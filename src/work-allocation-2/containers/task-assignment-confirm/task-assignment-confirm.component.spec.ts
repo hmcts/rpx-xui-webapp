@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of, throwError } from 'rxjs';
+import { PriorityFieldComponentModule } from '../../../work-allocation-2/components/priority-field/priority.module';
 import { PersonRole } from '../../../../api/workAllocation2/interfaces/person';
 import { TaskActionConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
@@ -14,6 +15,8 @@ import { InfoMessageCommService, WorkAllocationTaskService } from '../../service
 import { getMockTasks } from '../../tests/utils.spec';
 import { REDIRECTS } from '../../utils';
 import { TaskAssignmentConfirmComponent } from './task-assignment-confirm.component';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
+import { By } from '@angular/platform-browser';
 
 @Component({
   template: `<exui-task-assignment-confirm></exui-task-assignment-confirm>`
@@ -36,6 +39,7 @@ describe('TaskAssignmentConfirmComponent', () => {
   const mockTasks = getMockTasks();
   // Provide a fake implementation of assignTask(), which returns different responses based on the task ID
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['assignTask']);
+  const mockSessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem']);
   mockTaskService.assignTask.and.callFake((taskId: any) => {
     switch (taskId) {
       // For testing recognised error status 401
@@ -60,7 +64,7 @@ describe('TaskAssignmentConfirmComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,
-        ExuiCommonLibModule,
+        PriorityFieldComponentModule,
         RouterTestingModule,
         WorkAllocationComponentsModule,
         ExuiCommonLibModule
@@ -85,7 +89,8 @@ describe('TaskAssignmentConfirmComponent', () => {
           }
         },
         { provide: Router, useValue: { url: 'localhost/test', navigate: (_1: any, _2: any) => {} } },
-        { provide: InfoMessageCommService, useValue: mockInfoMessageCommService }
+        { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
+        { provide: SessionStorageService, useValue: mockSessionStorageService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
@@ -237,4 +242,93 @@ describe('TaskAssignmentConfirmComponent', () => {
       }
     });
   });
+
+});
+
+
+['caseworker-ia-iacjudge', 'caseworker-ia-caseofficer'].forEach(role => {
+  describe(`TaskAssignmentConfirmComponent by userType role ${role}`, () => {
+    let component: TaskAssignmentConfirmComponent;
+    let wrapper: WrapperComponent;
+    let fixture: ComponentFixture<WrapperComponent>;
+    let router: Router;
+    const SELECTED_PERSON = {
+      id: 'id123',
+      name: 'John Smith',
+      email: 'john.smith@email.com',
+      domain: PersonRole.CASEWORKER
+    };
+    const mockTasks = getMockTasks();
+    // Provide a fake implementation of assignTask(), which returns different responses based on the task ID
+    const mockTaskService = jasmine.createSpyObj('mockTaskService', ['assignTask']);
+
+    const mockSessionStorageService = {
+      getItem: jasmine.createSpy('getItem').and.returnValue(JSON.stringify({
+        roles: [role]
+      }))
+    };
+
+    let mockInfoMessageCommService: jasmine.SpyObj<InfoMessageCommService>;
+
+    beforeEach(() => {
+      mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['nextMessage']);
+      TestBed.configureTestingModule({
+        imports: [
+          CdkTableModule,
+          PriorityFieldComponentModule,
+          RouterTestingModule,
+          WorkAllocationComponentsModule,
+          ExuiCommonLibModule
+        ],
+        declarations: [TaskAssignmentConfirmComponent, WrapperComponent],
+        providers: [
+          { provide: WorkAllocationTaskService, useValue: mockTaskService },
+          {
+            provide: ActivatedRoute,
+            useValue: {
+              snapshot: {
+                data: {
+                  taskAndCaseworkers: { data: mockTasks[0], caseworkers: [] },
+                  ...TaskActionConstants.Reassign
+                },
+                params: {
+                  taskId: 'task1111111'
+                }
+              },
+              params: Observable.of({ task: mockTasks[0] }),
+              paramMap: Observable.of({ selectedPerson: SELECTED_PERSON })
+            }
+          },
+          { provide: Router, useValue: { url: 'localhost/test', navigate: (_1: any, _2: any) => { } } },
+          { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
+          { provide: SessionStorageService, useValue: mockSessionStorageService }
+        ]
+      }).compileComponents();
+      fixture = TestBed.createComponent(WrapperComponent);
+      wrapper = fixture.componentInstance;
+      component = wrapper.appComponentRef;
+      component.verb = TaskActionType.Reassign;
+      router = TestBed.get(Router);
+      window.history.pushState({ selectedPerson: SELECTED_PERSON }, '', '');
+      fixture.detectChanges();
+    });
+
+    it('configured fields for judicial', () => {
+      const headers = fixture.debugElement.queryAll(By.css('th'));
+
+      const fieldLabels = headers.map(header => header.nativeElement.textContent);
+      console.log(`component.isUserJudidical ${component.isUserJudidical}`);
+      if (role === 'caseworker-ia-iacjudge') {
+        expect(fieldLabels).toContain('Task created');
+        expect(fieldLabels).not.toContain('Due date');
+        expect(fieldLabels).not.toContain('Priority');
+      } else {
+        expect(fieldLabels).not.toContain('Task created');
+        expect(fieldLabels).toContain('Due date');
+        expect(fieldLabels).toContain('Priority');
+      }
+    });
+
+  });
+
 });

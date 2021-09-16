@@ -20,7 +20,7 @@ Feature: WA Release 2: My work - My tasks - Manage links
             | Allwork test scr | auto test category | London QA lab |
 
     Scenario Outline:  My Tasks, colums and column links for "<UserType>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
        
 
         Given I start MockApp

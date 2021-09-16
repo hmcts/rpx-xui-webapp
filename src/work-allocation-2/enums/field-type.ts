@@ -4,6 +4,8 @@ export enum FieldType {
   DATE_AGE_DAYS,         // Display as number of days since date
   DATE,                  // Display as DD/MM/YYYY date
   DATETIME,              // Display as DD/MM/YYYY HH:MM date time (24 hour clock)
+  FORMATTED_DATE,        // Display as e.g. 5 May 2034
+  PRIORITY,              // Display as HIGH, MEDIUM or LOW priority (colour coded)
   BOOLEAN,               // Display as Yes, No, or blank
   IDAM_ID,               // Look up IDAM ID and convert to Firstname Lastname
   INTEGER,               // Convert to nearest whole numer

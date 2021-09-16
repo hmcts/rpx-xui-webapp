@@ -4,9 +4,9 @@ Feature: WA Release 2: My work - My Tasks
     Background: Mock and browser setup
         Given I init MockApp
 
-@ignore
+    @ignore
     Scenario Outline:  My Tasks, colums and column links for "<UserType>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
         Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 10    |
@@ -30,13 +30,15 @@ Feature: WA Release 2: My work - My Tasks
 
         Given I start MockApp
         Given I navigate to home page
-        Then I validate task list table columns displayed
-            | ColumnHeader  |
-            | Case name     |
-            | Case category |
-            | Location      |
-            | Task          |
-            | Date          |
+        Then I validate task list table columns displayed for user "<UserType>"
+            | ColumnHeader  | Caseworker | Judge |
+            | Case name     | Yes        | Yes   |
+            | Case category | Yes        | Yes   |
+            | Location      | Yes        | Yes   |
+            | Task          | Yes       | Yes   |
+            | Task created  | No         | Yes   |
+            | Due date      | Yes        | No    |
+            | Priority      | Yes        | No    |
 
         Then I validate task table values displayed
             | row | Case name | Case category        | Location        | Task             | Date |
@@ -58,12 +60,12 @@ Feature: WA Release 2: My work - My Tasks
         Examples:
             | UserIdentifier     | UserType   | Roles                                              |
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-    # | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
-    
+
 
     Scenario Outline: My Tasks sort column persist in session with Caseworker user "<SubNavigationTab>"
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer "
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer " with reference "userDetails"
         Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 100   |

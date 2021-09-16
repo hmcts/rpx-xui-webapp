@@ -45,6 +45,7 @@ import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-tr
 // from services
 import * as fromServices from './services';
 import { effects, reducers } from './store';
+import { PriorityFieldComponentModule } from '../work-allocation-2/components/priority-field/priority.module';
 
 @NgModule({
   imports: [
@@ -65,7 +66,8 @@ import { effects, reducers } from './store';
     WorkbasketFiltersModule,
     ExuiCommonLibModule,
     LoadingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    PriorityFieldComponentModule
   ],
   declarations: [...fromComponents.components, ...fromContainers.containers, ...fromDirectives.directives],
   providers: [

@@ -14,6 +14,7 @@ class workFlowUtil{
         let workflowPageObject = null;
         switch (workflow) {
             case 'reassigntask':
+            case 'assigntask':
                 workflowPageObject = reassignTaskWorkFlow;
                 break;
             case 'reallocate':

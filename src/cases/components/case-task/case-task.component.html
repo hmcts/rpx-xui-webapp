@@ -4,9 +4,18 @@
     <span class="hmcts-badge_right"></span>
 </p>
 <dl class="govuk-summary-list govuk-summary-list--no-border">
+    <div *ngIf="!isUserJudidical" class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            <span class="row-padding">Priority</span>
+        </dt>
+        <dd class="govuk-summary-list__value">
+            <exui-priority-field [dueDate]="toDate(task.dueDate)">
+            </exui-priority-field>
+        </dd>
+    </div>
     <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
-            <span class="row-padding">Task created</span>
+            <span class="row-padding">{{getDueDateTitle()}}</span>
         </dt>
         <dd class="govuk-summary-list__value">{{task.dueDate | date: 'dd/MM/yyyy'}}</dd>
     </div>

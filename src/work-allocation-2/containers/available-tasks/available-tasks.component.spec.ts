@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { TASK_ACTIONS } from 'api/workAllocation/constants/actions';
 import { of, throwError } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
 
@@ -39,6 +40,7 @@ describe('AvailableTasksComponent', () => {
   let component: AvailableTasksComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
+  let router: Router;
 
   const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
   const mockLocations: dtos.Location[] = getMockLocations();
@@ -79,6 +81,7 @@ describe('AvailableTasksComponent', () => {
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTaskWithPagination.and.returnValue(of({ tasks }));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
+    router = TestBed.get(Router);
     fixture.detectChanges();
   });
 
@@ -267,38 +270,72 @@ describe('AvailableTasksComponent', () => {
   });
 
   describe('onActionHandler()', () => {
-
+    const TASK_ID = '2345678901234567';
+    const taskAction: InvokedTaskAction = {
+      action: {
+        id: TaskActionIds.CLAIM,
+        title: 'Assign to me',
+      },
+      task: {
+        assignee: null,
+        description: null,
+        assigneeName: null,
+        id: TASK_ID,
+        case_id: '2345678901234567',
+        caseName: 'Mankai Lit',
+        caseCategory: 'Revocation',
+        location: 'Taylor House',
+        taskName: 'Review appellant case',
+        dueDate: new Date(1604506789000),
+        actions: [{
+          id: TaskActionIds.CLAIM,
+          title: 'Assign to me',
+        }]
+      }
+    };
     it('should call claimTask with the task id, so that the task can be \'claimed\' by the User.', () => {
 
       const claimTaskSpy = spyOn(component, 'claimTask');
-
-      const TASK_ID = '2345678901234567';
-      const taskAction: InvokedTaskAction = {
-        action: {
-          id: TaskActionIds.CLAIM,
-          title: 'Assign to me',
-        },
-        task: {
-          assignee: null,
-          description: null,
-          assigneeName: null,
-          id: TASK_ID,
-          case_id: '2345678901234567',
-          caseName: 'Mankai Lit',
-          caseCategory: 'Revocation',
-          location: 'Taylor House',
-          taskName: 'Review appellant case',
-          dueDate: new Date(1604506789000),
-          actions: [ {
-            id: TaskActionIds.CLAIM,
-            title: 'Assign to me',
-          } ]
-        }
-      };
-
       component.onActionHandler(taskAction);
 
       expect(claimTaskSpy).toHaveBeenCalledWith(TASK_ID);
     });
+
+    [
+      { statusCode: 403, routeUrl: '/not-authorised' },
+      { statusCode: 401, routeUrl: '/not-authorised' },
+      { statusCode: 500, routeUrl: '/service-down' },
+      { statusCode: 400, routeUrl: '/service-down' },
+    ].forEach(scr => {
+      it('should call claimTask with the task id, so that the task can be \'claimed\' by the User.', () => {
+        mockTaskService.searchTaskWithPagination.and.returnValue(throwError({ status: scr.statusCode }));
+
+        component.onPaginationEvent(1);
+        expect(mockRouter.navigate).toHaveBeenCalledWith([scr.routeUrl]);
+      });
+    });
+
+
+    [
+      { statusCode: 403, routeUrl: '/not-authorised' , action: TaskActionIds.CLAIM },
+      { statusCode: 401, routeUrl: '/not-authorised', action: TaskActionIds.CLAIM },
+      { statusCode: 500, routeUrl: '/service-down', action: TaskActionIds.CLAIM},
+      { statusCode: 400, routeUrl: '/service-down', action: TaskActionIds.CLAIM},
+      { statusCode: 403, routeUrl: '/not-authorised', action: TaskActionIds.CLAIM_AND_GO },
+      { statusCode: 401, routeUrl: '/not-authorised', action: TaskActionIds.CLAIM_AND_GO },
+      { statusCode: 500, routeUrl: '/service-down', action: TaskActionIds.CLAIM_AND_GO },
+      { statusCode: 400, routeUrl: '/service-down', action: TaskActionIds.CLAIM_AND_GO },
+    ].forEach(scr => {
+      it('should call claimTask with the task id, so that the task can be \'claimed\' by the User.', () => {
+        mockTaskService.claimTask.and.returnValue(throwError({status: scr.statusCode}));
+
+        taskAction.action.id = scr.action;
+        component.onActionHandler(taskAction);
+
+        expect(mockTaskService.claimTask).toHaveBeenCalledWith(TASK_ID);
+        expect(mockRouter.navigate).toHaveBeenCalledWith([scr.routeUrl]);
+      });
+    });
+
   });
 });

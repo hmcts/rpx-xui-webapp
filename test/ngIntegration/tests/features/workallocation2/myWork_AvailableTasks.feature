@@ -5,7 +5,7 @@ Feature: WA Release 2: My work -  Available tasks
         Given I init MockApp
 
     Scenario Outline:  Available Tasks, columns and column links for "<UserType>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
         Given I start MockApp
         Given I navigate to home page
         When I navigate to My work sub navigation tab "Available tasks"
@@ -28,7 +28,7 @@ Feature: WA Release 2: My work -  Available tasks
 
 
     Scenario Outline: Available Tasks pagnation and sorting for user type "<UserType>" with roles "<Roles>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 100   |
@@ -72,7 +72,7 @@ Feature: WA Release 2: My work -  Available tasks
             | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
     Scenario: Available Tasks sort column persist in session with Caseworker user 
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer "
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer " with reference "userDetails"
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 100   |
@@ -97,7 +97,7 @@ Feature: WA Release 2: My work -  Available tasks
         
 
     Scenario Outline:  Available Tasks error with response code <ResponseCode>
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker"
+        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker" with reference "userDetails"
         Given I start MockApp
         Given I navigate to home page
 

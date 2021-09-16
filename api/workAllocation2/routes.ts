@@ -9,6 +9,7 @@ import {
   getRolesByCaseId,
   getRolesCategory,
   getTask, getTasksByCaseId,
+  getTasksForCaseIdAndEventId,
   postTaskAction,
   postTaskSearchForCompletable,
   searchCase,
@@ -51,5 +52,6 @@ router.use('/exclusion/rolesCategory', getRolesCategory);
 
 router.use('/roles/:caseId/show-allocate-role-link', showAllocateRoleLink);
 router.use('/roles/:caseId', getRolesByCaseId);
+router.use('/case/:caseId/event/:eventId', getTasksForCaseIdAndEventId)
 
 export default router;

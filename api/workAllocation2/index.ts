@@ -367,3 +367,20 @@ export async function showAllocateRoleLink(req: EnhancedRequest, res: Response, 
     next(e);
   }
 }
+
+export async function getTasksForCaseIdAndEventId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+  const caseId = req.params.caseId;
+  const eventId = req.params.eventId;
+  try {
+    const promise = new Promise((resolve, reject) => {
+      if(!caseId || !eventId) {
+        return reject(false);
+      }
+      eventId !== 'sendDirection' ? resolve(false) : resolve(true);
+    });
+    const result = await promise
+    return res.send(result).status(200);
+  } catch (e) {
+    next(e);
+  }
+}

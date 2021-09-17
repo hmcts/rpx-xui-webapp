@@ -44,6 +44,10 @@ const CASE_ROLE: FieldConfig = {
   sortName: 'caseRole',
   views: TaskView.ALL_VIEWS
 };
+const CASE_ROLE_DISABLE_SORT: FieldConfig = {
+  ...CASE_ROLE,
+  disableSort: true
+};
 const ROLE: FieldConfig = {
   name: 'role',
   type: FieldType.STRING,
@@ -72,6 +76,10 @@ const JURISDICTION: FieldConfig = {
   columnLabel: 'Jurisdiction',
   sortName: 'jurisdiction',
   views: TaskView.ALL_VIEWS
+};
+const JURISDICTION_DISABLE_SORT: FieldConfig = {
+  ...JURISDICTION,
+  disableSort: true
 };
 const LOCATION: FieldConfig = {
   name: 'location_name',
@@ -142,12 +150,20 @@ const START_DATE: FieldConfig = {
   sortName: 'startDate',
   views: TaskView.ALL_VIEWS
 };
+const START_DATE_DISABLE_SORT: FieldConfig = {
+  ...START_DATE,
+  disableSort: true
+};
 const END_DATE: FieldConfig = {
   name: 'endDate',
   type: FieldType.FORMATTED_DATE,
   columnLabel: 'End',
   sortName: 'endDate',
   views: TaskView.ALL_VIEWS
+};
+const END_DATE_DISABLE_SORT: FieldConfig = {
+  ...END_DATE,
+  disableSort: true
 };
 const ASSIGNEE: FieldConfig = {
   name: 'assigneeName',
@@ -184,7 +200,7 @@ const AVAILABLE_TASKS_FOR_LEGAL_OPS: FieldConfig[] = [
   CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_TEXT, ...STAFF_DATES
 ];
 const MY_CASES: FieldConfig[] = [
-  CASE_NAME_AS_LINK, JURISDICTION, CASE_CATEGORY, CASE_ROLE, START_DATE, END_DATE
+  CASE_NAME_AS_LINK_DISABLE_SORT, JURISDICTION_DISABLE_SORT, CASE_CATEGORY_DISABLE_SORT, CASE_ROLE_DISABLE_SORT, START_DATE_DISABLE_SORT, END_DATE_DISABLE_SORT
 ];
 const MY_TASKS: FieldConfig[] = [
   CASE_REFERENCE_AS_LINK, CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_TEXT, ...STAFF_DATES

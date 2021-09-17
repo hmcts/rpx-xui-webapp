@@ -5,7 +5,7 @@ Feature: WA Release 2: All work - filters
         Given I init MockApp
 
     Scenario Outline: filter selection, with user role "<UserType>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
         Given I set MOCK tasks with permissions for view "All work" and assigned state ""
             | Permissions | Count |
             | Manage      | 140    |
@@ -82,7 +82,7 @@ Feature: WA Release 2: All work - filters
 
 
     Scenario Outline: All location filter selection, with user role "<UserType>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
         Given I set MOCK tasks with permissions for view "All work" and assigned state ""
             | Permissions | Count |
             | Manage      | 140   |
@@ -137,7 +137,7 @@ Feature: WA Release 2: All work - filters
             | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
     Scenario Outline: All persons filter selection, with user role "<UserType>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
         Given I set MOCK tasks with permissions for view "All work" and assigned state ""
             | Permissions | Count |
             | Manage      | 140   |
@@ -197,7 +197,7 @@ Feature: WA Release 2: All work - filters
 
 
     Scenario Outline: All persons filter selection, select None option, with user role "<UserType>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
         Given I set MOCK tasks with permissions for view "All work" and assigned state ""
             | Permissions | Count |
             | Manage      | 140   |

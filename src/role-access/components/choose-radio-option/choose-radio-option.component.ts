@@ -4,7 +4,8 @@ import { OptionsModel } from '../../models/options-model';
 
 @Component({
   selector: 'exui-choose-radio-option',
-  templateUrl: './choose-radio-option.component.html'
+  templateUrl: './choose-radio-option.component.html',
+  styleUrls: ['./choose-radio-option.component.scss']
 })
 
 export class ChooseRadioOptionComponent {

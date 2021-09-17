@@ -6,7 +6,7 @@ Feature: WA Release 2: My work - My Tasks - pagination sorting
 
  
     Scenario Outline: My Tasks pagnation and sorting for user type "<UserType>" with roles "<Roles>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
         Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 100   |
@@ -51,7 +51,7 @@ Feature: WA Release 2: My work - My Tasks - pagination sorting
             # | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
     Scenario Outline: My Tasks pagnation control display with only 1 page of items
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
         Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 10    |
@@ -71,7 +71,7 @@ Feature: WA Release 2: My work - My Tasks - pagination sorting
 
 
     Scenario Outline: My Tasks pagnation control display 0 items
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
         Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 0    |

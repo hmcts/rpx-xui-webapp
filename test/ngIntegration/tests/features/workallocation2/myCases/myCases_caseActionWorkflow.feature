@@ -12,7 +12,7 @@ Feature: WA Release 2: My cases - Manage links - Action work flow
             |                | 90    |
 
     Scenario Outline:  Task Manage links for "<UserType>" action "<action>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
         Given I set MOCK find persons database with persons
             | email             | name          |
             | Test12@justice.uk | test12 person |
@@ -31,18 +31,18 @@ Feature: WA Release 2: My cases - Manage links - Action work flow
         Then I see action link "<action>" is present for case with Manage link open
         When I click action link "<action>" on task with Manage link open
         Then I am in workflow page "Reallocate"
-        Then In workflow, I see find person page displayed with caption "<action>"
-        When In workflow, I enter search term "test" in find person input text
-        Then In workflow, I see following options available in find person results
+        Then In workflow "<action>", I see find person page displayed with caption "<action>"
+        When In workflow "<action>", I enter search term "test" in find person input text
+        Then In workflow "<action>", I see following options available in find person results
             | value             |
             | Test12@justice.uk |
             | Test23@justice.uk |
             | Test34@justice.uk |
             | Test45@justice.uk |
-        When In workflow, I select find person result "Test23@justice.uk"
-        Then In workflow, I see find person is selected with "Test23@justice.uk"
+        When In workflow "<action>", I select find person result "Test23@justice.uk"
+        Then In workflow "<action>", I see find person is selected with "Test23@justice.uk"
 
-        When In workflow, I click continue
+        When In workflow "<action>", I click continue
 
         Then I see task check your changes page for action "<action>" displayed
 
@@ -63,7 +63,7 @@ Feature: WA Release 2: My cases - Manage links - Action work flow
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | 4         | Reallocate | Reallocate     | You've reassigned a task to somebody else. |
 
     Scenario Outline:  Case Manage links for "<UserType>" action "<action>" cancel in check your changes page
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
         Given I set MOCK find persons database with persons
             | email             | name          |
             | Test12@justice.uk | test12 person |
@@ -81,18 +81,18 @@ Feature: WA Release 2: My cases - Manage links - Action work flow
         When I open Manage link for wa cases at row <taskAtRow>
         Then I see action link "<action>" is present for case with Manage link open
         When I click action link "<action>" on task with Manage link open
-        Then In workflow, I see find person page displayed with caption "<action>"
-        When In workflow, I enter search term "test" in find person input text
-        Then In workflow, I see following options available in find person results
+        Then In workflow "<action>", I see find person page displayed with caption "<action>"
+        When In workflow "<action>", I enter search term "test" in find person input text
+        Then In workflow "<action>", I see following options available in find person results
             | value             |
             | Test12@justice.uk |
             | Test23@justice.uk |
             | Test34@justice.uk |
             | Test45@justice.uk |
-        When In workflow, I select find person result "Test23@justice.uk"
-        Then In workflow, I see find person is selected with "Test23@justice.uk"
+        When In workflow "<action>", I select find person result "Test23@justice.uk"
+        Then In workflow "<action>", I see find person is selected with "Test23@justice.uk"
 
-        When In workflow, I click continue
+        When In workflow "<action>", I click continue
 
         Then I see task check your changes page for action "<action>" displayed
 

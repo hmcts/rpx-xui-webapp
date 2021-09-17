@@ -61,7 +61,7 @@ class BrowserWaits{
                     clearInterval(conditionCheckInterval);
                     resolve(true);
                 }
-            }, 500);
+            }, 50);
 
             setTimeout(() => {
                 clearInterval(conditionCheckInterval);

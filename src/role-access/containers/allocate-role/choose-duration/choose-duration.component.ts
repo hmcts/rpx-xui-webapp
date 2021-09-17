@@ -50,9 +50,9 @@ export class ChooseDurationComponent implements OnInit {
   constructor(private readonly store: Store<fromFeature.State>,
               private readonly builder: FormBuilder) {
     this.allDurations = [
-      { duration: DurationOfRole.SEVEN_DAYS, description: ChooseDurationComponent.sevenDaysDesc, checked: false },
-      { duration: DurationOfRole.INDEFINITE, description:  ChooseDurationComponent.indefiniteDesc, checked: false },
-      { duration: DurationOfRole.ANOTHER_PERIOD, description: ChooseDurationComponent.anotherPeriodDesc, checked: false }
+      { id: '1', duration: DurationOfRole.SEVEN_DAYS, description: ChooseDurationComponent.sevenDaysDesc, checked: false },
+      { id: '2', duration: DurationOfRole.INDEFINITE, description:  ChooseDurationComponent.indefiniteDesc, checked: false },
+      { id: '3', duration: DurationOfRole.ANOTHER_PERIOD, description: ChooseDurationComponent.anotherPeriodDesc, checked: false }
     ];
     this.dayStartDate = new FormControl('', [Validators.required, Validators.min(1), Validators.max(31)]);
     this.monthStartDate = new FormControl('', [Validators.required, Validators.min(1), Validators.max(12)]);
@@ -235,6 +235,7 @@ export class ChooseDurationComponent implements OnInit {
 }
 
 export interface DurationDescription {
+  id: string;
   duration: DurationOfRole;
   description: string;
   checked: boolean;

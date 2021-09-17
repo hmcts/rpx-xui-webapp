@@ -1,4 +1,4 @@
-@ng 
+# Tested covered in unit tests
 Feature: WA Release 2: My work -  Available tasks - Negative Scenarios
 
     Background: Mock and browser setup
@@ -6,7 +6,7 @@ Feature: WA Release 2: My work -  Available tasks - Negative Scenarios
 
 
     Scenario Outline:  Available Tasks error with response code <ResponseCode>
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker"
+        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker" with reference "userDetails"
         Given I start MockApp
         Given I navigate to home page
 

@@ -60,7 +60,7 @@ describe('Work Allocation: ', function () {
 
     });
 
-    it('My work: Work fikters', async function () {
+    it('My work: Work filters', async function () {
         userDetailsMock.withIACJudicialUser('IAC_Judge_WA_R2');
         await MockApp.startServer();
         const actions = [];

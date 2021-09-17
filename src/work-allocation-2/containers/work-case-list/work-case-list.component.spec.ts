@@ -120,7 +120,8 @@ describe('CaseListComponent', () => {
 
   });
 
-  it('should take in the field name and trigger a new Request to the API to get a sorted result set.', async () => {
+  // required no sorting so exclude the test
+  xit('should take in the field name and trigger a new Request to the API to get a sorted result set.', async () => {
 
     // mock the emitter and dispatch the connected event
     spyOn(component.sortEvent, 'emit');
@@ -138,7 +139,8 @@ describe('CaseListComponent', () => {
     expect(component.showResetSortButton).toBeFalsy();
   });
 
-  it('show reset sort button after clicking column header', async () => {
+  // required no sorting so exclude the test
+  xit('show reset sort button after clicking column header', async () => {
 
     /// mock the emitter and dispatch the connected event
     spyOn(component.sortEvent, 'emit');
@@ -151,7 +153,8 @@ describe('CaseListComponent', () => {
     expect(component.showResetSortButton).toBeTruthy();
   });
 
-  it('should allow sorting for different columns.', async () => {
+  // required no sorting so exclude the test
+  xit('should allow sorting for different columns.', async () => {
 
     // mock the emitter and dispatch the connected event
     spyOn(component.sortEvent, 'emit');
@@ -370,7 +373,8 @@ describe('CaseListComponent', () => {
     expect(component.actionEvent.emit).toHaveBeenCalledWith({invokedCase: secondCase, action});
   });
 
-  it('should allow a check to verify whether column sorted.', async () => {
+  // required no sorting so exclude the test
+  xit('should allow a check to verify whether column sorted.', async () => {
     // mock the emitter and dispatch the connected event (with example case field buttons selected)
     spyOn(component.sortEvent, 'emit');
     const element = fixture.debugElement.nativeElement;

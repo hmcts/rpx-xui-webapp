@@ -117,7 +117,6 @@ export class WorkCaseListWrapperComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.setUpLocations();
     this.setupCaseWorkers();
     this.loadCases();
   }
@@ -261,7 +260,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
   }
 
   // Do the actual load. This is separate as it's called from two methods.
-  private doLoad(): void {
+  protected doLoad(): void {
     this.showSpinner$ = this.loadingService.isLoading;
     const loadingToken = this.loadingService.register();
     this.isPaginationEnabled$.pipe(mergeMap(enabled => enabled ? this.performSearchPagination() : this.performSearch())).subscribe(result => {
@@ -276,7 +275,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
     });
   }
 
-  private setUpLocations(): void {
+  protected setUpLocations(): void {
     this.locations$ = this.locationService.getLocations();
   }
 

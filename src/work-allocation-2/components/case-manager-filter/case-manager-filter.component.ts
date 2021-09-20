@@ -1,7 +1,6 @@
-import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
-import { JurisdictionType } from 'api/workAllocation2/interfaces/jurisdiction';
 import { filter } from 'rxjs/operators';
 import { PersonRole } from '../../../../api/workAllocation2/interfaces/person';
 import { SERVICE_OPTIONS_LIST } from '../../../app/app.constants';
@@ -19,7 +18,9 @@ export class CaseManagerFilterComponent implements OnInit {
 
   @Input() public locations: Location[] = [];
 
-  public fieldsConfig: FilterConfig = {
+  @Output() public selectChanged: EventEmitter<any> = new EventEmitter<any>();
+
+  public filterConfig: FilterConfig = {
     persistence: 'session',
     enableDisabledButton: true,
     id: CaseManagerFilterComponent.FILTER_NAME,
@@ -30,8 +31,20 @@ export class CaseManagerFilterComponent implements OnInit {
       id: CaseManagerFilterComponent.FILTER_NAME,
       fields: [
         {
-          name: 'service',
-          value: [JurisdictionType.IA]
+          name: 'jurisdiction',
+          value: ['Immigration and Asylum']
+        },
+        {
+          name: 'location_id',
+          value: ['all']
+        },
+        {
+          name: 'role',
+          value: [PersonRole.JUDICIAL]
+        },
+        {
+          name: 'case_name',
+          value: [PersonRole.ALL]
         }
       ]
     }
@@ -43,7 +56,7 @@ export class CaseManagerFilterComponent implements OnInit {
 
   private static initServiceFilter(): FilterFieldConfig {
     return {
-      name: 'service',
+      name: 'jurisdiction',
       options: SERVICE_OPTIONS_LIST,
       minSelected: 1,
       maxSelected: 1,
@@ -59,7 +72,7 @@ export class CaseManagerFilterComponent implements OnInit {
       locations = [];
     }
     return {
-      name: 'location',
+      name: 'location_id',
       options: locations.map(loc => ({key: loc.id, label: loc.locationName})),
       minSelected: 1,
       maxSelected: 1,
@@ -98,7 +111,7 @@ export class CaseManagerFilterComponent implements OnInit {
 
   private static initPersonFilter(): FilterFieldConfig {
     return {
-      name: 'selectPerson',
+      name: 'case_name',
       options: [
         {
           key: PersonRole.ALL,
@@ -126,13 +139,13 @@ export class CaseManagerFilterComponent implements OnInit {
       maxSelected: 0,
       minSelectedError: 'You must select a person',
       maxSelectedError: null,
-      showCondition: 'selectPerson=Specific person',
+      enableCondition: 'case_name=Specific person',
       type: 'find-person'
     };
   }
 
   public ngOnInit(): void {
-    this.fieldsConfig.fields = [
+    this.filterConfig.fields = [
       CaseManagerFilterComponent.initServiceFilter(),
       CaseManagerFilterComponent.initCaseLocationFilter([{
         id: 'all',
@@ -145,8 +158,12 @@ export class CaseManagerFilterComponent implements OnInit {
     ];
     this.filterService.getStream(CaseManagerFilterComponent.FILTER_NAME)
       .pipe(
-        filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
+        filter((f: FilterSetting) => f && f.hasOwnProperty('fields') && f.id === CaseManagerFilterComponent.FILTER_NAME),
       ).subscribe((f: FilterSetting) => {
+      const fields = f.fields.reduce((acc, field: { name: string, value: string[] }) => {
+        return {...acc, [field.name]: field.value[0]};
+      }, {});
+      this.selectChanged.emit(fields);
     });
   }
 }

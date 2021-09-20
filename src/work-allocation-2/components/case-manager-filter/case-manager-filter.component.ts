@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
+import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { PersonRole } from '../../../../api/workAllocation2/interfaces/person';
 import { SERVICE_OPTIONS_LIST } from '../../../app/app.constants';
@@ -12,14 +13,11 @@ import { Location } from '../../models/dtos';
   styleUrls: ['./case-manager-filter.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class CaseManagerFilterComponent implements OnInit {
+export class CaseManagerFilterComponent implements OnInit, OnDestroy {
 
   private static FILTER_NAME: string = 'cases';
-
   @Input() public locations: Location[] = [];
-
   @Output() public selectChanged: EventEmitter<any> = new EventEmitter<any>();
-
   public filterConfig: FilterConfig = {
     persistence: 'session',
     enableDisabledButton: true,
@@ -49,6 +47,7 @@ export class CaseManagerFilterComponent implements OnInit {
       ]
     }
   };
+  private sub: Subscription;
 
   constructor(private readonly filterService: FilterService) {
 
@@ -156,14 +155,20 @@ export class CaseManagerFilterComponent implements OnInit {
       CaseManagerFilterComponent.initPersonFilter(),
       CaseManagerFilterComponent.findPersonFilter()
     ];
-    this.filterService.getStream(CaseManagerFilterComponent.FILTER_NAME)
+    this.sub = this.filterService.getStream(CaseManagerFilterComponent.FILTER_NAME)
       .pipe(
         filter((f: FilterSetting) => f && f.hasOwnProperty('fields') && f.id === CaseManagerFilterComponent.FILTER_NAME),
       ).subscribe((f: FilterSetting) => {
-      const fields = f.fields.reduce((acc, field: { name: string, value: string[] }) => {
-        return {...acc, [field.name]: field.value[0]};
-      }, {});
-      this.selectChanged.emit(fields);
-    });
+        const fields = f.fields.reduce((acc, field: { name: string, value: string[] }) => {
+          return {...acc, [field.name]: field.value[0]};
+        }, {});
+        this.selectChanged.emit(fields);
+      });
+  }
+
+  public ngOnDestroy(): void {
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
   }
 }

@@ -252,5 +252,3 @@ export const paginate = (array: any[], pageNumber: number, pageSize: number): an
 export const filterByFieldName = (array: any[], fieldName: string, locations: any[]): any[] => {
   return array.filter(item => locations.includes(item[fieldName]));
 };
-
-

@@ -56,7 +56,7 @@ export const init = () => {
     const paginationConfig = body.pagination_parameters;
     const sortingConfig = body.sorting_parameters;
     const searchParameters: SearchTaskParameter[] = body.search_parameters as SearchTaskParameter[];
-    const filteredList = filterAllWorkCases(CASEWORKER_ALL_CASES.cases, searchParameters);
+    const filteredList = filterAllWorkCases(JUDICIAL_ALL_CASES.cases, searchParameters);
     const caseList = sort(filteredList,
       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [

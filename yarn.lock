@@ -403,6 +403,14 @@
     enabled "2.0.x"
     kuler "^2.0.0"
 
+"@edium/fsm@^2.1.2":
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/@edium/fsm/-/fsm-2.1.2.tgz#3349644cb6ce9edf4f78574c377ccd303897bffd"
+  integrity sha512-5mnpxxutpXINa4DMfWMUQhQyZ7v0ZzG/+r2QJyDih0W5fzMleBLDi/Yr5WL658E8Mu6zgCzsLz++MZreRjAv9w==
+  dependencies:
+    lodash "^4.17.21"
+    tslib "^2.2.0"
+
 "@hapi/address@^4.0.1":
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/@hapi/address/-/address-4.1.0.tgz#d60c5c0d930e77456fdcde2598e77302e2955e1d"
@@ -443,14 +451,15 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.3.1-switch-tabs":
-  version "4.3.1-switch-tabs"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.3.1-switch-tabs.tgz#e285de37f00852e0325a1ebcd1b72c7603822510"
-  integrity sha512-ElekxXdAw59V2yPOLMGIbeilC4wj9CfkGgkkgCEL7AfVTaSgBdqfCC8KGzgMAVtuJ8/gwpF8wKriNgJVGkip4A==
+"@hmcts/ccd-case-ui-toolkit@4.3.3-state-machine":
+  version "4.3.3-state-machine"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.3.3-state-machine.tgz#7824f43cb5d5caa7d3734f7998e448f0f646c068"
+  integrity sha512-F6QheHgye3SJbG7K9q3/RAkbGFpcwTs1+BT43EOjWwS0untAA4dvxUN3BHQ//OtL+nZebzOLinpIoI2/4/Lg2A==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
+    "@edium/fsm" "^2.1.2"
     "@hmcts/ccpay-web-component" "3.0.3"
     braces "^2.3.1"
     enhanced-resolve "3.3.0"
@@ -8056,7 +8065,7 @@ lodash.tail@^4.1.1:
   resolved "https://registry.yarnpkg.com/lodash.tail/-/lodash.tail-4.1.1.tgz#d2333a36d9e7717c8ad2f7cacafec7c32b444664"
   integrity sha1-0jM6NtnncXyK0vfKyv7HwytERmQ=
 
-lodash@4, lodash@^3.7.0, lodash@^4.0.0, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.16, lodash@^4.17.19, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.5.0, lodash@~4.17.10:
+lodash@4, lodash@^3.7.0, lodash@^4.0.0, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.16, lodash@^4.17.19, lodash@^4.17.21, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.5.0, lodash@~4.17.10:
   version "4.17.19"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.19.tgz#e48ddedbe30b3321783c5b4301fbd353bc1e4a4b"
   integrity sha512-JNvd8XER9GQX0v2qJgsaN/mzFCNA5BRe/j8JN9d+tWyGLSodKQHKFicdwNYzWwI3wjRnaKPsGj1XkBjx/F96DQ==
@@ -12835,6 +12844,11 @@ tslib@^2.0.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.2.0.tgz#fb2c475977e35e241311ede2693cee1ec6698f5c"
   integrity sha512-gS9GVHRU+RGn5KQM2rllAlR3dU6m7AcpJKdtH8gFvQiC4Otgk98XnmMU+nZenHt/+VhnBPWwgrJsyrdcw6i23w==
+
+tslib@^2.2.0:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.3.1.tgz#e8a335add5ceae51aa261d32a490158ef042ef01"
+  integrity sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==
 
 tslib@~1.11.1:
   version "1.11.1"

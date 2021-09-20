@@ -1,5 +1,4 @@
-import { Component } from '@angular/core';
-import { JurisdictionType } from '../../../../api/workAllocation2/interfaces/jurisdiction';
+import { Component, OnInit } from '@angular/core';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { Actions } from '../../../role-access/models';
@@ -16,7 +15,7 @@ import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-cas
   templateUrl: 'all-work-case.component.html',
   styleUrls: ['all-work-case.component.scss']
 })
-export class AllWorkCaseComponent extends WorkCaseListWrapperComponent {
+export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implements OnInit {
   public sortedBy: SortField = {
     fieldName: '',
     order: SortOrder.NONE
@@ -25,10 +24,12 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent {
     page_number: 1,
     page_size: 25
   };
-  private selectedJurisdiction: any = JurisdictionType.IA;
+  private selectedJurisdiction: any = 'Immigration and Asylum';
+  private selectedCaseName: string = '';
+  private selectedRole: string = 'All';
   private selectedLocation: Location = {
     id: '231596',
-    locationName: 'Taylor House',
+    locationName: 'Birmingham',
     services: [],
   };
 
@@ -52,6 +53,11 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent {
     return ConfigConstants.AllWorkCases;
   }
 
+  public ngOnInit(): void {
+    this.setUpLocations();
+    this.setupCaseWorkers();
+  }
+
   public getSearchCaseRequestPagination(): SearchCaseRequest {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
@@ -60,7 +66,9 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent {
       return {
         search_parameters: [
           {key: 'jurisdiction', operator: 'EQUAL', values: this.selectedJurisdiction},
-          {key: 'location', operator: 'EQUAL', values: this.selectedLocation.id},
+          {key: 'location_id', operator: 'EQUAL', values: this.selectedLocation.id},
+          {key: 'case_name', operator: 'EQUAL', values: this.selectedCaseName},
+          {key: 'role', operator: 'EQUAL', values: this.selectedRole},
         ],
         sorting_parameters: [this.getSortParameter()],
         search_by: userRole,
@@ -86,8 +94,11 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent {
     this.onPaginationHandler(pageNumber);
   }
 
-  public onSelectionChanged(selection: { location: Location, jurisdiction: any }): void {
-    this.selectedLocation = selection.location;
-    this.selectedLocation = selection.jurisdiction;
+  public onSelectionChanged(selection: { location_id: string, jurisdiction: string, case_name: string, role: string, person: string }): void {
+    this.selectedLocation.id = selection.location_id === 'all' ? '' : selection.location_id;
+    this.selectedJurisdiction = selection.jurisdiction;
+    this.selectedCaseName = selection.case_name === 'All' ? '' : selection.person;
+    this.selectedRole = selection.role;
+    this.doLoad();
   }
 }

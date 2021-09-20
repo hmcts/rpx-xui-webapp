@@ -1,5 +1,5 @@
-<ng-container *ngIf="locations$ | async as locations">
-  <exui-case-manager-filter [locations]="locations" (selectionChanged)="onSelectionChanged($event)"></exui-case-manager-filter>
+<div class="cases-container" *ngIf="locations$ | async as locations">
+  <exui-case-manager-filter [locations]="locations" (selectChanged)="onSelectionChanged($event)"></exui-case-manager-filter>
   <div class="hmcts-filter-layout__content exui-task-list">
     <exui-work-case-list
       [caseServiceConfig]="caseServiceConfig"
@@ -14,4 +14,5 @@
       (actionEvent)="onActionHandler($event)">
     </exui-work-case-list>
   </div>
-</ng-container>
+</div>
+

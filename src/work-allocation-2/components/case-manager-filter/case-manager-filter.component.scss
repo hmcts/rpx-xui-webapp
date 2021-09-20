@@ -7,3 +7,12 @@
 .govuk-select, .govuk-input{
   width: 100% !important;
 }
+
+
+.hmcts-filter-layout__filter {
+  float: none;
+  margin-right: 0;
+  min-width: inherit;
+  max-width: inherit;
+  width: 100%;
+}

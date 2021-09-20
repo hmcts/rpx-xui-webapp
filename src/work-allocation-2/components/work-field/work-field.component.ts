@@ -1,9 +1,9 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { FieldConfig } from '../../models/common';
-import { Task } from '.././../models/tasks';
 import { Case } from '.././../models/cases';
+import { Task } from '.././../models/tasks';
 
-import { FieldType } from './../../enums';
+import { FieldType } from '../../enums';
 
 @Component({
   selector: 'exui-work-field',

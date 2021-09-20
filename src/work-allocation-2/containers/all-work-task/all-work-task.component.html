@@ -1,4 +1,5 @@
-<exui-task-manager-filter [caseworkers]="caseworkers" [locations]="locations" (selectionChanged)="onSelectionChanged($event)"></exui-task-manager-filter>
+<ng-container *ngIf="locations$ | async as locations">
+<exui-task-manager-filter [locations]="locations" (selectionChanged)="onSelectionChanged($event)"></exui-task-manager-filter>
 <div class="hmcts-filter-layout__content exui-task-list">
   <exui-task-list
   [taskServiceConfig]="taskServiceConfig" [tasks]="tasks" [fields]="fields" [tasksTotal]="tasksTotal" [pagination]="pagination"
@@ -7,3 +8,4 @@
   (sortEvent)="onSortHandler($event)" (actionEvent)="onActionHandler($event)">
   </exui-task-list>
 </div>
+</ng-container>

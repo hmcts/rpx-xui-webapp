@@ -1,8 +1,14 @@
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models';
-import { Location } from '../../models/dtos';
+import { select, Store } from '@ngrx/store';
 import { filter } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
+
+import { AppUtils } from '../../../app/app-utils';
+import { UserRole } from '../../../app/models';
+import * as fromAppStore from '../../../app/store';
+import { Location } from '../../models/dtos';
 
 @Component({
   selector: 'exui-task-manager-filter',
@@ -15,6 +21,16 @@ export class TaskManagerFilterComponent implements OnInit {
   private static FILTER_NAME: string = 'all-tasks';
 
   @Input() public locations: Location[] = [];
+
+  public appStoreSub: Subscription;
+  public roleType: string;
+  public isLegalOpsOrJudicialRole: UserRole;
+
+  public ALL_LOCATIONS: Location[] = [{
+    id: '**ALL_LOCATIONS**',
+    locationName: 'All locations',
+    services: []
+  }];
 
   public fieldsConfig: FilterConfig = {
     persistence: 'session',
@@ -29,12 +45,26 @@ export class TaskManagerFilterComponent implements OnInit {
         {
           name: 'service',
           value: ['IA']
+        },
+        {
+          name: 'location',
+          value: ['**ALL_LOCATIONS**']
+        },
+        {
+          name: 'selectPerson',
+          value: ['All']
+        },
+        // Note: judicial users can have pirority cancel setting without needing it
+        {
+          name: 'priority',
+          value: ['All']
         }
       ]
     }
   };
 
-  constructor(private readonly filterService: FilterService) {
+  constructor(private readonly filterService: FilterService,
+    private readonly appStore: Store<fromAppStore.State>) {
   }
 
   private static initServiceFilter(): FilterFieldConfig {
@@ -71,32 +101,6 @@ export class TaskManagerFilterComponent implements OnInit {
     };
   }
 
-  private static initRoleTypeFilter(): FilterFieldConfig {
-    return {
-      name: 'role',
-      options: [
-        {
-          key: 'Judicial',
-          label: 'Judicial'
-        },
-        {
-          key: 'Legal Ops',
-          label: 'Legal Ops'
-        },
-        {
-          key: 'Admin',
-          label: 'Admin'
-        }
-      ],
-      minSelected: 1,
-      maxSelected: 1,
-      minSelectedError: 'You must select a role type',
-      maxSelectedError: null,
-      showCondition: 'selectPerson=Specific person',
-      type: 'select'
-    };
-  }
-
   private static initPersonFilter(): FilterFieldConfig {
     return {
       name: 'selectPerson',
@@ -118,8 +122,37 @@ export class TaskManagerFilterComponent implements OnInit {
       maxSelected: 1,
       minSelectedError: 'You must select a person',
       maxSelectedError: null,
+      lineBreakBefore: true,
       title: 'Person',
       type: 'radio'
+    };
+  }
+
+  private static initRoleTypeFilter(): FilterFieldConfig {
+    return {
+      name: 'role',
+      options: [
+        {
+          key: 'Judicial',
+          label: 'Judicial'
+        },
+        {
+          key: 'Legal Ops',
+          label: 'Legal Ops'
+        },
+        {
+          key: 'Admin',
+          label: 'Admin'
+        }
+      ],
+      minSelected: 1,
+      maxSelected: 1,
+      minSelectedError: 'You must select a role type',
+      maxSelectedError: null,
+      enableCondition: 'selectPerson=Specific person',
+      findPersonField: 'person',
+      disabledText: 'Select a role type',
+      type: 'select'
     };
   }
 
@@ -131,24 +164,105 @@ export class TaskManagerFilterComponent implements OnInit {
       maxSelected: 0,
       minSelectedError: 'You must select a person',
       maxSelectedError: null,
-      showCondition: 'selectPerson=Specific person',
+      enableCondition: 'selectPerson=Specific person',
       type: 'find-person'
     };
   }
 
+  private static initTaskTypeFilter(): FilterFieldConfig {
+    return {
+      name: 'taskType',
+      options: [
+        {
+          key: 'All',
+          label: 'All'
+        },
+        {
+          key: 'Judicial',
+          label: 'Judicial'
+        },
+        {
+          key: 'Legal Ops',
+          label: 'Legal Ops'
+        },
+        {
+          key: 'Admin',
+          label: 'Admin'
+        }
+      ],
+      minSelected: 1,
+      maxSelected: 1,
+      minSelectedError: 'You must select a task type',
+      maxSelectedError: null,
+      lineBreakBefore: true,
+      title: 'Task type',
+      type: 'select'
+    };
+  }
+
+  private static initPriorityFilter(): FilterFieldConfig {
+    return {
+      name: 'priority',
+      options: [
+        {
+          key: 'All',
+          label: 'All'
+        },
+        {
+          key: 'High',
+          label: 'High'
+        },
+        {
+          key: 'Medium',
+          label: 'Medium'
+        },
+        {
+          key: 'Low',
+          label: 'Low'
+        }
+      ],
+      minSelected: 1,
+      maxSelected: 1,
+      minSelectedError: 'You must select a priority',
+      maxSelectedError: null,
+      lineBreakBefore: true,
+      title: 'Priority',
+      type: 'select'
+    };
+  }
+
   public ngOnInit(): void {
+    this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
+      userDetails => {
+        this.isLegalOpsOrJudicialRole = AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles)
+        this.roleType = AppUtils.convertDomainToLabel(this.isLegalOpsOrJudicialRole);
+        this.fieldsConfig.cancelSetting.fields.push({
+          name: 'taskType',
+          value: [this.roleType]
+        },
+        {
+          name: 'role',
+          value: [this.roleType]
+        },
+        );
+      }
+    );
     this.fieldsConfig.fields = [
       TaskManagerFilterComponent.initServiceFilter(),
-      TaskManagerFilterComponent.initCaseLocationFilter(this.locations),
+      TaskManagerFilterComponent.initCaseLocationFilter(this.ALL_LOCATIONS.concat(this.locations)),
       TaskManagerFilterComponent.initPersonFilter(),
       TaskManagerFilterComponent.initRoleTypeFilter(),
-      TaskManagerFilterComponent.findPersonFilter()
+      TaskManagerFilterComponent.findPersonFilter(),
+      TaskManagerFilterComponent.initTaskTypeFilter(),
+      TaskManagerFilterComponent.initPriorityFilter()
     ];
+    this.fieldsConfig.fields = this.isLegalOpsOrJudicialRole === UserRole.Judicial ?
+      this.fieldsConfig.fields.slice(0, -1) : this.fieldsConfig.fields;
     this.filterService.getStream(TaskManagerFilterComponent.FILTER_NAME)
       .pipe(
         filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
       ).subscribe((f: FilterSetting) => {
-      console.log(f);
+        console.log(f);
     });
   }
 }

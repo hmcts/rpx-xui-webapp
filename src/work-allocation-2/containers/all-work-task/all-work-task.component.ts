@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
@@ -17,6 +18,7 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
 export class AllWorkTaskComponent extends TaskListWrapperComponent {
   private selectedCaseworker: Caseworker;
   private selectedLocation: Location;
+  public locations$: Observable<Location[]>;
 
   public sortedBy: SortField = {
     fieldName: '',
@@ -48,11 +50,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   }
 
   public loadCaseWorkersAndLocations() {
-    this.locationService.getLocations().subscribe(locations => {
-      this.locations = [...locations];
-    }, error => {
-      handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
-    });
+    this.locations$ = this.locationService.getLocations();
   }
 
   public getSearchTaskRequestPagination(): SearchTaskRequest {

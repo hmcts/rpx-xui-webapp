@@ -157,4 +157,22 @@ export class AppUtils {
     }
     return null;
   }
+
+  public static convertDomainToLabel(userRole: string): string {
+    switch(userRole) {
+      case UserRole.LegalOps: {
+        userRole = 'Legal Ops';
+        break;
+      }
+      case UserRole.Judicial: {
+        userRole = 'Judicial';
+        break;
+      }
+      case UserRole.Admin: {
+        userRole = 'Admin';
+        break;
+      }
+    }
+    return userRole;
+  }
 }

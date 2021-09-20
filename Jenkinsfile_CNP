@@ -46,8 +46,6 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 }
 
 withPipeline(type, product, component) {
-    enableMutationTest()
-    enableCrossBrowserTest()
 
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)

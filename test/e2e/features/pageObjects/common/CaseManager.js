@@ -6,12 +6,14 @@ var path = require('path');
 var cucumberReporter = require('../../../support/reportLogger');
 var CaseEditPage = require('../caseEditPage');
 const BrowserUtil = require('../../../../ngIntegration/util/browserUtil');
+const App = require('./application');
 
 const { accessibilityCheckerAuditor } = require('../../../../accessibility/helpers/accessibilityAuditor');
 
 class CaseManager {
 
     constructor() {
+        this.app = new App();
         this.manageCasesHeaderLink = $('.hmcts-header__link');
         this.caseListContainer = $('exui-case-list');
 
@@ -62,6 +64,7 @@ class CaseManager {
             let isJurisdictionSelected = false;
             while (retryOnJurisdiction < 3 && !isJurisdictionSelected) {
                 try {
+                    await this.app.waitForSpinnerToDissappear();
                     await this.createCaseStartPage.selectJurisdiction(jurisdiction);
                     isJurisdictionSelected = true;
                 }
@@ -77,7 +80,6 @@ class CaseManager {
                 }
             }
 
-
             await this.createCaseStartPage.selectCaseType(caseType);
             await this.createCaseStartPage.selectEvent(event);
 
@@ -87,6 +89,7 @@ class CaseManager {
             let isCaseStartPageDisplayed = false;
             while (startCasePageRetry < 3 && !isCaseStartPageDisplayed) {
                 try {
+                    await this.app.waitForSpinnerToDissappear();
                     await this.createCaseStartPage.clickStartButton();
                     await BrowserWaits.waitForPageNavigation(thisPageUrl);
                     isCaseStartPageDisplayed = true;

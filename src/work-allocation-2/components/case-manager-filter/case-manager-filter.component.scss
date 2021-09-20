@@ -16,3 +16,8 @@
   max-width: inherit;
   width: 100%;
 }
+
+
+.cases-container .govuk-section-break--visible:not(.elevated-break) {
+  display: none !important;
+}

@@ -5,5 +5,4 @@ import { Component } from '@angular/core';
   templateUrl: './main-error-page.component.html'
 })
 export class MainErrorPageComponent {
-  constructor() { }
 }

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models';
 import { select, Store } from '@ngrx/store';
@@ -21,6 +21,7 @@ export class TaskManagerFilterComponent implements OnInit {
   private static FILTER_NAME: string = 'all-tasks';
 
   @Input() public locations: Location[] = [];
+  @Output() public selectionChanged: EventEmitter<any> = new EventEmitter<any>();
 
   public appStoreSub: Subscription;
   public roleType: string;
@@ -33,7 +34,7 @@ export class TaskManagerFilterComponent implements OnInit {
   }];
 
   public fieldsConfig: FilterConfig = {
-    persistence: 'session',
+    persistence: 'local',
     enableDisabledButton: true,
     id: TaskManagerFilterComponent.FILTER_NAME,
     fields: [],
@@ -262,7 +263,10 @@ export class TaskManagerFilterComponent implements OnInit {
       .pipe(
         filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
       ).subscribe((f: FilterSetting) => {
-        console.log(f);
+        const fields = f.fields.reduce((acc, field: { name: string, value: string[] }) => {
+          return {...acc, [field.name]: field.value[0]};
+        }, {});
+        this.selectionChanged.emit(fields);
     });
   }
 }

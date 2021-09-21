@@ -3,6 +3,7 @@ import { HttpMockAdapter } from '../common/httpMockAdapter';
 import {
   ALL_TASKS,
   ASSIGNED_CASE_TASKS,
+  ASSIGNED_TASKS,
   CASEWORKER_AVAILABLE_TASKS,
   CASEWORKER_MY_TASKS,
   JUDICIAL_AVAILABLE_TASKS,
@@ -70,9 +71,13 @@ export const init = () => {
     let allTasks = [...JUDICIAL_AVAILABLE_TASKS.tasks, ...JUDICIAL_MY_TASKS.tasks];
     allTasks = sort(allTasks,
       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
-    if (body.search_parameters && body.search_parameters.find(param => param.key === 'location')) {
-      const locations = body.search_parameters.find(param => param.key === 'location').values;
-      allTasks = allTasks.filter(task => locations.some(loc => task.location_id === loc));
+    if (body.search_parameters) {
+      if (body.search_parameters.find(param => param.key === 'location')) {
+        const locations = body.search_parameters.find(param => param.key === 'location').values;
+        allTasks = allTasks.filter(task => locations.some(loc => task.location_id === loc));
+      }
+      allTasks = filterByAssignee(body.search_parameters, allTasks);
+      allTasks = filterByTaskField(body.search_parameters, allTasks, 'taskType', 'task_type');
     }
     return [
       200,
@@ -121,12 +126,29 @@ export const init = () => {
     ];
   });
 
-  mock.onPost(caseworkerAllTasksUrl).reply(() => {
+  mock.onPost(caseworkerAllTasksUrl).reply(config => {
+    // return an array in the form of [status, data, headers]
+    const body = JSON.parse(config.data);
+    const paginationConfig = body.pagination_parameters;
+    const sortingConfig = body.sorting_parameters;
+    // note as not necessary to edit all mock data, re-using changes to judicial tasks
+    let allTasks = [...JUDICIAL_AVAILABLE_TASKS.tasks, ...ASSIGNED_TASKS.tasks, ...JUDICIAL_MY_TASKS.tasks];
+    allTasks = sort(allTasks,
+      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
+    if (body.search_parameters) {
+      if (body.search_parameters.find(param => param.key === 'location')) {
+        const locations = body.search_parameters.find(param => param.key === 'location').values;
+        allTasks = allTasks.filter(task => locations.some(loc => task.location_id === loc));
+      }
+      allTasks = filterByAssignee(body.search_parameters, allTasks);
+      allTasks = filterByTaskField(body.search_parameters, allTasks, 'taskType', 'task_type');
+      allTasks = filterByPriority(body.search_parameters, allTasks);
+    }
     return [
       200,
       {
-        tasks: paginate([], 0, 1),
-        total_records: 0,
+        tasks: paginate(allTasks, paginationConfig.page_number, paginationConfig.page_size),
+        total_records: allTasks.length,
       },
     ];
   });
@@ -249,6 +271,65 @@ export const paginate = (array: any[], pageNumber: number, pageSize: number): an
   return array.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 };
 
+export const filterByTaskField = (array: any[], taskList: any[], fieldName: string, taskFieldName: string): any[] => {
+  if (array.find(param => param.key === fieldName)) {
+    const fieldValue = array.find(param => param.key === fieldName).values;
+    if (fieldValue === 'All') {
+      return taskList;
+    }
+    return taskList.filter(task => fieldValue === task[taskFieldName]);
+  }
+  return taskList;
+};
+
+export const filterByAssignee = (array: any[], taskList: any[]): any[] => {
+  if (array.find(param => param.key === 'taskCategory')) {
+    const fieldValue = array.find(param => param.key === 'taskCategory').values;
+    switch(fieldValue) {
+      case 'All': {
+        return taskList;
+      }
+      case 'None / Available tasks': {
+        return taskList.filter(task => task.assignee === null || task.assignee === '');
+      }
+      case 'Specific person': {
+        if (array.find(param => param.key === 'person')) {
+          const personId = array.find(param => param.key === 'person').values[0].id;
+          return taskList.filter(task => task.assignee === personId);
+        }
+      }
+    }
+  }
+  return taskList;
+}
+
+export const filterByPriority = (array: any[], taskList: any[]): any[] => {
+  if (array.find(param => param.key === 'priority')) {
+    const fieldValue = array.find(param => param.key === 'priority').values;
+    const today = new Date();
+    switch(fieldValue) {
+      case 'All': {
+        return taskList;
+      }
+      case 'High': {
+        return taskList.filter(task => new Date(task.dueDate) < today && !isToday(task.dueDate));
+      }
+      case 'Medium': {
+        return taskList.filter(task => isToday(task.dueDate));
+      }
+      case 'Low': {
+        return taskList.filter(task => new Date(task.dueDate) > today && !isToday(task.dueDate));
+      }
+    }
+  }
+  return taskList;
+}
+
 export const filterByFieldName = (array: any[], fieldName: string, locations: any[]): any[] => {
   return array.filter(item => locations.includes(item[fieldName]));
+};
+
+export const isToday = (date: string): boolean => {
+  const today = new Date();
+  return new Date(date).toDateString() === today.toDateString();
 };

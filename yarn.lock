@@ -443,10 +443,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.3.4":
-  version "4.3.4"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.3.4.tgz#09e1dcf790e482bef05e56c7c057bbcd1a4d0e91"
-  integrity sha512-wN4/1KoAbRp/5NWKmFFAz1g4iq+/ry3PzUA4+SE/P9Kb5O9TWYYnj8i7VkE94VO1LaRyYktwq1QP4uR9lQw/Jg==
+"@hmcts/ccd-case-ui-toolkit@4.3.4-download-secure-docstore":
+  version "4.3.4-download-secure-docstore"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.3.4-download-secure-docstore.tgz#ebbef17b1c7f99e12cd17fa798eeb71bc05db6c1"
+  integrity sha512-UQIk2u6gANOA4PybTkmek83l6liNxI1RlCA3CQcnt6xLsxlBmOgYU7ygh+0CZyrCvX88bEyQTS69/+G63yTBiA==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular/cli" "^6.0.8"

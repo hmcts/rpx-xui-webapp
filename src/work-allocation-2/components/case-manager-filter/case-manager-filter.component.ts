@@ -41,7 +41,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
           value: [PersonRole.JUDICIAL]
         },
         {
-          name: 'case_name',
+          name: 'actorId',
           value: [PersonRole.ALL]
         }
       ]
@@ -101,6 +101,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       ],
       minSelected: 1,
       maxSelected: 1,
+      findPersonField: 'person',
       lineBreakBefore: true,
       minSelectedError: 'You must select a role type',
       maxSelectedError: null,
@@ -111,7 +112,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
 
   private static initPersonFilter(): FilterFieldConfig {
     return {
-      name: 'case_name',
+      name: 'actorId',
       options: [
         {
           key: PersonRole.ALL,
@@ -140,7 +141,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       maxSelected: 0,
       minSelectedError: 'You must select a person',
       maxSelectedError: null,
-      enableCondition: 'case_name=Specific person',
+      enableCondition: 'actorId=Specific person',
       type: 'find-person'
     };
   }
@@ -164,6 +165,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
         const fields = f.fields.reduce((acc, field: { name: string, value: string[] }) => {
           return {...acc, [field.name]: field.value[0]};
         }, {});
+        console.log(fields);
         this.selectChanged.emit(fields);
       });
   }

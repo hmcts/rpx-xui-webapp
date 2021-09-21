@@ -33,6 +33,7 @@ import { effects } from './store/effects';
 // ngrx modules - END
 // APP store
 import { CustomSerializer, reducers } from './store/reducers';
+import { MainErrorPageComponent } from './containers/main-error-page/main-error-page.component';
 // enforces immutability
 export const metaReducers: MetaReducer<any>[] = !environment.production
   ? [storeFreeze]
@@ -48,7 +49,7 @@ const routerOptions: ExtraOptions = {
 };
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, MainErrorPageComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

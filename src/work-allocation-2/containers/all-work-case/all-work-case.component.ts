@@ -25,7 +25,7 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
     page_size: 25
   };
   private selectedJurisdiction: any = 'Immigration and Asylum';
-  private selectedCaseName: string = '';
+  private selectedPerson: string = '';
   private selectedRole: string = 'All';
   private selectedLocation: Location = {
     id: '231596',
@@ -67,7 +67,7 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
         search_parameters: [
           {key: 'jurisdiction', operator: 'EQUAL', values: this.selectedJurisdiction},
           {key: 'location_id', operator: 'EQUAL', values: this.selectedLocation.id},
-          {key: 'case_name', operator: 'EQUAL', values: this.selectedCaseName},
+          {key: 'actorId', operator: 'EQUAL', values: this.selectedPerson},
           {key: 'role', operator: 'EQUAL', values: this.selectedRole},
         ],
         sorting_parameters: [this.getSortParameter()],
@@ -94,10 +94,10 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
     this.onPaginationHandler(pageNumber);
   }
 
-  public onSelectionChanged(selection: { location_id: string, jurisdiction: string, case_name: string, role: string, person: string }): void {
+  public onSelectionChanged(selection: { location_id: string, jurisdiction: string, actorId: string, role: string, person: any }): void {
     this.selectedLocation.id = selection.location_id === 'all' ? '' : selection.location_id;
     this.selectedJurisdiction = selection.jurisdiction;
-    this.selectedCaseName = selection.case_name === 'All' ? '' : selection.person;
+    this.selectedPerson = selection.actorId === 'All' ? '' : selection.person.id;
     this.selectedRole = selection.role;
     this.doLoad();
   }

@@ -11,6 +11,7 @@ import {
 } from './components';
 import { ApplicationRoutingComponent } from './components/routing/application-routing.component';
 import { AcceptTcWrapperComponent, LegacyTermsAndConditionsComponent, TermsAndConditionsComponent } from './containers';
+import { MainErrorPageComponent } from './containers/main-error-page/main-error-page.component';
 import { AcceptTermsGuard } from './guards/acceptTerms.guard';
 import { AuthGuard } from './services/auth/auth.guard';
 
@@ -134,5 +135,9 @@ export const ROUTES: Routes = [
     path: '**',
     redirectTo: '/cases',
     pathMatch: 'full'
-  }
+  },
+  {
+    path: 'main-error',
+    component: MainErrorPageComponent
+  },
 ];

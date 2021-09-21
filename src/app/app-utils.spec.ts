@@ -202,4 +202,9 @@ describe('isLegalOpsOrJudicial', () => {
     const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker-ia']);
     expect(isLegalOpsOrJudicial).toBeNull();
   });
+
+  it('should return the domain from the user list', () => {
+    const role = AppUtils.convertDomainToLabel(UserRole.Judicial);
+    expect(role).toBe('Judicial');
+  });
 });

@@ -5,8 +5,10 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
+import { reducers } from '../../../app/store';
 import { ALL_LOCATIONS } from '../../components/constants/locations';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Case } from '../../models/cases';
@@ -51,6 +53,7 @@ describe('AllWorkCaseComponent', () => {
         CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
+        StoreModule.forRoot({...reducers}),
         WorkAllocationComponentsModule,
         PaginationModule
       ],
@@ -81,14 +84,6 @@ describe('AllWorkCaseComponent', () => {
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     component.locations$ = of(ALL_LOCATIONS as unknown as Location[]);
     fixture.detectChanges();
-  });
-
-  it('should make a call to load cases using the default search request', () => {
-    const searchRequest = component.getSearchCaseRequestPagination();
-    const payload = {searchRequest, view: component.view};
-    expect(mockCaseService.searchCase).toHaveBeenCalledWith(payload);
-    expect(component.cases).toBeDefined();
-    expect(component.cases.length).toEqual(2);
   });
 
   it('should have all column headers, including "Manage +"', () => {

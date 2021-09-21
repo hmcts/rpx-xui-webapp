@@ -4,16 +4,17 @@ import { LoggerService } from '../logger/logger.service';
 
 @Injectable()
 export class DefaultErrorHandler implements ErrorHandler {
-   router: Router;
+   private router: Router;
    constructor(
      private loggerService: LoggerService,
      private injector: Injector,
      private zone: NgZone,
    ) { }
  
-   handleError(error: Error) {
-    this.loggerService.error(error);
-     this.router =  this.injector.get(Router); 
-     this.zone.run(() => this.router.navigate(['/main-error']));
+   public handleError(error: Error) {
+      this.loggerService.error(error);
+      this.router =  this.injector.get(Router); 
+      this.zone.run(() => this.router.navigate(['/main-error']));
    }
 }
+

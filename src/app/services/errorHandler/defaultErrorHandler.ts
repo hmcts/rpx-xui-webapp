@@ -11,6 +11,7 @@ export class DefaultErrorHandler implements ErrorHandler {
      private zone: NgZone
    ) { }
  
+   // Error handler
    public handleError(error: Error) {
       this.loggerService.error(error);
       this.router =  this.injector.get(Router); 

@@ -9,10 +9,10 @@ export class DefaultErrorHandler implements ErrorHandler {
      private loggerService: LoggerService,
      private injector: Injector,
      private zone: NgZone) { }
-     
+
    public handleError(error: Error) {
       this.loggerService.error(error);
-      this.router =  this.injector.get(Router); 
+      this.router =  this.injector.get(Router);
       this.zone.run(() => this.router.navigate(['/main-error']));
    }
 }

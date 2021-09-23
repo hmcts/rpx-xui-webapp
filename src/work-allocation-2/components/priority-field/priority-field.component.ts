@@ -20,7 +20,7 @@ export class PriorityFieldComponent {
       if (isToday) {
         return TaskPriority.MEDIUM;
       } else {
-        return this.dueDate < today ? TaskPriority.HIGH : TaskPriority.LOW
+        return this.dueDate < today ? TaskPriority.HIGH : TaskPriority.LOW;
       }
     }
   }

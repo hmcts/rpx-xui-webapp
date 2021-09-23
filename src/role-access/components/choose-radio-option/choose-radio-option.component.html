@@ -7,7 +7,8 @@
         *ngIf="formGroup.get(radioControlName).errors && submitted">
     Please select an option
   </span>
-  <fieldset class="govuk-fieldset">
+  <fieldset class="govuk-fieldset" [attr.aria-label]="title">
+    <legend class="hidden-legend">{{title}}</legend>
     <div class="govuk-radios">
       <div *ngFor="let option of optionsList" class="govuk-radios__item">
         <input class="govuk-radios__input" formControlName="{{radioControlName}}" [id]="option.optionId" type="radio"

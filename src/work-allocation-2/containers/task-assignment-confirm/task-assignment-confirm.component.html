@@ -31,7 +31,7 @@
           <td class="govuk-table__cell">{{ taskAndCaseworker.location_name }}</td>
           <td class="govuk-table__cell">{{ taskAndCaseworker.task_title }}</td>
           <td class="govuk-table__cell">
-              {{ taskAndCaseworker.dueDate | date: 'dd/MM/yyyy' }}
+              {{ taskAndCaseworker.dueDate | date: 'd MMMM yyyy' }}
           </td>
           <td *ngIf="!isUserJudidical" class="govuk-table__cell">
             <exui-priority-field [dueDate]="toDate(taskAndCaseworker.dueDate)"></exui-priority-field>

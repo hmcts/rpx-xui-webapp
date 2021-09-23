@@ -76,20 +76,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await taskCheckYourChangesPage.submitButton.click();
     });
 
-    Then('I validate task details displayed in check your changes page', async function(taskDetailsDatatable){
-        const taskDetails = taskDetailsDatatable.hashes()[0];
-        const softAssert = new SoftAssert();
-
-        const taskColumns = Object.keys(taskDetails);
-        for (let i = 0; i < taskColumns.length; i++){
-            let columnName = taskColumns[i];
-            let expectColValue = taskDetails[columnName]
-            softAssert.setScenario(`Validate column ${columnName} value is ${expectColValue}`);
-            const columnActalValue = await taskCheckYourChangesPage.getColumnValue(columnName);
-            await softAssert.assert(async () => expect(columnActalValue).to.contains(expectColValue));
-        }
-        softAssert.finally();
-        
-    });
+ 
 
 });

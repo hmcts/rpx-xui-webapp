@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models';
 import { select, Store } from '@ngrx/store';
@@ -16,14 +16,15 @@ import { Location } from '../../models/dtos';
   styleUrls: ['./task-manager-filter.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class TaskManagerFilterComponent implements OnInit {
-  
-  private static FILTER_NAME: string = 'all-tasks';
+export class TaskManagerFilterComponent implements OnInit, OnDestroy {
+
+  private static readonly FILTER_NAME: string = 'all-tasks';
 
   @Input() public locations: Location[] = [];
   @Output() public selectionChanged: EventEmitter<any> = new EventEmitter<any>();
 
   public appStoreSub: Subscription;
+  public filterSub: Subscription;
   public roleType: string;
   public isLegalOpsOrJudicialRole: UserRole;
 
@@ -65,7 +66,7 @@ export class TaskManagerFilterComponent implements OnInit {
   };
 
   constructor(private readonly filterService: FilterService,
-    private readonly appStore: Store<fromAppStore.State>) {
+              private readonly appStore: Store<fromAppStore.State>) {
   }
 
   private static initServiceFilter(): FilterFieldConfig {
@@ -259,7 +260,7 @@ export class TaskManagerFilterComponent implements OnInit {
     ];
     this.fieldsConfig.fields = this.isLegalOpsOrJudicialRole === UserRole.Judicial ?
       this.fieldsConfig.fields.slice(0, -1) : this.fieldsConfig.fields;
-    this.filterService.getStream(TaskManagerFilterComponent.FILTER_NAME)
+    this.filterSub = this.filterService.getStream(TaskManagerFilterComponent.FILTER_NAME)
       .pipe(
         filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
       ).subscribe((f: FilterSetting) => {
@@ -268,5 +269,14 @@ export class TaskManagerFilterComponent implements OnInit {
         }, {});
         this.selectionChanged.emit(fields);
     });
+  }
+
+  public ngOnDestroy(): void {
+    if (this.appStoreSub) {
+      this.appStoreSub.unsubscribe();
+    }
+    if (this.filterSub) {
+      this.filterSub.unsubscribe();
+    }
   }
 }

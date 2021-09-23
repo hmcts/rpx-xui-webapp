@@ -5,8 +5,11 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
+
 import { SessionStorageService } from '../../../app/services';
+import { reducers } from '../../../app/store';
 import { TaskListComponent } from '..';
 import { TaskFieldConfig } from '../../../work-allocation/models/tasks';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
@@ -32,7 +35,7 @@ class TaskFieldComponent {
   @Input() public task: Task;
 }
 
-describe('AllWorkTaskComponent', () => {
+fdescribe('AllWorkTaskComponent', () => {
   let component: AllWorkTaskComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -54,7 +57,8 @@ describe('AllWorkTaskComponent', () => {
         ExuiCommonLibModule,
         RouterTestingModule,
         WorkAllocationComponentsModule,
-        PaginationModule
+        PaginationModule,
+        StoreModule.forRoot({...reducers}),
       ],
       declarations: [AllWorkTaskComponent, WrapperComponent, TaskListComponent ],
       providers: [
@@ -122,6 +126,27 @@ describe('AllWorkTaskComponent', () => {
     expect(component.tasks).toBeDefined();
     expect(component.tasks.length).toEqual(2);
   });
+
+  it('should correctly get filter selections', () => {
+    mockSessionStorageService.getItem.and.returnValue(JSON.stringify({
+      id: 'someId',
+      forename: 'fore',
+      surname: 'surName',
+      email: 'email',
+      active: true,
+      roles: ['caseworker-ia-caseofficer'],
+      uid: '1233434'
+    }));
+    const selection = {location: 'exampleLocation', jurisdiction: 'IA', selectPerson: 'All', person: '', taskType: 'Judicial', priority: 'High' };
+    component.onSelectionChanged(selection);
+    const searchRequest = component.getSearchTaskRequestPagination();
+    expect(searchRequest.search_parameters).toContain({key: 'jurisdiction', operator: 'EQUAL', values: ['IA']});
+    expect(searchRequest.search_parameters).toContain({key: 'location', operator: 'IN', values: ['exampleLocation']});
+    expect(searchRequest.search_parameters).toContain({key: 'taskCategory', operator: 'EQUAL', values: ['All']});
+    expect(searchRequest.search_parameters).toContain({key: 'person', operator: 'IN', values: []});
+    expect(searchRequest.search_parameters).toContain({key: 'taskType', operator: 'EQUAL', values: ['Judicial']});
+    expect(searchRequest.search_parameters).toContain({key: 'priority', operator: 'EQUAL', values: ['High']});
+  })
 
   afterEach(() => {
     fixture.destroy();

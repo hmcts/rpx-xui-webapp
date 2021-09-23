@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
@@ -16,13 +16,13 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
     styleUrls: ['all-work-task.component.scss']
 })
 export class AllWorkTaskComponent extends TaskListWrapperComponent {
+  private static ALL_TASKS = 'All';
+  private static AVAILABLE_TASKS = 'None / Available tasks';
   private selectedLocation: Location = {
     id: '**ALL LOCATIONS**',
     locationName: '',
     services: [],
   };
-  private static ALL_TASKS = 'All';
-  private static AVAILABLE_TASKS = 'None / Available tasks';
   private selectedJurisdiction: any = 'Immigration and Asylum';
   private selectedTaskCategory: string = 'All';
   private selectedPerson: string = '';
@@ -60,7 +60,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     return this.isCurrentUserJudicial() ? ConfigConstants.AllWorkTasksForJudicial : ConfigConstants.AllWorkTasksForLegalOps;
   }
 
-  public loadCaseWorkersAndLocations() {
+  public loadCaseWorkersAndLocations(): void {
     this.locations$ = this.locationService.getLocations();
     this.locations$.subscribe(locations => this.locations = locations);
   }
@@ -72,12 +72,12 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
       const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
       return {
         search_parameters: [
-          {key: 'jurisdiction', operator: 'EQUAL', values: this.selectedJurisdiction},
+          {key: 'jurisdiction', operator: 'EQUAL', values: [this.selectedJurisdiction]},
           this.getLocationParameter(),
-          {key: 'taskCategory', operator: 'EQUAL', values: this.selectedTaskCategory},
+          {key: 'taskCategory', operator: 'EQUAL', values: [this.selectedTaskCategory]},
           this.getPersonParameter(),
-          {key: 'taskType', operator: 'EQUAL', values: this.selectedTaskType},
-          {key: 'priority', operator: 'EQUAL', values: this.selectedPriority},
+          {key: 'taskType', operator: 'EQUAL', values: [this.selectedTaskType]},
+          {key: 'priority', operator: 'EQUAL', values: [this.selectedPriority]},
         ],
         sorting_parameters: [this.getSortParameter()],
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
@@ -120,7 +120,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     this.selectedTaskCategory = selection.selectPerson;
     this.selectedPerson = selection.person;
     this.selectedTaskType = selection.taskType;
-    this.selectedPriority = selection.priority ? selection.priority : '';
+    this.selectedPriority = selection.priority && !this.isCurrentUserJudicial() ? selection.priority : '';
     this.loadTasks();
   }
 }

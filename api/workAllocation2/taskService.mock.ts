@@ -273,7 +273,7 @@ export const paginate = (array: any[], pageNumber: number, pageSize: number): an
 
 export const filterByTaskField = (array: any[], taskList: any[], fieldName: string, taskFieldName: string): any[] => {
   if (array.find(param => param.key === fieldName)) {
-    const fieldValue = array.find(param => param.key === fieldName).values;
+    const fieldValue = array.find(param => param.key === fieldName).values[0];
     if (fieldValue === 'All') {
       return taskList;
     }
@@ -284,7 +284,7 @@ export const filterByTaskField = (array: any[], taskList: any[], fieldName: stri
 
 export const filterByAssignee = (array: any[], taskList: any[]): any[] => {
   if (array.find(param => param.key === 'taskCategory')) {
-    const fieldValue = array.find(param => param.key === 'taskCategory').values;
+    const fieldValue = array.find(param => param.key === 'taskCategory').values[0];
     switch(fieldValue) {
       case 'All': {
         return taskList;
@@ -305,7 +305,7 @@ export const filterByAssignee = (array: any[], taskList: any[]): any[] => {
 
 export const filterByPriority = (array: any[], taskList: any[]): any[] => {
   if (array.find(param => param.key === 'priority')) {
-    const fieldValue = array.find(param => param.key === 'priority').values;
+    const fieldValue = array.find(param => param.key === 'priority').values[0];
     const today = new Date();
     switch(fieldValue) {
       case 'All': {

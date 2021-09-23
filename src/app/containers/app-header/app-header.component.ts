@@ -32,9 +32,9 @@ import * as fromActions from '../../store';
  */
 export class AppHeaderComponent implements OnInit, OnDestroy {
   public static defaultUserTypeRoles = {
-    Solicitor: ['pui-case-manager'],
-    Judicial: ['caseworker-ia-iacjudge'],
-    LegalOps: [],
+    solicitor: ['pui-case-manager'],
+    judicial: ['caseworker-ia-iacjudge'],
+    legalOps: [],
   };
   public navItems: NavItemsModel[];
   public appHeaderTitle: AppTitleModel;

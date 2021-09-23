@@ -180,9 +180,9 @@ export class AppUtils {
   }
 
   public static getUserType(userRoles: string[], userTypeRoles: UserTypeRole): string {
-    if (userRoles.some(userRole => userTypeRoles.Solicitor && userTypeRoles.Solicitor.includes(userRole))) {
+    if (userRoles.some(userRole => userTypeRoles.solicitor && userTypeRoles.solicitor.includes(userRole))) {
       return 'Solicitor';
-    } else if (userRoles.some(userRole => userTypeRoles.Judicial && userTypeRoles.Judicial.includes(userRole))) {
+    } else if (userRoles.some(userRole => userTypeRoles.judicial && userTypeRoles.judicial.includes(userRole))) {
       return 'Judicial';
     } else {
       return 'LegalOps';

@@ -285,7 +285,7 @@ export const filterByTaskField = (array: any[], taskList: any[], fieldName: stri
 export const filterByAssignee = (array: any[], taskList: any[]): any[] => {
   if (array.find(param => param.key === 'taskCategory')) {
     const fieldValue = array.find(param => param.key === 'taskCategory').values[0];
-    switch(fieldValue) {
+    switch (fieldValue) {
       case 'All': {
         return taskList;
       }
@@ -301,13 +301,13 @@ export const filterByAssignee = (array: any[], taskList: any[]): any[] => {
     }
   }
   return taskList;
-}
+};
 
 export const filterByPriority = (array: any[], taskList: any[]): any[] => {
   if (array.find(param => param.key === 'priority')) {
     const fieldValue = array.find(param => param.key === 'priority').values[0];
     const today = new Date();
-    switch(fieldValue) {
+    switch (fieldValue) {
       case 'All': {
         return taskList;
       }
@@ -323,7 +323,7 @@ export const filterByPriority = (array: any[], taskList: any[]): any[] => {
     }
   }
   return taskList;
-}
+};
 
 export const filterByFieldName = (array: any[], fieldName: string, locations: any[]): any[] => {
   return array.filter(item => locations.includes(item[fieldName]));

@@ -39,7 +39,7 @@ class TaskFieldComponent {
   @Input() public task: Task;
 }
 
-fdescribe('AllWorkTaskComponent', () => {
+describe('AllWorkTaskComponent', () => {
   let component: AllWorkTaskComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;

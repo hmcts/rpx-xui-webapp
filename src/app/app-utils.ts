@@ -159,7 +159,7 @@ export class AppUtils {
   }
 
   public static convertDomainToLabel(userRole: string): string {
-    switch(userRole) {
+    switch (userRole) {
       case UserRole.LegalOps: {
         userRole = 'Legal Ops';
         break;

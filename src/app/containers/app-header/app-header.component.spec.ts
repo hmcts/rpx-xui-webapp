@@ -4,8 +4,8 @@ import { NavigationEnd, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Action, Store, StoreModule } from '@ngrx/store';
 import { BehaviorSubject, combineLatest, Observable, of, Subscription } from 'rxjs';
-import { AppConstants } from 'src/app/app.constants';
-import { Theme } from 'src/app/models/theme.model';
+import { AppConstants } from '../../../app/app.constants';
+import { Theme } from '../../../app/models/theme.model';
 import { UserDetails, UserInfo } from '../../../app/models/user-details.model';
 
 import { LoggerService } from '../../services/logger/logger.service';
@@ -184,7 +184,7 @@ describe('AppHeaderComponent', () => {
         ];
 
         const defaultTheme = AppConstants.DEFAULT_USER_THEME;
-        const userTypeRoles = { Solicitor: [] }
+        const userTypeRoles = { Solicitor: [] };
         expect(component.getUsersTheme(userRoles, themes, defaultTheme, AppHeaderComponent.defaultUserTypeRoles)).toEqual(themes[0]);
       });
 

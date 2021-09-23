@@ -450,10 +450,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.3.2-EUI-4424-date-pickers-working-as-expected-r4":
-  version "4.3.2-EUI-4424-date-pickers-working-as-expected-r4"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.3.2-EUI-4424-date-pickers-working-as-expected-r4.tgz#2215fc7e3e06dfb52088a420787812fd2987863e"
-  integrity sha512-Ywo6DmQ4XGsFbuVLqCLT7Qafy9WMqHf7WmOgmoQ1XbAHgeFXDKkb94tUUfCEzA4EKKMRrjIwpXL8X9lK9QqcDQ==
+"@hmcts/ccd-case-ui-toolkit@4.3.2-EUI-4424-date-picker-r3":
+  version "4.3.2-EUI-4424-date-picker-r3"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.3.2-EUI-4424-date-picker-r3.tgz#e8f6774de85dd3ed5131f4ccb0a978004933a255"
+  integrity sha512-uEwP4l8GJEXRnU9t+y4781LRFtzNzzp0DTsswrYuAWLHoqH1jPnt97z436XhlLM0ATGOQuhUYN2zFp40DME0Wg==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

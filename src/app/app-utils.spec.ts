@@ -202,4 +202,19 @@ describe('isLegalOpsOrJudicial', () => {
     const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker-ia']);
     expect(isLegalOpsOrJudicial).toBeNull();
   });
+
+  it('should return the judicial domain from the user list', () => {
+    const role = AppUtils.convertDomainToLabel(UserRole.Judicial);
+    expect(role).toBe('Judicial');
+  });
+
+  it('should return the legal ops domain from the user list', () => {
+    const role = AppUtils.convertDomainToLabel(UserRole.LegalOps);
+    expect(role).toBe('Legal Ops');
+  });
+
+  it('should return the admin domain from the user list', () => {
+    const role = AppUtils.convertDomainToLabel(UserRole.Admin);
+    expect(role).toBe('Admin');
+  });
 });

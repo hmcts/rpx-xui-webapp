@@ -1,20 +1,19 @@
-import { Injector, NgZone } from '@angular/core';
+import { Inject, Injector, NgZone } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { DefaultErrorHandler } from './defaultErrorHandler';
 
-describe('Default Error Handler', () => {
+describe('Default Error Handler', () => { 
     const mockedLoggerService = jasmine.createSpyObj('mockedLoggerService', ['error']);
-
-    fit('Should call Default Error Handler and be returned a DEH instance', () => {
-        const injector = Injector.create([]);
+    fit('Should call Default Error Handler and be returned a DEH instance', () => {      
         const ngZone = TestBed.get(NgZone);
+        const injector = TestBed.get(Inject);
         spyOn(ngZone, 'runOutsideAngular').and.callFake((fn: Function) => fn());
-       const errorHandler = new DefaultErrorHandler(mockedLoggerService, injector, ngZone);
-       expect(errorHandler).toBeTruthy();
+        const errorHandler = new DefaultErrorHandler(mockedLoggerService, injector, ngZone);
+        expect(errorHandler).toBeTruthy();
     });
 
     it('should be able to call error', () => {
-        const injector = Injector.create([]);
+        const injector = TestBed.get(Inject);
         const ngZone = TestBed.get(NgZone);
         spyOn(ngZone, 'runOutsideAngular').and.callFake((fn: Function) => fn());
         const errorHandler = new DefaultErrorHandler(mockedLoggerService, injector, ngZone);

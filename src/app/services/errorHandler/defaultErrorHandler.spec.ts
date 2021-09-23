@@ -1,6 +1,5 @@
 import { Inject, Injector, NgZone } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
 import { DefaultErrorHandler } from './defaultErrorHandler';
 
 describe('Default Error Handler', () => {

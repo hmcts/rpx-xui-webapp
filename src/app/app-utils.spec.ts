@@ -1,6 +1,7 @@
 import { AppUtils } from './app-utils';
 import { AppConstants } from './app.constants';
 import { NavItemsModel } from './models/nav-item.model';
+import { Theme } from './models/theme.model';
 import { UserRole } from './models/user-details.model';
 
 describe('getEnvironment', () => {
@@ -201,5 +202,31 @@ describe('isLegalOpsOrJudicial', () => {
   it('should return null if user has no judicial or legal ops role', () => {
     const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker-ia']);
     expect(isLegalOpsOrJudicial).toBeNull();
+  });
+});
+
+describe('setThemeBasedOnUserType', () => {
+  it('Judicial User', () => {
+    const theme = { appTitle: {}} as Theme;
+    AppUtils.setThemeBasedOnUserType('Judicial', theme);
+    expect(theme.appTitle.name).toEqual('Judicial Case Manager');
+    expect(theme.backgroundColor).toEqual( '#8d0f0e');
+    expect(theme.logoType).toEqual('judicial');
+  });
+
+  it('LegalOps User', () => {
+    const theme = { appTitle: {}} as Theme;
+    AppUtils.setThemeBasedOnUserType('LegalOps', theme);
+    expect(theme.appTitle.name).toEqual('Manage cases');
+    expect(theme.backgroundColor).toEqual('#202020');
+    expect(theme.logoType).toEqual('');
+  });
+
+  it('Solicitor User', () => {
+    const theme = { appTitle: {}} as Theme;
+    AppUtils.setThemeBasedOnUserType('Solicitor', theme);
+    expect(theme.appTitle.name).toEqual('Manage cases');
+    expect(theme.backgroundColor).toEqual('#202020');
+    expect(theme.logoType).toEqual('myhmcts');
   });
 });

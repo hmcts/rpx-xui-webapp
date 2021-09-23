@@ -1,6 +1,7 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { AppConstants, JUDICIAL_ROLE_LIST, LEGAL_OPS_ROLE_LIST } from './app.constants';
 import { NavItemsModel } from './models/nav-item.model';
+import { Theme } from './models/theme.model';
 import { UserRole } from './models/user-details.model';
 
 export class AppUtils {
@@ -156,5 +157,35 @@ export class AppUtils {
       return UserRole.Judicial;
     }
     return null;
+  }
+
+  public static setThemeBasedOnUserType(userType: string, theme: Theme) {
+    switch (userType) {
+      case 'Judicial':
+        theme.appTitle.name = 'Judicial Case Manager';
+        theme.backgroundColor = '#8d0f0e';
+        theme.logoType = 'judicial';
+        break;
+      case 'LegalOps':
+        theme.appTitle.name = 'Manage cases';
+        theme.backgroundColor = '#202020';
+        theme.logoType = '';
+        break;
+      case 'Solicitor':
+        theme.appTitle.name = 'Manage cases';
+        theme.backgroundColor = '#202020';
+        theme.logoType = 'myhmcts';
+        break;
+    }
+  }
+
+  public static getUserType(userRoles: string[], userTypeRoles: any): string {
+    if (userRoles.some(userRole => userTypeRoles.Solicitor.includes(userRole))) {
+      return 'Solicitor';
+    } else if (userRoles.some(userRole => userTypeRoles.Judicial.includes(userRole))) {
+      return 'Judicial';
+    } else {
+      return 'LegalOps';
+    }
   }
 }

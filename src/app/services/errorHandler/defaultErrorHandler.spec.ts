@@ -1,10 +1,16 @@
 import { Inject, Injector, NgZone } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { DefaultErrorHandler } from './defaultErrorHandler';
 
 describe('Default Error Handler', () => {
     const mockedLoggerService = jasmine.createSpyObj('mockedLoggerService', ['error']);
-    fit('Should call Default Error Handler and be returned a DEH instance', () => {
+    before(() => {
+        spyOn(TestBed.get(Injector), 'get').and.callFake((token) => {
+                return TestBed.get(token);
+        });
+    })
+    it('Should call Default Error Handler and be returned a DEH instance', () => {
         const ngZone = TestBed.get(NgZone);
         const injector = TestBed.get(Inject);
         spyOn(ngZone, 'runOutsideAngular').and.callFake((fn: void) => {});

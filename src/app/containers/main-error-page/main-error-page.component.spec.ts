@@ -1,4 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ExuiPageWrapperComponent } from '@hmcts/rpx-xui-common-lib/lib/components/exui-main-wrapper/exui-page-wrapper.component';
+import { AppHeaderComponent } from '../app-header/app-header.component';
+import { FooterComponent } from '../footer/footer.component';
 
 import { MainErrorPageComponent } from './main-error-page.component';
 
@@ -8,7 +11,7 @@ describe('MainErrorPageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MainErrorPageComponent ]
+      declarations: [ MainErrorPageComponent, FooterComponent, AppHeaderComponent, ExuiPageWrapperComponent ]
     })
     .compileComponents();
   }));

@@ -5,11 +5,11 @@ import { DefaultErrorHandler } from './defaultErrorHandler';
 
 describe('Default Error Handler', () => {
     const mockedLoggerService = jasmine.createSpyObj('mockedLoggerService', ['error']);
-    before(() => {
+    beforeEach(() => {
         spyOn(TestBed.get(Injector), 'get').and.callFake((token) => {
-                return TestBed.get(token);
+            return TestBed.get(token);
         });
-    })
+    });
     it('Should call Default Error Handler and be returned a DEH instance', () => {
         const ngZone = TestBed.get(NgZone);
         const injector = TestBed.get(Inject);

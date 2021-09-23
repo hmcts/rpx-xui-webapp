@@ -185,7 +185,6 @@ describe('AllWorkTaskComponent', () => {
       mockLocationService.getLocations.and.returnValue(of([{ id: 'loc123', locationName: 'Test', services: [] }]));
       mockTaskService.searchTaskWithPagination.and.returnValue(throwError({ status: scr.statusCode }));
       const tasks: Task[] = getMockTasks();
-      mockLocationService.getLocations.and.returnValue(of([{ id: 'loc123', locationName: 'Test', services: [] }]));
       // mockTaskService.searchTaskWithPagination.and.returnValue(of(throwError({ status: 500 })));
       mockCaseworkerService.getAll.and.returnValue(of([]));
       mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
@@ -197,6 +196,7 @@ describe('AllWorkTaskComponent', () => {
           RouterTestingModule,
           WorkAllocationComponentsModule,
           PaginationModule,
+          StoreModule.forRoot({...reducers}),
           RouterTestingModule.withRoutes(
             [
               { path: 'service-down', component: NothingComponent },

@@ -230,3 +230,23 @@ describe('setThemeBasedOnUserType', () => {
     expect(theme.logoType).toEqual('myhmcts');
   });
 });
+
+describe('getUserType', () => {
+  it('Solicitor', () => {
+    const userRole = { Solicitor: ['role1'] };
+    const userType = AppUtils.getUserType(['role1', 'role3'], userRole);
+    expect(userType).toEqual('Solicitor');
+  });
+
+  it('Judicial', () => {
+    const userRole = { Judicial: ['role1'] };
+    const userType = AppUtils.getUserType(['role1', 'role3'], userRole);
+    expect(userType).toEqual('Judicial');
+  });
+
+  it('LegalOps', () => {
+    const userRole = { LegalOps: ['role1'] };
+    const userType = AppUtils.getUserType(['role1', 'role3'], userRole);
+    expect(userType).toEqual('LegalOps');
+  });
+});

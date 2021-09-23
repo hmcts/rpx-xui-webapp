@@ -1,7 +1,7 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { AppConstants, JUDICIAL_ROLE_LIST, LEGAL_OPS_ROLE_LIST } from './app.constants';
 import { NavItemsModel } from './models/nav-item.model';
-import { Theme } from './models/theme.model';
+import { Theme, UserTypeRole } from './models/theme.model';
 import { UserRole } from './models/user-details.model';
 
 export class AppUtils {
@@ -179,10 +179,10 @@ export class AppUtils {
     }
   }
 
-  public static getUserType(userRoles: string[], userTypeRoles: any): string {
-    if (userRoles.some(userRole => userTypeRoles.Solicitor.includes(userRole))) {
+  public static getUserType(userRoles: string[], userTypeRoles: UserTypeRole): string {
+    if (userRoles.some(userRole => userTypeRoles.Solicitor && userTypeRoles.Solicitor.includes(userRole))) {
       return 'Solicitor';
-    } else if (userRoles.some(userRole => userTypeRoles.Judicial.includes(userRole))) {
+    } else if (userRoles.some(userRole => userTypeRoles.Judicial && userTypeRoles.Judicial.includes(userRole))) {
       return 'Judicial';
     } else {
       return 'LegalOps';

@@ -1,3 +1,4 @@
+import { AxiosRequestConfig } from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { HttpMockAdapter } from '../common/httpMockAdapter';
 import {
@@ -10,7 +11,6 @@ import {
   JUDICIAL_WORKERS,
   UNASSIGNED_CASE_TASKS
 } from './constants/mock.data';
-import { AxiosRequestConfig } from 'axios';
 
 export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
@@ -173,6 +173,12 @@ export const init = () => {
   mock.onPost(claimTaskUrl).reply((config: AxiosRequestConfig) => {
     // return an array in the form of [status, data, headers]
     // error
+    if (config.url.includes('0d22d836-b25a-11eb-a18c-f2d58a9b7bc18')) {
+      return [
+        400,
+        'error',
+      ];
+    }
     return [
       204,
       'success',

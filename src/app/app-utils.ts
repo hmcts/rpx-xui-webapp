@@ -10,7 +10,6 @@ export class AppUtils {
     const regex = 'pr-|localhost|aat|demo|ithc|perftest';
     const matched = url.match(regex);
 
-
     if (matched && matched[0]) {
       switch (matched[0]) {
         case AppConstants.ENVIRONMENT_NAMES.aat:
@@ -157,6 +156,24 @@ export class AppUtils {
       return UserRole.Judicial;
     }
     return null;
+  }
+
+  public static convertDomainToLabel(userRole: string): string {
+    switch (userRole) {
+      case UserRole.LegalOps: {
+        userRole = 'Legal Ops';
+        break;
+      }
+      case UserRole.Judicial: {
+        userRole = 'Judicial';
+        break;
+      }
+      case UserRole.Admin: {
+        userRole = 'Admin';
+        break;
+      }
+    }
+    return userRole;
   }
 
   public static setThemeBasedOnUserType(userType: string, theme: Theme) {

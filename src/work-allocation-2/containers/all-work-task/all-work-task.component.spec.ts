@@ -141,7 +141,7 @@ describe('AllWorkTaskComponent', () => {
       roles: ['caseworker-ia-caseofficer'],
       uid: '1233434'
     }));
-    const selection = {location: 'exampleLocation', jurisdiction: 'IA', selectPerson: 'All', person: '', taskType: 'Judicial', priority: 'High' };
+    const selection = {location: 'exampleLocation', service: 'IA', selectPerson: 'All', person: null, taskType: 'Judicial', priority: 'High' };
     component.onSelectionChanged(selection);
     const searchRequest = component.getSearchTaskRequestPagination();
     expect(searchRequest.search_parameters).toContain({key: 'jurisdiction', operator: 'EQUAL', values: ['IA']});
@@ -165,7 +165,7 @@ describe('AllWorkTaskComponent', () => {
   { statusCode: 500, routeUrl: '/service-down' },
   { statusCode: 400, routeUrl: '/service-down' },
 ].forEach(scr => {
-  describe('AllWorkTaskComponent negative cases', () => {
+  fdescribe('AllWorkTaskComponent negative cases', () => {
     let component: AllWorkTaskComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;

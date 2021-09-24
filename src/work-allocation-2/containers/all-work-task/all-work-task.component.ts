@@ -1,13 +1,14 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, } from '@angular/core';
+import { Person } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
+
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { SortOrder } from '../../enums';
-import { Caseworker, Location } from '../../interfaces/common';
+import { Location } from '../../interfaces/common';
 import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter, SearchTaskRequest } from '../../models/dtos';
-import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
 @Component({
@@ -114,11 +115,11 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     this.onPaginationHandler(pageNumber);
   }
 
-  public onSelectionChanged(selection: {location: string, jurisdiction: string, selectPerson: string, person: string, taskType: string, priority: string }): void {
+  public onSelectionChanged(selection: {location: string, service: string, selectPerson: string, person: Person, taskType: string, priority: string }): void {
     this.selectedLocation.id = selection.location;
-    this.selectedJurisdiction = selection.jurisdiction;
+    this.selectedJurisdiction = selection.service;
     this.selectedTaskCategory = selection.selectPerson;
-    this.selectedPerson = selection.person;
+    this.selectedPerson = selection.person ? selection.person.id : null;
     this.selectedTaskType = selection.taskType;
     this.selectedPriority = selection.priority && !this.isCurrentUserJudicial() ? selection.priority : '';
     this.loadTasks();

@@ -78,7 +78,13 @@ class BrowserUtil{
 
 
     async waitForLD(){
-        return await this.waitForNetworkResponse('app.launchdarkly.com/sdk/evalx');
+        try{
+            return await this.waitForNetworkResponse('app.launchdarkly.com/sdk/evalx');
+        }catch(err){
+            console.log(err);
+            return false;
+        }
+        
     }
 
     async waitForNetworkResponse(url){
@@ -87,6 +93,9 @@ class BrowserUtil{
         let ldDone = false;
         while (!ldDone && elapsedTime < 15) {
             let perf = await browser.executeScript("return window.performance.getEntriesByType('resource')");
+            if(!perf){
+                break;
+            }
             for (let i = 0; i < perf.length; i++) {
                 if (perf[i].name.includes(url)) {
                     ldDone = true;

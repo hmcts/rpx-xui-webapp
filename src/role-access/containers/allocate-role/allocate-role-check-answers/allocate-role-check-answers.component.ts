@@ -93,7 +93,7 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
       }
     }
     if (allocateRoleStateData.action === Actions.Reallocate) {
-      if (allocateRoleStateData.allocateTo !== AllocateTo.RESERVE_TO_ME && personDetails) {
+      if (personDetails) {
         this.answers.push({label: AnswerLabelText.Person, value: personDetails, action: AllocateRoleState.SEARCH_PERSON});
       }
     }

@@ -3,9 +3,7 @@
   <div class="page">
     <main id="content" role="main">
       <div class="govuk-grid-row">
-        <exui-allocate-role-navigation [isLegalOpsOrJudicialRole]="isLegalOpsOrJudicialRole"
-                                       [roleCategory]="roleCategory"
-                                       (eventTrigger)="onNavEvent($event)">
+        <exui-allocate-role-navigation (eventTrigger)="onNavEvent($event)">
           <div class="govuk-main-wrapper">
             <exui-choose-role
               #chooseRole

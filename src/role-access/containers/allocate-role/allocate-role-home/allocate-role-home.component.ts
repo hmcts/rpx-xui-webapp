@@ -124,19 +124,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
   }
 
   private instantiateState(): AllocateRoleState {
-    if (this.isLegalOpsOrJudicialRole === UserRole.Judicial) {
-      if (this.roleCategory === RoleCategory.JUDICIAL) {
-        return AllocateRoleState.CHOOSE_ALLOCATE_TO;
-      } else if (this.roleCategory === RoleCategory.LEGAL_OPERATIONS) {
-        return AllocateRoleState.SEARCH_PERSON;
-      }
-    } else if (this.isLegalOpsOrJudicialRole === UserRole.LegalOps) {
-      if (this.roleCategory === RoleCategory.LEGAL_OPERATIONS) {
-        return AllocateRoleState.CHOOSE_ALLOCATE_TO;
-      } else if (this.roleCategory === RoleCategory.JUDICIAL) {
-        return AllocateRoleState.SEARCH_PERSON;
-      }
-    }
+    return AllocateRoleState.SEARCH_PERSON;
   }
 
   public ngOnInit(): void {
@@ -201,52 +189,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
           case AllocateRoleState.CHOOSE_DURATION:
             switch (this.action) {
               case Actions.Reallocate:
-                switch (this.isLegalOpsOrJudicialRole) {
-                  case UserRole.Judicial:
-                    switch (this.roleCategory) {
-                      case RoleCategory.LEGAL_OPERATIONS:
-                        this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
-                        break;
-                      case RoleCategory.JUDICIAL:
-                        switch (this.allocateTo) {
-                          case AllocateTo.RESERVE_TO_ME:
-                            this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
-                            break;
-                          case AllocateTo.ALLOCATE_TO_ANOTHER_PERSON:
-                            this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
-                            break;
-                          default:
-                            throw new Error('Invalid allocate to');
-                        }
-                        break;
-                      default:
-                        throw new Error('invalid role category');
-                    }
-                    break;
-                  case UserRole.LegalOps:
-                    switch (this.roleCategory) {
-                      case RoleCategory.LEGAL_OPERATIONS:
-                        switch (this.allocateTo) {
-                          case AllocateTo.RESERVE_TO_ME:
-                            this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
-                            break;
-                          case AllocateTo.ALLOCATE_TO_ANOTHER_PERSON:
-                            this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
-                            break;
-                          default:
-                            throw new Error('Invalid allocate to');
-                        }
-                        break;
-                      case RoleCategory.JUDICIAL:
-                        this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
-                        break;
-                      default:
-                        throw new Error('invalid role category');
-                    }
-                    break;
-                  default:
-                    throw new Error('invalid user role');
-                }
+                this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
                 break;
               case Actions.Allocate:
                 switch (this.isLegalOpsOrJudicialRole) {

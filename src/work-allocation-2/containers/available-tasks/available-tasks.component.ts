@@ -97,7 +97,6 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
    * that the Task is no longer available.
    */
   public claimTaskErrors(status: number): void {
-
     const REDIRECT_404 = [{ status: 404, redirectTo: REDIRECTS.ServiceDown }];
     const handledStatus = handleFatalErrors(status, this.router, REDIRECT_404);
     if (handledStatus > 0) {

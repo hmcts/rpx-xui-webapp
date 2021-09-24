@@ -26,6 +26,10 @@ const CASE_NAME_AS_LINK: FieldConfig = {
   sortName: 'caseName',
   views: TaskView.ALL_VIEWS
 };
+const CASE_NAME_AS_LINK_DISABLE_SORT: FieldConfig = {
+  ...CASE_NAME_AS_LINK,
+  disableSort: true
+};
 const CASE_NAME_AS_TEXT: FieldConfig = {
   name: 'case_name',
   type: FieldType.STRING,
@@ -40,12 +44,20 @@ const CASE_ROLE: FieldConfig = {
   sortName: 'caseRole',
   views: TaskView.ALL_VIEWS
 };
+const CASE_ROLE_DISABLE_SORT: FieldConfig = {
+  ...CASE_ROLE,
+  disableSort: true
+};
 const ROLE: FieldConfig = {
   name: 'role',
   type: FieldType.STRING,
   columnLabel: 'Role',
   sortName: 'role',
   views: TaskView.ALL_VIEWS
+};
+const ROLE_DISABLE_SORT: FieldConfig = {
+  ...ROLE,
+  disableSort: true
 };
 const CASE_CATEGORY: FieldConfig = {
   name: 'case_category',
@@ -54,6 +66,10 @@ const CASE_CATEGORY: FieldConfig = {
   sortName: 'caseCategory',
   views: TaskView.ALL_VIEWS
 };
+const CASE_CATEGORY_DISABLE_SORT: FieldConfig = {
+  ...CASE_CATEGORY,
+  disableSort: true
+};
 const JURISDICTION: FieldConfig = {
   name: 'jurisdiction',
   type: FieldType.STRING,
@@ -61,12 +77,20 @@ const JURISDICTION: FieldConfig = {
   sortName: 'jurisdiction',
   views: TaskView.ALL_VIEWS
 };
+const JURISDICTION_DISABLE_SORT: FieldConfig = {
+  ...JURISDICTION,
+  disableSort: true
+};
 const LOCATION: FieldConfig = {
   name: 'location_name',
   type: FieldType.STRING,
   columnLabel: 'Location',
   sortName: 'locationName',
   views: TaskView.ALL_VIEWS
+};
+const LOCATION_DISABLE_SORT: FieldConfig = {
+  ...LOCATION,
+  disableSort: true
 };
 const DERIVED_ICON: FieldConfig = {
   name: 'derivedIcon',
@@ -111,7 +135,7 @@ const CREATED_DATE: FieldConfig = {
   columnLabel: 'Task created',
   sortName: 'created_date',
   views: TaskView.ALL_VIEWS
-}
+};
 const PRIORITY: FieldConfig = {
   name: 'priority',
   type: FieldType.PRIORITY,
@@ -121,39 +145,47 @@ const PRIORITY: FieldConfig = {
 };
 const START_DATE: FieldConfig = {
   name: 'startDate',
-  type: FieldType.DATE,
+  type: FieldType.FORMATTED_DATE,
   columnLabel: 'Start',
   sortName: 'startDate',
   views: TaskView.ALL_VIEWS
 };
+const START_DATE_DISABLE_SORT: FieldConfig = {
+  ...START_DATE,
+  disableSort: true
+};
 const END_DATE: FieldConfig = {
   name: 'endDate',
-  type: FieldType.DATE,
+  type: FieldType.FORMATTED_DATE,
   columnLabel: 'End',
   sortName: 'endDate',
   views: TaskView.ALL_VIEWS
 };
+const END_DATE_DISABLE_SORT: FieldConfig = {
+  ...END_DATE,
+  disableSort: true
+};
 const ASSIGNEE: FieldConfig = {
-  disableSort: true,
   name: 'assigneeName',
   type: FieldType.STRING,
   columnLabel: 'Person',
   sortName: 'assignee',
+  disableSort: true,
   views: TaskView.ALL_VIEWS
 };
 
 // can be used concatenated to differentiate between views
 const JUDICIAL_DATES: FieldConfig[] = [
   CREATED_DATE
-]
+];
 const STAFF_DATES: FieldConfig[] = [
   DUE_DATE_AS_TEXT, PRIORITY
-]
+];
 const PERSON: FieldConfig = {
-  disableSort: true,
   name: 'actorName',
   type: FieldType.STRING,
   columnLabel: 'Person',
+  disableSort: true,
   sortName: 'actorName',
   views: TaskView.ALL_VIEWS
 };
@@ -168,7 +200,7 @@ const AVAILABLE_TASKS_FOR_LEGAL_OPS: FieldConfig[] = [
   CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_TEXT, ...STAFF_DATES
 ];
 const MY_CASES: FieldConfig[] = [
-  CASE_NAME_AS_LINK, JURISDICTION, CASE_CATEGORY, CASE_ROLE, START_DATE, END_DATE
+  CASE_NAME_AS_LINK_DISABLE_SORT, JURISDICTION_DISABLE_SORT, CASE_CATEGORY_DISABLE_SORT, CASE_ROLE_DISABLE_SORT, START_DATE_DISABLE_SORT, END_DATE_DISABLE_SORT
 ];
 const MY_TASKS: FieldConfig[] = [
   CASE_REFERENCE_AS_LINK, CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_TEXT, ...STAFF_DATES
@@ -198,7 +230,7 @@ const ALL_WORK_TASKS_FOR_JUDICIAL: FieldConfig[] = [
   CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_LINK, ...JUDICIAL_DATES, ASSIGNEE
 ];
 const ALL_WORK_CASES: FieldConfig[] = [
-  CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, ROLE, PERSON
+  CASE_NAME_AS_LINK_DISABLE_SORT, CASE_CATEGORY_DISABLE_SORT, LOCATION_DISABLE_SORT, ROLE_DISABLE_SORT, PERSON
 ];
 
 export const CONFIG_CONSTANTS = {

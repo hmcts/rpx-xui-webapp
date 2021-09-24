@@ -5,16 +5,28 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
+import { reducers } from '../../../app/store';
+import { ALL_LOCATIONS } from '../../components/constants/locations';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Case } from '../../models/cases';
-import { CaseworkerDataService, WorkAllocationCaseService, WorkAllocationFeatureService } from '../../services';
+import { Location } from '../../models/dtos';
+import {
+  CaseworkerDataService,
+  LocationDataService,
+  WorkAllocationCaseService,
+  WorkAllocationFeatureService
+} from '../../services';
 import { getMockCases } from '../../tests/utils.spec';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { AllWorkCaseComponent } from './all-work-case.component';
 
-@Component({ template: `<exui-all-work-cases></exui-all-work-cases>` })
+@Component({
+  template: `
+    <exui-all-work-cases></exui-all-work-cases>`
+})
 
 class WrapperComponent {
   @ViewChild(AllWorkCaseComponent) public appComponentRef: AllWorkCaseComponent;
@@ -30,6 +42,7 @@ describe('AllWorkCaseComponent', () => {
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
+  const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
   const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
@@ -40,19 +53,21 @@ describe('AllWorkCaseComponent', () => {
         CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
+        StoreModule.forRoot({...reducers}),
         WorkAllocationComponentsModule,
         PaginationModule
       ],
       declarations: [AllWorkCaseComponent, WrapperComponent, WorkCaseListComponent],
       providers: [
-        { provide: Router, useValue: routerMock },
-        { provide: WorkAllocationCaseService, useValue: mockCaseService },
-        { provide: AlertService, useValue: mockAlertService },
-        { provide: SessionStorageService, useValue: mockSessionStorageService },
-        { provide: CaseworkerDataService, useValue: mockCaseworkerService },
-        { provide: WorkAllocationFeatureService, useValue: mockFeatureService },
-        { provide: LoadingService, useValue: mockLoadingService },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
+        {provide: Router, useValue: routerMock},
+        {provide: WorkAllocationCaseService, useValue: mockCaseService},
+        {provide: AlertService, useValue: mockAlertService},
+        {provide: SessionStorageService, useValue: mockSessionStorageService},
+        {provide: CaseworkerDataService, useValue: mockCaseworkerService},
+        {provide: LocationDataService, useValue: mockLocationService},
+        {provide: WorkAllocationFeatureService, useValue: mockFeatureService},
+        {provide: LoadingService, useValue: mockLoadingService},
+        {provide: FeatureToggleService, useValue: mockFeatureToggleService}
       ]
     }).compileComponents();
   }));
@@ -63,23 +78,17 @@ describe('AllWorkCaseComponent', () => {
     component = wrapper.appComponentRef;
     component.isPaginationEnabled$ = of(false);
     const cases: Case[] = getMockCases();
-    mockCaseService.searchCase.and.returnValue(of({ cases }));
+    mockCaseService.searchCase.and.returnValue(of({cases}));
     mockCaseworkerService.getAll.and.returnValue(of([]));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
+    component.locations$ = of(ALL_LOCATIONS as unknown as Location[]);
     fixture.detectChanges();
   });
 
-
-  it('should make a call to load cases using the default search request', () => {
-    const searchRequest = component.getSearchCaseRequestPagination();
-    const payload = { searchRequest, view: component.view };
-    expect(mockCaseService.searchCase).toHaveBeenCalledWith(payload);
-    expect(component.cases).toBeDefined();
-    expect(component.cases.length).toEqual(2);
-  });
-
   it('should have all column headers, including "Manage +"', () => {
+    component.locations$ = of(ALL_LOCATIONS as unknown as Location[]);
+    fixture.detectChanges();
     const element = fixture.debugElement.nativeElement;
     const headerCells = element.querySelectorAll('.govuk-table__header');
     const fields = component.fields;
@@ -98,6 +107,8 @@ describe('AllWorkCaseComponent', () => {
   });
 
   it('should not show the footer when there are cases', () => {
+    component.locations$ = of(ALL_LOCATIONS as unknown as Location[]);
+    fixture.detectChanges();
     const element = fixture.debugElement.nativeElement;
     const footerRow = element.querySelector('.footer-row');
     expect(footerRow).toBeDefined();
@@ -107,6 +118,8 @@ describe('AllWorkCaseComponent', () => {
   });
 
   it('should show the footer when there are no cases', () => {
+    component.locations$ = of(ALL_LOCATIONS as unknown as Location[]);
+    fixture.detectChanges();
     spyOnProperty(component, 'cases').and.returnValue([]);
     fixture.detectChanges();
     const element = fixture.debugElement.nativeElement;
@@ -121,6 +134,8 @@ describe('AllWorkCaseComponent', () => {
   });
 
   it('should appropriately handle clicking on a row action', () => {
+    component.locations$ = of(ALL_LOCATIONS as unknown as Location[]);
+    fixture.detectChanges();
     const element = fixture.debugElement.nativeElement;
     // Use the first case.
     const caseItem = component.cases[0];

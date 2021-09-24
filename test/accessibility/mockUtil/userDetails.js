@@ -10,12 +10,12 @@ class UserDetails{
 
 
     withIACJudicialUser(forUserIndetifier) {
-        this.mockUserDetailsWithIdentifierAndRoles(forUserIndetifier, ['caseworker', 'caseworker-ia','caseworker-ia-iacjudge']);
+        return this.mockUserDetailsWithIdentifierAndRoles(forUserIndetifier, ['caseworker', 'caseworker-ia','caseworker-ia-iacjudge']);
 
     }
 
     withIACLegalOpsUser(forUserIndetifier) {
-        this.mockUserDetailsWithIdentifierAndRoles(forUserIndetifier, ['caseworker', 'caseworker-ia','caseworker-ia-caseofficer']);
+       return this.mockUserDetailsWithIdentifierAndRoles(forUserIndetifier, ['caseworker', 'caseworker-ia','caseworker-ia-caseofficer']);
 
     }
 
@@ -32,6 +32,7 @@ class UserDetails{
         MockApp.onGet('/api/user/details', (req, res) => {
             res.send(userDetails);
         })
+        return userDetails;
     }
 
 }

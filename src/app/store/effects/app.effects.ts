@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs/internal/observable/of';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { TermsConditionsService } from 'src/app/services/terms-and-conditions/terms-and-conditions.service';
+import { AuthService } from '../../../app/services/auth/auth.service';
+import { TermsConditionsService } from '../../../app/services/terms-and-conditions/terms-and-conditions.service';
 import { AppConfigService } from '../../services/config/configuration.services';
 import * as fromActions from '../actions';
 import { UserService } from '../../services/user/user.service';
-import { SessionStorageService } from 'src/app/services/session-storage/session-storage.service';
+import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';
 
 @Injectable()
 export class AppEffects {

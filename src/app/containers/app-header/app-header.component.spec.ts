@@ -4,12 +4,13 @@ import { NavigationEnd, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Action, Store, StoreModule } from '@ngrx/store';
 import { BehaviorSubject, combineLatest, Observable, of, Subscription } from 'rxjs';
-import { AppConstants } from 'src/app/app.constants';
+import { AppConstants } from '../../../app/app.constants';
+import { Theme } from '../../../app/models/theme.model';
 import { UserDetails, UserInfo } from '../../../app/models/user-details.model';
 
 import { LoggerService } from '../../services/logger/logger.service';
 import * as fromActions from '../../store';
-import { AppHeaderComponent, Theme } from './app-header.component';
+import { AppHeaderComponent } from './app-header.component';
 
 const storeMock = {
   pipe: () => {
@@ -183,32 +184,38 @@ describe('AppHeaderComponent', () => {
         ];
 
         const defaultTheme = AppConstants.DEFAULT_USER_THEME;
-
-        expect(component.getUsersTheme(userRoles, themes, defaultTheme)).toEqual(themes[0]);
+        const userTypeRoles = { Solicitor: [] };
+        expect(component.getUsersTheme(userRoles, themes, defaultTheme, AppHeaderComponent.defaultUserTypeRoles)).toEqual(themes[0]);
       });
 
     it('should return a default theme if there are no user roles.', () => {
 
       const userRoles = [];
+      const theme1 = {} as Theme;
+      theme1.roles = [
+        'caseworker-sscs-judge',
+        'caseworker-sscs-panelmember',
+        'caseworker-cmc-judge',
+        'caseworker-divorce-judge',
+      ];
+      theme1.appTitle = {
+        name: 'Judicial Case Manager',
+        url: ''
+      };
+
+      const theme2 = {} as Theme;
+      theme2.roles = ['pui-case-manager'];
+      theme1.appTitle = {
+        name: 'Case Manager',
+        url: ''
+      };
 
       const themes = [
-        {
-          roles: [
-            'caseworker-sscs-judge',
-            'caseworker-sscs-panelmember',
-            'caseworker-cmc-judge',
-            'caseworker-divorce-judge',
-          ],
-          appTitle: 'Judicial Case Manager',
-        },
-        {
-          roles: ['pui-case-manager'],
-          appTitle: 'Case Manager',
-        },
+        theme1, theme2
       ];
       const defaultTheme = AppConstants.DEFAULT_USER_THEME;
 
-      expect(component.getUsersTheme(userRoles, themes, defaultTheme)).toEqual(AppConstants.DEFAULT_USER_THEME);
+      expect(component.getUsersTheme(userRoles, themes, defaultTheme, AppHeaderComponent.defaultUserTypeRoles)).toEqual(AppConstants.DEFAULT_USER_THEME);
     });
 
     it('should return a default theme if there are no themes.', () => {
@@ -217,7 +224,7 @@ describe('AppHeaderComponent', () => {
       const themes = [];
       const defaultTheme = AppConstants.DEFAULT_USER_THEME;
 
-      expect(component.getUsersTheme(userRoles, themes, defaultTheme)).toEqual(AppConstants.DEFAULT_USER_THEME);
+      expect(component.getUsersTheme(userRoles, themes, defaultTheme, AppHeaderComponent.defaultUserTypeRoles)).toEqual(AppConstants.DEFAULT_USER_THEME);
     });
 
   });
@@ -270,7 +277,7 @@ describe('AppHeaderComponent', () => {
 
   describe('getApplicationThemeForUser()', () => {
     it('get default theme when no roles', () => {
-      const themes = component.getApplicationThemeForUser([], []);
+      const themes = component.getApplicationThemeForUser([], [], AppHeaderComponent.defaultUserTypeRoles);
       expect(themes).toEqual(AppConstants.DEFAULT_USER_THEME);
     });
 
@@ -305,7 +312,7 @@ describe('AppHeaderComponent', () => {
       combineLatest([userDetails$, applicationThemes$]).subscribe(([givenUserDetails, givenApplicationThemes]) => {
         // within the subscribe set the check as true and get application theme to ensure correct running
         checkCombineLatestRuns = true;
-        applicationTheme = component.getApplicationThemeForUser(givenApplicationThemes, givenUserDetails.userInfo.roles);
+        applicationTheme = component.getApplicationThemeForUser(givenApplicationThemes, givenUserDetails.userInfo.roles, AppHeaderComponent.defaultUserTypeRoles);
         // note the other methods actually called within not relevant as are tested elsewhere
       });
       // expect settings to be correct
@@ -315,7 +322,7 @@ describe('AppHeaderComponent', () => {
 
     describe('setHeaderContent', () => {
       it('should allow correctly running through the content of combineLatest', () => {
-        expect(component.setHeaderContent(userDetails, applicationThemes));
+        expect(component.setHeaderContent(userDetails, applicationThemes, AppHeaderComponent.defaultUserTypeRoles));
         expect(component.appHeaderTitle).toBe(applicationThemes[1].appTitle);
       });
     });

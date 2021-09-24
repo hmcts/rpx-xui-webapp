@@ -1,4 +1,4 @@
-import { State } from 'src/app/store';
+import { State } from '../../app/store';
 
 export const initialMockState: State = {
   routerReducer: null,

@@ -7,7 +7,7 @@ import { CASE_SHARE_PERMISSIONS, SERVICES_ROLE_ASSIGNMENT_API_PATH, SESSION_TIME
 import { http } from '../lib/http';
 import { setHeaders } from '../lib/proxy';
 import { LocationInfo, RoleAssignment } from './interfaces/roleAssignment';
-import { isCurrentUserCaseAllocator } from './utils';
+import { getOrganisationRoles, isCurrentUserCaseAllocator } from './utils';
 
 export async function getUserDetails(req, res: Response, next: NextFunction): Promise<Response> {
   if (!req.session || !req.session.passport || !req.session.passport.user) {
@@ -43,6 +43,8 @@ export async function getRoleAssignmentForUser(userInfo: UserInfo, req: any): Pr
   try {
     const response: AxiosResponse = await http.get(path, { headers });
     locationInfo = getRoleAssignmentInfo(response.data.roleAssignmentResponse);
+    const roles = getOrganisationRoles(response.data.roleAssignmentResponse);
+    userInfo.roles = userInfo.roles.concat(roles);
     req.session.roleAssignmentResponse = response.data.roleAssignmentResponse;
   } catch (error) {
     console.log(error);
@@ -53,10 +55,10 @@ export async function getRoleAssignmentForUser(userInfo: UserInfo, req: any): Pr
 export function getRoleAssignmentInfo(roleAssignmentResponse: RoleAssignment[]): LocationInfo[] {
   const roleAssignmentInfo = [];
   roleAssignmentResponse.forEach(roleAssignment => {
-      const isCaseAllocator = isCurrentUserCaseAllocator(roleAssignment);
-      const attributes = {...roleAssignment.attributes};
-      attributes.isCaseAllocator = isCaseAllocator;
-      roleAssignmentInfo.push(attributes);
+    const isCaseAllocator = isCurrentUserCaseAllocator(roleAssignment);
+    const attributes = {...roleAssignment.attributes};
+    attributes.isCaseAllocator = isCaseAllocator;
+    roleAssignmentInfo.push(attributes);
   });
   return roleAssignmentInfo;
 }

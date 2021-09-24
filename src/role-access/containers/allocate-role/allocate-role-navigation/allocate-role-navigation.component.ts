@@ -1,14 +1,14 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { UserRole } from '../../../../app/models';
 import {
   backButtonVisibilityStates,
-  backButtonVisibilityStatesIfReallocate,
   cancelButtonVisibilityStates,
   confirmButtonVisibilityStates,
   continueButtonVisibilityStates
 } from '../../../constants/allocate-role-navigation-visibility-states';
-import { Actions, AllocateRoleNavigationEvent, AllocateRoleState, AllocateRoleStateData } from '../../../models';
+import { Actions, AllocateRoleNavigationEvent, AllocateRoleState, AllocateRoleStateData, RoleCategory } from '../../../models';
 import * as fromFeature from '../../../store';
 
 @Component({
@@ -22,15 +22,20 @@ export class AllocateRoleNavigationComponent implements OnInit {
   public allocateRoleStateData$: Observable<AllocateRoleStateData>;
 
   public backVisibilityStates = backButtonVisibilityStates;
-  public backButtonVisibilityStatesIfReallocate = backButtonVisibilityStatesIfReallocate;
   public continueVisibilityStates = continueButtonVisibilityStates;
   public confirmExclusionButtonVisibilityStates = confirmButtonVisibilityStates;
   public cancelButtonVisibilityStates = cancelButtonVisibilityStates;
 
   public allocateRoleNavigationEvent = AllocateRoleNavigationEvent;
 
+  @Input()
+  public isLegalOpsOrJudicialRole: UserRole;
+
+  @Input()
+  public roleCategory: RoleCategory;
+
   constructor(
-    private store: Store<fromFeature.State>,
+    private readonly store: Store<fromFeature.State>,
   ) {
   }
 
@@ -39,9 +44,32 @@ export class AllocateRoleNavigationComponent implements OnInit {
   }
 
   public isBackVisible(currentNavigationState: AllocateRoleState, action: Actions): boolean {
+    // when action is reallocate to show/hide the back button depends on the logon user's role and the role category to be added
     if (action === Actions.Reallocate) {
-      return this.backButtonVisibilityStatesIfReallocate.includes(currentNavigationState);
+      if (this.isLegalOpsOrJudicialRole === UserRole.Judicial) {
+        if (this.roleCategory === RoleCategory.JUDICIAL) {
+          if (currentNavigationState === AllocateRoleState.CHOOSE_ALLOCATE_TO) {
+            return false;
+          }
+        } else if (this.roleCategory === RoleCategory.LEGAL_OPERATIONS) {
+          if (currentNavigationState === AllocateRoleState.SEARCH_PERSON) {
+            return false;
+          }
+        }
+      } else if (this.isLegalOpsOrJudicialRole === UserRole.LegalOps) {
+        if (this.roleCategory === RoleCategory.LEGAL_OPERATIONS) {
+          if (currentNavigationState === AllocateRoleState.CHOOSE_ALLOCATE_TO) {
+            return false;
+          }
+        } else if (this.roleCategory === RoleCategory.JUDICIAL) {
+          if (currentNavigationState === AllocateRoleState.SEARCH_PERSON) {
+            return false;
+          }
+        }
+      }
+      return true;
     }
+    // when action is allocate use the backVisibilityStates
     return this.backVisibilityStates.includes(currentNavigationState);
   }
 

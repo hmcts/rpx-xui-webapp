@@ -72,6 +72,11 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
         this.answers.push({ label: AnswerLabelText.WhoBeAllocatedTo, value: allocateRoleStateData.allocateTo, action: AllocateRoleState.CHOOSE_ALLOCATE_TO });
       }
     }
+    if (allocateRoleStateData.action === Actions.Reallocate) {
+      if (allocateRoleStateData.allocateTo) {
+        this.answers.push({ label: AnswerLabelText.WhoBeAllocatedTo, value: allocateRoleStateData.allocateTo, action: AllocateRoleState.CHOOSE_ALLOCATE_TO });
+      }
+    }
     this.setPersonDetails(allocateRoleStateData);
     this.setDurationOfRole(allocateRoleStateData);
   }
@@ -81,10 +86,16 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
     if (allocateRoleStateData.person && allocateRoleStateData.person.email) {
       personDetails += `${allocateRoleStateData.person.name}\n${allocateRoleStateData.person.email}`;
     }
-    if (allocateRoleStateData.allocateTo === AllocateTo.ALLOCATE_TO_ANOTHER_PERSON ||
-      (allocateRoleStateData.allocateTo === null && allocateRoleStateData.typeOfRole === TypeOfRole.CaseManager) ||
-      allocateRoleStateData.action === Actions.Reallocate) {
-      this.answers.push({label: AnswerLabelText.Person, value: personDetails, action: AllocateRoleState.SEARCH_PERSON});
+    if (allocateRoleStateData.action === Actions.Allocate) {
+      if (allocateRoleStateData.allocateTo === AllocateTo.ALLOCATE_TO_ANOTHER_PERSON ||
+        (allocateRoleStateData.typeOfRole === TypeOfRole.CaseManager && allocateRoleStateData.allocateTo === null)) {
+        this.answers.push({label: AnswerLabelText.Person, value: personDetails, action: AllocateRoleState.SEARCH_PERSON});
+      }
+    }
+    if (allocateRoleStateData.action === Actions.Reallocate) {
+      if (allocateRoleStateData.allocateTo !== AllocateTo.RESERVE_TO_ME && personDetails) {
+        this.answers.push({label: AnswerLabelText.Person, value: personDetails, action: AllocateRoleState.SEARCH_PERSON});
+      }
     }
   }
 

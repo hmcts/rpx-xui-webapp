@@ -7,11 +7,6 @@ export const backButtonVisibilityStates = [
   AllocateRoleState.CHECK_ANSWERS,
 ];
 
-export const backButtonVisibilityStatesIfReallocate = [
-  AllocateRoleState.CHOOSE_DURATION,
-  AllocateRoleState.CHECK_ANSWERS,
-];
-
 export const continueButtonVisibilityStates = [
   AllocateRoleState.CHOOSE_ROLE,
   AllocateRoleState.CHOOSE_ALLOCATE_TO,

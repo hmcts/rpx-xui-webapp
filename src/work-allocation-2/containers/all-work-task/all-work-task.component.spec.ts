@@ -165,7 +165,7 @@ describe('AllWorkTaskComponent', () => {
   { statusCode: 500, routeUrl: '/service-down' },
   { statusCode: 400, routeUrl: '/service-down' },
 ].forEach(scr => {
-  fdescribe('AllWorkTaskComponent negative cases', () => {
+  describe('AllWorkTaskComponent negative cases', () => {
     let component: AllWorkTaskComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;

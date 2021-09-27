@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 
 import { InformationMessage } from '../../models/comms';
 import { InfoMessageCommService } from '../../services';
@@ -12,6 +12,7 @@ export class InfoMessageContainerComponent implements OnInit {
 
   public showInfoMessage: boolean = false;
   public infoMessages: InformationMessage[];
+  private currentUrl: string;
 
   /**
    * Flag to indicate whether or not messages should be retained at
@@ -32,8 +33,14 @@ export class InfoMessageContainerComponent implements OnInit {
 
   public ngOnInit(): void {
     this.router.events.subscribe(event => {
+      if (event instanceof NavigationStart) {
+        // keep the current url the navigation started from
+        this.currentUrl = this.router.url;
+      }
       if (event instanceof NavigationEnd) {
-        this.resetMessages();
+        if (!this.currentUrl.includes('#manage')) {
+          this.resetMessages();
+        }
       }
     });
 

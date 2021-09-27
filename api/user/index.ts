@@ -1,7 +1,7 @@
 import { getUserSessionTimeout, RoleGroupSessionTimeout } from '@hmcts/rpx-xui-node-lib';
-import { UserInfo } from 'auth/interfaces/UserInfo';
 import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
+import { UserInfo } from '../auth/interfaces/UserInfo';
 import { getConfigValue } from '../configuration';
 import { CASE_SHARE_PERMISSIONS, SERVICES_ROLE_ASSIGNMENT_API_PATH, SESSION_TIMEOUTS } from '../configuration/references';
 import { http } from '../lib/http';

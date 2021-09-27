@@ -4,3 +4,15 @@
 .all-work-filter-label {
     font-weight: 550!important;
 }
+
+.cases-container {
+  display: flex;
+  justify-content: space-between;
+  exui-case-manager-filter {
+    margin-right: 40px;
+  }
+
+  .exui-task-list {
+    width: 78%;
+  }
+}

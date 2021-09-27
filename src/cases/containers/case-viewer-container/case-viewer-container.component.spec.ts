@@ -9,7 +9,7 @@ import { FeatureToggleService, FeatureUser } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
-import { reducers, State } from 'src/app/store';
+import { reducers, State } from '../../../app/store';
 import { CaseViewerContainerComponent } from './case-viewer-container.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 

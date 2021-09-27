@@ -1,11 +1,12 @@
 import { BadgeColour, ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib';
-import { Theme } from './containers';
+import { Theme } from './models/theme.model';
 
 const FeatureNames = {
   currentWAFeature: 'mc-work-allocation-active-feature',
   workAllocation: 'MC_Work_Allocation',
   noticeOfChange: 'MC_Notice_of_Change',
-  waMvpPaginationFeature: 'mc-mvp-wa-pagination'
+  waMvpPaginationFeature: 'mc-mvp-wa-pagination',
+  userTypeRoles: 'mc-user-type-roles'
 };
 
 const FooterData = {
@@ -245,3 +246,4 @@ export const LD_FLAG_REMOVE_USER_FROM_CASE_MC: string = 'remove-user-from-case-m
 export const LD_FLAG_MC_APPLICATION_THEMES: string = 'mc-application-themes';
 export const LEGAL_OPS_ROLE_LIST: string[] = ['caseworker-ia-caseofficer'];
 export const JUDICIAL_ROLE_LIST: string[] = ['caseworker-ia-iacjudge'];
+export const SERVICE_OPTIONS_LIST = [{key: 'Immigration and Asylum', label: 'Immigration and Asylum'}];

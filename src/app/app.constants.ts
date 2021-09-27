@@ -1,5 +1,5 @@
 import { BadgeColour, ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib';
-import {Theme} from './containers/app-header/app-header.component';
+import { Theme } from './models/theme.model';
 
 const FeatureNames = {
   currentWAFeature: 'mc-work-allocation-active-feature',

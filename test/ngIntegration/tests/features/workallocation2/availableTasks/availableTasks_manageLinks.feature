@@ -10,7 +10,7 @@ Feature: WA Release 2: My work - Available tasks - Manage links
             | Permissions | Count |
             | Manage      | 100   |
             | Read        | 40    |
-        Given I set MOCK tasks with attributes for view "AvailableTasks"
+        Given I set MOCK tasks with attributes for view "Available tasks"
             | index | permissions | assignee            | case_name |
             | 0     | Manage,Read |                     | case 1    |
             | 1     | Manage      |                     | case 2    |

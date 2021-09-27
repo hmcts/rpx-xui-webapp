@@ -1,6 +1,8 @@
 
 const CaseRolesTable = require("../common/caseRolesTable");
 const BrowserWaits = require('../../../support/customWaits');
+const BrowserUtil = require('../../../../ngIntegration/util/browserUtil');
+
 class CaseRolesAccessPage{
     constructor(){
         this.pageContainer = $('exui-roles-and-access-container');
@@ -74,7 +76,9 @@ class CaseRolesAccessPage{
     }
 
     async clickAllocateRoleLinkForCategory(rolecategory){
-        await this.getAllocateRoleLinkForCategory(rolecategory).click();
+        const element = this.getAllocateRoleLinkForCategory(rolecategory);
+        await BrowserUtil.scrollToElement(element);
+        await element.click();
     }
 
     async isExclusionAddLinkPresent(){

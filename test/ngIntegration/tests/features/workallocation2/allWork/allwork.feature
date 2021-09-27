@@ -4,7 +4,7 @@ Feature: WA Release 2: All work
     Background: Mock and browser setup
         Given I init MockApp
 
-@ignore
+    @ignore
     Scenario Outline:  All work Tasks, colums and column links for "<UserType>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
         Given I set MOCK tasks with permissions for view "All work" and assigned state ""
@@ -35,7 +35,8 @@ Feature: WA Release 2: All work
             | Case name     | Yes        | Yes   |
             | Case category | Yes        | Yes   |
             | Location      | Yes        | Yes   |
-            | Task          | Yes       | Yes   |
+            | Person        | Yes        | Yes   |
+            | Task          | Yes        | Yes   |
             | Task created  | No         | Yes   |
             | Due date      | Yes        | No    |
             | Priority      | Yes        | No    |
@@ -94,13 +95,13 @@ Feature: WA Release 2: All work
 
         Then I validate tasks count in page 25
         Then I validate task table pagination controls, is displayed state is "true"
-        Then I validate task list page results text displayed as "Displaying 1 - 25 out of 140 tasks"
+        Then I validate task list page results text displayed as "Showing 1 to 25 of 140 results"
 
         When I click task list table header column "Case name", I validate task list table sorted with column "Case name" in order "asc"
         When I click on primary navigation header tab "Case list", I see selected tab page displayed
         Then I see case list page displayed
         When I click on primary navigation header tab "All work", I see selected tab page displayed
         Then I validate tasks count in page 25
-        Then I validate task list page results text displayed as "Displaying 1 - 25 out of 140 tasks"
+        Then I validate task list page results text displayed as "Showing 1 to 25 of 140 results"
         Then I validate task list table sorted with column "Case name" in order "asc"
 

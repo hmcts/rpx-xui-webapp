@@ -19,7 +19,6 @@ defineSupportCode(({ Before, After }) => {
     Before(async function (scenario) {
 
         const world = this;
-        global.scenarioData = {};
         CucumberReportLog.setScenarioWorld(this);
 
         const scenarioId = scenario.pickle.name.split(' ').join('_').split('"').join('').split('/').join('');

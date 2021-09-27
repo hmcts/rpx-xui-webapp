@@ -5,7 +5,7 @@ const SoftAssert = require('../../../../ngIntegration/util/softAssert');
 
 const caseDetailsPage = require("../../pageObjects/caseDetailsPage");
 const caseRolesAndAccessPage = require("../../pageObjects/workAllocation/caseRolesAccessPage");
-const durationDateUtil = require('../../pageObjects/workAllocation/common/durationDateUtil');
+const workAllocationDateUtil = require('../../pageObjects/workAllocation/common/workAllocationDateUtil');
 const ArrayUtil = require('../../../utils/ArrayUtil');
 
 const checkYourAnswersPage = require('../../pageObjects/workAllocation/common/checkYourAnswersPage');
@@ -87,18 +87,14 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 let expectedValue = rowHash[headerName];
                 if (headerName === 'Start' || headerName === 'End'){
                     if (expectedValue !== ''){
-                        expectedValue = durationDateUtil.getDurationDateDisplayString(expectedValue);
+                        expectedValue = workAllocationDateUtil.getDurationDateDisplayString(expectedValue);
                     }else{
                         expectedValue = '';
                     }
                     
                 } else if (headerName === 'Added'){
                     const addedDate = new Date();
-                    addedDate.setDate(addedDate.getDate() + parseInt(expectedValue));
-                    const date = addedDate.getDate() < 10 ? `0${addedDate.getDate()}` : `${addedDate.getDate()}`
-                    const month = addedDate.getMonth() + 1 < 10 ? `0${addedDate.getMonth() + 1}` : `${ addedDate.getMonth() + 1 }`
-
-                    expectedValue = `${date}/${month}/${addedDate.getFullYear()}`
+                    expectedValue = workAllocationDateUtil.getDurationDateDisplayString(expectedValue);
                 }
                 expect(await caseRolesAndAccessPage.getTableColumnValueForAccessRoleType(roleCategory, rowNum, headerName), `${headerName} column value does not match ${roleCategory}`).to.contains(expectedValue);
             }
@@ -108,7 +104,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
 
 
-    When('I click add link for role category  {string} in case roles and access page', async function (roleType){
+    When('I click add link for role category {string} in case roles and access page', async function (roleType){
         await caseRolesAndAccessPage.clickAllocateRoleLinkForCategory(roleType);
 
     });

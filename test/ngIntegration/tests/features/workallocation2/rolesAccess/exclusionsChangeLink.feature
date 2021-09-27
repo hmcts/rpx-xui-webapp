@@ -26,7 +26,7 @@ Feature: WA Release 2: Exclusion workflow - Change links
         Then I see case details tab label "Roles and access" is displayed is "true"
         When I click tab with label "Roles and access" in case details page
         Then I see Roles and access page is displayed
-        When I click add link for role category  "Exclusions" in case roles and access page
+        When I click add link for role category "Exclusions" in case roles and access page
 
         Then I see Add an exclusion work flow page "Choose who the exclusion is for" is displayed
         When I select Choose who the exclusion is for option "Exclude another person" in add exclusion work flow

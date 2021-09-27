@@ -75,6 +75,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
              let headerName = columnHeaders[i];
              CucumberReporter.AddMessage("Validating sort column for header : " + headerName);
 
+             const isColumnSortable = await taskListPage.isHeaderSortable(headerName);
+             if (!isColumnSortable){
+                continue;
+             }
+
              const headerElement = await taskListPage.getHeaderElementWithName(headerName);
              const headerColId = await headerElement.getAttribute("id");
              expect(await taskListPage.getColumnSortState(headerName)).to.equal("none");

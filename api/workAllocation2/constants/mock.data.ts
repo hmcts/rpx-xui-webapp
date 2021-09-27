@@ -1220,7 +1220,7 @@ export const JUDICIAL_ALL_CASES = {
       startDate: '2021-05-18T16:00:00.000+0000',
       endDate: '2021-06-19T16:00:00.000+0000',
       location_name: 'Manchester',
-      location_id: '231596',
+      location_id: '512401',
       jurisdiction: 'Immigration and Asylum',
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',

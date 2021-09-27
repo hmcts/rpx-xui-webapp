@@ -29,32 +29,27 @@ export class InfoMessageCommService {
    * Helper function to remove all previous messages, and add a new message.
    */
   public nextMessage(message: InformationMessage): void {
-
     this.removeAllMessages();
     this.addMessage(message);
   }
 
   public removeAllMessages(): void {
-
     this.infoMessages = [];
 
     this.emitMessages(this.infoMessages);
   }
 
   public addMessage(message: InformationMessage): void {
-
     this.infoMessages.push(message);
 
     this.emitMessages(this.infoMessages);
   }
 
   public emitMessages(messages: InformationMessage[]): void {
-
     this.infoMessageSource.next(messages);
   }
 
   public getMessages(): InformationMessage[] {
-
     return this.infoMessages;
   }
 }

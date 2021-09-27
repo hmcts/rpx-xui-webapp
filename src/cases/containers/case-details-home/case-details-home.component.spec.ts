@@ -73,9 +73,10 @@ describe('CaseDetailsHomeComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should not have a success message that is shown', () => {
+    it('should have a success message that is shown', () => {
       // as data has been set up beforehand to have been redirected from avialable tasks
       // the alert service will have been called
+      expect(mockAlertService.setPreserveAlerts).toHaveBeenCalled();
       expect(mockAlertService.success).toHaveBeenCalled();
     });
 

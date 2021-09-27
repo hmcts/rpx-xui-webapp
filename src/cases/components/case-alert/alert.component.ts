@@ -36,9 +36,9 @@ export class AlertComponent implements OnInit, OnDestroy {
   }
 
   public hyphenate(msg: string): string {
-    const caseId = msg.match(/[0-9]{16}/g);
+    const caseId = msg.match(/\d{16}/g);
     if (caseId) {
-      const caseIdHyphen = msg.match(/([0-9][0-9][0-9][0-9])/g).join('-');
+      const caseIdHyphen = msg.match(/(\d\d\d\d)/g).join('-');
       return msg.replace(caseId.toString(), caseIdHyphen);
     } else {
       return msg;
@@ -46,7 +46,11 @@ export class AlertComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    this.alertMessageSubscription.unsubscribe();
-    this.routeSubscription.unsubscribe();
+    if (this.alertMessageSubscription) {
+      this.alertMessageSubscription.unsubscribe();
+    }
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
+    }
   }
 }

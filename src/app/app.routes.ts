@@ -19,11 +19,19 @@ export const routingConfiguration: ExtraOptions = {
   paramsInheritanceStrategy: 'always'
 };
 
+export const appRoutePaths: {[key: string]: string} = {
+  mainError: 'main-error'
+}
+
 export const ROUTES: Routes = [
   {
     path: '',
     component: ApplicationRoutingComponent,
     pathMatch: 'full'
+  },
+  {
+    path: appRoutePaths.mainError,
+    component: MainErrorPageComponent
   },
   {
     path: 'cases',
@@ -135,9 +143,5 @@ export const ROUTES: Routes = [
     path: '**',
     redirectTo: '/cases',
     pathMatch: 'full'
-  },
-  {
-    path: 'main-error',
-    component: MainErrorPageComponent
   },
 ];

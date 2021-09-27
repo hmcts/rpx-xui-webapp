@@ -1,6 +1,7 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { AppConstants } from './app.constants';
 import { NavItemsModel } from './models/nav-item.model';
+import { Theme } from './models/theme.model';
 
 export class AppUtils {
 
@@ -148,5 +149,35 @@ export class AppUtils {
 
   public static getFeatureToggledUrl(isFeatureEnabled: boolean, workallocationUrl: string): string {
     return isFeatureEnabled ? workallocationUrl : null;
+  }
+
+  public static setThemeBasedOnUserType(userType: string, theme: Theme) {
+    switch (userType) {
+      case 'Judicial':
+        theme.appTitle.name = 'Judicial Case Manager';
+        theme.backgroundColor = '#8d0f0e';
+        theme.logoType = 'judicial';
+        break;
+      case 'LegalOps':
+        theme.appTitle.name = 'Manage cases';
+        theme.backgroundColor = '#202020';
+        theme.logoType = '';
+        break;
+      case 'Solicitor':
+        theme.appTitle.name = 'Manage cases';
+        theme.backgroundColor = '#202020';
+        theme.logoType = 'myhmcts';
+        break;
+    }
+  }
+
+  public static getUserType(userRoles: string[], userTypeRoles: any): string {
+    if (userRoles.some(userRole => userTypeRoles.solicitor.includes(userRole))) {
+      return 'Solicitor';
+    } else if (userRoles.some(userRole => userTypeRoles.judicial.includes(userRole))) {
+      return 'Judicial';
+    } else {
+      return 'LegalOps';
+    }
   }
 }

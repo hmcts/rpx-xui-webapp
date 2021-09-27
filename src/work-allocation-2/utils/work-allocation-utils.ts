@@ -46,6 +46,30 @@ export const handleFatalErrors = (status: number, navigator: Navigator, fatals?:
       navigator.navigate([ REDIRECTS.ServiceDown ]);
       return 0; // 0 indicates it has been handled.
     case 400:
+      navigator.navigate([ REDIRECTS.ServiceDown ]);
+      return 400;
+    default:
+      // If it's anything other than a 400, 401, 403, 500, or 503, we should not
+      // send the User to an error page. This should be handled within
+      // the component so just return the status.
+
+      // However, if they've specified that other errors should be treated
+      // as fatal, we should handle that.
+      return treatAsFatal(status, navigator, fatals);
+  }
+};
+
+export const handleTasksFatalErrors = (status: number, navigator: Navigator, fatals?: FatalRedirect[]): number => {
+  switch (status) {
+    case 401:
+    case 403:
+      navigator.navigate([ REDIRECTS.NotAuthorised ]);
+      return 0; // 0 indicates it has been handled.
+    case 500:
+    case 503:
+      navigator.navigate([ REDIRECTS.ServiceDown ]);
+      return 0; // 0 indicates it has been handled.
+    case 400:
       return 400;
     default:
       // If it's anything other than a 400, 401, 403, 500, or 503, we should not

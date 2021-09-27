@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsul
 import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models';
 import { select, Store } from '@ngrx/store';
-import { filter } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 
 import { AppUtils } from '../../../app/app-utils';
@@ -261,8 +261,18 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
     this.fieldsConfig.fields = this.isLegalOpsOrJudicialRole === UserRole.Judicial ?
       this.fieldsConfig.fields.slice(0, -1) : this.fieldsConfig.fields;
     this.filterSub = this.filterService.getStream(TaskManagerFilterComponent.FILTER_NAME)
-      .pipe(
-        filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
+    .pipe(
+      map((f: FilterSetting) => {
+        if (f === null) {
+          f = {
+            id: TaskManagerFilterComponent.FILTER_NAME,
+            fields: this.fieldsConfig.cancelSetting.fields
+          };
+          return f;
+        }
+        return f;
+      }),
+      filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
       ).subscribe((f: FilterSetting) => {
         const fields = f.fields.reduce((acc, field: { name: string, value: string[] }) => {
           return {...acc, [field.name]: field.value[0]};

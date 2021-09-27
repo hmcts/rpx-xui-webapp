@@ -1,5 +1,5 @@
-@ng
-Feature: WA Release 2: My work to  My cases to pagination sorting
+@ng 
+Feature: WA Release 2: All work > cases -  pagination sorting
 
     Background: Mock and browser setup
         Given I init MockApp
@@ -8,7 +8,7 @@ Feature: WA Release 2: My work to  My cases to pagination sorting
 
     Scenario Outline: pagnation and sorting for user type "<UserType>" with roles "<Roles>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
-        Given I set MOCK workallocation cases with permissions for view "My cases"
+        Given I set MOCK workallocation cases with permissions for view "AllWorkCases"
             | Roles          | Count |
             | case-allocator | 40    |
             |                | 100    |
@@ -16,7 +16,8 @@ Feature: WA Release 2: My work to  My cases to pagination sorting
         Given I start MockApp
 
         Given I navigate to home page
-        When I navigate to My work sub navigation tab "My cases"
+        When I click on primary navigation header tab "All work", I see selected tab page displayed
+        When I navigate to All work sub navigation tab "Cases"
 
         Then I validate work allocation cases count in page 25
 
@@ -56,14 +57,15 @@ Feature: WA Release 2: My work to  My cases to pagination sorting
 
     Scenario Outline: pagnation control display with only 1 page of items
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
-        Given I set MOCK workallocation cases with permissions for view "My cases"
+        Given I set MOCK workallocation cases with permissions for view "AllWorkCases"
             | Roles          | Count |
             | case-allocator | 20    |
 
         Given I start MockApp
 
         Given I navigate to home page
-        When I navigate to My work sub navigation tab "My cases"
+        When I click on primary navigation header tab "All work", I see selected tab page displayed
+        When I navigate to All work sub navigation tab "Cases"
 
         Then I validate task table pagination controls, is displayed state is "false"
         Then I validate work allocation cases count in page 20
@@ -78,14 +80,15 @@ Feature: WA Release 2: My work to  My cases to pagination sorting
     @ignore
     Scenario Outline: pagnation control display 0 items
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
-        Given I set MOCK workallocation cases with permissions for view "My cases"
+        Given I set MOCK workallocation cases with permissions for view "AllWorkCases"
             | Roles          | Count |
             | case-allocator | 0    |
 
         Given I start MockApp
 
         Given I navigate to home page
-        When I navigate to My work sub navigation tab "My cases"
+        When I click on primary navigation header tab "All work", I see selected tab page displayed
+        When I navigate to All work sub navigation tab "Cases"
 
         Then I validate work allocation cases table pagination controls, is displayed state is "false"
 

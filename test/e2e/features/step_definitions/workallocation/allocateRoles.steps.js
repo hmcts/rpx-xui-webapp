@@ -22,7 +22,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             expect(await workFlowPageObject.getHeaderText(), `${workFlowPageType} work flow page header not matching`).to.include(workFlowPageType);
             expect(await workFlowPageObject.getHeaderCaption(), `${workFlowPageType} work flow page header caption not matching`).to.include(captionHeader);
 
-        });
+        },null,1);
         
     });
 

@@ -154,8 +154,8 @@ class WorkAllocationModels {
         if (caseActionsMatrix[view] === undefined) {
             throw new Error(`View ${view} is not modeled in Mock data model. test requires update`);
         }
-        if (view.includes('mycases')) {
-            actionsView = caseActionsMatrix['mycases'];
+        if (view.includes('mycases') || view.includes('cases')) {
+            actionsView = caseActionsMatrix[view];
         }
 
         let allowedActions = {};
@@ -275,6 +275,9 @@ const taskActionsMatrix = {
 
 const caseActionsMatrix = {
     mycases: {
+        "case-allocator": [CASE_ACTIONS.ReAllocate, CASE_ACTIONS.RemoveAllocation],
+    },
+    allworkcases:{
         "case-allocator": [CASE_ACTIONS.ReAllocate, CASE_ACTIONS.RemoveAllocation],
     }
 }

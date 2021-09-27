@@ -75,7 +75,8 @@ class MockApp{
                 callback(req, res);
             }
         }catch(err){
-            res.status(500).send({message:'MOCK error', err:err});
+            console.log(err); 
+            res.status(500).send({message:'MOCK error', err:err.message});
         }
     }
 
@@ -154,6 +155,7 @@ class MockApp{
         app.use(bodyParser.json());
         app.use(cookieParser());
         app.use(express.json()); 
+
 
         app.get('/requestLogs',(req,res) =>{
             res.set('content-type', 'application/json');
@@ -262,7 +264,7 @@ function setUpcaseConfig() {
 
     mockInstance.onGet('/api/user/details', (req, res) => {
         const roles = ['caseworker', 'caseworker-ia', 'caseworker-ia-iacjudge'];
-        const idamid = '44d5d2c2-kjnjhbjhb-kjnbjbj-ubhb';
+        const idamid = '44d5d2c2-7112-4bef-8d05-baaa610bf463';
         res.send(nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, idamid));
 
     });

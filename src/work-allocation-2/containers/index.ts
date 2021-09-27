@@ -11,7 +11,6 @@ import { TaskAssignmentContainerComponent } from './task-assignment/task-assignm
 import { TaskHomeComponent } from './task-home/task-home.component';
 import { TaskListWrapperComponent } from './task-list-wrapper/task-list-wrapper.component';
 import { TaskListComponent } from './task-list/task-list.component';
-import { TaskManagerListComponent } from './task-manager-list/task-manager-list.component';
 import { TaskManagerComponent } from './task-manager/task-manager.component';
 import { WorkAllocationHomeComponent } from './work-allocation-home/work-allocation-home.component';
 import { WorkCaseListWrapperComponent } from './work-case-list-wrapper/work-case-list-wrapper.component';
@@ -28,7 +27,6 @@ export const containers: any[] = [
   TaskListComponent,
   TaskListWrapperComponent,
   TaskManagerComponent,
-  TaskManagerListComponent,
   WorkAllocationHomeComponent,
   TaskAssignmentConfirmComponent,
   AllWorkHomeComponent,
@@ -47,7 +45,6 @@ export * from './task-home/task-home.component';
 export * from './task-list/task-list.component';
 export * from './task-list-wrapper/task-list-wrapper.component';
 export * from './task-manager/task-manager.component';
-export * from './task-manager-list/task-manager-list.component';
 export * from './work-allocation-home/work-allocation-home.component';
 export * from './task-assignment-confirm/task-assignment-confirm.component';
 export * from './all-work-home/all-work-home.component';

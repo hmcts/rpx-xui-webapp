@@ -317,7 +317,6 @@ describe('TaskAssignmentConfirmComponent', () => {
       const headers = fixture.debugElement.queryAll(By.css('th'));
 
       const fieldLabels = headers.map(header => header.nativeElement.textContent);
-      console.log(`component.isUserJudidical ${component.isUserJudidical}`);
       if (role === 'caseworker-ia-iacjudge') {
         expect(fieldLabels).toContain('Task created');
         expect(fieldLabels).not.toContain('Due date');

@@ -25,7 +25,7 @@ export interface UserDetails {
 }
 
 export enum UserRole {
+  Admin = 'admin',
   LegalOps = 'legalops',
   Judicial = 'judicial',
-  Admin = 'admin'
 }

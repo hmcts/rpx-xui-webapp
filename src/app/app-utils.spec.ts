@@ -187,39 +187,6 @@ describe('getFeatureToggledUrl', () => {
   });
 });
 
-describe('isLegalOpsOrJudicial', () => {
-
-  it('should return legal ops role if user has any legal ops role', () => {
-    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker-ia-caseofficer']);
-    expect(isLegalOpsOrJudicial).toBe(UserRole.LegalOps);
-  });
-
-  it('should return judicial role if user has any judicial role', () => {
-    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker-ia-iacjudge']);
-    expect(isLegalOpsOrJudicial).toBe(UserRole.Judicial);
-  });
-
-  it('should return null if user has no judicial or legal ops role', () => {
-    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker-ia']);
-    expect(isLegalOpsOrJudicial).toBeNull();
-  });
-
-  it('should return the judicial domain from the user list', () => {
-    const role = AppUtils.convertDomainToLabel(UserRole.Judicial);
-    expect(role).toBe('Judicial');
-  });
-
-  it('should return the legal ops domain from the user list', () => {
-    const role = AppUtils.convertDomainToLabel(UserRole.LegalOps);
-    expect(role).toBe('Legal Ops');
-  });
-
-  it('should return the admin domain from the user list', () => {
-    const role = AppUtils.convertDomainToLabel(UserRole.Admin);
-    expect(role).toBe('Admin');
-  });
-});
-
 describe('setThemeBasedOnUserType', () => {
   it('Judicial User', () => {
     const theme = { appTitle: {}} as Theme;

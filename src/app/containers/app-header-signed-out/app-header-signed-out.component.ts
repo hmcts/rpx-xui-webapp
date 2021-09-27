@@ -5,7 +5,7 @@ import {AppConstants} from '../../app.constants';
 import {AppTitleModel} from '../../models/app-title.model';
 import {NavItemsModel} from '../../models/nav-item.model';
 import {UserNavModel} from '../../models/user-nav.model';
-import {Theme} from '../app-header/app-header.component';
+import {Theme} from '../../models/theme.model';
 
 @Component({
   selector: 'exui-app-header-signed-out',

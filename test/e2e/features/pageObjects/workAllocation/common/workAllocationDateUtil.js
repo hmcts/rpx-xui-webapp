@@ -3,6 +3,47 @@
 class DurationDateUtil{
 
     getDurationDateDisplayString(dateInDays) {
+        return this.getDateFormat(dateInDays, "DD MONTH YYYY");
+    }
+
+    getTaskDueDateDisplayString(dateInDays){
+        return this.getDateFormat(dateInDays, "DD MONTH YYYY");
+    }
+
+
+    getTaskCeateDateDisplayString(dateInDays){
+        return this.getDateFormat(dateInDays, "DD MONTH YYYY");
+    }
+
+
+
+    getDateFormat(dateInDays,format) {
+        let dateObj = new Date();
+        dateObj.setDate(dateObj.getDate() + parseInt(dateInDays.replace(' ', '')));
+        let date = dateObj.getDate();
+
+        if (format === "DD MONTH YYYY"){
+            date = date < 10 ? "0" + date : date;
+
+            let month = dateObj.getMonth();
+            month = this.getFullMonth(month + 1);
+
+            let year = dateObj.getFullYear();
+            return `${date} ${month} ${year}`
+        }
+
+        if (format === "DD/MM/YYYY"){
+            date = date < 10 ? "0" + date : date;
+
+            let month = dateObj.getMonth();
+
+            let year = dateObj.getFullYear();
+            return `${date}/${month+1}/${year}`
+        }
+       
+    }
+
+    getDateFormat_DD_Month_YYYY(dateInDays){
         let dateObj = new Date();
         dateObj.setDate(dateObj.getDate() + parseInt(dateInDays.replace(' ', '')));
 

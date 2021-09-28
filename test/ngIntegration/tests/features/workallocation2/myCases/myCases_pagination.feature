@@ -1,5 +1,5 @@
 @ng
-Feature: WA Release 2: My work -  My cases - pagination sorting
+Feature: WA Release 2: My work to  My cases to pagination sorting
 
     Background: Mock and browser setup
         Given I init MockApp
@@ -21,7 +21,7 @@ Feature: WA Release 2: My work -  My cases - pagination sorting
         Then I validate work allocation cases count in page 25
 
         Then I validate work allocation cases table pagination controls, is displayed state is "true"
-        Then I validate WA case list page results text displayed as "Displaying 1 - 25 out of 140 cases"
+        Then I validate WA case list page results text displayed as "Showing 1 to 25 of 140 results"
 
 
         Given I reset reference "caseSearchRequest" value to null
@@ -29,29 +29,30 @@ Feature: WA Release 2: My work -  My cases - pagination sorting
         Then I validate task search request with reference "caseSearchRequest" has pagination parameters
             | PageNumber | PageSize |
             | 2          | 25       |
-        Then I validate WA case list page results text displayed as "Displaying 26 - 50 out of 140 cases"
+        Then I validate WA case list page results text displayed as "Showing 26 to 50 of 140 results"
         Given I reset reference "caseSearchRequest" value to null
         When I click WA case list pagination link "Previous" and wait for req reference "caseSearchRequest" not null
         Then I validate task search request with reference "caseSearchRequest" has pagination parameters
             | PageNumber | PageSize |
             | 1          | 25       |
-        Then I validate WA case list page results text displayed as "Displaying 1 - 25 out of 140 cases"
+        Then I validate WA case list page results text displayed as "Showing 1 to 25 of 140 results"
         Given I reset reference "caseSearchRequest" value to null
         When I click WA case list pagination link "3" and wait for req reference "caseSearchRequest" not null
         Then I validate task search request with reference "caseSearchRequest" has pagination parameters
             | PageNumber | PageSize |
             | 3          | 25       |
-        Then I validate WA case list page results text displayed as "Displaying 51 - 75 out of 140 cases"
+        Then I validate WA case list page results text displayed as "Showing 51 to 75 of 140 results"
 
-       
+        Then I validate work allocation table "cases" columns sortability
+            | Columnheader | isSortable |
+            | Person       | No         |
+            | Case name    | No        |
+            | Case category | No |
+
         Examples:
             | UserIdentifier  | UserType | Roles                                           |
-            # | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
+            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
             | IAC_Judge_WA_R2 | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker |
-
-
-
-
 
     Scenario Outline: pagnation control display with only 1 page of items
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"

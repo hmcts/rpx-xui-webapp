@@ -22,6 +22,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
        
     });
 
+    When('I navigate to All work sub navigation tab {string}', async function (secondaryNavTab) {
+        await headerPage.clickPrimaryNavigationWithLabel('All work');
+        await allWorkPage.clickSubNavigationTab(secondaryNavTab);
+
+    });
+
     Then('I validate My work sub navigations displayed', async function(datatable){
         const tabshashes = datatable.hashes();
         for(let i = 0; i < tabshashes.length;i++){
@@ -74,6 +80,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     When('I click submit button {string} in task check your changes page', async function(buttonLabel){
         expect(await taskCheckYourChangesPage.submitButton.getText()).to.contains(buttonLabel);
         await taskCheckYourChangesPage.submitButton.click();
+    });
+
+    Then('I see All work cases page displayed', async function(){
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await allWorkPage.isCasesContainerDisplayed()).to.be.true
+        });
     });
 
  

@@ -11,8 +11,8 @@ import { CaseActionIds, CaseService, InfoMessage, InfoMessageType, SortOrder } f
 import { Caseworker } from '../../interfaces/common';
 import { Case, CaseFieldConfig, CaseServiceConfig, InvokedCaseAction } from '../../models/cases';
 import { SortField } from '../../models/common';
-import { PaginationParameter, SearchCaseRequest, SortParameter } from '../../models/dtos';
-import { CaseworkerDataService, InfoMessageCommService, WorkAllocationCaseService } from '../../services';
+import { Location, PaginationParameter, SearchCaseRequest, SortParameter } from '../../models/dtos';
+import { CaseworkerDataService, InfoMessageCommService, LocationDataService, WorkAllocationCaseService } from '../../services';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
@@ -25,6 +25,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
   public caseworkers: Caseworker[];
   public showSpinner$: Observable<boolean>;
   public sortedBy: SortField;
+  public locations$: Observable<Location[]>;
   public pagination: PaginationParameter;
   public isPaginationEnabled$: Observable<boolean>;
   private pCases: Case[];
@@ -37,20 +38,22 @@ export class WorkCaseListWrapperComponent implements OnInit {
     defaultSortFieldName: 'startDate',
     fields: this.fields,
   };
+  private pCasesTotal: number;
 
   /**
    * Take in the Router so we can navigate when actions are clicked.
    */
   constructor(
-    protected ref: ChangeDetectorRef,
-    protected caseService: WorkAllocationCaseService,
-    protected router: Router,
-    protected infoMessageCommService: InfoMessageCommService,
-    protected sessionStorageService: SessionStorageService,
-    protected alertService: AlertService,
-    protected caseworkerService: CaseworkerDataService,
-    protected loadingService: LoadingService,
-    protected featureToggleService: FeatureToggleService
+    protected readonly ref: ChangeDetectorRef,
+    protected readonly caseService: WorkAllocationCaseService,
+    protected readonly router: Router,
+    protected readonly infoMessageCommService: InfoMessageCommService,
+    protected readonly sessionStorageService: SessionStorageService,
+    protected readonly alertService: AlertService,
+    protected readonly caseworkerService: CaseworkerDataService,
+    protected readonly loadingService: LoadingService,
+    protected readonly locationService: LocationDataService,
+    protected readonly featureToggleService: FeatureToggleService
   ) {
     this.isPaginationEnabled$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.waMvpPaginationFeature);
   }
@@ -63,10 +66,10 @@ export class WorkCaseListWrapperComponent implements OnInit {
     this.pCases = value;
   }
 
-  private pCasesTotal: number;
   public get casesTotal(): number {
     return this.pCasesTotal;
   }
+
   public set casesTotal(value: number) {
     this.pCasesTotal = value;
   }
@@ -120,14 +123,14 @@ export class WorkCaseListWrapperComponent implements OnInit {
 
   public setupCaseWorkers(): void {
     this.caseworkerService.getAll().subscribe(caseworkers => {
-      this.caseworkers = [ ...caseworkers ];
+      this.caseworkers = [...caseworkers];
     }, error => {
       handleFatalErrors(error.status, this.router);
     });
     // Try to get the sort order out of the session.
     const stored = this.sessionStorageService.getItem(this.sortSessionKey);
     if (stored) {
-      const { fieldName, order } = JSON.parse(stored);
+      const {fieldName, order} = JSON.parse(stored);
       this.sortedBy = {
         fieldName,
         order: order as SortOrder
@@ -178,19 +181,19 @@ export class WorkCaseListWrapperComponent implements OnInit {
 
   public performSearch(): Observable<any> {
     const searchRequest = this.getSearchCaseRequestPagination();
-    return this.caseService.searchCase({ searchRequest, view: this.view });
+    return this.caseService.searchCase({searchRequest, view: this.view});
   }
 
   public performSearchPagination(): Observable<any> {
     const searchRequest = this.getSearchCaseRequestPagination();
-    return this.caseService.searchCaseWithPagination({ searchRequest, view: this.view });
+    return this.caseService.searchCaseWithPagination({searchRequest, view: this.view});
   }
 
   /**
    * Get a search case request appropriate to the current view,
    * sort order, etc.
    */
-   public getSearchCaseRequestPagination(): SearchCaseRequest {
+  public getSearchCaseRequestPagination(): SearchCaseRequest {
     return {
       search_parameters: [],
       sorting_parameters: [this.getSortParameter()],
@@ -206,7 +209,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
   }
 
   public getPaginationParameter(): PaginationParameter {
-    return { ...this.pagination };
+    return {...this.pagination};
   }
 
   /**
@@ -223,7 +226,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
     if (this.sortedBy.fieldName === fieldName && this.sortedBy.order === SortOrder.ASC) {
       order = SortOrder.DESC;
     }
-    this.sortedBy = { fieldName, order };
+    this.sortedBy = {fieldName, order};
     this.sessionStorageService.setItem(this.sortSessionKey, JSON.stringify(this.sortedBy));
 
     this.loadCases();
@@ -248,28 +251,32 @@ export class WorkCaseListWrapperComponent implements OnInit {
       showAssigneeColumn: caseAction.action.id !== CaseActionIds.ASSIGN
     };
     const actionUrl = `/work/${caseAction.invokedCase.id}/${caseAction.action.id}/${this.specificPage}`;
-    this.router.navigate([actionUrl], { state });
-  }
-
-  // Do the actual load. This is separate as it's called from two methods.
-  private doLoad(): void {
-    this.showSpinner$ = this.loadingService.isLoading;
-    const loadingToken = this.loadingService.register();
-    this.isPaginationEnabled$.pipe(mergeMap(enabled => enabled ? this.performSearchPagination() : this.performSearch())).subscribe(result => {
-        this.loadingService.unregister(loadingToken);
-        this.cases = result.cases;
-        this.casesTotal = result.total_records;
-        this.cases.forEach(item => item.assigneeName = getAssigneeName(this.caseworkers, item.assignee));
-        this.ref.detectChanges();
-      }, error => {
-        this.loadingService.unregister(loadingToken);
-        handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
-    });
+    this.router.navigate([actionUrl], {state});
   }
 
   public onPaginationHandler(pageNumber: number): void {
     this.pagination.page_number = pageNumber;
     this.doLoad();
+  }
+
+  // Do the actual load. This is separate as it's called from two methods.
+  protected doLoad(): void {
+    this.showSpinner$ = this.loadingService.isLoading;
+    const loadingToken = this.loadingService.register();
+    this.isPaginationEnabled$.pipe(mergeMap(enabled => enabled ? this.performSearchPagination() : this.performSearch())).subscribe(result => {
+      this.loadingService.unregister(loadingToken);
+      this.cases = result.cases;
+      this.casesTotal = result.total_records;
+      this.cases.forEach(item => item.assigneeName = getAssigneeName(this.caseworkers, item.assignee));
+      this.ref.detectChanges();
+    }, error => {
+      this.loadingService.unregister(loadingToken);
+      handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
+    });
+  }
+
+  protected setUpLocations(): void {
+    this.locations$ = this.locationService.getLocations();
   }
 
 }

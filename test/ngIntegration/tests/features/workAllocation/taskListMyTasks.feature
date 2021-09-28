@@ -1,4 +1,4 @@
-@ng @wa1
+@ng @wa1 
 Feature: WA Release 1: My Tasks Task list
 
     Background: Mock and browser setup
@@ -99,18 +99,6 @@ Feature: WA Release 1: My Tasks Task list
         Then I see Task list sub navigation tabs
         Then I see My tasks page displayed
         Then I validate My tasks sort column persist in session
-
-
-
-    Scenario:  My Tasks error responses
-        Given I set MOCK My tasks count 150
-        Given I start MockApp
-        Given I navigate to home page
-        When I click on primary navigation header tab "Task list", I see selected tab page displayed
-        Then I see Task list sub navigation tabs
-        Then I see My tasks page displayed
-        Then I validate error responses on My tasks page
-
 
 
 

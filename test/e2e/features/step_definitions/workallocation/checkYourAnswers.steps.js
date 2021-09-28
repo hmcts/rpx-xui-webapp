@@ -12,7 +12,7 @@ const exclusionWorkFlow = require("../../pageObjects/workAllocation/exclusionRol
 const allocateRoleWorkFlow = require("../../pageObjects/workAllocation/workFlow");
 const checkYourAnswersPage = require("../../pageObjects/workAllocation/common/checkYourAnswersPage");
 
-const durtaionDateUtil = require('../../pageObjects/workAllocation/common/durationDateUtil');
+const workAllocationDateUtil = require('../../pageObjects/workAllocation/common/workAllocationDateUtil');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -60,8 +60,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 const startDateByDays = durationString[0];
                 const endDateByDays = durationString[1];
 
-                let startDate = durtaionDateUtil.getDurationDateDisplayString(startDateByDays);
-                let endDate = durtaionDateUtil.getDurationDateDisplayString(endDateByDays);
+                let startDate = workAllocationDateUtil.getDurationDateDisplayString(startDateByDays);
+                let endDate = workAllocationDateUtil.getDurationDateDisplayString(endDateByDays);
 
                 expectedAnswer = `${startDate} to ${endDate}`;
             } else if (question.toLowerCase().includes("added")) {

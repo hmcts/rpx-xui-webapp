@@ -225,7 +225,7 @@ describe('WorkAllocation', () => {
         fixture.destroy();
       });
 
-      it('On Submit error response 500', () => {
+      it(`On Submit error response ${scr.statusCode}`, () => {
         const navigateSpy = spyOn(router, 'navigate');
         const navigateByUrlSpy = spyOn(router, 'navigateByUrl');
 

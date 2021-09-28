@@ -16,7 +16,7 @@ export interface TaskSearchParameter {
 export interface SearchTaskParameter {
   key: string;
   operator: string;
-  values: string[];
+  values: string[] | string;
 }
 
 export interface SearchTaskRequest {

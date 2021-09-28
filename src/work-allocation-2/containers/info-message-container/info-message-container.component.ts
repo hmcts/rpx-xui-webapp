@@ -41,7 +41,7 @@ export class InfoMessageContainerComponent implements OnInit {
         // check whether manage link is open
         // messages should not be cleared when following action via manage link
         if (!this.currentUrl.includes('#manage')) {
-          // remove current messages when not redirected to other page and not part of action
+          // remove current messages when redirected to other page or not part of action
           this.resetMessages();
         }
       }

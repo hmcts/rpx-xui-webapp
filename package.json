@@ -76,7 +76,7 @@
     "@hmcts/media-viewer": "2.7.7",
     "@hmcts/nodejs-healthcheck": "^1.7.0",
     "@hmcts/properties-volume": "^0.0.9",
-    "@hmcts/rpx-xui-common-lib": "1.4.1-find-person",
+    "@hmcts/rpx-xui-common-lib": "v1.4.3-display-case-filters",
     "@hmcts/rpx-xui-node-lib": "2.25.4",
     "@ng-idle/core": "^8.0.0-beta.4",
     "@ng-idle/keepalive": "^8.0.0-beta.4",

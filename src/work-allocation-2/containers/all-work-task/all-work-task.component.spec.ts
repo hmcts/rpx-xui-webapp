@@ -5,8 +5,10 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { of } from 'rxjs';
+import { StoreModule } from '@ngrx/store';
+import { of, throwError } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
+import { reducers } from '../../../app/store';
 import { TaskListComponent } from '..';
 import { TaskFieldConfig } from '../../../work-allocation/models/tasks';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
@@ -22,6 +24,11 @@ import { AllWorkTaskComponent } from './all-work-task.component';
 class WrapperComponent {
   @ViewChild(AllWorkTaskComponent) public appComponentRef: AllWorkTaskComponent;
 }
+
+@Component({
+  template: `<div>Nothing</div>`
+})
+class NothingComponent { }
 
 @Component({
   selector: 'exui-task-field',
@@ -54,7 +61,8 @@ describe('AllWorkTaskComponent', () => {
         ExuiCommonLibModule,
         RouterTestingModule,
         WorkAllocationComponentsModule,
-        PaginationModule
+        PaginationModule,
+        StoreModule.forRoot({...reducers}),
       ],
       declarations: [AllWorkTaskComponent, WrapperComponent, TaskListComponent ],
       providers: [
@@ -123,8 +131,120 @@ describe('AllWorkTaskComponent', () => {
     expect(component.tasks.length).toEqual(2);
   });
 
+  it('should correctly get filter selections', () => {
+    mockSessionStorageService.getItem.and.returnValue(JSON.stringify({
+      id: 'someId',
+      forename: 'fore',
+      surname: 'surName',
+      email: 'email',
+      active: true,
+      roles: ['caseworker-ia-caseofficer'],
+      uid: '1233434'
+    }));
+    const selection = {location: 'exampleLocation', service: 'IA', selectPerson: 'All', person: null, taskType: 'Judicial', priority: 'High' };
+    component.onSelectionChanged(selection);
+    const searchRequest = component.getSearchTaskRequestPagination();
+    expect(searchRequest.search_parameters).toContain({key: 'jurisdiction', operator: 'EQUAL', values: ['IA']});
+    expect(searchRequest.search_parameters).toContain({key: 'location', operator: 'IN', values: ['exampleLocation']});
+    expect(searchRequest.search_parameters).toContain({key: 'taskCategory', operator: 'EQUAL', values: ['All']});
+    expect(searchRequest.search_parameters).toContain({key: 'person', operator: 'IN', values: []});
+    expect(searchRequest.search_parameters).toContain({key: 'taskType', operator: 'EQUAL', values: ['Judicial']});
+    expect(searchRequest.search_parameters).toContain({key: 'priority', operator: 'EQUAL', values: ['High']});
+  })
+
   afterEach(() => {
     fixture.destroy();
+  });
+
+});
+
+
+[
+  { statusCode: 403, routeUrl: '/not-authorised' },
+  { statusCode: 401, routeUrl: '/not-authorised' },
+  { statusCode: 500, routeUrl: '/service-down' },
+  { statusCode: 400, routeUrl: '/service-down' },
+].forEach(scr => {
+  describe('AllWorkTaskComponent negative cases', () => {
+    let component: AllWorkTaskComponent;
+    let wrapper: WrapperComponent;
+    let fixture: ComponentFixture<WrapperComponent>;
+
+    let router: Router;
+    const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTaskWithPagination']);
+    const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
+    const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
+    const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
+    const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
+    const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
+    const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
+    const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations'])
+
+
+    beforeEach(async(() => {
+      mockLocationService.getLocations.and.returnValue(of([{ id: 'loc123', locationName: 'Test', services: [] }]));
+      mockTaskService.searchTaskWithPagination.and.returnValue(throwError({ status: scr.statusCode }));
+      const tasks: Task[] = getMockTasks();
+      // mockTaskService.searchTaskWithPagination.and.returnValue(of(throwError({ status: 500 })));
+      mockCaseworkerService.getAll.and.returnValue(of([]));
+      mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
+      mockFeatureToggleService.isEnabled.and.returnValue(of(false));
+      TestBed.configureTestingModule({
+        imports: [
+          CdkTableModule,
+          ExuiCommonLibModule,
+          RouterTestingModule,
+          WorkAllocationComponentsModule,
+          PaginationModule,
+          StoreModule.forRoot({...reducers}),
+          RouterTestingModule.withRoutes(
+            [
+              { path: 'service-down', component: NothingComponent },
+              { path: 'not-authorised', component: NothingComponent }
+            ]
+          )
+        ],
+        declarations: [AllWorkTaskComponent, WrapperComponent, TaskListComponent, NothingComponent],
+        providers: [
+          { provide: WorkAllocationTaskService, useValue: mockTaskService },
+          { provide: AlertService, useValue: mockAlertService },
+          { provide: SessionStorageService, useValue: mockSessionStorageService },
+          { provide: CaseworkerDataService, useValue: mockCaseworkerService },
+          { provide: WorkAllocationFeatureService, useValue: mockFeatureService },
+          { provide: LoadingService, useValue: mockLoadingService },
+          { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+          { provide: LocationDataService, useValue: mockLocationService }
+        ]
+      }).compileComponents();
+
+
+      fixture = TestBed.createComponent(WrapperComponent);
+      wrapper = fixture.componentInstance;
+      component = wrapper.appComponentRef;
+
+      component.locations = [{ id: 'loc123', locationName: 'Test', services: [] }];
+      router = TestBed.get(Router);
+      fixture.detectChanges();
+
+    }));
+
+
+    it(`onPaginationEvent with error response code ${scr.statusCode}`, () => {
+      const navigateSpy = spyOn(router, 'navigate');
+      component.getSearchTaskRequestPagination();
+      const searchRequest = component.onPaginationEvent(1);
+      const payload = { searchRequest, view: component.view };
+      expect(mockTaskService.searchTaskWithPagination).toHaveBeenCalledWith(payload);
+
+      expect(navigateSpy).toHaveBeenCalledWith([scr.routeUrl]);
+
+    });
+
+
+    afterEach(() => {
+      fixture.destroy();
+    });
+
   });
 
 });

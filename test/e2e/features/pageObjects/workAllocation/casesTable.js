@@ -12,7 +12,7 @@ const WATable = require("./waTable");
 class WACaseListTable extends WATable {
 
     constructor() {
-        super('exui-my-cases');
+        super('exui-work-case-list');
 
     }
 

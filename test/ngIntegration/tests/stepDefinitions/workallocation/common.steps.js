@@ -29,6 +29,7 @@ const taskActionPage = require('../../../../e2e/features/pageObjects/workAllocat
 const TaskListTable = require('../../../../e2e/features/pageObjects/workAllocation/taskListTable');
 const CaseListTable = require('../../../../e2e/features/pageObjects/workAllocation/casesTable');
 
+const workAllocationDateUtil = require('../../../../e2e/features/pageObjects/workAllocation/common/workAllocationDateUtil');
 
 const ArrayUtil = require("../../../../e2e/utils/ArrayUtil");
 
@@ -50,6 +51,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             await taskListTable.clickPaginationLink(paginationLinktext);
             await BrowserWaits.waitForConditionAsync(async () => {
                 const caseCatColVal = await taskListTable.getColumnValueForTaskAt('Case category', 1);
+                CucumberReporter.AddMessage('OnPagination page refresh dinee: ' + !caseCatColVal.includes('Sort test'));
                 return !caseCatColVal.includes('Sort test');
             });
             await BrowserWaits.waitForConditionAsync(async () => {
@@ -161,34 +163,53 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I validate task table values displayed', async function(datatable){
+        await validateTaskTableValues(datatable);
+    });
+
+    Then('If current user {string} is {string}, I validate task table values displayed', async function (currentUser,validationForUserType ,datatable) {
+        if (currentUser === validationForUserType){
+            await validateTaskTableValues(datatable);
+        }
+    });
+
+    async function validateTaskTableValues(datatable){
         const tableRowHashes = datatable.hashes();
-        const softAssert= new SoftAssert();
-        for (let i = 0; i < tableRowHashes.length; i++){
+        const softAssert = new SoftAssert();
+        for (let i = 0; i < tableRowHashes.length; i++) {
             const expectRowHash = tableRowHashes[i];
             const rowNum = parseInt(expectRowHash["row"]);
 
             const hashkeys = Object.keys(expectRowHash);
 
-            for (let j = 0; j < hashkeys.length; j++){
+            for (let j = 0; j < hashkeys.length; j++) {
                 const columnName = hashkeys[j];
-                const expectedValue = expectRowHash[columnName];
+                let expectedValue = expectRowHash[columnName];
+
+                if (columnName.includes('Due date')){
+                    expectedValue = workAllocationDateUtil.getTaskDueDateDisplayString(expectedValue);
+                }
+
+                if (columnName.includes('Task created')) {
+                    expectedValue = workAllocationDateUtil.getTaskCeateDateDisplayString(expectedValue);
+                }
 
                 let actualColumnValue = null;
-                if (columnName === "row"){
+                if (columnName === "row") {
                     continue;
-                }else{
+                } else {
                     actualColumnValue = await taskListTable.getColumnValueForTaskAt(columnName, rowNum)
                 }
 
-                softAssert.setScenario(`At row ${rowNum} validation of column ${columnName}`);
-                await softAssert.assert(async () => expect(actualColumnValue).to.includes(expectedValue));
+                const assertionMessage = `At row ${rowNum} validation of column ${columnName}`;
+                softAssert.setScenario(assertionMessage);
+                await softAssert.assert(async () => expect(actualColumnValue, assertionMessage).to.includes(expectedValue));
 
             }
 
-            
+
         }
         softAssert.finally();
-    });
+    } 
 
     function getLocationsResponse(datatable){
         const locationHashes = datatable.hashes();

@@ -1,4 +1,4 @@
-@ng
+@ng 
 Feature: WA Release 2: Exclusions
     Background: Setup
         Given I set MOCK case details with reference "caseDetails"
@@ -32,7 +32,7 @@ Feature: WA Release 2: Exclusions
         Then I see case details tab label "Roles and access" is displayed is "true"
         When I click tab with label "Roles and access" in case details page
         Then I see Roles and access page is displayed
-        When I click add link for role category  "Exclusions" in case roles and access page
+        When I click add link for role category "Exclusions" in case roles and access page
 
         Then I see Add an exclusion work flow page "Choose who the exclusion is for" is displayed
         When I select Choose who the exclusion is for option "Exclude another person" in add exclusion work flow
@@ -82,7 +82,7 @@ Feature: WA Release 2: Exclusions
         Then I see case details tab label "Roles and access" is displayed is "true"
         When I click tab with label "Roles and access" in case details page
         Then I see Roles and access page is displayed
-        When I click add link for role category  "Exclusions" in case roles and access page
+        When I click add link for role category "Exclusions" in case roles and access page
 
         Then I see Add an exclusion work flow page "Choose who the exclusion is for" is displayed
         When I select Choose who the exclusion is for option "Exclude me" in add exclusion work flow
@@ -99,10 +99,8 @@ Feature: WA Release 2: Exclusions
             | Describe the exclusion   | <ExclusionDescription> |
 
         When I click button with label "Confirm exclusion" in add exclusion work Check your answers page
-        Then I see case details page with message banner "You've added an exclusion."
-            | message                              |
-            | You've excluded yourself from a case |
-
+        Then I see case details page with message banner "You've excluded yourself from a case."
+           
         Examples:
             | Useridentifier  | Roles                                           | ExclusionDescription |
             # | IAC_CaseOfficer_R2 | caseworker-ia-caseofficer,caseworker-ia-admofficer | Caseworker excluding me |

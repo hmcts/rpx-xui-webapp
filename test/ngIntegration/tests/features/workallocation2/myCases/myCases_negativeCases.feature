@@ -6,7 +6,7 @@ Feature: WA Release 2: My cases - negative scenarios
 
 
     Scenario Outline:  My cases error with response code <ResponseCode>
-        Given I set MOCK with user "<UserIdentifier>" and roles "<UserRoles>"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<UserRoles>" with reference "userDetails"
         Given I set MOCK api method "post" endpoint "/workallocation2/caseWithPagination/" with error response code <ResponseCode>
         Given I start MockApp
         Given I navigate to home page

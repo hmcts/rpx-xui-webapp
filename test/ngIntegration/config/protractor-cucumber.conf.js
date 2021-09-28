@@ -14,7 +14,7 @@ const customReporter = require('../../e2e/support/reportLogger');
 const isParallelExecution = argv.parallel ? argv.parallel=== "true" : true;
 
 const chromeOptArgs = [ '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'];
-if (!argv.head.includes('true') ){
+if (!argv.head ){
     chromeOptArgs.push('--headless');
 }
 const jenkinsConfig = [

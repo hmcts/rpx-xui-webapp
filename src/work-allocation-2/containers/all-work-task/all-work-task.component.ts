@@ -1,12 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, } from '@angular/core';
+import { Person } from '@hmcts/rpx-xui-common-lib';
+import { Observable } from 'rxjs';
+
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { SortOrder } from '../../enums';
-import { Caseworker, Location } from '../../interfaces/common';
+import { Location } from '../../interfaces/common';
 import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter, SearchTaskRequest } from '../../models/dtos';
-import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
 @Component({
@@ -15,8 +17,20 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
     styleUrls: ['all-work-task.component.scss']
 })
 export class AllWorkTaskComponent extends TaskListWrapperComponent {
-  private selectedCaseworker: Caseworker;
-  private selectedLocation: Location;
+  private static ALL_TASKS = 'All';
+  private static AVAILABLE_TASKS = 'None / Available tasks';
+  private selectedLocation: Location = {
+    id: '**ALL LOCATIONS**',
+    locationName: '',
+    services: [],
+  };
+  private selectedJurisdiction: any = 'Immigration and Asylum';
+  private selectedTaskCategory: string = 'All';
+  private selectedPerson: string = '';
+  private selectedTaskType: string = 'All';
+  private selectedPriority: string = 'All';
+  public locations$: Observable<Location[]>;
+  public locations: Location[];
 
   public sortedBy: SortField = {
     fieldName: '',
@@ -47,12 +61,9 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     return this.isCurrentUserJudicial() ? ConfigConstants.AllWorkTasksForJudicial : ConfigConstants.AllWorkTasksForLegalOps;
   }
 
-  public loadCaseWorkersAndLocations() {
-    this.locationService.getLocations().subscribe(locations => {
-      this.locations = [...locations];
-    }, error => {
-      handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
-    });
+  public loadCaseWorkersAndLocations(): void {
+    this.locations$ = this.locationService.getLocations();
+    this.locations$.subscribe(locations => this.locations = locations);
   }
 
   public getSearchTaskRequestPagination(): SearchTaskRequest {
@@ -62,8 +73,12 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
       const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
       return {
         search_parameters: [
-        this.getLocationParameter(),
-        this.getCaseworkerParameter()
+          {key: 'jurisdiction', operator: 'EQUAL', values: [this.selectedJurisdiction]},
+          this.getLocationParameter(),
+          {key: 'taskCategory', operator: 'EQUAL', values: [this.selectedTaskCategory]},
+          this.getPersonParameter(),
+          {key: 'taskType', operator: 'EQUAL', values: [this.selectedTaskType]},
+          {key: 'priority', operator: 'EQUAL', values: [this.selectedPriority]},
         ],
         sorting_parameters: [this.getSortParameter()],
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
@@ -82,20 +97,15 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     return { key: 'location', operator: 'IN', values };
   }
 
-  private getCaseworkerParameter() {
-    let values: string[];
-    let key = 'user';
-    if (this.selectedCaseworker && this.selectedCaseworker !== FilterConstants.Options.Caseworkers.ALL) {
-      if (this.selectedCaseworker === FilterConstants.Options.Caseworkers.UNASSIGNED) {
-        key = 'state';
-        values = ['unassigned'];
+  private getPersonParameter() {
+    if (this.selectedTaskCategory && this.selectedTaskCategory !== AllWorkTaskComponent.ALL_TASKS) {
+      if (this.selectedTaskCategory === AllWorkTaskComponent.AVAILABLE_TASKS) {
+        return { key: 'person', operator: 'IN', values: ['unassigned'] }
       } else {
-        values = [this.selectedCaseworker.idamId];
+        return { key: 'person', operator: 'IN', values: [this.selectedPerson]}
       }
-    } else {
-      values = [];
     }
-    return { key, operator: 'IN', values };
+    return { key: 'person', operator: 'IN', values: [] };
   }
 
   /**
@@ -105,9 +115,13 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     this.onPaginationHandler(pageNumber);
   }
 
-  public onSelectionChanged(selection: { location: Location, caseworker: Caseworker }): void {
-    this.selectedLocation = selection.location;
-    this.selectedCaseworker = selection.caseworker;
+  public onSelectionChanged(selection: {location: string, service: string, selectPerson: string, person: Person, taskType: string, priority: string }): void {
+    this.selectedLocation.id = selection.location;
+    this.selectedJurisdiction = selection.service;
+    this.selectedTaskCategory = selection.selectPerson;
+    this.selectedPerson = selection.person ? selection.person.id : null;
+    this.selectedTaskType = selection.taskType;
+    this.selectedPriority = selection.priority && !this.isCurrentUserJudicial() ? selection.priority : '';
     this.loadTasks();
   }
 }

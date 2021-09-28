@@ -1,13 +1,15 @@
 import MockAdapter from 'axios-mock-adapter';
 import { HttpMockAdapter } from '../common/httpMockAdapter';
+import { filterAllWorkCases } from './caseService';
 import { CASEWORKER_ALL_CASES, CASEWORKER_MY_CASES, JUDICIAL_ALL_CASES, JUDICIAL_MY_CASES } from './constants/mock.data';
+import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 
 export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
 
   const judicialMyCaseUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/myCases\?view=judicial/;
   // tslint:disable-next-line:max-line-length
-  const caseworkerMyCaseUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/myCases\?view=caseworker/;
+  const caseworkerMyCaseUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/myCases\?view=legalops/;
 
   const judicialAllCaseUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/allWorkCases\?view=judicial/;
   // tslint:disable-next-line:max-line-length
@@ -36,7 +38,7 @@ export const init = () => {
     const body = JSON.parse(config.data);
     const paginationConfig = body.pagination_parameters;
     const sortingConfig = body.sorting_parameters;
-    const caseList = sort(CASEWORKER_MY_CASES.cases,
+    const caseList = sort(CASEWORKER_ALL_CASES.cases,
        getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
@@ -50,15 +52,18 @@ export const init = () => {
   mock.onPost(judicialAllCaseUrl).reply(config => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
+    console.log(JSON.stringify(body, null, 2));
     const paginationConfig = body.pagination_parameters;
     const sortingConfig = body.sorting_parameters;
-    const caseList = sort(JUDICIAL_ALL_CASES.cases,
+    const searchParameters: SearchTaskParameter[] = body.search_parameters as SearchTaskParameter[];
+    const filteredList = filterAllWorkCases(JUDICIAL_ALL_CASES.cases, searchParameters);
+    const caseList = sort(filteredList,
       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
         cases: paginate(caseList, paginationConfig.page_number, paginationConfig.page_size),
-        total_records: JUDICIAL_ALL_CASES.cases.length,
+        total_records: filteredList.length,
       },
     ];
   });
@@ -68,13 +73,15 @@ export const init = () => {
     const body = JSON.parse(config.data);
     const paginationConfig = body.pagination_parameters;
     const sortingConfig = body.sorting_parameters;
-    const caseList = sort(CASEWORKER_ALL_CASES.cases,
+    const filteringConfig = body.search_parameters;
+    const filteredList = filterAllWorkCases(CASEWORKER_ALL_CASES.cases, filteringConfig);
+    const caseList = sort(filteredList,
       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
         cases: paginate(caseList, paginationConfig.page_number, paginationConfig.page_size),
-        total_records: CASEWORKER_ALL_CASES.cases.length,
+        total_records: filteredList.length,
       },
     ];
   });

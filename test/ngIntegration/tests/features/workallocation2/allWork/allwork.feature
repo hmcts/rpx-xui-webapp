@@ -4,9 +4,9 @@ Feature: WA Release 2: All work
     Background: Mock and browser setup
         Given I init MockApp
 
-@ignore
+    @ignore
     Scenario Outline:  All work Tasks, colums and column links for "<UserType>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
         Given I set MOCK tasks with permissions for view "All work" and assigned state ""
             | Permissions | Count |
             | Manage      | 10    |
@@ -30,15 +30,16 @@ Feature: WA Release 2: All work
         Given I start MockApp
         Given I navigate to home page
         When I click on primary navigation header tab "All work", I see selected tab page displayed
-
-        Then I validate task list table columns displayed
-            | ColumnHeader  |
-            | Case name     |
-            | Case category |
-            | Location      |
-            | Task          |
-            | Date          |
-            | Person        |
+        Then I validate task list table columns displayed for user "<UserType>"
+            | ColumnHeader  | Caseworker | Judge |
+            | Case name     | Yes        | Yes   |
+            | Case category | Yes        | Yes   |
+            | Location      | Yes        | Yes   |
+            | Person        | Yes        | Yes   |
+            | Task          | Yes        | Yes   |
+            | Task created  | No         | Yes   |
+            | Due date      | Yes        | No    |
+            | Priority      | Yes        | No    |
 
         Then I validate task table values displayed
             | row | Case name | Case category        | Location        | Task             | Date | Person |
@@ -58,10 +59,10 @@ Feature: WA Release 2: All work
         Examples:
             | UserIdentifier     | UserType   | Roles                                              |
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            # | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
     Scenario Outline: Tasks pagnation control display with only 1 page of items
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
         Given I set MOCK tasks with permissions for view "All work" and assigned state ""
             | Permissions | Count |
             | Manage      | 10    |
@@ -81,7 +82,7 @@ Feature: WA Release 2: All work
             | IAC_Judge_WA_R2 | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker |
 
     Scenario:  Tasks sort column persist in session with Caseworker user
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer "
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer " with reference "userDetails"
         Given I set MOCK tasks with permissions for view "All work" and assigned state ""
             | Permissions | Count |
             | Manage      | 100   |
@@ -94,13 +95,13 @@ Feature: WA Release 2: All work
 
         Then I validate tasks count in page 25
         Then I validate task table pagination controls, is displayed state is "true"
-        Then I validate task list page results text displayed as "Displaying 1 - 25 out of 140 tasks"
+        Then I validate task list page results text displayed as "Showing 1 to 25 of 140 results"
 
         When I click task list table header column "Case name", I validate task list table sorted with column "Case name" in order "asc"
         When I click on primary navigation header tab "Case list", I see selected tab page displayed
         Then I see case list page displayed
         When I click on primary navigation header tab "All work", I see selected tab page displayed
         Then I validate tasks count in page 25
-        Then I validate task list page results text displayed as "Displaying 1 - 25 out of 140 tasks"
+        Then I validate task list page results text displayed as "Showing 1 to 25 of 140 results"
         Then I validate task list table sorted with column "Case name" in order "asc"
 

@@ -59,6 +59,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Given('I set MOCK request {string} intercept with reference {string}', async function(url,reference){
         global.scenarioData[reference] = null;
         MockApp.addIntercept(url,(req,res,next) => {
+            CucumberReporter.AddMessage(`${url} request body`)
+            CucumberReporter.AddJson(req.body)
             global.scenarioData[reference] = req.body;
             next();
         })
@@ -71,6 +73,20 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             res.send = function (body) {
                 CucumberReporter.AddMessage('Intercept response or api ' + url);
                 CucumberReporter.AddJson(body)
+                send.call(this, body);
+            }
+            next();
+        })
+    });
+
+    Given('I set MOCK request {string} intercept, hold response with reference {string}', async function (url,reference) {
+        MockApp.addIntercept(url, (req, res, next) => {
+            CucumberReporter.AddJson(req.body)
+            let send = res.send;
+            res.send = function (body) {
+                CucumberReporter.AddMessage('Intercept response or api ' + url);
+                CucumberReporter.AddJson(body)
+                global.scenarioData[reference] = body;
                 send.call(this, body);
             }
             next();

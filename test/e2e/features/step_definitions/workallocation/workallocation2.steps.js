@@ -22,6 +22,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
        
     });
 
+    When('I navigate to All work sub navigation tab {string}', async function (secondaryNavTab) {
+        await headerPage.clickPrimaryNavigationWithLabel('All work');
+        await allWorkPage.clickSubNavigationTab(secondaryNavTab);
+
+    });
+
     Then('I validate My work sub navigations displayed', async function(datatable){
         const tabshashes = datatable.hashes();
         for(let i = 0; i < tabshashes.length;i++){
@@ -76,20 +82,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await taskCheckYourChangesPage.submitButton.click();
     });
 
-    Then('I validate task details displayed in check your changes page', async function(taskDetailsDatatable){
-        const taskDetails = taskDetailsDatatable.hashes()[0];
-        const softAssert = new SoftAssert();
-
-        const taskColumns = Object.keys(taskDetails);
-        for (let i = 0; i < taskColumns.length; i++){
-            let columnName = taskColumns[i];
-            let expectColValue = taskDetails[columnName]
-            softAssert.setScenario(`Validate column ${columnName} value is ${expectColValue}`);
-            const columnActalValue = await taskCheckYourChangesPage.getColumnValue(columnName);
-            await softAssert.assert(async () => expect(columnActalValue).to.contains(expectColValue));
-        }
-        softAssert.finally();
-        
+    Then('I see All work cases page displayed', async function(){
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await allWorkPage.isCasesContainerDisplayed()).to.be.true
+        });
     });
+
+ 
 
 });

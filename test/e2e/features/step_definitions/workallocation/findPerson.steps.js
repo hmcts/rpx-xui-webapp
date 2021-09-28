@@ -18,20 +18,19 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
  
 
 
-    Then('In workflow, I see find person page displayed with caption {string}', async function (findPersonCaption) {
-        expect(global.scenarioData['workflow'], 'Workflow is undefined, add validation of work flow page step before actions on workflow page ').to.be.not.equal(undefined)
-        const workFlowPage = workflowUtil.getWorlflowPageObject(global.scenarioData['workflow']);
+    Then('In workflow {string}, I see find person page displayed with caption {string}', async function (workflow,findPersonCaption) {
+        const workFlowPage = workflowUtil.getWorlflowPageObject(workflow);
         expect(await workFlowPage.findPersonPage.amOnPage()).to.be.true;
         expect(await workFlowPage.findPersonPage.getHeaderCaption()).to.contains(findPersonCaption);
     });
 
-    When('In workflow, I enter search term {string} in find person input text', async function (searchterm) {
-        const workFlowPage = workflowUtil.getWorlflowPageObject(global.scenarioData['workflow']);
+    When('In workflow {string}, I enter search term {string} in find person input text', async function (workflow,searchterm) {
+        const workFlowPage = workflowUtil.getWorlflowPageObject(workflow);
         await workFlowPage.findPersonPage.inputSearchTerm(searchterm);
     });
 
-    Then('In workflow, I see following options available in find person results', async function (findPersonResultsDatatable) {
-        const workFlowPage = workflowUtil.getWorlflowPageObject(global.scenarioData['workflow']);
+    Then('In workflow {string}, I see following options available in find person results', async function (workflow,findPersonResultsDatatable) {
+        const workFlowPage = workflowUtil.getWorlflowPageObject(workflow);
 
         await workFlowPage.findPersonPage.isSearchResultSelectionContainerDisplayed()
 
@@ -45,13 +44,13 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     });
 
-    When('In workflow, I select find person result {string}', async function (person) {
-        const workFlowPage = workflowUtil.getWorlflowPageObject(global.scenarioData['workflow']);
+    When('In workflow {string}, I select find person result {string}', async function (workflow,person) {
+        const workFlowPage = workflowUtil.getWorlflowPageObject(workflow);
         await workFlowPage.findPersonPage.selectPerson(person);
     });
 
-    Then('In workflow, I see find person is selected with {string}', async function (person) {
-        const workFlowPage = workflowUtil.getWorlflowPageObject(global.scenarioData['workflow']);
+    Then('In workflow {string}, I see find person is selected with {string}', async function (workflow,person) {
+        const workFlowPage = workflowUtil.getWorlflowPageObject(workflow);
         expect(await workFlowPage.findPersonPage.isPersonSelected(person), `${person} is not selected`).to.be.true;
     });
 

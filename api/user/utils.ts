@@ -13,3 +13,17 @@ export function isCurrentUserCaseAllocator(currentUserRoleAssignment: RoleAssign
    && (!currentJurisdiction || currentUserRoleAssignment.attributes.jurisdiction === currentJurisdiction)
    && (!currentLocation || currentUserRoleAssignment.attributes.primaryLocation === currentLocation);
 }
+
+// Returns the roles
+// Of Type ORGANISATION
+export function getOrganisationRoles(roleAssignments: RoleAssignment[]): string[] {
+   const roles = [];
+   if (roleAssignments) {
+      roleAssignments.forEach(roleAssignment => {
+         if (!roles.includes(roleAssignment.roleName) && roleAssignment.roleType === ORGANISATION_ROLE_TYPE) {
+             roles.push(roleAssignment.roleName);
+           }
+       });
+   }
+   return roles;
+ }

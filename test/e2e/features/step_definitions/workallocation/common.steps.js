@@ -22,6 +22,7 @@ const taskCheckYourChangesPage = require('../../pageObjects/workAllocation/taskC
 const workflowUtil = require('../../pageObjects/common/workflowUtil');
 
 const taskListPage = require('../../../../e2e/features/pageObjects/workAllocation/taskListPage');
+const { checkYourAnswersHeading } = require('../../../../ngIntegration/tests/pageObjects/ccdCaseEditPages');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
     const taskListTable = new TaskListTable();
@@ -100,6 +101,38 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         expect(actualHeadeColumns.length, `Actual Cols ||${actualHeadeColumns}|| !== Expected Cols ||${expectdColHeaders}|| `).to.equal(expectdColHeaders.length);
         expect(actualHeadeColumns, `Actual Cols ||${actualHeadeColumns}|| !== Expected Cols ||${expectdColHeaders}|| `).to.include.members(expectdColHeaders);
 
+    });
+
+    Then('I validate task list table columns displayed for user {string}', async function (userType, datatable) {
+        const columnHeadersHash = datatable.hashes();
+        
+        const actualHeadeColumns = await taskListTable.getColumnHeaderNames();
+        for (const headerHash of columnHeadersHash ){
+            const columnHeader = headerHash.ColumnHeader;
+            if (headerHash[userType].toLowerCase().includes('yes') || headerHash[userType].toLowerCase().includes('true')){
+                expect(actualHeadeColumns).to.include(columnHeader);
+
+            }else{
+                expect(actualHeadeColumns).to.not.include(columnHeader);
+
+            }
+        }
+    });
+
+    Then('I validate check your changes table columns displayed for user {string}', async function (userType, datatable) {
+        const columnHeadersHash = datatable.hashes();
+
+        const actualHeadeColumns = await taskCheckYourChangesPage.checkYourChangesTable.getHeaders();
+        for (const headerHash of columnHeadersHash) {
+            const columnHeader = headerHash.ColumnHeader;
+            if (headerHash[userType].toLowerCase().includes('yes') || headerHash[userType].toLowerCase().includes('true')) {
+                expect(actualHeadeColumns).to.include(columnHeader);
+
+            } else {
+                expect(actualHeadeColumns).to.not.include(columnHeader);
+
+            }
+        }
     });
 
     Then('I validate task list columns are links', async function(datatable){
@@ -242,7 +275,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         } else if (page.includes("all work")) {
             actualmessages = await allWorkPage.taskInfoMessageBanner.getBannerMessagesDisplayed();
         } else if (page.includes("case details")) {
-            actualmessages = await caseDetailsPage.taskInfoMessageBanner.getBannerMessagesDisplayed();
+            actualmessages = await caseDetailsPage.messageBanner.getBannerMessagesDisplayed();
         } else if (page.includes("case list")) {
             actualmessages = await caseListPage.taskInfoMessageBanner.getBannerMessagesDisplayed();
         }  else {
@@ -258,21 +291,56 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     });
 
+    Then('If user type {string} is {string}, I validate task details displayed in task action page', async function (currentUserType,stepForUserType,taskDetailsDatatable){
+        if (currentUserType === stepForUserType){
+            const taskDetails = taskDetailsDatatable.hashes()[0];
+
+            validateTaskDetailsDisplayed(taskDetails, taskActionPage);
+        } else {
+            reportLogger.AddMessage(`"Step is not for scenario user ${currentUserType}" .Step is ignored`);
+        }
+    });
+
     Then('I validate task details displayed in task action page', async function (taskDetailsDatatable) {
         const taskDetails = taskDetailsDatatable.hashes()[0];
-        const softAssert = new SoftAssert();
 
+        validateTaskDetailsDisplayed(taskDetails,taskActionPage);
+    });
+
+    Then('I validate task details displayed in task action page matching reference {string}', async function (reference) {
+        const taskDetails = global.scenarioData[reference];;
+
+        validateTaskDetailsDisplayed(taskDetails, taskActionPage);
+    });
+
+    Then('I validate task details displayed in check your changes page', async function (taskDetailsDatatable) {
+        const taskDetails = taskDetailsDatatable.hashes()[0];
+        
+        validateTaskDetailsDisplayed(taskDetails, taskCheckYourChangesPage);
+
+    });
+
+    Then('I validate task details displayed in check your changes page matching reference {string}', async function (reference) {
+        const taskDetails = global.scenarioData[reference];
+
+        validateTaskDetailsDisplayed(taskDetails, taskCheckYourChangesPage);
+
+    });
+
+    async function validateTaskDetailsDisplayed(taskDetails, actionPage){
+        const softAssert = new SoftAssert();
+        reportLogger.AddMessage("Task details:");
+        reportLogger.AddJson(taskDetails);
         const taskColumns = Object.keys(taskDetails);
         for (let i = 0; i < taskColumns.length; i++) {
             let columnName = taskColumns[i];
             let expectColValue = taskDetails[columnName]
             softAssert.setScenario(`Validate column ${columnName} value is ${expectColValue}`);
-            const columnActalValue = await taskActionPage.getColumnValue(columnName);
+            const columnActalValue = await actionPage.getColumnValue(columnName);
             await softAssert.assert(async () => expect(columnActalValue).to.contains(expectColValue));
         }
         softAssert.finally();
-
-    });
+    }
 
     Then('I see {string} task action page', async function(actionHeader){
         expect(await taskActionPage.getPageHeader()).to.contain(actionHeader);
@@ -291,14 +359,14 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await taskActionPage.clickCancelLink();
     });
 
-    When('In workflow, I click cancel link', async function(){
-        const workFlowPage = workflowUtil.getWorlflowPageObject(global.scenarioData['workflow']);
+    When('In workflow {string}, I click cancel link', async function (workflow){
+        const workFlowPage = workflowUtil.getWorlflowPageObject(workflow);
         expect(workFlowPage,'workFlowPage pagee is null. test issue, include step Then I am in workflow page "xxx" ').to.be.not.null;
         await workFlowPage.workFlowContainer.clickCancelLink();
     });
 
-    When('In workflow, I click continue', async function () {
-        const workFlowPage = workflowUtil.getWorlflowPageObject(global.scenarioData['workflow']);
+    When('In workflow {string}, I click continue', async function (workflow) {
+        const workFlowPage = workflowUtil.getWorlflowPageObject(workflow);
         expect(workFlowPage, 'workFlowPage pagee is null. test issue, include step Then I am in workflow page "xxx" ').to.be.not.null;
         await workFlowPage.workFlowContainer.clickContinue();
     });
@@ -334,5 +402,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I validate WA cases table footer message is {string}', async function (message) {
         expect(await waCaseListTable.getTableFooterMessage()).to.include(message);
     });
+
 
 });

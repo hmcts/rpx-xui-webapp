@@ -8,7 +8,7 @@ class CaseDetailsPage{
     constructor(){
         this.caseDetailsContainer = $("exui-case-details-home");
         this.tabsContainer = $("mat-tab-header .mat-tab-label-container");
-
+        
         this.messageBanner = new MessageBanner();
     }
 

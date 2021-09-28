@@ -127,11 +127,14 @@ class BrowserWaits{
     }
        
     
-    async retryWithActionCallback( callback,actionMessage) {
+    async retryWithActionCallback( callback,actionMessage,retryTryAttempts) {
         let retryCounter = 0;
         let isSuccess = false;
         let error = null;
-        while (retryCounter < 3) {
+        while (retryCounter <= 3) {
+            if (retryCounter > retryTryAttempts){
+                break;
+            }
             await this.waitForSeconds(retryCounter);
             try {
                 const retVal = await callback();

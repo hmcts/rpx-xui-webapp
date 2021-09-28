@@ -115,9 +115,9 @@ defineSupportCode(({ Before,After }) => {
                         browserErrorLogs.push(browserLog[browserLogCounter]);
                     }
                 }
+                CucumberReportLog.AddJson(browserErrorLogs);
             }else{
                 browser.manage().logs().get('browser');
-                CucumberReportLog.AddJson(browserErrorLogs);
                 if (global.scenarioData['featureToggles']){
                     //CucumberReportLog.AddJson(global.scenarioData['featureToggles'])
                 }

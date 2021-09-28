@@ -90,14 +90,14 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
 
   private setDurationOfRole(allocateRoleStateData: AllocateRoleStateData): void {
     let durationOfRole;
-    const startDate = moment.parseZone(allocateRoleStateData.period.startDate).format('DD MMMM YYYY');
+    const startDate = moment.parseZone(allocateRoleStateData.period.startDate).format('D MMMM YYYY');
     let endDate;
     if (allocateRoleStateData.durationOfRole === DurationOfRole.INDEFINITE) {
       durationOfRole = DurationOfRole.INDEFINITE;
     } else if (allocateRoleStateData.durationOfRole === DurationOfRole.SEVEN_DAYS) {
       durationOfRole = DurationOfRole.SEVEN_DAYS;
     } else {
-      endDate = moment.parseZone(allocateRoleStateData.period.endDate).format('DD MMMM YYYY');
+      endDate = moment.parseZone(allocateRoleStateData.period.endDate).format('D MMMM YYYY');
       durationOfRole = `${startDate} to ${endDate}`;
     }
     this.answers.push({label: AnswerLabelText.DurationOfRole, value: durationOfRole, action: AllocateRoleState.CHOOSE_DURATION});

@@ -160,7 +160,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
 
-    Then('I validate {string} tasks columns sorting with taskRequest url {string} on page {int}', async function (waPage,taskRequesturl,onPage ,datatable) {
+    Then('I validate {string} tasks columns sorting with taskRequest url {string} on page {int} for user type {string}', async function (waPage,taskRequesturl,onPage ,userType,datatable) {
         const softAssert = new SoftAssert();
         const datatableHashes = datatable.hashes();
         const pageUndertest = waPage.toLowerCase() === "my work" ? myWorkPage : null;
@@ -177,8 +177,13 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         for (let i = 0; i < datatableHashes.length; i++) {
             
             sortColumnInRequestParam = null;
-            const headerName = datatableHashes[i]['Header'];
+            const headerName = datatableHashes[i]['ColumnHeader'];
             const sortColumnId = datatableHashes[i]['FieldId'];
+            const forUserType = datatableHashes[i][userType];
+
+            if (!forUserType.toLowerCase().includes('true') || !forUserType.toLowerCase().includes('yes')){
+                continue;
+            }
 
             const headerElement = await pageUndertest.getHeaderElementWithName(headerName);
             // const headerColId = await headerElement.getAttribute("id");

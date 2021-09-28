@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { PaginationParameter } from '../../models/dtos';
@@ -7,15 +7,14 @@ import { ListConstants } from '../../components/constants';
 import { SortOrder } from '../../enums';
 import { FieldConfig, SortField } from '../../models/common';
 import { InvokedTaskAction, Task, TaskAction, TaskServiceConfig } from '../../models/tasks';
+import { isDefined } from '@angular/compiler/src/util';
 
 @Component({
   selector: 'exui-task-list',
   templateUrl: './task-list.component.html',
   styleUrls: ['task-list.component.scss']
 })
-export class TaskListComponent implements OnChanges, OnInit {
-    public paginationEnabled: boolean = true;
-
+export class TaskListComponent implements OnChanges {
   /**
    * These are the tasks & fields as returned from the WA Api.
    */
@@ -51,10 +50,6 @@ export class TaskListComponent implements OnChanges, OnInit {
   private selectedTask: Task;
 
   constructor(private readonly router: Router) {
-  }
-
-  public ngOnInit(): void {
-    this.paginationEnabled = this.pagination && this.enablePagination;
   }
 
   public get showResetSortButton(): boolean {
@@ -204,6 +199,13 @@ export class TaskListComponent implements OnChanges, OnInit {
 
   public getLastResult(): number {
     return ((this.getCurrentPageIndex() * this.pagination.page_size) + this.getCurrentTaskCount());
+  }
+
+  public isPaginationEnabled(): boolean {
+    return this.pagination &&
+           this.enablePagination && 
+           isDefined(this.tasks) && 
+           this.tasks.length > 0;
   }
 
   private setDefaultSort(): void {

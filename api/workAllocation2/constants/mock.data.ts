@@ -3399,6 +3399,7 @@ export const JUDICIAL_AVAILABLE_TASKS_COPY = {
       case_name: 'xWilliam Priest',
       warnings: true,
       permissions: ['Read', 'Manage'],
+      task_type: 'Judicial'
     },
     {
       assignee: null,

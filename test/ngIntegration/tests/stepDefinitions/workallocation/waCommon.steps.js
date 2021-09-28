@@ -119,14 +119,14 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     });
 
-    Given('I set MOCK user with reference {string} locationsInfo', async function(userDetailsRef, locatiosInfo){
+    Given('I set MOCK user with reference {string} roleAssignmentInfo', async function(userDetailsRef, locatiosInfo){
         const userDetails = global.scenarioData[userDetailsRef];
         const locationInfos = [];
         for (let loc of locatiosInfo.hashes()){
             loc.isCaseAllocator = loc.isCaseAllocator === "true"
             locationInfos.push(loc);
         }
-        userDetails.locationInfo = locationInfos;
+        userDetails.roleAssignmentInfo = locationInfos;
     });
 
 

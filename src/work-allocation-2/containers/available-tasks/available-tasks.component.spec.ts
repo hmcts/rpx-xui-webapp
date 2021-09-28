@@ -320,11 +320,11 @@ describe('AvailableTasksComponent', () => {
       { statusCode: 403, routeUrl: '/not-authorised' , action: TaskActionIds.CLAIM },
       { statusCode: 401, routeUrl: '/not-authorised', action: TaskActionIds.CLAIM },
       { statusCode: 500, routeUrl: '/service-down', action: TaskActionIds.CLAIM},
-      { statusCode: 400, routeUrl: '/service-down', action: TaskActionIds.CLAIM},
+      { statusCode: 400, routeUrl: '/work/my-work/available', action: TaskActionIds.CLAIM},
       { statusCode: 403, routeUrl: '/not-authorised', action: TaskActionIds.CLAIM_AND_GO },
       { statusCode: 401, routeUrl: '/not-authorised', action: TaskActionIds.CLAIM_AND_GO },
       { statusCode: 500, routeUrl: '/service-down', action: TaskActionIds.CLAIM_AND_GO },
-      { statusCode: 400, routeUrl: '/service-down', action: TaskActionIds.CLAIM_AND_GO },
+      { statusCode: 400, routeUrl: '/work/my-work/available', action: TaskActionIds.CLAIM_AND_GO },
     ].forEach(scr => {
       it('should call claimTask with the task id, so that the task can be \'claimed\' by the User.', () => {
         mockTaskService.claimTask.and.returnValue(throwError({status: scr.statusCode}));
@@ -333,7 +333,15 @@ describe('AvailableTasksComponent', () => {
         component.onActionHandler(taskAction);
 
         expect(mockTaskService.claimTask).toHaveBeenCalledWith(TASK_ID);
-        expect(mockRouter.navigate).toHaveBeenCalledWith([scr.routeUrl]);
+        if (scr.statusCode === 400) {
+          expect(mockRouter.navigate).toHaveBeenCalledWith([scr.routeUrl]);
+          expect(mockInfoMessageCommService.nextMessage).toHaveBeenCalledWith({
+            type: InfoMessageType.WARNING,
+            message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
+          });
+        } else {
+          expect(mockRouter.navigate).toHaveBeenCalledWith([scr.routeUrl]);
+        }
       });
     });
 

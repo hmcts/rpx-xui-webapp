@@ -275,7 +275,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         } else if (page.includes("all work")) {
             actualmessages = await allWorkPage.taskInfoMessageBanner.getBannerMessagesDisplayed();
         } else if (page.includes("case details")) {
-            actualmessages = await caseDetailsPage.taskInfoMessageBanner.getBannerMessagesDisplayed();
+            actualmessages = await caseDetailsPage.messageBanner.getBannerMessagesDisplayed();
         } else if (page.includes("case list")) {
             actualmessages = await caseListPage.taskInfoMessageBanner.getBannerMessagesDisplayed();
         }  else {

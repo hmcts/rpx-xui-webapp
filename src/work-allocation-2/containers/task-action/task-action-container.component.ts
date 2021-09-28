@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
-import { AppUtils } from 'src/app/app-utils';
-import { UserInfo, UserRole } from 'src/app/models';
+import { AppUtils } from '../../../app/app-utils';
+import { UserInfo, UserRole } from '../../../app/models';
 
 import { ConfigConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, SortOrder, TaskActionType, TaskService } from '../../enums';

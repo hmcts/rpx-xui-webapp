@@ -6,12 +6,14 @@ var path = require('path');
 var cucumberReporter = require('../../../support/reportLogger');
 var CaseEditPage = require('../caseEditPage');
 const BrowserUtil = require('../../../../ngIntegration/util/browserUtil');
+const App = require('./application');
 
 const { accessibilityCheckerAuditor } = require('../../../../accessibility/helpers/accessibilityAuditor');
 
 class CaseManager {
 
     constructor() {
+        this.app = new App();
         this.manageCasesHeaderLink = $('.hmcts-header__link');
         this.caseListContainer = $('exui-case-list');
 
@@ -24,7 +26,7 @@ class CaseManager {
         this.cancelLink = $("form .cancel a");
 
         this.formFields = 'ccd-case-edit-form>div';
-
+        this.ccdCaseDetails = $('ccd-case-viewer');
         this.ccdCaseEdit = $('ccd-case-edit')
         this.exuiCaseHomeComp = $("exui-case-home");
         this.checkYourAnswers = $(".check-your-answers");
@@ -57,46 +59,47 @@ class CaseManager {
     }
 
     async startCaseCreation(jurisdiction, caseType, event){
-
-        let retryOnJurisdiction = 0;
-        let isJurisdictionSelected = false;
-        while (retryOnJurisdiction < 3 && !isJurisdictionSelected){
-            try{
-                await this.createCaseStartPage.selectJurisdiction(jurisdiction);
-                isJurisdictionSelected = true;
+        await BrowserWaits.retryWithActionCallback(async ()=> {
+            let retryOnJurisdiction = 0;
+            let isJurisdictionSelected = false;
+            while (retryOnJurisdiction < 3 && !isJurisdictionSelected) {
+                try {
+                    await this.app.waitForSpinnerToDissappear();
+                    await this.createCaseStartPage.selectJurisdiction(jurisdiction);
+                    isJurisdictionSelected = true;
+                }
+                catch (error) {
+                    cucumberReporter.AddMessage("Jurisdiction option not found after 30sec. Retrying again");
+                    retryOnJurisdiction++;
+                    await BrowserUtil.waitForLD();
+                    await this.manageCasesHeaderLink.click();
+                    await this._waitForSearchComponent();
+                    await await BrowserWaits.waitForElement(this.caseListContainer);
+                    await this.caseCreateheaderLink.click();
+                    await this.createCaseStartPage.amOnPage();
+                }
             }
-            catch(error){
-                cucumberReporter.AddMessage("Jurisdiction option not found after 30sec. Retrying again"); 
-                retryOnJurisdiction++; 
-                await BrowserUtil.waitForLD();
-                await this.manageCasesHeaderLink.click();
-                await this._waitForSearchComponent();
-                await await BrowserWaits.waitForElement(this.caseListContainer);
-                await this.caseCreateheaderLink.click();
-                await this.createCaseStartPage.amOnPage();
+
+            await this.createCaseStartPage.selectCaseType(caseType);
+            await this.createCaseStartPage.selectEvent(event);
+
+            var thisPageUrl = await browser.getCurrentUrl();
+
+            let startCasePageRetry = 0;
+            let isCaseStartPageDisplayed = false;
+            while (startCasePageRetry < 3 && !isCaseStartPageDisplayed) {
+                try {
+                    await this.app.waitForSpinnerToDissappear();
+                    await this.createCaseStartPage.clickStartButton();
+                    await BrowserWaits.waitForPageNavigation(thisPageUrl);
+                    isCaseStartPageDisplayed = true;
+                }
+                catch (err) {
+                    cucumberReporter.AddMessage("Case start page not displayed in  30sec. Retrying again " + err);
+                    startCasePageRetry++;
+                }
             }
-        }
-
-
-        await this.createCaseStartPage.selectCaseType(caseType);
-        await this.createCaseStartPage.selectEvent(event);
-
-        var thisPageUrl = await browser.getCurrentUrl();
-
-        let startCasePageRetry = 0;
-        let isCaseStartPageDisplayed = false;
-        while (startCasePageRetry < 3 && !isCaseStartPageDisplayed){
-            try{
-                await this.createCaseStartPage.clickStartButton();
-                await BrowserWaits.waitForPageNavigation(thisPageUrl);
-                isCaseStartPageDisplayed = true;
-            }
-            catch(err){
-                cucumberReporter.AddMessage("Case start page not displayed in  30sec. Retrying again");  
-                startCasePageRetry++; 
-            }
-        }
-        
+        });    
    } 
 
     async createCase( caseData,isAccessibilityTest,tcTypeStatus) {
@@ -157,15 +160,21 @@ class CaseManager {
 
 
     async AmOnCaseDetailsPage(){
-        expect(this.ccdCaseEdit.isPresent()).to.be.equal;
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await this.ccdCaseDetails.isPresent()).to.be.true;
+        });
     }
 
     async AmOnCCDCaseEditPage() {
-        expect(this.exuiCaseHomeComp.isPresent()).to.be.equal;
-    }
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await this.exuiCaseHomeComp.isPresent()).to.be.true;
+        });
+    }    
 
     async AmOnChekYourAnswersPage() {
-        expect(this.checkYourAnswers.isPresent()).to.be.equal;
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await this.checkYourAnswers.isPresent()).to.be.true;
+        });
     }
 
     async _formFillPage(pageCounter) {

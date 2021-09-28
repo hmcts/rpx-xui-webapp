@@ -25,6 +25,9 @@ class WorkFlowContainer{
 
     }
 
+    async isDisplayed(){
+        return await this.container.isDisplayed();
+    }
 
     async isContinueButtonDisplayed() {
         return await this.continueButton.idPresent() && await this.continueButton.isDisplayed();

@@ -20,6 +20,7 @@ class CaseListPage{
         this.searchResultsTopPagination = $("ccd-search-result .pagination-top");
         this.noResultsNotification = $("ccd-search-result .notification");
 
+        this.ccdCaseSearchResult = $('ccd-search-result');
         this.caseListRows = $$("ccd-search-result>table>tbody>tr");
 
         //case list pagination navigation
@@ -118,7 +119,9 @@ class CaseListPage{
 
     async clickFirstCaseLink(){
         let currentPageUrl = await browser.getCurrentUrl();
+        CucumberReportLogger.AddMessage(` Before navigation :   ${currentPageUrl}`);
 
+        await BrowserWaits.waitForElement(this.ccdCaseSearchResult);
         let isNavigationSuccess = false;
         let retryAttemptsCounter = 0;
         while (retryAttemptsCounter <= 3 && !isNavigationSuccess ){
@@ -131,6 +134,8 @@ class CaseListPage{
                 CucumberReportLogger.AddMessage(`Error openning first case from case list. Retrying attempt ${retryAttemptsCounter} :   ${err}`); 
             }
         } 
+        CucumberReportLogger.AddMessage(` After navigation :   ${await browser.getCurrentUrl()}`);
+
     }
 
     async getCountOfCasesListedInPage(){

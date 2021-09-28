@@ -77,7 +77,7 @@ Feature: WA Release 2: My work - My Tasks
         When I navigate to My work sub navigation tab "<SubNavigationTab>"
         Then I validate tasks count in page 25
         Then I validate task table pagination controls, is displayed state is "true"
-        Then I validate task list page results text displayed as "Displaying 1 - 25 out of 140 tasks"
+        Then I validate task list page results text displayed as "Showing 1 to 25 of 140 results"
 
         When I click task list table header column "Case name", I validate task list table sorted with column "Case name" in order "asc"
 
@@ -86,7 +86,7 @@ Feature: WA Release 2: My work - My Tasks
         When I click on primary navigation header tab "My work", I see selected tab page displayed
         When I navigate to My work sub navigation tab "<SubNavigationTab>"
         Then I validate tasks count in page 25
-        Then I validate task list page results text displayed as "Displaying 1 - 25 out of 140 tasks"
+        Then I validate task list page results text displayed as "Showing 1 to 25 of 140 results"
         Then I validate task list table sorted with column "Case name" in order "asc"
         Examples:
             | SubNavigationTab |

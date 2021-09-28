@@ -16,7 +16,7 @@ import * as fromCaseCreate from '../../store';
 export class CaseDetailsComponent implements OnInit, OnDestroy {
 
   public caseId: string;
-  private $caseIdSubscription: Subscription;
+  public $caseIdSubscription: Subscription;
 
   constructor(private readonly store: Store<fromCaseCreate.State>) {}
 
@@ -26,7 +26,9 @@ export class CaseDetailsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.$caseIdSubscription.unsubscribe();
+    if (this.$caseIdSubscription) {
+      this.$caseIdSubscription.unsubscribe();
+    }
   }
 
 

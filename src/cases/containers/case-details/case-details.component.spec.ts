@@ -1,85 +1,32 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import {
-  AbstractAppConfig,
-  AlertService,
-  AuthService as CCDAuthService,
-  CaseEditWizardGuard,
-  CasesService,
-  CaseUIToolkitModule,
-  DocumentManagementService,
-  DraftService,
-  HttpErrorService,
-  HttpService,
-  PageValidationService,
-  PlaceholderService,
-  RequestOptionsBuilder,
-  RouterHelperService,
-  SearchFiltersModule,
-  SearchService,
-} from '@hmcts/ccd-case-ui-toolkit';
-import { combineReducers, StoreModule } from '@ngrx/store';
-import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-
-import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
-import { AppConfigService } from '../../../app/services/config/configuration.services';
-import { SharedModule } from '../../../app/shared/shared.module';
-import { reducers } from '../../../app/store';
-import * as fromCases from '../../store/reducers';
+import { Store } from '@ngrx/store';
+import { of } from 'rxjs';
 import { CaseDetailsComponent } from './case-details.component';
+
 
 class MockSortService {
   public features = {};
   public getFeatureToggle() { }
   public cgetEditorConfiguration() { }
 }
-xdescribe('CaseDetailsComponent', () => {
+describe('CaseDetailsComponent', () => {
   let component: CaseDetailsComponent;
   let fixture: ComponentFixture<CaseDetailsComponent>;
+  const storeMock = jasmine.createSpyObj('mockStore', ['pipe']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule,
-        CaseUIToolkitModule,
-        HttpClientTestingModule,
-        StoreModule.forRoot({...reducers, cases: combineReducers(fromCases.reducers)}),
-        SharedModule,
-        SearchFiltersModule,
       ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [CaseDetailsComponent],
       providers: [
-        PlaceholderService,
-        CasesService,
-        CCDAuthService,
-        HttpService,
-        HttpErrorService,
-        AlertService,
-        DraftService,
-        PageValidationService,
-        CaseEditWizardGuard,
-        RouterHelperService,
-        DocumentManagementService,
-        AppConfigService,
-        RequestOptionsBuilder,
-        AppConfigService,
-        AppConfig,
         {
-          provide: SearchService,
-          useValue: {
-            requestOptionsBuilder: RequestOptionsBuilder
-          }
-        },
-        {
-          provide: AbstractAppConfig,
-          useExisting: AppConfig
-        },
-        {
-          provide: AppConfigService,
-          useClass: MockSortService
-        },
-        ScrollToService
+          provide: Store,
+          useValue: storeMock
+        }
+
       ]
     })
       .compileComponents();
@@ -88,21 +35,18 @@ xdescribe('CaseDetailsComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CaseDetailsComponent);
     component = fixture.componentInstance;
-
+    storeMock.pipe.and.returnValue(of('dummy'));
     fixture.detectChanges();
-
-  });
-  it('should create', () => {
-    expect(component).toBeTruthy();
   });
 
-  it('should have ngOnInit', () => {
-    expect(component.ngOnInit).toBeTruthy();
+  it('should assign case id', () => {
+    expect(component.caseId).toEqual('dummy');
   });
 
-  it('should have ngOnDestroy ', () => {
-    expect(component.ngOnDestroy).toBeTruthy();
+  it('should unsubscribe', () => {
+    spyOn(component.$caseIdSubscription, 'unsubscribe').and.callThrough();
+    component.ngOnDestroy();
+    expect(component.$caseIdSubscription.unsubscribe).toHaveBeenCalled();
   });
-
 
 });

@@ -35,15 +35,6 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   protected userDetailsKey: string = 'userDetails';
 
   private selectedLocationsSubscription: Subscription;
-  /**
-   * Mock TaskServiceConfig.
-   */
-  private readonly defaultTaskServiceConfig: TaskServiceConfig = {
-    service: TaskService.IAC,
-    defaultSortDirection: SortOrder.ASC,
-    defaultSortFieldName: 'dueDate',
-    fields: this.fields,
-  };
 
   /**
    * Take in the Router so we can navigate when actions are clicked.
@@ -62,6 +53,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected filterService: FilterService
   ) {
   }
+  public taskServiceConfig: TaskServiceConfig;
 
   public get tasks(): Task[] {
     return this.pTasks;
@@ -83,8 +75,21 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     return [];
   }
 
-  public get taskServiceConfig(): TaskServiceConfig {
-    return this.defaultTaskServiceConfig;
+  public getTaskServiceConfig(): TaskServiceConfig {
+    return {
+      service: TaskService.IAC,
+      defaultSortDirection: SortOrder.ASC,
+      defaultSortFieldName: this.getDateField('dueDate'),
+      fields: this.fields
+    };
+  }
+
+  public getDateField(defaultSortColumn: string): string {
+    const field = this.fields.find(currentField => currentField.isDate);
+    if (field) {
+      return field.sortName;
+    }
+    return defaultSortColumn;
   }
 
   public get emptyMessage(): string {
@@ -129,6 +134,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public ngOnInit(): void {
+    this.taskServiceConfig = this.getTaskServiceConfig();
     this.loadCaseWorkersAndLocations();
     this.setupTaskList();
     this.loadTasks();

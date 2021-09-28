@@ -9,4 +9,5 @@ export default interface FieldConfig {
   sortName?: string;     // for the purpose of sorting (data names not 100% matching)
   sourceColumn?: string; // column to be matched with
   matchValue?: any;      // value to be matched with
+  isDate?: boolean;
 }

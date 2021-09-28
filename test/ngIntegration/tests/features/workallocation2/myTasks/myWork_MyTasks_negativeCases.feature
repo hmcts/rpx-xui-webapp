@@ -1,4 +1,4 @@
-@ng
+# Tests covered in Unit tests
 Feature: WA Release 2: My work - My Tasks - negative scenarios
 
     Background: Mock and browser setup

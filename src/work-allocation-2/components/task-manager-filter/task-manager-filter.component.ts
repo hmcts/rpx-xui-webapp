@@ -1,113 +1,292 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
+import { FilterService } from '@hmcts/rpx-xui-common-lib';
+import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models';
+import { select, Store } from '@ngrx/store';
+import { filter, map } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
-import { SessionStorageService } from '../../../app/services';
-import { Caseworker, Location } from '../../models/dtos';
-import { FilterConstants } from '../constants';
+import { AppUtils } from '../../../app/app-utils';
+import { UserRole } from '../../../app/models';
+import * as fromAppStore from '../../../app/store';
+import { Location } from '../../models/dtos';
 
 @Component({
   selector: 'exui-task-manager-filter',
   templateUrl: './task-manager-filter.component.html',
-  styleUrls: ['./task-manager-filter.component.scss']
+  styleUrls: ['./task-manager-filter.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
-export class TaskManagerFilterComponent implements OnChanges {
-  // Protected instances of the exported constants.
-  public readonly ALL_LOCATIONS: Location = FilterConstants.Options.Locations.ALL;
-  public readonly ALL_CASEWORKERS: Caseworker = FilterConstants.Options.Caseworkers.ALL;
-  public readonly NO_CASEWORKER_ASSIGNED: Caseworker = FilterConstants.Options.Caseworkers.UNASSIGNED;
+export class TaskManagerFilterComponent implements OnInit, OnDestroy {
 
-  /**
-   * The caseworkers that are available to be selected from.
-   */
-  @Input() public caseworkers: Caseworker[];
+  private static readonly FILTER_NAME: string = 'all-tasks';
 
-  /**
-   * The locations that are available to be selected from.
-   */
-  @Input() public locations: Location[];
+  @Input() public locations: Location[] = [];
+  @Output() public selectionChanged: EventEmitter<any> = new EventEmitter<any>();
 
-  @Input()
-  public get location(): Location {
-    return this.pLocation;
-  }
-  public set location(value: Location) {
-    value = value || this.ALL_LOCATIONS; // undefined or null means "All"
-    if (this.pLocation !== value) {
-      this.pLocation = value;
-      this.saveFilterToSession();
-      this.emitChangedEvent();
+  public appStoreSub: Subscription;
+  public filterSub: Subscription;
+  public roleType: string;
+  public isLegalOpsOrJudicialRole: UserRole;
+
+  public ALL_LOCATIONS: Location[] = [{
+    id: '**ALL_LOCATIONS**',
+    locationName: 'All locations',
+    services: []
+  }];
+
+  public fieldsConfig: FilterConfig = {
+    persistence: 'local',
+    enableDisabledButton: true,
+    id: TaskManagerFilterComponent.FILTER_NAME,
+    fields: [],
+    cancelButtonText: 'Reset to default',
+    applyButtonText: 'Apply',
+    cancelSetting: {
+      id: TaskManagerFilterComponent.FILTER_NAME,
+      fields: [
+        {
+          name: 'service',
+          value: ['IA']
+        },
+        {
+          name: 'location',
+          value: ['**ALL_LOCATIONS**']
+        },
+        {
+          name: 'selectPerson',
+          value: ['All']
+        },
+        // Note: judicial users can have pirority cancel setting without needing it
+        {
+          name: 'priority',
+          value: ['All']
+        }
+      ]
     }
-  }
-  private pLocation: Location = this.ALL_LOCATIONS;
+  };
 
-  @Input()
-  public get caseworker(): Caseworker {
-    return this.pCaseworker;
+  constructor(private readonly filterService: FilterService,
+              private readonly appStore: Store<fromAppStore.State>) {
   }
-  public set caseworker(value: Caseworker) {
-    value = value || this.ALL_CASEWORKERS; // undefined or null means "All"
-    if (this.pCaseworker !== value) {
-      this.pCaseworker = value;
-      this.saveFilterToSession();
-      this.emitChangedEvent();
+
+  private static initServiceFilter(): FilterFieldConfig {
+    return {
+      name: 'service',
+      options: [
+        {
+          key: 'IA',
+          label: 'Immigration and Asylum'
+        }
+      ],
+      minSelected: 1,
+      maxSelected: 1,
+      minSelectedError: 'You must select a service',
+      maxSelectedError: null,
+      title: 'Service',
+      type: 'select'
+    };
+  }
+
+  private static initCaseLocationFilter(locations: Location[]): FilterFieldConfig {
+    if (!locations) {
+      locations = [];
     }
-  }
-  private pCaseworker: Caseworker = this.ALL_CASEWORKERS;
-
-  /**
-   * Emit an event to notify the parent component that the selected Caseworker
-   * and/or Location has changed. The new selection is emitted with the event
-   * but can also be retrieved from component.location.
-   */
-  @Output() public selectionChanged: EventEmitter<{ location: Location, caseworker: Caseworker }>
-    = new EventEmitter<{ location: Location, caseworker: Caseworker }>();
-
-  /**
-   * Accept the SessionStorageService for adding to and retrieving from sessionStorage.
-   */
-  constructor(private readonly sessionStorageService: SessionStorageService) {
+    return {
+      name: 'location',
+      options: locations.map(loc => ({key: loc.id, label: loc.locationName})),
+      minSelected: 1,
+      maxSelected: 1,
+      minSelectedError: 'You must select a location',
+      maxSelectedError: null,
+      title: 'Case Location',
+      type: 'select'
+    };
   }
 
-  public ngOnChanges(): void {
-    if (this.caseworkers && this.locations) {
-      // See if we have anything stored in the session for the filter.
-      const stored: string = this.sessionStorageService.getItem(FilterConstants.Session.TaskManager);
-      if (stored) {
-        const { caseworkerId, locationId } = JSON.parse(stored);
-        this.pCaseworker = this.getCaseworkerByIdamId(caseworkerId);
-        this.pLocation = this.getLocationById(locationId);
+  private static initPersonFilter(): FilterFieldConfig {
+    return {
+      name: 'selectPerson',
+      options: [
+        {
+          key: 'All',
+          label: 'All'
+        },
+        {
+          key: 'None / Available tasks',
+          label: 'None / Available tasks'
+        },
+        {
+          key: 'Specific person',
+          label: 'Specific person'
+        }
+      ],
+      minSelected: 1,
+      maxSelected: 1,
+      minSelectedError: 'You must select a person',
+      maxSelectedError: null,
+      lineBreakBefore: true,
+      title: 'Person',
+      type: 'radio'
+    };
+  }
+
+  private static initRoleTypeFilter(): FilterFieldConfig {
+    return {
+      name: 'role',
+      options: [
+        {
+          key: 'Judicial',
+          label: 'Judicial'
+        },
+        {
+          key: 'Legal Ops',
+          label: 'Legal Ops'
+        },
+        {
+          key: 'Admin',
+          label: 'Admin'
+        }
+      ],
+      minSelected: 1,
+      maxSelected: 1,
+      minSelectedError: 'You must select a role type',
+      maxSelectedError: null,
+      enableCondition: 'selectPerson=Specific person',
+      findPersonField: 'person',
+      disabledText: 'Select a role type',
+      type: 'select'
+    };
+  }
+
+  private static findPersonFilter(): FilterFieldConfig {
+    return {
+      name: 'person',
+      options: [],
+      minSelected: 0,
+      maxSelected: 0,
+      minSelectedError: 'You must select a person',
+      maxSelectedError: null,
+      enableCondition: 'selectPerson=Specific person',
+      type: 'find-person'
+    };
+  }
+
+  private static initTaskTypeFilter(): FilterFieldConfig {
+    return {
+      name: 'taskType',
+      options: [
+        {
+          key: 'All',
+          label: 'All'
+        },
+        {
+          key: 'Judicial',
+          label: 'Judicial'
+        },
+        {
+          key: 'Legal Ops',
+          label: 'Legal Ops'
+        },
+        {
+          key: 'Admin',
+          label: 'Admin'
+        }
+      ],
+      minSelected: 1,
+      maxSelected: 1,
+      minSelectedError: 'You must select a task type',
+      maxSelectedError: null,
+      lineBreakBefore: true,
+      title: 'Task type',
+      type: 'select'
+    };
+  }
+
+  private static initPriorityFilter(): FilterFieldConfig {
+    return {
+      name: 'priority',
+      options: [
+        {
+          key: 'All',
+          label: 'All'
+        },
+        {
+          key: 'High',
+          label: 'High'
+        },
+        {
+          key: 'Medium',
+          label: 'Medium'
+        },
+        {
+          key: 'Low',
+          label: 'Low'
+        }
+      ],
+      minSelected: 1,
+      maxSelected: 1,
+      minSelectedError: 'You must select a priority',
+      maxSelectedError: null,
+      lineBreakBefore: true,
+      title: 'Priority',
+      type: 'select'
+    };
+  }
+
+  public ngOnInit(): void {
+    this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
+      userDetails => {
+        this.isLegalOpsOrJudicialRole = userDetails.userInfo && userDetails.userInfo.roles ? AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles) : null;
+        this.roleType = AppUtils.convertDomainToLabel(this.isLegalOpsOrJudicialRole);
+        this.fieldsConfig.cancelSetting.fields.push({
+          name: 'taskType',
+          value: [this.roleType]
+        },
+        {
+          name: 'role',
+          value: [this.roleType]
+        },
+        );
       }
-      this.emitChangedEvent();
-    }
-  }
-
-  private saveFilterToSession(): void {
-    const toStore = JSON.stringify({
-      caseworkerId: this.caseworker.idamId,
-      locationId: this.location.id
+    );
+    this.fieldsConfig.fields = [
+      TaskManagerFilterComponent.initServiceFilter(),
+      TaskManagerFilterComponent.initCaseLocationFilter(this.ALL_LOCATIONS.concat(this.locations)),
+      TaskManagerFilterComponent.initPersonFilter(),
+      TaskManagerFilterComponent.initRoleTypeFilter(),
+      TaskManagerFilterComponent.findPersonFilter(),
+      TaskManagerFilterComponent.initTaskTypeFilter(),
+      TaskManagerFilterComponent.initPriorityFilter()
+    ];
+    this.fieldsConfig.fields = this.isLegalOpsOrJudicialRole === UserRole.Judicial ?
+      this.fieldsConfig.fields.slice(0, -1) : this.fieldsConfig.fields;
+    this.filterSub = this.filterService.getStream(TaskManagerFilterComponent.FILTER_NAME)
+    .pipe(
+      map((f: FilterSetting) => {
+        if (f === null) {
+          f = {
+            id: TaskManagerFilterComponent.FILTER_NAME,
+            fields: this.fieldsConfig.cancelSetting.fields
+          };
+          return f;
+        }
+        return f;
+      }),
+      filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
+      ).subscribe((f: FilterSetting) => {
+        const fields = f.fields.reduce((acc, field: { name: string, value: string[] }) => {
+          return {...acc, [field.name]: field.value[0]};
+        }, {});
+        this.selectionChanged.emit(fields);
     });
-    this.sessionStorageService.setItem(FilterConstants.Session.TaskManager, toStore);
   }
 
-  public getLocationById(id: string): Location {
-    if (id === this.ALL_LOCATIONS.id) {
-      return this.ALL_LOCATIONS;
+  public ngOnDestroy(): void {
+    if (this.appStoreSub) {
+      this.appStoreSub.unsubscribe();
     }
-    return this.locations.find(loc => loc.id === id) || this.ALL_LOCATIONS;
-  }
-
-  public getCaseworkerByIdamId(id: string): Caseworker {
-    if (id === this.ALL_CASEWORKERS.idamId) {
-      return this.ALL_CASEWORKERS;
-    } else if (id === this.NO_CASEWORKER_ASSIGNED.idamId) {
-      return this.NO_CASEWORKER_ASSIGNED;
+    if (this.filterSub) {
+      this.filterSub.unsubscribe();
     }
-    return this.caseworkers.find(cw => cw.idamId === id) || this.ALL_CASEWORKERS;
-  }
-
-  private emitChangedEvent(): void {
-    this.selectionChanged.emit({
-      caseworker: this.caseworker,
-      location: this.location
-    });
   }
 }

@@ -8,14 +8,15 @@ class AllWork extends TaskList {
 
     constructor() {
         super();
-        this.pageHeader = $('exui-all-work-home h3.govuk-heading-xl');
+        this.containerTag = 'exui-all-work-home'
+        this.pageHeader = $(`${this.containerTag} h3.govuk-heading-xl`);
 
         this.subNavListContainer = $('xuilib-hmcts-sub-navigation .hmcts-sub-navigation__list');
 
         this.bannerMessageContainer = $('exui-info-message ')
         this.infoMessages = $$('exui-info-message .hmcts-banner__message');
 
-        this.taskInfoMessageBanner = new TaskMessageBanner("exui-all-work-home exui-all-work-tasks");
+        this.taskInfoMessageBanner = new TaskMessageBanner(`${this.containerTag} exui-all-work-tasks`);
 
         //tasks container elements
         this.tasksContainer = $('exui-all-work-tasks');
@@ -30,7 +31,7 @@ class AllWork extends TaskList {
 
 
     getSubNavigationTabElement(tabLabel) {
-        return element(by.xpath(`//exui-task-home//a[contains(text(),'${tabLabel}')]`));
+        return element(by.xpath(`//${this.containerTag}//a[contains(text(),'${tabLabel}')]`));
     }
 
     async isSubNavigationTabPresent(tabLabel) {

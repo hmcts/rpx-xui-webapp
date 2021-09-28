@@ -6,7 +6,7 @@ Feature: WA Release 2: Allocate Role Case worker - Check your answers Change lin
         Given I set MOCK case details with reference "caseDetails"
         Given I set MOCK case details "caseDetails" property "Jurisdiction" as "IA"
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker " with reference "userDetails"
-        Given I set MOCK user with reference "userDetails" locationsInfo
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
         Given I set MOCK find person response for jurisdictions
@@ -27,7 +27,7 @@ Feature: WA Release 2: Allocate Role Case worker - Check your answers Change lin
         When I click tab with label "Roles and access" in case details page
         Then I see Roles and access page is displayed
         Then I validate add link for role category "JUDICIAL" is displayed in Roles and access page
-        When I click add link for role category  "JUDICIAL" in case roles and access page
+        When I click add link for role category "JUDICIAL" in case roles and access page
 
 
         Then I see Allocate role work flow page "Choose a role" with caption "Allocate a judicial role" is displayed

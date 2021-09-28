@@ -18,7 +18,7 @@ Feature: WA Release 2: Allocate Role Legal ops
     Scenario: Roles and access - LegalOps user allocates role - Allocate role, reserve to me for duration Indefinite
 
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer" with reference "userDetails"
-        Given I set MOCK user with reference "userDetails" locationsInfo
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
 
@@ -31,7 +31,7 @@ Feature: WA Release 2: Allocate Role Legal ops
         When I click tab with label "Roles and access" in case details page
         Then I see Roles and access page is displayed
         Then I validate add link for role category "Legal Ops" is displayed in Roles and access page
-        When I click add link for role category  "LEGAL_OPERATIONS" in case roles and access page
+        When I click add link for role category "Legal Ops" in case roles and access page
 
         Then I see Allocate role work flow page "Choose a role" with caption "Allocate a legal ops role" is displayed
         When I select Choose a role option "Case manager" in work flow
@@ -65,7 +65,7 @@ Feature: WA Release 2: Allocate Role Legal ops
     Scenario: Roles and access - LegalOps user allocates role - Allocate role, Allocate to another person for duration 7 Days
 
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer" with reference "userDetails"
-        Given I set MOCK user with reference "userDetails" locationsInfo
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
 
@@ -78,7 +78,7 @@ Feature: WA Release 2: Allocate Role Legal ops
         When I click tab with label "Roles and access" in case details page
         Then I see Roles and access page is displayed
         Then I validate add link for role category "Legal Ops" is displayed in Roles and access page
-        When I click add link for role category  "LEGAL_OPERATIONS" in case roles and access page
+        When I click add link for role category "Legal Ops" in case roles and access page
 
         Then I see Allocate role work flow page "Choose a role" with caption "Allocate a legal ops role" is displayed
         When I select Choose a role option "Case manager" in work flow
@@ -120,7 +120,7 @@ Feature: WA Release 2: Allocate Role Legal ops
     Scenario: Roles and access - LegalOps user allocates role - Allocate role, reserve to me for duration Another period
 
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer" with reference "userDetails"
-        Given I set MOCK user with reference "userDetails" locationsInfo
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
 
@@ -133,7 +133,7 @@ Feature: WA Release 2: Allocate Role Legal ops
         When I click tab with label "Roles and access" in case details page
         Then I see Roles and access page is displayed
         Then I validate add link for role category "Legal Ops" is displayed in Roles and access page
-        When I click add link for role category  "LEGAL_OPERATIONS" in case roles and access page
+        When I click add link for role category "Legal Ops" in case roles and access page
 
         Then I see Allocate role work flow page "Choose a role" with caption "Allocate a legal ops role" is displayed
         When I select Choose a role option "Case manager" in work flow
@@ -172,7 +172,7 @@ Feature: WA Release 2: Allocate Role Legal ops
     Scenario: Roles and access - LegalOps user allocates role - Allocate role, reserve to me for duration Another period - invalid dates
 
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer" with reference "userDetails"
-        Given I set MOCK user with reference "userDetails" locationsInfo
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
 
@@ -185,7 +185,7 @@ Feature: WA Release 2: Allocate Role Legal ops
         When I click tab with label "Roles and access" in case details page
         Then I see Roles and access page is displayed
         Then I validate add link for role category "Legal Ops" is displayed in Roles and access page
-        When I click add link for role category  "LEGAL_OPERATIONS" in case roles and access page
+        When I click add link for role category "Legal Ops" in case roles and access page
 
         Then I see Allocate role work flow page "Choose a role" with caption "Allocate a legal ops role" is displayed
         When I select Choose a role option "Case manager" in work flow
@@ -216,7 +216,7 @@ Feature: WA Release 2: Allocate Role Legal ops
     Scenario: Roles and access - Judge user allocates LegalOps role
 
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker " with reference "userDetails"
-        Given I set MOCK user with reference "userDetails" locationsInfo
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
 
@@ -229,7 +229,7 @@ Feature: WA Release 2: Allocate Role Legal ops
         When I click tab with label "Roles and access" in case details page
         Then I see Roles and access page is displayed
         Then I validate add link for role category "Legal Ops" is displayed in Roles and access page
-        When I click add link for role category  "LEGAL_OPERATIONS" in case roles and access page
+        When I click add link for role category "Legal Ops" in case roles and access page
 
         Then I see Allocate role work flow page "Choose a role" with caption "Allocate a legal ops role" is displayed
         When I select Choose a role option "Case manager" in work flow

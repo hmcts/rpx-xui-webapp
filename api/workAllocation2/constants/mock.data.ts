@@ -75,11 +75,43 @@ export const PERSON = [
   },
 ]
 
+export const ASSIGNED_TASKS = { tasks: [
+  {
+    id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba1',
+    assignee: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
+    task_title: 'Review FTPA application',
+    created_date: '2021-05-05T16:00:00.000+0000',
+    dueDate: '2021-05-05T16:00:00.000+0000',
+    location_name: 'Birmingham',
+    location_id: '231596',
+    case_id: '1620409659381330',
+    case_category: 'EEA',
+    case_name: 'James Priest',
+    permissions: ['Read', 'Manage'],
+    task_type: 'Judicial',
+  },
+  {
+    id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba1',
+    assignee: 'id109',
+    task_title: 'Review FTPA application',
+    created_date: '2021-05-05T16:00:00.000+0000',
+    dueDate: '2021-05-05T16:00:00.000+0000',
+    location_name: 'Birmingham',
+    location_id: '231596',
+    case_id: '1620409659381330',
+    case_category: 'EEA',
+    case_name: 'James Priest',
+    permissions: ['Read', 'Manage'],
+    task_type: 'Judicial',
+  }
+]}
+
 export const JUDICIAL_MY_TASKS = {
   tasks: [
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba1',
-      assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
+      //a
+      assignee: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
       task_title: 'Review FTPA application',
       created_date: '2021-05-05T16:00:00.000+0000',
       dueDate: '2021-05-05T16:00:00.000+0000',
@@ -89,6 +121,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'EEA',
       case_name: 'James Priest',
       permissions: ['Read', 'Manage'],
+      task_type: 'Judicial',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba2',
@@ -102,6 +135,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'Protection',
       case_name: 'Ella Ryan',
       permissions: ['Execute', 'Manage'],
+      task_type: 'Judicial',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba3',
@@ -115,6 +149,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'refusalOfHumanRights',
       case_name: 'Jo Jackson',
       permissions: ['Read'],
+      task_type: 'Judicial',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba4',
@@ -128,6 +163,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'asylum',
       case_name: 'Boris Bush',
       permissions: ['Read'],
+      task_type: 'Judicial'
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba5',
@@ -141,6 +177,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'EEA',
       case_name: 'James Patrick',
       permissions: ['Read'],
+      task_type: 'Judicial',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba6',
@@ -154,6 +191,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'Protection',
       case_name: 'Ella Frank',
       permissions: ['Read'],
+      task_type: 'Judicial',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba7',
@@ -167,6 +205,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'refusalOfHumanRights',
       case_name: 'Jo Johnson',
       permissions: ['Read'],
+      task_type: 'Judicial',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba8',
@@ -180,6 +219,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'asylum',
       case_name: 'Boris Shrub',
       permissions: ['Read'],
+      task_type: 'Judicial',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba9',
@@ -193,6 +233,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'EEA',
       case_name: 'James Pequequer',
       permissions: ['Read'],
+      task_type: 'Judicial',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb0',
@@ -206,6 +247,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'Protection',
       case_name: 'Ella Roderick',
       permissions: ['Read'],
+      task_type: 'Judicial',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb1',
@@ -219,6 +261,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'refusalOfHumanRights',
       case_name: 'Jo Jehovan',
       permissions: ['Read'],
+      task_type: 'Judicial',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb2',
@@ -232,6 +275,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'asylum',
       case_name: 'Boris Badger',
       permissions: ['Read'],
+      task_type: 'Judicial',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb3',
@@ -245,6 +289,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'EEA',
       case_name: 'James Patronus',
       permissions: ['Read'],
+      task_type: 'Judicial',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb4',
@@ -258,6 +303,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'Protection',
       case_name: 'Ella Farthing',
       permissions: ['Read'],
+      task_type: 'Judicial',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb5',
@@ -271,6 +317,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'refusalOfHumanRights',
       case_name: 'Jo Jumping',
       permissions: ['Read'],
+      task_type: 'Judicial',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb6',
@@ -284,6 +331,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'asylum',
       case_name: 'Boris Shrew',
       permissions: ['Read'],
+      task_type: 'Judicial',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb7',
@@ -297,6 +345,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'EEA',
       case_name: 'James Parrot',
       permissions: ['Read'],
+      task_type: 'Judicial',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb8',
@@ -310,6 +359,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'Protection',
       case_name: 'Ella Ran',
       permissions: ['Read'],
+      task_type: 'Judicial',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb9',
@@ -323,6 +373,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'refusalOfHumanRights',
       case_name: 'Jo Jeffries',
       permissions: ['Read'],
+      task_type: 'Legal Ops',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc0',
@@ -336,6 +387,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'asylum',
       case_name: 'Boris Bawler',
       permissions: ['Read'],
+      task_type: 'Admin',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc1',
@@ -349,6 +401,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'EEA',
       case_name: 'James Patricia',
       permissions: ['Read'],
+      task_type: 'Admin',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc2',
@@ -362,6 +415,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'Protection',
       case_name: 'Ella Forthorn',
       permissions: ['Read'],
+      task_type: 'Judicial',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc3',
@@ -375,6 +429,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'refusalOfHumanRights',
       case_name: 'Jo Jail',
       permissions: ['Read'],
+      task_type: 'Judicial',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc4',
@@ -388,6 +443,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'asylum',
       case_name: 'Boris Slither',
       permissions: ['Read'],
+      task_type: 'Judicial',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc5',
@@ -401,6 +457,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'EEA',
       case_name: 'James Shiraz',
       permissions: ['Read'],
+      task_type: 'Admin',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc6',
@@ -414,6 +471,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'Protection',
       case_name: 'Ella Redan',
       permissions: ['Read'],
+      task_type: 'Judicial',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc7',
@@ -427,6 +485,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'refusalOfHumanRights',
       case_name: 'Jo Joret',
       permissions: ['Read'],
+      task_type: 'Judicial',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc8',
@@ -440,6 +499,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'asylum',
       case_name: 'Boris Bear',
       permissions: ['Read'],
+      task_type: 'Judicial',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc9',
@@ -453,6 +513,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'EEA',
       case_name: 'James Porkie',
       permissions: ['Read'],
+      task_type: 'Judicial',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd0',
@@ -466,6 +527,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'Protection',
       case_name: 'Ella Ferry',
       permissions: ['Read'],
+      task_type: 'Judicial',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd1',
@@ -479,6 +541,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'refusalOfHumanRights',
       case_name: 'Jo Jackdaw',
       permissions: ['Read'],
+      task_type: 'Legal Ops',
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd2',
@@ -492,6 +555,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'asylum',
       case_name: 'Boris Starling',
       permissions: ['Read'],
+      task_type: 'Judicial',
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7b1',
@@ -505,6 +569,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'EEA',
       case_name: 'Tanya Boris',
       permissions: ['Read', 'Manage'],
+      task_type: 'Judicial',
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7b2',
@@ -518,6 +583,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'Protection',
       case_name: 'Victoria King',
       permissions: ['Read', 'Manage'],
+      task_type: 'Judicial',
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7b3',
@@ -531,6 +597,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'refusalOfHumanRights',
       case_name: 'Ryan Lee',
       permissions: ['Read', 'Manage'],
+      task_type: 'Judicial',
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7b4',
@@ -544,6 +611,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'asylum',
       case_name: 'Kim Lee',
       permissions: ['Read'],
+      task_type: 'Judicial',
     },
   ],
 };
@@ -1220,7 +1288,7 @@ export const JUDICIAL_ALL_CASES = {
       startDate: '2021-05-18T16:00:00.000+0000',
       endDate: '2021-06-19T16:00:00.000+0000',
       location_name: 'Manchester',
-      location_id: '231596',
+      location_id: '512401',
       jurisdiction: 'Immigration and Asylum',
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
@@ -2923,6 +2991,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_name: 'William Priest',
       warnings: true,
       permissions: ['Read', 'Manage'],
+      task_type: 'Judicial',
     },
     {
       assignee: null,
@@ -2937,6 +3006,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_category: 'Protection',
       case_name: 'Jo Fly',
       permissions: ['Read', 'Manage', 'Execute'],
+      task_type: 'Judicial',
     },
     {
       assignee: null,
@@ -2951,6 +3021,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_category: 'refusalOfHumanRights',
       case_name: 'Francis Gigs',
       permissions: ['Execute'],
+      task_type: 'Admin',
     },
     {
       assignee: null,
@@ -2965,6 +3036,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_category: 'asylum',
       case_name: 'Alan Jonson',
       permissions: ['Read', 'Manage'],
+      task_type: 'Admin',
     },
     {
       assignee: null,
@@ -2979,6 +3051,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_category: 'EEA',
       case_name: 'Michael Jackson',
       permissions: ['Cancel', 'Manage'],
+      task_type: 'Legal Ops',
     },
     {
       assignee: null,
@@ -2993,6 +3066,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_category: 'Protection',
       case_name: 'George Bush',
       permissions: ['Manage', 'Cancel'],
+      task_type: 'Judicial',
     },
     {
       assignee: null,
@@ -3007,6 +3081,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_category: 'refusalOfHumanRights',
       case_name: 'Taylor Swift',
       permissions: ['Read', 'Manage'],
+      task_type: 'Judicial',
     },
     {
       assignee: null,
@@ -3021,6 +3096,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_category: 'asylum',
       case_name: 'Kenny Young',
       permissions: ['Read'],
+      task_type: 'Judicial',
     },
     {
       assignee: null,

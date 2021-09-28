@@ -17,7 +17,7 @@ Feature: WA Release 2: Allocate and Remove Role judiciary
     Scenario: Roles and access - Judge user allocates judicial role "<Useridentifier>" - Allocate role, reserve to me for duration Indefinite
 
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker " with reference "userDetails"
-        Given I set MOCK user with reference "userDetails" locationsInfo
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
 
@@ -30,7 +30,7 @@ Feature: WA Release 2: Allocate and Remove Role judiciary
         When I click tab with label "Roles and access" in case details page
         Then I see Roles and access page is displayed
         Then I validate add link for role category "JUDICIAL" is displayed in Roles and access page
-        When I click add link for role category  "JUDICIAL" in case roles and access page
+        When I click add link for role category "JUDICIAL" in case roles and access page
 
         Then I see Allocate role work flow page "Choose a role" with caption "Allocate a judicial role" is displayed
         When I select Choose a role option "Hearing judge" in work flow
@@ -64,7 +64,7 @@ Feature: WA Release 2: Allocate and Remove Role judiciary
     Scenario: Roles and access - Judge user allocates judicial role  "<Useridentifier>" - Allocate role, Allocate to another person for duration 7 Days
 
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker " with reference "userDetails"
-        Given I set MOCK user with reference "userDetails" locationsInfo
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
 
@@ -77,7 +77,7 @@ Feature: WA Release 2: Allocate and Remove Role judiciary
         When I click tab with label "Roles and access" in case details page
         Then I see Roles and access page is displayed
         Then I validate add link for role category "JUDICIAL" is displayed in Roles and access page
-        When I click add link for role category  "JUDICIAL" in case roles and access page
+        When I click add link for role category "JUDICIAL" in case roles and access page
 
         Then I see Allocate role work flow page "Choose a role" with caption "Allocate a judicial role" is displayed
         When I select Choose a role option "Lead judge" in work flow
@@ -119,7 +119,7 @@ Feature: WA Release 2: Allocate and Remove Role judiciary
     Scenario: Roles and access - Judge user allocates judicial role "<Useridentifier>" - Allocate role, reserve to me for duration Another period
 
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker " with reference "userDetails"
-        Given I set MOCK user with reference "userDetails" locationsInfo
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
 
@@ -132,7 +132,7 @@ Feature: WA Release 2: Allocate and Remove Role judiciary
         When I click tab with label "Roles and access" in case details page
         Then I see Roles and access page is displayed
         Then I validate add link for role category "JUDICIAL" is displayed in Roles and access page
-        When I click add link for role category  "JUDICIAL" in case roles and access page
+        When I click add link for role category "JUDICIAL" in case roles and access page
 
         Then I see Allocate role work flow page "Choose a role" with caption "Allocate a judicial role" is displayed
         When I select Choose a role option "Hearing judge" in work flow
@@ -171,7 +171,7 @@ Feature: WA Release 2: Allocate and Remove Role judiciary
     Scenario: Roles and access - Judge user allocates judicial role "<Useridentifier>" - Allocate role, reserve to me for duration Another period - invalid dates
 
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker " with reference "userDetails"
-        Given I set MOCK user with reference "userDetails" locationsInfo
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
 
@@ -184,7 +184,7 @@ Feature: WA Release 2: Allocate and Remove Role judiciary
         When I click tab with label "Roles and access" in case details page
         Then I see Roles and access page is displayed
         Then I validate add link for role category "JUDICIAL" is displayed in Roles and access page
-        When I click add link for role category  "JUDICIAL" in case roles and access page
+        When I click add link for role category "JUDICIAL" in case roles and access page
 
         Then I see Allocate role work flow page "Choose a role" with caption "Allocate a judicial role" is displayed
         When I select Choose a role option "Hearing judge" in work flow
@@ -215,7 +215,7 @@ Feature: WA Release 2: Allocate and Remove Role judiciary
     Scenario: Roles and access - Legal ops user allocates judicial role
 
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer" with reference "userDetails"
-        Given I set MOCK user with reference "userDetails" locationsInfo
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
 
@@ -228,7 +228,7 @@ Feature: WA Release 2: Allocate and Remove Role judiciary
         When I click tab with label "Roles and access" in case details page
         Then I see Roles and access page is displayed
         Then I validate add link for role category "JUDICIAL" is displayed in Roles and access page
-        When I click add link for role category  "JUDICIAL" in case roles and access page
+        When I click add link for role category "JUDICIAL" in case roles and access page
 
         Then I see Allocate role work flow page "Choose a role" with caption "Allocate a judicial role" is displayed
         When I select Choose a role option "Lead judge" in work flow

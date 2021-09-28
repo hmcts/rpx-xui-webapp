@@ -27,6 +27,8 @@ class WAListTable {
         this.pagePreviousLink = $(`${this.baseCssLocator} pagination-template .pagination-previous a`);
         this.pageNextLink = $(`${this.baseCssLocator} pagination-template .pagination-next a`);
 
+        this.resetSortButton = $(`${this.baseCssLocator} .reset-sort-button button`);
+
         this.spinner = new Spinner();
     }
 
@@ -61,8 +63,12 @@ class WAListTable {
         return await this.tableRows.count();
     }
 
-    async getHeaderElementWithName(headerName) {
+    getHeaderElementWithName(headerName) {
         return element(by.xpath(`//${ this.baseCssLocator }//table//thead//th//button[contains(text(),'${headerName}')]`));
+    }
+
+    getNonClickableHeaderElementWithName(headerName) {
+        return element(by.xpath(`//${this.baseCssLocator}//table//thead//th[contains(text(),'${headerName}')]`));
     }
 
     async getHeaderPositionWithName(headerName) {
@@ -80,18 +86,19 @@ class WAListTable {
     async getColumnHeaderNames() {
         return await BrowserWaits.retryWithActionCallback(async () => {
             await this.waitForTable();
-            const headers = element.all(by.xpath(`//${ this.baseCssLocator }//table//thead//th//button`));
+            const headers = element.all(by.xpath(`//${ this.baseCssLocator }//table//thead//th`));
             const headerElementsCount = await headers.count();
-            const headerElements = [];
+            const names = [];
 
 
             for (let i = 0; i < headerElementsCount; i++) {
-                headerElements.push(await headers.get(i));
+                const headerElement = await headers.get(i);
+                const headerLabel = await headerElement.getText();
+                if (headerLabel.trim() !== ""){
+                    names.push(headerLabel.trim());
+                }
             }
-            const names = await ArrayUtil.map(headerElements, async (headerElement) => {
-                const headerName = await headerElement.getText();
-                return headerName.trim();
-            });
+           
             return names;
         });
 
@@ -132,6 +139,9 @@ class WAListTable {
     async getColumnValueAt(columnName, atPos) {
         const waRow = await this.getTableRowAt(atPos);
         const columnPos = await this.getHeaderPositionWithName(columnName);
+        if (columnPos === -1){
+            throw new Error(`${columnName} is not displayed in table`);
+        }
         const columnValue = await waRow.$(`td:nth-of-type(${columnPos})`).getText();
         return columnValue;
     }
@@ -312,6 +322,23 @@ class WAListTable {
         }
         return displayValuesObject;
 
+    }
+
+    async isResetSortButtonDisplayed(){
+        return await this.resetSortButton.isPresent();
+    }
+
+    async clickResetSortButton(){
+        await this.resetSortButton.click();
+    }
+
+    async isHeaderSortable(headerName){
+        const headerElementClickable = this.getHeaderElementWithName(headerName);
+        const headerElementNonClickable = this.getNonClickableHeaderElementWithName(headerName);
+        const isClickableElementPresent = await headerElementClickable.isPresent();
+        const isNonClickableElementPresent = await headerElementNonClickable.isPresent();
+
+        return isClickableElementPresent && !isNonClickableElementPresent
     }
 }
 

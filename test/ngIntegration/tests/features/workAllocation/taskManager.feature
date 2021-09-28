@@ -87,19 +87,6 @@ Feature: WA Release 1: Task manager
         Then I see Task manager page displayed
         Then I validate Task manager tasks sort column persist in session
 
-    Scenario: Task manager error responses
-        Given I set MOCK with user roles
-            | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
-        Given I set MOCK Task manager tasks count 250
-        Given I start MockApp
-        Given I navigate to home page
-        When I click on primary navigation header "Task manager"
-
-        Then I see Task manager page displayed
-        Then I validate error responses on Task manager page
-
 
 
 

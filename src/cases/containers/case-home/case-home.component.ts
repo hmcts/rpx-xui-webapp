@@ -63,6 +63,8 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     if (this.navigationSubscription) {
+      // When case home is destroyed reset the navigation notifier service observables
+      this.navigationNotifier.announceNavigation({});
       this.navigationSubscription.unsubscribe();
     }
   }

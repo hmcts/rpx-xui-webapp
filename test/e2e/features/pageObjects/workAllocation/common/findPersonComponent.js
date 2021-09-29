@@ -47,6 +47,8 @@ class FindPersonComponent{
     }
 
     async inputSearchTerm(searchTerm){
+        await this.amOnPage();
+        await BrowserWaits.waitForElementClickable(this.searchInput,5);
         await this.searchInput.clear();
         await this.searchInput.sendKeys(searchTerm);
     }

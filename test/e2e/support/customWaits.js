@@ -2,12 +2,10 @@ var EC = protractor.ExpectedConditions;
 const CucumberReporter = require('./reportLogger');
 
 class BrowserWaits{
-
-
-
     constructor(){
         this.waitTime = 30000; 
         this.pageErrors = $$(".error-summary");
+        this.retriesCount = 3;
     }
 
     setDefaultWaitTime(defaultWait){
@@ -15,31 +13,36 @@ class BrowserWaits{
  
     }
 
+    setRetryCount(count){
+        this.retriesCount = count; 
+    }
+
     async waitForSeconds(waitInSec){
         await browser.sleep(waitInSec*1000);
     }
    
     async waitForElementTime(element,waitTime) {
-        await browser.wait(EC.presenceOf(element), waitTime ? waitTime :  10000, "Error : " + element.locator().toString());
+        await browser.wait(EC.presenceOf(element), waitTime ? waitTime : 10000, "Error waitForElementTime : " + element.locator().toString());
 
     }
 
     async waitForElement(element, message, waitForSeconds){
         const startTime = Date.now();
         CucumberReporter.AddMessage("starting wait for element max in sec " + this.waitTime / 1000 + " : " + element.locator().toString());
-        await browser.wait(EC.visibilityOf(element), waitForSeconds ? waitForSeconds*1000 :  this.waitTime,"Error : "+element.locator().toString() + " => "+message);
+        await browser.wait(EC.visibilityOf(element), waitForSeconds ? waitForSeconds * 1000 : this.waitTime,"Error waitForElement : "+element.locator().toString() + " => "+message);
         CucumberReporter.AddMessage("wait done in sec " + (Date.now() - startTime ) / 1000); 
 
     }
 
     async waitForPresenceOfElement(element){
-        await browser.wait(EC.presenceOf(element), this.waitTime, "Error : " + element.locator().toString());
+        await browser.wait(EC.presenceOf(element), this.waitTime, "Error waitForPresenceOfElement : " + element.locator().toString());
     }
 
-    async waitForElementClickable(element) {
+    async waitForElementClickable(element, waitInSec) {
         const startTime = Date.now();
-        CucumberReporter.AddMessage("starting wait for element clickable max in sec " + this.waitTime / 1000 + " : " + element.locator().toString());
-        await browser.wait(EC.elementToBeClickable(element), this.waitTime, "Error : " + element.locator().toString());
+        const waitTimeInMilliSec = waitInSec ? waitInSec * 1000 : this.waitTime;
+        CucumberReporter.AddMessage("starting wait for element clickable max in sec " + waitTimeInMilliSec+ " : " + element.locator().toString());
+        await browser.wait(EC.elementToBeClickable(element), waitTimeInMilliSec, "Error waitForElementClickable : " + element.locator().toString());
         CucumberReporter.AddMessage("wait done in sec " + (Date.now() - startTime) / 1000); 
     }
 
@@ -131,10 +134,8 @@ class BrowserWaits{
         let retryCounter = 0;
         let isSuccess = false;
         let error = null;
-        while (retryCounter <= 3) {
-            if (retryCounter > retryTryAttempts){
-                break;
-            }
+        while (retryCounter <= this.retriesCount) {
+           
             await this.waitForSeconds(retryCounter);
             try {
                 const retVal = await callback();
@@ -149,7 +150,7 @@ class BrowserWaits{
             }
         }
         if (!isSuccess){
-            throw new Error("Action failed to meet success condition after 3 retry attempts.",error.stack);
+            throw new Error(`Action failed to meet success condition after ${this.retriesCount} retry attempts.`,error.stack);
         }
     }
 }

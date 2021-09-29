@@ -14,15 +14,13 @@ const workFlowPage = require("../../pageObjects/workAllocation/workFlow");
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I see Allocate role work flow page {string} with caption {string} is displayed', async function (workFlowPageType,captionHeader) {
-        await BrowserWaits.retryWithActionCallback(async () => {
-            let workFlowPageObject = getWorkflowPageObject(workFlowPageType);
-            reportLogger.AddMessage(`getWorkflowPageObject : ${workFlowPageType} with header text ${await workFlowPageObject.getHeaderText()}`);
+        let workFlowPageObject = getWorkflowPageObject(workFlowPageType);
+        reportLogger.AddMessage(`getWorkflowPageObject : ${workFlowPageType} with header text ${await workFlowPageObject.getHeaderText()}`);
 
-            expect(await workFlowPageObject.isDisplayed(), `${workFlowPageType} work flow page not displayed`).to.be.true;
-            expect(await workFlowPageObject.getHeaderText(), `${workFlowPageType} work flow page header not matching`).to.include(workFlowPageType);
-            expect(await workFlowPageObject.getHeaderCaption(), `${workFlowPageType} work flow page header caption not matching`).to.include(captionHeader);
+        expect(await workFlowPageObject.isDisplayed(), `${workFlowPageType} work flow page not displayed`).to.be.true;
+        expect(await workFlowPageObject.getHeaderText(), `${workFlowPageType} work flow page header not matching`).to.include(workFlowPageType);
+        expect(await workFlowPageObject.getHeaderCaption(), `${workFlowPageType} work flow page header caption not matching`).to.include(captionHeader);
 
-        },null,1);
         
     });
 

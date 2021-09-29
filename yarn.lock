@@ -447,6 +447,7 @@
   version "4.3.2-rc3"
   resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.3.2-rc3.tgz#3493f8cc9ab19f43e1363b19205f3f6216c7a504"
   integrity sha512-sIiRX3QVM3JWw0EQNOxl+ixcQacLTYUXl+sDP6oRE34k+g+ULvhSoixIGJLJ+DVe6n33qRcJyC73F3y3PqVAUg==
+
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular/cli" "^6.0.8"

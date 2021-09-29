@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 
@@ -13,7 +13,7 @@ import * as fromCaseCreate from '../../store';
   selector: 'exui-case-details',
   templateUrl: './case-details.component.html'
 })
-export class CaseDetailsComponent implements OnDestroy {
+export class CaseDetailsComponent implements OnDestroy, OnInit {
 
   public caseId: string;
   public $caseIdSubscription: Subscription;

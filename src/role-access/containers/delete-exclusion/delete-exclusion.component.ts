@@ -21,7 +21,9 @@ export class DeleteExclusionComponent implements OnInit {
   public caseId: string;
   public roleExclusion: RoleExclusion;
 
-  constructor(private readonly route: ActivatedRoute, private readonly router: Router, private roleExclusionsService: RoleExclusionsService) {}
+  constructor(private readonly route: ActivatedRoute,
+              private readonly router: Router,
+              private readonly roleExclusionsService: RoleExclusionsService) {}
 
   public ngOnInit(): void {
     // Get the role exclusions from the route, which will have been put there by the resolver.

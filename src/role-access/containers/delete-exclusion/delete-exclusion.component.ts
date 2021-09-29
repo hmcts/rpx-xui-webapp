@@ -17,6 +17,7 @@ export class DeleteExclusionComponent implements OnInit {
   public caption = AnswerHeaderText.DeleteExclusion;
   public heading = AnswerHeaderText.CheckAnswers;
   public hint = AnswerHeaderText.CheckInformation;
+  public exclusionId: string;
   public caseId: string;
   public roleExclusion: RoleExclusion;
 
@@ -24,21 +25,19 @@ export class DeleteExclusionComponent implements OnInit {
 
   public ngOnInit(): void {
     // Get the role exclusions from the route, which will have been put there by the resolver.
-    const roleExclusions = this.route.snapshot.data.roleExclusions;
-    // as mock data returns list, get first one for now
-    this.roleExclusion = roleExclusions[0];
-    this.populateAnswers(roleExclusions);
-    this.route.paramMap.subscribe(params => {
-      this.caseId = params.get('caseId');
+    const roleExclusions: RoleExclusion[] = this.route.snapshot.data.roleExclusions;
+    this.route.queryParamMap.subscribe(queryMap => {
+      this.exclusionId = queryMap.get('exclusionId');
+      this.caseId = queryMap.get('caseId');
+      this.roleExclusion = roleExclusions.find(exclusion => exclusion.id === this.exclusionId);
+      this.populateAnswers(this.roleExclusion);
     });
   }
 
-  private populateAnswers(exclusions: RoleExclusion[]): void {
-    for (const exclusion of exclusions) {
-      this.answers.push({label: AnswerLabelText.Person, value: exclusion.name});
-      this.answers.push({label: AnswerLabelText.DescribeExclusion, value: exclusion.notes});
-      this.answers.push({label: AnswerLabelText.DateAdded, value: new Date(exclusion.added).toLocaleDateString('en-GB')});
-    }
+  private populateAnswers(exclusion: RoleExclusion): void {
+    this.answers.push({label: AnswerLabelText.Person, value: exclusion.name});
+    this.answers.push({label: AnswerLabelText.DescribeExclusion, value: exclusion.notes});
+    this.answers.push({label: AnswerLabelText.DateAdded, value: new Date(exclusion.added).toLocaleDateString('en-GB')});
   }
 
   public onNavEvent(navEvent: ExclusionNavigationEvent): void {

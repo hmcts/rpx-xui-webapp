@@ -1,4 +1,5 @@
 <exui-page-wrapper [title]="'Case list'">
+  <xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
   <div class="case-list-component">
     <div class="hmcts-action-bar">
       <div class="hmcts-action-bar__filter">

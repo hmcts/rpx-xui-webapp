@@ -190,7 +190,7 @@ module.exports = {
             res.send();
         },
         '/workallocation2/task/:taskId/claim': (req, res) => {
-            res.status(400).send('success');
+            res.status(204).send('success');
         },
         '/workallocation/task/:taskId/unclaim': (req, res) => {
             res.status(204).send('success');

@@ -2,10 +2,13 @@ import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/cor
 import { ActivatedRoute } from '@angular/router';
 import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
+import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { AppUtils } from '../../../app/app-utils';
 
 import { ErrorMessage } from '../../../app/models';
+import * as fromRoot from '../../../app/store';
 import { Location } from '../../models/dtos';
 import { LocationDataService } from '../../services';
 
@@ -14,6 +17,7 @@ export const LOCATION_ERROR: ErrorMessage = {
   description: 'At least one location is required',
   fieldId: 'task_assignment_caseworker'
 };
+
 @Component({
   selector: 'exui-task-list-filter',
   templateUrl: './task-list-filter.component.html',
@@ -25,7 +29,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   public showFilteredText = false;
   public error: ErrorMessage;
   public fieldsConfig: FilterConfig = {
-    persistence: 'local',
+    persistence: 'session',
     id: TaskListFilterComponent.FILTER_NAME,
     fields: [],
     cancelButtonText: 'Reset to default',
@@ -41,20 +45,32 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   };
   public selectedLocations: string[] = [];
   public toggleFilter = false;
-
+  public errorSubscription: Subscription;
+  public appStoreSub: Subscription;
   private locationSubscription: Subscription;
   private selectedLocationsSubscription: Subscription;
-  public errorSubscription: Subscription;
 
   /**
    * Accept the SessionStorageService for adding to and retrieving from sessionStorage.
    */
   constructor(private readonly route: ActivatedRoute,
+              private readonly store: Store<fromRoot.State>,
               private readonly filterService: FilterService,
               private readonly locationService: LocationDataService) {
   }
 
   public ngOnInit(): void {
+
+    this.appStoreSub = this.store.pipe(select(fromRoot.getUserDetails)).subscribe(
+      userDetails => {
+        const isLegalOpsOrJudicialRole = AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
+        const roleType = AppUtils.convertDomainToLabel(isLegalOpsOrJudicialRole);
+
+        if (roleType === 'Judicial') {
+          this.fieldsConfig.persistence = 'local';
+        }
+      }
+    );
     this.locationSubscription = this.locationService.getLocations()
       .subscribe((locations: Location[]) => {
         locations.forEach((location) => this.allLocations.push(location.id.toString()));
@@ -64,6 +80,48 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     this.setErrors();
     this.subscribeToSelectedLocations();
     this.toggleFilter = false;
+  }
+
+  // if there is no local storage available, default locations need to be reset
+  public getDefaultLocations(): string[] {
+    if (this.fieldsConfig && this.fieldsConfig.cancelSetting) {
+      this.fieldsConfig.cancelSetting.fields.forEach(field => {
+        if (field.name === 'locations') {
+          this.defaultLocations = field.value;
+        }
+      });
+    }
+    return this.defaultLocations;
+  }
+
+  public subscribeToSelectedLocations(): void {
+    this.selectedLocationsSubscription = this.filterService.getStream(TaskListFilterComponent.FILTER_NAME)
+      .pipe(
+        filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
+      )
+      .subscribe((f: FilterSetting) => {
+        this.selectedLocations = f.fields.find((field) => field.name === TaskListFilterComponent.FILTER_NAME).value;
+        this.showFilteredText = this.hasBeenFiltered(f, this.getDefaultLocations());
+        this.toggleFilter = false;
+      });
+  }
+
+  public ngOnDestroy(): void {
+    if (this.locationSubscription) {
+      this.locationSubscription.unsubscribe();
+    }
+
+    if (this.selectedLocationsSubscription) {
+      this.selectedLocationsSubscription.unsubscribe();
+    }
+
+    if (this.errorSubscription) {
+      this.errorSubscription.unsubscribe();
+    }
+
+    if (this.appStoreSub) {
+      this.appStoreSub.unsubscribe();
+    }
   }
 
   // EUI-4408 - If stream not yet started, persist first session settings in filter service
@@ -115,31 +173,6 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     this.fieldsConfig.fields.push(field);
   }
 
-  // if there is no local storage available, default locations need to be reset
-  public getDefaultLocations(): string[] {
-    if (this.fieldsConfig && this.fieldsConfig.cancelSetting) {
-      this.fieldsConfig.cancelSetting.fields.forEach(field => {
-        if (field.name === 'locations') {
-          this.defaultLocations = field.value;
-        }
-      });
-    }
-    return this.defaultLocations;
-  }
-
-  public subscribeToSelectedLocations(): void {
-    this.selectedLocationsSubscription = this.filterService.getStream(TaskListFilterComponent.FILTER_NAME)
-      .pipe(
-        filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
-      )
-      .subscribe((f: FilterSetting) => {
-        this.selectedLocations = f.fields.find((field) => field.name === TaskListFilterComponent.FILTER_NAME).value;
-        const isFiltered = this.hasBeenFiltered(f, this.getDefaultLocations());
-        this.showFilteredText = isFiltered;
-        this.toggleFilter = false;
-      });
-  }
-
   private hasBeenFiltered(f: FilterSetting, defaultLocations: string[]): boolean {
     const selectedFields = f.fields.find(field => field.name === TaskListFilterComponent.FILTER_NAME);
     // check if selected fields are the same as cancelled filter settings
@@ -147,20 +180,6 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     // check if the amount of fields selected is the same as the amount in the cancel settings
     const notSameSize = !(defaultLocations.length === selectedFields.value.length);
     return (containsNonDefaultFields || notSameSize) && (defaultLocations.length !== 0);
-  }
-
-  public ngOnDestroy(): void {
-    if (this.locationSubscription) {
-      this.locationSubscription.unsubscribe();
-    }
-
-    if (this.selectedLocationsSubscription) {
-      this.selectedLocationsSubscription.unsubscribe();
-    }
-
-    if (this.errorSubscription) {
-      this.errorSubscription.unsubscribe();
-    }
   }
 
 }

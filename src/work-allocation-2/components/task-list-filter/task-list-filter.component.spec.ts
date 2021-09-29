@@ -4,7 +4,10 @@ import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
+import { StoreModule } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
+import { initialMockState } from '../../../role-access/testing/app-initial-state.mock';
 
 import { LocationDataService, WorkAllocationTaskService } from '../../services';
 import { ALL_LOCATIONS } from '../constants/locations';
@@ -23,8 +26,14 @@ describe('TaskListFilterComponent', () => {
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
-  const SELECTED_LOCATIONS = { id: 'locations', fields: [ { name: 'locations', value: ['231596', '698118'] }] };
-  const filterSettings = { id: 'locations', fields: [ { name: 'locations', value: [ '364992', '512401', '231596', '366796', '698118', '227101', '198444', '562808', '386417', '765324' ] } ] };
+  const SELECTED_LOCATIONS = {id: 'locations', fields: [{name: 'locations', value: ['231596', '698118']}]};
+  const filterSettings = {
+    id: 'locations',
+    fields: [{
+      name: 'locations',
+      value: ['364992', '512401', '231596', '366796', '698118', '227101', '198444', '562808', '386417', '765324']
+    }]
+  };
   const mockFilterService: any = {
     getStream: () => of(SELECTED_LOCATIONS),
     get: jasmine.createSpy(),
@@ -41,12 +50,14 @@ describe('TaskListFilterComponent', () => {
         CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        ExuiCommonLibModule
+        ExuiCommonLibModule,
+        StoreModule,
       ],
-      declarations: [TaskListFilterComponent, WrapperComponent ],
+      declarations: [TaskListFilterComponent, WrapperComponent],
       providers: [
-        { provide: WorkAllocationTaskService, useValue: mockTaskService },
-        { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },
+        {provide: WorkAllocationTaskService, useValue: mockTaskService},
+        provideMockStore({initialState: initialMockState}),
+        {provide: LocationDataService, useValue: {getLocations: () => of(ALL_LOCATIONS)}},
         {
           provide: FilterService, useValue: mockFilterService
         },
@@ -97,6 +108,10 @@ describe('TaskListFilterComponent', () => {
 
   it('should set the filter without local storage', () => {
     expect(mockFilterService.persist).toHaveBeenCalledWith(filterSettings, 'local');
+  });
+
+  it('should set the persistence to be local storage if the  user is a judicial user', () => {
+    expect(component.fieldsConfig.persistence).toBe('local');
   });
 
   afterAll(() => {

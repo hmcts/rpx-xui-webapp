@@ -7,7 +7,7 @@ import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
 import { FieldConfig } from '../../models/common';
 import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
 import { InvokedTaskAction, Task } from '../../models/tasks';
-import { handleFatalErrors, REDIRECTS } from '../../utils';
+import { handleTasksFatalErrors, REDIRECTS } from '../../utils';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
 @Component({
@@ -53,10 +53,6 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     }
   }
 
-  private getLocationParameter(): SearchTaskParameter {
-    return { key: 'location', operator: 'IN', values: this.selectedLocations };
-  }
-
   /**
    * A User 'Claims' themselves a task aka. 'Assign to me'.
    */
@@ -84,8 +80,9 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
       this.router.navigate([goToCaseUrl], {
         state: {
           showMessage: true,
-          messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS}
-        });
+          messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
+        }
+      });
     }, error => {
 
       this.claimTaskErrors(error.status);
@@ -97,9 +94,8 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
    * that the Task is no longer available.
    */
   public claimTaskErrors(status: number): void {
-
-    const REDIRECT_404 = [{ status: 404, redirectTo: REDIRECTS.ServiceDown }];
-    const handledStatus = handleFatalErrors(status, this.router, REDIRECT_404);
+    const REDIRECT_404 = [{status: 404, redirectTo: REDIRECTS.ServiceDown}];
+    const handledStatus = handleTasksFatalErrors(status, this.router, REDIRECT_404);
     if (handledStatus > 0) {
       this.infoMessageCommService.nextMessage({
         type: InfoMessageType.WARNING,
@@ -130,5 +126,9 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
    */
   public onPaginationEvent(pageNumber: number): void {
     this.onPaginationHandler(pageNumber);
+  }
+
+  private getLocationParameter(): SearchTaskParameter {
+    return {key: 'location', operator: 'IN', values: this.selectedLocations};
   }
 }

@@ -165,7 +165,7 @@ describe('TaskListWrapperComponent searchWithPagination', () => {
     router = TestBed.get(Router);
     component = fixture.componentInstance;
     const tasks: Task[] = [];
-    for (let i = 0; i < 25; i++){
+    for (let i = 0; i < 25; i++) {
       tasks.push(getMockTasks()[0]);
     }
     mockWorkAllocationService.searchTaskWithPagination.and.returnValue(of({ tasks, total_records: 500 }));

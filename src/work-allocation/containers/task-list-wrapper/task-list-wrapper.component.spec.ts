@@ -190,7 +190,7 @@ describe('TaskListWrapperComponent searchWithPagination', () => {
       { statusCode: 500, routeUrl: '/service-down' },
       { statusCode: 400, routeUrl: '/service-down' },
     ].forEach(scr => {
-      fit(`pagination search error response on load ${scr.statusCode }`, () => {
+      it(`pagination search error response on load ${scr.statusCode }`, () => {
         mockWorkAllocationService.searchTaskWithPagination.and.returnValue(throwError({ status: scr.statusCode }));
         const navigateSpy = spyOn(router, 'navigate');
         component.onPaginationHandler(1);
@@ -207,7 +207,7 @@ describe('TaskListWrapperComponent searchWithPagination', () => {
       { statusCode: 500, routeUrl: '/service-down' },
       { statusCode: 400, routeUrl: '/service-down' },
     ].forEach(scr => {
-      fit(`pagination search error response on pagination link click ${scr.statusCode}`, () => {
+      it(`pagination search error response on pagination link click ${scr.statusCode}`, () => {
         const pageLinkElement = fixture.nativeElement.querySelector('pagination-template li a');
 
         mockWorkAllocationService.searchTaskWithPagination.and.returnValue(throwError({ status: scr.statusCode }));

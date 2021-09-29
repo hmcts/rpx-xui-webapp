@@ -7,6 +7,7 @@ import {
   CASEWORKER_AVAILABLE_TASKS,
   CASEWORKER_MY_TASKS,
   JUDICIAL_AVAILABLE_TASKS,
+  JUDICIAL_AVAILABLE_TASKS_COPY,
   JUDICIAL_MY_TASKS,
   JUDICIAL_WORKERS,
   UNASSIGNED_CASE_TASKS
@@ -31,6 +32,8 @@ export const init = () => {
   const caseworkerAllTasksUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/allTasks\?view=caseworker/;
 
   const locationField = 'location_id';
+
+  let keepAvailableTasks = [];
 
   mock.onPost(judicialWorkersUrl).reply(() => {
     // return an array in the form of [status, data, headers]
@@ -95,7 +98,12 @@ export const init = () => {
     const locationConfig = getLocationConfig(searchConfig)[0];
     const paginationConfig = body.pagination_parameters;
     const sortingConfig = body.sorting_parameters;
-    const filteredTaskList = filterByFieldName(JUDICIAL_AVAILABLE_TASKS.tasks, locationField, locationConfig.values);
+    let newTaskList = JUDICIAL_AVAILABLE_TASKS.tasks;
+    if (keepAvailableTasks[0] && keepAvailableTasks[0].id === newTaskList[0].id) {
+      newTaskList = JUDICIAL_AVAILABLE_TASKS_COPY.tasks;
+    }
+    keepAvailableTasks = newTaskList;
+    const filteredTaskList = filterByFieldName(newTaskList, locationField, locationConfig.values);
     const taskList = sort(filteredTaskList,
       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [

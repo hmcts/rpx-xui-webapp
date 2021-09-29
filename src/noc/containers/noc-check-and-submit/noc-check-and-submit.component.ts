@@ -125,9 +125,17 @@ export class NocCheckAndSubmitComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.affirmationAgreedSub.unsubscribe();
-    this.notifyEveryPartySub.unsubscribe();
-    this.caseReferenceSub.unsubscribe();
-    this.nocAnswersSub.unsubscribe();
+    if (this.affirmationAgreedSub) {
+      this.affirmationAgreedSub.unsubscribe();
+    }
+    if (this.notifyEveryPartySub) {
+      this.notifyEveryPartySub.unsubscribe();
+    }
+    if (this.caseReferenceSub) {
+      this.caseReferenceSub.unsubscribe();
+    }
+    if (this.nocAnswersSub) {
+      this.nocAnswersSub.unsubscribe();
+    }
   }
 }

@@ -100,6 +100,12 @@ describe('CaseCreateComponent', () => {
     fixture.detectChanges();
 
   });
+
+  afterEach(() => {
+    spyOn(component, 'ngOnDestroy').and.callFake(() => { });
+    fixture.destroy();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });

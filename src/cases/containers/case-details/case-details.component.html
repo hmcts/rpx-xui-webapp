@@ -1,6 +1,6 @@
 <ccd-case-view
   [hasPrint]="true"
-  *ngIf="caseId$ | async"
-  [case]="caseId$ | async"
+  *ngIf="$caseIdSubscription | async"
+  [case]="$caseIdSubscription | async"
   [hasEventSelector]="true">
 </ccd-case-view>

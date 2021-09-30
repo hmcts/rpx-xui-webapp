@@ -1,10 +1,11 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { FilterPersistence } from '../../../../.yalc/@hmcts/rpx-xui-common-lib/projects/exui-common-lib/src';
 
 import { AppUtils } from '../../../app/app-utils';
 import { ErrorMessage } from '../../../app/models';
@@ -25,6 +26,7 @@ export const LOCATION_ERROR: ErrorMessage = {
 })
 export class TaskListFilterComponent implements OnInit, OnDestroy {
   private static readonly FILTER_NAME = 'locations';
+  @Input() public persistence: FilterPersistence;
   @Output() public errorChanged: EventEmitter<ErrorMessage> = new EventEmitter();
   public showFilteredText = false;
   public error: ErrorMessage;
@@ -46,7 +48,6 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   public selectedLocations: string[] = [];
   public toggleFilter = false;
   public errorSubscription: Subscription;
-  public appStoreSub: Subscription;
   private locationSubscription: Subscription;
   private selectedLocationsSubscription: Subscription;
 
@@ -54,23 +55,12 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
    * Accept the SessionStorageService for adding to and retrieving from sessionStorage.
    */
   constructor(private readonly route: ActivatedRoute,
-              private readonly store: Store<fromRoot.State>,
               private readonly filterService: FilterService,
               private readonly locationService: LocationDataService) {
   }
 
   public ngOnInit(): void {
-
-    this.appStoreSub = this.store.pipe(select(fromRoot.getUserDetails)).subscribe(
-      userDetails => {
-        const isLegalOpsOrJudicialRole = AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
-        const roleType = AppUtils.convertDomainToLabel(isLegalOpsOrJudicialRole);
-
-        if (roleType === 'Judicial') {
-          this.fieldsConfig.persistence = 'local';
-        }
-      }
-    );
+    this.fieldsConfig.persistence = this.persistence || 'session';
     this.locationSubscription = this.locationService.getLocations()
       .subscribe((locations: Location[]) => {
         locations.forEach((location) => this.allLocations.push(location.id.toString()));
@@ -117,10 +107,6 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
 
     if (this.errorSubscription) {
       this.errorSubscription.unsubscribe();
-    }
-
-    if (this.appStoreSub) {
-      this.appStoreSub.unsubscribe();
     }
   }
 

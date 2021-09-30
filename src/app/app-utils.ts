@@ -1,8 +1,9 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
+import { FilterPersistence } from '../../.yalc/@hmcts/rpx-xui-common-lib/projects/exui-common-lib/src';
 import { AppConstants, JUDICIAL_ROLE_LIST, LEGAL_OPS_ROLE_LIST } from './app.constants';
 import { NavItemsModel } from './models/nav-item.model';
 import { Theme, UserTypeRole } from './models/theme.model';
-import { UserRole } from './models/user-details.model';
+import { UserDetails, UserRole } from './models/user-details.model';
 
 export class AppUtils {
 
@@ -174,6 +175,19 @@ export class AppUtils {
       }
     }
     return userRole;
+  }
+
+  public static getFilterPersistenceByRoleType(userDetails: UserDetails): FilterPersistence {
+    const isLegalOpsOrJudicialRole = AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
+    const roleType = AppUtils.convertDomainToLabel(isLegalOpsOrJudicialRole);
+    switch (roleType) {
+      case 'LegalOps':
+        return 'session';
+      case 'Judicial':
+        return 'local';
+      default:
+        return 'session';
+    }
   }
 
   public static setThemeBasedOnUserType(userType: string, theme: Theme) {

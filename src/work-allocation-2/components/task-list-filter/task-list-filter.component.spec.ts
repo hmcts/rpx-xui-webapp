@@ -56,7 +56,6 @@ describe('TaskListFilterComponent', () => {
       declarations: [TaskListFilterComponent, WrapperComponent],
       providers: [
         {provide: WorkAllocationTaskService, useValue: mockTaskService},
-        provideMockStore({initialState: initialMockState}),
         {provide: LocationDataService, useValue: {getLocations: () => of(ALL_LOCATIONS)}},
         {
           provide: FilterService, useValue: mockFilterService
@@ -66,6 +65,7 @@ describe('TaskListFilterComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
+    component.persistence = 'local';
     spyOn(mockFilterService.givenErrors, 'unsubscribe');
     mockFilterService.get.and.returnValue(null);
     fixture.detectChanges();

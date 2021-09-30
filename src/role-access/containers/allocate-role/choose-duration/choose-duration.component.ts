@@ -81,11 +81,13 @@ export class ChooseDurationComponent implements OnInit {
   public selectDurationRole(roleAllocate: AllocateRoleStateData) {
     const action = EnumUtil(Actions).getKeyOrDefault(roleAllocate.action);
     const typeOfRole = roleAllocate.typeOfRole;
-    if (typeOfRole === TypeOfRole.CaseManager) {
+    if (typeOfRole && typeOfRole.name && typeOfRole.name === TypeOfRole.CaseManager) {
       this.title = `${action} ${RoleCaptionText.ALegalOpsCaseManager}`;
     } else {
-      if (typeOfRole) {
-        this.title = `${action} a ${typeOfRole.toLowerCase()}`;
+      if (typeOfRole && typeOfRole.name) {
+        this.title = `${action} a ${typeOfRole.name.toLowerCase()}`;
+      } else {
+        this.title = `${action} a role`;
       }
     }
     this.selectedDuration = roleAllocate.durationOfRole;

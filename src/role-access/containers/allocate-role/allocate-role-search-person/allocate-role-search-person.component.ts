@@ -11,6 +11,7 @@ import {
   AllocateRoleNavigationEvent,
   AllocateRoleState,
   AllocateRoleStateData,
+  SpecificRole,
   TypeOfRole
 } from '../../../models';
 import { RoleCaptionText } from '../../../models/enums/allocation-text';
@@ -31,7 +32,7 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
   public personName: string;
   public person: Person;
   public subscription: Subscription;
-  public roleType: string;
+  public roleType: SpecificRole;
 
   constructor(private readonly store: Store<fromFeature.State>) {
   }
@@ -43,12 +44,14 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
 
   private setData(allocateRoleStateData: AllocateRoleStateData): void {
     const action = EnumUtil(Actions).getKeyOrDefault(allocateRoleStateData.action);
-    if (allocateRoleStateData.typeOfRole === TypeOfRole.CaseManager) {
+    if (allocateRoleStateData.typeOfRole && allocateRoleStateData.typeOfRole.name === TypeOfRole.CaseManager) {
       this.domain = PersonRole.CASEWORKER;
       this.title = `${action} ${RoleCaptionText.ALegalOpsCaseManager}`;
     } else {
-      if (allocateRoleStateData.typeOfRole) {
-        this.title = `${action} a ${allocateRoleStateData.typeOfRole.toLowerCase()}`;
+      if (allocateRoleStateData.typeOfRole && allocateRoleStateData.typeOfRole.name) {
+        this.title = `${action} a ${allocateRoleStateData.typeOfRole.name.toLowerCase()}`;
+      } else {
+        this.title = `${action} a role`;
       }
     }
     this.personName = allocateRoleStateData && allocateRoleStateData.person ? this.getDisplayName(allocateRoleStateData.person) : null;

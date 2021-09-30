@@ -14,3 +14,4 @@ export * from './radio-option.model';
 export * from './role.model';
 export * from './role-access-http-error.interface';
 export * from './role-exclusion.model';
+export * from './specific-role.model';

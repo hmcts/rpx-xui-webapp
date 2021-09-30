@@ -23,6 +23,7 @@ import {
   AllocateTo,
   DurationOfRole,
   RoleCategory,
+  SpecificRole,
   TypeOfRole
 } from '../../../models';
 import { AllocateRoleService } from '../../../services';
@@ -75,7 +76,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
   public roleCategory: RoleCategory;
   public userIdToBeRemoved: string;
   public userNameToBeRemoved: string;
-  public typeOfRole: string;
+  public typeOfRole: SpecificRole;
   public action: string;
 
   constructor(private readonly appStore: Store<fromAppStore.State>,
@@ -105,7 +106,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
       caseId: this.caseId,
       assignmentId: this.assignmentId,
       state: AllocateRoleState.SEARCH_PERSON,
-      typeOfRole: TypeOfRole[EnumUtil(TypeOfRole).getKeyOrDefault(this.typeOfRole)],
+      typeOfRole: this.typeOfRole,
       allocateTo: AllocateTo.REALLOCATE_TO_ANOTHER_PERSON,
       personToBeRemoved,
       person: null,

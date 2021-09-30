@@ -9,17 +9,13 @@ import {
   SearchResultView,
   SearchResultViewItem,
   WindowService,
-  LoadingService as CCDLoadingService
 } from '@hmcts/ccd-case-ui-toolkit';
 import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
-import {
-  FeatureToggleService,
-  LoadingService as CommonLibLoadingService
- } from '@hmcts/rpx-xui-common-lib';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 import { select, Store } from '@ngrx/store';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { delay, map } from 'rxjs/operators';
+
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import * as fromRoot from '../../../app/store';
 import { OrganisationDetails } from '../../../organisation/models';
@@ -100,8 +96,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   public resultViewIsReady: boolean = false;
 
-  public showSpinner$: Observable<boolean>;
-
   constructor(
     public store: Store<fromCaseList.State>,
     private readonly orgStore: Store<fromStore.OrganisationState>,
@@ -109,8 +103,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
     private readonly definitionsService: DefinitionsService,
     private readonly windowService: WindowService,
     private readonly featureToggleService: FeatureToggleService,
-    private readonly commonLibLoadingService: CommonLibLoadingService,
-    private readonly ccdLibLoadingService: CCDLoadingService,
     private readonly cd: ChangeDetectorRef
   ) { }
 
@@ -119,13 +111,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.isVisible = false;
     this.page = 1;
     this.resultView = null;
-
-    const libServices$ = combineLatest([
-      this.ccdLibLoadingService.isLoading,
-      this.commonLibLoadingService.isLoading
-    ]);
-
-    this.showSpinner$ = libServices$.pipe(delay(0), map(states => states.reduce((c, s) => c || s, false)));
 
     this.definitionsService.getJurisdictions('read').subscribe(this.jurisdictionsBehaviourSubject$);
 

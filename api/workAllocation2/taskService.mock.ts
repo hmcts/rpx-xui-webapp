@@ -1,3 +1,4 @@
+import { AxiosRequestConfig } from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { HttpMockAdapter } from '../common/httpMockAdapter';
 import {
@@ -7,6 +8,7 @@ import {
   CASEWORKER_AVAILABLE_TASKS,
   CASEWORKER_MY_TASKS,
   JUDICIAL_AVAILABLE_TASKS,
+  JUDICIAL_AVAILABLE_TASKS_COPY,
   JUDICIAL_MY_TASKS,
   JUDICIAL_WORKERS,
   UNASSIGNED_CASE_TASKS
@@ -21,7 +23,7 @@ export const init = () => {
   const caseworkerAvailableTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/availableTasks\?view=caseworker/;
   const getTaskFromIDUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/;
   const getTasksByCaseIdUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{16}/;
-  const claimTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/claim/;
+  const claimTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12,13}\/claim/;
   const unclaimTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/unclaim/;
   const completeTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/complete/;
   const cancelTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/cancel/;
@@ -31,6 +33,8 @@ export const init = () => {
   const caseworkerAllTasksUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/allTasks\?view=caseworker/;
 
   const locationField = 'location_id';
+
+  let keepAvailableTasks = [];
 
   mock.onPost(judicialWorkersUrl).reply(() => {
     // return an array in the form of [status, data, headers]
@@ -95,7 +99,12 @@ export const init = () => {
     const locationConfig = getLocationConfig(searchConfig)[0];
     const paginationConfig = body.pagination_parameters;
     const sortingConfig = body.sorting_parameters;
-    const filteredTaskList = filterByFieldName(JUDICIAL_AVAILABLE_TASKS.tasks, locationField, locationConfig.values);
+    let newTaskList = JUDICIAL_AVAILABLE_TASKS.tasks;
+    if (keepAvailableTasks[0] && keepAvailableTasks[0].id === newTaskList[0].id) {
+      newTaskList = JUDICIAL_AVAILABLE_TASKS_COPY.tasks;
+    }
+    keepAvailableTasks = newTaskList;
+    const filteredTaskList = filterByFieldName(newTaskList, locationField, locationConfig.values);
     const taskList = sort(filteredTaskList,
       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
@@ -191,8 +200,15 @@ export const init = () => {
     ];
   });
 
-  mock.onPost(claimTaskUrl).reply(() => {
+  mock.onPost(claimTaskUrl).reply((config: AxiosRequestConfig) => {
     // return an array in the form of [status, data, headers]
+    // error
+    if (config.url.includes('0d22d836-b25a-11eb-a18c-f2d58a9b7bc18')) {
+      return [
+        400,
+        'error',
+      ];
+    }
     return [
       204,
       'success',

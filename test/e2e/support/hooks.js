@@ -112,7 +112,9 @@ defineSupportCode(({ Before,After }) => {
                 
                 for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++) {
                     if (browserLog[browserLogCounter].level.value > 900) {
-                        browserErrorLogs.push(browserLog[browserLogCounter]);
+                        browserLog[browserLogCounter]['time'] = (new Date(browserLog[browserLogCounter]['timestamp'])).toISOString()
+                        let perfItem = { ...browserLog[browserLogCounter], time: (new Date(browserLog[browserLogCounter]['timestamp'])).toISOString()}
+                        browserErrorLogs.push(perfItem);
                     }
                 }
                 CucumberReportLog.AddJson(browserErrorLogs);

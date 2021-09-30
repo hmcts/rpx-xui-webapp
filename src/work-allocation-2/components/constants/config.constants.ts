@@ -123,6 +123,7 @@ const DUE_DATE: FieldConfig = {
   views: TaskView.ALL_VIEWS
 };
 const DUE_DATE_AS_TEXT: FieldConfig = {
+  isDate: false,
   name: 'dueDate',
   type: FieldType.FORMATTED_DATE,
   columnLabel: 'Due date',
@@ -130,6 +131,7 @@ const DUE_DATE_AS_TEXT: FieldConfig = {
   views: TaskView.ALL_VIEWS
 };
 const CREATED_DATE: FieldConfig = {
+  isDate: true,
   name: 'created_date',
   type: FieldType.FORMATTED_DATE,
   columnLabel: 'Task created',

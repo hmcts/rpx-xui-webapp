@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs';
 
 import * as fromCaseCreate from '../../store';
 
@@ -13,14 +13,22 @@ import * as fromCaseCreate from '../../store';
   selector: 'exui-case-details',
   templateUrl: './case-details.component.html'
 })
-export class CaseDetailsComponent implements OnInit {
+export class CaseDetailsComponent implements OnDestroy, OnInit {
 
-  public caseId$: Observable<string>;
+  public caseId: string;
+  public $caseIdSubscription: Subscription;
 
   constructor(private readonly store: Store<fromCaseCreate.State>) {
   }
 
   public ngOnInit(): void {
-    this.caseId$ = this.store.pipe(select(fromCaseCreate.getCaseId));
+    this.$caseIdSubscription = this.store.pipe(select(fromCaseCreate.getCaseId))
+      .subscribe(caseId => this.caseId = caseId);
+  }
+
+  public ngOnDestroy(): void {
+    if (this.$caseIdSubscription) {
+      this.$caseIdSubscription.unsubscribe();
+    }
   }
 }

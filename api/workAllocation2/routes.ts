@@ -9,6 +9,7 @@ import {
   getRolesByCaseId,
   getRolesCategory,
   getTask, getTasksByCaseId,
+  getTasksByCaseIdAndEventId,
   postTaskAction,
   postTaskSearchForCompletable,
   searchCase,
@@ -46,6 +47,7 @@ router.use('/task', searchTask);
 router.use('/taskWithPagination', searchTask);
 
 router.use('/case/task/:caseId', getTasksByCaseId);
+router.use('/case/task/:caseId/event/:eventId', getTasksByCaseIdAndEventId);
 
 router.use('/exclusion/rolesCategory', getRolesCategory);
 

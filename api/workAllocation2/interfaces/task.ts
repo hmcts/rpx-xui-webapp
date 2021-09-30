@@ -15,8 +15,9 @@ export interface Task {
   location: string;
   jurisdiction: string;
   region: string;
-  case_type_id: string;
+  event_id?: string;
   case_id: string;
+  case_type_id: string;
   case_category: string;
   case_name: string;
   auto_assigned: boolean;

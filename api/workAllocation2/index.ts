@@ -180,6 +180,17 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
   }
 }
 
+export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+  const caseId = req.params.caseId;
+  const eventId = req.params.eventId;
+  try {
+    //const {status, data} = await handleGetTasksByCaseIdAndEventId(`${baseWorkAllocationTaskUrl}/task/${caseId}/event/${eventId}`, req);
+    return res.send(data as TaskList).status(status);
+  } catch (e) {
+    next(e);
+  }
+}
+
 /**
  * Post to invoke an action on a Task.
  */

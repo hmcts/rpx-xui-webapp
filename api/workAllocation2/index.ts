@@ -26,7 +26,7 @@ import { Caseworker, Judicialworker } from './interfaces/common';
 import { TaskList } from './interfaces/task';
 import { checkIfCaseAllocator, refineRoleAssignments } from './roleService';
 import * as roleServiceMock from './roleService.mock';
-import { handleGetTasksByCaseId } from './taskService';
+import { handleGetTasksByCaseId, handleGetTasksByCaseIdAndEventId } from './taskService';
 import * as taskServiceMock from './taskService.mock';
 import {
   assignActionsToCases,
@@ -184,7 +184,7 @@ export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Resp
   const caseId = req.params.caseId;
   const eventId = req.params.eventId;
   try {
-    //const {status, data} = await handleGetTasksByCaseIdAndEventId(`${baseWorkAllocationTaskUrl}/task/${caseId}/event/${eventId}`, req);
+    const {status, data} = await handleGetTasksByCaseIdAndEventId(`${baseWorkAllocationTaskUrl}/task/${caseId}/event/${eventId}`, req);
     return res.send(data as TaskList).status(status);
   } catch (e) {
     next(e);

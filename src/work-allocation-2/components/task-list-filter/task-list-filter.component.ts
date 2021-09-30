@@ -5,8 +5,8 @@ import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-c
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { AppUtils } from '../../../app/app-utils';
 
+import { AppUtils } from '../../../app/app-utils';
 import { ErrorMessage } from '../../../app/models';
 import * as fromRoot from '../../../app/store';
 import { Location } from '../../models/dtos';

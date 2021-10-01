@@ -130,6 +130,7 @@ describe('ExclusionsTableComponent', () => {
   it('should display a list of roles', () => {
     component.exclusions = [
       {
+        id: '123',
         added: new Date(2021, 7, 1),
         name: 'Judge Birch',
         notes: 'this case been remitted from Upper Tribunal and required different judge',

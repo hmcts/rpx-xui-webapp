@@ -125,7 +125,7 @@ describe('Work Allocation: Allocate', function () {
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.deleteExclusionPage))
 
-        await pa11ytest(this, actions, conf.baseUrl + 'role-access/delete-exclusion/1547480421733777');
+        await pa11ytest(this, actions, conf.baseUrl + 'role-access/delete-exclusion?caseId=1620409659381330&exclusionId=123');
 
     });
 

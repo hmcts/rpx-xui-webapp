@@ -18,6 +18,7 @@ describe('exclusions.exclusionService', () => {
   let next: any;
   const SUCCESS_RESPONSE = { status: {}, data: 'ok' };
   const exampleRoleExclusion = {
+    id: '123',
     added: Date.UTC(2021, 7, 1),
     name: 'Judge Birch',
     notes: 'this case been remitted from Upper Tribunal and required different judge',
@@ -26,6 +27,7 @@ describe('exclusions.exclusionService', () => {
   };
   const exampleMultiRoleExclusions = [
     {
+      id: '123',
       added: Date.UTC(2021, 7, 1),
       name: 'Judge Birch',
       notes: 'this case been remitted from Upper Tribunal and required different judge',
@@ -33,6 +35,7 @@ describe('exclusions.exclusionService', () => {
       userType: 'Judicial',
     },
     {
+      id: '234',
       added: Date.UTC(2021, 7, 10),
       name: 'Judge test',
       notes: 'this case been remitted from Upper Tribunal and required different judge',

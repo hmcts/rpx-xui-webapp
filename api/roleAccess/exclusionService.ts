@@ -8,6 +8,7 @@ export async function getUserExclusions(req: EnhancedRequest, res: Response, nex
     exclusions = [
       {
         added: Date.UTC(2021, 7, 1),
+        id: '123',
         name: 'Judge Birch',
         notes: 'this case been remitted from Upper Tribunal and required different judge',
         type: 'Other',
@@ -15,6 +16,7 @@ export async function getUserExclusions(req: EnhancedRequest, res: Response, nex
       },
       {
         added: Date.UTC(2021, 7, 10),
+        id: '234',
         name: 'Judge test',
         notes: 'this case been remitted from Upper Tribunal and required different judge',
         type: 'Other',

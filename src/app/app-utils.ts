@@ -1,5 +1,5 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
-import { FilterPersistence } from '../../.yalc/@hmcts/rpx-xui-common-lib/projects/exui-common-lib/src';
+import { FilterPersistence } from '@hmcts/rpx-xui-common-lib';
 import { AppConstants, JUDICIAL_ROLE_LIST, LEGAL_OPS_ROLE_LIST } from './app.constants';
 import { NavItemsModel } from './models/nav-item.model';
 import { Theme, UserTypeRole } from './models/theme.model';

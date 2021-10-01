@@ -1,15 +1,10 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FilterService } from '@hmcts/rpx-xui-common-lib';
+import { FilterPersistence, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
-import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { FilterPersistence } from '../../../../.yalc/@hmcts/rpx-xui-common-lib/projects/exui-common-lib/src';
-
-import { AppUtils } from '../../../app/app-utils';
 import { ErrorMessage } from '../../../app/models';
-import * as fromRoot from '../../../app/store';
 import { Location } from '../../models/dtos';
 import { LocationDataService } from '../../services';
 

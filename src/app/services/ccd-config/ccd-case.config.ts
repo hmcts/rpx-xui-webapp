@@ -33,6 +33,20 @@ export class AppConfig extends AbstractAppConfig {
         document_management_secure_enabled: val
       }
     });
+
+    this.featureToggleService.getValue('access-management-mode', false).subscribe({
+      next: (val) => this.config = {
+        ...this.config,
+        access_management_mode: val
+      }
+    });
+
+    this.featureToggleService.getValue('access-management-basic-view-mock', {}).subscribe({
+      next: (val) => this.config = {
+        ...this.config,
+        access_management_basic_view_mock: val
+      }
+    });
   }
 
   private featureToggleWorkAllocation(): void {
@@ -170,5 +184,17 @@ export class AppConfig extends AbstractAppConfig {
 
   public getWorkAllocationApiUrl(): string {
     return this.workallocationUrl;
+  }
+
+  public getAccessManagementMode(): boolean {
+    return this.config.access_management_mode;
+  }
+
+  public getAccessManagementBasicViewMock(): {} {
+    return this.config.access_management_basic_view_mock;
+  }
+
+  public getLocationRefApiUrl(): string {
+    return this.config.location_ref_api_url;
   }
 }

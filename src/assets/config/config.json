@@ -26,7 +26,10 @@
     "pagination_page_size": 25,
     "annotation_api_url": "/em-anno",
     "hrs_url": "/hearing-recordings",
-    "remote_hrs_url": ".*(\/hearing-recordings)"
+    "remote_hrs_url": ".*(\/hearing-recordings)",
+    "access_management_mode": false,
+    "access_management_basic_view_mock_mode": false,
+    "location_ref_api_url": "/refdata/location"
   },
   "urls": {
     "idam": {

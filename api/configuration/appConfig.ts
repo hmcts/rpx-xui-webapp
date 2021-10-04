@@ -24,12 +24,12 @@ import {
   SERVICES_IDAM_CLIENT_ID,
   SERVICES_IDAM_LOGIN_URL,
   SERVICES_IDAM_OAUTH_CALLBACK_URL,
+  SERVICES_LOCATION_REF_API_URL,
   SERVICES_PAYMENTS_URL,
   SERVICES_PRD_API_URL,
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
   SERVICES_TERMS_AND_CONDITIONS_URL,
-  SERVICES_WORK_ALLOCATION_TASK_API_PATH,
-  SERVICES_LOCATION_REF_API_URL
+  SERVICES_WORK_ALLOCATION_TASK_API_PATH
 } from './references';
 
 /**
@@ -70,8 +70,8 @@ export const applicationConfiguration = () => {
     servicesDocumentApiPath: getConfigValue(SERVICES_DOCUMENTS_API_PATH),
     servicesDocumentApiV2Path: getConfigValue(SERVICES_DOCUMENTS_API_PATH_V2),
     servicesEmHrsApiPath: getConfigValue(SERVICES_EM_HRS_API_PATH),
-    servicesPrdApiPath: getConfigValue(SERVICES_PRD_API_URL),
     servicesLocationRefApiPath: getConfigValue(SERVICES_LOCATION_REF_API_URL),
+    servicesPrdApiPath: getConfigValue(SERVICES_PRD_API_URL),
     servicesS2sPath: getConfigValue(SERVICE_S2S_PATH),
     servicesTermsAndConditionsPath: getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL),
     workAllocationTaskPath: getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH),

@@ -10,7 +10,7 @@ import {
     SERVICES_EM_DOCASSEMBLY_API_URL,
     SERVICES_EM_HRS_API_PATH,
     SERVICES_ICP_API_URL, SERVICES_LOCATION_REF_API_URL,
-    SERVICES_MARKUP_API_URL, SERVICES_PAYMENTS_URL, SERVICES_PRD_API_URL
+    SERVICES_MARKUP_API_URL, SERVICES_PAYMENTS_URL
 } from './configuration/references'
 import {applyProxy} from './lib/middleware/proxy'
 import * as searchCases from './searchCases'

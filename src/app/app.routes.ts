@@ -131,6 +131,10 @@ export const ROUTES: Routes = [
     }
   },
   {
+    path: 'refunds',
+    loadChildren: '../refunds/refunds.module#RefundsModule'
+  },
+  {
     path: '**',
     redirectTo: '/cases',
     pathMatch: 'full'

@@ -1,0 +1,18 @@
+<exui-app-header></exui-app-header>
+<div class="govuk-width-container">
+  <div class="page">
+    <main id="content" role="main">
+      <ccpay-payment-lib
+        [REFUNDS_API_ROOT] ="refundsApiRoot"
+        [CCD_CASE_NUMBER]="ccdCaseNumber"
+        VIEW="refund-list"
+        [TAKEPAYMENT]="false"
+        [REFUNDLIST]="true"
+        [LOGGEDINUSEREMAIL]="userEmail"
+        [LOGGEDINUSERROLES]="userRoles"
+      >
+      </ccpay-payment-lib>
+    </main>
+  </div>
+</div>
+<exui-app-footer></exui-app-footer>

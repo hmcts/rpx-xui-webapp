@@ -130,6 +130,10 @@
     "workAllocationEnabled": {
       "__name": "FEATURE_WORKALLOCATION_ENABLED",
       "__format":"json"
+    },
+    "accessManagementEnabled": {
+      "__name": "FEATURE_ACCESS_MANAGEMENT_ENABLED",
+      "__format":"json"
     }
   },
   "helmet": {

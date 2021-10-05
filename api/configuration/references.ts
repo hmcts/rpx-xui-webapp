@@ -88,7 +88,6 @@ export const FEATURE_REDIS_ENABLED = 'redisEnabled'
 export const FEATURE_OIDC_ENABLED = 'oidcEnabled'
 export const FEATURE_ACCESS_MANAGEMENT_ENABLED = 'accessManagementEnabled'
 
-
 export const FEATURE_WORKALLOCATION_ENABLED = 'workAllocationEnabled'
 
 export const HELMET = 'helmet'

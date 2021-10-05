@@ -523,10 +523,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@v1.4.3-display-case-filters":
-  version "1.4.3-display-case-filters"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.3-display-case-filters.tgz#30120e804c4a719391addbf9d8dc0691d71f8ba1"
-  integrity sha512-MNm6z9YPvGdO7WUWRC8XQcEo3uj/yo4xFUB099q5sHEGe57Gm0+7VYP63jXFQX3FAzt8p09f/EXoEr74ESsFqA==
+"@hmcts/rpx-xui-common-lib@1.4.3-enable-find-person":
+  version "1.4.3-enable-find-person"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.3-enable-find-person.tgz#795e7c439a905b893b431d2a50b9a8d34c059f6a"
+  integrity sha512-eToJS2NwIkTHXe1RdXbbJGFG7H9fM50i0umThRrpT9TdMduc/4XoaM1H3ESoyRDuR5yIrSgJEtFMCGpN0Vx3Lw==
   dependencies:
     tslib "^1.9.0"
 

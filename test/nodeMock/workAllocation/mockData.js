@@ -272,6 +272,56 @@ class WorkAllocationMockData {
         return caseExlusionsRes;
     }
 
+    getCaseTasks(tasksObjects,userDetails){
+
+        const tasks = [];
+        for (let task of tasksObjects){
+            const taskTemplate = this.getRelease2TaskDetails();
+            
+            const taskAttributes = Object.keys(task);
+            for (const taskAttribute of taskAttributes){
+                if (taskAttribute.toLowerCase().includes('date')){
+                    const dateObj = new Date();
+                    dateObj.setDate(dateObj.getDate() + parseInt(task[taskAttribute]));
+                    taskTemplate[taskAttribute] = dateObj.toISOString();
+                } else if (taskAttribute.toLowerCase().includes('permissions')){
+                    if (task[taskAttribute] === ''){
+                        taskTemplate[taskAttribute] = [];
+                    }else{
+                        taskTemplate[taskAttribute] = task[taskAttribute].split(',');
+                    }
+                } else if (taskAttribute.toLowerCase().includes('warnings')) {
+                    const val = task[taskAttribute].toLowerCase();
+                    taskTemplate[taskAttribute] = val.includes('true') || val.includes('yes');
+                } else if (taskAttribute.toLowerCase().trim() === 'assignee') {
+                    const val = task[taskAttribute].toLowerCase();
+                    if (val.includes('session')){
+                        taskTemplate[taskAttribute] = userDetails.userInfo.id;
+                    }else if(val === '' || val === undefined){
+                        taskTemplate[taskAttribute] = null;
+                        taskTemplate['assigneeName'] = null;
+                    }else{
+                        taskTemplate[taskAttribute] = v4();
+                    }
+                } else if (taskAttribute.toLowerCase().includes('description')) {
+                    const val = task[taskAttribute];
+                    if (val !== '' || val !== undefined){
+                        taskTemplate[taskAttribute] = val;
+                    }else{
+                        delete taskTemplate[taskAttribute];
+                    }
+                 }
+                else{
+                    taskTemplate[taskAttribute] = task[taskAttribute];
+                }
+            }
+
+            tasks.push(taskTemplate);
+
+        }
+        return tasks;
+    }
+
 }
 
 

@@ -19,14 +19,11 @@ defineSupportCode(({ Before, After, BeforeAll }) => {
     BeforeAll(async function(){
         const scenarioServerPort = MockApp.serverPort;
 
-        browser.driver.get(config.config.baseUrl).then(() => {
-            browser.manage().addCookie({ name: 'scenarioMockPort', value: scenarioServerPort + "", domain: 'localhost:3000' });
-        });
-    });
+        await browser.driver.get(config.config.baseUrl);
 
     Before(async function (scenario) {
         const scenarioServerPort = MockApp.serverPort;
-        browser.manage().addCookie({ name: 'scenarioMockPort', value: scenarioServerPort + "", domain: 'localhost:3000' });
+        await browser.manage().addCookie({ name: 'scenarioMockPort', value: scenarioServerPort + "", domain: 'localhost:3000' });
         CucumberReportLog.setScenarioWorld(this);
 
         MockApp.init();

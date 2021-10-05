@@ -37,7 +37,7 @@ export class AppConfig extends AbstractAppConfig {
     this.featureToggleService.getValue('access-management-mode', false).subscribe({
       next: (val) => this.config = {
         ...this.config,
-        access_management_mode: val && this.environmentService.get('accessManagementEnabled')
+        access_management_mode: val
       }
     });
 
@@ -187,7 +187,7 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getAccessManagementMode(): boolean {
-    return this.config.access_management_mode;
+    return this.config.access_management_mode && this.environmentService.get('accessManagementEnabled');
   }
 
   public getAccessManagementBasicViewMock(): {} {

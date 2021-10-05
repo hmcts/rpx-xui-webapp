@@ -20,6 +20,7 @@ defineSupportCode(({ Before, After, BeforeAll }) => {
         const scenarioServerPort = MockApp.serverPort;
 
         await browser.driver.get(config.config.baseUrl);
+    });
 
     Before(async function (scenario) {
         const scenarioServerPort = MockApp.serverPort;
@@ -42,4 +43,4 @@ defineSupportCode(({ Before, After, BeforeAll }) => {
         CucumberReportLog.AddMessage("NG Integration test status : " + scenario.result.status);
         CucumberReportLog.AddJson(MockApp.requestLogs);
     });
-});
+})

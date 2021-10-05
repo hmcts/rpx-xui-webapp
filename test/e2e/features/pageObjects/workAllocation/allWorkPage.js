@@ -2,6 +2,8 @@ const TaskList = require('./taskListTable');
 const BrowserWaits = require('../../../support/customWaits');
 var cucumberReporter = require('../../../support/reportLogger');
 
+const { Select,GovUKRadios } = require('../../../utils/domElements');
+
 var TaskMessageBanner = require('../messageBanner');
 
 class AllWork extends TaskList {
@@ -20,12 +22,22 @@ class AllWork extends TaskList {
 
         //tasks container elements
         this.tasksContainer = $('exui-all-work-tasks');
-        this.locationsFilterSelect = $('.all-work-filter  #task_assignment_location');
-        this.personsFilterSelect = $('.all-work-filter  #task_assignment_caseworker');
 
+
+        this.serviceFilterSelect = new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Service")]/..//select');
+        this.caselocationFilterSelect = new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Case Location")]/..//select');
+
+        this.personFilterRadio = new GovUKRadios('//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Person")]/..//*[contains(@class,"govuk-radios")]');
+
+        this.roleType = element(by.xpath('//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//select[contains(@id,"select_role")]'));
+
+        this.findPersonFilterInput = element(by.xpath('//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//xuilib-find-person//input'));
+        
+        this.taskTypeFilter = new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Task type")]/..//select');
+        this.priorityFilter = new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Priority")]/..//select');
 
         //Cases container elements
-        this.casesContainer = $('not implemented yet');
+        this.casesContainer = $('exui-all-work-cases exui-work-case-list');
 
     }
 
@@ -111,3 +123,8 @@ class AllWork extends TaskList {
 }
 
 module.exports = new AllWork();
+
+
+
+
+

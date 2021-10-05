@@ -256,7 +256,7 @@ Feature: WA Release 2: Roles and access tab
 
         Then I validate add link for role category "Judicial" is not displayed in Roles and access page
         Then I validate add link for role category "Legal Ops" is not displayed in Roles and access page
-        Then I validate add link for role category "Exclusion" is not displayed in Roles and access page
+        Then I validate add link for role category "Exclusion" is displayed in Roles and access page
 
         Then I validate case roles table has headers for role category "Judicial" in case roles and access page
             | headerName |

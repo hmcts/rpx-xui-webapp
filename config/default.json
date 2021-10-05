@@ -114,7 +114,8 @@
     "oidcEnabled": false,
     "workAllocationEnabled": false,
     "roleEnabled": false,
-    "caseworkerRefEnabled": false
+    "caseworkerRefEnabled": false,
+    "accessManagementEnabled": false
   },
   "helmet": {
     "contentSecurityPolicy": {

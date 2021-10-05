@@ -1,6 +1,8 @@
 
 
-class DurationDateUtil{
+class WorkAllocationDateUtil{
+
+
 
     getDurationDateDisplayString(dateInDays) {
         return this.getDateFormat(dateInDays, "DD MONTH YYYY");
@@ -57,6 +59,19 @@ class DurationDateUtil{
         return `${date} ${month} ${year}`
     }
 
+    getDateFormat_D_Month_YYYY(dateInDays) {
+        let dateObj = new Date();
+        dateObj.setDate(dateObj.getDate() + parseInt(dateInDays.replace(' ', '')));
+
+        let date = dateObj.getDate();
+
+        let month = dateObj.getMonth();
+        month = this.getFullMonth(month + 1);
+
+        let year = dateObj.getFullYear();
+        return `${date} ${month} ${year}`
+    }
+
     getFullMonth(monthNum) {
         let month = "";
         switch (monthNum) {
@@ -105,4 +120,4 @@ class DurationDateUtil{
 
 }
 
-module.exports = new DurationDateUtil();
+module.exports = new WorkAllocationDateUtil();

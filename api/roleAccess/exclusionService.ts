@@ -1,33 +1,34 @@
+import { AxiosResponse } from 'axios';
+import { getConfigValue } from '../configuration';
+import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
 import { NextFunction, Response } from 'express';
+import { http } from '../lib/http';
+import { setHeaders } from '../lib/proxy';
 import { EnhancedRequest } from '../lib/models';
 
-export async function getUserExclusions(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const isJudge = req.session.passport.user.userinfo.roles.includes('caseworker-ia-iacjudge');
-  let exclusions;
-  if (isJudge) {
-    exclusions = [
-      {
-        added: Date.UTC(2021, 7, 1),
-        id: '123',
-        name: 'Judge Birch',
-        notes: 'this case been remitted from Upper Tribunal and required different judge',
-        type: 'Other',
-        userType: 'Judicial',
-      },
-      {
-        added: Date.UTC(2021, 7, 10),
-        id: '234',
-        name: 'Judge test',
-        notes: 'this case been remitted from Upper Tribunal and required different judge',
-        type: 'Other',
-        userType: 'Judicial',
-      },
-    ];
-  } else {
-    exclusions = [];
-  }
-
-  return res.status(200).send(exclusions);
+export async function findExclusionsForCaseId(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const requestPayload = { 
+          queryRequests:[
+            {
+                attributes: {
+                    caseId: [req.body.caseId],
+                    jurisdiction: [req.body.jurisdiction],
+                    caseType: [req.body.caseType]
+                  },
+                grantType: ['EXCLUDED']
+            }
+        ]
+    };
+    
+    const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+    const fullPath = `${basePath}/am/role-assignments/query`;
+    const headers = setHeaders(req);
+    try {
+      const response: AxiosResponse = await http.post(fullPath, requestPayload, {headers});
+      return res.status(200).send(response.data);
+    } catch(error) {
+      next(error);
+    }
 }
 
 export async function confirmUserExclusion(req: EnhancedRequest, res: Response, next: NextFunction) {

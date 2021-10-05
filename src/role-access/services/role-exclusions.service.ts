@@ -8,8 +8,8 @@ export class RoleExclusionsService {
   public static exclusionsUrl = '/api/role-access/exclusions';
   constructor(private readonly http: HttpClient) { }
 
-  public getCurrentUserRoleExclusions(): Observable<RoleExclusion[]> {
-    return this.http.get<RoleExclusion[]>(`${RoleExclusionsService.exclusionsUrl}/get`);
+  public getCurrentUserRoleExclusions(caseId: string, jurisdiction: string, caseType: string): Observable<RoleExclusion[]> {
+    return this.http.post<RoleExclusion[]>(`${RoleExclusionsService.exclusionsUrl}/post`, {caseId, jurisdiction, caseType});
   }
 
   public getRolesCategory(): Observable<Role[]> {

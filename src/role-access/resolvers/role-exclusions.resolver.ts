@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
-import { EMPTY, Observable } from 'rxjs';
+import { EMPTY, Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../work-allocation-2/utils';
@@ -15,11 +15,12 @@ export class RoleExclusionsResolver implements Resolve<RoleExclusion[]> {
   ) {}
 
   public resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<RoleExclusion[]> {
-    return this.service.getCurrentUserRoleExclusions().pipe(
-      catchError(error => {
-        handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
-        return EMPTY;
-      })
-    );
+  //   return this.service.getCurrentUserRoleExclusions().pipe(
+  //     catchError(error => {
+  //       handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
+  //       return EMPTY;
+  //     })
+  //   );
+  return of([]);
   }
 }

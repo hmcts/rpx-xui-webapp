@@ -7,7 +7,7 @@ import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 
 import { http } from '../lib/http';
-import { confirmUserExclusion, deleteUserExclusion, getUserExclusions } from './exclusionService';
+import { confirmUserExclusion, deleteUserExclusion, findExclusionsForCaseId } from './exclusionService';
 
 chai.use(sinonChai);
 describe('exclusions.exclusionService', () => {
@@ -80,7 +80,7 @@ describe('exclusions.exclusionService', () => {
         },
       });
       let response = mockRes();
-      await getUserExclusions(req, response, next);
+      await findExclusionsForCaseId(req, response, next);
 
       // Should have received the HTTP response. The get simply returns the data.
       expect(response.send).to.have.been.calledWith(sinon.match(exampleMultiRoleExclusions));
@@ -99,7 +99,7 @@ describe('exclusions.exclusionService', () => {
         },
       });
       response = mockRes();
-      await getUserExclusions(nonJudgeReq, response, next);
+      await findExclusionsForCaseId(nonJudgeReq, response, next);
       // Should have received the HTTP response. The get simply returns the data.
       expect(response.send).to.have.been.calledWith(sinon.match([]));
     });

@@ -7,8 +7,6 @@ import * as fromNocStore from '../../../noc/store';
 import { NavItemsModel } from '../../models/nav-item.model';
 import { UserNavModel } from '../../models/user-nav.model';
 import { UserService } from '../../services/user/user.service';
-import c = require('config');
-
 
 @Component({
     selector: 'exui-hmcts-global-header',

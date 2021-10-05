@@ -5,16 +5,16 @@ class WorkAllocationDateUtil{
 
 
     getDurationDateDisplayString(dateInDays) {
-        return this.getDateFormat(dateInDays, "DD MONTH YYYY");
+        return this.getDateFormat_D_Month_YYYY(dateInDays);
     }
 
     getTaskDueDateDisplayString(dateInDays){
-        return this.getDateFormat(dateInDays, "DD MONTH YYYY");
+        return this.getDateFormat_D_Month_YYYY(dateInDays);
     }
 
 
     getTaskCeateDateDisplayString(dateInDays){
-        return this.getDateFormat(dateInDays, "DD MONTH YYYY");
+        return this.getDateFormat_D_Month_YYYY(dateInDays);
     }
 
 

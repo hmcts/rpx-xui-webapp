@@ -15,8 +15,18 @@ describe('HmctsGlobalHeaderComponent', () => {
   let fixture: ComponentFixture<HmctsGlobalHeaderComponent>;
   let mockRouter: jasmine.SpyObj<Router>;
 
-  const changesMock = {items: { currentValue: 'a', previousValue: 'b', firstChange: false, isFirstChange: () => false}};
-  const flags = { enabledFlag: true, disabledFlag: false };
+  const changesMock = {
+    items: {
+      currentValue: 'a',
+      previousValue: 'b',
+      firstChange: false,
+      isFirstChange: () => false
+    }
+  };
+  const flags = {
+    enabledFlag: true,
+    disabledFlag: false
+  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -25,8 +35,22 @@ describe('HmctsGlobalHeaderComponent', () => {
       imports: [ RouterTestingModule ],
       providers: [
         provideMockStore(),
-        { provide: UserService, useValue: { getUserDetails: () => of({ userInfo: { roles: ['roleA', 'roleB']}})}},
-        { provide: FeatureToggleService, useValue: { isEnabled: (flag) => of(flags[flag])} }
+        {
+          provide: UserService,
+          useValue: {
+            getUserDetails: () => of({
+              userInfo: {
+                roles: ['roleA', 'roleB']
+              }
+            })
+          }
+        },
+        {
+          provide: FeatureToggleService,
+          useValue: {
+            isEnabled: (flag) => of(flags[flag])
+          }
+        }
       ]
     })
     .compileComponents();

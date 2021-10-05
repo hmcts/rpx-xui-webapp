@@ -70,6 +70,15 @@
           <li class="hmcts-primary-navigation__item" *ngFor="let item of rightItems">
             <a class="hmcts-primary-navigation__link transparent-background" [ngClass]="item.ngClass" (click)="onEmitSubMenu(item)" [attr.aria-current]="item.active ? true: null" [routerLink]="item.href">{{item.text}}</a>
           </li>
+          <form name="aspnetForm" method="post" id="aspnetForm" autocomplete="off" action="/opencase">
+            <div style="display: flex;flex-direction: row;">
+                <p style="color: white; margin-top:8px; margin-bottom: 0px; ">16-digit case reference:  &nbsp;</p>
+                <input class="govuk-input" id="hmctsrefheader" name="hmctsrefheader" type="text" spellcheck="false" style="width:219px;">
+                <button class="govuk-button govuk-button--secondary" data-module="govuk-button" style="height:36px; margin-left: 4px; margin-top: 2px;  margin-bottom: 0px;">
+                    Find
+                </button>
+            </div>
+        </form>
         </ul>
       </div>
     </div>

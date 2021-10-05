@@ -31,6 +31,9 @@
       "dataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal",
       "caseAssignmentApi": "http://aac-manage-case-assignment-prod.service.core-compute-prod.internal"
     },
+    "hearings": {
+      "componentApi": "https://hearings-prod.service.core-compute-prod.internal"
+    },
     "documents": {
       "api": "http://dm-store-prod.service.core-compute-prod.internal"
     },

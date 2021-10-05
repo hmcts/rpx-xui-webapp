@@ -39,7 +39,8 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
     const locations = await handleLocationGet(path, req);
 
     res.status(200);
-    res.send(mapLocations(locations.data.court_venues));
+    const newLocations = locations.data.court_venues.map(venue => ({id: venue.epimms_id, locationName: venue.site_name }));
+    res.send(newLocations);
   } catch (error) {
     next(error);
   }

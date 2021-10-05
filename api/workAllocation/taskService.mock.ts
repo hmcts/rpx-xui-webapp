@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import * as faker from 'faker/locale/en_GB';
-import { httpMock } from '../common/httpMock';
+import { HttpMockAdapter } from '../common/httpMockAdapter';
 import { ActionViews } from './constants/actions';
 import { AVAILABLE_TASKS, MY_TASKS, TASK_MANAGER } from './constants/mock.data';
 
@@ -32,7 +32,7 @@ export const generator = (schema, min = 1, max) => {
 };
 
 export const init = () => {
-  const mock = new MockAdapter(httpMock);
+  const mock: MockAdapter = HttpMockAdapter.getInstance();
 
   const postMyTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task/;
 

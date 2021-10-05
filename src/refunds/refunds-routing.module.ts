@@ -8,7 +8,7 @@ const routes: Routes = [{
   component: RefundsComponent,
   canActivate: [ RoleGuard ],
   data: {
-    needsRole: ['payments-refund-approver', 'payments-refund'],
+    needsRole: ['payments\-refund\-approver', 'payments\-refund'],
     roleMatching: RoleMatching.ANY,
     noRoleMatchRedirect: '/'
   }

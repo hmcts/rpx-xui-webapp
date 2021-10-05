@@ -45,7 +45,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   }
 }
 
-function mapLocations(venues: Array<{epimms_id, site_name}>) {
+export function mapLocations(venues: Array<{epimms_id, site_name}>): Array<{id: string, locationName: string}> {
   const locations = [];
   venues.forEach(venue => locations.push({
                               id: venue.epimms_id,

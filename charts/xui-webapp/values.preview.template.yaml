@@ -20,6 +20,8 @@ nodejs:
      STUB: false
      DEBUG: xuiNode:*
      FEATURE_WORKALLOCATION_ENABLED: true
+     SERVICES_LOCATION_REF_API_URL: http://rd-location-ref-api-aat.service.core-compute-aat.internal
+     SERVICES_DOCUMENTS_API_PATH: http://www.google.com
      FEATURE_ACCESS_MANAGEMENT_ENABLED: true
   keyVaults:
     rpx:

@@ -457,6 +457,18 @@ describe('TaskListComponent', () => {
     });
   });
 
+  describe('pagination display state', () => {
+    it('should display pagination', async () => {
+      component.tasks = getTasks();
+      expect(component.isPaginationEnabled()).toEqual(true);
+    });
+
+    it('should not display pagination', async () => {
+      component.tasks = [];
+      expect(component.isPaginationEnabled()).toEqual(false);
+    });
+  });
+
   describe('generate pagination summary', () => {
     let paginationSummary: HTMLElement;
 

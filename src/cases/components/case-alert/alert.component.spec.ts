@@ -33,6 +33,11 @@ describe('AlertComponent', () => {
     fixture.detectChanges();
   });
 
+  afterEach(() => {
+    spyOn(component, 'ngOnDestroy').and.callFake(() => { });
+    fixture.destroy();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
@@ -49,11 +54,23 @@ describe('AlertComponent', () => {
 
   it('should unsubscribe onDestroy', () => {
     spyOn(component.alertMessageSubscription, 'unsubscribe').and.callThrough();
-    spyOn(component.routeSubscription, 'unsubscribe').and.callThrough();
 
     component.ngOnDestroy();
     expect(component.alertMessageSubscription.unsubscribe).toHaveBeenCalled();
-    expect(component.routeSubscription.unsubscribe).toHaveBeenCalled();
+  });
+
+  it('should unsubscribe onDestroy', () => {
+    const subscription = jasmine.createSpyObj('mockObject', ['unsubscribe']);
+
+    component.unSubscribe(subscription);
+    expect(subscription.unsubscribe).toHaveBeenCalled();
+  });
+
+  it('should not call unsubscribe when no subscription', () => {
+    const subscription = jasmine.createSpyObj('mockObject', ['unsubscribe']);
+
+    component.unSubscribe(null);
+    expect(subscription.unsubscribe).not.toHaveBeenCalled();
   });
 
   it('should hyphenate every 4th digit of alert', () => {

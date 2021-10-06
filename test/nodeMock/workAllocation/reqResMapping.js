@@ -34,9 +34,6 @@ module.exports = {
         '/api/role-access/allocate-role/valid-roles' : (req,res) => {
             res.send(workAllocationMockData.getRoles());
         },
-        '/workallocation2/case/task/:caseId' : (req,res) => {
-            res.send(workAllocationMockData.getMyTasks());
-        },
         '/workallocation2/roles/:caseId' : (req,res) => {
             const actions = [{ id: "reallocate", title: "Reallocate" }, { id: "remove", title: "Remove Allocation" }]
             const mockRoles = [
@@ -63,6 +60,15 @@ module.exports = {
             ];
             
             res.send(mockExclusions);
+        },
+        '/workallocation2/case/task/:caseid': (req,res) => {
+            const tasks = [
+                { task_title: 'task 1', dueDate: -1, created_date: -10, permissions: "Own,Execute,Manage" , warnings:"true"},
+                { task_title: 'task 2', dueDate: 0, created_date: -10, permissions: "Own,Execute,Manage", warnings: "true" },
+                { task_title: 'task 3', dueDate: 1, created_date: -10, permissions: "Own,Execute,Manage", warnings: "true"},
+                { task_title: 'task 4', dueDate: 10, created_date: -10, permissions: "Own,Execute,Manage", warnings: "true" }
+            ];
+            res.send(workAllocationMockData.getCaseTasks(tasks));
         }
     },
     post: {
@@ -190,7 +196,7 @@ module.exports = {
             res.send();
         },
         '/workallocation2/task/:taskId/claim': (req, res) => {
-            res.status(400).send('success');
+            res.status(204).send('success');
         },
         '/workallocation/task/:taskId/unclaim': (req, res) => {
             res.status(204).send('success');

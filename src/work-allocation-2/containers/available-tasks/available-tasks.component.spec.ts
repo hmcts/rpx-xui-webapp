@@ -334,7 +334,6 @@ describe('AvailableTasksComponent', () => {
 
         expect(mockTaskService.claimTask).toHaveBeenCalledWith(TASK_ID);
         if (scr.statusCode === 400) {
-          expect(mockRouter.navigate).toHaveBeenCalledWith([scr.routeUrl]);
           expect(mockInfoMessageCommService.nextMessage).toHaveBeenCalledWith({
             type: InfoMessageType.WARNING,
             message: InfoMessage.TASK_NO_LONGER_AVAILABLE,

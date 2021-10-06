@@ -2,6 +2,8 @@ const TaskList = require('./taskListTable');
 const BrowserWaits = require('../../../support/customWaits');
 var cucumberReporter = require('../../../support/reportLogger');
 
+const { Select,GovUKRadios } = require('../../../utils/domElements');
+
 var TaskMessageBanner = require('../messageBanner');
 
 class AllWork extends TaskList {
@@ -20,15 +22,76 @@ class AllWork extends TaskList {
 
         //tasks container elements
         this.tasksContainer = $('exui-all-work-tasks');
-        this.locationsFilterSelect = $('.all-work-filter  #task_assignment_location');
-        this.personsFilterSelect = $('.all-work-filter  #task_assignment_caseworker');
-
 
         //Cases container elements
-        this.casesContainer = $('not implemented yet');
+        this.casesContainer = $('exui-all-work-cases exui-work-case-list');
+
+        this.FILTER_ITEMS = {
+            'Service': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Service")]/..//select'),
+            'Case Location': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Case Location")]/..//select'),
+            'Person': new GovUKRadios('//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Person")]/..//*[contains(@class,"govuk-radios")]'),
+            'Person role type': new Select('xpath','//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//select[contains(@id,"select_role")]'),
+            'Person input': element(by.xpath('//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//xuilib-find-person//input')),
+            'Task type': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Task type")]/..//select'),
+            'Priority': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Priority")]/..//select')
+        } 
+
+        this.selectOrRadioFilterItems = ['Service', 'Case Location', 'Person role type', 'Task type', 'Priority','Person'];
+
+        this.filterApplyBtn = $('exui-task-manager-filter xuilib-generic-filter #applyFilter');
+        this.filterResetBtn = $('exui-task-manager-filter xuilib-generic-filter #cancelFilter');
+    }
+
+
+    async isFilterItemDisplayed(filterItem){
+        const filtersItems = Object.keys(this.FILTER_ITEMS);
+        if (!filtersItems.includes(filterItem)){
+            throw new Error(`Filter item "${filterItem}" not recognised or not implemented in test`);
+        }
+
+        if (this.selectOrRadioFilterItems.includes(filterItem)){
+            return await this.FILTER_ITEMS[filterItem].isDisplayed();
+        }else{
+            return await this.FILTER_ITEMS[filterItem].isPresent();
+        }
+    }
+
+    async isFilterItemEnbled(filterItem) {
+        const filtersItems = Object.keys(this.FILTER_ITEMS);
+        if (!filtersItems.includes(filterItem)) {
+            throw new Error(`Filter item "${filterItem}" not recognised or not implemented in test`);
+        }
+        return await this.FILTER_ITEMS[filterItem].isEnabled();
 
     }
 
+    async getFilterSelectOrRadioOptions(filterItem){
+        const filtersItems = Object.keys(this.FILTER_ITEMS);
+        if (!filtersItems.includes(filterItem)) {
+            throw new Error(`Filter item "${filterItem}" not recognised or not implemented in test`);
+        }
+        if (this.selectOrRadioFilterItems.includes(filterItem)) {
+            return await this.FILTER_ITEMS[filterItem].getOptions();
+        } else {
+            throw new Error(`filter item ${filterItem} is not a select or a Radio item.`);
+        }
+    }
+
+    async setFilterSelectOrRadioOptions(filterItem,option) {
+        const filtersItems = Object.keys(this.FILTER_ITEMS);
+        if (!filtersItems.includes(filterItem)) {
+            throw new Error(`Filter item "${filterItem}" not recognised or not implemented in test`);
+        }
+        if (this.selectOrRadioFilterItems.includes(filterItem)) {
+            return await this.FILTER_ITEMS[filterItem].selectOption(option);
+        } else {
+            throw new Error(`filter item ${filterItem} is not a select or a Radio item.`);
+        }
+    }
+
+    async inputFilterItem(filterItem, inputText){
+        await await this.FILTER_ITEMS[filterItem].sendKeys(inputText);
+    }
 
     getSubNavigationTabElement(tabLabel) {
         return element(by.xpath(`//${this.containerTag}//a[contains(text(),'${tabLabel}')]`));
@@ -111,3 +174,8 @@ class AllWork extends TaskList {
 }
 
 module.exports = new AllWork();
+
+
+
+
+

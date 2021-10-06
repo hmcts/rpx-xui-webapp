@@ -1,4 +1,5 @@
 export interface RoleExclusion {
+    id: string;
     type: string;
     name: string;
     userType: string;

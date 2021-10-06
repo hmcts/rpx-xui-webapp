@@ -16,3 +16,9 @@ export interface UserDetails {
   canShareCases: boolean;
   userInfo: UserInfo;
 }
+
+export enum UserRole {
+  Admin = 'admin',
+  LegalOps = 'legalops',
+  Judicial = 'judicial',
+}

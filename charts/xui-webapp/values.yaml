@@ -69,7 +69,7 @@ nodejs:
     SERVICES_EM_HRS_API: http://em-hrs-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services PRD
     SERVICES_PRD_API: http://rd-professional-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
-    # Services Location Ref
+    # Services Location Ref endpoint
     SERVICES_LOCATION_REF_API_URL: http://rd-location-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services Em Anno
     SERVICES_EM_ANNO_API: http://em-anno-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal

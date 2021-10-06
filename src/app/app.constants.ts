@@ -5,7 +5,8 @@ const FeatureNames = {
   currentWAFeature: 'mc-work-allocation-active-feature',
   workAllocation: 'MC_Work_Allocation',
   noticeOfChange: 'MC_Notice_of_Change',
-  waMvpPaginationFeature: 'mc-mvp-wa-pagination'
+  waMvpPaginationFeature: 'mc-mvp-wa-pagination',
+  mcHearingsFeature: 'mc-hearings-jurisdictions'
 };
 
 const FooterData =  {
@@ -242,3 +243,5 @@ export class AppConstants {
 
 export const LD_FLAG_REMOVE_USER_FROM_CASE_MC: string = 'remove-user-from-case-mc';
 export const LD_FLAG_MC_APPLICATION_THEMES: string = 'mc-application-themes';
+export const LEGAL_OPS_ROLE_LIST: string[] = ['caseworker-ia-caseofficer'];
+export const JUDICIAL_ROLE_LIST: string[] = ['caseworker-ia-iacjudge', 'caseworker-sscs-judge'];

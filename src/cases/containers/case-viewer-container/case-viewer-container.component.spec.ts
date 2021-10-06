@@ -10,6 +10,7 @@ import { StoreModule } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
 import { reducers, State } from 'src/app/store';
+import { FeatureVariation } from 'src/cases/models/feature-variation.model';
 import { CaseViewerContainerComponent } from './case-viewer-container.component';
 
 @Component({
@@ -23,14 +24,13 @@ import { CaseViewerContainerComponent } from './case-viewer-container.component'
   `
 })
 class CaseViewerComponent {
-   @Input() public caseDetails: CaseView;
-   @Input() public prependedTabs: CaseTab[] = [];
+  @Input() public caseDetails: CaseView;
+  @Input() public prependedTabs: CaseTab[] = [];
 }
 
-describe('CaseViewerContainerComponent', () => {
+fdescribe('CaseViewerContainerComponent', () => {
   let component: CaseViewerContainerComponent;
   let fixture: ComponentFixture<CaseViewerContainerComponent>;
-  let debug: DebugElement;
 
   const CASE_VIEW: CaseView = {
     events: [],
@@ -131,11 +131,15 @@ describe('CaseViewerContainerComponent', () => {
   class MockFeatureToggleService implements FeatureToggleService {
     public getValue<R>(_key: string, _defaultValue: R): Observable<R> {
       // @ts-ignore
-      return of('Hearings');
+      return of(null);
     }
 
     public getValueOnce<R>(_key: string, _defaultValue: R): Observable<R> {
-      return of(null);
+        return of([{
+          jurisdiction: 'SSCS',
+          roles: ['caseworker-sscs-judge', 'caseworker-sscs']
+        }
+      ] as unknown as R);
     }
 
     public initialize(_user: FeatureUser, _clientId: string): void {
@@ -220,9 +224,15 @@ describe('CaseViewerContainerComponent', () => {
   }));
 
   beforeEach(() => {
+    let service = TestBed.get(FeatureToggleService);
+    const launchDarklyMockData: [FeatureVariation] = [{
+        jurisdiction: 'SSCS',
+        roles: ['caseworker-sscs-judge', 'caseworker-sscs']
+      }
+    ];
+
     fixture = TestBed.createComponent(CaseViewerContainerComponent);
     component = fixture.componentInstance;
-    debug = fixture.debugElement;
     fixture.detectChanges();
   });
 

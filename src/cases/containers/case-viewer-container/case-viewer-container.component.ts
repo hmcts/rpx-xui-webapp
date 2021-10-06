@@ -6,7 +6,7 @@ import { select, Store } from '@ngrx/store';
 import { combineLatest } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 import { map } from 'rxjs/operators';
-import { AppUtils } from '../../../app/app-utils';
+import { FeatureVariation } from 'src/cases/models/feature-variation.model';
 import { AppConstants } from '../../../app/app.constants';
 import { UserDetails } from '../../../app/models/user-details.model';
 import * as fromRoot from '../../../app/store';
@@ -34,15 +34,18 @@ export class CaseViewerContainerComponent implements OnInit {
     private readonly featureToggleService: FeatureToggleService) {
   }
 
-  private static enableAppendedTabs(feature: string, userDetails: UserDetails): boolean {
-    console.log('feature', feature);
+  private static enableAppendedTabs(featureRoles:  string[], userDetails: UserDetails): boolean {
+    console.log('featureRoles', featureRoles);
     console.log('userDetails', userDetails);
-    return feature === CaseViewerContainerComponent.FEATURE_HEARING
-      && !!AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
+
+    if (userDetails && userDetails.userInfo) {
+      return userDetails.userInfo.roles && featureRoles.length ? userDetails.userInfo.roles.some(userRole => featureRoles.some(role => role === userRole)): false;
+    }
+    return false;
   }
 
   public ngOnInit(): void {
-    this.caseDetails = this.route.snapshot.data.case as CaseView;
+    this.caseDetails = this.route.snapshot.data.case as CaseView;    
     const lastCaseTab = Math.max.apply(Math, this.caseDetails.tabs.map(function(o) { return o.order; }));
     this.appendedTabs[0].order = lastCaseTab;
     this.appendedCaseViewTabs().subscribe(appendResult => {
@@ -54,11 +57,12 @@ export class CaseViewerContainerComponent implements OnInit {
 
   private appendedCaseViewTabs(): Observable<CaseTab[]> {
     const returnValue = combineLatest([
-      this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.mcHearingsFeature, CaseViewerContainerComponent.FEATURE_HEARING),
+      this.featureToggleService.getValueOnce<FeatureVariation[]>(AppConstants.FEATURE_NAMES.mcHearingsFeature, []),
       this.store.pipe(select(fromRoot.getUserDetails))
     ]).pipe(
-      map(([feature, userDetails]: [string, UserDetails]) => {
-        return CaseViewerContainerComponent.enableAppendedTabs(feature, userDetails) ? this.appendedTabs : [];
+      map(([featureVariations, userDetails]: [FeatureVariation[], UserDetails]) => {
+        const featureRoles = featureVariations.length ? featureVariations[0].roles: [];
+        return CaseViewerContainerComponent.enableAppendedTabs(featureRoles, userDetails) ? this.appendedTabs : [];
       })
     );
     return returnValue;

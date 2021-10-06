@@ -49,4 +49,18 @@ describe('CaseDetailsComponent', () => {
     expect(component.$caseIdSubscription.unsubscribe).toHaveBeenCalled();
   });
 
+  it('should unsubscribe ', () => {
+    const subscription = jasmine.createSpyObj('myObject', ['unsubscribe']);
+
+    component.unSubscribe(subscription);
+    expect(subscription.unsubscribe).toHaveBeenCalled();
+  });
+
+  it('should not call unsubscribe when no subscription', () => {
+    const subscription = jasmine.createSpyObj('myObject', ['unsubscribe']);
+
+    component.unSubscribe(null);
+    expect(subscription.unsubscribe).not.toHaveBeenCalled();
+  });
+
 });

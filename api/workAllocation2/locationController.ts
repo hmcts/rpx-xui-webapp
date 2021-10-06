@@ -2,6 +2,7 @@ import { NextFunction, Response } from 'express';
 import { getConfigValue } from '../configuration';
 import { SERVICES_LOCATION_API_PATH } from '../configuration/references';
 import { EnhancedRequest } from '../lib/models';
+import { CourtVenue, Location } from './interfaces/location';
 import { handleLocationGet } from './locationService';
 import { prepareGetLocationByIdUrl, prepareGetLocationsUrl } from './util';
 
@@ -46,7 +47,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   }
 }
 
-export function mapLocations(venues: Array<{epimms_id, site_name}>): Array<{id: string, locationName: string}> {
+export function mapLocations(venues: CourtVenue []): Location [] {
   const locations = [];
   venues.forEach(venue => locations.push({
                               id: venue.epimms_id,

@@ -47,7 +47,7 @@ router.use('/task', searchTask);
 router.use('/taskWithPagination', searchTask);
 
 router.use('/case/task/:caseId', getTasksByCaseId);
-router.use('/case/task/:caseId/event/:eventId', getTasksByCaseIdAndEventId);
+router.use('/case/tasks/:caseId/event/:eventId', getTasksByCaseIdAndEventId);
 
 router.use('/exclusion/rolesCategory', getRolesCategory);
 

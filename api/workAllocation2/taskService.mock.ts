@@ -5,6 +5,7 @@ import {
   ALL_TASKS,
   ASSIGNED_CASE_TASKS,
   ASSIGNED_TASKS,
+  CASE_EVENT_TASKS,
   CASEWORKER_AVAILABLE_TASKS,
   CASEWORKER_MY_TASKS,
   JUDICIAL_AVAILABLE_TASKS,
@@ -23,7 +24,7 @@ export const init = () => {
   const caseworkerAvailableTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/availableTasks\?view=caseworker/;
   const getTaskFromIDUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/;
   const getTasksByCaseIdUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{16}/;
-  const getTasksByCaseIdAndEventIdUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{16}\/event\/[a-zA-Z]{1,}/;
+  const getTasksByCaseIdAndEventIdUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/tasks\/[a-fA-F0-9]{16}\/event\/[a-zA-Z]{1,}/;
   const claimTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12,13}\/claim/;
   const unclaimTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/unclaim/;
   const completeTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/complete/;
@@ -195,6 +196,42 @@ export const init = () => {
   mock.onGet(getTasksByCaseIdUrl).reply(config => {
     // return an array in the form of [status, data, headers]
     const tasks = [...ASSIGNED_CASE_TASKS.tasks, ...UNASSIGNED_CASE_TASKS.tasks];
+    return [
+      200,
+      tasks,
+    ];
+  });
+
+  mock.onGet(getTasksByCaseIdAndEventIdUrl).reply(config => {
+    // return an array in the form of [status, data, headers]
+    let tasks = [...CASE_EVENT_TASKS.tasks];
+    const paths = config.url.split('/');
+    const eventId = paths[paths.length - 1];
+
+    if (eventId === 'editAppealAfterSubmit') {
+      tasks = [];
+    }
+
+    if (eventId === 'addCaseNote') {
+      tasks = [tasks[2]];
+    }
+
+    if (eventId === 'linkAppeal') {
+      tasks = [tasks[0]];
+    }
+
+    if (eventId === 'unlinkAppeal') {
+      tasks = [tasks[5]];
+    }
+
+    if (eventId === 'changeDirectionDueDate') {
+      tasks = [tasks[4]];
+    }
+
+    if (eventId === 'endAppeal') {
+      tasks = [tasks[3]];
+    }
+
     return [
       200,
       tasks,

@@ -37,7 +37,7 @@ export async function handleGetTasksByCaseId(path: string, req: EnhancedRequest)
 
 export async function handleGetTasksByCaseIdAndEventId(path: string, req: EnhancedRequest): Promise<any> {
   // this is relevant for eventStartComponent
-  logger.info('getting tasks for', path);
+  logger.info('getting tasks by case id and event id', path);
   const headers = setHeaders(req);
   return await httpMock.get<TaskList>(path, { headers });
 }

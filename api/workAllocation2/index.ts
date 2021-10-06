@@ -1,4 +1,6 @@
+import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
+import { sendPost } from '../common/crudService';
 import { handleGet, handlePost } from '../common/mockService';
 import { getConfigValue } from '../configuration';
 import {
@@ -19,9 +21,6 @@ import {
   handlePostRoleAssingnments,
   handlePostSearch
 } from './caseWorkerService';
-
-import { AxiosResponse } from 'axios';
-import { sendPost } from '../common/crudService';
 import { Caseworker, Judicialworker } from './interfaces/common';
 import { TaskList } from './interfaces/task';
 import { checkIfCaseAllocator, refineRoleAssignments } from './roleService';
@@ -184,7 +183,10 @@ export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Resp
   const caseId = req.params.caseId;
   const eventId = req.params.eventId;
   try {
-    const {status, data} = await handleGetTasksByCaseIdAndEventId(`${baseWorkAllocationTaskUrl}/task/${caseId}/event/${eventId}`, req);
+    const {
+      status,
+      data,
+    } = await handleGetTasksByCaseIdAndEventId(`${baseWorkAllocationTaskUrl}/tasks/${caseId}/event/${eventId}`, req);
     return res.send(data as TaskList).status(status);
   } catch (e) {
     next(e);

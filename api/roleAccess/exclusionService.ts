@@ -15,7 +15,7 @@ export async function findExclusionsForCaseId(req: EnhancedRequest, res: Respons
   const headers = setHeaders(req);
   try {
     const response: AxiosResponse = await http.post(fullPath, requestPayload, {headers});
-    const roleExclusions = mapResponseToExclusions(response.data.roleAssignmentResponse);
+    const roleExclusions = mapResponseToExclusions(response.data.roleAssignmentResponse, req.body.exclusionId);
     return res.status(200).send(roleExclusions);
   } catch (error) {
     next(error);
@@ -44,7 +44,10 @@ export async function deleteUserExclusion(req: EnhancedRequest, res: Response, n
   return res.status(200).send(req.body.roleExclusion);
 }
 
-export function mapResponseToExclusions(roleAssignments: RoleAssignment[]): RoleExclusion[] {
+export function mapResponseToExclusions(roleAssignments: RoleAssignment[], assignmentId?: string): RoleExclusion[] {
+  if (assignmentId) {
+    roleAssignments = roleAssignments.filter(roleAssignment => roleAssignment.id === assignmentId);
+  }
   return roleAssignments.map(roleAssignment => ({
     added: roleAssignment.created,
     id: roleAssignment.id,

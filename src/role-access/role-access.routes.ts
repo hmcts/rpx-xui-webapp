@@ -26,7 +26,6 @@ export const ROUTES: Routes = [
   },
   {
     path: 'delete-exclusion',
-    resolve: {case: CaseResolver},
     component: DeleteExclusionComponent,
     canActivate: [HealthCheckGuard],
     data: {

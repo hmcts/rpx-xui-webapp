@@ -56,6 +56,7 @@ Feature: WA Release 2: Case details Tasks tab - Manage links
 
         When I click manage link "Assign to me" for task at position 7 in case details tasks tab
         Then I see case details page with message banner "You've assigned task to yourself"
+        Then I see case details tab label "Tasks" is displayed is "true"
 
     @test
     Scenario: Task manage link actions Reassign
@@ -99,15 +100,9 @@ Feature: WA Release 2: Case details Tasks tab - Manage links
         Then I validate column "Person" value is set to "test23 person" in task check your changes page
         When I click submit button "Reassign" in task check your changes page
         Then I see navigation header tab page "My work"
-        Then I validate notification message banner is displayed in "My work" page
-        Then I validate notification banner messages displayed in "My work" page
-            | message         |
-            | <bannermessage> |
+        Then I see case details tab label "Tasks" is displayed is "true"
 
-
-
-
-        Then I see case details page with message banner "You've assigned task to yourself"
+        Then I see case details page with message banner "You've reassigned a task to somebody else"
 
 
 
@@ -148,8 +143,10 @@ Feature: WA Release 2: Case details Tasks tab - Manage links
             | Allwork test scr | auto test category | London QA lab |
 
         When I click "Unassign" submit button in task action page
-        Then I see navigation header tab page "My work"
-        Then I validate notification message banner is displayed in "My work" page
+        Then I see case details tab label "Tasks" is displayed is "true"
+
+        Then I see case details page with message banner "You've unassigned a task."
+
 # Then I validate notification banner messages displayed in "My work" page
 #     | message                                   |
 #     | <bannermessage> |

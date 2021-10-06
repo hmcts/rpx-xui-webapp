@@ -6,6 +6,14 @@ class Select{
         
     }
 
+    async isDisplayed(){
+        return await this.selectElement.isPresent();
+    }
+
+    async isEnabled() {
+        return await this.selectElement.isEnabled();
+    }
+
     async getOptions(){
         const count = await this.selectElementOptions.count();
         const options = [];
@@ -35,8 +43,20 @@ class GovUKRadios{
        
     }
 
+    async isDisplayed() {
+        const container = this.locatorType.toLowerCase() === 'css' ? $(`${this.selector}`) : element(by.xpath(`${selector}`));
+
+        return await this.selectElement.isPresent();
+    }
+
+    async isEnabled(){
+        const container = this.locatorType.toLowerCase() === 'css' ? $(`${this.selector}`) : element(by.xpath(`${selector}`));
+
+        return await this.selectElement.isEnabled();
+    }
+
     async getRadioOptions(){
-        const labels = this.locatorType.toLowerCase() === 'css' ? $$(`${this.selector} .govuk-radios__item govuk-radios__label`) : element(by.xpath(`${selector}//div[contains(@class,"govuk-radios__item")//label]`));
+        const labels = this.locatorType.toLowerCase() === 'css' ? $$(`${this.selector} .govuk-radios__item govuk-radios__label`) : element.all(by.xpath(`${selector}//div[contains(@class,"govuk-radios__item")//label]`));
     
         const count = await labels.count();
         const options = [];

@@ -7,7 +7,7 @@ import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 
 import { http } from '../lib/http';
-import { confirmUserExclusion, deleteUserExclusion, findExclusionsForCaseId } from './exclusionService';
+import { confirmUserExclusion, deleteUserExclusion, findExclusionsForCaseId, getRequestPayload } from './exclusionService';
 
 chai.use(sinonChai);
 describe('exclusions.exclusionService', () => {
@@ -63,47 +63,14 @@ describe('exclusions.exclusionService', () => {
 
   describe('getUserExclusions', () => {
 
-    it('should make a get request and respond appropriately', async () => {
-
-      spy = sandbox.stub(http, 'get').resolves(res);
-      const req = mockReq({
-        session: {
-          passport: {
-            user: {
-              userinfo: {
-                roles: [
-                  'caseworker-ia-iacjudge',
-                ],
-              },
-            },
-          },
-        },
-      });
-      let response = mockRes();
-      await findExclusionsForCaseId(req, response, next);
-
-      // Should have received the HTTP response. The get simply returns the data.
-      expect(response.send).to.have.been.calledWith(sinon.match(exampleMultiRoleExclusions));
-
-      const nonJudgeReq = mockReq({
-        session: {
-          passport: {
-            user: {
-              userinfo: {
-                roles: [
-                  'caseworker',
-                ],
-              },
-            },
-          },
-        },
-      });
-      response = mockRes();
-      await findExclusionsForCaseId(nonJudgeReq, response, next);
-      // Should have received the HTTP response. The get simply returns the data.
-      expect(response.send).to.have.been.calledWith(sinon.match([]));
+    it('should make a getRequestPayload', async () => {
+      const requestPayload = getRequestPayload('1234567891234567', 'Asylum', 'IA');
+      expect(requestPayload.queryRequests.length).to.equal(1);
+      expect(requestPayload.queryRequests[0].grantType[0]).to.equal('EXCLUDED');
+      expect(requestPayload.queryRequests[0].attributes.caseId[0]).to.equal('1234567891234567');
+      expect(requestPayload.queryRequests[0].attributes.jurisdiction[0]).to.equal('Asylum');
+      expect(requestPayload.queryRequests[0].attributes.caseType[0]).to.equal('IA');
     });
-
   });
 
   describe('confirmUserExclusion', () => {

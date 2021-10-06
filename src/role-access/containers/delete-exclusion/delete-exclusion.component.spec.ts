@@ -26,6 +26,7 @@ describe('DeleteExclusionComponent', () => {
   ]);
   const mockRoleExclusionsService = jasmine.createSpyObj('roleExclusionsService', ['deleteExclusion']);
   const exampleCaseId = '1234';
+  const exclusionId = '222';
   const goToCaseUrl = `cases/case-details/${exampleCaseId}/roles-and-access`;
 
   beforeEach(async(() => {
@@ -44,13 +45,14 @@ describe('DeleteExclusionComponent', () => {
                 roleExclusions: [
                   {
                     added: Date.UTC(2021, 6, 1),
+                    id: exclusionId,
                     name: 'Judge Rinder',
                     notes: 'Test exclusion'
                   }
                 ]
               }
             },
-            paramMap: of(convertToParamMap({caseId: exampleCaseId}))
+            queryParamMap: of(convertToParamMap({caseId: exampleCaseId, exclusionId }))
           }
         },
         {

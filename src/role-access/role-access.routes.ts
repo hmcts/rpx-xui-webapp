@@ -24,7 +24,7 @@ export const ROUTES: Routes = [
     ]
   },
   {
-    path: 'delete-exclusion/:caseId',
+    path: 'delete-exclusion',
     resolve: { roleExclusions: RoleExclusionsResolver },
     component: DeleteExclusionComponent,
     canActivate: [HealthCheckGuard],

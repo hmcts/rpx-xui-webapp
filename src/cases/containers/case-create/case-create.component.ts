@@ -49,9 +49,13 @@ export class CasesCreateComponent implements OnInit, OnDestroy {
 
   }
 
-  ngOnDestroy(): void {
-    if (this.$inputSubscription) {
-      this.$inputSubscription.unsubscribe();
+  public ngOnDestroy(): void {
+    this.unSubscribe(this.$inputSubscription);
+  }
+
+  public unSubscribe(subscription: Subscription): void {
+    if (subscription) {
+      subscription.unsubscribe();
     }
   }
 

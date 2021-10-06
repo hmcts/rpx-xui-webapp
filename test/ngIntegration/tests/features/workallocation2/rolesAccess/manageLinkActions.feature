@@ -1,4 +1,4 @@
-@ng @test
+@ng
 Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
     Background: User and mock data setup
@@ -102,9 +102,9 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
         When I click action row link "Reallocate" for role category "Judiciary" in Roles and access page
 
-        Then I see Allocate role work flow page "Choose how to allocate the role" with caption "Reallocate a hearing judge" is displayed
-        When I select Choose how to allocate option "Reserve to me" in work flow
-        When I click continue in work flow page "Choose how to allocate the role"
+        # Then I see Allocate role work flow page "Choose how to allocate the role" with caption "Reallocate a hearing judge" is displayed
+        # When I select Choose how to allocate option "Reserve to me" in work flow
+        # When I click continue in work flow page "Choose how to allocate the role"
 
         Then I see Allocate role work flow page "Find the person" with caption "Reallocate a lead judge" is displayed
         When I enter find person search input "jud" in work flow
@@ -229,9 +229,9 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
         When I click action row link "Reallocate" for role category "Legal Ops" in Roles and access page
 
-        Then I see Allocate role work flow page "Choose how to allocate the role" with caption "Reallocate a legal ops case manager" is displayed
-        When I select Choose how to allocate option "Allocate to another person" in work flow
-        When I click continue in work flow page "Choose how to allocate the role"
+        # Then I see Allocate role work flow page "Choose how to allocate the role" with caption "Reallocate a legal ops case manager" is displayed
+        # When I select Choose how to allocate option "Allocate to another person" in work flow
+        # When I click continue in work flow page "Choose how to allocate the role"
 
         Then I see Allocate role work flow page "Find the person" with caption "Reallocate a legal ops case manager" is displayed
         When I enter find person search input "jud" in work flow

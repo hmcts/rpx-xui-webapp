@@ -27,8 +27,12 @@ export class CaseDetailsComponent implements OnDestroy, OnInit {
   }
 
   public ngOnDestroy(): void {
-    if (this.$caseIdSubscription) {
-      this.$caseIdSubscription.unsubscribe();
+    this.unSubscribe(this.$caseIdSubscription);
+  }
+
+  public unSubscribe(subscription: Subscription): void {
+    if (subscription) {
+      subscription.unsubscribe();
     }
   }
 }

@@ -310,7 +310,13 @@ class WAListTable {
     }
 
     async isPaginationControlDisplayed() {
-        return this.paginationContainer.isPresent() && this.paginationContainer.isDisplayed();
+        const isPresent = await this.paginationContainer.isPresent();
+        let isDisplayed = false;
+
+        if (isPresent){
+            isDisplayed = await this.paginationContainer.isDisplayed();
+        }
+        return isPresent && isDisplayed;
     }
 
     async getTableDisplayValuesAtRow(rowNum) {

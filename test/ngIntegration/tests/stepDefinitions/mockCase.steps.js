@@ -117,6 +117,17 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             res.send(caseRoleExclusions);
         });
     });
+
+    Given('I set MOCK case tasks with userDetails from reference {string}', async function (userDetailsRef, caseTasksDatatable) {
+        const userDetails = global.scenarioData[userDetailsRef];
+
+        const dateTableHashes = caseTasksDatatable.hashes();
+        const tasks = workAlloctionMockData.getCaseTasks(dateTableHashes, userDetails);
+        MockApp.onGet('/workallocation2/case/task/:caseid', (req, res) => {
+            CucumberReporter.AddJson(tasks);
+            res.send(tasks);
+        });
+    });
 });
 
 function getCaseDetailsMetadataField(caseDetails, metadatFieldId){

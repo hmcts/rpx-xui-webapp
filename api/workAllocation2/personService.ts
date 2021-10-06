@@ -15,12 +15,8 @@ export async function postFindPersonSearch(req: EnhancedRequest, res: Response, 
     const domain = req.body.searchOptions.jurisdiction as PersonRole;
     let searchResult = PERSON.filter(person => applySearchFilter(person, domain, searchTerm));
     if (searchResult && searchResult.length === 0) {
-        searchResult = getDefaultResult();
+        searchResult = [];
     }
     res.status(200);
     res.send(searchResult);
-}
-
-export function getDefaultResult() {
-    return [];
 }

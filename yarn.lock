@@ -523,10 +523,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.4.3-change-spinner":
-  version "1.4.3-change-spinner"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.3-change-spinner.tgz#c645110a551ecef954a355376584c8b24bb831c0"
-  integrity sha512-AM8zF/Bvg6RmKoqPXkNnugEOxncJ3NBaKwMw1AEBSPinjNhYetiw66/D+GvXULR7cezD1XZwk9JMCyJoBZxTcw==
+"@hmcts/rpx-xui-common-lib@1.4.3-change-spinner-v2":
+  version "1.4.3-change-spinner-v2"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.3-change-spinner-v2.tgz#8584a0655af521e6bd82767ebee9af209649b60b"
+  integrity sha512-ruZTMMpd02Zddet2XGx0eZ59c8BrQfGQM2blCj827IeeYoXJS27cMzXblNIz3QZwcbFrOz2fyStdcvaExpndww==
   dependencies:
     tslib "^1.9.0"
 

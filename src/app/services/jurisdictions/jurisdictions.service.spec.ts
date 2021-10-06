@@ -1,10 +1,10 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { GlobalSearchJurisdictionsService } from "./global-search-jurisdictions.service";
+import { JurisdictionsService } from "./jurisdictions.service";
 
-describe('Global Search Jurisdictions Service', () => {
+describe('Jurisdictions Service', () => {
     let httpClientGetSpy: { get: jasmine.Spy };
-    let service: GlobalSearchJurisdictionsService;
+    let service: JurisdictionsService;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -12,7 +12,7 @@ describe('Global Search Jurisdictions Service', () => {
                 HttpClientTestingModule
             ],
             providers: [
-                GlobalSearchJurisdictionsService
+                JurisdictionsService
             ]
         });
 
@@ -20,8 +20,15 @@ describe('Global Search Jurisdictions Service', () => {
     });
 
     it('should have configuration service', () => {
-        service = TestBed.get(GlobalSearchJurisdictionsService);
+        service = TestBed.get(JurisdictionsService);
         expect(service).toBeTruthy();
+    });
+
+    it('should get jurisdictions', () => {
+        httpClientGetSpy.get.and.returnValue({});
+        service.getJurisdictions().subscribe(data => {
+            expect(data).toBeDefined();
+        });
     });
 
     it('should get global search jurisdictions', () => {

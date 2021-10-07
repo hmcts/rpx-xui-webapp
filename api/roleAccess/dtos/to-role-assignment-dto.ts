@@ -28,13 +28,9 @@ export function toRoleAssignmentBody(userInfo: UserInfo, allocateRoleData: Alloc
 }
 
 export function getActorId(userInfo: UserInfo, allocateRoleData: AllocateRoleData): string {
-  if (allocateRoleData.action === 'reallocate') {
-    return allocateRoleData.person.id;
+  if (allocateRoleData.allocateTo === AllocateTo.RESERVE_TO_ME) {
+    return userInfo.id;
   } else {
-    if (allocateRoleData.allocateTo === AllocateTo.RESERVE_TO_ME) {
-      return userInfo.id;
-    } else {
-      return allocateRoleData.person.id;
-    }
+    return allocateRoleData.person.id;
   }
 }

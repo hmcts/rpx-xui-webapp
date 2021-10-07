@@ -1,4 +1,4 @@
-import { Component, DebugElement, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatTabsModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -10,7 +10,6 @@ import { StoreModule } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
 import { reducers, State } from 'src/app/store';
-import { FeatureVariation } from 'src/cases/models/feature-variation.model';
 import { CaseViewerContainerComponent } from './case-viewer-container.component';
 
 @Component({
@@ -28,7 +27,7 @@ class CaseViewerComponent {
   @Input() public prependedTabs: CaseTab[] = [];
 }
 
-fdescribe('CaseViewerContainerComponent', () => {
+describe('CaseViewerContainerComponent', () => {
   let component: CaseViewerContainerComponent;
   let fixture: ComponentFixture<CaseViewerContainerComponent>;
 
@@ -130,7 +129,6 @@ fdescribe('CaseViewerContainerComponent', () => {
   // Stub
   class MockFeatureToggleService implements FeatureToggleService {
     public getValue<R>(_key: string, _defaultValue: R): Observable<R> {
-      // @ts-ignore
       return of(null);
     }
 
@@ -186,20 +184,11 @@ fdescribe('CaseViewerContainerComponent', () => {
             'pui-user-manager'
           ],
           uid: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
-          surname: 'judge',       
+          surname: 'judge',
         },
       }
     }
   };
-
-  const TABS: CaseTab[] = [
-    {
-      id: 'hearings',
-      label: 'Hearings',
-      fields: [],
-      show_condition: null
-    }
-  ];
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -224,19 +213,12 @@ fdescribe('CaseViewerContainerComponent', () => {
   }));
 
   beforeEach(() => {
-    let service = TestBed.get(FeatureToggleService);
-    const launchDarklyMockData: [FeatureVariation] = [{
-        jurisdiction: 'SSCS',
-        roles: ['caseworker-sscs-judge', 'caseworker-sscs']
-      }
-    ];
-
     fixture = TestBed.createComponent(CaseViewerContainerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should return Hearings as the last tab', () => {  
+  it('should return Hearings as the last tab', () => {
     expect(component.caseDetails.tabs.length).toBeTruthy();
     expect(component.caseDetails.tabs[component.caseDetails.tabs.length -1].label).toEqual('Hearings');
   });

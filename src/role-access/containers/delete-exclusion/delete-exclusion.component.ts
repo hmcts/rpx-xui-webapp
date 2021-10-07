@@ -31,8 +31,8 @@ export class DeleteExclusionComponent implements OnInit {
     paramMap$.pipe(mergeMap(queryMap => {
         return this.getExclusionFromQuery(queryMap);
       })).subscribe(exclusions => {
-          this.roleExclusion = exclusions.find(excl => excl.id === this.exclusionId);
-          this.populateAnswers(this.roleExclusion);
+        this.roleExclusion = exclusions.find(excl => excl.id === this.exclusionId);
+        this.populateAnswers(this.roleExclusion);
       });
   }
 

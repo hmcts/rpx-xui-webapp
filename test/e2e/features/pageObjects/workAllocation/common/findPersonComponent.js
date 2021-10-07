@@ -39,6 +39,7 @@ class FindPersonComponent{
     }
 
     async getHeaderText(){
+        expect(await this.amOnPage(),'Not on find person page').to.be.true;
         return await this.header.getText();
     }
 

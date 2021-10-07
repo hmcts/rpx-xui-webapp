@@ -29,17 +29,19 @@ class AllWork extends TaskList {
         this.FILTER_ITEMS = {
             'Service': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Service")]/..//select'),
             'Case Location': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Case Location")]/..//select'),
-            'Person': new GovUKRadios('//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Person")]/..//*[contains(@class,"govuk-radios")]'),
+            'Person': new GovUKRadios('xpath','//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Person")]/..//div[contains(@class,"govuk-radios")]'),
             'Person role type': new Select('xpath','//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//select[contains(@id,"select_role")]'),
             'Person input': element(by.xpath('//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//xuilib-find-person//input')),
             'Task type': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Task type")]/..//select'),
-            'Priority': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Priority")]/..//select')
+            'Priority': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Priority")]/..//select'),
+            'Role type': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Role type")]/..//select')
+            
         } 
 
-        this.selectOrRadioFilterItems = ['Service', 'Case Location', 'Person role type', 'Task type', 'Priority','Person'];
+        this.selectOrRadioFilterItems = ['Service', 'Case Location', 'Person role type', 'Task type', 'Priority','Person','Role type'];
 
-        this.filterApplyBtn = $('exui-task-manager-filter xuilib-generic-filter #applyFilter');
-        this.filterResetBtn = $('exui-task-manager-filter xuilib-generic-filter #cancelFilter');
+        this.filterApplyBtn = $('exui-all-work-home xuilib-generic-filter #applyFilter');
+        this.filterResetBtn = $('exui-all-work-home xuilib-generic-filter #cancelFilter');
     }
 
 
@@ -128,18 +130,6 @@ class AllWork extends TaskList {
     // Task container methods
     async isTasksContainerDisplayed() {
         return await this.tasksContainer.isPresent() && await this.tasksContainer.isDisplayed();
-    }
-
-    async selectLocationFilter(value){
-        const elementToSelect = this.locationsFilterSelect.element(by.xpath(`option[contains(text(),'${value}')]`));
-        await BrowserWaits.waitForElement(elementToSelect);
-        await elementToSelect.click();
-    }
-
-    async selectPersonFilter(value) {
-        const elementToSelect = this.personsFilterSelect.element(by.xpath(`option[contains(text(),'${value}')]`));
-        await BrowserWaits.waitForElement(elementToSelect);
-        await elementToSelect.click();
     }
 
 

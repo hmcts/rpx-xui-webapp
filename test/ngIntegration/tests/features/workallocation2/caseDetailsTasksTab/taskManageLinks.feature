@@ -58,7 +58,6 @@ Feature: WA Release 2: Case details Tasks tab - Manage links
         Then I see case details page with message banner "You've assigned task to yourself"
         Then I see case details tab label "Tasks" is displayed is "true"
 
-    @test
     Scenario: Task manage link actions Reassign
 
         Given I start MockApp
@@ -106,7 +105,6 @@ Feature: WA Release 2: Case details Tasks tab - Manage links
 
 
 
-    @test
     Scenario: Task manage link actions Unassign
 
         Given I start MockApp

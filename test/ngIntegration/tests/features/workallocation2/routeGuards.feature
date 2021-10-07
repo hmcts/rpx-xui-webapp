@@ -8,8 +8,7 @@ Feature: Work allocation 2 feature route guards
         Given I set MOCK with user "IAC_CaseOfficer_R1" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer" with reference "userDetails"
         Given I start MockApp
         Given I navigate to home page
-        When I click on primary navigation header tab "Task list", I see selected tab page displayed
-
+        
         Given I navigate to page route "http://localhost:3000<Route>"
         Then I see page with css locator "ccd-search-result"
 

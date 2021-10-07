@@ -44,19 +44,19 @@ class GovUKRadios{
     }
 
     async isDisplayed() {
-        const container = this.locatorType.toLowerCase() === 'css' ? $(`${this.selector}`) : element(by.xpath(`${selector}`));
+        const container = this.locatorType.toLowerCase() === 'css' ? $(`${this.selector}`) : element(by.xpath(`${this.selector}`));
 
-        return await this.selectElement.isPresent();
+        return await container.isPresent();
     }
 
     async isEnabled(){
-        const container = this.locatorType.toLowerCase() === 'css' ? $(`${this.selector}`) : element(by.xpath(`${selector}`));
+        const container = this.locatorType.toLowerCase() === 'css' ? $(`${this.selector}`) : element(by.xpath(`${this.selector}`));
 
-        return await this.selectElement.isEnabled();
+        return await containert.isEnabled();
     }
 
     async getRadioOptions(){
-        const labels = this.locatorType.toLowerCase() === 'css' ? $$(`${this.selector} .govuk-radios__item govuk-radios__label`) : element.all(by.xpath(`${selector}//div[contains(@class,"govuk-radios__item")//label]`));
+        const labels = this.locatorType.toLowerCase() === 'css' ? $$(`${this.selector} .govuk-radios__item govuk-radios__label`) : element.all(by.xpath(`${this.selector}//div[contains(@class,"govuk-radios__item")]//label]`));
     
         const count = await labels.count();
         const options = [];
@@ -68,7 +68,7 @@ class GovUKRadios{
     }
 
     async selectOption(option){
-        const labels = this.locatorType.toLowerCase() === 'css' ? $$(`${this.selector} .govuk-radios__item govuk-radios__label`) : element(by.xpath(`${selector}//div[contains(@class,"govuk-radios__item")//label]`));
+        const labels = this.locatorType.toLowerCase() === 'css' ? $$(`${this.selector} .govuk-radios__item govuk-radios__label`) : element.all(by.xpath(`${this.selector}//div[contains(@class,"govuk-radios__item")]//label`));
 
         const count = await labels.count();
         for (let i = 0; i < count; i++) {

@@ -37,6 +37,9 @@
       "dataApi": "SERVICES_CCD_DATA_STORE_API",
       "caseAssignmentApi": "SERVICES_CCD_CASE_ASSIGNMENT_API"
     },
+    "hearings": {
+      "componentApi": "SERVICES_HEARINGS_COMPONENT_API"
+    },
     "documents": {
       "api": "SERVICES_DOCUMENTS_API"
     },

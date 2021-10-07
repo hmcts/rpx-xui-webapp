@@ -19,7 +19,7 @@ export const getTitleText = (role: SpecificRole, action: string, roleCategory: s
   } else {
     return roleCategory  ? `${action} a ${roleCategory.replace('_', ' ').toLowerCase()} role` : `${action} a role`;
   }
-}
+};
 
 export const handleError = (error: RoleAccessHttpError, navigator: Navigator, defaultUrl: string): void => {
   if (error && error.status) {
@@ -48,4 +48,4 @@ export const handleError = (error: RoleAccessHttpError, navigator: Navigator, de
         }
     }
   }
-}
+};

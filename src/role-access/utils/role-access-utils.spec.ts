@@ -53,14 +53,14 @@ describe('WorkAllocationUtils', () => {
     const firstRole: SpecificRole = {
       id: 'first-role',
       name: 'First role'
-    }
+    };
     const caseManager: SpecificRole = {
       id: 'case-manager',
       name: 'Case manager'
-    }
+    };
     // test that title can mention specifc role
     expect(getTitleText(firstRole, 'allocate', 'JUDICIAL')).toBe('allocate a first role');
-    // case manager 
+    // case manager
     expect(getTitleText(caseManager, 'reallocate', 'LEGAL_OPS')).toBe('reallocate a legal ops case manager');
     // category of role
     expect(getTitleText(null, 'remove', 'LEGAL_OPS')).toBe('remove a legal ops role');

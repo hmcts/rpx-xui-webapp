@@ -205,7 +205,7 @@ describe('CaseViewerContainerComponent', () => {
             }
           }
         },
-        {provide: FeatureToggleService, useClass: MockFeatureToggleService},
+        { provide: FeatureToggleService, useClass: MockFeatureToggleService },
       ],
       declarations: [CaseViewerContainerComponent, CaseViewerComponent]
     })

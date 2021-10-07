@@ -19,6 +19,7 @@ describe('Default Error Handler', () => {
       return token;
     });
   });
+  
   it('Should call Default Error Handler and be returned a DEH instance', () => {
     const errorHandler = new DefaultErrorHandler(mockedLoggerService, injector, zone);
     expect(errorHandler).toBeTruthy();

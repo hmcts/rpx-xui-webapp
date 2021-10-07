@@ -48,7 +48,7 @@
       "api": "SERVICES_PRD_API"
     },
     "locationref": {
-      "api": "SERVICES_LOCATION_REF_API"
+      "api": "SERVICES_LOCATION_REF_API_URL"
     },
     "caseShare": {
       "api": "SERVICES_CASE_SHARE_API"

@@ -20,7 +20,7 @@ export class CaseViewerContainerComponent implements OnInit {
   private static readonly FEATURE_HEARING = 'Hearings';
   public caseDetails: CaseView;
 
-  private appendedTabs: CaseTab[] = [
+  private readonly appendedTabs: CaseTab[] = [
     {
       id: 'hearings',
       label: 'Hearings',
@@ -30,23 +30,23 @@ export class CaseViewerContainerComponent implements OnInit {
   ];
 
   constructor(private readonly route: ActivatedRoute,
-    private readonly store: Store<fromRoot.State>,
-    private readonly featureToggleService: FeatureToggleService) {
+              private readonly store: Store<fromRoot.State>,
+              private readonly featureToggleService: FeatureToggleService) {
   }
 
-  private static enableAppendedTabs(featureRoles:  string[], userDetails: UserDetails): boolean {
+  private static enableAppendedTabs(featureRoles: string[], userDetails: UserDetails): boolean {
     console.log('featureRoles', featureRoles);
     console.log('userDetails', userDetails);
 
     if (userDetails && userDetails.userInfo) {
-      return userDetails.userInfo.roles && featureRoles.length ? userDetails.userInfo.roles.some(userRole => featureRoles.some(role => role === userRole)): false;
+      return userDetails.userInfo.roles && featureRoles.length ? userDetails.userInfo.roles.some(userRole => featureRoles.some(role => role === userRole)) : false;
     }
     return false;
   }
 
   public ngOnInit(): void {
-    this.caseDetails = this.route.snapshot.data.case as CaseView;    
-    const lastCaseTab = Math.max.apply(Math, this.caseDetails.tabs.map(function(o) { return o.order; }));
+    this.caseDetails = this.route.snapshot.data.case as CaseView;
+    const lastCaseTab = Math.max.apply(Math, this.caseDetails.tabs.map((o) => o.order ));
     this.appendedTabs[0].order = lastCaseTab;
     this.appendedCaseViewTabs().subscribe(appendResult => {
       if (appendResult.length) {
@@ -61,7 +61,7 @@ export class CaseViewerContainerComponent implements OnInit {
       this.store.pipe(select(fromRoot.getUserDetails))
     ]).pipe(
       map(([featureVariations, userDetails]: [FeatureVariation[], UserDetails]) => {
-        const featureRoles = featureVariations.length ? featureVariations[0].roles: [];
+        const featureRoles = featureVariations.length ? featureVariations[0].roles : [];
         return CaseViewerContainerComponent.enableAppendedTabs(featureRoles, userDetails) ? this.appendedTabs : [];
       })
     );

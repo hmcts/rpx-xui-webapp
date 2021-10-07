@@ -24,7 +24,7 @@ export const containers: any[] = [
   CaseShareComponent,
   CaseShareConfirmComponent,
   CaseShareCompleteComponent,
-  CaseViewerContainerComponent 
+  CaseViewerContainerComponent
 ];
 
 export * from './case-list/case-list.component';

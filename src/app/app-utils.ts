@@ -149,13 +149,4 @@ export class AppUtils {
   public static getFeatureToggledUrl(isFeatureEnabled: boolean, workallocationUrl: string): string {
     return isFeatureEnabled ? workallocationUrl : null;
   }
-
-  public static isLegalOpsOrJudicial(userRoles: string[]): UserRole {
-    if (userRoles.some(userRole => LEGAL_OPS_ROLE_LIST.some(role => role === userRole))) {
-      return UserRole.LegalOps;
-    } else if (userRoles.some(userRole => JUDICIAL_ROLE_LIST.some(role => role === userRole))) {
-      return UserRole.Judicial;
-    }
-    return null;
-  }
 }

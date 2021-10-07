@@ -47,7 +47,7 @@ export async function deleteUserExclusion(req: EnhancedRequest, res: Response, n
   try {
     const response = await http.delete(fullPath, {headers})
     return res.status(response.status).send(req.body.roleExclusion);
-  } catch(error) {
+  } catch (error) {
     next(error)
   }
 }

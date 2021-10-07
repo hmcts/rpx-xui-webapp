@@ -78,3 +78,4 @@ stryker.log
 # yalc
 .yalc/
 yalc.lock
+startnode.sh

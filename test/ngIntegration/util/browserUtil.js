@@ -143,6 +143,11 @@ class BrowserUtil{
         return scenarioId ? scenarioId.value : null;
     }
 
+    async isTextPresentInElementWithCssSelector(cssSelector, text){
+        const elementtext = await $(cssSelector).getText();
+        return elementtext.includes(text);
+    }
+
     async addTextToElementWithCssSelector(cssSelector, text,append){
         return await browser.executeScript( () => {
             let div = document.querySelector(arguments[0]);

@@ -1,6 +1,6 @@
-import { RoleAccessHttpError } from '../models';
+import { RoleAccessHttpError, SpecificRole } from '../models';
 import { InfoMessageType } from '../models/enums/info-message-type';
-import { handleError, REDIRECTS } from './role-access-utils';
+import { getTitleText, handleError, REDIRECTS } from './role-access-utils';
 
 describe('WorkAllocationUtils', () => {
   let mockRouter: any;
@@ -47,6 +47,25 @@ describe('WorkAllocationUtils', () => {
     error.status = 403;
     handleError(error, mockRouter, exampleUrl);
     expect(mockRouter.navigate).toHaveBeenCalledWith([ REDIRECTS.NotAuthorised ]);
+  });
+
+  it('should correctly set the title text', () => {
+    const firstRole: SpecificRole = {
+      id: 'first-role',
+      name: 'First role'
+    }
+    const caseManager: SpecificRole = {
+      id: 'case-manager',
+      name: 'Case manager'
+    }
+    // test that title can mention specifc role
+    expect(getTitleText(firstRole, 'allocate', 'JUDICIAL')).toBe('allocate a first role');
+    // case manager 
+    expect(getTitleText(caseManager, 'reallocate', 'LEGAL_OPS')).toBe('reallocate a legal ops case manager');
+    // category of role
+    expect(getTitleText(null, 'remove', 'LEGAL_OPS')).toBe('remove a legal ops role');
+    // unspecific role
+    expect(getTitleText(null, 'view', null)).toBe('view a role');
   });
 });
 

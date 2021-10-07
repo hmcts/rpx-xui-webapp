@@ -16,7 +16,7 @@ export async function findExclusionsForCaseId(req: EnhancedRequest, res: Respons
   try {
     const response: AxiosResponse = await http.post(fullPath, requestPayload, {headers});
     const roleExclusions = mapResponseToExclusions(response.data.roleAssignmentResponse, req.body.exclusionId);
-    return res.status(200).send(roleExclusions);
+    return res.status(response.status).send(roleExclusions);
   } catch (error) {
     next(error);
   }
@@ -41,7 +41,15 @@ export async function confirmUserExclusion(req: EnhancedRequest, res: Response, 
 }
 
 export async function deleteUserExclusion(req: EnhancedRequest, res: Response, next: NextFunction) {
-  return res.status(200).send(req.body.roleExclusion);
+  const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+  const fullPath = `${basePath}/am/role-assignments/${req.body.roleExclusion.id}`;
+  const headers = setHeaders(req);
+  try {
+    const response = await http.delete(fullPath, {headers})
+    return res.status(response.status).send(req.body.roleExclusion);
+  } catch(error) {
+    next(error)
+  }
 }
 
 export function mapResponseToExclusions(roleAssignments: RoleAssignment[], assignmentId?: string): RoleExclusion[] {

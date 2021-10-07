@@ -30,7 +30,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { GlobalSearchService } from 'src/app/services/globalSearch/globalSearch.service';
-import { JurisdictionsService } from 'src/app/services/jurisdiction/jurisdiction.service';
+import { JurisdictionService } from 'src/app/services/jurisdiction/jurisdiction.service';
 import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 import { SharedModule } from '../app/shared/shared.module';
 import { OrganisationModule } from '../organisation/organisation.module';
@@ -86,7 +86,7 @@ import { effects, reducers } from './store';
     ...fromServices.services,
     CreateCaseEventTriggerResolver,
     ActivityResolver,
-    JurisdictionsService,
+    JurisdictionService,
     GlobalSearchService
   ]
 })

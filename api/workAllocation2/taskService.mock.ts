@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import * as faker from 'faker/locale/en_GB';
-import { httpMock } from '../common/httpMock';
+import { HttpMockAdapter } from '../common/httpMockAdapter';
 import {
   ALL_TASKS,
   CASEWORKER_AVAILABLE_TASKS,
@@ -37,7 +37,7 @@ export const generator = (schema, min = 1, max) => {
 };
 
 export const init = () => {
-  const mock = new MockAdapter(httpMock);
+  const mock: MockAdapter = HttpMockAdapter.getInstance();
 
   const judicialMyTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/myTasks\?view=judicial/;
   // tslint:disable-next-line:max-line-length

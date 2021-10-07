@@ -57,6 +57,7 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
     this.allocateRoleStateData = allocateRoleStateData;
     this.typeOfRole = allocateRoleStateData.typeOfRole.name;
     this.allocateTo = allocateRoleStateData.allocateTo;
+    const roleCategory = allocateRoleStateData.roleCategory;
     const action = EnumUtil(Actions).getKeyOrDefault(allocateRoleStateData.action);
     if (this.typeOfRole === TypeOfRole.CaseManager) {
       this.caption = `${action} ${RoleCaptionText.ALegalOpsCaseManager}`;
@@ -64,11 +65,12 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
       if (this.typeOfRole) {
         this.caption = `${action} a ${this.typeOfRole.toLowerCase()}`;
       } else {
-        this.caption = `${action} a role`;
+        this.caption = roleCategory !== undefined ? `${action} a ${roleCategory.replace('_', ' ').toLowerCase()} role` : `${action} a role`;
       }
     }
     this.answers = [];
     if (allocateRoleStateData.action === Actions.Allocate) {
+      console.log('allocating ', allocateRoleStateData.typeOfRole.name)
       this.answers.push({ label: AnswerLabelText.TypeOfRole, value: allocateRoleStateData.typeOfRole.name, action: AllocateRoleState.CHOOSE_ROLE });
       if (allocateRoleStateData.allocateTo) {
         this.answers.push({ label: AnswerLabelText.WhoBeAllocatedTo, value: allocateRoleStateData.allocateTo, action: AllocateRoleState.CHOOSE_ALLOCATE_TO });

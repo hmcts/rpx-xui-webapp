@@ -14,8 +14,8 @@ import {
   SpecificRole,
   TypeOfRole
 } from '../../../models';
-import { RoleCaptionText } from '../../../models/enums/allocation-text';
 import * as fromFeature from '../../../store';
+import { getTitleText } from '../../../utils';
 
 @Component({
   selector: 'exui-allocate-role-search-person',
@@ -46,14 +46,8 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
     const action = EnumUtil(Actions).getKeyOrDefault(allocateRoleStateData.action);
     if (allocateRoleStateData.typeOfRole && allocateRoleStateData.typeOfRole.name === TypeOfRole.CaseManager) {
       this.domain = PersonRole.CASEWORKER;
-      this.title = `${action} ${RoleCaptionText.ALegalOpsCaseManager}`;
-    } else {
-      if (allocateRoleStateData.typeOfRole && allocateRoleStateData.typeOfRole.name) {
-        this.title = `${action} a ${allocateRoleStateData.typeOfRole.name.toLowerCase()}`;
-      } else {
-        this.title = `${action} a role`;
-      }
     }
+    this.title = getTitleText(allocateRoleStateData.typeOfRole, action, allocateRoleStateData.roleCategory);
     this.personName = allocateRoleStateData && allocateRoleStateData.person ? this.getDisplayName(allocateRoleStateData.person) : null;
     this.person = allocateRoleStateData.person;
     this.roleType = allocateRoleStateData.typeOfRole;

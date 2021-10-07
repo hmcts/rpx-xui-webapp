@@ -1,6 +1,7 @@
 import { NavigationExtras } from '@angular/router';
 
-import { RoleAccessHttpError } from '../models';
+import { RoleAccessHttpError, SpecificRole, TypeOfRole } from '../models';
+import { RoleCaptionText } from '../models/enums/allocation-text';
 import { InfoMessageType } from '../models/enums/info-message-type';
 
 interface Navigator {
@@ -10,6 +11,14 @@ interface Navigator {
 export enum REDIRECTS {
   NotAuthorised = '/not-authorised',
   ServiceDown = '/service-down'
+}
+
+export const getTitleText = (role: SpecificRole, action: string, roleCategory: string): string => {
+  if (role && role.name) {
+    return role.name === TypeOfRole.CaseManager ? `${action} ${RoleCaptionText.ALegalOpsCaseManager}` : `${action} a ${role.name.toLowerCase()}`;
+  } else {
+    return roleCategory  ? `${action} a ${roleCategory.replace('_', ' ').toLowerCase()} role` : `${action} a role`;
+  }
 }
 
 export const handleError = (error: RoleAccessHttpError, navigator: Navigator, defaultUrl: string): void => {

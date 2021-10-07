@@ -120,9 +120,18 @@ export class AppComponent implements OnInit, OnDestroy {
       if (propsExist(userDetails, ['sessionTimeout'] ) && userDetails.sessionTimeout.totalIdleTime > 0) {
         const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
         this.addTimeoutNotificationServiceListener();
-        this.initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime);
+        /**
+         * Fix for EUI-4469 Live Defect - Google Tag Manager broken
+         *
+         * I've changed the order of execution in order to make the cookie banner
+         * visible in production.
+         *
+         * TODO: The "TypeError: Cannot read properties of undefined (reading 'setIdleName')"
+         * issue will need to be fixed as part of EUI-4482. Remove comment once EUI-4482 is done.
+         */
         const uid = userDetails.userInfo.id ? userDetails.userInfo.id : userDetails.userInfo.uid;
         this.setUserAndCheckCookie(uid);
+        this.initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime);
       }
     }
   }

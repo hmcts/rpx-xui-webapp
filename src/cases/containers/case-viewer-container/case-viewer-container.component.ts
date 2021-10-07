@@ -35,9 +35,6 @@ export class CaseViewerContainerComponent implements OnInit {
   }
 
   private static enableAppendedTabs(featureRoles: string[], userDetails: UserDetails): boolean {
-    console.log('featureRoles', featureRoles);
-    console.log('userDetails', userDetails);
-
     if (userDetails && userDetails.userInfo) {
       return userDetails.userInfo.roles && featureRoles.length ? userDetails.userInfo.roles.some(userRole => featureRoles.some(role => role === userRole)) : false;
     }

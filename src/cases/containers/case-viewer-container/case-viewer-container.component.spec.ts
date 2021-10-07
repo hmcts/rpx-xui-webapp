@@ -220,6 +220,6 @@ describe('CaseViewerContainerComponent', () => {
 
   it('should return Hearings as the last tab', () => {
     expect(component.caseDetails.tabs.length).toBeTruthy();
-    expect(component.caseDetails.tabs[component.caseDetails.tabs.length -1].label).toEqual('Hearings');
+    expect(component.caseDetails.tabs[component.caseDetails.tabs.length - 1].label).toEqual('Hearings');
   });
 });

@@ -132,6 +132,7 @@ export const ROUTES: Routes = [
   },
   {
     path: 'refunds',
+    canActivate: [AuthGuard, AcceptTermsGuard],
     loadChildren: '../refunds/refunds.module#RefundsModule'
   },
   {

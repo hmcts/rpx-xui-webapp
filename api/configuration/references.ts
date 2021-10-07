@@ -63,7 +63,7 @@ export const ENVIRONMENT = 'environment'
 
 export const JURISDICTIONS = 'jurisdictions'
 
-export const GLOBAL_SEARCH_JURISDICTIONS = 'globalSearchJurisdictions'
+export const GLOBAL_SEARCH_SERVICES = 'globalSearchServices'
 
 export const WILDCARD_SEARCH_FIELDS = 'wildcardSearchFields'
 

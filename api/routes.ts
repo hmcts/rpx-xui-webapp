@@ -8,6 +8,7 @@ import { router as nocRouter } from './noc/routes';
 import { router as organisationRouter } from './organisations';
 import userRouter from './user/routes';
 import { router as jurisdictionRoutes } from './jurisdictions/routes';
+import { router as globalSearchRoutes } from './globalSearch/routes';
 
 const router = express.Router({mergeParams: true});
 
@@ -29,7 +30,8 @@ router.use('/user', userRouter);
 router.use('/caseshare', caseShareRoutes);
 router.use('/noc', nocRouter);
 router.use('/organisation', organisationRouter);
-// router.use('/jurisdictions', jurisdictionRoutes);
+router.use('/jurisdictions', jurisdictionRoutes);
+router.use('/globalSearch', globalSearchRoutes);
 
 // @ts-ignore
 export default router;

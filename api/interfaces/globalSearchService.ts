@@ -1,4 +1,4 @@
-export interface GlobalSearchJurisdiction {
+export interface GlobalSearchService {
     serviceId: string,
     serviceName: string
 }

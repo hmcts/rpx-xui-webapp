@@ -1,6 +1,6 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
-import { GlobalSearchService } from "./globalSearch.service";
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
+import { GlobalSearchService } from './globalSearch.service';
 
 describe('Global Search Service', () => {
     let httpClientGetSpy: { get: jasmine.Spy };

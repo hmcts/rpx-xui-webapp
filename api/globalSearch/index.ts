@@ -1,13 +1,10 @@
+import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
 import { NextFunction, Response } from 'express';
+import { GlobalSearchService } from 'interfaces/globalSearchService';
+import { EnhancedRequest } from 'lib/models';
 import { handleGet } from '../common/crudService';
 import { getConfigValue } from '../configuration';
-import {
-    SERVICES_PRD_API_URL,
-    GLOBAL_SEARCH_SERVICES
-} from '../configuration/references';
-import { EnhancedRequest } from 'lib/models';
-import { GlobalSearchService } from 'interfaces/globalSearchService';
-import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
+import { GLOBAL_SEARCH_SERVICES, SERVICES_PRD_API_URL } from '../configuration/references';
 
 /**
  * Get global search services
@@ -44,8 +41,8 @@ export async function getServices(req: EnhancedRequest, res: Response, next: Nex
 
 /**
  * Generate global search services from jurisdictions and global search service ids
- * @param jurisdictions 
- * @returns 
+ * @param jurisdictions
+ * @returns
  */
 export function generateServices(jurisdictions: Jurisdiction[]): GlobalSearchService[] {
     // Retrieve global search services id from config

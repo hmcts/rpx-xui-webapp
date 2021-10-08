@@ -1,10 +1,8 @@
 import { NextFunction, Response } from 'express';
-import { handleGet } from '../common/crudService';
-import {
-    SERVICES_PRD_API_URL
-} from '../configuration/references';
 import { EnhancedRequest } from 'lib/models';
+import { handleGet } from '../common/crudService';
 import { getConfigValue } from '../configuration';
+import { SERVICES_PRD_API_URL } from '../configuration/references';
 
 /**
  * Get jurisdictions

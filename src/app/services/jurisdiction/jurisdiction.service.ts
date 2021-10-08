@@ -1,7 +1,7 @@
-import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { Jurisdiction } from "@hmcts/ccd-case-ui-toolkit";
-import { Observable } from "rxjs";
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class JurisdictionService {

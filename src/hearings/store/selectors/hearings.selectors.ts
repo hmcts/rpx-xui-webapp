@@ -2,12 +2,12 @@ import { createSelector } from '@ngrx/store';
 
 import * as fromFeature from '../reducers';
 
-export const getHearingsState = createSelector(
- fromFeature.getHearingsFeatureState,
- (state: fromFeature.State) => state.hearings
+export const getHearingsList = createSelector(
+  fromFeature.getHearingsFeatureState,
+  (state: fromFeature.State) => state.hearingsList
 );
 
 export const lastError = createSelector(
-  getHearingsState,
-    fromFeature.getLastError
+  getHearingsList,
+  fromFeature.getLastError
 );

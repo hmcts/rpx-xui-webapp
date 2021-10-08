@@ -2,7 +2,6 @@ import { HearingsStateData } from '../../models/hearingsStateData.model';
 import * as fromActions from '../actions';
 
 export const initialState: HearingsStateData = {
-  caseReference: '',
   caseHearingsMainModel: null,
   lastError: null,
 };
@@ -13,6 +12,12 @@ export function hearingsReducer(currentState = initialState, action: fromActions
       return {
         ...currentState,
         ...initialState
+      };
+    }
+    case fromActions.LOAD_ALL_HEARINGS_SUCCESS: {
+      return {
+        ...currentState,
+        caseHearingsMainModel: action.payload
       };
     }
     default: {

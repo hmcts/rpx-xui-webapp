@@ -42,7 +42,8 @@ import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-tr
 // from services
 import * as fromServices from './services';
 import { effects, reducers } from './store';
-import { CaseHearingsComponent } from './containers/case-hearings/case-hearings.component';
+import { HearingsModule } from '../hearings/hearings.module';
+import { HearingsService } from '../hearings/services/hearings.service';
 
 @NgModule({
   imports: [
@@ -62,7 +63,8 @@ import { CaseHearingsComponent } from './containers/case-hearings/case-hearings.
     CaseListFiltersModule,
     WorkbasketFiltersModule,
     ExuiCommonLibModule,
-    LoadingModule
+    LoadingModule,
+    HearingsModule
   ],
   declarations: [...fromComponents.components, ...fromContainers.containers],
   providers: [
@@ -84,7 +86,8 @@ import { CaseHearingsComponent } from './containers/case-hearings/case-hearings.
     ScrollToService,
     ...fromServices.services,
     CreateCaseEventTriggerResolver,
-    ActivityResolver
+    ActivityResolver,
+    HearingsService
   ]
 })
 /**

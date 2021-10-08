@@ -1,12 +1,12 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
-import { HearingsHomeComponent } from './containers/hearings-home/hearings-home.component';
+import { HearingsRequestComponent } from './containers';
 
 export const ROUTES: Routes = [
   {
     path: '',
-    component: HearingsHomeComponent,
+    component: HearingsRequestComponent,
     children: [
       {
         path: '',

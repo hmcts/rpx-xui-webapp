@@ -1,7 +1,7 @@
-import { HearingsHomeComponent } from './hearings-home/hearings-home.component';
+import { HearingsRequestComponent } from './hearings-request/hearings-request.component';
 
 export const containers: any[] = [
-  HearingsHomeComponent,
+  HearingsRequestComponent,
 ];
 
-export * from './hearings-home/hearings-home.component';
+export * from './hearings-request/hearings-request.component';

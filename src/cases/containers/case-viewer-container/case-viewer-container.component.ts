@@ -79,25 +79,15 @@ export class CaseViewerContainerComponent implements OnInit {
       this.store.pipe(select(fromRoot.getUserDetails))
     ]).pipe(
       map(([featureVariations, userDetails]: [FeatureVariation[], UserDetails]) => {
-<<<<<<< HEAD
-        const hasMatchedJurisdictionAndRole = featureVariations.some(featureVariation => this.hasMatchedJurisdictionAndRole(featureVariation, this.caseDetails, userDetails));
-=======
         const jurisdictionID = this.caseDetails.case_type.jurisdiction.id;
         const hasMatchedJurisdictionAndRole = featureVariations.some(featureVariation => this.hasMatchedJurisdictionAndRole(featureVariation, jurisdictionID, userDetails));
->>>>>>> feature/EUI-4446-create-hearings-tab-case-details-page
         return hasMatchedJurisdictionAndRole ? this.appendedTabs : [];
       })
     );
   }
 
-<<<<<<< HEAD
-  private hasMatchedJurisdictionAndRole(featureVariation: FeatureVariation, caseDetails: CaseView, userDetails: UserDetails): boolean {
-    const caseField = caseDetails.metadataFields.find(field => field.id === CaseViewerContainerComponent.META_FIELD_JURISDICTION);
-    if (caseField && featureVariation.jurisdiction === caseField.value) {
-=======
   private hasMatchedJurisdictionAndRole(featureVariation: FeatureVariation, jurisdictionID: string, userDetails: UserDetails): boolean {
     if (featureVariation.jurisdiction === jurisdictionID) {
->>>>>>> feature/EUI-4446-create-hearings-tab-case-details-page
       if (userDetails && userDetails.userInfo) {
         return userDetails.userInfo.roles && featureVariation.roles ? userDetails.userInfo.roles.some(userRole => featureVariation.roles.some(role => role === userRole)) : false;
       }

@@ -21,9 +21,8 @@ import {
   handlePostRoleAssingnments,
   handlePostSearch
 } from './caseWorkerService';
-import { JUDICIAL_WORKERS_LOCATIONS, PERSON } from './constants/mock.data';
-import { Caseworker, Judicialworker } from './interfaces/common';
-import { PersonRole } from './interfaces/person';
+import { JUDICIAL_WORKERS_LOCATIONS } from './constants/mock.data';
+import { Caseworker } from './interfaces/common';
 import { TaskList } from './interfaces/task';
 import { checkIfCaseAllocator, refineRoleAssignments } from './roleService';
 import * as roleServiceMock from './roleService.mock';

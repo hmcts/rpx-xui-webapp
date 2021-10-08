@@ -9,7 +9,6 @@ export class CaseHearingsComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    console.log('CaseHearingsComponent');
   }
 
 }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../app/services/user/user.service';
 
 @Component({
-  selector: 'xui-refunds',
+  selector: 'exui-refunds',
   templateUrl: './refunds.component.html',
   styleUrls: ['./refunds.component.scss']
 })

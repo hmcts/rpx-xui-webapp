@@ -64,7 +64,7 @@ import { CaseHearingsComponent } from './containers/case-hearings/case-hearings.
     ExuiCommonLibModule,
     LoadingModule
   ],
-  declarations: [...fromComponents.components, ...fromContainers.containers, CaseHearingsComponent],
+  declarations: [...fromComponents.components, ...fromContainers.containers],
   providers: [
     PlaceholderService,
     CasesService,

@@ -8,6 +8,7 @@ export class AppUtils {
     const regex = 'pr-|localhost|aat|demo|ithc|perftest';
     const matched = url.match(regex);
 
+
     if (matched && matched[0]) {
       switch (matched[0]) {
         case AppConstants.ENVIRONMENT_NAMES.aat:

@@ -1,14 +1,15 @@
 import { BadgeColour, ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib';
-import {Theme} from './containers/app-header/app-header.component';
+import { Theme } from './containers/app-header/app-header.component';
 
 const FeatureNames = {
   currentWAFeature: 'mc-work-allocation-active-feature',
   workAllocation: 'MC_Work_Allocation',
   noticeOfChange: 'MC_Notice_of_Change',
-  waMvpPaginationFeature: 'mc-mvp-wa-pagination'
+  waMvpPaginationFeature: 'mc-mvp-wa-pagination',
+  mcHearingsFeature: 'mc-hearings-jurisdictions'
 };
 
-const FooterData =  {
+const FooterData = {
   heading: 'Help',
   email: {
     address: 'contactprobate@justice.gov.uk',
@@ -30,15 +31,15 @@ const FooterData =  {
 
 const FooterDataNavigation = {
   items: [
-    { text: 'Accessibility', href: '/accessibility', target: '_blank' },
-    { text: 'Terms and conditions', href: '/terms-and-conditions', target: '_blank' },
-    { text: 'Cookies', href: '/cookies', target: '_blank' },
-    { text: 'Privacy policy', href: '/privacy-policy', target: '_blank' },
-    { text: 'Get help', href: '/get-help', target: '_blank' }
+    {text: 'Accessibility', href: '/accessibility', target: '_blank'},
+    {text: 'Terms and conditions', href: '/terms-and-conditions', target: '_blank'},
+    {text: 'Cookies', href: '/cookies', target: '_blank'},
+    {text: 'Privacy policy', href: '/privacy-policy', target: '_blank'},
+    {text: 'Get help', href: '/get-help', target: '_blank'}
   ]
 };
 
-const applicationUserThemes: Theme[] =  [
+const applicationUserThemes: Theme[] = [
   {
     roles: [
       'caseworker-sscs-judge',
@@ -213,8 +214,6 @@ const redirectUrl = {
   perftest: 'https://idam-web-public.perftest.platform.hmcts.net',
   localhost: 'https://idam-web-public.aat.platform.hmcts.net'
 };
-
-
 
 const appHeaderTitle = {name: 'Manage cases', url: '/'};
 

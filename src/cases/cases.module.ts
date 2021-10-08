@@ -42,6 +42,7 @@ import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-tr
 // from services
 import * as fromServices from './services';
 import { effects, reducers } from './store';
+import { CaseHearingsComponent } from './containers/case-hearings/case-hearings.component';
 
 @NgModule({
   imports: [
@@ -63,7 +64,7 @@ import { effects, reducers } from './store';
     ExuiCommonLibModule,
     LoadingModule
   ],
-  declarations: [...fromComponents.components, ...fromContainers.containers],
+  declarations: [...fromComponents.components, ...fromContainers.containers, CaseHearingsComponent],
   providers: [
     PlaceholderService,
     CasesService,

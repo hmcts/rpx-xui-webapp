@@ -3,13 +3,20 @@ import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CaseResolver, editorRouting, viewerRouting as caseViewRouting } from '@hmcts/ccd-case-ui-toolkit';
 import { HealthCheckGuard } from 'src/app/shared/guards/health-check.guard';
-import { CaseCreateSubmitComponent, CasesCreateComponent, CaseShareCompleteComponent, CaseShareComponent, CaseShareConfirmComponent } from './containers';
+import {
+  CaseCreateSubmitComponent,
+  CaseHearingsComponent,
+  CasesCreateComponent,
+  CaseShareCompleteComponent,
+  CaseShareComponent,
+  CaseShareConfirmComponent,
+  CaseViewerContainerComponent
+} from './containers';
 import { CaseDetailsHomeComponent } from './containers/case-details-home/case-details-home.component';
 import { CaseFilterComponent } from './containers/case-filter/case-filter.component';
 import { CaseHomeComponent } from './containers/case-home/case-home.component';
 import { CaseListComponent } from './containers/case-list/case-list.component';
 import { CaseSearchComponent } from './containers/case-search/case-search.component';
-import { CaseViewerContainerComponent } from './containers/case-viewer-container/case-viewer-container.component';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 
@@ -105,26 +112,18 @@ export const ROUTES: Routes = [
                   path: '',
                   pathMatch: 'full',
                 },
+                {
+                  path: 'hearings',
+                  component: CaseHearingsComponent,
+                }
               ]
             },
-           // ...caseViewRouting
-          ],
+            ...caseViewRouting],
           canActivate: [HealthCheckGuard],
           data: {
             title: 'Case Details'
           }
         }
-        // {
-        //   path: 'case-details/:cid',
-        //   component: CaseDetailsHomeComponent,
-        //   resolve: { case: CaseResolver },
-        //   runGuardsAndResolvers: 'always',
-        //   children: caseViewRouting,
-        //   canActivate: [ HealthCheckGuard ],
-        //   data: {
-        //     title: 'Case Details'
-        //   }
-        // }
       ]
     },
 

@@ -44,19 +44,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
 
-    When('I select all work tasks filter {string} with value {string}', async function (filterType, filterValue) {
-        let filterTypeLowerCase = filterType.toLowerCase();
-        if (filterTypeLowerCase.includes("location")){
-            allWorkPage.selectLocationFilter(filterValue);
-
-        } else if (filterTypeLowerCase.includes("person")){
-            allWorkPage.selectPersonFilter(filterValue);
-        }else{
-            throw new Error(`Test implementation error.filterType ${filterType} is not yet implemented in test `);
-        }
-       
-    });
-
     When('I click cancel in check your changes of work allocation', async function () {
         await taskCheckYourChangesPage.clickCancelLink();
     });

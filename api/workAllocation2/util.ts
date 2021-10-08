@@ -34,8 +34,8 @@ export function prepareGetLocationByIdUrl(baseUrl: string, locationId: string): 
   return `${baseUrl}/location/${locationId}`;
 }
 
-export function prepareGetLocationsUrl(baseUrl: string): string {
-  return `${baseUrl}/location`;
+export function prepareGetLocationsUrl(baseUrl: string, serviceCode: string = 'BFA1'): string {
+  return `${baseUrl}/refdata/location/court-venues/services?service_code=${serviceCode}`;
 }
 
 export function prepareRoleApiUrl(baseUrl: string) {

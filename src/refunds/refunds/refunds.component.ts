@@ -10,8 +10,9 @@ export class RefundsComponent implements OnInit {
 
   public refundsApiRoot = 'api/refund';
   public ccdCaseNumber = 0;
-  public userEmail = 'test@test.com';
-  public userRoles = ['role1', 'role2'];
+  public userEmail = '';
+  public userRoles = [];
+  public userDataLoaded = false;
 
   constructor(private readonly userService: UserService) { }
 
@@ -19,6 +20,7 @@ export class RefundsComponent implements OnInit {
     this.userService.getUserDetails().subscribe(details => {
       this.userEmail = details.userInfo.email;
       this.userRoles = details.userInfo.roles;
+      this.userDataLoaded = true;
     });
   }
 

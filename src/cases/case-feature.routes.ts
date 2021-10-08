@@ -4,7 +4,12 @@ import { RouterModule, Routes } from '@angular/router';
 import { CaseResolver, editorRouting, viewerRouting as caseViewRouting } from '@hmcts/ccd-case-ui-toolkit';
 import { HealthCheckGuard } from 'src/app/shared/guards/health-check.guard';
 import {
+<<<<<<< HEAD
   CaseCreateSubmitComponent, CaseHearingsComponent,
+=======
+  CaseCreateSubmitComponent,
+  CaseHearingsComponent,
+>>>>>>> feature/EUI-4446-create-hearings-tab-case-details-page
   CasesCreateComponent,
   CaseShareCompleteComponent,
   CaseShareComponent,
@@ -100,7 +105,7 @@ export const ROUTES: Routes = [
         {
           path: 'case-details/:cid',
           component: CaseDetailsHomeComponent,
-          resolve: { case: CaseResolver },
+          resolve: {case: CaseResolver},
           runGuardsAndResolvers: 'always',
           children: [
             {
@@ -118,7 +123,11 @@ export const ROUTES: Routes = [
               ]
             },
             ...caseViewRouting],
+<<<<<<< HEAD
           canActivate: [ HealthCheckGuard ],
+=======
+          canActivate: [HealthCheckGuard],
+>>>>>>> feature/EUI-4446-create-hearings-tab-case-details-page
           data: {
             title: 'Case Details'
           }

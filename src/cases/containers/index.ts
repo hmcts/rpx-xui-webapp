@@ -11,7 +11,10 @@ import { CaseShareConfirmComponent } from './case-share-confirm/case-share-confi
 import { CaseShareCompleteComponent } from './case-share-complete/case-share-complete.component';
 import { CaseViewerContainerComponent } from './case-viewer-container/case-viewer-container.component';
 import { CaseHearingsComponent } from './case-hearings/case-hearings.component';
+<<<<<<< HEAD
 
+=======
+>>>>>>> feature/EUI-4446-create-hearings-tab-case-details-page
 
 export const containers: any[] = [
   CaseListComponent,

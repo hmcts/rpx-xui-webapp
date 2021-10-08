@@ -1,7 +1,6 @@
 import { Component, DebugElement, Input } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatTabsModule } from '@angular/material';
-import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseField, CaseTab, CaseView } from '@hmcts/ccd-case-ui-toolkit';
@@ -26,12 +25,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 class CaseViewerComponent {
   @Input() public caseDetails: CaseView;
   @Input() public prependedTabs: CaseTab[] = [];
+  @Input() public appendedTabs: CaseTab[] = [];
 }
 
 describe('CaseViewerContainerComponent', () => {
   let component: CaseViewerContainerComponent;
   let fixture: ComponentFixture<CaseViewerContainerComponent>;
-  let debug: DebugElement;
 
   const CASE_VIEW: CaseView = {
     events: [],
@@ -41,8 +40,8 @@ describe('CaseViewerContainerComponent', () => {
       id: 'TestAddressBookCase',
       name: 'Test Address Book Case',
       jurisdiction: {
-        id: 'TEST',
-        name: 'Test',
+        id: 'SSCS',
+        name: 'SSCS',
       },
       printEnabled: true
     },
@@ -128,6 +127,7 @@ describe('CaseViewerContainerComponent', () => {
     ]
   };
 
+  // Stub
   class MockFeatureToggleService implements FeatureToggleService {
     public getValue<R>(_key: string, _defaultValue: R): Observable<R> {
       // @ts-ignore
@@ -135,7 +135,11 @@ describe('CaseViewerContainerComponent', () => {
     }
 
     public getValueOnce<R>(_key: string, _defaultValue: R): Observable<R> {
-      return of(null);
+        return of([{
+          jurisdiction: 'SSCS',
+          roles: ['caseworker-sscs-judge', 'caseworker-sscs']
+        }
+      ] as unknown as R);
     }
 
     public initialize(_user: FeatureUser, _clientId: string): void {
@@ -167,11 +171,24 @@ describe('CaseViewerContainerComponent', () => {
           active: true,
           email: 'juser4@mailinator.com',
           forename: 'XUI test',
-          roles: ['caseworker-ia-iacjudge'],
+          roles: [
+            'caseworker',
+            'caseworker-ia-iacjudge',
+            'caseworker-sscs',
+            'caseworker-sscs-judge',
+            'caseworker-test',
+            'managePayment',
+            'payments',
+            'payments-refund',
+            'payments-refund-approver',
+            'pui-case-manager',
+            'pui-finance-manager',
+            'pui-organisation-manager',
+            'pui-user-manager'
+          ],
           uid: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
-          surname: 'judge'
+          surname: 'judge',
         },
-        roleAssignmentInfo: []
       }
     }
   };
@@ -205,7 +222,7 @@ describe('CaseViewerContainerComponent', () => {
             }
           }
         },
-        {provide: FeatureToggleService, useClass: MockFeatureToggleService},
+        { provide: FeatureToggleService, useClass: MockFeatureToggleService },
       ],
       declarations: [CaseViewerContainerComponent, CaseViewerComponent]
     })
@@ -215,25 +232,12 @@ describe('CaseViewerContainerComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CaseViewerContainerComponent);
     component = fixture.componentInstance;
-    debug = fixture.debugElement;
     fixture.detectChanges();
   });
 
-  it('should return the two tabs', (done: DoneFn) => {
-    component.prependedTabs$.subscribe((tabs: CaseTab[]) => {
-      expect(tabs.length).toBe(TABS.length);
-      expect(tabs[0].id).toBe('tasks');
-      expect(tabs[1].id).toBe('roles-and-access');
-      done();
-    });
-  });
-
-  it('should render two tabs', () => {
-    const matTabLabels: DebugElement = debug.query(By.css('.mat-tab-labels'));
-    const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
-    const tasksTab: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
-    const roleAndAccessTab: HTMLElement = matTabHTMLElement.children[1] as HTMLElement;
-    expect((tasksTab.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Tasks');
-    expect((roleAndAccessTab.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Roles and access');
+  it('should return Hearings as the last tab', () => {
+    component.appendedTabs$.subscribe(tab =>
+      expect(tab[0].id).toBe('hearings')
+    );
   });
 });

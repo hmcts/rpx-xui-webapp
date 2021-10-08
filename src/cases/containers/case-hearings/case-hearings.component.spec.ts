@@ -1,4 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+<<<<<<< HEAD
+=======
+
+>>>>>>> feature/EUI-4446-create-hearings-tab-case-details-page
 import { CaseHearingsComponent } from './case-hearings.component';
 
 describe('CaseHearingsComponent', () => {

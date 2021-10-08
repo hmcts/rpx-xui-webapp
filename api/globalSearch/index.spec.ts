@@ -37,18 +37,15 @@ describe('Jurisdiction', () => {
     });
 
     it('should get global search services', async() => {
+        const serviceListJson = JSON.stringify(serviceList);
         const req = mockReq();
-        const res = mockRes(
-            [
-                { "serviceId": "PROBATE", "serviceName": "Manage probate application" },
-                { "serviceId": "IA", "serviceName": "Immigration & Asylum" }
-            ]
-        );
+        const res = mockRes({
+            serviceListJson
+        });
         const next = sinon.mock().atLeast(1) as NextFunction;
         spy = sandbox.stub(http, 'get').resolves(res);
+        sandbox.stub(globalSearchServices.generateServices)
         const response = await globalSearchServices.getServices(req, res, next);
-        console.log(response);
-        console.log('res', res.json);
         expect(response).to.deep.equal(res);
     });
 

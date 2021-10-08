@@ -26,7 +26,7 @@ export async function getServices(req: EnhancedRequest, res: Response, next: Nex
         if (req.session.jurisdictions) {
             services = generateServices(req.session.jurisdictions as Jurisdiction[]);
         } else {
-            const path = `https://manage-case.aat.platform.hmcts.net/aggregated/caseworkers/:uid/jurisdictions?access=read`;
+            const path = `${getConfigValue(SERVICES_PRD_API_URL)}/aggregated/caseworkers/:uid/jurisdictions?access=read`;
             const response = await handleGet(path, req, next);
             services = generateServices(response.data as Jurisdiction[]);
         }

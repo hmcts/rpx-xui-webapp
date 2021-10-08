@@ -39,52 +39,72 @@ const HEARING_DAY_SCHEDULE_4: HearingDayScheduleModel = {
   hearingPanel: ['child'],
 };
 
+const HEARING_DAY_SCHEDULE_5: HearingDayScheduleModel = {
+  hearingStartDateTime: '2021-09-01T16:00:00.000+0000',
+  hearingEndDateTime: '2021-09-04T16:00:00.000+0000',
+  ListAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc6',
+  hearingVenueId: 'venue 5',
+  hearingRoomId: 'room 5',
+  hearingPanel: ['child'],
+};
+
 const CASE_HEARING_1: CaseHearingModel = {
   hearingID: 'h111111',
-  hearingType: 'hearing type 1',
-  hmcStatus: 'pending',
+  hearingType: 'Case management hearing',
+  hmcStatus: 'Upcoming',
   lastResponseReceivedDateTime: '2021-05-05T16:00:00.000+0000',
   responseVersion: 'rv1',
-  hearingListingStatus: 'pending',
-  listAssistCaseStatus: 'pending',
+  hearingListingStatus: 'WAITING TO BE LISTED',
+  listAssistCaseStatus: '',
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_1],
 };
 
 const CASE_HEARING_2: CaseHearingModel = {
   hearingID: 'h222222',
-  hearingType: 'hearing type 2',
-  hmcStatus: 'upcoming',
+  hearingType: 'Final hearing',
+  hmcStatus: 'Upcoming',
   lastResponseReceivedDateTime: '2021-06-05T16:00:00.000+0000',
   responseVersion: 'rv2',
-  hearingListingStatus: 'upcoming',
-  listAssistCaseStatus: 'upcoming',
+  hearingListingStatus: 'LISTED',
+  listAssistCaseStatus: '',
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_2],
 };
 
 const CASE_HEARING_3: CaseHearingModel = {
   hearingID: 'h333333',
-  hearingType: 'hearing type 3',
-  hmcStatus: 'past',
+  hearingType: 'Initial hearing',
+  hmcStatus: 'Past and cancelled',
   lastResponseReceivedDateTime: '2021-07-05T16:00:00.000+0000',
   responseVersion: 'rv3',
-  hearingListingStatus: 'past',
-  listAssistCaseStatus: 'past',
+  hearingListingStatus: 'COMPLETED',
+  listAssistCaseStatus: '',
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_3],
 };
 
 const CASE_HEARING_4: CaseHearingModel = {
   hearingID: 'h444444',
-  hearingType: 'hearing type 4',
-  hmcStatus: 'past',
+  hearingType: 'Case management hearing',
+  hmcStatus: 'Past and cancelled',
   lastResponseReceivedDateTime: '2021-08-05T16:00:00.000+0000',
   responseVersion: 'rv4',
-  hearingListingStatus: 'cancelled',
-  listAssistCaseStatus: 'past',
+  hearingListingStatus: 'CANCELLED',
+  listAssistCaseStatus: '',
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_4],
+};
+
+const CASE_HEARING_5: CaseHearingModel = {
+  hearingID: 'h555555',
+  hearingType: 'Directions hearing',
+  hmcStatus: 'Past and cancelled',
+  lastResponseReceivedDateTime: '2021-08-05T16:00:00.000+0000',
+  responseVersion: 'rv5',
+  hearingListingStatus: 'CANCELLED',
+  listAssistCaseStatus: '',
+  hearingDaySchedule: [HEARING_DAY_SCHEDULE_5],
 };
 
 export const HEARINGS_LIST: CaseHearingsMainModel = {
   hmctsServiceID: 'SSCS',
   caseRef: '1568642646198441',
-  caseHearings: [CASE_HEARING_1, CASE_HEARING_2, CASE_HEARING_3, CASE_HEARING_4],
+  caseHearings: [CASE_HEARING_1, CASE_HEARING_2, CASE_HEARING_3, CASE_HEARING_4, CASE_HEARING_5],
 };

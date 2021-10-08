@@ -1,7 +1,6 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
-import { AppConstants, JUDICIAL_ROLE_LIST, LEGAL_OPS_ROLE_LIST } from './app.constants';
+import { AppConstants } from './app.constants';
 import { NavItemsModel } from './models/nav-item.model';
-import { UserRole } from './models/user-details.model';
 
 export class AppUtils {
 

@@ -189,6 +189,20 @@ describe('CaseViewerContainerComponent', () => {
       }
     }
   };
+  const TABS: CaseTab[] = [
+    {
+      id: 'tasks',
+      label: 'Tasks',
+      fields: [],
+      show_condition: null
+    },
+    {
+      id: 'roles-and-access',
+      label: 'Roles and access',
+      fields: [],
+      show_condition: null
+    }
+  ];
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

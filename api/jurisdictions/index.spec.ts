@@ -1,5 +1,4 @@
 import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
-import { handleGet } from '../../api/common/crudService';
 import * as chai from 'chai';
 import { expect } from 'chai';
 import { NextFunction } from 'express';
@@ -31,7 +30,7 @@ describe('Jurisdiction', () => {
         sandbox.restore();
     });
 
-    it.only('should get jurisdictions', async() => {
+    it('should get jurisdictions', async() => {
         const req = mockReq();
         const res = mockRes({
             jurisdictionList
@@ -39,7 +38,17 @@ describe('Jurisdiction', () => {
         const next = sinon.mock().atLeast(1) as NextFunction;
         spy = sandbox.stub(http, 'get').resolves(res);
         const response = await jurisdictions.getJurisdictions(req, res, next);
-        console.log(response);
         expect(response).to.deep.equal(res);
+    });
+
+    it('should error when getting jurisdictions', async() => {
+        const req = mockReq();
+        const res = mockRes({
+            jurisdictionList
+        });
+        const next = sinon.mock().atLeast(1) as NextFunction;
+        spy = sandbox.stub(http, 'get').resolves(res).throws(Error('failed to fetch records'));
+        const response = await jurisdictions.getJurisdictions(req, res, next);
+        expect(response).to.deep.equal(undefined);
     });
 });

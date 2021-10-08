@@ -1,7 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, DebugElement, Input } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatTabsModule } from '@angular/material';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseField, CaseTab, CaseView } from '@hmcts/ccd-case-ui-toolkit';
@@ -9,8 +8,9 @@ import { FeatureToggleService, FeatureUser } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
-import { reducers, State } from 'src/app/store';
+import { reducers, State } from '../../../app/store';
 import { CaseViewerContainerComponent } from './case-viewer-container.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -25,6 +25,7 @@ import { CaseViewerContainerComponent } from './case-viewer-container.component'
 class CaseViewerComponent {
   @Input() public caseDetails: CaseView;
   @Input() public prependedTabs: CaseTab[] = [];
+  @Input() public appendedTabs: CaseTab[] = [];
 }
 
 describe('CaseViewerContainerComponent', () => {
@@ -39,8 +40,8 @@ describe('CaseViewerContainerComponent', () => {
       id: 'TestAddressBookCase',
       name: 'Test Address Book Case',
       jurisdiction: {
-        id: 'TEST',
-        name: 'Test',
+        id: 'SSCS',
+        name: 'SSCS',
       },
       printEnabled: true
     },
@@ -129,7 +130,8 @@ describe('CaseViewerContainerComponent', () => {
   // Stub
   class MockFeatureToggleService implements FeatureToggleService {
     public getValue<R>(_key: string, _defaultValue: R): Observable<R> {
-      return of(null);
+      // @ts-ignore
+      return of('WorkAllocationRelease2');
     }
 
     public getValueOnce<R>(_key: string, _defaultValue: R): Observable<R> {
@@ -171,6 +173,7 @@ describe('CaseViewerContainerComponent', () => {
           forename: 'XUI test',
           roles: [
             'caseworker',
+            'caseworker-ia-iacjudge',
             'caseworker-sscs',
             'caseworker-sscs-judge',
             'caseworker-test',
@@ -233,7 +236,8 @@ describe('CaseViewerContainerComponent', () => {
   });
 
   it('should return Hearings as the last tab', () => {
-    expect(component.caseDetails.tabs.length).toBeTruthy();
-    expect(component.caseDetails.tabs[component.caseDetails.tabs.length - 1].label).toEqual('Hearings');
+    component.appendedTabs$.subscribe(tab =>
+      expect(tab[0].id).toBe('hearings')
+    );
   });
 });

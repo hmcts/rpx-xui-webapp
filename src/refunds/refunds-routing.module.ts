@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { RoleGuard, RoleMatching } from '@hmcts/rpx-xui-common-lib';
 import { RefundsComponent } from './refunds/refunds.component';
 

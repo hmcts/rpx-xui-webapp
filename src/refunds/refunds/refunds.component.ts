@@ -15,11 +15,11 @@ export class RefundsComponent implements OnInit {
 
   constructor(private readonly userService: UserService) { }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.userService.getUserDetails().subscribe(details => {
       this.userEmail = details.userInfo.email;
       this.userRoles = details.userInfo.roles;
-    })
+    });
   }
 
 }

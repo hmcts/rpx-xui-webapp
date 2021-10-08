@@ -47,7 +47,7 @@ export async function getServices(req: EnhancedRequest, res: Response, next: Nex
  * @param jurisdictions 
  * @returns 
  */
-function generateServices(jurisdictions: Jurisdiction[]): GlobalSearchService[] {
+export function generateServices(jurisdictions: Jurisdiction[]): GlobalSearchService[] {
     // Retrieve global search services id from config
     const globalSearchServiceIds = getConfigValue(GLOBAL_SEARCH_SERVICES);
     const globalSearchServiceIdsArray = globalSearchServiceIds.split(',');

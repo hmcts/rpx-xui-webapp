@@ -75,6 +75,21 @@ export const PERSON = [
   },
 ]
 
+
+export const JUDICIAL_WORKERS_LOCATIONS = [
+  {
+    idamId: '44d5d2c2-7112-4bef-8d05-baaa610bf463',
+    name: 'XUI test',
+    lastName: 'Judge',
+    email: 'juser8@mailinator.com',
+    domain: PersonRole.JUDICIAL,
+    location: {
+      id: '231596',
+      locationName:'Birmingham'
+    }
+  }
+]
+
 export const ASSIGNED_TASKS = { tasks: [
   {
     id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba1',

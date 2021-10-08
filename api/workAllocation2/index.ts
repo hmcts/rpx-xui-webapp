@@ -1,4 +1,6 @@
+import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
+import { sendPost } from '../common/crudService';
 import { handleGet, handlePost } from '../common/mockService';
 import { getConfigValue } from '../configuration';
 import {
@@ -19,10 +21,9 @@ import {
   handlePostRoleAssingnments,
   handlePostSearch
 } from './caseWorkerService';
-
-import { AxiosResponse } from 'axios';
-import { sendPost } from '../common/crudService';
+import { JUDICIAL_WORKERS_LOCATIONS, PERSON } from './constants/mock.data';
 import { Caseworker, Judicialworker } from './interfaces/common';
+import { PersonRole } from './interfaces/person';
 import { TaskList } from './interfaces/task';
 import { checkIfCaseAllocator, refineRoleAssignments } from './roleService';
 import * as roleServiceMock from './roleService.mock';
@@ -228,7 +229,7 @@ export async function retrieveAllCaseWorkers(req: EnhancedRequest, res: Response
  */
 export async function getAllJudicialWorkers(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const judicialWorkers: Judicialworker[] = await retrieveAllJudicialWorkers(req, res);
+    const judicialWorkers: any[] = await retrieveAllJudicialWorkers();
     res.status(200);
     res.send(judicialWorkers);
   } catch (error) {
@@ -236,18 +237,12 @@ export async function getAllJudicialWorkers(req: EnhancedRequest, res: Response,
   }
 }
 
-export async function retrieveAllJudicialWorkers(req: EnhancedRequest, res: Response): Promise<Judicialworker[]> {
-  if (req.session && req.session.judicialWorkers) {
-    return req.session.judicialWorkers;
-  }
-  const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
-  const payload = prepareRoleApiRequest();
-  const {data} = await handlePostRoleAssingnments(roleApiPath, payload, req);
-  const userIds = getUserIdsFromRoleApiResponse(data);
-  const userUrl = `${baseJudicialWorkerRefUrl}/judicialworkers/`;
-  const userResponse = await handlePost(userUrl, userIds, req);
-  req.session.judicialWorkers = userResponse.data;
-  return userResponse.data;
+export async function retrieveAllJudicialWorkers(): Promise<any[]> {
+  return new Promise<any[]>(resolve => {
+    setTimeout(() => {
+      resolve(JUDICIAL_WORKERS_LOCATIONS);
+    }, 0);
+  });
 }
 
 /**

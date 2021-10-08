@@ -1,6 +1,6 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
-import { JurisdictionService } from "./jurisdiction.service";
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
+import { JurisdictionService } from './jurisdiction.service';
 
 describe('Jurisdiction Service', () => {
     let httpClientGetSpy: { get: jasmine.Spy };

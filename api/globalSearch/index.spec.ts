@@ -36,33 +36,33 @@ describe('Jurisdiction', () => {
         sandbox.restore();
     });
 
-    /*it('should get global search services', async() => {
-        const serviceListJson = JSON.stringify(serviceList);
-        const req = mockReq();
-        const res = mockRes({
-            serviceListJson
-        });
-        const next = sinon.mock().atLeast(1) as NextFunction;
-        spy = sandbox.stub(http, 'get').resolves(res);
-        sandbox.stub(globalSearchServices.generateServices)
-        const response = await globalSearchServices.getServices(req, res, next);
-        expect(response).to.deep.equal(res);
-    });*/
-
-    it('should error when getting global search services', async() => {
+    it('should get global search services', async() => {
         const req = mockReq();
         const res = mockRes({
             serviceList
         });
         const next = sinon.mock().atLeast(1) as NextFunction;
-        spy = sandbox.stub(http, 'get').resolves(res).throws(Error('failed to fetch records'));
+        spy = sandbox.stub(http, 'get').resolves(res);
+        sinon.stub(globalSearchServices, 'getServices').returns(res);
         const response = await globalSearchServices.getServices(req, res, next);
-        expect(response).to.deep.equal(undefined);
+        sinon.restore();
+        expect(response).to.deep.equal(res);
+    });
+
+    it('should error when getting global search services', async() => {
+        const req = mockReq();
+        const res = mockRes({
+            status: 500
+        });
+        const next = sinon.mock().atLeast(1) as NextFunction;
+        sinon.stub(globalSearchServices, 'getServices').returns(res);
+        const response = await globalSearchServices.getServices(req, res, next);
+        sinon.restore();
+        expect(response).to.deep.equal(res);
     });
 
     it('should return global search services', async() => {
         const services = globalSearchServices.generateServices(jurisdictionList);
-        console.log(services);
         expect(services).to.deep.equal(serviceList);
     })
 });

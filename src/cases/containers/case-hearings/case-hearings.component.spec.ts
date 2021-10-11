@@ -1,12 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { CaseHearingsComponent } from './case-hearings.component';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { Store } from '@ngrx/store';
-import { State } from '../../../app/store/reducers';
 import { ActivatedRoute } from '@angular/router';
-import { TaskActionConstants } from '../../../work-allocation-2/components/constants';
-import { Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { State } from '../../../app/store/reducers';
+import { CaseHearingsComponent } from './case-hearings.component';
 
 describe('CaseHearingsComponent', () => {
   let component: CaseHearingsComponent;

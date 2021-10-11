@@ -1,3 +1,35 @@
-<p>
-  case-hearings works!
-</p>
+<div class="govuk-tabs__panel" id="event" style="padding:0; border:0; min-height: 300px;">
+  <br />
+  <br />
+  <a href="#" role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button" style="padding-right: 10px;background-image:none;">
+    Request a hearing
+    <svg style="padding-left:5px;vertical-align: middle;" class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewBox="0 0 33 40" aria-hidden="true" focusable="false">
+      <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z" />
+    </svg></a>
+
+  <table class="govuk-table">
+    <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <td scope="row" colspan="4" class="govuk-table__header"><h2 class="govuk-heading-m govuk-!-margin-bottom-2 govuk-!-margin-top-7">Upcoming</h2></td>
+    </tr>
+    <tr class="govuk-table__row" *ngFor="let upcomingHearing of upcomingHearings$ | async">
+      <td scope="row" class="govuk-table__header">{{ upcomingHearing.hearingType}}</td>
+      <td scope="row" class="govuk-table__cell">{{ upcomingHearing.lastResponseReceivedDateTime | date:'d MMMM yyyy'}}</td>
+      <td scope="row" class="govuk-table__cell"><strong class="govuk-tag govuk-tag--grey" style="background-color:#eeefef; color:#383f43">
+        {{ upcomingHearing.hearingListingStatus}}</strong></td>
+      <td scope="row" class="govuk-table__cell"><a href="hearing-details-pending">View and change</a> <span style="margin:0 16px;"></span> <a href="#">Cancel hearing</a></td>
+    </tr>
+
+    <tr class="govuk-table__row">
+      <td scope="row" colspan="4" class="govuk-table__header"><h2 class="govuk-heading-m govuk-!-margin-bottom-2 govuk-!-margin-top-7">Past and cancelled</h2></td>
+    </tr>
+    <tr class="govuk-table__row" *ngFor="let pastAndCancelledHearing of pastAndCancelledHearings$ | async">
+      <td scope="row" class="govuk-table__header">{{ pastAndCancelledHearing.hearingType}}</td>
+      <td scope="row" class="govuk-table__cell">{{ pastAndCancelledHearing.lastResponseReceivedDateTime | date:'d MMMM yyyy'}}</td>
+      <td scope="row" class="govuk-table__cell"><strong class="govuk-tag govuk-tag--purple" style="background-color:#dbd5e9; color:#3d2375">
+        {{ pastAndCancelledHearing.hearingListingStatus}}</strong></td>
+      <td scope="row" class="govuk-table__cell"><a href="hearing-details-completed">View details</a></td>
+    </tr>
+    </tbody>
+  </table>
+</div>

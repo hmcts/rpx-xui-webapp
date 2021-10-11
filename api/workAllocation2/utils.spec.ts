@@ -1,3 +1,4 @@
+import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { expect } from 'chai';
 
 import { mockReq } from 'sinon-express-mock';
@@ -9,6 +10,7 @@ import { Task } from './interfaces/task';
 import { applySearchFilter,
   assignActionsToTasks,
   getActionsByPermissions,
+  getCaseIdListFromRoles,
   mapCaseworkerData,
   mapCaseworkerPrimaryLocation,
   prepareGetTaskUrl,
@@ -407,6 +409,67 @@ describe('workAllocation.utils', () => {
       const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.CASEWORKER };
       const result = applySearchFilter(person, PersonRole.JUDICIAL, 'name');
       expect(result).to.equal(false);
+    });
+  });
+
+  describe('getCaseIdListFromRoles', () => {
+    const firstRoleAssignment: RoleAssignment[] = [{
+      id: '1',
+      attributes: {
+        caseId: '4'
+      }
+    },
+    {
+      id: '2',
+      attributes: {
+        region: 'Birm'
+      }
+    },
+    {
+      id: '3',
+      attributes: {
+        caseId: '2'
+      }
+    },
+    {
+      id: '4',
+      attributes: {
+        caseId: '5'
+      }
+    }];
+    const secondRoleAssignment: RoleAssignment[] = [{
+      id: '1',
+      attributes: {
+        caseId: '4'
+      }
+    },
+    {
+      id: '2',
+      attributes: {
+        region: '2'
+      }
+    },
+    {
+      id: '3',
+      attributes: {
+        caseId: '2'
+      }
+    },
+    {
+      id: '4',
+      attributes: {
+        caseId: '5'
+      }
+    }];
+    const expectedCaseList = ['4', '2', '5'];
+    it('should return empty list if there is nothing given', () => {
+      expect(getCaseIdListFromRoles(null)).to.deep.equal([]);
+    });
+    it('should return correct list of case ids', () => {
+      expect(getCaseIdListFromRoles(firstRoleAssignment)).to.deep.equal(expectedCaseList);
+    });
+    it('should avoid duplicating case ids', () => {
+      expect(getCaseIdListFromRoles(firstRoleAssignment)).to.deep.equal(expectedCaseList);
     });
   });
 

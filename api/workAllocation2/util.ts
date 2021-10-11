@@ -1,4 +1,5 @@
 import { AxiosResponse } from 'axios';
+import { RoleAssignment } from 'user/interfaces/roleAssignment';
 
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
@@ -228,4 +229,18 @@ export async function handlePost(path: string, payload: any, req: EnhancedReques
   // Return the whole response, not just the data, so we can
   // see what the status of the response is.
   return response;
+}
+
+export function getCaseIdListFromRoles(roleAssignment: RoleAssignment[]): string[] {
+  const caseIdList = [];
+  if (!roleAssignment) {
+    return [];
+  }
+  roleAssignment.forEach(roleAssignment => {
+    const caseId = roleAssignment.attributes.caseId;
+    if (caseId && !caseIdList.includes(caseId)) {
+      caseIdList.push(caseId);
+    };
+  })
+  return caseIdList;
 }

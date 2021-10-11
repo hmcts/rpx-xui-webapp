@@ -16,13 +16,13 @@ describe('Jurisdiction', () => {
 
 	let sandbox: sinon.SinonSandbox;
 	let spy: any;
-	let jurisdictionList: Jurisdiction[] = [
+	const jurisdictionList: Jurisdiction[] = [
 		{ id: 'PROBATE', name: 'Manage probate application', description: null, caseTypes: null },
 		{ id: 'IA', name: 'Immigration & Asylum', description: null, caseTypes: null },
 		{ id: 'PUBLICLAW', name: 'Public Law', description: null, caseTypes: null },
 		{ id: 'DIVORCE', name: 'Family Divorce', description: null, caseTypes: null }
 	];
-	let serviceList: GlobalSearchService[] = [
+	const serviceList: GlobalSearchService[] = [
 		{ serviceId: 'DIVORCE', serviceName: 'Family Divorce' },
 		{ serviceId: 'PROBATE', serviceName: 'Manage probate application' },
 		{ serviceId: 'PUBLICLAW', serviceName: 'Public Law' }

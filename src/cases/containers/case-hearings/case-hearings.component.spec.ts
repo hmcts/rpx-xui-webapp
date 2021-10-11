@@ -6,7 +6,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { State } from 'src/app/store';
 import { CaseHearingsComponent } from './case-hearings.component';
 
-fdescribe('CaseHearingsComponent', () => {
+describe('CaseHearingsComponent', () => {
   let component: CaseHearingsComponent;
   let fixture: ComponentFixture<CaseHearingsComponent>;
   let de: DebugElement;
@@ -15,8 +15,8 @@ fdescribe('CaseHearingsComponent', () => {
     routerReducer: null,
     hearings: {
       hearingsList: {
-        caseHearingsMainModel: 
-        {  
+        caseHearingsMainModel:
+        {
           hmctsServiceID: undefined,
           caseRef: undefined,
           caseHearings:  [{
@@ -73,7 +73,7 @@ fdescribe('CaseHearingsComponent', () => {
       }
     }
   };
-    
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ CaseHearingsComponent ],
@@ -85,7 +85,7 @@ fdescribe('CaseHearingsComponent', () => {
             snapshot: {
               params: {
                 cid: '1234'
-              }  
+              }
             }
           }
         },

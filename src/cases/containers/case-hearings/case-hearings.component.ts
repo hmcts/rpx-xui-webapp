@@ -7,7 +7,8 @@ import * as fromFeature from '../../../hearings/store';
 
 @Component({
   selector: 'exui-case-hearings',
-  templateUrl: './case-hearings.component.html'
+  templateUrl: './case-hearings.component.html',
+  styles:[`.header-container { margin-top: 30px; }`]
 })
 
 export class CaseHearingsComponent implements OnInit {
@@ -41,7 +42,7 @@ export class CaseHearingsComponent implements OnInit {
       hearingsList => {
         if (hearingsList && hearingsList.caseHearingsMainModel) {
           const groupedHearing = this.groupBy(hearingsList.caseHearingsMainModel.caseHearings, hearing => hearing.hmcStatus);
-           Array.from(groupedHearing.values()).forEach(value => this.combinedHearing.push(value));
+          Array.from(groupedHearing.values()).forEach(value => this.combinedHearing.push(value));
         }
       }
     );

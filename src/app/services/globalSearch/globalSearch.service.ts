@@ -4,9 +4,9 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class GlobalSearchService {
-    constructor(private readonly http: HttpClient) {}
+	constructor(private readonly http: HttpClient) {}
 
-    public getGlobalSearchServices(): Observable<GlobalSearchService[]> {
-        return this.http.get<GlobalSearchService[]>(`api/globalsearch/services`);
-    }
+	public getGlobalSearchServices(): Observable<GlobalSearchService[]> {
+		return this.http.get<GlobalSearchService[]>(`api/globalsearch/services`);
+	}
 }

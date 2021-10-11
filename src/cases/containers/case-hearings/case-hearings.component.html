@@ -18,10 +18,10 @@
           focusable="false">
           <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"></path>
       </svg></a>
-  </div>
-  <table *ngIf="caseHearing" class="govuk-table">
+  </div>  
+  <table *ngIf="hearingsList.caseHearingsMainModel" class="govuk-table">
     <tbody class="govuk-table__body">
-      <ng-container *ngFor="let caseHearing of caseHearing">
+      <ng-container *ngFor="let caseHearing of hearingsList.caseHearingsMainModel.caseHearings">
         <tr class="govuk-table__row">
             <td scope="row" colspan="4" class="govuk-table__header">
               <h2 class="govuk-heading-m govuk-!-margin-bottom-2 govuk-!-margin-top-7"> {{ caseHearing.caseRef }}</h2>

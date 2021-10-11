@@ -1,6 +1,7 @@
 import { ExtraOptions, Routes } from '@angular/router';
 import {
   AccessibilityComponent,
+  ApplicationRoutingComponent,
   CookiePolicyComponent,
   GetHelpComponent,
   MediaViewerWrapperComponent,
@@ -9,7 +10,6 @@ import {
   ServiceDownComponent,
   SignedOutComponent,
 } from './components';
-import { ApplicationRoutingComponent } from './components/routing/application-routing.component';
 import { AcceptTcWrapperComponent, LegacyTermsAndConditionsComponent, TermsAndConditionsComponent } from './containers';
 import { AcceptTermsGuard } from './guards/acceptTerms.guard';
 import { AuthGuard } from './services/auth/auth.guard';
@@ -56,6 +56,11 @@ export const ROUTES: Routes = [
     path: 'noc',
     canActivate: [AuthGuard, AcceptTermsGuard],
     loadChildren: '../noc/noc.module#NocModule'
+  },
+  {
+    path: 'hearings',
+    canActivate: [AuthGuard, AcceptTermsGuard],
+    loadChildren: '../hearings/hearings.module#HearingsModule'
   },
   {
     path: 'cookies',

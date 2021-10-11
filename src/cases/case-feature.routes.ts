@@ -126,8 +126,6 @@ export const ROUTES: Routes = [
         }
       ]
     },
-
-
 ];
 
 export const casesRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);

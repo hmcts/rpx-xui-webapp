@@ -1,4 +1,3 @@
-// @ts-ignore
 import { NextFunction, Response } from 'express';
 import { handleGet } from '../common/mockService';
 import { getConfigValue } from '../configuration';

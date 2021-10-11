@@ -8,7 +8,7 @@ import * as fromFeature from '../../../hearings/store';
 @Component({
   selector: 'exui-case-hearings',
   templateUrl: './case-hearings.component.html',
-  styles:[ `.header-container { margin-top: 30px; }` ]
+  styles: [ `.header-container { margin-top: 30px; }` ]
 })
 
 export class CaseHearingsComponent implements OnInit {

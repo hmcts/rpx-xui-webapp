@@ -231,16 +231,18 @@ export async function handlePost(path: string, payload: any, req: EnhancedReques
   return response;
 }
 
-export function getCaseIdListFromRoles(roleAssignment: RoleAssignment[]): string[] {
+export function getCaseIdListFromRoles(roleAssignmentList: RoleAssignment[]): string[] {
   const caseIdList = [];
-  if (!roleAssignment) {
+  if (!roleAssignmentList) {
     return [];
   }
-  roleAssignment.forEach(roleAssignment => {
-    const caseId = roleAssignment.attributes.caseId;
-    if (caseId && !caseIdList.includes(caseId)) {
-      caseIdList.push(caseId);
-    };
-  })
+  roleAssignmentList.forEach(roleAssignment => {
+    if (roleAssignment.attributes) {
+      const caseId = roleAssignment.attributes.caseId;
+      if (caseId && !caseIdList.includes(caseId)) {
+        caseIdList.push(caseId);
+      }
+    }
+  });
   return caseIdList;
 }

@@ -8,6 +8,6 @@ export class JurisdictionService {
     constructor(private readonly http: HttpClient) {}
 
     public getJurisdictions(): Observable<Jurisdiction[]> {
-        return this.http.get<Jurisdiction[]>(`api/jurisdictions`);
+        return this.http.get<Jurisdiction[]>(`/aggregated/caseworkers/:uid/jurisdictions?access=read`);
     }
 }

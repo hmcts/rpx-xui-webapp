@@ -2,6 +2,7 @@ export enum AnswerHeaderText {
   AddExclusion = 'Add an exclusion',
   DeleteExclusion = 'Delete an exclusion',
   CheckAnswers = 'Check your answers',
+  CheckChanges = 'Check your changes',
   CheckInformation = 'Check the information below carefully.'
 }
 

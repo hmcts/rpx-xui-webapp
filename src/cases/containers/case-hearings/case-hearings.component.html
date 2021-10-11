@@ -19,33 +19,35 @@
           <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"></path>
       </svg></a>
   </div>  
-  <table *ngIf="hearingsList.caseHearingsMainModel" class="govuk-table">
+  <table class="govuk-table">
     <tbody class="govuk-table__body">
-      <ng-container *ngFor="let caseHearing of hearingsList.caseHearingsMainModel.caseHearings">
-        <tr class="govuk-table__row">
-            <td scope="row" colspan="4" class="govuk-table__header">
-              <h2 class="govuk-heading-m govuk-!-margin-bottom-2 govuk-!-margin-top-7"> {{ caseHearing.caseRef }}</h2>
+      <ng-container *ngFor="let groupedHearing of combinedHearing">
+        <ng-container *ngFor="let caseHearing of groupedHearing; let i = index">
+          <tr *ngIf="i === 0" class="govuk-table__row">
+              <td scope="row" colspan="4" class="govuk-table__header">
+                <h2 class="govuk-heading-m govuk-!-margin-bottom-2 govuk-!-margin-top-7"> {{ caseHearing.hmcStatus }}</h2>
+              </td>
+          </tr>
+          <tr class="govuk-table__row"> 
+              <td scope="row" class="govuk-table__header">{{ caseHearing.hearingType }}</td>
+              <td scope="row" class="govuk-table__cell">{{ caseHearing.lastResponseReceivedDateTime }}</td>
+              <td scope="row" class="govuk-table__cell">
+                <strong 
+                [ngClass]="{ 
+                  'govuk-tag govuk-tag--grey' : caseHearing.hearingListingStatus === 'WAITING TO BE LISTED',
+                  'govuk-tag govuk-tag--purple' : caseHearing.hearingListingStatus === 'COMPLETED',
+                  'govuk-tag govuk-tag--red' : caseHearing.hearingListingStatus === 'CANCELLED',
+                  'govuk-tag govuk-tag--green' : caseHearing.hearingListingStatus === 'LISTED'
+                }"
+                >{{ caseHearing.hearingListingStatus }}</strong>
+              </td>
+              <td scope="row" class="govuk-table__cell">
+                <a (click)="viewHearing.emit(hearing)">View and change</a> 
+                <span style="margin:0 16px;"></span> 
+                <a  (click)="cancelHearing.emit(hearing)">Cancel hearing</a>
             </td>
-        </tr>
-        <tr *ngFor="let hearing of caseHearing.caseHearings" class="govuk-table__row">
-            <td scope="row" class="govuk-table__header">{{ hearing.hearingType }}</td>
-            <td scope="row" class="govuk-table__cell">{{ hearing.lastResponseReceivedDateTime }}</td>
-            <td scope="row" class="govuk-table__cell">
-              <strong 
-              [ngClass]="{
-                'GREY' : hearing.hearingListingStatus === 'WAITING TO BE LISTED',
-                'TORQUISE' : hearing.hearingListingStatus === 'COMPLETED',
-                'RED' : hearing.hearingListingStatus === 'CANCELLED',
-                'GREEN' : hearing.hearingListingStatus === 'LISTED'
-              }"
-              >{{ hearing.hearingListingStatus }}</strong>
-            </td>
-            <td scope="row" class="govuk-table__cell">
-              <a (click)="viewHearing.emit(hearing)">View and change</a> 
-              <span style="margin:0 16px;"></span> 
-              <a  (click)="cancelHearing.emit(hearing)">Cancel hearing</a>
-          </td>
-        </tr>
+          </tr>
+        </ng-container>
       </ng-container>
     </tbody>
   </table>

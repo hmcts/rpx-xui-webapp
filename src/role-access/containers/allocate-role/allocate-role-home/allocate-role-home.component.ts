@@ -111,7 +111,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
       caseId: this.caseId,
       assignmentId: this.assignmentId,
       state: this.instantiateState(),
-      typeOfRole: TypeOfRole[EnumUtil(TypeOfRole).getKeyOrDefault(this.typeOfRole)],
+      typeOfRole: this.typeOfRole,
       allocateTo: null,
       personToBeRemoved,
       person: null,

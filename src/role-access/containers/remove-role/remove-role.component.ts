@@ -29,7 +29,8 @@ export class RemoveRoleComponent implements OnInit {
     this.assignmentId = this.route.snapshot.queryParams.assignmentId;
     const currentRole = roles.find(assignment => assignment.id === this.assignmentId);
     const personDetails = `${currentRole.name}\n${currentRole.email}`;
-    this.answers.push({label: 'Type of role', value: currentRole.roleDefinition.name});
+    const roleName = currentRole.roleDefinition && currentRole.roleDefinition.name ? currentRole.roleDefinition.name : currentRole.roleName;
+    this.answers.push({label: 'Type of role', value: roleName});
     this.answers.push({label: 'Person', value: personDetails});
   }
 

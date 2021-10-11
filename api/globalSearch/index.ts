@@ -23,7 +23,8 @@ export async function getServices(req: EnhancedRequest, res: Response, next: Nex
         if (req.session.jurisdictions) {
             services = generateServices(req.session.jurisdictions as Jurisdiction[]);
         } else {
-            const path = `${getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)}/aggregated/caseworkers/:uid/jurisdictions?access=read`;
+            const domain = `${getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)}`;
+            const path = `${domain}/aggregated/caseworkers/:uid/jurisdictions?access=read`;
             const response = await handleGet(path, req, next);
             services = generateServices(response.data as Jurisdiction[]);
         }

@@ -50,7 +50,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public metadataFields$: Observable<string[]>;
   public caseFilterToggle$: Observable<boolean>;
   public jurisdictionsBehaviourSubject$: BehaviorSubject<Jurisdiction[]> = new BehaviorSubject<Jurisdiction[]>([]);
-    public shareCases$: Observable<SharedCase[]>;
+  public shareCases$: Observable<SharedCase[]>;
   public shareableJurisdictions$: Observable<string[]>;
   private pIsCaseShareVisible$: Observable<boolean>;
   public get isCaseShareVisible$(): Observable<boolean> {

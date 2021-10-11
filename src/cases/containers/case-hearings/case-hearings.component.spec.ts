@@ -15,11 +15,10 @@ fdescribe('CaseHearingsComponent', () => {
     routerReducer: null,
     hearings: {
       hearingsList: {
-        caseHearingsMainModel: 
-        {  
+        caseHearingsMainModel: {
           hmctsServiceID: undefined,
           caseRef: undefined,
-          caseHearings:  [{
+          caseHearings: [{
             hearingID: 'h555555',
             hearingType: 'Directions hearing',
             hmcStatus: 'Past and cancelled',
@@ -73,10 +72,10 @@ fdescribe('CaseHearingsComponent', () => {
       }
     }
   };
-    
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CaseHearingsComponent ],
+      declarations: [CaseHearingsComponent],
       providers: [
         provideMockStore({initialState}),
         {
@@ -85,13 +84,13 @@ fdescribe('CaseHearingsComponent', () => {
             snapshot: {
               params: {
                 cid: '1234'
-              }  
+              },
             }
           }
         },
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

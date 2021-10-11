@@ -6,7 +6,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { State } from 'src/app/store';
 import { CaseHearingsComponent } from './case-hearings.component';
 
-fdescribe('CaseHearingsComponent', () => {
+describe('CaseHearingsComponent', () => {
   let component: CaseHearingsComponent;
   let fixture: ComponentFixture<CaseHearingsComponent>;
   let de: DebugElement;
@@ -108,7 +108,7 @@ fdescribe('CaseHearingsComponent', () => {
   it('Should have the correct value for status in the markup', () => {
     const secondColumn = fixture.debugElement.queryAll(By.css('.govuk-table__cell strong'))[0];
     expect(secondColumn.nativeElement.innerHTML).toEqual('CANCELLED');
-    expect(secondColumn.nativeElement.className).toEqual('RED');
+    expect(secondColumn.nativeElement.className).toEqual('govuk-tag--red');
   });
 
   it('Should have the requested hearing when request button is clicked', () => {

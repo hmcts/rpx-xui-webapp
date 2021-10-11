@@ -33,7 +33,7 @@ export class HearingsEffects {
   );
 
   public static handleError(error: HttpError, action: string): Observable<Action> {
-    if (error && error.status) {
+    if (error && error.status && error.status >= 400) {
       return of(new fromActions.Go({path: ['/service-down']}));
     }
   }

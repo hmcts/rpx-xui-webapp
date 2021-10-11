@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { cold, hot } from 'jasmine-marbles';
 import { of } from 'rxjs';
+import { Go } from '../../../app/store/actions';
 import { CaseHearingModel } from '../../models/caseHearing.model';
 import { CaseHearingsMainModel } from '../../models/caseHearingsMain.model';
 import { HearingDayScheduleModel } from '../../models/hearingDaySchedule.model';
@@ -26,9 +27,7 @@ describe('Hearings Effects', () => {
         provideMockActions(() => actions$)
       ]
     });
-
     effects = TestBed.get(HearingsEffects);
-
   });
 
   describe('loadHearingsList$', () => {
@@ -62,6 +61,13 @@ describe('Hearings Effects', () => {
       actions$ = hot('-a', {a: action});
       const expected = cold('-b', {b: completion});
       expect(effects.loadHearingsList$).toBeObservable(expected);
+    });
+  });
+
+  describe('handleError', () => {
+    it('should handle 500', () => {
+      const action$ = HearingsEffects.handleError({status: 500, message: 'error'}, hearingsActions.LOAD_ALL_HEARINGS);
+      action$.subscribe(action => expect(action).toEqual(new Go({path: ['/service-down']})));
     });
   });
 });

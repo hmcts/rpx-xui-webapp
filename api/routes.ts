@@ -4,7 +4,6 @@ import { getConfigValue, showFeature } from './configuration';
 import { APP_INSIGHTS_KEY } from './configuration/references';
 import { router as globalSearchRoutes } from './globalSearch/routes';
 import healthCheck from './healthCheck';
-import { router as jurisdictionRoutes } from './jurisdictions/routes';
 import authInterceptor from './lib/middleware/auth';
 import { router as nocRouter } from './noc/routes';
 import { router as organisationRouter } from './organisations';
@@ -30,7 +29,6 @@ router.use('/user', userRouter);
 router.use('/caseshare', caseShareRoutes);
 router.use('/noc', nocRouter);
 router.use('/organisation', organisationRouter);
-router.use('/jurisdictions', jurisdictionRoutes);
 router.use('/globalSearch', globalSearchRoutes);
 
 // @ts-ignore

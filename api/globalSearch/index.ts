@@ -4,7 +4,7 @@ import { GlobalSearchService } from 'interfaces/globalSearchService';
 import { EnhancedRequest } from 'lib/models';
 import { handleGet } from '../common/crudService';
 import { getConfigValue } from '../configuration';
-import { GLOBAL_SEARCH_SERVICES, SERVICES_PRD_API_URL } from '../configuration/references';
+import { GLOBAL_SEARCH_SERVICES, SERVICES_CCD_COMPONENT_API_PATH } from '../configuration/references';
 
 /**
  * Get global search services
@@ -23,7 +23,7 @@ export async function getServices(req: EnhancedRequest, res: Response, next: Nex
         if (req.session.jurisdictions) {
             services = generateServices(req.session.jurisdictions as Jurisdiction[]);
         } else {
-            const path = `${getConfigValue(SERVICES_PRD_API_URL)}/aggregated/caseworkers/:uid/jurisdictions?access=read`;
+            const path = `${getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)}/aggregated/caseworkers/:uid/jurisdictions?access=read`;
             const response = await handleGet(path, req, next);
             services = generateServices(response.data as Jurisdiction[]);
         }

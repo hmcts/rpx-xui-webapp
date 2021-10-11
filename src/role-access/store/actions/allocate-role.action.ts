@@ -1,6 +1,6 @@
 import { Person } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 import { Action } from '@ngrx/store';
-import { AllocateRoleState, AllocateRoleStateData, AllocateTo, DurationOfRole, Period, RoleCategory, TypeOfRole } from '../../models';
+import { AllocateRoleState, AllocateRoleStateData, AllocateTo, DurationOfRole, Period, RoleCategory, SpecificRole } from '../../models';
 
 export enum AllocateRoleActionTypes {
   CHANGE_NAVIGATION = '[ALLOCATE ROLE] Change Navigation',
@@ -44,7 +44,7 @@ export class AllocateRoleChangeNavigation implements Action {
 
 export class ChooseRoleAndGo implements Action {
   public readonly type = AllocateRoleActionTypes.CHOOSE_ROLE_AND_GO;
-  constructor(public payload: { typeOfRole: TypeOfRole, allocateRoleState: AllocateRoleState }) {
+  constructor(public payload: { typeOfRole: SpecificRole, allocateRoleState: AllocateRoleState }) {
   }
 }
 

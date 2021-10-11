@@ -9,5 +9,5 @@ export {
   ExclusionMessageText,
   InfoMessageType,
   RoleAllocationCaptionText,
-  RoleAllocationTitleText,
+  RoleAllocationTitleText
 };

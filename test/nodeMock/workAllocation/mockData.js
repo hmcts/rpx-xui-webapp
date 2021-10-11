@@ -137,6 +137,10 @@ class WorkAllocationMockData {
         return this.getPersonList(count);
     }
 
+    getJudicialList(count) {
+        return this.getPersonList(count);
+    }
+
     getTaskDetails() {
         return {
             "task": WorkAllocationDataModels.getRelease1Task()

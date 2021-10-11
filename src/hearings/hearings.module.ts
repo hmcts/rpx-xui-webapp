@@ -10,26 +10,26 @@ import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 import { SharedModule } from '../app/shared/shared.module';
 import * as fromContainers from './containers';
 import { effects, reducers } from './store';
+import { HearingsPipesModule } from './pipes/hearings.pipes.module';
 
 @NgModule({
   imports: [
-      CommonModule,
-      CaseUIToolkitModule,
-      HttpClientModule,
-      StoreModule.forFeature('hearings', reducers),
-      EffectsModule.forFeature(effects),
-      SharedModule,
-      FormsModule,
-      ReactiveFormsModule,
-      ExuiCommonLibModule
+    CommonModule,
+    CaseUIToolkitModule,
+    HttpClientModule,
+    StoreModule.forFeature('hearings', reducers),
+    EffectsModule.forFeature(effects),
+    SharedModule,
+    FormsModule,
+    ReactiveFormsModule,
+    ExuiCommonLibModule
   ],
   declarations: [...fromContainers.containers],
-  entryComponents: [
-  ],
+  entryComponents: [],
   providers: [{
-      provide: AbstractAppConfig,
-      useExisting: AppConfig,
-    },
+    provide: AbstractAppConfig,
+    useExisting: AppConfig,
+  },
   ]
 })
 /**
@@ -43,8 +43,7 @@ export class HearingsModule {
   static forRoot(): ModuleWithProviders {
     return {
       ngModule: HearingsModule,
-      providers: [
-      ]
+      providers: []
     };
   }
 }

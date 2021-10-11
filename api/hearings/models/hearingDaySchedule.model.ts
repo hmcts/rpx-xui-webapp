@@ -1,7 +1,8 @@
 export interface HearingDayScheduleModel {
   hearingStartDateTime: string;
+  ListAssistSessionID?: string;
   hearingEndDateTime: string;
-  ListAssistSessionID: string;
+  listAssistSessionID: string;
   hearingVenueId: string;
   hearingRoomId: string;
   hearingPanel: string[];

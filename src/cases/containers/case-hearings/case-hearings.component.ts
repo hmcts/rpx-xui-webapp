@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CaseHearingModel } from '../../../hearings/models/caseHearing.model';
 import * as fromFeature from '../../../hearings/store';
+import { Actions, HearingsSectionStatusEnum } from '../../../hearings/models/hearings.enum';
 
 @Component({
   selector: 'exui-case-hearings',
@@ -13,7 +14,12 @@ import * as fromFeature from '../../../hearings/store';
 export class CaseHearingsComponent implements OnInit {
 
   public upcomingHearings$: Observable<CaseHearingModel[]>;
+  public upcomingHearingsActions: Actions[] = [Actions.View, Actions.Change, Actions.Cancel];
+  public upcomingStatus: HearingsSectionStatusEnum = HearingsSectionStatusEnum.UPCOMING;
+
   public pastAndCancelledHearings$: Observable<CaseHearingModel[]>;
+  public pastAndCancelledActions: Actions[] = [Actions.View];
+  public pastAndCancelledStatus: HearingsSectionStatusEnum = HearingsSectionStatusEnum.PAST_AND_CANCELLED;
 
   constructor(private readonly store: Store<fromFeature.State>,
               private readonly activatedRoute: ActivatedRoute) {
@@ -22,8 +28,8 @@ export class CaseHearingsComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.upcomingHearings$ = this.getHearsListByStatus('Upcoming');
-    this.pastAndCancelledHearings$ = this.getHearsListByStatus('Past and cancelled');
+    this.upcomingHearings$ = this.getHearsListByStatus(HearingsSectionStatusEnum.UPCOMING);
+    this.pastAndCancelledHearings$ = this.getHearsListByStatus(HearingsSectionStatusEnum.PAST_AND_CANCELLED);
   }
 
   public getHearsListByStatus(status: string): Observable<CaseHearingModel[]> {

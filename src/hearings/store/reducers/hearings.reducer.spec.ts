@@ -3,6 +3,7 @@ import { CaseHearingsMainModel } from '../../models/caseHearingsMain.model';
 import { HearingDayScheduleModel } from '../../models/hearingDaySchedule.model';
 import * as fromActions from '../actions/hearings.action';
 import * as fromReducer from './hearings.reducer';
+import { HearingListingStatusEnum } from '../../models/hearings.enum';
 
 describe('Hearings Reducer', () => {
 
@@ -34,7 +35,7 @@ describe('Hearings Reducer', () => {
           hmcStatus: 'pending',
           lastResponseReceivedDateTime: '2021-05-05T16:00:00.000+0000',
           responseVersion: 'rv1',
-          hearingListingStatus: 'pending',
+          hearingListingStatus: HearingListingStatusEnum.CANCELLED,
           listAssistCaseStatus: 'pending',
           hearingDaySchedule: [HEARING_DAY_SCHEDULE_1],
         };

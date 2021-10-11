@@ -6,7 +6,7 @@ import {
 import { createFeatureSelector, ActionReducerMap, createSelector } from '@ngrx/store';
 
 import * as fromRouter from '@ngrx/router-store';
-
+import * as fromHearing from '../../../hearings/store';
 import * as fromApp from './app-config.reducer';
 
 export interface RouterStateUrl {
@@ -16,6 +16,7 @@ export interface RouterStateUrl {
 }
 
 export interface State {
+  hearings?: fromHearing.State,
   routerReducer: fromRouter.RouterReducerState<RouterStateUrl>;
   appConfig: fromApp.AppConfigState;
 }

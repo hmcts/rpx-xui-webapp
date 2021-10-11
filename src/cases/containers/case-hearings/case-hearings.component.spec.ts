@@ -5,7 +5,6 @@ import { ActivatedRoute } from '@angular/router';
 import { provideMockStore } from '@ngrx/store/testing';
 import { State } from 'src/app/store';
 import { CaseHearingsComponent } from './case-hearings.component';
-import { HearingListingStatusEnum } from '../../../hearings/models/hearings.enum';
 
 describe('CaseHearingsComponent', () => {
   let component: CaseHearingsComponent;
@@ -14,25 +13,6 @@ describe('CaseHearingsComponent', () => {
 
   const initialState: State = {
     routerReducer: null,
-    hearings: {
-      hearingsList: {
-        caseHearingsMainModel: {
-          hmctsServiceID: undefined,
-          caseRef: undefined,
-          caseHearings: [{
-            hearingID: 'h555555',
-            hearingType: 'Directions hearing',
-            hmcStatus: 'Past and cancelled',
-            lastResponseReceivedDateTime: '2021-08-05T16:00:00.000+0000',
-            responseVersion: 'rv5',
-            hearingListingStatus: HearingListingStatusEnum.CANCELLED,
-            listAssistCaseStatus: '',
-            hearingDaySchedule: [],
-          }]
-        },
-        lastError: null
-      }
-    },
     appConfig: {
       config: {},
       termsAndCondition: null,

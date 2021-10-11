@@ -4,8 +4,8 @@ import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CaseHearingModel } from '../../../hearings/models/caseHearing.model';
-import * as fromFeature from '../../../hearings/store';
 import { Actions, HearingsSectionStatusEnum } from '../../../hearings/models/hearings.enum';
+import * as fromFeature from '../../../hearings/store';
 
 @Component({
   selector: 'exui-case-hearings',

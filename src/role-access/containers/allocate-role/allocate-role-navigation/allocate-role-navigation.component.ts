@@ -30,7 +30,7 @@ export class AllocateRoleNavigationComponent implements OnInit {
   public allocateRoleNavigationEvent = AllocateRoleNavigationEvent;
 
   constructor(
-    private store: Store<fromFeature.State>,
+    private readonly store: Store<fromFeature.State>,
   ) {
   }
 

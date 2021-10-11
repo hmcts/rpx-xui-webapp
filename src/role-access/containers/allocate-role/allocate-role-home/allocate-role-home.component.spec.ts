@@ -6,6 +6,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { AllocateRoleService } from '../../../services';
 import * as fromStore from '../../../store';
+import * as fromContainers from '../../allocate-role';
 import { AllocateRoleHomeComponent } from './allocate-role-home.component';
 
 const mockRoles = [{ roleId: '1', roleName: 'Role 1' },
@@ -28,7 +29,7 @@ describe('AllocateRoleHomeComponent', () => {
         NO_ERRORS_SCHEMA
       ],
       declarations: [
-        AllocateRoleHomeComponent
+        ...fromContainers.containers
       ],
       providers: [
         provideMockStore(),
@@ -63,9 +64,9 @@ describe('AllocateRoleHomeComponent', () => {
     store = TestBed.get(Store);
 
     storePipeMock = spyOn(store, 'pipe');
+    storePipeMock.and.returnValue(of(0));
     fixture = TestBed.createComponent(AllocateRoleHomeComponent);
     component = fixture.componentInstance;
-    storePipeMock.and.returnValue(of(0));
     fixture.detectChanges();
   });
 

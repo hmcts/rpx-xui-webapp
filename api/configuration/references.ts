@@ -31,6 +31,7 @@ export const SERVICES_WORK_ALLOCATION_TASK_API_PATH = 'services.work_allocation.
 export const SERVICES_ROLE_ASSIGNMENT_API_PATH = 'services.role_assignment.roleApi';
 export const SERVICES_CASE_CASEWORKER_REF_PATH = "services.case.caseworkerApi";
 export const SERVICES_CASE_JUDICIALWORKER_REF_PATH = "services.case.judicialworkerApi";
+export const SERVICES_LOCATION_API_PATH = "services.location_api";
 
 export const SERVICES_DOCUMENTS_API_PATH = 'services.documents.api'
 export const SERVICES_DOCUMENTS_API_PATH_V2 = 'services.documentsv2.api'

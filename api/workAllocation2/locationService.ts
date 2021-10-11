@@ -1,14 +1,11 @@
-import {EnhancedRequest} from '../lib/models';
-import {ALL_LOCATIONS} from './constants/locations';
+import { AxiosResponse } from 'axios';
+import { http } from '../lib/http';
+import { EnhancedRequest } from '../lib/models';
+import { setHeaders } from '../lib/proxy';
+import { LocationResponse } from './interfaces/location';
 
-export async function handleLocationGet(path: string, req: EnhancedRequest): Promise<any> {
-  /*TODO: Implement get location - currently using given data without endpoint connection*/
-  const response = {
-    data: ALL_LOCATIONS,
-  };
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve(response);
-    }, 0);
-  });
+export async function handleLocationGet(fullPath: string, req: EnhancedRequest): Promise<AxiosResponse<LocationResponse>> {
+  const headers = setHeaders(req);
+  const response = await http.get<LocationResponse>(fullPath, {headers});
+  return response;
 }

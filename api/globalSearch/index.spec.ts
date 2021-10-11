@@ -43,9 +43,8 @@ describe('Jurisdiction', () => {
         });
         const next = sinon.mock().atLeast(1) as NextFunction;
         spy = sandbox.stub(http, 'get').resolves(res);
-        sinon.stub(globalSearchServices, 'getServices').returns(res);
+        sandbox.stub(globalSearchServices, 'getServices').returns(res);
         const response = await globalSearchServices.getServices(req, res, next);
-        sinon.restore();
         expect(response).to.deep.equal(res);
     });
 
@@ -55,9 +54,8 @@ describe('Jurisdiction', () => {
             status: 500
         });
         const next = sinon.mock().atLeast(1) as NextFunction;
-        sinon.stub(globalSearchServices, 'getServices').returns(res);
+        sandbox.stub(globalSearchServices, 'getServices').returns(res);
         const response = await globalSearchServices.getServices(req, res, next);
-        sinon.restore();
         expect(response).to.deep.equal(res);
     });
 

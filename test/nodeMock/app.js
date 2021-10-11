@@ -263,7 +263,7 @@ function setUpcaseConfig() {
     // });
 
     mockInstance.onGet('/api/user/details', (req, res) => {
-        const roles = ['caseworker', 'caseworker-ia', 'caseworker-ia-iacjudge'];
+        const roles = ['caseworker', 'caseworker-ia', 'caseworker-ia-caseofficer'];
         const idamid = '44d5d2c2-7112-4bef-8d05-baaa610bf463';
         res.send(nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, idamid));
 

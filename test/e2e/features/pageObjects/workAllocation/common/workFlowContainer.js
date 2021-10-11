@@ -18,7 +18,7 @@ class WorkFlowContainer{
             'exui-task-container-assignment p>a'
         ];
 
-        this.container = $('.govuk-main-wrapper');
+        this.container = $('.govuk-main-wrapper , exui-allocate-role-navigation, exui-task-container-assignment');
         this.backLink = $('a.govuk-back-link');
         this.continueButton = $(continueButtons.join());
         this.cancelLink = $(cancelLinks.join());

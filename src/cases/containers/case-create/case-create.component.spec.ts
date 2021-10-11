@@ -100,6 +100,12 @@ describe('CaseCreateComponent', () => {
     fixture.detectChanges();
 
   });
+
+  afterEach(() => {
+    spyOn(component, 'ngOnDestroy').and.callFake(() => { });
+    fixture.destroy();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
@@ -108,5 +114,18 @@ describe('CaseCreateComponent', () => {
     expect(component.ngOnInit).toBeTruthy();
   });
 
+  it('should call unsubscribe on ngDestroy', () => {
+    const subscription = jasmine.createSpyObj('myObject', ['unsubscribe']);
+
+    component.unSubscribe(subscription);
+    expect(subscription.unsubscribe).toHaveBeenCalled();
+  });
+
+  it('should not call unsubscribe when no subscription', () => {
+    const subscription = jasmine.createSpyObj('myObject', ['unsubscribe']);
+
+    component.unSubscribe(null);
+    expect(subscription.unsubscribe).not.toHaveBeenCalled();
+  });
 
 });

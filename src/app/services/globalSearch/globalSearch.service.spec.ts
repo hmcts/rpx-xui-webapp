@@ -27,7 +27,7 @@ describe('Global Search Service', () => {
 	it('should get global search jurisdictions', () => {
 		httpClientGetSpy.get.and.returnValue({});
 		service.getGlobalSearchServices().subscribe(data => {
-				expect(data).toBeDefined();
+			expect(data).toBeDefined();
 		});
 	});
 });

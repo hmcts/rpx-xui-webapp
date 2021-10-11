@@ -57,7 +57,7 @@ Feature: WA Release 2: Case details Tasks tab - Manage links
         When I click manage link "Assign to me" for task at position 7 in case details tasks tab
         Then I see case details page with message banner "You've assigned task to yourself"
         Then I see case details tab label "Tasks" is displayed is "true"
-
+    
     Scenario: Task manage link actions Reassign
 
         Given I start MockApp

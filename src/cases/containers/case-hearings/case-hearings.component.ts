@@ -1,33 +1,37 @@
 
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseHearingModel } from 'api/hearings/models/caseHearing.model';
-import { CaseHearingsMainModel } from 'api/hearings/models/caseHearingsMain.model';
 import { select, Store } from '@ngrx/store';
 import * as fromFeature from '../../../hearings/store';
-import { HearingsStateData } from 'src/hearings/models/hearingsStateData.model';
 
 @Component({
   selector: 'exui-case-hearings',
-  templateUrl: './case-hearings.component.html',
-  styles:[`
-    .header-container { margin-top: 30px; }
-    .TORQUISE { background-color: purple; padding:5px }
-    .GREEN { background-color: green; padding:5px }
-    .GREY { background-color: grey; padding:5px }
-    .RED { background-color: red; padding:5px}
-  `]
+  templateUrl: './case-hearings.component.html'
 })
 
 export class CaseHearingsComponent implements OnInit {
- // @Input() caseHearing: CaseHearingsMainModel[];
   @Output() viewHearing = new EventEmitter<CaseHearingModel>();
   @Output() cancelHearing = new EventEmitter<CaseHearingModel>();
   @Output() requestHearing = new EventEmitter<any>();
-  public hearingsList: HearingsStateData;
 
   constructor(private readonly store: Store<fromFeature.State>,
-              private readonly activatedRoute: ActivatedRoute) {
+    private readonly activatedRoute: ActivatedRoute) {
+  }
+
+  public combinedHearing = [];
+  public groupBy(list, keyGetter) {
+    const map = new Map();
+    list.forEach((item) => {
+      const key = keyGetter(item);
+      const collection = map.get(key);
+      if (!collection) {
+          map.set(key, [item]);
+      } else {
+          collection.push(item);
+      }
+    });
+    return map;
   }
 
   public ngOnInit(): void {
@@ -35,8 +39,10 @@ export class CaseHearingsComponent implements OnInit {
     this.store.dispatch(new fromFeature.LoadAllHearings(caseID));
     this.store.pipe(select(fromFeature.getHearingsList)).subscribe(
       hearingsList => {
-        console.log('hearinglist', hearingsList.caseHearingsMainModel.caseHearings);
-        this.hearingsList = hearingsList;
+        if (hearingsList && hearingsList.caseHearingsMainModel) {
+          const groupedHearing = this.groupBy(hearingsList.caseHearingsMainModel.caseHearings, hearing => hearing.hmcStatus);
+           Array.from(groupedHearing.values()).forEach(value => this.combinedHearing.push(value));
+        }
       }
     );
   }

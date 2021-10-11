@@ -6,14 +6,14 @@ import { Observable } from 'rxjs';
 @Injectable()
 export class JurisdictionService {
 
-    public static jurisdictionUrl = '/aggregated/caseworkers/:uid/jurisdictions?access=read';
+	public static jurisdictionUrl = '/aggregated/caseworkers/:uid/jurisdictions?access=read';
 
-    constructor(private readonly http: HttpClient) {}
+	constructor(private readonly http: HttpClient) {}
 
-    public getJurisdictions(): Observable<Jurisdiction[]> {
-        // Headers had to be set here as the request is going via proxy
-        const headers = new HttpHeaders()
-            .set('content-type', 'application/json');
-        return this.http.get<Jurisdiction[]>(JurisdictionService.jurisdictionUrl, { headers });
-    }
+	public getJurisdictions(): Observable<Jurisdiction[]> {
+		// Headers had to be set here as the request is going via proxy
+		const headers = new HttpHeaders()
+			.set('content-type', 'application/json');
+		return this.http.get<Jurisdiction[]>(JurisdictionService.jurisdictionUrl, { headers });
+	}
 }

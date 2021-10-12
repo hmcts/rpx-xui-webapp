@@ -11,33 +11,33 @@ import { GLOBAL_SEARCH_SERVICES, SERVICES_CCD_COMPONENT_API_PATH } from '../conf
  * api/globalsearch/services
  */
 export async function getServices(req: EnhancedRequest, res: Response, next: NextFunction) {
-	try {
-		// Return global search services from session if available
-		if (req.session.globalSearchServices) {
-			return res.json(req.session.globalSearchServices);
-		}
+  try {
+    // Return global search services from session if available
+    if (req.session.globalSearchServices) {
+      return res.json(req.session.globalSearchServices);
+    }
 
-		// Retrieve jurisdictions from session if available
-		// Else perform api call to get jurisdictions
-		let services: any;
-		if (req.session.jurisdictions) {
-			services = generateServices(req.session.jurisdictions as Jurisdiction[]);
-		} else {
-			const domain = `${getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)}`;
-			const path = `${domain}/aggregated/caseworkers/:uid/jurisdictions?access=read`;
-			const response = await handleGet(path, req, next);
-			services = generateServices(response.data as Jurisdiction[]);
-		}
+    // Retrieve jurisdictions from session if available
+    // Else perform api call to get jurisdictions
+    let services: any;
+    if (req.session.jurisdictions) {
+      services = generateServices(req.session.jurisdictions as Jurisdiction[]);
+    } else {
+      const domain = `${getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)}`;
+      const path = `${domain}/aggregated/caseworkers/:uid/jurisdictions?access=read`;
+      const response = await handleGet(path, req, next);
+      services = generateServices(response.data as Jurisdiction[]);
+    }
 
-		// Store generated global search services to session
-		req.session.globalSearchServices = services;
+    // Store generated global search services to session
+    req.session.globalSearchServices = services;
 
-		// Return json response of generated global search services
-		return res.json(services);
+    // Return json response of generated global search services
+    return res.json(services);
 
-	} catch (error) {
-		next(error);
-	}
+  } catch (error) {
+    next(error);
+  }
 }
 
 /**
@@ -46,17 +46,17 @@ export async function getServices(req: EnhancedRequest, res: Response, next: Nex
  * @returns
  */
 export function generateServices(jurisdictions: Jurisdiction[]): GlobalSearchService[] {
-	// Retrieve global search services id from config
-	const globalSearchServiceIds = getConfigValue(GLOBAL_SEARCH_SERVICES);
-	const globalSearchServiceIdsArray = globalSearchServiceIds.split(',');
+  // Retrieve global search services id from config
+  const globalSearchServiceIds = getConfigValue(GLOBAL_SEARCH_SERVICES);
+  const globalSearchServiceIdsArray = globalSearchServiceIds.split(',');
 
-	// Generate global search services
-	const globalSearchServices: GlobalSearchService[] = [];
-	globalSearchServiceIdsArray.forEach(serviceId => {
-		const jurisdiction = jurisdictions.find(x => x.id === serviceId);
-		globalSearchServices.push({ serviceId: jurisdiction.id, serviceName: jurisdiction.name });
-	});
+  // Generate global search services
+  const globalSearchServices: GlobalSearchService[] = [];
+  globalSearchServiceIdsArray.forEach(serviceId => {
+    const jurisdiction = jurisdictions.find(x => x.id === serviceId);
+    globalSearchServices.push({ serviceId: jurisdiction.id, serviceName: jurisdiction.name });
+  });
 
-	// Return generated global search services
-	return globalSearchServices;
+  // Return generated global search services
+  return globalSearchServices;
 }

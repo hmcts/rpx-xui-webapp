@@ -171,4 +171,8 @@ export class AppConfig extends AbstractAppConfig {
   public getRemoteHrsUrl(): string {
     return this.config.remote_hrs_url;
   }
+
+  public getCamRoleAssignmentsApiUrl(): string {
+    return this.config.cam_role_assignments_api_url;
+  }
 }

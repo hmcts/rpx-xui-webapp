@@ -9,8 +9,9 @@ import { StoreModule } from '@ngrx/store';
 import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 import { SharedModule } from '../app/shared/shared.module';
 import * as fromContainers from './containers';
+import { hearingsRouting } from './hearings.routes';
+import { HearingsService } from './services/hearings.service';
 import { effects, reducers } from './store';
-import { HearingsPipesModule } from './pipes/hearings.pipes.module';
 
 @NgModule({
   imports: [
@@ -19,6 +20,7 @@ import { HearingsPipesModule } from './pipes/hearings.pipes.module';
     HttpClientModule,
     StoreModule.forFeature('hearings', reducers),
     EffectsModule.forFeature(effects),
+    hearingsRouting,
     SharedModule,
     FormsModule,
     ReactiveFormsModule,
@@ -26,10 +28,12 @@ import { HearingsPipesModule } from './pipes/hearings.pipes.module';
   ],
   declarations: [...fromContainers.containers],
   entryComponents: [],
-  providers: [{
-    provide: AbstractAppConfig,
-    useExisting: AppConfig,
-  },
+  providers: [
+    {
+      provide: AbstractAppConfig,
+      useExisting: AppConfig,
+    },
+    HearingsService
   ]
 })
 /**

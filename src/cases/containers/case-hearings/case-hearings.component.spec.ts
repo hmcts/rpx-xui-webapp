@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { provideMockStore } from '@ngrx/store/testing';
 import { State } from 'src/app/store';
 import { CaseHearingsComponent } from './case-hearings.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('CaseHearingsComponent', () => {
   let component: CaseHearingsComponent;
@@ -57,6 +58,7 @@ describe('CaseHearingsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [CaseHearingsComponent],
+      imports: [RouterTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         provideMockStore({initialState}),

@@ -1,7 +1,16 @@
-import { HearingsRequestComponent } from './hearings-request/hearings-request.component';
+import { CancelHearingComponent } from './cancel-hearing/cancel-hearing.component';
+import { ChangeHearingComponent } from './change-hearing/change-hearing.component';
+import { RequestHearingComponent } from './request-hearing/request-hearing.component';
+import { ViewHearingComponent } from './view-hearing/view-hearing.component';
 
 export const containers: any[] = [
-  HearingsRequestComponent,
+  CancelHearingComponent,
+  ChangeHearingComponent,
+  RequestHearingComponent,
+  ViewHearingComponent
 ];
 
-export * from './hearings-request/hearings-request.component';
+export * from './cancel-hearing/cancel-hearing.component';
+export * from './change-hearing/change-hearing.component';
+export * from './request-hearing/request-hearing.component';
+export * from './view-hearing/view-hearing.component';

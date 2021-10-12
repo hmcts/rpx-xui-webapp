@@ -15,10 +15,16 @@
       </strong>
     </td>
     <td scope="row" class="govuk-table__cell govuk-!-width-one-quarter">
-      <div *ngIf="hasViewChangeAction" class="div-action"><a href="javascript:void(0)">View and change</a>&nbsp;&nbsp;
+      <div *ngIf="hasViewChangeAction" class="div-action">
+        <a href="javascript:void(0)"
+           [routerLink]="['/', 'hearings', 'change']">View and change</a>&nbsp;&nbsp;
       </div>
-      <div *ngIf="hasCancelAction" class="div-action"><a href="javascript:void(0)">Cancel hearing</a>&nbsp;&nbsp;</div>
-      <div *ngIf="hasViewOnlyAction" class="div-action"><a href="javascript:void(0)">View details</a></div>
+      <div *ngIf="hasCancelAction" class="div-action">
+        <a href="javascript:void(0)"
+           [routerLink]="['/', 'hearings', 'cancel']">Cancel hearing</a>&nbsp;&nbsp;</div>
+      <div *ngIf="hasViewOnlyAction" class="div-action">
+        <a href="javascript:void(0)"
+           [routerLink]="['/', 'hearings', 'view']">View details</a></div>
     </td>
   </tr>
   </tbody>

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, NavigationStart, Router } from '@angular/router';
+import { Observable } from 'rxjs';
 
-import { InformationMessage } from '../../models/comms';
 import { InfoMessageCommService } from '../../services';
+import { InformationMessage } from '../../models/comms';
 
 @Component({
   selector: 'exui-info-message-container',
@@ -12,6 +13,9 @@ export class InfoMessageContainerComponent implements OnInit {
 
   public showInfoMessage: boolean = false;
   public infoMessages: InformationMessage[];
+  public infoMessageChangeEmitted$: Observable<InformationMessage[]> = this.messageService.infoMessageChangeEmitted$;
+
+  private currentUrl: string;
 
   /**
    * Flag to indicate whether or not messages should be retained at
@@ -32,8 +36,16 @@ export class InfoMessageContainerComponent implements OnInit {
 
   public ngOnInit(): void {
     this.router.events.subscribe(event => {
+      if (event instanceof NavigationStart) {
+        // keep the current url the navigation started from
+        this.currentUrl = this.router.url;
+      }
       if (event instanceof NavigationEnd) {
-        this.resetMessages();
+        // EUI-3950 - if the current url includes the manage link, do not allow removal of messages
+        // this is to ensure the spinner does not remove the messages shown to the user
+        if (!this.currentUrl.includes('#manage')) {
+          this.resetMessages();
+        }
       }
     });
 
@@ -41,7 +53,7 @@ export class InfoMessageContainerComponent implements OnInit {
   }
 
   public subscribeToInfoMessageCommService(): void {
-    this.messageService.infoMessageChangeEmitted$.subscribe(messages => {
+    this.infoMessageChangeEmitted$.subscribe(messages => {
       this.infoMessages = messages;
       this.showInfoMessage = (messages || []).length > 0;
     });

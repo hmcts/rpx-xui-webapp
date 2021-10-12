@@ -12,6 +12,8 @@ describe('CCD Endpoints', () => {
     // const userName = 'peterxuisuperuser@mailnesia.com';
     // const password = 'Monday01';
     beforeEach(function ()  {
+        this.timeout(120000);
+
         setTestContext(this);
         Request.clearSession();
     });
@@ -21,7 +23,7 @@ describe('CCD Endpoints', () => {
 
         const xsrfToken = await getXSRFToken(userName, password);
         const headers = {
-            experimental: true,
+            // experimental: true,
             'X-XSRF-TOKEN': xsrfToken
         };
         const response = await Request.get('api/addresses?postcode=E1', headers, 200);

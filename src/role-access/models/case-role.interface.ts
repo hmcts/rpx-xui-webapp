@@ -1,9 +1,11 @@
-import { RoleCategory, TypeOfRole } from './allocate-role.enum';
+import { SpecificRole } from '.';
+import { RoleCategory } from './allocate-role.enum';
 
 export interface CaseRole {
   name: string;
   roleCategory: RoleCategory;
-  roleName: TypeOfRole;
+  roleDefinition?: SpecificRole;
+  roleName?: string
   location: string;
   start: string;
   end: string;

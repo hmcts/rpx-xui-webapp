@@ -1,5 +1,5 @@
 
-@ng
+@_ng
 Feature: Work allocation 2 feature route guards
 
     These tests would be valid untill work allocation 2 features are enabled for all users
@@ -9,7 +9,7 @@ Feature: Work allocation 2 feature route guards
         Given I start MockApp
         Given I navigate to home page
         
-        Given I navigate to page route "http://localhost:3000<Route>"
+        Given I navigate to page route "<Route>"
         Then I see page with css locator "ccd-search-result"
 
         Examples:

@@ -17,6 +17,9 @@ export function toRoleAssignmentBody(userInfo: UserInfo, allocateRoleData: Alloc
         caseId: allocateRoleData.caseId,
         jurisdiction: 'IA',
       },
+      // TODO: When given roles valid do
+      // roleName: allocateRoleData.typeOfRole && allocateRoleData.typeOfRole.id ? allocateRoleData.typeOfRole.id : null,
+      // below judge roleName only name that works currently so used to test allocations working
       roleName: 'judge',
       roleCategory: allocateRoleData.roleCategory,
       actorIdType: 'IDAM',
@@ -28,13 +31,9 @@ export function toRoleAssignmentBody(userInfo: UserInfo, allocateRoleData: Alloc
 }
 
 export function getActorId(userInfo: UserInfo, allocateRoleData: AllocateRoleData): string {
-  if (allocateRoleData.action === 'reallocate') {
-    return allocateRoleData.person.id;
+  if (allocateRoleData.allocateTo === AllocateTo.RESERVE_TO_ME) {
+    return userInfo.id;
   } else {
-    if (allocateRoleData.allocateTo === AllocateTo.RESERVE_TO_ME) {
-      return userInfo.id;
-    } else {
-      return allocateRoleData.person.id;
-    }
+    return allocateRoleData.person.id;
   }
 }

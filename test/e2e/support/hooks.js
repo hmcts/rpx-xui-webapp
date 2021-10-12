@@ -117,6 +117,8 @@ defineSupportCode(({ Before,After }) => {
                         browserErrorLogs.push(perfItem);
                     }
                 }
+                CucumberReportLog.AddMessage("Page route : " + await browser.getCurrentUrl());
+
                 CucumberReportLog.AddJson(browserErrorLogs);
             }else{
                 browser.manage().logs().get('browser');

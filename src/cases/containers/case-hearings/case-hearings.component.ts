@@ -42,6 +42,7 @@ export class CaseHearingsComponent implements OnInit {
       hearingsList => {
         if (hearingsList && hearingsList.caseHearingsMainModel) {
           const groupedHearing = this.groupBy(hearingsList.caseHearingsMainModel.caseHearings, hearing => hearing.hmcStatus);
+          this.combinedHearing = [];
           Array.from(groupedHearing.values()).forEach(value => this.combinedHearing.push(value));
         }
       }

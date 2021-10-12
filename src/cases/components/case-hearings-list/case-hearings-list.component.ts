@@ -24,7 +24,7 @@ export class CaseHearingsListComponent implements OnInit {
   public hasCancelAction: boolean = false;
   public hasViewOnlyAction: boolean = false;
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     if (this.actions.includes(Actions.View) && this.actions.includes(Actions.Change)) {
       this.hasViewChangeAction = true;
     }

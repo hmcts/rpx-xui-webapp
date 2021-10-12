@@ -16,7 +16,6 @@ import { FeatureVariation } from '../../models/feature-variation.model';
   templateUrl: './case-viewer-container.component.html'
 })
 export class CaseViewerContainerComponent implements OnInit {
-  private static readonly META_FIELD_JURISDICTION = '[JURISDICTION]';
   private static readonly FEATURE_WORK_ALLOCATION_RELEASE_1 = 'WorkAllocationRelease1';
   private static readonly FEATURE_WORK_ALLOCATION_RELEASE_2 = 'WorkAllocationRelease2';
 
@@ -69,7 +68,8 @@ export class CaseViewerContainerComponent implements OnInit {
       this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.currentWAFeature, CaseViewerContainerComponent.FEATURE_WORK_ALLOCATION_RELEASE_1),
       this.store.pipe(select(fromRoot.getUserDetails))
     ]).pipe(
-      map(([feature, userDetails]: [string, UserDetails]) => CaseViewerContainerComponent.enablePrependedTabs(feature, userDetails) ? this.prependedTabs : [])
+      map(([feature, userDetails]: [string, UserDetails]) =>
+        CaseViewerContainerComponent.enablePrependedTabs(feature, userDetails) ? this.prependedTabs : [])
     );
   }
 
@@ -80,7 +80,8 @@ export class CaseViewerContainerComponent implements OnInit {
     ]).pipe(
       map(([featureVariations, userDetails]: [FeatureVariation[], UserDetails]) => {
         const jurisdictionID = this.caseDetails.case_type.jurisdiction.id;
-        const hasMatchedJurisdictionAndRole = featureVariations.some(featureVariation => this.hasMatchedJurisdictionAndRole(featureVariation, jurisdictionID, userDetails));
+        const hasMatchedJurisdictionAndRole = featureVariations.some(featureVariation =>
+          this.hasMatchedJurisdictionAndRole(featureVariation, jurisdictionID, userDetails));
         return hasMatchedJurisdictionAndRole ? this.appendedTabs : [];
       })
     );
@@ -89,7 +90,8 @@ export class CaseViewerContainerComponent implements OnInit {
   private hasMatchedJurisdictionAndRole(featureVariation: FeatureVariation, jurisdictionID: string, userDetails: UserDetails): boolean {
     if (featureVariation.jurisdiction === jurisdictionID) {
       if (userDetails && userDetails.userInfo) {
-        return userDetails.userInfo.roles && featureVariation.roles ? userDetails.userInfo.roles.some(userRole => featureVariation.roles.some(role => role === userRole)) : false;
+        return userDetails.userInfo.roles && featureVariation.roles ? userDetails.userInfo.roles.some(userRole =>
+          featureVariation.roles.some(role => role === userRole)) : false;
       }
     } else {
       return false;

@@ -29,7 +29,7 @@ export class RolesAndAccessContainerComponent implements OnInit {
     this.caseDetails = this.route.snapshot.data.case as CaseView;
     this.applyJurisdiction(this.caseDetails);
     this.roles = this.route.snapshot.data.roles as CaseRole[];
-    this.exclusions$ = this.roleExclusionsService.getCurrentUserRoleExclusions();
+    this.exclusions$ = this.roleExclusionsService.getCurrentUserRoleExclusions(this.caseDetails.case_id, this.caseDetails.case_type.id, 'IA');
   }
 
   public applyJurisdiction(caseDetails: CaseView): void {

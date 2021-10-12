@@ -24,10 +24,13 @@ describe('DeleteExclusionComponent', () => {
   const routerMock = jasmine.createSpyObj('Router', [
     'navigateByUrl', 'navigate'
   ]);
-  const mockRoleExclusionsService = jasmine.createSpyObj('roleExclusionsService', ['deleteExclusion']);
+  const mockRoleExclusionsService = jasmine.createSpyObj('roleExclusionsService', ['deleteExclusion', 'getCurrentUserRoleExclusions']);
   const exampleCaseId = '1234';
   const exclusionId = '222';
   const goToCaseUrl = `cases/case-details/${exampleCaseId}/roles-and-access`;
+  const jurisdiction = 'Jurisdiction';
+  const caseType = 'caseType';
+  const exclusion = {caseId: exampleCaseId, exclusionId, jurisdiction, caseType };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -52,7 +55,7 @@ describe('DeleteExclusionComponent', () => {
                 ]
               }
             },
-            queryParamMap: of(convertToParamMap({caseId: exampleCaseId, exclusionId }))
+            queryParamMap: of(convertToParamMap(exclusion))
           }
         },
         {
@@ -69,6 +72,14 @@ describe('DeleteExclusionComponent', () => {
   }));
 
   beforeEach(() => {
+    mockRoleExclusionsService.getCurrentUserRoleExclusions.and.returnValue([
+      {
+        added: Date.UTC(2021, 6, 1),
+        id: exclusionId,
+        name: 'Judge Rinder',
+        notes: 'Test exclusion'
+      }
+    ]);
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
@@ -86,18 +97,7 @@ describe('DeleteExclusionComponent', () => {
   });
 
   it('should display the exclusion details', () => {
-    const personLabelElement = fixture.debugElement.nativeElement.querySelectorAll('.govuk-summary-list__key')[0];
-    expect(personLabelElement.textContent).toContain(AnswerLabelText.Person);
-    const personValueElement = fixture.debugElement.nativeElement.querySelectorAll('.govuk-summary-list__value')[0];
-    expect(personValueElement.textContent).toContain('Judge Rinder');
-    const descriptionLabelElement = fixture.debugElement.nativeElement.querySelectorAll('.govuk-summary-list__key')[1];
-    expect(descriptionLabelElement.textContent).toContain(AnswerLabelText.DescribeExclusion);
-    const descriptionValueElement = fixture.debugElement.nativeElement.querySelectorAll('.govuk-summary-list__value')[1];
-    expect(descriptionValueElement.textContent).toContain('Test exclusion');
-    const dateAddedLabelElement = fixture.debugElement.nativeElement.querySelectorAll('.govuk-summary-list__key')[2];
-    expect(dateAddedLabelElement.textContent).toContain(AnswerLabelText.DateAdded);
-    const dateAddedValueElement = fixture.debugElement.nativeElement.querySelectorAll('.govuk-summary-list__value')[2];
-    expect(dateAddedValueElement.textContent).toContain('01/07/2021');
+    expect(mockRoleExclusionsService.getCurrentUserRoleExclusions).toHaveBeenCalledWith('1234', 'caseType', 'Jurisdiction', '222');
   });
 
   it('should navigate correctly on click', () => {

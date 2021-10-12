@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { mergeMap } from 'rxjs/operators';
 
 import { Answer, ExclusionNavigationEvent, RoleExclusion } from '../../models';
 import { AnswerHeaderText, AnswerLabelText, ExclusionMessageText } from '../../models/enums';
@@ -26,19 +27,26 @@ export class DeleteExclusionComponent implements OnInit {
               private readonly roleExclusionsService: RoleExclusionsService) {}
 
   public ngOnInit(): void {
-    // Get the role exclusions from the route, which will have been put there by the resolver.
-    const roleExclusions: RoleExclusion[] = this.route.snapshot.data.roleExclusions;
-    this.route.queryParamMap.subscribe(queryMap => {
-      this.exclusionId = queryMap.get('exclusionId');
-      this.caseId = queryMap.get('caseId');
-      this.roleExclusion = roleExclusions.find(exclusion => exclusion.id === this.exclusionId);
-      this.populateAnswers(this.roleExclusion);
-    });
+    const paramMap$ = this.route.queryParamMap;
+    paramMap$.pipe(mergeMap(queryMap => {
+        return this.getExclusionFromQuery(queryMap);
+      })).subscribe(exclusions => {
+        this.roleExclusion = exclusions.find(excl => excl.id === this.exclusionId);
+        this.populateAnswers(this.roleExclusion);
+      });
   }
 
-  private populateAnswers(exclusion: RoleExclusion): void {
+  public getExclusionFromQuery(queryMap: ParamMap) {
+    this.exclusionId = queryMap.get('exclusionId');
+    this.caseId = queryMap.get('caseId');
+    const jurisdiction = queryMap.get('jurisdiction');
+    const caseType = queryMap.get('caseType');
+    return this.roleExclusionsService.getCurrentUserRoleExclusions(this.caseId, caseType, jurisdiction, this.exclusionId);
+  }
+
+  public populateAnswers(exclusion: RoleExclusion): void {
     this.answers.push({label: AnswerLabelText.Person, value: exclusion.name});
-    this.answers.push({label: AnswerLabelText.DescribeExclusion, value: exclusion.notes});
+    this.answers.push({label: AnswerLabelText.DescribeExclusion, value: exclusion.notes ? exclusion.notes : ''});
     this.answers.push({label: AnswerLabelText.DateAdded, value: new Date(exclusion.added).toLocaleDateString('en-GB')});
   }
 

@@ -9,7 +9,10 @@ describe('RoleExclusionsService', () => {
         roleExclusionsService = new RoleExclusionsService(mockHttp);
     });
     it('getCurrentUserRoleExclusions', () => {
-        roleExclusionsService.getCurrentUserRoleExclusions();
-        expect(mockHttp.get).toHaveBeenCalledWith(`${RoleExclusionsService.exclusionsUrl}/get`);
+        roleExclusionsService.getCurrentUserRoleExclusions('12343454545', 'JUR', 'caseType', 'someId');
+        expect(mockHttp.post).toHaveBeenCalledWith(
+            `${RoleExclusionsService.exclusionsUrl}/post`,
+            {caseId: '12343454545', jurisdiction: 'JUR', caseType: 'caseType', exclusionId: 'someId'}
+            );
     });
 });

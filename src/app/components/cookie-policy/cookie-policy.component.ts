@@ -28,7 +28,10 @@ export class CookiePolicyComponent {
       {name: '_gat_XXXXXXXXXX', cat: this.GOOGLE, purpose: 'This is used to control the rate at which requests to the analytics software are made', expires: '1 day'},
       {name: '__userid__', cat: this.IDENTIFY, purpose: 'Your user ID', expires: 'When you close your browser'},
       {name: '__auth__', cat: this.SECURITY, purpose: 'Information about your current system authorisations', expires: 'When you close your browser'},
-      {name: 'XSRF-TOKEN', cat: this.SECURITY, purpose: 'Used to protect your session against cross site scripting attacks', expires: 'When you close your browser'}
+      {name: 'XSRF-TOKEN', cat: this.SECURITY, purpose: 'Used to protect your session against cross site scripting attacks', expires: 'When you close your browser'},
+      {name: 'dtCookie', cat: this.USAGE, purpose: 'Used for usage tracking (Dynatrace)', expires: 'When you close your browser'},
+      {name: 'dtSa', cat: this.USAGE, purpose: 'Used for usage tracking (Dynatrace)', expires: 'When you close your browser'},
+      {name: 'dtLatC', cat: this.USAGE, purpose: 'Used for usage tracking (Dynatrace)', expires: 'When you close your browser'}
     ];
 
   public countCookies(category: string): number {

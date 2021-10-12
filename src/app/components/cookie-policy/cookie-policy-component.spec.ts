@@ -49,6 +49,9 @@ describe('CookiePolicyComponentTest', () => {
   it('should include 4 security cookies', () => {
     expect(component.countCookies(component.SECURITY)).toBe(4);
   });
+  it('should include 5 uses cookies', () => {
+    expect(component.countCookies(component.USAGE)).toBe(5);
+  });
   it ('should return the __userid__ cookie as an identity cookie', () => {
     const cookieName = component.cookiesByCat(component.IDENTIFY)[0].name;
     expect (cookieName).toBe('__userid__');

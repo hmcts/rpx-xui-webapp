@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'xui-view-hearing',
+  selector: 'exui-view-hearing',
   templateUrl: './view-hearing.component.html',
   styleUrls: ['./view-hearing.component.scss']
 })

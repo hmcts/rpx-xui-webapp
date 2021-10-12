@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'xui-change-hearing',
+  selector: 'exui-change-hearing',
   templateUrl: './change-hearing.component.html',
   styleUrls: ['./change-hearing.component.scss']
 })

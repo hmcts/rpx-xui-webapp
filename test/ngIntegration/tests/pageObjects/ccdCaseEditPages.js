@@ -60,13 +60,12 @@ class CaseEdit {
         return errorSummaryText;
     }
 
-
     async isCallbackErrorSummaryDisplayed() {
         try {
             await BrowserWaits.waitForElement(this.callbackErrorSummaryContainer);
             return true;
         } catch (error) {
-            reportLogger.AddMessage("Callback error not displayed" + error);
+            reportLogger.AddMessage("Error waiting for error summary banner :" + error);
             return false;
         }
     }

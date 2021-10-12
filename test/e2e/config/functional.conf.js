@@ -9,6 +9,9 @@ chai.use(chaiAsPromised);
 
 const argv = minimist(process.argv.slice(2));
 
+
+const isParallelExecution = true;
+
 const jenkinsConfig = [
 
     {
@@ -33,6 +36,12 @@ const localConfig = [
         }
     }
 ];
+
+
+if (isParallelExecution) {
+    jenkinsConfig[0].shardTestFiles = true;
+    jenkinsConfig[0].maxInstances = 3;
+}
 
 const cap = (argv.local) ? localConfig : jenkinsConfig;
 
@@ -83,7 +92,8 @@ const config = {
             '../support/hooks.js',
             '../support/world.js',
             '../support/*.js',
-            '../features/step_definitions/*.steps.js'
+            '../features/step_definitions/*.steps.js',
+            '../features/step_definitions/**/*.steps.js'
         ]    },
 
     plugins: [
@@ -95,7 +105,9 @@ const config = {
                 reportName: 'XUI Manage Cases Functional Tests',
                 // openReportInBrowser: true,
                 jsonDir: 'reports/tests/functional',
-                reportPath: 'reports/tests/functional'
+                reportPath: 'reports/tests/functional',
+                displayDuration: true,
+                durationInMS: false
             }
         }
     ]

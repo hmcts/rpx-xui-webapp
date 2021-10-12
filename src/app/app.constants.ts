@@ -2,6 +2,7 @@ import { BadgeColour, ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib'
 import {Theme} from './containers/app-header/app-header.component';
 
 const FeatureNames = {
+  currentWAFeature: 'mc-work-allocation-active-feature',
   workAllocation: 'MC_Work_Allocation',
   noticeOfChange: 'MC_Notice_of_Change',
   waMvpPaginationFeature: 'mc-mvp-wa-pagination'
@@ -82,6 +83,13 @@ const applicationUserThemes: Theme[] =  [
         text: 'Create case',
         href: '/cases/case-filter',
         active: false
+      },
+      {
+        active: false,
+        align: 'right',
+        href: '/cases/case-search',
+        ngClass: 'hmcts-search-toggle__button',
+        text: 'Find case'
       }
     ],
     accountNavigationItems: {
@@ -111,6 +119,13 @@ const defaultUserTheme: Theme = {
       text: 'Create case',
       href: '/cases/case-filter',
       active: false
+    },
+    {
+      active: false,
+      align: 'right',
+      href: '/cases/case-search',
+      ngClass: 'hmcts-search-toggle__button',
+      text: 'Find case'
     }
   ],
   accountNavigationItems: {
@@ -125,7 +140,7 @@ const defaultUserTheme: Theme = {
   showFindCase: true,
   backgroundColor: '#202020',
   logoIsUsed: false,
-  logoType: 'default',
+  logoType: '',
 };
 
 const signedOutTheme: Theme = {
@@ -226,3 +241,4 @@ export class AppConstants {
 }
 
 export const LD_FLAG_REMOVE_USER_FROM_CASE_MC: string = 'remove-user-from-case-mc';
+export const LD_FLAG_MC_APPLICATION_THEMES: string = 'mc-application-themes';

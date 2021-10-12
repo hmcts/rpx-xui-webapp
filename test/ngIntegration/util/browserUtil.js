@@ -6,7 +6,6 @@ const config = require('../config/protractor-cucumber.conf');
 
 
 const axios = require('axios');
-
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 axios.defaults.headers.common['Content-Type'] = 'application/json';
@@ -78,7 +77,13 @@ class BrowserUtil{
 
 
     async waitForLD(){
-        return await this.waitForNetworkResponse('app.launchdarkly.com/sdk/evalx');
+        try{
+            return await this.waitForNetworkResponse('app.launchdarkly.com/sdk/evalx');
+        }catch(err){
+            console.log(err);
+            return false;
+        }
+        
     }
 
     async waitForNetworkResponse(url){
@@ -87,11 +92,13 @@ class BrowserUtil{
         let ldDone = false;
         while (!ldDone && elapsedTime < 15) {
             let perf = await browser.executeScript("return window.performance.getEntriesByType('resource')");
+            if(!perf){
+                break;
+            }
             for (let i = 0; i < perf.length; i++) {
                 if (perf[i].name.includes(url)) {
                     ldDone = true;
                     await this.stepWithRetry(async () => global.scenarioData['featureToggles'] = (await http.get(perf[i].name, {})).data, 3, 'Get LD feature toggles request')
-
                     // await browser.sleep(2000);
                     reportLogger.AddMessage("LD response received");
                     //reportLogger.AddJson(global.scenarioData['featureToggles']);
@@ -128,6 +135,30 @@ class BrowserUtil{
             }
         }
     }
+
+
+    async getScenarioIdCookieValue(){
+        const scenarioId = await browser.manage().getCookie('scenarioId')
+        return scenarioId ? scenarioId.value : null;
+    }
+
+    async addTextToElementWithCssSelector(cssSelector, text,append){
+        await browser.executeScript(() => {
+            let div = document.querySelector(arguments[0]);
+            if (arguments[2]){
+                div.innerHTML += arguments[1];
+            }else{
+                div.innerHTML = arguments[1];
+            }
+            
+        }, cssSelector, text, append);
+    }
+
+    async scrollToElement(element){
+        await browser.executeScript('arguments[0].scrollIntoView()',
+            element);
+    }
+
 }
 
 module.exports = new BrowserUtil();

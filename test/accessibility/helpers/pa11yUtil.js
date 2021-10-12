@@ -23,6 +23,7 @@ async function initBrowser() {
 
     page = await testBrowser.newPage();
     await page.goto("http://localhost:4200/");
+    
 }
 
 async function pa11ytest(test, actions, startUrl, roles) {
@@ -62,7 +63,8 @@ async function pa11ytestRunner(test, actions, startUrl, roles) {
 
     let result;
 
-    await initBrowser();
+    // await initBrowser();
+    // await setScenarioCookie(test);
     try {
         result = await pa11y(startUrl, {
             browser: testBrowser,
@@ -79,7 +81,16 @@ async function pa11ytestRunner(test, actions, startUrl, roles) {
     } catch (err) {
         await page.screenshot({ path: screenshotPath });
         const elapsedTime = Date.now() - startTime;
-        result = {};
+        result = {
+            documentTitle: "test name " + test.test.title,
+            pageUrl:"",
+            issues:[{
+                code:"test execution error",
+                message:""+err.message,
+                selector:""
+            }]
+        };
+       
         result.executionTime = elapsedTime;
         result.screenshot = screenshotReportRef;
         test.a11yResult = result;
@@ -107,4 +118,4 @@ async function pa11ytestRunner(test, actions, startUrl, roles) {
 
 
 
-module.exports = { pa11ytest }
+module.exports = { pa11ytest, initBrowser }

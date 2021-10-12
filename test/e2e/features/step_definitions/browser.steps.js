@@ -5,6 +5,8 @@ const ArrayUtil = require("../../utils/ArrayUtil");
 var { defineSupportCode } = require('cucumber');
 const { browser } = require("protractor");
 
+const minimist = require('minimist');
+const argv = minimist(process.argv.slice(2));
 const browserutl = require('../../../ngIntegration/util/browserUtil');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
@@ -14,7 +16,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Given('I navigate to page route {string}', async function (pageRoute) {
-        await browser.get(pageRoute);
+        await browser.get(argv.debug ? 'http://localhost:3000/' : 'http://localhost:4200/'+pageRoute);
 
     });
 

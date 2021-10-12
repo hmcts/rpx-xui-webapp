@@ -25,3 +25,8 @@ export interface Period {
   startDate: Date;
   endDate?: Date;
 }
+
+export interface SpecificRole {
+  id: string,
+  name: string
+}

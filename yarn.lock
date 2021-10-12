@@ -523,10 +523,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.4.3-find-caseworker-session":
-  version "1.4.3-find-caseworker-session"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.3-find-caseworker-session.tgz#ae7dc288adb786158faa9b400b8450227402fa50"
-  integrity sha512-duPm451aav8+ouKrX4glZbQm+AkJrAzMDAm30wvYV4o8ReBtA77QP+6nsbL/WORg5oBmijn+4i9WwYxko0rz/w==
+"@hmcts/rpx-xui-common-lib@1.4.3-find-caseworker-person":
+  version "1.4.3-find-caseworker-person"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.3-find-caseworker-person.tgz#6eb7f81eb84881538490b1d07b14a5256645400b"
+  integrity sha512-bRTjEVFuwBM5sThjJp42I1GOeeRjER7++pU7rdpuFNL3eAkiMLd7blzNFDQEJClFJxEEMFdVzGjmezoeL7ydAw==
   dependencies:
     tslib "^1.9.0"
 

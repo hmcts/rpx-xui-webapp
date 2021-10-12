@@ -1,33 +1,25 @@
+import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
+import { getConfigValue } from '../configuration';
+import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
+import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
+import { setHeaders } from '../lib/proxy';
+import { RoleAssignment } from '../user/interfaces/roleAssignment';
+import { CaseRoleRequestPayload, RoleExclusion } from './models/caseRoleRequestPayload';
 
-export async function getUserExclusions(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const isJudge = req.session.passport.user.userinfo.roles.includes('caseworker-ia-iacjudge');
-  let exclusions;
-  if (isJudge) {
-    exclusions = [
-      {
-        added: Date.UTC(2021, 7, 1),
-        id: '123',
-        name: 'Judge Birch',
-        notes: 'this case been remitted from Upper Tribunal and required different judge',
-        type: 'Other',
-        userType: 'Judicial',
-      },
-      {
-        added: Date.UTC(2021, 7, 10),
-        id: '234',
-        name: 'Judge test',
-        notes: 'this case been remitted from Upper Tribunal and required different judge',
-        type: 'Other',
-        userType: 'Judicial',
-      },
-    ];
-  } else {
-    exclusions = [];
+export async function findExclusionsForCaseId(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const requestPayload = getRequestPayload(req.body.caseId, req.body.jurisdiction, req.body.caseType);
+  const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+  const fullPath = `${basePath}/am/role-assignments/query`;
+  const headers = setHeaders(req);
+  try {
+    const response: AxiosResponse = await http.post(fullPath, requestPayload, {headers});
+    const roleExclusions = mapResponseToExclusions(response.data.roleAssignmentResponse, req.body.exclusionId);
+    return res.status(response.status).send(roleExclusions);
+  } catch (error) {
+    next(error);
   }
-
-  return res.status(200).send(exclusions);
 }
 
 export async function confirmUserExclusion(req: EnhancedRequest, res: Response, next: NextFunction) {
@@ -49,5 +41,41 @@ export async function confirmUserExclusion(req: EnhancedRequest, res: Response, 
 }
 
 export async function deleteUserExclusion(req: EnhancedRequest, res: Response, next: NextFunction) {
-  return res.status(200).send(req.body.roleExclusion);
+  const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+  const fullPath = `${basePath}/am/role-assignments/${req.body.roleExclusion.id}`;
+  const headers = setHeaders(req);
+  try {
+    const response = await http.delete(fullPath, {headers})
+    return res.status(response.status).send(req.body.roleExclusion);
+  } catch (error) {
+    next(error)
+  }
+}
+
+export function mapResponseToExclusions(roleAssignments: RoleAssignment[], assignmentId?: string): RoleExclusion[] {
+  if (assignmentId) {
+    roleAssignments = roleAssignments.filter(roleAssignment => roleAssignment.id === assignmentId);
+  }
+  return roleAssignments.map(roleAssignment => ({
+    added: roleAssignment.created,
+    id: roleAssignment.id,
+    name: roleAssignment.roleName,
+    type: roleAssignment.roleType,
+    userType: roleAssignment.roleCategory,
+  }));
+}
+
+export function getRequestPayload(caseId: string, jurisdiction: string, caseType: string): CaseRoleRequestPayload {
+  return {
+    queryRequests: [
+      {
+          attributes: {
+              caseId: [caseId],
+              caseType: [caseType],
+              jurisdiction: [jurisdiction],
+            },
+          grantType: ['EXCLUDED'],
+      },
+    ],
+  };
 }

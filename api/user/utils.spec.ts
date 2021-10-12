@@ -15,7 +15,7 @@ describe('user.utils', () => {
         grantType: 'STANDARD',
         roleCategory: LEGAL_OPS_TYPE,
         readOnly: false,
-        created: Date.UTC.toString(),
+        created: new Date(2021, 9, 8),
         attributes: {
           primaryLocation: '231596',
           jurisdiction: 'IA'
@@ -34,7 +34,7 @@ describe('user.utils', () => {
         grantType: 'STANDARD',
         roleCategory: LEGAL_OPS_TYPE,
         readOnly: false,
-        created: Date.UTC.toString(),
+        created: new Date(2021, 9, 8),
         attributes: {
           primaryLocation: '231596',
           jurisdiction: 'IA'
@@ -57,7 +57,7 @@ describe('user.utils', () => {
         grantType: 'STANDARD',
         roleCategory: LEGAL_OPS_TYPE,
         readOnly: false,
-        created: Date.UTC.toString(),
+        created: new Date(2021, 9, 8),
         attributes: {
           primaryLocation: '231596',
           jurisdiction: 'IA'
@@ -76,7 +76,7 @@ describe('user.utils', () => {
         grantType: 'STANDARD',
         roleCategory: LEGAL_OPS_TYPE,
         readOnly: false,
-        created: Date.UTC.toString(),
+        created: new Date(2021, 9, 8),
         attributes: {
           primaryLocation: '231596',
           jurisdiction: 'IA'
@@ -108,7 +108,7 @@ describe('user.utils', () => {
         grantType: 'STANDARD',
         roleCategory: LEGAL_OPS_TYPE,
         readOnly: false,
-        created: Date.UTC.toString(),
+        created: new Date(2021, 9, 8),
         attributes: {
           primaryLocation: '231596',
           jurisdiction: 'IA'
@@ -124,7 +124,7 @@ describe('user.utils', () => {
         grantType: 'STANDARD',
         roleCategory: LEGAL_OPS_TYPE,
         readOnly: false,
-        created: Date.UTC.toString(),
+        created: new Date(2021, 9, 8),
         attributes: {
           primaryLocation: '231596',
           jurisdiction: 'IA'

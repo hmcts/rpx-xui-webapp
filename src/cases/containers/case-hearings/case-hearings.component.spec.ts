@@ -15,11 +15,10 @@ describe('CaseHearingsComponent', () => {
     routerReducer: null,
     hearings: {
       hearingsList: {
-        caseHearingsMainModel:
-        {
+        caseHearingsMainModel: {
           hmctsServiceID: undefined,
           caseRef: undefined,
-          caseHearings:  [{
+          caseHearings: [{
             hearingID: 'h555555',
             hearingType: 'Directions hearing',
             hmcStatus: 'Past and cancelled',
@@ -76,7 +75,7 @@ describe('CaseHearingsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CaseHearingsComponent ],
+      declarations: [CaseHearingsComponent],
       providers: [
         provideMockStore({initialState}),
         {
@@ -85,13 +84,13 @@ describe('CaseHearingsComponent', () => {
             snapshot: {
               params: {
                 cid: '1234'
-              }
+              },
             }
           }
         },
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -109,7 +108,7 @@ describe('CaseHearingsComponent', () => {
   it('Should have the correct value for status in the markup', () => {
     const secondColumn = fixture.debugElement.queryAll(By.css('.govuk-table__cell strong'))[0];
     expect(secondColumn.nativeElement.innerHTML).toEqual('CANCELLED');
-    expect(secondColumn.nativeElement.className).toEqual('RED');
+    expect(secondColumn.nativeElement.className).toEqual('govuk-tag--red');
   });
 
   it('Should have the requested hearing when request button is clicked', () => {

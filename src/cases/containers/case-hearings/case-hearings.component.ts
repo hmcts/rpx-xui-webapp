@@ -1,8 +1,7 @@
-
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CaseHearingModel } from 'api/hearings/models/caseHearing.model';
 import { select, Store } from '@ngrx/store';
+import { CaseHearingModel } from 'api/hearings/models/caseHearing.model';
 import * as fromFeature from '../../../hearings/store';
 
 @Component({
@@ -12,24 +11,25 @@ import * as fromFeature from '../../../hearings/store';
 })
 
 export class CaseHearingsComponent implements OnInit {
-  @Output() viewHearing = new EventEmitter<CaseHearingModel>();
-  @Output() cancelHearing = new EventEmitter<CaseHearingModel>();
-  @Output() requestHearing = new EventEmitter<any>();
+  @Output() public viewHearing = new EventEmitter<CaseHearingModel>();
+  @Output() public cancelHearing = new EventEmitter<CaseHearingModel>();
+  @Output() public requestHearing = new EventEmitter<any>();
 
   constructor(private readonly store: Store<fromFeature.State>,
               private readonly activatedRoute: ActivatedRoute) {
   }
 
   public combinedHearing = [];
+
   public groupBy(list, keyGetter) {
     const map = new Map();
     list.forEach((item) => {
       const key = keyGetter(item);
       const collection = map.get(key);
       if (!collection) {
-          map.set(key, [item]);
+        map.set(key, [item]);
       } else {
-          collection.push(item);
+        collection.push(item);
       }
     });
     return map;

@@ -31,6 +31,7 @@ import * as taskServiceMock from './taskService.mock';
 import {
   assignActionsToCases,
   assignActionsToTasks,
+  getCaseIdListFromRoles,
   mapCaseworkerData,
   prepareCaseWorkerForLocation,
   prepareCaseWorkerForLocationAndService,
@@ -80,6 +81,11 @@ export async function searchCase(req: EnhancedRequest, res: Response, next: Next
   try {
     const searchRequest = req.body.searchRequest;
     const view = req.body.view;
+    const roleAssignments = req.session.roleAssignmentResponse;
+    // EUI-4579 - get list of case ids from role assignments
+    // note - will need to be getting substantive roles in future
+    // tslint:disable-next-line
+    const caseIdList = getCaseIdListFromRoles(roleAssignments);
     let basePath = '';
     // TODO below call mock api will be replaced when real api is ready
     if (view === 'MyCases') {

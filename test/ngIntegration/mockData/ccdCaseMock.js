@@ -33,7 +33,7 @@ function getTestJurisdiction(scenario) {
     ];
     const ComplexType_2 =[
         { id: "AddressUKField", type: "AddressUK", label: "Uk Address"},
-        { id: "DateTimeField", type: "DateTime", label: "Date Time" },
+        { id: "DateField", type: "Date", label: "Date only" },
         
         { id: "DateTimeField", type: "DateTime", label: "Date Time" },
         { id: "optionsMultiVal", type: "FixedList", label: "Select all that match",
@@ -110,9 +110,6 @@ function getDLCaseConfig(scenario) {
         .addWizardPage("testPage1", "Test Page 1")
         .addCaseField({ id: "dl", type: "DynamicList", label: "Root DL", value: { value: listItems[1], list_items: listItems }})
       
-     
-
-
         .addCaseField({
             id: "coll", type: "Collection", label: "collection complex in complex with DL", collection_field_type:
             {

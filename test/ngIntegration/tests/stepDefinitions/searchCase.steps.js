@@ -92,7 +92,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I Validate search case total cases count {string}', async function(searchCaseConfigRef){
         const searchCaseConfig = global.scenarioData[searchCaseConfigRef].getConfig();
         
-        let reqData = { size: 250 }
+        let reqData = { size: 25 }
         const searchCaseInputValues = {}
         for (const dynamicfield of searchCaseConfig.searchInputs) {
             searchCaseInputValues[dynamicfield.field.id] = await caseListPage.inputWorkbasketFilter(dynamicfield);

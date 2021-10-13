@@ -171,3 +171,16 @@ describe('setActiveLink', () => {
     expect(AppUtils.isFullUrl(mockItems[0].href, '/task')).toBeFalsy();
   })
 });
+
+describe('getFeatureToggledUrl', () => {
+
+  it('url when feature is off', () => {
+    const url = AppUtils.getFeatureToggledUrl(false, 'someUrl');
+    expect(url).toBeNull();
+  });
+
+  it('url when feature is on', () => {
+    const url = AppUtils.getFeatureToggledUrl(true, 'someUrl');
+    expect(url).toEqual('someUrl');
+  });
+});

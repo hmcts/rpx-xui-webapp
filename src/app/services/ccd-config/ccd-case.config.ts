@@ -1,7 +1,11 @@
-import {Injectable} from '@angular/core';
-import {AbstractAppConfig, CaseEditorConfig} from '@hmcts/ccd-case-ui-toolkit';
-import {AppConfigService} from '../config/configuration.services';
-
+import { Injectable } from '@angular/core';
+import { AbstractAppConfig, CaseEditorConfig } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { AppConfigService } from '../config/configuration.services';
+import { AppConstants } from '../../app.constants';
+import { AppUtils } from '../../app-utils';
+import { WorkAllocationTaskService } from '../../../work-allocation/services';
+import { EnvironmentService } from '../../../app/shared/services/environment.service';
 
 /**
  * see more:
@@ -11,12 +15,36 @@ import {AppConfigService} from '../config/configuration.services';
 
 @Injectable()
 export class AppConfig extends AbstractAppConfig {
-
   protected config: CaseEditorConfig;
+  public workallocationUrl: string;
 
-  constructor(private appConfigService: AppConfigService) {
+  constructor(
+    private readonly appConfigService: AppConfigService,
+    private readonly featureToggleService: FeatureToggleService,
+    private readonly environmentService: EnvironmentService
+  ) {
     super();
     this.config = this.appConfigService.getEditorConfiguration() || {};
+    this.featureToggleWorkAllocation();
+
+    this.featureToggleService.getValue('mc-document-secure-mode-enabled', false).subscribe({
+      next: (val) => this.config = {
+        ...this.config,
+        document_management_secure_enabled: val
+      }
+    });
+  }
+
+  private featureToggleWorkAllocation(): void {
+    this.featureToggleService
+      .isEnabled(AppConstants.FEATURE_NAMES.workAllocation)
+      .subscribe(
+        (isFeatureEnabled) =>
+          this.workallocationUrl = AppUtils.getFeatureToggledUrl(
+            isFeatureEnabled,
+            WorkAllocationTaskService.WorkAllocationUrl
+          )
+      );
   }
 
   public load(): Promise<void> {
@@ -37,6 +65,14 @@ export class AppConfig extends AbstractAppConfig {
 
   public getDocumentManagementUrl() {
     return this.config.document_management_url;
+  }
+
+  public getDocumentManagementUrlV2() {
+    return this.config.document_management_url_v2;
+  }
+
+  public getDocumentSecureMode() {
+    return this.config.document_management_secure_enabled;
   }
 
   public getRemoteDocumentManagementUrl() {
@@ -73,7 +109,7 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getActivityUrl() {
-    return this.config.activity_url;
+    return `${this.environmentService.get('ccdGatewayUrl')}/activity`;
   }
 
   public getActivityNexPollRequestMs() {
@@ -125,7 +161,14 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getWorkAllocationApiUrl(): string {
-    // pass explicitly null to feature toggle workAllocation api
-    return null;
+    return this.workallocationUrl;
+  }
+
+  public getHrsUrl(): string {
+    return this.config.hrs_url;
+  }
+
+  public getRemoteHrsUrl(): string {
+    return this.config.remote_hrs_url;
   }
 }

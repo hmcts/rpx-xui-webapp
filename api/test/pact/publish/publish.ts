@@ -16,6 +16,8 @@ const publish = async (): Promise<void> => {
     const pactBroker = getConfigValue(PACT_BROKER_URL) ?
         getConfigValue(PACT_BROKER_URL) : 'http://localhost:80'
 
+    // const pactBroker = "https://pact-broker.platform.hmcts.net"
+
     const pactTag = getConfigValue(PACT_BRANCH_NAME) ?
         getConfigValue(PACT_BRANCH_NAME) : 'Dev'
 
@@ -38,13 +40,17 @@ const publish = async (): Promise<void> => {
       tags: [pactTag],
     }
 
-    await pact.publishPacts(opts)
+    if (pactTag === "master") {
+      await pact.publishPacts(opts)
 
-    console.log('Pact contract publishing complete!')
-    console.log('')
-    console.log(`Head over to ${pactBroker}`)
-    console.log('to see your published contracts.')
-
+      console.log('Pact contract publishing complete!')
+      console.log('')
+      console.log(`Head over to ${pactBroker}`)
+      console.log('to see your published contracts.')
+    } else {
+      console.log('Pact branchName is', pactTag)
+      console.log('publish is disabled for non "master" branchName')
+    }
   } catch (e) {
     console.log('Pact contract publishing failed: ', e)
   }

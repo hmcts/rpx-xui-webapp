@@ -79,11 +79,11 @@ describe('workAllocation', () => {
           view: 'view',
         },
         session: {
-          caseworkers: null
-        }
+          caseworkers: null,
+        },
       });
       const response = mockRes({
-        data: mockTasks
+        data: mockTasks,
       });
       await searchTask(req, response, next);
       // Should have the correct URL and the appropriate payload.

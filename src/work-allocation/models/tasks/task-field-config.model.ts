@@ -5,6 +5,7 @@ export default interface TaskFieldConfig {
   type: TaskFieldType;
   columnLabel: string;   // can be null for no column header
   views: number;         // bitwise or of the TaskViews that this field is to appear in
+  disableSort?: boolean; // optional, disable sorting only when set as true
   sortName?: string;     // for the purpose of sorting (data names not 100% matching)
   sourceColumn?: string; // column to be matched with
   matchValue?: any;      // value to be matched with

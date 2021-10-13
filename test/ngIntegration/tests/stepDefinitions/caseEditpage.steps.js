@@ -3,6 +3,8 @@ var { defineSupportCode } = require('cucumber');
 const MockApp = require('../../../nodeMock/app');
 
 const caseEditPage = require('../pageObjects/ccdCaseEditPages');
+const caseListPage = require('../pageObjects/caselistPage');
+
 const caseDetailsPage = require('../pageObjects/caseDetailsPage');
 
 
@@ -12,8 +14,8 @@ const CucumberReporter = require('../../../e2e/support/reportLogger');
 const BrowserWaits = require('../../../e2e/support/customWaits');
 
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
-
 const { getTestJurisdiction } = require('../../mockData/ccdCaseMock');
+const { Browser } = require('selenium-webdriver');
 
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
@@ -25,6 +27,28 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     When('I click cancel in case edit page', async function(){
         await caseEditPage.clickCancelLinkInEditPage(); 
      });
+
+    When('I click cancel in case edit page then I see page case list page', async function(){
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await caseEditPage.clickCancelLinkInEditPage();
+            expect(await caseListPage.amOnPage()).to.be.true;
+        });
+     });
+
+    When('I click continue in case edit page', async function () {
+        await caseEditPage.clickContinue();
+    });
+
+    Then('I see validation error for field with id {string}', async function(fieldId){
+        expect(await caseEditPage.isFieldLevelValidationErrorDisplayed(fieldId),"field level error validation not displayed or not as expected").to.be.true;
+    });
+
+    Then('I see case event validation alert error summary messages', async function(datatable){
+        const messageHashes = datatable.hashes();
+        for(let i = 0; i< messageHashes.length;i++){
+            expect(await caseEditPage.getValidationAlertMessageDisplayed(), 'Expected field error validation message not displayed in error summary').to.include(messageHashes[i].message);
+        }
+    });
 
      Then('I validate config {string} case edit wizard pages and fields in pages', async function(configReference){
          const caseConfigInstance = global.scenarioData[configReference];
@@ -135,6 +159,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I validate fields display in case edit page from event {string}', async function (eventConfigRef, datatable){
+        await BrowserWaits.waitForSeconds(1);
         const caseConfigInstance = global.scenarioData[eventConfigRef];
         const caseConfig = caseConfigInstance.getCase();
         const fieldValues = datatable.hashes();
@@ -149,14 +174,14 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I validate event page continue on validate request error status code {int}', async function(statusCode){
         let validateReq = null;
         MockApp.onPost('/data/case-types/:caseType/validate', (req, res, next) => {
-            validateReq = req.body;
+            validateReq = req;
             res.status(statusCode).send("Data validation error!");
         });
         await MockApp.stopServer();
         await MockApp.startServer();
 
         await caseEditPage.clickContinue();
-        expect(await caseEditPage.isErrorSummaryDisplayed(),' Error summary banner is not displayed').to.be.true;
+        expect(await caseEditPage.isCallbackErrorSummaryDisplayed(),' Error summary banner is not displayed').to.be.true;
        
     });
 });

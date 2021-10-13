@@ -1,7 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpModule } from '@angular/http';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
@@ -19,6 +18,7 @@ import {
   RequestOptionsBuilder,
   SearchService,
 } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import {combineReducers, StoreModule} from '@ngrx/store';
 import { of } from 'rxjs';
@@ -74,13 +74,16 @@ describe('CaseCreateSubmitComponent', () => {
   let casesService: CasesService;
   let draftService: DraftService;
   const mockAlertService = jasmine.createSpyObj('alertService', ['error']);
+  const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled', 'getValue']);
 
   beforeEach(async(() => {
+    mockFeatureToggleService.isEnabled.and.returnValue(of(false));
+    mockFeatureToggleService.getValue.and.returnValue(of({}));
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
         CaseUIToolkitModule,
-        HttpModule,
+        HttpClientTestingModule,
         HttpClientTestingModule,
         StoreModule.forRoot({...fromCases.reducers, cases: combineReducers(fromCases.reducers)}),
         EffectsModule.forRoot([]),
@@ -134,6 +137,7 @@ describe('CaseCreateSubmitComponent', () => {
           provide: AlertService,
           useValue: mockAlertService
         },
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
       ]
     })
       .compileComponents();

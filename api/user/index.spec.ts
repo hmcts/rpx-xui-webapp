@@ -1,11 +1,11 @@
 /* tslint:disable:no-unused-expression no-var-requires */
-import * as chai from 'chai'
-import { expect } from 'chai'
-import 'mocha'
-import * as sinon from 'sinon'
-import * as sinonChai from 'sinon-chai'
-import { mockReq, mockRes } from 'sinon-express-mock'
-import { getUserDetails } from './index'
+import * as chai from 'chai';
+import { expect } from 'chai';
+import 'mocha';
+import * as sinon from 'sinon';
+import * as sinonChai from 'sinon-chai';
+import { mockReq, mockRes } from 'sinon-express-mock';
+import { getUserDetails, getUserRoleAssignments } from './index';
 
 chai.use(sinonChai)
 describe('getUserDetails', () => {
@@ -30,6 +30,9 @@ describe('getUserDetails', () => {
         session: {
           passport: {
             user: {
+              tokenset: {
+                accessToken: '124'
+              },
               userinfo: {
                 roles: ['pui-case-manager'],
               },
@@ -50,6 +53,9 @@ describe('getUserDetails', () => {
         session: {
           passport: {
             user: {
+              tokenset: {
+                accessToken: '124'
+              },
               userinfo: {
                 roles: ['dummy'],
               },
@@ -70,6 +76,9 @@ describe('getUserDetails', () => {
         session: {
           passport: {
             user: {
+              tokenset: {
+                accessToken: '124'
+              },
               userinfo: {
                 roles: [],
               },
@@ -84,4 +93,26 @@ describe('getUserDetails', () => {
 
       expect(next).to.have.been.calledWith()
     })
-})
+});
+
+describe('getUserRoleAssignments', async () => {
+
+    it('use session', async () =>  {
+    const userInfo = {
+      forename: 'foreName',
+      surname: 'surName',
+      email: 'email@email.com',
+      active: true,
+      id: '223',
+      uid: '223',
+      roles: ['role1', 'role3']
+    }
+    const req = {
+      session: {
+        roleAssignmentResponse: [{attributes: {primaryLocation: {location: '123'} } }]
+      }
+    }
+    const locationInfo = await getUserRoleAssignments(userInfo, req)
+    expect(locationInfo[0].primaryLocation.location).to.equal('123')
+  });
+});

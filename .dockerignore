@@ -1,0 +1,7 @@
+.github
+charts
+infrastructure
+node_modules
+
+Jenkinsfile*
+README.md

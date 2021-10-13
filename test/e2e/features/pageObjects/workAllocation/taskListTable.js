@@ -1,18 +1,31 @@
 const c = require('config');
+const { constants } = require('karma');
+const { browser } = require('protractor');
+const browserUtil = require('../../../../ngIntegration/util/browserUtil');
 const BrowserWaits = require('../../../support/customWaits');
+const ArrayUtil = require('../../../utils/ArrayUtil');
+const Application = require('../../pageObjects/common/application');
+
 var cucumberReporter = require('../../../support/reportLogger');
 
 
-class TaskListTable{
+class TaskListTable extends Application{
 
     constructor(){
+        super();
         this.table = $('exui-task-list');
         this.tableRows = $$('exui-task-list table tbody>tr:not(.actions-row)');
         this.tableHeaderColumns = $$('exui-task-list table thead th');
         this.tableFooter = $('exui-task-list table tfoot td');
         this.taskActionsRows = $$('exui-task-list table tbody>tr.actions-row');
-        this.selectedTaskActioRow = $('exui-task-list table tbody>tr.actions-row[selected]') 
+        this.selectedTaskActioRow = $('exui-task-list table tbody>tr.actions-row.selected') 
         this.displayedtaskActionRow = $('tr.actions-row[aria-hidden=false]');
+
+        this.paginationContainer = $('ccd-pagination');
+        this.paginationResultText = $('exui-task-list .pagination-top span');
+        this.pagePreviousLink = $('exui-task-list pagination-template .pagination-previous a');
+        this.pageNextLink = $('exui-task-list pagination-template .pagination-next a');
+
     }
 
     async waitForTable(){
@@ -44,7 +57,7 @@ class TaskListTable{
     }
 
     async getHeaderPositionWithName(headerName) {
-        const headers = element.all(by.xpath(`//exui-task-list//table//thead//th//button`));
+        const headers = element.all(by.xpath(`//exui-task-list//table//thead//th`));
         const colCount = await headers.count();
         for (let i = 0; i < colCount; i++) {
             const name = await headers.get(i).getText();
@@ -56,15 +69,18 @@ class TaskListTable{
     }
 
     async getColumnHeaderNames(){
+        await this.waitForTable();
         const headers = element.all(by.xpath(`//exui-task-list//table//thead//th//button`));
-        const names = [];
-        const colCount = await headers.count();
-        for (let i = 0; i < colCount; i++) {
-            const name = await headers.get(i).getText();
-            if (name !== ''){
-                names.push(name);
-            } 
+        const headerElementsCount = await headers.count();
+        const headerElements = [];
+        for (let i =  0; i < headerElementsCount; i++){
+            headerElements.push(await headers.get(i));
         }
+        const names = await ArrayUtil.map(headerElements , async (headerElement) => {
+            const headerName = await headerElement.getText();
+            return headerName.trim();
+        });
+
         return names; 
     }    
 
@@ -106,6 +122,26 @@ class TaskListTable{
         return columnValue;
     }
 
+    async isColValForTaskALink(columnName, taskAtPos) {
+        const taskRow = await this.getTableRowAt(taskAtPos);
+        const columnPos = await this.getHeaderPositionWithName(columnName);
+        const isLink = await taskRow.$(`td:nth-of-type(${columnPos}) exui-url-field`).isPresent();
+        return isLink;
+    }
+
+    async clickTaskColLink(columnName, taskAtPos){
+        const taskRow = await this.getTableRowAt(taskAtPos);
+        const columnPos = await this.getHeaderPositionWithName(columnName);
+        await taskRow.$(`td:nth-of-type(${columnPos}) exui-url-field a`).click();
+        
+    }
+
+    async getColumnValueElementForTaskAt(columnName, taskAtPos) {
+        const taskRow = await this.getTableRowAt(taskAtPos);
+        const columnPos = await this.getHeaderPositionWithName(columnName);
+        return taskRow.$(`td:nth-of-type(${columnPos})`);
+    }
+
     async getTaskRowWithColumnValue(columnName, columnValue){
         const tasksCount = await this.tableRows.count();
         for(let i = 0; i < tasksCount; i++){
@@ -117,29 +153,49 @@ class TaskListTable{
         return -1;
     }
 
-    async clickManageLinkForTaskAt(position){
-        await BrowserWaits.retryWithActionCallback(async () => {
+    async isManageLinkPresent(position){
+        return await browserUtil.stepWithRetry(async () => {
             const taskrow = await this.getTableRowAt(position);
-            await taskrow.$('button[id^="manage_"]').click();
+            return await taskrow.$('button[id^="manage_"]').isPresent();
         });
     }
 
-    async isTaskActionPresent(taskAction){
-        const actionLink = await this.displayedtaskActionRow.element(by.xpath(`//div[@class = "task-action"]//a[contains(text(),"${taskAction}" )]`))
+    async clickManageLinkForTaskAt(position){
+        await browserUtil.stepWithRetry(async () => {
+            const taskrow = await this.getTableRowAt(position);
+            let taskManageLink = taskrow.$('button[id^="manage_"]');
+            await browser.executeScript('arguments[0].scrollIntoView()',
+                taskManageLink.getWebElement())
+            await taskManageLink.click();
+            if (!(await this.isManageLinkOpenForTaskAtPos(position))){
+                throw new Error('Manage link not open. retying action');
+            }
+        });
+    }
+
+    async isManageLinkOpenForTaskAtPos(position){
+        const task = element(by.xpath(`//tr[contains(@class,'cdk-row') and not(contains(@class,'actions-row'))][${position}]/following-sibling::tr[contains(@class,'actions-row')]`));
+        return await task.isDisplayed();
+    }
+
+    async isTaskActionPresent(taskAction){ 
+        await BrowserWaits.waitForElement(this.displayedtaskActionRow);
+        const actionLink = this.displayedtaskActionRow.element(by.xpath(`//div[@class = "task-action"]//a[contains(text(),"${taskAction}" )]`))
         return actionLink.isPresent();
     }
 
     async clickTaskAction(action){
-        const actionLink = await this.displayedtaskActionRow.element(by.xpath(`//div[@class = "task-action"]//a[contains(text(),"${action}" )]`))
+        
+        await BrowserWaits.waitForConditionAsync(async () => await this.isTaskActionPresent(action),5000);
+
+        const actionLink = this.displayedtaskActionRow.element(by.xpath(`//div[@class = "task-action"]//a[contains(text(),"${action}" )]`))
         await browser.executeScript('arguments[0].scrollIntoView()',
             actionLink.getWebElement());
         await actionLink.click();
     }
 
     async isTaskActionRowForTaskDisplayed(position){
-        const taskrow = this.getTableRowAt(position);
-        const taskActionRow = await this.taskActionsRows.get(position - 1);
-        return await taskActionRow.isDisplayed(); 
+        return await this.displayedtaskActionRow.isPresent();
 
     }
 
@@ -174,6 +230,49 @@ class TaskListTable{
         const taskRow = await this.taskActionsRows.get(row - 1);
         await BrowserWaits.waitForSeconds(1);
         return await taskRow.isDisplayed();
+    }
+
+    async getPaginationResultText() {
+        return await this.paginationResultText.getText();
+    }
+
+
+
+    async isPaginationPageNumEnabled(pageNum) {
+        const pageNumWithoutLink = element(by.xpath(`//exui-task-list//pagination-template//li//span[contains(text(),'${pageNum}')]`));
+        const pageNumWithLink = element(by.xpath(`//exui-task-list//pagination-template//li//a//span[contains(text(),'${pageNum}')]`));
+
+        return (await pageNumWithLink.isPresent()) && (await pageNumWithoutLink.isPresent());
+    }
+
+    async clickPaginationPageNum(pageNum) {
+        if (!(await this.isPaginationPageNumEnabled(pageNum))) {
+            throw new Error("Page num is not present or not enabled: " + pageNum);
+        }
+        const pageNumWithLink = element(by.xpath(`//exui-task-list//pagination-template//li//a//span[contains(text(),'${pageNum}')]`));
+        await pageNumWithLink.click();
+
+    }
+
+    async getTaskActions(){
+        return await this.selectedTaskActioRow.getText();
+    }
+
+    async clickPaginationLink(linkText){
+        let linkElement = null;
+        if (linkText.toLowerCase() === 'next'){
+            linkElement = this.pageNextLink;
+        } else if (linkText.toLowerCase() === 'previous'){
+            linkElement = this.pagePreviousLink;
+        }else{
+            linkElement = element(by.xpath(`//exui-task-list//pagination-template//li//a//span[contains(text(),'${linkText}')]`));
+        }
+
+        await BrowserWaits.waitForElement(linkElement);
+        await browserUtil.scrollToElement(linkElement);
+        await BrowserWaits.waitForElementClickable(linkElement);
+        await linkElement.click();
+
     }
 }
 

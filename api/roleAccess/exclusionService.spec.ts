@@ -7,7 +7,7 @@ import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 
 import { http } from '../lib/http';
-import { confirmUserExclusion, deleteUserExclusion, getRequestPayload, mapResponseToExclusions } from './exclusionService';
+import { confirmUserExclusion, deleteUserExclusion, getExclusionRequestPayload, mapResponseToExclusions } from './exclusionService';
 
 chai.use(sinonChai);
 describe('exclusions.exclusionService', () => {
@@ -63,8 +63,8 @@ describe('exclusions.exclusionService', () => {
 
   describe('getUserExclusions', () => {
 
-    it('should make a getRequestPayload', async () => {
-      const requestPayload = getRequestPayload('1234567891234567', 'Asylum', 'IA');
+    it('should make a getExclusionRequestPayload', async () => {
+      const requestPayload = getExclusionRequestPayload('1234567891234567', 'Asylum', 'IA');
       expect(requestPayload.queryRequests.length).to.equal(1);
       expect(requestPayload.queryRequests[0].grantType[0]).to.equal('EXCLUDED');
       expect(requestPayload.queryRequests[0].attributes.caseId[0]).to.equal('1234567891234567');

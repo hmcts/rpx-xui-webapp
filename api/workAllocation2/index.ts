@@ -20,11 +20,9 @@ import {
   handlePostSearch
 } from './caseWorkerService';
 
-import { AxiosResponse } from 'axios';
-import { sendPost } from '../common/crudService';
 import { Caseworker, Judicialworker } from './interfaces/common';
 import { TaskList } from './interfaces/task';
-import { checkIfCaseAllocator, refineRoleAssignments } from './roleService';
+import { checkIfCaseAllocator } from './roleService';
 import * as roleServiceMock from './roleService.mock';
 import { handleGetTasksByCaseId } from './taskService';
 import * as taskServiceMock from './taskService.mock';

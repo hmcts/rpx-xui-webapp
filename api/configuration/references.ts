@@ -53,6 +53,8 @@ export const SERVICES_PAYMENTS_URL = 'services.payments'
 
 export const SERVICES_PRD_API_URL = 'services.prd.api'
 
+export const SERVICES_LOCATION_REF_API_URL = 'services.locationref.api'
+
 export const PROTOCOL = 'protocol'
 export const MICROSERVICE = 'microservice'
 export const NOW = 'now'
@@ -84,6 +86,7 @@ export const FEATURE_TERMS_AND_CONDITIONS_ENABLED = 'termsAndConditionsEnabled'
 export const FEATURE_HELMET_ENABLED = 'helmetEnabled'
 export const FEATURE_REDIS_ENABLED = 'redisEnabled'
 export const FEATURE_OIDC_ENABLED = 'oidcEnabled'
+export const FEATURE_ACCESS_MANAGEMENT_ENABLED = 'accessManagementEnabled'
 
 export const FEATURE_WORKALLOCATION_ENABLED = 'workAllocationEnabled'
 

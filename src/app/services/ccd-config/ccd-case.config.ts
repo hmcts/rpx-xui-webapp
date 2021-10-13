@@ -33,6 +33,20 @@ export class AppConfig extends AbstractAppConfig {
         document_management_secure_enabled: val
       }
     });
+
+    this.featureToggleService.getValue('access-management-mode', false).subscribe({
+      next: (val) => this.config = {
+        ...this.config,
+        access_management_mode: val
+      }
+    });
+
+    this.featureToggleService.getValue('access-management-basic-view-mock', {}).subscribe({
+      next: (val) => this.config = {
+        ...this.config,
+        access_management_basic_view_mock: val
+      }
+    });
   }
 
   private featureToggleWorkAllocation(): void {
@@ -89,6 +103,14 @@ export class AppConfig extends AbstractAppConfig {
 
   public getPaymentsUrl() {
     return this.config.payments_url;
+  }
+
+  public getHrsUrl() {
+    return this.config.hrs_url;
+  }
+
+  public getRemoteHrsUrl() {
+    return this.config.remote_hrs_url;
   }
 
   public getCaseHistoryUrl(caseId: string, eventId: string) {
@@ -164,12 +186,16 @@ export class AppConfig extends AbstractAppConfig {
     return this.workallocationUrl;
   }
 
-  public getHrsUrl(): string {
-    return this.config.hrs_url;
+  public getAccessManagementMode(): boolean {
+    return this.config.access_management_mode && this.environmentService.get('accessManagementEnabled');
   }
 
-  public getRemoteHrsUrl(): string {
-    return this.config.remote_hrs_url;
+  public getAccessManagementBasicViewMock(): {} {
+    return this.config.access_management_basic_view_mock;
+  }
+
+  public getLocationRefApiUrl(): string {
+    return this.config.location_ref_api_url;
   }
 
   public getCamRoleAssignmentsApiUrl(): string {

@@ -9,7 +9,9 @@ import {
     SERVICES_EM_ANNO_API_URL,
     SERVICES_EM_DOCASSEMBLY_API_URL,
     SERVICES_EM_HRS_API_PATH,
-    SERVICES_ICP_API_URL, SERVICES_MARKUP_API_URL, SERVICES_PAYMENTS_URL, SERVICES_ROLE_ASSIGNMENT_API_PATH
+    SERVICES_ICP_API_URL, SERVICES_LOCATION_REF_API_URL,
+    SERVICES_MARKUP_API_URL, SERVICES_PAYMENTS_URL,
+    SERVICES_ROLE_ASSIGNMENT_API_PATH
 } from './configuration/references'
 import {applyProxy} from './lib/middleware/proxy'
 import * as searchCases from './searchCases'
@@ -122,6 +124,12 @@ export const initProxy = (app: Express) => {
         source: '/cam/role-assignments',
         target: getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH),
         ws: true,
+    })
+
+    applyProxy(app, {
+        rewrite: false,
+        source: '/refdata/location',
+        target: getConfigValue(SERVICES_LOCATION_REF_API_URL),
     })
 
     /**

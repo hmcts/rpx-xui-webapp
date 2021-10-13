@@ -1,4 +1,3 @@
-// @ts-ignore
 import MockAdapter from 'axios-mock-adapter';
 import { HttpMockAdapter } from '../common/httpMockAdapter';
 import { HEARINGS_LIST } from './data/mock.data';

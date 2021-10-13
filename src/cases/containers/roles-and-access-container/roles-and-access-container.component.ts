@@ -7,6 +7,7 @@ import { UserDetails } from '../../../app/models/user-details.model';
 import * as fromRoot from '../../../app/store';
 import { CaseRole, RoleExclusion } from '../../../role-access/models';
 import { RoleExclusionsService } from '../../../role-access/services';
+import { AllocateRoleService } from '../../../role-access/services';
 
 @Component({
   selector: 'exui-roles-and-access-container',
@@ -22,13 +23,14 @@ export class RolesAndAccessContainerComponent implements OnInit {
 
   constructor(private readonly route: ActivatedRoute,
               private readonly store: Store<fromRoot.State>,
-              private readonly roleExclusionsService: RoleExclusionsService) {}
+              private readonly roleExclusionsService: RoleExclusionsService,
+              private readonly allocateService: AllocateRoleService) {}
 
   public ngOnInit(): void {
     this.caseDetails = this.route.snapshot.data.case as CaseView;
     this.applyJurisdiction(this.caseDetails);
     const jurisdiction = this.caseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
-    this.roles$ = this.roleExclusionsService.getCaseRoles(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id);
+    this.roles$ = this.allocateService.getCaseRoles(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id);
     this.exclusions$ = this.roleExclusionsService.getCurrentUserRoleExclusions(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id);
   }
 

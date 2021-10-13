@@ -13,10 +13,6 @@ export class RoleExclusionsService {
     return this.http.post<RoleExclusion[]>(`${RoleExclusionsService.exclusionsUrl}/post`, {caseId, jurisdiction, caseType, exclusionId});
   }
 
-  public getCaseRoles(caseId: string, jurisdiction: string, caseType: string, exclusionId?: string): Observable<CaseRole[]> {
-    return this.http.post<CaseRole[]>(`${RoleExclusionsService.roleUrl}/post`, {caseId, jurisdiction, caseType, exclusionId});
-  }
-
   public getRolesCategory(): Observable<Role[]> {
     return this.http.get<Role[]>('workallocation2/exclusion/rolesCategory');
   }

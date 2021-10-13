@@ -345,24 +345,6 @@ export async function getRolesCategory(req: EnhancedRequest, res: Response, next
   return res.send(personRoles).status(200);
 }
 
-export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
-  const caseId = req.params.caseId;
-  try {
-    const basePath = `${baseRoleAssignmentUrl}/am/role-assignments/query`;
-    const roleAssignmentsBody = {
-      attributes: {
-        caseId: [caseId],
-      },
-    };
-    const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
-    const {status, data} = response;
-    const refinedData = refineRoleAssignments(data);
-    return res.status(status).send(refinedData);
-  } catch (e) {
-    next(e);
-  }
-}
-
 export async function showAllocateRoleLink(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const jurisdiction = req.params.jurisdiction;
   const caseLocationId = req.params.caseLocationId;

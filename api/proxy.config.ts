@@ -74,7 +74,7 @@ export const initProxy = (app: Express) => {
         onRes: workAllocation2.handleGetMyCasesResponse,
         rewrite: true,
         rewriteUrl: '/searchCases?ctid=Asylum',
-        source: '/workallocation2/caseWithPagination',
+        source: '/workallocation2/my-cases',
         target: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH),
     });
 

@@ -1,5 +1,11 @@
 .complete_banner {
   text-align: center;
-  padding: 30px 0px 30px 0px;
+  padding: 30px 0 30px 0;
   margin-top: 75px;
+}
+.govuk-table-column-header {
+  width: 45%;
+}
+.govuk-table-column-actions {
+  width: 10%;
 }

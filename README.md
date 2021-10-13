@@ -11,7 +11,7 @@ Then follow:
 `export IDAM_SECRET=* && export S2S_SECRET=* && export NODE_CONFIG_DIR=../config && export NODE_CONFIG_ENV=development
 && export ALLOW_CONFIG_MUTATIONS=1 && npm run start:node`
 
-Explanation:
+Explanation: 
 
 NODE_CONFIG_DIR tells the machine where the configuration for the Node application is located.
 NODE_CONFIG_ENV=development sets the machine so that the config that is used is local-development.json
@@ -27,7 +27,7 @@ Run `yarn start:ng` to start up the UI.
 Run `yarn test` to execute the unit tests on both the Angular and Node layers. Note that 
 `yarn test` is run on the build pipelines.
 
-## Linting
+## Linting 
 
 Run `yarn lint` to execute all linting across both Angular and Node layers. Note that this
 is run on the build pipelines.
@@ -95,7 +95,7 @@ ie.
 We create the file postgresql-admin-pw (no extension).
 Within the file we have one line of characters which is the secret.
 
-####MAC OS - Post Catalina
+####MAC OS - Post Catalina 
 
 1. Create a Mount point on your local machine within the Volumes folder<br/>
 Create the folder: `/Volumes/mnt/secrets/rpx`

@@ -24,14 +24,19 @@ export const MAX_LOG_LINE = 'maxLogLine'
 export const HEALTH = 'health'
 
 export const SERVICES_CCD_COMPONENT_API_PATH = 'services.ccd.componentApi'
+export const SERVICES_CCD_ACTIVITY_API_PATH = 'services.ccd.activityApi'
 export const SERVICES_CCD_DATA_STORE_API_PATH = 'services.ccd.dataApi'
 export const SERVICES_CCD_CASE_ASSIGNMENT_API_PATH = 'services.ccd.caseAssignmentApi'
 export const SERVICES_WORK_ALLOCATION_TASK_API_PATH = 'services.work_allocation.taskApi'
 export const SERVICES_ROLE_ASSIGNMENT_API_PATH = 'services.role_assignment.roleApi'
 export const SERVICES_CASE_CASEWORKER_REF_PATH = "services.case.caseworkerApi"
+export const SERVICES_CASE_JUDICIALWORKER_REF_PATH = "services.case.judicialworkerApi"
 
 export const SERVICES_DOCUMENTS_API_PATH = 'services.documents.api'
+export const SERVICES_DOCUMENTS_API_PATH_V2 = 'services.documentsv2.api'
+export const SERVICES_EM_HRS_API_PATH = 'services.em_hrs_api'
 export const SERVICES_EM_ANNO_API_URL = 'services.em_anno_api'
+export const SERVICES_EM_DOCASSEMBLY_API_URL = 'services.em_docassembly_api'
 export const SERVICES_MARKUP_API_URL = 'services.markup_api'
 export const SERVICES_ICP_API_URL = 'services.icp_api'
 

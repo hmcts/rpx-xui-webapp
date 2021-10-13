@@ -70,6 +70,9 @@ module.exports = {
                     });
                 }
                 res.send(address);
+            },
+            '/activity/cases/:cases/activity': (req,res) => {
+                res.send(ccdMockData.getCaseActivity(req.params.cases));
             }
         },
     post: {

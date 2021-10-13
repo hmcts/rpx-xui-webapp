@@ -15,8 +15,9 @@ import { ExuiCommonLibModule, GOV_UI_COMPONENTS } from '@hmcts/rpx-xui-common-li
  * Used to share common modules and components/containers across the app
  * FormsModule, CommonModule, ReactiveForms etc..
  */
+
 @NgModule( {
-  imports: [RouterModule, CommonModule, MediaViewerModule, ExuiCommonLibModule.forChild()],
+  imports: [RouterModule, CommonModule, MediaViewerModule, ExuiCommonLibModule],
   declarations: [
     ...fromAppComponents.components,
     ...fromAppContainers.containers,

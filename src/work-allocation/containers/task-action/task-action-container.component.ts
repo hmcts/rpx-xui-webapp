@@ -7,7 +7,7 @@ import { InformationMessage } from '../../models/comms';
 import { TaskFieldConfig, TaskServiceConfig } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { ACTION } from '../../services/work-allocation-task.service';
-import { handleFatalErrors } from '../../utils';
+import { getAssigneeName, handleFatalErrors } from '../../utils';
 
 interface RouteData {
   verb: TaskActionType;
@@ -60,11 +60,14 @@ export class TaskActionContainerComponent implements OnInit {
     };
 
     // Get the task from the route, which will have been put there by the resolver.
-    const { task } = this.route.snapshot.data.task;
+    const { task } = this.route.snapshot.data.taskAndCaseworkers.task;
     this.tasks = [ task ];
     this.routeData = this.route.snapshot.data as RouteData;
     if (!this.routeData.actionTitle) {
       this.routeData.actionTitle = `${this.routeData.verb} task`;
+    }
+    if (task.assignee) {
+      task.assigneeName = getAssigneeName(this.route.snapshot.data.taskAndCaseworkers.caseworkers, task.assignee);
     }
   }
 

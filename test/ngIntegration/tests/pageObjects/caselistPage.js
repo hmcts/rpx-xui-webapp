@@ -23,7 +23,8 @@ class CaseListPage{
     }
 
     async isWorkbasketFilterDisplayed(fieldConfig){
-        // await this.amOnPage(); 
+        // await this.amOnPage();
+        await BrowserWaits.waitForElement(this.dynamicFiltersContainer);
         return await this.dynamicFiltersContainer.$(`#dynamicFilters .form-group #${fieldConfig.field.id}`).isDisplayed(); 
     }
 
@@ -99,7 +100,7 @@ class CaseListPage{
                     break;
                 case "YesOrNo":
                     let inputYesNo = input ? input : "Yes";
-                    inputYesNo = fieldConfig.field.id + "-" + inputYesNo; 
+                    inputYesNo = fieldConfig.field.id + "_" + inputYesNo; 
                     await this.dynamicFiltersContainer.$(`.form-group #${fieldConfig.field.id} input#${inputYesNo}`).click();
                     inputValue = inputYesNo.includes("Yes") ? "Yes": "No";
                     break;

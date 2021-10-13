@@ -1,12 +1,16 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, RoutesRecognized } from '@angular/router';
-import { GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
+import { combineLatest, Subscription } from 'rxjs';
+import { CookieService, FeatureToggleService, FeatureUser, GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
+import { LoggerService } from '../../services/logger/logger.service';
 
 import { propsExist } from '../../../../api/lib/objectUtilities';
 import { environment as config } from '../../../environments/environment';
+import { UserDetails, UserInfo } from '../../models/user-details.model';
 import * as fromRoot from '../../store';
+import { EnvironmentService } from '../../shared/services/environment.service';
 
 @Component({
   selector: 'exui-root',
@@ -15,22 +19,30 @@ import * as fromRoot from '../../store';
   encapsulation: ViewEncapsulation.None
 })
 
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
 
   public timeoutModalConfig = {
     countdown: '0 seconds',
     isVisible: false,
   };
 
+  private userId: string = null;
+  public cookieName;
+  public isCookieBannerVisible: boolean = false;
+  private cookieBannerEnabledSubscription: Subscription
+  private cookieBannerEnabled: boolean = false;
+
   constructor(
     private readonly store: Store<fromRoot.State>,
     private readonly googleTagManagerService: GoogleTagManagerService,
     private readonly timeoutNotificationsService: TimeoutNotificationsService,
     private readonly router: Router,
-    private readonly titleService: Title
+    private readonly titleService: Title,
+    private readonly featureService: FeatureToggleService,
+    private readonly loggerService: LoggerService,
+    private readonly cookieService: CookieService,
+    private readonly environmentService: EnvironmentService
   ) {
-
-    this.googleTagManagerService.init(config.googleTagManagerKey);
 
     this.router.events.subscribe((data) => {
       if (data instanceof RoutesRecognized) {
@@ -58,16 +70,34 @@ export class AppComponent implements OnInit {
     // the rendering of the menu as it triggers an action that gets hold of
     // the user's profile.
     this.store.dispatch(new fromRoot.StartIdleSessionTimeout());
+
+    this.handleCookieBannerFeatureToggle();
+  }
+
+  public ngOnDestroy() {
+    if (this.cookieBannerEnabledSubscription) {
+      this.cookieBannerEnabledSubscription.unsubscribe();
+    }
+  }
+
+  public handleCookieBannerFeatureToggle(): void {
+    this.cookieBannerEnabledSubscription = this.featureService.isEnabled('mc-cookie-banner-enabled')
+                                            .subscribe(flag => {
+                                              this.cookieBannerEnabled = flag;
+                                              this.setCookieBannerVisibility();
+                                            });
   }
 
   /**
    * Load and Listen for User Details
    */
   public loadAndListenForUserDetails() {
-
-    this.store.pipe(select(fromRoot.getUserDetails)).subscribe(userDetails => this.userDetailsHandler(userDetails));
-
     this.store.dispatch(new fromRoot.LoadUserDetails());
+    const userDetails$ = this.store.pipe(select(fromRoot.getUserDetails));
+    const envConfigAndUserDetails$ = combineLatest([this.environmentService.config$, userDetails$]);
+    envConfigAndUserDetails$.subscribe(envConfigAndUserDetails => {
+      this.userDetailsHandler(envConfigAndUserDetails[0].launchDarklyClientId, envConfigAndUserDetails[1]);
+    });
   }
 
   /**
@@ -84,14 +114,71 @@ export class AppComponent implements OnInit {
    *  }
    * }
    */
-  public userDetailsHandler(userDetails) {
-
-    if (propsExist(userDetails, ['sessionTimeout'] ) && userDetails.sessionTimeout.totalIdleTime > 0) {
-      const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
-
-      this.addTimeoutNotificationServiceListener();
-      this.initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime);
+  public userDetailsHandler(ldClientId: string, userDetails: UserDetails) {
+    if (userDetails) {
+      this.initializeFeature(userDetails.userInfo, ldClientId);
+      if (propsExist(userDetails, ['sessionTimeout'] ) && userDetails.sessionTimeout.totalIdleTime > 0) {
+        const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
+        this.addTimeoutNotificationServiceListener();
+        /**
+         * Fix for EUI-4469 Live Defect - Google Tag Manager broken
+         *
+         * I've changed the order of execution in order to make the cookie banner
+         * visible in production.
+         *
+         * TODO: The "TypeError: Cannot read properties of undefined (reading 'setIdleName')"
+         * issue will need to be fixed as part of EUI-4482. Remove comment once EUI-4482 is done.
+         */
+        const uid = userDetails.userInfo.id ? userDetails.userInfo.id : userDetails.userInfo.uid;
+        this.setUserAndCheckCookie(uid);
+        this.initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime);
+      }
     }
+  }
+
+  public initializeFeature(userInfo: UserInfo, ldClientId: string) {
+      if (userInfo) {
+
+        const featureUser: FeatureUser = {
+          key: userInfo.id || userInfo.uid,
+          custom: {
+            roles: userInfo.roles,
+            orgId: '-1'
+          }
+        };
+        this.featureService.initialize(featureUser, ldClientId);
+    }
+  }
+
+  public setUserAndCheckCookie(userId) {
+    this.userId = userId;
+    if (this.userId) { // check if cookie selection has been made *after* user id is available
+      this.cookieName = `hmcts-exui-cookies-${this.userId}-mc-accepted`;
+      this.setCookieBannerVisibility();
+    }
+  }
+
+  public notifyAcceptance() {
+    this.loggerService.enableCookies();
+    this.googleTagManagerService.init(config.googleTagManagerKey);
+  }
+
+  public notifyRejection() {
+    // AppInsights
+    this.cookieService.deleteCookieByPartialMatch('ai_');
+    // Google Analytics
+    this.cookieService.deleteCookieByPartialMatch('_ga');
+    this.cookieService.deleteCookieByPartialMatch('_gid');
+    const domainElements = window.location.hostname.split('.');
+    for (let i = 0; i < domainElements.length; i++) {
+      const domainName = domainElements.slice(i).join('.');
+      this.cookieService.deleteCookieByPartialMatch('_ga', '/', domainName);
+      this.cookieService.deleteCookieByPartialMatch('_gid', '/', domainName);
+      this.cookieService.deleteCookieByPartialMatch('_ga', '/', `.${domainName}`);
+      this.cookieService.deleteCookieByPartialMatch('_gid', '/', `.${domainName}`);
+    }
+    // DynaTrace
+    this.cookieService.deleteCookieByPartialMatch('rxVisitor');
   }
 
   /**
@@ -137,7 +224,6 @@ export class AppComponent implements OnInit {
       case 'sign-out': {
         this.updateTimeoutModal('0 seconds', false);
 
-        console.log('sign-out');
         this.store.dispatch(new fromRoot.StopIdleSessionTimeout());
         this.store.dispatch(new fromRoot.IdleUserLogOut());
         return;
@@ -218,4 +304,9 @@ export class AppComponent implements OnInit {
 
     this.timeoutNotificationsService.initialise(timeoutNotificationConfig);
   }
+
+  public setCookieBannerVisibility(): void {
+    this.isCookieBannerVisible = this.cookieBannerEnabled && !!this.userId;
+  }
+
 }

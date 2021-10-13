@@ -19,6 +19,27 @@ export async function getSessionCookieString( username, password) {
     return cookieString;
 }
 
+export function updateSessionCookieString(username, name, value) {
+    let isNewCookie = true;
+    if (!authCookiesForUsers[username]){
+        return;
+    }
+    for (const cookie of authCookiesForUsers[username]) {
+        // console.log(`${cookie.name} : ${cookie.value}`);
+        if (cookie.name === name){
+            cookie.value=value;
+            isNewCookie = false;
+        }
+    }
+ 
+    let cookieString = '';
+    for (const cookie of authCookiesForUsers[username]) {
+        cookieString = `${cookieString}${cookie.name}=${cookie.value};`;
+    }
+    return cookieString;
+
+}
+
 export async function getXSRFToken(username, password) {
     if (!authCookiesForUsers.hasOwnProperty(username)) {
         authCookiesForUsers[username] = await authenticateAndGetcookies(username, password);
@@ -110,7 +131,11 @@ async function  authenticateAndGetcookies(username, password)  {
 
             isLoginSuccess = true;
         } catch (error) {
-            let usernameInput = await page.$eval('#username', element => element.value);
+            let usernameInput = "";
+            try{
+                usernameInput = await page.$eval('#username', element => element.value);
+            }catch(err){}
+           
             if (usernameInput === "") {
                 loginAttemptsCounter++;
                 console.log("Login error : " + error.message);

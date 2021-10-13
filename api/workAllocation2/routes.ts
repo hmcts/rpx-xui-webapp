@@ -8,22 +8,21 @@ import {
   getCaseWorkersForService,
   getRolesByCaseId,
   getRolesCategory,
-  getTask, getTasksByCaseId,
+  getTask,
+  getTasksByCaseId,
   postTaskAction,
   postTaskSearchForCompletable,
-  searchCase,
   searchCaseWorker,
-  searchTask, showAllocateRoleLink
+  searchTask,
+  showAllocateRoleLink
 } from '.';
 import authInterceptor from '../lib/middleware/auth';
 import { getLocationById, getLocations } from './locationController';
 import { postFindPersonSearch } from './personService';
 
-const router = Router({ mergeParams: true });
+const router = Router({mergeParams: true});
 
 router.use(authInterceptor);
-
-router.use('/caseWithPagination', searchCase);
 
 router.use('/caseworker/location/:locationId/service/:serviceId', getCaseWorkersForLocationAndService);
 router.use('/caseworker/location/:locationId', getAllCaseWorkersForLocation);

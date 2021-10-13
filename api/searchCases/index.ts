@@ -12,8 +12,6 @@ export function modifyRequest(proxyReq, req) {
   const userInfo = req.session.passport.user.userinfo as UserInfo;
   const request = prepareElasticQuery(req.query, req.body, userInfo);
 
-  console.log(JSON.stringify(request, null, 2));
-
   // Write out body changes to the proxyReq stream
   const body = JSON.stringify(request);
 

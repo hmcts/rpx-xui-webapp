@@ -13,23 +13,22 @@ import { RoleExclusionsService } from '../../../role-access/services';
   templateUrl: './roles-and-access-container.component.html'
 })
 export class RolesAndAccessContainerComponent implements OnInit {
-  public roles: CaseRole[] = [];
   public caseDetails: CaseView;
   public showAllocateRoleLink: boolean = false;
   public exclusions$: Observable<RoleExclusion[]>;
+  public roles$: Observable<CaseRole[]>;
   public jurisdictionFieldId = '[JURISDICTION]';
   public caseJurisdiction: string;
 
   constructor(private readonly route: ActivatedRoute,
               private readonly store: Store<fromRoot.State>,
-              private readonly roleExclusionsService: RoleExclusionsService) {
-  }
+              private readonly roleExclusionsService: RoleExclusionsService) {}
 
   public ngOnInit(): void {
     this.caseDetails = this.route.snapshot.data.case as CaseView;
     this.applyJurisdiction(this.caseDetails);
-    this.roles = this.route.snapshot.data.roles as CaseRole[];
     const jurisdiction = this.caseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
+    this.roles$ = this.roleExclusionsService.getCaseRoles(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id);
     this.exclusions$ = this.roleExclusionsService.getCurrentUserRoleExclusions(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id);
   }
 

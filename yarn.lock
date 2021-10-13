@@ -523,10 +523,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.4.3-enable-find-person":
-  version "1.4.3-enable-find-person"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.3-enable-find-person.tgz#795e7c439a905b893b431d2a50b9a8d34c059f6a"
-  integrity sha512-eToJS2NwIkTHXe1RdXbbJGFG7H9fM50i0umThRrpT9TdMduc/4XoaM1H3ESoyRDuR5yIrSgJEtFMCGpN0Vx3Lw==
+"@hmcts/rpx-xui-common-lib@1.4.3-find-caseworker-person":
+  version "1.4.3-find-caseworker-person"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.3-find-caseworker-person.tgz#6eb7f81eb84881538490b1d07b14a5256645400b"
+  integrity sha512-bRTjEVFuwBM5sThjJp42I1GOeeRjER7++pU7rdpuFNL3eAkiMLd7blzNFDQEJClFJxEEMFdVzGjmezoeL7ydAw==
   dependencies:
     tslib "^1.9.0"
 

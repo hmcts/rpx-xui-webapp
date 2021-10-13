@@ -121,7 +121,10 @@ export function mapResponseToCaseRoles(roleAssignments: RoleAssignment[], assign
     roleAssignments = roleAssignments.filter(roleAssignment => roleAssignment.id === assignmentId);
   }
   return roleAssignments.map(roleAssignment => ({
-    actions: [],
+    actions: [
+      {'id': 'reallocate', 'title': 'Reallocate'},
+      {'id': 'remove', 'title': 'Remove Allocation'},
+    ],
     actorId: roleAssignment.actorId,
     email: null,
     end: roleAssignment.endTime ? roleAssignment.endTime.toString() : null,

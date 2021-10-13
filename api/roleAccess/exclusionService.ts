@@ -8,7 +8,8 @@ import { setHeaders } from '../lib/proxy';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { CaseRoleRequestPayload, RoleExclusion } from './models/caseRoleRequestPayload';
 
-export const release2ContentType = 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
+export const release2ContentType =
+  'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
 
 export async function findExclusionsForCaseId(req: EnhancedRequest, res: Response, next: NextFunction) {
   const requestPayload = getRequestPayload(req.body.caseId, req.body.jurisdiction, req.body.caseType);

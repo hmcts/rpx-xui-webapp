@@ -246,3 +246,90 @@ export function getCaseIdListFromRoles(roleAssignmentList: RoleAssignment[]): st
   });
   return caseIdList;
 }
+
+/*    id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb7',
+      actorId: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
+      actorName: 'Jamie Well',
+      startDate: '2021-05-05T16:00:00.000+0000',
+      endDate: '2021-05-06T16:00:00.000+0000',
+      location_name: 'Birmingham',
+      location_id: '231596',
+      jurisdiction: 'Immigration and Asylum',
+      case_id: '1620409659381330',
+      case_category: 'EEA',
+      role: 'Lead Judge',
+      case_name: 'James Parrot',
+      permissions: [Array]
+      
+  {
+    id: 'f3a00ad9-6d4e-4970-a88d-88ec6d46be04',
+    actorIdType: 'IDAM',
+    actorId: '3db21928-cbbc-4364-bd91-137c7031fe17',
+    roleType: 'ORGANISATION',
+    roleName: 'judge',
+    classification: 'PUBLIC',
+    grantType: 'STANDARD',
+    roleCategory: 'JUDICIAL',
+    readOnly: false,
+    created: '2021-09-10T15:45:06.972614Z',
+    attributes: {
+      primaryLocation: '231596',
+      caseId: '1546883526751282',
+      jurisdiction: 'IA',
+      region: 'north-east'
+    },
+    authorisations: [ 'case-allocator-role' ]
+  },
+
+
+      case object is  {
+      case_id: '1547576085189394',
+      supplementary_data: null,
+      case_fields: {
+    '[STATE]': 'appealSubmitted',
+    '[SECURITY_CLASSIFICATION]': 'PUBLIC',
+    appealReferenceNumber: 'PA/50012/2019',
+    '[JURISDICTION]': 'IA',
+    '[LAST_STATE_MODIFIED_DATE]': null,
+    '[CREATED_DATE]': '2019-01-15T18:14:45.136',
+    '[CASE_TYPE]': 'Asylum',
+    appellantNameForDisplay: 'José González',
+    '[CASE_REFERENCE]': '1547576085189394',
+    '[LAST_MODIFIED_DATE]': '2021-07-29T18:24:11.698'
+  },
+  case_fields_formatted: {
+    '[STATE]': 'appealSubmitted',
+    '[SECURITY_CLASSIFICATION]': 'PUBLIC',
+    appealReferenceNumber: 'PA/50012/2019',
+    '[JURISDICTION]': 'IA',
+    '[LAST_STATE_MODIFIED_DATE]': null,
+    '[CREATED_DATE]': '2019-01-15T18:14:45.136',
+    '[CASE_TYPE]': 'Asylum',
+    appellantNameForDisplay: 'José González',
+    '[CASE_REFERENCE]': '1547576085189394',
+    '[LAST_MODIFIED_DATE]': '2021-07-29T18:24:11.698'
+  }*/
+
+export function mapCasesFromData(responseData: any[], roleAssignmentList: RoleAssignment[], paginationConfig: any): any {
+  if (!responseData) {
+    return [];
+  }
+  responseData = paginationConfig ? paginate(responseData, paginationConfig.page_number, paginationConfig.page_size): responseData;
+  const mergedResponse = [];
+  responseData.forEach(response => {
+    const thisRoleAssignment = roleAssignmentList.find(roleAssignment => roleAssignment.attributes.caseId === response.caseId);
+    const thisResponse = {...thisRoleAssignment, ...response};
+    thisResponse.case_name = thisResponse.appellantNameForDisplay;
+    thisResponse.location_id = thisResponse.attributes.primaryLocation.id;
+    thisResponse.case_category = thisResponse.jurisdiction; 
+    thisResponse.role = thisResponse.roleName;
+    thisResponse.startDate = thisResponse.created_date;
+    // unsure whether endDate is conditional
+    mergedResponse.push(thisResponse);
+  });
+  return mergedResponse;
+}
+
+export const paginate = (array: any[], pageNumber: number, pageSize: number): any[] => {
+  return array.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+};

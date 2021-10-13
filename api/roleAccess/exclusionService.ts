@@ -1,14 +1,14 @@
 import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
-import { CaseRole } from '../workAllocation2/interfaces/caseRole';
 import { getConfigValue } from '../configuration';
+import { RoleAssignment } from '../user/interfaces/roleAssignment';
+import { RoleCategory } from './models/allocate-role.enum';
+import { CaseRoleRequestPayload, RoleExclusion } from './models/caseRoleRequestPayload';
 import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
-import { RoleAssignment } from '../user/interfaces/roleAssignment';
-import { RoleCategory } from './models/allocate-role.enum';
-import { CaseRoleRequestPayload, RoleExclusion } from './models/caseRoleRequestPayload';
+import { CaseRole } from '../workAllocation2/interfaces/caseRole';
 
 export const release2ContentType =
   'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
@@ -85,7 +85,9 @@ export function getExclusionRequestPayload(caseId: string, jurisdiction: string,
   };
 }
 
-export function getLegalAndJudicialRequestPayload(caseId: string, jurisdiction: string, caseType: string): CaseRoleRequestPayload {
+export function getLegalAndJudicialRequestPayload(caseId: string,
+                                                  jurisdiction: string,
+                                                  caseType: string): CaseRoleRequestPayload {
   return {
     queryRequests: [
       {
@@ -94,7 +96,7 @@ export function getLegalAndJudicialRequestPayload(caseId: string, jurisdiction: 
               caseType: [caseType],
               jurisdiction: [jurisdiction],
             },
-          roleCategory: ['LEGAL_OPERATIONS']
+          roleCategory: ['LEGAL_OPERATIONS'],
       },
     ],
   };
@@ -119,21 +121,21 @@ export function mapResponseToCaseRoles(roleAssignments: RoleAssignment[], assign
     roleAssignments = roleAssignments.filter(roleAssignment => roleAssignment.id === assignmentId);
   }
   return roleAssignments.map(roleAssignment => ({
-    name: roleAssignment.roleName,
-    roleName: roleAssignment.roleName,
-    roleCategory: mapRoleCategory(roleAssignment.roleCategory),
-    location: null,
-    start: roleAssignment.beginTime ? roleAssignment.beginTime.toString() : null,
+    actions: [],
+    actorId: roleAssignment.actorId,
+    email: null,
     end: roleAssignment.endTime ? roleAssignment.endTime.toString() : null,
     id: roleAssignment.id,
-    actorId: roleAssignment.actorId,
-    actions: [],
-    email: null
+    location: null,
+    name: roleAssignment.roleName,
+    roleCategory: mapRoleCategory(roleAssignment.roleCategory),
+    roleName: roleAssignment.roleName,
+    start: roleAssignment.beginTime ? roleAssignment.beginTime.toString() : null,
   }));
 }
 
 export function mapRoleCategory(roleCategory: string): RoleCategory {
-  switch(roleCategory) {
+  switch (roleCategory) {
     case 'LEGAL_OPERATIONS':
       return RoleCategory.LEGAL_OPERATIONS;
     case 'JUDICIAL':

@@ -4,6 +4,7 @@ import { RoleAssignment } from 'user/interfaces/roleAssignment';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
+import { ElasticSearchQuery } from '../searchCases/interfaces/ElasticSearchQuery';
 
 import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX, ViewType } from './constants/actions';
 import { Action, Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/common';
@@ -94,7 +95,7 @@ export function assignActionsToTasks(tasks: any[], view: any, currentUser: strin
         thisView = ViewType.ACTIVE_TASKS_UNASSIGNED;
         if (task.assignee) {
           thisView = currentUser === task.assignee ?
-           ViewType.ACTIVE_TASKS_ASSIGNED_CURRENT : ViewType.ACTIVE_TASKS_ASSIGNED_OTHER;
+            ViewType.ACTIVE_TASKS_ASSIGNED_CURRENT : ViewType.ACTIVE_TASKS_ASSIGNED_OTHER;
         }
       }
       const actions: Action[] = getActionsByPermissions(thisView, task.permissions);
@@ -245,4 +246,19 @@ export function getCaseIdListFromRoles(roleAssignmentList: RoleAssignment[]): st
     }
   });
   return caseIdList;
+}
+
+export function constructElasticSearchQuery(caseIds: string[], page: number, size: number): ElasticSearchQuery {
+  const from = page * size;
+  return {
+    native_es_query: {
+      query: {
+        terms: {
+          reference: caseIds,
+        },
+      },
+      size,
+    },
+    supplementary_data: ['*'],
+  };
 }

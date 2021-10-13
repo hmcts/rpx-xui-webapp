@@ -1,9 +1,12 @@
+import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
+import { sendPost } from '../common/crudService';
 import { handleGet, handlePost } from '../common/mockService';
 import { getConfigValue } from '../configuration';
 import {
   SERVICES_CASE_CASEWORKER_REF_PATH,
   SERVICES_CASE_JUDICIALWORKER_REF_PATH,
+  SERVICES_CCD_DATA_STORE_API_PATH,
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
   SERVICES_WORK_ALLOCATION_TASK_API_PATH
 } from '../configuration/references';
@@ -19,9 +22,6 @@ import {
   handlePostRoleAssingnments,
   handlePostSearch
 } from './caseWorkerService';
-
-import { AxiosResponse } from 'axios';
-import { sendPost } from '../common/crudService';
 import { Caseworker, Judicialworker } from './interfaces/common';
 import { TaskList } from './interfaces/task';
 import { checkIfCaseAllocator, refineRoleAssignments } from './roleService';
@@ -31,6 +31,7 @@ import * as taskServiceMock from './taskService.mock';
 import {
   assignActionsToCases,
   assignActionsToTasks,
+  constructElasticSearchQuery,
   getCaseIdListFromRoles,
   mapCaseworkerData,
   prepareCaseWorkerForLocation,
@@ -55,6 +56,7 @@ export const baseWorkAllocationTaskUrl = getConfigValue(SERVICES_WORK_ALLOCATION
 export const baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
 export const baseJudicialWorkerRefUrl = getConfigValue(SERVICES_CASE_JUDICIALWORKER_REF_PATH);
 export const baseRoleAssignmentUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+export const dataStoreUrl = getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH);
 export const baseUrl: string = 'http://localhost:8080';
 
 /**
@@ -99,9 +101,8 @@ export async function searchCase(req: EnhancedRequest, res: Response, next: Next
         searchMap[item.key] = item.values;
       }
     });
-
     const postCasePath = preparePaginationUrl(req, basePath);
-    const promise = await handlePost(postCasePath, searchRequest, req);
+    const promise = await handlePost(postCasePath + '/searchCases', searchRequest, req);
 
     const {status, data} = promise;
     res.status(status);
@@ -118,6 +119,27 @@ export async function searchCase(req: EnhancedRequest, res: Response, next: Next
   } catch (error) {
     next(error);
   }
+}
+
+export function handleGetMyCasesRequest(proxyReq, req): void {
+  const roleAssignments = req.session.roleAssignmentResponse;
+  // EUI-4579 - get list of case ids from role assignments
+  // note - will need to be getting substantive roles in future
+  const caseIdList = getCaseIdListFromRoles(roleAssignments);
+  const query = constructElasticSearchQuery(caseIdList, 0, 10000);
+  const body = JSON.stringify(query);
+
+  proxyReq.setHeader('content-type', 'application/json');
+  proxyReq.setHeader('content-length', body.length);
+
+  proxyReq.write(body);
+  delete req.body;
+  proxyReq.end();
+}
+
+export function handleGetMyCasesResponse(proxyRes, req, res, json): any {
+  console.log('json', JSON.stringify(json.cases, null, 2));
+  return {};
 }
 
 /**

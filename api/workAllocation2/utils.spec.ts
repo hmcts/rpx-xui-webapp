@@ -11,12 +11,62 @@ import { applySearchFilter,
   assignActionsToTasks,
   getActionsByPermissions,
   getCaseIdListFromRoles,
+  mapCasesFromData,
   mapCaseworkerData,
   mapCaseworkerPrimaryLocation,
   prepareGetTaskUrl,
   preparePaginationUrl,
   preparePostTaskUrlAction,
   prepareSearchTaskUrl } from './util';
+
+  const firstRoleAssignment: RoleAssignment[] = [{
+    id: '1',
+    attributes: {
+      caseId: '4'
+    }
+  },
+  {
+    id: '2',
+    attributes: {
+      region: 'Birm'
+    }
+  },
+  {
+    id: '3',
+    attributes: {
+      caseId: '2'
+    }
+  },
+  {
+    id: '4',
+    attributes: {
+      caseId: '5'
+    }
+  }];
+  const secondRoleAssignment: RoleAssignment[] = [{
+    id: '1',
+    attributes: {
+      caseId: '4'
+    }
+  },
+  {
+    id: '2',
+    attributes: {
+      region: '2'
+    }
+  },
+  {
+    id: '3',
+    attributes: {
+      caseId: '2'
+    }
+  },
+  {
+    id: '4',
+    attributes: {
+      caseId: '5'
+    }
+  }];
 
 const myTasks = [
   {
@@ -413,54 +463,6 @@ describe('workAllocation.utils', () => {
   });
 
   describe('getCaseIdListFromRoles', () => {
-    const firstRoleAssignment: RoleAssignment[] = [{
-      id: '1',
-      attributes: {
-        caseId: '4'
-      }
-    },
-    {
-      id: '2',
-      attributes: {
-        region: 'Birm'
-      }
-    },
-    {
-      id: '3',
-      attributes: {
-        caseId: '2'
-      }
-    },
-    {
-      id: '4',
-      attributes: {
-        caseId: '5'
-      }
-    }];
-    const secondRoleAssignment: RoleAssignment[] = [{
-      id: '1',
-      attributes: {
-        caseId: '4'
-      }
-    },
-    {
-      id: '2',
-      attributes: {
-        region: '2'
-      }
-    },
-    {
-      id: '3',
-      attributes: {
-        caseId: '2'
-      }
-    },
-    {
-      id: '4',
-      attributes: {
-        caseId: '5'
-      }
-    }];
     const expectedCaseList = ['4', '2', '5'];
     it('should return empty list if there is nothing given', () => {
       expect(getCaseIdListFromRoles(null)).to.deep.equal([]);
@@ -471,6 +473,27 @@ describe('workAllocation.utils', () => {
     it('should avoid duplicating case ids', () => {
       expect(getCaseIdListFromRoles(firstRoleAssignment)).to.deep.equal(expectedCaseList);
     });
+  });
+
+  describe('mapCasesFromData', () => {
+    const paginationConfig = {
+      page_number: '1',
+      page_size: '2'
+    };
+    const firstCaseData = [
+      {
+        
+      }
+    ]
+    it('should return empty list if there is nothing given', () => {
+      expect(mapCasesFromData(null, null, null)).to.deep.equal([]);
+      expect(mapCasesFromData(null, firstRoleAssignment, null)).to.deep.equal([]);
+      expect(mapCasesFromData(null, firstRoleAssignment, paginationConfig)).to.deep.equal([]);
+      expect(mapCasesFromData(null, null, paginationConfig)).to.deep.equal([]);
+    });
+    it('should return correct case data if no role assignment data returned', () => {
+      console.log('details are ', mapCasesFromData(firstCaseData, firstRoleAssignment, null));
+    })
   });
 
 });

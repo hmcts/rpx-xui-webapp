@@ -86,6 +86,8 @@ export async function searchCase(req: EnhancedRequest, res: Response, next: Next
     // note - will need to be getting substantive roles in future
     // tslint:disable-next-line
     const caseIdList = getCaseIdListFromRoles(roleAssignments);
+    // getting case details from case id list will be here
+    // const fullCaseList = mapCasesFromData(caseDetailsList, roleAssignments);
     let basePath = '';
     // TODO below call mock api will be replaced when real api is ready
     if (view === 'MyCases') {

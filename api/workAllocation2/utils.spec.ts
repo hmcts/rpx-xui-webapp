@@ -1,14 +1,14 @@
-import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { expect } from 'chai';
 
 import { mockReq } from 'sinon-express-mock';
+import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { ASSIGN, CLAIM, CLAIM_AND_GO, COMPLETE, GO, REASSIGN, RELEASE, TaskPermission } from './constants/actions';
-import { JUDICIAL_AVAILABLE_TASKS, JUDICIAL_MY_TASKS } from './constants/mock.data';
 import { Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/common';
 import { PersonRole } from './interfaces/person';
-import { Task } from './interfaces/task';
-import { applySearchFilter,
+import {
+  applySearchFilter,
   assignActionsToTasks,
+  constructElasticSearchQuery,
   getActionsByPermissions,
   getCaseIdListFromRoles,
   mapCaseworkerData,
@@ -16,7 +16,8 @@ import { applySearchFilter,
   prepareGetTaskUrl,
   preparePaginationUrl,
   preparePostTaskUrlAction,
-  prepareSearchTaskUrl } from './util';
+  prepareSearchTaskUrl
+} from './util';
 
 const myTasks = [
   {
@@ -156,7 +157,7 @@ describe('workAllocation.utils', () => {
       expect(preparePaginationUrl(req, url)).to.equal(url);
       req = req = mockReq({
         body: {
-          searchRequest: { pagination_parameters: null},
+          searchRequest: {pagination_parameters: null},
           view: 'view',
         },
         session: {
@@ -386,27 +387,27 @@ describe('workAllocation.utils', () => {
 
   describe('applySearchFilter', () => {
     it('PersonRole BOTH', () => {
-      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.CASEWORKER };
+      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.CASEWORKER};
       const result = applySearchFilter(person, PersonRole.ALL, 'name');
       expect(result).to.equal(true);
     });
     it('PersonRole CASEWORKER', () => {
-      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.CASEWORKER };
+      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.CASEWORKER};
       const result = applySearchFilter(person, PersonRole.CASEWORKER, 'name');
       expect(result).to.equal(true);
     });
     it('PersonRole JUDICIAL', () => {
-      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.JUDICIAL };
+      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.JUDICIAL};
       const result = applySearchFilter(person, PersonRole.JUDICIAL, 'name');
       expect(result).to.equal(true);
     });
     it('PersonRole CASEWORKER no match', () => {
-      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.JUDICIAL };
+      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.JUDICIAL};
       const result = applySearchFilter(person, PersonRole.CASEWORKER, 'name');
       expect(result).to.equal(false);
     });
     it('PersonRole JUDICIAL no match', () => {
-      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.CASEWORKER };
+      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.CASEWORKER};
       const result = applySearchFilter(person, PersonRole.JUDICIAL, 'name');
       expect(result).to.equal(false);
     });
@@ -416,51 +417,51 @@ describe('workAllocation.utils', () => {
     const firstRoleAssignment: RoleAssignment[] = [{
       id: '1',
       attributes: {
-        caseId: '4'
-      }
+        caseId: '4',
+      },
     },
-    {
-      id: '2',
-      attributes: {
-        region: 'Birm'
-      }
-    },
-    {
-      id: '3',
-      attributes: {
-        caseId: '2'
-      }
-    },
-    {
-      id: '4',
-      attributes: {
-        caseId: '5'
-      }
-    }];
+      {
+        id: '2',
+        attributes: {
+          region: 'Birm',
+        },
+      },
+      {
+        id: '3',
+        attributes: {
+          caseId: '2',
+        },
+      },
+      {
+        id: '4',
+        attributes: {
+          caseId: '5',
+        },
+      }];
     const secondRoleAssignment: RoleAssignment[] = [{
       id: '1',
       attributes: {
-        caseId: '4'
-      }
+        caseId: '4',
+      },
     },
-    {
-      id: '2',
-      attributes: {
-        region: '2'
-      }
-    },
-    {
-      id: '3',
-      attributes: {
-        caseId: '2'
-      }
-    },
-    {
-      id: '4',
-      attributes: {
-        caseId: '5'
-      }
-    }];
+      {
+        id: '2',
+        attributes: {
+          region: '2',
+        },
+      },
+      {
+        id: '3',
+        attributes: {
+          caseId: '2',
+        },
+      },
+      {
+        id: '4',
+        attributes: {
+          caseId: '5',
+        },
+      }];
     const expectedCaseList = ['4', '2', '5'];
     it('should return empty list if there is nothing given', () => {
       expect(getCaseIdListFromRoles(null)).to.deep.equal([]);
@@ -470,6 +471,21 @@ describe('workAllocation.utils', () => {
     });
     it('should avoid duplicating case ids', () => {
       expect(getCaseIdListFromRoles(firstRoleAssignment)).to.deep.equal(expectedCaseList);
+    });
+  });
+
+  describe('constructElasticSearchQuery', () => {
+
+    it('should create a query with at least three case ids', () => {
+      const caseIds =  [1589185982594513, 1589185060514243, 1589185060514243];
+      const result = constructElasticSearchQuery(caseIds, 0, 1000);
+      expect(result.native_es_query.query.terms).to.deep.equal({reference: caseIds});
+    });
+
+    it('should create a query with no case ids', () => {
+      const caseIds =  [];
+      const result = constructElasticSearchQuery(caseIds, 0, 1000);
+      expect(result.native_es_query.query.terms).to.deep.equal({reference: caseIds});
     });
   });
 

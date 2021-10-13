@@ -8,11 +8,13 @@ import { setHeaders } from '../lib/proxy';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { CaseRoleRequestPayload, RoleExclusion } from './models/caseRoleRequestPayload';
 
+export const release2ContentType = 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
+
 export async function findExclusionsForCaseId(req: EnhancedRequest, res: Response, next: NextFunction) {
   const requestPayload = getRequestPayload(req.body.caseId, req.body.jurisdiction, req.body.caseType);
   const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
   const fullPath = `${basePath}/am/role-assignments/query`;
-  const headers = setHeaders(req);
+  const headers = setHeaders(req, release2ContentType);
   try {
     const response: AxiosResponse = await http.post(fullPath, requestPayload, {headers});
     const roleExclusions = mapResponseToExclusions(response.data.roleAssignmentResponse, req.body.exclusionId);

@@ -76,51 +76,6 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
   }
 }
 
-/**
- * Post to search for a Case.
- */
-export async function searchCase(req: EnhancedRequest, res: Response, next: NextFunction) {
-  try {
-    const searchRequest = req.body.searchRequest;
-    const view = req.body.view;
-    const roleAssignments = req.session.roleAssignmentResponse;
-    // EUI-4579 - get list of case ids from role assignments
-    // note - will need to be getting substantive roles in future
-    // tslint:disable-next-line
-    const caseIdList = getCaseIdListFromRoles(roleAssignments);
-    let basePath = '';
-    // TODO below call mock api will be replaced when real api is ready
-    if (view === 'MyCases') {
-      basePath = prepareSearchCaseUrl(baseWorkAllocationTaskUrl, `myCases?view=${searchRequest.search_by}`);
-    } else if (view === 'AllWorkCases') {
-      basePath = prepareSearchCaseUrl(baseWorkAllocationTaskUrl, `allWorkCases?view=${searchRequest.search_by}`);
-    }
-    const searchMap = {};
-    searchRequest.search_parameters.forEach(item => {
-      if (item.operator === 'EQUAL') {
-        searchMap[item.key] = item.values;
-      }
-    });
-    const postCasePath = preparePaginationUrl(req, basePath);
-    const promise = await handlePost(postCasePath + '/searchCases', searchRequest, req);
-
-    const {status, data} = promise;
-    res.status(status);
-    // Assign actions to the cases on the data from the API.
-    let returnData;
-    if (data) {
-      // @ts-ignore
-      const isCaseAllocator: boolean = checkIfCaseAllocator(searchMap.jurisdiction, searchMap.location, req);
-      returnData = {cases: assignActionsToCases(data.cases, req.body.view, isCaseAllocator), total_records: data.total_records};
-    }
-
-    // Send the (possibly modified) data back in the Response.
-    res.send(returnData);
-  } catch (error) {
-    next(error);
-  }
-}
-
 export function handleGetMyCasesRequest(proxyReq, req): void {
   const roleAssignments = req.session.roleAssignmentResponse;
   // EUI-4579 - get list of case ids from role assignments

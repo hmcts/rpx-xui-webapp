@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
-import { HearingsBadgePipe } from './hearings.pipe';
+import { HearingsBadgePipe } from './hearings-badge.pipe';
 
 @NgModule({
   declarations: [

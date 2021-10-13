@@ -4,8 +4,7 @@ import { getConfigValue } from '../configuration';
 import { SERVICES_HEARINGS_COMPONENT_API } from '../configuration/references';
 import * as mock from '../hearings/hearing.mock';
 import { EnhancedRequest } from '../lib/models';
-import { generateErrorMessageWithCode } from '../noc/errorCodeConverter';
-import { NoCQuestions } from '../noc/models/noCQuestions.interface';
+import { CaseHearingsMainModel } from './models/caseHearingsMain.model';
 
 mock.init();
 
@@ -20,9 +19,9 @@ export async function getHearings(req: EnhancedRequest, res: Response, next: Nex
   const markupPath: string = `${url}/hearings/${caseId}`;
 
   try {
-    const {status, data}: { status: number, data: NoCQuestions } = await handleGet(markupPath, req);
+    const {status, data}: { status: number, data: CaseHearingsMainModel } = await handleGet(markupPath, req);
     res.status(status).send(data);
   } catch (error) {
-    next(generateErrorMessageWithCode(error));
+    next(error);
   }
 }

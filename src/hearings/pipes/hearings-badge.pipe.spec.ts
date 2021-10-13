@@ -1,5 +1,5 @@
 import { HearingListingStatusEnum } from '../models/hearings.enum';
-import { HearingsBadgePipe } from './hearings.pipe';
+import { HearingsBadgePipe } from './hearings-badge.pipe';
 
 describe('HearingsBadgePipe', () => {
 

@@ -78,7 +78,6 @@ export function handleGetMyCasesRequest(proxyReq, req): void {
   // note - will need to be getting substantive roles in future
   const caseIdList = getCaseIdListFromRoles(roleAssignments);
   const query = constructElasticSearchQuery(caseIdList, 0, 10000);
-
   const body = JSON.stringify(query);
 
   proxyReq.setHeader('content-type', 'application/json');

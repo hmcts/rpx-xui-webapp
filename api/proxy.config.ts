@@ -119,8 +119,8 @@ export const initProxy = (app: Express) => {
 
     applyProxy(app, {
         rewrite: true,
-        rewriteUrl: "/refund",
-        source: "/api/refund",
+        rewriteUrl: '/refund',
+        source: '/api/refund',
         target: getConfigValue(SERVICES_REFUNDS_API_URL),
     })
 

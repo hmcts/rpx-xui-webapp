@@ -5,7 +5,11 @@ import { of } from 'rxjs';
 import { UserService } from 'src/app/services/user/user.service';
 import { RefundsComponent } from './refunds.component';
 
-const userMock = { getUserDetails: () => of({userInfo: { email: 'a', roles: ['b']}})};
+const userMock = {
+  getUserDetails: () => of({
+    userInfo: { email: 'a', roles: ['b'] }
+  })
+};
 
 describe('RefundsComponent', () => {
   let component: RefundsComponent;

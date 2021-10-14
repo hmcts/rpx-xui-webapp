@@ -69,6 +69,9 @@ module.exports = {
                 { task_title: 'task 4', dueDate: 10, created_date: -10, permissions: "Own,Execute,Manage", warnings: "true" }
             ];
             res.send(workAllocationMockData.getCaseTasks(tasks));
+        },
+        '/workallocation2/judicialworker' : (req,res) => {
+            res.send(workAllocationMockData.getJudicialList(20));
         }
     },
     post: {

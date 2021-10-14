@@ -119,11 +119,9 @@ export const initProxy = (app: Express) => {
     })
 
     applyProxy(app, {
-        rewrite: true,
-        rewriteUrl: '',
-        source: '/cam/role-assignments',
+        rewrite: false,
+        source: '/am/role-assignments',
         target: getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH),
-        ws: true,
     })
 
     applyProxy(app, {

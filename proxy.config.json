@@ -89,7 +89,7 @@
     "secure": false,
     "logLevel": "debug"
   },
-  "/cam/role-assignments/*": {
+  "/am/role-assignments/*": {
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"

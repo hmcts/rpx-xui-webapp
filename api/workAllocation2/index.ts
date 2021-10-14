@@ -1,12 +1,9 @@
-import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
-import { sendPost } from '../common/crudService';
 import { handleGet, handlePost } from '../common/mockService';
 import { getConfigValue } from '../configuration';
 import {
   SERVICES_CASE_CASEWORKER_REF_PATH,
   SERVICES_CASE_JUDICIALWORKER_REF_PATH,
-  SERVICES_CCD_DATA_STORE_API_PATH,
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
   SERVICES_WORK_ALLOCATION_TASK_API_PATH
 } from '../configuration/references';
@@ -30,7 +27,6 @@ import * as roleServiceMock from './roleService.mock';
 import { handleGetTasksByCaseId } from './taskService';
 import * as taskServiceMock from './taskService.mock';
 import {
-  assignActionsToCases,
   assignActionsToTasks,
   constructElasticSearchQuery,
   getCaseIdListFromRoles,
@@ -45,7 +41,6 @@ import {
   preparePostTaskUrlAction,
   prepareRoleApiRequest,
   prepareRoleApiUrl,
-  prepareSearchCaseUrl,
   prepareSearchTaskUrl,
   prepareTaskSearchForCompletable
 } from './util';
@@ -58,7 +53,6 @@ export const baseWorkAllocationTaskUrl = getConfigValue(SERVICES_WORK_ALLOCATION
 export const baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
 export const baseJudicialWorkerRefUrl = getConfigValue(SERVICES_CASE_JUDICIALWORKER_REF_PATH);
 export const baseRoleAssignmentUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
-export const dataStoreUrl = getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH);
 export const baseUrl: string = 'http://localhost:8080';
 
 /**

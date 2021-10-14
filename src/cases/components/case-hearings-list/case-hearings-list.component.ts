@@ -14,7 +14,7 @@ export class CaseHearingsListComponent implements OnInit {
   @Input()
   public hearingType = '';
 
-  @Input()string
+  @Input()
   public status: string;
 
   @Input()

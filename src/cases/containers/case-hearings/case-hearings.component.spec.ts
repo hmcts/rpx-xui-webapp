@@ -3,17 +3,51 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { provideMockStore } from '@ngrx/store/testing';
-import { State } from 'src/app/store';
 import { CaseHearingsComponent } from './case-hearings.component';
 import { RouterTestingModule } from '@angular/router/testing';
+import { HearingListingStatusEnum, HearingsSectionStatusEnum } from 'src/hearings/models/hearings.enum';
+import { State } from 'src/app/store';
+import { CaseHearingsListComponent } from 'src/cases/components';
+import { CaseHearingsListComponentStub } from 'src/cases/components/case-hearings-list/case-hearings-list.component.stub';
 
-describe('CaseHearingsComponent', () => {
+fdescribe('CaseHearingsComponent', () => {
   let component: CaseHearingsComponent;
   let fixture: ComponentFixture<CaseHearingsComponent>;
   let de: DebugElement;
 
+  function getProducts(): Array<DebugElement> {
+    return fixture.debugElement.queryAll(By.directive(CaseHearingsListComponentStub));
+  }
+
   const initialState: State = {
     routerReducer: null,
+    hearings: {
+      hearingsList: {
+        caseHearingsMainModel: {
+          hmctsServiceID: undefined,
+          caseRef: undefined,
+          caseHearings: [{
+          hearingID: 'h555555',
+          hearingType: 'Directions hearing',
+          hmcStatus: HearingsSectionStatusEnum.PAST_AND_CANCELLED,
+          lastResponseReceivedDateTime: '2021-08-05T16:00:00.000+0000',
+          responseVersion: 'rv5',
+          hearingListingStatus: HearingListingStatusEnum.CANCELLED,
+          listAssistCaseStatus: '',
+          hearingDaySchedule: [],
+          }, {
+            hearingID: 'h555555',
+            hearingType: 'Directions hearing',
+            hmcStatus: HearingsSectionStatusEnum.UPCOMING,
+            lastResponseReceivedDateTime: '2021-08-05T16:00:00.000+0000',
+            responseVersion: 'rv5',
+            hearingListingStatus: HearingListingStatusEnum.CANCELLED,
+            listAssistCaseStatus: '',
+            hearingDaySchedule: [],
+            }]
+        }
+      }    
+    },
     appConfig: {
       config: {},
       termsAndCondition: null,
@@ -57,9 +91,9 @@ describe('CaseHearingsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [CaseHearingsComponent],
+      declarations: [CaseHearingsComponent, CaseHearingsListComponentStub],
       imports: [RouterTestingModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],      
       providers: [
         provideMockStore({initialState}),
         {
@@ -82,11 +116,27 @@ describe('CaseHearingsComponent', () => {
     component = fixture.componentInstance;
     de = fixture.debugElement;
     fixture.detectChanges();
-    fixture.debugElement.queryAll(By.css('.govuk-table__cell'))[1];
   });
 
-  it('should create hearing component', () => {
-    expect(component).toBeTruthy();
-  });
+    it('Should product two listing components', () => {
+      let header = getProducts();
+      expect(header.length).toBeGreaterThan(1);
+    });
 
+    it('should list hearings with status off past and cancelled', async (done) => {
+      component.pastAndCancelledHearings$.subscribe(result => {        
+        console.log(result);      
+          expect(result[0].hmcStatus).toEqual(HearingsSectionStatusEnum.PAST_AND_CANCELLED);
+        done();
+      });
+    });
+
+    it('should list hearings with status off upcoming', async (done) => {
+      component.upcomingHearings$.subscribe(result => {        
+        console.log(result);      
+          expect(result[0].hmcStatus).toEqual(HearingsSectionStatusEnum.UPCOMING);
+        done();
+      });
+    });
 });
+

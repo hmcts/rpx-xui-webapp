@@ -17,14 +17,15 @@
 
   <exui-case-hearings-list
     [status]="upcomingStatus"
+    [hearingType]="'Upcoming'"
     [hearingsList$]="upcomingHearings$"
     [actions]="upcomingHearingsActions">
   </exui-case-hearings-list>
 
   <exui-case-hearings-list
     [status]="pastAndCancelledStatus"
+    [hearingType]="'Past and Cancelled'"
     [hearingsList$]="pastAndCancelledHearings$"
     [actions]="pastAndCancelledActions">
   </exui-case-hearings-list>
-
 </div>

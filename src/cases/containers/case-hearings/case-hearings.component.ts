@@ -32,19 +32,19 @@ export class CaseHearingsComponent implements OnInit {
     this.pastAndCancelledHearings$ = this.getHearsListByStatus(HearingsSectionStatusEnum.PAST_AND_CANCELLED);
   }
 
-  public getHearsListByStatus(status: string): Observable<CaseHearingModel[]> {
+  public getHearsListByStatus(status: string): Observable<CaseHearingModel[]> {   
     return this.store.pipe(select(fromFeature.getHearingsList)).pipe(
       map(hearingsStateData => {
-          if (hearingsStateData && hearingsStateData.caseHearingsMainModel && hearingsStateData.caseHearingsMainModel.caseHearings) {
-            return hearingsStateData.caseHearingsMainModel.caseHearings.filter(hearing =>
-              hearing.hmcStatus === status
-            );
-          } else {
+          console.log('hearing', hearingsStateData);
+          // if (hearingsStateData && hearingsStateData.caseHearingsMainModel && hearingsStateData.caseHearingsMainModel.caseHearings) {
+          //   return hearingsStateData.caseHearingsMainModel.caseHearings.filter(hearing =>
+          //     hearing.hmcStatus === status
+          //   );
+          // } else {
             return [];
-          }
+        //  }
         }
       )
     );
   }
-
 }

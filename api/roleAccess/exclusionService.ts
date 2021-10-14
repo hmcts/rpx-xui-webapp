@@ -11,7 +11,7 @@ import { setHeaders } from '../lib/proxy';
 import { CaseRole } from '../workAllocation2/interfaces/caseRole';
 
 export const release2ContentType =
-  'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
+  'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0';
 
 export async function findExclusionsForCaseId(req: EnhancedRequest, res: Response, next: NextFunction) {
   const requestPayload = getExclusionRequestPayload(req.body.caseId, req.body.jurisdiction, req.body.caseType);
@@ -57,7 +57,9 @@ export async function deleteUserExclusion(req: EnhancedRequest, res: Response, n
   }
 }
 
-export function mapResponseToExclusions(roleAssignments: RoleAssignment[], assignmentId: string, req: EnhancedRequest): RoleExclusion[] {
+export function mapResponseToExclusions(roleAssignments: RoleAssignment[],
+                                        assignmentId: string,
+                                        req: EnhancedRequest): RoleExclusion[] {
   if (assignmentId) {
     roleAssignments = roleAssignments.filter(roleAssignment => roleAssignment.id === assignmentId);
   }
@@ -72,7 +74,6 @@ export function mapResponseToExclusions(roleAssignments: RoleAssignment[], assig
 }
 
 export function getEmail(actorId: string, req: EnhancedRequest): string {
-  console.log(req.session.caseworkers);
   if(req.session.caseworkers) {
     const caseWorker = req.session.caseworkers.find(caseworker => caseworker.idamId === actorId);
     if(caseWorker) {

@@ -165,8 +165,8 @@ export function prepareRoleApiRequest(locationId?: number): any {
 
   const payload = {
     attributes,
-    roleName: ['hearing-centre-admin', 'case-manager', 'ctsc', 'tribunal-caseworker', 
-               'hmcts-legal-operations', 'task-supervisor', 'hmcts-admin', 
+    roleName: ['hearing-centre-admin', 'case-manager', 'ctsc', 'tribunal-caseworker',
+               'hmcts-legal-operations', 'task-supervisor', 'hmcts-admin',
                'national-business-centre', 'senior-tribunal-caseworker', 'case-allocator'],
     validAt: Date.UTC,
   };

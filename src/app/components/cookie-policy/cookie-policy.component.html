@@ -52,7 +52,7 @@
             <tr class="govuk-table__row" scope="col" *ngFor="let cookie of cookiesByCat(GOOGLE)">
               <td class="govuk-table__cell">{{cookie.name}}</td>
               <td class="govuk-table__cell">{{cookie.purpose}}</td>
-              <td class="govuk-table__cell">{{cookie.cat}}</td>
+              <td class="govuk-table__cell">{{cookie.expires}}</td>
             </tr>
             </tbody>
           </table>
@@ -72,7 +72,7 @@
             <tr class="govuk-table__row" scope="col" *ngFor="let cookie of cookiesByCat(USAGE)">
               <td class="govuk-table__cell">{{cookie.name}}</td>
               <td class="govuk-table__cell">{{cookie.purpose}}</td>
-              <td class="govuk-table__cell">{{cookie.cat}}</td>
+              <td class="govuk-table__cell">{{cookie.expires}}</td>
             </tr>
             </tbody>
           </table>

@@ -298,32 +298,79 @@ export function constructElasticSearchQuery(caseIds: string[], page: number, siz
   },
 
 
-      case object is  {
-      case_id: '1547576085189394',
-      supplementary_data: null,
-      case_fields: {
-    '[STATE]': 'appealSubmitted',
-    '[SECURITY_CLASSIFICATION]': 'PUBLIC',
-    appealReferenceNumber: 'PA/50012/2019',
-    '[JURISDICTION]': 'IA',
-    '[LAST_STATE_MODIFIED_DATE]': null,
-    '[CREATED_DATE]': '2019-01-15T18:14:45.136',
-    '[CASE_TYPE]': 'Asylum',
-    appellantNameForDisplay: 'José González',
-    '[CASE_REFERENCE]': '1547576085189394',
-    '[LAST_MODIFIED_DATE]': '2021-07-29T18:24:11.698'
-  },
-  case_fields_formatted: {
-    '[STATE]': 'appealSubmitted',
-    '[SECURITY_CLASSIFICATION]': 'PUBLIC',
-    appealReferenceNumber: 'PA/50012/2019',
-    '[JURISDICTION]': 'IA',
-    '[LAST_STATE_MODIFIED_DATE]': null,
-    '[CREATED_DATE]': '2019-01-15T18:14:45.136',
-    '[CASE_TYPE]': 'Asylum',
-    appellantNameForDisplay: 'José González',
-    '[CASE_REFERENCE]': '1547576085189394',
-    '[LAST_MODIFIED_DATE]': '2021-07-29T18:24:11.698'
+    id: 1546883526751282,
+    jurisdiction: 'IA',
+    state: 'appealSubmitted',
+    version: null,
+    case_type_id: 'Asylum',
+    created_date: '2019-01-07T17:52:06.745',
+    last_modified: '2020-07-23T15:16:03.595',
+    last_state_modified_date: null,
+    security_classification: 'PUBLIC',
+    case_data: {
+      appellantHasFixedAddress: 'Yes',
+      legalRepReferenceNumber: '123',
+      legalRepDeclaration: [Array],
+      appealGroundsProtection: [Object],
+      appellantDateOfBirth: '1980-01-01',
+      hasOtherAppeals: 'No',
+      appealGroundsHumanRights: [Object],
+      appellantAddress: [Object],
+      appealType: 'protection',
+      appellantGivenNames: 'Jim',
+      appellantTitle: 'Mr',
+      appellantNationalities: [Array],
+      homeOfficeDecisionDate: '1111-01-01',
+      sendDirectionActionAvailable: 'No',
+      hasNewMatters: 'No',
+      homeOfficeReferenceNumber: 'A123456'
+    },
+    data_classification: {
+      appellantHasFixedAddress: 'PUBLIC',
+      legalRepReferenceNumber: 'PUBLIC',
+      legalRepDeclaration: 'PUBLIC',
+      appealGroundsProtection: [Object],
+      appellantDateOfBirth: 'PUBLIC',
+      hasOtherAppeals: 'PUBLIC',
+      appealGroundsHumanRights: [Object],
+      appellantAddress: [Object],
+      appealType: 'PUBLIC',
+      appellantGivenNames: 'PUBLIC',
+      appellantTitle: 'PUBLIC',
+      appellantNationalities: [Object],
+      homeOfficeDecisionDate: 'PUBLIC',
+      sendDirectionActionAvailable: 'PUBLIC',
+      appellantLastName: 'PUBLIC',
+      hasNewMatters: 'PUBLIC',
+      homeOfficeReferenceNumber: 'PUBLIC'
+    },
+    supplementary_data: null,
+    after_submit_callback_response: null,
+    callback_response_status_code: null,
+    callback_response_status: null,
+    delete_draft_response_status_code: null,
+    delete_draft_response_status: null,
+    security_classifications: {
+      appellantHasFixedAddress: 'PUBLIC',
+      legalRepReferenceNumber: 'PUBLIC',
+      legalRepDeclaration: 'PUBLIC',
+      appealGroundsProtection: [Object],
+      appellantDateOfBirth: 'PUBLIC',
+      hasOtherAppeals: 'PUBLIC',
+      appealGroundsHumanRights: [Object],
+      appellantAddress: [Object],
+      appealType: 'PUBLIC',
+      appellantGivenNames: 'PUBLIC',
+      appellantTitle: 'PUBLIC',
+      appellantNationalities: [Object],
+      homeOfficeDecisionDate: 'PUBLIC',
+      sendDirectionActionAvailable: 'PUBLIC',
+      appellantLastName: 'PUBLIC',
+      hasNewMatters: 'PUBLIC',
+      homeOfficeReferenceNumber: 'PUBLIC'
+    }
+  }
+
   }*/
 
 export function mapCasesFromData(responseData: any[], roleAssignmentList: RoleAssignment[], paginationConfig: any): any {
@@ -336,10 +383,13 @@ export function mapCasesFromData(responseData: any[], roleAssignmentList: RoleAs
     const thisRoleAssignment = roleAssignmentList.find(roleAssignment => roleAssignment.attributes.caseId === response.caseId);
     const thisResponse = {...thisRoleAssignment, ...response};
     thisResponse.case_name = thisResponse.appellantNameForDisplay;
+    thisResponse.case_role = thisResponse.roleName;
     thisResponse.location_id = thisResponse.attributes.primaryLocation.id;
-    thisResponse.case_category = thisResponse.jurisdiction; 
+    thisResponse.case_category = thisResponse.case_type_id; 
     thisResponse.role = thisResponse.roleName;
-    thisResponse.startDate = thisResponse.created_date;
+    thisResponse.startDate = thisResponse.startTime;
+    thisResponse.endDate = thisResponse.endTime;
+    thisResponse.assignee = thisResponse.actorId;
     // unsure whether endDate is conditional
     mergedResponse.push(thisResponse);
   });

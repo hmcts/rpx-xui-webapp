@@ -4,6 +4,11 @@
     <td scope="row" colspan="4" class="govuk-table__header"><h2
       class="govuk-heading-m govuk-!-margin-bottom-2 govuk-!-margin-top-7 gds-font">{{status}}</h2></td>
   </tr>
+  <tr *ngIf="!(hearingsList$ | async)?.length"  class="govuk-table__row">
+    <td scope="row">
+      No {{ hearingType }} hearings
+    </td>
+  </tr>
   <tr class="govuk-table__row" *ngFor="let hearing of hearingsList$ | async">
     <td scope="row" class="govuk-table__header govuk-!-width-one-quarter gds-font">{{ hearing.hearingType}}</td>
     <td scope="row"

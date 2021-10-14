@@ -248,8 +248,7 @@ export function getCaseIdListFromRoles(roleAssignmentList: RoleAssignment[]): st
   return caseIdList;
 }
 
-export function constructElasticSearchQuery(caseIds: string[], page: number, size: number): ElasticSearchQuery {
-  const from = page * size;
+export function constructElasticSearchQuery(caseIds: any[], page: number, size: number): ElasticSearchQuery {
   return {
     native_es_query: {
       query: {

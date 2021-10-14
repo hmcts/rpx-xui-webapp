@@ -61,7 +61,8 @@
                 },
                 "esSpecCompliant": true
             }
-        ]
+        ],
+        "ordered-imports": { "severity": "warning" }
     },
     "rulesDirectory": [],
     "linterOptions": {

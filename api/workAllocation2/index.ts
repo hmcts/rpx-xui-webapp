@@ -22,9 +22,10 @@ import {
   handlePostRoleAssingnments,
   handlePostSearch
 } from './caseWorkerService';
+
 import { Caseworker, Judicialworker } from './interfaces/common';
 import { TaskList } from './interfaces/task';
-import { checkIfCaseAllocator, refineRoleAssignments } from './roleService';
+import { checkIfCaseAllocator } from './roleService';
 import * as roleServiceMock from './roleService.mock';
 import { handleGetTasksByCaseId } from './taskService';
 import * as taskServiceMock from './taskService.mock';
@@ -324,24 +325,6 @@ export async function getRolesCategory(req: EnhancedRequest, res: Response, next
     {roleId: 'legalOps', roleName: 'Legal Ops'},
     {roleId: 'admin', roleName: 'Admin'}];
   return res.send(personRoles).status(200);
-}
-
-export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
-  const caseId = req.params.caseId;
-  try {
-    const basePath = `${baseRoleAssignmentUrl}/am/role-assignments/query`;
-    const roleAssignmentsBody = {
-      attributes: {
-        caseId: [caseId],
-      },
-    };
-    const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
-    const {status, data} = response;
-    const refinedData = refineRoleAssignments(data);
-    return res.status(status).send(refinedData);
-  } catch (e) {
-    next(e);
-  }
 }
 
 export async function showAllocateRoleLink(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {

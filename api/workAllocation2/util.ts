@@ -382,7 +382,9 @@ export function mapCasesFromData(responseData: any[], roleAssignmentList: RoleAs
   responseData.forEach(response => {
     const thisRoleAssignment = roleAssignmentList.find(roleAssignment => roleAssignment.attributes.caseId === response.caseId);
     const thisResponse = {...thisRoleAssignment, ...response};
-    thisResponse.case_name = thisResponse.appellantNameForDisplay;
+    // TODO: thisResponse.case_name = thisResponse.hmctsCaseNameInternal (when services have made this available)
+    thisResponse.case_name = thisResponse.id;
+    thisResponse.case_id = thisResponse.id;
     thisResponse.case_role = thisResponse.roleName;
     thisResponse.location_id = thisResponse.attributes.primaryLocation.id;
     thisResponse.case_category = thisResponse.case_type_id; 

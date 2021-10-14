@@ -30,7 +30,7 @@
     "access_management_mode": false,
     "access_management_basic_view_mock_mode": false,
     "location_ref_api_url": "/refdata/location",
-    "cam_role_assignments_api_url": "/cam/role-assignments"
+    "cam_role_assignments_api_url": "/am/role-assignments"
   },
   "urls": {
     "idam": {

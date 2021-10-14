@@ -33,6 +33,7 @@ import {
   assignActionsToTasks,
   constructElasticSearchQuery,
   getCaseIdListFromRoles,
+  mapCasesFromData,
   mapCaseworkerData,
   prepareCaseWorkerForLocation,
   prepareCaseWorkerForLocationAndService,
@@ -93,8 +94,11 @@ export function handleGetMyCasesRequest(proxyReq, req): void {
 }
 
 export function handleGetMyCasesResponse(proxyRes, req, res, json): any {
-  console.log('json', JSON.stringify(json.cases, null, 2));
-  return {};
+  const caseData = json.cases;
+  const totalRecords = json.cases.length;
+  json.total_records = totalRecords;
+  json.cases = mapCasesFromData(caseData, req.session.roleAssignmentResponse, null);
+  return json;
 }
 
 /**

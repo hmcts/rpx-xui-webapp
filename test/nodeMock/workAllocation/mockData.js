@@ -198,6 +198,138 @@ class WorkAllocationMockData {
         return filteredUsers;
     }
 
+    getAllWorkTasks(count) {
+        let tasks = { tasks: [], total_records: count };
+        for (let i = 0; i < count; i++) {
+            tasks.tasks.push(this.getRelease2TaskWithPermissions(["Manage", "Read"], "AllWork", null));
+        }
+        return tasks;
+    }
+
+    getExclusionRoleCategories() {
+        const roleCategories = [];
+        const judicial = WorkAllocationDataModels.getRoleCategory();
+        judicial.roleId = "judicial";
+        judicial.roleName = "Judicial"
+
+        const legalOps = WorkAllocationDataModels.getRoleCategory();
+        legalOps.roleId = "legalOps";
+        legalOps.roleName = "Legal Ops"
+
+        const admin = WorkAllocationDataModels.getRoleCategory();
+        admin.roleId = "admin";
+        admin.roleName = "Admin"
+
+        roleCategories.push(judicial);
+        roleCategories.push(legalOps);
+        roleCategories.push(admin);
+        return roleCategories;
+
+    }
+
+    getRoles() {
+        const roles = [];
+        const leadJudge = WorkAllocationDataModels.getRole();
+        const hearingJudge = WorkAllocationDataModels.getRole();
+        const caseManager = WorkAllocationDataModels.getRole();
+
+        leadJudge.roleId = 'lead-judge';
+        leadJudge.roleName = 'Lead judge';
+        leadJudge.roleCategory = 'JUDICIAL';
+
+        hearingJudge.roleId = 'hearing-judge';
+        hearingJudge.roleName = 'Hearing judge';
+        hearingJudge.roleCategory = 'JUDICIAL';
+
+        caseManager.roleId = 'case-manager';
+        caseManager.roleName = 'Case manager';
+        caseManager.roleCategory = 'LEGAL_OPERATIONS';
+
+        roles.push(leadJudge);
+        roles.push(hearingJudge);
+        roles.push(caseManager);
+        return roles;
+
+    }
+
+    getCaseRoles(roles) {
+        const caseRolesRes = [];
+        for (const role of roles) {
+            const caseRoleObj = WorkAllocationDataModels.getCaseRole();
+
+            for (let key of Object.keys(role)) {
+                caseRoleObj[key] = role[key];
+            }
+
+            caseRolesRes.push(caseRoleObj);
+        }
+        return caseRolesRes;
+    }
+
+    getCaseExclusions(exclusions) {
+        const caseExlusionsRes = [];
+        for (const exclusion of exclusions) {
+            const caseExclusionObj = WorkAllocationDataModels.getCaseRole();
+
+            for (let key of Object.keys(exclusion)) {
+                caseExclusionObj[key] = exclusion[key];
+            }
+
+            caseExlusionsRes.push(caseExclusionObj);
+        }
+        return caseExlusionsRes;
+    }
+
+    getCaseTasks(tasksObjects, userDetails) {
+
+        const tasks = [];
+        for (let task of tasksObjects) {
+            const taskTemplate = this.getRelease2TaskDetails();
+
+            const taskAttributes = Object.keys(task);
+            for (const taskAttribute of taskAttributes) {
+                if (taskAttribute.toLowerCase().includes('date')) {
+                    const dateObj = new Date();
+                    dateObj.setDate(dateObj.getDate() + parseInt(task[taskAttribute]));
+                    taskTemplate[taskAttribute] = dateObj.toISOString();
+                } else if (taskAttribute.toLowerCase().includes('permissions')) {
+                    if (task[taskAttribute] === '') {
+                        taskTemplate[taskAttribute] = [];
+                    } else {
+                        taskTemplate[taskAttribute] = task[taskAttribute].split(',');
+                    }
+                } else if (taskAttribute.toLowerCase().includes('warnings')) {
+                    const val = task[taskAttribute].toLowerCase();
+                    taskTemplate[taskAttribute] = val.includes('true') || val.includes('yes');
+                } else if (taskAttribute.toLowerCase().trim() === 'assignee') {
+                    const val = task[taskAttribute].toLowerCase();
+                    if (val.includes('session')) {
+                        taskTemplate[taskAttribute] = userDetails.userInfo.id;
+                    } else if (val === '' || val === undefined) {
+                        taskTemplate[taskAttribute] = null;
+                        taskTemplate['assigneeName'] = null;
+                    } else {
+                        taskTemplate[taskAttribute] = v4();
+                    }
+                } else if (taskAttribute.toLowerCase().includes('description')) {
+                    const val = task[taskAttribute];
+                    if (val !== '' || val !== undefined) {
+                        taskTemplate[taskAttribute] = val;
+                    } else {
+                        delete taskTemplate[taskAttribute];
+                    }
+                }
+                else {
+                    taskTemplate[taskAttribute] = task[taskAttribute];
+                }
+            }
+
+            tasks.push(taskTemplate);
+
+        }
+        return tasks;
+    }
+
 
 }
 

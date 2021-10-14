@@ -8,7 +8,7 @@ export interface RoleAssignment {
   grantType?: string;
   roleCategory?: string;
   readOnly?: boolean;
-  created?: string;
+  created?: Date;
   attributes: LocationInfo
   authorisations?: string[]
 }

@@ -4,6 +4,7 @@ import { PERSON } from './constants/mock.data';
 import { PersonRole } from './interfaces/person';
 import { applySearchFilter } from './util';
 
+// judicial person search
 export async function postFindPersonSearch(req: EnhancedRequest, res: Response, next: NextFunction) {
     if (!req.body || !req.body.searchOptions || !req.body.searchOptions.searchTerm) {
         res.status(400);
@@ -14,17 +15,8 @@ export async function postFindPersonSearch(req: EnhancedRequest, res: Response, 
     const domain = req.body.searchOptions.jurisdiction as PersonRole;
     let searchResult = PERSON.filter(person => applySearchFilter(person, domain, searchTerm));
     if (searchResult && searchResult.length === 0) {
-        searchResult = getDefaultResult();
+        searchResult = [];
     }
     res.status(200);
     res.send(searchResult);
-}
-
-export function getDefaultResult() {
-    return [{
-        domain: PersonRole.ALL,
-        email: '',
-        id: '',
-        name: 'No results found',
-    }];
 }

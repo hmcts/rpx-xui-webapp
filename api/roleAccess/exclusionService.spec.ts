@@ -7,7 +7,7 @@ import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 
 import { http } from '../lib/http';
-import { confirmUserExclusion, deleteUserExclusion, getUserExclusions } from './exclusionService';
+import { confirmUserExclusion, deleteUserExclusion, getRequestPayload, mapResponseToExclusions } from './exclusionService';
 
 chai.use(sinonChai);
 describe('exclusions.exclusionService', () => {
@@ -63,47 +63,51 @@ describe('exclusions.exclusionService', () => {
 
   describe('getUserExclusions', () => {
 
-    it('should make a get request and respond appropriately', async () => {
-
-      spy = sandbox.stub(http, 'get').resolves(res);
-      const req = mockReq({
-        session: {
-          passport: {
-            user: {
-              userinfo: {
-                roles: [
-                  'caseworker-ia-iacjudge',
-                ],
-              },
-            },
-          },
-        },
-      });
-      let response = mockRes();
-      await getUserExclusions(req, response, next);
-
-      // Should have received the HTTP response. The get simply returns the data.
-      expect(response.send).to.have.been.calledWith(sinon.match(exampleMultiRoleExclusions));
-
-      const nonJudgeReq = mockReq({
-        session: {
-          passport: {
-            user: {
-              userinfo: {
-                roles: [
-                  'caseworker',
-                ],
-              },
-            },
-          },
-        },
-      });
-      response = mockRes();
-      await getUserExclusions(nonJudgeReq, response, next);
-      // Should have received the HTTP response. The get simply returns the data.
-      expect(response.send).to.have.been.calledWith(sinon.match([]));
+    it('should make a getRequestPayload', async () => {
+      const requestPayload = getRequestPayload('1234567891234567', 'Asylum', 'IA');
+      expect(requestPayload.queryRequests.length).to.equal(1);
+      expect(requestPayload.queryRequests[0].grantType[0]).to.equal('EXCLUDED');
+      expect(requestPayload.queryRequests[0].attributes.caseId[0]).to.equal('1234567891234567');
+      expect(requestPayload.queryRequests[0].attributes.jurisdiction[0]).to.equal('Asylum');
+      expect(requestPayload.queryRequests[0].attributes.caseType[0]).to.equal('IA');
     });
 
+    it('mapResponseToExclusions with blank array', () => {
+      const result = mapResponseToExclusions([], null);
+      expect(result.length).to.equal(0);
+    });
+
+    it('mapResponseToExclusions with an array', () => {
+      const exclusions = [{
+        id: '123',
+        actorIdType: 'actorIdType',
+        actorId: 'actorId',
+        roleType: 'roleType',
+        roleName: 'roleName',
+        classification: 'classification',
+        grantType: 'grantType',
+        roleCategory: 'roleCategory',
+        readOnly: true,
+        created: new Date(2020, 11, 20),
+        attributes: {
+          primaryLocation: 'loc123',
+          caseId: '334455',
+          jurisdiction: 'jurisdiction',
+          region: 'region1',
+          isCaseAllocator: false
+        },
+        authorisations: []
+      }];
+      const result = mapResponseToExclusions(exclusions, null);
+      expect(result.length).to.equal(1);
+      expect(result[0].id).to.equal('123');
+      expect(result[0].name).to.equal('roleName');
+      expect(result[0].added.getFullYear()).to.equal(2020);
+      expect(result[0].added.getMonth()).to.equal(11);
+      expect(result[0].added.getDate()).to.equal(20);
+      expect(result[0].userType).to.equal('roleCategory');
+      expect(result[0].type).to.equal('roleType');
+    });
   });
 
   describe('confirmUserExclusion', () => {

@@ -1,4 +1,4 @@
-<exui-roles-and-access [roles]="roles"
+<exui-roles-and-access [roles]="roles$ | async"
                        [caseDetails]="caseDetails"
                        [exclusions]="exclusions$ | async"
                        [showAllocateRoleLink]="showAllocateRoleLink">

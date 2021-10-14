@@ -17,10 +17,7 @@ export function toRoleAssignmentBody(userInfo: UserInfo, allocateRoleData: Alloc
         caseId: allocateRoleData.caseId,
         jurisdiction: 'IA',
       },
-      // TODO: When given roles valid do
-      // roleName: allocateRoleData.typeOfRole && allocateRoleData.typeOfRole.id ? allocateRoleData.typeOfRole.id : null,
-      // below judge roleName only name that works currently so used to test allocations working
-      roleName: 'judge',
+      roleName: allocateRoleData.typeOfRole.id,
       roleCategory: allocateRoleData.roleCategory,
       actorIdType: 'IDAM',
       actorId: getActorId(userInfo, allocateRoleData),

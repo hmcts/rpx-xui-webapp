@@ -6,7 +6,6 @@ import {
   getAllJudicialWorkers,
   getCaseWorkersForLocationAndService,
   getCaseWorkersForService,
-  getRolesByCaseId,
   getRolesCategory,
   getTask,
   getTasksByCaseId,
@@ -49,6 +48,5 @@ router.use('/case/task/:caseId', getTasksByCaseId);
 router.use('/exclusion/rolesCategory', getRolesCategory);
 
 router.use('/roles/:caseId/show-allocate-role-link', showAllocateRoleLink);
-router.use('/roles/:caseId', getRolesByCaseId);
 
 export default router;

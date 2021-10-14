@@ -4,11 +4,12 @@ export interface CaseRoleRequestPayload {
 
 export interface CaseRoleQueryRequest {
     attributes: {
-        caseId: string[];
+        caseId?: string[];
         jurisdiction: string[];
         caseType: string[];
     };
-    grantType: string [];
+    grantType?: string [];
+    roleCategory?: string [];
 }
 
 export interface RoleExclusion {

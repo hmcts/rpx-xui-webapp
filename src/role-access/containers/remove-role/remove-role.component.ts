@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
+import { Caseworker } from '../../../work-allocation-2/models/dtos';
+import { SessionStorageService } from '../../../app/services';
 import { handleFatalErrors } from '../../../work-allocation-2/utils';
 import { Answer, CaseRole, RemoveAllocationNavigationEvent } from '../../models';
 import { RemoveRoleText } from '../../models/enums/answer-text';
@@ -24,7 +26,8 @@ export class RemoveRoleComponent implements OnInit {
 
   constructor(private readonly route: ActivatedRoute,
               private readonly router: Router,
-              private readonly allocateRoleService: AllocateRoleService) {}
+              private readonly allocateRoleService: AllocateRoleService,
+              private readonly sessionStorageService: SessionStorageService) {}
 
   public ngOnInit(): void {
     const paramMap$ = this.route.queryParamMap;
@@ -32,6 +35,13 @@ export class RemoveRoleComponent implements OnInit {
         return this.getRoleAssignmentFromQuery(queryMap);
       })).subscribe(roleAssignments => {
         this.roleAssignment = roleAssignments.find(assignment => assignment.id === this.assignmentId);
+        if (!this.roleAssignment.email && this.roleAssignment.actorId) {
+          const caseworkers = JSON.parse(this.sessionStorageService.getItem('caseworkers'));
+          if (caseworkers) {
+            const caseWorker = (caseworkers as Caseworker[]).find(caseworker => caseworker.idamId === this.roleAssignment.actorId);
+            this.roleAssignment.email = caseWorker.email;
+          }
+        }
         this.populateAnswers(this.roleAssignment);
       });
   }

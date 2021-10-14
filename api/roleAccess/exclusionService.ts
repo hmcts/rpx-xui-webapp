@@ -20,7 +20,7 @@ export async function findExclusionsForCaseId(req: EnhancedRequest, res: Respons
   const headers = setHeaders(req, release2ContentType);
   try {
     const response: AxiosResponse = await http.post(fullPath, requestPayload, {headers});
-    const roleExclusions = mapResponseToExclusions(response.data.roleAssignmentResponse, req.body.exclusionId);
+    const roleExclusions = mapResponseToExclusions(response.data.roleAssignmentResponse, req.body.exclusionId, req);
     return res.status(response.status).send(roleExclusions);
   } catch (error) {
     next(error);
@@ -57,7 +57,7 @@ export async function deleteUserExclusion(req: EnhancedRequest, res: Response, n
   }
 }
 
-export function mapResponseToExclusions(roleAssignments: RoleAssignment[], assignmentId?: string): RoleExclusion[] {
+export function mapResponseToExclusions(roleAssignments: RoleAssignment[], assignmentId: string, req: EnhancedRequest): RoleExclusion[] {
   if (assignmentId) {
     roleAssignments = roleAssignments.filter(roleAssignment => roleAssignment.id === assignmentId);
   }
@@ -67,7 +67,18 @@ export function mapResponseToExclusions(roleAssignments: RoleAssignment[], assig
     name: roleAssignment.roleName,
     type: roleAssignment.roleType,
     userType: roleAssignment.roleCategory,
+    email: roleAssignment.actorId ? getEmail(roleAssignment.actorId, req) : null
   }));
+}
+
+export function getEmail(actorId: string, req: EnhancedRequest): string {
+  console.log(req.session.caseworkers);
+  if(req.session.caseworkers) {
+    const caseWorker = req.session.caseworkers.find(caseworker => caseworker.idamId === actorId);
+    if(caseWorker) {
+      return caseWorker.email;
+    }
+  }
 }
 
 export function getExclusionRequestPayload(caseId: string, jurisdiction: string, caseType: string): CaseRoleRequestPayload {
@@ -109,14 +120,14 @@ export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next
   const headers = setHeaders(req, release2ContentType);
   try {
     const response: AxiosResponse = await http.post(fullPath, requestPayload, {headers});
-    const roleExclusions = mapResponseToCaseRoles(response.data.roleAssignmentResponse, req.body.exclusionId);
+    const roleExclusions = mapResponseToCaseRoles(response.data.roleAssignmentResponse, req.body.exclusionId, req);
     return res.status(response.status).send(roleExclusions);
   } catch (error) {
     next(error);
   }
 }
 
-export function mapResponseToCaseRoles(roleAssignments: RoleAssignment[], assignmentId?: string): CaseRole[] {
+export function mapResponseToCaseRoles(roleAssignments: RoleAssignment[], assignmentId: string, req: EnhancedRequest): CaseRole[] {
   if (assignmentId) {
     roleAssignments = roleAssignments.filter(roleAssignment => roleAssignment.id === assignmentId);
   }
@@ -126,7 +137,7 @@ export function mapResponseToCaseRoles(roleAssignments: RoleAssignment[], assign
       {'id': 'remove', 'title': 'Remove Allocation'},
     ],
     actorId: roleAssignment.actorId,
-    email: null,
+    email: roleAssignment.actorId ? getEmail(roleAssignment.actorId, req) : null,
     end: roleAssignment.endTime ? roleAssignment.endTime.toString() : null,
     id: roleAssignment.id,
     location: null,

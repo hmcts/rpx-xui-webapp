@@ -1,5 +1,6 @@
+import { initialMockState } from '../role-access/testing/app-initial-state.mock';
 import { AppUtils } from './app-utils';
-import { AppConstants } from './app.constants';
+import { AppConstants, LEGAL_OPS_ROLE_LIST } from './app.constants';
 import { NavItemsModel } from './models/nav-item.model';
 import { Theme } from './models/theme.model';
 import { UserRole } from './models/user-details.model';
@@ -263,5 +264,20 @@ describe('getUserType', () => {
     const userRole = { legalOps: ['role1'] };
     const userType = AppUtils.getUserType(['role1', 'role3'], userRole);
     expect(userType).toEqual('LegalOps');
+  });
+});
+
+
+describe('getFilterPersistenceByRoleType', () => {
+  it('should return local persistence if user is a judicial user', () => {
+    const persistence = AppUtils.getFilterPersistenceByRoleType(initialMockState.appConfig.userDetails);
+    expect(persistence).toEqual('local');
+  });
+
+  it('should return local persistence if user is a legalOps user', () => {
+    const userDetails = initialMockState.appConfig.userDetails;
+    userDetails.userInfo.roles = LEGAL_OPS_ROLE_LIST;
+    const persistence = AppUtils.getFilterPersistenceByRoleType(userDetails);
+    expect(persistence).toEqual('session');
   });
 });

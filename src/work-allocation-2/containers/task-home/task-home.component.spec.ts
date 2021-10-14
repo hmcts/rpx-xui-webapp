@@ -4,7 +4,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
+import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
+import { initialMockState } from '../../../role-access/testing/app-initial-state.mock';
 
 import { ALL_LOCATIONS } from '../../components/constants/locations';
 import { ErrorMessageComponent } from '../../../app/components';
@@ -50,6 +52,7 @@ describe('TaskHomeComponent', () => {
       declarations: [TaskHomeComponent, WrapperComponent, InfoMessageContainerComponent, ErrorMessageComponent],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
+        provideMockStore({initialState: initialMockState}),
         { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },
         {
           provide: FilterService, useValue: mockFilterService

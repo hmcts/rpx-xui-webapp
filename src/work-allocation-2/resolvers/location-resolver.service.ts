@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Resolve, Router} from '@angular/router';
+import { Resolve, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { EMPTY } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 import { catchError, first, map, mergeMap } from 'rxjs/operators';
-import { UserDetails } from '../../app/models/user-details.model';
+import { AppUtils } from '../../app/app-utils';
+import { UserDetails, UserRole } from '../../app/models/user-details.model';
 import * as fromRoot from '../../app/store';
 import * as fromCaseList from '../../app/store/reducers';
 import { Caseworker, JudicialWorker, Location } from '../models/dtos';
@@ -52,7 +53,7 @@ export class LocationResolver implements Resolve<Location> {
   }
 
   private getJudicialWorkersOrCaseWorkers(userDetails: UserDetails): Observable<Caseworker[]> | Observable<JudicialWorker[]> {
-    const isCaseWorker = userDetails.userInfo.roles.filter((role: string) => role.includes('caseworker')).length;
-    return isCaseWorker ? this.caseworkerDataService.getAll() : this.judicialWorkerDataService.getAll();
+    const role = AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
+    return role === UserRole.LegalOps ? this.caseworkerDataService.getAll() : this.judicialWorkerDataService.getAll();
   }
 }

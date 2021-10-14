@@ -165,7 +165,9 @@ export function prepareRoleApiRequest(locationId?: number): any {
 
   const payload = {
     attributes,
-    roleName: ['tribunal-caseworker', 'senior-tribunal-caseworker'],
+    roleName: ['hearing-centre-admin', 'case-manager', 'ctsc', 'tribunal-caseworker',
+               'hmcts-legal-operations', 'task-supervisor', 'hmcts-admin',
+               'national-business-centre', 'senior-tribunal-caseworker', 'case-allocator'],
     validAt: Date.UTC,
   };
   if (locationId) {
@@ -248,8 +250,7 @@ export function getCaseIdListFromRoles(roleAssignmentList: RoleAssignment[]): st
   return caseIdList;
 }
 
-export function constructElasticSearchQuery(caseIds: string[], page: number, size: number): ElasticSearchQuery {
-  const from = page * size;
+export function constructElasticSearchQuery(caseIds: any[], page: number, size: number): ElasticSearchQuery {
   return {
     native_es_query: {
       query: {

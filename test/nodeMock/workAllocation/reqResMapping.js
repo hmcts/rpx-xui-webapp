@@ -238,6 +238,15 @@ module.exports = {
         '/api/role-access/allocate-role/delete' : (req,res) => {
             res.status(204).send({});
 
+        },
+        '/api/role-access/exclusions/post' : (req,res) => {
+            const mockRoles = [
+                { added: '2021-10-12T12:14:42.230129Z', name: 'judeg a', userType: 'JUDICIAL', type: 'CASE', id: '12345678901' },
+                { added: '2021-10-12T12:14:42.230129Z', name: 'judeg b', userType: 'JUDICIAL', type: 'CASE', id: '12345678902' },
+                { added: '2021-10-12T12:14:42.230129Z', name: 'judeg c', userType: 'JUDICIAL', type: 'CASE', id: '12345678903' },
+                { added: '2021-10-12T12:14:42.230129Z', name: 'legal a', userType: 'LEGAL_OPERATIONS', type: 'CASE', id: '12345678904' }
+            ];
+            res.send(workAllocationMockData.getCaseExclusions(mockRoles));
         }
     }
   

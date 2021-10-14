@@ -36,7 +36,10 @@ export class CaseRolesTableComponent {
       caseId: this.caseDetails.case_id,
       assignmentId: caseRole.id,
       caseType: this.caseDetails.case_type.id,
-      jurisdiction: this.caseDetails.case_type.jurisdiction.id
+      jurisdiction: this.caseDetails.case_type.jurisdiction.id,
+      typeOfRole: caseRole.roleName,
+      roleCategory: caseRole.roleCategory,
+      actorId: caseRole.actorId
     };
   }
 }

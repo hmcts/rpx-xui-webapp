@@ -1,12 +1,12 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { CaseResolver } from '@hmcts/ccd-case-ui-toolkit';
 import { CaseRolesResolverService } from '../app/resolvers/case-roles-resolver.service';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
 import { DeleteExclusionComponent, RemoveRoleComponent } from './containers';
 import { AddExclusionHomeComponent } from './containers/add-exclusion';
 import { AllocateRoleHomeComponent } from './containers/allocate-role';
 import { RoleAllocationsResolver } from './resolvers/role-allocations.resolver';
-import { RoleExclusionsResolver } from './resolvers/role-exclusions.resolver';
 
 export const ROUTES: Routes = [
   {
@@ -25,7 +25,6 @@ export const ROUTES: Routes = [
   },
   {
     path: 'delete-exclusion',
-    resolve: { roleExclusions: RoleExclusionsResolver },
     component: DeleteExclusionComponent,
     canActivate: [HealthCheckGuard],
     data: {

@@ -374,15 +374,15 @@ export function constructElasticSearchQuery(caseIds: any[], page: number, size: 
 
   }*/
 
-export function mapCasesFromData(responseData: any[], roleAssignmentList: RoleAssignment[], paginationConfig: any): any {
-  if (!responseData) {
+export function mapCasesFromData(caseDetails: any[], roleAssignmentList: RoleAssignment[], paginationConfig: any): any {
+  if (!caseDetails) {
     return [];
   }
-  responseData = paginationConfig ? paginate(responseData, paginationConfig.page_number, paginationConfig.page_size): responseData;
+  caseDetails = paginationConfig ? paginate(caseDetails, paginationConfig.page_number, paginationConfig.page_size): caseDetails;
   const mergedResponse = [];
-  responseData.forEach(response => {
-    const thisRoleAssignment = roleAssignmentList.find(roleAssignment => roleAssignment.attributes.caseId === response.caseId);
-    const thisResponse = {...thisRoleAssignment, ...response};
+  caseDetails.forEach(caseDetail => {
+    const roleAssignment = roleAssignmentList.find(roleAssignment => roleAssignment.attributes.caseId === caseDetail.caseId);
+    const thisResponse = {...roleAssignment, ...caseDetail};
     // TODO: thisResponse.case_name = thisResponse.hmctsCaseNameInternal (when services have made this available)
     thisResponse.case_name = thisResponse.id;
     thisResponse.case_id = thisResponse.id;
@@ -390,7 +390,7 @@ export function mapCasesFromData(responseData: any[], roleAssignmentList: RoleAs
     thisResponse.location_id = thisResponse.attributes.primaryLocation.id;
     thisResponse.case_category = thisResponse.case_type_id; 
     thisResponse.role = thisResponse.roleName;
-    thisResponse.startDate = thisResponse.startTime;
+    thisResponse.startDate = thisResponse.beginTime;
     thisResponse.endDate = thisResponse.endTime;
     thisResponse.assignee = thisResponse.actorId;
     // unsure whether endDate is conditional
@@ -402,3 +402,13 @@ export function mapCasesFromData(responseData: any[], roleAssignmentList: RoleAs
 export const paginate = (array: any[], pageNumber: number, pageSize: number): any[] => {
   return array.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 };
+
+export interface TaskCaseData {
+
+}
+
+export function mapTaskCaseData(roleAssignment: RoleAssignment, caseDetail: any): TaskCaseData {
+  return {
+    
+  }
+}

@@ -22,7 +22,7 @@ export class RemoveRoleComponent implements OnInit {
   public assignmentId: string;
   public heading = RemoveRoleText.heading;
   public hint = RemoveRoleText.hint;
-  public roleAssignment: CaseRole;
+  public role: CaseRole;
 
   constructor(private readonly route: ActivatedRoute,
               private readonly router: Router,
@@ -33,16 +33,17 @@ export class RemoveRoleComponent implements OnInit {
     const paramMap$ = this.route.queryParamMap;
     paramMap$.pipe(mergeMap(queryMap => {
         return this.getRoleAssignmentFromQuery(queryMap);
-      })).subscribe(roleAssignments => {
-        this.roleAssignment = roleAssignments.find(assignment => assignment.id === this.assignmentId);
-        if (!this.roleAssignment.email && this.roleAssignment.actorId) {
+      })).subscribe((caseRoles: CaseRole[]) => {
+        console.log('caseRoles', caseRoles);
+        this.role = caseRoles.find(role => role.id === this.assignmentId);
+        if (!this.role.email && this.role.actorId) {
           const caseworkers = JSON.parse(this.sessionStorageService.getItem('caseworkers'));
           if (caseworkers) {
-            const caseWorker = (caseworkers as Caseworker[]).find(caseworker => caseworker.idamId === this.roleAssignment.actorId);
-            this.roleAssignment.email = caseWorker.email;
+            const caseWorker = (caseworkers as Caseworker[]).find(caseworker => caseworker.idamId === this.role.actorId);
+            this.role.email = caseWorker.email;
           }
         }
-        this.populateAnswers(this.roleAssignment);
+        this.populateAnswers(this.role);
       });
   }
 

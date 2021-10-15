@@ -10,10 +10,6 @@ import { Actions } from '../../../hearings/models/hearings.enum';
 })
 
 export class CaseHearingsListComponent implements OnInit {
-
-  @Input()
-  public hearingType = '';
-
   @Input()
   public status: string;
 

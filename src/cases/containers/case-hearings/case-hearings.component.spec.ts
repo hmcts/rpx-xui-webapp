@@ -10,7 +10,7 @@ import { State } from 'src/app/store';
 import { CaseHearingsListComponent } from 'src/cases/components';
 import { CaseHearingsListComponentStub } from 'src/cases/components/case-hearings-list/case-hearings-list.component.stub';
 
-fdescribe('CaseHearingsComponent', () => {
+describe('CaseHearingsComponent', () => {
   let component: CaseHearingsComponent;
   let fixture: ComponentFixture<CaseHearingsComponent>;
   let de: DebugElement;

@@ -4,10 +4,10 @@ import { HearingListingStatusEnum } from './hearings.enum';
 export interface CaseHearingModel {
   hearingID: string;
   hearingType: string;
-  hmcStatus: string;
   lastResponseReceivedDateTime: string;
-  responseVersion: string;
+  hmcStatus: string;
   hearingListingStatus: HearingListingStatusEnum;
+  responseVersion: string;
   listAssistCaseStatus: string;
   hearingDaySchedule: HearingDayScheduleModel[];
 }

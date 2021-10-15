@@ -16,6 +16,7 @@ import {
 } from './configuration/references';
 import { applyProxy } from './lib/middleware/proxy';
 import * as searchCases from './searchCases';
+import { handleMyCasesRewriteUrl } from './workAllocation2/index';
 import * as workAllocation2 from './workAllocation2/index';
 
 export const initProxy = (app: Express) => {
@@ -73,7 +74,7 @@ export const initProxy = (app: Express) => {
         onReq: workAllocation2.handleGetMyCasesRequest,
         onRes: workAllocation2.handleGetMyCasesResponse,
         rewrite: true,
-        rewriteUrl: '/searchCases?ctid=Asylum',
+        rewriteUrl: handleMyCasesRewriteUrl,
         source: '/workallocation2/my-cases',
         target: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH),
     });

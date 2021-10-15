@@ -267,116 +267,6 @@ export function constructElasticSearchQuery(caseIds: any[], page: number, size: 
   };
 }
 
-/*    id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb7',
-      actorId: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
-      actorName: 'Jamie Well',
-      startDate: '2021-05-05T16:00:00.000+0000',
-      endDate: '2021-05-06T16:00:00.000+0000',
-      location_name: 'Birmingham',
-      location_id: '231596',
-      jurisdiction: 'Immigration and Asylum',
-      case_id: '1620409659381330',
-      case_category: 'EEA',
-      role: 'Lead Judge',
-      case_name: 'James Parrot',
-      permissions: [Array]
-      
-  {
-    id: 'f3a00ad9-6d4e-4970-a88d-88ec6d46be04',
-    actorIdType: 'IDAM',
-    actorId: '3db21928-cbbc-4364-bd91-137c7031fe17',
-    roleType: 'ORGANISATION',
-    roleName: 'judge',
-    classification: 'PUBLIC',
-    grantType: 'STANDARD',
-    roleCategory: 'JUDICIAL',
-    readOnly: false,
-    created: '2021-09-10T15:45:06.972614Z',
-    attributes: {
-      primaryLocation: '231596',
-      caseId: '1546883526751282',
-      jurisdiction: 'IA',
-      region: 'north-east'
-    },
-    authorisations: [ 'case-allocator-role' ]
-  },
-
-
-    id: 1546883526751282,
-    jurisdiction: 'IA',
-    state: 'appealSubmitted',
-    version: null,
-    case_type_id: 'Asylum',
-    created_date: '2019-01-07T17:52:06.745',
-    last_modified: '2020-07-23T15:16:03.595',
-    last_state_modified_date: null,
-    security_classification: 'PUBLIC',
-    case_data: {
-      appellantHasFixedAddress: 'Yes',
-      legalRepReferenceNumber: '123',
-      legalRepDeclaration: [Array],
-      appealGroundsProtection: [Object],
-      appellantDateOfBirth: '1980-01-01',
-      hasOtherAppeals: 'No',
-      appealGroundsHumanRights: [Object],
-      appellantAddress: [Object],
-      appealType: 'protection',
-      appellantGivenNames: 'Jim',
-      appellantTitle: 'Mr',
-      appellantNationalities: [Array],
-      homeOfficeDecisionDate: '1111-01-01',
-      sendDirectionActionAvailable: 'No',
-      hasNewMatters: 'No',
-      homeOfficeReferenceNumber: 'A123456'
-    },
-    data_classification: {
-      appellantHasFixedAddress: 'PUBLIC',
-      legalRepReferenceNumber: 'PUBLIC',
-      legalRepDeclaration: 'PUBLIC',
-      appealGroundsProtection: [Object],
-      appellantDateOfBirth: 'PUBLIC',
-      hasOtherAppeals: 'PUBLIC',
-      appealGroundsHumanRights: [Object],
-      appellantAddress: [Object],
-      appealType: 'PUBLIC',
-      appellantGivenNames: 'PUBLIC',
-      appellantTitle: 'PUBLIC',
-      appellantNationalities: [Object],
-      homeOfficeDecisionDate: 'PUBLIC',
-      sendDirectionActionAvailable: 'PUBLIC',
-      appellantLastName: 'PUBLIC',
-      hasNewMatters: 'PUBLIC',
-      homeOfficeReferenceNumber: 'PUBLIC'
-    },
-    supplementary_data: null,
-    after_submit_callback_response: null,
-    callback_response_status_code: null,
-    callback_response_status: null,
-    delete_draft_response_status_code: null,
-    delete_draft_response_status: null,
-    security_classifications: {
-      appellantHasFixedAddress: 'PUBLIC',
-      legalRepReferenceNumber: 'PUBLIC',
-      legalRepDeclaration: 'PUBLIC',
-      appealGroundsProtection: [Object],
-      appellantDateOfBirth: 'PUBLIC',
-      hasOtherAppeals: 'PUBLIC',
-      appealGroundsHumanRights: [Object],
-      appellantAddress: [Object],
-      appealType: 'PUBLIC',
-      appellantGivenNames: 'PUBLIC',
-      appellantTitle: 'PUBLIC',
-      appellantNationalities: [Object],
-      homeOfficeDecisionDate: 'PUBLIC',
-      sendDirectionActionAvailable: 'PUBLIC',
-      appellantLastName: 'PUBLIC',
-      hasNewMatters: 'PUBLIC',
-      homeOfficeReferenceNumber: 'PUBLIC'
-    }
-  }
-
-  }*/
-
 export function mapCasesFromData(caseDetails: Case[], roleAssignmentList: RoleAssignment[], paginationConfig: PaginationParameter): any {
   if (!caseDetails) {
     return [];
@@ -391,10 +281,6 @@ export function mapCasesFromData(caseDetails: Case[], roleAssignmentList: RoleAs
   });
   return roleCaseList;
 }
-
-export const paginate = (array: Case[], pageNumber: number, pageSize: number): any[] => {
-  return array.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
-};
 
 export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case): RoleCaseData {
   const roleCaseData: RoleCaseData = {
@@ -411,3 +297,16 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
   }
   return roleCaseData;
 }
+
+export function getCaseTypesFromRoleAssignments(roleAssignments: RoleAssignment[]): string {
+  const caseTypes = roleAssignments
+    .filter((roleAssignment: RoleAssignment) => roleAssignment.attributes.caseType)
+    .map((roleAssignment: RoleAssignment) => roleAssignment.attributes.caseType)
+    .reduce((query: string, caseType: string) => query.includes(caseType) ? query : `${query}${caseType},`);
+  return caseTypes[caseTypes.length - 1] === ',' ? caseTypes.slice(0, caseTypes.length - 1) : caseTypes;
+}
+
+// Note: array type may need to be changed depending on where pagination called
+export const paginate = (array: Case[], pageNumber: number, pageSize: number): any[] => {
+  return array.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+};

@@ -14,7 +14,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I validate case details task tab page is displayed', async function(){
-        expect(await caseDetailsTaskTabPage.container.isPresent()).be.true
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await caseDetailsTaskTabPage.container.isPresent(),'Task details ta page display ').be.true
+
+        });
     }); 
 
     Then('I validate task tab alert container displayed', async function(){

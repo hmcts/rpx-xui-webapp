@@ -1,4 +1,4 @@
-<div class="govuk-tabs__panel" id="event" style="padding:0; border:0; min-height: 300px;">
+<div class="govuk-tabs__panel" id="event" style="min-height: 300px; margin-bottom:5px">
   <br>
   <a href="javascript:void(O)"
      role="button" draggable="false"
@@ -14,18 +14,14 @@
       <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"/>
     </svg>
   </a>
-
-  <exui-case-hearings-list
-    [status]="upcomingStatus"
-    [hearingType]="'Upcoming'"
-    [hearingsList$]="upcomingHearings$"
-    [actions]="upcomingHearingsActions">
-  </exui-case-hearings-list>
-
   <exui-case-hearings-list
     [status]="pastAndCancelledStatus"
-    [hearingType]="'Past and Cancelled'"
     [hearingsList$]="pastAndCancelledHearings$"
     [actions]="pastAndCancelledActions">
+  </exui-case-hearings-list>
+  <exui-case-hearings-list
+    [status]="upcomingStatus"
+    [hearingsList$]="upcomingHearings$"
+    [actions]="upcomingHearingsActions">
   </exui-case-hearings-list>
 </div>

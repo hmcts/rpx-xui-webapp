@@ -1,0 +1,16 @@
+:host ::ng-deep #caseRef, :host ::ng-deep #otherRef {
+  max-width: 23ex;
+}
+
+:host ::ng-deep #fullName, :host ::ng-deep #addressLine1, :host ::ng-deep #email {
+  max-width: 41ex;
+}
+
+:host ::ng-deep #postcode {
+  max-width: 120px;
+}
+
+:host ::ng-deep xuilib-gov-uk-input div.govuk-form-group:first-of-type,
+:host ::ng-deep xuilib-gov-uk-date div.govuk-date-input__item div.govuk-form-group:first-of-type {
+  margin-bottom: 30px;
+}

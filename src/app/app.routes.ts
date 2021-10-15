@@ -131,6 +131,14 @@ export const ROUTES: Routes = [
     }
   },
   {
+    path: 'search',
+    canActivate: [AuthGuard, AcceptTermsGuard],
+    loadChildren: '../search/search.module#SearchModule',
+    data: {
+      title: 'Search cases'
+    }
+  },
+  {
     path: '**',
     redirectTo: '/cases',
     pathMatch: 'full'

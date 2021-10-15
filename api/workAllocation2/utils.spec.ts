@@ -542,13 +542,11 @@ describe('workAllocation.utils', () => {
   describe('mapCasesFromData', () => {
     const paginationConfig = {
       page_number: '1',
-      page_size: '2'
+      page_size: '2',
     };
     const firstCaseData = [
-      {
-
-      }
-    ]
+      {},
+    ];
     it('should return empty list if there is nothing given', () => {
       expect(mapCasesFromData(null, null, null)).to.deep.equal([]);
       expect(mapCasesFromData(null, firstRoleAssignment, null)).to.deep.equal([]);
@@ -556,7 +554,7 @@ describe('workAllocation.utils', () => {
       expect(mapCasesFromData(null, null, paginationConfig)).to.deep.equal([]);
     });
     it('should return correct case data if no role assignment data returned', () => {
-      console.log('details are ', mapCasesFromData(firstCaseData, firstRoleAssignment, null));
+      // console.log('details are ', mapCasesFromData(firstCaseData, firstRoleAssignment, null));
     })
   });
 

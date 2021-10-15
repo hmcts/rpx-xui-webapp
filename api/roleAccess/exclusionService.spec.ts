@@ -7,7 +7,12 @@ import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 
 import { http } from '../lib/http';
-import { confirmUserExclusion, deleteUserExclusion, getExclusionRequestPayload, mapResponseToExclusions } from './exclusionService';
+import { EnhancedRequest } from '../lib/models';
+import {
+  confirmUserExclusion,
+  deleteUserExclusion,
+  getExclusionRequestPayload,
+  mapResponseToExclusions } from './exclusionService';
 
 chai.use(sinonChai);
 describe('exclusions.exclusionService', () => {
@@ -18,8 +23,8 @@ describe('exclusions.exclusionService', () => {
   let next: any;
   const SUCCESS_RESPONSE = { status: {}, data: 'ok' };
   const exampleRoleExclusion = {
-    id: '123',
     added: Date.UTC(2021, 7, 1),
+    id: '123',
     name: 'Judge Birch',
     notes: 'this case been remitted from Upper Tribunal and required different judge',
     type: 'Other',
@@ -27,16 +32,16 @@ describe('exclusions.exclusionService', () => {
   };
   const exampleMultiRoleExclusions = [
     {
-      id: '123',
       added: Date.UTC(2021, 7, 1),
+      id: '123',
       name: 'Judge Birch',
       notes: 'this case been remitted from Upper Tribunal and required different judge',
       type: 'Other',
       userType: 'Judicial',
     },
     {
-      id: '234',
       added: Date.UTC(2021, 7, 10),
+      id: '234',
       name: 'Judge test',
       notes: 'this case been remitted from Upper Tribunal and required different judge',
       type: 'Other',
@@ -73,35 +78,48 @@ describe('exclusions.exclusionService', () => {
     });
 
     it('mapResponseToExclusions with blank array', () => {
-      const result = mapResponseToExclusions([], null);
+      const result = mapResponseToExclusions([], null, null);
       expect(result.length).to.equal(0);
     });
 
     it('mapResponseToExclusions with an array', () => {
       const exclusions = [{
-        id: '123',
-        actorIdType: 'actorIdType',
         actorId: 'actorId',
-        roleType: 'roleType',
-        roleName: 'roleName',
-        classification: 'classification',
-        grantType: 'grantType',
-        roleCategory: 'roleCategory',
-        readOnly: true,
-        created: new Date(2020, 11, 20),
+        actorIdType: 'actorIdType',
         attributes: {
-          primaryLocation: 'loc123',
           caseId: '334455',
+          isCaseAllocator: false,
           jurisdiction: 'jurisdiction',
+          primaryLocation: 'loc123',
           region: 'region1',
-          isCaseAllocator: false
         },
-        authorisations: []
+        authorisations: [],
+        classification: 'classification',
+        created: new Date(2020, 11, 20),
+        grantType: 'grantType',
+        id: '123',
+        name: 'roleName',
+        readOnly: true,
+        roleCategory: 'roleCategory',
+        roleName: 'roleName',
+        roleType: 'roleType',
       }];
-      const result = mapResponseToExclusions(exclusions, null);
+      const req = {
+        session: {
+          caseworkers: [
+            {
+              firstName: 'John',
+              idamId: 'actorId',
+              lastName: 'Priest',
+            },
+          ],
+          roleAssignments: [],
+        },
+      } as unknown as EnhancedRequest;
+      const result = mapResponseToExclusions(exclusions, null, req);
       expect(result.length).to.equal(1);
       expect(result[0].id).to.equal('123');
-      expect(result[0].name).to.equal('roleName');
+      expect(result[0].name).to.equal('John-Priest');
       expect(result[0].added.getFullYear()).to.equal(2020);
       expect(result[0].added.getMonth()).to.equal(11);
       expect(result[0].added.getDate()).to.equal(20);

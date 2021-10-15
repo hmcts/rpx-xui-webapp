@@ -1,14 +1,14 @@
 import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
 import { getConfigValue } from '../configuration';
-import { RoleAssignment } from '../user/interfaces/roleAssignment';
-import { RoleCategory } from './models/allocate-role.enum';
-import { CaseRoleRequestPayload, RoleExclusion } from './models/caseRoleRequestPayload';
 import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
+import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { CaseRole } from '../workAllocation2/interfaces/caseRole';
+import { RoleCategory } from './models/allocate-role.enum';
+import { CaseRoleRequestPayload, RoleExclusion } from './models/caseRoleRequestPayload';
 
 export const release2ContentType =
   'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0';
@@ -50,10 +50,10 @@ export async function deleteUserExclusion(req: EnhancedRequest, res: Response, n
   const fullPath = `${basePath}/am/role-assignments/${req.body.roleExclusion.id}`;
   const headers = setHeaders(req);
   try {
-    const response = await http.delete(fullPath, {headers})
+    const response = await http.delete(fullPath, {headers});
     return res.status(response.status).send(req.body.roleExclusion);
   } catch (error) {
-    next(error)
+    next(error);
   }
 }
 
@@ -65,26 +65,26 @@ export function mapResponseToExclusions(roleAssignments: RoleAssignment[],
   }
   return roleAssignments.map(roleAssignment => ({
     added: roleAssignment.created,
+    email: roleAssignment.actorId ? getEmail(roleAssignment.actorId, req) : null,
     id: roleAssignment.id,
     name: roleAssignment.actorId ? getUserName(roleAssignment.actorId, req) : null,
     type: roleAssignment.roleType,
     userType: roleAssignment.roleCategory,
-    email: roleAssignment.actorId ? getEmail(roleAssignment.actorId, req) : null
   }));
 }
 
 export function getEmail(actorId: string, req: EnhancedRequest): string {
-  if(req.session.caseworkers) {
+  if (req.session.caseworkers) {
     const caseWorker = req.session.caseworkers.find(caseworker => caseworker.idamId === actorId);
-    if(caseWorker) {
+    if (caseWorker) {
       return caseWorker.email;
     }
   }
 }
 export function getUserName(actorId: string, req: EnhancedRequest): string {
-  if(req.session.caseworkers) {
+  if (req.session.caseworkers) {
     const caseWorker = req.session.caseworkers.find(caseworker => caseworker.idamId === actorId);
-    if(caseWorker) {
+    if (caseWorker) {
       return `${caseWorker.firstName}-${caseWorker.lastName}`;
     }
   }
@@ -136,7 +136,11 @@ export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next
   }
 }
 
-export function mapResponseToCaseRoles(roleAssignments: RoleAssignment[], assignmentId: string, req: EnhancedRequest): CaseRole[] {
+export function mapResponseToCaseRoles(
+  roleAssignments: RoleAssignment[],
+  assignmentId: string,
+  req: EnhancedRequest
+): CaseRole[] {
   if (assignmentId) {
     roleAssignments = roleAssignments.filter(roleAssignment => roleAssignment.id === assignmentId);
   }

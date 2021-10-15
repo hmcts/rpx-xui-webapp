@@ -277,7 +277,7 @@ export function constructElasticSearchQuery(caseIds: any[], page: number, size: 
       role: 'Lead Judge',
       case_name: 'James Parrot',
       permissions: [Array]
-      
+
   {
     id: 'f3a00ad9-6d4e-4970-a88d-88ec6d46be04',
     actorIdType: 'IDAM',
@@ -297,7 +297,6 @@ export function constructElasticSearchQuery(caseIds: any[], page: number, size: 
     },
     authorisations: [ 'case-allocator-role' ]
   },
-
 
     id: 1546883526751282,
     jurisdiction: 'IA',
@@ -378,17 +377,17 @@ export function mapCasesFromData(caseDetails: any[], roleAssignmentList: RoleAss
   if (!caseDetails) {
     return [];
   }
-  caseDetails = paginationConfig ? paginate(caseDetails, paginationConfig.page_number, paginationConfig.page_size): caseDetails;
+  caseDetails = paginationConfig ? paginate(caseDetails, paginationConfig.page_number, paginationConfig.page_size) : caseDetails;
   const mergedResponse = [];
   caseDetails.forEach(caseDetail => {
-    const roleAssignment = roleAssignmentList.find(roleAssignment => roleAssignment.attributes.caseId === caseDetail.caseId);
+    const roleAssignment = roleAssignmentList.find(role => role.attributes.caseId === caseDetail.caseId);
     const thisResponse = {...roleAssignment, ...caseDetail};
     // TODO: thisResponse.case_name = thisResponse.hmctsCaseNameInternal (when services have made this available)
     thisResponse.case_name = thisResponse.id;
     thisResponse.case_id = thisResponse.id;
     thisResponse.case_role = thisResponse.roleName;
     thisResponse.location_id = thisResponse.attributes.primaryLocation.id;
-    thisResponse.case_category = thisResponse.case_type_id; 
+    thisResponse.case_category = thisResponse.case_type_id;
     thisResponse.role = thisResponse.roleName;
     thisResponse.startDate = thisResponse.beginTime;
     thisResponse.endDate = thisResponse.endTime;
@@ -409,6 +408,14 @@ export interface TaskCaseData {
 
 export function mapTaskCaseData(roleAssignment: RoleAssignment, caseDetail: any): TaskCaseData {
   return {
-    
-  }
+
+  };
+}
+
+export function getCaseTypesFromRoleAssignments(roleAssignments: RoleAssignment[]): string {
+  const caseTypes = roleAssignments
+    .filter((roleAssignment: RoleAssignment) => roleAssignment.attributes.caseType)
+    .map((roleAssignment: RoleAssignment) => roleAssignment.attributes.caseType)
+    .reduce((query: string, caseType: string) => query.includes(caseType) ? query : `${query}${caseType},`);
+  return caseTypes[caseTypes.length - 1] === ',' ? caseTypes.slice(0, caseTypes.length - 1) : caseTypes;
 }

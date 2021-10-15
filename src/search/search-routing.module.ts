@@ -1,11 +1,21 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { SearchFormComponent } from './containers';
+import { NoResultsComponent } from './containers/no-results/no-results.component';
 
-const routes: Routes = [{
-  path: '',
-  component: SearchFormComponent
-}];
+const routes: Routes = [
+  {
+    path: '',
+    component: SearchFormComponent,
+  },
+  {
+    path: 'noresults',
+    component: NoResultsComponent,
+    data: {
+      title: 'No results'
+    }
+  }
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

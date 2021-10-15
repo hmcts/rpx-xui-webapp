@@ -1,19 +1,19 @@
 export interface RoleCaseData {
-  case_name: string,
-  case_id: string,
-  case_category: string,
-  case_role: string,
-  jurisdiction: string,
-  location_id: string,
-  startDate: Date,
-  endDate: Date,
-  assignee: string,
-  state?: string,
-  version?: string,
-  created_date?: string,
-  last_modified?: string,
-  last_state_modified_date?: string,
-  security_classification?: string,
+  case_name: string;
+  case_id: string;
+  case_category: string;
+  case_role: string;
+  jurisdiction: string;
+  location_id: string;
+  startDate: Date;
+  endDate: Date;
+  assignee: string;
+  state?: string;
+  version?: string;
+  created_date?: string;
+  last_modified?: string;
+  last_state_modified_date?: string;
+  security_classification?: string;
   case_data?: {
     appellantHasFixedAddress?: string,
     legalRepReferenceNumber?: string,
@@ -28,5 +28,5 @@ export interface RoleCaseData {
     sendDirectionActionAvailable?: string,
     hasNewMatters?: string,
     homeOfficeReferenceNumber?: string
-  }
+  };
 }

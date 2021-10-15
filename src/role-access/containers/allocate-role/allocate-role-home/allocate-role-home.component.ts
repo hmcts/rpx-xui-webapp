@@ -147,7 +147,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
 
   private setReallocatedRole(roleId: string): void {
     if (roleId) {
-      const role = DEFINED_ROLES.find(role => role.id === roleId);
+      const role = DEFINED_ROLES.find(r => r.id === roleId);
       this.typeOfRole = role && role.name ? role : {id: roleId, name: convertToName(roleId)};
     }
   }

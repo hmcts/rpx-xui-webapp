@@ -267,15 +267,21 @@ export function constructElasticSearchQuery(caseIds: any[], page: number, size: 
   };
 }
 
-export function mapCasesFromData(caseDetails: Case[], roleAssignmentList: RoleAssignment[], paginationConfig: PaginationParameter): any {
+export function mapCasesFromData(
+  caseDetails: Case[],
+  roleAssignmentList: RoleAssignment[],
+  paginationConfig: PaginationParameter
+): any {
   if (!caseDetails) {
     return [];
   }
   // Note: Might have to change where paginate is called if want role data before separating - line 392
-  caseDetails = paginationConfig ? paginate(caseDetails, paginationConfig.page_number, paginationConfig.page_size): caseDetails;
+  caseDetails = paginationConfig ? paginate(caseDetails, paginationConfig.page_number, paginationConfig.page_size) : caseDetails;
   const roleCaseList = [];
   caseDetails.forEach(caseDetail => {
-    const roleAssignment = roleAssignmentList.find(roleAssignment => roleAssignment.attributes && roleAssignment.attributes.caseId === caseDetail.id.toString());
+    const roleAssignment = roleAssignmentList.find(
+      role => role.attributes && role.attributes.caseId === caseDetail.id.toString()
+    );
     const roleCase = mapRoleCaseData(roleAssignment, caseDetail);
     roleCaseList.push(roleCase);
   });
@@ -284,17 +290,17 @@ export function mapCasesFromData(caseDetails: Case[], roleAssignmentList: RoleAs
 
 export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case): RoleCaseData {
   const roleCaseData: RoleCaseData = {
+    assignee: roleAssignment.actorId,
+    case_category: caseDetail.case_type_id,
+    // TODO: case_name: caseDetail.hmctsCaseNameInternal (when services have made this available)
     case_id: caseDetail.id,
     case_name: caseDetail.id,
-    // TODO: case_name: caseDetail.hmctsCaseNameInternal (when services have made this available)
     case_role: roleAssignment.roleName,
+    endDate: roleAssignment.endTime,
     jurisdiction: caseDetail.jurisdiction,
     location_id: roleAssignment.attributes.primaryLocation,
-    case_category: caseDetail.case_type_id,
     startDate: roleAssignment.beginTime,
-    endDate: roleAssignment.endTime,
-    assignee: roleAssignment.actorId
-  }
+  };
   return roleCaseData;
 }
 

@@ -24,6 +24,6 @@ export interface SearchCaseRequest {
 }
 
 export interface PaginationParameter {
-  page_number: number,
-  page_size: number
+  page_number: number;
+  page_size: number;
 }

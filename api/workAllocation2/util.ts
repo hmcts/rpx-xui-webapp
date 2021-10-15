@@ -7,8 +7,11 @@ import { setHeaders } from '../lib/proxy';
 import { ElasticSearchQuery } from '../searchCases/interfaces/ElasticSearchQuery';
 
 import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX, ViewType } from './constants/actions';
+import { Case } from './interfaces/case';
+import { PaginationParameter } from './interfaces/caseSearchParameter';
 import { Action, Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/common';
 import { Person, PersonRole } from './interfaces/person';
+import { RoleCaseData } from './interfaces/roleCaseData';
 
 export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {
   return `${baseUrl}/task/${taskId}`;
@@ -374,41 +377,37 @@ export function constructElasticSearchQuery(caseIds: any[], page: number, size: 
 
   }*/
 
-export function mapCasesFromData(caseDetails: any[], roleAssignmentList: RoleAssignment[], paginationConfig: any): any {
+export function mapCasesFromData(caseDetails: Case[], roleAssignmentList: RoleAssignment[], paginationConfig: PaginationParameter): any {
   if (!caseDetails) {
     return [];
   }
+  // Note: Might have to change where paginate is called if want role data before separating - line 392
   caseDetails = paginationConfig ? paginate(caseDetails, paginationConfig.page_number, paginationConfig.page_size): caseDetails;
-  const mergedResponse = [];
+  const roleCaseList = [];
   caseDetails.forEach(caseDetail => {
-    const roleAssignment = roleAssignmentList.find(roleAssignment => roleAssignment.attributes.caseId === caseDetail.caseId);
-    const thisResponse = {...roleAssignment, ...caseDetail};
-    // TODO: thisResponse.case_name = thisResponse.hmctsCaseNameInternal (when services have made this available)
-    thisResponse.case_name = thisResponse.id;
-    thisResponse.case_id = thisResponse.id;
-    thisResponse.case_role = thisResponse.roleName;
-    thisResponse.location_id = thisResponse.attributes.primaryLocation.id;
-    thisResponse.case_category = thisResponse.case_type_id; 
-    thisResponse.role = thisResponse.roleName;
-    thisResponse.startDate = thisResponse.beginTime;
-    thisResponse.endDate = thisResponse.endTime;
-    thisResponse.assignee = thisResponse.actorId;
-    // unsure whether endDate is conditional
-    mergedResponse.push(thisResponse);
+    const roleAssignment = roleAssignmentList.find(roleAssignment => roleAssignment.attributes && roleAssignment.attributes.caseId === caseDetail.id.toString());
+    const roleCase = mapRoleCaseData(roleAssignment, caseDetail);
+    roleCaseList.push(roleCase);
   });
-  return mergedResponse;
+  return roleCaseList;
 }
 
-export const paginate = (array: any[], pageNumber: number, pageSize: number): any[] => {
+export const paginate = (array: Case[], pageNumber: number, pageSize: number): any[] => {
   return array.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 };
 
-export interface TaskCaseData {
-
-}
-
-export function mapTaskCaseData(roleAssignment: RoleAssignment, caseDetail: any): TaskCaseData {
-  return {
-    
+export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case): RoleCaseData {
+  const roleCaseData: RoleCaseData = {
+    case_id: caseDetail.id,
+    case_name: caseDetail.id,
+    // TODO: case_name: caseDetail.hmctsCaseNameInternal (when services have made this available)
+    case_role: roleAssignment.roleName,
+    jurisdiction: caseDetail.jurisdiction,
+    location_id: roleAssignment.attributes.primaryLocation,
+    case_category: caseDetail.case_type_id,
+    startDate: roleAssignment.beginTime,
+    endDate: roleAssignment.endTime,
+    assignee: roleAssignment.actorId
   }
+  return roleCaseData;
 }

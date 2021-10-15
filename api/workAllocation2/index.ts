@@ -29,7 +29,7 @@ import * as taskServiceMock from './taskService.mock';
 import {
   assignActionsToTasks,
   constructElasticSearchQuery,
-  getCaseIdListFromRoles,
+  getCaseIdListFromRoles, getCaseTypesFromRoleAssignments,
   mapCasesFromData,
   mapCaseworkerData,
   prepareCaseWorkerForLocation,
@@ -70,6 +70,12 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
   } catch (error) {
     next(error);
   }
+}
+
+export function handleMyCasesRewriteUrl(path: string, req: any): string {
+  const roleAssignments = req.session.roleAssignmentResponse;
+  const caseTypes = getCaseTypesFromRoleAssignments(roleAssignments);
+  return path.replace('/workallocation2/my-cases', `/searchCases?ctid=${caseTypes}`);
 }
 
 export function handleGetMyCasesRequest(proxyReq, req): void {

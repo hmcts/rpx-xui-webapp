@@ -5,7 +5,7 @@ export interface CaseRole {
   name: string;
   roleCategory: RoleCategory;
   roleDefinition?: SpecificRole;
-  roleName?: string
+  roleName?: string;
   location: string;
   start: string;
   end: string;

@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import { mockReq } from 'sinon-express-mock';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { ASSIGN, CLAIM, CLAIM_AND_GO, COMPLETE, GO, REASSIGN, RELEASE, TaskPermission } from './constants/actions';
+import { Case } from './interfaces/case';
 import { Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/common';
 import { PersonRole } from './interfaces/person';
 import {
@@ -544,8 +545,13 @@ describe('workAllocation.utils', () => {
       page_number: 1,
       page_size: 2
     };
-    const firstCaseData = [
-      {},
+    // note not making it a case as would have to fill in multiple unneccessary properties
+    const mockCaseData: any[] = [
+      {
+        id: '123',
+        type: 'example',
+
+      },
     ];
     it('should return empty list if there is nothing given', () => {
       expect(mapCasesFromData(null, null, null)).to.deep.equal([]);
@@ -554,7 +560,7 @@ describe('workAllocation.utils', () => {
       expect(mapCasesFromData(null, null, paginationConfig)).to.deep.equal([]);
     });
     /* it('should return correct case data if no role assignment data returned', () => {
-      console.log('details are ', mapCasesFromData(firstCaseData, firstRoleAssignment, null));
+      console.log('details are ', mapCasesFromData(mockCaseData, firstRoleAssignment, null));
     }) */
   });
 

@@ -11,7 +11,10 @@ import { EnhancedRequest } from '../lib/models';
 import {
   confirmUserExclusion,
   deleteUserExclusion,
+  getEmail,
   getExclusionRequestPayload,
+  getLegalAndJudicialRequestPayload,
+  getUserName,
   mapResponseToExclusions } from './exclusionService';
 
 chai.use(sinonChai);
@@ -165,6 +168,73 @@ describe('exclusions.exclusionService', () => {
 
       // Should have received the HTTP response. The delete simply sends the data
       expect(response.send).to.have.been.calledWith(sinon.match(exampleRoleExclusion));
+    });
+
+  });
+
+  describe('getEmail', () => {
+    const req = {
+      session: {
+        caseworkers: [
+          {
+            firstName: 'John',
+            idamId: 'actorId',
+            lastName: 'Priest',
+            email: 'test@test.com'
+          },
+        ],
+        roleAssignments: [],
+      },
+    } as unknown as EnhancedRequest;
+    it('should get the correct email', async () => {
+      expect(getEmail('actorId', req)).to.equal('test@test.com');
+    });
+    it('should get nothing if data is incorrect', async () => {
+      expect(getEmail('nonActorId', req)).to.equal(undefined);
+      expect(getEmail('actorId', null)).to.equal(undefined);
+    })
+
+  });
+
+  describe('getUserName', () => {
+    const req = {
+      session: {
+        caseworkers: [
+          {
+            firstName: 'John',
+            idamId: 'actorId',
+            lastName: 'Priest',
+            email: 'test@test.com'
+          },
+        ],
+        roleAssignments: [],
+      },
+    } as unknown as EnhancedRequest;
+    it('should get the correct username', async () => {
+      expect(getUserName('actorId', req)).to.equal('John-Priest');
+    });
+    it('should get nothing if data is incorrect', async () => {
+      expect(getUserName('nonActorId', req)).to.equal(undefined);
+      expect(getUserName('actorId', null)).to.equal(undefined);
+    });
+
+  });
+
+  describe('getLegalAndJudicialRequestPayload', () => {
+    const caseRoleRequestPayload = {
+      queryRequests: [
+        {
+            attributes: {
+                caseId: ['123'],
+                caseType: ['Asylum'],
+                jurisdiction: ['IA'],
+              },
+            roleCategory: ['LEGAL_OPERATIONS'],
+        },
+      ],
+    } as unknown as EnhancedRequest;
+    it('should get the correct payload', async () => {
+      expect(getLegalAndJudicialRequestPayload('123', 'IA', 'Asylum')).to.deep.equal(caseRoleRequestPayload);
     });
 
   });

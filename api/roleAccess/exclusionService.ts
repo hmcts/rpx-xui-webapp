@@ -66,7 +66,7 @@ export function mapResponseToExclusions(roleAssignments: RoleAssignment[],
   return roleAssignments.map(roleAssignment => ({
     added: roleAssignment.created,
     id: roleAssignment.id,
-    name: roleAssignment.roleName,
+    name: roleAssignment.actorId ? getUserName(roleAssignment.actorId, req) : null,
     type: roleAssignment.roleType,
     userType: roleAssignment.roleCategory,
     email: roleAssignment.actorId ? getEmail(roleAssignment.actorId, req) : null
@@ -78,6 +78,14 @@ export function getEmail(actorId: string, req: EnhancedRequest): string {
     const caseWorker = req.session.caseworkers.find(caseworker => caseworker.idamId === actorId);
     if(caseWorker) {
       return caseWorker.email;
+    }
+  }
+}
+export function getUserName(actorId: string, req: EnhancedRequest): string {
+  if(req.session.caseworkers) {
+    const caseWorker = req.session.caseworkers.find(caseworker => caseworker.idamId === actorId);
+    if(caseWorker) {
+      return `${caseWorker.firstName}-${caseWorker.lastName}`;
     }
   }
 }
@@ -142,7 +150,7 @@ export function mapResponseToCaseRoles(roleAssignments: RoleAssignment[], assign
     end: roleAssignment.endTime ? roleAssignment.endTime.toString() : null,
     id: roleAssignment.id,
     location: null,
-    name: roleAssignment.roleName,
+    name: roleAssignment.actorId ? getUserName(roleAssignment.actorId, req) : null,
     roleCategory: mapRoleCategory(roleAssignment.roleCategory),
     roleName: roleAssignment.roleName,
     start: roleAssignment.beginTime ? roleAssignment.beginTime.toString() : null,

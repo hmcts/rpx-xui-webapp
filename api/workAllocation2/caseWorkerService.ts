@@ -74,8 +74,7 @@ export async function handlePostJudicialWorkersRefData(path: string, userIds: an
     userIds,
   };
   const headers = setHeaders(req);
-  const response: AxiosResponse = await http.post(path, payload, { headers });
-  return response;
+  return await http.post(path, payload, {headers});
 }
 
 export function getUserIdsFromRoleApiResponse(response: any): string [] {

@@ -25,7 +25,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I enter find person search input {string} in work flow', async function(searchInput){
-        await workFlowPage.findPersonPage.inputSearchTerm(searchInput);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await workFlowPage.findPersonPage.inputSearchTerm(searchInput);
+            const results = await workFlowPage.findPersonPage.getPersonsReturned();
+            expect(results.length > 0, `No find person results returned for input "${searchInput}"`).to.be.true;
+        }); 
     });
 
     Then('I see find person search results in work flow', async function(resulEmails){

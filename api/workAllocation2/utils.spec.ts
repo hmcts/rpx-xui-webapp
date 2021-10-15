@@ -545,10 +545,8 @@ describe('workAllocation.utils', () => {
       page_size: 2
     };
     const firstCaseData = [
-      {
-
-      }
-    ]
+      {},
+    ];
     it('should return empty list if there is nothing given', () => {
       expect(mapCasesFromData(null, null, null)).to.deep.equal([]);
       expect(mapCasesFromData(null, firstRoleAssignment, null)).to.deep.equal([]);

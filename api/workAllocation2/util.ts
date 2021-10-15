@@ -300,7 +300,7 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
 
 export function getCaseTypesFromRoleAssignments(roleAssignments: RoleAssignment[]): string {
   const caseTypes = roleAssignments
-    .filter((roleAssignment: RoleAssignment) => roleAssignment.attributes.caseType)
+    .filter((roleAssignment: RoleAssignment) => roleAssignment.attributes && roleAssignment.attributes.caseType)
     .map((roleAssignment: RoleAssignment) => roleAssignment.attributes.caseType)
     .reduce((query: string, caseType: string) => query.includes(caseType) ? query : `${query}${caseType},`);
   return caseTypes[caseTypes.length - 1] === ',' ? caseTypes.slice(0, caseTypes.length - 1) : caseTypes;

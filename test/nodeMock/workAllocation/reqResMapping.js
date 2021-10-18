@@ -75,7 +75,7 @@ module.exports = {
         }
     },
     post: {
-        '/workallocation2/caseWithPagination/': (req, res) => {
+        '/workallocation2/my-cases/': (req, res) => {
             const pageNum = req.body.searchRequest.pagination_parameters.page_number;
             const pageSize = req.body.searchRequest.pagination_parameters.page_size;
 

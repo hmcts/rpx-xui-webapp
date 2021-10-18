@@ -9,7 +9,7 @@ const routes: Routes = [{
   canActivate: [RoleGuard],
   data: {
     // TODO: Roles will need replacing with actual ones to be granted access, or loaded from configuration
-    needsRole: ['pui-case-manager'],
+    needsRole: ['pui\-case\-manager'],
     roleMatching: RoleMatching.ANY,
     noRoleMatchRedirect: '/'
   }

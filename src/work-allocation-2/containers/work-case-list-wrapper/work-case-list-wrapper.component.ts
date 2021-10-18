@@ -242,9 +242,9 @@ export class WorkCaseListWrapperComponent implements OnInit {
     const thisAction = caseAction.action;
     let actionUrl = '';
     if (thisAction.id === Actions.Reallocate) {
-      actionUrl = `role-access/allocate-role/${thisAction.id}?caseId=${actionedCase.case_id}&roleCategory=${actionedCase.roleCategory}&assignmentId=${actionedCase.id}&userName=${actionedCase.assignee}&typeOfRole=${actionedCase.case_role}`;
+      actionUrl = `role-access/allocate-role/${thisAction.id}?caseId=${actionedCase.case_id}&roleCategory=${actionedCase.case_category}&assignmentId=${actionedCase.id}&userName=${actionedCase.assignee}&typeOfRole=${actionedCase.case_role}`;
     } else if (thisAction.id === Actions.Remove) {
-      actionUrl = `role-access/allocate-role/${thisAction.id}?caseId=${actionedCase.case_id}&assignmentId=${actionedCase.id}`;
+      actionUrl = `role-access/allocate-role/${thisAction.id}?caseId=${actionedCase.case_id}&assignmentId=${actionedCase.id}&roleCategory=${actionedCase.case_category}&jurisdiction=${actionedCase.jurisdiction}`;
     }
     this.router.navigateByUrl(actionUrl);
   }

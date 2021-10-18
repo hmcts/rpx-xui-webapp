@@ -556,6 +556,18 @@ describe('workAllocation.utils', () => {
       startDate: new Date('01-01-2021'),
       endDate: new Date('01-01-2022'),
       assignee: 'person1',
+    },
+    {
+      id: '3',
+      case_id: '456',
+      case_name: '456',
+      case_category: 'Test',
+      case_role: 'example-role-2',
+      jurisdiction: 'IA',
+      location_id: '001',
+      startDate: new Date('01-01-2021'),
+      endDate: new Date('01-01-2022'),
+      assignee: 'person1',
     }]
     it('should return empty list if there is nothing given', () => {
       expect(mapCasesFromData(null, null, null)).to.deep.equal([]);
@@ -564,7 +576,7 @@ describe('workAllocation.utils', () => {
       expect(mapCasesFromData(null, null, paginationConfig)).to.deep.equal([]);
     });
     it('should return correct case data if no role assignment data returned', () => {
-      expect(mapCasesFromData(mockCaseData, firstRoleAssignment, null)).to.deep.equal(expectedRoleCaseData);
+      expect(mapCasesFromData(mockCaseData, mockRoleAssignment, null)).to.deep.equal(expectedRoleCaseData);
     });
   });
 

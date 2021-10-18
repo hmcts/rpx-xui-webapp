@@ -290,7 +290,6 @@ export function mapCasesFromData(
 
 export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case): RoleCaseData {
   const roleCaseData: RoleCaseData = {
-    id: roleAssignment.id,
     assignee: roleAssignment.actorId,
     case_category: caseDetail.case_type_id,
     // TODO: case_name: caseDetail.hmctsCaseNameInternal (when services have made this available)
@@ -298,6 +297,7 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
     case_name: caseDetail.id,
     case_role: roleAssignment.roleName,
     endDate: roleAssignment.endTime,
+    id: roleAssignment.id,
     jurisdiction: caseDetail.jurisdiction,
     location_id: roleAssignment.attributes.primaryLocation,
     startDate: roleAssignment.beginTime,

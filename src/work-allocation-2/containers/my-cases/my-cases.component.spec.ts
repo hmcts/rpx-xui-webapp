@@ -135,7 +135,7 @@ describe('MyCasesComponent', () => {
     // Click on the action link.
     actionLink.dispatchEvent(new Event('click'));
     fixture.detectChanges();
-    // Ensure the correct attempt has been made to navigate.
-    expect(navigateSpy).toHaveBeenCalledWith([`/work/${caseItem.id}/${actionId}/`], jasmine.any(Object));
+    // Ensure the correct attempt has been made to navigate - navigation handled in onActionHandler
+    expect(navigateSpy).toHaveBeenCalledWith([`/`], jasmine.any(Object));
   });
 });

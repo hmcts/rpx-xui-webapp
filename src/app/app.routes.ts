@@ -1,4 +1,5 @@
 import { ExtraOptions, Routes } from '@angular/router';
+import { FeatureToggleGuard } from '@hmcts/rpx-xui-common-lib';
 import {
   AccessibilityComponent,
   CookiePolicyComponent,
@@ -132,10 +133,12 @@ export const ROUTES: Routes = [
   },
   {
     path: 'search',
-    canActivate: [AuthGuard, AcceptTermsGuard],
+    canActivate: [AuthGuard, AcceptTermsGuard, FeatureToggleGuard],
     loadChildren: '../search/search.module#SearchModule',
     data: {
-      title: 'Search cases'
+      title: 'Search cases',
+      needsFeaturesEnabled: ['feature-global-search'],
+      featureDisabledRedirect: '/'
     }
   },
   {

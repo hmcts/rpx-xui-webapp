@@ -20,7 +20,7 @@ import { SearchRoutingModule } from './search-routing.module';
   ],
   declarations: [
     SearchFormComponent,
-		SearchResultsComponent,
+    SearchResultsComponent,
     NoResultsComponent,
   ],
   exports: [

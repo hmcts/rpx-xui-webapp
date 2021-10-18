@@ -7,6 +7,7 @@ import { AnswersComponent } from '../../components/answers/answers.component';
 import { ExclusionNavigationEvent } from '../../models';
 import { AnswerHeaderText, AnswerLabelText, ExclusionMessageText } from '../../models/enums';
 import { RoleExclusionsService } from '../../services';
+import { RoleExclusionsMockService } from '../../services/role-exclusions.mock.service';
 import { DeleteExclusionComponent } from './delete-exclusion.component';
 import { of } from 'rxjs';
 
@@ -24,13 +25,12 @@ describe('DeleteExclusionComponent', () => {
   const routerMock = jasmine.createSpyObj('Router', [
     'navigateByUrl', 'navigate'
   ]);
-  const mockRoleExclusionsService = jasmine.createSpyObj('roleExclusionsService', ['deleteExclusion', 'getCurrentUserRoleExclusions']);
   const exampleCaseId = '1234';
-  const exclusionId = '222';
+  const exclusionId = '2';
   const goToCaseUrl = `cases/case-details/${exampleCaseId}/roles-and-access`;
   const jurisdiction = 'Jurisdiction';
   const caseType = 'caseType';
-  const exclusion = {caseId: exampleCaseId, exclusionId, jurisdiction, caseType };
+  const exclusion = {caseId: exampleCaseId, exclusionId, jurisdiction, caseType, name: 'Sample Name' };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -64,7 +64,7 @@ describe('DeleteExclusionComponent', () => {
         },
         {
           provide: RoleExclusionsService,
-          useValue: mockRoleExclusionsService
+          useClass: RoleExclusionsMockService
         }
       ]
     })
@@ -72,14 +72,6 @@ describe('DeleteExclusionComponent', () => {
   }));
 
   beforeEach(() => {
-    mockRoleExclusionsService.getCurrentUserRoleExclusions.and.returnValue([
-      {
-        added: Date.UTC(2021, 6, 1),
-        id: exclusionId,
-        name: 'Judge Rinder',
-        notes: 'Test exclusion'
-      }
-    ]);
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
@@ -96,14 +88,9 @@ describe('DeleteExclusionComponent', () => {
     expect(hintElement.textContent).toContain(AnswerHeaderText.CheckInformation);
   });
 
-  it('should display the exclusion details', () => {
-    expect(mockRoleExclusionsService.getCurrentUserRoleExclusions).toHaveBeenCalledWith('1234', 'caseType', 'Jurisdiction', '222');
-  });
-
   it('should navigate correctly on click', () => {
     component.onNavEvent(ExclusionNavigationEvent.CANCEL);
     expect(routerMock.navigateByUrl).toHaveBeenCalledWith(goToCaseUrl);
-    mockRoleExclusionsService.deleteExclusion.and.returnValue(of({}));
     component.onNavEvent(ExclusionNavigationEvent.DELETE_EXCLUSION);
     const additionalState = {state: {showMessage: true, messageText: ExclusionMessageText.Delete}};
     expect(routerMock.navigate).toHaveBeenCalledWith([goToCaseUrl], additionalState);

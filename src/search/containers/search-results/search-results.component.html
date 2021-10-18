@@ -1,6 +1,11 @@
 <exui-app-header></exui-app-header>
 <div class="govuk-width-container">
   <exui-page-wrapper [title]="'Search results'">
+		<p>
+			<a class="govuk-link" href="" [routerLink]="['/search']">
+				Change search
+			</a>
+		</p>
     <table class="govuk-table">
       <thead class="govuk-table__head">
         <tr class="govuk-table__row">
@@ -15,7 +20,7 @@
         <tr class="govuk-table__row">
           <td class="govuk-table__cell">
 						<div>Loan Bourland</div>
-						<div>0598-5385-1020-1905</div>
+						<div class="case-reference">0598-5385-1020-1905</div>
 					</td>
           <td class="govuk-table__cell">
 						Immigration and Asylum
@@ -26,9 +31,29 @@
 			    <td class="govuk-table__cell">
 						Manchester Tribunal Hearing Centre
 					</td>
-			    <td class="govuk-table__cell">
+			    <td class="govuk-table__cell action-cell">
 						<a class="govuk-link" href="" [routerLink]="['/cases/case-details/1567097366157542']">
 							View
+						</a>
+					</td>
+        </tr>
+				<tr class="govuk-table__row">
+          <td class="govuk-table__cell">
+						<div>Basilia Bourdeau</div>
+						<div class="case-reference">4520-3340-3600-1211	</div>
+					</td>
+          <td class="govuk-table__cell">
+						Immigration and Asylum
+					</td>
+          <td class="govuk-table__cell">
+						Case under review
+					</td>
+			    <td class="govuk-table__cell">
+						Yarl's Wood Immigration and Asylum Hearing Centre
+					</td>
+			    <td class="govuk-table__cell action-cell">
+						<a class="govuk-link" href="" [routerLink]="['/cases/case-details/1567097366157542']">
+							Specific access
 						</a>
 					</td>
         </tr>

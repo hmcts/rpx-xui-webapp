@@ -34,7 +34,6 @@ export class RemoveRoleComponent implements OnInit {
     paramMap$.pipe(mergeMap(queryMap => {
         return this.getRoleAssignmentFromQuery(queryMap);
       })).subscribe((caseRoles: CaseRole[]) => {
-        console.log('caseRoles', caseRoles);
         this.role = caseRoles.find(role => role.id === this.assignmentId);
         if (!this.role.email && this.role.actorId) {
           const caseworkers = JSON.parse(this.sessionStorageService.getItem('caseworkers'));

@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -27,6 +28,47 @@ describe('HmctsGlobalHeaderComponent', () => {
     enabledFlag: true,
     disabledFlag: false
   };
+  const navItemsWithFindCaseRightAligned = [
+    {
+      align: 'right',
+      text: 'Find case',
+      href: '/cases/case-search',
+      active: false,
+      ngClass: 'hmcts-search-toggle__button'
+    },
+    {
+      align: null,
+      text: '2',
+      href: '',
+      active: false
+    },
+    {
+      align: 'null',
+      text: '3',
+      href: '',
+      active: false
+    }
+  ];
+  const navItemsWithSearchBox = [
+    {
+      align: 'right',
+      text: 'Find',
+      href: '',
+      active: false
+    },
+    {
+      align: null,
+      text: '2',
+      href: '',
+      active: false
+    },
+    {
+      align: 'null',
+      text: '3',
+      href: '',
+      active: false
+    }
+  ];
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -91,6 +133,46 @@ describe('HmctsGlobalHeaderComponent', () => {
     spyOn(component.navigate, 'emit');
     component.onEmitEvent(1);
     expect(component.navigate.emit).toHaveBeenCalled();
+  });
+
+  it('should display 16 digit case reference search box', async () => {
+    component.showItems = true;
+    component.showCaseReferenceSearchBox = true;
+    component.items = navItemsWithSearchBox;
+    await component.ngOnChanges(changesMock);
+    fixture.detectChanges();
+    const caseReferenceSearchBox = fixture.debugElement.query(By.css('#case-reference-search-box'));
+    expect(caseReferenceSearchBox).toBeTruthy();
+  });
+
+  it('should not display 16 digit case reference search box', async () => {
+    component.showItems = true;
+    component.showCaseReferenceSearchBox = false;
+    component.items = navItemsWithSearchBox;
+    await component.ngOnChanges(changesMock);
+    fixture.detectChanges();
+    const caseReferenceSearchBox = fixture.debugElement.query(By.css('#case-reference-search-box'));
+    expect(caseReferenceSearchBox).toBeFalsy();
+  });
+
+  it('should display find case right aligned', async () => {
+    component.showItems = true;
+    component.showFindCase = true;
+    component.items = navItemsWithFindCaseRightAligned;
+    await component.ngOnChanges(changesMock);
+    fixture.detectChanges();
+    const findCase = fixture.debugElement.query(By.css('#find-case-link'));
+    expect(findCase).toBeTruthy();
+  });
+
+  it('should not display find case right aligned', async () => {
+    component.showItems = true;
+    component.showFindCase = false;
+    component.items = navItemsWithFindCaseRightAligned;
+    await component.ngOnChanges(changesMock);
+    fixture.detectChanges();
+    const findCase = fixture.debugElement.query(By.css('#find-case-link'));
+    expect(findCase).toBeFalsy();
   });
 
   it('splitNavItems', async () => {

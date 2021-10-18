@@ -12,7 +12,7 @@ const routes: Routes = [
     path: 'noresults',
     component: NoResultsComponent,
     data: {
-      title: 'No results'
+      title: 'Search cases | No results'
     }
   }
 ];

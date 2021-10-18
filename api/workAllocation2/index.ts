@@ -28,6 +28,7 @@ import * as roleServiceMock from './roleService.mock';
 import { handleGetTasksByCaseId } from './taskService';
 import * as taskServiceMock from './taskService.mock';
 import {
+  assignActionsToCases,
   assignActionsToTasks,
   constructElasticSearchQuery,
   getCaseIdListFromRoles, getCaseTypesFromRoleAssignments,
@@ -97,10 +98,14 @@ export function handleGetMyCasesRequest(proxyReq, req): void {
 }
 
 export function handleGetMyCasesResponse(proxyRes, req, res, json): any {
+  // note: body not currently being passed in as function only used for my cases
   const caseData = json.cases;
   const totalRecords = json.cases.length;
   json.total_records = totalRecords;
-  json.cases = mapCasesFromData(caseData, req.session.roleAssignmentResponse, null);
+  // search parameters passed in as null as there are no parameters for my cases
+  const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
+  const mappedCases =  req && req.session && req.session.roleAssignmentResponse ? mapCasesFromData(caseData, req.session.roleAssignmentResponse, null) : [];
+  json.cases = assignActionsToCases(mappedCases, userIsCaseAllocator, true);
   return json;
 }
 

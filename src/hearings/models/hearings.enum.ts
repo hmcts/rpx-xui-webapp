@@ -1,7 +1,8 @@
 export enum Actions {
-  View,
-  Change,
-  Cancel
+  Create,
+  Read,
+  Update,
+  Delete
 }
 
 export enum HearingsSectionStatusEnum {

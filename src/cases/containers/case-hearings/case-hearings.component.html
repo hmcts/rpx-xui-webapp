@@ -1,6 +1,7 @@
 <div class="govuk-tabs__panel" id="event" style="padding:0; border:0; min-height: 300px;">
   <br>
-  <a href="javascript:void(O)"
+  <a *ngIf="hasRequestAction"
+     href="javascript:void(O)"
      role="button" draggable="false"
      class="govuk-button
      govuk-button--start"
@@ -18,13 +19,13 @@
   <exui-case-hearings-list
     [status]="upcomingStatus"
     [hearingsList$]="upcomingHearings$"
-    [actions]="upcomingHearingsActions">
+    [actions]="hearingsActions">
   </exui-case-hearings-list>
 
   <exui-case-hearings-list
     [status]="pastAndCancelledStatus"
     [hearingsList$]="pastAndCancelledHearings$"
-    [actions]="pastAndCancelledActions">
+    [actions]="hearingsActions">
   </exui-case-hearings-list>
 
 </div>

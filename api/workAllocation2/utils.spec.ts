@@ -6,6 +6,7 @@ import { ASSIGN, CLAIM, CLAIM_AND_GO, COMPLETE, GO, REASSIGN, RELEASE, TaskPermi
 import { Case } from './interfaces/case';
 import { Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/common';
 import { PersonRole } from './interfaces/person';
+import { RoleCaseData } from './interfaces/roleCaseData';
 import {
   applySearchFilter,
   assignActionsToTasks,
@@ -465,54 +466,6 @@ describe('workAllocation.utils', () => {
   });
 
   describe('getCaseIdListFromRoles', () => {
-    const firstRoleAssignment: RoleAssignment[] = [{
-      id: '1',
-      attributes: {
-        caseId: '4',
-      },
-    },
-      {
-        id: '2',
-        attributes: {
-          region: 'Birm',
-        },
-      },
-      {
-        id: '3',
-        attributes: {
-          caseId: '2',
-        },
-      },
-      {
-        id: '4',
-        attributes: {
-          caseId: '5',
-        },
-      }];
-    const secondRoleAssignment: RoleAssignment[] = [{
-      id: '1',
-      attributes: {
-        caseId: '4',
-      },
-    },
-      {
-        id: '2',
-        attributes: {
-          region: '2',
-        },
-      },
-      {
-        id: '3',
-        attributes: {
-          caseId: '2',
-        },
-      },
-      {
-        id: '4',
-        attributes: {
-          caseId: '5',
-        },
-      }];
     const expectedCaseList = ['4', '2', '5'];
     it('should return empty list if there is nothing given', () => {
       expect(getCaseIdListFromRoles(null)).to.deep.equal([]);
@@ -521,7 +474,7 @@ describe('workAllocation.utils', () => {
       expect(getCaseIdListFromRoles(firstRoleAssignment)).to.deep.equal(expectedCaseList);
     });
     it('should avoid duplicating case ids', () => {
-      expect(getCaseIdListFromRoles(firstRoleAssignment)).to.deep.equal(expectedCaseList);
+      expect(getCaseIdListFromRoles(secondRoleAssignment)).to.deep.equal(expectedCaseList);
     });
   });
 
@@ -550,18 +503,69 @@ describe('workAllocation.utils', () => {
       {
         id: '123',
         type: 'example',
-
+        case_type_id: 'Asylum',
+        jurisdiction: 'IA',
+      },
+      {
+        id: '456',
+        type: 'example2',
+        case_type_id: 'Test',
+        jurisdiction: 'IA',
       },
     ];
+    const mockRoleAssignment: RoleAssignment[] = [{
+      id: '1',
+      actorId: 'person1',
+      roleName: 'example-role',
+      endTime: new Date('01-01-2022'),
+      beginTime: new Date('01-01-2021'),
+      attributes: {
+        caseId: '123',
+        primaryLocation: '001'
+      }
+    },
+    {
+      id: '2',
+      actorId: 'person1',
+      roleName: 'example-role',
+      endTime: new Date('01-01-2022'),
+      beginTime: new Date('01-01-2021'),
+      attributes: {
+        primaryLocation: '001'
+      }
+    },
+    {
+      id: '3',
+      actorId: 'person1',
+      roleName: 'example-role-2',
+      endTime: new Date('01-01-2022'),
+      beginTime: new Date('01-01-2021'),
+      attributes: {
+        caseId: '456',
+        primaryLocation: '001'
+      }
+    },];
+    const expectedRoleCaseData: RoleCaseData[] = [{
+      id: '1',
+      case_id: '123',
+      case_name: '123',
+      case_category: 'Asylum',
+      case_role: 'example-role',
+      jurisdiction: 'IA',
+      location_id: '001',
+      startDate: new Date('01-01-2021'),
+      endDate: new Date('01-01-2022'),
+      assignee: 'person1',
+    }]
     it('should return empty list if there is nothing given', () => {
       expect(mapCasesFromData(null, null, null)).to.deep.equal([]);
       expect(mapCasesFromData(null, firstRoleAssignment, null)).to.deep.equal([]);
       expect(mapCasesFromData(null, firstRoleAssignment, paginationConfig)).to.deep.equal([]);
       expect(mapCasesFromData(null, null, paginationConfig)).to.deep.equal([]);
     });
-    /* it('should return correct case data if no role assignment data returned', () => {
-      console.log('details are ', mapCasesFromData(mockCaseData, firstRoleAssignment, null));
-    }) */
+    it('should return correct case data if no role assignment data returned', () => {
+      expect(mapCasesFromData(mockCaseData, firstRoleAssignment, null)).to.deep.equal(expectedRoleCaseData);
+    });
   });
 
 });

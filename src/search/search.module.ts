@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CaseUIToolkitModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { SharedModule } from '../app/shared/shared.module';
+import { NoResultsComponent } from './containers/no-results/no-results.component';
 import { SearchFormComponent } from './containers/search-form/search-form.component';
 import { SearchRoutingModule } from './search-routing.module';
 
@@ -17,10 +18,12 @@ import { SearchRoutingModule } from './search-routing.module';
     ReactiveFormsModule
   ],
   declarations: [
-    SearchFormComponent
+    SearchFormComponent,
+    NoResultsComponent,
   ],
   exports: [
-    SearchFormComponent
+    SearchFormComponent,
+    NoResultsComponent
   ],
   providers: [
 

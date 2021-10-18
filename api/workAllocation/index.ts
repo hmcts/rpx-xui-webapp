@@ -86,6 +86,8 @@ export async function searchTaskWithPagination(req: EnhancedRequest, res: Respon
     const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
     const postTaskPath = preparePaginationUrl(req, basePath);
     const searchRequest = req.body.searchRequest;
+    // EUI-4285 - Remove pagination parameters from request
+    delete searchRequest.pagination_parameters;
     const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
     res.status(status);
     // Assign actions to the tasks on the data from the API.

@@ -6,6 +6,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { SharedModule } from '../app/shared/shared.module';
 import { NoResultsComponent } from './containers/no-results/no-results.component';
 import { SearchFormComponent } from './containers/search-form/search-form.component';
+import { SearchResultsComponent } from './containers/search-results/search-results.component';
 import { SearchRoutingModule } from './search-routing.module';
 
 @NgModule({
@@ -19,10 +20,12 @@ import { SearchRoutingModule } from './search-routing.module';
   ],
   declarations: [
     SearchFormComponent,
+		SearchResultsComponent,
     NoResultsComponent,
   ],
   exports: [
     SearchFormComponent,
+		SearchResultsComponent,
     NoResultsComponent
   ],
   providers: [

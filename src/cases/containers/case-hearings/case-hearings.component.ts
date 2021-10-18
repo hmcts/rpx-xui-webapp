@@ -20,7 +20,8 @@ export class CaseHearingsComponent implements OnInit {
   public pastAndCancelledStatus: HearingsSectionStatusEnum = HearingsSectionStatusEnum.PAST_AND_CANCELLED;
 
   constructor(private readonly store: Store<fromFeature.State>,
-              private readonly activatedRoute: ActivatedRoute) {
+              private readonly activatedRoute: ActivatedRoute
+              ) {
     const caseID = this.activatedRoute.snapshot.params.cid;
     this.store.dispatch(new fromFeature.LoadAllHearings(caseID));
   }

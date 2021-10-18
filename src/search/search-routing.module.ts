@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { RoleGuard, RoleMatching } from '@hmcts/rpx-xui-common-lib';
 import { SearchFormComponent } from './containers';
 import { NoResultsComponent } from './containers/no-results/no-results.component';
+import { SearchResultsComponent } from './containers/search-results/search-results.component';
 
 const routes: Routes = [
   {
@@ -21,6 +22,13 @@ const routes: Routes = [
     component: NoResultsComponent,
     data: {
       title: 'No results'
+    }
+  },
+  {
+    path: 'results',
+    component: SearchResultsComponent,
+    data: {
+      title: 'Search Results'
     }
   }
 ];

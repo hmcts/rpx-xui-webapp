@@ -56,9 +56,8 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
   }
 
   private async splitAndFilterNavItems() {
+    this.items = await this.filterNavItems(this.items);
     this.splitNavItems();
-    this.rightItems = await this.filterNavItems(this.rightItems);
-    this.leftItems = await this.filterNavItems(this.leftItems);
   }
 
   private splitNavItems() {

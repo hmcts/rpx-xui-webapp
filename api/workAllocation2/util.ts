@@ -271,7 +271,7 @@ export function mapCasesFromData(
   caseDetails: Case[],
   roleAssignmentList: RoleAssignment[],
   paginationConfig: PaginationParameter
-): any {
+): RoleCaseData[] {
   if (!caseDetails) {
     return [];
   }
@@ -290,6 +290,7 @@ export function mapCasesFromData(
 
 export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case): RoleCaseData {
   const roleCaseData: RoleCaseData = {
+    id: roleAssignment.id,
     assignee: roleAssignment.actorId,
     case_category: caseDetail.case_type_id,
     // TODO: case_name: caseDetail.hmctsCaseNameInternal (when services have made this available)

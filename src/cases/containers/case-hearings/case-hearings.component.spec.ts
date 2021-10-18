@@ -1,16 +1,20 @@
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { provideMockStore } from '@ngrx/store/testing';
-import { State } from 'src/app/store';
-import { CaseHearingsComponent } from './case-hearings.component';
 import { RouterTestingModule } from '@angular/router/testing';
+import { provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs';
+import { State } from 'src/app/store';
+import { UserRole } from '../../../app/models/user-details.model';
+import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
+import { CaseHearingsComponent } from './case-hearings.component';
 
 describe('CaseHearingsComponent', () => {
   let component: CaseHearingsComponent;
   let fixture: ComponentFixture<CaseHearingsComponent>;
   let de: DebugElement;
+  let mockRoleCategoryMappingService: RoleCategoryMappingService;
 
   const initialState: State = {
     routerReducer: null,
@@ -55,7 +59,8 @@ describe('CaseHearingsComponent', () => {
     }
   };
 
-  beforeEach(async(() => {
+  beforeEach(() => {
+    mockRoleCategoryMappingService = jasmine.createSpyObj('RoleCategoryMappingService', ['isJudicialOrLegalOpsCategory']);
     TestBed.configureTestingModule({
       declarations: [CaseHearingsComponent],
       imports: [RouterTestingModule],
@@ -72,15 +77,17 @@ describe('CaseHearingsComponent', () => {
             }
           }
         },
+        {
+          provide: RoleCategoryMappingService,
+          useValue: mockRoleCategoryMappingService,
+        }
       ]
-    })
-      .compileComponents();
-  }));
-
-  beforeEach(() => {
+    }).compileComponents();
     fixture = TestBed.createComponent(CaseHearingsComponent);
     component = fixture.componentInstance;
     de = fixture.debugElement;
+    // @ts-ignore
+    mockRoleCategoryMappingService.isJudicialOrLegalOpsCategory.and.returnValue(of(UserRole.Judicial));
     fixture.detectChanges();
     fixture.debugElement.queryAll(By.css('.govuk-table__cell'))[1];
   });

@@ -37,7 +37,7 @@ Feature: WA Release 2: All work - filters
             | 08a3d216-c6ab-4e92-a7e3-ca3661e6be82 | caseworker8 | cw | caseworker_user8@gov.uk |
 
         Given I set MOCK request "/workallocation2/taskWithPagination/" intercept with reference "taskSearchRequest"
-        Given I set MOCK request "/workallocation2/caseWithPagination/" intercept with reference "caseSearchRequest"
+        Given I set MOCK request "/workallocation2/my-cases/" intercept with reference "caseSearchRequest"
 
 
     Scenario Outline: Tasks filter selection, with user role "<UserType>"

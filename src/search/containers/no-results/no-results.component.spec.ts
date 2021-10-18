@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NoResultsComponent } from './no-results.component';
 
-describe('SearchFormComponent', () => {
+describe('NoResultsComponent', () => {
   let component: NoResultsComponent;
   let fixture: ComponentFixture<NoResultsComponent>;
 

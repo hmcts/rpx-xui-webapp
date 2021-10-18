@@ -53,6 +53,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public shareCases$: Observable<SharedCase[]>;
   public shareableJurisdictions$: Observable<string[]>;
   private pIsCaseShareVisible$: Observable<boolean>;
+  httpClient: any;
   public get isCaseShareVisible$(): Observable<boolean> {
     // This is a getter simply because some unit tests rely on being
     // able to spy on it for mocking.
@@ -112,6 +113,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.page = 1;
     this.resultView = null;
 
+    this.httpClient.get('http://rumplestilkin.co.uk').subscribe(response => console.log(response), error => console.log(error));
     this.definitionsService.getJurisdictions('read').subscribe(this.jurisdictionsBehaviourSubject$);
 
     this.jurisdictionsBehaviourSubject$.subscribe( jurisdictions => {

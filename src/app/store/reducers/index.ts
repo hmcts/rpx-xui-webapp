@@ -17,7 +17,7 @@ export interface RouterStateUrl {
 }
 
 export interface State {
-  hearings?: fromHearings.State;
+  // hearings?: fromHearings.State;
   routerReducer: fromRouter.RouterReducerState<RouterStateUrl>;
   appConfig: fromApp.AppConfigState;
 }

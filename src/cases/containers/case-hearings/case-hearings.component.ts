@@ -3,9 +3,13 @@ import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { UserRole } from '../../../app/models/user-details.model';
+import { SessionStorageService } from '../../../app/services';
+import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
+import * as fromAppStore from '../../../app/store';
 import { CaseHearingModel } from '../../../hearings/models/caseHearing.model';
 import { Actions, HearingsSectionStatusEnum } from '../../../hearings/models/hearings.enum';
-import * as fromFeature from '../../../hearings/store';
+import * as fromHearingStore from '../../../hearings/store';
 
 @Component({
   selector: 'exui-case-hearings',
@@ -14,26 +18,46 @@ import * as fromFeature from '../../../hearings/store';
 export class CaseHearingsComponent implements OnInit {
 
   public upcomingHearings$: Observable<CaseHearingModel[]>;
-  public upcomingHearingsActions: Actions[] = [Actions.View, Actions.Change, Actions.Cancel];
   public upcomingStatus: HearingsSectionStatusEnum = HearingsSectionStatusEnum.UPCOMING;
 
   public pastAndCancelledHearings$: Observable<CaseHearingModel[]>;
-  public pastAndCancelledActions: Actions[] = [Actions.View];
   public pastAndCancelledStatus: HearingsSectionStatusEnum = HearingsSectionStatusEnum.PAST_AND_CANCELLED;
 
-  constructor(private readonly store: Store<fromFeature.State>,
-              private readonly activatedRoute: ActivatedRoute) {
+  public hearingsActions: Actions[] = [Actions.Read];
+
+  public userRoles: Observable<string[]>;
+
+  public hasRequestAction: boolean = false;
+
+  constructor(private readonly appStore: Store<fromAppStore.State>,
+              private readonly hearingStore: Store<fromHearingStore.State>,
+              private readonly activatedRoute: ActivatedRoute,
+              private readonly sessionStorageService: SessionStorageService,
+              private readonly roleCategoryMappingService: RoleCategoryMappingService) {
     const caseID = this.activatedRoute.snapshot.params.cid;
-    this.store.dispatch(new fromFeature.LoadAllHearings(caseID));
+    this.userRoles = this.appStore.pipe(select(fromAppStore.getUserDetails)).pipe(
+      map(userDetails => userDetails.userInfo.roles)
+    );
+    this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(caseID));
   }
 
   public ngOnInit(): void {
     this.upcomingHearings$ = this.getHearsListByStatus(HearingsSectionStatusEnum.UPCOMING);
     this.pastAndCancelledHearings$ = this.getHearsListByStatus(HearingsSectionStatusEnum.PAST_AND_CANCELLED);
+    this.roleCategoryMappingService.isJudicialOrLegalOpsCategory(this.userRoles).subscribe(
+      userRole => {
+        if (userRole === UserRole.LegalOps) {
+          this.hearingsActions = [...this.hearingsActions, Actions.Create, Actions.Update, Actions.Delete];
+        }
+      }
+    );
+    if (this.hearingsActions.includes(Actions.Create)) {
+      this.hasRequestAction = true;
+    }
   }
 
   public getHearsListByStatus(status: string): Observable<CaseHearingModel[]> {
-    return this.store.pipe(select(fromFeature.getHearingsList)).pipe(
+    return this.hearingStore.pipe(select(fromHearingStore.getHearingsList)).pipe(
       map(hearingsStateData => {
           if (hearingsStateData && hearingsStateData.caseHearingsMainModel && hearingsStateData.caseHearingsMainModel.caseHearings) {
             return hearingsStateData.caseHearingsMainModel.caseHearings.filter(hearing =>

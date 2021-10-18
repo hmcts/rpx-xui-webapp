@@ -68,6 +68,7 @@ export class CaseViewerContainerComponent implements OnInit {
       this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.currentWAFeature, CaseViewerContainerComponent.FEATURE_WORK_ALLOCATION_RELEASE_1),
       this.store.pipe(select(fromRoot.getUserDetails))
     ]).pipe(
+      // @ts-ignore
       map(([feature, userDetails]: [string, UserDetails]) =>
         CaseViewerContainerComponent.enablePrependedTabs(feature, userDetails) ? this.prependedTabs : [])
     );
@@ -78,6 +79,7 @@ export class CaseViewerContainerComponent implements OnInit {
       this.featureToggleService.getValueOnce<FeatureVariation[]>(AppConstants.FEATURE_NAMES.mcHearingsFeature, []),
       this.store.pipe(select(fromRoot.getUserDetails))
     ]).pipe(
+      // @ts-ignore
       map(([featureVariations, userDetails]: [FeatureVariation[], UserDetails]) => {
         const jurisdictionID = this.caseDetails.case_type.jurisdiction.id;
         const hasMatchedJurisdictionAndRole = featureVariations.some(featureVariation =>

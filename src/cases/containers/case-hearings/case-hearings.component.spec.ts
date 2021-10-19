@@ -69,7 +69,6 @@ describe('CaseHearingsComponent', () => {
     // @ts-ignore
     mockRoleCategoryMappingService.isJudicialOrLegalOpsCategory.and.returnValue(of(UserRole.Judicial));
     fixture.detectChanges();
-    // fixture.debugElement.queryAll(By.css('.govuk-table__cell'))[1];
   });
 
   it('should create hearing component', () => {

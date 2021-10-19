@@ -1,10 +1,10 @@
 
 import { ActivatedRoute, ActivatedRouteSnapshot, convertToParamMap, Params } from '@angular/router';
 import { CaseHearingsComponent } from './case-hearings.component';
-import { RoleCategoryMappingServiceStub } from 'src/app/services/role-category-mapping/role-category-mapping.service.stub';
-import { HearingListingStatusEnum, HearingsSectionStatusEnum, HMCStatus } from 'src/hearings/models/hearings.enum';
+import { HearingListingStatusEnum, HearingsSectionStatusEnum } from 'src/hearings/models/hearings.enum';
 import { Observable, of } from 'rxjs';
 import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
+import { RoleCategoryMappingServiceStub } from 'src/app/services/role-category-mapping/role-category-mapping.service.stub';
 
 export class ActivatedRouteMock {
   public paramMap = Observable.of(convertToParamMap({
@@ -12,33 +12,33 @@ export class ActivatedRouteMock {
   }));
 }
 
-describe('CaseHearingsComponent', () => {
+fdescribe('CaseHearingsComponent', () => {
   let component: CaseHearingsComponent;
   let mockStore: any;
   let hearingStore: any;
   
   const initialState = {
     caseHearingsMainModel: {
-      hmctsServiceID: undefined,
-      caseRef: undefined,
-      caseHearings: [{
-      hearingID: 'h555555',
-      hearingType: 'Directions hearing',
-      hmcStatus: HMCStatus.awaitingActuals,
-      lastResponseReceivedDateTime: '2021-08-05T16:00:00.000+0000',
-      responseVersion: 'rv5',
-      hearingListingStatus: HearingListingStatusEnum.CANCELLED,
-      listAssistCaseStatus: HearingsSectionStatusEnum.UPCOMING,
-      hearingDaySchedule: [],
+        hmctsServiceID: undefined,
+        caseRef: undefined,
+        caseHearings: [{
+        hearingID: 'h555555',
+        hearingType: 'Directions hearing',
+        hmcStatus: HearingsSectionStatusEnum.PAST_AND_CANCELLED,
+        lastResponseReceivedDateTime: '2021-08-05T16:00:00.000+0000',
+        responseVersion: 'rv5',
+        hearingListingStatus: HearingListingStatusEnum.CANCELLED,
+        listAssistCaseStatus: '',
+        hearingDaySchedule: [],
       }, {
-      hearingID: 'h555555',
-      hearingType: 'Directions hearing',
-      hmcStatus: HMCStatus.awaitingActuals,
-      lastResponseReceivedDateTime: '2021-08-05T16:00:00.000+0000',
-      responseVersion: 'rv5',
-      hearingListingStatus: HearingListingStatusEnum.CANCELLED,
-      listAssistCaseStatus: HearingsSectionStatusEnum.PAST_AND_CANCELLED,
-      hearingDaySchedule: [],
+        hearingID: 'h555555',
+        hearingType: 'Directions hearing',
+        hmcStatus: HearingsSectionStatusEnum.UPCOMING,
+        lastResponseReceivedDateTime: '2021-08-05T16:00:00.000+0000',
+        responseVersion: 'rv5',
+        hearingListingStatus: HearingListingStatusEnum.CANCELLED,
+        listAssistCaseStatus: '',
+        hearingDaySchedule: [],
       }]
     },
     appConfig: {
@@ -98,6 +98,7 @@ describe('CaseHearingsComponent', () => {
       const mockRoleCategoryMappingService = new RoleCategoryMappingServiceStub();
       component = new CaseHearingsComponent(mockStore, hearingStore, activate, mockRoleCategoryMappingService as RoleCategoryMappingService);
       component.ngOnInit();
+
   });
 
   it('should have a defined component', () => {
@@ -106,14 +107,15 @@ describe('CaseHearingsComponent', () => {
 
   it('should list hearings with status off past and cancelled', async (done) => {
     component.pastAndCancelledHearings$.subscribe(result => {
-      expect(result[0].listAssistCaseStatus).toEqual(HearingsSectionStatusEnum.PAST_AND_CANCELLED);
+        expect(result[0].hmcStatus).toEqual(HearingsSectionStatusEnum.PAST_AND_CANCELLED);
       done();
     });
   });
 
   it('should list hearings with status off upcoming', async (done) => {
     component.upcomingHearings$.subscribe(result => {
-      expect(result[0].listAssistCaseStatus).toEqual(HearingsSectionStatusEnum.UPCOMING);
+      console.log(result);
+        expect(result[0].listAssistCaseStatus).toEqual(HearingsSectionStatusEnum.UPCOMING);
       done();
     });
   });

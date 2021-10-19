@@ -2,17 +2,25 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
+import { FeatureUser } from '@hmcts/rpx-xui-common-lib';
+import { Observable, of } from 'rxjs';
 import { RoleCategoryMappingService } from 'src/app/services/role-category-mapping/role-category-mapping.service';
 import { Actions, HearingListingStatusEnum, HearingsSectionStatusEnum } from '../../../hearings/models/hearings.enum';
 import { HearingsPipesModule } from '../../../hearings/pipes/hearings.pipes.module';
 import { CaseHearingsListComponent } from './case-hearings-list.component';
 
-fdescribe('CaseHearingsListComponent', () => {
+class MockRoleCategoryMappingService {
+    public initialize = (_user: FeatureUser, _clientId: string):void => { }
+    public isEnabled = (_feature: string): Observable<boolean> => { return of(true); }
+    public getValue = <R>(_key: string, _defaultValue: R): Observable<R> => { return of(_defaultValue); };
+    public getValueOnce = <R>(_key: string, _defaultValue: R): Observable<R>  => { return of(_defaultValue); };
+}
+
+describe('CaseHearingsListComponent', () => {
   let component: CaseHearingsListComponent;
   let roleCategoryMappingService: RoleCategoryMappingService;
   let fixture: ComponentFixture<CaseHearingsListComponent>;
-  let mockFeatureService: any;
+  let mockFeatureService = new MockRoleCategoryMappingService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -25,8 +33,7 @@ fdescribe('CaseHearingsListComponent', () => {
       declarations: [ CaseHearingsListComponent ],
       providers: [
       ]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

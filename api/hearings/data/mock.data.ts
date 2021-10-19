@@ -51,7 +51,7 @@ const HEARING_DAY_SCHEDULE_5: HearingDayScheduleModel = {
 const CASE_HEARING_1: CaseHearingModel = {
   hearingID: 'h111111',
   hearingType: 'Case management hearing',
-  hmcStatus: 'Upcoming',
+  hmcStatus: 'Hearing requested',
   lastResponseReceivedDateTime: '',
   responseVersion: 'rv1',
   hearingListingStatus: 'WAITING TO BE LISTED',
@@ -62,7 +62,7 @@ const CASE_HEARING_1: CaseHearingModel = {
 const CASE_HEARING_2: CaseHearingModel = {
   hearingID: 'h222222',
   hearingType: 'Final hearing',
-  hmcStatus: 'Upcoming',
+  hmcStatus: 'Awaiting listing',
   lastResponseReceivedDateTime: '2021-10-12T16:00:00.000+0000',
   responseVersion: 'rv2',
   hearingListingStatus: 'LISTED',
@@ -73,7 +73,7 @@ const CASE_HEARING_2: CaseHearingModel = {
 const CASE_HEARING_3: CaseHearingModel = {
   hearingID: 'h333333',
   hearingType: 'Initial hearing',
-  hmcStatus: 'Past and cancelled',
+  hmcStatus: 'Listed',
   lastResponseReceivedDateTime: '2021-09-05T16:00:00.000+0000',
   responseVersion: 'rv3',
   hearingListingStatus: 'COMPLETED',
@@ -84,7 +84,7 @@ const CASE_HEARING_3: CaseHearingModel = {
 const CASE_HEARING_4: CaseHearingModel = {
   hearingID: 'h444444',
   hearingType: 'Case management hearing',
-  hmcStatus: 'Past and cancelled',
+  hmcStatus: 'Update requested',
   lastResponseReceivedDateTime: '2021-10-22T16:00:00.000+0000',
   responseVersion: 'rv4',
   hearingListingStatus: 'CANCELLED',
@@ -93,9 +93,75 @@ const CASE_HEARING_4: CaseHearingModel = {
 };
 
 const CASE_HEARING_5: CaseHearingModel = {
+  hearingID: 'h444444',
+  hearingType: 'Case management hearing',
+  hmcStatus: 'Update submitted',
+  lastResponseReceivedDateTime: '2021-10-22T16:00:00.000+0000',
+  responseVersion: 'rv4',
+  hearingListingStatus: 'CANCELLED',
+  listAssistCaseStatus: '',
+  hearingDaySchedule: [HEARING_DAY_SCHEDULE_4],
+};
+
+const CASE_HEARING_6: CaseHearingModel = {
   hearingID: 'h555555',
   hearingType: 'Directions hearing',
-  hmcStatus: 'Past and cancelled',
+  hmcStatus: 'Exception',
+  lastResponseReceivedDateTime: '2021-09-14T16:00:00.000+0000',
+  responseVersion: 'rv5',
+  hearingListingStatus: 'CANCELLED',
+  listAssistCaseStatus: '',
+  hearingDaySchedule: [HEARING_DAY_SCHEDULE_5],
+};
+
+const CASE_HEARING_7: CaseHearingModel = {
+  hearingID: 'h555555',
+  hearingType: 'Directions hearing',
+  hmcStatus: 'Cancellation requested',
+  lastResponseReceivedDateTime: '2021-09-14T16:00:00.000+0000',
+  responseVersion: 'rv5',
+  hearingListingStatus: 'CANCELLED',
+  listAssistCaseStatus: '',
+  hearingDaySchedule: [HEARING_DAY_SCHEDULE_5],
+};
+
+const CASE_HEARING_8: CaseHearingModel = {
+  hearingID: 'h555555',
+  hearingType: 'Directions hearing',
+  hmcStatus: 'Vacated',
+  lastResponseReceivedDateTime: '2021-09-14T16:00:00.000+0000',
+  responseVersion: 'rv5',
+  hearingListingStatus: 'CANCELLED',
+  listAssistCaseStatus: '',
+  hearingDaySchedule: [HEARING_DAY_SCHEDULE_5],
+};
+
+const CASE_HEARING_9: CaseHearingModel = {
+  hearingID: 'h555555',
+  hearingType: 'Directions hearing',
+  hmcStatus: 'Awaiting Actuals',
+  lastResponseReceivedDateTime: '2021-09-14T16:00:00.000+0000',
+  responseVersion: 'rv5',
+  hearingListingStatus: 'CANCELLED',
+  listAssistCaseStatus: '',
+  hearingDaySchedule: [HEARING_DAY_SCHEDULE_5],
+};
+
+const CASE_HEARING_10: CaseHearingModel = {
+  hearingID: 'h555555',
+  hearingType: 'Directions hearing',
+  hmcStatus: 'Completed',
+  lastResponseReceivedDateTime: '2021-09-14T16:00:00.000+0000',
+  responseVersion: 'rv5',
+  hearingListingStatus: 'CANCELLED',
+  listAssistCaseStatus: '',
+  hearingDaySchedule: [HEARING_DAY_SCHEDULE_5],
+};
+
+const CASE_HEARING_11: CaseHearingModel = {
+  hearingID: 'h555555',
+  hearingType: 'Directions hearing',
+  hmcStatus: 'Adjourned',
   lastResponseReceivedDateTime: '2021-09-14T16:00:00.000+0000',
   responseVersion: 'rv5',
   hearingListingStatus: 'CANCELLED',
@@ -106,5 +172,15 @@ const CASE_HEARING_5: CaseHearingModel = {
 export const HEARINGS_LIST: CaseHearingsMainModel = {
   hmctsServiceID: 'SSCS',
   caseRef: '1568642646198441',
-  caseHearings: [CASE_HEARING_1, CASE_HEARING_2, CASE_HEARING_3, CASE_HEARING_4, CASE_HEARING_5],
+  caseHearings: [CASE_HEARING_1, 
+    CASE_HEARING_2, 
+    CASE_HEARING_3, 
+    CASE_HEARING_4, 
+    CASE_HEARING_5, 
+    CASE_HEARING_6, 
+    CASE_HEARING_7, 
+    CASE_HEARING_8, 
+    CASE_HEARING_9, 
+    CASE_HEARING_10, 
+    CASE_HEARING_11],
 };

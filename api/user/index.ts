@@ -6,6 +6,8 @@ import { getConfigValue } from '../configuration';
 import { CASE_SHARE_PERMISSIONS, SERVICES_ROLE_ASSIGNMENT_API_PATH, SESSION_TIMEOUTS } from '../configuration/references';
 import { http } from '../lib/http';
 import { setHeaders } from '../lib/proxy';
+import { LocationInfo, RoleAssignment } from './interfaces/roleAssignment';
+import { getOrganisationRoles, isCurrentUserCaseAllocator } from './utils';
 
 export async function getUserDetails(req, res: Response, next: NextFunction): Promise<Response> {
   if (!req.session || !req.session.passport || !req.session.passport.user) {
@@ -13,54 +15,57 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
   }
 
   try {
-    const { roles } = req.session.passport.user.userinfo
+    const { roles } = req.session.passport.user.userinfo;
 
-    const permissions = CASE_SHARE_PERMISSIONS.split(',')
-    const canShareCases = roles.some(role => permissions.includes(role))
-    const sessionTimeouts = getConfigValue(SESSION_TIMEOUTS) as RoleGroupSessionTimeout[]
-    const sessionTimeout = getUserSessionTimeout(roles, sessionTimeouts)
-    const locationInfo = await getUserRoleAssignments(req.session.passport.user.userinfo, req)
-    const userInfo = {...req.session.passport.user.userinfo, token: `Bearer ${req.session.passport.user.tokenset.accessToken}`}
+    const permissions = CASE_SHARE_PERMISSIONS.split(',');
+    const canShareCases = roles.some(role => permissions.includes(role));
+    const sessionTimeouts = getConfigValue(SESSION_TIMEOUTS) as RoleGroupSessionTimeout[];
+    const sessionTimeout = getUserSessionTimeout(roles, sessionTimeouts);
+    const roleAssignmentInfo = await getUserRoleAssignments(req.session.passport.user.userinfo, req);
+    const userInfo = {...req.session.passport.user.userinfo, token: `Bearer ${req.session.passport.user.tokenset.accessToken}`};
     res.send({
       canShareCases,
-      locationInfo,
+      roleAssignmentInfo,
       sessionTimeout,
       userInfo,
-    })
+    });
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
-
-export async function getUserRoleAssignments(userInfo: UserInfo, req): Promise<any []> {
-  const locationInfo = req.session.roleAssignmentResponse ?
-                      getLocationInfo(req.session.roleAssignmentResponse) :
-                      await getRoleAssignmentForUser(userInfo, req);
-  return locationInfo
 }
 
 export async function getRoleAssignmentForUser(userInfo: UserInfo, req: any): Promise<any []> {
-  let locationInfo = []
-  const baseUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH)
-  const id = userInfo.id ? userInfo.id : userInfo.uid
-  const path = `${baseUrl}/am/role-assignments/actors/${id}`
-  const headers = setHeaders(req)
+  let locationInfo = [];
+  const baseUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+  const id = userInfo.id ? userInfo.id : userInfo.uid;
+  const path = `${baseUrl}/am/role-assignments/actors/${id}`;
+  const headers = setHeaders(req);
   try {
-    const response: AxiosResponse = await http.get(path, { headers })
-    locationInfo = getLocationInfo(response.data.roleAssignmentResponse)
-    req.session.roleAssignmentResponse = response.data.roleAssignmentResponse
+    const response: AxiosResponse = await http.get(path, { headers });
+    locationInfo = getRoleAssignmentInfo(response.data.roleAssignmentResponse);
+    const roles = getOrganisationRoles(response.data.roleAssignmentResponse);
+    userInfo.roles = userInfo.roles.concat(roles);
+    req.session.roleAssignmentResponse = response.data.roleAssignmentResponse;
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-  return locationInfo
+  return locationInfo;
 }
 
-export function getLocationInfo(roleAssignmentResponse: any): any [] {
-  const locationInfo = []
+export function getRoleAssignmentInfo(roleAssignmentResponse: RoleAssignment[]): LocationInfo[] {
+  const roleAssignmentInfo = [];
   roleAssignmentResponse.forEach(roleAssignment => {
-    if (roleAssignment.attributes.primaryLocation) {
-      locationInfo.push(roleAssignment.attributes)
-    }
+    const isCaseAllocator = isCurrentUserCaseAllocator(roleAssignment);
+    const attributes = {...roleAssignment.attributes};
+    attributes.isCaseAllocator = isCaseAllocator;
+    roleAssignmentInfo.push(attributes);
   });
-  return locationInfo
+  return roleAssignmentInfo;
+}
+
+export async function getUserRoleAssignments(userInfo: UserInfo, req): Promise<any []> {
+  const roleAssignmentInfo = req.session.roleAssignmentResponse ?
+                      getRoleAssignmentInfo(req.session.roleAssignmentResponse) :
+                      await getRoleAssignmentForUser(userInfo, req);
+  return roleAssignmentInfo;
 }

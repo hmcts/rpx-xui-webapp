@@ -310,14 +310,8 @@ export function getCaseTypesFromRoleAssignments(roleAssignments: RoleAssignment[
     .filter((roleAssignment: RoleAssignment) => roleAssignment.attributes && roleAssignment.attributes.caseType)
     .map((roleAssignment: RoleAssignment) => roleAssignment.attributes.caseType)
     .reduce((query: string, caseType: string) => {
-      if (!query) {
-        return null;
-      }
       return query.includes(caseType) ? query : `${query}${caseType},`;
-    }, null);
-  if (!caseTypes) {
-    return null;
-  }
+    }, '');
   return caseTypes[caseTypes.length - 1] === ',' ? caseTypes.slice(0, caseTypes.length - 1) : caseTypes;
 }
 

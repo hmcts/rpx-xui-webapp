@@ -17,10 +17,6 @@ import {
 export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
 
-  const judicialMyTaskUrl = /http:\/\/wa-task-management-api-(demo|aat).service.core-compute-(demo|aat).internal\/myTasks\?view=judicial/;
-  const judicialAvailableTaskUrl = /http:\/\/wa-task-management-api-(demo|aat).service.core-compute-(demo|aat).internal\/availableTasks\?view=judicial/;
-  const caseworkerMyTaskUrl = /http:\/\/wa-task-management-api-(demo|aat).service.core-compute-(demo|aat).internal\/myTasks\?view=caseworker/;
-  const caseworkerAvailableTaskUrl = /http:\/\/wa-task-management-api-(demo|aat).service.core-compute-(demo|aat).internal\/availableTasks\?view=caseworker/;
   const getTaskFromIDUrl = /http:\/\/wa-task-management-api-(demo|aat).service.core-compute-(demo|aat).internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/;
   const getTasksByCaseIdUrl = /http:\/\/wa-task-management-api-(demo|aat).service.core-compute-(demo|aat).internal\/task\/[a-fA-F0-9]{16}/;
   const claimTaskUrl = /http:\/\/wa-task-management-api-(demo|aat).service.core-compute-(demo|aat).internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12,13}\/claim/;
@@ -41,27 +37,6 @@ export const init = () => {
     return [
       200,
       JUDICIAL_WORKERS,
-    ];
-  });
-
-  // simulate some error if needed
-  // mock.onGet(url).networkErrorOnce()
-  mock.onPost(judicialMyTaskUrl).reply(config => {
-    // return an array in the form of [status, data, headers]
-    const body = JSON.parse(config.data);
-    const searchConfig = body.search_parameters;
-    const locationConfig = getLocationConfig(searchConfig)[0];
-    const paginationConfig = body.pagination_parameters;
-    const sortingConfig = body.sorting_parameters;
-    const filteredTaskList = filterByFieldName(JUDICIAL_MY_TASKS.tasks, locationField, locationConfig.values);
-    const taskList = sort(filteredTaskList,
-      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
-    return [
-      200,
-      {
-        tasks: paginate(taskList, paginationConfig.page_number, paginationConfig.page_size),
-        total_records: filteredTaskList.length,
-      },
     ];
   });
 
@@ -92,49 +67,6 @@ export const init = () => {
     ];
   });
 
-  mock.onPost(judicialAvailableTaskUrl).reply(config => {
-    // return an array in the form of [status, data, headers]
-    const body = JSON.parse(config.data);
-    const searchConfig = body.search_parameters;
-    const locationConfig = getLocationConfig(searchConfig)[0];
-    const paginationConfig = body.pagination_parameters;
-    const sortingConfig = body.sorting_parameters;
-    let newTaskList = JUDICIAL_AVAILABLE_TASKS.tasks;
-    if (keepAvailableTasks[0] && keepAvailableTasks[0].id === newTaskList[0].id) {
-      newTaskList = JUDICIAL_AVAILABLE_TASKS_COPY.tasks;
-    }
-    keepAvailableTasks = newTaskList;
-    const filteredTaskList = filterByFieldName(newTaskList, locationField, locationConfig.values);
-    const taskList = sort(filteredTaskList,
-      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
-    return [
-      200,
-      {
-        tasks: paginate(taskList, paginationConfig.page_number, paginationConfig.page_size),
-        total_records: filteredTaskList.length,
-      },
-    ];
-  });
-
-  mock.onPost(caseworkerMyTaskUrl).reply(config => {
-    // return an array in the form of [status, data, headers]
-    const body = JSON.parse(config.data);
-    const searchConfig = body.search_parameters;
-    const locationConfig = getLocationConfig(searchConfig)[0];
-    const paginationConfig = body.pagination_parameters;
-    const sortingConfig = body.sorting_parameters;
-    const filteredTaskList = filterByFieldName(CASEWORKER_MY_TASKS.tasks, locationField, locationConfig.values);
-    const taskList = sort(filteredTaskList,
-      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
-    return [
-      200,
-      {
-        tasks: paginate(taskList, paginationConfig.page_number, paginationConfig.page_size),
-        total_records: filteredTaskList.length,
-      },
-    ];
-  });
-
   mock.onPost(caseworkerAllTasksUrl).reply(config => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
@@ -158,25 +90,6 @@ export const init = () => {
       {
         tasks: paginate(allTasks, paginationConfig.page_number, paginationConfig.page_size),
         total_records: allTasks.length,
-      },
-    ];
-  });
-
-  mock.onPost(caseworkerAvailableTaskUrl).reply(config => {
-    // return an array in the form of [status, data, headers]
-    const body = JSON.parse(config.data);
-    const searchConfig = body.search_parameters;
-    const locationConfig = getLocationConfig(searchConfig)[0];
-    const paginationConfig = body.pagination_parameters;
-    const sortingConfig = body.sorting_parameters;
-    const filteredTaskList = filterByFieldName(CASEWORKER_AVAILABLE_TASKS.tasks, locationField, locationConfig.values);
-    const taskList = sort(filteredTaskList,
-      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
-    return [
-      200,
-      {
-        tasks: paginate(taskList, paginationConfig.page_number, paginationConfig.page_size),
-        total_records: filteredTaskList.length,
       },
     ];
   });

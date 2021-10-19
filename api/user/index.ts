@@ -44,7 +44,9 @@ export async function getRoleAssignmentForUser(userInfo: UserInfo, req: any): Pr
     const response: AxiosResponse = await http.get(path, { headers });
     locationInfo = getRoleAssignmentInfo(response.data.roleAssignmentResponse);
     const roles = getOrganisationRoles(response.data.roleAssignmentResponse);
+    const roleCategories = getRoleCategories(response.data.roleAssignmentResponse);
     userInfo.roles = userInfo.roles.concat(roles);
+    userInfo.roleCategories = roleCategories;
     req.session.roleAssignmentResponse = response.data.roleAssignmentResponse;
   } catch (error) {
     console.log(error);
@@ -68,4 +70,14 @@ export async function getUserRoleAssignments(userInfo: UserInfo, req): Promise<a
                       getRoleAssignmentInfo(req.session.roleAssignmentResponse) :
                       await getRoleAssignmentForUser(userInfo, req);
   return roleAssignmentInfo;
+}
+
+export function getRoleCategories(roleAssignmentResponse: RoleAssignment[]): string[] {
+  const roleCategories = Array<string>();
+  roleAssignmentResponse.forEach(roleAssignment => {
+      if(roleAssignment.roleCategory && !roleCategories.includes(roleAssignment.roleCategory)) {
+        roleCategories.push(roleAssignment.roleCategory);
+      }
+  });
+  return roleCategories;
 }

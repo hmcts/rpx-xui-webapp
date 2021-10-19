@@ -37,7 +37,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I see Task list Available tasks table displaying some tasks', async function () {
         await BrowserWaits.retryWithActionCallback(async () => {
-            expect(await taskListPage.getTaskListCountInTable(), "Task list has no rows displayed ").to.be.greaterThan(0);
+            await taskListPage.waitForTable();
+
         });
     });
 

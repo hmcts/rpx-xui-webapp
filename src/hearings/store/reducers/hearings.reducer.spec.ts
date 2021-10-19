@@ -1,9 +1,9 @@
 import { CaseHearingModel } from '../../models/caseHearing.model';
 import { CaseHearingsMainModel } from '../../models/caseHearingsMain.model';
 import { HearingDayScheduleModel } from '../../models/hearingDaySchedule.model';
+import { HearingListingStatusEnum } from '../../models/hearings.enum';
 import * as fromActions from '../actions/hearings.action';
 import * as fromReducer from './hearings.reducer';
-import { HearingListingStatusEnum } from '../../models/hearings.enum';
 
 describe('Hearings Reducer', () => {
 
@@ -24,7 +24,7 @@ describe('Hearings Reducer', () => {
         const HEARING_DAY_SCHEDULE_1: HearingDayScheduleModel = {
           hearingStartDateTime: '2021-05-01T16:00:00.000+0000',
           hearingEndDateTime: '2021-05-04T16:00:00.000+0000',
-          ListAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba5',
+          listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba5',
           hearingVenueId: 'venue 1',
           hearingRoomId: 'room 1',
           hearingPanel: ['child'],

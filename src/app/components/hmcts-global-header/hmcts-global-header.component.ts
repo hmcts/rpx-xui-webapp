@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -36,7 +36,8 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
   constructor(
     public nocStore: Store<fromNocStore.State>,
     private readonly userService: UserService,
-    private readonly featureToggleService: FeatureToggleService
+    private readonly featureToggleService: FeatureToggleService,
+    private readonly cd: ChangeDetectorRef
   ) { }
 
   public async ngOnChanges(changes: SimpleChanges): Promise<void> {
@@ -58,6 +59,7 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
   private async splitAndFilterNavItems() {
     this.items = await this.filterNavItems(this.items);
     this.splitNavItems();
+    this.cd.detectChanges();
   }
 
   private splitNavItems() {

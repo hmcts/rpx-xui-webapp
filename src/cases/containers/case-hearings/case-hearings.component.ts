@@ -60,7 +60,7 @@ export class CaseHearingsComponent implements OnInit {
           console.log('hearing', hearingsStateData);
           if (hearingsStateData && hearingsStateData.caseHearingsMainModel && hearingsStateData.caseHearingsMainModel.caseHearings) {
             return hearingsStateData.caseHearingsMainModel.caseHearings.filter(hearing =>
-              hearing.listAssistCaseStatus === status
+              hearing.hearingsSectionStatus === status
             );
           } else {
             return [];

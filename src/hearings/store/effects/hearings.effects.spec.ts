@@ -48,7 +48,7 @@ describe('Hearings Effects', () => {
         lastResponseReceivedDateTime: '2021-05-05T16:00:00.000+0000',
         responseVersion: 'rv1',
         hearingListingStatus: HearingListingStatusEnum.WAITING_TO_BE_LISTED,
-        listAssistCaseStatus: 'pending',
+        hearingsSectionStatus: 'pending',
         hearingDaySchedule: [HEARING_DAY_SCHEDULE_1],
       };
       const HEARINGS_LIST: CaseHearingsMainModel = {

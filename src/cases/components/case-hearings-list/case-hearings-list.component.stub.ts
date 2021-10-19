@@ -1,5 +1,5 @@
-import { Component, Input } from "@angular/core";
 import { CaseHearingModel } from "api/hearings/models/caseHearing.model";
+import { Component, Input } from "@angular/core";
 import { Observable } from "rxjs";
 import { Actions } from "src/app/store";
 
@@ -7,13 +7,14 @@ import { Actions } from "src/app/store";
     selector: 'exui-case-hearings-list',
     template: ''
   })
-  export class CaseHearingsListComponentStub {
+  export class CaseHearingsListStubComponent {
     @Input()
     public status: string;
-  
+
     @Input()
     public hearingsList$: Observable<CaseHearingModel[]>;
-  
+
     @Input()
     public actions: Actions[];
   }
+  

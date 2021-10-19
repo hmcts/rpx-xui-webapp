@@ -8,6 +8,6 @@ export interface CaseHearingModel {
   hmcStatus: string;
   hearingListingStatus: HearingListingStatusEnum;
   responseVersion: string;
-  listAssistCaseStatus: string;
+  hearingsSectionStatus: string;
   hearingDaySchedule: HearingDayScheduleModel[];
 }

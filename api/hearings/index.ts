@@ -24,7 +24,7 @@ export async function getHearings(req: EnhancedRequest, res: Response, next: Nex
     data.caseHearings.forEach(hearing => 
       hearingStatusMappings.filter(mapping => mapping.hmcStatus === hearing.hmcStatus).map(m => {
         hearing.hearingListingStatus = m.hearingListingStatus
-        hearing.listAssistCaseStatus = m.hearingsSectionStatus
+        hearing.hearingsSectionStatus = m.hearingsSectionStatus
     }));
 
     res.status(status).send(data);

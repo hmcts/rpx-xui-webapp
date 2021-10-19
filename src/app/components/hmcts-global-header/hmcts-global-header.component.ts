@@ -1,7 +1,7 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import * as fromNocStore from '../../../noc/store';
 import { NavItemsModel } from '../../models/nav-item.model';
@@ -30,14 +30,22 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
   public showItems: boolean;
   public userValue = true;
   public tab;
-  public leftItems: NavItemsModel[] = [];
-  public rightItems: NavItemsModel[] = [];
+  public get leftItems(): Observable<NavItemsModel[]> {
+    return this.menuItems.left.asObservable();
+  };
+  public get rightItems(): Observable<NavItemsModel[]> {
+    return this.menuItems.right.asObservable();
+  };
+
+  private menuItems = {
+    left: new BehaviorSubject<NavItemsModel[]>([]),
+    right: new BehaviorSubject<NavItemsModel[]>([])
+  };
 
   constructor(
     public nocStore: Store<fromNocStore.State>,
     private readonly userService: UserService,
-    private readonly featureToggleService: FeatureToggleService,
-    private readonly cd: ChangeDetectorRef
+    private readonly featureToggleService: FeatureToggleService
   ) { }
 
   public async ngOnChanges(changes: SimpleChanges): Promise<void> {
@@ -59,12 +67,11 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
   private async splitAndFilterNavItems() {
     this.items = await this.filterNavItems(this.items);
     this.splitNavItems();
-    this.cd.detectChanges();
   }
 
   private splitNavItems() {
-    this.rightItems = this.items.filter(item => item.align && item.align === 'right');
-    this.leftItems = this.items.filter(item => !item.align || item.align !== 'right');
+    this.menuItems.right.next(this.items.filter(item => item.align && item.align === 'right'));
+    this.menuItems.left.next(this.items.filter(item => !item.align || item.align !== 'right'));
   }
 
   private async filterNavItems(items: NavItemsModel[]): Promise<NavItemsModel[]> {

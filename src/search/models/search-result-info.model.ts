@@ -1,5 +1,5 @@
 export interface SearchResultInfo {
-	casestartrecord: number;
-	casesreturned: number;
-	moreresultstogo: boolean;
+  caseStartRecord: number;
+  casesReturned: number;
+  moreResultsToGo: boolean;
 }

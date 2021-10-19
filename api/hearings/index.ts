@@ -5,6 +5,7 @@ import { SERVICES_HEARINGS_COMPONENT_API } from '../configuration/references';
 import * as mock from '../hearings/hearing.mock';
 import { EnhancedRequest } from '../lib/models';
 import { CaseHearingsMainModel } from './models/caseHearingsMain.model';
+import { hearingStatusMappings } from './models/hearingStatusMappings';
 
 mock.init();
 
@@ -20,6 +21,12 @@ export async function getHearings(req: EnhancedRequest, res: Response, next: Nex
 
   try {
     const {status, data}: { status: number, data: CaseHearingsMainModel } = await handleGet(markupPath, req);
+    data.caseHearings.forEach(hearing => 
+      hearingStatusMappings.filter(mapping => mapping.hmcStatus === hearing.hmcStatus).map(m => {
+        hearing.hearingListingStatus = m.hearingListingStatus
+        hearing.listAssistCaseStatus = m.hearingsSectionStatus
+    }));
+
     res.status(status).send(data);
   } catch (error) {
     next(error);

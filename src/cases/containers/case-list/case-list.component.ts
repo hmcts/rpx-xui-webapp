@@ -112,8 +112,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.isVisible = false;
     this.page = 1;
     this.resultView = null;
-
-    this.httpClient.get('http://rumplestilkin.co.uk').subscribe(response => console.log(response), error => console.log(error));
     this.definitionsService.getJurisdictions('read').subscribe(this.jurisdictionsBehaviourSubject$);
 
     this.jurisdictionsBehaviourSubject$.subscribe( jurisdictions => {

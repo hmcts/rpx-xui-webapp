@@ -4,7 +4,7 @@
       <th scope="col" class="govuk-table__header govuk-body-lead">{{ status }}</th>
       <th scope="col" class="govuk-table__header">Hearing date</th>
       <th scope="col" class="govuk-table__header">Status</th>
-      <th scope="col" class="govuk-table__header">Options</th>
+      <th scope="col" class="govuk-table__header">Actions</th>
     </tr>
   </thead>
   <tbody class="govuk-table__body">
@@ -24,16 +24,16 @@
         </strong>
       </td>
       <td scope="row" class="govuk-table__cell govuk-!-width-one-quarter">
-        <div *ngIf="hasViewChangeAction" class="div-action">
+        <div *ngIf="hasUpdateAction" class="div-action">
           <a href="javascript:void(0)"
-            [routerLink]="['/', 'hearings', 'change']">View and change</a>&nbsp;&nbsp;
+             [routerLink]="['/', 'hearings', 'change']">View or change</a>&nbsp;&nbsp;
         </div>
-        <div *ngIf="hasCancelAction" class="div-action">
+        <div *ngIf="hasDeleteAction" class="div-action">
           <a href="javascript:void(0)"
-            [routerLink]="['/', 'hearings', 'cancel']">Cancel hearing</a>&nbsp;&nbsp;</div>
-        <div *ngIf="hasViewOnlyAction" class="div-action">
+             [routerLink]="['/', 'hearings', 'cancel']">Cancel hearing</a>&nbsp;&nbsp;</div>
+        <div *ngIf="hasReadOnlyAction" class="div-action">
           <a href="javascript:void(0)"
-            [routerLink]="['/', 'hearings', 'view']">View details</a></div>
+             [routerLink]="['/', 'hearings', 'view']">View details</a></div>
       </td>
     </tr>
   </tbody>

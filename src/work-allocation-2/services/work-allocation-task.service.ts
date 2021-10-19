@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { SearchTaskRequest, TaskSearchParameters } from '../models/dtos';
 import { Task } from '../models/tasks';
 
-const BASE_URL: string = '/workallocation2/task';
+const BASE_URL: string = '/workallocation/task';
 export enum ACTION {
   ASSIGN = 'assign',
   CANCEL = 'cancel',
@@ -47,10 +47,6 @@ export class WorkAllocationTaskService {
 
   public searchTask(body: { searchRequest: SearchTaskRequest, view: string }): Observable<Task[]> {
     return this.http.post<any>(`${BASE_URL}`, body);
-  }
-
-  public searchTaskWithPagination(body: { searchRequest: SearchTaskRequest, view: string }): Observable<Task[]> {
-    return this.http.post<any>(`/workallocation2/taskWithPagination`, body);
   }
 
   public claimTask(taskId: string): Observable<Response> {

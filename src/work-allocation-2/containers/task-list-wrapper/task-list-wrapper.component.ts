@@ -216,7 +216,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
 
   public performSearchPagination(): Observable<any> {
     const searchRequest = this.getSearchTaskRequestPagination();
-    return this.taskService.searchTaskWithPagination({ searchRequest, view: this.view });
+    return this.taskService.searchTask({ searchRequest, view: this.view });
   }
 
   /**

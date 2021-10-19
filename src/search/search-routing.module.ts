@@ -31,7 +31,11 @@ const routes: Routes = [
     path: 'results',
     component: SearchResultsComponent,
     data: {
-      title: 'Search Results'
+      title: 'Search cases | Search Results',
+      // TODO: Roles will need replacing with actual ones to be granted access, or loaded from configuration
+      needsRole: ['pui\-case\-manager'],
+      roleMatching: RoleMatching.ANY,
+      noRoleMatchRedirect: '/'
     }
   }
 ];

@@ -2,9 +2,13 @@ import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
 import { NextFunction, Response } from 'express';
 import { GlobalSearchService } from 'interfaces/globalSearchService';
 import { EnhancedRequest } from 'lib/models';
-import { handleGet } from '../common/crudService';
+import { handleGet, handlePost } from '../common/crudService';
 import { getConfigValue } from '../configuration';
-import { GLOBAL_SEARCH_SERVICES, SERVICES_CCD_COMPONENT_API_PATH } from '../configuration/references';
+import { 
+  GLOBAL_SEARCH_SERVICES, 
+  SERVICES_CCD_COMPONENT_API_PATH, 
+  SERVICES_CCD_DATA_STORE_API_PATH 
+} from '../configuration/references';
 
 /**
  * Get global search services
@@ -35,6 +39,23 @@ export async function getServices(req: EnhancedRequest, res: Response, next: Nex
     // Return json response of generated global search services
     return res.json(services);
 
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * Get global search results
+ * api/globalsearch/results
+ */
+export async function getSearchResults(req: EnhancedRequest, res: Response, next: NextFunction) {
+  try {
+    const searchRequest = req.body;
+    console.log('request body', req.body);
+    const path = `${getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH)}/globalsearch`;
+    console.log(path);
+    const response = await handlePost(path, searchRequest, req, next);
+    return response.data;
   } catch (error) {
     next(error);
   }

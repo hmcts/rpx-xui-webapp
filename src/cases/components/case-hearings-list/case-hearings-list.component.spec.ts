@@ -10,17 +10,17 @@ import { HearingsPipesModule } from '../../../hearings/pipes/hearings.pipes.modu
 import { CaseHearingsListComponent } from './case-hearings-list.component';
 
 class MockRoleCategoryMappingService {
-    public initialize = (_user: FeatureUser, _clientId: string):void => { }
-    public isEnabled = (_feature: string): Observable<boolean> => { return of(true); }
-    public getValue = <R>(_key: string, _defaultValue: R): Observable<R> => { return of(_defaultValue); };
-    public getValueOnce = <R>(_key: string, _defaultValue: R): Observable<R>  => { return of(_defaultValue); };
+  public initialize = (user: FeatureUser, clientId: string): void => { };
+  public isEnabled = (feature: string) : Observable<boolean> => { return of(true); };
+  public getValue = <R>(key: string, defaultValue: R): Observable<R> => of(defaultValue);
+  public getValueOnce = <R>(key: string, defaultValue: R): Observable<R>  =>  of(defaultValue);
 }
 
-describe('CaseHearingsListComponent', () => {
+fdescribe('CaseHearingsListComponent', () => {
   let component: CaseHearingsListComponent;
   let roleCategoryMappingService: RoleCategoryMappingService;
   let fixture: ComponentFixture<CaseHearingsListComponent>;
-  let mockFeatureService = new MockRoleCategoryMappingService;
+  const mockFeatureService = new MockRoleCategoryMappingService();
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -42,14 +42,14 @@ describe('CaseHearingsListComponent', () => {
     component = fixture.componentInstance;
     component.actions = [Actions.Delete];
     component.status = HearingsSectionStatusEnum.PAST_AND_CANCELLED;
-    component. hearingsList$ = of( [{
+    component.hearingsList$ = of( [{
       hearingID: 'h555555',
       hearingType: 'Directions hearing',
       hmcStatus: HearingsSectionStatusEnum.PAST_AND_CANCELLED,
       lastResponseReceivedDateTime: '2021-08-05T16:00:00.000+0000',
       responseVersion: 'rv5',
       hearingListingStatus: HearingListingStatusEnum.CANCELLED,
-      listAssistCaseStatus: '',
+      hearingsSectionStatus: '',
       hearingDaySchedule: [],
       }, {
         hearingID: 'h555555',
@@ -58,7 +58,7 @@ describe('CaseHearingsListComponent', () => {
         lastResponseReceivedDateTime: '2021-08-05T16:00:00.000+0000',
         responseVersion: 'rv5',
         hearingListingStatus: HearingListingStatusEnum.CANCELLED,
-        listAssistCaseStatus: '',
+        hearingsSectionStatus: '',
         hearingDaySchedule: [],
         }]);
     component.actions = [Actions.Delete];

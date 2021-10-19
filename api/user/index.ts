@@ -75,7 +75,7 @@ export async function getUserRoleAssignments(userInfo: UserInfo, req): Promise<a
 export function getRoleCategories(roleAssignmentResponse: RoleAssignment[]): string[] {
   const roleCategories = Array<string>();
   roleAssignmentResponse.forEach(roleAssignment => {
-      if(roleAssignment.roleCategory && !roleCategories.includes(roleAssignment.roleCategory)) {
+      if (roleAssignment.roleCategory && !roleCategories.includes(roleAssignment.roleCategory)) {
         roleCategories.push(roleAssignment.roleCategory);
       }
   });

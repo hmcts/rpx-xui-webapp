@@ -26,7 +26,7 @@ import { Caseworker } from './interfaces/common';
 import { TaskList } from './interfaces/task';
 import { checkIfCaseAllocator, refineRoleAssignments } from './roleService';
 import * as roleServiceMock from './roleService.mock';
-import { handleGetTasksByCaseId } from './taskService';
+import { handleGetTasksByCaseId, handleTaskSearch } from './taskService';
 import * as taskServiceMock from './taskService.mock';
 import {
   assignActionsToCases,
@@ -124,57 +124,23 @@ export async function searchCase(req: EnhancedRequest, res: Response, next: Next
  * Post to search for a Task.
  */
 export async function searchTask(req: EnhancedRequest, res: Response, next: NextFunction) {
-  try {
-    const searchRequest = req.body.searchRequest;
-    const view = req.body.view;
-    const currentUser = req.body.currentUser ? req.body.currentUser : '';
-    let promise;
-    if (searchRequest.search_by === 'judge') {
-      // TODO below call mock api will be replaced when real api is ready
-      if (view === 'MyTasks') {
-        const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'myTasks?view=judicial');
-        const postTaskPath = preparePaginationUrl(req, basePath);
-        promise = await handlePost(postTaskPath, searchRequest, req);
-      } else if (view === 'AvailableTasks') {
-        const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'availableTasks?view=judicial');
-        const postTaskPath = preparePaginationUrl(req, basePath);
-        promise = await handlePost(postTaskPath, searchRequest, req);
-      } else {
-        const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'allTasks?view=judicial');
-        const postTaskPath = preparePaginationUrl(req, basePath);
-        promise = await handlePost(postTaskPath, searchRequest, req);
-      }
-    } else {
-      if (view === 'MyTasks') {
-        const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'myTasks?view=caseworker');
-        const postTaskPath = preparePaginationUrl(req, basePath);
-        promise = await handlePost(postTaskPath, searchRequest, req);
-      } else if (view === 'AvailableTasks') {
-        const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'availableTasks?view=caseworker');
-        const postTaskPath = preparePaginationUrl(req, basePath);
-        promise = await handlePost(postTaskPath, searchRequest, req);
-      } else {
-        const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'allTasks?view=caseworker');
-        const postTaskPath = preparePaginationUrl(req, basePath);
-        promise = await handlePost(postTaskPath, searchRequest, req);
-      }
-    }
-    const {status, data} = promise;
-    res.status(status);
-    // Assign actions to the tasks on the data from the API.
-    let returnData;
-    if (data) {
-      // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
-      // These should be mocked as if we were getting them from the user themselves
-      returnData = {tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records};
-    }
+    try {
+      const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
+      const postTaskPath = preparePaginationUrl(req, basePath);
+      const searchRequest = req.body.searchRequest;
+      const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
+      res.status(status);
+      // Assign actions to the tasks on the data from the API.
+      // if (data) {
+      //   assignActionsToTasks(data.tasks, req.body.view);
+      // }
 
-    // Send the (possibly modified) data back in the Response.
-    res.send(returnData);
-  } catch (error) {
-    next(error);
+      // Send the (possibly modified) data back in the Response.
+      res.send(data);
+    } catch (error) {
+      next(error);
+    }
   }
-}
 
 export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const caseId = req.params.caseId;

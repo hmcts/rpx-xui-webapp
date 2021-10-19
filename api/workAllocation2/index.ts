@@ -77,7 +77,7 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
 export function handleMyCasesRewriteUrl(path: string, req: any): string {
   const roleAssignments = req.session.roleAssignmentResponse;
   const caseTypes: string = getCaseTypesFromRoleAssignments(roleAssignments);
-  const queryParams = caseTypes.length ? caseTypes : 'Asylum';
+  const queryParams = caseTypes && caseTypes.length ? caseTypes : 'Asylum';
   return path.replace('/workallocation2/my-cases', `/searchCases?ctid=${queryParams}`);
 }
 

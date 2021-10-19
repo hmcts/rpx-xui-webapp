@@ -119,23 +119,5 @@ describe('MyCasesComponent', () => {
     expect(footerCell).toBeDefined();
     expect(footerCell.textContent.trim()).toEqual(component.emptyMessage);
   });
-
-  it('should appropriately handle clicking on a row action', () => {
-    const navigateSpy = spyOn(router, 'navigate');
-    const element = fixture.debugElement.nativeElement;
-    // Use the first case.
-    const caseItem = component.cases[0];
-    // Click on the Manage + button.
-    const manageButton = element.querySelector(`#manage_${caseItem.id}`);
-    manageButton.dispatchEvent(new Event('click'));
-    fixture.detectChanges();
-    // Use the first action from that case.
-    const actionId = caseItem.actions[0].id;
-    const actionLink = element.querySelector(`#action_${actionId}`);
-    // Click on the action link.
-    actionLink.dispatchEvent(new Event('click'));
-    fixture.detectChanges();
-    // Ensure the correct attempt has been made to navigate - navigation handled in onActionHandler
-    expect(navigateSpy).toHaveBeenCalledWith([`/`], jasmine.any(Object));
-  });
+// took out action handler test as is handled by wrapper component
 });

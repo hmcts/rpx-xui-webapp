@@ -1,6 +1,4 @@
-import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
-import { sendPost } from '../common/crudService';
 import { handleGet, handlePost } from '../common/mockService';
 import { getConfigValue } from '../configuration';
 import {
@@ -21,17 +19,20 @@ import {
   handlePostRoleAssingnments,
   handlePostSearch
 } from './caseWorkerService';
+
 import { JUDICIAL_WORKERS_LOCATIONS } from './constants/mock.data';
 import { Caseworker } from './interfaces/common';
 import { TaskList } from './interfaces/task';
-import { checkIfCaseAllocator, refineRoleAssignments } from './roleService';
+import { checkIfCaseAllocator } from './roleService';
 import * as roleServiceMock from './roleService.mock';
 import { handleGetTasksByCaseId, handleTaskSearch } from './taskService';
 import * as taskServiceMock from './taskService.mock';
 import {
   assignActionsToCases,
   assignActionsToTasks,
-  getCaseIdListFromRoles,
+  constructElasticSearchQuery,
+  getCaseIdListFromRoles, getCaseTypesFromRoleAssignments,
+  mapCasesFromData,
   mapCaseworkerData,
   prepareCaseWorkerForLocation,
   prepareCaseWorkerForLocationAndService,
@@ -42,7 +43,6 @@ import {
   preparePostTaskUrlAction,
   prepareRoleApiRequest,
   prepareRoleApiUrl,
-  prepareSearchCaseUrl,
   prepareSearchTaskUrl,
   prepareTaskSearchForCompletable
 } from './util';
@@ -74,50 +74,40 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
   }
 }
 
-/**
- * Post to search for a Case.
- */
-export async function searchCase(req: EnhancedRequest, res: Response, next: NextFunction) {
-  try {
-    const searchRequest = req.body.searchRequest;
-    const view = req.body.view;
-    const roleAssignments = req.session.roleAssignmentResponse;
-    // EUI-4579 - get list of case ids from role assignments
-    // note - will need to be getting substantive roles in future
-    // tslint:disable-next-line
-    const caseIdList = getCaseIdListFromRoles(roleAssignments);
-    let basePath = '';
-    // TODO below call mock api will be replaced when real api is ready
-    if (view === 'MyCases') {
-      basePath = prepareSearchCaseUrl(baseWorkAllocationTaskUrl, `myCases?view=${searchRequest.search_by}`);
-    } else if (view === 'AllWorkCases') {
-      basePath = prepareSearchCaseUrl(baseWorkAllocationTaskUrl, `allWorkCases?view=${searchRequest.search_by}`);
-    }
-    const searchMap = {};
-    searchRequest.search_parameters.forEach(item => {
-      if (item.operator === 'EQUAL') {
-        searchMap[item.key] = item.values;
-      }
-    });
+export function handleMyCasesRewriteUrl(path: string, req: any): string {
+  const roleAssignments = req.session.roleAssignmentResponse;
+  const caseTypes: string = getCaseTypesFromRoleAssignments(roleAssignments);
+  const queryParams = caseTypes && caseTypes.length ? caseTypes : 'Asylum';
+  return path.replace('/workallocation2/my-cases', `/searchCases?ctid=${queryParams}`);
+}
 
-    const postCasePath = preparePaginationUrl(req, basePath);
-    const promise = await handlePost(postCasePath, searchRequest, req);
+export function handleGetMyCasesRequest(proxyReq, req): void {
+  const roleAssignments = req.session.roleAssignmentResponse;
+  // EUI-4579 - get list of case ids from role assignments
+  // note - will need to be getting substantive roles in future
+  const caseIdList = getCaseIdListFromRoles(roleAssignments);
+  const query = constructElasticSearchQuery(caseIdList, 0, 10000);
+  const body = JSON.stringify(query);
 
-    const {status, data} = promise;
-    res.status(status);
-    // Assign actions to the cases on the data from the API.
-    let returnData;
-    if (data) {
-      // @ts-ignore
-      const isCaseAllocator: boolean = checkIfCaseAllocator(searchMap.jurisdiction, searchMap.location, req);
-      returnData = {cases: assignActionsToCases(data.cases, req.body.view, isCaseAllocator), total_records: data.total_records};
-    }
+  proxyReq.setHeader('content-type', 'application/json');
+  proxyReq.setHeader('content-length', body.length);
 
-    // Send the (possibly modified) data back in the Response.
-    res.send(returnData);
-  } catch (error) {
-    next(error);
-  }
+  proxyReq.write(body);
+  delete req.body;
+  proxyReq.end();
+}
+
+export function handleGetMyCasesResponse(proxyRes, req, res, json): any {
+  // note: body not currently being passed in as function only used for my cases
+  const caseData = json.cases;
+  const totalRecords = json.cases.length;
+  json.total_records = totalRecords;
+  // search parameters passed in as null as there are no parameters for my cases
+  const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
+  const mappedCases =  req && req.session && req.session.roleAssignmentResponse
+    ? mapCasesFromData(caseData, req.session.roleAssignmentResponse, null) : [];
+  json.cases = assignActionsToCases(mappedCases, userIsCaseAllocator, true);
+  return json;
 }
 
 /**
@@ -306,24 +296,6 @@ export async function getRolesCategory(req: EnhancedRequest, res: Response, next
     {roleId: 'legalOps', roleName: 'Legal Ops'},
     {roleId: 'admin', roleName: 'Admin'}];
   return res.send(personRoles).status(200);
-}
-
-export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
-  const caseId = req.params.caseId;
-  try {
-    const basePath = `${baseRoleAssignmentUrl}/am/role-assignments/query`;
-    const roleAssignmentsBody = {
-      attributes: {
-        caseId: [caseId],
-      },
-    };
-    const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
-    const {status, data} = response;
-    const refinedData = refineRoleAssignments(data);
-    return res.status(status).send(refinedData);
-  } catch (e) {
-    next(e);
-  }
 }
 
 export async function showAllocateRoleLink(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {

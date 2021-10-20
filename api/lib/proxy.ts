@@ -15,12 +15,14 @@ import { http } from './http'
 import { EnhancedRequest } from './models'
 import {exists} from './util'
 
-export function setHeaders(req: express.Request) {
+export function setHeaders(req: express.Request, contentType?: string) {
     const headers: any = {}
 
     if (req.headers) {
 
-        if (req.headers['content-type']) {
+        if (contentType) {
+            headers['content-type'] = contentType;
+        } else if (req.headers['content-type']) {
             headers['content-type'] = req.headers['content-type']
         }
 

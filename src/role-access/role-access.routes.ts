@@ -1,7 +1,5 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CaseResolver } from '@hmcts/ccd-case-ui-toolkit';
-import { CaseRolesResolverService } from '../app/resolvers/case-roles-resolver.service';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
 import { DeleteExclusionComponent, RemoveRoleComponent } from './containers';
 import { AddExclusionHomeComponent } from './containers/add-exclusion';
@@ -56,9 +54,6 @@ export const ROUTES: Routes = [
         path: 'remove',
         component: RemoveRoleComponent,
         canActivate: [HealthCheckGuard],
-        resolve: {
-          roles: CaseRolesResolverService
-        },
         data: {
           title: 'HMCTS Manage cases | Role and access | Remove a role',
         }

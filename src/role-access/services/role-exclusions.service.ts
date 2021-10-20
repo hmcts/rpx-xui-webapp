@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ExclusionStateData, Role, RoleExclusion } from '../models';
+import { CaseRole, ExclusionStateData, Role, RoleExclusion } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class RoleExclusionsService {

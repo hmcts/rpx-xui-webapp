@@ -9,10 +9,10 @@ import { RoleCategoryMappingService } from '../../../app/services/role-category-
 import { CaseHearingModel } from '../../../hearings/models/caseHearing.model';
 import { CaseHearingsMainModel } from '../../../hearings/models/caseHearingsMain.model';
 import { HearingDayScheduleModel } from '../../../hearings/models/hearingDaySchedule.model';
-import { Actions, HearingListingStatusEnum, HearingsSectionStatusEnum } from '../../../hearings/models/hearings.enum';
+import { Actions, EXUISectionStatusEnum, HearingListingStatusEnum } from '../../../hearings/models/hearings.enum';
 import { CaseHearingsComponent } from './case-hearings.component';
 
-fdescribe('CaseHearingsComponent', () => {
+describe('CaseHearingsComponent', () => {
 
   let component: CaseHearingsComponent;
   let fixture: ComponentFixture<CaseHearingsComponent>;
@@ -33,8 +33,9 @@ fdescribe('CaseHearingsComponent', () => {
     hmcStatus: 'Upcoming',
     lastResponseReceivedDateTime: '',
     responseVersion: 'rv1',
+    listAssistCaseStatus: '',
     hearingListingStatus: HearingListingStatusEnum.LISTED,
-    hearingsSectionStatus: '',
+    exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_1],
   };
   const HEARINGS_LIST: CaseHearingsMainModel = {
@@ -107,13 +108,13 @@ fdescribe('CaseHearingsComponent', () => {
     component.ngOnInit();
     fixture.detectChanges();
     expect(component.hearingsActions.length).toBe(4);
-    expect(component.hearingsActions.includes(Actions.Create)).toBeTruthy();
+    expect(component.hearingsActions.includes(Actions.CREATE)).toBeTruthy();
     expect(component.hasRequestAction).toBeTruthy();
   });
 
   it('should getHearsListByStatus', () => {
     mockStore.pipe.and.returnValue(of(HEARINGS_LIST));
-    const hearingList = component.getHearsListByStatus(HearingsSectionStatusEnum.UPCOMING);
+    const hearingList = component.getHearsListByStatus(EXUISectionStatusEnum.UPCOMING);
     fixture.detectChanges();
     hearingList.subscribe(hearing => expect(hearing).toBeTruthy());
   });

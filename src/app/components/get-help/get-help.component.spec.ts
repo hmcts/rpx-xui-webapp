@@ -20,10 +20,12 @@ describe('GetHelpComponent', () => {
         useValue: mockStore
       }
     ]
-    }).compileComponents();
+    })
+      .compileComponents();
   }));
 
   describe('Testing using store of component', () => {
+
     beforeEach(() => {
       mockStore = jasmine.createSpyObj('store', ['dispatch', 'pipe']);
       component = new GetHelpComponent(mockStore);

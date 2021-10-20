@@ -1,13 +1,15 @@
 import { HearingDayScheduleModel } from './hearingDaySchedule.model';
-import { HearingListingStatusEnum } from './hearings.enum';
+import { EXUIDisplayStatusEnum, EXUISectionStatusEnum } from './hearings.enum';
 
 export interface CaseHearingModel {
   hearingID: string;
   hearingType: string;
-  lastResponseReceivedDateTime: string;
   hmcStatus: string;
-  hearingListingStatus: HearingListingStatusEnum;
+  lastResponseReceivedDateTime: string;
   responseVersion: string;
-  hearingsSectionStatus: string;
+  hearingListingStatus: string;
+  listAssistCaseStatus: string;
   hearingDaySchedule: HearingDayScheduleModel[];
+  exuiSectionStatus?: EXUISectionStatusEnum;
+  exuiDisplayStatus?: EXUIDisplayStatusEnum;
 }

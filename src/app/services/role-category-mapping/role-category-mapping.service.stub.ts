@@ -1,5 +1,5 @@
-import { Observable, of } from "rxjs";
-import { UserRole } from "src/app/models/user-details.model";
+import { Observable, of } from 'rxjs';
+import { UserRole } from 'src/app/models/user-details.model';
 
 export class RoleCategoryMappingServiceStub {
     public isJudicialCategory = (userRoles$: Observable<string[]>): Observable<boolean>  => of(true);

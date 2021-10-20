@@ -22,10 +22,10 @@ export async function getHearings(req: EnhancedRequest, res: Response, next: Nex
   try {
     const {status, data}: { status: number, data: CaseHearingsMainModel } = await handleGet(markupPath, req);
     data.caseHearings.forEach(hearing =>
-      hearingStatusMappings.filter(mapping => mapping.hmcStatus === hearing.hmcStatus).map(m => {
-        hearing.hearingListingStatus = m.hearingListingStatus;
-        hearing.hearingsSectionStatus = m.hearingsSectionStatus;
-    }));
+      hearingStatusMappings.filter(mapping => mapping.hmcStatus === hearing.hmcStatus).map(hearingStatusMapping => {
+        hearing.exuiSectionStatus = hearingStatusMapping.exuiSectionStatus;
+        hearing.exuiDisplayStatus = hearingStatusMapping.exuiDisplayStatus;
+      }));
 
     res.status(status).send(data);
   } catch (error) {

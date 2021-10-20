@@ -110,7 +110,7 @@ const CASE_HEARING_6: CaseHearingModel = {
   hmcStatus: HMCStatus.exception,
   lastResponseReceivedDateTime: '2021-09-14T16:00:00.000+0000',
   responseVersion: 'rv5',
-  hearingListingStatus:HearingListingStatusEnum.CANCELLED,
+  hearingListingStatus: HearingListingStatusEnum.CANCELLED,
   hearingsSectionStatus: '',
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_5],
 };
@@ -173,15 +173,5 @@ const CASE_HEARING_11: CaseHearingModel = {
 export const HEARINGS_LIST: CaseHearingsMainModel = {
   hmctsServiceID: 'SSCS',
   caseRef: '1568642646198441',
-  caseHearings: [CASE_HEARING_1, 
-    CASE_HEARING_2, 
-    CASE_HEARING_3, 
-    CASE_HEARING_4, 
-    CASE_HEARING_5, 
-    CASE_HEARING_6, 
-    CASE_HEARING_7, 
-    CASE_HEARING_8, 
-    CASE_HEARING_9, 
-    CASE_HEARING_10, 
-    CASE_HEARING_11],
+  caseHearings: [CASE_HEARING_1, CASE_HEARING_2, CASE_HEARING_3, CASE_HEARING_4, CASE_HEARING_5, CASE_HEARING_6, CASE_HEARING_7, CASE_HEARING_8, CASE_HEARING_9, CASE_HEARING_10, CASE_HEARING_11],
 };

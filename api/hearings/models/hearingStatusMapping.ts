@@ -5,4 +5,3 @@ export class HearingStatusMapping {
   public hearingListingStatus: HearingListingStatusEnum;
   public hearingsSectionStatus: HearingsSectionStatusEnum;
 }
-  

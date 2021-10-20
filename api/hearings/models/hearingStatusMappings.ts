@@ -3,59 +3,58 @@ import { HearingStatusMapping } from "./hearingStatusMapping";
 
 export const hearingStatusMappings: HearingStatusMapping[] = [
     {
+      hearingListingStatus : HearingListingStatusEnum.WAITING_TO_BE_LISTED,
+      hearingsSectionStatus : HearingsSectionStatusEnum.UPCOMING,
       hmcStatus : HMCStatus.hearingRequestd,
-      hearingsSectionStatus : HearingsSectionStatusEnum.UPCOMING,
-      hearingListingStatus : HearingListingStatusEnum.WAITING_TO_BE_LISTED
     },
     {
+      hearingListingStatus : HearingListingStatusEnum.WAITING_TO_BE_LISTED,
+      hearingsSectionStatus : HearingsSectionStatusEnum.UPCOMING,
       hmcStatus : HMCStatus.awaitingListing,
-      hearingsSectionStatus : HearingsSectionStatusEnum.UPCOMING,
-      hearingListingStatus : HearingListingStatusEnum.WAITING_TO_BE_LISTED
     },
     {
+      hearingListingStatus : HearingListingStatusEnum.WAITING_TO_BE_LISTED,
+      hearingsSectionStatus : HearingsSectionStatusEnum.UPCOMING,
       hmcStatus : HMCStatus.listed,
-      hearingsSectionStatus : HearingsSectionStatusEnum.UPCOMING,
-      hearingListingStatus : HearingListingStatusEnum.LISTED
     },
     {
+      hearingListingStatus : HearingListingStatusEnum.WAITING_TO_BE_LISTED,
+      hearingsSectionStatus : HearingsSectionStatusEnum.UPCOMING,
       hmcStatus : HMCStatus.updateRequested,
-      hearingsSectionStatus : HearingsSectionStatusEnum.UPCOMING,
-      hearingListingStatus : HearingListingStatusEnum.UPDATE_REQUESTED
     },
     {
+      hearingListingStatus : HearingListingStatusEnum.UPDATE_REQUESTED,
+      hearingsSectionStatus : HearingsSectionStatusEnum.UPCOMING,
       hmcStatus : HMCStatus.updateSubmitted,
-      hearingsSectionStatus : HearingsSectionStatusEnum.UPCOMING,
-      hearingListingStatus : HearingListingStatusEnum.UPDATE_REQUESTED
     },
     {
+      hearingListingStatus : HearingListingStatusEnum.EXCEPTION,
+      hearingsSectionStatus : HearingsSectionStatusEnum.UPCOMING,
       hmcStatus : HMCStatus.exception,
-      hearingsSectionStatus : HearingsSectionStatusEnum.UPCOMING,
-      hearingListingStatus : HearingListingStatusEnum.EXCEPTION
     },
     {
+      hearingListingStatus : HearingListingStatusEnum.CANCELLATION_REQUESTED,
+      hearingsSectionStatus : HearingsSectionStatusEnum.UPCOMING,
       hmcStatus : HMCStatus.cancellationRequested,
-      hearingsSectionStatus : HearingsSectionStatusEnum.UPCOMING,
-      hearingListingStatus : HearingListingStatusEnum.CANCELLATION_REQUESTED
     },
     {
+      hearingListingStatus : HearingListingStatusEnum.VACATED,
+      hearingsSectionStatus : HearingsSectionStatusEnum.PAST_AND_CANCELLED,
       hmcStatus : HMCStatus.vacated,
-      hearingsSectionStatus : HearingsSectionStatusEnum.PAST_AND_CANCELLED,
-      hearingListingStatus : HearingListingStatusEnum.VACATED
     },
     {
+      hearingListingStatus : HearingListingStatusEnum.AWAITING_ACTUALS,
+      hearingsSectionStatus : HearingsSectionStatusEnum.PAST_AND_CANCELLED,
       hmcStatus : HMCStatus.awaitingActuals,
-      hearingsSectionStatus : HearingsSectionStatusEnum.PAST_AND_CANCELLED,
-      hearingListingStatus : HearingListingStatusEnum.AWAITING_ACTUALS
     },
     {
+      hearingListingStatus : HearingListingStatusEnum.COMPLETED,
+      hearingsSectionStatus : HearingsSectionStatusEnum.PAST_AND_CANCELLED,
       hmcStatus : HMCStatus.completed,
-      hearingsSectionStatus : HearingsSectionStatusEnum.PAST_AND_CANCELLED,
-      hearingListingStatus : HearingListingStatusEnum.COMPLETED
     },
     {
-      hmcStatus : HMCStatus.adjourned,
+      hearingListingStatus : HearingListingStatusEnum.ADJOURNED,
       hearingsSectionStatus : HearingsSectionStatusEnum.PAST_AND_CANCELLED,
-      hearingListingStatus : HearingListingStatusEnum.ADJOURNED
+      hmcStatus : HMCStatus.adjourned,
     },
   ];
-  

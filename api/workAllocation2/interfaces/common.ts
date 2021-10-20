@@ -34,6 +34,7 @@ export interface Caseworker {
     idamId: string;
     email: string;
     location: Location;
+    roleCategory: string;
 }
 
 export interface Judicialworker {

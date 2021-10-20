@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Person } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
+import { convertToName } from 'src/role-access/utils';
 import { $enum as EnumUtil } from 'ts-enum-util';
 import { AppUtils } from '../../../../app/app-utils';
 import { UserRole } from '../../../../app/models';
@@ -21,6 +22,7 @@ import {
   AllocateRoleState,
   AllocateRoleStateData,
   AllocateTo,
+  DEFINED_ROLES,
   DurationOfRole,
   RoleCategory,
   SpecificRole,
@@ -95,7 +97,8 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
       this.roleCategory = this.route.snapshot.queryParams.roleCategory ? this.route.snapshot.queryParams.roleCategory : null;
       this.userIdToBeRemoved = this.route.snapshot.queryParams.actorId ? this.route.snapshot.queryParams.actorId : null;
       this.userNameToBeRemoved = this.route.snapshot.queryParams.userName ? this.route.snapshot.queryParams.userName : null;
-      this.typeOfRole = this.route.snapshot.queryParams.typeOfRole ? this.route.snapshot.queryParams.typeOfRole : null;
+      const roleId = this.route.snapshot.queryParams.typeOfRole ? this.route.snapshot.queryParams.typeOfRole : null;
+      this.setReallocatedRole(roleId);
       this.action = this.route.snapshot.routeConfig.path ? this.route.snapshot.routeConfig.path : null;
     }
     if (this.action === Actions.Reallocate) {
@@ -140,6 +143,13 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
 
   public isComponentVisible(currentNavigationState: AllocateRoleState, requiredNavigationState: AllocateRoleState[]): boolean {
     return requiredNavigationState.includes(currentNavigationState);
+  }
+
+  private setReallocatedRole(roleId: string): void {
+    if (roleId) {
+      const role = DEFINED_ROLES.find(r => r.id === roleId);
+      this.typeOfRole = role && role.name ? role : {id: roleId, name: convertToName(roleId)};
+    }
   }
 
   public onNavEvent(event: AllocateRoleNavigationEvent): void {

@@ -1,22 +1,75 @@
-import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { expect } from 'chai';
 
 import { mockReq } from 'sinon-express-mock';
+import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { ASSIGN, CLAIM, CLAIM_AND_GO, COMPLETE, GO, REASSIGN, RELEASE, TaskPermission } from './constants/actions';
-import { JUDICIAL_AVAILABLE_TASKS, JUDICIAL_MY_TASKS } from './constants/mock.data';
+import { Case } from './interfaces/case';
 import { Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/common';
 import { PersonRole } from './interfaces/person';
-import { Task } from './interfaces/task';
-import { applySearchFilter,
+import { RoleCaseData } from './interfaces/roleCaseData';
+import {
+  applySearchFilter,
   assignActionsToTasks,
+  constructElasticSearchQuery,
   getActionsByPermissions,
   getCaseIdListFromRoles,
+  mapCasesFromData,
   mapCaseworkerData,
   mapCaseworkerPrimaryLocation,
   prepareGetTaskUrl,
   preparePaginationUrl,
   preparePostTaskUrlAction,
-  prepareSearchTaskUrl } from './util';
+  prepareSearchTaskUrl
+} from './util';
+
+  const firstRoleAssignment: RoleAssignment[] = [{
+    id: '1',
+    attributes: {
+      caseId: '4'
+    }
+  },
+  {
+    id: '2',
+    attributes: {
+      region: 'Birm'
+    }
+  },
+  {
+    id: '3',
+    attributes: {
+      caseId: '2'
+    }
+  },
+  {
+    id: '4',
+    attributes: {
+      caseId: '5'
+    }
+  }];
+  const secondRoleAssignment: RoleAssignment[] = [{
+    id: '1',
+    attributes: {
+      caseId: '4'
+    }
+  },
+  {
+    id: '2',
+    attributes: {
+      region: '2'
+    }
+  },
+  {
+    id: '3',
+    attributes: {
+      caseId: '2'
+    }
+  },
+  {
+    id: '4',
+    attributes: {
+      caseId: '5'
+    }
+  }];
 
 const myTasks = [
   {
@@ -156,7 +209,7 @@ describe('workAllocation.utils', () => {
       expect(preparePaginationUrl(req, url)).to.equal(url);
       req = req = mockReq({
         body: {
-          searchRequest: { pagination_parameters: null},
+          searchRequest: {pagination_parameters: null},
           view: 'view',
         },
         session: {
@@ -386,81 +439,33 @@ describe('workAllocation.utils', () => {
 
   describe('applySearchFilter', () => {
     it('PersonRole BOTH', () => {
-      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.CASEWORKER };
+      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.CASEWORKER};
       const result = applySearchFilter(person, PersonRole.ALL, 'name');
       expect(result).to.equal(true);
     });
     it('PersonRole CASEWORKER', () => {
-      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.CASEWORKER };
+      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.CASEWORKER};
       const result = applySearchFilter(person, PersonRole.CASEWORKER, 'name');
       expect(result).to.equal(true);
     });
     it('PersonRole JUDICIAL', () => {
-      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.JUDICIAL };
+      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.JUDICIAL};
       const result = applySearchFilter(person, PersonRole.JUDICIAL, 'name');
       expect(result).to.equal(true);
     });
     it('PersonRole CASEWORKER no match', () => {
-      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.JUDICIAL };
+      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.JUDICIAL};
       const result = applySearchFilter(person, PersonRole.CASEWORKER, 'name');
       expect(result).to.equal(false);
     });
     it('PersonRole JUDICIAL no match', () => {
-      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.CASEWORKER };
+      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.CASEWORKER};
       const result = applySearchFilter(person, PersonRole.JUDICIAL, 'name');
       expect(result).to.equal(false);
     });
   });
 
   describe('getCaseIdListFromRoles', () => {
-    const firstRoleAssignment: RoleAssignment[] = [{
-      id: '1',
-      attributes: {
-        caseId: '4'
-      }
-    },
-    {
-      id: '2',
-      attributes: {
-        region: 'Birm'
-      }
-    },
-    {
-      id: '3',
-      attributes: {
-        caseId: '2'
-      }
-    },
-    {
-      id: '4',
-      attributes: {
-        caseId: '5'
-      }
-    }];
-    const secondRoleAssignment: RoleAssignment[] = [{
-      id: '1',
-      attributes: {
-        caseId: '4'
-      }
-    },
-    {
-      id: '2',
-      attributes: {
-        region: '2'
-      }
-    },
-    {
-      id: '3',
-      attributes: {
-        caseId: '2'
-      }
-    },
-    {
-      id: '4',
-      attributes: {
-        caseId: '5'
-      }
-    }];
     const expectedCaseList = ['4', '2', '5'];
     it('should return empty list if there is nothing given', () => {
       expect(getCaseIdListFromRoles(null)).to.deep.equal([]);
@@ -469,7 +474,109 @@ describe('workAllocation.utils', () => {
       expect(getCaseIdListFromRoles(firstRoleAssignment)).to.deep.equal(expectedCaseList);
     });
     it('should avoid duplicating case ids', () => {
-      expect(getCaseIdListFromRoles(firstRoleAssignment)).to.deep.equal(expectedCaseList);
+      expect(getCaseIdListFromRoles(secondRoleAssignment)).to.deep.equal(expectedCaseList);
+    });
+  });
+
+  describe('constructElasticSearchQuery', () => {
+
+    it('should create a query with at least three case ids', () => {
+      const caseIds =  [1589185982594513, 1589185060514243, 1589185060514243];
+      const result = constructElasticSearchQuery(caseIds, 0, 1000);
+      expect(result.native_es_query.query.terms).to.deep.equal({reference: caseIds});
+    });
+
+    it('should create a query with no case ids', () => {
+      const caseIds =  [];
+      const result = constructElasticSearchQuery(caseIds, 0, 1000);
+      expect(result.native_es_query.query.terms).to.deep.equal({reference: caseIds});
+    });
+  });
+
+  describe('mapCasesFromData', () => {
+    const paginationConfig = {
+      page_number: 1,
+      page_size: 2
+    };
+    // note not making it a case as would have to fill in multiple unneccessary properties
+    const mockCaseData: any[] = [
+      {
+        id: '123',
+        type: 'example',
+        case_type_id: 'Asylum',
+        jurisdiction: 'IA',
+      },
+      {
+        id: '456',
+        type: 'example2',
+        case_type_id: 'Test',
+        jurisdiction: 'IA',
+      },
+    ];
+    const mockRoleAssignment: RoleAssignment[] = [{
+      id: '1',
+      actorId: 'person1',
+      roleName: 'example-role',
+      endTime: new Date('01-01-2022'),
+      beginTime: new Date('01-01-2021'),
+      attributes: {
+        caseId: '123',
+        primaryLocation: '001'
+      }
+    },
+    {
+      id: '2',
+      actorId: 'person1',
+      roleName: 'example-role',
+      endTime: new Date('01-01-2022'),
+      beginTime: new Date('01-01-2021'),
+      attributes: {
+        primaryLocation: '001'
+      }
+    },
+    {
+      id: '3',
+      actorId: 'person1',
+      roleName: 'example-role-2',
+      endTime: new Date('01-01-2022'),
+      beginTime: new Date('01-01-2021'),
+      attributes: {
+        caseId: '456',
+        primaryLocation: '001'
+      }
+    },];
+    const expectedRoleCaseData: RoleCaseData[] = [{
+      id: '1',
+      case_id: '123',
+      case_name: '123',
+      case_category: 'Asylum',
+      case_role: 'example-role',
+      jurisdiction: 'IA',
+      location_id: '001',
+      startDate: new Date('01-01-2021'),
+      endDate: new Date('01-01-2022'),
+      assignee: 'person1',
+    },
+    {
+      id: '3',
+      case_id: '456',
+      case_name: '456',
+      case_category: 'Test',
+      case_role: 'example-role-2',
+      jurisdiction: 'IA',
+      location_id: '001',
+      startDate: new Date('01-01-2021'),
+      endDate: new Date('01-01-2022'),
+      assignee: 'person1',
+    }]
+    it('should return empty list if there is nothing given', () => {
+      expect(mapCasesFromData(null, null, null)).to.deep.equal([]);
+      expect(mapCasesFromData(null, firstRoleAssignment, null)).to.deep.equal([]);
+      expect(mapCasesFromData(null, firstRoleAssignment, paginationConfig)).to.deep.equal([]);
+      expect(mapCasesFromData(null, null, paginationConfig)).to.deep.equal([]);
+    });
+    it('should return correct case data if no role assignment data returned', () => {
+      expect(mapCasesFromData(mockCaseData, mockRoleAssignment, null)).to.deep.equal(expectedRoleCaseData);
     });
   });
 

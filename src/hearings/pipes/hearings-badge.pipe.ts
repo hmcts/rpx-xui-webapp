@@ -1,23 +1,23 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { HearingListingStatusEnum } from '../models/hearings.enum';
+import { EXUIDisplayStatusEnum } from '../models/hearings.enum';
 
 @Pipe({
   name: 'hearingsBadge'
 })
 export class HearingsBadgePipe implements PipeTransform {
 
-  public transform(value: HearingListingStatusEnum): string {
+  public transform(value: EXUIDisplayStatusEnum): string {
     switch (value) {
-      case HearingListingStatusEnum.CANCELLED:
+      case EXUIDisplayStatusEnum.VACATED:
         return 'govuk-tag govuk-tag--red';
-      case HearingListingStatusEnum.COMPLETED:
+      case EXUIDisplayStatusEnum.COMPLETED:
         return 'govuk-tag govuk-tag--purple';
-      case HearingListingStatusEnum.LISTED:
+      case EXUIDisplayStatusEnum.LISTED:
         return 'govuk-tag govuk-tag--green';
-      case HearingListingStatusEnum.WAITING_TO_BE_LISTED:
+      case EXUIDisplayStatusEnum.AWAITING_LISTING:
         return 'govuk-tag govuk-tag--grey';
       default:
-        return '';
+        return 'govuk-tag';
     }
   }
 

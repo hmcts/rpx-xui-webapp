@@ -4,11 +4,10 @@ import {
   RouterStateSnapshot,
 } from '@angular/router';
 import { ActionReducerMap, createFeatureSelector, createSelector } from '@ngrx/store';
-import * as fromHearings from '../../../hearings/store';
+
 import * as fromRouter from '@ngrx/router-store';
 
 import * as fromApp from './app-config.reducer';
-import { HearingsStateData } from 'src/hearings/models/hearingsStateData.model';
 
 export interface RouterStateUrl {
   url: string;

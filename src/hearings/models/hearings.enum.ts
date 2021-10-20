@@ -1,38 +1,53 @@
 export enum Actions {
-  Create,
-  Read,
-  Update,
-  Delete,
+  CREATE,
+  READ,
+  UPDATE,
+  DELETE,
 }
 
-export enum HearingsSectionStatusEnum {
-  UPCOMING = 'Upcoming',
-  PAST_AND_CANCELLED = 'Past and cancelled',
+export enum HMCStatus {
+  HEARING_REQUESTD = 'Hearing requested',
+  AWAITING_LISTING = 'Awaiting listing',
+  LISTED = 'Listed',
+  UPDATE_REQUESTED = 'Update requested',
+  UPDATE_SUBMITTED = 'Update submitted',
+  EXCEPTION = 'Exception',
+  CANCELLATION_REQUESTED = 'Cancellation requested',
+  VACATED = 'Vacated',
+  AWAITING_ACTUALS = 'Awaiting Actuals',
+  COMPLETED = 'Completed',
+  ADJOURNED = 'Adjourned',
 }
 
 export enum HearingListingStatusEnum {
-  WAITING_TO_BE_LISTED = 'WAITING TO BE LISTED',
+  AWAITING_LISTING = 'AWAITING LISTING',
   UPDATE_REQUESTED = 'UPDATE REQUESTED',
+  UPDATE_SUBMITTED = 'UPDATE SUBMITTED',
   COMPLETED = 'COMPLETED',
   CANCELLED = 'CANCELLED',
   LISTED = 'LISTED',
   EXCEPTION = 'EXCEPTION',
-  CANCELLATION_REQUESTED = 'CANCELLATION_REQUESTED',
+  CANCELLATION_REQUESTED = 'CANCELLATION REQUESTED',
   VACATED = 'VACATED',
   AWAITING_ACTUALS = 'AWAITING ACTUALS',
   ADJOURNED = 'ADJOURNED',
 }
 
-export enum HMCStatus {
-  hearingRequestd = 'Hearing requested',
-  awaitingListing = 'Awaiting listing',
-  listed = 'Listed',
-  updateRequested = 'Update requested',
-  updateSubmitted = 'Update submitted',
-  exception = 'Exception',
-  cancellationRequested = 'Cancellation requested',
-  vacated = 'Vacated',
-  awaitingActuals = 'Awaiting Actuals',
-  completed = 'Completed',
-  adjourned = 'Adjourned',
+export enum EXUISectionStatusEnum {
+  UPCOMING = 'Upcoming',
+  PAST_AND_CANCELLED = 'Past and cancelled',
+}
+
+export enum EXUIDisplayStatusEnum {
+  AWAITING_LISTING = 'AWAITING LISTING',
+  UPDATE_REQUESTED = 'UPDATE REQUESTED',
+  UPDATE_SUBMITTED = 'UPDATE SUBMITTED',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED',
+  LISTED = 'LISTED',
+  EXCEPTION = 'EXCEPTION',
+  CANCELLATION_REQUESTED = 'CANCELLATION REQUESTED',
+  VACATED = 'VACATED',
+  AWAITING_ACTUALS = 'AWAITING ACTUALS',
+  ADJOURNED = 'ADJOURNED',
 }

@@ -1,60 +1,61 @@
-import { HearingListingStatusEnum, HearingsSectionStatusEnum, HMCStatus } from "./hearings.enum";
-import { HearingStatusMapping } from "./hearingStatusMapping";
+/* tslint:disable:object-literal-sort-keys */
+import { EXUIDisplayStatusEnum, EXUISectionStatusEnum, HMCStatus } from './hearings.enum';
+import { HearingStatusMapping } from './hearingStatusMapping';
 
 export const hearingStatusMappings: HearingStatusMapping[] = [
-    {
-      hearingListingStatus : HearingListingStatusEnum.WAITING_TO_BE_LISTED,
-      hearingsSectionStatus : HearingsSectionStatusEnum.UPCOMING,
-      hmcStatus : HMCStatus.hearingRequestd,
-    },
-    {
-      hearingListingStatus : HearingListingStatusEnum.WAITING_TO_BE_LISTED,
-      hearingsSectionStatus : HearingsSectionStatusEnum.UPCOMING,
-      hmcStatus : HMCStatus.awaitingListing,
-    },
-    {
-      hearingListingStatus : HearingListingStatusEnum.WAITING_TO_BE_LISTED,
-      hearingsSectionStatus : HearingsSectionStatusEnum.UPCOMING,
-      hmcStatus : HMCStatus.listed,
-    },
-    {
-      hearingListingStatus : HearingListingStatusEnum.WAITING_TO_BE_LISTED,
-      hearingsSectionStatus : HearingsSectionStatusEnum.UPCOMING,
-      hmcStatus : HMCStatus.updateRequested,
-    },
-    {
-      hearingListingStatus : HearingListingStatusEnum.UPDATE_REQUESTED,
-      hearingsSectionStatus : HearingsSectionStatusEnum.UPCOMING,
-      hmcStatus : HMCStatus.updateSubmitted,
-    },
-    {
-      hearingListingStatus : HearingListingStatusEnum.EXCEPTION,
-      hearingsSectionStatus : HearingsSectionStatusEnum.UPCOMING,
-      hmcStatus : HMCStatus.exception,
-    },
-    {
-      hearingListingStatus : HearingListingStatusEnum.CANCELLATION_REQUESTED,
-      hearingsSectionStatus : HearingsSectionStatusEnum.UPCOMING,
-      hmcStatus : HMCStatus.cancellationRequested,
-    },
-    {
-      hearingListingStatus : HearingListingStatusEnum.VACATED,
-      hearingsSectionStatus : HearingsSectionStatusEnum.PAST_AND_CANCELLED,
-      hmcStatus : HMCStatus.vacated,
-    },
-    {
-      hearingListingStatus : HearingListingStatusEnum.AWAITING_ACTUALS,
-      hearingsSectionStatus : HearingsSectionStatusEnum.PAST_AND_CANCELLED,
-      hmcStatus : HMCStatus.awaitingActuals,
-    },
-    {
-      hearingListingStatus : HearingListingStatusEnum.COMPLETED,
-      hearingsSectionStatus : HearingsSectionStatusEnum.PAST_AND_CANCELLED,
-      hmcStatus : HMCStatus.completed,
-    },
-    {
-      hearingListingStatus : HearingListingStatusEnum.ADJOURNED,
-      hearingsSectionStatus : HearingsSectionStatusEnum.PAST_AND_CANCELLED,
-      hmcStatus : HMCStatus.adjourned,
-    },
-  ];
+  {
+    hmcStatus: HMCStatus.HEARING_REQUESTD,
+    exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+    exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
+  },
+  {
+    hmcStatus: HMCStatus.AWAITING_LISTING,
+    exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+    exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
+  },
+  {
+    hmcStatus: HMCStatus.LISTED,
+    exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+    exuiDisplayStatus: EXUIDisplayStatusEnum.LISTED,
+  },
+  {
+    hmcStatus: HMCStatus.UPDATE_REQUESTED,
+    exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+    exuiDisplayStatus: EXUIDisplayStatusEnum.UPDATE_REQUESTED,
+  },
+  {
+    hmcStatus: HMCStatus.UPDATE_SUBMITTED,
+    exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+    exuiDisplayStatus: EXUIDisplayStatusEnum.UPDATE_REQUESTED,
+  },
+  {
+    hmcStatus: HMCStatus.EXCEPTION,
+    exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+    exuiDisplayStatus: EXUIDisplayStatusEnum.EXCEPTION,
+  },
+  {
+    hmcStatus: HMCStatus.CANCELLATION_REQUESTED,
+    exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+    exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLATION_REQUESTED,
+  },
+  {
+    hmcStatus: HMCStatus.VACATED,
+    exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
+    exuiDisplayStatus: EXUIDisplayStatusEnum.VACATED,
+  },
+  {
+    hmcStatus: HMCStatus.AWAITING_ACTUALS,
+    exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
+    exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_ACTUALS,
+  },
+  {
+    hmcStatus: HMCStatus.COMPLETED,
+    exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
+    exuiDisplayStatus: EXUIDisplayStatusEnum.COMPLETED,
+  },
+  {
+    hmcStatus: HMCStatus.ADJOURNED,
+    exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
+    exuiDisplayStatus: EXUIDisplayStatusEnum.ADJOURNED,
+  },
+];

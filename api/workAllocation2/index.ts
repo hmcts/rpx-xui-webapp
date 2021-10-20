@@ -32,6 +32,7 @@ import {
   assignActionsToTasks,
   constructElasticSearchQuery,
   getCaseIdListFromRoles, getCaseTypesFromRoleAssignments,
+  getSubstantiveRoles,
   mapCasesFromData,
   mapCaseworkerData,
   prepareCaseWorkerForLocation,
@@ -104,8 +105,9 @@ export function handleGetMyCasesResponse(proxyRes, req, res, json): any {
   json.total_records = totalRecords;
   // search parameters passed in as null as there are no parameters for my cases
   const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
-  const mappedCases =  req && req.session && req.session.roleAssignmentResponse
-    ? mapCasesFromData(caseData, req.session.roleAssignmentResponse, null) : [];
+  const substantiveRoles = req && req.session && req.session.roleAssignmentResponse ?
+   getSubstantiveRoles(req.session.roleAssignmentResponse) : null;
+  const mappedCases =  substantiveRoles ? mapCasesFromData(caseData, req.session.roleAssignmentResponse, null) : [];
   json.cases = assignActionsToCases(mappedCases, userIsCaseAllocator, true);
   return json;
 }

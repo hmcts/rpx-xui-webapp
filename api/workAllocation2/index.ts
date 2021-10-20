@@ -1,7 +1,8 @@
 import { NextFunction, Response } from 'express';
 import { handleGet, handlePost } from '../common/mockService';
-import { getConfigValue } from '../configuration';
+import { getConfigValue, showFeature } from '../configuration';
 import {
+  FEATURE_SUBSTANTIVE_ROLE_ENABLED,
   SERVICES_CASE_CASEWORKER_REF_PATH,
   SERVICES_CASE_JUDICIALWORKER_REF_PATH,
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
@@ -105,9 +106,11 @@ export function handleGetMyCasesResponse(proxyRes, req, res, json): any {
   json.total_records = totalRecords;
   // search parameters passed in as null as there are no parameters for my cases
   const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
-  const substantiveRoles = req && req.session && req.session.roleAssignmentResponse ?
-   getSubstantiveRoles(req.session.roleAssignmentResponse) : null;
-  const mappedCases =  substantiveRoles ? mapCasesFromData(caseData, req.session.roleAssignmentResponse, null) : [];
+  let checkedRoles = req && req.session && req.session.roleAssignmentResponse ? req.session.roleAssignmentResponse : null;
+  if (showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED)) {
+    checkedRoles = getSubstantiveRoles(req.session.roleAssignmentResponse);
+  }
+  const mappedCases =  checkedRoles ? mapCasesFromData(caseData, checkedRoles, null) : [];
   json.cases = assignActionsToCases(mappedCases, userIsCaseAllocator, true);
   return json;
 }

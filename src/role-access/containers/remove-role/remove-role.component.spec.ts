@@ -1,16 +1,17 @@
 import { HttpClientModule } from '@angular/common/http';
 import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
-import { of } from 'rxjs';
+import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
+import { Observable, of } from 'rxjs';
 import { AnswersComponent } from '../../components';
-import { RemoveAllocationNavigationEvent, RoleCategory, TypeOfRole } from '../../models';
+import { AllocateRoleStateData, CaseRole, RemoveAllocationNavigationEvent, Role, RoleCategory, TypeOfRole } from '../../models';
 import { AnswerLabelText, RemoveRoleText } from '../../models/enums/answer-text';
 import { AllocateRoleService } from '../../services';
 import { RemoveRoleComponent } from './remove-role.component';
 
 @Component({
-  template: `<exui-remove-role></exui-remove-role>`
+  template: `
+    <exui-remove-role></exui-remove-role>`
 })
 class WrapperComponent {
   @ViewChild(RemoveRoleComponent) public appComponentRef: RemoveRoleComponent;
@@ -23,17 +24,43 @@ describe('RemoveRoleComponent', () => {
   const routerMock = jasmine.createSpyObj('Router', [
     'navigateByUrl', 'navigate'
   ]);
-  const mockAllocateRoleService = jasmine.createSpyObj('allocateRoleService', ['removeAllocation']);
   const exampleCaseId = '123456789';
   const goToCaseUrl = `cases/case-details/${exampleCaseId}/roles-and-access`;
+
+  class AllocateRoleMockService extends AllocateRoleService {
+    public confirmAllocation(allocateRoleStateData: AllocateRoleStateData): Observable<any> {
+      return of(null);
+    }
+
+    public getCaseRoles(caseId: string, jurisdiction: string, caseType: string, assignmentId?: string): Observable<CaseRole[]> {
+      return of([
+        {
+          added: Date.UTC(2021, 6, 1),
+          id: '999999999',
+          name: 'Judge Rinder',
+          notes: 'Test exclusion',
+          email: 'user@test.com'
+        }
+      ] as unknown as CaseRole[]);
+    }
+
+    public getValidRoles(): Observable<Role[]> {
+      return of(null);
+    }
+
+    public removeAllocation(assigmentId: string): Observable<any> {
+      return of(null);
+    }
+
+  }
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       schemas: [
         NO_ERRORS_SCHEMA
       ],
-      imports: [ HttpClientModule ],
-      declarations: [ AnswersComponent, RemoveRoleComponent, WrapperComponent ],
+      imports: [HttpClientModule],
+      declarations: [AnswersComponent, RemoveRoleComponent, WrapperComponent],
       providers: [
         {
           provide: ActivatedRoute,
@@ -58,8 +85,14 @@ describe('RemoveRoleComponent', () => {
               queryParams: {
                 caseId: '123456789',
                 assignmentId: '999999999',
-              }
+              },
             },
+            queryParamMap: of(convertToParamMap({
+              caseId: '123456789',
+              assignmentId: '999999999',
+              jurisdiction: 'IA',
+              caseType: 'Alsyum',
+            }))
           }
         },
         {
@@ -68,7 +101,7 @@ describe('RemoveRoleComponent', () => {
         },
         {
           provide: AllocateRoleService,
-          useValue: mockAllocateRoleService
+          useClass: AllocateRoleMockService
         }
       ]
     })
@@ -96,7 +129,7 @@ describe('RemoveRoleComponent', () => {
     const ELEMENT_0 = fixture.debugElement.nativeElement.querySelectorAll('.govuk-summary-list__key')[0];
     expect(ELEMENT_0.textContent).toContain(AnswerLabelText.TypeOfRole);
     const ELEMENT_0_VALUE = fixture.debugElement.nativeElement.querySelectorAll('.govuk-summary-list__value')[0];
-    expect(ELEMENT_0_VALUE.textContent).toContain('Lead judge');
+    expect(ELEMENT_0_VALUE.textContent).toContain('Judge Rinder');
     const ELEMENT_1 = fixture.debugElement.nativeElement.querySelectorAll('.govuk-summary-list__key')[1];
     expect(ELEMENT_1.textContent).toContain(AnswerLabelText.Person);
     const ELEMENT_1_VALUE = fixture.debugElement.nativeElement.querySelectorAll('.govuk-summary-list__value')[1];
@@ -106,7 +139,6 @@ describe('RemoveRoleComponent', () => {
   it('should navigate correctly on click', () => {
     component.onNavEvent(RemoveAllocationNavigationEvent.CANCEL);
     expect(routerMock.navigateByUrl).toHaveBeenCalledWith(goToCaseUrl);
-    mockAllocateRoleService.removeAllocation.and.returnValue(of({}));
     component.onNavEvent(RemoveAllocationNavigationEvent.REMOVE_ROLE_ALLOCATION);
     const additionalState = {state: {showMessage: true, messageText: RemoveRoleText.infoMessage}};
     expect(routerMock.navigate).toHaveBeenCalledWith([goToCaseUrl], additionalState);

@@ -7,29 +7,31 @@ import { UserDetails } from '../../../app/models/user-details.model';
 import * as fromRoot from '../../../app/store';
 import { CaseRole, RoleExclusion } from '../../../role-access/models';
 import { RoleExclusionsService } from '../../../role-access/services';
+import { AllocateRoleService } from '../../../role-access/services';
 
 @Component({
   selector: 'exui-roles-and-access-container',
   templateUrl: './roles-and-access-container.component.html'
 })
 export class RolesAndAccessContainerComponent implements OnInit {
-  public roles: CaseRole[] = [];
   public caseDetails: CaseView;
   public showAllocateRoleLink: boolean = false;
   public exclusions$: Observable<RoleExclusion[]>;
+  public roles$: Observable<CaseRole[]>;
   public jurisdictionFieldId = '[JURISDICTION]';
   public caseJurisdiction: string;
 
   constructor(private readonly route: ActivatedRoute,
               private readonly store: Store<fromRoot.State>,
-              private readonly roleExclusionsService: RoleExclusionsService) {
-  }
+              private readonly roleExclusionsService: RoleExclusionsService,
+              private readonly allocateService: AllocateRoleService) {}
 
   public ngOnInit(): void {
     this.caseDetails = this.route.snapshot.data.case as CaseView;
     this.applyJurisdiction(this.caseDetails);
-    this.roles = this.route.snapshot.data.roles as CaseRole[];
-    this.exclusions$ = this.roleExclusionsService.getCurrentUserRoleExclusions(this.caseDetails.case_id, this.caseDetails.case_type.id, 'IA');
+    const jurisdiction = this.caseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
+    this.roles$ = this.allocateService.getCaseRoles(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id);
+    this.exclusions$ = this.roleExclusionsService.getCurrentUserRoleExclusions(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id);
   }
 
   public applyJurisdiction(caseDetails: CaseView): void {

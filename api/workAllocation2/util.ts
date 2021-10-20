@@ -4,10 +4,14 @@ import { RoleAssignment } from 'user/interfaces/roleAssignment';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
+import { ElasticSearchQuery } from '../searchCases/interfaces/ElasticSearchQuery';
 
 import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX, ViewType } from './constants/actions';
+import { Case } from './interfaces/case';
+import { PaginationParameter } from './interfaces/caseSearchParameter';
 import { Action, Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/common';
 import { Person, PersonRole } from './interfaces/person';
+import { RoleCaseData } from './interfaces/roleCaseData';
 
 export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {
   return `${baseUrl}/task/${taskId}`;
@@ -94,7 +98,7 @@ export function assignActionsToTasks(tasks: any[], view: any, currentUser: strin
         thisView = ViewType.ACTIVE_TASKS_UNASSIGNED;
         if (task.assignee) {
           thisView = currentUser === task.assignee ?
-           ViewType.ACTIVE_TASKS_ASSIGNED_CURRENT : ViewType.ACTIVE_TASKS_ASSIGNED_OTHER;
+            ViewType.ACTIVE_TASKS_ASSIGNED_CURRENT : ViewType.ACTIVE_TASKS_ASSIGNED_OTHER;
         }
       }
       const actions: Action[] = getActionsByPermissions(thisView, task.permissions);
@@ -164,7 +168,9 @@ export function prepareRoleApiRequest(locationId?: number): any {
 
   const payload = {
     attributes,
-    roleName: ['tribunal-caseworker', 'senior-tribunal-caseworker'],
+    roleName: ['hearing-centre-admin', 'case-manager', 'ctsc', 'tribunal-caseworker',
+               'hmcts-legal-operations', 'task-supervisor', 'hmcts-admin',
+               'national-business-centre', 'senior-tribunal-caseworker', 'case-allocator'],
     validAt: Date.UTC,
   };
   if (locationId) {
@@ -246,3 +252,70 @@ export function getCaseIdListFromRoles(roleAssignmentList: RoleAssignment[]): st
   });
   return caseIdList;
 }
+
+export function constructElasticSearchQuery(caseIds: any[], page: number, size: number): ElasticSearchQuery {
+  return {
+    native_es_query: {
+      query: {
+        terms: {
+          reference: caseIds,
+        },
+      },
+      size,
+    },
+    supplementary_data: ['*'],
+  };
+}
+
+export function mapCasesFromData(
+  caseDetails: Case[],
+  roleAssignmentList: RoleAssignment[],
+  paginationConfig: PaginationParameter
+): RoleCaseData[] {
+  if (!caseDetails) {
+    return [];
+  }
+  // Note: Might have to change where paginate is called if want role data before separating - line 392
+  caseDetails = paginationConfig ? paginate(caseDetails, paginationConfig.page_number, paginationConfig.page_size) : caseDetails;
+  const roleCaseList = [];
+  caseDetails.forEach(caseDetail => {
+    const roleAssignment = roleAssignmentList.find(
+      role => role.attributes && role.attributes.caseId === caseDetail.id.toString()
+    );
+    const roleCase = mapRoleCaseData(roleAssignment, caseDetail);
+    roleCaseList.push(roleCase);
+  });
+  return roleCaseList;
+}
+
+export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case): RoleCaseData {
+  const roleCaseData: RoleCaseData = {
+    assignee: roleAssignment.actorId,
+    case_category: caseDetail.case_type_id,
+    // TODO: case_name: caseDetail.hmctsCaseNameInternal (when services have made this available)
+    case_id: caseDetail.id,
+    case_name: caseDetail.id,
+    case_role: roleAssignment.roleName,
+    endDate: roleAssignment.endTime,
+    id: roleAssignment.id,
+    jurisdiction: caseDetail.jurisdiction,
+    location_id: roleAssignment.attributes.primaryLocation,
+    startDate: roleAssignment.beginTime,
+  };
+  return roleCaseData;
+}
+
+export function getCaseTypesFromRoleAssignments(roleAssignments: RoleAssignment[]): string {
+  const caseTypes = roleAssignments
+    .filter((roleAssignment: RoleAssignment) => roleAssignment.attributes && roleAssignment.attributes.caseType)
+    .map((roleAssignment: RoleAssignment) => roleAssignment.attributes.caseType)
+    .reduce((query: string, caseType: string) => {
+      return query.includes(caseType) ? query : `${query}${caseType},`;
+    }, '');
+  return caseTypes[caseTypes.length - 1] === ',' ? caseTypes.slice(0, caseTypes.length - 1) : caseTypes;
+}
+
+// Note: array type may need to be changed depending on where pagination called
+export const paginate = (array: Case[], pageNumber: number, pageSize: number): any[] => {
+  return array.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+};

@@ -60,9 +60,13 @@ export const applyProxy = (app, config) => {
     }
 
     if (false !== config.rewrite) {
-        options.pathRewrite = {
+        if (typeof config.rewriteUrl === 'function') {
+          options.pathRewrite = config.rewriteUrl;
+        } else {
+          options.pathRewrite = {
             [`^${config.source}`]: config.rewriteUrl || '',
-        };
+          };
+        }
     }
 
     let middlewares = [authInterceptor];

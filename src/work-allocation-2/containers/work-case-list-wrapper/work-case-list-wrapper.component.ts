@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { AppConstants } from '../../../app/app.constants';
 import { SessionStorageService } from '../../../app/services';
+import { Actions } from '../../../role-access/models';
 import { ListConstants } from '../../components/constants';
 import { CaseActionIds, CaseService, InfoMessage, InfoMessageType, SortOrder } from '../../enums';
 import { Caseworker } from '../../interfaces/common';
@@ -237,21 +238,15 @@ export class WorkCaseListWrapperComponent implements OnInit {
    * action.
    */
   public onActionHandler(caseAction: InvokedCaseAction): void {
-    if (caseAction.action.id === CaseActionIds.GO) {
-      const goToCaseUrl = `/cases/case-details/${caseAction.invokedCase.case_id}`;
-      this.router.navigate([goToCaseUrl]);
-      return;
+    const actionedCase = caseAction.invokedCase;
+    const thisAction = caseAction.action;
+    let actionUrl = '';
+    if (thisAction.id === Actions.Reallocate) {
+      actionUrl = `role-access/allocate-role/${thisAction.id}?caseId=${actionedCase.case_id}&roleCategory=${actionedCase.case_category}&assignmentId=${actionedCase.id}&userName=${actionedCase.assignee}&typeOfRole=${actionedCase.case_role}`;
+    } else if (thisAction.id === Actions.Remove) {
+      actionUrl = `role-access/allocate-role/${thisAction.id}?caseId=${actionedCase.case_id}&assignmentId=${actionedCase.id}&caseType=${actionedCase.case_category}&jurisdiction=${actionedCase.jurisdiction}&typeOfRole=${actionedCase.case_role}`;
     }
-
-    if (this.returnUrl.includes('manager') && caseAction.action.id === CaseActionIds.RELEASE) {
-      this.specificPage = 'manager';
-    }
-    const state = {
-      returnUrl: this.returnUrl,
-      showAssigneeColumn: caseAction.action.id !== CaseActionIds.ASSIGN
-    };
-    const actionUrl = `/work/${caseAction.invokedCase.id}/${caseAction.action.id}/${this.specificPage}`;
-    this.router.navigate([actionUrl], {state});
+    this.router.navigateByUrl(actionUrl);
   }
 
   public onPaginationHandler(pageNumber: number): void {

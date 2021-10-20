@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import authInterceptor from '../lib/middleware/auth';
-import { confirmUserExclusion, deleteUserExclusion, findExclusionsForCaseId } from './exclusionService';
+import { confirmUserExclusion, deleteUserExclusion, findExclusionsForCaseId, getRolesByCaseId } from './exclusionService';
 import { confirmAllocateRole, deleteRoleByCaseAndRoleId, reallocateRole } from './index';
 import { getPossibleRoles } from './roleAssignmentService';
 
@@ -16,5 +16,6 @@ router.post('/allocate-role/reallocate', reallocateRole);
 router.post('/allocate-role/delete', deleteRoleByCaseAndRoleId);
 
 router.get('/allocate-role/valid-roles', getPossibleRoles);
+router.post('/roles/post', getRolesByCaseId);
 
 export default router;

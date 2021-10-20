@@ -32,7 +32,7 @@ export class WorkAllocationCaseService {
   }
 
   public searchCaseWithPagination(body: { searchRequest: SearchCaseRequest, view: string }): Observable<Case[]> {
-    return this.http.post<Case[]>(`/workallocation2/caseWithPagination`, body);
+    return this.http.post<Case[]>(`/workallocation2/my-cases`, body);
   }
 
   public getActionUrl(caseId: string, action: ACTION): string {

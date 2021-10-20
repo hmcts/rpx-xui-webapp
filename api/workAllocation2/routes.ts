@@ -6,24 +6,22 @@ import {
   getAllJudicialWorkers,
   getCaseWorkersForLocationAndService,
   getCaseWorkersForService,
-  getRolesByCaseId,
   getRolesCategory,
-  getTask, getTasksByCaseId,
+  getTask,
+  getTasksByCaseId,
   postTaskAction,
   postTaskSearchForCompletable,
-  searchCase,
   searchCaseWorker,
-  searchTask, showAllocateRoleLink
+  searchTask,
+  showAllocateRoleLink
 } from '.';
 import authInterceptor from '../lib/middleware/auth';
 import { getLocationById, getLocations } from './locationController';
 import { postFindPersonSearch } from './personService';
 
-const router = Router({ mergeParams: true });
+const router = Router({mergeParams: true});
 
 router.use(authInterceptor);
-
-router.use('/caseWithPagination', searchCase);
 
 router.use('/caseworker/location/:locationId/service/:serviceId', getCaseWorkersForLocationAndService);
 router.use('/caseworker/location/:locationId', getAllCaseWorkersForLocation);
@@ -50,6 +48,5 @@ router.use('/case/task/:caseId', getTasksByCaseId);
 router.use('/exclusion/rolesCategory', getRolesCategory);
 
 router.use('/roles/:caseId/show-allocate-role-link', showAllocateRoleLink);
-router.use('/roles/:caseId', getRolesByCaseId);
 
 export default router;

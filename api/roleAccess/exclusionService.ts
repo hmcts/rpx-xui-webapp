@@ -6,16 +6,21 @@ import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
+import { CaseRole } from '../workAllocation2/interfaces/caseRole';
+import { RoleCategory } from './models/allocate-role.enum';
 import { CaseRoleRequestPayload, RoleExclusion } from './models/caseRoleRequestPayload';
 
+export const release2ContentType =
+  'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0';
+
 export async function findExclusionsForCaseId(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const requestPayload = getRequestPayload(req.body.caseId, req.body.jurisdiction, req.body.caseType);
+  const requestPayload = getExclusionRequestPayload(req.body.caseId, req.body.jurisdiction, req.body.caseType);
   const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
   const fullPath = `${basePath}/am/role-assignments/query`;
-  const headers = setHeaders(req);
+  const headers = setHeaders(req, release2ContentType);
   try {
     const response: AxiosResponse = await http.post(fullPath, requestPayload, {headers});
-    const roleExclusions = mapResponseToExclusions(response.data.roleAssignmentResponse, req.body.exclusionId);
+    const roleExclusions = mapResponseToExclusions(response.data.roleAssignmentResponse, req.body.exclusionId, req);
     return res.status(response.status).send(roleExclusions);
   } catch (error) {
     next(error);
@@ -45,27 +50,47 @@ export async function deleteUserExclusion(req: EnhancedRequest, res: Response, n
   const fullPath = `${basePath}/am/role-assignments/${req.body.roleExclusion.id}`;
   const headers = setHeaders(req);
   try {
-    const response = await http.delete(fullPath, {headers})
+    const response = await http.delete(fullPath, {headers});
     return res.status(response.status).send(req.body.roleExclusion);
   } catch (error) {
-    next(error)
+    next(error);
   }
 }
 
-export function mapResponseToExclusions(roleAssignments: RoleAssignment[], assignmentId?: string): RoleExclusion[] {
+export function mapResponseToExclusions(roleAssignments: RoleAssignment[],
+                                        assignmentId: string,
+                                        req: EnhancedRequest): RoleExclusion[] {
   if (assignmentId) {
     roleAssignments = roleAssignments.filter(roleAssignment => roleAssignment.id === assignmentId);
   }
   return roleAssignments.map(roleAssignment => ({
     added: roleAssignment.created,
+    email: roleAssignment.actorId ? getEmail(roleAssignment.actorId, req) : null,
     id: roleAssignment.id,
-    name: roleAssignment.roleName,
+    name: roleAssignment.actorId ? getUserName(roleAssignment.actorId, req) : null,
     type: roleAssignment.roleType,
     userType: roleAssignment.roleCategory,
   }));
 }
 
-export function getRequestPayload(caseId: string, jurisdiction: string, caseType: string): CaseRoleRequestPayload {
+export function getEmail(actorId: string, req: EnhancedRequest): string {
+  if (req && req.session && req.session.caseworkers) {
+    const caseWorker = req.session.caseworkers.find(caseworker => caseworker.idamId === actorId);
+    if (caseWorker) {
+      return caseWorker.email;
+    }
+  }
+}
+export function getUserName(actorId: string, req: EnhancedRequest): string {
+  if (req && req.session && req.session.caseworkers) {
+    const caseWorker = req.session.caseworkers.find(caseworker => caseworker.idamId === actorId);
+    if (caseWorker) {
+      return `${caseWorker.firstName}-${caseWorker.lastName}`;
+    }
+  }
+}
+
+export function getExclusionRequestPayload(caseId: string, jurisdiction: string, caseType: string): CaseRoleRequestPayload {
   return {
     queryRequests: [
       {
@@ -78,4 +103,71 @@ export function getRequestPayload(caseId: string, jurisdiction: string, caseType
       },
     ],
   };
+}
+
+export function getLegalAndJudicialRequestPayload(caseId: string,
+                                                  jurisdiction: string,
+                                                  caseType: string): CaseRoleRequestPayload {
+  return {
+    queryRequests: [
+      {
+          attributes: {
+              caseId: [caseId],
+              caseType: [caseType],
+              jurisdiction: [jurisdiction],
+            },
+          roleCategory: ['LEGAL_OPERATIONS'],
+      },
+    ],
+  };
+}
+
+export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+  const requestPayload = getLegalAndJudicialRequestPayload(req.body.caseId, req.body.jurisdiction, req.body.caseType);
+  const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+  const fullPath = `${basePath}/am/role-assignments/query`;
+  const headers = setHeaders(req, release2ContentType);
+  try {
+    const response: AxiosResponse = await http.post(fullPath, requestPayload, {headers});
+    const roleExclusions = mapResponseToCaseRoles(response.data.roleAssignmentResponse, req.body.exclusionId, req);
+    return res.status(response.status).send(roleExclusions);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export function mapResponseToCaseRoles(
+  roleAssignments: RoleAssignment[],
+  assignmentId: string,
+  req: EnhancedRequest
+): CaseRole[] {
+  if (assignmentId) {
+    roleAssignments = roleAssignments.filter(roleAssignment => roleAssignment.id === assignmentId);
+  }
+  return roleAssignments.map(roleAssignment => ({
+    actions: [
+      {'id': 'reallocate', 'title': 'Reallocate'},
+      {'id': 'remove', 'title': 'Remove Allocation'},
+    ],
+    actorId: roleAssignment.actorId,
+    email: roleAssignment.actorId ? getEmail(roleAssignment.actorId, req) : null,
+    end: roleAssignment.endTime ? roleAssignment.endTime.toString() : null,
+    id: roleAssignment.id,
+    location: null,
+    name: roleAssignment.actorId ? getUserName(roleAssignment.actorId, req) : null,
+    roleCategory: mapRoleCategory(roleAssignment.roleCategory),
+    roleName: roleAssignment.roleName,
+    start: roleAssignment.beginTime ? roleAssignment.beginTime.toString() : null,
+  }));
+}
+
+export function mapRoleCategory(roleCategory: string): RoleCategory {
+  switch (roleCategory) {
+    case 'LEGAL_OPERATIONS':
+      return RoleCategory.LEGAL_OPERATIONS;
+    case 'JUDICIAL':
+      return RoleCategory.JUDICIAL;
+    default:
+      throw new Error('Invalid roleCategory');
+  }
 }

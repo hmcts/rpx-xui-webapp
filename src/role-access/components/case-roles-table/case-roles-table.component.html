@@ -30,13 +30,7 @@
         <a *ngFor="let action of item.actions"
            href="javascript:void(0)"
            [routerLink]="['/', 'role-access', 'allocate-role', action.id]"
-           [queryParams]="{
-           'caseId': caseDetails.case_id,
-           'roleCategory': roleCategory,
-           'assignmentId': item.id,
-           'actorId': item.actorId,
-           'userName': item.name,
-           'typeOfRole': item.roleName}">{{action.title}}</a>
+           [queryParams]="queryParams(item)">{{action.title}}</a>
       </td>
     </tr>
   </ng-container>

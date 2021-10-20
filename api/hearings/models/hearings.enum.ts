@@ -2,12 +2,12 @@ export enum Actions {
   Create,
   Read,
   Update,
-  Delete
+  Delete,
 }
 
 export enum HearingsSectionStatusEnum {
   UPCOMING = 'Upcoming',
-  PAST_AND_CANCELLED = 'Past_and_cancelled'
+  PAST_AND_CANCELLED = 'Past_and_cancelled',
 }
 
 export enum HearingListingStatusEnum {
@@ -34,5 +34,5 @@ export enum HMCStatus {
   vacated = 'Vacated',
   awaitingActuals = 'Awaiting_Actuals',
   completed = 'Completed',
-  adjourned = 'Adjourned'
+  adjourned = 'Adjourned',
 }

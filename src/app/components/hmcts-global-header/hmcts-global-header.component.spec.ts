@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -9,7 +9,7 @@ import { UserService } from 'src/app/services/user/user.service';
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
 
 
-xdescribe('HmctsGlobalHeaderComponent', () => {
+fdescribe('HmctsGlobalHeaderComponent', () => {
   let nocStoreSpy: jasmine.Spy;
   let component: HmctsGlobalHeaderComponent;
   let fixture: ComponentFixture<HmctsGlobalHeaderComponent>;
@@ -100,7 +100,7 @@ xdescribe('HmctsGlobalHeaderComponent', () => {
     expect(component.navigate.emit).toHaveBeenCalled();
   });
 
-  it('splitNavItems', async (done) => {
+  it('splitNavItems', fakeAsync(async () => {
     component.items = [{
       align: 'right',
       text: '1',
@@ -120,8 +120,10 @@ xdescribe('HmctsGlobalHeaderComponent', () => {
       active: false
     }];
     await component.ngOnChanges(changesMock);
+    tick();
     const leftItems = await component.leftItems.toPromise();
     const rightItems = await component.rightItems.toPromise();
+    tick();
     expect(leftItems).toEqual([{
       align: null,
       text: '2',
@@ -141,11 +143,9 @@ xdescribe('HmctsGlobalHeaderComponent', () => {
       href: '',
       active: false
     }]);
+  }));
 
-    done();
-  });
-
-  it('filters out menu items for which the user does not hold the correct role', async (done) => {
+  it('filters out menu items for which the user does not hold the correct role', fakeAsync(async () => {
     component.items = [{
       align: 'right',
       text: '1',
@@ -168,15 +168,15 @@ xdescribe('HmctsGlobalHeaderComponent', () => {
       roles: ['roleC']
     }];
     await component.ngOnChanges(changesMock);
+    tick();
     const leftItems = await component.leftItems.toPromise();
     const rightItems = await component.rightItems.toPromise();
+    tick();
     expect(leftItems).toEqual([component.items[1]]);
     expect(rightItems).toEqual([component.items[0]]);
+  }));
 
-    done();
-  });
-
-  it('filters out menu items for which not all features are enabled', async (done) => {
+  it('filters out menu items for which not all features are enabled', fakeAsync(async () => {
     component.items = [{
       align: 'right',
       text: '1',
@@ -198,11 +198,11 @@ xdescribe('HmctsGlobalHeaderComponent', () => {
       flags: ['enabledFlag', 'disabledFlag']
     }];
     await component.ngOnChanges(changesMock);
+    tick();
     const leftItems = await component.leftItems.toPromise();
     const rightItems = await component.rightItems.toPromise();
+    tick();
     expect(leftItems).toEqual([component.items[1]]);
     expect(rightItems).toEqual([component.items[0]]);
-
-    done();
-  });
+  }));
 });

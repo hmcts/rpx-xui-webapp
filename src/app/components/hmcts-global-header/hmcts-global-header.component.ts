@@ -50,7 +50,7 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
 
   public async ngOnChanges(changes: SimpleChanges): Promise<void> {
     if (changes.items.currentValue !== changes.items.previousValue) {
-      await this.splitAndFilterNavItems();
+      await this.splitAndFilterNavItems(this.items);
     }
   }
 
@@ -64,14 +64,14 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
     }
   }
 
-  private async splitAndFilterNavItems() {
-    this.items = await this.filterNavItems(this.items);
-    this.splitNavItems();
+  private async splitAndFilterNavItems(items: NavItemsModel[]) {
+    items = await this.filterNavItems(this.items);
+    this.splitNavItems(items);
   }
 
-  private splitNavItems() {
-    this.menuItems.right.next(this.items.filter(item => item.align && item.align === 'right'));
-    this.menuItems.left.next(this.items.filter(item => !item.align || item.align !== 'right'));
+  private splitNavItems(items: NavItemsModel[]) {
+    this.menuItems.right.next(items.filter(item => item.align && item.align === 'right'));
+    this.menuItems.left.next(items.filter(item => !item.align || item.align !== 'right'));
   }
 
   private async filterNavItems(items: NavItemsModel[]): Promise<NavItemsModel[]> {

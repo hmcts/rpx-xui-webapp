@@ -36,7 +36,7 @@ describe('Work allocation Release 2:  Cases', () => {
             'content-length': JSON.stringify(caseRequestObj.getRequestBody()).length
         };
 
-        const response = await Request.post(`workallocation2/caseWithPagination`, caseRequestObj.getRequestBody(), headers, 200);
+        const response = await Request.post(`workallocation2/my-cases`, caseRequestObj.getRequestBody(), headers, 200);
         expect(response.status).to.equal(200);
 
         const expectedCases = workAllocationDataModels.getRelease2Cases();

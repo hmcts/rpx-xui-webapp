@@ -28,8 +28,10 @@ export class RolesAndAccessComponent implements OnInit {
   @Input()
   public set roles(value: CaseRole[]) {
     this.pRoles = value;
-    this.legalOpsRoles = this.roles.filter(role => role.roleCategory === RoleCategory.LEGAL_OPERATIONS);
-    this.judicialRoles = this.roles.filter(role => role.roleCategory === RoleCategory.JUDICIAL);
+    if (this.roles) {
+      this.legalOpsRoles = this.roles.filter(role => role.roleCategory === RoleCategory.LEGAL_OPERATIONS);
+      this.judicialRoles = this.roles.filter(role => role.roleCategory === RoleCategory.JUDICIAL);
+    }
   }
 
   public ngOnInit(): void {

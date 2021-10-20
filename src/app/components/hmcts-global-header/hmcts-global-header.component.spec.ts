@@ -120,8 +120,8 @@ xdescribe('HmctsGlobalHeaderComponent', () => {
       active: false
     }];
     await component.ngOnChanges(changesMock);
-    let leftItems = await component.leftItems.toPromise();
-    let rightItems = await component.rightItems.toPromise();
+    const leftItems = await component.leftItems.toPromise();
+    const rightItems = await component.rightItems.toPromise();
     expect(leftItems).toEqual([{
       align: null,
       text: '2',
@@ -168,8 +168,8 @@ xdescribe('HmctsGlobalHeaderComponent', () => {
       roles: ['roleC']
     }];
     await component.ngOnChanges(changesMock);
-    let leftItems = await component.leftItems.toPromise();
-    let rightItems = await component.rightItems.toPromise();
+    const leftItems = await component.leftItems.toPromise();
+    const rightItems = await component.rightItems.toPromise();
     expect(leftItems).toEqual([component.items[1]]);
     expect(rightItems).toEqual([component.items[0]]);
 
@@ -198,8 +198,8 @@ xdescribe('HmctsGlobalHeaderComponent', () => {
       flags: ['enabledFlag', 'disabledFlag']
     }];
     await component.ngOnChanges(changesMock);
-    let leftItems = await component.leftItems.toPromise();
-    let rightItems = await component.rightItems.toPromise();
+    const leftItems = await component.leftItems.toPromise();
+    const rightItems = await component.rightItems.toPromise();
     expect(leftItems).toEqual([component.items[1]]);
     expect(rightItems).toEqual([component.items[0]]);
 

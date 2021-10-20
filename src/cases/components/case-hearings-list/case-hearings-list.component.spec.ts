@@ -11,7 +11,7 @@ import { CaseHearingsListComponent } from './case-hearings-list.component';
 
 class MockRoleCategoryMappingService {
   public initialize = (user: FeatureUser, clientId: string): void => { };
-  public isEnabled = (feature: string) : Observable<boolean> => { return of(true); };
+  public isEnabled = (feature: string): Observable<boolean> => { return of(true); };
   public getValue = <R>(key: string, defaultValue: R): Observable<R> => of(defaultValue);
   public getValueOnce = <R>(key: string, defaultValue: R): Observable<R>  =>  of(defaultValue);
 }

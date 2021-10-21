@@ -2,6 +2,7 @@ import * as express from 'express';
 import { router as caseShareRoutes } from './caseshare/routes';
 import { getConfigValue, showFeature } from './configuration';
 import { APP_INSIGHTS_KEY } from './configuration/references';
+import { router as globalSearchRoutes } from './globalSearch/routes';
 import healthCheck from './healthCheck';
 import authInterceptor from './lib/middleware/auth';
 import { router as nocRouter } from './noc/routes';
@@ -28,6 +29,7 @@ router.use('/user', userRouter);
 router.use('/caseshare', caseShareRoutes);
 router.use('/noc', nocRouter);
 router.use('/organisation', organisationRouter);
+router.use('/globalSearch', globalSearchRoutes);
 
 // @ts-ignore
 export default router;

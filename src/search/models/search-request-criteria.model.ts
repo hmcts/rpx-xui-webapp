@@ -1,4 +1,4 @@
-import { SearchRequestParty } from "./search-request-party.model";
+import { SearchRequestParty } from './search-request-party.model';
 
 export class SearchRequestCriteria {
   ccdCaseTypeIds: string[];

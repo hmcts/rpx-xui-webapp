@@ -290,7 +290,6 @@ export function mapCasesFromData(
 
 export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case): RoleCaseData {
   const roleCaseData: RoleCaseData = {
-    id: roleAssignment.id,
     assignee: roleAssignment.actorId,
     case_category: caseDetail.case_type_id,
     // TODO: case_name: caseDetail.hmctsCaseNameInternal (when services have made this available)
@@ -298,6 +297,7 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
     case_name: caseDetail.id,
     case_role: roleAssignment.roleName,
     endDate: roleAssignment.endTime,
+    id: roleAssignment.id,
     jurisdiction: caseDetail.jurisdiction,
     location_id: roleAssignment.attributes.primaryLocation,
     startDate: roleAssignment.beginTime,
@@ -309,8 +309,15 @@ export function getCaseTypesFromRoleAssignments(roleAssignments: RoleAssignment[
   const caseTypes = roleAssignments
     .filter((roleAssignment: RoleAssignment) => roleAssignment.attributes && roleAssignment.attributes.caseType)
     .map((roleAssignment: RoleAssignment) => roleAssignment.attributes.caseType)
-    .reduce((query: string, caseType: string) => query.includes(caseType) ? query : `${query}${caseType},`);
+    .reduce((query: string, caseType: string) => {
+      return query.includes(caseType) ? query : `${query}${caseType},`;
+    }, '');
   return caseTypes[caseTypes.length - 1] === ',' ? caseTypes.slice(0, caseTypes.length - 1) : caseTypes;
+}
+
+export function getSubstantiveRoles(roleAssignments: RoleAssignment[]): RoleAssignment[] {
+  return roleAssignments
+    .filter((roleAssignment: RoleAssignment) => roleAssignment.attributes && roleAssignment.attributes.substantive === 'Y');
 }
 
 // Note: array type may need to be changed depending on where pagination called

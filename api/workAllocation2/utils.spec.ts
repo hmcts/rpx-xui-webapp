@@ -13,6 +13,7 @@ import {
   constructElasticSearchQuery,
   getActionsByPermissions,
   getCaseIdListFromRoles,
+  getSubstantiveRoles,
   mapCasesFromData,
   mapCaseworkerData,
   mapCaseworkerPrimaryLocation,
@@ -556,6 +557,18 @@ describe('workAllocation.utils', () => {
       startDate: new Date('01-01-2021'),
       endDate: new Date('01-01-2022'),
       assignee: 'person1',
+    },
+    {
+      id: '3',
+      case_id: '456',
+      case_name: '456',
+      case_category: 'Test',
+      case_role: 'example-role-2',
+      jurisdiction: 'IA',
+      location_id: '001',
+      startDate: new Date('01-01-2021'),
+      endDate: new Date('01-01-2022'),
+      assignee: 'person1',
     }]
     it('should return empty list if there is nothing given', () => {
       expect(mapCasesFromData(null, null, null)).to.deep.equal([]);
@@ -563,8 +576,52 @@ describe('workAllocation.utils', () => {
       expect(mapCasesFromData(null, firstRoleAssignment, paginationConfig)).to.deep.equal([]);
       expect(mapCasesFromData(null, null, paginationConfig)).to.deep.equal([]);
     });
-    it('should return correct case data if no role assignment data returned', () => {
-      expect(mapCasesFromData(mockCaseData, firstRoleAssignment, null)).to.deep.equal(expectedRoleCaseData);
+    it('should return correct case data if role assignment data returned', () => {
+      expect(mapCasesFromData(mockCaseData, mockRoleAssignment, null)).to.deep.equal(expectedRoleCaseData);
+    });
+  });
+
+  describe('getSubstantiveRoles', () => {
+    const mockRoleAssignment: RoleAssignment[] = [{
+      id: '1',
+      actorId: 'person1',
+      roleName: 'example-role',
+      endTime: new Date('01-01-2022'),
+      beginTime: new Date('01-01-2021'),
+      attributes: {
+        caseId: '123',
+        primaryLocation: '001',
+        substantive: 'Y'
+      }
+    },
+    {
+      id: '2',
+      actorId: 'person1',
+      roleName: 'example-role',
+      endTime: new Date('01-01-2022'),
+      beginTime: new Date('01-01-2021'),
+      attributes: {
+        primaryLocation: '001',
+        substantive: 'Y'
+      }
+    },
+    {
+      id: '3',
+      actorId: 'person1',
+      roleName: 'example-role-2',
+      endTime: new Date('01-01-2022'),
+      beginTime: new Date('01-01-2021'),
+      attributes: {
+        caseId: '456',
+        primaryLocation: '001',
+        substantive: 'N'
+      }
+    },];
+    it('should return empty list if there is nothing given', () => {
+      expect(getSubstantiveRoles([])).to.deep.equal([]);
+    });
+    it('should return correct sustantive roles if role assignment data returned', () => {
+      expect(getSubstantiveRoles(mockRoleAssignment)).to.deep.equal(mockRoleAssignment.slice(0,2));
     });
   });
 

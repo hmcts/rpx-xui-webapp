@@ -11,8 +11,8 @@ export interface RoleAssignment {
   roleCategory?: string;
   readOnly?: boolean;
   created?: Date;
-  attributes: LocationInfo
-  authorisations?: string[]
+  attributes: LocationInfo;
+  authorisations?: string[];
 }
 
 export interface LocationInfo {
@@ -22,6 +22,7 @@ export interface LocationInfo {
   region?: string;
   isCaseAllocator?: boolean;
   caseType?: string;
+  substantive?: string;
 }
 
 export interface LocationApi {

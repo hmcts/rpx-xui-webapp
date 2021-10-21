@@ -1,7 +1,8 @@
 import { NextFunction, Response } from 'express';
 import { handleGet, handlePost } from '../common/mockService';
-import { getConfigValue } from '../configuration';
+import { getConfigValue, showFeature } from '../configuration';
 import {
+  FEATURE_SUBSTANTIVE_ROLE_ENABLED,
   SERVICES_CASE_CASEWORKER_REF_PATH,
   SERVICES_CASE_JUDICIALWORKER_REF_PATH,
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
@@ -30,6 +31,10 @@ import * as taskServiceMock from './taskService.mock';
 import {
   assignActionsToCases,
   assignActionsToTasks,
+  constructElasticSearchQuery,
+  getCaseIdListFromRoles, getCaseTypesFromRoleAssignments,
+  getSubstantiveRoles,
+  mapCasesFromData,
   constructElasticSearchQuery,
   getCaseIdListFromRoles, getCaseTypesFromRoleAssignments,
   mapCasesFromData,
@@ -77,7 +82,7 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
 export function handleMyCasesRewriteUrl(path: string, req: any): string {
   const roleAssignments = req.session.roleAssignmentResponse;
   const caseTypes: string = getCaseTypesFromRoleAssignments(roleAssignments);
-  const queryParams = caseTypes.length ? caseTypes : 'Asylum';
+  const queryParams = caseTypes && caseTypes.length ? caseTypes : 'Asylum';
   return path.replace('/workallocation2/my-cases', `/searchCases?ctid=${queryParams}`);
 }
 
@@ -104,7 +109,11 @@ export function handleGetMyCasesResponse(proxyRes, req, res, json): any {
   json.total_records = totalRecords;
   // search parameters passed in as null as there are no parameters for my cases
   const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
-  const mappedCases =  req && req.session && req.session.roleAssignmentResponse ? mapCasesFromData(caseData, req.session.roleAssignmentResponse, null) : [];
+  let checkedRoles = req && req.session && req.session.roleAssignmentResponse ? req.session.roleAssignmentResponse : null;
+  if (showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED)) {
+    checkedRoles = getSubstantiveRoles(req.session.roleAssignmentResponse);
+  }
+  const mappedCases =  checkedRoles ? mapCasesFromData(caseData, checkedRoles, null) : [];
   json.cases = assignActionsToCases(mappedCases, userIsCaseAllocator, true);
   return json;
 }

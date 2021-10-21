@@ -4,6 +4,6 @@ import { SearchRequestSortCriteria } from "./search-request-sort-criteria.model"
 export interface SearchRequest {
   maxReturnRecordCount: number;
   searchCriteria: SearchRequestCriteria;
-  sortCriteria: SearchRequestSortCriteria;
+  sortCriteria?: SearchRequestSortCriteria[];
   startRecordNumber: number;
 }

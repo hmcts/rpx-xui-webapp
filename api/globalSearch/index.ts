@@ -52,9 +52,37 @@ export async function getSearchResults(req: EnhancedRequest, res: Response, next
   try {
     const searchRequest = req.body;
     console.log('request body', req.body);
-    const path = `${getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH)}/globalsearch`;
-    console.log(path);
+
+		const request = {
+			"searchCriteria": {
+					"stateIds": [
+							"CaseCreated",
+							"CaseUpdated"
+					]
+			},
+			"sortCriteria": [
+					{
+							"sortBy": "caseName",
+							"sortDirection": "descending"
+					},
+					{
+							"sortBy": "caseManagementCategoryName",
+							"sortDirection": "ascending"
+					},
+					{
+							"sortBy": "createdDate",
+							"sortDirection": "ascending"
+					}
+			],
+			"maxReturnRecordCount": 500,
+			"startRecordNumber": 1
+	};
+
+    // const path = `${getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH)}/globalsearch`;
+		const path = 'http://ccd-ac-int-data-store-api-demo.service.core-compute-demo.internal/globalSearch';
+    console.log('path:', path);
     const response = await handlePost(path, searchRequest, req, next);
+		console.log(response.data);
     return response.data;
   } catch (error) {
     next(error);

@@ -15,7 +15,6 @@ export async function getPossibleRoles(req: EnhancedRequest, res: Response, next
     const response: AxiosResponse = await http.get(fullPath, {headers});
     const results = (response.data as Role[]);
     const filteredResults = results.filter(filterRoleAssignments());
-    console.log(JSON.stringify(filteredResults));
     const roles = filteredResults.map(roleApi => ({
       roleCategory: roleApi.category,
       roleId: roleApi.name,

@@ -85,6 +85,7 @@ export const FEATURE_TERMS_AND_CONDITIONS_ENABLED = 'termsAndConditionsEnabled';
 export const FEATURE_HELMET_ENABLED = 'helmetEnabled';
 export const FEATURE_REDIS_ENABLED = 'redisEnabled';
 export const FEATURE_OIDC_ENABLED = 'oidcEnabled';
+export const FEATURE_SUBSTANTIVE_ROLE_ENABLED = 'substantiveRoleEnabled';
 
 export const FEATURE_WORKALLOCATION_ENABLED = 'workAllocationEnabled';
 

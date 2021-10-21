@@ -8,6 +8,7 @@ import {
   SERVICES_IDAM_CLIENT_ID,
   SERVICES_IDAM_LOGIN_URL,
   SERVICES_IDAM_OAUTH_CALLBACK_URL,
+  FEATURE_SUBSTANTIVE_ROLE_ENABLED
 } from './references'
 
 export const router = express.Router({mergeParams: true})
@@ -31,6 +32,7 @@ async function uiConfigurationRouter(req, res) {
     oAuthCallback: getConfigValue(SERVICES_IDAM_OAUTH_CALLBACK_URL),
     oidcEnabled: showFeature(FEATURE_OIDC_ENABLED),
     protocol: getConfigValue(PROTOCOL),
+    substantiveEnabled: showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED),
   })
 }
 

@@ -18,9 +18,4 @@ describe('Search Service', () => {
       expect(data).toBeDefined();
     });
   });
-
-  // it('should get results', async () => {
-  //   service.getResults();
-  //   expect(mockHttpService.post).toHaveBeenCalledWith('');
-  // });
 });

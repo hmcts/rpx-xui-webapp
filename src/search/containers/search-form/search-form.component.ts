@@ -23,7 +23,8 @@ export class SearchFormComponent implements OnInit {
   public services: SearchFormServiceListItem[];
 
   constructor(private readonly fb: FormBuilder,
-		private searchService: SearchService) {
+              private searchService: SearchService) {
+
     this.caseRefConfig = {
       id: 'caseRef',
       name: 'caseRef',

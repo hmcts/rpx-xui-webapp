@@ -4,10 +4,10 @@ import { GlobalSearchService } from 'interfaces/globalSearchService';
 import { EnhancedRequest } from 'lib/models';
 import { handleGet, handlePost } from '../common/crudService';
 import { getConfigValue } from '../configuration';
-import { 
-  GLOBAL_SEARCH_SERVICES, 
-  SERVICES_CCD_COMPONENT_API_PATH, 
-  SERVICES_CCD_DATA_STORE_API_PATH 
+import {
+  GLOBAL_SEARCH_SERVICES,
+  SERVICES_CCD_COMPONENT_API_PATH,
+  SERVICES_CCD_DATA_STORE_API_PATH
 } from '../configuration/references';
 
 /**

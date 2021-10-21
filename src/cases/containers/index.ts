@@ -22,7 +22,7 @@ export const containers: any[] = [
   CaseHomeComponent,
   CaseCreateSubmitComponent,
   CaseDetailsHomeComponent,
-  CaseShareComponent,
+   CaseShareComponent,
   CaseShareConfirmComponent,
   CaseShareCompleteComponent
 ];

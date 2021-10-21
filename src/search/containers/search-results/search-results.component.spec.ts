@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
@@ -12,6 +13,7 @@ describe('SearchFormComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SearchResultsComponent ],
+      imports: [ HttpClientModule ],
       schemas: [ NO_ERRORS_SCHEMA ],
       providers: [
         { provide: FormBuilder, useValue: formBuilder }

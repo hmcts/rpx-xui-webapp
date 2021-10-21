@@ -9,9 +9,6 @@ import * as globalSearchServices from './index';
 import { http } from '../../api/lib/http';
 import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
 import { GlobalSearchService } from '../../api/interfaces/globalSearchService';
-import { SearchResult } from 'src/search/models/search-result.model';
-import { SearchResultInfo } from 'src/search/models/search-result-info.model';
-import { SearchResultCase } from 'src/search/models/search-result-case.model';
 
 chai.use(sinonChai);
 
@@ -30,36 +27,6 @@ describe('Jurisdiction', () => {
     { serviceId: 'PROBATE', serviceName: 'Manage probate application' },
     { serviceId: 'PUBLICLAW', serviceName: 'Public Law' }
   ];
-  const searchResultInfo: SearchResultInfo = {
-    caseStartRecord: 1,
-    casesReturned: 25,
-    moreResultsToGo: true
-  };
-  const searchResultCaseList: SearchResultCase[] = [
-    {
-      ccdCaseTypeId: '123',
-      ccdCaseTypeName: 'Test Case Type',
-      ccdJurisdictionId: 'IA',
-      ccdJurisdictionName: '',
-      hmctsServiceId: '',
-      hmctsServiceShortDescription: '',
-      baseLocationId: '',
-      baseLocationName: '',
-      caseManagementCategoryId: '',
-      caseManagementCategoryName: '',
-      caseNameHmctsInternal: '',
-      caseReference: '',
-      otherReferences: [],
-      processForAccess: '',
-      regionId: '',
-      regionName: '',
-      stateId: ''
-    }
-  ];
-  const searchResult: SearchResult = {
-    info: searchResultInfo,
-    caseList: searchResultCaseList
-  }
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -99,9 +66,32 @@ describe('Jurisdiction', () => {
 
   it('should get global search results', async () => {
     const req = mockReq();
-    const res = mockRes({
-      searchResult
-    });
+    const res = mockRes(
+      {
+        caseStartRecord: 1,
+        casesReturned: 25,
+        moreResultsToGo: true
+      },
+      [{
+        ccdCaseTypeId: '123',
+        ccdCaseTypeName: 'Test Case Type',
+        ccdJurisdictionId: 'IA',
+        ccdJurisdictionName: '',
+        hmctsServiceId: '',
+        hmctsServiceShortDescription: '',
+        baseLocationId: '',
+        baseLocationName: '',
+        caseManagementCategoryId: '',
+        caseManagementCategoryName: '',
+        caseNameHmctsInternal: '',
+        caseReference: '',
+        otherReferences: [],
+        processForAccess: '',
+        regionId: '',
+        regionName: '',
+        stateId: ''
+      }]
+    );
     const next = sinon.mock().atLeast(1) as NextFunction;
     sandbox.stub(http, 'post').resolves(res);
     sandbox.stub(globalSearchServices, 'getSearchResults').returns(res);

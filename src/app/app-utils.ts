@@ -177,6 +177,7 @@ export class AppUtils {
     return userRole;
   }
 
+
   public static getFilterPersistenceByRoleType(userDetails: UserDetails): FilterPersistence {
     const isLegalOpsOrJudicialRole = AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
     const roleType = AppUtils.convertDomainToLabel(isLegalOpsOrJudicialRole);

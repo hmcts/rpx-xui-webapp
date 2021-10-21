@@ -24,6 +24,7 @@ import {
 import { JUDICIAL_WORKERS_LOCATIONS } from './constants/mock.data';
 import { Caseworker } from './interfaces/common';
 import { TaskList } from './interfaces/task';
+import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { checkIfCaseAllocator } from './roleService';
 import * as roleServiceMock from './roleService.mock';
 import { handleGetTasksByCaseId } from './taskService';
@@ -32,11 +33,13 @@ import {
   assignActionsToCases,
   assignActionsToTasks,
   constructElasticSearchQuery,
-  getCaseIdListFromRoles, getCaseTypesFromRoleAssignments,
+  constructRoleAssignmentCaseAllocatorQuery,
+  constructRoleAssignmentQuery,
+  getCaseAllocatorLocations,
+  getCaseIdListFromRoles,
+  getCaseTypesFromRoleAssignments,
+  getRoleAssignmentsByQuery,
   getSubstantiveRoles,
-  mapCasesFromData,
-  constructElasticSearchQuery,
-  getCaseIdListFromRoles, getCaseTypesFromRoleAssignments,
   mapCasesFromData,
   mapCaseworkerData,
   prepareCaseWorkerForLocation,
@@ -86,6 +89,32 @@ export function handleMyCasesRewriteUrl(path: string, req: any): string {
   return path.replace('/workallocation2/my-cases', `/searchCases?ctid=${queryParams}`);
 }
 
+export async function handleCasesRewriteUrl(path: string, req: any): Promise<string> {
+  const searchParameters = req.body.searchRequest.search_parameters as SearchTaskParameter[];
+
+  // get users case allocations
+  const caseAllocatorQuery = constructRoleAssignmentCaseAllocatorQuery(searchParameters, req);
+  console.log('caseAllocatorQuery', JSON.stringify(caseAllocatorQuery, null, 2));
+  const caseAllocatorResult = await getRoleAssignmentsByQuery(caseAllocatorQuery, req);
+  // get case allocator locations
+  const locations = caseAllocatorResult.roleAssignmentResponse
+    ? getCaseAllocatorLocations(caseAllocatorResult.roleAssignmentResponse)
+    : [];
+
+  // get all role assignments
+  const query = constructRoleAssignmentQuery(searchParameters, locations);
+  console.log('query', JSON.stringify(query, null, 2));
+  const result = await getRoleAssignmentsByQuery(query, req);
+
+  // temporary save the role assignments to the session
+  req.session.casesRoleAssignments = result.roleAssignmentResponse;
+
+  // get the case ids from the role assignments
+  const caseTypes: string = getCaseTypesFromRoleAssignments(req.session.casesRoleAssignments);
+  const queryParams = caseTypes.length ? caseTypes : 'Asylum';
+  return path.replace('/workallocation2/cases', `/searchCases?ctid=${queryParams}`);
+}
+
 export function handleGetMyCasesRequest(proxyReq, req): void {
   const roleAssignments = req.session.roleAssignmentResponse;
   // EUI-4579 - get list of case ids from role assignments
@@ -93,6 +122,23 @@ export function handleGetMyCasesRequest(proxyReq, req): void {
   const caseIdList = getCaseIdListFromRoles(roleAssignments);
   const query = constructElasticSearchQuery(caseIdList, 0, 10000);
   const body = JSON.stringify(query);
+
+  proxyReq.setHeader('content-type', 'application/json');
+  proxyReq.setHeader('content-length', body.length);
+
+  proxyReq.write(body);
+  delete req.body;
+  proxyReq.end();
+}
+
+export function handleGetCasesRequest(proxyReq, req): void {
+  const roleAssignments = req.session.casesRoleAssignments;
+  console.log('roleAssignments', JSON.stringify(roleAssignments, null, 2));
+  // EUI-4579 - get list of case ids from role assignments
+  // note - will need to be getting substantive roles in future
+  const caseIdList = getCaseIdListFromRoles(roleAssignments);
+  const query = constructElasticSearchQuery(caseIdList, 0, 10000);
+  const body = JSON.stringify(query, null, 2);
 
   proxyReq.setHeader('content-type', 'application/json');
   proxyReq.setHeader('content-length', body.length);
@@ -114,6 +160,19 @@ export function handleGetMyCasesResponse(proxyRes, req, res, json): any {
     checkedRoles = getSubstantiveRoles(req.session.roleAssignmentResponse);
   }
   const mappedCases =  checkedRoles ? mapCasesFromData(caseData, checkedRoles, null) : [];
+  json.cases = assignActionsToCases(mappedCases, userIsCaseAllocator, true);
+  return json;
+}
+
+export function handleGetCasesResponse(proxyRes, req, res, json): any {
+  // note: body not currently being passed in as function only used for my cases
+  const caseData = json.cases;
+  const totalRecords = json.cases.length;
+  json.total_records = totalRecords;
+  // search parameters passed in as null as there are no parameters for my cases
+  const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
+  const mappedCases = req && req.session && req.session.casesRoleAssignments ?
+    mapCasesFromData(caseData, req.session.casesRoleAssignments, null) : [];
   json.cases = assignActionsToCases(mappedCases, userIsCaseAllocator, true);
   return json;
 }

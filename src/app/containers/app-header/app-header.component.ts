@@ -19,6 +19,7 @@ export interface Theme {
   navigationItems: NavItemsModel[];
   accountNavigationItems: UserNavModel;
   showFindCase: boolean;
+  showCaseReferenceSearchBox: boolean;
   backgroundColor: string;
   logoIsUsed: boolean;
   logoType: string;
@@ -46,6 +47,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   public appHeaderTitle: AppTitleModel;
   public userNav: UserNavModel;
   public showFindCase: boolean;
+  public showCaseReferenceSearchBox: boolean;
   public backgroundColor: string;
   public logoType: string;
   public logoIsUsed: boolean = false;
@@ -199,6 +201,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
       logoType,
       navigationItems,
       showFindCase,
+      showCaseReferenceSearchBox,
     } = applicationTheme;
 
     this.appHeaderTitle = appTitle;
@@ -209,6 +212,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     this.logoIsUsed = logoIsUsed;
 
     this.showFindCase = showFindCase;
+    this.showCaseReferenceSearchBox = showCaseReferenceSearchBox;
   }
 
   /**

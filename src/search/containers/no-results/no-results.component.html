@@ -1,0 +1,15 @@
+<exui-app-header></exui-app-header>
+<div class="govuk-width-container">
+  <exui-page-wrapper [title]="'No results found'">
+    <p class="govuk-body">Try searching again.</p>
+    <p>You might be able to get more accurate results if you:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>search using different criteria</li>
+      <li>use an asterisk (*) to search for one or more unknown characters in any part of a word, for example 'J* Smith'</li>
+      <li>check you've entered all the information correctly</li>
+    </ul>
+    <button class="govuk-button" [routerLink]="['/search']">
+      Search again
+    </button>
+  </exui-page-wrapper>
+</div>

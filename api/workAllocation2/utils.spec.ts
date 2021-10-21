@@ -1,6 +1,10 @@
+import * as chai from 'chai';
 import { expect } from 'chai';
+import * as sinon from 'sinon';
+import * as sinonChai from 'sinon-chai';
+import {mockReq, mockRes} from 'sinon-express-mock';
+import { http } from '../lib/http';
 
-import { mockReq } from 'sinon-express-mock';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { ASSIGN, CLAIM, CLAIM_AND_GO, COMPLETE, GO, REASSIGN, RELEASE, TaskPermission } from './constants/actions';
 import { Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/common';
@@ -9,9 +13,11 @@ import { RoleCaseData } from './interfaces/roleCaseData';
 import {
   applySearchFilter,
   assignActionsToTasks,
-  constructElasticSearchQuery, constructRoleAssignmentCaseAllocatorQuery,
-  getActionsByPermissions,
+  constructElasticSearchQuery,
+  constructRoleAssignmentCaseAllocatorQuery, constructRoleAssignmentQuery,
+  getActionsByPermissions, getCaseAllocatorLocations,
   getCaseIdListFromRoles,
+  getRoleAssignmentsByQuery,
   getSubstantiveRoles,
   mapCasesFromData,
   mapCaseworkerData,
@@ -21,6 +27,8 @@ import {
   preparePostTaskUrlAction,
   prepareSearchTaskUrl
 } from './util';
+
+chai.use(sinonChai);
 
 const firstRoleAssignment: RoleAssignment[] = [{
   id: '1',
@@ -599,8 +607,8 @@ describe('workAllocation.utils', () => {
       attributes: {
         caseId: '123',
         primaryLocation: '001',
-        substantive: 'Y'
-      }
+        substantive: 'Y',
+      },
     },
     {
       id: '2',
@@ -610,8 +618,8 @@ describe('workAllocation.utils', () => {
       beginTime: new Date('01-01-2021'),
       attributes: {
         primaryLocation: '001',
-        substantive: 'Y'
-      }
+        substantive: 'Y',
+      },
     },
     {
       id: '3',
@@ -622,14 +630,14 @@ describe('workAllocation.utils', () => {
       attributes: {
         caseId: '456',
         primaryLocation: '001',
-        substantive: 'N'
-      }
-    },];
+        substantive: 'N',
+      },
+    }, ];
     it('should return empty list if there is nothing given', () => {
       expect(getSubstantiveRoles([])).to.deep.equal([]);
     });
     it('should return correct sustantive roles if role assignment data returned', () => {
-      expect(getSubstantiveRoles(mockRoleAssignment)).to.deep.equal(mockRoleAssignment.slice(0,2));
+      expect(getSubstantiveRoles(mockRoleAssignment)).to.deep.equal(mockRoleAssignment.slice(0, 2));
     });
   });
 
@@ -675,6 +683,185 @@ describe('workAllocation.utils', () => {
         expect(result.queryRequests[0].actorId[0]).to.equal('0d8be1b2-a023-4125-9ab7-00f87b560d76');
         expect(result.queryRequests[0].role[0]).to.equal('case-allocator');
         expect(result.queryRequests[0].roleType[0]).to.equal('ORGANISATION');
+      });
+  });
+
+  describe('getRoleAssignmentsByQuery', () => {
+
+    let sandbox: sinon.SinonSandbox;
+    let spy: any;
+    beforeEach(() => {
+      sandbox = sinon.createSandbox();
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+    });
+
+    it(
+      'should get role assignments by caseAllocatorQuery',
+      async () => {
+
+        const caseAllocatorQuery = {
+          "queryRequests": [
+            {
+              "attributes": {
+                "jurisdiction": [
+                  "IA",
+                ],
+              },
+              "actorId": [
+                "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+              ],
+              "role": [
+                "case-allocator",
+              ],
+              "roleType": [
+                "ORGANISATION",
+              ],
+            },
+          ],
+        };
+        const req = mockReq();
+        const mockRoleAssignments = [
+          {
+            "id": "508daf11-d968-4d65-bebb-863195b395c2",
+            "actorIdType": "IDAM",
+            "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+            "roleType": "CASE",
+            "roleName": "case-manager",
+            "classification": "PUBLIC",
+            "grantType": "SPECIFIC",
+            "roleCategory": "LEGAL_OPERATIONS",
+            "readOnly": false,
+            "beginTime": "2021-10-20T23:00:00Z",
+            "endTime": "2021-10-27T23:00:00Z",
+            "created": "2021-10-21T14:55:04.103639Z",
+            "attributes": {
+              "substantive": "Y",
+              "caseId": "1634822871207303",
+              "jurisdiction": "IA",
+              "caseType": "Asylum",
+            },
+          },
+          {
+            "id": "90d23b9f-3458-4aeb-83c3-5fb25ecfa30a",
+            "actorIdType": "IDAM",
+            "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+            "roleType": "CASE",
+            "roleName": "case-manager",
+            "classification": "PUBLIC",
+            "grantType": "SPECIFIC",
+            "roleCategory": "LEGAL_OPERATIONS",
+            "readOnly": false,
+            "beginTime": "2021-10-13T23:00:00Z",
+            "created": "2021-10-14T15:55:58.586597Z",
+            "attributes": {
+              "substantive": "Y",
+              "caseId": "1547476018728634",
+              "jurisdiction": "IA",
+              "caseType": "Asylum",
+            },
+          },
+        ];
+        const res = mockRes({status: 200, data: mockRoleAssignments});
+        spy = sandbox.stub(http, 'post').resolves(res);
+        const data = await  getRoleAssignmentsByQuery(caseAllocatorQuery, req);
+        expect(data).to.deep.equal(mockRoleAssignments);
+      });
+  });
+
+  describe('getCaseAllocatorLocations', () => {
+
+    it(
+      'should get case allocator locations',
+      () => {
+
+        const mockRoleAssignments: any[] = [
+          {
+            "id": "508daf11-d968-4d65-bebb-863195b395c2",
+            "actorIdType": "IDAM",
+            "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+            "roleType": "CASE",
+            "roleName": "case-manager",
+            "classification": "PUBLIC",
+            "grantType": "SPECIFIC",
+            "roleCategory": "LEGAL_OPERATIONS",
+            "readOnly": false,
+            "beginTime": "2021-10-20T23:00:00Z",
+            "endTime": "2021-10-27T23:00:00Z",
+            "created": "2021-10-21T14:55:04.103639Z",
+            "attributes": {
+              "substantive": "Y",
+              "caseId": "1634822871207303",
+              "jurisdiction": "IA",
+              "primaryLocation": "229786",
+              "caseType": "Asylum",
+            },
+          },
+          {
+            "id": "90d23b9f-3458-4aeb-83c3-5fb25ecfa30a",
+            "actorIdType": "IDAM",
+            "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+            "roleType": "CASE",
+            "roleName": "case-manager",
+            "classification": "PUBLIC",
+            "grantType": "SPECIFIC",
+            "roleCategory": "LEGAL_OPERATIONS",
+            "readOnly": false,
+            "beginTime": "2021-10-13T23:00:00Z",
+            "created": "2021-10-14T15:55:58.586597Z",
+            "attributes": {
+              "substantive": "Y",
+              "caseId": "1547476018728634",
+              "primaryLocation": "229786",
+              "jurisdiction": "IA",
+              "caseType": "Asylum",
+            },
+          },
+        ];
+
+        const result = getCaseAllocatorLocations(mockRoleAssignments);
+        expect(result.length).to.equal(1);
+        expect(result[0]).to.equal('229786');
+      });
+  });
+
+  describe('constructRoleAssignmentQuery', () => {
+
+    it(
+      'should create a query with jurisdiction (IA), primaryLocation and roleType CASE',
+      () => {
+
+        const searchParameters = [
+          {
+            key: 'jurisdiction',
+            operator: 'EQUAL',
+            values: 'IA',
+          },
+          {
+            key: 'location_id',
+            operator: 'EQUAL',
+            values: '',
+          },
+          {
+            key: 'actorId',
+            operator: 'EQUAL',
+            values: '',
+          },
+          {
+            key: 'role',
+            operator: 'EQUAL',
+            values: 'Legal Ops',
+          },
+        ];
+
+        const result = constructRoleAssignmentQuery(searchParameters, ['229786']);
+        console.log('result', JSON.stringify(result, null, 2));
+        expect(result.queryRequests.length).to.equal(1);
+        expect(result.queryRequests[0].attributes.primaryLocation[0]).to.equal('229786');
+        expect(result.queryRequests[0].attributes.jurisdiction[0]).to.equal('IA');
+        expect(result.queryRequests[0].roleType[0]).to.equal('CASE');
       });
   });
 

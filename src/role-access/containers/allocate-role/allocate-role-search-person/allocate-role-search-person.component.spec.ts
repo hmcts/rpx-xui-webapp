@@ -1,7 +1,15 @@
 import { FormControl } from '@angular/forms';
 import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
 
-import { AllocateRoleNavigationEvent, AllocateRoleState } from '../../../models';
+import { of } from 'rxjs';
+import {
+  Actions,
+  AllocateRoleNavigationEvent,
+  AllocateRoleState,
+  AllocateRoleStateData,
+  AllocateTo,
+  DurationOfRole, RoleCategory
+} from '../../../models';
 import { ChoosePersonAndGo } from '../../../store';
 import { AllocateRoleSearchPersonComponent } from './allocate-role-search-person.component';
 
@@ -49,5 +57,38 @@ describe('AllocateRolePersonComponent', () => {
     expect(component.person).toBe(firstPerson);
     component.selectedPerson(secondPerson);
     expect(component.person).toBe(secondPerson);
+  });
+
+  it('should set data in ngOnInit', () => {
+    const ALLOCATE_ROLE_STATE_DATA: AllocateRoleStateData = {
+      caseId: '1111111111111111',
+      assignmentId: 'a123456',
+      state: AllocateRoleState.CHOOSE_ALLOCATE_TO,
+      typeOfRole: {id: 'lead-judge', name: 'Lead judge'},
+      allocateTo: AllocateTo.RESERVE_TO_ME,
+      personToBeRemoved: {
+        id: 'p111111',
+        name: 'test1',
+        domain: '',
+      },
+      person: {
+        id: 'p222222',
+        name: 'test2',
+        domain: '',
+      },
+      durationOfRole: DurationOfRole.SEVEN_DAYS,
+      action: Actions.Allocate,
+      period: {
+        startDate: new Date(),
+        endDate: new Date(),
+      },
+      roleCategory: RoleCategory.LEGAL_OPERATIONS,
+    };
+    mockStore.pipe.and.returnValue(of(ALLOCATE_ROLE_STATE_DATA));
+    component.ngOnInit();
+    expect(component.domain).toBe('Judicial');
+    expect(component.title).toBe('Allocate a lead judge');
+    expect(component.personName).toBe('test2');
+    expect(component.roleType).toEqual({id: 'lead-judge', name: 'Lead judge'});
   });
 });

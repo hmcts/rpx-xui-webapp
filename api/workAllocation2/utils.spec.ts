@@ -3,14 +3,13 @@ import { expect } from 'chai';
 import { mockReq } from 'sinon-express-mock';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { ASSIGN, CLAIM, CLAIM_AND_GO, COMPLETE, GO, REASSIGN, RELEASE, TaskPermission } from './constants/actions';
-import { Case } from './interfaces/case';
 import { Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/common';
 import { PersonRole } from './interfaces/person';
 import { RoleCaseData } from './interfaces/roleCaseData';
 import {
   applySearchFilter,
   assignActionsToTasks,
-  constructElasticSearchQuery,
+  constructElasticSearchQuery, constructRoleAssignmentCaseAllocatorQuery,
   getActionsByPermissions,
   getCaseIdListFromRoles,
   getSubstantiveRoles,
@@ -23,53 +22,53 @@ import {
   prepareSearchTaskUrl
 } from './util';
 
-  const firstRoleAssignment: RoleAssignment[] = [{
-    id: '1',
-    attributes: {
-      caseId: '4'
-    }
+const firstRoleAssignment: RoleAssignment[] = [{
+  id: '1',
+  attributes: {
+    caseId: '4',
   },
+},
   {
     id: '2',
     attributes: {
-      region: 'Birm'
-    }
+      region: 'Birm',
+    },
   },
   {
     id: '3',
     attributes: {
-      caseId: '2'
-    }
+      caseId: '2',
+    },
   },
   {
     id: '4',
     attributes: {
-      caseId: '5'
-    }
+      caseId: '5',
+    },
   }];
-  const secondRoleAssignment: RoleAssignment[] = [{
-    id: '1',
-    attributes: {
-      caseId: '4'
-    }
+const secondRoleAssignment: RoleAssignment[] = [{
+  id: '1',
+  attributes: {
+    caseId: '4',
   },
+},
   {
     id: '2',
     attributes: {
-      region: '2'
-    }
+      region: '2',
+    },
   },
   {
     id: '3',
     attributes: {
-      caseId: '2'
-    }
+      caseId: '2',
+    },
   },
   {
     id: '4',
     attributes: {
-      caseId: '5'
-    }
+      caseId: '5',
+    },
   }];
 
 const myTasks = [
@@ -271,7 +270,8 @@ describe('workAllocation.utils', () => {
       expect(tasksWithActionsAllWorkUnassigned[0].actions[0]).to.be.equal(ASSIGN);
       expect(tasksWithActionsAllWorkUnassigned[0].actions[1]).to.be.equal(GO);
 
-      const tasksWithActionsActiveTasksAssignedCurrentUser = assignActionsToTasks(myTasks, 'ActiveTasks', '49db7670-09b3-49e3-b945-b98f4e5e9a99');
+      const tasksWithActionsActiveTasksAssignedCurrentUser = assignActionsToTasks(
+        myTasks, 'ActiveTasks', '49db7670-09b3-49e3-b945-b98f4e5e9a99');
       expect(tasksWithActionsActiveTasksAssignedCurrentUser[1].actions[0]).to.be.equal(CLAIM);
       expect(tasksWithActionsActiveTasksAssignedCurrentUser[1].actions[1]).to.be.equal(REASSIGN);
       expect(tasksWithActionsActiveTasksAssignedCurrentUser[1].actions[2]).to.be.equal(RELEASE);
@@ -424,16 +424,23 @@ describe('workAllocation.utils', () => {
     it('should get correct actions for active tasks for certain permissions', () => {
       expect(getActionsByPermissions('ActiveTasksAssignedCurrentUser', [TaskPermission.MANAGE])).to.deep.equal([]);
       expect(getActionsByPermissions('ActiveTasksAssignedCurrentUser', [TaskPermission.EXECUTE])).to.deep.equal([]);
-      expect(getActionsByPermissions('ActiveTasksAssignedCurrentUser', [TaskPermission.MANAGE, TaskPermission.EXECUTE])).to.deep.equal([CLAIM, REASSIGN, RELEASE]);
-      expect(getActionsByPermissions('ActiveTasksAssignedCurrentUser', [TaskPermission.MANAGE, TaskPermission.EXECUTE, TaskPermission.OWN])).to.deep.equal([CLAIM, REASSIGN, RELEASE]);
+      expect(getActionsByPermissions('ActiveTasksAssignedCurrentUser', [
+        TaskPermission.MANAGE, TaskPermission.EXECUTE])).to.deep.equal([CLAIM, REASSIGN, RELEASE]);
+      expect(getActionsByPermissions('ActiveTasksAssignedCurrentUser', [
+        TaskPermission.MANAGE, TaskPermission.EXECUTE, TaskPermission.OWN,
+      ])).to.deep.equal([CLAIM, REASSIGN, RELEASE]);
 
       expect(getActionsByPermissions('ActiveTasksAssignedOtherUser', [TaskPermission.MANAGE])).to.deep.equal([REASSIGN, RELEASE]);
       expect(getActionsByPermissions('ActiveTasksAssignedOtherUser', [TaskPermission.EXECUTE])).to.deep.equal([]);
-      expect(getActionsByPermissions('ActiveTasksAssignedOtherUser', [TaskPermission.MANAGE, TaskPermission.EXECUTE])).to.deep.equal([CLAIM, REASSIGN, RELEASE]);
+      expect(getActionsByPermissions('ActiveTasksAssignedOtherUser', [
+        TaskPermission.MANAGE, TaskPermission.EXECUTE])).to.deep.equal([CLAIM, REASSIGN, RELEASE,
+      ]);
 
       expect(getActionsByPermissions('ActiveTasksUnassigned', [TaskPermission.MANAGE])).to.deep.equal([]);
       expect(getActionsByPermissions('ActiveTasksUnassigned', [TaskPermission.EXECUTE])).to.deep.equal([]);
-      expect(getActionsByPermissions('ActiveTasksUnassigned', [TaskPermission.MANAGE, TaskPermission.EXECUTE])).to.deep.equal([CLAIM]);
+      expect(getActionsByPermissions('ActiveTasksUnassigned', [
+        TaskPermission.MANAGE, TaskPermission.EXECUTE,
+      ])).to.deep.equal([CLAIM]);
     });
 
   });
@@ -482,13 +489,13 @@ describe('workAllocation.utils', () => {
   describe('constructElasticSearchQuery', () => {
 
     it('should create a query with at least three case ids', () => {
-      const caseIds =  [1589185982594513, 1589185060514243, 1589185060514243];
+      const caseIds = [1589185982594513, 1589185060514243, 1589185060514243];
       const result = constructElasticSearchQuery(caseIds, 0, 1000);
       expect(result.native_es_query.query.terms).to.deep.equal({reference: caseIds});
     });
 
     it('should create a query with no case ids', () => {
-      const caseIds =  [];
+      const caseIds = [];
       const result = constructElasticSearchQuery(caseIds, 0, 1000);
       expect(result.native_es_query.query.terms).to.deep.equal({reference: caseIds});
     });
@@ -497,7 +504,7 @@ describe('workAllocation.utils', () => {
   describe('mapCasesFromData', () => {
     const paginationConfig = {
       page_number: 1,
-      page_size: 2
+      page_size: 2,
     };
     // note not making it a case as would have to fill in multiple unneccessary properties
     const mockCaseData: any[] = [
@@ -522,30 +529,31 @@ describe('workAllocation.utils', () => {
       beginTime: new Date('01-01-2021'),
       attributes: {
         caseId: '123',
-        primaryLocation: '001'
-      }
+        primaryLocation: '001',
+      },
     },
-    {
-      id: '2',
-      actorId: 'person1',
-      roleName: 'example-role',
-      endTime: new Date('01-01-2022'),
-      beginTime: new Date('01-01-2021'),
-      attributes: {
-        primaryLocation: '001'
-      }
-    },
-    {
-      id: '3',
-      actorId: 'person1',
-      roleName: 'example-role-2',
-      endTime: new Date('01-01-2022'),
-      beginTime: new Date('01-01-2021'),
-      attributes: {
-        caseId: '456',
-        primaryLocation: '001'
-      }
-    },];
+      {
+        id: '2',
+        actorId: 'person1',
+        roleName: 'example-role',
+        endTime: new Date('01-01-2022'),
+        beginTime: new Date('01-01-2021'),
+        attributes: {
+          primaryLocation: '001',
+        },
+      },
+      {
+        id: '3',
+        actorId: 'person1',
+        roleName: 'example-role-2',
+        endTime: new Date('01-01-2022'),
+        beginTime: new Date('01-01-2021'),
+        attributes: {
+          caseId: '456',
+          primaryLocation: '001',
+        },
+      },
+    ];
     const expectedRoleCaseData: RoleCaseData[] = [{
       id: '1',
       case_id: '123',
@@ -569,7 +577,7 @@ describe('workAllocation.utils', () => {
       startDate: new Date('01-01-2021'),
       endDate: new Date('01-01-2022'),
       assignee: 'person1',
-    }]
+    }];
     it('should return empty list if there is nothing given', () => {
       expect(mapCasesFromData(null, null, null)).to.deep.equal([]);
       expect(mapCasesFromData(null, firstRoleAssignment, null)).to.deep.equal([]);
@@ -623,6 +631,51 @@ describe('workAllocation.utils', () => {
     it('should return correct sustantive roles if role assignment data returned', () => {
       expect(getSubstantiveRoles(mockRoleAssignment)).to.deep.equal(mockRoleAssignment.slice(0,2));
     });
+  });
+
+  describe('constructRoleAssignmentCaseAllocatorQuery', () => {
+
+    it(
+      'should create a query with jurisdiction (IA), actorId and roleType ORG',
+      () => {
+
+        const searchParameters = [
+          {
+            key: 'jurisdiction',
+            operator: 'EQUAL',
+            values: 'IA',
+          },
+          {
+            key: 'location_id',
+            operator: 'EQUAL',
+            values: '',
+          },
+          {
+            key: 'actorId',
+            operator: 'EQUAL',
+            values: '',
+          },
+          {
+            key: 'role',
+            operator: 'EQUAL',
+            values: 'Legal Ops',
+          },
+        ];
+        const req = {
+          user: {
+            userinfo: {
+              id: '0d8be1b2-a023-4125-9ab7-00f87b560d76',
+            },
+          },
+        };
+
+        const result = constructRoleAssignmentCaseAllocatorQuery(searchParameters, req);
+        expect(result.queryRequests.length).to.equal(1);
+        expect(result.queryRequests[0].attributes.jurisdiction[0]).to.equal('IA');
+        expect(result.queryRequests[0].actorId[0]).to.equal('0d8be1b2-a023-4125-9ab7-00f87b560d76');
+        expect(result.queryRequests[0].role[0]).to.equal('case-allocator');
+        expect(result.queryRequests[0].roleType[0]).to.equal('ORGANISATION');
+      });
   });
 
 });

@@ -7,9 +7,8 @@ import { filter, map } from 'rxjs/operators';
 import { PersonRole } from '../../../../api/workAllocation2/interfaces/person';
 import { AppUtils } from '../../../app/app-utils';
 import { SERVICE_OPTIONS_LIST } from '../../../app/app.constants';
-import { Location } from '../../models/dtos';
 import * as fromAppStore from '../../../app/store';
-
+import { Location } from '../../models/dtos';
 
 @Component({
   selector: 'exui-case-manager-filter',
@@ -34,7 +33,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       fields: [
         {
           name: 'jurisdiction',
-          value: ['Immigration and Asylum']
+          value: ['IA']
         },
         {
           name: 'location_id',
@@ -151,7 +150,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
       userDetails => {
-        const isLegalOpsOrJudicialRole = AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles)
+        const isLegalOpsOrJudicialRole = AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
         const roleType = AppUtils.convertDomainToLabel(isLegalOpsOrJudicialRole);
         this.filterConfig.cancelSetting.fields.push({
             name: 'role',

@@ -187,7 +187,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
 
   public performSearchPagination(): Observable<any> {
     const searchRequest = this.getSearchCaseRequestPagination();
-    return this.caseService.searchCaseWithPagination({searchRequest, view: this.view});
+    return this.caseService.getCases({searchRequest, view: this.view});
   }
 
   /**

@@ -20,17 +20,30 @@ export class SearchResultsComponent implements OnInit {
 
   ngOnInit(): void {
     const searchRequestCriteria: SearchRequestCriteria = {
-      ccdCaseTypeIds: null,
-      ccdJurisdictionIds: ['DIVORCE', 'PROBATE', 'PUBLICLAW'],
-      caseManagementBaseLocationIds: null,
-      caseManagementRegionIds: null,
-      caseReferences: null,
-      otherReferences: null,
-      parties: null,
-      stateIds: null
+      "ccdJurisdictionIds": ["BEFTA_MASTER"]
     };
 
-    const searchRequestSortCriteria: SearchRequestSortCriteria = null;
+		// const searchRequestCriteria: SearchRequestCriteria = {
+		// 	stateIds: [
+		// 		"CaseCreated",
+		// 		"CaseUpdated"
+		// 	]
+		// };
+
+    const searchRequestSortCriteria: SearchRequestSortCriteria[] = [
+			{
+					"sortBy": "caseName",
+					"sortDirection": "descending"
+			},
+			{
+					"sortBy": "caseManagementCategoryName",
+					"sortDirection": "ascending"
+			},
+			{
+					"sortBy": "createdDate",
+					"sortDirection": "ascending"
+			}
+	];
 
     const searchRequest: SearchRequest = {
       searchCriteria: searchRequestCriteria,
@@ -38,6 +51,36 @@ export class SearchResultsComponent implements OnInit {
       maxReturnRecordCount: 25,
       startRecordNumber: 1
     }
+
+		console.log(searchRequest);
+
+		const request = {
+			"searchCriteria": {
+					"stateIds": [
+							"CaseCreated",
+							"CaseUpdated"
+					]
+			},
+			"sortCriteria": [
+					{
+							"sortBy": "caseName",
+							"sortDirection": "descending"
+					},
+					{
+							"sortBy": "caseManagementCategoryName",
+							"sortDirection": "ascending"
+					},
+					{
+							"sortBy": "createdDate",
+							"sortDirection": "ascending"
+					}
+			],
+			"maxReturnRecordCount": 500,
+			"startRecordNumber": 1
+	};
+
+	console.log(request);
+
 
     this.searchService.getResults(searchRequest).subscribe(searchResult => {
       this.searchResult = searchResult;

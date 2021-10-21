@@ -132,7 +132,7 @@ describe('HmctsGlobalHeaderComponent', () => {
           href: '',
           active: false
         }]);
-        return rightItems;   
+        return rightItems;
       })
     ).subscribe(items => {
       expect(items).toEqual([{

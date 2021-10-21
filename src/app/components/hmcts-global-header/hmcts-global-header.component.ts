@@ -66,12 +66,12 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
 
   private splitAndFilterNavItems(items: NavItemsModel[]) {
     of(items).pipe(
-      switchMap(items => this.filterNavItemsOnRole(items)),
-      switchMap(items => this.filterNavItemsOnFlag(items)),
-      map(items => this.splitNavItems(items))
-    ).subscribe(items => {
-      this.menuItems.left.next(items.left);
-      this.menuItems.right.next(items.right);
+      switchMap(unfilteredItems => this.filterNavItemsOnRole(unfilteredItems)),
+      switchMap(roleFilteredItems => this.filterNavItemsOnFlag(roleFilteredItems)),
+      map(filteredItems => this.splitNavItems(filteredItems))
+    ).subscribe(sortedItems => {
+      this.menuItems.left.next(sortedItems.left);
+      this.menuItems.right.next(sortedItems.right);
     });
   }
 
@@ -101,15 +101,13 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
         )
       )
     );
-    
+
     if (obs.length === 0) {
       return of(items);
     }
 
     return ((obs.length > 1 ? obs[0].combineLatest(obs.slice(1)) : obs[0]) as Observable<any>).pipe(
-      map(_ => {
-        return items.filter(item => item.flags && item.flags.length > 0 ? item.flags.every(flag => flags[flag]) : true)
-      })
+      map(_ => items.filter(item => item.flags && item.flags.length > 0 ? item.flags.every(flag => flags[flag]) : true))
     );
   }
 }

@@ -22,6 +22,7 @@ export interface LocationInfo {
   region?: string;
   isCaseAllocator?: boolean;
   caseType?: string;
+  substantive?: string;
 }
 
 export interface LocationApi {

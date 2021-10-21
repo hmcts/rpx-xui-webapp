@@ -315,6 +315,11 @@ export function getCaseTypesFromRoleAssignments(roleAssignments: RoleAssignment[
   return caseTypes[caseTypes.length - 1] === ',' ? caseTypes.slice(0, caseTypes.length - 1) : caseTypes;
 }
 
+export function getSubstantiveRoles(roleAssignments: RoleAssignment[]): RoleAssignment[] {
+  return roleAssignments
+    .filter((roleAssignment: RoleAssignment) => roleAssignment.attributes && roleAssignment.attributes.substantive === 'Y');
+}
+
 // Note: array type may need to be changed depending on where pagination called
 export const paginate = (array: Case[], pageNumber: number, pageSize: number): any[] => {
   return array.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);

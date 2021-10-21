@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
 import * as fromNocStore from '../../../noc/store';
 import { NavItemsModel } from '../../models/nav-item.model';
 import { UserNavModel } from '../../models/user-nav.model';
@@ -48,9 +48,9 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
     private readonly featureToggleService: FeatureToggleService
   ) { }
 
-  public async ngOnChanges(changes: SimpleChanges): Promise<void> {
+  public ngOnChanges(changes: SimpleChanges): void {
     if (changes.items.currentValue !== changes.items.previousValue) {
-      await this.splitAndFilterNavItems(this.items);
+      this.splitAndFilterNavItems(this.items);
     }
   }
 
@@ -64,30 +64,32 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
     }
   }
 
-  private async splitAndFilterNavItems(items: NavItemsModel[]) {
-    items = await this.filterNavItems(this.items);
-    this.splitNavItems(items);
+  private splitAndFilterNavItems(items: NavItemsModel[]) {
+    of(items).pipe(
+      switchMap(items => this.filterNavItemsOnRole(items)),
+      switchMap(items => this.filterNavItemsOnFlag(items)),
+      map(items => this.splitNavItems(items))
+    ).subscribe(items => {
+      this.menuItems.left.next(items.left);
+      this.menuItems.right.next(items.right);
+    });
   }
 
   private splitNavItems(items: NavItemsModel[]) {
-    this.menuItems.right.next(items.filter(item => item.align && item.align === 'right'));
-    this.menuItems.left.next(items.filter(item => !item.align || item.align !== 'right'));
+    return {
+      right: items.filter(item => item.align && item.align === 'right'),
+      left: items.filter(item => !item.align || item.align !== 'right')
+    };
   }
 
-  private async filterNavItems(items: NavItemsModel[]): Promise<NavItemsModel[]> {
-    items = await this.filterNavItemsOnRole(items);
-    items = await this.filterNavItemsOnFlag(items);
-    return items;
-  }
-
-  private async filterNavItemsOnRole(items: NavItemsModel[]): Promise<NavItemsModel[]> {
+  private filterNavItemsOnRole(items: NavItemsModel[]): Observable<NavItemsModel[]> {
     return this.userService.getUserDetails().pipe(
       map(details => details.userInfo.roles),
       map(roles => items.filter(item => (item.roles && item.roles.length > 0 ? item.roles.some(role => roles.includes(role)) : true)))
-    ).toPromise();
+    );
   }
 
-  private async filterNavItemsOnFlag(items: NavItemsModel[]): Promise<NavItemsModel[]> {
+  private filterNavItemsOnFlag(items: NavItemsModel[]): Observable<NavItemsModel[]> {
     const flags: {[flag: string]: boolean} = {};
     const obs: Observable<boolean>[] = [];
     items.forEach(
@@ -99,13 +101,15 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
         )
       )
     );
-    if (obs.length > 1) {
-      await obs[0].combineLatest(obs.slice(1)).toPromise();
-    } else if (obs.length > 0) {
-      await obs[0].toPromise();
-    } else {
-      return items; // no flags found, so nothing to filter
+    
+    if (obs.length === 0) {
+      return of(items);
     }
-    return items.filter(item => item.flags && item.flags.length > 0 ? item.flags.every(flag => flags[flag]) : true)
+
+    return ((obs.length > 1 ? obs[0].combineLatest(obs.slice(1)) : obs[0]) as Observable<any>).pipe(
+      map(_ => {
+        return items.filter(item => item.flags && item.flags.length > 0 ? item.flags.every(flag => flags[flag]) : true)
+      })
+    );
   }
 }

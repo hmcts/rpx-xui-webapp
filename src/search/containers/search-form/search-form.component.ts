@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
+import { SearchService } from 'src/search/services/search.service';
 
 @Component({
   selector: 'exui-search-form',
@@ -21,7 +22,8 @@ export class SearchFormComponent implements OnInit {
   public servicesConfig: GovUiConfigModel;
   public services: SearchFormServiceListItem[];
 
-  constructor(private readonly fb: FormBuilder) {
+  constructor(private readonly fb: FormBuilder,
+		private searchService: SearchService) {
     this.caseRefConfig = {
       id: 'caseRef',
       name: 'caseRef',
@@ -103,6 +105,12 @@ export class SearchFormComponent implements OnInit {
       dateOfDeath_month: '',
       dateOfDeath_year: '',
       servicesList: ''
+    });
+
+    this.searchService.getServices().subscribe(services => {
+      services.forEach(service => {
+        this.services.push({ label: service.serviceName, value: service.serviceName, id: service.serviceId });
+      });
     });
 
     // Set default service selection to "All"

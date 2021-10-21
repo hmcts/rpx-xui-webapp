@@ -113,7 +113,8 @@
     "oidcEnabled": false,
     "workAllocationEnabled": false,
     "roleEnabled": false,
-    "caseworkerRefEnabled": false
+    "caseworkerRefEnabled": false,
+    "substantiveRoleEnabled": true
   },
   "helmet": {
     "contentSecurityPolicy": {

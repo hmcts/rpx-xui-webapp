@@ -309,9 +309,6 @@ export function constructRoleAssignmentQuery(searchTaskParameters: SearchTaskPar
         }
         if (param.key === 'role') {
           param.key = 'roleCategory';
-        }
-
-        if (param.key === 'roleCategory') {
           param.values = mapRoleType(param.values as string);
         }
 
@@ -337,7 +334,6 @@ export function constructRoleAssignmentQuery(searchTaskParameters: SearchTaskPar
 }
 
 export function constructRoleAssignmentCaseAllocatorQuery(searchTaskParameters: SearchTaskParameter[], req: any): any {
-  console.log('searchTaskParameters', JSON.stringify(searchTaskParameters, null, 2));
   let userId = '';
   if (req.user) {
     userId = req.user.userinfo.id;

@@ -92,7 +92,8 @@ describe('NocGuard', () => {
         'caseworker-ia-iacjudge',
         'caseworker-publiclaw-judiciary'
       ],
-      showFindCase: false
+      showFindCase: false,
+      showCaseReferenceSearchBox: false
     },
     {
       accountNavigationItems: {
@@ -136,7 +137,8 @@ describe('NocGuard', () => {
       roles: [
         'caseworker-ia-caseofficer'
       ],
-      showFindCase: true
+      showFindCase: true,
+      showCaseReferenceSearchBox: false
     },
     {
       accountNavigationItems: {
@@ -175,7 +177,8 @@ describe('NocGuard', () => {
       roles: [
         'caseworker-ia-caseofficer'
       ],
-      showFindCase: true
+      showFindCase: true,
+      showCaseReferenceSearchBox: false
     },
     {
       accountNavigationItems: {
@@ -215,7 +218,8 @@ describe('NocGuard', () => {
         'caseworker-ia-legalrep-solicitor',
         'caseworker-publiclaw-solicitor'
       ],
-      showFindCase: true
+      showFindCase: true,
+      showCaseReferenceSearchBox: false
     }
   ];
   let nocGuard: NocGuard;

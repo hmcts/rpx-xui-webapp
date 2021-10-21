@@ -12,8 +12,15 @@ describe('Search Service', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should get results', async () => {
-    service.getResults();
-    expect(mockHttpService.post).toHaveBeenCalledWith('');
+  it('should get global search jurisdictions', () => {
+    mockHttpService.get.and.returnValue({});
+    service.getServices().subscribe(data => {
+      expect(data).toBeDefined();
+    });
   });
+
+  // it('should get results', async () => {
+  //   service.getResults();
+  //   expect(mockHttpService.post).toHaveBeenCalledWith('');
+  // });
 });

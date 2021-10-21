@@ -75,7 +75,9 @@ export function generateServices(jurisdictions: Jurisdiction[]): GlobalSearchSer
   const globalSearchServices: GlobalSearchService[] = [];
   globalSearchServiceIdsArray.forEach(serviceId => {
     const jurisdiction = jurisdictions.find(x => x.id === serviceId);
-    globalSearchServices.push({ serviceId: jurisdiction.id, serviceName: jurisdiction.name });
+    if (jurisdiction !== undefined) {
+      globalSearchServices.push({ serviceId: jurisdiction.id, serviceName: jurisdiction.name });
+    }
   });
 
   // Return generated global search services

@@ -1,5 +1,6 @@
 import * as bodyParser from 'body-parser'
 import {Express} from 'express'
+import * as accessManagement from './accessManagement'
 import * as amendedJurisdictions from './amendedJurisdictions'
 import {getConfigValue} from './configuration'
 import {
@@ -120,6 +121,7 @@ export const initProxy = (app: Express) => {
 
     applyProxy(app, {
         rewrite: false,
+        onReq: accessManagement.removeAcceptHeader,
         source: '/am/role-assignments',
         target: getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH),
     })

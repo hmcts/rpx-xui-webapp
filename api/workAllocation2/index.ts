@@ -105,7 +105,7 @@ export async function handleCasesRewriteUrl(path: string, req: any): Promise<str
     : [];
 */
   // get all role assignments
-  const query = constructRoleAssignmentQuery(searchParameters, [], pagination);
+  const query = constructRoleAssignmentQuery(searchParameters, []);
   console.log('query', JSON.stringify(query, null, 2));
   const result = await getRoleAssignmentsByQuery(query, req);
 
@@ -137,7 +137,6 @@ export function handleGetMyCasesRequest(proxyReq, req): void {
 
 export function handleGetCasesRequest(proxyReq, req): void {
   const roleAssignments = req.session.casesRoleAssignments;
-  console.log('roleAssignments', JSON.stringify(roleAssignments, null, 2));
   // EUI-4579 - get list of case ids from role assignments
   // note - will need to be getting substantive roles in future
   const caseIdList = getCaseIdListFromRoles(roleAssignments);
@@ -177,7 +176,7 @@ export function handleGetCasesResponse(proxyRes, req, res, json): any {
   if (showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED)) {
     checkedRoles = getSubstantiveRoles(req.session.casesRoleAssignments);
   }
-  const mappedCases =  checkedRoles ? mapCasesFromData(caseData, checkedRoles, null) : [];
+  const mappedCases =  checkedRoles ? mapCasesFromData(caseData, checkedRoles, req.session.casesPagination) : [];
   json.cases = assignActionsToCases(mappedCases, userIsCaseAllocator, true);
   return json;
 }

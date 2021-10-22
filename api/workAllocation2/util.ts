@@ -306,7 +306,7 @@ export function constructRoleAssignmentQuery(
         if (param.key === 'location_id') {
           param.key = 'primaryLocation';
           const values = param.values as string;
-          param.values = [values]
+          param.values = [values, ...locations]
             .filter(location => location.length);
           return param;
         }

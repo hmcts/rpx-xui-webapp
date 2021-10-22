@@ -33,8 +33,8 @@ import * as taskServiceMock from './taskService.mock';
 import {
   assignActionsToCases,
   assignActionsToTasks,
-  constructElasticSearchQuery,
-  constructRoleAssignmentQuery,
+  constructElasticSearchQuery, constructRoleAssignmentCaseAllocatorQuery,
+  constructRoleAssignmentQuery, getCaseAllocatorLocations,
   getCaseIdListFromRoles,
   getCaseTypesFromRoleAssignments,
   getRoleAssignmentsByQuery,
@@ -92,7 +92,7 @@ export async function handleCasesRewriteUrl(path: string, req: any): Promise<str
   const searchParameters = req.body.searchRequest.search_parameters as SearchTaskParameter[];
   const pagination  = req.body.searchRequest.pagination_parameters as PaginationParameter;
 
- /* // get users case allocations
+  // get users case allocations
   const caseAllocatorQuery = constructRoleAssignmentCaseAllocatorQuery(searchParameters, req);
   console.log('caseAllocatorQuery', JSON.stringify(caseAllocatorQuery, null, 2));
   const caseAllocatorResult = await getRoleAssignmentsByQuery(caseAllocatorQuery, req);
@@ -103,9 +103,9 @@ export async function handleCasesRewriteUrl(path: string, req: any): Promise<str
   const locations = caseAllocatorResult.roleAssignmentResponse
     ? getCaseAllocatorLocations(caseAllocatorResult.roleAssignmentResponse)
     : [];
-*/
+
   // get all role assignments
-  const query = constructRoleAssignmentQuery(searchParameters, []);
+  const query = constructRoleAssignmentQuery(searchParameters, locations);
   console.log('query', JSON.stringify(query, null, 2));
   const result = await getRoleAssignmentsByQuery(query, req);
   console.log('caseData', JSON.stringify(result.roleAssignmentResponse, null, 2));

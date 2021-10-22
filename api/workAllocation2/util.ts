@@ -295,8 +295,7 @@ export function getCaseAllocatorLocations(roleAssignments: RoleAssignment[]): st
 
 export function constructRoleAssignmentQuery(
   searchTaskParameters: SearchTaskParameter[],
-  locations: string[],
-  pagination: PaginationParameter
+  locations: string[]
 ): any {
   searchTaskParameters = [...searchTaskParameters,
     {key: 'roleType', values: 'CASE', operator: ''},
@@ -334,8 +333,7 @@ export function constructRoleAssignmentQuery(
         }
         return {...acc, [param.key]: param.values};
       }, {})],
-    pageNumber: pagination.page_number,
-    size: pagination.page_size,
+    size: 10000,
   };
 }
 

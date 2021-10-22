@@ -294,7 +294,7 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
     case_category: caseDetail.case_type_id,
     // TODO: case_name: caseDetail.hmctsCaseNameInternal (when services have made this available)
     case_id: caseDetail.id,
-    case_name: caseDetail.id,
+    case_name: caseDetail.case_data && caseDetail.case_data.caseName ? caseDetail.case_data.caseName : caseDetail.id,
     case_role: roleAssignment.roleName,
     endDate: roleAssignment.endTime,
     id: roleAssignment.id,

@@ -22,6 +22,7 @@ import {
 } from './caseWorkerService';
 
 import { JUDICIAL_WORKERS_LOCATIONS } from './constants/mock.data';
+import { PaginationParameter } from './interfaces/caseSearchParameter';
 import { Caseworker } from './interfaces/common';
 import { TaskList } from './interfaces/task';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
@@ -33,9 +34,7 @@ import {
   assignActionsToCases,
   assignActionsToTasks,
   constructElasticSearchQuery,
-  constructRoleAssignmentCaseAllocatorQuery,
   constructRoleAssignmentQuery,
-  getCaseAllocatorLocations,
   getCaseIdListFromRoles,
   getCaseTypesFromRoleAssignments,
   getRoleAssignmentsByQuery,
@@ -91,23 +90,28 @@ export function handleMyCasesRewriteUrl(path: string, req: any): string {
 
 export async function handleCasesRewriteUrl(path: string, req: any): Promise<string> {
   const searchParameters = req.body.searchRequest.search_parameters as SearchTaskParameter[];
+  const pagination  = req.body.searchRequest.pagination_parameters as PaginationParameter;
 
-  // get users case allocations
+ /* // get users case allocations
   const caseAllocatorQuery = constructRoleAssignmentCaseAllocatorQuery(searchParameters, req);
   console.log('caseAllocatorQuery', JSON.stringify(caseAllocatorQuery, null, 2));
   const caseAllocatorResult = await getRoleAssignmentsByQuery(caseAllocatorQuery, req);
+
+  console.log('caseAllocatorResult', JSON.stringify(caseAllocatorResult, null, 2));
+
   // get case allocator locations
   const locations = caseAllocatorResult.roleAssignmentResponse
     ? getCaseAllocatorLocations(caseAllocatorResult.roleAssignmentResponse)
     : [];
-
+*/
   // get all role assignments
-  const query = constructRoleAssignmentQuery(searchParameters, locations);
+  const query = constructRoleAssignmentQuery(searchParameters, [], pagination);
   console.log('query', JSON.stringify(query, null, 2));
   const result = await getRoleAssignmentsByQuery(query, req);
 
   // temporary save the role assignments to the session
   req.session.casesRoleAssignments = result.roleAssignmentResponse;
+  req.session.casesPagination = pagination;
 
   // get the case ids from the role assignments
   const caseTypes: string = getCaseTypesFromRoleAssignments(req.session.casesRoleAssignments);
@@ -151,8 +155,7 @@ export function handleGetCasesRequest(proxyReq, req): void {
 export function handleGetMyCasesResponse(proxyRes, req, res, json): any {
   // note: body not currently being passed in as function only used for my cases
   const caseData = json.cases;
-  const totalRecords = json.cases.length;
-  json.total_records = totalRecords;
+  json.total_records = json.cases.length;
   // search parameters passed in as null as there are no parameters for my cases
   const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
   let checkedRoles = req && req.session && req.session.roleAssignmentResponse ? req.session.roleAssignmentResponse : null;
@@ -167,12 +170,14 @@ export function handleGetMyCasesResponse(proxyRes, req, res, json): any {
 export function handleGetCasesResponse(proxyRes, req, res, json): any {
   // note: body not currently being passed in as function only used for my cases
   const caseData = json.cases;
-  const totalRecords = json.cases.length;
-  json.total_records = totalRecords;
+  json.total_records = json.cases.length;
   // search parameters passed in as null as there are no parameters for my cases
   const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
-  const mappedCases = req && req.session && req.session.casesRoleAssignments ?
-    mapCasesFromData(caseData, req.session.casesRoleAssignments, null) : [];
+  let checkedRoles = req && req.session && req.session.casesRoleAssignments ? req.session.casesRoleAssignments : null;
+  if (showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED)) {
+    checkedRoles = getSubstantiveRoles(req.session.casesRoleAssignments);
+  }
+  const mappedCases =  checkedRoles ? mapCasesFromData(caseData, checkedRoles, null) : [];
   json.cases = assignActionsToCases(mappedCases, userIsCaseAllocator, true);
   return json;
 }

@@ -293,7 +293,11 @@ export function getCaseAllocatorLocations(roleAssignments: RoleAssignment[]): st
     .filter(location => location.length);
 }
 
-export function constructRoleAssignmentQuery(searchTaskParameters: SearchTaskParameter[], locations: string[]): any {
+export function constructRoleAssignmentQuery(
+  searchTaskParameters: SearchTaskParameter[],
+  locations: string[],
+  pagination: PaginationParameter
+): any {
   searchTaskParameters = [...searchTaskParameters,
     {key: 'roleType', values: 'CASE', operator: ''},
   ];
@@ -303,7 +307,7 @@ export function constructRoleAssignmentQuery(searchTaskParameters: SearchTaskPar
         if (param.key === 'location_id') {
           param.key = 'primaryLocation';
           const values = param.values as string;
-          param.values = [values, ...locations]
+          param.values = [values]
             .filter(location => location.length);
           return param;
         }
@@ -319,7 +323,7 @@ export function constructRoleAssignmentQuery(searchTaskParameters: SearchTaskPar
       .filter((param: SearchTaskParameter) => param.values && param.values.length)
       .reduce((acc: any, param: SearchTaskParameter) => {
 
-        if (param.key === 'jurisdiction') {
+        if (param.key === 'jurisdiction' || param.key === 'primaryLocation') {
           const attributes = acc.attributes || {};
           return {
             ...acc, attributes: {
@@ -330,6 +334,8 @@ export function constructRoleAssignmentQuery(searchTaskParameters: SearchTaskPar
         }
         return {...acc, [param.key]: param.values};
       }, {})],
+    pageNumber: pagination.page_number,
+    size: pagination.page_size,
   };
 }
 

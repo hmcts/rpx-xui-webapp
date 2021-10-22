@@ -857,7 +857,6 @@ describe('workAllocation.utils', () => {
         ];
 
         const result = constructRoleAssignmentQuery(searchParameters, ['229786']);
-        console.log('result', JSON.stringify(result, null, 2));
         expect(result.queryRequests.length).to.equal(1);
         expect(result.queryRequests[0].attributes.primaryLocation[0]).to.equal('229786');
         expect(result.queryRequests[0].attributes.jurisdiction[0]).to.equal('IA');

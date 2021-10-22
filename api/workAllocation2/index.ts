@@ -108,6 +108,7 @@ export async function handleCasesRewriteUrl(path: string, req: any): Promise<str
   const query = constructRoleAssignmentQuery(searchParameters, []);
   console.log('query', JSON.stringify(query, null, 2));
   const result = await getRoleAssignmentsByQuery(query, req);
+  console.log('caseData', JSON.stringify(result.roleAssignmentResponse, null, 2));
 
   // temporary save the role assignments to the session
   req.session.casesRoleAssignments = result.roleAssignmentResponse;

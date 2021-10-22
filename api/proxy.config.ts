@@ -120,8 +120,8 @@ export const initProxy = (app: Express) => {
     })
 
     applyProxy(app, {
-        rewrite: false,
         onReq: accessManagement.removeAcceptHeader,
+        rewrite: false,
         source: '/am/role-assignments',
         target: getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH),
     })

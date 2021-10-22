@@ -9,3 +9,52 @@
 		text-align: right;
 	}
 }
+
+.hmcts-pagination {
+
+  .hmcts-pagination__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    .hmcts-pagination__item--prev .hmcts-pagination__link:before,
+    .hmcts-pagination__item--prev .hmcts-pagination__link:after,
+    .hmcts-pagination__item--next .hmcts-pagination__link:before,
+    .hmcts-pagination__item--next .hmcts-pagination__link:after {
+      background-image: url(/assets/images/icon-pagination.svg);
+      background-repeat: no-repeat;
+      background-size: 22px 36px;
+      background-position: 0 0;
+      display: inline-block;
+      height: 18px;
+      vertical-align: middle;
+      position: relative;
+      top: -1px;
+      width: 11px;
+    }
+
+    .hmcts-pagination__link {
+      display: block;
+      padding: 5px;
+      text-align: center;
+      text-decoration: none;
+      min-width: 25px;
+    }
+
+    .hmcts-pagination__item--prev .hmcts-pagination__link:before {
+      content: "";
+      margin-right: 10px;
+    }
+
+    .hmcts-pagination__item--next .hmcts-pagination__link:after {
+      background-position: -11px -18px;
+      content: "";
+      margin-left: 10px;
+    }
+
+    .hmcts-pagination__item--dots {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+}

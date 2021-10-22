@@ -27,7 +27,7 @@
     "annotation_api_url": "/em-anno",
     "hrs_url": "/hearing-recordings",
     "remote_hrs_url": ".*(\/hearing-recordings)",
-    "refunds_url": "api/refunds"
+    "refunds_url": "api/refund"
   },
   "urls": {
     "idam": {

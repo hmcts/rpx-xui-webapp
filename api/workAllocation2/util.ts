@@ -128,7 +128,7 @@ export function assignActionsToCases(cases: any[], view: any, isAllocator: boole
   return casesWithActions;
 }
 
-export function mapCaseworkerData(caseWorkerData: CaseworkerApi[]): Caseworker[] {
+export function mapCaseworkerData(caseWorkerData: CaseworkerApi[], roleAssignments: RoleAssignment[]): Caseworker[] {
   const caseworkers: Caseworker[] = [];
   if (caseWorkerData) {
     caseWorkerData.forEach((caseWorkerApi: CaseworkerApi) => {
@@ -138,11 +138,17 @@ export function mapCaseworkerData(caseWorkerData: CaseworkerApi[]): Caseworker[]
         idamId: caseWorkerApi.id,
         lastName: caseWorkerApi.last_name,
         location: mapCaseworkerPrimaryLocation(caseWorkerApi.base_location),
+        roleCategory: getRoleCategory(roleAssignments, caseWorkerApi),
       };
       caseworkers.push(thisCaseWorker);
     });
   }
   return caseworkers;
+}
+
+export function getRoleCategory(roleAssignments: RoleAssignment[], caseWorkerApi: CaseworkerApi): string {
+  const roleAssignment = roleAssignments.find(roleAssign => roleAssign.actorId === caseWorkerApi.id);
+  return roleAssignment ? roleAssignment.roleCategory : null;
 }
 
 export function mapCaseworkerPrimaryLocation(baseLocation: LocationApi[]): Location {
@@ -294,7 +300,7 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
     case_category: caseDetail.case_type_id,
     // TODO: case_name: caseDetail.hmctsCaseNameInternal (when services have made this available)
     case_id: caseDetail.id,
-    case_name: caseDetail.id,
+    case_name: caseDetail.case_data && caseDetail.case_data.caseName ? caseDetail.case_data.caseName : caseDetail.id,
     case_role: roleAssignment.roleName,
     endDate: roleAssignment.endTime,
     id: roleAssignment.id,
@@ -313,6 +319,11 @@ export function getCaseTypesFromRoleAssignments(roleAssignments: RoleAssignment[
       return query.includes(caseType) ? query : `${query}${caseType},`;
     }, '');
   return caseTypes[caseTypes.length - 1] === ',' ? caseTypes.slice(0, caseTypes.length - 1) : caseTypes;
+}
+
+export function getSubstantiveRoles(roleAssignments: RoleAssignment[]): RoleAssignment[] {
+  return roleAssignments
+    .filter((roleAssignment: RoleAssignment) => roleAssignment.attributes && roleAssignment.attributes.substantive === 'Y');
 }
 
 // Note: array type may need to be changed depending on where pagination called

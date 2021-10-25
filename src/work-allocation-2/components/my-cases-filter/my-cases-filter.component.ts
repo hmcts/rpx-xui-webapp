@@ -20,7 +20,7 @@ const LOCATION_ERROR: ErrorMessage = {
   styleUrls: ['my-cases-filter.component.scss']
 })
 export class MyCasesFilterComponent implements OnInit, OnDestroy {
-  private static readonly FILTER_NAME = 'locations';
+  private static readonly FILTER_NAME = 'case_locations';
   @Output() public errorChanged: EventEmitter<ErrorMessage> = new EventEmitter();
   public showFilteredText = false;
   public error: ErrorMessage;
@@ -106,7 +106,7 @@ export class MyCasesFilterComponent implements OnInit, OnDestroy {
   public getDefaultLocations(): string[] {
     if (this.fieldsConfig && this.fieldsConfig.cancelSetting) {
       this.fieldsConfig.cancelSetting.fields.forEach(field => {
-        if (field.name === 'locations') {
+        if (field.name === 'case_locations') {
           this.defaultLocations = field.value;
         }
       });

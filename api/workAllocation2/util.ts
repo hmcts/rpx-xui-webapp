@@ -6,6 +6,7 @@ import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
+import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 import { release2ContentType } from '../roleAccess/exclusionService';
 import { ElasticSearchQuery } from '../searchCases/interfaces/ElasticSearchQuery';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
@@ -379,15 +380,15 @@ export function constructRoleAssignmentCaseAllocatorQuery(searchTaskParameters: 
 
 export function mapRoleType(roleType: string): string {
   if (roleType === PersonRole.JUDICIAL) {
-    return 'JUDICIAL';
+    return RoleCategory.JUDICIAL;
   }
 
   if (roleType === PersonRole.CASEWORKER) {
-    return 'LEGAL_OPERATIONS';
+    return RoleCategory.LEGAL_OPERATIONS;
   }
 
   if (roleType === PersonRole.ADMIN) {
-    return 'ADMIN';
+    return RoleCategory.ADMIN;
   }
 
   return '';

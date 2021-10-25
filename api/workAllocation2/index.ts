@@ -33,8 +33,8 @@ import * as taskServiceMock from './taskService.mock';
 import {
   assignActionsToCases,
   assignActionsToTasks,
-  constructElasticSearchQuery, constructRoleAssignmentCaseAllocatorQuery,
-  constructRoleAssignmentQuery, getCaseAllocatorLocations,
+  constructElasticSearchQuery,
+  constructRoleAssignmentQuery,
   getCaseIdListFromRoles,
   getCaseTypesFromRoleAssignments,
   getRoleAssignmentsByQuery,
@@ -90,17 +90,17 @@ export function handleMyCasesRewriteUrl(path: string, req: any): string {
 
 export async function handleCasesRewriteUrl(path: string, req: any): Promise<string> {
   const searchParameters = req.body.searchRequest.search_parameters as SearchTaskParameter[];
-  const pagination  = req.body.searchRequest.pagination_parameters as PaginationParameter;
+  const pagination = req.body.searchRequest.pagination_parameters as PaginationParameter;
 
-/*
-  // get users case allocations
-  const caseAllocatorQuery = constructRoleAssignmentCaseAllocatorQuery(searchParameters, req);
-  const caseAllocatorResult = await getRoleAssignmentsByQuery(caseAllocatorQuery, req);
-  // get case allocator locations
-  const locations = caseAllocatorResult.roleAssignmentResponse
-    ? getCaseAllocatorLocations(caseAllocatorResult.roleAssignmentResponse)
-    : [];
-*/
+  /*
+    // get users case allocations
+    const caseAllocatorQuery = constructRoleAssignmentCaseAllocatorQuery(searchParameters, req);
+    const caseAllocatorResult = await getRoleAssignmentsByQuery(caseAllocatorQuery, req);
+    // get case allocator locations
+    const locations = caseAllocatorResult.roleAssignmentResponse
+      ? getCaseAllocatorLocations(caseAllocatorResult.roleAssignmentResponse)
+      : [];
+  */
 
   // get all role assignments
   const query = constructRoleAssignmentQuery(searchParameters, []);
@@ -158,7 +158,7 @@ export function handleGetMyCasesResponse(proxyRes, req, res, json): any {
   if (showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED)) {
     checkedRoles = getSubstantiveRoles(req.session.roleAssignmentResponse);
   }
-  const mappedCases =  checkedRoles ? mapCasesFromData(caseData, checkedRoles, null) : [];
+  const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles, null) : [];
   json.cases = assignActionsToCases(mappedCases, userIsCaseAllocator, true);
   return json;
 }
@@ -173,7 +173,7 @@ export function handleGetCasesResponse(proxyRes, req, res, json): any {
   if (showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED)) {
     checkedRoles = getSubstantiveRoles(req.session.casesRoleAssignments);
   }
-  const mappedCases =  checkedRoles ? mapCasesFromData(caseData, checkedRoles, req.session.casesPagination) : [];
+  const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles, req.session.casesPagination) : [];
   json.cases = assignActionsToCases(mappedCases, userIsCaseAllocator, true);
   return json;
 }

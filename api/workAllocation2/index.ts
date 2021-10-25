@@ -94,24 +94,19 @@ export async function handleCasesRewriteUrl(path: string, req: any): Promise<str
 
   // get users case allocations
   const caseAllocatorQuery = constructRoleAssignmentCaseAllocatorQuery(searchParameters, req);
-  console.log('caseAllocatorQuery', JSON.stringify(caseAllocatorQuery, null, 2));
   const caseAllocatorResult = await getRoleAssignmentsByQuery(caseAllocatorQuery, req);
 
-  console.log('caseAllocatorResult', JSON.stringify(caseAllocatorResult, null, 2));
-
   // get case allocator locations
-  const locations = caseAllocatorResult.roleAssignmentResponse
+  const locations = caseAllocatorResult && caseAllocatorResult.roleAssignmentResponse
     ? getCaseAllocatorLocations(caseAllocatorResult.roleAssignmentResponse)
     : [];
 
   // get all role assignments
   const query = constructRoleAssignmentQuery(searchParameters, locations);
-  console.log('query', JSON.stringify(query, null, 2));
   const result = await getRoleAssignmentsByQuery(query, req);
-  console.log('caseData', JSON.stringify(result.roleAssignmentResponse, null, 2));
 
   // temporary save the role assignments to the session
-  req.session.casesRoleAssignments = result.roleAssignmentResponse;
+  req.session.casesRoleAssignments = result ? result.roleAssignmentResponse : [];
   req.session.casesPagination = pagination;
 
   // get the case ids from the role assignments

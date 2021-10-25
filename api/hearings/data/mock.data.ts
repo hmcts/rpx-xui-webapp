@@ -60,18 +60,6 @@ const CASE_HEARING_1: CaseHearingModel = {
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_1],
 };
 
-const CASE_HEARING_2: CaseHearingModel = {
-  hearingID: 'h222222',
-  hearingType: 'Final hearing',
-  hmcStatus: 'Upcoming',
-  creationDateTime: '2021-02-12T16:00:00.000+0000',
-  lastResponseReceivedDateTime: '2021-10-12T16:00:00.000+0000',
-  responseVersion: 'rv2',
-  hearingListingStatus: 'LISTED',
-  listAssistCaseStatus: '',
-  hearingDaySchedule: [HEARING_DAY_SCHEDULE_2],
-};
-
 const CASE_HEARING_3: CaseHearingModel = {
   hearingID: 'h333333',
   hearingType: 'Initial hearing',
@@ -82,6 +70,18 @@ const CASE_HEARING_3: CaseHearingModel = {
   hearingListingStatus: 'COMPLETED',
   listAssistCaseStatus: '',
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_3],
+};
+
+const CASE_HEARING_2: CaseHearingModel = {
+  hearingID: 'h222222',
+  hearingType: 'Final hearing',
+  hmcStatus: 'Upcoming',
+  creationDateTime: '2021-02-12T16:00:00.000+0000',
+  lastResponseReceivedDateTime: '2021-10-12T16:00:00.000+0000',
+  responseVersion: 'rv2',
+  hearingListingStatus: 'LISTED',
+  listAssistCaseStatus: '',
+  hearingDaySchedule: [HEARING_DAY_SCHEDULE_2],
 };
 
 const CASE_HEARING_4: CaseHearingModel = {

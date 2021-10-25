@@ -108,7 +108,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   // EUI-4408 - If stream not yet started, persist first session settings in filter service
   private persistFirstSetting(): void {
     if (!this.filterService.get(TaskListFilterComponent.FILTER_NAME)) {
-      this.filterService.persist(this.fieldsSettings, 'local');
+      this.filterService.persist(this.fieldsSettings, this.fieldsConfig.persistence);
       this.filterService.isInitialSetting = true;
     }
   }

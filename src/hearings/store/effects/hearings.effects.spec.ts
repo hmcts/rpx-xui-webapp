@@ -6,7 +6,7 @@ import { Go } from '../../../app/store/actions';
 import { CaseHearingModel } from '../../models/caseHearing.model';
 import { CaseHearingsMainModel } from '../../models/caseHearingsMain.model';
 import { HearingDayScheduleModel } from '../../models/hearingDaySchedule.model';
-import { HearingListingStatusEnum } from '../../models/hearings.enum';
+import { EXUISectionStatusEnum, HearingListingStatusEnum } from '../../models/hearings.enum';
 import { HearingsService } from '../../services/hearings.service';
 import * as hearingsActions from '../actions/hearings.action';
 import { HearingsEffects } from './hearings.effects';
@@ -47,8 +47,9 @@ describe('Hearings Effects', () => {
         hmcStatus: 'pending',
         lastResponseReceivedDateTime: '2021-05-05T16:00:00.000+0000',
         responseVersion: 'rv1',
-        hearingListingStatus: HearingListingStatusEnum.WAITING_TO_BE_LISTED,
+        hearingListingStatus: HearingListingStatusEnum.AWAITING_LISTING,
         listAssistCaseStatus: 'pending',
+        exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
         hearingDaySchedule: [HEARING_DAY_SCHEDULE_1],
       };
       const HEARINGS_LIST: CaseHearingsMainModel = {

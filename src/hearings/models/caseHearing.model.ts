@@ -2,12 +2,13 @@ import { HearingDayScheduleModel } from './hearingDaySchedule.model';
 import { HearingListingStatusEnum } from './hearings.enum';
 
 export interface CaseHearingModel {
+  creationDateTime: string;
+  hearingDaySchedule: HearingDayScheduleModel[];
   hearingID: string;
+  hearingListingStatus: HearingListingStatusEnum;
   hearingType: string;
   hmcStatus: string;
   lastResponseReceivedDateTime: string;
-  responseVersion: string;
-  hearingListingStatus: HearingListingStatusEnum;
   listAssistCaseStatus: string;
-  hearingDaySchedule: HearingDayScheduleModel[];
+  responseVersion: string;
 }

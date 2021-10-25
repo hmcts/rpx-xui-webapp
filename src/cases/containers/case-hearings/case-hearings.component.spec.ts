@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -13,7 +13,7 @@ import { Actions, HearingListingStatusEnum, HearingsSectionStatusEnum } from '..
 import { CaseHearingsComponent } from './case-hearings.component';
 import * as moment from 'moment';
 
-fdescribe('CaseHearingsComponent', () => {
+describe('CaseHearingsComponent', () => {
 
   let component: CaseHearingsComponent;
   let fixture: ComponentFixture<CaseHearingsComponent>;
@@ -268,7 +268,7 @@ fdescribe('CaseHearingsComponent', () => {
     });
   });
 
-  it('should have first Update section status hearing with hearing status as Waiting', (done) => {  
+  it('should have first Update section status hearing with hearing status as Waiting', (done) => {
     component.upcomingHearings$.subscribe(hearing => {
       expect(hearing[0].hearingListingStatus).toEqual(HearingListingStatusEnum.WAITING_TO_BE_LISTED);
       done();
@@ -287,7 +287,7 @@ fdescribe('CaseHearingsComponent', () => {
       expect(hearing[2].hmcStatus).toEqual(HearingsSectionStatusEnum.UPCOMING);
       expect(hearing[3].hmcStatus).toEqual(HearingsSectionStatusEnum.UPCOMING);
       expect(hearing[2].hearingListingStatus).not.toEqual(HearingListingStatusEnum.WAITING_TO_BE_LISTED);
-      expect(hearing[3].hearingListingStatus).not.toEqual(HearingListingStatusEnum.WAITING_TO_BE_LISTED);     
+      expect(hearing[3].hearingListingStatus).not.toEqual(HearingListingStatusEnum.WAITING_TO_BE_LISTED);
       expect(moment(hearing[3].lastResponseReceivedDateTime).isBefore(moment(hearing[2].lastResponseReceivedDateTime))).toBeTruthy();
       done();
     });

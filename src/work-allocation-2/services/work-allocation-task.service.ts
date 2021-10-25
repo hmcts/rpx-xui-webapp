@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { SearchTaskRequest, TaskSearchParameters } from '../models/dtos';
 import { Task } from '../models/tasks';
 
-const BASE_URL: string = '/workallocation/task';
+const BASE_URL: string = '/workallocation2/task';
 export enum ACTION {
   ASSIGN = 'assign',
   CANCEL = 'cancel',

@@ -38,29 +38,29 @@ export class CaseHearingsComponent implements OnInit {
   public ngOnInit(): void {
     this.getHearsListByStatus(HearingsSectionStatusEnum.UPCOMING).subscribe(hearings => {
       this.upcomingHearings$ = of(hearings.sort((a, b) => {
-        return new Date(a.lastResponseReceivedDateTime) > new Date(b.lastResponseReceivedDateTime) ? 1: -1;
+        return new Date(a.lastResponseReceivedDateTime) > new Date(b.lastResponseReceivedDateTime) ? 1 : -1;
       }).sort((a, b) => {
-        return new Date(a.creationDateTime) > new Date(b.creationDateTime) ? 1: -1;
+        return new Date(a.creationDateTime) > new Date(b.creationDateTime) ? 1 : -1;
       }).sort((a) => {
-        return a.hearingListingStatus === 'WAITING TO BE LISTED' ? -1: 1;
-      }))
+        return a.hearingListingStatus === 'WAITING TO BE LISTED' ? -1 : 1;
+      }));
     });
 
     this.getHearsListByStatus(HearingsSectionStatusEnum.PAST_AND_CANCELLED).subscribe(hearings => {
       this.pastAndCancelledHearings$ = of(hearings.sort((a, b) => {
-        return new Date(a.lastResponseReceivedDateTime) > new Date(b.lastResponseReceivedDateTime) ? 1: -1;
+        return new Date(a.lastResponseReceivedDateTime) > new Date(b.lastResponseReceivedDateTime) ? 1 : -1;
       }).sort((a) => {
         return !a.lastResponseReceivedDateTime ? 1 : -1;
       }).sort((a, b) => {
-        return new Date(a.creationDateTime) < new Date(b.creationDateTime) ? 1: -1;
+        return new Date(a.creationDateTime) < new Date(b.creationDateTime) ? 1 : -1;
       }).sort((a, b) => {
-        return new Date(a.creationDateTime) < new Date(b.creationDateTime) ? 1: -1;
+        return new Date(a.creationDateTime) < new Date(b.creationDateTime) ? 1 : -1;
       }).sort((a) => {
-        return a.lastResponseReceivedDateTime ? 1: -1;
-      }))
+        return a.lastResponseReceivedDateTime ? 1 : -1;
+      }));
     });
 
-   this.roleCategoryMappingService.isJudicialOrLegalOpsCategory(this.userRoles).subscribe(
+    this.roleCategoryMappingService.isJudicialOrLegalOpsCategory(this.userRoles).subscribe(
       userRole => {
         if (userRole === UserRole.LegalOps) {
           this.hearingsActions = [...this.hearingsActions, Actions.Create, Actions.Update, Actions.Delete];
@@ -83,7 +83,7 @@ export class CaseHearingsComponent implements OnInit {
             return [];
           }
         }
-      )      
+      )  
     );
   }
 }

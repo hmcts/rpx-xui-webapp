@@ -4,7 +4,6 @@ import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import {mockReq, mockRes} from 'sinon-express-mock';
 import { http } from '../lib/http';
-import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 
 import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';

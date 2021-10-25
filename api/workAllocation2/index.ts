@@ -9,7 +9,6 @@ import {
   SERVICES_WORK_ALLOCATION_TASK_API_PATH
 } from '../configuration/references';
 import { EnhancedRequest } from '../lib/models';
-
 import * as caseServiceMock from './caseService.mock';
 import {
   getUserIdsFromRoleApiResponse,

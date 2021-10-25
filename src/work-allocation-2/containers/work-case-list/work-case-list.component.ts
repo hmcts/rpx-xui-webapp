@@ -56,10 +56,7 @@ export class WorkCaseListComponent implements OnChanges {
       return false;
     }
     const { defaultSortFieldName, defaultSortDirection } = this.caseServiceConfig;
-    if (this.sortedBy.fieldName === defaultSortFieldName && this.sortedBy.order === defaultSortDirection) {
-      return false;
-    }
-    return true;
+    return !(this.sortedBy.fieldName === defaultSortFieldName && this.sortedBy.order === defaultSortDirection);
   }
 
   public selectCaseFromUrlHash(url: string): Case {
@@ -103,6 +100,7 @@ export class WorkCaseListComponent implements OnChanges {
    * Therefore we need to add the 'manage' column field within this component, as discussed in the LLD.
    */
   public addManageColumn(fields: string[]): string[] {
+    console.log(fields);
     return [...fields, 'manage'];
   }
 

@@ -31,9 +31,7 @@ export class LocationResolver implements Resolve<Location> {
       .pipe(
         first(),
         mergeMap((userDetails: UserDetails) => this.getJudicialWorkersOrCaseWorkers(userDetails)
-          .pipe(
-            map((caseWorkers: Caseworker[]) => this.extractLocation(userDetails, caseWorkers))
-          )
+            .map((caseWorkers) => this.extractLocation(userDetails, caseWorkers))
         ),
         catchError(error => {
           handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);

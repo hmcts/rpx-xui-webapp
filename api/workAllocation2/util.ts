@@ -128,7 +128,7 @@ export function assignActionsToCases(cases: any[], view: any, isAllocator: boole
   return casesWithActions;
 }
 
-export function mapCaseworkerData(caseWorkerData: CaseworkerApi[]): Caseworker[] {
+export function mapCaseworkerData(caseWorkerData: CaseworkerApi[], roleAssignments: RoleAssignment[]): Caseworker[] {
   const caseworkers: Caseworker[] = [];
   if (caseWorkerData) {
     caseWorkerData.forEach((caseWorkerApi: CaseworkerApi) => {
@@ -138,11 +138,17 @@ export function mapCaseworkerData(caseWorkerData: CaseworkerApi[]): Caseworker[]
         idamId: caseWorkerApi.id,
         lastName: caseWorkerApi.last_name,
         location: mapCaseworkerPrimaryLocation(caseWorkerApi.base_location),
+        roleCategory: getRoleCategory(roleAssignments, caseWorkerApi),
       };
       caseworkers.push(thisCaseWorker);
     });
   }
   return caseworkers;
+}
+
+export function getRoleCategory(roleAssignments: RoleAssignment[], caseWorkerApi: CaseworkerApi): string {
+  const roleAssignment = roleAssignments.find(roleAssign => roleAssign.actorId === caseWorkerApi.id);
+  return roleAssignment ? roleAssignment.roleCategory : null;
 }
 
 export function mapCaseworkerPrimaryLocation(baseLocation: LocationApi[]): Location {

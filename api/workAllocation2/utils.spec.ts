@@ -1,9 +1,9 @@
 import { expect } from 'chai';
-
 import { mockReq } from 'sinon-express-mock';
+
+import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { ASSIGN, CLAIM, CLAIM_AND_GO, COMPLETE, GO, REASSIGN, RELEASE, TaskPermission } from './constants/actions';
-import { Case } from './interfaces/case';
 import { Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/common';
 import { PersonRole } from './interfaces/person';
 import { RoleCaseData } from './interfaces/roleCaseData';
@@ -346,6 +346,7 @@ describe('workAllocation.utils', () => {
       idamId: '1',
       lastName: 'Test',
       location: LOCATION_1,
+      roleCategory: RoleCategory.LEGAL_OPERATIONS
     };
     const CASEWORKER_2: Caseworker = {
       email: 'firstlast@test.com',
@@ -353,6 +354,7 @@ describe('workAllocation.utils', () => {
       idamId: '2',
       lastName: 'Last',
       location: LOCATION_2,
+      roleCategory: RoleCategory.ADMIN
     };
     const CASEWORKER_3: Caseworker = {
       email: 'onetwo@test.com',
@@ -360,6 +362,7 @@ describe('workAllocation.utils', () => {
       idamId: '3',
       lastName: 'Two',
       location: LOCATION_2,
+      roleCategory: RoleCategory.LEGAL_OPERATIONS
     };
     const CASEWORKER_4: Caseworker = {
       email: 'fourthtest@test.com',
@@ -367,7 +370,35 @@ describe('workAllocation.utils', () => {
       idamId: '4',
       lastName: 'Test',
       location: null,
+      roleCategory: null
     };
+
+    const mockRoleAssignments: RoleAssignment[] = [
+      {
+        id: '123',
+        attributes: null,
+        actorId: '1',
+        roleCategory: RoleCategory.LEGAL_OPERATIONS
+      },
+      {
+        id: '123',
+        attributes: null,
+        actorId: '2',
+        roleCategory: RoleCategory.ADMIN
+      },
+      {
+        id: '123',
+        attributes: null,
+        actorId: '3',
+        roleCategory: RoleCategory.LEGAL_OPERATIONS
+      },
+      {
+        id: '123',
+        attributes: null,
+        actorId: '5',
+        roleCategory: RoleCategory.LEGAL_OPERATIONS
+      }
+    ]
 
     it('should map the primary location correctly', () => {
       // check function seals with no locations
@@ -388,10 +419,10 @@ describe('workAllocation.utils', () => {
 
     it('should map the caseworkers correctly', () => {
       // ensure null values are passed through with no issues
-      expect(mapCaseworkerData(null)).to.deep.equal([]);
+      expect(mapCaseworkerData(null, mockRoleAssignments)).to.deep.equal([]);
 
       // this will ensure that the mapping of caseworker data is correct
-      expect(mapCaseworkerData([CASEWORKERAPI_1, CASEWORKERAPI_2, CASEWORKERAPI_3, CASEWORKERAPI_4]))
+      expect(mapCaseworkerData([CASEWORKERAPI_1, CASEWORKERAPI_2, CASEWORKERAPI_3, CASEWORKERAPI_4], mockRoleAssignments))
         .to.deep.equal([CASEWORKER_1, CASEWORKER_2, CASEWORKER_3, CASEWORKER_4]);
     });
   });

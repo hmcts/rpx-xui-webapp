@@ -11,8 +11,8 @@ import {
   AllocateRoleNavigationEvent,
   AllocateRoleState,
   AllocateRoleStateData,
-  SpecificRole,
-  TypeOfRole
+  RoleCategory,
+  SpecificRole
 } from '../../../models';
 import * as fromFeature from '../../../store';
 import { getTitleText } from '../../../utils';
@@ -44,7 +44,7 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
 
   private setData(allocateRoleStateData: AllocateRoleStateData): void {
     const action = EnumUtil(Actions).getKeyOrDefault(allocateRoleStateData.action);
-    if (allocateRoleStateData.typeOfRole && allocateRoleStateData.typeOfRole.name === TypeOfRole.CaseManager) {
+    if (allocateRoleStateData.roleCategory === RoleCategory.LEGAL_OPERATIONS) {
       this.domain = PersonRole.CASEWORKER;
     }
     this.title = getTitleText(allocateRoleStateData.typeOfRole, action, allocateRoleStateData.roleCategory);

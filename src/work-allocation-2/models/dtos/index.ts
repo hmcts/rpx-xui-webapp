@@ -1,3 +1,5 @@
+import { RoleCategory } from '../../../role-access/models';
+
 export interface Assignee {
   userId: string;
   userName?: string;
@@ -16,6 +18,7 @@ export interface Caseworker {
   lastName: string;
   email: string;
   location: Location;
+  roleCategory: RoleCategory
 }
 
 export interface JudicialWorker {

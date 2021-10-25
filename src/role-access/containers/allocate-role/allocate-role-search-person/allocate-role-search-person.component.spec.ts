@@ -86,7 +86,6 @@ describe('AllocateRolePersonComponent', () => {
     };
     mockStore.pipe.and.returnValue(of(ALLOCATE_ROLE_STATE_DATA));
     component.ngOnInit();
-    expect(component.domain).toBe('Judicial');
     expect(component.title).toBe('Allocate a lead judge');
     expect(component.personName).toBe('test2');
     expect(component.roleType).toEqual({id: 'lead-judge', name: 'Lead judge'});

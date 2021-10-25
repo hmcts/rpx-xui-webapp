@@ -22,8 +22,13 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I select jurisdiction {string} case type {string}', async function (jurisdiction,caseType) {
-        await searchCasePage.selectJurisdiction(jurisdiction);
-        await searchCasePage.selectCaseType(caseType);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await searchCasePage.selectJurisdiction(jurisdiction);
+            await searchCasePage.selectCaseType(caseType);
+
+            await BrowserWaits.waitForElement(caseListPage.dynamicFiltersContainer);
+        });
+        
     });
 
     Then('I validate search case {string} fields displayed', async function(searchCaseConfigReference){

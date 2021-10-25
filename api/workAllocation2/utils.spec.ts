@@ -1,10 +1,10 @@
 import * as chai from 'chai';
 import { expect } from 'chai';
-import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import {mockReq, mockRes} from 'sinon-express-mock';
 import { http } from '../lib/http';
+import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { ASSIGN, CLAIM, CLAIM_AND_GO, COMPLETE, GO, REASSIGN, RELEASE, TaskPermission } from './constants/actions';
@@ -355,7 +355,7 @@ describe('workAllocation.utils', () => {
       idamId: '1',
       lastName: 'Test',
       location: LOCATION_1,
-      roleCategory: RoleCategory.LEGAL_OPERATIONS
+      roleCategory: RoleCategory.LEGAL_OPERATIONS,
     };
     const CASEWORKER_2: Caseworker = {
       email: 'firstlast@test.com',
@@ -363,7 +363,7 @@ describe('workAllocation.utils', () => {
       idamId: '2',
       lastName: 'Last',
       location: LOCATION_2,
-      roleCategory: RoleCategory.ADMIN
+      roleCategory: RoleCategory.ADMIN,
     };
     const CASEWORKER_3: Caseworker = {
       email: 'onetwo@test.com',
@@ -371,7 +371,7 @@ describe('workAllocation.utils', () => {
       idamId: '3',
       lastName: 'Two',
       location: LOCATION_2,
-      roleCategory: RoleCategory.LEGAL_OPERATIONS
+      roleCategory: RoleCategory.LEGAL_OPERATIONS,
     };
     const CASEWORKER_4: Caseworker = {
       email: 'fourthtest@test.com',
@@ -379,7 +379,7 @@ describe('workAllocation.utils', () => {
       idamId: '4',
       lastName: 'Test',
       location: null,
-      roleCategory: null
+      roleCategory: null,
     };
 
     const mockRoleAssignments: RoleAssignment[] = [
@@ -387,27 +387,27 @@ describe('workAllocation.utils', () => {
         id: '123',
         attributes: null,
         actorId: '1',
-        roleCategory: RoleCategory.LEGAL_OPERATIONS
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
       },
       {
         id: '123',
         attributes: null,
         actorId: '2',
-        roleCategory: RoleCategory.ADMIN
+        roleCategory: RoleCategory.ADMIN,
       },
       {
         id: '123',
         attributes: null,
         actorId: '3',
-        roleCategory: RoleCategory.LEGAL_OPERATIONS
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
       },
       {
         id: '123',
         attributes: null,
         actorId: '5',
-        roleCategory: RoleCategory.LEGAL_OPERATIONS
-      }
-    ]
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
+      },
+    ];
 
     it('should map the primary location correctly', () => {
       // check function seals with no locations

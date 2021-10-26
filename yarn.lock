@@ -443,12 +443,13 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.3.6-rc.1":
-  version "4.3.6-rc.1"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.3.6-rc.1.tgz#8021a3c8f9f2b3fb5c652eabf5f1d8ba83db4f87"
-  integrity sha512-+vidGbJIl4u6vZ+fzLxl8stCqVesVfDLnEb0sq32Z0O0YxnD9Tn2BmUEx1jouLcBk77K2F8/FRTTvKPDAMLZdw==
+"@hmcts/ccd-case-ui-toolkit@4.5.0-EUI-3476-case-specific-access":
+  version "4.5.0-EUI-3476-case-specific-access"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.5.0-EUI-3476-case-specific-access.tgz#de8478414569500c8f31505d55905214985f424a"
+  integrity sha512-9waJtQc8zC1t3ysXAsMXo9naE/wRlEtsG4t6anXDMnk8UPE17c3p/gOTwQiYf4o8Fc4Zv1r9MvQs+KQu23cntA==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
+    "@angular-material-components/moment-adapter" "^5.0.0"
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
     "@hmcts/ccpay-web-component" "3.0.3"

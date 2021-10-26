@@ -1,7 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
 import { Subscription } from 'rxjs';
+import { SearchValidationError } from '../../models';
+import { SearchValidators } from '../../utils';
 import { SearchService } from '../../services/search.service';
 
 @Component({
@@ -23,6 +25,9 @@ export class SearchFormComponent implements OnInit, OnDestroy {
   public servicesConfig: GovUiConfigModel;
   public services: SearchFormServiceListItem[];
   public searchServiceSubscription: Subscription;
+  public searchValidationErrors: SearchValidationError[] = [];
+  public emailErrorMessage: ErrorMessagesModel;
+  public postcodeErrorMessage: ErrorMessagesModel;
 
   constructor(private readonly fb: FormBuilder,
               private readonly searchService: SearchService) {
@@ -118,10 +123,31 @@ export class SearchFormComponent implements OnInit, OnDestroy {
 
     // Set default service selection to "All"
     this.formGroup.get('servicesList').setValue(this.services[0].id);
+
+    // Set the form control validators
+    this.setValidators();
+  }
+
+  setValidators(): void {
+    // Validator for email
+    this.formGroup.get('email').setValidators(Validators.email);
+
+    // Validator for postcode
+    const postcodeValidator = SearchValidators.postcodeValidator();
+    this.formGroup.get('postcode').setValidators(postcodeValidator);
   }
 
   public onSubmit(): void {
-
+    if (!this.formGroup.valid) {
+      if (this.formGroup.get('email').hasError) {
+        this.searchValidationErrors.push({ controlId: 'email', documentHRef: 'email', errorMessage: 'Enter a valid email' });
+        this.emailErrorMessage = { isInvalid: true, messages: ['Enter a valid email'] };
+      }
+      if (this.formGroup.get('postcode').hasError) {
+        this.searchValidationErrors.push({ controlId: 'postcode', documentHRef: 'postcode', errorMessage: 'Enter a valid postcode' });
+        this.postcodeErrorMessage = { isInvalid: true, messages: ['Enter a valid postcode'] };
+      }
+    }
   }
 
   public ngOnDestroy(): void {

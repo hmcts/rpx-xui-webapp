@@ -179,14 +179,14 @@ class WorkAllocationModels {
         return { "roleId": "judicial", "roleName": "Judicial" }
     }
 
-    getCaseRole(){
+    getCaseRole(roleCategory){
         return {
             actions: [{ id: "reallocate", title: "Reallocate" }, { id: "remove", title: "Remove Allocation" }],
             end: "2021-02-16T18:58:48.987+0000",
             id: v4(),
             location:"test location",
             name:"caserole name",
-            roleCategory:"test-case-role",
+            roleCategory: roleCategory ? roleCategory : "test-case-role",
             roleName:'',
             start: "2020-09-16T18:58:48.987+0000",
             end:'',

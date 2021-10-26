@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
+import { Subscription } from 'rxjs';
 import { SearchService } from '../../services/search.service';
 
 @Component({
@@ -8,7 +9,7 @@ import { SearchService } from '../../services/search.service';
   templateUrl: './search-form.component.html',
   styleUrls: ['./search-form.component.scss']
 })
-export class SearchFormComponent implements OnInit {
+export class SearchFormComponent implements OnInit, OnDestroy {
 
   public formGroup: FormGroup;
   public caseRefConfig: GovUiConfigModel;
@@ -21,6 +22,7 @@ export class SearchFormComponent implements OnInit {
   public dateOfDeathConfig: GovUiConfigModel;
   public servicesConfig: GovUiConfigModel;
   public services: SearchFormServiceListItem[];
+  public searchServiceSubscription: Subscription;
 
   constructor(private readonly fb: FormBuilder,
               private readonly searchService: SearchService) {
@@ -108,7 +110,7 @@ export class SearchFormComponent implements OnInit {
       servicesList: ''
     });
 
-    this.searchService.getServices().subscribe(services => {
+    this.searchServiceSubscription = this.searchService.getServices().subscribe(services => {
       services.forEach(service => {
         this.services.push({ label: service.serviceName, value: service.serviceName, id: service.serviceId });
       });
@@ -120,6 +122,10 @@ export class SearchFormComponent implements OnInit {
 
   public onSubmit(): void {
 
+  }
+
+  public ngOnDestroy(): void {
+    this.searchServiceSubscription.unsubscribe();
   }
 }
 

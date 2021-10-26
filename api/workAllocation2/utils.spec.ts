@@ -4,8 +4,8 @@ import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import {mockReq, mockRes} from 'sinon-express-mock';
 import { http } from '../lib/http';
-import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 
+import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { ASSIGN, CLAIM, CLAIM_AND_GO, COMPLETE, GO, REASSIGN, RELEASE, TaskPermission } from './constants/actions';
 import { Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/common';
@@ -23,6 +23,7 @@ import {
   mapCasesFromData,
   mapCaseworkerData,
   mapCaseworkerPrimaryLocation,
+  mapRoleType,
   prepareGetTaskUrl,
   preparePaginationUrl,
   preparePostTaskUrlAction,
@@ -893,6 +894,18 @@ describe('workAllocation.utils', () => {
         expect(result.queryRequests[0].attributes.primaryLocation[0]).to.equal('229786');
         expect(result.queryRequests[0].attributes.jurisdiction[0]).to.equal('IA');
         expect(result.queryRequests[0].roleType[0]).to.equal('CASE');
+      });
+  });
+
+  describe('mapRoleType', () => {
+
+    it(
+      'should map the role type to the correct role category',
+      () => {
+        expect(mapRoleType(PersonRole.ALL)).to.deep.equal('');
+        expect(mapRoleType(PersonRole.JUDICIAL)).to.deep.equal(RoleCategory.JUDICIAL);
+        expect(mapRoleType(PersonRole.ADMIN)).to.deep.equal(RoleCategory.ADMIN);
+        expect(mapRoleType(PersonRole.CASEWORKER)).to.deep.equal(RoleCategory.LEGAL_OPERATIONS);
       });
   });
 

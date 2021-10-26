@@ -4,7 +4,7 @@ import 'mocha';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { baseWorkAllocationTaskUrl, getTask, postTaskAction, searchTask } from '.';
+import { baseWorkAllocationTaskUrl, getTask, handleCasesRewriteUrl, handleMyCasesRewriteUrl, postTaskAction, searchTask } from '.';
 import { httpMock } from '../common/mockService';
 import { http } from '../lib/http';
 import { mockTasks } from './taskTestData.spec';
@@ -189,5 +189,245 @@ describe('workAllocation', () => {
     });
 
   });
+
+  describe('handleCasesRewriteUrl', () => {
+
+    it('should be able to handle rewriting a given url for my cases', async () => {
+      const body = {assignee: {name: 'bob', id: 'bob01'}};
+      const req = mockReq({
+        body,
+        session: {
+          roleAssignmentResponse: [
+            {
+              "id": "508daf11-d968-4d65-bebb-863195b395c2",
+              "actorIdType": "IDAM",
+              "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+              "roleType": "CASE",
+              "roleName": "case-manager",
+              "classification": "PUBLIC",
+              "grantType": "SPECIFIC",
+              "roleCategory": "LEGAL_OPERATIONS",
+              "readOnly": false,
+              "beginTime": "2021-10-20T23:00:00Z",
+              "endTime": "2021-10-27T23:00:00Z",
+              "created": "2021-10-21T14:55:04.103639Z",
+              "attributes": {
+                "substantive": "Y",
+                "caseId": "1634822871207303",
+                "jurisdiction": "IA",
+                "primaryLocation": "229786",
+                "caseType": "Asylum",
+              },
+            },
+            {
+              "id": "90d23b9f-3458-4aeb-83c3-5fb25ecfa30a",
+              "actorIdType": "IDAM",
+              "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+              "roleType": "CASE",
+              "roleName": "case-manager",
+              "classification": "PUBLIC",
+              "grantType": "SPECIFIC",
+              "roleCategory": "LEGAL_OPERATIONS",
+              "readOnly": false,
+              "beginTime": "2021-10-13T23:00:00Z",
+              "created": "2021-10-14T15:55:58.586597Z",
+              "attributes": {
+                "substantive": "Y",
+                "caseId": "1547476018728634",
+                "primaryLocation": "229786",
+                "jurisdiction": "IA",
+                "caseType": "Asylum",
+              },
+            },
+          ],
+        }
+      });
+
+      expect(handleMyCasesRewriteUrl('/workallocation2/my-cases', req)).to.deep.equal(`/searchCases?ctid=Asylum`);
+    });
+
+    it('should be able to handle rewriting a given url for my cases', async () => {
+      spy = sandbox.stub(httpMock, 'post').resolves(res);
+      const req = mockReq({
+        body : {
+          searchRequest: {
+            search_parameters: [],
+            pagination_parameters: {
+              page_number: 1,
+              page_size: 5
+            }
+          },
+        },
+        session: {
+          roleAssignmentResponse: [
+            {
+              "id": "508daf11-d968-4d65-bebb-863195b395c2",
+              "actorIdType": "IDAM",
+              "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+              "roleType": "CASE",
+              "roleName": "case-manager",
+              "classification": "PUBLIC",
+              "grantType": "SPECIFIC",
+              "roleCategory": "LEGAL_OPERATIONS",
+              "readOnly": false,
+              "beginTime": "2021-10-20T23:00:00Z",
+              "endTime": "2021-10-27T23:00:00Z",
+              "created": "2021-10-21T14:55:04.103639Z",
+              "attributes": {
+                "substantive": "Y",
+                "caseId": "1634822871207303",
+                "jurisdiction": "IA",
+                "primaryLocation": "229786",
+                "caseType": "Asylum",
+              },
+            },
+            {
+              "id": "90d23b9f-3458-4aeb-83c3-5fb25ecfa30a",
+              "actorIdType": "IDAM",
+              "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+              "roleType": "CASE",
+              "roleName": "case-manager",
+              "classification": "PUBLIC",
+              "grantType": "SPECIFIC",
+              "roleCategory": "LEGAL_OPERATIONS",
+              "readOnly": false,
+              "beginTime": "2021-10-13T23:00:00Z",
+              "created": "2021-10-14T15:55:58.586597Z",
+              "attributes": {
+                "substantive": "Y",
+                "caseId": "1547476018728634",
+                "primaryLocation": "229786",
+                "jurisdiction": "IA",
+                "caseType": "Asylum",
+              },
+            },
+          ],
+        }
+      });
+
+      expect(handleCasesRewriteUrl('/workallocation2/cases', req)).not.to.deep.equal('/workallocation2/cases');
+    });
+
+  });
+
+  /* describe('handleGetCasesResponse', () => {
+
+    it('should be able to handle rewriting a given url for my cases', async () => {
+      const body = {assignee: {name: 'bob', id: 'bob01'}};
+      const req = mockReq({
+        body,
+        session: {
+          roleAssignmentResponse: [
+            {
+              "id": "508daf11-d968-4d65-bebb-863195b395c2",
+              "actorIdType": "IDAM",
+              "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+              "roleType": "CASE",
+              "roleName": "case-manager",
+              "classification": "PUBLIC",
+              "grantType": "SPECIFIC",
+              "roleCategory": "LEGAL_OPERATIONS",
+              "readOnly": false,
+              "beginTime": "2021-10-20T23:00:00Z",
+              "endTime": "2021-10-27T23:00:00Z",
+              "created": "2021-10-21T14:55:04.103639Z",
+              "attributes": {
+                "substantive": "Y",
+                "caseId": "1634822871207303",
+                "jurisdiction": "IA",
+                "primaryLocation": "229786",
+                "caseType": "Asylum",
+              },
+            },
+            {
+              "id": "90d23b9f-3458-4aeb-83c3-5fb25ecfa30a",
+              "actorIdType": "IDAM",
+              "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+              "roleType": "CASE",
+              "roleName": "case-manager",
+              "classification": "PUBLIC",
+              "grantType": "SPECIFIC",
+              "roleCategory": "LEGAL_OPERATIONS",
+              "readOnly": false,
+              "beginTime": "2021-10-13T23:00:00Z",
+              "created": "2021-10-14T15:55:58.586597Z",
+              "attributes": {
+                "substantive": "Y",
+                "caseId": "1547476018728634",
+                "primaryLocation": "229786",
+                "jurisdiction": "IA",
+                "caseType": "Asylum",
+              },
+            },
+          ],
+        }
+      });
+
+      expect(handleMyCasesRewriteUrl('/workallocation2/my-cases', req)).to.deep.equal(`/searchCases?ctid=Asylum`);
+    });
+
+    it('should be able to handle rewriting a given url for my cases', async () => {
+      spy = sandbox.stub(httpMock, 'post').resolves(res);
+      const req = mockReq({
+        body : {
+          searchRequest: {
+            search_parameters: [],
+            pagination_parameters: {
+              page_number: 1,
+              page_size: 5
+            }
+          },
+        },
+        session: {
+          roleAssignmentResponse: [
+            {
+              "id": "508daf11-d968-4d65-bebb-863195b395c2",
+              "actorIdType": "IDAM",
+              "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+              "roleType": "CASE",
+              "roleName": "case-manager",
+              "classification": "PUBLIC",
+              "grantType": "SPECIFIC",
+              "roleCategory": "LEGAL_OPERATIONS",
+              "readOnly": false,
+              "beginTime": "2021-10-20T23:00:00Z",
+              "endTime": "2021-10-27T23:00:00Z",
+              "created": "2021-10-21T14:55:04.103639Z",
+              "attributes": {
+                "substantive": "Y",
+                "caseId": "1634822871207303",
+                "jurisdiction": "IA",
+                "primaryLocation": "229786",
+                "caseType": "Asylum",
+              },
+            },
+            {
+              "id": "90d23b9f-3458-4aeb-83c3-5fb25ecfa30a",
+              "actorIdType": "IDAM",
+              "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+              "roleType": "CASE",
+              "roleName": "case-manager",
+              "classification": "PUBLIC",
+              "grantType": "SPECIFIC",
+              "roleCategory": "LEGAL_OPERATIONS",
+              "readOnly": false,
+              "beginTime": "2021-10-13T23:00:00Z",
+              "created": "2021-10-14T15:55:58.586597Z",
+              "attributes": {
+                "substantive": "Y",
+                "caseId": "1547476018728634",
+                "primaryLocation": "229786",
+                "jurisdiction": "IA",
+                "caseType": "Asylum",
+              },
+            },
+          ],
+        }
+      });
+
+      expect(handleCasesRewriteUrl('/workallocation2/cases', req)).not.to.deep.equal('/workallocation2/cases');
+    });
+
+  }); */
 
 });

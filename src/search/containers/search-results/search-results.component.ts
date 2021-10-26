@@ -1,8 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { SearchRequestCriteria } from 'src/search/models/search-request-criteria.model';
-import { SearchRequestSortCriteria } from 'src/search/models/search-request-sort-criteria.model';
-import { SearchRequest } from 'src/search/models/search-request.model';
-import { SearchResult } from 'src/search/models/search-result.model';
+import { Component, OnInit } from '@angular/core';
+import { SearchRequestCriteria,
+  SearchRequestSortCriteria,
+  SearchRequest,
+  SearchResult
+} from '../../models/index';
 import { SearchService } from '../../services/search.service';
 
 @Component({
@@ -12,13 +13,12 @@ import { SearchService } from '../../services/search.service';
 })
 export class SearchResultsComponent implements OnInit {
 
-  // searchRequest: SearchRequest;
   searchResult: SearchResult;
   showSpinner: boolean = false;
 
-  constructor(private searchService: SearchService) { }
+  constructor(private readonly searchService: SearchService) { }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     const searchRequestCriteria: SearchRequestCriteria = {
       ccdCaseTypeIds: null,
       ccdJurisdictionIds: ['DIVORCE', 'PROBATE', 'PUBLICLAW'],
@@ -41,7 +41,6 @@ export class SearchResultsComponent implements OnInit {
 
     this.searchService.getResults(searchRequest).subscribe(searchResult => {
       this.searchResult = searchResult;
-      console.log(searchResult);
       this.showSpinner = false;
     });
   }

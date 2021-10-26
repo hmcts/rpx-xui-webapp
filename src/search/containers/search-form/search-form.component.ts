@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
-import { SearchService } from 'src/search/services/search.service';
+import { SearchService } from '../../services/search.service';
 
 @Component({
   selector: 'exui-search-form',
@@ -23,7 +23,7 @@ export class SearchFormComponent implements OnInit {
   public services: SearchFormServiceListItem[];
 
   constructor(private readonly fb: FormBuilder,
-              private searchService: SearchService) {
+              private readonly searchService: SearchService) {
 
     this.caseRefConfig = {
       id: 'caseRef',

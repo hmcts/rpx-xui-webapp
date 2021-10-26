@@ -1,5 +1,4 @@
-import { SearchRequestCriteria } from './search-request-criteria.model';
-import { SearchRequestSortCriteria } from './search-request-sort-criteria.model';
+import { SearchRequestCriteria, SearchRequestSortCriteria } from './index';
 
 export interface SearchRequest {
   maxReturnRecordCount: number;

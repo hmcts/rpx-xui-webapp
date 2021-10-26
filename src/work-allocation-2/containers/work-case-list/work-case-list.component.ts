@@ -199,14 +199,12 @@ export class WorkCaseListComponent implements OnChanges {
   private addPersonInfo(cases: Case[]): Case[] {
     const caseworkers = JSON.parse(sessionStorage.getItem('caseworkers'));
     return cases.map((c: Case) => {
-
       if (c.assignee && c.assignee.length) {
         const actorName = caseworkers.find((caseworker) => caseworker.idamId === c.assignee);
         if (actorName) {
           return {...c, actorName: `${actorName.firstName} ${actorName.lastName}`};
         }
       }
-
       return c;
     });
   }

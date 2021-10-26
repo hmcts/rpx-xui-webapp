@@ -3,7 +3,6 @@ import { expect } from 'chai';
 import { mockReq } from 'sinon-express-mock';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { ASSIGN, CLAIM, CLAIM_AND_GO, COMPLETE, GO, REASSIGN, RELEASE, TaskPermission } from './constants/actions';
-import { Case } from './interfaces/case';
 import { Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/common';
 import { PersonRole } from './interfaces/person';
 import { RoleCaseData } from './interfaces/roleCaseData';

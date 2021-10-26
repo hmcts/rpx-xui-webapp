@@ -129,6 +129,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
       // These should be mocked as if we were getting them from the user themselves
       returnData = {tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records};
     }
+    res.send(returnData);
   }
   catch (error) {
     next(error);

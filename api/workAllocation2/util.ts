@@ -292,7 +292,6 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
   const roleCaseData: RoleCaseData = {
     assignee: roleAssignment.actorId,
     case_category: caseDetail.case_type_id,
-    // TODO: case_name: caseDetail.hmctsCaseNameInternal (when services have made this available)
     case_id: caseDetail.id,
     case_name: caseDetail.id,
     case_role: roleAssignment.roleName,

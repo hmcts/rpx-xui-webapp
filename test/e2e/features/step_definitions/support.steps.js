@@ -3,6 +3,9 @@
 const BrowserWaits = require("../../support/customWaits");
 const ArrayUtil = require("../../utils/ArrayUtil");
 var { defineSupportCode } = require('cucumber');
+const browserLogs = require('../../support/browserLogs');
+
+const CucumberReportLoggeer = require('../../support/reportLogger');
 const { browser } = require("protractor");
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
@@ -26,6 +29,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             await browser.switchTo().window(unknownWindowHandles[0]);
         });
         
+    });
+
+    Then('I verify a network made with endpoint containing {string}', async function(endpointText){
+        const logs = await browserLogs.getNetworkCalllogs(endpointText);
+        CucumberReportLoggeer.AddJson(logs);
+        expect(logs.length > 0).to.be.true;
     });
 
     async function getUnknownWindowHandles(){

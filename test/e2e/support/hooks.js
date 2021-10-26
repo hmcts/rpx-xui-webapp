@@ -15,7 +15,7 @@ const targetJson = `${jsonReports}/cucumber_report.json`;
 const { Given, When, Then } = require('cucumber');
 
 const CucumberReportLog = require("./reportLogger");
-
+const browserLogs = require('./browserLogs');
 
 // defineSupportCode(function({After }) {
 //     registerHandler("BeforeFeature", { timeout: 500 * 1000 }, function() {
@@ -108,7 +108,7 @@ defineSupportCode(({ Before,After }) => {
             let browserErrorLogs = []
             if (scenario.result.status === 'failed'){
                 await CucumberReportLog.AddScreenshot(global.screenShotUtils);
-                let browserLog = await browser.manage().logs().get('browser');
+                let browserLog = await browserLogs.getBrowserLogs();
                 
                 for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++) {
                     if (browserLog[browserLogCounter].level.value > 900) {

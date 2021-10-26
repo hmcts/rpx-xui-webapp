@@ -1,4 +1,5 @@
 import { ExtraOptions, Routes } from '@angular/router';
+import { FeatureToggleGuard } from '@hmcts/rpx-xui-common-lib';
 import {
   AccessibilityComponent,
   CookiePolicyComponent,
@@ -128,6 +129,16 @@ export const ROUTES: Routes = [
     component: SignedOutComponent,
     data: {
       title: 'You have been signed out'
+    }
+  },
+  {
+    path: 'search',
+    canActivate: [AuthGuard, AcceptTermsGuard, FeatureToggleGuard],
+    loadChildren: '../search/search.module#SearchModule',
+    data: {
+      title: 'Search cases',
+      needsFeaturesEnabled: ['feature-global-search'],
+      featureDisabledRedirect: '/'
     }
   },
   {

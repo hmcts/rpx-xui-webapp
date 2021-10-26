@@ -64,11 +64,18 @@
       </nav>
     </div>
     <div class="hmcts-primary-navigation__search">
-      <!-- TODO: Should turn on and off -->
       <div class="hmcts-primary-navigation__item">
         <ul class="hmcts-primary-navigation__list">
           <li class="hmcts-primary-navigation__item" *ngFor="let item of rightItems">
-            <a class="hmcts-primary-navigation__link transparent-background" [ngClass]="item.ngClass" (click)="onEmitSubMenu(item)" [attr.aria-current]="item.active ? true: null" [routerLink]="item.href">{{item.text}}</a>
+            <a class="hmcts-primary-navigation__link transparent-background" id="find-case-link" [ngClass]="item.ngClass" (click)="onEmitSubMenu(item)"
+							[attr.aria-current]="item.active ? true: null" [routerLink]="item.href" *ngIf="showFindCase && item.ngClass === 'hmcts-search-toggle__button'">{{item.text}}</a>
+						<div class="case-reference-container" *ngIf="showCaseReferenceSearchBox">
+                <p>16-digit case reference:</p>
+                <input class="govuk-input" id="case-reference-search-box" name="case-reference-search-box" type="text" spellcheck="false">
+                <button class="govuk-button govuk-button--secondary">
+									{{item.text}}
+                </button>
+            </div>
           </li>
         </ul>
       </div>

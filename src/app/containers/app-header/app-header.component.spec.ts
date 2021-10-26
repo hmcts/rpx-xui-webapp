@@ -149,6 +149,7 @@ describe('AppHeaderComponent', () => {
               }]
             },
             showFindCase: false,
+            showCaseReferenceSearchBox: false,
             backgroundColor: '#8d0f0e',
             logoIsUsed: true,
             logoType: 'judicial',
@@ -176,6 +177,7 @@ describe('AppHeaderComponent', () => {
               }]
             },
             showFindCase: true,
+            showCaseReferenceSearchBox: false,
             backgroundColor: '#202020',
             logoIsUsed: true,
             logoType: 'myhmcts',

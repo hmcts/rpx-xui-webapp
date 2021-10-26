@@ -29,7 +29,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import { JurisdictionService } from 'src/app/services/jurisdiction/jurisdiction.service';
+import { JurisdictionService } from '../app/services/jurisdiction/jurisdiction.service';
 import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 import { SharedModule } from '../app/shared/shared.module';
 import { OrganisationModule } from '../organisation/organisation.module';

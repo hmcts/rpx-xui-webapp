@@ -14,7 +14,7 @@ import {
  * Get global search services
  * api/globalsearch/services
  */
-export async function getServices(req: EnhancedRequest, res: Response, next: NextFunction) {
+export async function getServices(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   try {
     // Return global search services from session if available
     if (req.session.globalSearchServices) {
@@ -48,12 +48,10 @@ export async function getServices(req: EnhancedRequest, res: Response, next: Nex
  * Get global search results
  * api/globalsearch/results
  */
-export async function getSearchResults(req: EnhancedRequest, res: Response, next: NextFunction) {
+export async function getSearchResults(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   try {
     const searchRequest = req.body;
-    console.log('request body', req.body);
     const path = `${getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH)}/globalsearch`;
-    console.log(path);
     const response = await handlePost(path, searchRequest, req, next);
     return response.data;
   } catch (error) {

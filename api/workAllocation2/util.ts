@@ -429,6 +429,7 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
     case_id: caseDetail.id,
     case_name: caseDetail.id,
     case_role: roleAssignment.roleName,
+    role: roleAssignment.roleName,
     endDate: roleAssignment.endTime,
     id: roleAssignment.id,
     jurisdiction: caseDetail.jurisdiction,

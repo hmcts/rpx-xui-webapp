@@ -40,7 +40,7 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
         ],
         sorting_parameters: [this.getSortParameter()],
         search_by: userRole,
-        pagination_parameters: this.getPaginationParameter()
+        pagination_parameters: null
       };
     }
   }

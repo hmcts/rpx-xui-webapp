@@ -3,7 +3,7 @@ import { SearchRequestCriteria,
   SearchRequestSortCriteria,
   SearchRequest,
   SearchResult
-} from '../../models/index';
+} from '../../models';
 import { SearchService } from '../../services/search.service';
 
 @Component({

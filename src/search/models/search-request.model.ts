@@ -1,4 +1,4 @@
-import { SearchRequestCriteria, SearchRequestSortCriteria } from './index';
+import { SearchRequestCriteria, SearchRequestSortCriteria } from './';
 
 export interface SearchRequest {
   maxReturnRecordCount: number;

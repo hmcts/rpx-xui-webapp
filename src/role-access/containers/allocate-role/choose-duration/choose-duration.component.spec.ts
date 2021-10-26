@@ -1,21 +1,124 @@
-import { async, ComponentFixture } from '@angular/core/testing';
+import { async } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
 
-import { DurationOfRole } from '../../../../role-access/models';
+import { of } from 'rxjs';
+import { UserRole } from '../../../../app/models';
+import {
+  Actions, AllocateRoleNavigationEvent,
+  AllocateRoleState,
+  AllocateRoleStateData,
+  AllocateTo,
+  DurationOfRole,
+  RoleCategory
+} from '../../../models';
+import * as fromFeature from '../../../store';
 import { ChooseDurationComponent } from './choose-duration.component';
 
 describe('ChooseDurationComponent', () => {
   let component: ChooseDurationComponent;
   let mockStore: any;
   let formBuilder: FormBuilder;
-
+  const ALLOCATE_ROLE_STATE_DATA: AllocateRoleStateData = {
+    caseId: '1111111111111111',
+    assignmentId: 'a123456',
+    state: AllocateRoleState.CHOOSE_ALLOCATE_TO,
+    typeOfRole: {id: 'lead-judge', name: 'Lead judge'},
+    allocateTo: AllocateTo.RESERVE_TO_ME,
+    personToBeRemoved: {
+      id: 'p111111',
+      name: 'test1',
+      domain: '',
+    },
+    person: {
+      id: 'p222222',
+      name: 'test2',
+      domain: '',
+    },
+    durationOfRole: DurationOfRole.SEVEN_DAYS,
+    action: Actions.Allocate,
+    period: {
+      startDate: new Date(),
+      endDate: new Date(),
+    },
+    roleCategory: RoleCategory.LEGAL_OPERATIONS,
+  };
   beforeEach(async(() => {
-    mockStore = jasmine.createSpyObj('mockStore', ['pipe']);
+    mockStore = jasmine.createSpyObj('mockStore', ['pipe', 'dispatch']);
     formBuilder = new FormBuilder();
   }));
 
   beforeEach(() => {
     component = new ChooseDurationComponent(mockStore, formBuilder);
+  });
+
+  it('should create component', () => {
+    mockStore.pipe.and.returnValue(of(ALLOCATE_ROLE_STATE_DATA));
+    component.ngOnInit();
+    expect(component.formGroup.contains('dayStartDate')).toBeTruthy();
+    expect(component.formGroup.contains('monthStartDate')).toBeTruthy();
+    expect(component.formGroup.contains('yearStartDate')).toBeTruthy();
+    expect(component.formGroup.contains('dayEndDate')).toBeTruthy();
+    expect(component.formGroup.contains('monthEndDate')).toBeTruthy();
+    expect(component.formGroup.contains('yearEndDate')).toBeTruthy();
+    expect(component.formGroup.contains('radioSelected')).toBeTruthy();
+  });
+
+  it('should create component', () => {
+    const STATE_DATA = {
+      ...ALLOCATE_ROLE_STATE_DATA,
+      durationOfRole: DurationOfRole.ANOTHER_PERIOD,
+      period: {
+        startDate: new Date('2021-12-17T03:24:00'),
+        endDate: new Date('2021-12-27T03:24:00'),
+      },
+    };
+    component.selectDurationRole(STATE_DATA);
+    expect(component.dayStartDate.value).toBe(17);
+    expect(component.monthStartDate.value).toBe(12);
+    expect(component.yearStartDate.value).toBe(2021);
+    expect(component.dayEndDate.value).toBe(27);
+    expect(component.monthEndDate.value).toBe(12);
+    expect(component.yearEndDate.value).toBe(2021);
+  });
+
+  it('should navigationHandler', () => {
+    const navEvent: AllocateRoleNavigationEvent = AllocateRoleNavigationEvent.CONTINUE;
+    const roleCategory: RoleCategory = RoleCategory.JUDICIAL;
+    const isLegalOpsOrJudicialRole: UserRole = UserRole.Judicial;
+    component.selectedDuration = DurationOfRole.SEVEN_DAYS;
+    component.navigationHandler(navEvent);
+    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseDurationAndGo({
+      durationOfRole: DurationOfRole.SEVEN_DAYS,
+      period: {
+        startDate: component.getTodayDate(),
+        endDate: new Date(component.getTodayDate().setDate(new Date().getDate() + 7))
+      },
+      allocateRoleState: AllocateRoleState.CHECK_ANSWERS}
+    ));
+  });
+
+  it('should return true if start date not in past', () => {
+    component.dayStartDate.setValue(12);
+    component.monthStartDate.setValue(11);
+    component.yearStartDate.setValue(2021);
+    const result = component.startDateNotInPast();
+    expect(result).toBeTruthy();
+  });
+
+  it('should return false if start date in past', () => {
+    component.dayStartDate.setValue(12);
+    component.monthStartDate.setValue(10);
+    component.yearStartDate.setValue(2021);
+    const result = component.startDateNotInPast();
+    expect(result).toBeFalsy();
+  });
+
+  it('should return false if date is missed', () => {
+    component.dayStartDate.setValue(12);
+    component.monthStartDate.setValue(10);
+    component.yearStartDate.setValue(2021);
+    const result = component.datesMissing();
+    expect(result).toBeFalsy();
   });
 
   it('should create component and initialise durations', () => {

@@ -29,9 +29,14 @@ export interface Case {
   caseCategory: string;
   assigneeName: string;
   name: string;
+  case_data?: CaseInternalData
 }
 
 export interface CaseAction {
   id: string;
   title: string;
+}
+
+export interface CaseInternalData {
+  caseName?: string;
 }

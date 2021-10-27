@@ -113,7 +113,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
         }
         const caseRoleExclusions = workAlloctionMockData.getCaseExclusions(dateTableHashes);
-        MockApp.onGet('/api/role-access/exclusions/get', (req, res) => {
+        MockApp.onGet('/api/role-access/roles/post', (req, res) => {
             res.send(caseRoleExclusions);
         });
     });

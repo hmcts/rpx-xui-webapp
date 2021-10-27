@@ -6,7 +6,7 @@ import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { UserRole } from '../../../../app/models';
 import { CHOOSE_A_ROLE, ERROR_MESSAGE } from '../../../constants';
-import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, Role, RoleCategory, SpecificRole, TypeOfRole } from '../../../models';
+import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, Role, RoleCategory, SpecificRole } from '../../../models';
 import { RoleAllocationTitleText } from '../../../models/enums';
 import { OptionsModel } from '../../../models/options-model';
 import { AllocateRoleService } from '../../../services';
@@ -78,7 +78,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
         const typeOfRole: SpecificRole = {
           id: roleOption ? roleOption.optionId : roleChosen,
           name: roleChosen
-        }
+        };
         switch (roleCategory) {
           case RoleCategory.JUDICIAL: {
             switch (isLegalOpsOrJudicialRole) {

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, RoutesRecognized } from '@angular/router';
-import { CookieService, FeatureToggleService, FeatureUser, GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
+import { CookieService, FeatureToggleService, FeatureUser, GoogleTagManagerService, RoleService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, Subscription } from 'rxjs';
 
@@ -41,7 +41,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly featureService: FeatureToggleService,
     private readonly loggerService: LoggerService,
     private readonly cookieService: CookieService,
-    private readonly environmentService: EnvironmentService
+    private readonly environmentService: EnvironmentService,
+    private readonly roleService: RoleService
   ) {
 
     this.router.events.subscribe((data) => {
@@ -132,6 +133,7 @@ export class AppComponent implements OnInit, OnDestroy {
         const uid = userDetails.userInfo.id ? userDetails.userInfo.id : userDetails.userInfo.uid;
         this.setUserAndCheckCookie(uid);
         this.initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime);
+        this.roleService.roles = userDetails.userInfo.roles;
       }
     }
   }

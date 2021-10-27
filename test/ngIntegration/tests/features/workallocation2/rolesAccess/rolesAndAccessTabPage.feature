@@ -1,4 +1,4 @@
-@ng
+@ng 
 Feature: WA Release 2: Roles and access tab
 
     Background: Case details setup
@@ -15,8 +15,8 @@ Feature: WA Release 2: Roles and access tab
 
         Given I set MOCK case roles
             | name        | roleCategory     | roleName     | email                 | start | end |
-            | user1 judge | JUDICIAL         | Lead judge   | judge_lead_1@gov.uk   | 1     | 2   |
-            | user1 legal | LEGAL_OPEARTIONS | Case manager | case_manager_1@gov.uk | 10    | 10  |
+            | user1 judge | XXX         | Lead judge   | judge_lead_1@gov.uk   | 1     | 2   |
+            | user1 legal | XXX | Case manager | case_manager_1@gov.uk | 10    | 10  |
 
         Given I set MOCK case role exclusions
             | name | userType | type | notes | added |

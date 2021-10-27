@@ -4,11 +4,11 @@ import 'mocha';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
+import { baseWorkAllocationTaskUrl, getTask, handleCasesRewriteUrl, handleGetCasesResponse, handleGetMyCasesResponse, handleMyCasesRewriteUrl, postTaskAction, searchTask } from '.';
 import { httpMock } from '../common/mockService';
 import { http } from '../lib/http';
 import { RE_ALLOCATE, REMOVE_ALLOCATE } from './constants/actions';
 import { mockTasks } from './taskTestData.spec';
-import { baseWorkAllocationTaskUrl, getTask, handleCasesRewriteUrl, handleGetCasesResponse, handleGetMyCasesResponse, handleMyCasesRewriteUrl, postTaskAction, searchTask } from '.';
 
 chai.use(sinonChai);
 
@@ -241,7 +241,7 @@ describe('workAllocation', () => {
               },
             },
           ],
-        }
+        },
       });
 
       expect(handleMyCasesRewriteUrl('/workallocation2/my-cases', req)).to.deep.equal(`/searchCases?ctid=Asylum`);
@@ -255,8 +255,8 @@ describe('workAllocation', () => {
             search_parameters: [],
             pagination_parameters: {
               page_number: 1,
-              page_size: 5
-            }
+              page_size: 5,
+            },
           },
         },
         session: {
@@ -303,7 +303,7 @@ describe('workAllocation', () => {
               },
             },
           ],
-        }
+        },
       });
 
       expect(handleCasesRewriteUrl('/workallocation2/cases', req)).not.to.deep.equal('/workallocation2/cases');
@@ -323,8 +323,9 @@ describe('workAllocation', () => {
         id: '508daf11-d968-4d65-bebb-863195b395c2',
         jurisdiction: undefined,
         location_id: '229786',
+        role: "case-manager",
         startDate: '2021-10-20T23:00:00Z',
-        actions: [ RE_ALLOCATE, REMOVE_ALLOCATE ]
+        actions: [ RE_ALLOCATE, REMOVE_ALLOCATE ],
       },
       {
         assignee: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
@@ -336,21 +337,22 @@ describe('workAllocation', () => {
         id: '90d23b9f-3458-4aeb-83c3-5fb25ecfa30a',
         jurisdiction: undefined,
         location_id: '229786',
+        role: "case-manager",
         startDate: '2021-10-13T23:00:00Z',
-        actions: [ RE_ALLOCATE, REMOVE_ALLOCATE ]
-      }
+        actions: [ RE_ALLOCATE, REMOVE_ALLOCATE ],
+      },
     ];
     it('should be able to handle getting response for my cases', async () => {
       const json = {
         cases: [{
           id: '1634822871207303',
-          type: 'Asylum'
+          type: 'Asylum',
         },
         {
           id: '1547476018728634',
-          type: 'NotAsylum'
-        }]
-      }
+          type: 'NotAsylum',
+        }],
+      };
       const req = mockReq({
         session: {
           roleAssignmentResponse: [
@@ -396,7 +398,7 @@ describe('workAllocation', () => {
               },
             },
           ],
-        }
+        },
       });
       const returnedData = handleGetMyCasesResponse({}, req, {}, json);
       expect(returnedData).to.deep.equal(json);
@@ -409,13 +411,13 @@ describe('workAllocation', () => {
       const json = {
         cases: [{
           id: '1634822871207303',
-          type: 'Asylum'
+          type: 'Asylum',
         },
         {
           id: '1547476018728634',
-          type: 'NotAsylum'
-        }]
-      }
+          type: 'NotAsylum',
+        }],
+      };
       const req = mockReq({
         session: {
           casesRoleAssignments: [
@@ -461,7 +463,7 @@ describe('workAllocation', () => {
               },
             },
           ],
-        }
+        },
       });
 
       const returnedData = handleGetCasesResponse({}, req, {}, json);

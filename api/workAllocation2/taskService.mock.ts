@@ -5,10 +5,7 @@ import {
   ALL_TASKS,
   ASSIGNED_CASE_TASKS,
   ASSIGNED_TASKS,
-  CASEWORKER_AVAILABLE_TASKS,
-  CASEWORKER_MY_TASKS,
   JUDICIAL_AVAILABLE_TASKS,
-  JUDICIAL_AVAILABLE_TASKS_COPY,
   JUDICIAL_MY_TASKS,
   JUDICIAL_WORKERS,
   UNASSIGNED_CASE_TASKS
@@ -27,10 +24,6 @@ export const init = () => {
   const judicialWorkersUrl = /http:\/\/rd-judicialworker-ref-api-(demo|aat).service.core-compute-(demo|aat).internal\/judicialworkers/;
   const judicialAllTasksUrl = /http:\/\/wa-task-management-api-(demo|aat).service.core-compute-(demo|aat).internal\/allTasks\?view=judicial/;
   const caseworkerAllTasksUrl = /http:\/\/wa-task-management-api-(demo|aat).service.core-compute-(demo|aat).internal\/allTasks\?view=caseworker/;
-
-  const locationField = 'location_id';
-
-  let keepAvailableTasks = [];
 
   mock.onPost(judicialWorkersUrl).reply(() => {
     // return an array in the form of [status, data, headers]

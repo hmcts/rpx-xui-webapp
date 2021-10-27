@@ -130,8 +130,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
       returnData = {tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records};
     }
     res.send(returnData);
-  }
-  catch (error) {
+  } catch (error) {
     next(error);
   }
 }

@@ -5,6 +5,8 @@ import { Subscription } from 'rxjs';
 import { SearchValidationError } from '../../models';
 import { SearchValidators } from '../../utils';
 import { SearchService } from '../../services/search.service';
+import { Router } from '@angular/router';
+import { isDefined } from '@angular/compiler/src/util';
 
 @Component({
   selector: 'exui-search-form',
@@ -25,11 +27,12 @@ export class SearchFormComponent implements OnInit, OnDestroy {
   public servicesConfig: GovUiConfigModel;
   public services: SearchFormServiceListItem[];
   public searchServiceSubscription: Subscription;
-  public searchValidationErrors: SearchValidationError[] = [];
+  public searchValidationErrors: SearchValidationError[];
   public emailErrorMessage: ErrorMessagesModel;
   public postcodeErrorMessage: ErrorMessagesModel;
 
   constructor(private readonly fb: FormBuilder,
+              private readonly router: Router,
               private readonly searchService: SearchService) {
 
     this.caseRefConfig = {
@@ -137,16 +140,36 @@ export class SearchFormComponent implements OnInit, OnDestroy {
     this.formGroup.get('postcode').setValidators(postcodeValidator);
   }
 
-  public onSubmit(): void {
+  validateForm(): boolean {
+    this.searchValidationErrors = [];
+    this.emailErrorMessage = null;
+    this.postcodeErrorMessage = null;
     if (!this.formGroup.valid) {
-      if (this.formGroup.get('email').hasError) {
+      if (!this.formGroup.get('email').valid) {
         this.searchValidationErrors.push({ controlId: 'email', documentHRef: 'email', errorMessage: 'Enter a valid email' });
         this.emailErrorMessage = { isInvalid: true, messages: ['Enter a valid email'] };
       }
-      if (this.formGroup.get('postcode').hasError) {
+      if (!this.formGroup.get('postcode').valid) {
         this.searchValidationErrors.push({ controlId: 'postcode', documentHRef: 'postcode', errorMessage: 'Enter a valid postcode' });
         this.postcodeErrorMessage = { isInvalid: true, messages: ['Enter a valid postcode'] };
       }
+
+      return false;
+    }
+
+    return true;
+  }
+
+  isAnyError(): boolean {
+    return isDefined(this.searchValidationErrors) && this.searchValidationErrors.length > 0;
+  }
+
+  public onSubmit(): void {
+    if (this.validateForm()) {
+      // TODO: Send data to store
+
+      // Navigate to results page
+      // this.router.navigateByUrl('/search/results');
     }
   }
 

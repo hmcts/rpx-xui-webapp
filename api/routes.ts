@@ -6,6 +6,7 @@ import healthCheck from './healthCheck';
 import authInterceptor from './lib/middleware/auth';
 import { router as nocRouter } from './noc/routes';
 import { router as organisationRouter } from './organisations';
+import { router as supportedJurisdictionRouter } from './supportedJurisdictions';
 import roleAccessRouter from './roleAccess/routes';
 import userRouter from './user/routes';
 
@@ -31,6 +32,7 @@ router.use('/role-access', roleAccessRouter);
 router.use('/caseshare', caseShareRoutes);
 router.use('/noc', nocRouter);
 router.use('/organisation', organisationRouter);
+router.use('/supported-jurisdiction', supportedJurisdictionRouter);
 
 // @ts-ignore
 export default router;

@@ -15,7 +15,7 @@ export function toRoleAssignmentBody(userInfo: UserInfo, allocateRoleData: Alloc
       classification: 'PUBLIC',
       attributes: {
         caseId: allocateRoleData.caseId,
-        jurisdiction: 'IA',
+        jurisdiction: allocateRoleData.jurisdiction,
       },
       roleName: allocateRoleData.typeOfRole.id,
       roleCategory: allocateRoleData.roleCategory,

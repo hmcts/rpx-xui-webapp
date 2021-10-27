@@ -13,7 +13,7 @@ import { Caseworker } from '../../interfaces/common';
 import { Case, CaseFieldConfig, CaseServiceConfig, InvokedCaseAction } from '../../models/cases';
 import { SortField } from '../../models/common';
 import { Location, PaginationParameter, SearchCaseRequest, SortParameter } from '../../models/dtos';
-import { CaseworkerDataService, InfoMessageCommService, LocationDataService, WorkAllocationCaseService } from '../../services';
+import { CaseworkerDataService, InfoMessageCommService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationCaseService } from '../../services';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
@@ -27,6 +27,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
   public showSpinner$: Observable<boolean>;
   public sortedBy: SortField;
   public locations$: Observable<Location[]>;
+  public supportedJurisdictions$: Observable<string[]>;
   public pagination: PaginationParameter;
   public isPaginationEnabled$: Observable<boolean>;
   private pCases: Case[];
@@ -54,7 +55,8 @@ export class WorkCaseListWrapperComponent implements OnInit {
     protected readonly caseworkerService: CaseworkerDataService,
     protected readonly loadingService: LoadingService,
     protected readonly locationService: LocationDataService,
-    protected readonly featureToggleService: FeatureToggleService
+    protected readonly featureToggleService: FeatureToggleService,
+    protected readonly supportedJurisdictionsService: WASupportedJurisdictionsService
   ) {
     this.isPaginationEnabled$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.waMvpPaginationFeature);
   }
@@ -271,7 +273,11 @@ export class WorkCaseListWrapperComponent implements OnInit {
   }
 
   protected setUpLocations(): void {
+    console.log('setting up locations');
     this.locations$ = this.locationService.getLocations();
+    this.supportedJurisdictionsService.getSupportedJurisdictions().subscribe(response => {
+      console.log('response is ', response);
+    });
   }
 
 }

@@ -36,6 +36,7 @@ describe('SearchFormComponent', () => {
   it('should have ngOnInit', () => {
     expect(component.ngOnInit).toBeTruthy();
     expect(component.searchServiceSubscription).toBeDefined();
+    expect(component.formGroup.get('servicesList').value).toEqual('All');
   });
 
   it('should unsubscribe subscriptions onDestroy', () => {

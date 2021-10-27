@@ -56,7 +56,7 @@ export async function handlePostRoleAssingnments(path: string, payload: any, req
     // sort
     // direction
     const response: AxiosResponse = await http.post(path, payload, { headers });
-    if(response.data.roleAssignmentResponse.length === MAX_RECORDS) {
+    if (response.data.roleAssignmentResponse.length === MAX_RECORDS) {
         logger.warn('Case workers now returning MAX_RECORDS', response.data.roleAssignmentResponse.length);
     }
     return response;

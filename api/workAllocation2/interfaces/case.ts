@@ -15,6 +15,7 @@ export interface Case {
   location: string;
   jurisdiction: string;
   region: string;
+  case_data?: CaseInternalData;
   case_type_id: string;
   case_id: string;
   case_category: string;
@@ -29,7 +30,6 @@ export interface Case {
   caseCategory: string;
   assigneeName: string;
   name: string;
-  case_data?: CaseInternalData
 }
 
 export interface CaseAction {

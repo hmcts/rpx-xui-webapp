@@ -1,4 +1,4 @@
-import { AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 export class SearchValidators {
 
@@ -12,32 +12,31 @@ export class SearchValidators {
     };
   }
 
-  public static dayValidator(controlName: string): ValidatorFn {
+  public static dayValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-    if (control.value === null || control.value === '') { return; }
+      if (control.value === null || control.value === '') { return; }
       if (control.value === 0 || control.value > 31) {
-        return { controlName : false };
+        return { isValid : false };
       }
       return;
     };
   }
 
-  public static monthValidator(controlName: string): ValidatorFn {
+  public static monthValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-    if (control.value === null || control.value === '') { return; }
-			console.log(control);
+      if (control.value === null || control.value === '') { return; }
       if (control.value === 0 || control.value > 12) {
-        return { controlName : false };
+        return { isValid : false };
       }
       return;
     };
   }
 
-  public static yearValidator(controlName: string): ValidatorFn {
+  public static yearValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (control.value === null || control.value === '') { return; }
       if (control.value === 0 || control.value < 1900) {
-        return { controlName : false };
+        return { isValid : false };
       }
       return;
     };

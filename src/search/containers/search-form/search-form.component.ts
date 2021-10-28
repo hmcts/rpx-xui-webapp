@@ -137,9 +137,8 @@ export class SearchFormComponent implements OnInit, OnDestroy {
   /**
    * Assign validation to form controls
    *
-   * @memberof SearchFormComponent
    */
-  setValidators(): void {
+  private setValidators(): void {
     // Validator for email
     this.formGroup.get(SearchFormControl.EMAIL).setValidators(Validators.email);
 
@@ -148,27 +147,25 @@ export class SearchFormComponent implements OnInit, OnDestroy {
     this.formGroup.get(SearchFormControl.POSTCODE).setValidators(postcodeValidator);
 
     // validator for date of birth
-    let dayValidator =SearchValidators.dayValidator(SearchFormControl.DATE_OF_BIRTH_DAY);
+    let dayValidator = SearchValidators.dayValidator();
     this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).setValidators(dayValidator);
-    let monthValidator =SearchValidators.monthValidator(SearchFormControl.DATE_OF_BIRTH_MONTH);
+    let monthValidator = SearchValidators.monthValidator();
     this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_MONTH).setValidators(monthValidator);
-    let yearValidator =SearchValidators.yearValidator(SearchFormControl.DATE_OF_BIRTH_YEAR);
+    let yearValidator = SearchValidators.yearValidator();
     this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_YEAR).setValidators(yearValidator);
 
     // validator for date of death
-    dayValidator =SearchValidators.dayValidator(SearchFormControl.DATE_OF_DEATH_DAY);
+    dayValidator = SearchValidators.dayValidator();
     this.formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).setValidators(dayValidator);
-    monthValidator =SearchValidators.monthValidator(SearchFormControl.DATE_OF_DEATH_MONTH);
+    monthValidator = SearchValidators.monthValidator();
     this.formGroup.get(SearchFormControl.DATE_OF_DEATH_MONTH).setValidators(monthValidator);
-    yearValidator =SearchValidators.yearValidator(SearchFormControl.DATE_OF_DEATH_YEAR);
+    yearValidator = SearchValidators.yearValidator();
     this.formGroup.get(SearchFormControl.DATE_OF_DEATH_YEAR).setValidators(yearValidator);
   }
 
   /**
    * Function to validate form controls
    *
-   * @return {*}  {boolean}
-   * @memberof SearchFormComponent
    */
   validateForm(): boolean {
     this.resetValidationErrorMessages();
@@ -209,21 +206,18 @@ export class SearchFormComponent implements OnInit, OnDestroy {
   /**
    * Function to reset validation error messages
    *
-   * @memberof SearchFormComponent
    */
   resetValidationErrorMessages(): void {
     this.searchValidationErrors = [];
-    this.emailErrorMessage = 
-    this.postcodeErrorMessage = 
-    this.dateOfBirthErrorMessage = 
+    this.emailErrorMessage =
+    this.postcodeErrorMessage =
+    this.dateOfBirthErrorMessage =
     this.dateOfDeathErrorMessage = null;
   }
 
   /**
    * Function to check if any error exists
    *
-   * @return {*}  {boolean}
-   * @memberof SearchFormComponent
    */
   isAnyError(): boolean {
     return isDefined(this.searchValidationErrors) && this.searchValidationErrors.length > 0;
@@ -232,7 +226,6 @@ export class SearchFormComponent implements OnInit, OnDestroy {
   /**
    * Function to handle form submit
    *
-   * @memberof SearchFormComponent
    */
   public onSubmit(): void {
     if (this.validateForm()) {

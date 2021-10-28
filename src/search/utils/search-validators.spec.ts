@@ -1,5 +1,5 @@
-import { FormControl } from "@angular/forms";
-import { SearchValidators } from "./search-validators";
+import { FormControl } from '@angular/forms';
+import { SearchValidators } from './search-validators';
 
 describe('SearchValidators', () => {
   let control: FormControl;
@@ -20,15 +20,39 @@ describe('SearchValidators', () => {
     expect(postcodeValidator(control)).toBeUndefined();
   });
 
-  it('dateValidator invalid case', () => {
-    control.setValue('2019-13-24');
-    const validator = SearchValidators.dateValidator();
-    expect(validator(control)).toEqual({date: true, month: true, valid: false});
+  it('dayValidator invalid case', () => {
+    control.setValue('32');
+    const dayValidator = SearchValidators.dayValidator();
+    expect(dayValidator(control)).toEqual({isValid: false});
   });
 
-  it('dateValidator valid case', () => {
-    control.setValue('2019-12-24');
-    const validator = SearchValidators.dateValidator();
+  it('dayValidator valid case', () => {
+    control.setValue('10');
+    const validator = SearchValidators.dayValidator();
     expect(validator(control)).toBeUndefined();
+  });
+
+  it('monthValidator invalid case', () => {
+    control.setValue('14');
+    const monthValidator = SearchValidators.monthValidator();
+    expect(monthValidator(control)).toEqual({isValid: false});
+  });
+
+  it('monthValidator valid case', () => {
+    control.setValue('10');
+    const monthValidator = SearchValidators.monthValidator();
+    expect(monthValidator(control)).toBeUndefined();
+  });
+
+  it('yearValidator invalid case', () => {
+    control.setValue('1800');
+    const yearValidator = SearchValidators.yearValidator();
+    expect(yearValidator(control)).toEqual({isValid: false});
+  });
+
+  it('yearValidator valid case', () => {
+    control.setValue('2010');
+    const yearValidator = SearchValidators.yearValidator();
+    expect(yearValidator(control)).toBeUndefined();
   });
 });

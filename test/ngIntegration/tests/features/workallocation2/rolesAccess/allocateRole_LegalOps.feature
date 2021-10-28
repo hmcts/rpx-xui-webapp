@@ -1,4 +1,4 @@
-@ng
+@ng 
 Feature: WA Release 2: Allocate Role Legal ops
 
     Background: Case details setup
@@ -13,6 +13,19 @@ Feature: WA Release 2: Allocate Role Legal ops
             | Legal Ops | 1234 | caseworker_user2@gov.uk | caseworker2 cw | Case worker   |
             | Admin     | 1235 | admin_user1@gov.uk      | admin1 a       | Case worker   |
             | Admin     | 1236 | admin_user2@gov.uk      | admin2 a       | Case worker   |
+
+        Given I set MOCK persons end point "/workallocation2/caseworker" for WA release 2
+            | idamId                               | firstName   | lastName | email                   | roleCategory     |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | caseworker1 | cw       | caseworker_user1@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be81 | caseworker2 | cw       | caseworker_user2@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be87 | caseworker3 | cw       | caseworker_user3@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be86 | caseworker4 | cw       | caseworker_user4@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be85 | caseworker5 | cw       | caseworker_user5@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be84 | caseworker6 | cw       | caseworker_user6@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | caseworker7 | cw       | caseworker_user7@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be82 | caseworker8 | cw       | caseworker_user8@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | admin1      | a        | admin_user1@gov.uk      | ADMIN            |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be82 | admin2      | a        | admin_user2@gov.uk      | ADMIN            |
 
 
     Scenario: Roles and access - LegalOps user allocates role - Allocate role, reserve to me for duration Indefinite
@@ -237,8 +250,7 @@ Feature: WA Release 2: Allocate Role Legal ops
 
 
         Then I see Allocate role work flow page "Find the person" with caption "Allocate a legal ops case manager" is displayed
-        When I enter find person search input "jud" in work flow
-        When I enter find person search input "case" in work flow
+        When I enter find person search input "cas" in work flow
         Then I see find person search results in work flow
             | Person                                  |
             | caseworker1 cw(caseworker_user1@gov.uk) |

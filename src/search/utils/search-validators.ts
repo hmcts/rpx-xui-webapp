@@ -1,5 +1,4 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
-import * as moment from 'moment';
 
 export class SearchValidators {
 
@@ -13,9 +12,34 @@ export class SearchValidators {
     };
   }
 
-  public static dateValidator(): ValidatorFn {
+  public static dayValidator(controlName: string): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+    if (control.value === null || control.value === '') { return; }
+      if (control.value === 0 || control.value > 31) {
+        return { controlName : false };
+      }
+      return;
+    };
+  }
 
+  public static monthValidator(controlName: string): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+    if (control.value === null || control.value === '') { return; }
+			console.log(control);
+      if (control.value === 0 || control.value > 12) {
+        return { controlName : false };
+      }
+      return;
+    };
+  }
 
-    return;
+  public static yearValidator(controlName: string): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (control.value === null || control.value === '') { return; }
+      if (control.value === 0 || control.value < 1900) {
+        return { controlName : false };
+      }
+      return;
+    };
   }
 }

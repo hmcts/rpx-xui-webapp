@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
 import { Subscription } from 'rxjs';
 import { SearchValidationError } from '../../models';
@@ -134,50 +134,106 @@ export class SearchFormComponent implements OnInit, OnDestroy {
     this.setValidators();
   }
 
+  /**
+   * Assign validation to form controls
+   *
+   * @memberof SearchFormComponent
+   */
   setValidators(): void {
     // Validator for email
-    this.formGroup.get('email').setValidators(Validators.email);
+    this.formGroup.get(SearchFormControl.EMAIL).setValidators(Validators.email);
 
     // Validator for postcode
     const postcodeValidator = SearchValidators.postcodeValidator();
-    this.formGroup.get('postcode').setValidators(postcodeValidator);
+    this.formGroup.get(SearchFormControl.POSTCODE).setValidators(postcodeValidator);
 
     // validator for date of birth
+    let dayValidator =SearchValidators.dayValidator(SearchFormControl.DATE_OF_BIRTH_DAY);
+    this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).setValidators(dayValidator);
+    let monthValidator =SearchValidators.monthValidator(SearchFormControl.DATE_OF_BIRTH_MONTH);
+    this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_MONTH).setValidators(monthValidator);
+    let yearValidator =SearchValidators.yearValidator(SearchFormControl.DATE_OF_BIRTH_YEAR);
+    this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_YEAR).setValidators(yearValidator);
+
     // validator for date of death
+    dayValidator =SearchValidators.dayValidator(SearchFormControl.DATE_OF_DEATH_DAY);
+    this.formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).setValidators(dayValidator);
+    monthValidator =SearchValidators.monthValidator(SearchFormControl.DATE_OF_DEATH_MONTH);
+    this.formGroup.get(SearchFormControl.DATE_OF_DEATH_MONTH).setValidators(monthValidator);
+    yearValidator =SearchValidators.yearValidator(SearchFormControl.DATE_OF_DEATH_YEAR);
+    this.formGroup.get(SearchFormControl.DATE_OF_DEATH_YEAR).setValidators(yearValidator);
   }
 
+  /**
+   * Function to validate form controls
+   *
+   * @return {*}  {boolean}
+   * @memberof SearchFormComponent
+   */
   validateForm(): boolean {
-    this.searchValidationErrors = [];
-    this.emailErrorMessage = null;
-    this.postcodeErrorMessage = null;
+    this.resetValidationErrorMessages();
     if (!this.formGroup.valid) {
+      // Email
       if (!this.formGroup.get(SearchFormControl.EMAIL).valid) {
         this.searchValidationErrors.push({ controlId: SearchFormControl.EMAIL, documentHRef: SearchFormControl.EMAIL, errorMessage: SearchFormErrorMessage.EMAIL });
         this.emailErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.EMAIL] };
       }
+      // Postcode
       if (!this.formGroup.get(SearchFormControl.POSTCODE).valid) {
         this.searchValidationErrors.push({ controlId: SearchFormControl.POSTCODE, documentHRef: SearchFormControl.POSTCODE, errorMessage: SearchFormErrorMessage.POSTCODE });
         this.postcodeErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.POSTCODE] };
       }
-      if (!this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).valid) {
+      // Date of birth
+      if (!this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).valid ||
+          !this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_MONTH).valid ||
+          !this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_YEAR).valid) {
         this.searchValidationErrors.push({ controlId: SearchFormControl.DATE_OF_BIRTH_DAY, documentHRef: SearchFormControl.DATE_OF_BIRTH_DAY, errorMessage: SearchFormErrorMessage.DATE_OF_BIRTH });
         this.dateOfBirthErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.DATE_OF_BIRTH] };
       }
-      if (!this.formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).valid) {
+      // Date of death
+      if (!this.formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).valid ||
+          !this.formGroup.get(SearchFormControl.DATE_OF_DEATH_MONTH).valid ||
+          !this.formGroup.get(SearchFormControl.DATE_OF_DEATH_YEAR).valid) {
         this.searchValidationErrors.push({ controlId: SearchFormControl.DATE_OF_DEATH_DAY, documentHRef: SearchFormControl.DATE_OF_DEATH_DAY, errorMessage: SearchFormErrorMessage.DATE_OF_DEATH });
-        this.dateOfBirthErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.DATE_OF_DEATH] };
+        this.dateOfDeathErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.DATE_OF_DEATH] };
       }
 
+      // Validation failed, return false
       return false;
     }
 
+    // Validation succeeded, return true
     return true;
   }
 
+  /**
+   * Function to reset validation error messages
+   *
+   * @memberof SearchFormComponent
+   */
+  resetValidationErrorMessages(): void {
+    this.searchValidationErrors = [];
+    this.emailErrorMessage = 
+    this.postcodeErrorMessage = 
+    this.dateOfBirthErrorMessage = 
+    this.dateOfDeathErrorMessage = null;
+  }
+
+  /**
+   * Function to check if any error exists
+   *
+   * @return {*}  {boolean}
+   * @memberof SearchFormComponent
+   */
   isAnyError(): boolean {
     return isDefined(this.searchValidationErrors) && this.searchValidationErrors.length > 0;
   }
 
+  /**
+   * Function to handle form submit
+   *
+   * @memberof SearchFormComponent
+   */
   public onSubmit(): void {
     if (this.validateForm()) {
       // TODO: Send data to session storage

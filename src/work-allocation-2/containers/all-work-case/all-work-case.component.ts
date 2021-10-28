@@ -24,6 +24,7 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
     page_number: 1,
     page_size: 25
   };
+  public jurisdictions: string[];
   private selectedJurisdiction: any = 'Immigration and Asylum';
   private selectedPerson: string = '';
   private selectedRole: string = 'All';
@@ -54,7 +55,10 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
   }
 
   public ngOnInit(): void {
-    this.setUpLocations();
+    this.setUpLocationsAndJurisdicttions();
+    this.supportedJurisdictions$.subscribe(jurisdictionList => {
+      this.jurisdictions = jurisdictionList;
+    })
     this.setupCaseWorkers();
   }
 
@@ -101,4 +105,5 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
     this.selectedRole = selection.role;
     this.doLoad();
   }
+
 }

@@ -49,7 +49,7 @@ export async function handlePostSearch(path: string, payload: string | any, req:
     return response;
 }
 
-export async function handlePostRoleAssingnments(path: string, payload: any, req: EnhancedRequest): Promise<any> {
+export async function handlePostRoleAssignments(path: string, payload: any, req: EnhancedRequest): Promise<any> {
     const headers = setHeaders(req);
     // For MVP we are expecting maximum 80 caseworkers
     headers.pageNumber = 0;

@@ -272,12 +272,9 @@ export class WorkCaseListWrapperComponent implements OnInit {
     });
   }
 
-  protected setUpLocations(): void {
-    console.log('setting up locations');
+  protected setUpLocationsAndJurisdicttions(): void {
     this.locations$ = this.locationService.getLocations();
-    this.supportedJurisdictionsService.getSupportedJurisdictions().subscribe(response => {
-      console.log('response is ', response);
-    });
+    this.supportedJurisdictions$ = this.supportedJurisdictionsService.getSupportedJurisdictions();
   }
 
 }

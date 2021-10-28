@@ -215,10 +215,6 @@ const redirectUrl = {
   localhost: 'https://idam-web-public.aat.platform.hmcts.net'
 };
 
-const WASupportedJurisdictions = [
-  {id: 'IA', name: 'IA'},
-]
-
 const appHeaderTitle = {name: 'Manage cases', url: '/'};
 
 // Making the base URL for case details a constant.
@@ -243,7 +239,6 @@ export class AppConstants {
   public static CASE_DETAILS_URL = caseDetailsUrl;
   public static SERVICE_MESSAGES_FEATURE_TOGGLE_KEY = serviceMessagesFeatureToggleKey;
   public static SERVICE_MESSAGE_COOKIE = serviceMessageCookie;
-  public static WA_SUPPORTED_JURISDICTIONS = WASupportedJurisdictions
   public static CASE_ALLOCATOR_ROLE = caseAllocatorRole;
 }
 

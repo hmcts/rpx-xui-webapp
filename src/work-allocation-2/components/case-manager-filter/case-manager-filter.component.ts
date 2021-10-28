@@ -21,6 +21,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
 
   private static FILTER_NAME: string = 'cases';
   @Input() public locations: Location[] = [];
+  @Input() public jurisdictions: string[] = [];
   @Output() public selectChanged: EventEmitter<any> = new EventEmitter<any>();
   public filterConfig: FilterConfig = {
     persistence: 'session',
@@ -34,7 +35,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       fields: [
         {
           name: 'jurisdiction',
-          value: ['Immigration and Asylum']
+          value: ['IA']
         },
         {
           name: 'location_id',
@@ -54,10 +55,10 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
 
   }
 
-  private static initServiceFilter(): FilterFieldConfig {
+  private static initServiceFilter(jurisdictions: string[]): FilterFieldConfig {
     return {
       name: 'jurisdiction',
-      options: SERVICE_OPTIONS_LIST,
+      options: jurisdictions.map(service => ({key: service, label: service})),
       minSelected: 1,
       maxSelected: 1,
       minSelectedError: 'You must select a service',
@@ -161,7 +162,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       }
     );
     this.filterConfig.fields = [
-      CaseManagerFilterComponent.initServiceFilter(),
+      CaseManagerFilterComponent.initServiceFilter(this.jurisdictions),
       CaseManagerFilterComponent.initCaseLocationFilter([{
         id: 'all',
         locationName: 'All locations',

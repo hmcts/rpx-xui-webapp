@@ -1,4 +1,5 @@
 import { NextFunction, Response } from 'express';
+import { getWASupportedJurisdictions } from '../supportedJurisdictions/index';
 import { handleGet, handlePost } from '../common/mockService';
 import { getConfigValue, showFeature } from '../configuration';
 import {
@@ -17,7 +18,7 @@ import {
   handleCaseWorkerForLocationAndService,
   handleCaseWorkerForService,
   handlePostCaseWorkersRefData,
-  handlePostRoleAssingnments,
+  handlePostRoleAssignments,
   handlePostSearch
 } from './caseWorkerService';
 
@@ -214,8 +215,9 @@ export async function retrieveAllCaseWorkers(req: EnhancedRequest, res: Response
     return req.session.caseworkers;
   }
   const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
-  const payload = prepareRoleApiRequest();
-  const {data} = await handlePostRoleAssingnments(roleApiPath, payload, req);
+  const jurisdictions = req.session && req.session.supportedJurisdictions ? req.session.supportedJurisdictions : getWASupportedJurisdictions(req, res, null);
+  const payload = prepareRoleApiRequest(jurisdictions);
+  const {data} = await handlePostRoleAssignments(roleApiPath, payload, req);
   const userIds = getUserIdsFromRoleApiResponse(data);
   const userUrl = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
   const userResponse = await handlePostCaseWorkersRefData(userUrl, userIds, req);

@@ -184,14 +184,14 @@ export class SearchFormComponent implements OnInit, OnDestroy {
       if (!this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).valid ||
           !this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_MONTH).valid ||
           !this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_YEAR).valid) {
-        this.searchValidationErrors.push({ controlId: SearchFormControl.DATE_OF_BIRTH_DAY, documentHRef: SearchFormControl.DATE_OF_BIRTH_DAY, errorMessage: SearchFormErrorMessage.DATE_OF_BIRTH });
+        this.searchValidationErrors.push({ controlId: SearchFormControl.DATE_OF_BIRTH_DAY, documentHRef: 'dateOfBirth', errorMessage: SearchFormErrorMessage.DATE_OF_BIRTH });
         this.dateOfBirthErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.DATE_OF_BIRTH] };
       }
       // Date of death
       if (!this.formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).valid ||
           !this.formGroup.get(SearchFormControl.DATE_OF_DEATH_MONTH).valid ||
           !this.formGroup.get(SearchFormControl.DATE_OF_DEATH_YEAR).valid) {
-        this.searchValidationErrors.push({ controlId: SearchFormControl.DATE_OF_DEATH_DAY, documentHRef: SearchFormControl.DATE_OF_DEATH_DAY, errorMessage: SearchFormErrorMessage.DATE_OF_DEATH });
+        this.searchValidationErrors.push({ controlId: SearchFormControl.DATE_OF_DEATH_DAY, documentHRef: 'dateOfDeath', errorMessage: SearchFormErrorMessage.DATE_OF_DEATH });
         this.dateOfDeathErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.DATE_OF_DEATH] };
       }
 

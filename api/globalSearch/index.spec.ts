@@ -23,9 +23,7 @@ describe('Jurisdiction', () => {
     { id: 'DIVORCE', name: 'Family Divorce', description: null, caseTypes: null }
   ];
   const serviceList: GlobalSearchService[] = [
-    { serviceId: 'DIVORCE', serviceName: 'Family Divorce' },
-    { serviceId: 'PROBATE', serviceName: 'Manage probate application' },
-    { serviceId: 'PUBLICLAW', serviceName: 'Public Law' }
+    { serviceId: 'IA', serviceName: 'Immigration & Asylum' }
   ];
 
   beforeEach(() => {

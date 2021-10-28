@@ -22,9 +22,9 @@ const port = 3001;
 
 
 class MockApp{
-    init(){
+    init(clientPortStart){
         this.requestLogs = [];
-        this.clientPortCounter = 3002;
+        this.clientPortCounter = clientPortStart ? clientPortStart : 3002;
         this.scenarios = {};
 
         this.browserScenarioCookieCallback = null;

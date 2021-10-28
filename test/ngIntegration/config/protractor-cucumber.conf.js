@@ -80,7 +80,7 @@ const config = {
     beforeLaunch(){
         if (isParallelExecution) {
             MockApp.setServerPort(3001);
-            MockApp.init();
+            MockApp.init(3002);
             MockApp.startServer();
         }    
     },

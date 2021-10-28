@@ -14,6 +14,17 @@ const customReporter = require('../../e2e/support/reportLogger');
 const isParallelExecution = argv.parallel ? argv.parallel=== "true" : true;
 
 const chromeOptArgs = [ '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'];
+
+const perfLoggingPrefs = {
+    'enableNetwork': true,
+    'enablePage': false
+};
+
+const loggingPrefs = {
+    performance: 'ALL',
+    browser: 'ALL'
+};
+
 if (!argv.head ){
     chromeOptArgs.push('--headless');
 }
@@ -23,7 +34,8 @@ const jenkinsConfig = [
         browserName: 'chrome',
         acceptInsecureCerts: true,
         nogui: true,
-        chromeOptions: { args: chromeOptArgs  }
+        chromeOptions: { args: chromeOptArgs, perfLoggingPrefs: perfLoggingPrefs  },
+        loggingPrefs: loggingPrefs
     }
 ];
 
@@ -32,7 +44,8 @@ const localConfig = [
 
         browserName: 'chrome',
         acceptInsecureCerts: true,
-        chromeOptions: { args: chromeOptArgs},
+        chromeOptions: { args: chromeOptArgs, perfLoggingPrefs: perfLoggingPrefs },
+        loggingPrefs: loggingPrefs,
         proxy: {
             proxyType: 'manual',
             httpProxy: 'proxyout.reform.hmcts.net:8080',

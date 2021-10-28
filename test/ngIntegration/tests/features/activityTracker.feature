@@ -1,4 +1,4 @@
-@ng
+@ng @test
 Feature: Activity tracket basic validation
 
     Scenario: Verify activity tracket network call to confirm feature is available
@@ -10,4 +10,4 @@ Feature: Activity tracket basic validation
         Given I navigate page route "cases"
         Then I see case list page displayed
 
-        Then I verify a network made with endpoint containing "activity/case"
+        Then I verify a networkc all made with endpoint containing "activity/case"

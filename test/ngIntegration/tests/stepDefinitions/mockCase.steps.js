@@ -96,7 +96,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
         }
         const caseRoles = workAlloctionMockData.getCaseRoles(dateTableHashes);
-        MockApp.onGet('/workallocation2/roles/:caseId', (req, res) => {
+        MockApp.onPost('/api/role-access/roles/post', (req, res) => {
             res.send(caseRoles);
         });
     }); 
@@ -113,7 +113,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
         }
         const caseRoleExclusions = workAlloctionMockData.getCaseExclusions(dateTableHashes);
-        MockApp.onGet('/api/role-access/roles/post', (req, res) => {
+        MockApp.onPost('/api/role-access/exclusions/post', (req, res) => {
             res.send(caseRoleExclusions);
         });
     });

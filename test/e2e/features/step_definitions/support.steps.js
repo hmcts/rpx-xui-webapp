@@ -9,9 +9,6 @@ const BrowserLogs = require('../../support/browserLogs');
 const cucumberReporter = require('../../support/reportLogger');
 defineSupportCode(function ({ And, But, Given, Then, When }) {
    
-    Given('I save current window handle reference {string}', async function(windowReference){
-        global.scenarioData["window." + windowReference] = await browser.driver.getWindowHandle();
-    });
 
     Given('I switch to new window opened', async function(){
         let retryCounter = 1;

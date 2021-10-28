@@ -39,16 +39,8 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
           { key: 'user', operator: 'IN', values: [id] },
         ],
         sorting_parameters: [this.getSortParameter()],
-        search_by: userRole,
-        pagination_parameters: this.getPaginationParameter()
+        search_by: userRole
       };
     }
-  }
-
-  /**
-   * Handle the paging event
-   */
-  public onPaginationEvent(pageNumber: number): void {
-    this.onPaginationHandler(pageNumber);
   }
 }

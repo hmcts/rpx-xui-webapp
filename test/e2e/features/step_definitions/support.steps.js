@@ -4,7 +4,9 @@ const BrowserWaits = require("../../support/customWaits");
 const ArrayUtil = require("../../utils/ArrayUtil");
 var { defineSupportCode } = require('cucumber');
 const { browser } = require("protractor");
+const BrowserLogs = require('../../support/browserLogs');
 
+const cucumberReporter = require('../../support/reportLogger');
 defineSupportCode(function ({ And, But, Given, Then, When }) {
    
     Given('I save current window handle reference {string}', async function(windowReference){
@@ -26,6 +28,19 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             await browser.switchTo().window(unknownWindowHandles[0]);
         });
         
+    });
+
+    Then('I verify a networkc all made with endpoint containing {string}', async function(endPoint){
+        const networkLogs = await BrowserLogs.getNetworkLogs();
+        let isendPointTrigered = false;
+        for (networkCall of networkLogs){
+            if(networkCall.requestDetails.url.includes(endPoint)){
+                isendPointTrigered = true;
+                break;
+            }
+        }
+        // cucumberReporter.AddJson(networkLogs);
+        expect(isendPointTrigered).to.be.true
     });
 
     async function getUnknownWindowHandles(){

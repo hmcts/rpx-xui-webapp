@@ -19,7 +19,8 @@ export const ROUTES: Routes = [
         data: {
           title: 'HMCTS Manage cases | Role and access | Add Exclusion',
           roleMatching: RoleMatching.ANY,
-          needsRole: ['case-allocator']
+          needsRole: ['case-allocator'],
+          noRoleMatchRedirect: '/cases'
         }
       }
     ]
@@ -31,7 +32,8 @@ export const ROUTES: Routes = [
     data: {
       title: 'HMCTS Manage cases | Role and access | Delete exclusion',
       roleMatching: RoleMatching.ANY,
-      needsRole: ['case-allocator']
+      needsRole: ['case-allocator'],
+      noRoleMatchRedirect: '/cases'
     }
   },
   {
@@ -46,7 +48,8 @@ export const ROUTES: Routes = [
         data: {
           title: 'HMCTS Manage cases | Role and access | Allocate a role',
           roleMatching: RoleMatching.ANY,
-          needsRole: ['case-allocator']
+          needsRole: ['case-allocator'],
+          noRoleMatchRedirect: '/cases'
         }
       },
       {
@@ -56,7 +59,8 @@ export const ROUTES: Routes = [
         data: {
           title: 'HMCTS Manage cases | Role and access | Reallocate a role',
           roleMatching: RoleMatching.ANY,
-          needsRole: ['case-allocator']
+          needsRole: ['case-allocator'],
+          noRoleMatchRedirect: '/cases'
         }
       },
       {
@@ -66,7 +70,8 @@ export const ROUTES: Routes = [
         data: {
           title: 'HMCTS Manage cases | Role and access | Remove a role',
           roleMatching: RoleMatching.ANY,
-          needsRole: ['case-allocator']
+          needsRole: ['case-allocator'],
+          noRoleMatchRedirect: '/cases'
         }
       }
     ]

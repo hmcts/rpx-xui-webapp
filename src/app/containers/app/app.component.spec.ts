@@ -14,6 +14,7 @@ describe('AppComponent', () => {
   let router: any;
   let title: any;
   let testRoute: RoutesRecognized;
+  let roleService;
 
   beforeEach(() => {
       store = jasmine.createSpyObj('store', ['pipe', 'dispatch']);
@@ -23,6 +24,7 @@ describe('AppComponent', () => {
       cookieService = jasmine.createSpyObj('CookieService', ['deleteCookieByPartialMatch']);
       loggerService = jasmine.createSpyObj('LoggerService', ['enableCookies']);
       environmentService = jasmine.createSpyObj('environmentService', ['config$']);
+      roleService = { roles: ['role1'] };
       testRoute = new RoutesRecognized(1, 'test', 'test', {
           url: 'test',
           root: {
@@ -61,7 +63,16 @@ describe('AppComponent', () => {
       });
       router = { events: of(testRoute) };
       title = jasmine.createSpyObj('Title', ['setTitle']);
-      appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, featureToggleService, loggerService, cookieService, environmentService);
+      appComponent = new AppComponent(store,
+                                      googleTagManagerService,
+                                      timeoutNotificationService,
+                                      router,
+                                      title,
+                                      featureToggleService,
+                                      loggerService,
+                                      cookieService,
+                                      environmentService,
+                                      roleService);
   });
 
   it('Truthy', () => {

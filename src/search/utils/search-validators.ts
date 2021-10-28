@@ -1,4 +1,5 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
+import * as moment from 'moment';
 
 export class SearchValidators {
 
@@ -10,5 +11,11 @@ export class SearchValidators {
       }
       return;
     };
+  }
+
+  public static dateValidator(): ValidatorFn {
+
+
+    return;
   }
 }

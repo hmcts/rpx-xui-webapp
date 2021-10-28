@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
 import { Subscription } from 'rxjs';
 import { SearchValidationError } from '../../models';
@@ -7,6 +7,7 @@ import { SearchValidators } from '../../utils';
 import { SearchService } from '../../services/search.service';
 import { Router } from '@angular/router';
 import { isDefined } from '@angular/compiler/src/util';
+import { SearchFormControl, SearchFormErrorMessage } from '../../enums';
 
 @Component({
   selector: 'exui-search-form',
@@ -30,6 +31,8 @@ export class SearchFormComponent implements OnInit, OnDestroy {
   public searchValidationErrors: SearchValidationError[];
   public emailErrorMessage: ErrorMessagesModel;
   public postcodeErrorMessage: ErrorMessagesModel;
+  public dateOfBirthErrorMessage: ErrorMessagesModel;
+  public dateOfDeathErrorMessage: ErrorMessagesModel;
 
   constructor(private readonly fb: FormBuilder,
               private readonly router: Router,
@@ -138,6 +141,9 @@ export class SearchFormComponent implements OnInit, OnDestroy {
     // Validator for postcode
     const postcodeValidator = SearchValidators.postcodeValidator();
     this.formGroup.get('postcode').setValidators(postcodeValidator);
+
+    // validator for date of birth
+    // validator for date of death
   }
 
   validateForm(): boolean {
@@ -145,13 +151,21 @@ export class SearchFormComponent implements OnInit, OnDestroy {
     this.emailErrorMessage = null;
     this.postcodeErrorMessage = null;
     if (!this.formGroup.valid) {
-      if (!this.formGroup.get('email').valid) {
-        this.searchValidationErrors.push({ controlId: 'email', documentHRef: 'email', errorMessage: 'Enter a valid email' });
-        this.emailErrorMessage = { isInvalid: true, messages: ['Enter a valid email'] };
+      if (!this.formGroup.get(SearchFormControl.EMAIL).valid) {
+        this.searchValidationErrors.push({ controlId: SearchFormControl.EMAIL, documentHRef: SearchFormControl.EMAIL, errorMessage: SearchFormErrorMessage.EMAIL });
+        this.emailErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.EMAIL] };
       }
-      if (!this.formGroup.get('postcode').valid) {
-        this.searchValidationErrors.push({ controlId: 'postcode', documentHRef: 'postcode', errorMessage: 'Enter a valid postcode' });
-        this.postcodeErrorMessage = { isInvalid: true, messages: ['Enter a valid postcode'] };
+      if (!this.formGroup.get(SearchFormControl.POSTCODE).valid) {
+        this.searchValidationErrors.push({ controlId: SearchFormControl.POSTCODE, documentHRef: SearchFormControl.POSTCODE, errorMessage: SearchFormErrorMessage.POSTCODE });
+        this.postcodeErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.POSTCODE] };
+      }
+      if (!this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).valid) {
+        this.searchValidationErrors.push({ controlId: SearchFormControl.DATE_OF_BIRTH_DAY, documentHRef: SearchFormControl.DATE_OF_BIRTH_DAY, errorMessage: SearchFormErrorMessage.DATE_OF_BIRTH });
+        this.dateOfBirthErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.DATE_OF_BIRTH] };
+      }
+      if (!this.formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).valid) {
+        this.searchValidationErrors.push({ controlId: SearchFormControl.DATE_OF_DEATH_DAY, documentHRef: SearchFormControl.DATE_OF_DEATH_DAY, errorMessage: SearchFormErrorMessage.DATE_OF_DEATH });
+        this.dateOfBirthErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.DATE_OF_DEATH] };
       }
 
       return false;
@@ -166,7 +180,7 @@ export class SearchFormComponent implements OnInit, OnDestroy {
 
   public onSubmit(): void {
     if (this.validateForm()) {
-      // TODO: Send data to store
+      // TODO: Send data to session storage
 
       // Navigate to results page
       // this.router.navigateByUrl('/search/results');

@@ -19,4 +19,16 @@ describe('SearchValidators', () => {
     const postcodeValidator = SearchValidators.postcodeValidator();
     expect(postcodeValidator(control)).toBeUndefined();
   });
+
+  it('dateValidator invalid case', () => {
+    control.setValue('2019-13-24');
+    const validator = SearchValidators.dateValidator();
+    expect(validator(control)).toEqual({date: true, month: true, valid: false});
+  });
+
+  it('dateValidator valid case', () => {
+    control.setValue('2019-12-24');
+    const validator = SearchValidators.dateValidator();
+    expect(validator(control)).toBeUndefined();
+  });
 });

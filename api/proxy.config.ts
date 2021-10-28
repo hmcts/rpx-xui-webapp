@@ -4,7 +4,6 @@ import * as amendedJurisdictions from './amendedJurisdictions';
 import { getConfigValue } from './configuration';
 import {
   SERVICES_CCD_COMPONENT_API_PATH,
-  SERVICES_CCD_DATA_STORE_API_PATH,
   SERVICES_DOCUMENTS_API_PATH,
   SERVICES_DOCUMENTS_API_PATH_V2,
   SERVICES_EM_ANNO_API_URL,
@@ -16,7 +15,6 @@ import {
 } from './configuration/references';
 import { applyProxy } from './lib/middleware/proxy';
 import * as searchCases from './searchCases';
-import * as workAllocation2 from './workAllocation2/index';
 
 export const initProxy = (app: Express) => {
   applyProxy(app, {
@@ -66,26 +64,6 @@ export const initProxy = (app: Express) => {
     rewrite: false,
     source: '/data/internal/searchCases',
     target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
-  });
-
-  applyProxy(app, {
-    middlewares: [bodyParser.json()],
-    onReq: workAllocation2.handleGetMyCasesRequest,
-    onRes: workAllocation2.handleGetMyCasesResponse,
-    rewrite: true,
-    rewriteUrl: workAllocation2.handleMyCasesRewriteUrl,
-    source: '/workallocation2/my-cases',
-    target: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH),
-  });
-
-  applyProxy(app, {
-    middlewares: [bodyParser.json()],
-    onReq: workAllocation2.handleGetCasesRequest,
-    onRes: workAllocation2.handleGetCasesResponse,
-    rewrite: true,
-    rewriteUrl: workAllocation2.handleCasesRewriteUrl,
-    source: '/workallocation2/cases',
-    target: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH),
   });
 
   applyProxy(app, {

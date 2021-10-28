@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import * as express from 'express';
 import { getConfigValue } from '../configuration';
-import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
+import { SERVICES_CCD_DATA_STORE_API_PATH, SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
 
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
@@ -284,6 +284,19 @@ export async function getRoleAssignmentsByQuery(query: any, req: express.Request
   const path = `${url}/am/role-assignments/query`;
   const headers = setHeaders(req, release2ContentType);
   headers.size = 10000;
+  try {
+    const result = await http.post(path, query, {headers});
+    return result.data;
+  } catch (e) {
+    console.error(e);
+  }
+  return null;
+}
+
+export async function searchCasesById(queryParams: string, query: any,  req: express.Request): Promise<any> {
+  const url = getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH);
+  const path = `${url}/searchCases?ctid=${queryParams}`;
+  const headers = setHeaders(req);
   try {
     const result = await http.post(path, query, {headers});
     return result.data;

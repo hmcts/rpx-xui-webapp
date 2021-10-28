@@ -4,7 +4,12 @@ import 'mocha';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { baseWorkAllocationTaskUrl, getTask, handleCasesRewriteUrl, handleGetCasesResponse, handleGetMyCasesResponse, handleMyCasesRewriteUrl, postTaskAction, searchTask } from '.';
+import {
+  baseWorkAllocationTaskUrl,
+  getTask,
+  postTaskAction,
+  searchTask
+} from '.';
 import { httpMock } from '../common/mockService';
 import { http } from '../lib/http';
 import { RE_ALLOCATE, REMOVE_ALLOCATE } from './constants/actions';
@@ -76,7 +81,7 @@ describe('workAllocation', () => {
       spy = sandbox.stub(httpMock, 'post').resolves(res);
       const req = mockReq({
         body: {
-          searchRequest: { search_parameters: [] },
+          searchRequest: {search_parameters: []},
           view: 'MyTasks',
         },
         session: {
@@ -101,7 +106,7 @@ describe('workAllocation', () => {
       spy = sandbox.stub(httpMock, 'post').resolves(res);
       const req = mockReq({
         body: {
-          searchRequest: { search_parameters: [], pagination_parameters: {page_size: 11, page_number: 3}},
+          searchRequest: {search_parameters: [], pagination_parameters: {page_size: 11, page_number: 3}},
           view: 'MyTasks',
         },
         session: {
@@ -115,11 +120,13 @@ describe('workAllocation', () => {
       // Should have the correct URL and the appropriate payload.
       const args = spy.getCall(0).args;
       expect(args[0]).to.equal(`${baseWorkAllocationTaskUrl}/myTasks?view=caseworker?first_result=22&max_results=11`);
-      expect(args[1]).to.deep.equal({"pagination_parameters": {
-        "page_number": 3,
-        "page_size": 11,
-      },
-      search_parameters: []});
+      expect(args[1]).to.deep.equal({
+        'pagination_parameters': {
+          'page_number': 3,
+          'page_size': 11,
+        },
+        search_parameters: [],
+      });
 
       // Should have received the HTTP response. The search simply returns the data.
       expect(response.data.length).to.equal(3);
@@ -190,289 +197,4 @@ describe('workAllocation', () => {
     });
 
   });
-
-  describe('handleCasesRewriteUrl', () => {
-
-    it('should be able to handle rewriting a given url for my cases', async () => {
-      const body = {assignee: {name: 'bob', id: 'bob01'}};
-      const req = mockReq({
-        body,
-        session: {
-          roleAssignmentResponse: [
-            {
-              "id": "508daf11-d968-4d65-bebb-863195b395c2",
-              "actorIdType": "IDAM",
-              "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
-              "roleType": "CASE",
-              "roleName": "case-manager",
-              "classification": "PUBLIC",
-              "grantType": "SPECIFIC",
-              "roleCategory": "LEGAL_OPERATIONS",
-              "readOnly": false,
-              "beginTime": "2021-10-20T23:00:00Z",
-              "endTime": "2021-10-27T23:00:00Z",
-              "created": "2021-10-21T14:55:04.103639Z",
-              "attributes": {
-                "substantive": "Y",
-                "caseId": "1634822871207303",
-                "jurisdiction": "IA",
-                "primaryLocation": "229786",
-                "caseType": "Asylum",
-              },
-            },
-            {
-              "id": "90d23b9f-3458-4aeb-83c3-5fb25ecfa30a",
-              "actorIdType": "IDAM",
-              "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
-              "roleType": "CASE",
-              "roleName": "case-manager",
-              "classification": "PUBLIC",
-              "grantType": "SPECIFIC",
-              "roleCategory": "LEGAL_OPERATIONS",
-              "readOnly": false,
-              "beginTime": "2021-10-13T23:00:00Z",
-              "created": "2021-10-14T15:55:58.586597Z",
-              "attributes": {
-                "substantive": "Y",
-                "caseId": "1547476018728634",
-                "primaryLocation": "229786",
-                "jurisdiction": "IA",
-                "caseType": "Asylum",
-              },
-            },
-          ],
-        },
-      });
-
-      expect(handleMyCasesRewriteUrl('/workallocation2/my-cases', req)).to.deep.equal(`/searchCases?ctid=Asylum`);
-    });
-
-    it('should be able to handle rewriting a given url for all cases', async () => {
-      spy = sandbox.stub(httpMock, 'post').resolves(res);
-      const req = mockReq({
-        body : {
-          searchRequest: {
-            search_parameters: [],
-            pagination_parameters: {
-              page_number: 1,
-              page_size: 5,
-            },
-          },
-        },
-        session: {
-          roleAssignmentResponse: [
-            {
-              "id": "508daf11-d968-4d65-bebb-863195b395c2",
-              "actorIdType": "IDAM",
-              "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
-              "roleType": "CASE",
-              "roleName": "case-manager",
-              "classification": "PUBLIC",
-              "grantType": "SPECIFIC",
-              "roleCategory": "LEGAL_OPERATIONS",
-              "readOnly": false,
-              "beginTime": "2021-10-20T23:00:00Z",
-              "endTime": "2021-10-27T23:00:00Z",
-              "created": "2021-10-21T14:55:04.103639Z",
-              "attributes": {
-                "substantive": "Y",
-                "caseId": "1634822871207303",
-                "jurisdiction": "IA",
-                "primaryLocation": "229786",
-                "caseType": "Asylum",
-              },
-            },
-            {
-              "id": "90d23b9f-3458-4aeb-83c3-5fb25ecfa30a",
-              "actorIdType": "IDAM",
-              "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
-              "roleType": "CASE",
-              "roleName": "case-manager",
-              "classification": "PUBLIC",
-              "grantType": "SPECIFIC",
-              "roleCategory": "LEGAL_OPERATIONS",
-              "readOnly": false,
-              "beginTime": "2021-10-13T23:00:00Z",
-              "created": "2021-10-14T15:55:58.586597Z",
-              "attributes": {
-                "substantive": "Y",
-                "caseId": "1547476018728634",
-                "primaryLocation": "229786",
-                "jurisdiction": "IA",
-                "caseType": "Asylum",
-              },
-            },
-          ],
-        },
-      });
-
-      expect(handleCasesRewriteUrl('/workallocation2/cases', req)).not.to.deep.equal('/workallocation2/cases');
-    });
-
-  });
-
-  describe('handleGetCasesResponse', () => {
-    const expectedCases = [
-      {
-        assignee: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
-        case_category: undefined,
-        case_id: '1634822871207303',
-        case_name: '1634822871207303',
-        case_role: 'case-manager',
-        endDate: '2021-10-27T23:00:00Z',
-        id: '508daf11-d968-4d65-bebb-863195b395c2',
-        jurisdiction: undefined,
-        location_id: '229786',
-        role: "case-manager",
-        startDate: '2021-10-20T23:00:00Z',
-        actions: [ RE_ALLOCATE, REMOVE_ALLOCATE ],
-      },
-      {
-        assignee: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
-        case_category: undefined,
-        case_id: '1547476018728634',
-        case_name: '1547476018728634',
-        case_role: 'case-manager',
-        endDate: undefined,
-        id: '90d23b9f-3458-4aeb-83c3-5fb25ecfa30a',
-        jurisdiction: undefined,
-        location_id: '229786',
-        role: "case-manager",
-        startDate: '2021-10-13T23:00:00Z',
-        actions: [ RE_ALLOCATE, REMOVE_ALLOCATE ],
-      },
-    ];
-    it('should be able to handle getting response for my cases', async () => {
-      const json = {
-        cases: [{
-          id: '1634822871207303',
-          type: 'Asylum',
-        },
-        {
-          id: '1547476018728634',
-          type: 'NotAsylum',
-        }],
-      };
-      const req = mockReq({
-        session: {
-          roleAssignmentResponse: [
-            {
-              "id": "508daf11-d968-4d65-bebb-863195b395c2",
-              "actorIdType": "IDAM",
-              "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
-              "roleType": "CASE",
-              "roleName": "case-manager",
-              "classification": "PUBLIC",
-              "grantType": "SPECIFIC",
-              "roleCategory": "LEGAL_OPERATIONS",
-              "readOnly": false,
-              "beginTime": "2021-10-20T23:00:00Z",
-              "endTime": "2021-10-27T23:00:00Z",
-              "created": "2021-10-21T14:55:04.103639Z",
-              "attributes": {
-                "substantive": "Y",
-                "caseId": "1634822871207303",
-                "jurisdiction": "IA",
-                "primaryLocation": "229786",
-                "caseType": "Asylum",
-              },
-            },
-            {
-              "id": "90d23b9f-3458-4aeb-83c3-5fb25ecfa30a",
-              "actorIdType": "IDAM",
-              "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
-              "roleType": "CASE",
-              "roleName": "case-manager",
-              "classification": "PUBLIC",
-              "grantType": "SPECIFIC",
-              "roleCategory": "LEGAL_OPERATIONS",
-              "readOnly": false,
-              "beginTime": "2021-10-13T23:00:00Z",
-              "created": "2021-10-14T15:55:58.586597Z",
-              "attributes": {
-                "substantive": "Y",
-                "caseId": "1547476018728634",
-                "primaryLocation": "229786",
-                "jurisdiction": "IA",
-                "caseType": "Asylum",
-              },
-            },
-          ],
-        },
-      });
-      const returnedData = handleGetMyCasesResponse({}, req, {}, json);
-      expect(returnedData).to.deep.equal(json);
-      expect(returnedData.total_records).to.deep.equal(2);
-      expect(returnedData.cases[0].actions).to.deep.equal([RE_ALLOCATE, REMOVE_ALLOCATE]);
-      expect(returnedData.cases).to.deep.equal(expectedCases);
-    });
-
-    it('should be able to handle getting response for all cases', async () => {
-      const json = {
-        cases: [{
-          id: '1634822871207303',
-          type: 'Asylum',
-        },
-        {
-          id: '1547476018728634',
-          type: 'NotAsylum',
-        }],
-      };
-      const req = mockReq({
-        session: {
-          casesRoleAssignments: [
-            {
-              "id": "508daf11-d968-4d65-bebb-863195b395c2",
-              "actorIdType": "IDAM",
-              "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
-              "roleType": "CASE",
-              "roleName": "case-manager",
-              "classification": "PUBLIC",
-              "grantType": "SPECIFIC",
-              "roleCategory": "LEGAL_OPERATIONS",
-              "readOnly": false,
-              "beginTime": "2021-10-20T23:00:00Z",
-              "endTime": "2021-10-27T23:00:00Z",
-              "created": "2021-10-21T14:55:04.103639Z",
-              "attributes": {
-                "substantive": "Y",
-                "caseId": "1634822871207303",
-                "jurisdiction": "IA",
-                "primaryLocation": "229786",
-                "caseType": "Asylum",
-              },
-            },
-            {
-              "id": "90d23b9f-3458-4aeb-83c3-5fb25ecfa30a",
-              "actorIdType": "IDAM",
-              "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
-              "roleType": "CASE",
-              "roleName": "case-manager",
-              "classification": "PUBLIC",
-              "grantType": "SPECIFIC",
-              "roleCategory": "LEGAL_OPERATIONS",
-              "readOnly": false,
-              "beginTime": "2021-10-13T23:00:00Z",
-              "created": "2021-10-14T15:55:58.586597Z",
-              "attributes": {
-                "substantive": "Y",
-                "caseId": "1547476018728634",
-                "primaryLocation": "229786",
-                "jurisdiction": "IA",
-                "caseType": "Asylum",
-              },
-            },
-          ],
-        },
-      });
-
-      const returnedData = handleGetCasesResponse({}, req, {}, json);
-      expect(returnedData).to.deep.equal(json);
-      expect(returnedData.total_records).to.deep.equal(2);
-      expect(returnedData.cases[0].actions).to.deep.equal([RE_ALLOCATE, REMOVE_ALLOCATE]);
-      expect(returnedData.cases).to.deep.equal(expectedCases);
-    });
-
-  });
-
 });

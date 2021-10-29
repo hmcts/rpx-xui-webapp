@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { SearchRequestCriteria,
-  SearchRequestSortCriteria,
+import {
   SearchRequest,
+  SearchRequestCriteria,
+  SearchRequestSortCriteria,
   SearchResult
 } from '../../models';
 import { SearchService } from '../../services/search.service';
@@ -13,8 +14,8 @@ import { SearchService } from '../../services/search.service';
 })
 export class SearchResultsComponent implements OnInit {
 
-  searchResult: SearchResult;
-  showSpinner: boolean = false;
+  public searchResult: SearchResult;
+  public showSpinner: boolean = false;
 
   constructor(private readonly searchService: SearchService) { }
 
@@ -37,7 +38,7 @@ export class SearchResultsComponent implements OnInit {
       sortCriteria: searchRequestSortCriteria,
       maxReturnRecordCount: 25,
       startRecordNumber: 1
-    }
+    };
 
     this.searchService.getResults(searchRequest).subscribe(searchResult => {
       this.searchResult = searchResult;

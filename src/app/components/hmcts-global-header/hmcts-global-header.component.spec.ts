@@ -179,7 +179,7 @@ describe('HmctsGlobalHeaderComponent', () => {
     leftItems.pipe(
       switchMap(items => {
         expect(items).toEqual([component.items[1]]);
-        return rightItems
+        return rightItems;
       })
     ).subscribe(items => {
       expect(items).toEqual([component.items[0]]);

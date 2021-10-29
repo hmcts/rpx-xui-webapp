@@ -128,7 +128,7 @@ export class SearchFormComponent implements OnInit, OnDestroy {
     });
 
     // Set default service selection to "All"
-    this.formGroup.get('servicesList').setValue(this.services[0].id);
+    this.formGroup.get(SearchFormControl.SERVICES_LIST).setValue(this.services[0].id);
 
     // Set the form control validators
     this.setValidators();
@@ -199,7 +199,7 @@ export class SearchFormComponent implements OnInit, OnDestroy {
         if (this.formGroup.errors.errorType === SearchFormErrorType.DATE_COMPARISON) {
           this.searchValidationErrors.push({ controlId: null, documentHRef: 'dateOfBirth', errorMessage: SearchFormErrorMessage.DATE_COMPARISON_FAILED });
           this.dateOfBirthErrorMessage = { isInvalid: true, messages: [] };
-          this.dateOfDeathErrorMessage = { isInvalid: true, messages: [] };
+          this.dateOfDeathErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.DATE_COMPARISON_FAILED] };
         }
       }
 

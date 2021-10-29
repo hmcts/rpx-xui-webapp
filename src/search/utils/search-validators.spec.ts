@@ -1,4 +1,5 @@
-import { FormControl } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
+import { SearchFormControl, SearchFormErrorType } from '../enums';
 import { SearchValidators } from './search-validators';
 
 describe('SearchValidators', () => {
@@ -54,5 +55,49 @@ describe('SearchValidators', () => {
     control.setValue('2010');
     const yearValidator = SearchValidators.yearValidator();
     expect(yearValidator(control)).toBeUndefined();
+  });
+
+  it('dateComparisonValidator invalid case', () => {
+    const formGroup = new FormBuilder().group({
+      dateOfBirth_day: '',
+      dateOfBirth_month: '',
+      dateOfBirth_year: '',
+      dateOfDeath_day: '',
+      dateOfDeath_month: '',
+      dateOfDeath_year: '',
+    });
+
+    formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).setValue(10);
+    formGroup.get(SearchFormControl.DATE_OF_BIRTH_MONTH).setValue(12);
+    formGroup.get(SearchFormControl.DATE_OF_BIRTH_YEAR).setValue(2020);
+
+    formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).setValue(10);
+    formGroup.get(SearchFormControl.DATE_OF_DEATH_MONTH).setValue(12);
+    formGroup.get(SearchFormControl.DATE_OF_DEATH_YEAR).setValue(2010);
+
+    const dateComparisonValidator = SearchValidators.dateComparisonValidator();
+    expect(dateComparisonValidator(formGroup)).toEqual({isValid: false, errorType: SearchFormErrorType.DATE_COMPARISON});
+  });
+
+  it('dateComparisonValidator invalid case', () => {
+    const formGroup = new FormBuilder().group({
+      dateOfBirth_day: '',
+      dateOfBirth_month: '',
+      dateOfBirth_year: '',
+      dateOfDeath_day: '',
+      dateOfDeath_month: '',
+      dateOfDeath_year: '',
+    });
+
+    formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).setValue(10);
+    formGroup.get(SearchFormControl.DATE_OF_BIRTH_MONTH).setValue(12);
+    formGroup.get(SearchFormControl.DATE_OF_BIRTH_YEAR).setValue(2010);
+
+    formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).setValue(10);
+    formGroup.get(SearchFormControl.DATE_OF_DEATH_MONTH).setValue(12);
+    formGroup.get(SearchFormControl.DATE_OF_DEATH_YEAR).setValue(2020);
+
+    const dateComparisonValidator = SearchValidators.dateComparisonValidator();
+    expect(dateComparisonValidator(formGroup)).toBeUndefined();
   });
 });

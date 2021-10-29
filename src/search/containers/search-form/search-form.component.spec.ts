@@ -4,6 +4,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable } from 'rxjs';
+import { SearchFormControl } from 'src/search/enums';
 
 import { SearchFormComponent } from './search-form.component';
 
@@ -40,7 +41,7 @@ describe('SearchFormComponent', () => {
   it('should have ngOnInit', () => {
     expect(component.ngOnInit).toBeTruthy();
     expect(component.searchServiceSubscription).toBeDefined();
-    expect(component.formGroup.get('servicesList').value).toEqual('All');
+    expect(component.formGroup.get(SearchFormControl.SERVICES_LIST).value).toEqual('All');
   });
 
   it('should unsubscribe subscriptions onDestroy', () => {
@@ -62,21 +63,21 @@ describe('SearchFormComponent', () => {
   });
 
   it('should isAnyError function return correct state', () => {
-    component.formGroup.get('dateOfBirth_day').setValue(32);
+    component.formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).setValue(32);
     component.onSubmit();
     expect(component.isAnyError()).toEqual(true);
 
-    component.formGroup.get('dateOfBirth_day').setValue(10);
+    component.formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).setValue(10);
     component.onSubmit();
     expect(component.isAnyError()).toEqual(false);
   });
 
   it('should validateForm function return correct state', () => {
-    component.formGroup.get('postcode').setValue('WRONGPOSTCODE');
+    component.formGroup.get(SearchFormControl.POSTCODE).setValue('WRONGPOSTCODE');
     component.onSubmit();
     expect(component.formGroup.valid).toEqual(false);
 
-    component.formGroup.get('postcode').setValue('B5 6AB');
+    component.formGroup.get(SearchFormControl.POSTCODE).setValue('B5 6AB');
     component.onSubmit();
     expect(component.formGroup.valid).toEqual(true);
   });

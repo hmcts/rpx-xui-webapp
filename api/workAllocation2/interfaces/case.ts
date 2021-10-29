@@ -39,4 +39,10 @@ export interface CaseAction {
 
 export interface CaseInternalData {
   caseName?: string;
+  caseManagementLocation?: CaseManagementLocation;
+}
+
+export interface CaseManagementLocation {
+  baseLocation: string;
+  region: string;
 }

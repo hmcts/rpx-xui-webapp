@@ -6,7 +6,7 @@ import { SortOrder } from '../../enums';
 import { Case, CaseAction, InvokedCaseAction } from '../../models/cases';
 import CaseServiceConfig from '../../models/cases/case-service-config.model';
 import { FieldConfig, SortField } from '../../models/common';
-import { PaginationParameter } from '../../models/dtos';
+import { Location, PaginationParameter } from '../../models/dtos';
 
 @Component({
   selector: 'exui-work-case-list',
@@ -19,6 +19,7 @@ export class WorkCaseListComponent implements OnChanges {
    * These are the cases & fields as returned from the WA Api.
    */
   @Input() public cases: Case[];
+  @Input() public locations: Location[] = [];
   @Input() public casesTotal: number;
   @Input() public caseServiceConfig: CaseServiceConfig;
   @Input() public sortedBy: SortField;
@@ -72,7 +73,7 @@ export class WorkCaseListComponent implements OnChanges {
 
   public ngOnChanges(): void {
     if (this.cases) {
-      this.cases = this.addPersonInfo(this.cases);
+      this.cases = this.addPersonInfoAndLocationInfo(this.cases);
       this.dataSource$ = new BehaviorSubject(this.cases);
       this.setSelectedCase(this.selectCaseFromUrlHash(this.router.url));
       for (const item of this.cases) {
@@ -196,13 +197,19 @@ export class WorkCaseListComponent implements OnChanges {
     return ((this.getCurrentPageIndex() * this.pagination.page_size) + this.getCurrentCaseCount());
   }
 
-  private addPersonInfo(cases: Case[]): Case[] {
+  private addPersonInfoAndLocationInfo(cases: Case[]): Case[] {
     const caseworkers = JSON.parse(sessionStorage.getItem('caseworkers'));
     return cases.map((c: Case) => {
       if (c.assignee && c.assignee.length) {
         const actorName = caseworkers.find((caseworker) => caseworker.idamId === c.assignee);
         if (actorName) {
-          return {...c, actorName: `${actorName.firstName} ${actorName.lastName}`};
+          c.actorName =  `${actorName.firstName} ${actorName.lastName}`;
+        }
+      }
+      if (c.location_id && c.location_id.length) {
+        const location = this.locations.find((l) => l.id === c.location_id);
+        if (location) {
+          c.location_name = location.locationName;
         }
       }
       return c;

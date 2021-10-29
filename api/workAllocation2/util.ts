@@ -6,8 +6,8 @@ import { SERVICES_CCD_DATA_STORE_API_PATH, SERVICES_ROLE_ASSIGNMENT_API_PATH } f
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
-import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 import { release2ContentType } from '../roleAccess/exclusionService';
+import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 import { ElasticSearchQuery } from '../searchCases/interfaces/ElasticSearchQuery';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 
@@ -293,7 +293,7 @@ export async function getRoleAssignmentsByQuery(query: any, req: express.Request
   return null;
 }
 
-export async function searchCasesById(queryParams: string, query: any,  req: express.Request): Promise<any> {
+export async function searchCasesById(queryParams: string, query: any, req: express.Request): Promise<any> {
   const url = getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH);
   const path = `${url}/searchCases?ctid=${queryParams}`;
   const headers = setHeaders(req);
@@ -341,9 +341,10 @@ export function constructRoleAssignmentQuery(
         };
       })
       .filter((param: SearchTaskParameter) => param.values && param.values.length)
+      .filter((param: SearchTaskParameter) => param.key !== 'primaryLocation')
       .reduce((acc: any, param: SearchTaskParameter) => {
 
-        if (param.key === 'jurisdiction' || param.key === 'primaryLocation') {
+        if (param.key === 'jurisdiction') {
           const attributes = acc.attributes || {};
           return {
             ...acc, attributes: {
@@ -413,6 +414,19 @@ export function mapRoleType(roleType: string): string {
   return '';
 }
 
+export function filterByLocationId(cases: Case[], searchParams: SearchTaskParameter[]): Case[] {
+  const locationParam: SearchTaskParameter = searchParams.find(param => param.key === 'primaryLocation');
+  return cases.filter((caseDetail: Case) => {
+    if (locationParam && locationParam.values && locationParam.values.length) {
+      return caseDetail.case_data &&
+        caseDetail.case_data.caseManagementLocation &&
+        caseDetail.case_data.caseManagementLocation.baseLocation &&
+        caseDetail.case_data.caseManagementLocation.baseLocation === locationParam.values[0];
+    }
+    return caseDetail;
+  });
+}
+
 export function mapCasesFromData(
   caseDetails: Case[],
   roleAssignmentList: RoleAssignment[],
@@ -435,7 +449,7 @@ export function mapCasesFromData(
 }
 
 export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case): RoleCaseData {
-  const roleCaseData: RoleCaseData = {
+  return {
     assignee: roleAssignment.actorId,
     case_category: caseDetail.case_type_id,
     // TODO: case_name: caseDetail.hmctsCaseNameInternal (when services have made this available)
@@ -446,10 +460,12 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
     endDate: roleAssignment.endTime,
     id: roleAssignment.id,
     jurisdiction: caseDetail.jurisdiction,
-    location_id: roleAssignment.attributes.primaryLocation,
+    location_id: caseDetail.case_data &&
+    caseDetail.case_data.caseManagementLocation &&
+    caseDetail.case_data.caseManagementLocation.baseLocation ?
+      caseDetail.case_data.caseManagementLocation.baseLocation : null,
     startDate: roleAssignment.beginTime,
   };
-  return roleCaseData;
 }
 
 export function getCaseTypesFromRoleAssignments(roleAssignments: RoleAssignment[]): string {

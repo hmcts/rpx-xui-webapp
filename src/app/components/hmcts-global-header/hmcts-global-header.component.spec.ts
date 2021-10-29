@@ -1,11 +1,12 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { UserService } from 'src/app/services/user/user.service';
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
 
@@ -69,8 +70,11 @@ describe('HmctsGlobalHeaderComponent', () => {
       active: false
     }
   ];
+  let origTimeout: number;
 
   beforeEach(async(() => {
+    origTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
     TestBed.configureTestingModule({
       declarations: [ HmctsGlobalHeaderComponent ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
@@ -117,6 +121,10 @@ describe('HmctsGlobalHeaderComponent', () => {
     };
     nocStoreSpy = spyOn(component.nocStore, 'dispatch');
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = origTimeout;
   });
 
   it('should create', () => {
@@ -175,7 +183,7 @@ describe('HmctsGlobalHeaderComponent', () => {
     expect(findCase).toBeFalsy();
   });
 
-  it('splitNavItems', async () => {
+  it('splitNavItems', (done: DoneFn) => {
     component.items = [{
       align: 'right',
       text: '1',
@@ -194,29 +202,38 @@ describe('HmctsGlobalHeaderComponent', () => {
       href: '',
       active: false
     }];
-    await component.ngOnChanges(changesMock);
-    expect(component.leftItems).toEqual([{
-      align: null,
-      text: '2',
-      href: '',
-      active: false
-    }]);
+    component.ngOnChanges(changesMock);
+    const leftItems = component.leftItems;
+    const rightItems = component.rightItems;
 
-    expect(component.rightItems).toEqual([{
-      align: 'right',
-      text: '1',
-      href: '',
-      active: false
-    },
-    {
-      align: 'right',
-      text: '3',
-      href: '',
-      active: false
-    }]);
+    leftItems.pipe(
+      switchMap(items => {
+        expect(items).toEqual([{
+          align: null,
+          text: '2',
+          href: '',
+          active: false
+        }]);
+        return rightItems;
+      })
+    ).subscribe(items => {
+      expect(items).toEqual([{
+        align: 'right',
+        text: '1',
+        href: '',
+        active: false
+      },
+      {
+        align: 'right',
+        text: '3',
+        href: '',
+        active: false
+      }]);
+      done();
+    });
   });
 
-  it('filters out menu items for which the user does not hold the correct role', async () => {
+  it('filters out menu items for which the user does not hold the correct role', (done) => {
     component.items = [{
       align: 'right',
       text: '1',
@@ -238,12 +255,21 @@ describe('HmctsGlobalHeaderComponent', () => {
       active: false,
       roles: ['roleC']
     }];
-    await component.ngOnChanges(changesMock);
-    expect(component.leftItems).toEqual([component.items[1]]);
-    expect(component.rightItems).toEqual([component.items[0]]);
+    component.ngOnChanges(changesMock);
+    const leftItems = component.leftItems;
+    const rightItems = component.rightItems;
+    leftItems.pipe(
+      switchMap(items => {
+        expect(items).toEqual([component.items[1]]);
+        return rightItems;
+      })
+    ).subscribe(items => {
+      expect(items).toEqual([component.items[0]]);
+      done();
+    });
   });
 
-  it('filters out menu items for which not all features are enabled', async () => {
+  it('filters out menu items for which not all features are enabled', (done) => {
     component.items = [{
       align: 'right',
       text: '1',
@@ -264,8 +290,17 @@ describe('HmctsGlobalHeaderComponent', () => {
       active: false,
       flags: ['enabledFlag', 'disabledFlag']
     }];
-    await component.ngOnChanges(changesMock);
-    expect(component.leftItems).toEqual([component.items[1]]);
-    expect(component.rightItems).toEqual([component.items[0]]);
+    component.ngOnChanges(changesMock);
+    const leftItems = component.leftItems;
+    const rightItems = component.rightItems;
+    leftItems.pipe(
+      switchMap(items => {
+        expect(items).toEqual([component.items[1]]);
+        return rightItems;
+      })
+    ).subscribe(items => {
+      expect(items).toEqual([component.items[0]]);
+      done();
+    });
   });
 });

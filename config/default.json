@@ -71,6 +71,7 @@
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS",
+  "globalSearchServices": "IA",
   "wildcardSearchFields": {
     "Benefit": [
       "generatedSurname",

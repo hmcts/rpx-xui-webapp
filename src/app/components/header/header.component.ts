@@ -21,6 +21,7 @@ export class HeaderComponent implements OnInit {
   @Input() public title: AppTitleModel;
   @Input() public userNav: UserNavModel;
   @Input() public showFindCase: boolean;
+  @Input() public showCaseReferenceSearchBox: boolean;
   @Input() public backgroundColor: string;
   @Input() public logoType: string;
   @Input() public logoIsUsed: boolean = false;

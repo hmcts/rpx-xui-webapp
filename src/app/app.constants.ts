@@ -66,6 +66,7 @@ const applicationUserThemes: Theme[] =  [
       }]
     },
     showFindCase: false,
+    showCaseReferenceSearchBox: false,
     backgroundColor: '#8d0f0e',
     logoIsUsed: true,
     logoType: 'judicial',
@@ -100,6 +101,7 @@ const applicationUserThemes: Theme[] =  [
       }]
     },
     showFindCase: true,
+    showCaseReferenceSearchBox: false,
     backgroundColor: '#202020',
     logoIsUsed: true,
     logoType: 'myhmcts',
@@ -138,6 +140,7 @@ const defaultUserTheme: Theme = {
     ]
   },
   showFindCase: true,
+  showCaseReferenceSearchBox: false,
   backgroundColor: '#202020',
   logoIsUsed: false,
   logoType: '',
@@ -152,6 +155,7 @@ const signedOutTheme: Theme = {
     items: []
   },
   showFindCase: true,
+  showCaseReferenceSearchBox: false,
   backgroundColor: '#202020',
   logoIsUsed: false,
   logoType: 'default',

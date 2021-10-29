@@ -33,7 +33,10 @@ import {
   assignActionsToCases,
   assignActionsToTasks,
   constructElasticSearchQuery,
-  constructRoleAssignmentQuery, filterByLocationId,
+  constructRoleAssignmentCaseAllocatorQuery,
+  constructRoleAssignmentQuery,
+  filterByLocationId,
+  getCaseAllocatorLocations,
   getCaseIdListFromRoles,
   getCaseTypesFromRoleAssignments,
   getRoleAssignmentsByQuery,
@@ -341,7 +344,9 @@ export async function getMyCases(req: EnhancedRequest, res: Response) {
 export async function getCases(req: EnhancedRequest, res: Response, next: NextFunction) {
   const searchParameters = req.body.searchRequest.search_parameters as SearchTaskParameter[];
   const pagination = req.body.searchRequest.pagination_parameters as PaginationParameter;
-  /*
+
+  try {
+
     // get users case allocations
     const caseAllocatorQuery = constructRoleAssignmentCaseAllocatorQuery(searchParameters, req);
     const caseAllocatorResult = await getRoleAssignmentsByQuery(caseAllocatorQuery, req);
@@ -349,12 +354,9 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     const locations = caseAllocatorResult.roleAssignmentResponse
       ? getCaseAllocatorLocations(caseAllocatorResult.roleAssignmentResponse)
       : [];
-  */
-  try {
 
     // get all role assignments
-    const query = constructRoleAssignmentQuery(searchParameters, []);
-    console.log(JSON.stringify(query, null, 2));
+    const query = constructRoleAssignmentQuery(searchParameters, locations);
     const roleAssignmentResult = await getRoleAssignmentsByQuery(query, req);
 
     const caseTypes: string = getCaseTypesFromRoleAssignments(roleAssignmentResult.roleAssignmentResponse);
@@ -365,7 +367,6 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     const esQuery = constructElasticSearchQuery(caseIds, 0, 10000);
 
     const result = await searchCasesById(queryParams, esQuery, req);
-    console.log('searchParameters', JSON.stringify(searchParameters, null, 2));
     const caseData = filterByLocationId(result.cases, searchParameters);
     result.total_records = caseData.length;
 

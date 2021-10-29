@@ -341,7 +341,6 @@ export function constructRoleAssignmentQuery(
         };
       })
       .filter((param: SearchTaskParameter) => param.values && param.values.length)
-      .filter((param: SearchTaskParameter) => param.key !== 'primaryLocation')
       .reduce((acc: any, param: SearchTaskParameter) => {
 
         if (param.key === 'jurisdiction') {

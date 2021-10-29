@@ -88,8 +88,10 @@ export function assignActionsToTasks(tasks: any[], view: any, currentUser: strin
   const allWorkView = ViewType.ALL_WORK;
   const activeTasksView = ViewType.ACTIVE_TASKS;
   const tasksWithActions: any[] = [];
+  console.log('tasks are ', tasks);
   if (tasks) {
     for (const task of tasks) {
+      task.dueDate = task.due_date;
       let thisView = view;
       if (view === allWorkView) {
         thisView = task.assignee ? ViewType.ALL_WORK_ASSIGNED : ViewType.ALL_WORK_UNASSIGNED;
@@ -101,7 +103,8 @@ export function assignActionsToTasks(tasks: any[], view: any, currentUser: strin
             ViewType.ACTIVE_TASKS_ASSIGNED_CURRENT : ViewType.ACTIVE_TASKS_ASSIGNED_OTHER;
         }
       }
-      const actions: Action[] = getActionsByPermissions(thisView, task.permissions);
+      console.log(thisView, task.permissions);
+      const actions: Action[] = task.permissions ? getActionsByPermissions(thisView, task.permissions) : [];
       const taskWithAction = {...task, actions};
       tasksWithActions.push(taskWithAction);
     }

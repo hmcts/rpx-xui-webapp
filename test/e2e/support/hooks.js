@@ -114,7 +114,7 @@ defineSupportCode(({ Before,After }) => {
                 CucumberReportLog.AddMessage("Page route : " + await browser.getCurrentUrl());
 
                 CucumberReportLog.AddJson(browserLog);
-                CucumberReportLog.AddJson(networkLog);
+                // CucumberReportLog.AddJson(networkLog);
 
             }else{
                 BrowserLogs.clearLogs();

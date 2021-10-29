@@ -4,10 +4,10 @@ import { Observable, of } from 'rxjs';
 import { RoleCategory } from '../../role-access/models';
 import { ConfigConstants } from '../components/constants';
 import { CaseService, SortOrder, TaskService } from '../enums';
+import { Case, CaseServiceConfig } from '../models/cases';
 import { FieldConfig } from '../models/common';
 import { Caseworker, Location } from '../models/dtos';
 import { Task, TaskServiceConfig } from '../models/tasks';
-import { Case, CaseServiceConfig } from '../models/cases';
 
 const LOCATION_A: Location = { id: 'a', locationName: 'Taylor House', services: ['a'] };
 const LOCATION_B: Location = { id: 'b', locationName: 'Taylor Swift', services: ['a', 'b'] };

@@ -11,7 +11,7 @@ export interface Case {
   task_title: string;
   created_date: string;
   due_date: string;
-  location_name: string;
+  location_name?: string;
   location: string;
   jurisdiction: string;
   region: string;

@@ -132,7 +132,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             workFlowPageObject = workFlowPage.findPersonPage;
         } else if (workFlowPageType === "Duration of role") {
             workFlowPageObject = workFlowPage.durationOfRolePage;
-        } else if (workFlowPageType === "Check your answers") {
+        } else if (workFlowPageType === "Check your answers" || workFlowPageType === "Check your changes") {
             workFlowPageObject = workFlowPage.checkYourAnswers;
         } else {
             throw new Error(`work flow page "${workFlowPageType}" is not recognised or not implemented in test step definition.`);

@@ -7,7 +7,7 @@ import { SearchValidators } from '../../utils';
 import { SearchService } from '../../services/search.service';
 import { Router } from '@angular/router';
 import { isDefined } from '@angular/compiler/src/util';
-import { SearchFormControl, SearchFormErrorMessage } from '../../enums';
+import { SearchFormControl, SearchFormErrorMessage, SearchFormErrorType } from '../../enums';
 
 @Component({
   selector: 'exui-search-form',
@@ -147,20 +147,20 @@ export class SearchFormComponent implements OnInit, OnDestroy {
     this.formGroup.get(SearchFormControl.POSTCODE).setValidators(postcodeValidator);
 
     // validator for date of birth
-    let dayValidator = SearchValidators.dayValidator();
+    const dayValidator = SearchValidators.dayValidator();
     this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).setValidators(dayValidator);
-    let monthValidator = SearchValidators.monthValidator();
+    const monthValidator = SearchValidators.monthValidator();
     this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_MONTH).setValidators(monthValidator);
-    let yearValidator = SearchValidators.yearValidator();
+    const yearValidator = SearchValidators.yearValidator();
     this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_YEAR).setValidators(yearValidator);
 
     // validator for date of death
-    dayValidator = SearchValidators.dayValidator();
     this.formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).setValidators(dayValidator);
-    monthValidator = SearchValidators.monthValidator();
     this.formGroup.get(SearchFormControl.DATE_OF_DEATH_MONTH).setValidators(monthValidator);
-    yearValidator = SearchValidators.yearValidator();
     this.formGroup.get(SearchFormControl.DATE_OF_DEATH_YEAR).setValidators(yearValidator);
+
+    const dateComparisonValidator = SearchValidators.dateComparisonValidator();
+    this.formGroup.setValidators(dateComparisonValidator);
   }
 
   /**
@@ -193,6 +193,14 @@ export class SearchFormComponent implements OnInit, OnDestroy {
           !this.formGroup.get(SearchFormControl.DATE_OF_DEATH_YEAR).valid) {
         this.searchValidationErrors.push({ controlId: SearchFormControl.DATE_OF_DEATH_DAY, documentHRef: 'dateOfDeath', errorMessage: SearchFormErrorMessage.DATE_OF_DEATH });
         this.dateOfDeathErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.DATE_OF_DEATH] };
+      }
+      // Date comparison
+      if (this.formGroup.errors) {
+        if (this.formGroup.errors.errorType === SearchFormErrorType.DATE_COMPARISON) {
+          this.searchValidationErrors.push({ controlId: null, documentHRef: 'dateOfBirth', errorMessage: SearchFormErrorMessage.DATE_COMPARISON_FAILED });
+          this.dateOfBirthErrorMessage = { isInvalid: true, messages: [] };
+          this.dateOfDeathErrorMessage = { isInvalid: true, messages: [] };
+        }
       }
 
       // Validation failed, return false

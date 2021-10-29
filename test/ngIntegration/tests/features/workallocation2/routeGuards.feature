@@ -8,9 +8,12 @@ Feature: Work allocation 2 feature route guards
         Given I set MOCK with user "IAC_CaseOfficer_R1" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer" with reference "userDetails"
         Given I start MockApp
         Given I navigate to home page
-        
+        When I click on primary navigation header tab "Create case", I see selected tab page displayed
+        Then I see page with css locator "exui-filter-case"
+
+
         Given I navigate to page route "<Route>"
-        Then I see page with css locator "ccd-search-result"
+        Then I see page with css locator "exui-case-list"
 
         Examples:
             | Route                                                                                                                                                                                                                                             |

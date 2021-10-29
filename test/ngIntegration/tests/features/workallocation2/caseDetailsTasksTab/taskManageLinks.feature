@@ -98,7 +98,7 @@ Feature: WA Release 2: Case details Tasks tab - Manage links
 
         Then I validate column "Person" value is set to "test23 person" in task check your changes page
         When I click submit button "Reassign" in task check your changes page
-        Then I see navigation header tab page "My work"
+        # Then I see navigation header tab page "My work"
         Then I see case details tab label "Tasks" is displayed is "true"
 
         Then I see case details page with message banner "You've reassigned a task to somebody else"

@@ -1,4 +1,4 @@
-import { AbstractControl, AbstractFormGroupDirective, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { SearchFormControl, SearchFormErrorType } from '../enums';
 
 export class SearchValidators {
@@ -45,14 +45,18 @@ export class SearchValidators {
 
   public static dateComparisonValidator(): ValidatorFn {
     return (formGroup: AbstractControl): ValidationErrors | null => {
-      const dateOfBirth = new Date(formGroup.get(SearchFormControl.DATE_OF_BIRTH_YEAR).value,
-                                   formGroup.get(SearchFormControl.DATE_OF_BIRTH_MONTH).value,
-                                   formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).value);
+      const dateOfBirthDay = formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).value;
+      const dateOfBirthMonth = formGroup.get(SearchFormControl.DATE_OF_BIRTH_MONTH).value;
+      const dateOfBirthYear = formGroup.get(SearchFormControl.DATE_OF_BIRTH_YEAR).value;
+      if (dateOfBirthDay === '' && dateOfBirthMonth === '' && dateOfBirthYear === '') { return; }
 
-      const dateOfDeath = new Date(formGroup.get(SearchFormControl.DATE_OF_DEATH_YEAR).value,
-                                   formGroup.get(SearchFormControl.DATE_OF_DEATH_MONTH).value,
-                                   formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).value);
+      const dateOfDeathDay = formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).value;
+      const dateOfDeathMonth = formGroup.get(SearchFormControl.DATE_OF_DEATH_MONTH).value;
+      const dateOfDeathYear = formGroup.get(SearchFormControl.DATE_OF_DEATH_YEAR).value;
+      if (dateOfDeathDay === '' && dateOfDeathMonth === '' && dateOfDeathYear === '') { return; }
 
+      const dateOfBirth = new Date(dateOfBirthYear, dateOfBirthMonth, dateOfBirthDay);
+      const dateOfDeath = new Date(dateOfDeathYear, dateOfDeathMonth, dateOfDeathDay);
       if (dateOfBirth > dateOfDeath) {
         return { isValid: false, errorType: SearchFormErrorType.DATE_COMPARISON };
       }

@@ -33,7 +33,7 @@ import {
   assignActionsToCases,
   assignActionsToTasks,
   constructElasticSearchQuery,
-  constructRoleAssignmentQuery,
+  constructRoleAssignmentQuery, filterByLocationId,
   getCaseIdListFromRoles,
   getCaseTypesFromRoleAssignments,
   getRoleAssignmentsByQuery,
@@ -341,7 +341,6 @@ export async function getMyCases(req: EnhancedRequest, res: Response) {
 export async function getCases(req: EnhancedRequest, res: Response, next: NextFunction) {
   const searchParameters = req.body.searchRequest.search_parameters as SearchTaskParameter[];
   const pagination = req.body.searchRequest.pagination_parameters as PaginationParameter;
-
   /*
     // get users case allocations
     const caseAllocatorQuery = constructRoleAssignmentCaseAllocatorQuery(searchParameters, req);
@@ -355,18 +354,20 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
 
     // get all role assignments
     const query = constructRoleAssignmentQuery(searchParameters, []);
+    console.log(JSON.stringify(query, null, 2));
     const roleAssignmentResult = await getRoleAssignmentsByQuery(query, req);
 
-    // get the case ids from the role assignments
     const caseTypes: string = getCaseTypesFromRoleAssignments(roleAssignmentResult.roleAssignmentResponse);
     const queryParams = caseTypes.length ? caseTypes : 'Asylum';
 
-    const caseIdList = getCaseIdListFromRoles(roleAssignmentResult.roleAssignmentResponse);
-    const esQuery = constructElasticSearchQuery(caseIdList, 0, 10000);
+    // get the case ids from the role assignments
+    const caseIds = getCaseIdListFromRoles(roleAssignmentResult.roleAssignmentResponse);
+    const esQuery = constructElasticSearchQuery(caseIds, 0, 10000);
 
     const result = await searchCasesById(queryParams, esQuery, req);
-    const caseData = result.cases;
-    result.total_records = result.cases.length;
+    console.log('searchParameters', JSON.stringify(searchParameters, null, 2));
+    const caseData = filterByLocationId(result.cases, searchParameters);
+    result.total_records = caseData.length;
 
     const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
     let checkedRoles = roleAssignmentResult.roleAssignmentResponse;

@@ -10,6 +10,8 @@ export default interface Case {
   roleName?: string;
   roleCategory?: string;
   location: string;
+  location_id: string;
+  location_name: string;
   taskName: string;
   dueDate: Date;
   actions: CaseAction[];

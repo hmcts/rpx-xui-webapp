@@ -5,7 +5,7 @@ import { EnhancedRequest, JUILogger } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
 
 const logger: JUILogger = log4jui.getLogger('caseworker-service');
-const MAX_RECORDS: number = 100;
+const MAX_RECORDS: number = 5000;
 
 export async function handleCaseWorkerGetAll(path: string, req: EnhancedRequest): Promise<any> {
     logger.info('getting all caseworkers for', path);
@@ -49,14 +49,16 @@ export async function handlePostSearch(path: string, payload: string | any, req:
     return response;
 }
 
-export async function handlePostRoleAssingnments(path: string, payload: any, req: EnhancedRequest): Promise<any> {
+export async function handlePostRoleAssignments(path: string, payload: any, req: EnhancedRequest): Promise<any> {
     const headers = setHeaders(req);
-    // For MVP we are expecting maximum 80 caseworkers
     headers.pageNumber = 0;
     headers.size = MAX_RECORDS;
     // sort
     // direction
     const response: AxiosResponse = await http.post(path, payload, { headers });
+    if (response.data.roleAssignmentResponse.length >= MAX_RECORDS) {
+        logger.warn('Case workers now returning MAX_RECORDS', response.data.roleAssignmentResponse.length);
+    }
     return response;
 }
 

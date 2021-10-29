@@ -15,7 +15,7 @@ const targetJson = `${jsonReports}/cucumber_report.json`;
 const { Given, When, Then } = require('cucumber');
 
 const CucumberReportLog = require("./reportLogger");
-
+const BrowserLogs = require('./browserLogs');
 
 // defineSupportCode(function({After }) {
 //     registerHandler("BeforeFeature", { timeout: 500 * 1000 }, function() {
@@ -108,20 +108,16 @@ defineSupportCode(({ Before,After }) => {
             let browserErrorLogs = []
             if (scenario.result.status === 'failed'){
                 await CucumberReportLog.AddScreenshot(global.screenShotUtils);
-                let browserLog = await browser.manage().logs().get('browser');
-                
-                for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++) {
-                    if (browserLog[browserLogCounter].level.value > 900) {
-                        browserLog[browserLogCounter]['time'] = (new Date(browserLog[browserLogCounter]['timestamp'])).toISOString()
-                        let perfItem = { ...browserLog[browserLogCounter], time: (new Date(browserLog[browserLogCounter]['timestamp'])).toISOString()}
-                        browserErrorLogs.push(perfItem);
-                    }
-                }
+                let networkLog = await BrowserLogs.getNetworkLogs();
+                let browserLog = await BrowserLogs.getBrowserLogs();
+
                 CucumberReportLog.AddMessage("Page route : " + await browser.getCurrentUrl());
 
-                CucumberReportLog.AddJson(browserErrorLogs);
+                CucumberReportLog.AddJson(browserLog);
+                // CucumberReportLog.AddJson(networkLog);
+
             }else{
-                browser.manage().logs().get('browser');
+                BrowserLogs.clearLogs();
                 if (global.scenarioData['featureToggles']){
                     //CucumberReportLog.AddJson(global.scenarioData['featureToggles'])
                 }

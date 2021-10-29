@@ -53,7 +53,7 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
     }
   }
 
-  private setAnswersFromAllocateRoleStateStore(allocateRoleStateData: AllocateRoleStateData): void {
+  public setAnswersFromAllocateRoleStateStore(allocateRoleStateData: AllocateRoleStateData): void {
     this.allocateRoleStateData = allocateRoleStateData;
     this.typeOfRole = allocateRoleStateData.typeOfRole.name;
     this.allocateTo = allocateRoleStateData.allocateTo;
@@ -85,7 +85,7 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
     this.setDurationOfRole(allocateRoleStateData);
   }
 
-  private setPersonDetails(allocateRoleStateData: AllocateRoleStateData): void {
+  public setPersonDetails(allocateRoleStateData: AllocateRoleStateData): void {
     let personDetails = '';
     if (allocateRoleStateData.person && allocateRoleStateData.person.email) {
       personDetails += `${allocateRoleStateData.person.name}\n${allocateRoleStateData.person.email}`;
@@ -102,7 +102,7 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
     }
   }
 
-  private setDurationOfRole(allocateRoleStateData: AllocateRoleStateData): void {
+  public setDurationOfRole(allocateRoleStateData: AllocateRoleStateData): void {
     let durationOfRole;
     const startDate = moment.parseZone(allocateRoleStateData.period.startDate).format('D MMMM YYYY');
     let endDate;

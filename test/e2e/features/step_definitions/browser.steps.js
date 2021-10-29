@@ -21,7 +21,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I see page with css locator {string}', async function(cssLocator){
-        await BrowserWaits.waitForElement($(cssLocator),10);
+
+        await BrowserWaits.waitForElement($(cssLocator),60*1000);
     });
 
     Given('I set debug text {string} in element with css selector {string}', async function(debugtext, cssSelector){

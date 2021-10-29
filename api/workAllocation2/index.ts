@@ -1,7 +1,8 @@
 import { NextFunction, Response } from 'express';
 import { handleGet, handlePost } from '../common/mockService';
-import { getConfigValue } from '../configuration';
+import { getConfigValue, showFeature } from '../configuration';
 import {
+  FEATURE_SUBSTANTIVE_ROLE_ENABLED,
   SERVICES_CASE_CASEWORKER_REF_PATH,
   SERVICES_CASE_JUDICIALWORKER_REF_PATH,
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
@@ -16,7 +17,7 @@ import {
   handleCaseWorkerForLocationAndService,
   handleCaseWorkerForService,
   handlePostCaseWorkersRefData,
-  handlePostRoleAssingnments,
+  handlePostRoleAssignments,
   handlePostSearch
 } from './caseWorkerService';
 
@@ -32,6 +33,7 @@ import {
   assignActionsToTasks,
   constructElasticSearchQuery,
   getCaseIdListFromRoles, getCaseTypesFromRoleAssignments,
+  getSubstantiveRoles,
   mapCasesFromData,
   mapCaseworkerData,
   prepareCaseWorkerForLocation,
@@ -104,8 +106,11 @@ export function handleGetMyCasesResponse(proxyRes, req, res, json): any {
   json.total_records = totalRecords;
   // search parameters passed in as null as there are no parameters for my cases
   const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
-  const mappedCases =  req && req.session && req.session.roleAssignmentResponse
-    ? mapCasesFromData(caseData, req.session.roleAssignmentResponse, null) : [];
+  let checkedRoles = req && req.session && req.session.roleAssignmentResponse ? req.session.roleAssignmentResponse : null;
+  if (showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED)) {
+    checkedRoles = getSubstantiveRoles(req.session.roleAssignmentResponse);
+  }
+  const mappedCases =  checkedRoles ? mapCasesFromData(caseData, checkedRoles, null) : [];
   json.cases = assignActionsToCases(mappedCases, userIsCaseAllocator, true);
   return json;
 }
@@ -179,11 +184,11 @@ export async function retrieveAllCaseWorkers(req: EnhancedRequest, res: Response
   }
   const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
   const payload = prepareRoleApiRequest();
-  const {data} = await handlePostRoleAssingnments(roleApiPath, payload, req);
+  const {data} = await handlePostRoleAssignments(roleApiPath, payload, req);
   const userIds = getUserIdsFromRoleApiResponse(data);
   const userUrl = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
   const userResponse = await handlePostCaseWorkersRefData(userUrl, userIds, req);
-  const caseWorkerReferenceData = mapCaseworkerData(userResponse.data);
+  const caseWorkerReferenceData = mapCaseworkerData(userResponse.data, data.roleAssignmentResponse);
   req.session.caseworkers = caseWorkerReferenceData;
   return caseWorkerReferenceData;
 }

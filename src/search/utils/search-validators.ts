@@ -1,4 +1,5 @@
-import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { AbstractControl, AbstractFormGroupDirective, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { SearchFormControl, SearchFormErrorType } from '../enums';
 
 export class SearchValidators {
 
@@ -37,6 +38,23 @@ export class SearchValidators {
       if (control.value === null || control.value === '') { return; }
       if (control.value === 0 || control.value < 1900) {
         return { isValid : false };
+      }
+      return;
+    };
+  }
+
+  public static dateComparisonValidator(): ValidatorFn {
+    return (formGroup: AbstractControl): ValidationErrors | null => {
+      const dateOfBirth = new Date(formGroup.get(SearchFormControl.DATE_OF_BIRTH_YEAR).value,
+                                   formGroup.get(SearchFormControl.DATE_OF_BIRTH_MONTH).value,
+                                   formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).value);
+
+      const dateOfDeath = new Date(formGroup.get(SearchFormControl.DATE_OF_DEATH_YEAR).value,
+                                   formGroup.get(SearchFormControl.DATE_OF_DEATH_MONTH).value,
+                                   formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).value);
+
+      if (dateOfBirth > dateOfDeath) {
+        return { isValid: false, errorType: SearchFormErrorType.DATE_COMPARISON };
       }
       return;
     };

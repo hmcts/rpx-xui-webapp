@@ -16,6 +16,7 @@ export function toRoleAssignmentBody(userInfo: UserInfo, allocateRoleData: Alloc
       attributes: {
         caseId: allocateRoleData.caseId,
         jurisdiction: 'IA',
+        primaryLocation: '386417',
       },
       roleName: allocateRoleData.typeOfRole.id,
       roleCategory: allocateRoleData.roleCategory,

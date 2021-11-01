@@ -45,7 +45,7 @@ describe('AllWorkTaskComponent', () => {
   let fixture: ComponentFixture<WrapperComponent>;
 
   let router: Router;
-  const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTaskWithPagination']);
+  const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
@@ -84,7 +84,7 @@ describe('AllWorkTaskComponent', () => {
     component = wrapper.appComponentRef;
     router = TestBed.get(Router);
     const tasks: Task[] = getMockTasks();
-    mockTaskService.searchTaskWithPagination.and.returnValue(of({tasks}));
+    mockTaskService.searchTask.and.returnValue(of({tasks}));
     mockCaseworkerService.getAll.and.returnValue(of([]));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
@@ -126,7 +126,7 @@ describe('AllWorkTaskComponent', () => {
   it('should make a call to load tasks using the default search request', () => {
     const searchRequest = component.getSearchTaskRequestPagination();
     const payload = {searchRequest, view: component.view};
-    expect(mockTaskService.searchTaskWithPagination).toHaveBeenCalledWith(payload);
+    expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
     expect(component.tasks).toBeDefined();
     expect(component.tasks.length).toEqual(2);
   });
@@ -171,7 +171,7 @@ describe('AllWorkTaskComponent', () => {
     let fixture: ComponentFixture<WrapperComponent>;
 
     let router: Router;
-    const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTaskWithPagination']);
+    const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
     const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
     const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
     const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
@@ -183,7 +183,7 @@ describe('AllWorkTaskComponent', () => {
 
     beforeEach(async(() => {
       mockLocationService.getLocations.and.returnValue(of([{ id: 'loc123', locationName: 'Test', services: [] }]));
-      mockTaskService.searchTaskWithPagination.and.returnValue(throwError({ status: scr.statusCode }));
+      mockTaskService.searchTask.and.returnValue(throwError({ status: scr.statusCode }));
       const tasks: Task[] = getMockTasks();
       // mockTaskService.searchTaskWithPagination.and.returnValue(of(throwError({ status: 500 })));
       mockCaseworkerService.getAll.and.returnValue(of([]));
@@ -234,7 +234,7 @@ describe('AllWorkTaskComponent', () => {
       component.getSearchTaskRequestPagination();
       const searchRequest = component.onPaginationEvent(1);
       const payload = { searchRequest, view: component.view };
-      expect(mockTaskService.searchTaskWithPagination).toHaveBeenCalledWith(payload);
+      expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
 
       expect(navigateSpy).toHaveBeenCalledWith([scr.routeUrl]);
 

@@ -1,8 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { RoleGuard, RoleMatching } from '@hmcts/rpx-xui-common-lib';
-import { SearchResultsComponent } from './containers/search-results/search-results.component';
-import { NoResultsComponent, SearchFormComponent } from './containers';
+import {
+  NoResultsComponent,
+  SearchFormComponent,
+  SearchResultsComponent
+} from './containers';
 
 const routes: Routes = [
   {

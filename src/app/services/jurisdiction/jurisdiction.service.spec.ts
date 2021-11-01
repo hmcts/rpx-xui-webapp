@@ -27,7 +27,7 @@ describe('Jurisdiction Service', () => {
   it('should get jurisdictions', () => {
     httpClientGetSpy.get.and.returnValue({});
     service.getJurisdictions().subscribe(data => {
-      expect(data).toBeDefined();
+      expect(data).toBeTruthy();
     });
   });
 });

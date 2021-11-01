@@ -4,17 +4,17 @@ import { GlobalSearchService } from 'interfaces/globalSearchService';
 import { EnhancedRequest } from 'lib/models';
 import { handleGet, handlePost } from '../common/crudService';
 import { getConfigValue } from '../configuration';
-import { 
-  GLOBAL_SEARCH_SERVICES, 
-  SERVICES_CCD_COMPONENT_API_PATH, 
-  SERVICES_CCD_DATA_STORE_API_PATH 
+import {
+  GLOBAL_SEARCH_SERVICES,
+  SERVICES_CCD_COMPONENT_API_PATH,
+  SERVICES_CCD_DATA_STORE_API_PATH
 } from '../configuration/references';
 
 /**
  * Get global search services
  * api/globalsearch/services
  */
-export async function getServices(req: EnhancedRequest, res: Response, next: NextFunction) {
+export async function getServices(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   try {
     // Return global search services from session if available
     if (req.session.globalSearchServices) {
@@ -103,7 +103,9 @@ export function generateServices(jurisdictions: Jurisdiction[]): GlobalSearchSer
   const globalSearchServices: GlobalSearchService[] = [];
   globalSearchServiceIdsArray.forEach(serviceId => {
     const jurisdiction = jurisdictions.find(x => x.id === serviceId);
-    globalSearchServices.push({ serviceId: jurisdiction.id, serviceName: jurisdiction.name });
+    if (jurisdiction !== undefined) {
+      globalSearchServices.push({ serviceId: jurisdiction.id, serviceName: jurisdiction.name });
+    }
   });
 
   // Return generated global search services

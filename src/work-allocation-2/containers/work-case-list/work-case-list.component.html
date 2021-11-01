@@ -111,4 +111,4 @@
 
 </table>
 
-<ccd-pagination *ngIf="pagination" [autoHide]="true" (pageChange)="paginationEvent.emit($event)"></ccd-pagination>
+<ccd-pagination *ngIf="cases && cases.length > 0" [autoHide]="true" (pageChange)="paginationEvent.emit($event)" ></ccd-pagination>

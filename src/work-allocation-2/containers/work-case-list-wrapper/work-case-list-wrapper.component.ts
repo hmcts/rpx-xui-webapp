@@ -8,7 +8,7 @@ import { AppConstants } from '../../../app/app.constants';
 import { SessionStorageService } from '../../../app/services';
 import { Actions } from '../../../role-access/models';
 import { ListConstants } from '../../components/constants';
-import { CaseActionIds, CaseService, InfoMessage, InfoMessageType, SortOrder } from '../../enums';
+import { CaseService, InfoMessage, InfoMessageType, SortOrder } from '../../enums';
 import { Caseworker } from '../../interfaces/common';
 import { Case, CaseFieldConfig, CaseServiceConfig, InvokedCaseAction } from '../../models/cases';
 import { SortField } from '../../models/common';
@@ -187,7 +187,10 @@ export class WorkCaseListWrapperComponent implements OnInit {
 
   public performSearchPagination(): Observable<any> {
     const searchRequest = this.getSearchCaseRequestPagination();
-    return this.caseService.searchCaseWithPagination({searchRequest, view: this.view});
+    if (this.view === 'AllWorkCases') {
+      return this.caseService.getCases({searchRequest, view: this.view});
+    }
+    return this.caseService.getMyCases({searchRequest, view: this.view});
   }
 
   /**

@@ -4,9 +4,15 @@ import 'mocha';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { baseWorkAllocationTaskUrl, getTask, postTaskAction, searchTask } from '.';
+import {
+  baseWorkAllocationTaskUrl,
+  getTask,
+  postTaskAction,
+  searchTask
+} from '.';
 import { httpMock } from '../common/mockService';
 import { http } from '../lib/http';
+import { RE_ALLOCATE, REMOVE_ALLOCATE } from './constants/actions';
 import { mockTasks } from './taskTestData.spec';
 
 chai.use(sinonChai);
@@ -75,7 +81,7 @@ describe('workAllocation', () => {
       spy = sandbox.stub(http, 'post').resolves(res);
       const req = mockReq({
         body: {
-          searchRequest: { search_parameters: [] },
+          searchRequest: {search_parameters: []},
           view: 'MyTasks',
         },
         session: {
@@ -100,7 +106,7 @@ describe('workAllocation', () => {
       spy = sandbox.stub(http, 'post').resolves(res);
       const req = mockReq({
         body: {
-          searchRequest: { search_parameters: [], pagination_parameters: {page_size: 11, page_number: 3}},
+          searchRequest: {search_parameters: [], pagination_parameters: {page_size: 11, page_number: 3}},
           view: 'MyTasks',
         },
         session: {
@@ -113,8 +119,14 @@ describe('workAllocation', () => {
       await searchTask(req, response, next);
       // Should have the correct URL and the appropriate payload.
       const args = spy.getCall(0).args;
-      expect(args[0]).to.equal(`${baseWorkAllocationTaskUrl}/task?first_result=22&max_results=11`);
-      expect(args[1]).to.deep.equal({search_parameters: []});
+      expect(args[0]).to.equal(`${baseWorkAllocationTaskUrl}/myTasks?view=caseworker?first_result=22&max_results=11`);
+      expect(args[1]).to.deep.equal({
+        'pagination_parameters': {
+          'page_number': 3,
+          'page_size': 11,
+        },
+        search_parameters: [],
+      });
 
       // Should have received the HTTP response. The search simply returns the data.
       expect(response.data.length).to.equal(3);
@@ -185,5 +197,4 @@ describe('workAllocation', () => {
     });
 
   });
-
 });

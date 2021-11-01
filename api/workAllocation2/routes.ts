@@ -3,9 +3,9 @@ import { Router } from 'express';
 import {
   getAllCaseWorkers,
   getAllCaseWorkersForLocation,
-  getAllJudicialWorkers,
+  getAllJudicialWorkers, getCases,
   getCaseWorkersForLocationAndService,
-  getCaseWorkersForService,
+  getCaseWorkersForService, getMyCases,
   getRolesCategory,
   getTask,
   getTasksByCaseId,
@@ -47,5 +47,8 @@ router.use('/case/task/:caseId', getTasksByCaseId);
 router.use('/exclusion/rolesCategory', getRolesCategory);
 
 router.use('/roles/:caseId/show-allocate-role-link', showAllocateRoleLink);
+
+router.use('/my-work/cases', getMyCases);
+router.use('/all-work/cases', getCases);
 
 export default router;

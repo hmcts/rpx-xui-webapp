@@ -75,22 +75,25 @@ module.exports = {
         }
     },
     post: {
-        '/workallocation2/my-cases/': (req, res) => {
-            const pageNum = req.body.searchRequest.pagination_parameters.page_number;
-            const pageSize = req.body.searchRequest.pagination_parameters.page_size;
-
+        '/workallocation2/my-work/cases': (req, res) => {
+            
             const requestedView = req.body.view.toLowerCase();
+            const pageNum = requestedView === "mycases" ? 0 : req.body.searchRequest.pagination_parameters.page_number;
+            const pageSize = requestedView === "mycases" ? 10000 : req.body.searchRequest.pagination_parameters.page_size;
+
             let cases = [];
             if (requestedView === "mycases" || requestedView === "allworkcases") {
-                cases = global.scenarioData && global.scenarioData[`workallocation2.${requestedView}`] ? global.scenarioData[`workallocation2.${requestedView}`] : workAllocationMockData.getMyCases(pageSize * 5);
+                cases = global.scenarioData && global.scenarioData[`workallocation2.${requestedView}`] ? global.scenarioData[`workallocation2.${requestedView}`] : workAllocationMockData.getMyCases(pageSize ? pageSize  * 5: 125);
             }  else {
                 throw new Error("Unrecognised case list view : " + requestedView);
             }
             try {
                 const thisPageCases = [];
 
-                const startIndexForPage = pageNum === 1 ? 0 : ((pageNum - 1) * pageSize) - 1;
-                const endIndexForPage = (startIndexForPage + pageSize) < cases.total_records ? startIndexForPage + pageSize - 1 : cases.total_records - 1;
+                
+
+                const startIndexForPage =  ((pageNum - 1) * pageSize) - 1;
+                const endIndexForPage =  (startIndexForPage + pageSize) < cases.total_records ? startIndexForPage + pageSize - 1 : cases.total_records - 1;
                 for (let i = startIndexForPage; i <= endIndexForPage; i++) {
                     thisPageCases.push(cases.cases[i]);
                 }

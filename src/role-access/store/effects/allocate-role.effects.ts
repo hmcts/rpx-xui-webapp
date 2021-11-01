@@ -28,7 +28,7 @@ export class AllocateRoleEffects {
           .pipe(
             map(() => {
               return new routeAction.CreateCaseGo({
-                path: [`/cases/case-details/${data.payload.caseId}/roles-and-access`],
+                path: [this.allocateRoleService.backUrl],
                 caseId: data.payload.caseId,
                 extras: {
                   state: {

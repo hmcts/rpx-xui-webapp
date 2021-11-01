@@ -11,10 +11,11 @@ export interface Case {
   task_title: string;
   created_date: string;
   due_date: string;
-  location_name: string;
+  location_name?: string;
   location: string;
   jurisdiction: string;
   region: string;
+  case_data?: CaseInternalData;
   case_type_id: string;
   case_id: string;
   case_category: string;
@@ -29,7 +30,6 @@ export interface Case {
   caseCategory: string;
   assigneeName: string;
   name: string;
-  case_data?: CaseInternalData
 }
 
 export interface CaseAction {
@@ -39,4 +39,10 @@ export interface CaseAction {
 
 export interface CaseInternalData {
   caseName?: string;
+  caseManagementLocation?: CaseManagementLocation;
+}
+
+export interface CaseManagementLocation {
+  baseLocation: string;
+  region: string;
 }

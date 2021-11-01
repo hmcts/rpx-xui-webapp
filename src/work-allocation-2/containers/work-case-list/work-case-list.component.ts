@@ -1,13 +1,12 @@
-import CaseServiceConfig from '../../models/cases/case-service-config.model';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { Case, CaseAction, InvokedCaseAction } from '../../models/cases';
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
-import { FieldConfig, SortField } from '../../models/common';
-import { ListConstants } from '../../components/constants';
-import { PaginationParameter } from '../../models/dtos';
 import { Router } from '@angular/router';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { ListConstants } from '../../components/constants';
 import { SortOrder } from '../../enums';
-
+import { Case, CaseAction, InvokedCaseAction } from '../../models/cases';
+import CaseServiceConfig from '../../models/cases/case-service-config.model';
+import { FieldConfig, SortField } from '../../models/common';
+import { Location, PaginationParameter } from '../../models/dtos';
 
 @Component({
   selector: 'exui-work-case-list',
@@ -20,6 +19,7 @@ export class WorkCaseListComponent implements OnChanges {
    * These are the cases & fields as returned from the WA Api.
    */
   @Input() public cases: Case[];
+  @Input() public locations: Location[] = [];
   @Input() public casesTotal: number;
   @Input() public caseServiceConfig: CaseServiceConfig;
   @Input() public sortedBy: SortField;
@@ -49,17 +49,15 @@ export class WorkCaseListComponent implements OnChanges {
 
   private selectedCase: Case;
 
-  constructor(private readonly router: Router) {}
+  constructor(private readonly router: Router) {
+  }
 
   public get showResetSortButton(): boolean {
     if (!this.sortedBy) {
       return false;
     }
-    const { defaultSortFieldName, defaultSortDirection } = this.caseServiceConfig;
-    if (this.sortedBy.fieldName === defaultSortFieldName && this.sortedBy.order === defaultSortDirection) {
-      return false;
-    }
-    return true;
+    const {defaultSortFieldName, defaultSortDirection} = this.caseServiceConfig;
+    return !(this.sortedBy.fieldName === defaultSortFieldName && this.sortedBy.order === defaultSortDirection);
   }
 
   public selectCaseFromUrlHash(url: string): Case {
@@ -75,6 +73,7 @@ export class WorkCaseListComponent implements OnChanges {
 
   public ngOnChanges(): void {
     if (this.cases) {
+      this.cases = this.addPersonInfoAndLocationInfo(this.cases);
       this.dataSource$ = new BehaviorSubject(this.cases);
       this.setSelectedCase(this.selectCaseFromUrlHash(this.router.url));
       for (const item of this.cases) {
@@ -190,9 +189,36 @@ export class WorkCaseListComponent implements OnChanges {
     this.sortEvent.emit(this.sortedBy.fieldName);
   }
 
+  public getFirstResult(): number {
+    return ((this.getCurrentPageIndex() * this.pagination.page_size) + (this.cases ? 1 : 0));
+  }
+
+  public getLastResult(): number {
+    return ((this.getCurrentPageIndex() * this.pagination.page_size) + this.getCurrentCaseCount());
+  }
+
+  private addPersonInfoAndLocationInfo(cases: Case[]): Case[] {
+    const caseworkers = JSON.parse(sessionStorage.getItem('caseworkers'));
+    return cases.map((c: Case) => {
+      if (c.assignee && c.assignee.length) {
+        const actorName = caseworkers.find((caseworker) => caseworker.idamId === c.assignee);
+        if (actorName) {
+          c.actorName =  `${actorName.firstName} ${actorName.lastName}`;
+        }
+      }
+      if (c.location_id && c.location_id.length) {
+        const location = this.locations.find((l) => l.id === c.location_id);
+        if (location) {
+          c.location_name = location.locationName;
+        }
+      }
+      return c;
+    });
+  }
+
   private setDefaultSort(): void {
-    const { defaultSortFieldName, defaultSortDirection } = this.caseServiceConfig;
-    this.sortedBy = { fieldName: defaultSortFieldName, order: defaultSortDirection };
+    const {defaultSortFieldName, defaultSortDirection} = this.caseServiceConfig;
+    this.sortedBy = {fieldName: defaultSortFieldName, order: defaultSortDirection};
   }
 
   private setupHash(): void {
@@ -200,9 +226,9 @@ export class WorkCaseListComponent implements OnChanges {
       const currentPath = this.router.url || '';
       const basePath = currentPath.split('#')[0];
       if (this.selectedCase) {
-        this.router.navigate([ basePath ], { fragment: `manage_${this.selectedCase.id}` });
+        this.router.navigate([basePath], {fragment: `manage_${this.selectedCase.id}`});
       } else {
-        this.router.navigate([ basePath ]);
+        this.router.navigate([basePath]);
       }
     }
   }
@@ -213,14 +239,6 @@ export class WorkCaseListComponent implements OnChanges {
 
   private getCurrentCaseCount(): number {
     return this.cases ? this.cases.length : 0;
-  }
-
-  public getFirstResult(): number {
-    return ((this.getCurrentPageIndex() * this.pagination.page_size) + (this.cases ? 1 : 0));
-  }
-
-  public getLastResult(): number {
-    return ((this.getCurrentPageIndex() * this.pagination.page_size) + this.getCurrentCaseCount());
   }
 
 }

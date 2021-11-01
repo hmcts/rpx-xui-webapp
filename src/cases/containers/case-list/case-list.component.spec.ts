@@ -2,7 +2,6 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { AlertService, PaginationMetadata, SearchResultViewItem, WindowService } from '@hmcts/ccd-case-ui-toolkit';
-import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
@@ -19,6 +18,7 @@ import {
   SynchronizeStateToStore,
 } from '../../store/actions';
 import { CaseListComponent } from './case-list.component';
+import { JurisdictionService } from '../../../app/services/jurisdiction/jurisdiction.service';
 
 describe('CaseListComponent', () => {
   let component: CaseListComponent;
@@ -31,7 +31,7 @@ describe('CaseListComponent', () => {
   let spyOnDispatchToStore = jasmine.createSpy();
   let spyOnPipeToStore = jasmine.createSpy();
 
-  const mockDefinitionsService = jasmine.createSpyObj('DefinitionsService', ['getJurisdictions']);
+  const mockJurisdictionService = jasmine.createSpyObj('JurisdictionService', ['getJurisdictions']);
   const mockAppConfig = jasmine.createSpyObj('AppConfig', ['getPaginationPageSize']);
   const mockWindowService = jasmine.createSpyObj('WindowService', ['removeLocalStorage']);
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['getValue', 'isEnabled']);
@@ -47,8 +47,8 @@ describe('CaseListComponent', () => {
           useValue: mockAppConfig
         },
         {
-          provide: DefinitionsService,
-          useValue: mockDefinitionsService
+          provide: JurisdictionService,
+          useValue: mockJurisdictionService
         },
         {
           provide: WindowService,
@@ -82,7 +82,7 @@ describe('CaseListComponent', () => {
       spyOn(component, 'listenToPaginationMetadata').and.callThrough();
       spyOn(component, 'findCaseListPaginationMetadata').and.callThrough();
 
-      mockDefinitionsService.getJurisdictions.and.returnValue(of([{
+      mockJurisdictionService.getJurisdictions.and.returnValue(of([{
         id: 'some id',
         caseTypes: [{
           id: 'some id',
@@ -661,7 +661,7 @@ describe('CaseListComponent', () => {
   describe('Should see cases unselectable information', () => {
     beforeEach(() => {
       spyOnPipeToStore.and.returnValue(of({}));
-      mockDefinitionsService.getJurisdictions.and.returnValue(of([{
+      mockJurisdictionService.getJurisdictions.and.returnValue(of([{
         id: 'some id',
         caseTypes: [{
           id: 'some id',

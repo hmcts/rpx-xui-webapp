@@ -10,7 +10,6 @@ import {
   SearchResultViewItem,
   WindowService,
 } from '@hmcts/ccd-case-ui-toolkit';
-import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 import { select, Store } from '@ngrx/store';
@@ -24,6 +23,7 @@ import * as converters from '../../converters/case-converter';
 import { ActionBindingModel } from '../../models/create-case-actions.model';
 import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
+import { JurisdictionService } from '../../../app/services/jurisdiction/jurisdiction.service';
 
 /**
  * Entry component wrapper for Case List
@@ -100,9 +100,9 @@ export class CaseListComponent implements OnInit, OnDestroy {
     public store: Store<fromCaseList.State>,
     private readonly orgStore: Store<fromStore.OrganisationState>,
     private readonly appConfig: AppConfig,
-    private readonly definitionsService: DefinitionsService,
     private readonly windowService: WindowService,
     private readonly featureToggleService: FeatureToggleService,
+    private readonly jurisdictionService: JurisdictionService,
     private readonly cd: ChangeDetectorRef
   ) { }
 
@@ -112,9 +112,9 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.page = 1;
     this.resultView = null;
 
-    this.definitionsService.getJurisdictions('read').subscribe(this.jurisdictionsBehaviourSubject$);
+    this.jurisdictionService.getJurisdictions().subscribe(this.jurisdictionsBehaviourSubject$);
 
-    this.jurisdictionsBehaviourSubject$.subscribe( jurisdictions => {
+    this.jurisdictionsBehaviourSubject$.subscribe(jurisdictions => {
       this.isVisible = jurisdictions.length > 0;
       this.jurisdictions = jurisdictions;
     });

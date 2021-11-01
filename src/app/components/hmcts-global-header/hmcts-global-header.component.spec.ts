@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -182,7 +183,6 @@ describe('HmctsGlobalHeaderComponent', () => {
     expect(findCase).toBeFalsy();
   });
 
-  it('splitNavItems', async () => {
   it('splitNavItems', (done: DoneFn) => {
     component.items = [{
       align: 'right',

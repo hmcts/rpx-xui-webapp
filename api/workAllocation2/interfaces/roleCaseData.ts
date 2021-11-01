@@ -4,6 +4,7 @@ export interface RoleCaseData {
   case_id: string;
   case_category: string;
   case_role: string;
+  role_category: string;
   role?: string;
   jurisdiction: string;
   location_id: string;

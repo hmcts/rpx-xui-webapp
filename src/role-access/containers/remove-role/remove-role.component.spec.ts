@@ -22,10 +22,10 @@ describe('RemoveRoleComponent', () => {
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
   const routerMock = jasmine.createSpyObj('Router', [
-    'navigateByUrl', 'navigate'
+    'navigateByUrl', 'navigate', 'getCurrentNavigation'
   ]);
   const exampleCaseId = '123456789';
-  const goToCaseUrl = `cases/case-details/${exampleCaseId}/roles-and-access`;
+  const allworkUrl = `work/all-work/cases`;
 
   class AllocateRoleMockService extends AllocateRoleService {
     public confirmAllocation(allocateRoleStateData: AllocateRoleStateData): Observable<any> {
@@ -109,6 +109,7 @@ describe('RemoveRoleComponent', () => {
   }));
 
   beforeEach(() => {
+    routerMock.getCurrentNavigation.and.returnValue({extras: {state: {backUrl: allworkUrl}}});
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
@@ -138,9 +139,21 @@ describe('RemoveRoleComponent', () => {
 
   it('should navigate correctly on click', () => {
     component.onNavEvent(RemoveAllocationNavigationEvent.CANCEL);
-    expect(routerMock.navigateByUrl).toHaveBeenCalledWith(goToCaseUrl);
+    expect(routerMock.navigateByUrl).toHaveBeenCalledWith(allworkUrl);
     component.onNavEvent(RemoveAllocationNavigationEvent.REMOVE_ROLE_ALLOCATION);
     const additionalState = {state: {showMessage: true, messageText: RemoveRoleText.infoMessage}};
-    expect(routerMock.navigate).toHaveBeenCalledWith([goToCaseUrl], additionalState);
+    expect(routerMock.navigate).toHaveBeenCalledWith([allworkUrl], additionalState);
+  });
+
+  describe('navigationHandler cancel', () => {
+    it('on cancel event', () => {
+      fixture.detectChanges();
+      component.onNavEvent(RemoveAllocationNavigationEvent.CANCEL);
+      expect(routerMock.navigateByUrl).toHaveBeenCalledWith(allworkUrl);
+    });
+
+    afterEach(() => {
+      fixture.destroy();
+    });
   });
 });

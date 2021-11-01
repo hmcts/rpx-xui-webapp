@@ -413,17 +413,12 @@ export function mapRoleType(roleType: string): string {
   return '';
 }
 
-export function filterByLocationId(cases: Case[], searchParams: SearchTaskParameter[]): Case[] {
-  const locationParam: SearchTaskParameter = searchParams.find(param => param.key === 'primaryLocation');
-  return cases.filter((caseDetail: Case) => {
-    if (locationParam && locationParam.values && locationParam.values.length) {
-      return caseDetail.case_data &&
-        caseDetail.case_data.caseManagementLocation &&
-        caseDetail.case_data.caseManagementLocation.baseLocation &&
-        caseDetail.case_data.caseManagementLocation.baseLocation === locationParam.values[0];
-    }
-    return caseDetail;
-  });
+export function filterByLocationId(cases: Case[], locations: string[]): Case[] {
+   const result = cases.filter((caseDetail: Case) => 
+          caseDetail.case_data.caseManagementLocation &&
+          caseDetail.case_data.caseManagementLocation.baseLocation &&
+          locations.includes(caseDetail.case_data.caseManagementLocation.baseLocation));
+  return result;
 }
 
 export function mapCasesFromData(

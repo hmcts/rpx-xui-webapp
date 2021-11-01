@@ -125,7 +125,7 @@ module.exports = {
                     tasks.push(workAllocationMockData.getRelease2TaskWithPermissions(permissions[i], 'AvailableTasks', null));
                 }
                 
-            } else if (req.body.view === "TaskManager") {
+            } else if (req.body.view === "AllWork") {
                 for (let i = 0; i < permissions.length; i++) {
                     tasks.push(workAllocationMockData.getRelease2TaskWithPermissions(permissions[i], 'AvailableTasks', 'Unassigned'));
                 }

@@ -197,8 +197,7 @@ export class SearchFormComponent implements OnInit, OnDestroy {
       // Date comparison
       if (this.formGroup.errors) {
         if (this.formGroup.errors.errorType === SearchFormErrorType.DATE_COMPARISON) {
-          this.searchValidationErrors.push({ controlId: null, documentHRef: 'dateOfBirth', errorMessage: SearchFormErrorMessage.DATE_COMPARISON_FAILED });
-          this.dateOfBirthErrorMessage = { isInvalid: true, messages: [] };
+          this.searchValidationErrors.push({ controlId: null, documentHRef: 'dateOfDeath', errorMessage: SearchFormErrorMessage.DATE_COMPARISON_FAILED });
           this.dateOfDeathErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.DATE_COMPARISON_FAILED] };
         }
       }

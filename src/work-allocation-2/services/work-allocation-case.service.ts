@@ -31,8 +31,12 @@ export class WorkAllocationCaseService {
     return this.http.post<Case[]>(`${BASE_URL}`, body);
   }
 
-  public searchCaseWithPagination(body: { searchRequest: SearchCaseRequest, view: string }): Observable<Case[]> {
-    return this.http.post<Case[]>(`/workallocation2/my-cases`, body);
+  public getMyCases(body: { searchRequest: SearchCaseRequest, view: string }): Observable<Case[]> {
+    return this.http.post<Case[]>(`/workallocation2/my-work/cases`, body);
+  }
+
+  public getCases(body: { searchRequest: SearchCaseRequest, view: string }): Observable<Case[]> {
+    return this.http.post<Case[]>(`/workallocation2/all-work/cases`, body);
   }
 
   public getActionUrl(caseId: string, action: ACTION): string {

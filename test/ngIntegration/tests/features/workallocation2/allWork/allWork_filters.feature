@@ -1,4 +1,4 @@
-@ng @test
+@ng
 Feature: WA Release 2: All work - filters
 
     Background: Mock and browser setup
@@ -26,15 +26,17 @@ Feature: WA Release 2: All work - filters
             | Admin     | 1236 | admin_user2@gov.uk      | admin2 a       | Case worker   |
 
         Given I set MOCK persons end point "/workallocation2/caseworker" for WA release 2
-            | idamId                               | firstName   | lastName | email            |
-            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | caseworker1 | cw | caseworker_user1@gov.uk |
-            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be81 | caseworker2 | cw | caseworker_user2@gov.uk |
-            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be87 | caseworker3 | cw | caseworker_user3@gov.uk |
-            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be86 | caseworker4 | cw | caseworker_user4@gov.uk |
-            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be85 | caseworker5 | cw | caseworker_user5@gov.uk |
-            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be84 | caseworker6 | cw | caseworker_user6@gov.uk |
-            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | caseworker7 | cw | caseworker_user7@gov.uk |
-            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be82 | caseworker8 | cw | caseworker_user8@gov.uk |
+            | idamId                               | firstName   | lastName | email                   | roleCategory     |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | caseworker1 | cw       | caseworker_user1@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be81 | caseworker2 | cw       | caseworker_user2@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be87 | caseworker3 | cw       | caseworker_user3@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be86 | caseworker4 | cw       | caseworker_user4@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be85 | caseworker5 | cw       | caseworker_user5@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be84 | caseworker6 | cw       | caseworker_user6@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | caseworker7 | cw       | caseworker_user7@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be82 | caseworker8 | cw       | caseworker_user8@gov.uk | LEGAL_OPERATIONS |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | admin1      | a        | admin_user1@gov.uk      | ADMIN            |
+            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be82 | admin2      | a        | admin_user2@gov.uk      | ADMIN            |
 
         Given I set MOCK request "/workallocation2/taskWithPagination/" intercept with reference "taskSearchRequest"
         Given I set MOCK request "/workallocation2/my-cases/" intercept with reference "caseSearchRequest"
@@ -152,13 +154,13 @@ Feature: WA Release 2: All work - filters
         When I click Apply filter button in all work page
         When I wait for reference "taskSearchRequest" value not null
         Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value           |
-            | location     | 12347           |
-            | person | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 |
-            | jurisdiction | IA              |
-            | taskCategory | Specific person |
-            | taskType     | Legal Ops       |
-            | priority     | All             |
+            | key          | value                                |
+            | location     | 12347                                |
+            | person       | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 |
+            | jurisdiction | IA                                   |
+            | taskCategory | Specific person                      |
+            | taskType     | Legal Ops                            |
+            | priority     | All                                  |
         Then I validate debug text "DEBUG category" not present in element with css selector "exui-task-field"
 
         Given I reset reference "taskSearchRequest" value to null
@@ -216,13 +218,13 @@ Feature: WA Release 2: All work - filters
         When I click Apply filter button in all work page
         When I wait for reference "taskSearchRequest" value not null
         Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value           |
-            | location     | 12347           |
-            | person       | 1235            |
-            | jurisdiction | IA              |
-            | taskCategory | Specific person |
-            | taskType     | Legal Ops       |
-            | priority     | All             |
+            | key          | value                                |
+            | location     | 12347                                |
+            | person       | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 |
+            | jurisdiction | IA                                   |
+            | taskCategory | Specific person                      |
+            | taskType     | Legal Ops                            |
+            | priority     | All                                  |
         Then I validate debug text "DEBUG category" not present in element with css selector "exui-task-field"
 
         Given I reset reference "taskSearchRequest" value to null
@@ -246,13 +248,13 @@ Feature: WA Release 2: All work - filters
         When I click Apply filter button in all work page
         When I wait for reference "taskSearchRequest" value not null
         Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value           |
-            | location     | 12347           |
-            | person       | 1235            |
-            | jurisdiction | IA              |
-            | taskCategory | Specific person |
-            | taskType     | Legal Ops       |
-            | priority     | All             |
+            | key          | value                                |
+            | location     | 12347                                |
+            | person       | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 |
+            | jurisdiction | IA                                   |
+            | taskCategory | Specific person                      |
+            | taskType     | Legal Ops                            |
+            | priority     | All                                  |
         Then I validate debug text "DEBUG category" not present in element with css selector "exui-task-field"
 
         Given I reset reference "taskSearchRequest" value to null
@@ -262,13 +264,13 @@ Feature: WA Release 2: All work - filters
         When I click Apply filter button in all work page
         When I wait for reference "taskSearchRequest" value not null
         Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value           |
-            | location     | 12347           |
-            | person       | 1235            |
-            | jurisdiction | IA              |
-            | taskCategory | Specific person |
-            | taskType     | Judicial        |
-            | priority     | All             |
+            | key          | value                                |
+            | location     | 12347                                |
+            | person       | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 |
+            | jurisdiction | IA                                   |
+            | taskCategory | Specific person                      |
+            | taskType     | Judicial                             |
+            | priority     | All                                  |
         Then I validate debug text "DEBUG category" not present in element with css selector "exui-task-field"
 
         Given I reset reference "taskSearchRequest" value to null
@@ -280,13 +282,13 @@ Feature: WA Release 2: All work - filters
         When I click Apply filter button in all work page
         When I wait for reference "taskSearchRequest" value not null
         Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value           |
-            | location     | 12347           |
-            | person       | 1235            |
-            | jurisdiction | IA              |
-            | taskCategory | Specific person |
-            | taskType     | Judicial        |
-            | priority     | High            |
+            | key          | value                                |
+            | location     | 12347                                |
+            | person       | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 |
+            | jurisdiction | IA                                   |
+            | taskCategory | Specific person                      |
+            | taskType     | Judicial                             |
+            | priority     | High                                 |
         Then I validate debug text "DEBUG category" not present in element with css selector "exui-task-field"
 
         Examples:
@@ -438,13 +440,13 @@ Feature: WA Release 2: All work - filters
         When I click Apply filter button in all work page
         When I wait for reference "taskSearchRequest" value not null
         Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value           |
-            | location     | 12347           |
-            | person       | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89            |
-            | jurisdiction | IA              |
-            | taskCategory | Specific person |
-            | taskType     | Judicial        |
-            | priority     |                 |
+            | key          | value                                |
+            | location     | 12347                                |
+            | person       | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 |
+            | jurisdiction | IA                                   |
+            | taskCategory | Specific person                      |
+            | taskType     | Judicial                             |
+            | priority     |                                      |
         Then I validate debug text "DEBUG category" not present in element with css selector "exui-task-field"
 
         Given I reset reference "taskSearchRequest" value to null
@@ -470,13 +472,13 @@ Feature: WA Release 2: All work - filters
         When I click Apply filter button in all work page
         When I wait for reference "taskSearchRequest" value not null
         Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value           |
-            | location     | 12347           |
-            | person       | 1235            |
-            | jurisdiction | IA              |
-            | taskCategory | Specific person |
-            | taskType     | Judicial        |
-            | priority     |                 |
+            | key          | value                                |
+            | location     | 12347                                |
+            | person       | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 |
+            | jurisdiction | IA                                   |
+            | taskCategory | Specific person                      |
+            | taskType     | Judicial                             |
+            | priority     |                                      |
         Then I validate debug text "DEBUG category" not present in element with css selector "exui-task-field"
 
         Given I reset reference "taskSearchRequest" value to null
@@ -500,13 +502,13 @@ Feature: WA Release 2: All work - filters
         When I click Apply filter button in all work page
         When I wait for reference "taskSearchRequest" value not null
         Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value           |
-            | location     | 12347           |
-            | person       | 1235            |
-            | jurisdiction | IA              |
-            | taskCategory | Specific person |
-            | taskType     | Judicial        |
-            | priority     |                 |
+            | key          | value                                |
+            | location     | 12347                                |
+            | person       | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 |
+            | jurisdiction | IA                                   |
+            | taskCategory | Specific person                      |
+            | taskType     | Judicial                             |
+            | priority     |                                      |
         Then I validate debug text "DEBUG category" not present in element with css selector "exui-task-field"
 
         Given I reset reference "taskSearchRequest" value to null
@@ -516,13 +518,13 @@ Feature: WA Release 2: All work - filters
         When I click Apply filter button in all work page
         When I wait for reference "taskSearchRequest" value not null
         Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value           |
-            | location     | 12347           |
-            | person       | 1235            |
-            | jurisdiction | IA              |
-            | taskCategory | Specific person |
-            | taskType     | Legal Ops       |
-            | priority     |                 |
+            | key          | value                                |
+            | location     | 12347                                |
+            | person       | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 |
+            | jurisdiction | IA                                   |
+            | taskCategory | Specific person                      |
+            | taskType     | Legal Ops                            |
+            | priority     |                                      |
         Then I validate debug text "DEBUG category" not present in element with css selector "exui-task-field"
 
 
@@ -618,11 +620,11 @@ Feature: WA Release 2: All work - filters
         When I click Apply filter button in all work page
         When I wait for reference "caseSearchRequest" value not null
         Then I validate task search request with reference "caseSearchRequest" have search parameters
-            | key          | value                  |
-            | location_id  | 12347                  |
-            | actorId      | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89                   |
-            | jurisdiction | Immigration and Asylum |
-            | role         | Legal Ops              |
+            | key          | value                                |
+            | location_id  | 12347                                |
+            | actorId      | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 |
+            | jurisdiction | Immigration and Asylum               |
+            | role         | Legal Ops                            |
         Then I validate debug text "DEBUG category" not present in element with css selector "exui-work-field"
 
         Given I reset reference "caseSearchRequest" value to null
@@ -678,11 +680,11 @@ Feature: WA Release 2: All work - filters
         When I click Apply filter button in all work page
         When I wait for reference "caseSearchRequest" value not null
         Then I validate task search request with reference "caseSearchRequest" have search parameters
-            | key          | value                  |
-            | location_id  | 12347                  |
-            | actorId      | 1235                   |
-            | jurisdiction | Immigration and Asylum |
-            | role         | Admin                  |
+            | key          | value                                |
+            | location_id  | 12347                                |
+            | actorId      | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 |
+            | jurisdiction | Immigration and Asylum               |
+            | role         | Admin                                |
         Then I validate debug text "DEBUG category" not present in element with css selector "exui-work-field"
 
         Given I reset reference "caseSearchRequest" value to null
@@ -706,11 +708,11 @@ Feature: WA Release 2: All work - filters
         When I click Apply filter button in all work page
         When I wait for reference "caseSearchRequest" value not null
         Then I validate task search request with reference "caseSearchRequest" have search parameters
-            | key          | value                  |
-            | location_id  | 12347                  |
-            | actorId      | 1235                   |
-            | jurisdiction | Immigration and Asylum |
-            | role         | Admin                  |
+            | key          | value                                |
+            | location_id  | 12347                                |
+            | actorId      | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 |
+            | jurisdiction | Immigration and Asylum               |
+            | role         | Admin                                |
         Then I validate debug text "DEBUG category" not present in element with css selector "exui-work-field"
 
         Given I reset reference "caseSearchRequest" value to null
@@ -721,7 +723,7 @@ Feature: WA Release 2: All work - filters
         Then I validate task search request with reference "caseSearchRequest" have search parameters
             | key          | value                  |
             | location_id  | 12347                  |
-            | actorId      | 1235                   |
+            | actorId | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 |
             | jurisdiction | Immigration and Asylum |
             | role         | Admin                  |
         Then I validate debug text "DEBUG category" not present in element with css selector "exui-work-field"
@@ -849,11 +851,11 @@ Feature: WA Release 2: All work - filters
         When I click Apply filter button in all work page
         When I wait for reference "caseSearchRequest" value not null
         Then I validate task search request with reference "caseSearchRequest" have search parameters
-            | key          | value                  |
-            | location_id  | 12347                  |
-            | actorId      | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89                   |
-            | jurisdiction | Immigration and Asylum |
-            | role         | Legal Ops              |
+            | key          | value                                |
+            | location_id  | 12347                                |
+            | actorId      | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 |
+            | jurisdiction | Immigration and Asylum               |
+            | role         | Legal Ops                            |
         Then I validate debug text "DEBUG category" not present in element with css selector "exui-work-field"
 
         Given I reset reference "taskSearchRequest" value to null
@@ -879,11 +881,11 @@ Feature: WA Release 2: All work - filters
         When I click Apply filter button in all work page
         When I wait for reference "caseSearchRequest" value not null
         Then I validate task search request with reference "caseSearchRequest" have search parameters
-            | key          | value                  |
-            | location_id  | 12347                  |
-            | actorId      | 1235                   |
-            | jurisdiction | Immigration and Asylum |
-            | role         | Admin                  |
+            | key          | value                                |
+            | location_id  | 12347                                |
+            | actorId      | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 |
+            | jurisdiction | Immigration and Asylum               |
+            | role         | Admin                                |
         Then I validate debug text "DEBUG category" not present in element with css selector "exui-work-field"
 
         Given I reset reference "caseSearchRequest" value to null
@@ -907,11 +909,11 @@ Feature: WA Release 2: All work - filters
         When I click Apply filter button in all work page
         When I wait for reference "caseSearchRequest" value not null
         Then I validate task search request with reference "caseSearchRequest" have search parameters
-            | key          | value                  |
-            | location_id  | 12347                  |
-            | actorId      | 1235                   |
-            | jurisdiction | Immigration and Asylum |
-            | role         | Admin                  |
+            | key          | value                                |
+            | location_id  | 12347                                |
+            | actorId      | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 |
+            | jurisdiction | Immigration and Asylum               |
+            | role         | Admin                                |
         Then I validate debug text "DEBUG category" not present in element with css selector "exui-work-field"
 
         Given I reset reference "caseSearchRequest" value to null
@@ -920,11 +922,11 @@ Feature: WA Release 2: All work - filters
         When I click Apply filter button in all work page
         When I wait for reference "caseSearchRequest" value not null
         Then I validate task search request with reference "caseSearchRequest" have search parameters
-            | key          | value                  |
-            | location_id  | 12347                  |
-            | actorId      | 1235                   |
-            | jurisdiction | Immigration and Asylum |
-            | role         | Admin                  |
+            | key          | value                                |
+            | location_id  | 12347                                |
+            | actorId      | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 |
+            | jurisdiction | Immigration and Asylum               |
+            | role         | Admin                                |
         Then I validate debug text "DEBUG category" not present in element with css selector "exui-work-field"
 
 

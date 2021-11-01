@@ -356,7 +356,8 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
       : [];
 
     // get all role assignments
-    const query = constructRoleAssignmentQuery(searchParameters, locations);
+    //Remove the need of blank Array
+    const query = constructRoleAssignmentQuery(searchParameters, []);
     const roleAssignmentResult = await getRoleAssignmentsByQuery(query, req);
 
     const caseTypes: string = getCaseTypesFromRoleAssignments(roleAssignmentResult.roleAssignmentResponse);
@@ -367,7 +368,7 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     const esQuery = constructElasticSearchQuery(caseIds, 0, 10000);
 
     const result = await searchCasesById(queryParams, esQuery, req);
-    const caseData = filterByLocationId(result.cases, searchParameters);
+    const caseData = filterByLocationId(result.cases, locations);
     result.total_records = caseData.length;
 
     const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);

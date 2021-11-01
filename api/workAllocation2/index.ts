@@ -356,7 +356,6 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
       : [];
 
     // get all role assignments
-    //Remove the need of blank Array
     const query = constructRoleAssignmentQuery(searchParameters);
     const roleAssignmentResult = await getRoleAssignmentsByQuery(query, req);
 

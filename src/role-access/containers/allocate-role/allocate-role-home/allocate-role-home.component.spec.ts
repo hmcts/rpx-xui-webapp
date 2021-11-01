@@ -25,7 +25,7 @@ const mockRoles = [{ roleId: '1', roleName: 'Role 1' },
       { roleId: '2', roleName: 'Role 2' },
       { roleId: '3', roleName: 'Role 3' }];
 
-fdescribe('AllocateRoleHomeComponent', () => {
+describe('AllocateRoleHomeComponent', () => {
   const USER = {
     sessionTimeout: {
       idleModalDisplayTime: 12,

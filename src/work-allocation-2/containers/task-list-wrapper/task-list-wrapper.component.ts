@@ -239,10 +239,9 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public getPaginationParameter(): PaginationParameter {
-    console.log('page session key', this.pageSessionKey);
-    const savedPagination = JSON.parse(this.sessionStorageService.getItem(this.pageSessionKey));
-    if (savedPagination) {
-      return savedPagination;
+    const savedPaginationNumber = JSON.parse(this.sessionStorageService.getItem(this.pageSessionKey));
+    if (savedPaginationNumber) {
+      return {...this.pagination, page_number: savedPaginationNumber};
     }
     return {...this.pagination};
   }

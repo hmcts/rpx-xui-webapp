@@ -169,7 +169,7 @@ describe('HmctsGlobalHeaderComponent', () => {
     component.items = navItemsWithFindCaseRightAligned;
     await component.ngOnChanges(changesMock);
     fixture.detectChanges();
-    const findCase = fixture.debugElement.query(By.css('#find-case-link'));
+    const findCase = fixture.debugElement.query(By.css('.hmcts-search-toggle__button'));
     expect(findCase).toBeTruthy();
   });
 
@@ -179,7 +179,7 @@ describe('HmctsGlobalHeaderComponent', () => {
     component.items = navItemsWithFindCaseRightAligned;
     await component.ngOnChanges(changesMock);
     fixture.detectChanges();
-    const findCase = fixture.debugElement.query(By.css('#find-case-link'));
+    const findCase = fixture.debugElement.query(By.css('.hmcts-search-toggle__button'));
     expect(findCase).toBeFalsy();
   });
 

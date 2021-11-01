@@ -7,6 +7,7 @@ import { Actions, AllocateRoleStateData, CaseRole, Role } from '../models';
 export class AllocateRoleService {
   public static allocateRoleBaseUrl = '/api/role-access/allocate-role';
   public static roleUrl = '/api/role-access/roles';
+  public backUrl: string;
   constructor(private readonly http: HttpClient) { }
 
   public confirmAllocation(allocateRoleStateData: AllocateRoleStateData) {

@@ -27,7 +27,10 @@ export class RemoveRoleComponent implements OnInit {
   constructor(private readonly route: ActivatedRoute,
               private readonly router: Router,
               private readonly allocateRoleService: AllocateRoleService,
-              private readonly sessionStorageService: SessionStorageService) {}
+              private readonly sessionStorageService: SessionStorageService) {
+      const extras = this.router.getCurrentNavigation().extras;
+      this.allocateRoleService.backUrl = extras.state && extras.state.backUrl ? extras.state.backUrl : `cases/case-details/${this.caseId}/roles-and-access`;
+    }
 
   public ngOnInit(): void {
     const paramMap$ = this.route.queryParamMap;
@@ -43,7 +46,7 @@ export class RemoveRoleComponent implements OnInit {
           }
         }
         this.populateAnswers(this.role);
-      });
+    });
   }
 
   public populateAnswers(assignment: CaseRole): void {
@@ -60,11 +63,10 @@ export class RemoveRoleComponent implements OnInit {
   }
 
   public onNavEvent(navEvent: RemoveAllocationNavigationEvent): void {
-    const goToCaseUrl = `cases/case-details/${this.caseId}/roles-and-access`;
     switch (navEvent) {
       case RemoveAllocationNavigationEvent.REMOVE_ROLE_ALLOCATION: {
         this.allocateRoleService.removeAllocation(this.assignmentId).subscribe(() =>
-        this.router.navigate([goToCaseUrl], {
+        this.router.navigate([this.allocateRoleService.backUrl], {
           state: {
               showMessage: true,
               messageText: RemoveRoleText.infoMessage
@@ -78,7 +80,7 @@ export class RemoveRoleComponent implements OnInit {
         break;
       }
       case RemoveAllocationNavigationEvent.CANCEL: {
-        this.router.navigateByUrl(goToCaseUrl);
+        this.router.navigateByUrl(this.allocateRoleService.backUrl);
         return;
       }
       default: {
@@ -86,4 +88,5 @@ export class RemoveRoleComponent implements OnInit {
       }
     }
   }
+
 }

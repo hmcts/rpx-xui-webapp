@@ -65,7 +65,6 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
   public checkAnswersVisibilityStates = checkAnswersVisibilityStates;
 
   public navEvent: AllocateRoleNavigation;
-  public backUrl: string = null;
 
   public appStoreSub: Subscription;
   public allocateRoleStateDataSub: Subscription;
@@ -108,10 +107,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
       this.store.dispatch(new fromFeature.AllocateRoleSetInitData({caseId: this.caseId, roleCategory: this.roleCategory}));
     }
     const extras = this.router.getCurrentNavigation().extras;
-    if (extras.state && extras.state.backUrl) {
-      this.backUrl = extras.state.backUrl;
-    }
-    console.log(this.backUrl);
+    this.allocateRoleService.backUrl = extras.state && extras.state.backUrl ? extras.state.backUrl : `cases/case-details/${this.caseId}/roles-and-access`;
   }
 
   private instantiateReallocateRoleData(): void {
@@ -301,19 +297,12 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
         break;
       }
       case AllocateRoleNavigationEvent.CANCEL: {
-        this.navigateToPreviousPage();
+        this.router.navigateByUrl(this.allocateRoleService.backUrl);
         break;
       }
       default:
         throw new Error('Invalid allocation navigation event');
     }
-  }
-
-  public navigateToPreviousPage(): void {
-    if (this.backUrl) {
-      this.router.navigateByUrl(this.backUrl);
-    }
-    this.router.navigateByUrl(`cases/case-details/${this.caseId}/roles-and-access`);
   }
 
   public ngOnDestroy(): void {

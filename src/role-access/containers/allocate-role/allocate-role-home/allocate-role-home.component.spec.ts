@@ -25,7 +25,7 @@ const mockRoles = [{ roleId: '1', roleName: 'Role 1' },
       { roleId: '2', roleName: 'Role 2' },
       { roleId: '3', roleName: 'Role 3' }];
 
-describe('AllocateRoleHomeComponent', () => {
+fdescribe('AllocateRoleHomeComponent', () => {
   const USER = {
     sessionTimeout: {
       idleModalDisplayTime: 12,
@@ -63,7 +63,7 @@ describe('AllocateRoleHomeComponent', () => {
   let component: AllocateRoleHomeComponent;
   let fixture: ComponentFixture<AllocateRoleHomeComponent>;
   const routerMock = jasmine.createSpyObj('Router', [
-    'navigateByUrl'
+    'navigateByUrl', 'getCurrentNavigation'
   ]);
   const allocateRoleServiceMock = jasmine.createSpyObj('AllocateRoleService', ['getValidRoles']);
   let store: Store<fromStore.State>;
@@ -118,6 +118,7 @@ describe('AllocateRoleHomeComponent', () => {
     storePipeMock = spyOn(store, 'pipe');
     storeDispatchMock = spyOn(store, 'dispatch');
     storePipeMock.and.returnValue(of(USER));
+    routerMock.getCurrentNavigation.and.returnValue({extras: {state: {backUrl: null}}});
     fixture = TestBed.createComponent(AllocateRoleHomeComponent);
     component = fixture.componentInstance;
   });

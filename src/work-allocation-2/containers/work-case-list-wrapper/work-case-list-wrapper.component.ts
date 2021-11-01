@@ -247,7 +247,6 @@ export class WorkCaseListWrapperComponent implements OnInit {
     } else if (thisAction.id === Actions.Remove) {
       actionUrl = `role-access/allocate-role/${thisAction.id}?caseId=${actionedCase.case_id}&assignmentId=${actionedCase.id}&caseType=${actionedCase.case_category}&jurisdiction=${actionedCase.jurisdiction}&typeOfRole=${actionedCase.case_role}`;
     }
-    console.log(this.backUrl);
     this.router.navigateByUrl(actionUrl, {state: {backUrl: this.backUrl}});
   }
 

@@ -17,12 +17,12 @@ class WrapperComponent {
   @ViewChild(RemoveRoleComponent) public appComponentRef: RemoveRoleComponent;
 }
 
-describe('RemoveRoleComponent', () => {
+fdescribe('RemoveRoleComponent', () => {
   let component: RemoveRoleComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
   const routerMock = jasmine.createSpyObj('Router', [
-    'navigateByUrl', 'navigate'
+    'navigateByUrl', 'navigate', 'getCurrentNavigation'
   ]);
   const exampleCaseId = '123456789';
   const goToCaseUrl = `cases/case-details/${exampleCaseId}/roles-and-access`;
@@ -112,6 +112,7 @@ describe('RemoveRoleComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
+    routerMock.getCurrentNavigation.and.returnValue({extras: {state: {backUrl: 'work/all-work/cases'}}});
     fixture.detectChanges();
   });
 
@@ -142,5 +143,17 @@ describe('RemoveRoleComponent', () => {
     component.onNavEvent(RemoveAllocationNavigationEvent.REMOVE_ROLE_ALLOCATION);
     const additionalState = {state: {showMessage: true, messageText: RemoveRoleText.infoMessage}};
     expect(routerMock.navigate).toHaveBeenCalledWith([goToCaseUrl], additionalState);
+  });
+
+  describe('navigationHandler cancel', () => {
+    it('on cancel event', () => {
+      fixture.detectChanges();
+      component.onNavEvent(RemoveAllocationNavigationEvent.CANCEL);
+      expect(routerMock.navigateByUrl).toHaveBeenCalledWith('work/all-work/cases');
+    });
+
+    afterEach(() => {
+      fixture.destroy();
+    });
   });
 });

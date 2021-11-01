@@ -578,6 +578,7 @@ describe('workAllocation.utils', () => {
       roleName: 'example-role',
       endTime: new Date('01-01-2022'),
       beginTime: new Date('01-01-2021'),
+      roleCategory: 'LEGAL_OPERATIONS',
       attributes: {
         caseId: '123',
         primaryLocation: '001',
@@ -589,6 +590,7 @@ describe('workAllocation.utils', () => {
         roleName: 'example-role',
         endTime: new Date('01-01-2022'),
         beginTime: new Date('01-01-2021'),
+        roleCategory: 'LEGAL_OPERATIONS',
         attributes: {
           primaryLocation: '001',
         },
@@ -599,6 +601,7 @@ describe('workAllocation.utils', () => {
         roleName: 'example-role-2',
         endTime: new Date('01-01-2022'),
         beginTime: new Date('01-01-2021'),
+        roleCategory: 'LEGAL_OPERATIONS',
         attributes: {
           caseId: '456',
           primaryLocation: '001',
@@ -617,6 +620,7 @@ describe('workAllocation.utils', () => {
       startDate: new Date('01-01-2021'),
       endDate: new Date('01-01-2022'),
       assignee: 'person1',
+      role_category: 'LEGAL_OPERATIONS',
     },
     {
       id: '3',
@@ -630,6 +634,7 @@ describe('workAllocation.utils', () => {
       startDate: new Date('01-01-2021'),
       endDate: new Date('01-01-2022'),
       assignee: 'person1',
+      role_category: 'LEGAL_OPERATIONS',
     }];
     it('should return empty list if there is nothing given', () => {
       expect(mapCasesFromData(null, null, null)).to.deep.equal([]);
@@ -649,6 +654,7 @@ describe('workAllocation.utils', () => {
       roleName: 'example-role',
       endTime: new Date('01-01-2022'),
       beginTime: new Date('01-01-2021'),
+      roleCategory: 'LEGAL_OPERATIONS',
       attributes: {
         caseId: '123',
         primaryLocation: '001',
@@ -661,6 +667,7 @@ describe('workAllocation.utils', () => {
       roleName: 'example-role',
       endTime: new Date('01-01-2022'),
       beginTime: new Date('01-01-2021'),
+      roleCategory: 'LEGAL_OPERATIONS',
       attributes: {
         primaryLocation: '001',
         substantive: 'Y',
@@ -672,6 +679,7 @@ describe('workAllocation.utils', () => {
       roleName: 'example-role-2',
       endTime: new Date('01-01-2022'),
       beginTime: new Date('01-01-2021'),
+      roleCategory: 'LEGAL_OPERATIONS',
       attributes: {
         caseId: '456',
         primaryLocation: '001',

@@ -451,7 +451,6 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
   return {
     assignee: roleAssignment.actorId,
     case_category: caseDetail.case_type_id,
-    // TODO: case_name: caseDetail.hmctsCaseNameInternal (when services have made this available)
     case_id: caseDetail.id,
     case_name: caseDetail.case_data && caseDetail.case_data.caseName ? caseDetail.case_data.caseName : caseDetail.id,
     case_role: roleAssignment.roleName,
@@ -459,6 +458,7 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
     endDate: roleAssignment.endTime,
     id: roleAssignment.id,
     jurisdiction: caseDetail.jurisdiction,
+    role_category: roleAssignment.roleCategory,
     location_id: caseDetail.case_data &&
     caseDetail.case_data.caseManagementLocation &&
     caseDetail.case_data.caseManagementLocation.baseLocation ?

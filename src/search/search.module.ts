@@ -25,7 +25,7 @@ import { SearchRoutingModule } from './search-routing.module';
   ],
   exports: [
     SearchFormComponent,
-		SearchResultsComponent,
+    SearchResultsComponent,
     NoResultsComponent
   ],
   providers: [

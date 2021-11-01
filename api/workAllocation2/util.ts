@@ -306,6 +306,7 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
     id: roleAssignment.id,
     jurisdiction: caseDetail.jurisdiction,
     location_id: roleAssignment.attributes.primaryLocation,
+    role_category: roleAssignment.roleCategory,
     startDate: roleAssignment.beginTime,
   };
   return roleCaseData;

@@ -119,12 +119,8 @@ describe('workAllocation', () => {
       await searchTask(req, response, next);
       // Should have the correct URL and the appropriate payload.
       const args = spy.getCall(0).args;
-      expect(args[0]).to.equal(`${baseWorkAllocationTaskUrl}/myTasks?view=caseworker?first_result=22&max_results=11`);
+      expect(args[0]).to.equal(`${baseWorkAllocationTaskUrl}/task?first_result=22&max_results=11`);
       expect(args[1]).to.deep.equal({
-        'pagination_parameters': {
-          'page_number': 3,
-          'page_size': 11,
-        },
         search_parameters: [],
       });
 

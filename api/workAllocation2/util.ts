@@ -315,8 +315,7 @@ export function getCaseAllocatorLocations(roleAssignments: RoleAssignment[]): st
 }
 
 export function constructRoleAssignmentQuery(
-  searchTaskParameters: SearchTaskParameter[],
-  locations: string[]
+  searchTaskParameters: SearchTaskParameter[]
 ): any {
   searchTaskParameters = [...searchTaskParameters,
     {key: 'roleType', values: 'CASE', operator: ''},
@@ -327,7 +326,7 @@ export function constructRoleAssignmentQuery(
         if (param.key === 'location_id') {
           param.key = 'primaryLocation';
           const values = param.values as string;
-          param.values = [values, ...locations]
+          param.values = [values]
             .filter(location => location.length);
           return param;
         }
@@ -414,11 +413,10 @@ export function mapRoleType(roleType: string): string {
 }
 
 export function filterByLocationId(cases: Case[], locations: string[]): Case[] {
-   const result = cases.filter((caseDetail: Case) => 
-          caseDetail.case_data.caseManagementLocation &&
-          caseDetail.case_data.caseManagementLocation.baseLocation &&
-          locations.includes(caseDetail.case_data.caseManagementLocation.baseLocation));
-  return result;
+  return cases.filter((caseDetail: Case) =>
+     caseDetail.case_data.caseManagementLocation &&
+     caseDetail.case_data.caseManagementLocation.baseLocation &&
+     locations.includes(caseDetail.case_data.caseManagementLocation.baseLocation));
 }
 
 export function mapCasesFromData(

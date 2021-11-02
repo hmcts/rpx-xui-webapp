@@ -48,15 +48,26 @@ export class SearchValidators {
       const dateOfBirthDay = formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).value;
       const dateOfBirthMonth = formGroup.get(SearchFormControl.DATE_OF_BIRTH_MONTH).value;
       const dateOfBirthYear = formGroup.get(SearchFormControl.DATE_OF_BIRTH_YEAR).value;
-      if (dateOfBirthDay === '' && dateOfBirthMonth === '' && dateOfBirthYear === '') { return; }
-
       const dateOfDeathDay = formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).value;
       const dateOfDeathMonth = formGroup.get(SearchFormControl.DATE_OF_DEATH_MONTH).value;
       const dateOfDeathYear = formGroup.get(SearchFormControl.DATE_OF_DEATH_YEAR).value;
-      if (dateOfDeathDay === '' && dateOfDeathMonth === '' && dateOfDeathYear === '') { return; }
 
+      // No comparison required if both the dates are blank
+      if (dateOfBirthDay === '' && dateOfBirthMonth === '' && dateOfBirthYear === '' &&
+          dateOfDeathDay === '' && dateOfDeathMonth === '' && dateOfDeathYear === '') {
+        return;
+      }
+
+      // Form the dates
       const dateOfBirth = new Date(dateOfBirthYear, dateOfBirthMonth, dateOfBirthDay);
       const dateOfDeath = new Date(dateOfDeathYear, dateOfDeathMonth, dateOfDeathDay);
+
+      // Do not compare even if one of the date is not well formed
+      if (dateOfBirth.getFullYear() <= 1900 || dateOfDeath.getFullYear() <= 1900) {
+        return;
+      }
+
+      // Compare
       if (dateOfBirth > dateOfDeath) {
         return { isValid: false, errorType: SearchFormErrorType.DATE_COMPARISON };
       }

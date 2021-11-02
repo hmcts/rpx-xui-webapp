@@ -68,7 +68,7 @@ export const baseJudicialWorkerRefUrl = getConfigValue(SERVICES_CASE_JUDICIALWOR
 export const baseRoleAssignmentUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
 export const baseUrl: string = 'http://localhost:8080';
 
-const logger: JUILogger = log4jui.getLogger('workallocation 2');
+const logger: JUILogger = log4jui.getLogger('workallocation2');
 
 /**
  * getTask
@@ -377,11 +377,12 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     // get the case ids from the role assignments
     const caseIds = getCaseIdListFromRoles(roleAssignmentResult.roleAssignmentResponse);
     const esQuery = constructElasticSearchQuery(caseIds, 0, 10000);
+
     logger.info('esQuery', JSON.stringify(esQuery, null, 2));
 
     const result = await searchCasesById(queryParams, esQuery, req);
 
-    logger.info('elastic search results ', result.cases.length);
+    logger.info('elastic search results length ', result.cases.length);
     const caseData = filterByLocationId(result.cases, locations);
     logger.info('results filtered by location id', caseData.length);
     result.total_records = caseData.length;

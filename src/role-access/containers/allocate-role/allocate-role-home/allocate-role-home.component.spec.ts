@@ -63,7 +63,7 @@ describe('AllocateRoleHomeComponent', () => {
   let component: AllocateRoleHomeComponent;
   let fixture: ComponentFixture<AllocateRoleHomeComponent>;
   const routerMock = jasmine.createSpyObj('Router', [
-    'navigateByUrl'
+    'navigateByUrl', 'getCurrentNavigation'
   ]);
   const allocateRoleServiceMock = jasmine.createSpyObj('AllocateRoleService', ['getValidRoles']);
   let store: Store<fromStore.State>;
@@ -118,6 +118,7 @@ describe('AllocateRoleHomeComponent', () => {
     storePipeMock = spyOn(store, 'pipe');
     storeDispatchMock = spyOn(store, 'dispatch');
     storePipeMock.and.returnValue(of(USER));
+    routerMock.getCurrentNavigation.and.returnValue({extras: {state: {backUrl: null}}});
     fixture = TestBed.createComponent(AllocateRoleHomeComponent);
     component = fixture.componentInstance;
   });

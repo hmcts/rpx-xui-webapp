@@ -80,13 +80,13 @@ describe('WorkCaseListWrapperComponent', () => {
 
       // need to check that navigate has been called
       component.onActionHandler(firstCaseAction);
-      expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(jasmine.stringMatching('reallocate'));
+      expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(jasmine.stringMatching('reallocate'), {state: {backUrl: null}});
     });
 
     it('should handle a remove action', () => {
       // need to spy on the router and set up the task action
       component.onActionHandler(secondCaseAction);
-      expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(jasmine.stringMatching('remove'));
+      expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(jasmine.stringMatching('remove'), {state: {backUrl: null}});
     });
   });
 });

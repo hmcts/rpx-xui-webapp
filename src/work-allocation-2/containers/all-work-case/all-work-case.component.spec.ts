@@ -150,7 +150,7 @@ describe('AllWorkCaseComponent', () => {
     actionLink.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     // Ensure the correct attempt has been made to navigate.
-    expect(routerMock.navigateByUrl).toHaveBeenCalledWith(jasmine.stringMatching('reallocate'));
+    expect(routerMock.navigateByUrl).toHaveBeenCalledWith(jasmine.stringMatching('reallocate'), {state: {backUrl: 'work/all-work/cases'}});
   });
 
   afterEach(() => {

@@ -106,6 +106,8 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
     } else {
       this.store.dispatch(new fromFeature.AllocateRoleSetInitData({caseId: this.caseId, roleCategory: this.roleCategory}));
     }
+    const extras = this.router.getCurrentNavigation().extras;
+    this.allocateRoleService.backUrl = extras.state && extras.state.backUrl ? extras.state.backUrl : `cases/case-details/${this.caseId}/roles-and-access`;
   }
 
   private instantiateReallocateRoleData(): void {
@@ -295,7 +297,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
         break;
       }
       case AllocateRoleNavigationEvent.CANCEL: {
-        this.router.navigateByUrl(`cases/case-details/${this.caseId}/roles-and-access`);
+        this.router.navigateByUrl(this.allocateRoleService.backUrl);
         break;
       }
       default:

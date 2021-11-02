@@ -909,7 +909,7 @@ describe('workAllocation.utils', () => {
           },
         ];
 
-        const result = constructRoleAssignmentQuery(searchParameters, []);
+        const result = constructRoleAssignmentQuery(searchParameters);
         expect(result.queryRequests.length).to.equal(1);
         expect(result.queryRequests[0].attributes.jurisdiction[0]).to.equal('IA');
         expect(result.queryRequests[0].roleType[0]).to.equal('CASE');
@@ -933,28 +933,6 @@ describe('workAllocation.utils', () => {
     it(
       'should retrieve only cases which have base location "Taylor House Tribunal Hearing Centre"',
       () => {
-        const searchParameters = [
-          {
-            key: 'jurisdiction',
-            operator: 'EQUAL',
-            values: 'IA',
-          },
-          {
-            key: 'primaryLocation',
-            operator: 'EQUAL',
-            values: ['765324'],
-          },
-          {
-            key: 'actorId',
-            operator: 'EQUAL',
-            values: '',
-          },
-          {
-            key: 'role',
-            operator: 'EQUAL',
-            values: 'Legal Ops',
-          },
-        ];
         const cases: any[] = [
           {
             "id": 1634920056536726,
@@ -1207,7 +1185,7 @@ describe('workAllocation.utils', () => {
           },
         ];
 
-        const result = filterByLocationId(cases, searchParameters);
+        const result = filterByLocationId(cases, ['765324']);
         expect(result.length).equal(2);
         expect(result[0].case_data.caseManagementLocation.baseLocation).to.equal('765324');
       });

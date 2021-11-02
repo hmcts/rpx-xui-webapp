@@ -1,12 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
 import { Subscription } from 'rxjs';
 import { SearchValidationError } from '../../models';
 import { SearchValidators } from '../../utils';
 import { SearchService } from '../../services/search.service';
-import { Router } from '@angular/router';
-import { isDefined } from '@angular/compiler/src/util';
 import { SearchFormControl, SearchFormErrorMessage, SearchFormErrorType } from '../../enums';
 
 @Component({
@@ -167,7 +166,7 @@ export class SearchFormComponent implements OnInit, OnDestroy {
    * Function to validate form controls
    *
    */
-  validateForm(): boolean {
+  private validateForm(): boolean {
     this.resetValidationErrorMessages();
     if (!this.formGroup.valid) {
       // Email
@@ -214,7 +213,7 @@ export class SearchFormComponent implements OnInit, OnDestroy {
    * Function to reset validation error messages
    *
    */
-  resetValidationErrorMessages(): void {
+  public resetValidationErrorMessages(): void {
     this.searchValidationErrors = [];
     this.emailErrorMessage =
     this.postcodeErrorMessage =
@@ -226,8 +225,8 @@ export class SearchFormComponent implements OnInit, OnDestroy {
    * Function to check if any error exists
    *
    */
-  isAnyError(): boolean {
-    return isDefined(this.searchValidationErrors) && this.searchValidationErrors.length > 0;
+  public isAnyError(): boolean {
+    return Array.isArray(this.searchValidationErrors) && this.searchValidationErrors.length > 0;
   }
 
   /**

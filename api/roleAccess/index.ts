@@ -13,7 +13,7 @@ export async function confirmAllocateRole(req: EnhancedRequest, res: Response, n
   try {
     const body = req.body;
     // @ts-ignore
-    const roleAssignmentsBody = toRoleAssignmentBody(req.user.userinfo, body);
+    const roleAssignmentsBody = toRoleAssignmentBody(req.session.passport.user.userinfo, body);
     const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
     const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
     await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);

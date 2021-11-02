@@ -56,7 +56,7 @@
     "test:ngIntegration": "webdriver-manager update --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/ngIntegration/config/protractor-cucumber.conf.js",
     "test:ngIntegrationDebug": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/ngIntegration/config/protractor-cucumber.conf.js --debug",
     "test:nodeMock": "nodemon test/nodeMock/app --standalone",
-    "parallel": "run-p test:ngIntegration test:api test:functionalE2E"
+    "parallel": "npm-run-all -p -c -l  test:ngIntegration test:api test:functionalE2E"
   },
   "private": true,
   "dependencies": {

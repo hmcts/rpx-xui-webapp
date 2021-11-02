@@ -12,8 +12,9 @@ export class SearchService {
     return this.http.get<GlobalSearchService[]>(`api/globalsearch/services`);
   }
 
-  public getResults(requestBody: SearchRequest): Observable<SearchResult> {
-    return this.http.post<SearchResult>(`api/globalsearch/results`, requestBody);
+  public getResults(id: string): Observable<SearchResult> {
+		const body = this.retrieveState(id);
+    return this.http.post<SearchResult>(`api/globalsearch/results`, body);
   }
 
   public storeState(id: string, value: any): void {

@@ -169,15 +169,15 @@ export class SearchFormComponent implements OnInit, OnDestroy {
   private validateForm(): boolean {
     this.resetValidationErrorMessages();
     if (!this.formGroup.valid) {
-      // Email
-      if (!this.formGroup.get(SearchFormControl.EMAIL).valid) {
-        this.searchValidationErrors.push({ controlId: SearchFormControl.EMAIL, documentHRef: SearchFormControl.EMAIL, errorMessage: SearchFormErrorMessage.EMAIL });
-        this.emailErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.EMAIL] };
-      }
       // Postcode
       if (!this.formGroup.get(SearchFormControl.POSTCODE).valid) {
         this.searchValidationErrors.push({ controlId: SearchFormControl.POSTCODE, documentHRef: SearchFormControl.POSTCODE, errorMessage: SearchFormErrorMessage.POSTCODE });
         this.postcodeErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.POSTCODE] };
+      }
+      // Email
+      if (!this.formGroup.get(SearchFormControl.EMAIL).valid) {
+        this.searchValidationErrors.push({ controlId: SearchFormControl.EMAIL, documentHRef: SearchFormControl.EMAIL, errorMessage: SearchFormErrorMessage.EMAIL });
+        this.emailErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.EMAIL] };
       }
       // Date of birth
       if (!this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).valid ||
@@ -200,6 +200,9 @@ export class SearchFormComponent implements OnInit, OnDestroy {
           this.dateOfDeathErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.DATE_COMPARISON_FAILED] };
         }
       }
+
+      // Scroll to error summary
+      window.scrollTo({ top: 0, left: 0 });
 
       // Validation failed, return false
       return false;

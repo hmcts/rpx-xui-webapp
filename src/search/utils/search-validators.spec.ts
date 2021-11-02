@@ -79,7 +79,7 @@ describe('SearchValidators', () => {
     expect(dateComparisonValidator(formGroup)).toEqual({isValid: false, errorType: SearchFormErrorType.DATE_COMPARISON});
   });
 
-  it('dateComparisonValidator invalid case', () => {
+  it('dateComparisonValidator valid case', () => {
     const formGroup = new FormBuilder().group({
       dateOfBirth_day: '',
       dateOfBirth_month: '',

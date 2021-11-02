@@ -443,12 +443,13 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.3.1-switch-tabs":
-  version "4.3.1-switch-tabs"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.3.1-switch-tabs.tgz#e285de37f00852e0325a1ebcd1b72c7603822510"
-  integrity sha512-ElekxXdAw59V2yPOLMGIbeilC4wj9CfkGgkkgCEL7AfVTaSgBdqfCC8KGzgMAVtuJ8/gwpF8wKriNgJVGkip4A==
+"@hmcts/ccd-case-ui-toolkit@4.7.0-rc.7":
+  version "4.7.0-rc.7"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.7.0-rc.7.tgz#0098b9b3f7bc0ba1cda45fbbfb0b4a38404f247c"
+  integrity sha512-6NuAWyefTNUkjLUsO3axvU3PHmOPPyVb6ndIWgvKmMzgu9cxRvMIUB27SGQpH825JQ7OrY6ulNHpF7i1Sk4ACQ==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
+    "@angular-material-components/moment-adapter" "^5.0.0"
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
     "@hmcts/ccpay-web-component" "3.0.3"

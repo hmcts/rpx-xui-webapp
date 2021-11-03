@@ -109,9 +109,6 @@ describe('AllWorkCaseComponent', () => {
   });
 
   it('should not show the footer when there are cases', () => {
-    component.locations$ = of(ALL_LOCATIONS as unknown as Location[]);
-    component.supportedJurisdictions$ = of(['IA']);
-    fixture.detectChanges();
     const element = fixture.debugElement.nativeElement;
     const footerRow = element.querySelector('.footer-row');
     expect(footerRow).toBeDefined();
@@ -121,9 +118,6 @@ describe('AllWorkCaseComponent', () => {
   });
 
   it('should show the footer when there are no cases', () => {
-    component.locations$ = of(ALL_LOCATIONS as unknown as Location[]);
-    component.supportedJurisdictions$ = of(['IA']);
-    fixture.detectChanges();
     spyOnProperty(component, 'cases').and.returnValue([]);
     fixture.detectChanges();
     const element = fixture.debugElement.nativeElement;
@@ -138,9 +132,6 @@ describe('AllWorkCaseComponent', () => {
   });
 
   it('should appropriately handle clicking on a row action', () => {
-    component.locations$ = of(ALL_LOCATIONS as unknown as Location[]);
-    component.supportedJurisdictions$ = of(['IA']);
-    fixture.detectChanges();
     const element = fixture.debugElement.nativeElement;
     // Use the first case.
     const caseItem = component.cases[0];

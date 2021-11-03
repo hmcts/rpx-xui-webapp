@@ -16,6 +16,7 @@ import { Location } from '../../models/dtos';
 import {
   CaseworkerDataService,
   LocationDataService,
+  WASupportedJurisdictionsService,
   WorkAllocationCaseService,
   WorkAllocationFeatureService
 } from '../../services';
@@ -46,6 +47,7 @@ describe('AllWorkCaseComponent', () => {
   const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
+  const mockSupportedJurisdictionService = jasmine.createSpyObj('mockSupportedJurisdictionService', ['getSupportedJurisdictions']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -67,7 +69,8 @@ describe('AllWorkCaseComponent', () => {
         {provide: LocationDataService, useValue: mockLocationService},
         {provide: WorkAllocationFeatureService, useValue: mockFeatureService},
         {provide: LoadingService, useValue: mockLoadingService},
-        {provide: FeatureToggleService, useValue: mockFeatureToggleService}
+        {provide: FeatureToggleService, useValue: mockFeatureToggleService},
+        {provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionService}
       ]
     }).compileComponents();
   }));
@@ -82,13 +85,12 @@ describe('AllWorkCaseComponent', () => {
     mockCaseworkerService.getAll.and.returnValue(of([]));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
-    component.locations$ = of(ALL_LOCATIONS as unknown as Location[]);
+    mockLocationService.getLocations.and.returnValue(of(ALL_LOCATIONS as unknown as Location[]));
+    mockSupportedJurisdictionService.getSupportedJurisdictions.and.returnValue(of(['IA']));
     fixture.detectChanges();
   });
 
   it('should have all column headers, including "Manage +"', () => {
-    component.locations$ = of(ALL_LOCATIONS as unknown as Location[]);
-    fixture.detectChanges();
     const element = fixture.debugElement.nativeElement;
     const headerCells = element.querySelectorAll('.govuk-table__header');
     const fields = component.fields;
@@ -108,6 +110,7 @@ describe('AllWorkCaseComponent', () => {
 
   it('should not show the footer when there are cases', () => {
     component.locations$ = of(ALL_LOCATIONS as unknown as Location[]);
+    component.supportedJurisdictions$ = of(['IA']);
     fixture.detectChanges();
     const element = fixture.debugElement.nativeElement;
     const footerRow = element.querySelector('.footer-row');
@@ -119,6 +122,7 @@ describe('AllWorkCaseComponent', () => {
 
   it('should show the footer when there are no cases', () => {
     component.locations$ = of(ALL_LOCATIONS as unknown as Location[]);
+    component.supportedJurisdictions$ = of(['IA']);
     fixture.detectChanges();
     spyOnProperty(component, 'cases').and.returnValue([]);
     fixture.detectChanges();
@@ -135,6 +139,7 @@ describe('AllWorkCaseComponent', () => {
 
   it('should appropriately handle clicking on a row action', () => {
     component.locations$ = of(ALL_LOCATIONS as unknown as Location[]);
+    component.supportedJurisdictions$ = of(['IA']);
     fixture.detectChanges();
     const element = fixture.debugElement.nativeElement;
     // Use the first case.

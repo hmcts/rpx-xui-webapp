@@ -187,7 +187,8 @@ export async function retrieveAllCaseWorkers(req: EnhancedRequest, res: Response
     return req.session.caseworkers;
   }
   const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
-  const jurisdictions = req.session && req.session.supportedJurisdictions ? req.session.supportedJurisdictions : getWASupportedJurisdictions(req, res, null);
+  const jurisdictions = req.session && req.session.supportedJurisdictions
+   ? req.session.supportedJurisdictions : getWASupportedJurisdictions(req, res, null);
   const payload = prepareRoleApiRequest(jurisdictions);
   const {data} = await handlePostRoleAssignments(roleApiPath, payload, req);
   const userIds = getUserIdsFromRoleApiResponse(data);

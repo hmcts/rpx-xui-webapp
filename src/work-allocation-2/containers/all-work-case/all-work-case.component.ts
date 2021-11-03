@@ -58,9 +58,6 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
 
   public ngOnInit(): void {
     this.setUpLocationsAndJurisdicttions();
-    this.supportedJurisdictions$.subscribe(jurisdictionList => {
-      this.jurisdictions = jurisdictionList;
-    })
     this.setupCaseWorkers();
   }
 

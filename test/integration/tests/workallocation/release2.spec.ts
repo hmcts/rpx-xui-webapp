@@ -142,7 +142,7 @@ describe('Work allocations Release 2', () => {
         };
 
         const caseId = '1547565764480315';
-        const response = await Request.get(`workallocation2/roles/${caseId}`, headers, 200);
+        const response = await Request.post(`api/role-access/roles/post`, { caseId: caseId, caseType: "Asylum", jurisdiction:"IA"  } ,headers, 200);
         expect(response.status).to.equal(200);
         const actual = response.data;
         const expected = workAllocationDataModels.getCaseRole();

@@ -357,10 +357,8 @@ export function constructRoleAssignmentQuery(
 }
 
 export function constructRoleAssignmentCaseAllocatorQuery(searchTaskParameters: SearchTaskParameter[], req: any): any {
-  let userId = '';
-  if (req.user) {
-    userId = req.user.userinfo.id;
-  }
+  const currentUser = req.session.passport.user.userinfo;
+  const userId = currentUser.id ? currentUser.id : currentUser.uid;
   let newSearchTaskParameters = JSON.parse(JSON.stringify(searchTaskParameters)) as SearchTaskParameter[];
   newSearchTaskParameters = [...newSearchTaskParameters,
     {key: 'role', values: 'case-allocator', operator: ''},

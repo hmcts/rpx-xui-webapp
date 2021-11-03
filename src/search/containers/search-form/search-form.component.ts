@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
 import { Subscription } from 'rxjs';
-import { SearchStatePersistenceKey } from '../../enums';
+import { DateCategoryType, SearchStatePersistenceKey } from '../../enums';
 import { SearchParameters } from '../../models';
 import { SearchService } from '../../services/search.service';
 
@@ -138,11 +138,8 @@ export class SearchFormComponent implements OnInit, OnDestroy {
       address: this.formGroup.get('addressLine1').value,
       postcode: this.formGroup.get('postcode').value,
       emailAddress: this.formGroup.get('email').value,
-      // Date format expected by API endpoint is yyyy-mm-dd
-      dateOfBirth: `${this.formGroup.get('dateOfBirth_year').value}-${this.formGroup.get('dateOfBirth_month').value}-` +
-      `${this.formGroup.get('dateOfBirth_day').value}`,
-      dateOfDeath: `${this.formGroup.get('dateOfDeath_year').value}-${this.formGroup.get('dateOfDeath_month').value}-` +
-      `${this.formGroup.get('dateOfDeath_day').value}`
+      dateOfBirth: this.getDateFormatted(DateCategoryType.DATE_OF_BIRTH),
+      dateOfDeath: this.getDateFormatted(DateCategoryType.DATE_OF_DEATH)
     };
 
     this.searchService.storeState(SearchStatePersistenceKey.SEARCH_PARAMS, searchParameters);
@@ -158,6 +155,27 @@ export class SearchFormComponent implements OnInit, OnDestroy {
     if (this.searchServiceSubscription$) {
       this.searchServiceSubscription$.unsubscribe();
     }
+  }
+
+  private getDateFormatted(dateCategoryType: string): string {
+    const day = dateCategoryType === DateCategoryType.DATE_OF_BIRTH
+      ? this.formGroup.get('dateOfBirth_day').value
+      : this.formGroup.get('dateOfDeath_day').value;
+
+    const month = dateCategoryType === DateCategoryType.DATE_OF_BIRTH
+      ? this.formGroup.get('dateOfBirth_month').value
+      : this.formGroup.get('dateOfDeath_month').value;
+
+    const year = dateCategoryType === DateCategoryType.DATE_OF_BIRTH
+      ? this.formGroup.get('dateOfBirth_year').value
+      : this.formGroup.get('dateOfDeath_year').value
+
+    if (day === '' || month === '' || year === '') {
+      return null;
+    }
+
+    // Date format expected by API endpoint is yyyy-mm-dd
+    return `${year}-${month}-${day}`;
   }
 }
 

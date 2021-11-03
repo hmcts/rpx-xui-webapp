@@ -1,12 +1,12 @@
 import { SearchRequestParty } from "./search-request-party.model";
 
 export class SearchRequestCriteria {
-  CCDCaseTypeIds: string[];
+  CCDCaseTypeIds?: string[];
   CCDJurisdictionIds: string[];
-  caseManagementBaseLocationIds: string[];
-  caseManagementRegionIds: string[];
-  caseReferences: string[];
-  otherReferences: string[];
-  parties: SearchRequestParty[];
-  stateIds: string[];
+  caseManagementBaseLocationIds?: string[];
+  caseManagementRegionIds?: string[];
+  caseReferences?: string[];
+  otherReferences?: string[];
+  parties?: SearchRequestParty[];
+  stateIds?: string[];
 }

@@ -17,7 +17,7 @@ export class SearchResultsComponent implements OnInit {
   public ngOnInit(): void {
     this.searchService.getResults().subscribe(searchResult => {
       this.searchResult = searchResult;
-      console.log(searchResult);
+      console.log('searchResult', searchResult);
       this.showSpinner = false;
     });
   }

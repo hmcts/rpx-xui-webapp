@@ -1,12 +1,11 @@
 /* tslint:disable:object-literal-sort-keys */
-import { UserInfo } from '../../auth/interfaces/UserInfo';
 import { AllocateRoleData } from '../models/allocate-role-state-data.interface';
 import { AllocateTo } from '../models/allocate-role.enum';
 
-export function toRoleAssignmentBody(userInfo: UserInfo, allocateRoleData: AllocateRoleData): any {
+export function toRoleAssignmentBody(currentUserId: string, allocateRoleData: AllocateRoleData): any {
   return {
     roleRequest: {
-      assignerId: userInfo.id,
+      assignerId: currentUserId,
       replaceExisting: false,
     },
     requestedRoles: [{
@@ -20,16 +19,16 @@ export function toRoleAssignmentBody(userInfo: UserInfo, allocateRoleData: Alloc
       roleName: allocateRoleData.typeOfRole.id,
       roleCategory: allocateRoleData.roleCategory,
       actorIdType: 'IDAM',
-      actorId: getActorId(userInfo, allocateRoleData),
+      actorId: getActorId(currentUserId, allocateRoleData),
       beginTime: allocateRoleData.period.startDate,
       endTime: allocateRoleData.period.endDate,
     }],
   };
 }
 
-export function getActorId(userInfo: UserInfo, allocateRoleData: AllocateRoleData): string {
+export function getActorId(currentUserId: string, allocateRoleData: AllocateRoleData): string {
   if (allocateRoleData.allocateTo === AllocateTo.RESERVE_TO_ME) {
-    return userInfo.id;
+    return currentUserId;
   } else {
     return allocateRoleData.person.id;
   }

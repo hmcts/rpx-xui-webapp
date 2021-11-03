@@ -745,11 +745,15 @@ describe('workAllocation.utils', () => {
           },
         ];
         const req = {
-          user: {
-            userinfo: {
-              id: '0d8be1b2-a023-4125-9ab7-00f87b560d76',
-            },
-          },
+            session: {
+              passport: {
+                  user: {
+                    userinfo: {
+                      id: '0d8be1b2-a023-4125-9ab7-00f87b560d76',
+                    },
+                },
+              },
+          }
         };
 
         const result = constructRoleAssignmentCaseAllocatorQuery(searchParameters, req);

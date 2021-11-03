@@ -367,7 +367,7 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     logger.info('cases query', JSON.stringify(query, null, 2));
     const roleAssignmentResult = await getRoleAssignmentsByQuery(query, req);
 
-    logger.info('returned cases', roleAssignmentResult.roleAssignmentResponse);
+    logger.info('returned cases', JSON.stringify(roleAssignmentResult.roleAssignmentResponse));
 
     const caseTypes: string = getCaseTypesFromRoleAssignments(roleAssignmentResult.roleAssignmentResponse);
     const queryParams = caseTypes.length ? caseTypes : 'Asylum';

@@ -1,10 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  SearchRequest,
-  SearchRequestCriteria,
-  SearchRequestSortCriteria,
-  SearchResult
-} from '../../models';
+import { SearchResult } from '../../models';
 import { SearchService } from '../../services/search.service';
 
 @Component({
@@ -19,8 +14,8 @@ export class SearchResultsComponent implements OnInit {
 
   constructor(private readonly searchService: SearchService) { }
 
-  ngOnInit(): void {
-		this.searchService.getResults('searchParameters').subscribe(searchResult => {
+  public ngOnInit(): void {
+    this.searchService.getResults().subscribe(searchResult => {
       this.searchResult = searchResult;
       console.log(searchResult);
       this.showSpinner = false;

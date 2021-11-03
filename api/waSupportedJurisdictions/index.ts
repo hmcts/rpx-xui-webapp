@@ -5,11 +5,8 @@ import { EnhancedRequest } from '../lib/models';
 
 export async function getWASupportedJurisdictions(req: EnhancedRequest, res: Response, next: NextFunction): Promise<any> {
   try {
-    if (!req.session.supportedJurisdictions) {
-      const jurisdictions = getConfigValue(WA_SUPPORTED_JURISDICTIONS);
-      req.session.supportedJurisdictions = jurisdictions;
-    }
-    return res.send(req.session.supportedJurisdictions).status(200);
+    const jurisdictions = getConfigValue(WA_SUPPORTED_JURISDICTIONS);
+    return res.send(jurisdictions).status(200);
   } catch (error) {
     next(error);
   }

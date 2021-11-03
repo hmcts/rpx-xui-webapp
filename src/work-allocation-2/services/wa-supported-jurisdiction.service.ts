@@ -4,10 +4,10 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class WASupportedJurisdictionsService {
-  public static jurisdictionUrl: string = '/api/supported-jurisdiction/get';
+  public static jurisdictionUrl: string = '/api/wa-supported-jurisdiction/get';
   public constructor(private readonly http: HttpClient) {}
 
-  public getSupportedJurisdictions(): Observable<string[]> {
+  public getWASupportedJurisdictions(): Observable<string[]> {
     return this.http.get<string[]>(WASupportedJurisdictionsService.jurisdictionUrl);
   }
 }

@@ -47,7 +47,7 @@ describe('AllWorkCaseComponent', () => {
   const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
-  const mockSupportedJurisdictionService = jasmine.createSpyObj('mockSupportedJurisdictionService', ['getSupportedJurisdictions']);
+  const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -70,7 +70,7 @@ describe('AllWorkCaseComponent', () => {
         {provide: WorkAllocationFeatureService, useValue: mockFeatureService},
         {provide: LoadingService, useValue: mockLoadingService},
         {provide: FeatureToggleService, useValue: mockFeatureToggleService},
-        {provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionService}
+        {provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService}
       ]
     }).compileComponents();
   }));
@@ -86,7 +86,7 @@ describe('AllWorkCaseComponent', () => {
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockLocationService.getLocations.and.returnValue(of(ALL_LOCATIONS as unknown as Location[]));
-    mockSupportedJurisdictionService.getSupportedJurisdictions.and.returnValue(of(['IA']));
+    mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
     fixture.detectChanges();
   });
 

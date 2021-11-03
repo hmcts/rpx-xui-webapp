@@ -1,5 +1,5 @@
 import { NextFunction, Response } from 'express';
-import { getWASupportedJurisdictions } from '../supportedJurisdictions/index';
+import { getWASupportedJurisdictions } from '../waSupportedJurisdictions/index';
 import { handleGet, handlePost } from '../common/mockService';
 import { getConfigValue, showFeature } from '../configuration';
 import {
@@ -187,8 +187,7 @@ export async function retrieveAllCaseWorkers(req: EnhancedRequest, res: Response
     return req.session.caseworkers;
   }
   const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
-  const jurisdictions = req.session && req.session.supportedJurisdictions
-   ? req.session.supportedJurisdictions : getWASupportedJurisdictions(req, res, null);
+  const jurisdictions = await getWASupportedJurisdictions(req, res, null);
   const payload = prepareRoleApiRequest(jurisdictions);
   const {data} = await handlePostRoleAssignments(roleApiPath, payload, req);
   const userIds = getUserIdsFromRoleApiResponse(data);

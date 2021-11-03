@@ -31,8 +31,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   private selectedPriority: string = 'All';
   public locations$: Observable<Location[]>;
   public locations: Location[];
-  public supportedJurisdictions$: Observable<string[]>;
-  public supportedJurisdictions: string[];
+  public waSupportedJurisdictions$: Observable<string[]>;
 
   public sortedBy: SortField = {
     fieldName: '',
@@ -65,7 +64,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
 
   public loadCaseWorkersAndLocations(): void {
     this.locations$ = this.locationService.getLocations();
-    this.supportedJurisdictions$ = this.supportedJurisdictionsService.getSupportedJurisdictions();
+    this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
   }
 
   public getSearchTaskRequestPagination(): SearchTaskRequest {

@@ -27,7 +27,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
   public showSpinner$: Observable<boolean>;
   public sortedBy: SortField;
   public locations$: Observable<Location[]>;
-  public supportedJurisdictions$: Observable<string[]>;
+  public waSupportedJurisdictions$: Observable<string[]>;
   public pagination: PaginationParameter;
   public isPaginationEnabled$: Observable<boolean>;
   public backUrl: string = null;
@@ -57,7 +57,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
     protected readonly loadingService: LoadingService,
     protected readonly locationService: LocationDataService,
     protected readonly featureToggleService: FeatureToggleService,
-    protected readonly supportedJurisdictionsService: WASupportedJurisdictionsService
+    protected readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService
   ) {
     this.isPaginationEnabled$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.waMvpPaginationFeature);
   }
@@ -278,7 +278,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
 
   protected setUpLocationsAndJurisdicttions(): void {
     this.locations$ = this.locationService.getLocations();
-    this.supportedJurisdictions$ = this.supportedJurisdictionsService.getSupportedJurisdictions();
+    this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
   }
 
 }

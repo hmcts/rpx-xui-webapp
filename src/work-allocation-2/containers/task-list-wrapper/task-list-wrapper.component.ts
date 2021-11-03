@@ -50,7 +50,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected loadingService: LoadingService,
     protected featureToggleService: FeatureToggleService,
     protected locationService: LocationDataService,
-    protected supportedJurisdictionsService: WASupportedJurisdictionsService,
+    protected waSupportedJurisdictionsService: WASupportedJurisdictionsService,
     protected filterService: FilterService
   ) {
   }

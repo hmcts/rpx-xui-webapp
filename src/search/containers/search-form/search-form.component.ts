@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
 import { Subscription } from 'rxjs';
+import { SearchStatePersistenceKey } from '../../enums';
 import { SearchParameters } from '../../models';
 import { SearchService } from '../../services/search.service';
 
@@ -144,10 +145,10 @@ export class SearchFormComponent implements OnInit, OnDestroy {
       `${this.formGroup.get('dateOfDeath_day').value}`
     };
 
-    this.searchService.storeState('searchParameters', searchParameters);
+    this.searchService.storeState(SearchStatePersistenceKey.SEARCH_PARAMS, searchParameters);
 
     // Set the starting record number to 1
-    this.searchService.storeState('startRecordNumber', 1);
+    this.searchService.storeState(SearchStatePersistenceKey.START_RECORD, 1);
 
     // Navigate to the Search Results page
     this.router.navigate(['results'], {relativeTo: this.route});

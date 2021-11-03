@@ -5,7 +5,8 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable, of } from 'rxjs';
-import { SearchParameters } from '../../../search/models';
+import { SearchStatePersistenceKey } from '../../enums';
+import { SearchParameters } from '../../models';
 import { SearchService } from '../../services/search.service';
 import { SearchFormComponent } from './search-form.component';
 
@@ -86,7 +87,7 @@ describe('SearchFormComponent', () => {
     expect(searchService.storeState).toHaveBeenCalledTimes(2);
 
     // Check arguments
-    expect(searchService.storeState.calls.all()[0].args[0]).toEqual('searchParameters');
+    expect(searchService.storeState.calls.all()[0].args[0]).toEqual(SearchStatePersistenceKey.SEARCH_PARAMS);
     expect(searchService.storeState.calls.all()[0].args[1]).toEqual({
       caseReferences: ['1234123412341234'],
       CCDJurisdictionIds: ['TEST'],
@@ -98,7 +99,7 @@ describe('SearchFormComponent', () => {
       dateOfBirth: '1980-10-1',
       dateOfDeath: '2020-2-2'
     } as SearchParameters);
-    expect(searchService.storeState.calls.all()[1].args[0]).toEqual('startRecordNumber');
+    expect(searchService.storeState.calls.all()[1].args[0]).toEqual(SearchStatePersistenceKey.START_RECORD);
     expect(searchService.storeState.calls.all()[1].args[1]).toEqual(1);
 
     expect(router.navigate).toHaveBeenCalledWith(['results'], {relativeTo: route});

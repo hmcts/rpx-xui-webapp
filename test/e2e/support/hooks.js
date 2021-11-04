@@ -119,7 +119,7 @@ defineSupportCode(({ Before,After }) => {
             }else{
                 BrowserLogs.clearLogs();
                 if (global.scenarioData['featureToggles']){
-                    //CucumberReportLog.AddJson(global.scenarioData['featureToggles'])
+                    CucumberReportLog.AddJson(global.scenarioData['featureToggles'])
                 }
             } 
             

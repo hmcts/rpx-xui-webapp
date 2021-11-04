@@ -276,7 +276,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
     });
   }
 
-  protected setUpLocationsAndJurisdicttions(): void {
+  protected setUpLocationsAndJurisdictions(): void {
     this.locations$ = this.locationService.getLocations();
     this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
   }

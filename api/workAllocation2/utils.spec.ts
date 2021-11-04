@@ -179,7 +179,7 @@ describe('workAllocation.utils', () => {
 
   describe('prepareRoleApiRequest', () => {
 
-    it('should correctly prepare a payload with jursidictions and location parameters', () => {
+    it('should correctly prepare a payload with jurisdictions and location parameters', () => {
       const jurisdictions: string[] = ['IA', 'Not-IA'];
       const locationId = 123456;
       const expectedResult = {

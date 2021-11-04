@@ -57,7 +57,7 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
   public backUrl: string = 'work/all-work/cases';
 
   public ngOnInit(): void {
-    this.setUpLocationsAndJurisdicttions();
+    this.setUpLocationsAndJurisdictions();
     this.setupCaseWorkers();
   }
 

@@ -5,7 +5,7 @@ import { FormBuilder } from '@angular/forms';
 
 import { SearchResultsComponent } from './search-results.component';
 
-describe('SearchFormComponent', () => {
+describe('SearchResultsComponent', () => {
   let component: SearchResultsComponent;
   let fixture: ComponentFixture<SearchResultsComponent>;
   const formBuilder = new FormBuilder();

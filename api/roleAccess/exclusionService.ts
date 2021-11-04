@@ -117,6 +117,7 @@ export function getLegalAndJudicialRequestPayload(caseId: string,
               jurisdiction: [jurisdiction],
             },
           roleCategory: ['LEGAL_OPERATIONS'],
+          roleName: ['case-manager'],
       },
     ],
   };

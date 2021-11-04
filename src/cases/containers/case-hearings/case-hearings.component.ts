@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
@@ -6,21 +6,20 @@ import { map } from 'rxjs/operators';
 import { UserRole } from '../../../app/models/user-details.model';
 import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
 import * as fromAppStore from '../../../app/store';
-import { CaseHearingModel } from '../../../hearings/models/caseHearing.model';
-import { Actions, HearingsSectionStatusEnum } from '../../../hearings/models/hearings.enum';
+import { CaseHearingModel, CaseHearingViewModel } from '../../../hearings/models/caseHearing.model';
+import { Actions, EXUISectionStatusEnum } from '../../../hearings/models/hearings.enum';
 import * as fromHearingStore from '../../../hearings/store';
 
 @Component({
   selector: 'exui-case-hearings',
   templateUrl: './case-hearings.component.html'
 })
-export class CaseHearingsComponent implements OnInit {
-
+export class CaseHearingsComponent implements OnInit, OnDestroy {
   public upcomingHearings$: Observable<CaseHearingModel[]>;
-  public upcomingStatus: HearingsSectionStatusEnum = HearingsSectionStatusEnum.UPCOMING;
+  public upcomingStatus: EXUISectionStatusEnum = EXUISectionStatusEnum.UPCOMING;
   public pastAndCancelledHearings$: Observable<CaseHearingModel[]>;
-  public pastAndCancelledStatus: HearingsSectionStatusEnum = HearingsSectionStatusEnum.PAST_AND_CANCELLED;
-  public hearingsActions: Actions[] = [Actions.Read];
+  public pastAndCancelledStatus: EXUISectionStatusEnum = EXUISectionStatusEnum.PAST_AND_CANCELLED;
+  public hearingsActions: Actions[] = [Actions.READ];
   public userRoles: Observable<string[]>;
   public hasRequestAction: boolean = false;
 
@@ -28,6 +27,7 @@ export class CaseHearingsComponent implements OnInit {
               private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly activatedRoute: ActivatedRoute,
               private readonly roleCategoryMappingService: RoleCategoryMappingService) {
+
     const caseID = this.activatedRoute.snapshot.params.cid;
     this.userRoles = this.appStore.pipe(select(fromAppStore.getUserDetails)).pipe(
       map(userDetails => userDetails.userInfo.roles)
@@ -36,7 +36,8 @@ export class CaseHearingsComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.getHearsListByStatus(HearingsSectionStatusEnum.UPCOMING).subscribe(hearings => {
+    this.getHearsListByStatus(EXUISectionStatusEnum.UPCOMING).subscribe(hearings => {
+      hearings.map(hearing => hearing.creationDateTime = (Math.max.apply(null,hearing.hearingDaySchedule.map(schedule => schedule.hearingStartDateTime))));
       this.upcomingHearings$ = of(hearings.sort((a, b) => {
         return new Date(a.lastResponseReceivedDateTime) > new Date(b.lastResponseReceivedDateTime) ? 1 : -1;
       }).sort((a, b) => {
@@ -46,7 +47,7 @@ export class CaseHearingsComponent implements OnInit {
       }));
     });
 
-    this.getHearsListByStatus(HearingsSectionStatusEnum.PAST_AND_CANCELLED).subscribe(hearings => {
+    this.getHearsListByStatus(EXUISectionStatusEnum.PAST_AND_CANCELLED).subscribe(hearings => {
       this.pastAndCancelledHearings$ = of(hearings.sort((a, b) => {
         return new Date(a.lastResponseReceivedDateTime) > new Date(b.lastResponseReceivedDateTime) ? 1 : -1;
       }).sort((a) => {
@@ -63,21 +64,22 @@ export class CaseHearingsComponent implements OnInit {
     this.roleCategoryMappingService.isJudicialOrLegalOpsCategory(this.userRoles).subscribe(
       userRole => {
         if (userRole === UserRole.LegalOps) {
-          this.hearingsActions = [...this.hearingsActions, Actions.Create, Actions.Update, Actions.Delete];
+          this.hearingsActions = [...this.hearingsActions, Actions.CREATE, Actions.UPDATE, Actions.DELETE];
         }
       }
     );
-    if (this.hearingsActions.includes(Actions.Create)) {
+    if (this.hearingsActions.includes(Actions.CREATE)) {
       this.hasRequestAction = true;
     }
   }
 
-  public getHearsListByStatus(status: string): Observable<CaseHearingModel[]> {
+  public getHearsListByStatus(status: string): Observable<CaseHearingViewModel[]> {
     return this.hearingStore.pipe(select(fromHearingStore.getHearingsList)).pipe(
       map(hearingsStateData => {          
           if (hearingsStateData && hearingsStateData.caseHearingsMainModel && hearingsStateData.caseHearingsMainModel.caseHearings) {
-            return hearingsStateData.caseHearingsMainModel.caseHearings.filter(hearing =>
-              hearing.hmcStatus === status
+            const viewModel = hearingsStateData.caseHearingsMainModel.caseHearings as CaseHearingViewModel[];
+            return viewModel.filter(hearing =>
+              hearing.exuiSectionStatus === status
             );
           } else {
             return [];
@@ -85,5 +87,9 @@ export class CaseHearingsComponent implements OnInit {
         }
       )  
     );
+  }
+
+  public ngOnDestroy(): void {
+    this.hearingStore.dispatch(new fromHearingStore.Reset());
   }
 }

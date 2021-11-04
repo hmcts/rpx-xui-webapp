@@ -1,27 +1,37 @@
 <table class="govuk-table">
-  <tbody class="govuk-table__body">
+  <thead class="govuk-table__head">
   <tr class="govuk-table__row">
-    <td scope="row" colspan="4" class="govuk-table__header"><h2
-      class="govuk-heading-m govuk-!-margin-bottom-2 govuk-!-margin-top-7 gds-font">{{status}}</h2></td>
+    <th class="govuk-table__header govuk-body-lead">{{ status }}</th>
+    <th *ngIf="(hearingsList$ | async)?.length" class="govuk-table__header">Hearing date</th>
+    <th *ngIf="(hearingsList$ | async)?.length" class="govuk-table__header">Status</th>
+    <th *ngIf="(hearingsList$ | async)?.length" class="govuk-table__header">Actions</th>
+  </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+  <tr *ngIf="!(hearingsList$ | async)?.length" class="govuk-table__row">
+    <td colspan="4">
+      No {{ status.toLowerCase() }} hearings found
+    </td>
   </tr>
   <tr class="govuk-table__row" *ngFor="let hearing of hearingsList$ | async">
-    <td scope="row" class="govuk-table__header govuk-!-width-one-quarter gds-font">{{ hearing.hearingType}}</td>
-    <td scope="row"
-        class="govuk-table__cell govuk-!-width-one-quarter gds-font">
+    <td class="govuk-table__header govuk-!-width-one-quarter gds-font">{{ hearing.hearingType}}</td>
+    <td
+      class="govuk-table__cell govuk-!-width-one-quarter gds-font">
       {{ hearing.lastResponseReceivedDateTime | date:'d MMMM yyyy'}}
     </td>
-    <td scope="row" class="govuk-table__cell govuk-!-width-one-quarter gds-font">
-      <strong [ngClass]="hearing.hearingListingStatus | hearingsBadge">{{ hearing.hearingListingStatus }}
+    <td class="govuk-table__cell govuk-!-width-one-quarter gds-font">
+      <strong [ngClass]="hearing.exuiDisplayStatus | hearingsBadge">{{ hearing.hearingListingStatus }}
       </strong>
     </td>
-    <td scope="row" class="govuk-table__cell govuk-!-width-one-quarter">
+    <td class="govuk-table__cell govuk-!-width-one-quarter">
       <div *ngIf="hasUpdateAction" class="div-action">
         <a href="javascript:void(0)"
-           [routerLink]="['/', 'hearings', 'change']">View and change</a>&nbsp;&nbsp;
+           [routerLink]="['/', 'hearings', 'change']">View or change</a>&nbsp;&nbsp;
       </div>
       <div *ngIf="hasDeleteAction" class="div-action">
         <a href="javascript:void(0)"
-           [routerLink]="['/', 'hearings', 'cancel']">Cancel hearing</a>&nbsp;&nbsp;</div>
+           [routerLink]="['/', 'hearings', 'cancel']">Cancel hearing</a>&nbsp;&nbsp;
+      </div>
       <div *ngIf="hasReadOnlyAction" class="div-action">
         <a href="javascript:void(0)"
            [routerLink]="['/', 'hearings', 'view']">View details</a></div>

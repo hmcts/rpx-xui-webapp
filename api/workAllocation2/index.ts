@@ -1,6 +1,4 @@
-import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
-import { sendPost } from '../common/crudService';
 import { handleGet, handlePost } from '../common/mockService';
 import { getConfigValue, showFeature } from '../configuration';
 import {

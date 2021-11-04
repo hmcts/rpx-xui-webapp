@@ -5,7 +5,7 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable, of } from 'rxjs';
-import { SearchStatePersistenceKey } from '../../enums';
+import { SearchFormControl, SearchStatePersistenceKey } from '../../enums';
 import { SearchParameters } from '../../models';
 import { SearchService } from '../../services/search.service';
 import { SearchFormComponent } from './search-form.component';
@@ -57,6 +57,7 @@ describe('SearchFormComponent', () => {
       {label: 'All', value: 'All', id: 'All'},
       {label: 'Test service', value: 'Test service', id: 'TEST'}
     ]);
+    expect(component.formGroup.get(SearchFormControl.SERVICES_LIST).value).toEqual('All');
   });
 
   it('should unsubscribe subscriptions onDestroy', () => {
@@ -103,5 +104,35 @@ describe('SearchFormComponent', () => {
     expect(searchService.storeState.calls.all()[1].args[1]).toEqual(1);
 
     expect(router.navigate).toHaveBeenCalledWith(['results'], {relativeTo: route});
+  });
+
+  it('should reset validation error messages', () => {
+    component.resetValidationErrorMessages();
+
+    expect(component.searchValidationErrors.length).toEqual(0);
+    expect(component.emailErrorMessage).toEqual(null);
+    expect(component.postcodeErrorMessage).toEqual(null);
+    expect(component.dateOfBirthErrorMessage).toEqual(null);
+    expect(component.dateOfDeathErrorMessage).toEqual(null);
+  });
+
+  it('should isAnyError function return correct state', () => {
+    component.formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).setValue(32);
+    component.onSubmit();
+    expect(component.isAnyError()).toEqual(true);
+
+    component.formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).setValue(10);
+    component.onSubmit();
+    expect(component.isAnyError()).toEqual(false);
+  });
+
+  it('should validateForm function return correct state', () => {
+    component.formGroup.get(SearchFormControl.POSTCODE).setValue('WRONGPOSTCODE');
+    component.onSubmit();
+    expect(component.formGroup.valid).toEqual(false);
+
+    component.formGroup.get(SearchFormControl.POSTCODE).setValue('B5 6AB');
+    component.onSubmit();
+    expect(component.formGroup.valid).toEqual(true);
   });
 });

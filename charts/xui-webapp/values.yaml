@@ -53,6 +53,7 @@ nodejs:
     SERVICES_CCD_ACTIVITY_API: http://ccd-case-activity-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     SERVICES_CCD_DATA_STORE_API: http://ccd-data-store-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     SERVICES_CCD_CASE_ASSIGNMENT_API: http://aac-manage-case-assignment-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    SERVICES_LOCATION_API: http://rd-location-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services work allocation endpoints
     SERVICES_WORK_ALLOCATION_TASK_API: http://wa-task-management-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services role  endpoints
@@ -101,6 +102,7 @@ nodejs:
     FEATURE_REDIS_ENABLED: true
     FEATURE_OIDC_ENABLED: false
     FEATURE_WORKALLOCATION_ENABLED: false
+    FEATURE_SUBSTANTIVE_ROLE_ENABLED: true
 
     # Redis
     REDIS_KEY_PREFIX: 'activity:'

@@ -140,8 +140,8 @@ const defaultUserTheme: Theme = {
   },
   showFindCase: true,
   backgroundColor: '#202020',
-  logoIsUsed: true,
-  logoType: 'myhmcts',
+  logoIsUsed: false,
+  logoType: '',
 };
 
 const signedOutTheme: Theme = {
@@ -246,4 +246,4 @@ export const LD_FLAG_REMOVE_USER_FROM_CASE_MC: string = 'remove-user-from-case-m
 export const LD_FLAG_MC_APPLICATION_THEMES: string = 'mc-application-themes';
 export const LEGAL_OPS_ROLE_LIST: string[] = ['caseworker-ia-caseofficer'];
 export const JUDICIAL_ROLE_LIST: string[] = ['caseworker-ia-iacjudge'];
-export const SERVICE_OPTIONS_LIST = [{key: 'Immigration and Asylum', label: 'Immigration and Asylum'}];
+export const SERVICE_OPTIONS_LIST = [{key: 'IA', label: 'Immigration and Asylum'}];

@@ -59,6 +59,7 @@
       "oauthCallbackUrl": "SERVICES_IDAM_OAUTH_CALLBACK_URL",
       "iss": "SERVICES_IDAM_ISS_URL"
     },
+    "location_api": "SERVICES_LOCATION_API",
     "work_allocation": {
       "taskApi": "SERVICES_WORK_ALLOCATION_TASK_API"
     },
@@ -126,6 +127,10 @@
     },
     "workAllocationEnabled": {
       "__name": "FEATURE_WORKALLOCATION_ENABLED",
+      "__format":"json"
+    },
+    "substantiveRoleEnabled": {
+      "__name": "FEATURE_SUBSTANTIVE_ROLE_ENABLED",
       "__format":"json"
     }
   },

@@ -6,7 +6,7 @@ import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { UserRole } from '../../../../app/models';
 import { CHOOSE_A_ROLE, ERROR_MESSAGE } from '../../../constants';
-import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, Role, RoleCategory, TypeOfRole } from '../../../models';
+import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, Role, RoleCategory, SpecificRole } from '../../../models';
 import { RoleAllocationTitleText } from '../../../models/enums';
 import { OptionsModel } from '../../../models/options-model';
 import { AllocateRoleService } from '../../../services';
@@ -31,7 +31,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
 
   public allocateRoleStateDataSub: Subscription;
 
-  public typeOfRole: TypeOfRole;
+  public typeOfRole: SpecificRole;
 
   public roleCategory: string = '';
 
@@ -55,7 +55,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
     );
     this.radioOptionControl = new FormControl(this.typeOfRole ? this.typeOfRole : '', [Validators.required]);
     this.formGroup = new FormGroup({[this.radioControlName]: this.radioOptionControl});
-    const rolesList = this.allocateRoleService.getValidRoles().subscribe(roles =>
+    this.allocateRoleService.getValidRoles().subscribe(roles =>
         this.optionsList = this.getOptions(roles.filter(role => role.roleCategory === this.roleCategory)));
   }
 
@@ -73,7 +73,12 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
   public dispatchEvent(navEvent: AllocateRoleNavigationEvent, roleCategory: RoleCategory, isLegalOpsOrJudicialRole: UserRole): void {
     switch (navEvent) {
       case AllocateRoleNavigationEvent.CONTINUE:
-        const typeOfRole = this.radioOptionControl.value;
+        const roleChosen = this.radioOptionControl.value;
+        const roleOption = this.optionsList.filter(option => option.optionValue === roleChosen)[0];
+        const typeOfRole: SpecificRole = {
+          id: roleOption ? roleOption.optionId : roleChosen,
+          name: roleChosen
+        };
         switch (roleCategory) {
           case RoleCategory.JUDICIAL: {
             switch (isLegalOpsOrJudicialRole) {

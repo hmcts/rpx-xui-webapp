@@ -25,7 +25,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I enter find person search input {string} in work flow', async function(searchInput){
-        await workFlowPage.findPersonPage.inputSearchTerm(searchInput);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await workFlowPage.findPersonPage.inputSearchTerm(searchInput);
+            const results = await workFlowPage.findPersonPage.getPersonsReturned();
+            expect(results.length > 0, `No find person results returned for input "${searchInput}"`).to.be.true;
+        }); 
     });
 
     Then('I see find person search results in work flow', async function(resulEmails){
@@ -128,7 +132,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             workFlowPageObject = workFlowPage.findPersonPage;
         } else if (workFlowPageType === "Duration of role") {
             workFlowPageObject = workFlowPage.durationOfRolePage;
-        } else if (workFlowPageType === "Check your answers") {
+        } else if (workFlowPageType === "Check your answers" || workFlowPageType === "Check your changes") {
             workFlowPageObject = workFlowPage.checkYourAnswers;
         } else {
             throw new Error(`work flow page "${workFlowPageType}" is not recognised or not implemented in test step definition.`);

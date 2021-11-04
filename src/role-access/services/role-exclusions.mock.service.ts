@@ -11,6 +11,7 @@ export class RoleExclusionsMockService extends RoleExclusionsService {
 
   public deleteExclusion(deletedExclusion: RoleExclusion): Observable<RoleExclusion> {
     return of({
+      id: '1',
       added: new Date(2021, 7, 1),
       name: 'Judge Birch',
       notes: 'this case been remitted from Upper Tribunal and required different judge',
@@ -22,6 +23,7 @@ export class RoleExclusionsMockService extends RoleExclusionsService {
   public getCurrentUserRoleExclusions(): Observable<RoleExclusion[]> {
     return of([
       {
+        id: '2',
         added: new Date(2021, 7, 1),
         name: 'Judge Birch',
         notes: 'this case been remitted from Upper Tribunal and required different judge',

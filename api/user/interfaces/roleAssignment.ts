@@ -2,15 +2,17 @@ export interface RoleAssignment {
   id: string;
   actorIdType?: string;
   actorId?: string;
+  beginTime?: Date;
+  endTime?: Date;
   roleType?: string;
   roleName?: string;
   classification?: string;
   grantType?: string;
   roleCategory?: string;
   readOnly?: boolean;
-  created?: string;
-  attributes: LocationInfo
-  authorisations?: string[]
+  created?: Date;
+  attributes: LocationInfo;
+  authorisations?: string[];
 }
 
 export interface LocationInfo {
@@ -19,6 +21,8 @@ export interface LocationInfo {
   jurisdiction?: string;
   region?: string;
   isCaseAllocator?: boolean;
+  caseType?: string;
+  substantive?: string;
 }
 
 export interface LocationApi {

@@ -73,20 +73,14 @@ class WorkAllocationMockData {
         return tasks;
     }
 
-    getAllWorkTasks(count) {
-        let tasks = { tasks: [], total_records: count };
-        for (let i = 0; i < count; i++) {
-            tasks.tasks.push(this.getRelease2TaskWithPermissions(["Manage", "Read"],"AllWork",  null));
-        }
-        return tasks;
-    }
-
     getMyCases(count) {
+
         let cases = { cases: [], total_records: count };
         for (let i = 0; i < count; i++) {
-            cases.cases.push(this.getRelease2CaseWithPermission([], "MyCases", "assigned"));
+            cases.cases.push(this.getRelease2CaseWithPermission(['case-allocator'], "MyCases", "assigned"));
         }
         return cases;
+
     }
 
     getRelease1TaskList(count, actions) {
@@ -137,6 +131,10 @@ class WorkAllocationMockData {
         return this.getPersonList(count);
     }
 
+    getJudicialList(count) {
+        return this.getPersonList(count);
+    }
+
     getTaskDetails() {
         return {
             "task": WorkAllocationDataModels.getRelease1Task()
@@ -178,18 +176,20 @@ class WorkAllocationMockData {
         return task;
     }
 
-    getRelease2CaseWithPermission(roles, view) {
+    getRelease2CaseWithPermission(permissions, view, assignState) {
         view = view.replace(" ", "");
         const waCase = WorkAllocationDataModels.getRelease2Case();
-        waCase.permissions = roles;
-        waCase.actions = WorkAllocationDataModels.getRelease2CaseActions(roles, view);
+        waCase.permissions = permissions;
+        waCase.actions = WorkAllocationDataModels.getRelease2CaseActions(permissions, view, assignState);
 
         return waCase;
     }
 
     async findPersonResponse(searchTerm, personsData) {
 
-        this.findPersonsAllAdata = await this.getFindPersonsDataFrom(findPersonsDetails);
+        if (this.findPersonsAllAdata.length === 0) {
+            this.findPersonsAllAdata = await this.getFindPersonsDataFrom(findPersonsDetails);
+        }
         searchTerm = searchTerm.toLowerCase();
         const referenceData = personsData ? personsData : this.findPersonsAllAdata;
         const filteredUsers = await ArrayUtil.filter(referenceData, async (person) => {
@@ -198,7 +198,15 @@ class WorkAllocationMockData {
         return filteredUsers;
     }
 
-    getExclusionRoleCategories(){
+    getAllWorkTasks(count) {
+        let tasks = { tasks: [], total_records: count };
+        for (let i = 0; i < count; i++) {
+            tasks.tasks.push(this.getRelease2TaskWithPermissions(["Manage", "Read"], "AllWork", null));
+        }
+        return tasks;
+    }
+
+    getExclusionRoleCategories() {
         const roleCategories = [];
         const judicial = WorkAllocationDataModels.getRoleCategory();
         judicial.roleId = "judicial";
@@ -219,7 +227,7 @@ class WorkAllocationMockData {
 
     }
 
-    getRoles(){
+    getRoles() {
         const roles = [];
         const leadJudge = WorkAllocationDataModels.getRole();
         const hearingJudge = WorkAllocationDataModels.getRole();
@@ -244,15 +252,15 @@ class WorkAllocationMockData {
 
     }
 
-    getCaseRoles(roles){
+    getCaseRoles(roles) {
         const caseRolesRes = [];
-        for(const role of roles){
-            const caseRoleObj = WorkAllocationDataModels.getCaseRole();
+        for (const role of roles) {
+            const caseRoleObj = WorkAllocationDataModels.getCaseRole(role.roleCategory);
 
-            for (let key of Object.keys(role)){
+            for (let key of Object.keys(role)) {
                 caseRoleObj[key] = role[key];
             }
-            
+
             caseRolesRes.push(caseRoleObj);
         }
         return caseRolesRes;
@@ -271,6 +279,57 @@ class WorkAllocationMockData {
         }
         return caseExlusionsRes;
     }
+
+    getCaseTasks(tasksObjects, userDetails) {
+
+        const tasks = [];
+        for (let task of tasksObjects) {
+            const taskTemplate = this.getRelease2TaskDetails();
+
+            const taskAttributes = Object.keys(task);
+            for (const taskAttribute of taskAttributes) {
+                if (taskAttribute.toLowerCase().includes('date')) {
+                    const dateObj = new Date();
+                    dateObj.setDate(dateObj.getDate() + parseInt(task[taskAttribute]));
+                    taskTemplate[taskAttribute] = dateObj.toISOString();
+                } else if (taskAttribute.toLowerCase().includes('permissions')) {
+                    if (task[taskAttribute] === '') {
+                        taskTemplate[taskAttribute] = [];
+                    } else {
+                        taskTemplate[taskAttribute] = task[taskAttribute].split(',');
+                    }
+                } else if (taskAttribute.toLowerCase().includes('warnings')) {
+                    const val = task[taskAttribute].toLowerCase();
+                    taskTemplate[taskAttribute] = val.includes('true') || val.includes('yes');
+                } else if (taskAttribute.toLowerCase().trim() === 'assignee') {
+                    const val = task[taskAttribute].toLowerCase();
+                    if (val.includes('session')) {
+                        taskTemplate[taskAttribute] = userDetails.userInfo.id;
+                    } else if (val === '' || val === undefined) {
+                        taskTemplate[taskAttribute] = null;
+                        taskTemplate['assigneeName'] = null;
+                    } else {
+                        taskTemplate[taskAttribute] = v4();
+                    }
+                } else if (taskAttribute.toLowerCase().includes('description')) {
+                    const val = task[taskAttribute];
+                    if (val !== '' || val !== undefined) {
+                        taskTemplate[taskAttribute] = val;
+                    } else {
+                        delete taskTemplate[taskAttribute];
+                    }
+                }
+                else {
+                    taskTemplate[taskAttribute] = task[taskAttribute];
+                }
+            }
+
+            tasks.push(taskTemplate);
+
+        }
+        return tasks;
+    }
+
 
 }
 

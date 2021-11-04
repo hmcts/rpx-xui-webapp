@@ -158,11 +158,6 @@ describe('RolesContainerComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should get a list of case roles from the activated route snapshot', () => {
-    expect(component.roles.length).toBe(3);
-    expect(component.roles[0].name).toBe('Judge Beech');
-  });
-
   it('setDisplayAllocateLink to set true for JUDICIAL', () => {
     component.setDisplayAllocateLink(initialMockState.appConfig.userDetails, 'JUDICIAL');
     expect(component.showAllocateRoleLink).toBeTruthy();

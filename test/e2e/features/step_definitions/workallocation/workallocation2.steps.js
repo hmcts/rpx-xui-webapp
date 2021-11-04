@@ -24,8 +24,19 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     When('I navigate to All work sub navigation tab {string}', async function (secondaryNavTab) {
         await headerPage.clickPrimaryNavigationWithLabel('All work');
-        await allWorkPage.clickSubNavigationTab(secondaryNavTab);
+        
+        await BrowserWaits.retryWithActionCallback( async () => {
+            await allWorkPage.clickSubNavigationTab(secondaryNavTab);
 
+            if (secondaryNavTab.toLowerCase().includes('task')) {
+                await allWorkPage.tasksContainer.isPresent()
+            }
+
+            if (secondaryNavTab.toLowerCase().includes('case')) {
+                await allWorkPage.casesContainer.isPresent();
+            }
+        });
+        
     });
 
     Then('I validate My work sub navigations displayed', async function(datatable){
@@ -43,19 +54,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await myWorkPage.clickSubNavigationTab(subNavTabLabel);
     });
 
-
-    When('I select all work tasks filter {string} with value {string}', async function (filterType, filterValue) {
-        let filterTypeLowerCase = filterType.toLowerCase();
-        if (filterTypeLowerCase.includes("location")){
-            allWorkPage.selectLocationFilter(filterValue);
-
-        } else if (filterTypeLowerCase.includes("person")){
-            allWorkPage.selectPersonFilter(filterValue);
-        }else{
-            throw new Error(`Test implementation error.filterType ${filterType} is not yet implemented in test `);
-        }
-       
-    });
 
     When('I click cancel in check your changes of work allocation', async function () {
         await taskCheckYourChangesPage.clickCancelLink();

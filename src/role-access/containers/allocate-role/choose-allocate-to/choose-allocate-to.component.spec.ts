@@ -1,12 +1,20 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { State } from '../../../../app/store/reducers';
+import { of } from 'rxjs';
 import { ChooseRadioOptionComponent } from '../../../components';
 import { CHOOSE_ALLOCATE_TO } from '../../../constants';
+import {
+  Actions,
+  AllocateRoleNavigationEvent,
+  AllocateRoleState,
+  AllocateRoleStateData,
+  AllocateTo,
+  DurationOfRole,
+  RoleCategory
+} from '../../../models';
+import * as fromFeature from '../../../store';
 import { ChooseAllocateToComponent } from './choose-allocate-to.component';
 
 describe('ChooseAllocateToComponent', () => {
@@ -15,12 +23,33 @@ describe('ChooseAllocateToComponent', () => {
 
   let component: ChooseAllocateToComponent;
   let fixture: ComponentFixture<ChooseAllocateToComponent>;
-  let store: MockStore<State>;
-
-  let spyOnPipeToStore = jasmine.createSpy();
-  let spyOnStoreDispatch = jasmine.createSpy();
-
+  let mockStore: any;
+  const ALLOCATE_ROLE_STATE_DATA: AllocateRoleStateData = {
+    caseId: '1111111111111111',
+    assignmentId: 'a123456',
+    state: AllocateRoleState.CHOOSE_ALLOCATE_TO,
+    typeOfRole: {id: 'lead-judge', name: 'Lead judge'},
+    allocateTo: AllocateTo.RESERVE_TO_ME,
+    personToBeRemoved: {
+      id: 'p111111',
+      name: 'test1',
+      domain: '',
+    },
+    person: {
+      id: 'p222222',
+      name: 'test2',
+      domain: '',
+    },
+    durationOfRole: DurationOfRole.SEVEN_DAYS,
+    action: Actions.Allocate,
+    period: {
+      startDate: new Date(),
+      endDate: new Date(),
+    },
+    roleCategory: RoleCategory.LEGAL_OPERATIONS,
+  };
   beforeEach(async(() => {
+    mockStore = jasmine.createSpyObj('store', ['pipe', 'dispatch']);
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [ ChooseRadioOptionComponent, ChooseAllocateToComponent ],
@@ -28,17 +57,19 @@ describe('ChooseAllocateToComponent', () => {
         ReactiveFormsModule
       ],
       providers: [
-        provideMockStore(),
+        {
+          provide: Store,
+          useValue: mockStore
+        }
       ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    store = TestBed.get(Store);
-    spyOnPipeToStore = spyOn(store, 'pipe').and.callThrough();
-    spyOnStoreDispatch = spyOn(store, 'dispatch');
     fixture = TestBed.createComponent(ChooseAllocateToComponent);
+    mockStore = TestBed.get(Store);
+    mockStore.pipe.and.returnValue(of(ALLOCATE_ROLE_STATE_DATA));
     component = fixture.componentInstance;
     component.formGroup = formGroup;
     fixture.detectChanges();
@@ -46,6 +77,30 @@ describe('ChooseAllocateToComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should set data in ngOnInit', () => {
+    component.ngOnInit();
+    expect(component.typeOfRole).toEqual({id: 'lead-judge', name: 'Lead judge'});
+    expect(component.allocateTo).toBe('Reserve to me');
+    expect(component.caption).toBe('Allocate a lead judge');
+  });
+
+  it('should navigationHandler with error', () => {
+    const navEvent: AllocateRoleNavigationEvent = AllocateRoleNavigationEvent.CONTINUE;
+    component.radioOptionControl.setValue(null);
+    component.navigationHandler(navEvent);
+    fixture.detectChanges();
+    expect(component.radioOptionControl.errors).toBeTruthy();
+  });
+
+  it('should dispatchEvent', () => {
+    const navEvent: AllocateRoleNavigationEvent = AllocateRoleNavigationEvent.CONTINUE;
+    component.dispatchEvent(navEvent);
+    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseAllocateToAndGo({
+      allocateTo: AllocateTo.RESERVE_TO_ME,
+      allocateRoleState: 3
+    }));
   });
 
   afterEach(() => {

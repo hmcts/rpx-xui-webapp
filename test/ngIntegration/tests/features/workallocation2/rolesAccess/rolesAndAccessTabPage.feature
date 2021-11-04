@@ -14,13 +14,13 @@ Feature: WA Release 2: Roles and access tab
             | true            | IA           | 12345           |
 
         Given I set MOCK case roles
-            | name        | roleCategory | roleName     | email                 | start | end |
-            | user1 judge | UNKNOWN      | Lead judge   | judge_lead_1@gov.uk   | 1     | 2   |
-            | user1 legal | UNKNOWN      | Case manager | case_manager_1@gov.uk | 10    | 10  |
+            | name        | roleCategory     | roleName     | email                 | start | end |
+            | user1 judge | XXX         | Lead judge   | judge_lead_1@gov.uk   | 1     | 2   |
+            | user1 legal | XXX | Case manager | case_manager_1@gov.uk | 10    | 10  |
 
         Given I set MOCK case role exclusions
-            | name    | userType | type | notes            | added |
-         
+            | name | userType | type | notes | added |
+
         Given I start MockApp
         Given I navigate to home page
         When I click on primary navigation header tab "Case list", I see selected tab page displayed
@@ -62,7 +62,7 @@ Feature: WA Release 2: Roles and access tab
         Given I set MOCK case role exclusions
             | name    | userType | type | notes            | added |
             | judge 1 | Judicial | lead | Test exclusion 1 | -5    |
-           
+
 
         Given I start MockApp
         Given I navigate to home page
@@ -198,16 +198,16 @@ Feature: WA Release 2: Roles and access tab
             | headerName |
             | Type       |
             | Name       |
-            | User type   |
+            | User type  |
             | Notes      |
-            | Added        |
+            | Added      |
 
         Then I validate case roles table for role category "Exclusions" has data
-            | Name        | User type         | Type | Notes |Added|
-            | judge 1 | Judicial | lead | Test exclusion 1 | -5  |
-            | judge 2 | Judicial | lead | Test exclusion 2 | -5  |
-            | judge 3 | Judicial | lead | Test exclusion 3 | -15 |
-            | judge 4 | Judicial | lead | Test exclusion 4 | -55 |
+            | Name    | User type | Type | Notes            | Added |
+            | judge 1 | Judicial  | lead | Test exclusion 1 | -5    |
+            | judge 2 | Judicial  | lead | Test exclusion 2 | -5    |
+            | judge 3 | Judicial  | lead | Test exclusion 3 | -15   |
+            | judge 4 | Judicial  | lead | Test exclusion 4 | -55   |
 
 
         Then I validate case roles "Manage" link displayed status is "true" for category "Judicial"
@@ -256,7 +256,7 @@ Feature: WA Release 2: Roles and access tab
 
         Then I validate add link for role category "Judicial" is not displayed in Roles and access page
         Then I validate add link for role category "Legal Ops" is not displayed in Roles and access page
-        Then I validate add link for role category "Exclusion" is not displayed in Roles and access page
+        Then I validate add link for role category "Exclusion" is displayed in Roles and access page
 
         Then I validate case roles table has headers for role category "Judicial" in case roles and access page
             | headerName |
@@ -300,7 +300,7 @@ Feature: WA Release 2: Roles and access tab
 
         Then I validate case roles "Manage" link displayed status is "false" for category "Judicial"
         Then I validate case roles "Manage" link displayed status is "false" for category "Legal Ops"
-        Then I validate case roles "Delete" link displayed status is "false" for category "Exclusions"
+        Then I validate case roles "Delete" link displayed status is "true" for category "Exclusions"
 
 # Then I validate case roles table has headers for role category "Exclusions" in case roles and access page
 #     | headerName |

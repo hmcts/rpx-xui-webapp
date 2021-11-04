@@ -1,4 +1,4 @@
-@ng @test
+@ng
 Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
     Background: User and mock data setup
@@ -18,16 +18,18 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
 
         Given I set MOCK case roles
-            | name        | roleCategory     | roleName     | email                 | start | end |
-            | user1 judge | JUDICIAL         | Lead judge   | judge_lead_1@gov.uk   | 1     | 2   |
-            | user1 judge | JUDICIAL         | Lead judge   | judge_lead_1@gov.uk   | 2     | 2   |
-            | user1 judge | JUDICIAL         | Lead judge   | judge_lead_1@gov.uk   | 3     | 4   |
-            | user1 judge | JUDICIAL         | Lead judge   | judge_lead_1@gov.uk   | 4     | 4   |
-            | user1 judge | JUDICIAL         | Lead judge   | judge_lead_1@gov.uk   | 5     | 8   |
-            | user1 judge | JUDICIAL         | Lead judge   | judge_lead_1@gov.uk   | 6     | 8   |
-            | user1 judge | JUDICIAL         | Lead judge   | judge_lead_1@gov.uk   | 7     | 8   |
-            | user1 judge | JUDICIAL         | Lead judge   | judge_lead_1@gov.uk   | 8     | 8   |
-            | user1 legal | LEGAL_OPERATIONS | Case manager | case_manager_1@gov.uk | 9     | 20  |
+            | name        | roleCategory     | roleName     | email                   | start | end |
+            | user1 judge | JUDICIAL         | Lead judge   | judge_lead_1@gov.uk     | 1     | 2   |
+            | user1 judge | JUDICIAL         | Lead judge   | judge_lead_1@gov.uk     | 2     | 2   |
+            | user1 judge | JUDICIAL         | Lead judge   | judge_lead_1@gov.uk     | 3     | 4   |
+            | user1 judge | JUDICIAL         | Lead judge   | judge_lead_1@gov.uk     | 4     | 4   |
+            | user1 judge | JUDICIAL         | Lead judge   | judge_lead_1@gov.uk     | 5     | 8   |
+            | user1 judge | JUDICIAL         | Lead judge   | judge_lead_1@gov.uk     | 6     | 8   |
+            | user1 judge | JUDICIAL         | Lead judge   | judge_lead_1@gov.uk     | 7     | 8   |
+            | user1 judge | JUDICIAL         | Lead judge   | judge_lead_1@gov.uk     | 8     | 8   |
+            | admin1 a    | LEGAL_OPERATIONS | Case manager | caseworker_user1@gov.uk | 9     | 20  |
+            | admin1 b    | LEGAL_OPERATIONS | Case manager | caseworker_user2@gov.uk | 9     | 20  |
+
 
         Given I set MOCK case role exclusions
             | name    | userType | type | notes            | added |
@@ -102,9 +104,9 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
         When I click action row link "Reallocate" for role category "Judiciary" in Roles and access page
 
-        Then I see Allocate role work flow page "Choose how to allocate the role" with caption "Reallocate a hearing judge" is displayed
-        When I select Choose how to allocate option "Reserve to me" in work flow
-        When I click continue in work flow page "Choose how to allocate the role"
+        # Then I see Allocate role work flow page "Choose how to allocate the role" with caption "Reallocate a hearing judge" is displayed
+        # When I select Choose how to allocate option "Reserve to me" in work flow
+        # When I click continue in work flow page "Choose how to allocate the role"
 
         Then I see Allocate role work flow page "Find the person" with caption "Reallocate a lead judge" is displayed
         When I enter find person search input "jud" in work flow
@@ -121,7 +123,7 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
         Then I validate date input field "Access ends" is displayed "No" in work flow page
         When I click continue in work flow page "Duration of role"
 
-        Then I see Allocate role work flow page "Check your answers" with caption "Reallocate a lead judge" is displayed
+        Then I see Allocate role work flow page "Check your changes" with caption "Reallocate a lead judge" is displayed
 
         Then I see Check your answers page has total 3 questions
         Then I see Check your answers page has questions and answers with change link
@@ -229,9 +231,9 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
         When I click action row link "Reallocate" for role category "Legal Ops" in Roles and access page
 
-        Then I see Allocate role work flow page "Choose how to allocate the role" with caption "Reallocate a legal ops case manager" is displayed
-        When I select Choose how to allocate option "Allocate to another person" in work flow
-        When I click continue in work flow page "Choose how to allocate the role"
+        # Then I see Allocate role work flow page "Choose how to allocate the role" with caption "Reallocate a legal ops case manager" is displayed
+        # When I select Choose how to allocate option "Allocate to another person" in work flow
+        # When I click continue in work flow page "Choose how to allocate the role"
 
         Then I see Allocate role work flow page "Find the person" with caption "Reallocate a legal ops case manager" is displayed
         When I enter find person search input "jud" in work flow
@@ -309,7 +311,7 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
         Then I validate date input field "Access ends" is displayed "No" in work flow page
         When I click continue in work flow page "Duration of role"
 
-        Then I see Allocate role work flow page "Check your answers" with caption "Reallocate a lead judge" is displayed
+        Then I see Allocate role work flow page "Check your changes" with caption "Reallocate a lead judge" is displayed
 
         Then I see Check your answers page has total 2 questions
         Then I see Check your answers page has questions and answers with change link

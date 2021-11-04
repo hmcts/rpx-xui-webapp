@@ -37,6 +37,12 @@ Feature: WA Release 2: My work - My tasks - Manage links
             | 4     | Reassign task,Unassign task,Go to task |
             | 5     | Reassign task,Unassign task,Go to task |
             | 6     |                                        |
+        When I open Manage link for task at row 1
+        Then I see action link "Go to task" is present for task with Manage link open
+        When I click action link "Go to task" on task with Manage link open
+        Then I see case details page
+        Then I see case details tab label "Tasks" is displayed is "true"
+        Then I see case details tab label "Tasks" is selected is "true"
 
         Examples:
             | UserIdentifier     | UserType   | Roles                                              |

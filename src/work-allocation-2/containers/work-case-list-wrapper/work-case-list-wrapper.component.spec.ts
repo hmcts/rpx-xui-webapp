@@ -19,7 +19,7 @@ describe('WorkCaseListWrapperComponent', () => {
   let component: WorkCaseListWrapperComponent;
   let fixture: ComponentFixture<WorkCaseListWrapperComponent>;
   const mockRef = jasmine.createSpyObj('mockRef', ['']);
-  const mockRouter: MockRouter = new MockRouter();
+  const mockRouter = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate']);
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['searchCase', 'getCase']);
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem']);
@@ -76,36 +76,17 @@ describe('WorkCaseListWrapperComponent', () => {
     const secondAction = exampleCase.actions[1];
     const firstCaseAction = { invokedCase: exampleCase, action: firstAction };
     const secondCaseAction = { invokedCase: exampleCase, action: secondAction };
-    it('should handle an action', () => {
-      // need to spy on the router and set up the case action
-      spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`/mywork/list`);
-      const navigateCallsBefore = mockRouter.navigateCalls.length;
+    it('should handle a reallocate action', () => {
 
       // need to check that navigate has been called
       component.onActionHandler(firstCaseAction);
-      expect(mockRouter.navigateCalls.length).toBeGreaterThan(navigateCallsBefore);
-
-      // need to verify correct properties were called
-      const lastNavigateCall = mockRouter.navigateCalls.pop();
-      expect(lastNavigateCall.commands).toEqual([`/work/${exampleCase.id}/${firstAction.id}/`]);
-      const exampleNavigateCall = { state: { returnUrl: '/mywork/list', showAssigneeColumn: true } };
-      expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
+      expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(jasmine.stringMatching('reallocate'), {state: {backUrl: null}});
     });
 
-    it('should handle an action returned via the task manager page', () => {
+    it('should handle a remove action', () => {
       // need to spy on the router and set up the task action
-      spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`/mywork/manager`);
-      const navigateCallsBefore = mockRouter.navigateCalls.length;
-
-      // need to check that navigate has been called
       component.onActionHandler(secondCaseAction);
-      expect(mockRouter.navigateCalls.length).toBeGreaterThan(navigateCallsBefore);
-
-      // need to verify correct properties were called
-      const lastNavigateCall = mockRouter.navigateCalls.pop();
-      expect(lastNavigateCall.commands).toEqual([`/work/${exampleCase.id}/${secondAction.id}/`]);
-      const exampleNavigateCall = { state: { returnUrl: '/mywork/manager', showAssigneeColumn: true } };
-      expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
+      expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(jasmine.stringMatching('remove'), {state: {backUrl: null}});
     });
   });
 });

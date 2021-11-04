@@ -22,7 +22,8 @@
     "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal/health",
     "taskApi": "http://wa-task-management-api-prod.service.core-compute-prod.internal/health",
     "roleApi": "http://am-role-assignment-service-prod.service.core-compute-prod.internal/health",
-    "caseworkerApi": "http://rd-caseworker-ref-api-prod.service.core-compute-prod.internal/health"
+    "caseworkerApi": "http://rd-caseworker-ref-api-prod.service.core-compute-prod.internal/health",
+    "locationApi": "http://rd-location-ref-api-prod.service.core-compute-prod.internal/health"
   },
   "services": {
     "ccd": {
@@ -51,6 +52,7 @@
       "oauthCallbackUrl": "oauth2/callback",
       "iss": "https://forgerock-am.service.core-compute-idam-prod.internal:8443/openam/oauth2/hmcts"
     },
+    "location_api": "http://rd-location-ref-api-prod.service.core-compute-prod.internal",
     "work_allocation": {
       "taskApi": "http://wa-task-management-api-prod.service.core-compute-prod.internal"
     },
@@ -111,7 +113,8 @@
     "oidcEnabled": false,
     "workAllocationEnabled": false,
     "roleEnabled": false,
-    "caseworkerRefEnabled": false
+    "caseworkerRefEnabled": false,
+    "substantiveRoleEnabled": true
   },
   "helmet": {
     "contentSecurityPolicy": {

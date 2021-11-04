@@ -291,6 +291,7 @@ defineSupportCode(function ({ Given, When, Then }) {
   });
 
   Given('I am logged into Expert UI with test user identified as {string}', async function (testUserIdentifier) {
+    const world = this;
 
     const matchingUsers = testConfig.users.filter(user => user.userIdentifier === testUserIdentifier);
     if (matchingUsers.length === 0 ){

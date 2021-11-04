@@ -3,7 +3,6 @@ import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CaseResolver, editorRouting, viewerRouting as caseViewRouting } from '@hmcts/ccd-case-ui-toolkit';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
-import { CaseRolesResolverService } from '../app/resolvers/case-roles-resolver.service';
 import { CaseTasksResolverService } from '../app/resolvers/case-tasks-resolver.service';
 import {
   CaseCreateSubmitComponent,
@@ -124,10 +123,7 @@ export const ROUTES: Routes = [
               },
               {
                 path: 'roles-and-access',
-                component: RolesAndAccessContainerComponent,
-                resolve: {
-                  roles: CaseRolesResolverService
-                }
+                component: RolesAndAccessContainerComponent
               }
             ]
           },

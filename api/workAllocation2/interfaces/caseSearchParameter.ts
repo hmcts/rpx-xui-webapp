@@ -22,3 +22,8 @@ export interface SearchCaseParameter {
 export interface SearchCaseRequest {
   search_parameters: SearchCaseParameter[];
 }
+
+export interface PaginationParameter {
+  page_number: number;
+  page_size: number;
+}

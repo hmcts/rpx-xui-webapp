@@ -112,7 +112,7 @@ async function  authenticateAndGetcookies(username, password)  {
                      }
                 }
             }
-            await page.waitForSelector('.hmcts-primary-navigation', { visible: true, timeout: 10000 });
+            await page.waitForSelector('.hmcts-primary-navigation', { visible: true, timeout: 20000 });
 
             // await page.waitForSelector('.hmcts-primary-navigation', { visible: true, timeout: 10000 });
 

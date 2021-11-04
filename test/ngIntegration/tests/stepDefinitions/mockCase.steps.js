@@ -96,7 +96,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
         }
         const caseRoles = workAlloctionMockData.getCaseRoles(dateTableHashes);
-        MockApp.onGet('/workallocation2/roles/:caseId', (req, res) => {
+        MockApp.onPost('/api/role-access/roles/post', (req, res) => {
             res.send(caseRoles);
         });
     }); 
@@ -113,8 +113,19 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
         }
         const caseRoleExclusions = workAlloctionMockData.getCaseExclusions(dateTableHashes);
-        MockApp.onGet('/api/role-access/exclusions/get', (req, res) => {
+        MockApp.onPost('/api/role-access/exclusions/post', (req, res) => {
             res.send(caseRoleExclusions);
+        });
+    });
+
+    Given('I set MOCK case tasks with userDetails from reference {string}', async function (userDetailsRef, caseTasksDatatable) {
+        const userDetails = global.scenarioData[userDetailsRef];
+
+        const dateTableHashes = caseTasksDatatable.hashes();
+        const tasks = workAlloctionMockData.getCaseTasks(dateTableHashes, userDetails);
+        MockApp.onGet('/workallocation2/case/task/:caseid', (req, res) => {
+            CucumberReporter.AddJson(tasks);
+            res.send(tasks);
         });
     });
 });

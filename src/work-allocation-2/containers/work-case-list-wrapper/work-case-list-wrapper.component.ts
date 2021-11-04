@@ -6,8 +6,9 @@ import { Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { AppConstants } from '../../../app/app.constants';
 import { SessionStorageService } from '../../../app/services';
+import { Actions } from '../../../role-access/models';
 import { ListConstants } from '../../components/constants';
-import { CaseActionIds, CaseService, InfoMessage, InfoMessageType, SortOrder } from '../../enums';
+import { CaseService, InfoMessage, InfoMessageType, SortOrder } from '../../enums';
 import { Caseworker } from '../../interfaces/common';
 import { Case, CaseFieldConfig, CaseServiceConfig, InvokedCaseAction } from '../../models/cases';
 import { SortField } from '../../models/common';
@@ -28,6 +29,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
   public locations$: Observable<Location[]>;
   public pagination: PaginationParameter;
   public isPaginationEnabled$: Observable<boolean>;
+  public backUrl: string = null;
   private pCases: Case[];
   /**
    * Mock CaseServiceConfig.
@@ -186,7 +188,10 @@ export class WorkCaseListWrapperComponent implements OnInit {
 
   public performSearchPagination(): Observable<any> {
     const searchRequest = this.getSearchCaseRequestPagination();
-    return this.caseService.searchCaseWithPagination({searchRequest, view: this.view});
+    if (this.view === 'AllWorkCases') {
+      return this.caseService.getCases({searchRequest, view: this.view});
+    }
+    return this.caseService.getMyCases({searchRequest, view: this.view});
   }
 
   /**
@@ -237,21 +242,15 @@ export class WorkCaseListWrapperComponent implements OnInit {
    * action.
    */
   public onActionHandler(caseAction: InvokedCaseAction): void {
-    if (caseAction.action.id === CaseActionIds.GO) {
-      const goToCaseUrl = `/cases/case-details/${caseAction.invokedCase.case_id}`;
-      this.router.navigate([goToCaseUrl]);
-      return;
+    const actionedCase = caseAction.invokedCase;
+    const thisAction = caseAction.action;
+    let actionUrl = '';
+    if (thisAction.id === Actions.Reallocate) {
+      actionUrl = `role-access/allocate-role/${thisAction.id}?caseId=${actionedCase.case_id}&roleCategory=${actionedCase.role_category}&assignmentId=${actionedCase.id}&caseType=${actionedCase.case_category}&jurisdiction=${actionedCase.jurisdiction}&userName=${actionedCase.assignee}&typeOfRole=${actionedCase.case_role}`;
+    } else if (thisAction.id === Actions.Remove) {
+      actionUrl = `role-access/allocate-role/${thisAction.id}?caseId=${actionedCase.case_id}&assignmentId=${actionedCase.id}&caseType=${actionedCase.case_category}&jurisdiction=${actionedCase.jurisdiction}&typeOfRole=${actionedCase.case_role}`;
     }
-
-    if (this.returnUrl.includes('manager') && caseAction.action.id === CaseActionIds.RELEASE) {
-      this.specificPage = 'manager';
-    }
-    const state = {
-      returnUrl: this.returnUrl,
-      showAssigneeColumn: caseAction.action.id !== CaseActionIds.ASSIGN
-    };
-    const actionUrl = `/work/${caseAction.invokedCase.id}/${caseAction.action.id}/${this.specificPage}`;
-    this.router.navigate([actionUrl], {state});
+    this.router.navigateByUrl(actionUrl, {state: {backUrl: this.backUrl}});
   }
 
   public onPaginationHandler(pageNumber: number): void {

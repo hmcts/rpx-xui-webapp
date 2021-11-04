@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { UserService } from 'src/app/services/user/user.service';
+import { UserService } from '../../../app/services/user/user.service';
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
 
 

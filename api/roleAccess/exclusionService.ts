@@ -1,4 +1,5 @@
 import { AxiosResponse } from 'axios';
+import { sendPost } from '../common/crudService';
 import { NextFunction, Response } from 'express';
 import { getConfigValue } from '../configuration';
 import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
@@ -9,6 +10,9 @@ import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { CaseRole } from '../workAllocation2/interfaces/caseRole';
 import { RoleCategory } from './models/allocate-role.enum';
 import { CaseRoleRequestPayload, RoleExclusion } from './models/caseRoleRequestPayload';
+import { refreshRoleAssignmentForUser } from '../user';
+
+const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
 
 export const release2ContentType =
   'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0';
@@ -28,21 +32,40 @@ export async function findExclusionsForCaseId(req: EnhancedRequest, res: Respons
 }
 
 export async function confirmUserExclusion(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const exclusion = [
-    {
-      added: Date.UTC(2021, 7, 1),
-      name: 'Judge ABCDE',
-      notes: 'this case been remitted from Upper Tribunal and required different judge',
-      type: 'Other',
-      userType: 'Judicial',
+  const body = req.body;
+  // @ts-ignore
+  const currentUser = req.session.passport.user.userinfo;
+  const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
+  const roleAssignmentsBody = prepareExclusionBody(currentUserId, body);
+  const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
+  console.log(basePath);
+  console.log(JSON.stringify(roleAssignmentsBody));
+  const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
+  await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
+  const {status, data} = response;
+  return res.status(status).send(data);
+}
+
+export function prepareExclusionBody(currentUserId: string, body: any): any {
+  return {
+    roleRequest: {
+      assignerId: currentUserId,
+      replaceExisting: false,
     },
-  ];
-  const errorCodes: string[] = ['400', '401', '402', '403', '500', '503'];
-  const value: string = req.body.exclusionDescription;
-  if (errorCodes.indexOf(value) !== -1) {
-    return res.status(parseInt(value, 10)).send(`{status: ${value}}`);
-  }
-  return res.status(200).send(exclusion);
+    requestedRoles: [{
+      roleType: 'CASE',
+      grantType: 'EXCLUDED',
+      classification: 'RESTRICTED',
+      attributes: {
+        caseId: body.caseId,
+        jurisdiction: 'IA',
+      },
+      roleCategory : 'LEGAL_OPERATIONS',
+      roleName: 'conflict-of-interest',
+      actorIdType: 'IDAM',
+      actorId: currentUserId
+    }],
+  };
 }
 
 export async function deleteUserExclusion(req: EnhancedRequest, res: Response, next: NextFunction) {
@@ -99,7 +122,7 @@ export function getExclusionRequestPayload(caseId: string, jurisdiction: string,
               caseType: [caseType],
               jurisdiction: [jurisdiction],
             },
-          grantType: ['EXCLUDED'],
+          grantType: ['EXCLUDED']
       },
     ],
   };
@@ -117,7 +140,7 @@ export function getLegalAndJudicialRequestPayload(caseId: string,
               jurisdiction: [jurisdiction],
             },
           roleCategory: ['LEGAL_OPERATIONS'],
-          roleName: ['case-manager'],
+          roleName: ['case-manager']
       },
     ],
   };

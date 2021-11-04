@@ -1,5 +1,4 @@
 import { NextFunction, Response } from 'express';
-import { getWASupportedJurisdictions } from '../waSupportedJurisdictions/index';
 import { handleGet, handlePost } from '../common/mockService';
 import { getConfigValue, showFeature } from '../configuration';
 import {
@@ -11,6 +10,7 @@ import {
 } from '../configuration/references';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
+import { getWASupportedJurisdictionsList } from '../waSupportedJurisdictions/index';
 import * as caseServiceMock from './caseService.mock';
 import {
   getUserIdsFromRoleApiResponse,
@@ -187,7 +187,7 @@ export async function retrieveAllCaseWorkers(req: EnhancedRequest, res: Response
     return req.session.caseworkers;
   }
   const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
-  const jurisdictions = await getWASupportedJurisdictions(req, res, null);
+  const jurisdictions = getWASupportedJurisdictionsList();
   const payload = prepareRoleApiRequest(jurisdictions);
   const {data} = await handlePostRoleAssignments(roleApiPath, payload, req);
   const userIds = getUserIdsFromRoleApiResponse(data);

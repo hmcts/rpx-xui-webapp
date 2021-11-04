@@ -32,4 +32,10 @@ describe('WA Supported Jurisdictions', () => {
     expect(res.send).to.have.been.calledWith(sinon.match(response));
   })
 
+  it('should get only the list of supported jurisdictions', async() => {
+
+    const jurisdictionList = waSupportedJurisdictions.getWASupportedJurisdictionsList();
+    expect(jurisdictionList).to.deep.equal(['IA']);
+  })
+
 })

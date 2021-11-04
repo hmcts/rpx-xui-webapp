@@ -432,8 +432,10 @@ export function mapCasesFromData(
     const roleAssignment = roleAssignmentList.find(
       role => role.attributes && role.attributes.caseId === caseDetail.id.toString()
     );
-    const roleCase = mapRoleCaseData(roleAssignment, caseDetail);
-    roleCaseList.push(roleCase);
+    if (roleAssignment) {
+      const roleCase = mapRoleCaseData(roleAssignment, caseDetail);
+      roleCaseList.push(roleCase);
+    }
   });
   return roleCaseList;
 }

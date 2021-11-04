@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CaseHearingModel } from '../../../hearings/models/caseHearing.model';
-import { Actions, HearingsSectionStatusEnum } from '../../../hearings/models/hearings.enum';
+import { Actions, EXUISectionStatusEnum } from '../../../hearings/models/hearings.enum';
 
 @Component({
   selector: 'exui-case-hearings-list',
@@ -10,9 +10,8 @@ import { Actions, HearingsSectionStatusEnum } from '../../../hearings/models/hea
 })
 
 export class CaseHearingsListComponent implements OnInit {
-
   @Input()
-  public status: HearingsSectionStatusEnum;
+  public status: EXUISectionStatusEnum;
 
   @Input()
   public hearingsList$: Observable<CaseHearingModel[]>;
@@ -25,16 +24,16 @@ export class CaseHearingsListComponent implements OnInit {
   public hasReadOnlyAction: boolean = false;
 
   public ngOnInit(): void {
-    if (this.status === HearingsSectionStatusEnum.PAST_AND_CANCELLED) {
+    if (this.status === EXUISectionStatusEnum.PAST_AND_CANCELLED) {
       this.hasReadOnlyAction = true;
     } else {
-      if (this.actions.includes(Actions.Update)) {
+      if (this.actions.includes(Actions.UPDATE)) {
         this.hasUpdateAction = true;
       }
-      if (this.actions.includes(Actions.Delete)) {
+      if (this.actions.includes(Actions.DELETE)) {
         this.hasDeleteAction = true;
       }
-      if (this.actions.length === 1 && this.actions.includes(Actions.Read)) {
+      if (this.actions.length === 1 && this.actions.includes(Actions.READ)) {
         this.hasReadOnlyAction = true;
       }
     }

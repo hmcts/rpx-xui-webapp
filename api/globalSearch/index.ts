@@ -73,7 +73,7 @@ export async function getSearchResults(req: EnhancedRequest, res: Response, next
 							"sortDirection": "ascending"
 					}
 			],
-			"maxReturnRecordCount": 500,
+			"maxReturnRecordCount": 25,
 			"startRecordNumber": 1
 	};
 

@@ -4,48 +4,93 @@ import { CaseHearingsMainModel } from '../models/caseHearingsMain.model';
 import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
 
 const HEARING_DAY_SCHEDULE_1: HearingDayScheduleModel = {
-  hearingStartDateTime: '2021-05-01T16:00:00.000+0000',
+  hearingStartDateTime: '2021-01-12T16:00:00.000+0000',
   hearingEndDateTime: '2021-05-04T16:00:00.000+0000',
   listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba5',
   hearingVenueId: 'venue 1',
   hearingRoomId: 'room 1',
-  hearingPanel: ['child'],
+  hearingPanel: ['hearingJudgeId1'],
 };
 
 const HEARING_DAY_SCHEDULE_2: HearingDayScheduleModel = {
-  hearingStartDateTime: '2021-06-01T16:00:00.000+0000',
+  hearingStartDateTime: '2021-02-12T16:00:00.000+0000',
   hearingEndDateTime: '2021-06-04T16:00:00.000+0000',
   listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba4',
   hearingVenueId: 'venue 2',
   hearingRoomId: 'room 2',
-  hearingPanel: ['child'],
+  hearingPanel: ['hearingJudgeId1'],
 };
 
 const HEARING_DAY_SCHEDULE_3: HearingDayScheduleModel = {
-  hearingStartDateTime: '2021-07-01T16:00:00.000+0000',
-  hearingEndDateTime: '2021-07-04T16:00:00.000+0000',
+  hearingStartDateTime: '2021-03-12T16:00:00.000+0000',
+  hearingEndDateTime: '2021-06-12T16:00:00.000+0000',
   listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc4',
   hearingVenueId: 'venue 3',
   hearingRoomId: 'room 3',
-  hearingPanel: ['child'],
+  hearingPanel: ['hearingJudgeId1'],
 };
 
 const HEARING_DAY_SCHEDULE_4: HearingDayScheduleModel = {
-  hearingStartDateTime: '2021-08-01T16:00:00.000+0000',
-  hearingEndDateTime: '2021-08-04T16:00:00.000+0000',
+  hearingStartDateTime: '2021-10-12T16:00:00.000+00000',
+  hearingEndDateTime: '2021-11-12T16:00:00.000+0000',
   listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc5',
   hearingVenueId: 'venue 4',
   hearingRoomId: 'room 4',
-  hearingPanel: ['child'],
+  hearingPanel: ['hearingJudgeId2'],
 };
 
 const HEARING_DAY_SCHEDULE_5: HearingDayScheduleModel = {
-  hearingStartDateTime: '2021-09-01T16:00:00.000+0000',
-  hearingEndDateTime: '2021-09-04T16:00:00.000+0000',
+  hearingStartDateTime: '2021-04-12T16:00:00.000+0000',
+  hearingEndDateTime: '2021-05-12T16:00:00.000+0000',
   listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc6',
   hearingVenueId: 'venue 5',
   hearingRoomId: 'room 5',
-  hearingPanel: ['child'],
+  hearingPanel: ['hearingJudgeId3'],
+};
+
+const HEARING_DAY_SCHEDULE_6: HearingDayScheduleModel = {
+  hearingStartDateTime: '2021-05-02T16:00:00.000+0000',
+  hearingEndDateTime: '2021-05-20T16:00:00.000+0000',
+  listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba5',
+  hearingVenueId: 'venue 1',
+  hearingRoomId: 'room 1',
+  hearingPanel: ['hearingJudgeId1'],
+};
+
+const HEARING_DAY_SCHEDULE_7: HearingDayScheduleModel = {
+  hearingStartDateTime: '2021-06-12T16:00:00.000+0000',
+  hearingEndDateTime: '2021-07-12T16:00:00.000+0000',
+  listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba4',
+  hearingVenueId: 'venue 2',
+  hearingRoomId: 'room 2',
+  hearingPanel: ['hearingJudgeId1'],
+};
+
+const HEARING_DAY_SCHEDULE_8: HearingDayScheduleModel = {
+  hearingStartDateTime: '2021-02-13T16:00:00.000+0000',
+  hearingEndDateTime: '2021-03-13T16:00:00.000+0000',
+  listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc4',
+  hearingVenueId: 'venue 3',
+  hearingRoomId: 'room 3',
+  hearingPanel: ['hearingJudgeId1'],
+};
+
+const HEARING_DAY_SCHEDULE_9: HearingDayScheduleModel = {
+  hearingStartDateTime: '2021-03-12T16:00:00.000+0000',
+  hearingEndDateTime: '2021-04-12T16:00:00.000+0000',
+  listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc5',
+  hearingVenueId: 'venue 4',
+  hearingRoomId: 'room 4',
+  hearingPanel: ['hearingJudgeId2'],
+};
+
+const HEARING_DAY_SCHEDULE_10: HearingDayScheduleModel = {
+  hearingStartDateTime: '2021-04-12T16:00:00.000+0000',
+  hearingEndDateTime: '2021-05-12T16:00:00.000+0000',
+  listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc6',
+  hearingVenueId: 'venue 5',
+  hearingRoomId: 'room 5',
+  hearingPanel: ['hearingJudgeId3'],
 };
 
 const CASE_HEARING_1: CaseHearingModel = {
@@ -112,12 +157,12 @@ const CASE_HEARING_6: CaseHearingModel = {
   hearingID: 'h222222',
   hearingType: 'Next hearing',
   hmcStatus: 'Upcoming',
-  creationDateTime: '2021-052T16:00:00.000+0000',
+  creationDateTime: '2021-05-02T16:00:00.000+0000',
   lastResponseReceivedDateTime: '2021-11-12T16:00:00.000+0000',
   responseVersion: 'rv2',
   hearingListingStatus: 'LISTED',
   listAssistCaseStatus: '',
-  hearingDaySchedule: [HEARING_DAY_SCHEDULE_2],
+  hearingDaySchedule: [HEARING_DAY_SCHEDULE_6],
 };
 
 const CASE_HEARING_7: CaseHearingModel = {
@@ -129,7 +174,7 @@ const CASE_HEARING_7: CaseHearingModel = {
   responseVersion: 'rv2',
   hearingListingStatus: 'LISTED',
   listAssistCaseStatus: '',
-  hearingDaySchedule: [HEARING_DAY_SCHEDULE_2],
+  hearingDaySchedule: [HEARING_DAY_SCHEDULE_7],
 };
 
 const CASE_HEARING_8: CaseHearingModel = {
@@ -141,7 +186,7 @@ const CASE_HEARING_8: CaseHearingModel = {
   responseVersion: 'rv1',
   hearingListingStatus: 'WAITING TO BE LISTED',
   listAssistCaseStatus: '',
-  hearingDaySchedule: [HEARING_DAY_SCHEDULE_1],
+  hearingDaySchedule: [HEARING_DAY_SCHEDULE_8],
 };
 
 const CASE_HEARING_9: CaseHearingModel = {
@@ -153,7 +198,7 @@ const CASE_HEARING_9: CaseHearingModel = {
   responseVersion: 'rv5',
   hearingListingStatus: 'CANCELLED',
   listAssistCaseStatus: '',
-  hearingDaySchedule: [HEARING_DAY_SCHEDULE_5],
+  hearingDaySchedule: [HEARING_DAY_SCHEDULE_9],
 };
 
 const CASE_HEARING_10: CaseHearingModel = {
@@ -165,7 +210,7 @@ const CASE_HEARING_10: CaseHearingModel = {
   responseVersion: 'rv5',
   hearingListingStatus: 'CANCELLED',
   listAssistCaseStatus: '',
-  hearingDaySchedule: [HEARING_DAY_SCHEDULE_5],
+  hearingDaySchedule: [HEARING_DAY_SCHEDULE_10],
 };
 
 export const HEARINGS_LIST: CaseHearingsMainModel = {

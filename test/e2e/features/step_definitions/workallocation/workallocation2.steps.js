@@ -24,8 +24,19 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     When('I navigate to All work sub navigation tab {string}', async function (secondaryNavTab) {
         await headerPage.clickPrimaryNavigationWithLabel('All work');
-        await allWorkPage.clickSubNavigationTab(secondaryNavTab);
+        
+        await BrowserWaits.retryWithActionCallback( async () => {
+            await allWorkPage.clickSubNavigationTab(secondaryNavTab);
 
+            if (secondaryNavTab.toLowerCase().includes('task')) {
+                await allWorkPage.tasksContainer.isPresent()
+            }
+
+            if (secondaryNavTab.toLowerCase().includes('case')) {
+                await allWorkPage.casesContainer.isPresent();
+            }
+        });
+        
     });
 
     Then('I validate My work sub navigations displayed', async function(datatable){

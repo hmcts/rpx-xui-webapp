@@ -16,6 +16,7 @@ class NodeAppMockData {
         const userDetails = nodeAppDataModel.getUserDetails_oidc();
         userDetails.userInfo.roles = roles;
         userDetails.userInfo.id = idamId;
+        userDetails.userInfo.uid = idamId;
         return userDetails;
     }
 

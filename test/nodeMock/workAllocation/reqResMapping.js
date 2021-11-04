@@ -82,7 +82,7 @@ module.exports = {
             const pageSize = requestedView === "mycases" ? 10000 : req.body.searchRequest.pagination_parameters.page_size;
 
             let cases = [];
-            if (requestedView === "mycases" || requestedView === "allworkcases") {
+            if (requestedView === "mycases" ) {
                 cases = global.scenarioData && global.scenarioData[`workallocation2.${requestedView}`] ? global.scenarioData[`workallocation2.${requestedView}`] : workAllocationMockData.getMyCases(pageSize ? pageSize  * 5: 125);
             }  else {
                 throw new Error("Unrecognised case list view : " + requestedView);
@@ -94,6 +94,34 @@ module.exports = {
 
                 const startIndexForPage =  ((pageNum - 1) * pageSize) - 1;
                 const endIndexForPage =  (startIndexForPage + pageSize) < cases.total_records ? startIndexForPage + pageSize - 1 : cases.total_records - 1;
+                for (let i = startIndexForPage; i <= endIndexForPage; i++) {
+                    thisPageCases.push(cases.cases[i]);
+                }
+                const responseData = { cases: thisPageCases, total_records: cases.total_records };
+                res.send(responseData);
+            } catch (e) {
+                res.status(500).send({ error: 'mock error occured', stack: e });
+            }
+        },
+        '/workallocation2/all-work/cases': (req, res) => {
+
+            const requestedView = req.body.view.toLowerCase();
+            const pageNum = requestedView === "allworkcases" ? 1 : req.body.searchRequest.pagination_parameters.page_number;
+            const pageSize = requestedView === "allworkcases" ? 25 : req.body.searchRequest.pagination_parameters.page_size;
+
+            let cases = [];
+            if (requestedView === "allworkcases") {
+                cases = global.scenarioData && global.scenarioData[`workallocation2.${requestedView}`] ? global.scenarioData[`workallocation2.${requestedView}`] : workAllocationMockData.getMyCases(pageSize ? pageSize * 5 : 125);
+            } else {
+                throw new Error("Unrecognised case list view : " + requestedView);
+            }
+            try {
+                const thisPageCases = [];
+
+
+
+                const startIndexForPage = ((pageNum - 1) * pageSize) - (pageNum <= 1 ? 0 : 1);
+                const endIndexForPage = (startIndexForPage + pageSize) < cases.total_records ? startIndexForPage + pageSize - 1 : cases.total_records - 1;
                 for (let i = startIndexForPage; i <= endIndexForPage; i++) {
                     thisPageCases.push(cases.cases[i]);
                 }

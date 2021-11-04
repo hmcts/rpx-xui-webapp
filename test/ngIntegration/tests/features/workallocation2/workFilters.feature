@@ -1,4 +1,4 @@
-@ng
+@ng @test
 Feature: WA Release 2: My work - Work filters
 
     Background: Mock and browser setup
@@ -40,8 +40,8 @@ Feature: WA Release 2: My work - Work filters
         Then I validate following work location selected
             | locationName  |
             | Aldgate Tower |
-            | Bradford |
-            | Newcastle |
+            | Bradford      |
+            | Newcastle     |
         When I click work filter button
         Then I validate location filter is not displayed
         When I click work filter button
@@ -60,7 +60,7 @@ Feature: WA Release 2: My work - Work filters
         Then I validate following work location selected
             | locationName  |
             | Aldgate Tower |
-            | Glasgow |
+            | Glasgow       |
             | Newcastle     |
 
         When I click work location filter with label "Bradford"
@@ -69,24 +69,27 @@ Feature: WA Release 2: My work - Work filters
         Then I validate location filter is not displayed
         When I click work filter button
         Then I validate location filter is displayed
-        
+
         Then I validate following work location selected
             | locationName  |
             | Aldgate Tower |
-            | Glasgow |
+            | Glasgow       |
             | Newcastle     |
         Examples:
-            | UserType       | Roles                                          |
+            | UserType       | Roles                                              |
             | Caseworker IAC | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            # | Judge          | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+    # | Judge          | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
 
 
     Scenario Outline:  Work filters location select and unselect "<UserType>"
-        Given I set MOCK with "wa_release_2" release user and roles "<Roles>"
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles " caseworker-ia-caseofficer,caseworker-ia-admofficer, case-allocator" with reference "userDetails"
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | isCaseAllocator | jurisdiction | primaryLocation |
+            | true            | IA           | 12345           |
         Given I start MockApp
         Given I navigate to home page
-# When I click on primary navigation header "My work"
+        # When I click on primary navigation header "My work"
 
         Then I see work filter button displayed
         Then I validate work filter button text is "Show work filter"
@@ -112,18 +115,21 @@ Feature: WA Release 2: My work - Work filters
             | locationName |
             | Bradford     |
         Examples:
-            | UserType       | Roles                                              |
+            | UserType | Roles                                           |
             # | Caseworker IAC | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            | Judge          | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+            | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker |
 
 
 
 
     Scenario Outline:  Work filters Reset for "<UserType>"
-        Given I set MOCK with "wa_release_2" release user and roles "<Roles>"
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles " caseworker-ia-caseofficer,caseworker-ia-admofficer" with reference "userDetails"
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | isCaseAllocator | jurisdiction | primaryLocation |
+            | true            | IA           | 12345           |
         Given I start MockApp
         Given I navigate to home page
-# When I click on primary navigation header "My work"
+        # When I click on primary navigation header "My work"
         Then I see work filter button displayed
         Then I validate work filter button text is "Show work filter"
         Then I validate work location filter batch and hint labels are not displayed
@@ -164,11 +170,14 @@ Feature: WA Release 2: My work - Work filters
         Examples:
             | UserType       | Roles                                              |
             | Caseworker IAC | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            # | Judge          | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+    # | Judge          | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
 
     Scenario Outline:  Work filters applied selection persistence within and across session "<UserType>"
-        Given I set MOCK with "wa_release_2" release user and roles "<Roles>"
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles " caseworker-ia-caseofficer,caseworker-ia-admofficer" with reference "userDetails"
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | isCaseAllocator | jurisdiction | primaryLocation |
+            | true            | IA           | 12345           |
         Given I start MockApp
         Given I navigate to home page
         # When I click on primary navigation header "My work"
@@ -186,9 +195,9 @@ Feature: WA Release 2: My work - Work filters
             | Aldgate Tower |
             | Bradford      |
             | Newcastle     |
-        
+
         When I click work location filter Apply button
-        
+
         Then I validate location filter is not displayed
         Then I validate work location filter batch and hint labels are displayed
 
@@ -226,18 +235,21 @@ Feature: WA Release 2: My work - Work filters
             | Newcastle     |
 
         Examples:
-            | UserType       | Roles                                              |
+            | UserType | Roles                                           |
             # | Caseworker IAC | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            | Judge          | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+            | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker |
 
 
     Scenario Outline:  Work filters applied to all sub navigation tabs "<UserType>"
-        Given I set MOCK with "wa_release_2" release user and roles "<Roles>"
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles " caseworker-ia-caseofficer,caseworker-ia-admofficer" with reference "userDetails"
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | isCaseAllocator | jurisdiction | primaryLocation |
+            | true            | IA           | 12345           |
         Given I start MockApp
         Given I navigate to home page
         When I click on primary navigation header "My work"
         Then I see work filter button displayed
-        
+
         When I click work filter button
         Then I validate location filter is displayed
         When I click work location filter with label "Bradford"
@@ -264,7 +276,7 @@ Feature: WA Release 2: My work - Work filters
             | Aldgate Tower |
             | Bradford      |
             | Newcastle     |
-       
+
         Given I reset reference "workallocationCasesRequest" value to null
         When I click My work sub navigation tab "My cases"
         When I wait for reference "workallocationCasesRequest" value not null
@@ -277,6 +289,6 @@ Feature: WA Release 2: My work - Work filters
         Examples:
             | UserType       | Roles                                              |
             | Caseworker IAC | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            # | Judge          | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+# | Judge          | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
 

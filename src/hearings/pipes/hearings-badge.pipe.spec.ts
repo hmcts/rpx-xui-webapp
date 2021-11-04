@@ -1,5 +1,5 @@
-import { EXUIDisplayStatusEnum } from '../models/hearings.enum';
-import { HearingsBadgePipe } from './hearings-badge.pipe';
+import {EXUIDisplayStatusEnum} from '../models/hearings.enum';
+import {HearingsBadgePipe} from './hearings-badge.pipe';
 
 describe('HearingsBadgePipe', () => {
 
@@ -24,9 +24,34 @@ describe('HearingsBadgePipe', () => {
     expect(badge).toBe('govuk-tag govuk-tag--green');
   });
 
-  it('should return GREY badge if to be listed', () => {
+  it('should return GREY badge if awaiting listing', () => {
     const badge = hearingsBadgePipe.transform(EXUIDisplayStatusEnum.AWAITING_LISTING);
     expect(badge).toBe('govuk-tag govuk-tag--grey');
+  });
+
+  it('should return GREY badge if update requested', () => {
+    const badge = hearingsBadgePipe.transform(EXUIDisplayStatusEnum.UPDATE_REQUESTED);
+    expect(badge).toBe('govuk-tag govuk-tag--grey');
+  });
+
+  it('should return GREY badge if cancellation requested', () => {
+    const badge = hearingsBadgePipe.transform(EXUIDisplayStatusEnum.CANCELLATION_REQUESTED);
+    expect(badge).toBe('govuk-tag govuk-tag--grey');
+  });
+
+  it('should return ORANGE badge if failure', () => {
+    const badge = hearingsBadgePipe.transform(EXUIDisplayStatusEnum.FAILURE);
+    expect(badge).toBe('govuk-tag govuk-tag--orange');
+  });
+
+  it('should return BLUE badge if awaiting actual', () => {
+    const badge = hearingsBadgePipe.transform(EXUIDisplayStatusEnum.AWAITING_ACTUALS);
+    expect(badge).toBe('govuk-tag govuk-tag--blue');
+  });
+
+  it('should return YELLOW badge if adjourned', () => {
+    const badge = hearingsBadgePipe.transform(EXUIDisplayStatusEnum.ADJOURNED);
+    expect(badge).toBe('govuk-tag govuk-tag--yellow');
   });
 
   it('should return nothing if no matched status', () => {

@@ -1,7 +1,7 @@
-import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
 import { NextFunction, Response } from 'express';
-import { GlobalSearchService } from 'interfaces/globalSearchService';
-import { EnhancedRequest } from 'lib/models';
+import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
+import { GlobalSearchService } from '../interfaces/globalSearchService';
+import { EnhancedRequest } from '../lib/models';
 import { handleGet, handlePost } from '../common/crudService';
 import { getConfigValue } from '../configuration';
 import {
@@ -50,41 +50,13 @@ export async function getServices(req: EnhancedRequest, res: Response, next: Nex
  */
 export async function getSearchResults(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const searchRequest = req.body;
     console.log('search request api', req.body);
 
-		const request = {
-			"searchCriteria": {
-				"CCDJurisdictionIds": [
-					"BEFTA_MASTER"
-				]
-			},
-			"sortCriteria": [
-					{
-							"sortBy": "caseName",
-							"sortDirection": "descending"
-					},
-					{
-							"sortBy": "caseManagementCategoryName",
-							"sortDirection": "ascending"
-					},
-					{
-							"sortBy": "createdDate",
-							"sortDirection": "ascending"
-					}
-			],
-			"maxReturnRecordCount": 25,
-			"startRecordNumber": 1
-	};
-
-	console.log('request', request);
-
     // const path = `${getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH)}/globalsearch`;
-		const path = 'http://ccd-ac-int-data-store-api-demo.service.core-compute-demo.internal/globalSearch';
+    const path = 'http://ccd-ac-int-data-store-api-demo.service.core-compute-demo.internal/globalSearch';
     console.log('path:', path);
-    const response = await handlePost(path, request, req, next);
-		console.log(response.data);
-    return response.data;
+    const response = await handlePost(path, req.body, req, next);
+    return res.status(response.status).send(response.data);
   } catch (error) {
     next(error);
   }

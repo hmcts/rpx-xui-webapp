@@ -209,7 +209,7 @@ describe('Work allocations MVP', () => {
             'X-XSRF-TOKEN': xsrfToken,
         };
 
-        const reqBody =   getSearchTaskReqBody("TaskManager", []).getRequestBody();
+        const reqBody = getSearchTaskReqBody("TaskManager", ["77f9a4a4-1bf1-4903-aa6c-cab334875d91"]).getRequestBody();
         const headersForGetTasks = {
             'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
             'content-length': JSON.stringify(reqBody).length
@@ -247,7 +247,7 @@ describe('Work allocations MVP', () => {
             'X-XSRF-TOKEN': xsrfToken,
         };
 
-        const reqBody = getSearchTaskReqBody("TaskManager", []).getRequestBody();
+        const reqBody = getSearchTaskReqBody("TaskManager", ["77f9a4a4-1bf1-4903-aa6c-cab334875d91"]).getRequestBody();
         const headersForGetTasks = {
             'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
             'content-length': JSON.stringify(reqBody).length
@@ -310,18 +310,24 @@ describe('Work allocations MVP', () => {
                         taskRequestBody.searchWithUser(user);
                     });
                 }else{
-                    taskRequestBody.searchWithUser(null);
+                    taskRequestBody.searchWithAllUsers();
                 }
                 
                 break;
             case "AvailableTasks":
-                taskRequestBody.searchWithlocation(null);
+                taskRequestBody.searchWithAllLocations();
                 taskRequestBody.searchWithState('unassigned');
                 break;
 
             case "TaskManager":
-                taskRequestBody.searchWithlocation(null);
-                taskRequestBody.searchWithUser(null);
+                taskRequestBody.searchWithAllLocations();
+                if (users) {
+                    users.forEach(user => {
+                        taskRequestBody.searchWithUser(user);
+                    });
+                } else {
+                    taskRequestBody.searchWithAllUsers();
+                }
 
                 break;
         }

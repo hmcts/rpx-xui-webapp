@@ -253,10 +253,8 @@ export class SearchFormComponent implements OnInit, OnDestroy {
         postcode: this.formGroup.get('postcode').value,
         emailAddress: this.formGroup.get('email').value,
         // Date format expected by API endpoint is yyyy-mm-dd
-        dateOfBirth: `${this.formGroup.get('dateOfBirth_year').value}-${this.formGroup.get('dateOfBirth_month').value}-` +
-        `${this.formGroup.get('dateOfBirth_day').value}`,
-        dateOfDeath: `${this.formGroup.get('dateOfDeath_year').value}-${this.formGroup.get('dateOfDeath_month').value}-` +
-        `${this.formGroup.get('dateOfDeath_day').value}`
+        dateOfBirth: this.getDateFormatted(DateCategoryType.DATE_OF_BIRTH),
+        dateOfDeath: this.getDateFormatted(DateCategoryType.DATE_OF_DEATH)
       };
 
       this.searchService.storeState(SearchStatePersistenceKey.SEARCH_PARAMS, searchParameters);
@@ -267,6 +265,27 @@ export class SearchFormComponent implements OnInit, OnDestroy {
       // Navigate to the Search Results page
       this.router.navigate(['results'], {relativeTo: this.route});
     }
+  }
+
+  private getDateFormatted(dateCategoryType: string): string {
+    const day = dateCategoryType === DateCategoryType.DATE_OF_BIRTH
+      ? this.formGroup.get('dateOfBirth_day').value
+      : this.formGroup.get('dateOfDeath_day').value;
+
+    const month = dateCategoryType === DateCategoryType.DATE_OF_BIRTH
+      ? this.formGroup.get('dateOfBirth_month').value
+      : this.formGroup.get('dateOfDeath_month').value;
+
+    const year = dateCategoryType === DateCategoryType.DATE_OF_BIRTH
+      ? this.formGroup.get('dateOfBirth_year').value
+      : this.formGroup.get('dateOfDeath_year').value
+
+    if (day === '' || month === '' || year === '') {
+      return null;
+    }
+
+    // Date format expected by API endpoint is yyyy-mm-dd
+    return `${year}-${month}-${day}`;
   }
 
   public ngOnDestroy(): void {

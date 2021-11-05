@@ -213,7 +213,7 @@ describe('Work allocations MVP', () => {
         const locationsResponse = await Request.get(`workallocation/location`, headers, 200);
 
         const locations = [];
-        for (const loc of locationsResponse.body){
+        for (const loc of locationsResponse.data){
             locations.push(loc.id);
         }
 
@@ -257,7 +257,7 @@ describe('Work allocations MVP', () => {
         const locationsResponse = await Request.get(`workallocation/location`, headers, 200);
 
         const locations = [];
-        for (const loc of locationsResponse.body) {
+        for (const loc of locationsResponse.data) {
             locations.push(loc.id);
         }
 

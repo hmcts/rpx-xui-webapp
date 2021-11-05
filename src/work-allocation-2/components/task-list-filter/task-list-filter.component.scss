@@ -17,3 +17,16 @@
     color: #0b0c0c;
   }
 }
+
+
+div[field="locations"] {
+  > div {
+    flex-basis: calc(50% - 34px);
+  }
+}
+
+div[field="types-of-work"] {
+  > div {
+    flex-basis: calc(100% - 34px);
+  }
+}

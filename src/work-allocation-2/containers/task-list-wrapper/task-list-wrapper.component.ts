@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { Observable, Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { debounceTime, filter } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 
@@ -29,12 +29,13 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public showSpinner$: Observable<boolean>;
   public sortedBy: SortField;
   public pagination: PaginationParameter;
-  private pTasks: Task[];
   public selectedLocations: string[] = [];
-  private tasksLoaded: boolean = false;
+  public taskServiceConfig: TaskServiceConfig;
   protected userDetailsKey: string = 'userDetails';
-
+  private pTasks: Task[];
+  private tasksLoaded: boolean = false;
   private selectedLocationsSubscription: Subscription;
+  private pTasksTotal: number;
 
   /**
    * Take in the Router so we can navigate when actions are clicked.
@@ -53,7 +54,6 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected filterService: FilterService
   ) {
   }
-  public taskServiceConfig: TaskServiceConfig;
 
   public get tasks(): Task[] {
     return this.pTasks;
@@ -63,33 +63,16 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     this.pTasks = value;
   }
 
-  private pTasksTotal: number;
   public get tasksTotal(): number {
     return this.pTasksTotal;
   }
+
   public set tasksTotal(value: number) {
     this.pTasksTotal = value;
   }
 
   public get fields(): FieldConfig[] {
     return [];
-  }
-
-  public getTaskServiceConfig(): TaskServiceConfig {
-    return {
-      service: TaskService.IAC,
-      defaultSortDirection: SortOrder.ASC,
-      defaultSortFieldName: this.getDateField('dueDate'),
-      fields: this.fields
-    };
-  }
-
-  public getDateField(defaultSortColumn: string): string {
-    const field = this.fields.find(currentField => currentField.isDate);
-    if (field) {
-      return field.sortName;
-    }
-    return defaultSortColumn;
   }
 
   public get emptyMessage(): string {
@@ -106,7 +89,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   /**
    * To be overridden.
    */
-   public get pageSessionKey(): string {
+  public get pageSessionKey(): string {
     return 'pageSessionKey';
   }
 
@@ -133,6 +116,23 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     return false;
   }
 
+  public getTaskServiceConfig(): TaskServiceConfig {
+    return {
+      service: TaskService.IAC,
+      defaultSortDirection: SortOrder.ASC,
+      defaultSortFieldName: this.getDateField('dueDate'),
+      fields: this.fields
+    };
+  }
+
+  public getDateField(defaultSortColumn: string): string {
+    const field = this.fields.find(currentField => currentField.isDate);
+    if (field) {
+      return field.sortName;
+    }
+    return defaultSortColumn;
+  }
+
   public ngOnInit(): void {
     this.taskServiceConfig = this.getTaskServiceConfig();
     this.loadCaseWorkersAndLocations();
@@ -149,31 +149,30 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public loadCaseWorkersAndLocations() {
     this.selectedLocationsSubscription = this.filterService.getStream('locations')
       .pipe(
-        filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
+        filter((f: FilterSetting) => f && f.hasOwnProperty('fields')),
+        debounceTime(10),
       )
       .subscribe((f: FilterSetting) => {
         this.selectedLocations = f.fields.find((field) => field.name === 'locations').value;
         // timeout ensures tasks are loaded on initial local setting
         // waits for initial setting to be persisted via task-filter-component
-        setTimeout(() => {
-          if (this.tasksLoaded || this.filterService.isInitialSetting) {
-            this.doLoad();
-            this.filterService.isInitialSetting = false;
-          }
-        }, 1);
-    });
+        if (this.tasksLoaded || this.filterService.isInitialSetting) {
+          this.doLoad();
+          this.filterService.isInitialSetting = false;
+        }
+      });
   }
 
   public setupTaskList() {
     this.caseworkerService.getAll().subscribe(caseworkers => {
-      this.caseworkers = [ ...caseworkers ];
+      this.caseworkers = [...caseworkers];
     }, error => {
       handleFatalErrors(error.status, this.router);
     });
     // Try to get the sort order out of the session.
     const sortStored = this.sessionStorageService.getItem(this.sortSessionKey);
     if (sortStored) {
-      const { fieldName, order } = JSON.parse(sortStored);
+      const {fieldName, order} = JSON.parse(sortStored);
       this.sortedBy = {
         fieldName,
         order: order as SortOrder
@@ -216,14 +215,14 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
 
   public performSearchPagination(): Observable<any> {
     const searchRequest = this.getSearchTaskRequestPagination();
-    return this.taskService.searchTaskWithPagination({ searchRequest, view: this.view });
+    return this.taskService.searchTaskWithPagination({searchRequest, view: this.view});
   }
 
   /**
    * Get a search task request appropriate to the current view,
    * sort order, etc.
    */
-   public getSearchTaskRequestPagination(): SearchTaskRequest {
+  public getSearchTaskRequestPagination(): SearchTaskRequest {
     return {
       search_parameters: [],
       sorting_parameters: [this.getSortParameter()],
@@ -239,7 +238,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public getPaginationParameter(): PaginationParameter {
-    return { ...this.pagination };
+    return {...this.pagination};
   }
 
   /**
@@ -256,7 +255,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     if (this.sortedBy.fieldName === fieldName && this.sortedBy.order === SortOrder.ASC) {
       order = SortOrder.DESC;
     }
-    this.sortedBy = { fieldName, order };
+    this.sortedBy = {fieldName, order};
     this.sessionStorageService.setItem(this.sortSessionKey, JSON.stringify(this.sortedBy));
     this.loadTasks();
   }
@@ -280,24 +279,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       showAssigneeColumn: taskAction.action.id !== TaskActionIds.ASSIGN
     };
     const actionUrl = `/work/${taskAction.task.id}/${taskAction.action.id}/${this.specificPage}`;
-    this.router.navigate([actionUrl], { state });
-  }
-
-  // Do the actual load. This is separate as it's called from two methods.
-  private doLoad(): void {
-    this.showSpinner$ = this.loadingService.isLoading;
-    const loadingToken = this.loadingService.register();
-    this.performSearchPagination().subscribe(result => {
-        this.loadingService.unregister(loadingToken);
-        this.tasks = result.tasks;
-        this.tasksTotal = result.total_records;
-        this.tasks.forEach(task => task.assigneeName = getAssigneeName(this.caseworkers, task.assignee));
-        this.tasksLoaded = true;
-        this.ref.detectChanges();
-      }, error => {
-        this.loadingService.unregister(loadingToken);
-        handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
-    });
+    this.router.navigate([actionUrl], {state});
   }
 
   public onPaginationHandler(pageNumber: number): void {
@@ -313,6 +295,23 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       const isJudge = AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
       return isJudge;
     }
-    return false
+    return false;
+  }
+
+  // Do the actual load. This is separate as it's called from two methods.
+  private doLoad(): void {
+    this.showSpinner$ = this.loadingService.isLoading;
+    const loadingToken = this.loadingService.register();
+    this.performSearchPagination().subscribe(result => {
+      this.loadingService.unregister(loadingToken);
+      this.tasks = result.tasks;
+      this.tasksTotal = result.total_records;
+      this.tasks.forEach(task => task.assigneeName = getAssigneeName(this.caseworkers, task.assignee));
+      this.tasksLoaded = true;
+      this.ref.detectChanges();
+    }, error => {
+      this.loadingService.unregister(loadingToken);
+      handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
+    });
   }
 }

@@ -26,7 +26,7 @@ export class SearchService {
       startRecordNumber: startRecord ? parseInt(startRecord, 10) : 1
     };
 
-		console.log('searchRequest', searchRequest);
+    console.log('searchRequest', searchRequest);
 
     return this.http.post<SearchResult>(`api/globalsearch/results`, searchRequest);
   }

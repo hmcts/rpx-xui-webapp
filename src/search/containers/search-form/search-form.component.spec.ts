@@ -48,7 +48,7 @@ describe('SearchFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have ngOnInit and populate the Services list', () => {
+  it('should have called ngOnInit and populate the Services list', () => {
     expect(component.ngOnInit).toBeTruthy();
     expect(component.searchServiceSubscription$).toBeTruthy();
     expect(searchService.getServices).toHaveBeenCalled();

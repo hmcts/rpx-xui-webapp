@@ -479,3 +479,14 @@ export function getSubstantiveRoles(roleAssignments: RoleAssignment[]): RoleAssi
 export const paginate = (array: Case[], pageNumber: number, pageSize: number): any[] => {
   return array.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 };
+
+export async function getWorkTypeByUserId(path, req: express.Request): Promise<any> {
+  const headers = setHeaders(req);
+  try {
+    const result = await http.get(path, {headers});
+    return result.data;
+  } catch (e) {
+    console.error(e);
+  }
+  return null;
+}

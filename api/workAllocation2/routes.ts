@@ -8,7 +8,7 @@ import {
   getCaseWorkersForService, getMyCases,
   getRolesCategory,
   getTask,
-  getTasksByCaseId,
+  getTasksByCaseId, getTypesOfWork,
   postTaskAction,
   postTaskSearchForCompletable,
   searchCaseWorker,
@@ -38,6 +38,7 @@ router.use('/location', getLocations);
 
 router.use('/searchForCompletable', postTaskSearchForCompletable);
 
+router.use('/task/types-of-work', getTypesOfWork);
 router.use('/task/:taskId/:action', postTaskAction);
 router.use('/task/:taskId', getTask);
 router.use('/task', searchTask);

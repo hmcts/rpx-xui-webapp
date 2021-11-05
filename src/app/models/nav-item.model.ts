@@ -4,4 +4,6 @@ export interface NavItemsModel {
   href: string;
   active: boolean;
   ngClass?: string;
+  roles?: string[];
+  flags?: string[];
 }

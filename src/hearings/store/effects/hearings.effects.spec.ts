@@ -45,7 +45,6 @@ describe('Hearings Effects', () => {
         hearingID: 'h111111',
         hearingType: 'hearing type 1',
         hmcStatus: 'pending',
-        creationDateTime: '',
         lastResponseReceivedDateTime: '2021-05-05T16:00:00.000+0000',
         responseVersion: 'rv1',
         hearingListingStatus: HearingListingStatusEnum.AWAITING_LISTING,

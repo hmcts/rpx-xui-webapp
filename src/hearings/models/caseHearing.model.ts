@@ -12,6 +12,16 @@ export interface CaseHearingModel {
   exuiSectionStatus?: EXUISectionStatusEnum;
   exuiDisplayStatus?: EXUIDisplayStatusEnum;
 }
-export interface CaseHearingViewModel extends CaseHearingModel {
+export class CaseHearingViewModel implements CaseHearingModel {
+  hearingID: string;
+  hearingType: string;
+  hmcStatus: string;
+  lastResponseReceivedDateTime: string;
+  responseVersion: string;
+  hearingListingStatus: string;
+  listAssistCaseStatus: string;
+  hearingDaySchedule: HearingDayScheduleModel[];
+  exuiSectionStatus?: EXUISectionStatusEnum;
+  exuiDisplayStatus?: EXUIDisplayStatusEnum;
   creationDateTime: string;
 }

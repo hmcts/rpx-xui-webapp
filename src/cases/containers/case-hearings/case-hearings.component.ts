@@ -3,10 +3,11 @@ import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CaseHearingViewModel } from 'src/hearings/viewModel/case-hearing-view.model';
 import { UserRole } from '../../../app/models/user-details.model';
 import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
 import * as fromAppStore from '../../../app/store';
-import { CaseHearingModel, CaseHearingViewModel } from '../../../hearings/models/caseHearing.model';
+import { CaseHearingModel } from '../../../hearings/models/caseHearing.model';
 import { Actions, EXUISectionStatusEnum } from '../../../hearings/models/hearings.enum';
 import * as fromHearingStore from '../../../hearings/store';
 
@@ -15,9 +16,9 @@ import * as fromHearingStore from '../../../hearings/store';
   templateUrl: './case-hearings.component.html'
 })
 export class CaseHearingsComponent implements OnInit, OnDestroy {
-  public upcomingHearings$: Observable<CaseHearingModel[]>;
+  public upcomingHearings$: Observable<CaseHearingViewModel[]>;
   public upcomingStatus: EXUISectionStatusEnum = EXUISectionStatusEnum.UPCOMING;
-  public pastAndCancelledHearings$: Observable<CaseHearingModel[]>;
+  public pastAndCancelledHearings$: Observable<CaseHearingViewModel[]>;
   public pastAndCancelledStatus: EXUISectionStatusEnum = EXUISectionStatusEnum.PAST_AND_CANCELLED;
   public hearingsActions: Actions[] = [Actions.READ];
   public userRoles: Observable<string[]>;
@@ -37,28 +38,34 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.getHearsListByStatus(EXUISectionStatusEnum.UPCOMING).subscribe(hearings => {
-      hearings.map(hearing => hearing.creationDateTime = (Math.max.apply(null,hearing.hearingDaySchedule.map(schedule => schedule.hearingStartDateTime))));
-      this.upcomingHearings$ = of(hearings.sort((a, b) => {
-        return new Date(a.lastResponseReceivedDateTime) > new Date(b.lastResponseReceivedDateTime) ? 1 : -1;
-      }).sort((a, b) => {
-        return new Date(a.creationDateTime) > new Date(b.creationDateTime) ? 1 : -1;
-      }).sort((a) => {
-        return a.hearingListingStatus === 'WAITING TO BE LISTED' ? -1 : 1;
-      }));
+      if (hearings.length) {
+        const viewModels: CaseHearingViewModel[] = this.convertServiceToVM(hearings);
+
+        this.upcomingHearings$ = of(viewModels.sort((a, b) => {
+          return new Date(a.lastResponseReceivedDateTime) > new Date(b.lastResponseReceivedDateTime) ? 1 : -1;
+        }).sort((a, b) => {
+          return new Date(a.creationDateTime) > new Date(b.creationDateTime) ? 1 : -1;
+        }).sort((a) => {
+          return a.hearingListingStatus === 'WAITING TO BE LISTED' ? -1 : 1;
+        }));
+      }
     });
 
     this.getHearsListByStatus(EXUISectionStatusEnum.PAST_AND_CANCELLED).subscribe(hearings => {
-      this.pastAndCancelledHearings$ = of(hearings.sort((a, b) => {
-        return new Date(a.lastResponseReceivedDateTime) > new Date(b.lastResponseReceivedDateTime) ? 1 : -1;
-      }).sort((a) => {
-        return !a.lastResponseReceivedDateTime ? 1 : -1;
-      }).sort((a, b) => {
-        return new Date(a.creationDateTime) < new Date(b.creationDateTime) ? 1 : -1;
-      }).sort((a, b) => {
-        return new Date(a.creationDateTime) < new Date(b.creationDateTime) ? 1 : -1;
-      }).sort((a) => {
-        return a.lastResponseReceivedDateTime ? 1 : -1;
-      }));
+      if (hearings.length) {
+        const viewModels: CaseHearingViewModel[] = this.convertServiceToVM(hearings);
+        this.pastAndCancelledHearings$ = of(viewModels.sort((a, b) => {
+          return new Date(a.lastResponseReceivedDateTime) > new Date(b.lastResponseReceivedDateTime) ? 1 : -1;
+          }).sort((a) => {
+            return !a.lastResponseReceivedDateTime ? 1 : -1;
+          }).sort((a, b) => {
+            return new Date(a.creationDateTime) < new Date(b.creationDateTime) ? 1 : -1;
+          }).sort((a, b) => {
+            return new Date(a.creationDateTime) < new Date(b.creationDateTime) ? 1 : -1;
+          }).sort((a) => {
+            return a.lastResponseReceivedDateTime ? 1 : -1;
+          }));
+      }
     });
 
     this.roleCategoryMappingService.isJudicialOrLegalOpsCategory(this.userRoles).subscribe(
@@ -73,12 +80,27 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     }
   }
 
-  public getHearsListByStatus(status: string): Observable<CaseHearingViewModel[]> {
+  public convertServiceToVM(hearings: CaseHearingModel[]) {
+    const viewModels: CaseHearingViewModel[] = [];
+    hearings.forEach((hearing) => {
+      let viewModel = new CaseHearingViewModel;
+      Object.keys(hearing).forEach(key => viewModel[key] = hearing[key]);
+
+      if (hearing.hearingDaySchedule && hearing.hearingDaySchedule.length) {
+        viewModel.creationDateTime = Math.max.apply(null, hearing.hearingDaySchedule.map(schedule => schedule.hearingStartDateTime ?
+        new Date(schedule.hearingStartDateTime): new Date(-8640000000000000))) as string;
+      }
+      viewModels.push(viewModel);
+    });
+
+    return viewModels;
+  }
+
+  public getHearsListByStatus(status: string): Observable<CaseHearingModel[]> {
     return this.hearingStore.pipe(select(fromHearingStore.getHearingsList)).pipe(
-      map(hearingsStateData => {          
+      map(hearingsStateData => {
           if (hearingsStateData && hearingsStateData.caseHearingsMainModel && hearingsStateData.caseHearingsMainModel.caseHearings) {
-            const viewModel = hearingsStateData.caseHearingsMainModel.caseHearings as CaseHearingViewModel[];
-            return viewModel.filter(hearing =>
+            return hearingsStateData.caseHearingsMainModel.caseHearings.filter(hearing =>
               hearing.exuiSectionStatus === status
             );
           } else {

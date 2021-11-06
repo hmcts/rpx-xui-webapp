@@ -31,7 +31,6 @@ describe('Hearings Reducer', () => {
         };
         const CASE_HEARING_1: CaseHearingModel = {
           hearingID: 'h111111',
-          creationDateTime: '',
           hearingType: 'hearing type 1',
           hmcStatus: 'pending',
           lastResponseReceivedDateTime: '2021-05-05T16:00:00.000+0000',

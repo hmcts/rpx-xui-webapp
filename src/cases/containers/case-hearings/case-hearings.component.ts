@@ -83,12 +83,12 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public convertServiceToVM(hearings: CaseHearingModel[]) {
     const viewModels: CaseHearingViewModel[] = [];
     hearings.forEach((hearing) => {
-      let viewModel = new CaseHearingViewModel;
+      const viewModel = new CaseHearingViewModel();
       Object.keys(hearing).forEach(key => viewModel[key] = hearing[key]);
 
       if (hearing.hearingDaySchedule && hearing.hearingDaySchedule.length) {
         viewModel.creationDateTime = Math.max.apply(null, hearing.hearingDaySchedule.map(schedule => schedule.hearingStartDateTime ?
-        new Date(schedule.hearingStartDateTime): new Date(-8640000000000000))) as string;
+        new Date(schedule.hearingStartDateTime) : new Date(-8640000000000000))) as string;
       }
       viewModels.push(viewModel);
     });
@@ -107,7 +107,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
             return [];
           }
         }
-      )  
+      )
     );
   }
 

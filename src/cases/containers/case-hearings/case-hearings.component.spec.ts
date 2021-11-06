@@ -322,34 +322,33 @@ describe('CaseHearingsComponent', () => {
   });
 
   it('should provide a date', () => {
-    
     const testVM: CaseHearingViewModel = {
-        hearingID: 'h111111',
-        hearingType: 'Case management hearing 2',
-        hmcStatus:  HMCStatus.AWAITING_ACTUALS,
-        lastResponseReceivedDateTime: '',
-        creationDateTime: '',
-        responseVersion: 'rv1',
-        hearingListingStatus: HearingListingStatusEnum.LISTED,
-        exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
-        listAssistCaseStatus: '',
-        hearingDaySchedule: [HEARING_DAY_SCHEDULE_2],
-      };
+      hearingID: 'h111111',
+      hearingType: 'Case management hearing 2',
+      hmcStatus:  HMCStatus.AWAITING_ACTUALS,
+      lastResponseReceivedDateTime: '',
+      creationDateTime: '',
+      responseVersion: 'rv1',
+      hearingListingStatus: HearingListingStatusEnum.LISTED,
+      exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+      listAssistCaseStatus: '',
+      hearingDaySchedule: [HEARING_DAY_SCHEDULE_2],
+    };
 
-      const testVM2: CaseHearingViewModel = {
-        hearingID: 'h111111',
-        hearingType: 'Case management hearing 2',
-        hmcStatus:  HMCStatus.AWAITING_ACTUALS,
-        lastResponseReceivedDateTime: '',
-        creationDateTime: '',
-        responseVersion: 'rv1',
-        hearingListingStatus: HearingListingStatusEnum.LISTED,
-        exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
-        listAssistCaseStatus: '',
-        hearingDaySchedule: [HEARING_DAY_SCHEDULE_10],
-      };
-    const arrangeData = [testVM, testVM2];
+    const testVM2: CaseHearingViewModel = {
+      hearingID: 'h111111',
+      hearingType: 'Case management hearing 2',
+      hmcStatus:  HMCStatus.AWAITING_ACTUALS,
+      lastResponseReceivedDateTime: '',
+      creationDateTime: '',
+      responseVersion: 'rv1',
+      hearingListingStatus: HearingListingStatusEnum.LISTED,
+      exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+      listAssistCaseStatus: '',
+      hearingDaySchedule: [HEARING_DAY_SCHEDULE_10],
+    };
   
+    const arrangeData = [testVM, testVM2];
     const result = arrangeData[0].hearingDaySchedule.map(schedule => schedule.hearingStartDateTime);
     expect(result).toBeDefined();
 

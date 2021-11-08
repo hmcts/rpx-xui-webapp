@@ -11,6 +11,7 @@ import { CaseRole } from '../workAllocation2/interfaces/caseRole';
 import { RoleCategory } from './models/allocate-role.enum';
 import { CaseRoleRequestPayload, RoleExclusion } from './models/caseRoleRequestPayload';
 import { refreshRoleAssignmentForUser } from '../user';
+import { UserInfo } from 'auth/interfaces/UserInfo';
 
 const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
 
@@ -34,9 +35,19 @@ export async function findExclusionsForCaseId(req: EnhancedRequest, res: Respons
 export async function confirmUserExclusion(req: EnhancedRequest, res: Response, next: NextFunction) {
   const body = req.body;
   // @ts-ignore
-  const currentUser = req.session.passport.user.userinfo;
+  const currentUser: UserInfo = req.session.passport.user.userinfo;
   const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
-  const roleAssignmentsBody = prepareExclusionBody(currentUserId, body);
+  let roleCategory: string;
+  let userId: string;
+  if (body.exclusionOption === 'Exclude another person') {
+    roleCategory = body.person.domain === 'Legal Ops' ? 'LEGAL_OPERATIONS' : body.person.domain;
+    userId = body.person.id;
+  } else {
+    roleCategory = currentUser.roleCategory;
+    userId = currentUserId;
+  }
+
+  const roleAssignmentsBody = prepareExclusionBody(userId, body, roleCategory);
   const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
   console.log(basePath);
   console.log(JSON.stringify(roleAssignmentsBody));
@@ -46,7 +57,7 @@ export async function confirmUserExclusion(req: EnhancedRequest, res: Response, 
   return res.status(status).send(data);
 }
 
-export function prepareExclusionBody(currentUserId: string, body: any): any {
+export function prepareExclusionBody(currentUserId: string, body: any, roleCategory: string): any {
   return {
     roleRequest: {
       assignerId: currentUserId,
@@ -63,7 +74,7 @@ export function prepareExclusionBody(currentUserId: string, body: any): any {
       roleCategory : 'LEGAL_OPERATIONS',
       roleName: 'conflict-of-interest',
       actorIdType: 'IDAM',
-      actorId: currentUserId
+      actorId: currentUserId,
     }],
   };
 }
@@ -122,7 +133,7 @@ export function getExclusionRequestPayload(caseId: string, jurisdiction: string,
               caseType: [caseType],
               jurisdiction: [jurisdiction],
             },
-          grantType: ['EXCLUDED']
+          grantType: ['EXCLUDED'],
       },
     ],
   };
@@ -140,7 +151,7 @@ export function getLegalAndJudicialRequestPayload(caseId: string,
               jurisdiction: [jurisdiction],
             },
           roleCategory: ['LEGAL_OPERATIONS'],
-          roleName: ['case-manager']
+          roleName: ['case-manager'],
       },
     ],
   };

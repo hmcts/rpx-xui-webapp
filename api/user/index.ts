@@ -7,7 +7,7 @@ import { CASE_SHARE_PERMISSIONS, SERVICES_ROLE_ASSIGNMENT_API_PATH, SESSION_TIME
 import { http } from '../lib/http';
 import { setHeaders } from '../lib/proxy';
 import { LocationInfo, RoleAssignment } from './interfaces/roleAssignment';
-import { getOrganisationRoles, isCurrentUserCaseAllocator } from './utils';
+import { getMappedRoleCategory, getOrganisationRoles, isCurrentUserCaseAllocator } from './utils';
 
 export async function getUserDetails(req, res: Response, next: NextFunction): Promise<Response> {
   if (!req.session || !req.session.passport || !req.session.passport.user) {
@@ -45,6 +45,7 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
     locationInfo = getRoleAssignmentInfo(response.data.roleAssignmentResponse);
     const roles = getOrganisationRoles(response.data.roleAssignmentResponse);
     userInfo.roles = userInfo.roles.concat(roles);
+    userInfo.roleCategory = getMappedRoleCategory(userInfo.roles, ['LEGAL_OPERATIONS']);
     req.session.roleAssignmentResponse = response.data.roleAssignmentResponse;
   } catch (error) {
     console.log(error);

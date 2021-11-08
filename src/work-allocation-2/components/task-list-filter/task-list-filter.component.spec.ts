@@ -5,11 +5,10 @@ import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
-import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
-import { initialMockState } from '../../../role-access/testing/app-initial-state.mock';
 
 import { LocationDataService, WorkAllocationTaskService } from '../../services';
+import { TaskDataService } from '../../services/task-data.service';
 import { ALL_LOCATIONS } from '../constants/locations';
 import { TaskListFilterComponent } from './task-list-filter.component';
 
@@ -25,6 +24,40 @@ describe('TaskListFilterComponent', () => {
   let component: TaskListFilterComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
+  const typesOfWork = [
+    {
+      key: 'hearing_work',
+      label: 'Hearing work'
+    },
+    {
+      key: 'upper_tribunal',
+      label: 'Upper Tribunal'
+    },
+    {
+      key: 'routine_work',
+      label: 'Routine work'
+    },
+    {
+      key: 'decision_making_work',
+      label: 'Decision-making work'
+    },
+    {
+      key: 'applications',
+      label: 'Applications'
+    },
+    {
+      key: 'priority',
+      label: 'Priority'
+    },
+    {
+      key: 'access_requests',
+      label: 'Access requests'
+    },
+    {
+      key: 'error_management',
+      label: 'Error management'
+    }
+  ];
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
   const SELECTED_LOCATIONS = {id: 'locations', fields: [{name: 'locations', value: ['231596', '698118']}]};
   const filterSettings = {
@@ -57,6 +90,7 @@ describe('TaskListFilterComponent', () => {
       providers: [
         {provide: WorkAllocationTaskService, useValue: mockTaskService},
         {provide: LocationDataService, useValue: {getLocations: () => of(ALL_LOCATIONS)}},
+        {provide: TaskDataService, useValue: {getTypesOfWork: () => of(typesOfWork)}},
         {
           provide: FilterService, useValue: mockFilterService
         },
@@ -112,6 +146,12 @@ describe('TaskListFilterComponent', () => {
 
   it('should set the persistence to be local storage if the  user is a judicial user', () => {
     expect(component.fieldsConfig.persistence).toBe('local');
+  });
+
+  it('should show types of work filter with all types of work filters selected', () => {
+    expect(component.fieldsSettings.fields.length).toBe(2);
+    const typesOfWorkSelectedFields = component.fieldsSettings.fields[1];
+    expect(typesOfWorkSelectedFields.value.length).toBe(typesOfWork.length + 1);
   });
 
   afterAll(() => {

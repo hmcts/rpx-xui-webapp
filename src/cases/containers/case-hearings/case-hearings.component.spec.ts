@@ -347,7 +347,7 @@ describe('CaseHearingsComponent', () => {
       listAssistCaseStatus: '',
       hearingDaySchedule: [HEARING_DAY_SCHEDULE_10],
     };
-  
+
     const arrangeData = [testVM, testVM2];
     const result = arrangeData[0].hearingDaySchedule.map(schedule => schedule.hearingStartDateTime);
     expect(result).toBeDefined();

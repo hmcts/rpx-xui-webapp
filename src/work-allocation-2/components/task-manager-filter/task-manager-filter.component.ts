@@ -125,6 +125,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       minSelectedError: 'You must select a person',
       maxSelectedError: null,
       lineBreakBefore: true,
+      findPersonField: 'person',
       title: 'Person',
       type: 'radio'
     };

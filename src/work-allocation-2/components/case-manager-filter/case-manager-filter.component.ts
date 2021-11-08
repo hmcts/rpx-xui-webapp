@@ -127,6 +127,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       minSelected: 1,
       maxSelected: 1,
       lineBreakBefore: true,
+      findPersonField: 'person',
       minSelectedError: 'You must select a person',
       maxSelectedError: null,
       title: 'Person',

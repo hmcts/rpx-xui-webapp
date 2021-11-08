@@ -1,15 +1,15 @@
-import { TaskDataService } from './task-data.service';
+import { TaskTypesService } from './task-types.service';
 
-describe('TaskDataService', () => {
+describe('TaskTypesService', () => {
   const mockHttpService = jasmine.createSpyObj('mockHttpService', ['put', 'get', 'post']);
 
   it('should be created', () => {
-    const service: TaskDataService = new TaskDataService(mockHttpService);
+    const service: TaskTypesService = new TaskTypesService(mockHttpService);
     expect(service).toBeTruthy();
   });
 
   it('getTypesOfWork should make correct api call', () => {
-    const service = new TaskDataService(mockHttpService);
+    const service = new TaskTypesService(mockHttpService);
     service.getTypesOfWork();
     expect(mockHttpService.get).toHaveBeenCalledWith('/workallocation2/task/types-of-work');
   });

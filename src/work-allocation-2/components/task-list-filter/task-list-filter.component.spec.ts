@@ -8,7 +8,7 @@ import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs/internal/observable/of';
 
 import { LocationDataService, WorkAllocationTaskService } from '../../services';
-import { TaskDataService } from '../../services/task-data.service';
+import { TaskTypesService } from '../../services/task-types.service';
 import { ALL_LOCATIONS } from '../constants/locations';
 import { TaskListFilterComponent } from './task-list-filter.component';
 
@@ -93,7 +93,7 @@ describe('TaskListFilterComponent', () => {
       providers: [
         {provide: WorkAllocationTaskService, useValue: mockTaskService},
         {provide: LocationDataService, useValue: {getLocations: () => of(ALL_LOCATIONS)}},
-        {provide: TaskDataService, useValue: {getTypesOfWork: () => of(typesOfWork)}},
+        {provide: TaskTypesService, useValue: {getTypesOfWork: () => of(typesOfWork)}},
         {
           provide: FilterService, useValue: mockFilterService
         },

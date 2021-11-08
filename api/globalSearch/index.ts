@@ -1,14 +1,13 @@
-import { NextFunction, Response } from 'express';
 import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
-import { GlobalSearchService } from '../interfaces/globalSearchService';
-import { EnhancedRequest } from '../lib/models';
+import { NextFunction, Response } from 'express';
 import { handleGet, handlePost } from '../common/crudService';
 import { getConfigValue } from '../configuration';
 import {
   GLOBAL_SEARCH_SERVICES,
-  SERVICES_CCD_COMPONENT_API_PATH,
-  SERVICES_CCD_DATA_STORE_API_PATH
+  SERVICES_CCD_COMPONENT_API_PATH
 } from '../configuration/references';
+import { GlobalSearchService } from '../interfaces/globalSearchService';
+import { EnhancedRequest } from '../lib/models';
 
 /**
  * Get global search services

@@ -1,10 +1,10 @@
 export interface Result {
-  ccdCaseTypeId: string;
-  ccdCaseTypeName: string;
-  ccdJurisdictionId: string;
-  ccdJurisdictionName: string;
-  hmctsServiceId: string;
-  hmctsServiceShortDescription: string;
+  CCDCaseTypeId: string;
+  CCDCaseTypeName: string;
+  CCDJurisdictionId: string;
+  CCDJurisdictionName: string;
+  HMCTSServiceId: string;
+  HMCTSServiceShortDescription: string;
   baseLocationId: string;
   baseLocationName: string;
   caseManagementCategoryId: string;

@@ -110,28 +110,36 @@ describe('Work allocations MVP', () => {
 
 
     it('case officer,Assign to me task', async function () {
-        await testWithRetry(async () => {
-            await Request.withSession(caseOfficer, caseofficerPass);
-            const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
-            const headers = {
-                'X-XSRF-TOKEN': xsrfToken,
-            };
+        await Request.withSession(caseOfficer, caseofficerPass);
+        const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
+        const headers = {
+            'X-XSRF-TOKEN': xsrfToken,
+        };
 
-            const userDetailsRes = await Request.get('api/user/details', { 'X-XSRF-TOKEN': xsrfToken }, 200);
-            const reqBody = getSearchTaskReqBody("AvailableTasks", [userDetailsRes.data.userInfo.id]).getRequestBody();
-            const headersForGetTasks = {
-                'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
-                'content-length': JSON.stringify(reqBody).length
-            };
+        const userDetailsRes = await Request.get('api/user/details', { 'X-XSRF-TOKEN': xsrfToken }, 200);
+        const loggedInUserId = userDetailsRes.data.userInfo.id ? userDetailsRes.data.userInfo.id : userDetailsRes.data.userInfo.uid;
+        const reqBody = getSearchTaskReqBody("AvailableTasks", [loggedInUserId],null).getRequestBody();
+        const headersForGetTasks = {
+            'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
+            'content-length': JSON.stringify(reqBody).length
+        };
 
-            const tasksRes = await Request.post(`workallocation/task`, reqBody, headersForGetTasks, 200);
-            const caseworkerRes = await Request.get(`workallocation/caseworker`, headers, 200);
+        const tasksRes = await Request.post(`workallocation/task`, reqBody, headersForGetTasks, 200);
+        const caseworkerRes = await Request.get(`workallocation/caseworker`, headers, 200);
 
 
-            const idamId = caseworkerRes.data[0].idamId;
+        const idamId = caseworkerRes.data[0].idamId;
 
-            const assignTaskReqBody = {}
-            let assignTasksHeader = {
+        const assignTaskReqBody = {  }
+        let assignTasksHeader = {
+            'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
+            'content-length': JSON.stringify(assignTaskReqBody).length
+        };
+        if (tasksRes.data.tasks.length > 1) {
+            const assignTaskRes = await Request.post(`workallocation/task/${tasksRes.data.tasks[0].id}/claim`, assignTaskReqBody, assignTasksHeader, 204);
+            expect(assignTaskRes.status).to.equal(204);
+
+            assignTasksHeader = {
                 'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
                 'content-length': JSON.stringify(assignTaskReqBody).length
             };

@@ -4,6 +4,7 @@ export interface CaseHearingModel {
   hearingID: string;
   hearingType: string;
   hmcStatus: string;
+  hearingRequestDateTime: string,
   lastResponseReceivedDateTime: string;
   responseVersion: string;
   hearingListingStatus: string;
@@ -11,17 +12,4 @@ export interface CaseHearingModel {
   hearingDaySchedule: HearingDayScheduleModel[];
   exuiSectionStatus?: EXUISectionStatusEnum;
   exuiDisplayStatus?: EXUIDisplayStatusEnum;
-}
-export class CaseHearingViewModel implements CaseHearingModel {
-  hearingID: string;
-  hearingType: string;
-  hmcStatus: string;
-  lastResponseReceivedDateTime: string;
-  responseVersion: string;
-  hearingListingStatus: string;
-  listAssistCaseStatus: string;
-  hearingDaySchedule: HearingDayScheduleModel[];
-  exuiSectionStatus?: EXUISectionStatusEnum;
-  exuiDisplayStatus?: EXUIDisplayStatusEnum;
-  creationDateTime: string;
 }

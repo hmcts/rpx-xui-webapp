@@ -77,7 +77,7 @@ describe('Search Service', () => {
     const searchParameters: SearchParameters = {
       caseReferences: ['1234123412341234'],
       CCDJurisdictionIds: ['TEST'],
-      otherReference: 'Abc',
+      otherReferences: ['Abc'],
       fullName: 'Test test',
       address: '102 Petty France',
       postcode: 'SW1H 9AJ',
@@ -99,7 +99,7 @@ describe('Search Service', () => {
         caseManagementBaseLocationIds: null,
         caseManagementRegionIds: null,
         caseReferences: searchParameters.caseReferences,
-        otherReferences: [searchParameters.otherReference],
+        otherReferences: searchParameters.otherReferences,
         parties: [{
           addressLine1: searchParameters.address,
           dateOfBirth: searchParameters.dateOfBirth,
@@ -115,8 +115,8 @@ describe('Search Service', () => {
       startRecordNumber: 1
     };
     const dummySearchResult: SearchResult = {
-      info: null,
-      caseList: [null, null]
+      resultInfo : null,
+      results: [null, null]
     };
 
     service.getResults().subscribe(result => {

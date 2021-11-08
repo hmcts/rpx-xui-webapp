@@ -55,7 +55,7 @@ describe('SearchFormComponent', () => {
     expect(component.services.length).toEqual(2);
     expect(component.services).toEqual([
       {label: 'All', value: 'All', id: 'All'},
-      {label: 'Test service', value: 'Test service', id: 'TEST'}
+      {label: 'Test service', value: 'TEST', id: 'TEST'}
     ]);
     expect(component.formGroup.get(SearchFormControl.SERVICES_LIST).value).toEqual('All');
   });
@@ -92,7 +92,7 @@ describe('SearchFormComponent', () => {
     expect(searchService.storeState.calls.all()[0].args[1]).toEqual({
       caseReferences: ['1234123412341234'],
       CCDJurisdictionIds: ['TEST'],
-      otherReference: 'Abc',
+      otherReferences: ['Abc'],
       fullName: 'Test test',
       address: '102 Petty France',
       postcode: 'SW1H 9AJ',

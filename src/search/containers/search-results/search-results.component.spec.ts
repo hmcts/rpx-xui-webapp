@@ -19,9 +19,9 @@ describe('SearchResultsComponent', () => {
   let router: Router;
   let route: ActivatedRoute;
 
-  const searchResult: SearchResult = {
+  const searchResultWithNoCases: SearchResult = {
     resultInfo: {
-      caseStartRecord: 0,
+      caseStartRecord: 1,
       casesReturned: 0,
       moreResultsToGo: false
     },
@@ -30,8 +30,8 @@ describe('SearchResultsComponent', () => {
 
   const searchResultWithCaseList: SearchResult = {
     resultInfo: {
-      caseStartRecord: 0,
-      casesReturned: 0,
+      caseStartRecord: 1,
+      casesReturned: 2,
       moreResultsToGo: false
     },
     results: [
@@ -78,7 +78,7 @@ describe('SearchResultsComponent', () => {
 
   beforeEach(async(() => {
     searchService = createSpyObj<SearchService>('searchService', ['getResults']);
-    searchService.getResults.and.returnValue(of(searchResult));
+    searchService.getResults.and.returnValue(of(searchResultWithCaseList));
     TestBed.configureTestingModule({
       declarations: [ SearchResultsComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],
@@ -108,13 +108,10 @@ describe('SearchResultsComponent', () => {
   });
 
   it('should have called ngOnInit and populate search results', () => {
-    searchService.getResults.and.returnValue(of(searchResultWithCaseList));
-    console.log('searchResultWithCaseList', searchResultWithCaseList);
     expect(component.ngOnInit).toBeTruthy();
     expect(component.searchResultSubscription$).toBeTruthy();
     expect(searchService.getResults).toHaveBeenCalled();
-    console.log('component.searchResult', component.searchResult);
-    expect(component.searchResult.results.length).toBeGreaterThan(0);
+    expect(component.searchResult).toEqual(searchResultWithCaseList);
   });
 
   it('should unsubscribe subscriptions onDestroy', () => {
@@ -125,8 +122,10 @@ describe('SearchResultsComponent', () => {
     expect(component.searchResultSubscription$.unsubscribe).toHaveBeenCalled();
   });
 
-  it('should navigate to no results page if search result is empty', async() => {
+  it('should navigate to no results page if search result is empty', () => {
+    searchService.getResults.and.returnValue(of(searchResultWithNoCases));
+    component.ngOnInit();
     expect(searchService.getResults).toHaveBeenCalled();
-    expect(router.navigate).toHaveBeenCalledWith(['noresults'], {relativeTo: route});
+    expect(router.navigate).toHaveBeenCalledWith(['/search/noresults'], {relativeTo: route});
   });
 });

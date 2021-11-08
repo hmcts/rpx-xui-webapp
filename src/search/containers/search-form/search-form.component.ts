@@ -168,7 +168,9 @@ export class SearchFormComponent implements OnInit, OnDestroy {
    *
    */
   private validateForm(): boolean {
+    // Reset validation error messages
     this.resetValidationErrorMessages();
+
     if (!this.formGroup.valid) {
       // Postcode
       if (!this.formGroup.get(SearchFormControl.POSTCODE).valid) {
@@ -201,9 +203,6 @@ export class SearchFormComponent implements OnInit, OnDestroy {
           this.dateOfDeathErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.DATE_COMPARISON_FAILED] };
         }
       }
-
-      // Scroll to error summary
-      window.scrollTo({ top: 0, left: 0 });
 
       // Validation failed, return false
       return false;
@@ -238,34 +237,38 @@ export class SearchFormComponent implements OnInit, OnDestroy {
    *
    */
   public onSubmit(): void {
-    // Populate a SearchParameters instance with the form inputs and persist via the SearchService
-    const searchParameters: SearchParameters = {
-      caseReferences: this.formGroup.get('caseRef').value !== '' ? [this.formGroup.get('caseRef').value] : null,
-      CCDJurisdictionIds:
-        // If the selected value is not "All", use it; else, use the entire Services list (except the "All") item
-        this.formGroup.get('servicesList').value !== 'All'
-          ? [this.formGroup.get('servicesList').value]
-          : this.services.slice(1).map(service => service.id),
-      otherReferences: this.formGroup.get('otherRef').value !== '' ? [this.formGroup.get('otherRef').value] : null,
-      fullName: this.formGroup.get('fullName').value !== '' ? this.formGroup.get('fullName').value : null,
-      address: this.formGroup.get('addressLine1').value !== '' ? this.formGroup.get('addressLine1').value : null,
-      postcode: this.formGroup.get('postcode').value !== '' ? this.formGroup.get('postcode').value : null,
-      emailAddress: this.formGroup.get('email').value !== '' ? this.formGroup.get('email').value : null,
-      // Date format expected by API endpoint is yyyy-mm-dd
-      dateOfBirth: this.getDateFormatted(DateCategoryType.DATE_OF_BIRTH),
-      dateOfDeath: this.getDateFormatted(DateCategoryType.DATE_OF_DEATH)
-    };
+    if (!this.validateForm()) {
+      // Scroll to error summary
+      window.scrollTo({ top: 0, left: 0 });
+    } else {
+      // Populate a SearchParameters instance with the form inputs and persist via the SearchService
+      const searchParameters: SearchParameters = {
+        caseReferences: this.formGroup.get('caseRef').value !== '' ? [this.formGroup.get('caseRef').value] : null,
+        CCDJurisdictionIds:
+          // If the selected value is not "All", use it; else, use the entire Services list (except the "All") item
+          this.formGroup.get('servicesList').value !== 'All'
+            ? [this.formGroup.get('servicesList').value]
+            : this.services.slice(1).map(service => service.id),
+        otherReferences: this.formGroup.get('otherRef').value !== '' ? [this.formGroup.get('otherRef').value] : null,
+        fullName: this.formGroup.get('fullName').value !== '' ? this.formGroup.get('fullName').value : null,
+        address: this.formGroup.get('addressLine1').value !== '' ? this.formGroup.get('addressLine1').value : null,
+        postcode: this.formGroup.get('postcode').value !== '' ? this.formGroup.get('postcode').value : null,
+        emailAddress: this.formGroup.get('email').value !== '' ? this.formGroup.get('email').value : null,
+        // Date format expected by API endpoint is yyyy-mm-dd
+        dateOfBirth: this.getDateFormatted(DateCategoryType.DATE_OF_BIRTH),
+        dateOfDeath: this.getDateFormatted(DateCategoryType.DATE_OF_DEATH)
+      };
 
-    // Store the search parameters to session
-    this.searchService.storeState(SearchStatePersistenceKey.SEARCH_PARAMS, searchParameters);
+      // Store the search parameters to session
+      this.searchService.storeState(SearchStatePersistenceKey.SEARCH_PARAMS, searchParameters);
 
-    // Set the starting record number to 1
-    this.searchService.storeState(SearchStatePersistenceKey.START_RECORD, 1);
+      // Set the starting record number to 1
+      this.searchService.storeState(SearchStatePersistenceKey.START_RECORD, 1);
 
-    // Navigate to the Search Results page
-    this.router.navigate(['results'], {relativeTo: this.route});
+      // Navigate to the Search Results page
+      this.router.navigate(['results'], {relativeTo: this.route});
+    }
   }
-
 
   /**
    * Function to return date in a format expected by the backend service

@@ -1,7 +1,7 @@
-import { SearchResultCase } from './search-result-case.model';
-import { SearchResultInfo } from './search-result-info.model';
+import { Result } from './result.model';
+import { ResultInfo } from './result-info.model';
 
 export interface SearchResult {
-  info: SearchResultInfo;
-  caseList: SearchResultCase[];
+  resultInfo: ResultInfo;
+  results: Result[];
 }

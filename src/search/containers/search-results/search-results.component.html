@@ -1,6 +1,6 @@
 <exui-app-header></exui-app-header>
 <xuilib-loading-spinner *ngIf="showSpinner"></xuilib-loading-spinner>
-<div class="govuk-width-container">
+<div class="govuk-width-container" *ngIf="!showSpinner">
   <exui-page-wrapper [title]="'Search results'">
     <p>
       <a class="govuk-link" href="" [routerLink]="['/search']">
@@ -18,7 +18,7 @@
         </tr>
       </thead>
       <tbody class="govuk-table__body">
-        <!-- <tr class="govuk-table__row" *ngFor="let case of searchResult.caseList">
+        <tr class="govuk-table__row" *ngFor="let case of searchResult.results">
           <td class="govuk-table__cell">
             <div>{{case.caseNameHmctsInternal}}</div>
             <div class="case-reference">{{case.caseReference}}</div>
@@ -33,48 +33,8 @@
             {{case.regionName}}
           </td>
           <td class="govuk-table__cell action-cell">
-            <a class="govuk-link" href="" [routerLink]="['/cases/case-details/1567097366157542']">
+            <a class="govuk-link" href="" routerLink="/cases/case-details/{{case.caseReference}}">
               View
-            </a>
-          </td>
-        </tr> -->
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">
-            <div>Loan Bourland</div>
-            <div class="case-reference">0598-5385-1020-1905</div>
-          </td>
-          <td class="govuk-table__cell">
-            Immigration and Asylum
-          </td>
-          <td class="govuk-table__cell">
-            Appeal submitted
-          </td>
-          <td class="govuk-table__cell">
-            Manchester Tribunal Hearing Centre
-          </td>
-          <td class="govuk-table__cell action-cell">
-            <a class="govuk-link" href="" [routerLink]="['/cases/case-details/1567097366157542']">
-              View
-            </a>
-          </td>
-        </tr>
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">
-            <div>Basilia Bourdeau</div>
-            <div class="case-reference">4520-3340-3600-1211	</div>
-          </td>
-          <td class="govuk-table__cell">
-            Immigration and Asylum
-          </td>
-          <td class="govuk-table__cell">
-            Case under review
-          </td>
-          <td class="govuk-table__cell">
-            Yarl's Wood Immigration and Asylum Hearing Centre
-          </td>
-          <td class="govuk-table__cell action-cell">
-            <a class="govuk-link" href="" [routerLink]="['/cases/case-details/1567097366157542']">
-              Specific access
             </a>
           </td>
         </tr>

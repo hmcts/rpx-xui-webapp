@@ -3,6 +3,7 @@ import { CaseHearingModel } from '../models/caseHearing.model';
 import { CaseHearingsMainModel } from '../models/caseHearingsMain.model';
 import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
 import { HearingListingStatusEnum, HMCStatus } from '../models/hearings.enum';
+import {HearingStageModel, HearingStagesModel} from "../models/hearingStages.model";
 
 const HEARING_DAY_SCHEDULE_1: HearingDayScheduleModel = {
   hearingStartDateTime: '2021-05-01T16:00:00.000+0000',
@@ -246,3 +247,29 @@ export const HEARINGS_LIST: CaseHearingsMainModel = {
     CASE_HEARING_10,
     CASE_HEARING_11],
 };
+
+export const SSCS_STAGES: HearingStageModel[] = [
+  {
+    stageId: 'initial',
+    stageName: 'Initial',
+  },
+  {
+    stageId: 'final',
+    stageName: 'Final',
+  },
+  {
+    stageId: 'Substantial',
+    stageName: 'Substantial',
+  },
+  {
+    stageId: 'case-management',
+    stageName: 'Case management',
+  },
+];
+
+export const STAGES: HearingStagesModel[] = [
+  {
+    jurisdictionId: 'SSCS',
+    stages: SSCS_STAGES,
+  },
+];

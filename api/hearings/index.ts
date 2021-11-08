@@ -5,6 +5,7 @@ import { SERVICES_HEARINGS_COMPONENT_API } from '../configuration/references';
 import * as mock from '../hearings/hearing.mock';
 import { EnhancedRequest } from '../lib/models';
 import { CaseHearingsMainModel } from './models/caseHearingsMain.model';
+import {HearingStagesModel} from "./models/hearingStages.model";
 import { hearingStatusMappings } from './models/hearingStatusMappings';
 
 mock.init();
@@ -26,6 +27,23 @@ export async function getHearings(req: EnhancedRequest, res: Response, next: Nex
         hearing.exuiSectionStatus = hearingStatusMapping.exuiSectionStatus;
         hearing.exuiDisplayStatus = hearingStatusMapping.exuiDisplayStatus;
       }));
+
+    res.status(status).send(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * getStages from jurisdiction ID
+ */
+export async function getStages(req: EnhancedRequest, res: Response, next: NextFunction) {
+  // @ts-ignore
+  const juridictionID = req.query.juridictionID;
+  const markupPath: string = `${url}/stages/${juridictionID}`;
+
+  try {
+    const {status, data}: { status: number, data: HearingStagesModel } = await handleGet(markupPath, req);
 
     res.status(status).send(data);
   } catch (error) {

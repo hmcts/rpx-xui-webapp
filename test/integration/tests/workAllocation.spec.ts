@@ -104,7 +104,8 @@ describe('Work allocations MVP', () => {
         };
 
         const userDetailsRes = await Request.get('api/user/details', { 'X-XSRF-TOKEN': xsrfToken }, 200);
-        const reqBody = getSearchTaskReqBody("AvailableTasks", [userDetailsRes.data.userInfo.id],null).getRequestBody();
+        const loggedInUserId = userDetailsRes.data.userInfo.id ? userDetailsRes.data.userInfo.id : userDetailsRes.data.userInfo.uid;
+        const reqBody = getSearchTaskReqBody("AvailableTasks", [loggedInUserId],null).getRequestBody();
         const headersForGetTasks = {
             'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
             'content-length': JSON.stringify(reqBody).length

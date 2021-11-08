@@ -65,6 +65,9 @@ describe('TaskListFilterComponent', () => {
     fields: [{
       name: 'locations',
       value: ['364992', '512401', '231596', '366796', '698118', '227101', '198444', '562808', '386417', '765324']
+    }, {
+      name: 'types-of-work',
+      value: ['types_of_work_all', ...typesOfWork.map(t => t.key)]
     }]
   };
   const mockFilterService: any = {

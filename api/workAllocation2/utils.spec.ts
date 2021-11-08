@@ -861,7 +861,7 @@ describe('workAllocation.utils', () => {
             "actorIdType": "IDAM",
             "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
             "roleType": "CASE",
-            "roleName": "case-manager",
+            "roleName": "case-allocator",
             "classification": "PUBLIC",
             "grantType": "SPECIFIC",
             "roleCategory": "LEGAL_OPERATIONS",

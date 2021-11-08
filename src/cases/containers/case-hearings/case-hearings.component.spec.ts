@@ -14,7 +14,7 @@ import { CaseHearingsComponent } from './case-hearings.component';
 import * as moment from 'moment';
 import { CaseHearingViewModel } from 'src/hearings/viewModel/case-hearing-view.model';
 
-describe('CaseHearingsComponent', () => {
+fdescribe('CaseHearingsComponent', () => {
 
   let component: CaseHearingsComponent;
   let fixture: ComponentFixture<CaseHearingsComponent>;
@@ -116,7 +116,6 @@ describe('CaseHearingsComponent', () => {
     hearingType: 'Case management hearing',
     hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
     hmcStatus: HMCStatus.AWAITING_ACTUALS,
-    lastResponseReceivedDateTime: '',
     responseVersion: 'rv1',
     hearingListingStatus: HearingListingStatusEnum.AWAITING_LISTING,
     listAssistCaseStatus: '',
@@ -129,7 +128,6 @@ describe('CaseHearingsComponent', () => {
     hearingType: 'Final hearing',
     hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
     hmcStatus: HMCStatus.AWAITING_ACTUALS,
-    lastResponseReceivedDateTime: '2021-10-12T16:00:00.000+0000',
     responseVersion: 'rv2',
     hearingListingStatus: HearingListingStatusEnum.LISTED,
     listAssistCaseStatus: '',
@@ -142,7 +140,6 @@ describe('CaseHearingsComponent', () => {
     hearingType: 'Initial hearing',
     hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
     hmcStatus:  HMCStatus.AWAITING_ACTUALS,
-    lastResponseReceivedDateTime: '2021-09-05T16:00:00.000+0000',
     responseVersion: 'rv3',
     hearingListingStatus: HearingListingStatusEnum.COMPLETED,
     listAssistCaseStatus: '',
@@ -153,9 +150,8 @@ describe('CaseHearingsComponent', () => {
   const CASE_HEARING_4: CaseHearingModel = {
     hearingID: 'h444444',
     hearingType: 'Case management hearing',
-    hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
+    hearingRequestDateTime: '2021-10-22T16:00:00.000+0000',
     hmcStatus:  HMCStatus.AWAITING_ACTUALS,
-    lastResponseReceivedDateTime: '2021-10-22T16:00:00.000+0000',
     responseVersion: 'rv4',
     hearingListingStatus: HearingListingStatusEnum.CANCELLED,
     listAssistCaseStatus: '',
@@ -167,8 +163,7 @@ describe('CaseHearingsComponent', () => {
     hearingID: 'h555555',
     hearingType: 'Directions hearing',
     hmcStatus: HMCStatus.AWAITING_ACTUALS,
-    hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
-    lastResponseReceivedDateTime: '2021-09-14T16:00:00.000+0000',
+    hearingRequestDateTime: '2021-09-14T16:00:00.000+0000',
     responseVersion: 'rv5',
     hearingListingStatus: HearingListingStatusEnum.CANCELLED,
     listAssistCaseStatus: '',
@@ -180,9 +175,8 @@ describe('CaseHearingsComponent', () => {
     hearingID: 'h222222',
     hearingType: 'Next hearing',
     hmcStatus:  HMCStatus.AWAITING_ACTUALS,
-    lastResponseReceivedDateTime: '2021-11-12T16:00:00.000+0000',
     responseVersion: 'rv2',
-    hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
+    hearingRequestDateTime: '2021-11-12T16:00:00.000+0000',
     hearingListingStatus: HearingListingStatusEnum.LISTED,
     listAssistCaseStatus: '',
     exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
@@ -193,8 +187,7 @@ describe('CaseHearingsComponent', () => {
     hearingID: 'h222222',
     hearingType: 'Next hearing',
     hmcStatus: HMCStatus.AWAITING_ACTUALS,
-    hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
-    lastResponseReceivedDateTime: '2021-03-12T16:00:00.000+0000',
+    hearingRequestDateTime: '2021-03-12T16:00:00.000+0000',
     responseVersion: 'rv2',
     hearingListingStatus: HearingListingStatusEnum.LISTED,
     listAssistCaseStatus: '',
@@ -207,7 +200,6 @@ describe('CaseHearingsComponent', () => {
     hearingType: 'Case management hearing 2',
     hmcStatus:  HMCStatus.AWAITING_ACTUALS,
     hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
-    lastResponseReceivedDateTime: '',
     responseVersion: 'rv1',
     hearingListingStatus: HearingListingStatusEnum.LISTED,
     exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
@@ -220,7 +212,6 @@ describe('CaseHearingsComponent', () => {
     hearingType: 'Directions hearing',
     hmcStatus:  HMCStatus.AWAITING_ACTUALS,
     hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
-    lastResponseReceivedDateTime: '',
     responseVersion: 'rv5',
     hearingListingStatus:  HearingListingStatusEnum.CANCELLED,
     listAssistCaseStatus: '',
@@ -232,7 +223,6 @@ describe('CaseHearingsComponent', () => {
     hearingID: 'h555555',
     hearingType: 'Directions hearing',
     hmcStatus:  HMCStatus.AWAITING_ACTUALS,
-    lastResponseReceivedDateTime: '',
     hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
     responseVersion: 'rv5',
     hearingListingStatus:  HearingListingStatusEnum.CANCELLED,
@@ -337,7 +327,6 @@ describe('CaseHearingsComponent', () => {
       hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
       hearingType: 'Case management hearing 2',
       hmcStatus:  HMCStatus.AWAITING_ACTUALS,
-      lastResponseReceivedDateTime: '',
       creationDateTime: '',
       responseVersion: 'rv1',
       hearingListingStatus: HearingListingStatusEnum.LISTED,
@@ -351,7 +340,6 @@ describe('CaseHearingsComponent', () => {
       hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
       hearingType: 'Case management hearing 2',
       hmcStatus:  HMCStatus.AWAITING_ACTUALS,
-      lastResponseReceivedDateTime: '',
       creationDateTime: '',
       responseVersion: 'rv1',
       hearingListingStatus: HearingListingStatusEnum.LISTED,
@@ -372,7 +360,7 @@ describe('CaseHearingsComponent', () => {
       expect(hearing[3].hmcStatus).toEqual(HMCStatus.AWAITING_ACTUALS);
       expect(hearing[2].hearingListingStatus).not.toEqual(HearingListingStatusEnum.AWAITING_LISTING);
       expect(hearing[3].hearingListingStatus).not.toEqual(HearingListingStatusEnum.CANCELLED);
-      expect(moment(hearing[3].lastResponseReceivedDateTime).isBefore(moment(hearing[2].lastResponseReceivedDateTime))).toBeFalsy();
+      expect(moment(hearing[3].hearingRequestDateTime).isBefore(moment(hearing[2].hearingRequestDateTime))).toBeFalsy();
       done();
     });
   });

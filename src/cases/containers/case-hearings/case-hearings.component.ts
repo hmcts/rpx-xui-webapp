@@ -8,8 +8,9 @@ import { UserRole } from '../../../app/models/user-details.model';
 import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
 import * as fromAppStore from '../../../app/store';
 import { CaseHearingModel } from '../../../hearings/models/caseHearing.model';
-import { Actions, EXUISectionStatusEnum } from '../../../hearings/models/hearings.enum';
+import { Actions, EXUISectionStatusEnum, HearingListingStatusEnum } from '../../../hearings/models/hearings.enum';
 import * as fromHearingStore from '../../../hearings/store';
+import * as moment from 'moment';
 
 @Component({
   selector: 'exui-case-hearings',
@@ -28,7 +29,6 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
               private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly activatedRoute: ActivatedRoute,
               private readonly roleCategoryMappingService: RoleCategoryMappingService) {
-
     const caseID = this.activatedRoute.snapshot.params.cid;
     this.userRoles = this.appStore.pipe(select(fromAppStore.getUserDetails)).pipe(
       map(userDetails => userDetails.userInfo.roles)
@@ -42,11 +42,11 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
         const viewModels: CaseHearingViewModel[] = this.convertServiceToVM(hearings);
 
         this.upcomingHearings$ = of(viewModels.sort((a, b) => {
-          return new Date(a.lastResponseReceivedDateTime) > new Date(b.lastResponseReceivedDateTime) ? 1 : -1;
+          return new Date(a.hearingRequestDateTime) > new Date(b.hearingRequestDateTime) ? 1 : -1;
         }).sort((a, b) => {
           return new Date(a.creationDateTime) > new Date(b.creationDateTime) ? 1 : -1;
         }).sort((a) => {
-          return a.hearingListingStatus === 'WAITING TO BE LISTED' ? -1 : 1;
+          return a.hearingListingStatus === HearingListingStatusEnum.AWAITING_LISTING ? -1 : 1;
         }));
       }
     });
@@ -55,15 +55,13 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
       if (hearings.length) {
         const viewModels: CaseHearingViewModel[] = this.convertServiceToVM(hearings);
         this.pastAndCancelledHearings$ = of(viewModels.sort((a, b) => {
-          return new Date(a.lastResponseReceivedDateTime) > new Date(b.lastResponseReceivedDateTime) ? 1 : -1;
+          return new Date(a.hearingRequestDateTime) > new Date(b.hearingRequestDateTime) ? 1 : -1;
           }).sort((a) => {
-            return !a.lastResponseReceivedDateTime ? 1 : -1;
-          }).sort((a, b) => {
-            return new Date(a.creationDateTime) < new Date(b.creationDateTime) ? 1 : -1;
+            return !a.hearingRequestDateTime ? 1 : -1;
           }).sort((a, b) => {
             return new Date(a.creationDateTime) < new Date(b.creationDateTime) ? 1 : -1;
           }).sort((a) => {
-            return a.lastResponseReceivedDateTime ? 1 : -1;
+            return a.hearingRequestDateTime ? 1 : -1;
           }));
       }
     });
@@ -83,12 +81,12 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public convertServiceToVM(hearings: CaseHearingModel[]) {
     const viewModels: CaseHearingViewModel[] = [];
     hearings.forEach((hearing) => {
-      const viewModel = new CaseHearingViewModel();
+      const viewModel = {} as CaseHearingViewModel;
       Object.keys(hearing).forEach(key => viewModel[key] = hearing[key]);
 
       if (hearing.hearingDaySchedule && hearing.hearingDaySchedule.length) {
-        viewModel.creationDateTime = Math.max.apply(null, hearing.hearingDaySchedule.map(schedule => schedule.hearingStartDateTime ?
-        new Date(schedule.hearingStartDateTime) : new Date(-8640000000000000))) as string;
+        let moments = hearing.hearingDaySchedule.map(d => moment(d.hearingStartDateTime));
+        viewModel.creationDateTime = moment.max(moments).toString();
       }
       viewModels.push(viewModel);
     });

@@ -248,7 +248,7 @@ export const HEARINGS_LIST: CaseHearingsMainModel = {
     CASE_HEARING_11],
 };
 
-export const SSCS_STAGES: HearingStageModel[] = [
+export const DEFAULT_STAGES: HearingStageModel[] = [
   {
     stageId: 'initial',
     stageName: 'Initial',
@@ -267,7 +267,15 @@ export const SSCS_STAGES: HearingStageModel[] = [
   },
 ];
 
+export const SSCS_STAGES: HearingStageModel[] = [
+  ...DEFAULT_STAGES,
+];
+
 export const STAGES: HearingStagesModel[] = [
+  {
+    jurisdictionId: 'DEFAULT',
+    stages: DEFAULT_STAGES,
+  },
   {
     jurisdictionId: 'SSCS',
     stages: SSCS_STAGES,

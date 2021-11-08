@@ -39,13 +39,17 @@ export async function getHearings(req: EnhancedRequest, res: Response, next: Nex
  */
 export async function getStages(req: EnhancedRequest, res: Response, next: NextFunction) {
   // @ts-ignore
-  const juridictionID = req.query.juridictionID;
-  const markupPath: string = `${url}/stages/${juridictionID}`;
-
+  const jurisdictionID = req.query.jurisdictionID;
+  const markupPath: string = `${url}/stages/${jurisdictionID}`;
   try {
-    const {status, data}: { status: number, data: HearingStagesModel } = await handleGet(markupPath, req);
-
-    res.status(status).send(data);
+    const {status, data}: { status: number, data: HearingStagesModel[] } = await handleGet(markupPath, req);
+    const stages = data.find(hearingStage => hearingStage.jurisdictionId === jurisdictionID);
+    if (stages) {
+      res.status(status).send(stages.stages);
+    } else {
+      const defaultStages  = data.find(hearingStage => hearingStage.jurisdictionId === 'DEFAULT');
+      res.status(status).send(defaultStages.stages);
+    }
   } catch (error) {
     next(error);
   }

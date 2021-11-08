@@ -4,7 +4,7 @@ import { FilterPersistence, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
 import { forkJoin, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { TaskDataService } from 'src/work-allocation-2/services/task-data.service';
+import { TaskTypesService } from 'src/work-allocation-2/services/task-types.service';
 import { ErrorMessage } from '../../../app/models';
 import { Location } from '../../models/dtos';
 import { LocationDataService } from '../../services';
@@ -53,13 +53,13 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
    */
   constructor(private readonly route: ActivatedRoute,
               private readonly filterService: FilterService,
-              private readonly taskDataService: TaskDataService,
+              private readonly taskTypesService: TaskTypesService,
               private readonly locationDataService: LocationDataService) {
   }
 
   public ngOnInit(): void {
     this.fieldsConfig.persistence = this.persistence || 'session';
-    this.subscription = forkJoin([this.locationDataService.getLocations(), this.taskDataService.getTypesOfWork()])
+    this.subscription = forkJoin([this.locationDataService.getLocations(), this.taskTypesService.getTypesOfWork()])
       .subscribe(([locations, typesOfWork]: [Location[], any[]]) => {
         locations.forEach((location) => this.allLocations.push(location.id.toString()));
         this.setUpLocationFilter(locations);

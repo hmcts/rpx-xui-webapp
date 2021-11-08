@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class TaskDataService {
+export class TaskTypesService {
 
   public constructor(private readonly http: HttpClient) {
   }

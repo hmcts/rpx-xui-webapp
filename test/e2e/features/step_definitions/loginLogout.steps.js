@@ -177,15 +177,14 @@ defineSupportCode(function ({ Given, When, Then }) {
 
 
   Then(/^I select the sign out link$/, async function () {
-    browser.sleep(SHORT_DELAY);
-    await expect(loginPage.signOutlink.isDisplayed()).to.eventually.be.true;
-    browser.sleep(SHORT_DELAY);
-    try{
+    
+    await BrowserWaits.retryWithActionCallback(async () => {
+      browser.sleep(SHORT_DELAY);
+      await expect(loginPage.signOutlink.isDisplayed()).to.eventually.be.true;
+      browser.sleep(SHORT_DELAY);
       await loginPage.signOutlink.click();
-    }catch(err){
-      await browser.sleep(SHORT_DELAY);
-      await loginPage.signOutlink.click();
-    }
+    });
+   
     browser.sleep(SHORT_DELAY);
   });
 

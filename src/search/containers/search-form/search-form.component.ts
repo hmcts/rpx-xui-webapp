@@ -124,7 +124,7 @@ export class SearchFormComponent implements OnInit, OnDestroy {
 
     this.searchServiceSubscription$ = this.searchService.getServices().subscribe(services => {
       services.forEach(service => {
-        this.services.push({ label: service.serviceName, value: service.serviceName, id: service.serviceId });
+        this.services.push({ label: service.serviceName, value: service.serviceId, id: service.serviceId });
       });
     });
     // Set default service selection to "All"
@@ -238,35 +238,39 @@ export class SearchFormComponent implements OnInit, OnDestroy {
    *
    */
   public onSubmit(): void {
-    if (this.validateForm()) {
-      // Populate a SearchParameters instance with the form inputs and persist via the SearchService
-      const searchParameters: SearchParameters = {
-        caseReferences: [this.formGroup.get('caseRef').value],
-        CCDJurisdictionIds:
+    // Populate a SearchParameters instance with the form inputs and persist via the SearchService
+    const searchParameters: SearchParameters = {
+      caseReferences: this.formGroup.get('caseRef').value !== '' ? [this.formGroup.get('caseRef').value] : null,
+      CCDJurisdictionIds:
         // If the selected value is not "All", use it; else, use the entire Services list (except the "All") item
         this.formGroup.get('servicesList').value !== 'All'
           ? [this.formGroup.get('servicesList').value]
           : this.services.slice(1).map(service => service.id),
-        otherReference: this.formGroup.get('otherRef').value,
-        fullName: this.formGroup.get('fullName').value,
-        address: this.formGroup.get('addressLine1').value,
-        postcode: this.formGroup.get('postcode').value,
-        emailAddress: this.formGroup.get('email').value,
-        // Date format expected by API endpoint is yyyy-mm-dd
-        dateOfBirth: this.getDateFormatted(DateCategoryType.DATE_OF_BIRTH),
-        dateOfDeath: this.getDateFormatted(DateCategoryType.DATE_OF_DEATH)
-      };
+      otherReferences: this.formGroup.get('otherRef').value !== '' ? [this.formGroup.get('otherRef').value] : null,
+      fullName: this.formGroup.get('fullName').value !== '' ? this.formGroup.get('fullName').value : null,
+      address: this.formGroup.get('addressLine1').value !== '' ? this.formGroup.get('addressLine1').value : null,
+      postcode: this.formGroup.get('postcode').value !== '' ? this.formGroup.get('postcode').value : null,
+      emailAddress: this.formGroup.get('email').value !== '' ? this.formGroup.get('email').value : null,
+      // Date format expected by API endpoint is yyyy-mm-dd
+      dateOfBirth: this.getDateFormatted(DateCategoryType.DATE_OF_BIRTH),
+      dateOfDeath: this.getDateFormatted(DateCategoryType.DATE_OF_DEATH)
+    };
 
-      this.searchService.storeState(SearchStatePersistenceKey.SEARCH_PARAMS, searchParameters);
+    // Store the search parameters to session
+    this.searchService.storeState(SearchStatePersistenceKey.SEARCH_PARAMS, searchParameters);
 
-      // Set the starting record number to 1
-      this.searchService.storeState(SearchStatePersistenceKey.START_RECORD, 1);
+    // Set the starting record number to 1
+    this.searchService.storeState(SearchStatePersistenceKey.START_RECORD, 1);
 
-      // Navigate to the Search Results page
-      this.router.navigate(['results'], {relativeTo: this.route});
-    }
+    // Navigate to the Search Results page
+    this.router.navigate(['results'], {relativeTo: this.route});
   }
 
+
+  /**
+   * Function to return date in a format expected by the backend service
+   *
+   */
   private getDateFormatted(dateCategoryType: string): string {
     const day = dateCategoryType === DateCategoryType.DATE_OF_BIRTH
       ? this.formGroup.get('dateOfBirth_day').value

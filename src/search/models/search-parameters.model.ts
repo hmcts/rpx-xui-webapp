@@ -1,7 +1,7 @@
 export interface SearchParameters {
   caseReferences: string[];
   CCDJurisdictionIds: string[];
-  otherReference: string;
+  otherReferences: string[];
   fullName: string;
   address: string;
   postcode: string;

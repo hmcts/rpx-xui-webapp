@@ -26,8 +26,6 @@ export class SearchService {
       startRecordNumber: startRecord ? parseInt(startRecord, 10) : 1
     };
 
-    console.log('searchRequest', searchRequest);
-
     return this.http.post<SearchResult>(`api/globalsearch/results`, searchRequest);
   }
 
@@ -46,7 +44,7 @@ export class SearchService {
       caseManagementBaseLocationIds: null,
       caseManagementRegionIds: null,
       caseReferences: searchParameters.caseReferences,
-      otherReferences: [searchParameters.otherReference],
+      otherReferences: searchParameters.otherReferences,
       parties: [{
         addressLine1: searchParameters.address,
         dateOfBirth: searchParameters.dateOfBirth,

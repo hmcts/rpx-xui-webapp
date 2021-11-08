@@ -1,4 +1,4 @@
-export interface SearchResultCase {
+export interface Result {
   ccdCaseTypeId: string;
   ccdCaseTypeName: string;
   ccdJurisdictionId: string;

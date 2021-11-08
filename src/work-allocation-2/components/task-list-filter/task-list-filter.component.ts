@@ -4,10 +4,10 @@ import { FilterPersistence, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
 import { forkJoin, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { TaskTypesService } from 'src/work-allocation-2/services/task-types.service';
 import { ErrorMessage } from '../../../app/models';
 import { Location } from '../../models/dtos';
 import { LocationDataService } from '../../services';
+import { TaskTypesService } from '../../services/task-types.service';
 
 export const LOCATION_ERROR: ErrorMessage = {
   title: 'There is a problem',

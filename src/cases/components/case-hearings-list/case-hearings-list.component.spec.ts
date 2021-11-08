@@ -44,6 +44,7 @@ describe('CaseHearingsListComponent', () => {
     component.hearingsList$ = of([{
       hearingID: 'h555555',
       hearingType: 'Directions hearing',
+      hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
       hmcStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
       lastResponseReceivedDateTime: '2021-08-05T16:00:00.000+0000',
       responseVersion: 'rv5',
@@ -56,6 +57,7 @@ describe('CaseHearingsListComponent', () => {
       hearingID: 'h555555',
       hearingType: 'Directions hearing',
       hmcStatus: EXUISectionStatusEnum.UPCOMING,
+      hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
       lastResponseReceivedDateTime: '2021-08-05T16:00:00.000+0000',
       responseVersion: 'rv5',
       hearingListingStatus: HearingListingStatusEnum.CANCELLED,

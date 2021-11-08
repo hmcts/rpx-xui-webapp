@@ -2,6 +2,7 @@ import { CaseHearingModel } from 'api/hearings/models/caseHearing.model';
 import { EXUISectionStatusEnum, EXUIDisplayStatusEnum } from 'api/hearings/models/hearings.enum';
 import { HearingDayScheduleModel } from 'api/hearings/models/hearingDaySchedule.model';
 export class CaseHearingViewModel implements CaseHearingModel {
+    hearingRequestDateTime: string;
     hearingID: string;
     hearingType: string;
     hmcStatus: string;

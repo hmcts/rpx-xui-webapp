@@ -186,7 +186,6 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       value: ['types_of_work_all', ...defaultFields]
     }];
     this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
-    console.log(this.fieldsSettings);
     this.fieldsConfig.fields.push(field);
   }
 

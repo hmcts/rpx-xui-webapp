@@ -7,6 +7,7 @@ import { AppUtils } from '../../app-utils';
 import { WorkAllocationTaskService } from '../../../work-allocation/services';
 import { EnvironmentService } from '../../../app/shared/services/environment.service';
 
+
 /**
  * see more:
  * https://tools.hmcts.net/confluence/pages/viewpage.action?pageId=797343913#Integrationsteps-Caseview(`ccd-case-view`)
@@ -31,6 +32,13 @@ export class AppConfig extends AbstractAppConfig {
       next: (val) => this.config = {
         ...this.config,
         document_management_secure_enabled: val
+      }
+    });
+
+    this.featureToggleService.getValue('access-management-request-review-mock', {}).subscribe({
+      next: (val) => this.config = {
+        ...this.config,
+        access_management_request_review_mock: val
       }
     });
   }
@@ -73,6 +81,10 @@ export class AppConfig extends AbstractAppConfig {
 
   public getDocumentSecureMode() {
     return this.config.document_management_secure_enabled;
+  }
+
+  public getAccessManagementRequestReviewMockModel() {
+    return this.config.access_management_request_review_mock;
   }
 
   public getRemoteDocumentManagementUrl() {

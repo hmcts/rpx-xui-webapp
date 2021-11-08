@@ -71,10 +71,8 @@ describe('Work allocations MVP', () => {
                 'X-XSRF-TOKEN': xsrfToken,
                 'content-length': JSON.stringify(reqBody).length
             };
-
             const response = await Request.post(`workallocation/task`, reqBody, headers, 200);
             expect(response.status).to.equal(200);
-
         });
        
     });
@@ -89,10 +87,8 @@ describe('Work allocations MVP', () => {
                 'X-XSRF-TOKEN': xsrfToken,
                 'content-length': JSON.stringify(reqBody).length
             };
-
             const response = await Request.post(`workallocation/task`, reqBody, headers, 200);
             expect(response.status).to.equal(200);
-
         }); 
     });
 
@@ -107,10 +103,8 @@ describe('Work allocations MVP', () => {
                 'X-XSRF-TOKEN': xsrfToken,
                 'content-length': JSON.stringify(reqBody).length
             };
-
             const response = await Request.post(`workallocation/task`, reqBody, headers, 200);
             expect(response.status).to.equal(200);
-
         }); 
     });
 
@@ -224,7 +218,6 @@ describe('Work allocations MVP', () => {
             }
 
         }); 
-
     });
 
 
@@ -284,8 +277,6 @@ describe('Work allocations MVP', () => {
             };
 
             const tasksRes = await Request.post(`workallocation/task`, reqBody, headersForGetTasks, 200);
-
-
             const assignTaskReqBody = {}
             const assignTasksHeader = {
                 'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
@@ -309,7 +300,6 @@ describe('Work allocations MVP', () => {
                 'X-XSRF-TOKEN': xsrfToken,
                 'content-length': JSON.stringify(taskRequestObj.getRequestBody()).length
             };
-
             const response = await Request.post(`workallocation/task`, taskRequestObj.getRequestBody(), headers, 200);
             expect(response.status).to.equal(200);
             expect(response.data).to.have.all.keys('tasks', 'total_records');
@@ -330,34 +320,27 @@ describe('Work allocations MVP', () => {
         }); 
     });
 
-    function getSearchTaskReqBody(view,users){
+    function getSearchTaskReqBody(view,users,locations){
         // const response = await Request.get('api/user/details', null, 200); 
         
         const taskRequestBody = new TaskRequestBody();
         taskRequestBody.inView(view);
-        switch(view){
-            case "MyTasks":
-                if(users){
-                    users.forEach(user => {
-                        taskRequestBody.searchWithUser(user);
-                    });
-                }else{
-                    taskRequestBody.searchWithUser(null);
-                }
-                
-                break;
-            case "AvailableTasks":
-                taskRequestBody.searchWithlocation(null);
-                taskRequestBody.searchWithState('unassigned');
-                break;
 
-            case "TaskManager":
-                taskRequestBody.searchWithlocation(null);
-                taskRequestBody.searchWithUser(null);
-
-                break;
+        if (users) {
+            users.forEach(user => {
+                taskRequestBody.searchWithUser(user);
+            });
+        } else {
+            taskRequestBody.searchWithAllUsers();
         }
 
+        if (locations) {
+            locations.forEach(loc => {
+                taskRequestBody.searchWithlocation(loc);
+            });
+        } else {
+            taskRequestBody.searchWithAllLocations();
+        }
         return taskRequestBody;
     }
 

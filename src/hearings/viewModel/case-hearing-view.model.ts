@@ -1,17 +1,4 @@
 import { CaseHearingModel } from 'api/hearings/models/caseHearing.model';
-import { EXUISectionStatusEnum, EXUIDisplayStatusEnum } from 'api/hearings/models/hearings.enum';
-import { HearingDayScheduleModel } from 'api/hearings/models/hearingDaySchedule.model';
-export class CaseHearingViewModel implements CaseHearingModel {
-    hearingRequestDateTime: string;
-    hearingID: string;
-    hearingType: string;
-    hmcStatus: string;
-    lastResponseReceivedDateTime: string;
-    responseVersion: string;
-    hearingListingStatus: string;
-    listAssistCaseStatus: string;
-    hearingDaySchedule: HearingDayScheduleModel[];
-    exuiSectionStatus?: EXUISectionStatusEnum;
-    exuiDisplayStatus?: EXUIDisplayStatusEnum;
+export interface CaseHearingViewModel extends CaseHearingModel {
     creationDateTime: string;
 }

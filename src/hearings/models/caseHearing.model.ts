@@ -5,7 +5,6 @@ export interface CaseHearingModel {
   hearingType: string;
   hmcStatus: string;
   hearingRequestDateTime: string,
-  lastResponseReceivedDateTime: string;
   responseVersion: string;
   hearingListingStatus: string;
   listAssistCaseStatus: string;

@@ -43,10 +43,9 @@ describe('Hearings Effects', () => {
       };
       const CASE_HEARING_1: CaseHearingModel = {
         hearingID: 'h111111',
-        hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
+        hearingRequestDateTime: '2021-05-05T16:00:00.000+0000',
         hearingType: 'hearing type 1',
         hmcStatus: 'pending',
-        lastResponseReceivedDateTime: '2021-05-05T16:00:00.000+0000',
         responseVersion: 'rv1',
         hearingListingStatus: HearingListingStatusEnum.AWAITING_LISTING,
         listAssistCaseStatus: 'pending',

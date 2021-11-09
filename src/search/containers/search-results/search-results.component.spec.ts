@@ -49,7 +49,7 @@ describe('SearchResultsComponent', () => {
         caseNameHmctsInternal: 'Derrick Rega',
         caseReference: '8771-7857-4127-5065',
         otherReferences: null,
-        processForAccess: null,
+        processForAccess: 'SPECIFIC',
         regionId: null,
         regionName: null,
         stateId: null
@@ -68,7 +68,7 @@ describe('SearchResultsComponent', () => {
         caseNameHmctsInternal: 'Lea Mangan',
         caseReference: '0598-5385-1020-1905',
         otherReferences: null,
-        processForAccess: null,
+        processForAccess: 'CHALLENGED',
         regionId: null,
         regionName: null,
         stateId: null
@@ -127,5 +127,12 @@ describe('SearchResultsComponent', () => {
     component.ngOnInit();
     expect(searchService.getResults).toHaveBeenCalled();
     expect(router.navigate).toHaveBeenCalledWith(['/search/noresults'], {relativeTo: route});
+  });
+
+  it('should verify process for access links', () => {
+    component.ngOnInit();
+    const nodes = fixture.debugElement.nativeElement.querySelectorAll('td > a');
+    expect(nodes[0].innerText).toContain('Specific access');
+    expect(nodes[1].innerText).toContain('Challenged access');
   });
 });

@@ -13,9 +13,9 @@ import {
   deleteUserExclusion,
   getEmail,
   getExclusionRequestPayload,
-  getLegalAndJudicialRequestPayload,
   getUserName,
   mapResponseToExclusions } from './exclusionService';
+import { getLegalAndJudicialRequestPayload } from './index';
 
 chai.use(sinonChai);
 describe('exclusions.exclusionService', () => {

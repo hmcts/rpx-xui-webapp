@@ -14,7 +14,7 @@ import { CaseHearingsComponent } from './case-hearings.component';
 import * as moment from 'moment';
 import { CaseHearingViewModel } from 'src/hearings/viewModel/case-hearing-view.model';
 
-fdescribe('CaseHearingsComponent', () => {
+describe('CaseHearingsComponent', () => {
 
   let component: CaseHearingsComponent;
   let fixture: ComponentFixture<CaseHearingsComponent>;
@@ -327,7 +327,7 @@ fdescribe('CaseHearingsComponent', () => {
       hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
       hearingType: 'Case management hearing 2',
       hmcStatus:  HMCStatus.AWAITING_ACTUALS,
-      creationDateTime: '',
+      mostRecentHearingStartDateTime: '',
       responseVersion: 'rv1',
       hearingListingStatus: HearingListingStatusEnum.LISTED,
       exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
@@ -340,7 +340,7 @@ fdescribe('CaseHearingsComponent', () => {
       hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
       hearingType: 'Case management hearing 2',
       hmcStatus:  HMCStatus.AWAITING_ACTUALS,
-      creationDateTime: '',
+      mostRecentHearingStartDateTime: '',
       responseVersion: 'rv1',
       hearingListingStatus: HearingListingStatusEnum.LISTED,
       exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,

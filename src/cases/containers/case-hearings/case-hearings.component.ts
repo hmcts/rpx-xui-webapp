@@ -44,7 +44,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
         this.upcomingHearings$ = of(viewModels.sort((a, b) => {
           return new Date(a.hearingRequestDateTime) > new Date(b.hearingRequestDateTime) ? 1 : -1;
         }).sort((a, b) => {
-          return new Date(a.creationDateTime) > new Date(b.creationDateTime) ? 1 : -1;
+          return new Date(a.mostRecentHearingStartDateTime) > new Date(b.mostRecentHearingStartDateTime) ? 1 : -1;
         }).sort((a) => {
           return a.hearingListingStatus === HearingListingStatusEnum.AWAITING_LISTING ? -1 : 1;
         }));
@@ -59,7 +59,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
           }).sort((a) => {
             return !a.hearingRequestDateTime ? 1 : -1;
           }).sort((a, b) => {
-            return new Date(a.creationDateTime) < new Date(b.creationDateTime) ? 1 : -1;
+            return new Date(a.mostRecentHearingStartDateTime) < new Date(b.mostRecentHearingStartDateTime) ? 1 : -1;
           }).sort((a) => {
             return a.hearingRequestDateTime ? 1 : -1;
           }));
@@ -86,7 +86,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
 
       if (hearing.hearingDaySchedule && hearing.hearingDaySchedule.length) {
         const moments = hearing.hearingDaySchedule.map(d => moment(d.hearingStartDateTime));
-        viewModel.creationDateTime = moment.max(moments).toString();
+        viewModel.mostRecentHearingStartDateTime = moment.max(moments).toString();
       }
       viewModels.push(viewModel);
     });

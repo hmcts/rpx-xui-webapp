@@ -42,12 +42,12 @@ export const DEFAULT_STAGES_REF: RefDataModel[] = [
 
 export const SSCS_STAGES: RefDataByServiceModel = {
   serviceID: 'SSCS',
-  refData: DEFAULT_STAGES_REF,
+  values: DEFAULT_STAGES_REF,
 };
 
 export const ALL_REF_DATA: RefDataByCategoryModel[] = [
   {
     categoryKey: 'HearingStage',
-    serviceData: [SSCS_STAGES],
+    services: [SSCS_STAGES],
   },
 ];

@@ -10,10 +10,10 @@ export interface RefDataModel {
 
 export interface RefDataByServiceModel {
   serviceID: string;
-  refData: RefDataModel[];
+  values: RefDataModel[];
 }
 
 export interface RefDataByCategoryModel {
   categoryKey: string;
-  serviceData: RefDataByServiceModel[];
+  services: RefDataByServiceModel[];
 }

@@ -47,9 +47,9 @@ export async function getRefData(req: EnhancedRequest, res: Response, next: Next
     const {status, data}: { status: number, data: RefDataByCategoryModel[] } = await handleGet(markupPath, req);
     const refDataByCategory: RefDataByCategoryModel = data.find(refDataByCategoryModel =>
       refDataByCategoryModel.categoryKey === category);
-    const refDataByService: RefDataByServiceModel = refDataByCategory.serviceData.find(refDataByServiceModel =>
-      refDataByServiceModel.serviceID === service);
-    res.status(status).send(refDataByService.refData);
+    const refDataByService: RefDataByServiceModel = refDataByCategory.services.find(aService =>
+      aService.serviceID === service);
+    res.status(status).send(refDataByService.values);
   } catch (error) {
     next(error);
   }

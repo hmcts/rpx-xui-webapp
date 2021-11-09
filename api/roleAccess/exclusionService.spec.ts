@@ -136,22 +136,20 @@ describe('exclusions.exclusionService', () => {
     it('should confirm successfully', async () => {
       spy = sandbox.stub(http, 'post').resolves(res);
       const req = mockReq({});
+      req.session = { 
+        passport: {
+          user: {
+            userinfo: {
+              id: 'someId'
+            }
+          }
+        }
+      }
       let response = mockRes();
       await confirmUserExclusion(req, response, next);
 
       // Should have received the HTTP response. The confirm simply sends the data
-      expect(response.send).to.have.been.calledWith(sinon.match([confirmRoleExclusion]));
-
-      const nonJudgeReq = mockReq({
-        body: {
-          exclusionDescription: '400',
-          roleExclusion: exampleRoleExclusion,
-        },
-      });
-      response = mockRes();
-      await confirmUserExclusion(nonJudgeReq, response, next);
-      // The confirm simply returns the error data.
-      expect(response.send).to.have.been.calledWith(sinon.match('{status: 400}'));
+      expect(response.send).to.have.been.calledWith(sinon.match('ok'));
     });
 
   });
@@ -230,6 +228,7 @@ describe('exclusions.exclusionService', () => {
                 jurisdiction: ['IA'],
               },
             roleCategory: ['LEGAL_OPERATIONS'],
+            roleName: ['case-manager']
         },
       ],
     } as unknown as EnhancedRequest;

@@ -10,7 +10,6 @@ import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { CaseRole } from '../workAllocation2/interfaces/caseRole';
 import { RoleCategory } from './models/allocate-role.enum';
 import { CaseRoleRequestPayload, RoleExclusion } from './models/caseRoleRequestPayload';
-import { refreshRoleAssignmentForUser } from '../user';
 import { UserInfo } from 'auth/interfaces/UserInfo';
 
 const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
@@ -50,7 +49,6 @@ export async function confirmUserExclusion(req: EnhancedRequest, res: Response, 
   const roleAssignmentsBody = prepareExclusionBody(currentUserId, assigneeId, body, roleCategory);
   const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
   const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
-  await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
   const {status, data} = response;
   return res.status(status).send(data);
 }

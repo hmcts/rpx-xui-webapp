@@ -12,4 +12,5 @@ export interface AllocateRoleData {
   durationOfRole: DurationOfRole;
   roleCategory?: RoleCategory;
   period: Period;
+  jurisdiction?: string;
 }

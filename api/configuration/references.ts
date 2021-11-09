@@ -64,6 +64,8 @@ export const ENVIRONMENT = 'environment';
 
 export const JURISDICTIONS = 'jurisdictions';
 
+export const WA_SUPPORTED_JURISDICTIONS = 'waSupportedJurisdictions';
+
 export const WILDCARD_SEARCH_FIELDS = 'wildcardSearchFields';
 
 export const WILDCARD_SEARCH_ROLES = 'wildcardSearchRoles';

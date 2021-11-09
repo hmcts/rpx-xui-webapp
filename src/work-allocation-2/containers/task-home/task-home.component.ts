@@ -19,7 +19,6 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
   public sortedBy: SortField;
   public pageTitle: string;
   public error: ErrorMessage = null;
-  public jurisdiction: string = 'Immigration & Asylum';
   /**
    * Take in the Router so we can navigate when actions are clicked and
    * to identify which sub-navigation item to highlight.

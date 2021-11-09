@@ -27,6 +27,7 @@ import {
   prepareGetTaskUrl,
   preparePaginationUrl,
   preparePostTaskUrlAction,
+  prepareRoleApiRequest,
   prepareSearchTaskUrl
 } from './util';
 
@@ -172,6 +173,27 @@ describe('workAllocation.utils', () => {
       const TASK_ID: string = '123456';
       const url = prepareGetTaskUrl(BASE_URL, TASK_ID);
       expect(url).to.equal('base/task/123456');
+    });
+
+  });
+
+  describe('prepareRoleApiRequest', () => {
+
+    it('should correctly prepare a payload with jurisdictions and location parameters', () => {
+      const jurisdictions: string[] = ['IA', 'Not-IA'];
+      const locationId = 123456;
+      const expectedResult = {
+        attributes: {
+          jurisdiction: jurisdictions,
+          primaryLocation: [locationId]
+        },
+        roleName: ['hearing-centre-admin', 'case-manager', 'ctsc', 'tribunal-caseworker',
+          'hmcts-legal-operations', 'task-supervisor', 'hmcts-admin',
+          'national-business-centre', 'senior-tribunal-caseworker', 'case-allocator'],
+        validAt: Date.UTC,
+      };
+      const payload = prepareRoleApiRequest(jurisdictions, locationId);
+      expect(payload).to.deep.equal(expectedResult);
     });
 
   });

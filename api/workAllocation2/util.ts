@@ -173,9 +173,9 @@ export function mapCaseworkerPrimaryLocation(baseLocation: LocationApi[]): Locat
   return primaryLocation;
 }
 
-export function prepareRoleApiRequest(locationId?: number): any {
+export function prepareRoleApiRequest(jurisdictions: string[], locationId?: number): any {
   const attributes: any = {
-    jurisdiction: ['IA'],
+    jurisdiction: jurisdictions,
   };
 
   const payload = {

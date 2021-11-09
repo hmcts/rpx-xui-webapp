@@ -29,7 +29,6 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import { GlobalSearchService } from '../app/services/globalSearch/globalSearch.service';
 import { JurisdictionService } from '../app/services/jurisdiction/jurisdiction.service';
 import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 import { SharedModule } from '../app/shared/shared.module';
@@ -86,8 +85,7 @@ import { effects, reducers } from './store';
     ...fromServices.services,
     CreateCaseEventTriggerResolver,
     ActivityResolver,
-    JurisdictionService,
-    GlobalSearchService
+    JurisdictionService
   ]
 })
 /**

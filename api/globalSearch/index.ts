@@ -47,7 +47,7 @@ export async function getServices(req: EnhancedRequest, res: Response, next: Nex
  * Get global search results
  * api/globalsearch/results
  */
-export async function getSearchResults(req: EnhancedRequest, res: Response, next: NextFunction) {
+export async function getSearchResults(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   try {
     // https://tools.hmcts.net/jira/browse/EUI-4719
     // TODO: Enable the below line and delete the line next to it (URL hardcoded)

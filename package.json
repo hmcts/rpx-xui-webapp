@@ -69,7 +69,7 @@
     "@angular/platform-browser": "^7.2.13",
     "@angular/platform-browser-dynamic": "^7.2.13",
     "@angular/router": "^7.2.13",
-    "@hmcts/ccpay-web-component": "4.0.0-beta550",
+    "@hmcts/ccpay-web-component": "4.0.0-beta553",
     "@hmcts/ccd-case-ui-toolkit": "4.5.0-ccpay-update2",
     "@hmcts/frontend": "0.0.39-alpha",
     "@hmcts/media-viewer": "2.7.9",

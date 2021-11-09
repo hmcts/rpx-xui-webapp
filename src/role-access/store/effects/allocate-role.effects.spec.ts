@@ -14,7 +14,7 @@ describe('Allocate Role Effects', () => {
   let actions$;
   let effects: AllocateRoleEffects;
   const allocateRoleServiceMock = jasmine.createSpyObj('AllocateRoleService', [
-    'confirmAllocation'
+    'confirmAllocation', 'backUrl'
   ]);
 
   beforeEach(() => {
@@ -28,7 +28,7 @@ describe('Allocate Role Effects', () => {
         provideMockActions(() => actions$)
       ]
     });
-
+    allocateRoleServiceMock.backUrl = 'work/my-work/cases';
     effects = TestBed.get(AllocateRoleEffects);
 
   });
@@ -50,7 +50,7 @@ describe('Allocate Role Effects', () => {
       }));
       const action = new allocateRoleAction.ConfirmAllocation(STATE_DATA);
       const completion = new routeAction.CreateCaseGo({
-        path: [`/cases/case-details/111111/roles-and-access`],
+        path: [`work/my-work/cases`],
         caseId: '111111',
         extras: {
           state: {

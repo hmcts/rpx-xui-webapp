@@ -53,6 +53,8 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
     return ConfigConstants.AllWorkCases;
   }
 
+  public backUrl: string = 'work/all-work/cases';
+
   public ngOnInit(): void {
     this.setUpLocations();
     this.setupCaseWorkers();
@@ -75,16 +77,6 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
         pagination_parameters: this.getPaginationParameter()
       };
     }
-  }
-
-  public onActionHandler(caseAction: InvokedCaseAction): void {
-    let actionUrl = '';
-    if (caseAction.action.id === Actions.Reallocate) {
-      actionUrl = `role-access/allocate-role/${caseAction.action.id}?caseId=${caseAction.invokedCase.case_id}&roleCategory=${caseAction.invokedCase.roleCategory}&assignmentId=${caseAction.invokedCase.id}&userName=${caseAction.invokedCase.assignee}&typeOfRole=${caseAction.invokedCase.roleName}`;
-    } else if (caseAction.action.id === Actions.Remove) {
-      actionUrl = `role-access/allocate-role/${caseAction.action.id}?caseId=${caseAction.invokedCase.case_id}&assignmentId=${caseAction.invokedCase.id}`;
-    }
-    this.router.navigateByUrl(actionUrl);
   }
 
   /**

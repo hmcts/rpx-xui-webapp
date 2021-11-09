@@ -73,12 +73,12 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
       const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
       return {
         search_parameters: [
-          {key: 'jurisdiction', operator: 'EQUAL', values: [this.selectedJurisdiction]},
+          // {key: 'jurisdiction', operator: 'EQUAL', values: [this.selectedJurisdiction]},
           this.getLocationParameter(),
-          {key: 'taskCategory', operator: 'EQUAL', values: [this.selectedTaskCategory]},
+          /* {key: 'taskCategory', operator: 'EQUAL', values: [this.selectedTaskCategory]},
           this.getPersonParameter(),
           {key: 'taskType', operator: 'EQUAL', values: [this.selectedTaskType]},
-          {key: 'priority', operator: 'EQUAL', values: [this.selectedPriority]},
+          {key: 'priority', operator: 'EQUAL', values: [this.selectedPriority]}, */
         ],
         sorting_parameters: [this.getSortParameter()],
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',

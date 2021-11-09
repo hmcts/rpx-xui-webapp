@@ -38,7 +38,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I see Task list Available tasks table displaying some tasks', async function () {
         await BrowserWaits.retryWithActionCallback(async () => {
             await taskListPage.waitForTable();
-
         });
     });
 

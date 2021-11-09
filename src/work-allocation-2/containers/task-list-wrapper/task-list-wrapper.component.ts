@@ -14,7 +14,7 @@ import { Caseworker, Location } from '../../interfaces/common';
 import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter, SearchTaskRequest, SortParameter } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskServiceConfig } from '../../models/tasks';
-import { CaseworkerDataService, InfoMessageCommService, LocationDataService, WorkAllocationTaskService } from '../../services';
+import { CaseworkerDataService, InfoMessageCommService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
@@ -51,6 +51,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected loadingService: LoadingService,
     protected featureToggleService: FeatureToggleService,
     protected locationService: LocationDataService,
+    protected waSupportedJurisdictionsService: WASupportedJurisdictionsService,
     protected filterService: FilterService
   ) {
   }

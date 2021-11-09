@@ -1,15 +1,14 @@
 import MockAdapter from 'axios-mock-adapter';
 import {HttpMockAdapter} from '../common/httpMockAdapter';
-import {EMPTY_HEARINGS_LIST, HEARINGS_LIST, STAGES} from './data/mock.data';
+import {EMPTY_HEARINGS_LIST, HEARINGS_LIST} from './data/hearings.mock.data';
+import {ALL_REF_DATA} from './data/reference.mock.data';
 
 export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
 
   const getHearingsUrl = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearings\/[0-9]{16}/;
-  // const getHearingsUrl = /https:\/\/hearings.demo.service.core-compute-demo.internal\/hearings\/[0-9]{16}/;
 
-  const getStagesUrl = /https:\/\/hearings.aat.service.core-compute-aat.internal\/stages\/[\w]*/;
-  // const getStagesUrl = /https:\/\/hearings.demo.service.core-compute-demo.internal\/stages\/[\w]*/;
+  const getRefDataUrl = /http:\/\/rd-professional-api-aat.service.core-compute-aat.internal\/refdata\/lov\/[\w]*\/[\w]*/;
 
   mock.onGet(getHearingsUrl).reply(config => {
     const url = config.url;
@@ -28,10 +27,10 @@ export const init = () => {
     }
   });
 
-  mock.onGet(getStagesUrl).reply(config => {
+  mock.onGet(getRefDataUrl).reply(() => {
     return [
       200,
-      STAGES,
+      ALL_REF_DATA,
     ];
   });
 };

@@ -66,8 +66,9 @@ export function prepareExclusionBody(currentUserId: string, assigneeId: string, 
       attributes: {
         caseId: body.caseId,
         jurisdiction: 'IA',
+        notes: body.exclusionDescription,
       },
-      roleCategory : 'LEGAL_OPERATIONS',
+      roleCategory,
       roleName: 'conflict-of-interest',
       actorIdType: 'IDAM',
       actorId: assigneeId,
@@ -100,6 +101,7 @@ export function mapResponseToExclusions(roleAssignments: RoleAssignment[],
     name: roleAssignment.actorId ? getUserName(roleAssignment.actorId, req) : null,
     type: roleAssignment.roleType,
     userType: roleAssignment.roleCategory,
+    notes: roleAssignment.attributes.notes,
   }));
 }
 

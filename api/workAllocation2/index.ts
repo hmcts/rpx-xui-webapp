@@ -54,6 +54,7 @@ import {
   prepareRoleApiUrl,
   prepareSearchTaskUrl,
   prepareTaskSearchForCompletable,
+  removeEmptyValues,
   searchCasesById
 } from './util';
 
@@ -91,9 +92,11 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
   try {
     const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
     const postTaskPath = preparePaginationUrl(req, basePath);
-    const searchRequest = req.body.searchRequest;
+    const searchRequest = {
+      ...req.body.searchRequest, search_parameters: removeEmptyValues(req.body.searchRequest.search_parameters),
+    };
     delete searchRequest.pagination_parameters;
-    const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
+    const {status, data} = await handleTaskSearch(postTaskPath, searchRequest, req);
     const currentUser = req.body.currentUser ? req.body.currentUser : '';
     res.status(status);
     // Assign actions to the tasks on the data from the API.

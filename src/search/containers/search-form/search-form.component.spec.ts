@@ -135,4 +135,23 @@ describe('SearchFormComponent', () => {
     component.onSubmit();
     expect(component.formGroup.valid).toEqual(true);
   });
+
+  it('should return null for empty fields on form submit', () => {
+    component.onSubmit();
+    expect(component.searchParameters.caseReferences).toEqual(null);
+    expect(component.searchParameters.otherReferences).toEqual(null);
+    expect(component.searchParameters.fullName).toEqual(null);
+    expect(component.searchParameters.address).toEqual(null);
+    expect(component.searchParameters.postcode).toEqual(null);
+    expect(component.searchParameters.emailAddress).toEqual(null);
+    expect(component.searchParameters.dateOfBirth).toEqual(null);
+    expect(component.searchParameters.dateOfDeath).toEqual(null);
+  });
+
+  it('should scroll to top and display error summary if validation failed', () => {
+    spyOn(window, 'scrollTo');
+    component.formGroup.get(SearchFormControl.EMAIL).setValue('WRONGEMAIL');
+    component.onSubmit();
+    expect(window.scrollTo).toHaveBeenCalled();
+  });
 });

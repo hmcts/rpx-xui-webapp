@@ -28,6 +28,7 @@ export class SearchFormComponent implements OnInit, OnDestroy {
   public servicesConfig: GovUiConfigModel;
   public services: SearchFormServiceListItem[];
   public searchServiceSubscription$: Subscription;
+  public searchParameters: SearchParameters;
   public searchValidationErrors: SearchValidationError[];
   public emailErrorMessage: ErrorMessagesModel;
   public postcodeErrorMessage: ErrorMessagesModel;
@@ -242,7 +243,7 @@ export class SearchFormComponent implements OnInit, OnDestroy {
       window.scrollTo({ top: 0, left: 0 });
     } else {
       // Populate a SearchParameters instance with the form inputs and persist via the SearchService
-      const searchParameters: SearchParameters = {
+      this.searchParameters = {
         caseReferences: this.formGroup.get('caseRef').value !== '' ? [this.formGroup.get('caseRef').value] : null,
         CCDJurisdictionIds:
           // If the selected value is not "All", use it; else, use the entire Services list (except the "All") item
@@ -260,7 +261,7 @@ export class SearchFormComponent implements OnInit, OnDestroy {
       };
 
       // Store the search parameters to session
-      this.searchService.storeState(SearchStatePersistenceKey.SEARCH_PARAMS, searchParameters);
+      this.searchService.storeState(SearchStatePersistenceKey.SEARCH_PARAMS, this.searchParameters);
 
       // Set the starting record number to 1
       this.searchService.storeState(SearchStatePersistenceKey.START_RECORD, 1);

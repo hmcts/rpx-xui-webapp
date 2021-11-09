@@ -47,7 +47,7 @@ export const SSCS_STAGES: RefDataByServiceModel = {
 
 export const ALL_REF_DATA: RefDataByCategoryModel[] = [
   {
-    categoryKey: 'HearingStage',
+    categoryKey: 'HearingType',
     services: [SSCS_STAGES],
   },
 ];

@@ -28,6 +28,6 @@ router.use('/user', userRouter);
 router.use('/caseshare', caseShareRoutes);
 router.use('/noc', nocRouter);
 router.use('/organisation', organisationRouter);
-
+router.use('/locations', hearingsRouter);
 // @ts-ignore
 export default router;

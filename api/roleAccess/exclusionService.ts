@@ -38,26 +38,24 @@ export async function confirmUserExclusion(req: EnhancedRequest, res: Response, 
   const currentUser: UserInfo = req.session.passport.user.userinfo;
   const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
   let roleCategory: string;
-  let userId: string;
+  let assigneeId: string;
   if (body.exclusionOption === 'Exclude another person') {
     roleCategory = body.person.domain === 'Legal Ops' ? 'LEGAL_OPERATIONS' : body.person.domain;
-    userId = body.person.id;
+    assigneeId = body.person.id;
   } else {
     roleCategory = currentUser.roleCategory;
-    userId = currentUserId;
+    assigneeId = currentUserId;
   }
 
-  const roleAssignmentsBody = prepareExclusionBody(userId, body, roleCategory);
+  const roleAssignmentsBody = prepareExclusionBody(currentUserId, assigneeId, body, roleCategory);
   const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
-  console.log(basePath);
-  console.log(JSON.stringify(roleAssignmentsBody));
   const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
   await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
   const {status, data} = response;
   return res.status(status).send(data);
 }
 
-export function prepareExclusionBody(currentUserId: string, body: any, roleCategory: string): any {
+export function prepareExclusionBody(currentUserId: string, assigneeId: string, body: any, roleCategory: string): any {
   return {
     roleRequest: {
       assignerId: currentUserId,
@@ -74,7 +72,7 @@ export function prepareExclusionBody(currentUserId: string, body: any, roleCateg
       roleCategory : 'LEGAL_OPERATIONS',
       roleName: 'conflict-of-interest',
       actorIdType: 'IDAM',
-      actorId: currentUserId,
+      actorId: assigneeId,
     }],
   };
 }

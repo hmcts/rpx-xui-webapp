@@ -1,11 +1,11 @@
-import { NextFunction, Response } from 'express';
-import { handleGet } from '../common/mockService';
-import { getConfigValue } from '../configuration';
+import {NextFunction, Response} from 'express';
+import {handleGet} from '../common/mockService';
+import {getConfigValue} from '../configuration';
 import {SERVICES_HEARINGS_COMPONENT_API, SERVICES_PRD_API_URL} from '../configuration/references';
 import * as mock from '../hearings/hearing.mock';
-import { EnhancedRequest } from '../lib/models';
-import { CaseHearingsMainModel } from './models/caseHearingsMain.model';
-import { hearingStatusMappings } from './models/hearingStatusMappings';
+import {EnhancedRequest} from '../lib/models';
+import {CaseHearingsMainModel} from './models/caseHearingsMain.model';
+import {hearingStatusMappings} from './models/hearingStatusMappings';
 import {RefDataByCategoryModel, RefDataByServiceModel} from "./models/refData.model";
 
 mock.init();

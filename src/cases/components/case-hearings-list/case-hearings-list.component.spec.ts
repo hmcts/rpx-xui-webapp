@@ -44,8 +44,8 @@ describe('CaseHearingsListComponent', () => {
     component.hearingsList$ = of([{
       hearingID: 'h555555',
       hearingType: 'Directions hearing',
-      hearingRequestDateTime: '2021-08-05T16:00:00.000+0000',
       hmcStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
+      hearingRequestDateTime: '2021-08-05T16:00:00.000+0000',
       responseVersion: 'rv5',
       hearingListingStatus: HearingListingStatusEnum.CANCELLED,
       listAssistCaseStatus: '',

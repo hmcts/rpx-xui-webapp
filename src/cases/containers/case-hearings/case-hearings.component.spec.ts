@@ -9,10 +9,10 @@ import { RoleCategoryMappingService } from '../../../app/services/role-category-
 import { CaseHearingModel } from '../../../hearings/models/caseHearing.model';
 import { CaseHearingsMainModel } from '../../../hearings/models/caseHearingsMain.model';
 import { HearingDayScheduleModel } from '../../../hearings/models/hearingDaySchedule.model';
+import { CaseHearingViewModel } from '../../../hearings/viewModel/case-hearing-view.model';
 import { Actions, EXUISectionStatusEnum, HearingListingStatusEnum, HMCStatus } from '../../../hearings/models/hearings.enum';
 import { CaseHearingsComponent } from './case-hearings.component';
 import * as moment from 'moment';
-import { CaseHearingViewModel } from 'src/hearings/viewModel/case-hearing-view.model';
 
 describe('CaseHearingsComponent', () => {
 

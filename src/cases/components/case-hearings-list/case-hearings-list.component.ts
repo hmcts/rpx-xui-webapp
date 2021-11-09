@@ -2,7 +2,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CaseHearingModel } from '../../../hearings/models/caseHearing.model';
 import { Actions, EXUISectionStatusEnum } from '../../../hearings/models/hearings.enum';
-
 @Component({
   selector: 'exui-case-hearings-list',
   templateUrl: './case-hearings-list.component.html',
@@ -18,7 +17,6 @@ export class CaseHearingsListComponent implements OnInit {
 
   @Input()
   public actions: Actions[];
-
   public hasUpdateAction: boolean = false;
   public hasDeleteAction: boolean = false;
   public hasReadOnlyAction: boolean = false;
@@ -38,5 +36,4 @@ export class CaseHearingsListComponent implements OnInit {
       }
     }
   }
-
 }

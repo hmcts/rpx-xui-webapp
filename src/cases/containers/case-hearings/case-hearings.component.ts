@@ -85,7 +85,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
       Object.keys(hearing).forEach(key => viewModel[key] = hearing[key]);
 
       if (hearing.hearingDaySchedule && hearing.hearingDaySchedule.length) {
-        let moments = hearing.hearingDaySchedule.map(d => moment(d.hearingStartDateTime));
+        const moments = hearing.hearingDaySchedule.map(d => moment(d.hearingStartDateTime));
         viewModel.creationDateTime = moment.max(moments).toString();
       }
       viewModels.push(viewModel);

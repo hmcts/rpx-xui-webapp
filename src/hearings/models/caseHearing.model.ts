@@ -7,6 +7,7 @@ export interface CaseHearingModel {
   hearingRequestDateTime: string,
   responseVersion: string;
   hearingListingStatus: string;
+  lastResponseReceivedDateTime: string;
   listAssistCaseStatus: string;
   hearingDaySchedule: HearingDayScheduleModel[];
   exuiSectionStatus?: EXUISectionStatusEnum;

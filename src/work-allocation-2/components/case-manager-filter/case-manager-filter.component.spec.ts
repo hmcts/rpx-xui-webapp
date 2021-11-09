@@ -21,7 +21,7 @@ class WrapperComponent {
   @ViewChild(CaseManagerFilterComponent) public appComponentRef: CaseManagerFilterComponent;
 }
 
-fdescribe('CaseManagerFilterComponent', () => {
+describe('CaseManagerFilterComponent', () => {
   let component: CaseManagerFilterComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;

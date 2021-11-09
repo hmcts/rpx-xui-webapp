@@ -16,6 +16,7 @@ import { Location } from '../../models/dtos';
 import {
   CaseworkerDataService,
   LocationDataService,
+  WASupportedJurisdictionsService,
   WorkAllocationCaseService,
   WorkAllocationFeatureService
 } from '../../services';
@@ -46,6 +47,7 @@ describe('AllWorkCaseComponent', () => {
   const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
+  const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -67,7 +69,8 @@ describe('AllWorkCaseComponent', () => {
         {provide: LocationDataService, useValue: mockLocationService},
         {provide: WorkAllocationFeatureService, useValue: mockFeatureService},
         {provide: LoadingService, useValue: mockLoadingService},
-        {provide: FeatureToggleService, useValue: mockFeatureToggleService}
+        {provide: FeatureToggleService, useValue: mockFeatureToggleService},
+        {provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService}
       ]
     }).compileComponents();
   }));
@@ -82,13 +85,12 @@ describe('AllWorkCaseComponent', () => {
     mockCaseworkerService.getAll.and.returnValue(of([]));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
-    component.locations$ = of(ALL_LOCATIONS as unknown as Location[]);
+    mockLocationService.getLocations.and.returnValue(of(ALL_LOCATIONS as unknown as Location[]));
+    mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
     fixture.detectChanges();
   });
 
   it('should have all column headers, including "Manage +"', () => {
-    component.locations$ = of(ALL_LOCATIONS as unknown as Location[]);
-    fixture.detectChanges();
     const element = fixture.debugElement.nativeElement;
     const headerCells = element.querySelectorAll('.govuk-table__header');
     const fields = component.fields;
@@ -107,8 +109,6 @@ describe('AllWorkCaseComponent', () => {
   });
 
   it('should not show the footer when there are cases', () => {
-    component.locations$ = of(ALL_LOCATIONS as unknown as Location[]);
-    fixture.detectChanges();
     const element = fixture.debugElement.nativeElement;
     const footerRow = element.querySelector('.footer-row');
     expect(footerRow).toBeDefined();
@@ -118,8 +118,6 @@ describe('AllWorkCaseComponent', () => {
   });
 
   it('should show the footer when there are no cases', () => {
-    component.locations$ = of(ALL_LOCATIONS as unknown as Location[]);
-    fixture.detectChanges();
     spyOnProperty(component, 'cases').and.returnValue([]);
     fixture.detectChanges();
     const element = fixture.debugElement.nativeElement;
@@ -134,8 +132,6 @@ describe('AllWorkCaseComponent', () => {
   });
 
   it('should appropriately handle clicking on a row action', () => {
-    component.locations$ = of(ALL_LOCATIONS as unknown as Location[]);
-    fixture.detectChanges();
     const element = fixture.debugElement.nativeElement;
     // Use the first case.
     const caseItem = component.cases[0];
@@ -150,7 +146,7 @@ describe('AllWorkCaseComponent', () => {
     actionLink.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     // Ensure the correct attempt has been made to navigate.
-    expect(routerMock.navigateByUrl).toHaveBeenCalledWith(jasmine.stringMatching('reallocate'));
+    expect(routerMock.navigateByUrl).toHaveBeenCalledWith(jasmine.stringMatching('reallocate'), {state: {backUrl: 'work/all-work/cases'}});
   });
 
   afterEach(() => {

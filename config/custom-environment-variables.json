@@ -92,6 +92,7 @@
     }
   },
   "jurisdictions": "JURISDICTIONS",
+  "waSupportedJurisdictions": "WA_SUPPORTED_JURISDICTIONS",
   "log4JConfig": {
     "__name": "LOG_4JS_CONFIG",
     "__format": "json"
@@ -127,6 +128,10 @@
     },
     "workAllocationEnabled": {
       "__name": "FEATURE_WORKALLOCATION_ENABLED",
+      "__format":"json"
+    },
+    "substantiveRoleEnabled": {
+      "__name": "FEATURE_SUBSTANTIVE_ROLE_ENABLED",
       "__format":"json"
     }
   },

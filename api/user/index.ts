@@ -34,7 +34,7 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
   }
 }
 
-export async function getRoleAssignmentForUser(userInfo: UserInfo, req: any): Promise<any []> {
+export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any): Promise<any []> {
   let locationInfo = [];
   const baseUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
   const id = userInfo.id ? userInfo.id : userInfo.uid;
@@ -66,6 +66,6 @@ export function getRoleAssignmentInfo(roleAssignmentResponse: RoleAssignment[]):
 export async function getUserRoleAssignments(userInfo: UserInfo, req): Promise<any []> {
   const roleAssignmentInfo = req.session.roleAssignmentResponse ?
                       getRoleAssignmentInfo(req.session.roleAssignmentResponse) :
-                      await getRoleAssignmentForUser(userInfo, req);
+                      await refreshRoleAssignmentForUser(userInfo, req);
   return roleAssignmentInfo;
 }

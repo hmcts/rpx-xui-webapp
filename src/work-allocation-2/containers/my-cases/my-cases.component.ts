@@ -28,6 +28,8 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
     return ConfigConstants.MyCases;
   }
 
+  public backUrl: string = 'work/my-work/my-cases';
+
   public getSearchCaseRequestPagination(): SearchCaseRequest {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
@@ -39,16 +41,8 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
           { key: 'user', operator: 'IN', values: [id] },
         ],
         sorting_parameters: [this.getSortParameter()],
-        search_by: userRole,
-        pagination_parameters: this.getPaginationParameter()
+        search_by: userRole
       };
     }
-  }
-
-  /**
-   * Handle the paging event
-   */
-  public onPaginationEvent(pageNumber: number): void {
-    this.onPaginationHandler(pageNumber);
   }
 }

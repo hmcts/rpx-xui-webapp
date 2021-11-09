@@ -221,6 +221,19 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   });
 
+  Given('I am logged into Expert UI with valid Probate back office user credentials', async function () {
+    await loginPage.givenIAmLoggedIn(config.config.params.usernameProbate, config.config.params.password);
+    const world = this;
+
+    loginAttempts++;
+    await loginattemptCheckAndRelogin(config.config.params.usernameProbate, config.config.params.password, this);
+
+    await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
+      world.attach("Login success page load load attempt : " + message)
+    });
+
+  });
+
   Given('I am logged into Expert UI with non professional user details', async function () {
     await loginPage.givenIAmLoggedIn(this.config.caseworkerUser, this.config.caseworkerPassword);
     const world = this;
@@ -291,6 +304,7 @@ defineSupportCode(function ({ Given, When, Then }) {
   });
 
   Given('I am logged into Expert UI with test user identified as {string}', async function (testUserIdentifier) {
+    const world = this;
 
     const matchingUsers = testConfig.users.filter(user => user.userIdentifier === testUserIdentifier);
     if (matchingUsers.length === 0 ){

@@ -1,11 +1,13 @@
 import { NavigationExtras } from '@angular/router';
 import { Observable, of } from 'rxjs';
+
+import { RoleCategory } from '../../role-access/models';
 import { ConfigConstants } from '../components/constants';
 import { CaseService, SortOrder, TaskService } from '../enums';
+import { Case, CaseServiceConfig } from '../models/cases';
 import { FieldConfig } from '../models/common';
 import { Caseworker, Location } from '../models/dtos';
 import { Task, TaskServiceConfig } from '../models/tasks';
-import { Case, CaseServiceConfig } from '../models/cases';
 
 const LOCATION_A: Location = { id: 'a', locationName: 'Taylor House', services: ['a'] };
 const LOCATION_B: Location = { id: 'b', locationName: 'Taylor Swift', services: ['a', 'b'] };
@@ -20,14 +22,16 @@ export function getMockCaseworkers(): Caseworker[] {
       lastName: 'Smith',
       idamId: '1',
       email: 'j.s@caseworkers.gov.uk',
-      location: LOCATION_A
+      location: LOCATION_A,
+      roleCategory: RoleCategory.LEGAL_OPERATIONS
     },
     {
       firstName: 'Jane',
       lastName: 'Doe',
       idamId: '2',
       email: 'j.doe@caseworkers.gov.uk',
-      location: LOCATION_B
+      location: LOCATION_B,
+      roleCategory: RoleCategory.LEGAL_OPERATIONS
     }
   ];
 }

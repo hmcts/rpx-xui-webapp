@@ -53,7 +53,7 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
     }
   }
 
-  private setAnswersFromAllocateRoleStateStore(allocateRoleStateData: AllocateRoleStateData): void {
+  public setAnswersFromAllocateRoleStateStore(allocateRoleStateData: AllocateRoleStateData): void {
     this.allocateRoleStateData = allocateRoleStateData;
     this.typeOfRole = allocateRoleStateData.typeOfRole.name;
     this.allocateTo = allocateRoleStateData.allocateTo;
@@ -85,7 +85,7 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
     this.setDurationOfRole(allocateRoleStateData);
   }
 
-  private setPersonDetails(allocateRoleStateData: AllocateRoleStateData): void {
+  public setPersonDetails(allocateRoleStateData: AllocateRoleStateData): void {
     let personDetails = '';
     if (allocateRoleStateData.person && allocateRoleStateData.person.email) {
       personDetails += `${allocateRoleStateData.person.name}\n${allocateRoleStateData.person.email}`;
@@ -94,15 +94,14 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
       (allocateRoleStateData.allocateTo === null && allocateRoleStateData.typeOfRole.name === TypeOfRole.CaseManager) ||
       allocateRoleStateData.action === Actions.Reallocate) {
       this.answers.push({label: AnswerLabelText.Person, value: personDetails, action: AllocateRoleState.SEARCH_PERSON});
-    }
-    if (allocateRoleStateData.allocateTo !== AllocateTo.RESERVE_TO_ME) {
+    } else if (allocateRoleStateData.allocateTo === AllocateTo.RESERVE_TO_ME) {
       if (personDetails) {
         this.answers.push({label: AnswerLabelText.Person, value: personDetails, action: AllocateRoleState.SEARCH_PERSON});
       }
     }
   }
 
-  private setDurationOfRole(allocateRoleStateData: AllocateRoleStateData): void {
+  public setDurationOfRole(allocateRoleStateData: AllocateRoleStateData): void {
     let durationOfRole;
     const startDate = moment.parseZone(allocateRoleStateData.period.startDate).format('D MMMM YYYY');
     let endDate;

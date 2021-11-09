@@ -24,6 +24,7 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
     page_number: 1,
     page_size: 25
   };
+  public jurisdictions: string[];
   private selectedJurisdiction: any = 'Immigration and Asylum';
   private selectedPerson: string = '';
   private selectedRole: string = 'All';
@@ -53,8 +54,10 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
     return ConfigConstants.AllWorkCases;
   }
 
+  public backUrl: string = 'work/all-work/cases';
+
   public ngOnInit(): void {
-    this.setUpLocations();
+    this.setUpLocationsAndJurisdictions();
     this.setupCaseWorkers();
   }
 
@@ -77,16 +80,6 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
     }
   }
 
-  public onActionHandler(caseAction: InvokedCaseAction): void {
-    let actionUrl = '';
-    if (caseAction.action.id === Actions.Reallocate) {
-      actionUrl = `role-access/allocate-role/${caseAction.action.id}?caseId=${caseAction.invokedCase.case_id}&roleCategory=${caseAction.invokedCase.roleCategory}&assignmentId=${caseAction.invokedCase.id}&userName=${caseAction.invokedCase.assignee}&typeOfRole=${caseAction.invokedCase.roleName}`;
-    } else if (caseAction.action.id === Actions.Remove) {
-      actionUrl = `role-access/allocate-role/${caseAction.action.id}?caseId=${caseAction.invokedCase.case_id}&assignmentId=${caseAction.invokedCase.id}`;
-    }
-    this.router.navigateByUrl(actionUrl);
-  }
-
   /**
    * Handle the paging event
    */
@@ -101,4 +94,5 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
     this.selectedRole = selection.role;
     this.doLoad();
   }
+
 }

@@ -75,21 +75,52 @@ module.exports = {
         }
     },
     post: {
-        '/workallocation2/my-cases/': (req, res) => {
-            const pageNum = req.body.searchRequest.pagination_parameters.page_number;
-            const pageSize = req.body.searchRequest.pagination_parameters.page_size;
-
+        '/workallocation2/my-work/cases': (req, res) => {
+            
             const requestedView = req.body.view.toLowerCase();
+            const pageNum = requestedView === "mycases" ? 0 : req.body.searchRequest.pagination_parameters.page_number;
+            const pageSize = requestedView === "mycases" ? 10000 : req.body.searchRequest.pagination_parameters.page_size;
+
             let cases = [];
-            if (requestedView === "mycases" || requestedView === "allworkcases") {
-                cases = global.scenarioData && global.scenarioData[`workallocation2.${requestedView}`] ? global.scenarioData[`workallocation2.${requestedView}`] : workAllocationMockData.getMyCases(pageSize * 5);
+            if (requestedView === "mycases" ) {
+                cases = global.scenarioData && global.scenarioData[`workallocation2.${requestedView}`] ? global.scenarioData[`workallocation2.${requestedView}`] : workAllocationMockData.getMyCases(pageSize ? pageSize  * 5: 125);
             }  else {
                 throw new Error("Unrecognised case list view : " + requestedView);
             }
             try {
                 const thisPageCases = [];
 
-                const startIndexForPage = pageNum === 1 ? 0 : ((pageNum - 1) * pageSize) - 1;
+                
+
+                const startIndexForPage =  ((pageNum - 1) * pageSize) - 1;
+                const endIndexForPage =  (startIndexForPage + pageSize) < cases.total_records ? startIndexForPage + pageSize - 1 : cases.total_records - 1;
+                for (let i = startIndexForPage; i <= endIndexForPage; i++) {
+                    thisPageCases.push(cases.cases[i]);
+                }
+                const responseData = { cases: thisPageCases, total_records: cases.total_records };
+                res.send(responseData);
+            } catch (e) {
+                res.status(500).send({ error: 'mock error occured', stack: e });
+            }
+        },
+        '/workallocation2/all-work/cases': (req, res) => {
+
+            const requestedView = req.body.view.toLowerCase();
+            const pageNum = requestedView === "allworkcases" ? 1 : req.body.searchRequest.pagination_parameters.page_number;
+            const pageSize = requestedView === "allworkcases" ? 25 : req.body.searchRequest.pagination_parameters.page_size;
+
+            let cases = [];
+            if (requestedView === "allworkcases") {
+                cases = global.scenarioData && global.scenarioData[`workallocation2.${requestedView}`] ? global.scenarioData[`workallocation2.${requestedView}`] : workAllocationMockData.getMyCases(pageSize ? pageSize * 5 : 125);
+            } else {
+                throw new Error("Unrecognised case list view : " + requestedView);
+            }
+            try {
+                const thisPageCases = [];
+
+
+
+                const startIndexForPage = ((pageNum - 1) * pageSize) - (pageNum <= 1 ? 0 : 1);
                 const endIndexForPage = (startIndexForPage + pageSize) < cases.total_records ? startIndexForPage + pageSize - 1 : cases.total_records - 1;
                 for (let i = startIndexForPage; i <= endIndexForPage; i++) {
                     thisPageCases.push(cases.cases[i]);
@@ -250,6 +281,15 @@ module.exports = {
                 { added: '2021-10-12T12:14:42.230129Z', name: 'legal a', userType: 'LEGAL_OPERATIONS', type: 'CASE', id: '12345678904' }
             ];
             res.send(workAllocationMockData.getCaseExclusions(mockRoles));
+        },
+        '/api/role-access/roles/post': (req, res) => {
+            const mockRoles = [
+                { added: '2021-10-12T12:14:42.230129Z', name: 'judeg a', userType: 'JUDICIAL', type: 'CASE', id: '12345678901', roleCategory: 'JUDICIAL' },
+                { added: '2021-10-12T12:14:42.230129Z', name: 'judeg b', userType: 'JUDICIAL', type: 'CASE', id: '12345678902', roleCategory: 'JUDICIAL' },
+                { added: '2021-10-12T12:14:42.230129Z', name: 'judeg c', userType: 'JUDICIAL', type: 'CASE', id: '12345678903', roleCategory: 'JUDICIAL' },
+                { added: '2021-10-12T12:14:42.230129Z', name: 'legal a', userType: 'LEGAL_OPERATIONS', type: 'CASE', id: '12345678904', roleCategory: 'LEGAL_OPERATIONS'}
+            ];
+            res.send(workAllocationMockData.getCaseRoles(mockRoles));
         }
     }
   

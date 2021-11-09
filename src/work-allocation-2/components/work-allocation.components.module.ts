@@ -7,7 +7,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { MatAutocompleteModule, MatFormFieldModule, MatInputModule, MatNativeDateModule } from '@angular/material';
 
 import * as fromComponents from '.';
-import { CaseworkerDataService, InfoMessageCommService, LocationDataService } from '../services';
+import { CaseworkerDataService, InfoMessageCommService, LocationDataService, WASupportedJurisdictionsService } from '../services';
 import { WorkAllocationPipesModule } from '../pipes/work-allocation.pipes.module';
 import { PriorityFieldComponentModule } from './priority-field/priority.module';
 
@@ -30,7 +30,7 @@ import { PriorityFieldComponentModule } from './priority-field/priority.module';
   declarations: [
     ...fromComponents.components,
   ],
-  providers: [CaseworkerDataService, LocationDataService, InfoMessageCommService],
+  providers: [CaseworkerDataService, LocationDataService, InfoMessageCommService, WASupportedJurisdictionsService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   exports: [
     ...fromComponents.components,

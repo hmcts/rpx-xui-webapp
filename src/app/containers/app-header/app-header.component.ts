@@ -2,27 +2,15 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import { combineLatest, Observable, of, Subscription } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
+import { ApplicationTheme, NavigationItem } from 'src/app/models/theming.model';
 import { UserDetails } from 'src/app/models/user-details.model';
-
 import { AppUtils } from '../../app-utils';
-import { AppConstants, LD_FLAG_MC_APPLICATION_THEMES } from '../../app.constants';
+import { AppConstants } from '../../app.constants';
 import { AppTitleModel } from '../../models/app-title.model';
-import { NavItemsModel } from '../../models/nav-item.model';
 import { UserNavModel } from '../../models/user-nav.model';
 import { LoggerService } from '../../services/logger/logger.service';
 import * as fromActions from '../../store';
-
-export interface Theme {
-  roles: string[];
-  appTitle: AppTitleModel;
-  navigationItems: NavItemsModel[];
-  accountNavigationItems: UserNavModel;
-  showFindCase: boolean;
-  backgroundColor: string;
-  logoIsUsed: boolean;
-  logoType: string;
-}
 
 @Component({
   selector: 'exui-app-header',
@@ -42,7 +30,7 @@ export interface Theme {
  */
 export class AppHeaderComponent implements OnInit, OnDestroy {
 
-  public navItems: NavItemsModel[];
+  public navItems: NavigationItem[];
   public appHeaderTitle: AppTitleModel;
   public userNav: UserNavModel;
   public showFindCase: boolean;
@@ -57,7 +45,8 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
   private subscription: Subscription;
   public userDetails$: Observable<UserDetails>;
-  public defaultTheme: Theme = AppConstants.DEFAULT_USER_THEME;
+  public defaultTheme: ApplicationTheme = AppConstants.DEFAULT_USER_THEME;
+  public defaultMenuItems: NavigationItem[] = AppConstants.DEFAULT_MENU_ITEMS;
 
   constructor(
     private readonly store: Store<fromActions.State>,
@@ -65,19 +54,6 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     private readonly loggerService: LoggerService,
     public router: Router
   ) {}
-
-  /**
-   * Get Default Application Themes
-   *
-   * Note that the application themes are in priority order, the application theme at the top of
-   * the list is given the highest precedence.
-   *
-   * If Launch Darkly goes down then these Default Application Themes will be used.
-   */
-  public getDefaultApplicationThemes() {
-
-    return AppConstants.APPLICATION_USER_THEMES;
-  }
 
   /**
    * Get User Roles
@@ -94,39 +70,8 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     return AppUtils.getCookieRolesAsArray(serialisedUserRolesWithoutJsonPrefix);
   }
 
-  /**
-   * Get Users Theme
-   *
-   * Find the Application's Theme, it's Styling and Navigation based on the Users roles.
-   *
-   * An example would be:
-   *
-   * For a Judicial User the application is called 'Judicial Case Manager' and has different menu items,
-   * and color, whereas to a Case Manager's this application is called 'Manager Cases'.
-   *
-   * In addition to a default User the header is styled completely differently.
-   *
-   * Note that we run through Themes first so that our Theme array can be organised in priority order;
-   * the top most item is the highest priority theming to be applied. Most likely for a Judicial User.
-   *
-   * @param userRoles - ['pui-case-manager', 'caseworker-sscs-judge']
-   * @param themes - [roles, appTitle, navigationItems etc.] - see unit tests
-   * @param defaultTheme - The default theme to be applied if we cannot find a matching Theme
-   * for the User's Roles.
-   */
-  public getUsersTheme(userRoles, themes, defaultTheme): Theme {
-
-    const themeToApply = defaultTheme;
-
-    for (const theme of themes) {
-      for (const role of theme.roles) {
-        if (userRoles.indexOf(role) > -1) {
-          return theme;
-        }
-      }
-    }
-
-    return themeToApply;
+  public getUsersTheme(defaultTheme: ApplicationTheme): Observable<ApplicationTheme> {
+    return this.featureToggleService.getValue('mc-menu-theme', defaultTheme);
   }
 
   /**
@@ -143,12 +88,11 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     this.featureToggleKey = AppConstants.SERVICE_MESSAGES_FEATURE_TOGGLE_KEY;
     this.serviceMessageCookie = AppConstants.SERVICE_MESSAGE_COOKIE;
     this.userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
-    this.setAppHeaderProperties(this.defaultTheme);
+    this.setAppHeaderProperties(this.defaultTheme, this.defaultMenuItems);
 
-    const applicationThemes$ = this.featureToggleService.getValue<Theme[]>(LD_FLAG_MC_APPLICATION_THEMES, this.getDefaultApplicationThemes());
-    combineLatest([this.userDetails$, applicationThemes$]).subscribe(([userDetails, applicationThemes]) => {
-        this.setHeaderContent(userDetails, applicationThemes);
-      });
+    this.userDetails$.subscribe(userDetails => {
+      this.setHeaderContent(userDetails);
+    });
 
     // Set up the active link whenever we detect that navigation has completed.
     this.router.events.subscribe(event => {
@@ -156,12 +100,13 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     });
   }
 
-  public setHeaderContent(userDetails, applicationThemes) {
+  public async setHeaderContent(userDetails) {
     if (userDetails.userInfo) {
       this.userRoles = userDetails.userInfo.roles;
-      const applicationTheme: Theme = this.getApplicationThemeForUser(applicationThemes, userDetails.userInfo.roles);
+      const applicationTheme: ApplicationTheme = await this.getApplicationThemeForUser().toPromise();
+      const menuItems: NavigationItem[] = await this.featureToggleService.getValue('mc-menu-items', this.defaultMenuItems).toPromise();
       this.hideNavigationListener(this.store);
-      this.setAppHeaderProperties(applicationTheme);
+      this.setAppHeaderProperties(applicationTheme, menuItems);
     }
   }
 
@@ -171,17 +116,17 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     }
   }
 
-  public getApplicationThemeForUser(applicationThemes: Theme[], userRoles: string[]): Theme {
+  public getApplicationThemeForUser(): Observable<ApplicationTheme> {
     try {
-        return this.getUsersTheme(userRoles, applicationThemes, this.defaultTheme);
+        return this.getUsersTheme(this.defaultTheme);
     } catch (error) {
       return this.logErrorAndReturnDefaultTheme(error);
     }
   }
 
-  public logErrorAndReturnDefaultTheme(error): Theme {
+  public logErrorAndReturnDefaultTheme(error): Observable<ApplicationTheme> {
     this.loggerService.error(error);
-    return this.defaultTheme;
+    return of(this.defaultTheme);
   }
 
   /**
@@ -189,26 +134,23 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    *
    * Set the app header properties, in one function that takes in the application theme.
    */
-  public setAppHeaderProperties(applicationTheme: Theme): void {
-
-    const {
-      appTitle,
-      accountNavigationItems,
-      backgroundColor,
-      logoIsUsed,
-      logoType,
-      navigationItems,
-      showFindCase,
-    } = applicationTheme;
-
-    this.appHeaderTitle = appTitle;
+  public setAppHeaderProperties(applicationTheme: ApplicationTheme, navigationItems: NavigationItem[]): void {
+    this.appHeaderTitle = applicationTheme.appTitle;
     this.setupActiveNavLink(navigationItems);
-    this.userNav = accountNavigationItems;
-    this.backgroundColor = backgroundColor;
-    this.logoType = logoType;
-    this.logoIsUsed = logoIsUsed;
-
-    this.showFindCase = showFindCase;
+    this.userNav = this.userRoles.length > 0 ? {
+      label: 'Account navigation',
+      items: [{
+        text: 'Sign out',
+        emit: 'sign-out'
+      }]
+    } : {
+      label: 'Account navigation',
+      items: []
+    };
+    this.backgroundColor = applicationTheme.backgroundColor;
+    this.logoType = applicationTheme.logo;
+    this.logoIsUsed = applicationTheme.logo !== 'none';
+    this.showFindCase = applicationTheme.showFindCase;
   }
 
   /**
@@ -261,7 +203,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     }
   }
 
-  private setupActiveNavLink(items: NavItemsModel[]): void {
+  private setupActiveNavLink(items: NavigationItem[]): void {
     this.navItems = AppUtils.setActiveLink(items, this.router.url);
   }
 }

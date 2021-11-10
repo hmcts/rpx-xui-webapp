@@ -108,10 +108,10 @@ const CASE_HEARING_1: CaseHearingModel = {
   hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
   hearingType: 'Case management hearing',
   lastResponseReceivedDateTime: '',
-  hmcStatus: HMCStatus.AWAITING_LISTING,
+  hmcStatus: HMCStatus.HEARING_REQUESTD,
   responseVersion: 'rv1',
   listAssistCaseStatus: '',
-  hearingListingStatus: HearingListingStatusEnum.AWAITING_LISTING,
+  hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_1],
 };
 
@@ -123,7 +123,7 @@ const CASE_HEARING_2: CaseHearingModel = {
   hmcStatus: HMCStatus.AWAITING_LISTING,
   responseVersion: 'rv2',
   listAssistCaseStatus: '',
-  hearingListingStatus: HearingListingStatusEnum.LISTED,
+  hearingListingStatus: HearingListingStatusEnum.AWAITING_LISTING,
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_2],
 };
 
@@ -144,10 +144,10 @@ const CASE_HEARING_4: CaseHearingModel = {
   hearingType: 'Case management hearing',
   lastResponseReceivedDateTime: '',
   hearingRequestDateTime: '2021-10-01T16:00:00.000+0000',
-  hmcStatus: HMCStatus.CANCELLATION_REQUESTED,
+  hmcStatus: HMCStatus.UPDATE_REQUESTED,
   responseVersion: 'rv4',
   listAssistCaseStatus: '',
-  hearingListingStatus: HearingListingStatusEnum.CANCELLATION_REQUESTED,
+  hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_4],
 };
 
@@ -156,10 +156,10 @@ const CASE_HEARING_5: CaseHearingModel = {
   hearingType: 'Case management preliminary hearing - open',
   lastResponseReceivedDateTime: '',
   hearingRequestDateTime: '2021-10-01T16:00:00.000+0000',
-  hmcStatus: HMCStatus.CANCELLATION_REQUESTED,
+  hmcStatus: HMCStatus.UPDATE_SUBMITTED,
   responseVersion: 'rv5',
   listAssistCaseStatus: '',
-  hearingListingStatus: HearingListingStatusEnum.CANCELLATION_REQUESTED,
+  hearingListingStatus: HearingListingStatusEnum.UPDATE_SUBMITTED,
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_5],
 };
 
@@ -168,10 +168,10 @@ const CASE_HEARING_6: CaseHearingModel = {
   hearingType: 'Directions hearing',
   lastResponseReceivedDateTime: '',
   hearingRequestDateTime: '2021-09-01T14:00:00.000+0000',
-  hmcStatus: HMCStatus.LISTED,
+  hmcStatus: HMCStatus.EXCEPTION,
   responseVersion: 'rv6',
   listAssistCaseStatus: '',
-  hearingListingStatus: HearingListingStatusEnum.LISTED,
+  hearingListingStatus: HearingListingStatusEnum.EXCEPTION,
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_6],
 };
 
@@ -180,10 +180,10 @@ const CASE_HEARING_7: CaseHearingModel = {
   hearingType: 'Full hearing',
   lastResponseReceivedDateTime: '',
   hearingRequestDateTime: '2021-09-01T14:00:00.000+0000',
-  hmcStatus: HMCStatus.LISTED,
+  hmcStatus: HMCStatus.CANCELLATION_REQUESTED,
   responseVersion: 'rv7',
   listAssistCaseStatus: '',
-  hearingListingStatus: HearingListingStatusEnum.LISTED,
+  hearingListingStatus: HearingListingStatusEnum.CANCELLATION_REQUESTED,
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_7],
 };
 
@@ -191,11 +191,11 @@ const CASE_HEARING_8: CaseHearingModel = {
   hearingID: 'h555555',
   hearingType: 'Directions hearing',
   lastResponseReceivedDateTime: '',
-  hmcStatus: HMCStatus.AWAITING_LISTING,
+  hmcStatus: HMCStatus.VACATED,
   hearingRequestDateTime: '2021-09-14T16:00:00.000+0000',
   responseVersion: 'rv8',
   listAssistCaseStatus: '',
-  hearingListingStatus: HearingListingStatusEnum.AWAITING_LISTING,
+  hearingListingStatus: HearingListingStatusEnum.VACATED,
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_8],
 };
 
@@ -204,10 +204,10 @@ const CASE_HEARING_9: CaseHearingModel = {
   hearingType: 'Pre-hearing review',
   lastResponseReceivedDateTime: '',
   hearingRequestDateTime: '2021-09-01T14:00:00.000+0000',
-  hmcStatus: HMCStatus.VACATED,
+  hmcStatus: HMCStatus.AWAITING_ACTUALS,
   responseVersion: 'rv9',
   listAssistCaseStatus: '',
-  hearingListingStatus: HearingListingStatusEnum.VACATED,
+  hearingListingStatus: HearingListingStatusEnum.AWAITING_ACTUALS,
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_9],
 };
 
@@ -215,11 +215,11 @@ const CASE_HEARING_10: CaseHearingModel = {
   hearingID: 'h555555',
   hearingType: 'Case management preliminary hearing - open',
   lastResponseReceivedDateTime: '',
-  hmcStatus: HMCStatus.VACATED,
+  hmcStatus: HMCStatus.COMPLETED,
   hearingRequestDateTime: '2021-09-01T14:00:00.000+0000',
   responseVersion: 'rv10',
   listAssistCaseStatus: '',
-  hearingListingStatus: HearingListingStatusEnum.VACATED,
+  hearingListingStatus: HearingListingStatusEnum.COMPLETED,
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_10],
 };
 
@@ -228,10 +228,10 @@ const CASE_HEARING_11: CaseHearingModel = {
   hearingType: 'Remedy hearing',
   hearingRequestDateTime: '2021-09-14T16:00:00.000+0000',
   lastResponseReceivedDateTime: '',
-  hmcStatus: HMCStatus.AWAITING_ACTUALS,
+  hmcStatus: HMCStatus.ADJOURNED,
   responseVersion: 'rv11',
   listAssistCaseStatus: '',
-  hearingListingStatus: HearingListingStatusEnum.AWAITING_ACTUALS,
+  hearingListingStatus: HearingListingStatusEnum.ADJOURNED,
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_11],
 };
 

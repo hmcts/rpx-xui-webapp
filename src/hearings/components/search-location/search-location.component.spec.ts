@@ -5,23 +5,23 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureUser } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of } from 'rxjs';
 import { RoleCategoryMappingService } from 'src/app/services/role-category-mapping/role-category-mapping.service';
-// import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, HearingListingStatusEnum } from '../../../hearings/models/hearings.enum';
-// import { HearingsPipesModule } from '../../../hearings/pipes/hearings.pipes.module';
-// import { CaseHearingsListComponent } from './case-hearings-list.component';
+import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, HearingListingStatusEnum } from '../../../hearings/models/hearings.enum';
+import { HearingsPipesModule } from '../../../hearings/pipes/hearings.pipes.module';
+import { SearchLocationComponent } from './search-location.component';
 
-class MockRoleCategoryMappingService {
-  public initialize = (user: FeatureUser, clientId: string): void => {
-  };
-  public isEnabled = (feature: string): Observable<boolean> => of(true);
-  public getValue = <R>(key: string, defaultValue: R): Observable<R> => of(defaultValue);
-  public getValueOnce = <R>(key: string, defaultValue: R): Observable<R> => of(defaultValue);
-}
+// class MockRoleCategoryMappingService {
+//   public initialize = (user: FeatureUser, clientId: string): void => {
+//   };
+//   public isEnabled = (feature: string): Observable<boolean> => of(true);
+//   public getValue = <R>(key: string, defaultValue: R): Observable<R> => of(defaultValue);
+//   public getValueOnce = <R>(key: string, defaultValue: R): Observable<R> => of(defaultValue);
+// }
 
-describe('CaseHearingsListComponent', () => {
-  let component: CaseHearingsListComponent;
-  let roleCategoryMappingService: RoleCategoryMappingService;
-  let fixture: ComponentFixture<CaseHearingsListComponent>;
-  const mockFeatureService = new MockRoleCategoryMappingService();
+describe('SearchLocationComponent', () => {
+  let component: SearchLocationComponent;
+  //let roleCategoryMappingService: RoleCategoryMappingService;
+  let fixture: ComponentFixture<SearchLocationComponent>;
+  //const mockFeatureService = new MockRoleCategoryMappingService();
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -30,14 +30,14 @@ describe('CaseHearingsListComponent', () => {
         RouterTestingModule.withRoutes([]),
         HearingsPipesModule
       ],
-      declarations: [CaseHearingsListComponent],
+      declarations: [SearchLocationComponent],
       providers: []
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CaseHearingsListComponent);
-    roleCategoryMappingService = new RoleCategoryMappingService(mockFeatureService);
+    fixture = TestBed.createComponent(SearchLocationComponent);
+    //roleCategoryMappingService = new RoleCategoryMappingService(mockFeatureService);
     component = fixture.componentInstance;
     component.actions = [Actions.DELETE];
     component.status = EXUISectionStatusEnum.PAST_AND_CANCELLED;

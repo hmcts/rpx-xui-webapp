@@ -22,9 +22,7 @@ export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next
   const fullPath = `${basePath}/am/role-assignments/query`;
   const headers = setHeaders(req, release2ContentType);
   try {
-    console.log(JSON.stringify(requestPayload))
     const response: AxiosResponse = await http.post(fullPath, requestPayload, {headers});
-    console.log(response.data);
     const roleExclusions = mapResponseToCaseRoles(response.data.roleAssignmentResponse, req.body.exclusionId, req);
     return res.status(response.status).send(roleExclusions);
   } catch (error) {

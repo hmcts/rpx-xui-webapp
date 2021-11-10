@@ -3,8 +3,8 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
+import { FlagDefinition, NavigationItem } from 'src/app/models/theming.model';
 import * as fromNocStore from '../../../noc/store';
-import { NavItemsModel } from '../../models/nav-item.model';
 import { UserNavModel } from '../../models/user-nav.model';
 import { UserService } from '../../services/user/user.service';
 
@@ -18,7 +18,7 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
   @Input() public set showNavItems(value: boolean) {
     this.showItems = value;
   }
-  @Input() public items: NavItemsModel[];
+  @Input() public items: NavigationItem[];
   @Input() public logoIsUsed: boolean;
   @Input() public showFindCase: boolean;
   @Input() public headerTitle: {name: string; url: string};
@@ -30,16 +30,16 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
   public showItems: boolean;
   public userValue = true;
   public tab;
-  public get leftItems(): Observable<NavItemsModel[]> {
+  public get leftItems(): Observable<NavigationItem[]> {
     return this.menuItems.left.asObservable();
   };
-  public get rightItems(): Observable<NavItemsModel[]> {
+  public get rightItems(): Observable<NavigationItem[]> {
     return this.menuItems.right.asObservable();
   };
 
   private menuItems = {
-    left: new BehaviorSubject<NavItemsModel[]>([]),
-    right: new BehaviorSubject<NavItemsModel[]>([])
+    left: new BehaviorSubject<NavigationItem[]>([]),
+    right: new BehaviorSubject<NavigationItem[]>([])
   };
 
   constructor(
@@ -64,7 +64,7 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
     }
   }
 
-  private splitAndFilterNavItems(items: NavItemsModel[]) {
+  private splitAndFilterNavItems(items: NavigationItem[]) {
     of(items).pipe(
       switchMap(unfilteredItems => this.filterNavItemsOnRole(unfilteredItems)),
       switchMap(roleFilteredItems => this.filterNavItemsOnFlag(roleFilteredItems)),
@@ -75,30 +75,33 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
     });
   }
 
-  private splitNavItems(items: NavItemsModel[]) {
+  private splitNavItems(items: NavigationItem[]) {
     return {
       right: items.filter(item => item.align && item.align === 'right'),
       left: items.filter(item => !item.align || item.align !== 'right')
     };
   }
 
-  private filterNavItemsOnRole(items: NavItemsModel[]): Observable<NavItemsModel[]> {
+  private filterNavItemsOnRole(items: NavigationItem[]): Observable<NavigationItem[]> {
     return this.userService.getUserDetails().pipe(
       map(details => details.userInfo.roles),
       map(roles => items.filter(item => (item.roles && item.roles.length > 0 ? item.roles.some(role => roles.includes(role)) : true)))
     );
   }
 
-  private filterNavItemsOnFlag(items: NavItemsModel[]): Observable<NavItemsModel[]> {
-    const flags: {[flag: string]: boolean} = {};
+  private filterNavItemsOnFlag(items: NavigationItem[]): Observable<NavigationItem[]> {
+    const flags: {[flag: string]: boolean | string} = {};
     const obs: Observable<boolean>[] = [];
     items.forEach(
       item => (item.flags || []).forEach(
-        flag => obs.push(
-          this.featureToggleService.isEnabled(flag).pipe(
-            tap(state => flags[flag] = state)
-          )
-        )
+        flag => {
+          let flagName = this.isPlainFlag(flag) ? flag : flag.flagName;
+          obs.push(
+            this.featureToggleService.isEnabled(flagName).pipe(
+              tap(state => flags[flagName] = state)
+            )
+          );
+        }
       )
     );
 
@@ -107,7 +110,11 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
     }
 
     return ((obs.length > 1 ? obs[0].combineLatest(obs.slice(1)) : obs[0]) as Observable<any>).pipe(
-      map(_ => items.filter(item => item.flags && item.flags.length > 0 ? item.flags.every(flag => flags[flag]) : true))
+      map(_ => items.filter(item => item.flags && item.flags.length > 0 ? item.flags.every(flag => this.isPlainFlag(flag) ? flags[flag]: flags[flag.flagName] === flag.value) : true))
     );
+  }
+
+  private isPlainFlag(flag: FlagDefinition): flag is string {
+    return !flag.hasOwnProperty('flagName');
   }
 }

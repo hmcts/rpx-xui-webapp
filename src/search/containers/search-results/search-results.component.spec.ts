@@ -107,19 +107,19 @@ describe('SearchResultsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have called ngOnInit and populate search results', () => {
+  fit('should have called ngOnInit', () => {
     expect(component.ngOnInit).toBeTruthy();
-    expect(component.searchResultSubscription$).toBeTruthy();
+    expect(component.searchSubscription$).toBeTruthy();
     expect(searchService.getResults).toHaveBeenCalled();
-    expect(component.searchResult).toEqual(searchResultWithCaseList);
+    expect(component.onSearchSubscriptionHandler).toHaveBeenCalled();
   });
 
   it('should unsubscribe subscriptions onDestroy', () => {
-    component.searchResultSubscription$ = new Observable().subscribe();
-    spyOn(component.searchResultSubscription$, 'unsubscribe').and.callThrough();
+    component.searchSubscription$ = new Observable().subscribe();
+    spyOn(component.searchSubscription$, 'unsubscribe').and.callThrough();
 
     component.ngOnDestroy();
-    expect(component.searchResultSubscription$.unsubscribe).toHaveBeenCalled();
+    expect(component.searchSubscription$.unsubscribe).toHaveBeenCalled();
   });
 
   it('should navigate to no results page if search result is empty', () => {

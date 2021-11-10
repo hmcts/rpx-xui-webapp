@@ -33,6 +33,7 @@ import { effects } from './store/effects';
 // ngrx modules - END
 // APP store
 import { CustomSerializer, reducers } from './store/reducers';
+import { JurisdictionService } from './services/jurisdiction/jurisdiction.service';
 // enforces immutability
 export const metaReducers: MetaReducer<any>[] = !environment.production
   ? [storeFreeze]
@@ -99,7 +100,8 @@ const routerOptions: ExtraOptions = {
     AcceptTermsService,
     CaseShareService,
     { provide: FeatureToggleService, useClass: LaunchDarklyService },
-    TimeoutNotificationsService
+    TimeoutNotificationsService,
+    JurisdictionService
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

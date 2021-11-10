@@ -18,29 +18,23 @@
         </tr>
       </thead>
       <tbody class="govuk-table__body">
-        <tr class="govuk-table__row" *ngFor="let case of searchResult.results">
+        <tr class="govuk-table__row" *ngFor="let item of searchResultDisplay">
           <td class="govuk-table__cell">
-            <div>{{case.caseNameHmctsInternal}}</div>
-            <div class="case-reference">{{case.caseReference}}</div>
+            <div>{{item.caseName}}</div>
+            <div class="case-reference">{{item.caseReference}}</div>
           </td>
           <td class="govuk-table__cell">
-            {{case.CCDJurisdictionName}}
+            {{item.service}}
           </td>
           <td class="govuk-table__cell">
-            {{case.stateId}}
+            {{item.state}}
           </td>
           <td class="govuk-table__cell">
-            {{case.baseLocationName}}
+            {{item.location}}
           </td>
           <td class="govuk-table__cell action-cell">
-            <a class="govuk-link" href="" routerLink="/cases/case-details/{{case.caseReference}}" *ngIf="case.processForAccess !== 'SPECIFIC' && case.processForAccess !== 'CHALLENGED'">
-              View
-            </a>
-            <a class="govuk-link" href="" routerLink="cases/case-details/{{case.caseReference}}/specific-access-request" *ngIf="case.processForAccess === 'SPECIFIC'">
-              Specific access
-            </a>
-            <a class="govuk-link" href="" routerLink="/cases/case-details/{{case.caseReference}}/challenged-access-request" *ngIf="case.processForAccess === 'CHALLENGED'">
-              Challenged access
+            <a class="govuk-link" href="" routerLink="{{item.actionLink}}">
+              {{item.actionLinkText}}
             </a>
           </td>
         </tr>

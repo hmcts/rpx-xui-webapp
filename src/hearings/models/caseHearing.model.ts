@@ -5,9 +5,9 @@ export interface CaseHearingModel {
   hearingType: string;
   hmcStatus: string;
   hearingRequestDateTime: string,
+  lastResponseReceivedDateTime: string;
   responseVersion: string;
   hearingListingStatus: string;
-  lastResponseReceivedDateTime: string;
   listAssistCaseStatus: string;
   hearingDaySchedule: HearingDayScheduleModel[];
   exuiSectionStatus?: EXUISectionStatusEnum;

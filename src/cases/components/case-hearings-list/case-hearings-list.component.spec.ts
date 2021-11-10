@@ -17,7 +17,7 @@ class MockRoleCategoryMappingService {
   public getValueOnce = <R>(key: string, defaultValue: R): Observable<R> => of(defaultValue);
 }
 
-fdescribe('CaseHearingsListComponent', () => {
+describe('CaseHearingsListComponent', () => {
   let component: CaseHearingsListComponent;
   let roleCategoryMappingService: RoleCategoryMappingService;
   let fixture: ComponentFixture<CaseHearingsListComponent>;
@@ -48,6 +48,7 @@ fdescribe('CaseHearingsListComponent', () => {
       hearingRequestDateTime: '2021-08-05T16:00:00.000+0000',
       lastResponseReceivedDateTime: '',
       responseVersion: 'rv5',
+      mostRecentHearingStartDateTime: '',
       hearingListingStatus: HearingListingStatusEnum.CANCELLED,
       listAssistCaseStatus: '',
       exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
@@ -55,11 +56,12 @@ fdescribe('CaseHearingsListComponent', () => {
       hearingDaySchedule: [],
     }, {
       hearingID: 'h555555',
-      hearingType: 'Directions hearing',
-      hmcStatus: EXUISectionStatusEnum.UPCOMING,
-      hearingRequestDateTime: '2021-08-05T16:00:00.000+0000',
       lastResponseReceivedDateTime: '',
+      hearingType: 'Directions hearing',
+      hearingRequestDateTime: '2021-08-05T16:00:00.000+0000',
+      hmcStatus: EXUISectionStatusEnum.UPCOMING,         
       responseVersion: 'rv5',
+      mostRecentHearingStartDateTime: '',
       hearingListingStatus: HearingListingStatusEnum.CANCELLED,
       listAssistCaseStatus: '',
       exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,

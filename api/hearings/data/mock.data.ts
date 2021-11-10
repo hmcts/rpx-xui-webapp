@@ -105,13 +105,13 @@ const HEARING_DAY_SCHEDULE_11: HearingDayScheduleModel = {
 
 const CASE_HEARING_1: CaseHearingModel = {
   hearingID: 'h111111',
-  hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
   hearingType: 'Case management hearing',
+  hearingRequestDateTime: '2021-09-01T16:00:00.000+0000', 
   lastResponseReceivedDateTime: '',
   hmcStatus: HMCStatus.HEARING_REQUESTD,
   responseVersion: 'rv1',
-  listAssistCaseStatus: '',
   hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
+  listAssistCaseStatus: '',
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_1],
 };
 
@@ -122,8 +122,8 @@ const CASE_HEARING_2: CaseHearingModel = {
   hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
   hmcStatus: HMCStatus.AWAITING_LISTING,
   responseVersion: 'rv2',
-  listAssistCaseStatus: '',
   hearingListingStatus: HearingListingStatusEnum.AWAITING_LISTING,
+  listAssistCaseStatus: '',
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_2],
 };
 
@@ -134,8 +134,8 @@ const CASE_HEARING_3: CaseHearingModel = {
   hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
   hmcStatus: HMCStatus.LISTED,
   responseVersion: 'rv3',
-  listAssistCaseStatus: '',
   hearingListingStatus: HearingListingStatusEnum.LISTED,
+  listAssistCaseStatus: '',
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_3],
 };
 
@@ -146,8 +146,8 @@ const CASE_HEARING_4: CaseHearingModel = {
   hearingRequestDateTime: '2021-10-01T16:00:00.000+0000',
   hmcStatus: HMCStatus.UPDATE_REQUESTED,
   responseVersion: 'rv4',
-  listAssistCaseStatus: '',
   hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
+  listAssistCaseStatus: '',
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_4],
 };
 
@@ -158,8 +158,8 @@ const CASE_HEARING_5: CaseHearingModel = {
   hearingRequestDateTime: '2021-10-01T16:00:00.000+0000',
   hmcStatus: HMCStatus.UPDATE_SUBMITTED,
   responseVersion: 'rv5',
-  listAssistCaseStatus: '',
   hearingListingStatus: HearingListingStatusEnum.UPDATE_SUBMITTED,
+  listAssistCaseStatus: '',
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_5],
 };
 
@@ -170,8 +170,8 @@ const CASE_HEARING_6: CaseHearingModel = {
   hearingRequestDateTime: '2021-09-01T14:00:00.000+0000',
   hmcStatus: HMCStatus.EXCEPTION,
   responseVersion: 'rv6',
-  listAssistCaseStatus: '',
   hearingListingStatus: HearingListingStatusEnum.EXCEPTION,
+  listAssistCaseStatus: '', 
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_6],
 };
 
@@ -182,8 +182,8 @@ const CASE_HEARING_7: CaseHearingModel = {
   hearingRequestDateTime: '2021-09-01T14:00:00.000+0000',
   hmcStatus: HMCStatus.CANCELLATION_REQUESTED,
   responseVersion: 'rv7',
-  listAssistCaseStatus: '',
   hearingListingStatus: HearingListingStatusEnum.CANCELLATION_REQUESTED,
+  listAssistCaseStatus: '',
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_7],
 };
 
@@ -194,8 +194,8 @@ const CASE_HEARING_8: CaseHearingModel = {
   hmcStatus: HMCStatus.VACATED,
   hearingRequestDateTime: '2021-09-14T16:00:00.000+0000',
   responseVersion: 'rv8',
-  listAssistCaseStatus: '',
   hearingListingStatus: HearingListingStatusEnum.VACATED,
+  listAssistCaseStatus: '',
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_8],
 };
 
@@ -206,8 +206,8 @@ const CASE_HEARING_9: CaseHearingModel = {
   hearingRequestDateTime: '2021-09-01T14:00:00.000+0000',
   hmcStatus: HMCStatus.AWAITING_ACTUALS,
   responseVersion: 'rv9',
-  listAssistCaseStatus: '',
   hearingListingStatus: HearingListingStatusEnum.AWAITING_ACTUALS,
+  listAssistCaseStatus: '',
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_9],
 };
 
@@ -218,8 +218,8 @@ const CASE_HEARING_10: CaseHearingModel = {
   hmcStatus: HMCStatus.COMPLETED,
   hearingRequestDateTime: '2021-09-01T14:00:00.000+0000',
   responseVersion: 'rv10',
-  listAssistCaseStatus: '',
   hearingListingStatus: HearingListingStatusEnum.COMPLETED,
+  listAssistCaseStatus: '',
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_10],
 };
 
@@ -230,8 +230,8 @@ const CASE_HEARING_11: CaseHearingModel = {
   lastResponseReceivedDateTime: '',
   hmcStatus: HMCStatus.ADJOURNED,
   responseVersion: 'rv11',
-  listAssistCaseStatus: '',
   hearingListingStatus: HearingListingStatusEnum.ADJOURNED,
+  listAssistCaseStatus: '',
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_11],
 };
 

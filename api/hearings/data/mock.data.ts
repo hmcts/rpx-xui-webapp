@@ -106,7 +106,7 @@ const HEARING_DAY_SCHEDULE_11: HearingDayScheduleModel = {
 const CASE_HEARING_1: CaseHearingModel = {
   hearingID: 'h111111',
   hearingType: 'Case management hearing',
-  hearingRequestDateTime: '2021-09-01T16:00:00.000+0000', 
+  hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
   lastResponseReceivedDateTime: '',
   hmcStatus: HMCStatus.HEARING_REQUESTD,
   responseVersion: 'rv1',
@@ -171,7 +171,7 @@ const CASE_HEARING_6: CaseHearingModel = {
   hmcStatus: HMCStatus.EXCEPTION,
   responseVersion: 'rv6',
   hearingListingStatus: HearingListingStatusEnum.EXCEPTION,
-  listAssistCaseStatus: '', 
+  listAssistCaseStatus: '',
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_6],
 };
 

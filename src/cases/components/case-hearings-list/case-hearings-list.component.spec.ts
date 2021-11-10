@@ -59,7 +59,7 @@ describe('CaseHearingsListComponent', () => {
       lastResponseReceivedDateTime: '',
       hearingType: 'Directions hearing',
       hearingRequestDateTime: '2021-08-05T16:00:00.000+0000',
-      hmcStatus: EXUISectionStatusEnum.UPCOMING,         
+      hmcStatus: EXUISectionStatusEnum.UPCOMING,
       responseVersion: 'rv5',
       mostRecentHearingStartDateTime: '',
       hearingListingStatus: HearingListingStatusEnum.CANCELLED,

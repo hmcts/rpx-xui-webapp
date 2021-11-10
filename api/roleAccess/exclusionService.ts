@@ -62,7 +62,7 @@ export function prepareExclusionBody(currentUserId: string, assigneeId: string, 
       classification: 'RESTRICTED',
       attributes: {
         caseId: body.caseId,
-        jurisdiction: 'IA',
+        jurisdiction: body.jurisdiction,
         notes: body.exclusionDescription,
       },
       roleCategory,

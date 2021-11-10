@@ -85,7 +85,10 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
   private filterNavItemsOnRole(items: NavigationItem[]): Observable<NavigationItem[]> {
     return this.userService.getUserDetails().pipe(
       map(details => details.userInfo.roles),
-      map(roles => items.filter(item => (item.roles && item.roles.length > 0 ? item.roles.some(role => roles.includes(role)) : true)))
+      map(roles => {
+        const i = items.filter(item => (item.roles && item.roles.length > 0 ? item.roles.some(role => roles.includes(role)) : true));
+        return i.filter(item => (item.notRoles && item.notRoles.length > 0 ? item.roles.every(role => !roles.includes(role)) : true))
+      })
     );
   }
 
@@ -93,7 +96,7 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
     const flags: {[flag: string]: boolean | string} = {};
     const obs: Observable<boolean>[] = [];
     items.forEach(
-      item => (item.flags || []).forEach(
+      item => (item.flags || []).concat(item.notFlags || []).forEach(
         flag => {
           let flagName = this.isPlainFlag(flag) ? flag : flag.flagName;
           obs.push(
@@ -110,7 +113,10 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
     }
 
     return ((obs.length > 1 ? obs[0].combineLatest(obs.slice(1)) : obs[0]) as Observable<any>).pipe(
-      map(_ => items.filter(item => item.flags && item.flags.length > 0 ? item.flags.every(flag => this.isPlainFlag(flag) ? flags[flag]: flags[flag.flagName] === flag.value) : true))
+      map(_ => {
+        const i = items.filter(item => item.flags && item.flags.length > 0 ? item.flags.every(flag => this.isPlainFlag(flag) ? flags[flag] : flags[flag.flagName] === flag.value) : true);
+        return i.filter(item => item.notFlags && item.notFlags.length > 0 ? item.flags.every(flag => this.isPlainFlag(flag) ? !flags[flag] : flags[flag.flagName] !== flag.value) : true);
+      })
     );
   }
 

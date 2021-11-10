@@ -137,15 +137,23 @@ describe('SearchFormComponent', () => {
   });
 
   it('should return null for empty fields on form submit', () => {
+    // Submit the form with empty values other than jurisdiction
     component.onSubmit();
-    expect(component.searchParameters.caseReferences).toEqual(null);
-    expect(component.searchParameters.otherReferences).toEqual(null);
-    expect(component.searchParameters.fullName).toEqual(null);
-    expect(component.searchParameters.address).toEqual(null);
-    expect(component.searchParameters.postcode).toEqual(null);
-    expect(component.searchParameters.emailAddress).toEqual(null);
-    expect(component.searchParameters.dateOfBirth).toEqual(null);
-    expect(component.searchParameters.dateOfDeath).toEqual(null);
+    // Check how many times the spy was called
+    expect(searchService.storeState).toHaveBeenCalledTimes(2);
+    // Check arguments
+    expect(searchService.storeState.calls.all()[0].args[0]).toEqual(SearchStatePersistenceKey.SEARCH_PARAMS);
+    expect(searchService.storeState.calls.all()[0].args[1]).toEqual({
+      caseReferences: null,
+      CCDJurisdictionIds: ['TEST'],
+      otherReferences: null,
+      fullName: null,
+      address: null,
+      postcode: null,
+      emailAddress: null,
+      dateOfBirth: null,
+      dateOfDeath: null
+    } as SearchParameters);
   });
 
   it('should scroll to top and display error summary if validation failed', () => {

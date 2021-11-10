@@ -21,6 +21,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   private static readonly FILTER_NAME: string = 'all-tasks';
 
   @Input() public locations: Location[] = [];
+  @Input() public jurisdictions: string[] = [];
   @Output() public selectionChanged: EventEmitter<any> = new EventEmitter<any>();
 
   public appStoreSub: Subscription;
@@ -69,15 +70,10 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
               private readonly appStore: Store<fromAppStore.State>) {
   }
 
-  private static initServiceFilter(): FilterFieldConfig {
+  private static initServiceFilter(jurisdictions: string[]): FilterFieldConfig {
     return {
       name: 'service',
-      options: [
-        {
-          key: 'IA',
-          label: 'Immigration and Asylum'
-        }
-      ],
+      options: jurisdictions.map(service => ({key: service, label: service})),
       minSelected: 1,
       maxSelected: 1,
       minSelectedError: 'You must select a service',
@@ -251,7 +247,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       }
     );
     this.fieldsConfig.fields = [
-      TaskManagerFilterComponent.initServiceFilter(),
+      TaskManagerFilterComponent.initServiceFilter(this.jurisdictions),
       TaskManagerFilterComponent.initCaseLocationFilter(this.ALL_LOCATIONS.concat(this.locations)),
       TaskManagerFilterComponent.initPersonFilter(),
       TaskManagerFilterComponent.initRoleTypeFilter(),

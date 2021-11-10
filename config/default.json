@@ -72,6 +72,7 @@
   "protocol": "https",
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
+  "waSupportedJurisdictions": ["IA"],
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS",
   "wildcardSearchFields": {
     "Benefit": [

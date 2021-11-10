@@ -152,8 +152,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
       userDetails => {
-        const isLegalOpsOrJudicialRole = AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
-        const roleType = AppUtils.convertDomainToLabel(isLegalOpsOrJudicialRole);
+        const isLegalOpsOrJudicialRole = userDetails.userInfo && userDetails.userInfo.roles ? AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles) : null;const roleType = AppUtils.convertDomainToLabel(isLegalOpsOrJudicialRole);
         this.filterConfig.cancelSetting.fields.push({
             name: 'role',
             value: [roleType]

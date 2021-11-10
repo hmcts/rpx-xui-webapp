@@ -9,13 +9,12 @@ import { RoleCategoryMappingService } from '../../../app/services/role-category-
 import { CaseHearingModel } from '../../../hearings/models/caseHearing.model';
 import { CaseHearingsMainModel } from '../../../hearings/models/caseHearingsMain.model';
 import { HearingDayScheduleModel } from '../../../hearings/models/hearingDaySchedule.model';
-import { CaseHearingViewModel } from '../../../hearings/viewModel/case-hearing-view.model';
+import { CaseHearingViewModel } from '../../../models/case-hearing-view.model';
 import { Actions, EXUISectionStatusEnum, HearingListingStatusEnum, HMCStatus } from '../../../hearings/models/hearings.enum';
 import { CaseHearingsComponent } from './case-hearings.component';
 import * as moment from 'moment';
 
 describe('CaseHearingsComponent', () => {
-
   let component: CaseHearingsComponent;
   let fixture: ComponentFixture<CaseHearingsComponent>;
   let mockStore: any;

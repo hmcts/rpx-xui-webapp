@@ -7,7 +7,7 @@ import { UserRole } from '../../../app/models/user-details.model';
 import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
 import * as fromAppStore from '../../../app/store';
 import { CaseHearingModel } from '../../../hearings/models/caseHearing.model';
-import { CaseHearingViewModel } from '../../../hearings/viewModel/case-hearing-view.model';
+import { CaseHearingViewModel } from '../../../models/case-hearing-view.model';
 import { Actions, EXUISectionStatusEnum, HearingListingStatusEnum } from '../../../hearings/models/hearings.enum';
 import * as fromHearingStore from '../../../hearings/store';
 import * as moment from 'moment';

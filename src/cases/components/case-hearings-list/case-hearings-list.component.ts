@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CaseHearingViewModel } from 'src/hearings/viewModel/case-hearing-view.model';
+import { CaseHearingViewModel } from '../../../models/case-hearing-view.model';
 import { Actions, EXUISectionStatusEnum } from '../../../hearings/models/hearings.enum';
 @Component({
   selector: 'exui-case-hearings-list',

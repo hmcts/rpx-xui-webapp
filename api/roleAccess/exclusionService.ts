@@ -1,4 +1,5 @@
 import { AxiosResponse } from 'axios';
+import { sendPost } from '../common/crudService';
 import { NextFunction, Response } from 'express';
 import { getConfigValue } from '../configuration';
 import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
@@ -6,12 +7,12 @@ import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
-import { CaseRole } from '../workAllocation2/interfaces/caseRole';
 import { RoleCategory } from './models/allocate-role.enum';
 import { CaseRoleRequestPayload, RoleExclusion } from './models/caseRoleRequestPayload';
+import { UserInfo } from 'auth/interfaces/UserInfo';
+import { release2ContentType } from './models/release2ContentType';
 
-export const release2ContentType =
-  'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0';
+const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
 
 export async function findExclusionsForCaseId(req: EnhancedRequest, res: Response, next: NextFunction) {
   const requestPayload = getExclusionRequestPayload(req.body.caseId, req.body.jurisdiction, req.body.caseType);
@@ -28,21 +29,48 @@ export async function findExclusionsForCaseId(req: EnhancedRequest, res: Respons
 }
 
 export async function confirmUserExclusion(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const exclusion = [
-    {
-      added: Date.UTC(2021, 7, 1),
-      name: 'Judge ABCDE',
-      notes: 'this case been remitted from Upper Tribunal and required different judge',
-      type: 'Other',
-      userType: 'Judicial',
-    },
-  ];
-  const errorCodes: string[] = ['400', '401', '402', '403', '500', '503'];
-  const value: string = req.body.exclusionDescription;
-  if (errorCodes.indexOf(value) !== -1) {
-    return res.status(parseInt(value, 10)).send(`{status: ${value}}`);
+  const body = req.body;
+  // @ts-ignore
+  const currentUser: UserInfo = req.session.passport.user.userinfo;
+  const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
+  let roleCategory: string;
+  let assigneeId: string;
+  if (body.exclusionOption === 'Exclude another person') {
+    roleCategory = body.person.domain === 'Legal Ops' ? 'LEGAL_OPERATIONS' : body.person.domain;
+    assigneeId = body.person.id;
+  } else {
+    roleCategory = currentUser.roleCategory;
+    assigneeId = currentUserId;
   }
-  return res.status(200).send(exclusion);
+
+  const roleAssignmentsBody = prepareExclusionBody(currentUserId, assigneeId, body, roleCategory);
+  const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
+  const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
+  const {status, data} = response;
+  return res.status(status).send(data);
+}
+
+export function prepareExclusionBody(currentUserId: string, assigneeId: string, body: any, roleCategory: string): any {
+  return {
+    roleRequest: {
+      assignerId: currentUserId,
+      replaceExisting: false,
+    },
+    requestedRoles: [{
+      roleType: 'CASE',
+      grantType: 'EXCLUDED',
+      classification: 'RESTRICTED',
+      attributes: {
+        caseId: body.caseId,
+        jurisdiction: 'IA',
+        notes: body.exclusionDescription,
+      },
+      roleCategory,
+      roleName: 'conflict-of-interest',
+      actorIdType: 'IDAM',
+      actorId: assigneeId,
+    }],
+  };
 }
 
 export async function deleteUserExclusion(req: EnhancedRequest, res: Response, next: NextFunction) {
@@ -70,6 +98,7 @@ export function mapResponseToExclusions(roleAssignments: RoleAssignment[],
     name: roleAssignment.actorId ? getUserName(roleAssignment.actorId, req) : null,
     type: roleAssignment.roleType,
     userType: roleAssignment.roleCategory,
+    notes: roleAssignment.attributes.notes,
   }));
 }
 
@@ -103,62 +132,6 @@ export function getExclusionRequestPayload(caseId: string, jurisdiction: string,
       },
     ],
   };
-}
-
-export function getLegalAndJudicialRequestPayload(caseId: string,
-                                                  jurisdiction: string,
-                                                  caseType: string): CaseRoleRequestPayload {
-  return {
-    queryRequests: [
-      {
-          attributes: {
-              caseId: [caseId],
-              caseType: [caseType],
-              jurisdiction: [jurisdiction],
-            },
-          roleCategory: ['LEGAL_OPERATIONS'],
-      },
-    ],
-  };
-}
-
-export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
-  const requestPayload = getLegalAndJudicialRequestPayload(req.body.caseId, req.body.jurisdiction, req.body.caseType);
-  const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
-  const fullPath = `${basePath}/am/role-assignments/query`;
-  const headers = setHeaders(req, release2ContentType);
-  try {
-    const response: AxiosResponse = await http.post(fullPath, requestPayload, {headers});
-    const roleExclusions = mapResponseToCaseRoles(response.data.roleAssignmentResponse, req.body.exclusionId, req);
-    return res.status(response.status).send(roleExclusions);
-  } catch (error) {
-    next(error);
-  }
-}
-
-export function mapResponseToCaseRoles(
-  roleAssignments: RoleAssignment[],
-  assignmentId: string,
-  req: EnhancedRequest
-): CaseRole[] {
-  if (assignmentId) {
-    roleAssignments = roleAssignments.filter(roleAssignment => roleAssignment.id === assignmentId);
-  }
-  return roleAssignments.map(roleAssignment => ({
-    actions: [
-      {'id': 'reallocate', 'title': 'Reallocate'},
-      {'id': 'remove', 'title': 'Remove Allocation'},
-    ],
-    actorId: roleAssignment.actorId,
-    email: roleAssignment.actorId ? getEmail(roleAssignment.actorId, req) : null,
-    end: roleAssignment.endTime ? roleAssignment.endTime.toString() : null,
-    id: roleAssignment.id,
-    location: null,
-    name: roleAssignment.actorId ? getUserName(roleAssignment.actorId, req) : null,
-    roleCategory: mapRoleCategory(roleAssignment.roleCategory),
-    roleName: roleAssignment.roleName,
-    start: roleAssignment.beginTime ? roleAssignment.beginTime.toString() : null,
-  }));
 }
 
 export function mapRoleCategory(roleCategory: string): RoleCategory {

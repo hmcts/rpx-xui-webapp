@@ -35,6 +35,7 @@ import {
   assignActionsToCases,
   assignActionsToTasks,
   constructElasticSearchQuery,
+  constructGlobalSearchQuery,
   constructRoleAssignmentCaseAllocatorQuery,
   constructRoleAssignmentQuery,
   filterByLocationId,
@@ -324,8 +325,8 @@ export async function getMyCases(req: EnhancedRequest, res: Response) {
   const caseTypes: string = getCaseTypesFromRoleAssignments(roleAssignments);
   const queryParams = caseTypes && caseTypes.length ? caseTypes : 'Asylum';
   const caseIdList = getCaseIdListFromRoles(roleAssignments);
-  const query = constructElasticSearchQuery(caseIdList, 0, 10000);
-
+  //const query = constructElasticSearchQuery(caseIdList, 0, 10000);
+  const query = constructGlobalSearchQuery(caseIdList, 1, 10000)
   try {
     const result = await searchCasesById(queryParams, query, req);
     const caseData = result.cases;

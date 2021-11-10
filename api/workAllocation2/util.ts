@@ -280,6 +280,33 @@ export function constructElasticSearchQuery(caseIds: any[], page: number, size: 
   };
 }
 
+export function constructGlobalSearchQuery(caseIds: any[], page: number, size: number): any {
+  return {
+    maxReturnRecordCount: size,
+    startRecordNumber: page,
+    sortCriteria: null,
+    searchCriteria: {
+      caseReferences: null,
+      CCDCaseTypeIds: null,
+      CCDJurisdictionIds: null,
+      caseManagementBaseLocationIds: ['123'],
+      caseManagementRegionIds: null,
+      otherReferences: null,
+      parties: [
+        {
+          addressLine1: null,
+          dateOfBirth: null,
+          dateOfDeath: null,
+          emailAddress: null,
+          partyName: null,
+          postCode: null
+        }
+      ],
+      stateIds: null
+    }
+  };
+}
+
 export async function getRoleAssignmentsByQuery(query: any, req: express.Request): Promise<any> {
   const url = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
   const path = `${url}/am/role-assignments/query`;
@@ -295,11 +322,13 @@ export async function getRoleAssignmentsByQuery(query: any, req: express.Request
 }
 
 export async function searchCasesById(queryParams: string, query: any, req: express.Request): Promise<any> {
-  const url = getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH);
-  const path = `${url}/searchCases?ctid=${queryParams}`;
+  const url = 'http://ccd-ac-int-data-store-api-demo.service.core-compute-demo.internal/globalSearch';
+  const path = `${url}`;
   const headers = setHeaders(req);
   try {
+    console.log(query, 'trying to post', queryParams);
     const result = await http.post(path, query, {headers});
+    console.log('have posted', result.data);
     return result.data;
   } catch (e) {
     console.error(e);

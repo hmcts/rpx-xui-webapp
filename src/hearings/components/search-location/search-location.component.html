@@ -1,19 +1,34 @@
-<p>
+<div>
     <label for="event-name">Search for location by name
-        <input class="govuk-input" id="event-name" name="event-name" type="text">
+        <div>
+            <input class="govuk-input search-box" id="event-name"
+                (focus)="focus$.next($any($event).target.value)"
+                (click)="click$.next($any($event).target.value)"
+                [(ngModel)]="text"
+                type="text">
+            <ol>
+                <li *ngFor="let location of locations$ | async"> {{ location.name }} </li>
+            </ol>
+            <button (click)="searchLocation()" class="govuk-button add-location" data-module="govuk-button">
+                Add location
+              </button>
+        </div>     
     </label>
-</p>
-<br/>
-<div class="govuk-form-group govuk-form-group--error">
-    <label class="govuk-label" for="national-insurance-number">
-        National Insurance number
-    </label>
-    <div id="national-insurance-number-hint" class="govuk-hint">
-        It’s on your National Insurance card, benefit letter, payslip or P60. For example, ‘QQ 12 34 56 C’.
+    <ng-container *ngIf="(selectedLocations$ | async).length">
+
+        <div class="location-selection" *ngFor="let selection of selectedLocations$ | async">
+            {{ selection.name }}
+            <button  href="javascript:void(0)" (click)="removeSelection(selection)"><label>x</label></button>
+        </div>  
+    </ng-container>
+    <br/>
+    <div class="govuk-details__text">
+        <div>You can check the venue has the required facilities or reasonable adjustments using  </div>
+        <div class="div-action">
+            <a href="javascript:void(0)"
+            [routerLink]="['/', 'hearings', 'cancel']">(Court Finder(opens in new tab)</a>
+        </div> 
     </div>
-    <span id="national-insurance-number-error" class="govuk-error-message">
-        <span class="govuk-visually-hidden">Error:</span> Enter a National Insurance number in the correct format
-    </span>
-    <input class="govuk-input govuk-input--width-10 govuk-input--error" id="national-insurance-number" name="national-insurance-number" type="text" spellcheck="false" value="12345678" aria-describedby="national-insurance-number-hint national-insurance-number-error">
+    <br/>
+    <button class="govuk-button" data-module="govuk-button">Continue</button>
 </div>
-<button class="govuk-button" data-module="govuk-button">Continue</button>

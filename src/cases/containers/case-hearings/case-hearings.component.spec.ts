@@ -278,7 +278,7 @@ describe('CaseHearingsComponent', () => {
     caseRef: '1568642646198441',
     caseHearings: [CASE_HEARING_1, CASE_HEARING_2, CASE_HEARING_3, CASE_HEARING_4, CASE_HEARING_5, CASE_HEARING_6, CASE_HEARING_7, CASE_HEARING_8, CASE_HEARING_9, CASE_HEARING_10, CASE_HEARING_11],
   };
-  
+
   const initialState = {
     hearings: {
       hearingsList: {

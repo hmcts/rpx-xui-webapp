@@ -33,8 +33,6 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
   /**
    * Function to handle the API results
    *
-   * @param {[SearchResult, Jurisdiction[]]} results
-   * @memberof SearchResultsComponent
    */
   public onSearchSubscriptionHandler(results: [SearchResult, Jurisdiction[]]): void {
     // Get the search result from the results

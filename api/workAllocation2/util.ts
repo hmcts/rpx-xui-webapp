@@ -109,7 +109,7 @@ export function assignActionsToTasks(tasks: any[], view: any, currentUser: strin
             ViewType.ACTIVE_TASKS_ASSIGNED_CURRENT : ViewType.ACTIVE_TASKS_ASSIGNED_OTHER;
         }
       }
-      const actions: Action[] = task.permissions ? getActionsByPermissions(thisView, task.permissions) : [];
+      const actions: Action[] = task.permissions ? getActionsByPermissions(thisView, task.permissions.values) : [];
       const taskWithAction = {...task, actions};
       tasksWithActions.push(taskWithAction);
     }
@@ -201,6 +201,7 @@ export function prepareRoleApiRequest(jurisdictions: string[], locationId?: numb
  */
 export function getActionsByPermissions(view, permissions: TaskPermission[]): Action[] {
   let actionList: Action[] = [];
+  console.log('neeely', permissions);
   permissions.forEach(permission => {
     switch (permission) {
       case TaskPermission.MANAGE:

@@ -45,7 +45,7 @@ export class SearchLocationComponent implements OnInit {
 
   constructor(private readonly appStore: Store<fromAppStore.State>,
               private readonly hearingStore: Store<fromHearingStore.State>,) { 
-    this.appStore.dispatch(new fromAppStore.LoadLocations(caseID));
+   // TODO: this.appStore.dispatch(new fromAppStore.LoadLocations(caseID));
   }
 
   public addSelection(location: LocationModel) {
@@ -65,17 +65,24 @@ export class SearchLocationComponent implements OnInit {
   }
 
   public getLocations(): Observable<LocationModel[]> {
-    return this.hearingStore.pipe(select(fromAppStore.getLocation('yes'))).pipe(
-      map(hearingsStateData => {
-          if (hearingsStateData && hearingsStateData.caseHearingsMainModel && hearingsStateData.caseHearingsMainModel.caseHearings) {
-            return hearingsStateData.caseHearingsMainModel.caseHearings.filter(hearing =>
-              hearing.exuiSectionStatus === status
-            );
-          } else {
-            return [];
-          }
-        }
-      )
-    );
+    return [
+      new LocationModel {
+        name: 'Tim',
+        id: 1
+      }
+    ]
+    /// TODO: get NGRX
+    // return this.hearingStore.pipe(select(fromAppStore.getLocation('yes'))).pipe(
+    //   map(hearingsStateData => {
+    //       if (hearingsStateData && hearingsStateData.caseHearingsMainModel && hearingsStateData.caseHearingsMainModel.caseHearings) {
+    //         return hearingsStateData.caseHearingsMainModel.caseHearings.filter(hearing =>
+    //           hearing.exuiSectionStatus === status
+    //         );
+    //       } else {
+    //         return [];
+    //       }
+    //     }
+    //   )
+    // );
   }
 }

@@ -43,6 +43,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
 
 function getCourtTypeIdsByService(service: string): string {
   const courtTypeIdsArray: [] = SERVICES_COURT_TYPE_MAPPINGS[service];
+
   if (courtTypeIdsArray) {
     return courtTypeIdsArray.join(',');
   }

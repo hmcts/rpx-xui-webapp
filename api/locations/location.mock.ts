@@ -5,7 +5,6 @@ import {ALL_COURT_LOCATIONS} from "./data/location.mock.data";
 
 export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
-
   const getHearingsUrl = /http:\/\/rd-professional-api-aat.service.core-compute-aat.internal\/refdata\/location\/court-venues\/venue-search\?search-string=[\w]*/;
 
   mock.onGet(getHearingsUrl).reply(config => {
@@ -13,6 +12,7 @@ export const init = () => {
     const searchTermStartIdx = config.url.indexOf('=');
     const searchTermEndIdx = config.url.indexOf('&');
     let searchTerm;
+
     if (searchTermEndIdx) {
       searchTerm = requestURL.substring(searchTermStartIdx + 1, searchTermEndIdx);
     } else {

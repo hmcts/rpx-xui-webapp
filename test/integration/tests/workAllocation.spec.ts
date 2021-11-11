@@ -1,14 +1,32 @@
 import { expect } from 'chai';
-import { v4 as uuid } from 'uuid';
-// import mocha from 'mocha';
-import { config } from './config/config';
-import { getUserId, getXSRFToken } from './utils/authUtil';
+import { getXSRFToken } from './utils/authUtil';
+import { setTestContext, testWithRetry } from './utils/helper';
 import Request from './utils/request';
-import { setTestContext } from './utils/helper';
-
 import TaskRequestBody from './utils/wa/taskRequestBody';
 
-import { testWithRetry } from './utils/helper'
+function getSearchTaskReqBody(view, users = null, locations = null){
+    // const response = await Request.get('api/user/details', null, 200); 
+    
+    const taskRequestBody = new TaskRequestBody();
+    taskRequestBody.inView(view);
+
+    if (users) {
+        users.forEach(user => {
+            taskRequestBody.searchWithUser(user);
+        });
+    } else {
+        taskRequestBody.searchWithAllUsers();
+    }
+
+    if (locations) {
+        locations.forEach(loc => {
+            taskRequestBody.searchWithlocation(loc);
+        });
+    } else {
+        taskRequestBody.searchWithAllLocations();
+    }
+    return taskRequestBody;
+}
 
 describe('Work allocations MVP', () => {
     const userName = 'lukesuperuserxui@mailnesia.com';
@@ -329,38 +347,6 @@ describe('Work allocations MVP', () => {
 
         }); 
     });
-
-    function getSearchTaskReqBody(view,users){
-        // const response = await Request.get('api/user/details', null, 200); 
-        
-        const taskRequestBody = new TaskRequestBody();
-        taskRequestBody.inView(view);
-        switch(view){
-            case "MyTasks":
-                if(users){
-                    users.forEach(user => {
-                        taskRequestBody.searchWithUser(user);
-                    });
-                }else{
-                    taskRequestBody.searchWithUser(null);
-                }
-                
-                break;
-            case "AvailableTasks":
-                taskRequestBody.searchWithlocation(null);
-                taskRequestBody.searchWithState('unassigned');
-                break;
-
-            case "TaskManager":
-                taskRequestBody.searchWithlocation(null);
-                taskRequestBody.searchWithUser(null);
-
-                break;
-        }
-
-        return taskRequestBody;
-    }
-
 });
 
 

@@ -1,7 +1,26 @@
-<div>
+<div class="govuk-form-group" [formGroup]="findLocationGroup"
+     [ngClass]="{'form-group-error': !findLocationGroup.valid && submitted}">
     <label for="event-name">Search for location by name
         <div>
-            <input class="govuk-input search-box" id="event-name"
+            <input id="inputSelectPerson" type="text" aria-label="select a person" matInput
+            formControlName="findLocationControl"
+            [matAutocomplete]="auto"
+            class="search-box"
+            (ngModelChange)="updatedVal($event)"
+            [attr.disabled]="disabled"
+            [value]="selectedLocation?.name">
+            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+            <mat-option *ngFor="let location of data | async"
+                        [value]="getDisplayName(location)"
+                        (onSelectionChange)="onSelectionChange(location)"
+                        [ngClass]="{'hide-autocomplete': !showAutocomplete}">
+                {{getDisplayName(location)}}
+            </mat-option>
+            </mat-autocomplete>
+            <button (click)="addSelection()" class="govuk-button add-location" data-module="govuk-button">
+                Add location
+              </button>
+            <!-- <input class="govuk-input search-box" id="event-name"
                 (focus)="focus$.next($any($event).target.value)"
                 (click)="click$.next($any($event).target.value)"
                 [(ngModel)]="text"
@@ -11,14 +30,13 @@
             </ol>
             <button (click)="searchLocation()" class="govuk-button add-location" data-module="govuk-button">
                 Add location
-              </button>
+              </button> -->
         </div>     
     </label>
-    <ng-container *ngIf="(selectedLocations$ | async).length">
-
+    <ng-container *ngIf="selectedLocations$ && (selectedLocations$ | async).length">
         <div class="location-selection" *ngFor="let selection of selectedLocations$ | async">
             {{ selection.name }}
-            <button  href="javascript:void(0)" (click)="removeSelection(selection)"><label>x</label></button>
+            <button class="remove-loation-button" href="javascript:void(0)" (click)="removeSelection(selection)"><label>x</label></button>
         </div>  
     </ng-container>
     <br/>

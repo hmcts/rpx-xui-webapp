@@ -13,12 +13,19 @@
 }
 
 .search-box{
-    width: 70%
+    width: 70%;
+    line-height: 30px;
 }
 
 .location-selection {
     background-color: lightgray;
     color: black;
-    width: auto;
-    line-height: 15px;
+    max-width: 200px;
+    line-height: 35px;
+    text-align: center;
+}
+
+.remove-loation-button {
+    float: right;
+    margin:5px;
 }

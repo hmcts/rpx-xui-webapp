@@ -89,8 +89,8 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
       Object.keys(hearing).forEach(key => viewModel[key] = hearing[key]);
 
       if (hearing.hearingDaySchedule && hearing.hearingDaySchedule.length) {
-        const moments = hearing.hearingDaySchedule.map(d => moment(d.hearingStartDateTime ? d.hearingStartDateTime: this.minimumDate));
-        viewModel.mostRecentHearingStartDateTime = moment.max(moments).format("l");
+        const moments = hearing.hearingDaySchedule.map(d => moment(d.hearingStartDateTime ? d.hearingStartDateTime : this.minimumDate));
+        viewModel.mostRecentHearingStartDateTime = moment.max(moments).format('l');
 
         if (viewModel.mostRecentHearingStartDateTime === 'Invalid date') {
           viewModel.mostRecentHearingStartDateTime = this.minimumDate;
@@ -105,7 +105,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
                                  new Date(viewModel.mostRecentHearingStartDateTime) > new Date(this.previousMostRecentHearingStartDateTime) ? 2 :
                                  new Date(viewModel.hearingRequestDateTime) > new Date(this.previousHearingRequestDateTime) ? 1 : -1;
       }
-      
+
       viewModels.push(viewModel);
       this.previousMostRecentHearingStartDateTime = viewModel.mostRecentHearingStartDateTime;
       this.previousHearingRequestDateTime = viewModel.hearingRequestDateTime;

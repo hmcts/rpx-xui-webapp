@@ -28,7 +28,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 1',
     hearingPanel: ['hearingJudgeId1'],
   };
-  
+
   const HEARING_DAY_SCHEDULE_2: HearingDayScheduleModel = {
     hearingStartDateTime: '',
     hearingEndDateTime: '2021-06-04T16:00:00.000+0000',
@@ -37,7 +37,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 2',
     hearingPanel: ['hearingJudgeId1'],
   };
-  
+
   const HEARING_DAY_SCHEDULE_3: HearingDayScheduleModel = {
     hearingStartDateTime: '2021-03-12T16:00:00.000+0000',
     hearingEndDateTime: '2021-06-12T16:00:00.000+0000',
@@ -46,7 +46,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 3',
     hearingPanel: ['hearingJudgeId1'],
   };
-  
+
   const HEARING_DAY_SCHEDULE_4: HearingDayScheduleModel = {
     hearingStartDateTime: '2021-10-12T16:00:00.000+0000',
     hearingEndDateTime: '2021-11-12T16:00:00.000+0000',
@@ -55,7 +55,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 4',
     hearingPanel: ['hearingJudgeId2'],
   };
-  
+
   const HEARING_DAY_SCHEDULE_5: HearingDayScheduleModel = {
     hearingStartDateTime: '2021-04-12T16:00:00.000+0000',
     hearingEndDateTime: '2021-05-12T16:00:00.000+0000',
@@ -64,7 +64,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 5',
     hearingPanel: ['hearingJudgeId3'],
   };
-  
+
   const HEARING_DAY_SCHEDULE_6: HearingDayScheduleModel = {
     hearingStartDateTime: '2021-05-02T16:00:00.000+0000',
     hearingEndDateTime: '2021-05-20T16:00:00.000+0000',
@@ -73,7 +73,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 1',
     hearingPanel: ['hearingJudgeId1'],
   };
-  
+
   const HEARING_DAY_SCHEDULE_7: HearingDayScheduleModel = {
     hearingStartDateTime: '2021-06-12T16:00:00.000+0000',
     hearingEndDateTime: '2021-07-12T16:00:00.000+0000',
@@ -82,7 +82,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 2',
     hearingPanel: ['hearingJudgeId1'],
   };
-  
+
   const HEARING_DAY_SCHEDULE_8: HearingDayScheduleModel = {
     hearingStartDateTime: '2021-02-13T16:00:00.000+0000',
     hearingEndDateTime: '2021-03-13T16:00:00.000+0000',
@@ -91,7 +91,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 3',
     hearingPanel: ['hearingJudgeId1'],
   };
-  
+
   const HEARING_DAY_SCHEDULE_9: HearingDayScheduleModel = {
     hearingStartDateTime: '2021-03-12T16:00:00.000+0000',
     hearingEndDateTime: '2021-04-12T16:00:00.000+0000',
@@ -100,7 +100,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 4',
     hearingPanel: ['hearingJudgeId2'],
   };
-  
+
   const HEARING_DAY_SCHEDULE_10: HearingDayScheduleModel = {
     hearingStartDateTime: '2021-04-12T16:00:00.000+0000',
     hearingEndDateTime: '2021-05-12T16:00:00.000+0000',
@@ -109,7 +109,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 5',
     hearingPanel: ['hearingJudgeId3'],
   };
-  
+
   const HEARING_DAY_SCHEDULE_11: HearingDayScheduleModel = {
     hearingStartDateTime: '2021-09-01T16:00:00.000+0000',
     hearingEndDateTime: '2021-09-04T16:00:00.000+0000',
@@ -118,7 +118,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 11',
     hearingPanel: ['child'],
   };
-  
+
   const CASE_HEARING_1: CaseHearingModel = {
     hearingID: 'h111111',
     hearingType: 'Case management hearing',
@@ -132,7 +132,7 @@ describe('CaseHearingsComponent', () => {
     listAssistCaseStatus: '',
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_1],
   };
-  
+
   const CASE_HEARING_2: CaseHearingModel = {
     hearingID: 'h222222',
     hearingType: 'Final hearing',
@@ -146,7 +146,7 @@ describe('CaseHearingsComponent', () => {
     listAssistCaseStatus: '',
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_2],
   };
-  
+
   const CASE_HEARING_3: CaseHearingModel = {
     hearingID: 'h333333',
     hearingType: 'Initial hearing',
@@ -160,7 +160,7 @@ describe('CaseHearingsComponent', () => {
     listAssistCaseStatus: '',
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_3],
   };
-  
+
   const CASE_HEARING_4: CaseHearingModel = {
     hearingID: 'h444444',
     hearingType: 'Case management hearing',
@@ -174,7 +174,7 @@ describe('CaseHearingsComponent', () => {
     listAssistCaseStatus: '',
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_4],
   };
-  
+
   const CASE_HEARING_5: CaseHearingModel = {
     hearingID: 'h444444',
     hearingType: 'Case management preliminary hearing - open',
@@ -188,7 +188,7 @@ describe('CaseHearingsComponent', () => {
     listAssistCaseStatus: '',
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_5],
   };
-  
+
   const CASE_HEARING_6: CaseHearingModel = {
     hearingID: 'h555555',
     hearingType: 'Directions hearing',
@@ -202,7 +202,7 @@ describe('CaseHearingsComponent', () => {
     listAssistCaseStatus: '',
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_6],
   };
-  
+
   const CASE_HEARING_7: CaseHearingModel = {
     hearingID: 'h555555',
     hearingType: 'Full hearing',
@@ -216,7 +216,7 @@ describe('CaseHearingsComponent', () => {
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_7],
     exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
   };
-  
+
   const CASE_HEARING_8: CaseHearingModel = {
     hearingID: 'h555555',
     hearingType: 'Directions hearing',
@@ -230,7 +230,7 @@ describe('CaseHearingsComponent', () => {
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_8],
     exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
   };
-  
+
   const CASE_HEARING_9: CaseHearingModel = {
     hearingID: 'h555555',
     hearingType: 'Pre-hearing review',
@@ -244,7 +244,7 @@ describe('CaseHearingsComponent', () => {
     exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
     exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_ACTUALS,
   };
-  
+
   const CASE_HEARING_10: CaseHearingModel = {
     hearingID: 'h555555',
     hearingType: 'Case management preliminary hearing - open',
@@ -258,7 +258,7 @@ describe('CaseHearingsComponent', () => {
     exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
     exuiDisplayStatus: EXUIDisplayStatusEnum.COMPLETED,
   };
-  
+
   const CASE_HEARING_11: CaseHearingModel = {
     hearingID: 'h555555',
     hearingType: 'Remedy hearing',
@@ -278,6 +278,7 @@ describe('CaseHearingsComponent', () => {
     caseRef: '1568642646198441',
     caseHearings: [CASE_HEARING_1, CASE_HEARING_2, CASE_HEARING_3, CASE_HEARING_4, CASE_HEARING_5, CASE_HEARING_6, CASE_HEARING_7, CASE_HEARING_8, CASE_HEARING_9, CASE_HEARING_10, CASE_HEARING_11],
   };
+  
   const initialState = {
     hearings: {
       hearingsList: {

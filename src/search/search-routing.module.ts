@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { RoleGuard, RoleMatching } from '@hmcts/rpx-xui-common-lib';
 import {
   NoResultsComponent,
@@ -14,7 +14,7 @@ const routes: Routes = [
     canActivate: [RoleGuard],
     data: {
       // TODO: Roles will need replacing with actual ones to be granted access, or loaded from configuration
-      needsRole: ['pui\-case\-manager'],
+      needsRole: ['pui\-case\-manager', 'caseworker'],
       roleMatching: RoleMatching.ANY,
       noRoleMatchRedirect: '/'
     }
@@ -25,7 +25,7 @@ const routes: Routes = [
     data: {
       title: 'Search cases | No results',
       // TODO: Roles will need replacing with actual ones to be granted access, or loaded from configuration
-      needsRole: ['pui\-case\-manager'],
+      needsRole: ['pui\-case\-manager', 'caseworker'],
       roleMatching: RoleMatching.ANY,
       noRoleMatchRedirect: '/'
     }
@@ -36,7 +36,7 @@ const routes: Routes = [
     data: {
       title: 'Search cases | Search Results',
       // TODO: Roles will need replacing with actual ones to be granted access, or loaded from configuration
-      needsRole: ['pui\-case\-manager'],
+      needsRole: ['pui\-case\-manager', 'caseworker'],
       roleMatching: RoleMatching.ANY,
       noRoleMatchRedirect: '/'
     }

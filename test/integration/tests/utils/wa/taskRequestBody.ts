@@ -5,9 +5,10 @@ class TaskRequestBody{
     constructor(){
         this.requestBody = {
             searchRequest:{
-                sorting_parameters:[],
+                search_by:'',
+                sorting_parameters: [{ sort_by: "dueDate", sort_order: "asc"}],
                 search_parameters:[],
-                pagination_parameters: { page_number: 1, page_size:10},
+                pagination_parameters: { page_number: 1, page_size:25},
                 view:''
             }
         }
@@ -16,6 +17,10 @@ class TaskRequestBody{
     inView(view:string){
         this.requestBody.searchRequest.view = view;
         return this;
+    }
+
+    searchBy(userType){
+        this.requestBody.searchRequest.search_by = userType;
     }
 
     searchWithUser(idamId:string){
@@ -32,6 +37,17 @@ class TaskRequestBody{
         return this;
     }
 
+    searchWithAllUsers() {       
+        const searchParamsWithAllUsers = [];
+        for (const searchParam of this.requestBody.searchRequest.search_parameters){
+            if (searchParam.key !== 'user'){
+                searchParamsWithAllUsers.push(searchParam);
+            }
+        }
+        this.requestBody.searchRequest.search_parameters = searchParamsWithAllUsers;
+        return this;
+    }
+
     searchWithlocation(locationId: string) {
         const usersConfig = this.requestBody.searchRequest.search_parameters.filter(searchField => searchField.key === "location");
         if (usersConfig.length === 0) {
@@ -40,12 +56,24 @@ class TaskRequestBody{
                 operator: 'IN',
                 values: locationId ? [locationId]: []
             })
-        } else {
-            locationId ? usersConfig[0].values.push(locationId):'';
+        } else  {
+            if (locationId){
+                usersConfig[0].values.push(locationId);
+            }
         }
         return this;
     }
 
+    searchWithAllLocations() {
+        const searchParamsWithAllLocations = [];
+        for (const searchParam of this.requestBody.searchRequest.search_parameters) {
+            if (searchParam.key !== 'location') {
+                searchParamsWithAllLocations.push(searchParam);
+            }
+        }
+        this.requestBody.searchRequest.search_parameters = searchParamsWithAllLocations;
+        return this;
+    }
     searchWithState(state: string) {
         const usersConfig = this.requestBody.searchRequest.search_parameters.filter(searchField => searchField.key === "state");
         if (usersConfig.length === 0) {

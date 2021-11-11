@@ -60,23 +60,27 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     })
 
     Then('I see primary navigation tabs {string} in main header', async function (navigationTabs) {
-        const softAssert = new SoftAssert();
-        const navigationTabsArr = navigationTabs.split(',');
+        
+        await browserWaits.retryWithActionCallback(async () => {
+            const softAssert = new SoftAssert();
+            const navigationTabsArr = navigationTabs.split(',');
 
-        for (let i = 0; i < navigationTabsArr.length; i++){
-            const headerlabel = navigationTabsArr[i].trim();
-            try {
-                await browserWaits.waitForConditionAsync(async () => {
-                    return await headerPage.isTabPresentInMainNav(headerlabel);
-                });
-            } catch (err) {
+            for (let i = 0; i < navigationTabsArr.length; i++) {
+                const headerlabel = navigationTabsArr[i].trim();
+                try {
+                    await browserWaits.waitForConditionAsync(async () => {
+                        return await headerPage.isTabPresentInMainNav(headerlabel);
+                    });
+                } catch (err) {
+
+                }
+                softAssert.setScenario('Nav header in main tab ' + headerlabel);
+                await softAssert.assert(async () => expect(await headerPage.isTabPresentInMainNav(headerlabel), headerlabel + " tab is not present main nav in " + await headerPage.getPrimaryTabsDisplayed()).to.be.true);
 
             }
-            softAssert.setScenario('Nav header in main tab ' + headerlabel);
-            await softAssert.assert(async () => expect(await headerPage.isTabPresentInMainNav(headerlabel), headerlabel + " tab is not present main nav in " + await headerPage.getPrimaryTabsDisplayed()).to.be.true);
-            
-        }
-        softAssert.finally();
+            softAssert.finally();
+        });
+        
     })
 
     Then('I see primary navigation tabs {string} in right side header column', async function (navigationTabs) {

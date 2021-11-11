@@ -9,6 +9,7 @@ import { setHeaders } from '../lib/proxy';
 import { release2ContentType } from '../roleAccess/exclusionService';
 import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 import { ElasticSearchQuery } from '../searchCases/interfaces/ElasticSearchQuery';
+import { CASE_ALLOCATOR_ROLE } from '../user/constants';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 
 import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX, ViewType } from './constants/actions';
@@ -174,9 +175,9 @@ export function mapCaseworkerPrimaryLocation(baseLocation: LocationApi[]): Locat
   return primaryLocation;
 }
 
-export function prepareRoleApiRequest(locationId?: number): any {
+export function prepareRoleApiRequest(jurisdictions: string[], locationId?: number): any {
   const attributes: any = {
-    jurisdiction: ['IA'],
+    jurisdiction: jurisdictions,
   };
 
   const payload = {
@@ -308,7 +309,8 @@ export async function searchCasesById(queryParams: string, query: any, req: expr
 }
 
 export function getCaseAllocatorLocations(roleAssignments: RoleAssignment[]): string[] {
-  return roleAssignments.filter(roleAssignment => roleAssignment.attributes && roleAssignment.attributes.primaryLocation)
+  return roleAssignments.filter(roleAssignment => roleAssignment.attributes && roleAssignment.attributes.primaryLocation
+    && roleAssignment.roleName === CASE_ALLOCATOR_ROLE)
     .map(roleAssignment => roleAssignment.attributes.primaryLocation)
     .reduce((acc, locationId) => acc.includes(locationId) ? acc : `${acc}${locationId},`, '')
     .split(',')
@@ -358,10 +360,8 @@ export function constructRoleAssignmentQuery(
 }
 
 export function constructRoleAssignmentCaseAllocatorQuery(searchTaskParameters: SearchTaskParameter[], req: any): any {
-  let userId = '';
-  if (req.user) {
-    userId = req.user.userinfo.id;
-  }
+  const currentUser = req.session.passport.user.userinfo;
+  const userId = currentUser.id ? currentUser.id : currentUser.uid;
   let newSearchTaskParameters = JSON.parse(JSON.stringify(searchTaskParameters)) as SearchTaskParameter[];
   newSearchTaskParameters = [...newSearchTaskParameters,
     {key: 'role', values: 'case-allocator', operator: ''},
@@ -435,8 +435,10 @@ export function mapCasesFromData(
     const roleAssignment = roleAssignmentList.find(
       role => role.attributes && role.attributes.caseId === caseDetail.id.toString()
     );
-    const roleCase = mapRoleCaseData(roleAssignment, caseDetail);
-    roleCaseList.push(roleCase);
+    if (roleAssignment) {
+      const roleCase = mapRoleCaseData(roleAssignment, caseDetail);
+      roleCaseList.push(roleCase);
+    }
   });
   return roleCaseList;
 }

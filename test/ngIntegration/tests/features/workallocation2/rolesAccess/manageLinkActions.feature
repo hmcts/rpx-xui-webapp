@@ -71,7 +71,7 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
         When I click action row link "Remove" for role category "Judiciary" in Roles and access page
 
-@test
+
     Scenario: Judicial user Reallocate a Judiciary role
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker " with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo

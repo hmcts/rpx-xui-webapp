@@ -82,9 +82,47 @@ export const ROUTES: Routes = [
             component: CaseCreateSubmitComponent,
             resolve: {
               eventTrigger: CreateCaseEventTriggerResolver
+            }
+          },
+          {
+            path: ':jid/:ctid/:eid',
+            component: CaseCreateSubmitComponent,
+            resolve: {
+              eventTrigger: CreateCaseEventTriggerResolver
             },
             children: editorRouting
           }
+          ],
+          canActivate: [ HealthCheckGuard ],
+          data: {
+            title: 'Create a case'
+          }
+        },
+        {
+          path: 'case-search',
+          component: CaseSearchComponent,
+          children: editorRouting,
+          canActivate: [ HealthCheckGuard ],
+          data: {
+            title: 'Find a case'
+          }
+        },
+        {
+          path: 'case-details/:cid',
+          component: CaseDetailsHomeComponent,
+          resolve: { case: CaseResolver },
+          runGuardsAndResolvers: 'always',
+          children: [
+            {
+              path: '',
+              component: CaseViewerContainerComponent
+            },
+            ...caseViewRouting],
+          canActivate: [ HealthCheckGuard ],
+          data: {
+            title: 'Case Details'
+          }
+        }
         ],
         canActivate: [HealthCheckGuard],
         data: {
@@ -133,10 +171,7 @@ export const ROUTES: Routes = [
           title: 'Case Details'
         }
       }
-    ]
-  },
-
-];
+    ];
 
 export const casesRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
 

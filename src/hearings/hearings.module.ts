@@ -13,6 +13,7 @@ import * as fromComponents from './components';
 import { hearingsRouting } from './hearings.routes';
 import { HearingsService } from './services/hearings.service';
 import { effects, reducers } from './store';
+import { MatAutocompleteModule, MatTabsModule } from '@angular/material';
 
 @NgModule({
   imports: [
@@ -25,7 +26,9 @@ import { effects, reducers } from './store';
     SharedModule,
     FormsModule,
     ReactiveFormsModule,
-    ExuiCommonLibModule
+    ExuiCommonLibModule,
+    MatAutocompleteModule,
+    MatTabsModule
   ],
   declarations: [...fromContainers.containers, ...fromComponents.components],
   entryComponents: [],

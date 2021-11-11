@@ -142,8 +142,8 @@ describe('ExclusionsTableComponent', () => {
     const tableBody: DebugElement = fixture.debugElement.query(By.css('.govuk-table__body'));
     const tableBodyHTMLElement: HTMLElement = tableBody.nativeElement as HTMLElement;
     expect(tableBodyHTMLElement.children.length).toBe(1);
-    expect(tableBodyHTMLElement.children[0].children[0].textContent).toBe('Other');
-    expect(tableBodyHTMLElement.children[0].children[1].textContent).toBe('Judge Birch');
+    expect(tableBodyHTMLElement.children[0].children[0].textContent).toBe('Judge Birch');
+    expect(tableBodyHTMLElement.children[0].children[1].textContent).toBe('Judicial');
 
   });
 });

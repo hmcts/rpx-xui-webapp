@@ -65,12 +65,12 @@ export class SearchLocationComponent implements OnInit {
   }
 
   public getLocations(): Observable<LocationModel[]> {
-    return [
-      new LocationModel {
+    return of([{
         name: 'Tim',
-        id: 1
+        id: 1,
+        description: ''
       }
-    ]
+    ]);
     /// TODO: get NGRX
     // return this.hearingStore.pipe(select(fromAppStore.getLocation('yes'))).pipe(
     //   map(hearingsStateData => {

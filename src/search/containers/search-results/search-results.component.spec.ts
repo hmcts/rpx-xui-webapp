@@ -52,7 +52,7 @@ describe('SearchResultsComponent', () => {
       casesReturned: 0,
       moreResultsToGo: false
     },
-    results: null
+    results: []
   }
 
   const searchResultWithCaseList: SearchResult = {
@@ -152,13 +152,6 @@ describe('SearchResultsComponent', () => {
     expect(component.searchSubscription$.unsubscribe).toHaveBeenCalled();
   });
 
-  it('should navigate to no results page if search result is empty', () => {
-    searchService.getResults.and.returnValue(of(searchResultWithNoCases));
-    component.ngOnInit();
-    expect(searchService.getResults).toHaveBeenCalled();
-    expect(router.navigate).toHaveBeenCalledWith(['/search/noresults'], {relativeTo: route});
-  });
-
   it('should populate search records to display if search result is not empty', () => {
     component.onSearchSubscriptionHandler([searchResultWithCaseList, jurisdictions]);
     expect(searchResultWithCaseList.resultInfo.casesReturned).toBeGreaterThan(0);
@@ -175,5 +168,10 @@ describe('SearchResultsComponent', () => {
     const changeSearchLink = fixture.debugElement.nativeElement.querySelector('p > a');
     expect(changeSearchLink.getAttribute('href')).toEqual('/search');
     expect(changeSearchLink.innerText).toContain('Change search');
+  });
+
+  it('should navigate to no results page if search result is empty', () => {
+    component.onSearchSubscriptionHandler([searchResultWithNoCases, jurisdictions]);
+    expect(router.navigate).toHaveBeenCalledWith(['/search/noresults'], {relativeTo: route});
   });
 });

@@ -74,13 +74,16 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
       const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
       const searchParameters = [
         {key: 'jurisdiction', operator: 'IN', values: [this.selectedJurisdiction]},
-        this.getLocationParameter(),
         // {key: 'taskType', operator: 'IN', values: [this.selectedTaskType]},
         // {key: 'priority', operator: 'IN', values: [this.selectedPriority]},
       ];
       const personParameter = this.getPersonParameter();
+      const locationParameter = this.getLocationParameter();
       if (personParameter) {
         searchParameters.push(personParameter);
+      };
+      if (locationParameter) {
+        searchParameters.push(locationParameter);
       }
       return {
         search_parameters: searchParameters,
@@ -98,7 +101,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     } else {
       values = this.locations.map(loc => loc.id);
     }
-    return { key: 'location', operator: 'IN', values };
+    return values && values.length > 0 ? { key: 'location', operator: 'IN', values } : null;
   }
 
   private getPersonParameter() {

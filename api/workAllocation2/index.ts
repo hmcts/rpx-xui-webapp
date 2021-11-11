@@ -29,7 +29,7 @@ import { TaskList } from './interfaces/task';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { checkIfCaseAllocator } from './roleService';
 import * as roleServiceMock from './roleService.mock';
-import { handleGetTasksByCaseId, handleTaskSearch } from './taskService';
+import { handleGetTasksByCaseId, handleTaskGet, handleTaskSearch } from './taskService';
 import * as taskServiceMock from './taskService.mock';
 import {
   assignActionsToCases,
@@ -79,8 +79,10 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
   try {
     const getTaskPath: string = prepareGetTaskUrl(baseWorkAllocationTaskUrl, req.params.taskId);
 
-    const jsonResponse = await handleGet(getTaskPath, req);
-
+    const jsonResponse = await handleTaskGet(getTaskPath, req);
+    if (jsonResponse && jsonResponse.task && jsonResponse.task.due_date) {
+      jsonResponse.task.dueDate = jsonResponse.task.due_date;
+    }
     res.status(200);
     res.send(jsonResponse);
   } catch (error) {

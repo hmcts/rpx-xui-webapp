@@ -10,6 +10,7 @@ export interface CaseRoleQueryRequest {
     };
     grantType?: string [];
     roleCategory?: string [];
+    roleName?: string [];
 }
 
 export interface RoleExclusion {

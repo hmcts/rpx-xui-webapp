@@ -442,7 +442,7 @@
   integrity sha512-tFJlT47db0kMqVm3H4nQYgn6Pwg10GTZHb1pwmSiv1K4ks6drQOtfEF5ZnPjkvC+y4/bUPHK+bc87QvLcL+WMw==
   dependencies:
     "@hapi/hoek" "^9.0.0"
-
+    
 "@hmcts/ccd-case-ui-toolkit@4.7.1-EUI-3478-review-case-specific-access":
   version "4.7.1-EUI-3478-review-case-specific-access"
   resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.7.1-EUI-3478-review-case-specific-access.tgz#b950ec217398d18663087aec5954bb8fe8477f0e"

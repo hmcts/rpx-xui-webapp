@@ -2,9 +2,12 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
-
+import { of } from 'rxjs';
+import { UserService } from '../../../app/services/user/user.service';
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
+
 
 describe('HmctsGlobalHeaderComponent', () => {
   let nocStoreSpy: jasmine.Spy;
@@ -12,13 +15,42 @@ describe('HmctsGlobalHeaderComponent', () => {
   let fixture: ComponentFixture<HmctsGlobalHeaderComponent>;
   let mockRouter: jasmine.SpyObj<Router>;
 
+  const changesMock = {
+    items: {
+      currentValue: 'a',
+      previousValue: 'b',
+      firstChange: false,
+      isFirstChange: () => false
+    }
+  };
+  const flags = {
+    enabledFlag: true,
+    disabledFlag: false
+  };
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ HmctsGlobalHeaderComponent ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
       imports: [ RouterTestingModule ],
       providers: [
-        provideMockStore()
+        provideMockStore(),
+        {
+          provide: UserService,
+          useValue: {
+            getUserDetails: () => of({
+              userInfo: {
+                roles: ['roleA', 'roleB']
+              }
+            })
+          }
+        },
+        {
+          provide: FeatureToggleService,
+          useValue: {
+            isEnabled: (flag) => of(flags[flag])
+          }
+        }
       ]
     })
     .compileComponents();
@@ -84,7 +116,7 @@ describe('HmctsGlobalHeaderComponent', () => {
     expect(component.navigate.emit).toHaveBeenCalled();
   });
 
-  it('splitNavItems', () => {
+  it('splitNavItems', async () => {
     component.items = [{
       align: 'right',
       text: '1',
@@ -103,7 +135,7 @@ describe('HmctsGlobalHeaderComponent', () => {
       href: '',
       active: false
     }];
-    component.splitNavItems();
+    await component.ngOnChanges(changesMock);
     expect(component.leftItems).toEqual([{
       align: null,
       text: '2',
@@ -123,5 +155,58 @@ describe('HmctsGlobalHeaderComponent', () => {
       href: '',
       active: false
     }]);
+  });
+
+  it('filters out menu items for which the user does not hold the correct role', async () => {
+    component.items = [{
+      align: 'right',
+      text: '1',
+      href: '',
+      active: false,
+      roles: ['roleA']
+    },
+    {
+      align: null,
+      text: '2',
+      href: '',
+      active: false,
+      roles: ['roleB']
+    },
+    {
+      align: 'right',
+      text: '3',
+      href: '',
+      active: false,
+      roles: ['roleC']
+    }];
+    await component.ngOnChanges(changesMock);
+    expect(component.leftItems).toEqual([component.items[1]]);
+    expect(component.rightItems).toEqual([component.items[0]]);
+  });
+
+  it('filters out menu items for which not all features are enabled', async () => {
+    component.items = [{
+      align: 'right',
+      text: '1',
+      href: '',
+      active: false,
+      flags: ['enabledFlag']
+    },
+    {
+      align: null,
+      text: '2',
+      href: '',
+      active: false
+    },
+    {
+      align: 'right',
+      text: '3',
+      href: '',
+      active: false,
+      flags: ['enabledFlag', 'disabledFlag']
+    }];
+    await component.ngOnChanges(changesMock);
+    expect(component.leftItems).toEqual([component.items[1]]);
+    expect(component.rightItems).toEqual([component.items[0]]);
   });
 });

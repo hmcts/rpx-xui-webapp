@@ -10,14 +10,41 @@ import { SearchResult } from 'src/search/models';
 import { SearchResultsComponent } from './search-results.component';
 
 import createSpyObj = jasmine.createSpyObj;
+import { JurisdictionService } from 'src/app/services/jurisdiction/jurisdiction.service';
+import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
 
 describe('SearchResultsComponent', () => {
   let component: SearchResultsComponent;
   let fixture: ComponentFixture<SearchResultsComponent>;
   const formBuilder = new FormBuilder();
   let searchService: jasmine.SpyObj<SearchService>;
+  let jurisdictionService: jasmine.SpyObj<JurisdictionService>;
   let router: Router;
   let route: ActivatedRoute;
+
+  const jurisdictions: Jurisdiction[] = [
+    {
+      id: 'BEFTA_MASTER',
+      caseTypes: [
+        {
+          id: 'FT_GlobalSearch',
+          states: [
+            {
+              id: 'CaseCreated',
+              name: 'Create case',
+              description: null,
+              order: 1
+            }
+          ],
+          description: null,
+          events: null,
+          name: 'Global Search'
+        }
+      ],
+      description: null,
+      name: 'BEFTA Master'
+    }
+  ];
 
   const searchResultWithNoCases: SearchResult = {
     resultInfo: {
@@ -36,10 +63,10 @@ describe('SearchResultsComponent', () => {
     },
     results: [
       {
-        CCDCaseTypeId: null,
+        CCDCaseTypeId: 'FT_GlobalSearch',
         CCDCaseTypeName: null,
-        CCDJurisdictionId: null,
-        CCDJurisdictionName: 'IA',
+        CCDJurisdictionId: 'BEFTA_MASTER',
+        CCDJurisdictionName: 'BEFTA Master',
         HMCTSServiceId: null,
         HMCTSServiceShortDescription: null,
         baseLocationId: null,
@@ -52,13 +79,13 @@ describe('SearchResultsComponent', () => {
         processForAccess: 'SPECIFIC',
         regionId: null,
         regionName: null,
-        stateId: null
+        stateId: 'CaseCreated'
       },
       {
-        CCDCaseTypeId: null,
+        CCDCaseTypeId: 'FT_GlobalSearch',
         CCDCaseTypeName: null,
-        CCDJurisdictionId: null,
-        CCDJurisdictionName: 'IA',
+        CCDJurisdictionId: 'BEFTA_MASTER',
+        CCDJurisdictionName: 'BEFTA Master',
         HMCTSServiceId: null,
         HMCTSServiceShortDescription: null,
         baseLocationId: null,
@@ -71,7 +98,7 @@ describe('SearchResultsComponent', () => {
         processForAccess: 'CHALLENGED',
         regionId: null,
         regionName: null,
-        stateId: null
+        stateId: 'CaseCreated'
       }
     ]
   };
@@ -79,6 +106,8 @@ describe('SearchResultsComponent', () => {
   beforeEach(async(() => {
     searchService = createSpyObj<SearchService>('searchService', ['getResults']);
     searchService.getResults.and.returnValue(of(searchResultWithCaseList));
+    jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['getJurisdictions']);
+    jurisdictionService.getJurisdictions.and.returnValue(of(jurisdictions));
     TestBed.configureTestingModule({
       declarations: [ SearchResultsComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],
@@ -88,7 +117,8 @@ describe('SearchResultsComponent', () => {
       ],
       providers: [
         { provide: FormBuilder, useValue: formBuilder },
-        { provide: SearchService, useValue: searchService }
+        { provide: SearchService, useValue: searchService },
+        { provide: JurisdictionService, useValue: jurisdictionService }
       ]
     })
     .compileComponents();
@@ -107,11 +137,11 @@ describe('SearchResultsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  fit('should have called ngOnInit', () => {
+  it('should have called ngOnInit', () => {
     expect(component.ngOnInit).toBeTruthy();
     expect(component.searchSubscription$).toBeTruthy();
     expect(searchService.getResults).toHaveBeenCalled();
-    expect(component.onSearchSubscriptionHandler).toHaveBeenCalled();
+    expect(jurisdictionService.getJurisdictions).toHaveBeenCalled();
   });
 
   it('should unsubscribe subscriptions onDestroy', () => {
@@ -129,10 +159,21 @@ describe('SearchResultsComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['/search/noresults'], {relativeTo: route});
   });
 
+  it('should populate search records to display if search result is not empty', () => {
+    component.onSearchSubscriptionHandler([searchResultWithCaseList, jurisdictions]);
+    expect(searchResultWithCaseList.resultInfo.casesReturned).toBeGreaterThan(0);
+    expect(component.searchResultDisplay.length).toEqual(2);
+  });
+
   it('should verify process for access links', () => {
-    component.ngOnInit();
     const nodes = fixture.debugElement.nativeElement.querySelectorAll('td > a');
     expect(nodes[0].innerText).toContain('Specific access');
     expect(nodes[1].innerText).toContain('Challenged access');
+  });
+
+  it('should display change search link', () => {
+    const changeSearchLink = fixture.debugElement.nativeElement.querySelector('p > a');
+    expect(changeSearchLink.getAttribute('href')).toEqual('/search');
+    expect(changeSearchLink.innerText).toContain('Change search');
   });
 });

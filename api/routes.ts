@@ -4,6 +4,7 @@ import { getConfigValue, showFeature } from './configuration';
 import { APP_INSIGHTS_KEY } from './configuration/references';
 import healthCheck from './healthCheck';
 import authInterceptor from './lib/middleware/auth';
+import { router as locationsRouter } from './locations/routes';
 import { router as nocRouter } from './noc/routes';
 import { router as organisationRouter } from './organisations';
 import userRouter from './user/routes';
@@ -28,6 +29,6 @@ router.use('/user', userRouter);
 router.use('/caseshare', caseShareRoutes);
 router.use('/noc', nocRouter);
 router.use('/organisation', organisationRouter);
-router.use('/locations', hearingsRouter);
+router.use('/locations', locationsRouter);
 // @ts-ignore
 export default router;

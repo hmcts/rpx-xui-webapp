@@ -8,7 +8,7 @@ import { RoleCategoryMappingService } from '../../../app/services/role-category-
 import * as fromAppStore from '../../../app/store';
 import { CaseHearingModel } from '../../../hearings/models/caseHearing.model';
 import { CaseHearingViewModel } from '../../../models/case-hearing-view.model';
-import { Actions, EXUISectionStatusEnum, HearingListingStatusEnum } from '../../../hearings/models/hearings.enum';
+import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, HearingListingStatusEnum } from '../../../hearings/models/hearings.enum';
 import * as fromHearingStore from '../../../hearings/store';
 import * as moment from 'moment';
 
@@ -24,6 +24,8 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public hearingsActions: Actions[] = [Actions.READ];
   public userRoles: Observable<string[]>;
   public hasRequestAction: boolean = false;
+  previousMostRecentHearingStartDateTime: string;
+  previousHearingRequestDateTime: string;
 
   constructor(private readonly appStore: Store<fromAppStore.State>,
               private readonly hearingStore: Store<fromHearingStore.State>,
@@ -42,11 +44,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
         const viewModels: CaseHearingViewModel[] = this.calculateMostRecentHearingDate(hearings);
 
         this.upcomingHearings$ = of(viewModels.sort((a, b) => {
-          return new Date(a.hearingRequestDateTime) > new Date(b.hearingRequestDateTime) ? 1 : -1;
-        }).sort((a, b) => {
-          return new Date(a.mostRecentHearingStartDateTime) > new Date(b.mostRecentHearingStartDateTime) ? 1 : -1;
-        }).sort((a) => {
-          return a.hearingListingStatus === HearingListingStatusEnum.AWAITING_LISTING ? -1 : 1;
+          return a.orderNumber < b.orderNumber ? 1 : -1;
         }));
       }
     });
@@ -78,17 +76,39 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     }
   }
 
+  public get minimumDate() {
+    return moment(new Date('01/01/1900')).format('l');
+  }
+
   public calculateMostRecentHearingDate(hearings: CaseHearingModel[]) {
+    this.previousMostRecentHearingStartDateTime = '';
+    this.previousHearingRequestDateTime = '';
     const viewModels: CaseHearingViewModel[] = [];
     hearings.forEach((hearing) => {
       const viewModel = {} as CaseHearingViewModel;
       Object.keys(hearing).forEach(key => viewModel[key] = hearing[key]);
 
       if (hearing.hearingDaySchedule && hearing.hearingDaySchedule.length) {
-        const moments = hearing.hearingDaySchedule.map(d => moment(d.hearingStartDateTime));
-        viewModel.mostRecentHearingStartDateTime = moment.max(moments).toString();
+        const moments = hearing.hearingDaySchedule.map(d => moment(d.hearingStartDateTime ? d.hearingStartDateTime: this.minimumDate));
+        viewModel.mostRecentHearingStartDateTime = moment.max(moments).format("l");
+
+        if (viewModel.mostRecentHearingStartDateTime === 'Invalid date') {
+          viewModel.mostRecentHearingStartDateTime = this.minimumDate;
+        }
       }
+
+      if (viewModel.exuiSectionStatus === EXUISectionStatusEnum.UPCOMING) {
+        viewModel.orderNumber =  viewModel.exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_LISTING &&
+                                 // viewModel.mostRecentHearingStartDateTime.toString() === '-8640000000000000' ? 4 :
+                                 viewModel.mostRecentHearingStartDateTime === this.minimumDate ? 4 :
+                                 viewModel.hearingListingStatus === EXUIDisplayStatusEnum.AWAITING_LISTING &&
+                                 new Date(viewModel.mostRecentHearingStartDateTime) > new Date(this.previousMostRecentHearingStartDateTime) ? 2 :
+                                 new Date(viewModel.hearingRequestDateTime) > new Date(this.previousHearingRequestDateTime) ? 1 : -1;
+      }
+      
       viewModels.push(viewModel);
+      this.previousMostRecentHearingStartDateTime = viewModel.mostRecentHearingStartDateTime;
+      this.previousHearingRequestDateTime = viewModel.hearingRequestDateTime;
     });
 
     return viewModels;

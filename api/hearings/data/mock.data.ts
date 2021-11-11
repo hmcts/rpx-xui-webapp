@@ -5,7 +5,7 @@ import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
 import { HearingListingStatusEnum, HMCStatus } from '../models/hearings.enum';
 
 const HEARING_DAY_SCHEDULE_1: HearingDayScheduleModel = {
-  hearingStartDateTime: '2021-01-12T16:00:00.000+0000',
+  hearingStartDateTime: '', // '2021-01-12T16:00:00.000+0000',
   hearingEndDateTime: '2021-05-04T16:00:00.000+0000',
   listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba5',
   hearingVenueId: 'venue 1',
@@ -14,7 +14,7 @@ const HEARING_DAY_SCHEDULE_1: HearingDayScheduleModel = {
 };
 
 const HEARING_DAY_SCHEDULE_2: HearingDayScheduleModel = {
-  hearingStartDateTime: '2021-02-12T16:00:00.000+0000',
+  hearingStartDateTime: '', // '2021-02-12T16:00:00.000+0000',
   hearingEndDateTime: '2021-06-04T16:00:00.000+0000',
   listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba4',
   hearingVenueId: 'venue 2',

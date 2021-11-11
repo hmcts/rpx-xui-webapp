@@ -88,7 +88,7 @@
     "accessibility-checker": "^3.0.6",
     "applicationinsights": "1.7.2",
     "applicationinsights-js": "^1.0.20",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "axios-mock-adapter": "^1.18.2",
     "class-transformer": "^0.3.2",
     "config": "^3.2.5",

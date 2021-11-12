@@ -104,7 +104,7 @@ const HEARING_DAY_SCHEDULE_11: HearingDayScheduleModel = {
 };
 
 const CASE_HEARING_1: CaseHearingModel = {
-  hearingID: 'h111111',
+  hearingID: 'h100001',
   hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
   hearingType: 'Case management hearing',
   hmcStatus: HMCStatus.HEARING_REQUESTD,
@@ -116,7 +116,7 @@ const CASE_HEARING_1: CaseHearingModel = {
 };
 
 const CASE_HEARING_2: CaseHearingModel = {
-  hearingID: 'h222222',
+  hearingID: 'h100002',
   hearingRequestDateTime: '2021-10-01T16:00:00.000+0000',
   hearingType: 'Final hearing',
   hmcStatus: HMCStatus.AWAITING_LISTING,
@@ -128,7 +128,7 @@ const CASE_HEARING_2: CaseHearingModel = {
 };
 
 const CASE_HEARING_3: CaseHearingModel = {
-  hearingID: 'h333333',
+  hearingID: 'h100003',
   hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
   hearingType: 'Initial hearing',
   hmcStatus: HMCStatus.LISTED,
@@ -140,7 +140,7 @@ const CASE_HEARING_3: CaseHearingModel = {
 };
 
 const CASE_HEARING_4: CaseHearingModel = {
-  hearingID: 'h444444',
+  hearingID: 'h100004',
   hearingRequestDateTime: '2021-10-01T16:00:00.000+0000',
   hearingType: 'Case management hearing',
   hmcStatus: HMCStatus.UPDATE_REQUESTED,
@@ -152,7 +152,7 @@ const CASE_HEARING_4: CaseHearingModel = {
 };
 
 const CASE_HEARING_5: CaseHearingModel = {
-  hearingID: 'h444444',
+  hearingID: 'h100005',
   hearingRequestDateTime: '2021-10-01T16:00:00.000+0000',
   hearingType: 'Case management preliminary hearing - open',
   hmcStatus: HMCStatus.UPDATE_SUBMITTED,
@@ -164,7 +164,7 @@ const CASE_HEARING_5: CaseHearingModel = {
 };
 
 const CASE_HEARING_6: CaseHearingModel = {
-  hearingID: 'h555555',
+  hearingID: 'h100006',
   hearingRequestDateTime: '2021-09-01T14:00:00.000+0000',
   hearingType: 'Directions hearing',
   hmcStatus: HMCStatus.EXCEPTION,
@@ -176,7 +176,7 @@ const CASE_HEARING_6: CaseHearingModel = {
 };
 
 const CASE_HEARING_7: CaseHearingModel = {
-  hearingID: 'h555555',
+  hearingID: 'h100007',
   hearingRequestDateTime: '2021-09-01T14:00:00.000+0000',
   hearingType: 'Full hearing',
   hmcStatus: HMCStatus.CANCELLATION_REQUESTED,
@@ -188,7 +188,7 @@ const CASE_HEARING_7: CaseHearingModel = {
 };
 
 const CASE_HEARING_8: CaseHearingModel = {
-  hearingID: 'h555555',
+  hearingID: 'h100008',
   hearingRequestDateTime: '2021-09-14T16:00:00.000+0000',
   hearingType: 'Directions hearing',
   hmcStatus: HMCStatus.VACATED,
@@ -196,11 +196,11 @@ const CASE_HEARING_8: CaseHearingModel = {
   responseVersion: 'rv8',
   hearingListingStatus: HearingListingStatusEnum.VACATED,
   listAssistCaseStatus: '',
-  hearingDaySchedule: [HEARING_DAY_SCHEDULE_8],
+  hearingDaySchedule: [],
 };
 
 const CASE_HEARING_9: CaseHearingModel = {
-  hearingID: 'h555555',
+  hearingID: 'h100009',
   hearingRequestDateTime: '2021-09-01T14:00:00.000+0000',
   hearingType: 'Pre-hearing review',
   hmcStatus: HMCStatus.AWAITING_ACTUALS,
@@ -212,7 +212,7 @@ const CASE_HEARING_9: CaseHearingModel = {
 };
 
 const CASE_HEARING_10: CaseHearingModel = {
-  hearingID: 'h555555',
+  hearingID: 'h100010',
   hearingRequestDateTime: '2021-09-01T14:00:00.000+0000',
   hearingType: 'Case management preliminary hearing - open',
   hmcStatus: HMCStatus.COMPLETED,
@@ -224,7 +224,7 @@ const CASE_HEARING_10: CaseHearingModel = {
 };
 
 const CASE_HEARING_11: CaseHearingModel = {
-  hearingID: 'h555555',
+  hearingID: 'h100011',
   hearingRequestDateTime: '2021-09-14T16:00:00.000+0000',
   hearingType: 'Remedy hearing',
   hmcStatus: HMCStatus.ADJOURNED,
@@ -233,6 +233,18 @@ const CASE_HEARING_11: CaseHearingModel = {
   hearingListingStatus: HearingListingStatusEnum.ADJOURNED,
   listAssistCaseStatus: '',
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_11],
+};
+
+const CASE_HEARING_12: CaseHearingModel = {
+  hearingID: 'h100012',
+  hearingRequestDateTime: '2021-10-14T16:00:00.000+0000',
+  hearingType: 'Full hearing',
+  hmcStatus: HMCStatus.VACATED,
+  lastResponseReceivedDateTime: '',
+  responseVersion: 'rv8',
+  hearingListingStatus: HearingListingStatusEnum.VACATED,
+  listAssistCaseStatus: '',
+  hearingDaySchedule: [],
 };
 
 export const EMPTY_HEARINGS_LIST: CaseHearingsMainModel = {
@@ -255,5 +267,6 @@ export const HEARINGS_LIST: CaseHearingsMainModel = {
     CASE_HEARING_8,
     CASE_HEARING_9,
     CASE_HEARING_10,
-    CASE_HEARING_11],
+    CASE_HEARING_11,
+    CASE_HEARING_12],
 };

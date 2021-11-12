@@ -14,15 +14,20 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Given('I navigate to home page', async function () {
         await BrowserWaits.retryWithActionCallback(async () => {
             await browserUtil.gotoHomePage();
-            await headerpage.waitForPrimaryNavDisplay();
-            await browserUtil.waitForLD();
+            await BrowserWaits.retryWithActionCallback(async () => {
+                await headerpage.waitForPrimaryNavDisplay();
+                await browserUtil.waitForLD();
+            });
+            
         });  
     });
 
     Given('I navigate page route {string}', async function (routeUrl) {
         await browser.get(routeUrl);
-        await headerpage.waitForPrimaryNavDisplay();
-        await browserUtil.waitForLD();
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await headerpage.waitForPrimaryNavDisplay();
+            await browserUtil.waitForLD();
+        });        
     });
 
     Given('I init MockApp', async function () {

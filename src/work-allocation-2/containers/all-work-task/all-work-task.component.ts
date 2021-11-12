@@ -1,6 +1,6 @@
 import { Component, } from '@angular/core';
 import { Person } from '@hmcts/rpx-xui-common-lib';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
@@ -31,6 +31,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   private selectedPriority: string = 'All';
   public locations$: Observable<Location[]>;
   public locations: Location[];
+  public waSupportedJurisdictions$: Observable<string[]>;
 
   public sortedBy: SortField = {
     fieldName: '',
@@ -63,7 +64,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
 
   public loadCaseWorkersAndLocations(): void {
     this.locations$ = this.locationService.getLocations();
-    this.locations$.subscribe(locations => this.locations = locations);
+    this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
   }
 
   public getSearchTaskRequestPagination(): SearchTaskRequest {
@@ -73,13 +74,16 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
       const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
       const searchParameters = [
         {key: 'jurisdiction', operator: 'IN', values: [this.selectedJurisdiction]},
-        this.getLocationParameter(),
         // {key: 'taskType', operator: 'IN', values: [this.selectedTaskType]},
         // {key: 'priority', operator: 'IN', values: [this.selectedPriority]},
       ];
       const personParameter = this.getPersonParameter();
+      const locationParameter = this.getLocationParameter();
       if (personParameter) {
         searchParameters.push(personParameter);
+      };
+      if (locationParameter) {
+        searchParameters.push(locationParameter);
       }
       return {
         search_parameters: searchParameters,
@@ -97,7 +101,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     } else {
       values = this.locations.map(loc => loc.id);
     }
-    return { key: 'location', operator: 'IN', values };
+    return values && values.length > 0 ? { key: 'location', operator: 'IN', values } : null;
   }
 
   private getPersonParameter() {

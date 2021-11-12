@@ -13,7 +13,9 @@ export async function confirmAllocateRole(req: EnhancedRequest, res: Response, n
   try {
     const body = req.body;
     // @ts-ignore
-    const roleAssignmentsBody = toRoleAssignmentBody(req.user.userinfo, body);
+    const currentUser = req.session.passport.user.userinfo;
+    const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
+    const roleAssignmentsBody = toRoleAssignmentBody(currentUserId, body);
     const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
     const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
     await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
@@ -34,7 +36,9 @@ export async function reallocateRole(req: EnhancedRequest, res: Response, next: 
     const {status, data} = deleteResponse;
     if (status >= 200 && status <= 204) {
       // @ts-ignore
-      const roleAssignmentsBody = toRoleAssignmentBody(req.user.userinfo, body);
+      const currentUser = req.session.passport.user.userinfo;
+      const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
+      const roleAssignmentsBody = toRoleAssignmentBody(currentUserId, body);
       const postResponse: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
       await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
       return res.status(postResponse.status).send(postResponse.data);

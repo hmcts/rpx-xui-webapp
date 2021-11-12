@@ -8,7 +8,9 @@ import {
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
   SERVICES_WORK_ALLOCATION_TASK_API_PATH
 } from '../configuration/references';
-import { EnhancedRequest } from '../lib/models';
+import * as log4jui from '../lib/log4jui';
+import { EnhancedRequest, JUILogger } from '../lib/models';
+import { getWASupportedJurisdictionsList } from '../waSupportedJurisdictions/index';
 import * as caseServiceMock from './caseService.mock';
 import {
   getUserIdsFromRoleApiResponse,
@@ -27,7 +29,7 @@ import { TaskList } from './interfaces/task';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { checkIfCaseAllocator } from './roleService';
 import * as roleServiceMock from './roleService.mock';
-import { handleGetTasksByCaseId, handleTaskSearch } from './taskService';
+import { handleGetTasksByCaseId, handleTaskGet, handleTaskSearch } from './taskService';
 import * as taskServiceMock from './taskService.mock';
 import {
   assignActionsToCases,
@@ -68,6 +70,8 @@ export const baseJudicialWorkerRefUrl = getConfigValue(SERVICES_CASE_JUDICIALWOR
 export const baseRoleAssignmentUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
 export const baseUrl: string = 'http://localhost:8080';
 
+const logger: JUILogger = log4jui.getLogger('workallocation2');
+
 /**
  * getTask
  */
@@ -76,8 +80,10 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
   try {
     const getTaskPath: string = prepareGetTaskUrl(baseWorkAllocationTaskUrl, req.params.taskId);
 
-    const jsonResponse = await handleGet(getTaskPath, req);
-
+    const jsonResponse = await handleTaskGet(getTaskPath, req);
+    if (jsonResponse && jsonResponse.task && jsonResponse.task.due_date) {
+      jsonResponse.task.dueDate = jsonResponse.task.due_date;
+    }
     res.status(200);
     res.send(jsonResponse);
   } catch (error) {
@@ -155,7 +161,8 @@ export async function retrieveAllCaseWorkers(req: EnhancedRequest, res: Response
     return req.session.caseworkers;
   }
   const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
-  const payload = prepareRoleApiRequest();
+  const jurisdictions = getWASupportedJurisdictionsList();
+  const payload = prepareRoleApiRequest(jurisdictions);
   const {data} = await handlePostRoleAssignments(roleApiPath, payload, req);
   const userIds = getUserIdsFromRoleApiResponse(data);
   const userUrl = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
@@ -317,29 +324,43 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
   const searchParameters = req.body.searchRequest.search_parameters as SearchTaskParameter[];
   const pagination = req.body.searchRequest.pagination_parameters as PaginationParameter;
 
+  logger.info('getting all work cases', searchParameters);
+
   try {
 
     // get users case allocations
     const caseAllocatorQuery = constructRoleAssignmentCaseAllocatorQuery(searchParameters, req);
+    logger.info('case-allocator query', JSON.stringify(caseAllocatorQuery, null, 2));
     const caseAllocatorResult = await getRoleAssignmentsByQuery(caseAllocatorQuery, req);
     // get case allocator locations
     const locations = caseAllocatorResult.roleAssignmentResponse
       ? getCaseAllocatorLocations(caseAllocatorResult.roleAssignmentResponse)
       : [];
+    logger.info('case-allocator locations', locations);
 
     // get all role assignments
     const query = constructRoleAssignmentQuery(searchParameters);
+    logger.info('cases query', JSON.stringify(query, null, 2));
     const roleAssignmentResult = await getRoleAssignmentsByQuery(query, req);
+
+    logger.info('returned cases', JSON.stringify(roleAssignmentResult.roleAssignmentResponse));
 
     const caseTypes: string = getCaseTypesFromRoleAssignments(roleAssignmentResult.roleAssignmentResponse);
     const queryParams = caseTypes.length ? caseTypes : 'Asylum';
+
+    logger.info('caseTypes', queryParams);
 
     // get the case ids from the role assignments
     const caseIds = getCaseIdListFromRoles(roleAssignmentResult.roleAssignmentResponse);
     const esQuery = constructElasticSearchQuery(caseIds, 0, 10000);
 
+    logger.info('esQuery', JSON.stringify(esQuery, null, 2));
+
     const result = await searchCasesById(queryParams, esQuery, req);
+
+    logger.info('elastic search results length ', result.cases.length);
     const caseData = filterByLocationId(result.cases, locations);
+    logger.info('results filtered by location id', caseData.length);
     result.total_records = caseData.length;
 
     const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);

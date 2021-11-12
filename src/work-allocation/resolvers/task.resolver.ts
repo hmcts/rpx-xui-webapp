@@ -24,7 +24,6 @@ export class TaskResolver implements Resolve<{ task: Task; caseworkers: Casework
       })
     );
     const caseworker$ = this.caseworkerService.getAll();
-
     return forkJoin({task: task$, caseworkers: caseworker$});
   }
 }

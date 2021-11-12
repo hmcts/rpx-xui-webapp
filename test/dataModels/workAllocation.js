@@ -101,6 +101,7 @@ class WorkAllocationModels {
             firstName: "testfn",
             lastName: "testln",
             idamId: "004b7164-0943-41b5-95fc-39794af4a9fe",
+            roleCategory:'case-worker',
             location: this.getLocation()
         }
     }

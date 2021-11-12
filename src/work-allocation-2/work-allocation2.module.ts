@@ -14,6 +14,7 @@ import { WorkAllocationFeatureToggleGuard } from './guards';
 import { CaseworkerDataService, WorkAllocationTaskService } from './services';
 import { WorkAllocationFeatureService } from './services/work-allocation-feature.service';
 import { workAllocationRouting } from './work-allocation-feature.routes';
+import { TaskAssignmentChooseRoleComponent } from './containers/task-assignment-choose-role/task-assignment-choose-role.component';
 
 // from containers
 @NgModule({
@@ -30,7 +31,7 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
     ExuiCommonLibModule,
     PriorityFieldComponentModule
   ],
-  declarations: [...fromContainers.containers],
+  declarations: [...fromContainers.containers, TaskAssignmentChooseRoleComponent],
   providers: [
     WorkAllocationTaskService,
     WorkAllocationFeatureToggleGuard,

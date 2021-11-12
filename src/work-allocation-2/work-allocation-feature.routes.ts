@@ -16,6 +16,7 @@ import {
   WorkAllocationHomeComponent,
 } from './containers';
 import { MyCasesComponent } from './containers/my-cases/my-cases.component';
+import { TaskAssignmentChooseRoleComponent } from './containers/task-assignment-choose-role/task-assignment-choose-role.component';
 import { WorkAllocationFeatureToggleGuard } from './guards';
 import { TaskResolver } from './resolvers';
 import { LocationResolver } from './resolvers/location-resolver.service';
@@ -98,13 +99,18 @@ export const ROUTES: Routes = [
             path: 'assign',
             children: [
               {
+                path: 'person',
+                component: TaskAssignmentContainerComponent,
+                data: TaskActionConstants.Assign
+              },
+              {
                 path: 'confirm',
                 component: TaskAssignmentConfirmComponent,
                 data: TaskActionConstants.Assign
               },
               {
                 path: '',
-                component: TaskAssignmentContainerComponent,
+                component: TaskAssignmentChooseRoleComponent,
                 data: TaskActionConstants.Assign
               }
             ]

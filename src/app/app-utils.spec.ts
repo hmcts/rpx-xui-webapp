@@ -205,6 +205,21 @@ describe('isLegalOpsOrJudicial', () => {
     expect(isLegalOpsOrJudicial).toBeNull();
   });
 
+  it('should return legal ops role if user is an task supervisor', () => {
+    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['task-supervisor']);
+    expect(isLegalOpsOrJudicial).toBe('Legal Ops');
+  });
+
+  it('should return legal ops role if user is an caseworker-ia', () => {
+    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker-ia']);
+    expect(isLegalOpsOrJudicial).toBe('Legal Ops');
+  });
+
+  it('should return legal ops role if user is an caseworker-ia-admofficer', () => {
+    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker-ia-admofficer']);
+    expect(isLegalOpsOrJudicial).toBe('Legal Ops');
+  });
+
   it('should return the judicial domain from the user list', () => {
     const role = AppUtils.convertDomainToLabel(UserRole.Judicial);
     expect(role).toBe('Judicial');

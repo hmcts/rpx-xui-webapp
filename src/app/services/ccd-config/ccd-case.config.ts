@@ -171,4 +171,8 @@ export class AppConfig extends AbstractAppConfig {
           )
       );
   }
+
+  public getRefundsUrl(): string {
+    return this.config.refunds_url;
+  }
 }

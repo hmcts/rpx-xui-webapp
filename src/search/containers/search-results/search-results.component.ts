@@ -27,7 +27,10 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
     this.searchSubscription$ = combineLatest([
       this.searchService.getResults(),
       this.jurisdictionService.getJurisdictions()
-    ]).subscribe(results => this.onSearchSubscriptionHandler(results));
+    ]).subscribe(
+      results => this.onSearchSubscriptionHandler(results),
+      error => this.router.navigate(['/search/noresults', true], {relativeTo: this.route})
+    );
   }
 
   /**
@@ -39,7 +42,7 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
     const searchResult = results[0];
     // Navigate to no results page if case list is empty
     if (searchResult.resultInfo.casesReturned === 0) {
-      this.router.navigate(['/search/noresults'], {relativeTo: this.route});
+      this.router.navigate(['/search/noresults', false], {relativeTo: this.route})
     }
 
     // Get the jurisdiction list from the results

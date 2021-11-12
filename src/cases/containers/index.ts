@@ -32,13 +32,14 @@ export const containers: any[] = [
   CaseShareCompleteComponent
 ];
 
-export * from './case-list/case-list.component';
-export * from './case-create/case-create.component';
-export * from './case-filter/case-filter.component';
-export * from './case-details/case-details.component';
-export * from './case-home/case-home.component';
 export * from './case-create-submit/case-create-submit.component';
+export * from './case-create/case-create.component';
 export * from './case-details-home/case-details-home.component';
-export * from './case-share/case-share.component';
-export * from './case-share-confirm/case-share-confirm.component';
+export * from './case-details/case-details.component';
+export * from './case-filter/case-filter.component';
+export * from './case-home/case-home.component';
+export * from './case-list/case-list.component';
 export * from './case-share-complete/case-share-complete.component';
+export * from './case-share-confirm/case-share-confirm.component';
+export * from './case-share/case-share.component';
+

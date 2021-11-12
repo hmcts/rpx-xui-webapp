@@ -2,6 +2,7 @@ import { Component, DebugElement, Input } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatTabsModule } from '@angular/material';
 import { By } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseField, CaseTab, CaseView } from '@hmcts/ccd-case-ui-toolkit';
@@ -11,7 +12,6 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
 import { reducers, State } from '../../../app/store';
 import { CaseViewerContainerComponent } from './case-viewer-container.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -235,5 +235,12 @@ describe('CaseViewerContainerComponent', () => {
     const roleAndAccessTab: HTMLElement = matTabHTMLElement.children[1] as HTMLElement;
     expect((tasksTab.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Tasks');
     expect((roleAndAccessTab.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Roles and access');
+  });
+
+  it('should show no tabs', (done: DoneFn) => {
+    component.tabs$.subscribe((tabs: CaseTab[]) => {
+      expect(tabs.length).toBe(0);
+      done();
+    });
   });
 });

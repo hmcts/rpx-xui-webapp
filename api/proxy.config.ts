@@ -3,18 +3,19 @@ import { Express } from 'express';
 import * as amendedJurisdictions from './amendedJurisdictions';
 import { getConfigValue } from './configuration';
 import {
-  SERVICES_CCD_COMPONENT_API_PATH,
-  SERVICES_DOCUMENTS_API_PATH,
-  SERVICES_DOCUMENTS_API_PATH_V2,
-  SERVICES_EM_ANNO_API_URL,
-  SERVICES_EM_DOCASSEMBLY_API_URL,
-  SERVICES_EM_HRS_API_PATH,
-  SERVICES_ICP_API_URL,
-  SERVICES_MARKUP_API_URL,
-  SERVICES_PAYMENTS_URL
-} from './configuration/references';
-import { applyProxy } from './lib/middleware/proxy';
-import * as searchCases from './searchCases';
+    SERVICES_CCD_COMPONENT_API_PATH,
+    SERVICES_DOCUMENTS_API_PATH,
+    SERVICES_DOCUMENTS_API_PATH_V2,
+    SERVICES_EM_ANNO_API_URL,
+    SERVICES_EM_DOCASSEMBLY_API_URL,
+    SERVICES_EM_HRS_API_PATH,
+    SERVICES_ICP_API_URL,
+    SERVICES_MARKUP_API_URL,
+    SERVICES_PAYMENTS_URL,
+    SERVICES_REFUNDS_API_URL
+} from './configuration/references'
+import { applyProxy } from './lib/middleware/proxy'
+import * as searchCases from './searchCases'
 
 export const initProxy = (app: Express) => {
   applyProxy(app, {
@@ -118,16 +119,23 @@ export const initProxy = (app: Express) => {
     target: getConfigValue(SERVICES_PAYMENTS_URL),
   });
 
-  /**
-   * Commenting this out as it's completely bypassing the API this way,
-   * which is not we want right now. If that's to be the long-term
-   * solution, we'll need to move the logic around adding actions out
-   * of the node layer.
-   */
-  // applyProxy(app, {
-  //     rewrite: true,
-  //     rewriteUrl: '',
-  //     source: '/workallocation',
-  //     target: 'http://localhost:8080',
-  // })
-};
+  applyProxy(app, {
+      rewrite: true,
+      rewriteUrl: '/refund',
+      source: '/api/refund',
+      target: getConfigValue(SERVICES_REFUNDS_API_URL),
+  });
+
+    /**
+     * Commenting this out as it's completely bypassing the API this way,
+     * which is not we want right now. If that's to be the long-term
+     * solution, we'll need to move the logic around adding actions out
+     * of the node layer.
+     */
+    // applyProxy(app, {
+    //     rewrite: true,
+    //     rewriteUrl: '',
+    //     source: '/workallocation',
+    //     target: 'http://localhost:8080',
+    // });
+}

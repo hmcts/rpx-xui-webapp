@@ -54,9 +54,11 @@ export const SERVICES_PAYMENTS_URL = 'services.payments';
 
 export const SERVICES_PRD_API_URL = 'services.prd.api';
 
-export const PROTOCOL = 'protocol';
-export const MICROSERVICE = 'microservice';
-export const NOW = 'now';
+export const SERVICES_REFUNDS_API_URL = 'services.refunds'
+
+export const PROTOCOL = 'protocol'
+export const MICROSERVICE = 'microservice'
+export const NOW = 'now'
 
 export const SESSION_SECRET = 'sessionSecret';
 

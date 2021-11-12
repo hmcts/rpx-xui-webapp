@@ -1,4 +1,4 @@
-@ng @ignore
+@ng  @wa2 @ignore
 Feature: WA Release 2: Case details - "Tasks", "Roles and access" tabs visibility
 
     Scenario Outline: WA tab "<TabLabel>"" is displayed "<isDisplayed>"" in case details for user "<UserType>" "<UserIdentifier>"

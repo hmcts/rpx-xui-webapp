@@ -241,7 +241,7 @@ const CASE_HEARING_12: CaseHearingModel = {
   hearingType: 'Full hearing',
   hmcStatus: HMCStatus.VACATED,
   lastResponseReceivedDateTime: '',
-  responseVersion: 'rv8',
+  responseVersion: 'rv12',
   hearingListingStatus: HearingListingStatusEnum.VACATED,
   listAssistCaseStatus: '',
   hearingDaySchedule: [],

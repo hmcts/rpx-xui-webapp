@@ -443,12 +443,13 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.7.3-EUI-3503-reject-review-specific-access":
-  version "5.0.0-unsaved-changes-beta-r3"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.0-unsaved-changes-beta-r3.tgz#2c6d86499cdaaa23fa96f92133952fa8296aae6c"
-  integrity sha512-8H5GACbZW3+enXyGuSpUlPNci9xm5LgJfSYFLKmmAjPY93/+WyEirfqnA/+xCrQhMCtVXbaeDEybV/hglg8tew==
+"@hmcts/ccd-case-ui-toolkit@4.7.3-EUI-3503-reject-review-specific-access-2":
+  version "4.7.3-EUI-3503-reject-review-specific-access-2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.7.3-EUI-3503-reject-review-specific-access-2.tgz#0b332e9d88c814c66d7de502849cd35ce46d7ce9"
+  integrity sha512-yojCYOmBDBVPZ+wv1bJdUasjY8LDxA0Dlp9xX9gqbKH6e0sDZcD0N6nllDFyLOilXjbhoDQ+S2P/vhMj/g7Bbg==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
+    "@angular-material-components/moment-adapter" "^5.0.0"
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
     "@hmcts/ccpay-web-component" "3.0.3"

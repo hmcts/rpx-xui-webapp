@@ -36,7 +36,7 @@
             <a class="govuk-link" href="" routerLink="/cases/case-details/{{case.caseReference}}" *ngIf="case.processForAccess !== 'SPECIFIC' && case.processForAccess !== 'CHALLENGED'">
               View
             </a>
-            <a class="govuk-link" href="" routerLink="cases/case-details/{{case.caseReference}}/specific-access-request" *ngIf="case.processForAccess === 'SPECIFIC'">
+            <a class="govuk-link" href="" routerLink="/cases/case-details/{{case.caseReference}}/specific-access-request" *ngIf="case.processForAccess === 'SPECIFIC'">
               Specific access
             </a>
             <a class="govuk-link" href="" routerLink="/cases/case-details/{{case.caseReference}}/challenged-access-request" *ngIf="case.processForAccess === 'CHALLENGED'">

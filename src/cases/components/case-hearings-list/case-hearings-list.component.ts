@@ -1,8 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { CaseHearingViewModel } from '../../../models/case-hearing-view.model';
-import { Actions, EXUISectionStatusEnum } from '../../../hearings/models/hearings.enum';
-import * as moment from 'moment';
+import {Component, Input, OnInit} from '@angular/core';
+import {Observable} from 'rxjs';
+import {CaseHearingViewModel} from '../../../hearings/models/caseHearingView.model';
+import {Actions, EXUISectionStatusEnum} from '../../../hearings/models/hearings.enum';
+
 @Component({
   selector: 'exui-case-hearings-list',
   templateUrl: './case-hearings-list.component.html',
@@ -35,16 +35,6 @@ export class CaseHearingsListComponent implements OnInit {
       if (this.actions.length === 1 && this.actions.includes(Actions.READ)) {
         this.hasReadOnlyAction = true;
       }
-    }
-  }
-
-  public get minimumDate(): string {
-    return moment(new Date('01/01/1900')).format('l');
-  }
-
-  public minValueFilter(expression: string) {
-    if (expression) {
-      return expression === this.minimumDate ? '' : expression;
     }
   }
 }

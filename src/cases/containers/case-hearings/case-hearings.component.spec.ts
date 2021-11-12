@@ -3,16 +3,16 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
+import * as moment from 'moment';
 import { of } from 'rxjs';
-import { CaseHearingViewModel } from 'src/models/case-hearing-view.model';
 import { UserRole } from '../../../app/models/user-details.model';
 import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
 import { CaseHearingModel } from '../../../hearings/models/caseHearing.model';
 import { CaseHearingsMainModel } from '../../../hearings/models/caseHearingsMain.model';
+import {CaseHearingViewModel} from '../../../hearings/models/caseHearingView.model';
 import { HearingDayScheduleModel } from '../../../hearings/models/hearingDaySchedule.model';
 import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, HearingListingStatusEnum, HMCStatus } from '../../../hearings/models/hearings.enum';
 import { CaseHearingsComponent } from './case-hearings.component';
-import * as moment from 'moment';
 
 describe('CaseHearingsComponent', () => {
   let component: CaseHearingsComponent;
@@ -372,7 +372,7 @@ describe('CaseHearingsComponent', () => {
       hearingType: 'Case management hearing 2',
       lastResponseReceivedDateTime: '',
       hmcStatus:  HMCStatus.AWAITING_ACTUALS,
-      mostRecentHearingStartDateTime: '',
+      earliestHearingStartDateTime: '',
       responseVersion: 'rv1',
       hearingListingStatus: HearingListingStatusEnum.LISTED,
       exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
@@ -386,7 +386,7 @@ describe('CaseHearingsComponent', () => {
       hearingType: 'Case management hearing 2',
       lastResponseReceivedDateTime: '',
       hmcStatus:  HMCStatus.AWAITING_ACTUALS,
-      mostRecentHearingStartDateTime: '',
+      earliestHearingStartDateTime: '',
       responseVersion: 'rv1',
       hearingListingStatus: HearingListingStatusEnum.LISTED,
       exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,

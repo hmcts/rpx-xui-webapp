@@ -1,16 +1,16 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { select, Store } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { UserRole } from '../../../app/models/user-details.model';
-import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
-import * as fromAppStore from '../../../app/store';
-import { CaseHearingModel } from '../../../hearings/models/caseHearing.model';
-import { CaseHearingViewModel } from '../../../models/case-hearing-view.model';
-import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, HearingListingStatusEnum } from '../../../hearings/models/hearings.enum';
-import * as fromHearingStore from '../../../hearings/store';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {select, Store} from '@ngrx/store';
 import * as moment from 'moment';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {UserRole} from '../../../app/models/user-details.model';
+import {RoleCategoryMappingService} from '../../../app/services/role-category-mapping/role-category-mapping.service';
+import * as fromAppStore from '../../../app/store';
+import {CaseHearingModel} from '../../../hearings/models/caseHearing.model';
+import {CaseHearingViewModel} from '../../../hearings/models/caseHearingView.model';
+import {Actions, EXUISectionStatusEnum} from '../../../hearings/models/hearings.enum';
+import * as fromHearingStore from '../../../hearings/store';
 
 @Component({
   selector: 'exui-case-hearings',
@@ -24,8 +24,6 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public hearingsActions: Actions[] = [Actions.READ];
   public userRoles: Observable<string[]>;
   public hasRequestAction: boolean = false;
-  previousMostRecentHearingStartDateTime: string;
-  previousHearingRequestDateTime: string;
 
   constructor(private readonly appStore: Store<fromAppStore.State>,
               private readonly hearingStore: Store<fromHearingStore.State>,
@@ -39,31 +37,8 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.getHearsListByStatus(EXUISectionStatusEnum.UPCOMING).subscribe(hearings => {
-      if (hearings.length) {
-        const viewModels: CaseHearingViewModel[] = this.calculateMostRecentHearingDate(hearings);
-
-        this.upcomingHearings$ = of(viewModels.sort((a, b) => {
-          return a.orderNumber < b.orderNumber ? 1 : -1;
-        }));
-      }
-    });
-
-    this.getHearsListByStatus(EXUISectionStatusEnum.PAST_AND_CANCELLED).subscribe(hearings => {
-      if (hearings.length) {
-        const viewModels: CaseHearingViewModel[] = this.calculateMostRecentHearingDate(hearings);
-        this.pastAndCancelledHearings$ = of(viewModels.sort((a, b) => {
-          return new Date(a.hearingRequestDateTime) > new Date(b.hearingRequestDateTime) ? 1 : -1;
-          }).sort((a) => {
-            return !a.hearingRequestDateTime ? 1 : -1;
-          }).sort((a, b) => {
-            return new Date(a.mostRecentHearingStartDateTime) < new Date(b.mostRecentHearingStartDateTime) ? 1 : -1;
-          }).sort((a) => {
-            return a.hearingRequestDateTime ? 1 : -1;
-          }));
-      }
-    });
-
+    this.upcomingHearings$ = this.getHearsListByStatus(EXUISectionStatusEnum.UPCOMING);
+    this.pastAndCancelledHearings$ = this.getHearsListByStatus(EXUISectionStatusEnum.PAST_AND_CANCELLED);
     this.roleCategoryMappingService.isJudicialOrLegalOpsCategory(this.userRoles).subscribe(
       userRole => {
         if (userRole === UserRole.LegalOps) {
@@ -76,56 +51,50 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     }
   }
 
-  public get minimumDate() {
-    return moment(new Date('01/01/1900')).format('l');
-  }
-
-  public calculateMostRecentHearingDate(hearings: CaseHearingModel[]) {
-    this.previousMostRecentHearingStartDateTime = '';
-    this.previousHearingRequestDateTime = '';
-    const viewModels: CaseHearingViewModel[] = [];
-    hearings.forEach((hearing) => {
-      const viewModel = {} as CaseHearingViewModel;
-      Object.keys(hearing).forEach(key => viewModel[key] = hearing[key]);
-
-      if (hearing.hearingDaySchedule && hearing.hearingDaySchedule.length) {
-        const moments = hearing.hearingDaySchedule.map(d => moment(d.hearingStartDateTime ? d.hearingStartDateTime : this.minimumDate));
-        viewModel.mostRecentHearingStartDateTime = moment.max(moments).format('l');
-
-        if (viewModel.mostRecentHearingStartDateTime === 'Invalid date') {
-          viewModel.mostRecentHearingStartDateTime = this.minimumDate;
-        }
-      }
-
-      if (viewModel.exuiSectionStatus === EXUISectionStatusEnum.UPCOMING) {
-        viewModel.orderNumber =  viewModel.exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_LISTING &&
-                                 // viewModel.mostRecentHearingStartDateTime.toString() === '-8640000000000000' ? 4 :
-                                 viewModel.mostRecentHearingStartDateTime === this.minimumDate ? 4 :
-                                 viewModel.hearingListingStatus === EXUIDisplayStatusEnum.AWAITING_LISTING &&
-                                 new Date(viewModel.mostRecentHearingStartDateTime) > new Date(this.previousMostRecentHearingStartDateTime) ? 2 :
-                                 new Date(viewModel.hearingRequestDateTime) > new Date(this.previousHearingRequestDateTime) ? 1 : -1;
-      }
-
-      viewModels.push(viewModel);
-      this.previousMostRecentHearingStartDateTime = viewModel.mostRecentHearingStartDateTime;
-      this.previousHearingRequestDateTime = viewModel.hearingRequestDateTime;
-    });
-
-    return viewModels;
-  }
-
-  public getHearsListByStatus(status: string): Observable<CaseHearingModel[]> {
+  public getHearsListByStatus(status: string): Observable<CaseHearingViewModel[]> {
     return this.hearingStore.pipe(select(fromHearingStore.getHearingsList)).pipe(
       map(hearingsStateData => {
           if (hearingsStateData && hearingsStateData.caseHearingsMainModel && hearingsStateData.caseHearingsMainModel.caseHearings) {
-            return hearingsStateData.caseHearingsMainModel.caseHearings.filter(hearing =>
+            const caseHearingModels: CaseHearingModel[] = hearingsStateData.caseHearingsMainModel.caseHearings.filter(hearing =>
               hearing.exuiSectionStatus === status
             );
+            const caseHearingViewModels: CaseHearingViewModel[] = this.calculateEarliestHearingDate(caseHearingModels);
+            return this.sortHearingsByHearingAndRequestDate(caseHearingViewModels);
           } else {
             return [];
           }
         }
       )
+    );
+  }
+
+  public calculateEarliestHearingDate(hearings: CaseHearingModel[]): CaseHearingViewModel[] {
+    const viewModels: CaseHearingViewModel[] = [];
+    hearings.forEach((hearing) => {
+      const viewModel = {} as CaseHearingViewModel;
+      Object.keys(hearing).forEach(key => viewModel[key] = hearing[key]);
+      if (hearing.hearingDaySchedule && hearing.hearingDaySchedule.length) {
+        const moments = hearing.hearingDaySchedule.map(d => moment(d.hearingStartDateTime));
+        viewModel.earliestHearingStartDateTime = moment.min(moments).toString();
+      } else {
+        viewModel.earliestHearingStartDateTime = null;
+      }
+      viewModels.push(viewModel);
+    });
+    return viewModels;
+  }
+
+  public sortHearingsByHearingAndRequestDate(arrayToBeSorted: CaseHearingViewModel[]): CaseHearingViewModel[] {
+    return arrayToBeSorted.sort((a, b) => {
+        if (a.earliestHearingStartDateTime === b.earliestHearingStartDateTime) {
+          return new Date(a.hearingRequestDateTime) > new Date(b.hearingRequestDateTime) ? -1 : 1;
+        } else if (a.earliestHearingStartDateTime === null) {
+          return -1;
+        } else if (b.earliestHearingStartDateTime === null) {
+          return 1;
+        }
+        return new Date(a.earliestHearingStartDateTime) > new Date(b.earliestHearingStartDateTime) ? -1 : 1;
+      }
     );
   }
 

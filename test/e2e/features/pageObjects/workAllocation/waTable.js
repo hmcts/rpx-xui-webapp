@@ -47,7 +47,7 @@ class WAListTable {
             let isTableFooterDispayed = await this.tableFooter.isDisplayed();
             cucumberReporter.AddMessage(`Waiting for WA list table condition : row count is ${tableRowsCount} or table foorter displayed ${isTableFooterDispayed}`);
             return tableRowsCount > 0 || isTableFooterDispayed;
-        }, 45000);
+        }, BrowserWaits.waitTime);
     }
 
     async isTableDisplayed() {

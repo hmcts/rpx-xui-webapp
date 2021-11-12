@@ -1,4 +1,4 @@
-@ng
+@ng  @wa2
 Feature: WA Release 2: My work of My Tasks of pagination sorting
 
     Background: Mock and browser setup

@@ -161,7 +161,7 @@ function getBDDTags() {
         if (argv.tags){
             tags = argv.tags.split(',');
         }else{
-            tags = ["@ng", "~@ignore"];
+            tags = ["@ng", "~@ignore","~@wa2"];
         }
     }else{
         tags.push("@none"); 

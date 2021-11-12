@@ -1,4 +1,4 @@
-@ng 
+@ng  @wa2 
 Feature: WA Release 2: All work - Task assignment work flows
 
     Background: Mock and browser setup

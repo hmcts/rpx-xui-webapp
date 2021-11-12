@@ -1,4 +1,4 @@
-@ng
+@ng  @wa2
 Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
     Background: User and mock data setup

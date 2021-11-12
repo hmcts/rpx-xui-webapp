@@ -1,5 +1,5 @@
 
-@ng
+@ng  @wa2
 Feature: Work allocation 2 feature route guards
 
     These tests would be valid untill work allocation 2 features are enabled for all users

@@ -1,4 +1,4 @@
-@ng 
+@ng  @wa2 
 Feature: WA Release 2: Roles and access tab
 
     Background: Case details setup

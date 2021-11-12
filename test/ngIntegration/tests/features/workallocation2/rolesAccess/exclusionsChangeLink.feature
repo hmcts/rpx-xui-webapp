@@ -1,4 +1,4 @@
-@ng
+@ng  @wa2
 Feature: WA Release 2: Exclusion workflow - Change links
 
     Background: Setup

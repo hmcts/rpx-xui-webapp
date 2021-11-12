@@ -184,7 +184,7 @@ const CASE_HEARING_7: CaseHearingModel = {
   responseVersion: 'rv7',
   hearingListingStatus: HearingListingStatusEnum.CANCELLATION_REQUESTED,
   listAssistCaseStatus: '',
-  hearingDaySchedule: [HEARING_DAY_SCHEDULE_7],
+  hearingDaySchedule: [HEARING_DAY_SCHEDULE_7, HEARING_DAY_SCHEDULE_8],
 };
 
 const CASE_HEARING_8: CaseHearingModel = {

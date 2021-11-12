@@ -33,6 +33,13 @@ export class AppConfig extends AbstractAppConfig {
         document_management_secure_enabled: val
       }
     });
+
+    this.featureToggleService.getValue('access-management-request-review-mock', {}).subscribe({
+      next: (val) => this.config = {
+        ...this.config,
+        access_management_request_review_mock: val
+      }
+    });
   }
 
   private featureToggleWorkAllocation(): void {
@@ -73,6 +80,10 @@ export class AppConfig extends AbstractAppConfig {
 
   public getDocumentSecureMode() {
     return this.config.document_management_secure_enabled;
+  }
+
+  public getAccessManagementRequestReviewMockModel() {
+    return this.config.access_management_request_review_mock;
   }
 
   public getRemoteDocumentManagementUrl() {

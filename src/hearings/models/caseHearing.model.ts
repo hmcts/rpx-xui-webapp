@@ -3,9 +3,9 @@ import {EXUIDisplayStatusEnum, EXUISectionStatusEnum} from './hearings.enum';
 
 export interface CaseHearingModel {
   hearingID: string;
+  hearingRequestDateTime: string;
   hearingType: string;
   hmcStatus: string;
-  hearingRequestDateTime: string;
   lastResponseReceivedDateTime: string;
   responseVersion: string;
   hearingListingStatus: string;

@@ -105,10 +105,10 @@ const HEARING_DAY_SCHEDULE_11: HearingDayScheduleModel = {
 
 const CASE_HEARING_1: CaseHearingModel = {
   hearingID: 'h111111',
-  hearingType: 'Case management hearing',
   hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
-  lastResponseReceivedDateTime: '',
+  hearingType: 'Case management hearing',
   hmcStatus: HMCStatus.HEARING_REQUESTD,
+  lastResponseReceivedDateTime: '',
   responseVersion: 'rv1',
   hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
   listAssistCaseStatus: '',
@@ -117,10 +117,10 @@ const CASE_HEARING_1: CaseHearingModel = {
 
 const CASE_HEARING_2: CaseHearingModel = {
   hearingID: 'h222222',
-  hearingType: 'Final hearing',
-  lastResponseReceivedDateTime: '',
   hearingRequestDateTime: '2021-10-01T16:00:00.000+0000',
+  hearingType: 'Final hearing',
   hmcStatus: HMCStatus.AWAITING_LISTING,
+  lastResponseReceivedDateTime: '',
   responseVersion: 'rv2',
   hearingListingStatus: HearingListingStatusEnum.AWAITING_LISTING,
   listAssistCaseStatus: '',
@@ -129,10 +129,10 @@ const CASE_HEARING_2: CaseHearingModel = {
 
 const CASE_HEARING_3: CaseHearingModel = {
   hearingID: 'h333333',
-  hearingType: 'Initial hearing',
-  lastResponseReceivedDateTime: '',
   hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
+  hearingType: 'Initial hearing',
   hmcStatus: HMCStatus.LISTED,
+  lastResponseReceivedDateTime: '',
   responseVersion: 'rv3',
   hearingListingStatus: HearingListingStatusEnum.LISTED,
   listAssistCaseStatus: '',
@@ -141,10 +141,10 @@ const CASE_HEARING_3: CaseHearingModel = {
 
 const CASE_HEARING_4: CaseHearingModel = {
   hearingID: 'h444444',
-  hearingType: 'Case management hearing',
-  lastResponseReceivedDateTime: '',
   hearingRequestDateTime: '2021-10-01T16:00:00.000+0000',
+  hearingType: 'Case management hearing',
   hmcStatus: HMCStatus.UPDATE_REQUESTED,
+  lastResponseReceivedDateTime: '',
   responseVersion: 'rv4',
   hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
   listAssistCaseStatus: '',
@@ -153,10 +153,10 @@ const CASE_HEARING_4: CaseHearingModel = {
 
 const CASE_HEARING_5: CaseHearingModel = {
   hearingID: 'h444444',
-  hearingType: 'Case management preliminary hearing - open',
-  lastResponseReceivedDateTime: '',
   hearingRequestDateTime: '2021-10-01T16:00:00.000+0000',
+  hearingType: 'Case management preliminary hearing - open',
   hmcStatus: HMCStatus.UPDATE_SUBMITTED,
+  lastResponseReceivedDateTime: '',
   responseVersion: 'rv5',
   hearingListingStatus: HearingListingStatusEnum.UPDATE_SUBMITTED,
   listAssistCaseStatus: '',
@@ -165,10 +165,10 @@ const CASE_HEARING_5: CaseHearingModel = {
 
 const CASE_HEARING_6: CaseHearingModel = {
   hearingID: 'h555555',
-  hearingType: 'Directions hearing',
-  lastResponseReceivedDateTime: '',
   hearingRequestDateTime: '2021-09-01T14:00:00.000+0000',
+  hearingType: 'Directions hearing',
   hmcStatus: HMCStatus.EXCEPTION,
+  lastResponseReceivedDateTime: '',
   responseVersion: 'rv6',
   hearingListingStatus: HearingListingStatusEnum.EXCEPTION,
   listAssistCaseStatus: '',
@@ -177,10 +177,10 @@ const CASE_HEARING_6: CaseHearingModel = {
 
 const CASE_HEARING_7: CaseHearingModel = {
   hearingID: 'h555555',
-  hearingType: 'Full hearing',
-  lastResponseReceivedDateTime: '',
   hearingRequestDateTime: '2021-09-01T14:00:00.000+0000',
+  hearingType: 'Full hearing',
   hmcStatus: HMCStatus.CANCELLATION_REQUESTED,
+  lastResponseReceivedDateTime: '',
   responseVersion: 'rv7',
   hearingListingStatus: HearingListingStatusEnum.CANCELLATION_REQUESTED,
   listAssistCaseStatus: '',
@@ -189,10 +189,10 @@ const CASE_HEARING_7: CaseHearingModel = {
 
 const CASE_HEARING_8: CaseHearingModel = {
   hearingID: 'h555555',
-  hearingType: 'Directions hearing',
-  lastResponseReceivedDateTime: '',
-  hmcStatus: HMCStatus.VACATED,
   hearingRequestDateTime: '2021-09-14T16:00:00.000+0000',
+  hearingType: 'Directions hearing',
+  hmcStatus: HMCStatus.VACATED,
+  lastResponseReceivedDateTime: '',
   responseVersion: 'rv8',
   hearingListingStatus: HearingListingStatusEnum.VACATED,
   listAssistCaseStatus: '',
@@ -201,10 +201,10 @@ const CASE_HEARING_8: CaseHearingModel = {
 
 const CASE_HEARING_9: CaseHearingModel = {
   hearingID: 'h555555',
-  hearingType: 'Pre-hearing review',
-  lastResponseReceivedDateTime: '',
   hearingRequestDateTime: '2021-09-01T14:00:00.000+0000',
+  hearingType: 'Pre-hearing review',
   hmcStatus: HMCStatus.AWAITING_ACTUALS,
+  lastResponseReceivedDateTime: '',
   responseVersion: 'rv9',
   hearingListingStatus: HearingListingStatusEnum.AWAITING_ACTUALS,
   listAssistCaseStatus: '',
@@ -213,10 +213,10 @@ const CASE_HEARING_9: CaseHearingModel = {
 
 const CASE_HEARING_10: CaseHearingModel = {
   hearingID: 'h555555',
-  hearingType: 'Case management preliminary hearing - open',
-  lastResponseReceivedDateTime: '',
-  hmcStatus: HMCStatus.COMPLETED,
   hearingRequestDateTime: '2021-09-01T14:00:00.000+0000',
+  hearingType: 'Case management preliminary hearing - open',
+  hmcStatus: HMCStatus.COMPLETED,
+  lastResponseReceivedDateTime: '',
   responseVersion: 'rv10',
   hearingListingStatus: HearingListingStatusEnum.COMPLETED,
   listAssistCaseStatus: '',
@@ -225,10 +225,10 @@ const CASE_HEARING_10: CaseHearingModel = {
 
 const CASE_HEARING_11: CaseHearingModel = {
   hearingID: 'h555555',
-  hearingType: 'Remedy hearing',
   hearingRequestDateTime: '2021-09-14T16:00:00.000+0000',
-  lastResponseReceivedDateTime: '',
+  hearingType: 'Remedy hearing',
   hmcStatus: HMCStatus.ADJOURNED,
+  lastResponseReceivedDateTime: '',
   responseVersion: 'rv11',
   hearingListingStatus: HearingListingStatusEnum.ADJOURNED,
   listAssistCaseStatus: '',

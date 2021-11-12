@@ -111,7 +111,11 @@ defineSupportCode(({ Before,After }) => {
                 let browserErrorLogs = []
                 for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++) {
                     if (browserLog[browserLogCounter].level.value > 900) {
-                        browserLog[browserLogCounter]['time'] = (new Date(browserLog[browserLogCounter]['time'])).toISOString()
+                        try{
+                            browserLog[browserLogCounter]['time'] = (new Date(browserLog[browserLogCounter]['time'])).toISOString()
+                        }catch(err){
+                            browserLog[browserLogCounter]['time'] = browserLog[browserLogCounter]['time'] + "" + err;
+                        }
                         browserErrorLogs.push(browserLog[browserLogCounter]);
                     }
                 }

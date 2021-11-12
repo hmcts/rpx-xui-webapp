@@ -1,4 +1,4 @@
-@ng
+@ng  @wa2
 Feature: WA Release 2: All work - Manage links
 
     Background: Mock and browser setup

@@ -1,4 +1,4 @@
-@ng
+@ng  @wa2
 Feature: WA Release 2: My work - My tasks - Manage links
 
     Background: Mock and browser setup

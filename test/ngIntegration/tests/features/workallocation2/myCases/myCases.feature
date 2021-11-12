@@ -1,4 +1,4 @@
-@ng  @wa2 @wa 
+@ng  @wa2  @wa2 @wa 
 Feature: WA Release 2: My cases
 
     Background: Mock and browser setup

@@ -1,4 +1,4 @@
-@ng
+@ng  @wa2
 Feature: WA Release 2: Allocate and Remove Role judiciary
 
     Background: Case details setup

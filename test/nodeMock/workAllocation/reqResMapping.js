@@ -72,6 +72,9 @@ module.exports = {
         },
         '/workallocation2/judicialworker' : (req,res) => {
             res.send(workAllocationMockData.getJudicialList(20));
+        },
+        '/api/wa-supported-jurisdiction/get': (req,res) => {
+            res.send(['IA']);
         }
     },
     post: {

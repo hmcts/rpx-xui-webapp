@@ -33,6 +33,20 @@ export class AppConfig extends AbstractAppConfig {
         document_management_secure_enabled: val
       }
     });
+
+    this.featureToggleService.getValue('access-management-mode', false).subscribe({
+      next: (val) => this.config = {
+        ...this.config,
+        access_management_mode: val
+      }
+    });
+
+    this.featureToggleService.getValue('access-management-basic-view-mock', {}).subscribe({
+      next: (val) => this.config = {
+        ...this.config,
+        access_management_basic_view_mock: val
+      }
+    });
   }
 
   public load(): Promise<void> {
@@ -170,5 +184,21 @@ export class AppConfig extends AbstractAppConfig {
             WorkAllocationTaskService.WorkAllocationUrl
           )
       );
+  }
+
+  public getAccessManagementMode(): boolean {
+    return this.config.access_management_mode && this.environmentService.get('accessManagementEnabled');
+  }
+
+  public getAccessManagementBasicViewMock(): {} {
+    return this.config.access_management_basic_view_mock;
+  }
+
+  public getLocationRefApiUrl(): string {
+    return this.config.location_ref_api_url;
+  }
+
+  public getCamRoleAssignmentsApiUrl(): string {
+    return this.config.cam_role_assignments_api_url;
   }
 }

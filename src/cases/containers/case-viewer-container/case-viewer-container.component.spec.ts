@@ -236,11 +236,4 @@ describe('CaseViewerContainerComponent', () => {
     expect((tasksTab.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Tasks');
     expect((roleAndAccessTab.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Roles and access');
   });
-
-  it('should show no tabs', (done: DoneFn) => {
-    component.tabs$.subscribe((tabs: CaseTab[]) => {
-      expect(tabs.length).toBe(0);
-      done();
-    });
-  });
 });

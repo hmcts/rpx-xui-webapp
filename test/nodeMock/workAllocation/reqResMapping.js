@@ -318,10 +318,11 @@ module.exports = {
                 { added: '2021-10-12T12:14:42.230129Z', name: 'legal a', userType: 'LEGAL_OPERATIONS', type: 'CASE', id: '12345678904', roleCategory: 'LEGAL_OPERATIONS'}
             ];
             res.send(workAllocationMockData.getCaseRoles(mockRoles));
+        },
+        '/api/role-access/exclusions/delete' : (req,res) => {
+            res.status(204).send();
         }
     }
-  
-
    
 }
 

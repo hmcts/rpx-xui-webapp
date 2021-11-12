@@ -1,12 +1,12 @@
 import { AxiosResponse } from 'axios';
 import * as express from 'express';
+import { release2ContentType } from '../roleAccess/models/release2ContentType';
 import { getConfigValue } from '../configuration';
 import { SERVICES_CCD_DATA_STORE_API_PATH, SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
 
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
-import { release2ContentType } from '../roleAccess/exclusionService';
 import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 import { ElasticSearchQuery } from '../searchCases/interfaces/ElasticSearchQuery';
 import { CASE_ALLOCATOR_ROLE } from '../user/constants';

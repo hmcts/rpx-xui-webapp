@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { getOrganisationRoles, isCurrentUserCaseAllocator } from './utils';
+import { getMappedRoleCategory, getOrganisationRoles, isCurrentUserCaseAllocator } from './utils';
 import { CASE_ALLOCATOR_ROLE, LEGAL_OPS_TYPE } from './constants';
 
 describe('user.utils', () => {
@@ -133,6 +133,17 @@ describe('user.utils', () => {
       const response = getOrganisationRoles(roleAssignmentInfo);
       expect(response.length).to.equal(1);
       expect(response[0]).to.equal(CASE_ALLOCATOR_ROLE);
+    });
+  });
+
+  describe('getMappedRoleCategory', () => {
+    it('should return LEGAL_OPERATION', () => {
+      const roles = ['caseworker', 'caseworker-ia',
+                     'caseworker-ia-caseofficer', 'cwd-user',
+                     'case-allocator', 'tribunal-caseworker',
+                     'hmcts-legal-operations', 'task-supervisor'];
+      const result = getMappedRoleCategory(roles, ['LEGAL_OPERATIONS']);
+      console.log('getMappedRoleCategory', result);
     });
   });
 });

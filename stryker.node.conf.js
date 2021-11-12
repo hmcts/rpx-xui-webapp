@@ -10,7 +10,7 @@ const modulesArr = [
     "searchCases","services",
     "termsAndConditions",
     "user","userTermsAndConditions",
-    "workAllocation"
+    "workAllocation", "accessManagement"
 ];
 
 const modulesString = modulesArr.join(",");

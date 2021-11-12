@@ -70,6 +70,8 @@ nodejs:
     SERVICES_EM_HRS_API: http://em-hrs-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services PRD
     SERVICES_PRD_API: http://rd-professional-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services Location Ref
+    SERVICES_LOCATION_REF_API_URL: http://rd-location-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services Em Anno
     SERVICES_EM_ANNO_API: http://em-anno-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services Markup
@@ -103,6 +105,7 @@ nodejs:
     FEATURE_OIDC_ENABLED: false
     FEATURE_WORKALLOCATION_ENABLED: false
     FEATURE_SUBSTANTIVE_ROLE_ENABLED: true
+    FEATURE_ACCESS_MANAGEMENT_ENABLED: false
 
     # Redis
     REDIS_KEY_PREFIX: 'activity:'

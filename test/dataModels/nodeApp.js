@@ -25,6 +25,7 @@ class NodeApp{
                     "caseworker-ia",
                     "caseworker-ia-iacjudge"
                 ],
+                "roleCategory": "LEGAL_OPARATIONS",
                 "token": "Bearer eyJ0eXAiOiJKV1Q"
             }
         }
@@ -52,6 +53,7 @@ class NodeApp{
                     "caseworker-ia",
                     "caseworker-ia-iacjudge"
                 ],
+                "roleCategory": "LEGAL_OPARATIONS",
                 "token": "Bearer eyJ0eXAiOiJKV1Q"
             }
         }

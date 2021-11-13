@@ -8,7 +8,7 @@ import { setTestContext } from '../utils/helper';
 
 import TaskRequestBody from '../utils/wa/taskRequestBody';
 
-import { testWithRetry } from './utils/helper'
+import { testWithRetry } from '../utils/helper'
 
 describe('Work allocations MVP', () => {
     const userName = 'lukesuperuserxui@mailnesia.com';
@@ -152,7 +152,7 @@ describe('Work allocations MVP', () => {
 
             }
 
-        });
+        }
     });
 
 
@@ -239,7 +239,7 @@ describe('Work allocations MVP', () => {
             locations.push(loc.id);
         }
 
-            const reqBody = getSearchTaskReqBody("TaskManager", []).getRequestBody();
+            const reqBody = getSearchTaskReqBody("TaskManager", [],[]).getRequestBody();
             const headersForGetTasks = {
                 'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
                 'content-length': JSON.stringify(reqBody).length
@@ -280,7 +280,7 @@ describe('Work allocations MVP', () => {
                 'X-XSRF-TOKEN': xsrfToken,
             };
 
-            const reqBody = getSearchTaskReqBody("TaskManager", []).getRequestBody();
+            const reqBody = getSearchTaskReqBody("TaskManager", [],[]).getRequestBody();
             const headersForGetTasks = {
                 'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
                 'content-length': JSON.stringify(reqBody).length

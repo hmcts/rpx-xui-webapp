@@ -20,7 +20,8 @@
 .location-selection {
     background-color: lightgray;
     color: black;
-    max-width: 200px;
+    width: auto;
+    margin: 5px;
     line-height: 35px;
     text-align: center;
 }
@@ -28,4 +29,8 @@
 .remove-loation-button {
     float: right;
     margin:5px;
+}
+
+.hide-autocomplete {
+    display: none;
 }

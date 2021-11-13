@@ -12,8 +12,9 @@ import * as fromContainers from './containers';
 import * as fromComponents from './components';
 import { hearingsRouting } from './hearings.routes';
 import { HearingsService } from './services/hearings.service';
+import { LocationService } from './services/location.service';
 import { effects, reducers } from './store';
-import { MatAutocompleteModule, MatTabsModule } from '@angular/material';
+import { MatAutocompleteModule, MatInputModule, MatTabsModule } from '@angular/material';
 
 @NgModule({
   imports: [
@@ -28,7 +29,8 @@ import { MatAutocompleteModule, MatTabsModule } from '@angular/material';
     ReactiveFormsModule,
     ExuiCommonLibModule,
     MatAutocompleteModule,
-    MatTabsModule
+    MatTabsModule,
+    MatInputModule
   ],
   declarations: [...fromContainers.containers, ...fromComponents.components],
   entryComponents: [],
@@ -37,7 +39,8 @@ import { MatAutocompleteModule, MatTabsModule } from '@angular/material';
       provide: AbstractAppConfig,
       useExisting: AppConfig,
     },
-    HearingsService
+    HearingsService,
+    LocationService
   ]
 })
 /**

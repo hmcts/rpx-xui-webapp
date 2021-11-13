@@ -3,12 +3,11 @@ import { By } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureUser } from '@hmcts/rpx-xui-common-lib';
+import { Actions, EXUISectionStatusEnum, HearingListingStatusEnum, EXUIDisplayStatusEnum } from 'api/hearings/models/hearings.enum';
 import { Observable, of } from 'rxjs';
 import { RoleCategoryMappingService } from 'src/app/services/role-category-mapping/role-category-mapping.service';
-// import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, HearingListingStatusEnum } from '../../../hearings/models/hearings.enum';
-// import { HearingsPipesModule } from '../../../hearings/pipes/hearings.pipes.module';
-// import { CaseHearingsListComponent } from './case-hearings-list.component';
-
+import { HearingsPipesModule } from 'src/hearings/pipes/hearings.pipes.module';
+import { CaseHearingsListComponent } from './components';
 class MockRoleCategoryMappingService {
   public initialize = (user: FeatureUser, clientId: string): void => {
   };

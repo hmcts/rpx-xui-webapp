@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import { UnidentifiedPaymentsRequest } from '@hmcts/ccpay-web-component/lib/interfaces/UnidentifiedPaymentsRequest';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { map, startWith, switchMap, take } from 'rxjs/operators';
 import { LocationModel } from '../../models/location.model';
@@ -18,19 +19,18 @@ export class SearchLocationComponent implements OnInit {
   @Input() public submitted?: boolean = true;
   @Input() public findLocationForm: FormGroup;
   
-  public locations$: Observable<LocationModel[]>;
   public backUpLocations$: Observable<LocationModel[]>;
-  public selectedLocation: LocationModel;
-  public text: string;
-  public showAutocomplete: boolean = false;
-  private readonly minSearchCharacters = 2;
   public filteredOptions: Observable<unknown>;
-  public term: string;
+  public locations$: Observable<LocationModel[]>;
+  public selectedLocation: LocationModel;
+  public showAutocomplete: boolean = false;
+  public text: string;
+  private readonly minSearchCharacters = 2;
 
-  constructor(private readonly locationService: LocationService, private fb: FormBuilder) {
+  constructor(private readonly locationService: LocationService, fb: FormBuilder) {
     this.findLocationForm =  fb.group({
       findLocationControl: [null],
-  });
+    });
   }
 
   public ngOnInit(): void {   
@@ -41,7 +41,6 @@ export class SearchLocationComponent implements OnInit {
       this.findLocationForm.controls.findLocationControl.valueChanges.pipe(
         startWith(''),
         switchMap(searchTerm => {
-          console.log('formtest', searchTerm)
           return this.filter(searchTerm || '');
         })
       );
@@ -60,16 +59,15 @@ export class SearchLocationComponent implements OnInit {
 
     this.locations$ = a$.pipe(
       map(results => {
-        const filteredResult = term ? results[0].filter(x => x.court_address.toLowerCase().indexOf(term.toLowerCase()) > -1): results[0];
-        const res = results[1].length ?  filteredResult.filter(location => results[1].
-        filter(selectedLocation => selectedLocation.court_venue_id !== location.court_venue_id).length): filteredResult;
+        const filteredResult = term ? results[0].filter(x => x.court_address.toLowerCase().indexOf(term.toLowerCase()) > -1 ||
+        x.postcode.toLowerCase().indexOf(term.toLowerCase()) > -1): results[0];
+        const res = results[1].length ?  filteredResult.filter(location => results[1].filter(selectedLocation => selectedLocation.court_venue_id !== location.court_venue_id).length): filteredResult;
         return res;
       }), take(10)
     );
   }
 
   public updatedVal(currentValue: string) {
-    this.term = currentValue;
     this.showAutocomplete = !!currentValue && (currentValue.length > this.minSearchCharacters);
     this.filter(currentValue);
   }
@@ -79,14 +77,17 @@ export class SearchLocationComponent implements OnInit {
   }
 
   public getLocations(): Observable<LocationModel[]> {
-    return this.locationService.getAllLocations(this.caseId);
+    return this.locationService.getAllLocations();
   }
 
   public addSelection() {
-    this.selectedLocations$.subscribe(x => {
-        x.push(this.selectedLocation);
-        this.selectedLocation = null;
-    });
+    if (this.selectedLocation) {
+      this.selectedLocations$.subscribe(x => {
+          x.push(this.selectedLocation);
+          this.selectedLocation = null;
+      });
+    }
+    this.selectedLocation = undefined;
   }
 
   public removeSelection(location: LocationModel) {

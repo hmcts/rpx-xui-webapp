@@ -18,16 +18,20 @@
 }
 
 .location-selection {
-    background-color: lightgray;
+    padding-left: 4px;
+    border: solid;
+    border-color: black;
+    display: inline-block;
     color: black;
     width: auto;
     margin: 5px;
     line-height: 35px;
+    border-width: thin;
     text-align: center;
 }
 
 .remove-loation-button {
-    float: right;
+    // float: right;
     margin:5px;
 }
 

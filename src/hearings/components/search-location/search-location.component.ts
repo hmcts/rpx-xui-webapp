@@ -1,8 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
-import { UnidentifiedPaymentsRequest } from '@hmcts/ccpay-web-component/lib/interfaces/UnidentifiedPaymentsRequest';
-import { combineLatest, Observable, of, Subject } from 'rxjs';
-import { map, startWith, switchMap, take } from 'rxjs/operators';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { combineLatest, Observable, of } from 'rxjs';
+import { map, take } from 'rxjs/operators';
 import { LocationModel } from '../../models/location.model';
 import { LocationService } from '../../services/location.service';
 
@@ -19,39 +18,24 @@ export class SearchLocationComponent implements OnInit {
   @Input() public submitted?: boolean = true;
   @Input() public findLocationForm: FormGroup;
   
-  public backUpLocations$: Observable<LocationModel[]>;
-  public filteredOptions: Observable<unknown>;
   public locations$: Observable<LocationModel[]>;
   public selectedLocation: LocationModel;
-  public showAutocomplete: boolean = false;
-  public text: string;
+  public showAutocomplete = false;
   private readonly minSearchCharacters = 2;
 
   constructor(private readonly locationService: LocationService, fb: FormBuilder) {
     this.findLocationForm =  fb.group({
       findLocationControl: [null],
     });
+
+    this.selectedLocations$ = of([]);
   }
 
   public ngOnInit(): void {   
-    this.selectedLocations$ = of([]);
     this.locations$ = this.getLocations();
-
-    if (this.findLocationForm.controls.findLocationControl) {
-      this.findLocationForm.controls.findLocationControl.valueChanges.pipe(
-        startWith(''),
-        switchMap(searchTerm => {
-          return this.filter(searchTerm || '');
-        })
-      );
-
-      this.findLocationForm.controls.findLocationControl.setValue(this.selectedLocation);
-    }
   }
 
   public filter(term: string): any {
-    console.log('term', term);
-
     const a$ = combineLatest([
       this.getLocations(),
       this.selectedLocations$,
@@ -61,8 +45,7 @@ export class SearchLocationComponent implements OnInit {
       map(results => {
         const filteredResult = term ? results[0].filter(x => x.court_address.toLowerCase().indexOf(term.toLowerCase()) > -1 ||
         x.postcode.toLowerCase().indexOf(term.toLowerCase()) > -1): results[0];
-        const res = results[1].length ?  filteredResult.filter(location => results[1].filter(selectedLocation => selectedLocation.court_venue_id !== location.court_venue_id).length): filteredResult;
-        return res;
+        return results[1].length ?  filteredResult.filter(location => results[1].filter(selectedLocation => selectedLocation.court_venue_id !== location.court_venue_id).length): filteredResult;
       }), take(10)
     );
   }
@@ -87,6 +70,7 @@ export class SearchLocationComponent implements OnInit {
           this.selectedLocation = null;
       });
     }
+
     this.selectedLocation = undefined;
   }
 

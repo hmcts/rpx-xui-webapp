@@ -77,10 +77,9 @@ export function prepareCaseWorkerForLocationAndService(baseUrl: string, location
 export function preparePaginationUrl(req: EnhancedRequest, postPath: string): string {
   if (req.body && req.body.searchRequest && req.body.searchRequest.pagination_parameters) {
     const paginationConfig = req.body.searchRequest.pagination_parameters;
-    const pageNumber = paginationConfig.page_number;
+    const pageNumber = paginationConfig.page_number - 1;
     const pageSize = paginationConfig.page_size;
-    const firstResult = (pageNumber - 1) * pageSize;
-    return `${postPath}?first_result=${firstResult}&max_results=${pageSize}`;
+    return `${postPath}?first_result=${pageNumber}&max_results=${pageSize}`;
   }
   return postPath;
 }
@@ -109,7 +108,9 @@ export function assignActionsToTasks(tasks: any[], view: any, currentUser: strin
             ViewType.ACTIVE_TASKS_ASSIGNED_CURRENT : ViewType.ACTIVE_TASKS_ASSIGNED_OTHER;
         }
       }
-      const actions: Action[] = task.permissions ? getActionsByPermissions(thisView, task.permissions.values) : [];
+      const permissions = task.permissions && task.permissions.values && Array.isArray(task.permissions.values)
+        ? task.permissions.values : task.permissions;
+      const actions: Action[] = getActionsByPermissions(thisView, permissions);
       const taskWithAction = {...task, actions};
       tasksWithActions.push(taskWithAction);
     }
@@ -123,6 +124,7 @@ export function assignActionsToTasks(tasks: any[], view: any, currentUser: strin
  * in the future - it should do fine for the MVP, though.
  * @param cases The cases to set up the actions for.
  * @param view This dictates which set of actions we should use.
+ * @param isAllocator User is caseAllocator
  */
 export function assignActionsToCases(cases: any[], view: any, isAllocator: boolean): any[] {
   const casesWithActions: any[] = [];
@@ -416,9 +418,9 @@ export function mapRoleType(roleType: string): string {
 
 export function filterByLocationId(cases: Case[], locations: string[]): Case[] {
   return cases.filter((caseDetail: Case) =>
-     caseDetail.case_data.caseManagementLocation &&
-     caseDetail.case_data.caseManagementLocation.baseLocation &&
-     locations.includes(caseDetail.case_data.caseManagementLocation.baseLocation));
+    caseDetail.case_data.caseManagementLocation &&
+    caseDetail.case_data.caseManagementLocation.baseLocation &&
+    locations.includes(caseDetail.case_data.caseManagementLocation.baseLocation));
 }
 
 export function mapCasesFromData(
@@ -483,3 +485,7 @@ export function getSubstantiveRoles(roleAssignments: RoleAssignment[]): RoleAssi
 export const paginate = (array: Case[], pageNumber: number, pageSize: number): any[] => {
   return array.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 };
+
+export function removeEmptyValues(searchRequests: SearchTaskParameter[]): SearchTaskParameter[] {
+  return searchRequests.filter((searchRequest: SearchTaskParameter) => searchRequest.values && searchRequest.values.length > 0);
+}

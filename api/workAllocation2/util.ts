@@ -124,6 +124,7 @@ export function assignActionsToTasks(tasks: any[], view: any, currentUser: strin
  * in the future - it should do fine for the MVP, though.
  * @param cases The cases to set up the actions for.
  * @param view This dictates which set of actions we should use.
+ * @param isAllocator User is caseAllocator
  */
 export function assignActionsToCases(cases: any[], view: any, isAllocator: boolean): any[] {
   const casesWithActions: any[] = [];

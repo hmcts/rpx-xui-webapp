@@ -1,5 +1,5 @@
 import { NextFunction, Response } from 'express';
-import { handleGet, handlePost } from '../common/mockService';
+import { handlePost } from '../common/mockService';
 import { getConfigValue, showFeature } from '../configuration';
 import {
   FEATURE_SUBSTANTIVE_ROLE_ENABLED,
@@ -29,7 +29,7 @@ import { TaskList } from './interfaces/task';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { checkIfCaseAllocator } from './roleService';
 import * as roleServiceMock from './roleService.mock';
-import { handleTaskGet, handleTaskSearch } from './taskService';
+import { handleTaskGet, handleTaskSearch, handleTaskPost } from './taskService';
 import * as taskServiceMock from './taskService.mock';
 import {
   assignActionsToCases,
@@ -118,13 +118,10 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
   }
 }
 
-class SearchRequest {
-}
-
 export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const caseId = req.params.caseId;
   const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
-  const searchRequest: SearchRequest = {
+  const searchRequest = {
     search_parameters: [
       {
         key: 'caseId',
@@ -157,7 +154,7 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
 
   try {
     const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action);
-    const {status, data} = await handlePost(getTaskPath, req.body, req);
+    const {status, data} = await handleTaskPost(getTaskPath, req.body, req);
     res.status(status);
     res.send(data);
   } catch (error) {

@@ -10,7 +10,7 @@ import {
     SERVICES_EM_ANNO_API_URL,
     SERVICES_EM_DOCASSEMBLY_API_URL,
     SERVICES_EM_HRS_API_PATH,
-    SERVICES_ICP_API_URL, SERVICES_LOCATION_REF_API_URL,
+    SERVICES_ICP_API_URL,
     SERVICES_MARKUP_API_URL, SERVICES_PAYMENTS_URL,
     SERVICES_ROLE_ASSIGNMENT_API_PATH
 } from './configuration/references'
@@ -121,16 +121,12 @@ export const initProxy = (app: Express) => {
 
     applyProxy(app, {
         onReq: accessManagement.removeAcceptHeader,
-        rewrite: false,
-        source: '/am/role-assignments',
+        rewrite: true,
+        rewriteUrl: '/am/role-assignments',
+        source: '/am/role-assignments/challenged',
         target: getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH),
     })
 
-    applyProxy(app, {
-        rewrite: false,
-        source: '/refdata/location',
-        target: getConfigValue(SERVICES_LOCATION_REF_API_URL),
-    })
 
     /**
      * Commenting this out as it's completely bypassing the API this way,

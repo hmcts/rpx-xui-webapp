@@ -15,6 +15,7 @@ import * as health from './health';
 import * as log4jui from './lib/log4jui';
 import { JUILogger } from './lib/models';
 import * as tunnel from './lib/tunnel';
+import amRoutes from './accessManagement/routes';
 import openRoutes from './openRoutes';
 import { initProxy } from './proxy.config';
 import routes from './routes';
@@ -111,10 +112,11 @@ app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
 
 // TODO: No dash?
 // TODO: taskRouter should be called workAllocationRouter
+app.use('/am', amRoutes);
+app.use('/api', routes);
+app.use('/external', openRoutes);
 app.use('/workallocation', taskRouter);
 app.use('/workallocation2', workAllocation2Router);
-app.use('/external', openRoutes);
-app.use('/api', routes);
 app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true }, ignoreMethods: ["GET"] }));
 // @ts-ignore
 const logger: JUILogger = log4jui.getLogger('Application');

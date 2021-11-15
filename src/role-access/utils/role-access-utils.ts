@@ -1,9 +1,8 @@
 import { NavigationExtras } from '@angular/router';
-import { string } from '@pact-foundation/pact/dsl/matchers';
 
 import { RoleAccessHttpError, SpecificRole, TypeOfRole } from '../models';
 import { RoleCaptionText } from '../models/enums/allocation-text';
-import { InfoMessageType } from '../models/enums/info-message-type';
+import { InfoMessageType } from '../models/enums';
 
 interface Navigator {
   navigate(commands: any[], extras?: NavigationExtras): Promise<boolean>;

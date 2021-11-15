@@ -8,9 +8,9 @@ describe('TaskAssignmentChooseRoleComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TaskAssignmentChooseRoleComponent ]
+      declarations: [TaskAssignmentChooseRoleComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -21,5 +21,17 @@ describe('TaskAssignmentChooseRoleComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should select judicial role', () => {
+
+  });
+
+  it('should set the caption to reassign', () => {
+
+  });
+
+  it('should send user to find person', () => {
+
   });
 });

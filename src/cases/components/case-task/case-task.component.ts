@@ -21,7 +21,7 @@ export class CaseTaskComponent implements OnInit {
     CaseTaskComponent.TASK_ID_VARIABLE
   ];
   public manageOptions: { text: string, path: string }[];
-  public isUserJudidical: boolean;
+  public isUserJudicial: boolean;
   private pTask: Task;
 
   constructor(private readonly sessionStorageService: SessionStorageService) {
@@ -62,7 +62,7 @@ export class CaseTaskComponent implements OnInit {
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const userId = userInfo.id ? userInfo.id : userInfo.uid;
-      this.isUserJudidical = AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
+      this.isUserJudicial = AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
       return task.assignee && task.assignee === userId;
     }
     return false;
@@ -73,7 +73,7 @@ export class CaseTaskComponent implements OnInit {
   }
 
   public getDueDateTitle(): string {
-    return this.isUserJudidical ? 'Task created' : 'Due date';
+    return this.isUserJudicial ? 'Task created' : 'Due date';
   }
 
   public getManageOptions(task: Task): {text: string, path: string} [] {
@@ -81,26 +81,26 @@ export class CaseTaskComponent implements OnInit {
       if (task.permissions.length === 0 || (task.permissions.length === 1 && task.permissions.includes(TaskPermission.MANAGE))) {
         return [];
       } else {
-        return [{text: 'Assign to me', path: '/work/4d53d9ca-2d05-11ec-94dd-1266c188b551/assign'}];
+        return [{text: 'Assign to me', path: `/work/${task.id}/assign`}];
       }
     }
 
     if (this.isTaskAssignedToCurrentUser(task)) {
       return [
-        {text: 'Reassign task', path: `/work/4d53d9ca-2d05-11ec-94dd-1266c188b551/reassign`},
-        {text: 'Unassign task', path: `/work/4d53d9ca-2d05-11ec-94dd-1266c188b551/unclaim`}
+        {text: 'Reassign task', path: `/work/${task.id}/reassign`},
+        {text: 'Unassign task', path: `/work/${task.id}/unclaim`}
       ];
     } else {
       if (task.permissions.includes(TaskPermission.EXECUTE) && task.permissions.includes(TaskPermission.MANAGE)) {
         return [
-          {text: 'Assign to me', path: '/work/4d53d9ca-2d05-11ec-94dd-1266c188b551/assign'},
-          {text: 'Reassign task', path: `/work/4d53d9ca-2d05-11ec-94dd-1266c188b551/reassign`},
-          {text: 'Unassign task', path: `/work/4d53d9ca-2d05-11ec-94dd-1266c188b551/unclaim`}
+          {text: 'Assign to me', path: `/work/${task.id}/assign`},
+          {text: 'Reassign task', path: `/work/${task.id}/reassign`},
+          {text: 'Unassign task', path: `/work/${task.id}/unclaim`}
         ];
       } else if (task.permissions.includes(TaskPermission.MANAGE)) {
         return [
-          {text: 'Reassign task', path: `/work/4d53d9ca-2d05-11ec-94dd-1266c188b551/reassign`},
-          {text: 'Unassign task', path: `/work/4d53d9ca-2d05-11ec-94dd-1266c188b551/unclaim`}
+          {text: 'Reassign task', path: `/work/${task.id}/reassign`},
+          {text: 'Unassign task', path: `/work/${task.id}/unclaim`}
         ];
       } else {
         return [];

@@ -1,5 +1,5 @@
 import { NextFunction, Response } from 'express';
-import { handleGet, handlePost } from '../common/mockService';
+import { handlePost } from '../common/mockService';
 import { getConfigValue, showFeature } from '../configuration';
 import {
   FEATURE_SUBSTANTIVE_ROLE_ENABLED,
@@ -29,7 +29,7 @@ import { TaskList } from './interfaces/task';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { checkIfCaseAllocator } from './roleService';
 import * as roleServiceMock from './roleService.mock';
-import { handleGetTasksByCaseId, handleTaskGet, handleTaskSearch } from './taskService';
+import { handleTaskGet, handleTaskSearch } from './taskService';
 import * as taskServiceMock from './taskService.mock';
 import {
   assignActionsToCases,
@@ -99,7 +99,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     const postTaskPath = preparePaginationUrl(req, basePath);
     const searchRequest = req.body.searchRequest;
     delete searchRequest.pagination_parameters;
-    const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
+    const {status, data} = await handleTaskSearch(postTaskPath, searchRequest, req);
     const currentUser = req.body.currentUser ? req.body.currentUser : '';
     res.status(status);
     // Assign actions to the tasks on the data from the API.
@@ -115,11 +115,33 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
   }
 }
 
+class SearchRequest {
+}
+
 export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const caseId = req.params.caseId;
+  const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
+  const searchRequest: SearchRequest = {
+    search_parameters: [
+      {
+        key: 'caseId',
+        operator: 'IN',
+        values: [
+          caseId,
+        ],
+      },
+    ],
+    sorting_parameters: [
+      {
+        sort_by: 'due_date',
+        sort_order: 'asc',
+      },
+    ],
+    search_by: 'caseworker',
+  };
   try {
-    const {status, data} = await handleGetTasksByCaseId(`${baseWorkAllocationTaskUrl}/task/${caseId}`, req);
-    return res.send(data as TaskList).status(status);
+    const {status, data} = await handleTaskSearch(`${basePath}`, searchRequest, req);
+    return res.send(data.tasks as TaskList).status(status);
   } catch (e) {
     next(e);
   }

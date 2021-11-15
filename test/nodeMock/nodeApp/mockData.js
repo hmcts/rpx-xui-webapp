@@ -27,7 +27,8 @@ class NodeAppMockData {
             "launchDarklyClientId": "5de6610b23ce5408280f2268",
             "manageCaseLink": "https://xui-webapp-aat.service.core-compute-aat.internal/cases",
             "manageOrgLink": "https://xui-mo-webapp-aat.service.core-compute-aat.internal",
-            "protocol": "http"
+            "protocol": "http",
+            "accessManagementEnabled": true
         };
     }
 

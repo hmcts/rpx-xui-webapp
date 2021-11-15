@@ -59,7 +59,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             searchCaseInputValues[dynamicfield.field.id] = await caseListPage.inputWorkbasketFilter(dynamicfield);
         }
 
-            const searchCaseInputValues = {}
             for (const dynamicfield of searchCaseConfig.searchInputs) {
                 searchCaseInputValues[dynamicfield.field.id] = await caseListPage.inputWorkbasketFilter(dynamicfield);
             }

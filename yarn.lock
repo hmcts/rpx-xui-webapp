@@ -524,10 +524,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.4.5-find-person-legal-ops":
-  version "1.4.5-find-person-legal-ops"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.5-find-person-legal-ops.tgz#5e863998ad50c081f28f258a518aa7723584fe54"
-  integrity sha512-lGXzXeFpA0TGRS19Md7XhQg3A5XqS4Uj1QjxAP0fXTK5GmR8tGbodwLOOvfidK68EZ5oFT3SJ2jWt/WcbCmcOg==
+"@hmcts/rpx-xui-common-lib@1.4.7-remove-person-on-radio-select":
+  version "1.4.7-remove-person-on-radio-select"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.7-remove-person-on-radio-select.tgz#f275d2bc8bd7ec3f44b9347830ffb49022608a27"
+  integrity sha512-cyjHoj6Wke3c5jM7e/09/LAy5s29tFGQwA6XqqLDNrnO2r6fteVsbmUwAtTtlX+V5RKWVrF5OCESAyG0feNz3g==
   dependencies:
     tslib "^1.9.0"
 

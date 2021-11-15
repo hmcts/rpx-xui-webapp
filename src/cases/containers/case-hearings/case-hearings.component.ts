@@ -14,7 +14,7 @@ import * as fromHearingStore from '../../../hearings/store';
   selector: 'exui-case-hearings',
   templateUrl: './case-hearings.component.html'
 })
-export class CaseHearingsComponent implements OnInit, OnDestroy {
+export class CaseHearingsComponent implements OnInit {
   public upcomingHearings$: Observable<CaseHearingModel[]>;
   public upcomingStatus: EXUISectionStatusEnum = EXUISectionStatusEnum.UPCOMING;
   public pastAndCancelledHearings$: Observable<CaseHearingModel[]>;
@@ -66,9 +66,5 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
         }
       )
     );
-  }
-
-  public ngOnDestroy(): void {
-    this.hearingStore.dispatch(new fromHearingStore.Reset());
   }
 }

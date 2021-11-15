@@ -1,4 +1,4 @@
-import { Component, DebugElement, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatTabsModule } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
@@ -135,10 +135,10 @@ describe('CaseViewerContainerComponent', () => {
     }
 
     public getValueOnce<R>(_key: string, _defaultValue: R): Observable<R> {
-        return of([{
-          jurisdiction: 'SSCS',
-          roles: ['caseworker-sscs-judge', 'caseworker-sscs']
-        }
+      return of([{
+        jurisdiction: 'SSCS',
+        roles: ['caseworker-sscs-judge', 'caseworker-sscs']
+      }
       ] as unknown as R);
     }
 

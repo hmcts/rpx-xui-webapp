@@ -17,6 +17,7 @@ export const containers: any[] = [
   CasesCreateComponent,
   CaseFilterComponent,
   CaseSearchComponent,
+  CaseViewerContainerComponent,
   CaseDetailsComponent,
   CaseHomeComponent,
   CaseCreateSubmitComponent,
@@ -24,7 +25,6 @@ export const containers: any[] = [
   CaseShareComponent,
   CaseShareConfirmComponent,
   CaseShareCompleteComponent,
-  CaseViewerContainerComponent,
   CaseHearingsComponent,
 ];
 

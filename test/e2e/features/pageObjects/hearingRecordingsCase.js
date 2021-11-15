@@ -26,7 +26,10 @@ class HearingRecordingsCase {
       await BrowserWaits.waitForSeconds(3);
       await this.continueBtn.click();
       await BrowserWaits.waitForPresenceOfElement(this.submitBtn);
-      await this.submitBtn.click();
+      await BrowserWaits.waitForElementClickable(this.submitBtn);
+      await BrowserWaits.retryWithActionCallback(async () => {
+        await this.submitBtn.click();
+      });
     }
 
     async hearingFilesTab() {

@@ -24,4 +24,19 @@ export const reporterJson = (jsonMsg) => {
    addContext(testContext, reportMsg);
 }
 
+export const testWithRetry = async (fn) => {
+   let i = 0;
+   while (i < 3) {
+      i++;
+      try {
+         await fn();
+         break;
+      }
+      catch (err) {
+         reporterMsg(err);
+      }
+
+   }
+
+}
 

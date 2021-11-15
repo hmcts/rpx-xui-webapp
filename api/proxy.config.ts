@@ -125,7 +125,7 @@ export const initProxy = (app: Express) => {
       source: '/api/refund',
       target: getConfigValue(SERVICES_REFUNDS_API_URL),
   });
-  
+
   applyProxy(app, {
     onReq: accessManagement.removeAcceptHeader,
     rewrite: false,

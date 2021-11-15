@@ -71,6 +71,7 @@ describe('TaskListWrapperComponent', () => {
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockCaseworkerDataService.getAll.and.returnValue(of([]));
+    mockSessionStorageService.getItem.and.returnValue('1');
     fixture.detectChanges();
   }));
 

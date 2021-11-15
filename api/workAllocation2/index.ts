@@ -132,12 +132,10 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
 
   try {
     const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action);
-    console.log('takpat', getTaskPath);
     const {status, data} = await handleTaskPost(getTaskPath, req.body, req);
     res.status(status);
     res.send(data);
   } catch (error) {
-    console.log('horriba', error);
     next(error);
   }
 }

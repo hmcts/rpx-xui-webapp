@@ -7,7 +7,9 @@ import { SearchParameters, SearchRequest, SearchRequestCriteria, SearchResult } 
 
 @Injectable({ providedIn: 'root' })
 export class SearchService {
-  private readonly MAX_RECORD_PAGE_SIZE = 25;
+  // Page size temporarily set to 5 instead of 25 due to limitation of CCD test endpoint
+  public readonly MAX_RECORD_PAGE_SIZE = 5;
+  // public readonly MAX_RECORD_PAGE_SIZE = 25;
 
   constructor(private readonly http: HttpClient) { }
 
@@ -35,6 +37,26 @@ export class SearchService {
 
   public retrieveState(key: string): any {
     return window.sessionStorage.getItem(key) ? JSON.parse(window.sessionStorage.getItem(key)) : null;
+  }
+
+  public decrementStartRecord(): void {
+    const startRecord = this.retrieveState(SearchStatePersistenceKey.START_RECORD);
+    if (startRecord) {
+      const startRecordNumber = parseInt(startRecord, 10);
+      if (startRecordNumber > this.MAX_RECORD_PAGE_SIZE) {
+        this.storeState(SearchStatePersistenceKey.START_RECORD, startRecordNumber - this.MAX_RECORD_PAGE_SIZE);
+      }
+    }
+  }
+
+  public incrementStartRecord(): void {
+    const startRecord = this.retrieveState(SearchStatePersistenceKey.START_RECORD);
+    if (startRecord) {
+      const startRecordNumber = parseInt(startRecord, 10);
+      if (startRecordNumber >= 1) {
+        this.storeState(SearchStatePersistenceKey.START_RECORD, startRecordNumber + this.MAX_RECORD_PAGE_SIZE);
+      }
+    }
   }
 
   private mapSearchParametersToRequestCriteria(searchParameters: SearchParameters): SearchRequestCriteria {

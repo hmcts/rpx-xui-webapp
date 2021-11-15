@@ -15,6 +15,7 @@ import * as fromContainers from './containers';
 import { roleAccessRouting } from './role-access.routes';
 import { RoleExclusionsService } from './services';
 import { effects, reducers } from './store';
+import { CaseworkerDataService } from '../work-allocation-2/services';
 
 @NgModule({
   imports: [
@@ -32,10 +33,11 @@ import { effects, reducers } from './store';
   entryComponents: [],
   providers: [{
     provide: AbstractAppConfig,
-    useExisting: AppConfig,
+    useExisting: AppConfig
   },
     InfoMessageCommService,
-    RoleExclusionsService
+    RoleExclusionsService,
+    CaseworkerDataService
   ]
 })
 /**

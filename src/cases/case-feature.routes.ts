@@ -2,8 +2,8 @@ import { ModuleWithProviders } from '@angular/core';
 // routes
 import { RouterModule, Routes } from '@angular/router';
 import { CaseResolver, editorRouting, viewerRouting as caseViewRouting } from '@hmcts/ccd-case-ui-toolkit';
-import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
 import { CaseTasksResolverService } from '../app/resolvers/case-tasks-resolver.service';
+import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
 import {
   CaseCreateSubmitComponent,
   CaseDetailsHomeComponent,
@@ -17,10 +17,10 @@ import {
 } from './containers';
 import { CaseSearchComponent } from './containers/case-search/case-search.component';
 import { CaseViewerContainerComponent } from './containers/case-viewer-container/case-viewer-container.component';
+import { RolesAndAccessContainerComponent } from './containers/roles-and-access-container/roles-and-access-container.component';
+import { TasksContainerComponent } from './containers/tasks-container/tasks-container.component';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
-import { TasksContainerComponent } from './containers/tasks-container/tasks-container.component';
-import { RolesAndAccessContainerComponent } from './containers/roles-and-access-container/roles-and-access-container.component';
 
 export const ROUTES: Routes = [
   {
@@ -76,14 +76,6 @@ export const ROUTES: Routes = [
           {
             path: '',
             component: CasesCreateComponent
-          },
-          {
-            path: ':jid/:ctid/:eid',
-            component: CaseCreateSubmitComponent,
-            resolve: {
-              eventTrigger: CreateCaseEventTriggerResolver
-            },
-            children: editorRouting
           },
           {
             path: ':jid/:ctid/:eid',

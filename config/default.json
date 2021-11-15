@@ -41,6 +41,9 @@
     "prd": {
       "api": "http://rd-professional-api-prod.service.core-compute-prod.internal"
     },
+    "locationref": {
+      "api": "http://rd-location-ref-api-prod.service.core-compute-prod.internal"
+    },
     "em_hrs_api": "http://em-hrs-api-prod.service.core-compute-prod.internal",
     "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal",
     "em_docassembly_api": "http://dg-docassembly-prod.service.core-compute-prod.internal/",
@@ -116,7 +119,8 @@
     "workAllocationEnabled": false,
     "roleEnabled": false,
     "caseworkerRefEnabled": false,
-    "substantiveRoleEnabled": true
+    "substantiveRoleEnabled": true,
+    "accessManagementEnabled": false
   },
   "helmet": {
     "contentSecurityPolicy": {

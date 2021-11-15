@@ -1,18 +1,18 @@
-import * as bodyParser from 'body-parser';
-import { Express } from 'express';
-import * as amendedJurisdictions from './amendedJurisdictions';
-import { getConfigValue } from './configuration';
+import * as bodyParser from 'body-parser'
+import { Express } from 'express'
+import * as accessManagement from './accessManagement'
+import * as amendedJurisdictions from './amendedJurisdictions'
+import { getConfigValue } from './configuration'
 import {
-    SERVICES_CCD_COMPONENT_API_PATH,
-    SERVICES_DOCUMENTS_API_PATH,
-    SERVICES_DOCUMENTS_API_PATH_V2,
-    SERVICES_EM_ANNO_API_URL,
-    SERVICES_EM_DOCASSEMBLY_API_URL,
-    SERVICES_EM_HRS_API_PATH,
-    SERVICES_ICP_API_URL,
-    SERVICES_MARKUP_API_URL,
-    SERVICES_PAYMENTS_URL,
-    SERVICES_REFUNDS_API_URL
+  SERVICES_CCD_COMPONENT_API_PATH,
+  SERVICES_DOCUMENTS_API_PATH,
+  SERVICES_DOCUMENTS_API_PATH_V2,
+  SERVICES_EM_ANNO_API_URL,
+  SERVICES_EM_DOCASSEMBLY_API_URL,
+  SERVICES_EM_HRS_API_PATH,
+  SERVICES_ICP_API_URL, SERVICES_LOCATION_REF_API_URL, SERVICES_MARKUP_API_URL,
+  SERVICES_PAYMENTS_URL,
+  SERVICES_REFUNDS_API_URL, SERVICES_ROLE_ASSIGNMENT_API_PATH
 } from './configuration/references'
 import { applyProxy } from './lib/middleware/proxy'
 import * as searchCases from './searchCases'
@@ -125,17 +125,17 @@ export const initProxy = (app: Express) => {
       source: '/api/refund',
       target: getConfigValue(SERVICES_REFUNDS_API_URL),
   });
+  
+  applyProxy(app, {
+    onReq: accessManagement.removeAcceptHeader,
+    rewrite: false,
+    source: '/am/role-assignments',
+    target: getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH),
+  });
 
-    /**
-     * Commenting this out as it's completely bypassing the API this way,
-     * which is not we want right now. If that's to be the long-term
-     * solution, we'll need to move the logic around adding actions out
-     * of the node layer.
-     */
-    // applyProxy(app, {
-    //     rewrite: true,
-    //     rewriteUrl: '',
-    //     source: '/workallocation',
-    //     target: 'http://localhost:8080',
-    // });
+  applyProxy(app, {
+      rewrite: false,
+      source: '/refdata/location',
+      target: getConfigValue(SERVICES_LOCATION_REF_API_URL),
+  });
 }

@@ -13,11 +13,6 @@ export const init = () => {
 
   const getTaskFromIDUrl = /http:\/\/wa-task-management-api-(demo|aat).service.core-compute-(demo|aat).internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/;
   const getTasksByCaseIdUrl = /http:\/\/wa-task-management-api-(demo|aat).service.core-compute-(demo|aat).internal\/task\/[a-fA-F0-9]{16}/;
-  const claimTaskUrl = /http:\/\/wa-task-management-api-(demo|aat).service.core-compute-(demo|aat).internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12,13}\/claim/;
-  const unclaimTaskUrl = /http:\/\/wa-task-management-api-(demo|aat).service.core-compute-(demo|aat).internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/unclaim/;
-  const completeTaskUrl = /http:\/\/wa-task-management-api-(demo|aat).service.core-compute-(demo|aat).internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/complete/;
-  const cancelTaskUrl = /http:\/\/wa-task-management-api-(demo|aat).service.core-compute-(demo|aat).internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/cancel/;
-  const assignTaskUrl = /http:\/\/wa-task-management-api-(demo|aat).service.core-compute-(demo|aat).internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/assign/;
   const judicialWorkersUrl = /http:\/\/rd-judicialworker-ref-api-(demo|aat).service.core-compute-(demo|aat).internal\/judicialworkers/;
 
   mock.onPost(judicialWorkersUrl).reply(() => {
@@ -45,62 +40,6 @@ export const init = () => {
       200,
       tasks,
     ];
-  });
-
-  mock.onPost(claimTaskUrl).reply((config: AxiosRequestConfig) => {
-    // return an array in the form of [status, data, headers]
-    // error
-    if (config.url.includes('0d22d836-b25a-11eb-a18c-f2d58a9b7bc18')) {
-      return [
-        400,
-        'error',
-      ];
-    }
-    return [
-      204,
-      'success',
-    ];
-  });
-
-  mock.onPost(cancelTaskUrl).reply(() => {
-    // return an array in the form of [status, data, headers]
-    return [
-      204,
-      'success',
-    ];
-  });
-
-  mock.onPost(unclaimTaskUrl).reply(() => {
-    // return an array in the form of [status, data, headers]
-    return [
-      204,
-      'success',
-    ];
-  });
-
-  mock.onPost(completeTaskUrl).reply(() => {
-    // return an array in the form of [status, data, headers]
-    return [
-      204,
-      'success',
-    ];
-  });
-
-  mock.onPost(assignTaskUrl).reply(config => {
-    const data = JSON.parse(config.data);
-    const id = data.userId.toString().substr(0, 1);
-    const mod = parseInt(id, 10) % 2;
-    if (mod === 0) {
-      return [
-        204,
-        'success',
-      ];
-    } else {
-      return [
-        400,
-        'failed',
-      ];
-    }
   });
 };
 

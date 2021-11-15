@@ -39,6 +39,7 @@ export class TaskActionContainerComponent implements OnInit {
 
   private get returnUrl(): string {
     if (window && window.history && window.history.state) {
+      console.log(window, 'window', window.history, 'window.history');
       const url = window.history.state.returnUrl;
       return url.split('/').splice(0, 3).join('/');
     }
@@ -60,7 +61,7 @@ export class TaskActionContainerComponent implements OnInit {
     };
 
     // Get the task from the route, which will have been put there by the resolver.
-    this.tasks = [ this.route.snapshot.data.taskAndCaseworkers.data ];
+    this.tasks = [ this.route.snapshot.data.taskAndCaseworkers.task.task ];
     this.routeData = this.route.snapshot.data as RouteData;
     if (!this.routeData.actionTitle) {
       this.routeData.actionTitle = `${this.routeData.verb} task`;

@@ -41,11 +41,15 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
+      const searchParameters = [
+        {key: 'state', operator: 'IN', values: ['unassigned']}
+      ]
+      const locationParameter = this.getLocationParameter();
+      if (locationParameter) {
+        searchParameters.push(locationParameter);
+      }
       return {
-        search_parameters: [
-          this.getLocationParameter(),
-          {key: 'state', operator: 'IN', values: ['unassigned']}
-        ],
+        search_parameters: searchParameters,
         sorting_parameters: [this.getSortParameter()],
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
         pagination_parameters: this.getPaginationParameter()
@@ -129,6 +133,10 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
   }
 
   private getLocationParameter(): SearchTaskParameter {
-    return {key: 'location', operator: 'IN', values: this.selectedLocations};
+    if (this.selectedLocations && this.selectedLocations.length > 0) {
+      return { key: 'location', operator: 'IN', values: this.selectedLocations };
+    } else {
+      return null;
+    }
   }
 }

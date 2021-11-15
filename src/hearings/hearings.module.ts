@@ -9,10 +9,8 @@ import { StoreModule } from '@ngrx/store';
 import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 import { SharedModule } from '../app/shared/shared.module';
 import * as fromContainers from './containers';
-import * as fromComponents from './components';
 import { hearingsRouting } from './hearings.routes';
 import { HearingsService } from './services/hearings.service';
-import { LocationService } from './services/location.service';
 import { effects, reducers } from './store';
 import { MatAutocompleteModule, MatInputModule, MatTabsModule } from '@angular/material';
 
@@ -32,7 +30,7 @@ import { MatAutocompleteModule, MatInputModule, MatTabsModule } from '@angular/m
     MatTabsModule,
     MatInputModule
   ],
-  declarations: [...fromContainers.containers, ...fromComponents.components],
+  declarations: [...fromContainers.containers],
   entryComponents: [],
   providers: [
     {
@@ -40,7 +38,6 @@ import { MatAutocompleteModule, MatInputModule, MatTabsModule } from '@angular/m
       useExisting: AppConfig,
     },
     HearingsService,
-    LocationService
   ]
 })
 /**

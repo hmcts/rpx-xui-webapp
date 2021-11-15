@@ -1,7 +1,9 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
 import { CancelHearingComponent, ChangeHearingComponent, RequestHearingComponent, ViewHearingComponent } from './containers';
+import { LocationSearchContainerComponent } from './containers/request-hearing/location-search-container/location-search-container.component';
 
 export const ROUTES: Routes = [
   {
@@ -34,7 +36,7 @@ export const ROUTES: Routes = [
   },
   {
     path: 'request',
-    component: RequestHearingComponent,
+    component: null,
     children: [
       {
         path: '',
@@ -42,6 +44,14 @@ export const ROUTES: Routes = [
         canActivate: [ HealthCheckGuard ],
         data: {
           title: 'HMCTS Manage cases | Request Hearing'
+        }
+      },
+      {
+        path: 'locationSearch',
+        component: LocationSearchContainerComponent,
+        canActivate: [ HealthCheckGuard ],
+        data: {
+          title: 'HMCTS Hearings | Request Hearing Location'
         }
       }
     ]

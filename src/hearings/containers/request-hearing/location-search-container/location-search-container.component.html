@@ -2,8 +2,8 @@
 <div class="govuk-width-container">
   <div class="page">
     <main id="content" role="main">
-        <div class="search-location">
-          <exui-search-location class="search-location"></exui-search-location>
+        <div *ngIf="serviceId" class="search-location">
+          <exui-search-location class="search-location" [serviceId]="serviceId" [locationType]="'hearing'"></exui-search-location>
         </div>     
     </main>
   </div>

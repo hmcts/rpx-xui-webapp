@@ -104,12 +104,9 @@ describe('TaskManagerListComponent', () => {
     fixture.detectChanges();
 
     const searchRequest = component.getSearchTaskRequestPagination();
-    // Make sure the search request looks right.
-    expect(searchRequest.search_parameters.length).toEqual(mockLocations.length);
+    // Make sure the search request looks right
     expect(searchRequest.search_parameters[0].key).toEqual('location');
     expect(searchRequest.search_parameters[0].values).toContain('a');
-    expect(searchRequest.search_parameters[1].key).toEqual('user');
-    expect(searchRequest.search_parameters[1].values.length).toEqual(0);
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
     const payload = { searchRequest, view: component.view };
@@ -121,9 +118,8 @@ describe('TaskManagerListComponent', () => {
 
     const newSearchRequest = component.getSearchTaskRequestPagination();
     // Make sure the search request looks right.
-    expect(newSearchRequest.search_parameters.length).toEqual(2);
-    expect(newSearchRequest.search_parameters[1].key).toEqual('user');
-    expect(newSearchRequest.search_parameters[1].values.length).toEqual(0);
+    expect(searchRequest.search_parameters[0].key).toEqual('location');
+    expect(searchRequest.search_parameters[0].values).toContain('a');
 
     expect(newSearchRequest.sorting_parameters[0].sort_by).toBe('caseId');
     expect(newSearchRequest.sorting_parameters[0].sort_order).toBe('desc'); // Important!
@@ -143,11 +139,8 @@ describe('TaskManagerListComponent', () => {
 
     const searchRequest = component.getSearchTaskRequestPagination();
     // Make sure the search request looks right.
-    expect(searchRequest.search_parameters.length).toEqual(2);
     expect(searchRequest.search_parameters[0].key).toEqual('location');
     expect(searchRequest.search_parameters[0].values.length).toEqual(1);
-    expect(searchRequest.search_parameters[1].key).toEqual('user');
-    expect(searchRequest.search_parameters[1].values.length).toEqual(0);
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
     const payload = { searchRequest, view: component.view };

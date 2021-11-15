@@ -163,29 +163,26 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   Given(/^I should be redirected to the Idam login page$/, async function () {
 
-    const world = this;
-    await BrowserWaits.retryForPageLoad(loginPage.signinTitle, function(message){
-      world.attach("Idam login page load attempt : "+message)
+    await BrowserWaits.retryWithActionCallback(async () => {
+      await expect(loginPage.signinTitle.getText())
+        .to
+        .eventually
+        .equal('Sign in');
     });
-
-    await expect(loginPage.signinTitle.getText())
-      .to
-      .eventually
-      .equal('Sign in');
     browser.sleep(LONG_DELAY);
+    
   });
 
 
   Then(/^I select the sign out link$/, async function () {
-    browser.sleep(SHORT_DELAY);
-    await expect(loginPage.signOutlink.isDisplayed()).to.eventually.be.true;
-    browser.sleep(SHORT_DELAY);
-    try{
+    
+    await BrowserWaits.retryWithActionCallback(async () => {
+      browser.sleep(SHORT_DELAY);
+      await expect(loginPage.signOutlink.isDisplayed()).to.eventually.be.true;
+      browser.sleep(SHORT_DELAY);
       await loginPage.signOutlink.click();
-    }catch(err){
-      await browser.sleep(SHORT_DELAY);
-      await loginPage.signOutlink.click();
-    }
+    });
+   
     browser.sleep(SHORT_DELAY);
   });
 

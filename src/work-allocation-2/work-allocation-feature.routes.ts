@@ -124,8 +124,13 @@ export const ROUTES: Routes = [
                 data: TaskActionConstants.Reassign
               },
               {
-                path: '',
+                path: 'person',
                 component: TaskAssignmentContainerComponent,
+                data: TaskActionConstants.Reassign
+              },
+              {
+                path: '',
+                component: TaskAssignmentChooseRoleComponent,
                 data: TaskActionConstants.Reassign
               }
             ]

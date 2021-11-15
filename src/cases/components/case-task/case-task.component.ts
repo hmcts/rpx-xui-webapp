@@ -81,7 +81,7 @@ export class CaseTaskComponent implements OnInit {
       if (task.permissions.length === 0 || (task.permissions.length === 1 && task.permissions.includes(TaskPermission.MANAGE))) {
         return [];
       } else {
-        return [{text: 'Assign to me', path: ''}];
+        return [{text: 'Assign to me', path: '/work/4d53d9ca-2d05-11ec-94dd-1266c188b551/assign'}];
       }
     }
 
@@ -93,7 +93,7 @@ export class CaseTaskComponent implements OnInit {
     } else {
       if (task.permissions.includes(TaskPermission.EXECUTE) && task.permissions.includes(TaskPermission.MANAGE)) {
         return [
-          {text: 'Assign to me', path: ''},
+          {text: 'Assign to me', path: '/work/4d53d9ca-2d05-11ec-94dd-1266c188b551/assign'},
           {text: 'Reassign task', path: `/work/4d53d9ca-2d05-11ec-94dd-1266c188b551/reassign`},
           {text: 'Unassign task', path: `/work/4d53d9ca-2d05-11ec-94dd-1266c188b551/unclaim`}
         ];

@@ -1,3 +1,4 @@
+import { Location as AngularLocation } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -6,12 +7,11 @@ import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
-import { UserInfo, UserRole } from '../../../app/models';
-
-import { ErrorMessage } from '../../../app/models';
+import { ErrorMessage, UserInfo, UserRole } from '../../../app/models';
+import { RoleCategory } from '../../../role-access/models';
 import { ConfigConstants } from '../../components/constants';
 import { SortOrder, TaskActionType, TaskService } from '../../enums';
-import { FieldConfig } from '../../models/common'
+import { FieldConfig } from '../../models/common';
 import { Caseworker, Location } from '../../models/dtos';
 import { TaskServiceConfig } from '../../models/tasks';
 
@@ -30,24 +30,32 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   public domain = PersonRole.ALL;
   public formGroup: FormGroup = new FormGroup({});
   public person: Person;
-  private readonly assignTask: Subscription;
   public taskId: string;
+  public role: RoleCategory;
   public rootPath: string;
   public isJudicial: boolean;
-
   public defaultPerson: string;
+  public taskServiceConfig: TaskServiceConfig = {
+    service: TaskService.IAC,
+    defaultSortDirection: SortOrder.ASC,
+    defaultSortFieldName: 'dueDate',
+    fields: this.fields,
+  };
   protected userDetailsKey: string = 'userDetails';
+  private readonly assignTask: Subscription;
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
+    private readonly angularLocation: AngularLocation,
     private readonly sessionStorageService: SessionStorageService
-  ) { }
+  ) {
+  }
 
   public get fields(): FieldConfig[] {
     return this.showAssigneeColumn ?
-    (this.isJudicial ? ConfigConstants.TaskActionsWithAssigneeForJudicial : ConfigConstants.TaskActionsWithAssigneeForLegalOps) :
-    ConfigConstants.TaskActions;
+      (this.isJudicial ? ConfigConstants.TaskActionsWithAssigneeForJudicial : ConfigConstants.TaskActionsWithAssigneeForLegalOps) :
+      ConfigConstants.TaskActions;
   }
 
   private get returnUrl(): string {
@@ -71,13 +79,6 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  public taskServiceConfig: TaskServiceConfig = {
-    service: TaskService.IAC,
-    defaultSortDirection: SortOrder.ASC,
-    defaultSortFieldName: 'dueDate',
-    fields: this.fields,
-  };
-
   public ngOnInit(): void {
     this.isJudicial = this.isCurrentUserJudicial();
     // Get the task from the route, which will have been put there by the resolver.
@@ -85,7 +86,9 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     this.tasks = [task];
     this.verb = this.route.snapshot.data.verb as TaskActionType;
 
-    this.taskId = this.route.snapshot.params['taskId'];
+    this.taskId = this.route.snapshot.paramMap.get('taskId');
+    this.role = this.route.snapshot.paramMap.get('role') as RoleCategory;
+    this.setDomain(this.role);
     this.rootPath = this.router.url.split('/')[1];
     this.route.paramMap
       .pipe(map(() => window.history.state)).subscribe(person => {
@@ -100,10 +103,9 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      const isJudge = AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
-      return isJudge;
+      return AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
     }
-    return false
+    return false;
   }
 
   public ngOnDestroy(): void {
@@ -130,8 +132,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   }
 
   public cancel(): void {
-    // Use returnUrl to return the user to the "All work" or "My work" screen, depending on which one they started from
-    this.router.navigate([this.returnUrl]);
+    this.angularLocation.back();
   }
 
   public onCaseworkerChanged(caseworker: Caseworker): void {
@@ -140,5 +141,16 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
 
   public setFocusOn(eId: string): void {
     document.getElementById(eId).focus();
+  }
+
+  private setDomain(role: RoleCategory): string {
+    if (role === RoleCategory.JUDICIAL) {
+      return PersonRole.JUDICIAL;
+    } else if (role === RoleCategory.LEGAL_OPERATIONS) {
+      return PersonRole.CASEWORKER;
+    } else if (role === RoleCategory.ADMIN) {
+      return PersonRole.ADMIN;
+    }
+    return PersonRole.ALL;
   }
 }

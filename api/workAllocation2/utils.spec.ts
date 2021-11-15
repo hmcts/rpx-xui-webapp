@@ -191,6 +191,7 @@ describe('workAllocation.utils', () => {
           'hmcts-legal-operations', 'task-supervisor', 'hmcts-admin',
           'national-business-centre', 'senior-tribunal-caseworker', 'case-allocator'],
         validAt: Date.UTC,
+        roleType: ['ORGANISATION'],
       };
       const payload = prepareRoleApiRequest(jurisdictions, locationId);
       expect(payload).to.deep.equal(expectedResult);

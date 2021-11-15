@@ -1,5 +1,5 @@
 import { NextFunction, Response } from 'express';
-import { handlePost } from '../common/mockService';
+import { handleGet, handlePost } from '../common/mockService';
 import { getConfigValue, showFeature } from '../configuration';
 import {
   FEATURE_SUBSTANTIVE_ROLE_ENABLED,
@@ -10,7 +10,7 @@ import {
 } from '../configuration/references';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
-import { getWASupportedJurisdictionsList } from '../waSupportedJurisdictions';
+import { getWASupportedJurisdictionsList } from '../waSupportedJurisdictions/index';
 import * as caseServiceMock from './caseService.mock';
 import {
   getUserIdsFromRoleApiResponse,

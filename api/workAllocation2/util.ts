@@ -187,6 +187,7 @@ export function prepareRoleApiRequest(jurisdictions: string[], locationId?: numb
     roleName: ['hearing-centre-admin', 'case-manager', 'ctsc', 'tribunal-caseworker',
       'hmcts-legal-operations', 'task-supervisor', 'hmcts-admin',
       'national-business-centre', 'senior-tribunal-caseworker', 'case-allocator'],
+    roleType: ['ORGANISATION'],
     validAt: Date.UTC,
   };
   if (locationId) {

@@ -9,38 +9,39 @@ import { StoreModule } from '@ngrx/store';
 
 import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 import { SharedModule } from '../app/shared/shared.module';
-import { InfoMessageCommService } from '../work-allocation-2/services';
-import { ChooseRadioOptionComponent } from './components';
+import { CaseworkerDataService, InfoMessageCommService } from '../work-allocation-2/services';
 import * as fromComponents from './components';
+import { ChooseRadioOptionComponent } from './components';
 import * as fromContainers from './containers';
 import { roleAccessRouting } from './role-access.routes';
 import { RoleExclusionsService } from './services';
 import { effects, reducers } from './store';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        HttpClientModule,
-        StoreModule.forFeature('role-access', reducers),
-        EffectsModule.forFeature(effects),
-        roleAccessRouting,
-        SharedModule,
-        FormsModule,
-        ReactiveFormsModule,
-        ExuiCommonLibModule
-    ],
-    declarations: [...fromContainers.containers, ...fromComponents.components],
-    entryComponents: [],
-    exports: [
-        ChooseRadioOptionComponent
-    ],
-    providers: [{
-        provide: AbstractAppConfig,
-        useExisting: AppConfig,
-    },
-        InfoMessageCommService,
-        RoleExclusionsService
-    ]
+  imports: [
+    CommonModule,
+    HttpClientModule,
+    StoreModule.forFeature('role-access', reducers),
+    EffectsModule.forFeature(effects),
+    roleAccessRouting,
+    SharedModule,
+    FormsModule,
+    ReactiveFormsModule,
+    ExuiCommonLibModule
+  ],
+  declarations: [...fromContainers.containers, ...fromComponents.components],
+  entryComponents: [],
+  exports: [
+    ChooseRadioOptionComponent
+  ],
+  providers: [{
+    provide: AbstractAppConfig,
+    useExisting: AppConfig,
+  },
+    InfoMessageCommService,
+    RoleExclusionsService,
+    CaseworkerDataService
+  ]
 })
 /**
  * Entry point for Role Access Module that is also lazy loaded.

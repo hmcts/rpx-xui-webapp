@@ -120,7 +120,7 @@ describe('TaskListWrapperComponent', () => {
       expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
     });
     it('User should be Judicial', () => {
-      mockSessionStorageService.getItem.and.returnValue('{\"sub\":\"juser8@mailinator.com\",\"uid\":\"44d5d2c2-7112-4bef-8d05-baaa610bf463\",\"roles\":[\"caseworker\",\"caseworker-ia\",\"caseworker-ia-iacjudge\"],\"name\":\"XUI test Judge\",\"given_name\":\"XUI test\",\"family_name\":\"Judge\",\"token\":\"\"}');
+      mockSessionStorageService.getItem.and.returnValue('{\"sub\":\"juser8@mailinator.com\",\"uid\":\"44d5d2c2-7112-4bef-8d05-baaa610bf463\",\"roles\":[\"caseworker\",\"caseworker-ia-iacjudge\"],\"name\":\"XUI test Judge\",\"given_name\":\"XUI test\",\"family_name\":\"Judge\",\"token\":\"\"}');
       const isJudicial = component.isCurrentUserJudicial();
       expect(isJudicial).toBeTruthy();
     });

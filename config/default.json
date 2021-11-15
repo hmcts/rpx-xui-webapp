@@ -73,7 +73,7 @@
   "protocol": "https",
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
-  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS",
+  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL",
   "wildcardSearchFields": {
     "Benefit": [
       "generatedSurname",

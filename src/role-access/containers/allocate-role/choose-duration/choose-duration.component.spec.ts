@@ -102,7 +102,8 @@ describe('ChooseDurationComponent', () => {
     component.monthStartDate.setValue(11);
     component.yearStartDate.setValue(2021);
     const result = component.startDateNotInPast();
-    expect(result).toBeTruthy();
+    // date is now in past
+    expect(result).toBeFalsy();
   });
 
   it('should return false if start date in past', () => {

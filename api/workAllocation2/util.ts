@@ -108,7 +108,9 @@ export function assignActionsToTasks(tasks: any[], view: any, currentUser: strin
             ViewType.ACTIVE_TASKS_ASSIGNED_CURRENT : ViewType.ACTIVE_TASKS_ASSIGNED_OTHER;
         }
       }
-      const actions: Action[] = task.permissions ? getActionsByPermissions(thisView, task.permissions.values) : [];
+      const permissions = task.permissions && task.permissions.values && Array.isArray(task.permissions.values)
+        ? task.permissions.values : task.permissions;
+      const actions: Action[] = getActionsByPermissions(thisView, permissions);
       const taskWithAction = {...task, actions};
       tasksWithActions.push(taskWithAction);
     }

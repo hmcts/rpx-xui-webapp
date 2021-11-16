@@ -164,6 +164,7 @@ defineSupportCode(function ({ Given, When, Then }) {
   Given(/^I should be redirected to the Idam login page$/, async function () {
 
     await BrowserWaits.retryWithActionCallback(async () => {
+      await BrowserWaits.waitForElement(loginPage.signinTitle);
       await expect(loginPage.signinTitle.getText())
         .to
         .eventually

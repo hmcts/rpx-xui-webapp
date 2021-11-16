@@ -58,6 +58,11 @@ export const ROUTES: Routes = [
     loadChildren: '../noc/noc.module#NocModule'
   },
   {
+    path: 'bookings',
+    canActivate: [AuthGuard, AcceptTermsGuard],
+    loadChildren: '../bookings/bookings.module#BookingsModule'
+  },
+  {
     path: 'cookies',
     component: CookiePolicyComponent,
     data: {

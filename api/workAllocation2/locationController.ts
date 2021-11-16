@@ -37,10 +37,11 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   try {
     const basePath = getConfigValue(SERVICES_LOCATION_API_PATH);
     const path: string = prepareGetLocationsUrl(basePath);
-    const locations = await handleLocationGet(path, req);
+    const response = await handleLocationGet(path, req);
 
     res.status(200);
-    const newLocations = locations.data.court_venues.map(venue => ({id: venue.epimms_id, locationName: venue.site_name }));
+    const newLocations = response.data.court_venues.filter(venue => venue.is_case_management_location).
+                         map(venue => ({id: venue.epimms_id, locationName: venue.site_name }));
     res.send(newLocations);
   } catch (error) {
     next(error);

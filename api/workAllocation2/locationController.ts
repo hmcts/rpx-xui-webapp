@@ -50,7 +50,7 @@ export function mapLocations(venues: CourtVenue []): Location [] {
   const locations = [];
   venues.forEach(venue => locations.push({
                               id: venue.epimms_id,
-                              locationName: venue.site_name,
+                              locationName: venue.venue_name,
                             }));
   return locations;
 }

@@ -56,8 +56,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 throw new Error("Dynamic filters not displayed to proced with scenario.");
             }
        
-     
-            const searchCaseInputValues = {}
             for (const dynamicfield of searchCaseConfig.searchInputs) {
                 searchCaseInputValues[dynamicfield.field.id] = await caseListPage.inputWorkbasketFilter(dynamicfield);
             }

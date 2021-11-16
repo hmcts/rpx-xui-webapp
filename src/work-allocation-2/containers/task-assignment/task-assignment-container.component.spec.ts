@@ -80,7 +80,6 @@ describe('TaskAssignmentContainerComponent2', () => {
         EffectsModule.forRoot([]),
         ExuiCommonLibModule,
         PaginationModule,
-        {provide: Location, useValue: locationStub},
         StoreModule.forRoot({}),
         RouterTestingModule.withRoutes(
           [
@@ -89,6 +88,7 @@ describe('TaskAssignmentContainerComponent2', () => {
         ),
       ],
       providers: [
+        {provide: Location, useValue: locationStub},
         {provide: WorkAllocationTaskService, useValue: mockWorkAllocationService},
         {provide: SessionStorageService, useValue: mockSessionStorageService},
         {
@@ -163,7 +163,7 @@ describe('TaskAssignmentContainerComponent2', () => {
     const findPersonControl = new FormControl('test');
     tacComponent.formGroup.addControl('findPersonControl', findPersonControl);
     tacComponent.cancel();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['all-work/tasks']);
+    expect(locationStub.back).toHaveBeenCalledWith();
   });
 
   it('should redirect to the fallback URL (\'\') on cancelling task assignment, if the return URL is not in the history', () => {
@@ -173,13 +173,14 @@ describe('TaskAssignmentContainerComponent2', () => {
     const findPersonControl = new FormControl('test');
     tacComponent.formGroup.addControl('findPersonControl', findPersonControl);
     tacComponent.cancel();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['']);
+    expect(locationStub.back).toHaveBeenCalledWith();
   });
 
   it('should display the correct verb on screen', () => {
     const activatedRoute: ActivatedRoute = fixture.debugElement.injector.get(ActivatedRoute);
     activatedRoute.snapshot.data = {
-      taskAndCaseworkers: { data: mockTasks[0], caseworkers: [] },
+      taskAndCaseworkers: {
+        task: { task: mockTasks[0]}, caseworkers: []},
       ...TaskActionConstants.Assign
     };
     fixture.detectChanges();

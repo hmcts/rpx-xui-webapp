@@ -167,22 +167,6 @@ describe('AllWorkTaskComponent', () => {
       {key: 'location', operator: 'IN', values: ['exampleLocation']}
     );
     expect(searchRequest.search_parameters).toContain({key: 'location', operator: 'IN', values: ['exampleLocation']});
-    expect(searchRequest.search_parameters).toContain(
-      {key: 'taskCategory', operator: 'EQUAL', values: ['All']},
-      {key: 'location', operator: 'IN', values: ['exampleLocation']}
-    );
-    expect(searchRequest.search_parameters).toContain(
-      {key: 'person', operator: 'IN', values: []},
-      {key: 'location', operator: 'IN', values: ['exampleLocation']}
-    );
-    expect(searchRequest.search_parameters).toContain(
-      {key: 'taskType', operator: 'EQUAL', values: ['Judicial']},
-      {key: 'location', operator: 'IN', values: ['exampleLocation']}
-    );
-    expect(searchRequest.search_parameters).toContain(
-      {key: 'priority', operator: 'EQUAL', values: ['High']},
-      {key: 'location', operator: 'IN', values: ['exampleLocation']}
-    );
   });
 
   afterEach(() => {

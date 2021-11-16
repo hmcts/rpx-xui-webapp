@@ -107,7 +107,7 @@ class WorkAllocationMockData {
         return { tasks: tasks, total_records: 150 };
     }
 
-    getPersonList(count) {
+    getPersonList(count,roleCategory) {
         const persons = [];
         for (let ctr = 0; ctr < count; ctr++) {
             persons.push({
@@ -115,6 +115,7 @@ class WorkAllocationMockData {
                 "lastName": "Doe",
                 "idamId": "41a90c39-d756-4eba-8e85-5b5bf56b31f" + ctr,
                 "email": "testemail" + ctr + "@testdomain.com",
+                "roleCategory": roleCategory ? roleCategory : "LEGAL_OPERATIONS",
                 "location": {
                     "id": "a",
                     "locationName": "Location A",

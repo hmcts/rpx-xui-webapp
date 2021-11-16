@@ -77,7 +77,8 @@ describe('TaskAssignmentConfirmComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                taskAndCaseworkers: { data: mockTasks[0], caseworkers: [] },
+                taskAndCaseworkers: {
+                  task: { task: mockTasks[0]}, caseworkers: []},
                 ...TaskActionConstants.Reassign
               },
               params: {
@@ -288,7 +289,8 @@ describe('TaskAssignmentConfirmComponent', () => {
             useValue: {
               snapshot: {
                 data: {
-                  taskAndCaseworkers: { data: mockTasks[0], caseworkers: [] },
+                  taskAndCaseworkers: {
+                    task: { task: mockTasks[0]}, caseworkers: []},
                   ...TaskActionConstants.Reassign
                 },
                 params: {

@@ -1,5 +1,4 @@
 import { NextFunction, Response } from 'express';
-import { handlePost } from '../common/mockService';
 import { getConfigValue, showFeature } from '../configuration';
 import {
   FEATURE_SUBSTANTIVE_ROLE_ENABLED,

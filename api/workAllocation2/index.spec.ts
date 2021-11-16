@@ -145,7 +145,7 @@ describe('workAllocation2', () => {
   describe('postTaskAction', () => {
 
     it('should make a post request and respond appropriately', async () => {
-      spy = sandbox.stub(httpMock, 'post').resolves(res);
+      spy = sandbox.stub(http, 'post').resolves(res);
       const body = {assignee: {name: 'bob', id: 'bob01'}};
       const req = mockReq({
         body,

@@ -30,7 +30,6 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
   constructor(private readonly fb: FormBuilder,
               private readonly location: Location,
               private readonly router: Router,
-              private readonly allocateRoleService: AllocateRoleService,
               private readonly sessionStorageService: SessionStorageService,
               private readonly route: ActivatedRoute) {
   }

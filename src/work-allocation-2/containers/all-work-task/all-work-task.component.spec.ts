@@ -7,13 +7,19 @@ import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 import { of, throwError } from 'rxjs';
+import { TaskListComponent } from '..';
 import { SessionStorageService } from '../../../app/services';
 import { reducers } from '../../../app/store';
-import { TaskListComponent } from '..';
 import { TaskFieldConfig } from '../../../work-allocation/models/tasks';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Task } from '../../models/tasks';
-import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
+import {
+  CaseworkerDataService,
+  LocationDataService,
+  WASupportedJurisdictionsService,
+  WorkAllocationFeatureService,
+  WorkAllocationTaskService
+} from '../../services';
 import { getMockTasks } from '../../tests/utils.spec';
 import { AllWorkTaskComponent } from './all-work-task.component';
 
@@ -26,9 +32,11 @@ class WrapperComponent {
 }
 
 @Component({
-  template: `<div>Nothing</div>`
+  template: `
+    <div>Nothing</div>`
 })
-class NothingComponent { }
+class NothingComponent {
+}
 
 @Component({
   selector: 'exui-task-field',
@@ -65,17 +73,17 @@ describe('AllWorkTaskComponent', () => {
         PaginationModule,
         StoreModule.forRoot({...reducers}),
       ],
-      declarations: [AllWorkTaskComponent, WrapperComponent, TaskListComponent ],
+      declarations: [AllWorkTaskComponent, WrapperComponent, TaskListComponent],
       providers: [
-        { provide: WorkAllocationTaskService, useValue: mockTaskService },
-        { provide: AlertService, useValue: mockAlertService },
-        { provide: SessionStorageService, useValue: mockSessionStorageService },
-        { provide: CaseworkerDataService, useValue: mockCaseworkerService },
-        { provide: WorkAllocationFeatureService, useValue: mockFeatureService },
-        { provide: LoadingService, useValue: mockLoadingService },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
-        { provide: LocationDataService, useValue: mockLocationService },
-        { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService }
+        {provide: WorkAllocationTaskService, useValue: mockTaskService},
+        {provide: AlertService, useValue: mockAlertService},
+        {provide: SessionStorageService, useValue: mockSessionStorageService},
+        {provide: CaseworkerDataService, useValue: mockCaseworkerService},
+        {provide: WorkAllocationFeatureService, useValue: mockFeatureService},
+        {provide: LoadingService, useValue: mockLoadingService},
+        {provide: FeatureToggleService, useValue: mockFeatureToggleService},
+        {provide: LocationDataService, useValue: mockLocationService},
+        {provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService}
       ]
     }).compileComponents();
   }));
@@ -144,16 +152,38 @@ describe('AllWorkTaskComponent', () => {
       roles: ['caseworker-ia-caseofficer'],
       uid: '1233434'
     }));
-    const selection = {location: 'exampleLocation', service: 'IA', selectPerson: 'All', person: null, taskType: 'Judicial', priority: 'High' };
+    const selection = {
+      location: 'exampleLocation',
+      service: 'IA',
+      selectPerson: 'All',
+      person: null,
+      taskType: 'Judicial',
+      priority: 'High'
+    };
     component.onSelectionChanged(selection);
     const searchRequest = component.getSearchTaskRequestPagination();
-    expect(searchRequest.search_parameters).toContain({key: 'jurisdiction', operator: 'EQUAL', values: ['IA']});
+    expect(searchRequest.search_parameters).toContain(
+      {key: 'jurisdiction', operator: 'IN', values: ['IA']},
+      {key: 'location', operator: 'IN', values: ['exampleLocation']}
+    );
     expect(searchRequest.search_parameters).toContain({key: 'location', operator: 'IN', values: ['exampleLocation']});
-    expect(searchRequest.search_parameters).toContain({key: 'taskCategory', operator: 'EQUAL', values: ['All']});
-    expect(searchRequest.search_parameters).toContain({key: 'person', operator: 'IN', values: []});
-    expect(searchRequest.search_parameters).toContain({key: 'taskType', operator: 'EQUAL', values: ['Judicial']});
-    expect(searchRequest.search_parameters).toContain({key: 'priority', operator: 'EQUAL', values: ['High']});
-  })
+    expect(searchRequest.search_parameters).toContain(
+      {key: 'taskCategory', operator: 'EQUAL', values: ['All']},
+      {key: 'location', operator: 'IN', values: ['exampleLocation']}
+    );
+    expect(searchRequest.search_parameters).toContain(
+      {key: 'person', operator: 'IN', values: []},
+      {key: 'location', operator: 'IN', values: ['exampleLocation']}
+    );
+    expect(searchRequest.search_parameters).toContain(
+      {key: 'taskType', operator: 'EQUAL', values: ['Judicial']},
+      {key: 'location', operator: 'IN', values: ['exampleLocation']}
+    );
+    expect(searchRequest.search_parameters).toContain(
+      {key: 'priority', operator: 'EQUAL', values: ['High']},
+      {key: 'location', operator: 'IN', values: ['exampleLocation']}
+    );
+  });
 
   afterEach(() => {
     fixture.destroy();
@@ -161,12 +191,11 @@ describe('AllWorkTaskComponent', () => {
 
 });
 
-
 [
-  { statusCode: 403, routeUrl: '/not-authorised' },
-  { statusCode: 401, routeUrl: '/not-authorised' },
-  { statusCode: 500, routeUrl: '/service-down' },
-  { statusCode: 400, routeUrl: '/service-down' },
+  {statusCode: 403, routeUrl: '/not-authorised'},
+  {statusCode: 401, routeUrl: '/not-authorised'},
+  {statusCode: 500, routeUrl: '/service-down'},
+  {statusCode: 400, routeUrl: '/service-down'},
 ].forEach(scr => {
   describe('AllWorkTaskComponent negative cases', () => {
     let component: AllWorkTaskComponent;
@@ -184,10 +213,9 @@ describe('AllWorkTaskComponent', () => {
     const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
     const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
 
-
     beforeEach(async(() => {
-      mockLocationService.getLocations.and.returnValue(of([{ id: 'loc123', locationName: 'Test', services: [] }]));
-      mockTaskService.searchTask.and.returnValue(throwError({ status: scr.statusCode }));
+      mockLocationService.getLocations.and.returnValue(of([{id: 'loc123', locationName: 'Test', services: []}]));
+      mockTaskService.searchTask.and.returnValue(throwError({status: scr.statusCode}));
       const tasks: Task[] = getMockTasks();
       // mockTaskService.searchTaskWithPagination.and.returnValue(of(throwError({ status: 500 })));
       mockCaseworkerService.getAll.and.returnValue(of([]));
@@ -204,48 +232,45 @@ describe('AllWorkTaskComponent', () => {
           StoreModule.forRoot({...reducers}),
           RouterTestingModule.withRoutes(
             [
-              { path: 'service-down', component: NothingComponent },
-              { path: 'not-authorised', component: NothingComponent }
+              {path: 'service-down', component: NothingComponent},
+              {path: 'not-authorised', component: NothingComponent}
             ]
           )
         ],
         declarations: [AllWorkTaskComponent, WrapperComponent, TaskListComponent, NothingComponent],
         providers: [
-          { provide: WorkAllocationTaskService, useValue: mockTaskService },
-          { provide: AlertService, useValue: mockAlertService },
-          { provide: SessionStorageService, useValue: mockSessionStorageService },
-          { provide: CaseworkerDataService, useValue: mockCaseworkerService },
-          { provide: WorkAllocationFeatureService, useValue: mockFeatureService },
-          { provide: LoadingService, useValue: mockLoadingService },
-          { provide: FeatureToggleService, useValue: mockFeatureToggleService },
-          { provide: LocationDataService, useValue: mockLocationService },
-          { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService }
+          {provide: WorkAllocationTaskService, useValue: mockTaskService},
+          {provide: AlertService, useValue: mockAlertService},
+          {provide: SessionStorageService, useValue: mockSessionStorageService},
+          {provide: CaseworkerDataService, useValue: mockCaseworkerService},
+          {provide: WorkAllocationFeatureService, useValue: mockFeatureService},
+          {provide: LoadingService, useValue: mockLoadingService},
+          {provide: FeatureToggleService, useValue: mockFeatureToggleService},
+          {provide: LocationDataService, useValue: mockLocationService},
+          {provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService}
         ]
       }).compileComponents();
-
 
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;
 
-      component.locations = [{ id: 'loc123', locationName: 'Test', services: [] }];
+      component.locations = [{id: 'loc123', locationName: 'Test', services: []}];
       router = TestBed.get(Router);
       fixture.detectChanges();
 
     }));
 
-
     it(`onPaginationEvent with error response code ${scr.statusCode}`, () => {
       const navigateSpy = spyOn(router, 'navigate');
       component.getSearchTaskRequestPagination();
       const searchRequest = component.onPaginationEvent(1);
-      const payload = { searchRequest, view: component.view };
+      const payload = {searchRequest, view: component.view};
       expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
 
       expect(navigateSpy).toHaveBeenCalledWith([scr.routeUrl]);
 
     });
-
 
     afterEach(() => {
       fixture.destroy();

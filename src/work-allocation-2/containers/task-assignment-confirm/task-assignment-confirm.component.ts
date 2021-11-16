@@ -3,11 +3,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
 import { Person } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 import { map } from 'rxjs/operators';
-import { Task } from '../../models/tasks';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { AssignHintText, InfoMessage, InfoMessageType, TaskActionType } from '../../enums';
 import { InformationMessage } from '../../models/comms';
+import { Task } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { handleFatalErrors } from '../../utils';
 
@@ -25,7 +25,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
   public assignTask: any;
   public selectedPerson: Person;
   public assignHintText: string;
-  public isUserJudidical: boolean;
+  public isUserJudicial: boolean;
 
   constructor(
     private readonly taskService: WorkAllocationTaskService,
@@ -52,7 +52,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      this.isUserJudidical = AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
+      this.isUserJudicial = AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
     }
     this.verb = this.route.snapshot.data.verb as TaskActionType;
     this.taskId = this.route.snapshot.params['taskId'];
@@ -87,6 +87,18 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     this.router.navigate([this.returnUrl]);
   }
 
+  public getDueDateTitle(): string {
+    return this.isUserJudicial ? 'Task created' : 'Due date';
+  }
+
+  public toDate(value: string | number | Date): Date {
+    if (value) {
+      const d = new Date(value);
+      return isNaN(d.getTime()) ? null : d;
+    }
+    return null;
+  }
+
   private reportSuccessAndReturn(): void {
     const message = this.verb === 'Assign' ? InfoMessage.ASSIGNED_TASK : InfoMessage.REASSIGNED_TASK;
     this.returnWithMessage(
@@ -108,15 +120,5 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     }
     // Use returnUrl to return the user to the "All work" or "My work" screen, depending on which one they started from
     this.router.navigate([this.returnUrl], {state: {...state, retainMessages: true}});
-  }
-  public getDueDateTitle(): string {
-    return this.isUserJudidical ? 'Task created' : 'Due date';
-  }
-  public toDate(value: string | number | Date): Date {
-    if (value) {
-      const d = new Date(value);
-      return isNaN(d.getTime()) ? null : d;
-    }
-    return null;
   }
 }

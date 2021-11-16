@@ -49,6 +49,9 @@ describe('TaskAssignmentContainerComponent2', () => {
     email: 'john.smith@email.com',
     domain: PersonRole.CASEWORKER
   };
+  const locationStub: any = {
+    back: jasmine.createSpy('back')
+  };
   const mockTasks = getMockTasks();
   const mockWorkAllocationService = {
     assignTask: jasmine.createSpy('assignTask').and.returnValue(Observable.of({}))
@@ -77,6 +80,7 @@ describe('TaskAssignmentContainerComponent2', () => {
         EffectsModule.forRoot([]),
         ExuiCommonLibModule,
         PaginationModule,
+        {provide: Location, useValue: locationStub},
         StoreModule.forRoot({}),
         RouterTestingModule.withRoutes(
           [
@@ -92,7 +96,8 @@ describe('TaskAssignmentContainerComponent2', () => {
           useValue: {
             snapshot: {
               data: {
-                taskAndCaseworkers: {data: mockTasks[0], caseworkers: []},
+                taskAndCaseworkers: {
+                  task: { task: mockTasks[0]}, caseworkers: []},
                 ...TaskActionConstants.Reassign
               },
               params: {
@@ -127,7 +132,7 @@ describe('TaskAssignmentContainerComponent2', () => {
 
   it('should re-direct to assign task confirmation page', () => {
     const mockRouter = jasmine.createSpyObj('router', ['navigate']);
-    const compo = new TaskAssignmentContainerComponent(null, mockRouter, mockSessionStorageService);
+    const compo = new TaskAssignmentContainerComponent(null, mockRouter, locationStub, mockSessionStorageService);
     const findPersonControl = new FormControl('test');
     compo.formGroup.addControl('findPersonControl', findPersonControl);
     compo.verb = TaskActionType.Reassign;
@@ -141,7 +146,7 @@ describe('TaskAssignmentContainerComponent2', () => {
 
   it('should not re-direct to assign task confirmation page and throw form group error', () => {
     const mockRouter = jasmine.createSpyObj('router', ['navigate']);
-    const compo = new TaskAssignmentContainerComponent(null, mockRouter, mockSessionStorageService);
+    const compo = new TaskAssignmentContainerComponent(null, mockRouter, locationStub, mockSessionStorageService);
     const findPersonControl = new FormControl('');
     compo.formGroup.addControl('findPersonControl', findPersonControl);
     compo.verb = TaskActionType.Reassign;
@@ -154,7 +159,7 @@ describe('TaskAssignmentContainerComponent2', () => {
     window.history.pushState({ returnUrl: 'all-work/tasks#manage_0d22d838', showAssigneeColumn: false }, '',
       'all-work/tasks#manage_0d22d838');
     const mockRouter = jasmine.createSpyObj('router', ['navigate']);
-    const tacComponent = new TaskAssignmentContainerComponent(null, mockRouter, mockSessionStorageService);
+    const tacComponent = new TaskAssignmentContainerComponent(null, mockRouter, locationStub,  mockSessionStorageService);
     const findPersonControl = new FormControl('test');
     tacComponent.formGroup.addControl('findPersonControl', findPersonControl);
     tacComponent.cancel();
@@ -164,7 +169,7 @@ describe('TaskAssignmentContainerComponent2', () => {
   it('should redirect to the fallback URL (\'\') on cancelling task assignment, if the return URL is not in the history', () => {
     window.history.pushState({}, '');
     const mockRouter = jasmine.createSpyObj('router', ['navigate']);
-    const tacComponent = new TaskAssignmentContainerComponent(null, mockRouter, mockSessionStorageService);
+    const tacComponent = new TaskAssignmentContainerComponent(null, mockRouter, locationStub,  mockSessionStorageService);
     const findPersonControl = new FormControl('test');
     tacComponent.formGroup.addControl('findPersonControl', findPersonControl);
     tacComponent.cancel();
@@ -179,7 +184,7 @@ describe('TaskAssignmentContainerComponent2', () => {
     };
     fixture.detectChanges();
     const mockRouter = jasmine.createSpyObj('router', ['navigate']);
-    const tacComponent = new TaskAssignmentContainerComponent(null, mockRouter, mockSessionStorageService);
+    const tacComponent = new TaskAssignmentContainerComponent(null, mockRouter, locationStub, mockSessionStorageService);
     const findPersonControl = new FormControl('test');
     tacComponent.formGroup.addControl('findPersonControl', findPersonControl);
     const titleElement = fixture.debugElement.nativeElement.querySelector('.govuk-caption-l');

@@ -1,12 +1,14 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of, throwError } from 'rxjs';
-import { PriorityFieldComponentModule } from '../../../work-allocation-2/components/priority-field/priority.module';
 import { PersonRole } from '../../../../api/workAllocation2/interfaces/person';
+import { PriorityFieldComponentModule } from '../../../work-allocation-2/components/priority-field/priority.module';
 import { TaskActionConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { InfoMessage, InfoMessageType, TaskActionType } from '../../enums';
@@ -15,11 +17,10 @@ import { InfoMessageCommService, WorkAllocationTaskService } from '../../service
 import { getMockTasks } from '../../tests/utils.spec';
 import { REDIRECTS } from '../../utils';
 import { TaskAssignmentConfirmComponent } from './task-assignment-confirm.component';
-import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
-import { By } from '@angular/platform-browser';
 
 @Component({
-  template: `<exui-task-assignment-confirm></exui-task-assignment-confirm>`
+  template: `
+    <exui-task-assignment-confirm></exui-task-assignment-confirm>`
 })
 class WrapperComponent {
   @ViewChild(TaskAssignmentConfirmComponent) public appComponentRef: TaskAssignmentConfirmComponent;
@@ -45,13 +46,13 @@ describe('TaskAssignmentConfirmComponent', () => {
       // For testing recognised error status 401
       case '401':
         // Doesn't work with just `throwError({ status: 401 })`; need to "return the return"
-        return throwError({ status: 401 });
+        return throwError({status: 401});
       // For testing recognised error status 500
       case '500':
-        return throwError({ status: 500 });
+        return throwError({status: 500});
       // For testing unrecognised error status
       case '999':
-        return throwError({ status: 999 });
+        return throwError({status: 999});
       // For testing success case
       default:
         return of(null);
@@ -71,26 +72,33 @@ describe('TaskAssignmentConfirmComponent', () => {
       ],
       declarations: [TaskAssignmentConfirmComponent, WrapperComponent],
       providers: [
-        { provide: WorkAllocationTaskService, useValue: mockTaskService },
+        {provide: WorkAllocationTaskService, useValue: mockTaskService},
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
-                taskAndCaseworkers: { data: mockTasks[0], caseworkers: [] },
+                taskAndCaseworkers: {
+                  task: {task: mockTasks[0]}, caseworkers: []
+                },
                 ...TaskActionConstants.Reassign
               },
               params: {
                 taskId: 'task1111111'
               }
             },
-            params: Observable.of({ task: mockTasks[0] }),
-            paramMap: Observable.of({ selectedPerson: SELECTED_PERSON })
+            params: Observable.of({task: mockTasks[0]}),
+            paramMap: Observable.of({selectedPerson: SELECTED_PERSON})
           }
         },
-        { provide: Router, useValue: { url: 'localhost/test', navigate: (_1: any, _2: any) => {} } },
-        { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
-        { provide: SessionStorageService, useValue: mockSessionStorageService }
+        {
+          provide: Router, useValue: {
+            url: 'localhost/test', navigate: (_1: any, _2: any) => {
+            }
+          }
+        },
+        {provide: InfoMessageCommService, useValue: mockInfoMessageCommService},
+        {provide: SessionStorageService, useValue: mockSessionStorageService}
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
@@ -98,7 +106,7 @@ describe('TaskAssignmentConfirmComponent', () => {
     component = wrapper.appComponentRef;
     component.verb = TaskActionType.Reassign;
     router = TestBed.get(Router);
-    window.history.pushState({ selectedPerson: SELECTED_PERSON}, '', '');
+    window.history.pushState({selectedPerson: SELECTED_PERSON}, '', '');
     fixture.detectChanges();
   });
 
@@ -143,7 +151,7 @@ describe('TaskAssignmentConfirmComponent', () => {
   });
 
   it('should redirect to the "All work" page on cancelling task assignment', () => {
-    window.history.pushState({ returnUrl: 'all-work/tasks', showAssigneeColumn: false }, '', 'all-work/tasks');
+    window.history.pushState({returnUrl: 'all-work/tasks', showAssigneeColumn: false}, '', 'all-work/tasks');
     const navigateSpy = spyOn(router, 'navigate');
     component.onCancel();
     expect(navigateSpy).toHaveBeenCalledWith(['all-work/tasks']);
@@ -157,10 +165,10 @@ describe('TaskAssignmentConfirmComponent', () => {
   });
 
   it('should return to the "All work" page on successful task assignment', () => {
-    window.history.pushState({ returnUrl: 'all-work/tasks', showAssigneeColumn: false }, '', 'all-work/tasks');
+    window.history.pushState({returnUrl: 'all-work/tasks', showAssigneeColumn: false}, '', 'all-work/tasks');
     const navigateSpy = spyOn(router, 'navigate');
     component.onSubmit();
-    expect(mockTaskService.assignTask).toHaveBeenCalledWith('task1111111', { userId: undefined });
+    expect(mockTaskService.assignTask).toHaveBeenCalledWith('task1111111', {userId: undefined});
     expect(navigateSpy).toHaveBeenCalledWith(['all-work/tasks'], {
       state: {
         badRequest: false,
@@ -181,10 +189,10 @@ describe('TaskAssignmentConfirmComponent', () => {
   });
 
   it('should return to the "My work" page on successful task reassignment', () => {
-    window.history.pushState({ returnUrl: 'my-work/list', showAssigneeColumn: false }, '', 'my-work/list');
+    window.history.pushState({returnUrl: 'my-work/list', showAssigneeColumn: false}, '', 'my-work/list');
     const navigateSpy = spyOn(router, 'navigate');
     component.onSubmit();
-    expect(mockTaskService.assignTask).toHaveBeenCalledWith('task1111111', { userId: undefined });
+    expect(mockTaskService.assignTask).toHaveBeenCalledWith('task1111111', {userId: undefined});
     expect(navigateSpy).toHaveBeenCalledWith(['my-work/list'], {
       state: {
         badRequest: false,
@@ -245,7 +253,6 @@ describe('TaskAssignmentConfirmComponent', () => {
 
 });
 
-
 ['caseworker-ia-iacjudge', 'caseworker-ia-caseofficer'].forEach(role => {
   describe(`TaskAssignmentConfirmComponent by userType role ${role}`, () => {
     let component: TaskAssignmentConfirmComponent;
@@ -282,26 +289,31 @@ describe('TaskAssignmentConfirmComponent', () => {
         ],
         declarations: [TaskAssignmentConfirmComponent, WrapperComponent],
         providers: [
-          { provide: WorkAllocationTaskService, useValue: mockTaskService },
+          {provide: WorkAllocationTaskService, useValue: mockTaskService},
           {
             provide: ActivatedRoute,
             useValue: {
               snapshot: {
                 data: {
-                  taskAndCaseworkers: { data: mockTasks[0], caseworkers: [] },
+                  taskAndCaseworkers: {task: {task: mockTasks[0]}, caseworkers: []},
                   ...TaskActionConstants.Reassign
                 },
                 params: {
                   taskId: 'task1111111'
                 }
               },
-              params: Observable.of({ task: mockTasks[0] }),
-              paramMap: Observable.of({ selectedPerson: SELECTED_PERSON })
+              params: Observable.of({task: mockTasks[0]}),
+              paramMap: Observable.of({selectedPerson: SELECTED_PERSON})
             }
           },
-          { provide: Router, useValue: { url: 'localhost/test', navigate: (_1: any, _2: any) => { } } },
-          { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
-          { provide: SessionStorageService, useValue: mockSessionStorageService }
+          {
+            provide: Router, useValue: {
+              url: 'localhost/test', navigate: (_1: any, _2: any) => {
+              }
+            }
+          },
+          {provide: InfoMessageCommService, useValue: mockInfoMessageCommService},
+          {provide: SessionStorageService, useValue: mockSessionStorageService}
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
@@ -309,13 +321,13 @@ describe('TaskAssignmentConfirmComponent', () => {
       component = wrapper.appComponentRef;
       component.verb = TaskActionType.Reassign;
       router = TestBed.get(Router);
-      window.history.pushState({ selectedPerson: SELECTED_PERSON }, '', '');
+      window.history.pushState({selectedPerson: SELECTED_PERSON}, '', '');
       fixture.detectChanges();
     });
 
     it('configured fields for judicial', () => {
       const headers = fixture.debugElement.queryAll(By.css('th'));
-
+      fixture.detectChanges();
       const fieldLabels = headers.map(header => header.nativeElement.textContent);
       if (role === 'caseworker-ia-iacjudge') {
         expect(fieldLabels).toContain('Task created');

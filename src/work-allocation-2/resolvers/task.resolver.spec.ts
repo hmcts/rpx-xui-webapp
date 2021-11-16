@@ -1,6 +1,8 @@
 import { RouterStateSnapshot } from '@angular/router';
 import { of } from 'rxjs';
+
 import { Caseworker } from '../models/dtos';
+import { Task } from '../models/tasks';
 import { TaskResolver } from './task.resolver';
 
 describe('Task Resolver', () => {

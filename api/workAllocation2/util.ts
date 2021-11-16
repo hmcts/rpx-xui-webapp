@@ -204,7 +204,6 @@ export function prepareRoleApiRequest(jurisdictions: string[], locationId?: numb
  */
 export function getActionsByPermissions(view, permissions: TaskPermission[]): Action[] {
   let actionList: Action[] = [];
-  console.log('neeely', permissions);
   permissions.forEach(permission => {
     switch (permission) {
       case TaskPermission.MANAGE:

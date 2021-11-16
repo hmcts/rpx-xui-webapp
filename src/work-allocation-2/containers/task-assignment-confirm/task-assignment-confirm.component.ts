@@ -57,7 +57,6 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     this.verb = this.route.snapshot.data.verb as TaskActionType;
     this.taskId = this.route.snapshot.params['taskId'];
     this.rootPath = this.router.url.split('/')[1];
-    console.log('well now', this.route.snapshot.data);
     this.task = this.route.snapshot.data.taskAndCaseworkers.task.task;
     this.route.paramMap
       .pipe(map(() => window.history.state)).subscribe(person => {

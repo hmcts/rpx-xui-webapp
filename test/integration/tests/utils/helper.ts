@@ -3,12 +3,12 @@ import * as addContext from 'mochawesome/addContext'
 let testContext;
 export const mochaHooks = {
    beforeEach(){
-      // testContext = this;
+       testContext = this;
    } 
 }
 
 export const setTestContext = (testObj) => {
-
+   console.log("******************** .  SET context called ");
    testContext = testObj;
 }
 

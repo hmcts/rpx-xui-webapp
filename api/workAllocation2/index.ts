@@ -1,5 +1,4 @@
 import { NextFunction, Response } from 'express';
-import { handlePost } from '../common/mockService';
 import { getConfigValue, showFeature } from '../configuration';
 import {
   FEATURE_SUBSTANTIVE_ROLE_ENABLED,
@@ -29,7 +28,7 @@ import { TaskList } from './interfaces/task';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { checkIfCaseAllocator } from './roleService';
 import * as roleServiceMock from './roleService.mock';
-import { handleTaskGet, handleTaskSearch, handleTaskPost } from './taskService';
+import { handleTaskGet, handleTaskPost, handleTaskSearch } from './taskService';
 import * as taskServiceMock from './taskService.mock';
 import {
   assignActionsToCases,

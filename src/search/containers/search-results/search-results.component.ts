@@ -27,10 +27,7 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
               private readonly route: ActivatedRoute) { }
 
   public ngOnInit(): void {
-    this.searchSubscription$ = combineLatest([
-      this.searchService.getResults(),
-      this.jurisdictionService.getJurisdictions()
-    ]).subscribe(results => this.onSearchSubscriptionHandler(results));
+    this.retrieveSearchResults();
   }
 
   /**
@@ -73,33 +70,21 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
 
   public getPreviousResultsPage(): void {
     // Decrement the start record
-    this.searchService.decrementStartRecord();
-
-    // Get the new start record
-    const startRecord = this.searchService.retrieveState(SearchStatePersistenceKey.START_RECORD);
-    if (startRecord) {
-      this.caseStartRecord = parseInt(startRecord, 10);
-    }
+    this.caseStartRecord = this.searchService.decrementStartRecord();
 
     // Retrieve the search results
-    this.showSpinner = true;
-    this.searchSubscription$ = combineLatest([
-      this.searchService.getResults(),
-      this.jurisdictionService.getJurisdictions()
-    ]).subscribe(results => this.onSearchSubscriptionHandler(results));
+    this.retrieveSearchResults();
   }
 
   public getNextResultsPage(): void {
     // Increment the start record
-    this.searchService.incrementStartRecord();
-
-    // Get the new start record
-    const startRecord = this.searchService.retrieveState(SearchStatePersistenceKey.START_RECORD);
-    if (startRecord) {
-      this.caseStartRecord = parseInt(startRecord, 10);
-    }
+    this.caseStartRecord = this.searchService.incrementStartRecord();
 
     // Retrieve the search results
+    this.retrieveSearchResults();
+  }
+
+  private retrieveSearchResults(): void {
     this.showSpinner = true;
     this.searchSubscription$ = combineLatest([
       this.searchService.getResults(),

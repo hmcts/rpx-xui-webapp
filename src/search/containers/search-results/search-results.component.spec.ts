@@ -136,9 +136,10 @@ describe('SearchResultsComponent', () => {
 
   beforeEach(async(() => {
     searchService = createSpyObj<SearchService>(
-      'searchService', ['getResults', 'decrementStartRecord', 'incrementStartRecord', 'retrieveState']);
+      'searchService', ['getResults', 'decrementStartRecord', 'incrementStartRecord']);
     searchService.getResults.and.returnValue(of(searchResultWithCaseList));
-    searchService.retrieveState.and.returnValue('2');
+    searchService.decrementStartRecord.and.returnValue(1);
+    searchService.incrementStartRecord.and.returnValue(2);
     jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['getJurisdictions']);
     jurisdictionService.getJurisdictions.and.returnValue(of(jurisdictions));
     TestBed.configureTestingModule({
@@ -222,8 +223,7 @@ describe('SearchResultsComponent', () => {
     fixture.debugElement.query(By.css('a.moj-pagination__link:first-of-type')).triggerEventHandler('click', null);
     expect(component.getPreviousResultsPage).toHaveBeenCalled();
     expect(searchService.decrementStartRecord).toHaveBeenCalled();
-    expect(searchService.retrieveState).toHaveBeenCalled();
-    expect(component.caseStartRecord).toEqual(2);
+    expect(component.caseStartRecord).toEqual(1);
     expect(searchService.getResults).toHaveBeenCalled();
     expect(jurisdictionService.getJurisdictions).toHaveBeenCalled();
     expect(component.onSearchSubscriptionHandler).toHaveBeenCalled();
@@ -239,7 +239,6 @@ describe('SearchResultsComponent', () => {
     fixture.debugElement.query(By.css('a.moj-pagination__link:last-of-type')).triggerEventHandler('click', null);
     expect(component.getNextResultsPage).toHaveBeenCalled();
     expect(searchService.incrementStartRecord).toHaveBeenCalled();
-    expect(searchService.retrieveState).toHaveBeenCalled();
     expect(component.caseStartRecord).toEqual(2);
     expect(searchService.getResults).toHaveBeenCalled();
     expect(jurisdictionService.getJurisdictions).toHaveBeenCalled();

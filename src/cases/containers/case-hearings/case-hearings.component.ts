@@ -16,7 +16,7 @@ import * as fromHearingStore from '../../../hearings/store';
   selector: 'exui-case-hearings',
   templateUrl: './case-hearings.component.html'
 })
-export class CaseHearingsComponent implements OnInit, OnDestroy {
+export class CaseHearingsComponent implements OnInit {
   public upcomingHearings$: Observable<CaseHearingViewModel[]>;
   public upcomingStatus: EXUISectionStatusEnum = EXUISectionStatusEnum.UPCOMING;
   public pastAndCancelledHearings$: Observable<CaseHearingViewModel[]>;
@@ -37,8 +37,8 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.upcomingHearings$ = this.getHearsListByStatus(EXUISectionStatusEnum.UPCOMING);
-    this.pastAndCancelledHearings$ = this.getHearsListByStatus(EXUISectionStatusEnum.PAST_AND_CANCELLED);
+    this.upcomingHearings$ = this.getHearingListByStatus(EXUISectionStatusEnum.UPCOMING);
+    this.pastAndCancelledHearings$ = this.getHearingListByStatus(EXUISectionStatusEnum.PAST_AND_CANCELLED);
     this.roleCategoryMappingService.isJudicialOrLegalOpsCategory(this.userRoles).subscribe(
       userRole => {
         if (userRole === UserRole.LegalOps) {
@@ -51,7 +51,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     }
   }
 
-  public getHearsListByStatus(status: string): Observable<CaseHearingViewModel[]> {
+  public getHearingListByStatus(status: string): Observable<CaseHearingViewModel[]> {
     return this.hearingStore.pipe(select(fromHearingStore.getHearingsList)).pipe(
       map(hearingsStateData => {
           if (hearingsStateData && hearingsStateData.caseHearingsMainModel && hearingsStateData.caseHearingsMainModel.caseHearings) {
@@ -98,7 +98,4 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     );
   }
 
-  public ngOnDestroy(): void {
-    this.hearingStore.dispatch(new fromHearingStore.Reset());
-  }
 }

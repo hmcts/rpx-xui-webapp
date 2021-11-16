@@ -222,7 +222,16 @@ class CaseManager {
         cucumberReporter.AddMessage("Submitting page: " + thisPageUrl);
         console.log("Submitting : " + thisPageUrl )
 
+        let retryCounter = 0;
         await BrowserWaits.retryWithActionCallback(async () => {
+            if (retryCounter > 0){
+                let isValidationDisplayed = await caseEditPage.isValidationErrorDisplayed();
+                cucumberReporter.AddJson(`******* Is Validation error message displayed : ${isValidationDisplayed}`);
+                if (isValidationDisplayed){
+                    cucumberReporter.AddJson(`******* Validation error message : ${await caseEditPage.getValidationErrorMessageDisplayed()}`);
+                }
+            }
+            retryCounter++;
             await continieElement.click();
             browser.waitForAngular();
             await BrowserWaits.waitForPageNavigation(thisPageUrl);

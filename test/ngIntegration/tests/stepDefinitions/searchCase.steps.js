@@ -45,27 +45,24 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             const searchCaseConfig = global.scenarioData[searchCaseConfigReference].getConfig();
             let caseListReq = null;
             MockApp.addIntercept('/data/internal/searchCases', (req, res, next) => {
-                console.log("Add intercpy called");
+                CucumberReporter.AddJson("Search cases api call received :/data/internal/searchCases ");
                 caseListReq = req.query;
                 next();
             })
-
-        const searchCaseInputValues = {}
-        if (!(await caseListPage.isDynamicFilterDisplayed())){
-            throw new Error("Dynamic filters not displayed to proced with scenario.");
-        }
+            await MockApp.stopServer();
+            await MockApp.startServer();
+            const searchCaseInputValues = {}
+            if (!(await caseListPage.isDynamicFilterDisplayed())){
+                throw new Error("Dynamic filters not displayed to proced with scenario.");
+            }
        
-        for (const dynamicfield of searchCaseConfig.searchInputs) {
-            searchCaseInputValues[dynamicfield.field.id] = await caseListPage.inputWorkbasketFilter(dynamicfield);
-        }
-
             for (const dynamicfield of searchCaseConfig.searchInputs) {
                 searchCaseInputValues[dynamicfield.field.id] = await caseListPage.inputWorkbasketFilter(dynamicfield);
             }
 
             caseListReq = null;
             await searchCasePage.clickApplySearchCaseFilters();
-            await BrowserWaits.waitForCondition(async () => caseListReq !== null);
+            await BrowserWaits.waitForCondition(async () => caseListReq !== null, "waiting for search cases api call");
 
             for (const key of Object.keys(searchCaseInputValues)) {
                 if (searchCaseInputValues[key] instanceof Array) {

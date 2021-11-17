@@ -13,7 +13,11 @@ describe("WelshHearingComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule],
-      declarations: [WelshHearingComponent, MockTestComponent, MockHearingPartiesComponent],
+      declarations: [
+        WelshHearingComponent,
+        MockTestComponent,
+        MockHearingPartiesComponent,
+      ],
     }).compileComponents();
   }));
 
@@ -42,11 +46,6 @@ describe("WelshHearingComponent", () => {
   });
 
   it("should check hearingInWelshFlag", (): void => {
-    const NAME_ERROR: ErrorMessage = {
-      title: "There is a problem",
-      description: "You must select Yes or No",
-      fieldId: "welsh-hint",
-    };
     fixture.detectChanges();
     let errors = null;
     const hearingInWelshFlag = component.welshForm.controls.hearingInWelshFlag;
@@ -54,7 +53,7 @@ describe("WelshHearingComponent", () => {
     hearingInWelshFlag.setValue(null);
     component.onSubmit();
     errors = hearingInWelshFlag.errors;
-    expect(component.error).toBe(NAME_ERROR);
+    expect(component.error.title).toBe("There is a problem");
   });
 });
 

@@ -43,8 +43,8 @@ class BrowserWaits{
         CucumberReporter.AddMessage("wait done in sec " + (Date.now() - startTime) / 1000); 
     }
 
-    async waitForCondition(condition){
-        await this.waitForConditionAsync( condition, this.waitTime);
+    async waitForCondition(condition, message){
+        await this.waitForConditionAsync(condition, this.waitTime, message);
     }
 
     async waitForConditionAsync(condition,waitInMillisec,waitMessage){

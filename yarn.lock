@@ -524,10 +524,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.4.7-format-date-and-text-input":
-  version "1.4.7-format-date-and-text-input"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.7-format-date-and-text-input.tgz#557ae32bbbd7367bcc074ea44fa2d541aa28a0c1"
-  integrity sha512-R45heTsLwqQUMGDbzJdkWTLXvRxr9c39m0g2HhvzH4o2U0sAc8KH2rIdXK/fo5v8QwZvRkmFZwSOmCJfFOIxCA==
+"@hmcts/rpx-xui-common-lib@1.4.8-pagination-component-remove-moj-styles":
+  version "1.4.8-pagination-component-remove-moj-styles"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.8-pagination-component-remove-moj-styles.tgz#70f6de406ee886326d802a065543a28d819380ee"
+  integrity sha512-TQ10Q5h7VqFeBMddVl/yj5XJAqXFNUFr6xr4n7TiExgj5MVvjVbPt4xGtx6C+FDaxMizJyPRlbQOtcoHTK3tYw==
   dependencies:
     tslib "^1.9.0"
 

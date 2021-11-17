@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ErrorMessage } from 'src/app/models';
+import { ErrorMessage } from '../../../../app/models';
 
 export const NAME_ERROR: ErrorMessage = {
   title: 'There is a problem',

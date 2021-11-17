@@ -6,6 +6,7 @@ import { InfoMessageContainerComponent } from './info-message-container/info-mes
 import { MyCasesComponent } from './my-cases/my-cases.component';
 import { MyTasksComponent } from './my-tasks/my-tasks.component';
 import { TaskActionContainerComponent } from './task-action/task-action-container.component';
+import { TaskAssignmentChooseRoleComponent } from './task-assignment-choose-role/task-assignment-choose-role.component';
 import { TaskAssignmentConfirmComponent } from './task-assignment-confirm/task-assignment-confirm.component';
 import { TaskAssignmentContainerComponent } from './task-assignment/task-assignment-container.component';
 import { TaskHomeComponent } from './task-home/task-home.component';
@@ -19,6 +20,7 @@ import { WorkCaseListComponent } from './work-case-list/work-case-list.component
 export const containers: any[] = [
   AvailableTasksComponent,
   InfoMessageContainerComponent,
+  TaskAssignmentChooseRoleComponent,
   MyTasksComponent,
   MyCasesComponent,
   TaskActionContainerComponent,

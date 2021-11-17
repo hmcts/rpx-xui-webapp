@@ -201,7 +201,8 @@ describe('WorkAllocation', () => {
               useValue: {
                 snapshot: {
                   data: {
-                    taskAndCaseworkers: { data: mockTasks[0] },
+                    taskAndCaseworkers: {
+                      task: { task: mockTasks[0]}, caseworkers: []},
                     ...TaskActionConstants.Unassign
                   }
                 },

@@ -13,10 +13,8 @@ import { PriorityFieldComponentModule } from './components/priority-field/priori
 import { WorkAllocationComponentsModule } from './components/work-allocation.components.module';
 import * as fromContainers from './containers';
 import { WorkAllocationFeatureToggleGuard } from './guards';
-import { CaseworkerDataService, WorkAllocationTaskService } from './services';
-import { WorkAllocationFeatureService } from './services/work-allocation-feature.service';
+import { CaseworkerDataService, WorkAllocationFeatureService, WorkAllocationTaskService } from './services';
 import { workAllocationRouting } from './work-allocation-feature.routes';
-import { TaskAssignmentChooseRoleComponent } from './containers/task-assignment-choose-role/task-assignment-choose-role.component';
 
 // from containers
 @NgModule({
@@ -35,7 +33,7 @@ import { TaskAssignmentChooseRoleComponent } from './containers/task-assignment-
     ReactiveFormsModule,
     RoleAccessModule
   ],
-  declarations: [...fromContainers.containers, TaskAssignmentChooseRoleComponent],
+  declarations: [...fromContainers.containers],
   providers: [
     WorkAllocationTaskService,
     WorkAllocationFeatureToggleGuard,
@@ -45,4 +43,5 @@ import { TaskAssignmentChooseRoleComponent } from './containers/task-assignment-
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class WorkAllocationModule2 {}
+export class WorkAllocationModule2 {
+}

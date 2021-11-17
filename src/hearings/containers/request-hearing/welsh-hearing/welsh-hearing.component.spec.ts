@@ -1,12 +1,26 @@
-import { Component, Input } from "@angular/core";
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { ReactiveFormsModule } from "@angular/forms";
-import { RouterTestingModule } from "@angular/router/testing";
-import { ErrorMessage } from "src/app/models";
+import { Component, Input } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ErrorMessage } from 'src/app/models';
+import { WelshHearingComponent } from './welsh-hearing.component';
 
-import { WelshHearingComponent } from "./welsh-hearing.component";
+@Component({
+  selector: 'exui-error-message',
+  template: '',
+})
+class MockTestComponent {
+  @Input() public error: ErrorMessage;
+}
+@Component({
+  selector: 'exui-hearing-parties-title',
+  template: '',
+})
+class MockHearingPartiesComponent {
+  @Input() public error: ErrorMessage;
+}
 
-describe("WelshHearingComponent", () => {
+describe('WelshHearingComponent', () => {
   let component: WelshHearingComponent;
   let fixture: ComponentFixture<WelshHearingComponent>;
 
@@ -27,11 +41,11 @@ describe("WelshHearingComponent", () => {
     fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it("should check hearingInWelshFlag", (): void => {
+  it('should check hearingInWelshFlag', (): void => {
     fixture.detectChanges();
     let errors = null;
     const hearingInWelshFlag = component.welshForm.controls.hearingInWelshFlag;
@@ -45,7 +59,7 @@ describe("WelshHearingComponent", () => {
     expect(errors).toBeTruthy();
   });
 
-  it("should check hearingInWelshFlag", (): void => {
+  it('should check hearingInWelshFlag', (): void => {
     fixture.detectChanges();
     let errors = null;
     const hearingInWelshFlag = component.welshForm.controls.hearingInWelshFlag;
@@ -53,21 +67,6 @@ describe("WelshHearingComponent", () => {
     hearingInWelshFlag.setValue(null);
     component.onSubmit();
     errors = hearingInWelshFlag.errors;
-    expect(component.error.title).toBe("There is a problem");
+    expect(component.error.title).toBe('There is a problem');
   });
 });
-
-@Component({
-  selector: "exui-error-message",
-  template: "",
-})
-class MockTestComponent {
-  @Input() public error: ErrorMessage;
-}
-@Component({
-  selector: "exui-hearing-parties-title",
-  template: "",
-})
-class MockHearingPartiesComponent {
-  @Input() public error: ErrorMessage;
-}

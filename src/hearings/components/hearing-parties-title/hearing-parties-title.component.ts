@@ -1,12 +1,9 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from '@angular/core';
 
 @Component({
-  selector: "exui-hearing-parties-title",
-  templateUrl: "./hearing-parties-title.component.html",
-  styleUrls: ["./hearing-parties-title.component.scss"],
+  selector: 'exui-hearing-parties-title',
+  templateUrl: './hearing-parties-title.component.html',
+  styleUrls: ['./hearing-parties-title.component.scss'],
 })
-export class HearingPartiesTitleComponent implements OnInit {
-  constructor() {}
-
-  ngOnInit() {}
+export class HearingPartiesTitleComponent {
 }

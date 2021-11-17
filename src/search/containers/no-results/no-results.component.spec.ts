@@ -1,17 +1,30 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { Observable } from 'rxjs';
-
+import { NoResultsMessageId } from 'src/search/enums';
 import { NoResultsComponent } from './no-results.component';
 
-fdescribe('NoResultsComponent', () => {
+describe('NoResultsComponent', () => {
   let component: NoResultsComponent;
   let fixture: ComponentFixture<NoResultsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ NoResultsComponent ],
-      schemas: [ NO_ERRORS_SCHEMA ]
+      schemas: [ NO_ERRORS_SCHEMA ],
+      imports: [ RouterTestingModule ],
+      providers: [
+        { 
+          provide: ActivatedRoute,
+          useValue: {
+            paramMap: Observable.of({
+              id: NoResultsMessageId.NO_RESULTS
+            })
+          }
+        }
+      ]
     })
     .compileComponents();
   }));
@@ -35,12 +48,20 @@ fdescribe('NoResultsComponent', () => {
   });
 
   it('should display no results content if no error', () => {
-    component.isError = false;
-    expect(fixture.debugElement.nativeElement.querySelector('.govuk-heading-xl').innerText).toContain('No results');
+    component.messageId = NoResultsMessageId.NO_RESULTS;
+    expect(fixture.debugElement.nativeElement.querySelector('.govuk-width-container').innerText).toContain('search using different criteria');
   });
 
-  it('should display something went wrong content if error', () => {
-    component.isError = true;
-    expect(fixture.debugElement.nativeElement.querySelector('.govuk-heading-xl').innerText).toContain('Something went wrong');
+  fit('should display something went wrong content if error', () => {
+    TestBed.overrideProvider(ActivatedRoute, { 
+      useValue: {
+        paramMap: Observable.of({
+          id: NoResultsMessageId.ERROR
+        })
+      }
+    });
+    component.messageId = NoResultsMessageId.ERROR;
+    component.ngOnInit();
+    expect(fixture.debugElement.nativeElement.querySelector('.govuk-width-container').innerText).toContain('search using different criteria');
   });
 });

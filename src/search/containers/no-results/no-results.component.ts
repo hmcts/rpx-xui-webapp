@@ -10,13 +10,13 @@ import { Subscription } from 'rxjs';
 export class NoResultsComponent implements OnInit, OnDestroy {
 
   public paramMapSubscription$: Subscription;
-  public isError: boolean;
+  public messageId: number;
 
   constructor(private readonly route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.paramMapSubscription$ = this.route.paramMap.subscribe(params => {
-      this.isError = params.get('error') === 'false' ? false : true;
+      this.messageId = Number(params.get('id'));
     });
   }
 

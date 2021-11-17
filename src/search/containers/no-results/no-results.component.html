@@ -1,6 +1,6 @@
 <exui-app-header></exui-app-header>
 <div class="govuk-width-container">
-  <exui-page-wrapper [title]="'No results found'" *ngIf="!isError">
+  <exui-page-wrapper [title]="'No results found'" *ngIf="messageId === 1">
     <p class="govuk-body">Try searching again.</p>
     <p>You might be able to get more accurate results if you:</p>
     <ul class="govuk-list govuk-list--bullet">
@@ -12,7 +12,7 @@
       Search again
     </button>
   </exui-page-wrapper>
-  <exui-page-wrapper [title]="'Something went wrong'" *ngIf="isError">
+  <exui-page-wrapper [title]="'Something went wrong'" *ngIf="messageId === 2">
     <p class="govuk-body">Try searching again.</p>
     <p>You might be able to get more accurate results if you:</p>
     <ul class="govuk-list govuk-list--bullet">

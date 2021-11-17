@@ -1,32 +1,32 @@
-import { Component, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { ErrorMessage } from "src/app/models";
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ErrorMessage } from 'src/app/models';
 
 export const NAME_ERROR: ErrorMessage = {
-  title: "There is a problem",
-  description: "You must select Yes or No",
-  fieldId: "welsh-hint",
+  title: 'There is a problem',
+  description: 'You must select Yes or No',
+  fieldId: 'welsh-hint',
 };
 
 @Component({
-  selector: "exui-welsh-hearing",
-  templateUrl: "./welsh-hearing.component.html",
-  styleUrls: ["./welsh-hearing.component.scss"],
+  selector: 'exui-welsh-hearing',
+  templateUrl: './welsh-hearing.component.html',
+  styleUrls: ['./welsh-hearing.component.scss'],
 })
 export class WelshHearingComponent implements OnInit {
   public error: ErrorMessage = null;
-  welshForm: FormGroup;
+  public welshForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(private readonly formBuilder: FormBuilder) { }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.initForm();
   }
 
   /**
    * Inits form
    */
-  initForm() {
+  public initForm() {
     this.welshForm = this.formBuilder.group({
       hearingInWelshFlag: [false, Validators.required],
     });
@@ -34,12 +34,12 @@ export class WelshHearingComponent implements OnInit {
 
   /**
    * Determines whether submit on
-   * @returns
+   * @returns void if invalid form
    */
-  onSubmit() {
+  public onSubmit(): void {
     if (!this.welshForm.valid) {
       this.error = NAME_ERROR;
-      return false;
+      return;
     }
     this.error = null;
   }

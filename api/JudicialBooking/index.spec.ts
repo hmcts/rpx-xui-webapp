@@ -15,9 +15,7 @@ describe('Judicial Booking', () => {
     let spy: any
 
     beforeEach(() => {
-        res = {
-            data: 'okay',
-        }
+        res = {}
         spy = sinon.stub(http, 'get').callsFake(() => {
             return Promise.resolve(res)
         })

@@ -4,6 +4,7 @@ import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { TASK_ROLES } from '../../../../api/workAllocation2/constants/task-roles.mock.data';
 import { ChooseRadioOptionComponent } from '../../../role-access/components';
 
 import { TaskAssignmentChooseRoleComponent } from './task-assignment-choose-role.component';
@@ -34,7 +35,8 @@ describe('TaskAssignmentChooseRoleComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                verb: 'Reassign'
+                verb: 'Reassign',
+                roles: TASK_ROLES,
               },
               paramMap: convertToParamMap({taskId: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8'})
             }
@@ -61,7 +63,6 @@ describe('TaskAssignmentChooseRoleComponent', () => {
     const radios: any = nativeElement.querySelectorAll('.govuk-radios__item');
     const input = radios[1].firstChild;
     expect(input.checked).toBeTruthy();
-
   });
 
   it('should set the caption to reassign', () => {
@@ -73,7 +74,7 @@ describe('TaskAssignmentChooseRoleComponent', () => {
     component.submit(component.form.value, component.form.valid);
     expect(router.navigate).toHaveBeenCalledWith(
       ['work', 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', 'reassign', 'person'],
-      {queryParams: { role: 'LEGAL_OPERATIONS'}}
+      {queryParams: {role: 'LEGAL_OPERATIONS'}}
     );
   });
 });

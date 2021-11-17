@@ -22,6 +22,7 @@ import {
 } from './caseWorkerService';
 
 import { JUDICIAL_WORKERS_LOCATIONS } from './constants/mock.data';
+import { TASK_ROLES } from './constants/task-roles.mock.data';
 import { PaginationParameter } from './interfaces/caseSearchParameter';
 import { Caseworker } from './interfaces/common';
 import { TaskList } from './interfaces/task';
@@ -85,6 +86,19 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
     }
     res.status(200);
     res.send(jsonResponse);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * getTask
+ */
+export async function getTaskRoles(req: EnhancedRequest, res: Response, next: NextFunction) {
+
+  try {
+    res.status(200);
+    res.send(TASK_ROLES);
   } catch (error) {
     next(error);
   }

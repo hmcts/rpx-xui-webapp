@@ -4,9 +4,9 @@ import { RouterModule, Routes } from '@angular/router';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
 import { TaskActionConstants } from './components/constants';
 import {
+  AllWorkCaseComponent,
   AllWorkHomeComponent,
   AllWorkTaskComponent,
-  AllWorkCaseComponent,
   AvailableTasksComponent,
   MyTasksComponent,
   TaskActionContainerComponent,
@@ -20,6 +20,7 @@ import { TaskAssignmentChooseRoleComponent } from './containers/task-assignment-
 import { WorkAllocationFeatureToggleGuard } from './guards';
 import { TaskResolver } from './resolvers';
 import { LocationResolver } from './resolvers/location-resolver.service';
+import { TaskRoleResolverService } from './resolvers/task-role-resolver.service';
 
 export const ROUTES: Routes = [
   {
@@ -92,7 +93,7 @@ export const ROUTES: Routes = [
       },
       {
         path: ':taskId',
-        resolve: { taskAndCaseworkers: TaskResolver },
+        resolve: { taskAndCaseworkers: TaskResolver, roles: TaskRoleResolverService},
         canActivate: [ WorkAllocationFeatureToggleGuard ],
         children: [
           {

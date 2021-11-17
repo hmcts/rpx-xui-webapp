@@ -8,7 +8,7 @@ import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { RoleCategory } from '../../../role-access/models';
 import { OptionsModel } from '../../../role-access/models/options-model';
-import { AllocateRoleService } from '../../../role-access/services';
+import { Permissions, TaskRole } from '../../models/tasks/TaskRole';
 
 @Component({
   selector: 'exui-task-assignment-choose-role',
@@ -25,6 +25,7 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
   public submitted: boolean = true;
   public optionsList: OptionsModel[];
   public roles = TaskAssignmentChooseRoleComponent.getOptions();
+  public taskRoles: TaskRole[] = [];
   public form: FormGroup;
 
   constructor(private readonly fb: FormBuilder,
@@ -45,9 +46,10 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
     const isJudicial = this.isCurrentUserJudicial();
     const taskId = this.route.snapshot.paramMap.get('taskId');
     this.verb = this.route.snapshot.data.verb;
+    this.taskRoles = this.route.snapshot.data.roles;
     this.setCaptionAndDescription(this.verb);
     this.form = this.fb.group({
-      role: [isJudicial ? RoleCategory.JUDICIAL : RoleCategory.LEGAL_OPERATIONS, Validators.required],
+      role: [this.setUpDefaultRoleType(isJudicial, this.taskRoles), Validators.required],
       taskId: [taskId, Validators.required]
     });
   }
@@ -78,5 +80,19 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
       return AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
     }
     return false;
+  }
+
+  private setUpDefaultRoleType(isCurrentUserJudicial: boolean, roles: TaskRole[]): RoleCategory {
+    if (roles.length) {
+      const role = this.userWithOwnPermission(roles);
+      if (role) {
+        return role.role_category === 'judicial' ? RoleCategory.JUDICIAL : RoleCategory.LEGAL_OPERATIONS;
+      }
+    }
+    return isCurrentUserJudicial ? RoleCategory.JUDICIAL : RoleCategory.LEGAL_OPERATIONS;
+  }
+
+  private userWithOwnPermission(roles: TaskRole[]): TaskRole {
+    return roles.find(role => role.permissions.includes(Permissions.Own));
   }
 }

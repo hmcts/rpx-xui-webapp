@@ -31,16 +31,4 @@ export class WelshHearingComponent implements OnInit {
       hearingInWelshFlag: [false, Validators.required],
     });
   }
-
-  /**
-   * Determines whether submit on
-   * @returns void if invalid form
-   */
-  public onSubmit(): void {
-    if (!this.welshForm.valid) {
-      this.error = NAME_ERROR;
-      return;
-    }
-    this.error = null;
-  }
 }

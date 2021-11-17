@@ -58,15 +58,4 @@ describe('WelshHearingComponent', () => {
     errors = hearingInWelshFlag.errors;
     expect(errors).toBeTruthy();
   });
-
-  it('should check hearingInWelshFlag', (): void => {
-    fixture.detectChanges();
-    let errors = null;
-    const hearingInWelshFlag = component.welshForm.controls.hearingInWelshFlag;
-
-    hearingInWelshFlag.setValue(null);
-    component.onSubmit();
-    errors = hearingInWelshFlag.errors;
-    expect(component.error.title).toBe('There is a problem');
-  });
 });

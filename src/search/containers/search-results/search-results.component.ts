@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
 import { combineLatest, Subscription } from 'rxjs';
 import { JurisdictionService } from '../../../app/services/jurisdiction/jurisdiction.service';
-import { SearchStatePersistenceKey } from '../../enums';
 import { SearchResult, SearchResultDisplay } from '../../models';
 import { SearchService } from '../../services/search.service';
 import { NoResultsMessageId } from '../../enums';
@@ -91,7 +90,8 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
       this.searchService.getResults(),
       this.jurisdictionService.getJurisdictions()
     ]).subscribe(
-      results => this.onSearchSubscriptionHandler(results)
+      results => this.onSearchSubscriptionHandler(results),
+      error => this.router.navigate(['/search/noresults', NoResultsMessageId.ERROR], {relativeTo: this.route})
     );
   }
 

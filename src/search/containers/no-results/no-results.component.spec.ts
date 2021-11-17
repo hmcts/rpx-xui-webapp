@@ -68,13 +68,25 @@ describe('NoResultsComponent', () => {
   });
 
   it('should display something went wrong content if error', () => {
-    const activatedRoute2 = new ActivatedRouteStub({ id: NoResultsMessageId.ERROR });
-    TestBed.overrideProvider(ActivatedRoute, { useValue: activatedRoute2 });
+    const activatedRoute = new ActivatedRouteStub({ id: NoResultsMessageId.ERROR });
+    TestBed.overrideProvider(ActivatedRoute, { useValue: activatedRoute });
 
     component.messageId = NoResultsMessageId.ERROR;
     activatedRoute.paramMap.subscribe(params => {
       if (Number(params.get('id')) === NoResultsMessageId.ERROR) {
         expect(fixture.debugElement.nativeElement.querySelector('.govuk-width-container').innerText).toContain('search for as many fields as possible');
+      }
+    });
+  });
+
+  it('should display no results content if 16 digit case reference error', () => {
+    const activatedRoute = new ActivatedRouteStub({ id: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH });
+    TestBed.overrideProvider(ActivatedRoute, { useValue: activatedRoute });
+
+    component.messageId = NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH;
+    activatedRoute.paramMap.subscribe(params => {
+      if (Number(params.get('id')) === NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH) {
+        expect(fixture.debugElement.nativeElement.querySelector('.govuk-width-container').innerText).toContain('This 16-digit case reference could not be found.');
       }
     });
   });

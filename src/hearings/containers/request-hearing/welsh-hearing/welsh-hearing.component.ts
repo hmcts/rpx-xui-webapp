@@ -23,12 +23,19 @@ export class WelshHearingComponent implements OnInit {
     this.initForm();
   }
 
+  /**
+   * Inits form
+   */
   initForm() {
     this.welshForm = this.formBuilder.group({
       hearingInWelshFlag: [false, Validators.required],
     });
   }
 
+  /**
+   * Determines whether submit on
+   * @returns
+   */
   onSubmit() {
     if (!this.welshForm.valid) {
       this.error = NAME_ERROR;

@@ -40,5 +40,8 @@
         </tr>
       </tbody>
     </table>
+    <xuilib-pagination *ngIf="moreResultsToGo || caseStartRecord > 1" [moreItems]="moreResultsToGo" [firstRecord]="caseStartRecord"
+    (previousPage)="getPreviousResultsPage()" (nextPage)="getNextResultsPage()">
+    </xuilib-pagination>
   </exui-page-wrapper>
 </div>

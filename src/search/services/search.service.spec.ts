@@ -111,7 +111,7 @@ describe('Search Service', () => {
         stateIds: null
       },
       sortCriteria: null,
-      maxReturnRecordCount: 25,
+      maxReturnRecordCount: service.RECORD_PAGE_SIZE,
       startRecordNumber: 1
     };
     const dummySearchResult: SearchResult = {
@@ -131,5 +131,88 @@ describe('Search Service', () => {
     expect(req.request.method).toEqual('POST');
     expect(req.request.body).toEqual(searchRequest);
     req.flush(dummySearchResult);
+  });
+
+  it('should decrement the starting record number if it exists in the session store and is greater than the record page size', () => {
+    mockSessionStorage.setItem(SearchStatePersistenceKey.START_RECORD, service.RECORD_PAGE_SIZE + 1);
+    spyOn(service, 'retrieveState').and.callThrough();
+    spyOn(window.sessionStorage, 'getItem').and.callFake(mockSessionStorage.getItem);
+    spyOn(service, 'storeState').and.callThrough();
+    spyOn(window.sessionStorage, 'setItem').and.callFake(mockSessionStorage.setItem);
+    const startRecord = service.decrementStartRecord();
+    expect(service.retrieveState).toHaveBeenCalledWith(SearchStatePersistenceKey.START_RECORD);
+    expect(window.sessionStorage.getItem).toHaveBeenCalledWith(SearchStatePersistenceKey.START_RECORD);
+    // The start record is expected to be 1, having been decremented by the record page size
+    expect(service.storeState).toHaveBeenCalledWith(SearchStatePersistenceKey.START_RECORD, 1);
+    expect(window.sessionStorage.setItem).toHaveBeenCalledWith(SearchStatePersistenceKey.START_RECORD, '1');
+    expect(startRecord).toEqual(1);
+  });
+
+  it('should decrement the starting record number (to 1) even if it is not greater than the record page size', () => {
+    mockSessionStorage.setItem(SearchStatePersistenceKey.START_RECORD, service.RECORD_PAGE_SIZE);
+    spyOn(service, 'retrieveState').and.callThrough();
+    spyOn(window.sessionStorage, 'getItem').and.callFake(mockSessionStorage.getItem);
+    spyOn(service, 'storeState').and.callThrough();
+    spyOn(window.sessionStorage, 'setItem').and.callFake(mockSessionStorage.setItem);
+    const startRecord = service.decrementStartRecord();
+    expect(service.retrieveState).toHaveBeenCalledWith(SearchStatePersistenceKey.START_RECORD);
+    expect(window.sessionStorage.getItem).toHaveBeenCalledWith(SearchStatePersistenceKey.START_RECORD);
+    // The start record is expected to be 1, having been decremented to 1
+    expect(service.storeState).toHaveBeenCalledWith(SearchStatePersistenceKey.START_RECORD, 1);
+    expect(window.sessionStorage.setItem).toHaveBeenCalledWith(SearchStatePersistenceKey.START_RECORD, '1');
+    expect(startRecord).toEqual(1);
+  });
+
+  it('should not decrement the starting record number if it does not exist in the session store', () => {
+    spyOn(service, 'retrieveState').and.callThrough();
+    spyOn(window.sessionStorage, 'getItem').and.callFake(mockSessionStorage.getItem);
+    spyOn(service, 'storeState').and.callThrough();
+    const startRecord = service.decrementStartRecord();
+    expect(service.retrieveState).toHaveBeenCalledWith(SearchStatePersistenceKey.START_RECORD);
+    expect(window.sessionStorage.getItem).toHaveBeenCalledWith(SearchStatePersistenceKey.START_RECORD);
+    expect(service.storeState).not.toHaveBeenCalled();
+    // The start record is expected to default to 1 if it cannot be retrieved
+    expect(startRecord).toEqual(1);
+  });
+
+  it('should increment the starting record number if it exists in the session store and is greater than or equal to 1', () => {
+    mockSessionStorage.setItem(SearchStatePersistenceKey.START_RECORD, 1);
+    spyOn(service, 'retrieveState').and.callThrough();
+    spyOn(window.sessionStorage, 'getItem').and.callFake(mockSessionStorage.getItem);
+    spyOn(service, 'storeState').and.callThrough();
+    spyOn(window.sessionStorage, 'setItem').and.callFake(mockSessionStorage.setItem);
+    const startRecord = service.incrementStartRecord();
+    expect(service.retrieveState).toHaveBeenCalledWith(SearchStatePersistenceKey.START_RECORD);
+    expect(window.sessionStorage.getItem).toHaveBeenCalledWith(SearchStatePersistenceKey.START_RECORD);
+    // The start record is expected to be 1 + record page size, having been incremented by the record page size
+    const newStartRecord = 1 + service.RECORD_PAGE_SIZE;
+    expect(service.storeState).toHaveBeenCalledWith(SearchStatePersistenceKey.START_RECORD, newStartRecord);
+    expect(window.sessionStorage.setItem).toHaveBeenCalledWith(SearchStatePersistenceKey.START_RECORD, newStartRecord.toString());
+    expect(startRecord).toEqual(newStartRecord);
+  });
+
+  it('should not increment the starting record number if it is less than 1', () => {
+    mockSessionStorage.setItem(SearchStatePersistenceKey.START_RECORD, 0);
+    spyOn(service, 'retrieveState').and.callThrough();
+    spyOn(window.sessionStorage, 'getItem').and.callFake(mockSessionStorage.getItem);
+    spyOn(service, 'storeState').and.callThrough();
+    const startRecord = service.incrementStartRecord();
+    expect(service.retrieveState).toHaveBeenCalledWith(SearchStatePersistenceKey.START_RECORD);
+    expect(window.sessionStorage.getItem).toHaveBeenCalledWith(SearchStatePersistenceKey.START_RECORD);
+    expect(service.storeState).not.toHaveBeenCalled();
+    // The start record is expected to be whatever the existing value is (i.e. zero, in this case)
+    expect(startRecord).toEqual(0);
+  });
+
+  it('should not increment the starting record number if it does not exist in the session store', () => {
+    spyOn(service, 'retrieveState').and.callThrough();
+    spyOn(window.sessionStorage, 'getItem').and.callFake(mockSessionStorage.getItem);
+    spyOn(service, 'storeState').and.callThrough();
+    const startRecord = service.incrementStartRecord();
+    expect(service.retrieveState).toHaveBeenCalledWith(SearchStatePersistenceKey.START_RECORD);
+    expect(window.sessionStorage.getItem).toHaveBeenCalledWith(SearchStatePersistenceKey.START_RECORD);
+    expect(service.storeState).not.toHaveBeenCalled();
+    // The start record is expected to default to 1 if it cannot be retrieved
+    expect(startRecord).toEqual(1);
   });
 });

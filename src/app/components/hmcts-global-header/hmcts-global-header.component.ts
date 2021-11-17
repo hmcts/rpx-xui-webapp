@@ -1,12 +1,15 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import * as fromNocStore from '../../../noc/store';
 import { NavItemsModel } from '../../models/nav-item.model';
 import { UserNavModel } from '../../models/user-nav.model';
 import { UserService } from '../../services/user/user.service';
+import { SearchService } from '../../../search/services/search.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NoResultsMessageId } from 'src/search/enums';
 
 @Component({
     selector: 'exui-hmcts-global-header',
@@ -37,6 +40,7 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
   public get rightItems(): Observable<NavItemsModel[]> {
     return this.menuItems.right.asObservable();
   };
+  public searchSubscription$: Subscription;
 
   private menuItems = {
     left: new BehaviorSubject<NavItemsModel[]>([]),
@@ -46,7 +50,10 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
   constructor(
     public nocStore: Store<fromNocStore.State>,
     private readonly userService: UserService,
-    private readonly featureToggleService: FeatureToggleService
+    private readonly featureToggleService: FeatureToggleService,
+    private readonly searchService: SearchService,
+    private readonly router: Router,
+    private readonly route: ActivatedRoute
   ) { }
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -63,6 +70,16 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
     if (menuItem.href === '/noc') {
       this.nocStore.dispatch(new fromNocStore.Reset());
     }
+  }
+
+  public onSearchCase(): void {
+    this.searchSubscription$ = this.searchService.getResults().subscribe(result => {
+      if (result.resultInfo.casesReturned > 0) {
+        this.router.navigate([`/cases/case-details/${result.results[0].caseReference}`], { relativeTo: this.route });
+      }
+
+      return this.router.navigate(['/search/noresults', NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH], { relativeTo: this.route });
+    });
   }
 
   private splitAndFilterNavItems(items: NavItemsModel[]) {

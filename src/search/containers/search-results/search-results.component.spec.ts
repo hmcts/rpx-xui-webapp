@@ -220,7 +220,7 @@ describe('SearchResultsComponent', () => {
     // Ensure that the start record is greater than 1 for the "Previous page" navigation to be displayed
     component.caseStartRecord = 3;
     fixture.detectChanges();
-    fixture.debugElement.query(By.css('a.moj-pagination__link:first-of-type')).triggerEventHandler('click', null);
+    fixture.debugElement.query(By.css('a.hmcts-pagination__link:first-of-type')).triggerEventHandler('click', null);
     expect(component.getPreviousResultsPage).toHaveBeenCalled();
     expect(searchService.decrementStartRecord).toHaveBeenCalled();
     expect(component.caseStartRecord).toEqual(1);
@@ -236,7 +236,7 @@ describe('SearchResultsComponent', () => {
     // Ensure that "more results to go" is true for the "Next page" navigation to be displayed
     component.moreResultsToGo = true;
     fixture.detectChanges();
-    fixture.debugElement.query(By.css('a.moj-pagination__link:last-of-type')).triggerEventHandler('click', null);
+    fixture.debugElement.query(By.css('a.hmcts-pagination__link:last-of-type')).triggerEventHandler('click', null);
     expect(component.getNextResultsPage).toHaveBeenCalled();
     expect(searchService.incrementStartRecord).toHaveBeenCalled();
     expect(component.caseStartRecord).toEqual(2);
@@ -251,6 +251,6 @@ describe('SearchResultsComponent', () => {
     component.moreResultsToGo = false;
     component.caseStartRecord = 1;
     fixture.detectChanges();
-    expect(fixture.debugElement.query(By.css('nav.moj-pagination'))).toBeFalsy();
+    expect(fixture.debugElement.query(By.css('nav.hmcts-pagination'))).toBeFalsy();
   });
 });

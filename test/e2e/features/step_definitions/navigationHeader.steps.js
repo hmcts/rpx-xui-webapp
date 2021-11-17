@@ -1,5 +1,6 @@
 const headerPage = require('../pageObjects/headerPage');
 const browserWaits = require('../../support/customWaits');
+const cucumberReporter = require('../../support/reportLogger');
 var { defineSupportCode } = require('cucumber');
 const SoftAssert = require('../../../ngIntegration/util/softAssert');
 const constants = require('../../support/constants');
@@ -60,8 +61,14 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     })
 
     Then('I see primary navigation tabs {string} in main header', async function (navigationTabs) {
-        
+       let counter = 0; 
         await browserWaits.retryWithActionCallback(async () => {
+            if (counter > 0){
+                cucumberReporter.AddMessage("Expected Navigation tabs not present, Refreshing browser to get LD config again");
+                await browser.refresh();
+            }
+            counter++;
+
             const softAssert = new SoftAssert();
             const navigationTabsArr = navigationTabs.split(',');
 

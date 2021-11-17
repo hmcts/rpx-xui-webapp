@@ -79,6 +79,14 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.payments_url;
   }
 
+  public getHrsUrl() {
+    return this.config.hrs_url;
+  }
+
+  public getRemoteHrsUrl() {
+    return this.config.remote_hrs_url;
+  }
+
   public getCaseHistoryUrl(caseId: string, eventId: string) {
     return (
       this.getCaseDataUrl() +
@@ -152,10 +160,6 @@ export class AppConfig extends AbstractAppConfig {
     return this.workallocationUrl;
   }
 
-  public getHrsUrl(): string {
-    return this.config.hrs_url;
-  }
-
   private featureToggleWorkAllocation(): void {
     this.featureToggleService
       .isEnabled(AppConstants.FEATURE_NAMES.workAllocation)
@@ -166,9 +170,5 @@ export class AppConfig extends AbstractAppConfig {
             WorkAllocationTaskService.WorkAllocationUrl
           )
       );
-  }
-
-  public getRemoteHrsUrl(): string {
-    return this.config.remote_hrs_url;
   }
 }

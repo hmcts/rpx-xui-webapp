@@ -60,8 +60,10 @@ class CaseListPage{
 
     async waitForSpinnerToDissappear(){
         await BrowserWaits.waitForCondition(async () => {
-            return !(await $(".loading-spinner-in-action").isPresent());
-        });
+            const isSpinnerPresent = await $(".loading-spinner-in-action").isPresent();
+            CucumberReportLogger.AddMessage('Waiting for spinner to dissappear.');
+            return !isSpinnerPresent;
+        },'Spinner is still displayed after waiting ');
     }
     _getOptionSelectorWithText(optionText){
         return by.xpath("//option[text() = '"+optionText+"']");

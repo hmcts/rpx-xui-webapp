@@ -105,19 +105,17 @@ defineSupportCode(({ Before,After }) => {
 
         const world = this;
         try{
-            let browserErrorLogs = []
-            if (scenario.result.status === 'failed'){
-                await CucumberReportLog.AddScreenshot(global.screenShotUtils);
-                let networkLog = await BrowserLogs.getNetworkLogs();
-                let browserLog = await BrowserLogs.getBrowserLogs();
-
-                CucumberReportLog.AddMessage("Page route : " + await browser.getCurrentUrl());
-
-                CucumberReportLog.AddJson(browserLog);
-                // CucumberReportLog.AddJson(networkLog);
-
-            }else{
-                BrowserLogs.clearLogs();
+            await CucumberReportLog.AddScreenshot(global.screenShotUtils);
+            if (scenario.result.status === 'failed') {
+                let browserLog = await browser.manage().logs().get('browser');
+                let browserErrorLogs = []
+                for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++) {
+                    if (browserLog[browserLogCounter].level.value > 900) {
+                        browserLog[browserLogCounter]['time'] = (new Date(browserLog[browserLogCounter]['time'])).toISOString()
+                        browserErrorLogs.push(browserLog[browserLogCounter]);
+                    }
+                }
+                CucumberReportLog.AddJson(browserErrorLogs);
                 if (global.scenarioData['featureToggles']){
                     CucumberReportLog.AddJson(global.scenarioData['featureToggles'])
                 }

@@ -2,15 +2,22 @@ import { CancelHearingComponent } from './cancel-hearing/cancel-hearing.componen
 import { ChangeHearingComponent } from './change-hearing/change-hearing.component';
 import { RequestHearingComponent } from './request-hearing/request-hearing.component';
 import { ViewHearingComponent } from './view-hearing/view-hearing.component';
+import { WelshHearingComponent } from '../containers/request-hearing/welsh-hearing/welsh-hearing.component';
+import { HearingPartiesTitleComponent } from '../components/hearing-parties-title/hearing-parties-title.component';
 
 export const containers: any[] = [
   CancelHearingComponent,
   ChangeHearingComponent,
   RequestHearingComponent,
-  ViewHearingComponent
+  ViewHearingComponent,
+  WelshHearingComponent,
+  HearingPartiesTitleComponent
 ];
 
 export * from './cancel-hearing/cancel-hearing.component';
 export * from './change-hearing/change-hearing.component';
 export * from './request-hearing/request-hearing.component';
 export * from './view-hearing/view-hearing.component';
+export * from '../containers/request-hearing/welsh-hearing/welsh-hearing.component';
+export *  from '../components/hearing-parties-title/hearing-parties-title.component';
+

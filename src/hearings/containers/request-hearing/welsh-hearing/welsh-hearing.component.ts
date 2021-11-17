@@ -19,14 +19,14 @@ export class WelshHearingComponent implements OnInit {
 
   constructor(private readonly formBuilder: FormBuilder) { }
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     this.initForm();
   }
 
   /**
    * Inits form
    */
-  public initForm() {
+  public initForm(): void {
     this.welshForm = this.formBuilder.group({
       hearingInWelshFlag: [false, Validators.required],
     });

@@ -3,11 +3,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
 import { Subscription } from 'rxjs';
+import { DateCategoryType, SearchFormControl, SearchFormErrorMessage, SearchFormErrorType, SearchStatePersistenceKey } from '../../enums';
 import { SearchParameters, SearchValidationError } from '../../models';
 import { SearchService } from '../../services/search.service';
 import { SearchValidators } from '../../utils';
-import { DateCategoryType, SearchStatePersistenceKey } from '../../enums';
-import { SearchFormControl, SearchFormErrorMessage, SearchFormErrorType } from '../../enums';
 
 @Component({
   selector: 'exui-search-form',
@@ -242,7 +241,7 @@ export class SearchFormComponent implements OnInit, OnDestroy {
       window.scrollTo({ top: 0, left: 0 });
     } else {
       // Populate a SearchParameters instance with the form inputs and persist via the SearchService
-      const searchParameters = {
+      const searchParameters: SearchParameters = {
         caseReferences: this.formGroup.get('caseRef').value !== '' ? [this.formGroup.get('caseRef').value] : null,
         CCDJurisdictionIds:
           // If the selected value is not "All", use it; else, use the entire Services list (except the "All") item
@@ -285,7 +284,7 @@ export class SearchFormComponent implements OnInit, OnDestroy {
 
     const year = dateCategoryType === DateCategoryType.DATE_OF_BIRTH
       ? this.formGroup.get('dateOfBirth_year').value
-      : this.formGroup.get('dateOfDeath_year').value
+      : this.formGroup.get('dateOfDeath_year').value;
 
     if (day === '' || month === '' || year === '') {
       return null;

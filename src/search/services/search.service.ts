@@ -7,7 +7,7 @@ import { SearchParameters, SearchRequest, SearchRequestCriteria, SearchResult } 
 
 @Injectable({ providedIn: 'root' })
 export class SearchService {
-  private readonly MAX_RECORD_PAGE_SIZE = 25;
+  public readonly RECORD_PAGE_SIZE = 25;
 
   constructor(private readonly http: HttpClient) { }
 
@@ -22,7 +22,7 @@ export class SearchService {
     const searchRequest: SearchRequest = {
       searchCriteria: searchRequestCriteria,
       sortCriteria: null,
-      maxReturnRecordCount: this.MAX_RECORD_PAGE_SIZE,
+      maxReturnRecordCount: this.RECORD_PAGE_SIZE,
       startRecordNumber: startRecord ? parseInt(startRecord, 10) : 1
     };
 
@@ -35,6 +35,29 @@ export class SearchService {
 
   public retrieveState(key: string): any {
     return window.sessionStorage.getItem(key) ? JSON.parse(window.sessionStorage.getItem(key)) : null;
+  }
+
+  public decrementStartRecord(): number {
+    const startRecord: number = this.retrieveState(SearchStatePersistenceKey.START_RECORD);
+    if (startRecord != null) {
+      // Need to be able to decrement start record even if current value is less than or equal to record page size
+      const newStartRecord = Math.max(startRecord - this.RECORD_PAGE_SIZE, 1);
+      this.storeState(SearchStatePersistenceKey.START_RECORD, newStartRecord);
+      return newStartRecord;
+    }
+    // Return default value of 1 if start record cannot be retrieved
+    return 1;
+  }
+
+  public incrementStartRecord(): number {
+    const startRecord: number = this.retrieveState(SearchStatePersistenceKey.START_RECORD);
+    if (startRecord != null && startRecord >= 1) {
+      const newStartRecord = startRecord + this.RECORD_PAGE_SIZE;
+      this.storeState(SearchStatePersistenceKey.START_RECORD, newStartRecord);
+      return newStartRecord;
+    }
+    // Return original start record or 1 as a default, if it cannot be retrieved
+    return startRecord != null ? startRecord : 1;
   }
 
   private mapSearchParametersToRequestCriteria(searchParameters: SearchParameters): SearchRequestCriteria {

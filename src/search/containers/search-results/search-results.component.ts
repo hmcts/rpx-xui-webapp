@@ -1,10 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { JurisdictionService } from '../../../app/services/jurisdiction/jurisdiction.service';
+import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
 import { combineLatest, Subscription } from 'rxjs';
+import { JurisdictionService } from '../../../app/services/jurisdiction/jurisdiction.service';
+import { SearchStatePersistenceKey } from '../../enums';
 import { SearchResult, SearchResultDisplay } from '../../models';
 import { SearchService } from '../../services/search.service';
-import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
 import { NoResultsMessageId } from '../../enums';
 
 @Component({
@@ -18,6 +19,8 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
   public jurisdictions: Jurisdiction[];
   public searchResultDisplay: SearchResultDisplay[];
   public showSpinner: boolean = true;
+  public moreResultsToGo: boolean = false;
+  public caseStartRecord: number = 1;
 
   constructor(private readonly searchService: SearchService,
               private readonly jurisdictionService: JurisdictionService,
@@ -25,13 +28,7 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
               private readonly route: ActivatedRoute) { }
 
   public ngOnInit(): void {
-    this.searchSubscription$ = combineLatest([
-      this.searchService.getResults(),
-      this.jurisdictionService.getJurisdictions()
-    ]).subscribe(
-      results => this.onSearchSubscriptionHandler(results),
-      error => this.router.navigate(['/search/noresults', NoResultsMessageId.ERROR], {relativeTo: this.route})
-    );
+    this.retrieveSearchResults();
   }
 
   /**
@@ -67,6 +64,35 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
 
     // Hide spinner
     this.showSpinner = false;
+
+    // Update moreResultsToGo flag
+    this.moreResultsToGo = searchResult.resultInfo.moreResultsToGo;
+  }
+
+  public getPreviousResultsPage(): void {
+    // Decrement the start record
+    this.caseStartRecord = this.searchService.decrementStartRecord();
+
+    // Retrieve the search results
+    this.retrieveSearchResults();
+  }
+
+  public getNextResultsPage(): void {
+    // Increment the start record
+    this.caseStartRecord = this.searchService.incrementStartRecord();
+
+    // Retrieve the search results
+    this.retrieveSearchResults();
+  }
+
+  private retrieveSearchResults(): void {
+    this.showSpinner = true;
+    this.searchSubscription$ = combineLatest([
+      this.searchService.getResults(),
+      this.jurisdictionService.getJurisdictions()
+    ]).subscribe(
+			results => this.onSearchSubscriptionHandler(results)
+		);
   }
 
   /**

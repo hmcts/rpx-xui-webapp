@@ -23,7 +23,7 @@ export class LoadAllHearingsSuccess implements Action {
   }
 }
 
-export type HearingsAction =
+export type HearingListAction =
   | Reset
   | LoadAllHearings
   | LoadAllHearingsSuccess;

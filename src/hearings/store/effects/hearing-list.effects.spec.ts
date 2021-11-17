@@ -8,12 +8,12 @@ import { CaseHearingsMainModel } from '../../models/caseHearingsMain.model';
 import { HearingDayScheduleModel } from '../../models/hearingDaySchedule.model';
 import { EXUISectionStatusEnum, HearingListingStatusEnum } from '../../models/hearings.enum';
 import { HearingsService } from '../../services/hearings.service';
-import * as hearingsActions from '../actions/hearings.action';
-import { HearingsEffects } from './hearings.effects';
+import * as hearingListActions from '../actions/hearing-list.action';
+import { HearingListEffects } from './hearing-list.effects';
 
-describe('Hearings Effects', () => {
+describe('Hearing List Effects', () => {
   let actions$;
-  let effects: HearingsEffects;
+  let effects: HearingListEffects;
   const hearingsServiceMock = jasmine.createSpyObj('HearingsService', [
     'getAllHearings',
   ]);
@@ -24,14 +24,14 @@ describe('Hearings Effects', () => {
           provide: HearingsService,
           useValue: hearingsServiceMock,
         },
-        HearingsEffects,
+        HearingListEffects,
         provideMockActions(() => actions$)
       ]
     });
-    effects = TestBed.get(HearingsEffects);
+    effects = TestBed.get(HearingListEffects);
   });
 
-  describe('loadHearingsList$', () => {
+  describe('loadHearingList$', () => {
     it('should return a response with hearings list', () => {
       const HEARING_DAY_SCHEDULE_1: HearingDayScheduleModel = {
         hearingStartDateTime: '2021-05-01T16:00:00.000+0000',
@@ -59,17 +59,17 @@ describe('Hearings Effects', () => {
         caseHearings: [CASE_HEARING_1],
       };
       hearingsServiceMock.getAllHearings.and.returnValue(of(HEARINGS_LIST));
-      const action = new hearingsActions.LoadAllHearings('1111222233334444');
-      const completion = new hearingsActions.LoadAllHearingsSuccess(HEARINGS_LIST);
+      const action = new hearingListActions.LoadAllHearings('1111222233334444');
+      const completion = new hearingListActions.LoadAllHearingsSuccess(HEARINGS_LIST);
       actions$ = hot('-a', {a: action});
       const expected = cold('-b', {b: completion});
-      expect(effects.loadHearingsList$).toBeObservable(expected);
+      expect(effects.loadHearingList$).toBeObservable(expected);
     });
   });
 
   describe('handleError', () => {
     it('should handle 500', () => {
-      const action$ = HearingsEffects.handleError({status: 500, message: 'error'}, hearingsActions.LOAD_ALL_HEARINGS);
+      const action$ = HearingListEffects.handleError({status: 500, message: 'error'}, hearingListActions.LOAD_ALL_HEARINGS);
       action$.subscribe(action => expect(action).toEqual(new Go({path: ['/service-down']})));
     });
   });

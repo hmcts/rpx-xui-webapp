@@ -1,17 +1,19 @@
 import { ActionReducerMap, createFeatureSelector } from '@ngrx/store';
-import { HearingsStateData } from '../../models/hearingsStateData.model';
-import * as fromHearings from './hearings.reducer';
+import { HearingListStateData } from '../../models/hearingsStateData.model';
+import * as fromHearingList from './hearing-list.reducer';
 
 export interface State {
-  hearingsList: HearingsStateData;
+  hearingList: HearingListStateData;
+  // hearingRequest: HearingRequestStateData;
 }
 
 export const reducers: ActionReducerMap<State> = {
-  hearingsList: fromHearings.hearingsReducer,
+  hearingList: fromHearingList.hearingListReducer,
+  // hearingRequest: fromHearings.hearingsReducer,
 };
 
 export const getHearingsFeatureState = createFeatureSelector<State>(
   'hearings'
 );
 
-export * from './hearings.reducer';
+export * from './hearing-list.reducer';

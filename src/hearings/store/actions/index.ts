@@ -1,1 +1,1 @@
-export * from './hearings.action';
+export * from './hearing-list.action';

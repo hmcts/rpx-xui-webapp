@@ -52,10 +52,10 @@ export class CaseHearingsComponent implements OnInit {
   }
 
   public getHearingListByStatus(status: string): Observable<CaseHearingViewModel[]> {
-    return this.hearingStore.pipe(select(fromHearingStore.getHearingsList)).pipe(
-      map(hearingsStateData => {
-          if (hearingsStateData && hearingsStateData.caseHearingsMainModel && hearingsStateData.caseHearingsMainModel.caseHearings) {
-            const caseHearingModels: CaseHearingModel[] = hearingsStateData.caseHearingsMainModel.caseHearings.filter(hearing =>
+    return this.hearingStore.pipe(select(fromHearingStore.getHearingList)).pipe(
+      map(hearingListStateData => {
+          if (hearingListStateData && hearingListStateData.caseHearingsMainModel && hearingListStateData.caseHearingsMainModel.caseHearings) {
+            const caseHearingModels: CaseHearingModel[] = hearingListStateData.caseHearingsMainModel.caseHearings.filter(hearing =>
               hearing.exuiSectionStatus === status
             );
             const caseHearingViewModels: CaseHearingViewModel[] = this.calculateEarliestHearingDate(caseHearingModels);

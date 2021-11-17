@@ -2,9 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { select, Store, StoreModule } from '@ngrx/store';
 import { reducers } from '../index';
 import { initialState, State } from '../reducers';
-import { getHearingsList } from './hearings.selectors';
+import { getHearingList } from './hearing-list.selectors';
 
-describe('Hearings selectors', () => {
+describe('Hearing List selectors', () => {
   let store: Store<State>;
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -17,10 +17,10 @@ describe('Hearings selectors', () => {
     spyOn(store, 'dispatch').and.callThrough();
   });
 
-  describe('getHearingsList', () => {
+  describe('getHearingList', () => {
     it('should return hearings navigation state', () => {
       let result;
-      store.pipe(select(getHearingsList)).subscribe(value => {
+      store.pipe(select(getHearingList)).subscribe(value => {
         result = value;
       });
       expect(result).toEqual(initialState);

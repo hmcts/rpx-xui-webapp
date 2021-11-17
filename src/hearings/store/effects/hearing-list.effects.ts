@@ -3,13 +3,13 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import * as fromActions from '../../../app/store/actions';
-import * as hearingsActions from '../../../hearings/store/actions/hearings.action';
+import * as fromAppStoreActions from '../../../app/store/actions';
+import * as hearingListActions from '../../../hearings/store/actions/hearing-list.action';
 import { HttpError } from '../../../models/httpError.model';
 import { HearingsService } from '../../services/hearings.service';
 
 @Injectable()
-export class HearingsEffects {
+export class HearingListEffects {
 
   constructor(
     private readonly actions$: Actions,
@@ -18,15 +18,15 @@ export class HearingsEffects {
   }
 
   @Effect()
-  public loadHearingsList$ = this.actions$.pipe(
-    ofType(hearingsActions.LOAD_ALL_HEARINGS),
-    map((action: hearingsActions.LoadAllHearings) => action.payload),
+  public loadHearingList$ = this.actions$.pipe(
+    ofType(hearingListActions.LOAD_ALL_HEARINGS),
+    map((action: hearingListActions.LoadAllHearings) => action.payload),
     switchMap(payload => {
       return this.hearingsService.getAllHearings(payload).pipe(
         map(
-          (response) => new hearingsActions.LoadAllHearingsSuccess(response)),
+          (response) => new hearingListActions.LoadAllHearingsSuccess(response)),
         catchError(error => {
-          return HearingsEffects.handleError(error, hearingsActions.LOAD_ALL_HEARINGS);
+          return HearingListEffects.handleError(error, hearingListActions.LOAD_ALL_HEARINGS);
         })
       );
     })
@@ -34,7 +34,7 @@ export class HearingsEffects {
 
   public static handleError(error: HttpError, action: string): Observable<Action> {
     if (error && error.status && error.status >= 400) {
-      return of(new fromActions.Go({path: ['/service-down']}));
+      return of(new fromAppStoreActions.Go({path: ['/service-down']}));
     }
   }
 }

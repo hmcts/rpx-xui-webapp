@@ -20,7 +20,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'noresults/:error',
+    path: 'noresults/:id',
     component: NoResultsComponent,
     data: {
       title: 'Search cases | No results',

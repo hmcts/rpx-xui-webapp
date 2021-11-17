@@ -5,6 +5,7 @@ import { combineLatest, Subscription } from 'rxjs';
 import { SearchResult, SearchResultDisplay } from '../../models';
 import { SearchService } from '../../services/search.service';
 import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
+import { NoResultsMessageId } from '../../enums';
 
 @Component({
   selector: 'exui-search-results',
@@ -29,7 +30,7 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
       this.jurisdictionService.getJurisdictions()
     ]).subscribe(
       results => this.onSearchSubscriptionHandler(results),
-      error => this.router.navigate(['/search/noresults', true], {relativeTo: this.route})
+      error => this.router.navigate(['/search/noresults', NoResultsMessageId.ERROR], {relativeTo: this.route})
     );
   }
 
@@ -42,7 +43,7 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
     const searchResult = results[0];
     // Navigate to no results page if case list is empty
     if (searchResult.resultInfo.casesReturned === 0) {
-      this.router.navigate(['/search/noresults', false], {relativeTo: this.route})
+      this.router.navigate(['/search/noresults', NoResultsMessageId.NO_RESULTS], {relativeTo: this.route})
     }
 
     // Get the jurisdiction list from the results

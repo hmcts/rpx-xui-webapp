@@ -1,30 +1,41 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, ParamMap, Params } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Observable } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { NoResultsMessageId } from 'src/search/enums';
 import { NoResultsComponent } from './no-results.component';
+
+export class ActivatedRouteStub {
+  // Use a ReplaySubject to share previous values with subscribers
+  // and pump new values into the `paramMap` observable
+  private subject = new ReplaySubject<ParamMap>();
+
+  constructor(initialParams?: Params) {
+    this.setParamMap(initialParams);
+  }
+
+  /** The mock paramMap observable */
+  readonly paramMap = this.subject.asObservable();
+
+  /** Set the paramMap observables's next value */
+  setParamMap(params?: Params) {
+    this.subject.next(convertToParamMap(params));
+  }
+}
 
 describe('NoResultsComponent', () => {
   let component: NoResultsComponent;
   let fixture: ComponentFixture<NoResultsComponent>;
+  let activatedRoute: ActivatedRouteStub;
 
   beforeEach(async(() => {
+    activatedRoute = new ActivatedRouteStub({ id: NoResultsMessageId.NO_RESULTS });
     TestBed.configureTestingModule({
       declarations: [ NoResultsComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],
       imports: [ RouterTestingModule ],
-      providers: [
-        { 
-          provide: ActivatedRoute,
-          useValue: {
-            paramMap: Observable.of({
-              id: NoResultsMessageId.NO_RESULTS
-            })
-          }
-        }
-      ]
+      providers: [{ provide: ActivatedRoute, useValue: activatedRoute }]
     })
     .compileComponents();
   }));
@@ -49,19 +60,22 @@ describe('NoResultsComponent', () => {
 
   it('should display no results content if no error', () => {
     component.messageId = NoResultsMessageId.NO_RESULTS;
-    expect(fixture.debugElement.nativeElement.querySelector('.govuk-width-container').innerText).toContain('search using different criteria');
-  });
-
-  fit('should display something went wrong content if error', () => {
-    TestBed.overrideProvider(ActivatedRoute, { 
-      useValue: {
-        paramMap: Observable.of({
-          id: NoResultsMessageId.ERROR
-        })
+    activatedRoute.paramMap.subscribe(params => {
+      if (Number(params.get('id')) === NoResultsMessageId.NO_RESULTS) {
+        expect(fixture.debugElement.nativeElement.querySelector('.govuk-width-container').innerText).toContain('search using different criteria');
       }
     });
+  });
+
+  it('should display something went wrong content if error', () => {
+    const activatedRoute2 = new ActivatedRouteStub({ id: NoResultsMessageId.ERROR });
+    TestBed.overrideProvider(ActivatedRoute, { useValue: activatedRoute2 });
+
     component.messageId = NoResultsMessageId.ERROR;
-    component.ngOnInit();
-    expect(fixture.debugElement.nativeElement.querySelector('.govuk-width-container').innerText).toContain('search using different criteria');
+    activatedRoute.paramMap.subscribe(params => {
+      if (Number(params.get('id')) === NoResultsMessageId.ERROR) {
+        expect(fixture.debugElement.nativeElement.querySelector('.govuk-width-container').innerText).toContain('search for as many fields as possible');
+      }
+    });
   });
 });

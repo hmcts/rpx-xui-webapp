@@ -13,7 +13,18 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Given('I navigate to home page', async function () {
         await BrowserWaits.retryWithActionCallback(async () => {
-            await browserUtil.gotoHomePage();
+            let isAppLoaded = false;
+            try{
+                isAppLoaded = await headerpage.manageCases.isPresent();
+            }catch(err){
+            }
+            if (isAppLoaded){
+                CucumberReporter.AddJson("Clicking Manage cases header Link in loaded app.");
+                await headerpage.manageCases.click();
+            }else{
+                CucumberReporter.AddJson("Loading app by browser navigate to url");
+                await browserUtil.gotoHomePage();
+            }
             await BrowserWaits.retryWithActionCallback(async () => {
                 await headerpage.waitForPrimaryNavDisplay();
                 await browserUtil.waitForLD();
@@ -35,6 +46,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Given('I start MockApp', async function () {
+        try{
+            await MockApp.stopServer();
+        }
+        catch(err){}
        await MockApp.startServer();
     });
 

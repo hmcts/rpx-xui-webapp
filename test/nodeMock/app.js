@@ -10,17 +10,17 @@ const http = axios.create({})
 axios.defaults.headers.common['Content-Type'] = 'application/json'
 
 
-
-
 let { requestMapping,configurations} = require('./reqResMapping');
 const CCDCaseConfig = require('./ccd/ccdCaseConfig/caseCreateConfigGenerator');
 const CCDCaseDetails = require('./ccd/ccdCaseConfig/caseDetailsConfigGenerator');
 
 const { getDLCaseConfig} = require('../ngIntegration/mockData/ccdCaseMock');
 const nodeAppMock = require('./nodeApp/mockData');
+
+const waMockDataService = require('./workAllocation/mockData');
+
+
 const port = 3001;
-
-
 class MockApp{
     init(clientPortStart){
         this.requestLogs = [];
@@ -39,10 +39,16 @@ class MockApp{
             delete: { ...requestMapping.delete}
         };
         // this.configurations = Object.assign({}, configurations)
-       
         this.logMessageCallback = null;
+
+        this.mockDataServices = []
         console.log("Mock Config Initialized");
         return "done";
+    }
+
+
+    initialiseMockDataServices(){
+        waMockDataService.init();
     }
 
     setServerPort(port){
@@ -149,6 +155,7 @@ class MockApp{
     }
 
     async startServer(){
+        
         const app = express();
         app.disable('etag');
         app.use(bodyParser.urlencoded({ extended: false }));

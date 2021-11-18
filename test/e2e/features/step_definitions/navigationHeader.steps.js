@@ -7,6 +7,7 @@ const constants = require('../../support/constants');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
+
     Then('I see header tab Task list', async function () {
         expect(await headerPage.isTabPresent("Task list"), "Task list tab is not present").to.be.true;
     });

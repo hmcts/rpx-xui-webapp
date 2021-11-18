@@ -94,9 +94,14 @@ const BrowserLogs = require('./browserLogs');
 
 
 defineSupportCode(({ Before,After }) => {
-    Before(function (scenario) {
+    Before(async function (scenario) {
         global.scenarioData = {};
         const world = this;
+        if (!scenario.pickle.name.startsWith('WITH SESSION')){
+            await browser.executeScript('window.sessionStorage.clear();');
+            await browser.executeScript('window.localStorage.clear();');
+            await browser.manage().deleteAllCookies();
+        }
         CucumberReportLog.setScenarioWorld(this);
     });
 
@@ -111,14 +116,19 @@ defineSupportCode(({ Before,After }) => {
                 let browserErrorLogs = []
                 for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++) {
                     if (browserLog[browserLogCounter].level.value > 900) {
-                        browserLog[browserLogCounter]['time'] = (new Date(browserLog[browserLogCounter]['time'])).toISOString()
+                        try{
+                            browserLog[browserLogCounter]['time'] = (new Date(browserLog[browserLogCounter]['time'])).toISOString()
+                        }
+                        catch(err){
+                            
+                        }
                         browserErrorLogs.push(browserLog[browserLogCounter]);
                     }
                 }
                 CucumberReportLog.AddJson(browserErrorLogs);
-                if (global.scenarioData['featureToggles']){
-                    CucumberReportLog.AddJson(global.scenarioData['featureToggles'])
-                }
+                // if (global.scenarioData['featureToggles']){
+                //     CucumberReportLog.AddJson(global.scenarioData['featureToggles'])
+                // }
             } 
             
             await CucumberReportLog.AddMessage("Cleared browser logs after successful scenario.");
@@ -129,9 +139,7 @@ defineSupportCode(({ Before,After }) => {
             CucumberReportLog.AddMessage("Error in hooks with browserlogs or screenshots. See error details : " + err);
         }     
         
-        await browser.executeScript('window.sessionStorage.clear();');
-        await browser.executeScript('window.localStorage.clear();');
-        await browser.manage().deleteAllCookies();
+       
 
     });
 });

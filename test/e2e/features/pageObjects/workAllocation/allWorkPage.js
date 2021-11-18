@@ -63,7 +63,8 @@ class AllWork extends TaskList {
         if (!filtersItems.includes(filterItem)) {
             throw new Error(`Filter item "${filterItem}" not recognised or not implemented in test`);
         }
-        return await this.FILTER_ITEMS[filterItem].isEnabled();
+        return await this.FILTER_ITEMS[filterItem].isDisplayed() 
+        && await this.FILTER_ITEMS[filterItem].isEnabled();
 
     }
 

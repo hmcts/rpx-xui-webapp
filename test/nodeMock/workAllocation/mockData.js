@@ -5,7 +5,35 @@ const WorkAllocationDataModels = require("../../dataModels/workAllocation");
 class WorkAllocationMockData {
 
     constructor() {
+        this.init();  
+        
+    }
+
+    init(){
         this.findPersonsAllAdata = [];
+        this.cases = { cases: [], total_records: 0 };
+
+        this.exclusions = this.getCaseExclusions([
+            { added: '2021-10-12T12:14:42.230129Z', name: 'judeg a', userType: 'JUDICIAL', type: 'CASE', id: '12345678901' },
+            { added: '2021-10-12T12:14:42.230129Z', name: 'judeg b', userType: 'JUDICIAL', type: 'CASE', id: '12345678902' },
+            { added: '2021-10-12T12:14:42.230129Z', name: 'judeg c', userType: 'JUDICIAL', type: 'CASE', id: '12345678903' },
+            { added: '2021-10-12T12:14:42.230129Z', name: 'legal a', userType: 'LEGAL_OPERATIONS', type: 'CASE', id: '12345678904' }
+        ]);
+
+        this.caseRoles = this.getCaseRoles([
+            { added: '2021-10-12T12:14:42.230129Z', name: 'judeg a', userType: 'JUDICIAL', type: 'CASE', id: '12345678901', roleCategory: 'JUDICIAL', roleName:'lead-judge' },
+            { added: '2021-10-12T12:14:42.230129Z', name: 'judeg b', userType: 'JUDICIAL', type: 'CASE', id: '12345678902', roleCategory: 'JUDICIAL', roleName: 'lead-judge' },
+            { added: '2021-10-12T12:14:42.230129Z', name: 'judeg c', userType: 'JUDICIAL', type: 'CASE', id: '12345678903', roleCategory: 'JUDICIAL', roleName: 'lead-judge'},
+            { added: '2021-10-12T12:14:42.230129Z', name: 'legal a', userType: 'LEGAL_OPERATIONS', type: 'CASE', id: '12345678904', roleCategory: 'LEGAL_OPERATIONS', roleName: 'case-manager'}
+        ]);
+
+        this.caseRoleForAssignment = this.caseRoles[0];
+
+
+    }
+
+    setCaseRoleAssignment(caseRole){
+        this.caseRoleForAssignment  = this.getCaseRoles([caseRole]);
     }
 
     async getFindPersonsDataFrom(database) {
@@ -74,12 +102,13 @@ class WorkAllocationMockData {
     }
 
     getMyCases(count) {
-
-        let cases = { cases: [], total_records: count };
-        for (let i = 0; i < count; i++) {
-            cases.cases.push(this.getRelease2CaseWithPermission(['case-allocator'], "MyCases", "assigned"));
+        if (this.cases.cases.length === 0 ){
+            for (let i = 0; i < count; i++) {
+                this.cases.cases.push(this.getRelease2CaseWithPermission(['case-allocator'], "MyCases", "assigned"));
+            }
         }
-        return cases;
+        this.cases.total_records = this.cases.cases.length;
+        return this.cases;
 
     }
 
@@ -229,27 +258,8 @@ class WorkAllocationMockData {
     }
 
     getRoles() {
-        const roles = [];
-        const leadJudge = WorkAllocationDataModels.getRole();
-        const hearingJudge = WorkAllocationDataModels.getRole();
-        const caseManager = WorkAllocationDataModels.getRole();
-
-        leadJudge.roleId = 'lead-judge';
-        leadJudge.roleName = 'Lead judge';
-        leadJudge.roleCategory = 'JUDICIAL';
-
-        hearingJudge.roleId = 'hearing-judge';
-        hearingJudge.roleName = 'Hearing judge';
-        hearingJudge.roleCategory = 'JUDICIAL';
-
-        caseManager.roleId = 'case-manager';
-        caseManager.roleName = 'Case manager';
-        caseManager.roleCategory = 'LEGAL_OPERATIONS';
-
-        roles.push(leadJudge);
-        roles.push(hearingJudge);
-        roles.push(caseManager);
-        return roles;
+        
+        return WorkAllocationDataModels.getValidRoles();
 
     }
 
@@ -330,6 +340,8 @@ class WorkAllocationMockData {
         }
         return tasks;
     }
+
+
 
 
 }

@@ -251,11 +251,11 @@ describe('CaseTaskComponent', () => {
     expect(result).toBe('[Link the appeal](/cases/case-details/1620409659381330/trigger/linkAppeal/linkAppealreasonForLinkAppealPageId)');
   });
   it('getDueDateTitle should be Task created', () => {
-      component.isUserJudidical = true;
+      component.isUserJudicial = true;
       expect(component.getDueDateTitle()).toEqual('Task created');
   });
   it('getDueDateTitle should be Due date', () => {
-      component.isUserJudidical = false;
+      component.isUserJudicial = false;
       expect(component.getDueDateTitle()).toEqual('Due date');
   });
 });

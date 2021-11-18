@@ -20,7 +20,7 @@ Feature: WA Release 2: My work - Work filters - Uhhappy paths
             | 12345 | Aldgate Tower |
 
         Given I set MOCK request "/workallocation2/taskWithPagination" intercept with reference "workallocationTaskRequest"
-        Given I set MOCK request "/workallocation2/my-cases" intercept with reference "workallocationCasesRequest"
+        Given I set MOCK request "/workallocation2/my-work/cases" intercept with reference "workallocationCasesRequest"
 
 
     Scenario Outline:  Work filters no location selected"

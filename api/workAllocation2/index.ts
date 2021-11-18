@@ -22,13 +22,14 @@ import {
 } from './caseWorkerService';
 
 import { JUDICIAL_WORKERS_LOCATIONS } from './constants/mock.data';
+import { TASK_ROLES } from './constants/task-roles.mock.data';
 import { PaginationParameter } from './interfaces/caseSearchParameter';
 import { Caseworker } from './interfaces/common';
 import { TaskList } from './interfaces/task';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { checkIfCaseAllocator } from './roleService';
 import * as roleServiceMock from './roleService.mock';
-import { handleGetTasksByCaseId, handleTaskGet, handleTaskPost, handleTaskSearch } from './taskService';
+import { handleTaskGet, handleTaskPost, handleTaskSearch } from './taskService';
 import * as taskServiceMock from './taskService.mock';
 import {
   assignActionsToCases,
@@ -91,6 +92,19 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
 }
 
 /**
+ * getTask
+ */
+export async function getTaskRoles(req: EnhancedRequest, res: Response, next: NextFunction) {
+
+  try {
+    res.status(200);
+    res.send(TASK_ROLES);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
  * Post to search for a Task.
  */
 export async function searchTask(req: EnhancedRequest, res: Response, next: NextFunction) {
@@ -119,9 +133,28 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
 
 export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const caseId = req.params.caseId;
+  const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
+  const searchRequest = {
+    search_parameters: [
+      {
+        key: 'caseId',
+        operator: 'IN',
+        values: [
+          caseId,
+        ],
+      },
+    ],
+    sorting_parameters: [
+      {
+        sort_by: 'due_date',
+        sort_order: 'asc',
+      },
+    ],
+    search_by: 'caseworker',
+  };
   try {
-    const {status, data} = await handleGetTasksByCaseId(`${baseWorkAllocationTaskUrl}/task/${caseId}`, req);
-    return res.send(data as TaskList).status(status);
+    const {status, data} = await handleTaskSearch(`${basePath}`, searchRequest, req);
+    return res.send(data.tasks as TaskList).status(status);
   } catch (e) {
     next(e);
   }
@@ -301,18 +334,22 @@ export async function getMyCases(req: EnhancedRequest, res: Response) {
 
   try {
     const result = await searchCasesById(queryParams, query, req);
-    const caseData = result.cases;
-    result.total_records = result.cases.length;
-    // search parameters passed in as null as there are no parameters for my cases
-    const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
-    let checkedRoles = req && req.session && req.session.roleAssignmentResponse ? req.session.roleAssignmentResponse : null;
-    if (showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED)) {
-      checkedRoles = getSubstantiveRoles(req.session.roleAssignmentResponse);
+    if (result && result.cases) {
+      const caseData = result.cases;
+      result.total_records = result.cases.length;
+      // search parameters passed in as null as there are no parameters for my cases
+      const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
+      let checkedRoles = req && req.session && req.session.roleAssignmentResponse ? req.session.roleAssignmentResponse : null;
+      if (showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED)) {
+        checkedRoles = getSubstantiveRoles(req.session.roleAssignmentResponse);
+      }
+      const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles, null) : [];
+      const cases = assignActionsToCases(mappedCases, userIsCaseAllocator, true);
+      result.cases = cases;
+      return res.send(result).status(200);
+    } else {
+      return res.send([]).status(200);
     }
-    const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles, null) : [];
-    const cases = assignActionsToCases(mappedCases, userIsCaseAllocator, true);
-    result.cases = cases;
-    return res.send(result).status(200);
   } catch (e) {
     console.log(e);
     return res.send(null).status(500);

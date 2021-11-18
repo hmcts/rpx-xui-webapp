@@ -1,9 +1,9 @@
-@ng 
+@ng @test
 Feature: WA Release 2: All work > cases -  pagination sorting
 
     Background: Mock and browser setup
         Given I init MockApp
-        Given I set MOCK request "/workallocation2/my-cases" intercept with reference "caseSearchRequest"
+        Given I set MOCK request "/workallocation2/all-work/cases" intercept with reference "caseSearchRequest"
 
 
     Scenario Outline: pagnation and sorting for user type "<UserType>" with roles "<Roles>"
@@ -93,7 +93,7 @@ Feature: WA Release 2: All work > cases -  pagination sorting
         Then I validate work allocation cases table pagination controls, is displayed state is "false"
 
         Then I validate WA cases table footer displayed status is "true"
-        Then I validate WA cases table footer message is "You have no assigned cases"
+        Then I validate WA cases table footer message is "Change your selection to view cases"
 
         Examples:
             | UserIdentifier  | UserType | Roles                                           |

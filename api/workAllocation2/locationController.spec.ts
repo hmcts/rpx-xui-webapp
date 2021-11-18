@@ -60,7 +60,7 @@ describe('workAllocation', () => {
       const req = mockReq();
       const response = mockRes();
 
-      const locations = mapLocations([{epimms_id: '1', site_name: 'name1'}]);
+      const locations = mapLocations([{epimms_id: '1', site_name: 'full name', venue_name: 'name1', is_case_management_location: 'Y'}]);
 
       expect(locations[0].id).to.equal('1');
       expect(locations[0].locationName).to.equal('name1');

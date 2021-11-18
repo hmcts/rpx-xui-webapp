@@ -123,7 +123,7 @@ module.exports = {
 
                 
 
-                const startIndexForPage =  ((pageNum - 1) * pageSize) - 1;
+                const startIndexForPage = pageNum === 0 ? 0 : ((pageNum) * pageSize) - 1;
                 const endIndexForPage =  (startIndexForPage + pageSize) < cases.total_records ? startIndexForPage + pageSize - 1 : cases.total_records - 1;
                 for (let i = startIndexForPage; i <= endIndexForPage; i++) {
                     thisPageCases.push(cases.cases[i]);

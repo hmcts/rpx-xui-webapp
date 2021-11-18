@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
@@ -9,14 +9,15 @@ import { UserNavModel } from '../../models/user-nav.model';
 import { UserService } from '../../services/user/user.service';
 import { SearchService } from '../../../search/services/search.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NoResultsMessageId } from 'src/search/enums';
+import { NoResultsMessageId, SearchStatePersistenceKey } from '../../../search/enums';
+import { SearchParameters } from '../../../search/models';
 
 @Component({
     selector: 'exui-hmcts-global-header',
     templateUrl: './hmcts-global-header.component.html',
     styleUrls: ['./hmcts-global-header.component.scss']
 })
-export class HmctsGlobalHeaderComponent implements OnChanges {
+export class HmctsGlobalHeaderComponent implements OnChanges, OnDestroy {
 
   @Input() public set showNavItems(value: boolean) {
     this.showItems = value;
@@ -41,6 +42,7 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
     return this.menuItems.right.asObservable();
   };
   public searchSubscription$: Subscription;
+	public caseReference: string;
 
   private menuItems = {
     left: new BehaviorSubject<NavItemsModel[]>([]),
@@ -73,7 +75,24 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
   }
 
   public onSearchCase(): void {
+		// Populate a SearchParameters instance and persist via the SearchService
+		const searchParameters: SearchParameters = {
+			caseReferences: [this.caseReference],
+			CCDJurisdictionIds: null,
+			otherReferences: null,
+			fullName: null,
+			address: null,
+			postcode: null,
+			emailAddress: null,
+			dateOfBirth: null,
+			dateOfDeath: null
+		};
+
+		// Store the search parameters to session
+		this.searchService.storeState(SearchStatePersistenceKey.SEARCH_PARAMS, searchParameters);
+
     this.searchSubscription$ = this.searchService.getResults().subscribe(result => {
+			console.log('result', result);
       if (result.resultInfo.casesReturned > 0) {
         this.router.navigate([`/cases/case-details/${result.results[0].caseReference}`], { relativeTo: this.route });
       }
@@ -81,6 +100,12 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
       return this.router.navigate(['/search/noresults', NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH], { relativeTo: this.route });
     });
   }
+
+	public ngOnDestroy(): void {
+		if (this.searchSubscription$) {
+			this.searchSubscription$.unsubscribe();
+		}
+	}
 
   private splitAndFilterNavItems(items: NavItemsModel[]) {
     of(items).pipe(

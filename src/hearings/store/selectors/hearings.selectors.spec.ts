@@ -26,5 +26,4 @@ describe('Hearings selectors', () => {
       expect(result).toEqual(initialState);
     });
   });
-
 });

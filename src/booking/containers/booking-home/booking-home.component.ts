@@ -11,7 +11,7 @@ import { BookingNavigation } from '../../models/booking-navigation.interface';
 export class BookingHomeComponent implements OnInit {
 
   @Input() public navEvent: BookingNavigation;
-  @Input() public bookingOptionIndex: boolean;
+  @Input() public bookingOptionIndex: number;
 
   @Output() public bookingOptionIndexChange = new EventEmitter<boolean>();
 

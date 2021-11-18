@@ -1,0 +1,32 @@
+<exui-app-header></exui-app-header>
+<div class="govuk-width-container">
+  <div class="page">
+    <main id="content" role="main">
+      <div class="govuk-grid-row">
+        <exui-booking-navigation (eventTrigger)="onNavEvent($event)" [currentNavigationState]="bookingNavigationCurrentState" [bookingOptionIndex]="bookingOptionIndex">
+          <div class="govuk-main-wrapper">
+            <exui-booking-home #bookingHome
+              *ngIf="isComponentVisible(bookingNavigationCurrentState, bookingHomeVisibilityStates)"
+              [navEvent]="navEvent"
+              [(bookingOptionIndex)]="bookingOptionIndex"
+              >
+            </exui-booking-home>
+            <exui-booking-location #bookingLocation
+              *ngIf="isComponentVisible(bookingNavigationCurrentState, bookingLocationVisibilityStates)"
+              [navEvent]="navEvent">
+            </exui-booking-location>
+            <exui-booking-date #bookingDate
+              *ngIf="isComponentVisible(bookingNavigationCurrentState, bookingDateVisibilityStates)"
+              [navEvent]="navEvent">
+            </exui-booking-date>
+            <exui-booking-check #bookingCheck
+              *ngIf="isComponentVisible(bookingNavigationCurrentState, bookingCheckVisibilityStates)"
+              [navEvent]="navEvent">
+            </exui-booking-check>
+          </div>
+        </exui-booking-navigation>
+      </div>
+    </main>
+  </div>
+</div>
+<exui-app-footer></exui-app-footer>

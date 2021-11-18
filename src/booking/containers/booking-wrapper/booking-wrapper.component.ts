@@ -5,7 +5,7 @@ import { bookingCheckVisibilityStates, bookingDateVisibilityStates, bookingHomeV
 import { BookingNavigation, BookingNavigationEvent, BookingState } from '../../models';
 
 @Component({
-  selector: 'xui-booking-wrapper',
+  selector: 'exui-booking-wrapper',
   templateUrl: './booking-wrapper.component.html',
   styleUrls: ['./booking-wrapper.component.scss']
 })
@@ -30,7 +30,7 @@ export class BookingWrapperComponent implements OnInit {
   public bookingDateVisibilityStates = bookingDateVisibilityStates;
   public bookingCheckVisibilityStates = bookingCheckVisibilityStates;
 
-  public bookingOptionIndex : number;
+  public bookingOptionIndex: number;
 
   constructor(private readonly router: Router) { }
 
@@ -65,10 +65,9 @@ export class BookingWrapperComponent implements OnInit {
       case BookingNavigationEvent.HOMECONTINUE:
         if (this.bookingOptionIndex === 1) {
           this.bookingNavigationCurrentState = BookingState.LOCATION;
-        } else
-        {
+        } else {
           this.router.navigate(['/work/my-work/list']);
-          // redirect to view tasks and cases
+          // TODO: redirect to view tasks and cases
         }
         break;
       case BookingNavigationEvent.LOCATIONCONTINUE:
@@ -81,7 +80,7 @@ export class BookingWrapperComponent implements OnInit {
         this.bookingNavigationCurrentState = BookingState.CHECK;
         break;
       case BookingNavigationEvent.CONFIRMBOOKINGSUBMIT:
-        //TODO: Submit booking
+        // TODO: Submit booking
         break;
       default:
         throw new Error('Invalid Booking state');
@@ -91,7 +90,7 @@ export class BookingWrapperComponent implements OnInit {
   public isComponentVisible(currentNavigationState: BookingState, requiredNavigationState: BookingState[]): boolean {
     return requiredNavigationState.includes(currentNavigationState);
   }
-  
+
  public fieldValueHandler(navEvent: BookingNavigationEvent) {
     switch (navEvent) {
       case BookingNavigationEvent.BACK:
@@ -122,7 +121,7 @@ export class BookingWrapperComponent implements OnInit {
         this.bookingNavigationCurrentState = BookingState.CHECK;
         break;
       case BookingNavigationEvent.CONFIRMBOOKINGSUBMIT:
-        //TODO: Submit booking
+        // TODO: Submit booking
         break;
       default:
         throw new Error('Invalid Booking state');

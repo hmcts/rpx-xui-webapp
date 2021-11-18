@@ -11,8 +11,8 @@ describe('Hearing List Reducer', () => {
 
     describe('Reset action', () => {
       it('should set correct object', () => {
-        const initialState = fromHearingListReducer.initialState;
-        const action = new fromHearingListActions.Reset();
+        const initialState = fromHearingListReducer.initialHearingListState;
+        const action = new fromHearingListActions.HearingListReset();
         const hearingsState = fromHearingListReducer.hearingListReducer(initialState, action);
         expect(hearingsState).toEqual(initialState);
       });
@@ -20,7 +20,7 @@ describe('Hearing List Reducer', () => {
 
     describe('Load all hearings success action', () => {
       it('should set correct object', () => {
-        const initialState = fromHearingListReducer.initialState;
+        const initialState = fromHearingListReducer.initialHearingListState;
         const HEARING_DAY_SCHEDULE_1: HearingDayScheduleModel = {
           hearingStartDateTime: '2021-05-01T16:00:00.000+0000',
           hearingEndDateTime: '2021-05-04T16:00:00.000+0000',

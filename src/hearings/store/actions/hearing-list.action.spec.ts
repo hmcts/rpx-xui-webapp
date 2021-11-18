@@ -4,8 +4,8 @@ describe('Hearing List Actions', () => {
 
   describe('Reset', () => {
     it('should create an action', () => {
-      const action = new fromHearingListAction.Reset();
-      expect(action.type).toBe(fromHearingListAction.RESET);
+      const action = new fromHearingListAction.HearingListReset();
+      expect(action.type).toBe(fromHearingListAction.HEARING_LIST_RESET);
     });
   });
 

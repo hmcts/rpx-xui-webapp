@@ -72,7 +72,7 @@ describe('Hearing List Effects', () => {
       const action$ = HearingListEffects.handleError({
         status: 500,
         message: 'error'
-      }, hearingListActions.LOAD_ALL_HEARINGS);
+      });
       action$.subscribe(action => expect(action).toEqual(new Go({path: ['/service-down']})));
     });
   });

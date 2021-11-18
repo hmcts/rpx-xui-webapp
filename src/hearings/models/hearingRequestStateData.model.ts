@@ -1,6 +1,7 @@
 import {HttpError} from '../../models/httpError.model';
+import {HearingRequestMainModel} from './hearingRequestMain.model';
 
 export interface HearingRequestStateData {
-  // caseHearingsMainModel: HearingRequestMainModel;
+  hearingRequestMainModel: HearingRequestMainModel;
   lastError?: HttpError;
 }

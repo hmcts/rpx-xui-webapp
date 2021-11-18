@@ -26,13 +26,13 @@ export class HearingListEffects {
         map(
           (response) => new hearingListActions.LoadAllHearingsSuccess(response)),
         catchError(error => {
-          return HearingListEffects.handleError(error, hearingListActions.LOAD_ALL_HEARINGS);
+          return HearingListEffects.handleError(error);
         })
       );
     })
   );
 
-  public static handleError(error: HttpError, action: string): Observable<Action> {
+  public static handleError(error: HttpError): Observable<Action> {
     if (error && error.status && error.status >= 400) {
       return of(new fromAppStoreActions.Go({path: ['/service-down']}));
     }

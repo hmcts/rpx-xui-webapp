@@ -51,14 +51,12 @@ describe('NoResultsComponent', () => {
   });
 
   it('should display no results content if 16 digit case reference error', () => {
-    const activatedRoute = new ActivatedRouteStub({ id: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH });
-    TestBed.overrideProvider(ActivatedRoute, { useValue: activatedRoute });
-
+    spyOn(route.snapshot.paramMap, 'get').and.returnValue(NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH);
+    // We have to TestBed.createComponent again for the activated route to work
+    fixture = TestBed.createComponent(NoResultsComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
     component.messageId = NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH;
-    activatedRoute.paramMap.subscribe(params => {
-      if (Number(params.get('id')) === NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH) {
-        expect(fixture.debugElement.nativeElement.querySelector('.govuk-width-container').innerText).toContain('This 16-digit case reference could not be found.');
-      }
-    });
+    expect(fixture.debugElement.nativeElement.querySelector('.govuk-width-container').innerText).toContain('This 16-digit case reference could not be found.');
   });
 });

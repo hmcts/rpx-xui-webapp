@@ -42,7 +42,6 @@ export class HmctsGlobalHeaderComponent implements OnChanges, OnDestroy {
     return this.menuItems.right.asObservable();
   };
   public searchSubscription$: Subscription;
-	public caseReference: string;
 
   private menuItems = {
     left: new BehaviorSubject<NavItemsModel[]>([]),
@@ -74,38 +73,37 @@ export class HmctsGlobalHeaderComponent implements OnChanges, OnDestroy {
     }
   }
 
-  public onSearchCase(): void {
-		// Populate a SearchParameters instance and persist via the SearchService
-		const searchParameters: SearchParameters = {
-			caseReferences: [this.caseReference],
-			CCDJurisdictionIds: null,
-			otherReferences: null,
-			fullName: null,
-			address: null,
-			postcode: null,
-			emailAddress: null,
-			dateOfBirth: null,
-			dateOfDeath: null
-		};
+  public onSearchCase(caseReference): void {
+    // Populate a SearchParameters instance and persist via the SearchService
+    const searchParameters: SearchParameters = {
+      caseReferences: [caseReference],
+      CCDJurisdictionIds: null,
+      otherReferences: null,
+      fullName: null,
+      address: null,
+      postcode: null,
+      emailAddress: null,
+      dateOfBirth: null,
+      dateOfDeath: null
+    };
 
-		// Store the search parameters to session
-		this.searchService.storeState(SearchStatePersistenceKey.SEARCH_PARAMS, searchParameters);
+    // Store the search parameters to session
+    this.searchService.storeState(SearchStatePersistenceKey.SEARCH_PARAMS, searchParameters);
 
     this.searchSubscription$ = this.searchService.getResults().subscribe(result => {
-			console.log('result', result);
       if (result.resultInfo.casesReturned > 0) {
         this.router.navigate([`/cases/case-details/${result.results[0].caseReference}`], { relativeTo: this.route });
+      } else {
+        this.router.navigate(['/search/noresults', NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH], { relativeTo: this.route });
       }
-
-      return this.router.navigate(['/search/noresults', NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH], { relativeTo: this.route });
     });
   }
 
-	public ngOnDestroy(): void {
-		if (this.searchSubscription$) {
-			this.searchSubscription$.unsubscribe();
-		}
-	}
+  public ngOnDestroy(): void {
+    if (this.searchSubscription$) {
+      this.searchSubscription$.unsubscribe();
+    }
+  }
 
   private splitAndFilterNavItems(items: NavItemsModel[]) {
     of(items).pipe(

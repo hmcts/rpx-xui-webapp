@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
 import { combineLatest, Subscription } from 'rxjs';
 import { JurisdictionService } from '../../../app/services/jurisdiction/jurisdiction.service';
-import { NoResultsMessageId } from '../../enums';
+import { NoResultsMessageId, ProcessForAccessType } from '../../enums';
 import { SearchResult, SearchResultDisplay } from '../../models';
 import { SearchService } from '../../services/search.service';
 
@@ -120,11 +120,11 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
    *
    */
   private getActionLink(processForAccess: string, caseReference: string): string {
-    if (processForAccess === 'SPECIFIC') {
+    if (processForAccess === ProcessForAccessType.SPECIFIC) {
       return `/cases/case-details/${caseReference}/specific-access-request`;
     }
 
-    if (processForAccess === 'CHALLENGED') {
+    if (processForAccess === ProcessForAccessType.CHALLENGED) {
       return `/cases/case-details/${caseReference}/challenged-access-request`;
     }
 
@@ -136,11 +136,11 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
    *
    */
   private getActionLinkText(processForAccess: string): string {
-    if (processForAccess === 'SPECIFIC') {
+    if (processForAccess === ProcessForAccessType.SPECIFIC) {
       return 'Specific access';
     }
 
-    if (processForAccess === 'CHALLENGED') {
+    if (processForAccess === ProcessForAccessType.CHALLENGED) {
       return 'Challenged access';
     }
 

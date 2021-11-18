@@ -391,8 +391,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I validate WA cases table footer displayed status is {string}', async function (displayStateBool) {
-        const expectedDisplayState = displayStateBool.toLowerCase().includes("true");
-        expect(await waCaseListTable.isTableFooterDisplayed()).to.equal(expectedDisplayState);
+       await BrowserWaits.retryWithActionCallback(async () => {
+           const expectedDisplayState = displayStateBool.toLowerCase().includes("true");
+           await BrowserWaits.waitForElement(waCaseListTable.tableFooter);
+           expect(await waCaseListTable.isTableFooterDisplayed()).to.equal(expectedDisplayState);
+       });
+        
     });
 
     Then('I validate WA tasks table footer message is {string}', async function (message) {

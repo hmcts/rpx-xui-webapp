@@ -19,7 +19,7 @@ Feature: WA Release 1: Task actions
 
 
     
-    Scenario:  Available Tasks actions submit
+    Scenario:  WITH SESSION : Available Tasks actions submit
          Given I start MockApp
         Given I navigate to home page
         Then I validate Task actions from page "Available tasks"
@@ -28,7 +28,7 @@ Feature: WA Release 1: Task actions
             | Assign to me and go to case | ONCECLICK  |              |                                                       |
 
    
-    Scenario:   Task manager actions submit
+    Scenario:  WITH SESSION :  Task manager actions submit
           Given I start MockApp
         Given I navigate to home page
         Then I validate Task actions from page "Task manager"

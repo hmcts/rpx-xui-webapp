@@ -1,21 +1,36 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { RequestHearingComponent } from '../request-hearing.component';
+import { provideMockStore } from '@ngrx/store/testing';
+import { LocationSearchContainerComponent } from './location-search-container.component';
 
-describe('RequestHearingComponent', () => {
-  let component: RequestHearingComponent;
-  let fixture: ComponentFixture<RequestHearingComponent>;
+fdescribe('LocationSearchContainerComponent', () => {
+  let component: LocationSearchContainerComponent;
+  let fixture: ComponentFixture<LocationSearchContainerComponent>;
+
+  const initialState = {
+    hearings: {
+      hearingsList: {
+        caseHearingsMainModel: [
+          {
+            hmctsServiceID: 'SSCS'
+          }
+        ]
+      },
+    }
+  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ RequestHearingComponent ],
+      declarations: [ LocationSearchContainerComponent ],
+      providers: [
+        provideMockStore({initialState})],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RequestHearingComponent);
+    fixture = TestBed.createComponent(LocationSearchContainerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -105,7 +105,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
 
         }
-        global.scenarioData[`workallocation2.${view}`] = { cases: cases, total_records: cases.length };
+        const casesResponse = { cases: cases, total_records: cases.length };
+        workAllocationMockData.cases = casesResponse;
+        global.scenarioData[`workallocation2.${view}`] = casesResponse;
 
     });
 

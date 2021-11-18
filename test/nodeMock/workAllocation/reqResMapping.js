@@ -1,7 +1,6 @@
 const workAllocationMockData = require('./mockData');
 
 module.exports = {
-
     get: {
         '/workallocation/location': (req, res) => {
             res.send(workAllocationMockData.getLocationList(20));
@@ -277,22 +276,17 @@ module.exports = {
 
         },
         '/api/role-access/exclusions/post' : (req,res) => {
-            const mockRoles = [
-                { added: '2021-10-12T12:14:42.230129Z', name: 'judeg a', userType: 'JUDICIAL', type: 'CASE', id: '12345678901' },
-                { added: '2021-10-12T12:14:42.230129Z', name: 'judeg b', userType: 'JUDICIAL', type: 'CASE', id: '12345678902' },
-                { added: '2021-10-12T12:14:42.230129Z', name: 'judeg c', userType: 'JUDICIAL', type: 'CASE', id: '12345678903' },
-                { added: '2021-10-12T12:14:42.230129Z', name: 'legal a', userType: 'LEGAL_OPERATIONS', type: 'CASE', id: '12345678904' }
-            ];
+            
             res.send(workAllocationMockData.getCaseExclusions(mockRoles));
         },
         '/api/role-access/roles/post': (req, res) => {
-            const mockRoles = [
-                { added: '2021-10-12T12:14:42.230129Z', name: 'judeg a', userType: 'JUDICIAL', type: 'CASE', id: '12345678901', roleCategory: 'JUDICIAL' },
-                { added: '2021-10-12T12:14:42.230129Z', name: 'judeg b', userType: 'JUDICIAL', type: 'CASE', id: '12345678902', roleCategory: 'JUDICIAL' },
-                { added: '2021-10-12T12:14:42.230129Z', name: 'judeg c', userType: 'JUDICIAL', type: 'CASE', id: '12345678903', roleCategory: 'JUDICIAL' },
-                { added: '2021-10-12T12:14:42.230129Z', name: 'legal a', userType: 'LEGAL_OPERATIONS', type: 'CASE', id: '12345678904', roleCategory: 'LEGAL_OPERATIONS'}
-            ];
-            res.send(workAllocationMockData.getCaseRoles(mockRoles));
+            
+            if(Object.keys(req.body).includes('assignmentid')){
+                res.send(workAllocationMockData.caseRoleForAssignment);
+
+            }else{
+                res.send(workAllocationMockData.caseRoles);
+            }
         },
         '/api/role-access/exclusions/delete' : (req,res) => {
             res.status(204).send();

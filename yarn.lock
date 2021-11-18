@@ -524,10 +524,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.0.tgz#7de3caa3a2836ffe41f9c426dccf5860c426a519"
-  integrity sha512-GFw/DuF8SNRItKHdKv6IFqsp0qgkzRPkWNttuUWv+E19I90n+2Nhq6uragOm0a0Rra3ajuk3zYpd1xFYjBaN0A==
+"@hmcts/rpx-xui-common-lib@1.4.10-search-location-component-common":
+  version "1.4.10-search-location-component-common"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.10-search-location-component-common.tgz#246e128089c311fe86f74bb143a53996086258cf"
+  integrity sha512-WWl4GDBW+MJ/J1YVJjBm3EncVUgGx6DLQKMXVMmvu7+heCyeTgc66g5V9wXpPhQTcSNmZKr8uZoNkaBFbwbkyg==
   dependencies:
     tslib "^1.9.0"
 

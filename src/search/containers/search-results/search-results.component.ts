@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
 import { combineLatest, Subscription } from 'rxjs';
 import { JurisdictionService } from '../../../app/services/jurisdiction/jurisdiction.service';
-import { SearchStatePersistenceKey } from '../../enums';
 import { SearchResult, SearchResultDisplay } from '../../models';
 import { SearchService } from '../../services/search.service';
 import { NoResultsMessageId } from '../../enums';
@@ -40,7 +39,7 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
     const searchResult = results[0];
     // Navigate to no results page if case list is empty
     if (searchResult.resultInfo.casesReturned === 0) {
-      this.router.navigate(['/search/noresults', NoResultsMessageId.NO_RESULTS], {relativeTo: this.route})
+      this.router.navigate(['/search/noresults', NoResultsMessageId.NO_RESULTS], {relativeTo: this.route});
     }
 
     // Get the jurisdiction list from the results

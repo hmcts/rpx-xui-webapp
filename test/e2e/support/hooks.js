@@ -98,9 +98,15 @@ defineSupportCode(({ Before,After }) => {
         global.scenarioData = {};
         const world = this;
         if (!scenario.pickle.name.startsWith('WITH SESSION')){
-            await browser.executeScript('window.sessionStorage.clear();');
-            await browser.executeScript('window.localStorage.clear();');
-            await browser.manage().deleteAllCookies();
+            try{
+                await browser.executeScript('window.sessionStorage.clear();');
+                await browser.executeScript('window.localStorage.clear();');
+                await browser.manage().deleteAllCookies();
+            }
+            catch(err){
+
+            }
+            
         }
         CucumberReportLog.setScenarioWorld(this);
     });

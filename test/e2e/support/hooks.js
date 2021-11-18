@@ -97,17 +97,7 @@ defineSupportCode(({ Before,After }) => {
     Before(async function (scenario) {
         global.scenarioData = {};
         const world = this;
-        if (!scenario.pickle.name.startsWith('WITH SESSION')){
-            try{
-                await browser.executeScript('window.sessionStorage.clear();');
-                await browser.executeScript('window.localStorage.clear();');
-                await browser.manage().deleteAllCookies();
-            }
-            catch(err){
-
-            }
-            
-        }
+       
         CucumberReportLog.setScenarioWorld(this);
     });
 
@@ -145,7 +135,9 @@ defineSupportCode(({ Before,After }) => {
             CucumberReportLog.AddMessage("Error in hooks with browserlogs or screenshots. See error details : " + err);
         }     
         
-       
+        await browser.executeScript('window.sessionStorage.clear();');
+        await browser.executeScript('window.localStorage.clear();');
+        await browser.manage().deleteAllCookies();
 
     });
 });

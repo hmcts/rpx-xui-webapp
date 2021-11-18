@@ -1,8 +1,8 @@
-import { HearingListStateData } from '../../models/hearingsStateData.model';
+import { HearingListStateData } from '../../models/hearingListStateData.model';
 import * as fromActions from '../actions';
 
 export const initialState: HearingListStateData = {
-  caseHearingsMainModel: null,
+  hearingListMainModel: null,
   lastError: null,
 };
 
@@ -17,7 +17,7 @@ export function hearingListReducer(currentState = initialState, action: fromActi
     case fromActions.LOAD_ALL_HEARINGS_SUCCESS: {
       return {
         ...currentState,
-        caseHearingsMainModel: action.payload
+        hearingListMainModel: action.payload
       };
     }
     default: {

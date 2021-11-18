@@ -1,18 +1,24 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { provideMockStore } from '@ngrx/store/testing';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {ActivatedRoute} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
+import {provideMockStore} from '@ngrx/store/testing';
 import * as moment from 'moment';
-import { of } from 'rxjs';
-import { UserRole } from '../../../app/models/user-details.model';
-import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
-import { CaseHearingModel } from '../../../hearings/models/caseHearing.model';
-import { CaseHearingsMainModel } from '../../../hearings/models/caseHearingsMain.model';
-import {CaseHearingViewModel} from '../../../hearings/models/caseHearingView.model';
-import { HearingDayScheduleModel } from '../../../hearings/models/hearingDaySchedule.model';
-import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, HearingListingStatusEnum, HMCStatus } from '../../../hearings/models/hearings.enum';
-import { CaseHearingsComponent } from './case-hearings.component';
+import {of} from 'rxjs';
+import {UserRole} from '../../../app/models/user-details.model';
+import {RoleCategoryMappingService} from '../../../app/services/role-category-mapping/role-category-mapping.service';
+import {HearingDayScheduleModel} from '../../../hearings/models/hearingDaySchedule.model';
+import {HearingListModel} from '../../../hearings/models/hearingList.model';
+import {HearingListMainModel} from '../../../hearings/models/hearingListMain.model';
+import {HearingListViewModel} from '../../../hearings/models/hearinglistView.model';
+import {
+  Actions,
+  EXUIDisplayStatusEnum,
+  EXUISectionStatusEnum,
+  HearingListingStatusEnum,
+  HMCStatus
+} from '../../../hearings/models/hearings.enum';
+import {CaseHearingsComponent} from './case-hearings.component';
 
 describe('CaseHearingsComponent', () => {
   let component: CaseHearingsComponent;
@@ -119,12 +125,12 @@ describe('CaseHearingsComponent', () => {
     hearingPanel: ['child'],
   };
 
-  const CASE_HEARING_1: CaseHearingModel = {
+  const CASE_HEARING_1: HearingListModel = {
     hearingID: 'h100001',
     hearingType: 'Case management hearing',
     hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
     lastResponseReceivedDateTime: '',
-    exuiSectionStatus:  EXUISectionStatusEnum.UPCOMING,
+    exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
     exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
     hmcStatus: HMCStatus.HEARING_REQUESTD,
     responseVersion: 'rv1',
@@ -133,11 +139,11 @@ describe('CaseHearingsComponent', () => {
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_1],
   };
 
-  const CASE_HEARING_2: CaseHearingModel = {
+  const CASE_HEARING_2: HearingListModel = {
     hearingID: 'h100002',
     hearingType: 'Final hearing',
     lastResponseReceivedDateTime: '',
-    exuiSectionStatus:  EXUISectionStatusEnum.UPCOMING,
+    exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
     hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
     exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
     hmcStatus: HMCStatus.AWAITING_LISTING,
@@ -147,13 +153,13 @@ describe('CaseHearingsComponent', () => {
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_2],
   };
 
-  const CASE_HEARING_3: CaseHearingModel = {
+  const CASE_HEARING_3: HearingListModel = {
     hearingID: 'h100003',
     hearingType: 'Initial hearing',
     lastResponseReceivedDateTime: '',
     hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
     hmcStatus: HMCStatus.LISTED,
-    exuiSectionStatus:  EXUISectionStatusEnum.UPCOMING,
+    exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
     exuiDisplayStatus: EXUIDisplayStatusEnum.LISTED,
     responseVersion: 'rv3',
     hearingListingStatus: HearingListingStatusEnum.LISTED,
@@ -161,12 +167,12 @@ describe('CaseHearingsComponent', () => {
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_3],
   };
 
-  const CASE_HEARING_4: CaseHearingModel = {
+  const CASE_HEARING_4: HearingListModel = {
     hearingID: 'h100004',
     hearingType: 'Case management hearing',
     lastResponseReceivedDateTime: '',
     hearingRequestDateTime: '2021-10-01T16:00:00.000+0000',
-    exuiSectionStatus:  EXUISectionStatusEnum.UPCOMING,
+    exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
     exuiDisplayStatus: EXUIDisplayStatusEnum.UPDATE_REQUESTED,
     hmcStatus: HMCStatus.UPDATE_REQUESTED,
     responseVersion: 'rv4',
@@ -175,7 +181,7 @@ describe('CaseHearingsComponent', () => {
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_4],
   };
 
-  const CASE_HEARING_5: CaseHearingModel = {
+  const CASE_HEARING_5: HearingListModel = {
     hearingID: 'h100005',
     hearingType: 'Case management preliminary hearing - open',
     lastResponseReceivedDateTime: '',
@@ -189,7 +195,7 @@ describe('CaseHearingsComponent', () => {
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_5],
   };
 
-  const CASE_HEARING_6: CaseHearingModel = {
+  const CASE_HEARING_6: HearingListModel = {
     hearingID: 'h100006',
     hearingType: 'Directions hearing',
     lastResponseReceivedDateTime: '',
@@ -203,7 +209,7 @@ describe('CaseHearingsComponent', () => {
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_6],
   };
 
-  const CASE_HEARING_7: CaseHearingModel = {
+  const CASE_HEARING_7: HearingListModel = {
     hearingID: 'h100007',
     hearingType: 'Full hearing',
     lastResponseReceivedDateTime: '',
@@ -217,7 +223,7 @@ describe('CaseHearingsComponent', () => {
     exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
   };
 
-  const CASE_HEARING_8: CaseHearingModel = {
+  const CASE_HEARING_8: HearingListModel = {
     hearingID: 'h100008',
     hearingType: 'Directions hearing',
     lastResponseReceivedDateTime: '',
@@ -231,7 +237,7 @@ describe('CaseHearingsComponent', () => {
     exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
   };
 
-  const CASE_HEARING_9: CaseHearingModel = {
+  const CASE_HEARING_9: HearingListModel = {
     hearingID: 'h100009',
     hearingType: 'Pre-hearing review',
     lastResponseReceivedDateTime: '',
@@ -245,7 +251,7 @@ describe('CaseHearingsComponent', () => {
     exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_ACTUALS,
   };
 
-  const CASE_HEARING_10: CaseHearingModel = {
+  const CASE_HEARING_10: HearingListModel = {
     hearingID: 'h100010',
     hearingType: 'Case management preliminary hearing - open',
     lastResponseReceivedDateTime: '',
@@ -259,7 +265,7 @@ describe('CaseHearingsComponent', () => {
     exuiDisplayStatus: EXUIDisplayStatusEnum.COMPLETED,
   };
 
-  const CASE_HEARING_11: CaseHearingModel = {
+  const CASE_HEARING_11: HearingListModel = {
     hearingID: 'h100011',
     hearingType: 'Remedy hearing',
     hearingRequestDateTime: '2021-09-14T16:00:00.000+0000',
@@ -273,7 +279,7 @@ describe('CaseHearingsComponent', () => {
     exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
   };
 
-  const HEARINGS_LIST: CaseHearingsMainModel = {
+  const HEARINGS_LIST: HearingListMainModel = {
     hmctsServiceID: 'SSCS',
     caseRef: '1568642646198441',
     caseHearings: [CASE_HEARING_1, CASE_HEARING_2, CASE_HEARING_3, CASE_HEARING_4, CASE_HEARING_5, CASE_HEARING_6, CASE_HEARING_7, CASE_HEARING_8, CASE_HEARING_9, CASE_HEARING_10, CASE_HEARING_11],
@@ -282,7 +288,7 @@ describe('CaseHearingsComponent', () => {
   const initialState = {
     hearings: {
       hearingList: {
-        caseHearingsMainModel: HEARINGS_LIST
+        hearingListMainModel: HEARINGS_LIST
       },
     }
   };
@@ -366,12 +372,12 @@ describe('CaseHearingsComponent', () => {
   });
 
   it('should provide a date', () => {
-    const testVM: CaseHearingViewModel = {
+    const testVM: HearingListViewModel = {
       hearingID: 'h111111',
       hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
       hearingType: 'Case management hearing 2',
       lastResponseReceivedDateTime: '',
-      hmcStatus:  HMCStatus.AWAITING_ACTUALS,
+      hmcStatus: HMCStatus.AWAITING_ACTUALS,
       earliestHearingStartDateTime: '',
       responseVersion: 'rv1',
       hearingListingStatus: HearingListingStatusEnum.LISTED,
@@ -380,12 +386,12 @@ describe('CaseHearingsComponent', () => {
       hearingDaySchedule: [HEARING_DAY_SCHEDULE_2],
     };
 
-    const testVM2: CaseHearingViewModel = {
+    const testVM2: HearingListViewModel = {
       hearingID: 'h111111',
       hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
       hearingType: 'Case management hearing 2',
       lastResponseReceivedDateTime: '',
-      hmcStatus:  HMCStatus.AWAITING_ACTUALS,
+      hmcStatus: HMCStatus.AWAITING_ACTUALS,
       earliestHearingStartDateTime: '',
       responseVersion: 'rv1',
       hearingListingStatus: HearingListingStatusEnum.LISTED,

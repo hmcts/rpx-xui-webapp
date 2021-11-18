@@ -1,15 +1,15 @@
-import { TestBed } from '@angular/core/testing';
-import { provideMockActions } from '@ngrx/effects/testing';
-import { cold, hot } from 'jasmine-marbles';
-import { of } from 'rxjs';
-import { Go } from '../../../app/store/actions';
-import { CaseHearingModel } from '../../models/caseHearing.model';
-import { CaseHearingsMainModel } from '../../models/caseHearingsMain.model';
-import { HearingDayScheduleModel } from '../../models/hearingDaySchedule.model';
-import { EXUISectionStatusEnum, HearingListingStatusEnum } from '../../models/hearings.enum';
-import { HearingsService } from '../../services/hearings.service';
+import {TestBed} from '@angular/core/testing';
+import {provideMockActions} from '@ngrx/effects/testing';
+import {cold, hot} from 'jasmine-marbles';
+import {of} from 'rxjs';
+import {Go} from '../../../app/store/actions';
+import {HearingDayScheduleModel} from '../../models/hearingDaySchedule.model';
+import {HearingListModel} from '../../models/hearingList.model';
+import {HearingListMainModel} from '../../models/hearingListMain.model';
+import {EXUISectionStatusEnum, HearingListingStatusEnum} from '../../models/hearings.enum';
+import {HearingsService} from '../../services/hearings.service';
 import * as hearingListActions from '../actions/hearing-list.action';
-import { HearingListEffects } from './hearing-list.effects';
+import {HearingListEffects} from './hearing-list.effects';
 
 describe('Hearing List Effects', () => {
   let actions$;
@@ -41,7 +41,7 @@ describe('Hearing List Effects', () => {
         hearingRoomId: 'room 1',
         hearingPanel: ['child'],
       };
-      const CASE_HEARING_1: CaseHearingModel = {
+      const CASE_HEARING_1: HearingListModel = {
         hearingID: 'h111111',
         hearingRequestDateTime: '2021-05-05T16:00:00.000+0000',
         hearingType: 'hearing type 1',
@@ -53,7 +53,7 @@ describe('Hearing List Effects', () => {
         exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
         hearingDaySchedule: [HEARING_DAY_SCHEDULE_1],
       };
-      const HEARINGS_LIST: CaseHearingsMainModel = {
+      const HEARINGS_LIST: HearingListMainModel = {
         hmctsServiceID: 'SSCS',
         caseRef: '1568642646198441',
         caseHearings: [CASE_HEARING_1],
@@ -69,7 +69,10 @@ describe('Hearing List Effects', () => {
 
   describe('handleError', () => {
     it('should handle 500', () => {
-      const action$ = HearingListEffects.handleError({status: 500, message: 'error'}, hearingListActions.LOAD_ALL_HEARINGS);
+      const action$ = HearingListEffects.handleError({
+        status: 500,
+        message: 'error'
+      }, hearingListActions.LOAD_ALL_HEARINGS);
       action$.subscribe(action => expect(action).toEqual(new Go({path: ['/service-down']})));
     });
   });

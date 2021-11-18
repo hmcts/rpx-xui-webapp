@@ -1,7 +1,7 @@
-import { CaseHearingModel } from '../../models/caseHearing.model';
-import { CaseHearingsMainModel } from '../../models/caseHearingsMain.model';
-import { HearingDayScheduleModel } from '../../models/hearingDaySchedule.model';
-import { EXUISectionStatusEnum, HearingListingStatusEnum } from '../../models/hearings.enum';
+import {HearingDayScheduleModel} from '../../models/hearingDaySchedule.model';
+import {HearingListModel} from '../../models/hearingList.model';
+import {HearingListMainModel} from '../../models/hearingListMain.model';
+import {EXUISectionStatusEnum, HearingListingStatusEnum} from '../../models/hearings.enum';
 import * as fromHearingListActions from '../actions/hearing-list.action';
 import * as fromHearingListReducer from './hearing-list.reducer';
 
@@ -29,7 +29,7 @@ describe('Hearing List Reducer', () => {
           hearingRoomId: 'room 1',
           hearingPanel: ['child'],
         };
-        const CASE_HEARING_1: CaseHearingModel = {
+        const CASE_HEARING_1: HearingListModel = {
           hearingID: 'h111111',
           hearingType: 'hearing type 1',
           hearingRequestDateTime: '2021-05-05T16:00:00.000+0000',
@@ -41,14 +41,14 @@ describe('Hearing List Reducer', () => {
           exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
           hearingDaySchedule: [HEARING_DAY_SCHEDULE_1],
         };
-        const HEARINGS_LIST: CaseHearingsMainModel = {
+        const HEARINGS_LIST: HearingListMainModel = {
           hmctsServiceID: 'SSCS',
           caseRef: '1568642646198441',
           caseHearings: [CASE_HEARING_1],
         };
         const action = new fromHearingListActions.LoadAllHearingsSuccess(HEARINGS_LIST);
         const hearingsState = fromHearingListReducer.hearingListReducer(initialState, action);
-        expect(hearingsState.caseHearingsMainModel).toEqual(HEARINGS_LIST);
+        expect(hearingsState.hearingListMainModel).toEqual(HEARINGS_LIST);
       });
     });
   });

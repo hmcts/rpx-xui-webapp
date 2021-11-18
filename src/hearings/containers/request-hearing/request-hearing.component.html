@@ -2,9 +2,11 @@
 <div class="govuk-width-container">
   <div class="page">
     <main id="content" role="main">
-      <p>
-        request-hearing works!
-      </p>
+      <a [routerLink]="backLink" class="govuk-back-link">Back</a>
+
+      <router-outlet></router-outlet>
+
+      <button class="govuk-button" data-module="govuk-button" (click)="onSubmit()">Continue</button>
     </main>
   </div>
 </div>

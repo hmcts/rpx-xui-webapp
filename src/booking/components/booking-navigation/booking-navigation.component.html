@@ -1,0 +1,10 @@
+<a class="govuk-back-link" href="javascript:void(0)" *ngIf="isVisible(backVisibilityStates)" (click)="onEventTrigger(bookingNavigationEvent.BACK)">Back</a>
+
+<div>
+  <ng-content></ng-content>
+</div>
+
+<button class="button" type="button" *ngIf="isVisible(homeVisibilityStates)" (click)="onEventTrigger(bookingNavigationEvent.HOMECONTINUE)">Continue</button>
+<button class="button" type="button" *ngIf="isVisible(locationVisibilityStates)" (click)="onEventTrigger(bookingNavigationEvent.LOCATIONCONTINUE)">Continue</button>
+<button class="button" type="button" *ngIf="isVisible(dateVisibilityStates)" (click)="onEventTrigger(bookingNavigationEvent.CONFIRMBOOKINGDATESUBMIT)">Submit</button>
+<button class="button" type="button" *ngIf="isVisible(checkBookingVisibilityStates)" (click)="onEventTrigger(bookingNavigationEvent.CONFIRMBOOKINGSUBMIT)">Confirm Booking</button>

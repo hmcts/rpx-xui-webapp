@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { BookingNavigationEvent } from '../../models';
 import { BookingNavigation } from '../../models/booking-navigation.interface';
 
@@ -14,12 +15,19 @@ export class BookingHomeComponent implements OnInit {
 
   @Output() public bookingOptionIndexChange = new EventEmitter<boolean>();
 
-  constructor() { }
+  public bookingTypeForm: FormGroup;
+
+  constructor(
+    private readonly fb: FormBuilder
+  ) { }
 
   public ngOnInit() {
+    this.bookingTypeForm = this.fb.group({
+      bookingType: new FormControl(null)
+    });
   }
 
-  public selectOption(index) {
+  public onChange(index) {
     this.bookingOptionIndexChange.emit(index);
   }
 

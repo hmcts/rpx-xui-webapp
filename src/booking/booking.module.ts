@@ -10,13 +10,15 @@ import { BookingNavigationComponent } from './components/booking-navigation/book
 import { BookingLocationComponent } from './containers/booking-location/booking-location.component';
 import { BookingDateComponent } from './containers/booking-date/booking-date.component';
 import { BookingCheckComponent } from './containers/booking-check/booking-check.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
     CommonModule,
     HttpClientModule,
     bookingRouting,
-    SharedModule
+    SharedModule,
+    ReactiveFormsModule
   ],
   declarations: [
     ... fromComponents.components,

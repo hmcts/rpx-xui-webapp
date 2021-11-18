@@ -50,7 +50,7 @@ describe('CaseHearingsListComponent', () => {
       hearingListingStatus: HearingListingStatusEnum.CANCELLED,
       listAssistCaseStatus: '',
       exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
-      exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED,      
+      exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED,
       hearingRequestDateTime: '',
       hearingDaySchedule: [],
     }, {
@@ -63,7 +63,7 @@ describe('CaseHearingsListComponent', () => {
       hearingListingStatus: HearingListingStatusEnum.CANCELLED,
       listAssistCaseStatus: '',
       exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
-      exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED,     
+      exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED,
       hearingRequestDateTime: '',
       hearingDaySchedule: [],
     }]);

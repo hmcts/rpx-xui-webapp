@@ -3,9 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
 import { combineLatest, Subscription } from 'rxjs';
 import { JurisdictionService } from '../../../app/services/jurisdiction/jurisdiction.service';
+import { NoResultsMessageId } from '../../enums';
 import { SearchResult, SearchResultDisplay } from '../../models';
 import { SearchService } from '../../services/search.service';
-import { NoResultsMessageId } from '../../enums';
 
 @Component({
   selector: 'exui-search-results',

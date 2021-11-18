@@ -9,7 +9,7 @@ import {
 } from '../configuration/references';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
-import { getWASupportedJurisdictionsList } from '../waSupportedJurisdictions/index';
+import { getWASupportedJurisdictionsList } from '../waSupportedJurisdictions';
 import * as caseServiceMock from './caseService.mock';
 import {
   getUserIdsFromRoleApiResponse,
@@ -334,18 +334,22 @@ export async function getMyCases(req: EnhancedRequest, res: Response) {
 
   try {
     const result = await searchCasesById(queryParams, query, req);
-    const caseData = result.cases;
-    result.total_records = result.cases.length;
-    // search parameters passed in as null as there are no parameters for my cases
-    const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
-    let checkedRoles = req && req.session && req.session.roleAssignmentResponse ? req.session.roleAssignmentResponse : null;
-    if (showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED)) {
-      checkedRoles = getSubstantiveRoles(req.session.roleAssignmentResponse);
+    if (result && result.cases) {
+      const caseData = result.cases;
+      result.total_records = result.cases.length;
+      // search parameters passed in as null as there are no parameters for my cases
+      const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
+      let checkedRoles = req && req.session && req.session.roleAssignmentResponse ? req.session.roleAssignmentResponse : null;
+      if (showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED)) {
+        checkedRoles = getSubstantiveRoles(req.session.roleAssignmentResponse);
+      }
+      const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles, null) : [];
+      const cases = assignActionsToCases(mappedCases, userIsCaseAllocator, true);
+      result.cases = cases;
+      return res.send(result).status(200);
+    } else {
+      return res.send([]).status(200);
     }
-    const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles, null) : [];
-    const cases = assignActionsToCases(mappedCases, userIsCaseAllocator, true);
-    result.cases = cases;
-    return res.send(result).status(200);
   } catch (e) {
     console.log(e);
     return res.send(null).status(500);

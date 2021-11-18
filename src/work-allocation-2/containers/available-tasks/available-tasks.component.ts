@@ -43,7 +43,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
       const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
       const searchParameters = [
         {key: 'state', operator: 'IN', values: ['unassigned']}
-      ];
+      ]
       const locationParameter = this.getLocationParameter();
       if (locationParameter) {
         searchParameters.push(locationParameter);

@@ -1,6 +1,11 @@
 import MockAdapter from 'axios-mock-adapter';
 import { HttpMockAdapter } from '../common/httpMockAdapter';
-import { ALL_TASKS, ASSIGNED_CASE_TASKS, JUDICIAL_WORKERS, UNASSIGNED_CASE_TASKS } from './constants/mock.data';
+import {
+  ALL_TASKS,
+  ASSIGNED_CASE_TASKS,
+  JUDICIAL_WORKERS,
+  UNASSIGNED_CASE_TASKS
+} from './constants/mock.data';
 
 export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();

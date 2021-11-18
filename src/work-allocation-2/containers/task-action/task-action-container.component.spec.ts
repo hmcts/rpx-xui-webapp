@@ -12,7 +12,7 @@ import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
 import { TaskActionConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { InfoMessage, InfoMessageType, SortOrder, TaskActionType, TaskService } from '../../enums';
+import { InfoMessage, InfoMessageType } from '../../enums';
 import { Task } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { ACTION } from '../../services/work-allocation-task.service';
@@ -20,7 +20,8 @@ import { getMockTasks } from '../../tests/utils.spec';
 import { TaskActionContainerComponent } from './task-action-container.component';
 
 @Component({
-  template: `<exui-task-action-container></exui-task-action-container>`
+  template: `
+    <exui-task-action-container></exui-task-action-container>`
 })
 class WrapperComponent {
   @ViewChild(TaskActionContainerComponent) public appComponentRef: TaskActionContainerComponent;
@@ -28,9 +29,11 @@ class WrapperComponent {
 }
 
 @Component({
-  template: `<div>Nothing</div>`
+  template: `
+    <div>Nothing</div>`
 })
-class NothingComponent {}
+class NothingComponent {
+}
 
 describe('WorkAllocation', () => {
 
@@ -59,26 +62,28 @@ describe('WorkAllocation', () => {
           WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule, PaginationModule,
           RouterTestingModule.withRoutes(
             [
-              { path: 'mywork/list', component: NothingComponent }
+              {path: 'mywork/list', component: NothingComponent}
             ]
           )
         ],
         providers: [
-          { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
-          { provide: SessionStorageService, useValue: mockSessionStorageService },
+          {provide: WorkAllocationTaskService, useValue: mockWorkAllocationService},
+          {provide: SessionStorageService, useValue: mockSessionStorageService},
           {
             provide: ActivatedRoute,
             useValue: {
               snapshot: {
                 data: {
-                  taskAndCaseworkers: { task: {task: mockTasks[0]}  },
+                  taskAndCaseworkers: {
+                    task: {task: mockTasks[0]}, caseworkers: []
+                  },
                   ...TaskActionConstants.Unassign
                 }
               },
-              params: Observable.of({ task: mockTasks[0] })
+              params: Observable.of({task: mockTasks[0]})
             }
           },
-          { provide: InfoMessageCommService, useValue: mockInfoMessageCommService }
+          {provide: InfoMessageCommService, useValue: mockInfoMessageCommService}
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
@@ -87,7 +92,7 @@ describe('WorkAllocation', () => {
       router = TestBed.get(Router);
 
       wrapper.tasks = null;
-      window.history.pushState({ returnUrl: 'mywork/list' }, '', 'mywork/list');
+      window.history.pushState({returnUrl: 'mywork/list'}, '', 'mywork/list');
       fixture.detectChanges();
     });
 
@@ -104,7 +109,6 @@ describe('WorkAllocation', () => {
       submit.click();
       expect(mockWorkAllocationService.performActionOnTask).toHaveBeenCalledWith(mockTasks[0].id, ACTION.UNCLAIM);
     });
-
 
     it('should cancel the action successfully', () => {
       spyOn(component, 'returnWithMessage');
@@ -156,13 +160,12 @@ describe('WorkAllocation', () => {
 
   });
 
-
   [
-    { statusCode: 403, routeUrl: '/not-authorised' },
-    { statusCode: 401, routeUrl: '/not-authorised'},
-    { statusCode: 500, routeUrl: '/service-down' },
-    { statusCode: 400, routeUrl: '/service-down' },
-    { statusCode: 404, routeUrl: '/' }
+    {statusCode: 403, routeUrl: '/not-authorised'},
+    {statusCode: 401, routeUrl: '/not-authorised'},
+    {statusCode: 500, routeUrl: '/service-down'},
+    {statusCode: 400, routeUrl: '/service-down'},
+    {statusCode: 404, routeUrl: '/'}
 
   ].forEach(scr => {
     describe(`TaskActionContainerComponent negative scenarios error response code ${scr.statusCode}`, () => {
@@ -173,7 +176,7 @@ describe('WorkAllocation', () => {
       const mockTasks = getMockTasks();
 
       const mockWorkAllocationService = {
-        performActionOnTask: jasmine.createSpy('performActionOnTask').and.returnValue(throwError({ status: scr.statusCode }))
+        performActionOnTask: jasmine.createSpy('performActionOnTask').and.returnValue(throwError({status: scr.statusCode}))
       };
       const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
       const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
@@ -189,27 +192,28 @@ describe('WorkAllocation', () => {
             WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule, PaginationModule,
             RouterTestingModule.withRoutes(
               [
-                { path: 'mywork/list', component: NothingComponent }
+                {path: 'mywork/list', component: NothingComponent}
               ]
             )
           ],
           providers: [
-            { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
-            { provide: SessionStorageService, useValue: mockSessionStorageService },
+            {provide: WorkAllocationTaskService, useValue: mockWorkAllocationService},
+            {provide: SessionStorageService, useValue: mockSessionStorageService},
             {
               provide: ActivatedRoute,
               useValue: {
                 snapshot: {
                   data: {
                     taskAndCaseworkers: {
-                      task: { task: mockTasks[0]}, caseworkers: []},
+                      task: {task: mockTasks[0]}, caseworkers: []
+                    },
                     ...TaskActionConstants.Unassign
                   }
                 },
-                params: Observable.of({ task: mockTasks[0] })
+                params: Observable.of({task: mockTasks[0]})
               }
             },
-            { provide: InfoMessageCommService, useValue: mockInfoMessageCommService }
+            {provide: InfoMessageCommService, useValue: mockInfoMessageCommService}
           ]
         }).compileComponents();
         fixture = TestBed.createComponent(WrapperComponent);
@@ -218,7 +222,7 @@ describe('WorkAllocation', () => {
         router = TestBed.get(Router);
 
         wrapper.tasks = null;
-        window.history.pushState({ returnUrl: 'mywork/list' }, '', 'mywork/list');
+        window.history.pushState({returnUrl: 'mywork/list'}, '', 'mywork/list');
         fixture.detectChanges();
       });
 
@@ -235,7 +239,7 @@ describe('WorkAllocation', () => {
         if (scr.statusCode === 404) {
           expect(navigateByUrlSpy).toHaveBeenCalled();
           expect(mockInfoMessageCommService.nextMessage).toHaveBeenCalledWith(
-            { type: InfoMessageType.WARNING, message: InfoMessage.TASK_NO_LONGER_AVAILABLE }
+            {type: InfoMessageType.WARNING, message: InfoMessage.TASK_NO_LONGER_AVAILABLE}
           );
         } else {
           expect(navigateSpy).toHaveBeenCalledWith([scr.routeUrl]);

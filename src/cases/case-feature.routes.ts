@@ -119,7 +119,7 @@ export const ROUTES: Routes = [
               ]
             },
             ...caseViewRouting],
-          canActivate: [HealthCheckGuard],
+          canActivate: [ HealthCheckGuard ],
           data: {
             title: 'Case Details'
           }

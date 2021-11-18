@@ -41,6 +41,7 @@ describe('CaseHearingsListComponent', () => {
     component.actions = [Actions.DELETE];
     component.status = EXUISectionStatusEnum.PAST_AND_CANCELLED;
     component.hearingsList$ = of([{
+      earliestHearingStartDateTime: '',
       hearingID: 'h555555',
       hearingType: 'Directions hearing',
       hmcStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
@@ -49,9 +50,11 @@ describe('CaseHearingsListComponent', () => {
       hearingListingStatus: HearingListingStatusEnum.CANCELLED,
       listAssistCaseStatus: '',
       exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
-      exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED,
+      exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED,      
+      hearingRequestDateTime: '',
       hearingDaySchedule: [],
     }, {
+      earliestHearingStartDateTime: '',
       hearingID: 'h555555',
       hearingType: 'Directions hearing',
       hmcStatus: EXUISectionStatusEnum.UPCOMING,
@@ -60,7 +63,8 @@ describe('CaseHearingsListComponent', () => {
       hearingListingStatus: HearingListingStatusEnum.CANCELLED,
       listAssistCaseStatus: '',
       exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
-      exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED,
+      exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED,     
+      hearingRequestDateTime: '',
       hearingDaySchedule: [],
     }]);
     component.actions = [Actions.DELETE];

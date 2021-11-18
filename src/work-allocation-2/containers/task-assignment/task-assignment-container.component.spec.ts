@@ -39,7 +39,7 @@ class WrapperComponent {
 class NothingComponent {
 }
 
-describe('TaskAssignmentContainerComponent2', () => {
+describe('TaskAssignmentContainerComponent', () => {
   let component: TaskAssignmentContainerComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -92,7 +92,8 @@ describe('TaskAssignmentContainerComponent2', () => {
           useValue: {
             snapshot: {
               data: {
-                taskAndCaseworkers: {data: mockTasks[0], caseworkers: []},
+                taskAndCaseworkers: {
+                  task: { task: mockTasks[0]}, caseworkers: []},
                 ...TaskActionConstants.Reassign
               },
               params: {
@@ -174,7 +175,8 @@ describe('TaskAssignmentContainerComponent2', () => {
   it('should display the correct verb on screen', () => {
     const activatedRoute: ActivatedRoute = fixture.debugElement.injector.get(ActivatedRoute);
     activatedRoute.snapshot.data = {
-      taskAndCaseworkers: { data: mockTasks[0], caseworkers: [] },
+      taskAndCaseworkers: {
+        task: { task: mockTasks[0]}, caseworkers: []},
       ...TaskActionConstants.Assign
     };
     fixture.detectChanges();

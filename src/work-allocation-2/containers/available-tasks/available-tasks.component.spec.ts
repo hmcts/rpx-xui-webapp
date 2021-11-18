@@ -44,7 +44,7 @@ describe('AvailableTasksComponent', () => {
 
   const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
   const mockLocations: dtos.Location[] = getMockLocations();
-  const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask', 'claimTask', 'searchTaskWithPagination']);
+  const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask', 'claimTask', 'searchTask']);
   const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
@@ -79,7 +79,7 @@ describe('AvailableTasksComponent', () => {
     component = wrapper.appComponentRef;
     mockLocationService.getLocations.and.returnValue(of(mockLocations));
     const tasks: Task[] = getMockTasks();
-    mockTaskService.searchTaskWithPagination.and.returnValue(of({ tasks }));
+    mockTaskService.searchTask.and.returnValue(of({ tasks }));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     router = TestBed.get(Router);
     fixture.detectChanges();
@@ -98,7 +98,7 @@ describe('AvailableTasksComponent', () => {
     mockSessionStorageService.getItem.and.returnValue(userInfo);
     const exampleLocations = ['location1', 'location2', 'location3'];
     component.selectedLocations = exampleLocations;
-    const searchParameter = component.getSearchTaskRequestPagination().search_parameters[0];
+    const searchParameter = component.getSearchTaskRequestPagination().search_parameters[1];
     expect(searchParameter.key).toBe('location');
     expect(searchParameter.values).toBe(exampleLocations);
   });
@@ -308,7 +308,7 @@ describe('AvailableTasksComponent', () => {
       { statusCode: 400, routeUrl: '/service-down' },
     ].forEach(scr => {
       it('should call claimTask with the task id, so that the task can be \'claimed\' by the User.', () => {
-        mockTaskService.searchTaskWithPagination.and.returnValue(throwError({ status: scr.statusCode }));
+        mockTaskService.searchTask.and.returnValue(throwError({ status: scr.statusCode }));
 
         component.onPaginationEvent(1);
         expect(mockRouter.navigate).toHaveBeenCalledWith([scr.routeUrl]);

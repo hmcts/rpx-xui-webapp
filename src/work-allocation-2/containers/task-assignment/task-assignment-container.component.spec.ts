@@ -12,7 +12,6 @@ import { ExuiCommonLibModule, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { of } from 'rxjs/internal/observable/of';
 
 import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
@@ -182,6 +181,7 @@ describe('TaskAssignmentContainerComponent', () => {
     const activatedRoute: any = fixture.debugElement.injector.get(ActivatedRoute) as any;
     activatedRoute.snapshot = {
       paramMap: convertToParamMap({taskId: 'task1111111', role: 'LEGAL_OPERATIONS'}),
+      queryParamMap: convertToParamMap({taskId: 'task1111111', role: 'LEGAL_OPERATIONS'}),
       data: {
         taskAndCaseworkers: {
           task: {task: mockTasks[0]}, caseworkers: []

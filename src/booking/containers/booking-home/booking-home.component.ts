@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { BookingNavigationEvent } from '../../models';
 import { BookingNavigation } from '../../models/booking-navigation.interface';
 
 @Component({
@@ -10,7 +9,7 @@ import { BookingNavigation } from '../../models/booking-navigation.interface';
 export class BookingHomeComponent implements OnInit {
 
   @Input() public navEvent: BookingNavigation;
-  @Input() public bookingOptionIndex: boolean;
+  @Input() public bookingOptionIndex: number;
 
   @Output() public bookingOptionIndexChange = new EventEmitter<boolean>();
 

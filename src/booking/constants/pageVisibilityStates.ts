@@ -1,4 +1,4 @@
-import { BookingState } from '../models'
+import { BookingState } from '../models';
 
 export const bookingBackButtonVisibilityStates = [
   BookingState.LOCATION, BookingState.BOOKDATE, BookingState.CHECK

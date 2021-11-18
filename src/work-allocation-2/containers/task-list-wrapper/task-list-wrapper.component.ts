@@ -217,7 +217,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
 
   public performSearchPagination(): Observable<any> {
     const searchRequest = this.getSearchTaskRequestPagination();
-    return this.taskService.searchTaskWithPagination({ searchRequest, view: this.view });
+    return this.taskService.searchTask({ searchRequest, view: this.view });
   }
 
   /**
@@ -240,6 +240,10 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public getPaginationParameter(): PaginationParameter {
+    const savedPaginationNumber = JSON.parse(this.sessionStorageService.getItem(this.pageSessionKey));
+    if (savedPaginationNumber && typeof savedPaginationNumber === 'number') {
+      return {...this.pagination, page_number: savedPaginationNumber};
+    }
     return { ...this.pagination };
   }
 

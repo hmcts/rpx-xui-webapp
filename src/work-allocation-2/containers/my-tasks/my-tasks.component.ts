@@ -40,11 +40,15 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const id = userInfo.id ? userInfo.id : userInfo.uid;
       const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
+      const searchParameters = [
+        { key: 'user', operator: 'IN', values: [ id ] }
+      ]
+      const locationParameter = this.getLocationParameter();
+      if (locationParameter) {
+        searchParameters.push(locationParameter);
+      }
       return {
-        search_parameters: [
-          { key: 'user', operator: 'IN', values: [ id ] },
-          this.getLocationParameter()
-        ],
+        search_parameters: searchParameters,
         sorting_parameters: [this.getSortParameter()],
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
         pagination_parameters: this.getPaginationParameter()
@@ -53,7 +57,11 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
   }
 
   private getLocationParameter(): SearchTaskParameter {
-    return { key: 'location', operator: 'IN', values: this.selectedLocations };
+    if (this.selectedLocations && this.selectedLocations.length > 0) {
+      return { key: 'location', operator: 'IN', values: this.selectedLocations };
+    } else {
+      return null;
+    }
   }
 
   /**

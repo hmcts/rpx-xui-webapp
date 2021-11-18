@@ -1,4 +1,4 @@
-import { bookings } from './data/bookings.mock.data';
+import { bookings } from './data/booking.mock.data';
 
 export const getBookings = (proxyReq, req, res) => {
     // when am/booking url is developed , there will be switch flag implementation to get responds from url or from mock data

@@ -6,6 +6,7 @@ var DivorceCase = require('../pageObjects/Divorcecase');
 var IACCase = require('../pageObjects/iacCase');
 var HearingRecordingsCase = require('../pageObjects/hearingRecordingsCase');
 
+var BrowserWaits = require('../../support/customWaits');
 
 var CaseManager = require('../pageObjects/common/CaseManager');
 
@@ -49,11 +50,15 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     })
 
     When('I start case next step', async function () {
-        await caseManager.startNextStep(false);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await caseManager.startNextStep(false);
+        });
     });
 
     When('I start case next step {string}', async function (stepName) {
-        await caseManager.startNextStep(stepName);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await caseManager.startNextStep(stepName);
+        });
     });
 
     When('I click cancel link', async function () {

@@ -210,7 +210,9 @@ function HeaderPage() {
         retValue = await caseListPage.amOnPage();
         break;
       case 'Create case':
-        retValue = await createCaseStartPage.amOnPage();
+        const isOnpage = await createCaseStartPage.amOnPage();
+        const juridictiosnLoaded = await createCaseStartPage.getLoadedJurisdictionsCount();
+        retValue = isOnpage && juridictiosnLoaded > 0;
         break;
       case 'Find case':
         retValue = await searchCasePage.amOnPage();

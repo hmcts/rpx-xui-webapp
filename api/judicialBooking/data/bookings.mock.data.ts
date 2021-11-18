@@ -11,6 +11,6 @@ export const bookings: Bookings  = {
     "endTime": new Date("2021-09-01T00:00:00Z"),
     "region_id": "104",
     "roleId": "caseworker",
-    "userId": "21334a2b-79ce-44eb-9168-2d49a744be9c"
+    "userId": "21334a2b-79ce-44eb-9168-2d49a744be9c",
   }],
 };

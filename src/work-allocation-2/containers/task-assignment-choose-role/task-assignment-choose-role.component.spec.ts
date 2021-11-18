@@ -38,7 +38,8 @@ describe('TaskAssignmentChooseRoleComponent', () => {
                 verb: 'Reassign',
                 roles: TASK_ROLES,
               },
-              paramMap: convertToParamMap({taskId: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8'})
+              paramMap: convertToParamMap({taskId: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8'}),
+              queryParamMap: convertToParamMap({taskId: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8'})
             }
           },
         },

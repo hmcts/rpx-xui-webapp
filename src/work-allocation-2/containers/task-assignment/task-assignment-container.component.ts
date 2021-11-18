@@ -87,8 +87,9 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     this.verb = this.route.snapshot.data.verb as TaskActionType;
 
     this.taskId = this.route.snapshot.paramMap.get('taskId');
-    this.role = this.route.snapshot.paramMap.get('role') as RoleCategory;
-    this.setDomain(this.role);
+    this.role = this.route.snapshot.queryParamMap.get('role') as RoleCategory;
+    this.domain = this.setDomain(this.role);
+    console.log(this.domain);
     this.rootPath = this.router.url.split('/')[1];
     this.route.paramMap
       .pipe(map(() => window.history.state)).subscribe(person => {
@@ -143,7 +144,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     document.getElementById(eId).focus();
   }
 
-  private setDomain(role: RoleCategory): string {
+  private setDomain(role: RoleCategory): PersonRole {
     if (role === RoleCategory.JUDICIAL) {
       return PersonRole.JUDICIAL;
     } else if (role === RoleCategory.LEGAL_OPERATIONS) {

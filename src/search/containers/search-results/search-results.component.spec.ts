@@ -14,7 +14,7 @@ import { SearchService } from '../../services/search.service';
 import { SearchResultsComponent } from './search-results.component';
 
 import createSpyObj = jasmine.createSpyObj;
-import { NoResultsMessageId } from 'src/search/enums';
+import { NoResultsMessageId } from '../../enums';
 
 describe('SearchResultsComponent', () => {
   let component: SearchResultsComponent;

@@ -22,7 +22,7 @@ describe('TaskListWrapperComponent', () => {
   const SELECTED_LOCATIONS = { id: 'locations', fields: [ { name: 'locations', value: ['231596', '698118'] }] };
   const mockRef = jasmine.createSpyObj('mockRef', ['']);
   const mockRouter: MockRouter = new MockRouter();
-  const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['searchTaskWithPagination', 'getTask']);
+  const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['searchTask', 'getTask']);
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['']);
@@ -67,10 +67,11 @@ describe('TaskListWrapperComponent', () => {
     fixture = TestBed.createComponent(TaskListWrapperComponent);
     component = fixture.componentInstance;
     const tasks: Task[] = getMockTasks();
-    mockWorkAllocationService.searchTaskWithPagination.and.returnValue(of({ tasks }));
+    mockWorkAllocationService.searchTask.and.returnValue(of({ tasks }));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockCaseworkerDataService.getAll.and.returnValue(of([]));
+    mockSessionStorageService.getItem.and.returnValue('1');
     fixture.detectChanges();
   }));
 

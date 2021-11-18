@@ -81,7 +81,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.isJudicial = this.isCurrentUserJudicial();
     // Get the task from the route, which will have been put there by the resolver.
-    const task = this.route.snapshot.data.taskAndCaseworkers.data;
+    const task = this.route.snapshot.data.taskAndCaseworkers.task.task;
     this.tasks = [task];
     this.verb = this.route.snapshot.data.verb as TaskActionType;
 

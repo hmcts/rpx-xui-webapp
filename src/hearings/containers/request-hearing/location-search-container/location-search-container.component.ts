@@ -6,7 +6,6 @@ import * as fromHearingStore from '../../../../hearings/store';
 @Component({
   selector: 'exui-location-search-container',
   templateUrl: './location-search-container.component.html',
-  styleUrls: ['./location-search-container.component.scss']
 })
 export class LocationSearchContainerComponent implements OnInit {
   public serviceId: string = 'SSCS';
@@ -15,11 +14,9 @@ export class LocationSearchContainerComponent implements OnInit {
 
   public ngOnInit(): void {
     this.hearingStore.pipe(select(fromHearingStore.getHearingsList)).pipe(
-      map(hearingList => hearingList.caseHearingsMainModel.hmctsServiceID)
-  ).subscribe(id => {
-      console.log('seviceIce', id);
+      map(hearingList => hearingList.caseHearingsMainModel ? hearingList.caseHearingsMainModel.hmctsServiceID : '')
+    ).subscribe(id => {
       this.serviceId = id
     });
   }
-
 }

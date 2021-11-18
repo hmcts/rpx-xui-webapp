@@ -1,8 +1,7 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
-import { CancelHearingComponent, ChangeHearingComponent, RequestHearingComponent, ViewHearingComponent } from './containers';
+import { CancelHearingComponent, ChangeHearingComponent, ViewHearingComponent } from './containers';
 import { LocationSearchContainerComponent } from './containers/request-hearing/location-search-container/location-search-container.component';
 
 export const ROUTES: Routes = [

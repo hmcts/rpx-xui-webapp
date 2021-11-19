@@ -9,38 +9,21 @@
       <form [formGroup]="bookingTypeForm">
 
         <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
-          <div class="govuk-radios__item">
-            <input class="govuk-radios__input" id="type-0" name="bookingType" type="radio" [value]="0"
-            data-aria-controls="conditional-booking-type-0" (change)="onChange(0)" formControlName="bookingType"/>
-            <label class="govuk-label govuk-radios__label" for="type-0" id="type-0-label">
-              Choose an existing booking
-            </label>
-          </div>
-          <div id="conditional-booking-type-0" *ngIf="bookingTypeForm.get('bookingType').value === 0" class="govuk-radios__conditional">
-            <div class="govuk-form-group">
-              <div class="govuk-grid-column-one-half">
-                <p>
-                  <strong>Plymouth Crown Court</strong>
-                  <span class="govuk-hint">
-                    21 November 2021 to 26 November 2021
-                  </span>
-                </p>
-                <div class="govuk-button-group">
-                  <button
-                    role="button"
-                    class="govuk-button govuk-button--secondary"
-                  >
-                    Continue
-                  </button>
-                </div>
-              </div>
-              <div class="govuk-grid-column-one-half">
-
-                <div class="govuk-form-group">
+          <ng-container *ngIf="existingBookings.length > 0">
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="type-0" name="bookingType" type="radio" [value]="0"
+              data-aria-controls="conditional-booking-type-0" (change)="onChange(0)" formControlName="bookingType"/>
+              <label class="govuk-label govuk-radios__label" for="type-0" id="type-0-label">
+                Choose an existing booking
+              </label>
+            </div>
+            <div id="conditional-booking-type-0" *ngIf="bookingTypeForm.get('bookingType').value === 0" class="govuk-radios__conditional">
+              <div class="govuk-form-group">
+                <div class="govuk-grid-column-one-half" *ngFor="let booking of existingBookings" >
                   <p>
-                    <strong>Salisbury County Court</strong>
+                    <strong>{{getLocation(booking.base_location_id)}}</strong>
                     <span class="govuk-hint">
-                      24 November 2021 to 29 November 2021<br />
+                      {{booking.beginTime | date:'dd LLLL yyyy'}} to {{booking.endTime | date:'dd LLLL yyyy'}}
                     </span>
                   </p>
                   <div class="govuk-button-group">
@@ -54,7 +37,7 @@
                 </div>
               </div>
             </div>
-          </div>
+          </ng-container>
           <div class="govuk-radios__item">
             <input class="govuk-radios__input" id="type-1" name="bookingType" type="radio"
               (change)="onChange(1)" [value]="1" formControlName="bookingType"/>

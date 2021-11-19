@@ -1,7 +1,7 @@
 import * as fromComponents from './components';
 import * as fromContainers from './containers';
-
-import { CommonModule } from '@angular/common';
+import * as fromServices from './services';
+import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
@@ -28,7 +28,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     BookingNavigationComponent
   ],
   providers: [
-    AlertService
+    AlertService,
+    ...fromServices.services
   ]
 })
 export class BookingModule { }

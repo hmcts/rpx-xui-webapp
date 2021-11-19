@@ -22,11 +22,12 @@ export const containers: any[] = [
   TasksContainerComponent,
   RolesAndAccessContainerComponent,
   CaseSearchComponent,
+  CaseViewerContainerComponent,
   CaseDetailsComponent,
   CaseHomeComponent,
   CaseCreateSubmitComponent,
   CaseDetailsHomeComponent,
-  CaseShareComponent,
+   CaseShareComponent,
   CaseShareConfirmComponent,
   CaseShareCompleteComponent
 ];

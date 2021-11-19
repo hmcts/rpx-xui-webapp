@@ -7,7 +7,7 @@ class Select{
     }
 
     async isDisplayed(){
-        return await this.selectElement.isPresent();
+        return await this.selectElement.isPresent() && await this.selectElement.isDisplayed();
     }
 
     async isEnabled() {

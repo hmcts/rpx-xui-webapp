@@ -1,5 +1,4 @@
 import { NextFunction, Response } from 'express';
-import { handleGet, handlePost } from '../common/mockService';
 import { getConfigValue, showFeature } from '../configuration';
 import {
   FEATURE_SUBSTANTIVE_ROLE_ENABLED,
@@ -10,7 +9,7 @@ import {
 } from '../configuration/references';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
-import { getWASupportedJurisdictionsList } from '../waSupportedJurisdictions/index';
+import { getWASupportedJurisdictionsList } from '../waSupportedJurisdictions';
 import * as caseServiceMock from './caseService.mock';
 import {
   getUserIdsFromRoleApiResponse,
@@ -29,7 +28,7 @@ import { TaskList } from './interfaces/task';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { checkIfCaseAllocator } from './roleService';
 import * as roleServiceMock from './roleService.mock';
-import { handleGetTasksByCaseId } from './taskService';
+import { handleGetTasksByCaseId, handleTaskGet, handleTaskPost, handleTaskSearch } from './taskService';
 import * as taskServiceMock from './taskService.mock';
 import {
   assignActionsToCases,
@@ -57,6 +56,7 @@ import {
   prepareRoleApiUrl,
   prepareSearchTaskUrl,
   prepareTaskSearchForCompletable,
+  removeEmptyValues,
   searchCasesById
 } from './util';
 
@@ -80,8 +80,10 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
   try {
     const getTaskPath: string = prepareGetTaskUrl(baseWorkAllocationTaskUrl, req.params.taskId);
 
-    const jsonResponse = await handleGet(getTaskPath, req);
-
+    const jsonResponse = await handleTaskGet(getTaskPath, req);
+    if (jsonResponse && jsonResponse.task && jsonResponse.task.due_date) {
+      jsonResponse.task.dueDate = jsonResponse.task.due_date;
+    }
     res.status(200);
     res.send(jsonResponse);
   } catch (error) {
@@ -112,41 +114,14 @@ export async function getTypesOfWork(req: EnhancedRequest, res: Response, next: 
  */
 export async function searchTask(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const searchRequest = req.body.searchRequest;
-    const view = req.body.view;
+    const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
+    const postTaskPath = preparePaginationUrl(req, basePath);
+    const searchRequest = {
+      ...req.body.searchRequest, search_parameters: removeEmptyValues(req.body.searchRequest.search_parameters),
+    };
+    delete searchRequest.pagination_parameters;
+    const {status, data} = await handleTaskSearch(postTaskPath, searchRequest, req);
     const currentUser = req.body.currentUser ? req.body.currentUser : '';
-    let promise;
-    if (searchRequest.search_by === 'judge') {
-      // TODO below call mock api will be replaced when real api is ready
-      if (view === 'MyTasks') {
-        const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'myTasks?view=judicial');
-        const postTaskPath = preparePaginationUrl(req, basePath);
-        promise = await handlePost(postTaskPath, searchRequest, req);
-      } else if (view === 'AvailableTasks') {
-        const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'availableTasks?view=judicial');
-        const postTaskPath = preparePaginationUrl(req, basePath);
-        promise = await handlePost(postTaskPath, searchRequest, req);
-      } else {
-        const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'allTasks?view=judicial');
-        const postTaskPath = preparePaginationUrl(req, basePath);
-        promise = await handlePost(postTaskPath, searchRequest, req);
-      }
-    } else {
-      if (view === 'MyTasks') {
-        const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'myTasks?view=caseworker');
-        const postTaskPath = preparePaginationUrl(req, basePath);
-        promise = await handlePost(postTaskPath, searchRequest, req);
-      } else if (view === 'AvailableTasks') {
-        const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'availableTasks?view=caseworker');
-        const postTaskPath = preparePaginationUrl(req, basePath);
-        promise = await handlePost(postTaskPath, searchRequest, req);
-      } else {
-        const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'allTasks?view=caseworker');
-        const postTaskPath = preparePaginationUrl(req, basePath);
-        promise = await handlePost(postTaskPath, searchRequest, req);
-      }
-    }
-    const {status, data} = promise;
     res.status(status);
     // Assign actions to the tasks on the data from the API.
     let returnData;
@@ -155,8 +130,6 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
       // These should be mocked as if we were getting them from the user themselves
       returnData = {tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records};
     }
-
-    // Send the (possibly modified) data back in the Response.
     res.send(returnData);
   } catch (error) {
     next(error);
@@ -180,7 +153,7 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
 
   try {
     const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action);
-    const {status, data} = await handlePost(getTaskPath, req.body, req);
+    const {status, data} = await handleTaskPost(getTaskPath, req.body, req);
     res.status(status);
     res.send(data);
   } catch (error) {
@@ -347,18 +320,22 @@ export async function getMyCases(req: EnhancedRequest, res: Response) {
 
   try {
     const result = await searchCasesById(queryParams, query, req);
-    const caseData = result.cases;
-    result.total_records = result.cases.length;
-    // search parameters passed in as null as there are no parameters for my cases
-    const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
-    let checkedRoles = req && req.session && req.session.roleAssignmentResponse ? req.session.roleAssignmentResponse : null;
-    if (showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED)) {
-      checkedRoles = getSubstantiveRoles(req.session.roleAssignmentResponse);
+    if (result && result.cases) {
+      const caseData = result.cases;
+      result.total_records = result.cases.length;
+      // search parameters passed in as null as there are no parameters for my cases
+      const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
+      let checkedRoles = req && req.session && req.session.roleAssignmentResponse ? req.session.roleAssignmentResponse : null;
+      if (showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED)) {
+        checkedRoles = getSubstantiveRoles(req.session.roleAssignmentResponse);
+      }
+      const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles, null) : [];
+      const cases = assignActionsToCases(mappedCases, userIsCaseAllocator, true);
+      result.cases = cases;
+      return res.send(result).status(200);
+    } else {
+      return res.send([]).status(200);
     }
-    const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles, null) : [];
-    const cases = assignActionsToCases(mappedCases, userIsCaseAllocator, true);
-    result.cases = cases;
-    return res.send(result).status(200);
   } catch (e) {
     console.log(e);
     return res.send(null).status(500);

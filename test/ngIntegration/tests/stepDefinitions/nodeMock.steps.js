@@ -13,12 +13,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Given('I navigate to home page', async function () {
         await BrowserWaits.retryWithActionCallback(async () => {
-            await browserUtil.gotoHomePage();
-            await BrowserWaits.retryWithActionCallback(async () => {
-                await headerpage.waitForPrimaryNavDisplay();
-                await browserUtil.waitForLD();
-            });
             
+            await headerpage.manageCases.click();
+           
         });  
     });
 
@@ -35,6 +32,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Given('I start MockApp', async function () {
+        try{
+            await MockApp.stopServer();
+        }
+        catch(err){}
        await MockApp.startServer();
     });
 

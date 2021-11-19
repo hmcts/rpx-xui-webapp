@@ -10,7 +10,7 @@ import {RoleCategoryMappingService} from '../../../app/services/role-category-ma
 import {HearingDayScheduleModel} from '../../../hearings/models/hearingDaySchedule.model';
 import {HearingListModel} from '../../../hearings/models/hearingList.model';
 import {HearingListMainModel} from '../../../hearings/models/hearingListMain.model';
-import {HearingListViewModel} from '../../../hearings/models/hearinglistView.model';
+import {HearingListViewModel} from '../../../hearings/models/hearingListView.model';
 import {
   Actions,
   EXUIDisplayStatusEnum,

@@ -35,7 +35,7 @@ describe('Work allocations MVP', () => {
     const caseOfficer = 'xui_caseofficer@justice.gov.uk';
     const caseofficerPass = 'Welcome01';
 
-    beforeEach(function ()  {
+    beforeEach(function () {
         this.timeout(120000);
 
         setTestContext(this);
@@ -331,7 +331,6 @@ describe('Work allocations MVP', () => {
             const response = await Request.post(`workallocation/task`, taskRequestObj.getRequestBody(), headers, 200);
             expect(response.status).to.equal(200);
             expect(response.data).to.have.all.keys('tasks', 'total_records');
-
             console.log(response.data.tasks.length + " " + response.data.total_records);
             //expect(response.data.tasks.length).to.equal(response.data.total_records > 10 ? 10 : response.data.total_records );
 
@@ -348,5 +347,3 @@ describe('Work allocations MVP', () => {
         }); 
     });
 });
-
-

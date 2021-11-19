@@ -98,7 +98,7 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
     items.forEach(
       item => (item.flags || []).concat(item.notFlags || []).forEach(
         flag => {
-          let flagName = this.isPlainFlag(flag) ? flag : flag.flagName;
+          const flagName = this.isPlainFlag(flag) ? flag : flag.flagName;
           obs.push(
             this.featureToggleService.isEnabled(flagName).pipe(
               tap(state => flags[flagName] = state)

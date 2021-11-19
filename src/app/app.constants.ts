@@ -19,32 +19,32 @@ const FooterDataNavigation = {
 };
 
 const defaultUserTheme: ApplicationTheme = {
-  "appTitle": {
-    "name": "Manage Cases",
-    "url": "/"
+  appTitle: {
+    name: 'Manage Cases',
+    url: '/'
   },
-  "backgroundColor": "#202020",
-  "logo": "none",
-  "showFindCase": true
+  backgroundColor: '#202020',
+  logo: 'none',
+  showFindCase: true
 };
 
 const defaultMenuItems: NavigationItem[] = [
   {
-    "active": false,
-    "href": "/cases",
-    "text": "Case list"
+    active: false,
+    href: '/cases',
+    text: 'Case list'
   },
   {
-    "active": false,
-    "href": "/cases/case-filter",
-    "text": "Create case"
+    active: false,
+    href: '/cases/case-filter',
+    text: 'Create case'
   },
   {
-    "active": false,
-    "align": "right",
-    "href": "/cases/case-search",
-    "ngClass": "hmcts-search-toggle__button",
-    "text": "Find case"
+    active: false,
+    align: 'right',
+    href: '/cases/case-search',
+    ngClass: 'hmcts-search-toggle__button',
+    text: 'Find case'
   }
 ];
 

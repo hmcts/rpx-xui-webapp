@@ -1,12 +1,12 @@
 export interface ApplicationTheme {
-    appTitle: { name: string; url: string;};
+    appTitle: { name: string; url: string; };
     backgroundColor: string;
     logo: 'judicial' | 'myhmcts' | 'default' | 'none';
     showFindCase: boolean;
 }
 
 export type FlagDefinition = string | { flagName: string; value: string; };
-  
+
 export interface NavigationItem {
     text: string;
     href: string;

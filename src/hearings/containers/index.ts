@@ -14,6 +14,7 @@ export const containers: any[] = [
   WelshHearingComponent,
   HearingPartiesTitleComponent,
   LocationSearchContainerComponent,
+  WelshHearingComponent,
 ];
 
 export * from './cancel-hearing/cancel-hearing.component';

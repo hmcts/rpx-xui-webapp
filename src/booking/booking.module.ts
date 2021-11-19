@@ -23,7 +23,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule
   ],
   declarations: [
-    ... fromComponents.components,
+    ...fromComponents.components,
     ...fromContainers.containers,
     BookingNavigationComponent
   ],

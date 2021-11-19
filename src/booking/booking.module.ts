@@ -7,9 +7,12 @@ import { bookingRouting } from './booking.routes';
 import * as fromComponents from './components';
 import { BookingNavigationComponent } from './components/booking-navigation/booking-navigation.component';
 import * as fromContainers from './containers';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
+    FormsModule,
+    ReactiveFormsModule,
     CommonModule,
     HttpClientModule,
     bookingRouting,

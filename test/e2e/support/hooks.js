@@ -110,12 +110,13 @@ defineSupportCode(({ Before,After }) => {
                 let browserErrorLogs = []
                 for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++) {
                     if (browserLog[browserLogCounter].level.value > 900) {
+                        browserLog[browserLogCounter]['time'] = (new Date(browserLog[browserLogCounter]['time'])).toISOString()
                         browserErrorLogs.push(browserLog[browserLogCounter]);
                     }
                 }
                 CucumberReportLog.AddJson(browserErrorLogs);
                 if (global.scenarioData['featureToggles']){
-                    //CucumberReportLog.AddJson(global.scenarioData['featureToggles'])
+                    CucumberReportLog.AddJson(global.scenarioData['featureToggles'])
                 }
             } else {
                 browser.manage().logs().get('browser');

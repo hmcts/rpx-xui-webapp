@@ -443,12 +443,13 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.3.6-rc.1":
-  version "4.3.6-rc.1"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.3.6-rc.1.tgz#8021a3c8f9f2b3fb5c652eabf5f1d8ba83db4f87"
-  integrity sha512-+vidGbJIl4u6vZ+fzLxl8stCqVesVfDLnEb0sq32Z0O0YxnD9Tn2BmUEx1jouLcBk77K2F8/FRTTvKPDAMLZdw==
+"@hmcts/ccd-case-ui-toolkit@4.7.0-rc.7":
+  version "4.7.0-rc.7"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.7.0-rc.7.tgz#0098b9b3f7bc0ba1cda45fbbfb0b4a38404f247c"
+  integrity sha512-6NuAWyefTNUkjLUsO3axvU3PHmOPPyVb6ndIWgvKmMzgu9cxRvMIUB27SGQpH825JQ7OrY6ulNHpF7i1Sk4ACQ==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
+    "@angular-material-components/moment-adapter" "^5.0.0"
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
     "@hmcts/ccpay-web-component" "3.0.3"
@@ -482,10 +483,10 @@
   resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.39-alpha.tgz#782d4a4698dae040dd72b26711f04a8d8299d25c"
   integrity sha512-M1364rFLuvktYz5+jVjJ5ZmNUx0/SgoAvH3RsIaT2wFqFf92emuiRyXqax5oSEC5kM9Jpw0rcxEcRbBJWMoglg==
 
-"@hmcts/media-viewer@2.7.7":
-  version "2.7.7"
-  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.7.7.tgz#2ccce65349faf65f16ea19fac811d32cb9de859c"
-  integrity sha512-DPogqinEghoSXtfy67CyO4tFYToEQJa+w5WJi/Da/JiK+4eEA4QZoQTRTjyixo19qHaYmfcdkhSsLPaIWcMZrg==
+"@hmcts/media-viewer@2.7.9":
+  version "2.7.9"
+  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.7.9.tgz#6fa22f7e2a9b65e418afe32059369b332fbc29b3"
+  integrity sha512-0QEbYZgLSVLUspcUgtqZSc2HcKOls5XnEFSHaj6kNOi9OahTXgywQLGKmQziMcSZi9buaH1MqnQd+tMCCPO7AQ==
   dependencies:
     "@swimlane/ngx-datatable" "^16.0.2"
     angular-tree-component "^8.5.6"

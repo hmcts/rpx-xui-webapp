@@ -1,6 +1,5 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { AppConstants } from './app.constants';
-import { NavItemsModel } from './models/nav-item.model';
 import { NavigationItem } from './models/theming.model';
 
 export class AppUtils {
@@ -85,7 +84,7 @@ export class AppUtils {
    * @param currrentUrl - the url being tested
    * @return - a list including boolean stating whether the full url is given or the similar matching url
    */
-  public static checkTabs(items: NavItemsModel[], currentUrl: string): any[] {
+  public static checkTabs(items: NavigationItem[], currentUrl: string): any[] {
     let fullUrl = false;
     let maxLength = 0;
     let matchingUrl = '';

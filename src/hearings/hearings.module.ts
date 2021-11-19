@@ -12,7 +12,6 @@ import * as fromContainers from './containers';
 import { hearingsRouting } from './hearings.routes';
 import { HearingsService } from './services/hearings.service';
 import { effects, reducers } from './store';
-import { MatAutocompleteModule, MatInputModule, MatTabsModule } from '@angular/material';
 
 @NgModule({
   imports: [
@@ -26,9 +25,6 @@ import { MatAutocompleteModule, MatInputModule, MatTabsModule } from '@angular/m
     FormsModule,
     ReactiveFormsModule,
     ExuiCommonLibModule,
-    MatAutocompleteModule,
-    MatTabsModule,
-    MatInputModule
   ],
   declarations: [...fromContainers.containers],
   entryComponents: [],

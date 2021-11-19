@@ -1,8 +1,9 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
-import { CancelHearingComponent, ChangeHearingComponent, ViewHearingComponent } from './containers';
+import { CancelHearingComponent, ChangeHearingComponent, RequestHearingComponent, ViewHearingComponent } from './containers';
 import { LocationSearchContainerComponent } from './containers/request-hearing/location-search-container/location-search-container.component';
+import { WelshHearingComponent } from './containers/request-hearing/welsh-hearing/welsh-hearing.component';
 
 export const ROUTES: Routes = [
   {
@@ -46,11 +47,20 @@ export const ROUTES: Routes = [
         }
       },
       {
+
         path: 'locationSearch',
         component: LocationSearchContainerComponent,
         canActivate: [ HealthCheckGuard ],
         data: {
           title: 'HMCTS Hearings | Request Hearing Location'
+        }
+      },
+      {
+        path: 'welsh-hearing',
+        component: WelshHearingComponent,
+        canActivate: [ HealthCheckGuard ],
+        data: {
+          title: 'HMCTS Manage cases | Request Hearing'
         }
       }
     ]

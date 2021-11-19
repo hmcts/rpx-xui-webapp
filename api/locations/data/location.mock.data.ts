@@ -13261,22 +13261,4 @@ export const ALL_COURT_LOCATIONS: LocationModel[] = [
     "court_address": "CLIFFORD STREET, THE LAW COURTS",
     "postcode": "YO1 9RE"
   },
-  {
-    "court_venue_id": "841",
-    "epims_id": "783561",
-    "is_hearing_location": "Y",
-    "is_case_management_location": "Y",
-    "site_name": "York Magistrates\' Court and Family Court",
-    "court_name": "UNIQUE COURT AND FAMILY COURT",
-    "court_status": "Open",
-    "region_id": "4",
-    "region": "North East",
-    "court_type_id": "18",
-    "court_type": "Family Court",
-    "cluster_id": "14",
-    "cluster_name": "North and West Yorkshire",
-    "open_for_public": "Yes",
-    "court_address": "CLIFFORD STREET, THE LAW COURTS",
-    "postcode": "YO1 9RE"
-  }
 ];

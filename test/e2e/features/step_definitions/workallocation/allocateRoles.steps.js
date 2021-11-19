@@ -25,6 +25,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I enter find person search input {string} in work flow', async function(searchInput){
+        if (searchInput === ''){
+            return;
+        }
         await BrowserWaits.retryWithActionCallback(async () => {
             await workFlowPage.findPersonPage.inputSearchTerm(searchInput);
             const results = await workFlowPage.findPersonPage.getPersonsReturned();
@@ -41,9 +44,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             counter++;
             const actualSearcResults = await workFlowPage.findPersonPage.getPersonsReturned();
             const expectedResultsHashes = resulEmails.hashes();
+           
             const expectedResultsArr = [];
             for (const expectedHash of expectedResultsHashes) {
-                expectedResultsArr.push(expectedHash.Person);
+                if (expectedHash.Person !== ''){
+                    expectedResultsArr.push(expectedHash.Person);
+                }
             }
             for (const expected of expectedResultsArr) {
                 expect(actualSearcResults, `Actual : ${actualSearcResults}`).to.include(expected)
@@ -53,7 +59,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I select find person result {string} in work flow', async function(person){
-        await workFlowPage.findPersonPage.selectPerson(person);
+        if (person !== ''){
+            await workFlowPage.findPersonPage.selectPerson(person);
+        }
     });
 
     When('I click continue in work flow page {string}', async function (workFlowPageType) {

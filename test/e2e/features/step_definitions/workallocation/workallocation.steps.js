@@ -24,12 +24,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I see Task manager page displayed', async function () {
         expect(await taskmanagerPage.amOnPage(), "Task manager page not displayed").to.be.true;
     });
- 
+
     Then('I see Task list table', async function () {
         expect(await taskListPage.isTableDisplayed(), "Task list table is not present").to.be.true;
     });
 
-    Then('I see Task list My tasks table displaying some tasks', async function () { 
+    Then('I see Task list My tasks table displaying some tasks', async function () {
         await BrowserWaits.retryWithActionCallback(async () => {
             await taskListPage.waitForTable();
         });
@@ -50,11 +50,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
 
     When('I click sub navigation tab Available tasks', async function () {
-        await taskListPage.clickAvailableTasks(); 
+        await taskListPage.clickAvailableTasks();
      });
 
     When('I click sub navigation tab My tasks', async function () {
-        await taskListPage.clickMyTasks(); 
+        await taskListPage.clickMyTasks();
     });
 
 
@@ -73,7 +73,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Given('I note task id from table at position {int} with reference {string} to track', async function(ttaskAtpos, taskIdReference){
         const caseRefenceVal = await taskListPage.getColumnValueForTaskAt('Case reference',1);
-        scenarioData[taskIdReference] = caseRefenceVal; 
+        scenarioData[taskIdReference] = caseRefenceVal;
     });
 
     Then('I see task action links', async function(actionsTable){
@@ -81,7 +81,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         for (const actionRow of actionRows){
             const action = actionRow.action;
             expect(await taskListPage.isTaskActionPresent(action), `Task action "${action} ${JSON.stringify(actionRow,2)}" is not displayed`).to.be.true;
-        } 
+        }
     });
 
     Then('I validate task actions in manage link for task at row {int}', async function (taskRow, actionsTable){
@@ -99,12 +99,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
             }
         }
-        
+
     });
-  
+
 
     When('I click task action {string}', async function(taskAction){
-        await taskListPage.clickTaskAction(taskAction); 
+        await taskListPage.clickTaskAction(taskAction);
     });
 
     Then('I see task action suceess confirmation banner', async function(){
@@ -112,7 +112,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const messages = await taskListPage.getBannerMessagesDisplayed();
         const isSuccessDidplayed =  await taskListPage.isBannermessageWithTextDisplayed("You've assigned yourself a task. It's available in My tasks");
         expect(isSuccessDidplayed, "Success message expected is not displayed in :  " + JSON.stringify(messages)).to.be.true;
-       
+
     });
 
     When('I click My tasks tab', async function(){
@@ -156,7 +156,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         reportLogger.AddMessage("Total tasks listed  " + tasksCount);
 
         for (let i = 1; i <= tasksCount; i++) {
-           
+
             await BrowserWaits.retryWithActionCallback(async () => {
                 const isActionBarDisplayed = await taskListPage.isTaskActionBarDisplayedForAtPos(i);
                 if (!isActionBarDisplayed) {
@@ -207,7 +207,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
 
     When('I perform task {string} submit for {string}', async function (actionType, action){
-        
+
         if (actionType.toUpperCase() === "ASSIGNMENT") {
             await taskAssignmentPage.selectLocationAtpos(1);
             await taskAssignmentPage.selectcaseworkerAtpos(2);
@@ -222,7 +222,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     When('I perform task {string} cancel for {string}', async function (actionType, action) {
 
         if (actionType.toUpperCase() === "ASSIGNMENT") {
-         
+
             await taskAssignmentPage.clickCancelBtn();
         } else if (actionType.toUpperCase() === "ACTION") {
             await taskAction.clickCancelBtn();
@@ -279,14 +279,14 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                     await softAssert.assert(async () => expect(hrefVal,"href does not match expected").to.includes("/cases/case-details"));
                 }
             }
-        } 
+        }
         softAssert.finally();
     });
 
-   
+
 
     Then('I validate tasks pagination is displayed if feature toggle {string} is on', async function(featureToggleName){
-        
+
         const toggleVal = featureToggleUtil.getFeatureToggleValue(featureToggleName);
         expect(await taskListPage.paginationContainer.isDisplayed(), 'Pagination display is expected to be ' + toggleVal).to.equal(toggleVal);
 

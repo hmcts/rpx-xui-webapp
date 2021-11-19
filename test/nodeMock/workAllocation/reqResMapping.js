@@ -1,7 +1,6 @@
 const workAllocationMockData = require('./mockData');
 
 module.exports = {
-
     get: {
         '/workallocation/location': (req, res) => {
             res.send(workAllocationMockData.getLocationList(20));
@@ -72,9 +71,40 @@ module.exports = {
         },
         '/workallocation2/judicialworker' : (req,res) => {
             res.send(workAllocationMockData.getJudicialList(20));
+        },
+        '/api/wa-supported-jurisdiction/get': (req,res) => {
+            res.send(['IA']);
         }
     },
     post: {
+        '/workallocation2/my-cases': (req, res) => {
+
+            const requestedView = req.body.view.toLowerCase();
+            const pageNum = requestedView === "mycases" ? 1 : req.body.searchRequest.pagination_parameters.page_number;
+            const pageSize = requestedView === "mycases" ? 125 : req.body.searchRequest.pagination_parameters.page_size;
+
+            let cases = [];
+            if (requestedView === "mycases" || requestedView === "allworkcases") {
+                cases = global.scenarioData && global.scenarioData[`workallocation2.${requestedView}`] ? global.scenarioData[`workallocation2.${requestedView}`] : workAllocationMockData.getMyCases(pageSize ? pageSize * 5 : 125);
+            } else {
+                throw new Error("Unrecognised case list view : " + requestedView);
+            }
+            try {
+                const thisPageCases = [];
+
+
+
+                const startIndexForPage = ((pageNum - 1 ) * pageSize) ;
+                const endIndexForPage = (startIndexForPage + pageSize) < cases.total_records ? startIndexForPage + pageSize - 1 : cases.total_records - 1;
+                for (let i = startIndexForPage; i <= endIndexForPage; i++) {
+                    thisPageCases.push(cases.cases[i]);
+                }
+                const responseData = { cases: thisPageCases, total_records: cases.total_records };
+                res.send(responseData);
+            } catch (e) {
+                res.status(500).send({ error: 'mock error occured', stack: e });
+            }
+        },
         '/workallocation2/my-work/cases': (req, res) => {
             
             const requestedView = req.body.view.toLowerCase();
@@ -92,7 +122,7 @@ module.exports = {
 
                 
 
-                const startIndexForPage =  ((pageNum - 1) * pageSize) - 1;
+                const startIndexForPage = pageNum === 0 ? 0 : ((pageNum) * pageSize) - 1;
                 const endIndexForPage =  (startIndexForPage + pageSize) < cases.total_records ? startIndexForPage + pageSize - 1 : cases.total_records - 1;
                 for (let i = startIndexForPage; i <= endIndexForPage; i++) {
                     thisPageCases.push(cases.cases[i]);
@@ -156,7 +186,7 @@ module.exports = {
                     tasks.push(workAllocationMockData.getRelease2TaskWithPermissions(permissions[i], 'AvailableTasks', null));
                 }
                 
-            } else if (req.body.view === "TaskManager") {
+            } else if (req.body.view === "AllWork") {
                 for (let i = 0; i < permissions.length; i++) {
                     tasks.push(workAllocationMockData.getRelease2TaskWithPermissions(permissions[i], 'AvailableTasks', 'Unassigned'));
                 }
@@ -274,26 +304,22 @@ module.exports = {
 
         },
         '/api/role-access/exclusions/post' : (req,res) => {
-            const mockRoles = [
-                { added: '2021-10-12T12:14:42.230129Z', name: 'judeg a', userType: 'JUDICIAL', type: 'CASE', id: '12345678901' },
-                { added: '2021-10-12T12:14:42.230129Z', name: 'judeg b', userType: 'JUDICIAL', type: 'CASE', id: '12345678902' },
-                { added: '2021-10-12T12:14:42.230129Z', name: 'judeg c', userType: 'JUDICIAL', type: 'CASE', id: '12345678903' },
-                { added: '2021-10-12T12:14:42.230129Z', name: 'legal a', userType: 'LEGAL_OPERATIONS', type: 'CASE', id: '12345678904' }
-            ];
+            
             res.send(workAllocationMockData.getCaseExclusions(mockRoles));
         },
         '/api/role-access/roles/post': (req, res) => {
-            const mockRoles = [
-                { added: '2021-10-12T12:14:42.230129Z', name: 'judeg a', userType: 'JUDICIAL', type: 'CASE', id: '12345678901', roleCategory: 'JUDICIAL' },
-                { added: '2021-10-12T12:14:42.230129Z', name: 'judeg b', userType: 'JUDICIAL', type: 'CASE', id: '12345678902', roleCategory: 'JUDICIAL' },
-                { added: '2021-10-12T12:14:42.230129Z', name: 'judeg c', userType: 'JUDICIAL', type: 'CASE', id: '12345678903', roleCategory: 'JUDICIAL' },
-                { added: '2021-10-12T12:14:42.230129Z', name: 'legal a', userType: 'LEGAL_OPERATIONS', type: 'CASE', id: '12345678904', roleCategory: 'LEGAL_OPERATIONS'}
-            ];
-            res.send(workAllocationMockData.getCaseRoles(mockRoles));
+            
+            if(Object.keys(req.body).includes('assignmentid')){
+                res.send(workAllocationMockData.caseRoleForAssignment);
+
+            }else{
+                res.send(workAllocationMockData.caseRoles);
+            }
+        },
+        '/api/role-access/exclusions/delete' : (req,res) => {
+            res.status(204).send();
         }
     }
-  
-
    
 }
 

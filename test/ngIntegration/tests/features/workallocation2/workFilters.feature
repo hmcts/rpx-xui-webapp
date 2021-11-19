@@ -1,4 +1,4 @@
-@ng @test
+@ng 
 Feature: WA Release 2: My work - Work filters
 
     Background: Mock and browser setup
@@ -20,7 +20,7 @@ Feature: WA Release 2: My work - Work filters
             | 12345 | Aldgate Tower |
 
         Given I set MOCK request "/workallocation2/taskWithPagination" intercept with reference "workallocationTaskRequest"
-        Given I set MOCK request "/workallocation2/my-cases" intercept with reference "workallocationCasesRequest"
+        Given I set MOCK request "/workallocation2/my-work/cases" intercept with reference "workallocationCasesRequest"
 
 
     Scenario Outline:  Work filters show hide button and Apply for "<UserType>"

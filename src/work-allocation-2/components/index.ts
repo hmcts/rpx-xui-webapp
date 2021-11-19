@@ -33,6 +33,7 @@ export const components: any[] = [
 ];
 
 export * from './available-tasks-filter/available-tasks-filter.component';
+export * from './case-manager-filter/case-manager-filter.component';
 export * from './case-name-field/case-name-field.component';
 export * from './case-reference-field/case-reference-field.component';
 export * from './derived-icon-field/derived-icon-field.component';

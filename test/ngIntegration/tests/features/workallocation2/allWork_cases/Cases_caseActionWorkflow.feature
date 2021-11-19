@@ -11,6 +11,8 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
             | case-allocator | 10    |
             |                | 90    |
 
+        Given I set MOCK request "/workallocation2/findPerson" intercept with reference "findPersonRequest"
+
     Scenario:  Judge reaallocate case from all work cases
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker" with reference "userDetails"
         Given I set MOCK find person response for jurisdictions
@@ -21,6 +23,10 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
             | Legal Ops | 1234 | caseworker_user2@gov.uk | caseworker2 cw | Case worker   |
             | Admin     | 1235 | admin_user1@gov.uk      | admin1 a       | Case worker   |
             | Admin     | 1236 | admin_user2@gov.uk      | admin2 a       | Case worker   |
+
+        Given I set Mock WA case property values
+            | index | key       | value      |
+            | 0     | case_role | lead-judge |
 
         Given I start MockApp
         Given I navigate to home page
@@ -39,7 +45,12 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
         # When I click continue in work flow page "Choose how to allocate the role"
 
         Then I see Allocate role work flow page "Find the person" with caption "Reallocate a lead judge" is displayed
+
+        Given I reset reference "findPersonRequest" value to null
         When I enter find person search input "jud" in work flow
+        Then I validate find person request body from reference "findPersonRequest"
+            | jurisdiction | Judicial |
+            | searchTerm | jud |
         Then I see find person search results in work flow
             | Person                            |
             | Lead judge(judge_user1@gov.uk)    |
@@ -53,7 +64,7 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
         Then I validate date input field "Access ends" is displayed "No" in work flow page
         When I click continue in work flow page "Duration of role"
 
-        Then I see Allocate role work flow page "Check your answers" with caption "Reallocate a lead judge" is displayed
+        Then I see Allocate role work flow page "Check your changes" with caption "Reallocate a lead judge" is displayed
 
         Then I see Check your answers page has total 3 questions
         Then I see Check your answers page has questions and answers with change link
@@ -78,6 +89,9 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
             | Admin     | 1235 | admin_user1@gov.uk      | admin1 a       | Case worker   |
             | Admin     | 1236 | admin_user2@gov.uk      | admin2 a       | Case worker   |
 
+        Given I set Mock WA case property values
+            | index | key       | value      |
+            | 0     | case_role | case-manager |
         Given I start MockApp
         Given I navigate to home page
 
@@ -94,7 +108,11 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
         # When I click continue in work flow page "Choose how to allocate the role"
 
         Then I see Allocate role work flow page "Find the person" with caption "Reallocate a legal ops case manager" is displayed
-        When I enter find person search input "jud" in work flow
+        Given I reset reference "findPersonRequest" value to null
+        When I enter find person search input "cas" in work flow
+        Then I validate find person request body from reference "findPersonRequest"
+            | jurisdiction | legal ops |
+            | searchTerm   | cas |
         Then I see find person search results in work flow
             | Person                                  |
             | caseworker1 cw(caseworker_user1@gov.uk) |
@@ -119,7 +137,6 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
 
         When I click button with label "Confirm allocation" in work flow  Check your answers page
         Then I see All work cases page displayed
-
 
 
     Scenario:  Judge Removes allocation of case from all work cases

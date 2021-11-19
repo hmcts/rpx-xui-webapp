@@ -106,7 +106,6 @@ Feature: WA Release 2: Exclusions
             # | IAC_CaseOfficer_R2 | caseworker-ia-caseofficer,caseworker-ia-admofficer | Caseworker excluding me |
             | IAC_Judge_WA_R2 | caseworker-ia-iacjudge,caseworker-ia,caseworker | Judge excluding me   |
 
-
     Scenario Outline: Delete exclusion
         Given I set MOCK with user "<Useridentifier>" and roles "<Roles>" with reference "userDetails"
 
@@ -128,8 +127,12 @@ Feature: WA Release 2: Exclusions
             | Descrive the exclusion | Test exclusion 1 |
             | Added                  | -5               |
 
+
+        Given I set MOCK api method "get" endpoint "/data/internal/cases/1602078503323954" with error response code 404
+        Given I restart MockApp
+
         When I click button with label "Delete exclusion" in add exclusion work Check your answers page
-        Then I see case details page with message banner "You've added an exclusion."
+        Then I see case details page with message banner "You've deleted an exclusion."
 
         Examples:
             | Useridentifier  | Roles                                           | ExclusionDescription |

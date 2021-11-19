@@ -40,6 +40,14 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         expect(isendPointTrigered).to.be.true
     });
 
+    Given('I am perforing actions to validate {string}', async function(behaviour){
+        const behaviourStringLen = behaviour.length;
+        const border = "**********************".padStart(behaviourStringLen,"*")
+        cucumberReporter.AddMessage(`${border}`);
+        cucumberReporter.AddMessage(`********** ${behaviour} ***********`);
+        cucumberReporter.AddMessage(`${border}`);
+    });
+
     async function getUnknownWindowHandles(){
         const scenarioDataKeys = Object.keys(global.scenarioData);
         const windowReferences = await ArrayUtil.filter(scenarioDataKeys,async (scrDataKey) => scrDataKey.includes('window.') );

@@ -111,7 +111,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             if (searchParamObj.length > 0) {
                 if (searchHash.value && searchHash.value !== ""){
                     softAssert.setScenario(`Search param with key ${searchHash.key} and values ${searchHash.value} is present`);
-                    await softAssert.assert(async () => expect(searchParamObj[0].values).to.includes(searchHash.value));
+                    if (searchHash.value !== ''){
+                        await softAssert.assert(async () => expect(searchParamObj[0].values).to.includes(searchHash.value));
+                    }else{
+                        await softAssert.assert(async () => expect(searchParamObj[0].values.length).to.equal(0));
+                    }
+                    
                 }
 
                 if (searchHash.size) {

@@ -14,11 +14,11 @@ import { BookingNavigationComponent } from './components/booking-navigation/book
   imports: [
     CommonModule,
     HttpClientModule,
-    bookingRouting,
-    SharedModule
+    SharedModule,
+    bookingRouting
   ],
   declarations: [
-    ... fromComponents.components,
+    ...fromComponents.components,
     ...fromContainers.containers,
     BookingNavigationComponent
   ],

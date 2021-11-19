@@ -14,7 +14,13 @@ import { Caseworker, Location } from '../../interfaces/common';
 import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter, SearchTaskRequest, SortParameter } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskServiceConfig } from '../../models/tasks';
-import { CaseworkerDataService, InfoMessageCommService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
+import {
+  CaseworkerDataService,
+  InfoMessageCommService,
+  LocationDataService,
+  WASupportedJurisdictionsService,
+  WorkAllocationTaskService
+} from '../../services';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
@@ -315,9 +321,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      const isJudge = AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
-      return isJudge;
+      return AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
     }
-    return false
+    return false;
   }
 }

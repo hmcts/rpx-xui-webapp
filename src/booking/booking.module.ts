@@ -9,9 +9,13 @@ import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { SharedModule } from '../app/shared/shared.module';
 import { bookingRouting } from './booking.routes';
 import { BookingNavigationComponent } from './components/booking-navigation/booking-navigation.component';
+import * as fromContainers from './containers';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
+    FormsModule,
+    ReactiveFormsModule,
     CommonModule,
     HttpClientModule,
     SharedModule,

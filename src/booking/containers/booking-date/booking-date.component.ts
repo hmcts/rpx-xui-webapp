@@ -15,11 +15,15 @@ export class BookingDateComponent implements OnInit {
 
   constructor() { }
 
-  public ngOnInit() {
-  }
 
   public onEventTrigger() {
     this.eventTrigger.emit(BookingNavigationEvent.CONFIRMBOOKINGDATESUBMIT);
   }
 
 }
+
+export interface DisplayedDateInterval {
+  date: TimeOption,
+  checked: boolean
+}
+

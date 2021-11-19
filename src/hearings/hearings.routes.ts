@@ -36,7 +36,7 @@ export const ROUTES: Routes = [
   },
   {
     path: 'request',
-    component: null,
+    component: RequestHearingComponent,
     children: [
       {
         path: '',
@@ -52,14 +52,6 @@ export const ROUTES: Routes = [
         canActivate: [ HealthCheckGuard ],
         data: {
           title: 'HMCTS Hearings | Request Hearing Location'
-        }
-      },
-      {
-        path: 'welsh-hearing',
-        component: WelshHearingComponent,
-        canActivate: [ HealthCheckGuard ],
-        data: {
-          title: 'HMCTS Manage cases | Request Hearing'
         }
       },
       {

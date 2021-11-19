@@ -1,12 +1,13 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FilterPersistence, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
-import { Subscription } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { ErrorMessage } from '../../../app/models';
 import { Location } from '../../models/dtos';
 import { LocationDataService } from '../../services';
+import { TaskTypesService } from '../../services/task-types.service';
 
 export const LOCATION_ERROR: ErrorMessage = {
   title: 'There is a problem',
@@ -17,7 +18,8 @@ export const LOCATION_ERROR: ErrorMessage = {
 @Component({
   selector: 'exui-task-list-filter',
   templateUrl: './task-list-filter.component.html',
-  styleUrls: ['task-list-filter.component.scss']
+  styleUrls: ['task-list-filter.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class TaskListFilterComponent implements OnInit, OnDestroy {
   private static readonly FILTER_NAME = 'locations';
@@ -43,7 +45,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   public selectedLocations: string[] = [];
   public toggleFilter = false;
   public errorSubscription: Subscription;
-  private locationSubscription: Subscription;
+  private subscription: Subscription;
   private selectedLocationsSubscription: Subscription;
 
   /**
@@ -51,15 +53,17 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
    */
   constructor(private readonly route: ActivatedRoute,
               private readonly filterService: FilterService,
-              private readonly locationService: LocationDataService) {
+              private readonly taskTypesService: TaskTypesService,
+              private readonly locationDataService: LocationDataService) {
   }
 
   public ngOnInit(): void {
     this.fieldsConfig.persistence = this.persistence || 'session';
-    this.locationSubscription = this.locationService.getLocations()
-      .subscribe((locations: Location[]) => {
+    this.subscription = forkJoin([this.locationDataService.getLocations(), this.taskTypesService.getTypesOfWork()])
+      .subscribe(([locations, typesOfWork]: [Location[], any[]]) => {
         locations.forEach((location) => this.allLocations.push(location.id.toString()));
         this.setUpLocationFilter(locations);
+        this.setUpTypesOfWorkFilter(typesOfWork);
         this.persistFirstSetting();
       });
     this.setErrors();
@@ -92,8 +96,8 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    if (this.locationSubscription) {
-      this.locationSubscription.unsubscribe();
+    if (this.subscription) {
+      this.subscription.unsubscribe();
     }
 
     if (this.selectedLocationsSubscription) {
@@ -149,6 +153,37 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
       name: TaskListFilterComponent.FILTER_NAME,
       value: this.defaultLocations
+    }];
+    this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
+    this.fieldsConfig.fields.push(field);
+  }
+
+  private setUpTypesOfWorkFilter(typesOfWork: any[]): void {
+    if (!typesOfWork.length) {
+      return;
+    }
+    const field: FilterFieldConfig = {
+      name: 'types-of-work',
+      options: [
+        {
+          key: 'types_of_work_all',
+          label: 'Select all',
+          selectAll: true
+        },
+        ...typesOfWork
+      ],
+      minSelected: 1,
+      maxSelected: null,
+      lineBreakBefore: true,
+      displayMinSelectedError: true,
+      minSelectedError: 'Select a type of work',
+      title: 'Types of work',
+      type: 'checkbox'
+    };
+    const defaultFields = typesOfWork.map(typeOfWork => typeOfWork.key);
+    this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
+      name: 'types-of-work',
+      value: ['types_of_work_all', ...defaultFields]
     }];
     this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
     this.fieldsConfig.fields.push(field);

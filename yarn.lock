@@ -524,10 +524,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.4.7-remove-person-on-radio-select":
-  version "1.4.7-remove-person-on-radio-select"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.7-remove-person-on-radio-select.tgz#f275d2bc8bd7ec3f44b9347830ffb49022608a27"
-  integrity sha512-cyjHoj6Wke3c5jM7e/09/LAy5s29tFGQwA6XqqLDNrnO2r6fteVsbmUwAtTtlX+V5RKWVrF5OCESAyG0feNz3g==
+"@hmcts/rpx-xui-common-lib@1.4.8-select-all-redo":
+  version "1.4.8-select-all-redo"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.8-select-all-redo.tgz#2f82ed4e7dea6ccfc3bb88dac7db0c21933a01fd"
+  integrity sha512-Sazil/MKCiKfU054N0lf0NcJkFDw3357LXCO3TvyAAPu0ayWJnVAfntGyX2YbELxwON02R8lW3b3fA2+vy6KEQ==
   dependencies:
     tslib "^1.9.0"
 

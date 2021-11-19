@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as fromComponents from './components';
 import * as fromContainers from './containers';
+import * as fromServices from './services';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { HttpClientModule } from '@angular/common/http';
 import { SharedModule } from '../app/shared/shared.module';
@@ -29,7 +30,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     BookingCheckComponent
   ],
   providers: [
-    AlertService
+    AlertService,
+    ...fromServices.services
   ]
 })
 export class BookingModule { }

@@ -1,0 +1,14 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Booking } from '../models/booking.interface';
+
+@Injectable()
+export class BookingService {
+
+  constructor(private readonly http: HttpClient) {}
+
+  public getBookings(): Observable<{bookings: Booking[]}> {
+    return this.http.get<any>(`/am/bookings`);
+  }
+}

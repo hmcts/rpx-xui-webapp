@@ -16,7 +16,7 @@ export class LocationSearchContainerComponent implements OnInit {
     this.hearingStore.pipe(select(fromHearingStore.getHearingsList)).pipe(
       map(hearingList => hearingList.caseHearingsMainModel ? hearingList.caseHearingsMainModel.hmctsServiceID : '')
     ).subscribe(id => {
-      this.serviceId = id
+      this.serviceId = id ? id : this.serviceId;
     });
   }
 }

@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RequestHearingComponent } from './request-hearing.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('RequestHearingComponent', () => {
   let component: RequestHearingComponent;
@@ -8,6 +9,7 @@ describe('RequestHearingComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
       declarations: [ RequestHearingComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })

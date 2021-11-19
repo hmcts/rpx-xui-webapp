@@ -1,6 +1,7 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { AppConstants } from './app.constants';
 import { NavItemsModel } from './models/nav-item.model';
+import { NavigationItem } from './models/theming.model';
 
 export class AppUtils {
 
@@ -65,7 +66,7 @@ export class AppUtils {
   /**
    * Set the active property on the navigation items.
    */
-  public static setActiveLink(items: NavItemsModel[], currentUrl: string): NavItemsModel[] {
+  public static setActiveLink(items: NavigationItem[], currentUrl: string): NavigationItem[] {
     let fullUrl = false;
     let matchingUrl = '';
     [fullUrl, matchingUrl] = AppUtils.checkTabs(items, currentUrl);

@@ -11,4 +11,8 @@ export class BookingService {
   public getBookings(): Observable<{bookings: Booking[]}> {
     return this.http.get<any>(`/am/bookings`);
   }
+
+  public getBookingLocation(locationId: string): Observable<any> {
+    return this.http.get(`/refdata/location/building-locations?epimms_id=${locationId}`);
+  }
 }

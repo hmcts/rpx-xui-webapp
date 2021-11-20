@@ -9,7 +9,7 @@
       <form [formGroup]="bookingTypeForm">
 
         <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
-          <ng-container *ngIf="existingBookings.length > 0">
+          <ng-container *ngIf="existingBookings && existingBookings.length > 0">
             <div class="govuk-radios__item">
               <input class="govuk-radios__input" id="type-0" name="bookingType" type="radio" [value]="0"
               data-aria-controls="conditional-booking-type-0" (change)="onChange(0)" formControlName="bookingType"/>
@@ -21,7 +21,7 @@
               <div class="govuk-form-group">
                 <div class="govuk-grid-column-one-half" *ngFor="let booking of existingBookings" >
                   <p>
-                    <strong>{{getLocation(booking.base_location_id)}}</strong>
+                    <strong>{{booking.locationName}}</strong>
                     <span class="govuk-hint">
                       {{booking.beginTime | date:'dd LLLL yyyy'}} to {{booking.endTime | date:'dd LLLL yyyy'}}
                     </span>

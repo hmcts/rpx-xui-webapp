@@ -4,7 +4,7 @@ export const bookings: Bookings  = {
   "bookings":
   [{
     "appointmentId": "101",
-    "base_location_id": "103",
+    "base_location_id": "366796",
     "beginTime": new Date("2021-01-01T00:00:00Z"),
     "contract_type_id": "102",
     "created" : new Date("2021-02-23T06:37:58Z"),

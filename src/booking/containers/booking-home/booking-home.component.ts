@@ -20,6 +20,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
   public bookingTypeForm: FormGroup;
   public existingBookings: Booking[];
   private existingBookingsSubscription: Subscription;
+  private bookingLocationSubscription: Subscription;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -33,6 +34,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
 
     this.existingBookingsSubscription = this.bookingService.getBookings().subscribe(response => {
       this.existingBookings = response.bookings;
+      this.assignBookingLocation();
     });
   }
 
@@ -40,14 +42,23 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
     this.bookingOptionIndexChange.emit(index);
   }
 
+  public assignBookingLocation() {
+    this.existingBookings.forEach(booking => {
+      this.bookingLocationSubscription = this.bookingService.getBookingLocation(booking.base_location_id).subscribe(location =>
+        booking.locationName = location[0] && location[0].building_location_name ?
+                                    location[0].building_location_name :
+                                    null
+      );
+    });
+  }
+
   public ngOnDestroy() {
     if (this.existingBookingsSubscription) {
       this.existingBookingsSubscription.unsubscribe();
     }
-  }
-
-  public getLocation(locationId: string): string {
-    return locationId;
+    if (this.bookingLocationSubscription) {
+      this.bookingLocationSubscription.unsubscribe();
+    }
   }
 
 }

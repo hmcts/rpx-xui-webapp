@@ -8,4 +8,5 @@ export interface Booking {
     beginTime: Date;
     endTime: Date;
     created: Date;
+    locationName?: string;
 }

@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { Booking } from 'src/booking/models/booking.interface';
-import { BookingService } from 'src/booking/services';
 import { BookingNavigation } from '../../models/booking-navigation.interface';
+import { Booking } from '../../models/booking.interface';
+import { BookingService } from '../../services';
 
 @Component({
   selector: 'exui-booking-home',

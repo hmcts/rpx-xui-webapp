@@ -62,4 +62,3 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
   }
 
 }
-

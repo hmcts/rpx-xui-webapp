@@ -1,10 +1,11 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import * as fromComponents from './components';
 import * as fromContainers from './containers';
 import * as fromServices from './services';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
+import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
+
 import { SharedModule } from '../app/shared/shared.module';
 import { bookingRouting } from './booking.routes';
 import { BookingNavigationComponent } from './components/booking-navigation/booking-navigation.component';
@@ -22,12 +23,9 @@ import { ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule
   ],
   declarations: [
-    ... fromComponents.components,
+    ...fromComponents.components,
     ...fromContainers.containers,
-    BookingNavigationComponent,
-    BookingLocationComponent,
-    BookingDateComponent,
-    BookingCheckComponent
+    BookingNavigationComponent
   ],
   providers: [
     AlertService,

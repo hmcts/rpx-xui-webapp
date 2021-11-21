@@ -12,8 +12,8 @@ export class BookingNavigationComponent implements OnInit {
 
   constructor() { }
 
-  @Input() currentNavigationState: BookingState;
-  @Input() bookingOptionIndex: number;
+  @Input() private readonly currentNavigationState: BookingState;
+  @Input() private readonly bookingOptionIndex: number;
 
   @Output() public eventTrigger = new EventEmitter();
 
@@ -23,10 +23,10 @@ export class BookingNavigationComponent implements OnInit {
   public locationVisibilityStates = bookingLocationVisibilityStates;
   public dateVisibilityStates = bookingDateVisibilityStates;
   public checkBookingVisibilityStates = bookingCheckVisibilityStates;
-  
+
   public backVisibilityStates = bookingBackButtonVisibilityStates;
-  
-  ngOnInit() {
+
+  public ngOnInit() {
   }
 
   public isVisible(visibleNavigationStates: BookingState[]): boolean {

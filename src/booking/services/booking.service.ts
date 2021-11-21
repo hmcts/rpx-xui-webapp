@@ -9,7 +9,7 @@ export class BookingService {
   constructor(private readonly http: HttpClient) {}
 
   public getBookings(): Observable<{bookings: Booking[]}> {
-    return this.http.get<any>(`/am/bookings`);
+    return this.http.get<{bookings: Booking[]}>(`/am/bookings`);
   }
 
   public getBookingLocation(locationId: string): Observable<any> {

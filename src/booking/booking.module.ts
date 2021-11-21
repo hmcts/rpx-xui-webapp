@@ -1,18 +1,15 @@
-import * as fromComponents from './components';
-import * as fromContainers from './containers';
-import * as fromServices from './services';
-import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
+
+import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
-
 import { SharedModule } from '../app/shared/shared.module';
 import { bookingRouting } from './booking.routes';
+import * as fromComponents from './components';
 import { BookingNavigationComponent } from './components/booking-navigation/booking-navigation.component';
-import { BookingLocationComponent } from './containers/booking-location/booking-location.component';
-import { BookingDateComponent } from './containers/booking-date/booking-date.component';
-import { BookingCheckComponent } from './containers/booking-check/booking-check.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import * as fromContainers from './containers';
+import * as fromServices from './services';
 
 @NgModule({
   imports: [

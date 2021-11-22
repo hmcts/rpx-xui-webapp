@@ -14,7 +14,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Given('I navigate to home page', async function () {
         await BrowserWaits.retryWithActionCallback(async () => {
             const isAppLoaded = await headerpage.amOnPage();
-            if (global.scenarioData['canSecenarioRunwiThExistingSession'] && isAppLoaded ){
+            if (global.scenarioData['canSecenarioRunwiThExistingSession'] && isAppLoaded  && false){
                 await headerpage.manageCases.click();
            } else{
                 await browserUtil.gotoHomePage();

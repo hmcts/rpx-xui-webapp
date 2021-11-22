@@ -2,7 +2,7 @@ import * as chai from 'chai';
 import { expect } from 'chai';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
-import {mockReq, mockRes} from 'sinon-express-mock';
+import { mockReq, mockRes } from 'sinon-express-mock';
 import { http } from '../lib/http';
 
 import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
@@ -15,11 +15,15 @@ import {
   applySearchFilter,
   assignActionsToTasks,
   constructElasticSearchQuery,
-  constructRoleAssignmentCaseAllocatorQuery, constructRoleAssignmentQuery, filterByLocationId,
-  getActionsByPermissions, getCaseAllocatorLocations,
+  constructRoleAssignmentCaseAllocatorQuery,
+  constructRoleAssignmentQuery,
+  filterByLocationId,
+  getActionsByPermissions,
+  getCaseAllocatorLocations,
   getCaseIdListFromRoles,
   getRoleAssignmentsByQuery,
   getSubstantiveRoles,
+  getTypesOfWorkByUserId,
   mapCasesFromData,
   mapCaseworkerData,
   mapCaseworkerPrimaryLocation,
@@ -185,7 +189,7 @@ describe('workAllocation.utils', () => {
       const expectedResult = {
         attributes: {
           jurisdiction: jurisdictions,
-          primaryLocation: [locationId]
+          primaryLocation: [locationId],
         },
         roleName: ['hearing-centre-admin', 'case-manager', 'ctsc', 'tribunal-caseworker',
           'hmcts-legal-operations', 'task-supervisor', 'hmcts-admin',
@@ -645,20 +649,20 @@ describe('workAllocation.utils', () => {
       assignee: 'person1',
       role_category: 'LEGAL_OPERATIONS',
     },
-    {
-      id: '3',
-      case_id: '456',
-      case_name: '456',
-      case_category: 'Test',
-      case_role: 'example-role-2',
-      jurisdiction: 'IA',
-      location_id: '001',
-      role: 'example-role-2',
-      startDate: new Date('01-01-2021'),
-      endDate: new Date('01-01-2022'),
-      assignee: 'person1',
-      role_category: 'LEGAL_OPERATIONS',
-    }];
+      {
+        id: '3',
+        case_id: '456',
+        case_name: '456',
+        case_category: 'Test',
+        case_role: 'example-role-2',
+        jurisdiction: 'IA',
+        location_id: '001',
+        role: 'example-role-2',
+        startDate: new Date('01-01-2021'),
+        endDate: new Date('01-01-2022'),
+        assignee: 'person1',
+        role_category: 'LEGAL_OPERATIONS',
+      }];
     it('should return empty list if there is nothing given', () => {
       expect(mapCasesFromData(null, null, null)).to.deep.equal([]);
       expect(mapCasesFromData(null, firstRoleAssignment, null)).to.deep.equal([]);
@@ -684,31 +688,31 @@ describe('workAllocation.utils', () => {
         substantive: 'Y',
       },
     },
-    {
-      id: '2',
-      actorId: 'person1',
-      roleName: 'example-role',
-      endTime: new Date('01-01-2022'),
-      beginTime: new Date('01-01-2021'),
-      roleCategory: 'LEGAL_OPERATIONS',
-      attributes: {
-        primaryLocation: '001',
-        substantive: 'Y',
+      {
+        id: '2',
+        actorId: 'person1',
+        roleName: 'example-role',
+        endTime: new Date('01-01-2022'),
+        beginTime: new Date('01-01-2021'),
+        roleCategory: 'LEGAL_OPERATIONS',
+        attributes: {
+          primaryLocation: '001',
+          substantive: 'Y',
+        },
       },
-    },
-    {
-      id: '3',
-      actorId: 'person1',
-      roleName: 'example-role-2',
-      endTime: new Date('01-01-2022'),
-      beginTime: new Date('01-01-2021'),
-      roleCategory: 'LEGAL_OPERATIONS',
-      attributes: {
-        caseId: '456',
-        primaryLocation: '001',
-        substantive: 'N',
-      },
-    }, ];
+      {
+        id: '3',
+        actorId: 'person1',
+        roleName: 'example-role-2',
+        endTime: new Date('01-01-2022'),
+        beginTime: new Date('01-01-2021'),
+        roleCategory: 'LEGAL_OPERATIONS',
+        attributes: {
+          caseId: '456',
+          primaryLocation: '001',
+          substantive: 'N',
+        },
+      }, ];
     it('should return empty list if there is nothing given', () => {
       expect(getSubstantiveRoles([])).to.deep.equal([]);
     });
@@ -746,15 +750,15 @@ describe('workAllocation.utils', () => {
           },
         ];
         const req = {
-            session: {
-              passport: {
-                  user: {
-                    userinfo: {
-                      id: '0d8be1b2-a023-4125-9ab7-00f87b560d76',
-                    },
+          session: {
+            passport: {
+              user: {
+                userinfo: {
+                  id: '0d8be1b2-a023-4125-9ab7-00f87b560d76',
                 },
               },
-          }
+            },
+          },
         };
 
         const result = constructRoleAssignmentCaseAllocatorQuery(searchParameters, req);
@@ -783,21 +787,21 @@ describe('workAllocation.utils', () => {
       async () => {
 
         const caseAllocatorQuery = {
-          "queryRequests": [
+          'queryRequests': [
             {
-              "attributes": {
-                "jurisdiction": [
-                  "IA",
+              'attributes': {
+                'jurisdiction': [
+                  'IA',
                 ],
               },
-              "actorId": [
-                "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+              'actorId': [
+                'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
               ],
-              "role": [
-                "case-allocator",
+              'role': [
+                'case-allocator',
               ],
-              "roleType": [
-                "ORGANISATION",
+              'roleType': [
+                'ORGANISATION',
               ],
             },
           ],
@@ -805,48 +809,48 @@ describe('workAllocation.utils', () => {
         const req = mockReq();
         const mockRoleAssignments = [
           {
-            "id": "508daf11-d968-4d65-bebb-863195b395c2",
-            "actorIdType": "IDAM",
-            "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
-            "roleType": "CASE",
-            "roleName": "case-manager",
-            "classification": "PUBLIC",
-            "grantType": "SPECIFIC",
-            "roleCategory": "LEGAL_OPERATIONS",
-            "readOnly": false,
-            "beginTime": "2021-10-20T23:00:00Z",
-            "endTime": "2021-10-27T23:00:00Z",
-            "created": "2021-10-21T14:55:04.103639Z",
-            "attributes": {
-              "substantive": "Y",
-              "caseId": "1634822871207303",
-              "jurisdiction": "IA",
-              "caseType": "Asylum",
+            'id': '508daf11-d968-4d65-bebb-863195b395c2',
+            'actorIdType': 'IDAM',
+            'actorId': 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
+            'roleType': 'CASE',
+            'roleName': 'case-manager',
+            'classification': 'PUBLIC',
+            'grantType': 'SPECIFIC',
+            'roleCategory': 'LEGAL_OPERATIONS',
+            'readOnly': false,
+            'beginTime': '2021-10-20T23:00:00Z',
+            'endTime': '2021-10-27T23:00:00Z',
+            'created': '2021-10-21T14:55:04.103639Z',
+            'attributes': {
+              'substantive': 'Y',
+              'caseId': '1634822871207303',
+              'jurisdiction': 'IA',
+              'caseType': 'Asylum',
             },
           },
           {
-            "id": "90d23b9f-3458-4aeb-83c3-5fb25ecfa30a",
-            "actorIdType": "IDAM",
-            "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
-            "roleType": "CASE",
-            "roleName": "case-manager",
-            "classification": "PUBLIC",
-            "grantType": "SPECIFIC",
-            "roleCategory": "LEGAL_OPERATIONS",
-            "readOnly": false,
-            "beginTime": "2021-10-13T23:00:00Z",
-            "created": "2021-10-14T15:55:58.586597Z",
-            "attributes": {
-              "substantive": "Y",
-              "caseId": "1547476018728634",
-              "jurisdiction": "IA",
-              "caseType": "Asylum",
+            'id': '90d23b9f-3458-4aeb-83c3-5fb25ecfa30a',
+            'actorIdType': 'IDAM',
+            'actorId': 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
+            'roleType': 'CASE',
+            'roleName': 'case-manager',
+            'classification': 'PUBLIC',
+            'grantType': 'SPECIFIC',
+            'roleCategory': 'LEGAL_OPERATIONS',
+            'readOnly': false,
+            'beginTime': '2021-10-13T23:00:00Z',
+            'created': '2021-10-14T15:55:58.586597Z',
+            'attributes': {
+              'substantive': 'Y',
+              'caseId': '1547476018728634',
+              'jurisdiction': 'IA',
+              'caseType': 'Asylum',
             },
           },
         ];
         const res = mockRes({status: 200, data: mockRoleAssignments});
         spy = sandbox.stub(http, 'post').resolves(res);
-        const data = await  getRoleAssignmentsByQuery(caseAllocatorQuery, req);
+        const data = await getRoleAssignmentsByQuery(caseAllocatorQuery, req);
         expect(data).to.deep.equal(mockRoleAssignments);
       });
   });
@@ -859,24 +863,24 @@ describe('workAllocation.utils', () => {
 
         const mockRoleAssignments: any[] = [
           {
-            "id": "508daf11-d968-4d65-bebb-863195b395c2",
-            "actorIdType": "IDAM",
-            "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
-            "roleType": "CASE",
-            "roleName": "case-manager",
-            "classification": "PUBLIC",
-            "grantType": "SPECIFIC",
-            "roleCategory": "LEGAL_OPERATIONS",
-            "readOnly": false,
-            "beginTime": "2021-10-20T23:00:00Z",
-            "endTime": "2021-10-27T23:00:00Z",
-            "created": "2021-10-21T14:55:04.103639Z",
-            "attributes": {
-              "substantive": "Y",
-              "caseId": "1634822871207303",
-              "jurisdiction": "IA",
-              "primaryLocation": "229786",
-              "caseType": "Asylum",
+            'id': '508daf11-d968-4d65-bebb-863195b395c2',
+            'actorIdType': 'IDAM',
+            'actorId': 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
+            'roleType': 'CASE',
+            'roleName': 'case-manager',
+            'classification': 'PUBLIC',
+            'grantType': 'SPECIFIC',
+            'roleCategory': 'LEGAL_OPERATIONS',
+            'readOnly': false,
+            'beginTime': '2021-10-20T23:00:00Z',
+            'endTime': '2021-10-27T23:00:00Z',
+            'created': '2021-10-21T14:55:04.103639Z',
+            'attributes': {
+              'substantive': 'Y',
+              'caseId': '1634822871207303',
+              'jurisdiction': 'IA',
+              'primaryLocation': '229786',
+              'caseType': 'Asylum',
             },
           },
           {
@@ -962,253 +966,253 @@ describe('workAllocation.utils', () => {
       () => {
         const cases: any[] = [
           {
-            "id": 1634920056536726,
-            "jurisdiction": "IA",
-            "state": "pendingPayment",
-            "version": null,
-            "case_type_id": "Asylum",
-            "created_date": "2021-10-22T16:27:36.555",
-            "last_modified": "2021-10-22T16:27:54.071",
-            "last_state_modified_date": "2021-10-22T16:27:54.071",
-            "security_classification": "PUBLIC",
-            "case_data": {
-              "eaHuAppealTypePaymentOption": "payOffline",
-              "appellantInUk": "Yes",
-              "staffLocation": "Taylor House",
-              "mobileNumber": "07977111111",
-              "isOutOfCountryEnabled": "Yes",
-              "feeWithHearing": "140",
-              "legalRepCompanyAddress": {
-                "AddressLine3": "",
-                "AddressLine2": "Lemon Street",
-                "AddressLine1": "2",
-                "Country": "",
-                "PostTown": "Aldgate",
-                "PostCode": "E1 7PU",
-                "County": "",
+            'id': 1634920056536726,
+            'jurisdiction': 'IA',
+            'state': 'pendingPayment',
+            'version': null,
+            'case_type_id': 'Asylum',
+            'created_date': '2021-10-22T16:27:36.555',
+            'last_modified': '2021-10-22T16:27:54.071',
+            'last_state_modified_date': '2021-10-22T16:27:54.071',
+            'security_classification': 'PUBLIC',
+            'case_data': {
+              'eaHuAppealTypePaymentOption': 'payOffline',
+              'appellantInUk': 'Yes',
+              'staffLocation': 'Taylor House',
+              'mobileNumber': '07977111111',
+              'isOutOfCountryEnabled': 'Yes',
+              'feeWithHearing': '140',
+              'legalRepCompanyAddress': {
+                'AddressLine3': '',
+                'AddressLine2': 'Lemon Street',
+                'AddressLine1': '2',
+                'Country': '',
+                'PostTown': 'Aldgate',
+                'PostCode': 'E1 7PU',
+                'County': '',
               },
-              "isFeePaymentEnabled": "Yes",
-              "appellantAddress": {},
-              "haveHearingAttendeesAndDurationBeenRecorded": "No",
-              "uploadAddendumEvidenceActionAvailable": "No",
-              "appellantGivenNames": "ssss",
-              "appellantFamilyName": "ss",
-              "applicationChangeDesignatedHearingCentre": "taylorHouse",
-              "hearingCentre": "taylorHouse",
-              "caseName": "HU/50152/2021-ss",
-              "submissionOutOfTime": "No",
-              "legalRepDeclaration": [
-                "hasDeclared",
+              'isFeePaymentEnabled': 'Yes',
+              'appellantAddress': {},
+              'haveHearingAttendeesAndDurationBeenRecorded': 'No',
+              'uploadAddendumEvidenceActionAvailable': 'No',
+              'appellantGivenNames': 'ssss',
+              'appellantFamilyName': 'ss',
+              'applicationChangeDesignatedHearingCentre': 'taylorHouse',
+              'hearingCentre': 'taylorHouse',
+              'caseName': 'HU/50152/2021-ss',
+              'submissionOutOfTime': 'No',
+              'legalRepDeclaration': [
+                'hasDeclared',
               ],
-              "appealGroundsDecisionHumanRightsRefusal": {
-                "values": [
-                  "humanRightsRefusal",
+              'appealGroundsDecisionHumanRightsRefusal': {
+                'values': [
+                  'humanRightsRefusal',
                 ],
               },
-              "appellantStateless": "isStateless",
-              "appellantTitle": "Mr",
-              "sendDirectionActionAvailable": "No",
-              "deportationOrderOptions": "No",
-              "homeOfficeReferenceNumber": "012891367",
-              "appellantHasFixedAddress": "No",
-              "legalRepReferenceNumber": "Test1234",
-              "legalRepName": "PavanPal Dady",
-              "legalRepCompany": "Ia-legal-rep-org654",
-              "caseManagementLocation": {
-                "baseLocation": "765324",
-                "region": "1",
+              'appellantStateless': 'isStateless',
+              'appellantTitle': 'Mr',
+              'sendDirectionActionAvailable': 'No',
+              'deportationOrderOptions': 'No',
+              'homeOfficeReferenceNumber': '012891367',
+              'appellantHasFixedAddress': 'No',
+              'legalRepReferenceNumber': 'Test1234',
+              'legalRepName': 'PavanPal Dady',
+              'legalRepCompany': 'Ia-legal-rep-org654',
+              'caseManagementLocation': {
+                'baseLocation': '765324',
+                'region': '1',
               },
-              "appealGroundsForDisplay": [
-                "humanRightsRefusal",
+              'appealGroundsForDisplay': [
+                'humanRightsRefusal',
               ],
-              "legalRepresentativeEmailAddress": "iac_success_delete@mailnesia.com",
-              "appealSubmissionDate": "2021-10-22",
-              "isAppellantMinor": "No",
-              "hasOtherAppeals": "No",
-              "appealOutOfCountry": "No",
-              "legalRepCompanyName": "Ia-legal-rep-org654",
-              "caseManagementCategory": {
-                "value": {
-                  "code": "refusalOfHumanRights",
-                  "label": "Refusal of a human rights claim",
+              'legalRepresentativeEmailAddress': 'iac_success_delete@mailnesia.com',
+              'appealSubmissionDate': '2021-10-22',
+              'isAppellantMinor': 'No',
+              'hasOtherAppeals': 'No',
+              'appealOutOfCountry': 'No',
+              'legalRepCompanyName': 'Ia-legal-rep-org654',
+              'caseManagementCategory': {
+                'value': {
+                  'code': 'refusalOfHumanRights',
+                  'label': 'Refusal of a human rights claim',
                 },
-                "list_items": [
+                'list_items': [
                   {
-                    "code": "refusalOfHumanRights",
-                    "label": "Refusal of a human rights claim",
+                    'code': 'refusalOfHumanRights',
+                    'label': 'Refusal of a human rights claim',
                   },
                 ],
               },
-              "appealReferenceNumber": "HU/50152/2021",
-              "isRemissionsEnabled": "No",
-              "appealType": "refusalOfHumanRights",
-              "appellantNationalities": [
+              'appealReferenceNumber': 'HU/50152/2021',
+              'isRemissionsEnabled': 'No',
+              'appealType': 'refusalOfHumanRights',
+              'appellantNationalities': [
                 {
-                  "id": "1",
-                  "value": {
-                    "code": "ZZ",
+                  'id': '1',
+                  'value': {
+                    'code': 'ZZ',
                   },
                 },
               ],
-              "homeOfficeDecisionDate": "2021-10-12",
-              "localAuthorityPolicy": {
-                "OrgPolicyCaseAssignedRole": "[LEGALREPRESENTATIVE]",
-                "Organisation": {
-                  "OrganisationID": "Q1P8H84",
+              'homeOfficeDecisionDate': '2021-10-12',
+              'localAuthorityPolicy': {
+                'OrgPolicyCaseAssignedRole': '[LEGALREPRESENTATIVE]',
+                'Organisation': {
+                  'OrganisationID': 'Q1P8H84',
                 },
               },
-              "changeDirectionDueDateActionAvailable": "No",
-              "paymentStatus": "Payment pending",
-              "contactPreference": "wantsSms",
-              "appellantDateOfBirth": "1980-03-02",
-              "checklist": {
-                "checklist3": [],
-                "checklist2": [
-                  "isNotDetained",
+              'changeDirectionDueDateActionAvailable': 'No',
+              'paymentStatus': 'Payment pending',
+              'contactPreference': 'wantsSms',
+              'appellantDateOfBirth': '1980-03-02',
+              'checklist': {
+                'checklist3': [],
+                'checklist2': [
+                  'isNotDetained',
                 ],
-                "checklist5": [],
-                "checklist4": [],
-                "checklist1": [],
-                "checklist7": [
-                  "isNotEUDecision",
+                'checklist5': [],
+                'checklist4': [],
+                'checklist1': [],
+                'checklist7': [
+                  'isNotEUDecision',
                 ],
-                "checklist6": [],
+                'checklist6': [],
               },
-              "feeAmountGbp": "14000",
-              "decisionHearingFeeOption": "decisionWithHearing",
-              "currentCaseStateVisibleToCaseOfficer": "pendingPayment",
-              "appellantNameForDisplay": "ssss ss",
-              "hasNewMatters": "No",
+              'feeAmountGbp': '14000',
+              'decisionHearingFeeOption': 'decisionWithHearing',
+              'currentCaseStateVisibleToCaseOfficer': 'pendingPayment',
+              'appellantNameForDisplay': 'ssss ss',
+              'hasNewMatters': 'No',
             },
           },
           {
-            "id": 1547476018728634,
-            "jurisdiction": "IA",
-            "state": "appealSubmitted",
-            "version": null,
-            "case_type_id": "Asylum",
-            "created_date": "2019-01-14T14:26:58.747",
-            "last_modified": "2020-11-26T11:25:26.898",
-            "last_state_modified_date": "2019-01-14T14:27:40.19",
-            "security_classification": "PUBLIC",
-            "case_data": {
-              "appellantHasFixedAddress": "No",
-              "legalRepDeclaration": [
-                "hasDeclared",
+            'id': 1547476018728634,
+            'jurisdiction': 'IA',
+            'state': 'appealSubmitted',
+            'version': null,
+            'case_type_id': 'Asylum',
+            'created_date': '2019-01-14T14:26:58.747',
+            'last_modified': '2020-11-26T11:25:26.898',
+            'last_state_modified_date': '2019-01-14T14:27:40.19',
+            'security_classification': 'PUBLIC',
+            'case_data': {
+              'appellantHasFixedAddress': 'No',
+              'legalRepDeclaration': [
+                'hasDeclared',
               ],
-              "appealGroundsProtection": {
-                "values": [
-                  "refugeeConvention",
+              'appealGroundsProtection': {
+                'values': [
+                  'refugeeConvention',
                 ],
               },
-              "appellantDateOfBirth": "2000-01-01",
-              "hasOtherAppeals": "No",
-              "appealGroundsHumanRights": {
-                "values": [],
+              'appellantDateOfBirth': '2000-01-01',
+              'hasOtherAppeals': 'No',
+              'appealGroundsHumanRights': {
+                'values': [],
               },
-              "appellantGivenNames": "Joe",
-              "appealType": "protection",
-              "appellantTitle": "Mr",
-              "appellantNationalities": [
+              'appellantGivenNames': 'Joe',
+              'appealType': 'protection',
+              'appellantTitle': 'Mr',
+              'appellantNationalities': [
                 {
-                  "id": "c741e247-9cc0-46b3-8487-84e7734d5149",
-                  "value": {
-                    "unused": "AF",
+                  'id': 'c741e247-9cc0-46b3-8487-84e7734d5149',
+                  'value': {
+                    'unused': 'AF',
                   },
                 },
               ],
-              "homeOfficeDecisionDate": "2019-01-01",
-              "sendDirectionActionAvailable": "No",
-              "hasNewMatters": "No",
-              "homeOfficeReferenceNumber": "A123456",
+              'homeOfficeDecisionDate': '2019-01-01',
+              'sendDirectionActionAvailable': 'No',
+              'hasNewMatters': 'No',
+              'homeOfficeReferenceNumber': 'A123456',
             },
-            "supplementary_data": null,
-            "after_submit_callback_response": null,
-            "callback_response_status_code": null,
-            "callback_response_status": null,
-            "delete_draft_response_status_code": null,
-            "delete_draft_response_status": null,
+            'supplementary_data': null,
+            'after_submit_callback_response': null,
+            'callback_response_status_code': null,
+            'callback_response_status': null,
+            'delete_draft_response_status_code': null,
+            'delete_draft_response_status': null,
           },
           {
-            "id": 1547669013800271,
-            "jurisdiction": "IA",
-            "state": "respondentReview",
-            "version": null,
-            "case_type_id": "Asylum",
-            "created_date": "2019-01-16T20:03:33.891",
-            "last_modified": "2021-10-27T10:11:07.718",
-            "last_state_modified_date": "2019-01-17T13:18:15.967",
-            "security_classification": "PUBLIC",
-            "case_data": {
-              "appellantHasFixedAddress": "No",
-              "legalRepReferenceNumber": "ASHCR/1",
-              "appealResponseDescription": "ffdgfdd",
-              "caseManagementLocation": {
-                "baseLocation": "765324",
-                "region": "1",
+            'id': 1547669013800271,
+            'jurisdiction': 'IA',
+            'state': 'respondentReview',
+            'version': null,
+            'case_type_id': 'Asylum',
+            'created_date': '2019-01-16T20:03:33.891',
+            'last_modified': '2021-10-27T10:11:07.718',
+            'last_state_modified_date': '2019-01-17T13:18:15.967',
+            'security_classification': 'PUBLIC',
+            'case_data': {
+              'appellantHasFixedAddress': 'No',
+              'legalRepReferenceNumber': 'ASHCR/1',
+              'appealResponseDescription': 'ffdgfdd',
+              'caseManagementLocation': {
+                'baseLocation': '765324',
+                'region': '1',
               },
-              "staffLocation": "Taylor House",
-              "appealGroundsForDisplay": [
-                "protectionRefugeeConvention",
+              'staffLocation': 'Taylor House',
+              'appealGroundsForDisplay': [
+                'protectionRefugeeConvention',
               ],
-              "legalRepresentativeEmailAddress": "ia.legalrep.b.ccd@gmail.com",
-              "appealGroundsHumanRights": {
-                "values": [],
+              'legalRepresentativeEmailAddress': 'ia.legalrep.b.ccd@gmail.com',
+              'appealGroundsHumanRights': {
+                'values': [],
               },
-              "hasOtherAppeals": "No",
-              "caseArgumentAvailable": "Yes",
-              "haveHearingAttendeesAndDurationBeenRecorded": "No",
-              "uploadAddendumEvidenceActionAvailable": "No",
-              "appealReferenceNumber": "PA/50015/2019",
-              "appellantGivenNames": "James",
-              "appealType": "protection",
-              "appellantFamilyName": "Bond",
-              "hearingCentre": "taylorHouse",
-              "caseName": "PA/50015/2019-Bond",
-              "appellantNationalities": [
+              'hasOtherAppeals': 'No',
+              'caseArgumentAvailable': 'Yes',
+              'haveHearingAttendeesAndDurationBeenRecorded': 'No',
+              'uploadAddendumEvidenceActionAvailable': 'No',
+              'appealReferenceNumber': 'PA/50015/2019',
+              'appellantGivenNames': 'James',
+              'appealType': 'protection',
+              'appellantFamilyName': 'Bond',
+              'hearingCentre': 'taylorHouse',
+              'caseName': 'PA/50015/2019-Bond',
+              'appellantNationalities': [
                 {
-                  "id": "d3465c3b-a301-44ea-a46f-811e5f0f9c49",
-                  "value": {
-                    "code": "AS",
+                  'id': 'd3465c3b-a301-44ea-a46f-811e5f0f9c49',
+                  'value': {
+                    'code': 'AS',
                   },
                 },
               ],
-              "homeOfficeDecisionDate": "2019-01-10",
-              "changeDirectionDueDateActionAvailable": "Yes",
-              "appealResponseEvidence": [],
-              "appealGroundsProtection": {
-                "values": [
-                  "protectionRefugeeConvention",
+              'homeOfficeDecisionDate': '2019-01-10',
+              'changeDirectionDueDateActionAvailable': 'Yes',
+              'appealResponseEvidence': [],
+              'appealGroundsProtection': {
+                'values': [
+                  'protectionRefugeeConvention',
                 ],
               },
-              "appellantDateOfBirth": "1980-07-07",
-              "caseArgumentEvidence": [],
-              "appealResponseAvailable": "Yes",
-              "currentCaseStateVisibleToCaseOfficer": "respondentReview",
-              "appellantNameForDisplay": "James Bond",
-              "appellantTitle": "Mr",
-              "respondentReviewAppealResponseAdded": "Yes",
-              "sendDirectionActionAvailable": "Yes",
-              "hasNewMatters": "No",
-              "homeOfficeReferenceNumber": "A1289298",
-              "caseNotes": [
+              'appellantDateOfBirth': '1980-07-07',
+              'caseArgumentEvidence': [],
+              'appealResponseAvailable': 'Yes',
+              'currentCaseStateVisibleToCaseOfficer': 'respondentReview',
+              'appellantNameForDisplay': 'James Bond',
+              'appellantTitle': 'Mr',
+              'respondentReviewAppealResponseAdded': 'Yes',
+              'sendDirectionActionAvailable': 'Yes',
+              'hasNewMatters': 'No',
+              'homeOfficeReferenceNumber': 'A1289298',
+              'caseNotes': [
                 {
-                  "id": "1",
-                  "value": {
-                    "caseNoteSubject": "Test",
-                    "caseNoteDescription": "Testing 1 2 3",
-                    "user": "Case Officer",
-                    "dateAdded": "2021-10-27",
+                  'id': '1',
+                  'value': {
+                    'caseNoteSubject': 'Test',
+                    'caseNoteDescription': 'Testing 1 2 3',
+                    'user': 'Case Officer',
+                    'dateAdded': '2021-10-27',
                   },
                 },
               ],
             },
-            "supplementary_data": null,
-            "after_submit_callback_response": null,
-            "callback_response_status_code": null,
-            "callback_response_status": null,
-            "delete_draft_response_status_code": null,
-            "delete_draft_response_status": null,
+            'supplementary_data': null,
+            'after_submit_callback_response': null,
+            'callback_response_status_code': null,
+            'callback_response_status': null,
+            'delete_draft_response_status_code': null,
+            'delete_draft_response_status': null,
           },
         ];
 
@@ -1216,6 +1220,65 @@ describe('workAllocation.utils', () => {
         expect(result.length).equal(2);
         expect(result[0].case_data.caseManagementLocation.baseLocation).to.equal('765324');
       });
+  });
+
+  describe('typesOfWork', () => {
+
+    let sandbox: sinon.SinonSandbox;
+    let spy: any;
+    beforeEach(() => {
+      sandbox = sinon.createSandbox();
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+    });
+
+    it('should get users types of work', async () => {
+
+      const typesOfWork = [
+        {
+          id: 'hearing_work',
+          label: 'Hearing work',
+        },
+        {
+          id: 'upper_tribunal',
+          label: 'Upper Tribunal',
+        },
+        {
+          id: 'routine_work',
+          label: 'Routine work',
+        },
+        {
+          id: 'decision_making_work',
+          label: 'Decision-making work',
+        },
+        {
+          id: 'applications',
+          label: 'Applications',
+        },
+        {
+          id: 'priority',
+          label: 'Priority',
+        },
+        {
+          id: 'access_requests',
+          label: 'Access requests',
+        },
+        {
+          id: 'error_management',
+          label: 'Error management',
+        },
+      ];
+      const req = mockReq();
+      const res = mockRes({status: 200, data: typesOfWork});
+      spy = sandbox.stub(http, 'get').resolves(res);
+
+      const data = await getTypesOfWorkByUserId(req, req);
+      expect(data).to.deep.equal(typesOfWork);
+
+    });
+
   });
 
 });

@@ -74,12 +74,13 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
       const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
       const searchParameters = [
         {key: 'jurisdiction', operator: 'IN', values: [this.selectedJurisdiction]},
+        this.getStateParameter()
         // {key: 'taskType', operator: 'IN', values: [this.selectedTaskType]},
         // {key: 'priority', operator: 'IN', values: [this.selectedPriority]},
       ];
-      const personParameter = this.getPersonParameter();
+      const personParameter = {key: 'user', operator: 'IN', values: [this.selectedPerson]};
       const locationParameter = this.getLocationParameter();
-      if (personParameter) {
+      if (this.selectedPerson) {
         searchParameters.push(personParameter);
       };
       if (locationParameter) {
@@ -94,7 +95,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     }
   }
 
-  private getLocationParameter() {
+  private getLocationParameter(): any {
     let values: string[];
     if (this.selectedLocation && this.selectedLocation.id !== FilterConstants.Options.Locations.ALL.id) {
       values = [ this.selectedLocation.id ];
@@ -104,15 +105,16 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     return values && values.length > 0 ? { key: 'location', operator: 'IN', values } : null;
   }
 
-  private getPersonParameter() {
+  private getStateParameter(): any {
     if (this.selectedTaskCategory && this.selectedTaskCategory !== AllWorkTaskComponent.ALL_TASKS) {
       if (this.selectedTaskCategory === AllWorkTaskComponent.AVAILABLE_TASKS) {
-        return { key: 'user', operator: 'IN', values: ['unassigned'] }
+        return { key: 'state', operator: 'IN', values: ['unassigned'] };
       } else {
-        return { key: 'user', operator: 'IN', values: [this.selectedPerson]}
+        return { key: 'state', operator: 'IN', values: ['assigned']};
       }
+    } else {
+      return { key: 'state', operator: 'IN', values: ['assigned', 'unassigned']};
     }
-    return null;
   }
 
   /**

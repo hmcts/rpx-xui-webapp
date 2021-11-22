@@ -276,7 +276,6 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       this.router.navigate([goToCaseUrl]);
       return;
     }
-
     if (this.returnUrl.includes('manager') && taskAction.action.id === TaskActionIds.RELEASE) {
       this.specificPage = 'manager';
     }

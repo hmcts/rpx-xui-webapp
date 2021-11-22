@@ -1,4 +1,4 @@
-@ng 
+@ng
 Feature: WA Release 2: Roles and access tab
 
     Background: Case details setup
@@ -14,9 +14,9 @@ Feature: WA Release 2: Roles and access tab
             | true            | IA           | 12345           |
 
         Given I set MOCK case roles
-            | name        | roleCategory     | roleName     | email                 | start | end |
-            | user1 judge | XXX         | Lead judge   | judge_lead_1@gov.uk   | 1     | 2   |
-            | user1 legal | XXX | Case manager | case_manager_1@gov.uk | 10    | 10  |
+            | name        | roleCategory | roleName     | email                 | start | end |
+            | user1 judge | XXX          | Lead judge   | judge_lead_1@gov.uk   | 1     | 2   |
+            | user1 legal | XXX          | Case manager | case_manager_1@gov.uk | 10    | 10  |
 
         Given I set MOCK case role exclusions
             | name | userType | type | notes | added |
@@ -224,10 +224,10 @@ Feature: WA Release 2: Roles and access tab
     #     | Start      |
     #     | End        |
 
-
+    @test
     Scenario: Case with roles - Validate non case-allocator user - columns and data displayed
 
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker " with reference "userDetails"
+        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | false           | IA           | 12345           |
@@ -262,7 +262,6 @@ Feature: WA Release 2: Roles and access tab
             | headerName |
             | Name       |
             | Role       |
-            | Location   |
             | Start      |
             | End        |
 
@@ -275,7 +274,6 @@ Feature: WA Release 2: Roles and access tab
             | headerName |
             | Name       |
             | Role       |
-            | Location   |
             | Start      |
             | End        |
 
@@ -291,11 +289,11 @@ Feature: WA Release 2: Roles and access tab
             | Added      |
 
         Then I validate case roles table for role category "Exclusions" has data
-            | Name    | User type | Type | Notes            | Added |
-            | judge 1 | Judicial  | lead | Test exclusion 1 | -5    |
-            | judge 2 | Judicial  | lead | Test exclusion 2 | -5    |
-            | judge 3 | Judicial  | lead | Test exclusion 3 | -15   |
-            | judge 4 | Judicial  | lead | Test exclusion 4 | -55   |
+            | Name    | User type | Notes            | Added |
+            | judge 1 | Judicial  | Test exclusion 1 | -5    |
+            | judge 2 | Judicial  | Test exclusion 2 | -5    |
+            | judge 3 | Judicial  | Test exclusion 3 | -15   |
+            | judge 4 | Judicial  | Test exclusion 4 | -55   |
 
         Then I validate case roles "Manage" link displayed status is "false" for category "Judicial"
         Then I validate case roles "Manage" link displayed status is "false" for category "Legal Ops"

@@ -10,8 +10,12 @@ class WorkAllocationMockData {
     }
 
     init(){
+        this.setDefaultData();
+    }
+
+    setDefaultData(){
         this.findPersonsAllAdata = [];
-        this.cases = { cases: [], total_records: 0 };
+        
 
         this.exclusions = this.getCaseExclusions([
             { added: '2021-10-12T12:14:42.230129Z', name: 'judeg a', userType: 'JUDICIAL', type: 'CASE', id: '12345678901' },
@@ -21,19 +25,54 @@ class WorkAllocationMockData {
         ]);
 
         this.caseRoles = this.getCaseRoles([
-            { added: '2021-10-12T12:14:42.230129Z', name: 'judeg a', userType: 'JUDICIAL', type: 'CASE', id: '12345678901', roleCategory: 'JUDICIAL', roleName:'lead-judge' },
+            { added: '2021-10-12T12:14:42.230129Z', name: 'judeg a', userType: 'JUDICIAL', type: 'CASE', id: '12345678901', roleCategory: 'JUDICIAL', roleName: 'lead-judge' },
             { added: '2021-10-12T12:14:42.230129Z', name: 'judeg b', userType: 'JUDICIAL', type: 'CASE', id: '12345678902', roleCategory: 'JUDICIAL', roleName: 'lead-judge' },
-            { added: '2021-10-12T12:14:42.230129Z', name: 'judeg c', userType: 'JUDICIAL', type: 'CASE', id: '12345678903', roleCategory: 'JUDICIAL', roleName: 'lead-judge'},
-            { added: '2021-10-12T12:14:42.230129Z', name: 'legal a', userType: 'LEGAL_OPERATIONS', type: 'CASE', id: '12345678904', roleCategory: 'LEGAL_OPERATIONS', roleName: 'case-manager'}
+            { added: '2021-10-12T12:14:42.230129Z', name: 'judeg c', userType: 'JUDICIAL', type: 'CASE', id: '12345678903', roleCategory: 'JUDICIAL', roleName: 'lead-judge' },
+            { added: '2021-10-12T12:14:42.230129Z', name: 'legal a', userType: 'LEGAL_OPERATIONS', type: 'CASE', id: '12345678904', roleCategory: 'LEGAL_OPERATIONS', roleName: 'case-manager' }
         ]);
 
         this.caseRoleForAssignment = this.caseRoles[0];
 
+        this.myWorkMyTasks = this.getMyWorkMyTasks(150);
+        this.myWorkAvailableTasks = this.getMyWorkAvailableTasks(200);
+        this.allWorkTasks = this.getAllWorkTasks(500);
+
+        this.myCases = this.getWACases(125);
+        this.allWorkCases = this.getWACases(125);
 
     }
 
+   
+
     setCaseRoleAssignment(caseRole){
         this.caseRoleForAssignment  = this.getCaseRoles([caseRole]);
+    }
+
+
+    setCasesWithPermissionsForView(viewInTest,casePermissionHashes){
+        const cases = [];
+        let view = viewInTest.split(" ").join("");
+        view = view.toLowerCase();
+        for (let i = 0; i < casePermissionHashes.length; i++) {
+
+            let caseCount = casePermissionHashes[i]['Count'];
+            for (let j = 0; j < caseCount; j++) {
+                cases.push(this.getRelease2CaseWithPermission(casePermissionHashes[i]['Roles'].split(","), view));
+            }
+
+        }
+        const casesResponse = { cases: cases, total_records: cases.length };
+        switch (view) {
+            case 'mycases':
+                this.myCases = casesResponse;
+                break;
+
+            case 'allworkcases':
+                this.allWorkCases = casesResponse;
+                break;
+            default:
+                throw new Error(`Cases view not recognised in test step "${viewInTest}"`);
+        }
     }
 
     async getFindPersonsDataFrom(database) {
@@ -101,14 +140,13 @@ class WorkAllocationMockData {
         return tasks;
     }
 
-    getMyCases(count) {
-        if (this.cases.cases.length === 0 ){
-            for (let i = 0; i < count; i++) {
-                this.cases.cases.push(this.getRelease2CaseWithPermission(['case-allocator'], "MyCases", "assigned"));
-            }
+    getWACases(count) {
+       let casesResponse =  { cases: [], total_records: count };
+        for (let i = 0; i < count; i++) {
+            casesResponse.cases.push(this.getRelease2CaseWithPermission(['case-allocator'], "MyCases", "assigned"));
         }
-        this.cases.total_records = this.cases.cases.length;
-        return this.cases;
+        casesResponse.total_records = casesResponse.cases.length;
+        return casesResponse;
 
     }
 

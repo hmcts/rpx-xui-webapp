@@ -1,6 +1,7 @@
 const workAllocationMockData = require('./mockData');
 
 module.exports = {
+    mockServiceResetCallbacks: [() => workAllocationMockData.setDefaultData()],
     get: {
         '/workallocation/location': (req, res) => {
             res.send(workAllocationMockData.getLocationList(20));
@@ -33,32 +34,11 @@ module.exports = {
         '/api/role-access/allocate-role/valid-roles' : (req,res) => {
             res.send(workAllocationMockData.getRoles());
         },
-        '/workallocation2/roles/:caseId' : (req,res) => {
-            const actions = [{ id: "reallocate", title: "Reallocate" }, { id: "remove", title: "Remove Allocation" }]
-            const mockRoles = [
-                { email: 'j1@test.com', name: 'judeg a', roleCategory: 'JUDICIAL', roleName: 'judge', actions: actions},
-                { email: 'j2@test.com', name: 'judeg b', roleCategory: 'JUDICIAL', roleName: 'judge', actions: actions },
-                { email: 'j3@test.com', name: 'judeg c', roleCategory: 'JUDICIAL', roleName: 'judge', actions: actions },
-                { email: 'leagal1@test.com', name: 'legal a', roleCategory: 'LEGAL_OPERATIONS', roleName: 'tribunal-caseworker', actions: actions }
-            ];
-            res.send(workAllocationMockData.getCaseRoles(mockRoles));
+        '/workallocation2/roles/:caseId' : (req,res) => { 
+            res.send(workAllocationMockData.caseRoles);
         },
-        '/api/role-access/exclusions/get' : (req,res) => {
-            const date1 = new Date();
-            date1.setDate(date1.getDate() - 5);
-
-            const date2= new Date();
-            date2.setDate(date2.getDate() - 15);
-
-            const date3 = new Date();
-            date3.setDate(date3.getDate() - 25);
-            const mockExclusions = [
-                { added: date1.getTime(), name: 'judeg a', userType: 'Judicial', type: 'judge', notes: 'test exclude 1' },
-                { added: date2.getTime(), name: 'judeg b', userType: 'Judicial', type: 'judge', notes: 'test exclude 2'},
-                { added: date3.getTime(), name: 'judeg c', userType: 'Legal Ops', type: 'judge', notes: 'test exclude 3'},
-            ];
-            
-            res.send(mockExclusions);
+        '/api/role-access/exclusions/get' : (req,res) => { 
+            res.send(workAllocationMockData.exclusions);
         },
         '/workallocation2/case/task/:caseid': (req,res) => {
             const tasks = [
@@ -106,59 +86,17 @@ module.exports = {
             }
         },
         '/workallocation2/my-work/cases': (req, res) => {
-            
-            const requestedView = req.body.view.toLowerCase();
-            const pageNum = requestedView === "mycases" ? 0 : req.body.searchRequest.pagination_parameters.page_number;
-            const pageSize = requestedView === "mycases" ? 10000 : req.body.searchRequest.pagination_parameters.page_size;
+            res.send(workAllocationMockData.myCases);
 
-            let cases = [];
-            if (requestedView === "mycases" ) {
-                cases = global.scenarioData && global.scenarioData[`workallocation2.${requestedView}`] ? global.scenarioData[`workallocation2.${requestedView}`] : workAllocationMockData.getMyCases(pageSize ? pageSize  * 5: 125);
-            }  else {
-                throw new Error("Unrecognised case list view : " + requestedView);
-            }
-            try {
-                const thisPageCases = [];
-
-                
-
-                const startIndexForPage = pageNum === 0 ? 0 : ((pageNum) * pageSize) - 1;
-                const endIndexForPage =  (startIndexForPage + pageSize) < cases.total_records ? startIndexForPage + pageSize - 1 : cases.total_records - 1;
-                for (let i = startIndexForPage; i <= endIndexForPage; i++) {
-                    thisPageCases.push(cases.cases[i]);
-                }
-                const responseData = { cases: thisPageCases, total_records: cases.total_records };
-                res.send(responseData);
-            } catch (e) {
-                res.status(500).send({ error: 'mock error occured', stack: e });
-            }
         },
         '/workallocation2/all-work/cases': (req, res) => {
-
-            const requestedView = req.body.view.toLowerCase();
-            const pageNum = requestedView === "allworkcases" ? 1 : req.body.searchRequest.pagination_parameters.page_number;
-            const pageSize = requestedView === "allworkcases" ? 25 : req.body.searchRequest.pagination_parameters.page_size;
-
-            let cases = [];
-            if (requestedView === "allworkcases") {
-                cases = global.scenarioData && global.scenarioData[`workallocation2.${requestedView}`] ? global.scenarioData[`workallocation2.${requestedView}`] : workAllocationMockData.getMyCases(pageSize ? pageSize * 5 : 125);
-            } else {
-                throw new Error("Unrecognised case list view : " + requestedView);
-            }
+            const pageNum = req.body.searchRequest.pagination_parameters.page_number;
+            const pageSize = req.body.searchRequest.pagination_parameters.page_size;
             try {
-                const thisPageCases = [];
+                res.send(getCasePageRecords(workAllocationMockData.allWorkCases, pageNum, pageSize));
 
-
-
-                const startIndexForPage = ((pageNum - 1) * pageSize) - (pageNum <= 1 ? 0 : 1);
-                const endIndexForPage = (startIndexForPage + pageSize) < cases.total_records ? startIndexForPage + pageSize - 1 : cases.total_records - 1;
-                for (let i = startIndexForPage; i <= endIndexForPage; i++) {
-                    thisPageCases.push(cases.cases[i]);
-                }
-                const responseData = { cases: thisPageCases, total_records: cases.total_records };
-                res.send(responseData);
             } catch (e) {
-                res.status(500).send({ error: 'mock error occured', stack: e });
+                res.status(500).send({ error: 'mock error occured', stack: e.stack });
             }
         },
         '/workallocation/task/': (req, res) => {
@@ -174,31 +112,26 @@ module.exports = {
             }
         },
         '/workallocation2/task/': (req, res) => {
-            const tasks = [];
-            const permissions = [['Read'], ['Read', 'Manage'], ['Read', 'Manage', 'Execute'], ['Read', 'Manage', 'Execute', 'Cancel']]
-            if (req.body.view === "MyTasks") {
-                for (let i = 0; i < permissions.length; i++){
-                    tasks.push(workAllocationMockData.getRelease2TaskWithPermissions(permissions[i],'MyTasks',null));
-                }
-                
-            } else if (req.body.view === "AvailableTasks") {
-                for (let i = 0; i < permissions.length; i++) {
-                    tasks.push(workAllocationMockData.getRelease2TaskWithPermissions(permissions[i], 'AvailableTasks', null));
-                }
-                
-            } else if (req.body.view === "AllWork") {
-                for (let i = 0; i < permissions.length; i++) {
-                    tasks.push(workAllocationMockData.getRelease2TaskWithPermissions(permissions[i], 'AvailableTasks', 'Unassigned'));
-                }
+            const pageNum = req.body.searchRequest.pagination_parameters.page_number;
+            const pageSize = req.body.searchRequest.pagination_parameters.page_size;
 
-                for (let i = 0; i < permissions.length; i++) {
-                    tasks.push(workAllocationMockData.getRelease2TaskWithPermissions(permissions[i], 'AvailableTasks', 'assigned'));
-                }
-                
+            const requestedView = req.body.view;
+            let tasks = [];
+            if (requestedView === "MyTasks") {
+                tasks = workAllocationMockData.myWorkMyTasks;
+            } else if (requestedView === "AvailableTasks") {
+                tasks = workAllocationMockData.getMyWorkAvailableTasks;
+            } else if (requestedView === "AllWork") {
+                tasks = workAllocationMockData.allWorkTasks;
             } else {
-                throw new Error("Unrecognised task list view : " + req.body.view);
+                throw new Error("Unrecognised task list view : " + requestedView);
             }
-            res.send({ tasks: tasks, total_records: tasks.length});
+            try {
+                res.send(getTaskPageRecords(tasks, pageNum, pageSize));
+
+            } catch (e) {
+                res.status(500).send({ error: 'mock error occured', stack: e.stack });
+            }
         },
         '/workallocation/taskWithPagination/': (req, res) => {
             const pageNum = req.body.searchRequest.pagination_parameters.page_number;
@@ -305,7 +238,7 @@ module.exports = {
         },
         '/api/role-access/exclusions/post' : (req,res) => {
             
-            res.send(workAllocationMockData.getCaseExclusions(mockRoles));
+            res.send(workAllocationMockData.exclusions);
         },
         '/api/role-access/roles/post': (req, res) => {
             
@@ -333,6 +266,19 @@ function getTaskPageRecords(totalRecords, pageNum, pageSize) {
         thisPageTasks.push(totalRecords.tasks[i]);
     }
     responseData = { tasks: thisPageTasks, total_records: totalRecords.total_records };
+    return responseData;
+}
+
+function getCasePageRecords(totalRecords, pageNum, pageSize) {
+    let responseData = null;
+    const thisPageTasks = [];
+
+    const startIndexForPage = pageNum === 1 ? 0 : ((pageNum - 1) * pageSize) - 1;
+    const endIndexForPage = (startIndexForPage + pageSize) < totalRecords.total_records ? startIndexForPage + pageSize - 1 : totalRecords.total_records - 1;
+    for (let i = startIndexForPage; i <= endIndexForPage; i++) {
+        thisPageTasks.push(totalRecords.cases[i]);
+    }
+    responseData = { cases: thisPageTasks, total_records: totalRecords.total_records };
     return responseData;
 }
 

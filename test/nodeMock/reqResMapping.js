@@ -8,7 +8,8 @@ const nodeAppReqResMappings = require('./nodeApp/reqResMapping');
 const dummyCaseDetails = require('./ccd/caseDetails_data');
 
 const requestMapping = {
-   get:{
+    mockServiceResetCallbacks: [...WAReqResMappings.mockServiceResetCallbacks],
+    get:{
         ...nodeAppReqResMappings.get,
         ...WAReqResMappings.get,
         ...ccdReqResMapping.get,

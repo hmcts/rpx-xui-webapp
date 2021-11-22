@@ -489,3 +489,14 @@ export const paginate = (array: Case[], pageNumber: number, pageSize: number): a
 export function removeEmptyValues(searchRequests: SearchTaskParameter[]): SearchTaskParameter[] {
   return searchRequests.filter((searchRequest: SearchTaskParameter) => searchRequest.values && searchRequest.values.length > 0);
 }
+
+export async function getTypesOfWorkByUserId(path, req: express.Request): Promise<any> {
+  const headers = setHeaders(req);
+  try {
+    const result = await http.get(path, {headers});
+    return result.data;
+  } catch (e) {
+    console.error(e);
+  }
+  return null;
+}

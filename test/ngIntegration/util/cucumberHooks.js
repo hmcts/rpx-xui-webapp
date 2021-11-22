@@ -19,6 +19,7 @@ defineSupportCode(({ Before, After, BeforeAll }) => {
     BeforeAll(async function(){
         const scenarioServerPort = MockApp.serverPort;
 
+        CucumberReportLog.AddMessage("Loading App before All with navigate url");
         await browser.driver.get(config.config.baseUrl);
     });
 

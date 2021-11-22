@@ -57,7 +57,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         caseListReq = null;
         await searchCasePage.clickApplySearchCaseFilters();
-        await BrowserWaits.waitForCondition(async () => caseListReq !== null);
+        await BrowserWaits.waitForCondition(async () => caseListReq !== null,'Search case request not recived in mock');
 
         for (const key of Object.keys(searchCaseInputValues)) {
             if (searchCaseInputValues[key] instanceof Array) {

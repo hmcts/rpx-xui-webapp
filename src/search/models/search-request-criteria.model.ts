@@ -1,6 +1,6 @@
 import { SearchRequestParty } from './search-request-party.model';
 
-export class SearchRequestCriteria {
+export interface SearchRequestCriteria {
   CCDCaseTypeIds?: string[];
   CCDJurisdictionIds: string[];
   caseManagementBaseLocationIds?: string[];

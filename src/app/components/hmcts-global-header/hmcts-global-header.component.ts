@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
@@ -20,7 +20,9 @@ import { SearchParameters } from '../../../search/models';
 export class HmctsGlobalHeaderComponent implements OnChanges, OnDestroy {
 
   @Input() public set showNavItems(value: boolean) {
-    this.showItems = value;
+		console.log('this.showItems before', this.showItems);
+    this.showItems = value === null && value === undefined ? false : value;
+		console.log('this.showItems after', this.showItems);
   }
   @Input() public items: NavItemsModel[];
   @Input() public logoIsUsed: boolean;
@@ -32,7 +34,7 @@ export class HmctsGlobalHeaderComponent implements OnChanges, OnDestroy {
   @Input() public currentUrl: string;
   @Output() public navigate = new EventEmitter<string>();
 
-  public showItems: boolean;
+  public showItems = false;
   public userValue = true;
   public tab;
   public get leftItems(): Observable<NavItemsModel[]> {
@@ -58,9 +60,7 @@ export class HmctsGlobalHeaderComponent implements OnChanges, OnDestroy {
   ) { }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (changes.items.currentValue !== changes.items.previousValue) {
-      this.splitAndFilterNavItems(this.items);
-    }
+	  this.splitAndFilterNavItems(this.items);
   }
 
   public onEmitEvent(index: number): void {

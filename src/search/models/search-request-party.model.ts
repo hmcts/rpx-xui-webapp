@@ -1,4 +1,4 @@
-export class SearchRequestParty {
+export interface SearchRequestParty {
   addressLine1?: string;
   dateOfBirth?: string;
   dateOfDeath?: string;

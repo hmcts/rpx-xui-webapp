@@ -59,6 +59,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
   private subscription: Subscription;
   public userDetails$: Observable<UserDetails>;
+	public userDetails: UserDetails;
   public defaultTheme: Theme = AppConstants.DEFAULT_USER_THEME;
 
   constructor(
@@ -149,6 +150,9 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
     const applicationThemes$ = this.featureToggleService.getValue<Theme[]>(LD_FLAG_MC_APPLICATION_THEMES, this.getDefaultApplicationThemes());
     combineLatest([this.userDetails$, applicationThemes$]).subscribe(([userDetails, applicationThemes]) => {
+			console.log('user details', userDetails);
+			console.log('application themes', applicationThemes);
+			this.userDetails = userDetails;
         this.setHeaderContent(userDetails, applicationThemes);
       });
 
@@ -159,6 +163,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   }
 
   public setHeaderContent(userDetails, applicationThemes) {
+		console.log('setHeaderContent userDetails.userInfo', userDetails.userInfo);
     if (userDetails.userInfo) {
       this.userRoles = userDetails.userInfo.roles;
       const applicationTheme: Theme = this.getApplicationThemeForUser(applicationThemes, userDetails.userInfo.roles);
@@ -240,8 +245,11 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    */
   public subscribe(observable: Observable<string>): Subscription {
     return observable.subscribe(url => {
-
-      this.showNavItems = of(AppUtils.showNavItems(url));
+			console.log('this.userDetails.userInfo', this.userDetails.userInfo)
+      this.showNavItems = of(AppUtils.showNavItems(url) && this.userDetails.userInfo !== null);
+			this.showNavItems.subscribe(x => {
+				console.log('this.showNavItems$', x);
+			});
     });
   }
 
@@ -267,5 +275,6 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
   private setupActiveNavLink(items: NavItemsModel[]): void {
     this.navItems = AppUtils.setActiveLink(items, this.router.url);
+		console.log('app header - navItems', items);
   }
 }

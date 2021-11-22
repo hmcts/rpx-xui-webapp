@@ -100,9 +100,17 @@ defineSupportCode(({ Before,After }) => {
         global.scenarioData['canSecenarioRunwiThExistingSession'] = scenario.pickle.name.startsWith("WITH_SESSION")
         let url = await browser.getCurrentUrl();
         if (!global.scenarioData['canSecenarioRunwiThExistingSession'] && url.startsWith('http')){
-            await browser.executeScript('window.sessionStorage.clear();');
-            await browser.executeScript('window.localStorage.clear();');
-            await browser.manage().deleteAllCookies();
+            //clearSession();
+
+
+            try{
+                const scenarioMockPort = browser.manage().getCookie('scenarioMockPort')
+                await browser.manage().addCookie({ name: 'scenarioMockPort', value: scenarioMockPort });
+            }
+           catch(err){
+
+           } 
+
         }
        
         CucumberReportLog.setScenarioWorld(this);
@@ -141,8 +149,14 @@ defineSupportCode(({ Before,After }) => {
         }catch(err) {
             CucumberReportLog.AddMessage("Error in hooks with browserlogs or screenshots. See error details : " + err);
         }     
-        
+        clearSession();
        
 
     });
+
+    async function clearSession(){
+        await browser.executeScript('window.sessionStorage.clear();');
+        await browser.executeScript('window.localStorage.clear();');
+        await browser.manage().deleteAllCookies();
+    }
 });

@@ -7,8 +7,7 @@ import { BookingService } from '../../services';
 
 @Component({
   selector: 'exui-booking-home',
-  templateUrl: './booking-home.component.html',
-  styleUrls: ['./booking-home.component.scss']
+  templateUrl: './booking-home.component.html'
 })
 export class BookingHomeComponent implements OnInit, OnDestroy {
 

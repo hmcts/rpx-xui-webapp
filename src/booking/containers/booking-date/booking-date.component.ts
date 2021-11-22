@@ -2,9 +2,10 @@ import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { BookingNavigation } from '../../models';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { TimeOption, ChallengedAccessRequestErrors, BookingTimePageText } from '../../models/booking-date.enum';
+import { Observable, of, Subscription } from 'rxjs';
+import { TimeOption, BookingTimePageText } from '../../models/booking-date.enum';
 import { ErrorMessage } from '../../../app/models';
+import { GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
 
 @Component({
   selector: 'exui-booking-date',
@@ -27,7 +28,9 @@ export class BookingDateComponent implements OnInit {
   private readonly caseReferenceControlName = 'caseReference';
   private readonly otherReasonControlName = 'otherReason';
   public $roleAssignmentResponseSubscription: Subscription;
-
+  public duedate = '2021-06-30T16:53:10+0100';
+  public configStart: GovUiConfigModel;
+  public configEnd: GovUiConfigModel;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -40,28 +43,58 @@ export class BookingDateComponent implements OnInit {
         {date: TimeOption.WEEK, checked: false},
         {date: TimeOption.DATERANGE, checked: false},
       ];
+
+    this.configStart =
+
+  {
+    id: 'startDate',
+    name: 'startDate',
+    hint: 'For example, 19 11 2021',
+    //classes: 'govuk-input--width-10',
+    label: 'Booking Starts',
+   // type: 'text',
+    isPageHeading: true,
+    legend: 'test',
+
+  };
+  this.configEnd =
+
+  {
+    id: 'startDate',
+    name: 'startDate',
+    hint: 'For example, 19 11 2021',
+    //classes: 'govuk-input--width-10',
+    label: 'Booking Ends',
+    isPageHeading: true,
+    legend: 'test',
+
+  };
     }
 
+   
+
     public ngOnInit(): void {
+      
       this.title = BookingTimePageText.TITLE;
       this.caption = BookingTimePageText.CAPTION;
       this.caseRefLabel = BookingTimePageText.TITLE;
       this.formGroup = this.fb.group({
-        radioSelected: new FormControl(null, Validators.required)
-      });
-      this.formGroup.addControl(this.caseReferenceControlName,
-        new FormControl('', {
-          validators: [(control: AbstractControl): {[key: string]: boolean} | null => {
-            if (this.formGroup.get(this.radioSelectedControlName).value === TimeOption.DATERANGE && this.inputEmpty(control)) {
-              return {'invalid': true};
-            }
-            return null;
-          }],
-          updateOn: 'submit'
-        })
-      );
-    }
+        radioSelected: new FormControl(null, Validators.required),
+        caseRef_day: new FormControl(null, null),
+        caseRef: new FormControl(null, null),
+        startDate_year: new FormControl(null, null),
+        startDate_month: new FormControl(null, null),
+        startDate_day:new FormControl(null, null),
 
+      });
+    }
+    public toDate(value: string | number | Date): Date {
+      if (value) {
+        const d = new Date(value);
+        return isNaN(d.getTime()) ? null : d;
+      }
+      return null;
+    }
     private inputEmpty(input: AbstractControl): boolean {
       return input.value == null || input.value.trim().length === 0;
     }

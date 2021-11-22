@@ -20,9 +20,7 @@ import { SearchParameters } from '../../../search/models';
 export class HmctsGlobalHeaderComponent implements OnChanges, OnDestroy {
 
   @Input() public set showNavItems(value: boolean) {
-		console.log('this.showItems before', this.showItems);
-    this.showItems = value === null && value === undefined ? false : value;
-		console.log('this.showItems after', this.showItems);
+    this.showItems = value === null || value === undefined ? false : value;
   }
   @Input() public items: NavItemsModel[];
   @Input() public logoIsUsed: boolean;

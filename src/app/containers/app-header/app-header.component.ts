@@ -146,12 +146,9 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     this.featureToggleKey = AppConstants.SERVICE_MESSAGES_FEATURE_TOGGLE_KEY;
     this.serviceMessageCookie = AppConstants.SERVICE_MESSAGE_COOKIE;
     this.userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
-    this.setAppHeaderProperties(this.defaultTheme);
 
     const applicationThemes$ = this.featureToggleService.getValue<Theme[]>(LD_FLAG_MC_APPLICATION_THEMES, this.getDefaultApplicationThemes());
     combineLatest([this.userDetails$, applicationThemes$]).subscribe(([userDetails, applicationThemes]) => {
-			console.log('user details', userDetails);
-			console.log('application themes', applicationThemes);
 			this.userDetails = userDetails;
         this.setHeaderContent(userDetails, applicationThemes);
       });
@@ -163,13 +160,14 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   }
 
   public setHeaderContent(userDetails, applicationThemes) {
-		console.log('setHeaderContent userDetails.userInfo', userDetails.userInfo);
     if (userDetails.userInfo) {
       this.userRoles = userDetails.userInfo.roles;
       const applicationTheme: Theme = this.getApplicationThemeForUser(applicationThemes, userDetails.userInfo.roles);
       this.hideNavigationListener(this.store);
       this.setAppHeaderProperties(applicationTheme);
-    }
+    } else {
+			this.setAppHeaderProperties(this.defaultTheme);
+		}
   }
 
   public setNavigationEnd(event) {
@@ -245,11 +243,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    */
   public subscribe(observable: Observable<string>): Subscription {
     return observable.subscribe(url => {
-			console.log('this.userDetails.userInfo', this.userDetails.userInfo)
       this.showNavItems = of(AppUtils.showNavItems(url) && this.userDetails.userInfo !== null);
-			this.showNavItems.subscribe(x => {
-				console.log('this.showNavItems$', x);
-			});
     });
   }
 
@@ -275,6 +269,5 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
   private setupActiveNavLink(items: NavItemsModel[]): void {
     this.navItems = AppUtils.setActiveLink(items, this.router.url);
-		console.log('app header - navItems', items);
   }
 }

@@ -6,7 +6,7 @@
     </h1>
 
 
-    <form class="form">
+    <form class="form" [formGroup]="priorityForm">
       <!-- <xuilib-gov-uk-date [config]="
       {
         label: 'Find the person',
@@ -20,19 +20,21 @@
         <div class="govuk-form-group">
           <fieldset class="govuk-fieldset" role="group" aria-describedby="passport-issued-hint">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                <h1 class="govuk-fieldset__heading">Length of hearing</h1>
+              <h1 class="govuk-fieldset__heading">Length of hearing</h1>
             </legend>
-            <div class="govuk-date-input" id="passport-issued">
+            <div class="govuk-date-input" formGroupName="durationLength">
               <div class="govuk-date-input__item">
                 <div class="govuk-form-group">
                   <label class="govuk-label govuk-date-input__label" for="durationhours">Hours</label>
-                  <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="durationhours" name="durationhours" type="text" pattern="[0-9]*" inputmode="numeric" value="">
+                  <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="durationhours"
+                    name="durationhours" type="text" inputmode="numeric" value="" formControlName="hours">
                 </div>
               </div>
               <div class="govuk-date-input__item">
                 <div class="govuk-form-group">
                   <label class="govuk-label govuk-date-input__label" for="durationmins">Minutes</label>
-                  <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="durationmins" name="durationmins" type="text" pattern="[0-9]*" inputmode="numeric" value="">
+                  <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="durationmins"
+                    name="durationmins" type="text" inputmode="numeric" value="" formControlName="minutes">
                 </div>
               </div>
             </div>
@@ -46,39 +48,43 @@
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
             <h3 class="govuk-fieldset__heading">Does the hearing need to take place on a specific date?</h3>
           </legend>
-          <div class="govuk-hint">Availability of all the parties will be taken into account when scheduling this hearing.</div>
+          <div class="govuk-hint">Availability of all the parties will be taken into account when scheduling this
+            hearing.</div>
           <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
             <div class="govuk-radios__item">
-              <input class="govuk-radios__input" id="dates1" name="dateradios" type="radio" value="No" onclick="hiderangedate(); hidefixeddate();">
+              <input class="govuk-radios__input" id="dates1" name="hearingAvailability" type="radio" value="No" formControlName="hearingAvailability" (change)="showDateAvailability();">
               <label class="govuk-label govuk-radios__label" for="dates1">No</label>
             </div>
             <div class="govuk-radios__item">
-              <input class="govuk-radios__input" id="dates2" name="dateradios" type="radio" value="Yes"  onclick="hiderangedate(); showfixeddate();">
+              <input class="govuk-radios__input" id="dates2" name="hearingAvailability" type="radio" value="Yes" formControlName="hearingAvailability" (change)="showDateAvailability();">
               <label class="govuk-label govuk-radios__label" for="dates2">Yes</label>
             </div>
-            <div class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3"  id="fixeddatesection"    style="display:none;">
+            <div class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3" id="fixeddatesection" [ngClass]="{'js-hidden': checkedHearingAvailability!=='Yes'}">
               <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset" role="group" aria-describedby="passport-issued-hint">
                   <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                      <h1 class="govuk-fieldset__heading">The first date of the hearing must be</h1>
+                    <h1 class="govuk-fieldset__heading">The first date of the hearing must be</h1>
                   </legend>
                   <div class="govuk-date-input" id="passport-issued">
                     <div class="govuk-date-input__item">
                       <div class="govuk-form-group">
                         <label class="govuk-label govuk-date-input__label" for="firstdateday">Day</label>
-                        <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="firstdateday" name="firstdateday" type="text" pattern="[0-9]*" inputmode="numeric" value="">
+                        <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="firstdateday"
+                          name="firstdateday" type="text" inputmode="numeric" value="">
                       </div>
                     </div>
                     <div class="govuk-date-input__item">
                       <div class="govuk-form-group">
                         <label class="govuk-label govuk-date-input__label" for="firstdatemonth">Month</label>
-                        <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="firstdatemonth" name="firstdatemonth" type="text" pattern="[0-9]*" inputmode="numeric" value="">
+                        <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="firstdatemonth"
+                          name="firstdatemonth" type="text" inputmode="numeric" value="">
                       </div>
                     </div>
                     <div class="govuk-date-input__item">
                       <div class="govuk-form-group">
                         <label class="govuk-label govuk-date-input__label" for="firstdateyear">Year</label>
-                        <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="firstdateyear" name="firstdateyear" type="text" pattern="[0-9]*" inputmode="numeric" value="">
+                        <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="firstdateyear"
+                          name="firstdateyear" type="text" inputmode="numeric" value="">
                       </div>
                     </div>
                   </div>
@@ -86,33 +92,36 @@
               </div>
             </div>
             <div class="govuk-radios__item">
-              <input class="govuk-radios__input" id="dates3" name="dateradios" type="radio" value="Choose a date range"  onclick="showrangedate(); hidefixeddate();">
-              <label class="govuk-label govuk-radios__label" for="dates3" onclick="showrangedate();  hidefixeddate();">Choose a date range</label>
+              <input class="govuk-radios__input" id="dates3" name="hearingAvailability" type="radio" value="Choose"  formControlName="hearingAvailability" (change)="showDateAvailability();">
+              <label class="govuk-label govuk-radios__label" for="dates3">Choose a date range</label>
             </div>
-            <div class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3" id="rangedatesection"  style="display:none;">
+            <div class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3" id="rangedatesection" [ngClass]="{'js-hidden': checkedHearingAvailability!=='Choose'}">
               <div id="waste-hint" class="govuk-hint">You can enter either or both dates.</div>
               <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset" role="group" aria-describedby="passport-issued-hint">
                   <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                      <h1 class="govuk-fieldset__heading">Earliest hearing date</h1>
+                    <h1 class="govuk-fieldset__heading">Earliest hearing date</h1>
                   </legend>
                   <div class="govuk-date-input" id="passport-issued">
                     <div class="govuk-date-input__item">
                       <div class="govuk-form-group">
                         <label class="govuk-label govuk-date-input__label" for="earliestdateday">Day</label>
-                        <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="earliestdateday" name="earliestdateday" type="text" pattern="[0-9]*" inputmode="numeric" value="">
+                        <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="earliestdateday"
+                          name="earliestdateday" type="text" pattern="[0-9]*" inputmode="numeric" value="">
                       </div>
                     </div>
                     <div class="govuk-date-input__item">
                       <div class="govuk-form-group">
                         <label class="govuk-label govuk-date-input__label" for="earliestdatemonth">Month</label>
-                        <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="earliestdatemonth" name="earliestdatemonth" type="text" pattern="[0-9]*" inputmode="numeric" value="">
+                        <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="earliestdatemonth"
+                          name="earliestdatemonth" type="text" pattern="[0-9]*" inputmode="numeric" value="">
                       </div>
                     </div>
                     <div class="govuk-date-input__item">
                       <div class="govuk-form-group">
                         <label class="govuk-label govuk-date-input__label" for="earliestdateyear">Year</label>
-                        <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="earliestdateyear" name="earliestdateyear" type="text" pattern="[0-9]*" inputmode="numeric" value="">
+                        <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="earliestdateyear"
+                          name="earliestdateyear" type="text" pattern="[0-9]*" inputmode="numeric" value="">
                       </div>
                     </div>
                   </div>
@@ -121,25 +130,28 @@
               <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset" role="group" aria-describedby="passport-issued-hint">
                   <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                      <h1 class="govuk-fieldset__heading">Latest hearing date</h1>
+                    <h1 class="govuk-fieldset__heading">Latest hearing date</h1>
                   </legend>
                   <div class="govuk-date-input" id="passport-issued">
                     <div class="govuk-date-input__item">
                       <div class="govuk-form-group">
                         <label class="govuk-label govuk-date-input__label" for="latestdateday">Day</label>
-                        <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="latestdateday" name="latestdateday" type="text" pattern="[0-9]*" inputmode="numeric" value="">
+                        <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="latestdateday"
+                          name="latestdateday" type="text" pattern="[0-9]*" inputmode="numeric" value="">
                       </div>
                     </div>
                     <div class="govuk-date-input__item">
                       <div class="govuk-form-group">
                         <label class="govuk-label govuk-date-input__label" for="latestdatemonth">Month</label>
-                        <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="latestdatemonth" name="latestdatemonth" type="text" pattern="[0-9]*" inputmode="numeric" value="">
+                        <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="latestdatemonth"
+                          name="latestdatemonth" type="text" pattern="[0-9]*" inputmode="numeric" value="">
                       </div>
                     </div>
                     <div class="govuk-date-input__item">
                       <div class="govuk-form-group">
                         <label class="govuk-label govuk-date-input__label" for="latestdateyear">Year</label>
-                        <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="latestdateyear" name="latestdateyear" type="text" pattern="[0-9]*" inputmode="numeric" value="">
+                        <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="latestdateyear"
+                          name="latestdateyear" type="text" pattern="[0-9]*" inputmode="numeric" value="">
                       </div>
                     </div>
                   </div>
@@ -156,20 +168,7 @@
           <span class="govuk-details__summary-text">See dates the parties will not be available</span>
         </summary>
         <div class="govuk-details__text">
-            2 November 2021<br>
-            3 November 2021<br>
-            4 November 2021<br>
-            5 November 2021<br>
-            6 November 2021<br>
-            7 November 2021<br>
-            8 November 2021<br>
-            9 November 2021<br>
-            10 November 2021<br>
-            11 November 2021<br>
-            12 November 2021<br>
-            5 December 2021<br>
-            6 December 2021<br>
-            7 December 2021<br>
+          <span *ngFor="let partiesNotAvailableDate of partiesNotAvailableDates">{{partiesNotAvailableDate}}<br></span>
         </div>
       </details>
 
@@ -181,11 +180,13 @@
           </legend>
           <div class="govuk-radios">
             <div class="govuk-radios__item">
-              <input class="govuk-radios__input" id="priorityHearing" name="priorityHearing" type="radio" value="Standard">
+              <input class="govuk-radios__input" id="priorityHearing" name="priorityHearing" type="radio"
+                value="Standard">
               <label class="govuk-label govuk-radios__label" for="priorityHearing">Standard</label>
             </div>
             <div class="govuk-radios__item">
-              <input class="govuk-radios__input" id="priorityHearing2" name="priorityHearing" type="radio" value="Urgent">
+              <input class="govuk-radios__input" id="priorityHearing2" name="priorityHearing" type="radio"
+                value="Urgent">
               <label class="govuk-label govuk-radios__label" for="priorityHearing2">Urgent</label>
             </div>
           </div>

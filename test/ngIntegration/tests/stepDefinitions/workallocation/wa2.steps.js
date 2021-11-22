@@ -70,10 +70,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
 
-    Given('I set MOCK tasks with permissions for view {string} and assigned state {string}', async function (view,assignedState ,taskPermissionsTable) {
+    Given('I set MOCK tasks with permissions for view {string} and assigned state {string}', async function (inputView,assignedState ,taskPermissionsTable) {
         const taskPermissionHashes = taskPermissionsTable.hashes(); 
         const tasks = [];
-        view = view.split(" ").join("");
+        let view = inputView.split(" ").join("");
         view = view.toLowerCase();
         for (let i = 0; i < taskPermissionHashes.length; i++){
             let taskCount = 0;
@@ -88,27 +88,26 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
             
         }
-        global.scenarioData[`workallocation2.${view}`] = {tasks : tasks, total_records:tasks.length} ;
+
+        switch (view){
+            case 'mytasks':
+                workAllocationMockData.myWorkMyTasks = { tasks: tasks, total_records: tasks.length };
+                break;
+            case 'availabletasks':
+                workAllocationMockData.myWorkAvailableTasks = { tasks: tasks, total_records: tasks.length };
+                break;
+            case 'allwork':
+                workAllocationMockData.allWorkTasks = { tasks: tasks, total_records: tasks.length };
+                break;
+
+            default:
+                throw new Error(`Unrecognised input view from step def "${inputView}"`);
+        }
         
     });
 
-    Given('I set MOCK workallocation cases with permissions for view {string}', async function (view, casePermissionsTable) {
-        const casePermissionHashes = casePermissionsTable.hashes();
-        const cases = [];
-        view = view.split(" ").join("");
-        view = view.toLowerCase();
-        for (let i = 0; i < casePermissionHashes.length; i++) {
-            
-            let caseCount = casePermissionHashes[i]['Count'];
-            for (let j = 0; j < caseCount; j++) {
-                cases.push(workAllocationMockData.getRelease2CaseWithPermission(casePermissionHashes[i]['Roles'].split(","), view));
-            }
-
-        }
-        const casesResponse = { cases: cases, total_records: cases.length };
-        workAllocationMockData.cases = casesResponse;
-        global.scenarioData[`workallocation2.${view}`] = casesResponse;
-
+    Given('I set MOCK workallocation cases with permissions for view {string}', async function (viewInTest, casePermissionsTable) {
+        workAllocationMockData.setCasesWithPermissionsForView(viewInTest, casePermissionsTable.hashes()) 
     });
 
 

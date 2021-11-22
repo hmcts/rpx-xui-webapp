@@ -33,11 +33,11 @@ Feature: WA Release 2: All work - filters
             | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | admin1      | a        | admin_user1@gov.uk      | ADMIN            |
             | 08a3d216-c6ab-4e92-a7e3-ca3661e6be82 | admin2      | a        | admin_user2@gov.uk      | ADMIN            |
 
-        Given I set MOCK request "/workallocation2/taskWithPagination/" intercept with reference "taskSearchRequest"
+        Given I set MOCK request "/workallocation2/task" intercept with reference "taskSearchRequest"
         Given I set MOCK request "/workallocation2/all-work/cases" intercept with reference "caseSearchRequest"
 
 
-    Scenario: WITH SESSION Tasks filters state, with user role "Caseworker"
+    Scenario: WITH_SESSION Tasks filters state, with user role "Caseworker"
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer" with reference "userDetails"
 
         Given I start MockApp
@@ -79,7 +79,7 @@ Feature: WA Release 2: All work - filters
         Then I see filter "Priority" is displayed in all work page
         Then I see filter "Priority" is enabled in all work page
 
-    Scenario Outline: WITH SESSION Tasks filter selection, with user role "Caseworker"
+    Scenario Outline: WITH_SESSION Tasks filter selection, with user role "Caseworker"
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer" with reference "userDetails"
 
         Given I start MockApp
@@ -126,7 +126,7 @@ Feature: WA Release 2: All work - filters
         Then I validate task search request with reference "taskSearchRequest" have search parameters
             | key          | value           |
             | location     | <locationId>    |
-            | person       | <person_id>     |
+            | user       | <person_id>     |
             | jurisdiction | <Jurisdiction>  |
             | taskCategory | <Task_Category> |
             | taskType     | <Task_type>     |
@@ -141,7 +141,7 @@ Feature: WA Release 2: All work - filters
             | IA           | Test loc 3   | 12347      | Specific person        | adm           | admin1 a(admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     | High     |
             | IA           | Test loc 3   | 12347      | Specific person        | adm           | admin1 a(admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     | All      |
 
-    Scenario: WITH SESSION Tasks filters state, with user role "Judicial"
+    Scenario: WITH_SESSION Tasks filters state, with user role "Judicial"
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker" with reference "userDetails"
 
         Given I start MockApp
@@ -183,7 +183,7 @@ Feature: WA Release 2: All work - filters
         Then I see filter "Priority" is not displayed in all work page
 
 
-    Scenario Outline: WITH SESSION Tasks filter selection, with user role "Judicial"
+    Scenario Outline: WITH_SESSION Tasks filter selection, with user role "Judicial"
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker" with reference "userDetails"
 
         Given I start MockApp
@@ -243,7 +243,7 @@ Feature: WA Release 2: All work - filters
             | IA           | Test loc 3   | 12347      | Specific person        | adm           | admin1 a(admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     |
             | IA           | Test loc 3   | 12347      | Specific person        | adm           | admin1 a(admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     |
 
-    Scenario: WITH SESSION Cases filter selection, with user role "Caseworker"
+    Scenario: WITH_SESSION Cases filter selection, with user role "Caseworker"
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer" with reference "userDetails"
 
         Given I start MockApp
@@ -283,7 +283,7 @@ Feature: WA Release 2: All work - filters
         Then I see filter "Person input" is displayed in all work page
         Then I see filter "Person input" is disabled in all work page
 
-    Scenario Outline: WITH SESSION Case filter selection, with user role "Caseworker"
+    Scenario Outline: WITH_SESSION Case filter selection, with user role "Caseworker"
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer" with reference "userDetails"
 
         Given I start MockApp
@@ -342,7 +342,7 @@ Feature: WA Release 2: All work - filters
             | IA           | Test loc 3   | 12347      | Specific person        | adm           | admin1 a(admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin     |
             | IA           | Test loc 3   | 12347      | Specific person        | adm           | admin1 a(admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin     |
 
-    Scenario Outline: WITH SESSION Case filter selection, with user role "Judicial"
+    Scenario Outline: WITH_SESSION Case filter selection, with user role "Judicial"
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker" with reference "userDetails"
 
         Given I start MockApp

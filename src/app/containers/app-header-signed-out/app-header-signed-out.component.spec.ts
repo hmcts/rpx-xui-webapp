@@ -53,11 +53,11 @@ describe('AppHeaderSignedOutComponent', () => {
       component.setAppHeaderProperties(defaultTheme);
 
       expect(component.appHeaderTitle).toBe(AppConstants.DEFAULT_USER_THEME.appTitle);
-      expect(component.navItems).toBe(AppConstants.DEFAULT_USER_THEME.navigationItems);
-      expect(component.userNav).toBe(AppConstants.DEFAULT_USER_THEME.accountNavigationItems);
+      expect(component.navItems.length).toBe(0);
+      expect(component.userNav).toEqual({ label: '', items: [] });
       expect(component.backgroundColor).toBe(AppConstants.DEFAULT_USER_THEME.backgroundColor);
-      expect(component.logoType).toBe(AppConstants.DEFAULT_USER_THEME.logoType);
-      expect(component.logoIsUsed).toBe(AppConstants.DEFAULT_USER_THEME.logoIsUsed);
+      expect(component.logoType).toBe(AppConstants.DEFAULT_USER_THEME.logo);
+      expect(component.logoIsUsed).toBe(AppConstants.DEFAULT_USER_THEME.logo !== 'none');
     });
   });
 });

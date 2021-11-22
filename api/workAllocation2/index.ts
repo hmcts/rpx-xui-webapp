@@ -22,13 +22,14 @@ import {
 } from './caseWorkerService';
 
 import { JUDICIAL_WORKERS_LOCATIONS } from './constants/mock.data';
+import { TASK_ROLES } from './constants/task-roles.mock.data';
 import { PaginationParameter } from './interfaces/caseSearchParameter';
 import { Caseworker } from './interfaces/common';
 import { TaskList } from './interfaces/task';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { checkIfCaseAllocator } from './roleService';
 import * as roleServiceMock from './roleService.mock';
-import { handleGetTasksByCaseId, handleTaskGet, handleTaskPost, handleTaskSearch } from './taskService';
+import { handleTaskGet, handleTaskPost, handleTaskSearch } from './taskService';
 import * as taskServiceMock from './taskService.mock';
 import {
   assignActionsToCases,
@@ -91,6 +92,19 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
 }
 
 /**
+ * getTask
+ */
+export async function getTaskRoles(req: EnhancedRequest, res: Response, next: NextFunction) {
+
+  try {
+    res.status(200);
+    res.send(TASK_ROLES);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
  * Post to search for a Task.
  */
 export async function searchTask(req: EnhancedRequest, res: Response, next: NextFunction) {
@@ -119,9 +133,28 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
 
 export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const caseId = req.params.caseId;
+  const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
+  const searchRequest = {
+    search_parameters: [
+      {
+        key: 'caseId',
+        operator: 'IN',
+        values: [
+          caseId,
+        ],
+      },
+    ],
+    sorting_parameters: [
+      {
+        sort_by: 'due_date',
+        sort_order: 'asc',
+      },
+    ],
+    search_by: 'caseworker',
+  };
   try {
-    const {status, data} = await handleGetTasksByCaseId(`${baseWorkAllocationTaskUrl}/task/${caseId}`, req);
-    return res.send(data as TaskList).status(status);
+    const {status, data} = await handleTaskSearch(`${basePath}`, searchRequest, req);
+    return res.send(data.tasks as TaskList).status(status);
   } catch (e) {
     next(e);
   }

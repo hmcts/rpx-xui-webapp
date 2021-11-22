@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 
 import { SearchTaskRequest, TaskSearchParameters } from '../models/dtos';
 import { Task } from '../models/tasks';
+import { TaskRole } from '../models/tasks/TaskRole';
 
 const BASE_URL: string = '/workallocation2/task';
 export enum ACTION {
@@ -60,6 +61,11 @@ export class WorkAllocationTaskService {
   public getTask(taskId: string): Observable<Task> {
     const url = `${BASE_URL}/${taskId}`;
     return this.http.get<Task>(url);
+  }
+
+  public getTaskRoles(taskId: string): Observable<TaskRole[]> {
+    const url = `${BASE_URL}/${taskId}/roles`;
+    return this.http.get<TaskRole[]>(url);
   }
 
   public performActionOnTask(taskId: string, action: ACTION): Observable<Response> {

@@ -7,7 +7,7 @@ import {
   getCaseWorkersForLocationAndService,
   getCaseWorkersForService, getMyCases,
   getRolesCategory,
-  getTask,
+  getTask, getTaskRoles,
   getTasksByCaseId,
   postTaskAction,
   postTaskSearchForCompletable,
@@ -38,6 +38,7 @@ router.use('/location', getLocations);
 
 router.use('/searchForCompletable', postTaskSearchForCompletable);
 
+router.use('/task/:taskId/roles', getTaskRoles);
 router.use('/task/:taskId/:action', postTaskAction);
 router.use('/task/:taskId', getTask);
 router.use('/task', searchTask);

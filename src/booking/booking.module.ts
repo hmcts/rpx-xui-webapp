@@ -8,6 +8,7 @@ import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { SharedModule } from '../app/shared/shared.module';
 import { bookingRouting } from './booking.routes';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
 @NgModule({
   imports: [
@@ -17,6 +18,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     HttpClientModule,
     SharedModule,
     bookingRouting
+    ExuiCommonLibModule,
   ],
   declarations: [
     ...fromContainers.containers,

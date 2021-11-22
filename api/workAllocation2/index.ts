@@ -22,7 +22,6 @@ import {
 } from './caseWorkerService';
 
 import { JUDICIAL_WORKERS_LOCATIONS } from './constants/mock.data';
-import { TASK_ROLES } from './constants/task-roles.mock.data';
 import { PaginationParameter } from './interfaces/caseSearchParameter';
 import { Caseworker } from './interfaces/common';
 import { TaskList } from './interfaces/task';
@@ -154,7 +153,7 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
         operator: 'IN',
         values: [
           'assigned',
-          'unassigned'
+          'unassigned',
         ],
       },
     ],

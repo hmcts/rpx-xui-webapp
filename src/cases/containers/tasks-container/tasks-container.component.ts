@@ -24,7 +24,6 @@ export class TasksContainerComponent implements OnInit {
   }
 
   public onTaskRefreshRequired(): void {
-    console.log('assigning to me');
     this.waCaseService.getTasksByCaseId(this.tasks[0].case_id).pipe(first()).subscribe(tasks => {
       this.tasks = tasks;
       this.warningIncluded = this.tasks.some(task => task.warnings);

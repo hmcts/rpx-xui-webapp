@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
@@ -115,6 +116,9 @@ describe('TasksContainerComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [TaskAlertBannerComponent, TasksContainerComponent],
+      imports: [
+        HttpClientModule
+      ],
       providers: [
         {provide: AlertService, useValue: mockAlertService},
         {
@@ -122,7 +126,10 @@ describe('TasksContainerComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                tasks: getMockTasks(),
+                tasks: {
+                  tasks: getMockTasks(),
+                  caseworkers: null
+                },
                 case: CASE_VIEW
               }
             }

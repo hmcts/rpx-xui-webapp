@@ -1,14 +1,14 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
+import { replaceAll } from '../../../cases/utils/utils';
 import { Caseworker } from '../../../work-allocation-2/models/dtos';
 import { Task, TaskPermission } from '../../../work-allocation-2/models/tasks';
 import { WorkAllocationTaskService } from '../../../work-allocation-2/services';
 import { getAssigneeName, handleTasksFatalErrors, REDIRECTS } from '../../../work-allocation-2/utils';
-import { AppUtils } from '../../../app/app-utils';
-import { replaceAll } from '../../../cases/utils/utils';
 
 @Component({
   selector: 'exui-case-task',
@@ -16,10 +16,10 @@ import { replaceAll } from '../../../cases/utils/utils';
   styleUrls: ['./case-task.component.scss']
 })
 export class CaseTaskComponent implements OnInit {
-  private static CASE_REFERENCE_VARIABLE = '${[CASE_REFERENCE]}';
-  private static CASE_ID_VARIABLE = '${[case_id]}';
-  private static TASK_ID_VARIABLE = '${[id]}';
-  private static VARIABLES: string[] = [
+  private static readonly CASE_REFERENCE_VARIABLE = '${[CASE_REFERENCE]}';
+  private static readonly CASE_ID_VARIABLE = '${[case_id]}';
+  private static readonly TASK_ID_VARIABLE = '${[id]}';
+  private static readonly VARIABLES: string[] = [
     CaseTaskComponent.CASE_REFERENCE_VARIABLE,
     CaseTaskComponent.CASE_ID_VARIABLE,
     CaseTaskComponent.TASK_ID_VARIABLE
@@ -99,7 +99,6 @@ export class CaseTaskComponent implements OnInit {
         }); */
         this.taskRefreshRequired.emit();
       }, error => {
-  
         this.claimTaskErrors(error.status);
       });
       return;
@@ -116,12 +115,13 @@ export class CaseTaskComponent implements OnInit {
     const REDIRECT_404 = [{status: 404, redirectTo: REDIRECTS.ServiceDown}];
     const handledStatus = handleTasksFatalErrors(status, this.router, REDIRECT_404);
     if (handledStatus > 0) {
+      // TODO: Update with case alert message
       /* this.infoMessageCommService.nextMessage({
         type: InfoMessageType.WARNING,
         message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
       }); */
       if (handledStatus === 400) {
-        //this.refreshTasks();
+        this.taskRefreshRequired.emit();
       }
     }
   }

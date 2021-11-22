@@ -1,9 +1,13 @@
+import { RoleCategory } from '../../../role-access/models';
+import { Caseworker } from '../../../work-allocation-2/models/dtos';
 import { Task } from '../../../work-allocation-2/models/tasks';
 import { CaseTaskComponent } from './case-task.component';
 
 describe('CaseTaskComponent', () => {
-  const sessionStorage = jasmine.createSpyObj('sessionStorage', ['getItem']);
-  const component = new CaseTaskComponent(sessionStorage);
+  const mockSessionStorage = jasmine.createSpyObj('mockSessionStorage', ['getItem']);
+  const mockRouter = jasmine.createSpyObj('router', ['navigate']);
+  const mockTaskService = jasmine.createSpyObj('taskService', ['claimTask']);
+  const component = new CaseTaskComponent(mockRouter, mockSessionStorage, mockTaskService);
   it('getManageOptions no assignee no permissions', () => {
     const task: Task = {
       assignee: null,
@@ -196,7 +200,7 @@ describe('CaseTaskComponent', () => {
       warnings: false,
       derivedIcon: null
     };
-    sessionStorage.getItem.and.returnValue('{\"sub\":\"juser8@mailinator.com\",\"uid\":\"44d5d2c2-7112-4bef-8d05-baaa610bf463\",\"roles\":[\"caseworker\",\"caseworker-ia\",\"caseworker-ia-iacjudge\"],\"name\":\"XUI test Judge\",\"given_name\":\"XUI test\",\"family_name\":\"Judge\",\"token\":\"\"}');
+    mockSessionStorage.getItem.and.returnValue('{\"sub\":\"juser8@mailinator.com\",\"uid\":\"44d5d2c2-7112-4bef-8d05-baaa610bf463\",\"roles\":[\"caseworker\",\"caseworker-ia\",\"caseworker-ia-iacjudge\"],\"name\":\"XUI test Judge\",\"given_name\":\"XUI test\",\"family_name\":\"Judge\",\"token\":\"\"}');
     const result = component.isTaskAssignedToCurrentUser(task);
     expect(result).toBeTruthy();
   });
@@ -218,6 +222,21 @@ describe('CaseTaskComponent', () => {
       warnings: false,
       derivedIcon: null
     };
+    const caseworkers: Caseworker[] = [
+      {
+        idamId: '44d5d2c2-7112-4bef-8d05-baaa610bf463',
+        firstName: 'Some',
+        lastName: 'Name',
+        email: 'test@test.com',
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
+        location: {
+          id: '1',
+          locationName: 'TestLocation',
+          services: null
+        }
+      }
+    ];
+    component.caseworkers = caseworkers;
     let name = component.getAssigneeName(task);
     expect(name).toEqual('Some Name');
 

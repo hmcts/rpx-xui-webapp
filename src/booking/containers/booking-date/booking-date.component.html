@@ -1,4 +1,4 @@
-<exui-error-message *ngIf="formGroup.invalid && submitted" [error]="errorMessage"></exui-error-message>
+<!-- <exui-error-message *ngIf="formGroup.invalid && submitted" [error]="errorMessage"></exui-error-message> -->
 
 <form [formGroup]="formGroup" (submit)="onSubmit()">
   <div class="govuk-form-group" [ngClass]="{'form-group-error': formGroup.invalid && submitted}">
@@ -39,7 +39,7 @@
         <div id="conditional-date-0" *ngIf="formGroup.get('radioSelected').value === dateInterval[2].date"
         class="govuk-radios__conditional">
           <div class="govuk-form-group">
-            <label class="govuk-label" for="case-reference">
+            <!-- <label class="govuk-label" for="case-reference">
               {{caseRefLabel}}
             </label>
             <div id="case-reference-error-message" class="govuk-error-message" *ngIf="formGroup.get('caseReference').invalid && submitted">
@@ -47,9 +47,29 @@
             </div>
             <input class="govuk-input govuk-!-width-one-third"
             [ngClass]="{'govuk-input--error': formGroup.get('caseReference').invalid && submitted}" id="case-reference"
-            name="case-reference" type="text" formControlName="caseReference">
+            name="case-reference" type="text" formControlName="caseReference"> -->
+            <xuilib-gov-uk-date [formGroup]="formGroup" [config]="configStart"   [errorMessage]="{}" 
+            ></xuilib-gov-uk-date>
+            <xuilib-gov-uk-date [formGroup]="formGroup" [config]="configEnd"   [errorMessage]="{}" 
+            ></xuilib-gov-uk-date>
           </div>
         </div>
+        <!-- <ng-container >
+          <xuilib-due-date [dueDate]="toDate(duedate)"></xuilib-due-date>
+        </ng-container> -->
+        <!-- <ng-container > -->
+          <!-- formControlName="caseRef" name="caseRef" id="caseRef" -->
+
+          <!-- formControlName="startDate"  name="startDate" id="startDate" -->
+          <!-- <div *ngIf="this.config | async; let config">{{this.config}} -->
+
+     
+    
+      <!-- </div> -->
+     
+     
+     
+      <!-- </ng-container> -->
       </div>
     </fieldset>
   </div>

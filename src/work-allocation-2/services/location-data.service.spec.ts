@@ -3,7 +3,7 @@ import { LocationDataService } from './location-data.service';
 
 describe('WorkAllocation', () => {
   const mockHttpService = jasmine.createSpyObj('mockHttpService', ['put', 'get', 'post']);
-  const sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem'])
+  const sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem']);
 
   describe('LocationDataService', () => {
     it('should be Truthy', () => {

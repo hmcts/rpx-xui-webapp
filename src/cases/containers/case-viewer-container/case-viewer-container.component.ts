@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseTab, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -9,6 +9,7 @@ import { map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { AppConstants } from '../../../app/app.constants';
 import { UserDetails } from '../../../app/models/user-details.model';
+import { SessionStorageService } from '../../../app/services';
 import * as fromRoot from '../../../app/store';
 
 @Component({
@@ -17,6 +18,7 @@ import * as fromRoot from '../../../app/store';
   styleUrls: ['./case-viewer-container.component.scss']
 })
 export class CaseViewerContainerComponent implements OnInit {
+  private static readonly CLAIM_URL_RETURN_KEY = 'claimReturnUrl';
   private static readonly FEATURE_WORK_ALLOCATION_RELEASE_1 = 'WorkAllocationRelease1';
   private static readonly FEATURE_WORK_ALLOCATION_RELEASE_2 = 'WorkAllocationRelease2';
   public caseDetails: CaseView;
@@ -37,6 +39,7 @@ export class CaseViewerContainerComponent implements OnInit {
   ];
 
   constructor(private readonly route: ActivatedRoute,
+              private readonly sessionStorageService: SessionStorageService,
               private readonly store: Store<fromRoot.State>,
               private readonly featureToggleService: FeatureToggleService) {
   }
@@ -49,6 +52,7 @@ export class CaseViewerContainerComponent implements OnInit {
   public ngOnInit(): void {
     this.caseDetails = this.route.snapshot.data.case as CaseView;
     this.tabs$ = this.prependedCaseViewTabs();
+    this.sessionStorageService.setItem(CaseViewerContainerComponent.CLAIM_URL_RETURN_KEY, window.location.pathname);
   }
 
   private prependedCaseViewTabs(): Observable<CaseTab[]> {

@@ -3,6 +3,7 @@ import { ActivatedRouteSnapshot, NavigationEnd, Router, RoutesRecognized } from 
 import { SubNavigation } from '@hmcts/rpx-xui-common-lib';
 import { Subscription } from 'rxjs';
 import { AppUtils } from '../../../app/app-utils';
+import { SessionStorageService } from '../../../app/services';
 
 @Component({
   selector: 'exui-all-work-home',
@@ -10,6 +11,7 @@ import { AppUtils } from '../../../app/app-utils';
   styleUrls: ['all-work-home.component.scss']
 })
 export class AllWorkHomeComponent implements OnInit, OnDestroy {
+  private static readonly CLAIM_URL_RETURN_KEY = 'claimReturnUrl';
   public pageTitle: string;
 
   public subNavigationItems: SubNavigation[] = [
@@ -20,7 +22,8 @@ export class AllWorkHomeComponent implements OnInit, OnDestroy {
   private routeSubscription: Subscription;
 
   constructor(
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly sessionStorageService: SessionStorageService
   ) {
   }
 
@@ -40,6 +43,7 @@ export class AllWorkHomeComponent implements OnInit, OnDestroy {
 
     // Set up the page data.
     this.setupPageData(this.router.routerState.root.snapshot);
+    this.sessionStorageService.setItem(AllWorkHomeComponent.CLAIM_URL_RETURN_KEY, window.location.pathname);
   }
 
   public ngOnDestroy(): void {

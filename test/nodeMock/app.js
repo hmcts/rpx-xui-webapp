@@ -42,6 +42,10 @@ class MockApp{
         this.logMessageCallback = null;
 
         this.mockDataServices = []
+
+        for (const mockDataService of requestMapping.mockServiceResetCallbacks) {
+            mockDataService();
+        }
         console.log("Mock Config Initialized");
         return "done";
     }
@@ -155,7 +159,7 @@ class MockApp{
     }
 
     async startServer(){
-        
+       
         const app = express();
         app.disable('etag');
         app.use(bodyParser.urlencoded({ extended: false }));
@@ -197,7 +201,7 @@ class MockApp{
 
         await this.stopServer();
         this.server = await app.listen(this.serverPort);
-
+       
       
         
         console.log("mock server started on port : " + this.serverPort);

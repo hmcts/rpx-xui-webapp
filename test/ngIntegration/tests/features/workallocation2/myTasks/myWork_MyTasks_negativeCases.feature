@@ -7,7 +7,7 @@ Feature: WA Release 2: My work - My Tasks - negative scenarios
   
     Scenario Outline:  My Tasks error with response code <ResponseCode>
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer" with reference "userDetails"
-        Given I set MOCK api method "post" endpoint "/workallocation2/taskWithPagination/" with error response code <ResponseCode>
+        Given I set MOCK api method "post" endpoint "/workallocation2/task/" with error response code <ResponseCode>
         Given I start MockApp
         Given I navigate to home page
 

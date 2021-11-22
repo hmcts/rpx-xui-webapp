@@ -1,9 +1,10 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, Jurisdiction, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
+import { JurisdictionsService } from '../../../work-allocation-2/services/juridictions.service';
 import { AppConstants } from '../../../app/app.constants';
 import { SessionStorageService } from '../../../app/services';
 import { Actions } from '../../../role-access/models';
@@ -32,6 +33,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
   public isPaginationEnabled$: Observable<boolean>;
   public backUrl: string = null;
   private pCases: Case[];
+  protected jurisdictions: Jurisdiction[];
   /**
    * Mock CaseServiceConfig.
    */
@@ -57,7 +59,8 @@ export class WorkCaseListWrapperComponent implements OnInit {
     protected readonly loadingService: LoadingService,
     protected readonly locationService: LocationDataService,
     protected readonly featureToggleService: FeatureToggleService,
-    protected readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService
+    protected readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService,
+    protected readonly jurisdictionsService: JurisdictionsService
   ) {
     this.isPaginationEnabled$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.waMvpPaginationFeature);
   }
@@ -121,6 +124,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    this.jurisdictionsService.getJurisdictions().subscribe(jur => this.jurisdictions = jur);
     this.setupCaseWorkers();
     this.loadCases();
   }
@@ -268,7 +272,12 @@ export class WorkCaseListWrapperComponent implements OnInit {
       this.loadingService.unregister(loadingToken);
       this.cases = result.cases;
       this.casesTotal = result.total_records;
-      this.cases.forEach(item => item.assigneeName = getAssigneeName(this.caseworkers, item.assignee));
+      this.cases.forEach(item => {
+        item.assigneeName = getAssigneeName(this.caseworkers, item.assignee);
+        if (this.jurisdictions && this.jurisdictions.find(jur => jur.id === item.jurisdiction)) {
+          item.jurisdiction = this.jurisdictions.find(jur => jur.id === item.jurisdiction).name;
+        }
+      });
       this.ref.detectChanges();
     }, error => {
       this.loadingService.unregister(loadingToken);

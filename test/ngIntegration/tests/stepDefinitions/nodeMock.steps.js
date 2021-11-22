@@ -13,11 +13,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Given('I navigate to home page', async function () {
         await BrowserWaits.retryWithActionCallback(async () => {
-            await browserUtil.gotoHomePage();
-            await BrowserWaits.retryWithActionCallback(async () => {
-                await headerpage.waitForPrimaryNavDisplay();
-                await browserUtil.waitForLD();
-            });
+            const isAppLoaded = await headerpage.amOnPage();
+            if (global.scenarioData['canSecenarioRunwiThExistingSession'] && isAppLoaded ){
+                await headerpage.manageCases.click();
+           } else{
+                await browserUtil.gotoHomePage();
+           }
             
         });  
     });
@@ -35,6 +36,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Given('I start MockApp', async function () {
+        try{
+            await MockApp.stopServer();
+        }
+        catch(err){}
        await MockApp.startServer();
     });
 

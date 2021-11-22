@@ -1,5 +1,5 @@
 # https://tools.hmcts.net/jira/browse/EUI-3886
-@ng 
+@ng  
 Feature: WA Release 2: My work to  My cases to pagination sorting
 
     Background: Mock and browser setup

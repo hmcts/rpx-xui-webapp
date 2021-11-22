@@ -102,16 +102,17 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             const searchParamObj = await ArrayUtil.filter(reqSearchParams, async (searchObj) => searchObj.key === searchHash.key);
            
             softAssert.setScenario(`Search param with key ${searchHash.key} is present`);
-            if (searchHash.keyIsPresent){
-                await softAssert.assert(async () => expect(searchParamObj.length > 0).to.equal(searchHash.keyIsPresent.toLowerCase() ==="true"));
-            }else{  
+            if (searchHash.value !== ''){
                 await softAssert.assert(async () => expect(searchParamObj.length > 0).to.be.true);
             }
              
             if (searchParamObj.length > 0) {
                 if (searchHash.value && searchHash.value !== ""){
                     softAssert.setScenario(`Search param with key ${searchHash.key} and values ${searchHash.value} is present`);
-                    await softAssert.assert(async () => expect(searchParamObj[0].values).to.includes(searchHash.value));
+                    if (searchHash.value !== ''){
+                        await softAssert.assert(async () => expect(searchParamObj[0].values).to.includes(searchHash.value));
+                    }
+                    
                 }
 
                 if (searchHash.size) {

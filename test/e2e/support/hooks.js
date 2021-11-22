@@ -94,9 +94,17 @@ const BrowserLogs = require('./browserLogs');
 
 
 defineSupportCode(({ Before,After }) => {
-    Before(function (scenario) {
+    Before(async function (scenario) {
         global.scenarioData = {};
         const world = this;
+        global.scenarioData['canSecenarioRunwiThExistingSession'] = scenario.pickle.name.startsWith("WITH_SESSION")
+        let url = await browser.getCurrentUrl();
+        if (!global.scenarioData['canSecenarioRunwiThExistingSession'] && url.startsWith('http')){
+            await browser.executeScript('window.sessionStorage.clear();');
+            await browser.executeScript('window.localStorage.clear();');
+            await browser.manage().deleteAllCookies();
+        }
+       
         CucumberReportLog.setScenarioWorld(this);
     });
 
@@ -111,7 +119,12 @@ defineSupportCode(({ Before,After }) => {
                 let browserErrorLogs = []
                 for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++) {
                     if (browserLog[browserLogCounter].level.value > 900) {
-                        browserLog[browserLogCounter]['time'] = (new Date(browserLog[browserLogCounter]['time'])).toISOString()
+                        try{
+                            browserLog[browserLogCounter]['time'] = (new Date(browserLog[browserLogCounter]['time'])).toISOString()
+                        }
+                        catch(err){
+                            browserLog[browserLogCounter]['timeConversionError']= err;
+                        }
                         browserErrorLogs.push(browserLog[browserLogCounter]);
                     }
                 }
@@ -129,9 +142,7 @@ defineSupportCode(({ Before,After }) => {
             CucumberReportLog.AddMessage("Error in hooks with browserlogs or screenshots. See error details : " + err);
         }     
         
-        await browser.executeScript('window.sessionStorage.clear();');
-        await browser.executeScript('window.localStorage.clear();');
-        await browser.manage().deleteAllCookies();
+       
 
     });
 });

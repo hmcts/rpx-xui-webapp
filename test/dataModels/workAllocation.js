@@ -62,7 +62,7 @@ class WorkAllocationModels {
             "startDate": "2021-02-16T18:58:48.987+0000",
             "endDate": "2021-02-16T18:58:48.987+0000",
             "jurisdiction":"Test jurisdiction",
-            "case_role":"Test case role"
+            "case_role":"Mock Test case role"
         };
     }
 
@@ -219,6 +219,30 @@ class WorkAllocationModels {
             roleName:'',
             roleType:''
         }
+    }
+
+    getValidRoles(){
+        const roles = [];
+        const leadJudge = this.getRole();
+        const hearingJudge = this.getRole();
+        const caseManager = this.getRole();
+
+        leadJudge.roleId = 'lead-judge';
+        leadJudge.roleName = 'Lead judge';
+        leadJudge.roleCategory = 'JUDICIAL';
+
+        hearingJudge.roleId = 'hearing-judge';
+        hearingJudge.roleName = 'Hearing judge';
+        hearingJudge.roleCategory = 'JUDICIAL';
+
+        caseManager.roleId = 'case-manager';
+        caseManager.roleName = 'Case manager';
+        caseManager.roleCategory = 'LEGAL_OPERATIONS';
+
+        roles.push(leadJudge);
+        roles.push(hearingJudge);
+        roles.push(caseManager);
+        return roles;
     }
 }
 

@@ -43,6 +43,7 @@ import {
   getCaseTypesFromRoleAssignments,
   getRoleAssignmentsByQuery,
   getSubstantiveRoles,
+  getTypesOfWorkByUserId,
   mapCasesFromData,
   mapCaseworkerData,
   prepareCaseWorkerForLocation,
@@ -94,11 +95,16 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
 /**
  * getTask
  */
-export async function getTaskRoles(req: EnhancedRequest, res: Response, next: NextFunction) {
-
+export async function getTypesOfWork(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
+    const path: string = `${baseWorkAllocationTaskUrl}/work-types?filter-by-user=false`;
+    const response = await getTypesOfWorkByUserId(path, req);
+    let typesOfWork = [];
+    if (response.work_types) {
+      typesOfWork = response.work_types.map(work => ({key: work.id, label: work.label}));
+    }
     res.status(200);
-    res.send(TASK_ROLES);
+    res.send(typesOfWork);
   } catch (error) {
     next(error);
   }

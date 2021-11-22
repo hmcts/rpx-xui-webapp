@@ -95,10 +95,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 }
             }
         }
-        const caseRoles = workAlloctionMockData.getCaseRoles(dateTableHashes);
-        MockApp.onPost('/api/role-access/roles/post', (req, res) => {
-            res.send(caseRoles);
-        });
+        workAlloctionMockData.caseRoles = workAlloctionMockData.getCaseRoles(dateTableHashes);
+        
     }); 
 
     Given('I set MOCK case role exclusions', async function (caseRoleExclusionsDatatable) {
@@ -112,10 +110,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 }
             }
         }
-        const caseRoleExclusions = workAlloctionMockData.getCaseExclusions(dateTableHashes);
-        MockApp.onPost('/api/role-access/exclusions/post', (req, res) => {
-            res.send(caseRoleExclusions);
-        });
+        workAlloctionMockData.exclusions= workAlloctionMockData.getCaseExclusions(dateTableHashes);
     });
 
     Given('I set MOCK case tasks with userDetails from reference {string}', async function (userDetailsRef, caseTasksDatatable) {

@@ -11,6 +11,7 @@ import { bookingRouting } from './booking.routes';
 import { BookingNavigationComponent } from './components/booking-navigation/booking-navigation.component';
 import * as fromContainers from './containers';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
 @NgModule({
   imports: [
@@ -18,8 +19,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule,
     CommonModule,
     HttpClientModule,
-    SharedModule,
-    bookingRouting
+    bookingRouting,
+    ExuiCommonLibModule,
+    SharedModule
   ],
   declarations: [
     ...fromComponents.components,

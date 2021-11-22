@@ -140,16 +140,16 @@ export class SearchFormComponent implements OnInit, OnDestroy {
       /* tslint:disable:triple-equals */
       const caseReferences = searchParameters.caseReferences;
       if (caseReferences != null) {
-        this.formGroup.get(SearchFormControl.CASE_REF).setValue(caseReferences[0] != null ? caseReferences[0] : '');
+        this.formGroup.get(SearchFormControl.CASE_REF).setValue(caseReferences[0] || '');
       }
       const otherReferences = searchParameters.otherReferences;
       if (otherReferences != null) {
-        this.formGroup.get(SearchFormControl.OTHER_REF).setValue(otherReferences[0] != null ? otherReferences[0] : '');
+        this.formGroup.get(SearchFormControl.OTHER_REF).setValue(otherReferences[0] || '');
       }
-      this.formGroup.get(SearchFormControl.FULL_NAME).setValue(searchParameters.fullName != null ? searchParameters.fullName : '');
-      this.formGroup.get(SearchFormControl.ADDRESS_LINE_1).setValue(searchParameters.address != null ? searchParameters.address : '');
-      this.formGroup.get(SearchFormControl.POSTCODE).setValue(searchParameters.postcode != null ? searchParameters.postcode : '');
-      this.formGroup.get(SearchFormControl.EMAIL).setValue(searchParameters.emailAddress != null ? searchParameters.emailAddress : '');
+      this.formGroup.get(SearchFormControl.FULL_NAME).setValue(searchParameters.fullName || '');
+      this.formGroup.get(SearchFormControl.ADDRESS_LINE_1).setValue(searchParameters.address || '');
+      this.formGroup.get(SearchFormControl.POSTCODE).setValue(searchParameters.postcode || '');
+      this.formGroup.get(SearchFormControl.EMAIL).setValue(searchParameters.emailAddress || '');
       const dateOfBirth = searchParameters.dateOfBirth;
       if (dateOfBirth != null) {
         // Date is stored in format yyyy-mm-dd

@@ -16,6 +16,8 @@ import { SortField } from '../../models/common';
 import { Location, PaginationParameter, SearchCaseRequest, SortParameter } from '../../models/dtos';
 import { CaseworkerDataService, InfoMessageCommService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationCaseService } from '../../services';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
+import { AllocateRoleService } from '../../../role-access/services';
+import { Role } from '../../../role-access/models';
 
 @Component({
   templateUrl: 'work-case-list-wrapper.component.html',
@@ -34,6 +36,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
   public backUrl: string = null;
   private pCases: Case[];
   protected jurisdictions: Jurisdiction[];
+  protected allRoles: Role[];
   /**
    * Mock CaseServiceConfig.
    */
@@ -60,7 +63,8 @@ export class WorkCaseListWrapperComponent implements OnInit {
     protected readonly locationService: LocationDataService,
     protected readonly featureToggleService: FeatureToggleService,
     protected readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService,
-    protected readonly jurisdictionsService: JurisdictionsService
+    protected readonly jurisdictionsService: JurisdictionsService,
+    protected readonly rolesService: AllocateRoleService
   ) {
     this.isPaginationEnabled$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.waMvpPaginationFeature);
   }
@@ -124,6 +128,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    this.rolesService.getValidRoles().subscribe(allRoles => this.allRoles = allRoles);
     this.jurisdictionsService.getJurisdictions().subscribe(jur => this.jurisdictions = jur);
     this.setupCaseWorkers();
     this.loadCases();
@@ -276,6 +281,9 @@ export class WorkCaseListWrapperComponent implements OnInit {
         item.assigneeName = getAssigneeName(this.caseworkers, item.assignee);
         if (this.jurisdictions && this.jurisdictions.find(jur => jur.id === item.jurisdiction)) {
           item.jurisdiction = this.jurisdictions.find(jur => jur.id === item.jurisdiction).name;
+        }
+        if (this.allRoles && this.allRoles.find(role => role.roleId === item.case_role)) {
+          item.case_role = this.allRoles.find(role => role.roleId === item.case_role).roleName;
         }
       });
       this.ref.detectChanges();

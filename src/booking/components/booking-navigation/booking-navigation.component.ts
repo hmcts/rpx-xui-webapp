@@ -8,7 +8,7 @@ import { BookingState } from '../../models/booking-state.enum';
   templateUrl: './booking-navigation.component.html',
   styleUrls: ['./booking-navigation.component.scss']
 })
-export class BookingNavigationComponent implements OnInit {
+export class BookingNavigationComponent {
 
   constructor() { }
 
@@ -25,9 +25,6 @@ export class BookingNavigationComponent implements OnInit {
   public checkBookingVisibilityStates = bookingCheckVisibilityStates;
 
   public backVisibilityStates = bookingBackButtonVisibilityStates;
-
-  public ngOnInit() {
-  }
 
   public isVisible(visibleNavigationStates: BookingState[]): boolean {
     return visibleNavigationStates.includes(this.currentNavigationState) && this.bookingOptionIndex > 0;

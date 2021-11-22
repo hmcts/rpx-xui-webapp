@@ -59,7 +59,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
   private subscription: Subscription;
   public userDetails$: Observable<UserDetails>;
-	public userDetails: UserDetails;
+  public userDetails: UserDetails;
   public defaultTheme: Theme = AppConstants.DEFAULT_USER_THEME;
 
   constructor(
@@ -149,9 +149,9 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
     const applicationThemes$ = this.featureToggleService.getValue<Theme[]>(LD_FLAG_MC_APPLICATION_THEMES, this.getDefaultApplicationThemes());
     combineLatest([this.userDetails$, applicationThemes$]).subscribe(([userDetails, applicationThemes]) => {
-			this.userDetails = userDetails;
-        this.setHeaderContent(userDetails, applicationThemes);
-      });
+      this.userDetails = userDetails;
+      this.setHeaderContent(userDetails, applicationThemes);
+    });
 
     // Set up the active link whenever we detect that navigation has completed.
     this.router.events.subscribe(event => {
@@ -166,8 +166,8 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
       this.hideNavigationListener(this.store);
       this.setAppHeaderProperties(applicationTheme);
     } else {
-			this.setAppHeaderProperties(this.defaultTheme);
-		}
+      this.setAppHeaderProperties(this.defaultTheme);
+    }
   }
 
   public setNavigationEnd(event) {

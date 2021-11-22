@@ -58,7 +58,7 @@ export class HmctsGlobalHeaderComponent implements OnChanges, OnDestroy {
   ) { }
 
   public ngOnChanges(changes: SimpleChanges): void {
-	  this.splitAndFilterNavItems(this.items);
+    this.splitAndFilterNavItems(this.items);
   }
 
   public onEmitEvent(index: number): void {

@@ -1,4 +1,4 @@
-import * as fromActions from '../actions/hearings.action';
+import * as fromActions from '../actions/hearing-details.action';
 import * as fromReducer from './hearings-details.reducer';
 
 describe('Hearings Details Reducer', () => {
@@ -8,7 +8,7 @@ describe('Hearings Details Reducer', () => {
     describe('Reset action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.initialState;
-        const action = new fromActions.Reset();
+        const action = new fromActions.HearingDetails();
         const hearingsState = fromReducer.hearingsDetailsReducer(initialState, action);
         expect(hearingsState).toEqual(initialState);
       });

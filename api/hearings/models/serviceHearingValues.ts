@@ -14,44 +14,40 @@
   hearingPriorityType: '',
   numberOfPhysicalAttendees: 2,
   hearingInWelshFlag: false,
-  hearingLocations: [{}],
-  facilitiesRequired: [{}],
+  hearingLocations: [],
+  facilitiesRequired: [],
   listingComments: '',
   hearingRequester: '',
   privateHearingRequiredFlag: false,
   leadJudgeContractType: '',
   judiciary: {
-  roleType: [''],
+    roleType: [''],
     authorisationTypes: [''],
     authorisationSubType: [''],
-  panelComposition: {
-    [
+    panelComposition: [
+    {
       memberType: 'string',
       count: number,
-  ],
-  }
-  judiciaryPreferences: [
-    {
-      memberID: '',
-      memberType: '',
-      requirementType: '',
     },
-}
-],
-  judiciarySpecialisms: [
-  '',
-]
-},
-hearingIsLinkedFlag: false,
-parties:
+    ],
+    judiciaryPreferences: [
+      {
+        memberID: '',
+        memberType: '',
+        requirementType: '',
+      },
+    ],
+  judiciarySpecialisms: [''],
+  hearingIsLinkedFlag: false,
+  parties:
   [
   {
     partyName: 'string',
     partyChannel: 'string',
     unavailability: [
       {
-        start: 'string', // date
-        end: 'string' // date
+        start: 'string',
+        end: 'string'
       }
     }
 ],
@@ -59,22 +55,22 @@ caseFlags: {
   flags:
     [
       {
-        partyName: string,
-        flagId: string,
-        flagDescription: string,
-        flagStatus: string,
+        partyName: 'string',
+        flagId: 'string',
+        flagDescription: 'string',
+        flagStatus: 'string',
       }
     ],
-      flagAmendURL: string,
+      flagAmendURL: 'string',
 }
 }
 screenFlow:
 [
   {
-    screenName: string,
+    screenName: 'string',
     navigation: [
       {
-        resultValue1: "string",
+        resultValue1: 'string',
       }
     ]
   }
@@ -82,7 +78,7 @@ screenFlow:
 vocabulary:
   [
     {
-      word1: "string",
+      word1: 'string',
     }
   ]
 }

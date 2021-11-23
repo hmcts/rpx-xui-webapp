@@ -131,28 +131,16 @@ describe('Work allocations MVP', () => {
             'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
             'content-length': JSON.stringify(assignTaskReqBody).length
         };
-        if (tasksRes.data.tasks.length > 1) {
-            const assignTaskRes = await Request.post(`workallocation/task/${tasksRes.data.tasks[0].id}/claim`, assignTaskReqBody, assignTasksHeader, 204);
+
+        let i = 1;
+        while (tasksRes.data.tasks.length > i && i < 5){
+           
+            const assignTaskRes = await Request.post(`workallocation/task/${tasksRes.data.tasks[i - 1].id}/claim`, assignTaskReqBody, assignTasksHeader, 204);
             expect(assignTaskRes.status).to.equal(204);
-
-            assignTasksHeader = {
-                'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
-                'content-length': JSON.stringify(assignTaskReqBody).length
-            };
-            if (tasksRes.data.tasks.length > 1) {
-                const assignTaskRes = await Request.post(`workallocation/task/${tasksRes.data.tasks[0].id}/claim`, assignTaskReqBody, assignTasksHeader, 204);
-                expect(assignTaskRes.status).to.equal(204);
-
-                assignTasksHeader = {
-                    'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
-                    'content-length': JSON.stringify(assignTaskReqBody).length
-                };
-                const assignTaskRes2 = await Request.post(`workallocation/task/${tasksRes.data.tasks[1].id}/claim`, assignTaskReqBody, assignTasksHeader, 204);
-                expect(assignTaskRes2.status).to.equal(204);
-
-            }
-
         }
+
+
+        
     });
 
 
@@ -238,8 +226,9 @@ describe('Work allocations MVP', () => {
         for (const loc of locationsResponse.data) {
             locations.push(loc.id);
         }
-
-            const reqBody = getSearchTaskReqBody("TaskManager", [],[]).getRequestBody();
+        const userDetailsRes = await Request.get('api/user/details', { 'X-XSRF-TOKEN': xsrfToken }, 200);
+        const sessionUserIdamId = userDetailsRes.data.userInfo.id ? userDetailsRes.data.userInfo.id : userDetailsRes.data.userInfo.uid;
+        const reqBody = getSearchTaskReqBody("TaskManager", [sessionUserIdamId],[]).getRequestBody();
             const headersForGetTasks = {
                 'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
                 'content-length': JSON.stringify(reqBody).length
@@ -279,8 +268,10 @@ describe('Work allocations MVP', () => {
             const headers = {
                 'X-XSRF-TOKEN': xsrfToken,
             };
+            const userDetailsRes = await Request.get('api/user/details', { 'X-XSRF-TOKEN': xsrfToken }, 200);
+            const sessionUserIdamId = userDetailsRes.data.userInfo.id ? userDetailsRes.data.userInfo.id : userDetailsRes.data.userInfo.uid;
 
-            const reqBody = getSearchTaskReqBody("TaskManager", [],[]).getRequestBody();
+            const reqBody = getSearchTaskReqBody("TaskManager", [sessionUserIdamId],[]).getRequestBody();
             const headersForGetTasks = {
                 'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
                 'content-length': JSON.stringify(reqBody).length

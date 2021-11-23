@@ -7,19 +7,20 @@ import {map} from 'rxjs/operators';
 import {UserRole} from '../../../app/models/user-details.model';
 import {RoleCategoryMappingService} from '../../../app/services/role-category-mapping/role-category-mapping.service';
 import * as fromAppStore from '../../../app/store';
-import {CaseHearingModel} from '../../../hearings/models/caseHearing.model';
-import {CaseHearingViewModel} from '../../../hearings/models/caseHearingView.model';
+import {HearingListModel} from '../../../hearings/models/hearingList.model';
+import {HearingListViewModel} from '../../../hearings/models/hearingListView.model';
 import {Actions, EXUISectionStatusEnum} from '../../../hearings/models/hearings.enum';
 import * as fromHearingStore from '../../../hearings/store';
 
 @Component({
   selector: 'exui-case-hearings',
-  templateUrl: './case-hearings.component.html'
+  templateUrl: './case-hearings.component.html',
+  styleUrls: ['./case-hearings.component.scss']
 })
 export class CaseHearingsComponent implements OnInit {
-  public upcomingHearings$: Observable<CaseHearingViewModel[]>;
+  public upcomingHearings$: Observable<HearingListViewModel[]>;
   public upcomingStatus: EXUISectionStatusEnum = EXUISectionStatusEnum.UPCOMING;
-  public pastAndCancelledHearings$: Observable<CaseHearingViewModel[]>;
+  public pastAndCancelledHearings$: Observable<HearingListViewModel[]>;
   public pastAndCancelledStatus: EXUISectionStatusEnum = EXUISectionStatusEnum.PAST_AND_CANCELLED;
   public hearingsActions: Actions[] = [Actions.READ];
   public userRoles: Observable<string[]>;
@@ -51,14 +52,14 @@ export class CaseHearingsComponent implements OnInit {
     }
   }
 
-  public getHearingListByStatus(status: string): Observable<CaseHearingViewModel[]> {
-    return this.hearingStore.pipe(select(fromHearingStore.getHearingsList)).pipe(
-      map(hearingsStateData => {
-          if (hearingsStateData && hearingsStateData.caseHearingsMainModel && hearingsStateData.caseHearingsMainModel.caseHearings) {
-            const caseHearingModels: CaseHearingModel[] = hearingsStateData.caseHearingsMainModel.caseHearings.filter(hearing =>
+  public getHearingListByStatus(status: string): Observable<HearingListViewModel[]> {
+    return this.hearingStore.pipe(select(fromHearingStore.getHearingList)).pipe(
+      map(hearingListStateData => {
+          if (hearingListStateData && hearingListStateData.hearingListMainModel && hearingListStateData.hearingListMainModel.caseHearings) {
+            const caseHearingModels: HearingListModel[] = hearingListStateData.hearingListMainModel.caseHearings.filter(hearing =>
               hearing.exuiSectionStatus === status
             );
-            const caseHearingViewModels: CaseHearingViewModel[] = this.calculateEarliestHearingDate(caseHearingModels);
+            const caseHearingViewModels: HearingListViewModel[] = this.calculateEarliestHearingDate(caseHearingModels);
             return this.sortHearingsByHearingAndRequestDate(caseHearingViewModels);
           } else {
             return [];
@@ -68,10 +69,10 @@ export class CaseHearingsComponent implements OnInit {
     );
   }
 
-  public calculateEarliestHearingDate(hearings: CaseHearingModel[]): CaseHearingViewModel[] {
-    const viewModels: CaseHearingViewModel[] = [];
+  public calculateEarliestHearingDate(hearings: HearingListModel[]): HearingListViewModel[] {
+    const viewModels: HearingListViewModel[] = [];
     hearings.forEach((hearing) => {
-      const viewModel = {} as CaseHearingViewModel;
+      const viewModel = {} as HearingListViewModel;
       Object.keys(hearing).forEach(key => viewModel[key] = hearing[key]);
       if (hearing.hearingDaySchedule && hearing.hearingDaySchedule.length) {
         const moments = hearing.hearingDaySchedule.map(d => moment(d.hearingStartDateTime));
@@ -84,7 +85,7 @@ export class CaseHearingsComponent implements OnInit {
     return viewModels;
   }
 
-  public sortHearingsByHearingAndRequestDate(arrayToBeSorted: CaseHearingViewModel[]): CaseHearingViewModel[] {
+  public sortHearingsByHearingAndRequestDate(arrayToBeSorted: HearingListViewModel[]): HearingListViewModel[] {
     return arrayToBeSorted.sort((a, b) => {
         if (a.earliestHearingStartDateTime === b.earliestHearingStartDateTime) {
           return new Date(a.hearingRequestDateTime) > new Date(b.hearingRequestDateTime) ? -1 : 1;

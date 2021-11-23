@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
-import {CaseHearingViewModel} from '../../../hearings/models/caseHearingView.model';
+import {HearingListViewModel} from '../../../hearings/models/hearingListView.model';
 import {Actions, EXUISectionStatusEnum} from '../../../hearings/models/hearings.enum';
 
 @Component({
@@ -14,7 +14,7 @@ export class CaseHearingsListComponent implements OnInit {
   public status: EXUISectionStatusEnum;
 
   @Input()
-  public hearingsList$: Observable<CaseHearingViewModel[]>;
+  public hearingList$: Observable<HearingListViewModel[]>;
 
   @Input()
   public actions: Actions[];

@@ -1,5 +1,7 @@
-import { HearingsEffects } from './hearings.effects';
+import { HearingListEffects } from './hearing-list.effects';
+import {HearingRequestEffects} from './hearing-request.effects';
 
-export const effects: any[] = [HearingsEffects];
+export const effects: any[] = [HearingListEffects, HearingRequestEffects];
 
-export * from './hearings.effects';
+export * from './hearing-list.effects';
+export * from './hearing-request.effects';

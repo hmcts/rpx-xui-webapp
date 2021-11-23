@@ -13260,5 +13260,5 @@ export const ALL_COURT_LOCATIONS: LocationModel[] = [
     "open_for_public": "Yes",
     "court_address": "CLIFFORD STREET, THE LAW COURTS",
     "postcode": "YO1 9RE"
-  }
+  },
 ];

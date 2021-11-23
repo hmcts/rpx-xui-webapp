@@ -2,18 +2,18 @@
   <thead class="govuk-table__head">
   <tr class="govuk-table__row">
     <th class="govuk-table__header govuk-body-lead">{{ status }}</th>
-    <th *ngIf="(hearingsList$ | async)?.length" class="govuk-table__header">Hearing date</th>
-    <th *ngIf="(hearingsList$ | async)?.length" class="govuk-table__header">Status</th>
-    <th *ngIf="(hearingsList$ | async)?.length" class="govuk-table__header">Actions</th>
+    <th *ngIf="(hearingList$ | async)?.length" class="govuk-table__header">Hearing date</th>
+    <th *ngIf="(hearingList$ | async)?.length" class="govuk-table__header">Status</th>
+    <th *ngIf="(hearingList$ | async)?.length" class="govuk-table__header">Actions</th>
   </tr>
   </thead>
   <tbody class="govuk-table__body">
-  <tr *ngIf="!(hearingsList$ | async)?.length" class="govuk-table__row">
+  <tr *ngIf="!(hearingList$ | async)?.length" class="govuk-table__row">
     <td colspan="4">
       No {{ status.toLowerCase() }} hearings found
     </td>
   </tr>
-  <tr class="govuk-table__row" *ngFor="let hearing of hearingsList$ | async">
+  <tr class="govuk-table__row" *ngFor="let hearing of hearingList$ | async">
     <td class="govuk-table__header govuk-!-width-one-quarter gds-font">{{ hearing.hearingType}}</td>
     <td
       class="govuk-table__cell govuk-!-width-one-quarter gds-font">

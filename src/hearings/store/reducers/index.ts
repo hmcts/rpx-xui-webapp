@@ -1,21 +1,27 @@
 import { ActionReducerMap, createFeatureSelector } from '@ngrx/store';
 import { HearingDetailsModel } from 'src/hearings/models/hearingDetails.model';
-import { HearingsStateData } from '../../models/hearingsStateData.model';
-import * as fromHearingsDetails from './hearings-details.reducer';
-import * as fromHearings from './hearings.reducer';
+import { HearingListStateData } from '../../models/hearingListStateData.model';
+import { HearingRequestStateData } from '../../models/hearingRequestStateData.model';
+import * as fromHearingList from './hearing-list.reducer';
+import * as fromHearingRequest from './hearing-request.reducer';
+import * as fromHearingDetails from './hearings-details.reducer';
 
 export interface State {
-  hearingsList: HearingsStateData;
+  hearingList: HearingListStateData;
+  hearingRequest: HearingRequestStateData;
   hearingDetails: HearingDetailsModel;
 }
 
 export const reducers: ActionReducerMap<State> = {
-  hearingsList: fromHearings.hearingsReducer,
-  hearingDetails: fromHearingsDetails.hearingsDetailsReducer
+  hearingList: fromHearingList.hearingListReducer,
+  hearingRequest: fromHearingRequest.hearingRequestReducer,
+  hearingDetails: fromHearingDetails.hearingsDetailsReducer
 };
 
 export const getHearingsFeatureState = createFeatureSelector<State>(
   'hearings'
 );
 
-export * from './hearings.reducer';
+export * from './hearing-list.reducer';
+export * from './hearing-request.reducer';
+export * from './hearings-details.reducer';

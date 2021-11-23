@@ -24,7 +24,7 @@ import { effects, reducers } from './store';
     SharedModule,
     FormsModule,
     ReactiveFormsModule,
-    ExuiCommonLibModule
+    ExuiCommonLibModule,
   ],
   declarations: [...fromContainers.containers],
   entryComponents: [],
@@ -33,7 +33,7 @@ import { effects, reducers } from './store';
       provide: AbstractAppConfig,
       useExisting: AppConfig,
     },
-    HearingsService
+    HearingsService,
   ]
 })
 /**

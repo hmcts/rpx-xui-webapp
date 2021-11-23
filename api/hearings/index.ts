@@ -62,3 +62,30 @@ export async function getRefData(req: EnhancedRequest, res: Response, next: Next
     next(error);
   }
 }
+
+/**
+ * getRefData - get details required to populate the hearing request/amend journey
+ */
+export async function getServiceHearingValues(req: EnhancedRequest, res: Response, next: NextFunction) {
+  // @ts-ignore
+  const reqBody = req.body;
+  const markupPath: string = `${hearingsUrl}/serviceHearingValues`;
+  try {
+    const {status, data}: { status: number, data: RefDataByCategoryModel[] } = await handleGet(markupPath, req);
+    const refDataByCategory: RefDataByCategoryModel = data.find(refDataByCategoryModel =>
+      refDataByCategoryModel.categoryKey === category);
+    if (refDataByCategory && refDataByCategory.services) {
+      const refDataByService: RefDataByServiceModel = refDataByCategory.services.find(aService =>
+        aService.serviceID === service);
+      if (refDataByService && refDataByService.values) {
+        res.status(status).send(refDataByService.values);
+      } else {
+        res.status(status).send([]);
+      }
+    } else {
+      res.status(status).send([]);
+    }
+  } catch (error) {
+    next(error);
+  }
+}

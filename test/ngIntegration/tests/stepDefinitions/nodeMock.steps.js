@@ -20,7 +20,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Given('I navigate page route {string}', async function (routeUrl) {
-        await browser.get(routeUrl);
         await BrowserWaits.retryWithActionCallback(async () => {
             await browser.get(routeUrl);
             await headerpage.waitForPrimaryNavDisplay();
@@ -59,6 +58,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const userDetails = nodeAppMockData.getUserDetailsWithRoles(roles);
         CucumberReporter.AddJson(userDetails)
         MockApp.onGet('/api/user/details', (req,res) => {
+            CucumberReporter.AddJson(userDetails)
             res.send(userDetails);
         });
      });

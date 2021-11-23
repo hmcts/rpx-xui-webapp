@@ -43,10 +43,11 @@ describe('DatePriorityHearingComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                priorities: PRIORITIES
+                hearingPriorities: {
+                  priorities: PRIORITIES
+                }
               }
             },
-            params: Observable.of({ priorities: PRIORITIES })
           }
         },
       ]

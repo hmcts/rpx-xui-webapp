@@ -12,9 +12,9 @@ export const initialState: HearingDetailsModel = {
   hearingPriorityType: ''
 };
 
-export function hearingsDetailsReducer(currentState = initialState, action: fromActions.HearingsAction): HearingDetailsModel {
+export function hearingsDetailsReducer(currentState = initialState, action: fromActions.HearingDetails): HearingDetailsModel {
   switch (action.type) {
-    case fromActions.RESET: {
+    case fromActions.HEARING_DETAILS: {
       return {
         ...currentState,
         ...initialState

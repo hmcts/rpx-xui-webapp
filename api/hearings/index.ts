@@ -4,7 +4,7 @@ import {getConfigValue} from '../configuration';
 import {SERVICES_HEARINGS_COMPONENT_API, SERVICES_PRD_API_URL} from '../configuration/references';
 import * as mock from '../hearings/hearing.mock';
 import {EnhancedRequest} from '../lib/models';
-import {CaseHearingsMainModel} from './models/caseHearingsMain.model';
+import {HearingListMainModel} from './models/hearingListMain.model';
 import {hearingStatusMappings} from './models/hearingStatusMappings';
 import {RefDataByCategoryModel, RefDataByServiceModel} from "./models/refData.model";
 
@@ -22,7 +22,7 @@ export async function getHearings(req: EnhancedRequest, res: Response, next: Nex
   const markupPath: string = `${hearingsUrl}/hearings/${caseId}`;
 
   try {
-    const {status, data}: { status: number, data: CaseHearingsMainModel } = await handleGet(markupPath, req);
+    const {status, data}: { status: number, data: HearingListMainModel } = await handleGet(markupPath, req);
     data.caseHearings.forEach(hearing =>
       hearingStatusMappings.filter(mapping => mapping.hmcStatus === hearing.hmcStatus).map(hearingStatusMapping => {
         hearing.exuiSectionStatus = hearingStatusMapping.exuiSectionStatus;

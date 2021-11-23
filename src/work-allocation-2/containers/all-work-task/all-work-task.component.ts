@@ -1,6 +1,6 @@
 import { Component, } from '@angular/core';
 import { Person } from '@hmcts/rpx-xui-common-lib';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
@@ -31,6 +31,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   private selectedPriority: string = 'All';
   public locations$: Observable<Location[]>;
   public locations: Location[];
+  public waSupportedJurisdictions$: Observable<string[]>;
 
   public sortedBy: SortField = {
     fieldName: '',
@@ -63,7 +64,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
 
   public loadCaseWorkersAndLocations(): void {
     this.locations$ = this.locationService.getLocations();
-    this.locations$.subscribe(locations => this.locations = locations);
+    this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
   }
 
   public getSearchTaskRequestPagination(): SearchTaskRequest {
@@ -71,15 +72,21 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
+      const searchParameters = [
+        {key: 'jurisdiction', operator: 'IN', values: [this.selectedJurisdiction]},
+        // {key: 'taskType', operator: 'IN', values: [this.selectedTaskType]},
+        // {key: 'priority', operator: 'IN', values: [this.selectedPriority]},
+      ];
+      const personParameter = this.getPersonParameter();
+      const locationParameter = this.getLocationParameter();
+      if (personParameter) {
+        searchParameters.push(personParameter);
+      };
+      if (locationParameter) {
+        searchParameters.push(locationParameter);
+      }
       return {
-        search_parameters: [
-          {key: 'jurisdiction', operator: 'EQUAL', values: [this.selectedJurisdiction]},
-          this.getLocationParameter(),
-          {key: 'taskCategory', operator: 'EQUAL', values: [this.selectedTaskCategory]},
-          this.getPersonParameter(),
-          {key: 'taskType', operator: 'EQUAL', values: [this.selectedTaskType]},
-          {key: 'priority', operator: 'EQUAL', values: [this.selectedPriority]},
-        ],
+        search_parameters: searchParameters,
         sorting_parameters: [this.getSortParameter()],
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
         pagination_parameters: this.getPaginationParameter()
@@ -94,18 +101,18 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     } else {
       values = this.locations.map(loc => loc.id);
     }
-    return { key: 'location', operator: 'IN', values };
+    return values && values.length > 0 ? { key: 'location', operator: 'IN', values } : null;
   }
 
   private getPersonParameter() {
     if (this.selectedTaskCategory && this.selectedTaskCategory !== AllWorkTaskComponent.ALL_TASKS) {
       if (this.selectedTaskCategory === AllWorkTaskComponent.AVAILABLE_TASKS) {
-        return { key: 'person', operator: 'IN', values: ['unassigned'] }
+        return { key: 'user', operator: 'IN', values: ['unassigned'] }
       } else {
-        return { key: 'person', operator: 'IN', values: [this.selectedPerson]}
+        return { key: 'user', operator: 'IN', values: [this.selectedPerson]}
       }
     }
-    return { key: 'person', operator: 'IN', values: [] };
+    return null;
   }
 
   /**

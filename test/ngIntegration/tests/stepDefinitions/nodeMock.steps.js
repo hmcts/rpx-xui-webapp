@@ -21,8 +21,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Given('I navigate page route {string}', async function (routeUrl) {
         await browser.get(routeUrl);
-        await headerpage.waitForPrimaryNavDisplay();
-        await browserUtil.waitForLD();
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await headerpage.waitForPrimaryNavDisplay();
+            await browserUtil.waitForLD();
+        });        
     });
 
     Given('I init MockApp', async function () {
@@ -30,6 +32,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Given('I start MockApp', async function () {
+        try{
+            await MockApp.stopServer();
+        }
+        catch(err){}
        await MockApp.startServer();
     });
 
@@ -52,6 +58,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const userDetails = nodeAppMockData.getUserDetailsWithRoles(roles);
         CucumberReporter.AddJson(userDetails)
         MockApp.onGet('/api/user/details', (req,res) => {
+            CucumberReporter.AddJson(userDetails)
             res.send(userDetails);
         });
      });

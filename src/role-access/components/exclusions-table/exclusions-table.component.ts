@@ -10,6 +10,7 @@ import { RoleExclusion } from '../../models';
 export class ExclusionsTableComponent {
   @Input() public caseDetails: CaseView;
   @Input() public exclusions: RoleExclusion [];
+  @Input() public isCaseAllocator: boolean;
 
   public queryParams(exclusion: RoleExclusion): any {
     return {

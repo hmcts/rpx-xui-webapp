@@ -19,11 +19,13 @@ defineSupportCode(({ Before, After, BeforeAll }) => {
     BeforeAll(async function(){
         const scenarioServerPort = MockApp.serverPort;
 
+        CucumberReportLog.AddMessage("Loading App before All with navigate url");
         await browser.driver.get(config.config.baseUrl);
     });
 
     Before(async function (scenario) {
         const scenarioServerPort = MockApp.serverPort;
+        CucumberReportLog.AddMessage("Scenario executing with mock server on port " + scenarioServerPort);
         await browser.manage().addCookie({ name: 'scenarioMockPort', value: scenarioServerPort + "", domain: 'localhost:3000' });
         CucumberReportLog.setScenarioWorld(this);
 

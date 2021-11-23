@@ -79,7 +79,7 @@ export class TaskListComponent implements OnChanges {
       this.dataSource$ = new BehaviorSubject(this.tasks);
       this.setSelectedTask(this.selectTaskFromUrlHash(this.router.url));
       for (const task of this.tasks) {
-        if (task.actions && task.actions.length) {
+        if (task && task.actions && task.actions.length) {
           this.showManage[task.id] = task.actions.length > 0;
         }
       }

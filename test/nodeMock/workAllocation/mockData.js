@@ -5,7 +5,74 @@ const WorkAllocationDataModels = require("../../dataModels/workAllocation");
 class WorkAllocationMockData {
 
     constructor() {
+        this.init();  
+        
+    }
+
+    init(){
+        this.setDefaultData();
+    }
+
+    setDefaultData(){
         this.findPersonsAllAdata = [];
+        
+
+        this.exclusions = this.getCaseExclusions([
+            { added: '2021-10-12T12:14:42.230129Z', name: 'judeg a', userType: 'JUDICIAL', type: 'CASE', id: '12345678901' },
+            { added: '2021-10-12T12:14:42.230129Z', name: 'judeg b', userType: 'JUDICIAL', type: 'CASE', id: '12345678902' },
+            { added: '2021-10-12T12:14:42.230129Z', name: 'judeg c', userType: 'JUDICIAL', type: 'CASE', id: '12345678903' },
+            { added: '2021-10-12T12:14:42.230129Z', name: 'legal a', userType: 'LEGAL_OPERATIONS', type: 'CASE', id: '12345678904' }
+        ]);
+
+        this.caseRoles = this.getCaseRoles([
+            { added: '2021-10-12T12:14:42.230129Z', name: 'judeg a', userType: 'JUDICIAL', type: 'CASE', id: '12345678901', roleCategory: 'JUDICIAL', roleName: 'lead-judge' },
+            { added: '2021-10-12T12:14:42.230129Z', name: 'judeg b', userType: 'JUDICIAL', type: 'CASE', id: '12345678902', roleCategory: 'JUDICIAL', roleName: 'lead-judge' },
+            { added: '2021-10-12T12:14:42.230129Z', name: 'judeg c', userType: 'JUDICIAL', type: 'CASE', id: '12345678903', roleCategory: 'JUDICIAL', roleName: 'lead-judge' },
+            { added: '2021-10-12T12:14:42.230129Z', name: 'legal a', userType: 'LEGAL_OPERATIONS', type: 'CASE', id: '12345678904', roleCategory: 'LEGAL_OPERATIONS', roleName: 'case-manager' }
+        ]);
+
+        this.caseRoleForAssignment = this.caseRoles[0];
+
+        this.myWorkMyTasks = this.getMyWorkMyTasks(150);
+        this.myWorkAvailableTasks = this.getMyWorkAvailableTasks(200);
+        this.allWorkTasks = this.getAllWorkTasks(500);
+
+        this.myCases = this.getWACases(125);
+        this.allWorkCases = this.getWACases(125);
+
+    }
+
+   
+
+    setCaseRoleAssignment(caseRole){
+        this.caseRoleForAssignment  = this.getCaseRoles([caseRole]);
+    }
+
+
+    setCasesWithPermissionsForView(viewInTest,casePermissionHashes){
+        const cases = [];
+        let view = viewInTest.split(" ").join("");
+        view = view.toLowerCase();
+        for (let i = 0; i < casePermissionHashes.length; i++) {
+
+            let caseCount = casePermissionHashes[i]['Count'];
+            for (let j = 0; j < caseCount; j++) {
+                cases.push(this.getRelease2CaseWithPermission(casePermissionHashes[i]['Roles'].split(","), view));
+            }
+
+        }
+        const casesResponse = { cases: cases, total_records: cases.length };
+        switch (view) {
+            case 'mycases':
+                this.myCases = casesResponse;
+                break;
+
+            case 'allworkcases':
+                this.allWorkCases = casesResponse;
+                break;
+            default:
+                throw new Error(`Cases view not recognised in test step "${viewInTest}"`);
+        }
     }
 
     async getFindPersonsDataFrom(database) {
@@ -73,13 +140,13 @@ class WorkAllocationMockData {
         return tasks;
     }
 
-    getMyCases(count) {
-
-        let cases = { cases: [], total_records: count };
+    getWACases(count) {
+       let casesResponse =  { cases: [], total_records: count };
         for (let i = 0; i < count; i++) {
-            cases.cases.push(this.getRelease2CaseWithPermission(['case-allocator'], "MyCases", "assigned"));
+            casesResponse.cases.push(this.getRelease2CaseWithPermission(['case-allocator'], "MyCases", "assigned"));
         }
-        return cases;
+        casesResponse.total_records = casesResponse.cases.length;
+        return casesResponse;
 
     }
 
@@ -107,7 +174,7 @@ class WorkAllocationMockData {
         return { tasks: tasks, total_records: 150 };
     }
 
-    getPersonList(count) {
+    getPersonList(count,roleCategory) {
         const persons = [];
         for (let ctr = 0; ctr < count; ctr++) {
             persons.push({
@@ -115,6 +182,7 @@ class WorkAllocationMockData {
                 "lastName": "Doe",
                 "idamId": "41a90c39-d756-4eba-8e85-5b5bf56b31f" + ctr,
                 "email": "testemail" + ctr + "@testdomain.com",
+                "roleCategory": roleCategory ? roleCategory : "LEGAL_OPERATIONS",
                 "location": {
                     "id": "a",
                     "locationName": "Location A",
@@ -228,27 +296,8 @@ class WorkAllocationMockData {
     }
 
     getRoles() {
-        const roles = [];
-        const leadJudge = WorkAllocationDataModels.getRole();
-        const hearingJudge = WorkAllocationDataModels.getRole();
-        const caseManager = WorkAllocationDataModels.getRole();
-
-        leadJudge.roleId = 'lead-judge';
-        leadJudge.roleName = 'Lead judge';
-        leadJudge.roleCategory = 'JUDICIAL';
-
-        hearingJudge.roleId = 'hearing-judge';
-        hearingJudge.roleName = 'Hearing judge';
-        hearingJudge.roleCategory = 'JUDICIAL';
-
-        caseManager.roleId = 'case-manager';
-        caseManager.roleName = 'Case manager';
-        caseManager.roleCategory = 'LEGAL_OPERATIONS';
-
-        roles.push(leadJudge);
-        roles.push(hearingJudge);
-        roles.push(caseManager);
-        return roles;
+        
+        return WorkAllocationDataModels.getValidRoles();
 
     }
 
@@ -329,6 +378,8 @@ class WorkAllocationMockData {
         }
         return tasks;
     }
+
+
 
 
 }

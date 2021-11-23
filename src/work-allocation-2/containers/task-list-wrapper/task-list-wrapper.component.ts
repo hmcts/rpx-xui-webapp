@@ -14,7 +14,13 @@ import { Caseworker, Location } from '../../interfaces/common';
 import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter, SearchTaskRequest, SortParameter } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskServiceConfig } from '../../models/tasks';
-import { CaseworkerDataService, InfoMessageCommService, LocationDataService, WorkAllocationTaskService } from '../../services';
+import {
+  CaseworkerDataService,
+  InfoMessageCommService,
+  LocationDataService,
+  WASupportedJurisdictionsService,
+  WorkAllocationTaskService
+} from '../../services';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
@@ -50,6 +56,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected loadingService: LoadingService,
     protected featureToggleService: FeatureToggleService,
     protected locationService: LocationDataService,
+    protected waSupportedJurisdictionsService: WASupportedJurisdictionsService,
     protected filterService: FilterService
   ) {
   }
@@ -216,7 +223,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
 
   public performSearchPagination(): Observable<any> {
     const searchRequest = this.getSearchTaskRequestPagination();
-    return this.taskService.searchTaskWithPagination({ searchRequest, view: this.view });
+    return this.taskService.searchTask({ searchRequest, view: this.view });
   }
 
   /**
@@ -239,6 +246,10 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public getPaginationParameter(): PaginationParameter {
+    const savedPaginationNumber = JSON.parse(this.sessionStorageService.getItem(this.pageSessionKey));
+    if (savedPaginationNumber && typeof savedPaginationNumber === 'number') {
+      return {...this.pagination, page_number: savedPaginationNumber};
+    }
     return { ...this.pagination };
   }
 
@@ -310,9 +321,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      const isJudge = AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
-      return isJudge;
+      return AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
     }
-    return false
+    return false;
   }
 }

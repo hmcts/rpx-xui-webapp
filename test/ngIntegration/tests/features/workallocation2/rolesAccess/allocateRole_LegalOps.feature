@@ -1,5 +1,5 @@
 @ng 
-Feature: WA Release 2: Allocate Role Legal ops
+Feature: WA Release 2: Allocate and Remove Role Legal Ops
 
     Background: Case details setup
         Given I set MOCK case details with reference "caseDetails"

@@ -41,7 +41,7 @@ export class DeleteExclusionComponent implements OnInit {
     this.caseId = queryMap.get('caseId');
     const jurisdiction = queryMap.get('jurisdiction');
     const caseType = queryMap.get('caseType');
-    return this.roleExclusionsService.getCurrentUserRoleExclusions(this.caseId, caseType, jurisdiction, this.exclusionId);
+    return this.roleExclusionsService.getCurrentUserRoleExclusions(this.caseId, jurisdiction, caseType, this.exclusionId);
   }
 
   public populateAnswers(exclusion: RoleExclusion): void {

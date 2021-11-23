@@ -8,12 +8,12 @@ import { AppConstants } from '../../../app/app.constants';
 import { SessionStorageService } from '../../../app/services';
 import { Actions } from '../../../role-access/models';
 import { ListConstants } from '../../components/constants';
-import { CaseActionIds, CaseService, InfoMessage, InfoMessageType, SortOrder } from '../../enums';
+import { CaseService, InfoMessage, InfoMessageType, SortOrder } from '../../enums';
 import { Caseworker } from '../../interfaces/common';
 import { Case, CaseFieldConfig, CaseServiceConfig, InvokedCaseAction } from '../../models/cases';
 import { SortField } from '../../models/common';
 import { Location, PaginationParameter, SearchCaseRequest, SortParameter } from '../../models/dtos';
-import { CaseworkerDataService, InfoMessageCommService, LocationDataService, WorkAllocationCaseService } from '../../services';
+import { CaseworkerDataService, InfoMessageCommService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationCaseService } from '../../services';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
@@ -27,8 +27,10 @@ export class WorkCaseListWrapperComponent implements OnInit {
   public showSpinner$: Observable<boolean>;
   public sortedBy: SortField;
   public locations$: Observable<Location[]>;
+  public waSupportedJurisdictions$: Observable<string[]>;
   public pagination: PaginationParameter;
   public isPaginationEnabled$: Observable<boolean>;
+  public backUrl: string = null;
   private pCases: Case[];
   /**
    * Mock CaseServiceConfig.
@@ -54,7 +56,8 @@ export class WorkCaseListWrapperComponent implements OnInit {
     protected readonly caseworkerService: CaseworkerDataService,
     protected readonly loadingService: LoadingService,
     protected readonly locationService: LocationDataService,
-    protected readonly featureToggleService: FeatureToggleService
+    protected readonly featureToggleService: FeatureToggleService,
+    protected readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService
   ) {
     this.isPaginationEnabled$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.waMvpPaginationFeature);
   }
@@ -187,7 +190,10 @@ export class WorkCaseListWrapperComponent implements OnInit {
 
   public performSearchPagination(): Observable<any> {
     const searchRequest = this.getSearchCaseRequestPagination();
-    return this.caseService.searchCaseWithPagination({searchRequest, view: this.view});
+    if (this.view === 'AllWorkCases') {
+      return this.caseService.getCases({searchRequest, view: this.view});
+    }
+    return this.caseService.getMyCases({searchRequest, view: this.view});
   }
 
   /**
@@ -242,11 +248,11 @@ export class WorkCaseListWrapperComponent implements OnInit {
     const thisAction = caseAction.action;
     let actionUrl = '';
     if (thisAction.id === Actions.Reallocate) {
-      actionUrl = `role-access/allocate-role/${thisAction.id}?caseId=${actionedCase.case_id}&roleCategory=${actionedCase.case_category}&assignmentId=${actionedCase.id}&userName=${actionedCase.assignee}&typeOfRole=${actionedCase.case_role}`;
+      actionUrl = `role-access/allocate-role/${thisAction.id}?caseId=${actionedCase.case_id}&roleCategory=${actionedCase.role_category}&assignmentId=${actionedCase.id}&caseType=${actionedCase.case_category}&jurisdiction=${actionedCase.jurisdiction}&userName=${actionedCase.assignee}&typeOfRole=${actionedCase.case_role}`;
     } else if (thisAction.id === Actions.Remove) {
       actionUrl = `role-access/allocate-role/${thisAction.id}?caseId=${actionedCase.case_id}&assignmentId=${actionedCase.id}&caseType=${actionedCase.case_category}&jurisdiction=${actionedCase.jurisdiction}&typeOfRole=${actionedCase.case_role}`;
     }
-    this.router.navigateByUrl(actionUrl);
+    this.router.navigateByUrl(actionUrl, {state: {backUrl: this.backUrl}});
   }
 
   public onPaginationHandler(pageNumber: number): void {
@@ -270,8 +276,9 @@ export class WorkCaseListWrapperComponent implements OnInit {
     });
   }
 
-  protected setUpLocations(): void {
+  protected setUpLocationsAndJurisdictions(): void {
     this.locations$ = this.locationService.getLocations();
+    this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
   }
 
 }

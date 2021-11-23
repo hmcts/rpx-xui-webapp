@@ -6,6 +6,7 @@
     "jsRules": {},
     "rules": {
         "object-literal-key-quotes": false,
+        "object-literal-sort-keys": false,
         "arrow-parens": [
             true,
             "ban-single-arg-parens"

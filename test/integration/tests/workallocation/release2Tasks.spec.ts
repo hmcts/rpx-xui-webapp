@@ -29,7 +29,7 @@ describe('Work allocations Release 2: Tasks', () => {
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
-        const reqBody = getSearchTaskReqBody("MyTasks", ["77f9a4a4-1bf1-4903-aa6c-cab334875d91"]).getRequestBody();
+        const reqBody = getSearchTaskReqBody("MyTasks", ["3db21928-cbbc-4364-bd91-137c7031fe17"], ["698118"],'caseworker').getRequestBody();
         const headers = {
             'X-XSRF-TOKEN': xsrfToken,
             'content-length': JSON.stringify(reqBody).length
@@ -52,7 +52,7 @@ describe('Work allocations Release 2: Tasks', () => {
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
-        const reqBody = getSearchTaskReqBody("AvailableTasks", ["77f9a4a4-1bf1-4903-aa6c-cab334875d91"]).getRequestBody();
+        const reqBody = getSearchTaskReqBody("AvailableTasks", ["77f9a4a4-1bf1-4903-aa6c-cab334875d91"], ["698118"], 'caseworker').getRequestBody();
         const headers = {
             'X-XSRF-TOKEN': xsrfToken,
             'content-length': JSON.stringify(reqBody).length
@@ -75,7 +75,7 @@ describe('Work allocations Release 2: Tasks', () => {
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
-        const reqBody = getSearchTaskReqBody("TaskManager", ["77f9a4a4-1bf1-4903-aa6c-cab334875d91"]).getRequestBody();
+        const reqBody = getSearchTaskReqBody("TaskManager", ["77f9a4a4-1bf1-4903-aa6c-cab334875d91"], ["698118"], 'caseworker').getRequestBody();
         const headers = {
             'X-XSRF-TOKEN': xsrfToken,
             'content-length': JSON.stringify(reqBody).length
@@ -102,7 +102,7 @@ describe('Work allocations Release 2: Tasks', () => {
         };
 
         const userDetailsRes = await Request.get('api/user/details', { 'X-XSRF-TOKEN': xsrfToken }, 200);
-        const reqBody = getSearchTaskReqBody("AvailableTasks", [userDetailsRes.data.userInfo.id]).getRequestBody();
+        const reqBody = getSearchTaskReqBody("AvailableTasks", [userDetailsRes.data.userInfo.id], ["698118"], 'caseworker').getRequestBody();
         const headersForGetTasks = {
             'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
             'content-length': JSON.stringify(reqBody).length
@@ -145,7 +145,7 @@ describe('Work allocations Release 2: Tasks', () => {
 
         const userDetailsRes = await Request.get('api/user/details', { 'X-XSRF-TOKEN': xsrfToken }, 200);
         const sessionUserIdamId = userDetailsRes.data.userInfo.id ? userDetailsRes.data.userInfo.id : userDetailsRes.data.userInfo.uid;
-        const reqBody = getSearchTaskReqBody("MyTasks", [sessionUserIdamId]).getRequestBody();
+        const reqBody = getSearchTaskReqBody("MyTasks", [sessionUserIdamId], ["698118"], 'caseworker').getRequestBody();
         const headersForGetTasks = {
             'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
             'content-length': JSON.stringify(reqBody).length
@@ -180,7 +180,7 @@ describe('Work allocations Release 2: Tasks', () => {
         const userDetailsRes = await Request.get('api/user/details', { 'X-XSRF-TOKEN': xsrfToken }, 200);
         const sessionUserIdamId = userDetailsRes.data.userInfo.id ? userDetailsRes.data.userInfo.id : userDetailsRes.data.userInfo.uid;
 
-        const reqBody = getSearchTaskReqBody("MyTasks", [sessionUserIdamId]).getRequestBody();
+        const reqBody = getSearchTaskReqBody("MyTasks", [sessionUserIdamId], ["698118"], 'caseworker').getRequestBody();
         const headersForGetTasks = {
             'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
             'content-length': JSON.stringify(reqBody).length
@@ -210,7 +210,7 @@ describe('Work allocations Release 2: Tasks', () => {
             'X-XSRF-TOKEN': xsrfToken,
         };
 
-        const reqBody = getSearchTaskReqBody("TaskManager", []).getRequestBody();
+        const reqBody = getSearchTaskReqBody("TaskManager", [], ["698118"], 'caseworker').getRequestBody();
         const headersForGetTasks = {
             'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
             'content-length': JSON.stringify(reqBody).length
@@ -240,7 +240,7 @@ describe('Work allocations Release 2: Tasks', () => {
             'X-XSRF-TOKEN': xsrfToken,
         };
 
-        const reqBody = getSearchTaskReqBody('TaskManager', []).getRequestBody();
+        const reqBody = getSearchTaskReqBody('TaskManager', [], ["698118"], 'caseworker').getRequestBody();
         const headersForGetTasks = {
             'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
             'content-length': JSON.stringify(reqBody).length
@@ -266,7 +266,7 @@ describe('Work allocations Release 2: Tasks', () => {
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
-        const taskRequestObj = getSearchTaskReqBody("TaskManager", ["77f9a4a4-1bf1-4903-aa6c-cab334875d91"]);
+        const taskRequestObj = getSearchTaskReqBody("TaskManager", ["77f9a4a4-1bf1-4903-aa6c-cab334875d91"], ["698118"], 'caseworker');
         taskRequestObj.withPageNumber(1);
         const headers = {
             'X-XSRF-TOKEN': xsrfToken,
@@ -292,11 +292,18 @@ describe('Work allocations Release 2: Tasks', () => {
 
     });
 
-    function getSearchTaskReqBody(view, users) {
+    function getSearchTaskReqBody(view, users, locations ,userType) {
         // const response = await Request.get('api/user/details', null, 200); 
 
         const taskRequestBody = new TaskRequestBody();
         taskRequestBody.inView(view);
+
+        if (locations) {
+            locations.forEach(loc => {
+                taskRequestBody.searchWithlocation(loc);
+            });
+        }
+
         switch (view) {
             case 'MyTasks':
                 if (users) {
@@ -306,7 +313,7 @@ describe('Work allocations Release 2: Tasks', () => {
                 } else {
                     taskRequestBody.searchWithUser(null);
                 }
-
+                taskRequestBody.searchBy(userType ? userType : 'caseworker');
                 break;
             case 'AvailableTasks':
                 taskRequestBody.searchWithlocation(null);

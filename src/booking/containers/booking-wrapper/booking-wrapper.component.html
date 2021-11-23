@@ -21,7 +21,9 @@
             </exui-booking-date>
             <exui-booking-check #bookingCheck
               *ngIf="isComponentVisible(bookingNavigationCurrentState, bookingCheckVisibilityStates)"
-              [navEvent]="navEvent">
+              [navEvent]="navEvent"
+              [(bookingOptionIndex)]="bookingOptionIndex"
+              >
             </exui-booking-check>
           </div>
         </exui-booking-navigation>

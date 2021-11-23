@@ -240,7 +240,7 @@ describe('CaseTaskComponent', () => {
     let name = component.getAssigneeName(task);
     expect(name).toEqual('Some Name');
 
-    task.assigneeName = null;
+    task.assignee = null;
     name = component.getAssigneeName(task);
     expect(name).toEqual('Unassigned');
   });

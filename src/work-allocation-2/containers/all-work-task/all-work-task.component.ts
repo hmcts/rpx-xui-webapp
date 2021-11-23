@@ -85,7 +85,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
       };
       if (locationParameter) {
         searchParameters.push(locationParameter);
-      }
+      };
       return {
         search_parameters: searchParameters,
         sorting_parameters: [this.getSortParameter()],

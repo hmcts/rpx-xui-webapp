@@ -94,7 +94,7 @@ describe('MyTasksComponent', () => {
     mockSessionStorageService.getItem.and.returnValue(userInfo);
     const searchParameter = component.getSearchTaskRequestPagination().search_parameters[1];
     expect(searchParameter.key).toBe('state');
-    expect(searchParameter.values).toBe('assigned');
+    expect(searchParameter.values[0]).toBe('assigned');
   });
 
   it('should allow searching via location', () => {

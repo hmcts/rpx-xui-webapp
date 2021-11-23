@@ -53,7 +53,7 @@ describe('CaseTasksResolverService', () => {
   });
 
   it('should return a list of tasks', (done) => {
-    spyOn(httpClient, 'get').and.returnValue(of(TASKS));
+    spyOn(httpClient, 'get').and.returnValues(of(TASKS), of(null));
     const service: CaseTasksResolverService = TestBed.get(CaseTasksResolverService);
     const activatedRoute = new ActivatedRouteSnapshot();
     activatedRoute.params = {

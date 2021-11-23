@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { BookingNavigation } from '../../models';
 
 @Component({
@@ -9,10 +9,17 @@ import { BookingNavigation } from '../../models';
 export class BookingCheckComponent implements OnInit {
 
   @Input() public navEvent: BookingNavigation;
+  @Input() public bookingOptionIndex: number;
+
+  @Output() public bookingOptionIndexChange = new EventEmitter<boolean>();
 
   constructor() { }
 
   public ngOnInit() {
+  }
+
+  public onChange(index) {
+    this.bookingOptionIndexChange.emit(index);
   }
 
 }

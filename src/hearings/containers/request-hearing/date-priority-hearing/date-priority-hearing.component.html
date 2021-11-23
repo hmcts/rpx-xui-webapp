@@ -56,34 +56,7 @@
             <div class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3" id="fixeddatesection"
               [ngClass]="{'js-hidden': checkedHearingAvailability!=='Yes'}">
               <div class="govuk-form-group">
-                <fieldset class="govuk-fieldset" role="group" aria-describedby="passport-issued-hint">
-                  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                    <h1 class="govuk-fieldset__heading">The first date of the hearing must be</h1>
-                  </legend>
-                  <div class="govuk-date-input" id="passport-issued">
-                    <div class="govuk-date-input__item">
-                      <div class="govuk-form-group">
-                        <label class="govuk-label govuk-date-input__label" for="firstdateday">Day</label>
-                        <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="firstdateday"
-                          name="firstdateday" type="text" inputmode="numeric" value="">
-                      </div>
-                    </div>
-                    <div class="govuk-date-input__item">
-                      <div class="govuk-form-group">
-                        <label class="govuk-label govuk-date-input__label" for="firstdatemonth">Month</label>
-                        <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="firstdatemonth"
-                          name="firstdatemonth" type="text" inputmode="numeric" value="">
-                      </div>
-                    </div>
-                    <div class="govuk-date-input__item">
-                      <div class="govuk-form-group">
-                        <label class="govuk-label govuk-date-input__label" for="firstdateyear">Year</label>
-                        <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="firstdateyear"
-                          name="firstdateyear" type="text" inputmode="numeric" value="">
-                      </div>
-                    </div>
-                  </div>
-                </fieldset>
+                <xuilib-gov-uk-date [config]="firstHearingDate"></xuilib-gov-uk-date>
               </div>
             </div>
             <div class="govuk-radios__item">
@@ -95,64 +68,10 @@
               [ngClass]="{'js-hidden': checkedHearingAvailability!=='Choose'}">
               <div id="waste-hint" class="govuk-hint">You can enter either or both dates.</div>
               <div class="govuk-form-group">
-                <fieldset class="govuk-fieldset" role="group" aria-describedby="passport-issued-hint">
-                  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                    <h1 class="govuk-fieldset__heading">Earliest hearing date</h1>
-                  </legend>
-                  <div class="govuk-date-input" id="passport-issued">
-                    <div class="govuk-date-input__item">
-                      <div class="govuk-form-group">
-                        <label class="govuk-label govuk-date-input__label" for="earliestdateday">Day</label>
-                        <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="earliestdateday"
-                          name="earliestdateday" type="text" pattern="[0-9]*" inputmode="numeric" value="">
-                      </div>
-                    </div>
-                    <div class="govuk-date-input__item">
-                      <div class="govuk-form-group">
-                        <label class="govuk-label govuk-date-input__label" for="earliestdatemonth">Month</label>
-                        <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="earliestdatemonth"
-                          name="earliestdatemonth" type="text" pattern="[0-9]*" inputmode="numeric" value="">
-                      </div>
-                    </div>
-                    <div class="govuk-date-input__item">
-                      <div class="govuk-form-group">
-                        <label class="govuk-label govuk-date-input__label" for="earliestdateyear">Year</label>
-                        <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="earliestdateyear"
-                          name="earliestdateyear" type="text" pattern="[0-9]*" inputmode="numeric" value="">
-                      </div>
-                    </div>
-                  </div>
-                </fieldset>
+                <xuilib-gov-uk-date [config]="earliestHearingDate"></xuilib-gov-uk-date>
               </div>
               <div class="govuk-form-group">
-                <fieldset class="govuk-fieldset" role="group" aria-describedby="passport-issued-hint">
-                  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                    <h1 class="govuk-fieldset__heading">Latest hearing date</h1>
-                  </legend>
-                  <div class="govuk-date-input" id="passport-issued">
-                    <div class="govuk-date-input__item">
-                      <div class="govuk-form-group">
-                        <label class="govuk-label govuk-date-input__label" for="latestdateday">Day</label>
-                        <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="latestdateday"
-                          name="latestdateday" type="text" pattern="[0-9]*" inputmode="numeric" value="">
-                      </div>
-                    </div>
-                    <div class="govuk-date-input__item">
-                      <div class="govuk-form-group">
-                        <label class="govuk-label govuk-date-input__label" for="latestdatemonth">Month</label>
-                        <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="latestdatemonth"
-                          name="latestdatemonth" type="text" pattern="[0-9]*" inputmode="numeric" value="">
-                      </div>
-                    </div>
-                    <div class="govuk-date-input__item">
-                      <div class="govuk-form-group">
-                        <label class="govuk-label govuk-date-input__label" for="latestdateyear">Year</label>
-                        <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="latestdateyear"
-                          name="latestdateyear" type="text" pattern="[0-9]*" inputmode="numeric" value="">
-                      </div>
-                    </div>
-                  </div>
-                </fieldset>
+                <xuilib-gov-uk-date [config]="latestHearingDate"></xuilib-gov-uk-date>
               </div>
             </div>
           </div>

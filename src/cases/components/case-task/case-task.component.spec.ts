@@ -1,6 +1,8 @@
+import { of } from 'rxjs';
 import { RoleCategory } from '../../../role-access/models';
 import { Caseworker } from '../../../work-allocation-2/models/dtos';
 import { Task } from '../../../work-allocation-2/models/tasks';
+import { getMockTasks } from '../../../work-allocation-2/tests/utils.spec';
 import { CaseTaskComponent } from './case-task.component';
 
 describe('CaseTaskComponent', () => {
@@ -277,4 +279,58 @@ describe('CaseTaskComponent', () => {
       component.isUserJudicial = false;
       expect(component.getDueDateTitle()).toEqual('Due date');
   });
+
+  describe('onActionHandler()', () => {
+    const exampleTask = getMockTasks()[0];
+    const firstOption = {id: 'claim'};
+    const secondOption = {id: 'unclaim'};
+    it('should handle a claim action', () => {
+      mockTaskService.claimTask.and.returnValue(of(null));
+      // need to check that navigate has not been called
+      component.onActionHandler(exampleTask, firstOption);
+      expect(mockRouter.navigate).not.toHaveBeenCalled();
+
+    });
+
+    it('should handle an action that redirects', () => {
+
+      // need to check that navigate has been called
+      component.onActionHandler(exampleTask, secondOption);
+      expect(mockRouter.navigate).toHaveBeenCalled();
+
+      // need to verify correct properties were called
+      expect(mockRouter.navigate).toHaveBeenCalledWith([`/work/${exampleTask.id}/${secondOption.id}`]);
+    });
+  });
+
+  describe('claimTaskErrors()', () => {
+
+    it('should make a call to navigate the user to the /service-down page, if the error status code is 500.', () => {
+
+      component.claimTaskErrors(500);
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/service-down']);
+    });
+
+    it('should make a call to navigate the user to the /not-authorised page, if the error status code is 401.', () => {
+
+      component.claimTaskErrors(401);
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/not-authorised']);
+    });
+
+    it('should make a call to navigate the user to the /not-authorised page, if the error status code is 403.', () => {
+
+      component.claimTaskErrors(403);
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/not-authorised']);
+    });
+
+    it('should refresh the tasks if the error status code is 400.', () => {
+      const refreshTasksSpy = spyOn(component.taskRefreshRequired, 'emit');
+      component.claimTaskErrors(400);
+      expect(refreshTasksSpy).toHaveBeenCalled();
+    });
+  });
+
 });

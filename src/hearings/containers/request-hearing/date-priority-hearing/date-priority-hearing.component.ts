@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { RefDataModel } from 'api/hearings/models/refData.model';
 
 @Component({
   selector: 'exui-date-priority-hearing',
@@ -8,13 +10,18 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 })
 export class DatePriorityHearingComponent implements OnInit {
   public priorityForm: FormGroup;
+  public priorities: RefDataModel[];
   public checkedHearingAvailability: string;
   public partiesNotAvailableDates: string[];
 
-  constructor(private readonly formBuilder: FormBuilder) { }
+  constructor(private readonly formBuilder: FormBuilder,
+              private readonly route: ActivatedRoute) { }
 
   public ngOnInit(): void {
     this.initForm();
+
+    this.priorities = this.route.snapshot.data.hearingPriorities.priorities.sort((a, b) => (a.order < b.order ? -1 : 1));
+
     // TODO: Get dates from a service
     this.partiesNotAvailableDates = ['2 November 2021', '3 November 2021', '4 November 2021'];
   }

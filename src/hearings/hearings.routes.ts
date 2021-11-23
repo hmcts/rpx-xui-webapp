@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
 import { CancelHearingComponent, ChangeHearingComponent, DatePriorityHearingComponent, RequestHearingComponent, ViewHearingComponent } from './containers';
 import { WelshHearingComponent } from './containers/request-hearing/welsh-hearing/welsh-hearing.component';
+import { PriorityResolver } from './resolvers/priority/priority.resolve';
 
 export const ROUTES: Routes = [
   {
@@ -12,7 +13,7 @@ export const ROUTES: Routes = [
       {
         path: '',
         component: null,
-        canActivate: [ HealthCheckGuard ],
+        canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Manage cases | Cancel Hearing'
         }
@@ -26,7 +27,7 @@ export const ROUTES: Routes = [
       {
         path: '',
         component: null,
-        canActivate: [ HealthCheckGuard ],
+        canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Manage cases | Change Hearing'
         }
@@ -40,7 +41,7 @@ export const ROUTES: Routes = [
       {
         path: '',
         component: null,
-        canActivate: [ HealthCheckGuard ],
+        canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Manage cases | Request Hearing'
         }
@@ -48,15 +49,16 @@ export const ROUTES: Routes = [
       {
         path: 'welsh-hearing',
         component: WelshHearingComponent,
-        canActivate: [ HealthCheckGuard ],
+        canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Manage cases | Request Hearing'
         }
       },
       {
         path: 'date-priority-hearing',
+        resolve: { hearingPriorities: PriorityResolver },
         component: DatePriorityHearingComponent,
-        canActivate: [ HealthCheckGuard ],
+        canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Manage cases | Request Hearing'
         }
@@ -70,7 +72,7 @@ export const ROUTES: Routes = [
       {
         path: '',
         component: null,
-        canActivate: [ HealthCheckGuard ],
+        canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Manage cases | View Hearing'
         }

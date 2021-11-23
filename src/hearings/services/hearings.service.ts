@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { RefDataModel } from 'api/hearings/models/refData.model';
 import { Observable } from 'rxjs';
 import { CaseHearingsMainModel } from '../models/caseHearingsMain.model';
 

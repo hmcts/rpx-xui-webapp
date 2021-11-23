@@ -96,22 +96,7 @@ const BrowserLogs = require('./browserLogs');
 defineSupportCode(({ Before,After }) => {
     Before(async function (scenario) {
         global.scenarioData = {};
-        const world = this;
-        global.scenarioData['canSecenarioRunwiThExistingSession'] = scenario.pickle.name.startsWith("WITH_SESSION")
-        let url = await browser.getCurrentUrl();
-        if (!global.scenarioData['canSecenarioRunwiThExistingSession'] && url.startsWith('http')){
-            //clearSession();
-
-
-            try{
-                const scenarioMockPort = browser.manage().getCookie('scenarioMockPort')
-                await browser.manage().addCookie({ name: 'scenarioMockPort', value: scenarioMockPort });
-            }
-           catch(err){
-
-           } 
-
-        }
+        const world = this
        
         CucumberReportLog.setScenarioWorld(this);
     });

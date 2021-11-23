@@ -52,14 +52,17 @@
             hearing.</div>
           <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
             <div class="govuk-radios__item">
-              <input class="govuk-radios__input" id="dates1" name="hearingAvailability" type="radio" value="No" formControlName="hearingAvailability" (change)="showDateAvailability();">
+              <input class="govuk-radios__input" id="dates1" name="hearingAvailability" type="radio" value="No"
+                formControlName="hearingAvailability" (change)="showDateAvailability();">
               <label class="govuk-label govuk-radios__label" for="dates1">No</label>
             </div>
             <div class="govuk-radios__item">
-              <input class="govuk-radios__input" id="dates2" name="hearingAvailability" type="radio" value="Yes" formControlName="hearingAvailability" (change)="showDateAvailability();">
+              <input class="govuk-radios__input" id="dates2" name="hearingAvailability" type="radio" value="Yes"
+                formControlName="hearingAvailability" (change)="showDateAvailability();">
               <label class="govuk-label govuk-radios__label" for="dates2">Yes</label>
             </div>
-            <div class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3" id="fixeddatesection" [ngClass]="{'js-hidden': checkedHearingAvailability!=='Yes'}">
+            <div class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3" id="fixeddatesection"
+              [ngClass]="{'js-hidden': checkedHearingAvailability!=='Yes'}">
               <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset" role="group" aria-describedby="passport-issued-hint">
                   <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
@@ -92,10 +95,12 @@
               </div>
             </div>
             <div class="govuk-radios__item">
-              <input class="govuk-radios__input" id="dates3" name="hearingAvailability" type="radio" value="Choose"  formControlName="hearingAvailability" (change)="showDateAvailability();">
+              <input class="govuk-radios__input" id="dates3" name="hearingAvailability" type="radio" value="Choose"
+                formControlName="hearingAvailability" (change)="showDateAvailability();">
               <label class="govuk-label govuk-radios__label" for="dates3">Choose a date range</label>
             </div>
-            <div class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3" id="rangedatesection" [ngClass]="{'js-hidden': checkedHearingAvailability!=='Choose'}">
+            <div class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3" id="rangedatesection"
+              [ngClass]="{'js-hidden': checkedHearingAvailability!=='Choose'}">
               <div id="waste-hint" class="govuk-hint">You can enter either or both dates.</div>
               <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset" role="group" aria-describedby="passport-issued-hint">
@@ -179,15 +184,10 @@
             <h3 class="govuk-fieldset__heading">What is the priority of this hearing?</h3>
           </legend>
           <div class="govuk-radios">
-            <div class="govuk-radios__item">
-              <input class="govuk-radios__input" id="priorityHearing" name="priorityHearing" type="radio"
-                value="Standard">
-              <label class="govuk-label govuk-radios__label" for="priorityHearing">Standard</label>
-            </div>
-            <div class="govuk-radios__item">
-              <input class="govuk-radios__input" id="priorityHearing2" name="priorityHearing" type="radio"
-                value="Urgent">
-              <label class="govuk-label govuk-radios__label" for="priorityHearing2">Urgent</label>
+            <div class="govuk-radios__item" *ngFor="let priority of priorities">
+              <input class="govuk-radios__input" id="{{priority.key}}" name="priorityHearing" type="radio"
+                [value]="priority.value_en">
+              <label class="govuk-label govuk-radios__label" [for]="priority.key">{{priority.value_en}}</label>
             </div>
           </div>
         </fieldset>

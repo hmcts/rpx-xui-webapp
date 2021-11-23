@@ -1,4 +1,4 @@
-@ng @wa2 @wa
+@ng @wa2 @wa  @test
 Feature: WA Release 2: My work - My tasks - Task actions
 
     Background: Mock and browser setup
@@ -18,6 +18,9 @@ Feature: WA Release 2: My work - My tasks - Task actions
         Given I set MOCK task details for WA release2
             | case_name        | case_category      | location_name |
             | Allwork test scr | auto test category | London QA lab |
+
+        Given I set MOCK request "/workallocation2/task/:taskId" intercept with reference "taskDetails"
+        Given I set MOCK request "/workallocation2/task/:taskId" response log to report
 
     Scenario Outline:  Task Manage links for "<UserType>"  action "<actionLink>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"

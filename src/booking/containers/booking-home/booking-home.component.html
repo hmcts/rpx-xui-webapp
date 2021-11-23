@@ -1,6 +1,7 @@
 <p>booking-home works!</p>
 <form>
-  <input type="radio" [value]="0" name="bookingChoice" (click)="selectOption(0)">Choose an existing booking<br />
-  <input type="radio" [value]="1" name="bookingChoice" (click)="selectOption(1)" [checked]="bookingOptionIndex === 1">Create a new booking<br />
-  <input type="radio" [value]="2" name="bookingChoice" (click)="selectOption(2)">View tasks and cases<br />
+  <input type="radio" [value]="0" name="bookingChoice" (click)="onSelectOption(0)">Choose an existing booking<br />
+  <input type="radio" [value]="1" name="bookingChoice" (click)="onSelectOption(1)" [checked]="newBooking.bookingOptionIndex === 1">Create a new booking<br />
+  <input type="radio" [value]="2" name="bookingChoice" (click)="onSelectOption(2)">View tasks and cases<br />
+  <button class="button" type="button" *ngIf="newBooking.bookingOptionIndex" (click)="onEventTrigger()">Continue</button>
 </form>

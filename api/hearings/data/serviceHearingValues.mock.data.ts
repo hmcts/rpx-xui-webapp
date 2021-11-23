@@ -44,8 +44,8 @@ const searviceHearingValues = {
     partyChannel: 'string',
     unavailability: [
       {
-        start: 'string',
-        end: 'string',
+        start: '20211122',
+        end: '20211123',
       },
     ],
   }],

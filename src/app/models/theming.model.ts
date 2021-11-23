@@ -3,6 +3,7 @@ export interface ApplicationTheme {
     backgroundColor: string;
     logo: 'judicial' | 'myhmcts' | 'default' | 'none';
     showFindCase: boolean;
+    showCaseReferenceSearchBox: boolean;
 }
 
 export type FlagDefinition = string | { flagName: string; value: string; };

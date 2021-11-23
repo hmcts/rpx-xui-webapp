@@ -5,12 +5,11 @@ import { PriorityResolver } from './priority.resolve';
 
 
 describe('Hearings Priority Resolver', () => {
-
   it('resolves on success', () => {
-    const mockService = jasmine.createSpyObj('HearingsDataService', ['getPriorities']);
-    mockService.getPriorities.and.returnValue(of([] as RefDataModel[]));
+    const mockHearingDataService = jasmine.createSpyObj('HearingsDataService', ['getPriorities']);
+    mockHearingDataService.getPriorities.and.returnValue(of([] as RefDataModel[]));
     const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
-    const taskResolver = new PriorityResolver(mockService, mockRouter);
+    const hearingResolver = new PriorityResolver(mockRouter, mockHearingDataService);
     const route = jasmine.createSpyObj('Route', ['']);
     route.paramMap = {
       get: () => {
@@ -18,10 +17,13 @@ describe('Hearings Priority Resolver', () => {
       }
     };
 
-    const taskCaseWorkers$ = taskResolver.resolve(route, {} as RouterStateSnapshot);
-    taskCaseWorkers$.subscribe(taskCaseWorkers => {
-      expect(taskCaseWorkers.priorities).toEqual([] as RefDataModel[]);
-      expect(mockService.getPriorities).toHaveBeenCalledWith('somevalue');
+    const hearingData$ = hearingResolver.resolve(route, {} as RouterStateSnapshot);
+    hearingData$.subscribe(hearingDataPriorities => {
+      expect(hearingDataPriorities.priorities).toEqual([]);
+      expect(mockHearingDataService.getPriorities).toHaveBeenCalled();
     });
   });
+
+
+
 });

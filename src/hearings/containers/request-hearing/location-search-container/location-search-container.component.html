@@ -2,8 +2,11 @@
   <div class="page">
     <main id="content" role="main">
         <div *ngIf="serviceId" class="search-location">
-          <exui-search-location class="search-location" [serviceId]="serviceId" [locationType]="'hearing'"></exui-search-location>
-        </div>     
+          <exui-search-location class="search-location"
+                                [serviceId]="serviceId"
+                                [locationType]="'hearing'">
+          </exui-search-location>
+        </div>
     </main>
   </div>
 </div>

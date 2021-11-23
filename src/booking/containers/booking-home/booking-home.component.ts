@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { BookingNavigation } from '../../models/booking-navigation.interface';
+import { BookingNavigationEvent, NewBooking } from '../../models';
 
 @Component({
   selector: 'exui-booking-home',
@@ -8,19 +8,22 @@ import { BookingNavigation } from '../../models/booking-navigation.interface';
 })
 export class BookingHomeComponent implements OnInit {
 
-  @Input() public navEvent: BookingNavigation;
-  @Input() public bookingOptionIndex: number;
+  @Input() public newBooking: NewBooking;
 
-  @Output() public bookingOptionIndexChange = new EventEmitter<boolean>();
+  @Output() public newBookingChange = new EventEmitter<NewBooking>();
+  @Output() public eventTrigger = new EventEmitter();
 
   constructor() { }
 
   public ngOnInit() {
   }
 
-  public selectOption(index) {
-    this.bookingOptionIndexChange.emit(index);
+  public onSelectOption(index) {
+    this.newBooking.bookingOptionIndex = index;
+  }
+
+  public onEventTrigger() {
+    this.eventTrigger.emit(BookingNavigationEvent.HOMECONTINUE);
   }
 
 }
-

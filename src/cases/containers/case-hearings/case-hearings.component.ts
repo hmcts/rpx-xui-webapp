@@ -98,5 +98,4 @@ export class CaseHearingsComponent implements OnInit {
       }
     );
   }
-
 }

@@ -1,4 +1,4 @@
-import { Bookings } from "JudicialBooking/models/booking.model";
+import { Bookings } from "judicialBooking/models/booking.model";
 
 export const bookings: Bookings  = {
   "bookings":

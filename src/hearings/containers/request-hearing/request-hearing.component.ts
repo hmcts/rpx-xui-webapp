@@ -19,5 +19,4 @@ export class RequestHearingComponent implements OnInit {
    */
   public onSubmit(): void {
   }
-
 }

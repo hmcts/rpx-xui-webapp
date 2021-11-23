@@ -23,5 +23,6 @@ export * from './change-hearing/change-hearing.component';
 export * from './request-hearing/date-priority-hearing/date-priority-hearing.component';
 export * from './request-hearing/request-hearing.component';
 export * from './view-hearing/view-hearing.component';
-
+export * from '../containers/request-hearing/welsh-hearing/welsh-hearing.component';
+export * from '../components/hearing-parties-title/hearing-parties-title.component';
 

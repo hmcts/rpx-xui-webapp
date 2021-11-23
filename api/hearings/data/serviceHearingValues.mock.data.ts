@@ -1,7 +1,8 @@
-{
-  autolistFlag: true,
+/* tslint:disable:object-literal-sort-keys */
+const searviceHearingValues = {
+  autoListFlag: true,
   hearingType: '',
-  caseType: '' ,
+  caseType: '',
   caseSubTypes: [''],
   hearingWindow: {
     range: {
@@ -25,8 +26,8 @@
     authorisationTypes: [''],
     authorisationSubType: [''],
     panelComposition: [{
-      memberType: 'string',
-      count: number,
+      memberType: '',
+      count: 1,
     }],
     judiciaryPreferences: [
       {
@@ -38,23 +39,24 @@
     judiciarySpecialisms: [''],
   },
   hearingIsLinkedFlag: false,
-  parties:[{
-    partyName: 'string',
+  parties: [{
+    partyName: 'Jane and Smith',
     partyChannel: 'string',
     unavailability: [
       {
         start: 'string',
-        end: 'string'
-      }]
+        end: 'string',
+      },
+    ],
   }],
   caseFlags: {
-    flags:[
+    flags: [
       {
-        partyName: 'string',
+        partyName: 'Jane and Smith',
         flagId: 'string',
         flagDescription: 'string',
         flagStatus: 'string',
-      }
+      },
     ],
     flagAmendURL: 'string',
   },
@@ -64,13 +66,13 @@
       navigation: [
         {
           resultValue1: 'string',
-        }
-      ]
+        },
+      ],
     },
   ],
   vocabulary: [
     {
       word1: 'string',
     },
-  ]
-}
+  ],
+};

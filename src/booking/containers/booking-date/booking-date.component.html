@@ -1,91 +1,46 @@
-<p>
-  booking-date works!
-</p>
-<button class="button" type="button" (click)="onEventTrigger()">Submit</button>
-
 <form [formGroup]="formGroup" (submit)="onSubmit()">
-  <div class="govuk-form-group" [ngClass]="{'form-group-error': formGroup.invalid && submitted}">
+  <div
+    class="govuk-form-group"
+    [ngClass]="{ 'form-group-error': formGroup.invalid && submitted }">
     <fieldset class="govuk-fieldset" aria-describedby="reason-hint">
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-        <span class="govuk-caption-l"> {{caption}}</span>
-        <h1 class="govuk-fieldset__heading">
-          {{title}}
+        <span class="govuk-caption-l"> {{ caption }}</span>
+        <h1 class="govuk-fieldset__heading test">
+          {{ title }}
         </h1>
       </legend>
-      
-      <div id="error-message" class="govuk-error-message" *ngIf="formGroup.get('radioSelected').invalid && submitted">
-        {{errorMessage.description}}
+      <div id="error-message"class="govuk-error-message" *ngIf="formGroup.get('radioSelected').invalid && submitted">
+        {{ errorMessage.description }}
       </div>
       <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
-        <div class="govuk-radios__item">
-          <input class="govuk-radios__input" id="date-0" name="radioSelected" type="radio" [value]="dateInterval[0].date"
-          data-aria-controls="conditional-date-0" formControlName="radioSelected" [checked]="dateInterval[0].checked"
-          (change)="onChange()"/>
-          <label class="govuk-label govuk-radios__label" for="date-0">
-            {{dateInterval[0].date}}
+        <div class="govuk-radios__item" *ngFor="let item of dateInterval; let i = index">
+          <input
+            class="govuk-radios__input"
+            id="{{ 'date-' + i }}"
+            name="radioSelected"
+            type="radio"
+            [value]="item.date"
+            formControlName="radioSelected"
+            [checked]="item.checked"/>
+          <label
+            class="govuk-label govuk-radios__label"
+            for="{{ 'date-' + i }}">
+            {{ item.date }}
           </label>
         </div>
-        <div class="govuk-radios__item">
-          <input class="govuk-radios__input" id="date-1" name="radioSelected" type="radio" [value]="dateInterval[1].date"
-          formControlName="radioSelected" [checked]="dateInterval[1].checked" (change)="onChange()"/>
-          <label class="govuk-label govuk-radios__label" for="date-1">
-            {{dateInterval[1].date}}
-          </label>
-        </div>
-        <div class="govuk-radios__item">
-          <input class="govuk-radios__input" id="date-2" name="radioSelected" type="radio" [value]="dateInterval[2].date"
-          formControlName="radioSelected" [checked]="dateInterval[2].checked" (change)="onChange()"/>
-          <label class="govuk-label govuk-radios__label" for="date-2">
-            {{dateInterval[2].date}}
-          </label>
-        </div>
-        <div id="conditional-date-0" *ngIf="formGroup.get('radioSelected').value === dateInterval[2].date"
-        class="govuk-radios__conditional">
+        <div id="conditional-date-0" *ngIf="formGroup.get('radioSelected').value === dateInterval[2].date" class="govuk-radios__conditional">
           <div class="govuk-form-group">
-            <!-- <label class="govuk-label" for="case-reference">
-              {{caseRefLabel}}
-            </label>
-            <div id="case-reference-error-message" class="govuk-error-message" *ngIf="formGroup.get('caseReference').invalid && submitted">
-              {{errorMessage.description}}
-            </div>
-            <input class="govuk-input govuk-!-width-one-third"
-            [ngClass]="{'govuk-input--error': formGroup.get('caseReference').invalid && submitted}" id="case-reference"
-            name="case-reference" type="text" formControlName="caseReference"> -->
-            <xuilib-gov-uk-date [formGroup]="formGroup" [config]="configStart"   [errorMessage]="{}" 
-            ></xuilib-gov-uk-date>
-            <xuilib-gov-uk-date [formGroup]="formGroup" [config]="configEnd"   [errorMessage]="{}" 
-            ></xuilib-gov-uk-date>
+            <xuilib-gov-uk-date
+              [formGroup]="formGroup"
+              [config]="configStart">
+            </xuilib-gov-uk-date>
+            <xuilib-gov-uk-date
+              [formGroup]="formGroup"
+              [config]="configEnd">
+            </xuilib-gov-uk-date>
           </div>
         </div>
-        <!-- <ng-container >
-          <xuilib-due-date [dueDate]="toDate(duedate)"></xuilib-due-date>
-        </ng-container> -->
-        <!-- <ng-container > -->
-          <!-- formControlName="caseRef" name="caseRef" id="caseRef" -->
-
-          <!-- formControlName="startDate"  name="startDate" id="startDate" -->
-          <!-- <div *ngIf="this.config | async; let config">{{this.config}} -->
-
-     
-    
-      <!-- </div> -->
-     
-     
-     
-      <!-- </ng-container> -->
       </div>
     </fieldset>
   </div>
-  <!-- <div class="govuk-button-group">
-    <button class="govuk-button govuk-!-margin-right-3" type="submit">
-      Submit
-    </button>
-    <div class="govuk-grid-column-full govuk-!-padding-left-0">
-      <p>
-        <a class='govuk-body' (click)="onCancel()" href="javascript:void(0)">
-          Cancel
-        </a>
-      </p>
-    </div>
-  </div> -->
 </form>

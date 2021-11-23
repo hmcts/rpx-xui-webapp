@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Store, select } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { map } from 'rxjs/operators';
 import * as fromHearingStore from '../../../../hearings/store';
 
@@ -13,8 +13,8 @@ export class LocationSearchContainerComponent implements OnInit {
   constructor(private readonly hearingStore: Store<fromHearingStore.State>) {}
 
   public ngOnInit(): void {
-    this.hearingStore.pipe(select(fromHearingStore.getHearingsList)).pipe(
-      map(hearingList => hearingList.caseHearingsMainModel ? hearingList.caseHearingsMainModel.hmctsServiceID : '')
+    this.hearingStore.pipe(select(fromHearingStore.getHearingList)).pipe(
+      map(hearingList => hearingList.hearingListMainModel ? hearingList.hearingListMainModel.hmctsServiceID : '')
     ).subscribe(id => {
       this.serviceId = id ? id : this.serviceId;
     });

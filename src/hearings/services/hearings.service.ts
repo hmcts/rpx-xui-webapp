@@ -1,14 +1,15 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { CaseHearingsMainModel } from '../models/caseHearingsMain.model';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {HearingListMainModel} from '../models/hearingListMain.model';
 
 @Injectable()
 export class HearingsService {
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {
+  }
 
-  public getAllHearings(caseId: string): Observable<CaseHearingsMainModel> {
-    return this.http.get<CaseHearingsMainModel>(`api/hearings/getHearings?caseId=${caseId}`);
+  public getAllHearings(caseId: string): Observable<HearingListMainModel> {
+    return this.http.get<HearingListMainModel>(`api/hearings/getHearings?caseId=${caseId}`);
   }
 }

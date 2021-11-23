@@ -1,1 +1,2 @@
-export * from './hearings.selectors';
+export * from './hearing-list.selectors';
+export * from './hearing-request.selectors';

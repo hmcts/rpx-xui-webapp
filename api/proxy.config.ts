@@ -2,7 +2,7 @@ import * as bodyParser from 'body-parser'
 import {Express} from 'express'
 import * as amendedJurisdictions from './amendedJurisdictions'
 import {getConfigValue} from './configuration'
-import * as judicialBooking from './JudicialBooking'
+import * as judicialBooking from './judicialBooking'
 
 import {
     SERVICES_CCD_COMPONENT_API_PATH,

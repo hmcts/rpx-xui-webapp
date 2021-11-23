@@ -1,9 +1,5 @@
 tr {
-  > th {
-    width: 10%;
-
-    &:nth-child(4) {
-      width: 50%;
-    }
+  > th,td {
+    width: 20%;
   }
 }

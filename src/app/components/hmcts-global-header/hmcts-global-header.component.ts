@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild, ViewChildren, Renderer2 } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
@@ -17,7 +17,7 @@ import { SearchParameters } from '../../../search/models';
     templateUrl: './hmcts-global-header.component.html',
     styleUrls: ['./hmcts-global-header.component.scss']
 })
-export class HmctsGlobalHeaderComponent implements OnChanges, OnDestroy {
+export class HmctsGlobalHeaderComponent implements OnChanges, AfterViewInit, OnDestroy {
 
   @Input() public set showNavItems(value: boolean) {
     this.showItems = value;
@@ -30,7 +30,10 @@ export class HmctsGlobalHeaderComponent implements OnChanges, OnDestroy {
   @Input() public navigation: UserNavModel;
   @Input() public logoType: string;
   @Input() public currentUrl: string;
+  @Input() public decorate16DigitCaseReferenceSearchBox: boolean;
   @Output() public navigate = new EventEmitter<string>();
+
+  @ViewChildren('caseReference') public caseReferenceEl: ElementRef;
 
   public showItems: boolean;
   public userValue = true;
@@ -54,13 +57,23 @@ export class HmctsGlobalHeaderComponent implements OnChanges, OnDestroy {
     private readonly featureToggleService: FeatureToggleService,
     private readonly searchService: SearchService,
     private readonly router: Router,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private renderer: Renderer2
   ) { }
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes.items.currentValue !== changes.items.previousValue) {
       this.splitAndFilterNavItems(this.items);
     }
+    if (changes.decorate16DigitCaseReferenceSearchBox) {
+      if (changes.decorate16DigitCaseReferenceSearchBox.currentValue) {
+        const searchParameters: SearchParameters = this.searchService.retrieveState(SearchStatePersistenceKey.SEARCH_PARAMS);
+      }
+    }
+  }
+
+  public ngAfterViewInit(): void {
+    this.renderer.setProperty(this.caseReferenceEl.nativeElement,'innerHTML',"Hello Angular")
   }
 
   public onEmitEvent(index: number): void {

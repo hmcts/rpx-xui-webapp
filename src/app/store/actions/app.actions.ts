@@ -34,6 +34,9 @@ export const LOAD_USER_DETAILS_FAIL = '[App] Load User Details Success';
 export const START_IDLE_SESSION_TIMEOUT = '[App] Start Idle Session Timeout';
 export const STOP_IDLE_SESSION_TIMEOUT = '[App] Stop Idle Session Timeout';
 
+export const DECORATE_16_DIGIT_CASE_REFERENCE_SEARCH_BOX = '[App] Decorate 16 Digit Case Reference Search Box';
+export const DECORATE_16_DIGIT_CASE_REFERENCE_SEARCH_BOX_SUCCESS = '[App] Decorate 16 Digit Case Reference Search Box Success';
+
 export class LoadConfig implements Action {
   readonly type = APP_LOAD_CONFIG;
 }
@@ -145,6 +148,10 @@ export class LoadUserDetailsFail {
   constructor(public payload: any) {}
 }
 
+export class Decorate16DigitCaseReferenceSearchBox {
+  public readonly type = DECORATE_16_DIGIT_CASE_REFERENCE_SEARCH_BOX;
+  constructor(public payload: boolean) {}
+}
 
 export type AppActions =
   | LoadConfig
@@ -169,4 +176,5 @@ export type AppActions =
   | LoadUserDetailsSuccess
   | LoadUserDetailsFail
   | StartIdleSessionTimeout
-  | StopIdleSessionTimeout;
+  | StopIdleSessionTimeout
+  | Decorate16DigitCaseReferenceSearchBox;

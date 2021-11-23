@@ -1,5 +1,6 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -55,6 +56,7 @@ describe('HmctsGlobalHeaderComponent', () => {
       align: 'right',
       text: 'Find',
       href: '',
+      class: 'hmcts-search-toggle__button',
       active: false
     },
     {
@@ -78,7 +80,10 @@ describe('HmctsGlobalHeaderComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ HmctsGlobalHeaderComponent ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      imports: [ RouterTestingModule ],
+      imports: [
+        HttpClientTestingModule,
+        RouterTestingModule
+      ],
       providers: [
         provideMockStore(),
         {
@@ -149,7 +154,7 @@ describe('HmctsGlobalHeaderComponent', () => {
     component.items = navItemsWithSearchBox;
     await component.ngOnChanges(changesMock);
     fixture.detectChanges();
-    const caseReferenceSearchBox = fixture.debugElement.query(By.css('#case-reference-search-box'));
+    const caseReferenceSearchBox = fixture.debugElement.query(By.css('#caseReference'));
     expect(caseReferenceSearchBox).toBeTruthy();
   });
 
@@ -159,7 +164,7 @@ describe('HmctsGlobalHeaderComponent', () => {
     component.items = navItemsWithSearchBox;
     await component.ngOnChanges(changesMock);
     fixture.detectChanges();
-    const caseReferenceSearchBox = fixture.debugElement.query(By.css('#case-reference-search-box'));
+    const caseReferenceSearchBox = fixture.debugElement.query(By.css('#caseReference'));
     expect(caseReferenceSearchBox).toBeFalsy();
   });
 

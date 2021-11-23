@@ -1,18 +1,12 @@
-import * as fromHearingListAction from './hearing-list.action';
+import * as fromHearingDetailsAction from './hearing-details.action';
 
-describe('Hearing List Actions', () => {
+describe('Hearing Details Actions', () => {
 
-  describe('Reset', () => {
-    it('should create an action', () => {
-      const action = new fromHearingListAction.HearingListReset();
-      expect(action.type).toBe(fromHearingListAction.HEARING_LIST_RESET);
-    });
-  });
 
-  describe('LoadAllHearings', () => {
+  describe('GetHearingDetails', () => {
     it('should load all hearings', () => {
-      const action = new fromHearingListAction.LoadAllHearings('1111222233334444');
-      expect(action.type).toBe(fromHearingListAction.LOAD_ALL_HEARINGS);
+      const action = new fromHearingDetailsAction.HearingDetails();
+      expect(action.type).toBe(fromHearingDetailsAction.HEARING_DETAILS);
     });
   });
 });

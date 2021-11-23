@@ -39,7 +39,7 @@ export class SearchService {
 
   public decrementStartRecord(): number {
     const startRecord: number = this.retrieveState(SearchStatePersistenceKey.START_RECORD);
-    if (startRecord != null) {
+    if (startRecord !== null) {
       // Need to be able to decrement start record even if current value is less than or equal to record page size
       const newStartRecord = Math.max(startRecord - this.RECORD_PAGE_SIZE, 1);
       this.storeState(SearchStatePersistenceKey.START_RECORD, newStartRecord);
@@ -51,13 +51,13 @@ export class SearchService {
 
   public incrementStartRecord(): number {
     const startRecord: number = this.retrieveState(SearchStatePersistenceKey.START_RECORD);
-    if (startRecord != null && startRecord >= 1) {
+    if (startRecord !== null && startRecord >= 1) {
       const newStartRecord = startRecord + this.RECORD_PAGE_SIZE;
       this.storeState(SearchStatePersistenceKey.START_RECORD, newStartRecord);
       return newStartRecord;
     }
     // Return original start record or 1 as a default, if it cannot be retrieved
-    return startRecord != null ? startRecord : 1;
+    return startRecord !== null ? startRecord : 1;
   }
 
   private mapSearchParametersToRequestCriteria(searchParameters: SearchParameters): SearchRequestCriteria {

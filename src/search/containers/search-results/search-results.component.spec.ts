@@ -14,6 +14,7 @@ import { SearchService } from '../../services/search.service';
 import { SearchResultsComponent } from './search-results.component';
 
 import createSpyObj = jasmine.createSpyObj;
+import { NoResultsMessageId } from '../../enums';
 
 describe('SearchResultsComponent', () => {
   let component: SearchResultsComponent;
@@ -206,7 +207,7 @@ describe('SearchResultsComponent', () => {
 
   it('should navigate to no results page if search result is empty', () => {
     component.onSearchSubscriptionHandler([searchResultWithNoCases, jurisdictions]);
-    expect(router.navigate).toHaveBeenCalledWith(['/search/noresults'], {relativeTo: route});
+    expect(router.navigate).toHaveBeenCalledWith(['/search/noresults', NoResultsMessageId.NO_RESULTS], {relativeTo: route});
   });
 
   it('should set \"more results to go\" flag correctly', () => {

@@ -35,7 +35,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
   public isPaginationEnabled$: Observable<boolean>;
   public backUrl: string = null;
   private pCases: Case[];
-  protected jurisdictions: Jurisdiction[];
+  protected allJurisdictions: Jurisdiction[];
   protected allRoles: Role[];
   /**
    * Mock CaseServiceConfig.
@@ -129,7 +129,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
 
   public ngOnInit(): void {
     this.rolesService.getValidRoles().subscribe(allRoles => this.allRoles = allRoles);
-    this.jurisdictionsService.getJurisdictions().subscribe(jur => this.jurisdictions = jur);
+    this.jurisdictionsService.getJurisdictions().subscribe(jur => this.allJurisdictions = jur);
     this.setupCaseWorkers();
     this.loadCases();
   }
@@ -279,8 +279,8 @@ export class WorkCaseListWrapperComponent implements OnInit {
       this.casesTotal = result.total_records;
       this.cases.forEach(item => {
         item.assigneeName = getAssigneeName(this.caseworkers, item.assignee);
-        if (this.jurisdictions && this.jurisdictions.find(jur => jur.id === item.jurisdiction)) {
-          item.jurisdiction = this.jurisdictions.find(jur => jur.id === item.jurisdiction).name;
+        if (this.allJurisdictions && this.allJurisdictions.find(jur => jur.id === item.jurisdiction)) {
+          item.jurisdiction = this.allJurisdictions.find(jur => jur.id === item.jurisdiction).name;
         }
         if (this.allRoles && this.allRoles.find(role => role.roleId === item.case_role)) {
           item.case_role = this.allRoles.find(role => role.roleId === item.case_role).roleName;

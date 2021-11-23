@@ -62,6 +62,14 @@ export const ROUTES: Routes = [
         data: {
           title: 'HMCTS Manage cases | Request Hearing'
         }
+      },
+      {
+        path: 'welsh-hearing',
+        component: WelshHearingComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Manage cases | Request Hearing'
+        }
       }
     ]
   },

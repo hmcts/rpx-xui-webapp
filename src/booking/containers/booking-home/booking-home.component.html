@@ -1,0 +1,62 @@
+<div class="govuk-width-container">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="hmcts-page-heading">
+        <div class="hmcts-page-heading__title">
+          <h1 class="govuk-heading-l">Work access</h1>
+        </div>
+      </div>
+      <form [formGroup]="bookingTypeForm">
+
+        <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
+          <ng-container *ngIf="existingBookings && existingBookings.length > 0">
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="type-0" name="bookingType" type="radio" [value]="0"
+              data-aria-controls="conditional-booking-type-0" (change)="onChange(0)" formControlName="bookingType"/>
+              <label class="govuk-label govuk-radios__label" for="type-0" id="type-0-label">
+                Choose an existing booking
+              </label>
+            </div>
+            <div id="conditional-booking-type-0" *ngIf="bookingTypeForm.get('bookingType').value === 0" class="govuk-radios__conditional">
+              <div class="govuk-form-group">
+                <div class="govuk-grid-column-one-half" *ngFor="let booking of existingBookings" >
+                  <p>
+                    <strong>{{booking.locationName}}</strong>
+                    <span class="govuk-hint">
+                      {{booking.beginTime | date:'dd LLLL yyyy'}} to {{booking.endTime | date:'dd LLLL yyyy'}}
+                    </span>
+                  </p>
+                  <div class="govuk-button-group">
+                    <button
+                      role="button"
+                      class="govuk-button govuk-button--secondary"
+                    >
+                      Continue
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="type-1" name="bookingType" type="radio"
+              (change)="onChange(1)" [value]="1" formControlName="bookingType"/>
+            <label class="govuk-label govuk-radios__label" for="type-1">
+              Create a new booking
+            </label>
+          </div>
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="type-2" name="bookingType" type="radio"
+              (change)="onChange(2)" [value]="2" formControlName="bookingType"/>
+            <label class="govuk-label govuk-radios__label" for="type-2">
+              View tasks and cases
+            </label>
+          </div>
+        </div>
+
+
+      </form>
+    </div>
+
+  </div>
+</div>

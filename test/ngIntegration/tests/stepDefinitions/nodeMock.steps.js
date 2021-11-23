@@ -20,8 +20,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Given('I navigate page route {string}', async function (routeUrl) {
+        await browser.get(routeUrl);
         await BrowserWaits.retryWithActionCallback(async () => {
-            await browser.get(routeUrl);
             await headerpage.waitForPrimaryNavDisplay();
             await browserUtil.waitForLD();
         });        

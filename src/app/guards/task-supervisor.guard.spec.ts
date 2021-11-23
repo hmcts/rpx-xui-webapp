@@ -1,14 +1,14 @@
-import { CaseAllocatorGuard } from './case-allocator.guard';
+import { TaskSupervisorGuard } from './task-supervisor.guard';
 
 describe('Allow Accept Terms guard', () => {
-    let guard: CaseAllocatorGuard;
+    let guard: TaskSupervisorGuard;
     let service: any;
     let router: any;
 
     beforeEach(() => {
         service = jasmine.createSpyObj('SessionStorageService', ['getItem']);
         router = jasmine.createSpyObj('router', ['navigateByUrl']);
-        guard = new CaseAllocatorGuard(service, router);
+        guard = new TaskSupervisorGuard(service, router);
     });
 
     it('is Truthy', () => {
@@ -16,7 +16,7 @@ describe('Allow Accept Terms guard', () => {
     });
 
     it('calls acceptGuard returns true', () => {
-        const user = {roles: ['case-allocator']};
+        const user = {roles: ['task-supervisor']};
         service.getItem.and.returnValue(JSON.stringify(user));
         const result = guard.canActivate();
         expect(router.navigateByUrl).not.toHaveBeenCalled();

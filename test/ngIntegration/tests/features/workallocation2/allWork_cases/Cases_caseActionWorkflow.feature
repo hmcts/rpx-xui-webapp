@@ -24,7 +24,7 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
             | Admin     | 1235 | admin_user1@gov.uk      | admin1 a       | Case worker   |
             | Admin     | 1236 | admin_user2@gov.uk      | admin2 a       | Case worker   |
 
-        Given I set Mock WA case property values
+        Given I set Mock WA case "allWorkCases" property values
             | index | key       | value      |
             | 0     | case_role | lead-judge |
 
@@ -89,7 +89,7 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
             | Admin     | 1235 | admin_user1@gov.uk      | admin1 a       | Case worker   |
             | Admin     | 1236 | admin_user2@gov.uk      | admin2 a       | Case worker   |
 
-        Given I set Mock WA case property values
+        Given I set Mock WA case "allWorkCases" property values
             | index | key       | value      |
             | 0     | case_role | case-manager |
         Given I start MockApp

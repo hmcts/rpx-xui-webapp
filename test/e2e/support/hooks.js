@@ -97,7 +97,7 @@ defineSupportCode(({ Before,After }) => {
     Before(async function (scenario) {
         global.scenarioData = {};
         const world = this
-       
+        
         CucumberReportLog.setScenarioWorld(this);
     });
 
@@ -134,7 +134,7 @@ defineSupportCode(({ Before,After }) => {
         }catch(err) {
             CucumberReportLog.AddMessage("Error in hooks with browserlogs or screenshots. See error details : " + err);
         }     
-        clearSession();
+        await clearSession();
        
 
     });

@@ -1,11 +1,9 @@
-import {Component, OnInit} from '@angular/core';
-import {Store} from '@ngrx/store';
-
-import {AppConstants} from '../../app.constants';
-import {AppTitleModel} from '../../models/app-title.model';
-import {NavItemsModel} from '../../models/nav-item.model';
-import {UserNavModel} from '../../models/user-nav.model';
-import {Theme} from '../app-header/app-header.component';
+import { Component, OnInit } from '@angular/core';
+import { ApplicationTheme } from 'src/app/models/theming.model';
+import { AppConstants } from '../../app.constants';
+import { AppTitleModel } from '../../models/app-title.model';
+import { NavItemsModel } from '../../models/nav-item.model';
+import { UserNavModel } from '../../models/user-nav.model';
 
 @Component({
   selector: 'exui-app-header-signed-out',
@@ -27,7 +25,7 @@ export class AppHeaderSignedOutComponent implements OnInit {
 
   public ngOnInit(): void {
 
-    this.setAppHeaderProperties(AppConstants.SIGNED_OUT_THEME);
+    this.setAppHeaderProperties(AppConstants.DEFAULT_USER_THEME);
   }
 
   /**
@@ -35,25 +33,22 @@ export class AppHeaderSignedOutComponent implements OnInit {
    *
    * Set the app header properties, in one function that takes in the application theme.
    */
-  public setAppHeaderProperties(applicationTheme: Theme): void {
+  public setAppHeaderProperties(applicationTheme: ApplicationTheme): void {
 
     const {
       appTitle,
-      accountNavigationItems,
       backgroundColor,
-      logoIsUsed,
-      logoType,
-      navigationItems,
+      logo,
       showFindCase,
       showCaseReferenceSearchBox,
     } = applicationTheme;
 
     this.appHeaderTitle = appTitle;
-    this.navItems = navigationItems;
-    this.userNav = accountNavigationItems;
+    this.navItems = [];
+    this.userNav = { label: '', items: [] };
     this.backgroundColor = backgroundColor;
-    this.logoType = logoType;
-    this.logoIsUsed = logoIsUsed;
+    this.logoType = logo;
+    this.logoIsUsed = logo !== 'none';
 
     this.showFindCase = showFindCase;
     this.showCaseReferenceSearchBox = showCaseReferenceSearchBox;

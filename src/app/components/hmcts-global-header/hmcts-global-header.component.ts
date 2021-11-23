@@ -99,7 +99,7 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
     items.forEach(
       item => (item.flags || []).concat(item.notFlags || []).forEach(
         flag => {
-          let flagName = this.isPlainFlag(flag) ? flag : flag.flagName;
+          const flagName = this.isPlainFlag(flag) ? flag : flag.flagName;
           obs.push(
             this.featureToggleService.isEnabled(flagName).pipe(
               tap(state => flags[flagName] = state)
@@ -115,8 +115,8 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
 
     return ((obs.length > 1 ? obs[0].combineLatest(obs.slice(1)) : obs[0]) as Observable<any>).pipe(
       map(_ => {
-        const i = items.filter(item => item.flags && item.flags.length > 0 ? item.flags.every(flag => this.isPlainFlag(flag) ? flags[flag] : flags[flag.flagName] === flag.value) : true);
-        return i.filter(item => item.notFlags && item.notFlags.length > 0 ? item.flags.every(flag => this.isPlainFlag(flag) ? !flags[flag] : flags[flag.flagName] !== flag.value) : true);
+        const i = items.filter(item => item.flags && item.flags.length > 0 ? item.flags.every(flag => this.isPlainFlag(flag) ? (flags[flag] as boolean) : (flags[flag.flagName] as string) === flag.value) : true);
+        return i.filter(item => item.notFlags && item.notFlags.length > 0 ? item.flags.every(flag => this.isPlainFlag(flag) ? !(flags[flag] as boolean) : (flags[flag.flagName] as string) !== flag.value) : true);
       })
     );
   }

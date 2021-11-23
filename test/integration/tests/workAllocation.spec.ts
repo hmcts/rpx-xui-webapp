@@ -330,10 +330,19 @@ describe('Work allocations MVP', () => {
             const response = await Request.post(`workallocation/task`, taskRequestObj.getRequestBody(), headers, 200);
             expect(response.status).to.equal(200);
             expect(response.data).to.have.all.keys('tasks', 'total_records');
+            console.log(response.data.tasks.length + " " + response.data.total_records);
+            //expect(response.data.tasks.length).to.equal(response.data.total_records > 10 ? 10 : response.data.total_records );
 
-        }
+            const totalRecords = response.data.total_records;
+            if (totalRecords > 10) {
+                taskRequestObj.withPageNumber(2);
+                const response = await Request.post(`workallocation/task`, taskRequestObj.getRequestBody(), headers, 200);
+                expect(response.status).to.equal(200);
+                expect(response.data).to.have.all.keys('tasks', 'total_records');
+                //expect(response.data.tasks.length).to.equal(response.data.total_records > 20 ? 10 : response.data.total_records - 10);
 
+            }
+
+        }); 
     });
 });
-
-

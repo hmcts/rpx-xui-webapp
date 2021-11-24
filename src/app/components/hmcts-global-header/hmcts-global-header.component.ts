@@ -3,10 +3,8 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
+import * as fromAppStore from '../../../app/store';
 import * as fromNocStore from '../../../noc/store';
-import { SearchStatePersistenceKey } from '../../../search/enums';
-import { SearchParameters } from '../../../search/models';
-import { SearchService } from '../../../search/services/search.service';
 import { NavItemsModel } from '../../models/nav-item.model';
 import { UserNavModel } from '../../models/user-nav.model';
 import { UserService } from '../../services/user/user.service';
@@ -47,21 +45,15 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
     right: new BehaviorSubject<NavItemsModel[]>([])
   };
 
-  constructor(
+  constructor(private readonly appStore: Store<fromAppStore.State>,
     public nocStore: Store<fromNocStore.State>,
     private readonly userService: UserService,
-    private readonly featureToggleService: FeatureToggleService,
-    private readonly searchService: SearchService
+    private readonly featureToggleService: FeatureToggleService
   ) { }
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes.items.currentValue !== changes.items.previousValue) {
       this.splitAndFilterNavItems(this.items);
-    }
-    if (changes.decorate16DigitCaseReferenceSearchBox) {
-      if (changes.decorate16DigitCaseReferenceSearchBox.currentValue) {
-        const searchParameters: SearchParameters = this.searchService.retrieveState(SearchStatePersistenceKey.SEARCH_PARAMS);
-      }
     }
   }
 
@@ -70,6 +62,9 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
   }
 
   public onEmitSubMenu(menuItem: any) {
+    // New menu item page load, do not decorate 16-digit case reference search box with error class
+    this.appStore.dispatch(new fromAppStore.Decorate16DigitCaseReferenceSearchBox(false));
+
     if (menuItem.href === '/noc') {
       this.nocStore.dispatch(new fromNocStore.Reset());
     }

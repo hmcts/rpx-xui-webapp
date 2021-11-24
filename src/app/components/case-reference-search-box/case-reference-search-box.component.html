@@ -2,9 +2,10 @@
   <form [formGroup]="formGroup" (submit)="onSubmit()">
     <p>16-digit case reference:</p>
     <input class="govuk-input"
-      [ngClass]="{ 'govuk-input--error': decorate16DigitCaseReferenceSearchBox }"
+      [ngClass]="{'govuk-input--error': decorate16DigitCaseReferenceSearchBox}"
       id="caseReference"
       name="caseReference"
+      formControlName="caseReference"
       type="text"
       spellcheck="false">
     <button class="govuk-button govuk-button--secondary">

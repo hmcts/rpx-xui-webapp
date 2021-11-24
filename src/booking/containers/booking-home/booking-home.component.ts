@@ -1,8 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { BookingNavigation } from '../../models/booking-navigation.interface';
-import { Booking } from '../../models/booking.interface';
+import { Booking, BookingNavigationEvent, NewBooking } from '../../models';
 import { BookingService } from '../../services';
 
 @Component({
@@ -11,10 +10,10 @@ import { BookingService } from '../../services';
 })
 export class BookingHomeComponent implements OnInit, OnDestroy {
 
-  @Input() public navEvent: BookingNavigation;
-  @Input() public bookingOptionIndex: number;
+  @Input() public newBooking: NewBooking;
 
-  @Output() public bookingOptionIndexChange = new EventEmitter<boolean>();
+  @Output() public newBookingChange = new EventEmitter<NewBooking>();
+  @Output() public eventTrigger = new EventEmitter();
 
   public bookingTypeForm: FormGroup;
   public existingBookings: Booking[];
@@ -37,8 +36,8 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  public onChange(index) {
-    this.bookingOptionIndexChange.emit(index);
+  public onSelectOption(index) {
+    this.newBooking.bookingOptionIndex = index;
   }
 
   public assignBookingLocation() {
@@ -58,6 +57,10 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
     if (this.bookingLocationSubscription) {
       this.bookingLocationSubscription.unsubscribe();
     }
+  }
+
+  public onEventTrigger() {
+    this.eventTrigger.emit(BookingNavigationEvent.HOMECONTINUE);
   }
 
 }

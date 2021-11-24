@@ -109,7 +109,7 @@ const CASE_VIEW: CaseView = {
   ]
 };
 
-fdescribe('TasksContainerComponent', () => {
+describe('TasksContainerComponent', () => {
   const mockAlertService = jasmine.createSpyObj('alertService', ['success', 'setPreserveAlerts', 'error']);
   const mockWACaseService = jasmine.createSpyObj('waCaseService', ['getTasksByCaseId']);
   let component: TasksContainerComponent;

@@ -3,28 +3,29 @@
   <div class="page">
     <main id="content" role="main">
       <div class="govuk-grid-row">
-        <exui-booking-navigation (eventTrigger)="onNavEvent($event)" [currentNavigationState]="bookingNavigationCurrentState" [bookingOptionIndex]="bookingOptionIndex">
+        <a class="govuk-back-link" href="javascript:void(0)" *ngIf="isComponentVisible(bookingNavigationCurrentState, backVisibilityStates)" (click)="onNavEvent(bookingNavigationEvent.BACK)">Back</a>
           <div class="govuk-main-wrapper">
-            <exui-booking-home #bookingHome
+            <exui-booking-home
               *ngIf="isComponentVisible(bookingNavigationCurrentState, bookingHomeVisibilityStates)"
-              [navEvent]="navEvent"
-              [(bookingOptionIndex)]="bookingOptionIndex"
-              >
+              (eventTrigger)="onNavEvent($event)"
+              [(newBooking)]="newBooking">
             </exui-booking-home>
-            <exui-booking-location #bookingLocation
+            <exui-booking-location
               *ngIf="isComponentVisible(bookingNavigationCurrentState, bookingLocationVisibilityStates)"
-              [navEvent]="navEvent">
+              (eventTrigger)="onNavEvent($event)"
+              [(newBooking)]="newBooking">
             </exui-booking-location>
-            <exui-booking-date #bookingDate
+            <exui-booking-date
               *ngIf="isComponentVisible(bookingNavigationCurrentState, bookingDateVisibilityStates)"
-              [navEvent]="navEvent">
+              (eventTrigger)="onNavEvent($event)"
+              [(newBooking)]="newBooking">
             </exui-booking-date>
-            <exui-booking-check #bookingCheck
+            <exui-booking-check
               *ngIf="isComponentVisible(bookingNavigationCurrentState, bookingCheckVisibilityStates)"
-              [navEvent]="navEvent">
+              (eventTrigger)="onNavEvent($event)"
+              [(newBooking)]="newBooking">
             </exui-booking-check>
           </div>
-        </exui-booking-navigation>
       </div>
     </main>
   </div>

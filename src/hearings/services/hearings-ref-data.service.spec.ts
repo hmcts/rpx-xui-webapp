@@ -1,4 +1,4 @@
-import { HearingPriorityType } from '../models/hearings.enum';
+import { HearingRefDataCategory } from '../models/hearings.enum';
 import { HearingsRefDataService } from './hearings-ref-data.service';
 
 describe('Hearings Reference Data service', () => {
@@ -6,7 +6,7 @@ describe('Hearings Reference Data service', () => {
   describe('HearingsRefDataService', () => {
     it('getForService should make correct api call', () => {
       const service = new HearingsRefDataService(mockHttpService);
-      service.getRefData(HearingPriorityType.Priority, HearingPriorityType.SSCS);
+      service.getRefData(HearingRefDataCategory.Priority, 'SSCS');
       expect(mockHttpService.get).toHaveBeenCalledWith(`api/hearings/getRefData?category=Priority&service=SSCS`);
     });
   });

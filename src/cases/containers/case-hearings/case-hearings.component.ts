@@ -23,7 +23,7 @@ export class CaseHearingsComponent implements OnInit {
   public pastAndCancelledHearings$: Observable<HearingListViewModel[]>;
   public pastAndCancelledStatus: EXUISectionStatusEnum = EXUISectionStatusEnum.PAST_AND_CANCELLED;
   public hearingsActions: Actions[] = [Actions.READ];
-  public userRoles: Observable<string[]>;
+  public userRoles$: Observable<string[]>;
   public hasRequestAction: boolean = false;
 
   constructor(private readonly appStore: Store<fromAppStore.State>,
@@ -31,7 +31,7 @@ export class CaseHearingsComponent implements OnInit {
               private readonly activatedRoute: ActivatedRoute,
               private readonly roleCategoryMappingService: RoleCategoryMappingService) {
     const caseID = this.activatedRoute.snapshot.params.cid;
-    this.userRoles = this.appStore.pipe(select(fromAppStore.getUserDetails)).pipe(
+    this.userRoles$ = this.appStore.pipe(select(fromAppStore.getUserDetails)).pipe(
       map(userDetails => userDetails.userInfo.roles)
     );
     this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(caseID));
@@ -40,7 +40,7 @@ export class CaseHearingsComponent implements OnInit {
   public ngOnInit(): void {
     this.upcomingHearings$ = this.getHearingListByStatus(EXUISectionStatusEnum.UPCOMING);
     this.pastAndCancelledHearings$ = this.getHearingListByStatus(EXUISectionStatusEnum.PAST_AND_CANCELLED);
-    this.roleCategoryMappingService.isJudicialOrLegalOpsCategory(this.userRoles).subscribe(
+    this.roleCategoryMappingService.isJudicialOrLegalOpsCategory(this.userRoles$).subscribe(
       userRole => {
         if (userRole === UserRole.LegalOps) {
           this.hearingsActions = [...this.hearingsActions, Actions.CREATE, Actions.UPDATE, Actions.DELETE];

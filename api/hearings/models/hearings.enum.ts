@@ -51,3 +51,30 @@ export enum EXUIDisplayStatusEnum {
   AWAITING_ACTUALS = 'AWAITING ACTUALS',
   ADJOURNED = 'ADJOURNED',
 }
+
+export enum RequirementType {
+  MUSTINC = 'MUSTINC',
+  OPTINC = 'OPTINC',
+  EXCLUDE = 'EXCLUDE',
+}
+
+export enum PartyType {
+  IND = 'IND',
+  ORG = 'ORG',
+}
+
+export enum DOW {
+  Monday = 'Monday',
+  Tuesday = 'Tuesday',
+  Wednesday = 'Wednesday',
+  Thursday = 'Thursday',
+  Friday = 'Friday',
+  Saturday = 'Saturday',
+  Sunday = 'Sunday',
+}
+
+export enum DOWUnavailabilityType {
+  AM = 'AM',
+  PM = 'PM',
+  ALL = 'ALL',
+}

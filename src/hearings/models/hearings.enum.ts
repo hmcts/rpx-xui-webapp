@@ -78,3 +78,8 @@ export enum DOWUnavailabilityType {
   PM = 'PM',
   ALL = 'ALL',
 }
+
+export enum HearingPriorityType {
+  Priority = 'Priority',
+  SSCS = 'SSCS',
+}

@@ -3,11 +3,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { RefDataModel } from 'api/hearings/models/refData.model';
-import { Observable } from 'rxjs';
-import { ErrorMessage } from 'src/app/models';
+import { ErrorMessage } from '../../../../app/models';
+import { RefDataModel } from '../../../../hearings/models/refData.model';
 import { DatePriorityHearingComponent } from './date-priority-hearing.component';
-
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -21,15 +19,15 @@ describe('DatePriorityHearingComponent', () => {
   let component: DatePriorityHearingComponent;
   let fixture: ComponentFixture<DatePriorityHearingComponent>;
   let router: Router;
-  const PRIORITIES: RefDataModel[] = [
+  const priorities: RefDataModel[] = [
     {
-      key: 'string',
-      value_en: 'string',
-      value_cy: 'string',
-      hintText_EN: 'string',
-      hintTextCY: 'string',
-      order: 123,
-      parentKey: 'string'
+      key: 'urgent',
+      value_en: 'Urgent',
+      value_cy: '',
+      hintText_EN: 'Urgent',
+      hintTextCY: '',
+      order: 1,
+      parentKey: null,
     }];
 
   beforeEach(async(() => {
@@ -43,9 +41,7 @@ describe('DatePriorityHearingComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                hearingPriorities: {
-                  priorities: PRIORITIES
-                }
+                hearingPriorities: priorities
               }
             },
           }
@@ -64,5 +60,14 @@ describe('DatePriorityHearingComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should set checkedHearingAvailability', () => {
+    const hearingAvailability = component.priorityForm.controls.hearingAvailability;
+    component.showDateAvailability();
+    expect(component.checkedHearingAvailability).toBe(null);
+    hearingAvailability.setValue('yes');
+    component.showDateAvailability();
+    expect(component.checkedHearingAvailability).toBe('yes');
   });
 });

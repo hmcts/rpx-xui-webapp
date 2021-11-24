@@ -3,7 +3,6 @@ import { of } from 'rxjs';
 import { RefDataModel } from './../../../../api/hearings/models/refData.model';
 import { PriorityResolver } from './priority.resolve';
 
-
 describe('Hearings Priority Resolver', () => {
   it('resolves on success', () => {
     const mockHearingDataService = jasmine.createSpyObj('HearingsDataService', ['getPriorities']);
@@ -16,14 +15,10 @@ describe('Hearings Priority Resolver', () => {
         return 'somevalue';
       }
     };
-
     const hearingData$ = hearingResolver.resolve(route, {} as RouterStateSnapshot);
     hearingData$.subscribe(hearingDataPriorities => {
-      expect(hearingDataPriorities.priorities).toEqual([]);
+      expect(hearingDataPriorities).toEqual([]);
       expect(mockHearingDataService.getPriorities).toHaveBeenCalled();
     });
   });
-
-
-
 });

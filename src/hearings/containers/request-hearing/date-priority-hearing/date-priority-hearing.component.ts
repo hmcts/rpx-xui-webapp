@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
-import { RefDataModel } from 'api/hearings/models/refData.model';
-
+import { RefDataModel } from '../../../../hearings/models/refData.model';
 
 @Component({
   selector: 'exui-date-priority-hearing',
@@ -20,21 +19,16 @@ export class DatePriorityHearingComponent implements OnInit {
   public latestHearingDate: GovUiConfigModel;
 
   constructor(private readonly formBuilder: FormBuilder,
-              private readonly route: ActivatedRoute) { }
+    private readonly route: ActivatedRoute) { }
 
   public ngOnInit(): void {
     this.initDateConfig();
     this.initForm();
-
-    this.priorities = this.route.snapshot.data.hearingPriorities.priorities.sort((a, b) => (a.order < b.order ? -1 : 1));
-
+    this.priorities = this.route.snapshot.data.hearingPriorities.sort((currentPriority, nextPriority) => (currentPriority.order < nextPriority.order ? -1 : 1));
     // TODO: Get dates from a service
     this.partiesNotAvailableDates = ['2 November 2021', '3 November 2021', '4 November 2021'];
   }
 
-  /**
-   * Inits date config
-   */
   public initDateConfig(): void {
     this.firstHearingDate = {
       id: 'firstHearingDate',
@@ -60,15 +54,21 @@ export class DatePriorityHearingComponent implements OnInit {
     };
   }
 
-  /**
-   * Inits form
-   */
   public initForm(): void {
     this.priorityForm = this.formBuilder.group({
       durationLength: this.formBuilder.group({
         hours: [],
         minutes: []
       }),
+      firstHearingDate_day: [],
+      firstHearingDate_month: [],
+      firstHearingDate_year: [],
+      earliestHearingDate_day: [],
+      earliestHearingDate_month: [],
+      earliestHearingDate_year: [],
+      latestHearingDate_day: [],
+      latestHearingDate_month: [],
+      latestHearingDate_year: [],
       hearingAvailability: [],
     });
   }
@@ -76,5 +76,4 @@ export class DatePriorityHearingComponent implements OnInit {
   public showDateAvailability(): void {
     this.checkedHearingAvailability = this.priorityForm.get('hearingAvailability').value;
   }
-
 }

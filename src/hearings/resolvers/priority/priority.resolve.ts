@@ -1,26 +1,25 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
-import { RefDataModel } from 'api/hearings/models/refData.model';
-import { forkJoin, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { HearingsDataService } from 'src/hearings/services/hearings-data.service';
+import { HearingPriorityType } from 'src/hearings/models/hearings.enum';
+import { RefDataModel } from '../../../hearings/models/refData.model';
+import { HearingsRefDataService } from '../../services/hearings-ref-data.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PriorityResolver implements Resolve<{ priorities: RefDataModel[] }> {
+export class PriorityResolver implements Resolve<RefDataModel[]> {
   constructor(
     private readonly router: Router,
-    private readonly hearingsDataService: HearingsDataService
+    private readonly hearingsDataService: HearingsRefDataService
   ) { }
 
-  public resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<{ priorities: RefDataModel[] }> {
-    const priorities$ = this.hearingsDataService.getPriorities().pipe(
+  public resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<RefDataModel[]> {
+    return this.hearingsDataService.getPriorities(HearingPriorityType.Priority, HearingPriorityType.SSCS).pipe(
       catchError(error => {
         return [];
       })
-    ) as Observable<RefDataModel[]>;
-
-    return forkJoin({ priorities: priorities$ });
+    );
   }
 }

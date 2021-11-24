@@ -37,7 +37,6 @@ import {
   constructRoleAssignmentCaseAllocatorQuery,
   constructRoleAssignmentQuery,
   filterByLocationId,
-  getCaseAllocatorLocations,
   getCaseIdListFromRoles,
   getCaseTypesFromRoleAssignments,
   getRoleAssignmentsByQuery,
@@ -353,19 +352,19 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     // get users case allocations
     const caseAllocatorQuery = constructRoleAssignmentCaseAllocatorQuery(searchParameters, req);
     logger.info('case-allocator query', JSON.stringify(caseAllocatorQuery, null, 2));
-    const caseAllocatorResult = await getRoleAssignmentsByQuery(caseAllocatorQuery, req);
     // get case allocator locations
-    const locations = caseAllocatorResult.roleAssignmentResponse
-      ? getCaseAllocatorLocations(caseAllocatorResult.roleAssignmentResponse)
-      : [];
-    logger.info('case-allocator locations', locations);
+    const locations = [];
+    searchParameters.filter(param => param.key === 'location_id').forEach(location => {
+      if (location.values !== '') {
+        locations.push(location.values);
+      }
+    });
+    console.log('locations', locations);
 
     // get all role assignments
     const query = constructRoleAssignmentQuery(searchParameters);
     logger.info('cases query', JSON.stringify(query, null, 2));
     const roleAssignmentResult = await getRoleAssignmentsByQuery(query, req);
-
-    logger.info('returned cases', JSON.stringify(roleAssignmentResult.roleAssignmentResponse));
 
     const caseTypes: string = getCaseTypesFromRoleAssignments(roleAssignmentResult.roleAssignmentResponse);
     const queryParams = caseTypes.length ? caseTypes : 'Asylum';

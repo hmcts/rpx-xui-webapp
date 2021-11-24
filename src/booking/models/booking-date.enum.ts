@@ -2,8 +2,8 @@ export enum TimeOption {
   TODAY = 'Today only (ends at midnight)',
   WEEK = 'This week (end on Sunday at midnight )',
   DATERANGE = 'Select a date range',
-  BOKINGSTART = 'Booking start',
-  BOKINGEND = 'Booking ends'
+  BOOKINGSTART = 'Booking start',
+  BOOKINGEND = 'Booking ends'
 }
 
 export enum BookingTimePageText {

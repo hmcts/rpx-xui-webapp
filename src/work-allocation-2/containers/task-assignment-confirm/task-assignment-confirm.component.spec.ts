@@ -4,10 +4,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of, throwError } from 'rxjs';
 import { PersonRole } from '../../../../api/workAllocation2/interfaces/person';
-import { SessionStorageService } from '../../../app/services';
 import { PriorityFieldComponentModule } from '../../../work-allocation-2/components/priority-field/priority.module';
 import { TaskActionConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
@@ -40,7 +40,7 @@ describe('TaskAssignmentConfirmComponent', () => {
   const mockTasks = getMockTasks();
   // Provide a fake implementation of assignTask(), which returns different responses based on the task ID
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['assignTask']);
-  const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem']);
+  const mockSessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem']);
   mockTaskService.assignTask.and.callFake((taskId: any) => {
     switch (taskId) {
       // For testing recognised error status 401
@@ -151,22 +151,22 @@ describe('TaskAssignmentConfirmComponent', () => {
   });
 
   it('should redirect to the "All work" page on cancelling task assignment', () => {
-    mockSessionStorageService.getItem.and.returnValue('all-work/tasks');
+    window.history.pushState({returnUrl: 'all-work/tasks', showAssigneeColumn: false}, '', 'all-work/tasks');
     const navigateSpy = spyOn(router, 'navigate');
     component.onCancel();
     expect(navigateSpy).toHaveBeenCalledWith(['all-work/tasks']);
   });
 
   it('should redirect to the fallback URL (\'\') on cancelling task assignment, if the return URL is not in the history', () => {
-    mockSessionStorageService.getItem.and.returnValue('');
+    window.history.pushState({}, '');
     const navigateSpy = spyOn(router, 'navigate');
     component.onCancel();
     expect(navigateSpy).toHaveBeenCalledWith(['']);
   });
 
   it('should return to the "All work" page on successful task assignment', () => {
+    window.history.pushState({returnUrl: 'all-work/tasks', showAssigneeColumn: false}, '', 'all-work/tasks');
     const navigateSpy = spyOn(router, 'navigate');
-    mockSessionStorageService.getItem.and.returnValue('all-work/tasks');
     component.onSubmit();
     expect(mockTaskService.assignTask).toHaveBeenCalledWith('task1111111', {userId: undefined});
     expect(navigateSpy).toHaveBeenCalledWith(['all-work/tasks'], {
@@ -180,7 +180,6 @@ describe('TaskAssignmentConfirmComponent', () => {
   it('should set the correct confirmation message on successful task assignment', () => {
     component.verb = TaskActionType.Assign;
     fixture.detectChanges();
-    mockSessionStorageService.getItem.and.returnValue('');
     const message = {
       type: InfoMessageType.SUCCESS,
       message: InfoMessage.ASSIGNED_TASK
@@ -190,8 +189,8 @@ describe('TaskAssignmentConfirmComponent', () => {
   });
 
   it('should return to the "My work" page on successful task reassignment', () => {
+    window.history.pushState({returnUrl: 'my-work/list', showAssigneeColumn: false}, '', 'my-work/list');
     const navigateSpy = spyOn(router, 'navigate');
-    mockSessionStorageService.getItem.and.returnValue('my-work/list');
     component.onSubmit();
     expect(mockTaskService.assignTask).toHaveBeenCalledWith('task1111111', {userId: undefined});
     expect(navigateSpy).toHaveBeenCalledWith(['my-work/list'], {
@@ -205,7 +204,6 @@ describe('TaskAssignmentConfirmComponent', () => {
   it('should set the correct confirmation message on successful task reassignment', () => {
     component.verb = TaskActionType.Reassign;
     fixture.detectChanges();
-    mockSessionStorageService.getItem.and.returnValue('all-work/tasks');
     const message = {
       type: InfoMessageType.SUCCESS,
       message: InfoMessage.REASSIGNED_TASK
@@ -216,7 +214,6 @@ describe('TaskAssignmentConfirmComponent', () => {
 
   it('should handle an HTTP 401 error on submission', () => {
     // Set dummy task ID to trigger an error response from the fake assignTask() method
-    mockSessionStorageService.getItem.and.returnValue('all-work/tasks');
     component.taskId = '401';
     fixture.detectChanges();
     const navigateSpy = spyOn(router, 'navigate');
@@ -227,7 +224,6 @@ describe('TaskAssignmentConfirmComponent', () => {
 
   it('should handle an HTTP 500 error on submission', () => {
     // Set dummy task ID to trigger an error response from the fake assignTask() method
-    mockSessionStorageService.getItem.and.returnValue('all-work/tasks');
     component.taskId = '500';
     fixture.detectChanges();
     const navigateSpy = spyOn(router, 'navigate');
@@ -238,7 +234,6 @@ describe('TaskAssignmentConfirmComponent', () => {
 
   it('should handle an unknown error on submission', () => {
     // Set dummy task ID to trigger an error response from the fake assignTask() method
-    mockSessionStorageService.getItem.and.returnValue('');
     component.taskId = '999';
     fixture.detectChanges();
     const message = {
@@ -254,14 +249,6 @@ describe('TaskAssignmentConfirmComponent', () => {
         retainMessages: true
       }
     });
-  });
-
-  afterEach(() => {
-    mockSessionStorageService.getItem.and.returnValue('{"id":"db17f6f7-1abf-4223-8b5e-1eece04ee5d8","forename":"Case","surname":"Officer","email":' +
-      '"CRD_func_test_demo_user@justice.gov.uk","active":true,"roles":["case-allocator","caseworker","caseworker-ia",' +
-      '"caseworker-ia-caseofficer","cwd-user","hmcts-legal-operations",' +
-      '"task-supervisor","tribunal-caseworker"],"roleCategory":"LEGAL_OPERATIONS"}');
-    fixture.destroy();
   });
 
 });

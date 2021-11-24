@@ -6,7 +6,6 @@ import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { ErrorMessage } from '../../../app/models';
-import { SessionStorageService } from '../../../app/services';
 import * as fromRoot from '../../../app/store';
 import { SortField } from '../../models/common';
 
@@ -16,7 +15,6 @@ import { SortField } from '../../models/common';
   styleUrls: ['task-home.component.scss']
 })
 export class TaskHomeComponent implements OnInit, OnDestroy {
-  private static readonly CLAIM_URL_RETURN_KEY = 'claimReturnUrl';
   public persistence$: Observable<FilterPersistence>;
   public sortedBy: SortField;
   public pageTitle: string;
@@ -39,8 +37,7 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly store: Store<fromRoot.State>,
-    private readonly router: Router,
-    private readonly sessionStorageService: SessionStorageService,
+    private readonly router: Router
   ) {
   }
 
@@ -63,7 +60,6 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
 
     // Set up the page data.
     this.setupPageData(this.router.routerState.root.snapshot);
-    this.sessionStorageService.setItem(TaskHomeComponent.CLAIM_URL_RETURN_KEY, window.location.pathname);
   }
 
   public ngOnDestroy(): void {

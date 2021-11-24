@@ -3,7 +3,8 @@ import { CaseTaskComponent } from './case-task.component';
 
 describe('CaseTaskComponent', () => {
   const sessionStorage = jasmine.createSpyObj('sessionStorage', ['getItem']);
-  const component = new CaseTaskComponent(sessionStorage);
+  const router = jasmine.createSpyObj('router', ['']);
+  const component = new CaseTaskComponent(sessionStorage, router);
   it('getManageOptions no assignee no permissions', () => {
     const task: Task = {
       assignee: null,

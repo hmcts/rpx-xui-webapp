@@ -6,7 +6,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs/internal/observable/of';
 import { ErrorMessageComponent } from '../../../app/components';
-import { SessionStorageService } from '../../../app/services';
 import { ALL_LOCATIONS } from '../../components/constants/locations';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { LocationDataService, WorkAllocationTaskService } from '../../services';
@@ -27,7 +26,6 @@ describe('AllWorkHomeComponent', () => {
   let fixture: ComponentFixture<WrapperComponent>;
   let router: Router;
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
-  const sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['setItem']);
   const SELECTED_LOCATIONS = { id: 'locations', fields: [ { name: 'locations', value: ['231596', '698118'] }] };
   const mockFilterService: any = {
     getStream: () => of(SELECTED_LOCATIONS),
@@ -51,7 +49,6 @@ describe('AllWorkHomeComponent', () => {
       declarations: [AllWorkHomeComponent, WrapperComponent, InfoMessageContainerComponent, ErrorMessageComponent],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
-        SessionStorageService,
         { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },
         {
           provide: FilterService, useValue: mockFilterService

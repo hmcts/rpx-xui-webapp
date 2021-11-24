@@ -1,4 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { TaskActionIds } from '../../../work-allocation-2/enums';
 import { TaskPermission } from '../../../work-allocation-2/models/tasks/task-permission.model';
 import { UserInfo, UserRole } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
@@ -20,11 +22,12 @@ export class CaseTaskComponent implements OnInit {
     CaseTaskComponent.CASE_ID_VARIABLE,
     CaseTaskComponent.TASK_ID_VARIABLE
   ];
-  public manageOptions: { text: string, path: string }[];
+  public manageOptions: { text: string, path: string, state: any }[];
   public isUserJudicial: boolean;
   private pTask: Task;
+  private returnUrl = '';
 
-  constructor(private readonly sessionStorageService: SessionStorageService) {
+  constructor(private readonly sessionStorageService: SessionStorageService, private router: Router) {
   }
 
   public get task(): Task {
@@ -50,6 +53,7 @@ export class CaseTaskComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    this.returnUrl = this.router.url;
     this.manageOptions = this.getManageOptions(this.task);
   }
 
@@ -76,31 +80,34 @@ export class CaseTaskComponent implements OnInit {
     return this.isUserJudicial ? 'Task created' : 'Due date';
   }
 
-  public getManageOptions(task: Task): {text: string, path: string} [] {
+  public getManageOptions(task: Task): {text: string, path: string, state: any} [] {
+    const state = {
+      returnUrl: this.returnUrl,
+    };
     if (!task.assignee) {
       if (task.permissions.length === 0 || (task.permissions.length === 1 && task.permissions.includes(TaskPermission.MANAGE))) {
         return [];
       } else {
-        return [{text: 'Assign to me', path: `/work/${task.id}/assign`}];
+        return [{text: 'Assign to me', path: `/work/${task.id}/assign`, state}];
       }
     }
 
     if (this.isTaskAssignedToCurrentUser(task)) {
       return [
-        {text: 'Reassign task', path: `/work/${task.id}/reassign`},
-        {text: 'Unassign task', path: `/work/${task.id}/unclaim`}
+        {text: 'Reassign task', path: `/work/${task.id}/reassign`, state},
+        {text: 'Unassign task', path: `/work/${task.id}/unclaim`, state}
       ];
     } else {
       if (task.permissions.includes(TaskPermission.EXECUTE) && task.permissions.includes(TaskPermission.MANAGE)) {
         return [
-          {text: 'Assign to me', path: `/work/${task.id}/assign`},
-          {text: 'Reassign task', path: `/work/${task.id}/reassign`},
-          {text: 'Unassign task', path: `/work/${task.id}/unclaim`}
+          {text: 'Assign to me', path: `/work/${task.id}/assign`, state},
+          {text: 'Reassign task', path: `/work/${task.id}/reassign`, state},
+          {text: 'Unassign task', path: `/work/${task.id}/unclaim`, state}
         ];
       } else if (task.permissions.includes(TaskPermission.MANAGE)) {
         return [
-          {text: 'Reassign task', path: `/work/${task.id}/reassign`},
-          {text: 'Unassign task', path: `/work/${task.id}/unclaim`}
+          {text: 'Reassign task', path: `/work/${task.id}/reassign`, state},
+          {text: 'Unassign task', path: `/work/${task.id}/unclaim`, state}
         ];
       } else {
         return [];

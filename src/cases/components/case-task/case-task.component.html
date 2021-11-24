@@ -31,7 +31,7 @@
         </dt>
         <dd class="govuk-summary-list__value">
             <ng-container *ngFor="let option of manageOptions">
-                <a [routerLink]="option.path" class="right">{{option.text}}</a>
+                <a [routerLink]="option.path" [state]="option.state" class="right">{{option.text}}</a>
             </ng-container>
         </dd>
     </div>

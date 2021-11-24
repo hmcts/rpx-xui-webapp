@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
 import { Person } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 import { map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
-import { SessionStorageService } from '../../../app/services';
 import { AssignHintText, InfoMessage, InfoMessageType, TaskActionType } from '../../enums';
 import { InformationMessage } from '../../models/comms';
 import { Task } from '../../models/tasks';
@@ -16,7 +16,7 @@ import { handleFatalErrors } from '../../utils';
   templateUrl: './task-assignment-confirm.component.html'
 })
 export class TaskAssignmentConfirmComponent implements OnInit {
-  private static readonly CLAIM_URL_RETURN_KEY = 'claimReturnUrl';
+
   public verb: TaskActionType;
   public taskId: string;
   public rootPath: string;
@@ -40,10 +40,9 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     // buttons, which clear the `window.history.state` object
     let url: string = '';
 
-    const value = this.sessionStorageService.getItem(TaskAssignmentConfirmComponent.CLAIM_URL_RETURN_KEY);
     // The returnUrl is undefined if the user has used browser navigation buttons, so check for its presence
-    if (value) {
-      url = value;
+    if (window && window.history && window.history.state && window.history.state.returnUrl) {
+      url = window.history.state.returnUrl;
     }
 
     return url;

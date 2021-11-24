@@ -1,0 +1,9 @@
+<div class="govuk-form-group">
+  <h1 class="govuk-heading-l">
+    <span class="govuk-caption-l">Work access</span>
+    Select a location
+  </h1>
+  <div class="govuk-hint">Enter the location name, for example, Taylor House Tribunal Hearing Centre.</div>
+  <input class="govuk-input govuk-input--width-30" id="location" name="location" type="text" value="{{newBooking.locationName}}" (change)="onInputValueChange($event.target.value)"><br />
+</div>
+<button class="button" type="button" (click)="onEventTrigger()">Continue</button>

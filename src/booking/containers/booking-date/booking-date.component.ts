@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { BookingNavigation , BookingNavigationEvent, NewBooking} from '../../models';
+import {  BookingNavigationEvent, NewBooking} from '../../models';
 import {
   FormBuilder,
   FormControl,
@@ -19,9 +19,8 @@ import { GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
   styleUrls: ['./booking-date.component.scss'],
 })
 export class BookingDateComponent implements OnInit {
-  @Input() public navEvent: BookingNavigation;
-  @Input() public newBooking: NewBooking;
 
+  @Input() public newBooking: NewBooking;
   @Output() public newBookingChange = new EventEmitter<NewBooking>();
   @Output() public eventTrigger = new EventEmitter();
   public title: string;
@@ -75,7 +74,7 @@ export class BookingDateComponent implements OnInit {
   }
 
   public onEventTrigger() {
-    this.eventTrigger.emit(BookingNavigationEvent.HOMECONTINUE);
+    this.eventTrigger.emit(BookingNavigationEvent.CONFIRMBOOKINGDATESUBMIT);
   }
 }
 

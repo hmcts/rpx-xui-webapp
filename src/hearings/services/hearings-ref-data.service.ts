@@ -7,7 +7,7 @@ import { RefDataModel } from '../models/refData.model';
 export class HearingsRefDataService {
   public constructor(private readonly http: HttpClient) { }
 
-  public getPriorities(category: string, service: string): Observable<RefDataModel[]> {
+  public getRefData(category: string, service: string): Observable<RefDataModel[]> {
     return this.http.get<RefDataModel[]>(`api/hearings/getRefData?category=${category}&service=${service}`);
   }
 }

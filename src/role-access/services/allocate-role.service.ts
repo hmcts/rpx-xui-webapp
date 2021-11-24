@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { SessionStorageService } from '../../app/services';
 import { Actions, AllocateRoleStateData, CaseRole, Role } from '../models';
 
 @Injectable({ providedIn: 'root' })
@@ -8,7 +10,7 @@ export class AllocateRoleService {
   public static allocateRoleBaseUrl = '/api/role-access/allocate-role';
   public static roleUrl = '/api/role-access/roles';
   public backUrl: string;
-  constructor(private readonly http: HttpClient) { }
+  constructor(private readonly http: HttpClient, private readonly sessionStorageService: SessionStorageService) { }
 
   public confirmAllocation(allocateRoleStateData: AllocateRoleStateData) {
     const action: Actions = allocateRoleStateData.action;
@@ -26,7 +28,13 @@ export class AllocateRoleService {
   }
 
   public getValidRoles(): Observable<Role[]> {
-    return this.http.get<Role[]>(`${AllocateRoleService.allocateRoleBaseUrl}/valid-roles`);
+    if (this.sessionStorageService.getItem('AllRoles')) {
+      const roles = JSON.parse(this.sessionStorageService.getItem('AllRoles'));
+      return of(roles as Role[]);
+    }
+    return this.http.get<Role[]>(`${AllocateRoleService.allocateRoleBaseUrl}/valid-roles`).pipe(
+        tap(roles => this.sessionStorageService.setItem('AllRoles', JSON.stringify(roles)))
+    );
   }
 
   public getCaseRoles(caseId: string, jurisdiction: string, caseType: string, assignmentId?: string): Observable<CaseRole[]> {

@@ -1,9 +1,10 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, Jurisdiction, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
+import { JurisdictionsService } from '../../../work-allocation-2/services/juridictions.service';
 import { AppConstants } from '../../../app/app.constants';
 import { SessionStorageService } from '../../../app/services';
 import { Actions } from '../../../role-access/models';
@@ -15,6 +16,8 @@ import { SortField } from '../../models/common';
 import { Location, PaginationParameter, SearchCaseRequest, SortParameter } from '../../models/dtos';
 import { CaseworkerDataService, InfoMessageCommService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationCaseService } from '../../services';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
+import { AllocateRoleService } from '../../../role-access/services';
+import { Role } from '../../../role-access/models';
 
 @Component({
   templateUrl: 'work-case-list-wrapper.component.html',
@@ -32,6 +35,8 @@ export class WorkCaseListWrapperComponent implements OnInit {
   public isPaginationEnabled$: Observable<boolean>;
   public backUrl: string = null;
   private pCases: Case[];
+  protected allJurisdictions: Jurisdiction[];
+  protected allRoles: Role[];
   /**
    * Mock CaseServiceConfig.
    */
@@ -57,7 +62,9 @@ export class WorkCaseListWrapperComponent implements OnInit {
     protected readonly loadingService: LoadingService,
     protected readonly locationService: LocationDataService,
     protected readonly featureToggleService: FeatureToggleService,
-    protected readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService
+    protected readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService,
+    protected readonly jurisdictionsService: JurisdictionsService,
+    protected readonly rolesService: AllocateRoleService
   ) {
     this.isPaginationEnabled$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.waMvpPaginationFeature);
   }
@@ -121,6 +128,8 @@ export class WorkCaseListWrapperComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    this.rolesService.getValidRoles().subscribe(allRoles => this.allRoles = allRoles);
+    this.jurisdictionsService.getJurisdictions().subscribe(jur => this.allJurisdictions = jur);
     this.setupCaseWorkers();
     this.loadCases();
   }
@@ -268,7 +277,15 @@ export class WorkCaseListWrapperComponent implements OnInit {
       this.loadingService.unregister(loadingToken);
       this.cases = result.cases;
       this.casesTotal = result.total_records;
-      this.cases.forEach(item => item.assigneeName = getAssigneeName(this.caseworkers, item.assignee));
+      this.cases.forEach(item => {
+        item.assigneeName = getAssigneeName(this.caseworkers, item.assignee);
+        if (this.allJurisdictions && this.allJurisdictions.find(jur => jur.id === item.jurisdiction)) {
+          item.jurisdiction = this.allJurisdictions.find(jur => jur.id === item.jurisdiction).name;
+        }
+        if (this.allRoles && this.allRoles.find(role => role.roleId === item.case_role)) {
+          item.case_role = this.allRoles.find(role => role.roleId === item.case_role).roleName;
+        }
+      });
       this.ref.detectChanges();
     }, error => {
       this.loadingService.unregister(loadingToken);

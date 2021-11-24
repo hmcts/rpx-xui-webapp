@@ -1,22 +1,45 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
-import { Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-import { HearingPriorityType } from '../../../hearings/models/hearings.enum';
+import { Resolve } from '@angular/router';
+import { select, Store } from '@ngrx/store';
+import { Observable, of } from 'rxjs';
+import { catchError, map, switchMap, take } from 'rxjs/operators';
+import { HearingRefDataCategory } from '../../../hearings/models/hearings.enum';
 import { RefDataModel } from '../../../hearings/models/refData.model';
+import * as fromHearingStore from '../../../hearings/store';
 import { HearingsRefDataService } from '../../services/hearings-ref-data.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PriorityResolver implements Resolve<RefDataModel[]> {
+  public serviceId: string = 'SSCS';
+
   constructor(
-    private readonly router: Router,
-    private readonly hearingsDataService: HearingsRefDataService
+    private readonly hearingsDataService: HearingsRefDataService,
+    private readonly hearingStore: Store<fromHearingStore.State>
   ) { }
 
-  public resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<RefDataModel[]> {
-    return this.hearingsDataService.getRefData(HearingPriorityType.Priority, HearingPriorityType.SSCS).pipe(
+  public resolve(): Observable<RefDataModel[]> {
+    return this.getServiceId$()
+      .pipe(
+        switchMap(id => {
+          return of(
+            id ? id : this.serviceId);
+        }), take(1),
+        switchMap((serviceId) => {
+          return this.getReferenceData$(serviceId);
+        })
+      );
+  }
+
+  public getServiceId$(): Observable<string> {
+    return this.hearingStore.pipe(select(fromHearingStore.getHearingList)).pipe(
+      map(hearingList => hearingList.hearingListMainModel ? hearingList.hearingListMainModel.hmctsServiceID : '')
+    );
+  }
+
+  public getReferenceData$(serviceId): Observable<RefDataModel[]> {
+    return this.hearingsDataService.getRefData(HearingRefDataCategory.Priority, serviceId).pipe(
       catchError(error => {
         return [];
       })

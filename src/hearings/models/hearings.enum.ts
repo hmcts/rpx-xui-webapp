@@ -79,7 +79,15 @@ export enum DOWUnavailabilityType {
   ALL = 'ALL',
 }
 
-export enum HearingPriorityType {
+export enum HearingRefDataCategory {
   Priority = 'Priority',
-  SSCS = 'SSCS',
+  HearingType = 'HearingType',
+  FacilitiesList = 'FacilitiesList',
+  HearingChannels = 'HearingChannels',
+  HearingSubChannels = 'HearingSubChannels',
+  PanelMemberType = 'PanelMemberType',
+  PanelMemberSpecialism = 'PanelMemberSpecialism',
+  CancellationReasonCodes = 'CancellationReasonCodes',
+  NonStdDurationReasonCodes = 'NonStdDurationReasonCodes',
+  EntityRoleCodes = 'EntityRoleCodes'
 }

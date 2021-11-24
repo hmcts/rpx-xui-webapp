@@ -16,7 +16,7 @@ import { GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
 @Component({
   selector: 'exui-booking-date',
   templateUrl: './booking-date.component.html',
-  styleUrls: ['./booking-date.component.scss']
+  styleUrls: ['./booking-date.component.scss'],
 })
 export class BookingDateComponent implements OnInit {
 

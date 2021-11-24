@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { BookingNavigation } from '../../models';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { BookingNavigation , BookingNavigationEvent, NewBooking} from '../../models';
 import {
   FormBuilder,
   FormControl,
@@ -22,6 +22,8 @@ export class BookingDateComponent implements OnInit {
   @Input() public navEvent: BookingNavigation;
   @Input() public newBooking: NewBooking;
 
+  @Output() public newBookingChange = new EventEmitter<NewBooking>();
+  @Output() public eventTrigger = new EventEmitter();
   public title: string;
   public caption: string;
   public readonly dateInterval: DisplayedDateInterval[];
@@ -30,8 +32,6 @@ export class BookingDateComponent implements OnInit {
   public errorMessage: ErrorMessage;
   public configStart: GovUiConfigModel;
   public configEnd: GovUiConfigModel;
-  @Output() public newBookingChange = new EventEmitter<NewBooking>();
-  @Output() public eventTrigger = new EventEmitter();
 
   constructor(
     private readonly fb: FormBuilder
@@ -73,10 +73,10 @@ export class BookingDateComponent implements OnInit {
       endDate_day: new FormControl(null, null),
     });
   }
-  public onEventTrigger() {
-    this.eventTrigger.emit(BookingNavigationEvent.CONFIRMBOOKINGDATESUBMIT);
-  }
 
+  public onEventTrigger() {
+    this.eventTrigger.emit(BookingNavigationEvent.HOMECONTINUE);
+  }
 }
 
 export interface DisplayedDateInterval {

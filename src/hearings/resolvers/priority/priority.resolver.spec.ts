@@ -5,8 +5,8 @@ import { PriorityResolver } from './priority.resolve';
 
 describe('Hearings Priority Resolver', () => {
   it('resolves on success', () => {
-    const mockHearingDataService = jasmine.createSpyObj('HearingsDataService', ['getPriorities']);
-    mockHearingDataService.getPriorities.and.returnValue(of([] as RefDataModel[]));
+    const mockHearingDataService = jasmine.createSpyObj('HearingsDataService', ['getRefData']);
+    mockHearingDataService.getRefData.and.returnValue(of([] as RefDataModel[]));
     const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
     const hearingResolver = new PriorityResolver(mockRouter, mockHearingDataService);
     const route = jasmine.createSpyObj('Route', ['']);
@@ -18,7 +18,7 @@ describe('Hearings Priority Resolver', () => {
     const hearingData$ = hearingResolver.resolve(route, {} as RouterStateSnapshot);
     hearingData$.subscribe(hearingDataPriorities => {
       expect(hearingDataPriorities).toEqual([]);
-      expect(mockHearingDataService.getPriorities).toHaveBeenCalled();
+      expect(mockHearingDataService.getRefData).toHaveBeenCalled();
     });
   });
 });

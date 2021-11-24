@@ -4,9 +4,7 @@ import * as fromHearingValuesActions from '../actions/hearing-values.action';
 import * as fromHearingValuesReducer from './hearing-values.reducer';
 
 describe('Hearing Values Reducer', () => {
-
   describe('Actions', () => {
-
     describe('Reset action', () => {
       it('should set correct object', () => {
         const initialState = fromHearingValuesReducer.initialHearingValuesState;

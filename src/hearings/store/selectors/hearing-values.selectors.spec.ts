@@ -2,6 +2,7 @@ import {TestBed} from '@angular/core/testing';
 import {select, Store, StoreModule} from '@ngrx/store';
 import {getHearingValues, reducers} from '../index';
 import {initialHearingValuesState, State} from '../reducers';
+import {HearingValuesStateData} from "../../models/hearingValuesStateData";
 
 describe('Hearing Values selectors', () => {
   let store: Store<State>;
@@ -18,7 +19,7 @@ describe('Hearing Values selectors', () => {
 
   describe('getHearingValues', () => {
     it('should return hearing values state', () => {
-      let result;
+      let result: HearingValuesStateData;
       store.pipe(select(getHearingValues)).subscribe(value => {
         result = value;
       });

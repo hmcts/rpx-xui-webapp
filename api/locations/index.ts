@@ -44,13 +44,13 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
 
 function getCourtTypeIdsByService(serviceIdArray: string[]): string {
   const courtTypeIdsArray = serviceIdArray.map(serviceId => SERVICES_COURT_TYPE_MAPPINGS[serviceId])
-    .reduce(concatWithoutDuplicates);
+    .reduce(concatCourtTypeWithoutDuplicates);
   if (courtTypeIdsArray) {
     return courtTypeIdsArray.join(',');
   }
   return '';
 }
 
-function concatWithoutDuplicates(array1: number[], array2: number[]) {
+function concatCourtTypeWithoutDuplicates(array1: number[], array2: number[]) {
   return array1.concat(array2.filter(item => array1.indexOf(item) < 0));
 }

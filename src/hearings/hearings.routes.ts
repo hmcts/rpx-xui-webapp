@@ -50,7 +50,7 @@ export const ROUTES: Routes = [
       {
         path: 'locationSearch',
         component: LocationSearchContainerComponent,
-        canActivate: [ HealthCheckGuard ],
+        canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Hearings | Request Hearing Location'
         }
@@ -60,7 +60,7 @@ export const ROUTES: Routes = [
         component: WelshHearingComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Manage cases | Request Hearing'
+          title: 'HMCTS Manage cases | Request Hearing | Welsh Hearing'
         }
       },
       {
@@ -69,17 +69,9 @@ export const ROUTES: Routes = [
         component: DatePriorityHearingComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Manage cases | Request Hearing'
+          title: 'HMCTS Manage cases | Request Hearing | Date Priority Hearing'
         }
       },
-      {
-        path: 'welsh-hearing',
-        component: WelshHearingComponent,
-        canActivate: [HealthCheckGuard],
-        data: {
-          title: 'HMCTS Manage cases | Request Hearing'
-        }
-      }
     ]
   },
   {

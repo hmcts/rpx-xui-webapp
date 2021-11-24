@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { BookingNavigation } from '../../models';
+import { BookingNavigationEvent, NewBooking } from '../../models';
 
 @Component({
   selector: 'exui-booking-check',
@@ -8,18 +8,19 @@ import { BookingNavigation } from '../../models';
 })
 export class BookingCheckComponent implements OnInit {
 
-  @Input() public navEvent: BookingNavigation;
   @Input() public bookingOptionIndex: number;
+  @Input() public newBooking: NewBooking;
 
-  @Output() public bookingOptionIndexChange = new EventEmitter<boolean>();
+  @Output() public newBookingChange = new EventEmitter<NewBooking>();
+  @Output() public eventTrigger = new EventEmitter();
 
   constructor() { }
 
   public ngOnInit() {
   }
 
-  public onChange(index) {
-    this.bookingOptionIndexChange.emit(index);
+  public onEventTrigger() {
+    this.eventTrigger.emit(BookingNavigationEvent.CONFIRMBOOKINGDATESUBMIT);
   }
 
 }

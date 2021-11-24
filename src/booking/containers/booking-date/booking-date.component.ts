@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { BookingNavigation } from '../../models';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { BookingNavigationEvent, NewBooking } from '../../models';
 
 @Component({
   selector: 'exui-booking-date',
@@ -8,11 +8,18 @@ import { BookingNavigation } from '../../models';
 })
 export class BookingDateComponent implements OnInit {
 
-  @Input() public navEvent: BookingNavigation;
+  @Input() public newBooking: NewBooking;
+
+  @Output() public newBookingChange = new EventEmitter<NewBooking>();
+  @Output() public eventTrigger = new EventEmitter();
 
   constructor() { }
 
   public ngOnInit() {
+  }
+
+  public onEventTrigger() {
+    this.eventTrigger.emit(BookingNavigationEvent.CONFIRMBOOKINGDATESUBMIT);
   }
 
 }

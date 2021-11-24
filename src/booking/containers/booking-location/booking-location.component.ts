@@ -1,18 +1,26 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { BookingNavigation } from '../../models';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { BookingNavigationEvent, NewBooking } from '../../models';
 
 @Component({
   selector: 'exui-booking-location',
   templateUrl: './booking-location.component.html',
   styleUrls: ['./booking-location.component.scss']
 })
-export class BookingLocationComponent implements OnInit {
+export class BookingLocationComponent {
 
-  @Input() public navEvent: BookingNavigation;
+  @Input() public newBooking: NewBooking;
+
+  @Output() public newBookingChange = new EventEmitter<NewBooking>();
+  @Output() public eventTrigger = new EventEmitter();
 
   constructor() { }
 
-  public ngOnInit() {
+  public onInputValueChange(value: string) {
+    this.newBooking.locationName = value;
+  }
+
+  public onEventTrigger() {
+    this.eventTrigger.emit(BookingNavigationEvent.LOCATIONCONTINUE);
   }
 
 }

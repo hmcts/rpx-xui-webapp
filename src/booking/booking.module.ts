@@ -17,7 +17,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
     CommonModule,
     HttpClientModule,
     SharedModule,
-    bookingRouting
+    bookingRouting,
     ExuiCommonLibModule,
   ],
   declarations: [

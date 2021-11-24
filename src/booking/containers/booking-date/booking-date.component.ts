@@ -15,8 +15,7 @@ import { GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
 
 @Component({
   selector: 'exui-booking-date',
-  templateUrl: './booking-date.component.html',
-  styleUrls: ['./booking-date.component.scss']
+  templateUrl: './booking-date.component.html'
 })
 export class BookingDateComponent implements OnInit {
 
@@ -46,16 +45,14 @@ export class BookingDateComponent implements OnInit {
       name: 'startDate',
       hint: 'For example, 19 11 2021',
       label: 'Booking Starts',
-      isPageHeading: true,
-      classes: 'date-head'
+      isPageHeading: false
     };
     this.configEnd = {
       id: 'endDate',
       name: 'endDate',
       hint: 'For example, 19 11 2021',
       label: 'Booking Ends',
-      isPageHeading: true,
-      classes: 'date-head'
+      isPageHeading: false
     };
   }
 

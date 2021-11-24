@@ -13,16 +13,16 @@ mock.init();
 const url: string = getConfigValue(SERVICES_PRD_API_URL);
 
 /**
- * getHearings from case ID
- * API sample: /api/locations/getLocations?service=SSCS,IA&locationType=hearing&searchTerm=CT9 1RL
- * service=SSCS or SSCS,IA split with ','
- * locationType=optional|hearing|case_management
- * searchTerm=any search term for postcode/site name/venue name/court name/court address etc.
+ * @description getLocations from service ID/location type/search term
+ * @overview API sample: /api/locations/getLocations?serviceIds=SSCS,IA&locationType=hearing&searchTerm=CT91RL
+ * @example service = SSCS | SSCS,IA split with ','
+ * @example locationType = optional | hearing | case_management
+ * @example searchTerm = any search term for postcode | site name | venue name |court name | court address etc.
  */
 export async function getLocations(req: EnhancedRequest, res: Response, next: NextFunction) {
   // @ts-ignore
   const searchTerm = req.query.searchTerm;
-  const serviceIds = req.query.service;
+  const serviceIds = req.query.serviceIds;
   const locationType = req.query.locationType;
   const serviceIdArray = serviceIds.split(',');
   const courtTypeIds = getCourtTypeIdsByService(serviceIdArray);

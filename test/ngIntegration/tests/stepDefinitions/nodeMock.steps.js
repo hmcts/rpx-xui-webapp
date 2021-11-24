@@ -12,8 +12,8 @@ const workAllocationDataModel = require("../../../dataModels/workAllocation");
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Given('I navigate to home page', async function () {
+        await browserUtil.gotoHomePage();
         await BrowserWaits.retryWithActionCallback(async () => {
-            await browserUtil.gotoHomePage();
             await headerpage.waitForPrimaryNavDisplay();
             await browserUtil.waitForLD();
         });  

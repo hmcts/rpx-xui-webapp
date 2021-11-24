@@ -40,16 +40,6 @@ Feature: WA Release 2: My work - My tasks - Task actions
         Then I see "<actionHeader>" task action page
         Then I validate task action page has description "<actionDescription>"
 
-        Then I validate task list table columns displayed for user "<UserType>"
-            | ColumnHeader  | Caseworker | Judge |
-            | Case name     | Yes        | Yes   |
-            | Case category | Yes        | Yes   |
-            | Location      | Yes        | Yes   |
-            | Task          | Yes       | Yes   |
-            | Task created  | No         | Yes   |
-            | Due date      | Yes        | No    |
-            | Priority      | Yes        | No    |
-
 
         Then I validate task details displayed in task action page
             | Case name        | Case category      | Location      |
@@ -85,15 +75,7 @@ Feature: WA Release 2: My work - My tasks - Task actions
 
         Then I see "<actionHeader>" task action page
         Then I validate task action page has description "<actionDescription>"
-        Then I validate task list table columns displayed for user "<UserType>"
-            | ColumnHeader  | Caseworker | Judge |
-            | Case name     | Yes        | Yes   |
-            | Case category | Yes        | Yes   |
-            | Location      | Yes        | Yes   |
-            | Task          | Yes       | Yes   |
-            | Task created  | No         | Yes   |
-            | Due date      | Yes        | No    |
-            | Priority      | Yes        | No    |
+       
 
         Then I validate task details displayed in task action page
             | Case name        | Case category      | Location      |

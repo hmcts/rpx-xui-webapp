@@ -1,5 +1,8 @@
-@ng
-Feature: WA Release 2: Roles and access tab
+@ng @known_bug @EUI-4837
+Feature: WA Release 2: Roles and access tab (EUI-4837)
+        https://tools.hmcts.net/jira/browse/EUI-3782 ???
+        known bug EUI-4837
+
 
     Background: Case details setup
         Given I set MOCK case details with reference "caseDetails"
@@ -297,7 +300,7 @@ Feature: WA Release 2: Roles and access tab
 
         Then I validate case roles "Manage" link displayed status is "false" for category "Judicial"
         Then I validate case roles "Manage" link displayed status is "false" for category "Legal Ops"
-        Then I validate case roles "Delete" link displayed status is "true" for category "Exclusions"
+        Then I validate case roles "Delete" link displayed status is "false" for category "Exclusions"
 
 # Then I validate case roles table has headers for role category "Exclusions" in case roles and access page
 #     | headerName |

@@ -19,7 +19,7 @@ Feature: WA Release 2: My cases - Manage links
         When I click on primary navigation header tab "My work", I see selected tab page displayed
         When I navigate to My work sub navigation tab "My cases"
 
-        Then I validate work allocation cases count in page 25
+        Then I validate work allocation cases count in page 100
 
         Then I validate manage link actions for cases
             | index | actions           |

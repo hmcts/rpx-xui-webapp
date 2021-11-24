@@ -55,16 +55,6 @@ Feature: WA Release 2: All work - Task assignment work flows
 
         Then I see task check your changes page for action "<action>" displayed
 
-        Then I validate check your changes table columns displayed for user "<UserType>"
-            | ColumnHeader  | Caseworker | Judge |
-            | Case name     | Yes        | Yes   |
-            | Case category | Yes        | Yes   |
-            | Location      | Yes        | Yes   |
-            | Task          | Yes       | Yes   |
-            | Task created  | No         | Yes   |
-            | Due date      | Yes        | No    |
-            | Priority      | Yes        | No    |
-
         Given I update object values in reference "taskDetails"
             | Person | test23 person |
       

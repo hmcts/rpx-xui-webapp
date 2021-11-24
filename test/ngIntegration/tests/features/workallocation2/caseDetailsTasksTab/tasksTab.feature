@@ -1,6 +1,6 @@
 
-@ng
-Feature: WA Release 2: Case details Tasks tab
+@ng @integration_todo
+Feature: WA Release 2: Case details Tasks tab (Integration to be done)
 
     Requirements from 
     https://tools.hmcts.net/confluence/pages/viewpage.action?pageId=1466503344#WorkAllocationRelease2and2.1-ManagelinklogicforTasksandCases

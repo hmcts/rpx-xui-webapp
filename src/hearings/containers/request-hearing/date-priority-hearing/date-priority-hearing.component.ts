@@ -19,7 +19,7 @@ export class DatePriorityHearingComponent implements OnInit {
   public latestHearingDate: GovUiConfigModel;
 
   constructor(private readonly formBuilder: FormBuilder,
-    private readonly route: ActivatedRoute) { }
+              private readonly route: ActivatedRoute) { }
 
   public ngOnInit(): void {
     this.initDateConfig();

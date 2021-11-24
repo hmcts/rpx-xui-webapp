@@ -79,7 +79,7 @@ export enum DOWUnavailabilityType {
   ALL = 'ALL',
 }
 
-export enum HearingRefDataCategory {
+export enum HearingCategory {
   Priority = 'Priority',
   HearingType = 'HearingType',
   FacilitiesList = 'FacilitiesList',

@@ -1,6 +1,6 @@
 import { RouterStateSnapshot } from '@angular/router';
 import { of } from 'rxjs';
-import { RefDataModel } from './../../../../api/hearings/models/refData.model';
+import { RefDataModel } from '../../../hearings/models/refData.model';
 import { PriorityResolver } from './priority.resolve';
 
 describe('Hearings Priority Resolver', () => {

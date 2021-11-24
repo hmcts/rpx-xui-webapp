@@ -1,5 +1,5 @@
 /* tslint:disable:object-literal-sort-keys */
-import { RefDataByCategoryModel, RefDataByServiceModel, RefDataModel } from "../models/refData.model";
+import {RefDataByCategoryModel, RefDataByServiceModel, RefDataModel} from '../models/refData.model';
 
 export const DEFAULT_STAGES_REF: RefDataModel[] = [
   {

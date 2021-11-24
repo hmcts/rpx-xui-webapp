@@ -4,9 +4,9 @@ import { getConfigValue } from '../configuration';
 import { SERVICES_PRD_API_URL} from '../configuration/references';
 import { EnhancedRequest } from '../lib/models';
 import * as mock from '../locations/location.mock';
-import {LocationTypeEnum} from "./data/locationType.enum";
-import {SERVICES_COURT_TYPE_MAPPINGS} from "./data/serviceCourtType.mapping";
-import {LocationModel} from "./models/location.model";
+import {LocationTypeEnum} from './data/locationType.enum';
+import {SERVICES_COURT_TYPE_MAPPINGS} from './data/serviceCourtType.mapping';
+import {LocationModel} from './models/location.model';
 
 mock.init();
 

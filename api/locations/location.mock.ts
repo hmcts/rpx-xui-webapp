@@ -1,7 +1,7 @@
 /* tslint:disable:max-line-length */
 import MockAdapter from 'axios-mock-adapter';
 import {HttpMockAdapter} from '../common/httpMockAdapter';
-import {ALL_COURT_LOCATIONS} from "./data/location.mock.data";
+import {ALL_COURT_LOCATIONS} from './data/location.mock.data';
 
 export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
@@ -26,7 +26,7 @@ export const init = () => {
       (location.court_name ? location.court_name.toLowerCase().includes(searchTerm.toLowerCase()) : false)
       || (location.site_name ? location.site_name.toLowerCase().includes(searchTerm.toLowerCase()) : false)
       || (location.venue_name ? location.venue_name.toLowerCase().includes(searchTerm.toLowerCase()) : false)
-      || (location.postcode ? location.postcode.replace(/\s+/g, "").toLowerCase().includes(searchTerm.toLowerCase()) : false)
+      || (location.postcode ? location.postcode.replace(/\s+/g, '').toLowerCase().includes(searchTerm.toLowerCase()) : false)
       || (location.postcode ? location.postcode.toLowerCase().includes(searchTerm.toLowerCase()) : false)
       || (location.court_address ? location.court_address.toLowerCase().includes(searchTerm.toLowerCase()) : false));
     return [

@@ -1,5 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NewBooking } from '../../models';
+
 import { ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { Booking } from '../../models/booking.interface';
@@ -47,6 +49,7 @@ describe('BookingHomeComponent', () => {
 
     fixture = TestBed.createComponent(BookingHomeComponent);
     component = fixture.componentInstance;
+    component.newBooking = {} as NewBooking;
     fixture.detectChanges();
   }));
 

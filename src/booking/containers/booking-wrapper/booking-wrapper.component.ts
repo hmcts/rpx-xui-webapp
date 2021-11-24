@@ -1,8 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { BookingCheckComponent, BookingDateComponent, BookingHomeComponent, BookingLocationComponent } from '..';
-import { bookingCheckVisibilityStates, bookingDateVisibilityStates, bookingHomeVisibilityStates, bookingLocationVisibilityStates } from '../../constants/pageVisibilityStates';
-import { BookingNavigation, BookingNavigationEvent, BookingState } from '../../models';
+import { bookingBackButtonVisibilityStates, bookingCheckVisibilityStates, bookingDateVisibilityStates, bookingHomeVisibilityStates, bookingLocationVisibilityStates } from '../../constants/pageVisibilityStates';
+import { BookingNavigation, BookingNavigationEvent, BookingState, NewBooking } from '../../models';
 
 @Component({
   selector: 'exui-booking-wrapper',
@@ -11,26 +10,15 @@ import { BookingNavigation, BookingNavigationEvent, BookingState } from '../../m
 })
 export class BookingWrapperComponent implements OnInit {
 
-  @ViewChild('bookingHome', { read: BookingHomeComponent })
-  public bookingHomeComponent: BookingHomeComponent;
-
-  @ViewChild('bookingLocation', { read: BookingLocationComponent })
-  public bookingLocationComponent: BookingLocationComponent;
-
-  @ViewChild('bookingDate', { read: BookingDateComponent })
-  public bookingDateComponent: BookingDateComponent;
-
-  @ViewChild('bookingCheck', { read: BookingCheckComponent })
-  public bookingCheckComponent: BookingCheckComponent;
-
-  public navEvent: BookingNavigation;
+  public backVisibilityStates = bookingBackButtonVisibilityStates;
   public bookingNavigationCurrentState: BookingState;
+  public bookingNavigationEvent = BookingNavigationEvent;
   public bookingHomeVisibilityStates = bookingHomeVisibilityStates;
   public bookingLocationVisibilityStates = bookingLocationVisibilityStates;
   public bookingDateVisibilityStates = bookingDateVisibilityStates;
   public bookingCheckVisibilityStates = bookingCheckVisibilityStates;
-
-  public bookingOptionIndex: number;
+  public navEvent: BookingNavigation;
+  public newBooking = {} as NewBooking;
 
   constructor(private readonly router: Router) { }
 
@@ -64,7 +52,7 @@ export class BookingWrapperComponent implements OnInit {
         }
         break;
       case BookingNavigationEvent.HOMECONTINUE:
-        if (this.bookingOptionIndex === 1) {
+        if (this.newBooking.bookingOptionIndex === 1) {
           this.bookingNavigationCurrentState = BookingState.LOCATION;
         } else {
           this.router.navigate(['/work/my-work/list']);

@@ -74,7 +74,32 @@ export class BookingDateComponent implements OnInit {
   }
 
   public onEventTrigger() {
-    this.eventTrigger.emit(BookingNavigationEvent.CONFIRMBOOKINGDATESUBMIT);
+    let startDate;
+    let endDate;
+    const now = new Date();
+    switch (this.formGroup.get('radioSelected').value) {
+      case TimeOption.TODAY:
+        startDate = now;
+        endDate = new Date(now.setUTCHours(23, 59, 59, 999));
+        break;
+
+      case TimeOption.WEEK:
+          startDate = now;
+          const sundayUTC = now.setTime(now.getTime() - (now.getDay() ? now.getDay() : 7) * 24 * 60 * 60 * 1000);
+          const sundayMignightUTC = new Date(sundayUTC).setUTCHours(23, 59, 59, 999);
+          endDate = new Date(sundayMignightUTC);
+          break;
+
+      case TimeOption.DATERANGE:
+          startDate = new Date();
+          endDate = new Date();
+          break;
+      default:
+        break;
+    }
+
+    console.log(startDate, endDate);
+    // this.eventTrigger.emit(BookingNavigationEvent.CONFIRMBOOKINGDATESUBMIT);
   }
 }
 

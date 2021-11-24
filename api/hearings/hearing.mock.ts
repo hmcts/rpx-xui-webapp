@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import {HttpMockAdapter} from '../common/httpMockAdapter';
 import {EMPTY_HEARINGS_LIST, HEARINGS_LIST} from './data/hearings.mock.data';
 import {ALL_REF_DATA} from './data/reference.mock.data';
-import {SERVICE_HEARING_VALUES} from "./data/serviceHearingValues.mock.data";
+import {SERVICE_HEARING_VALUES} from './data/serviceHearingValues.mock.data';
 
 export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();

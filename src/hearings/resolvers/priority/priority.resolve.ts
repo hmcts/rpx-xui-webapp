@@ -3,7 +3,7 @@ import { Resolve } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap, take } from 'rxjs/operators';
-import { HearingRefDataCategory } from '../../../hearings/models/hearings.enum';
+import { HearingCategory } from '../../../hearings/models/hearings.enum';
 import { RefDataModel } from '../../../hearings/models/refData.model';
 import * as fromHearingStore from '../../../hearings/store';
 import { HearingsRefDataService } from '../../services/hearings-ref-data.service';
@@ -39,7 +39,7 @@ export class PriorityResolver implements Resolve<RefDataModel[]> {
   }
 
   public getReferenceData$(serviceId): Observable<RefDataModel[]> {
-    return this.hearingsDataService.getRefData(HearingRefDataCategory.Priority, serviceId).pipe(
+    return this.hearingsDataService.getRefData(HearingCategory.Priority, serviceId).pipe(
       catchError(error => {
         return [];
       })

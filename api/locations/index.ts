@@ -14,17 +14,18 @@ const url: string = getConfigValue(SERVICES_PRD_API_URL);
 
 /**
  * getHearings from case ID
+ * API sample: /api/locations/getLocations?service=SSCS,IA&locationType=hearing&searchTerm=CT9 1RL
+ * service=SSCS or SSCS,IA split with ','
+ * locationType=optional|hearing|case_management
+ * searchTerm=any search term for postcode/site name/venue name/court name/court address etc.
  */
 export async function getLocations(req: EnhancedRequest, res: Response, next: NextFunction) {
-  // API sample: /api/locations/getLocations?service=SSCS&locationType=hearing&searchTerm=CT9 1RL
-  // service=SSCS|IA etc.
-  // locationType=hearing|case_management (only these two location type is allowed currently)
-  // searchTerm=any search term for postcode/site name/venue name/court name/court address etc.
   // @ts-ignore
   const searchTerm = req.query.searchTerm;
-  const service = req.query.service;
+  const serviceIds = req.query.service;
   const locationType = req.query.locationType;
-  const courtTypeIds = getCourtTypeIdsByService(service);
+  const serviceIdArray = serviceIds.split(',');
+  const courtTypeIds = getCourtTypeIdsByService(serviceIdArray);
   // tslint:disable-next-line:max-line-length
   const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${courtTypeIds}`;
   try {
@@ -41,11 +42,15 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   }
 }
 
-function getCourtTypeIdsByService(service: string): string {
-  const courtTypeIdsArray: [] = SERVICES_COURT_TYPE_MAPPINGS[service];
-
+function getCourtTypeIdsByService(serviceIdArray: string[]): string {
+  const courtTypeIdsArray = serviceIdArray.map(serviceId => SERVICES_COURT_TYPE_MAPPINGS[serviceId])
+    .reduce(concatWithoutDuplicates);
   if (courtTypeIdsArray) {
     return courtTypeIdsArray.join(',');
   }
   return '';
+}
+
+function concatWithoutDuplicates(array1: number[], array2: number[]) {
+  return array1.concat(array2.filter(item => array1.indexOf(item) < 0));
 }

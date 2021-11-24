@@ -40,7 +40,7 @@
     "prd": {
       "api": "http://rd-professional-api-prod.service.core-compute-prod.internal"
     },
-    "locationref": {
+    "locationRef": {
       "api": "http://rd-location-ref-api-prod.service.core-compute-prod.internal"
     },
     "em_hrs_api": "http://em-hrs-api-prod.service.core-compute-prod.internal",

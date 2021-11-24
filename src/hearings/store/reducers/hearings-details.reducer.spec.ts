@@ -2,9 +2,7 @@ import * as fromActions from '../actions/hearing-details.action';
 import * as fromReducer from './hearings-details.reducer';
 
 describe('Hearings Details Reducer', () => {
-
   describe('Actions', () => {
-
     describe('Reset action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.initialState;

@@ -14,7 +14,8 @@ describe('LocationSearchContainerComponent', () => {
           {
             hmctsServiceID: 'SSCS'
           }
-        ]
+        ],
+        hearingListMainModel: null
       },
     }
   };

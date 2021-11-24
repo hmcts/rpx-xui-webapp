@@ -68,7 +68,7 @@ export class CaseReferenceSearchBoxComponent implements OnInit {
         this.router.navigate([`/cases/case-details/${result.results[0].caseReference}`], { relativeTo: this.route });
       } else {
         // Navigate to no results page
-        this.router.navigate(['/search/noresults', NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH], { relativeTo: this.route });
+        this.router.navigate(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH } });
       }
     });
   }

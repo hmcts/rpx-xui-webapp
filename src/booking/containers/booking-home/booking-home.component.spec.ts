@@ -64,16 +64,31 @@ describe('BookingHomeComponent', () => {
     expect(bookingsList).toBeTruthy();
   });
 
-  describe('onChange()', () => {
+  describe('onSelectOption()', () => {
 
-    it('should emit index', () => {
+    it('should change bookingOptionIndex', () => {
 
-      const bookingOptionIndexChangeSpy = spyOn(component.bookingOptionIndexChange, 'emit');
       // Click on the second radio button.
       const element = fixture.debugElement.nativeElement;
       const secondRadioButton = element.querySelector('#type-1');
       secondRadioButton.click();
-      expect(bookingOptionIndexChangeSpy).toHaveBeenCalledWith(1);
+      expect(component.newBooking.bookingOptionIndex).toEqual(1);
+    });
+  });
+
+  describe('onEventTrigger()', () => {
+
+    it('should emit a navigation enum', () => {
+
+      const eventTriggerSpy = spyOn(component.eventTrigger, 'emit');
+      // Click on the second radio button.
+      const element = fixture.debugElement.nativeElement;
+      const secondRadioButton = element.querySelector('#type-1');
+      secondRadioButton.click();
+      fixture.detectChanges();
+      const button = element.querySelector('button.govuk-button');
+      button.click();
+      expect(eventTriggerSpy).toHaveBeenCalled();
     });
   });
 

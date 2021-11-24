@@ -1,11 +1,8 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { BookingNavigation } from '../../models/booking-navigation.interface';
-import { Booking } from '../../models/booking.interface';
+import { Booking, BookingNavigationEvent, NewBooking } from '../../models';
 import { BookingService } from '../../services';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { BookingNavigationEvent, NewBooking } from '../../models';
 
 @Component({
   selector: 'exui-booking-home',
@@ -39,8 +36,6 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  public onChange(index) {
-    this.bookingOptionIndexChange.emit(index);
   public onSelectOption(index) {
     this.newBooking.bookingOptionIndex = index;
   }

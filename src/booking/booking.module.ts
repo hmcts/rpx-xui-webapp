@@ -1,4 +1,5 @@
 import * as fromContainers from './containers';
+import * as fromServices from './services';
 
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';

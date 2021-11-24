@@ -2,6 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import {HttpMockAdapter} from '../common/httpMockAdapter';
 import {EMPTY_HEARINGS_LIST, HEARINGS_LIST} from './data/hearings.mock.data';
 import {ALL_REF_DATA} from './data/reference.mock.data';
+import {SERVICE_HEARING_VALUES} from "./data/serviceHearingValues.mock.data";
 
 export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
@@ -9,6 +10,8 @@ export const init = () => {
   const getHearingsUrl = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearings\/[0-9]{16}/;
 
   const getRefDataUrl = /http:\/\/rd-professional-api-aat.service.core-compute-aat.internal\/refdata\/lov\/[\w]*\/[\w]*/;
+
+  const postServiceHearingValues = /https:\/\/hearings.aat.service.core-compute-aat.internal\/serviceHearingValues/;
 
   mock.onGet(getHearingsUrl).reply(config => {
     const url = config.url;
@@ -31,6 +34,13 @@ export const init = () => {
     return [
       200,
       ALL_REF_DATA,
+    ];
+  });
+
+  mock.onPost(postServiceHearingValues).reply(() => {
+    return [
+      200,
+      SERVICE_HEARING_VALUES,
     ];
   });
 };

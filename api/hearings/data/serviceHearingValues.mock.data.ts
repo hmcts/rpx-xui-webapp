@@ -1,5 +1,8 @@
 /* tslint:disable:object-literal-sort-keys */
-const serviceHearingValues = {
+import {RequirementType} from '../models/hearings.enum';
+import {ServiceHearingValuesModel} from '../models/serviceHearingValues.model';
+
+export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   autoListFlag: false,
   hearingType: 'Final',
   caseType: 'Personal Independence Payment',
@@ -33,7 +36,7 @@ const serviceHearingValues = {
       {
         memberID: '',
         memberType: '',
-        requirementType: '',
+        requirementType: RequirementType.EXCLUDE,
       },
     ],
     judiciarySpecialisms: [''],

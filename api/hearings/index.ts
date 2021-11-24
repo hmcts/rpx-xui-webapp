@@ -1,12 +1,13 @@
 import {NextFunction, Response} from 'express';
-import {handleGet} from '../common/mockService';
+import {handleGet, handlePost} from '../common/mockService';
 import {getConfigValue} from '../configuration';
 import {SERVICES_HEARINGS_COMPONENT_API, SERVICES_PRD_API_URL} from '../configuration/references';
 import * as mock from '../hearings/hearing.mock';
 import {EnhancedRequest} from '../lib/models';
 import {HearingListMainModel} from './models/hearingListMain.model';
 import {hearingStatusMappings} from './models/hearingStatusMappings';
-import {RefDataByCategoryModel, RefDataByServiceModel} from "./models/refData.model";
+import {RefDataByCategoryModel, RefDataByServiceModel} from './models/refData.model';
+import {ServiceHearingValuesModel} from './models/serviceHearingValues.model';
 
 mock.init();
 
@@ -64,27 +65,14 @@ export async function getRefData(req: EnhancedRequest, res: Response, next: Next
 }
 
 /**
- * getRefData - get details required to populate the hearing request/amend journey
+ * loadServiceHearingValues - get details required to populate the hearing request/amend journey
  */
-export async function getServiceHearingValues(req: EnhancedRequest, res: Response, next: NextFunction) {
-  // @ts-ignore
+export async function loadServiceHearingValues(req: EnhancedRequest, res: Response, next: NextFunction) {
   const reqBody = req.body;
   const markupPath: string = `${hearingsUrl}/serviceHearingValues`;
   try {
-    const {status, data}: { status: number, data: RefDataByCategoryModel[] } = await handleGet(markupPath, req);
-    const refDataByCategory: RefDataByCategoryModel = data.find(refDataByCategoryModel =>
-      refDataByCategoryModel.categoryKey === category);
-    if (refDataByCategory && refDataByCategory.services) {
-      const refDataByService: RefDataByServiceModel = refDataByCategory.services.find(aService =>
-        aService.serviceID === service);
-      if (refDataByService && refDataByService.values) {
-        res.status(status).send(refDataByService.values);
-      } else {
-        res.status(status).send([]);
-      }
-    } else {
-      res.status(status).send([]);
-    }
+    const {status, data}: { status: number, data: ServiceHearingValuesModel } = await handlePost(markupPath, reqBody, req);
+    res.status(status).send(data);
   } catch (error) {
     next(error);
   }

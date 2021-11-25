@@ -8,7 +8,7 @@ import * as fromHearingStore from '../../../../hearings/store';
   templateUrl: './location-search-container.component.html',
 })
 export class LocationSearchContainerComponent implements OnInit {
-  public serviceId: string = 'SSCS';
+  public serviceIds: string = 'SSCS';
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>) {}
 
@@ -16,7 +16,7 @@ export class LocationSearchContainerComponent implements OnInit {
     this.hearingStore.pipe(select(fromHearingStore.getHearingList)).pipe(
       map(hearingList => hearingList.hearingListMainModel ? hearingList.hearingListMainModel.hmctsServiceID : '')
     ).subscribe(id => {
-      this.serviceId = id ? id : this.serviceId;
+      this.serviceIds = id ? id : this.serviceIds;
     });
   }
 }

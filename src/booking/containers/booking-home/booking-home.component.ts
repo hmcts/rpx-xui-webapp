@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { Booking, BookingNavigationEvent, NewBooking } from '../../models';
+import { Booking, BookingNavigationEvent, BookingProcess } from '../../models';
 import { BookingService } from '../../services';
 
 @Component({
@@ -10,9 +10,9 @@ import { BookingService } from '../../services';
 })
 export class BookingHomeComponent implements OnInit, OnDestroy {
 
-  @Input() public newBooking: NewBooking;
+  @Input() public bookingProcess: BookingProcess;
 
-  @Output() public newBookingChange = new EventEmitter<NewBooking>();
+  @Output() public bookingProcessChange = new EventEmitter<BookingProcess>();
   @Output() public eventTrigger = new EventEmitter();
 
   public bookingTypeForm: FormGroup;
@@ -37,7 +37,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
   }
 
   public onSelectOption(index) {
-    this.newBooking.bookingOptionIndex = index;
+    this.bookingProcess.selectedBookingOption = index;
   }
 
   public assignBookingLocation() {

@@ -1,7 +1,7 @@
 <form [formGroup]="formGroup">
   <div
     class="govuk-form-group"
-    [ngClass]="{ 'form-group-error': formGroup.invalid && submitted }">
+    [ngClass]="{ 'form-group-error': formGroup.get('dateOption').invalid && submitted }">
     <fieldset class="govuk-fieldset" aria-describedby="reason-hint">
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
         <span class="govuk-caption-l"> {{ caption }}</span>
@@ -9,7 +9,7 @@
           {{ title }}
         </h1>
       </legend>
-      <div id="error-message"class="govuk-error-message" *ngIf="formGroup.get('radioSelected').invalid && submitted">
+      <div id="error-message"class="govuk-error-message" *ngIf="formGroup.get('dateOption').invalid && submitted">
         {{ errorMessage.description }}
       </div>
       <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
@@ -17,18 +17,19 @@
           <input
             class="govuk-radios__input"
             id="{{ 'date-' + i }}"
-            name="radioSelected"
+            name="dateOption"
             type="radio"
-            [value]="item.date"
-            formControlName="radioSelected"
-            [checked]="item.checked"/>
+            [value]="i"
+            formControlName="dateOption"
+            [checked]="item.checked"
+            (change)="dateOptionOnChange(i)"/>
           <label
             class="govuk-label govuk-radios__label"
             for="{{ 'date-' + i }}">
             {{ item.date }}
           </label>
         </div>
-        <div id="conditional-date-0" *ngIf="formGroup.get('radioSelected').value === dateInterval[2].date" class="govuk-radios__conditional">
+        <div id="conditional-date-0" *ngIf="formGroup.get('dateOption').value === 2" class="govuk-radios__conditional">
           <div class="govuk-form-group">
             <xuilib-gov-uk-date
               [formGroup]="formGroup"

@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { LocationService } from '@hmcts/rpx-xui-common-lib/lib/services/locations/location.service';
 import { Store, select } from '@ngrx/store';
 import { LocationModel } from 'api/locations/models/location.model';
 import { Observable, of } from 'rxjs';
@@ -15,9 +14,10 @@ export class LocationSearchContainerComponent implements OnInit {
   public locations$: Observable<LocationModel[]>;
   public locationType: string;
   public findLocationForm: FormGroup;
-  @Input() public selectedLocations$: Observable<LocationModel[]>;
+  public selectedLocations$: Observable<LocationModel[]>;
+  public selectedLocation: LocationModel;
 
-  constructor(private readonly hearingStore: Store<fromHearingStore.State>, private readonly locationService: LocationService, fb: FormBuilder) {
+  constructor(private readonly hearingStore: Store<fromHearingStore.State>, fb: FormBuilder) {
     this.findLocationForm =  fb.group({
       locationSelected: [null]
     });
@@ -31,20 +31,14 @@ export class LocationSearchContainerComponent implements OnInit {
     ).subscribe(id => {
       this.serviceId = id ? id : this.serviceId;
     });
-
-    this.findLocationForm.controls.locationSelected.valueChanges.subscribe(locationSelected => this.addSelection(locationSelected));
   }
 
-  public addSelection(location: LocationModel) {
-    if (location) {
-      this.selectedLocations$.subscribe(selectedLocations => {
-          selectedLocations.push(location);
-          // this.selectedLocation = null;
-          this.locations$ = of([]);
-      });
-    }
-
-    // this.selectedLocation = undefined;
+  public addSelection() {
+    this.selectedLocations$.subscribe(selectedLocations => {
+        selectedLocations.push(this.findLocationForm.controls.locationSelected.value as LocationModel);
+        this.findLocationForm.controls.locationSelected.setValue(undefined);
+        this.locations$ = of([]);
+    });
   }
 
   public removeSelection(location: LocationModel) {
@@ -52,9 +46,5 @@ export class LocationSearchContainerComponent implements OnInit {
       const index = selectedLocations.findIndex(selectedLocation => selectedLocation.court_venue_id === location.court_venue_id);
       selectedLocations.splice(index, 1);
     });
-  }
-
-  public getLocations(term: string): Observable<LocationModel[]> {
-    return this.locationService.getAllLocations(this.serviceId, this.locationType, term);
   }
 }

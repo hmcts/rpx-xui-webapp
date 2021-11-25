@@ -3,12 +3,12 @@
     <main id="content" role="main">
       <div class="govuk-form-group">
         <div class="location-picker-custom">
-          <div *ngIf="serviceId" class="search-location">
+          <div *ngIf="serviceIds" class="search-location">
             <exui-search-location class="search-location"
               [selectedLocations$]="selectedLocations$"
               [control]="findLocationForm.controls.locationSelected"
               [disabled]=false 
-              [serviceId]="serviceId"
+              [serviceIds]="serviceIds"
               [locationType]="'hearing'"></exui-search-location>
           </div>
         </div>

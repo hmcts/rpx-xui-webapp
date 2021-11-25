@@ -128,7 +128,6 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | location     | <locationId>    |
             | user       | <person_id>     |
             | jurisdiction | <Jurisdiction>  |
-            | taskCategory | <Task_Category> |
             | taskType     | <Task_type>     |
             | priority     | <Priority>      |
         Examples:
@@ -231,7 +230,6 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | location     | <locationId>    |
             | person       | <person_id>     |
             | jurisdiction | <Jurisdiction>  |
-            | taskCategory | <Task_Category> |
             | taskType     | <Task_type>     |
         Examples:
             | Jurisdiction | locationName | locationId | Task_Category          | Person_search | Person_name                             | person_id                            | Person_Role_Type | Task_type |

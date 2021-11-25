@@ -25,7 +25,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         const datatableHashes = datatable.hashes();
   
-        const cases = waMockData[view].length > 0 ? waMockData.getMyCases(): waMockData.getMyCases(100);
+        const cases = waMockData[view];
         for (const wacase of datatableHashes){
             cases.cases[parseInt(wacase.index)][wacase.key] = wacase.value
         }

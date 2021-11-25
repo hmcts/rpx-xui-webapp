@@ -13,7 +13,7 @@ Feature: Navigation header tabs
         Examples:
             | useridentifier     | roles                                                             | mainHeaders                                    | rightColumnHeaders  |
             | IAC_CaseOfficer_R1 | caseworker-ia-caseofficer,caseworker-ia-admofficer                | Task list, Task manager,Case list, Create case | Find case           |
-            | IAC_CaseOfficer_R2 | caseworker-ia-caseofficer,caseworker-ia-admofficer,case-allocator | My work, All work ,Case list, Create case      | Find case           |
+            | IAC_CaseOfficer_R2 | caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor | My work, All work ,Case list, Create case      | Find case           |
             | IAC_Judge_WA_R1    | caseworker-ia-iacjudge,caseworker-ia,caseworker                   | Case list                                      | Find case           |
-            | IAC_Judge_WA_R2    | caseworker-ia-iacjudge,caseworker-ia,caseworker, case-allocator   | My work, All work                              | Case list,Find case |
+            | IAC_Judge_WA_R2    | caseworker-ia-iacjudge,caseworker-ia,caseworker, task-supervisor   | My work, All work                              | Case list,Find case |
             | SOLICITOR          | caseworker-divorce-solicitor,caseworker-divorce,pui-case-manager  | Case list, Create case                         | Find case           |

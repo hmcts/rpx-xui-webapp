@@ -8,7 +8,7 @@ Feature: WA Release 2: My cases - Manage links - Action work flow
         Given I init MockApp
         Given I set MOCK workallocation cases with permissions for view "My cases"
             | Roles          | Count |
-            | case-allocator | 10    |
+            | task-supervisor | 10    |
             |                | 90    |
 
     Scenario Outline:  Task Manage links for "<UserType>" action "<action>"

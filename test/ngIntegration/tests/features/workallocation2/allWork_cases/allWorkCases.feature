@@ -33,7 +33,7 @@ Feature: WA Release 2: All work > Cases
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
         Given I set MOCK workallocation cases with permissions for view "AllWorkCases"
             | Roles          | Count |
-            | case-allocator | 10    |
+            | task-supervisor | 10    |
             |                | 10    |
 
         Given I set MOCK request "/workallocation2/my-work/cases/" intercept with reference "taskSearchRequest"

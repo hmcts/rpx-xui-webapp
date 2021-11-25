@@ -196,6 +196,6 @@ Feature: WA Release 2: Case details Tasks tab (Integration to be done)
             | Next steps   | false                    |             |            |
         Examples:
             | roles                                                             | PriorityIsDisplayed | DuedateIsDisplayed | TaskcreatedIsDisplayed |
-            | caseworker-ia-caseofficer,caseworker-ia-admofficer,case-allocator | true                | true               | false                  |
-            | caseworker-ia-iacjudge,caseworker-ia,caseworker ,case-allocator   | false               | false              | true                   |
+            | caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor | true                | true               | false                  |
+            | caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor   | false               | false              | true                   |
 

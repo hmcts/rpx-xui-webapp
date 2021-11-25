@@ -89,7 +89,6 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     this.taskId = this.route.snapshot.paramMap.get('taskId');
     this.role = this.route.snapshot.queryParamMap.get('role') as RoleCategory;
     this.domain = this.setDomain(this.role);
-    console.log(this.domain);
     this.rootPath = this.router.url.split('/')[1];
     this.route.paramMap
       .pipe(map(() => window.history.state)).subscribe(person => {

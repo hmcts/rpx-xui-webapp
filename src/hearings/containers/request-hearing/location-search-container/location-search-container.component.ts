@@ -8,6 +8,7 @@ import * as fromHearingStore from '../../../../hearings/store';
 @Component({
   selector: 'exui-location-search-container',
   templateUrl: './location-search-container.component.html',
+  styleUrls: ['./location-search.component.scss']
 })
 export class LocationSearchContainerComponent implements OnInit {
   public locationType: string;

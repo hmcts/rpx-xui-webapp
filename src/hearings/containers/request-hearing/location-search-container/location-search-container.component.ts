@@ -1,13 +1,8 @@
-<<<<<<< HEAD
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { LocationModel } from 'api/locations/models/location.model';
 import { Observable, of } from 'rxjs';
-=======
-import { Component, OnInit } from '@angular/core';
-import { select, Store } from '@ngrx/store';
->>>>>>> f0e2e9b36c8192fe703a35e1c400f1f8ca21e106
 import { map } from 'rxjs/operators';
 import * as fromHearingStore from '../../../../hearings/store';
 @Component({

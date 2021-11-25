@@ -1,5 +1,5 @@
-@ng 
-Feature: WA Release 2: Allocate Role Case worker - Check your answers Change link
+@ng @known_bug @EUI-4803
+Feature: WA Release 2: Roles and access - Allocate Role Case worker - Check your answers Change link (EUI-4803)
 
 
     Scenario Outline: Roles and access

@@ -16,7 +16,7 @@ module.exports = {
             res.status(200).send(workAllocationMockData.getTaskDetails());
         },
         '/workallocation2/task/:taskId': (req, res) => {
-            const body = { data: workAllocationMockData.getRelease2TaskDetails() }
+            const body = workAllocationMockData.taskDetails
             res.status(200).send(body);
         },
         '/workallocation/caseworker': (req, res) => {
@@ -120,7 +120,7 @@ module.exports = {
             if (requestedView === "MyTasks") {
                 tasks = workAllocationMockData.myWorkMyTasks;
             } else if (requestedView === "AvailableTasks") {
-                tasks = workAllocationMockData.getMyWorkAvailableTasks;
+                tasks = workAllocationMockData.myWorkAvailableTasks;
             } else if (requestedView === "AllWork") {
                 tasks = workAllocationMockData.allWorkTasks;
             } else {

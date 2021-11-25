@@ -119,7 +119,7 @@ class MockApp{
             res.status(response.status).send(response.data)
         }
         catch(err){
-            res.status(err.response.status).send(err.response.data);
+            res.status(500).send({mockError: err});
         }
          
     }

@@ -12,8 +12,8 @@ const workAllocationDataModel = require("../../../dataModels/workAllocation");
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Given('I navigate to home page', async function () {
+        await browserUtil.gotoHomePage();
         await BrowserWaits.retryWithActionCallback(async () => {
-            await browserUtil.gotoHomePage();
             await headerpage.waitForPrimaryNavDisplay();
             await browserUtil.waitForLD();
         });  
@@ -22,7 +22,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Given('I navigate page route {string}', async function (routeUrl) {
         await browser.get(routeUrl);
         await BrowserWaits.retryWithActionCallback(async () => {
-            await browser.get(routeUrl);
             await headerpage.waitForPrimaryNavDisplay();
             await browserUtil.waitForLD();
         });        
@@ -59,6 +58,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const userDetails = nodeAppMockData.getUserDetailsWithRoles(roles);
         CucumberReporter.AddJson(userDetails)
         MockApp.onGet('/api/user/details', (req,res) => {
+            CucumberReporter.AddJson(userDetails)
             res.send(userDetails);
         });
      });

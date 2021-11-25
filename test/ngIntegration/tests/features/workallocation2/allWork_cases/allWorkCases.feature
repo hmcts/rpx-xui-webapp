@@ -4,7 +4,7 @@ Feature: WA Release 2: All work > Cases
     Background: Mock and browser setup
         Given I init MockApp
 
-    Scenario Outline:  My cases, colums and column links for "<UserType>"
+    Scenario Outline:  All cases, colums and column links for "<UserType>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
         Given I start MockApp
         Given I navigate to home page
@@ -14,11 +14,9 @@ Feature: WA Release 2: All work > Cases
         Then I validate work allocation cases table columns displayed
             | ColumnHeader  |
             | Case name     |
-            | Jurisdiction  |
             | Case category |
-            | Case role     |
-            | Start         |
-            | End           |
+            | Role    |
+            | Location         |
 
         Then I validate work allocation table columns are links
             | ColumnHeader |
@@ -31,7 +29,7 @@ Feature: WA Release 2: All work > Cases
             # | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
             | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
-    Scenario Outline: My cases pagnation control display with only 1 page of items
+    Scenario Outline: All cases pagnation control display with only 1 page of items
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
         Given I set MOCK workallocation cases with permissions for view "AllWorkCases"
             | Roles          | Count |

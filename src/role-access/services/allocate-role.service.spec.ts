@@ -11,10 +11,12 @@ const mockRoles = [{roleId: '1', roleName: 'Role 1'},
 
 describe('AllocateRoleService', () => {
   let roleAssignmentService: AllocateRoleService;
+  let sessionStorageService: any;
   let mockHttp: any;
   beforeEach(() => {
     mockHttp = jasmine.createSpyObj('HttpClient', ['get', 'post']);
-    roleAssignmentService = new AllocateRoleService(mockHttp);
+    sessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem']);
+    roleAssignmentService = new AllocateRoleService(mockHttp, sessionStorageService);
   });
   it('should be able to set judicial and legal ops roles', () => {
     mockHttp.get.and.returnValue(of(mockRoles));

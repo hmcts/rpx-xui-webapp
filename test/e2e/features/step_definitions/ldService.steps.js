@@ -12,6 +12,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I validate launch darkly feature toggles response received', async function(){ 
         expect(global.scenarioData['featureToggles']).to.not.be.a('null');
+        expect(global.scenarioData['featureToggles']).to.not.be.a('undefined');
     });
 
     Then('I validate launch darkly feature toggle values', async function(featureToggleValuesDataTable){

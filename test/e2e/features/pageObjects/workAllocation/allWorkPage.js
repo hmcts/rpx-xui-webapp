@@ -46,6 +46,8 @@ class AllWork extends TaskList {
 
 
     async isFilterItemDisplayed(filterItem){
+
+        
         const filtersItems = Object.keys(this.FILTER_ITEMS);
         if (!filtersItems.includes(filterItem)){
             throw new Error(`Filter item "${filterItem}" not recognised or not implemented in test`);

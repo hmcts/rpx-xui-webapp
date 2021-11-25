@@ -21,11 +21,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     const waCasesTable = new WACasesTable();
 
 
-    Given('I set Mock WA case property values', async function (datatable) {
+    Given('I set Mock WA case {string} property values', async function (view,datatable) {
 
         const datatableHashes = datatable.hashes();
   
-        const cases = waMockData.cases.length > 0 ? waMockData.getMyCases(): waMockData.getMyCases(100);
+        const cases = waMockData[view];
         for (const wacase of datatableHashes){
             cases.cases[parseInt(wacase.index)][wacase.key] = wacase.value
         }

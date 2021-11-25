@@ -5,7 +5,7 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
-import { TaskList } from '../../work-allocation-2/models/dtos';
+import { Caseworker, TaskList } from '../../work-allocation-2/models/dtos';
 
 import { CaseTasksResolverService } from './case-tasks-resolver.service';
 
@@ -53,14 +53,14 @@ describe('CaseTasksResolverService', () => {
   });
 
   it('should return a list of tasks', (done) => {
-    spyOn(httpClient, 'get').and.returnValue(of(TASKS));
+    spyOn(httpClient, 'get').and.returnValues(of(TASKS), of(null));
     const service: CaseTasksResolverService = TestBed.get(CaseTasksResolverService);
     const activatedRoute = new ActivatedRouteSnapshot();
     activatedRoute.params = {
       cid: '1620409659381330'
     };
-    service.resolve(activatedRoute, null).subscribe((tasks: TaskList) => {
-      expect(tasks.tasks.length).toBe(2);
+    service.resolve(activatedRoute, null).subscribe((data: {tasks: TaskList, caseworkers: Caseworker[]}) => {
+      expect(data.tasks.tasks.length).toBe(2);
       done();
     });
   });

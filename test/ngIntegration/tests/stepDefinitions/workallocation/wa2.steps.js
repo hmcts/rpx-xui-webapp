@@ -116,20 +116,17 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         let tasksObj = {};
         let view = forView.toLowerCase();
         view = view.split(" ").join("");
-        if(!global.scenarioData[`workallocation2.${view}`] ){
-            let tasks = [];
-            if(view.includes("mytasks")){
-                tasks = workAllocationMockData.getMyWorkMyTasks(150);
-            } else if (view.includes("available")) {
-                tasks = workAllocationMockData.getMyWorkAvailableTasks(200);
-            }else if (view.includes("allwork")) {
-                tasks = workAllocationMockData.getAllWorkTasks(400);
-            }else{
-                throw new Error("Unrecognised task view " + forView);
-            }
-            global.scenarioData[`workallocation2.${view}`] = tasks;
+        let tasks = [];
+        if (view.includes("mytasks")) {
+            tasks = workAllocationMockData.myWorkMyTasks;
+        } else if (view.includes("availabletask")) {
+            tasks = workAllocationMockData.myWorkAvailableTasks;
+        } else if (view.includes("allwork")) {
+            tasks = workAllocationMockData.allWorkTasks;
+        } else {
+            throw new Error("Unrecognised task view " + forView);
         }
-        tasksObj = global.scenarioData[`workallocation2.${view}`];
+        tasksObj = tasks;
         await ArrayUtil.forEach(tasksHashes, async  (taskHash) => {
             let task = tasksObj.tasks[taskHash.index];
 
@@ -248,21 +245,17 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Given('I set MOCK task details for WA release2', async function(taskDetailsDatatable){
-        const relese2TaskDetails = workAllocationDataModel.getRelease2Task();
-        const taskDetails = taskDetailsDatatable.hashes()[0];
-        const taskKeys = Object.keys(taskDetails);
+        const inputTaskDetails = taskDetailsDatatable.hashes();
+
+        const taskDetails = workAllocationMockData.taskDetails;
+        const taskKeys = Object.keys(inputTaskDetails);
 
         await ArrayUtil.forEach(taskKeys,async(key) => {
             if(key.toLowerCase().includes("date")){
-                relese2TaskDetails[key] = getDateValueForDays(taskDetails[key]);
+                taskDetails.task[key] = getDateValueForDays(inputTaskDetails[key]);
             }else{
-                relese2TaskDetails[key] = taskDetails[key];
-            }
-            
-        })
-
-        MockApp.onGet('/workallocation2/task/:taskId', (req,res) => {
-            res.send({data:relese2TaskDetails});
+                taskDetails.task[key] = inputTaskDetails[key];
+            } 
         })
 
     });

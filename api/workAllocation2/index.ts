@@ -162,6 +162,14 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
           caseId,
         ],
       },
+      {
+        key: 'state',
+        operator: 'IN',
+        values: [
+          'assigned',
+          'unassigned',
+        ],
+      },
     ],
     sorting_parameters: [
       {

@@ -343,20 +343,30 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     }
 
     Then('I see {string} task action page', async function(actionHeader){
-        expect(await taskActionPage.getPageHeader()).to.contain(actionHeader);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await taskActionPage.getPageHeader()).to.contain(actionHeader);
+        });
     });
 
     Then('I validate task action page has description {string}', async function (actionDescription) {
-        expect(await taskActionPage.getActionDescription()).to.contain(actionDescription);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await taskActionPage.getActionDescription()).to.contain(actionDescription);
+        });
+
     });
 
     When('I click {string} submit button in task action page', async function(actionSubmitBtnLabel){
-        expect(await taskActionPage.getSubmitBtnActionLabel()).to.contain(actionSubmitBtnLabel);
-        await taskActionPage.clickSubmit();
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await taskActionPage.getSubmitBtnActionLabel()).to.contain(actionSubmitBtnLabel);
+            await taskActionPage.clickSubmit();
+        });
+        
     });
 
     When('I click Cancel link in task action page', async function(){
-        await taskActionPage.clickCancelLink();
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await taskActionPage.clickCancelLink();
+        });
     });
 
     When('In workflow {string}, I click cancel link', async function (workflow){

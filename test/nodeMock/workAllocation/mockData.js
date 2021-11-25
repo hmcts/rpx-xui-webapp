@@ -31,7 +31,7 @@ class WorkAllocationMockData {
             { added: '2021-10-12T12:14:42.230129Z', name: 'legal a', userType: 'LEGAL_OPERATIONS', type: 'CASE', id: '12345678904', roleCategory: 'LEGAL_OPERATIONS', roleName: 'case-manager' }
         ]);
 
-        this.caseRoleForAssignment = this.caseRoles[0];
+        this.caseRoleForAssignment = [this.caseRoles[0]];
 
         this.myWorkMyTasks = this.getMyWorkMyTasks(150);
         this.myWorkAvailableTasks = this.getMyWorkAvailableTasks(200);
@@ -39,6 +39,8 @@ class WorkAllocationMockData {
 
         this.myCases = this.getWACases(125);
         this.allWorkCases = this.getWACases(125);
+
+        this.taskDetails = { task: this.getRelease2TaskDetails() } 
 
     }
 

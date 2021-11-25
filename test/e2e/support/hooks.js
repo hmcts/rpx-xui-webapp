@@ -96,15 +96,8 @@ const BrowserLogs = require('./browserLogs');
 defineSupportCode(({ Before,After }) => {
     Before(async function (scenario) {
         global.scenarioData = {};
-        const world = this;
-        global.scenarioData['canSecenarioRunwiThExistingSession'] = scenario.pickle.name.startsWith("WITH_SESSION")
-        let url = await browser.getCurrentUrl();
-        if (!global.scenarioData['canSecenarioRunwiThExistingSession'] && url.startsWith('http')){
-            await browser.executeScript('window.sessionStorage.clear();');
-            await browser.executeScript('window.localStorage.clear();');
-            await browser.manage().deleteAllCookies();
-        }
-       
+        const world = this
+        
         CucumberReportLog.setScenarioWorld(this);
     });
 
@@ -141,8 +134,14 @@ defineSupportCode(({ Before,After }) => {
         }catch(err) {
             CucumberReportLog.AddMessage("Error in hooks with browserlogs or screenshots. See error details : " + err);
         }     
-        
+        await clearSession();
        
 
     });
+
+    async function clearSession(){
+        await browser.executeScript('window.sessionStorage.clear();');
+        await browser.executeScript('window.localStorage.clear();');
+        await browser.manage().deleteAllCookies();
+    }
 });

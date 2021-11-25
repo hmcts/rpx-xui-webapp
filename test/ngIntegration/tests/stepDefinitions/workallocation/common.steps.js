@@ -39,6 +39,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     const taskListTable = new TaskListTable();
     const waCaseListTable = new CaseListTable();
 
+    const TASK_SEARHC_FILTERS_TO_IGNORE_IN_REQUEST_BODY = {
+        'priority': 'Is out of scope and will be removed as part of https://tools.hmcts.net/jira/browse/EUI-4809',
+        'taskType': 'Is to be includes only in 2.1 till the it will be ignored in test'
+    }
+
     When('I click task list pagination link {string} and wait for req reference {string} not null', async function (paginationLinktext, reference) {
         await taskListTable.waitForTable();
         await BrowserWaits.retryWithActionCallback(async () => {
@@ -99,6 +104,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const reqSearchParams = reqBody.searchRequest.search_parameters;
         for (let i = 0; i < datatableHash.length; i++) {
             searchHash = datatableHash[i];
+            if (Object.keys(TASK_SEARHC_FILTERS_TO_IGNORE_IN_REQUEST_BODY).includes(searchHash.key)){
+                CucumberReporter.AddMessage(`${searchHash.key} is ignored for eeason : ${TASK_SEARHC_FILTERS_TO_IGNORE_IN_REQUEST_BODY[searchHash.key]}`);
+                continue;
+            }
             const searchParamObj = await ArrayUtil.filter(reqSearchParams, async (searchObj) => searchObj.key === searchHash.key);
            
             softAssert.setScenario(`Search param with key ${searchHash.key} is present`);
@@ -134,6 +143,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const reqSearchParams = reqBody.searchRequest.search_parameters;
         for (let i = 0; i < datatableHash.length; i++) {
             searchHash = datatableHash[i];
+            if (Object.keys(TASK_SEARHC_FILTERS_TO_IGNORE_IN_REQUEST_BODY).includes(searchHash.key)) {
+                CucumberReporter.AddMessage(`${searchHash.key} is ignored for eeason : ${TASK_SEARHC_FILTERS_TO_IGNORE_IN_REQUEST_BODY[searchHash.key]}`);
+                continue;
+            }
             const searchParamObj = await ArrayUtil.filter(reqSearchParams, async (searchObj) => searchObj.key === searchHash.key);
             softAssert.setScenario(`Search param with key ${searchHash.key} is present`);
             if (searchParamObj.length > 0) {

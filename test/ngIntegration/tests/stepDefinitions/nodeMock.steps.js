@@ -12,14 +12,10 @@ const workAllocationDataModel = require("../../../dataModels/workAllocation");
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Given('I navigate to home page', async function () {
+        await browserUtil.gotoHomePage();
         await BrowserWaits.retryWithActionCallback(async () => {
-            const isAppLoaded = await headerpage.amOnPage();
-            if (global.scenarioData['canSecenarioRunwiThExistingSession'] && isAppLoaded ){
-                await headerpage.manageCases.click();
-           } else{
-                await browserUtil.gotoHomePage();
-           }
-            
+            await headerpage.waitForPrimaryNavDisplay();
+            await browserUtil.waitForLD();
         });  
     });
 
@@ -62,6 +58,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const userDetails = nodeAppMockData.getUserDetailsWithRoles(roles);
         CucumberReporter.AddJson(userDetails)
         MockApp.onGet('/api/user/details', (req,res) => {
+            CucumberReporter.AddJson(userDetails)
             res.send(userDetails);
         });
      });

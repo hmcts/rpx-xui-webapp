@@ -1,5 +1,6 @@
-@ng 
-Feature: WA Release 2: Allocate and Remove Role Legal Ops
+@ng @known_bug @EUI-4803
+Feature: WA Release 2: Roles and access - Allocate and Remove Role Legal Ops (EUI-4803)
+        https://tools.hmcts.net/jira/browse/EUI-3800
 
     Background: Case details setup
         Given I set MOCK case details with reference "caseDetails"

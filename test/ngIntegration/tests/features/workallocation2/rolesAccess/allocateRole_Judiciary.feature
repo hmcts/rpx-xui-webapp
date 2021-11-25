@@ -1,5 +1,5 @@
-@ng
-Feature: WA Release 2: Allocate and Remove Role judiciary
+@ng @known_bug @EUI-4803
+Feature: WA Release 2: Roles and access - Allocate and Remove Role judiciary (EUI-4803)
 
     Background: Case details setup
         Given I set MOCK case details with reference "caseDetails"
@@ -59,7 +59,6 @@ Feature: WA Release 2: Allocate and Remove Role judiciary
         When I click button with label "Confirm allocation" in work flow  Check your answers page
         Then I see case details page displayed with tab "Roles and access" selected
         Then I see case details page with message banner "You've allocated a role"
-
 
     Scenario: Roles and access - Judge user allocates judicial role  "<Useridentifier>" - Allocate role, Allocate to another person for duration 7 Days
 
@@ -166,7 +165,6 @@ Feature: WA Release 2: Allocate and Remove Role judiciary
         When I click button with label "Confirm allocation" in work flow  Check your answers page
         Then I see case details page displayed with tab "Roles and access" selected
         Then I see case details page with message banner "You've allocated a role"
-
 
     Scenario: Roles and access - Judge user allocates judicial role "<Useridentifier>" - Allocate role, reserve to me for duration Another period - invalid dates
 

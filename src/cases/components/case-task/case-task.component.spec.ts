@@ -9,6 +9,7 @@ describe('CaseTaskComponent', () => {
   const mockSessionStorage = jasmine.createSpyObj('mockSessionStorage', ['getItem']);
   const mockRouter = jasmine.createSpyObj('router', ['navigate']);
   const mockTaskService = jasmine.createSpyObj('taskService', ['claimTask']);
+  mockRouter.url = '/case-details/123243430403904/tasks';
   const component = new CaseTaskComponent(mockRouter, mockSessionStorage, mockTaskService);
   it('getManageOptions no assignee no permissions', () => {
     const task: Task = {
@@ -293,13 +294,14 @@ describe('CaseTaskComponent', () => {
     });
 
     it('should handle an action that redirects', () => {
+      const state = {returnUrl: ''};
 
       // need to check that navigate has been called
       component.onActionHandler(exampleTask, secondOption);
       expect(mockRouter.navigate).toHaveBeenCalled();
 
       // need to verify correct properties were called
-      expect(mockRouter.navigate).toHaveBeenCalledWith([`/work/${exampleTask.id}/${secondOption.id}`]);
+      expect(mockRouter.navigate).toHaveBeenCalledWith([`/work/${exampleTask.id}/${secondOption.id}`], {state});
     });
   });
 

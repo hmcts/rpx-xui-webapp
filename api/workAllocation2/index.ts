@@ -371,7 +371,7 @@ export async function getMyCases(req: EnhancedRequest, res: Response) {
         checkedRoles = getSubstantiveRoles(req.session.roleAssignmentResponse);
       }
       const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles, null) : [];
-      const cases = assignActionsToCases(mappedCases, userIsCaseAllocator, true);
+      const cases = assignActionsToCases(mappedCases, userIsCaseAllocator);
       result.cases = cases;
       return res.send(result).status(200);
     } else {
@@ -432,7 +432,7 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
       checkedRoles = getSubstantiveRoles(roleAssignmentResult.roleAssignmentResponse);
     }
     const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles, pagination) : [];
-    result.cases = assignActionsToCases(mappedCases, userIsCaseAllocator, true);
+    result.cases = assignActionsToCases(mappedCases, userIsCaseAllocator);
     return res.send(result).status(200);
   } catch (error) {
     console.error(error);

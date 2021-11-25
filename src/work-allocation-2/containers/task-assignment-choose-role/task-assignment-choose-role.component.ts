@@ -62,7 +62,8 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
     if (valid) {
       const role = values.role;
       const taskId = values.taskId;
-      this.router.navigate(['work', taskId, this.verb.toLowerCase(), 'person'], {queryParams: {role}});
+      const state = window.history.state;
+      this.router.navigate(['work', taskId, this.verb.toLowerCase(), 'person'], {queryParams: {role}, state});
     }
   }
 

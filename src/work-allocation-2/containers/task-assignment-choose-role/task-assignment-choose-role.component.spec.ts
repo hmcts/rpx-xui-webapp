@@ -72,10 +72,12 @@ describe('TaskAssignmentChooseRoleComponent', () => {
   });
 
   it('should send user to find person', () => {
+    window.history.pushState({returnUrl: '/case-details/123243430403904/tasks'}, 'state');
+    const state = window.history.state;
     component.submit(component.form.value, component.form.valid);
     expect(router.navigate).toHaveBeenCalledWith(
       ['work', 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', 'reassign', 'person'],
-      {queryParams: {role: 'LEGAL_OPERATIONS'}}
+      {queryParams: {role: 'LEGAL_OPERATIONS'}, state}
     );
   });
 });

@@ -11,7 +11,7 @@ Feature: WA Release 2: My work to  My cases to pagination sorting
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
         Given I set MOCK workallocation cases with permissions for view "My cases"
             | Roles          | Count |
-            | case-allocator | 40    |
+            | task-supervisor | 40    |
             |                | 100    |
 
         Given I start MockApp
@@ -38,7 +38,7 @@ Feature: WA Release 2: My work to  My cases to pagination sorting
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
         Given I set MOCK workallocation cases with permissions for view "My cases"
             | Roles          | Count |
-            | case-allocator | 20    |
+            | task-supervisor | 20    |
 
         Given I start MockApp
 
@@ -60,7 +60,7 @@ Feature: WA Release 2: My work to  My cases to pagination sorting
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
         Given I set MOCK workallocation cases with permissions for view "My cases"
             | Roles          | Count |
-            | case-allocator | 0    |
+            | task-supervisor | 0    |
 
         Given I start MockApp
 

@@ -31,7 +31,7 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role Legal Ops (EU
 
     Scenario: Roles and access - LegalOps user allocates role - Allocate role, reserve to me for duration Indefinite
 
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,case-allocator" with reference "userDetails"
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |

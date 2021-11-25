@@ -5,7 +5,7 @@ Feature: WA Release 2: My cases - Manage links
         Given I init MockApp
         Given I set MOCK workallocation cases with permissions for view "My cases"
             | Roles          | Count |
-            | case-allocator | 10    |
+            | task-supervisor | 10    |
             |                | 90    |
 
 

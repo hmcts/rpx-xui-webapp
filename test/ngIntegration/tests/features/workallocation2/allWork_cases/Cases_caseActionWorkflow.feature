@@ -8,7 +8,7 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
         Given I init MockApp
         Given I set MOCK workallocation cases with permissions for view "AllWorkCases"
             | Roles          | Count |
-            | case-allocator | 10    |
+            | task-supervisor | 10    |
             |                | 90    |
 
         Given I set MOCK request "/workallocation2/findPerson" intercept with reference "findPersonRequest"

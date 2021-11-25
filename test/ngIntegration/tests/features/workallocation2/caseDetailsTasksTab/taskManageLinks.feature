@@ -13,7 +13,7 @@ Feature: WA Release 2: Case details Tasks tab - Manage links (@integration_todo)
             | Test34@justice.uk | test34 person |
             | Test45@justice.uk | test45 person |
 
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,case-allocator" with reference "userDetails"
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |

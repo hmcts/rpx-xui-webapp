@@ -2,6 +2,7 @@
      *ngIf="{locations: locations$ | async, jurisdictions: waSupportedJurisdictions$ | async } as filterLists">
   <ng-container *ngIf="filterLists.locations && filterLists.jurisdictions">
     <exui-case-manager-filter
+      [defaultLocation]="defaultLocation"
       [locations]="filterLists.locations"
       [jurisdictions]="filterLists.jurisdictions"
       (selectChanged)="onSelectionChanged($event)"

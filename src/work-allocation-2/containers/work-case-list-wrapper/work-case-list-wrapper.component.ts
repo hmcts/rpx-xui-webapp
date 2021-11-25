@@ -18,6 +18,7 @@ import { CaseworkerDataService, InfoMessageCommService, LocationDataService, WAS
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 import { AllocateRoleService } from '../../../role-access/services';
 import { Role } from '../../../role-access/models';
+import { UserInfo } from '../../../app/models';
 
 @Component({
   templateUrl: 'work-case-list-wrapper.component.html',
@@ -37,6 +38,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
   private pCases: Case[];
   protected allJurisdictions: Jurisdiction[];
   protected allRoles: Role[];
+  protected defaultLocation: string = 'all';
   /**
    * Mock CaseServiceConfig.
    */
@@ -137,6 +139,16 @@ export class WorkCaseListWrapperComponent implements OnInit {
   public setupCaseWorkers(): void {
     this.caseworkerService.getAll().subscribe(caseworkers => {
       this.caseworkers = [...caseworkers];
+      const userInfoStr = this.sessionStorageService.getItem('userDetails');
+      if (userInfoStr) {
+        const userInfo: UserInfo = JSON.parse(userInfoStr);
+        const userId = userInfo.id === null ? userInfo.uid : userInfo.id;
+        const currentCW = this.caseworkers.find(cw => cw.idamId === userId);
+        if (currentCW && currentCW.location && currentCW.location.id) {
+          this.defaultLocation = currentCW.location.id
+        }
+      }
+
     }, error => {
       handleFatalErrors(error.status, this.router);
     });

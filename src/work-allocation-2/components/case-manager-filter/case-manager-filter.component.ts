@@ -21,6 +21,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
   private static FILTER_NAME: string = 'cases';
   @Input() public locations: Location[] = [];
   @Input() public jurisdictions: string[] = [];
+  @Input() public defaultLocation: string = 'all';
   @Output() public selectChanged: EventEmitter<any> = new EventEmitter<any>();
   public filterConfig: FilterConfig = {
     persistence: 'session',
@@ -35,10 +36,6 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
         {
           name: 'jurisdiction',
           value: ['IA']
-        },
-        {
-          name: 'location_id',
-          value: ['all']
         },
         {
           name: 'actorId',
@@ -157,6 +154,11 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
         this.filterConfig.cancelSetting.fields.push({
             name: 'role',
             value: [roleType]
+          }
+        );
+        this.filterConfig.cancelSetting.fields.push({
+            name: 'location_id',
+            value: [this.defaultLocation.toString()]
           },
         );
       }

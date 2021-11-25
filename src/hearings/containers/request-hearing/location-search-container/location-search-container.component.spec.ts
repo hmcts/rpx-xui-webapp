@@ -59,7 +59,7 @@ describe('LocationSearchContainerComponent', () => {
       postcode: 'AB11 6LT'
     } as LocationModel;
 
-    component.addSelection(location);
+    component.addSelection();
     fixture.detectChanges();
     done();
     const selectedLoctions = fixture.debugElement.queryAll(By.css('.location-selection'));
@@ -84,7 +84,7 @@ describe('LocationSearchContainerComponent', () => {
       postcode: 'AB11 6LT'
     } as LocationModel;
 
-    component.addSelection(location);
+    component.addSelection();
     fixture.detectChanges();
     fixture.whenStable().then(() => {
       const selectedLoctions = fixture.debugElement.queryAll(By.css('.location-selection'));

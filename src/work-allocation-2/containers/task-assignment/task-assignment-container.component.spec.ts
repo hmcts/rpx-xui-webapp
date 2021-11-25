@@ -4,7 +4,7 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, ViewChild } from '@angular/co
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
@@ -49,6 +49,9 @@ describe('TaskAssignmentContainerComponent', () => {
     email: 'john.smith@email.com',
     domain: PersonRole.CASEWORKER
   };
+  const locationStub: any = {
+    back: jasmine.createSpy('back')
+  };
   const mockTasks = getMockTasks();
   const mockWorkAllocationService = {
     assignTask: jasmine.createSpy('assignTask').and.returnValue(Observable.of({}))
@@ -85,6 +88,7 @@ describe('TaskAssignmentContainerComponent', () => {
         ),
       ],
       providers: [
+        {provide: Location, useValue: locationStub},
         {provide: WorkAllocationTaskService, useValue: mockWorkAllocationService},
         {provide: SessionStorageService, useValue: mockSessionStorageService},
         {
@@ -93,7 +97,8 @@ describe('TaskAssignmentContainerComponent', () => {
             snapshot: {
               data: {
                 taskAndCaseworkers: {
-                  task: { task: mockTasks[0]}, caseworkers: []},
+                  task: {task: mockTasks[0]}, caseworkers: []
+                },
                 ...TaskActionConstants.Reassign
               },
               params: {
@@ -128,7 +133,7 @@ describe('TaskAssignmentContainerComponent', () => {
 
   it('should re-direct to assign task confirmation page', () => {
     const mockRouter = jasmine.createSpyObj('router', ['navigate']);
-    const compo = new TaskAssignmentContainerComponent(null, mockRouter, mockSessionStorageService);
+    const compo = new TaskAssignmentContainerComponent(null, mockRouter, locationStub, mockSessionStorageService);
     const findPersonControl = new FormControl('test');
     compo.formGroup.addControl('findPersonControl', findPersonControl);
     compo.verb = TaskActionType.Reassign;
@@ -142,7 +147,7 @@ describe('TaskAssignmentContainerComponent', () => {
 
   it('should not re-direct to assign task confirmation page and throw form group error', () => {
     const mockRouter = jasmine.createSpyObj('router', ['navigate']);
-    const compo = new TaskAssignmentContainerComponent(null, mockRouter, mockSessionStorageService);
+    const compo = new TaskAssignmentContainerComponent(null, mockRouter, locationStub, mockSessionStorageService);
     const findPersonControl = new FormControl('');
     compo.formGroup.addControl('findPersonControl', findPersonControl);
     compo.verb = TaskActionType.Reassign;
@@ -152,36 +157,41 @@ describe('TaskAssignmentContainerComponent', () => {
   });
 
   it('should redirect to the "All work" page on cancelling task assignment', () => {
-    window.history.pushState({ returnUrl: 'all-work/tasks#manage_0d22d838', showAssigneeColumn: false }, '',
+    window.history.pushState({returnUrl: 'all-work/tasks#manage_0d22d838', showAssigneeColumn: false}, '',
       'all-work/tasks#manage_0d22d838');
     const mockRouter = jasmine.createSpyObj('router', ['navigate']);
-    const tacComponent = new TaskAssignmentContainerComponent(null, mockRouter, mockSessionStorageService);
+    const tacComponent = new TaskAssignmentContainerComponent(null, mockRouter, locationStub, mockSessionStorageService);
     const findPersonControl = new FormControl('test');
     tacComponent.formGroup.addControl('findPersonControl', findPersonControl);
     tacComponent.cancel();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['all-work/tasks']);
+    expect(locationStub.back).toHaveBeenCalledWith();
   });
 
   it('should redirect to the fallback URL (\'\') on cancelling task assignment, if the return URL is not in the history', () => {
     window.history.pushState({}, '');
     const mockRouter = jasmine.createSpyObj('router', ['navigate']);
-    const tacComponent = new TaskAssignmentContainerComponent(null, mockRouter, mockSessionStorageService);
+    const tacComponent = new TaskAssignmentContainerComponent(null, mockRouter, locationStub, mockSessionStorageService);
     const findPersonControl = new FormControl('test');
     tacComponent.formGroup.addControl('findPersonControl', findPersonControl);
     tacComponent.cancel();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['']);
+    expect(locationStub.back).toHaveBeenCalledWith();
   });
 
   it('should display the correct verb on screen', () => {
-    const activatedRoute: ActivatedRoute = fixture.debugElement.injector.get(ActivatedRoute);
-    activatedRoute.snapshot.data = {
-      taskAndCaseworkers: {
-        task: { task: mockTasks[0]}, caseworkers: []},
-      ...TaskActionConstants.Assign
+    const activatedRoute: any = fixture.debugElement.injector.get(ActivatedRoute) as any;
+    activatedRoute.snapshot = {
+      paramMap: convertToParamMap({taskId: 'task1111111', role: 'LEGAL_OPERATIONS'}),
+      queryParamMap: convertToParamMap({taskId: 'task1111111', role: 'LEGAL_OPERATIONS'}),
+      data: {
+        taskAndCaseworkers: {
+          task: {task: mockTasks[0]}, caseworkers: []
+        },
+        ...TaskActionConstants.Assign
+      }
     };
     fixture.detectChanges();
     const mockRouter = jasmine.createSpyObj('router', ['navigate']);
-    const tacComponent = new TaskAssignmentContainerComponent(null, mockRouter, mockSessionStorageService);
+    const tacComponent = new TaskAssignmentContainerComponent(null, mockRouter, locationStub, mockSessionStorageService);
     const findPersonControl = new FormControl('test');
     tacComponent.formGroup.addControl('findPersonControl', findPersonControl);
     const titleElement = fixture.debugElement.nativeElement.querySelector('.govuk-caption-l');

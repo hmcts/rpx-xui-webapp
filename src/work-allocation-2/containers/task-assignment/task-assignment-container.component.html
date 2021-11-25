@@ -18,7 +18,7 @@
 
   <div class="govuk-grid-row">
     <xuilib-find-person
-      title="{{verb}} task"
+      [title]="verb + ' task'"
       [findPersonGroup]="formGroup"
       (personSelected)="selectedPerson($event)"
       [selectedPerson]="defaultPerson"

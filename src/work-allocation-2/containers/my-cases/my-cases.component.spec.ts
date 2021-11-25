@@ -120,4 +120,7 @@ describe('MyCasesComponent', () => {
     expect(footerCell.textContent.trim()).toEqual(component.emptyMessage);
   });
 // took out action handler test as is handled by wrapper component
+  afterEach(() => {
+    fixture.destroy();
+  })
 });

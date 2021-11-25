@@ -1,9 +1,12 @@
+import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { AlertService, CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
+import { of } from 'rxjs';
 
 import { TaskAlertBannerComponent } from '../../../cases/components';
+import { WorkAllocationCaseService } from '../../../work-allocation-2/services';
 import { getMockTasks } from '../../../work-allocation-2/tests/utils.spec';
 import { TasksContainerComponent } from './tasks-container.component';
 
@@ -108,21 +111,28 @@ const CASE_VIEW: CaseView = {
 
 describe('TasksContainerComponent', () => {
   const mockAlertService = jasmine.createSpyObj('alertService', ['success', 'setPreserveAlerts', 'error']);
-
+  const mockWACaseService = jasmine.createSpyObj('waCaseService', ['getTasksByCaseId']);
   let component: TasksContainerComponent;
   let fixture: ComponentFixture<TasksContainerComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [TaskAlertBannerComponent, TasksContainerComponent],
+      imports: [
+        HttpClientModule
+      ],
       providers: [
         {provide: AlertService, useValue: mockAlertService},
+        {provide: WorkAllocationCaseService, useValue: mockWACaseService},
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
-                tasks: getMockTasks(),
+                tasks: {
+                  tasks: getMockTasks(),
+                  caseworkers: null
+                },
                 case: CASE_VIEW
               }
             }
@@ -143,5 +153,12 @@ describe('TasksContainerComponent', () => {
   it('should correctly show task alert when warnings are present', () => {
     // as the mock tasks include a warning the task alert banner should be displayed
     expect(component.warningIncluded).toBe(true);
+  });
+
+  it('should refresh tasks when requested', () => {
+    const firstTask = getMockTasks()[0];
+    mockWACaseService.getTasksByCaseId.and.returnValue(of([firstTask]))
+    component.onTaskRefreshRequired();
+    expect(component.tasks.length).toEqual(1);
   });
 });

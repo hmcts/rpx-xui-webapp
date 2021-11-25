@@ -17,7 +17,7 @@ import { SearchService } from '../../../search/services/search.service';
 export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy {
 
   @Input() public item: NavItemsModel;
-  @Input() public decorate16DigitCaseReferenceSearchBox: boolean;
+  @Input() public decorate16DigitCaseReferenceSearchBoxInHeader: boolean;
 
   public formGroup: FormGroup;
   public searchSubscription$: Subscription;
@@ -36,7 +36,7 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy {
 
     // If search returned no case, retrieve case reference from session storage
     // and populate the 16-digit case reference search box
-    if (this.decorate16DigitCaseReferenceSearchBox) {
+    if (this.decorate16DigitCaseReferenceSearchBoxInHeader) {
       const searchParameters = this.searchService.retrieveState(SearchStatePersistenceKey.SEARCH_PARAMS);
       this.formGroup.controls['caseReference'].setValue(searchParameters.caseReferences[0]);
     }
@@ -62,7 +62,7 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy {
     this.searchSubscription$ = this.searchService.getResults().subscribe(result => {
       if (result.resultInfo.casesReturned > 0) {
         // Case found, do not decorate 16-digit case reference search box with error class
-        this.store.dispatch(new fromActions.Decorate16DigitCaseReferenceSearchBox(false));
+        this.store.dispatch(new fromActions.Decorate16DigitCaseReferenceSearchBoxInHeader(false));
         // Navigate to case details page
         this.router.navigate([`/cases/case-details/${result.results[0].caseReference}`], { relativeTo: this.route });
       } else {

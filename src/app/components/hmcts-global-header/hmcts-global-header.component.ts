@@ -27,7 +27,7 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
   @Input() public navigation: UserNavModel;
   @Input() public logoType: string;
   @Input() public currentUrl: string;
-  @Input() public decorate16DigitCaseReferenceSearchBox: boolean;
+  @Input() public decorate16DigitCaseReferenceSearchBoxInHeader: boolean;
   @Output() public navigate = new EventEmitter<string>();
 
   public showItems: boolean;
@@ -63,7 +63,7 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
 
   public onEmitSubMenu(menuItem: any) {
     // New menu item page load, do not decorate 16-digit case reference search box with error class
-    this.appStore.dispatch(new fromAppStore.Decorate16DigitCaseReferenceSearchBox(false));
+    this.appStore.dispatch(new fromAppStore.Decorate16DigitCaseReferenceSearchBoxInHeader(false));
 
     if (menuItem.href === '/noc') {
       this.nocStore.dispatch(new fromNocStore.Reset());

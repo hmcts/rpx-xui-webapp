@@ -163,6 +163,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
   }
 
   public navigationHandler(navEvent: AllocateRoleNavigationEvent): void {
+    console.log('navEvent', navEvent);
     switch (navEvent) {
       case AllocateRoleNavigationEvent.BACK: {
         switch (this.navigationCurrentState) {

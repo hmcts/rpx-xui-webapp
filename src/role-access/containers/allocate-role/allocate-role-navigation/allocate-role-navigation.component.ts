@@ -1,6 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import {
   backButtonVisibilityStates,
   backButtonVisibilityStatesIfReallocate,
@@ -35,7 +36,7 @@ export class AllocateRoleNavigationComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.allocateRoleStateData$ = this.store.pipe(select(fromFeature.getAllocateRoleState));
+    this.allocateRoleStateData$ = this.store.pipe(select(fromFeature.getAllocateRoleState), tap(console.log));
   }
 
   public isBackVisible(currentNavigationState: AllocateRoleState, action: Actions): boolean {
@@ -50,6 +51,7 @@ export class AllocateRoleNavigationComponent implements OnInit {
   }
 
   public onEventTrigger(event: AllocateRoleNavigationEvent): void {
+    console.log('onEventTrigger', event);
     this.eventTrigger.emit(event);
   }
 }

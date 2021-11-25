@@ -37,6 +37,10 @@ export class CaseTaskComponent implements OnInit {
     return this.pTask;
   }
 
+  public get returnUrl(): string {
+    return this.router ? this.router.url : `case-details/${this.task.case_id}/tasks`;
+  }
+
   @Input()
   public set task(value: Task) {
     value.description = CaseTaskComponent.replaceVariablesWithRealValues(value);
@@ -64,7 +68,9 @@ export class CaseTaskComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.manageOptions = this.getManageOptions(this.task);
+    if (this.task && this.task.permissions) {
+      this.manageOptions = this.getManageOptions(this.task);
+    }
   }
 
   public getAssigneeName(task: Task): string {
@@ -83,7 +89,8 @@ export class CaseTaskComponent implements OnInit {
   }
 
   public doesUserHaveOwnAndExecute(task: Task): boolean {
-    return task.permissions.includes(TaskPermission.OWN) && task.permissions.includes(TaskPermission.EXECUTE);
+    return task && task.permissions && task.permissions.values
+     && task.permissions.values.includes(TaskPermission.OWN) && task.permissions.includes(TaskPermission.EXECUTE);
   }
 
   public getDueDateTitle(): string {
@@ -103,8 +110,13 @@ export class CaseTaskComponent implements OnInit {
       });
       return;
     }
+    const state = {
+      returnUrl: this.returnUrl,
+      keepUrl: true,
+      showAssigneeColumn: true
+    };
     const actionUrl = `/work/${task.id}/${option.id}`;
-    this.router.navigate([actionUrl]);
+    this.router.navigate([actionUrl], {state});
   }
 
   /**
@@ -127,8 +139,9 @@ export class CaseTaskComponent implements OnInit {
   }
 
   public getManageOptions(task: Task): {id: string, text: string} [] {
+    const permissions = task && task.permissions ? task.permissions.values : [];
     if (!task.assignee) {
-      if (task.permissions.length === 0 || (task.permissions.length === 1 && task.permissions.includes(TaskPermission.MANAGE))) {
+      if (permissions.length === 0 || (permissions.length === 1 && permissions.includes(TaskPermission.MANAGE))) {
         return [];
       } else {
         return [{id: 'claim', text: 'Assign to me'}];
@@ -141,13 +154,13 @@ export class CaseTaskComponent implements OnInit {
         {id: 'unclaim', text: 'Unassign task'}
       ];
     } else {
-      if (task.permissions.includes(TaskPermission.EXECUTE) && task.permissions.includes(TaskPermission.MANAGE)) {
+      if (permissions.includes(TaskPermission.EXECUTE) && permissions.includes(TaskPermission.MANAGE)) {
         return [
           {id: 'claim', text: 'Assign to me'},
           {id: 'reassign', text: 'Reassign task'},
           {id: 'unclaim', text: 'Unassign task'}
         ];
-      } else if (task.permissions.includes(TaskPermission.MANAGE)) {
+      } else if (permissions.includes(TaskPermission.MANAGE)) {
         return [
           {id: 'reassign', text: 'Reassign task'},
           {id: 'unclaim', text: 'Unassign task'}

@@ -41,6 +41,9 @@ export class TaskActionContainerComponent implements OnInit {
   private get returnUrl(): string {
     if (window && window.history && window.history.state) {
       const url = window.history.state.returnUrl;
+      if (window.history.state.keepUrl) {
+        return url;
+      };
       return url.split('/').splice(0, 3).join('/');
     }
     return '/work/my-work/list';

@@ -19,8 +19,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
     bookingRouting,
     SharedModule,
     bookingRouting,
-    ExuiCommonLibModule,
-    ReactiveFormsModule
+    ExuiCommonLibModule
   ],
   declarations: [
     ...fromContainers.containers,

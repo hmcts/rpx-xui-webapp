@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -14,14 +14,13 @@ import { SearchService } from '../../../search/services/search.service';
   templateUrl: './case-reference-search-box.component.html',
   styleUrls: ['./case-reference-search-box.component.scss']
 })
-export class CaseReferenceSearchBoxComponent implements OnInit {
+export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy {
 
   @Input() public item: NavItemsModel;
   @Input() public decorate16DigitCaseReferenceSearchBox: boolean;
 
   public formGroup: FormGroup;
   public searchSubscription$: Subscription;
-  public searchParameters: SearchParameters;
 
   constructor(private readonly store: Store<fromActions.State>,
               private readonly fb: FormBuilder,

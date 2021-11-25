@@ -1,26 +1,26 @@
-import { CaseHearingModel } from '../../models/caseHearing.model';
-import { CaseHearingsMainModel } from '../../models/caseHearingsMain.model';
-import { HearingDayScheduleModel } from '../../models/hearingDaySchedule.model';
-import { EXUISectionStatusEnum, HearingListingStatusEnum } from '../../models/hearings.enum';
-import * as fromActions from '../actions/hearings.action';
-import * as fromReducer from './hearings.reducer';
+import {HearingDayScheduleModel} from '../../models/hearingDaySchedule.model';
+import {HearingListModel} from '../../models/hearingList.model';
+import {HearingListMainModel} from '../../models/hearingListMain.model';
+import {EXUISectionStatusEnum, HearingListingStatusEnum} from '../../models/hearings.enum';
+import * as fromHearingListActions from '../actions/hearing-list.action';
+import * as fromHearingListReducer from './hearing-list.reducer';
 
-describe('Hearings Reducer', () => {
+describe('Hearing List Reducer', () => {
 
   describe('Actions', () => {
 
     describe('Reset action', () => {
       it('should set correct object', () => {
-        const initialState = fromReducer.initialState;
-        const action = new fromActions.Reset();
-        const hearingsState = fromReducer.hearingsReducer(initialState, action);
+        const initialState = fromHearingListReducer.initialHearingListState;
+        const action = new fromHearingListActions.HearingListReset();
+        const hearingsState = fromHearingListReducer.hearingListReducer(initialState, action);
         expect(hearingsState).toEqual(initialState);
       });
     });
 
     describe('Load all hearings success action', () => {
       it('should set correct object', () => {
-        const initialState = fromReducer.initialState;
+        const initialState = fromHearingListReducer.initialHearingListState;
         const HEARING_DAY_SCHEDULE_1: HearingDayScheduleModel = {
           hearingStartDateTime: '2021-05-01T16:00:00.000+0000',
           hearingEndDateTime: '2021-05-04T16:00:00.000+0000',
@@ -29,7 +29,7 @@ describe('Hearings Reducer', () => {
           hearingRoomId: 'room 1',
           hearingPanel: ['child'],
         };
-        const CASE_HEARING_1: CaseHearingModel = {
+        const CASE_HEARING_1: HearingListModel = {
           hearingID: 'h111111',
           hearingType: 'hearing type 1',
           hearingRequestDateTime: '2021-05-05T16:00:00.000+0000',
@@ -41,14 +41,14 @@ describe('Hearings Reducer', () => {
           exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
           hearingDaySchedule: [HEARING_DAY_SCHEDULE_1],
         };
-        const HEARINGS_LIST: CaseHearingsMainModel = {
+        const HEARINGS_LIST: HearingListMainModel = {
           hmctsServiceID: 'SSCS',
           caseRef: '1568642646198441',
           caseHearings: [CASE_HEARING_1],
         };
-        const action = new fromActions.LoadAllHearingsSuccess(HEARINGS_LIST);
-        const hearingsState = fromReducer.hearingsReducer(initialState, action);
-        expect(hearingsState.caseHearingsMainModel).toEqual(HEARINGS_LIST);
+        const action = new fromHearingListActions.LoadAllHearingsSuccess(HEARINGS_LIST);
+        const hearingsState = fromHearingListReducer.hearingListReducer(initialState, action);
+        expect(hearingsState.hearingListMainModel).toEqual(HEARINGS_LIST);
       });
     });
   });

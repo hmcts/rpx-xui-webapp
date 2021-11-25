@@ -11,7 +11,7 @@ import { CaseHearingsListComponent } from './case-hearings-list.component';
 
 class MockRoleCategoryMappingService {
   public initialize = (user: FeatureUser, clientId: string): void => {
-  };
+  }
   public isEnabled = (feature: string): Observable<boolean> => of(true);
   public getValue = <R>(key: string, defaultValue: R): Observable<R> => of(defaultValue);
   public getValueOnce = <R>(key: string, defaultValue: R): Observable<R> => of(defaultValue);
@@ -41,7 +41,7 @@ describe('CaseHearingsListComponent', () => {
     component = fixture.componentInstance;
     component.actions = [Actions.DELETE];
     component.status = EXUISectionStatusEnum.PAST_AND_CANCELLED;
-    component.hearingsList$ = of([{
+    component.hearingList$ = of([{
       hearingID: 'h555555',
       hearingType: 'Directions hearing',
       hmcStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,

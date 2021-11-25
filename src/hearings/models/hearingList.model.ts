@@ -1,7 +1,7 @@
-import { HearingDayScheduleModel } from './hearingDaySchedule.model';
-import { EXUIDisplayStatusEnum, EXUISectionStatusEnum } from './hearings.enum';
+import {HearingDayScheduleModel} from './hearingDaySchedule.model';
+import {EXUIDisplayStatusEnum, EXUISectionStatusEnum} from './hearings.enum';
 
-export interface CaseHearingModel {
+export interface HearingListModel {
   hearingID: string;
   hearingRequestDateTime: string;
   hearingType: string;

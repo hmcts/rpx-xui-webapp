@@ -33,7 +33,7 @@ export class NoResultsComponent implements OnInit {
     }
     // Decorate 16-digit case reference search box if a case has been searched from the header and not found
     if (this.messageId === NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH) {
-      this.store.dispatch(new fromActions.Decorate16DigitCaseReferenceSearchBox(true));
+      this.store.dispatch(new fromActions.Decorate16DigitCaseReferenceSearchBoxInHeader(true));
     }
   }
 }

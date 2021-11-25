@@ -132,13 +132,13 @@ describe('ExuiCaseReferenceSearchBoxComponent', () => {
   });
 
   it('should decorate 16 digit case reference search box', () => {
-    component.decorate16DigitCaseReferenceSearchBox = true;
+    component.decorate16DigitCaseReferenceSearchBoxInHeader = true;
     component.ngOnInit();
     expect(searchService.retrieveState).toHaveBeenCalledTimes(1);
   });
 
   it('should not decorate 16 digit case reference search box', () => {
-    component.decorate16DigitCaseReferenceSearchBox = false;
+    component.decorate16DigitCaseReferenceSearchBoxInHeader = false;
     component.ngOnInit();
     expect(searchService.retrieveState).toHaveBeenCalledTimes(0);
   });

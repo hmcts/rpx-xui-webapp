@@ -24,7 +24,7 @@ export class CaseTaskComponent implements OnInit {
     CaseTaskComponent.CASE_ID_VARIABLE,
     CaseTaskComponent.TASK_ID_VARIABLE
   ];
-  public manageOptions: { text: string, path: string, state: any }[];
+  public manageOptions: { text: string, id: string, state: any }[];
   public isUserJudicial: boolean;
   private pTask: Task;
   private returnUrl = '';
@@ -65,6 +65,7 @@ export class CaseTaskComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    console.log('this.router', this.router);
     this.returnUrl = this.router.url;
     this.manageOptions = this.getManageOptions(this.task);
   }

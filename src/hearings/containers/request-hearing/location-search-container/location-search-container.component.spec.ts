@@ -76,7 +76,7 @@ fdescribe('LocationSearchContainerComponent', () => {
       postcode: 'AB11 6LT'
     } as LocationModel;
 
-    component.findLocationForm.controls.locationSelected.setValue(location);
+    component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(location);
     component.addSelection();
     fixture.detectChanges();
     done();
@@ -102,7 +102,7 @@ fdescribe('LocationSearchContainerComponent', () => {
       postcode: 'AB11 6LT'
     } as LocationModel;
 
-    component.findLocationForm.controls.locationSelected.setValue(location);
+    component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(location);
     component.addSelection();
     fixture.detectChanges();
     fixture.whenStable().then(() => {

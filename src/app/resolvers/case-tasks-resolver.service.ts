@@ -1,24 +1,27 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
-import { EMPTY, Observable } from 'rxjs';
+import { EMPTY, forkJoin, Observable } from 'rxjs';
 import { catchError, first } from 'rxjs/operators';
-import { TaskList } from '../../work-allocation-2/models/dtos';
+import { Caseworker, TaskList } from '../../work-allocation-2/models/dtos';
+import { CaseworkerDataService } from '../../work-allocation-2/services';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../work-allocation-2/utils';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CaseTasksResolverService implements Resolve<TaskList> {
+export class CaseTasksResolverService implements Resolve<{ tasks: TaskList; caseworkers: Caseworker[] }> {
 
   public static CASE_TASKS_URL: string = '/workallocation2/case/task';
 
-  constructor(private readonly http: HttpClient, private readonly router: Router) {
+  constructor(private readonly http: HttpClient,
+              private readonly router: Router,
+              private readonly caseworkerService: CaseworkerDataService) {
   }
 
-  public resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<TaskList> {
+  public resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable< { tasks: TaskList; caseworkers: Caseworker[] } > {
     const caseId = route.paramMap.get('cid');
-    return this.http.get<TaskList>(`${CaseTasksResolverService.CASE_TASKS_URL}/${caseId}`)
+    const tasks$ = this.http.get<TaskList>(`${CaseTasksResolverService.CASE_TASKS_URL}/${caseId}`)
       .pipe(
         first(),
         catchError(error => {
@@ -26,5 +29,7 @@ export class CaseTasksResolverService implements Resolve<TaskList> {
           return EMPTY;
         })
       );
+    const caseworker$ = this.caseworkerService.getAll();
+    return forkJoin({tasks: tasks$, caseworkers: caseworker$});
   }
 }

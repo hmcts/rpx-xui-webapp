@@ -18,7 +18,7 @@
           <th class="govuk-table__header">Location</th>
           <th class="govuk-table__header">Task</th>
           <th class="govuk-table__header">{{getDueDateTitle()}}</th>
-          <th *ngIf="!isUserJudidical" class="govuk-table__header">Priority</th>
+          <th *ngIf="!isUserJudicial" class="govuk-table__header">Priority</th>
           <th class="govuk-table__header">Person</th>
           <th class="govuk-table__header"></th>
         </tr>
@@ -33,7 +33,7 @@
           <td class="govuk-table__cell">
               {{ task.dueDate | date: 'd MMMM yyyy' }}
           </td>
-          <td *ngIf="!isUserJudidical" class="govuk-table__cell">
+          <td *ngIf="!isUserJudicial" class="govuk-table__cell">
             <exui-priority-field [dueDate]="toDate(task.dueDate)"></exui-priority-field>
           </td>
           <td class="govuk-table__cell">{{ selectedPerson.name }}</td>

@@ -1,4 +1,4 @@
-export enum TimeOption {
+export enum BookingDateOption {
   TODAY = 'Today only (ends at midnight)',
   WEEK = 'This week (end on Sunday at midnight )',
   DATERANGE = 'Select a date range',
@@ -6,7 +6,7 @@ export enum TimeOption {
   BOKINGEND = 'Booking ends'
 }
 
-export enum BookingTimePageText {
+export enum BookingDatePageText {
   TITLE = 'Book your time at the location',
   CAPTION = 'Work access',
 }

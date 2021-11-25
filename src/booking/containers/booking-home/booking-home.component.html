@@ -54,7 +54,7 @@
             </div>
           </div>
         </div>  
-        <button class="govuk-button" type="button" *ngIf="newBooking.bookingOptionIndex" (click)="onEventTrigger()">Continue</button>
+        <button class="govuk-button" type="button" *ngIf="bookingProcess.selectedBookingOption" (click)="onEventTrigger()">Continue</button>
       </form>
     </div>
 

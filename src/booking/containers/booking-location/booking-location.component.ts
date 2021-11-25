@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { BookingNavigationEvent, NewBooking } from '../../models';
+import { BookingNavigationEvent, BookingProcess } from '../../models';
 
 @Component({
   selector: 'exui-booking-location',
@@ -8,15 +8,15 @@ import { BookingNavigationEvent, NewBooking } from '../../models';
 })
 export class BookingLocationComponent {
 
-  @Input() public newBooking: NewBooking;
+  @Input() public bookingProcess: BookingProcess;
 
-  @Output() public newBookingChange = new EventEmitter<NewBooking>();
+  @Output() public bookingProcessChange = new EventEmitter<BookingProcess>();
   @Output() public eventTrigger = new EventEmitter();
 
   constructor() { }
 
   public onInputValueChange(value: string) {
-    this.newBooking.locationName = value;
+    this.bookingProcess.locationName = value;
   }
 
   public onEventTrigger() {

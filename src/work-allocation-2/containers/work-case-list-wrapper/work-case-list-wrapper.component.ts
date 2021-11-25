@@ -145,7 +145,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
         const userId = userInfo.id === null ? userInfo.uid : userInfo.id;
         const currentCW = this.caseworkers.find(cw => cw.idamId === userId);
         if (currentCW && currentCW.location && currentCW.location.id) {
-          this.defaultLocation = currentCW.location.id
+          this.defaultLocation = currentCW.location.id;
         }
       }
 

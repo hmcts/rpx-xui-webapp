@@ -400,7 +400,6 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
         locations.push(location.values);
       }
     });
-    console.log('locations', locations);
 
     // get all role assignments
     const query = constructRoleAssignmentQuery(searchParameters);

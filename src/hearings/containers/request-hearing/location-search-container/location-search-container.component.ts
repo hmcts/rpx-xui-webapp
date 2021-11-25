@@ -12,14 +12,14 @@ import * as fromHearingStore from '../../../../hearings/store';
 })
 export class LocationSearchContainerComponent implements OnInit {
   public locationType: string;
-  public findLocationForm: FormGroup;
+  public findLocationFormGroup: FormGroup;
   public selectedLocations$: Observable<LocationModel[]>;
   public selectedLocation: LocationModel;
   public serviceIds: string = 'SSCS';
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>, fb: FormBuilder) {
-    this.findLocationForm =  fb.group({
-      locationSelected: [null]
+    this.findLocationFormGroup =  fb.group({
+      locationSelectedFormControl: [null]
     });
 
     this.selectedLocations$ = of([]);
@@ -33,14 +33,14 @@ export class LocationSearchContainerComponent implements OnInit {
     });
   }
 
-  public addSelection() {
+  public addSelection(): void {
     this.selectedLocations$.subscribe(selectedLocations => {
-        selectedLocations.push(this.findLocationForm.controls.locationSelected.value as LocationModel);
-        this.findLocationForm.controls.locationSelected.setValue(undefined);
+        selectedLocations.push(this.findLocationFormGroup.controls.locationSelectedFormControl.value as LocationModel);
+        this.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
     });
   }
 
-  public removeSelection(location: LocationModel) {
+  public removeSelection(location: LocationModel): void {
     this.selectedLocations$.subscribe(selectedLocations => {
       const index = selectedLocations.findIndex(selectedLocation => selectedLocation.court_venue_id === location.court_venue_id);
       selectedLocations.splice(index, 1);

@@ -3,10 +3,14 @@
     <main id="content" role="main">
       <div class="govuk-form-group">
         <div class="location-picker-custom">
-          <div *ngIf="serviceIds" class="search-location">
+          <div class="search-location">
+            <label id="input-selected-location-label" class="govuk-body" for="input-selected-location">
+                Search for a location by name
+            </label>
+            <br>
             <exui-search-location class="search-location"
               [selectedLocations$]="selectedLocations$"
-              [control]="findLocationForm.controls.locationSelected"
+              [control]="findLocationFormGroup.controls.locationSelectedFormControl"
               [disabled]=null 
               [serviceIds]="serviceIds"
               [locationType]="'hearing'"></exui-search-location>

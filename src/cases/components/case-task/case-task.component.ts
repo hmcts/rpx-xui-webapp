@@ -24,7 +24,7 @@ export class CaseTaskComponent implements OnInit {
     CaseTaskComponent.CASE_ID_VARIABLE,
     CaseTaskComponent.TASK_ID_VARIABLE
   ];
-  public manageOptions: { text: string, id: string, state: any }[];
+  public manageOptions: { text: string, id: string }[];
   public isUserJudicial: boolean;
   private pTask: Task;
   private returnUrl = '';
@@ -65,7 +65,6 @@ export class CaseTaskComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    console.log('this.router', this.router);
     this.returnUrl = this.router.url;
     this.manageOptions = this.getManageOptions(this.task);
   }
@@ -94,6 +93,9 @@ export class CaseTaskComponent implements OnInit {
   }
 
   public onActionHandler(task: Task, option: any): void {
+    const state = {
+      returnUrl: this.returnUrl,
+    };
     if (option.id === 'claim') {
       this.taskService.claimTask(task.id).subscribe(() => {
         /* this.infoMessageCommService.nextMessage({
@@ -107,7 +109,7 @@ export class CaseTaskComponent implements OnInit {
       return;
     }
     const actionUrl = `/work/${task.id}/${option.id}`;
-    this.router.navigate([actionUrl], { state: option.state});
+    this.router.navigate([actionUrl], { state});
   }
 
   /**
@@ -129,34 +131,31 @@ export class CaseTaskComponent implements OnInit {
     }
   }
 
-  public getManageOptions(task: Task): {id: string, text: string, state: any} [] {
-    const state = {
-      returnUrl: this.returnUrl,
-    };
+  public getManageOptions(task: Task): {id: string, text: string} [] {
     if (!task.assignee) {
       if (task.permissions.length === 0 || (task.permissions.length === 1 && task.permissions.includes(TaskPermission.MANAGE))) {
         return [];
       } else {
-        return [{id: 'claim', text: 'Assign to me', state}];
+        return [{id: 'claim', text: 'Assign to me'}];
       }
     }
 
     if (this.isTaskAssignedToCurrentUser(task)) {
       return [
-        {id: 'reassign', text: 'Reassign task', state},
-        {id: 'unclaim', text: 'Unassign task', state}
+        {id: 'reassign', text: 'Reassign task'},
+        {id: 'unclaim', text: 'Unassign task'}
       ];
     } else {
       if (task.permissions.includes(TaskPermission.EXECUTE) && task.permissions.includes(TaskPermission.MANAGE)) {
         return [
-          {id: 'claim', text: 'Assign to me', state},
-          {id: 'reassign', text: 'Reassign task', state},
-          {id: 'unclaim', text: 'Unassign task', state}
+          {id: 'claim', text: 'Assign to me'},
+          {id: 'reassign', text: 'Reassign task'},
+          {id: 'unclaim', text: 'Unassign task'}
         ];
       } else if (task.permissions.includes(TaskPermission.MANAGE)) {
         return [
-          {id: 'reassign', text: 'Reassign task', state},
-          {id: 'unclaim', text: 'Unassign task', state}
+          {id: 'reassign', text: 'Reassign task'},
+          {id: 'unclaim', text: 'Unassign task'}
         ];
       } else {
         return [];

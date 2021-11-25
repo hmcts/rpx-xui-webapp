@@ -294,7 +294,7 @@ describe('CaseTaskComponent', () => {
     });
 
     it('should handle an action that redirects', () => {
-      const state = undefined;
+      const state = {returnUrl: ''};
 
       // need to check that navigate has been called
       component.onActionHandler(exampleTask, secondOption);

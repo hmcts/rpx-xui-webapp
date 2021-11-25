@@ -141,35 +141,35 @@ describe('AppHeaderComponent', () => {
     });
   });
 
-    describe('subscribe()', async () => {
-      it('should allow subscribing to an observable', () => {
-        // ensure that the component's subscribe method runs with mock data
-        const url = '/tasks/list';
-        const exObservable$ = Observable.of(url);
-        expect(component.subscribe(exObservable$)).toBeTruthy();
-      });
+  describe('subscribe()', async () => {
+    it('should allow subscribing to an observable', () => {
+      // ensure that the component's subscribe method runs with mock data
+      const url = '/tasks/list';
+      const exObservable$ = Observable.of(url);
+      expect(component.subscribe(exObservable$)).toBeTruthy();
     });
+  });
 
-    describe('unsubscribe()', async () => {
-      it('should allow unsubscribing from a subscription', () => {
-        component.unsubscribe(subscriptionMock);
-        expect(subscribeSpy).toHaveBeenCalled();
-      });
+  describe('unsubscribe()', async () => {
+    it('should allow unsubscribing from a subscription', () => {
+      component.unsubscribe(subscriptionMock);
+      expect(subscribeSpy).toHaveBeenCalled();
     });
+  });
 
-    describe('getObservable()', async () => {
-      it('should allow getting an observable from the store', () => {
-        const observable = component.getObservable(stateStoreMock);
-        expect(observable).not.toBe(undefined);
-      });
+  describe('getObservable()', async () => {
+    it('should allow getting an observable from the store', () => {
+      const observable = component.getObservable(stateStoreMock);
+      expect(observable).not.toBe(undefined);
     });
+  });
 
-    describe('hideNavigationListener()', async () => {
-      it('should be able to set a subscription', () => {
-        // the internal methods of the hideNavigationListener has been tested so we want to make sure this runs without issue
-        const subscription = component.hideNavigationListener(stateStoreMock);
-        // will be undefined as Observable not returned from the store
-        expect(subscription).toBeUndefined();
-      });
+  describe('hideNavigationListener()', async () => {
+    it('should be able to set a subscription', () => {
+      // the internal methods of the hideNavigationListener has been tested so we want to make sure this runs without issue
+      const subscription = component.hideNavigationListener(stateStoreMock);
+      // will be undefined as Observable not returned from the store
+      expect(subscription).toBeUndefined();
     });
+  });
 });

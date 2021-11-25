@@ -1,9 +1,9 @@
-import { TestBed, async, ComponentFixture } from '@angular/core/testing';
-import { AppHeaderSignedOutComponent } from './app-header-signed-out.component';
-import { Store, StoreModule } from '@ngrx/store';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Store, StoreModule } from '@ngrx/store';
 import { AppConstants } from 'src/app/app.constants';
 import * as fromActions from '../../store';
+import { AppHeaderSignedOutComponent } from './app-header-signed-out.component';
 
 const cookieService = {
   get: key => {

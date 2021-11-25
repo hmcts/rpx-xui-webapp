@@ -2,7 +2,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { provideMockStore } from '@ngrx/store/testing';
 import { LocationSearchContainerComponent } from './location-search-container.component';
-import { LocationModel } from 'api/locations/models/location.model';
+import { LocationModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { By } from '@angular/platform-browser';
 
 describe('LocationSearchContainerComponent', () => {
   let component: LocationSearchContainerComponent;
@@ -57,8 +58,8 @@ describe('LocationSearchContainerComponent', () => {
       court_address: 'AB1, 48 HUNTLY STREET, ABERDEEN',
       postcode: 'AB11 6LT'
     } as LocationModel;
-    component.selectedLocation = location;
-    component.addSelection();
+
+    component.addSelection(location);
     fixture.detectChanges();
     done();
     const selectedLoctions = fixture.debugElement.queryAll(By.css('.location-selection'));
@@ -83,8 +84,7 @@ describe('LocationSearchContainerComponent', () => {
       postcode: 'AB11 6LT'
     } as LocationModel;
 
-    component.selectedLocation = location;
-    component.addSelection();
+    component.addSelection(location);
     fixture.detectChanges();
     fixture.whenStable().then(() => {
       const selectedLoctions = fixture.debugElement.queryAll(By.css('.location-selection'));

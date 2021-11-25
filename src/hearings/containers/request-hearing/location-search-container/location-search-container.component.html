@@ -4,7 +4,12 @@
       <div class="govuk-form-group">
         <div class="location-picker-custom">
           <div *ngIf="serviceId" class="search-location">
-            <exui-search-location class="search-location" [serviceId]="serviceId" [locationType]="'hearing'"></exui-search-location>
+            <exui-search-location class="search-location"
+              [selectedLocations$]="selectedLocations$"
+              [control]="findLocationForm.controls.locationSelected"
+              [disabled]=false 
+              [serviceId]="serviceId"
+              [locationType]="'hearing'"></exui-search-location>
           </div>
         </div>
         <a href="javascript:void(0)" (click)="addSelection()" class="govuk-button govuk-button--secondary" data-module="govuk-button">

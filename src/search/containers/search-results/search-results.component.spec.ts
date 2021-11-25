@@ -10,11 +10,11 @@ import { PaginationComponent } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of } from 'rxjs';
 import { JurisdictionService } from '../../../app/services/jurisdiction/jurisdiction.service';
 import { SearchResult } from '../../../search/models';
+import { NoResultsMessageId, ProcessForAccessType } from '../../enums';
 import { SearchService } from '../../services/search.service';
 import { SearchResultsComponent } from './search-results.component';
 
 import createSpyObj = jasmine.createSpyObj;
-import { NoResultsMessageId } from '../../enums';
 
 describe('SearchResultsComponent', () => {
   let component: SearchResultsComponent;
@@ -79,7 +79,7 @@ describe('SearchResultsComponent', () => {
         caseNameHmctsInternal: 'Derrick Rega',
         caseReference: '8771-7857-4127-5065',
         otherReferences: null,
-        processForAccess: 'SPECIFIC',
+        processForAccess: ProcessForAccessType.SPECIFIC,
         regionId: null,
         regionName: null,
         stateId: 'CaseCreated'
@@ -98,7 +98,7 @@ describe('SearchResultsComponent', () => {
         caseNameHmctsInternal: 'Lea Mangan',
         caseReference: '0598-5385-1020-1905',
         otherReferences: null,
-        processForAccess: 'CHALLENGED',
+        processForAccess: ProcessForAccessType.CHALLENGED,
         regionId: null,
         regionName: null,
         stateId: 'CaseCreated'
@@ -127,7 +127,7 @@ describe('SearchResultsComponent', () => {
         caseNameHmctsInternal: 'Derrick Rega',
         caseReference: '8771-7857-4127-5065',
         otherReferences: null,
-        processForAccess: 'SPECIFIC',
+        processForAccess: ProcessForAccessType.SPECIFIC,
         regionId: null,
         regionName: null,
         stateId: 'CaseCreated'

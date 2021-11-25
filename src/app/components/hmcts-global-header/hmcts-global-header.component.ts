@@ -3,6 +3,7 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
+import * as fromAppStore from '../../../app/store';
 import * as fromNocStore from '../../../noc/store';
 import { NavItemsModel } from '../../models/nav-item.model';
 import { UserNavModel } from '../../models/user-nav.model';
@@ -26,6 +27,7 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
   @Input() public navigation: UserNavModel;
   @Input() public logoType: string;
   @Input() public currentUrl: string;
+  @Input() public decorate16DigitCaseReferenceSearchBox: boolean;
   @Output() public navigate = new EventEmitter<string>();
 
   public showItems: boolean;
@@ -43,7 +45,7 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
     right: new BehaviorSubject<NavItemsModel[]>([])
   };
 
-  constructor(
+  constructor(private readonly appStore: Store<fromAppStore.State>,
     public nocStore: Store<fromNocStore.State>,
     private readonly userService: UserService,
     private readonly featureToggleService: FeatureToggleService
@@ -60,6 +62,9 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
   }
 
   public onEmitSubMenu(menuItem: any) {
+    // New menu item page load, do not decorate 16-digit case reference search box with error class
+    this.appStore.dispatch(new fromAppStore.Decorate16DigitCaseReferenceSearchBox(false));
+
     if (menuItem.href === '/noc') {
       this.nocStore.dispatch(new fromNocStore.Reset());
     }

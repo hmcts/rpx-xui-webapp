@@ -24,4 +24,11 @@
       Search again
     </button>
   </exui-page-wrapper>
+  <div *ngIf="messageId === noResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH">
+    <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+    <exui-page-wrapper [title]="'No results found'">
+      <p>This 16-digit case reference could not be found.</p>
+      <p>Try searching again or go back.</p>
+    </exui-page-wrapper>
+  </div>
 </div>

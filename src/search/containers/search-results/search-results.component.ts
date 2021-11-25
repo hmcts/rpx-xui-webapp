@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
 import { combineLatest, Subscription } from 'rxjs';
 import { JurisdictionService } from '../../../app/services/jurisdiction/jurisdiction.service';
-import { NoResultsMessageId } from '../../enums';
+import { NoResultsMessageId, ProcessForAccessType } from '../../enums';
 import { SearchResult, SearchResultDisplay } from '../../models';
 import { SearchService } from '../../services/search.service';
 
@@ -39,7 +39,7 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
     const searchResult = results[0];
     // Navigate to no results page if case list is empty
     if (searchResult.resultInfo.casesReturned === 0) {
-      this.router.navigate(['/search/noresults', NoResultsMessageId.NO_RESULTS], {relativeTo: this.route});
+      this.router.navigate(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS } });
     }
 
     // Get the jurisdiction list from the results
@@ -91,7 +91,7 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
       this.jurisdictionService.getJurisdictions()
     ]).subscribe(
       results => this.onSearchSubscriptionHandler(results),
-      error => this.router.navigate(['/search/noresults', NoResultsMessageId.ERROR], { relativeTo: this.route })
+      error => this.router.navigate(['/search/noresults'], { state: { messageId: NoResultsMessageId.ERROR } })
     );
   }
 
@@ -120,11 +120,11 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
    *
    */
   private getActionLink(processForAccess: string, caseReference: string): string {
-    if (processForAccess === 'SPECIFIC') {
+    if (processForAccess === ProcessForAccessType.SPECIFIC) {
       return `/cases/case-details/${caseReference}/specific-access-request`;
     }
 
-    if (processForAccess === 'CHALLENGED') {
+    if (processForAccess === ProcessForAccessType.CHALLENGED) {
       return `/cases/case-details/${caseReference}/challenged-access-request`;
     }
 
@@ -136,11 +136,11 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
    *
    */
   private getActionLinkText(processForAccess: string): string {
-    if (processForAccess === 'SPECIFIC') {
+    if (processForAccess === ProcessForAccessType.SPECIFIC) {
       return 'Specific access';
     }
 
-    if (processForAccess === 'CHALLENGED') {
+    if (processForAccess === ProcessForAccessType.CHALLENGED) {
       return 'Challenged access';
     }
 

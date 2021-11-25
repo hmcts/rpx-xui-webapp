@@ -45,7 +45,8 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
     right: new BehaviorSubject<NavItemsModel[]>([])
   };
 
-  constructor(private readonly appStore: Store<fromAppStore.State>,
+  constructor(
+    private readonly appStore: Store<fromAppStore.State>,
     public nocStore: Store<fromNocStore.State>,
     private readonly userService: UserService,
     private readonly featureToggleService: FeatureToggleService

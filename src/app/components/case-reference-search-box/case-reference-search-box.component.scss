@@ -2,8 +2,9 @@
   display: flex;
   flex-direction: row;
 
-  p {
+  .label {
     color: white;
+    font-weight: normal;
     margin: 8px 6px 0 0;
   }
 

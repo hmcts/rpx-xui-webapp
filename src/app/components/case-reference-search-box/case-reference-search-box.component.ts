@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -14,10 +14,12 @@ import { SearchService } from '../../../search/services/search.service';
   templateUrl: './case-reference-search-box.component.html',
   styleUrls: ['./case-reference-search-box.component.scss']
 })
-export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy {
+export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Input() public item: NavItemsModel;
   @Input() public decorate16DigitCaseReferenceSearchBoxInHeader: boolean;
+
+  @ViewChild('caseReferenceInput') public caseReferenceInputEl: ElementRef;
 
   public formGroup: FormGroup;
   public searchSubscription$: Subscription;
@@ -29,7 +31,7 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy {
               private readonly route: ActivatedRoute
   ) { }
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     this.formGroup = this.fb.group({
       caseReference: ''
     });
@@ -39,6 +41,13 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy {
     if (this.decorate16DigitCaseReferenceSearchBoxInHeader) {
       const searchParameters = this.searchService.retrieveState(SearchStatePersistenceKey.SEARCH_PARAMS);
       this.formGroup.controls['caseReference'].setValue(searchParameters.caseReferences[0]);
+    }
+  }
+
+  public ngAfterViewInit(): void {
+    // If search returned no case, set focus on the 16-digit case reference search box
+    if (this.decorate16DigitCaseReferenceSearchBoxInHeader) {
+      this.caseReferenceInputEl.nativeElement.focus();
     }
   }
 

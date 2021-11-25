@@ -1,18 +1,33 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
 import { provideMockStore } from '@ngrx/store/testing';
 import { LocationSearchContainerComponent } from './location-search-container.component';
-import { LocationModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { LocationByEPIMSModel, LocationModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { By } from '@angular/platform-browser';
+import { AbstractControl, FormBuilder } from '@angular/forms';
+import { Observable } from 'rxjs';
 
-describe('LocationSearchContainerComponent', () => {
+@Component({
+  selector: 'exui-search-location',
+  template: '',
+})
+class MockLocationSearchContainerComponent {
+  @Input() public serviceIds: string = '';
+  @Input() public locationType: string = '';
+  @Input() public disabled: boolean = false;
+  @Input() public selectedLocations$: Observable<LocationByEPIMSModel[]>;
+  @Input() public submitted?: boolean = true;
+  @Input() public control: AbstractControl;
+}
+
+fdescribe('LocationSearchContainerComponent', () => {
   let component: LocationSearchContainerComponent;
   let fixture: ComponentFixture<LocationSearchContainerComponent>;
 
   const initialState = {
     hearings: {
-      hearingsList: {
-        caseHearingsMainModel: [
+      hearingList: {
+        caseHearingMainModel: [
           {
             hmctsServiceID: 'SSCS'
           }
@@ -23,9 +38,11 @@ describe('LocationSearchContainerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LocationSearchContainerComponent ],
+      declarations: [ LocationSearchContainerComponent, MockLocationSearchContainerComponent ],
       providers: [
-        provideMockStore({initialState})],
+        provideMockStore({initialState}),
+        FormBuilder
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
     .compileComponents();
@@ -59,6 +76,7 @@ describe('LocationSearchContainerComponent', () => {
       postcode: 'AB11 6LT'
     } as LocationModel;
 
+    component.findLocationForm.controls.locationSelected.setValue(location);
     component.addSelection();
     fixture.detectChanges();
     done();
@@ -84,6 +102,7 @@ describe('LocationSearchContainerComponent', () => {
       postcode: 'AB11 6LT'
     } as LocationModel;
 
+    component.findLocationForm.controls.locationSelected.setValue(location);
     component.addSelection();
     fixture.detectChanges();
     fixture.whenStable().then(() => {

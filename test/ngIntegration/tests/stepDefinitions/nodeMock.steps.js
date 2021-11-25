@@ -13,19 +13,16 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Given('I navigate to home page', async function () {
         await BrowserWaits.retryWithActionCallback(async () => {
-            const isAppLoaded = await headerpage.amOnPage();
-            if (global.scenarioData['canSecenarioRunwiThExistingSession'] && isAppLoaded ){
-                await headerpage.manageCases.click();
-           } else{
-                await browserUtil.gotoHomePage();
-           }
-            
+            await browserUtil.gotoHomePage();
+            await headerpage.waitForPrimaryNavDisplay();
+            await browserUtil.waitForLD();
         });  
     });
 
     Given('I navigate page route {string}', async function (routeUrl) {
         await browser.get(routeUrl);
         await BrowserWaits.retryWithActionCallback(async () => {
+            await browser.get(routeUrl);
             await headerpage.waitForPrimaryNavDisplay();
             await browserUtil.waitForLD();
         });        

@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CaseSearchParameters, SearchCaseRequest } from '../models/dtos';
+import Task from '../models/tasks/task.model';
 
 const BASE_URL: string = '/workallocation2/case';
 export enum ACTION {
@@ -41,6 +42,10 @@ export class WorkAllocationCaseService {
 
   public getActionUrl(caseId: string, action: ACTION): string {
     return `${BASE_URL}/${caseId}/${action}`;
+  }
+
+  public getTasksByCaseId(caseId: string): Observable<Task[]> {
+    return this.http.get<Task[]>(`${BASE_URL}/task/${caseId}`);
   }
 
   /**

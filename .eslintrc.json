@@ -1,0 +1,65 @@
+{
+  "root": true,
+  "ignorePatterns": [
+    "projects/**/*"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "*.ts"
+      ],
+      "parserOptions": {
+        "project": [
+          "tsconfig.json",
+          "e2e/tsconfig.json"
+        ],
+        "createDefaultProgram": true
+      },
+      "extends": [
+        "airbnb-typescript",
+        "plugin:import/errors",
+        "plugin:import/warnings",
+        "plugin:prettier/recommended",
+        "plugin:@angular-eslint/recommended",
+        "plugin:@angular-eslint/template/process-inline-templates"
+      ],
+      "rules": {
+        "prettier/prettier": "error",
+        "import/named": "off",
+        "react/jsx-filename-extension": "off",
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          {
+            "args": "after-used",
+            "ignoreRestSiblings": true
+          }
+        ],
+        "@angular-eslint/component-selector": [
+          "error",
+          {
+            "prefix": "exui",
+            "style": "kebab-case",
+            "type": "element"
+          }
+        ],
+        "@typescript-eslint/explicit-member-accessibility": "error",
+        "@angular-eslint/directive-selector": [
+          "error",
+          {
+            "prefix": "exui",
+            "style": "camelCase",
+            "type": "attribute"
+          }
+        ]
+      }
+    }
+  ],
+  "settings": {
+    "import/parsers": {
+      "@typescript-eslint/parser": [
+        ".ts",
+        ".tsx"
+      ]
+    }
+  }
+}

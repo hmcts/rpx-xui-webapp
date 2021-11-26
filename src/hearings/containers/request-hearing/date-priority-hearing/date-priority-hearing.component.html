@@ -49,7 +49,8 @@
                 formControlName="hearingAvailability" (change)="showDateAvailability();">
               <label class="govuk-label govuk-radios__label" for="dates2">Yes</label>
             </div>
-            <div class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3" [ngClass]="{'js-hidden': checkedHearingAvailability!=='Yes'}">
+            <div class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3"
+              [ngClass]="{'js-hidden': checkedHearingAvailability!=='Yes'}">
               <div class="govuk-form-group">
                 <xuilib-gov-uk-date [config]="firstHearingDate" [formGroup]="priorityForm"></xuilib-gov-uk-date>
               </div>
@@ -59,7 +60,8 @@
                 formControlName="hearingAvailability" (change)="showDateAvailability();">
               <label class="govuk-label govuk-radios__label" for="dates3">Choose a date range</label>
             </div>
-            <div class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3" [ngClass]="{'js-hidden': checkedHearingAvailability!=='Choose'}">
+            <div class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3"
+              [ngClass]="{'js-hidden': checkedHearingAvailability!=='Choose'}">
               <div class="govuk-hint">You can enter either or both dates.</div>
               <div class="govuk-form-group">
                 <xuilib-gov-uk-date [config]="earliestHearingDate" [formGroup]="priorityForm"></xuilib-gov-uk-date>
@@ -71,14 +73,7 @@
           </div>
         </fieldset>
       </div>
-      <details class="govuk-details" data-module="govuk-details">
-        <summary class="govuk-details__summary">
-          <span class="govuk-details__summary-text">See dates the parties will not be available</span>
-        </summary>
-        <div class="govuk-details__text">
-          <span *ngFor="let partiesNotAvailableDate of partiesNotAvailableDates">{{partiesNotAvailableDate}}<br></span>
-        </div>
-      </details>
+      <exui-parties-unavailable-dates [unAvailableDates]="partiesNotAvailableDates"></exui-parties-unavailable-dates>
       <div class="govuk-form-group govuk-!-margin-top-5">
         <fieldset class="govuk-fieldset" id="hearing-priority">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">

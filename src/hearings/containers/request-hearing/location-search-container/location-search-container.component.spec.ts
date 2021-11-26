@@ -1,11 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
-import { provideMockStore } from '@ngrx/store/testing';
-import { LocationSearchContainerComponent } from './location-search-container.component';
-import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
-import { By } from '@angular/platform-browser';
 import { AbstractControl, FormBuilder } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { By } from '@angular/platform-browser';
+import { provideMockStore } from '@ngrx/store/testing';
+import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { Observable } from 'rxjs'
+import { LocationSearchContainerComponent } from './location-search-container.component';;
 
 @Component({
   selector: 'exui-search-location',
@@ -45,10 +45,10 @@ fdescribe('LocationSearchContainerComponent', () => {
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
-    .compileComponents();    
+    .compileComponents();
   }));
 
-  beforeEach(() => {   
+  beforeEach(() => {
     fixture = TestBed.createComponent(LocationSearchContainerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

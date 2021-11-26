@@ -105,4 +105,8 @@ describe('DatePriorityHearingComponent', () => {
     component.checkUnavailableDatesList([unavailabilityDate]);
     expect(component.partiesNotAvailableDates[0]).toBe('10 December 2021');
   });
+
+  afterEach(() => {
+    fixture.destroy();
+  });
 });

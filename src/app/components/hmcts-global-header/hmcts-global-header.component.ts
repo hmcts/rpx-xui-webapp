@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, of } from 'rxjs';
@@ -13,7 +13,7 @@ import { UserService } from '../../services/user/user.service';
     templateUrl: './hmcts-global-header.component.html',
     styleUrls: ['./hmcts-global-header.component.scss']
 })
-export class HmctsGlobalHeaderComponent implements OnChanges {
+export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
 
   @Input() public set showNavItems(value: boolean) {
     this.showItems = value;
@@ -27,7 +27,7 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
   @Input() public currentUrl: string;
   @Output() public navigate = new EventEmitter<string>();
 
-  public showItems: boolean;
+  public showItems = true;
   public userValue = true;
   public tab;
   public get leftItems(): Observable<NavigationItem[]> {
@@ -47,6 +47,10 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
     private readonly userService: UserService,
     private readonly featureToggleService: FeatureToggleService
   ) { }
+
+  public ngOnInit(): void {
+    this.splitAndFilterNavItems(this.items);
+  }
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes.items.currentValue !== changes.items.previousValue) {

@@ -38,6 +38,12 @@ describe('NoResultsComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should call window history back when back link is clicked', () => {
+    spyOn(window.history, 'back');
+    fixture.debugElement.nativeElement.querySelector('.govuk-back-link').click();
+    expect(window.history.back).toHaveBeenCalled();
+  });
+
   it('should display no results content if no error', () => {
     spyOn(mockRouter, 'getCurrentNavigation').and.returnValues({
       extras: {

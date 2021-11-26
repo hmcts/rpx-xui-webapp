@@ -1,10 +1,7 @@
+import { PartyUnavailabilityRange } from './partyUnavilabilityRange.model';
+
 export interface PartyUnavailabilityModel {
   partyName: string;
   partyChannel: string;
-  unavailability: [
-    {
-      start: string;
-      end: string;
-    }
-  ];
+  unavailability: PartyUnavailabilityRange[];
 }

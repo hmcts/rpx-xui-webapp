@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
 import { select, Store } from '@ngrx/store';
 import * as moment from 'moment';
+import { map } from 'rxjs/operators';
 import { PartyUnavailabilityRange } from '../../../../hearings/models/partyUnavilabilityRange.model';
 import { RefDataModel } from '../../../../hearings/models/refData.model';
 import * as fromHearingStore from '../../../../hearings/store';
@@ -30,11 +31,13 @@ export class DatePriorityHearingComponent implements OnInit {
     this.initDateConfig();
     this.initForm();
     this.priorities = this.route.snapshot.data.hearingPriorities.sort((currentPriority, nextPriority) => (currentPriority.order < nextPriority.order ? -1 : 1));
-    this.hearingStore.pipe(select(fromHearingStore.getHearingUnavailabilityList)).subscribe((unavailabilityDateList: PartyUnavailabilityRange[]) => {
-      if (unavailabilityDateList) {
-        this.checkUnavailableDatesList(unavailabilityDateList);
-      }
-    });
+    this.hearingStore.pipe(select(fromHearingStore.getHearingValuesModel),
+      map((hearingValues): PartyUnavailabilityRange[] => hearingValues && hearingValues.parties && hearingValues.parties.map(dates => dates.unavailability).flat()))
+      .subscribe((unavailabilityDateList: PartyUnavailabilityRange[]) => {
+        if (unavailabilityDateList) {
+          this.checkUnavailableDatesList(unavailabilityDateList);
+        }
+      });
   }
 
   public initDateConfig(): void {

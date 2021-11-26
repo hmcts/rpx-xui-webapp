@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
-import { LocationByEPIMSModel, LocationModel } from 'api/locations/models/location.model';
+import { LocationByEPIMSModel } from 'api/locations/models/location.model';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import * as fromHearingStore from '../../../../hearings/store';
@@ -40,7 +40,7 @@ export class LocationSearchContainerComponent implements OnInit {
     });
   }
 
-  public removeSelection(location: LocationModel): void {
+  public removeSelection(location: LocationByEPIMSModel): void {
     this.selectedLocations$.subscribe(selectedLocations => {
       const index = selectedLocations.findIndex(selectedLocation => selectedLocation.epims_id === location.epims_id);
       selectedLocations.splice(index, 1);

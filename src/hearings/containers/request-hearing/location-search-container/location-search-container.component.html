@@ -1,12 +1,24 @@
-<div class="govuk-width-container">
-  <div class="page">
-    <main id="content" role="main">
-        <div *ngIf="serviceIds" class="search-location">
-          <exui-search-location class="search-location"
-                                [serviceIds]="serviceIds"
-                                [locationType]="'hearing'">
-          </exui-search-location>
-        </div>
-    </main>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-three-quarters">
+    <exui-hearing-parties-title></exui-hearing-parties-title>
+    <h1 class="govuk-heading-l">
+      What are the hearing venue details?
+    </h1>
+    <div id="location-hint" class="govuk-hint govuk-!-margin-bottom-7">
+      If this is a fully remote hearing you must still select the court or tribunal which will be managing the case.
+    </div>
+    <div class="page">
+      <div *ngIf="serviceIds" class="search-location">
+        <exui-search-location class="search-location"
+                              [serviceIds]="serviceIds"
+                              [locationType]="'hearing'">
+        </exui-search-location>
+      </div>
+    </div>
+    <div class="govuk-inset-text">
+      You can check the venue has the required facilities or reasonable adjustments using<br/>
+      <a href="https://www.find-court-tribunal.service.gov.uk/search-by-name" target="_blank">Court Finder (opens in new
+        tab)</a>
+    </div>
   </div>
 </div>

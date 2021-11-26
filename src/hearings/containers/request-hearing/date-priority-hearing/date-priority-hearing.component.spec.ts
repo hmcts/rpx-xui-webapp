@@ -90,7 +90,6 @@ describe('DatePriorityHearingComponent', () => {
         end: '2021-12-31T09:00:00.000+0000',
       },
     ];
-    const selectedDates = ['10 December 2021', '13 December 2021', '14 December 2021', '15 December 2021', '16 December 2021', '17 December 2021', '20 December 2021', '21 December 2021', '22 December 2021', '23 December 2021', '24 December 2021', '27 December 2021', '28 December 2021', '29 December 2021', '30 December 2021', '31 December 2021'];
     component.checkUnavailableDatesList(unavailabilityDates);
     expect(component.partiesNotAvailableDates[2]).toBe('14 December 2021');
     expect(component.partiesNotAvailableDates.length).toBe(16);

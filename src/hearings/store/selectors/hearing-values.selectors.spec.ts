@@ -1,8 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { select, Store, StoreModule } from '@ngrx/store';
-import { PartyUnavailabilityRange } from '../../../hearings/models/partyUnavilabilityRange.model';
 import { HearingValuesStateData } from '../../models/hearingValuesStateData';
-import { getHearingUnavailabilityList, getHearingValues, reducers } from '../index';
+import { getHearingValues, reducers } from '../index';
 import { initialHearingValuesState, State } from '../reducers';
 
 describe('Hearing Values selectors', () => {
@@ -25,16 +24,6 @@ describe('Hearing Values selectors', () => {
         result = value;
       });
       expect(result).toEqual(initialHearingValuesState);
-    });
-  });
-
-  describe('getPartiesUnavailableDates', () => {
-    it('should return unavailable date ranges', () => {
-      let result: PartyUnavailabilityRange[];
-      store.pipe(select(getHearingUnavailabilityList)).subscribe(value => {
-        result = value;
-      });
-      expect(result).toEqual(null);
     });
   });
 });

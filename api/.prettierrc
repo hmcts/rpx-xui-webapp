@@ -2,14 +2,7 @@
   "semi": false,
   "printWidth": 130,
   "singleQuote": true,
+  "useTabs": false,
   "tabWidth": 4,
-  "trailingComma": "es5",
-  "overrides": [
-    {
-      "files": [".prettierrc", "package,json"],
-      "options": {
-        "parser": "json"
-      }
-    }
-  ]
+  "trailingComma": "none"
 }

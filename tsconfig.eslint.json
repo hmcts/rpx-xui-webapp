@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": [
+    "node_modules",
+    "yarn.lock",
+    "*.js"
+  ],
+  "include": [
+    "src",
+    ".eslintrc.js"
+  ]
+}

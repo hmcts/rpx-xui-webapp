@@ -14,7 +14,7 @@ export class LocationSearchContainerComponent implements OnInit {
   public locationType: string;
   public findLocationFormGroup: FormGroup;
   public selectedLocations$: Observable<LocationByEPIMSModel[]>;
-  public selectedLocation: LocationByEPIMSModel ;
+  public selectedLocation: LocationByEPIMSModel;
   public serviceIds: string = 'SSCS';
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>, fb: FormBuilder) {

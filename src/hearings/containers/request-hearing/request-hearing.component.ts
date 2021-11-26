@@ -16,7 +16,7 @@ export class RequestHearingComponent implements OnInit, OnDestroy {
   constructor(private readonly hearingStore: Store<fromHearingStore.State>) {
     this.hearingListSub = this.hearingStore.pipe(select(fromHearingStore.getHearingList)).subscribe(
       hearingList => {
-        this.referenceId = hearingList.hearingListMainModel.caseRef;
+        this.referenceId = hearingList.hearingListMainModel ? hearingList.hearingListMainModel.caseRef : '';
       }
     );
   }

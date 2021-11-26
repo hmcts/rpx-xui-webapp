@@ -97,8 +97,8 @@ export class DatePriorityHearingComponent implements OnInit {
 
     while (startDate <= endDate) {
       const currentDate = startDate.format('DD MMMM YYYY');
-      const isWeekend: boolean = (startDate.weekday() !== 6) && (startDate.weekday() !== 0);
-      if (isWeekend && !this.partiesNotAvailableDates.includes(currentDate)) {
+      const isWeekDay: boolean = (startDate.weekday() !== 6) && (startDate.weekday() !== 0);
+      if (isWeekDay && !this.partiesNotAvailableDates.includes(currentDate)) {
         this.partiesNotAvailableDates.push(currentDate);
       }
       startDate.add(1, 'd');

@@ -20,7 +20,7 @@ class MockLocationSearchContainerComponent {
   @Input() public control: AbstractControl;
 }
 
-describe('LocationSearchContainerComponent', () => {
+fdescribe('LocationSearchContainerComponent', () => {
   let component: LocationSearchContainerComponent;
   let fixture: ComponentFixture<LocationSearchContainerComponent>;
 
@@ -45,13 +45,14 @@ describe('LocationSearchContainerComponent', () => {
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
-    .compileComponents();
+    .compileComponents();    
   }));
 
-  beforeEach(() => {
+  beforeEach(() => {   
     fixture = TestBed.createComponent(LocationSearchContainerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    spyOn(component, 'removeSelection');
   });
 
   it('should create', () => {
@@ -113,6 +114,7 @@ describe('LocationSearchContainerComponent', () => {
       const selectedLoctionsAfterClick = fixture.debugElement.queryAll(By.css('.location-selection'));
       expect(selectedLoctions.length).toBeGreaterThan(0);
       expect(selectedLoctionsAfterClick.length).toEqual(0);
+      expect(component.removeSelection).toHaveBeenCalled();
     });
   });
 });

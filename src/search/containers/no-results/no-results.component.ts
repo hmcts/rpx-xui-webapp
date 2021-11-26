@@ -36,4 +36,8 @@ export class NoResultsComponent implements OnInit {
       this.store.dispatch(new fromActions.Decorate16DigitCaseReferenceSearchBoxInHeader(true));
     }
   }
+
+  public onBack(): void {
+    window.history.back();
+  }
 }

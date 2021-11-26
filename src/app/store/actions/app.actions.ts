@@ -110,44 +110,44 @@ export class AcceptTandCFail implements Action {
   constructor(public payload: boolean) {}
 }
 
-export class LoadTermsConditions {
+export class LoadTermsConditions implements Action {
   public readonly type = LOAD_TERMS_CONDITIONS;
 }
 
-export class LoadTermsConditionsSuccess {
+export class LoadTermsConditionsSuccess implements Action {
   public readonly type = LOAD_TERMS_CONDITIONS_SUCCESS;
   constructor(public payload: TCDocument) {}
 }
 
-export class LoadTermsConditionsFail {
+export class LoadTermsConditionsFail implements Action {
   public readonly type = LOAD_TERMS_CONDITIONS_FAIL;
   constructor(public payload: any) {}
 }
 
-export class LoadUserDetails {
+export class LoadUserDetails implements Action {
   public readonly type = LOAD_USER_DETAILS;
 }
 
-export class StartIdleSessionTimeout {
-  public readonly type = START_IDLE_SESSION_TIMEOUT;
-}
-
-export class StopIdleSessionTimeout {
-  public readonly type = STOP_IDLE_SESSION_TIMEOUT;
-}
-
 // TODO: strong type the payload
-export class LoadUserDetailsSuccess {
+export class LoadUserDetailsSuccess implements Action {
   public readonly type = LOAD_USER_DETAILS_SUCCESS;
   constructor(public payload) {}
 }
 
-export class LoadUserDetailsFail {
+export class LoadUserDetailsFail implements Action {
   public readonly type = LOAD_USER_DETAILS_FAIL;
   constructor(public payload: any) {}
 }
 
-export class Decorate16DigitCaseReferenceSearchBoxInHeader {
+export class StartIdleSessionTimeout implements Action {
+  public readonly type = START_IDLE_SESSION_TIMEOUT;
+}
+
+export class StopIdleSessionTimeout implements Action {
+  public readonly type = STOP_IDLE_SESSION_TIMEOUT;
+}
+
+export class Decorate16DigitCaseReferenceSearchBoxInHeader implements Action {
   public readonly type = DECORATE_16_DIGIT_CASE_REFERENCE_SEARCH_BOX_IN_HEADER;
   constructor(public payload: boolean) {}
 }

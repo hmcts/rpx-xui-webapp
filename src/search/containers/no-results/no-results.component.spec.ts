@@ -39,7 +39,13 @@ describe('NoResultsComponent', () => {
   });
 
   it('should display no results content if no error', () => {
-    spyOn(mockRouter, 'getCurrentNavigation').and.returnValues({ extras: { state: { messageId: NoResultsMessageId.NO_RESULTS } } });
+    spyOn(mockRouter, 'getCurrentNavigation').and.returnValues({
+      extras: {
+        state: {
+          messageId: NoResultsMessageId.NO_RESULTS
+        }
+      }
+    });
     // We have to TestBed.createComponent again for the activated route to work
     fixture = TestBed.createComponent(NoResultsComponent);
     component = fixture.componentInstance;
@@ -49,7 +55,13 @@ describe('NoResultsComponent', () => {
   });
 
   it('should display something went wrong content if error', () => {
-    spyOn(mockRouter, 'getCurrentNavigation').and.returnValues({ extras: { state: { messageId: NoResultsMessageId.ERROR } } });
+    spyOn(mockRouter, 'getCurrentNavigation').and.returnValues({
+      extras: {
+        state: {
+          messageId: NoResultsMessageId.ERROR
+        }
+      }
+    });
     // We have to TestBed.createComponent again for the activated route to work
     fixture = TestBed.createComponent(NoResultsComponent);
     component = fixture.componentInstance;
@@ -59,7 +71,13 @@ describe('NoResultsComponent', () => {
   });
 
   it('should display no results content if 16 digit case reference error', () => {
-    spyOn(mockRouter, 'getCurrentNavigation').and.returnValues({ extras: { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH } } });
+    spyOn(mockRouter, 'getCurrentNavigation').and.returnValues({
+      extras: {
+        state: {
+          messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH
+        }
+      }
+    });
     // We have to TestBed.createComponent again for the activated route to work
     fixture = TestBed.createComponent(NoResultsComponent);
     component = fixture.componentInstance;

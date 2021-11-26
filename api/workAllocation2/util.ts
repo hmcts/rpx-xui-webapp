@@ -417,7 +417,7 @@ export function mapRoleType(roleType: string): string {
 }
 
 export function filterByLocationId(cases: Case[], locations: string[]): Case[] {
-  return cases.filter((caseDetail: Case) =>
+  return locations.length === 0 ? cases : cases.filter((caseDetail: Case) =>
     caseDetail.case_data.caseManagementLocation &&
     caseDetail.case_data.caseManagementLocation.baseLocation &&
     locations.includes(caseDetail.case_data.caseManagementLocation.baseLocation));

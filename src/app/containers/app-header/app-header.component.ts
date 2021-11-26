@@ -3,6 +3,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
+import { first } from 'rxjs/operators';
 import { ApplicationTheme, NavigationItem } from 'src/app/models/theming.model';
 import { UserDetails } from 'src/app/models/user-details.model';
 import { AppUtils } from '../../app-utils';
@@ -103,8 +104,8 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   public async setHeaderContent(userDetails) {
     if (userDetails.userInfo) {
       this.userRoles = userDetails.userInfo.roles;
-      const applicationTheme: ApplicationTheme = await this.getApplicationThemeForUser().toPromise();
-      const menuItems: NavigationItem[] = await this.featureToggleService.getValue('mc-menu-items', this.defaultMenuItems).toPromise();
+      const applicationTheme: ApplicationTheme = await this.getApplicationThemeForUser().pipe(first()).toPromise();
+      const menuItems: NavigationItem[] = await this.featureToggleService.getValue('mc-menu-items', this.defaultMenuItems).pipe(first()).toPromise();
       this.hideNavigationListener(this.store);
       this.setAppHeaderProperties(applicationTheme, menuItems);
     }
@@ -161,7 +162,6 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    * due to business requirements.
    */
   public hideNavigationListener(store): void {
-
     const observable = this.getObservable(store);
     this.subscription = this.subscribe(observable);
   }
@@ -178,7 +178,6 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    */
   public subscribe(observable: Observable<string>): Subscription {
     return observable.subscribe(url => {
-
       this.showNavItems = of(AppUtils.showNavItems(url));
     });
   }

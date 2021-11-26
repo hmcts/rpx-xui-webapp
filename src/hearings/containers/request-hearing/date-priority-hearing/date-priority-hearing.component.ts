@@ -2,12 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
-import { select, Store } from '@ngrx/store';
-import * as moment from 'moment';
-import { map } from 'rxjs/operators';
-import { PartyUnavailabilityRange } from '../../../../hearings/models/partyUnavilabilityRange.model';
 import { RefDataModel } from '../../../../hearings/models/refData.model';
-import * as fromHearingStore from '../../../../hearings/store';
 
 @Component({
   selector: 'exui-date-priority-hearing',
@@ -18,26 +13,20 @@ export class DatePriorityHearingComponent implements OnInit {
   public priorityForm: FormGroup;
   public priorities: RefDataModel[];
   public checkedHearingAvailability: string;
-  public partiesNotAvailableDates: string[] = [];
+  public partiesNotAvailableDates: string[];
   public firstHearingDate: GovUiConfigModel;
   public earliestHearingDate: GovUiConfigModel;
   public latestHearingDate: GovUiConfigModel;
 
   constructor(private readonly formBuilder: FormBuilder,
-              private readonly route: ActivatedRoute,
-              private readonly hearingStore: Store<fromHearingStore.State>) { }
+              private readonly route: ActivatedRoute) { }
 
   public ngOnInit(): void {
     this.initDateConfig();
     this.initForm();
     this.priorities = this.route.snapshot.data.hearingPriorities.sort((currentPriority, nextPriority) => (currentPriority.order < nextPriority.order ? -1 : 1));
-    this.hearingStore.pipe(select(fromHearingStore.getHearingValuesModel),
-      map((hearingValues): PartyUnavailabilityRange[] => hearingValues && hearingValues.parties && hearingValues.parties.map(dates => dates.unavailability).flat()))
-      .subscribe((unavailabilityDateList: PartyUnavailabilityRange[]) => {
-        if (unavailabilityDateList) {
-          this.checkUnavailableDatesList(unavailabilityDateList);
-        }
-      });
+    // TODO: Get dates from a service
+    this.partiesNotAvailableDates = ['2 November 2021', '3 November 2021', '4 November 2021'];
   }
 
   public initDateConfig(): void {
@@ -86,25 +75,5 @@ export class DatePriorityHearingComponent implements OnInit {
 
   public showDateAvailability(): void {
     this.checkedHearingAvailability = this.priorityForm.get('hearingAvailability').value;
-  }
-
-  public checkUnavailableDatesList(dateList: PartyUnavailabilityRange[]): void {
-    dateList.forEach(dateRange => {
-      this.setUnavailableDates(dateRange);
-    });
-  }
-
-  public setUnavailableDates(dateRange): void {
-    const startDate = moment(dateRange.start);
-    const endDate = moment(dateRange.end);
-
-    while (startDate <= endDate) {
-      const currentDate = startDate.format('DD MMMM YYYY');
-      const isWeekDay: boolean = (startDate.weekday() !== 6) && (startDate.weekday() !== 0);
-      if (isWeekDay && !this.partiesNotAvailableDates.includes(currentDate)) {
-        this.partiesNotAvailableDates.push(currentDate);
-      }
-      startDate.add(1, 'd');
-    }
   }
 }

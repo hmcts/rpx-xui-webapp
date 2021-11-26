@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
 import { provideMockStore } from '@ngrx/store/testing';
 import { LocationSearchContainerComponent } from './location-search-container.component';
-import { LocationByEPIMSModel, LocationModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { By } from '@angular/platform-browser';
 import { AbstractControl, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
@@ -74,7 +74,7 @@ describe('LocationSearchContainerComponent', () => {
       open_for_public: 'Yes',
       court_address: 'AB1, 48 HUNTLY STREET, ABERDEEN',
       postcode: 'AB11 6LT'
-    } as LocationModel;
+    } as LocationByEPIMSModel;
 
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(location);
     component.addSelection();
@@ -100,7 +100,7 @@ describe('LocationSearchContainerComponent', () => {
       open_for_public: 'Yes',
       court_address: 'AB1, 48 HUNTLY STREET, ABERDEEN',
       postcode: 'AB11 6LT'
-    } as LocationModel;
+    } as LocationByEPIMSModel;
 
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(location);
     component.addSelection();

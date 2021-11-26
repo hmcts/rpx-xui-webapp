@@ -49,8 +49,7 @@
                 formControlName="hearingAvailability" (change)="showDateAvailability();">
               <label class="govuk-label govuk-radios__label" for="dates2">Yes</label>
             </div>
-            <div class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3"
-              [ngClass]="{'js-hidden': checkedHearingAvailability!=='Yes'}">
+            <div class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3" [ngClass]="{'js-hidden': checkedHearingAvailability!=='Yes'}">
               <div class="govuk-form-group">
                 <xuilib-gov-uk-date [config]="firstHearingDate" [formGroup]="priorityForm"></xuilib-gov-uk-date>
               </div>
@@ -60,8 +59,7 @@
                 formControlName="hearingAvailability" (change)="showDateAvailability();">
               <label class="govuk-label govuk-radios__label" for="dates3">Choose a date range</label>
             </div>
-            <div class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3"
-              [ngClass]="{'js-hidden': checkedHearingAvailability!=='Choose'}">
+            <div class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3" [ngClass]="{'js-hidden': checkedHearingAvailability!=='Choose'}">
               <div class="govuk-hint">You can enter either or both dates.</div>
               <div class="govuk-form-group">
                 <xuilib-gov-uk-date [config]="earliestHearingDate" [formGroup]="priorityForm"></xuilib-gov-uk-date>

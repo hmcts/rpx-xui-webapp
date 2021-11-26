@@ -4,14 +4,14 @@
       <div class="govuk-form-group">
         <div class="location-picker-custom">
           <div class="search-location">
-            <label id="input-selected-location-label" class="govuk-body" for="input-selected-location">
+            <label id="input-selected-location-label" class="govuk-body">
                 Search for a location by name
             </label>
             <br>
             <exui-search-location class="search-location"
               [selectedLocations$]="selectedLocations$"
               [control]="findLocationFormGroup.controls.locationSelectedFormControl"
-              [disabled]=null 
+              [disabled]=false 
               [serviceIds]="serviceIds"
               [locationType]="'hearing'"></exui-search-location>
               <a href="javascript:void(0)" (click)="addSelection()" class="govuk-button govuk-button--secondary" data-module="govuk-button">

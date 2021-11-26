@@ -4,5 +4,20 @@
   "singleQuote": true,
   "useTabs": false,
   "tabWidth": 4,
-  "trailingComma": "none"
+  "jsxBracketSameLine": true,
+  "htmlWhitespaceSensitivity": "ignore",
+  "proseWrap": "preserve",
+  "trailingComma": "none",
+  "overrides": [
+    {
+      "files": [
+        "**/*.css",
+        "**/*.scss",
+        "**/*.html"
+      ],
+      "options": {
+        "singleQuote": false
+      }
+    }
+  ]
 }

@@ -5,8 +5,8 @@
     </h2>
     <div class="govuk-error-summary__body">
       <ul class="govuk-list govuk-error-summary__list">
-        <li *ngFor="let validationError of searchValidationErrors">
-          <a href="search#{{validationError.documentHRef}}">{{validationError.errorMessage}}</a>
+        <li *ngFor="let validationError of dateValidationErrors">
+          <a href="booking#{{validationError.documentHRef}}">{{validationError.errorMessage}}</a>
         </li>
       </ul>
     </div>
@@ -23,7 +23,7 @@
           {{ title }}
         </h1>
       </legend>
-      <div id="error-message"class="govuk-error-message" *ngIf="formGroup.get('radioSelected').invalid && submitted">
+      <div id="error-message"class="govuk-error-message" *ngIf="formGroup.get('bookingDateType').invalid && submitted">
         {{ errorMessage.description }}
       </div>
       <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
@@ -31,18 +31,19 @@
           <input
             class="govuk-radios__input"
             id="{{ 'date-' + i }}"
-            name="radioSelected"
+            name="bookingDateType"
             type="radio"
             [value]="item.date"
-            formControlName="radioSelected"
-            [checked]="item.checked"/>
+            formControlName="bookingDateType"
+            [checked]="item.checked"
+            (change)="onSelectOption(i)"/>
           <label
             class="govuk-label govuk-radios__label"
             for="{{ 'date-' + i }}">
             {{ item.date }}
           </label>
         </div>
-        <div id="conditional-date-0" *ngIf="formGroup.get('radioSelected').value === dateInterval[2].date" class="govuk-radios__conditional">
+        <div id="conditional-date-0" *ngIf="formGroup.get('bookingDateType').value === dateInterval[2].date" class="govuk-radios__conditional">
           <div class="govuk-form-group">
             <xuilib-gov-uk-date
               [formGroup]="formGroup"

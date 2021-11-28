@@ -31,7 +31,7 @@ export enum BookingDateFormErrorMessage {
 }
 
 export enum DateFormControl {
-  RADIOSELECTED = 'radioSelected',
+  BOOKING_DATE_TYPE = 'bookingDateType',
   BOOKING_START_DAY = 'startDate_day',
   BOOKING_START_MONTH = 'startDate_month',
   BOOKING_START_YEAR = 'startDate_year',

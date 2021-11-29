@@ -102,7 +102,6 @@ describe('ExuiCaseReferenceSearchBoxComponent', () => {
     searchService = createSpyObj<SearchService>('searchService', ['getResults', 'retrieveState', 'storeState']);
     searchService.getResults.and.returnValue(of(searchResultWithCaseList));
     searchService.retrieveState.and.returnValue(searchParameters);
-    searchService.storeState.and.returnValue({});
     TestBed.configureTestingModule({
       declarations: [ CaseReferenceSearchBoxComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],
@@ -160,7 +159,7 @@ describe('ExuiCaseReferenceSearchBoxComponent', () => {
 
     expect(searchService.storeState).toHaveBeenCalledTimes(1);
     expect(searchService.getResults).toHaveBeenCalledTimes(1);
-    expect(router.navigate).toHaveBeenCalledWith(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH } });
+    expect(router.navigate).toHaveBeenCalledWith(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH }, relativeTo: route });
   });
 
   it('should unsubscribe subscriptions onDestroy', () => {

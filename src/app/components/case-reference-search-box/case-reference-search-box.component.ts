@@ -68,17 +68,23 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, After
     // Store the search parameters to session
     this.searchService.storeState(SearchStatePersistenceKey.SEARCH_PARAMS, searchParameters);
 
-    this.searchSubscription$ = this.searchService.getResults().subscribe(result => {
-      if (result.resultInfo.casesReturned > 0) {
-        // Case found, do not decorate 16-digit case reference search box with error class
-        this.store.dispatch(new fromActions.Decorate16DigitCaseReferenceSearchBoxInHeader(false));
-        // Navigate to case details page
-        this.router.navigate([`/cases/case-details/${result.results[0].caseReference}`], { relativeTo: this.route });
-      } else {
-        // Navigate to no results page
-        this.router.navigate(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH } });
+    this.searchSubscription$ = this.searchService.getResults().subscribe(
+      result => {
+        if (result.resultInfo.casesReturned > 0) {
+          // Case found, do not decorate 16-digit case reference search box with error class
+          this.store.dispatch(new fromActions.Decorate16DigitCaseReferenceSearchBoxInHeader(false));
+          // Navigate to case details page
+          this.router.navigate([`/cases/case-details/${result.results[0].caseReference}`], { relativeTo: this.route });
+        } else {
+          // Navigate to no results page
+          this.router.navigate(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH }, relativeTo: this.route });
+        }
+      },
+      error => {
+        // Error, navigate to service down page
+        this.router.navigate(['/service-down'], { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH } });
       }
-    });
+    );
   }
 
   public ngOnDestroy(): void {

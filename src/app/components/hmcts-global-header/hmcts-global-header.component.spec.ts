@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -9,7 +9,6 @@ import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { UserService } from 'src/app/services/user/user.service';
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
-
 
 describe('HmctsGlobalHeaderComponent', () => {
   let nocStoreSpy: jasmine.Spy;
@@ -36,26 +35,6 @@ describe('HmctsGlobalHeaderComponent', () => {
       href: '/cases/case-search',
       active: false,
       ngClass: 'hmcts-search-toggle__button'
-    },
-    {
-      align: null,
-      text: '2',
-      href: '',
-      active: false
-    },
-    {
-      align: 'null',
-      text: '3',
-      href: '',
-      active: false
-    }
-  ];
-  const navItemsWithSearchBox = [
-    {
-      align: 'right',
-      text: 'Find',
-      href: '',
-      active: false
     },
     {
       align: null,

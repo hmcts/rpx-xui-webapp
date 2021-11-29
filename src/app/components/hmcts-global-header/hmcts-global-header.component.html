@@ -6,7 +6,7 @@
 
       <!-- Logo for Judicial Users -->
       <ng-container *ngSwitchCase="'judicial'">
-        <div style="position: absolute;" *ngIf="showItems">
+        <div class="judicial-header__logo" *ngIf="showItems">
           <a href="#">
             <img class="img-responsive" alt="GOV.UK logo" src="/assets/images/govuk-crest-jcm.png" width="83px">
           </a>
@@ -59,7 +59,7 @@
       <nav class="hmcts-primary-navigation transparent-background" aria-label="Primary navigation">
         <ul class="hmcts-primary-navigation__list">
           <li class="hmcts-primary-navigation__item" *ngFor="let item of (leftItems | async)">
-            <a class="hmcts-primary-navigation__link" (click)="onEmitSubMenu(item)" [attr.aria-current]="item.active ? true : null" [routerLink]="item.href">{{item.text}}</a>
+            <a class="hmcts-primary-navigation__link" (click)="onEmitSubMenu(item)" [attr.aria-current]="item.active ? true : false" [routerLink]="item.href">{{item.text}}</a>
           </li>
         </ul>
       </nav>
@@ -69,7 +69,7 @@
         <ul class="hmcts-primary-navigation__list">
           <li class="hmcts-primary-navigation__item" *ngFor="let item of (rightItems | async)">
             <a class="hmcts-primary-navigation__link transparent-background" [ngClass]="item.ngClass" (click)="onEmitSubMenu(item)"
-            [attr.aria-current]="item.active ? true : null" [routerLink]="item.href" *ngIf="showFindCase && item.ngClass === 'hmcts-search-toggle__button'">{{item.text}}</a>
+            [attr.aria-current]="item.active ? true : false" [routerLink]="item.href" *ngIf="showFindCase && item.ngClass === 'hmcts-search-toggle__button'">{{item.text}}</a>
             <exui-case-reference-search-box
               [item]="item"
               [decorate16DigitCaseReferenceSearchBoxInHeader]="decorate16DigitCaseReferenceSearchBoxInHeader"

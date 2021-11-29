@@ -24,9 +24,7 @@ const defaultUserTheme: ApplicationTheme = {
     url: '/'
   },
   backgroundColor: '#202020',
-  logo: 'none',
-  showFindCase: true,
-	showCaseReferenceSearchBox: true
+  logo: 'none'
 };
 
 const defaultMenuItems: NavigationItem[] = [

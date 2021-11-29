@@ -19,8 +19,6 @@ export class HmctsPrimaryNavigationComponent {
     @Input() label;
     @Input() items;
     @Input() public logoIsUsed;
-    @Input() showFindCase: boolean;
-    @Input() showCaseReferenceSearchBox: boolean;
 
     public showItems: boolean;
     constructor(private route: ActivatedRoute) {

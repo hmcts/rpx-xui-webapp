@@ -34,8 +34,6 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   public navItems: NavigationItem[];
   public appHeaderTitle: AppTitleModel;
   public userNav: UserNavModel;
-  public showFindCase: boolean;
-  public showCaseReferenceSearchBox: boolean;
   public backgroundColor: string;
   public logoType: string;
   public logoIsUsed: boolean = false;
@@ -159,7 +157,6 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     this.backgroundColor = applicationTheme.backgroundColor;
     this.logoType = applicationTheme.logo;
     this.logoIsUsed = applicationTheme.logo !== 'none';
-    this.showFindCase = applicationTheme.showFindCase;
   }
 
   /**

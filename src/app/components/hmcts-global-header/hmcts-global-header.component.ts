@@ -21,8 +21,6 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   }
   @Input() public items: NavigationItem[];
   @Input() public logoIsUsed: boolean;
-  @Input() public showFindCase: boolean;
-  @Input() public showCaseReferenceSearchBox: boolean;
   @Input() public headerTitle: {name: string; url: string};
   @Input() public navigation: UserNavModel;
   @Input() public logoType: string;

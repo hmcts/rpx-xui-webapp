@@ -14,8 +14,6 @@ export class AppHeaderSignedOutComponent implements OnInit {
   public navItems: NavItemsModel[];
   public appHeaderTitle: AppTitleModel;
   public userNav: UserNavModel;
-  public showFindCase: boolean;
-  public showCaseReferenceSearchBox: boolean;
   public backgroundColor: string;
   public logoType: string;
   public logoIsUsed: boolean;
@@ -38,9 +36,7 @@ export class AppHeaderSignedOutComponent implements OnInit {
     const {
       appTitle,
       backgroundColor,
-      logo,
-      showFindCase,
-      showCaseReferenceSearchBox,
+      logo
     } = applicationTheme;
 
     this.appHeaderTitle = appTitle;
@@ -49,8 +45,5 @@ export class AppHeaderSignedOutComponent implements OnInit {
     this.backgroundColor = backgroundColor;
     this.logoType = logo;
     this.logoIsUsed = logo !== 'none';
-
-    this.showFindCase = showFindCase;
-    this.showCaseReferenceSearchBox = showCaseReferenceSearchBox;
   }
 }

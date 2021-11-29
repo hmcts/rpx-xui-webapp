@@ -296,6 +296,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
         }
         if (this.allRoles && this.allRoles.find(role => role.roleId === item.case_role)) {
           item.case_role = this.allRoles.find(role => role.roleId === item.case_role).roleName;
+          item.role = item.case_role;
         }
       });
       this.ref.detectChanges();

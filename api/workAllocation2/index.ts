@@ -99,7 +99,7 @@ export async function getTypesOfWork(req: EnhancedRequest, res: Response, next: 
     const path: string = `${baseWorkAllocationTaskUrl}/work-types?filter-by-user=false`;
     const response = await getTypesOfWorkByUserId(path, req);
     let typesOfWork = [];
-    if (response.work_types) {
+    if (response && response.work_types) {
       typesOfWork = response.work_types.map(work => ({key: work.id, label: work.label}));
     }
     res.status(200);
@@ -132,6 +132,10 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     const searchRequest = {
       ...req.body.searchRequest, search_parameters: removeEmptyValues(req.body.searchRequest.search_parameters),
     };
+    const sortParam = searchRequest.sorting_parameters.find(sort => sort.sort_by === 'created_date')
+    if(sortParam) {
+      sortParam.sort_by = 'dueDate';
+    }
     delete searchRequest.pagination_parameters;
     const {status, data} = await handleTaskSearch(postTaskPath, searchRequest, req);
     const currentUser = req.body.currentUser ? req.body.currentUser : '';

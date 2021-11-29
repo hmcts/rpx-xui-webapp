@@ -151,10 +151,10 @@ export class AppUtils {
   }
 
   public static isLegalOpsOrJudicial(userRoles: string[]): UserRole {
-    if (userRoles.some(userRole => LEGAL_OPS_ROLE_LIST.some(role => role === userRole))) {
-      return UserRole.LegalOps;
-    } else if (userRoles.some(userRole => JUDICIAL_ROLE_LIST.some(role => role === userRole))) {
+    if (userRoles.some(userRole => JUDICIAL_ROLE_LIST.some(role => role === userRole))) {
       return UserRole.Judicial;
+    } else if (userRoles.some(userRole => LEGAL_OPS_ROLE_LIST.some(role => role === userRole))) {
+      return UserRole.LegalOps;
     }
     return null;
   }

@@ -8,7 +8,7 @@ Feature: WA Release 2: Case details Tasks tab (Integration to be done)
 
 
     Scenario Outline: Task tab content displayed
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>" with reference "userDetails"
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |

@@ -70,6 +70,6 @@ Feature: WA Release 2: All work - Task assignment work flows
 
         Examples:
             | UserIdentifier     | UserType   | Roles                                              | taskAtRow | action        | submitBtnLabel | bannermessage                              |
-            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | 4         | Reassign task | Reassign       | You've reassigned a task to somebody else. |
-            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 1         | Assign task   | Assign         | You've assigned a task. It will be in the selected person's My tasks.   |
+            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator | 4 | Reassign task | Reassign | You've reassigned a task to somebody else. |
+            | IAC_Judge_WA_R2 | Judge | caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator | 1 | Assign task | Assign | You've assigned a task. It will be in the selected person's My tasks. |
 

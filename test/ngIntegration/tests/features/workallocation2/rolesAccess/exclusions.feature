@@ -21,7 +21,7 @@ Feature: WA Release 2: Exclusions
             | judge 4 | Judicial | lead | Test exclusion 4 | -55   |
 
     Scenario Outline: Roles and access - "<Useridentifier>" - Exclusion work flow with option "Exclude another person"
-        Given I set MOCK with user "<Useridentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<Useridentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
 
 
         Given I start MockApp
@@ -72,7 +72,7 @@ Feature: WA Release 2: Exclusions
     # | IAC_CaseOfficer_R2 | caseworker-ia-caseofficer,caseworker-ia-admofficer | Admin         | admin                | admin_user1@gov.uk      | admin_user2@gov.uk      | admin role user exclusion      |
 
     Scenario Outline: Exclusion with option "Exclude me" - "<Useridentifier>"
-        Given I set MOCK with user "<Useridentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<Useridentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I start MockApp
         Given I navigate to home page
@@ -107,7 +107,7 @@ Feature: WA Release 2: Exclusions
             | IAC_Judge_WA_R2 | caseworker-ia-iacjudge,caseworker-ia,caseworker | Judge excluding me   |
 
     Scenario Outline: Delete exclusion
-        Given I set MOCK with user "<Useridentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<Useridentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I start MockApp
         Given I navigate to home page

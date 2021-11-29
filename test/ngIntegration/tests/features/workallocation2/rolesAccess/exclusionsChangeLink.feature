@@ -15,7 +15,7 @@ Feature: WA Release 2: Exclusion workflow - Change links
             | Admin    | 1236 | admin_user2@gov.uk      | admin2 a       | Case worker   |
 
     Scenario Outline: Roles and access - "<Useridentifier>" - Exclusion work flow with option "Exclude another person"
-        Given I set MOCK with user "<Useridentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<Useridentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
 
 
         Given I start MockApp

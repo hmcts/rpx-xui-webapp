@@ -38,7 +38,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
 
     Scenario: WITH_SESSION Tasks filters state, with user role "Caseworker"
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer" with reference "userDetails"
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I start MockApp
 
@@ -80,7 +80,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Then I see filter "Priority" is enabled in all work page
 
     Scenario Outline: WITH_SESSION Tasks filter selection, with user role "Caseworker"
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer" with reference "userDetails"
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I start MockApp
 
@@ -141,7 +141,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | IA           | Test loc 3   | 12347      | Specific person        | adm           | admin1 a(admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     | All      |
 
     Scenario: WITH_SESSION Tasks filters state, with user role "Judicial"
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker" with reference "userDetails"
+        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I start MockApp
 
@@ -183,7 +183,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
 
     Scenario Outline: WITH_SESSION Tasks filter selection, with user role "Judicial"
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker" with reference "userDetails"
+        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I start MockApp
 
@@ -242,7 +242,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | IA           | Test loc 3   | 12347      | Specific person        | adm           | admin1 a(admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     |
 
     Scenario: WITH_SESSION Cases filter selection, with user role "Caseworker"
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer" with reference "userDetails"
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I start MockApp
 
@@ -282,7 +282,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Then I see filter "Person input" is disabled in all work page
 
     Scenario Outline: WITH_SESSION Case filter selection, with user role "Caseworker"
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer" with reference "userDetails"
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I start MockApp
 
@@ -341,7 +341,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | IA           | Test loc 3   | 12347      | Specific person        | adm           | admin1 a(admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin     |
 
     Scenario Outline: WITH_SESSION Case filter selection, with user role "Judicial"
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker" with reference "userDetails"
+        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I start MockApp
 

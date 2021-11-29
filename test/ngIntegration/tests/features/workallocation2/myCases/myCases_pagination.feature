@@ -8,7 +8,7 @@ Feature: WA Release 2: My work to  My cases to pagination sorting
 
 
     Scenario Outline: pagnation and sorting for user type "<UserType>" with roles "<Roles>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK workallocation cases with permissions for view "My cases"
             | Roles          | Count |
             | task-supervisor | 40    |
@@ -35,7 +35,7 @@ Feature: WA Release 2: My work to  My cases to pagination sorting
             | IAC_Judge_WA_R2 | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker |
 
     Scenario Outline: pagnation control display with only 1 page of items
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK workallocation cases with permissions for view "My cases"
             | Roles          | Count |
             | task-supervisor | 20    |
@@ -57,7 +57,7 @@ Feature: WA Release 2: My work to  My cases to pagination sorting
     # For EUI-4366
     @ignore
     Scenario Outline: pagnation control display 0 items
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK workallocation cases with permissions for view "My cases"
             | Roles          | Count |
             | task-supervisor | 0    |

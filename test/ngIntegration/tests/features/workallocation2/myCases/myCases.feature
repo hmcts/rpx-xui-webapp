@@ -5,7 +5,7 @@ Feature: WA Release 2: My cases
         Given I init MockApp
 
     Scenario Outline:  My cases, colums and column links for "<UserType>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I start MockApp
         Given I navigate to home page
         When I navigate to My work sub navigation tab "My cases"
@@ -31,7 +31,7 @@ Feature: WA Release 2: My cases
             | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
     Scenario Outline: My cases pagnation control display with only 1 page of items
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK workallocation cases with permissions for view "My cases"
             | Roles          | Count |
             | task-supervisor | 10    |

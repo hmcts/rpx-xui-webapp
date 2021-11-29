@@ -5,7 +5,7 @@ Feature: WA Release 2: All work > Cases
         Given I init MockApp
 
     Scenario Outline:  All cases, colums and column links for "<UserType>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I start MockApp
         Given I navigate to home page
         When I click on primary navigation header tab "All work", I see selected tab page displayed
@@ -30,7 +30,7 @@ Feature: WA Release 2: All work > Cases
             | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
     Scenario Outline: All cases pagnation control display with only 1 page of items
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK workallocation cases with permissions for view "AllWorkCases"
             | Roles          | Count |
             | task-supervisor | 10    |

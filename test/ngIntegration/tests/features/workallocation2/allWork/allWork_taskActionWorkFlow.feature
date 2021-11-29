@@ -20,7 +20,7 @@ Feature: WA Release 2: All work - Task action work flows
             | Allwork test scr | auto test category | London QA lab |
 
     Scenario Outline:  Task Manage links for "<UserType>"  action "<actionLink>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I start MockApp
         Given I navigate to home page

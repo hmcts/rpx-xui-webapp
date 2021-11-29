@@ -5,7 +5,7 @@ Feature: WA Release 2: My work - Available tasks - Manage links
         Given I init MockApp
 
     Scenario Outline:  Available Tasks, colums and column links for "<UserType>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK tasks with permissions for view "Available tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 100   |
@@ -43,7 +43,7 @@ Feature: WA Release 2: My work - Available tasks - Manage links
 
     
     Scenario Outline:  Task Manage links for "<UserType>"  action "<actionLink>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I start MockApp
         Given I navigate to home page

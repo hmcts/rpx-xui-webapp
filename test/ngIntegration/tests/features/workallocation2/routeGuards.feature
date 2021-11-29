@@ -5,7 +5,7 @@ Feature: Work allocation 2 feature route guards
     These tests would be valid untill work allocation 2 features are enabled for all users
 
     Scenario Outline: Release 2 routes not accessible to release 1 users
-        Given I set MOCK with user "IAC_CaseOfficer_R1" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer" with reference "userDetails"
+        Given I set MOCK with user "IAC_CaseOfficer_R1" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator" with reference "userDetails"
         Given I start MockApp
         Given I navigate to home page
         When I click on primary navigation header tab "Create case", I see selected tab page displayed
@@ -25,7 +25,7 @@ Feature: Work allocation 2 feature route guards
             | /role-access/delete-exclusion/1620409659381330                                                                                                                                                                                                    |
 
     # Scenario Outline: Release 2 routes for case allocator
-    #     Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer" with reference "userDetails"
+    #     Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator" with reference "userDetails"
     #     Given I set MOCK user with reference "userDetails" roleAssignmentInfo
     #         | isCaseAllocator | jurisdiction | primaryLocation |
     #         | false           | IA           | 12345           |

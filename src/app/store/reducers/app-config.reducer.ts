@@ -13,6 +13,7 @@ export interface AppConfigState {
   isTermsAndConditionsFeatureEnabled: boolean;
   useIdleSessionTimeout: boolean;
   userDetails: UserDetails;
+  decorate16digitCaseReferenceSearchBoxInHeader: boolean;
 }
 
 export const initialState: AppConfigState = {
@@ -30,7 +31,8 @@ export const initialState: AppConfigState = {
     },
     canShareCases: false,
     userInfo: null
-  }
+  },
+  decorate16digitCaseReferenceSearchBoxInHeader: false
 };
 
 export function reducer(
@@ -105,12 +107,16 @@ export function reducer(
         ...state,
         useIdleSessionTimeout: false
       };
+    case fromActions.DECORATE_16_DIGIT_CASE_REFERENCE_SEARCH_BOX_IN_HEADER:
+      return {
+        ...state,
+        decorate16digitCaseReferenceSearchBoxInHeader: action.payload
+      }
     default:
       return {
         ...state
       };
   }
-  return state;
 }
 
 
@@ -119,3 +125,4 @@ export const getTandCLoadedConfig = (state: AppConfigState) => state.termsAndCon
 export const getTermsConditions = (state: AppConfigState) => state.termsAndConditions;
 export const getUseIdleSessionTimeout = (state: AppConfigState) => state.useIdleSessionTimeout;
 export const getUserDetails = (state: AppConfigState) => state.userDetails;
+export const getDecorate16digitCaseReferenceSearchBoxInHeader = (state: AppConfigState) => state.decorate16digitCaseReferenceSearchBoxInHeader;

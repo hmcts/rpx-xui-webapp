@@ -143,26 +143,6 @@ describe('HmctsGlobalHeaderComponent', () => {
     expect(component.navigate.emit).toHaveBeenCalled();
   });
 
-  it('should display 16 digit case reference search box', async () => {
-    component.showItems = true;
-    component.showCaseReferenceSearchBox = true;
-    component.items = navItemsWithSearchBox;
-    await component.ngOnChanges(changesMock);
-    fixture.detectChanges();
-    const caseReferenceSearchBox = fixture.debugElement.query(By.css('#case-reference-search-box'));
-    expect(caseReferenceSearchBox).toBeTruthy();
-  });
-
-  it('should not display 16 digit case reference search box', async () => {
-    component.showItems = true;
-    component.showCaseReferenceSearchBox = false;
-    component.items = navItemsWithSearchBox;
-    await component.ngOnChanges(changesMock);
-    fixture.detectChanges();
-    const caseReferenceSearchBox = fixture.debugElement.query(By.css('#case-reference-search-box'));
-    expect(caseReferenceSearchBox).toBeFalsy();
-  });
-
   it('should display find case right aligned', async () => {
     component.showItems = true;
     component.showFindCase = true;

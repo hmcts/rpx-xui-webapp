@@ -1,4 +1,5 @@
 import { AccessibilityComponent } from './accessibility/accessibility.component';
+import { CaseReferenceSearchBoxComponent } from './case-reference-search-box/case-reference-search-box.component';
 import { CookiePolicyComponent } from './cookie-policy/cookie-policy.component';
 import { ErrorMessageComponent } from './error-message/error-message.component';
 import { GetHelpComponent } from './get-help/get-help.component';
@@ -29,7 +30,8 @@ export const components: any[] = [
   MediaViewerWrapperComponent,
   GetHelpComponent,
   SignedOutComponent,
-  ApplicationRoutingComponent
+  ApplicationRoutingComponent,
+  CaseReferenceSearchBoxComponent
 ];
 
 export * from './hmcts-global-footer/hmcts-global-footer.component';
@@ -47,3 +49,4 @@ export * from './get-help/get-help.component';
 export * from './signed-out/signed-out.component';
 export * from './not-authorised/not-authorised.component';
 export * from './routing/application-routing.component';
+export * from './case-reference-search-box/case-reference-search-box.component';

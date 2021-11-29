@@ -25,7 +25,8 @@ describe('App Selectors', () => {
       },
       canShareCases: false,
       userInfo: null
-    }
+    },
+    decorate16digitCaseReferenceSearchBoxInHeader: false
   };
 
   const appPayload = {
@@ -72,7 +73,8 @@ describe('App Selectors', () => {
       },
       canShareCases: false,
       userInfo: null
-    }
+    },
+    decorate16digitCaseReferenceSearchBoxInHeader: false
 };
 
   beforeEach(() => {

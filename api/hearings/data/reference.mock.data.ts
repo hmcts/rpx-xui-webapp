@@ -40,14 +40,44 @@ export const DEFAULT_STAGES_REF: RefDataModel[] = [
   },
 ];
 
+export const DEFAULT_PRIORITIES_REF: RefDataModel[] = [
+  {
+    key: 'urgent',
+    value_en: 'Urgent',
+    value_cy: '',
+    hintText_EN: 'Urgent',
+    hintTextCY: '',
+    order: 1,
+    parentKey: null,
+  },
+  {
+    key: 'standard',
+    value_en: 'Standard',
+    value_cy: '',
+    hintText_EN: 'Standard',
+    hintTextCY: '',
+    order: 2,
+    parentKey: null,
+  },
+];
+
 export const SSCS_STAGES: RefDataByServiceModel = {
   serviceID: 'SSCS',
   values: DEFAULT_STAGES_REF,
+};
+
+export const SSCS_PRIORITIES: RefDataByServiceModel = {
+  serviceID: 'SSCS',
+  values: DEFAULT_PRIORITIES_REF,
 };
 
 export const ALL_REF_DATA: RefDataByCategoryModel[] = [
   {
     categoryKey: 'HearingType',
     services: [SSCS_STAGES],
+  },
+  {
+    categoryKey: 'Priority',
+    services: [SSCS_PRIORITIES],
   },
 ];

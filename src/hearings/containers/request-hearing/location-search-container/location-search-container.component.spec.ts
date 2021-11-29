@@ -1,7 +1,9 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
 import { AbstractControl, FormBuilder } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { Observable } from 'rxjs'
@@ -23,9 +25,8 @@ class MockLocationSearchContainerComponent {
 fdescribe('LocationSearchContainerComponent', () => {
   let component: LocationSearchContainerComponent;
   let fixture: ComponentFixture<LocationSearchContainerComponent>;
-
   const initialState = {
-    hearings: {
+  hearings: {
       hearingList: {
         caseHearingMainModel: [
           {
@@ -36,19 +37,19 @@ fdescribe('LocationSearchContainerComponent', () => {
     }
   };
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ LocationSearchContainerComponent, MockLocationSearchContainerComponent ],
-      providers: [
-        provideMockStore({initialState}),
-        FormBuilder
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
-    })
-    .compileComponents();
-  }));
-
+  let mockStore: any;
   beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      declarations: [LocationSearchContainerComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        provideMockStore(),
+      ]
+    })
+      .compileComponents();
+    mockStore = TestBed.get(Store);
+    mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
     fixture = TestBed.createComponent(LocationSearchContainerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -116,5 +117,8 @@ fdescribe('LocationSearchContainerComponent', () => {
       expect(selectedLoctionsAfterClick.length).toEqual(0);
       expect(component.removeSelection).toHaveBeenCalled();
     });
+  });
+  afterEach(() => {
+    fixture.destroy();
   });
 });

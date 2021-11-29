@@ -49,7 +49,7 @@ fdescribe('LocationSearchContainerComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(LocationSearchContainerComponent);
     component = fixture.componentInstance;
-    
+
     fixture.detectChanges();
     spyOn(component, 'removeSelection').and.callThrough();
     spyOn(component.selectedLocations$, 'subscribe');

@@ -14,14 +14,12 @@ export class LocationSearchContainerComponent implements OnInit {
   public locationType: string;
   public findLocationFormGroup: FormGroup;
   public selectedLocations$: Observable<LocationByEPIMSModel[]>;
-  public selectedLocation: LocationByEPIMSModel;
   public serviceIds: string = 'SSCS';
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>, fb: FormBuilder) {
     this.findLocationFormGroup =  fb.group({
       locationSelectedFormControl: [null]
     });
-
     this.selectedLocations$ = of([]);
   }
 

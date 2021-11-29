@@ -18,7 +18,7 @@ class MockLocationSearchContainerComponent {
   @Input() public control: AbstractControl;
 }
 
-fdescribe('LocationSearchContainerComponent', () => {
+describe('LocationSearchContainerComponent', () => {
   let component: LocationSearchContainerComponent;
   let fixture: ComponentFixture<LocationSearchContainerComponent>;
 

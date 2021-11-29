@@ -1,12 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
 import { AbstractControl, FormBuilder } from '@angular/forms';
-import { By } from '@angular/platform-browser';
-import { provideMockStore } from '@ngrx/store/testing';
 import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { provideMockStore } from '@ngrx/store/testing';
 import { Observable } from 'rxjs';
 import { LocationSearchContainerComponent } from './location-search-container.component';
-
 @Component({
   selector: 'exui-search-location',
   template: '',
@@ -52,11 +50,13 @@ describe('LocationSearchContainerComponent', () => {
     fixture = TestBed.createComponent(LocationSearchContainerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    spyOn(component, 'removeSelection');
+    spyOn(component, 'removeSelection').and.callThrough();
+    spyOn(component.selectedLocations$, 'subscribe');
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+    expect(component.serviceIds).toEqual('SSCS');
   });
 
   it('should display selection in selection list', async (done) => {
@@ -81,8 +81,10 @@ describe('LocationSearchContainerComponent', () => {
     component.addSelection();
     fixture.detectChanges();
     done();
-    const selectedLoctions = fixture.debugElement.queryAll(By.css('.location-selection'));
-    expect(selectedLoctions.length).toBeGreaterThan(0);
+    component.selectedLocations$.subscribe(selectedLocations => {
+      expect(selectedLocations.length).toBeGreaterThan(0);
+      expect(component.findLocationFormGroup.controls.locationSelectedFormControl.value).toBeUndefined();
+    });   
   });
 
   it('should remove selection in selection list', async () => {
@@ -106,15 +108,7 @@ describe('LocationSearchContainerComponent', () => {
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(location);
     component.addSelection();
     fixture.detectChanges();
-    fixture.whenStable().then(() => {
-      const selectedLoctions = fixture.debugElement.queryAll(By.css('.location-selection'));
-      const button =  fixture.debugElement.query(By.css('.remove-loation-button'));
-      button.nativeElement.dispatchEvent(new Event('click'));
-      fixture.detectChanges();
-      const selectedLoctionsAfterClick = fixture.debugElement.queryAll(By.css('.location-selection'));
-      expect(selectedLoctions.length).toBeGreaterThan(0);
-      expect(selectedLoctionsAfterClick.length).toEqual(0);
-      expect(component.removeSelection).toHaveBeenCalled();
-    });
+    component.removeSelection(location);
+    expect(component.selectedLocations$.subscribe).toHaveBeenCalled();     
   });
 });

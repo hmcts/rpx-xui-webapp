@@ -18,7 +18,7 @@ class MockLocationSearchContainerComponent {
   @Input() public control: AbstractControl;
 }
 
-describe('LocationSearchContainerComponent', () => {
+fdescribe('LocationSearchContainerComponent', () => {
   let component: LocationSearchContainerComponent;
   let fixture: ComponentFixture<LocationSearchContainerComponent>;
 
@@ -47,8 +47,13 @@ describe('LocationSearchContainerComponent', () => {
   }));
 
   beforeEach(() => {
+    const fb = TestBed.get(FormBuilder);
+    var form =  fb.group({
+      locationSelectedFormControl: [null]
+    });
     fixture = TestBed.createComponent(LocationSearchContainerComponent);
     component = fixture.componentInstance;
+    component.control = form.controls.locationSelectedFormControl;
     fixture.detectChanges();
     spyOn(component, 'removeSelection').and.callThrough();
     spyOn(component.selectedLocations$, 'subscribe');
@@ -77,13 +82,13 @@ describe('LocationSearchContainerComponent', () => {
       postcode: 'AB11 6LT'
     } as LocationByEPIMSModel;
 
-    component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(location);
+    component.control.setValue(location);
     component.addSelection();
     fixture.detectChanges();
     done();
     component.selectedLocations$.subscribe(selectedLocations => {
       expect(selectedLocations.length).toBeGreaterThan(0);
-      expect(component.findLocationFormGroup.controls.locationSelectedFormControl.value).toBeUndefined();
+      expect(component.control.value).toBeUndefined();
     });   
   });
 
@@ -105,7 +110,7 @@ describe('LocationSearchContainerComponent', () => {
       postcode: 'AB11 6LT'
     } as LocationByEPIMSModel;
 
-    component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(location);
+    component.control.setValue(location);
     component.addSelection();
     fixture.detectChanges();
     component.removeSelection(location);

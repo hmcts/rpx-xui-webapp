@@ -84,7 +84,7 @@ describe('LocationSearchContainerComponent', () => {
     component.selectedLocations$.subscribe(selectedLocations => {
       expect(selectedLocations.length).toBeGreaterThan(0);
       expect(component.findLocationFormGroup.controls.locationSelectedFormControl.value).toBeUndefined();
-    });   
+    });
   });
 
   it('should remove selection in selection list', async () => {
@@ -109,6 +109,6 @@ describe('LocationSearchContainerComponent', () => {
     component.addSelection();
     fixture.detectChanges();
     component.removeSelection(location);
-    expect(component.selectedLocations$.subscribe).toHaveBeenCalled();     
+    expect(component.selectedLocations$.subscribe).toHaveBeenCalled();
   });
 });

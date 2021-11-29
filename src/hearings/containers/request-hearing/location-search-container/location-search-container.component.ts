@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, AbstractControl } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
@@ -12,17 +12,12 @@ import * as fromHearingStore from '../../../../hearings/store';
 })
 export class LocationSearchContainerComponent implements OnInit {
   public locationType: string;
-  public findLocationFormGroup: FormGroup;
   public selectedLocations$: Observable<LocationByEPIMSModel[]>;
   public selectedLocation: LocationByEPIMSModel;
   public serviceIds: string = 'SSCS';
-  public control: AbstractControl;
+  @Input() public control: AbstractControl;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>, fb: FormBuilder) {
-    this.findLocationFormGroup =  fb.group({
-      locationSelectedFormControl: [null]
-    });
-
     this.selectedLocations$ = of([]);
   }
 
@@ -36,8 +31,8 @@ export class LocationSearchContainerComponent implements OnInit {
 
   public addSelection(): void {
     this.selectedLocations$.subscribe(selectedLocations => {
-        selectedLocations.push(this.findLocationFormGroup.controls.locationSelectedFormControl.value as LocationByEPIMSModel);
-        this.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
+        selectedLocations.push(this.control.value as LocationByEPIMSModel);
+        this.control.setValue(undefined);
     });
   }
 

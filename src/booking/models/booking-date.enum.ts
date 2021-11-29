@@ -21,10 +21,10 @@ export enum BookingDateFormErrorMessage {
   PAST_DATE_CHECK_FAILED = 'The booking start date cannot be in the past',
   BOOKING_START_DATE_EMPTY_CHECK = 'booking-start-date-empty-check',
   BOOKING_END_DATE_EMPTY_CHECK = 'booking-end-date-empty-check',
-  BOOKING_BOTH_DATE_EMPTY_CHECK = 'booking-Both-date-empty-check',
+  BOOKING_BOTH_DATE_EMPTY_CHECK = 'booking-both-date-empty-check',
   BOOKING_START_DATE_CHECK = 'booking-start-date-check',
   BOOKING_END_DATE_CHECK = 'booking-end-date-check',
-  BOOKING_BOTH_DATE_CHECK = 'booking-Both-date-check',
+  BOOKING_BOTH_DATE_CHECK = 'booking-both-date-check',
   DATE_COMPARISON = 'date-comparison',
   NO_SELECTION = 'Select an option',
   PAST_DATE_CHECK= 'past-date-check'

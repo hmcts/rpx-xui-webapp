@@ -55,7 +55,7 @@ export class BookingDateComponent implements OnInit {
     this.configEnd = {
       id: 'endDate',
       name: 'endDate',
-      hint: 'For example, 19 11 2021',
+      hint: 'For example, 19 12 2021',
       label: 'Booking Ends',
       isPageHeading: false
     };

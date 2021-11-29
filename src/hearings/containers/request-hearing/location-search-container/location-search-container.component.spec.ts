@@ -4,8 +4,8 @@ import { AbstractControl, FormBuilder } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { provideMockStore } from '@ngrx/store/testing';
 import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
-import { Observable } from 'rxjs'
-import { LocationSearchContainerComponent } from './location-search-container.component';;
+import { Observable } from 'rxjs';
+import { LocationSearchContainerComponent } from './location-search-container.component';
 
 @Component({
   selector: 'exui-search-location',

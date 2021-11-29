@@ -3,6 +3,7 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
+import * as fromAppStore from '../../../app/store';
 import * as fromNocStore from '../../../noc/store';
 import { NavItemsModel } from '../../models/nav-item.model';
 import { UserNavModel } from '../../models/user-nav.model';
@@ -26,6 +27,7 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
   @Input() public navigation: UserNavModel;
   @Input() public logoType: string;
   @Input() public currentUrl: string;
+  @Input() public decorate16DigitCaseReferenceSearchBoxInHeader: boolean;
   @Output() public navigate = new EventEmitter<string>();
 
   public showItems: boolean;
@@ -33,17 +35,18 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
   public tab;
   public get leftItems(): Observable<NavItemsModel[]> {
     return this.menuItems.left.asObservable();
-  };
+  }
   public get rightItems(): Observable<NavItemsModel[]> {
     return this.menuItems.right.asObservable();
-  };
+  }
 
-  private menuItems = {
+  private readonly menuItems = {
     left: new BehaviorSubject<NavItemsModel[]>([]),
     right: new BehaviorSubject<NavItemsModel[]>([])
   };
 
   constructor(
+    private readonly appStore: Store<fromAppStore.State>,
     public nocStore: Store<fromNocStore.State>,
     private readonly userService: UserService,
     private readonly featureToggleService: FeatureToggleService
@@ -59,13 +62,16 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
     this.navigate.emit(this.navigation.items[index].emit);
   }
 
-  public onEmitSubMenu(menuItem: any) {
+  public onEmitSubMenu(menuItem: any): void {
+    // New menu item page load, do not decorate 16-digit case reference search box with error class
+    this.appStore.dispatch(new fromAppStore.Decorate16DigitCaseReferenceSearchBoxInHeader(false));
+
     if (menuItem.href === '/noc') {
       this.nocStore.dispatch(new fromNocStore.Reset());
     }
   }
 
-  private splitAndFilterNavItems(items: NavItemsModel[]) {
+  private splitAndFilterNavItems(items: NavItemsModel[]): void {
     of(items).pipe(
       switchMap(unfilteredItems => this.filterNavItemsOnRole(unfilteredItems)),
       switchMap(roleFilteredItems => this.filterNavItemsOnFlag(roleFilteredItems)),
@@ -76,7 +82,7 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
     });
   }
 
-  private splitNavItems(items: NavItemsModel[]) {
+  private splitNavItems(items: NavItemsModel[]): {right: NavItemsModel[], left: NavItemsModel[]} {
     return {
       right: items.filter(item => item.align && item.align === 'right'),
       left: items.filter(item => !item.align || item.align !== 'right')

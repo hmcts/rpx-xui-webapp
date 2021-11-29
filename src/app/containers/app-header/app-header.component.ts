@@ -60,6 +60,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
   public userDetails$: Observable<UserDetails>;
   public defaultTheme: Theme = AppConstants.DEFAULT_USER_THEME;
+  public decorate16DigitCaseReferenceSearchBoxInHeader: boolean;
 
   constructor(
     private readonly store: Store<fromActions.State>,
@@ -144,12 +145,18 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.featureToggleKey = AppConstants.SERVICE_MESSAGES_FEATURE_TOGGLE_KEY;
     this.serviceMessageCookie = AppConstants.SERVICE_MESSAGE_COOKIE;
-    this.userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
     this.setAppHeaderProperties(this.defaultTheme);
 
+    this.userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
+    const decorate16DigitCaseReferenceSearchBoxInHeader$ = this.store.pipe(select(fromActions.getDecorate16digitCaseReferenceSearchBoxInHeader));
     const applicationThemes$ = this.featureToggleService.getValue<Theme[]>(LD_FLAG_MC_APPLICATION_THEMES, this.getDefaultApplicationThemes());
-    combineLatest([this.userDetails$, applicationThemes$]).subscribe(([userDetails, applicationThemes]) => {
+    combineLatest([
+      this.userDetails$,
+      applicationThemes$,
+      decorate16DigitCaseReferenceSearchBoxInHeader$
+    ]).subscribe(([userDetails, applicationThemes, decorate16DigitCaseReferenceSearchBoxInHeader]) => {
         this.setHeaderContent(userDetails, applicationThemes);
+        this.decorate16DigitCaseReferenceSearchBoxInHeader = decorate16DigitCaseReferenceSearchBoxInHeader;
       });
 
     // Set up the active link whenever we detect that navigation has completed.

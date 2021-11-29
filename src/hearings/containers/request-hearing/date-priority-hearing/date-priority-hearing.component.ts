@@ -92,6 +92,7 @@ export class DatePriorityHearingComponent implements OnInit {
     dateList.forEach(dateRange => {
       this.setUnavailableDates(dateRange);
     });
+    this.partiesNotAvailableDates.sort((currentDate, previousDate) => new Date(currentDate).getTime() - new Date(previousDate).getTime());
   }
 
   public setUnavailableDates(dateRange): void {

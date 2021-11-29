@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { PartiesUnavailableDatesComponent } from './parties-unavailable-dates.component';
 
 describe('PartiesUnavailableDatesComponent', () => {

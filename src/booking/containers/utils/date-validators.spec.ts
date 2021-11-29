@@ -12,43 +12,43 @@ describe('DateValidators', () => {
     control = new FormControl({});
   });
 
-  it('dayValidator invalid case', () => {
+  it('should have an invalid date', () => {
     control.setValue('32');
     const dayValidator = DateValidators.dayValidator();
     expect(dayValidator(control)).toEqual({ isValid: false });
   });
 
-  it('dayValidator valid case', () => {
+  it('should have an valid date', () => {
     control.setValue('10');
     const validator = DateValidators.dayValidator();
     expect(validator(control)).toBeUndefined();
   });
 
-  it('monthValidator invalid case', () => {
+  it('should have an invalid date', () => {
     control.setValue('14');
     const monthValidator = DateValidators.monthValidator();
     expect(monthValidator(control)).toEqual({ isValid: false });
   });
 
-  it('monthValidator valid case', () => {
+  it('should have an valid date', () => {
     control.setValue('10');
     const monthValidator = DateValidators.monthValidator();
     expect(monthValidator(control)).toBeUndefined();
   });
 
-  it('yearValidator invalid case', () => {
+  it('should have an invalid date', () => {
     control.setValue('1800');
     const yearValidator = DateValidators.yearValidator();
     expect(yearValidator(control)).toEqual({ isValid: false });
   });
 
-  it('yearValidator valid case', () => {
+  it('should have an valid date', () => {
     control.setValue('2010');
     const yearValidator = DateValidators.yearValidator();
     expect(yearValidator(control)).toBeUndefined();
   });
 
-  it('bookingDateValidator past date check', () => {
+  it('should not allow the start date to be after the today', () => {
     const formGroup = new FormBuilder().group({
       startDate_day: '',
       startDate_month: '',
@@ -72,7 +72,7 @@ describe('DateValidators', () => {
     });
   });
 
-  it('dateComparisonValidator date comparison check', () => {
+  it('should not allow the start date to be after the end date', () => {
     const formGroup = new FormBuilder().group({
       startDate_day: '',
       startDate_month: '',

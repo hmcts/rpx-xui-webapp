@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, AbstractControl } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { Observable, of } from 'rxjs';
@@ -16,6 +16,7 @@ export class LocationSearchContainerComponent implements OnInit {
   public selectedLocations$: Observable<LocationByEPIMSModel[]>;
   public selectedLocation: LocationByEPIMSModel;
   public serviceIds: string = 'SSCS';
+  public control: AbstractControl;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>, fb: FormBuilder) {
     this.findLocationFormGroup =  fb.group({

@@ -38,6 +38,7 @@ export interface CaseAction {
 }
 
 export interface CaseInternalData {
+  appealType: string;
   caseName?: string;
   caseManagementLocation?: CaseManagementLocation;
 }

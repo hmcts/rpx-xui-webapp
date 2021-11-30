@@ -443,10 +443,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.7.0-rc.7":
-  version "4.7.0-rc.7"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.7.0-rc.7.tgz#0098b9b3f7bc0ba1cda45fbbfb0b4a38404f247c"
-  integrity sha512-6NuAWyefTNUkjLUsO3axvU3PHmOPPyVb6ndIWgvKmMzgu9cxRvMIUB27SGQpH825JQ7OrY6ulNHpF7i1Sk4ACQ==
+"@hmcts/ccd-case-ui-toolkit@4.3.6-hotfix-EUI-4652-4404":
+  version "4.3.6-hotfix-EUI-4652-4404"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.3.6-hotfix-EUI-4652-4404.tgz#f81cd11abfca24710dda8dfd97b4c73881db16da"
+  integrity sha512-alVD7Z1Tn7XcVR0GIh21kbgxyoGujGXf14SYkXI9SAR6I7bRpd8YEW1oNZA2FtxSIOo4VrQkuvXgEjJDbzFNTQ==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -515,10 +515,10 @@
     on-finished "^2.3.0"
     winston "^2.4.1"
 
-"@hmcts/properties-volume@^0.0.9":
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/@hmcts/properties-volume/-/properties-volume-0.0.9.tgz#1c2b29a563fcad9041231442476a4a3b7a8abf7d"
-  integrity sha512-qW6XDDnJT8wPfSrrFNFkoQXbtWS/KE55ifeRzXeHAXB8CB9r8e8H33jCql/3WYz/LX6PGQRlrZrU27mtQaNQ4g==
+"@hmcts/properties-volume@^0.0.13":
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/@hmcts/properties-volume/-/properties-volume-0.0.13.tgz#d1baeab407d519505aeb2614fb91632a1a328366"
+  integrity sha512-WTz5KTQG3IXQnNZCb63fR44muNn++GxGWZad0k12iIYsNfgws+dMOw7QwhbuKOMhQ2sSWxNK882ZxchVihZN9w==
   dependencies:
     "@hmcts/nodejs-logging" "^3.0.0"
     lodash "^4.17.11"

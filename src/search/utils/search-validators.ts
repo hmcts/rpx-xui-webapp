@@ -14,8 +14,8 @@ export class SearchValidators {
    */
   public static caseReferenceValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      // Coerce control.value to a string in case it is null
-      if (!(`''${control.value}`).replace(/[\D]/g, '').match(/^\d{16}$/)) {
+      // Use template literal to coerce control.value to a string in case it is null
+      if (!(`${control.value}`).replace(/[\D]/g, '').match(/^\d{16}$/)) {
         return { caseReference: true };
       }
       return null;

@@ -128,7 +128,7 @@ describe('WorkAllocation', () => {
       const navigateSpy = spyOn(router, 'navigateByUrl');
       component.returnWithMessage(message, null);
       expect(mockInfoMessageCommService.nextMessage).not.toHaveBeenCalledWith(message);
-      expect(navigateSpy).toHaveBeenCalledWith(['case/case-details'], {
+      expect(navigateSpy).toHaveBeenCalledWith('case/case-details', {
       state: {
         showMessage: true,
         messageText: InfoMessage.ASSIGNED_TASK,

@@ -12,10 +12,10 @@ export class SearchValidators {
    * Validates case reference entry. It accepts exactly 16 digits only and excludes all non-digit characters.
    * @returns `ValidationErrors` object if validation fails; `null` if it passes
    */
-   public static caseReferenceValidator(): ValidatorFn {
+  public static caseReferenceValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      if (control.value === null || control.value === '') { return; }
-      if (!control.value.toString().replace(/[\D]/g, '').match(/^\d{16}$/)) {
+      // Use template literal to coerce control.value to a string in case it is null
+      if (!(`${control.value}`).replace(/[\D]/g, '').match(/^\d{16}$/)) {
         return { caseReference: true };
       }
       return null;

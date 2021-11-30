@@ -27,6 +27,18 @@ describe('SearchValidators', () => {
     expect(caseReferenceValidator(control)).toBeNull();
   });
 
+  it('should fail caseReference validation if input is null', () => {
+    control.setValue(null);
+    const caseReferenceValidator = SearchValidators.caseReferenceValidator();
+    expect(caseReferenceValidator(control)).toEqual({caseReference: true});
+  });
+
+  it('should fail caseReference validation if input is the empty string', () => {
+    control.setValue('');
+    const caseReferenceValidator = SearchValidators.caseReferenceValidator();
+    expect(caseReferenceValidator(control)).toEqual({caseReference: true});
+  });
+
   it('should fail caseReferenceWithWildcards validation if input is less than 16 digits with no wildcards, after removing separators', () => {
     control.setValue('1234 1234-1234 123-');
     const caseReferenceWithWildcardsValidator = SearchValidators.caseReferenceWithWildcardsValidator();

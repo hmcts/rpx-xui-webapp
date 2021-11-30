@@ -35,11 +35,8 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, After
 
   public ngOnInit(): void {
     this.formGroup = this.fb.group({
-      [this.CASE_REF_FIELD]: ''
+      [this.CASE_REF_FIELD]: ['', SearchValidators.caseReferenceValidator()]
     });
-
-    // Set validator for the caseReference form control
-    this.formGroup.get(this.CASE_REF_FIELD).setValidators(SearchValidators.caseReferenceValidator());
 
     // If search returned no case, retrieve case reference from session storage
     // and populate the 16-digit case reference search box

@@ -131,7 +131,8 @@ describe('WorkAllocation', () => {
       expect(navigateSpy).toHaveBeenCalledWith(['case/case-details'], {
       state: {
         showMessage: true,
-        messageText: InfoMessage.ASSIGNED_TASK
+        messageText: InfoMessage.ASSIGNED_TASK,
+        retainMessages: true
       }
       });
     });

@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
+import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
+import { InfoMessage } from '../../../work-allocation-2/enums';
 
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
@@ -28,7 +30,8 @@ export class CaseTaskComponent implements OnInit {
   public isUserJudicial: boolean;
   private pTask: Task;
 
-  constructor(private readonly router: Router,
+  constructor(private readonly alertService: AlertService,
+              private readonly router: Router,
               private readonly sessionStorageService: SessionStorageService,
               protected taskService: WorkAllocationTaskService) {
   }
@@ -100,10 +103,7 @@ export class CaseTaskComponent implements OnInit {
   public onActionHandler(task: Task, option: any): void {
     if (option.id === 'claim') {
       this.taskService.claimTask(task.id).subscribe(() => {
-        /* this.infoMessageCommService.nextMessage({
-          type: InfoMessageType.SUCCESS,
-          message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
-        }); */
+        this.alertService.success(InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS)
         this.taskRefreshRequired.emit();
       }, error => {
         this.claimTaskErrors(error.status);
@@ -127,11 +127,7 @@ export class CaseTaskComponent implements OnInit {
     const REDIRECT_404 = [{status: 404, redirectTo: REDIRECTS.ServiceDown}];
     const handledStatus = handleTasksFatalErrors(status, this.router, REDIRECT_404);
     if (handledStatus > 0) {
-      // TODO: Update with case alert message
-      /* this.infoMessageCommService.nextMessage({
-        type: InfoMessageType.WARNING,
-        message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
-      }); */
+      this.alertService.warning(InfoMessage.TASK_NO_LONGER_AVAILABLE);
       if (handledStatus === 400) {
         this.taskRefreshRequired.emit();
       }

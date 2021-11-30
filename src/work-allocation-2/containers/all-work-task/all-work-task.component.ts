@@ -131,6 +131,6 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     this.selectedPerson = selection.person ? selection.person.id : null;
     this.selectedTaskType = selection.taskType;
     this.selectedPriority = selection.priority && !this.isCurrentUserJudicial() ? selection.priority : '';
-    this.loadTasks();
+    this.onPaginationHandler(1);
   }
 }

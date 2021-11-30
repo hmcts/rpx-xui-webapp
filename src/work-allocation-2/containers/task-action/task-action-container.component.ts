@@ -135,7 +135,14 @@ export class TaskActionContainerComponent implements OnInit {
 
   public returnWithMessage(message: InformationMessage, state: any): void {
     if (message) {
-      this.messageService.nextMessage(message);
+      if (this.returnUrl.includes('case-details')) {
+        state = {
+          showMessage: true,
+          messageText: message.message
+        }
+      } else {
+        this.messageService.nextMessage(message);
+      }
     }
     this.router.navigateByUrl(this.returnUrl, { state: { ...state, retainMessages: true } });
   }

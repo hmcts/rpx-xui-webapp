@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
-import { Actions } from '../../../role-access/models';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { SortOrder } from '../../enums';
 import { Location } from '../../interfaces/common';
-import { InvokedCaseAction } from '../../models/cases';
 import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter, SearchCaseRequest } from '../../models/dtos';
 import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-case-list-wrapper.component';

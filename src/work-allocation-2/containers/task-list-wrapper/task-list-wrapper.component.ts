@@ -159,7 +159,9 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
         filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
       )
       .subscribe((f: FilterSetting) => {
-        this.selectedLocations = f.fields.find((field) => field.name === 'locations').value;
+        const newLocations = f.fields.find((field) => field.name === 'locations').value;
+        this.resetPagination(this.selectedLocations, newLocations);
+        this.selectedLocations = newLocations;
         // timeout ensures tasks are loaded on initial local setting
         // waits for initial setting to be persisted via task-filter-component
         setTimeout(() => {
@@ -313,7 +315,15 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public onPaginationHandler(pageNumber: number): void {
     this.pagination.page_number = pageNumber;
     this.sessionStorageService.setItem(this.pageSessionKey, pageNumber.toString());
-    this.doLoad();
+    this.loadTasks();
+  }
+
+  // reset pagination when filter is applied
+  private resetPagination(selectedLocations: string[], newLocations: string[]): void {
+    if (this.selectedLocations !== newLocations && this.selectedLocations.length !== 0) {
+      this.pagination.page_number = 1;
+      this.sessionStorageService.setItem(this.pageSessionKey, '1');
+    }
   }
 
   public isCurrentUserJudicial(): boolean {

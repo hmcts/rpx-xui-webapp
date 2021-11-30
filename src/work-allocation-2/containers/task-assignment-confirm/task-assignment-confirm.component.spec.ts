@@ -188,6 +188,24 @@ describe('TaskAssignmentConfirmComponent', () => {
     expect(mockInfoMessageCommService.nextMessage).toHaveBeenCalledWith(message);
   });
 
+  it('should return the correct message/state for case', () => {
+    window.history.pushState({returnUrl: 'case/case-details', showAssigneeColumn: false}, '', 'case/case-details');
+    const navigateSpy = spyOn(router, 'navigate');
+    const message = {
+      type: InfoMessageType.SUCCESS,
+      message: InfoMessage.REASSIGNED_TASK
+    } as InformationMessage;
+    component.onSubmit();
+    expect(mockInfoMessageCommService.nextMessage).not.toHaveBeenCalledWith(message);
+    expect(navigateSpy).toHaveBeenCalledWith(['case/case-details'], {
+      state: {
+        showMessage: true,
+        messageText: InfoMessage.REASSIGNED_TASK,
+        retainMessages: true
+      }
+    });
+  });
+
   it('should return to the "My work" page on successful task reassignment', () => {
     window.history.pushState({returnUrl: 'my-work/list', showAssigneeColumn: false}, '', 'my-work/list');
     const navigateSpy = spyOn(router, 'navigate');

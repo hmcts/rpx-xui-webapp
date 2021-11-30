@@ -303,6 +303,7 @@ describe('CaseTaskComponent', () => {
 
       // need to verify correct properties were called
       expect(mockRouter.navigate).toHaveBeenCalledWith([`/work/${exampleTask.id}/${secondOption.id}`], {state});
+      expect(component.returnUrl).toBe('/case-details/123243430403904/tasks');
     });
   });
 

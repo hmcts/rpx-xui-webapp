@@ -91,11 +91,6 @@ export class CaseTaskComponent implements OnInit {
     return false;
   }
 
-  public doesUserHaveOwnAndExecute(task: Task): boolean {
-    return task && task.permissions && task.permissions.values
-     && task.permissions.values.includes(TaskPermission.OWN) && task.permissions.includes(TaskPermission.EXECUTE);
-  }
-
   public getDueDateTitle(): string {
     return this.isUserJudicial ? 'Task created' : 'Due date';
   }

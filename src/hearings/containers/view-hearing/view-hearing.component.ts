@@ -9,13 +9,14 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 })
 export class ViewHearingComponent implements OnInit {
   public findLocationFormGroup: FormGroup;
-  constructor( fb: FormBuilder) { 
+  constructor(fb: FormBuilder) { 
     this.findLocationFormGroup =  fb.group({
       locationSelectedFormControl: [null]
     });
   }
 
-  public ngOnInit(): void {    
+  public ngOnInit(): void {
+    console.log('form control venue',this.findLocationFormGroup.controls.locationSelectedFormControl);
   }
 
   public onSubmit() {

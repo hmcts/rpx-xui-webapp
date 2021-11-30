@@ -581,6 +581,7 @@ describe('workAllocation.utils', () => {
         type: 'example',
         case_type_id: 'Asylum',
         case_data: {
+          appealType: 'Asylum',
           caseManagementLocation: {
             baseLocation: '001',
           },
@@ -593,6 +594,7 @@ describe('workAllocation.utils', () => {
         case_type_id: 'Test',
         jurisdiction: 'IA',
         case_data: {
+          appealType: 'Test',
           caseManagementLocation: {
             baseLocation: '001',
           },

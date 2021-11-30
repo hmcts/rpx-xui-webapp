@@ -142,7 +142,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
       const userInfoStr = this.sessionStorageService.getItem('userDetails');
       if (userInfoStr) {
         const userInfo: UserInfo = JSON.parse(userInfoStr);
-        const userId = userInfo.id === null ? userInfo.uid : userInfo.id;
+        const userId = userInfo.id ? userInfo.id : userInfo.uid;
         const currentCW = this.caseworkers.find(cw => cw.idamId === userId);
         if (currentCW && currentCW.location && currentCW.location.id) {
           this.defaultLocation = currentCW.location.id;
@@ -296,6 +296,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
         }
         if (this.allRoles && this.allRoles.find(role => role.roleId === item.case_role)) {
           item.case_role = this.allRoles.find(role => role.roleId === item.case_role).roleName;
+          item.role = item.case_role;
         }
       });
       this.ref.detectChanges();

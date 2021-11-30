@@ -5,7 +5,7 @@ import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { baseWorkAllocationTaskUrl, getTask, postTaskAction, searchTask } from '.';
-import { httpMock } from '../common/httpMock';
+import { httpMock } from '../common/mockService';
 import { http } from '../lib/http';
 import { mockTasks } from './taskTestData.spec';
 
@@ -116,7 +116,7 @@ describe('workAllocation', () => {
       expect(args[0]).to.equal(`${baseWorkAllocationTaskUrl}/myTasks?view=caseworker?first_result=22&max_results=11`);
       expect(args[1]).to.deep.equal({"pagination_parameters": {
         "page_number": 3,
-        "page_size": 11
+        "page_size": 11,
       },
       search_parameters: []});
 

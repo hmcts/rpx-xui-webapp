@@ -71,14 +71,7 @@
           </div>
         </fieldset>
       </div>
-      <details class="govuk-details" data-module="govuk-details">
-        <summary class="govuk-details__summary">
-          <span class="govuk-details__summary-text">See dates the parties will not be available</span>
-        </summary>
-        <div class="govuk-details__text">
-          <span *ngFor="let partiesNotAvailableDate of partiesNotAvailableDates">{{partiesNotAvailableDate}}<br></span>
-        </div>
-      </details>
+      <exui-parties-unavailable-dates [unAvailableDates]="partiesNotAvailableDates"></exui-parties-unavailable-dates>
       <div class="govuk-form-group govuk-!-margin-top-5">
         <fieldset class="govuk-fieldset" id="hearing-priority">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">

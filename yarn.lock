@@ -443,10 +443,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.7.6-hearings-tab":
-  version "4.7.6-hearings-tab"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.7.6-hearings-tab.tgz#161248698cac1cd3e7efeca0831a7e0a0635f2da"
-  integrity sha512-4YM5vI7/zTMrjsc0bfarUP086+/fNNk9JD2K0cxrrwxWmH36G+/S31Jca8tZSCUnKM2rS5o5gFoGvFIA3siUMw==
+"@hmcts/ccd-case-ui-toolkit@4.7.7-hearings-tab":
+  version "4.7.7-hearings-tab"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.7.7-hearings-tab.tgz#d8e3ed0e876342b9a0794f142a1e045ce0640e3f"
+  integrity sha512-/6rP9+sC7VCmL847G5GgJJcWkfkdgAONZdo4qxaeczOLG/N4ebeAZfOR2oWB9S5uau9mwuGO+QuEEiTXWKj0bQ==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -515,19 +515,19 @@
     on-finished "^2.3.0"
     winston "^2.4.1"
 
-"@hmcts/properties-volume@^0.0.9":
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/@hmcts/properties-volume/-/properties-volume-0.0.9.tgz#1c2b29a563fcad9041231442476a4a3b7a8abf7d"
-  integrity sha512-qW6XDDnJT8wPfSrrFNFkoQXbtWS/KE55ifeRzXeHAXB8CB9r8e8H33jCql/3WYz/LX6PGQRlrZrU27mtQaNQ4g==
+"@hmcts/properties-volume@^0.0.13":
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/@hmcts/properties-volume/-/properties-volume-0.0.13.tgz#d1baeab407d519505aeb2614fb91632a1a328366"
+  integrity sha512-WTz5KTQG3IXQnNZCb63fR44muNn++GxGWZad0k12iIYsNfgws+dMOw7QwhbuKOMhQ2sSWxNK882ZxchVihZN9w==
   dependencies:
     "@hmcts/nodejs-logging" "^3.0.0"
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.4.13-location-api-cr":
-  version "1.4.13-location-api-cr"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.13-location-api-cr.tgz#c33d7b7f019e4de5229c909b57570bb89d7ad6b1"
-  integrity sha512-xJRj/9nWwMq08xMBP0ErdgXJbdAge9MdEQcRObmktDitphpjOr9LFeKX9XDrB8bMKUnvXAL0V/lvN/h6eR8LSg==
+"@hmcts/rpx-xui-common-lib@1.4.20-search-location-fix":
+  version "1.4.20-search-location-fix"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.20-search-location-fix.tgz#8f4c83df171c701877bca66b2b54e6ba12b94ec5"
+  integrity sha512-6H/K0X7JZavHghP6YzskRqpaACNqgQbKUx61NP/eMMb+cS5KY9vtOtj21XxC36nD5ei4nrRvNOLwieuUBTwdHA==
   dependencies:
     tslib "^1.9.0"
 

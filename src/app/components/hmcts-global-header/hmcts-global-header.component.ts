@@ -96,7 +96,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
       map(details => details.userInfo.roles),
       map(roles => {
         const i = items.filter(item => (item.roles && item.roles.length > 0 ? item.roles.some(role => roles.includes(role)) : true));
-        return i.filter(item => (item.notRoles && item.notRoles.length > 0 ? item.roles.every(role => !roles.includes(role)) : true))
+        return i.filter(item => (item.notRoles && item.notRoles.length > 0 ? item.notRoles.every(role => !roles.includes(role)) : true))
       })
     );
   }
@@ -124,7 +124,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
     return ((obs.length > 1 ? obs[0].combineLatest(obs.slice(1)) : obs[0]) as Observable<any>).pipe(
       map(_ => {
         const i = items.filter(item => item.flags && item.flags.length > 0 ? item.flags.every(flag => this.isPlainFlag(flag) ? (flags[flag] as boolean) : (flags[flag.flagName] as string) === flag.value) : true);
-        return i.filter(item => item.notFlags && item.notFlags.length > 0 ? item.flags.every(flag => this.isPlainFlag(flag) ? !(flags[flag] as boolean) : (flags[flag.flagName] as string) !== flag.value) : true);
+        return i.filter(item => item.notFlags && item.notFlags.length > 0 ? item.notFlags.every(flag => this.isPlainFlag(flag) ? !(flags[flag] as boolean) : (flags[flag.flagName] as string) !== flag.value) : true);
       })
     );
   }

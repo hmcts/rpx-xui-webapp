@@ -29,47 +29,6 @@ describe('HmctsGlobalHeaderComponent', () => {
     enabledFlag: true,
     disabledFlag: false
   };
-  const navItemsWithFindCaseRightAligned = [
-    {
-      align: 'right',
-      text: 'Find case',
-      href: '/cases/case-search',
-      active: false,
-      ngClass: 'hmcts-search-toggle__button'
-    },
-    {
-      align: null,
-      text: '2',
-      href: '',
-      active: false
-    },
-    {
-      align: 'null',
-      text: '3',
-      href: '',
-      active: false
-    }
-  ];
-  const navItemsWithSearchBox = [
-    {
-      align: 'right',
-      text: 'Find',
-      href: '',
-      active: false
-    },
-    {
-      align: null,
-      text: '2',
-      href: '',
-      active: false
-    },
-    {
-      align: 'null',
-      text: '3',
-      href: '',
-      active: false
-    }
-  ];
   let origTimeout: number;
 
   beforeEach(async(() => {
@@ -145,8 +104,23 @@ describe('HmctsGlobalHeaderComponent', () => {
 
   it('should display find case right aligned', async () => {
     component.showItems = true;
-    component.showFindCase = true;
-    component.items = navItemsWithFindCaseRightAligned;
+    component.items = [{
+      align: 'right',
+      text: 'Find case',
+      href: '/cases/case-search',
+      active: false,
+      ngClass: 'hmcts-search-toggle__button'
+    },
+    {
+      text: '2',
+      href: '',
+      active: false
+    },
+    {
+      text: '3',
+      href: '',
+      active: false
+    }];
     await component.ngOnChanges(changesMock);
     fixture.detectChanges();
     const findCase = fixture.debugElement.query(By.css('.hmcts-search-toggle__button'));
@@ -155,15 +129,28 @@ describe('HmctsGlobalHeaderComponent', () => {
 
   it('should not display find case right aligned', async () => {
     component.showItems = true;
-    component.showFindCase = false;
-    component.items = navItemsWithFindCaseRightAligned;
+    component.items = [{
+      text: 'Find case',
+      href: '/cases/case-search',
+      active: false
+    },
+    {
+      text: '2',
+      href: '',
+      active: false
+    },
+    {
+      text: '3',
+      href: '',
+      active: false
+    }];
     await component.ngOnChanges(changesMock);
     fixture.detectChanges();
     const findCase = fixture.debugElement.query(By.css('.hmcts-search-toggle__button'));
     expect(findCase).toBeFalsy();
   });
 
-  it('splitNavItems', (done: DoneFn) => {
+  it('splitNavItems', async() => {
     component.items = [{
       align: 'right',
       text: '1',
@@ -182,7 +169,8 @@ describe('HmctsGlobalHeaderComponent', () => {
       href: '',
       active: false
     }];
-    component.ngOnChanges(changesMock);
+    await component.ngOnChanges(changesMock);
+    fixture.detectChanges();
     const leftItems = component.leftItems;
     const rightItems = component.rightItems;
 
@@ -209,11 +197,10 @@ describe('HmctsGlobalHeaderComponent', () => {
         href: '',
         active: false
       }]);
-      done();
     });
   });
 
-  it('filters out menu items for which the user does not hold the correct role', (done) => {
+  it('filters out menu items for which the user does not hold the correct role', async() => {
     component.items = [{
       align: 'right',
       text: '1',
@@ -235,7 +222,7 @@ describe('HmctsGlobalHeaderComponent', () => {
       active: false,
       roles: ['roleC']
     }];
-    component.ngOnChanges(changesMock);
+    await component.ngOnChanges(changesMock);
     const leftItems = component.leftItems;
     const rightItems = component.rightItems;
     leftItems.pipe(
@@ -245,11 +232,10 @@ describe('HmctsGlobalHeaderComponent', () => {
       })
     ).subscribe(items => {
       expect(items).toEqual([component.items[0]]);
-      done();
     });
   });
 
-  it('filters out menu items for which not all features are enabled', (done) => {
+  it('filters out menu items for which not all features are enabled', async() => {
     component.items = [{
       align: 'right',
       text: '1',
@@ -270,7 +256,7 @@ describe('HmctsGlobalHeaderComponent', () => {
       active: false,
       flags: ['enabledFlag', 'disabledFlag']
     }];
-    component.ngOnChanges(changesMock);
+    await component.ngOnChanges(changesMock);
     const leftItems = component.leftItems;
     const rightItems = component.rightItems;
     leftItems.pipe(
@@ -280,7 +266,6 @@ describe('HmctsGlobalHeaderComponent', () => {
       })
     ).subscribe(items => {
       expect(items).toEqual([component.items[0]]);
-      done();
     });
   });
 });

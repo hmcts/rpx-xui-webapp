@@ -6,7 +6,7 @@ Feature: WA Release 2: My work to  Available tasks to pagination sorting
 
 
     Scenario Outline: Available Tasks pagnation and sorting for user type "<UserType>" with roles "<Roles>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 100   |
@@ -65,7 +65,7 @@ Feature: WA Release 2: My work to  Available tasks to pagination sorting
 
 
     Scenario Outline: Available Tasks pagnation control display with only 1 page of items
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 10   |
@@ -86,7 +86,7 @@ Feature: WA Release 2: My work to  Available tasks to pagination sorting
 # For EUI-4366
 @ignore
     Scenario Outline: Available Tasks pagnation control display 0 items
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 0     |

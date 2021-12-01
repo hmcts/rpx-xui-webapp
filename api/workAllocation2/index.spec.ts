@@ -145,7 +145,10 @@ describe('workAllocation2', () => {
       spy = sandbox.stub(http, 'post').resolves(res);
       const req = mockReq({
         body: {
-          searchRequest: {search_parameters: []},
+          searchRequest: {
+            search_parameters: [],
+            sorting_parameters: []
+          },
           view: 'MyTasks',
         },
         session: {
@@ -159,7 +162,7 @@ describe('workAllocation2', () => {
       // Should have the correct URL and the appropriate payload.
       const args = spy.getCall(0).args;
       expect(args[0]).to.equal(`${baseWorkAllocationTaskUrl}/task`);
-      expect(args[1]).to.deep.equal({search_parameters: []});
+      expect(args[1]).to.deep.equal({search_parameters: [], sorting_parameters: []});
 
       // Should have received the HTTP response. The search simply returns the data.
       expect(response.data.length).to.equal(3);
@@ -170,7 +173,14 @@ describe('workAllocation2', () => {
       spy = sandbox.stub(http, 'post').resolves(res);
       const req = mockReq({
         body: {
-          searchRequest: {search_parameters: [], pagination_parameters: {page_size: 11, page_number: 3}},
+          searchRequest: {
+            search_parameters: [],
+            sorting_parameters: [],
+            pagination_parameters: {
+              page_size: 11,
+              page_number: 3
+            }
+          },
           view: 'MyTasks',
         },
         session: {
@@ -186,6 +196,7 @@ describe('workAllocation2', () => {
       expect(args[0]).to.equal(`${baseWorkAllocationTaskUrl}/task?first_result=2&max_results=11`);
       expect(args[1]).to.deep.equal({
         search_parameters: [],
+        sorting_parameters: [],
       });
 
       // Should have received the HTTP response. The search simply returns the data.

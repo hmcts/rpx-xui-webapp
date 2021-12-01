@@ -40,7 +40,7 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
 
     Scenario: Manage link display and actions listed
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker " with reference "userDetails"
+        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
@@ -73,7 +73,7 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
 
     Scenario: Judicial user Reallocate a Judiciary role
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker " with reference "userDetails"
+        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
@@ -137,7 +137,7 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
         Then I see case details page with message banner "You've reallocated a role"
 
     Scenario: Judicial user Reallocate a Legal Ops role
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker " with reference "userDetails"
+        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
@@ -200,7 +200,7 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
 
     Scenario: Leagk Ops user Reallocate a Legal Ops role
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker " with reference "userDetails"
+        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
@@ -264,7 +264,7 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
         Then I see case details page with message banner "You've reallocated a role"
 
     Scenario: Legal ops user Reallocate a Judicial role
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker " with reference "userDetails"
+        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
@@ -325,7 +325,7 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
 
     Scenario: Judicial user Removes judicial role
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker " with reference "userDetails"
+        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
@@ -370,7 +370,7 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
         Then I see case details page with message banner "You've removed a role allocation. You may need to unassign or reassign associated tasks too."
 
     Scenario: Judicial user Removes Legal ops role
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker " with reference "userDetails"
+        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |

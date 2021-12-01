@@ -11,7 +11,7 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
 
     Scenario: Case with roles - 0 judicial, 0 LegalOps, 0 Exclusions
 
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker " with reference "userDetails"
+        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
@@ -52,7 +52,7 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
 
     Scenario: Case with roles - 1 judicial, 1 LegalOps, 1 Exclusion
 
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker " with reference "userDetails"
+        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
@@ -92,7 +92,7 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
 
     Scenario: Case with roles - Multiple judicial, 1 LegalOps and multiple Exclusions
 
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker " with reference "userDetails"
+        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
@@ -141,7 +141,7 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
 
     Scenario: Case with roles - Validate columns and data displayed
 
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker " with reference "userDetails"
+        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
@@ -230,7 +230,7 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
     @test
     Scenario: Case with roles - Validate non task-supervisor user - columns and data displayed
 
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor" with reference "userDetails"
+        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | false           | IA           | 12345           |

@@ -1,4 +1,8 @@
-<div class="govuk-width-container">
+<div
+  [ngClass]="{
+    'govuk-width-container': !control.valid && control.errors.required,
+    'govuk-form-group': !control.valid}"
+class="govuk-width-container">
   <div class="page">
     <main id="content" role="main">
       <div class="govuk-form-group">
@@ -8,6 +12,9 @@
                  Search for a location by name
             </label>
             <br>
+            <span  *ngIf="!control.valid && control.errors.required && dirty" id="event-name-error" class="govuk-error-message">
+              <span class="govuk-visually-hidden">Error:</span> Enter an event name
+            </span>
             <exui-search-location class="search-location"
               [selectedLocations$]="selectedLocations$"
               [control]="control"

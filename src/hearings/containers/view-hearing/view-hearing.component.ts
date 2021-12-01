@@ -1,6 +1,6 @@
 
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'exui-view-hearing',
@@ -9,10 +9,13 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 })
 export class ViewHearingComponent implements OnInit {
   public findLocationFormGroup: FormGroup;
+  dirty: boolean;
   constructor(fb: FormBuilder) { 
     this.findLocationFormGroup =  fb.group({
-      locationSelectedFormControl: [null]
+      locationSelectedFormControl: [null, Validators.required]
     });
+
+    this.findLocationFormGroup.valueChanges.subscribe(() => this.dirty = true);
   }
 
   public ngOnInit(): void {
@@ -21,6 +24,5 @@ export class ViewHearingComponent implements OnInit {
 
   public onSubmit() {
     console.log('success validation hearing view')
-    // this.navigationHandler(NocNavigationEvent.CONTINUE);
   }
 }

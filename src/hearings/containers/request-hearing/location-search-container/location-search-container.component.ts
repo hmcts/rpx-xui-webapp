@@ -15,6 +15,8 @@ export class LocationSearchContainerComponent implements OnInit {
   public selectedLocations$: Observable<LocationByEPIMSModel[]>;
   public selectedLocation: LocationByEPIMSModel;
   public serviceIds: string = 'SSCS';
+  public dirty: boolean = false;
+
   @Input() public control: AbstractControl;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>, fb: FormBuilder) {
@@ -27,13 +29,17 @@ export class LocationSearchContainerComponent implements OnInit {
     ).subscribe(id => {
       this.serviceIds = id ? id : this.serviceIds;
     });
+
+    this.control.valueChanges.subscribe(() => this.dirty = true);
   }
 
   public addSelection(): void {
-    this.selectedLocations$.subscribe(selectedLocations => {
-        selectedLocations.push(this.control.value as LocationByEPIMSModel);
-        this.control.setValue(undefined);
-    });
+    if (this.control.value) {
+      this.selectedLocations$.subscribe(selectedLocations => {
+          selectedLocations.push(this.control.value as LocationByEPIMSModel);
+          this.control.setValue(undefined);
+      });
+    }
   }
 
   public removeSelection(location: LocationByEPIMSModel): void {

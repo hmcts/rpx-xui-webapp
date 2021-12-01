@@ -64,7 +64,8 @@ class NodeApp{
         const location = Math.floor((Math.random() * 100009) + 10001);
         const isCaseAllocator = Math.floor((Math.random() * 1) + 0) === 0 ? false : true;
         return {
-            "primaryLocation": location,
+            "caseId": "1234567890",
+            "caseType": "mock test case type", 
             "jurisdiction": "IA",
             "isCaseAllocator": true
         }

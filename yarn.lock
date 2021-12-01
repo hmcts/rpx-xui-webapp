@@ -443,16 +443,15 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.7.0-rc.7":
-  version "4.7.0-rc.7"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.7.0-rc.7.tgz#0098b9b3f7bc0ba1cda45fbbfb0b4a38404f247c"
-  integrity sha512-6NuAWyefTNUkjLUsO3axvU3PHmOPPyVb6ndIWgvKmMzgu9cxRvMIUB27SGQpH825JQ7OrY6ulNHpF7i1Sk4ACQ==
+"@hmcts/ccd-case-ui-toolkit@4.8.4-rc.4":
+  version "4.8.4-rc.4"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.8.4-rc.4.tgz#76927c7ac13423d75de04fd99c833c9afcfa670e"
+  integrity sha512-HB6NtewOHmepIrwIexfiKBa0vpn6xdOs2SDdafc9KxLahreAZroVpFAp1/q9IQw/1ggoQ1AawlXXSAwpH3W6Ww==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
-    "@hmcts/ccpay-web-component" "3.0.3"
     braces "^2.3.1"
     enhanced-resolve "3.3.0"
     file-saver "^2.0.2"
@@ -471,10 +470,10 @@
     underscore "^1.9.1"
     yargs-parser "18.1.2"
 
-"@hmcts/ccpay-web-component@3.0.3":
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-3.0.3.tgz#d8f2c335e439515e0b87784414229301d9a8c05f"
-  integrity sha512-EIANuq103rLEA7LglNreLpPeo0aQtxfReXNd7A76V66tUwyQhwERMlpwKmOhO0eoA8HpcK0yV0mXNLh1aUifXA==
+"@hmcts/ccpay-web-component@4.0.2":
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-4.0.2.tgz#e09a3401c577f157dfb5d437a2a8e0e3a3a990c5"
+  integrity sha512-WOAfryrSZS/mbIIgRJwqbweJIhQaFzImwb7JMJOTZs5FDVzfqRs/yehyn4/6iysoIuaKkM76HnaruDW+AaWuCg==
   dependencies:
     tslib "^1.9.0"
 
@@ -8069,6 +8068,11 @@ loader-utils@1.2.3, loader-utils@^1.0.1, loader-utils@^1.0.2, loader-utils@^1.1.
     big.js "^5.2.2"
     emojis-list "^2.0.0"
     json5 "^1.0.1"
+
+local-storage@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/local-storage/-/local-storage-2.0.0.tgz#748b7d041b197f46f3ec7393640851c175b64db8"
+  integrity sha512-/0sRoeijw7yr/igbVVygDuq6dlYCmtsuTmmpnweVlVtl/s10pf5BCq8LWBxW/AMyFJ3MhMUuggMZiYlx6qr9tw==
 
 locate-path@^2.0.0:
   version "2.0.0"

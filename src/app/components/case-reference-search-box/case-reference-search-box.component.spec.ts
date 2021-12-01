@@ -10,6 +10,7 @@ import * as fromActions from '../../../app/store';
 import { NoResultsMessageId, ProcessForAccessType } from '../../../search/enums';
 import { SearchParameters, SearchResult } from '../../../search/models';
 import { SearchService } from '../../../search/services/search.service';
+import { SearchValidators } from '../../../search/utils';
 import { NavItemsModel } from '../../models/nav-item.model';
 import { CaseReferenceSearchBoxComponent } from './case-reference-search-box.component';
 
@@ -154,11 +155,23 @@ describe('ExuiCaseReferenceSearchBoxComponent', () => {
 
   it('should return to no results page if case not found', () => {
     searchService.getResults.and.returnValue(of(searchResultWithNoCases));
-    component.formGroup.get('caseReference').setValue('1234');
+    component.formGroup.get('caseReference').setValue('1234123412341234');
     component.onSubmit();
 
     expect(searchService.storeState).toHaveBeenCalledTimes(1);
+    expect(component.formGroup.get('caseReference').invalid).toBe(false);
     expect(searchService.getResults).toHaveBeenCalledTimes(1);
+    expect(router.navigate).toHaveBeenCalledWith(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH }, relativeTo: route });
+  });
+
+  it('should return to no results page if case reference entered is invalid', () => {
+    component.formGroup.get('caseReference').setValue('1234');
+    component.onSubmit();
+
+    // The case reference entered should be stored as a parameter even if it is invalid
+    expect(searchService.storeState).toHaveBeenCalledTimes(1);
+    expect(component.formGroup.get('caseReference').invalid).toBe(true);
+    expect(searchService.getResults).not.toHaveBeenCalled();
     expect(router.navigate).toHaveBeenCalledWith(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH }, relativeTo: route });
   });
 
@@ -168,5 +181,11 @@ describe('ExuiCaseReferenceSearchBoxComponent', () => {
 
     component.ngOnDestroy();
     expect(component.searchSubscription$.unsubscribe).toHaveBeenCalled();
+  });
+
+  it('should set the validator for the 16-digit case reference search box', () => {
+    spyOn(SearchValidators, 'caseReferenceValidator');
+    component.ngOnInit();
+    expect(SearchValidators.caseReferenceValidator).toHaveBeenCalled();
   });
 });

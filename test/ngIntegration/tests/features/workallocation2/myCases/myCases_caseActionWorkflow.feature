@@ -12,7 +12,7 @@ Feature: WA Release 2: My cases - Manage links - Action work flow
             |                | 90    |
 
     Scenario Outline:  Task Manage links for "<UserType>" action "<action>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK find persons database with persons
             | email             | name          |
             | Test12@justice.uk | test12 person |
@@ -63,7 +63,7 @@ Feature: WA Release 2: My cases - Manage links - Action work flow
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | 4         | Reallocate | Reallocate     | You've reassigned a task to somebody else. |
 
     Scenario Outline:  Case Manage links for "<UserType>" action "<action>" cancel in check your changes page
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK find persons database with persons
             | email             | name          |
             | Test12@justice.uk | test12 person |

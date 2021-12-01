@@ -14,7 +14,7 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
         Given I set MOCK request "/workallocation2/findPerson" intercept with reference "findPersonRequest"
 
     Scenario:  Judge reaallocate case from all work cases
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker" with reference "userDetails"
+        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK find person response for jurisdictions
             | domain    | id   | email                   | name           | knownAs       |
             | Judicial  | 1231 | judge_user1@gov.uk      | user1 j        | Lead judge    |
@@ -79,7 +79,7 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
 
 
     Scenario:  Legal ops reaallocate case from all work cases
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker" with reference "userDetails"
+        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK find person response for jurisdictions
             | domain    | id   | email                   | name           | knownAs       |
             | Judicial  | 1231 | judge_user1@gov.uk      | user1 j        | Lead judge    |
@@ -140,7 +140,7 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
 
 
     Scenario:  Judge Removes allocation of case from all work cases
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker" with reference "userDetails"
+        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK find person response for jurisdictions
             | domain    | id   | email                   | name           | knownAs       |
             | Judicial  | 1231 | judge_user1@gov.uk      | user1 j        | Lead judge    |
@@ -174,7 +174,7 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
         Then I see All work cases page displayed
 
     Scenario:  Legal ops Removes allocation of case from all work cases
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker" with reference "userDetails"
+        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK find person response for jurisdictions
             | domain    | id   | email                   | name           | knownAs       |
             | Judicial  | 1231 | judge_user1@gov.uk      | user1 j        | Lead judge    |

@@ -6,7 +6,7 @@ Feature: WA Release 2: All work -  negative scenarios
 
 
     Scenario Outline: Tasks error with response code <ResponseCode>
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer" with reference "userDetails"
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK api method "post" endpoint "/workallocation2/task/" with error response code <ResponseCode>
         Given I start MockApp
         Given I navigate to home page
@@ -21,7 +21,7 @@ Feature: WA Release 2: All work -  negative scenarios
             | 403          | Page             | Sorry, you're not authorised to perform this action |
 
     Scenario Outline:  Locations error with response code <ResponseCode>
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer" with reference "userDetails"
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK api method "get" endpoint "/workallocation2/location" with error response code <ResponseCode>
         Given I start MockApp
         Given I navigate to home page
@@ -36,7 +36,7 @@ Feature: WA Release 2: All work -  negative scenarios
             | 403          | Page             | Sorry, you're not authorised to perform this action |
 
     Scenario Outline:  Caseworkers/Person api error with response code <ResponseCode>
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer" with reference "userDetails"
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK api method "get" endpoint "/workallocation2/caseworker" with error response code <ResponseCode>
         Given I start MockApp
         Given I navigate to home page

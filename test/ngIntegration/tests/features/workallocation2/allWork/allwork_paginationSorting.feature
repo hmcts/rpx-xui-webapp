@@ -8,7 +8,7 @@ Feature: WA Release 2: All work to pagination sorting (EUI-4804)
         Given I init MockApp
 
     Scenario Outline: My Tasks pagnation and sorting for user type "<UserType>" with roles "<Roles>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK tasks with permissions for view "All work" and assigned state "assigned"
             | Permissions | Count |
             | Manage      | 100   |
@@ -72,7 +72,7 @@ Feature: WA Release 2: All work to pagination sorting (EUI-4804)
             | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
     Scenario Outline: All work tasks pagnation control display with only 1 page of items
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK tasks with permissions for view "All work" and assigned state "assigned"
             | Permissions | Count |
             | Manage      | 10    |
@@ -95,7 +95,7 @@ Feature: WA Release 2: All work to pagination sorting (EUI-4804)
     # For EUI-4366
     @ignore
     Scenario Outline:  All work tasks Tasks pagnation control display 0 items
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK tasks with permissions for view "All work" and assigned state "assigned"
             | Permissions | Count |
             | Manage      | 0     |

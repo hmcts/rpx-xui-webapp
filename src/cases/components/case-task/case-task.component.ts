@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
+import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
+import { InfoMessage } from '../../../work-allocation-2/enums';
 
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
@@ -24,18 +26,22 @@ export class CaseTaskComponent implements OnInit {
     CaseTaskComponent.CASE_ID_VARIABLE,
     CaseTaskComponent.TASK_ID_VARIABLE
   ];
-  public manageOptions: { text: string, id: string }[];
+  public manageOptions: {id: string, text: string }[];
   public isUserJudicial: boolean;
   private pTask: Task;
-  private returnUrl = '';
 
-  constructor(private readonly router: Router,
+  constructor(private readonly alertService: AlertService,
+              private readonly router: Router,
               private readonly sessionStorageService: SessionStorageService,
               protected taskService: WorkAllocationTaskService) {
   }
 
   public get task(): Task {
     return this.pTask;
+  }
+
+  public get returnUrl(): string {
+    return this.router ? this.router.url : `case-details/${this.task.case_id}/tasks`;
   }
 
   @Input()
@@ -65,7 +71,6 @@ export class CaseTaskComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.returnUrl = this.router.url;
     this.manageOptions = this.getManageOptions(this.task);
   }
 
@@ -84,32 +89,27 @@ export class CaseTaskComponent implements OnInit {
     return false;
   }
 
-  public doesUserHaveOwnAndExecute(task: Task): boolean {
-    return task.permissions.includes(TaskPermission.OWN) && task.permissions.includes(TaskPermission.EXECUTE);
-  }
-
   public getDueDateTitle(): string {
     return this.isUserJudicial ? 'Task created' : 'Due date';
   }
 
   public onActionHandler(task: Task, option: any): void {
-    const state = {
-      returnUrl: this.returnUrl,
-    };
     if (option.id === 'claim') {
       this.taskService.claimTask(task.id).subscribe(() => {
-        /* this.infoMessageCommService.nextMessage({
-          type: InfoMessageType.SUCCESS,
-          message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
-        }); */
+        this.alertService.success(InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS)
         this.taskRefreshRequired.emit();
       }, error => {
         this.claimTaskErrors(error.status);
       });
       return;
     }
+    const state = {
+      returnUrl: this.returnUrl,
+      keepUrl: true,
+      showAssigneeColumn: true
+    };
     const actionUrl = `/work/${task.id}/${option.id}`;
-    this.router.navigate([actionUrl], { state});
+    this.router.navigate([actionUrl], {state});
   }
 
   /**
@@ -120,11 +120,7 @@ export class CaseTaskComponent implements OnInit {
     const REDIRECT_404 = [{status: 404, redirectTo: REDIRECTS.ServiceDown}];
     const handledStatus = handleTasksFatalErrors(status, this.router, REDIRECT_404);
     if (handledStatus > 0) {
-      // TODO: Update with case alert message
-      /* this.infoMessageCommService.nextMessage({
-        type: InfoMessageType.WARNING,
-        message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
-      }); */
+      this.alertService.warning(InfoMessage.TASK_NO_LONGER_AVAILABLE);
       if (handledStatus === 400) {
         this.taskRefreshRequired.emit();
       }
@@ -132,8 +128,9 @@ export class CaseTaskComponent implements OnInit {
   }
 
   public getManageOptions(task: Task): {id: string, text: string} [] {
+    const permissions = task && task.permissions && task.permissions.values ? task.permissions.values : [];
     if (!task.assignee) {
-      if (task.permissions.length === 0 || (task.permissions.length === 1 && task.permissions.includes(TaskPermission.MANAGE))) {
+      if (permissions.length === 0 || (permissions.length === 1 && permissions.includes(TaskPermission.MANAGE))) {
         return [];
       } else {
         return [{id: 'claim', text: 'Assign to me'}];
@@ -146,13 +143,13 @@ export class CaseTaskComponent implements OnInit {
         {id: 'unclaim', text: 'Unassign task'}
       ];
     } else {
-      if (task.permissions.includes(TaskPermission.EXECUTE) && task.permissions.includes(TaskPermission.MANAGE)) {
+      if (permissions.includes(TaskPermission.EXECUTE) && permissions.includes(TaskPermission.MANAGE)) {
         return [
           {id: 'claim', text: 'Assign to me'},
           {id: 'reassign', text: 'Reassign task'},
           {id: 'unclaim', text: 'Unassign task'}
         ];
-      } else if (task.permissions.includes(TaskPermission.MANAGE)) {
+      } else if (permissions.includes(TaskPermission.MANAGE)) {
         return [
           {id: 'reassign', text: 'Reassign task'},
           {id: 'unclaim', text: 'Unassign task'}

@@ -14,6 +14,7 @@ import { WorkAllocationCaseService } from '../../../work-allocation-2/services';
 export class TasksContainerComponent implements OnInit {
   public caseDetails: CaseView;
   public tasks: Task[] = [];
+  public tasksRefreshed: boolean = false;
   public caseworkers: Caseworker[] = [];
   public warningIncluded: boolean;
 
@@ -29,6 +30,7 @@ export class TasksContainerComponent implements OnInit {
   public onTaskRefreshRequired(): void {
     this.waCaseService.getTasksByCaseId(this.caseDetails.case_id).pipe(first()).subscribe(tasks => {
       this.tasks = tasks;
+      this.tasksRefreshed = true;
       this.warningIncluded = this.tasks.some(task => task.warnings);
     })
   }

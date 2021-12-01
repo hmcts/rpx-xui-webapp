@@ -6,11 +6,12 @@ import { getMockTasks } from '../../../work-allocation-2/tests/utils.spec';
 import { CaseTaskComponent } from './case-task.component';
 
 describe('CaseTaskComponent', () => {
+  const mockAlertService = jasmine.createSpyObj('alertService', ['success', 'warning']);
   const mockSessionStorage = jasmine.createSpyObj('mockSessionStorage', ['getItem']);
   const mockRouter = jasmine.createSpyObj('router', ['navigate']);
   const mockTaskService = jasmine.createSpyObj('taskService', ['claimTask']);
   mockRouter.url = '/case-details/123243430403904/tasks';
-  const component = new CaseTaskComponent(mockRouter, mockSessionStorage, mockTaskService);
+  const component = new CaseTaskComponent(mockAlertService, mockRouter, mockSessionStorage, mockTaskService);
   it('getManageOptions no assignee no permissions', () => {
     const task: Task = {
       assignee: null,
@@ -41,7 +42,7 @@ describe('CaseTaskComponent', () => {
     const task: Task = {
       assignee: null,
       assigneeName: '',
-      permissions: ['Own', 'Execute', 'Manage'],
+      permissions: { values: ['Own', 'Execute', 'Manage'] },
       id: null,
       description: null,
       case_id: null,
@@ -54,14 +55,12 @@ describe('CaseTaskComponent', () => {
       warnings: false,
       derivedIcon: null
     };
-    task.assignee = null;
     let options = component.getManageOptions(task);
-    console.log(options);
     expect(options[0].text).toEqual('Assign to me');
-    task.permissions = ['Own'];
+    task.permissions.values = ['Own'];
     options = component.getManageOptions(task);
     expect(options[0].text).toEqual('Assign to me');
-    task.permissions = ['Execute'];
+    task.permissions.values = ['Execute'];
     options = component.getManageOptions(task);
     expect(options[0].text).toEqual('Assign to me');
   });
@@ -70,7 +69,7 @@ describe('CaseTaskComponent', () => {
     const task: Task = {
       assignee: '3314e308-e83b-4f39-a414-6844e185e5ac',
       assigneeName: 'Some Name',
-      permissions: ['Own', 'Execute', 'Manage'],
+      permissions: { values: ['Own', 'Execute', 'Manage'] },
       id: null,
       description: null,
       case_id: null,
@@ -95,7 +94,7 @@ describe('CaseTaskComponent', () => {
     const task: Task = {
       assignee: '3314e308-e83b-4f39-a414-6844e185e5ac',
       assigneeName: 'Some Name',
-      permissions: ['Own', 'Execute', 'Manage'],
+      permissions: { values: ['Own', 'Execute', 'Manage'] },
       id: null,
       description: null,
       case_id: null,
@@ -121,7 +120,7 @@ describe('CaseTaskComponent', () => {
     const task: Task = {
       assignee: '3314e308-e83b-4f39-a414-6844e185e5ac',
       assigneeName: 'Some Name',
-      permissions: ['Own', 'Manage'],
+      permissions: { values: ['Own', 'Manage'] },
       id: null,
       description: null,
       case_id: null,
@@ -146,7 +145,7 @@ describe('CaseTaskComponent', () => {
     const task: Task = {
       assignee: '3314e308-e83b-4f39-a414-6844e185e5ac',
       assigneeName: 'Some Name',
-      permissions: ['Own'],
+      permissions: { values: ['Own'] },
       id: null,
       description: null,
       case_id: null,
@@ -169,7 +168,7 @@ describe('CaseTaskComponent', () => {
     const task: Task = {
       assignee: '3314e308-e83b-4f39-a414-6844e185e5ac',
       assigneeName: 'Some Name',
-      permissions: ['Own'],
+      permissions: { values: ['Own'] },
       id: null,
       description: null,
       case_id: null,
@@ -190,7 +189,7 @@ describe('CaseTaskComponent', () => {
     const task: Task = {
       assignee: '44d5d2c2-7112-4bef-8d05-baaa610bf463',
       assigneeName: 'Some Name',
-      permissions: ['Own'],
+      permissions: { values: ['Own'] },
       id: null,
       description: null,
       case_id: null,
@@ -212,7 +211,7 @@ describe('CaseTaskComponent', () => {
     const task: Task = {
       assignee: '44d5d2c2-7112-4bef-8d05-baaa610bf463',
       assigneeName: 'Some Name',
-      permissions: ['Own'],
+      permissions: { values: ['Own'] },
       id: null,
       description: null,
       case_id: null,
@@ -287,14 +286,16 @@ describe('CaseTaskComponent', () => {
     const secondOption = {id: 'unclaim'};
     it('should handle a claim action', () => {
       mockTaskService.claimTask.and.returnValue(of(null));
+      const refreshTasksSpy = spyOn(component.taskRefreshRequired, 'emit');
       // need to check that navigate has not been called
       component.onActionHandler(exampleTask, firstOption);
       expect(mockRouter.navigate).not.toHaveBeenCalled();
-
+      expect(refreshTasksSpy).toHaveBeenCalled();
+      expect(mockAlertService.success).toHaveBeenCalled();
     });
 
     it('should handle an action that redirects', () => {
-      const state = {returnUrl: ''};
+      const state = {returnUrl: '/case-details/123243430403904/tasks', keepUrl: true, showAssigneeColumn: true};
 
       // need to check that navigate has been called
       component.onActionHandler(exampleTask, secondOption);
@@ -302,6 +303,7 @@ describe('CaseTaskComponent', () => {
 
       // need to verify correct properties were called
       expect(mockRouter.navigate).toHaveBeenCalledWith([`/work/${exampleTask.id}/${secondOption.id}`], {state});
+      expect(component.returnUrl).toBe('/case-details/123243430403904/tasks');
     });
   });
 
@@ -332,6 +334,7 @@ describe('CaseTaskComponent', () => {
       const refreshTasksSpy = spyOn(component.taskRefreshRequired, 'emit');
       component.claimTaskErrors(400);
       expect(refreshTasksSpy).toHaveBeenCalled();
+      expect(mockAlertService.warning).toHaveBeenCalled();
     });
   });
 

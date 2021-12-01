@@ -73,7 +73,7 @@ const CASE_CATEGORY_DISABLE_SORT: FieldConfig = {
 const JURISDICTION: FieldConfig = {
   name: 'jurisdiction',
   type: FieldType.STRING,
-  columnLabel: 'Jurisdiction',
+  columnLabel: 'Service',
   sortName: 'jurisdiction',
   views: TaskView.ALL_VIEWS
 };

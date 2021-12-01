@@ -97,7 +97,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       screenName: 'hearing-requirement',
       navigation: [
         {
-          resultValue1: 'additional-facilities',
+          resultValue: 'additional-facilities',
         },
       ],
     },
@@ -105,7 +105,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       screenName: 'additional-facilities',
       navigation: [
         {
-          resultValue1: 'hearing-stage',
+          resultValue: 'hearing-stage',
         },
       ],
     },
@@ -113,7 +113,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       screenName: 'hearing-stage',
       navigation: [
         {
-          resultValue1: 'how-party-attend',
+          resultValue: 'how-party-attend',
         },
       ],
     },
@@ -121,7 +121,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       screenName: 'how-party-attend',
       navigation: [
         {
-          resultValue1: 'location-search',
+          resultValue: 'location-search',
         },
       ],
     },
@@ -132,12 +132,12 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
         {
           conditionOperator: 'EQUAL',
           conditionValue: 'Wales',
-          resultValue1: 'welsh-hearing',
+          resultValue: 'welsh-hearing',
         },
         {
           conditionOperator: 'NOT EQUAL',
           conditionValue: 'Wales',
-          resultValue1: 'specify-judge',
+          resultValue: 'specify-judge',
         },
       ],
     },
@@ -145,7 +145,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       screenName: 'welsh-hearing',
       navigation: [
         {
-          resultValue1: 'specify-judge',
+          resultValue: 'specify-judge',
         },
       ],
     },
@@ -153,7 +153,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       screenName: 'specify-judge',
       navigation: [
         {
-          resultValue1: 'require-panel-or-not',
+          resultValue: 'require-panel-or-not',
         },
       ],
     },
@@ -161,7 +161,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       screenName: 'require-panel-or-not',
       navigation: [
         {
-          resultValue1: 'hearing-timing',
+          resultValue: 'hearing-timing',
         },
       ],
     },
@@ -169,7 +169,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       screenName: 'hearing-timing',
       navigation: [
         {
-          resultValue1: 'additional-instruction',
+          resultValue: 'additional-instruction',
         },
       ],
     },
@@ -177,7 +177,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       screenName: 'additional-instruction',
       navigation: [
         {
-          resultValue1: 'check-answers',
+          resultValue: 'check-answers',
         },
       ],
     },

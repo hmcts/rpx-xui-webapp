@@ -71,9 +71,7 @@ export class CaseTaskComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    if (this.task && this.task.permissions) {
-      this.manageOptions = this.getManageOptions(this.task);
-    }
+    this.manageOptions = this.getManageOptions(this.task);
   }
 
   public getAssigneeName(task: Task): string {

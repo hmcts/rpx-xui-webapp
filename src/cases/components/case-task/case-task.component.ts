@@ -128,7 +128,7 @@ export class CaseTaskComponent implements OnInit {
   }
 
   public getManageOptions(task: Task): {id: string, text: string} [] {
-    const permissions = task && task.permissions ? task.permissions.values : [];
+    const permissions = task && task.permissions && task.permissions.values ? task.permissions.values : [];
     if (!task.assignee) {
       if (permissions.length === 0 || (permissions.length === 1 && permissions.includes(TaskPermission.MANAGE))) {
         return [];

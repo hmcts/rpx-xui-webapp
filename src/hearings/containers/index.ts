@@ -7,6 +7,7 @@ import { DatePriorityHearingComponent } from './request-hearing/date-priority-he
 import { LocationSearchContainerComponent } from './request-hearing/location-search-container/location-search-container.component';
 import { RequestHearingComponent } from './request-hearing/request-hearing.component';
 import { ViewHearingComponent } from './view-hearing/view-hearing.component';
+import { HearingVenueComponent } from './request-hearing/hearing-venue/hearing-venue.component'
 
 export const containers: any[] = [
   CancelHearingComponent,
@@ -19,6 +20,7 @@ export const containers: any[] = [
   LocationSearchContainerComponent,
   WelshHearingComponent,
   PartiesUnavailableDatesComponent,
+  HearingVenueComponent
 ];
 
 export * from '../components/hearing-parties-title/hearing-parties-title.component';
@@ -29,6 +31,7 @@ export * from './request-hearing/date-priority-hearing/date-priority-hearing.com
 export * from './request-hearing/location-search-container/location-search-container.component';
 export * from './request-hearing/request-hearing.component';
 export * from './view-hearing/view-hearing.component';
+export * from './request-hearing/hearing-venue/hearing-venue.component';
 export * from '../components/parties-unavailable-dates/parties-unavailable-dates.component';
 
 

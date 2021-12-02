@@ -187,8 +187,8 @@ export class BookingDateComponent implements OnInit {
         startDate = new Date();
         const sunday = new Date();
         const sundayUTC = sunday.setTime(sunday.getTime() - ((sunday.getDay() ? sunday.getDay() : 7) - 7) * 24 * 60 * 60 * 1000);
-        const sundayMignightUTC = new Date(sundayUTC).setUTCHours(23, 59, 59, 999);
-        endDate = new Date(sundayMignightUTC);
+        const sundayMidnightUTC = new Date(sundayUTC).setUTCHours(23, 59, 59, 999);
+        endDate = new Date(sundayMidnightUTC);
         break;
       case BookingDateOption.DATERANGE:
         startDate = new Date(

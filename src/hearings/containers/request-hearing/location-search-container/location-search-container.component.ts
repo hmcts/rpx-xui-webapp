@@ -1,7 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, AbstractControl } from '@angular/forms';
+import { SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
-import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { LocationByEPIMSModel } from 'api/locations/models/location.model';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import * as fromHearingStore from '../../../../hearings/store';
@@ -13,14 +14,16 @@ import * as fromHearingStore from '../../../../hearings/store';
 export class LocationSearchContainerComponent implements OnInit {
   public locationType: string;
   public selectedLocations$: Observable<LocationByEPIMSModel[]>;
+  public locationsFound$: Observable<LocationByEPIMSModel[]>;
   public selectedLocation: LocationByEPIMSModel;
   public serviceIds: string = 'SSCS';
   public dirty: boolean = false;
-
+  @ViewChild(SearchLocationComponent) public searchLocationComponent: SearchLocationComponent;
   @Input() public control: AbstractControl;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>, fb: FormBuilder) {
     this.selectedLocations$ = of([]);
+    this.locationsFound$ = of([]);
   }
 
   public ngOnInit(): void {
@@ -30,7 +33,11 @@ export class LocationSearchContainerComponent implements OnInit {
       this.serviceIds = id ? id : this.serviceIds;
     });
 
-    this.control.valueChanges.subscribe(() => this.dirty = true);
+    this.control.valueChanges.subscribe((newValue) => newValue.value ? this.control.markAsPristine(): this.control.markAsDirty());
+
+    if (this.searchLocationComponent.autoCompleteInputBox && this.searchLocationComponent.autoCompleteInputBox.nativeElement) {
+      this.searchLocationComponent.autoCompleteInputBox.nativeElement.focus();
+    }
   }
 
   public addSelection(): void {
@@ -38,7 +45,11 @@ export class LocationSearchContainerComponent implements OnInit {
       this.selectedLocations$.subscribe(selectedLocations => {
           selectedLocations.push(this.control.value as LocationByEPIMSModel);
           this.control.setValue(undefined);
+          this.control.markAsPristine();
       });
+    } else {
+      this.control.setValue(undefined);
+      this.control.markAsDirty();
     }
   }
 

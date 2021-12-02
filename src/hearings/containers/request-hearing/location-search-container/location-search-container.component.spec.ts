@@ -3,8 +3,9 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
 import { AbstractControl, FormBuilder } from '@angular/forms';
 import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { provideMockStore } from '@ngrx/store/testing';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { LocationSearchContainerComponent } from './location-search-container.component';
+import { By } from '@angular/platform-browser';
 @Component({
   selector: 'exui-search-location',
   template: '',
@@ -18,7 +19,7 @@ class MockLocationSearchContainerComponent {
   @Input() public control: AbstractControl;
 }
 
-fdescribe('LocationSearchContainerComponent', () => {
+describe('LocationSearchContainerComponent', () => {
   let component: LocationSearchContainerComponent;
   let fixture: ComponentFixture<LocationSearchContainerComponent>;
 
@@ -56,7 +57,7 @@ fdescribe('LocationSearchContainerComponent', () => {
     component.control = form.controls.locationSelectedFormControl;
     fixture.detectChanges();
     spyOn(component, 'removeSelection').and.callThrough();
-    spyOn(component.selectedLocations$, 'subscribe');
+    spyOn(component.selectedLocations$, 'subscribe').and.returnValue(of([]));
   });
 
   it('should create', () => {
@@ -114,6 +115,17 @@ fdescribe('LocationSearchContainerComponent', () => {
     component.addSelection();
     fixture.detectChanges();
     component.removeSelection(location);
-    expect(component.selectedLocations$.subscribe).toHaveBeenCalled();     
+    expect(component.selectedLocations$.subscribe).toHaveBeenCalled();
+  });
+
+  it('should show error when there is no locations found', async (done) => {
+    component.control.setValue(undefined);
+    component.addSelection();
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      done();
+      const errorElement = fixture.debugElement.query(By.css('.govuk-error-summary'));
+      expect(errorElement).toBeDefined();
+    });
   });
 });

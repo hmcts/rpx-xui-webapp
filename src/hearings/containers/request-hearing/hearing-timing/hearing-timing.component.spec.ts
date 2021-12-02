@@ -6,9 +6,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { ErrorMessage } from '../../../../app/models';
-import { PartyUnavailabilityRange } from '../../../../hearings/models/partyUnavilabilityRange.model';
-import { RefDataModel } from '../../../../hearings/models/refData.model';
-import { DatePriorityHearingComponent } from './date-priority-hearing.component';
+import { PartyUnavailabilityRange } from '../../../models/partyUnavilabilityRange.model';
+import { RefDataModel } from '../../../models/refData.model';
+import {HearingTimingComponent} from './hearing-timing.component';
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -19,8 +19,8 @@ class MockHearingPartiesComponent {
 }
 
 describe('DatePriorityHearingComponent', () => {
-  let component: DatePriorityHearingComponent;
-  let fixture: ComponentFixture<DatePriorityHearingComponent>;
+  let component: HearingTimingComponent;
+  let fixture: ComponentFixture<HearingTimingComponent>;
   let router: Router;
   let mockStore: any;
   const priorities: RefDataModel[] = [
@@ -37,7 +37,7 @@ describe('DatePriorityHearingComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule],
-      declarations: [DatePriorityHearingComponent, MockHearingPartiesComponent],
+      declarations: [HearingTimingComponent, MockHearingPartiesComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         provideMockStore(),
@@ -59,7 +59,7 @@ describe('DatePriorityHearingComponent', () => {
   beforeEach(() => {
     mockStore = TestBed.get(Store);
     mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
-    fixture = TestBed.createComponent(DatePriorityHearingComponent);
+    fixture = TestBed.createComponent(HearingTimingComponent);
     component = fixture.componentInstance;
     router = TestBed.get(Router);
     fixture.detectChanges();

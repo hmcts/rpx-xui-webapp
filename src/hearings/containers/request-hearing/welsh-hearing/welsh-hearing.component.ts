@@ -11,7 +11,6 @@ export const NAME_ERROR: ErrorMessage = {
 @Component({
   selector: 'exui-welsh-hearing',
   templateUrl: './welsh-hearing.component.html',
-  styleUrls: ['./welsh-hearing.component.scss'],
 })
 export class WelshHearingComponent implements OnInit {
   public error: ErrorMessage = null;

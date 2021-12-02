@@ -1,15 +1,15 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AbstractControl, FormBuilder } from '@angular/forms';
 import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
-import { LocationSearchContainerComponent } from './location-search-container.component';
+import { LocationSearchComponent } from './location-search.component';
 @Component({
   selector: 'exui-search-location',
   template: '',
 })
-class MockLocationSearchContainerComponent {
+class MockLocationSearchComponent {
   @Input() public serviceIds: string = '';
   @Input() public locationType: string = '';
   @Input() public disabled: boolean = false;
@@ -19,8 +19,8 @@ class MockLocationSearchContainerComponent {
 }
 
 describe('LocationSearchContainerComponent', () => {
-  let component: LocationSearchContainerComponent;
-  let fixture: ComponentFixture<LocationSearchContainerComponent>;
+  let component: LocationSearchComponent;
+  let fixture: ComponentFixture<LocationSearchComponent>;
 
   const initialState = {
     hearings: {
@@ -36,7 +36,7 @@ describe('LocationSearchContainerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LocationSearchContainerComponent, MockLocationSearchContainerComponent ],
+      declarations: [ LocationSearchComponent, MockLocationSearchComponent ],
       providers: [
         provideMockStore({initialState}),
         FormBuilder
@@ -47,7 +47,7 @@ describe('LocationSearchContainerComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LocationSearchContainerComponent);
+    fixture = TestBed.createComponent(LocationSearchComponent);
     component = fixture.componentInstance;
 
     fixture.detectChanges();

@@ -6,11 +6,11 @@ import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import * as fromHearingStore from '../../../../hearings/store';
 @Component({
-  selector: 'exui-location-search-container',
-  templateUrl: './location-search-container.component.html',
-  styleUrls: ['./location-search-container.component.scss']
+  selector: 'exui-location-search',
+  templateUrl: './location-search.component.html',
+  styleUrls: ['./location-search.component.scss']
 })
-export class LocationSearchContainerComponent implements OnInit {
+export class LocationSearchComponent implements OnInit {
   public locationType: string;
   public findLocationFormGroup: FormGroup;
   public selectedLocations$: Observable<LocationByEPIMSModel[]>;

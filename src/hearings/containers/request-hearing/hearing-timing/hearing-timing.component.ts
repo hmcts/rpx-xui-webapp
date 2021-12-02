@@ -5,16 +5,16 @@ import { GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
 import { select, Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { map } from 'rxjs/operators';
-import { PartyUnavailabilityRange } from '../../../../hearings/models/partyUnavilabilityRange.model';
-import { RefDataModel } from '../../../../hearings/models/refData.model';
 import * as fromHearingStore from '../../../../hearings/store';
+import { PartyUnavailabilityRange } from '../../../models/partyUnavilabilityRange.model';
+import { RefDataModel } from '../../../models/refData.model';
 
 @Component({
-  selector: 'exui-date-priority-hearing',
-  templateUrl: './date-priority-hearing.component.html',
-  styleUrls: ['./date-priority-hearing.component.scss']
+  selector: 'exui-hearing-timing',
+  templateUrl: './hearing-timing.component.html',
+  styleUrls: ['./hearing-timing.component.scss']
 })
-export class DatePriorityHearingComponent implements OnInit {
+export class HearingTimingComponent implements OnInit {
   public priorityForm: FormGroup;
   public priorities: RefDataModel[];
   public checkedHearingAvailability: string;

@@ -74,6 +74,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   }
 
   private splitAndFilterNavItems(items: NavigationItem[]): void {
+    items = items || [];
     of(items).pipe(
       switchMap(unfilteredItems => this.filterNavItemsOnRole(unfilteredItems)),
       switchMap(roleFilteredItems => this.filterNavItemsOnFlag(roleFilteredItems)),
@@ -85,6 +86,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   }
 
   private splitNavItems(items: NavigationItem[]): {right: NavigationItem[], left: NavigationItem[]} {
+    items = items || [];
     return {
       right: items.filter(item => item.align && item.align === 'right'),
       left: items.filter(item => !item.align || item.align !== 'right')
@@ -92,6 +94,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   }
 
   private filterNavItemsOnRole(items: NavigationItem[]): Observable<NavigationItem[]> {
+    items = items || [];
     return this.userService.getUserDetails().pipe(
       map(details => details.userInfo.roles),
       map(roles => {
@@ -102,6 +105,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   }
 
   private filterNavItemsOnFlag(items: NavigationItem[]): Observable<NavigationItem[]> {
+    items = items || [];
     const flags: {[flag: string]: boolean | string} = {};
     const obs: Observable<boolean>[] = [];
     items.forEach(
@@ -123,7 +127,8 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
 
     return ((obs.length > 1 ? obs[0].combineLatest(obs.slice(1)) : obs[0]) as Observable<any>).pipe(
       map(_ => {
-        const i = items.filter(item => item.flags && item.flags.length > 0 ? item.flags.every(flag => this.isPlainFlag(flag) ? (flags[flag] as boolean) : (flags[flag.flagName] as string) === flag.value) : true);
+        let i = items.filter(item => item.flags && item.flags.length > 0 ? item.flags.every(flag => this.isPlainFlag(flag) ? (flags[flag] as boolean) : (flags[flag.flagName] as string) === flag.value) : true);
+        i = i || [];
         return i.filter(item => item.notFlags && item.notFlags.length > 0 ? item.notFlags.every(flag => this.isPlainFlag(flag) ? !(flags[flag] as boolean) : (flags[flag.flagName] as string) !== flag.value) : true);
       })
     );

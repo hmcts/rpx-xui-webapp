@@ -4,7 +4,6 @@ import {
   AccessibilityComponent,
   CookiePolicyComponent,
   GetHelpComponent,
-  MediaViewerWrapperComponent,
   NotAuthorisedComponent,
   PrivacyPolicyComponent,
   ServiceDownComponent,
@@ -107,16 +106,8 @@ export const ROUTES: Routes = [
       title: 'Service Unavailable'
     }
   },
-  {
-    path: 'media-viewer',
-    component: MediaViewerWrapperComponent,
-    data: {
-      title: 'View Document'
-    }
-  },
   { path: 'service-down', component: ServiceDownComponent },
   { path: 'not-authorised', component: NotAuthorisedComponent },
-  { path: 'media-viewer', component: MediaViewerWrapperComponent },
   {
     path: 'get-help',
     component: GetHelpComponent,

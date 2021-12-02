@@ -32,6 +32,6 @@ export class TasksContainerComponent implements OnInit {
       this.tasks = tasks;
       this.tasksRefreshed = true;
       this.warningIncluded = this.tasks.some(task => task.warnings);
-    })
+    });
   }
 }

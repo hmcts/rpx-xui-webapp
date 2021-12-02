@@ -3,7 +3,7 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { FlagDefinition, NavigationItem } from 'src/app/models/theming.model';
+import { FlagDefinition, NavigationItem } from '../../models/theming.model';
 import * as fromAppStore from '../../../app/store';
 import * as fromNocStore from '../../../noc/store';
 import { UserNavModel } from '../../models/user-nav.model';
@@ -38,9 +38,9 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
     return this.menuItems.right.asObservable();
   }
 
-  private readonly menuItems = {
-    left: new BehaviorSubject<NavItemsModel[]>([]),
-    right: new BehaviorSubject<NavItemsModel[]>([])
+  private menuItems = {
+    left: new BehaviorSubject<NavigationItem[]>([]),
+    right: new BehaviorSubject<NavigationItem[]>([])
   };
 
   constructor(
@@ -73,7 +73,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
     }
   }
 
-  private splitAndFilterNavItems(items: NavItemsModel[]): void {
+  private splitAndFilterNavItems(items: NavigationItem[]): void {
     of(items).pipe(
       switchMap(unfilteredItems => this.filterNavItemsOnRole(unfilteredItems)),
       switchMap(roleFilteredItems => this.filterNavItemsOnFlag(roleFilteredItems)),
@@ -84,7 +84,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
     });
   }
 
-  private splitNavItems(items: NavItemsModel[]): {right: NavItemsModel[], left: NavItemsModel[]} {
+  private splitNavItems(items: NavigationItem[]): {right: NavigationItem[], left: NavigationItem[]} {
     return {
       right: items.filter(item => item.align && item.align === 'right'),
       left: items.filter(item => !item.align || item.align !== 'right')

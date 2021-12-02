@@ -28,27 +28,6 @@ describe('HmctsGlobalHeaderComponent', () => {
     enabledFlag: true,
     disabledFlag: false
   };
-  const navItemsWithFindCaseRightAligned = [
-    {
-      align: 'right',
-      text: 'Find case',
-      href: '/cases/case-search',
-      active: false,
-      ngClass: 'hmcts-search-toggle__button'
-    },
-    {
-      align: null,
-      text: '2',
-      href: '',
-      active: false
-    },
-    {
-      align: 'null',
-      text: '3',
-      href: '',
-      active: false
-    }
-  ];
   let origTimeout: number;
 
   beforeEach(async(() => {

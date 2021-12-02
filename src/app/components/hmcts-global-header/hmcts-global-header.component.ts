@@ -41,7 +41,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
     return this.menuItems.right.asObservable();
   }
 
-  private menuItems = {
+  private readonly menuItems = {
     left: new BehaviorSubject<NavigationItem[]>([]),
     right: new BehaviorSubject<NavigationItem[]>([])
   };
@@ -57,7 +57,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
     this.appStore.dispatch(new fromAppStore.LoadUserDetails());
     this.userDetails$ = this.appStore.pipe(select(fromAppStore.getUserDetails));
 
-		this.isUserCaseManager$ = this.userDetails$.pipe(
+    this.isUserCaseManager$ = this.userDetails$.pipe(
       map(details => details.userInfo.roles),
       map(roles => {
         return roles.includes('pui-case-manager')

@@ -13,6 +13,7 @@ import { ErrorMessageComponent } from '../../../app/components';
 import { TaskActionConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { InfoMessage, InfoMessageType } from '../../enums';
+import { InformationMessage } from '../../models/comms';
 import { Task } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { ACTION } from '../../services/work-allocation-task.service';
@@ -117,6 +118,25 @@ describe('WorkAllocation', () => {
       cancel.click();
       expect(component.returnWithMessage).toHaveBeenCalledWith(null, {});
     });
+
+    it('should return the correct message/state', () => {
+      window.history.pushState({returnUrl: 'case/case-details', keepUrl: true}, '', 'case/case-details');
+      const message = {
+        type: InfoMessageType.SUCCESS,
+        message: InfoMessage.ASSIGNED_TASK
+      } as InformationMessage;
+      const navigateSpy = spyOn(router, 'navigateByUrl');
+      component.returnWithMessage(message, null);
+      expect(mockInfoMessageCommService.nextMessage).not.toHaveBeenCalledWith(message);
+      expect(navigateSpy).toHaveBeenCalledWith('case/case-details', {
+      state: {
+        showMessage: true,
+        messageText: InfoMessage.ASSIGNED_TASK,
+        retainMessages: true
+      }
+      });
+    });
+
 
     it('should have appropriate title', () => {
       const title: HTMLElement = fixture.debugElement.nativeElement.querySelector('#action-title');

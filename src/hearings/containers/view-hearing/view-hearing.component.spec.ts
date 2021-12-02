@@ -4,7 +4,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 
-fdescribe('ViewHearingComponent', () => {
+describe('ViewHearingComponent', () => {
   let component: ViewHearingComponent;
   let fixture: ComponentFixture<ViewHearingComponent>;
   

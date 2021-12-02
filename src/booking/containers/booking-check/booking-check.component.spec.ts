@@ -30,7 +30,6 @@ describe('BookingCheckComponent', () => {
     expect(infoMassage.textContent).toContain('Check your new booking');
     const location = fixture.debugElement.nativeElement.querySelector('.govuk-summary-list__row').childNodes[1];
     expect(location.textContent).toContain('London');
-    debugger;
     const dateInterval = fixture.debugElement.nativeElement.querySelector('.govuk-summary-list__row').nextElementSibling.childNodes[1];
     expect(dateInterval.textContent).toContain('02 December 2021 to 02 December 2021');
   });

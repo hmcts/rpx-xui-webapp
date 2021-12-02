@@ -36,11 +36,11 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   };
   public get rightItems(): Observable<NavigationItem[]> {
     return this.menuItems.right.asObservable();
-  };
+  }
 
-  private menuItems = {
-    left: new BehaviorSubject<NavigationItem[]>([]),
-    right: new BehaviorSubject<NavigationItem[]>([])
+  private readonly menuItems = {
+    left: new BehaviorSubject<NavItemsModel[]>([]),
+    right: new BehaviorSubject<NavItemsModel[]>([])
   };
 
   constructor(
@@ -64,7 +64,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
     this.navigate.emit(this.navigation.items[index].emit);
   }
 
-  public onEmitSubMenu(menuItem: any) {
+  public onEmitSubMenu(menuItem: any): void {
     // New menu item page load, do not decorate 16-digit case reference search box with error class
     this.appStore.dispatch(new fromAppStore.Decorate16DigitCaseReferenceSearchBoxInHeader(false));
 
@@ -73,7 +73,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
     }
   }
 
-  private splitAndFilterNavItems(items: NavigationItem[]) {
+  private splitAndFilterNavItems(items: NavItemsModel[]): void {
     of(items).pipe(
       switchMap(unfilteredItems => this.filterNavItemsOnRole(unfilteredItems)),
       switchMap(roleFilteredItems => this.filterNavItemsOnFlag(roleFilteredItems)),
@@ -84,7 +84,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
     });
   }
 
-  private splitNavItems(items: NavigationItem[]) {
+  private splitNavItems(items: NavItemsModel[]): {right: NavItemsModel[], left: NavItemsModel[]} {
     return {
       right: items.filter(item => item.align && item.align === 'right'),
       left: items.filter(item => !item.align || item.align !== 'right')

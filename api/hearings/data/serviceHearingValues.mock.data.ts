@@ -18,7 +18,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   hearingPriorityType: 'Standard',
   numberOfPhysicalAttendees: 2,
   hearingInWelshFlag: false,
-  hearingLocations: [],
+  hearingLocations: ['196538'],
   facilitiesRequired: [],
   listingComments: '',
   hearingRequester: '',

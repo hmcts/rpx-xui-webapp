@@ -1,32 +1,47 @@
-<div class="govuk-width-container">
-  <div class="page">
-    <main id="content" role="main">
-      <div class="govuk-form-group">
-        <div class="location-picker-custom">
-          <div class="search-location">
-            <label id="input-selected-location-label" class="govuk-body">
-                 Search for a location by name
-            </label>
-            <br>
-            <exui-search-location class="search-location"
-              [selectedLocations$]="selectedLocations$"
-              [control]="findLocationFormGroup.controls.locationSelectedFormControl"
-              [disabled]=false 
-              [serviceIds]="serviceIds"
-              [locationType]="'hearing'"></exui-search-location>
-              <a href="javascript:void(0)" (click)="addSelection()" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-three-quarters">
+    <exui-hearing-parties-title></exui-hearing-parties-title>
+    <h1 class="govuk-heading-l">
+      What are the hearing venue details?
+    </h1>
+    <div id="location-hint" class="govuk-hint govuk-!-margin-bottom-7">
+      If this is a fully remote hearing you must still select the court or tribunal which will be managing the case.
+    </div>
+    <div class="page">
+      <div *ngIf="serviceIds" class="search-location">
+        <div class="govuk-form-group">
+          <div class="location-picker-custom">
+            <div class="search-location">
+              <label id="input-selected-location-label" class="govuk-body">
+                Search for a location by name
+              </label>
+              <br>
+              <exui-search-location class="search-location"
+                                    [selectedLocations$]="selectedLocations$"
+                                    [control]="findLocationFormGroup.controls.locationSelectedFormControl"
+                                    [disabled]=false
+                                    [serviceIds]="serviceIds"
+                                    [locationType]="'hearing'"></exui-search-location>
+              <a href="javascript:void(0)" (click)="addSelection()" class="govuk-button govuk-button--secondary"
+                 data-module="govuk-button">
                 Add location
-            </a>
-          </div>   
-          <ul  *ngIf="(selectedLocations$ | async)?.length" class="hmcts-filter-tags selection-container">
-            <li class="location-selection"  *ngFor="let selection of selectedLocations$ | async">
-                <a class="hmcts-filter__tag" (click)="removeSelection(selection)" href="javascript:void(0)">           
-                    {{ selection.court_name }}
+              </a>
+            </div>
+            <ul *ngIf="(selectedLocations$ | async)?.length" class="hmcts-filter-tags selection-container">
+              <li class="location-selection" *ngFor="let selection of selectedLocations$ | async">
+                <a class="hmcts-filter__tag" (click)="removeSelection(selection)" href="javascript:void(0)">
+                  {{ selection.court_name }}
                 </a>
-            </li>
-          </ul>          
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
-    </main>
+    </div>
+    <div class="govuk-inset-text">
+      You can check the venue has the required facilities or reasonable adjustments using<br/>
+      <a href="https://www.find-court-tribunal.service.gov.uk/search-by-name" target="_blank">
+        Court Finder (opens in new tab)</a>
+    </div>
   </div>
 </div>

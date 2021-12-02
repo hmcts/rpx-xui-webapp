@@ -148,15 +148,6 @@ export const ROUTES: Routes = [
           title: 'HMCTS Manage cases | Request Hearing | Check Answers'
         }
       },
-      // {
-      //   path: 'date-priority-hearing',
-      //   resolve: {hearingPriorities: PriorityResolver},
-      //   component: HearingTimingComponent,
-      //   canActivate: [HealthCheckGuard],
-      //   data: {
-      //     title: 'HMCTS Manage cases | Request Hearing | Date Priority Hearing'
-      //   }
-      // },
     ]
   },
   {

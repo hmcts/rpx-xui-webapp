@@ -11,7 +11,6 @@ import { SharedModule } from '../app/shared/shared.module';
 import { RoleAccessModule } from '../role-access/role-access.module';
 import { PriorityFieldComponentModule } from './components/priority-field/priority.module';
 import { WorkAllocationComponentsModule } from './components/work-allocation.components.module';
-import { InfoMessageContainerComponent } from "./containers";
 import * as fromContainers from './containers';
 import { WorkAllocationFeatureToggleGuard } from './guards';
 import { CaseworkerDataService, WorkAllocationFeatureService, WorkAllocationTaskService } from './services';
@@ -41,9 +40,6 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
     AlertService,
     CaseworkerDataService,
     WorkAllocationFeatureService
-  ],
-  exports: [
-    InfoMessageContainerComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

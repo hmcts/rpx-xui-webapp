@@ -49,7 +49,7 @@ describe('LocationSearchContainerComponent', () => {
 
   beforeEach(() => {
     const fb = TestBed.get(FormBuilder);
-    var form =  fb.group({
+    const form =  fb.group({
       locationSelectedFormControl: [null]
     });
     fixture = TestBed.createComponent(LocationSearchContainerComponent);
@@ -90,7 +90,7 @@ describe('LocationSearchContainerComponent', () => {
     component.selectedLocations$.subscribe(selectedLocations => {
       expect(selectedLocations.length).toBeGreaterThan(0);
       expect(component.control.value).toBeUndefined();
-    });   
+    });
   });
 
   it('should remove selection in selection list', async () => {

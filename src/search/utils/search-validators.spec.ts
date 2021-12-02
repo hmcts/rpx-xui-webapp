@@ -9,20 +9,20 @@ describe('SearchValidators', () => {
     control = new FormControl({});
   });
 
-  it('should fail caseReference validation if input is less than 16 digits after removing non-digits', () => {
-    control.setValue('1234 1234-1234x123-');
+  it('should fail caseReference validation if input is less than 16 digits after removing separators', () => {
+    control.setValue('1234 12-- -34-1234  123-');
     const caseReferenceValidator = SearchValidators.caseReferenceValidator();
     expect(caseReferenceValidator(control)).toEqual({caseReference: true});
   });
 
-  it('should fail caseReference validation if input is more than 16 digits after removing non-digits', () => {
-    control.setValue('1234 1234-1234x12345');
+  it('should fail caseReference validation if input is more than 16 digits after removing separators', () => {
+    control.setValue('1234 12-- -34-1234  12345');
     const caseReferenceValidator = SearchValidators.caseReferenceValidator();
     expect(caseReferenceValidator(control)).toEqual({caseReference: true});
   });
 
-  it('should pass caseReference validation if input is exactly 16 digits after removing non-digits', () => {
-    control.setValue('1234 1234-1234x1234-');
+  it('should pass caseReference validation if input is exactly 16 digits after removing separators', () => {
+    control.setValue('1234 12-- -34-1234  1234-');
     const caseReferenceValidator = SearchValidators.caseReferenceValidator();
     expect(caseReferenceValidator(control)).toBeNull();
   });
@@ -35,6 +35,18 @@ describe('SearchValidators', () => {
 
   it('should fail caseReference validation if input is the empty string', () => {
     control.setValue('');
+    const caseReferenceValidator = SearchValidators.caseReferenceValidator();
+    expect(caseReferenceValidator(control)).toEqual({caseReference: true});
+  });
+
+  it('should fail caseReference validation if input contains one or more letters', () => {
+    control.setValue('1234-1234 1234123A');
+    const caseReferenceValidator = SearchValidators.caseReferenceValidator();
+    expect(caseReferenceValidator(control)).toEqual({caseReference: true});
+  });
+
+  it('should fail caseReference validation if input contains one or more symbols (except for "-")', () => {
+    control.setValue('1234-1234 1234_1234');
     const caseReferenceValidator = SearchValidators.caseReferenceValidator();
     expect(caseReferenceValidator(control)).toEqual({caseReference: true});
   });

@@ -1,39 +1,30 @@
-<div
-  [ngClass]="{
-    'govuk-width-container': !control.valid && control.errors.required,
-    'govuk-form-group': !control.valid}"
-class="govuk-width-container">
-  <div class="page">
-    <main id="content" role="main">
-      <div class="govuk-form-group">
-        <div class="location-picker-custom">
-          <div class="search-location">
-            <label id="input-selected-location-label" class="govuk-body">
-                 Search for a location by name
-            </label>
-            <br>
-            <span  *ngIf="!control.valid && control.errors.required && dirty" id="event-name-error" class="govuk-error-message">
-              <span class="govuk-visually-hidden">Error:</span> Enter an event name
-            </span>
-            <exui-search-location class="search-location"
-              [selectedLocations$]="selectedLocations$"
-              [control]="control"
-              [disabled]=false 
-              [serviceIds]="serviceIds"
-              [locationType]="'hearing'"></exui-search-location>
-              <a href="javascript:void(0)" (click)="addSelection()" class="govuk-button govuk-button--secondary" data-module="govuk-button">
-                Add location
-            </a>
-          </div>   
-          <ul  *ngIf="(selectedLocations$ | async)?.length" class="hmcts-filter-tags selection-container">
-            <li class="location-selection"  *ngFor="let selection of selectedLocations$ | async">
-                <a class="hmcts-filter__tag" (click)="removeSelection(selection)" href="javascript:void(0)">           
-                    {{ selection.court_name }}
-                </a>
-            </li>
-          </ul>          
-        </div>
-      </div>
-    </main>
+<div class="govuk-form-group">
+  <div class="location-picker-custom">
+    <div class="search-location">
+      <label id="input-selected-location-label" class="govuk-body">
+            Search for a location by name
+      </label>
+      <br>
+      <span  *ngIf="!control.valid && control.errors.required && control.dirty" id="event-name-error" class="govuk-error-message">
+        <span class="govuk-visually-hidden">Error:</span> Enter a valid location
+      </span>
+      <exui-search-location class="search-location"
+        [selectedLocations$]="selectedLocations$"
+        [control]="control"
+        [locations$]="locationsFound$"
+        [disabled]=false 
+        [serviceIds]="serviceIds"
+        [locationType]="'hearing'"></exui-search-location>
+        <a href="javascript:void(0)" (click)="addSelection()" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+          Add location
+      </a>
+    </div>
+    <ul *ngIf="(selectedLocations$ | async)?.length" class="hmcts-filter-tags selection-container">
+      <li class="location-selection"  *ngFor="let selection of selectedLocations$ | async">
+          <a class="hmcts-filter__tag" (click)="removeSelection(selection)" href="javascript:void(0)">    
+              {{ selection.court_name }}
+          </a>
+      </li>
+    </ul>
   </div>
 </div>

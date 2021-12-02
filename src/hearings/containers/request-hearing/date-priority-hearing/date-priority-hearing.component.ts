@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
 import { select, Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { map } from 'rxjs/operators';
+import { HearingsService } from 'src/hearings/services/hearings.service';
+import { ValidatorsService } from 'src/hearings/services/validators.service';
 import { PartyUnavailabilityRange } from '../../../../hearings/models/partyUnavilabilityRange.model';
 import { RefDataModel } from '../../../../hearings/models/refData.model';
 import * as fromHearingStore from '../../../../hearings/store';
@@ -22,10 +24,19 @@ export class DatePriorityHearingComponent implements OnInit {
   public firstHearingDate: GovUiConfigModel;
   public earliestHearingDate: GovUiConfigModel;
   public latestHearingDate: GovUiConfigModel;
+  public validationErrors: { id: string, message: string }[] = [];
+  public isHearingLengthNotValid: boolean;
+  public hearingLengthErrorValue: string;
+  public hearingLengthError: string = 'Enter a valid hearing length';
+  public hearingTotalLengthError = 'Enter a valid length of hearing, it must be between 5 minutes and 6 hours';
+  public isHearingPriorityNotValid: boolean;
+  public hearingPriorityError: string = 'Select the priority level of the hearing';
 
   constructor(private readonly formBuilder: FormBuilder,
               private readonly route: ActivatedRoute,
-              private readonly hearingStore: Store<fromHearingStore.State>) { }
+              private readonly validatorsService: ValidatorsService,
+              private readonly hearingStore: Store<fromHearingStore.State>,
+              private readonly hearingsService: HearingsService) { }
 
   public ngOnInit(): void {
     this.initDateConfig();
@@ -38,6 +49,9 @@ export class DatePriorityHearingComponent implements OnInit {
           this.checkUnavailableDatesList(unavailabilityDateList);
         }
       });
+    this.hearingsService.requestHearingForm$.subscribe((routeName: string) => {
+      this.onSubmit();
+    });
   }
 
   public initDateConfig(): void {
@@ -68,9 +82,9 @@ export class DatePriorityHearingComponent implements OnInit {
   public initForm(): void {
     this.priorityForm = this.formBuilder.group({
       durationLength: this.formBuilder.group({
-        hours: [],
-        minutes: []
-      }),
+        hours: ['', [Validators.required, this.validatorsService.numberMinMaxValidator(0, 6)]],
+        minutes: ['', [Validators.required, this.validatorsService.numberMinMaxValidator(0, 59)]]
+      }, { validator: this.validatorsService.minutesValidator(5, 360) }),
       firstHearingDate_day: [],
       firstHearingDate_month: [],
       firstHearingDate_year: [],
@@ -107,5 +121,28 @@ export class DatePriorityHearingComponent implements OnInit {
       }
       startDate.add(1, 'd');
     }
+  }
+
+  public checkFormData(): void {
+    this.validationErrors = [];
+    this.hearingLengthErrorValue = this.hearingLengthError;
+    this.isHearingLengthNotValid = false;
+    if (!this.priorityForm.valid) {
+      if (!this.priorityForm.controls.durationLength.get('hours').valid) {
+        this.isHearingLengthNotValid = true;
+        this.validationErrors.push({ id: 'durationhours', message: this.hearingLengthError });
+      } else if (!this.priorityForm.controls.durationLength.get('minutes').valid) {
+        this.isHearingLengthNotValid = true;
+        this.validationErrors.push({ id: 'durationmins', message: this.hearingLengthError });
+      } else if (!this.priorityForm.controls.durationLength.valid) {
+        this.isHearingLengthNotValid = true;
+        this.hearingLengthErrorValue = this.hearingTotalLengthError;
+        this.validationErrors.push({ id: 'durationhours', message: this.hearingTotalLengthError });
+      }
+    }
+  }
+
+  public onSubmit(): void {
+    this.checkFormData();
   }
 }

@@ -1,7 +1,7 @@
 import { FormBuilder, FormControl } from '@angular/forms';
 import {
   BookingDateFormErrorMessage,
-  TimeOption,
+  BookingDateOption,
 } from '../../models';
 import { DateValidators } from './date-validators';
 
@@ -56,7 +56,7 @@ describe('DateValidators', () => {
       endDate_year: '',
       endDate_month: '',
       endDate_day: '',
-      bookingDateType: '',
+      dateOption: '',
     });
     formGroup.get('startDate_day').setValue(10);
     formGroup.get('startDate_month').setValue(12);
@@ -64,7 +64,7 @@ describe('DateValidators', () => {
     formGroup.get('endDate_year').setValue(10);
     formGroup.get('endDate_month').setValue(12);
     formGroup.get('endDate_day').setValue(2010);
-    formGroup.get('bookingDateType').setValue(TimeOption.DATERANGE);
+    formGroup.get('dateOption').setValue(BookingDateOption.DATERANGE);
     const bookingDateValidator = DateValidators.bookingDateValidator();
     expect(bookingDateValidator(formGroup)).toEqual({
       isValid: false,
@@ -80,7 +80,7 @@ describe('DateValidators', () => {
       endDate_year: '',
       endDate_month: '',
       endDate_day: '',
-      bookingDateType: '',
+      dateOption: '',
     });
     formGroup.get('startDate_day').setValue(11);
     formGroup.get('startDate_month').setValue(12);
@@ -88,7 +88,7 @@ describe('DateValidators', () => {
     formGroup.get('endDate_year').setValue(10);
     formGroup.get('endDate_month').setValue(12);
     formGroup.get('endDate_day').setValue(2022);
-    formGroup.get('bookingDateType').setValue(TimeOption.DATERANGE);
+    formGroup.get('dateOption').setValue(BookingDateOption.DATERANGE);
     const dateComparisonValidator = DateValidators.bookingDateValidator();
     expect(dateComparisonValidator(formGroup)).toEqual({
       isValid: false,

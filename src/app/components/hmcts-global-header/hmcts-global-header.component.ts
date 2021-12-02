@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { FlagDefinition, NavigationItem } from '../../models/theming.model';
@@ -8,6 +8,7 @@ import * as fromAppStore from '../../../app/store';
 import * as fromNocStore from '../../../noc/store';
 import { UserNavModel } from '../../models/user-nav.model';
 import { UserService } from '../../services/user/user.service';
+import { UserDetails } from '../../../app/models/user-details.model';
 
 @Component({
     selector: 'exui-hmcts-global-header',
@@ -28,12 +29,14 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   @Input() public decorate16DigitCaseReferenceSearchBoxInHeader: boolean;
   @Output() public navigate = new EventEmitter<string>();
 
-  public showItems = true;
+  public showItems = false;
   public userValue = true;
   public tab;
+  public userDetails$: Observable<UserDetails>;
+  public isUserCaseManager$: Observable<boolean>;
   public get leftItems(): Observable<NavigationItem[]> {
     return this.menuItems.left.asObservable();
-  };
+  }
   public get rightItems(): Observable<NavigationItem[]> {
     return this.menuItems.right.asObservable();
   }
@@ -51,6 +54,16 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   ) { }
 
   public ngOnInit(): void {
+    this.appStore.dispatch(new fromAppStore.LoadUserDetails());
+    this.userDetails$ = this.appStore.pipe(select(fromAppStore.getUserDetails));
+
+		this.isUserCaseManager$ = this.userDetails$.pipe(
+      map(details => details.userInfo.roles),
+      map(roles => {
+        return roles.includes('pui-case-manager')
+      })
+    );
+
     this.splitAndFilterNavItems(this.items);
   }
 

@@ -149,7 +149,7 @@ describe('HmctsGlobalHeaderComponent', () => {
     expect(findCase).toBeFalsy();
   });
 
-  it('splitNavItems', async () => {
+  it('splitNavItems', (done: DoneFn) => {
     component.items = [{
       align: 'right',
       text: '1',
@@ -168,7 +168,7 @@ describe('HmctsGlobalHeaderComponent', () => {
       href: '',
       active: false
     }];
-    await component.ngOnChanges(changesMock);
+    component.ngOnChanges(changesMock);
     fixture.detectChanges();
     const leftItems = component.leftItems;
     const rightItems = component.rightItems;
@@ -196,10 +196,11 @@ describe('HmctsGlobalHeaderComponent', () => {
         href: '',
         active: false
       }]);
+      done();
     });
   });
 
-  it('filters out menu items for which the user does not hold the correct role', async () => {
+  it('filters out menu items for which the user does not hold the correct role', (done) => {
     component.items = [{
       align: 'right',
       text: '1',
@@ -221,7 +222,7 @@ describe('HmctsGlobalHeaderComponent', () => {
       active: false,
       roles: ['roleC']
     }];
-    await component.ngOnChanges(changesMock);
+    component.ngOnChanges(changesMock);
     const leftItems = component.leftItems;
     const rightItems = component.rightItems;
     leftItems.pipe(
@@ -231,10 +232,11 @@ describe('HmctsGlobalHeaderComponent', () => {
       })
     ).subscribe(items => {
       expect(items).toEqual([component.items[0]]);
+      done();
     });
   });
 
-  it('filters out menu items for which not all features are enabled', async () => {
+  it('filters out menu items for which not all features are enabled', (done) => {
     component.items = [{
       align: 'right',
       text: '1',
@@ -258,7 +260,7 @@ describe('HmctsGlobalHeaderComponent', () => {
       flags: ['enabledFlag', 'disabledFlag'],
       roles: ['roleC']
     }];
-    await component.ngOnChanges(changesMock);
+    component.ngOnChanges(changesMock);
     const leftItems = component.leftItems;
     const rightItems = component.rightItems;
     leftItems.pipe(
@@ -268,6 +270,7 @@ describe('HmctsGlobalHeaderComponent', () => {
       })
     ).subscribe(items => {
       expect(items).toEqual([component.items[0]]);
+      done();
     });
   });
 });

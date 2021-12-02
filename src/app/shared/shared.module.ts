@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import { MediaViewerModule } from '@hmcts/media-viewer';
 import { ExuiCommonLibModule, GOV_UI_COMPONENTS } from '@hmcts/rpx-xui-common-lib';
 import * as fromAppComponents from '../components';
 import * as fromAppContainers from '../containers';
@@ -20,6 +21,7 @@ import { HealthCheckService } from './services/health-check.service';
   imports: [
     RouterModule,
     CommonModule,
+    MediaViewerModule,
     ExuiCommonLibModule,
     ReactiveFormsModule
   ],

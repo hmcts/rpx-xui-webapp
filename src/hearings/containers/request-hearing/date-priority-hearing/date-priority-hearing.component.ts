@@ -39,9 +39,9 @@ export class DatePriorityHearingComponent implements OnInit {
               private readonly hearingsService: HearingsService) { }
 
   public ngOnInit(): void {
+    this.priorities = this.route.snapshot.data.hearingPriorities.sort((currentPriority, nextPriority) => (currentPriority.order < nextPriority.order ? -1 : 1));
     this.initDateConfig();
     this.initForm();
-    this.priorities = this.route.snapshot.data.hearingPriorities.sort((currentPriority, nextPriority) => (currentPriority.order < nextPriority.order ? -1 : 1));
     this.hearingStore.pipe(select(fromHearingStore.getHearingValuesModel),
       map((hearingValues): PartyUnavailabilityRange[] => hearingValues && hearingValues.parties && hearingValues.parties.map(dates => dates.unavailability).flat()))
       .subscribe((unavailabilityDateList: PartyUnavailabilityRange[]) => {
@@ -95,6 +95,7 @@ export class DatePriorityHearingComponent implements OnInit {
       latestHearingDate_month: [],
       latestHearingDate_year: [],
       hearingAvailability: [],
+      priority: ['', Validators.required]
     });
   }
 
@@ -127,6 +128,7 @@ export class DatePriorityHearingComponent implements OnInit {
     this.validationErrors = [];
     this.hearingLengthErrorValue = this.hearingLengthError;
     this.isHearingLengthNotValid = false;
+    this.isHearingPriorityNotValid = false;
     if (!this.priorityForm.valid) {
       if (!this.priorityForm.controls.durationLength.get('hours').valid) {
         this.isHearingLengthNotValid = true;
@@ -138,6 +140,10 @@ export class DatePriorityHearingComponent implements OnInit {
         this.isHearingLengthNotValid = true;
         this.hearingLengthErrorValue = this.hearingTotalLengthError;
         this.validationErrors.push({ id: 'durationhours', message: this.hearingTotalLengthError });
+      }
+      if (!this.priorityForm.controls.priority.valid) {
+        this.isHearingPriorityNotValid = true;
+        this.validationErrors.push({ id: this.priorities[0].key, message: this.hearingPriorityError });
       }
     }
   }

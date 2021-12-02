@@ -87,8 +87,7 @@
           </span>
           <div class="govuk-radios">
             <div class="govuk-radios__item" *ngFor="let priority of priorities">
-              <input class="govuk-radios__input" id="{{priority.key}}" name="priorityHearing" type="radio"
-                [value]="priority.value_en">
+              <input class="govuk-radios__input" id="{{priority.key}}" name="priority" type="radio" [value]="priority.value_en" formControlName="priority">
               <label class="govuk-label govuk-radios__label" [for]="priority.key">{{priority.value_en}}</label>
             </div>
           </div>

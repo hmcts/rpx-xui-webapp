@@ -150,7 +150,7 @@ describe('HmctsGlobalHeaderComponent', () => {
     expect(findCase).toBeFalsy();
   });
 
-  it('splitNavItems', async() => {
+  it('splitNavItems', async () => {
     component.items = [{
       align: 'right',
       text: '1',
@@ -200,7 +200,7 @@ describe('HmctsGlobalHeaderComponent', () => {
     });
   });
 
-  it('filters out menu items for which the user does not hold the correct role', async() => {
+  it('filters out menu items for which the user does not hold the correct role', async () => {
     component.items = [{
       align: 'right',
       text: '1',
@@ -235,26 +235,29 @@ describe('HmctsGlobalHeaderComponent', () => {
     });
   });
 
-  it('filters out menu items for which not all features are enabled', async() => {
+  it('filters out menu items for which not all features are enabled', async () => {
     component.items = [{
       align: 'right',
       text: '1',
       href: '',
       active: false,
-      flags: ['enabledFlag']
+      flags: ['enabledFlag'],
+      roles: ['roleA']
     },
     {
       align: null,
       text: '2',
       href: '',
-      active: false
+      active: false,
+      roles: ['roleB']
     },
     {
       align: 'right',
       text: '3',
       href: '',
       active: false,
-      flags: ['enabledFlag', 'disabledFlag']
+      flags: ['enabledFlag', 'disabledFlag'],
+      roles: ['roleC']
     }];
     await component.ngOnChanges(changesMock);
     const leftItems = component.leftItems;

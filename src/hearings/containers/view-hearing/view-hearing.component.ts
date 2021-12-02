@@ -11,15 +11,15 @@ export class ViewHearingComponent {
   @ViewChild(LocationSearchContainerComponent) public searchLocationContainerComponent: LocationSearchContainerComponent;
   public findLocationFormGroup: FormGroup;
   dirty: boolean;
-  constructor(fb: FormBuilder) { 
+  constructor(fb: FormBuilder) {
     this.findLocationFormGroup =  fb.group({
       locationSelectedFormControl: [null, Validators.required]
     });
   }
 
   public getLocationSearchFocus() {
-    if (this.searchLocationContainerComponent.searchLocationComponent && 
-        this.searchLocationContainerComponent.searchLocationComponent.autoCompleteInputBox && 
+    if (this.searchLocationContainerComponent.searchLocationComponent &&
+        this.searchLocationContainerComponent.searchLocationComponent.autoCompleteInputBox &&
         this.searchLocationContainerComponent.searchLocationComponent.autoCompleteInputBox.nativeElement) {
           this.searchLocationContainerComponent.searchLocationComponent.autoCompleteInputBox.nativeElement.focus();
     }

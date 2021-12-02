@@ -33,7 +33,7 @@ export class LocationSearchContainerComponent implements OnInit {
       this.serviceIds = id ? id : this.serviceIds;
     });
 
-    this.control.valueChanges.subscribe((newValue) => newValue.value ? this.control.markAsPristine(): this.control.markAsDirty());
+    this.control.valueChanges.subscribe((newValue) => newValue.value ? this.control.markAsPristine() : this.control.markAsDirty());
 
     if (this.searchLocationComponent.autoCompleteInputBox && this.searchLocationComponent.autoCompleteInputBox.nativeElement) {
       this.searchLocationComponent.autoCompleteInputBox.nativeElement.focus();

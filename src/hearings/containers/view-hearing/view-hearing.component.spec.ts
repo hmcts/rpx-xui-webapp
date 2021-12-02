@@ -7,7 +7,7 @@ import { By } from '@angular/platform-browser';
 describe('ViewHearingComponent', () => {
   let component: ViewHearingComponent;
   let fixture: ComponentFixture<ViewHearingComponent>;
-  
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
@@ -29,7 +29,7 @@ describe('ViewHearingComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should show summry header', async(done) => {
+  it('should show summry header', async (done) => {
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue('TEST ERROR');
     fixture.whenStable().then(() => {
       fixture.detectChanges();
@@ -39,7 +39,7 @@ describe('ViewHearingComponent', () => {
     });
   });
 
-  it('should call getLocationSearchFocus when clicking on the summary error anchor', async(done) => {    
+  it('should call getLocationSearchFocus when clicking on the summary error anchor', async (done) => {
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue('TEST ERROR');
     fixture.whenStable().then(() => {
       fixture.detectChanges();

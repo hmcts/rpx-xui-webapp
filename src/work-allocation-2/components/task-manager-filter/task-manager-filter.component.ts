@@ -56,11 +56,6 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
         {
           name: 'selectPerson',
           value: ['All']
-        },
-        // Note: judicial users can have pirority cancel setting without needing it
-        {
-          name: 'priority',
-          value: ['All']
         }
       ]
     }
@@ -199,37 +194,6 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
     };
   }
 
-  private static initPriorityFilter(): FilterFieldConfig {
-    return {
-      name: 'priority',
-      options: [
-        {
-          key: 'All',
-          label: 'All'
-        },
-        {
-          key: 'High',
-          label: 'High'
-        },
-        {
-          key: 'Medium',
-          label: 'Medium'
-        },
-        {
-          key: 'Low',
-          label: 'Low'
-        }
-      ],
-      minSelected: 1,
-      maxSelected: 1,
-      minSelectedError: 'You must select a priority',
-      maxSelectedError: null,
-      lineBreakBefore: true,
-      title: 'Priority',
-      type: 'select'
-    };
-  }
-
   public ngOnInit(): void {
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
       userDetails => {
@@ -252,8 +216,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       TaskManagerFilterComponent.initPersonFilter(),
       TaskManagerFilterComponent.initRoleTypeFilter(),
       TaskManagerFilterComponent.findPersonFilter(),
-      TaskManagerFilterComponent.initTaskTypeFilter(),
-      TaskManagerFilterComponent.initPriorityFilter()
+      TaskManagerFilterComponent.initTaskTypeFilter()
     ];
     this.fieldsConfig.fields = this.isLegalOpsOrJudicialRole === UserRole.Judicial ?
       this.fieldsConfig.fields.slice(0, -1) : this.fieldsConfig.fields;

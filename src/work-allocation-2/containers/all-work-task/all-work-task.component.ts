@@ -28,7 +28,6 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   private selectedTaskCategory: string = 'All';
   private selectedPerson: string = '';
   private selectedTaskType: string = 'All';
-  private selectedPriority: string = 'All';
   public locations$: Observable<Location[]>;
   public locations: Location[];
   public waSupportedJurisdictions$: Observable<string[]>;
@@ -124,13 +123,12 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     this.onPaginationHandler(pageNumber);
   }
 
-  public onSelectionChanged(selection: {location: string, service: string, selectPerson: string, person: Person, taskType: string, priority: string }): void {
+  public onSelectionChanged(selection: {location: string, service: string, selectPerson: string, person: Person, taskType: string}): void {
     this.selectedLocation.id = selection.location;
     this.selectedJurisdiction = selection.service;
     this.selectedTaskCategory = selection.selectPerson;
     this.selectedPerson = selection.person ? selection.person.id : null;
     this.selectedTaskType = selection.taskType;
-    this.selectedPriority = selection.priority && !this.isCurrentUserJudicial() ? selection.priority : '';
     this.loadTasks();
   }
 }

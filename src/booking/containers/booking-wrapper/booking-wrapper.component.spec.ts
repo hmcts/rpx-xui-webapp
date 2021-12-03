@@ -73,7 +73,7 @@ describe('BookingWrapperComponent', () => {
 
   describe('button events', () => {
     it('should navigate to the location page when new booking is selected', () => {
-      component.newBooking.bookingOptionIndex = 1; // new booking option
+      component.bookingProcess.selectedBookingOption = 1; // new booking option
       component.navigationHandler(BookingNavigationEvent.HOMECONTINUE);
       expect(component.bookingNavigationCurrentState).toBe(BookingState.LOCATION);
     });

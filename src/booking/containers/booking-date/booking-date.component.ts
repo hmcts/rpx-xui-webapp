@@ -1,5 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { BookingDateValidationError, BookingNavigationEvent, NewBooking } from '../../models';
+import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
+import { BookingDateValidationError, BookingNavigationEvent, BookingProcess } from '../../models';
+import { DateValidators } from '../utils';
+
 import {
   FormBuilder,
   FormControl,
@@ -7,14 +10,11 @@ import {
   Validators,
 } from '@angular/forms';
 import {
-  TimeOption,
-  BookingTimePageText,
-  DateFormControl,
   BookingDateFormErrorMessage,
+  BookingDateOption,
+  BookingDatePageText,
+  DateFormControl
 } from '../../models/booking-date.enum';
-import { ErrorMessage } from '../../../app/models';
-import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
-import { DateValidators } from '../utils';
 
 @Component({
   selector: 'exui-booking-date',
@@ -22,15 +22,13 @@ import { DateValidators } from '../utils';
 })
 export class BookingDateComponent implements OnInit {
 
-  @Input() public newBooking: NewBooking;
-  @Output() public newBookingChange = new EventEmitter<NewBooking>();
+  @Input() public bookingProcess: BookingProcess;
   @Output() public eventTrigger = new EventEmitter();
   public title: string;
   public caption: string;
-  public readonly dateInterval: DisplayedDateInterval[];
+  public dateInterval: DisplayedDateInterval[];
   public formGroup: FormGroup;
   public submitted = false;
-  public errorMessage: ErrorMessage;
   public configStart: GovUiConfigModel;
   public configEnd: GovUiConfigModel;
   public dateValidationErrors: BookingDateValidationError[];
@@ -41,9 +39,9 @@ export class BookingDateComponent implements OnInit {
     private readonly fb: FormBuilder
   ) {
     this.dateInterval = [
-      { date: TimeOption.TODAY, checked: false },
-      { date: TimeOption.WEEK, checked: false },
-      { date: TimeOption.DATERANGE, checked: false },
+      { date: BookingDateOption.TODAY, checked: false },
+      { date: BookingDateOption.WEEK, checked: false },
+      { date: BookingDateOption.DATERANGE, checked: false },
     ];
     this.configStart = {
       id: 'startDate',
@@ -62,21 +60,25 @@ export class BookingDateComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.title = BookingTimePageText.TITLE;
-    this.caption = BookingTimePageText.CAPTION;
+    this.title = BookingDatePageText.TITLE;
+    this.caption = BookingDatePageText.CAPTION;
     this.formGroup = this.fb.group({
-      bookingDateType: new FormControl(null, Validators.required),
-      startDate_day: null,
-      startDate_month: null,
-      startDate_year: null,
-      endDate_year: null,
-      endDate_month: null,
-      endDate_day: null
+      dateOption: new FormControl(null, Validators.required),
+      startDate_year: new FormControl(null, null),
+      startDate_month: new FormControl(null, null),
+      startDate_day: new FormControl(null, null),
+      endDate_year: new FormControl(null, null),
+      endDate_month: new FormControl(null, null),
+      endDate_day: new FormControl(null, null)
     });
+    this.formGroup.get('dateOption').patchValue(this.bookingProcess.selectedDateOption);
+    if (typeof this.bookingProcess.selectedDateOption === 'number') {
+      this.dateInterval[this.bookingProcess.selectedDateOption].checked = true;
+    }
     this.setValidators();
   }
 
-  private setValidators(): void {
+  public setValidators(): void {
     const dayValidator = DateValidators.dayValidator();
     const monthValidator = DateValidators.monthValidator();
     const yearValidator = DateValidators.yearValidator();
@@ -162,23 +164,75 @@ export class BookingDateComponent implements OnInit {
   }
 
   public onSelectOption(selectedOption): void {
-    if (selectedOption !== TimeOption.DATERANGE ) {
+    if (selectedOption !== BookingDateOption.DATERANGE) {
       this.resetValidationErrorMessages();
       this.formGroup.setErrors(null);
-   }
+    }
+    this.bookingProcess.selectedDateOption = selectedOption;
   }
+
+  public getStartEndDate(bookingDateOption: BookingDateOption): {startDate: Date, endDate: Date} {
+    let startDate: Date;
+    let endDate: Date;
+    switch (bookingDateOption) {
+      case BookingDateOption.TODAY:
+        startDate = new Date();
+        const now = new Date();
+        endDate = new Date(now.setUTCHours(23, 59, 59, 999));
+        break;
+      case BookingDateOption.WEEK:
+        startDate = new Date();
+        const sunday = new Date();
+        const sundayUTC = sunday.setTime(sunday.getTime() - ((sunday.getDay() ? sunday.getDay() : 7) - 7) * 24 * 60 * 60 * 1000);
+        const sundayMidnightUTC = new Date(sundayUTC).setUTCHours(23, 59, 59, 999);
+        endDate = new Date(sundayMidnightUTC);
+        break;
+      case BookingDateOption.DATERANGE:
+        startDate = new Date(
+                      this.formGroup.get(DateFormControl.BOOKING_START_YEAR).value,
+                      this.formGroup.get(DateFormControl.BOOKING_START_MONTH).value - 1,
+                      this.formGroup.get(DateFormControl.BOOKING_START_DAY).value
+                    );
+        const endDateMidnight = new Date(
+                                  this.formGroup.get(DateFormControl.BOOKING_END_YEAR).value,
+                                  this.formGroup.get(DateFormControl.BOOKING_END_MONTH).value - 1,
+                                  this.formGroup.get(DateFormControl.BOOKING_END_DAY).value
+                                ).setUTCHours(23, 59, 59, 999);
+        endDate = new Date(endDateMidnight);
+        break;
+      default:
+        break;
+    }
+
+    return {
+      startDate,
+      endDate
+    };
+  }
+
   public onSubmit(): void {
     if (!this.validateForm()) {
       // Scroll to error summary
       window.scrollTo({ top: 0, left: 0 });
     } else {
+      this.onEventTrigger();
+    }
+  }
+
+  public onEventTrigger() {
+    const {startDate, endDate} = this.getStartEndDate(this.formGroup.get('dateOption').value);
+    if (startDate && endDate) {
+      this.bookingProcess.startDate = startDate;
+      this.bookingProcess.endDate = endDate;
       this.eventTrigger.emit(BookingNavigationEvent.CONFIRMBOOKINGDATESUBMIT);
+    } else {
+      this.submitted = true;
     }
   }
 }
 
 export interface DisplayedDateInterval {
-  date: TimeOption;
+  date: BookingDateOption;
   checked: boolean;
 }
 

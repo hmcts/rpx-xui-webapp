@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { NewBooking } from '../../models';
+import { BookingProcess } from '../../models';
 
 import { ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
@@ -49,7 +49,7 @@ describe('BookingHomeComponent', () => {
 
     fixture = TestBed.createComponent(BookingHomeComponent);
     component = fixture.componentInstance;
-    component.newBooking = {} as NewBooking;
+    component.bookingProcess = {} as BookingProcess;
     fixture.detectChanges();
   }));
 
@@ -66,13 +66,13 @@ describe('BookingHomeComponent', () => {
 
   describe('onSelectOption()', () => {
 
-    it('should change bookingOptionIndex', () => {
+    it('should change selectedBookingOption', () => {
 
       // Click on the second radio button.
       const element = fixture.debugElement.nativeElement;
       const secondRadioButton = element.querySelector('#type-1');
       secondRadioButton.click();
-      expect(component.newBooking.bookingOptionIndex).toEqual(1);
+      expect(component.bookingProcess.selectedBookingOption).toEqual(1);
     });
   });
 

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { BookingNavigationEvent, NewBooking } from '../../models';
+import { BookingNavigationEvent, BookingProcess } from '../../models';
 
 @Component({
   selector: 'exui-booking-check',
@@ -8,9 +8,10 @@ import { BookingNavigationEvent, NewBooking } from '../../models';
 })
 export class BookingCheckComponent implements OnInit {
 
-  @Input() public newBooking: NewBooking;
+  @Input() public selectedBookingOption: number;
+  @Input() public bookingProcess: BookingProcess;
 
-  @Output() public newBookingChange = new EventEmitter<NewBooking>();
+  @Output() public bookingProcessChange = new EventEmitter<BookingProcess>();
   @Output() public eventTrigger = new EventEmitter();
 
   constructor() { }

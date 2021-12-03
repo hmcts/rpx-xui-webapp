@@ -3,6 +3,7 @@ import * as cookieParser from 'cookie-parser';
 import * as csrf from 'csurf';
 import * as express from 'express';
 import * as helmet from 'helmet';
+import amRoutes from './accessManagement/routes';
 import { getXuiNodeMiddleware } from './auth';
 import { getConfigValue, showFeature } from './configuration';
 import {
@@ -111,10 +112,11 @@ app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
 
 // TODO: No dash?
 // TODO: taskRouter should be called workAllocationRouter
+app.use('/am', amRoutes);
+app.use('/api', routes);
+app.use('/external', openRoutes);
 app.use('/workallocation', taskRouter);
 app.use('/workallocation2', workAllocation2Router);
-app.use('/external', openRoutes);
-app.use('/api', routes);
 app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true }, ignoreMethods: ["GET"] }));
 // @ts-ignore
 const logger: JUILogger = log4jui.getLogger('Application');

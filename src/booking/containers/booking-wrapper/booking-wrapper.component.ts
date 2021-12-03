@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { bookingBackButtonVisibilityStates, bookingCheckVisibilityStates, bookingDateVisibilityStates, bookingHomeVisibilityStates, bookingLocationVisibilityStates } from '../../constants/pageVisibilityStates';
-import { BookingNavigation, BookingNavigationEvent, BookingState, NewBooking } from '../../models';
+import { BookingNavigation, BookingNavigationEvent, BookingProcess, BookingState } from '../../models';
 
 @Component({
   selector: 'exui-booking-wrapper',
@@ -18,7 +18,7 @@ export class BookingWrapperComponent implements OnInit {
   public bookingDateVisibilityStates = bookingDateVisibilityStates;
   public bookingCheckVisibilityStates = bookingCheckVisibilityStates;
   public navEvent: BookingNavigation;
-  public newBooking = {} as NewBooking;
+  public bookingProcess = {} as BookingProcess;
 
   constructor(private readonly router: Router) { }
 
@@ -52,7 +52,7 @@ export class BookingWrapperComponent implements OnInit {
         }
         break;
       case BookingNavigationEvent.HOMECONTINUE:
-        if (this.newBooking.bookingOptionIndex === 1) {
+        if (this.bookingProcess.selectedBookingOption === 1) {
           this.bookingNavigationCurrentState = BookingState.LOCATION;
         } else {
           this.router.navigate(['/work/my-work/list']);

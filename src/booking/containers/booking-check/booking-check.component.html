@@ -1,4 +1,38 @@
-<p>
-  booking-check works!
-</p>
-<button class="button" type="button" (click)="onEventTrigger()">Confirm Booking</button>
+<div class="govuk-width-container">
+  <h1 class="govuk-heading-l">
+    <span class="govuk-caption-l"> Work access </span>
+    Check your new booking
+  </h1>
+
+  <dl class="govuk-summary-list govuk-!-margin-bottom-9 govuk-!-width-three-quarters">
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">Location</dt>
+      <dd class="govuk-summary-list__value">
+        <p class="govuk-body">{{bookingProcess.locationName}}</p>
+      </dd>
+      <dd class="govuk-summary-list__actions">
+        <a class="govuk-link" href="javascript:void(0)">
+          Change
+        </a>
+      </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">Duration</dt>
+      <dd class="govuk-summary-list__value">
+        <p class="govuk-body">{{bookingProcess.startDate | date:'dd LLLL yyyy'}} to {{bookingProcess.endDate | date:'dd LLLL yyyy'}}</p>
+      </dd>
+      <dd class="govuk-summary-list__actions">
+        <a class="govuk-link" href="javascript:void(0)">
+          Change
+        </a>
+      </dd>
+    </div>
+  </dl>
+
+  <button class="govuk-button govuk-!-margin-right-3" type="button" (click)="onEventTrigger()">Confirm Booking</button>
+  <div class="govuk-button-group">
+    <a class="govuk-body">
+      Cancel
+    </a>
+  </div>
+</div>

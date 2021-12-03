@@ -1,5 +1,5 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { DateFormControl, BookingDateFormErrorMessage, TimeOption } from '../../models/index';
+import { BookingDateFormErrorMessage, BookingDateOption, DateFormControl } from '../../models';
 
 export class DateValidators {
 
@@ -40,14 +40,14 @@ export class DateValidators {
     const endDateDay = formGroup.get(DateFormControl.BOOKING_END_DAY).value;
     const endDateMonth = formGroup.get(DateFormControl.BOOKING_END_MONTH).value;
     const endDateYear = formGroup.get(DateFormControl.BOOKING_END_YEAR).value;
-    const bookingDateType = formGroup.get('bookingDateType').value;
-    return {startDateDay, startDateMonth, startDateYear, endDateDay, endDateMonth, endDateYear, bookingDateType};
+    const dateOption = formGroup.get('dateOption').value;
+    return {startDateDay, startDateMonth, startDateYear, endDateDay, endDateMonth, endDateYear, dateOption};
   }
 
   public static bookingEmptyValidator(): ValidatorFn {
     return (formGroup: AbstractControl): ValidationErrors | null => {
-      const {startDateDay, startDateMonth, startDateYear, endDateDay, endDateMonth, endDateYear, bookingDateType} =  this.getFormValues(formGroup);
-      if (bookingDateType !== TimeOption.DATERANGE ) {
+      const {startDateDay, startDateMonth, startDateYear, endDateDay, endDateMonth, endDateYear, dateOption} =  this.getFormValues(formGroup);
+      if (dateOption !== BookingDateOption.DATERANGE ) {
         return;
       }
       if ((!startDateDay || !startDateMonth || !startDateYear ) &&
@@ -65,8 +65,8 @@ export class DateValidators {
 
   public static bookingDateValidator(): ValidatorFn {
     return (formGroup: AbstractControl): ValidationErrors | null => {
-      const {startDateDay, startDateMonth, startDateYear, endDateDay, endDateMonth, endDateYear, bookingDateType} =  this.getFormValues(formGroup);
-      if (bookingDateType !== TimeOption.DATERANGE ) {
+      const {startDateDay, startDateMonth, startDateYear, endDateDay, endDateMonth, endDateYear, dateOption} =  this.getFormValues(formGroup);
+      if (dateOption !== BookingDateOption.DATERANGE ) {
           return;
       }
       const startDate = new Date(startDateYear, startDateMonth, startDateDay);

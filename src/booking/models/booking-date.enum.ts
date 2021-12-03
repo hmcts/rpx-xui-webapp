@@ -1,4 +1,4 @@
-export enum TimeOption {
+export enum BookingDateOption {
   TODAY = 'Today only (ends at midnight)',
   WEEK = 'This week (end on Sunday at midnight )',
   DATERANGE = 'Select a date range',
@@ -6,7 +6,7 @@ export enum TimeOption {
   BOOKINGEND = 'Booking ends'
 }
 
-export enum BookingTimePageText {
+export enum BookingDatePageText {
   TITLE = 'Book your time at the location',
   CAPTION = 'Work access',
 }
@@ -26,12 +26,12 @@ export enum BookingDateFormErrorMessage {
   BOOKING_END_DATE_CHECK = 'booking-end-date-check',
   BOOKING_BOTH_DATE_CHECK = 'booking-both-date-check',
   DATE_COMPARISON = 'date-comparison',
-  NO_SELECTION = 'Select an option',
+  NO_SELECTION = 'Select an option to book your time at the location',
   PAST_DATE_CHECK= 'past-date-check'
 }
 
 export enum DateFormControl {
-  BOOKING_DATE_TYPE = 'bookingDateType',
+  BOOKING_DATE_TYPE = 'dateOption',
   BOOKING_START_DAY = 'startDate_day',
   BOOKING_START_MONTH = 'startDate_month',
   BOOKING_START_YEAR = 'startDate_year',

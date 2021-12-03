@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder, FormsModule,  ReactiveFormsModule } from '@angular/forms';
 
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
-import { BookingDateFormErrorMessage, BookingDatePageText, DateFormControl, BookingProcess, BookingDateOption } from '../../models';
+import { BookingDateFormErrorMessage, BookingDateOption, BookingDatePageText, BookingProcess, DateFormControl } from '../../models';
 import { BookingDateComponent } from './booking-date.component';
 
 describe('BookingDateComponent', () => {

@@ -227,7 +227,6 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
     #     | Start      |
     #     | End        |
 
-    @test
     Scenario: Case with roles - Validate non task-supervisor user - columns and data displayed
 
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,task-supervisor,case-allocator" with reference "userDetails"

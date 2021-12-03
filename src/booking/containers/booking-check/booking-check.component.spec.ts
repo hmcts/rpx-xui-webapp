@@ -5,7 +5,6 @@ import { BookingCheckComponent } from './booking-check.component';
 describe('BookingCheckComponent', () => {
   let component: BookingCheckComponent;
   let fixture: ComponentFixture<BookingCheckComponent>;
-  
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [BookingCheckComponent],

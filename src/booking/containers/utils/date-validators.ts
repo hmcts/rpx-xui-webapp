@@ -1,5 +1,5 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { BookingDateFormErrorMessage, BookingDateOption, DateFormControl } from '../../models/index';
+import { BookingDateFormErrorMessage, BookingDateOption, DateFormControl } from '../../models';
 
 export class DateValidators {
 

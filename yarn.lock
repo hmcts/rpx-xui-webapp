@@ -470,10 +470,10 @@
     underscore "^1.9.1"
     yargs-parser "18.1.2"
 
-"@hmcts/ccpay-web-component@4.0.0-beta60":
-  version "4.0.0-beta60"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-4.0.0-beta60.tgz#333dde0fbd23fea7d683858fe6e1522323b020d4"
-  integrity sha512-46Yjdlv1PC+MTIkwh/Pi1Nyixr/jDdk5glIKvqw+IcuSj6WUklmKZYfX1c618EU2qIRbdqUTBa+wC9+a15wlWg==
+"@hmcts/ccpay-web-component@4.0.0-beta602":
+  version "4.0.0-beta602"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-4.0.0-beta602.tgz#33c5ca6ebdd7eafdfff06a5b05a48e2bd91a674e"
+  integrity sha512-ZbUwqfTecmItIR7MVHtnE1sYa10DDa+dQ3u3LaM30HOxkYs6YbZpeSQNxSswQRDL0ugL3DTN5sp6rHsEzaoFNw==
   dependencies:
     tslib "^1.9.0"
 

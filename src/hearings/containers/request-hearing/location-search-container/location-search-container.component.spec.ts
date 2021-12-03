@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
-import { AbstractControl, FormBuilder } from '@angular/forms';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, Input } from '@angular/core';
+import { AbstractControl, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
@@ -17,9 +17,10 @@ class MockLocationSearchContainerComponent {
   @Input() public selectedLocations$: Observable<LocationByEPIMSModel[]>;
   @Input() public submitted?: boolean = true;
   @Input() public control: AbstractControl;
+  public autoCompleteInputBox: ElementRef<HTMLInputElement>
 }
 
-describe('LocationSearchContainerComponent', () => {
+fdescribe('LocationSearchContainerComponent', () => {
   let component: LocationSearchContainerComponent;
   let fixture: ComponentFixture<LocationSearchContainerComponent>;
 
@@ -28,7 +29,7 @@ describe('LocationSearchContainerComponent', () => {
       hearingList: {
         caseHearingMainModel: [
           {
-            hmctsServiceID: 'SSCS'
+            hmctsServiceID: 'TEST'
           }
         ]
       },
@@ -37,6 +38,7 @@ describe('LocationSearchContainerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [ReactiveFormsModule],
       declarations: [ LocationSearchContainerComponent, MockLocationSearchContainerComponent ],
       providers: [
         provideMockStore({initialState}),
@@ -54,18 +56,12 @@ describe('LocationSearchContainerComponent', () => {
     });
     fixture = TestBed.createComponent(LocationSearchContainerComponent);
     component = fixture.componentInstance;
-    component.control = form.controls.locationSelectedFormControl;
     fixture.detectChanges();
     spyOn(component, 'removeSelection').and.callThrough();
     spyOn(component.selectedLocations$, 'subscribe').and.returnValue(of([]));
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-    expect(component.serviceIds).toEqual('SSCS');
-  });
-
-  it('should display selection in selection list', async (done) => {
+  it('should display selection in selection list', async () => {
     const location = {
       court_venue_id: '100',
       epims_id: '219164',
@@ -83,18 +79,16 @@ describe('LocationSearchContainerComponent', () => {
       postcode: 'AB11 6LT'
     } as LocationByEPIMSModel;
 
-    component.control.setValue(location);
+    component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(location);
     component.addSelection();
-    fixture.detectChanges();
-    done();
     component.selectedLocations$.subscribe(selectedLocations => {
       expect(selectedLocations.length).toBeGreaterThan(0);
-      expect(component.control.value).toBeUndefined();
+      expect(component.findLocationFormGroup.controls.locationSelectedFormControl.value).toBeUndefined();
     });
   });
 
   it('should remove selection in selection list', async () => {
-    const location = {
+    const location =  {
       court_venue_id: '100',
       epims_id: '219164',
       is_hearing_location: 'Y',
@@ -111,7 +105,7 @@ describe('LocationSearchContainerComponent', () => {
       postcode: 'AB11 6LT'
     } as LocationByEPIMSModel;
 
-    component.control.setValue(location);
+    component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(location);
     component.addSelection();
     fixture.detectChanges();
     component.removeSelection(location);
@@ -119,7 +113,23 @@ describe('LocationSearchContainerComponent', () => {
   });
 
   it('should show error when there is no locations found', async (done) => {
-    component.control.setValue(undefined);
+    const location =  {
+      court_venue_id: '100',
+      epims_id: '219164',
+      is_hearing_location: 'Y',
+      is_case_management_location: 'Y',
+      site_name: 'Aberdeen Tribunal Hearing Centre',
+      court_name: 'ABERDEEN TRIBUNAL HEARING CENTRE',
+      court_status: 'Open',
+      region_id: '9',
+      region: 'Scotland',
+      court_type_id: '17',
+      court_type: 'Employment Tribunal',
+      open_for_public: 'Yes',
+      court_address: 'AB1, 48 HUNTLY STREET, ABERDEEN',
+      postcode: 'AB11 6LT'
+    } as LocationByEPIMSModel;
+    component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
     component.addSelection();
     fixture.whenStable().then(() => {
       fixture.detectChanges();
@@ -127,5 +137,54 @@ describe('LocationSearchContainerComponent', () => {
       const errorElement = fixture.debugElement.query(By.css('.govuk-error-summary'));
       expect(errorElement).toBeDefined();
     });
+
+    component.selectedLocations$ = of([ location ]);
+
+    component.removeSelection(location);
+    fixture.detectChanges();
+    // expect(component.selectedLocations$.subscribe).toHaveBeenCalled();
+    component.selectedLocations$.subscribe(selectedLocations => {
+      expect(selectedLocations.length).toEqual(0);
+    });
+  });
+  
+  // it('should show summry header', async (done) => {
+  //  // component.findLocationFormGroup.controls.locationSelectedFormControl.setValue('TEST ERROR');
+  //   fixture.whenStable().then(() => {
+  //     fixture.detectChanges();
+  //     done();
+  //     const errorElement = fixture.debugElement.query(By.css('.govuk-error-summary__list'));
+  //     expect(errorElement).toEqual(null);
+  //   });
+  // });
+
+  // it('should call getLocationSearchFocus when clicking on the summary error anchor', async (done) => {
+  //   component.findLocationFormGroup.controls.locationSelectedFormControl.setValue('TEST ERROR');
+  //   fixture.whenStable().then(() => {
+  //     fixture.detectChanges();
+  //     done();
+  //     const errorElement = fixture.debugElement.query(By.css('.govuk-error-message'));
+  //     expect(errorElement).toBeDefined();
+  //     const errorAnchor = errorElement.nativeElement.nativeElement.querySelector('a');
+  //     errorAnchor.dispatchEvent(new Event('click'));
+  //     fixture.whenStable().then(() => {
+  //       fixture.detectChanges();
+  //       expect(component.getLocationSearchFocus).toHaveBeenCalled();
+  //     });
+  //   });
+  // });
+
+  // it('should include page elements', () => {
+  //   const hearingHeader = fixture.debugElement.nativeElement.querySelector('.govuk-heading-l');
+  //   expect(hearingHeader.textContent).toContain('What are the hearing venue details?');
+  //   const hint = fixture.debugElement.nativeElement.querySelector('.govuk-hint');
+  //   expect(hint.textContent).toContain('If this is a fully remote hearing you must still select the court or tribunal which will be managing the case.');
+  //   const findCourtLink = fixture.debugElement.nativeElement.querySelector('.govuk-inset-text');
+  //   expect(findCourtLink.textContent).toContain('You can check the venue has the required facilities or reasonable adjustments using');
+  //   expect(findCourtLink.innerHTML).toContain('https://www.find-court-tribunal.service.gov.uk/search-by-name');
+  // });
+
+  afterEach(() => {
+    fixture.destroy();
   });
 });

@@ -1,5 +1,5 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, AbstractControl } from '@angular/forms';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { LocationByEPIMSModel } from 'api/locations/models/location.model';
@@ -17,11 +17,15 @@ export class LocationSearchContainerComponent implements OnInit {
   public locationsFound$: Observable<LocationByEPIMSModel[]>;
   public selectedLocation: LocationByEPIMSModel;
   public serviceIds: string = 'SSCS';
-  public dirty: boolean = false;
+  public findLocationFormGroup: FormGroup;
+
   @ViewChild(SearchLocationComponent) public searchLocationComponent: SearchLocationComponent;
-  @Input() public control: AbstractControl;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>, fb: FormBuilder) {
+    this.findLocationFormGroup =  fb.group({
+      locationSelectedFormControl: [null]
+    });
+
     this.selectedLocations$ = of([]);
     this.locationsFound$ = of([]);
   }
@@ -33,23 +37,27 @@ export class LocationSearchContainerComponent implements OnInit {
       this.serviceIds = id ? id : this.serviceIds;
     });
 
-    this.control.valueChanges.subscribe((newValue) => newValue.value ? this.control.markAsPristine() : this.control.markAsDirty());
+    if (this.findLocationFormGroup && this.findLocationFormGroup.controls.locationSelectedFormControl) {
+      this.findLocationFormGroup.controls.locationSelectedFormControl.valueChanges.subscribe((newValue) => 
+        newValue && newValue.value ? this.findLocationFormGroup.controls.locationSelectedFormControl.markAsPristine() : 
+        this.findLocationFormGroup.controls.locationSelectedFormControl.markAsDirty());
+    }
 
-    if (this.searchLocationComponent.autoCompleteInputBox && this.searchLocationComponent.autoCompleteInputBox.nativeElement) {
+    if (this.searchLocationComponent && this.searchLocationComponent.autoCompleteInputBox && this.searchLocationComponent.autoCompleteInputBox.nativeElement) {
       this.searchLocationComponent.autoCompleteInputBox.nativeElement.focus();
     }
   }
 
   public addSelection(): void {
-    if (this.control.value) {
+    if (this.findLocationFormGroup.controls.locationSelectedFormControl.value) {
       this.selectedLocations$.subscribe(selectedLocations => {
-          selectedLocations.push(this.control.value as LocationByEPIMSModel);
-          this.control.setValue(undefined);
-          this.control.markAsPristine();
+          selectedLocations.push(this.findLocationFormGroup.controls.locationSelectedFormControl.value as LocationByEPIMSModel);
+          this.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
+          this.findLocationFormGroup.controls.locationSelectedFormControl.markAsPristine();
       });
     } else {
-      this.control.setValue(undefined);
-      this.control.markAsDirty();
+      this.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
+      this.findLocationFormGroup.controls.locationSelectedFormControl.markAsDirty();
     }
   }
 
@@ -58,5 +66,13 @@ export class LocationSearchContainerComponent implements OnInit {
       const index = selectedLocations.findIndex(selectedLocation => selectedLocation.epims_id === location.epims_id);
       selectedLocations.splice(index, 1);
     });
+  }
+
+  public getLocationSearchFocus() {
+    if (this.searchLocationComponent &&
+        this.searchLocationComponent.autoCompleteInputBox &&
+        this.searchLocationComponent.autoCompleteInputBox.nativeElement) {
+          this.searchLocationComponent.autoCompleteInputBox.nativeElement.focus();
+    }
   }
 }

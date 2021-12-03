@@ -6,6 +6,15 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
 import { LocationSearchContainerComponent } from './location-search-container.component';
 import { By } from '@angular/platform-browser';
+import { SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
+
+class NativeElement {
+  focus: () => {};
+}
+class MockAutoCompleteInputBox {
+  nativeElement:NativeElement = new NativeElement
+}
+
 @Component({
   selector: 'exui-search-location',
   template: '',
@@ -17,10 +26,10 @@ class MockLocationSearchContainerComponent {
   @Input() public selectedLocations$: Observable<LocationByEPIMSModel[]>;
   @Input() public submitted?: boolean = true;
   @Input() public control: AbstractControl;
-  public autoCompleteInputBox: ElementRef<HTMLInputElement>
+  public autoCompleteInputBox: MockAutoCompleteInputBox = new MockAutoCompleteInputBox();
 }
 
-describe('LocationSearchContainerComponent', () => {
+fdescribe('LocationSearchContainerComponent', () => {
   let component: LocationSearchContainerComponent;
   let fixture: ComponentFixture<LocationSearchContainerComponent>;
 
@@ -59,6 +68,9 @@ describe('LocationSearchContainerComponent', () => {
     fixture.detectChanges();
     spyOn(component, 'removeSelection').and.callThrough();
     spyOn(component.selectedLocations$, 'subscribe').and.returnValue(of([]));
+    spyOn(component, 'getLocationSearchFocus').and.callThrough();
+    component.searchLocationComponent = new MockLocationSearchContainerComponent() as unknown as SearchLocationComponent;
+   // spyOn(component.searchLocationComponent.autoCompleteInputBox.nativeElement as HTMLOrSVGElement, 'focus');
   });
 
   it('should display selection in selection list', async () => {
@@ -81,9 +93,12 @@ describe('LocationSearchContainerComponent', () => {
 
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(location);
     component.addSelection();
-    component.selectedLocations$.subscribe(selectedLocations => {
-      expect(selectedLocations.length).toBeGreaterThan(0);
-      expect(component.findLocationFormGroup.controls.locationSelectedFormControl.value).toBeUndefined();
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      component.selectedLocations$.subscribe(selectedLocations => {
+        expect(selectedLocations.length).toBeGreaterThan(0);
+        expect(component.findLocationFormGroup.controls.locationSelectedFormControl.value).toBeUndefined();      
+      });
     });
   });
 
@@ -168,8 +183,10 @@ describe('LocationSearchContainerComponent', () => {
       const errorAnchor = errorElement.nativeElement.nativeElement.querySelector('a');
       errorAnchor.dispatchEvent(new Event('click'));
       fixture.whenStable().then(() => {
+        console.log('this is it');
         fixture.detectChanges();
         expect(component.getLocationSearchFocus).toHaveBeenCalled();
+        expect(component.searchLocationComponent.autoCompleteInputBox.nativeElement.focus).toHaveBeenCalled();
       });
     });
   });
@@ -187,3 +204,4 @@ describe('LocationSearchContainerComponent', () => {
     fixture.destroy();
   });
 });
+

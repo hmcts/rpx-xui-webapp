@@ -27,13 +27,13 @@
       <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
         <div class="govuk-radios__item" *ngFor="let item of dateInterval; let i = index">
           <input
+            [value]="item.date"
+            [checked]="item.checked"
             class="govuk-radios__input"
             id="{{ 'date-' + i }}"
             name="dateOption"
             type="radio"
-            [value]="item.date"
             formControlName="dateOption"
-            [checked]="item.checked"
             (change)="onSelectOption(i)"/>
           <label
             class="govuk-label govuk-radios__label"

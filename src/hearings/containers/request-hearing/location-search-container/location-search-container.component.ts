@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, RequiredValidator, Validators } from '@angular/forms';
 import { SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { LocationByEPIMSModel } from 'api/locations/models/location.model';
@@ -11,7 +11,7 @@ import * as fromHearingStore from '../../../../hearings/store';
   templateUrl: './location-search-container.component.html',
   styleUrls: ['./location-search-container.component.scss']
 })
-export class LocationSearchContainerComponent implements OnInit {
+export class LocationSearchContainerComponent implements OnInit  {
   public locationType: string;
   public selectedLocations$: Observable<LocationByEPIMSModel[]>;
   public locationsFound$: Observable<LocationByEPIMSModel[]>;
@@ -23,7 +23,7 @@ export class LocationSearchContainerComponent implements OnInit {
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>, fb: FormBuilder) {
     this.findLocationFormGroup =  fb.group({
-      locationSelectedFormControl: [null]
+      locationSelectedFormControl: [null, Validators.required]
     });
 
     this.selectedLocations$ = of([]);
@@ -36,12 +36,6 @@ export class LocationSearchContainerComponent implements OnInit {
     ).subscribe(id => {
       this.serviceIds = id ? id : this.serviceIds;
     });
-
-    if (this.findLocationFormGroup && this.findLocationFormGroup.controls.locationSelectedFormControl) {
-      this.findLocationFormGroup.controls.locationSelectedFormControl.valueChanges.subscribe((newValue) => 
-        newValue && newValue.value ? this.findLocationFormGroup.controls.locationSelectedFormControl.markAsPristine() : 
-        this.findLocationFormGroup.controls.locationSelectedFormControl.markAsDirty());
-    }
 
     if (this.searchLocationComponent && this.searchLocationComponent.autoCompleteInputBox && this.searchLocationComponent.autoCompleteInputBox.nativeElement) {
       this.searchLocationComponent.autoCompleteInputBox.nativeElement.focus();

@@ -3,12 +3,12 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { FlagDefinition, NavigationItem } from '../../models/theming.model';
+import { UserDetails } from '../../../app/models/user-details.model';
 import * as fromAppStore from '../../../app/store';
 import * as fromNocStore from '../../../noc/store';
+import { FlagDefinition, NavigationItem } from '../../models/theming.model';
 import { UserNavModel } from '../../models/user-nav.model';
 import { UserService } from '../../services/user/user.service';
-import { UserDetails } from '../../../app/models/user-details.model';
 
 @Component({
     selector: 'exui-hmcts-global-header',
@@ -56,7 +56,6 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   public ngOnInit(): void {
     this.appStore.dispatch(new fromAppStore.LoadUserDetails());
     this.userDetails$ = this.appStore.pipe(select(fromAppStore.getUserDetails));
-
     this.isUserCaseManager$ = this.userDetails$.pipe(
       map(details => details.userInfo.roles),
       map(roles => {

@@ -6,12 +6,15 @@ export const ROUTES: Routes = [
   {
     path: '',
     component: BookingWrapperComponent,
-    canActivate: [ ],
+    canActivate: [],
     children: [
       {
         path: '',
         component: BookingHomeComponent,
-        canActivate: [ ]
+        canActivate: [],
+        data: {
+          title: 'Booking'
+        }
       }
     ]
   }

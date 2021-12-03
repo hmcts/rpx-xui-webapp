@@ -167,11 +167,8 @@ export class BookingDateComponent implements OnInit {
     if (selectedOption !== BookingDateOption.DATERANGE) {
       this.resetValidationErrorMessages();
       this.formGroup.setErrors(null);
-   }
-  }
-
-  public dateOptionOnChange(optionIndex: number): void {
-    this.bookingProcess.selectedDateOption = optionIndex;
+    }
+    this.bookingProcess.selectedDateOption = selectedOption;
   }
 
   public getStartEndDate(bookingDateOption: BookingDateOption): {startDate: Date, endDate: Date} {

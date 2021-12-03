@@ -5,7 +5,6 @@ import { CancelHearingComponent, ChangeHearingComponent, DatePriorityHearingComp
 import { LocationSearchContainerComponent } from './containers/request-hearing/location-search-container/location-search-container.component';
 import { WelshHearingComponent } from './containers/request-hearing/welsh-hearing/welsh-hearing.component';
 import { PriorityResolver } from './resolvers/priority/priority.resolve';
-import { HearingVenueComponent } from './containers/request-hearing/hearing-venue/hearing-venue.component';
 
 export const ROUTES: Routes = [
   {
@@ -49,14 +48,6 @@ export const ROUTES: Routes = [
         }
       },
       {
-        path: 'location-search',
-        component: LocationSearchContainerComponent,
-        canActivate: [HealthCheckGuard],
-        data: {
-          title: 'HMCTS Hearings | Request Hearing Location'
-        }
-      },
-      {
         path: 'welsh-hearing',
         component: WelshHearingComponent,
         canActivate: [HealthCheckGuard],
@@ -76,7 +67,7 @@ export const ROUTES: Routes = [
       {
         path: 'hearing-venue',
         resolve: { hearingPriorities: PriorityResolver },
-        component: HearingVenueComponent,
+        component: LocationSearchContainerComponent,
         canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Manage cases | Request Hearing | Hearing Venue'

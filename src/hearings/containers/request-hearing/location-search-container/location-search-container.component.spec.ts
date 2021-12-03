@@ -20,7 +20,7 @@ class MockLocationSearchContainerComponent {
   public autoCompleteInputBox: ElementRef<HTMLInputElement>
 }
 
-fdescribe('LocationSearchContainerComponent', () => {
+describe('LocationSearchContainerComponent', () => {
   let component: LocationSearchContainerComponent;
   let fixture: ComponentFixture<LocationSearchContainerComponent>;
 
@@ -142,47 +142,46 @@ fdescribe('LocationSearchContainerComponent', () => {
 
     component.removeSelection(location);
     fixture.detectChanges();
-    // expect(component.selectedLocations$.subscribe).toHaveBeenCalled();
+    expect(component.selectedLocations$.subscribe).toHaveBeenCalled();
     component.selectedLocations$.subscribe(selectedLocations => {
       expect(selectedLocations.length).toEqual(0);
     });
   });
-  
-  // it('should show summry header', async (done) => {
-  //  // component.findLocationFormGroup.controls.locationSelectedFormControl.setValue('TEST ERROR');
-  //   fixture.whenStable().then(() => {
-  //     fixture.detectChanges();
-  //     done();
-  //     const errorElement = fixture.debugElement.query(By.css('.govuk-error-summary__list'));
-  //     expect(errorElement).toEqual(null);
-  //   });
-  // });
 
-  // it('should call getLocationSearchFocus when clicking on the summary error anchor', async (done) => {
-  //   component.findLocationFormGroup.controls.locationSelectedFormControl.setValue('TEST ERROR');
-  //   fixture.whenStable().then(() => {
-  //     fixture.detectChanges();
-  //     done();
-  //     const errorElement = fixture.debugElement.query(By.css('.govuk-error-message'));
-  //     expect(errorElement).toBeDefined();
-  //     const errorAnchor = errorElement.nativeElement.nativeElement.querySelector('a');
-  //     errorAnchor.dispatchEvent(new Event('click'));
-  //     fixture.whenStable().then(() => {
-  //       fixture.detectChanges();
-  //       expect(component.getLocationSearchFocus).toHaveBeenCalled();
-  //     });
-  //   });
-  // });
+  it('should show summry header', async (done) => {
+    component.findLocationFormGroup.controls.locationSelectedFormControl.setValue('TEST ERROR');
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      done();
+      const errorElement = fixture.debugElement.query(By.css('.govuk-error-summary__list'));
+      expect(errorElement).toEqual(null);
+    });
+  });
 
-  // it('should include page elements', () => {
-  //   const hearingHeader = fixture.debugElement.nativeElement.querySelector('.govuk-heading-l');
-  //   expect(hearingHeader.textContent).toContain('What are the hearing venue details?');
-  //   const hint = fixture.debugElement.nativeElement.querySelector('.govuk-hint');
-  //   expect(hint.textContent).toContain('If this is a fully remote hearing you must still select the court or tribunal which will be managing the case.');
-  //   const findCourtLink = fixture.debugElement.nativeElement.querySelector('.govuk-inset-text');
-  //   expect(findCourtLink.textContent).toContain('You can check the venue has the required facilities or reasonable adjustments using');
-  //   expect(findCourtLink.innerHTML).toContain('https://www.find-court-tribunal.service.gov.uk/search-by-name');
-  // });
+  it('should call getLocationSearchFocus when clicking on the summary error anchor', async (done) => {
+    component.findLocationFormGroup.controls.locationSelectedFormControl.setValue('TEST ERROR');
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      done();
+      const errorElement = fixture.debugElement.query(By.css('.govuk-error-message'));
+      expect(errorElement).toBeDefined();
+      const errorAnchor = errorElement.nativeElement.nativeElement.querySelector('a');
+      errorAnchor.dispatchEvent(new Event('click'));
+      fixture.whenStable().then(() => {
+        fixture.detectChanges();
+        expect(component.getLocationSearchFocus).toHaveBeenCalled();
+      });
+    });
+  });
+
+  it('should include page elements', () => {
+    const hearingHeader = fixture.debugElement.query(By.css('.govuk-heading-l'));
+    expect(hearingHeader.nativeElement.innerText).toContain('What are the hearing venue details?');
+    const hint = fixture.debugElement.query(By.css('.govuk-hint'));
+    expect(hint.nativeElement.innerText).toContain('If this is a fully remote hearing you must still select the court or tribunal which will be managing the case.');
+    const findCourtLink = fixture.debugElement.query(By.css('.govuk-inset-text'));
+    expect(findCourtLink.nativeElement.innerText).toContain('You can check the venue has the required facilities or reasonable adjustments using');
+  });
 
   afterEach(() => {
     fixture.destroy();

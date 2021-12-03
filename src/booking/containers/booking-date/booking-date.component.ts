@@ -172,8 +172,8 @@ export class BookingDateComponent implements OnInit {
   }
 
   public getStartEndDate(bookingDateOption: BookingDateOption): {startDate: Date, endDate: Date} {
-    let startDate;
-    let endDate;
+    let startDate: Date;
+    let endDate: Date;
     switch (bookingDateOption) {
       case BookingDateOption.TODAY:
         startDate = new Date();

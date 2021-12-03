@@ -129,6 +129,6 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     this.selectedTaskCategory = selection.selectPerson;
     this.selectedPerson = selection.person ? selection.person.id : null;
     this.selectedTaskType = selection.taskType;
-    this.loadTasks();
+    this.onPaginationHandler(1);
   }
 }

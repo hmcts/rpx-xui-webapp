@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
+import { AlertService, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
 import { Person } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 import { map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
@@ -44,7 +44,6 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     if (window && window.history && window.history.state && window.history.state.returnUrl) {
       url = window.history.state.returnUrl;
     }
-
     return url;
   }
 
@@ -116,7 +115,14 @@ export class TaskAssignmentConfirmComponent implements OnInit {
 
   private returnWithMessage(message: InformationMessage, state: any): void {
     if (message) {
-      this.messageService.nextMessage(message);
+      if (this.returnUrl.includes('case-details')) {
+        state = {
+          showMessage: true,
+          messageText: message.message
+        }
+      } else {
+        this.messageService.nextMessage(message);
+      }
     }
     // Use returnUrl to return the user to the "All work" or "My work" screen, depending on which one they started from
     this.router.navigate([this.returnUrl], {state: {...state, retainMessages: true}});

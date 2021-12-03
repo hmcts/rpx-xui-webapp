@@ -131,7 +131,7 @@ describe('HmctsGlobalHeaderComponent', () => {
     expect(component.navigate.emit).toHaveBeenCalled();
   });
 
-  it('should display find case right aligned', () => {
+  it('should display find case right aligned', (done: DoneFn) => {
     component.showItems = true;
     component.items = [{
       align: 'right',
@@ -152,11 +152,13 @@ describe('HmctsGlobalHeaderComponent', () => {
     }];
     component.ngOnInit();
     fixture.detectChanges();
-    component.isUserCaseManager$.subscribe(result => expect(result).toBe(true));
+    component.isUserCaseManager$.subscribe(result => {
+      expect(result).toBe(true);
+      done();
+    });
   });
 
-  it('should not display find case right aligned', () => {
-
+  it('should not display find case right aligned', (done: DoneFn) => {
     component.showItems = true;
     component.items = [{
       text: 'Find case',
@@ -173,9 +175,14 @@ describe('HmctsGlobalHeaderComponent', () => {
       href: '',
       active: false
     }];
+    userDetails.userInfo.roles = ['roleA', 'roleB'];
+    storeMock.pipe.and.returnValue(of(userDetails));
     component.ngOnInit();
     fixture.detectChanges();
-    component.isUserCaseManager$.subscribe(result => expect(result).toBe(true));
+    component.isUserCaseManager$.subscribe(result => {
+      expect(result).toBe(false);
+      done();
+    });
   });
 
   it('splitNavItems', (done: DoneFn) => {

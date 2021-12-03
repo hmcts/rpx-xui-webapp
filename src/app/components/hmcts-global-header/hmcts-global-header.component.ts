@@ -48,7 +48,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
 
   constructor(
     private readonly appStore: Store<fromAppStore.State>,
-    public nocStore: Store<fromNocStore.State>,
+    private readonly nocStore: Store<fromNocStore.State>,
     private readonly userService: UserService,
     private readonly featureToggleService: FeatureToggleService
   ) { }

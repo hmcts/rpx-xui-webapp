@@ -33,6 +33,8 @@ describe('Case details page', function () {
         await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator(caseDetailsPageLocators.container));
+         actions.push(...PallyActions.clickElement(caseDetailsPageLocators.rolesAndAccessTab));
+        actions.push(...PallyActions.waitForPageWithCssLocator(caseDetailsPageLocators.rolesAndAccessContainer));
         actions.push(...PallyActions.clickElement(caseDetailsPageLocators.tasksTab));
         actions.push(...PallyActions.waitForPageWithCssLocator(caseDetailsPageLocators.tasksContainer));
 

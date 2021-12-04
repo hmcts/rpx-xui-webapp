@@ -12,7 +12,7 @@ class NativeElement {
   focus: () => {};
 }
 class MockAutoCompleteInputBox {
-  nativeElement:NativeElement = new NativeElement
+  nativeElement:NativeElement = new NativeElement();
 }
 
 @Component({
@@ -97,7 +97,7 @@ fdescribe('LocationSearchContainerComponent', () => {
       fixture.detectChanges();
       component.selectedLocations$.subscribe(selectedLocations => {
         expect(selectedLocations.length).toBeGreaterThan(0);
-        expect(component.findLocationFormGroup.controls.locationSelectedFormControl.value).toBeUndefined();      
+        expect(component.findLocationFormGroup.controls.locationSelectedFormControl.value).toBeUndefined();
       });
     });
   });

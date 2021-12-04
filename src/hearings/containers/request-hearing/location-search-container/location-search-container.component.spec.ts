@@ -12,7 +12,7 @@ class NativeElement {
   focus: () => {};
 }
 class MockAutoCompleteInputBox {
-  nativeElement:NativeElement = new NativeElement();
+  nativeElement: NativeElement = new NativeElement();
 }
 
 @Component({

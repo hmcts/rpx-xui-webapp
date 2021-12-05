@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
+import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
 import { select, Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { map } from 'rxjs/operators';
@@ -33,6 +33,12 @@ export class DatePriorityHearingComponent implements OnInit {
   public hearingPriorityError: string = 'Select the priority level of the hearing';
   public isHearingDateNotValid: boolean;
   public hearingPriorityDateError: string = 'Select if the hearing needs to take place on a specific date';
+  public hearingDateRangeError: string = 'Enter a valid date range for the hearing to take place on';
+  public hearingDatePastError: string = 'The hearing dates cannot be in the past';
+  public earliestHearingDateError: string  = 'The earliest hearing date must be before the latest hearing date';
+  public firstDateOfHearingError: ErrorMessagesModel;
+  public earliestDateOfHearingError: ErrorMessagesModel;
+  public latestDateOfHearingError: ErrorMessagesModel;
 
   constructor(private readonly formBuilder: FormBuilder,
     private readonly route: ActivatedRoute,
@@ -126,12 +132,23 @@ export class DatePriorityHearingComponent implements OnInit {
     }
   }
 
+  public isWeekDay(givenDate): boolean {
+    return (givenDate.weekday() !== 6) && (givenDate.weekday() !== 0);
+  }
+  public isAavailableDate(givenDate): boolean {
+    const selectedDate = givenDate.format('DD MMMM YYYY');
+    return !this.partiesNotAvailableDates.includes(selectedDate);
+  }
+
   public checkFormData(): void {
     this.validationErrors = [];
     this.hearingLengthErrorValue = this.hearingLengthError;
     this.isHearingLengthNotValid = false;
     this.isHearingDateNotValid = false;
     this.isHearingPriorityNotValid = false;
+    this.latestDateOfHearingError = null;
+    this.earliestDateOfHearingError = null;
+    this.firstDateOfHearingError = null;
     if (!this.priorityForm.valid) {
       if (!this.priorityForm.controls.durationLength.get('hours').valid) {
         this.isHearingLengthNotValid = true;
@@ -147,12 +164,59 @@ export class DatePriorityHearingComponent implements OnInit {
       if (!this.priorityForm.controls.specificDate.valid) {
         this.isHearingDateNotValid = true;
         this.validationErrors.push({ id: 'noSpecificDate', message: this.hearingPriorityDateError });
+      } else if (this.priorityForm.controls.specificDate.value === 'Yes') {
+        const choosenDate = moment(this.getDateFormatted('firstHearingDate'), 'DD-MM-YYYY');
+        const isPastDate = choosenDate.isBefore();
+        const isFirstHearingDateValid = moment(choosenDate, 'DD-MM-YYYY').isValid() && this.isWeekDay(choosenDate) && this.isAavailableDate(choosenDate);
+        if (!isFirstHearingDateValid) {
+          this.validationErrors.push({ id: this.firstHearingDate.id, message: this.hearingDateRangeError });
+          this.firstDateOfHearingError = { isInvalid: true, messages: [this.hearingDateRangeError] };
+        } else if (isPastDate) {
+          this.validationErrors.push({ id: this.firstHearingDate.id, message: this.hearingDatePastError });
+          this.firstDateOfHearingError = { isInvalid: true, messages: [this.hearingDatePastError] };
+        }
+      } else if (this.priorityForm.controls.specificDate.value === 'Choose') {
+        const choosenEarliestDate = moment(this.getDateFormatted('earliestHearingDate'), 'DD-MM-YYYY');
+        const choosenLatestDate = moment(this.getDateFormatted('latestHearingDate'), 'DD-MM-YYYY');
+        const isPastEarliestDate = choosenEarliestDate.isBefore();
+        const isPastLatestDate = choosenLatestDate.isBefore();
+        const isLatestBeforeEarliest = choosenEarliestDate > choosenLatestDate;
+        const isEarliestDateValid = choosenEarliestDate.isValid() && this.isWeekDay(choosenEarliestDate) && this.isAavailableDate(choosenEarliestDate);
+        const isLatestHearingDate = choosenLatestDate.isValid() && this.isWeekDay(choosenLatestDate) && this.isAavailableDate(choosenLatestDate);
+        if (!isEarliestDateValid && !isLatestHearingDate) {
+          this.validationErrors.push({ id: this.earliestHearingDate.id, message: this.hearingDateRangeError });
+          this.earliestDateOfHearingError = { isInvalid: true, messages: [this.hearingDateRangeError] };
+          this.validationErrors.push({ id: this.latestHearingDate.id, message: this.hearingDateRangeError });
+          this.latestDateOfHearingError = { isInvalid: true, messages: [this.hearingDateRangeError] };
+        } else if (isPastEarliestDate) {
+          this.validationErrors.push({ id: this.earliestHearingDate.id, message: this.hearingDatePastError });
+          this.earliestDateOfHearingError = { isInvalid: true, messages: [this.hearingDatePastError] };
+        } else if (isPastLatestDate) {
+          this.validationErrors.push({ id: this.latestHearingDate.id, message: this.hearingDatePastError });
+          this.latestDateOfHearingError = { isInvalid: true, messages: [this.hearingDatePastError] };
+        } else if (isEarliestDateValid && isLatestHearingDate && isLatestBeforeEarliest) {
+          this.validationErrors.push({ id: this.earliestHearingDate.id, message: this.earliestHearingDateError });
+          this.earliestDateOfHearingError = { isInvalid: true, messages: [this.earliestHearingDateError] };
+        }
       }
       if (!this.priorityForm.controls.priority.valid) {
         this.isHearingPriorityNotValid = true;
         this.validationErrors.push({ id: this.priorities[0].key, message: this.hearingPriorityError });
       }
     }
+  }
+
+  private getDateFormatted(fieldName: string): string {
+    const day = this.priorityForm.get(`${fieldName}_day`).value;
+    const month = this.priorityForm.get(`${fieldName}_month`).value;
+    const year = this.priorityForm.get(`${fieldName}_year`).value;
+
+    if (day === '' || month === '' || year === '') {
+      return null;
+    }
+
+    // Date format expected by API endpoint is yyyy-mm-dd
+    return `${day}-${month}-${year}`;
   }
 
   public onSubmit(): void {

@@ -31,12 +31,14 @@ export class DatePriorityHearingComponent implements OnInit {
   public hearingTotalLengthError = 'Enter a valid length of hearing, it must be between 5 minutes and 6 hours';
   public isHearingPriorityNotValid: boolean;
   public hearingPriorityError: string = 'Select the priority level of the hearing';
+  public isHearingDateNotValid: boolean;
+  public hearingPriorityDateError: string = 'Select if the hearing needs to take place on a specific date';
 
   constructor(private readonly formBuilder: FormBuilder,
-              private readonly route: ActivatedRoute,
-              private readonly validatorsService: ValidatorsService,
-              private readonly hearingStore: Store<fromHearingStore.State>,
-              private readonly hearingsService: HearingsService) { }
+    private readonly route: ActivatedRoute,
+    private readonly validatorsService: ValidatorsService,
+    private readonly hearingStore: Store<fromHearingStore.State>,
+    private readonly hearingsService: HearingsService) { }
 
   public ngOnInit(): void {
     this.priorities = this.route.snapshot.data.hearingPriorities.sort((currentPriority, nextPriority) => (currentPriority.order < nextPriority.order ? -1 : 1));
@@ -85,6 +87,7 @@ export class DatePriorityHearingComponent implements OnInit {
         hours: ['', [Validators.required, this.validatorsService.numberMinMaxValidator(0, 6)]],
         minutes: ['', [Validators.required, this.validatorsService.numberMinMaxValidator(0, 59)]]
       }, { validator: this.validatorsService.minutesValidator(5, 360) }),
+      specificDate: ['', Validators.required],
       firstHearingDate_day: [],
       firstHearingDate_month: [],
       firstHearingDate_year: [],
@@ -94,13 +97,12 @@ export class DatePriorityHearingComponent implements OnInit {
       latestHearingDate_day: [],
       latestHearingDate_month: [],
       latestHearingDate_year: [],
-      hearingAvailability: [],
       priority: ['', Validators.required]
     });
   }
 
   public showDateAvailability(): void {
-    this.checkedHearingAvailability = this.priorityForm.get('hearingAvailability').value;
+    this.checkedHearingAvailability = this.priorityForm.get('specificDate').value;
   }
 
   public checkUnavailableDatesList(dateList: PartyUnavailabilityRange[]): void {
@@ -128,6 +130,7 @@ export class DatePriorityHearingComponent implements OnInit {
     this.validationErrors = [];
     this.hearingLengthErrorValue = this.hearingLengthError;
     this.isHearingLengthNotValid = false;
+    this.isHearingDateNotValid = false;
     this.isHearingPriorityNotValid = false;
     if (!this.priorityForm.valid) {
       if (!this.priorityForm.controls.durationLength.get('hours').valid) {
@@ -140,6 +143,10 @@ export class DatePriorityHearingComponent implements OnInit {
         this.isHearingLengthNotValid = true;
         this.hearingLengthErrorValue = this.hearingTotalLengthError;
         this.validationErrors.push({ id: 'durationhours', message: this.hearingTotalLengthError });
+      }
+      if (!this.priorityForm.controls.specificDate.valid) {
+        this.isHearingDateNotValid = true;
+        this.validationErrors.push({ id: 'noSpecificDate', message: this.hearingPriorityDateError });
       }
       if (!this.priorityForm.controls.priority.valid) {
         this.isHearingPriorityNotValid = true;

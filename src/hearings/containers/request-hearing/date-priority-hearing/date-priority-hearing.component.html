@@ -36,23 +36,26 @@
           </fieldset>
         </div>
       </div>
-      <div class="govuk-form-group govuk-!-margin-top-3">
+      <div class="govuk-form-group govuk-!-margin-top-3" [ngClass]="{'govuk-form-group--error': isHearingDateNotValid}">
         <fieldset class="govuk-fieldset" aria-describedby="contact-hint" id="hearing-specific-dates">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
             <h3 class="govuk-fieldset__heading">Does the hearing need to take place on a specific date?</h3>
           </legend>
           <div class="govuk-hint">Availability of all the parties will be taken into account when scheduling this
             hearing.</div>
+          <span id="duration-display-error" class="govuk-error-message" *ngIf="isHearingDateNotValid">
+            <span class="govuk-visually-hidden">Error:</span> {{hearingPriorityDateError}}
+          </span>
           <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
             <div class="govuk-radios__item">
-              <input class="govuk-radios__input" id="dates1" name="hearingAvailability" type="radio" value="No"
-                formControlName="hearingAvailability" (change)="showDateAvailability();">
-              <label class="govuk-label govuk-radios__label" for="dates1">No</label>
+              <input class="govuk-radios__input" id="noSpecificDate" name="specificDate" type="radio" value="No"
+                formControlName="specificDate" (change)="showDateAvailability();">
+              <label class="govuk-label govuk-radios__label" for="noSpecificDate">No</label>
             </div>
             <div class="govuk-radios__item">
-              <input class="govuk-radios__input" id="dates2" name="hearingAvailability" type="radio" value="Yes"
-                formControlName="hearingAvailability" (change)="showDateAvailability();">
-              <label class="govuk-label govuk-radios__label" for="dates2">Yes</label>
+              <input class="govuk-radios__input" id="hearingSingleDate" name="specificDate" type="radio" value="Yes"
+                formControlName="specificDate" (change)="showDateAvailability();">
+              <label class="govuk-label govuk-radios__label" for="hearingSingleDate">Yes</label>
             </div>
             <div class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3" [ngClass]="{'js-hidden': checkedHearingAvailability!=='Yes'}">
               <div class="govuk-form-group">
@@ -60,9 +63,9 @@
               </div>
             </div>
             <div class="govuk-radios__item">
-              <input class="govuk-radios__input" id="dates3" name="hearingAvailability" type="radio" value="Choose"
-                formControlName="hearingAvailability" (change)="showDateAvailability();">
-              <label class="govuk-label govuk-radios__label" for="dates3">Choose a date range</label>
+              <input class="govuk-radios__input" id="hearingDateRange" name="specificDate" type="radio" value="Choose"
+                formControlName="specificDate" (change)="showDateAvailability();">
+              <label class="govuk-label govuk-radios__label" for="hearingDateRange">Choose a date range</label>
             </div>
             <div class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3" [ngClass]="{'js-hidden': checkedHearingAvailability!=='Choose'}">
               <div class="govuk-hint">You can enter either or both dates.</div>

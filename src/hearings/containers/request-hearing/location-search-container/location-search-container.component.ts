@@ -45,14 +45,18 @@ export class LocationSearchContainerComponent implements OnInit  {
   public addSelection(): void {
     if (this.findLocationFormGroup.controls.locationSelectedFormControl.value) {
       this.selectedLocations$.subscribe(selectedLocations => {
-          selectedLocations.push(this.findLocationFormGroup.controls.locationSelectedFormControl.value as LocationByEPIMSModel);
-          this.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
-          this.findLocationFormGroup.controls.locationSelectedFormControl.markAsPristine();
+          this.appendLocation(selectedLocations);
       });
     } else {
       this.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
       this.findLocationFormGroup.controls.locationSelectedFormControl.markAsDirty();
     }
+  }
+
+  public appendLocation(selectedLocations: LocationByEPIMSModel[]) {
+    selectedLocations.push(this.findLocationFormGroup.controls.locationSelectedFormControl.value as LocationByEPIMSModel);
+    this.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
+    this.findLocationFormGroup.controls.locationSelectedFormControl.markAsPristine();
   }
 
   public removeSelection(location: LocationByEPIMSModel): void {

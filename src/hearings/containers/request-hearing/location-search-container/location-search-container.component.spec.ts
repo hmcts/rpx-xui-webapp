@@ -9,7 +9,7 @@ import { By } from '@angular/platform-browser';
 import { SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
 
 class NativeElement {
-  focus: () => {};
+  focus() {}
 }
 class MockAutoCompleteInputBox {
   nativeElement: NativeElement = new NativeElement();
@@ -70,7 +70,7 @@ fdescribe('LocationSearchContainerComponent', () => {
     spyOn(component.selectedLocations$, 'subscribe').and.returnValue(of([]));
     spyOn(component, 'getLocationSearchFocus').and.callThrough();
     component.searchLocationComponent = new MockLocationSearchContainerComponent() as unknown as SearchLocationComponent;
-   // spyOn(component.searchLocationComponent.autoCompleteInputBox.nativeElement as HTMLOrSVGElement, 'focus');
+    spyOn(component.searchLocationComponent.autoCompleteInputBox.nativeElement, 'focus');
   });
 
   it('should display selection in selection list', async () => {
@@ -173,6 +173,13 @@ fdescribe('LocationSearchContainerComponent', () => {
     });
   });
 
+  it('should reset form control and set it pristine when appendLocation is called', () => {
+    component.findLocationFormGroup.controls.locationSelectedFormControl.setValue('TEST ERROR');
+    component.appendLocation([]);
+    expect(component.findLocationFormGroup.controls.locationSelectedFormControl.pristine).toBeTruthy();
+    expect(component.findLocationFormGroup.controls.locationSelectedFormControl.value).toEqual(undefined);
+  });
+
   it('should call getLocationSearchFocus when clicking on the summary error anchor', async (done) => {
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue('TEST ERROR');
     fixture.whenStable().then(() => {
@@ -183,7 +190,6 @@ fdescribe('LocationSearchContainerComponent', () => {
       const errorAnchor = errorElement.nativeElement.nativeElement.querySelector('a');
       errorAnchor.dispatchEvent(new Event('click'));
       fixture.whenStable().then(() => {
-        console.log('this is it');
         fixture.detectChanges();
         expect(component.getLocationSearchFocus).toHaveBeenCalled();
         expect(component.searchLocationComponent.autoCompleteInputBox.nativeElement.focus).toHaveBeenCalled();
@@ -198,6 +204,11 @@ fdescribe('LocationSearchContainerComponent', () => {
     expect(hint.nativeElement.innerText).toContain('If this is a fully remote hearing you must still select the court or tribunal which will be managing the case.');
     const findCourtLink = fixture.debugElement.query(By.css('.govuk-inset-text'));
     expect(findCourtLink.nativeElement.innerText).toContain('You can check the venue has the required facilities or reasonable adjustments using');
+  });
+
+  it('should call auto complete focus', () => {
+    component.getLocationSearchFocus();
+    expect(component.searchLocationComponent.autoCompleteInputBox.nativeElement.focus).toHaveBeenCalled();
   });
 
   afterEach(() => {

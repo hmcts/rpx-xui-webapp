@@ -69,6 +69,7 @@ fdescribe('LocationSearchContainerComponent', () => {
     spyOn(component, 'removeSelection').and.callThrough();
     spyOn(component.selectedLocations$, 'subscribe').and.returnValue(of([]));
     spyOn(component, 'getLocationSearchFocus').and.callThrough();
+    spyOn(component, 'appendLocation').and.callThrough();
     component.searchLocationComponent = new MockLocationSearchContainerComponent() as unknown as SearchLocationComponent;
     spyOn(component.searchLocationComponent.autoCompleteInputBox.nativeElement, 'focus');
   });
@@ -93,6 +94,7 @@ fdescribe('LocationSearchContainerComponent', () => {
 
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(location);
     component.addSelection();
+    expect(component.appendLocation).toHaveBeenCalled();
     fixture.whenStable().then(() => {
       fixture.detectChanges();
       component.selectedLocations$.subscribe(selectedLocations => {
@@ -192,6 +194,9 @@ fdescribe('LocationSearchContainerComponent', () => {
       fixture.whenStable().then(() => {
         fixture.detectChanges();
         expect(component.getLocationSearchFocus).toHaveBeenCalled();
+        expect(component.searchLocationComponent &&
+          component.searchLocationComponent.autoCompleteInputBox &&
+          component.searchLocationComponent.autoCompleteInputBox.nativeElement).toBeDefined();
         expect(component.searchLocationComponent.autoCompleteInputBox.nativeElement.focus).toHaveBeenCalled();
       });
     });

@@ -28,7 +28,6 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   private selectedTaskCategory: string = 'All';
   private selectedPerson: string = '';
   private selectedTaskType: string = 'All';
-  private selectedPriority: string = 'All';
   public locations$: Observable<Location[]>;
   public locations: Location[];
   public waSupportedJurisdictions$: Observable<string[]>;
@@ -74,9 +73,8 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
       const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
       const searchParameters = [
         {key: 'jurisdiction', operator: 'IN', values: [this.selectedJurisdiction]},
-        this.getStateParameter()
-        // {key: 'taskType', operator: 'IN', values: [this.selectedTaskType]},
-        // {key: 'priority', operator: 'IN', values: [this.selectedPriority]},
+        this.getStateParameter(),
+        {key: 'taskType', operator: 'IN', values: [this.selectedTaskType]},
       ];
       const personParameter = {key: 'user', operator: 'IN', values: [this.selectedPerson]};
       const locationParameter = this.getLocationParameter();
@@ -130,7 +128,6 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     this.selectedTaskCategory = selection.selectPerson;
     this.selectedPerson = selection.person ? selection.person.id : null;
     this.selectedTaskType = selection.taskType;
-    this.selectedPriority = selection.priority && !this.isCurrentUserJudicial() ? selection.priority : '';
     this.onPaginationHandler(1);
   }
 }

@@ -1,7 +1,7 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
-import { CancelHearingComponent, ChangeHearingComponent, DatePriorityHearingComponent, RequestHearingComponent, ViewHearingComponent } from './containers';
+import { CancelHearingComponent, ChangeHearingComponent, DatePriorityHearingComponent, HearingStageComponent, RequestHearingComponent, ViewHearingComponent } from './containers';
 import { LocationSearchContainerComponent } from './containers/request-hearing/location-search-container/location-search-container.component';
 import { WelshHearingComponent } from './containers/request-hearing/welsh-hearing/welsh-hearing.component';
 import { PriorityResolver } from './resolvers/priority/priority.resolve';
@@ -72,6 +72,15 @@ export const ROUTES: Routes = [
           title: 'HMCTS Manage cases | Request Hearing | Date Priority Hearing'
         }
       },
+      {
+        path: 'hearing-stage',
+        resolve: { hearingPriorities: PriorityResolver },
+        component: HearingStageComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Manage cases | Hearing Stage | Date Priority Hearing'
+        }
+      },      
     ]
   },
   {

@@ -22,7 +22,7 @@ NODE_CONFIG_ENV=development sets the machine so that the config that is used is 
 
 Run `yarn start:ng` to start up the UI.
 
-## Running unit tests
+## Running unit tests 
 
 Run `yarn test` to execute the unit tests on both the Angular and Node layers. Note that 
 `yarn test` is run on the build pipelines.

@@ -96,7 +96,6 @@ fdescribe('LocationSearchContainerComponent', () => {
     component.addSelection();
     fixture.whenStable().then(() => {
       fixture.detectChanges();
-      
       component.selectedLocations$.subscribe(selectedLocations => {
         expect(selectedLocations.length).toBeGreaterThan(0);
         expect(component.findLocationFormGroup.controls.locationSelectedFormControl.value).toBeUndefined();

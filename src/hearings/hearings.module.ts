@@ -12,6 +12,7 @@ import * as fromContainers from './containers';
 import { hearingsRouting } from './hearings.routes';
 import { HearingsService } from './services/hearings.service';
 import { effects, reducers } from './store';
+import { HearingStageComponent } from './containers/request-hearing/hearing-stage/hearing-stage.component';
 
 @NgModule({
   imports: [
@@ -26,7 +27,7 @@ import { effects, reducers } from './store';
     ReactiveFormsModule,
     ExuiCommonLibModule,
   ],
-  declarations: [...fromContainers.containers],
+  declarations: [...fromContainers.containers, HearingStageComponent],
   entryComponents: [],
   providers: [
     {

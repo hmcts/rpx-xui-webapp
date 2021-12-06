@@ -488,7 +488,7 @@ export function getSubstantiveRoles(roleAssignments: RoleAssignment[]): RoleAssi
 }
 
 // Note: array type may need to be changed depending on where pagination called
-export const paginate = (array: RoleCaseData[], pageNumber: number, pageSize: number): any[] => {
+export function paginate<T>(array: T[], pageNumber: number, pageSize: number): T[] {
   return array.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 };
 
@@ -507,7 +507,7 @@ export async function getTypesOfWorkByUserId(path, req: express.Request): Promis
   return null;
 }
 
-export function getUniqueCases(caseData: RoleCaseData[]): number {
+export function getUniqueCasesCount(caseData: RoleCaseData[]): number {
   const caseIds = caseData ? caseData.map(caseResult => caseResult.case_id) : [];
   return new Set(caseIds).size;
 }

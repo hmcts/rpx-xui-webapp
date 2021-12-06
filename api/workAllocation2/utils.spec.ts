@@ -24,7 +24,7 @@ import {
   getRoleAssignmentsByQuery,
   getSubstantiveRoles,
   getTypesOfWorkByUserId,
-  getUniqueCases,
+  getUniqueCasesCount,
   mapCasesFromData,
   mapCaseworkerData,
   mapCaseworkerPrimaryLocation,
@@ -465,7 +465,7 @@ describe('workAllocation.utils', () => {
     });
   });
 
-  describe('getUniqueCases', () => {
+  describe('getUniqueCasesCount', () => {
 
     const mockRoleCaseData: RoleCaseData[] = [{
       id: '1',
@@ -526,15 +526,15 @@ describe('workAllocation.utils', () => {
 
     it('should get unique cases from the data', () => {
       // check function works with no data
-      expect(getUniqueCases(undefined)).to.equal(0);
-      expect(getUniqueCases(null)).to.equal(0);
-      expect(getUniqueCases([])).to.equal(0);
+      expect(getUniqueCasesCount(undefined)).to.equal(0);
+      expect(getUniqueCasesCount(null)).to.equal(0);
+      expect(getUniqueCasesCount([])).to.equal(0);
 
       // check function works with data present
-      expect(getUniqueCases(mockRoleCaseData)).to.equal(3);
-      expect(getUniqueCases([mockRoleCaseData[0]])).to.equal(1);
-      expect(getUniqueCases(mockRoleCaseData.slice(1,4))).to.equal(2);
-      expect(getUniqueCases(mockRoleCaseData.slice(1,3))).to.equal(1);
+      expect(getUniqueCasesCount(mockRoleCaseData)).to.equal(3);
+      expect(getUniqueCasesCount([mockRoleCaseData[0]])).to.equal(1);
+      expect(getUniqueCasesCount(mockRoleCaseData.slice(1,4))).to.equal(2);
+      expect(getUniqueCasesCount(mockRoleCaseData.slice(1,3))).to.equal(1);
     });
   });
 

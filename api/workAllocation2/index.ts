@@ -43,7 +43,7 @@ import {
   getRoleAssignmentsByQuery,
   getSubstantiveRoles,
   getTypesOfWorkByUserId,
-  getUniqueCases,
+  getUniqueCasesCount,
   mapCasesFromData,
   mapCaseworkerData,
   paginate,
@@ -376,7 +376,7 @@ export async function getMyCases(req: EnhancedRequest, res: Response) {
       }
       const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles, null) : [];
       result.total_records = mappedCases.length;
-      result.unique_cases = getUniqueCases(mappedCases);
+      result.unique_cases = getUniqueCasesCount(mappedCases);
       // amount of unique cases already given by case id
       // result.unique_cases = caseIdList.length;
       const cases = assignActionsToCases(mappedCases, userIsCaseAllocator);
@@ -438,7 +438,7 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     }
     const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles, pagination) : [];
     result.total_records = mappedCases.length;
-    result.unique_cases = getUniqueCases(mappedCases);
+    result.unique_cases = getUniqueCasesCount(mappedCases);
     const roleCaseList = pagination ? paginate(mappedCases, pagination.page_number, pagination.page_size) : mappedCases;
     result.cases = assignActionsToCases(roleCaseList, userIsCaseAllocator);
     return res.send(result).status(200);

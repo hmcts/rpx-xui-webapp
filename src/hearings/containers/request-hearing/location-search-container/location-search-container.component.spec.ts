@@ -29,7 +29,7 @@ class MockLocationSearchContainerComponent {
   public autoCompleteInputBox: MockAutoCompleteInputBox = new MockAutoCompleteInputBox();
 }
 
-fdescribe('LocationSearchContainerComponent', () => {
+describe('LocationSearchContainerComponent', () => {
   let component: LocationSearchContainerComponent;
   let fixture: ComponentFixture<LocationSearchContainerComponent>;
 

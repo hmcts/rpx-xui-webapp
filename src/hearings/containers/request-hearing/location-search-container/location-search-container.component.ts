@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, RequiredValidator, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
+import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { Store, select } from '@ngrx/store';
-import { LocationByEPIMSModel } from 'api/locations/models/location.model';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import * as fromHearingStore from '../../../../hearings/store';

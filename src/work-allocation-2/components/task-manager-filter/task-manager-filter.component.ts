@@ -263,13 +263,15 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
         if (f === null) {
           f = {
             id: TaskManagerFilterComponent.FILTER_NAME,
+            reset: false,
             fields: this.fieldsConfig.cancelSetting.fields
           };
           return f;
         }
         return f;
       }),
-      filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
+      filter((f: FilterSetting) => f && f.hasOwnProperty('fields')),
+      filter((f: FilterSetting) => !f.reset),
       ).subscribe((f: FilterSetting) => {
         const fields = f.fields.reduce((acc, field: { name: string, value: string[] }) => {
           return {...acc, [field.name]: field.value[0]};

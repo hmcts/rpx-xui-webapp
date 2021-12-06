@@ -1,13 +1,16 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { BookingProcess } from '../../models';
 import { BookingCheckComponent } from './booking-check.component';
 
 describe('BookingCheckComponent', () => {
   let component: BookingCheckComponent;
   let fixture: ComponentFixture<BookingCheckComponent>;
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [BookingCheckComponent],
+      imports: [RouterTestingModule]
     }).compileComponents();
     fixture = TestBed.createComponent(BookingCheckComponent);
     component = fixture.componentInstance;
@@ -19,58 +22,85 @@ describe('BookingCheckComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should show the correct page caption and heading', () => {
-    const caption = fixture.debugElement.nativeElement.querySelector('.govuk-caption-l');
-    const heading = fixture.debugElement.nativeElement.querySelector('h1');
+  describe('page display events', () => {
+    it('should display the correct page caption and heading', () => {
+      const caption = fixture.debugElement.nativeElement.querySelector('.govuk-caption-l');
+      const heading = fixture.debugElement.nativeElement.querySelector('h1');
 
-    expect(caption.textContent).toContain('Work access');
-    expect(heading.textContent).toContain('Check your new booking');
-  });
+      expect(caption.textContent).toContain('Work access');
+      expect(heading.textContent).toContain('Check your new booking');
+    });
 
-  it('should display the correct location', () => {
-    const location = fixture.debugElement.nativeElement.querySelector('.govuk-summary-list__row').childNodes[1];
-    component.bookingProcess = { locationName: 'London' } as BookingProcess;
+    it('should display the correct location', () => {
+      const location = fixture.debugElement.nativeElement.querySelector('.govuk-summary-list__row').childNodes[1];
+      component.bookingProcess = { locationName: 'London' } as BookingProcess;
 
-    fixture.detectChanges();
-    expect(location.textContent).toContain('London');
-  });
+      fixture.detectChanges();
+      expect(location.textContent).toContain('London');
+    });
 
-  it('should show the correct values on row for today only case', () => {
-    const dateInterval = fixture.debugElement.nativeElement.querySelector('.govuk-summary-list__row').nextElementSibling.childNodes[1];
-    component.bookingProcess = {
-      startDate: new Date('Thu Dec 02 2021 09:00:00 GMT+0000'),
-      endDate: new Date('Sun Dec 02 2021 23:59:59 GMT+0000'),
-    } as BookingProcess;
+    it('should display the correct values on row for today only case', () => {
+      const dateInterval = fixture.debugElement.nativeElement.querySelector('.govuk-summary-list__row').nextElementSibling.childNodes[1];
+      component.bookingProcess = {
+        startDate: new Date('Thu Dec 02 2021 09:00:00 GMT+0000'),
+        endDate: new Date('Sun Dec 02 2021 23:59:59 GMT+0000'),
+      } as BookingProcess;
 
-    fixture.detectChanges();
-    expect(dateInterval.textContent).toContain(
-      '02 December 2021 to 02 December 2021'
-    );
-  });
+      fixture.detectChanges();
+      expect(dateInterval.textContent).toContain(
+        '02 December 2021 to 02 December 2021'
+      );
+    });
 
-  it('should show the correct values on row for this week case', () => {
-    const dateInterval = fixture.debugElement.nativeElement.querySelector('.govuk-summary-list__row').nextElementSibling.childNodes[1];
-    component.bookingProcess = {
-      startDate: new Date('Thu Dec 02 2021 09:00:00 GMT+0000'),
-      endDate: new Date('Sun Dec 05 2021 23:59:59 GMT+0000'),
-    } as BookingProcess;
+    it('should display the correct values on row for this week case', () => {
+      const dateInterval = fixture.debugElement.nativeElement.querySelector('.govuk-summary-list__row').nextElementSibling.childNodes[1];
+      component.bookingProcess = {
+        startDate: new Date('Thu Dec 02 2021 09:00:00 GMT+0000'),
+        endDate: new Date('Sun Dec 05 2021 23:59:59 GMT+0000'),
+      } as BookingProcess;
 
-    fixture.detectChanges();
-    expect(dateInterval.textContent).toContain(
-      '02 December 2021 to 05 December 2021'
-    );
-  });
+      fixture.detectChanges();
+      expect(dateInterval.textContent).toContain(
+        '02 December 2021 to 05 December 2021'
+      );
+    });
 
-  it('should show the correct values on row for date range case', () => {
-    const dateInterval = fixture.debugElement.nativeElement.querySelector('.govuk-summary-list__row').nextElementSibling.childNodes[1];
-    component.bookingProcess = {
-      startDate: new Date('Thu Dec 02 2021 09:00:00 GMT+0000'),
-      endDate: new Date('Sun Dec 12 2021 23:59:59 GMT+0000'),
-    } as BookingProcess;
+    it('should display the correct values on row for date range case', () => {
+      const dateInterval = fixture.debugElement.nativeElement.querySelector('.govuk-summary-list__row').nextElementSibling.childNodes[1];
+      component.bookingProcess = {
+        startDate: new Date('Thu Dec 02 2021 09:00:00 GMT+0000'),
+        endDate: new Date('Sun Dec 12 2021 23:59:59 GMT+0000'),
+      } as BookingProcess;
 
-    fixture.detectChanges();
-    expect(dateInterval.textContent).toContain(
-      '02 December 2021 to 12 December 2021'
-    );
+      fixture.detectChanges();
+      expect(dateInterval.textContent).toContain(
+        '02 December 2021 to 12 December 2021'
+      );
+    });
+
+    describe('page link events', () => {
+      let eventTriggerSpy: jasmine.Spy;
+      beforeEach(() => {
+        eventTriggerSpy = spyOn(component, 'onEventTrigger');
+      });
+
+      it('should call the change location event trigger if the change location link is clicked', () => {
+        const changeLocationLink = fixture.debugElement.nativeElement.querySelector('a#change-location');
+        changeLocationLink.click();
+        expect(eventTriggerSpy).toHaveBeenCalledWith(component.bookingNavigationEvent.CHANGELOCATIONCLICK);
+      });
+
+      it('should call the change duration event trigger if the change duration link is clicked', () => {
+        const changeDurationLink = fixture.debugElement.nativeElement.querySelector('a#change-duration');
+        changeDurationLink.click();
+        expect(eventTriggerSpy).toHaveBeenCalledWith(component.bookingNavigationEvent.CHANGEDURATIONCLICK);
+      });
+
+      it('should call the cancel event trigger if the cancel link is clicked', () => {
+        const cancelLink = fixture.debugElement.nativeElement.querySelector('a#cancel');
+        cancelLink.click();
+        expect(eventTriggerSpy).toHaveBeenCalledWith(component.bookingNavigationEvent.CANCEL);
+      });
+    });
   });
 });

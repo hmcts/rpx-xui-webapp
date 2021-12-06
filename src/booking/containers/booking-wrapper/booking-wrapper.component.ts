@@ -52,6 +52,7 @@ export class BookingWrapperComponent implements OnInit {
         }
         break;
       case BookingNavigationEvent.HOMECONTINUE:
+      case BookingNavigationEvent.CHANGELOCATIONCLICK:
         if (this.bookingProcess.selectedBookingOption === 1) {
           this.bookingNavigationCurrentState = BookingState.LOCATION;
         } else {
@@ -67,6 +68,13 @@ export class BookingWrapperComponent implements OnInit {
         break;
       case BookingNavigationEvent.CONFIRMBOOKINGDATESUBMIT:
         this.bookingNavigationCurrentState = BookingState.CHECK;
+        break;
+      case BookingNavigationEvent.CHANGEDURATIONCLICK:
+        this.bookingNavigationCurrentState = BookingState.BOOKDATE;
+        break;
+      case BookingNavigationEvent.CANCEL:
+        this.bookingProcess = {} as BookingProcess;
+        this.bookingNavigationCurrentState = BookingState.HOME;
         break;
       case BookingNavigationEvent.CONFIRMBOOKINGSUBMIT:
         // TODO: Submit booking

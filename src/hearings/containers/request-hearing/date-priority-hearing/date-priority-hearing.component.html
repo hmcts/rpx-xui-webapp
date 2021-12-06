@@ -59,7 +59,7 @@
             </div>
             <div class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3" [ngClass]="{'js-hidden': checkedHearingAvailability!=='Yes'}">
               <div class="govuk-form-group">
-                <xuilib-gov-uk-date [config]="firstHearingDate" [formGroup]="priorityForm" [errorMessage]="firstDateOfHearingError"></xuilib-gov-uk-date>
+                <xuilib-gov-uk-date [config]="firstHearingDate" [formGroup]="firstHearingFormGroup" [errorMessage]="firstDateOfHearingError"></xuilib-gov-uk-date>
               </div>
             </div>
             <div class="govuk-radios__item">
@@ -70,10 +70,10 @@
             <div class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3" [ngClass]="{'js-hidden': checkedHearingAvailability!=='Choose'}">
               <div class="govuk-hint">You can enter either or both dates.</div>
               <div class="govuk-form-group">
-                <xuilib-gov-uk-date [config]="earliestHearingDate" [formGroup]="priorityForm" [errorMessage]="earliestDateOfHearingError"></xuilib-gov-uk-date>
+                <xuilib-gov-uk-date [config]="earliestHearingDate" [formGroup]="earliestHearingFormGroup" [errorMessage]="earliestDateOfHearingError"></xuilib-gov-uk-date>
               </div>
               <div class="govuk-form-group">
-                <xuilib-gov-uk-date [config]="latestHearingDate" [formGroup]="priorityForm" [errorMessage]="latestDateOfHearingError"></xuilib-gov-uk-date>
+                <xuilib-gov-uk-date [config]="latestHearingDate" [formGroup]="latestHearingFormGroup" [errorMessage]="latestDateOfHearingError"></xuilib-gov-uk-date>
               </div>
             </div>
           </div>

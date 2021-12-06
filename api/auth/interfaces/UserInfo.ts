@@ -6,4 +6,5 @@ export interface UserInfo {
   id?: string
   uid?: string
   roles?: string[]
+  roleCategory?: string;
 }

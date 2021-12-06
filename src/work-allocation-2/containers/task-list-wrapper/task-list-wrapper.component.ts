@@ -1,42 +1,40 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
+import { Observable, Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
+import { AppUtils } from '../../../app/app-utils';
+import { UserInfo, UserRole } from '../../../app/models';
 
-import { Caseworker } from 'api/workAllocation/interfaces/task';
-import { Observable } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
 import { ListConstants } from '../../components/constants';
-import { InfoMessage, InfoMessageType, TaskActionIds, TaskService, TaskSort } from '../../enums';
+import { InfoMessage, InfoMessageType, SortOrder, TaskActionIds, TaskService } from '../../enums';
+import { Caseworker, Location } from '../../interfaces/common';
+import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter, SearchTaskRequest, SortParameter } from '../../models/dtos';
-import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
-import { CaseworkerDataService, InfoMessageCommService, WorkAllocationTaskService } from '../../services';
+import { InvokedTaskAction, Task, TaskServiceConfig } from '../../models/tasks';
+import { CaseworkerDataService, InfoMessageCommService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { AppConstants } from '../../../app/app.constants';
-import { mergeMap } from 'rxjs/operators';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html',
   providers: [InfoMessageCommService]
 })
-export class TaskListWrapperComponent implements OnInit {
+export class TaskListWrapperComponent implements OnDestroy, OnInit {
 
   public specificPage: string = '';
   public caseworkers: Caseworker[];
+  public locations: Location[] = new Array<Location>();
   public showSpinner$: Observable<boolean>;
-  public sortedBy: TaskSortField;
+  public sortedBy: SortField;
   public pagination: PaginationParameter;
-  public isPaginationEnabled$: Observable<boolean>;
   private pTasks: Task[];
-  /**
-   * Mock TaskServiceConfig.
-   */
-  private readonly defaultTaskServiceConfig: TaskServiceConfig = {
-    service: TaskService.IAC,
-    defaultSortDirection: TaskSort.ASC,
-    defaultSortFieldName: 'dueDate',
-    fields: this.fields,
-  };
+  public selectedLocations: string[] = [];
+  private tasksLoaded: boolean = false;
+  protected userDetailsKey: string = 'userDetails';
+
+  private selectedLocationsSubscription: Subscription;
 
   /**
    * Take in the Router so we can navigate when actions are clicked.
@@ -50,10 +48,13 @@ export class TaskListWrapperComponent implements OnInit {
     protected alertService: AlertService,
     protected caseworkerService: CaseworkerDataService,
     protected loadingService: LoadingService,
-    protected featureToggleService: FeatureToggleService
+    protected featureToggleService: FeatureToggleService,
+    protected locationService: LocationDataService,
+    protected waSupportedJurisdictionsService: WASupportedJurisdictionsService,
+    protected filterService: FilterService
   ) {
-    this.isPaginationEnabled$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.waMvpPaginationFeature);
   }
+  public taskServiceConfig: TaskServiceConfig;
 
   public get tasks(): Task[] {
     return this.pTasks;
@@ -71,12 +72,25 @@ export class TaskListWrapperComponent implements OnInit {
     this.pTasksTotal = value;
   }
 
-  public get fields(): TaskFieldConfig[] {
+  public get fields(): FieldConfig[] {
     return [];
   }
 
-  public get taskServiceConfig(): TaskServiceConfig {
-    return this.defaultTaskServiceConfig;
+  public getTaskServiceConfig(): TaskServiceConfig {
+    return {
+      service: TaskService.IAC,
+      defaultSortDirection: SortOrder.ASC,
+      defaultSortFieldName: this.getDateField('dueDate'),
+      fields: this.fields
+    };
+  }
+
+  public getDateField(defaultSortColumn: string): string {
+    const field = this.fields.find(currentField => currentField.isDate);
+    if (field) {
+      return field.sortName;
+    }
+    return defaultSortColumn;
   }
 
   public get emptyMessage(): string {
@@ -88,6 +102,13 @@ export class TaskListWrapperComponent implements OnInit {
    */
   public get sortSessionKey(): string {
     return 'sortSessionKey';
+  }
+
+  /**
+   * To be overridden.
+   */
+   public get pageSessionKey(): string {
+    return 'pageSessionKey';
   }
 
   /**
@@ -114,8 +135,34 @@ export class TaskListWrapperComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    this.taskServiceConfig = this.getTaskServiceConfig();
+    this.loadCaseWorkersAndLocations();
     this.setupTaskList();
     this.loadTasks();
+  }
+
+  public ngOnDestroy(): void {
+    if (this.selectedLocationsSubscription) {
+      this.selectedLocationsSubscription.unsubscribe();
+    }
+  }
+
+  public loadCaseWorkersAndLocations() {
+    this.selectedLocationsSubscription = this.filterService.getStream('locations')
+      .pipe(
+        filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
+      )
+      .subscribe((f: FilterSetting) => {
+        this.selectedLocations = f.fields.find((field) => field.name === 'locations').value;
+        // timeout ensures tasks are loaded on initial local setting
+        // waits for initial setting to be persisted via task-filter-component
+        setTimeout(() => {
+          if (this.tasksLoaded || this.filterService.isInitialSetting) {
+            this.doLoad();
+            this.filterService.isInitialSetting = false;
+          }
+        }, 1);
+    });
   }
 
   public setupTaskList() {
@@ -125,12 +172,12 @@ export class TaskListWrapperComponent implements OnInit {
       handleFatalErrors(error.status, this.router);
     });
     // Try to get the sort order out of the session.
-    const stored = this.sessionStorageService.getItem(this.sortSessionKey);
-    if (stored) {
-      const { fieldName, order } = JSON.parse(stored);
+    const sortStored = this.sessionStorageService.getItem(this.sortSessionKey);
+    if (sortStored) {
+      const { fieldName, order } = JSON.parse(sortStored);
       this.sortedBy = {
         fieldName,
-        order: order as TaskSort
+        order: order as SortOrder
       };
     } else {
       // Otherwise, set up the default sorting.
@@ -139,18 +186,11 @@ export class TaskListWrapperComponent implements OnInit {
         order: this.taskServiceConfig.defaultSortDirection
       };
     }
-
-    this.isPaginationEnabled$.subscribe({
-      next: (result: boolean) => {
-        if (!result) this.pagination = null;
-        else {
-          this.pagination = {
-            page_number: 1,
-            page_size: 25
-          };
-        }
-      }
-    });
+    const pageSorted = +this.sessionStorageService.getItem(this.pageSessionKey);
+    this.pagination = {
+      page_number: pageSorted ? pageSorted : 1,
+      page_size: 25
+    };
   }
 
   /**
@@ -173,11 +213,6 @@ export class TaskListWrapperComponent implements OnInit {
       message: InfoMessage.LIST_OF_TASKS_REFRESHED,
     });
     this.doLoad();
-  }
-
-  public performSearch(): Observable<any> {
-    const searchRequest = this.getSearchTaskRequestPagination();
-    return this.taskService.searchTask({ searchRequest, view: this.view });
   }
 
   public performSearchPagination(): Observable<any> {
@@ -218,13 +253,12 @@ export class TaskListWrapperComponent implements OnInit {
    * @param fieldName - ie. 'caseName'
    */
   public onSortHandler(fieldName: string): void {
-    let order: TaskSort = TaskSort.ASC;
-    if (this.sortedBy.fieldName === fieldName && this.sortedBy.order === TaskSort.ASC) {
-      order = TaskSort.DSC;
+    let order: SortOrder = SortOrder.ASC;
+    if (this.sortedBy.fieldName === fieldName && this.sortedBy.order === SortOrder.ASC) {
+      order = SortOrder.DESC;
     }
     this.sortedBy = { fieldName, order };
     this.sessionStorageService.setItem(this.sortSessionKey, JSON.stringify(this.sortedBy));
-
     this.loadTasks();
   }
 
@@ -246,7 +280,7 @@ export class TaskListWrapperComponent implements OnInit {
       returnUrl: this.returnUrl,
       showAssigneeColumn: taskAction.action.id !== TaskActionIds.ASSIGN
     };
-    const actionUrl = `/mywork/${taskAction.task.id}/${taskAction.action.id}/${this.specificPage}`;
+    const actionUrl = `/work/${taskAction.task.id}/${taskAction.action.id}/${this.specificPage}`;
     this.router.navigate([actionUrl], { state });
   }
 
@@ -254,11 +288,12 @@ export class TaskListWrapperComponent implements OnInit {
   private doLoad(): void {
     this.showSpinner$ = this.loadingService.isLoading;
     const loadingToken = this.loadingService.register();
-    this.isPaginationEnabled$.pipe(mergeMap(enabled => enabled ? this.performSearchPagination() : this.performSearch())).subscribe(result => {
+    this.performSearchPagination().subscribe(result => {
         this.loadingService.unregister(loadingToken);
         this.tasks = result.tasks;
         this.tasksTotal = result.total_records;
         this.tasks.forEach(task => task.assigneeName = getAssigneeName(this.caseworkers, task.assignee));
+        this.tasksLoaded = true;
         this.ref.detectChanges();
       }, error => {
         this.loadingService.unregister(loadingToken);
@@ -268,7 +303,17 @@ export class TaskListWrapperComponent implements OnInit {
 
   public onPaginationHandler(pageNumber: number): void {
     this.pagination.page_number = pageNumber;
+    this.sessionStorageService.setItem(this.pageSessionKey, pageNumber.toString());
     this.doLoad();
   }
 
+  public isCurrentUserJudicial(): boolean {
+    const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
+    if (userInfoStr) {
+      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const isJudge = AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
+      return isJudge;
+    }
+    return false
+  }
 }

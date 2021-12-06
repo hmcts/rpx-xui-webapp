@@ -15,28 +15,26 @@ const CucumberReportLog = require("../../e2e/support/reportLogger");
 const MockApp = require('../../nodeMock/app');
 const BrowserWaits = require('../../e2e/support/customWaits');
 
-defineSupportCode(({ Before, After }) => {
-    Before(async function (scenario) {
-
-        const world = this;
-        global.scenarioData = {};
-        CucumberReportLog.setScenarioWorld(this);
-
-        const scenarioId = scenario.pickle.name.split(' ').join('_').split('"').join('').split('/').join('');
+defineSupportCode(({ Before, After, BeforeAll }) => {
+    BeforeAll(async function(){
         const scenarioServerPort = MockApp.serverPort;
-        MockApp.init();
-        await MockApp.startServer(); 
-        await browser.driver.get(config.config.baseUrl);
-        await headerPage.waitForPrimaryNavDisplay();
 
-        await browser.manage().addCookie({ name: 'scenarioMockPort', value: scenarioServerPort+"", domain: 'localhost:3000' });
-        
-        // done();
+        await browser.driver.get(config.config.baseUrl);
     });
 
+    Before(async function (scenario) {
+        const scenarioServerPort = MockApp.serverPort;
+        await browser.manage().addCookie({ name: 'scenarioMockPort', value: scenarioServerPort + "", domain: 'localhost:3000' });
+        CucumberReportLog.setScenarioWorld(this);
+
+        MockApp.init();
+        await MockApp.startServer();
+    });
+// 
     After(async function (scenario) {
-        if(argv.debug){
-           // await BrowserWaits.waitForSeconds(600);
+
+        if(argv.debug || true){
+        //    await BrowserWaits.waitForSeconds(600);
         }
         
         await MockApp.stopServer();
@@ -44,6 +42,5 @@ defineSupportCode(({ Before, After }) => {
         MockApp.deleteScenarioSession(scenarioId);
         CucumberReportLog.AddMessage("NG Integration test status : " + scenario.result.status);
         CucumberReportLog.AddJson(MockApp.requestLogs);
-        // done();
     });
-});
+})

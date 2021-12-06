@@ -6,6 +6,7 @@ import { TaskActionConstants } from './components/constants';
 import {
   AllWorkHomeComponent,
   AllWorkTaskComponent,
+  AllWorkCaseComponent,
   AvailableTasksComponent,
   MyTasksComponent,
   TaskActionContainerComponent,
@@ -14,6 +15,7 @@ import {
   TaskHomeComponent,
   WorkAllocationHomeComponent,
 } from './containers';
+import { MyCasesComponent } from './containers/my-cases/my-cases.component';
 import { WorkAllocationFeatureToggleGuard } from './guards';
 import { TaskResolver } from './resolvers';
 import { LocationResolver } from './resolvers/location-resolver.service';
@@ -49,6 +51,13 @@ export const ROUTES: Routes = [
             data: {
               title: 'HMCTS Manage cases | My work | Available tasks', subTitle: 'Available tasks'
             }
+          },
+          {
+            path: 'my-cases',
+            component: MyCasesComponent,
+            data: {
+              title: 'HMCTS Manage cases | My work | My cases', subTitle: 'My cases'
+            }
           }
         ]
       },
@@ -68,9 +77,16 @@ export const ROUTES: Routes = [
             path: 'tasks',
             component: AllWorkTaskComponent,
             data: {
-              title: 'HMCTS Manage cases | My work | My tasks', subTitle: 'My tasks'
+              title: 'HMCTS Manage cases | All work | Tasks', subTitle: 'Tasks'
             }
           },
+          {
+            path: 'cases',
+            component: AllWorkCaseComponent,
+            data: {
+              title: 'HMCTS Manage cases | All work | Cases', subTitle: 'Cases'
+            }
+          }
         ]
       },
       {
@@ -80,8 +96,18 @@ export const ROUTES: Routes = [
         children: [
           {
             path: 'assign',
-            component: TaskAssignmentContainerComponent,
-            data: TaskActionConstants.Assign
+            children: [
+              {
+                path: 'confirm',
+                component: TaskAssignmentConfirmComponent,
+                data: TaskActionConstants.Assign
+              },
+              {
+                path: '',
+                component: TaskAssignmentContainerComponent,
+                data: TaskActionConstants.Assign
+              }
+            ]
           },
           {
             path: 'reassign',

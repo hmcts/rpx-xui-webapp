@@ -3,12 +3,11 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { SearchStatePersistenceKey } from 'src/search/enums';
+import { SearchStatePersistenceKey } from '../../../search/enums';
 import * as fromAppStore from '../../../app/store';
 import * as fromNocStore from '../../../noc/store';
 import { SearchService } from '../../../search/services/search.service';
-import { NavItemsModel } from '../../models/nav-item.model';
-import { UserNavModel } from '../../models/user-nav.model';
+import { NavItemsModel, UserNavModel } from '../../models';
 import { UserService } from '../../services/user/user.service';
 
 @Component({

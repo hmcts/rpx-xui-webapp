@@ -74,6 +74,12 @@ fdescribe('LocationSearchContainerComponent', () => {
     spyOn(component.searchLocationComponent.autoCompleteInputBox.nativeElement, 'focus');
   });
 
+  it('should initialise component', async () => {
+    expect(component).toBeDefined();
+    component.ngOnInit();
+    expect(component.getLocationSearchFocus).toHaveBeenCalled();
+  });
+
   it('should display selection in selection list', async () => {
     const location = {
       court_venue_id: '100',
@@ -212,6 +218,9 @@ fdescribe('LocationSearchContainerComponent', () => {
 
   it('should call auto complete focus', () => {
     component.getLocationSearchFocus();
+    expect(component.searchLocationComponent &&
+      component.searchLocationComponent.autoCompleteInputBox &&
+      component.searchLocationComponent.autoCompleteInputBox.nativeElement).toBeDefined();
     expect(component.searchLocationComponent.autoCompleteInputBox.nativeElement.focus).toHaveBeenCalled();
   });
 

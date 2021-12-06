@@ -2,7 +2,6 @@ import * as bodyParser from 'body-parser'
 import {Express} from 'express'
 import * as amendedJurisdictions from './amendedJurisdictions'
 import {getConfigValue} from './configuration'
-import * as judicialBooking from './judicialBooking'
 
 import {
     SERVICES_CCD_COMPONENT_API_PATH,
@@ -78,13 +77,6 @@ export const initProxy = (app: Express) => {
         onRes: amendedJurisdictions.getJurisdictions,
         rewrite: false,
         source: '/aggregated',
-        target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
-    })
-
-    applyProxy(app, {
-        onReq: judicialBooking.getBookings,
-        rewrite: false,
-        source: '/am/bookings',
         target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
     })
 

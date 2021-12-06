@@ -56,12 +56,6 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, After
   }
 
   public onSubmit(): void {
-		// If the input to the 16-digit case reference search box is invalid, navigate to the "no results" error page
-    if (this.formGroup.get(this.CASE_REF_FIELD).invalid) {
-      this.router.navigate(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH }, relativeTo: this.route });
-      return;
-    }
-
     const caseReference = this.formGroup.get(this.CASE_REF_FIELD).value;
 
     // Populate a SearchParameters instance and persist via the SearchService. Do this even if the input to the 16-digit case reference
@@ -80,6 +74,12 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, After
 
     // Store the search parameters to session
     this.searchService.storeState(SearchStatePersistenceKey.SEARCH_PARAMS, searchParameters);
+
+    // If the input to the 16-digit case reference search box is invalid, navigate to the "no results" error page
+    if (this.formGroup.get(this.CASE_REF_FIELD).invalid) {
+      this.router.navigate(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH }, relativeTo: this.route });
+      return;
+    }
 
     // Do not decorate 16-digit case reference search box with error class
     this.store.dispatch(new fromActions.Decorate16DigitCaseReferenceSearchBoxInHeader(false));

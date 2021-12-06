@@ -100,8 +100,7 @@ describe('ExuiCaseReferenceSearchBoxComponent', () => {
   };
 
   beforeEach(async(() => {
-    searchService = createSpyObj<SearchService>('searchService', ['getResults', 'retrieveState', 'storeState']);
-    searchService.getResults.and.returnValue(of(searchResultWithCaseList));
+    searchService = createSpyObj<SearchService>('searchService', ['retrieveState', 'storeState']);
     searchService.retrieveState.and.returnValue(searchParameters);
     TestBed.configureTestingModule({
       declarations: [ CaseReferenceSearchBoxComponent ],
@@ -148,20 +147,8 @@ describe('ExuiCaseReferenceSearchBoxComponent', () => {
     component.onSubmit();
 
     expect(searchService.storeState).toHaveBeenCalledTimes(1);
-    expect(searchService.getResults).toHaveBeenCalledTimes(1);
     expect(store.dispatch).toHaveBeenCalledTimes(1);
-    expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/1234123412341234'], { relativeTo: route });
-  });
-
-  it('should return to no results page if case not found', () => {
-    searchService.getResults.and.returnValue(of(searchResultWithNoCases));
-    component.formGroup.get('caseReference').setValue('1234123412341234');
-    component.onSubmit();
-
-    expect(searchService.storeState).toHaveBeenCalledTimes(1);
-    expect(component.formGroup.get('caseReference').invalid).toBe(false);
-    expect(searchService.getResults).toHaveBeenCalledTimes(1);
-    expect(router.navigate).toHaveBeenCalledWith(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH }, relativeTo: route });
+    expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/1234123412341234'], { state: { origin: '16digitCaseReferenceSearchFromHeader' }, relativeTo: route });
   });
 
   it('should return to no results page if case reference entered is invalid', () => {
@@ -171,7 +158,6 @@ describe('ExuiCaseReferenceSearchBoxComponent', () => {
     // The case reference entered should be stored as a parameter even if it is invalid
     expect(searchService.storeState).toHaveBeenCalledTimes(1);
     expect(component.formGroup.get('caseReference').invalid).toBe(true);
-    expect(searchService.getResults).not.toHaveBeenCalled();
     expect(router.navigate).toHaveBeenCalledWith(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH }, relativeTo: route });
   });
 

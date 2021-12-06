@@ -1,11 +1,11 @@
-@search
+@search @ignore
 Feature: search criteria workflow
 
   Background:
     When I navigate to Expert UI Url
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
-  @ignore
+
   Scenario Outline:  search criteria apply workflow from Search Case Page
     When I click on search button
     Then Search page should be displayed
@@ -21,7 +21,7 @@ Feature: search criteria workflow
     | Jurisdiction | CaseType |
       | Manage probate application | Grant of representation |
 
-  @fullfunctional
+
   Scenario Outline:  search criteria apply workflow from Search Case Page
 
     When I select search criteria jurisdiction "<Jurisdiction>" case type "<CaseType>" state "Any" in case list page

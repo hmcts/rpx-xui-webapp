@@ -66,7 +66,6 @@ export const ROUTES: Routes = [
       },
       {
         path: 'location-search',
-        resolve: { hearingPriorities: PriorityResolver },
         component: LocationSearchContainerComponent,
         canActivate: [HealthCheckGuard],
         data: {

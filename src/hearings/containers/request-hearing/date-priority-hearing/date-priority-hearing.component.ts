@@ -35,16 +35,32 @@ export class DatePriorityHearingComponent implements OnInit {
   public hearingPriorityDateError: string = 'Select if the hearing needs to take place on a specific date';
   public hearingDateRangeError: string = 'Enter a valid date range for the hearing to take place on';
   public hearingDatePastError: string = 'The hearing dates cannot be in the past';
-  public earliestHearingDateError: string  = 'The earliest hearing date must be before the latest hearing date';
+  public earliestHearingDateError: string = 'The earliest hearing date must be before the latest hearing date';
   public firstDateOfHearingError: ErrorMessagesModel;
   public earliestDateOfHearingError: ErrorMessagesModel;
   public latestDateOfHearingError: ErrorMessagesModel;
 
   constructor(private readonly formBuilder: FormBuilder,
-    private readonly route: ActivatedRoute,
-    private readonly validatorsService: ValidatorsService,
-    private readonly hearingStore: Store<fromHearingStore.State>,
-    private readonly hearingsService: HearingsService) { }
+              private readonly route: ActivatedRoute,
+              private readonly validatorsService: ValidatorsService,
+              private readonly hearingStore: Store<fromHearingStore.State>,
+              private readonly hearingsService: HearingsService) { }
+
+  public get firstHearingFormGroup(): FormGroup {
+    return this.priorityForm.get('firstHearing') as FormGroup;
+  }
+
+  public get dateRangeHearingFormGroup(): FormGroup {
+    return this.priorityForm.get('dateRangeHearing') as FormGroup;
+  }
+
+  public get earliestHearingFormGroup(): FormGroup {
+    return this.dateRangeHearingFormGroup.get('earliestHearing') as FormGroup;
+  }
+
+  public get latestHearingFormGroup(): FormGroup {
+    return this.dateRangeHearingFormGroup.get('latestHearing') as FormGroup;
+  }
 
   public ngOnInit(): void {
     this.priorities = this.route.snapshot.data.hearingPriorities.sort((currentPriority, nextPriority) => (currentPriority.order < nextPriority.order ? -1 : 1));
@@ -94,21 +110,37 @@ export class DatePriorityHearingComponent implements OnInit {
         minutes: ['', [Validators.required, this.validatorsService.numberMinMaxValidator(0, 59)]]
       }, { validator: this.validatorsService.minutesValidator(5, 360) }),
       specificDate: ['', Validators.required],
-      firstHearingDate_day: [],
-      firstHearingDate_month: [],
-      firstHearingDate_year: [],
-      earliestHearingDate_day: [],
-      earliestHearingDate_month: [],
-      earliestHearingDate_year: [],
-      latestHearingDate_day: [],
-      latestHearingDate_month: [],
-      latestHearingDate_year: [],
+      firstHearing: this.formBuilder.group({
+        firstHearingDate_day: [],
+        firstHearingDate_month: [],
+        firstHearingDate_year: [],
+      }),
+      dateRangeHearing: this.formBuilder.group({
+        earliestHearing: this.formBuilder.group({
+          earliestHearingDate_day: [],
+          earliestHearingDate_month: [],
+          earliestHearingDate_year: [],
+        }),
+        latestHearing: this.formBuilder.group({
+          latestHearingDate_day: [],
+          latestHearingDate_month: [],
+          latestHearingDate_year: [],
+        }),
+      }),
       priority: ['', Validators.required]
     });
   }
 
   public showDateAvailability(): void {
     this.checkedHearingAvailability = this.priorityForm.get('specificDate').value;
+    this.firstHearingFormGroup.clearValidators();
+    if (this.checkedHearingAvailability === 'Yes') {
+      this.firstHearingFormGroup.setValidators([this.validatorsService.hearingDateValidator(this.partiesNotAvailableDates)]);
+    } else if (this.checkedHearingAvailability === 'Choose') {
+      this.dateRangeHearingFormGroup.setValidators([this.validatorsService.hearingDateRangeValidator(this.partiesNotAvailableDates)]);
+    }
+    this.firstHearingFormGroup.updateValueAndValidity();
+    this.dateRangeHearingFormGroup.updateValueAndValidity();
   }
 
   public checkUnavailableDatesList(dateList: PartyUnavailabilityRange[]): void {
@@ -165,7 +197,7 @@ export class DatePriorityHearingComponent implements OnInit {
         this.isHearingDateNotValid = true;
         this.validationErrors.push({ id: 'noSpecificDate', message: this.hearingPriorityDateError });
       } else if (this.priorityForm.controls.specificDate.value === 'Yes') {
-        const choosenDate = moment(this.getDateFormatted('firstHearingDate'), 'DD-MM-YYYY');
+        const choosenDate = moment(this.getDateFormatted(this.firstHearingFormGroup, 'firstHearingDate'), 'DD-MM-YYYY');
         const isPastDate = choosenDate.isBefore();
         const isFirstHearingDateValid = moment(choosenDate, 'DD-MM-YYYY').isValid() && this.isWeekDay(choosenDate) && this.isAavailableDate(choosenDate);
         if (!isFirstHearingDateValid) {
@@ -176,8 +208,8 @@ export class DatePriorityHearingComponent implements OnInit {
           this.firstDateOfHearingError = { isInvalid: true, messages: [this.hearingDatePastError] };
         }
       } else if (this.priorityForm.controls.specificDate.value === 'Choose') {
-        const choosenEarliestDate = moment(this.getDateFormatted('earliestHearingDate'), 'DD-MM-YYYY');
-        const choosenLatestDate = moment(this.getDateFormatted('latestHearingDate'), 'DD-MM-YYYY');
+        const choosenEarliestDate = moment(this.getDateFormatted(this.earliestHearingFormGroup, 'earliestHearingDate'), 'DD-MM-YYYY');
+        const choosenLatestDate = moment(this.getDateFormatted(this.latestHearingFormGroup, 'latestHearingDate'), 'DD-MM-YYYY');
         const isPastEarliestDate = choosenEarliestDate.isBefore();
         const isPastLatestDate = choosenLatestDate.isBefore();
         const isLatestBeforeEarliest = choosenEarliestDate > choosenLatestDate;
@@ -206,16 +238,13 @@ export class DatePriorityHearingComponent implements OnInit {
     }
   }
 
-  private getDateFormatted(fieldName: string): string {
-    const day = this.priorityForm.get(`${fieldName}_day`).value;
-    const month = this.priorityForm.get(`${fieldName}_month`).value;
-    const year = this.priorityForm.get(`${fieldName}_year`).value;
-
+  private getDateFormatted(formGroup: FormGroup, fieldName: string): string {
+    const day = formGroup.get(`${fieldName}_day`).value;
+    const month = formGroup.get(`${fieldName}_month`).value;
+    const year = formGroup.get(`${fieldName}_year`).value;
     if (day === '' || month === '' || year === '') {
       return null;
     }
-
-    // Date format expected by API endpoint is yyyy-mm-dd
     return `${day}-${month}-${year}`;
   }
 

@@ -37,9 +37,7 @@ export class LocationSearchContainerComponent implements OnInit  {
       this.serviceIds = id ? id : this.serviceIds;
     });
 
-    if (this.searchLocationComponent && this.searchLocationComponent.autoCompleteInputBox && this.searchLocationComponent.autoCompleteInputBox.nativeElement) {
-      this.searchLocationComponent.autoCompleteInputBox.nativeElement.focus();
-    }
+    this.getLocationSearchFocus();
   }
 
   public addSelection(): void {

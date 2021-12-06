@@ -74,8 +74,22 @@ export class BookingDateComponent implements OnInit {
     this.formGroup.get('dateOption').patchValue(this.bookingProcess.selectedDateOption);
     if (typeof this.bookingProcess.selectedDateOption === 'number') {
       this.dateInterval[this.bookingProcess.selectedDateOption].checked = true;
+      // convert the numeric index into the enumerated value
+      this.formGroup.get(DateFormControl.BOOKING_DATE_TYPE).setValue(Object.values(BookingDateOption)[this.bookingProcess.selectedDateOption]);
+      if (this.formGroup.get(DateFormControl.BOOKING_DATE_TYPE).value === BookingDateOption.DATERANGE && this.bookingProcess.startDate) {
+        this.displayBookingDates();
+      }
     }
     this.setValidators();
+  }
+
+  private displayBookingDates(): void {
+    this.formGroup.get(DateFormControl.BOOKING_START_DAY).setValue(this.bookingProcess.startDate.getDate().toString().padStart(2, '0'));
+    this.formGroup.get(DateFormControl.BOOKING_START_MONTH).setValue((this.bookingProcess.startDate.getMonth() + 1).toString().padStart(2, '0'));
+    this.formGroup.get(DateFormControl.BOOKING_START_YEAR).setValue(this.bookingProcess.startDate.getFullYear());
+    this.formGroup.get(DateFormControl.BOOKING_END_DAY).setValue(this.bookingProcess.endDate.getDate().toString().padStart(2, '0'));
+    this.formGroup.get(DateFormControl.BOOKING_END_MONTH).setValue((this.bookingProcess.endDate.getMonth() + 1).toString().padStart(2, '0'));
+    this.formGroup.get(DateFormControl.BOOKING_END_YEAR).setValue(this.bookingProcess.endDate.getFullYear());
   }
 
   public setValidators(): void {

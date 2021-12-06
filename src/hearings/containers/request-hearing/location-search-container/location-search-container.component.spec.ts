@@ -100,7 +100,6 @@ describe('LocationSearchContainerComponent', () => {
     } as LocationByEPIMSModel;
 
     component.selectedLocations$ = of([ location ]);
-
     component.removeSelection(location);
     fixture.detectChanges();
     // expect(component.selectedLocations$.subscribe).toHaveBeenCalled();

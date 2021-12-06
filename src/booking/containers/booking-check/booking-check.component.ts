@@ -14,13 +14,15 @@ export class BookingCheckComponent implements OnInit {
   @Output() public bookingProcessChange = new EventEmitter<BookingProcess>();
   @Output() public eventTrigger = new EventEmitter();
 
+  public bookingNavigationEvent: typeof BookingNavigationEvent = BookingNavigationEvent;
+
   constructor() { }
 
   public ngOnInit() {
   }
 
-  public onEventTrigger() {
-    this.eventTrigger.emit(BookingNavigationEvent.CONFIRMBOOKINGDATESUBMIT);
+  public onEventTrigger(navEvent: BookingNavigationEvent) {
+    this.eventTrigger.emit(navEvent);
   }
 
 }

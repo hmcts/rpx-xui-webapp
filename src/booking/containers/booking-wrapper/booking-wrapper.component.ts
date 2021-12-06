@@ -51,7 +51,8 @@ export class BookingWrapperComponent implements OnInit {
             throw new Error('Invalid Booking Back state');
         }
         break;
-      case BookingNavigationEvent.HOMECONTINUE: case BookingNavigationEvent.CHANGELOCATIONCLICK:
+      case BookingNavigationEvent.HOMECONTINUE:
+      case BookingNavigationEvent.CHANGELOCATIONCLICK:
         if (this.bookingProcess.selectedBookingOption === 1) {
           this.bookingNavigationCurrentState = BookingState.LOCATION;
         } else {

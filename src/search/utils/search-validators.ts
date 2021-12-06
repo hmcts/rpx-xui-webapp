@@ -9,13 +9,14 @@ import { SearchFormControl, SearchFormErrorType } from '../enums';
 export class SearchValidators {
 
   /**
-   * Validates case reference entry. It accepts exactly 16 digits only and excludes all non-digit characters.
+   * Validates case reference entry. Excluding spaces and '-' characters, it accepts exactly 16 digits only. All other characters are
+   * invalid.
    * @returns `ValidationErrors` object if validation fails; `null` if it passes
    */
   public static caseReferenceValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       // Use template literal to coerce control.value to a string in case it is null
-      if (!(`${control.value}`).replace(/[\D]/g, '').match(/^\d{16}$/)) {
+      if (!(`${control.value}`).replace(/[\s-]/g, '').match(/^\d{16}$/)) {
         return { caseReference: true };
       }
       return null;

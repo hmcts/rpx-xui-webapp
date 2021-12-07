@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { AcceptTermsService } from 'src/app/services/acceptTerms/acceptTerms.service';
+import { AcceptTermsService } from '../../../app/services/acceptTerms/acceptTerms.service';
 import * as fromRoot from '../../store';
 import * as acceptTandCActions from '../actions';
 

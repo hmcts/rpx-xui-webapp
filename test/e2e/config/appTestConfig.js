@@ -47,6 +47,11 @@ const data = {
              idamId: "16ce0689-bea9-4bd8-add0-722291656529",
             email: "xui_auto_co_r1_withoutPagination@justice.gov.uk",
              release: "wa_release_1", userIdentifier: "IAC_CaseOfficer_R1_withoutPagination"
+        },
+        {
+            idamId: "ba02568f-6a46-478d-9f1a-1ce4dea496aa",
+            email: "test@mailnesia.com",
+            release: "general", userIdentifier: "CASEWORKER_GLOBALSEARCH"
         }
     ],
     appFeatures: {

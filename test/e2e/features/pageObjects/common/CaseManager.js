@@ -28,6 +28,7 @@ class CaseManager {
         this.formFields = 'ccd-case-edit-form>div';
 
         this.ccdCaseEdit = $('ccd-case-edit')
+        this.caseDetailsPage = $('exui-case-details-home');
         this.exuiCaseHomeComp = $("exui-case-home");
         this.checkYourAnswers = $(".check-your-answers");
 
@@ -170,7 +171,8 @@ class CaseManager {
 
 
     async AmOnCaseDetailsPage(){
-        expect(this.ccdCaseEdit.isPresent()).to.be.equal;
+        await BrowserWaits.waitForElement(this.caseDetailsPage);
+        expect(await this.caseDetailsPage.isPresent()).to.be.true;
     }
 
     async AmOnCCDCaseEditPage() {

@@ -1,6 +1,6 @@
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
-
+ 
 var screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenShotUtils;
 
 chai.use(chaiAsPromised);
@@ -91,6 +91,10 @@ const config = {
             MockApp.setLogMessageCallback(customReporter.AddMessage);
         }    
         MockApp.setLogMessageCallback(customReporter.AddJson);
+
+        const customWaits = require('../../e2e/support/customWaits');
+        customWaits.setDefaultWaitTime(8000);
+
     },
     cucumberOpts: {
         strict: true,

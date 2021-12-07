@@ -3,6 +3,7 @@ const WAReqResMappings  = require('./workAllocation/reqResMapping');
 const ccdReqResMapping = require('./ccd/reqResMapping');
 const nodeAppReqResMappings = require('./nodeApp/reqResMapping');
 
+const globalSearchReqResMapping = require('./globalsearch/reqResMapping');
 
 
 const dummyCaseDetails = require('./ccd/caseDetails_data');
@@ -12,6 +13,7 @@ const requestMapping = {
         ...nodeAppReqResMappings.get,
         ...WAReqResMappings.get,
         ...ccdReqResMapping.get,
+        ...globalSearchReqResMapping.get,
 
        
        '/api/organisation': (req,res) => {
@@ -51,10 +53,12 @@ const requestMapping = {
         ...WAReqResMappings.post,
         ...ccdReqResMapping.post,
         ...WAReqResMappings.post,
+        ...globalSearchReqResMapping.post,
+
         
         '/api/caseshare/case-assignments': (req, res) => {
             res.send( []);
-        }
+        },
        
 
     },

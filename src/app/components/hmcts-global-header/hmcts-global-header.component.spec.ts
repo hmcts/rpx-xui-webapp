@@ -1,12 +1,12 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { UserService } from '../../../app/services/user/user.service';
+import { UserService } from 'src/app/services/user/user.service';
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
 
 
@@ -87,29 +87,6 @@ describe('HmctsGlobalHeaderComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  xit('should show the Case search button as inactive when the currentUrl does not match', () => {
-    const searchButton = fixture.debugElement.nativeElement.querySelector('.hmcts-search-toggle__button');
-    expect(searchButton).toBeDefined();
-    expect(searchButton.textContent).toBe('Find case');
-    expect(searchButton.getAttribute('aria-current')).not.toEqual('true');
-  });
-
-  xit('should show the Case search button as active when the currentUrl matches', () => {
-    // Get hold of the search button.
-    const searchButton = fixture.debugElement.nativeElement.querySelector('.hmcts-search-toggle__button');
-    expect(searchButton.getAttribute('aria-current')).not.toEqual('true');
-
-    // And get its href value.
-    const href = searchButton.getAttribute('href');
-
-    // Set the currentUrl to be the same as the search button's href.
-    component.currentUrl = href;
-    fixture.detectChanges();
-
-    // And now it should show be "active", which gives a different rendering.
-    expect(searchButton.getAttribute('aria-current')).toEqual('true');
   });
 
   it('should onEmitSubMenu', () => {

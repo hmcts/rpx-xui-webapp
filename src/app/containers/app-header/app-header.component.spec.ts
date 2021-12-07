@@ -3,10 +3,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NavigationEnd, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Action, Store, StoreModule } from '@ngrx/store';
-import { BehaviorSubject, combineLatest, Observable, of, Subscription } from 'rxjs';
-import { AppConstants } from '../../../app/app.constants';
-import { Theme } from '../../../app/models/theme.model';
-import { UserDetails, UserInfo } from '../../../app/models/user-details.model';
+import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
+import { AppConstants } from 'src/app/app.constants';
 import { LoggerService } from '../../services/logger/logger.service';
 import * as fromActions from '../../store';
 import { AppHeaderComponent } from './app-header.component';
@@ -94,123 +92,6 @@ describe('AppHeaderComponent', () => {
         'caseworker'
       ]);
     });
-  });
-
-  describe('getUsersTheme()', () => {
-
-    it('should return the theme in priority order ie. a theme higher up the themes array' +
-      'will be compared with the user\'s roles first.', () => {
-
-        // Remember we want exact matches not partial matches
-        const userRoles = ['pui-case-manager', 'caseworker-sscs-judge'];
-
-        // We compare the first set of theme roles first.
-        const themes = [
-          {
-            roles: [
-              'caseworker-sscs-judge',
-              'caseworker-sscs-panelmember',
-              'caseworker-cmc-judge',
-              'caseworker-divorce-judge',
-            ],
-            appTitle: { name: 'Judicial case manager', url: '/' },
-            navigationItems: [
-              {
-                text: 'Case list',
-                href: '/cases',
-                active: false
-              },
-              {
-                text: 'Create case',
-                href: '/cases/case-filter',
-                active: false
-              },
-            ],
-            accountNavigationItems: {
-              label: 'Account navigation',
-              items: [{
-                text: 'Sign out d',
-                emit: 'sign-out'
-              }]
-            },
-            showFindCase: false,
-            backgroundColor: '#8d0f0e',
-            logoIsUsed: true,
-            logoType: 'judicial',
-          },
-          {
-            roles: ['pui-case-manager'],
-            appTitle: { name: 'Manage Cases', url: '/' },
-            navigationItems: [
-              {
-                text: 'Case list',
-                href: '/cases',
-                active: false
-              },
-              {
-                text: 'Create case',
-                href: '/cases/case-filter',
-                active: false
-              }
-            ],
-            accountNavigationItems: {
-              label: 'Account navigation',
-              items: [{
-                text: 'Sign out',
-                emit: 'sign-out'
-              }]
-            },
-            showFindCase: true,
-            backgroundColor: '#202020',
-            logoIsUsed: true,
-            logoType: 'myhmcts',
-          },
-        ];
-
-        const defaultTheme = AppConstants.DEFAULT_USER_THEME;
-        const userTypeRoles = { Solicitor: [] };
-        expect(component.getUsersTheme(userRoles, themes, defaultTheme, AppHeaderComponent.defaultUserTypeRoles)).toEqual(themes[0]);
-      });
-
-    it('should return a default theme if there are no user roles.', () => {
-
-      const userRoles = [];
-      const theme1 = {} as Theme;
-      theme1.roles = [
-        'caseworker-sscs-judge',
-        'caseworker-sscs-panelmember',
-        'caseworker-cmc-judge',
-        'caseworker-divorce-judge',
-      ];
-      theme1.appTitle = {
-        name: 'Judicial Case Manager',
-        url: ''
-      };
-
-      const theme2 = {} as Theme;
-      theme2.roles = ['pui-case-manager'];
-      theme1.appTitle = {
-        name: 'Case Manager',
-        url: ''
-      };
-
-      const themes = [
-        theme1, theme2
-      ];
-      const defaultTheme = AppConstants.DEFAULT_USER_THEME;
-
-      expect(component.getUsersTheme(userRoles, themes, defaultTheme, AppHeaderComponent.defaultUserTypeRoles)).toEqual(AppConstants.DEFAULT_USER_THEME);
-    });
-
-    it('should return a default theme if there are no themes.', () => {
-
-      const userRoles = ['pui-case-manager'];
-      const themes = [];
-      const defaultTheme = AppConstants.DEFAULT_USER_THEME;
-
-      expect(component.getUsersTheme(userRoles, themes, defaultTheme, AppHeaderComponent.defaultUserTypeRoles)).toEqual(AppConstants.DEFAULT_USER_THEME);
-    });
-
   });
 
   describe('setAppHeaderProperties()', () => {

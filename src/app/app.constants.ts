@@ -1,5 +1,5 @@
 import { BadgeColour, ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib';
-import { Theme } from './models/theme.model';
+import { ApplicationTheme, NavigationItem } from './models/theming.model';
 
 const FeatureNames = {
   currentWAFeature: 'mc-work-allocation-active-feature',
@@ -39,124 +39,35 @@ const FooterDataNavigation = {
   ]
 };
 
-const applicationUserThemes: Theme[] = [
+const defaultUserTheme: ApplicationTheme = {
+  appTitle: {
+    name: 'Manage Cases',
+    url: '/'
+  },
+  backgroundColor: '#202020',
+  logo: 'none',
+  showFindCase: true
+};
+
+const defaultMenuItems: NavigationItem[] = [
   {
-    roles: [
-      'caseworker-sscs-judge',
-      'caseworker-sscs-panelmember',
-      'caseworker-cmc-judge',
-      'caseworker-divorce-judge',
-      'caseworker-divorce-financialremedy-judiciary',
-      'caseworker-probate-judge',
-      'caseworker-ia-iacjudge',
-      'caseworker-publiclaw-judiciary',
-    ],
-    appTitle: {name: 'Judicial Case Manager', url: '/'},
-    navigationItems: [
-      {
-        text: 'Case list',
-        href: '/cases',
-        active: false
-      },
-    ],
-    accountNavigationItems: {
-      label: 'Account navigation',
-      items: [{
-        text: 'Sign out',
-        emit: 'sign-out'
-      }]
-    },
-    showFindCase: false,
-    backgroundColor: '#8d0f0e',
-    logoIsUsed: true,
-    logoType: 'judicial',
+    active: false,
+    href: '/cases',
+    text: 'Case list'
   },
   {
-    roles: ['pui-case-manager'],
-    appTitle: {name: 'Manage cases', url: '/'},
-    navigationItems: [
-      {
-        text: 'Case list',
-        href: '/cases',
-        active: false
-      },
-      {
-        text: 'Create case',
-        href: '/cases/case-filter',
-        active: false
-      },
-      {
-        active: false,
-        align: 'right',
-        href: '/cases/case-search',
-        ngClass: 'hmcts-search-toggle__button',
-        text: 'Find case'
-      }
-    ],
-    accountNavigationItems: {
-      label: 'Account navigation',
-      items: [{
-        text: 'Sign out',
-        emit: 'sign-out'
-      }]
-    },
-    showFindCase: true,
-    backgroundColor: '#202020',
-    logoIsUsed: true,
-    logoType: 'myhmcts',
+    active: false,
+    href: '/cases/case-filter',
+    text: 'Create case'
   },
+  {
+    active: false,
+    align: 'right',
+    href: '/cases/case-search',
+    ngClass: 'hmcts-search-toggle__button',
+    text: 'Find case'
+  }
 ];
-
-const defaultUserTheme: Theme = {
-  roles: ['default'],
-  appTitle: {name: 'Manage cases', url: '/'},
-  navigationItems: [
-    {
-      text: 'Case list',
-      href: '/cases',
-      active: false
-    },
-    {
-      text: 'Create case',
-      href: '/cases/case-filter',
-      active: false
-    },
-    {
-      active: false,
-      align: 'right',
-      href: '/cases/case-search',
-      ngClass: 'hmcts-search-toggle__button',
-      text: 'Find case'
-    }
-  ],
-  accountNavigationItems: {
-    label: 'Account navigation',
-    items: [
-      {
-        text: 'Sign out',
-        emit: 'sign-out'
-      }
-    ]
-  },
-  showFindCase: true,
-  backgroundColor: '#202020',
-  logoIsUsed: false,
-  logoType: '',
-};
-
-const signedOutTheme: Theme = {
-  roles: [],
-  appTitle: {name: '', url: '/'},
-  navigationItems: [],
-  accountNavigationItems: {
-    label: 'Account navigation',
-    items: []
-  },
-  showFindCase: true,
-  backgroundColor: '#202020',
-  logoIsUsed: false,
-  logoType: 'default',
-};
 
 const helpContactDetails: ContactDetailsDataModel[] = [
   {
@@ -226,20 +137,18 @@ const serviceMessageCookie: string = 'service_messages';
 const caseAllocatorRole: string = 'case-allocator-role';
 
 export class AppConstants {
-  public static FOOTER_DATA = null;
-  public static FOOTER_DATA_NAVIGATION = FooterDataNavigation;
-  public static APP_HEADER_TITLE = appHeaderTitle;
-  public static ENVIRONMENT_NAMES = environmentNames;
-  public static REDIRECT_URL = redirectUrl;
-  public static HELP_CONTACT_DETAILS = helpContactDetails;
-  public static DEFAULT_USER_THEME = defaultUserTheme;
-  public static APPLICATION_USER_THEMES = applicationUserThemes;
-  public static SIGNED_OUT_THEME = signedOutTheme;
-  public static FEATURE_NAMES = FeatureNames;
-  public static CASE_DETAILS_URL = caseDetailsUrl;
-  public static SERVICE_MESSAGES_FEATURE_TOGGLE_KEY = serviceMessagesFeatureToggleKey;
-  public static SERVICE_MESSAGE_COOKIE = serviceMessageCookie;
-  public static CASE_ALLOCATOR_ROLE = caseAllocatorRole;
+  static FOOTER_DATA = null;
+  static FOOTER_DATA_NAVIGATION = FooterDataNavigation;
+  static APP_HEADER_TITLE = appHeaderTitle;
+  static ENVIRONMENT_NAMES = environmentNames;
+  static REDIRECT_URL = redirectUrl;
+  static HELP_CONTACT_DETAILS = helpContactDetails;
+  static DEFAULT_USER_THEME = defaultUserTheme;
+  static FEATURE_NAMES = FeatureNames;
+  static CASE_DETAILS_URL = caseDetailsUrl;
+  static SERVICE_MESSAGES_FEATURE_TOGGLE_KEY = serviceMessagesFeatureToggleKey;
+  static SERVICE_MESSAGE_COOKIE = serviceMessageCookie;
+  static DEFAULT_MENU_ITEMS = defaultMenuItems;
 }
 
 export const LD_FLAG_REMOVE_USER_FROM_CASE_MC: string = 'remove-user-from-case-mc';

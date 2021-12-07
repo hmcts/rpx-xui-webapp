@@ -1,8 +1,8 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { FilterPersistence } from '@hmcts/rpx-xui-common-lib';
 import { AppConstants, JUDICIAL_ROLE_LIST, LEGAL_OPS_ROLE_LIST } from './app.constants';
-import { NavItemsModel } from './models/nav-item.model';
 import { Theme, UserTypeRole } from './models/theme.model';
+import { NavigationItem } from './models/theming.model';
 import { UserDetails, UserRole } from './models/user-details.model';
 
 export class AppUtils {
@@ -67,7 +67,7 @@ export class AppUtils {
   /**
    * Set the active property on the navigation items.
    */
-  public static setActiveLink(items: NavItemsModel[], currentUrl: string): NavItemsModel[] {
+  public static setActiveLink(items: NavigationItem[], currentUrl: string): NavigationItem[] {
     let fullUrl = false;
     let matchingUrl = '';
     [fullUrl, matchingUrl] = AppUtils.checkTabs(items, currentUrl);
@@ -85,7 +85,7 @@ export class AppUtils {
    * @param currentUrl - the url being tested
    * @return - a list including boolean stating whether the full url is given or the similar matching url
    */
-  public static checkTabs(items: NavItemsModel[], currentUrl: string): any[] {
+  public static checkTabs(items: NavigationItem[], currentUrl: string): any[] {
     let fullUrl = false;
     let maxLength = 0;
     let matchingUrl = '';

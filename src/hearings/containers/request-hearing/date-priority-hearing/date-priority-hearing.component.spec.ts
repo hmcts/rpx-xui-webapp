@@ -1,4 +1,5 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Component, Input, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -8,7 +9,10 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { ErrorMessage } from '../../../../app/models';
 import { PartyUnavailabilityRange } from '../../../../hearings/models/partyUnavilabilityRange.model';
 import { RefDataModel } from '../../../../hearings/models/refData.model';
+import { HearingsService } from '../../../../hearings/services/hearings.service';
+import { ValidatorsService } from '../../../../hearings/services/validators.service';
 import { DatePriorityHearingComponent } from './date-priority-hearing.component';
+import createSpyObj = jasmine.createSpyObj;
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -36,11 +40,13 @@ describe('DatePriorityHearingComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, RouterTestingModule],
+      imports: [ReactiveFormsModule, RouterTestingModule,
+        HttpClientTestingModule],
       declarations: [DatePriorityHearingComponent, MockHearingPartiesComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         provideMockStore(),
+        HearingsService,
+        ValidatorsService,
         {
           provide: ActivatedRoute,
           useValue: {
@@ -52,6 +58,7 @@ describe('DatePriorityHearingComponent', () => {
           }
         },
       ],
+      schemas: [NO_ERRORS_SCHEMA],
     })
       .compileComponents();
   });
@@ -70,9 +77,9 @@ describe('DatePriorityHearingComponent', () => {
   });
 
   it('should set checkedHearingAvailability', () => {
-    const hearingAvailability = component.priorityForm.controls.hearingAvailability;
+    const hearingAvailability = component.priorityForm.controls.specificDate;
     component.showDateAvailability();
-    expect(component.checkedHearingAvailability).toBe(null);
+    expect(component.checkedHearingAvailability).toBe('');
     hearingAvailability.setValue('yes');
     component.showDateAvailability();
     expect(component.checkedHearingAvailability).toBe('yes');
@@ -94,6 +101,17 @@ describe('DatePriorityHearingComponent', () => {
     expect(component.partiesNotAvailableDates[2]).toBe('14 December 2021');
     expect(component.partiesNotAvailableDates.length).toBe(16);
   });
+
+  it('should set unavailable dates', () => {
+    component.partiesNotAvailableDates = [];
+    const unavailabilityDate: PartyUnavailabilityRange = {
+      start: '2021-12-10T09:00:00.000+0000',
+      end: '2021-12-11T09:00:00.000+0000',
+    };
+    component.checkUnavailableDatesList([unavailabilityDate]);
+    expect(component.partiesNotAvailableDates[0]).toBe('10 December 2021');
+  });
+
 
   it('should set unavailable dates', () => {
     component.partiesNotAvailableDates = [];

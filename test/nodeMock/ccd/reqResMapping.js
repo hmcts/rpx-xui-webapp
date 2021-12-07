@@ -1,7 +1,11 @@
 
 const ccdMockData = require('./ccdApi');
 module.exports = {
+    mockServiceResetCallbacks: [() => ccdMockData.setDefaultData()],
     get: {
+            '/data/internal/cases/:caseid': (req,res) => {
+                res.send(ccdMockData.caseDetailsResponse);
+            },
             '/aggregated/caseworkers/:uid/jurisdictions': (req, res) => {
             res.send(ccdMockData.getJurisdictions());
             },

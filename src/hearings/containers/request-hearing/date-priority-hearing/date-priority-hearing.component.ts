@@ -42,10 +42,10 @@ export class DatePriorityHearingComponent implements OnInit {
   public latestDateOfHearingError: ErrorMessagesModel;
 
   constructor(private readonly formBuilder: FormBuilder,
-    private readonly route: ActivatedRoute,
-    private readonly validatorsService: ValidatorsService,
-    private readonly hearingStore: Store<fromHearingStore.State>,
-    private readonly hearingsService: HearingsService) { }
+              private readonly route: ActivatedRoute,
+              private readonly validatorsService: ValidatorsService,
+              private readonly hearingStore: Store<fromHearingStore.State>,
+              private readonly hearingsService: HearingsService) { }
 
   public get firstHearingFormGroup(): FormGroup {
     return this.priorityForm.get('firstHearing') as FormGroup;
@@ -216,8 +216,8 @@ export class DatePriorityHearingComponent implements OnInit {
         const isPastEarliestDate = choosenEarliestDate.isBefore() || choosenEarliestDate.isSame(new Date(), 'd');
         const isPastLatestDate = choosenLatestDate.isBefore() || choosenLatestDate.isSame(new Date(), 'd');
         const isLatestBeforeEarliest = choosenEarliestDate > choosenLatestDate;
-        const isEarliestDateValid = choosenEarliestDate.isValid() && this.isWeekDay(choosenEarliestDate);
-        const isLatestHearingDate = choosenLatestDate.isValid() && this.isWeekDay(choosenLatestDate);
+        const isEarliestDateValid = choosenEarliestDate.isValid();
+        const isLatestHearingDate = choosenLatestDate.isValid();
         if (!isInValidEarliestDate && isPastEarliestDate) {
           this.validationErrors.push({ id: this.earliestHearingDate.id, message: this.hearingDatePastError });
           this.earliestDateOfHearingError = { isInvalid: true, messages: [this.hearingDatePastError] };

@@ -20,7 +20,7 @@ export class CaseNameFieldComponent implements OnChanges {
     if (this.caseId) {
       const caseId = this.caseId;
       if (caseId) {
-        href = `${AppConstants.CASE_DETAILS_URL}${caseId}`;
+        href = `${AppConstants.CASE_DETAILS_URL}${caseId}#overview`;
       }
     }
     this.pHref = href;

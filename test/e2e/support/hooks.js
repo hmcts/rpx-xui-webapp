@@ -15,7 +15,7 @@ const targetJson = `${jsonReports}/cucumber_report.json`;
 const { Given, When, Then } = require('cucumber');
 
 const CucumberReportLog = require("./reportLogger");
-
+const BrowserLogs = require('./browserLogs');
 
 // defineSupportCode(function({After }) {
 //     registerHandler("BeforeFeature", { timeout: 500 * 1000 }, function() {
@@ -102,6 +102,7 @@ defineSupportCode(({ Before,After }) => {
 
     After(async function(scenario) {
         CucumberReportLog.AddMessage("scenario completed with status : " + scenario.result.status);
+
         const world = this;
         try{
             await CucumberReportLog.AddScreenshot(global.screenShotUtils);
@@ -110,7 +111,11 @@ defineSupportCode(({ Before,After }) => {
                 let browserErrorLogs = []
                 for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++) {
                     if (browserLog[browserLogCounter].level.value > 900) {
-                        browserLog[browserLogCounter]['time'] = (new Date(browserLog[browserLogCounter]['time'])).toISOString()
+                        try{
+                            browserLog[browserLogCounter]['time'] = (new Date(browserLog[browserLogCounter]['time'])).toISOString()
+                        }catch(err){
+                            browserLog[browserLogCounter]['time'] = browserLog[browserLogCounter]['time'] + "" + err;
+                        }
                         browserErrorLogs.push(browserLog[browserLogCounter]);
                     }
                 }
@@ -118,9 +123,11 @@ defineSupportCode(({ Before,After }) => {
                 if (global.scenarioData['featureToggles']){
                     CucumberReportLog.AddJson(global.scenarioData['featureToggles'])
                 }
-            } else {
-                browser.manage().logs().get('browser');
-                await CucumberReportLog.AddMessage("Cleared browser logs after successful scenario.");
+            } 
+            
+            await CucumberReportLog.AddMessage("Cleared browser logs after successful scenario.");
+            if (global.scenarioData['featureToggles']) {
+                //CucumberReportLog.AddJson(global.scenarioData['featureToggles'])
             }
         }catch(err) {
             CucumberReportLog.AddMessage("Error in hooks with browserlogs or screenshots. See error details : " + err);

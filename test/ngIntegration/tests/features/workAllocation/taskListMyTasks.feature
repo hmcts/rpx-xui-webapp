@@ -1,4 +1,4 @@
-@ng @wa1
+@ng @wa1 
 Feature: WA Release 1: My Tasks Task list
 
     Background: Mock and browser setup
@@ -30,7 +30,6 @@ Feature: WA Release 1: My Tasks Task list
             | index | case_id             | case_name      | case_category      | location_name  | task_title               |
             | 0     | 1234-1234-1234-1234 | test case name | auto test category | London QA labs | Autotest validation task |
 
-
         Given I set MOCK request "/workallocation/taskWithPagination/" intercept with reference "taskSearchRequest"
         Given I reset reference "taskSearchRequest" value to null
         Given I start MockApp
@@ -45,7 +44,6 @@ Feature: WA Release 1: My Tasks Task list
             | row | Case reference      | Case name      | Case category      | Location       | Task                     |
             | 1     | 1234-1234-1234-1234 | test case name | auto test category | London QA labs | Autotest validation task |
 
-@test
     Scenario: My Tasks pagination
         Given I set MOCK My tasks count 25
         Given I set MOCK request "/workallocation/taskWithPagination/" intercept with reference "taskSearchRequest"
@@ -101,18 +99,6 @@ Feature: WA Release 1: My Tasks Task list
         Then I see Task list sub navigation tabs
         Then I see My tasks page displayed
         Then I validate My tasks sort column persist in session
-
-
-
-    Scenario:  My Tasks error responses
-        Given I set MOCK My tasks count 150
-        Given I start MockApp
-        Given I navigate to home page
-        When I click on primary navigation header tab "Task list", I see selected tab page displayed
-        Then I see Task list sub navigation tabs
-        Then I see My tasks page displayed
-        Then I validate error responses on My tasks page
-
 
 
 

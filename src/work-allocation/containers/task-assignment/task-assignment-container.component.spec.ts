@@ -3,6 +3,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
@@ -34,7 +35,7 @@ class WrapperComponent {
 })
 class NothingComponent {}
 
-describe('TaskAssignmentContainerComponent', () => {
+describe('TaskAssignmentContainerComponent1', () => {
   let component: TaskAssignmentContainerComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -50,11 +51,10 @@ describe('TaskAssignmentContainerComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [
-        TaskAssignmentContainerComponent, WrapperComponent, TaskListComponent,
-        ErrorMessageComponent, NothingComponent
+        TaskAssignmentContainerComponent, WrapperComponent, TaskListComponent, NothingComponent, ErrorMessageComponent,
       ],
       imports: [
-        WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule, PaginationModule,
+        WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule, PaginationModule, MatAutocompleteModule,
         RouterTestingModule.withRoutes(
           [
             { path: 'tasks/list', component: NothingComponent }

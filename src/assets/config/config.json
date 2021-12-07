@@ -16,6 +16,7 @@
     "postcode_lookup_url": "/api/addresses?postcode=${postcode}",
     "remote_document_management_url": ".*(\/documents)",
     "payments_url": "/payments",
+    "pay_bulk_scan_url": "/pay-bulkscan",
     "activity_batch_collection_delay_ms": 1,
     "activity_next_poll_request_ms": 30000,
     "activity_retry": 30,
@@ -26,7 +27,12 @@
     "pagination_page_size": 25,
     "annotation_api_url": "/em-anno",
     "hrs_url": "/hearing-recordings",
-    "remote_hrs_url": ".*(\/hearing-recordings)"
+    "remote_hrs_url": ".*(\/hearing-recordings)",
+    "refunds_url": "api/refund",
+    "access_management_mode": false,
+    "access_management_basic_view_mock_mode": false,
+    "location_ref_api_url": "/refdata/location",
+    "cam_role_assignments_api_url": "/am/role-assignments"
   },
   "urls": {
     "idam": {

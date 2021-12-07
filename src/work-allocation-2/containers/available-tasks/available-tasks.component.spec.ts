@@ -1,14 +1,17 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { TASK_ACTIONS } from 'api/workAllocation/constants/actions';
 import { of, throwError } from 'rxjs';
+import { SessionStorageService } from '../../../app/services';
 
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
+import { FieldConfig } from '../../models/common';
 import { InformationMessage } from '../../models/comms';
 import * as dtos from '../../models/dtos';
 import { InvokedTaskAction, Task } from '../../models/tasks';
@@ -24,18 +27,29 @@ class WrapperComponent {
   @ViewChild(AvailableTasksComponent) public appComponentRef: AvailableTasksComponent;
 }
 
+const userInfo =
+  `{"id":"exampleId",
+    "forename":"Joe",
+    "surname":"Bloggs",
+    "email":"JoeBloggs@example.com",
+    "active":true,
+    "roles":["caseworker","caseworker-ia","caseworker-ia-caseofficer"],
+    "token":"eXaMpLeToKeN"}`;
+
 describe('AvailableTasksComponent', () => {
   let component: AvailableTasksComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
+  let router: Router;
 
   const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
   const mockLocations: dtos.Location[] = getMockLocations();
-  const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask', 'claimTask']);
+  const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask', 'claimTask', 'searchTaskWithPagination']);
   const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
+  const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
 
@@ -54,6 +68,7 @@ describe('AvailableTasksComponent', () => {
         { provide: LocationDataService, useValue: mockLocationService },
         { provide: Router, useValue: mockRouter },
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: AlertService, useValue: mockAlertService },
         { provide: LoadingService, useValue: mockLoadingService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService }
@@ -62,11 +77,11 @@ describe('AvailableTasksComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
-    component.isPaginationEnabled$ = of(false);
     mockLocationService.getLocations.and.returnValue(of(mockLocations));
     const tasks: Task[] = getMockTasks();
-    mockTaskService.searchTask.and.returnValue(of({ tasks }));
+    mockTaskService.searchTaskWithPagination.and.returnValue(of({ tasks }));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
+    router = TestBed.get(Router);
     fixture.detectChanges();
   });
 
@@ -77,6 +92,15 @@ describe('AvailableTasksComponent', () => {
   it('should make a call to load tasks using the default search request', () => {
     expect(component.tasks).toBeDefined();
     expect(component.tasks.length).toEqual(2);
+  });
+
+  it('should allow searching via location', () => {
+    mockSessionStorageService.getItem.and.returnValue(userInfo);
+    const exampleLocations = ['location1', 'location2', 'location3'];
+    component.selectedLocations = exampleLocations;
+    const searchParameter = component.getSearchTaskRequestPagination().search_parameters[0];
+    expect(searchParameter.key).toBe('location');
+    expect(searchParameter.values).toBe(exampleLocations);
   });
 
   it('should have all column headers, including "Manage +"', () => {
@@ -246,35 +270,79 @@ describe('AvailableTasksComponent', () => {
   });
 
   describe('onActionHandler()', () => {
-
+    const TASK_ID = '2345678901234567';
+    const taskAction: InvokedTaskAction = {
+      action: {
+        id: TaskActionIds.CLAIM,
+        title: 'Assign to me',
+      },
+      task: {
+        assignee: null,
+        description: null,
+        assigneeName: null,
+        id: TASK_ID,
+        case_id: '2345678901234567',
+        caseName: 'Mankai Lit',
+        caseCategory: 'Revocation',
+        location: 'Taylor House',
+        taskName: 'Review appellant case',
+        dueDate: new Date(1604506789000),
+        actions: [{
+          id: TaskActionIds.CLAIM,
+          title: 'Assign to me',
+        }]
+      }
+    };
     it('should call claimTask with the task id, so that the task can be \'claimed\' by the User.', () => {
 
       const claimTaskSpy = spyOn(component, 'claimTask');
-
-      const TASK_ID = '2345678901234567';
-      const taskAction: InvokedTaskAction = {
-        action: {
-          id: TaskActionIds.CLAIM,
-          title: 'Assign to me',
-        },
-        task: {
-          id: TASK_ID,
-          case_id: '2345678901234567',
-          caseName: 'Mankai Lit',
-          caseCategory: 'Revocation',
-          location: 'Taylor House',
-          taskName: 'Review appellant case',
-          dueDate: new Date(1604506789000),
-          actions: [ {
-            id: TaskActionIds.CLAIM,
-            title: 'Assign to me',
-          } ]
-        }
-      };
-
       component.onActionHandler(taskAction);
 
       expect(claimTaskSpy).toHaveBeenCalledWith(TASK_ID);
     });
+
+    [
+      { statusCode: 403, routeUrl: '/not-authorised' },
+      { statusCode: 401, routeUrl: '/not-authorised' },
+      { statusCode: 500, routeUrl: '/service-down' },
+      { statusCode: 400, routeUrl: '/service-down' },
+    ].forEach(scr => {
+      it('should call claimTask with the task id, so that the task can be \'claimed\' by the User.', () => {
+        mockTaskService.searchTaskWithPagination.and.returnValue(throwError({ status: scr.statusCode }));
+
+        component.onPaginationEvent(1);
+        expect(mockRouter.navigate).toHaveBeenCalledWith([scr.routeUrl]);
+      });
+    });
+
+
+    [
+      { statusCode: 403, routeUrl: '/not-authorised' , action: TaskActionIds.CLAIM },
+      { statusCode: 401, routeUrl: '/not-authorised', action: TaskActionIds.CLAIM },
+      { statusCode: 500, routeUrl: '/service-down', action: TaskActionIds.CLAIM},
+      { statusCode: 400, routeUrl: '/work/my-work/available', action: TaskActionIds.CLAIM},
+      { statusCode: 403, routeUrl: '/not-authorised', action: TaskActionIds.CLAIM_AND_GO },
+      { statusCode: 401, routeUrl: '/not-authorised', action: TaskActionIds.CLAIM_AND_GO },
+      { statusCode: 500, routeUrl: '/service-down', action: TaskActionIds.CLAIM_AND_GO },
+      { statusCode: 400, routeUrl: '/work/my-work/available', action: TaskActionIds.CLAIM_AND_GO },
+    ].forEach(scr => {
+      it('should call claimTask with the task id, so that the task can be \'claimed\' by the User.', () => {
+        mockTaskService.claimTask.and.returnValue(throwError({status: scr.statusCode}));
+
+        taskAction.action.id = scr.action;
+        component.onActionHandler(taskAction);
+
+        expect(mockTaskService.claimTask).toHaveBeenCalledWith(TASK_ID);
+        if (scr.statusCode === 400) {
+          expect(mockInfoMessageCommService.nextMessage).toHaveBeenCalledWith({
+            type: InfoMessageType.WARNING,
+            message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
+          });
+        } else {
+          expect(mockRouter.navigate).toHaveBeenCalledWith([scr.routeUrl]);
+        }
+      });
+    });
+
   });
 });

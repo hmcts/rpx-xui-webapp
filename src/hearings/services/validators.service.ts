@@ -53,9 +53,7 @@ export class ValidatorsService {
       return (isValidFirstDate || isValidSecondDate) && (firstDateNullLength === 0 || firstDateNullLength === 3) && (secondDateNullLength === 0 || secondDateNullLength === 3) &&
         (firstDate.isValid() || secondDate.isValid()) && isLatestDate &&
         (isValidFirstDate ? (firstDate.isAfter() || firstDate.isSame(new Date(), 'd')) : true) &&
-        (isValidSecondDate ? (secondDate.isAfter() || secondDate.isSame(new Date(), 'd')) : true) &&
-        (isValidFirstDate ? (firstDate.weekday() !== 6) && (firstDate.weekday() !== 0) : true) &&
-        (isValidSecondDate ? (secondDate.weekday() !== 6) && (secondDate.weekday() !== 0) : true)
+        (isValidSecondDate ? (secondDate.isAfter() || secondDate.isSame(new Date(), 'd')) : true)
         ? null : { isValid: false };
     };
   }

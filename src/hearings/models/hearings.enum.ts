@@ -92,6 +92,11 @@ export enum HearingCategory {
   EntityRoleCodes = 'EntityRoleCodes'
 }
 
+export enum HearingDateEnum {
+  DisplayMonth = 'DD MMMM YYYY',
+  DefaultFormat = 'DD-MM-YYYY'
+}
+
 export enum HearingDatePriorityEnum {
   LengthError = 'Enter a valid hearing length',
   LengthMinutesError = 'The minutes entered must be a multiple of 5',
@@ -101,8 +106,12 @@ export enum HearingDatePriorityEnum {
   DateRangeError = 'Enter a valid date range for the hearing to take place on',
   DatePastError = 'The hearing dates cannot be in the past',
   EarliestHearingDateError = 'The earliest hearing date must be before the latest hearing date',
+}
 
-
-
-
+export enum HearingDatePriorityConstEnum {
+  MinHours = 0,
+  MaxHours = 6,
+  TotalMinMinutes = 5,
+  TotalMaxMinutes = 360,
+  MinutesMuliplier = 5,
 }

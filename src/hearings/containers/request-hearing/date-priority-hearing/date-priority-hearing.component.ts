@@ -5,11 +5,11 @@ import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/
 import { select, Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { map } from 'rxjs/operators';
-import { HearingDatePriorityEnum } from 'src/hearings/models/hearings.enum';
-import { HearingsService } from 'src/hearings/services/hearings.service';
-import { ValidatorsService } from 'src/hearings/services/validators.service';
+import { HearingDateEnum, HearingDatePriorityConstEnum, HearingDatePriorityEnum } from '../../../../hearings/models/hearings.enum';
 import { PartyUnavailabilityRange } from '../../../../hearings/models/partyUnavilabilityRange.model';
 import { RefDataModel } from '../../../../hearings/models/refData.model';
+import { HearingsService } from '../../../../hearings/services/hearings.service';
+import { ValidatorsService } from '../../../../hearings/services/validators.service';
 import * as fromHearingStore from '../../../../hearings/store';
 
 @Component({
@@ -43,19 +43,19 @@ export class DatePriorityHearingComponent implements OnInit {
               private readonly hearingsService: HearingsService) { }
 
   public get firstHearingFormGroup(): FormGroup {
-    return this.priorityForm.get('firstHearing') as FormGroup;
+    return this.priorityForm.controls.firstHearing as FormGroup;
   }
 
   public get dateRangeHearingFormGroup(): FormGroup {
-    return this.priorityForm.get('dateRangeHearing') as FormGroup;
+    return this.priorityForm.controls.dateRangeHearing as FormGroup;
   }
 
   public get earliestHearingFormGroup(): FormGroup {
-    return this.dateRangeHearingFormGroup.get('earliestHearing') as FormGroup;
+    return this.dateRangeHearingFormGroup.controls.earliestHearing as FormGroup;
   }
 
   public get latestHearingFormGroup(): FormGroup {
-    return this.dateRangeHearingFormGroup.get('latestHearing') as FormGroup;
+    return this.dateRangeHearingFormGroup.controls.latestHearing as FormGroup;
   }
 
   public ngOnInit(): void {
@@ -102,9 +102,9 @@ export class DatePriorityHearingComponent implements OnInit {
   public initForm(): void {
     this.priorityForm = this.formBuilder.group({
       durationLength: this.formBuilder.group({
-        hours: ['', [this.validatorsService.numberMinMaxValidator(0, 6)]],
-        minutes: ['', [this.validatorsService.numberMultipleValidator(5)]]
-      }, { validator: this.validatorsService.minutesValidator(5, 360) }),
+        hours: ['', [this.validatorsService.numberMinMaxValidator(HearingDatePriorityConstEnum.MinHours, HearingDatePriorityConstEnum.MaxHours)]],
+        minutes: ['', [this.validatorsService.numberMultipleValidator(HearingDatePriorityConstEnum.MinutesMuliplier)]]
+      }, { validator: this.validatorsService.minutesValidator(HearingDatePriorityConstEnum.TotalMinMinutes, HearingDatePriorityConstEnum.TotalMaxMinutes) }),
       specificDate: ['', Validators.required],
       firstHearing: this.formBuilder.group({
         firstHearingDate_day: [],
@@ -128,7 +128,7 @@ export class DatePriorityHearingComponent implements OnInit {
   }
 
   public showDateAvailability(): void {
-    this.checkedHearingAvailability = this.priorityForm.get('specificDate').value;
+    this.checkedHearingAvailability = this.priorityForm.controls.specificDate.value;
     this.firstHearingFormGroup.clearValidators();
     this.dateRangeHearingFormGroup.clearValidators();
     if (this.checkedHearingAvailability === 'Yes') {
@@ -152,9 +152,8 @@ export class DatePriorityHearingComponent implements OnInit {
     const endDate = moment(dateRange.end);
 
     while (startDate <= endDate) {
-      const currentDate = startDate.format('DD MMMM YYYY');
-      const isWeekDay: boolean = (startDate.weekday() !== 6) && (startDate.weekday() !== 0);
-      if (isWeekDay && !this.partiesNotAvailableDates.includes(currentDate)) {
+      const currentDate = startDate.format(HearingDateEnum.DisplayMonth);
+      if (this.isWeekDay(startDate) && !this.partiesNotAvailableDates.includes(currentDate)) {
         this.partiesNotAvailableDates.push(currentDate);
       }
       startDate.add(1, 'd');
@@ -193,10 +192,10 @@ export class DatePriorityHearingComponent implements OnInit {
         this.hearingPriorityDateError = HearingDatePriorityEnum.PriorityDateError;
         this.validationErrors.push({ id: 'noSpecificDate', message: HearingDatePriorityEnum.PriorityDateError });
       } else if (this.priorityForm.controls.specificDate.value === 'Yes') {
-        const isInValidDate = this.getDateFormatted(this.firstHearingFormGroup, 'firstHearingDate').includes(null);
-        const choosenDate = moment(this.getDateFormatted(this.firstHearingFormGroup, 'firstHearingDate'), 'DD-MM-YYYY');
+        const isInValidDate = this.getDateFormatted(this.firstHearingFormGroup, this.firstHearingDate.id).includes(null);
+        const choosenDate = moment(this.getDateFormatted(this.firstHearingFormGroup, this.firstHearingDate.id), HearingDateEnum.DefaultFormat);
         const isPastDate = choosenDate.isBefore() || choosenDate.isSame(new Date(), 'd');
-        const isFirstHearingDateValid = moment(choosenDate, 'DD-MM-YYYY').isValid() && this.isWeekDay(choosenDate);
+        const isFirstHearingDateValid = moment(choosenDate, HearingDateEnum.DefaultFormat).isValid() && this.isWeekDay(choosenDate);
         if (isInValidDate || !isFirstHearingDateValid) {
           this.validationErrors.push({ id: this.firstHearingDate.id, message: HearingDatePriorityEnum.DateRangeError });
           this.firstDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.DateRangeError] };
@@ -205,10 +204,10 @@ export class DatePriorityHearingComponent implements OnInit {
           this.firstDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.DatePastError] };
         }
       } else if (this.priorityForm.controls.specificDate.value === 'Choose') {
-        const isInValidEarliestDate = this.getDateFormatted(this.earliestHearingFormGroup, 'earliestHearingDate').includes(null);
-        const isInValidLatestDate = this.getDateFormatted(this.latestHearingFormGroup, 'latestHearingDate').includes(null);
-        const choosenEarliestDate = moment(this.getDateFormatted(this.earliestHearingFormGroup, 'earliestHearingDate'), 'DD-MM-YYYY');
-        const choosenLatestDate = moment(this.getDateFormatted(this.latestHearingFormGroup, 'latestHearingDate'), 'DD-MM-YYYY');
+        const isInValidEarliestDate = this.getDateFormatted(this.earliestHearingFormGroup, this.earliestHearingDate.id).includes(null);
+        const isInValidLatestDate = this.getDateFormatted(this.latestHearingFormGroup, this.latestHearingDate.id).includes(null);
+        const choosenEarliestDate = moment(this.getDateFormatted(this.earliestHearingFormGroup, this.earliestHearingDate.id), HearingDateEnum.DefaultFormat);
+        const choosenLatestDate = moment(this.getDateFormatted(this.latestHearingFormGroup, this.latestHearingDate.id), HearingDateEnum.DefaultFormat);
         const isPastEarliestDate = choosenEarliestDate.isBefore() || choosenEarliestDate.isSame(new Date(), 'd');
         const isPastLatestDate = choosenLatestDate.isBefore() || choosenLatestDate.isSame(new Date(), 'd');
         const isLatestBeforeEarliest = choosenEarliestDate > choosenLatestDate;

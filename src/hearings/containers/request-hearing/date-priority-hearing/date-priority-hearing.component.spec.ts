@@ -1,11 +1,12 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, Input, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
+import * as moment from 'moment';
 import { ErrorMessage } from '../../../../app/models';
 import { PartyUnavailabilityRange } from '../../../../hearings/models/partyUnavilabilityRange.model';
 import { RefDataModel } from '../../../../hearings/models/refData.model';
@@ -121,6 +122,20 @@ describe('DatePriorityHearingComponent', () => {
     };
     component.checkUnavailableDatesList([unavailabilityDate]);
     expect(component.partiesNotAvailableDates[0]).toBe('10 December 2021');
+  });
+
+  it('should check isWeekDay', () => {
+    expect(component.isWeekDay(moment('9-12-2021'))).toBe(false);
+  });
+
+  it('should get Formatted Date', () => {
+    const form = new FormGroup({
+      given_day: new FormControl(),
+      given_month: new FormControl(),
+      given_year: new FormControl()
+    });
+    form.controls.given_day.setValue('12');
+    expect((component as any).getDateFormatted(form, 'given')).toBe('12-null-null');
   });
 
   afterEach(() => {

@@ -2,7 +2,7 @@
 Feature: Navigation header tabs
 
     Scenario Outline: Primanry nav headers for user "<useridentifier>" and roles "<roles>"
-        Given I set MOCK with user "<useridentifier>" and roles "<roles>"
+        Given I set MOCK with user "<useridentifier>" and roles "<roles>" with reference "userDetails"
 
 
         Given I start MockApp

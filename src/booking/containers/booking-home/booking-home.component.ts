@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Booking, BookingNavigationEvent, BookingProcess } from '../../models';
 import { BookingService } from '../../services';
@@ -22,7 +23,8 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly fb: FormBuilder,
-    private readonly bookingService: BookingService
+    private readonly bookingService: BookingService,
+    private readonly router: Router
   ) { }
 
   public ngOnInit() {
@@ -61,6 +63,10 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
 
   public onEventTrigger() {
     this.eventTrigger.emit(BookingNavigationEvent.HOMECONTINUE);
+  }
+
+  public onExistingBookingSelected(locationId) {
+    this.router.navigate(['/work/my-work/list'], { queryParams: { epimms_id: locationId }});
   }
 
 }

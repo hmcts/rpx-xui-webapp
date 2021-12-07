@@ -160,6 +160,10 @@ export class AppConfig extends AbstractAppConfig {
     return this.workallocationUrl;
   }
 
+  public getRefundsUrl(): string {
+    return 'api/refund';
+  }
+
   private featureToggleWorkAllocation(): void {
     this.featureToggleService
       .isEnabled(AppConstants.FEATURE_NAMES.workAllocation)

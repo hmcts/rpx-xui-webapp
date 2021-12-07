@@ -30,9 +30,9 @@ class SoftAssert {
             reportLogger.AddMessage(`************* ${this.scenarioCounter}.${this.scrAssertionsCounter}  PASSED:  ${this.scenario}: ${verificationMsg ? verificationMsg : ''}`);
 
         } catch (assertError) {
+            this.isPassed = false;
             this.scenarios.push(`${this.scenarioCounter}.${this.scrAssertionsCounter}  FAILED **:   ${this.scenario}: ${verificationMsg ? verificationMsg : ''}`);
             // addContext(this.testContext, { title: "Screenshot path" , value: "../../"});
-            this.isPassed = false;
             this.assertions.push(`${this.scenarioCounter}.${this.scrAssertionsCounter} : ${assertError.message}`);
             reportLogger.AddMessage(`************* ${this.scenarioCounter}.${this.scrAssertionsCounter}  FAILED **:   ${this.scenario}: ${verificationMsg ? verificationMsg : ''} => ${assertError.message}`);
             await reportLogger.AddScreenshot();
@@ -55,6 +55,7 @@ class SoftAssert {
             scrs = `${scrs} \n ${scr}`;
         }
         scrs = scrs + "\n\n";
+        expect(this.isPassed).to.be.true;
         expect(this.assertions.length, `${this.assertions.length} of ${this.assertCount} assertions failed => Error(s) :` + scrs).to.equal(0);
 
     }

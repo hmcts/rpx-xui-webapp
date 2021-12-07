@@ -10,6 +10,8 @@ import { SearchParameters } from '../../../search/models';
 import { SearchService } from '../../../search/services/search.service';
 import { SearchValidators } from '../../../search/utils';
 
+const REQUEST_ORIGINATED_FROM = '16digitCaseReferenceSearchFromHeader';
+
 @Component({
   selector: 'exui-case-reference-search-box',
   templateUrl: './case-reference-search-box.component.html',
@@ -54,10 +56,12 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, After
   }
 
   public onSubmit(): void {
+    const caseReference = this.formGroup.get(this.CASE_REF_FIELD).value;
+
     // Populate a SearchParameters instance and persist via the SearchService. Do this even if the input to the 16-digit case reference
     // search box is invalid, so the value can be pre-populated in the box for the user to amend
     const searchParameters: SearchParameters = {
-      caseReferences: [this.formGroup.get(this.CASE_REF_FIELD).value],
+      caseReferences: [caseReference],
       CCDJurisdictionIds: null,
       otherReferences: null,
       fullName: null,
@@ -74,25 +78,14 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, After
     // If the input to the 16-digit case reference search box is invalid, navigate to the "no results" error page
     if (this.formGroup.get(this.CASE_REF_FIELD).invalid) {
       this.router.navigate(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH }, relativeTo: this.route });
-    } else {
-      this.searchSubscription$ = this.searchService.getResults().subscribe(
-        result => {
-          if (result.resultInfo.casesReturned > 0) {
-            // Case found, do not decorate 16-digit case reference search box with error class
-            this.store.dispatch(new fromActions.Decorate16DigitCaseReferenceSearchBoxInHeader(false));
-            // Navigate to case details page
-            this.router.navigate([`/cases/case-details/${result.results[0].caseReference}`], { relativeTo: this.route });
-          } else {
-            // Navigate to no results page
-            this.router.navigate(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH }, relativeTo: this.route });
-          }
-        },
-        error => {
-          // Error, navigate to service down page
-          this.router.navigate(['/service-down'], { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH } });
-        }
-      );
+      return;
     }
+
+    // Do not decorate 16-digit case reference search box with error class
+    this.store.dispatch(new fromActions.Decorate16DigitCaseReferenceSearchBoxInHeader(false));
+
+    // Navigate to case details page
+    this.router.navigate([`/cases/case-details/${caseReference}`], { state: { origin: REQUEST_ORIGINATED_FROM }, relativeTo: this.route });
   }
 
   public ngOnDestroy(): void {

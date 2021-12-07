@@ -91,3 +91,18 @@ export enum HearingCategory {
   NonStdDurationReasonCodes = 'NonStdDurationReasonCodes',
   EntityRoleCodes = 'EntityRoleCodes'
 }
+
+export enum HearingDatePriorityEnum {
+  LengthError = 'Enter a valid hearing length',
+  LengthMinutesError = 'The minutes entered must be a multiple of 5',
+  TotalLengthError = 'Enter a valid length of hearing, it must be between 5 minutes and 6 hours',
+  PriorityError = 'Select the priority level of the hearing',
+  PriorityDateError = 'Select if the hearing needs to take place on a specific date',
+  DateRangeError = 'Enter a valid date range for the hearing to take place on',
+  DatePastError = 'The hearing dates cannot be in the past',
+  EarliestHearingDateError = 'The earliest hearing date must be before the latest hearing date',
+
+
+
+
+}

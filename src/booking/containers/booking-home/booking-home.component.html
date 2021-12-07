@@ -17,24 +17,26 @@
                 </label>
               </div>
               <div id="conditional-booking-type-0" *ngIf="bookingTypeForm.get('bookingType').value === 0" class="govuk-radios__conditional">
-                <div class="govuk-form-group">
-                  <div class="govuk-grid-column-one-half" *ngFor="let booking of existingBookings" >
-                    <p>
-                      <strong>{{booking.locationName}}</strong>
-                      <span class="govuk-hint">
-                        {{booking.beginTime | date:'dd LLLL yyyy'}} to {{booking.endTime | date:'dd LLLL yyyy'}}
-                      </span>
-                    </p>
-                    <div class="govuk-button-group">
-                      <button
-                        role="button"
-                        class="govuk-button govuk-button--secondary"
-                      >
-                        Continue
-                      </button>
-                    </div>
+
+                <div class="govuk-grid-column-one-third" *ngFor="let booking of existingBookings" >
+                  <div class="govuk-form-group">
+                      <p>
+                        <strong>{{booking.locationName}}</strong>
+                        <span class="govuk-hint">
+                          {{booking.beginTime | date:'dd LLLL yyyy'}} to {{booking.endTime | date:'dd LLLL yyyy'}}
+                        </span>
+                      </p>
+                      <div class="govuk-button-group">
+                        <button
+                          role="button"
+                          class="govuk-button govuk-button--secondary"
+                        >
+                          Continue
+                        </button>
+                      </div>
                   </div>
                 </div>
+
               </div>
             </ng-container>
             <div class="govuk-radios__item">

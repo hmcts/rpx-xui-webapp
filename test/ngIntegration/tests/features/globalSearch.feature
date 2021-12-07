@@ -1,6 +1,5 @@
-@ng
+@ng 
 Feature: Global search
-
 
     Background: Setup
         Given I set MOCK with user "CASEWORKER_GLOBALSEARCH" and roles "caseworker,caseworker-befta_master,caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer"
@@ -9,7 +8,6 @@ Feature: Global search
         Then I click on primary navigation header tab "Search cases", I see selected tab page displayed
         Then I see global search Page
 
-@test
     Scenario: Search page field validation
         Then I validate field services has following values in global search page
             | value                |
@@ -295,7 +293,6 @@ Feature: Global search
         Then I see case details challenged access request page
 
     Scenario: Search from header with 1 result with speciic access
-
         Given I set global search mock results count 1
         Given I set global search mock results with values
             | index | processForAccess |
@@ -307,4 +304,29 @@ Feature: Global search
         When I input case reference in header search field "1234567812345678"
         When I click find in header search
         Then I see case details specific access request page
+
+    Scenario Outline: Search from header with invalid <ScenarioDes> case reference
+        Given I set global search mock results count 1
+        Given I set global search mock results with values
+            | index | processForAccess |
+            | 0     | SPECIFIC         |
+        Given I start MockApp
+        Then I validate case search field is displayed in header
+        When I input case reference in header search field "<SearchWith>"
+        When I click find in header search
+
+        Then I validate global search no results page is displayed
+        Then I validate global searh no results page displays message "This 16-digit case reference could not be found"
+        Then I validate global searh no results page displays message "Try searching again or go back"
+        Then I validate global search no results back link displayed
+        When I click global search no results back link
+        Then I see global search Page
+
+        Examples:
+            | ScenarioDes | SearchWith | 
+            | less than 16 digit  | 1234  | 
+            | with Alpha numeric | 1Abcd67812345678 |
+            | with special character | 1$%^&@67812345678 |
+
+
 

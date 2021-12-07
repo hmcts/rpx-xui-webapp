@@ -197,6 +197,21 @@ Feature: Global search
         Then I validate global search results pagination link "Next page" is enabled
         Then I validate global search results pagination link "Previous page" is disabled
 
+
+    Scenario: Case search results view validations view link
+        Given I set set global search mock results response and resultInfo
+            | caseStartRecord | casesReturned | moreResultsToGo |
+            | 1               | 10            | false           |
+
+        Given I start MockApp
+
+        When I click search button in global search page
+        Then I see global search results page
+        Then I validate global search results displayed count 10
+        When I click action link "View" at row 1 in global search results page
+        Then I see case details page
+
+
     Scenario: Case search results view validations challenged access
         Given I set set global search mock results response and resultInfo
             | caseStartRecord | casesReturned | moreResultsToGo |

@@ -36,6 +36,7 @@ export class HearingStageComponent implements OnInit, AfterViewInit {
     this.hearingStageOptions$.subscribe(hearingStageOptions => {
       this.radios.forEach((radio, index) => {
         radio.nativeElement.value = hearingStageOptions.length > index ? hearingStageOptions[index].key : '';
+        radio.nativeElement.name = hearingStageOptions.length > index ? hearingStageOptions[index].value_en : '';
       });
     });
 

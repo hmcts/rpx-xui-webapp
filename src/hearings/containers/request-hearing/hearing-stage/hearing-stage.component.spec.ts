@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
-import { RefDataModel } from 'src/hearings/models/refData.model';
+import { RefDataModel } from '../../../models/refData.model';
 import { HearingsRefDataService } from '../../../services/hearings-ref-data.service';
 import { HearingStageComponent } from './hearing-stage.component';
 
@@ -51,10 +51,35 @@ fdescribe('HearingStageComponent', () => {
     },
   ];
 
+  const initialState = {
+    hearings: {
+      hearingList: {
+        caseHearingMainModel: [
+          {
+            hmctsServiceID: 'TEST'
+          }
+        ]
+      },
+        hearingValues:  {
+          serviceHearingValuesModel: {
+            serviceHearingValuesModel: null,
+            lastError: null,
+          },
+          lastError: null,
+      },
+    }
+  };
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ HearingStageComponent ],
-      providers: [{ provide: HearingsRefDataService, useValue: hearingsRefDataServiceMock }, FormBuilder],
+      providers: [
+        { 
+          provide: HearingsRefDataService, useValue: hearingsRefDataServiceMock 
+        }, 
+        provideMockStore({initialState}),
+        FormBuilder
+      ],
     })
     .compileComponents();
   }));
@@ -81,3 +106,7 @@ fdescribe('HearingStageComponent', () => {
     }
   });
 });
+  function provideMockStore(arg0: { initialState: { hearings: { hearingList: { caseHearingMainModel: { hmctsServiceID: string; }[]; }; }; }; }): any {
+    throw new Error('Function not implemented.');
+  }
+

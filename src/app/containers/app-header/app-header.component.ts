@@ -5,7 +5,7 @@ import { select, Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { ApplicationTheme, NavigationItem } from 'src/app/models/theming.model';
-import { UserDetails } from '../../../app/models/user-details.model';
+import { UserDetails } from 'src/app/models/user-details.model';
 import { AppUtils } from '../../app-utils';
 import { AppConstants } from '../../app.constants';
 import { AppTitleModel } from '../../models/app-title.model';

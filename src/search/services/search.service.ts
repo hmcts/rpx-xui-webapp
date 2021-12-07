@@ -66,7 +66,10 @@ export class SearchService {
       CCDJurisdictionIds: searchParameters.CCDJurisdictionIds,
       caseManagementBaseLocationIds: null,
       caseManagementRegionIds: null,
-      caseReferences: searchParameters.caseReferences,
+      // Ensure case references are sanitised, i.e. have been stripped of separators (spaces and '-' characters)
+      caseReferences: searchParameters.caseReferences
+        ? searchParameters.caseReferences.map(caseRef => caseRef.replace(/[\s-]/g, ''))
+        : null,
       otherReferences: searchParameters.otherReferences,
       parties: [{
         addressLine1: searchParameters.address,

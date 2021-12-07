@@ -1,4 +1,5 @@
 export enum SearchFormErrorMessage {
+  CASE_REF = 'Enter a 16-digit HMCTS case reference number',
   EMAIL = 'Enter an email address in the correct format, like name@example.com',
   POSTCODE = 'Enter a valid postcode',
   DATE_OF_BIRTH = 'Enter a valid date of birth',

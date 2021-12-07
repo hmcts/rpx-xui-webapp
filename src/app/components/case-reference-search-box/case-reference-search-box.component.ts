@@ -84,8 +84,8 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, After
     // Do not decorate 16-digit case reference search box with error class
     this.store.dispatch(new fromActions.Decorate16DigitCaseReferenceSearchBoxInHeader(false));
 
-    // Navigate to case details page
-    this.router.navigate([`/cases/case-details/${caseReference}`], { state: { origin: REQUEST_ORIGINATED_FROM }, relativeTo: this.route });
+    // Navigate to case details page, ensuring the case reference is sanitised, i.e. has been stripped of separators (spaces and '-' characters)
+    this.router.navigate([`/cases/case-details/${caseReference.replace(/[\s-]/g, '')}`], { state: { origin: REQUEST_ORIGINATED_FROM }, relativeTo: this.route });
   }
 
   public ngOnDestroy(): void {

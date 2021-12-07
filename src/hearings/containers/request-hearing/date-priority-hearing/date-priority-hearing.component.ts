@@ -39,7 +39,7 @@ export class DatePriorityHearingComponent implements OnInit {
               private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly hearingsService: HearingsService) { }
 
-  private get firstHearingFormGroup(): FormGroup {
+  public get firstHearingFormGroup(): FormGroup {
     return this.priorityForm.controls.firstHearing as FormGroup;
   }
 
@@ -47,11 +47,11 @@ export class DatePriorityHearingComponent implements OnInit {
     return this.priorityForm.controls.dateRangeHearing as FormGroup;
   }
 
-  private get earliestHearingFormGroup(): FormGroup {
+  public get earliestHearingFormGroup(): FormGroup {
     return this.dateRangeHearingFormGroup.controls.earliestHearing as FormGroup;
   }
 
-  private get latestHearingFormGroup(): FormGroup {
+  public get latestHearingFormGroup(): FormGroup {
     return this.dateRangeHearingFormGroup.controls.latestHearing as FormGroup;
   }
 

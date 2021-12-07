@@ -74,7 +74,6 @@ export const ROUTES: Routes = [
       },
       {
         path: 'hearing-stage',
-        resolve: { hearingPriorities: PriorityResolver },
         component: HearingStageComponent,
         canActivate: [HealthCheckGuard],
         data: {

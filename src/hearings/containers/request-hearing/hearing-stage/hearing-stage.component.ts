@@ -1,46 +1,55 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, QueryList, ViewChildren, AfterViewInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
-import { Actions, EXUISectionStatusEnum } from 'api/hearings/models/hearings.enum';
+import { Actions } from 'api/hearings/models/hearings.enum';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { UserRole } from 'src/app/models/user-details.model';
-import { RoleCategoryMappingService } from 'src/app/services/role-category-mapping/role-category-mapping.service';
-import * as fromHearingStore from '../../../store';
-import * as fromAppStore from '../../../../app/store';
-
+import { RefDataModel } from 'src/hearings/models/refData.model';
+import { HearingsRefDataService } from 'src/hearings/services/hearings-ref-data.service';
+import * as fromHearingStore from '../../../../hearings/store';
+import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.model';
 @Component({
   selector: 'xui-hearing-stage',
   templateUrl: './hearing-stage.component.html',
   styleUrls: ['./hearing-stage.component.scss']
 })
-export class HearingStageComponent implements OnInit {
+export class HearingStageComponent implements OnInit, AfterViewInit {
   public hearingsActions: Actions[] = [Actions.READ];
-  public userRoles$: Observable<string[]>;
-  constructor(private readonly appStore: Store<fromAppStore.State>,
-    private readonly hearingStore: Store<fromHearingStore.State>,
-    private readonly activatedRoute: ActivatedRoute,
-    private readonly roleCategoryMappingService: RoleCategoryMappingService) {
-      const caseID = this.activatedRoute.snapshot.params.cid;
-      this.userRoles$ = this.appStore.pipe(select(fromAppStore.getUserDetails)).pipe(
-        map(userDetails => userDetails.userInfo.roles)
-      );
-      this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(caseID));
-      // this.roleCategoryMappingService.isJudicialOrLegalOpsCategory(this.userRoles$).subscribe(
-      //   userRole => console.log('userrole', userRole)
-      //   //{
-      //   //   if (userRole === UserRole.LegalOps) {
-      //   //     console.log('userrole', userRole);
-      //   //     this.hearingsActions = [...this.hearingsActions, Actions.CREATE, Actions.UPDATE, Actions.DELETE];
-      //   //   }
-      //   // }
-      // );
-   }
+  public serviceHearingValueModel$: Observable<ServiceHearingValuesModel>;
+  public foreName: string;
+  public surname: string;
+  public fullName: string;
+  public hearingStageOptions$: Observable<RefDataModel[]>;
+  public stageForm: FormGroup;
+  public hearingType: string;
+  @ViewChildren('radioButton') public radios: QueryList<any>;
 
-  ngOnInit() {
+  constructor(private readonly hearingsRefDataService: HearingsRefDataService,
+              private readonly hearingStore: Store<fromHearingStore.State>,
+              fb: FormBuilder) {
+    this.stageForm = fb.group({
+      'stage-option': [null],
+    });
   }
 
-  goBack() {
-    window.history.back();
+  public ngAfterViewInit(): void {
+    this.hearingStageOptions$.subscribe(hearingStageOptions => {
+      this.radios.forEach((radio, index) => {
+        radio.nativeElement.value = hearingStageOptions.length > index ? hearingStageOptions[index].key : '';
+      });
+    });
+
+    this.hearingStore.pipe(select(fromHearingStore.getHearingValuesModel)).pipe(
+      map(model => {
+        this.stageForm.controls['stage-option'].setValue('initial');
+        console.log('setvalue', this.stageForm.controls['stage-option'].value);
+      })
+    );
+
+    this.stageForm.controls['stage-option'].setValue('initial');
+  }
+
+  public ngOnInit() {
+    this.hearingStageOptions$ = this.hearingsRefDataService.getRefData('HearingType', 'SSCS');
   }
 }

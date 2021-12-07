@@ -5,10 +5,10 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import * as fromActions from '../../../app/store';
-import { NoResultsMessageId, ProcessForAccessType } from '../../../search/enums';
-import { SearchParameters, SearchResult } from '../../../search/models';
+import { NoResultsMessageId } from '../../../search/enums';
+import { SearchParameters } from '../../../search/models';
 import { SearchService } from '../../../search/services/search.service';
 import { SearchValidators } from '../../../search/utils';
 import { NavItemsModel } from '../../models/nav-item.model';
@@ -23,9 +23,7 @@ describe('ExuiCaseReferenceSearchBoxComponent', () => {
   let router: Router;
   let route: ActivatedRoute;
   let store: Store<fromActions.State>;
-  const storeMock = jasmine.createSpyObj('Store', [
-    'dispatch'
-  ]);
+  let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
   const formBuilder = new FormBuilder();
   const item: NavItemsModel = {
     text: 'Find',
@@ -47,6 +45,7 @@ describe('ExuiCaseReferenceSearchBoxComponent', () => {
   beforeEach(async(() => {
     searchService = createSpyObj<SearchService>('searchService', ['retrieveState', 'storeState']);
     searchService.retrieveState.and.returnValue(searchParameters);
+    storeMock = jasmine.createSpyObj('Store', ['dispatch']);
     TestBed.configureTestingModule({
       declarations: [ CaseReferenceSearchBoxComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],

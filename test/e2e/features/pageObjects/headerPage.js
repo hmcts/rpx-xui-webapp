@@ -11,12 +11,22 @@ const SearchCasePage = require('../pageObjects/searchPage');
 const taskListPage = require('../pageObjects/workAllocation/taskListPage');
 const taskManagerPage = require('../pageObjects/workAllocation/taskManagerPage');
 const myWorkPage = require('../pageObjects/workAllocation/myWorkPage');
-
+const globalSearchPage = require('./globalSearchCases');
 
 
 const createCaseStartPage = new CreateCaseStartPage();
 const caseListPage = new CaseListPage();
 const searchCasePage = new SearchCasePage();
+
+function HeaderSearch(){
+
+  this.container = element(by.xpath("//div[@class ='hmcts-primary-navigation__search']//exui-case-reference-search-box"));
+  this.label = element(by.xpath("//div[@class ='hmcts-primary-navigation__search']//exui-case-reference-search-box//span"));
+  this.input = element(by.xpath("//div[@class ='hmcts-primary-navigation__search']//exui-case-reference-search-box//input[@id='caseReference']"));
+  this.button = element(by.xpath("//div[@class ='hmcts-primary-navigation__search']//exui-case-reference-search-box//button"));
+
+}
+
 
 function HeaderPage() {
 
@@ -27,6 +37,8 @@ function HeaderPage() {
     this.manageCases = element(by.css(".hmcts-header .hmcts-header__link"));
 
     this.headerAppLogoLink = $('.hmcts-header__logo a');
+
+    this.headerSearch = new HeaderSearch();
 
     this.amOnPage = async function(){
       return await this.headerAppLogoLink.isPresent();
@@ -225,6 +237,9 @@ function HeaderPage() {
         break;
       case 'My work':
         retValue = await myWorkPage.amOnPage();
+        break;
+      case 'Search cases':
+        retValue = await globalSearchPage.amOnPage();
         break;
       case 'All work':
         throw new Error('All work Test pageObject not implemented/applied to tests');

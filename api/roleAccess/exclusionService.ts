@@ -36,7 +36,7 @@ export async function confirmUserExclusion(req: EnhancedRequest, res: Response, 
   let roleCategory: string;
   let assigneeId: string;
   if (body.exclusionOption === 'Exclude another person') {
-    roleCategory = body.person.domain === 'Legal Ops' ? 'LEGAL_OPERATIONS' : body.person.domain;
+    roleCategory = getCorrectRoleCategory(body.person.domain);
     assigneeId = body.person.id;
   } else {
     roleCategory = currentUser.roleCategory;
@@ -140,6 +140,21 @@ export function mapRoleCategory(roleCategory: string): RoleCategory {
       return RoleCategory.LEGAL_OPERATIONS;
     case 'JUDICIAL':
       return RoleCategory.JUDICIAL;
+    case 'ADMIN':
+      return RoleCategory.ADMIN;
+    default:
+      throw new Error('Invalid roleCategory');
+  }
+}
+
+export function getCorrectRoleCategory(domain: string): RoleCategory {
+  switch (domain) {
+    case 'Legal Ops':
+      return RoleCategory.LEGAL_OPERATIONS;
+    case 'Judicial':
+      return RoleCategory.JUDICIAL;
+    case 'Admin':
+      return RoleCategory.ADMIN;
     default:
       throw new Error('Invalid roleCategory');
   }

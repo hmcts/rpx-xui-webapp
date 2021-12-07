@@ -11,11 +11,14 @@ import { EnhancedRequest } from '../lib/models';
 import {
   confirmUserExclusion,
   deleteUserExclusion,
+  getCorrectRoleCategory,
   getEmail,
   getExclusionRequestPayload,
   getUserName,
   mapResponseToExclusions } from './exclusionService';
 import { getLegalAndJudicialRequestPayload } from './index';
+import { RoleCategory } from './models/allocate-role.enum';
+import { assert } from 'sinon';
 
 chai.use(sinonChai);
 describe('exclusions.exclusionService', () => {
@@ -234,6 +237,15 @@ describe('exclusions.exclusionService', () => {
     } as unknown as EnhancedRequest;
     it('should get the correct payload', async () => {
       expect(getLegalAndJudicialRequestPayload('123', 'IA', 'Asylum')).to.deep.equal(caseRoleRequestPayload);
+    });
+
+  });
+
+  describe('getCorrectRoleCategory', () => {
+    it('should get the correct role category', async () => {
+      expect(getCorrectRoleCategory('Judicial')).to.deep.equal(RoleCategory.JUDICIAL);
+      expect(getCorrectRoleCategory('Legal Ops')).to.deep.equal(RoleCategory.LEGAL_OPERATIONS);
+      expect(getCorrectRoleCategory('Admin')).to.deep.equal(RoleCategory.ADMIN);
     });
 
   });

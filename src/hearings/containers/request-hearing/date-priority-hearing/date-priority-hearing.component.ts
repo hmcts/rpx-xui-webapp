@@ -26,15 +26,12 @@ export class DatePriorityHearingComponent implements OnInit {
   public earliestHearingDate: GovUiConfigModel;
   public latestHearingDate: GovUiConfigModel;
   public validationErrors: { id: string, message: string }[] = [];
-  public isHearingLengthNotValid: boolean;
   public hearingLengthErrorValue: string;
-  public isHearingPriorityNotValid: boolean;
-  public isHearingDateNotValid: boolean;
+  public hearingPriorityError: string;
+  public hearingPriorityDateError: string;
   public firstDateOfHearingError: ErrorMessagesModel;
   public earliestDateOfHearingError: ErrorMessagesModel;
   public latestDateOfHearingError: ErrorMessagesModel;
-  public hearingPriorityError: string;
-  public hearingPriorityDateError: string;
 
   constructor(private readonly formBuilder: FormBuilder,
               private readonly route: ActivatedRoute,
@@ -166,29 +163,27 @@ export class DatePriorityHearingComponent implements OnInit {
 
   public checkFormData(): void {
     this.validationErrors = [];
-    this.hearingLengthErrorValue = HearingDatePriorityEnum.LengthError;
-    this.isHearingLengthNotValid = false;
-    this.isHearingDateNotValid = false;
-    this.isHearingPriorityNotValid = false;
+    this.hearingLengthErrorValue = null;
     this.latestDateOfHearingError = null;
     this.earliestDateOfHearingError = null;
     this.firstDateOfHearingError = null;
+    this.hearingPriorityError = null;
+    this.hearingPriorityDateError = null;
     if (!this.priorityForm.valid) {
-      if (!this.priorityForm.controls.durationLength.get('hours').valid) {
-        this.isHearingLengthNotValid = true;
+      // Hearing Length check
+      const durationLengthFormGroup = this.priorityForm.controls.durationLength;
+      if (durationLengthFormGroup.pristine || !durationLengthFormGroup.get('hours').valid) {
         this.hearingLengthErrorValue = HearingDatePriorityEnum.LengthError;
         this.validationErrors.push({ id: 'durationhours', message: HearingDatePriorityEnum.LengthError });
-      } else if (!this.priorityForm.controls.durationLength.get('minutes').valid) {
-        this.isHearingLengthNotValid = true;
+      } else if (!durationLengthFormGroup.get('minutes').valid) {
         this.hearingLengthErrorValue = HearingDatePriorityEnum.LengthMinutesError;
         this.validationErrors.push({ id: 'durationmins', message: HearingDatePriorityEnum.LengthMinutesError });
-      } else if (!this.priorityForm.controls.durationLength.valid) {
-        this.isHearingLengthNotValid = true;
+      } else if (!durationLengthFormGroup.valid) {
         this.hearingLengthErrorValue = HearingDatePriorityEnum.TotalLengthError;
         this.validationErrors.push({ id: 'durationhours', message: HearingDatePriorityEnum.TotalLengthError });
       }
+      // Hearing Date check
       if (!this.priorityForm.controls.specificDate.valid) {
-        this.isHearingDateNotValid = true;
         this.hearingPriorityDateError = HearingDatePriorityEnum.PriorityDateError;
         this.validationErrors.push({ id: 'noSpecificDate', message: HearingDatePriorityEnum.PriorityDateError });
       } else if (this.priorityForm.controls.specificDate.value === 'Yes') {
@@ -233,8 +228,8 @@ export class DatePriorityHearingComponent implements OnInit {
           this.earliestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.EarliestHearingDateError] };
         }
       }
+      // Hearing Priority check
       if (!this.priorityForm.controls.priority.valid) {
-        this.isHearingPriorityNotValid = true;
         this.hearingPriorityError = HearingDatePriorityEnum.PriorityError;
         this.validationErrors.push({ id: this.priorities[0].key, message: HearingDatePriorityEnum.PriorityError });
       }

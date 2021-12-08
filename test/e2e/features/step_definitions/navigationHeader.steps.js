@@ -120,4 +120,19 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         expect(await headerPage.isTabPresent(headerlabel), headerlabel + " tab is not expected to present " + await headerPage.getPrimaryTabsDisplayed() ).to.be.false;
     })
 
+    Then('I validate header displayed for user type {string}', async function(userType){
+        let i = 0;
+        await browserWaits.retryWithActionCallback(async (i) => {
+            await browserWaits.waitForSeconds(i*2);
+            await headerPage.validateHeaderDisplayedForUserType(userType);
+            i++;
+        });
+
+    });
+
+    Then('I validate 16-digit Case reference search box isDisplayed? is {string}', async function(isDisplayed){
+        isDisplayed = isDisplayed.toLowerCase();
+        expect(await headerPage.caseReferenceSearchBox.isPresent()).to.equal(isDisplayed.includes('yes') || isDisplayed.includes('true') );
+    });
+
 });

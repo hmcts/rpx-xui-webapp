@@ -1,10 +1,12 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { FlagDefinition, NavigationItem } from 'src/app/models/theming.model';
+import { UserDetails } from '../../../app/models/user-details.model';
+import * as fromAppStore from '../../../app/store';
 import * as fromNocStore from '../../../noc/store';
+import { FlagDefinition, NavigationItem } from '../../models/theming.model';
 import { UserNavModel } from '../../models/user-nav.model';
 import { UserService } from '../../services/user/user.service';
 
@@ -20,35 +22,46 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   }
   @Input() public items: NavigationItem[];
   @Input() public logoIsUsed: boolean;
-  @Input() public showFindCase: boolean;
   @Input() public headerTitle: {name: string; url: string};
   @Input() public navigation: UserNavModel;
   @Input() public logoType: string;
   @Input() public currentUrl: string;
   @Output() public navigate = new EventEmitter<string>();
 
-  public showItems = true;
+  public showItems = false;
   public userValue = true;
   public tab;
+  public userDetails$: Observable<UserDetails>;
+  public isUserCaseManager$: Observable<boolean>;
   public get leftItems(): Observable<NavigationItem[]> {
     return this.menuItems.left.asObservable();
-  };
+  }
   public get rightItems(): Observable<NavigationItem[]> {
     return this.menuItems.right.asObservable();
-  };
+  }
 
-  private menuItems = {
+  private readonly menuItems = {
     left: new BehaviorSubject<NavigationItem[]>([]),
     right: new BehaviorSubject<NavigationItem[]>([])
   };
 
   constructor(
-    public nocStore: Store<fromNocStore.State>,
+    private readonly appStore: Store<fromAppStore.State>,
+    private readonly nocStore: Store<fromNocStore.State>,
     private readonly userService: UserService,
     private readonly featureToggleService: FeatureToggleService
   ) { }
 
   public ngOnInit(): void {
+    this.appStore.dispatch(new fromAppStore.LoadUserDetails());
+    this.userDetails$ = this.appStore.pipe(select(fromAppStore.getUserDetails));
+    this.isUserCaseManager$ = this.userDetails$.pipe(
+      map(details => details.userInfo.roles),
+      map(roles => {
+        return roles.includes('pui-case-manager')
+      })
+    );
+
     this.splitAndFilterNavItems(this.items);
   }
 
@@ -62,14 +75,14 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
     this.navigate.emit(this.navigation.items[index].emit);
   }
 
-  public onEmitSubMenu(menuItem: any) {
+  public onEmitSubMenu(menuItem: any): void {
     if (menuItem.href === '/noc') {
       this.nocStore.dispatch(new fromNocStore.Reset());
     }
   }
 
-  private splitAndFilterNavItems(items: NavigationItem[]) {
-		items = items || [];
+  private splitAndFilterNavItems(items: NavigationItem[]): void {
+    items = items || [];
     of(items).pipe(
       switchMap(unfilteredItems => this.filterNavItemsOnRole(unfilteredItems)),
       switchMap(roleFilteredItems => this.filterNavItemsOnFlag(roleFilteredItems)),
@@ -80,8 +93,8 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
     });
   }
 
-  private splitNavItems(items: NavigationItem[]) {
-		items = items || [];
+  private splitNavItems(items: NavigationItem[]): {right: NavigationItem[], left: NavigationItem[]} {
+    items = items || [];
     return {
       right: items.filter(item => item.align && item.align === 'right'),
       left: items.filter(item => !item.align || item.align !== 'right')
@@ -89,7 +102,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   }
 
   private filterNavItemsOnRole(items: NavigationItem[]): Observable<NavigationItem[]> {
-		items = items || [];
+    items = items || [];
     return this.userService.getUserDetails().pipe(
       map(details => details.userInfo.roles),
       map(roles => {
@@ -100,7 +113,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   }
 
   private filterNavItemsOnFlag(items: NavigationItem[]): Observable<NavigationItem[]> {
-		items = items || [];
+    items = items || [];
     const flags: {[flag: string]: boolean | string} = {};
     const obs: Observable<boolean>[] = [];
     items.forEach(
@@ -123,7 +136,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
     return ((obs.length > 1 ? obs[0].combineLatest(obs.slice(1)) : obs[0]) as Observable<any>).pipe(
       map(_ => {
         let i = items.filter(item => item.flags && item.flags.length > 0 ? item.flags.every(flag => this.isPlainFlag(flag) ? (flags[flag] as boolean) : (flags[flag.flagName] as string) === flag.value) : true);
-				i = i || [];
+        i = i || [];
         return i.filter(item => item.notFlags && item.notFlags.length > 0 ? item.notFlags.every(flag => this.isPlainFlag(flag) ? !(flags[flag] as boolean) : (flags[flag.flagName] as string) !== flag.value) : true);
       })
     );

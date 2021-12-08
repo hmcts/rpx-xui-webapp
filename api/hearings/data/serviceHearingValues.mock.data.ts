@@ -67,26 +67,26 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
     flags: [
       {
         partyName: 'Jane and Smith',
-        flagId: 'Language Interpreter',
+        flagId: 'PF0015',
         flagDescription: 'Spanish interpreter required',
         flagStatus: 'ACTIVE',
       },
       {
         partyName: 'Jane and Smith',
-        flagId: 'Sign language interpreter',
+        flagId: 'RA0042',
         flagDescription: 'Sign language interpreter required',
         flagStatus: 'ACTIVE',
       },
       {
         partyName: 'Jane and Smith',
-        flagId: 'Reasonable adjustment',
+        flagId: 'RA0001',
         flagDescription: 'Hearing loop required',
         flagStatus: 'ACTIVE',
       },
       {
         partyName: 'DWP',
-        flagId: 'case flag 1',
-        flagDescription: 'case flag 1 description',
+        flagId: 'RA0005',
+        flagDescription: 'Physical access and facilities',
         flagStatus: 'ACTIVE',
       },
     ],

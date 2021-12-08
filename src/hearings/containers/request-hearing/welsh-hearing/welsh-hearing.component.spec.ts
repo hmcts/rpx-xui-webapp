@@ -1,9 +1,13 @@
-import { Component, Input } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
-import { ErrorMessage } from 'src/app/models';
-import { WelshHearingComponent } from './welsh-hearing.component';
+import {Component, Input} from '@angular/core';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {ReactiveFormsModule} from '@angular/forms';
+import {RouterTestingModule} from '@angular/router/testing';
+import {provideMockStore} from '@ngrx/store/testing';
+import {of} from 'rxjs';
+import {ErrorMessage} from 'src/app/models';
+import {ACTION} from '../../../models/hearings.enum';
+import {HearingsService} from '../../../services/hearings.service';
+import {WelshHearingComponent} from './welsh-hearing.component';
 
 @Component({
   selector: 'exui-error-message',
@@ -12,6 +16,7 @@ import { WelshHearingComponent } from './welsh-hearing.component';
 class MockTestComponent {
   @Input() public error: ErrorMessage;
 }
+
 @Component({
   selector: 'exui-hearing-parties-title',
   template: '',
@@ -23,8 +28,26 @@ class MockHearingPartiesComponent {
 describe('WelshHearingComponent', () => {
   let component: WelshHearingComponent;
   let fixture: ComponentFixture<WelshHearingComponent>;
+  const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
+  const hearingsService = new HearingsService(mockedHttpClient);
+  hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 
-  beforeEach(async(() => {
+  const initialState = {
+    hearings: {
+      hearingList: {
+        caseHearingMainModel: [
+          {
+            hmctsServiceID: 'SSCS'
+          }
+        ]
+      },
+      hearingValues: null,
+      hearingRequest: null,
+      hearingConditions: null,
+    }
+  };
+
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule],
       declarations: [
@@ -32,10 +55,12 @@ describe('WelshHearingComponent', () => {
         MockTestComponent,
         MockHearingPartiesComponent,
       ],
+      providers: [
+        provideMockStore({initialState}),
+        {provide: HearingsService, useValue: hearingsService},
+      ],
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(WelshHearingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -47,7 +72,7 @@ describe('WelshHearingComponent', () => {
 
   it('should check hearingInWelshFlag', (): void => {
     fixture.detectChanges();
-    let errors = null;
+    let errors;
     const hearingInWelshFlag = component.welshForm.controls.hearingInWelshFlag;
 
     hearingInWelshFlag.setValue(true);
@@ -57,5 +82,9 @@ describe('WelshHearingComponent', () => {
     hearingInWelshFlag.setValue(null);
     errors = hearingInWelshFlag.errors;
     expect(errors).toBeTruthy();
+  });
+
+  afterEach(() => {
+    fixture.destroy();
   });
 });

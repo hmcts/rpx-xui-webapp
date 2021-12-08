@@ -1,10 +1,13 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { AbstractControl, FormBuilder } from '@angular/forms';
-import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
-import { provideMockStore } from '@ngrx/store/testing';
-import { Observable, of } from 'rxjs';
-import { LocationSearchComponent } from './location-search.component';
+import {Component, CUSTOM_ELEMENTS_SCHEMA, Input} from '@angular/core';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {AbstractControl, FormBuilder} from '@angular/forms';
+import {LocationByEPIMSModel} from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import {provideMockStore} from '@ngrx/store/testing';
+import {Observable, of} from 'rxjs';
+import {ACTION} from '../../../models/hearings.enum';
+import {HearingsService} from '../../../services/hearings.service';
+import {LocationSearchComponent} from './location-search.component';
+
 @Component({
   selector: 'exui-search-location',
   template: '',
@@ -21,13 +24,16 @@ class MockLocationSearchComponent {
 describe('LocationSearchContainerComponent', () => {
   let component: LocationSearchComponent;
   let fixture: ComponentFixture<LocationSearchComponent>;
+  const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
+  const hearingsService = new HearingsService(mockedHttpClient);
+  hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 
   const initialState = {
     hearings: {
       hearingList: {
         caseHearingMainModel: [
           {
-            hmctsServiceID: 'TEST'
+            hmctsServiceID: 'SSCS'
           }
         ]
       },
@@ -36,14 +42,15 @@ describe('LocationSearchContainerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LocationSearchComponent, MockLocationSearchComponent ],
+      declarations: [LocationSearchComponent, MockLocationSearchComponent],
       providers: [
         provideMockStore({initialState}),
+        {provide: HearingsService, useValue: hearingsService},
         FormBuilder
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -82,7 +89,7 @@ describe('LocationSearchContainerComponent', () => {
   });
 
   it('should remove selection in selection list', async () => {
-    const location =  {
+    const location = {
       court_venue_id: '100',
       epims_id: '219164',
       is_hearing_location: 'Y',
@@ -99,11 +106,10 @@ describe('LocationSearchContainerComponent', () => {
       postcode: 'AB11 6LT'
     } as LocationByEPIMSModel;
 
-    component.selectedLocations$ = of([ location ]);
+    component.selectedLocations$ = of([location]);
 
     component.removeSelection(location);
     fixture.detectChanges();
-    // expect(component.selectedLocations$.subscribe).toHaveBeenCalled();
     component.selectedLocations$.subscribe(selectedLocations => {
       expect(selectedLocations.length).toEqual(0);
     });

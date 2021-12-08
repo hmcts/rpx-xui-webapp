@@ -8,12 +8,12 @@ import {ServiceHearingValuesModel} from '../models/serviceHearingValues.model';
 @Injectable()
 export class HearingsService {
 
-  public actionSubscription = new Subject<ACTION>();
+  public actionSubject = new Subject<ACTION>();
 
-  public navigateAction$: Observable<ACTION> = this.actionSubscription.asObservable();
+  public navigateAction$: Observable<ACTION> = this.actionSubject.asObservable();
 
   public navigateAction(action: ACTION): void {
-    this.actionSubscription.next(action);
+    this.actionSubject.next(action);
   }
 
   constructor(private readonly http: HttpClient) {

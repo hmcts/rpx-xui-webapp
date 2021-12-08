@@ -1,13 +1,16 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { Store } from '@ngrx/store';
-import { provideMockStore } from '@ngrx/store/testing';
-import { ErrorMessage } from '../../../../app/models';
-import { PartyUnavailabilityRange } from '../../../models/partyUnavilabilityRange.model';
-import { RefDataModel } from '../../../models/refData.model';
+import {Component, CUSTOM_ELEMENTS_SCHEMA, Input} from '@angular/core';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {ReactiveFormsModule} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
+import {Store} from '@ngrx/store';
+import {provideMockStore} from '@ngrx/store/testing';
+import {of} from 'rxjs';
+import {ErrorMessage} from '../../../../app/models';
+import {ACTION} from '../../../models/hearings.enum';
+import {PartyUnavailabilityRange} from '../../../models/partyUnavilabilityRange.model';
+import {RefDataModel} from '../../../models/refData.model';
+import {HearingsService} from '../../../services/hearings.service';
 import {HearingTimingComponent} from './hearing-timing.component';
 
 @Component({
@@ -18,7 +21,11 @@ class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
 }
 
-describe('DatePriorityHearingComponent', () => {
+describe('HearingTimingComponent', () => {
+  const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
+  const hearingsService = new HearingsService(mockedHttpClient);
+  hearingsService.navigateAction$ = of(ACTION.CONTINUE);
+
   let component: HearingTimingComponent;
   let fixture: ComponentFixture<HearingTimingComponent>;
   let router: Router;
@@ -34,13 +41,29 @@ describe('DatePriorityHearingComponent', () => {
       parentKey: null,
     }];
 
+  const initialState = {
+    hearings: {
+      hearingList: {
+        caseHearingMainModel: [
+          {
+            hmctsServiceID: 'SSCS'
+          }
+        ]
+      },
+      hearingValues: null,
+      hearingRequest: null,
+      hearingConditions: null,
+    }
+  };
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule],
       declarations: [HearingTimingComponent, MockHearingPartiesComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
-        provideMockStore(),
+        provideMockStore({initialState}),
+        {provide: HearingsService, useValue: hearingsService},
         {
           provide: ActivatedRoute,
           useValue: {

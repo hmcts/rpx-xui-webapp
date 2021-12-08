@@ -11,6 +11,16 @@ class caseEditPage {
         this.ccdCaseEdit = $('ccd-case-edit')
         this.continueButton = new Button('button[type=submit]');
         this.checkURanswerPageData;
+
+        this.validationErrorContainer = $('ccd-case-edit-page .error-summary');
+    }
+
+    async isValidationErrorDisplayed(){
+        return await this.validationErrorContainer.isPresent();
+    }
+
+    async getValidationErrorMessageDisplayed() {
+        return await this.validationErrorContainer.getText();
     }
 
     async validateWorkbasketInputs(reqPath) {

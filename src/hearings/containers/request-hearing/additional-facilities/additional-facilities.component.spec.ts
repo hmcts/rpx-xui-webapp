@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { AdditionalFacilitiesComponent } from './additional-facilities.component';
+import {provideMockStore} from '@ngrx/store/testing';
 
-describe('AdditionalFacilitiesComponent', () => {
+fdescribe('AdditionalFacilitiesComponent', () => {
   let component: AdditionalFacilitiesComponent;
   let fixture: ComponentFixture<AdditionalFacilitiesComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ AdditionalFacilitiesComponent ]
+      declarations: [ AdditionalFacilitiesComponent ],
+      providers: [
+        provideMockStore(),
+      ]
     })
     .compileComponents();
-  }));
-
-  beforeEach(() => {
     fixture = TestBed.createComponent(AdditionalFacilitiesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

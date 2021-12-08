@@ -1,6 +1,6 @@
 import { AppUtils } from './app-utils';
 import { AppConstants } from './app.constants';
-import { NavItemsModel } from './models/nav-item.model';
+import { NavigationItem } from './models/theming.model';
 
 describe('getEnvironment', () => {
 
@@ -81,7 +81,7 @@ describe('getCookieRolesAsArray', () => {
 describe('setActiveLink', () => {
 
   it('should correctly flag an item as being active', () => {
-    const ITEMS: NavItemsModel[] = [
+    const ITEMS: NavigationItem[] = [
       { href: '/a', active: false, text: 'A' },
       { href: '/b', active: false, text: 'B' },
       { href: '/c', active: false, text: 'C' }
@@ -98,7 +98,7 @@ describe('setActiveLink', () => {
   });
 
   it('should correctly deactivate a previously active item', () => {
-    const ITEMS: NavItemsModel[] = [
+    const ITEMS: NavigationItem[] = [
       { href: '/a', active: true, text: 'A' },
       { href: '/b', active: false, text: 'B' },
       { href: '/c', active: false, text: 'C' }
@@ -116,7 +116,7 @@ describe('setActiveLink', () => {
   });
 
   it('should correctly deactivate all items when the URL matches none of them', () => {
-    const ITEMS: NavItemsModel[] = [
+    const ITEMS: NavigationItem[] = [
       { href: '/a', active: true, text: 'A' },
       { href: '/b', active: false, text: 'B' },
       { href: '/c', active: false, text: 'C' }
@@ -137,7 +137,7 @@ describe('setActiveLink', () => {
     expect(AppUtils.pad('1', 3)).toEqual('001');
   });
 
-  const mockItems: NavItemsModel[] = [
+  const mockItems: NavigationItem[] = [
     // fill with actual mock data
     { href: '/tasks', active: false, text: 'A' },
     { href: '/tasks/task-manager', active: false, text: 'B' },

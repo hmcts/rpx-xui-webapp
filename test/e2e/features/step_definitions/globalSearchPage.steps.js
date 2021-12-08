@@ -9,9 +9,11 @@ const globalSearchPage = require('../pageObjects/globalSearchCases');
 const globalSearchResultsPage = require('../pageObjects/globalSearchResultsPage');
 
 const headerPage = require('../pageObjects/headerPage');
+const SoftAssert = require('../../../ngIntegration/util/softAssert');
+const CaseManager = require('../pageObjects/common/CaseManager');
 
 defineSupportCode(function ({ Given, When, Then }) {
-
+    const caseManager = new CaseManager();
     When('I input case reference in header search field {string}', async function(caseRef){
         await headerPage.headerSearch.input.clear();
         await headerPage.headerSearch.input.sendKeys(caseRef);
@@ -294,6 +296,45 @@ defineSupportCode(function ({ Given, When, Then }) {
         for (const hash of datatableHashes){
             expect(optionValues).to.includes(hash.value);
         }
+    });
+
+
+    Then('I validate valid global search case reference searches', async function(datatable){
+        const scenarios = datatable.hashes();
+        const softAssert = new SoftAssert();
+        for (const scenario of scenarios){
+            await headerPage.clickPrimaryNavigationWithLabel('Search cases');
+            expect(await globalSearchPage.amOnPage()).to.be.true
+
+            softAssert.setScenario(`${scenario.ScenarioDescription} : ${scenario.caseReference}`);
+            await headerPage.headerSearch.input.clear();
+            await headerPage.headerSearch.input.sendKeys(scenario.caseReference);
+            await headerPage.headerSearch.button.click();
+            
+            await softAssert.assert(async () => expect(await caseManager.caseDetailsPage.isPresent()).to.be.true);
+
+        }
+        softAssert.finally();
+    
+    });
+
+    Then('I validate invalid global search case reference searches', async function (datatable) {
+        const scenarios = datatable.hashes();
+        const softAssert = new SoftAssert();
+        for (const scenario of scenarios) {
+            await headerPage.clickPrimaryNavigationWithLabel('Search cases');
+            expect(await globalSearchPage.amOnPage()).to.be.true
+
+            softAssert.setScenario(`${scenario.ScenarioDescription} : ${scenario.caseReference}`);
+            await headerPage.headerSearch.input.clear();
+            await headerPage.headerSearch.input.sendKeys(scenario.caseReference);
+            await headerPage.headerSearch.button.click();
+
+            await softAssert.assert(async () => expect(await globalSearchResultsPage.noResultsPageContainer.isPresent()).to.be.true);
+
+        }
+        softAssert.finally();
+
     });
 
 });

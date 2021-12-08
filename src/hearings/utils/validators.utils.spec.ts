@@ -1,21 +1,21 @@
 import { inject, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ValidatorsService } from './validators.service';
+import { ValidatorsUtils } from './validators.utils';
 
-describe('ValidatorsService', () => {
+describe('ValidatorsUtils', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        ValidatorsService,
+        ValidatorsUtils,
       ]
     });
   });
 
-  it('should be created', inject([ValidatorsService], (service: ValidatorsService) => {
+  it('should be created', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
     expect(service).toBeTruthy();
   }));
 
-  it('should check numberMinMaxValidator', inject([ValidatorsService], (service: ValidatorsService) => {
+  it('should check numberMinMaxValidator', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
     const control = new FormControl();
 
     control.setValidators(service.numberMinMaxValidator(5, 10));
@@ -23,7 +23,7 @@ describe('ValidatorsService', () => {
     expect(control.hasError('isValid')).toBeFalsy();
   }));
 
-  it('should check numberMultipleValidator', inject([ValidatorsService], (service: ValidatorsService) => {
+  it('should check numberMultipleValidator', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
     const control = new FormControl();
 
     control.setValidators(service.numberMultipleValidator(5));
@@ -31,7 +31,7 @@ describe('ValidatorsService', () => {
     expect(control.hasError('isValid')).toBeFalsy();
   }));
 
-  it('should check minutesValidator', inject([ValidatorsService], (service: ValidatorsService) => {
+  it('should check minutesValidator', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
     const form = new FormGroup({
       hours: new FormControl(),
       minutes: new FormControl()
@@ -42,7 +42,7 @@ describe('ValidatorsService', () => {
     expect(form.hasError('isValid')).toBeFalsy();
   }));
 
-  it('should check hearingDateValidator', inject([ValidatorsService], (service: ValidatorsService) => {
+  it('should check hearingDateValidator', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
     const form = new FormGroup({
       day: new FormControl(),
       month: new FormControl(),
@@ -57,7 +57,7 @@ describe('ValidatorsService', () => {
     expect(form.hasError('isValid')).toBeFalsy();
   }));
 
-  it('should check hearingDateRangeValidator', inject([ValidatorsService], (service: ValidatorsService) => {
+  it('should check hearingDateRangeValidator', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
     const form = new FormGroup({
       earliestHearing: new FormGroup({
         day: new FormControl(),

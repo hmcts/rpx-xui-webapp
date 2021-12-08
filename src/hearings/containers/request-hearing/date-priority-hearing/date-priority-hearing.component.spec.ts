@@ -7,14 +7,13 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as moment from 'moment';
-import { HearingDatePriorityEnum } from 'src/hearings/models/hearings.enum';
 import { ErrorMessage } from '../../../../app/models';
+import { HearingDatePriorityEnum } from '../../../../hearings/models/hearings.enum';
 import { PartyUnavailabilityRange } from '../../../../hearings/models/partyUnavilabilityRange.model';
 import { RefDataModel } from '../../../../hearings/models/refData.model';
 import { HearingsService } from '../../../../hearings/services/hearings.service';
-import { ValidatorsService } from '../../../../hearings/services/validators.service';
+import { ValidatorsService } from '../../../utils/validators.service';
 import { DatePriorityHearingComponent } from './date-priority-hearing.component';
-import createSpyObj = jasmine.createSpyObj;
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -151,19 +150,62 @@ describe('DatePriorityHearingComponent', () => {
     expect((component as any).getDateFormatted(form, 'given')).toBe(null);
   });
 
-  it('should get Hearing Length check', () => {
-    component.checkFormData();
+  it('should check Hearing Length', () => {
+    component.showHearingLengthError();
     expect(component.hearingLengthErrorValue).toBe(HearingDatePriorityEnum.LengthError);
-    component.priorityForm.controls.durationLength.markAsTouched();
+    component.priorityForm.controls.durationLength.markAsDirty();
     component.priorityForm.controls.durationLength.get('hours').setValue('1');
     component.priorityForm.controls.durationLength.get('minutes').setValue('qer');
-    component.checkFormData();
+    component.showHearingLengthError();
     expect(component.hearingLengthErrorValue).toBe(HearingDatePriorityEnum.LengthMinutesError);
     component.priorityForm.controls.durationLength.markAsTouched();
     component.priorityForm.controls.durationLength.get('hours').setValue('1');
     component.priorityForm.controls.durationLength.get('minutes').setValue('3000');
-    component.checkFormData();
+    component.showHearingLengthError();
     expect(component.hearingLengthErrorValue).toBe(HearingDatePriorityEnum.TotalLengthError);
+  });
+
+  it('should check date selection invalid', () => {
+    component.firstDateOfHearingError = null;
+    component.firstHearingFormGroup.get('firstHearingDate_day').setValue('12');
+    component.showChoosenDateError();
+    expect(component.firstDateOfHearingError.isInvalid).toBeTruthy();
+  });
+
+  it('should check date selection valid', () => {
+    component.firstDateOfHearingError = null;
+    component.firstHearingFormGroup.get('firstHearingDate_day').setValue('25');
+    component.firstHearingFormGroup.get('firstHearingDate_month').setValue('10');
+    component.firstHearingFormGroup.get('firstHearingDate_year').setValue('2022');
+    component.showChoosenDateError();
+    expect(component.firstDateOfHearingError).toBe(null);
+  });
+
+  it('should check date selection weekend', () => {
+    component.firstDateOfHearingError = null;
+    component.firstHearingFormGroup.get('firstHearingDate_day').setValue('15');
+    component.firstHearingFormGroup.get('firstHearingDate_month').setValue('10');
+    component.firstHearingFormGroup.get('firstHearingDate_year').setValue('2022');
+    component.showChoosenDateError();
+    expect(component.firstDateOfHearingError.isInvalid).toBeTruthy();
+  });
+
+  it('should check date selection past date', () => {
+    component.firstDateOfHearingError = null;
+    component.firstHearingFormGroup.get('firstHearingDate_day').setValue('15');
+    component.firstHearingFormGroup.get('firstHearingDate_month').setValue('10');
+    component.firstHearingFormGroup.get('firstHearingDate_year').setValue('2020');
+    component.showChoosenDateError();
+    expect(component.firstDateOfHearingError.isInvalid).toBeTruthy();
+  });
+
+  it('should check date selection format', () => {
+    component.firstDateOfHearingError = null;
+    component.firstHearingFormGroup.get('firstHearingDate_day').setValue('ewr');
+    component.firstHearingFormGroup.get('firstHearingDate_month').setValue('10');
+    component.firstHearingFormGroup.get('firstHearingDate_year').setValue('2020');
+    component.showChoosenDateError();
+    expect(component.firstDateOfHearingError.isInvalid).toBeTruthy();
   });
 
   afterEach(() => {

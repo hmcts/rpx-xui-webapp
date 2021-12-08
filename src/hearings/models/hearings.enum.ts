@@ -63,6 +63,12 @@ export enum PartyType {
   ORG = 'ORG',
 }
 
+export enum RadioOptions {
+  YES = 'Yes',
+  NO = 'No',
+  CHOOSE_DATE_RANGE = 'Choose a date range'
+ }
+
 export enum DOW {
   Monday = 'Monday',
   Tuesday = 'Tuesday',

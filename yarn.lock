@@ -443,15 +443,16 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.8.3-rc.5":
-  version "4.8.3-rc.5"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.8.3-rc.5.tgz#ab1a97bfbd011a100d6d006e32afa45c2fc93221"
-  integrity sha512-KiVn3OaUP8tAxQjO68vefKuF9cBy9jCXHRkD+q6P4eInfiXJ4RsjdhnnBB48meq25cBT7sYvkdEzyy1PrBsobw==
+"@hmcts/ccd-case-ui-toolkit@4.8.4-EUI-4329-data-validation":
+  version "4.8.4-EUI-4329-data-validation"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.8.4-EUI-4329-data-validation.tgz#233452fd6a43a6aedfc2236592674f9c3f54a235"
+  integrity sha512-EdeiYmEt6QsikYvy9uczkgBbPW0aUz0tyeGE3DCjbhSWehx3PUF+wHN2wmTeuNGOH2rxhiIx0LmcPq/n9icc8A==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
+    "@hmcts/ccpay-web-component" "3.0.3"
     braces "^2.3.1"
     enhanced-resolve "3.3.0"
     file-saver "^2.0.2"
@@ -469,6 +470,13 @@
     typescript "3.1.1"
     underscore "^1.9.1"
     yargs-parser "18.1.2"
+
+"@hmcts/ccpay-web-component@3.0.3":
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-3.0.3.tgz#d8f2c335e439515e0b87784414229301d9a8c05f"
+  integrity sha512-EIANuq103rLEA7LglNreLpPeo0aQtxfReXNd7A76V66tUwyQhwERMlpwKmOhO0eoA8HpcK0yV0mXNLh1aUifXA==
+  dependencies:
+    tslib "^1.9.0"
 
 "@hmcts/ccpay-web-component@4.0.2":
   version "4.0.2"

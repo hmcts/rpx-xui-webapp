@@ -1,11 +1,9 @@
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {Actions, Effect, ofType} from '@ngrx/effects';
-import {Action, select, Store} from '@ngrx/store';
-import {Observable, of} from 'rxjs';
+import {select, Store} from '@ngrx/store';
+import {Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
-import * as fromAppStoreActions from '../../../app/store/actions';
-import {HttpError} from '../../../models/httpError.model';
 import {ScreenNavigationModel} from '../../models/screenNavigation.model';
 import {HearingsService} from '../../services/hearings.service';
 import * as fromHearingReducers from '../../store/reducers';
@@ -55,9 +53,4 @@ export class HearingRequestEffects {
     })
   );
 
-  public static handleError(error: HttpError): Observable<Action> {
-    if (error && error.status && error.status >= 400) {
-      return of(new fromAppStoreActions.Go({path: ['/service-down']}));
-    }
-  }
 }

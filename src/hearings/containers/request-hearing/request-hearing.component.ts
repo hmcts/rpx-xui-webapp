@@ -16,7 +16,7 @@ export class RequestHearingComponent implements OnInit, OnDestroy {
 
   public referenceId: string;
   public hearingListSub: Subscription;
-  public screensNaviagations$: Observable<ScreenNavigationModel[]>;
+  public screensNavigations$: Observable<ScreenNavigationModel[]>;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly hearingsService: HearingsService) {
@@ -25,7 +25,7 @@ export class RequestHearingComponent implements OnInit, OnDestroy {
         this.referenceId = hearingList.hearingListMainModel ? hearingList.hearingListMainModel.caseRef : '';
       }
     );
-    this.screensNaviagations$ = this.hearingStore.pipe(select(fromHearingStore.getHearingValues)).pipe(
+    this.screensNavigations$ = this.hearingStore.pipe(select(fromHearingStore.getHearingValues)).pipe(
       map(hearingValuesStateData => hearingValuesStateData.serviceHearingValuesModel.screenFlow));
   }
 

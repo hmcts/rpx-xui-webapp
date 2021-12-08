@@ -37,7 +37,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
           map( location => {
             return {
               ...booking,
-              locationName: location[0] && !!location[0].building_location_name && location[0].building_location_name  } ;
+              locationName: location[0] && location[0].building_location_name  } ;
           }
         ))
       );
@@ -45,7 +45,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
       this.bookings$ = forkJoin(this.locations$);
       this.bookings$.subscribe(( result) => {
         this.existingBookings = result;
-        this.orderByCurrentThenFeature();
+        this.orderByCurrentThenFuture();
       });
     });
   }
@@ -54,7 +54,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
     return (new Date().getTime() < new Date(beginTime).getTime());
   }
 
-  private orderByCurrentThenFeature() {
+  private orderByCurrentThenFuture() {
     const featureBookings: Booking[]  = this.existingBookings.filter(p => new Date().getTime() < new Date(p.beginTime).getTime()).sort(this.sortBookings);
     const currentBookings: Booking[]  = this.existingBookings.filter(p => new Date().getTime() > new Date(p.beginTime).getTime()).sort(this.sortBookings);
     this.existingBookings = currentBookings.sort(this.sortBookings).concat(featureBookings.sort(this.sortBookings));

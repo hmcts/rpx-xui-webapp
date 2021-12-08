@@ -68,12 +68,18 @@
       <div class="hmcts-primary-navigation__item">
         <ul class="hmcts-primary-navigation__list">
           <li class="hmcts-primary-navigation__item" *ngFor="let item of (rightItems | async)">
-            <a class="hmcts-primary-navigation__link transparent-background" [ngClass]="item.ngClass" (click)="onEmitSubMenu(item)"
-            [attr.aria-current]="item.active ? true : null" [routerLink]="item.href" *ngIf="showFindCase && item.ngClass === 'hmcts-search-toggle__button'">{{item.text}}</a>
+            <a
+              *ngIf="(isUserCaseManager$ | async)"
+              class="hmcts-primary-navigation__link transparent-background"
+              [ngClass]="item.ngClass"
+              (click)="onEmitSubMenu(item)"
+              [attr.aria-current]="item.active ? true : null"
+              [routerLink]="item.href">{{item.text}}
+            </a>
             <exui-case-reference-search-box
+              *ngIf="!(isUserCaseManager$ | async)"
               [item]="item"
-              [decorate16DigitCaseReferenceSearchBoxInHeader]="decorate16DigitCaseReferenceSearchBoxInHeader"
-              *ngIf="showCaseReferenceSearchBox">
+              [decorate16DigitCaseReferenceSearchBoxInHeader]="decorate16DigitCaseReferenceSearchBoxInHeader">
             </exui-case-reference-search-box>
           </li>
         </ul>

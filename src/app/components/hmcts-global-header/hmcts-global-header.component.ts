@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { SearchStatePersistenceKey } from '../../../search/enums';
@@ -8,6 +8,8 @@ import * as fromAppStore from '../../../app/store';
 import * as fromNocStore from '../../../noc/store';
 import { SearchService } from '../../../search/services/search.service';
 import { NavItemsModel, UserNavModel } from '../../models';
+import { UserDetails } from '../../../app/models/user-details.model';
+import { FlagDefinition, NavigationItem } from '../../models/theming.model';
 import { UserService } from '../../services/user/user.service';
 
 @Component({
@@ -15,15 +17,13 @@ import { UserService } from '../../services/user/user.service';
     templateUrl: './hmcts-global-header.component.html',
     styleUrls: ['./hmcts-global-header.component.scss']
 })
-export class HmctsGlobalHeaderComponent implements OnChanges {
+export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
 
   @Input() public set showNavItems(value: boolean) {
     this.showItems = value;
   }
-  @Input() public items: NavItemsModel[];
+  @Input() public items: NavigationItem[];
   @Input() public logoIsUsed: boolean;
-  @Input() public showFindCase: boolean;
-  @Input() public showCaseReferenceSearchBox: boolean;
   @Input() public headerTitle: {name: string; url: string};
   @Input() public navigation: UserNavModel;
   @Input() public logoType: string;
@@ -31,28 +31,43 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
   @Input() public decorate16DigitCaseReferenceSearchBoxInHeader: boolean;
   @Output() public navigate = new EventEmitter<string>();
 
-  public showItems: boolean;
+  public showItems = false;
   public userValue = true;
   public tab;
-  public get leftItems(): Observable<NavItemsModel[]> {
+  public userDetails$: Observable<UserDetails>;
+  public isUserCaseManager$: Observable<boolean>;
+  public get leftItems(): Observable<NavigationItem[]> {
     return this.menuItems.left.asObservable();
   }
-  public get rightItems(): Observable<NavItemsModel[]> {
+  public get rightItems(): Observable<NavigationItem[]> {
     return this.menuItems.right.asObservable();
   }
 
   private readonly menuItems = {
-    left: new BehaviorSubject<NavItemsModel[]>([]),
-    right: new BehaviorSubject<NavItemsModel[]>([])
+    left: new BehaviorSubject<NavigationItem[]>([]),
+    right: new BehaviorSubject<NavigationItem[]>([])
   };
 
   constructor(
     private readonly appStore: Store<fromAppStore.State>,
-    public nocStore: Store<fromNocStore.State>,
+    private readonly nocStore: Store<fromNocStore.State>,
     private readonly userService: UserService,
     private readonly featureToggleService: FeatureToggleService,
     private readonly searchService: SearchService
   ) { }
+
+  public ngOnInit(): void {
+    this.appStore.dispatch(new fromAppStore.LoadUserDetails());
+    this.userDetails$ = this.appStore.pipe(select(fromAppStore.getUserDetails));
+    this.isUserCaseManager$ = this.userDetails$.pipe(
+      map(details => details.userInfo.roles),
+      map(roles => {
+        return roles.includes('pui-case-manager')
+      })
+    );
+
+    this.splitAndFilterNavItems(this.items);
+  }
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes.items.currentValue !== changes.items.previousValue) {
@@ -76,7 +91,8 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
     }
   }
 
-  private splitAndFilterNavItems(items: NavItemsModel[]): void {
+  private splitAndFilterNavItems(items: NavigationItem[]): void {
+    items = items || [];
     of(items).pipe(
       switchMap(unfilteredItems => this.filterNavItemsOnRole(unfilteredItems)),
       switchMap(roleFilteredItems => this.filterNavItemsOnFlag(roleFilteredItems)),
@@ -87,30 +103,39 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
     });
   }
 
-  private splitNavItems(items: NavItemsModel[]): {right: NavItemsModel[], left: NavItemsModel[]} {
+  private splitNavItems(items: NavigationItem[]): {right: NavigationItem[], left: NavigationItem[]} {
+    items = items || [];
     return {
       right: items.filter(item => item.align && item.align === 'right'),
       left: items.filter(item => !item.align || item.align !== 'right')
     };
   }
 
-  private filterNavItemsOnRole(items: NavItemsModel[]): Observable<NavItemsModel[]> {
+  private filterNavItemsOnRole(items: NavigationItem[]): Observable<NavigationItem[]> {
+    items = items || [];
     return this.userService.getUserDetails().pipe(
       map(details => details.userInfo.roles),
-      map(roles => items.filter(item => (item.roles && item.roles.length > 0 ? item.roles.some(role => roles.includes(role)) : true)))
+      map(roles => {
+        const i = items.filter(item => (item.roles && item.roles.length > 0 ? item.roles.some(role => roles.includes(role)) : true));
+        return i.filter(item => (item.notRoles && item.notRoles.length > 0 ? item.notRoles.every(role => !roles.includes(role)) : true))
+      })
     );
   }
 
-  private filterNavItemsOnFlag(items: NavItemsModel[]): Observable<NavItemsModel[]> {
-    const flags: {[flag: string]: boolean} = {};
+  private filterNavItemsOnFlag(items: NavigationItem[]): Observable<NavigationItem[]> {
+    items = items || [];
+    const flags: {[flag: string]: boolean | string} = {};
     const obs: Observable<boolean>[] = [];
     items.forEach(
-      item => (item.flags || []).forEach(
-        flag => obs.push(
-          this.featureToggleService.isEnabled(flag).pipe(
-            tap(state => flags[flag] = state)
-          )
-        )
+      item => (item.flags || []).concat(item.notFlags || []).forEach(
+        flag => {
+          const flagName = this.isPlainFlag(flag) ? flag : flag.flagName;
+          obs.push(
+            this.featureToggleService.isEnabled(flagName).pipe(
+              tap(state => flags[flagName] = state)
+            )
+          );
+        }
       )
     );
 
@@ -119,7 +144,15 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
     }
 
     return ((obs.length > 1 ? obs[0].combineLatest(obs.slice(1)) : obs[0]) as Observable<any>).pipe(
-      map(_ => items.filter(item => item.flags && item.flags.length > 0 ? item.flags.every(flag => flags[flag]) : true))
+      map(_ => {
+        let i = items.filter(item => item.flags && item.flags.length > 0 ? item.flags.every(flag => this.isPlainFlag(flag) ? (flags[flag] as boolean) : (flags[flag.flagName] as string) === flag.value) : true);
+        i = i || [];
+        return i.filter(item => item.notFlags && item.notFlags.length > 0 ? item.notFlags.every(flag => this.isPlainFlag(flag) ? !(flags[flag] as boolean) : (flags[flag.flagName] as string) !== flag.value) : true);
+      })
     );
+  }
+
+  private isPlainFlag(flag: FlagDefinition): flag is string {
+    return !flag.hasOwnProperty('flagName');
   }
 }

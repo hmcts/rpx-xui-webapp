@@ -76,6 +76,10 @@ describe('CaseCreateSubmitComponent', () => {
   const mockAlertService = jasmine.createSpyObj('alertService', ['error']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled', 'getValue']);
 
+  beforeAll(() => {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+  });
+
   beforeEach(async(() => {
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockFeatureToggleService.getValue.and.returnValue(of({}));
@@ -143,7 +147,7 @@ describe('CaseCreateSubmitComponent', () => {
       .compileComponents();
   }));
 
-  beforeEach(() => {
+  beforeEach(async (() => {
     fixture = TestBed.createComponent(CaseCreateSubmitComponent);
     component = fixture.componentInstance;
     casesService = fixture.debugElement.injector.get(CasesService);
@@ -151,7 +155,7 @@ describe('CaseCreateSubmitComponent', () => {
 
     fixture.detectChanges();
 
-  });
+  }));
   it('should create', () => {
     expect(component).toBeTruthy();
   });

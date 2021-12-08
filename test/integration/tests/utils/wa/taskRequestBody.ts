@@ -5,9 +5,10 @@ class TaskRequestBody{
     constructor(){
         this.requestBody = {
             searchRequest:{
-                sorting_parameters:[],
+                search_by:'',
+                sorting_parameters: [{ sort_by: "dueDate", sort_order: "asc"}],
                 search_parameters:[],
-                pagination_parameters: { page_number: 1, page_size:10},
+                pagination_parameters: { page_number: 1, page_size:25},
                 view:''
             }
         }
@@ -16,6 +17,10 @@ class TaskRequestBody{
     inView(view:string){
         this.requestBody.searchRequest.view = view;
         return this;
+    }
+
+    searchBy(userType){
+        this.requestBody.searchRequest.search_by = userType;
     }
 
     searchWithUser(idamId:string){

@@ -16,3 +16,10 @@ export async function postBooking(req, res: Response, next: NextFunction): Promi
 export async function refreshRoleAssignments(req, res: Response, next: NextFunction): Promise<Response> {
   return res.send(refreshRoleAssignmentsSuccess);
 }
+
+/**
+ * Manually creating Elastic search query
+ */
+export function removeAcceptHeader(proxyReq, req) {
+    proxyReq.removeHeader('accept');
+}

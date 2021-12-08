@@ -19,18 +19,19 @@ export class AlertComponent implements OnInit, OnDestroy {
   private alertMessageObservable: Observable<Alert>;
 
   constructor(
-    private readonly alertService: AlertService,
-    private readonly router: Router
+    private readonly alertService: AlertService
   ) {}
 
   public ngOnInit() {
     this.alertMessageObservable = this.alertService.alerts.pipe(select( alert => alert));
-    this.routeSubscription = this.router.events.subscribe(() => this.message = '');
+    // EUI-4488 - Remove router subscription as alertService already sorts this
     this.alertMessageSubscription = this.alertMessageObservable.subscribe(alert => {
       if (alert) {
         const msg = alert.message;
         this.level = alert.level;
         this.message = this.hyphenate(msg);
+      } else {
+        this.message = '';
       }
     });
   }

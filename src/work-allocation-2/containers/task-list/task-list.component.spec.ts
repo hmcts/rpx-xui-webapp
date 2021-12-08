@@ -5,15 +5,17 @@ import { Router } from '@angular/router';
 import { LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
-import { PaginationParameter } from 'src/work-allocation-2/models/dtos';
+import { PaginationParameter } from '../../../work-allocation-2/models/dtos';
 
-import { ConfigConstants } from '../../../work-allocation/components/constants';
-import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { TaskService, TaskSort } from '../../../work-allocation/enums';
-import { Task, TaskAction, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../../work-allocation/models/tasks';
-import { WorkAllocationTaskService } from '../../../work-allocation/services';
-import { getMockTasks, MockRouter } from '../../../work-allocation/tests/utils.spec';
+import { Task, TaskAction, TaskServiceConfig } from '../../../work-allocation-2/models/tasks';
+import { TaskFieldConfig } from '../../../work-allocation/models/tasks';
 import { TaskListComponent } from './task-list.component';
+import { SortOrder, TaskService } from '../../enums';
+import { FieldConfig, SortField } from '../../models/common';
+import { ConfigConstants } from '../../components/constants';
+import { getMockTasks, MockRouter } from '../../tests/utils.spec';
+import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
+import { WorkAllocationTaskService } from '../../services';
 
 @Component({
   template: `
@@ -22,17 +24,26 @@ import { TaskListComponent } from './task-list.component';
       [tasks]='tasks'
       [tasksTotal]="tasksTotal"
       [taskServiceConfig]="taskServiceConfig"
-      [sortedBy]="TaskSortField"
+      [sortedBy]="SortField"
       [pagination]="pagination"></exui-task-list>`
 })
 class WrapperComponent {
   @ViewChild(TaskListComponent) public appComponentRef: TaskListComponent;
-  @Input() public fields: TaskFieldConfig[];
+  @Input() public fields: FieldConfig[];
   @Input() public tasks: Task[];
   @Input() public tasksTotal: number;
   @Input() public taskServiceConfig: TaskServiceConfig;
   @Input() public pagination: PaginationParameter;
-  @Input() public sortedBy: TaskSortField;
+  @Input() public sortedBy: SortField;
+}
+
+@Component({
+  selector: 'exui-task-field',
+  template: '<div class="xui-task-field">{{task.taskName}}</div>'
+})
+class TaskFieldComponent {
+  @Input() public config: TaskFieldConfig;
+  @Input() public task: Task;
 }
 
 /**
@@ -45,8 +56,8 @@ function getTasks(): Task[] {
 /**
  * Mock fields
  */
-function getFields(): TaskFieldConfig[] {
-  return ConfigConstants.AvailableTasks;
+function getFields(): FieldConfig[] {
+  return ConfigConstants.AvailableTasksForJudicial;
 }
 
 /**
@@ -55,7 +66,7 @@ function getFields(): TaskFieldConfig[] {
 function getTaskService(): TaskServiceConfig {
   return {
     service: TaskService.IAC,
-    defaultSortDirection: TaskSort.ASC,
+    defaultSortDirection: SortOrder.ASC,
     defaultSortFieldName: 'dueDate',
     fields: getFields(),
   };
@@ -115,12 +126,12 @@ describe('TaskListComponent', () => {
   it('should return the columns to be displayed by the Angular Component Dev Kit table.', async () => {
 
     // create mock getDisplayedColumn variables
-    const taskFieldConfig = getFields();
-    const fields = taskFieldConfig.map(field => field.name);
+    const fieldConfig = getFields();
+    const fields = fieldConfig.map(field => field.name);
     const displayedColumns = component.addManageColumn(fields);
 
     // test actual function against mock variables
-    expect(component.getDisplayedColumn(taskFieldConfig)).toEqual(displayedColumns);
+    expect(component.getDisplayedColumn(fieldConfig)).toEqual(displayedColumns);
 
   });
 
@@ -129,13 +140,34 @@ describe('TaskListComponent', () => {
     // mock the emitter and dispatch the connected event
     spyOn(component.sortEvent, 'emit');
     const element = fixture.debugElement.nativeElement;
-    const button = element.querySelector('#sort_by_caseId');
+    const button = element.querySelector('#sort_by_caseName');
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
-    // check the emitter had been called and that it gets called with the first field which is caseReference (caseId)
+    // check the emitter had been called and that it gets called with the first field which is caseName
     expect(component.sortEvent.emit).toHaveBeenCalled();
-    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseId');
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseName');
+  });
+
+  it('reset sort button is hidden by default', async () => {
+    expect(component.showResetSortButton).toBeFalsy();
+  });
+
+  it('show reset sort button after clicking column header', async () => {
+
+    /// mock the emitter and dispatch the connected event
+    spyOn(component.sortEvent, 'emit');
+    const element = fixture.debugElement.nativeElement;
+    const button = element.querySelector('#sort_by_caseName');
+    button.dispatchEvent(new Event('click'));
+    component.sortedBy = { fieldName: 'caseName', order: SortOrder.DESC };
+    fixture.detectChanges();
+
+    // check the emitter had been called and that it gets called with the new field defined which is caseName
+    expect(component.sortEvent.emit).toHaveBeenCalled();
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseName');
+
+    expect(component.showResetSortButton).toBeTruthy();
   });
 
   it('should allow sorting for different columns.', async () => {
@@ -364,21 +396,21 @@ describe('TaskListComponent', () => {
     // mock the emitter and dispatch the connected event (with example case field buttons selected)
     spyOn(component.sortEvent, 'emit');
     const element = fixture.debugElement.nativeElement;
-    const referenceButton = element.querySelector('#sort_by_caseId');
+    const referenceButton = element.querySelector('#sort_by_caseName');
     const categoryButton = element.querySelector('#sort_by_caseCategory');
-    const dueDateButton = element.querySelector('#sort_by_dueDate');
+    const dueDateButton = element.querySelector('#sort_by_created_date');
     referenceButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
     // check the case reference is being sorted via ascending
     expect(component.sortEvent.emit).toHaveBeenCalled();
-    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseId');
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseName');
 
     // check that the case reference is being sorted via descending
     referenceButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     expect(component.sortEvent.emit).toHaveBeenCalled();
-    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseId');
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseName');
 
     // click the second example button and verify that sorting is for case category
     categoryButton.dispatchEvent(new Event('click'));
@@ -390,7 +422,7 @@ describe('TaskListComponent', () => {
     dueDateButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     expect(component.sortEvent.emit).toHaveBeenCalled();
-    expect(component.sortEvent.emit).toHaveBeenCalledWith('dueDate');
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('created_date');
   });
 
   describe('act upon deep linking', () => {
@@ -425,15 +457,27 @@ describe('TaskListComponent', () => {
     });
   });
 
+  describe('pagination display state', () => {
+    it('should display pagination', async () => {
+      component.tasks = getTasks();
+      expect(component.isPaginationEnabled()).toEqual(true);
+    });
+
+    it('should not display pagination', async () => {
+      component.tasks = [];
+      expect(component.isPaginationEnabled()).toEqual(false);
+    });
+  });
+
   describe('generate pagination summary', () => {
     let paginationSummary: HTMLElement;
 
     beforeEach(() => {
-      paginationSummary = fixture.debugElement.nativeElement.querySelector('#search-result-summary__text');
+      paginationSummary = fixture.debugElement.nativeElement.querySelector('span[data-test="search-result-summary__text"]');
     });
 
     it('should correctly set the summary text', () => {
-      expect(paginationSummary.textContent).toContain('Displaying 1 - 2 out of 2 tasks');
+      expect(paginationSummary.textContent).toContain('Showing 1 to 2 of 2 results');
     });
   });
 

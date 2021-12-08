@@ -1,5 +1,7 @@
-<exui-roles-and-access [roles]="roles$ | async"
-                       [caseDetails]="caseDetails"
-                       [exclusions]="exclusions$ | async"
-                       [showAllocateRoleLink]="showAllocateRoleLink">
-</exui-roles-and-access>
+<div *ngIf="caseworkers$ | async">
+  <exui-roles-and-access [roles]="roles$ | async"
+                         [caseDetails]="caseDetails"
+                         [exclusions]="exclusions$ | async"
+                         [showAllocateRoleLink]="showAllocateRoleLink">
+  </exui-roles-and-access>
+</div>

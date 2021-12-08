@@ -9,6 +9,7 @@ import * as fromRoot from '../../../app/store';
 import { CaseRole, RoleExclusion } from '../../../role-access/models';
 import { RoleExclusionsService } from '../../../role-access/services';
 import { AllocateRoleService } from '../../../role-access/services';
+import { Caseworker } from '../../../work-allocation-2/models/dtos';
 import { first } from 'rxjs/operators';
 
 @Component({
@@ -18,6 +19,7 @@ import { first } from 'rxjs/operators';
 export class RolesAndAccessContainerComponent implements OnInit {
   public caseDetails: CaseView;
   public showAllocateRoleLink: boolean = false;
+  public caseworkers$: Observable<Caseworker[]>
   public exclusions$: Observable<RoleExclusion[]>;
   public roles$: Observable<CaseRole[]>;
   public jurisdictionFieldId = '[JURISDICTION]';
@@ -30,16 +32,16 @@ export class RolesAndAccessContainerComponent implements OnInit {
               private readonly caseworkerDataService: CaseworkerDataService) {}
 
   public ngOnInit(): void {
+    // We need this call. No active subscribers are needed
+    // as this will enable the loading caseworkers if not
+    // present in session storage
+    this.caseworkers$ = this.caseworkerDataService.getAll().pipe(first());
+
     this.caseDetails = this.route.snapshot.data.case as CaseView;
     this.applyJurisdiction(this.caseDetails);
     const jurisdiction = this.caseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
     this.roles$ = this.allocateService.getCaseRoles(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id);
     this.exclusions$ = this.roleExclusionsService.getCurrentUserRoleExclusions(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id);
-
-    // We need this call. No active subscribers are needed
-    // as this will enable the loading caseworkers if not
-    // present in session storage
-    this.caseworkerDataService.getAll().pipe(first()).subscribe();
   }
 
   public applyJurisdiction(caseDetails: CaseView): void {

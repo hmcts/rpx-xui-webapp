@@ -12,7 +12,7 @@ import { HearingDatePriorityEnum } from '../../../../hearings/models/hearings.en
 import { PartyUnavailabilityRange } from '../../../../hearings/models/partyUnavilabilityRange.model';
 import { RefDataModel } from '../../../../hearings/models/refData.model';
 import { HearingsService } from '../../../../hearings/services/hearings.service';
-import { ValidatorsService } from '../../../utils/validators.utils';
+import { ValidatorsUtils } from '../../../utils/validators.utils';
 import { DatePriorityHearingComponent } from './date-priority-hearing.component';
 
 @Component({
@@ -47,7 +47,7 @@ describe('DatePriorityHearingComponent', () => {
       providers: [
         provideMockStore(),
         HearingsService,
-        ValidatorsService,
+        ValidatorsUtils,
         {
           provide: ActivatedRoute,
           useValue: {

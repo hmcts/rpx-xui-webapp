@@ -85,7 +85,7 @@ describe('BookingHomeComponent', () => {
     expect(bookingsList).toBeTruthy();
   });
 
-  it('should display bookings in sorted when there are existing bookings and first radio button is clicked', () => {
+  it('should display bookings in sorted order when there are existing bookings and first radio button is clicked', () => {
     const element = fixture.debugElement.nativeElement;
     const firstRadioButton = element.querySelector('#type-0');
     firstRadioButton.click();

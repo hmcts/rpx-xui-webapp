@@ -1,5 +1,5 @@
 
-const globalSearchDataModel = require('../../dataModels/globalsearch');
+const globalSearchDataModel = require('../../dataModels/globalSearch');
 class GlobalSearchMockData{
     constructor(){
         this.mockName = "TEST_1";

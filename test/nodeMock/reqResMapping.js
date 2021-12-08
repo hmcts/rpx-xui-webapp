@@ -3,7 +3,7 @@ const WAReqResMappings  = require('./workAllocation/reqResMapping');
 const ccdReqResMapping = require('./ccd/reqResMapping');
 const nodeAppReqResMappings = require('./nodeApp/reqResMapping');
 
-const globalSearchReqResMapping = require('./globalsearch/reqResMapping');
+const globalSearchReqResMapping = require('./globalSearch/reqResMapping');
 
 
 const dummyCaseDetails = require('./ccd/caseDetails_data');

@@ -48,7 +48,7 @@ export const ROUTES: Routes = [
         }
       },
       {
-        path: 'locationSearch',
+        path: 'location-search',
         component: LocationSearchContainerComponent,
         canActivate: [HealthCheckGuard],
         data: {

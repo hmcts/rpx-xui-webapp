@@ -8,13 +8,23 @@
           <div class="govuk-form-group">
             <fieldset class="govuk-fieldset">              
               <div class="govuk-radios">
-                <div *ngFor="let hearingStageOption of hearingStageOptions$ | async; let i = index" class="govuk-radios__item">
+                <div class="govuk-radios">
+                  <div *ngFor="let option of hearingStageOptions$ | async;" class="govuk-radios__item">
+                    <input class="govuk-radios__input" formControlName="stage-option" type="radio"
+                           [value]="option.key">
+                    <label class="govuk-label govuk-radios__label" [for]="option.value_en">
+                      {{option.value_en}}
+                    </label>
+                  </div>
+                </div>
+                <!-- <div *ngFor="let hearingStageOption of hearingStageOptions$ | async; let i = index" class="govuk-radios__item">
                     <input #radioButton
-                           class="govuk-radios__input"
-                           name="hearing-type"
+                           class="govuk-radios__input" 
+                           name = "{{ hearingStageOption.value_en }}"
+                           value = "{{ hearingStageOption.key }}"
                            type="radio">
                     <label class="govuk-label govuk-radios__label">{{hearingStageOption.value_en}}</label>
-                </div>
+                </div> -->
               </div>
             </fieldset>
           </div>

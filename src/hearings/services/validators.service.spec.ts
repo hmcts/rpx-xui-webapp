@@ -48,10 +48,32 @@ describe('ValidatorsService', () => {
       month: new FormControl(),
       year: new FormControl()
     });
+    const control = new FormControl();
+    control.setValue('null-null-null');
     form.setValidators(service.hearingDateValidator());
     form.controls.day.setValue('12');
     form.controls.month.setValue('12');
     form.controls.year.setValue('2021');
+    expect(form.hasError('isValid')).toBeFalsy();
+  }));
+
+  it('should check hearingDateRangeValidator', inject([ValidatorsService], (service: ValidatorsService) => {
+    const form = new FormGroup({
+      earliestHearing: new FormGroup({
+        day: new FormControl(),
+        month: new FormControl(),
+        year: new FormControl(),
+      }),
+      latestHearing: new FormGroup({
+        day: new FormControl(),
+        month: new FormControl(),
+        year: new FormControl(),
+      }),
+    });
+    form.setValidators(service.hearingDateRangeValidator());
+    form.controls.earliestHearing.get('day').setValue('12');
+    form.controls.earliestHearing.get('month').setValue('12');
+    form.controls.earliestHearing.get('year').setValue('2021');
     expect(form.hasError('isValid')).toBeFalsy();
   }));
 });

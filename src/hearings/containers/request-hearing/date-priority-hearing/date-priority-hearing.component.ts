@@ -5,12 +5,12 @@ import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/
 import { select, Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { map } from 'rxjs/operators';
-import { HearingDateEnum, HearingDatePriorityConstEnum, HearingDatePriorityEnum } from '../../../../hearings/models/hearings.enum';
+import { HearingDateEnum, HearingDatePriorityConstEnum, HearingDatePriorityEnum, RadioOptions } from '../../../../hearings/models/hearings.enum';
 import { PartyUnavailabilityRange } from '../../../../hearings/models/partyUnavilabilityRange.model';
 import { RefDataModel } from '../../../../hearings/models/refData.model';
 import { HearingsService } from '../../../../hearings/services/hearings.service';
-import { ValidatorsService } from '../../../../hearings/services/validators.service';
 import * as fromHearingStore from '../../../../hearings/store';
+import { ValidatorsService } from '../../../utils/validators.service';
 
 @Component({
   selector: 'exui-date-priority-hearing',
@@ -128,9 +128,9 @@ export class DatePriorityHearingComponent implements OnInit {
     this.checkedHearingAvailability = this.priorityForm.controls.specificDate.value;
     this.firstHearingFormGroup.clearValidators();
     this.dateRangeHearingFormGroup.clearValidators();
-    if (this.checkedHearingAvailability === 'Yes') {
+    if (this.checkedHearingAvailability === RadioOptions.YES) {
       this.firstHearingFormGroup.setValidators([this.validatorsService.hearingDateValidator()]);
-    } else if (this.checkedHearingAvailability === 'Choose') {
+    } else if (this.checkedHearingAvailability === RadioOptions.CHOOSE_DATE_RANGE) {
       this.dateRangeHearingFormGroup.setValidators([this.validatorsService.hearingDateRangeValidator()]);
     }
     this.firstHearingFormGroup.updateValueAndValidity();
@@ -161,6 +161,90 @@ export class DatePriorityHearingComponent implements OnInit {
     return (givenDate.weekday() !== 6) && (givenDate.weekday() !== 0);
   }
 
+  public showHearingLengthError(): void {
+    const durationLengthFormGroup = this.priorityForm.controls.durationLength;
+    if (durationLengthFormGroup.pristine || !durationLengthFormGroup.get('hours').valid) {
+      this.hearingLengthErrorValue = HearingDatePriorityEnum.LengthError;
+      this.validationErrors.push({ id: 'durationhours', message: HearingDatePriorityEnum.LengthError });
+    } else if (!durationLengthFormGroup.get('minutes').valid) {
+      this.hearingLengthErrorValue = HearingDatePriorityEnum.LengthMinutesError;
+      this.validationErrors.push({ id: 'durationmins', message: HearingDatePriorityEnum.LengthMinutesError });
+    } else if (!durationLengthFormGroup.valid) {
+      this.hearingLengthErrorValue = HearingDatePriorityEnum.TotalLengthError;
+      this.validationErrors.push({ id: 'durationhours', message: HearingDatePriorityEnum.TotalLengthError });
+    }
+  }
+
+  public showChoosenDateError(): void {
+    const isInValidDate = this.getDateFormatted(this.firstHearingFormGroup, this.firstHearingDate.id).includes(null);
+    const choosenDate = moment(this.getDateFormatted(this.firstHearingFormGroup, this.firstHearingDate.id), HearingDateEnum.DefaultFormat);
+    const isPastDate = choosenDate.isBefore() || choosenDate.isSame(new Date(), 'd');
+    const isFirstHearingDateValid = moment(choosenDate, HearingDateEnum.DefaultFormat, true).isValid();
+    const isWeekday = this.isWeekDay(choosenDate);
+    if (isInValidDate) {
+      this.validationErrors.push({ id: this.firstHearingDate.id, message: HearingDatePriorityEnum.InValidHearingDateError });
+      this.firstDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.InValidHearingDateError] };
+    } else if (!isFirstHearingDateValid) {
+      this.validationErrors.push({ id: this.firstHearingDate.id, message: HearingDatePriorityEnum.DateRangeError });
+      this.firstDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.DateRangeError] };
+    } else if (!isWeekday) {
+      this.validationErrors.push({ id: this.firstHearingDate.id, message: HearingDatePriorityEnum.WeekendError });
+      this.firstDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.WeekendError] };
+    } else if (isPastDate) {
+      this.validationErrors.push({ id: this.firstHearingDate.id, message: HearingDatePriorityEnum.DatePastError });
+      this.firstDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.DatePastError] };
+    }
+  }
+
+  public showChoosenDateRangeError(): void {
+    const isInValidEarliestDate = this.getDateFormatted(this.earliestHearingFormGroup, this.earliestHearingDate.id).includes(null);
+    const isInValidLatestDate = this.getDateFormatted(this.latestHearingFormGroup, this.latestHearingDate.id).includes(null);
+    const choosenEarliestDate = moment(this.getDateFormatted(this.earliestHearingFormGroup, this.earliestHearingDate.id), HearingDateEnum.DefaultFormat);
+    const choosenLatestDate = moment(this.getDateFormatted(this.latestHearingFormGroup, this.latestHearingDate.id), HearingDateEnum.DefaultFormat);
+    const isPastEarliestDate = choosenEarliestDate.isBefore() || choosenEarliestDate.isSame(new Date(), 'd');
+    const isPastLatestDate = choosenLatestDate.isBefore() || choosenLatestDate.isSame(new Date(), 'd');
+    const isLatestBeforeEarliest = choosenEarliestDate > choosenLatestDate;
+    const isEarliestDateValid = choosenEarliestDate.isValid();
+    const isLatestHearingDate = choosenLatestDate.isValid();
+    if (!isInValidEarliestDate && isPastEarliestDate) {
+      this.validationErrors.push({ id: this.earliestHearingDate.id, message: HearingDatePriorityEnum.DatePastError });
+      this.earliestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.DatePastError] };
+    } else if (!isInValidLatestDate && isPastLatestDate) {
+      this.validationErrors.push({ id: this.latestHearingDate.id, message: HearingDatePriorityEnum.DatePastError });
+      this.latestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.DatePastError] };
+    } else if (isInValidEarliestDate || isInValidLatestDate || !isEarliestDateValid || !isLatestHearingDate) {
+      if ((this.earliestHearingFormGroup.dirty || (this.earliestHearingFormGroup.pristine && this.latestHearingFormGroup.pristine)) && (isInValidEarliestDate || !isEarliestDateValid)) {
+        this.validationErrors.push({ id: this.earliestHearingDate.id, message: HearingDatePriorityEnum.DateRangeError });
+        this.earliestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.DateRangeError] };
+      }
+      if ((this.latestHearingFormGroup.dirty || (this.earliestHearingFormGroup.pristine && this.latestHearingFormGroup.pristine)) && (isInValidLatestDate || !isLatestHearingDate)) {
+        this.validationErrors.push({ id: this.latestHearingDate.id, message: HearingDatePriorityEnum.DateRangeError });
+        this.latestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.DateRangeError] };
+      }
+    } else if (isEarliestDateValid && isLatestHearingDate && isLatestBeforeEarliest) {
+      this.validationErrors.push({ id: this.earliestHearingDate.id, message: HearingDatePriorityEnum.EarliestHearingDateError });
+      this.earliestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.EarliestHearingDateError] };
+    }
+  }
+
+  public showHearingDateError(): void {
+    if (!this.priorityForm.controls.specificDate.valid) {
+      this.hearingPriorityDateError = HearingDatePriorityEnum.PriorityDateError;
+      this.validationErrors.push({ id: 'noSpecificDate', message: HearingDatePriorityEnum.PriorityDateError });
+    } else if (this.priorityForm.controls.specificDate.value === RadioOptions.YES) {
+      this.showChoosenDateError();
+    } else if (this.priorityForm.controls.specificDate.value === RadioOptions.CHOOSE_DATE_RANGE) {
+      this.showChoosenDateRangeError();
+    }
+  }
+
+  public showHearingPriorityError(): void {
+    if (!this.priorityForm.controls.priority.valid) {
+      this.hearingPriorityError = HearingDatePriorityEnum.PriorityError;
+      this.validationErrors.push({ id: this.priorities[0].key, message: HearingDatePriorityEnum.PriorityError });
+    }
+  }
+
   public checkFormData(): void {
     this.validationErrors = [];
     this.hearingLengthErrorValue = null;
@@ -170,76 +254,9 @@ export class DatePriorityHearingComponent implements OnInit {
     this.hearingPriorityError = null;
     this.hearingPriorityDateError = null;
     if (!this.priorityForm.valid) {
-      // Hearing Length check
-      const durationLengthFormGroup = this.priorityForm.controls.durationLength;
-      if (durationLengthFormGroup.pristine || !durationLengthFormGroup.get('hours').valid) {
-        this.hearingLengthErrorValue = HearingDatePriorityEnum.LengthError;
-        this.validationErrors.push({ id: 'durationhours', message: HearingDatePriorityEnum.LengthError });
-      } else if (!durationLengthFormGroup.get('minutes').valid) {
-        this.hearingLengthErrorValue = HearingDatePriorityEnum.LengthMinutesError;
-        this.validationErrors.push({ id: 'durationmins', message: HearingDatePriorityEnum.LengthMinutesError });
-      } else if (!durationLengthFormGroup.valid) {
-        this.hearingLengthErrorValue = HearingDatePriorityEnum.TotalLengthError;
-        this.validationErrors.push({ id: 'durationhours', message: HearingDatePriorityEnum.TotalLengthError });
-      }
-      // Hearing Date check
-      if (!this.priorityForm.controls.specificDate.valid) {
-        this.hearingPriorityDateError = HearingDatePriorityEnum.PriorityDateError;
-        this.validationErrors.push({ id: 'noSpecificDate', message: HearingDatePriorityEnum.PriorityDateError });
-      } else if (this.priorityForm.controls.specificDate.value === 'Yes') {
-        const isInValidDate = this.getDateFormatted(this.firstHearingFormGroup, this.firstHearingDate.id).includes(null);
-        const choosenDate = moment(this.getDateFormatted(this.firstHearingFormGroup, this.firstHearingDate.id), HearingDateEnum.DefaultFormat);
-        const isPastDate = choosenDate.isBefore() || choosenDate.isSame(new Date(), 'd');
-        const isFirstHearingDateValid = moment(choosenDate, HearingDateEnum.DefaultFormat, true).isValid();
-        const isWeekday = this.isWeekDay(choosenDate);
-        if (isInValidDate) {
-          this.validationErrors.push({ id: this.firstHearingDate.id, message: HearingDatePriorityEnum.InValidHearingDateError });
-          this.firstDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.InValidHearingDateError] };
-        } else if (!isFirstHearingDateValid) {
-          this.validationErrors.push({ id: this.firstHearingDate.id, message: HearingDatePriorityEnum.DateRangeError });
-          this.firstDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.DateRangeError] };
-        } else if (!isWeekday) {
-          this.validationErrors.push({ id: this.firstHearingDate.id, message: HearingDatePriorityEnum.WeekendError });
-          this.firstDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.WeekendError] };
-        } else if (isPastDate) {
-          this.validationErrors.push({ id: this.firstHearingDate.id, message: HearingDatePriorityEnum.DatePastError });
-          this.firstDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.DatePastError] };
-        }
-      } else if (this.priorityForm.controls.specificDate.value === 'Choose') {
-        const isInValidEarliestDate = this.getDateFormatted(this.earliestHearingFormGroup, this.earliestHearingDate.id).includes(null);
-        const isInValidLatestDate = this.getDateFormatted(this.latestHearingFormGroup, this.latestHearingDate.id).includes(null);
-        const choosenEarliestDate = moment(this.getDateFormatted(this.earliestHearingFormGroup, this.earliestHearingDate.id), HearingDateEnum.DefaultFormat);
-        const choosenLatestDate = moment(this.getDateFormatted(this.latestHearingFormGroup, this.latestHearingDate.id), HearingDateEnum.DefaultFormat);
-        const isPastEarliestDate = choosenEarliestDate.isBefore() || choosenEarliestDate.isSame(new Date(), 'd');
-        const isPastLatestDate = choosenLatestDate.isBefore() || choosenLatestDate.isSame(new Date(), 'd');
-        const isLatestBeforeEarliest = choosenEarliestDate > choosenLatestDate;
-        const isEarliestDateValid = choosenEarliestDate.isValid();
-        const isLatestHearingDate = choosenLatestDate.isValid();
-        if (!isInValidEarliestDate && isPastEarliestDate) {
-          this.validationErrors.push({ id: this.earliestHearingDate.id, message: HearingDatePriorityEnum.DatePastError });
-          this.earliestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.DatePastError] };
-        } else if (!isInValidLatestDate && isPastLatestDate) {
-          this.validationErrors.push({ id: this.latestHearingDate.id, message: HearingDatePriorityEnum.DatePastError });
-          this.latestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.DatePastError] };
-        } else if (isInValidEarliestDate || isInValidLatestDate || !isEarliestDateValid || !isLatestHearingDate) {
-          if ((this.earliestHearingFormGroup.dirty || (this.earliestHearingFormGroup.pristine && this.latestHearingFormGroup.pristine)) && (isInValidEarliestDate || !isEarliestDateValid)) {
-            this.validationErrors.push({ id: this.earliestHearingDate.id, message: HearingDatePriorityEnum.DateRangeError });
-            this.earliestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.DateRangeError] };
-          }
-          if ((this.latestHearingFormGroup.dirty || (this.earliestHearingFormGroup.pristine && this.latestHearingFormGroup.pristine)) && (isInValidLatestDate || !isLatestHearingDate)) {
-            this.validationErrors.push({ id: this.latestHearingDate.id, message: HearingDatePriorityEnum.DateRangeError });
-            this.latestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.DateRangeError] };
-          }
-        } else if (isEarliestDateValid && isLatestHearingDate && isLatestBeforeEarliest) {
-          this.validationErrors.push({ id: this.earliestHearingDate.id, message: HearingDatePriorityEnum.EarliestHearingDateError });
-          this.earliestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.EarliestHearingDateError] };
-        }
-      }
-      // Hearing Priority check
-      if (!this.priorityForm.controls.priority.valid) {
-        this.hearingPriorityError = HearingDatePriorityEnum.PriorityError;
-        this.validationErrors.push({ id: this.priorities[0].key, message: HearingDatePriorityEnum.PriorityError });
-      }
+      this.showHearingLengthError();
+      this.showHearingDateError();
+      this.showHearingPriorityError();
     }
   }
 

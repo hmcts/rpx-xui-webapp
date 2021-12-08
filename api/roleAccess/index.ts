@@ -23,8 +23,13 @@ export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next
   const headers = setHeaders(req, release2ContentType);
   try {
     const response: AxiosResponse = await http.post(fullPath, requestPayload, {headers});
-    const roleExclusions = mapResponseToCaseRoles(response.data.roleAssignmentResponse, req.body.exclusionId, req);
-    return res.status(response.status).send(roleExclusions);
+    const judicialAndLegalOps = mapResponseToCaseRoles(response.data.roleAssignmentResponse, req.body.exclusionId, req);
+    // populate user
+    // const userDetailPromises = new ArrayPromise []
+    // populate promises judicialAndLegalOps.forEach(role => )
+    // userDetailPromises.all
+    //handle errors
+    return res.status(response.status).send(judicialAndLegalOps);
   } catch (error) {
     next(error);
   }

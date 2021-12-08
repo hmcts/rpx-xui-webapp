@@ -79,7 +79,7 @@ export const ROUTES: Routes = [
         data: {
           title: 'HMCTS Manage cases | Hearing Stage | Date Priority Hearing'
         }
-      },      
+      },
     ]
   },
   {

@@ -13,7 +13,7 @@ describe('RequestHearingComponent', () => {
   let mockStore: any;
   let hearingsService: HearingsService;
   beforeEach(() => {
-    hearingsService = createSpyObj<any>('hearingsService', ['getAllHearings', 'loadHearingValues']);
+    hearingsService = createSpyObj<any>('hearingsService', ['getAllHearings', 'loadHearingValues','onFormSubmission']);
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       declarations: [RequestHearingComponent],
@@ -33,6 +33,11 @@ describe('RequestHearingComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should check submit menthod', () => {
+    component.onSubmit();
+    expect(hearingsService.onFormSubmission).toHaveBeenCalled();
   });
 
   afterEach(() => {

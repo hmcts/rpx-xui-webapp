@@ -8,7 +8,7 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as moment from 'moment';
 import { ErrorMessage } from '../../../../app/models';
-import { HearingDatePriorityEnum } from '../../../../hearings/models/hearings.enum';
+import { HearingDatePriorityEnum, RadioOptions } from '../../../../hearings/models/hearings.enum';
 import { PartyUnavailabilityRange } from '../../../../hearings/models/partyUnavilabilityRange.model';
 import { RefDataModel } from '../../../../hearings/models/refData.model';
 import { HearingsService } from '../../../../hearings/services/hearings.service';
@@ -81,9 +81,24 @@ describe('DatePriorityHearingComponent', () => {
     const hearingAvailability = component.priorityForm.controls.specificDate;
     component.showDateAvailability();
     expect(component.checkedHearingAvailability).toBe('');
-    hearingAvailability.setValue('yes');
+    hearingAvailability.setValue(RadioOptions.YES);
     component.showDateAvailability();
-    expect(component.checkedHearingAvailability).toBe('yes');
+    expect(component.checkedHearingAvailability).toBe(RadioOptions.YES);
+    hearingAvailability.setValue(RadioOptions.CHOOSE_DATE_RANGE);
+    component.showDateAvailability();
+    expect(component.checkedHearingAvailability).toBe(RadioOptions.CHOOSE_DATE_RANGE);
+  });
+
+  it('should set showHearingDateError', () => {
+    const hearingAvailability = component.priorityForm.controls.specificDate;
+    component.showHearingDateError();
+    expect(component.hearingPriorityDateError).toBe(HearingDatePriorityEnum.PriorityDateError);
+    hearingAvailability.setValue(RadioOptions.YES);
+    component.showHearingDateError();
+    expect(component.hearingPriorityDateError).toBe(HearingDatePriorityEnum.PriorityDateError);
+    hearingAvailability.setValue(RadioOptions.CHOOSE_DATE_RANGE);
+    component.showHearingDateError();
+    expect(component.hearingPriorityDateError).toBe(HearingDatePriorityEnum.PriorityDateError);
   });
 
   it('should check unavailable dates list', () => {
@@ -206,6 +221,11 @@ describe('DatePriorityHearingComponent', () => {
     component.firstHearingFormGroup.get('firstHearingDate_year').setValue('2020');
     component.showChoosenDateError();
     expect(component.firstDateOfHearingError.isInvalid).toBeTruthy();
+  });
+
+  it('should check date selection format', () => {
+    component.checkFormData();
+    expect(component.priorityForm.valid).toBeFalsy();
   });
 
   afterEach(() => {

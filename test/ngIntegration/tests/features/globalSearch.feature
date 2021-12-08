@@ -1,4 +1,4 @@
-@ng 
+@ng
 Feature: Global search
 
     Background: Setup
@@ -268,15 +268,20 @@ Feature: Global search
         When I click global search no results back link
         Then I see global search Page
 
-    Scenario: Search from header with 1 result access to user
-
+@test
+    Scenario: Search from header all valid case refence formats 
         Given I set global search mock results count 1
         Given I start MockApp
 
-        Then I validate case search field is displayed in header
-        When I input case reference in header search field "1234567812345678"
-        When I click find in header search
-        Then I see case details page
+        Then I validate valid global search case reference searches  
+            | ScenarioDescription                        | caseReference          |
+            | shorter than 16 digit              | 1234123412341234    |
+            | 16 digit with space                | 1234 1234 1234 1234 |
+            | 16 digit with hyphens              | 1234-1234-1234-1234 |
+            | 16 digit with wild card at end     | 123412341234123*    |
+            | 16 digit with wild card            | 12341234123*1234    |
+            | 16 digit with wild card and hyphen | 1234-1234-123*-1234 |
+            | 16 digit with wild card and space  | 1234 1234 123* 1234 |
 
     Scenario: Search from header with 1 result with challenged access
 
@@ -305,28 +310,20 @@ Feature: Global search
         When I click find in header search
         Then I see case details specific access request page
 
-    Scenario Outline: Search from header with invalid <ScenarioDes> case reference
+
+
+    @test
+    Scenario: Search from header all invalid case refence formats
         Given I set global search mock results count 1
-        Given I set global search mock results with values
-            | index | processForAccess |
-            | 0     | SPECIFIC         |
         Given I start MockApp
-        Then I validate case search field is displayed in header
-        When I input case reference in header search field "<SearchWith>"
-        When I click find in header search
 
-        Then I validate global search no results page is displayed
-        Then I validate global searh no results page displays message "This 16-digit case reference could not be found"
-        Then I validate global searh no results page displays message "Try searching again or go back"
-        Then I validate global search no results back link displayed
-        When I click global search no results back link
-        Then I see global search Page
-
-        Examples:
-            | ScenarioDes | SearchWith | 
-            | less than 16 digit  | 1234  | 
-            | with Alpha numeric | 1Abcd67812345678 |
-            | with special character | 1$%^&@67812345678 |
+        Then I validate invalid global search case reference searches
+            | ScenarioDescription                | caseReference       |
+            | shorter than 16 digit           | 1234                 |
+            | longer than 16 digit            | 12341234123412341234 |
+            | 16 digit with 2 wild card chars | 12341234123412**     |
+            | with Alpha numeric              | 1Abcd67812345678     |
+            | with special character          | 1$%^&@6781234567     |
 
 
 

@@ -1,6 +1,6 @@
 const TaskList = require('./taskListTable');
 const BrowserWaits = require('../../../support/customWaits');
-var TaskMessageBanner = require('./taskMessageBanner');
+var TaskMessageBanner = require('../messageBanner');
 
 class TaskManagerPage extends TaskList{
   

@@ -47,7 +47,7 @@
     "prd": {
       "api": "SERVICES_PRD_API"
     },
-    "locationRef": {
+    "locationref": {
       "api": "SERVICES_LOCATION_REF_API_URL"
     },
     "caseShare": {
@@ -62,9 +62,11 @@
       "oauthCallbackUrl": "SERVICES_IDAM_OAUTH_CALLBACK_URL",
       "iss": "SERVICES_IDAM_ISS_URL"
     },
+    "location_api": "SERVICES_LOCATION_API",
     "work_allocation": {
       "taskApi": "SERVICES_WORK_ALLOCATION_TASK_API"
     },
+    "refunds": "SERVICES_REFUNDS_API_URL",
     "role_assignment": {
       "roleApi": "SERVICES_ROLE_ASSIGNMENT_API"
     },
@@ -94,6 +96,7 @@
     }
   },
   "jurisdictions": "JURISDICTIONS",
+  "waSupportedJurisdictions": "WA_SUPPORTED_JURISDICTIONS",
   "log4JConfig": {
     "__name": "LOG_4JS_CONFIG",
     "__format": "json"
@@ -129,6 +132,14 @@
     },
     "workAllocationEnabled": {
       "__name": "FEATURE_WORKALLOCATION_ENABLED",
+      "__format":"json"
+    },
+    "substantiveRoleEnabled": {
+      "__name": "FEATURE_SUBSTANTIVE_ROLE_ENABLED",
+      "__format":"json"
+    },
+    "accessManagementEnabled": {
+      "__name": "FEATURE_ACCESS_MANAGEMENT_ENABLED",
       "__format":"json"
     }
   },

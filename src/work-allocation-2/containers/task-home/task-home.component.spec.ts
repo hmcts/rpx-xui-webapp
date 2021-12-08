@@ -1,13 +1,15 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { Component, DebugElement, ViewChild } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
+import { Component, ViewChild } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
+import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
-import { ALL_LOCATIONS } from '../../../../api/workAllocation2/constants/locations';
+import { initialMockState } from '../../../role-access/testing/app-initial-state.mock';
 
+import { ALL_LOCATIONS } from '../../components/constants/locations';
+import { ErrorMessageComponent } from '../../../app/components';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { LocationDataService, WorkAllocationTaskService } from '../../services';
 import { InfoMessageContainerComponent } from '../info-message-container/info-message-container.component';
@@ -28,7 +30,16 @@ describe('TaskHomeComponent', () => {
   let router: Router;
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
   const SELECTED_LOCATIONS = { id: 'locations', fields: [ { name: 'locations', value: ['231596', '698118'] }] };
-
+  const mockFilterService: any = {
+    getStream: () => of(SELECTED_LOCATIONS),
+    get: () => SELECTED_LOCATIONS,
+    persist: (setting, persistence) => null,
+    givenErrors: {
+      subscribe: () => null,
+      next: () => null,
+      unsubscribe: () => null
+    }
+  };
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -38,15 +49,13 @@ describe('TaskHomeComponent', () => {
         WorkAllocationComponentsModule,
         ExuiCommonLibModule
       ],
-      declarations: [TaskHomeComponent, WrapperComponent, InfoMessageContainerComponent],
+      declarations: [TaskHomeComponent, WrapperComponent, InfoMessageContainerComponent, ErrorMessageComponent],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
+        provideMockStore({initialState: initialMockState}),
         { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },
         {
-          provide: FilterService, useValue: {
-            getStream: () => of(SELECTED_LOCATIONS),
-            get: () => SELECTED_LOCATIONS,
-          }
+          provide: FilterService, useValue: mockFilterService
         },
       ]
     }).compileComponents();
@@ -54,6 +63,7 @@ describe('TaskHomeComponent', () => {
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
     router = TestBed.get(Router);
+    spyOn(mockFilterService.givenErrors, 'unsubscribe');
     fixture.detectChanges();
   });
 
@@ -61,27 +71,4 @@ describe('TaskHomeComponent', () => {
     expect(component).toBeDefined();
   });
 
-  it('should show the toggle filter button', () => {
-    const button: DebugElement = fixture.debugElement.query(By.css('.govuk-button.hmcts-button--secondary'));
-    expect(button.nativeElement.innerText).toContain('Show work filter');
-  });
-
-  it('should select two locations', fakeAsync(() => {
-    const button: DebugElement = fixture.debugElement.query(By.css('.govuk-button.hmcts-button--secondary'));
-    button.nativeElement.click();
-
-    fixture.detectChanges();
-    const checkBoxes: DebugElement = fixture.debugElement.query(By.css('.govuk-checkboxes'));
-    const firstLocation = checkBoxes.nativeElement.children[0];
-    const secondLocation = checkBoxes.nativeElement.children[1];
-
-    firstLocation.click();
-    secondLocation.click();
-
-    fixture.detectChanges();
-    const applyButton: DebugElement = fixture.debugElement.query(By.css('#applyFilter'));
-    applyButton.nativeElement.click();
-    expect(component.selectedLocations.length).toEqual(2);
-
-  }));
 });

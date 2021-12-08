@@ -1,4 +1,5 @@
-@ng
+#  disabled tests in MC as same tests are now enabled in CCD-CASE-UI-TOOLKIT functional test
+# @ng
 Feature: Case fields
 
     Background: Mock event setup
@@ -48,7 +49,6 @@ Feature: Case fields
             | item1 | Item 1 |
             | item2 | Item 2 |
             | item3 | Item 3 |
-
 
     Scenario Outline: Mandatory case field validation non complex fields  "<fieldId>""
         Given I set field properties for field with id "<fieldId>" in event "CaseFieldsProperties"

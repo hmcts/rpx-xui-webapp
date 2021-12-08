@@ -2,6 +2,7 @@ import {getConfigValue, showFeature} from './index';
 import {
   COOKIES_SESSION_ID,
   COOKIES_TOKEN,
+  FEATURE_ACCESS_MANAGEMENT_ENABLED,
   FEATURE_APP_INSIGHTS_ENABLED,
   FEATURE_HELMET_ENABLED,
   FEATURE_OIDC_ENABLED,
@@ -47,6 +48,7 @@ export const applicationConfiguration = () => {
     clientId: getConfigValue(SERVICES_IDAM_CLIENT_ID),
     cookieSessionId: getConfigValue(COOKIES_SESSION_ID),
     cookieToken: getConfigValue(COOKIES_TOKEN),
+    featureAccessManagementEnabled: showFeature(FEATURE_ACCESS_MANAGEMENT_ENABLED),
     featureAppInsightsEnabled: showFeature(FEATURE_APP_INSIGHTS_ENABLED),
     featureHelmetEnabled: showFeature(FEATURE_HELMET_ENABLED),
     featureOidcEnabled: showFeature(FEATURE_OIDC_ENABLED),

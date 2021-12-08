@@ -5,7 +5,7 @@ import { select, Store } from '@ngrx/store';
 import { combineLatest, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { AppConstants, LD_FLAG_MC_APPLICATION_THEMES } from '../../app/app.constants';
-import { Theme } from '../../app/containers';
+import { Theme } from '../../app/models/theme.model';
 import { UserDetails } from '../../app/models/user-details.model';
 import * as fromActions from '../../app/store';
 

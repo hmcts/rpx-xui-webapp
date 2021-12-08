@@ -28,6 +28,7 @@ export class SearchFormComponent implements OnInit, OnDestroy {
   public services: SearchFormServiceListItem[];
   public searchServiceSubscription$: Subscription;
   public searchValidationErrors: SearchValidationError[];
+  public caseRefErrorMessage: ErrorMessagesModel;
   public emailErrorMessage: ErrorMessagesModel;
   public postcodeErrorMessage: ErrorMessagesModel;
   public dateOfBirthErrorMessage: ErrorMessagesModel;
@@ -106,19 +107,21 @@ export class SearchFormComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.formGroup = this.fb.group({
-      caseRef: '',
-      otherRef: '',
-      fullName: '',
-      addressLine1: '',
-      postcode: '',
-      email: '',
-      dateOfBirth_day: '',
-      dateOfBirth_month: '',
-      dateOfBirth_year: '',
-      dateOfDeath_day: '',
-      dateOfDeath_month: '',
-      dateOfDeath_year: '',
-      servicesList: ''
+      [SearchFormControl.CASE_REF]: ['', SearchValidators.caseReferenceWithWildcardsValidator()],
+      [SearchFormControl.OTHER_REF]: '',
+      [SearchFormControl.FULL_NAME]: '',
+      [SearchFormControl.ADDRESS_LINE_1]: '',
+      [SearchFormControl.POSTCODE]: ['', SearchValidators.postcodeValidator()],
+      [SearchFormControl.EMAIL]: ['', Validators.email],
+      [SearchFormControl.DATE_OF_BIRTH_DAY]: ['', SearchValidators.dayValidator()],
+      [SearchFormControl.DATE_OF_BIRTH_MONTH]: ['', SearchValidators.monthValidator()],
+      [SearchFormControl.DATE_OF_BIRTH_YEAR]: ['', SearchValidators.yearValidator()],
+      [SearchFormControl.DATE_OF_DEATH_DAY]: ['', SearchValidators.dayValidator()],
+      [SearchFormControl.DATE_OF_DEATH_MONTH]: ['', SearchValidators.monthValidator()],
+      [SearchFormControl.DATE_OF_DEATH_YEAR]: ['', SearchValidators.yearValidator()],
+      [SearchFormControl.SERVICES_LIST]: ''
+    }, {
+      validators: SearchValidators.dateComparisonValidator()
     });
 
     this.searchServiceSubscription$ = this.searchService.getServices().subscribe(services => {
@@ -128,9 +131,6 @@ export class SearchFormComponent implements OnInit, OnDestroy {
     });
     // Set default service selection to "All"
     this.formGroup.get(SearchFormControl.SERVICES_LIST).setValue(this.services[0].id);
-
-    // Set the form control validators
-    this.setValidators();
 
     // Pre-populate the form with existing search parameters
     const searchParameters: SearchParameters = this.searchService.retrieveState(SearchStatePersistenceKey.SEARCH_PARAMS);
@@ -176,35 +176,6 @@ export class SearchFormComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Assign validation to form controls
-   *
-   */
-  private setValidators(): void {
-    // Validator for email
-    this.formGroup.get(SearchFormControl.EMAIL).setValidators(Validators.email);
-
-    // Validator for postcode
-    const postcodeValidator = SearchValidators.postcodeValidator();
-    this.formGroup.get(SearchFormControl.POSTCODE).setValidators(postcodeValidator);
-
-    // validator for date of birth
-    const dayValidator = SearchValidators.dayValidator();
-    this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).setValidators(dayValidator);
-    const monthValidator = SearchValidators.monthValidator();
-    this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_MONTH).setValidators(monthValidator);
-    const yearValidator = SearchValidators.yearValidator();
-    this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_YEAR).setValidators(yearValidator);
-
-    // validator for date of death
-    this.formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).setValidators(dayValidator);
-    this.formGroup.get(SearchFormControl.DATE_OF_DEATH_MONTH).setValidators(monthValidator);
-    this.formGroup.get(SearchFormControl.DATE_OF_DEATH_YEAR).setValidators(yearValidator);
-
-    const dateComparisonValidator = SearchValidators.dateComparisonValidator();
-    this.formGroup.setValidators(dateComparisonValidator);
-  }
-
-  /**
    * Function to validate form controls
    *
    */
@@ -213,6 +184,11 @@ export class SearchFormComponent implements OnInit, OnDestroy {
     this.resetValidationErrorMessages();
 
     if (!this.formGroup.valid) {
+      // Case reference
+      if (!this.formGroup.get(SearchFormControl.CASE_REF).valid) {
+        this.searchValidationErrors.push({ controlId: SearchFormControl.CASE_REF, documentHRef: SearchFormControl.CASE_REF, errorMessage: SearchFormErrorMessage.CASE_REF });
+        this.caseRefErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.CASE_REF] };
+      }
       // Postcode
       if (!this.formGroup.get(SearchFormControl.POSTCODE).valid) {
         this.searchValidationErrors.push({ controlId: SearchFormControl.POSTCODE, documentHRef: SearchFormControl.POSTCODE, errorMessage: SearchFormErrorMessage.POSTCODE });
@@ -259,6 +235,7 @@ export class SearchFormComponent implements OnInit, OnDestroy {
    */
   public resetValidationErrorMessages(): void {
     this.searchValidationErrors = [];
+    this.caseRefErrorMessage =
     this.emailErrorMessage =
     this.postcodeErrorMessage =
     this.dateOfBirthErrorMessage =
@@ -316,17 +293,18 @@ export class SearchFormComponent implements OnInit, OnDestroy {
    *
    */
   private getDateFormatted(dateCategoryType: string): string {
+    // Set values to empty strings if they are not truthy
     const day = dateCategoryType === DateCategoryType.DATE_OF_BIRTH
-      ? this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).value
-      : this.formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).value;
+      ? (this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).value || '')
+      : (this.formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).value || '');
 
     const month = dateCategoryType === DateCategoryType.DATE_OF_BIRTH
-      ? this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_MONTH).value
-      : this.formGroup.get(SearchFormControl.DATE_OF_DEATH_MONTH).value;
+      ? (this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_MONTH).value || '')
+      : (this.formGroup.get(SearchFormControl.DATE_OF_DEATH_MONTH).value || '');
 
     const year = dateCategoryType === DateCategoryType.DATE_OF_BIRTH
-      ? this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_YEAR).value
-      : this.formGroup.get(SearchFormControl.DATE_OF_DEATH_YEAR).value;
+      ? (this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_YEAR).value || '')
+      : (this.formGroup.get(SearchFormControl.DATE_OF_DEATH_YEAR).value || '');
 
     if (day === '' || month === '' || year === '') {
       return null;

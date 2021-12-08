@@ -39,7 +39,7 @@
           </div>
         </details>
         <p class="govuk-body">Search for at least one of the following to find a case:</p>
-        <xuilib-gov-uk-input [config]="caseRefConfig" [group]="formGroup"></xuilib-gov-uk-input>
+        <xuilib-gov-uk-input [config]="caseRefConfig" [group]="formGroup" [errorMessage]="caseRefErrorMessage"></xuilib-gov-uk-input>
         <xuilib-gov-uk-input [config]="otherRefConfig" [group]="formGroup"></xuilib-gov-uk-input>
         <xuilib-gov-uk-input [config]="fullNameConfig" [group]="formGroup"></xuilib-gov-uk-input>
         <xuilib-gov-uk-input [config]="addressLine1Config" [group]="formGroup"></xuilib-gov-uk-input>

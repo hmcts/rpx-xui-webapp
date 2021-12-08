@@ -5,7 +5,7 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable, of } from 'rxjs';
-import { SearchFormControl, SearchStatePersistenceKey } from '../../enums';
+import { SearchFormControl, SearchFormErrorMessage, SearchStatePersistenceKey } from '../../enums';
 import { SearchParameters } from '../../models';
 import { SearchService } from '../../services/search.service';
 import { SearchFormComponent } from './search-form.component';
@@ -135,9 +135,21 @@ describe('SearchFormComponent', () => {
   });
 
   it('should reset validation error messages', () => {
+    component.searchValidationErrors = [];
+    component.searchValidationErrors.push({ controlId: SearchFormControl.CASE_REF, documentHRef: SearchFormControl.CASE_REF, errorMessage: SearchFormErrorMessage.CASE_REF });
+    component.caseRefErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.CASE_REF] };
+    component.searchValidationErrors.push({ controlId: SearchFormControl.EMAIL, documentHRef: SearchFormControl.EMAIL, errorMessage: SearchFormErrorMessage.EMAIL });
+    component.emailErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.EMAIL] };
+    component.searchValidationErrors.push({ controlId: SearchFormControl.POSTCODE, documentHRef: SearchFormControl.POSTCODE, errorMessage: SearchFormErrorMessage.POSTCODE });
+    component.postcodeErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.POSTCODE] };
+    component.searchValidationErrors.push({ controlId: SearchFormControl.DATE_OF_BIRTH_DAY, documentHRef: 'dateOfBirth', errorMessage: SearchFormErrorMessage.DATE_OF_BIRTH });
+    component.dateOfBirthErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.DATE_OF_BIRTH] };
+    component.searchValidationErrors.push({ controlId: SearchFormControl.DATE_OF_DEATH_DAY, documentHRef: 'dateOfDeath', errorMessage: SearchFormErrorMessage.DATE_OF_DEATH });
+    component.dateOfDeathErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.DATE_OF_DEATH] };
     component.resetValidationErrorMessages();
 
     expect(component.searchValidationErrors.length).toEqual(0);
+    expect(component.caseRefErrorMessage).toEqual(null);
     expect(component.emailErrorMessage).toEqual(null);
     expect(component.postcodeErrorMessage).toEqual(null);
     expect(component.dateOfBirthErrorMessage).toEqual(null);
@@ -167,8 +179,10 @@ describe('SearchFormComponent', () => {
   it('should return null for empty fields on form submit', () => {
     // Submit the form with empty values other than jurisdiction
     component.onSubmit();
+
     // Check how many times the spy was called
     expect(searchService.storeState).toHaveBeenCalledTimes(2);
+
     // Check arguments
     expect(searchService.storeState.calls.all()[0].args[0]).toEqual(SearchStatePersistenceKey.SEARCH_PARAMS);
     expect(searchService.storeState.calls.all()[0].args[1]).toEqual({
@@ -185,11 +199,44 @@ describe('SearchFormComponent', () => {
     } as SearchParameters);
   });
 
-  it('should scroll to top and display error summary if validation failed', () => {
+  it('should scroll to top and display error summary if validation failed, and not navigate to Search Results page', () => {
     spyOn(window, 'scrollTo');
     component.formGroup.get(SearchFormControl.EMAIL).setValue('WRONGEMAIL');
     component.onSubmit();
+    // Check that the array of errors for displaying the error summary contains the expected errors
+    expect(component.searchValidationErrors).toContain({
+      controlId: SearchFormControl.EMAIL,
+      documentHRef: SearchFormControl.EMAIL,
+      errorMessage: SearchFormErrorMessage.EMAIL
+    });
     expect(window.scrollTo).toHaveBeenCalled();
+    expect(router.navigate).not.toHaveBeenCalled();
+  });
+
+  it('should display inline error messages and repeat these in the error summary, for any fields failing validation', () => {
+    component.formGroup.get(SearchFormControl.CASE_REF).setValue('1111222233334444*');
+    component.formGroup.get(SearchFormControl.EMAIL).setValue('WRONGEMAIL');
+    component.onSubmit();
+    // Check that the array of errors for displaying the error summary contains the expected errors
+    expect(component.searchValidationErrors).toContain({
+      controlId: SearchFormControl.CASE_REF,
+      documentHRef: SearchFormControl.CASE_REF,
+      errorMessage: SearchFormErrorMessage.CASE_REF
+    }, {
+      controlId: SearchFormControl.EMAIL,
+      documentHRef: SearchFormControl.EMAIL,
+      errorMessage: SearchFormErrorMessage.EMAIL
+    });
+    // Check that field error messages on the component have been set (for display by the xuilib-gov-uk-error-message component)
+    expect(component.caseRefErrorMessage).toEqual({
+      isInvalid: true,
+      messages: [SearchFormErrorMessage.CASE_REF]
+    });
+    expect(component.emailErrorMessage).toEqual({
+      isInvalid: true,
+      messages: [SearchFormErrorMessage.EMAIL]
+    });
+    expect(router.navigate).not.toHaveBeenCalled();
   });
 
   it('should pre-populate the form with existing search parameters', () => {
@@ -238,5 +285,34 @@ describe('SearchFormComponent', () => {
     expect(component.formGroup.get(SearchFormControl.CASE_REF).value).toEqual('1234123412341234');
     expect(component.formGroup.get(SearchFormControl.OTHER_REF).value).toEqual('');
     expect(component.formGroup.get(SearchFormControl.SERVICES_LIST).value).toEqual('ALL');
+  });
+
+  it('should not format any date field inputs as a date if the day, month, or year are null or empty', () => {
+    component.formGroup.get(SearchFormControl.CASE_REF).setValue('1234123412341234');
+    component.formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).setValue(null);
+    component.formGroup.get(SearchFormControl.DATE_OF_BIRTH_MONTH).setValue('10');
+    component.formGroup.get(SearchFormControl.DATE_OF_BIRTH_YEAR).setValue('1980');
+    component.formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).setValue('2');
+    component.formGroup.get(SearchFormControl.DATE_OF_DEATH_MONTH).setValue('');
+    component.formGroup.get(SearchFormControl.DATE_OF_DEATH_YEAR).setValue('2020');
+    component.onSubmit();
+
+    // Check how many times the spy was called
+    expect(searchService.storeState).toHaveBeenCalledTimes(2);
+
+    // Check arguments
+    expect(searchService.storeState.calls.all()[0].args[0]).toEqual(SearchStatePersistenceKey.SEARCH_PARAMS);
+    expect(searchService.storeState.calls.all()[0].args[1]).toEqual({
+      caseReferences: ['1234123412341234'],
+      // Default service selection is "All", hence all service IDs are expected to be present
+      CCDJurisdictionIds: ['TEST', 'TEST2'],
+      otherReferences: null,
+      fullName: null,
+      address: null,
+      postcode: null,
+      emailAddress: null,
+      dateOfBirth: null,
+      dateOfDeath: null
+    } as SearchParameters);
   });
 });

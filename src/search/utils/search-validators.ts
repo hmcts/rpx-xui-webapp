@@ -93,22 +93,24 @@ export class SearchValidators {
 
   public static dateComparisonValidator(): ValidatorFn {
     return (formGroup: AbstractControl): ValidationErrors | null => {
-      const dateOfBirthDay = formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).value;
-      const dateOfBirthMonth = formGroup.get(SearchFormControl.DATE_OF_BIRTH_MONTH).value;
-      const dateOfBirthYear = formGroup.get(SearchFormControl.DATE_OF_BIRTH_YEAR).value;
-      const dateOfDeathDay = formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).value;
-      const dateOfDeathMonth = formGroup.get(SearchFormControl.DATE_OF_DEATH_MONTH).value;
-      const dateOfDeathYear = formGroup.get(SearchFormControl.DATE_OF_DEATH_YEAR).value;
+      // Set values to empty strings if they are not truthy
+      const dateOfBirthDay = formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).value || '';
+      const dateOfBirthMonth = formGroup.get(SearchFormControl.DATE_OF_BIRTH_MONTH).value || '';
+      const dateOfBirthYear = formGroup.get(SearchFormControl.DATE_OF_BIRTH_YEAR).value || '';
+      const dateOfDeathDay = formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).value || '';
+      const dateOfDeathMonth = formGroup.get(SearchFormControl.DATE_OF_DEATH_MONTH).value || '';
+      const dateOfDeathYear = formGroup.get(SearchFormControl.DATE_OF_DEATH_YEAR).value || '';
 
-      // No comparison required if both the dates are blank
-      if (dateOfBirthDay === '' && dateOfBirthMonth === '' && dateOfBirthYear === '' &&
-          dateOfDeathDay === '' && dateOfDeathMonth === '' && dateOfDeathYear === '') {
+      // No comparison possible if either date has one or more blank fields (should no longer happen once the revised xuilib-gov-uk-date
+      // component with built-in validation is released in XUI Common Lib)
+      if (dateOfBirthDay === '' || dateOfBirthMonth === '' || dateOfBirthYear === '' ||
+          dateOfDeathDay === '' || dateOfDeathMonth === '' || dateOfDeathYear === '') {
         return null;
       }
 
-      // Form the dates
-      const dateOfBirth = new Date(dateOfBirthYear, dateOfBirthMonth, dateOfBirthDay);
-      const dateOfDeath = new Date(dateOfDeathYear, dateOfDeathMonth, dateOfDeathDay);
+      // Form the dates. **Note: month ranges from 0-11 for the Date constructor!**
+      const dateOfBirth = new Date(dateOfBirthYear, dateOfBirthMonth - 1, dateOfBirthDay);
+      const dateOfDeath = new Date(dateOfDeathYear, dateOfDeathMonth - 1, dateOfDeathDay);
 
       // Do not compare if one of the dates is not well formed
       if (dateOfBirth.getFullYear() < 1900 || dateOfDeath.getFullYear() < 1900) {

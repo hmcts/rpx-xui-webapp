@@ -133,6 +133,67 @@ describe('Search Service', () => {
     req.flush(dummySearchResult);
   });
 
+  it('should ensure the case reference is sanitised of any separators (spaces and \'-\' characters) before being sent in a request', () => {
+    const searchParameters: SearchParameters = {
+      caseReferences: ['1234 1234-1234 -1234'],
+      CCDJurisdictionIds: ['TEST'],
+      otherReferences: ['Abc'],
+      fullName: 'Test test',
+      address: '102 Petty France',
+      postcode: 'SW1H 9AJ',
+      emailAddress: 'test@example.com',
+      dateOfBirth: '1980-10-1',
+      dateOfDeath: '2020-2-2'
+    };
+    const serviceSpy = spyOn(service, 'retrieveState').and.callFake((key: string) => {
+      if (key === SearchStatePersistenceKey.SEARCH_PARAMS) {
+        return searchParameters;
+      } else if (key === SearchStatePersistenceKey.START_RECORD) {
+        return '1';
+      }
+    });
+    const searchRequest: SearchRequest = {
+      searchCriteria: {
+        CCDCaseTypeIds: null,
+        CCDJurisdictionIds: searchParameters.CCDJurisdictionIds,
+        caseManagementBaseLocationIds: null,
+        caseManagementRegionIds: null,
+        // Case references are expected to be sanitised of any separators (spaces and '-' characters)
+        caseReferences: searchParameters.caseReferences.map(caseRef => caseRef.replace(/[\s-]/g, '')),
+        otherReferences: searchParameters.otherReferences,
+        parties: [{
+          addressLine1: searchParameters.address,
+          dateOfBirth: searchParameters.dateOfBirth,
+          dateOfDeath: searchParameters.dateOfDeath,
+          emailAddress: searchParameters.emailAddress,
+          partyName: searchParameters.fullName,
+          postCode: searchParameters.postcode
+        }],
+        stateIds: null
+      },
+      sortCriteria: null,
+      maxReturnRecordCount: service.RECORD_PAGE_SIZE,
+      startRecordNumber: 1
+    };
+    const dummySearchResult: SearchResult = {
+      resultInfo : null,
+      results: [null, null]
+    };
+
+    service.getResults().subscribe(result => {
+      expect(result).toEqual(dummySearchResult);
+    });
+
+    expect(serviceSpy).toHaveBeenCalledTimes(2);
+    expect(serviceSpy.calls.all()[0].args[0]).toEqual(SearchStatePersistenceKey.SEARCH_PARAMS);
+    expect(serviceSpy.calls.all()[1].args[0]).toEqual(SearchStatePersistenceKey.START_RECORD);
+
+    const req = httpMock.expectOne('api/globalsearch/results');
+    expect(req.request.method).toEqual('POST');
+    expect(req.request.body).toEqual(searchRequest);
+    req.flush(dummySearchResult);
+  });
+
   it('should decrement the starting record number if it exists in the session store and is greater than the record page size', () => {
     mockSessionStorage.setItem(SearchStatePersistenceKey.START_RECORD, service.RECORD_PAGE_SIZE + 1);
     spyOn(service, 'retrieveState').and.callThrough();

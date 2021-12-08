@@ -5,10 +5,10 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import * as fromActions from '../../../app/store';
-import { NoResultsMessageId, ProcessForAccessType } from '../../../search/enums';
-import { SearchParameters, SearchResult } from '../../../search/models';
+import { NoResultsMessageId } from '../../../search/enums';
+import { SearchParameters } from '../../../search/models';
 import { SearchService } from '../../../search/services/search.service';
 import { SearchValidators } from '../../../search/utils';
 import { NavItemsModel } from '../../models/nav-item.model';
@@ -23,9 +23,7 @@ describe('ExuiCaseReferenceSearchBoxComponent', () => {
   let router: Router;
   let route: ActivatedRoute;
   let store: Store<fromActions.State>;
-  const storeMock = jasmine.createSpyObj('Store', [
-    'dispatch'
-  ]);
+  let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
   const formBuilder = new FormBuilder();
   const item: NavItemsModel = {
     text: 'Find',
@@ -43,65 +41,11 @@ describe('ExuiCaseReferenceSearchBoxComponent', () => {
     dateOfBirth: '1980-10-01',
     dateOfDeath: '2020-02-02'
   };
-  const searchResultWithNoCases: SearchResult = {
-    resultInfo: {
-      caseStartRecord: 1,
-      casesReturned: 0,
-      moreResultsToGo: false
-    },
-    results: []
-  };
-  const searchResultWithCaseList: SearchResult = {
-    resultInfo: {
-      caseStartRecord: 1,
-      casesReturned: 2,
-      moreResultsToGo: false
-    },
-    results: [
-      {
-        CCDCaseTypeId: 'FT_GlobalSearch',
-        CCDCaseTypeName: null,
-        CCDJurisdictionId: 'BEFTA_MASTER',
-        CCDJurisdictionName: 'BEFTA Master',
-        HMCTSServiceId: null,
-        HMCTSServiceShortDescription: null,
-        baseLocationId: null,
-        baseLocationName: null,
-        caseManagementCategoryId: null,
-        caseManagementCategoryName: null,
-        caseNameHmctsInternal: 'Derrick Rega',
-        caseReference: '1234123412341234',
-        otherReferences: null,
-        processForAccess: ProcessForAccessType.SPECIFIC,
-        regionId: null,
-        regionName: null,
-        stateId: 'CaseCreated'
-      },
-      {
-        CCDCaseTypeId: 'FT_GlobalSearch',
-        CCDCaseTypeName: null,
-        CCDJurisdictionId: 'BEFTA_MASTER',
-        CCDJurisdictionName: 'BEFTA Master',
-        HMCTSServiceId: null,
-        HMCTSServiceShortDescription: null,
-        baseLocationId: null,
-        baseLocationName: null,
-        caseManagementCategoryId: null,
-        caseManagementCategoryName: null,
-        caseNameHmctsInternal: 'Lea Mangan',
-        caseReference: '0598538510201905',
-        otherReferences: null,
-        processForAccess: ProcessForAccessType.CHALLENGED,
-        regionId: null,
-        regionName: null,
-        stateId: 'CaseCreated'
-      }
-    ]
-  };
 
   beforeEach(async(() => {
     searchService = createSpyObj<SearchService>('searchService', ['retrieveState', 'storeState']);
     searchService.retrieveState.and.returnValue(searchParameters);
+    storeMock = jasmine.createSpyObj('Store', ['dispatch']);
     TestBed.configureTestingModule({
       declarations: [ CaseReferenceSearchBoxComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],
@@ -130,13 +74,13 @@ describe('ExuiCaseReferenceSearchBoxComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should decorate 16 digit case reference search box', () => {
+  it('should decorate 16-digit case reference search box', () => {
     component.decorate16DigitCaseReferenceSearchBoxInHeader = true;
     component.ngOnInit();
     expect(searchService.retrieveState).toHaveBeenCalledTimes(1);
   });
 
-  it('should not decorate 16 digit case reference search box', () => {
+  it('should not decorate 16-digit case reference search box', () => {
     component.decorate16DigitCaseReferenceSearchBoxInHeader = false;
     component.ngOnInit();
     expect(searchService.retrieveState).toHaveBeenCalledTimes(0);
@@ -147,6 +91,7 @@ describe('ExuiCaseReferenceSearchBoxComponent', () => {
     component.onSubmit();
 
     expect(searchService.storeState).toHaveBeenCalledTimes(1);
+    expect(component.formGroup.get('caseReference').invalid).toBe(false);
     expect(store.dispatch).toHaveBeenCalledTimes(1);
     expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/1234123412341234'], { state: { origin: '16digitCaseReferenceSearchFromHeader' }, relativeTo: route });
   });
@@ -173,5 +118,15 @@ describe('ExuiCaseReferenceSearchBoxComponent', () => {
     spyOn(SearchValidators, 'caseReferenceValidator');
     component.ngOnInit();
     expect(SearchValidators.caseReferenceValidator).toHaveBeenCalled();
+  });
+
+  it('should ensure the case reference is sanitised of any separators (spaces and \'-\' characters) before being used in navigation', () => {
+    component.formGroup.get('caseReference').setValue('1234 1234-1234 -1234');
+    component.onSubmit();
+
+    expect(searchService.storeState).toHaveBeenCalledTimes(1);
+    expect(component.formGroup.get('caseReference').invalid).toBe(false);
+    expect(store.dispatch).toHaveBeenCalledTimes(1);
+    expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/1234123412341234'], { state: { origin: '16digitCaseReferenceSearchFromHeader' }, relativeTo: route });
   });
 });

@@ -163,12 +163,12 @@ describe('SearchValidators', () => {
       dateOfDeath_year: '',
     });
 
-    formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).setValue(10);
-    formGroup.get(SearchFormControl.DATE_OF_BIRTH_MONTH).setValue(12);
-    formGroup.get(SearchFormControl.DATE_OF_BIRTH_YEAR).setValue(2020);
+    formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).setValue(1);
+    formGroup.get(SearchFormControl.DATE_OF_BIRTH_MONTH).setValue(11);
+    formGroup.get(SearchFormControl.DATE_OF_BIRTH_YEAR).setValue(2010);
 
-    formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).setValue(10);
-    formGroup.get(SearchFormControl.DATE_OF_DEATH_MONTH).setValue(12);
+    formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).setValue(31);
+    formGroup.get(SearchFormControl.DATE_OF_DEATH_MONTH).setValue(10);
     formGroup.get(SearchFormControl.DATE_OF_DEATH_YEAR).setValue(2010);
 
     const dateComparisonValidator = SearchValidators.dateComparisonValidator();
@@ -192,6 +192,50 @@ describe('SearchValidators', () => {
     formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).setValue(10);
     formGroup.get(SearchFormControl.DATE_OF_DEATH_MONTH).setValue(12);
     formGroup.get(SearchFormControl.DATE_OF_DEATH_YEAR).setValue(2020);
+
+    const dateComparisonValidator = SearchValidators.dateComparisonValidator();
+    expect(dateComparisonValidator(formGroup)).toBeNull();
+  });
+
+  it('dateComparisonValidator valid case - same dates', () => {
+    const formGroup = new FormBuilder().group({
+      dateOfBirth_day: '',
+      dateOfBirth_month: '',
+      dateOfBirth_year: '',
+      dateOfDeath_day: '',
+      dateOfDeath_month: '',
+      dateOfDeath_year: '',
+    });
+
+    formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).setValue(10);
+    formGroup.get(SearchFormControl.DATE_OF_BIRTH_MONTH).setValue(12);
+    formGroup.get(SearchFormControl.DATE_OF_BIRTH_YEAR).setValue(2010);
+
+    formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).setValue(10);
+    formGroup.get(SearchFormControl.DATE_OF_DEATH_MONTH).setValue(12);
+    formGroup.get(SearchFormControl.DATE_OF_DEATH_YEAR).setValue(2010);
+
+    const dateComparisonValidator = SearchValidators.dateComparisonValidator();
+    expect(dateComparisonValidator(formGroup)).toBeNull();
+  });
+
+  it('dateComparisonValidator - no comparison if either date is not well formed (i.e. missing one or more fields)', () => {
+    const formGroup = new FormBuilder().group({
+      dateOfBirth_day: null,
+      dateOfBirth_month: '',
+      dateOfBirth_year: '',
+      dateOfDeath_day: '',
+      dateOfDeath_month: '',
+      dateOfDeath_year: '',
+    });
+
+    // Date of birth day field deliberately left as null
+    formGroup.get(SearchFormControl.DATE_OF_BIRTH_MONTH).setValue(12);
+    formGroup.get(SearchFormControl.DATE_OF_BIRTH_YEAR).setValue(2010);
+
+    formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).setValue(10);
+    // Date of death month field deliberately left as empty string
+    formGroup.get(SearchFormControl.DATE_OF_DEATH_YEAR).setValue(2010);
 
     const dateComparisonValidator = SearchValidators.dateComparisonValidator();
     expect(dateComparisonValidator(formGroup)).toBeNull();

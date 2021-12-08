@@ -54,6 +54,9 @@ module.exports = {
         },
         '/api/wa-supported-jurisdiction/get': (req,res) => {
             res.send(['IA']);
+        },
+        '/workallocation2/task/:taskId/roles' : (req,res) => {
+            res.send(workAllocationMockData.getTaskRoles());
         }
     },
     post: {
@@ -241,9 +244,15 @@ module.exports = {
             res.send(workAllocationMockData.exclusions);
         },
         '/api/role-access/roles/post': (req, res) => {
+            const caseRolesAssignment = []; 
+            if(Object.keys(req.body).includes('assignmentId')){
+                const reqAssignmentId = req.body.assignmentId;
             
-            if(Object.keys(req.body).includes('assignmentid')){
-                res.send(workAllocationMockData.caseRoleForAssignment);
+                const caseRole = workAllocationMockData.getCaseRole();
+                caseRole.id = reqAssignmentId;
+                caseRolesAssignment.push(caseRole);
+            
+                res.send(caseRolesAssignment);
 
             }else{
                 res.send(workAllocationMockData.caseRoles);

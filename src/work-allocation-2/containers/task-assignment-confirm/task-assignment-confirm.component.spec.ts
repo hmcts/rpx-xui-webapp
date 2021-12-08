@@ -1,7 +1,6 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
@@ -17,6 +16,7 @@ import { InfoMessageCommService, WorkAllocationTaskService } from '../../service
 import { getMockTasks } from '../../tests/utils.spec';
 import { REDIRECTS } from '../../utils';
 import { TaskAssignmentConfirmComponent } from './task-assignment-confirm.component';
+import { By } from '@angular/platform-browser';
 
 @Component({
   template: `

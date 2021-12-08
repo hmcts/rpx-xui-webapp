@@ -47,6 +47,9 @@
     "prd": {
       "api": "SERVICES_PRD_API"
     },
+    "locationref": {
+      "api": "SERVICES_LOCATION_REF_API_URL"
+    },
     "caseShare": {
       "api": "SERVICES_CASE_SHARE_API"
     },
@@ -63,6 +66,7 @@
     "work_allocation": {
       "taskApi": "SERVICES_WORK_ALLOCATION_TASK_API"
     },
+    "refunds": "SERVICES_REFUNDS_API_URL",
     "role_assignment": {
       "roleApi": "SERVICES_ROLE_ASSIGNMENT_API"
     },
@@ -133,6 +137,10 @@
     },
     "substantiveRoleEnabled": {
       "__name": "FEATURE_SUBSTANTIVE_ROLE_ENABLED",
+      "__format":"json"
+    },
+    "accessManagementEnabled": {
+      "__name": "FEATURE_ACCESS_MANAGEMENT_ENABLED",
       "__format":"json"
     }
   },

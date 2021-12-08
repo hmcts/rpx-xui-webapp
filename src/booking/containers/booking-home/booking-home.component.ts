@@ -1,8 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { of } from 'rxjs/internal/observable/of';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { forkJoin, Observable, Subscription,  } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Booking, BookingNavigationEvent, BookingProcess } from '../../models';
 import { BookingService } from '../../services';
 
@@ -13,14 +12,14 @@ import { BookingService } from '../../services';
 export class BookingHomeComponent implements OnInit, OnDestroy {
 
   @Input() public bookingProcess: BookingProcess;
-
   @Output() public bookingProcessChange = new EventEmitter<BookingProcess>();
   @Output() public eventTrigger = new EventEmitter();
 
   public bookingTypeForm: FormGroup;
   public existingBookings: Booking[];
+  private bookings$: Observable<any[]> | any;
+  private locations$: Observable<any>[];
   private existingBookingsSubscription: Subscription;
-  private bookingLocationSubscription: Subscription;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -32,36 +31,40 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
       bookingType: new FormControl(null)
     });
 
-  //   this.existingBookingsSubscription = this.bookingService.getBookings().pipe(
-  //     map(res => (res as any).bookings.sort(this.sortFunction)
-  // ).subscribe(response => {
-  //     this.existingBookings = response.bookings;
-  //     this.assignBookingLocation();
-  //   });
+    this.existingBookingsSubscription = this.bookingService.getBookings().subscribe((arr) => {
+      this.locations$ = arr.bookings.map(
+        booking =>  this.bookingService.getBookingLocation(booking.base_location_id).pipe(
+          map( location => {
+            return {
+              ...booking,
+              locationName: location[0] && !!location[0].building_location_name && location[0].building_location_name  } ;
+          }
+        ))
+      );
 
-    this.existingBookingsSubscription = this.bookingService.getBookings().subscribe(response => {
-    this.existingBookings = response.bookings;
-    this.assignBookingLocation();
-    this.orderByCurrentThenFeature(); 
+      this.bookings$ = forkJoin(this.locations$);
+      this.bookings$.subscribe(( result) => {
+        this.existingBookings = result;
+        this.orderByCurrentThenFeature();
+      });
     });
+  }
 
+  public checkIfButtonDisabled(beginTime: Date): boolean {
+    return (new Date().getTime() < new Date(beginTime).getTime());
   }
 
   private orderByCurrentThenFeature() {
-    const featureBookings: Booking[]  = this.existingBookings.filter(p => new Date().getTime() < new Date(p.beginTime).getTime()).sort(this.sortFunction);
-    const currentBookings: Booking[]  = this.existingBookings.filter(p => new Date().getTime() > new Date(p.beginTime).getTime()).sort(this.sortFunction);
-
-    this.existingBookings = currentBookings.sort(this.sortFunction);
-    this.existingBookings.push(...featureBookings.sort(this.sortFunction));
+    const featureBookings: Booking[]  = this.existingBookings.filter(p => new Date().getTime() < new Date(p.beginTime).getTime()).sort(this.sortBookings);
+    const currentBookings: Booking[]  = this.existingBookings.filter(p => new Date().getTime() > new Date(p.beginTime).getTime()).sort(this.sortBookings);
+    this.existingBookings = currentBookings.sort(this.sortBookings).concat(featureBookings.sort(this.sortBookings));
   }
 
-  private sortFunction(a, b) {
-    const dateA = new Date(a.beginTime).getTime();
-    const dateB = new Date(b.beginTime).getTime();
-    if ( a.locationName > b.locationName) { return 1; }
-    if ( a.locationName < b.locationName) { return -1; }
-    if ( dateA > dateB) { return 1; }
-    if ( dateA < dateB) { return -1; }
+  private sortBookings(current, next) {
+    if ( current.locationName > next.locationName) { return 1; }
+    if ( current.locationName < next.locationName) { return -1; }
+    if ( current.beginTime > next.beginTime) { return 1; }
+    if ( current.beginTime < next.beginTime) { return -1; }
     return 0;
   }
 
@@ -69,29 +72,17 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
     this.bookingProcess.selectedBookingOption = index;
   }
 
-  public assignBookingLocation() {
-    this.existingBookings.forEach(booking => {
-      this.bookingLocationSubscription = this.bookingService.getBookingLocation(booking.base_location_id).subscribe(location =>
-        booking.locationName = location[0] && location[0].building_location_name ?
-                                    location[0].building_location_name :
-                                    null
-      );
-    });
-  }
-
   public ngOnDestroy() {
+    if (this.bookings$) {
+      this.bookings$.unsubscribe();
+    }
     if (this.existingBookingsSubscription) {
       this.existingBookingsSubscription.unsubscribe();
-    }
-    if (this.bookingLocationSubscription) {
-      this.bookingLocationSubscription.unsubscribe();
     }
   }
 
   public onEventTrigger() {
     this.eventTrigger.emit(BookingNavigationEvent.HOMECONTINUE);
   }
-
-
 
 }

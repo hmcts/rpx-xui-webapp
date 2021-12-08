@@ -4,6 +4,7 @@ import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
 import { CancelHearingComponent, ChangeHearingComponent, DatePriorityHearingComponent, HearingStageComponent, RequestHearingComponent, ViewHearingComponent } from './containers';
 import { LocationSearchContainerComponent } from './containers/request-hearing/location-search-container/location-search-container.component';
 import { WelshHearingComponent } from './containers/request-hearing/welsh-hearing/welsh-hearing.component';
+import { HearingCategory } from './models/hearings.enum';
 import { PriorityResolver } from './resolvers/priority/priority.resolve';
 
 export const ROUTES: Routes = [
@@ -74,10 +75,12 @@ export const ROUTES: Routes = [
       },
       {
         path: 'hearing-stage',
+        resolve: { hearingStages: PriorityResolver },
         component: HearingStageComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Manage cases | Hearing Stage | Date Priority Hearing'
+          title: 'HMCTS Manage cases | Hearing Stage | Date Priority Hearing',
+          category: HearingCategory.HearingType
         }
       },
     ]

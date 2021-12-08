@@ -1,4 +1,4 @@
-@fullfunctional
+@ignore
 Feature: WA Release 1: : Work allocations task list, Available list and Task manager
 
     Scenario Outline: View tasks, E2E journey of Caseworker-ia-officer user
@@ -25,7 +25,7 @@ Feature: WA Release 1: : Work allocations task list, Available list and Task man
 
         Then I see header tab Task manager
         When I click on primary navigation header tab "Task manager", I see selected tab page displayed
-       
+
         Then I see Task manager page displayed
         Then I see Task list table
         Then I see Task manager table displaying some tasks
@@ -37,4 +37,3 @@ Feature: WA Release 1: : Work allocations task list, Available list and Task man
         Examples:
             | useridentifier     | roles                                                            | mainHeaders                                    | rightColumnHeaders  |
             | IAC_CaseOfficer_R1 | caseworker-ia-caseofficer,caseworker-ia-admofficer               | Task list, Task manager,Case list, Create case | Find case           |
-           

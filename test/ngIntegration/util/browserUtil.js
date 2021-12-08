@@ -19,7 +19,6 @@ const http = axios.create(axiosOptions);
 class BrowserUtil{
 
     async gotoHomePage(){
-
         const baseUrl =  argv.debug ? 'http://localhost:3000/': 'http://localhost:4200/';
         await browser.get(baseUrl);
     }

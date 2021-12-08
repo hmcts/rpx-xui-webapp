@@ -524,10 +524,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.4.25-search-location-selection-getfocus-fontsize":
-  version "1.4.25-search-location-selection-getfocus-fontsize"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.25-search-location-selection-getfocus-fontsize.tgz#73f910fb5ec6c888aeec031130d197750257978a"
-  integrity sha512-CCae/MTKmiOhoAjpnXzSpqfUKfLfgTCcZIhvyRH8wQcJVSV8AZg7gpufxkGjK7ohsm7ifVy0HU50/AYVO6+mMA==
+"@hmcts/rpx-xui-common-lib@1.4.27-no-courtname-fontsize":
+  version "1.4.27-no-courtname-fontsize"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.27-no-courtname-fontsize.tgz#035feb6988690ef4504539b75a6a4baf5ccbc256"
+  integrity sha512-jg8AyCqTNBj/048uri3BM9R3yHLkPyDnik2gUSoorLSmrq83RU6Shr6y8aRbDAb6DTlURb3nacodFPtkHNMhDQ==
   dependencies:
     tslib "^1.9.0"
 

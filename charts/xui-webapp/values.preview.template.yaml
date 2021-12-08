@@ -20,6 +20,7 @@ nodejs:
      STUB: false
      DEBUG: xuiNode:*
      FEATURE_WORKALLOCATION_ENABLED: true
+     NODE_OPTIONS: --max-old-space-size=8192
   keyVaults:
     rpx:
       secrets:

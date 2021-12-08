@@ -8,17 +8,40 @@ import { Booking } from '../../models/booking.interface';
 import { BookingService } from '../../services';
 import { BookingHomeComponent } from './booking-home.component';
 
-const DUMMY_BOOKING_1: Booking = {
+const DUMMY_BOOKINGS: Booking[] = [{
   userId: 'Dummy User Id',
   appointmentId: 'Dummy Appointment Id',
   roleId: 'Dummy Role Id',
   contract_type_id: 'Dummy Contract Type Id',
-  base_location_id: 'Dummy Location Id',
+  base_location_id: '101',
   region_id: 'Dummy Region Id',
-  beginTime: new Date(),
-  endTime: new Date(),
-  created: new Date()
-};
+  beginTime: new Date('2021-12-01T09:58:39.930+0000'),
+  endTime: new Date('2022-01-01T09:58:39.930+0000'),
+  created: new Date('2021-12-01T09:58:39.930+0000'),
+},
+{
+  userId: 'Dummy User Id',
+  appointmentId: 'Dummy Appointment Id',
+  roleId: 'Dummy Role Id',
+  contract_type_id: 'Dummy Contract Type Id',
+  base_location_id: '101',
+  region_id: 'Dummy Region Id',
+  beginTime: new Date('2021-12-02T09:58:39.930+0000'),
+  endTime: new Date('2022-02-01T09:58:39.930+0000'),
+  created: new Date('2021-12-01T09:58:39.930+0000'),
+},
+{
+  userId: 'Dummy User Id',
+  appointmentId: 'Dummy Appointment Id',
+  roleId: 'Dummy Role Id',
+  contract_type_id: 'Dummy Contract Type Id',
+  base_location_id: '102',
+  region_id: 'Dummy Region Id',
+  beginTime: new Date('2029-01-01T09:58:39.930+0000'),
+  endTime: new Date('2029-03-01T09:58:39.930+0000'),
+  created: new Date('2029-12-01T09:58:39.930+0000'),
+}];
+
 
 const DUMMY_LOCATION_NAME: string = 'Some place name';
 
@@ -40,9 +63,7 @@ describe('BookingHomeComponent', () => {
     })
     .compileComponents();
 
-    bookingService.getBookings.and.returnValue(of({bookings: [
-      DUMMY_BOOKING_1
-    ]}));
+    bookingService.getBookings.and.returnValue(of({bookings: DUMMY_BOOKINGS}));
     bookingService.getBookingLocation.and.returnValue(of([{
       building_location_name: DUMMY_LOCATION_NAME
     }]));
@@ -62,6 +83,38 @@ describe('BookingHomeComponent', () => {
     fixture.detectChanges();
     const bookingsList = element.querySelector('#conditional-booking-type-0');
     expect(bookingsList).toBeTruthy();
+  });
+
+  it('should display bookings in sorted order when there are existing bookings and first radio button is clicked', () => {
+    const element = fixture.debugElement.nativeElement;
+    const firstRadioButton = element.querySelector('#type-0');
+    firstRadioButton.click();
+    fixture.detectChanges();
+
+    const totalItems = fixture.debugElement.nativeElement.querySelectorAll('div.govuk-grid-column-one-third').length;
+    const firstItemDateMessage = fixture.debugElement.nativeElement.querySelector('.govuk-radios__conditional').childNodes[1].querySelector('p .govuk-hint');
+    const firstItemLocationMessage = fixture.debugElement.nativeElement.querySelector('.govuk-radios__conditional').childNodes[1].querySelector('p').childNodes[0];
+    const secondItemDateMessage = fixture.debugElement.nativeElement.querySelector('.govuk-radios__conditional').childNodes[2].querySelector('p .govuk-hint');
+    const thirdItemDateMessage = fixture.debugElement.nativeElement.querySelector('.govuk-radios__conditional').childNodes[3].querySelector('p .govuk-hint');
+    expect(totalItems).toEqual(DUMMY_BOOKINGS.length);
+    expect(firstItemDateMessage.textContent).toContain('01 December 2021 to 01 January 2022');
+    expect(firstItemLocationMessage.textContent).toContain('Some place name');
+    expect(secondItemDateMessage.textContent).toContain('02 December 2021 to 01 February 2022');
+    expect(thirdItemDateMessage.textContent).toContain('01 January 2029 to 01 March 2029');
+  });
+
+  it('should display bookings disabled if future booking, enabled if current booking', () => {
+    const element = fixture.debugElement.nativeElement;
+    const firstRadioButton = element.querySelector('#type-0');
+    firstRadioButton.click();
+    fixture.detectChanges();
+    const firstBookingButton = fixture.debugElement.nativeElement.querySelectorAll('.govuk-button-group button')[0];
+    const secondBookingButton = fixture.debugElement.nativeElement.querySelectorAll('.govuk-button-group button')[1];
+    const thirdBookingButton = fixture.debugElement.nativeElement.querySelectorAll('.govuk-button-group button')[2];
+
+    expect(firstBookingButton.disabled).toBeFalsy();
+    expect(secondBookingButton.disabled).toBeFalsy();
+    expect(thirdBookingButton.disabled).toBeTruthy();
   });
 
   describe('onSelectOption()', () => {

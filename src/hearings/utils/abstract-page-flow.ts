@@ -4,9 +4,9 @@ import {ScreenNavigationModel} from '../models/screenNavigation.model';
 
 @Injectable()
 export abstract class AbstractPageFlow {
-  abstract getCurrentPage(): string;
+  public abstract getCurrentPage(): string;
 
-  abstract getNextPage(screensNavigations$: Observable<ScreenNavigationModel[]>): string;
+  public abstract getNextPage(screensNavigations$: Observable<ScreenNavigationModel[]>): string;
 
-  abstract getLastPage(): string;
+  public abstract getLastPage(screensNavigations$: Observable<ScreenNavigationModel[]>): string;
 }

@@ -1,11 +1,11 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
 import {select, Store} from '@ngrx/store';
 import {Observable, Subscription} from 'rxjs';
 import {map} from 'rxjs/operators';
+import {ACTION} from '../../models/hearings.enum';
 import {ScreenNavigationModel} from '../../models/screenNavigation.model';
+import {HearingsService} from '../../services/hearings.service';
 import * as fromHearingStore from '../../store';
-import {AbstractPageFlow} from '../../utils/abstract-page-flow';
 
 @Component({
   selector: 'exui-request-hearing',
@@ -13,14 +13,13 @@ import {AbstractPageFlow} from '../../utils/abstract-page-flow';
   styleUrls: ['./request-hearing.component.scss']
 })
 export class RequestHearingComponent implements OnInit, OnDestroy {
-  public backLink: string;
+
   public referenceId: string;
   public hearingListSub: Subscription;
   public screensNaviagations$: Observable<ScreenNavigationModel[]>;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
-              private readonly pageFlow: AbstractPageFlow,
-              private readonly router: Router) {
+              private readonly hearingsService: HearingsService) {
     this.hearingListSub = this.hearingStore.pipe(select(fromHearingStore.getHearingList)).subscribe(
       hearingList => {
         this.referenceId = hearingList.hearingListMainModel ? hearingList.hearingListMainModel.caseRef : '';
@@ -34,19 +33,12 @@ export class RequestHearingComponent implements OnInit, OnDestroy {
     this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.referenceId));
   }
 
-  public onContinue(): void {
-    console.log('continue');
-    // validate the route component form group
-    const isValid = this.validateForm();
-    if (isValid) {
-      const nextPage = this.pageFlow.getNextPage(this.screensNaviagations$);
-      this.router.navigate(['hearings', 'request', nextPage]);
-    }
+  public onBack(): void {
+    this.hearingsService.navigateAction(ACTION.BACK);
   }
 
-  public validateForm(): boolean {
-    // TODO
-    return true;
+  public onContinue(): void {
+    this.hearingsService.navigateAction(ACTION.CONTINUE);
   }
 
   public ngOnDestroy(): void {

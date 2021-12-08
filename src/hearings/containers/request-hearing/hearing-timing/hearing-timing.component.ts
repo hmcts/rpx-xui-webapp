@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
@@ -6,15 +6,18 @@ import { select, Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { map } from 'rxjs/operators';
 import * as fromHearingStore from '../../../../hearings/store';
+import {ACTION} from '../../../models/hearings.enum';
 import { PartyUnavailabilityRange } from '../../../models/partyUnavilabilityRange.model';
 import { RefDataModel } from '../../../models/refData.model';
+import {HearingsService} from '../../../services/hearings.service';
+import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-timing',
   templateUrl: './hearing-timing.component.html',
   styleUrls: ['./hearing-timing.component.scss']
 })
-export class HearingTimingComponent implements OnInit {
+export class HearingTimingComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
   public priorityForm: FormGroup;
   public priorities: RefDataModel[];
   public checkedHearingAvailability: string;
@@ -23,9 +26,12 @@ export class HearingTimingComponent implements OnInit {
   public earliestHearingDate: GovUiConfigModel;
   public latestHearingDate: GovUiConfigModel;
 
-  constructor(private readonly formBuilder: FormBuilder,
-              private readonly route: ActivatedRoute,
-              private readonly hearingStore: Store<fromHearingStore.State>) { }
+  constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
+              protected readonly hearingsService: HearingsService,
+              private readonly formBuilder: FormBuilder,
+              private readonly route: ActivatedRoute) {
+    super(hearingStore, hearingsService);
+  }
 
   public ngOnInit(): void {
     this.initDateConfig();
@@ -107,5 +113,20 @@ export class HearingTimingComponent implements OnInit {
       }
       startDate.add(1, 'd');
     }
+  }
+
+  public executeAction(action: ACTION): void {
+    if (this.isFormValid()) {
+      super.navigateAction(action);
+    }
+  }
+
+  public isFormValid(): boolean {
+    // TODO verify if form group is valid
+    return true;
+  }
+
+  public ngOnDestroy(): void {
+    super.unsubscribe();
   }
 }

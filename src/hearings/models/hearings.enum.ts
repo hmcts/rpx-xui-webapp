@@ -91,3 +91,14 @@ export enum HearingCategory {
   NonStdDurationReasonCodes = 'NonStdDurationReasonCodes',
   EntityRoleCodes = 'EntityRoleCodes'
 }
+
+export enum ACTION {
+  BACK = 'BACK',
+  CONTINUE = 'CONTINUE',
+  CANCEL = 'CANCEL',
+}
+
+export enum CONDITION_OPERATOR {
+  INCLUDE = 'INCLUDE',
+  NOT_INCLUDE = 'NOT INCLUDE',
+}

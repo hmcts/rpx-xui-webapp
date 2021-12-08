@@ -1,12 +1,12 @@
 import {Action} from '@ngrx/store';
 import {HearingListMainModel} from '../../models/hearingListMain.model';
 
-export const HEARING_LIST_RESET = '[HEARING LIST] Reset';
+export const RESET_HEARING_LIST = '[HEARING LIST] Reset Hearing List';
 export const LOAD_ALL_HEARINGS = '[HEARING LIST] Load All Hearings';
 export const LOAD_ALL_HEARINGS_SUCCESS = '[HEARING LIST] Load All Hearings Successfully';
 
-export class HearingListReset implements Action {
-  public readonly type = HEARING_LIST_RESET;
+export class ResetHearingList implements Action {
+  public readonly type = RESET_HEARING_LIST;
 }
 
 export class LoadAllHearings implements Action {
@@ -24,6 +24,6 @@ export class LoadAllHearingsSuccess implements Action {
 }
 
 export type HearingListAction =
-  | HearingListReset
+  | ResetHearingList
   | LoadAllHearings
   | LoadAllHearingsSuccess;

@@ -130,12 +130,12 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       conditionKey: 'region',
       navigation: [
         {
-          conditionOperator: 'EQUAL',
+          conditionOperator: 'INCLUDE',
           conditionValue: 'Wales',
           resultValue: 'welsh-hearing',
         },
         {
-          conditionOperator: 'NOT EQUAL',
+          conditionOperator: 'NOT INCLUDE',
           conditionValue: 'Wales',
           resultValue: 'specify-judge',
         },

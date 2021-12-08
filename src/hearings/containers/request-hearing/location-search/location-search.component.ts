@@ -1,23 +1,35 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { Store, select } from '@ngrx/store';
-import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
-import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {LocationByEPIMSModel} from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import {select, Store} from '@ngrx/store';
+import {Observable, of, Subscription} from 'rxjs';
+import {map} from 'rxjs/operators';
 import * as fromHearingStore from '../../../../hearings/store';
+import {HearingLocationModel} from '../../../models/hearingLocation.model';
+import {HearingRequestMainModel} from '../../../models/hearingRequestMain.model';
+import {ACTION} from '../../../models/hearings.enum';
+import {HearingsService} from '../../../services/hearings.service';
+import {RequestHearingPageFlow} from '../request-hearing.page.flow';
+
 @Component({
   selector: 'exui-location-search',
   templateUrl: './location-search.component.html',
   styleUrls: ['./location-search.component.scss']
 })
-export class LocationSearchComponent implements OnInit {
+export class LocationSearchComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
   public locationType: string;
   public findLocationFormGroup: FormGroup;
+  public selectedLocationsSub: Subscription;
+  public selectedLocations: LocationByEPIMSModel[];
   public selectedLocations$: Observable<LocationByEPIMSModel[]>;
   public serviceIds: string = 'SSCS';
+  public hearingRequestMainModel: HearingRequestMainModel;
 
-  constructor(private readonly hearingStore: Store<fromHearingStore.State>, fb: FormBuilder) {
-    this.findLocationFormGroup =  fb.group({
+  constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
+              protected readonly hearingsService: HearingsService,
+              fb: FormBuilder) {
+    super(hearingStore, hearingsService);
+    this.findLocationFormGroup = fb.group({
       locationSelectedFormControl: [null]
     });
     this.selectedLocations$ = of([]);
@@ -29,13 +41,18 @@ export class LocationSearchComponent implements OnInit {
     ).subscribe(id => {
       this.serviceIds = id ? id : this.serviceIds;
     });
+    this.selectedLocationsSub = this.selectedLocations$.subscribe(selectedLocations => {
+      this.selectedLocations = selectedLocations;
+    });
   }
 
   public addSelection(): void {
     if (this.findLocationFormGroup.controls.locationSelectedFormControl.value) {
       this.selectedLocations$.subscribe(selectedLocations => {
-          selectedLocations.push(this.findLocationFormGroup.controls.locationSelectedFormControl.value as LocationByEPIMSModel);
-          this.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
+        selectedLocations.push(this.findLocationFormGroup.controls.locationSelectedFormControl.value as LocationByEPIMSModel);
+        this.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
+        const strLocations = selectedLocations.map(location => location.region).join(',');
+        this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions({region: strLocations}));
       });
     }
   }
@@ -45,5 +62,36 @@ export class LocationSearchComponent implements OnInit {
       const index = selectedLocations.findIndex(selectedLocation => selectedLocation.epims_id === location.epims_id);
       selectedLocations.splice(index, 1);
     });
+  }
+
+  public executeAction(action: ACTION): void {
+    const locations: HearingLocationModel[] = this.selectedLocations.map(locationByEPIMSModel => {
+      return {
+        locationType: 'hearing',
+        locationId: locationByEPIMSModel.epims_id
+      } as HearingLocationModel;
+    });
+    this.hearingRequestMainModel = {
+      ...this.hearingRequestMainModel,
+      hearingDetails: {
+        ...this.hearingRequestMainModel.hearingDetails,
+        hearingLocations: locations
+      }
+    };
+    if (this.isFormValid()) {
+      super.navigateAction(action);
+    }
+  }
+
+  public isFormValid(): boolean {
+    // TODO verify if form group is valid
+    return true;
+  }
+
+  public ngOnDestroy(): void {
+    super.unsubscribe();
+    if (this.selectedLocationsSub) {
+      this.selectedLocationsSub.unsubscribe();
+    }
   }
 }

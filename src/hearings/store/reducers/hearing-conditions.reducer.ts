@@ -6,15 +6,15 @@ export const initialHearingConditionsState: HearingConditions = {};
 export function hearingConditionsReducer(currentState = initialHearingConditionsState,
                                          action: fromActions.HearingConditionsAction): HearingConditions {
   switch (action.type) {
-    case fromActions.HEARING_CONDITIONS_RESET: {
+    case fromActions.RESET_HEARING_CONDITIONS: {
       return {
         ...initialHearingConditionsState
       };
     }
-    case fromActions.HEARING_CONDITIONS_SAVE: {
+    case fromActions.SAVE_HEARING_CONDITIONS: {
       return {
         ...currentState,
-        [action.payload.key]: action.payload.toString()
+        [Object.keys(action.payload)[0]]: Object.values(action.payload)[0]
       };
     }
     default: {
@@ -24,5 +24,3 @@ export function hearingConditionsReducer(currentState = initialHearingConditions
     }
   }
 }
-
-export const hearingConditions = (hearingConditionsState) => hearingConditionsState;

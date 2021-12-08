@@ -9,7 +9,7 @@ export const initialHearingListState: HearingListStateData = {
 export function hearingListReducer(currentState = initialHearingListState,
                                    action: fromActions.HearingListAction): HearingListStateData {
   switch (action.type) {
-    case fromActions.HEARING_LIST_RESET: {
+    case fromActions.RESET_HEARING_LIST: {
       return {
         ...initialHearingListState
       };

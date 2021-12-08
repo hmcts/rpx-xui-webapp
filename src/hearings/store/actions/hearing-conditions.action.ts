@@ -1,19 +1,19 @@
 import {Action} from '@ngrx/store';
 import {HearingConditions} from '../../models/hearingConditions';
 
-export const HEARING_CONDITIONS_RESET = '[HEARING CONDITIONS] Reset';
-export const HEARING_CONDITIONS_SAVE = '[HEARING CONDITIONS] Save Condition';
+export const RESET_HEARING_CONDITIONS = '[HEARING CONDITIONS] Reset Condition';
+export const SAVE_HEARING_CONDITIONS = '[HEARING CONDITIONS] Save Condition';
 
-export class HearingConditionsReset implements Action {
-  public readonly type = HEARING_CONDITIONS_RESET;
+export class ResetHearingConditions implements Action {
+  public readonly type = RESET_HEARING_CONDITIONS;
 }
 
-export class HearingConditionsSave implements Action {
-  public readonly type = HEARING_CONDITIONS_SAVE;
+export class SaveHearingConditions implements Action {
+  public readonly type = SAVE_HEARING_CONDITIONS;
   constructor(public payload: HearingConditions) {
   }
 }
 
 export type HearingConditionsAction =
-  | HearingConditionsReset
-  | HearingConditionsSave;
+  | ResetHearingConditions
+  | SaveHearingConditions;

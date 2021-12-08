@@ -2,7 +2,7 @@
 <div class="govuk-width-container">
   <div class="page">
     <main id="content" role="main">
-      <a [routerLink]="backLink" class="govuk-back-link">Back</a>
+      <a href="javascript:void(0)" (click)="onBack()" class="govuk-back-link">Back</a>
       <router-outlet></router-outlet>
       <button class="govuk-button" data-module="govuk-button" (click)="onContinue()">Continue</button>
     </main>

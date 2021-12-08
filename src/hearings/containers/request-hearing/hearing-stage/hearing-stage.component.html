@@ -10,8 +10,8 @@
               <div class="govuk-radios">
                 <div *ngFor="let hearingStageOption of hearingStageOptions$ | async; let i = index" class="govuk-radios__item">
                     <input #radioButton
-                           class="govuk-radios__input" 
-                           formControlName="stage-option"
+                           class="govuk-radios__input"
+                           name="hearing-type"
                            type="radio">
                     <label class="govuk-label govuk-radios__label">{{hearingStageOption.value_en}}</label>
                 </div>

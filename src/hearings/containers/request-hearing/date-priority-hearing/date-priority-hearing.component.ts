@@ -10,7 +10,7 @@ import { PartyUnavailabilityRange } from '../../../../hearings/models/partyUnavi
 import { RefDataModel } from '../../../../hearings/models/refData.model';
 import { HearingsService } from '../../../../hearings/services/hearings.service';
 import * as fromHearingStore from '../../../../hearings/store';
-import { ValidatorsService } from '../../../utils/validators.service';
+import { ValidatorsUtils } from '../../../utils/validators.utils';
 
 @Component({
   selector: 'exui-date-priority-hearing',
@@ -35,7 +35,7 @@ export class DatePriorityHearingComponent implements OnInit {
 
   constructor(private readonly formBuilder: FormBuilder,
               private readonly route: ActivatedRoute,
-              private readonly validatorsService: ValidatorsService,
+              private readonly validatorsUtils: ValidatorsUtils,
               private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly hearingsService: HearingsService) { }
 
@@ -99,9 +99,9 @@ export class DatePriorityHearingComponent implements OnInit {
   public initForm(): void {
     this.priorityForm = this.formBuilder.group({
       durationLength: this.formBuilder.group({
-        hours: ['', [this.validatorsService.numberMinMaxValidator(HearingDatePriorityConstEnum.MinHours, HearingDatePriorityConstEnum.MaxHours)]],
-        minutes: ['', [this.validatorsService.numberMultipleValidator(HearingDatePriorityConstEnum.MinutesMuliplier)]]
-      }, { validator: this.validatorsService.minutesValidator(HearingDatePriorityConstEnum.TotalMinMinutes, HearingDatePriorityConstEnum.TotalMaxMinutes) }),
+        hours: ['', [this.validatorsUtils.numberMinMaxValidator(HearingDatePriorityConstEnum.MinHours, HearingDatePriorityConstEnum.MaxHours)]],
+        minutes: ['', [this.validatorsUtils.numberMultipleValidator(HearingDatePriorityConstEnum.MinutesMuliplier)]]
+      }, { validator: this.validatorsUtils.minutesValidator(HearingDatePriorityConstEnum.TotalMinMinutes, HearingDatePriorityConstEnum.TotalMaxMinutes) }),
       specificDate: ['', Validators.required],
       firstHearing: this.formBuilder.group({
         firstHearingDate_day: [],
@@ -129,9 +129,9 @@ export class DatePriorityHearingComponent implements OnInit {
     this.firstHearingFormGroup.clearValidators();
     this.dateRangeHearingFormGroup.clearValidators();
     if (this.checkedHearingAvailability === RadioOptions.YES) {
-      this.firstHearingFormGroup.setValidators([this.validatorsService.hearingDateValidator()]);
+      this.firstHearingFormGroup.setValidators([this.validatorsUtils.hearingDateValidator()]);
     } else if (this.checkedHearingAvailability === RadioOptions.CHOOSE_DATE_RANGE) {
-      this.dateRangeHearingFormGroup.setValidators([this.validatorsService.hearingDateRangeValidator()]);
+      this.dateRangeHearingFormGroup.setValidators([this.validatorsUtils.hearingDateRangeValidator()]);
     }
     this.firstHearingFormGroup.updateValueAndValidity();
     this.dateRangeHearingFormGroup.updateValueAndValidity();

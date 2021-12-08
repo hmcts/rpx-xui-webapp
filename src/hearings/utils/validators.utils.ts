@@ -4,7 +4,7 @@ import * as moment from 'moment';
 import { HearingDateEnum } from '../models/hearings.enum';
 
 @Injectable({ providedIn: 'root' })
-export class ValidatorsService {
+export class ValidatorsUtils {
 
   public numberMinMaxValidator(minNumber: number, maxNumber: number): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {

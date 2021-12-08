@@ -42,7 +42,9 @@ export class RemoveRoleComponent implements OnInit {
           const caseworkers = JSON.parse(this.sessionStorageService.getItem('caseworkers'));
           if (caseworkers) {
             const caseWorker = (caseworkers as Caseworker[]).find(caseworker => caseworker.idamId === this.role.actorId);
-            this.role.email = caseWorker.email;
+            if (caseWorker) {
+              this.role.email = caseWorker.email;
+            }
           }
         }
         this.populateAnswers(this.role);

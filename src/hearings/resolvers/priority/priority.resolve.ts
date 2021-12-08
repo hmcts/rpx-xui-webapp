@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Resolve } from '@angular/router';
+import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap, take } from 'rxjs/operators';
@@ -19,7 +19,7 @@ export class PriorityResolver implements Resolve<RefDataModel[]> {
     private readonly hearingStore: Store<fromHearingStore.State>
   ) { }
 
-  public resolve(): Observable<RefDataModel[]> {
+  public resolve(route?: ActivatedRouteSnapshot): Observable<RefDataModel[]> {
     return this.getServiceId$()
       .pipe(
         switchMap(id => {
@@ -27,7 +27,8 @@ export class PriorityResolver implements Resolve<RefDataModel[]> {
             id ? id : this.serviceId);
         }), take(1),
         switchMap((serviceId) => {
-          return this.getReferenceData$(serviceId);
+          const category = route.data['category'] ? route.data['category'] as HearingCategory : HearingCategory.Priority;
+          return this.getReferenceData$(serviceId, category);
         })
       );
   }
@@ -38,8 +39,8 @@ export class PriorityResolver implements Resolve<RefDataModel[]> {
     );
   }
 
-  public getReferenceData$(serviceId): Observable<RefDataModel[]> {
-    return this.hearingsDataService.getRefData(HearingCategory.Priority, serviceId).pipe(
+  public getReferenceData$(serviceId, category: HearingCategory = HearingCategory.Priority): Observable<RefDataModel[]> {
+    return this.hearingsDataService.getRefData(category, serviceId).pipe(
       catchError(error => {
         return [];
       })

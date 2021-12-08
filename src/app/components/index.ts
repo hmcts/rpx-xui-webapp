@@ -31,7 +31,7 @@ export const components: any[] = [
   GetHelpComponent,
   SignedOutComponent,
   ApplicationRoutingComponent,
-	CaseReferenceSearchBoxComponent
+  CaseReferenceSearchBoxComponent
 ];
 
 export * from './hmcts-global-footer/hmcts-global-footer.component';

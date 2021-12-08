@@ -28,12 +28,11 @@
         <a *ngFor="let action of item.actions"
            href="javascript:void(0)"
            [routerLink]="['/', 'role-access', 'allocate-role', action.id]"
-           [queryParams]="queryParams(item)">{{action.title}}</a>
+           [queryParams]="queryParams(item)" [state]="{returnUrl: returnUrl}">{{action.title}}</a>
       </td>
     </tr>
   </ng-container>
 </table>
-
 <dl class="govuk-summary-list" *ngIf="!roles ||  !roles.length">
   <div class="govuk-summary-list__row">
     <dd class="govuk-summary-list__value">

@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -24,15 +25,18 @@ export class RemoveRoleComponent implements OnInit {
   public hint = RemoveRoleText.hint;
   public role: CaseRole;
 
+  private returnUrl: string;
+
   constructor(private readonly route: ActivatedRoute,
               private readonly router: Router,
+              private readonly location: Location,
               private readonly allocateRoleService: AllocateRoleService,
               private readonly sessionStorageService: SessionStorageService) {
-      const extras = this.router.getCurrentNavigation().extras;
-      this.allocateRoleService.backUrl = extras.state && extras.state.backUrl ? extras.state.backUrl : `cases/case-details/${this.caseId}/roles-and-access`;
+
     }
 
   public ngOnInit(): void {
+    this.returnUrl = window.history.state && window.history.state.returnUrl ? window.history.state.returnUrl : '';
     const paramMap$ = this.route.queryParamMap;
     paramMap$.pipe(mergeMap(queryMap => {
         return this.getRoleAssignmentFromQuery(queryMap);
@@ -68,7 +72,7 @@ export class RemoveRoleComponent implements OnInit {
     switch (navEvent) {
       case RemoveAllocationNavigationEvent.REMOVE_ROLE_ALLOCATION: {
         this.allocateRoleService.removeAllocation(this.assignmentId).subscribe(() =>
-        this.router.navigate([this.allocateRoleService.backUrl], {
+        this.router.navigate([this.returnUrl], {
           state: {
               showMessage: true,
               messageText: RemoveRoleText.infoMessage
@@ -82,7 +86,7 @@ export class RemoveRoleComponent implements OnInit {
         break;
       }
       case RemoveAllocationNavigationEvent.CANCEL: {
-        this.router.navigateByUrl(this.allocateRoleService.backUrl);
+        this.location.back();
         return;
       }
       default: {

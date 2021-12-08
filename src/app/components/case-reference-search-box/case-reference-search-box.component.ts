@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { NavItemsModel } from 'src/app/models';
 
 @Component({
   selector: 'exui-case-reference-search-box',
@@ -6,4 +7,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./case-reference-search-box.component.scss']
 })
 export class CaseReferenceSearchBoxComponent {
+	@Input() public item: NavItemsModel;
 }

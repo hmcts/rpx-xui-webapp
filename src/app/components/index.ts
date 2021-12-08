@@ -13,6 +13,7 @@ import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.componen
 import { ApplicationRoutingComponent } from './routing/application-routing.component';
 import { ServiceDownComponent } from './service-down/service-down.component';
 import { SignedOutComponent } from './signed-out/signed-out.component';
+import { CaseReferenceSearchBoxComponent } from './case-reference-search-box/case-reference-search-box.component';
 
 export const components: any[] = [
   HmctsGlobalFooterComponent,
@@ -29,7 +30,8 @@ export const components: any[] = [
   MediaViewerWrapperComponent,
   GetHelpComponent,
   SignedOutComponent,
-  ApplicationRoutingComponent
+  ApplicationRoutingComponent,
+	CaseReferenceSearchBoxComponent
 ];
 
 export * from './hmcts-global-footer/hmcts-global-footer.component';
@@ -47,3 +49,4 @@ export * from './get-help/get-help.component';
 export * from './signed-out/signed-out.component';
 export * from './not-authorised/not-authorised.component';
 export * from './routing/application-routing.component';
+export * from './case-reference-search-box/case-reference-search-box.component';

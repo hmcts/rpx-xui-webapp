@@ -7,5 +7,5 @@ import { NavItemsModel } from 'src/app/models';
   styleUrls: ['./case-reference-search-box.component.scss']
 })
 export class CaseReferenceSearchBoxComponent {
-	@Input() public item: NavItemsModel;
+  @Input() public item: NavItemsModel;
 }

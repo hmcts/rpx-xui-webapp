@@ -2,8 +2,6 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CaseReferenceSearchBoxComponent } from './case-reference-search-box.component';
 
-import createSpyObj = jasmine.createSpyObj;
-
 describe('ExuiCaseReferenceSearchBoxComponent', () => {
   let component: CaseReferenceSearchBoxComponent;
   let fixture: ComponentFixture<CaseReferenceSearchBoxComponent>;

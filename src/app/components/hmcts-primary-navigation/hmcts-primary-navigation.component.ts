@@ -19,7 +19,7 @@ export class HmctsPrimaryNavigationComponent {
     @Input() label;
     @Input() items;
     @Input() public logoIsUsed;
-    
+
     public showItems: boolean;
     constructor(private route: ActivatedRoute) {
 

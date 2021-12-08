@@ -30,7 +30,6 @@ import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { checkIfCaseAllocator } from './roleService';
 import * as roleServiceMock from './roleService.mock';
 import { handleTaskGet, handleTaskPost, handleTaskSearch } from './taskService';
-import * as taskServiceMock from './taskService.mock';
 import {
   assignActionsToCases,
   assignActionsToTasks,
@@ -60,7 +59,6 @@ import {
   searchCasesById
 } from './util';
 
-taskServiceMock.init();
 caseServiceMock.init();
 roleServiceMock.init();
 

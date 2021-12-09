@@ -17,7 +17,6 @@ describe('Priority Resolver', () => {
   let hearingsDataService: HearingsRefDataService;
   let store: Store<fromHearingStore.State>;
   const dataRef: RefDataModel[] = [];
-  let route: ActivatedRoute;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

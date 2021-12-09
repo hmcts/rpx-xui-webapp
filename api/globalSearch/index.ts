@@ -4,7 +4,8 @@ import { handleGet, handlePost } from '../common/crudService';
 import { getConfigValue } from '../configuration';
 import {
   GLOBAL_SEARCH_SERVICES,
-  SERVICES_CCD_COMPONENT_API_PATH
+  SERVICES_CCD_COMPONENT_API_PATH,
+  SERVICES_CCD_DATA_STORE_API_PATH
 } from '../configuration/references';
 import { GlobalSearchService } from '../interfaces/globalSearchService';
 import { EnhancedRequest } from '../lib/models';
@@ -49,10 +50,7 @@ export async function getServices(req: EnhancedRequest, res: Response, next: Nex
  */
 export async function getSearchResults(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   try {
-    // https://tools.hmcts.net/jira/browse/EUI-4719
-    // TODO: Enable the below line and delete the line next to it (URL hardcoded)
-    // const path = `${getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH)}/globalsearch`;
-    const path = 'http://ccd-ac-int-data-store-api-demo.service.core-compute-demo.internal/globalSearch';
+    const path = `${getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH)}/globalSearch`;
     const response = await handlePost(path, req.body, req, next);
     return res.status(response.status).send(response.data);
   } catch (error) {

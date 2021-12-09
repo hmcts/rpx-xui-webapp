@@ -18,8 +18,8 @@
               </div>
               <div id="conditional-booking-type-0" *ngIf="bookingTypeForm.get('bookingType').value === 0" class="govuk-radios__conditional">
 
+                <div class="govuk-form-group">
                 <div class="govuk-grid-column-one-third" *ngFor="let booking of existingBookings" >
-                  <div class="govuk-form-group">
                       <p>
                         <span class="govuk-!-font-weight-bold">{{booking.locationName}}</span>
                         <span class="govuk-hint">

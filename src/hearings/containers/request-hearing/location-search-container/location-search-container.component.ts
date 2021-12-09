@@ -18,6 +18,7 @@ export class LocationSearchContainerComponent implements OnInit  {
   public selectedLocation: LocationByEPIMSModel;
   public serviceIds: string = 'SSCS';
   public findLocationFormGroup: FormGroup;
+  public showAutocomplete: boolean = false;
 
   @ViewChild(SearchLocationComponent) public searchLocationComponent: SearchLocationComponent;
 
@@ -56,6 +57,7 @@ export class LocationSearchContainerComponent implements OnInit  {
     this.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
     this.findLocationFormGroup.controls.locationSelectedFormControl.markAsPristine();
     this.locationsFound$ = of([]);
+    this.showAutocomplete = false;
   }
 
   public removeSelection(location: LocationByEPIMSModel): void {

@@ -10,12 +10,6 @@ export  const config =  {
             ]
         },
         {
-            id: 'PUBLICLAW',
-            caseTypeIds: [
-                'CARE_SUPERVISION_EPO'
-            ]
-        },
-        {
             id: 'IA',
             caseTypeIds: [
                 'Asylum'

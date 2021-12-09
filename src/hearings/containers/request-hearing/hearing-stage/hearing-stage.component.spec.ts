@@ -131,15 +131,6 @@ describe('HearingStageComponent', () => {
     });
   });
 
-  it('should be in the same order as service', () => {
-    const radioLabels = fixture.debugElement.queryAll(By.css('.govuk-radios__item'));
-    expect(radioLabels.length).toBeGreaterThan(0);
-
-    for (let index = 0; index < radioLabels.length; index++) {
-      expect(radioLabels[index].nativeElement.innerText).toEqual(source[index].value_en);
-    }
-  });
-
   it('should call unsubscribe', (done) => {
     component.ngOnInit();
     spyOn(component.hearingStoreSub, 'unsubscribe');
@@ -149,6 +140,15 @@ describe('HearingStageComponent', () => {
       component.ngOnDestroy();
       expect(component.hearingStoreSub.unsubscribe).toHaveBeenCalled();
     });
+  });
+
+  it('should be in the same order as service', () => {
+    const radioLabels = fixture.debugElement.queryAll(By.css('.govuk-radios__item'));
+    expect(radioLabels.length).toBeGreaterThan(0);
+
+    for (let index = 0; index < radioLabels.length; index++) {
+      expect(radioLabels[index].nativeElement.innerText).toEqual(source[index].value_en);
+    }
   });
 
   afterEach(() => {

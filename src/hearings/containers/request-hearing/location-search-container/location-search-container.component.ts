@@ -55,6 +55,7 @@ export class LocationSearchContainerComponent implements OnInit  {
     selectedLocations.push(this.findLocationFormGroup.controls.locationSelectedFormControl.value as LocationByEPIMSModel);
     this.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
     this.findLocationFormGroup.controls.locationSelectedFormControl.markAsPristine();
+    this.locationsFound$ = of([]);
   }
 
   public removeSelection(location: LocationByEPIMSModel): void {

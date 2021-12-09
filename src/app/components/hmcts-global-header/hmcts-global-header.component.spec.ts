@@ -58,6 +58,7 @@ describe('HmctsGlobalHeaderComponent', () => {
       declarations: [ HmctsGlobalHeaderComponent ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
       imports: [
+        HttpClientTestingModule,
         RouterTestingModule,
         StoreModule.forRoot({
           ...fromRoot.reducers,

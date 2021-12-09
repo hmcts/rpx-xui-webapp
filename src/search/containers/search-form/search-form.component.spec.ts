@@ -1,4 +1,4 @@
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
@@ -27,7 +27,7 @@ describe('SearchFormComponent', () => {
       {serviceName: 'Another test service', serviceId: 'TEST2'}
     ]));
     TestBed.configureTestingModule({
-      imports: [ HttpClientModule, RouterTestingModule ],
+      imports: [ HttpClientTestingModule, RouterTestingModule ],
       declarations: [ SearchFormComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],
       providers: [
@@ -176,27 +176,20 @@ describe('SearchFormComponent', () => {
     expect(component.formGroup.valid).toEqual(true);
   });
 
-  it('should return null for empty fields on form submit', () => {
-    // Submit the form with empty values other than jurisdiction
+  it('should fail validation if no search criteria are provided (excluding "Services" drop-down list value)', () => {
+    spyOn(window, 'scrollTo');
+    // Submit the form with empty values other than jurisdiction (from the "Services" drop-down list)
     component.onSubmit();
-
-    // Check how many times the spy was called
-    expect(searchService.storeState).toHaveBeenCalledTimes(2);
-
-    // Check arguments
-    expect(searchService.storeState.calls.all()[0].args[0]).toEqual(SearchStatePersistenceKey.SEARCH_PARAMS);
-    expect(searchService.storeState.calls.all()[0].args[1]).toEqual({
-      caseReferences: null,
-      // Default service selection is "All", hence all service IDs are expected to be present
-      CCDJurisdictionIds: ['TEST', 'TEST2'],
-      otherReferences: null,
-      fullName: null,
-      address: null,
-      postcode: null,
-      emailAddress: null,
-      dateOfBirth: null,
-      dateOfDeath: null
-    } as SearchParameters);
+    expect(component.formGroup.get(SearchFormControl.SERVICES_LIST).value).toEqual('ALL');
+    // Check that the array of errors for displaying the error summary contains the expected errors
+    expect(component.searchValidationErrors).toContain({
+      controlId: null,
+      documentHRef: null,
+      errorMessage: SearchFormErrorMessage.NO_SEARCH_CRITERIA
+    });
+    expect(window.scrollTo).toHaveBeenCalled();
+    expect(searchService.storeState).not.toHaveBeenCalled();
+    expect(router.navigate).not.toHaveBeenCalled();
   });
 
   it('should scroll to top and display error summary if validation failed, and not navigate to Search Results page', () => {
@@ -210,6 +203,7 @@ describe('SearchFormComponent', () => {
       errorMessage: SearchFormErrorMessage.EMAIL
     });
     expect(window.scrollTo).toHaveBeenCalled();
+    expect(searchService.storeState).not.toHaveBeenCalled();
     expect(router.navigate).not.toHaveBeenCalled();
   });
 
@@ -236,7 +230,6 @@ describe('SearchFormComponent', () => {
       isInvalid: true,
       messages: [SearchFormErrorMessage.EMAIL]
     });
-    expect(router.navigate).not.toHaveBeenCalled();
   });
 
   it('should pre-populate the form with existing search parameters', () => {

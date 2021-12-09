@@ -44,6 +44,7 @@
                       <span class="govuk-visually-hidden">Error:</span> Enter a valid location
                     </span>
                     <exui-search-location class="search-location"
+                      [showAutocomplete]="showAutocomplete"
                       [selectedLocations$]="selectedLocations$"
                       [control]="findLocationFormGroup.controls.locationSelectedFormControl"
                       [locations$]="locationsFound$"

@@ -190,10 +190,6 @@ export class AppConfig extends AbstractAppConfig {
       );
   }
 
-  public getRefundsUrl(): string {
-    return '';
-  }
-
   public getAccessManagementMode(): boolean {
     return this.config.access_management_mode && this.environmentService.get('accessManagementEnabled');
   }

@@ -13,7 +13,7 @@ import { RefDataModel } from '../../models/refData.model';
 import * as fromHearingStore from '../../store';
 import { RefDataResolver } from './ref-data-resolver.resolve';
 
-fdescribe('Priority Resolver', () => {
+describe('Priority Resolver', () => {
   let hearingsDataService: HearingsRefDataService;
   let store: Store<fromHearingStore.State>;
   const dataRef: RefDataModel[] = [];

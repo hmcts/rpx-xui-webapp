@@ -18,7 +18,7 @@ class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
 }
 
-describe('DatePriorityHearingComponent', () => {
+fdescribe('DatePriorityHearingComponent', () => {
   let component: DatePriorityHearingComponent;
   let fixture: ComponentFixture<DatePriorityHearingComponent>;
   let router: Router;

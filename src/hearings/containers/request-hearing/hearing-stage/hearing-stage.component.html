@@ -2,10 +2,9 @@
 <div class="govuk-width-container">     
   <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">        
     <div class="govuk-grid-row">
-      <xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem'"></xuilib-hmcts-error-summary>
       <div class="govuk-grid-column-two-thirds">
         <form class="form"  [formGroup]="stageForm">
-          <span class="govuk-caption-l">Request a hearing for {{ fullName }} vs DWP</span>
+          <exui-hearing-parties-title></exui-hearing-parties-title>
           <h1 class="govuk-heading-l">What stage is this hearing at?</h1>
           <div class="govuk-form-group">
             <fieldset class="govuk-fieldset">              

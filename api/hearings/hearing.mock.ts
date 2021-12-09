@@ -1,5 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import {HttpMockAdapter} from '../common/httpMockAdapter';
+import { CASE_FLAG_REFERENCE_VALUES } from './data/caseFlagReference.mock.data';
 import {EMPTY_HEARINGS_LIST, HEARINGS_LIST} from './data/hearings.mock.data';
 import {ALL_REF_DATA} from './data/reference.mock.data';
 import {SERVICE_HEARING_VALUES} from './data/serviceHearingValues.mock.data';
@@ -10,6 +11,8 @@ export const init = () => {
   const getHearingsUrl = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearings\/[0-9]{16}/;
 
   const getRefDataUrl = /http:\/\/rd-professional-api-aat.service.core-compute-aat.internal\/refdata\/lov\/[\w]*\/[\w]*/;
+
+  const getCaseFlagRefDataUrl = /http:\/\/rd-professional-api-aat.service.core-compute-aat.internal\/caseflagrefdata/;
 
   const postServiceHearingValues = /https:\/\/hearings.aat.service.core-compute-aat.internal\/serviceHearingValues/;
 
@@ -34,6 +37,13 @@ export const init = () => {
     return [
       200,
       ALL_REF_DATA,
+    ];
+  });
+
+  mock.onGet(getCaseFlagRefDataUrl).reply(() => {
+    return [
+      200,
+      CASE_FLAG_REFERENCE_VALUES,
     ];
   });
 

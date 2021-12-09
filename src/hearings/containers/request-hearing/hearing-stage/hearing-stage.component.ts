@@ -7,7 +7,6 @@ import { Observable, Subscription } from 'rxjs';
 import * as fromHearingStore from '../../../../hearings/store';
 import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.model';
 import { RefDataModel } from '../../../../../api/hearings/models/refData.model';
-import { HmctsErrorSummaryComponent } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/components/hmcts-error-summary/hmcts-error-summary.component';
 @Component({
   selector: 'exui-hearing-stage',
   templateUrl: './hearing-stage.component.html',

@@ -187,7 +187,7 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getRefundsUrl(): string {
-    return this.config.refunds_url;
+    return '';
   }
 
   public getAccessManagementMode(): boolean {

@@ -303,6 +303,10 @@ class WorkAllocationMockData {
 
     }
 
+    getCaseRole(){
+        return WorkAllocationDataModels.getCaseRole()
+    }
+
     getCaseRoles(roles) {
         const caseRolesRes = [];
         for (const role of roles) {
@@ -381,6 +385,51 @@ class WorkAllocationMockData {
         return tasks;
     }
 
+
+    getTaskRoles(){
+        return [
+            {
+                "role_category": "legal-ops",
+                "role_name": "tribunal-caseworker",
+                "permissions": [
+                    "OWN",
+                    "EXECUTE",
+                    "READ",
+                    "MANAGE",
+                    "CANCEL"
+                ],
+                "authorisations": [
+                    "IAC",
+                    "SSCS"
+                ]
+            },
+            {
+                "role_category": "legal-ops",
+                "role_name": "case-manager",
+                "permissions": [
+                    "EXECUTE",
+                    "READ",
+                    "MANAGE",
+                    "CANCEL"
+                ],
+                "authorisations": [
+                    "IAC",
+                    "SSCS"
+                ]
+            },
+            {
+                "role_category": "judiciary",
+                "role_name": "judge",
+                "permissions": [
+                    "EXECUTE",
+                    "READ"
+                ],
+                "authorisations": [
+                    "IAC"
+                ]
+            }
+        ]
+    }
 
 
 

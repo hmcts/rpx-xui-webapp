@@ -1,15 +1,15 @@
 # Requirements
 # https://tools.hmcts.net/confluence/display/EUI/Work+Allocation-+Release+2#WorkAllocationRelease2-ManagelinklogicforTasksandCases
 
-@ng @wa2 @wa 
+@ng @wa2 @wa
 Feature: WA Release 2: All work > cases - Manage links - Action work flow
 
     Background: Mock and browser setup
         Given I init MockApp
         Given I set MOCK workallocation cases with permissions for view "AllWorkCases"
-            | Roles          | Count |
-            | task-supervisor | 10    |
-            |                | 90    |
+            | Roles                          | Count |
+            | task-supervisor,case-allocator | 10    |
+            |                                | 90    |
 
         Given I set MOCK request "/workallocation2/findPerson" intercept with reference "findPersonRequest"
 
@@ -50,7 +50,7 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
         When I enter find person search input "jud" in work flow
         Then I validate find person request body from reference "findPersonRequest"
             | jurisdiction | Judicial |
-            | searchTerm | jud |
+            | searchTerm   | jud      |
         Then I see find person search results in work flow
             | Person                            |
             | Lead judge(judge_user1@gov.uk)    |
@@ -66,10 +66,9 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
 
         Then I see Allocate role work flow page "Check your changes" with caption "Reallocate a lead judge" is displayed
 
-        Then I see Check your answers page has total 3 questions
+        Then I see Check your answers page has total 2 questions
         Then I see Check your answers page has questions and answers with change link
             | Question                          | Answer                         |
-            | Who the role will be allocated to | Allocate to another person     |
             | Person                            | Lead judge(judge_user1@gov.uk) |
             | Duration of role                  | Indefinite                     |
 
@@ -90,7 +89,7 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
             | Admin     | 1236 | admin_user2@gov.uk      | admin2 a       | Case worker   |
 
         Given I set Mock WA case "allWorkCases" property values
-            | index | key       | value      |
+            | index | key       | value        |
             | 0     | case_role | case-manager |
         Given I start MockApp
         Given I navigate to home page
@@ -112,7 +111,7 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
         When I enter find person search input "cas" in work flow
         Then I validate find person request body from reference "findPersonRequest"
             | jurisdiction | legal ops |
-            | searchTerm   | cas |
+            | searchTerm   | cas       |
         Then I see find person search results in work flow
             | Person                                  |
             | caseworker1 cw(caseworker_user1@gov.uk) |
@@ -128,10 +127,9 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
 
         Then I see Allocate role work flow page "Check your answers" with caption "Reallocate a legal ops case manager" is displayed
 
-        Then I see Check your answers page has total 3 questions
+        Then I see Check your answers page has total 2 questions
         Then I see Check your answers page has questions and answers with change link
             | Question                          | Answer                                  |
-            | Who the role will be allocated to | Allocate to another person              |
             | Person                            | caseworker1 cw(caseworker_user1@gov.uk) |
             | Duration of role                  | Indefinite                              |
 

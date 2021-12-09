@@ -95,7 +95,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 }
             }
         }
-        workAlloctionMockData.caseRoles = workAlloctionMockData.getCaseRoles(dateTableHashes);
+        // workAlloctionMockData.caseRoles = workAlloctionMockData.getCaseRoles(dateTableHashes);
         
     }); 
 

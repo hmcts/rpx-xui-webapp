@@ -301,9 +301,11 @@ const taskActionsMatrix = {
 const caseActionsMatrix = {
     mycases: {
         "case-allocator": [CASE_ACTIONS.ReAllocate, CASE_ACTIONS.RemoveAllocation],
+        "task-supervisor": []
     },
     allworkcases:{
         "case-allocator": [CASE_ACTIONS.ReAllocate, CASE_ACTIONS.RemoveAllocation],
+        "task-supervisor": []
     }
 }
 

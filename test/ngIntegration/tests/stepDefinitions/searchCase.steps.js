@@ -22,8 +22,13 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I select jurisdiction {string} case type {string}', async function (jurisdiction,caseType) {
-        await searchCasePage.selectJurisdiction(jurisdiction);
-        await searchCasePage.selectCaseType(caseType);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await searchCasePage.selectJurisdiction(jurisdiction);
+            await searchCasePage.selectCaseType(caseType);
+
+            await BrowserWaits.waitForElement(caseListPage.dynamicFiltersContainer);
+        });
+        
     });
 
     Then('I validate search case {string} fields displayed', async function(searchCaseConfigReference){
@@ -47,17 +52,13 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await MockApp.startServer();
 
         const searchCaseInputValues = {}
-        if (!(await caseListPage.isDynamicFilterDisplayed())){
-            throw new Error("Dynamic filters not displayed to proced with scenario.");
-        }
-       
         for (const dynamicfield of searchCaseConfig.searchInputs) {
             searchCaseInputValues[dynamicfield.field.id] = await caseListPage.inputWorkbasketFilter(dynamicfield);
         }
 
         caseListReq = null;
         await searchCasePage.clickApplySearchCaseFilters();
-        await BrowserWaits.waitForCondition(async () => caseListReq !== null,'Search case request not recived in mock');
+        await BrowserWaits.waitForCondition(async () => caseListReq !== null);
 
         for (const key of Object.keys(searchCaseInputValues)) {
             if (searchCaseInputValues[key] instanceof Array) {

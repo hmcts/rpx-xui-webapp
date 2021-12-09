@@ -4,20 +4,21 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
 import { provideMockStore } from '@ngrx/store/testing';
 import { RefDataModel } from '../../../models/refData.model';
 import { HearingStageComponent } from './hearing-stage.component';
 
 @Component({
-  selector: 'exui-lib-hmcts-error-summary',
+  selector: 'exui-hearing-parties-title',
   template: '',
 })
-class MockHmctsErrorSummaryComponent {
-  @Input() public errorMessages: [];
-  @Input() public header: string;
+class MockHearingPartiesComponent {
+  @Input() public error: ErrorMessage;
 }
 
-describe('HearingStageComponent', () => {
+
+fdescribe('HearingStageComponent', () => {
   let component: HearingStageComponent;
   let fixture: ComponentFixture<HearingStageComponent>;
 
@@ -83,7 +84,7 @@ describe('HearingStageComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule],
-      declarations: [ HearingStageComponent, MockHmctsErrorSummaryComponent ],
+      declarations: [ HearingStageComponent, MockHearingPartiesComponent ],
       providers: [
         provideMockStore({initialState}),
         {

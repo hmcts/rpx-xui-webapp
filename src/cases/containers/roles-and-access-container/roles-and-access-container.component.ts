@@ -3,13 +3,13 @@ import { ActivatedRoute } from '@angular/router';
 import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { CaseworkerDataService } from '../../../work-allocation-2/services';
+import { first, map, mergeMap } from 'rxjs/operators';
 import { UserDetails } from '../../../app/models/user-details.model';
 import * as fromRoot from '../../../app/store';
 import { CaseRole, RoleExclusion } from '../../../role-access/models';
-import { RoleExclusionsService } from '../../../role-access/services';
-import { AllocateRoleService } from '../../../role-access/services';
-import { first, map, tap, mergeMap } from 'rxjs/operators';
+import { CaseRoleDetails } from '../../../role-access/models/case-role-details.interface';
+import { AllocateRoleService, RoleExclusionsService } from '../../../role-access/services';
+import { CaseworkerDataService } from '../../../work-allocation-2/services';
 
 @Component({
   selector: 'exui-roles-and-access-container',
@@ -27,14 +27,29 @@ export class RolesAndAccessContainerComponent implements OnInit {
               private readonly store: Store<fromRoot.State>,
               private readonly roleExclusionsService: RoleExclusionsService,
               private readonly allocateService: AllocateRoleService,
-              private readonly caseworkerDataService: CaseworkerDataService) {}
+              private readonly caseworkerDataService: CaseworkerDataService) {
+  }
 
   public ngOnInit(): void {
     this.caseDetails = this.route.snapshot.data.case as CaseView;
     this.applyJurisdiction(this.caseDetails);
     const jurisdiction = this.caseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
     this.roles$ = this.allocateService.getCaseRoles(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id).pipe(
-      mergeMap((caseRoles: CaseRole[]) => this.allocateService.getCaseRolesUserDetails(caseRoles).pipe()),
+      mergeMap((caseRoles: CaseRole[]) => this.allocateService.getCaseRolesUserDetails(caseRoles).pipe(
+        map((caseRolesWithUserDetails: CaseRoleDetails[]) => {
+          return caseRoles.map(role => {
+            const userDetails = caseRolesWithUserDetails.find(detail => detail.sidam_id === role.actorId);
+            if (!userDetails) {
+              return role;
+            }
+            return {
+              ...role,
+              name: userDetails.full_name,
+              email: userDetails.email_id,
+            };
+          });
+        })
+      )),
     );
     this.exclusions$ = this.roleExclusionsService.getCurrentUserRoleExclusions(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id);
 

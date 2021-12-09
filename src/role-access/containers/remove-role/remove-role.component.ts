@@ -2,11 +2,12 @@ import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import { Caseworker } from '../../../work-allocation-2/models/dtos';
 import { SessionStorageService } from '../../../app/services';
 import { handleFatalErrors } from '../../../work-allocation-2/utils';
 import { Answer, CaseRole, RemoveAllocationNavigationEvent } from '../../models';
+import { CaseRoleDetails } from '../../models/case-role-details.interface';
 import { RemoveRoleText } from '../../models/enums/answer-text';
 import { AllocateRoleService } from '../../services';
 
@@ -65,7 +66,23 @@ export class RemoveRoleComponent implements OnInit {
     this.caseId = queryMap.get('caseId');
     const jurisdiction = queryMap.get('jurisdiction');
     const caseType = queryMap.get('caseType');
-    return this.allocateRoleService.getCaseRoles(this.caseId, jurisdiction, caseType, this.assignmentId);
+    return this.allocateRoleService.getCaseRoles(this.caseId, jurisdiction, caseType, this.assignmentId).pipe(
+      mergeMap((caseRoles: CaseRole[]) => this.allocateRoleService.getCaseRolesUserDetails(caseRoles).pipe(
+        map((caseRolesWithUserDetails: CaseRoleDetails[]) => {
+          return caseRoles.map(role => {
+            const userDetails = caseRolesWithUserDetails.find(detail => detail.sidam_id === role.actorId);
+            if (!userDetails) {
+              return role;
+            }
+            return {
+              ...role,
+              name: userDetails.full_name,
+              email: userDetails.email_id,
+            };
+          });
+        })
+      )),
+    );
   }
 
   public onNavEvent(navEvent: RemoveAllocationNavigationEvent): void {

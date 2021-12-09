@@ -1,6 +1,7 @@
 export interface JudicialUserDto {
   title: string;
   knownAs: string;
-  fullName: string;
-  emailId: string;
+  full_name: string;
+  sidam_id: string;
+  email_id: string;
 }

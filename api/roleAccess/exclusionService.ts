@@ -149,7 +149,7 @@ export function mapRoleCategory(roleCategory: string): RoleCategory {
   }
 }
 
-export function getJudicialUsersFromApi(req: express.Request, ids: string[]): Promise<JudicialUserDto[]> {
+export  function getJudicialUsersFromApi(req: express.Request, ids: string[]): Promise<AxiosResponse<JudicialUserDto[]>> {
   const headers = setHeaders(req);
   return http.post(`${JUDICIAL_REF_URL}/refdata/judicial/users`, { sidam_ids: ids }, { headers });
 }

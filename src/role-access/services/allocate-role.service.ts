@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { SessionStorageService } from '../../app/services';
 import { Actions, AllocateRoleStateData, CaseRole, Role } from '../models';
+import { CaseRoleDetails } from '../models/case-role-details.interface';
 
 @Injectable({ providedIn: 'root' })
 export class AllocateRoleService {
@@ -41,8 +42,10 @@ export class AllocateRoleService {
     return this.http.post<CaseRole[]>(`${AllocateRoleService.roleUrl}/post`, {caseId, jurisdiction, caseType, assignmentId});
   }
 
-  public getCaseRolesUserDetails(caseRoles: CaseRole[]): Observable<CaseRole[]> {
-    const userIds = caseRoles.map(caseRole => caseRole.id);
-    return this.http.post<CaseRole[]>(`${AllocateRoleService.roleUrl}/getJudicialUsers`, {userIds});
+  public getCaseRolesUserDetails(caseRoles: CaseRole[]): Observable<CaseRoleDetails[]> {
+    const userIds = caseRoles
+      .filter(role => role.roleCategory === 'JUDICIAL')
+      .map(caseRole => caseRole.actorId);
+    return this.http.post<CaseRoleDetails[]>(`${AllocateRoleService.roleUrl}/getJudicialUsers`, {userIds});
   }
 }

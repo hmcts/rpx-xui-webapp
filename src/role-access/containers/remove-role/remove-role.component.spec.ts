@@ -1,10 +1,13 @@
+import { Location } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { Observable, of } from 'rxjs';
 import { AnswersComponent } from '../../components';
 import { AllocateRoleStateData, CaseRole, RemoveAllocationNavigationEvent, Role, RoleCategory, TypeOfRole } from '../../models';
+import { CaseRoleDetails } from '../../models/case-role-details.interface';
 import { AnswerLabelText, RemoveRoleText } from '../../models/enums/answer-text';
 import { AllocateRoleService } from '../../services';
 import { RemoveRoleComponent } from './remove-role.component';
@@ -24,8 +27,11 @@ describe('RemoveRoleComponent', () => {
   const routerMock = jasmine.createSpyObj('Router', [
     'navigateByUrl', 'navigate', 'getCurrentNavigation'
   ]);
-  const exampleCaseId = '123456789';
+  const locationMock = jasmine.createSpyObj('Location', [
+    'back'
+  ]);
   const allworkUrl = `work/all-work/cases`;
+  window.history.pushState({returnUrl: allworkUrl}, '', allworkUrl);
 
   class AllocateRoleMockService extends AllocateRoleService {
     public confirmAllocation(allocateRoleStateData: AllocateRoleStateData): Observable<any> {
@@ -52,6 +58,13 @@ describe('RemoveRoleComponent', () => {
       return of(null);
     }
 
+    public getCaseRolesUserDetails(caseRoles: CaseRole[]): Observable<CaseRoleDetails[]> {
+      const caseRoleDetail: CaseRoleDetails =  {
+        email_id: 'user@test.com', full_name: 'Judge Rinder', knownAs: '', sidam_id: '999999999', title: ''
+
+      };
+      return of([caseRoleDetail]);
+    }
   }
 
   beforeEach(async(() => {
@@ -59,7 +72,7 @@ describe('RemoveRoleComponent', () => {
       schemas: [
         NO_ERRORS_SCHEMA
       ],
-      imports: [HttpClientModule],
+      imports: [HttpClientModule, RouterTestingModule],
       declarations: [AnswersComponent, RemoveRoleComponent, WrapperComponent],
       providers: [
         {
@@ -98,6 +111,10 @@ describe('RemoveRoleComponent', () => {
         {
           provide: Router,
           useValue: routerMock
+        },
+        {
+          provide: Location,
+          useValue: locationMock
         },
         {
           provide: AllocateRoleService,
@@ -139,7 +156,7 @@ describe('RemoveRoleComponent', () => {
 
   it('should navigate correctly on click', () => {
     component.onNavEvent(RemoveAllocationNavigationEvent.CANCEL);
-    expect(routerMock.navigateByUrl).toHaveBeenCalledWith(allworkUrl);
+    expect(locationMock.back).toHaveBeenCalled();
     component.onNavEvent(RemoveAllocationNavigationEvent.REMOVE_ROLE_ALLOCATION);
     const additionalState = {state: {showMessage: true, messageText: RemoveRoleText.infoMessage}};
     expect(routerMock.navigate).toHaveBeenCalledWith([allworkUrl], additionalState);
@@ -149,7 +166,7 @@ describe('RemoveRoleComponent', () => {
     it('on cancel event', () => {
       fixture.detectChanges();
       component.onNavEvent(RemoveAllocationNavigationEvent.CANCEL);
-      expect(routerMock.navigateByUrl).toHaveBeenCalledWith(allworkUrl);
+      expect(locationMock.back).toHaveBeenCalled();
     });
 
     afterEach(() => {

@@ -9,6 +9,7 @@ import { setHeaders } from '../lib/proxy';
 import { refreshRoleAssignmentForUser } from '../user';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { CaseRole } from '../workAllocation2/interfaces/caseRole';
+import { JudicialUserDto } from './dtos/judicial-user-dto';
 import { toRoleAssignmentBody } from './dtos/to-role-assignment-dto';
 import { getEmail, getJudicialUsersFromApi, getUserName, mapRoleCategory } from './exclusionService';
 import { CaseRoleRequestPayload } from './models/caseRoleRequestPayload';
@@ -37,8 +38,8 @@ export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next
 export async function getJudicialUsers(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const userIds = req.body.userIds;
   try {
-    const userDetails = await getJudicialUsersFromApi(req, userIds);
-    return res.status(200).send(userDetails);
+    const response = await getJudicialUsersFromApi(req, userIds);
+    return res.status(200).send(response.data);
   } catch (error) {
     next(error);
   }

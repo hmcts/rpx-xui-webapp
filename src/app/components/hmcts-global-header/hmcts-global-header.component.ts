@@ -1,10 +1,8 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { select, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { UserDetails } from '../../../app/models/user-details.model';
-import * as fromAppStore from '../../../app/store';
 import * as fromNocStore from '../../../noc/store';
 import { FlagDefinition, NavigationItem } from '../../models/theming.model';
 import { UserNavModel } from '../../models/user-nav.model';
@@ -31,8 +29,6 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   public showItems = false;
   public userValue = true;
   public tab;
-  public userDetails$: Observable<UserDetails>;
-  public isUserCaseManager$: Observable<boolean>;
   public get leftItems(): Observable<NavigationItem[]> {
     return this.menuItems.left.asObservable();
   }
@@ -46,22 +42,12 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   };
 
   constructor(
-    private readonly appStore: Store<fromAppStore.State>,
-    private readonly nocStore: Store<fromNocStore.State>,
+    public nocStore: Store<fromNocStore.State>,
     private readonly userService: UserService,
     private readonly featureToggleService: FeatureToggleService
   ) { }
 
   public ngOnInit(): void {
-    this.appStore.dispatch(new fromAppStore.LoadUserDetails());
-    this.userDetails$ = this.appStore.pipe(select(fromAppStore.getUserDetails));
-    this.isUserCaseManager$ = this.userDetails$.pipe(
-      map(details => details.userInfo.roles),
-      map(roles => {
-        return roles.includes('pui-case-manager')
-      })
-    );
-
     this.splitAndFilterNavItems(this.items);
   }
 

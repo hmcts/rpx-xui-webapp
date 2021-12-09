@@ -3,13 +3,12 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { SearchStatePersistenceKey } from '../../../search/enums';
+import { UserDetails } from '../../../app/models/user-details.model';
 import * as fromAppStore from '../../../app/store';
 import * as fromNocStore from '../../../noc/store';
+import { SearchStatePersistenceKey } from '../../../search/enums';
 import { SearchService } from '../../../search/services/search.service';
-import { NavItemsModel, UserNavModel } from '../../models';
-import { UserDetails } from '../../../app/models/user-details.model';
-import { FlagDefinition, NavigationItem } from '../../models/theming.model';
+import { FlagDefinition, NavigationItem, UserNavModel } from '../../models';
 import { UserService } from '../../services/user/user.service';
 
 @Component({
@@ -62,7 +61,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
     this.isUserCaseManager$ = this.userDetails$.pipe(
       map(details => details.userInfo.roles),
       map(roles => {
-        return roles.includes('pui-case-manager')
+        return roles.includes('pui-case-manager');
       })
     );
 
@@ -117,7 +116,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
       map(details => details.userInfo.roles),
       map(roles => {
         const i = items.filter(item => (item.roles && item.roles.length > 0 ? item.roles.some(role => roles.includes(role)) : true));
-        return i.filter(item => (item.notRoles && item.notRoles.length > 0 ? item.notRoles.every(role => !roles.includes(role)) : true))
+        return i.filter(item => (item.notRoles && item.notRoles.length > 0 ? item.notRoles.every(role => !roles.includes(role)) : true));
       })
     );
   }

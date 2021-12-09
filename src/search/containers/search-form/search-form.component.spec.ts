@@ -1,4 +1,4 @@
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
@@ -27,7 +27,7 @@ describe('SearchFormComponent', () => {
       {serviceName: 'Another test service', serviceId: 'TEST2'}
     ]));
     TestBed.configureTestingModule({
-      imports: [ HttpClientModule, RouterTestingModule ],
+      imports: [ HttpClientTestingModule, RouterTestingModule ],
       declarations: [ SearchFormComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],
       providers: [

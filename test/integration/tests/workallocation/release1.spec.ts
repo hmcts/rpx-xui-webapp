@@ -1,8 +1,14 @@
 import { expect } from 'chai';
-import { getXSRFToken } from '../utils/authUtil';
-import { setTestContext, testWithRetry } from '../utils/helper';
+import { v4 as uuid } from 'uuid';
+// import mocha from 'mocha';
+import { config } from '../config/config';
+import { getUserId, getXSRFToken } from '../utils/authUtil';
 import Request from '../utils/request';
+import { setTestContext } from '../utils/helper';
+
 import TaskRequestBody from '../utils/wa/taskRequestBody';
+
+import { testWithRetry } from '../utils/helper'
 
 describe('Work allocations MVP', () => {
     const userName = 'lukesuperuserxui@mailnesia.com';
@@ -56,56 +62,46 @@ describe('Work allocations MVP', () => {
     });
 
     it('case officer, My tasks', async function () {
-        await testWithRetry(async () => {
-            await Request.withSession(caseOfficer, caseofficerPass);
-            const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
+        await Request.withSession(caseOfficer, caseofficerPass);
+        const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
-            const reqBody = getSearchTaskReqBody("MyTasks", ["77f9a4a4-1bf1-4903-aa6c-cab334875d91"]).getRequestBody();
-            const headers = {
-                'X-XSRF-TOKEN': xsrfToken,
-                'content-length': JSON.stringify(reqBody).length
-            };
+        const reqBody = getSearchTaskReqBody("MyTasks", ["77f9a4a4-1bf1-4903-aa6c-cab334875d91"], null).getRequestBody();
+        const headers = {
+            'X-XSRF-TOKEN': xsrfToken,
+            'content-length': JSON.stringify(reqBody).length
+        };
 
-            const response = await Request.post(`workallocation/task`, reqBody, headers, 200);
-            expect(response.status).to.equal(200);
-
-        });
-       
+        const response = await Request.post(`workallocation/task`, reqBody, headers, 200);
+        expect(response.status).to.equal(200);
     });
 
     it('case officer, Available tasks', async function () {
-        await testWithRetry(async () => {
-            await Request.withSession(caseOfficer, caseofficerPass);
-            const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
+        await Request.withSession(caseOfficer, caseofficerPass);
+        const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
-            const reqBody = getSearchTaskReqBody("AvailableTasks", ["77f9a4a4-1bf1-4903-aa6c-cab334875d91"]).getRequestBody();
-            const headers = {
-                'X-XSRF-TOKEN': xsrfToken,
-                'content-length': JSON.stringify(reqBody).length
-            };
+        const reqBody = getSearchTaskReqBody("AvailableTasks", ["77f9a4a4-1bf1-4903-aa6c-cab334875d91"], null).getRequestBody();
+        const headers = {
+            'X-XSRF-TOKEN': xsrfToken,
+            'content-length': JSON.stringify(reqBody).length
+        };
 
-            const response = await Request.post(`workallocation/task`, reqBody, headers, 200);
-            expect(response.status).to.equal(200);
-
-        }); 
+        const response = await Request.post(`workallocation/task`, reqBody, headers, 200);
+        expect(response.status).to.equal(200);
     });
 
 
     it('case officer, `Task manager tasks`', async function () {
-        await testWithRetry(async () => {
-            await Request.withSession(caseOfficer, caseofficerPass);
-            const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
+        await Request.withSession(caseOfficer, caseofficerPass);
+        const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
-            const reqBody = getSearchTaskReqBody("TaskManager", ["77f9a4a4-1bf1-4903-aa6c-cab334875d91"]).getRequestBody();
-            const headers = {
-                'X-XSRF-TOKEN': xsrfToken,
-                'content-length': JSON.stringify(reqBody).length
-            };
+        const reqBody = getSearchTaskReqBody("TaskManager", ["77f9a4a4-1bf1-4903-aa6c-cab334875d91"], null).getRequestBody();
+        const headers = {
+            'X-XSRF-TOKEN': xsrfToken,
+            'content-length': JSON.stringify(reqBody).length
+        };
 
-            const response = await Request.post(`workallocation/task`, reqBody, headers, 200);
-            expect(response.status).to.equal(200);
-
-        }); 
+        const response = await Request.post(`workallocation/task`, reqBody, headers, 200);
+        expect(response.status).to.equal(200);
     });
 
 
@@ -180,7 +176,6 @@ describe('Work allocations MVP', () => {
             expect(assignTaskRes.status).to.equal(204);
         }
 
-        }); 
     });
 
     it('case officer Unassign task', async function () {
@@ -296,17 +291,26 @@ describe('Work allocations MVP', () => {
     });
 
     it('case officer, `Task manager tasks pagination`', async function () {
-        await testWithRetry(async () => {
-            await Request.withSession(caseOfficer, caseofficerPass);
-            const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
+        await Request.withSession(caseOfficer, caseofficerPass);
+        const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
-            const taskRequestObj = getSearchTaskReqBody("TaskManager", ["77f9a4a4-1bf1-4903-aa6c-cab334875d91"]);
-            taskRequestObj.withPageNumber(1);
-            const headers = {
-                'X-XSRF-TOKEN': xsrfToken,
-                'content-length': JSON.stringify(taskRequestObj.getRequestBody()).length
-            };
+        const taskRequestObj = getSearchTaskReqBody("TaskManager", ["77f9a4a4-1bf1-4903-aa6c-cab334875d91"], null);
+        taskRequestObj.withPageNumber(1);
+        const headers = {
+            'X-XSRF-TOKEN': xsrfToken,
+            'content-length': JSON.stringify(taskRequestObj.getRequestBody()).length
+        };
 
+        const response = await Request.post(`workallocation/task`, taskRequestObj.getRequestBody(), headers, 200);
+        expect(response.status).to.equal(200);
+        expect(response.data).to.have.all.keys('tasks', 'total_records');
+
+        console.log(response.data.tasks.length + " " + response.data.total_records);
+        //expect(response.data.tasks.length).to.equal(response.data.total_records > 10 ? 10 : response.data.total_records );
+
+        const totalRecords = response.data.total_records;
+        if (totalRecords > 10) {
+            taskRequestObj.withPageNumber(2);
             const response = await Request.post(`workallocation/task`, taskRequestObj.getRequestBody(), headers, 200);
             expect(response.status).to.equal(200);
             expect(response.data).to.have.all.keys('tasks', 'total_records');
@@ -351,6 +355,4 @@ describe('Work allocations MVP', () => {
         return taskRequestBody;
     }
 
-        }); 
-    });
 });

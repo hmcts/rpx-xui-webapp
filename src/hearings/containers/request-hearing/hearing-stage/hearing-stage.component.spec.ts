@@ -17,8 +17,7 @@ class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
 }
 
-
-fdescribe('HearingStageComponent', () => {
+describe('HearingStageComponent', () => {
   let component: HearingStageComponent;
   let fixture: ComponentFixture<HearingStageComponent>;
 
@@ -105,7 +104,7 @@ fdescribe('HearingStageComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HearingStageComponent);
-    component = fixture.componentInstance;  
+    component = fixture.componentInstance;
     fixture.detectChanges();
   });
 

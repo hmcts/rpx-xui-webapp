@@ -18,7 +18,7 @@ class MockHearingPartiesComponent {
 }
 
 
-fdescribe('HearingStageComponent', () => {
+describe('HearingStageComponent', () => {
   let component: HearingStageComponent;
   let fixture: ComponentFixture<HearingStageComponent>;
 

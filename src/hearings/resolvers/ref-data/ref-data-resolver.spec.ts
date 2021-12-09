@@ -1,7 +1,7 @@
 import { APP_BASE_HREF } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, convertToParamMap } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
@@ -13,7 +13,7 @@ import { RefDataModel } from '../../models/refData.model';
 import * as fromHearingStore from '../../store';
 import { RefDataResolver } from './ref-data-resolver.resolve';
 
-describe('Priority Resolver', () => {
+fdescribe('Priority Resolver', () => {
   let hearingsDataService: HearingsRefDataService;
   let store: Store<fromHearingStore.State>;
   const dataRef: RefDataModel[] = [];
@@ -27,14 +27,6 @@ describe('Priority Resolver', () => {
       ],
       providers: [
         RefDataResolver,
-        {
-          provide: ActivatedRoute,
-          useValue: { paramMap: convertToParamMap({
-            data: {
-              title: 'HMCTS Manage cases | Request Hearing | Date Priority Hearing',
-              category: HearingCategory.Priority
-            }})}
-        },
         HearingsRefDataService,
         { provide: APP_BASE_HREF, useValue: '/' }
       ]
@@ -52,7 +44,15 @@ describe('Priority Resolver', () => {
   it('resolves reference data', inject([RefDataResolver], (service: RefDataResolver) => {
     spyOn(store, 'pipe').and.returnValue(of('serviceName'));
     spyOn(hearingsDataService, 'getRefData').and.returnValue(of(dataRef));
-    service.resolve().subscribe((refData: RefDataModel[]) => {
+    spyOn(service, 'getReferenceData$').and.callThrough();
+    const route = new ActivatedRouteSnapshot();
+    route.data =  {
+      title: 'HMCTS Manage cases | Request Hearing | Date Priority Hearing',
+      category: HearingCategory.Priority
+    };
+    service.resolve(route).subscribe((refData: RefDataModel[]) => {
+      expect(service.getReferenceData$).toHaveBeenCalled();
+      expect(hearingsDataService.getRefData).toHaveBeenCalled();
       expect(refData).toEqual([]);
     });
   }));

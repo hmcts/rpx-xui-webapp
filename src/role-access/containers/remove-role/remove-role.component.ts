@@ -68,21 +68,23 @@ export class RemoveRoleComponent implements OnInit {
     const caseType = queryMap.get('caseType');
     return this.allocateRoleService.getCaseRoles(this.caseId, jurisdiction, caseType, this.assignmentId).pipe(
       mergeMap((caseRoles: CaseRole[]) => this.allocateRoleService.getCaseRolesUserDetails(caseRoles).pipe(
-        map((caseRolesWithUserDetails: CaseRoleDetails[]) => {
-          return caseRoles.map(role => {
-            const userDetails = caseRolesWithUserDetails.find(detail => detail.sidam_id === role.actorId);
-            if (!userDetails) {
-              return role;
-            }
-            return {
-              ...role,
-              name: userDetails.full_name,
-              email: userDetails.email_id,
-            };
-          });
-        })
+        map((caseRolesWithUserDetails: CaseRoleDetails[]) => this.mapCaseRoles(caseRoles, caseRolesWithUserDetails))
       )),
     );
+  }
+
+  public mapCaseRoles(caseRoles: CaseRole[], caseRolesWithUserDetails: CaseRoleDetails[]): CaseRole[] {
+    return caseRoles.map(role => {
+      const userDetails = caseRolesWithUserDetails.find(detail => detail.sidam_id === role.actorId);
+      if (!userDetails) {
+        return role;
+      }
+      return {
+        ...role,
+        name: userDetails.full_name,
+        email: userDetails.email_id,
+      };
+    });
   }
 
   public onNavEvent(navEvent: RemoveAllocationNavigationEvent): void {

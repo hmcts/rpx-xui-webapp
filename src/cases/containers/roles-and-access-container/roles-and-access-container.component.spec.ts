@@ -121,6 +121,37 @@ describe('RolesContainerComponent', () => {
   let component: RolesAndAccessContainerComponent;
   let fixture: ComponentFixture<RolesAndAccessContainerComponent>;
   const mockAllocateRoleService = jasmine.createSpyObj('AllocateRoleService', ['getCaseRoles', 'getCaseRolesUserDetails']);
+  const data: CaseRoleDetails[] = [
+    {
+      idam_id: '519e0c40-d30e-4f42-8a4c-2c79838f0e4e',
+      sidam_id: '519e0c40-d30e-4f42-8a4c-2c79838f0e4e',
+      known_as: 'Tom',
+      surname: 'Cruz',
+      full_name: 'Tom Cruz',
+      email_id: '330085EMP-@ejudiciary.net',
+    }
+  ];
+  const caseRolesData: any[] = [
+    {
+      actions: [
+        {
+          id: 'reallocate',
+          title: 'Reallocate'
+        },
+        {
+          id: 'remove',
+          title: 'Remove Allocation'
+        }
+      ],
+      actorId: '519e0c40-d30e-4f42-8a4c-2c79838f0e4e',
+      end: null,
+      id: '13daef07-dbd2-4106-9099-711c4505f04f',
+      location: null,
+      roleCategory: RoleCategory.JUDICIAL,
+      roleName: 'hearing-judge',
+      start: '2021-12-09T00:00:00Z'
+    }
+  ];
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -175,42 +206,17 @@ describe('RolesContainerComponent', () => {
   });
 
   it('should case roles from api', () => {
-    const data: CaseRoleDetails[] = [
-      {
-        idam_id: '519e0c40-d30e-4f42-8a4c-2c79838f0e4e',
-        sidam_id: '519e0c40-d30e-4f42-8a4c-2c79838f0e4e',
-        known_as: 'Tom',
-        surname: 'Cruz',
-        full_name: 'Tom Cruz',
-        email_id: '330085EMP-@ejudiciary.net',
-      }
-    ];
-    const caseRolesData: any[] = [
-      {
-        actions: [
-          {
-            id: 'reallocate',
-            title: 'Reallocate'
-          },
-          {
-            id: 'remove',
-            title: 'Remove Allocation'
-          }
-        ],
-        actorId: '519e0c40-d30e-4f42-8a4c-2c79838f0e4e',
-        end: null,
-        id: '13daef07-dbd2-4106-9099-711c4505f04f',
-        location: null,
-        roleCategory: RoleCategory.JUDICIAL,
-        roleName: 'hearing-judge',
-        start: '2021-12-09T00:00:00Z'
-      }
-    ];
     mockAllocateRoleService.getCaseRoles.and.returnValue(of(caseRolesData));
     mockAllocateRoleService.getCaseRolesUserDetails.and.returnValue(of(data));
     component.roles$.subscribe((caseRoles: CaseRole[]) => {
       expect(caseRoles.length).toBe(1);
       expect(caseRoles[0].name).toBe('Tom Cruz');
     });
+  });
+
+  it('should map caseRoles', () => {
+    const result = component.mapCaseRoles(caseRolesData, data);
+    expect(result.length).toBe(1);
+    expect(result[0].name).toBe('Tom Cruz');
   });
 });

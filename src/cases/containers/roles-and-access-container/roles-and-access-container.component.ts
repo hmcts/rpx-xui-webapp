@@ -36,19 +36,7 @@ export class RolesAndAccessContainerComponent implements OnInit {
     const jurisdiction = this.caseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
     this.roles$ = this.allocateService.getCaseRoles(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id).pipe(
       mergeMap((caseRoles: CaseRole[]) => this.allocateService.getCaseRolesUserDetails(caseRoles).pipe(
-        map((caseRolesWithUserDetails: CaseRoleDetails[]) => {
-          return caseRoles.map(role => {
-            const userDetails = caseRolesWithUserDetails.find(detail => detail.sidam_id === role.actorId);
-            if (!userDetails) {
-              return role;
-            }
-            return {
-              ...role,
-              name: userDetails.full_name,
-              email: userDetails.email_id,
-            };
-          });
-        })
+        map((caseRolesWithUserDetails: CaseRoleDetails[]) => this.mapCaseRoles(caseRoles, caseRolesWithUserDetails))
       )),
     );
     this.exclusions$ = this.roleExclusionsService.getCurrentUserRoleExclusions(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id);
@@ -57,6 +45,20 @@ export class RolesAndAccessContainerComponent implements OnInit {
     // as this will enable the loading caseworkers if not
     // present in session storage
     this.caseworkerDataService.getAll().pipe(first()).subscribe();
+  }
+
+  public mapCaseRoles(caseRoles: CaseRole[], caseRolesWithUserDetails: CaseRoleDetails[]): CaseRole[] {
+    return caseRoles.map(role => {
+      const userDetails = caseRolesWithUserDetails.find(detail => detail.sidam_id === role.actorId);
+      if (!userDetails) {
+        return role;
+      }
+      return {
+        ...role,
+        name: userDetails.full_name,
+        email: userDetails.email_id,
+      };
+    });
   }
 
   public applyJurisdiction(caseDetails: CaseView): void {

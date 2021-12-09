@@ -2,10 +2,10 @@ import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
 import { CancelHearingComponent, ChangeHearingComponent, DatePriorityHearingComponent, RequestHearingComponent, ViewHearingComponent } from './containers';
+import { HearingRequirementsComponent } from './containers/request-hearing/hearing-requirements/hearing-requirements.component';
 import { LocationSearchContainerComponent } from './containers/request-hearing/location-search-container/location-search-container.component';
 import { WelshHearingComponent } from './containers/request-hearing/welsh-hearing/welsh-hearing.component';
 import { PriorityResolver } from './resolvers/priority/priority.resolve';
-import { HearingRequirementsComponent } from './containers/request-hearing/hearing-requirements/hearing-requirements.component';
 
 export const ROUTES: Routes = [
   {

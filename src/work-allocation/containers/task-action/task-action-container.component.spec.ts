@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
 import { Observable, of } from 'rxjs';
 
 import { TaskListComponent } from '..';
@@ -45,6 +46,7 @@ describe('WorkAllocation', () => {
     };
     const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
     const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
+    const mockSessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem']);
 
     beforeEach(() => {
       TestBed.configureTestingModule({
@@ -62,6 +64,7 @@ describe('WorkAllocation', () => {
         ],
         providers: [
           { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
+          { provide: SessionStorageService, useValue: mockSessionStorageService },
           {
             provide: ActivatedRoute,
             useValue: {

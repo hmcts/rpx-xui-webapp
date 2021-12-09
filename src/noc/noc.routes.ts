@@ -1,6 +1,6 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AppConstants } from 'src/app/app.constants';
+import { AppConstants } from '../app/app.constants';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
 import { NocHomeComponent } from './containers/noc-home/noc-home.component';
 import { NocGuard } from './guards/noc-guard';

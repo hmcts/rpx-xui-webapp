@@ -3,17 +3,87 @@ import { BookingResponse, BookingResponseError, Bookings } from '../models';
 /* tslint:disable */
 export const bookings: Bookings = {
   'bookings':
-    [{
-      appointmentId: '101',
-      base_location_id: '366796',
-      beginTime: new Date('2021-01-01T00:00:00Z'),
-      contract_type_id: '102',
-      created: new Date('2021-02-23T06:37:58Z'),
-      endTime: new Date('2021-09-01T00:00:00Z'),
-      region_id: '104',
-      roleId: 'caseworker',
-      userId: '21334a2b-79ce-44eb-9168-2d49a744be9c'
-    }],
+    [
+      {
+        appointmentId: '101',
+        base_location_id: '366796',
+        beginTime: new Date('2021-11-29T00:00:00Z'),
+        contract_type_id: '102',
+        created: new Date('2021-02-23T06:37:58Z'),
+        endTime: new Date('2021-12-24T00:00:00Z'),
+        region_id: '104',
+        roleId: 'caseworker',
+        userId: '21334a2b-79ce-44eb-9168-2d49a744be9c'
+      },
+      {
+        appointmentId: '102',
+        base_location_id: '366796',
+        beginTime: new Date('2021-12-02T00:00:00Z'),
+        contract_type_id: '102',
+        created: new Date('2021-02-23T06:37:58Z'),
+        endTime: new Date('2021-12-31T00:00:00Z'),
+        region_id: '104',
+        roleId: 'caseworker',
+        userId: '21334a2b-79ce-44eb-9168-2d49a744be9c'
+      },
+      {
+        appointmentId: '103',
+        base_location_id: '366796',
+        beginTime: new Date('2021-12-22T00:00:00Z'),
+        contract_type_id: '102',
+        created: new Date('2021-02-23T06:37:58Z'),
+        endTime: new Date('2022-02-01T00:00:00Z'),
+        region_id: '104',
+        roleId: 'caseworker',
+        userId: '21334a2b-79ce-44eb-9168-2d49a744be9c'
+      },
+      {
+        appointmentId: '103',
+        base_location_id: '324339',
+        beginTime: new Date('2021-10-10T00:00:00Z'),
+        contract_type_id: '102',
+        created: new Date('2021-02-23T06:37:58Z'),
+        endTime: new Date('2022-02-01T00:00:00Z'),
+        region_id: '104',
+        roleId: 'caseworker',
+        userId: '21334a2b-79ce-44eb-9168-2d49a744be9c'
+      },
+      {
+        appointmentId: '103',
+        base_location_id: '366796',
+        beginTime: new Date('2021-12-02T00:00:00Z'),
+        contract_type_id: '102',
+        created: new Date('2021-02-23T06:37:58Z'),
+        endTime: new Date('2021-12-31T00:00:00Z'),
+        region_id: '104',
+        roleId: 'caseworker',
+        userId: '21334a2b-79ce-44eb-9168-2d49a744be9c'
+      },
+
+      {
+        appointmentId: '103',
+        base_location_id: '324339',
+        beginTime: new Date('2021-12-20T00:00:00Z'),
+        contract_type_id: '102',
+        created: new Date('2021-02-23T06:37:58Z'),
+        endTime: new Date('2021-12-31T00:00:00Z'),
+        region_id: '104',
+        roleId: 'caseworker',
+        userId: '21334a2b-79ce-44eb-9168-2d49a744be9c'
+      },
+
+      {
+        appointmentId: '103',
+        base_location_id: '324339',
+        beginTime: new Date('2021-12-22T00:00:00Z'),
+        contract_type_id: '102',
+        created: new Date('2021-02-23T06:37:58Z'),
+        endTime: new Date('2022-02-01T00:00:00Z'),
+        region_id: '104',
+        roleId: 'caseworker',
+        userId: '21334a2b-79ce-44eb-9168-2d49a744be9c'
+      },
+    ],
 };
 
 export const bookingResponse: BookingResponse = {

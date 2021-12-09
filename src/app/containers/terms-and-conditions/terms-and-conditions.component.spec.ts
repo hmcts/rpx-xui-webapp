@@ -5,7 +5,7 @@ import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Action, Store } from '@ngrx/store';
 import { of } from 'rxjs';
-import { TermsConditionsService } from 'src/app/services/terms-and-conditions/terms-and-conditions.service';
+import { TermsConditionsService } from '../../../app/services/terms-and-conditions/terms-and-conditions.service';
 import { TermsAndConditionsComponent } from './terms-and-conditions.component';
 
 const storeMock = {

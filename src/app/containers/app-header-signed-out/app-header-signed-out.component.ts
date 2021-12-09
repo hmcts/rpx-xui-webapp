@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
+import { Theme } from '../../../app/models/theme.model';
 
 import {AppConstants} from '../../app.constants';
 import {AppTitleModel} from '../../models/app-title.model';
 import {NavItemsModel} from '../../models/nav-item.model';
 import {UserNavModel} from '../../models/user-nav.model';
-import {Theme} from '../app-header/app-header.component';
 
 @Component({
   selector: 'exui-app-header-signed-out',

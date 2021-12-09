@@ -22,12 +22,18 @@
   </p>
 
   <h2 class="govuk-heading-m">Legal Ops</h2>
-
+  <div *ngIf="!namedLegalRoles">
   <exui-case-roles-table [roles]="legalOpsRoles"
                          [caseDetails]="caseDetails"
                          [showAllocateRoleLink]="showAllocateRoleLink">
   </exui-case-roles-table>
-
+  </div>
+  <div *ngIf="namedLegalRoles">
+  <exui-case-roles-table [roles]="namedLegalRoles"
+                         [caseDetails]="caseDetails"
+                         [showAllocateRoleLink]="showAllocateRoleLink">
+  </exui-case-roles-table>
+  </div>
   <p>
     <a href="javascript:void(0)"
        class="govuk-link"

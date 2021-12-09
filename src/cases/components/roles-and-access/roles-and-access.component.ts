@@ -1,6 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
+
 import { CaseRole, RoleCategory, RoleExclusion } from '../../../role-access/models';
+import { Caseworker } from '../../../work-allocation-2/models/dtos';
 
 @Component({
   selector: 'exui-roles-and-access',
@@ -8,6 +10,8 @@ import { CaseRole, RoleCategory, RoleExclusion } from '../../../role-access/mode
 })
 export class RolesAndAccessComponent implements OnInit {
   public legalOpsRoles: CaseRole[] = [];
+  public namedLegalRoles: CaseRole[];
+  public legalRolesNotNamed: boolean = false;
   public judicialRoles: CaseRole[] = [];
   public legalOps: RoleCategory = RoleCategory.LEGAL_OPERATIONS;
   public judicial: RoleCategory = RoleCategory.JUDICIAL;
@@ -17,6 +21,7 @@ export class RolesAndAccessComponent implements OnInit {
   @Input() public exclusions: RoleExclusion[] = [];
   @Input() public showAllocateRoleLink: boolean = false;
   @Input() public caseDetails: CaseView;
+  @Input() public caseworkers: Caseworker[];
 
   private pRoles: CaseRole[] = [];
   public jurisdictionFieldId = '[JURISDICTION]';
@@ -39,6 +44,25 @@ export class RolesAndAccessComponent implements OnInit {
     const jurisdictionField = this.caseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
     if (jurisdictionField) {
       this.jurisdiction = jurisdictionField.value;
+    }
+  }
+
+  public ngOnChanges(): void {
+    if (this.legalOpsRoles && !this.caseworkers) {
+      this.legalRolesNotNamed = true;
+    };
+    if (this.caseworkers && this.legalOpsRoles) {
+      if (this.legalOpsRoles.length > 0 && this.legalRolesNotNamed) {
+      this.legalOpsRoles.forEach(
+        role => {
+          const caseWorker = this.caseworkers.find(caseworker => caseworker.idamId === role.actorId);
+          if (caseWorker) {
+            role.name = `${caseWorker.firstName}-${caseWorker.lastName}`;
+          }
+        }
+      );
+      }
+      this.namedLegalRoles = this.legalOpsRoles;
     }
   }
 }

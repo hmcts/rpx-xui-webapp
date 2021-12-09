@@ -443,10 +443,11 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.8.3":
-  version "4.8.3"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.8.3.tgz#a3182012806ac968d49129472a84609a6cbbeba6"
-  integrity sha512-zWToWMgs5mqnTeNZZ5ofJ4iIHBoCL28PCr+2tlO8UlBSro/ObPfQuYjP8JkERjCZf0MaiiyOqOhGbuNERrNoGQ==
+
+"@hmcts/ccd-case-ui-toolkit@4.7.6-tab-not-defined":
+  version "4.7.6-tab-not-defined"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.7.6-tab-not-defined.tgz#3a607e794c5d18a997568fdd53284c22fa0d0bb6"
+  integrity sha512-Hg68GiUB85lwbhu6K/PaJoGpFnsPheR3nV/2UTCmhtn29XxFWFEPv1eyeQzN8xu7nICN9w2KVFo/HmumHjkbCw==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -474,6 +475,13 @@
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-5.0.0.tgz#2b0b6e491fceeaabb51c0b57924b9fc6a91952d3"
   integrity sha512-qVcLIxVMMhjLZfpHwRif2BvQNvTKgv4MKtNnshBIDV3xaJI46xAk2WJvRnkTNpW5fBWNp2q3pPHgvPNm6ksByA==
+  dependencies:
+    tslib "^1.9.0"
+
+"@hmcts/ccpay-web-component@4.0.2":
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-4.0.2.tgz#e09a3401c577f157dfb5d437a2a8e0e3a3a990c5"
+  integrity sha512-WOAfryrSZS/mbIIgRJwqbweJIhQaFzImwb7JMJOTZs5FDVzfqRs/yehyn4/6iysoIuaKkM76HnaruDW+AaWuCg==
   dependencies:
     tslib "^1.9.0"
 
@@ -523,10 +531,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.4.8-select-all-redo":
-  version "1.4.8-select-all-redo"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.8-select-all-redo.tgz#2f82ed4e7dea6ccfc3bb88dac7db0c21933a01fd"
-  integrity sha512-Sazil/MKCiKfU054N0lf0NcJkFDw3357LXCO3TvyAAPu0ayWJnVAfntGyX2YbELxwON02R8lW3b3fA2+vy6KEQ==
+"@hmcts/rpx-xui-common-lib@v1.4.20-reset-button":
+  version "1.4.20-reset-button"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.20-reset-button.tgz#93cbffa788ad9b7f57a363c230a2dfd329180776"
+  integrity sha512-61nhMMrsBEZvoMMn1VYkxQOeYSZ4/P33iNwe6+BsnlzSFllosiB/r4DSqANkFULI/Xh9atwyW7e6ujWCu4COiQ==
   dependencies:
     tslib "^1.9.0"
 

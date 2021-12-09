@@ -21,7 +21,17 @@ const CCDCaseConfig = require('./ccdCaseConfig/caseCreateConfigGenerator');
 const CCDWorkBasketInputGenerator = require('./ccdCaseConfig/workBasketInputGenerator');
 const CCDSearchInputGenerator = require('./ccdCaseConfig/searchInputGenerator');
 
+const caseDetailsData = require('./caseDetails_data');
+
 class CCDApi{
+
+    constructor(){
+        this.setDefaultData();
+    }
+
+    setDefaultData(){
+        this.caseDetailsResponse = JSON.parse(JSON.stringify(caseDetailsData));
+    }
 
     getJurisdictions(){
         return caseworkerJurisdictions; 

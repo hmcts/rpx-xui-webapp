@@ -180,6 +180,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
           if (f === null) {
             f = {
               id: CaseManagerFilterComponent.FILTER_NAME,
+              reset: false,
               fields: this.filterConfig.cancelSetting.fields
             };
             return f;
@@ -187,6 +188,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
           return f;
         }),
         filter((f: FilterSetting) => f && f.hasOwnProperty('fields') && f.id === CaseManagerFilterComponent.FILTER_NAME),
+        filter((f: FilterSetting) => !f.reset),
       ).subscribe((f: FilterSetting) => {
         const fields = f.fields.reduce((acc, field: { name: string, value: string[] }) => {
           return {...acc, [field.name]: field.value[0]};

@@ -1,3 +1,4 @@
+import { Component, Input } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -7,10 +8,18 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { RefDataModel } from '../../../models/refData.model';
 import { HearingStageComponent } from './hearing-stage.component';
 
+@Component({
+  selector: 'exui-lib-hmcts-error-summary',
+  template: '',
+})
+class MockHmctsErrorSummaryComponent {
+  @Input() public errorMessages: [];
+  @Input() public header: string;
+}
+
 describe('HearingStageComponent', () => {
   let component: HearingStageComponent;
   let fixture: ComponentFixture<HearingStageComponent>;
-  const hearingsRefDataServiceMock = jasmine.createSpyObj('HearingsRefDataService', ['getRefData']);
 
   const source: RefDataModel[] = [
     {
@@ -74,7 +83,7 @@ describe('HearingStageComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule],
-      declarations: [ HearingStageComponent ],
+      declarations: [ HearingStageComponent, MockHmctsErrorSummaryComponent ],
       providers: [
         provideMockStore({initialState}),
         {

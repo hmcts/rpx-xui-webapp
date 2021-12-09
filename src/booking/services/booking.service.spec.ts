@@ -15,6 +15,10 @@ describe('BookingService', () => {
     });
   });
 
+  it('should be created', inject([BookingService], (service: BookingService) => {
+    expect(service).toBeTruthy();
+  }));
+
   describe('getBookings()', () => {
 
     it('should make a get call', inject([HttpTestingController, BookingService], (httpMock: HttpTestingController, service: BookingService) => {
@@ -37,6 +41,32 @@ describe('BookingService', () => {
 
       const req = httpMock.expectOne('/refdata/location/building-locations?epimms_id=123');
       expect(req.request.method).toEqual('GET');
+      req.flush(null);
+    }));
+  });
+
+  describe('createBooking()', () => {
+
+    it('should make a post to create a booking', inject([HttpTestingController, BookingService], (httpMock: HttpTestingController, service: BookingService) => {
+      service.createBooking({ locationId: '1', regionId: '1', beginDate: null, endDate: null }).subscribe(response => {
+        expect(response).toBeNull();
+      });
+
+      const req = httpMock.expectOne('/am/booking');
+      expect(req.request.method).toEqual('POST');
+      req.flush(null);
+    }));
+  });
+
+  describe('refreshRoleAssignments()', () => {
+
+    it('should make a post to refresh the role assignments', inject([HttpTestingController, BookingService], (httpMock: HttpTestingController, service: BookingService) => {
+      service.refreshRoleAssignments().subscribe(response => {
+        expect(response).toBeNull();
+      });
+
+      const req = httpMock.expectOne('/am/role-mapping/judicial/refresh');
+      expect(req.request.method).toEqual('POST');
       req.flush(null);
     }));
   });

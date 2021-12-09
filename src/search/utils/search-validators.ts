@@ -136,6 +136,6 @@ export class SearchValidators {
         return {searchForm: true, errorType: SearchFormErrorType.NO_SEARCH_CRITERIA};
       }
       return null;
-    }
+    };
   }
 }

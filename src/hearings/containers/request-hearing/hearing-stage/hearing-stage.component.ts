@@ -8,7 +8,7 @@ import { RefDataModel } from 'src/hearings/models/refData.model';
 import * as fromHearingStore from '../../../../hearings/store';
 import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.model';
 @Component({
-  selector: 'xui-hearing-stage',
+  selector: 'exui-hearing-stage',
   templateUrl: './hearing-stage.component.html',
   styleUrls: ['./hearing-stage.component.scss']
 })

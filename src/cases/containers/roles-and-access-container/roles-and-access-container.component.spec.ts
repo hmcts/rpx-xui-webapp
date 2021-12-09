@@ -5,11 +5,13 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs/internal/observable/of';
 import { CASEROLES } from '../../../../api/workAllocation2/constants/roles.mock.data';
 import { CaseRolesTableComponent } from '../../../role-access/components/case-roles-table/case-roles-table.component';
 import { ExclusionsTableComponent } from '../../../role-access/components/exclusions-table/exclusions-table.component';
-import { RoleExclusion } from '../../../role-access/models';
-import { RoleExclusionsService } from '../../../role-access/services';
+import { CaseRole, RoleCategory, RoleExclusion } from '../../../role-access/models';
+import { CaseRoleDetails } from '../../../role-access/models/case-role-details.interface';
+import { AllocateRoleService, RoleExclusionsService } from '../../../role-access/services';
 import { RoleExclusionsMockService } from '../../../role-access/services/role-exclusions.mock.service';
 import { initialMockState } from '../../../role-access/testing/app-initial-state.mock';
 import { RolesAndAccessComponent } from '../../components/roles-and-access/roles-and-access.component';
@@ -118,6 +120,7 @@ const CASE_VIEW: CaseView = {
 describe('RolesContainerComponent', () => {
   let component: RolesAndAccessContainerComponent;
   let fixture: ComponentFixture<RolesAndAccessContainerComponent>;
+  const mockAllocateRoleService = jasmine.createSpyObj('AllocateRoleService', ['getCaseRoles', 'getCaseRolesUserDetails']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -127,7 +130,7 @@ describe('RolesContainerComponent', () => {
           provide: RoleExclusionsService,
           useClass: RoleExclusionsMockService
         },
-        provideMockStore({initialState: initialMockState}),
+        provideMockStore({ initialState: initialMockState }),
         {
           provide: ActivatedRoute,
           useValue: {
@@ -168,6 +171,46 @@ describe('RolesContainerComponent', () => {
 
       expect(exclusions.length).toBe(1);
       expect(exclusions[0].name).toBe('Judge Birch');
+    });
+  });
+
+  it('should case roles from api', () => {
+    const data: CaseRoleDetails[] = [
+      {
+        idam_id: '519e0c40-d30e-4f42-8a4c-2c79838f0e4e',
+        sidam_id: '519e0c40-d30e-4f42-8a4c-2c79838f0e4e',
+        known_as: 'Tom',
+        surname: 'Cruz',
+        full_name: 'Tom Cruz',
+        email_id: '330085EMP-@ejudiciary.net',
+      }
+    ];
+    const caseRolesData: any[] = [
+      {
+        actions: [
+          {
+            id: 'reallocate',
+            title: 'Reallocate'
+          },
+          {
+            id: 'remove',
+            title: 'Remove Allocation'
+          }
+        ],
+        actorId: '519e0c40-d30e-4f42-8a4c-2c79838f0e4e',
+        end: null,
+        id: '13daef07-dbd2-4106-9099-711c4505f04f',
+        location: null,
+        roleCategory: RoleCategory.JUDICIAL,
+        roleName: 'hearing-judge',
+        start: '2021-12-09T00:00:00Z'
+      }
+    ];
+    mockAllocateRoleService.getCaseRoles.and.returnValue(of(caseRolesData));
+    mockAllocateRoleService.getCaseRolesUserDetails.and.returnValue(of(data));
+    component.roles$.subscribe((caseRoles: CaseRole[]) => {
+      expect(caseRoles.length).toBe(1);
+      expect(caseRoles[0].name).toBe('Tom Cruz');
     });
   });
 });

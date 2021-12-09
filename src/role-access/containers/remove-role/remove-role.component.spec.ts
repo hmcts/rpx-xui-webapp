@@ -31,7 +31,7 @@ describe('RemoveRoleComponent', () => {
     'back'
   ]);
   const allworkUrl = `work/all-work/cases`;
-  window.history.pushState({returnUrl: allworkUrl}, '', allworkUrl);
+  window.history.pushState({ returnUrl: allworkUrl }, '', allworkUrl);
 
   class AllocateRoleMockService extends AllocateRoleService {
     public confirmAllocation(allocateRoleStateData: AllocateRoleStateData): Observable<any> {
@@ -43,8 +43,10 @@ describe('RemoveRoleComponent', () => {
         {
           added: Date.UTC(2021, 6, 1),
           id: '999999999',
+          actorId: '999999999',
           name: 'Judge Rinder',
           notes: 'Test exclusion',
+          roleCategory: RoleCategory.JUDICIAL,
           email: 'user@test.com'
         }
       ] as unknown as CaseRole[]);
@@ -59,9 +61,13 @@ describe('RemoveRoleComponent', () => {
     }
 
     public getCaseRolesUserDetails(caseRoles: CaseRole[]): Observable<CaseRoleDetails[]> {
-      const caseRoleDetail: CaseRoleDetails =  {
-        email_id: 'user@test.com', full_name: 'Judge Rinder', knownAs: '', sidam_id: '999999999', title: ''
-
+      const caseRoleDetail: CaseRoleDetails = {
+        idam_id: '999999999',
+        surname: '',
+        email_id: 'user@test.com',
+        full_name: 'Judge Rinder',
+        known_as: '',
+        sidam_id: '999999999'
       };
       return of([caseRoleDetail]);
     }
@@ -126,7 +132,7 @@ describe('RemoveRoleComponent', () => {
   }));
 
   beforeEach(() => {
-    routerMock.getCurrentNavigation.and.returnValue({extras: {state: {backUrl: allworkUrl}}});
+    routerMock.getCurrentNavigation.and.returnValue({ extras: { state: { backUrl: allworkUrl } } });
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
@@ -158,7 +164,7 @@ describe('RemoveRoleComponent', () => {
     component.onNavEvent(RemoveAllocationNavigationEvent.CANCEL);
     expect(locationMock.back).toHaveBeenCalled();
     component.onNavEvent(RemoveAllocationNavigationEvent.REMOVE_ROLE_ALLOCATION);
-    const additionalState = {state: {showMessage: true, messageText: RemoveRoleText.infoMessage}};
+    const additionalState = { state: { showMessage: true, messageText: RemoveRoleText.infoMessage } };
     expect(routerMock.navigate).toHaveBeenCalledWith([allworkUrl], additionalState);
   });
 

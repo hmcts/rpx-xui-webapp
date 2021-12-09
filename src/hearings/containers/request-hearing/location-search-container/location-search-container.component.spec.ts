@@ -107,4 +107,18 @@ describe('LocationSearchContainerComponent', () => {
       expect(selectedLocations.length).toEqual(0);
     });
   });
+
+  it('should include page elements', () => {
+    const hearingHeader = fixture.debugElement.nativeElement.querySelector('.govuk-heading-l');
+    expect(hearingHeader.textContent).toContain('What are the hearing venue details?');
+    const hint = fixture.debugElement.nativeElement.querySelector('.govuk-hint');
+    expect(hint.textContent).toContain('If this is a fully remote hearing you must still select the court or tribunal which will be managing the case.');
+    const findCourtLink = fixture.debugElement.nativeElement.querySelector('.govuk-inset-text');
+    expect(findCourtLink.textContent).toContain('You can check the venue has the required facilities or reasonable adjustments using');
+    expect(findCourtLink.innerHTML).toContain('https://www.find-court-tribunal.service.gov.uk/search-by-name');
+  });
+
+  afterEach(() => {
+    fixture.destroy();
+  });
 });

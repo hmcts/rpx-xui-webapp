@@ -3,15 +3,15 @@ import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap, take } from 'rxjs/operators';
-import { HearingCategory } from '../../../hearings/models/hearings.enum';
-import { RefDataModel } from '../../../hearings/models/refData.model';
-import * as fromHearingStore from '../../../hearings/store';
+import { HearingCategory } from '../../models/hearings.enum';
+import { RefDataModel } from '../../models/refData.model';
+import * as fromHearingStore from '../../store';
 import { HearingsRefDataService } from '../../services/hearings-ref-data.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PriorityResolver implements Resolve<RefDataModel[]> {
+export class RefDataResolver implements Resolve<RefDataModel[]> {
   public serviceId: string = 'SSCS';
 
   constructor(
@@ -39,7 +39,7 @@ export class PriorityResolver implements Resolve<RefDataModel[]> {
     );
   }
 
-  public getReferenceData$(serviceId, category: HearingCategory = HearingCategory.Priority): Observable<RefDataModel[]> {
+  public getReferenceData$(serviceId, category: HearingCategory): Observable<RefDataModel[]> {
     return this.hearingsDataService.getRefData(category, serviceId).pipe(
       catchError(error => {
         return [];

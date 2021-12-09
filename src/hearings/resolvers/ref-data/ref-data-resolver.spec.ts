@@ -1,20 +1,23 @@
 import { APP_BASE_HREF } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
+import { HearingCategory } from 'src/hearings/models/hearings.enum';
 import { HearingsRefDataService } from 'src/hearings/services/hearings-ref-data.service';
 import { metaReducers } from '../../../app/app.module';
 import { reducers } from '../../../app/store';
-import { RefDataModel } from '../../../hearings/models/refData.model';
-import * as fromHearingStore from '../../../hearings/store';
-import { PriorityResolver } from './priority.resolve';
+import { RefDataModel } from '../../models/refData.model';
+import * as fromHearingStore from '../../store';
+import { RefDataResolver } from './ref-data-resolver.resolve';
 
-describe('Priority Resolver', () => {
+fdescribe('Priority Resolver', () => {
   let hearingsDataService: HearingsRefDataService;
   let store: Store<fromHearingStore.State>;
   const dataRef: RefDataModel[] = [];
+  let route: ActivatedRoute;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -24,7 +27,15 @@ describe('Priority Resolver', () => {
         HttpClientTestingModule,
       ],
       providers: [
-        PriorityResolver,
+        RefDataResolver,
+        {
+          provide: ActivatedRoute,
+          useValue: { paramMap: convertToParamMap({
+            data: {
+              title: 'HMCTS Manage cases | Request Hearing | Date Priority Hearing',
+              category: HearingCategory.Priority
+            }})}
+        },
         HearingsRefDataService,
         { provide: APP_BASE_HREF, useValue: '/' }
       ]
@@ -35,11 +46,11 @@ describe('Priority Resolver', () => {
   });
 
   it('should be created', () => {
-    const service: PriorityResolver = TestBed.get(PriorityResolver);
+    const service: RefDataResolver = TestBed.get(RefDataResolver);
     expect(service).toBeTruthy();
   });
 
-  it('resolves reference data', inject([PriorityResolver], (service: PriorityResolver) => {
+  it('resolves reference data', inject([RefDataResolver], (service: RefDataResolver) => {
     spyOn(store, 'pipe').and.returnValue(of('serviceName'));
     spyOn(hearingsDataService, 'getRefData').and.returnValue(of(dataRef));
     service.resolve().subscribe((refData: RefDataModel[]) => {

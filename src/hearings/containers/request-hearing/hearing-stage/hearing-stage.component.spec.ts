@@ -4,11 +4,10 @@ import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
-import { of } from 'rxjs';
 import { RefDataModel } from '../../../models/refData.model';
 import { HearingStageComponent } from './hearing-stage.component';
 
-fdescribe('HearingStageComponent', () => {
+describe('HearingStageComponent', () => {
   let component: HearingStageComponent;
   let fixture: ComponentFixture<HearingStageComponent>;
   const hearingsRefDataServiceMock = jasmine.createSpyObj('HearingsRefDataService', ['getRefData']);
@@ -106,7 +105,7 @@ fdescribe('HearingStageComponent', () => {
     expect(component.stageForm.controls['stage-option']).toBeDefined();
   });
 
-  it('should set hearingtype', async(done) => {
+  it('should set hearingtype', async (done) => {
     fixture.whenStable().then(() => {
       fixture.detectChanges();
       done();

@@ -1,16 +1,16 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { provideMockStore } from '@ngrx/store/testing/index';
+import { RouterTestingModule } from '@angular/router/testing';
+import { provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs';
 import { RefDataModel } from '../../../models/refData.model';
-import { HearingsRefDataService } from '../../../services/hearings-ref-data.service';
 import { HearingStageComponent } from './hearing-stage.component';
 
 fdescribe('HearingStageComponent', () => {
   let component: HearingStageComponent;
   let fixture: ComponentFixture<HearingStageComponent>;
-  let hearingsRefDataService: any;
   const hearingsRefDataServiceMock = jasmine.createSpyObj('HearingsRefDataService', ['getRefData']);
 
   const source: RefDataModel[] = [
@@ -74,6 +74,7 @@ fdescribe('HearingStageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [ReactiveFormsModule, RouterTestingModule],
       declarations: [ HearingStageComponent ],
       providers: [
         provideMockStore({initialState}),
@@ -82,7 +83,7 @@ fdescribe('HearingStageComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                hearingStages: hearingsRefDataServiceMock
+                hearingStages: source
               }
             },
           }
@@ -97,15 +98,39 @@ fdescribe('HearingStageComponent', () => {
     fixture = TestBed.createComponent(HearingStageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    expect(hearingsRefDataService.hearingStageOptions).toEqual(source);
   });
 
-  // it('should be in the same order as service', () => {
-  //   const radioLabels = fixture.debugElement.queryAll(By.css('.govuk-radios__item label'));
-  //   expect(radioLabels.length).toBeGreaterThan(0);
+  it('should create component and set option collection', () => {
+    expect(component).toBeDefined();
+    expect(component.hearingStageOptions).toEqual(source);
+    expect(component.stageForm.controls['stage-option']).toBeDefined();
+  });
 
-  //   for (let index = 0; index < radioLabels.length; index++) {
-  //     expect(radioLabels[index].nativeElement.innerText).toEqual(source[index].value_en);
-  //   }
-  // });
+  it('should set hearingtype', async(done) => {
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      done();
+      expect(component.hearingType).toEqual(initialState.hearings.hearingValues.serviceHearingValuesModel.hearingType);
+    });
+  })
+
+  it('should initialise control value to hearing type from store', async (done) => {
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      done();
+      expect(component.stageForm.controls['stage-option'].value).toEqual(initialState.hearings.hearingValues.serviceHearingValuesModel.hearingType);
+    });
+  });
+
+  it('should be in the same order as service', () => {
+    const radioLabels = fixture.debugElement.queryAll(By.css('.govuk-radios__item'));
+    expect(radioLabels.length).toBeGreaterThan(0);
+
+    for (let index = 0; index < radioLabels.length; index++) {
+      expect(radioLabels[index].nativeElement.innerText).toEqual(source[index].value_en);
+    }
+  });
+  afterEach(() => {
+    fixture.destroy();
+  });
 });

@@ -18,10 +18,10 @@ export class HearingStageComponent implements OnInit, OnDestroy, AfterViewInit {
   public foreName: string;
   public surname: string;
   public fullName: string;
-  public hearingStageOptions: Observable<RefDataModel[]>;
+  public hearingStageOptions: RefDataModel[];
   public hearingStoreSub: Subscription;
   public stageForm: FormGroup;
-  public hearingType: string = 'initial';
+  public hearingType: string;
   @ViewChildren('radioButton') public radios: QueryList<any>;
   public hearing$: Observable<string>;
 
@@ -34,17 +34,16 @@ export class HearingStageComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  public ngAfterViewInit(): void {
-    this.stageForm.controls['stage-option'].setValue(this.hearingType);
-  }
-
   public ngOnInit() {
     this.hearingStoreSub = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesModel)).subscribe(
       hearingValueModel => {
-       // console.log('hearingValueModel', hearingValueModel);
         this.hearingType = hearingValueModel && hearingValueModel.hearingType ? hearingValueModel.hearingType :  this.hearingType;
       }
     );
+  }
+
+  public ngAfterViewInit(): void {
+    this.stageForm.controls['stage-option'].setValue(this.hearingType);
   }
 
   public ngOnDestroy(): void {

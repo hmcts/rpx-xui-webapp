@@ -18,7 +18,7 @@ class MockHearingPartiesComponent {
 }
 
 
-describe('HearingStageComponent', () => {
+fdescribe('HearingStageComponent', () => {
   let component: HearingStageComponent;
   let fixture: ComponentFixture<HearingStageComponent>;
 
@@ -105,7 +105,7 @@ describe('HearingStageComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HearingStageComponent);
-    component = fixture.componentInstance;
+    component = fixture.componentInstance;  
     fixture.detectChanges();
   });
 
@@ -121,12 +121,13 @@ describe('HearingStageComponent', () => {
       done();
       expect(component.hearingType).toEqual(initialState.hearings.hearingValues.serviceHearingValuesModel.hearingType);
     });
-  })
+  });
 
   it('should initialise control value to hearing type from store', async (done) => {
     fixture.whenStable().then(() => {
       fixture.detectChanges();
       done();
+      component.ngAfterViewInit();
       expect(component.stageForm.controls['stage-option'].value).toEqual(initialState.hearings.hearingValues.serviceHearingValuesModel.hearingType);
     });
   });
@@ -139,6 +140,18 @@ describe('HearingStageComponent', () => {
       expect(radioLabels[index].nativeElement.innerText).toEqual(source[index].value_en);
     }
   });
+
+  it('should call unsubscribe', (done) => {
+    component.ngOnInit();
+    spyOn(component.hearingStoreSub, 'unsubscribe');
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      done();
+      component.ngOnDestroy();
+      expect(component.hearingStoreSub.unsubscribe).toHaveBeenCalled();
+    });
+  });
+
   afterEach(() => {
     fixture.destroy();
   });

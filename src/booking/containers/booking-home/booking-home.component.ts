@@ -76,9 +76,6 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    if (this.bookings$) {
-      this.bookings$.unsubscribe();
-    }
     if (this.existingBookingsSubscription) {
       this.existingBookingsSubscription.unsubscribe();
     }

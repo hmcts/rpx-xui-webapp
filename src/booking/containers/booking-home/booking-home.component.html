@@ -19,7 +19,7 @@
               <div id="conditional-booking-type-0" *ngIf="bookingTypeForm.get('bookingType').value === 0" class="govuk-radios__conditional">
 
                 <div class="govuk-form-group">
-                <div class="govuk-grid-column-one-third" *ngFor="let booking of existingBookings" >
+                  <div class="govuk-grid-column-one-third" *ngFor="let booking of existingBookings" >
                       <p>
                         <span class="govuk-!-font-weight-bold">{{booking.locationName}}</span>
                         <span class="govuk-hint">
@@ -30,7 +30,10 @@
                         <button
                           [disabled]="checkIfButtonDisabled(booking.beginTime)"
                           role="button"
-                          class="govuk-button govuk-button--secondary" attr.aria-label="{{booking.locationName}} {{booking.beginTime | date:'dd LLLL yyyy'}} to {{booking.endTime | date:'dd LLLL yyyy'}}">
+                          class="govuk-button govuk-button--secondary" 
+                          attr.aria-label="{{booking.locationName}} {{booking.beginTime | date:'dd LLLL yyyy'}} to {{booking.endTime | date:'dd LLLL yyyy'}}"
+                          (click)="onExistingBookingSelected(booking.base_location_id)"
+                        >
                           Continue
                         </button>
                       </div>

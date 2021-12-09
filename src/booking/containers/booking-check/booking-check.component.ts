@@ -1,5 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { BookingNavigationEvent, BookingProcess } from '../../models';
+import { Router } from '@angular/router';
+import { switchMap } from 'rxjs/operators';
+import { BookingNavigationEvent, BookingProcess, BookingRequest } from '../../models';
+import { BookingService } from '../../services';
 
 @Component({
   selector: 'exui-booking-check',
@@ -16,13 +19,35 @@ export class BookingCheckComponent implements OnInit {
 
   public bookingNavigationEvent: typeof BookingNavigationEvent = BookingNavigationEvent;
 
-  constructor() { }
+  constructor(
+    private readonly bookingService: BookingService,
+    private readonly router: Router
+  ) { }
 
   public ngOnInit() {
   }
 
-  public onEventTrigger(navEvent: BookingNavigationEvent) {
-    this.eventTrigger.emit(navEvent);
+  public onEventTrigger(navEvent: BookingNavigationEvent): void {
+    if (navEvent === BookingNavigationEvent.CONFIRM) {
+      this.submitBooking();
+    } else {
+      this.eventTrigger.emit(navEvent);
+    }
   }
 
+  private submitBooking(): void {
+    this.bookingService.refreshRoleAssignments().pipe(
+      switchMap(() => {
+        const payload: BookingRequest = {
+          locationId: this.bookingProcess.locationId,
+          regionId: this.bookingProcess.regionId,
+          beginDate: this.bookingProcess.startDate,
+          endDate: this.bookingProcess.endDate
+        };
+        return this.bookingService.createBooking(payload);
+      })
+    ).subscribe(() => {
+      this.router.navigate(['/work/my-work/list']);
+    });
+  }
 }

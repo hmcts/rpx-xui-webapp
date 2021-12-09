@@ -1,7 +1,8 @@
 export interface BookingProcess {
   selectedBookingOption: number;
   locationName: string;
-  locationValue: string;
+  locationId: string;
+  regionId: string;
   selectedDateOption: number;
   startDate: Date;
   endDate: Date;

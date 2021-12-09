@@ -16,7 +16,7 @@ module.exports = {
         "GLOBAL-SEARCH": ["caseworker", "caseworker-ia", "caseworker-ia-iacjudge"]
     },
     solicitor:{
-        "NOC": ["pui-caa", "pui-case-manager", "pui-user-manager","pui-organisation-manager","caseworker", "caseworker-divorce", "caseworker-divorce-financialremedy","caseworker-divorce-financialremedy-solicitor"],
+        "NOC": ["pui-caa", "pui-case-manager", "pui-user-manager","pui-organisation-manager","caseworker", "caseworker-divorce", "caseworker-divorce-financialremedy","caseworker-divorce-solicitor"],
         "NON-NOC": ["pui-caa", "pui-case-manager", "pui-user-manager", "pui-organisation-manager", "caseworker", "caseworker-divorce", "caseworker-divorce-financialremedy", "caseworker-divorce-financialremedy-solicitor"]
     }
    

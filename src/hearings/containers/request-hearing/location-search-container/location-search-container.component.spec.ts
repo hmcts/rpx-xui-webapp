@@ -1,18 +1,18 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, Input } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AbstractControl, FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
+import { SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
 import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
 import { LocationSearchContainerComponent } from './location-search-container.component';
-import { By } from '@angular/platform-browser';
-import { SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
 
 class NativeElement {
-  focus() {}
+  public focus() {}
 }
 class MockAutoCompleteInputBox {
-  nativeElement: NativeElement = new NativeElement();
+  public nativeElement: NativeElement = new NativeElement();
 }
 
 @Component({
@@ -29,7 +29,7 @@ class MockLocationSearchContainerComponent {
   public autoCompleteInputBox: MockAutoCompleteInputBox = new MockAutoCompleteInputBox();
 }
 
-describe('LocationSearchContainerComponent', () => {
+fdescribe('LocationSearchContainerComponent', () => {
   let component: LocationSearchContainerComponent;
   let fixture: ComponentFixture<LocationSearchContainerComponent>;
 

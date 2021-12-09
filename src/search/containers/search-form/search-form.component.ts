@@ -121,7 +121,7 @@ export class SearchFormComponent implements OnInit, OnDestroy {
       [SearchFormControl.DATE_OF_DEATH_YEAR]: ['', SearchValidators.yearValidator()],
       [SearchFormControl.SERVICES_LIST]: ''
     }, {
-      validators: SearchValidators.dateComparisonValidator()
+      validators: [SearchValidators.dateComparisonValidator(), SearchValidators.searchFormValidator()]
     });
 
     this.searchServiceSubscription$ = this.searchService.getServices().subscribe(services => {
@@ -213,11 +213,16 @@ export class SearchFormComponent implements OnInit, OnDestroy {
         this.searchValidationErrors.push({ controlId: SearchFormControl.DATE_OF_DEATH_DAY, documentHRef: 'dateOfDeath', errorMessage: SearchFormErrorMessage.DATE_OF_DEATH });
         this.dateOfDeathErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.DATE_OF_DEATH] };
       }
-      // Date comparison
+      // Search cases form
       if (this.formGroup.errors) {
+        // Date comparison
         if (this.formGroup.errors.errorType === SearchFormErrorType.DATE_COMPARISON) {
           this.searchValidationErrors.push({ controlId: null, documentHRef: 'dateOfDeath', errorMessage: SearchFormErrorMessage.DATE_COMPARISON_FAILED });
           this.dateOfDeathErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.DATE_COMPARISON_FAILED] };
+        }
+        // No search criteria
+        if (this.formGroup.errors.errorType === SearchFormErrorType.NO_SEARCH_CRITERIA) {
+          this.searchValidationErrors.push({ controlId: null, documentHRef: null, errorMessage: SearchFormErrorMessage.NO_SEARCH_CRITERIA });
         }
       }
 

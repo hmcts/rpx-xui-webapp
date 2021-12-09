@@ -155,12 +155,12 @@ describe('SearchValidators', () => {
 
   it('dateComparisonValidator invalid case', () => {
     const formGroup = new FormBuilder().group({
-      dateOfBirth_day: '',
-      dateOfBirth_month: '',
-      dateOfBirth_year: '',
-      dateOfDeath_day: '',
-      dateOfDeath_month: '',
-      dateOfDeath_year: '',
+      [SearchFormControl.DATE_OF_BIRTH_DAY]: '',
+      [SearchFormControl.DATE_OF_BIRTH_MONTH]: '',
+      [SearchFormControl.DATE_OF_BIRTH_YEAR]: '',
+      [SearchFormControl.DATE_OF_DEATH_DAY]: '',
+      [SearchFormControl.DATE_OF_DEATH_MONTH]: '',
+      [SearchFormControl.DATE_OF_DEATH_YEAR]: ''
     });
 
     formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).setValue(1);
@@ -177,12 +177,12 @@ describe('SearchValidators', () => {
 
   it('dateComparisonValidator valid case', () => {
     const formGroup = new FormBuilder().group({
-      dateOfBirth_day: '',
-      dateOfBirth_month: '',
-      dateOfBirth_year: '',
-      dateOfDeath_day: '',
-      dateOfDeath_month: '',
-      dateOfDeath_year: '',
+      [SearchFormControl.DATE_OF_BIRTH_DAY]: '',
+      [SearchFormControl.DATE_OF_BIRTH_MONTH]: '',
+      [SearchFormControl.DATE_OF_BIRTH_YEAR]: '',
+      [SearchFormControl.DATE_OF_DEATH_DAY]: '',
+      [SearchFormControl.DATE_OF_DEATH_MONTH]: '',
+      [SearchFormControl.DATE_OF_DEATH_YEAR]: ''
     });
 
     formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).setValue(10);
@@ -199,12 +199,12 @@ describe('SearchValidators', () => {
 
   it('dateComparisonValidator valid case - same dates', () => {
     const formGroup = new FormBuilder().group({
-      dateOfBirth_day: '',
-      dateOfBirth_month: '',
-      dateOfBirth_year: '',
-      dateOfDeath_day: '',
-      dateOfDeath_month: '',
-      dateOfDeath_year: '',
+      [SearchFormControl.DATE_OF_BIRTH_DAY]: '',
+      [SearchFormControl.DATE_OF_BIRTH_MONTH]: '',
+      [SearchFormControl.DATE_OF_BIRTH_YEAR]: '',
+      [SearchFormControl.DATE_OF_DEATH_DAY]: '',
+      [SearchFormControl.DATE_OF_DEATH_MONTH]: '',
+      [SearchFormControl.DATE_OF_DEATH_YEAR]: ''
     });
 
     formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).setValue(10);
@@ -221,12 +221,12 @@ describe('SearchValidators', () => {
 
   it('dateComparisonValidator - no comparison if either date is not well formed (i.e. missing one or more fields)', () => {
     const formGroup = new FormBuilder().group({
-      dateOfBirth_day: null,
-      dateOfBirth_month: '',
-      dateOfBirth_year: '',
-      dateOfDeath_day: '',
-      dateOfDeath_month: '',
-      dateOfDeath_year: '',
+      [SearchFormControl.DATE_OF_BIRTH_DAY]: null,
+      [SearchFormControl.DATE_OF_BIRTH_MONTH]: '',
+      [SearchFormControl.DATE_OF_BIRTH_YEAR]: '',
+      [SearchFormControl.DATE_OF_DEATH_DAY]: '',
+      [SearchFormControl.DATE_OF_DEATH_MONTH]: '',
+      [SearchFormControl.DATE_OF_DEATH_YEAR]: ''
     });
 
     // Date of birth day field deliberately left as null
@@ -239,5 +239,27 @@ describe('SearchValidators', () => {
 
     const dateComparisonValidator = SearchValidators.dateComparisonValidator();
     expect(dateComparisonValidator(formGroup)).toBeNull();
+  });
+
+  it('should fail form validation if no field values are present (excluding the "Services" drop-down list field)', () => {
+    const formGroup = new FormBuilder().group({
+      [SearchFormControl.CASE_REF]: null,
+      [SearchFormControl.OTHER_REF]: null,
+      [SearchFormControl.SERVICES_LIST]: 'ALL'
+    });
+
+    const searchFormValidator = SearchValidators.searchFormValidator();
+    expect(searchFormValidator(formGroup)).toEqual({searchForm: true, errorType: SearchFormErrorType.NO_SEARCH_CRITERIA});
+  });
+
+  it('should pass form validation if at least one field value is present (excluding the "Services" drop-down list field)', () => {
+    const formGroup = new FormBuilder().group({
+      [SearchFormControl.CASE_REF]: '0',
+      [SearchFormControl.OTHER_REF]: null,
+      [SearchFormControl.SERVICES_LIST]: 'ALL'
+    });
+
+    const searchFormValidator = SearchValidators.searchFormValidator();
+    expect(searchFormValidator(formGroup)).toBeNull();
   });
 });

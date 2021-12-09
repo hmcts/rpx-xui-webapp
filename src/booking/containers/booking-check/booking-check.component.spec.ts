@@ -1,16 +1,22 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BookingProcess } from '../../models';
+import { BookingService } from '../../services';
 import { BookingCheckComponent } from './booking-check.component';
 
 describe('BookingCheckComponent', () => {
   let component: BookingCheckComponent;
   let fixture: ComponentFixture<BookingCheckComponent>;
+  const mockBookingServiceSpy = jasmine.createSpyObj('BookingService', ['createBooking', 'refreshRoleAssignments']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [BookingCheckComponent],
-      imports: [RouterTestingModule]
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: BookingService, useValue: mockBookingServiceSpy }
+      ]
     }).compileComponents();
     fixture = TestBed.createComponent(BookingCheckComponent);
     component = fixture.componentInstance;
@@ -81,25 +87,36 @@ describe('BookingCheckComponent', () => {
     describe('page link events', () => {
       let eventTriggerSpy: jasmine.Spy;
       beforeEach(() => {
-        eventTriggerSpy = spyOn(component, 'onEventTrigger');
+        eventTriggerSpy = spyOn(component, 'onEventTrigger').and.callThrough();
       });
 
       it('should call the change location event trigger if the change location link is clicked', () => {
         const changeLocationLink = fixture.debugElement.nativeElement.querySelector('a#change-location');
         changeLocationLink.click();
+
         expect(eventTriggerSpy).toHaveBeenCalledWith(component.bookingNavigationEvent.CHANGELOCATIONCLICK);
       });
 
       it('should call the change duration event trigger if the change duration link is clicked', () => {
         const changeDurationLink = fixture.debugElement.nativeElement.querySelector('a#change-duration');
         changeDurationLink.click();
+
         expect(eventTriggerSpy).toHaveBeenCalledWith(component.bookingNavigationEvent.CHANGEDURATIONCLICK);
       });
 
       it('should call the cancel event trigger if the cancel link is clicked', () => {
         const cancelLink = fixture.debugElement.nativeElement.querySelector('a#cancel');
         cancelLink.click();
+
         expect(eventTriggerSpy).toHaveBeenCalledWith(component.bookingNavigationEvent.CANCEL);
+      });
+
+      it('should trigger the confirm booking event and call the submitBooking method when the confirm button is clicked', () => {
+        const confirmButton = fixture.debugElement.query(By.css('button'));
+        confirmButton.triggerEventHandler('click', null);
+
+        expect(eventTriggerSpy).toHaveBeenCalledWith(component.bookingNavigationEvent.CONFIRM);
+        expect(mockBookingServiceSpy.refreshRoleAssignments).toHaveBeenCalledTimes(1);
       });
     });
   });

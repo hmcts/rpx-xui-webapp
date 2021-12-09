@@ -28,7 +28,8 @@ export class CaseRolesTableComponent implements OnInit {
     return this._roles;
   }
 
-  @Input() public set roles(value: CaseRole[]) {
+  @Input()
+  public set roles(value: CaseRole[]) {
     this.items = value.map((role) => ({ ...role, open: false }));
     this._roles = value;
   }
@@ -47,5 +48,14 @@ export class CaseRolesTableComponent implements OnInit {
       roleCategory: caseRole.roleCategory,
       actorId: caseRole.actorId
     };
+  }
+
+  public openManageLink(items: Item[], item: Item): void {
+    item.open = !item.open;
+    for (const i of items) {
+      if (i.id !== item.id) {
+        i.open = false;
+      }
+    }
   }
 }

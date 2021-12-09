@@ -203,7 +203,7 @@ describe('exclusions.exclusionService', () => {
             caseType: ['Asylum'],
             jurisdiction: ['IA'],
           },
-          roleCategory: ['LEGAL_OPERATIONS', 'JUDICIAL']
+          roleCategory: ['LEGAL_OPERATIONS', 'JUDICIAL'],
         },
       ],
     } as unknown as EnhancedRequest;
@@ -251,7 +251,6 @@ describe('getJudicialUsersFromApi', () => {
 
   it('should get the judicial users successfully', async () => {
     const response = await getJudicialUsersFromApi(req, userIds);
-    console.log('kuda', response);
     expect(response.data.length).to.equal(2);
     expect(response.data).to.deep.equal(data);
   });

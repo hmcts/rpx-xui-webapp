@@ -9,7 +9,6 @@ import { setHeaders } from '../lib/proxy';
 import { refreshRoleAssignmentForUser } from '../user';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { CaseRole } from '../workAllocation2/interfaces/caseRole';
-import { JudicialUserDto } from './dtos/judicial-user-dto';
 import { toRoleAssignmentBody } from './dtos/to-role-assignment-dto';
 import { getEmail, getJudicialUsersFromApi, getUserName, mapRoleCategory } from './exclusionService';
 import { CaseRoleRequestPayload } from './models/caseRoleRequestPayload';

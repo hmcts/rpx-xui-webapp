@@ -15,4 +15,8 @@ export class BookingService {
   public getBookingLocation(locationId: string): Observable<any> {
     return this.http.get(`/refdata/location/building-locations?epimms_id=${locationId}`);
   }
+
+  public refreshAssignments(): Observable<any> {
+    return this.http.post(`/am/role-mapping/judicial/refresh`, {});
+  }
 }

@@ -20,6 +20,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
   public existingBookings: Booking[];
   private existingBookingsSubscription: Subscription;
   private bookingLocationSubscription: Subscription;
+  private refreshAssignmentsSubscription: Subscription;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -59,6 +60,9 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
     if (this.bookingLocationSubscription) {
       this.bookingLocationSubscription.unsubscribe();
     }
+    if (this.refreshAssignmentsSubscription) {
+      this.refreshAssignmentsSubscription.unsubscribe();
+    }
   }
 
   public onEventTrigger() {
@@ -66,7 +70,9 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
   }
 
   public onExistingBookingSelected(locationId) {
-    this.router.navigate(['/work/my-work/list'], { queryParams: { epimms_id: locationId }});
+    this.refreshAssignmentsSubscription = this.bookingService.refreshAssignments().subscribe(response =>
+                                           this.router.navigate(['/work/my-work/list']
+                                          ));
   }
 
 }

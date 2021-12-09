@@ -3,22 +3,18 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { combineReducers, Store, StoreModule } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { UserService } from 'src/app/services/user/user.service';
-import * as fromRoot from '../../../app/store/reducers';
-import * as fromNocStore from '../../../noc/store';
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
 
+
 describe('HmctsGlobalHeaderComponent', () => {
+  let nocStoreSpy: jasmine.Spy;
   let component: HmctsGlobalHeaderComponent;
   let fixture: ComponentFixture<HmctsGlobalHeaderComponent>;
   let mockRouter: jasmine.SpyObj<Router>;
-  let store: Store<fromRoot.State>;
-  const storeMock = jasmine.createSpyObj('Store', [
-    'dispatch', 'pipe'
-  ]);
 
   const changesMock = {
     items: {
@@ -34,40 +30,15 @@ describe('HmctsGlobalHeaderComponent', () => {
   };
   let origTimeout: number;
 
-  const userDetails = {
-    sessionTimeout: {
-      idleModalDisplayTime: 10,
-      totalIdleTime: 1,
-    },
-    canShareCases: true,
-    userInfo: {
-      id: 'someId',
-      forename: 'foreName',
-      surname: 'surName',
-      email: 'email@email.com',
-      active: true,
-      roles: ['pui-case-manager']
-    }
-  };
-
   beforeEach(async(() => {
     origTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
     TestBed.configureTestingModule({
       declarations: [ HmctsGlobalHeaderComponent ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      imports: [
-        RouterTestingModule,
-        StoreModule.forRoot({
-          ...fromRoot.reducers,
-          feature: combineReducers(fromNocStore.reducers)
-        })
-      ],
+      imports: [ RouterTestingModule ],
       providers: [
-        {
-          provide: Store,
-          useValue: storeMock
-        },
+        provideMockStore(),
         {
           provide: UserService,
           useValue: {
@@ -106,8 +77,7 @@ describe('HmctsGlobalHeaderComponent', () => {
         { text: 'Nav item 2', emit: '#1' }
       ]
     };
-    store = TestBed.get(Store);
-    storeMock.pipe.and.returnValue(of(userDetails));
+    nocStoreSpy = spyOn(component.nocStore, 'dispatch');
     fixture.detectChanges();
   });
 
@@ -122,67 +92,13 @@ describe('HmctsGlobalHeaderComponent', () => {
   it('should onEmitSubMenu', () => {
     const menuItem = {href: '/noc', text: null};
     component.onEmitSubMenu(menuItem);
-    expect(storeMock.dispatch).toHaveBeenCalled();
+    expect(nocStoreSpy).toHaveBeenCalled();
   });
 
   it('should onEmitEvent', () => {
     spyOn(component.navigate, 'emit');
     component.onEmitEvent(1);
     expect(component.navigate.emit).toHaveBeenCalled();
-  });
-
-  it('should display find case right aligned', (done: DoneFn) => {
-    component.showItems = true;
-    component.items = [{
-      align: 'right',
-      text: 'Find case',
-      href: '/cases/case-search',
-      active: false,
-      ngClass: 'hmcts-search-toggle__button'
-    },
-    {
-      text: '2',
-      href: '',
-      active: false
-    },
-    {
-      text: '3',
-      href: '',
-      active: false
-    }];
-    component.ngOnInit();
-    fixture.detectChanges();
-    component.isUserCaseManager$.subscribe(result => {
-      expect(result).toBe(true);
-      done();
-    });
-  });
-
-  it('should not display find case right aligned', (done: DoneFn) => {
-    component.showItems = true;
-    component.items = [{
-      text: 'Find case',
-      href: '/cases/case-search',
-      active: false
-    },
-    {
-      text: '2',
-      href: '',
-      active: false
-    },
-    {
-      text: '3',
-      href: '',
-      active: false
-    }];
-    userDetails.userInfo.roles = ['roleA', 'roleB'];
-    storeMock.pipe.and.returnValue(of(userDetails));
-    component.ngOnInit();
-    fixture.detectChanges();
-    component.isUserCaseManager$.subscribe(result => {
-      expect(result).toBe(false);
-      done();
-    });
   });
 
   it('splitNavItems', (done: DoneFn) => {
@@ -205,7 +121,6 @@ describe('HmctsGlobalHeaderComponent', () => {
       active: false
     }];
     component.ngOnChanges(changesMock);
-    fixture.detectChanges();
     const leftItems = component.leftItems;
     const rightItems = component.rightItems;
 
@@ -278,23 +193,20 @@ describe('HmctsGlobalHeaderComponent', () => {
       text: '1',
       href: '',
       active: false,
-      flags: ['enabledFlag'],
-      roles: ['roleA']
+      flags: ['enabledFlag']
     },
     {
       align: null,
       text: '2',
       href: '',
-      active: false,
-      roles: ['roleB']
+      active: false
     },
     {
       align: 'right',
       text: '3',
       href: '',
       active: false,
-      flags: ['enabledFlag', 'disabledFlag'],
-      roles: ['roleC']
+      flags: ['enabledFlag', 'disabledFlag']
     }];
     component.ngOnChanges(changesMock);
     const leftItems = component.leftItems;

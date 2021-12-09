@@ -13,16 +13,10 @@ import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.
   styleUrls: ['./hearing-stage.component.scss']
 })
 export class HearingStageComponent implements OnInit, OnDestroy, AfterViewInit {
-  public hearingsActions: Actions[] = [Actions.READ];
-  public serviceHearingValueModel$: Observable<ServiceHearingValuesModel>;
-  public foreName: string;
-  public surname: string;
-  public fullName: string;
   public hearingStageOptions: RefDataModel[];
   public hearingStoreSub: Subscription;
   public stageForm: FormGroup;
   public hearingType: string;
-  public validationErrors: { id: string, message: string }[] = [];
   @ViewChildren('radioButton') public radios: QueryList<any>;
   public hearing$: Observable<string>;
 

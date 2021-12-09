@@ -40,4 +40,9 @@ export class AllocateRoleService {
   public getCaseRoles(caseId: string, jurisdiction: string, caseType: string, assignmentId?: string): Observable<CaseRole[]> {
     return this.http.post<CaseRole[]>(`${AllocateRoleService.roleUrl}/post`, {caseId, jurisdiction, caseType, assignmentId});
   }
+
+  public getCaseRolesUserDetails(caseRoles: CaseRole[]): Observable<CaseRole[]> {
+    const userIds = caseRoles.map(caseRole => caseRole.id);
+    return this.http.post<CaseRole[]>(`${AllocateRoleService.roleUrl}/getJudicialUsers`, {userIds});
+  }
 }

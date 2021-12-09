@@ -25,6 +25,7 @@ export async function postFindPersonSearch(req: EnhancedRequest, res: Response, 
       const headers = setHeaders(req);
       const response = await http.post(`${JUDICIAL_REF_URL}/refdata/judicial/users/search`, { searchString }, { headers });
       searchResult = response.data ? response.data : [];
+      console.log(searchResult, 'searchResult');
       searchResult = searchResult.map((s: any) => ({ ...searchResult, name: s.fullName, email: s.emailId, id: s.idamId }));
     } catch (e) {
       if (e.status === 404) {

@@ -9,9 +9,8 @@ import { setHeaders } from '../lib/proxy';
 import { refreshRoleAssignmentForUser } from '../user';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { CaseRole } from '../workAllocation2/interfaces/caseRole';
-import { JudicialUserDto } from './dtos/judicial-user-dto';
 import { toRoleAssignmentBody } from './dtos/to-role-assignment-dto';
-import { getEmail, getJudicialUsers, getUserName, mapRoleCategory } from './exclusionService';
+import { getEmail, getJudicialUsersFromApi, getUserName, mapRoleCategory } from './exclusionService';
 import { CaseRoleRequestPayload } from './models/caseRoleRequestPayload';
 import { release2ContentType } from './models/release2ContentType';
 
@@ -24,17 +23,22 @@ export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next
   const headers = setHeaders(req, release2ContentType);
   try {
     const response: AxiosResponse = await http.post(fullPath, requestPayload, { headers });
-    const judicialAndLegalOps: CaseRole[] = mapResponseToCaseRoles(response.data.roleAssignmentResponse, req.body.exclusionId, req);
-    // populate user
-    // const userDetailPromises = new ArrayPromise []
-    // populate promises judicialAndLegalOps.forEach(role => )
-    // userDetailPromises.all
-    //handle errors
-    const ids: string[]  = judicialAndLegalOps.map(role => role.id);
-    console.log(req);
-    const userDetails: JudicialUserDto[] =  await getJudicialUsers(req, ids);
-    console.log(userDetails);
+    const judicialAndLegalOps: CaseRole[] = mapResponseToCaseRoles(
+      response.data.roleAssignmentResponse,
+      req.body.exclusionId,
+      req
+    );
     return res.status(response.status).send(judicialAndLegalOps);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getJudicialUsers(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+  const userIds = req.body.userIds;
+  try {
+    const userDetails = await getJudicialUsersFromApi(req, userIds);
+    return res.status(200).send(userDetails);
   } catch (error) {
     next(error);
   }

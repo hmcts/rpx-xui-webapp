@@ -9,7 +9,7 @@ import * as fromRoot from '../../../app/store';
 import { CaseRole, RoleExclusion } from '../../../role-access/models';
 import { RoleExclusionsService } from '../../../role-access/services';
 import { AllocateRoleService } from '../../../role-access/services';
-import { first } from 'rxjs/operators';
+import { first, map, tap, mergeMap } from 'rxjs/operators';
 
 @Component({
   selector: 'exui-roles-and-access-container',
@@ -33,7 +33,9 @@ export class RolesAndAccessContainerComponent implements OnInit {
     this.caseDetails = this.route.snapshot.data.case as CaseView;
     this.applyJurisdiction(this.caseDetails);
     const jurisdiction = this.caseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
-    this.roles$ = this.allocateService.getCaseRoles(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id);
+    this.roles$ = this.allocateService.getCaseRoles(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id).pipe(
+      mergeMap((caseRoles: CaseRole[]) => this.allocateService.getCaseRolesUserDetails(caseRoles).pipe()),
+    );
     this.exclusions$ = this.roleExclusionsService.getCurrentUserRoleExclusions(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id);
 
     // We need this call. No active subscribers are needed

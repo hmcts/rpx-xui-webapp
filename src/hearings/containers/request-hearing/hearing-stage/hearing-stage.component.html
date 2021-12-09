@@ -9,7 +9,7 @@
             <fieldset class="govuk-fieldset">              
               <div class="govuk-radios">
                 <div class="govuk-radios">
-                  <div *ngFor="let option of hearingStageOptions;" class="govuk-radios__item">
+                  <div *ngFor="let option of hearingStageOptions" class="govuk-radios__item">
                     <input class="govuk-radios__input" formControlName="stage-option" type="radio"
                            [value]="option.key">
                     <label class="govuk-label govuk-radios__label" [for]="option.value_en">

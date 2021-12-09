@@ -5,7 +5,7 @@ import { CancelHearingComponent, ChangeHearingComponent, DatePriorityHearingComp
 import { LocationSearchContainerComponent } from './containers/request-hearing/location-search-container/location-search-container.component';
 import { WelshHearingComponent } from './containers/request-hearing/welsh-hearing/welsh-hearing.component';
 import { HearingCategory } from './models/hearings.enum';
-import { PriorityResolver } from './resolvers/priority/priority.resolve';
+import { RefDataResolver } from './resolvers/ref-data/ref-data-resolver.resolve';
 
 export const ROUTES: Routes = [
   {
@@ -66,16 +66,17 @@ export const ROUTES: Routes = [
       },
       {
         path: 'date-priority-hearing',
-        resolve: { hearingPriorities: PriorityResolver },
+        resolve: { hearingPriorities: RefDataResolver },
         component: DatePriorityHearingComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Manage cases | Request Hearing | Date Priority Hearing'
+          title: 'HMCTS Manage cases | Request Hearing | Date Priority Hearing',
+          category: HearingCategory.Priority
         }
       },
       {
         path: 'hearing-stage',
-        resolve: { hearingStages: PriorityResolver },
+        resolve: { hearingStages: RefDataResolver },
         component: HearingStageComponent,
         canActivate: [HealthCheckGuard],
         data: {

@@ -4,9 +4,9 @@ import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Actions } from 'api/hearings/models/hearings.enum';
 import { Observable, Subscription } from 'rxjs';
-import { RefDataModel } from 'src/hearings/models/refData.model';
 import * as fromHearingStore from '../../../../hearings/store';
 import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.model';
+import { RefDataModel } from '../../../../../api/hearings/models/refData.model';
 @Component({
   selector: 'exui-hearing-stage',
   templateUrl: './hearing-stage.component.html',
@@ -22,6 +22,7 @@ export class HearingStageComponent implements OnInit, OnDestroy, AfterViewInit {
   public hearingStoreSub: Subscription;
   public stageForm: FormGroup;
   public hearingType: string;
+  public validationErrors: { id: string, message: string }[] = [];
   @ViewChildren('radioButton') public radios: QueryList<any>;
   public hearing$: Observable<string>;
 

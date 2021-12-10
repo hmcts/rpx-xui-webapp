@@ -1,5 +1,5 @@
 <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
-  <div class="govuk-grid-row">
+  <div *ngIf="hearingValueModel" class="govuk-grid-row">
       <form class="form" action="hearing-requirements-facilities" method="post">
           <div class="govuk-grid-column-two-thirds">
             <exui-hearing-parties-title></exui-hearing-parties-title>
@@ -16,10 +16,10 @@
             </div>
             <!-- Case flags table -->
             <div class="govuk-form-group">
-                <table class="govuk-table">
+                <table *ngFor="let case of caseFlags" class="govuk-table">
                     <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header" width="300">Jane Smith</th>
+                        <th scope="col" class="govuk-table__header" width="300">{{ case }}</th>
                         <th scope="col" class="govuk-table__header" width="550">Comments</th>
                         <th scope="col" class="govuk-table__header" width="100">Flag status</th>
                     </tr>
@@ -51,40 +51,14 @@
 <!--                    </tr>-->
                     </tbody>
                 </table>
-                <table class="govuk-table">
-                    <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header" width="300">DWP</th>
-                        <th scope="col" class="govuk-table__header" width="550">Comments</th>
-                        <th scope="col" class="govuk-table__header" width="100">Flag status</th>
-                    </tr>
-                    </thead>
-                    <tbody class="govuk-table__body">
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">Language interpreter<br>
-                        Spanish</td>
-                        <td class="govuk-table__cell"></td>
-                        <td class="govuk-table__cell">
-                            <strong class="govuk-tag">Active</strong>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
               </div>
               <p class="govuk-body">Review <a href="">case flags and reasonable adjustments (opens in new tab)</a> if you need to make any changes.</p>
-          </div>
-  
-          <div class="govuk-grid-column-two-thirds govuk-!-margin-top-4">
-  
-              <button class="govuk-button" data-module="govuk-button">Continue</button>
-  
           </div>
       </form>
   </div>
   <div class="govuk-form-group" style="position:absolute;margin-top: 80px;">
       <p class="govuk-body-s">
           <strong>Scenarios:</strong>
-  
           <a href="/hearings/pages/iteration3/hearing-requirements?ra=1party&amp;" class="govuk-link ">Reasonable adjustments (1 party)</a> /
           <a href="/hearings/pages/iteration3/hearing-requirements?ra=2parties&amp;" class="govuk-link govuk-!-font-weight-bold">Reasonable adjustments (2 parties)</a> /
           <a href="/hearings/pages/iteration3/hearing-requirements?ra=none&amp;" class="govuk-link ">Empty state</a>

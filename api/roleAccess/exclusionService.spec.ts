@@ -1,7 +1,6 @@
-import 'mocha';
-
 import * as chai from 'chai';
 import { expect } from 'chai';
+import 'mocha';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
@@ -13,8 +12,10 @@ import {
   deleteUserExclusion,
   getEmail,
   getExclusionRequestPayload,
+  getJudicialUsersFromApi,
   getUserName,
-  mapResponseToExclusions } from './exclusionService';
+  mapResponseToExclusions
+} from './exclusionService';
 import { getLegalAndJudicialRequestPayload } from './index';
 
 chai.use(sinonChai);
@@ -29,31 +30,6 @@ describe('exclusions.exclusionService', () => {
     added: Date.UTC(2021, 7, 1),
     id: '123',
     name: 'Judge Birch',
-    notes: 'this case been remitted from Upper Tribunal and required different judge',
-    type: 'Other',
-    userType: 'Judicial',
-  };
-  const exampleMultiRoleExclusions = [
-    {
-      added: Date.UTC(2021, 7, 1),
-      id: '123',
-      name: 'Judge Birch',
-      notes: 'this case been remitted from Upper Tribunal and required different judge',
-      type: 'Other',
-      userType: 'Judicial',
-    },
-    {
-      added: Date.UTC(2021, 7, 10),
-      id: '234',
-      name: 'Judge test',
-      notes: 'this case been remitted from Upper Tribunal and required different judge',
-      type: 'Other',
-      userType: 'Judicial',
-    },
-  ];
-  const confirmRoleExclusion = {
-    added: Date.UTC(2021, 7, 1),
-    name: 'Judge ABCDE',
     notes: 'this case been remitted from Upper Tribunal and required different judge',
     type: 'Other',
     userType: 'Judicial',
@@ -136,16 +112,16 @@ describe('exclusions.exclusionService', () => {
     it('should confirm successfully', async () => {
       spy = sandbox.stub(http, 'post').resolves(res);
       const req = mockReq({});
-      req.session = { 
+      req.session = {
         passport: {
           user: {
             userinfo: {
-              id: 'someId'
-            }
-          }
-        }
-      }
-      let response = mockRes();
+              id: 'someId',
+            },
+          },
+        },
+      };
+      const response = mockRes();
       await confirmUserExclusion(req, response, next);
 
       // Should have received the HTTP response. The confirm simply sends the data
@@ -159,7 +135,7 @@ describe('exclusions.exclusionService', () => {
     it('should delete successfully', async () => {
       spy = sandbox.stub(http, 'delete').resolves(res);
       const req = mockReq({
-        body: {roleExclusion: exampleRoleExclusion},
+        body: { roleExclusion: exampleRoleExclusion },
       });
       const response = mockRes();
       await deleteUserExclusion(req, response, next);
@@ -178,7 +154,7 @@ describe('exclusions.exclusionService', () => {
             firstName: 'John',
             idamId: 'actorId',
             lastName: 'Priest',
-            email: 'test@test.com'
+            email: 'test@test.com',
           },
         ],
         roleAssignments: [],
@@ -190,7 +166,7 @@ describe('exclusions.exclusionService', () => {
     it('should get nothing if data is incorrect', async () => {
       expect(getEmail('nonActorId', req)).to.equal(undefined);
       expect(getEmail('actorId', null)).to.equal(undefined);
-    })
+    });
 
   });
 
@@ -202,7 +178,7 @@ describe('exclusions.exclusionService', () => {
             firstName: 'John',
             idamId: 'actorId',
             lastName: 'Priest',
-            email: 'test@test.com'
+            email: 'test@test.com',
           },
         ],
         roleAssignments: [],
@@ -222,13 +198,12 @@ describe('exclusions.exclusionService', () => {
     const caseRoleRequestPayload = {
       queryRequests: [
         {
-            attributes: {
-                caseId: ['123'],
-                caseType: ['Asylum'],
-                jurisdiction: ['IA'],
-              },
-            roleCategory: ['LEGAL_OPERATIONS'],
-            roleName: ['case-manager']
+          attributes: {
+            caseId: ['123'],
+            caseType: ['Asylum'],
+            jurisdiction: ['IA'],
+          },
+          roleCategory: ['LEGAL_OPERATIONS', 'JUDICIAL'],
         },
       ],
     } as unknown as EnhancedRequest;
@@ -238,4 +213,45 @@ describe('exclusions.exclusionService', () => {
 
   });
 
+});
+
+describe('getJudicialUsersFromApi', () => {
+
+  let sandbox: sinon.SinonSandbox;
+  let req: EnhancedRequest;
+  let spy: sinon.SinonSpy;
+  const userIds = ['123', '456'];
+  const data = [
+    {
+      sidam_id: '123',
+      full_name: 'John-Priest',
+      email_id: 'john-priest@example.com',
+    },
+    {
+      sidam_id: '456',
+      full_name: 'Jane-Priest',
+      email_id: 'jane-priest@example.com',
+    },
+  ];
+  beforeEach(() => {
+    sandbox = sinon.createSandbox();
+    req = mockReq({
+      body: {
+        userIds,
+      },
+    });
+    spy = sandbox.stub(http, 'post').resolves({
+      data,
+    });
+  });
+
+  afterEach(() => {
+    sandbox.restore();
+  });
+
+  it('should get the judicial users successfully', async () => {
+    const response = await getJudicialUsersFromApi(req, userIds);
+    expect(response.data.length).to.equal(2);
+    expect(response.data).to.deep.equal(data);
+  });
 });

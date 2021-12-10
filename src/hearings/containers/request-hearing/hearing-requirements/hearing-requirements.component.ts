@@ -6,28 +6,21 @@ import * as fromHearingStore from '../../../store';
 import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 
 @Component({
-  selector: 'exui-hearing-stage',
-  templateUrl: './hearing-stage.component.html',
+  selector: 'exui-hearing-requirements',
+  templateUrl: './hearing-requirements.component.html',
 })
-export class HearingStageComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
+export class HearingRequirementsComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
 
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService) {
     super(hearingStore, hearingsService);
-  }á
+  }
 
   public ngOnInit(): void {
   }
 
-  public executeAction(action: ACTION): void {
-    if (this.isFormValid()) {
-      super.navigateAction(action);
-    }
-  }
-
-  public isFormValid(): boolean {
-    // TODO verify if form group is valid
-    return true;
+  protected executeAction(action: ACTION): void {
+    super.navigateAction(action);
   }
 
   public ngOnDestroy(): void {

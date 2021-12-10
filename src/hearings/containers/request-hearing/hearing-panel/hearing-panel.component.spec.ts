@@ -3,21 +3,21 @@ import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
 import {ACTION} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
-import {HearingStageComponent} from './hearing-stage.component';
+import {HearingPanelComponent} from './hearing-panel.component';
 
-describe('HearingStageComponent', () => {
-  let component: HearingStageComponent;
-  let fixture: ComponentFixture<HearingStageComponent>;
+describe('HearingPanelComponent', () => {
+  let component: HearingPanelComponent;
+  let fixture: ComponentFixture<HearingPanelComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 
-  const initialState = {á
+  const initialState = {
     hearings: {
       hearingList: {
         caseHearingMainModel: [
           {
-            hmctsServiceID: 'TEST'
+            hmctsServiceID: 'SSCS'
           }
         ]
       },
@@ -29,14 +29,14 @@ describe('HearingStageComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingStageComponent],
+      declarations: [HearingPanelComponent],
       providers: [
         provideMockStore({initialState}),
         {provide: HearingsService, useValue: hearingsService},
       ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(HearingStageComponent);
+    fixture = TestBed.createComponent(HearingPanelComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -94,15 +94,15 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   },
   screenFlow: [
     {
-      screenName: 'hearing-requirement',
+      screenName: 'hearing-requirements',
       navigation: [
         {
-          resultValue: 'additional-facilities',
+          resultValue: 'hearing-facilities',
         },
       ],
     },
     {
-      screenName: 'additional-facilities',
+      screenName: 'hearing-facilities',
       navigation: [
         {
           resultValue: 'hearing-stage',
@@ -113,52 +113,52 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       screenName: 'hearing-stage',
       navigation: [
         {
-          resultValue: 'how-party-attend',
+          resultValue: 'hearing-attendance',
         },
       ],
     },
     {
-      screenName: 'how-party-attend',
+      screenName: 'hearing-attendance',
       navigation: [
         {
-          resultValue: 'location-search',
+          resultValue: 'hearing-venue',
         },
       ],
     },
     {
-      screenName: 'location-search',
+      screenName: 'hearing-venue',
       conditionKey: 'region',
       navigation: [
         {
           conditionOperator: 'INCLUDE',
           conditionValue: 'Wales',
-          resultValue: 'welsh-hearing',
+          resultValue: 'hearing-welsh',
         },
         {
           conditionOperator: 'NOT INCLUDE',
           conditionValue: 'Wales',
-          resultValue: 'specify-judge',
+          resultValue: 'hearing-judge',
         },
       ],
     },
     {
-      screenName: 'welsh-hearing',
+      screenName: 'hearing-welsh',
       navigation: [
         {
-          resultValue: 'specify-judge',
+          resultValue: 'hearing-judge',
         },
       ],
     },
     {
-      screenName: 'specify-judge',
+      screenName: 'hearing-judge',
       navigation: [
         {
-          resultValue: 'require-panel-or-not',
+          resultValue: 'hearing-panel',
         },
       ],
     },
     {
-      screenName: 'require-panel-or-not',
+      screenName: 'hearing-panel',
       navigation: [
         {
           resultValue: 'hearing-timing',
@@ -169,15 +169,15 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       screenName: 'hearing-timing',
       navigation: [
         {
-          resultValue: 'additional-instruction',
+          resultValue: 'hearing-additional-instructions',
         },
       ],
     },
     {
-      screenName: 'additional-instruction',
+      screenName: 'hearing-additional-instructions',
       navigation: [
         {
-          resultValue: 'check-answers',
+          resultValue: 'hearing-check-answers',
         },
       ],
     },

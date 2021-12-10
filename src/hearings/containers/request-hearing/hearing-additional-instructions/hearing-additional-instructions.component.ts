@@ -6,15 +6,15 @@ import * as fromHearingStore from '../../../store';
 import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 
 @Component({
-  selector: 'exui-hearing-stage',
-  templateUrl: './hearing-stage.component.html',
+  selector: 'exui-hearing-additional-instructions',
+  templateUrl: './hearing-additional-instructions.component.html',
 })
-export class HearingStageComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
+export class HearingAdditionalInstructionsComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
 
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService) {
     super(hearingStore, hearingsService);
-  }á
+  }
 
   public ngOnInit(): void {
   }

@@ -3,18 +3,18 @@ import {RouterModule, Routes} from '@angular/router';
 import {HealthCheckGuard} from '../app/shared/guards/health-check.guard';
 import {CancelHearingComponent} from './containers/cancel-hearing/cancel-hearing.component';
 import {ChangeHearingComponent} from './containers/change-hearing/change-hearing.component';
-import {AdditionalFacilitiesComponent} from './containers/request-hearing/additional-facilities/additional-facilities.component';
-import {AdditionalInstructionComponent} from './containers/request-hearing/additional-instruction/additional-instruction.component';
-import {CheckAnswersComponent} from './containers/request-hearing/check-answers/check-answers.component';
-import {HearingRequirementComponent} from './containers/request-hearing/hearing-requirement/hearing-requirement.component';
+import {HearingCheckAnswersComponent} from './containers/request-hearing/hearing-check-answers/hearing-check-answers.component';
+import {HearingAdditionalInstructionsComponent} from './containers/request-hearing/hearing-additional-instructions/hearing-additional-instructions.component';
+import {HearingAttendanceComponent} from './containers/request-hearing/hearing-attendance/hearing-attendance.component';
+import {HearingFacilitiesComponent} from './containers/request-hearing/hearing-facilities/hearing-facilities.component';
+import {HearingJudgeComponent} from './containers/request-hearing/hearing-judge/hearing-judge.component';
+import {HearingPanelComponent} from './containers/request-hearing/hearing-panel/hearing-panel.component';
+import {HearingRequirementsComponent} from './containers/request-hearing/hearing-requirements/hearing-requirements.component';
 import {HearingStageComponent} from './containers/request-hearing/hearing-stage/hearing-stage.component';
 import {HearingTimingComponent} from './containers/request-hearing/hearing-timing/hearing-timing.component';
-import {HowPartyAttendComponent} from './containers/request-hearing/how-party-attend/how-party-attend.component';
-import {LocationSearchComponent} from './containers/request-hearing/location-search/location-search.component';
+import {HearingVenueComponent} from './containers/request-hearing/hearing-venue/hearing-venue.component';
+import {HearingWelshComponent} from './containers/request-hearing/hearing-welsh/hearing-welsh.component';
 import {RequestHearingComponent} from './containers/request-hearing/request-hearing.component';
-import {RequirePanelOrNotComponent} from './containers/request-hearing/require-panel-or-not/require-panel-or-not.component';
-import {SpecifyJudgeComponent} from './containers/request-hearing/specify-judge/specify-judge.component';
-import {WelshHearingComponent} from './containers/request-hearing/welsh-hearing/welsh-hearing.component';
 import {ViewHearingComponent} from './containers/view-hearing/view-hearing.component';
 import {PriorityResolver} from './resolvers/priority/priority.resolve';
 
@@ -53,23 +53,23 @@ export const ROUTES: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'hearing-requirement',
+        redirectTo: 'hearing-requirements',
         canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Manage cases | Request Hearing'
         }
       },
       {
-        path: 'hearing-requirement',
-        component: HearingRequirementComponent,
+        path: 'hearing-requirements',
+        component: HearingRequirementsComponent,
         canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Hearings | Request Hearing | Hearing Requirement'
         }
       },
       {
-        path: 'additional-facilities',
-        component: AdditionalFacilitiesComponent,
+        path: 'hearing-facilities',
+        component: HearingFacilitiesComponent,
         canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Hearings | Request Hearing | Additional Facilities'
@@ -84,40 +84,40 @@ export const ROUTES: Routes = [
         }
       },
       {
-        path: 'how-party-attend',
-        component: HowPartyAttendComponent,
+        path: 'hearing-attendance',
+        component: HearingAttendanceComponent,
         canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Hearings | Request Hearing | How Party Attend'
         }
       },
       {
-        path: 'location-search',
-        component: LocationSearchComponent,
+        path: 'hearing-venue',
+        component: HearingVenueComponent,
         canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Hearings | Request Hearing | Location Search'
         }
       },
       {
-        path: 'welsh-hearing',
-        component: WelshHearingComponent,
+        path: 'hearing-welsh',
+        component: HearingWelshComponent,
         canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Manage cases | Request Hearing | Welsh Hearing'
         }
       },
       {
-        path: 'specify-judge',
-        component: SpecifyJudgeComponent,
+        path: 'hearing-judge',
+        component: HearingJudgeComponent,
         canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Manage cases | Request Hearing | Specify Judge'
         }
       },
       {
-        path: 'require-panel-or-not',
-        component: RequirePanelOrNotComponent,
+        path: 'hearing-panel',
+        component: HearingPanelComponent,
         canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Manage cases | Request Hearing | Require Panel Or Not'
@@ -133,16 +133,16 @@ export const ROUTES: Routes = [
         }
       },
       {
-        path: 'additional-instruction',
-        component: AdditionalInstructionComponent,
+        path: 'hearing-additional-instructions',
+        component: HearingAdditionalInstructionsComponent,
         canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Manage cases | Request Hearing | Additional Instruction'
         }
       },
       {
-        path: 'check-answers',
-        component: CheckAnswersComponent,
+        path: 'hearing-check-answers',
+        component: HearingCheckAnswersComponent,
         canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Manage cases | Request Hearing | Check Answers'

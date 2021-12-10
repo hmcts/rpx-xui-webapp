@@ -4,11 +4,17 @@ export const LIST_CONSTANTS = {
   EmptyMessage: {
     Default: DEFAULT_EMPTY_MESSAGE,
     AvailableTasks: DEFAULT_EMPTY_MESSAGE,
+    MyCases: 'You have no assigned tasks.',
     MyTasks: 'You have no assigned tasks.',
-    TaskManager: DEFAULT_EMPTY_MESSAGE
+    TaskManager: DEFAULT_EMPTY_MESSAGE,
+    AllWork: 'Change your selection to view tasks.',
+    AllWorkCases: 'Change your selection to view cases.'
   },
   View: {
+    AllWork: 'AllWork',
+    AllWorkCases: 'AllWorkCases',
     AvailableTasks: 'AvailableTasks',
+    MyCases: 'MyCases',
     MyTasks: 'MyTasks',
     TaskManager: 'TaskManager'
   },

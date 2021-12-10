@@ -656,7 +656,6 @@ describe('workAllocation.utils', () => {
         type: 'example',
         case_type_id: 'Asylum',
         case_data: {
-          appealType: 'Asylum',
           hmctsCaseCategory: 'Asylum',
           caseManagementLocation: {
             baseLocation: '001',
@@ -670,7 +669,6 @@ describe('workAllocation.utils', () => {
         case_type_id: 'Test',
         jurisdiction: 'IA',
         case_data: {
-          appealType: 'Test',
           hmctsCaseCategory: 'Test',
           caseManagementLocation: {
             baseLocation: '001',
@@ -1127,7 +1125,7 @@ describe('workAllocation.utils', () => {
               },
               'appealReferenceNumber': 'HU/50152/2021',
               'isRemissionsEnabled': 'No',
-              'appealType': 'refusalOfHumanRights',
+              'hmctsCaseCategory': 'refusalOfHumanRights',
               'appellantNationalities': [
                 {
                   'id': '1',
@@ -1193,7 +1191,7 @@ describe('workAllocation.utils', () => {
                 'values': [],
               },
               'appellantGivenNames': 'Joe',
-              'appealType': 'protection',
+              'hmctsCaseCategory': 'protection',
               'appellantTitle': 'Mr',
               'appellantNationalities': [
                 {
@@ -1247,7 +1245,7 @@ describe('workAllocation.utils', () => {
               'uploadAddendumEvidenceActionAvailable': 'No',
               'appealReferenceNumber': 'PA/50015/2019',
               'appellantGivenNames': 'James',
-              'appealType': 'protection',
+              'hmctsCaseCategory': 'protection',
               'appellantFamilyName': 'Bond',
               'hearingCentre': 'taylorHouse',
               'caseName': 'PA/50015/2019-Bond',

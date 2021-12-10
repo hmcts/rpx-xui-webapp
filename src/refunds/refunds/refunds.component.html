@@ -5,13 +5,9 @@
       <xuilib-loading-spinner *ngIf="!userDataLoaded"></xuilib-loading-spinner>
       <ccpay-payment-lib
         *ngIf="userDataLoaded"
-        [REFUNDS_API_ROOT] ="refundsApiRoot"
         [CCD_CASE_NUMBER]="ccdCaseNumber"
         VIEW="refund-list"
         [TAKEPAYMENT]="false"
-        [REFUNDLIST]="true"
-        [LOGGEDINUSEREMAIL]="userEmail"
-        [LOGGEDINUSERROLES]="userRoles"
       >
       </ccpay-payment-lib>
     </main>

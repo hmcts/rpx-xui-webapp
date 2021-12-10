@@ -122,7 +122,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     this.onPaginationHandler(pageNumber);
   }
 
-  public onSelectionChanged(selection: {location: string, service: string, selectPerson: string, person: Person, taskType: string, priority: string }): void {
+  public onSelectionChanged(selection: {location: string, service: string, selectPerson: string, person: Person, taskType: string}): void {
     this.selectedLocation.id = selection.location;
     this.selectedJurisdiction = selection.service;
     this.selectedTaskCategory = selection.selectPerson;

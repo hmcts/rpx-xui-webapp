@@ -49,6 +49,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
     fields: this.fields,
   };
   private pCasesTotal: number;
+  private pUniqueCases: number;
 
   /**
    * Take in the Router so we can navigate when actions are clicked.
@@ -85,6 +86,14 @@ export class WorkCaseListWrapperComponent implements OnInit {
 
   public set casesTotal(value: number) {
     this.pCasesTotal = value;
+  }
+
+  public get uniqueCases(): number {
+    return this.pUniqueCases;
+  }
+
+  public set uniqueCases(value: number) {
+    this.pUniqueCases = value;
   }
 
   public get fields(): CaseFieldConfig[] {
@@ -289,6 +298,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
       this.loadingService.unregister(loadingToken);
       this.cases = result.cases;
       this.casesTotal = result.total_records;
+      this.uniqueCases = result.unique_cases;
       this.cases.forEach(item => {
         item.assigneeName = getAssigneeName(this.caseworkers, item.assignee);
         if (this.allJurisdictions && this.allJurisdictions.find(jur => jur.id === item.jurisdiction)) {

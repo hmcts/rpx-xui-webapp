@@ -69,8 +69,8 @@
     "@angular/platform-browser": "^7.2.13",
     "@angular/platform-browser-dynamic": "^7.2.13",
     "@angular/router": "^7.2.13",
-    "@hmcts/ccd-case-ui-toolkit": "4.8.3",
-    "@hmcts/ccpay-web-component": "5.0.0",
+    "@hmcts/ccd-case-ui-toolkit": "4.8.3-no-refunds-rc.1",
+    "@hmcts/ccpay-web-component": "3.0.27",
     "@hmcts/frontend": "0.0.39-alpha",
     "@hmcts/media-viewer": "2.7.9",
     "@hmcts/nodejs-healthcheck": "^1.7.0",
@@ -231,6 +231,7 @@
     "**/**/prismjs": "^1.23.0",
     "**/**/y18n": "^3.2.2",
     "**/**/ssri": "8.0.1",
-    "**/**/jose": "1.28.1"
+    "**/**/jose": "1.28.1",
+    "**/**/node-gyp": "^8.4.1"
   }
 }

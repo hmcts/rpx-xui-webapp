@@ -582,6 +582,7 @@ describe('workAllocation.utils', () => {
         case_type_id: 'Asylum',
         case_data: {
           appealType: 'Asylum',
+          hmctsCaseCategory: 'Asylum',
           caseManagementLocation: {
             baseLocation: '001',
           },
@@ -595,24 +596,26 @@ describe('workAllocation.utils', () => {
         jurisdiction: 'IA',
         case_data: {
           appealType: 'Test',
+          hmctsCaseCategory: 'Test',
           caseManagementLocation: {
             baseLocation: '001',
           },
         },
       },
     ];
-    const mockRoleAssignment: RoleAssignment[] = [{
-      id: '1',
-      actorId: 'person1',
-      roleName: 'example-role',
-      endTime: new Date('01-01-2022'),
-      beginTime: new Date('01-01-2021'),
-      roleCategory: 'LEGAL_OPERATIONS',
-      attributes: {
-        caseId: '123',
-        primaryLocation: '001',
+    const mockRoleAssignment: RoleAssignment[] = [
+      {
+        id: '1',
+        actorId: 'person1',
+        roleName: 'example-role',
+        endTime: new Date('01-01-2022'),
+        beginTime: new Date('01-01-2021'),
+        roleCategory: 'LEGAL_OPERATIONS',
+        attributes: {
+          caseId: '123',
+          primaryLocation: '001',
+        },
       },
-    },
       {
         id: '2',
         actorId: 'person1',
@@ -637,20 +640,21 @@ describe('workAllocation.utils', () => {
         },
       },
     ];
-    const expectedRoleCaseData: RoleCaseData[] = [{
-      id: '1',
-      case_id: '123',
-      case_name: '123',
-      case_category: 'Asylum',
-      case_role: 'example-role',
-      jurisdiction: 'IA',
-      location_id: '001',
-      role: 'example-role',
-      startDate: new Date('01-01-2021'),
-      endDate: new Date('01-01-2022'),
-      assignee: 'person1',
-      role_category: 'LEGAL_OPERATIONS',
-    },
+    const expectedRoleCaseData: RoleCaseData[] = [
+      {
+        id: '1',
+        case_id: '123',
+        case_name: '123',
+        case_category: 'Asylum',
+        case_role: 'example-role',
+        jurisdiction: 'IA',
+        location_id: '001',
+        role: 'example-role',
+        startDate: new Date('01-01-2021'),
+        endDate: new Date('01-01-2022'),
+        assignee: 'person1',
+        role_category: 'LEGAL_OPERATIONS',
+      },
       {
         id: '3',
         case_id: '456',
@@ -664,7 +668,8 @@ describe('workAllocation.utils', () => {
         endDate: new Date('01-01-2022'),
         assignee: 'person1',
         role_category: 'LEGAL_OPERATIONS',
-      }];
+      }
+    ];
     it('should return empty list if there is nothing given', () => {
       expect(mapCasesFromData(null, null, null)).to.deep.equal([]);
       expect(mapCasesFromData(null, firstRoleAssignment, null)).to.deep.equal([]);

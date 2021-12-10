@@ -43,7 +43,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
       );
 
       this.bookings$ = forkJoin(this.locations$);
-      this.bookings$.subscribe(( result) => {
+      this.bookings$.subscribe(( result ) => {
         this.existingBookings = result;
         this.orderByCurrentThenFuture();
       });
@@ -73,9 +73,6 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    if (this.bookings$) {
-      this.bookings$.unsubscribe();
-    }
     if (this.existingBookingsSubscription) {
       this.existingBookingsSubscription.unsubscribe();
     }

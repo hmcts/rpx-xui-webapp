@@ -23,7 +23,7 @@ export interface RoleCaseData {
     legalRepDeclaration?: string[],
     appellantDateOfBirth?: string,
     hasOtherAppeals?: string,
-    appealType?: string,
+    hmctsCaseCategory?: string,
     appellantGivenNames?: string,
     appellantTitle?: string,
     appellantNationalities?: string[],

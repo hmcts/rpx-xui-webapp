@@ -449,7 +449,8 @@ export function mapCasesFromData(
 export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case): RoleCaseData {
   return {
     assignee: roleAssignment.actorId,
-    case_category: caseDetail.case_data.appealType,
+    // hmctsCaseCategory will be available only if an event has been triggered
+    case_category: caseDetail.case_data && caseDetail.case_data.hmctsCaseCategory ? caseDetail.case_data.hmctsCaseCategory : '',
     case_id: caseDetail.id,
     case_name: caseDetail.case_data && caseDetail.case_data.caseName ? caseDetail.case_data.caseName : caseDetail.id,
     case_role: roleAssignment.roleName,

@@ -12,7 +12,7 @@ class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
 }
 
-fdescribe('HearingRequirementsComponent', () => {
+describe('HearingRequirementsComponent', () => {
   let component: HearingRequirementsComponent;
   let fixture: ComponentFixture<HearingRequirementsComponent>;
 

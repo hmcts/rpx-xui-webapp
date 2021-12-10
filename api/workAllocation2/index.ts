@@ -42,8 +42,10 @@ import {
   getRoleAssignmentsByQuery,
   getSubstantiveRoles,
   getTypesOfWorkByUserId,
+  getUniqueCasesCount,
   mapCasesFromData,
   mapCaseworkerData,
+  paginate,
   prepareCaseWorkerForLocation,
   prepareCaseWorkerForLocationAndService,
   prepareCaseWorkerForService,
@@ -130,6 +132,10 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     const searchRequest = {
       ...req.body.searchRequest, search_parameters: removeEmptyValues(req.body.searchRequest.search_parameters),
     };
+    // filter out task type from search parameters as not currently available until release 2.1
+    searchRequest.search_parameters = searchRequest.search_parameters.filter(
+      searchParam => searchParam.key !== 'taskType'
+    )
     const sortParam = searchRequest.sorting_parameters.find(sort => sort.sort_by === 'created_date')
     if (sortParam) {
       sortParam.sort_by = 'dueDate';
@@ -364,7 +370,6 @@ export async function getMyCases(req: EnhancedRequest, res: Response) {
     const result = await searchCasesById(queryParams, query, req);
     if (result && result.cases) {
       const caseData = result.cases;
-      result.total_records = result.cases.length;
       // search parameters passed in as null as there are no parameters for my cases
       const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
       let checkedRoles = req && req.session && req.session.roleAssignmentResponse ? req.session.roleAssignmentResponse : null;
@@ -372,6 +377,10 @@ export async function getMyCases(req: EnhancedRequest, res: Response) {
         checkedRoles = getSubstantiveRoles(req.session.roleAssignmentResponse);
       }
       const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles, null) : [];
+      result.total_records = mappedCases.length;
+      result.unique_cases = getUniqueCasesCount(mappedCases);
+      // amount of unique cases already given by case id
+      // result.unique_cases = caseIdList.length;
       const cases = assignActionsToCases(mappedCases, userIsCaseAllocator);
       result.cases = cases;
       return res.send(result).status(200);
@@ -414,17 +423,15 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     logger.info('caseTypes', queryParams);
 
     // get the case ids from the role assignments
-    const caseIds = getCaseIdListFromRoles(roleAssignmentResult.roleAssignmentResponse);
-    const esQuery = constructElasticSearchQuery(caseIds, 0, 10000);
+    const caseIdList = getCaseIdListFromRoles(roleAssignmentResult.roleAssignmentResponse);
+    const esQuery = constructElasticSearchQuery(caseIdList, 0, 10000);
 
     logger.info('esQuery', JSON.stringify(esQuery, null, 2));
 
     const result = await searchCasesById(queryParams, esQuery, req);
-
     logger.info('elastic search results length ', result.cases.length);
     const caseData = filterByLocationId(result.cases, locations);
     logger.info('results filtered by location id', caseData.length);
-    result.total_records = caseData.length;
 
     const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
     let checkedRoles = roleAssignmentResult.roleAssignmentResponse;
@@ -432,7 +439,10 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
       checkedRoles = getSubstantiveRoles(roleAssignmentResult.roleAssignmentResponse);
     }
     const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles, pagination) : [];
-    result.cases = assignActionsToCases(mappedCases, userIsCaseAllocator);
+    result.total_records = mappedCases.length;
+    result.unique_cases = getUniqueCasesCount(mappedCases);
+    const roleCaseList = pagination ? paginate(mappedCases, pagination.page_number, pagination.page_size) : mappedCases;
+    result.cases = assignActionsToCases(roleCaseList, userIsCaseAllocator);
     return res.send(result).status(200);
   } catch (error) {
     console.error(error);

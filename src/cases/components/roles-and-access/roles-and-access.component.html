@@ -35,7 +35,8 @@
   </exui-case-roles-table>
   </div>
   <p>
-    <a href="javascript:void(0)"
+    <a *ngIf="showLegalOpsAllocate" 
+       href="javascript:void(0)"
        class="govuk-link"
        [routerLink]="['/', 'role-access', 'allocate-role', 'allocate']"
        [queryParams]="{'caseId': caseId, 'roleCategory': 'LEGAL_OPERATIONS'}"

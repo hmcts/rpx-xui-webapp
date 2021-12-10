@@ -37,9 +37,6 @@ const requestMapping = {
         '/data/internal/profile' : (req,res) => {
             res.send({});
         },
-        '/data/internal/cases/:caseid': (req,res) => {
-            res.send(dummyCaseDetails);
-        },
         '/api/caseshare/orgs': (req, res) => {
             res.send(getCaseShareOrgs());
         },

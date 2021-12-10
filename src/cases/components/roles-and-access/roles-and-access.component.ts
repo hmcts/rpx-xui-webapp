@@ -27,6 +27,7 @@ export class RolesAndAccessComponent implements OnInit {
 
   private pRoles: CaseRole[] = [];
   public jurisdictionFieldId = '[JURISDICTION]';
+  public showLegalOpsAllocate: boolean;
 
   public get roles(): CaseRole[] {
     return this.pRoles;
@@ -39,6 +40,7 @@ export class RolesAndAccessComponent implements OnInit {
       this.legalOpsRoles = this.roles.filter(role => role.roleCategory === RoleCategory.LEGAL_OPERATIONS);
       this.judicialRoles = this.roles.filter(role => role.roleCategory === RoleCategory.JUDICIAL);
     }
+    this.showLegalOpsAllocate = this.showAllocateRoleLink && this.legalOpsRoles.length === 0;
   }
 
   public ngOnInit(): void {

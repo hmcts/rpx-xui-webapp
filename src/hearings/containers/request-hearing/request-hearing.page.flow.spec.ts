@@ -4,6 +4,12 @@ import {HearingsService} from '../../services/hearings.service';
 import * as fromHearingStore from '../../store';
 import {RequestHearingPageFlow} from './request-hearing.page.flow';
 
+class RequestHearingPageFlowSpec extends RequestHearingPageFlow {
+  public executeAction(action: ACTION): void {
+    super.navigateAction(action);
+  }
+}
+
 describe('RequestHearingPageFlow', () => {
   const hearingRequestMainModel = {
     hearingRequestMainModel: {
@@ -21,7 +27,7 @@ describe('RequestHearingPageFlow', () => {
 
   beforeEach(() => {
     mockStore.pipe.and.returnValue(of(hearingRequestMainModel));
-    requestHearingPageFlow = new RequestHearingPageFlow(mockStore, hearingsService);
+    requestHearingPageFlow = new RequestHearingPageFlowSpec(mockStore, hearingsService);
   });
 
   it('should navigate continue', () => {

@@ -65,6 +65,13 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
   }
 
   public executeAction(action: ACTION): void {
+    this.prepareHearingRequestData();
+    if (this.isFormValid()) {
+      super.navigateAction(action);
+    }
+  }
+
+  public prepareHearingRequestData(): void {
     const locations: HearingLocationModel[] = this.selectedLocations.map(locationByEPIMSModel => {
       return {
         locationType: 'hearing',
@@ -78,9 +85,6 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
         hearingLocations: locations
       }
     };
-    if (this.isFormValid()) {
-      super.navigateAction(action);
-    }
   }
 
   public isFormValid(): boolean {

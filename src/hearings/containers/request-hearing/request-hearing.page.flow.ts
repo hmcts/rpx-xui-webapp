@@ -5,14 +5,14 @@ import {ACTION} from '../../models/hearings.enum';
 import {HearingsService} from '../../services/hearings.service';
 import * as fromHearingStore from '../../store';
 
-export class RequestHearingPageFlow {
+export abstract class RequestHearingPageFlow {
   protected navigationSub: Subscription;
   protected hearingRequestMainModel: HearingRequestMainModel;
 
   public constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
                      protected readonly hearingsService: HearingsService) {
     this.navigationSub = this.hearingsService.navigateAction$.subscribe(
-      (action: ACTION) => this.navigateAction(action)
+      (action: ACTION) => this.executeAction(action)
     );
     this.hearingStore.pipe(select(fromHearingStore.getHearingRequest)).subscribe(
       hearingRequest => {
@@ -33,4 +33,6 @@ export class RequestHearingPageFlow {
       this.navigationSub.unsubscribe();
     }
   }
+
+  protected abstract executeAction(action: ACTION): void;
 }

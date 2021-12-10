@@ -1,9 +1,9 @@
-import {HttpClient} from '@angular/common/http';
-import {Injectable} from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import {Observable, Subject} from 'rxjs';
-import {HearingListMainModel} from '../models/hearingListMain.model';
+import { HearingListMainModel } from '../models/hearingListMain.model';
 import {ACTION} from '../models/hearings.enum';
-import {ServiceHearingValuesModel} from '../models/serviceHearingValues.model';
+import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
 
 @Injectable()
 export class HearingsService {

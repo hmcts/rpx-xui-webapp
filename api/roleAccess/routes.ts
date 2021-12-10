@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import authInterceptor from '../lib/middleware/auth';
 import { confirmUserExclusion, deleteUserExclusion, findExclusionsForCaseId } from './exclusionService';
-import { confirmAllocateRole, deleteRoleByCaseAndRoleId, getRolesByCaseId, reallocateRole } from './index';
+import { confirmAllocateRole, deleteRoleByCaseAndRoleId, getJudicialUsers, getRolesByCaseId, reallocateRole } from './index';
 import { getPossibleRoles } from './roleAssignmentService';
 
 const router = Router({ mergeParams: true });
@@ -17,5 +17,6 @@ router.post('/allocate-role/delete', deleteRoleByCaseAndRoleId);
 
 router.get('/allocate-role/valid-roles', getPossibleRoles);
 router.post('/roles/post', getRolesByCaseId);
+router.post('/roles/getJudicialUsers', getJudicialUsers);
 
 export default router;

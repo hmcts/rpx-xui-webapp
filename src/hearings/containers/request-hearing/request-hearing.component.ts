@@ -1,6 +1,7 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {select, Store} from '@ngrx/store';
-import {Subscription} from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { select, Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { HearingsService } from '../../../hearings/services/hearings.service';
 import * as fromHearingStore from '../../store';
 
 @Component({
@@ -13,7 +14,7 @@ export class RequestHearingComponent implements OnInit, OnDestroy {
   public referenceId: string;
   public hearingListSub: Subscription;
 
-  constructor(private readonly hearingStore: Store<fromHearingStore.State>) {
+  constructor(private readonly hearingStore: Store<fromHearingStore.State>, private readonly hearingsService: HearingsService) {
     this.hearingListSub = this.hearingStore.pipe(select(fromHearingStore.getHearingList)).subscribe(
       hearingList => {
         this.referenceId = hearingList.hearingListMainModel ? hearingList.hearingListMainModel.caseRef : '';
@@ -30,6 +31,7 @@ export class RequestHearingComponent implements OnInit, OnDestroy {
    * @returns void if invalid form
    */
   public onSubmit(): void {
+    this.hearingsService.onFormSubmission('location');
   }
 
   public ngOnDestroy(): void {

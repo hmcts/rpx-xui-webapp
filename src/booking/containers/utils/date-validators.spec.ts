@@ -12,42 +12,6 @@ describe('DateValidators', () => {
     control = new FormControl({});
   });
 
-  it('should have an invalid date', () => {
-    control.setValue('32');
-    const dayValidator = DateValidators.dayValidator();
-    expect(dayValidator(control)).toEqual({ isValid: false });
-  });
-
-  it('should have a valid date', () => {
-    control.setValue('10');
-    const validator = DateValidators.dayValidator();
-    expect(validator(control)).toBeUndefined();
-  });
-
-  it('should have an invalid date', () => {
-    control.setValue('14');
-    const monthValidator = DateValidators.monthValidator();
-    expect(monthValidator(control)).toEqual({ isValid: false });
-  });
-
-  it('should have a valid date', () => {
-    control.setValue('10');
-    const monthValidator = DateValidators.monthValidator();
-    expect(monthValidator(control)).toBeUndefined();
-  });
-
-  it('should have an invalid date', () => {
-    control.setValue('1800');
-    const yearValidator = DateValidators.yearValidator();
-    expect(yearValidator(control)).toEqual({ isValid: false });
-  });
-
-  it('should have a valid date', () => {
-    control.setValue('2010');
-    const yearValidator = DateValidators.yearValidator();
-    expect(yearValidator(control)).toBeUndefined();
-  });
-
   it('should not allow the start date to be after today', () => {
     const formGroup = new FormBuilder().group({
       startDate_day: '',

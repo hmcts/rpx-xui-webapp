@@ -20,7 +20,7 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
   public locationType: string;
   public findLocationFormGroup: FormGroup;
   public selectedLocationsSub: Subscription;
-  public selectedLocations: LocationByEPIMSModel[];
+  public selectedLocations: LocationByEPIMSModel[] = [];
   public selectedLocations$: Observable<LocationByEPIMSModel[]>;
   public serviceIds: string = 'SSCS';
   public hearingRequestMainModel: HearingRequestMainModel;
@@ -65,6 +65,7 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
   }
 
   public executeAction(action: ACTION): void {
+    this.checkFormData();
     if (this.isFormValid()) {
       this.prepareHearingRequestData();
       super.navigateAction(action);
@@ -88,8 +89,17 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
   }
 
   public isFormValid(): boolean {
-    // TODO verify if form group is valid
-    return true;
+    return this.findLocationFormGroup.valid;
+  }
+
+  public checkFormData(): void {
+    if (this.selectedLocations.length === 0) {
+      this.findLocationFormGroup.setErrors({
+        locationNotSelected: true
+      });
+    } else {
+      this.findLocationFormGroup.setErrors(null);
+    }
   }
 
   public ngOnDestroy(): void {

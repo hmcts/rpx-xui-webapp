@@ -90,7 +90,7 @@ describe('TaskListWrapperComponent', () => {
     const secondAction = exampleTask.actions[1];
     const firstTaskAction = { task: exampleTask, action: firstAction };
     const secondTaskAction = { task: exampleTask, action: secondAction };
-    it('should handle an action', () => {
+    xit('should handle an action', () => {
       // need to spy on the router and set up the task action
       spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`/mywork/list`);
       const navigateCallsBefore = mockRouter.navigateCalls.length;

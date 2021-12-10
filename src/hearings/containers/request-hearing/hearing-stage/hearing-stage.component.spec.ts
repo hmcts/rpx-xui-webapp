@@ -12,7 +12,7 @@ describe('HearingStageComponent', () => {
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 
-  const initialState = {á
+  const initialState = {
     hearings: {
       hearingList: {
         caseHearingMainModel: [

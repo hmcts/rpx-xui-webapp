@@ -1,12 +1,12 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { Store } from '@ngrx/store';
-import { provideMockStore } from '@ngrx/store/testing';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {RouterTestingModule} from '@angular/router/testing';
+import {Store} from '@ngrx/store';
+import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
 import {ACTION} from '../../models/hearings.enum';
 import {HearingsService} from '../../services/hearings.service';
-import { RequestHearingComponent } from './request-hearing.component';
+import {RequestHearingComponent} from './request-hearing.component';
 
 describe('RequestHearingComponent', () => {
   let component: RequestHearingComponent;
@@ -17,14 +17,13 @@ describe('RequestHearingComponent', () => {
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 
   beforeEach(() => {
-    // hearingsService = createSpyObj<any>('hearingsService', ['getAllHearings', 'loadHearingValues', 'onFormSubmission']);
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       declarations: [RequestHearingComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         provideMockStore(),
-        { provide: HearingsService, useValue: hearingsService }
+        {provide: HearingsService, useValue: hearingsService}
       ]
     })
       .compileComponents();
@@ -40,8 +39,15 @@ describe('RequestHearingComponent', () => {
   });
 
   it('should check continue method', () => {
+    spyOn(hearingsService, 'navigateAction');
+    component.onBack();
+    expect(hearingsService.navigateAction).toHaveBeenCalledWith(ACTION.BACK);
+  });
+
+  it('should check continue method', () => {
+    spyOn(hearingsService, 'navigateAction');
     component.onContinue();
-    expect(hearingsService.navigateAction).toHaveBeenCalled();
+    expect(hearingsService.navigateAction).toHaveBeenCalledWith(ACTION.CONTINUE);
   });
 
   afterEach(() => {

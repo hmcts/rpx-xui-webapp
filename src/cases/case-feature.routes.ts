@@ -108,7 +108,24 @@ export const ROUTES: Routes = [
         children: [
           {
             path: '',
-            component: CaseViewerContainerComponent
+            component: CaseViewerContainerComponent,
+            children: [
+              {
+                path: '',
+                pathMatch: 'full',
+              },
+              {
+                path: 'tasks',
+                component: TasksContainerComponent,
+                resolve: {
+                  tasks: CaseTasksResolverService
+                }
+              },
+              {
+                path: 'roles-and-access',
+                component: RolesAndAccessContainerComponent
+              }
+            ]
           },
           ...caseViewRouting
         ],
@@ -130,40 +147,6 @@ export const ROUTES: Routes = [
     canActivate: [HealthCheckGuard],
     data: {
       title: 'Find a case'
-    }
-  },
-  {
-    path: 'case-details/:cid',
-    component: CaseDetailsHomeComponent,
-    resolve: {case: CaseResolver},
-    runGuardsAndResolvers: 'always',
-    children: [
-      {
-        path: '',
-        component: CaseViewerContainerComponent,
-        children: [
-          {
-            path: '',
-            pathMatch: 'full',
-          },
-          {
-            path: 'tasks',
-            component: TasksContainerComponent,
-            resolve: {
-              tasks: CaseTasksResolverService
-            }
-          },
-          {
-            path: 'roles-and-access',
-            component: RolesAndAccessContainerComponent
-          }
-        ]
-      },
-      ...caseViewRouting
-    ],
-    canActivate: [HealthCheckGuard],
-    data: {
-      title: 'Case Details'
     }
   }
 ];

@@ -1,12 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {Store} from '@ngrx/store';
-import { Theme } from '../../../app/models/theme.model';
-
-import {AppConstants} from '../../app.constants';
-import {AppTitleModel} from '../../models/app-title.model';
-import {NavItemsModel} from '../../models/nav-item.model';
-import {UserNavModel} from '../../models/user-nav.model';
-import { ApplicationTheme } from 'src/app/models/theming.model';
+import { Component, OnInit } from '@angular/core';
+import { AppConstants } from '../../app.constants';
+import { ApplicationThemeLogo } from '../../enums';
+import { AppTitleModel } from '../../models/app-title.model';
+import { NavItemsModel } from '../../models/nav-item.model';
+import { ApplicationTheme } from '../../models/theming.model';
+import { UserNavModel } from '../../models/user-nav.model';
 
 @Component({
   selector: 'exui-app-header-signed-out',
@@ -47,6 +45,6 @@ export class AppHeaderSignedOutComponent implements OnInit {
     this.userNav = { label: '', items: [] };
     this.backgroundColor = backgroundColor;
     this.logoType = logo;
-    this.logoIsUsed = logo !== 'none';
+    this.logoIsUsed = logo !== ApplicationThemeLogo.NONE;
   }
 }

@@ -4,7 +4,8 @@ import { NavigationEnd, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Action, Store, StoreModule } from '@ngrx/store';
 import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
-import { AppConstants } from 'src/app/app.constants';
+import { AppConstants } from '../../app.constants';
+import { ApplicationThemeLogo } from '../../enums';
 import { LoggerService } from '../../services/logger/logger.service';
 import * as fromActions from '../../store';
 import { AppHeaderComponent } from './app-header.component';
@@ -107,7 +108,7 @@ describe('AppHeaderComponent', () => {
       expect(component.navItems).toEqual(AppConstants.DEFAULT_MENU_ITEMS);
       expect(component.backgroundColor).toBe(AppConstants.DEFAULT_USER_THEME.backgroundColor);
       expect(component.logoType).toBe(AppConstants.DEFAULT_USER_THEME.logo);
-      expect(component.logoIsUsed).toBe(AppConstants.DEFAULT_USER_THEME.logo !== 'none');
+      expect(component.logoIsUsed).toBe(AppConstants.DEFAULT_USER_THEME.logo !== ApplicationThemeLogo.NONE);
     });
   });
 

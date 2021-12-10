@@ -1,4 +1,5 @@
 import { BadgeColour, ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib';
+import { ApplicationThemeLogo } from './enums';
 import { ApplicationTheme, NavigationItem } from './models/theming.model';
 
 const FeatureNames = {
@@ -25,7 +26,7 @@ const defaultUserTheme: ApplicationTheme = {
     url: '/'
   },
   backgroundColor: '#202020',
-  logo: 'none'
+  logo: ApplicationThemeLogo.NONE
 };
 
 const defaultMenuItems: NavigationItem[] = [

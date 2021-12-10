@@ -4,11 +4,12 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
-import { ApplicationTheme, NavigationItem } from 'src/app/models/theming.model';
-import { UserDetails } from 'src/app/models/user-details.model';
 import { AppUtils } from '../../app-utils';
 import { AppConstants } from '../../app.constants';
+import { ApplicationThemeLogo } from '../../enums';
 import { AppTitleModel } from '../../models/app-title.model';
+import { ApplicationTheme, NavigationItem } from '../../models/theming.model';
+import { UserDetails } from '../../models/user-details.model';
 import { UserNavModel } from '../../models/user-nav.model';
 import { LoggerService } from '../../services/logger/logger.service';
 import * as fromActions from '../../store';
@@ -149,7 +150,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     };
     this.backgroundColor = applicationTheme.backgroundColor;
     this.logoType = applicationTheme.logo;
-    this.logoIsUsed = applicationTheme.logo !== 'none';
+    this.logoIsUsed = applicationTheme.logo !== ApplicationThemeLogo.NONE;
   }
 
   /**

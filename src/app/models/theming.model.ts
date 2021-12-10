@@ -1,7 +1,9 @@
+import { ApplicationThemeLogo } from '../enums';
+
 export interface ApplicationTheme {
     appTitle: { name: string; url: string; };
     backgroundColor: string;
-    logo: 'judicial' | 'myhmcts' | 'default' | 'none';
+    logo: ApplicationThemeLogo;
 }
 
 export type FlagDefinition = string | { flagName: string; value: string; };

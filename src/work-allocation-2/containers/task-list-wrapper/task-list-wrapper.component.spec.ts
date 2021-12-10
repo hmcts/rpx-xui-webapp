@@ -24,7 +24,7 @@ describe('TaskListWrapperComponent', () => {
   const mockRouter: MockRouter = new MockRouter();
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['searchTask', 'getTask']);
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['']);
-  const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
+  let mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['']);
   const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
@@ -77,6 +77,7 @@ describe('TaskListWrapperComponent', () => {
 
   afterEach((() => {
     component.ngOnDestroy();
+    mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem'])
   }));
 
   it('should create', () => {

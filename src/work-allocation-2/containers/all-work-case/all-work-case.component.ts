@@ -91,6 +91,7 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
     this.selectedJurisdiction = selection.jurisdiction;
     this.selectedPerson = selection.actorId === 'All' ? '' : selection.person.id;
     this.selectedRole = selection.role;
+    this.pagination.page_number = 1;
     this.doLoad();
   }
 

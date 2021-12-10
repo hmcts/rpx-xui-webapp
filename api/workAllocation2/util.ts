@@ -278,6 +278,12 @@ export function constructElasticSearchQuery(caseIds: any[], page: number, size: 
           reference: caseIds,
         },
       },
+      sort: [
+        // does not seem to allow sorting by case name (attempted both pre and post v6.8 syntax)
+        // this is either because case name not present for all cases or because nested data cannot be sorted in this instance
+        //{ "case_data.caseName": {mode: "max", order: "asc", nested_path: "case_data"}},
+        { id: {order: "asc"} },
+      ],
       size,
     },
     supplementary_data: ['*'],
@@ -431,18 +437,18 @@ export function mapCasesFromData(
   if (!caseDetails) {
     return [];
   }
-  // Note: Might have to change where paginate is called if want role data before separating - line 392
-  caseDetails = paginationConfig ? paginate(caseDetails, paginationConfig.page_number, paginationConfig.page_size) : caseDetails;
   const roleCaseList = [];
   caseDetails.forEach(caseDetail => {
-    const roleAssignment = roleAssignmentList.find(
-      role => role.attributes && role.attributes.caseId === caseDetail.id.toString()
+    const rolesForCaseId = roleAssignmentList.filter(
+      role => role.attributes && caseDetail.id.toString() === role.attributes.caseId
     );
-    if (roleAssignment) {
+    rolesForCaseId.forEach(roleAssignment => {
       const roleCase = mapRoleCaseData(roleAssignment, caseDetail);
       roleCaseList.push(roleCase);
-    }
+    });
   });
+  // sorting case list by case name - no longer necessary as sorting by case id through elastic search
+  //const sortedCaseList = roleCaseList.sort((a, b) => a.case_name.toString().localeCompare(b.case_name));
   return roleCaseList;
 }
 
@@ -483,7 +489,7 @@ export function getSubstantiveRoles(roleAssignments: RoleAssignment[]): RoleAssi
 }
 
 // Note: array type may need to be changed depending on where pagination called
-export const paginate = (array: Case[], pageNumber: number, pageSize: number): any[] => {
+export function paginate<T>(array: T[], pageNumber: number, pageSize: number): T[] {
   return array.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 };
 
@@ -500,4 +506,9 @@ export async function getTypesOfWorkByUserId(path, req: express.Request): Promis
     console.error(e);
   }
   return null;
+}
+
+export function getUniqueCasesCount(caseData: RoleCaseData[]): number {
+  const caseIds = caseData ? caseData.map(caseResult => caseResult.case_id) : [];
+  return new Set(caseIds).size;
 }

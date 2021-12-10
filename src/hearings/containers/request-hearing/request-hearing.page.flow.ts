@@ -9,8 +9,8 @@ export class RequestHearingPageFlow {
   protected navigationSub: Subscription;
   protected hearingRequestMainModel: HearingRequestMainModel;
 
-  protected constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
-                        protected readonly hearingsService: HearingsService) {
+  public constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
+                     protected readonly hearingsService: HearingsService) {
     this.navigationSub = this.hearingsService.navigateAction$.subscribe(
       (action: ACTION) => this.navigateAction(action)
     );
@@ -20,7 +20,7 @@ export class RequestHearingPageFlow {
       });
   }
 
-  protected navigateAction(action: ACTION): void {
+  public navigateAction(action: ACTION): void {
     if (action === ACTION.CONTINUE) {
       this.hearingStore.dispatch(new fromHearingStore.UpdateHearingRequest(this.hearingRequestMainModel));
     } else if (action === ACTION.BACK) {
@@ -28,7 +28,7 @@ export class RequestHearingPageFlow {
     }
   }
 
-  protected unsubscribe(): void {
+  public unsubscribe(): void {
     if (this.navigationSub) {
       this.navigationSub.unsubscribe();
     }

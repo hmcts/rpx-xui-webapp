@@ -21,6 +21,7 @@ export class WorkCaseListComponent implements OnChanges {
   @Input() public cases: Case[];
   @Input() public locations: Location[] = [];
   @Input() public casesTotal: number;
+  @Input() public uniqueCases: number;
   @Input() public caseServiceConfig: CaseServiceConfig;
   @Input() public sortedBy: SortField;
   @Input() public addActionsColumn: boolean = true;

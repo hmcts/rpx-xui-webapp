@@ -13,6 +13,7 @@ export interface RequestBodySearch {
 export interface Query {
   bool?: Bool;
   terms?: { [key: string]: any };
+  term?: { [key: string]: any };
 }
 
 export interface Bool {

@@ -2,11 +2,9 @@ import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChildren } 
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { Actions } from 'api/hearings/models/hearings.enum';
 import { Observable, Subscription } from 'rxjs';
 import { RefDataModel } from '../../../../../api/hearings/models/refData.model';
 import * as fromHearingStore from '../../../../hearings/store';
-import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.model';
 @Component({
   selector: 'exui-hearing-stage',
   templateUrl: './hearing-stage.component.html',

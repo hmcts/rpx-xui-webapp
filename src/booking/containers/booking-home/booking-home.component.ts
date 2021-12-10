@@ -3,6 +3,8 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { forkJoin, Observable, Subscription,  } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { TaskListFilterComponent } from 'src/work-allocation-2/components';
+import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';
 import { Booking, BookingNavigationEvent, BookingProcess } from '../../models';
 import { BookingService } from '../../services';
 
@@ -26,7 +28,8 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
   constructor(
     private readonly fb: FormBuilder,
     private readonly bookingService: BookingService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly sessionStorageService: SessionStorageService
   ) { }
 
   public ngOnInit() {
@@ -89,9 +92,19 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
   }
 
   public onExistingBookingSelected(locationId) {
-    this.refreshAssignmentsSubscription = this.bookingService.refreshAssignments().subscribe(response =>
-                                           this.router.navigate(['/work/my-work/list']
-                                          ));
+    this.refreshAssignmentsSubscription = this.bookingService.refreshAssignments().subscribe(response => {
+      this.sessionStorageService.removeItem(TaskListFilterComponent.FILTER_NAME);
+      this.router.navigate(
+        ['/work/my-work/list'],
+        {
+          state: {
+            location: {
+              id: locationId
+            }
+          }
+        }
+      );
+    });
   }
 
 }

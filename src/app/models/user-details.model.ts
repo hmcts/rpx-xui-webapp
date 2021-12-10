@@ -8,6 +8,12 @@ export interface UserInfo {
   uid?: string;
 }
 
+export interface RoleAssignmentInfo {
+  primaryLocation: string;
+  jurisdiction: string;
+  isCaseAllocator: boolean;
+}
+
 export interface UserDetails {
   sessionTimeout: {
     idleModalDisplayTime: number,
@@ -15,4 +21,11 @@ export interface UserDetails {
   };
   canShareCases: boolean;
   userInfo: UserInfo;
+  roleAssignmentInfo?: RoleAssignmentInfo[];
+}
+
+export enum UserRole {
+  Admin = 'admin',
+  LegalOps = 'legalops',
+  Judicial = 'judicial',
 }

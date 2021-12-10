@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Store, StoreModule } from '@ngrx/store';
 import { AppConstants } from '../../../app/app.constants';
+import { ApplicationThemeLogo } from '../../enums';
 import * as fromActions from '../../store';
 import { AppHeaderSignedOutComponent } from './app-header-signed-out.component';
 
@@ -57,7 +58,7 @@ describe('AppHeaderSignedOutComponent', () => {
       expect(component.userNav).toEqual({ label: '', items: [] });
       expect(component.backgroundColor).toBe(AppConstants.DEFAULT_USER_THEME.backgroundColor);
       expect(component.logoType).toBe(AppConstants.DEFAULT_USER_THEME.logo);
-      expect(component.logoIsUsed).toBe(AppConstants.DEFAULT_USER_THEME.logo !== 'none');
+      expect(component.logoIsUsed).toBe(AppConstants.DEFAULT_USER_THEME.logo !== ApplicationThemeLogo.NONE);
     });
   });
 });

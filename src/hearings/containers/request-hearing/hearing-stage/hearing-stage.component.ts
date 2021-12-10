@@ -14,7 +14,7 @@ export class HearingStageComponent extends RequestHearingPageFlow implements OnI
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService) {
     super(hearingStore, hearingsService);
-  }á
+  }
 
   public ngOnInit(): void {
   }

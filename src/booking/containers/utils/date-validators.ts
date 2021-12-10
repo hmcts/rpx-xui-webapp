@@ -3,36 +3,6 @@ import { BookingDateFormErrorMessage, BookingDateOption, DateFormControl } from 
 
 export class DateValidators {
 
-  public static dayValidator(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      if (control.value === null || control.value === '') { return; }
-      if (control.value <= 0 || control.value > 31) {
-        return { isValid : false };
-      }
-      return;
-    };
-  }
-
-  public static monthValidator(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      if (control.value === null || control.value === '') { return; }
-      if (control.value <= 0 || control.value > 12) {
-        return { isValid : false };
-      }
-      return;
-    };
-  }
-
-  public static yearValidator(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      if (control.value === null || control.value === '') { return; }
-      if (control.value < 1900 || control.value > 2100) {
-        return { isValid : false };
-      }
-      return;
-    };
-  }
-
   public static getFormValues(formGroup: AbstractControl) {
     const startDateDay = formGroup.get(DateFormControl.BOOKING_START_DAY).value;
     const startDateMonth = formGroup.get(DateFormControl.BOOKING_START_MONTH).value;

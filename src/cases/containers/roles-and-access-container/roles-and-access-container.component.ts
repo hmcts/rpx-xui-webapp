@@ -19,7 +19,7 @@ import { first } from 'rxjs/operators';
 export class RolesAndAccessContainerComponent implements OnInit {
   public caseDetails: CaseView;
   public showAllocateRoleLink: boolean = false;
-  public caseworkers$: Observable<Caseworker[]>
+  public caseworkers$: Observable<Caseworker[]>;
   public exclusions$: Observable<RoleExclusion[]>;
   public roles$: Observable<CaseRole[]>;
   public jurisdictionFieldId = '[JURISDICTION]';

@@ -10,16 +10,14 @@
             <ul class="govuk-list govuk-list--bullet">
                 <li *ngFor="let subType of hearingValueModel.caseSubTypes">{{ subType }}</li>
             </ul>
-
             <div class="govuk-inset-text">
                 Any reasonable adjustments on this page will be included in the hearing request.
             </div>
-            <!-- Case flags table -->
             <div class="govuk-form-group">
-                <table *ngFor="let case of caseFlags" class="govuk-table">
+                <table *ngFor="let caseFlag of caseFlags" class="govuk-table">
                     <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header" width="300">{{ case }}</th>
+                        <th scope="col" class="govuk-table__header" width="300">{{ caseFlag.name }}</th>
                         <th scope="col" class="govuk-table__header" width="550">Comments</th>
                         <th scope="col" class="govuk-table__header" width="100">Flag status</th>
                     </tr>
@@ -27,28 +25,19 @@
                     <tbody class="govuk-table__body">
                     <tr class="govuk-table__row">
                         <td class="govuk-table__cell">
-                            Sign language<br>
-                            British Sign Language (BSL)
+                            <label *ngFor="let partyFlag of caseFlag.partyFlags">
+                                {{ partyFlag.flagId }}<br>
+                            </label>
                         </td>
-                        <td class="govuk-table__cell"></td>
+                        <td class="govuk-table__cell">
+                            <label *ngFor="let partyFlag of caseFlag.partyFlags">
+                                {{ partyFlag.flagDescription }}<br>
+                            </label>
+                        </td>
                         <td class="govuk-table__cell">
                             <strong class="govuk-tag">Active</strong>
                         </td>
                     </tr>
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">Wheel chair access</td>
-                        <td class="govuk-table__cell"></td>
-                        <td class="govuk-table__cell">
-                            <strong class="govuk-tag">Active</strong>
-                        </td>
-                    </tr>
-<!--                    <tr class="govuk-table__row">-->
-<!--                        <td class="govuk-table__cell">Reasonable adjustment</td>-->
-<!--                        <td class="govuk-table__cell">Hearing loop required</td>-->
-<!--                        <td class="govuk-table__cell">-->
-<!--                            <strong class="govuk-tag">Active</strong>-->
-<!--                        </td>-->
-<!--                    </tr>-->
                     </tbody>
                 </table>
               </div>

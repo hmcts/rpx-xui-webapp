@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
 
 import { CaseRole, RoleCategory, RoleExclusion } from '../../../role-access/models';
@@ -50,15 +50,25 @@ export class RolesAndAccessComponent implements OnInit {
   }
 
   public ngOnChanges(): void {
-    if (this.legalOpsRoles && !this.caseworkers) {
+    // All of the below is in order to ensure the name is shown for roles if present
+    // if not present this will be ignored
+    if (this.legalOpsRoles.length > 0 && !this.caseworkers) {
       this.legalRolesNotNamed = true;
     };
-    if (this.exclusions && !this.caseworkers) {
+    if (this.exclusions.length > 0 && !this.caseworkers) {
       this.exclusionsNotNamed = true;
     }
-    if (this.caseworkers && this.legalOpsRoles) {
-      if (this.legalOpsRoles.length > 0 && this.legalRolesNotNamed) {
-      this.legalOpsRoles.forEach(
+    if (this.caseworkers && this.legalOpsRoles.length > 0) {
+      this.namedLegalRoles = this.checkSetNamedRoles(this.legalOpsRoles, this.legalRolesNotNamed);
+    }
+    if (this.caseworkers && this.exclusions.length > 0) {
+      this.namedExclusions = this.checkSetNamedRoles(this.exclusions, this.exclusionsNotNamed);
+    }
+  }
+
+  private checkSetNamedRoles(roles: any[], notNamed: boolean): any[] {
+    if (notNamed) {
+      roles.forEach(
         role => {
           const caseWorker = this.caseworkers.find(caseworker => caseworker.idamId === role.actorId);
           if (caseWorker) {
@@ -66,21 +76,7 @@ export class RolesAndAccessComponent implements OnInit {
           }
         }
       );
-      }
-      this.namedLegalRoles = this.legalOpsRoles;
     }
-    if (this.caseworkers && this.exclusions) {
-      if (this.exclusions.length > 0 && this.exclusionsNotNamed) {
-      this.exclusions.forEach(
-        exclusion => {
-          const caseWorker = this.caseworkers.find(caseworker => caseworker.idamId === exclusion.actorId);
-          if (caseWorker) {
-            exclusion.name = `${caseWorker.firstName}-${caseWorker.lastName}`;
-          }
-        }
-      );
-      }
-      this.namedLegalRoles = this.legalOpsRoles;
-    }
+    return roles;
   }
 }

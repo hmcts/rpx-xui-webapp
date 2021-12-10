@@ -1,95 +1,76 @@
 <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
-          
-
   <div class="govuk-grid-row">
       <form class="form" action="hearing-requirements-facilities" method="post">
-  
           <div class="govuk-grid-column-two-thirds">
-  
-              <span class="govuk-caption-l">Request a hearing for Jane Smith vs DWP</span>
-              <h1 class="govuk-heading-l">
-                  Hearing requirements
-              </h1>
-  
-              
-  
-              <p class="govuk-body govuk-!-margin-bottom-2">Personal Independence Payment</p>
-              <ul class="govuk-list govuk-list--bullet">
-                  <li>Conditions of Entitlement</li>
-                  <li>Good cause</li>
-                  <li>Rate of Assessment / Payability Issues - complex</li>
-              </ul>
-  
-              <div class="govuk-inset-text">
-                  Any reasonable adjustments on this page will be included in the hearing request.
+            <exui-hearing-parties-title></exui-hearing-parties-title>
+            <h1 class="govuk-heading-l">
+                Hearing requirements
+            </h1>
+            <p class="govuk-body govuk-!-margin-bottom-2">{{ hearingValueModel.caseType}} </p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li *ngFor="let subType of hearingValueModel.caseSubTypes">{{ subType }}</li>
+            </ul>
+
+            <div class="govuk-inset-text">
+                Any reasonable adjustments on this page will be included in the hearing request.
+            </div>
+            <!-- Case flags table -->
+            <div class="govuk-form-group">
+                <table class="govuk-table">
+                    <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header" width="300">Jane Smith</th>
+                        <th scope="col" class="govuk-table__header" width="550">Comments</th>
+                        <th scope="col" class="govuk-table__header" width="100">Flag status</th>
+                    </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">
+                            Sign language<br>
+                            British Sign Language (BSL)
+                        </td>
+                        <td class="govuk-table__cell"></td>
+                        <td class="govuk-table__cell">
+                            <strong class="govuk-tag">Active</strong>
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">Wheel chair access</td>
+                        <td class="govuk-table__cell"></td>
+                        <td class="govuk-table__cell">
+                            <strong class="govuk-tag">Active</strong>
+                        </td>
+                    </tr>
+<!--                    <tr class="govuk-table__row">-->
+<!--                        <td class="govuk-table__cell">Reasonable adjustment</td>-->
+<!--                        <td class="govuk-table__cell">Hearing loop required</td>-->
+<!--                        <td class="govuk-table__cell">-->
+<!--                            <strong class="govuk-tag">Active</strong>-->
+<!--                        </td>-->
+<!--                    </tr>-->
+                    </tbody>
+                </table>
+                <table class="govuk-table">
+                    <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header" width="300">DWP</th>
+                        <th scope="col" class="govuk-table__header" width="550">Comments</th>
+                        <th scope="col" class="govuk-table__header" width="100">Flag status</th>
+                    </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">Language interpreter<br>
+                        Spanish</td>
+                        <td class="govuk-table__cell"></td>
+                        <td class="govuk-table__cell">
+                            <strong class="govuk-tag">Active</strong>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
               </div>
-  
-              
-              <!-- Case flags table -->
-              <div class="govuk-form-group">
-  
-                  <table class="govuk-table">
-                      <thead class="govuk-table__head">
-                      <tr class="govuk-table__row">
-                          <th scope="col" class="govuk-table__header" width="300">Jane Smith</th>
-                          <th scope="col" class="govuk-table__header" width="550">Comments</th>
-                          <th scope="col" class="govuk-table__header" width="100">Flag status</th>
-                      </tr>
-                      </thead>
-                      <tbody class="govuk-table__body">
-                      <tr class="govuk-table__row">
-                          <td class="govuk-table__cell">
-                              Sign language<br>
-                              British Sign Language (BSL)
-                          </td>
-                          <td class="govuk-table__cell"></td>
-                          <td class="govuk-table__cell">
-                              <strong class="govuk-tag">Active</strong>
-                          </td>
-                      </tr>
-                      <tr class="govuk-table__row">
-                          <td class="govuk-table__cell">Wheel chair access</td>
-                          <td class="govuk-table__cell"></td>
-                          <td class="govuk-table__cell">
-                              <strong class="govuk-tag">Active</strong>
-                          </td>
-                      </tr>
-  <!--                    <tr class="govuk-table__row">-->
-  <!--                        <td class="govuk-table__cell">Reasonable adjustment</td>-->
-  <!--                        <td class="govuk-table__cell">Hearing loop required</td>-->
-  <!--                        <td class="govuk-table__cell">-->
-  <!--                            <strong class="govuk-tag">Active</strong>-->
-  <!--                        </td>-->
-  <!--                    </tr>-->
-                      </tbody>
-                  </table>
-  
-                  
-  
-                  <table class="govuk-table">
-                      <thead class="govuk-table__head">
-                      <tr class="govuk-table__row">
-                          <th scope="col" class="govuk-table__header" width="300">DWP</th>
-                          <th scope="col" class="govuk-table__header" width="550">Comments</th>
-                          <th scope="col" class="govuk-table__header" width="100">Flag status</th>
-                      </tr>
-                      </thead>
-                      <tbody class="govuk-table__body">
-                      <tr class="govuk-table__row">
-                          <td class="govuk-table__cell">Language interpreter<br>
-                          Spanish</td>
-                          <td class="govuk-table__cell"></td>
-                          <td class="govuk-table__cell">
-                              <strong class="govuk-tag">Active</strong>
-                          </td>
-                      </tr>
-                      </tbody>
-                  </table>
-  
-                  
-  
-              </div>
-              
               <p class="govuk-body">Review <a href="">case flags and reasonable adjustments (opens in new tab)</a> if you need to make any changes.</p>
           </div>
   
@@ -100,7 +81,6 @@
           </div>
       </form>
   </div>
-  
   <div class="govuk-form-group" style="position:absolute;margin-top: 80px;">
       <p class="govuk-body-s">
           <strong>Scenarios:</strong>
@@ -110,14 +90,4 @@
           <a href="/hearings/pages/iteration3/hearing-requirements?ra=none&amp;" class="govuk-link ">Empty state</a>
       </p>
   </div>
-  
-  <script>
-  
-      function goBack() {
-          window.history.back();
-      }
-  
-  </script>
-  
-  
-          </main>
+</main>

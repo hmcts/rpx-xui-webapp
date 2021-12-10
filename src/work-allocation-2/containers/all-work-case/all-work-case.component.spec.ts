@@ -39,7 +39,7 @@ describe('AllWorkCaseComponent', () => {
   let fixture: ComponentFixture<WrapperComponent>;
 
   const routerMock = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate']);
-  const mockCaseService = jasmine.createSpyObj('mockCaseService', ['searchCase']);
+  const mockCaseService = jasmine.createSpyObj('mockCaseService', ['searchCase', 'getCases']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
@@ -79,9 +79,9 @@ describe('AllWorkCaseComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
-    component.isPaginationEnabled$ = of(false);
+    component.isPaginationEnabled$ = of(true);
     const cases: Case[] = getMockCases();
-    mockCaseService.searchCase.and.returnValue(of({cases}));
+    mockCaseService.getCases.and.returnValue(of({cases}));
     mockCaseworkerService.getAll.and.returnValue(of([]));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));

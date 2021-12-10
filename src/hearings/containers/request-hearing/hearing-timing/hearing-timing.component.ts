@@ -285,12 +285,16 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
   public executeAction(action: ACTION): void {
     if (action === ACTION.CONTINUE) {
       this.checkFormData();
-      if (this.priorityForm.valid) {
+      if (this.isFormValid()) {
         super.navigateAction(action);
       }
     } else if (action === ACTION.BACK) {
       super.navigateAction(action);
     }
+  }
+
+  public isFormValid() {
+    return this.priorityForm.valid;
   }
 
   public ngOnDestroy(): void {

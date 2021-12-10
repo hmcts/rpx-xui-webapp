@@ -17,7 +17,7 @@ class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
 }
 
-describe('HearingStageComponent', () => {
+fdescribe('HearingStageComponent', () => {
   let component: HearingStageComponent;
   let fixture: ComponentFixture<HearingStageComponent>;
 
@@ -114,32 +114,23 @@ describe('HearingStageComponent', () => {
     expect(component.stageForm.controls['stage-option']).toBeDefined();
   });
 
-  it('should set hearingtype', async (done) => {
-    fixture.whenStable().then(() => {
-      fixture.detectChanges();
-      done();
-      expect(component.hearingType).toEqual(initialState.hearings.hearingValues.serviceHearingValuesModel.hearingType);
-    });
+  it('should set hearingtype', () => {
+    fixture.detectChanges();
+    expect(component.hearingType).toEqual(initialState.hearings.hearingValues.serviceHearingValuesModel.hearingType);
   });
 
-  it('should initialise control value to hearing type from store', async (done) => {
-    fixture.whenStable().then(() => {
+  it('should initialise control value to hearing type from store', () => {
       fixture.detectChanges();
-      done();
       component.ngAfterViewInit();
       expect(component.stageForm.controls['stage-option'].value).toEqual(initialState.hearings.hearingValues.serviceHearingValuesModel.hearingType);
-    });
   });
 
-  it('should call unsubscribe', (done) => {
+  it('should call unsubscribe', () => {
     component.ngOnInit();
     spyOn(component.hearingStoreSub, 'unsubscribe');
-    fixture.whenStable().then(() => {
-      fixture.detectChanges();
-      done();
-      component.ngOnDestroy();
-      expect(component.hearingStoreSub.unsubscribe).toHaveBeenCalled();
-    });
+    fixture.detectChanges();
+    component.ngOnDestroy();
+    expect(component.hearingStoreSub.unsubscribe).toHaveBeenCalled();
   });
 
   it('should be in the same order as service', () => {

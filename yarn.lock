@@ -443,10 +443,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.3.6-hotfix-EUI-4652-4404":
-  version "4.3.6-hotfix-EUI-4652-4404"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.3.6-hotfix-EUI-4652-4404.tgz#f81cd11abfca24710dda8dfd97b4c73881db16da"
-  integrity sha512-alVD7Z1Tn7XcVR0GIh21kbgxyoGujGXf14SYkXI9SAR6I7bRpd8YEW1oNZA2FtxSIOo4VrQkuvXgEjJDbzFNTQ==
+"@hmcts/ccd-case-ui-toolkit@4.7.6-tab-not-defined":
+  version "4.7.6-tab-not-defined"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.7.6-tab-not-defined.tgz#3a607e794c5d18a997568fdd53284c22fa0d0bb6"
+  integrity sha512-Hg68GiUB85lwbhu6K/PaJoGpFnsPheR3nV/2UTCmhtn29XxFWFEPv1eyeQzN8xu7nICN9w2KVFo/HmumHjkbCw==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -471,10 +471,10 @@
     underscore "^1.9.1"
     yargs-parser "18.1.2"
 
-"@hmcts/ccpay-web-component@3.0.3":
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-3.0.3.tgz#d8f2c335e439515e0b87784414229301d9a8c05f"
-  integrity sha512-EIANuq103rLEA7LglNreLpPeo0aQtxfReXNd7A76V66tUwyQhwERMlpwKmOhO0eoA8HpcK0yV0mXNLh1aUifXA==
+"@hmcts/ccpay-web-component@5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-5.0.0.tgz#2b0b6e491fceeaabb51c0b57924b9fc6a91952d3"
+  integrity sha512-qVcLIxVMMhjLZfpHwRif2BvQNvTKgv4MKtNnshBIDV3xaJI46xAk2WJvRnkTNpW5fBWNp2q3pPHgvPNm6ksByA==
   dependencies:
     tslib "^1.9.0"
 
@@ -524,10 +524,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.4.8-select-all-redo":
-  version "1.4.8-select-all-redo"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.8-select-all-redo.tgz#2f82ed4e7dea6ccfc3bb88dac7db0c21933a01fd"
-  integrity sha512-Sazil/MKCiKfU054N0lf0NcJkFDw3357LXCO3TvyAAPu0ayWJnVAfntGyX2YbELxwON02R8lW3b3fA2+vy6KEQ==
+"@hmcts/rpx-xui-common-lib@v1.4.20-reset-button":
+  version "1.4.20-reset-button"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.20-reset-button.tgz#93cbffa788ad9b7f57a363c230a2dfd329180776"
+  integrity sha512-61nhMMrsBEZvoMMn1VYkxQOeYSZ4/P33iNwe6+BsnlzSFllosiB/r4DSqANkFULI/Xh9atwyW7e6ujWCu4COiQ==
   dependencies:
     tslib "^1.9.0"
 
@@ -1703,11 +1703,11 @@ ansi-align@^2.0.0:
     string-width "^2.0.0"
 
 ansi-align@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/ansi-align/-/ansi-align-3.0.0.tgz#b536b371cf687caaef236c18d3e21fe3797467cb"
-  integrity sha512-ZpClVKqXN3RGBmKibdfWzqCY4lnjEuoNzU5T0oEFpfd/z5qJHVarukridD4juLO2FXMiwUQxr9WqQtaYa8XRYw==
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/ansi-align/-/ansi-align-3.0.1.tgz#0cdf12e111ace773a86e9a1fad1225c43cb19a59"
+  integrity sha512-IOfwwBF5iczOjp/WeY4YxyjqAFMQoZufdQWDd19SEExbVLNXqvpzSJ/M7Za4/sCPmQ0+GRquoA7bGcINcxew6w==
   dependencies:
-    string-width "^3.0.0"
+    string-width "^4.1.0"
 
 ansi-colors@4.1.1:
   version "4.1.1"
@@ -6092,9 +6092,9 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.6
   integrity sha512-a30VEBm4PEdx1dRB7MFK7BejejvCvBronbLjht+sHuGYj8PHs7M/5Z+rt5lw551vZ7yfTCj4Vuyy3mSJytDWRQ==
 
 graceful-fs@^4.1.3:
-  version "4.2.6"
-  resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.6.tgz#ff040b2b0853b23c3d31027523706f1885d76bee"
-  integrity sha512-nTnJ528pbqxYanhpDYsi4Rd8MAeaBA67+RZ10CM1m3bTAVFEDcd5AuA4a6W5YkGZ1iNXHzZz8T6TBKLeBuNriQ==
+  version "4.2.8"
+  resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.8.tgz#e412b8d33f5e006593cbd3cee6df9f2cebbe802a"
+  integrity sha512-qkIilPUYcNhJpd33n0GBXTB1MMPp14TxEsEs0pTrsSVucApsYzW5V+Q8Qxhik6KU3evy+qkAAowTByymK0avdg==
 
 graceful-fs@^4.2.4:
   version "4.2.4"
@@ -8069,6 +8069,11 @@ loader-utils@1.2.3, loader-utils@^1.0.1, loader-utils@^1.0.2, loader-utils@^1.1.
     big.js "^5.2.2"
     emojis-list "^2.0.0"
     json5 "^1.0.1"
+
+local-storage@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/local-storage/-/local-storage-2.0.0.tgz#748b7d041b197f46f3ec7393640851c175b64db8"
+  integrity sha512-/0sRoeijw7yr/igbVVygDuq6dlYCmtsuTmmpnweVlVtl/s10pf5BCq8LWBxW/AMyFJ3MhMUuggMZiYlx6qr9tw==
 
 locate-path@^2.0.0:
   version "2.0.0"

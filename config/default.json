@@ -41,6 +41,9 @@
     "prd": {
       "api": "http://rd-professional-api-prod.service.core-compute-prod.internal"
     },
+    "locationref": {
+      "api": "http://rd-location-ref-api-prod.service.core-compute-prod.internal"
+    },
     "em_hrs_api": "http://em-hrs-api-prod.service.core-compute-prod.internal",
     "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal",
     "em_docassembly_api": "http://dg-docassembly-prod.service.core-compute-prod.internal/",
@@ -56,12 +59,14 @@
     "work_allocation": {
       "taskApi": "http://wa-task-management-api-prod.service.core-compute-prod.internal"
     },
+    "refunds": "http://ccpay-refunds-api-prod.service.core-compute-prod.internal",
     "role_assignment": {
       "roleApi": "http://am-role-assignment-service-prod.service.core-compute-prod.internal"
     },
     "case": {
       "caseworkerApi": "http://rd-caseworker-ref-api-prod.service.core-compute-prod.internal",
-      "judicialworkerApi": "http://rd-judicialworker-ref-api-prod.service.core-compute-prod.internal"
+      "judicialworkerApi": "http://rd-judicialworker-ref-api-prod.service.core-compute-prod.internal",
+      "judicialApi": "http://rd-judicial-api-prod.service.core-compute-prod.internal"
     },
     "payments": "http://payment-api-prod.service.core-compute-prod.internal",
     "markup_api": "http://em-npa-prod.service.core-compute-prod.internal",
@@ -73,7 +78,7 @@
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
   "waSupportedJurisdictions": ["IA"],
-  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL",
+  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC",
   "wildcardSearchFields": {
     "Benefit": [
       "generatedSurname",
@@ -115,7 +120,8 @@
     "workAllocationEnabled": false,
     "roleEnabled": false,
     "caseworkerRefEnabled": false,
-    "substantiveRoleEnabled": true
+    "substantiveRoleEnabled": true,
+    "accessManagementEnabled": false
   },
   "helmet": {
     "contentSecurityPolicy": {

@@ -30,7 +30,6 @@ import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { checkIfCaseAllocator } from './roleService';
 import * as roleServiceMock from './roleService.mock';
 import { handleTaskGet, handleTaskPost, handleTaskSearch } from './taskService';
-import * as taskServiceMock from './taskService.mock';
 import {
   assignActionsToCases,
   assignActionsToTasks,
@@ -62,7 +61,6 @@ import {
   searchCasesById
 } from './util';
 
-taskServiceMock.init();
 caseServiceMock.init();
 roleServiceMock.init();
 
@@ -134,6 +132,10 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     const searchRequest = {
       ...req.body.searchRequest, search_parameters: removeEmptyValues(req.body.searchRequest.search_parameters),
     };
+    // filter out task type from search parameters as not currently available until release 2.1
+    searchRequest.search_parameters = searchRequest.search_parameters.filter(
+      searchParam => searchParam.key !== 'taskType'
+    )
     const sortParam = searchRequest.sorting_parameters.find(sort => sort.sort_by === 'created_date')
     if (sortParam) {
       sortParam.sort_by = 'dueDate';

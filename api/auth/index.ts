@@ -66,10 +66,10 @@ export const getXuiNodeMiddleware = () => {
 
     const routeCredential = {
         password,
-        routes: ['/workallocation/caseworker', '/workallocation2/caseworker'],
-        scope: 'openid profile roles manage-user create-user',
+        routes: ['/workallocation/caseworker', '/workallocation2/caseworker', '/api/role-access/roles/getJudicialUsers'],
+        scope: 'openid profile roles manage-user create-user search-user',
         userName,
-    }
+    };
 
     //TODO: we can move these out into proper config at some point to tidy up even further
     const options: AuthOptions = {
@@ -83,7 +83,7 @@ export const getXuiNodeMiddleware = () => {
         logoutURL: idamApiPath,
         responseTypes: ['code'],
         routeCredential,
-        scope: 'profile openid roles manage-user create-user',
+        scope: 'profile openid roles manage-user create-user search-user',
         sessionKey: 'xui-webapp',
         tokenEndpointAuthMethod: 'client_secret_post',
         tokenURL: tokenUrl,

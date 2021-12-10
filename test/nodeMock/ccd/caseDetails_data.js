@@ -6,20 +6,20 @@ module.exports = {
     },
     "case_id": "1604309496714935",
     "case_type": {
-        "id": "FinancialRemedyMVP2",
-        "name": "Financial Remedy Consented",
-        "description": "Financial Remedy",
+        "id": "Asylum",
+        "name": "Immigration & Asylum",
+        "description": "IA test casey",
         "jurisdiction": {
-            "id": "DIVORCE",
-            "name": "Family Divorce - v104-26.1",
-            "description": "Family Divorce: dissolution of marriage"
+            "id": "IA",
+            "name": "mmigration & Asylum",
+            "description": "mmigration & Asylum"
         },
         "printEnabled": false
     },
     "tabs": [
         {
-            "id": "Judge",
-            "label": "Judge",
+            "id": "overview",
+            "label": "Overview",
             "order": 15,
             "fields": [
                 {

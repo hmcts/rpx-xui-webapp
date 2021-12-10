@@ -6,4 +6,5 @@ export interface RoleExclusion {
     notes: string;
     added: Date;
     email?: string;
+    actorId: string;
 }

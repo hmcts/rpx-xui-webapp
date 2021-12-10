@@ -9,6 +9,8 @@ import { Caseworker } from '../../../work-allocation-2/models/dtos';
   templateUrl: './roles-and-access.component.html'
 })
 export class RolesAndAccessComponent implements OnInit {
+  public namedExclusions: RoleExclusion[];
+  public exclusionsNotNamed: boolean = false;
   public legalOpsRoles: CaseRole[] = [];
   public namedLegalRoles: CaseRole[];
   public legalRolesNotNamed: boolean = false;
@@ -51,6 +53,9 @@ export class RolesAndAccessComponent implements OnInit {
     if (this.legalOpsRoles && !this.caseworkers) {
       this.legalRolesNotNamed = true;
     };
+    if (this.exclusions && !this.caseworkers) {
+      this.exclusionsNotNamed = true;
+    }
     if (this.caseworkers && this.legalOpsRoles) {
       if (this.legalOpsRoles.length > 0 && this.legalRolesNotNamed) {
       this.legalOpsRoles.forEach(
@@ -58,6 +63,19 @@ export class RolesAndAccessComponent implements OnInit {
           const caseWorker = this.caseworkers.find(caseworker => caseworker.idamId === role.actorId);
           if (caseWorker) {
             role.name = `${caseWorker.firstName}-${caseWorker.lastName}`;
+          }
+        }
+      );
+      }
+      this.namedLegalRoles = this.legalOpsRoles;
+    }
+    if (this.caseworkers && this.exclusions) {
+      if (this.exclusions.length > 0 && this.exclusionsNotNamed) {
+      this.exclusions.forEach(
+        exclusion => {
+          const caseWorker = this.caseworkers.find(caseworker => caseworker.idamId === exclusion.actorId);
+          if (caseWorker) {
+            exclusion.name = `${caseWorker.firstName}-${caseWorker.lastName}`;
           }
         }
       );

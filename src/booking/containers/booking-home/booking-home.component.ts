@@ -49,7 +49,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
       );
 
       this.bookings$ = forkJoin(this.locations$);
-      this.bookings$.subscribe(( result) => {
+      this.bookings$.subscribe(( result ) => {
         this.existingBookings = result;
         this.orderByCurrentThenFuture();
       });
@@ -92,7 +92,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
   }
 
   public onExistingBookingSelected(locationId) {
-    this.refreshAssignmentsSubscription = this.bookingService.refreshAssignments().subscribe(response => {
+    this.refreshAssignmentsSubscription = this.bookingService.refreshRoleAssignments().subscribe(response => {
       this.sessionStorageService.removeItem(TaskListFilterComponent.FILTER_NAME);
       this.router.navigate(
         ['/work/my-work/list'],

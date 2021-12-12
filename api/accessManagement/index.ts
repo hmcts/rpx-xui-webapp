@@ -10,6 +10,8 @@ export async function getBookings(req, res: Response, next: NextFunction): Promi
 }
 
 export async function postBooking(req, res: Response, next: NextFunction): Promise<Response> {
+  // Unhappy paths are part of https://tools.hmcts.net/jira/browse/EUI-4783
+  //return res.status(400).send(refreshRoleAssignmentsError);
   return res.send(bookingResponse);
 }
 

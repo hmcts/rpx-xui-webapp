@@ -39,8 +39,9 @@ export class DateValidators {
       if (dateOption !== BookingDateOption.DATERANGE ) {
           return;
       }
-      const startDate = new Date(startDateYear, startDateMonth, startDateDay);
-      const endDate = new Date(endDateYear, endDateMonth, endDateDay);
+      const startDate = new Date(startDateYear, startDateMonth - 1, startDateDay, 23, 59, 59);
+      const endDate = new Date(endDateYear, endDateMonth - 1, endDateDay, 23, 59, 59);
+
       if (new Date() > startDate) {
         return { isValid: false, errorType: BookingDateFormErrorMessage.PAST_DATE_CHECK };
       }

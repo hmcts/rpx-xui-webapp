@@ -1,5 +1,5 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AbstractControl, FormBuilder } from '@angular/forms';
 import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { provideMockStore } from '@ngrx/store/testing';
@@ -100,7 +100,6 @@ describe('LocationSearchContainerComponent', () => {
     } as LocationByEPIMSModel;
 
     component.selectedLocations$ = of([ location ]);
-
     component.removeSelection(location);
     fixture.detectChanges();
     // expect(component.selectedLocations$.subscribe).toHaveBeenCalled();

@@ -24,6 +24,7 @@ import {
   getRoleAssignmentsByQuery,
   getSubstantiveRoles,
   getTypesOfWorkByUserId,
+  getUniqueCasesCount,
   mapCasesFromData,
   mapCaseworkerData,
   mapCaseworkerPrimaryLocation,
@@ -463,6 +464,80 @@ describe('workAllocation.utils', () => {
         .to.deep.equal([CASEWORKER_1, CASEWORKER_2, CASEWORKER_3, CASEWORKER_4]);
     });
   });
+
+  describe('getUniqueCasesCount', () => {
+
+    const mockRoleCaseData: RoleCaseData[] = [{
+      id: '1',
+      case_id: '123',
+      case_name: '123',
+      case_category: 'Asylum',
+      case_role: 'example-role',
+      jurisdiction: 'IA',
+      location_id: '001',
+      role: 'example-role',
+      startDate: new Date('01-01-2021'),
+      endDate: new Date('01-01-2022'),
+      assignee: 'person1',
+      role_category: 'LEGAL_OPERATIONS',
+    },
+    {
+      id: '3',
+      case_id: '456',
+      case_name: '456',
+      case_category: 'Test',
+      case_role: 'example-role-2',
+      jurisdiction: 'IA',
+      location_id: '001',
+      role: 'example-role-2',
+      startDate: new Date('01-01-2021'),
+      endDate: new Date('01-01-2022'),
+      assignee: 'person1',
+      role_category: 'LEGAL_OPERATIONS',
+    },
+    {
+      id: '4',
+      case_id: '456',
+      case_name: '456',
+      case_category: 'Test',
+      case_role: 'example-role-2',
+      jurisdiction: 'IA',
+      location_id: '001',
+      role: 'example-role-2',
+      startDate: new Date('01-01-2021'),
+      endDate: new Date('01-01-2022'),
+      assignee: 'person1',
+      role_category: 'LEGAL_OPERATIONS',
+    },
+    {
+      id: '5',
+      case_id: '457',
+      case_name: '456',
+      case_category: 'Test',
+      case_role: 'example-role-2',
+      jurisdiction: 'IA',
+      location_id: '001',
+      role: 'example-role-2',
+      startDate: new Date('01-01-2021'),
+      endDate: new Date('01-01-2022'),
+      assignee: 'person1',
+      role_category: 'LEGAL_OPERATIONS',
+    }];
+
+    it('should get unique cases from the data', () => {
+      // check function works with no data
+      expect(getUniqueCasesCount(undefined)).to.equal(0);
+      expect(getUniqueCasesCount(null)).to.equal(0);
+      expect(getUniqueCasesCount([])).to.equal(0);
+
+      // check function works with data present
+      expect(getUniqueCasesCount(mockRoleCaseData)).to.equal(3);
+      expect(getUniqueCasesCount([mockRoleCaseData[0]])).to.equal(1);
+      expect(getUniqueCasesCount(mockRoleCaseData.slice(1,4))).to.equal(2);
+      expect(getUniqueCasesCount(mockRoleCaseData.slice(1,3))).to.equal(1);
+    });
+  });
+
 
   describe('getActionsByPermissions', () => {
 

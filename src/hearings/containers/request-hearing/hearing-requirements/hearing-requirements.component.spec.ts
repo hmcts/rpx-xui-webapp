@@ -169,7 +169,7 @@ describe('HearingRequirementsComponent', () => {
     expect(component.hearingValueModel).toEqual(hearingValueModel);
   });
 
-  it('should call convertMapToArray during onint call', () => {
+  it('should call convertMapToArray during onint call', async () => {
     component.ngOnInit();
     expect(component).toBeDefined();
     const caseFlags = _.groupBy(component.hearingValueModel.caseFlags.flags, 'partyName');
@@ -177,7 +177,7 @@ describe('HearingRequirementsComponent', () => {
     expect(caseFlagConverted.length).toBeGreaterThan(0);
   });
 
-  it('should assign values to caseFlags once convertMapToArray is called', () => {
+  it('should assign values to caseFlags once convertMapToArray is called', async () => {
     component.assignHearingValue(hearingValueModel);
     expect(component.hearingValueModel).toEqual(hearingValueModel);
     expect(component.caseFlags.length).toEqual(2);

@@ -54,16 +54,16 @@ export class RolesAndAccessComponent implements OnInit {
   public ngOnChanges(): void {
     // All of the below is in order to ensure the name is shown for roles if present
     // if not present this will be ignored
-    if (this.legalOpsRoles.length > 0 && !this.caseworkers) {
+    if (this.legalOpsRoles && this.legalOpsRoles.length > 0 && !this.legalOpsRoles[0].name) {
       this.legalRolesNotNamed = true;
     };
-    if (this.exclusions.length > 0 && !this.caseworkers) {
+    if (this.exclusions && this.exclusions.length > 0 && !this.exclusions[0].name) {
       this.exclusionsNotNamed = true;
     }
-    if (this.caseworkers && this.legalOpsRoles.length > 0) {
+    if (this.caseworkers && this.legalOpsRoles && this.legalOpsRoles.length > 0) {
       this.namedLegalRoles = this.checkSetNamedRoles(this.legalOpsRoles, this.legalRolesNotNamed);
     }
-    if (this.caseworkers && this.exclusions.length > 0) {
+    if (this.caseworkers && this.exclusions && this.exclusions.length > 0) {
       this.namedExclusions = this.checkSetNamedRoles(this.exclusions, this.exclusionsNotNamed);
     }
   }

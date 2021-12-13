@@ -52,16 +52,14 @@ export class DeleteExclusionComponent implements OnInit {
   }
 
   public populateAnswers(exclusion: RoleExclusion): void {
-    const person = exclusion.name ? exclusion.name : 'Awaiting person details'
+    const person = exclusion.name ? exclusion.name : 'Awaiting person details';
     this.answers.push({label: AnswerLabelText.Person, value: person});
     this.answers.push({label: AnswerLabelText.DescribeExclusion, value: exclusion.notes ? exclusion.notes : ''});
     this.answers.push({label: AnswerLabelText.DateAdded, value: new Date(exclusion.added).toLocaleDateString('en-GB')});
   }
 
   public getNamesIfNeeded(): void {
-    console.log('changed ', this.roleExclusion);
     if (!this.roleExclusion.name) {
-      console.log('fixing for session');
       this.caseworkerDataService.getAll().pipe(first()).subscribe(caseworkers => {
         const caseworker = caseworkers.find(caseworker => caseworker.idamId === this.roleExclusion.actorId);
         this.roleExclusion.name = `${caseworker.firstName}-${caseworker.lastName}`;
@@ -69,7 +67,6 @@ export class DeleteExclusionComponent implements OnInit {
         this.populateAnswers(this.roleExclusion);
       });
     }
-    console.log('after change', this.roleExclusion);
   }
 
   public onNavEvent(navEvent: ExclusionNavigationEvent): void {

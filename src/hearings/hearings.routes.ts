@@ -87,7 +87,7 @@ export const ROUTES: Routes = [
       },
       {
         path: 'hearing-requirements',
-        resolve: { hearingPriorities: PriorityResolver },
+        resolve: { hearingPriorities: RefDataResolver },
         component: HearingRequirementsComponent,
         canActivate: [HealthCheckGuard],
         data: {

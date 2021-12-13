@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
 import { provideMockStore } from '@ngrx/store/testing';
@@ -149,12 +149,16 @@ describe('HearingRequirementsComponent', () => {
       providers: [
         provideMockStore({initialState}),
       ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
     .compileComponents();
+  }));
+
+  beforeEach(() => {
     fixture = TestBed.createComponent(HearingRequirementsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  }));
+  });
 
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -185,5 +189,9 @@ describe('HearingRequirementsComponent', () => {
     fixture.detectChanges();
     component.ngOnDestroy();
     expect(component.hearingStoreSub.unsubscribe).toHaveBeenCalled();
+  });
+
+  afterEach(() => {
+    fixture.destroy();
   });
 });

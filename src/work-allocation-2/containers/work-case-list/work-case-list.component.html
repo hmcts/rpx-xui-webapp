@@ -7,14 +7,13 @@
     of
     <span class="govuk-!-font-weight-bold">{{ casesTotal || 0 }}</span> results</span>
 </div>
-
 <ng-template #tableSummary>
   <div class="pagination-top" attr.aria-label="{{ casesTotal }} results have been found" role="status">
     <span class="text-16">Showing <span class="govuk-!-font-weight-bold">{{
         casesTotal || 0 }} </span>results</span>
   </div>
 </ng-template>
-
+<span class="second-line"><span class="govuk-!-font-weight-bold">{{ uniqueCases || 0 }}</span> cases</span>
 <!-- Reset Sorting Button -->
 <div *ngIf="showResetSortButton" class="reset-sort-button"><button type="button"
     class="govuk-button hmcts-button--secondary" (click)="onResetSorting()">Reset sorting</button></div>

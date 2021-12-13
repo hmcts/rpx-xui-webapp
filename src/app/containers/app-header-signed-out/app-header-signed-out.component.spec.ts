@@ -56,7 +56,7 @@ describe('AppHeaderSignedOutComponent', () => {
       expect(component.navItems.length).toBe(0);
       expect(component.userNav).toEqual({ label: '', items: [] });
       expect(component.backgroundColor).toBe(AppConstants.DEFAULT_USER_THEME.backgroundColor);
-      expect(component.logoType).toBe(AppConstants.DEFAULT_USER_THEME.logo);
+      expect(component.logo).toBe(AppConstants.DEFAULT_USER_THEME.logo);
       expect(component.logoIsUsed).toBe(AppConstants.DEFAULT_USER_THEME.logo !== 'none');
     });
   });

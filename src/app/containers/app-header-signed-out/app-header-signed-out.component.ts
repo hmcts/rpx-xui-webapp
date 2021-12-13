@@ -15,7 +15,7 @@ export class AppHeaderSignedOutComponent implements OnInit {
   public appHeaderTitle: AppTitleModel;
   public userNav: UserNavModel;
   public backgroundColor: string;
-  public logoType: string;
+  public logo: string;
   public logoIsUsed: boolean;
 
   constructor() {
@@ -43,7 +43,7 @@ export class AppHeaderSignedOutComponent implements OnInit {
     this.navItems = [];
     this.userNav = { label: '', items: [] };
     this.backgroundColor = backgroundColor;
-    this.logoType = logo;
+    this.logo = logo;
     this.logoIsUsed = logo !== 'none';
   }
 }

@@ -3,8 +3,8 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { forkJoin, Observable, Subscription,  } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { TaskListFilterComponent } from 'src/work-allocation-2/components';
 import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';
+import { TaskListFilterComponent } from '../../../work-allocation-2/components';
 import { Booking, BookingNavigationEvent, BookingProcess } from '../../models';
 import { BookingService } from '../../services';
 

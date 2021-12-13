@@ -150,15 +150,13 @@ describe('HearingRequirementsComponent', () => {
       ],
     })
     .compileComponents();
-  }));
-
-  beforeEach(() => {
     fixture = TestBed.createComponent(HearingRequirementsComponent);
     component = fixture.componentInstance;
+    fixture.detectChanges();
+
     spyOn(component, 'convertMapToArray').and.callThrough();
     spyOn(component, 'assignHearingValue').and.callThrough();
-    fixture.detectChanges();
-  });
+  }));
 
   it('should create', () => {
     expect(component).toBeTruthy();

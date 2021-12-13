@@ -8,7 +8,7 @@ export interface Theme {
     accountNavigationItems: UserNavModel;
     backgroundColor: string;
     logoIsUsed: boolean;
-    logoType: string;
+    logo: string;
 }
 
 export interface UserTypeRole {

@@ -6,7 +6,7 @@ export const bookings: Bookings = {
     [
       {
         appointmentId: '101',
-        base_location_id: '366796',
+        base_location_id: '231596',
         beginTime: new Date('2021-11-29T00:00:00Z'),
         contract_type_id: '102',
         created: new Date('2021-02-23T06:37:58Z'),

@@ -1,7 +1,6 @@
-/* tslint:disable:object-literal-sort-keys */
 import {DefaultHearingWindowModel} from './defaultHearingWindow.model';
 import {JudiciaryModel} from './judiciary.model';
-import {PartyFlagsModel} from './partyFlags.model';
+import { PartyFlagsModel } from './partyFlags.model';
 import {PartyUnavailabilityModel} from './partyUnavilability.model';
 import {ScreenNavigationModel} from './screenNavigation.model';
 import {VocabularyModel} from './vocabulary.model';

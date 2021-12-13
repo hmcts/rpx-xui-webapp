@@ -1,12 +1,13 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
-import { HearingRequirementsComponent } from './containers/request-hearing/hearing-requirements/hearing-requirements.component';
 import { CancelHearingComponent, ChangeHearingComponent, DatePriorityHearingComponent, HearingStageComponent, RequestHearingComponent, ViewHearingComponent } from './containers';
+import { HearingRequirementsComponent } from './containers/request-hearing/hearing-requirements/hearing-requirements.component';
 import { LocationSearchContainerComponent } from './containers/request-hearing/location-search-container/location-search-container.component';
 import { WelshHearingComponent } from './containers/request-hearing/welsh-hearing/welsh-hearing.component';
 import { HearingCategory } from './models/hearings.enum';
 import { RefDataResolver } from './resolvers/ref-data/ref-data-resolver.resolve';
+
 
 export const ROUTES: Routes = [
   {
@@ -87,7 +88,6 @@ export const ROUTES: Routes = [
       },
       {
         path: 'hearing-requirements',
-        resolve: { hearingPriorities: RefDataResolver },
         component: HearingRequirementsComponent,
         canActivate: [HealthCheckGuard],
         data: {

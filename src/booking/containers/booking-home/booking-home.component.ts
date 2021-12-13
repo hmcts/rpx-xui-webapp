@@ -1,7 +1,10 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { forkJoin, Observable, Subscription,  } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';
+import { TaskListFilterComponent } from '../../../work-allocation-2/components';
 import { Booking, BookingNavigationEvent, BookingProcess } from '../../models';
 import { BookingService } from '../../services';
 
@@ -20,10 +23,13 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
   private bookings$: Observable<any[]> | any;
   private locations$: Observable<any>[];
   private existingBookingsSubscription: Subscription;
+  private refreshAssignmentsSubscription: Subscription;
 
   constructor(
     private readonly fb: FormBuilder,
-    private readonly bookingService: BookingService
+    private readonly bookingService: BookingService,
+    private readonly router: Router,
+    private readonly sessionStorageService: SessionStorageService
   ) { }
 
   public ngOnInit() {
@@ -76,10 +82,29 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
     if (this.existingBookingsSubscription) {
       this.existingBookingsSubscription.unsubscribe();
     }
+    if (this.refreshAssignmentsSubscription) {
+      this.refreshAssignmentsSubscription.unsubscribe();
+    }
   }
 
   public onEventTrigger() {
     this.eventTrigger.emit(BookingNavigationEvent.HOMECONTINUE);
+  }
+
+  public onExistingBookingSelected(locationId) {
+    this.refreshAssignmentsSubscription = this.bookingService.refreshRoleAssignments().subscribe(response => {
+      this.sessionStorageService.removeItem(TaskListFilterComponent.FILTER_NAME);
+      this.router.navigate(
+        ['/work/my-work/list'],
+        {
+          state: {
+            location: {
+              id: locationId
+            }
+          }
+        }
+      );
+    });
   }
 
 }

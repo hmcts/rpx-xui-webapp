@@ -20,7 +20,7 @@ export const LOCATION_ERROR: ErrorMessage = {
   styleUrls: ['task-list-filter.component.scss']
 })
 export class TaskListFilterComponent implements OnInit, OnDestroy {
-  private static readonly FILTER_NAME = 'locations';
+  public static readonly FILTER_NAME = 'locations';
   @Input() public persistence: FilterPersistence;
   @Output() public errorChanged: EventEmitter<ErrorMessage> = new EventEmitter();
   public showFilteredText = false;
@@ -141,6 +141,9 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     };
     if (this.route.snapshot.data && this.route.snapshot.data.location) {
       const location: Location = this.route.snapshot.data.location;
+      this.defaultLocations = [`${location.id}`];
+    } else if (history.state && history.state.location) {
+      const location: Location = history.state.location;
       this.defaultLocations = [`${location.id}`];
     } else {
       // as some judicial workers do not have a set location set their default to be all locations

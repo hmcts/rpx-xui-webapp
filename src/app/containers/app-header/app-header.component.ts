@@ -36,7 +36,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   public appHeaderTitle: AppTitleModel;
   public userNav: UserNavModel;
   public backgroundColor: string;
-  public logo: string;
+  public logoType: string;
   public logoIsUsed: boolean = false;
   public showNavItems: Observable<boolean>;
 
@@ -149,7 +149,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
       items: []
     };
     this.backgroundColor = applicationTheme.backgroundColor;
-    this.logo = applicationTheme.logo;
+    this.logoType = applicationTheme.logo;
     this.logoIsUsed = applicationTheme.logo !== ApplicationThemeLogo.NONE;
   }
 

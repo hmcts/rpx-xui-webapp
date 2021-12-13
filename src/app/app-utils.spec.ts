@@ -242,7 +242,7 @@ describe('setThemeBasedOnUserType', () => {
     AppUtils.setThemeBasedOnUserType('Judicial', theme);
     expect(theme.appTitle.name).toEqual('Judicial Case Manager');
     expect(theme.backgroundColor).toEqual( '#8d0f0e');
-    expect(theme.logo).toEqual('judicial');
+    expect(theme.logoType).toEqual('judicial');
   });
 
   it('LegalOps User', () => {
@@ -250,7 +250,7 @@ describe('setThemeBasedOnUserType', () => {
     AppUtils.setThemeBasedOnUserType('LegalOps', theme);
     expect(theme.appTitle.name).toEqual('Manage cases');
     expect(theme.backgroundColor).toEqual('#202020');
-    expect(theme.logo).toEqual('');
+    expect(theme.logoType).toEqual('');
   });
 
   it('Solicitor User', () => {
@@ -258,7 +258,7 @@ describe('setThemeBasedOnUserType', () => {
     AppUtils.setThemeBasedOnUserType('Solicitor', theme);
     expect(theme.appTitle.name).toEqual('Manage cases');
     expect(theme.backgroundColor).toEqual('#202020');
-    expect(theme.logo).toEqual('myhmcts');
+    expect(theme.logoType).toEqual('myhmcts');
   });
 });
 

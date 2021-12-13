@@ -196,17 +196,17 @@ export class AppUtils {
       case 'Judicial':
         theme.appTitle.name = 'Judicial Case Manager';
         theme.backgroundColor = '#8d0f0e';
-        theme.logoType = 'judicial';
+        theme.logo = 'judicial';
         break;
       case 'LegalOps':
         theme.appTitle.name = 'Manage cases';
         theme.backgroundColor = '#202020';
-        theme.logoType = '';
+        theme.logo = '';
         break;
       case 'Solicitor':
         theme.appTitle.name = 'Manage cases';
         theme.backgroundColor = '#202020';
-        theme.logoType = 'myhmcts';
+        theme.logo = 'myhmcts';
         break;
     }
   }

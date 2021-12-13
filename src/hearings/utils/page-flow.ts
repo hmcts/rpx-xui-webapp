@@ -30,23 +30,25 @@ export class PageFlow implements AbstractPageFlow {
       .subscribe(([hearingConditions, screenNavigationModels]: [HearingConditions, ScreenNavigationModel[]]) => {
       const screenModel = screenNavigationModels.find(screenNavigationModel =>
         screenNavigationModel.screenName === this.getCurrentPage());
-      if (!screenModel.conditionKey) {
-        nextPage = screenModel.navigation[0].resultValue;
-      } else {
-        if (hearingConditions.hasOwnProperty(screenModel.conditionKey)) {
-          const conditionValue = hearingConditions[screenModel.conditionKey];
-          screenModel.navigation.forEach(navigationModel => {
-            switch (navigationModel.conditionOperator) {
-              case CONDITION_OPERATOR.INCLUDE:
-                nextPage = conditionValue.includes(navigationModel.conditionValue) ? navigationModel.resultValue : nextPage;
-                break;
-              case CONDITION_OPERATOR.NOT_INCLUDE:
-                nextPage = !conditionValue.includes(navigationModel.conditionValue) ? navigationModel.resultValue : nextPage;
-                break;
-              default:
-                nextPage = '';
-            }
-          });
+      if (screenModel) {
+        if (!screenModel.conditionKey) {
+          nextPage = screenModel.navigation[0].resultValue;
+        } else {
+          if (hearingConditions.hasOwnProperty(screenModel.conditionKey)) {
+            const conditionValue = hearingConditions[screenModel.conditionKey];
+            screenModel.navigation.forEach(navigationModel => {
+              switch (navigationModel.conditionOperator) {
+                case CONDITION_OPERATOR.INCLUDE:
+                  nextPage = conditionValue.includes(navigationModel.conditionValue) ? navigationModel.resultValue : nextPage;
+                  break;
+                case CONDITION_OPERATOR.NOT_INCLUDE:
+                  nextPage = !conditionValue.includes(navigationModel.conditionValue) ? navigationModel.resultValue : nextPage;
+                  break;
+                default:
+                  nextPage = '';
+              }
+            });
+          }
         }
       }
     });

@@ -95,6 +95,7 @@ describe('HearingStageComponent', () => {
       declarations: [HearingStageComponent, MockHearingPartiesComponent],
       providers: [
         provideMockStore({initialState}),
+        {provide: HearingsService, useValue: hearingsService},
         {
           provide: ActivatedRoute,
           useValue: {

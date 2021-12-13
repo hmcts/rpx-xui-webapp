@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
 import { provideMockStore } from '@ngrx/store/testing';
+import * as _ from 'underscore';
 import { ServiceHearingValuesModel } from '../../../../../api/hearings/models/serviceHearingValues.model';
 import { HearingRequirementsComponent } from './hearing-requirements.component';
 @Component({
@@ -153,9 +154,6 @@ describe('HearingRequirementsComponent', () => {
     fixture = TestBed.createComponent(HearingRequirementsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-
-    spyOn(component, 'convertMapToArray').and.callThrough();
-    spyOn(component, 'assignHearingValue').and.callThrough();
   }));
 
   it('should create', () => {
@@ -170,12 +168,9 @@ describe('HearingRequirementsComponent', () => {
   it('should call convertMapToArray during onint call', () => {
     component.ngOnInit();
     expect(component).toBeDefined();
-    expect(component.convertMapToArray).toHaveBeenCalled();
-  });
-
-  it('should call caseFlags count to be 4', () => {
-    component.ngOnInit();
-    expect(component.assignHearingValue).toHaveBeenCalled();
+    const caseFlags = _.groupBy(component.hearingValueModel.caseFlags.flags, 'partyName');
+    const caseFlagConverted = component.convertMapToArray(caseFlags);
+    expect(caseFlagConverted.length).toBeGreaterThan(0);
   });
 
   it('should assign values to caseFlags once convertMapToArray is called', () => {

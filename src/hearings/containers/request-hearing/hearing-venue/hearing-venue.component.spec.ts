@@ -12,7 +12,7 @@ import {HearingVenueComponent} from './hearing-venue.component';
   selector: 'exui-hearing-venue',
   template: '',
 })
-class MockLocationSearchComponent {
+class MockHearingVenueComponent {
   @Input() public serviceIds: string = '';
   @Input() public locationType: string = '';
   @Input() public disabled: boolean = false;
@@ -42,7 +42,7 @@ describe('HearingVenueComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingVenueComponent, MockLocationSearchComponent],
+      declarations: [HearingVenueComponent, MockHearingVenueComponent],
       providers: [
         provideMockStore({initialState}),
         {provide: HearingsService, useValue: hearingsService},
@@ -107,7 +107,6 @@ describe('HearingVenueComponent', () => {
     } as LocationByEPIMSModel;
 
     component.selectedLocations$ = of([location]);
-
     component.removeSelection(location);
     fixture.detectChanges();
     component.selectedLocations$.subscribe(selectedLocations => {

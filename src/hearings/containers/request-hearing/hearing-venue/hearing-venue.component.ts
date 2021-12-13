@@ -65,9 +65,13 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
   }
 
   public executeAction(action: ACTION): void {
-    this.checkFormData();
-    if (this.isFormValid()) {
-      this.prepareHearingRequestData();
+    if (action === ACTION.CONTINUE) {
+      this.checkFormData();
+      if (this.isFormValid()) {
+        this.prepareHearingRequestData();
+        super.navigateAction(action);
+      }
+    } else if (action === ACTION.BACK) {
       super.navigateAction(action);
     }
   }

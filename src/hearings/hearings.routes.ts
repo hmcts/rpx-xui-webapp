@@ -3,9 +3,9 @@ import {RouterModule, Routes} from '@angular/router';
 import {HealthCheckGuard} from '../app/shared/guards/health-check.guard';
 import {CancelHearingComponent} from './containers/cancel-hearing/cancel-hearing.component';
 import {ChangeHearingComponent} from './containers/change-hearing/change-hearing.component';
-import {HearingCheckAnswersComponent} from './containers/request-hearing/hearing-check-answers/hearing-check-answers.component';
 import {HearingAdditionalInstructionsComponent} from './containers/request-hearing/hearing-additional-instructions/hearing-additional-instructions.component';
 import {HearingAttendanceComponent} from './containers/request-hearing/hearing-attendance/hearing-attendance.component';
+import {HearingCheckAnswersComponent} from './containers/request-hearing/hearing-check-answers/hearing-check-answers.component';
 import {HearingFacilitiesComponent} from './containers/request-hearing/hearing-facilities/hearing-facilities.component';
 import {HearingJudgeComponent} from './containers/request-hearing/hearing-judge/hearing-judge.component';
 import {HearingPanelComponent} from './containers/request-hearing/hearing-panel/hearing-panel.component';
@@ -16,7 +16,7 @@ import {HearingVenueComponent} from './containers/request-hearing/hearing-venue/
 import {HearingWelshComponent} from './containers/request-hearing/hearing-welsh/hearing-welsh.component';
 import {RequestHearingComponent} from './containers/request-hearing/request-hearing.component';
 import {ViewHearingComponent} from './containers/view-hearing/view-hearing.component';
-import {PriorityResolver} from './resolvers/priority/priority.resolve';
+import {RefDataResolver} from './resolvers/ref-data/ref-data-resolver.resolve';
 
 export const ROUTES: Routes = [
   {
@@ -77,6 +77,7 @@ export const ROUTES: Routes = [
       },
       {
         path: 'hearing-stage',
+        resolve: {hearingStages: RefDataResolver},
         component: HearingStageComponent,
         canActivate: [HealthCheckGuard],
         data: {
@@ -125,7 +126,7 @@ export const ROUTES: Routes = [
       },
       {
         path: 'hearing-timing',
-        resolve: {hearingPriorities: PriorityResolver},
+        resolve: {hearingPriorities: RefDataResolver},
         component: HearingTimingComponent,
         canActivate: [HealthCheckGuard],
         data: {

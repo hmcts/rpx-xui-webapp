@@ -1,11 +1,12 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
-import { CaseFlagGroup } from 'api/hearings/models/case-flag-group.model';
 import { ServiceHearingValuesModel } from 'api/hearings/models/serviceHearingValues.model';
 import { Subscription } from 'rxjs';
+import { PartyFlagsModel } from 'src/hearings/models/partyFlags.model';
 import * as _ from 'underscore';
-import { PartyFlagsModel } from '../../../../../api/hearings/models/partyFlags.model';
+
+import { CaseFlagGroup } from '../../../../../api/hearings/models/case-flag-group.model';
 import * as fromHearingStore from '../../../../hearings/store';
 
 @Component({
@@ -14,7 +15,7 @@ import * as fromHearingStore from '../../../../hearings/store';
   styleUrls: ['./hearing-requirements.component.scss']
 })
 export class HearingRequirementsComponent implements OnInit, OnDestroy {
-  public hearingRequirmentForm: FormGroup;
+  public hearingRequirementForm: FormGroup;
   public hearingStoreSub: Subscription;
   public hearingValueModel: ServiceHearingValuesModel;
   public caseFlags: CaseFlagGroup[];

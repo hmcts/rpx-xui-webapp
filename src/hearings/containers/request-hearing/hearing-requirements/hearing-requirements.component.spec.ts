@@ -164,9 +164,8 @@ describe('HearingRequirementsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set option collection', async (done) => {
+  it('should set option collection', () => {
     expect(component).toBeDefined();
-    done();
     expect(component.hearingValueModel).toEqual(hearingValueModel);
   });
 
@@ -176,14 +175,14 @@ describe('HearingRequirementsComponent', () => {
     expect(component.convertMapToArray).toHaveBeenCalled();
   });
 
-  it('should call caseFlags count to be 4', async (done) => {
+  it('should call caseFlags count to be 4', () => {
     component.ngOnInit();
-    done();
     expect(component.assignHearingValue).toHaveBeenCalled();
   });
 
   it('should assign values to caseFlags once convertMapToArray is called', () => {
     component.assignHearingValue(hearingValueModel);
+    expect(component.hearingValueModel).toEqual(hearingValueModel);
     expect(component.caseFlags.length).toEqual(2);
   });
 

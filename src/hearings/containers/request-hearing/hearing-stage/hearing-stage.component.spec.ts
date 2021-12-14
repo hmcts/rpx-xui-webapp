@@ -7,7 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { ACTION } from '../../../models/hearings.enum';
+import { ACTION, HearingStageEnum } from '../../../models/hearings.enum';
 import { RefDataModel } from '../../../models/refData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingStageComponent } from './hearing-stage.component';
@@ -149,6 +149,19 @@ describe('HearingStageComponent', () => {
     for (let index = 0; index < radioLabels.length; index++) {
       expect(radioLabels[index].nativeElement.innerText).toEqual(source[index].value_en);
     }
+  });
+
+  it('should check form data', () => {
+    component.checkFormData();
+    expect(component.hearingStageSelectionError).toBe(null);
+    component.stageForm.controls['stage-option'].setValue('');
+    component.checkFormData();
+    expect(component.hearingStageSelectionError).toBe(HearingStageEnum.SelectHearingStageError);
+  });
+
+  it('should check form valid', () => {
+    component.stageForm.controls['stage-option'].setValue('Final');
+    expect(component.isFormValid()).toBe(true);
   });
 
   afterEach(() => {

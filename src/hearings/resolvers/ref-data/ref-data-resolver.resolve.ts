@@ -5,8 +5,8 @@ import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap, take } from 'rxjs/operators';
 import { HearingCategory } from '../../models/hearings.enum';
 import { RefDataModel } from '../../models/refData.model';
-import * as fromHearingStore from '../../store';
 import { HearingsRefDataService } from '../../services/hearings-ref-data.service';
+import * as fromHearingStore from '../../store';
 
 @Injectable({
   providedIn: 'root'

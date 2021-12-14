@@ -249,13 +249,13 @@ const CASE_HEARING_12: HearingListModel = {
 
 export const EMPTY_HEARINGS_LIST: HearingListMainModel = {
   hmctsServiceID: 'SSCS',
-  caseRef: '1568642646198441',
+  caseRef: '1584618195804035',
   caseHearings: [],
 };
 
 export const HEARINGS_LIST: HearingListMainModel = {
   hmctsServiceID: 'SSCS',
-  caseRef: '1568642646198442',
+  caseRef: '1584618195804035',
   caseHearings: [
     CASE_HEARING_1,
     CASE_HEARING_2,

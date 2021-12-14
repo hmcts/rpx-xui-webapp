@@ -1,12 +1,12 @@
 import {Action} from '@ngrx/store';
 import {ServiceHearingValuesModel} from '../../models/serviceHearingValues.model';
 
-export const HEARING_VALUES_RESET = '[HEARING VALUES] Reset';
+export const RESET_HEARING_VALUES = '[HEARING VALUES] Reset Hearing Values';
 export const LOAD_HEARING_VALUES = '[HEARING VALUES] Load Hearing Values';
 export const LOAD_HEARING_VALUES_SUCCESS = '[HEARING VALUES] Load Hearing Values Success';
 
-export class HearingValuesReset implements Action {
-  public readonly type = HEARING_VALUES_RESET;
+export class ResetHearingValues implements Action {
+  public readonly type = RESET_HEARING_VALUES;
 }
 
 export class LoadHearingValues implements Action {
@@ -23,6 +23,6 @@ export class LoadHearingValuesSuccess implements Action {
 }
 
 export type HearingValuesAction =
-  | HearingValuesReset
+  | ResetHearingValues
   | LoadHearingValues
   | LoadHearingValuesSuccess;

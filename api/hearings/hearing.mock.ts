@@ -13,6 +13,8 @@ export const init = () => {
 
   const postServiceHearingValues = /https:\/\/hearings.aat.service.core-compute-aat.internal\/serviceHearingValues/;
 
+  const submitHearingRequest = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearing/;
+
   mock.onGet(getHearingsUrl).reply(config => {
     const url = config.url;
     const caseIds = url.match(/[0-9]{16}/g);
@@ -41,6 +43,13 @@ export const init = () => {
     return [
       200,
       SERVICE_HEARING_VALUES,
+    ];
+  });
+
+  mock.onPost(submitHearingRequest).reply(() => {
+    return [
+      200,
+      [],
     ];
   });
 };

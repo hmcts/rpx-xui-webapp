@@ -167,13 +167,11 @@ describe('HearingRequirementsComponent', () => {
   });
 
   it('should set option collection', () => {
-    component.ngOnInit();
     expect(component).toBeDefined();
     expect(component.hearingValueModel).toEqual(hearingValueModel);
   });
 
   it('should call convertMapToArray during onint call', () => {
-    component.ngOnInit();
     expect(component).toBeDefined();
     const caseFlags = _.groupBy(component.hearingValueModel.caseFlags.flags, 'partyName');
     const caseFlagConverted = component.convertMapToArray(caseFlags);
@@ -189,7 +187,6 @@ describe('HearingRequirementsComponent', () => {
   });
 
   it('should call unsubscribe', () => {
-    component.ngOnInit();
     spyOn(component.hearingStoreSub, 'unsubscribe');
     fixture.detectChanges();
     component.ngOnDestroy();

@@ -40,6 +40,11 @@ describe('RequestHearingPageFlow', () => {
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.NavigateBackHearingRequest());
   });
 
+  it('should navigate submit', () => {
+    requestHearingPageFlow.navigateAction(ACTION.SUBMIT);
+    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.SubmitHearingRequest(hearingRequestMainModel.hearingRequestMainModel));
+  });
+
   afterEach(() => {
     requestHearingPageFlow = null;
   });

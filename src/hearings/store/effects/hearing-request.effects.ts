@@ -3,7 +3,7 @@ import {Router} from '@angular/router';
 import {Actions, Effect, ofType} from '@ngrx/effects';
 import {Action, select, Store} from '@ngrx/store';
 import {Observable, of} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
+import {catchError, map, switchMap, tap} from 'rxjs/operators';
 import * as fromAppStoreActions from '../../../app/store/actions';
 import {HttpError} from '../../../models/httpError.model';
 import {ScreenNavigationModel} from '../../models/screenNavigation.model';
@@ -52,6 +52,23 @@ export class HearingRequestEffects {
     tap(() => {
       const nextPage = this.pageFlow.getNextPage(this.screenNavigations$);
       return this.router.navigate(['hearings', 'request', nextPage]).then();
+    })
+  );
+
+  @Effect({ dispatch: false })
+  public submitHearingRequest$ = this.actions$.pipe(
+    ofType(hearingRequestActions.SUBMIT_HEARING_REQUEST),
+    map((action: hearingRequestActions.SubmitHearingRequest) => action.payload),
+    switchMap(payload => {
+      return this.hearingsService.submitHearingRequest(payload).pipe(
+        tap(
+          () => {
+            return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']).then();
+          }),
+        catchError(error => {
+          return HearingRequestEffects.handleError(error);
+        })
+      );
     })
   );
 

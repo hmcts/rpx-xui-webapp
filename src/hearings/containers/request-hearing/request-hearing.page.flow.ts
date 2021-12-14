@@ -21,10 +21,18 @@ export abstract class RequestHearingPageFlow {
   }
 
   public navigateAction(action: ACTION): void {
-    if (action === ACTION.CONTINUE) {
-      this.hearingStore.dispatch(new fromHearingStore.UpdateHearingRequest(this.hearingRequestMainModel));
-    } else if (action === ACTION.BACK) {
-      this.hearingStore.dispatch(new fromHearingStore.NavigateBackHearingRequest());
+    switch (action) {
+      case ACTION.BACK:
+        this.hearingStore.dispatch(new fromHearingStore.NavigateBackHearingRequest());
+        break;
+      case ACTION.CONTINUE:
+        this.hearingStore.dispatch(new fromHearingStore.UpdateHearingRequest(this.hearingRequestMainModel));
+        break;
+      case ACTION.SUBMIT:
+        this.hearingStore.dispatch(new fromHearingStore.SubmitHearingRequest(this.hearingRequestMainModel));
+        break;
+      default:
+        throw new Error('Invalid navigate action');
     }
   }
 

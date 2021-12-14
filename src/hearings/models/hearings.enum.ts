@@ -127,6 +127,7 @@ export enum HearingDatePriorityConstEnum {
 export enum ACTION {
   BACK = 'BACK',
   CONTINUE = 'CONTINUE',
+  SUBMIT = 'SUBMIT',
   CANCEL = 'CANCEL',
 }
 

@@ -142,7 +142,7 @@ describe('HearingRequirementsComponent', () => {
     }
   };
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
       declarations: [ HearingRequirementsComponent, MockHearingPartiesComponent ],
@@ -152,12 +152,14 @@ describe('HearingRequirementsComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
     .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HearingRequirementsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    spyOn(component, 'convertMapToArray').and.callThrough();
+    spyOn(component, 'assignHearingValue').and.callThrough();
   });
 
   it('should create', () => {
@@ -165,22 +167,25 @@ describe('HearingRequirementsComponent', () => {
   });
 
   it('should set option collection', () => {
+    component.ngOnInit();
     expect(component).toBeDefined();
     expect(component.hearingValueModel).toEqual(hearingValueModel);
   });
 
-  it('should call convertMapToArray during onint call', async () => {
+  it('should call convertMapToArray during onint call', () => {
     component.ngOnInit();
     expect(component).toBeDefined();
     const caseFlags = _.groupBy(component.hearingValueModel.caseFlags.flags, 'partyName');
     const caseFlagConverted = component.convertMapToArray(caseFlags);
     expect(caseFlagConverted.length).toBeGreaterThan(0);
+    expect(component.assignHearingValue).toHaveBeenCalled();
   });
 
-  it('should assign values to caseFlags once convertMapToArray is called', async () => {
+  it('should assign values to caseFlags once convertMapToArray is called', () => {
     component.assignHearingValue(hearingValueModel);
     expect(component.hearingValueModel).toEqual(hearingValueModel);
     expect(component.caseFlags.length).toEqual(2);
+    expect(component.convertMapToArray).toHaveBeenCalled();
   });
 
   it('should call unsubscribe', () => {

@@ -13,6 +13,10 @@ Feature: Global search
             | value                |
             | BEFTA Master         |
             | Immigration & Asylum |
+
+        When I click search button in global search page
+        Then I see error message "Enter information in at least one field" in global search Page
+
         When I input field "16-digit case reference" with value "1234567890123456" in global search Page
         When I input field "Other reference" with value "some test ref" in global search Page
         When I input field "Full name" with value "Sherlock Holmes" in global search Page

@@ -204,6 +204,11 @@ defineSupportCode(function ({ Given, When, Then }) {
 
     });
 
+    Then('I see error message {string} in global search Page', async function (errormessage) {
+        expect(await globalSearchPage.errorSummaryContainer.isPresent() && await globalSearchPage.errorSummaryContainer.isDisplayed()).to.be.true
+        expect(await globalSearchPage.errorSummaryContainer.getText()).to.includes(errormessage)
+    });
+
     Then('I validate global search results displayed count {int}', async function(count){
         let i = 0;
         await BrowserWaits.retryWithActionCallback(async (i) => {

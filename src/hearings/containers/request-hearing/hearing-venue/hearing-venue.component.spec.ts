@@ -1,15 +1,18 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { AbstractControl, FormBuilder } from '@angular/forms';
-import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
-import { provideMockStore } from '@ngrx/store/testing';
-import { Observable, of } from 'rxjs';
-import { LocationSearchContainerComponent } from './location-search-container.component';
+import {Component, CUSTOM_ELEMENTS_SCHEMA, Input} from '@angular/core';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {AbstractControl, FormBuilder} from '@angular/forms';
+import {LocationByEPIMSModel} from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import {provideMockStore} from '@ngrx/store/testing';
+import {Observable, of} from 'rxjs';
+import {ACTION} from '../../../models/hearings.enum';
+import {HearingsService} from '../../../services/hearings.service';
+import {HearingVenueComponent} from './hearing-venue.component';
+
 @Component({
-  selector: 'exui-search-location',
+  selector: 'exui-hearing-venue',
   template: '',
 })
-class MockLocationSearchContainerComponent {
+class MockHearingVenueComponent {
   @Input() public serviceIds: string = '';
   @Input() public locationType: string = '';
   @Input() public disabled: boolean = false;
@@ -18,16 +21,19 @@ class MockLocationSearchContainerComponent {
   @Input() public control: AbstractControl;
 }
 
-describe('LocationSearchContainerComponent', () => {
-  let component: LocationSearchContainerComponent;
-  let fixture: ComponentFixture<LocationSearchContainerComponent>;
+describe('HearingVenueComponent', () => {
+  let component: HearingVenueComponent;
+  let fixture: ComponentFixture<HearingVenueComponent>;
+  const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
+  const hearingsService = new HearingsService(mockedHttpClient);
+  hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 
   const initialState = {
     hearings: {
       hearingList: {
         caseHearingMainModel: [
           {
-            hmctsServiceID: 'TEST'
+            hmctsServiceID: 'SSCS'
           }
         ]
       },
@@ -36,18 +42,19 @@ describe('LocationSearchContainerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LocationSearchContainerComponent, MockLocationSearchContainerComponent ],
+      declarations: [HearingVenueComponent, MockHearingVenueComponent],
       providers: [
         provideMockStore({initialState}),
+        {provide: HearingsService, useValue: hearingsService},
         FormBuilder
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LocationSearchContainerComponent);
+    fixture = TestBed.createComponent(HearingVenueComponent);
     component = fixture.componentInstance;
 
     fixture.detectChanges();
@@ -82,7 +89,7 @@ describe('LocationSearchContainerComponent', () => {
   });
 
   it('should remove selection in selection list', async () => {
-    const location =  {
+    const location = {
       court_venue_id: '100',
       epims_id: '219164',
       is_hearing_location: 'Y',
@@ -99,10 +106,9 @@ describe('LocationSearchContainerComponent', () => {
       postcode: 'AB11 6LT'
     } as LocationByEPIMSModel;
 
-    component.selectedLocations$ = of([ location ]);
+    component.selectedLocations$ = of([location]);
     component.removeSelection(location);
     fixture.detectChanges();
-    // expect(component.selectedLocations$.subscribe).toHaveBeenCalled();
     component.selectedLocations$.subscribe(selectedLocations => {
       expect(selectedLocations.length).toEqual(0);
     });

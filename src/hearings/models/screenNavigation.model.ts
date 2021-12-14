@@ -1,7 +1,7 @@
 export interface NavigationModel {
   conditionOperator?: string;
   conditionValue?: string;
-  resultValue1: string;
+  resultValue: string;
 }
 
 export interface ScreenNavigationModel {

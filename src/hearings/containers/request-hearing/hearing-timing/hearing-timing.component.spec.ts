@@ -1,19 +1,20 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Component, Input, NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { Store } from '@ngrx/store';
-import { provideMockStore } from '@ngrx/store/testing';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {Component, Input, NO_ERRORS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
+import {Store} from '@ngrx/store';
+import {provideMockStore} from '@ngrx/store/testing';
 import * as moment from 'moment';
-import { ErrorMessage } from '../../../../app/models';
-import { HearingDatePriorityEnum, RadioOptions } from '../../../../hearings/models/hearings.enum';
-import { PartyUnavailabilityRange } from '../../../../hearings/models/partyUnavilabilityRange.model';
-import { RefDataModel } from '../../../../hearings/models/refData.model';
-import { HearingsService } from '../../../../hearings/services/hearings.service';
-import { ValidatorsUtils } from '../../../utils/validators.utils';
-import { DatePriorityHearingComponent } from './date-priority-hearing.component';
+import {of} from 'rxjs';
+import {ErrorMessage} from '../../../../app/models';
+import {ACTION, HearingDatePriorityEnum, RadioOptions} from '../../../models/hearings.enum';
+import {PartyUnavailabilityRange} from '../../../models/partyUnavilabilityRange.model';
+import {RefDataModel} from '../../../models/refData.model';
+import {HearingsService} from '../../../services/hearings.service';
+import {ValidatorsUtils} from '../../../utils/validators.utils';
+import {HearingTimingComponent} from './hearing-timing.component';
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -23,9 +24,13 @@ class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
 }
 
-describe('DatePriorityHearingComponent', () => {
-  let component: DatePriorityHearingComponent;
-  let fixture: ComponentFixture<DatePriorityHearingComponent>;
+describe('HearingTimingComponent', () => {
+  const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
+  const hearingsService = new HearingsService(mockedHttpClient);
+  hearingsService.navigateAction$ = of(ACTION.CONTINUE);
+
+  let component: HearingTimingComponent;
+  let fixture: ComponentFixture<HearingTimingComponent>;
   let router: Router;
   let mockStore: any;
   const priorities: RefDataModel[] = [
@@ -39,14 +44,29 @@ describe('DatePriorityHearingComponent', () => {
       parentKey: null,
     }];
 
+  const initialState = {
+    hearings: {
+      hearingList: {
+        caseHearingMainModel: [
+          {
+            hmctsServiceID: 'SSCS'
+          }
+        ]
+      },
+      hearingValues: null,
+      hearingRequest: null,
+      hearingConditions: null,
+    }
+  };
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule,
         HttpClientTestingModule],
-      declarations: [DatePriorityHearingComponent, MockHearingPartiesComponent],
+      declarations: [HearingTimingComponent, MockHearingPartiesComponent],
       providers: [
-        provideMockStore(),
-        HearingsService,
+        provideMockStore({initialState}),
+        {provide: HearingsService, useValue: hearingsService},
         ValidatorsUtils,
         {
           provide: ActivatedRoute,
@@ -67,7 +87,7 @@ describe('DatePriorityHearingComponent', () => {
   beforeEach(() => {
     mockStore = TestBed.get(Store);
     mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
-    fixture = TestBed.createComponent(DatePriorityHearingComponent);
+    fixture = TestBed.createComponent(HearingTimingComponent);
     component = fixture.componentInstance;
     router = TestBed.get(Router);
     fixture.detectChanges();

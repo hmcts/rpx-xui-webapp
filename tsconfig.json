@@ -3,6 +3,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
+    "sourceMap": true,
     "declaration": false,
     "module": "commonjs",
     "moduleResolution": "node",

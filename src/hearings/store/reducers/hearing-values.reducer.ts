@@ -9,7 +9,7 @@ export const initialHearingValuesState: HearingValuesStateData = {
 export function hearingValuesReducer(currentState = initialHearingValuesState,
                                      action: fromActions.HearingValuesAction): HearingValuesStateData {
   switch (action.type) {
-    case fromActions.HEARING_VALUES_RESET: {
+    case fromActions.RESET_HEARING_VALUES: {
       return {
         ...initialHearingValuesState
       };
@@ -29,4 +29,3 @@ export function hearingValuesReducer(currentState = initialHearingValuesState,
 }
 
 export const hearingValuesModel = (hearingValuesState) => hearingValuesState.serviceHearingValuesModel;
-export const hearingValuesLastError = (hearingValuesState) => hearingValuesState.lastError;

@@ -1,13 +1,22 @@
-import { ModuleWithProviders } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
-import { CancelHearingComponent, ChangeHearingComponent, DatePriorityHearingComponent, HearingStageComponent, RequestHearingComponent, ViewHearingComponent } from './containers';
-import { HearingRequirementsComponent } from './containers/request-hearing/hearing-requirements/hearing-requirements.component';
-import { LocationSearchContainerComponent } from './containers/request-hearing/location-search-container/location-search-container.component';
-import { WelshHearingComponent } from './containers/request-hearing/welsh-hearing/welsh-hearing.component';
-import { HearingCategory } from './models/hearings.enum';
-import { RefDataResolver } from './resolvers/ref-data/ref-data-resolver.resolve';
-
+import {ModuleWithProviders} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {HealthCheckGuard} from '../app/shared/guards/health-check.guard';
+import {CancelHearingComponent} from './containers/cancel-hearing/cancel-hearing.component';
+import {ChangeHearingComponent} from './containers/change-hearing/change-hearing.component';
+import {HearingAdditionalInstructionsComponent} from './containers/request-hearing/hearing-additional-instructions/hearing-additional-instructions.component';
+import {HearingAttendanceComponent} from './containers/request-hearing/hearing-attendance/hearing-attendance.component';
+import {HearingCheckAnswersComponent} from './containers/request-hearing/hearing-check-answers/hearing-check-answers.component';
+import {HearingFacilitiesComponent} from './containers/request-hearing/hearing-facilities/hearing-facilities.component';
+import {HearingJudgeComponent} from './containers/request-hearing/hearing-judge/hearing-judge.component';
+import {HearingPanelComponent} from './containers/request-hearing/hearing-panel/hearing-panel.component';
+import {HearingRequirementsComponent} from './containers/request-hearing/hearing-requirements/hearing-requirements.component';
+import {HearingStageComponent} from './containers/request-hearing/hearing-stage/hearing-stage.component';
+import {HearingTimingComponent} from './containers/request-hearing/hearing-timing/hearing-timing.component';
+import {HearingVenueComponent} from './containers/request-hearing/hearing-venue/hearing-venue.component';
+import {HearingWelshComponent} from './containers/request-hearing/hearing-welsh/hearing-welsh.component';
+import {RequestHearingComponent} from './containers/request-hearing/request-hearing.component';
+import {ViewHearingComponent} from './containers/view-hearing/view-hearing.component';
+import {RefDataResolver} from './resolvers/ref-data/ref-data-resolver.resolve';
 
 export const ROUTES: Routes = [
   {
@@ -44,46 +53,10 @@ export const ROUTES: Routes = [
     children: [
       {
         path: '',
-        component: null,
+        redirectTo: 'hearing-requirements',
         canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Manage cases | Request Hearing'
-        }
-      },
-      {
-        path: 'location-search',
-        component: LocationSearchContainerComponent,
-        canActivate: [HealthCheckGuard],
-        data: {
-          title: 'HMCTS Hearings | Request Hearing Location'
-        }
-      },
-      {
-        path: 'welsh-hearing',
-        component: WelshHearingComponent,
-        canActivate: [HealthCheckGuard],
-        data: {
-          title: 'HMCTS Manage cases | Request Hearing | Welsh Hearing'
-        }
-      },
-      {
-        path: 'date-priority-hearing',
-        resolve: { hearingPriorities: RefDataResolver },
-        component: DatePriorityHearingComponent,
-        canActivate: [HealthCheckGuard],
-        data: {
-          title: 'HMCTS Manage cases | Request Hearing | Date Priority Hearing',
-          category: HearingCategory.Priority
-        }
-      },
-      {
-        path: 'hearing-stage',
-        resolve: { hearingStages: RefDataResolver },
-        component: HearingStageComponent,
-        canActivate: [HealthCheckGuard],
-        data: {
-          title: 'HMCTS Manage cases | Hearing Stage | Date Priority Hearing',
-          category: HearingCategory.HearingType
         }
       },
       {
@@ -91,7 +64,89 @@ export const ROUTES: Routes = [
         component: HearingRequirementsComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Manage cases | Request Hearing | Hearing Requirements'
+          title: 'HMCTS Hearings | Request Hearing | Hearing Requirement'
+        }
+      },
+      {
+        path: 'hearing-facilities',
+        component: HearingFacilitiesComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Hearings | Request Hearing | Additional Facilities'
+        }
+      },
+      {
+        path: 'hearing-stage',
+        resolve: {hearingStages: RefDataResolver},
+        component: HearingStageComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Hearings | Request Hearing | Hearing Stage'
+        }
+      },
+      {
+        path: 'hearing-attendance',
+        component: HearingAttendanceComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Hearings | Request Hearing | How Party Attend'
+        }
+      },
+      {
+        path: 'hearing-venue',
+        component: HearingVenueComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Hearings | Request Hearing | Location Search'
+        }
+      },
+      {
+        path: 'hearing-welsh',
+        component: HearingWelshComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Manage cases | Request Hearing | Welsh Hearing'
+        }
+      },
+      {
+        path: 'hearing-judge',
+        component: HearingJudgeComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Manage cases | Request Hearing | Specify Judge'
+        }
+      },
+      {
+        path: 'hearing-panel',
+        component: HearingPanelComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Manage cases | Request Hearing | Require Panel Or Not'
+        }
+      },
+      {
+        path: 'hearing-timing',
+        resolve: {hearingPriorities: RefDataResolver},
+        component: HearingTimingComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Manage cases | Request Hearing | Hearing Timing'
+        }
+      },
+      {
+        path: 'hearing-additional-instructions',
+        component: HearingAdditionalInstructionsComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Manage cases | Request Hearing | Additional Instruction'
+        }
+      },
+      {
+        path: 'hearing-check-answers',
+        component: HearingCheckAnswersComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Manage cases | Request Hearing | Check Answers'
         }
       },
     ]

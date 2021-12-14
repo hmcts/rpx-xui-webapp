@@ -1,10 +1,14 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
-import { provideMockStore } from '@ngrx/store/testing';
+import {Component, CUSTOM_ELEMENTS_SCHEMA, Input} from '@angular/core';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
+import {provideMockStore} from '@ngrx/store/testing';
+import {of} from 'rxjs';
 import * as _ from 'underscore';
-import { ServiceHearingValuesModel } from '../../../../../api/hearings/models/serviceHearingValues.model';
-import { HearingRequirementsComponent } from './hearing-requirements.component';
+import {ACTION} from '../../../models/hearings.enum';
+import {ServiceHearingValuesModel} from '../../../models/serviceHearingValues.model';
+import {HearingsService} from '../../../services/hearings.service';
+import {HearingRequirementsComponent} from './hearing-requirements.component';
+
 @Component({
   selector: 'exui-hearing-parties-title',
   template: '',
@@ -16,6 +20,9 @@ class MockHearingPartiesComponent {
 describe('HearingRequirementsComponent', () => {
   let component: HearingRequirementsComponent;
   let fixture: ComponentFixture<HearingRequirementsComponent>;
+  const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
+  const hearingsService = new HearingsService(mockedHttpClient);
+  hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 
   const hearingValueModel: ServiceHearingValuesModel = {
     autoListFlag: false,
@@ -131,35 +138,32 @@ describe('HearingRequirementsComponent', () => {
       hearingList: {
         caseHearingMainModel: [
           {
-            hmctsServiceID: 'TEST'
+            hmctsServiceID: 'SSCS'
           }
         ]
       },
-        hearingValues:  {
-          serviceHearingValuesModel: hearingValueModel,
-          lastError: null,
+      hearingValues: {
+        serviceHearingValuesModel: hearingValueModel,
+        lastError: null,
       },
+      hearingRequest: null,
+      hearingConditions: null,
     }
   };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [],
-      declarations: [ HearingRequirementsComponent, MockHearingPartiesComponent ],
+      declarations: [HearingRequirementsComponent, MockHearingPartiesComponent],
       providers: [
         provideMockStore({initialState}),
+        {provide: HearingsService, useValue: hearingsService},
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
-    .compileComponents();
-  });
-
-  beforeEach(() => {
+      .compileComponents();
     fixture = TestBed.createComponent(HearingRequirementsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    spyOn(component, 'convertMapToArray').and.callThrough();
-    spyOn(component, 'assignHearingValue').and.callThrough();
   });
 
   it('should create', () => {
@@ -176,14 +180,12 @@ describe('HearingRequirementsComponent', () => {
     const caseFlags = _.groupBy(component.hearingValueModel.caseFlags.flags, 'partyName');
     const caseFlagConverted = component.convertMapToArray(caseFlags);
     expect(caseFlagConverted.length).toBeGreaterThan(0);
-    expect(component.assignHearingValue).toHaveBeenCalled();
   });
 
   it('should assign values to caseFlags once convertMapToArray is called', () => {
     component.assignHearingValue(hearingValueModel);
     expect(component.hearingValueModel).toEqual(hearingValueModel);
     expect(component.caseFlags.length).toEqual(2);
-    expect(component.convertMapToArray).toHaveBeenCalled();
   });
 
   it('should call unsubscribe', () => {

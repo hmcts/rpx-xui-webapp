@@ -1,4 +1,4 @@
-import { PartyFlagsModel } from "./partyFlags.model";
+import { PartyFlagsModel } from './partyFlags.model';
 
 export interface CaseFlagGroup {
     name: string;

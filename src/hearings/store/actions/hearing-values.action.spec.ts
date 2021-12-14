@@ -4,8 +4,8 @@ describe('Hearing Values Actions', () => {
 
   describe('Reset', () => {
     it('should create an action', () => {
-      const action = new fromHearingValuesAction.HearingValuesReset();
-      expect(action.type).toBe(fromHearingValuesAction.HEARING_VALUES_RESET);
+      const action = new fromHearingValuesAction.ResetHearingValues();
+      expect(action.type).toBe(fromHearingValuesAction.RESET_HEARING_VALUES);
     });
   });
 

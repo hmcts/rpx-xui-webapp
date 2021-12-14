@@ -8,7 +8,7 @@ describe('Hearing Request Reducer', () => {
     describe('Reset action', () => {
       it('should set correct object', () => {
         const initialState = fromHearingRequestReducer.initialHearingRequestState;
-        const action = new fromHearingRequestActions.HearingRequestReset();
+        const action = new fromHearingRequestActions.ResetHearingRequest();
         const hearingsState = fromHearingRequestReducer.hearingRequestReducer(initialState, action);
         expect(hearingsState).toEqual(initialState);
       });

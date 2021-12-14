@@ -123,3 +123,15 @@ export enum HearingDatePriorityConstEnum {
   TotalMaxMinutes = 360,
   MinutesMuliplier = 5,
 }
+
+export enum ACTION {
+  BACK = 'BACK',
+  CONTINUE = 'CONTINUE',
+  SUBMIT = 'SUBMIT',
+  CANCEL = 'CANCEL',
+}
+
+export enum CONDITION_OPERATOR {
+  INCLUDE = 'INCLUDE',
+  NOT_INCLUDE = 'NOT INCLUDE',
+}

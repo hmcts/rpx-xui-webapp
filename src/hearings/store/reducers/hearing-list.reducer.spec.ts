@@ -12,7 +12,7 @@ describe('Hearing List Reducer', () => {
     describe('Reset action', () => {
       it('should set correct object', () => {
         const initialState = fromHearingListReducer.initialHearingListState;
-        const action = new fromHearingListActions.HearingListReset();
+        const action = new fromHearingListActions.ResetHearingList();
         const hearingsState = fromHearingListReducer.hearingListReducer(initialState, action);
         expect(hearingsState).toEqual(initialState);
       });

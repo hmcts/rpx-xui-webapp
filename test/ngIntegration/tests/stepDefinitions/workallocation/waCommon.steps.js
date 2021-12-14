@@ -12,6 +12,9 @@ const TaskListTable = require('../../../../e2e/features/pageObjects/workAllocati
 const BrowserUtil = require('../../../util/browserUtil');
 const BrowserWaits = require('../../../../e2e/support/customWaits');
 
+
+const userRolesConfig = require('../../../../e2e/config/userRolesConfig');
+
 defineSupportCode(function ({ And, But, Given, Then, When }) {
     const taskListTable = new TaskListTable();
 
@@ -129,6 +132,39 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         userDetails.roleAssignmentInfo = locationInfos;
     });
 
+
+    Given('I set MOCK with user identifer {string} role type {string} and role identifiers {string}', async function (useridentifier,roleType ,roleIdentifiers) {
+        const roles = [];
+        const testUserIdamId = testData.users.filter(testUser => testUser.userIdentifier === useridentifier)[0];
+        if (!testUserIdamId) {
+            throw new Error("Provided user identifer is not configured in test data. " + useridentifier);
+        }
+
+        const userIdamID = testUserIdamId.idamId;
+        await CucumberReporter.AddMessage(`${useridentifier} id ${testUserIdamId.idamId}`);
+        
+        const rolesIdentifiersArr = roleIdentifiers.split(",");
+        const roleidentifersForRoleType = userRolesConfig[roleType.toLowerCase()];
+        if (!roleidentifersForRoleType){
+            throw new Error(`Role type not recognized ${roleType}`);
+        }
+
+        for (const roleIdentifier of rolesIdentifiersArr){
+            const rolesForIdentifier = roleidentifersForRoleType[roleIdentifier];
+            if (!rolesForIdentifier) {
+                throw new Error(`Role identifer not recognized ${roleType} ${roleIdentifier}`);
+            }
+            roles.push(...rolesForIdentifier);
+        }
+
+        
+        MockApp.onGet("/api/user/details", (req, res) => {
+            const userDetails = nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, userIdamID);
+            CucumberReporter.AddJson(userDetails);
+            res.send(userDetails);
+        });
+
+    });
 
     Then('I validate primary navigation tabs for user {string} in release {string}', async function(userType, release){
         await BrowserUtil.stepWithRetry(async () => {

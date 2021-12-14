@@ -1,54 +1,55 @@
 <div class="hmcts-header transparent-background">
   <a [routerLink]="'.'" fragment="content" class="govuk-skip-link">Skip to main content</a>
-    <div class="hmcts-header__container">
+  <div class="hmcts-header__container">
 
-        <ng-container [ngSwitch]="logoType">
+    <ng-container [ngSwitch]="logo">
 
-          <!-- Logo for Judicial Users -->
-          <ng-container *ngSwitchCase="'judicial'">
-              <div style="position: absolute;" *ngIf="showItems">
-                <a href="#">
-                  <img class="img-responsive" alt="Gov UK Logo" src="/assets/images/govuk-crest-jcm.png" width="83px">
-                </a>
-              </div>
-              <div class="govuk-header__logo">
-              </div>
-              <a class="hmcts-header__link" [routerLink]="headerTitle?.url" [attr.aria-label]="headerTitle?.name" >{{headerTitle?.name}}</a>
-          </ng-container>
+      <!-- Logo for Judicial Users -->
+      <ng-container *ngSwitchCase="'judicial'">
+        <div class="judicial-header__logo" *ngIf="showItems">
+          <a href="#">
+            <img class="img-responsive" alt="GOV.UK logo" src="/assets/images/govuk-crest-jcm.png" width="83px">
+          </a>
+        </div>
+        <div class="govuk-header__logo">
+        </div>
+        <a class="hmcts-header__link" [routerLink]="headerTitle?.url" [attr.aria-label]="headerTitle?.name">{{headerTitle?.name}}</a>
+      </ng-container>
 
-          <!-- Logo for Case Manager Users -->
-          <ng-container *ngSwitchCase="'myhmcts'">
-            <div class="govuk-header__logo">
-              <a href="#" class="govuk-header__link govuk-header__link--homepage">
-              <span class="govuk-header__logotype">
-                <span class="govuk-header__logotype-text">
-                  MyHMCTS
-                </span>
+      <!-- Logo for Case Manager Users -->
+      <ng-container *ngSwitchCase="'myhmcts'">
+        <div class="govuk-header__logo">
+          <a href="#" class="govuk-header__link govuk-header__link--homepage">
+            <span class="govuk-header__logotype">
+              <span class="govuk-header__logotype-text">
+                MyHMCTS
               </span>
-              </a>
-            </div>
-            <a class="hmcts-header__link" [routerLink]="headerTitle?.url" [attr.aria-label]="headerTitle?.name" >{{headerTitle?.name}}</a>
-          </ng-container>
+            </span>
+          </a>
+        </div>
+        <a class="hmcts-header__link" [routerLink]="headerTitle?.url" [attr.aria-label]="headerTitle?.name">{{headerTitle?.name}}</a>
+      </ng-container>
 
-          <!-- Logo for Users (Default) -->
-          <ng-container *ngSwitchDefault>
-            <div class="hmcts-header__logo">
-              <a class="hmcts-header__link" [routerLink]="'/'" [attr.aria-label]="headerTitle?.name" >{{headerTitle?.name}}</a>
-            </div>
-          </ng-container>
+      <!-- Logo for Users (Default) -->
+      <ng-container *ngSwitchDefault>
+        <div class="hmcts-header__logo">
+          <a class="hmcts-header__link" [routerLink]="'/'" [attr.aria-label]="headerTitle?.name">{{headerTitle?.name}}</a>
+        </div>
+      </ng-container>
 
-        </ng-container>
+    </ng-container>
 
-      <div class="hmcts-header__content">
-          <nav class="hmcts-header__navigation" attr.aria-label="{{navigation.label}}">
-              <ul class="hmcts-header__navigation-list" >
-                  <li *ngFor="let item of navigation.items; let i = index" class="hmcts-header__navigation-item">
-                      <a class="hmcts-header__navigation-link" (click)="onEmitEvent(i)" *ngIf="userValue" [routerLink]="">{{item.text}}</a>
-                  </li>
-              </ul>
-          </nav>
-      </div>
+    <!-- HMCTS header navigation items displayed in top right-hand corner (currently, just one: "Sign out") -->
+    <div class="hmcts-header__content">
+      <nav class="hmcts-header__navigation" attr.aria-label="{{navigation.label}}">
+        <ul class="hmcts-header__navigation-list">
+          <li *ngFor="let item of navigation.items; let i = index" class="hmcts-header__navigation-item">
+            <a class="hmcts-header__navigation-link" (click)="onEmitEvent(i)" *ngIf="userValue" [routerLink]="">{{item.text}}</a>
+          </li>
+        </ul>
+      </nav>
     </div>
+  </div>
 </div>
 
 <nav *ngIf="showItems" class="hmcts-primary-navigation transparent-background">
@@ -57,18 +58,22 @@
     <div class="hmcts-primary-navigation__nav">
       <nav class="hmcts-primary-navigation transparent-background" aria-label="Primary navigation">
         <ul class="hmcts-primary-navigation__list">
-          <li class="hmcts-primary-navigation__item" *ngFor="let item of (leftItems | async)" >
-            <a class="hmcts-primary-navigation__link" (click)="onEmitSubMenu(item)" [attr.aria-current]="item.active ? true: null" [routerLink]="item.href">{{item.text}}</a>
+          <li class="hmcts-primary-navigation__item" *ngFor="let item of (leftItems | async)">
+            <a class="hmcts-primary-navigation__link" (click)="onEmitSubMenu(item)" [attr.aria-current]="item.active ? true : null" [routerLink]="item.href">{{item.text}}</a>
           </li>
         </ul>
       </nav>
     </div>
     <div class="hmcts-primary-navigation__search">
-      <!-- TODO: Should turn on and off -->
       <div class="hmcts-primary-navigation__item">
         <ul class="hmcts-primary-navigation__list">
           <li class="hmcts-primary-navigation__item" *ngFor="let item of (rightItems | async)">
-            <a class="hmcts-primary-navigation__link transparent-background" [ngClass]="item.ngClass" (click)="onEmitSubMenu(item)" [attr.aria-current]="item.active ? true: null" [routerLink]="item.href">{{item.text}}</a>
+            <a class="hmcts-primary-navigation__link transparent-background"
+              [ngClass]="item.ngClass"
+              (click)="onEmitSubMenu(item)"
+              [attr.aria-current]="item.active ? true : null"
+              [routerLink]="item.href">{{item.text}}
+            </a>
           </li>
         </ul>
       </div>

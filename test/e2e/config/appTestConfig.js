@@ -3,6 +3,11 @@ const data = {
         {
             idamId: "12b6a360-7f19-4985-b065-94320a891eaa",
             email: "lukesuperuserxui@mailnesia.com",
+            release: "general", userIdentifier: "PROD_LIKE"
+        },
+        {
+            idamId: "12b6a360-7f19-4985-b065-94320a891eaa",
+            email: "lukesuperuserxui@mailnesia.com",
             release: "general", userIdentifier: "SOLICITOR"
         },
         { 
@@ -52,7 +57,27 @@ const data = {
              idamId: "16ce0689-bea9-4bd8-add0-722291656529",
             email: "xui_auto_co_r1_withoutPagination@justice.gov.uk",
              release: "wa_release_1", userIdentifier: "IAC_CaseOfficer_R1_withoutPagination"
-        }
+        },
+        {
+            idamId: "ba02568f-6a46-478d-9f1a-1ce4dea496aa",
+            email: "test@mailnesia.com",
+            release: "general", userIdentifier: "CASEWORKER_GLOBALSEARCH"
+        },
+
+        {
+            idamId: "4beb7bbe-5cc9-4f92-9c4d-620bd705dc8a",
+            email: "test@mailnesia.com",
+            release: "general", userIdentifier: "WA2"
+        },
+
+        {
+            idamId: "810b5601-4a8a-4c82-9294-34f087f2e67f",
+            email: "test@mailnesia.com",
+            release: "general", userIdentifier: "WA2_GLOBAL-SEARCH"
+        },
+
+
+
     ],
     appFeatures: {
         primaryTabs: {

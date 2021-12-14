@@ -1,13 +1,16 @@
-import { Component, Input } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { By } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
-import { provideMockStore } from '@ngrx/store/testing';
-import { RefDataModel } from '../../../models/refData.model';
-import { HearingStageComponent } from './hearing-stage.component';
+import {Component, Input} from '@angular/core';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {FormBuilder, ReactiveFormsModule} from '@angular/forms';
+import {By} from '@angular/platform-browser';
+import {ActivatedRoute} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
+import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
+import {provideMockStore} from '@ngrx/store/testing';
+import {of} from 'rxjs';
+import {ACTION} from '../../../models/hearings.enum';
+import {RefDataModel} from '../../../models/refData.model';
+import {HearingsService} from '../../../services/hearings.service';
+import {HearingStageComponent} from './hearing-stage.component';
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -17,9 +20,13 @@ class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
 }
 
-fdescribe('HearingStageComponent', () => {
+describe('HearingStageComponent', () => {
   let component: HearingStageComponent;
   let fixture: ComponentFixture<HearingStageComponent>;
+
+  const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
+  const hearingsService = new HearingsService(mockedHttpClient);
+  hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 
   const source: RefDataModel[] = [
     {
@@ -65,27 +72,30 @@ fdescribe('HearingStageComponent', () => {
       hearingList: {
         caseHearingMainModel: [
           {
-            hmctsServiceID: 'TEST'
+            hmctsServiceID: 'SSCS'
           }
         ]
       },
-        hearingValues:  {
-          serviceHearingValuesModel: {
-            autoListFlag: false,
-            hearingType: 'Final',
-            lastError: null,
-          },
+      hearingValues: {
+        serviceHearingValuesModel: {
+          autoListFlag: false,
+          hearingType: 'Final',
           lastError: null,
+        },
+        lastError: null,
       },
+      hearingRequest: null,
+      hearingConditions: null,
     }
   };
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule],
-      declarations: [ HearingStageComponent, MockHearingPartiesComponent ],
+      declarations: [HearingStageComponent, MockHearingPartiesComponent],
       providers: [
         provideMockStore({initialState}),
+        {provide: HearingsService, useValue: hearingsService},
         {
           provide: ActivatedRoute,
           useValue: {
@@ -99,10 +109,8 @@ fdescribe('HearingStageComponent', () => {
         FormBuilder
       ],
     })
-    .compileComponents();
-  }));
+      .compileComponents();
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(HearingStageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -120,9 +128,9 @@ fdescribe('HearingStageComponent', () => {
   });
 
   it('should initialise control value to hearing type from store', () => {
-      fixture.detectChanges();
-      component.ngAfterViewInit();
-      expect(component.stageForm.controls['stage-option'].value).toEqual(initialState.hearings.hearingValues.serviceHearingValuesModel.hearingType);
+    fixture.detectChanges();
+    component.ngAfterViewInit();
+    expect(component.stageForm.controls['stage-option'].value).toEqual(initialState.hearings.hearingValues.serviceHearingValuesModel.hearingType);
   });
 
   it('should call unsubscribe', () => {

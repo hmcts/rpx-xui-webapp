@@ -1,9 +1,10 @@
-import { TestBed, async, ComponentFixture } from '@angular/core/testing';
-import { AppHeaderSignedOutComponent } from './app-header-signed-out.component';
-import { Store, StoreModule } from '@ngrx/store';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Store, StoreModule } from '@ngrx/store';
 import { AppConstants } from '../../../app/app.constants';
+import { ApplicationThemeLogo } from '../../enums';
 import * as fromActions from '../../store';
+import { AppHeaderSignedOutComponent } from './app-header-signed-out.component';
 
 const cookieService = {
   get: key => {
@@ -53,11 +54,11 @@ describe('AppHeaderSignedOutComponent', () => {
       component.setAppHeaderProperties(defaultTheme);
 
       expect(component.appHeaderTitle).toBe(AppConstants.DEFAULT_USER_THEME.appTitle);
-      expect(component.navItems).toBe(AppConstants.DEFAULT_USER_THEME.navigationItems);
-      expect(component.userNav).toBe(AppConstants.DEFAULT_USER_THEME.accountNavigationItems);
+      expect(component.navItems.length).toBe(0);
+      expect(component.userNav).toEqual({ label: '', items: [] });
       expect(component.backgroundColor).toBe(AppConstants.DEFAULT_USER_THEME.backgroundColor);
-      expect(component.logoType).toBe(AppConstants.DEFAULT_USER_THEME.logoType);
-      expect(component.logoIsUsed).toBe(AppConstants.DEFAULT_USER_THEME.logoIsUsed);
+      expect(component.logo).toBe(AppConstants.DEFAULT_USER_THEME.logo);
+      expect(component.logoIsUsed).toBe(AppConstants.DEFAULT_USER_THEME.logo !== ApplicationThemeLogo.NONE);
     });
   });
 });

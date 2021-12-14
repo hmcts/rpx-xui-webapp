@@ -1,16 +1,16 @@
-import {Component, Input} from '@angular/core';
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {FormBuilder, ReactiveFormsModule} from '@angular/forms';
-import {By} from '@angular/platform-browser';
-import {ActivatedRoute} from '@angular/router';
-import {RouterTestingModule} from '@angular/router/testing';
-import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
-import {provideMockStore} from '@ngrx/store/testing';
-import {of} from 'rxjs';
-import {ACTION} from '../../../models/hearings.enum';
-import {RefDataModel} from '../../../models/refData.model';
-import {HearingsService} from '../../../services/hearings.service';
-import {HearingStageComponent} from './hearing-stage.component';
+import { Component, Input, NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
+import { provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs';
+import { ACTION } from '../../../models/hearings.enum';
+import { RefDataModel } from '../../../models/refData.model';
+import { HearingsService } from '../../../services/hearings.service';
+import { HearingStageComponent } from './hearing-stage.component';
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -94,8 +94,8 @@ describe('HearingStageComponent', () => {
       imports: [ReactiveFormsModule, RouterTestingModule],
       declarations: [HearingStageComponent, MockHearingPartiesComponent],
       providers: [
-        provideMockStore({initialState}),
-        {provide: HearingsService, useValue: hearingsService},
+        provideMockStore({ initialState }),
+        { provide: HearingsService, useValue: hearingsService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -108,6 +108,7 @@ describe('HearingStageComponent', () => {
         },
         FormBuilder
       ],
+      schemas: [NO_ERRORS_SCHEMA],
     })
       .compileComponents();
 
@@ -129,7 +130,7 @@ describe('HearingStageComponent', () => {
 
   it('should initialise control value to hearing type from store', () => {
     fixture.detectChanges();
-    component.ngAfterViewInit();
+    component.ngAfterContentInit();
     expect(component.stageForm.controls['stage-option'].value).toEqual(initialState.hearings.hearingValues.serviceHearingValuesModel.hearingType);
   });
 

@@ -3,7 +3,8 @@ import { NavigationEnd, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, Observable, of, Subscription } from 'rxjs';
-import { UserDetails } from 'src/app/models/user-details.model';
+import { Theme, UserTypeRole } from '../../../app/models/theme.model';
+import { UserDetails } from '../../../app/models/user-details.model';
 
 import { AppUtils } from '../../app-utils';
 import { AppConstants, LD_FLAG_MC_APPLICATION_THEMES } from '../../app.constants';
@@ -12,17 +13,6 @@ import { NavItemsModel } from '../../models/nav-item.model';
 import { UserNavModel } from '../../models/user-nav.model';
 import { LoggerService } from '../../services/logger/logger.service';
 import * as fromActions from '../../store';
-
-export interface Theme {
-  roles: string[];
-  appTitle: AppTitleModel;
-  navigationItems: NavItemsModel[];
-  accountNavigationItems: UserNavModel;
-  showFindCase: boolean;
-  backgroundColor: string;
-  logoIsUsed: boolean;
-  logoType: string;
-}
 
 @Component({
   selector: 'exui-app-header',
@@ -41,7 +31,11 @@ export interface Theme {
  * @see app.constants.ts for application themes and defaults.
  */
 export class AppHeaderComponent implements OnInit, OnDestroy {
-
+  public static defaultUserTypeRoles = {
+    solicitor: ['pui-case-manager'],
+    judicial: ['caseworker-ia-iacjudge'],
+    legalOps: [],
+  };
   public navItems: NavItemsModel[];
   public appHeaderTitle: AppTitleModel;
   public userNav: UserNavModel;
@@ -114,18 +108,18 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    * @param defaultTheme - The default theme to be applied if we cannot find a matching Theme
    * for the User's Roles.
    */
-  public getUsersTheme(userRoles, themes, defaultTheme): Theme {
+  public getUsersTheme(userRoles: string[], themes: Theme[], defaultTheme, userTypeRoles: UserTypeRole): Theme {
 
     const themeToApply = defaultTheme;
-
+    const userType = AppUtils.getUserType(userRoles, userTypeRoles);
     for (const theme of themes) {
       for (const role of theme.roles) {
         if (userRoles.indexOf(role) > -1) {
+          AppUtils.setThemeBasedOnUserType(userType, theme);
           return theme;
         }
       }
     }
-
     return themeToApply;
   }
 
@@ -144,10 +138,11 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     this.serviceMessageCookie = AppConstants.SERVICE_MESSAGE_COOKIE;
     this.userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
     this.setAppHeaderProperties(this.defaultTheme);
+    const userTypeRoles$ = this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.userTypeRoles, AppHeaderComponent.defaultUserTypeRoles);
 
     const applicationThemes$ = this.featureToggleService.getValue<Theme[]>(LD_FLAG_MC_APPLICATION_THEMES, this.getDefaultApplicationThemes());
-    combineLatest([this.userDetails$, applicationThemes$]).subscribe(([userDetails, applicationThemes]) => {
-        this.setHeaderContent(userDetails, applicationThemes);
+    combineLatest([this.userDetails$, applicationThemes$, userTypeRoles$]).subscribe(([userDetails, applicationThemes, userTypeRoles]) => {
+        this.setHeaderContent(userDetails, applicationThemes, userTypeRoles);
       });
 
     // Set up the active link whenever we detect that navigation has completed.
@@ -156,10 +151,10 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     });
   }
 
-  public setHeaderContent(userDetails, applicationThemes) {
+  public setHeaderContent(userDetails, applicationThemes, userTypeRoles: UserTypeRole) {
     if (userDetails.userInfo) {
       this.userRoles = userDetails.userInfo.roles;
-      const applicationTheme: Theme = this.getApplicationThemeForUser(applicationThemes, userDetails.userInfo.roles);
+      const applicationTheme: Theme = this.getApplicationThemeForUser(applicationThemes, userDetails.userInfo.roles, userTypeRoles);
       this.hideNavigationListener(this.store);
       this.setAppHeaderProperties(applicationTheme);
     }
@@ -171,9 +166,9 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     }
   }
 
-  public getApplicationThemeForUser(applicationThemes: Theme[], userRoles: string[]): Theme {
+  public getApplicationThemeForUser(applicationThemes: Theme[], userRoles: string[], userTypeRoles: UserTypeRole): Theme {
     try {
-        return this.getUsersTheme(userRoles, applicationThemes, this.defaultTheme);
+        return this.getUsersTheme(userRoles, applicationThemes, this.defaultTheme, userTypeRoles);
     } catch (error) {
       return this.logErrorAndReturnDefaultTheme(error);
     }

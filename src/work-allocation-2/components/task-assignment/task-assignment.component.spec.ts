@@ -8,6 +8,7 @@ import { Caseworker, Location } from '../../models/dtos';
 import { CaseworkerDataService, LocationDataService } from '../../services';
 import { SessionStorageService } from '../../../app/services';
 import { TaskAssignmentComponent } from './task-assignment.component';
+import { RoleCategory } from '../../../role-access/models/allocate-role.enum';
 
 // Locations.
 const LOCATION_A: Location = { id: 'a', locationName: 'Location A', services: ['a'] };
@@ -15,10 +16,10 @@ const LOCATION_B: Location = { id: 'b', locationName: 'Location B', services: ['
 const LOCATION_C: Location = { id: 'c', locationName: 'Location C', services: ['c'] };
 
 // Caseworkers.
-const JS = { firstName: 'John',   lastName: 'Smith',  idamId: '1', email: 'j.s@cw.gov.uk', location: LOCATION_A };
-const JD = { firstName: 'Jane',   lastName: 'Doe',    idamId: '2', email: 'j.d@cw.gov.uk', location: LOCATION_A };
-const JB = { firstName: 'Joseph', lastName: 'Bloggs', idamId: '3', email: 'j.b@cw.gov.uk', location: LOCATION_B };
-const NB = { firstName: 'Noah',   lastName: 'Body',   idamId: '4', email: 'n.b@cw.gov.uk', location: LOCATION_B };
+const JS = { firstName: 'John',   lastName: 'Smith',  idamId: '1', email: 'j.s@cw.gov.uk', location: LOCATION_A, roleCategory: RoleCategory.LEGAL_OPERATIONS };
+const JD = { firstName: 'Jane',   lastName: 'Doe',    idamId: '2', email: 'j.d@cw.gov.uk', location: LOCATION_A, roleCategory: RoleCategory.LEGAL_OPERATIONS };
+const JB = { firstName: 'Joseph', lastName: 'Bloggs', idamId: '3', email: 'j.b@cw.gov.uk', location: LOCATION_B, roleCategory: RoleCategory.LEGAL_OPERATIONS };
+const NB = { firstName: 'Noah',   lastName: 'Body',   idamId: '4', email: 'n.b@cw.gov.uk', location: LOCATION_B, roleCategory: RoleCategory.LEGAL_OPERATIONS };
 
 class MockLocationDataService {
   public getLocation(locationId: string): Observable<Location> {

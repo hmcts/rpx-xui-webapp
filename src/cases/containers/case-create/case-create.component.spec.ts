@@ -23,7 +23,7 @@ import {
 import { EffectsModule } from '@ngrx/effects';
 import {combineReducers, StoreModule} from '@ngrx/store';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import { reducers } from 'src/app/store';
+import { reducers } from '../../../app/store';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { AppConfigService } from '../../../app/services/config/configuration.services';
 import { SharedModule } from '../../../app/shared/shared.module';
@@ -38,6 +38,10 @@ class MockSortService {
 describe('CaseCreateComponent', () => {
   let component: CasesCreateComponent;
   let fixture: ComponentFixture<CasesCreateComponent>;
+
+  beforeAll(() => {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+  });
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

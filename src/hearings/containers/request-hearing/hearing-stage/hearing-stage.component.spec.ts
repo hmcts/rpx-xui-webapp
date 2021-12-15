@@ -7,6 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
+import { HearingRequestMainModel } from 'src/hearings/models/hearingRequestMain.model';
 import { ACTION, HearingStageEnum } from '../../../models/hearings.enum';
 import { RefDataModel } from '../../../models/refData.model';
 import { HearingsService } from '../../../services/hearings.service';
@@ -162,6 +163,18 @@ describe('HearingStageComponent', () => {
   it('should check form valid', () => {
     component.stageForm.controls['stage-option'].setValue('Final');
     expect(component.isFormValid()).toBe(true);
+  });
+
+  it('should execute Action', () => {
+    (component as any).hearingRequestMainModel = {} as HearingRequestMainModel;
+    component.stageForm.controls['stage-option'].setValue('');
+    component.executeAction(ACTION.CONTINUE);
+    expect(component.hearingStageSelectionError).toBe(HearingStageEnum.SelectHearingStageError);
+    component.stageForm.controls['stage-option'].setValue('Final');
+    component.executeAction(ACTION.CONTINUE);
+    expect(component.hearingStageSelectionError).toBe(null);
+    component.executeAction(ACTION.BACK);
+    expect(component.hearingStageSelectionError).toBe(null);
   });
 
   afterEach(() => {

@@ -15,6 +15,10 @@ module.exports = {
         '/workallocation/task/:taskId': (req, res) => {
             res.status(200).send(workAllocationMockData.getTaskDetails());
         },
+        '/workallocation2/task/:taskId': (req, res) => {
+            const body = { data: workAllocationMockData.getRelease2TaskDetails() }
+            res.status(200).send(body);
+        },
         '/workallocation/caseworker': (req, res) => {
             res.send(workAllocationMockData.getCaseworkersList(20));
         },
@@ -23,9 +27,113 @@ module.exports = {
         },
         '/workallocation/caseworker/location/:locId': (req, res) => {
             res.send(workAllocationMockData.getCaseworkersList(10));
+        },
+        '/workallocation2/exclusion/rolesCategory': (req, res)=>{
+            res.send(workAllocationMockData.getExclusionRoleCategories());
+        },
+        '/api/role-access/allocate-role/valid-roles' : (req,res) => {
+            res.send(workAllocationMockData.getRoles());
+        },
+        '/workallocation2/roles/:caseId' : (req,res) => {
+            const actions = [{ id: "reallocate", title: "Reallocate" }, { id: "remove", title: "Remove Allocation" }]
+            const mockRoles = [
+                { email: 'j1@test.com', name: 'judeg a', roleCategory: 'JUDICIAL', roleName: 'judge', actions: actions},
+                { email: 'j2@test.com', name: 'judeg b', roleCategory: 'JUDICIAL', roleName: 'judge', actions: actions },
+                { email: 'j3@test.com', name: 'judeg c', roleCategory: 'JUDICIAL', roleName: 'judge', actions: actions },
+                { email: 'leagal1@test.com', name: 'legal a', roleCategory: 'LEGAL_OPERATIONS', roleName: 'tribunal-caseworker', actions: actions }
+            ];
+            res.send(workAllocationMockData.getCaseRoles(mockRoles));
+        },
+        '/api/role-access/exclusions/get' : (req,res) => {
+            const date1 = new Date();
+            date1.setDate(date1.getDate() - 5);
+
+            const date2= new Date();
+            date2.setDate(date2.getDate() - 15);
+
+            const date3 = new Date();
+            date3.setDate(date3.getDate() - 25);
+            const mockExclusions = [
+                { added: date1.getTime(), name: 'judeg a', userType: 'Judicial', type: 'judge', notes: 'test exclude 1' },
+                { added: date2.getTime(), name: 'judeg b', userType: 'Judicial', type: 'judge', notes: 'test exclude 2'},
+                { added: date3.getTime(), name: 'judeg c', userType: 'Legal Ops', type: 'judge', notes: 'test exclude 3'},
+            ];
+            
+            res.send(mockExclusions);
+        },
+        '/workallocation2/case/task/:caseid': (req,res) => {
+            const tasks = [
+                { task_title: 'task 1', dueDate: -1, created_date: -10, permissions: "Own,Execute,Manage" , warnings:"true"},
+                { task_title: 'task 2', dueDate: 0, created_date: -10, permissions: "Own,Execute,Manage", warnings: "true" },
+                { task_title: 'task 3', dueDate: 1, created_date: -10, permissions: "Own,Execute,Manage", warnings: "true"},
+                { task_title: 'task 4', dueDate: 10, created_date: -10, permissions: "Own,Execute,Manage", warnings: "true" }
+            ];
+            res.send(workAllocationMockData.getCaseTasks(tasks));
+        },
+        '/workallocation2/judicialworker' : (req,res) => {
+            res.send(workAllocationMockData.getJudicialList(20));
+        },
+        '/api/wa-supported-jurisdiction/get': (req,res) => {
+            res.send(['IA']);
         }
     },
     post: {
+        '/workallocation2/my-work/cases': (req, res) => {
+            
+            const requestedView = req.body.view.toLowerCase();
+            const pageNum = requestedView === "mycases" ? 0 : req.body.searchRequest.pagination_parameters.page_number;
+            const pageSize = requestedView === "mycases" ? 10000 : req.body.searchRequest.pagination_parameters.page_size;
+
+            let cases = [];
+            if (requestedView === "mycases" ) {
+                cases = global.scenarioData && global.scenarioData[`workallocation2.${requestedView}`] ? global.scenarioData[`workallocation2.${requestedView}`] : workAllocationMockData.getMyCases(pageSize ? pageSize  * 5: 125);
+            }  else {
+                throw new Error("Unrecognised case list view : " + requestedView);
+            }
+            try {
+                const thisPageCases = [];
+
+                
+
+                const startIndexForPage =  ((pageNum - 1) * pageSize) - 1;
+                const endIndexForPage =  (startIndexForPage + pageSize) < cases.total_records ? startIndexForPage + pageSize - 1 : cases.total_records - 1;
+                for (let i = startIndexForPage; i <= endIndexForPage; i++) {
+                    thisPageCases.push(cases.cases[i]);
+                }
+                const responseData = { cases: thisPageCases, total_records: cases.total_records };
+                res.send(responseData);
+            } catch (e) {
+                res.status(500).send({ error: 'mock error occured', stack: e });
+            }
+        },
+        '/workallocation2/all-work/cases': (req, res) => {
+
+            const requestedView = req.body.view.toLowerCase();
+            const pageNum = requestedView === "allworkcases" ? 1 : req.body.searchRequest.pagination_parameters.page_number;
+            const pageSize = requestedView === "allworkcases" ? 25 : req.body.searchRequest.pagination_parameters.page_size;
+
+            let cases = [];
+            if (requestedView === "allworkcases") {
+                cases = global.scenarioData && global.scenarioData[`workallocation2.${requestedView}`] ? global.scenarioData[`workallocation2.${requestedView}`] : workAllocationMockData.getMyCases(pageSize ? pageSize * 5 : 125);
+            } else {
+                throw new Error("Unrecognised case list view : " + requestedView);
+            }
+            try {
+                const thisPageCases = [];
+
+
+
+                const startIndexForPage = ((pageNum - 1) * pageSize) - (pageNum <= 1 ? 0 : 1);
+                const endIndexForPage = (startIndexForPage + pageSize) < cases.total_records ? startIndexForPage + pageSize - 1 : cases.total_records - 1;
+                for (let i = startIndexForPage; i <= endIndexForPage; i++) {
+                    thisPageCases.push(cases.cases[i]);
+                }
+                const responseData = { cases: thisPageCases, total_records: cases.total_records };
+                res.send(responseData);
+            } catch (e) {
+                res.status(500).send({ error: 'mock error occured', stack: e });
+            }
+        },
         '/workallocation/task/': (req, res) => {
 
             if (req.body.view === "MyTasks"){
@@ -63,7 +171,7 @@ module.exports = {
             } else {
                 throw new Error("Unrecognised task list view : " + req.body.view);
             }
-            res.send({ tasks: tasks});
+            res.send({ tasks: tasks, total_records: tasks.length});
         },
         '/workallocation/taskWithPagination/': (req, res) => {
             const pageNum = req.body.searchRequest.pagination_parameters.page_number;
@@ -95,39 +203,101 @@ module.exports = {
             let tasks = [];
             if (requestedView === "MyTasks") {
                 tasks = global.scenarioData && global.scenarioData['workallocation2.mytasks'] ? global.scenarioData['workallocation2.mytasks'] : workAllocationMockData.getMyWorkMyTasks(pageSize * 5);
+                // global.scenarioData['workallocation2.mytasks'] = tasks;
             } else if (requestedView === "AvailableTasks") {
                 tasks = global.scenarioData && global.scenarioData['workallocation2.availabletasks'] ? global.scenarioData['workallocation2.availabletasks'] : workAllocationMockData.getMyWorkAvailableTasks(pageSize * 5);
+                // global.scenarioData['workallocation2.availabletasks'] = tasks;
+
             } else if (requestedView === "TaskManager" || requestedView.includes("AllWork")) {
                 tasks = global.scenarioData && global.scenarioData['workallocation2.allwork'] ? global.scenarioData['workallocation2.allwork'] : workAllocationMockData.getAllWorkTasks(pageSize * 5);
+                // global.scenarioData['workallocation2.allwork'] = tasks;
+
             } else {
                 throw new Error("Unrecognised task list view : " + requestedView);
             }
             
             try { 
-                res.send(getTaskPageRecords(tasks,pageNum,pageSize));
+                res.send(getTaskPageRecords(tasks, pageNum, pageSize));
+
             } catch (e) {
                 res.status(500).send({ error: 'mock error occured', stack: e.stack });
             }
-
         },
         '/workallocation/task/:taskId/assign': (req, res) => {
             res.send();
         },
+        '/workallocation2/task/:taskId/assign': (req, res) => {
+            res.send(204);
+        },
         '/workallocation/task/:taskId/claim' : (req,res) => {
             res.send();
         },
-        '/workallocation/task/:taskId/unclaim': (req, res) => {
-            res.send();
+        '/workallocation2/task/:taskId/claim': (req, res) => {
+            res.status(204).send('success');
         },
-
+        '/workallocation/task/:taskId/unclaim': (req, res) => {
+            res.status(204).send('success');
+        },
+        '/workallocation2/task/:taskId/unclaim': (req, res) => {
+            res.status(204).send('success');
+        },
         '/workallocation/task/:taskId/complete': (req, res) => {
-            res.send();
+            res.status(204).send();
+        },
+        '/workallocation2/task/:taskId/complete': (req, res) => {
+            res.status(204).send();
         },
         '/workallocation/task/:taskId/cancel': (req, res) => {
-            res.send();
+            res.status(204).send();
+        },
+        '/workallocation2/task/:taskId/cancel': (req, res) => {
+            res.status(204).send();
+        },
+        '/workallocation2/findPerson': (req, res) => {
+            workAllocationMockData.findPersonResponse(req.body.searchOptions.searchTerm, null).then((response) =>{
+                res.send(response);
+            });
+            
+        },
+        '/api/user/exclusions/confirm' : (req,res)=>{
+            res.send({});
+        },
+        '/api/role-access/allocate-role/confirm': (req, res) => {
+            res.send({});
+        },
+        '/api/role-access/allocate-role/reallocate': (req, res) => {
+            res.send({});
+        },
+        '/api/role-access/exclusions/confirm' : (req,res) => {
+            res.send({});
+
+        },
+        '/api/role-access/allocate-role/delete' : (req,res) => {
+            res.status(204).send({});
+
+        },
+        '/api/role-access/exclusions/post' : (req,res) => {
+            const mockRoles = [
+                { added: '2021-10-12T12:14:42.230129Z', name: 'judeg a', userType: 'JUDICIAL', type: 'CASE', id: '12345678901' },
+                { added: '2021-10-12T12:14:42.230129Z', name: 'judeg b', userType: 'JUDICIAL', type: 'CASE', id: '12345678902' },
+                { added: '2021-10-12T12:14:42.230129Z', name: 'judeg c', userType: 'JUDICIAL', type: 'CASE', id: '12345678903' },
+                { added: '2021-10-12T12:14:42.230129Z', name: 'legal a', userType: 'LEGAL_OPERATIONS', type: 'CASE', id: '12345678904' }
+            ];
+            res.send(workAllocationMockData.getCaseExclusions(mockRoles));
+        },
+        '/api/role-access/roles/post': (req, res) => {
+            const mockRoles = [
+                { added: '2021-10-12T12:14:42.230129Z', name: 'judeg a', userType: 'JUDICIAL', type: 'CASE', id: '12345678901', roleCategory: 'JUDICIAL' },
+                { added: '2021-10-12T12:14:42.230129Z', name: 'judeg b', userType: 'JUDICIAL', type: 'CASE', id: '12345678902', roleCategory: 'JUDICIAL' },
+                { added: '2021-10-12T12:14:42.230129Z', name: 'judeg c', userType: 'JUDICIAL', type: 'CASE', id: '12345678903', roleCategory: 'JUDICIAL' },
+                { added: '2021-10-12T12:14:42.230129Z', name: 'legal a', userType: 'LEGAL_OPERATIONS', type: 'CASE', id: '12345678904', roleCategory: 'LEGAL_OPERATIONS'}
+            ];
+            res.send(workAllocationMockData.getCaseRoles(mockRoles));
+        },
+        '/api/role-access/exclusions/delete' : (req,res) => {
+            res.status(204).send();
         }
     }
-
    
 }
 

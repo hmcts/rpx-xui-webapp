@@ -6,6 +6,31 @@ class CucumberReportLog{
         this.scenarioWorld = world; 
     }
 
+    FormatPrintJson(jsonObj,basePad){
+        basePad = basePad ? basePad : 0;
+        const keys = Object.keys(jsonObj);
+
+        let maxSize = 0;
+        for(let key of keys){
+            maxSize = key.length > maxSize ? key.length : maxSize;
+        }
+
+        let startPadding = basePad + maxSize + 1;
+        for (let key of keys) {
+            if (!this.scenarioWorld) {
+                return;
+            }
+            try {
+                this.scenarioWorld.attach(`${key.padEnd(startPadding)} : ${jsonObj[key]}`);
+            }
+            catch (err) {
+                console.log("Error occured adding message to report. " + err.stack);
+            }
+            console.log(`${key.padEnd(startPadding)} : ${jsonObj[key]}`)
+        }
+
+    }
+
     AddMessage(message){
         if (!this.scenarioWorld){
             return;

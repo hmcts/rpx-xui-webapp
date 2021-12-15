@@ -507,10 +507,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.4.8-pagination-component-remove-moj-styles":
-  version "1.4.8-pagination-component-remove-moj-styles"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.8-pagination-component-remove-moj-styles.tgz#70f6de406ee886326d802a065543a28d819380ee"
-  integrity sha512-TQ10Q5h7VqFeBMddVl/yj5XJAqXFNUFr6xr4n7TiExgj5MVvjVbPt4xGtx6C+FDaxMizJyPRlbQOtcoHTK3tYw==
+"@hmcts/rpx-xui-common-lib@1.4.31-date-component-validation-fixes":
+  version "1.4.31-date-component-validation-fixes"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.31-date-component-validation-fixes.tgz#eb845cc3ca3253520c3b2772b5d924255837321d"
+  integrity sha512-xn5gybq1p3n0f0vEtVOfxySeurUeU+ZC8i3CG0/YPeL4Of4ChpFoNBqEjWRSWhonlbxB11NcrnRDjx28OlkRfQ==
   dependencies:
     tslib "^1.9.0"
 

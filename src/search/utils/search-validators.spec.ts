@@ -117,42 +117,6 @@ describe('SearchValidators', () => {
     expect(postcodeValidator(control)).toBeNull();
   });
 
-  it('dayValidator invalid case', () => {
-    control.setValue('32');
-    const dayValidator = SearchValidators.dayValidator();
-    expect(dayValidator(control)).toEqual({dateDay: true});
-  });
-
-  it('dayValidator valid case', () => {
-    control.setValue('10');
-    const validator = SearchValidators.dayValidator();
-    expect(validator(control)).toBeNull();
-  });
-
-  it('monthValidator invalid case', () => {
-    control.setValue('14');
-    const monthValidator = SearchValidators.monthValidator();
-    expect(monthValidator(control)).toEqual({dateMonth: true});
-  });
-
-  it('monthValidator valid case', () => {
-    control.setValue('10');
-    const monthValidator = SearchValidators.monthValidator();
-    expect(monthValidator(control)).toBeNull();
-  });
-
-  it('yearValidator invalid case', () => {
-    control.setValue('1800');
-    const yearValidator = SearchValidators.yearValidator();
-    expect(yearValidator(control)).toEqual({dateYear: true});
-  });
-
-  it('yearValidator valid case', () => {
-    control.setValue('2010');
-    const yearValidator = SearchValidators.yearValidator();
-    expect(yearValidator(control)).toBeNull();
-  });
-
   it('dateComparisonValidator invalid case', () => {
     const formGroup = new FormBuilder().group({
       [SearchFormControl.DATE_OF_BIRTH_DAY]: '',
@@ -219,9 +183,9 @@ describe('SearchValidators', () => {
     expect(dateComparisonValidator(formGroup)).toBeNull();
   });
 
-  it('dateComparisonValidator - no comparison if either date is not well formed (i.e. missing one or more fields)', () => {
+  it('dateComparisonValidator - no comparison if either date is invalid (as per XUI Common Library Date component validation)', () => {
     const formGroup = new FormBuilder().group({
-      [SearchFormControl.DATE_OF_BIRTH_DAY]: null,
+      [SearchFormControl.DATE_OF_BIRTH_DAY]: '',
       [SearchFormControl.DATE_OF_BIRTH_MONTH]: '',
       [SearchFormControl.DATE_OF_BIRTH_YEAR]: '',
       [SearchFormControl.DATE_OF_DEATH_DAY]: '',
@@ -229,13 +193,22 @@ describe('SearchValidators', () => {
       [SearchFormControl.DATE_OF_DEATH_YEAR]: ''
     });
 
-    // Date of birth day field deliberately left as null
-    formGroup.get(SearchFormControl.DATE_OF_BIRTH_MONTH).setValue(12);
-    formGroup.get(SearchFormControl.DATE_OF_BIRTH_YEAR).setValue(2010);
+    // Set an error on date of birth day field deliberately, to simulate invalidity
+    formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).setErrors({invalid: true});
 
-    formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).setValue(10);
-    // Date of death month field deliberately left as empty string
-    formGroup.get(SearchFormControl.DATE_OF_DEATH_YEAR).setValue(2010);
+    const dateComparisonValidator = SearchValidators.dateComparisonValidator();
+    expect(dateComparisonValidator(formGroup)).toBeNull();
+  });
+
+  it('dateComparisonValidator - no comparison if either date is empty', () => {
+    const formGroup = new FormBuilder().group({
+      [SearchFormControl.DATE_OF_BIRTH_DAY]: null,
+      [SearchFormControl.DATE_OF_BIRTH_MONTH]: null,
+      [SearchFormControl.DATE_OF_BIRTH_YEAR]: null,
+      [SearchFormControl.DATE_OF_DEATH_DAY]: '15',
+      [SearchFormControl.DATE_OF_DEATH_MONTH]: '12',
+      [SearchFormControl.DATE_OF_DEATH_YEAR]: '2021'
+    });
 
     const dateComparisonValidator = SearchValidators.dateComparisonValidator();
     expect(dateComparisonValidator(formGroup)).toBeNull();

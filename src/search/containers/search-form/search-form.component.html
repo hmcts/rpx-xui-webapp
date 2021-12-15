@@ -45,8 +45,8 @@
         <xuilib-gov-uk-input [config]="addressLine1Config" [group]="formGroup"></xuilib-gov-uk-input>
         <xuilib-gov-uk-input [config]="postcodeConfig" [group]="formGroup" [errorMessage]="postcodeErrorMessage"></xuilib-gov-uk-input>
         <xuilib-gov-uk-input [config]="emailConfig" [group]="formGroup" [errorMessage]="emailErrorMessage"></xuilib-gov-uk-input>
-        <xuilib-gov-uk-date [config]="dateOfBirthConfig" [formGroup]="formGroup" [errorMessage]="dateOfBirthErrorMessage"></xuilib-gov-uk-date>
-        <xuilib-gov-uk-date [config]="dateOfDeathConfig" [formGroup]="formGroup" [errorMessage]="dateOfDeathErrorMessage"></xuilib-gov-uk-date>
+        <xuilib-gov-uk-date [config]="dateOfBirthConfig" [formGroup]="formGroup" [errorMessage]="dateOfBirthErrorMessage" [isOptional]="true"></xuilib-gov-uk-date>
+        <xuilib-gov-uk-date [config]="dateOfDeathConfig" [formGroup]="formGroup" [errorMessage]="dateOfDeathErrorMessage" [isOptional]="true"></xuilib-gov-uk-date>
         <xuilib-gov-select [config]="servicesConfig" [group]="formGroup" [items]="services"></xuilib-gov-select>
         <button class="govuk-button govuk-!-margin-top-7" type="submit">
           Search

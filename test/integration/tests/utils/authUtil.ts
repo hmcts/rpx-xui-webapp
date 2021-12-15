@@ -94,19 +94,7 @@ async function  authenticateAndGetcookies(username, password)  {
             const primaryNavElement = page.$('.hmcts-primary-navigation');
             const loginEmailField = page.$('#username'); 
  
-            // await new Promise((resolve,reject) => {
-            //     let interval = setInterval(async () => {
-            //         console.log("Checing login status : " + new Date().toTimeString());
-            //         if (primaryNavElement != undefined){
-            //             resolve('Login successful');
-            //         } else if (loginEmailField != undefined){
-            //             let usernameInput = await page.$eval('#username', element => element.value);
-            //             if (usernameInput === ""){
-            //                 reject("Login page reloaded, first time login issue");
-            //             }
-            //         }
-            //     },10000);
-            // });
+          
 
             let waitCounter = 0;
             while (waitCounter < 20){
@@ -124,7 +112,7 @@ async function  authenticateAndGetcookies(username, password)  {
                      }
                 }
             }
-            await page.waitForSelector('.hmcts-primary-navigation', { visible: true, timeout: 10000 });
+            await page.waitForSelector('.hmcts-primary-navigation', { visible: true, timeout: 20000 });
 
             // await page.waitForSelector('.hmcts-primary-navigation', { visible: true, timeout: 10000 });
 

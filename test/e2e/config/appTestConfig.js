@@ -40,6 +40,11 @@ const data = {
             email: "xui_iac_judge_2@mailinator.com",
             release: "wa_release_2", userIdentifier: "IAC_Judge_WA_R2"
         },
+        {
+            idamId: "44d5d2c2-7112-4bef-8d05-baaa610bf463",
+            email: "juser8@mailinator.com",
+            release: "wa_release_2", userIdentifier: "IAC_Judge_WA_R2_CaseAllocator"
+        },
 
         {
             idamId: "10c6b21d-5bd0-4047-8ca6-bb3dd4e83c9c",

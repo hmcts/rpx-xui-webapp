@@ -2,7 +2,7 @@ const TaskList = require('./taskListTable');
 const BrowserWaits = require('../../../support/customWaits');
 var cucumberReporter = require('../../../support/reportLogger');
 
-var TaskMessageBanner = require('./taskMessageBanner');
+var TaskMessageBanner = require('../messageBanner');
 
 class MyWorkPage extends TaskList {
 
@@ -27,7 +27,7 @@ class MyWorkPage extends TaskList {
         this.bannerMessageContainer = $('exui-info-message ')
         this.infoMessages = $$('exui-info-message .hmcts-banner__message');
 
-        this.taskInfoMessageBanner = new TaskMessageBanner();
+        this.taskInfoMessageBanner = new TaskMessageBanner("exui-work-allocation-home exui-task-home");
     }
 
     async waitForWorkFilterToDisplay(){
@@ -55,6 +55,22 @@ class MyWorkPage extends TaskList {
         return await this.workFilterLocationContainers.count();
     }
 
+    async OpenWorkFilter(){
+        const isOpen = await this.genericFilterContainer.isPresent() && await this.genericFilterContainer.isDisplayed();
+
+        if (!isOpen){
+            await this.showHideWorkFilterBtn.click();
+        }
+    }
+
+    async CloseWorkFilter() {
+        const isOpen = await this.genericFilterContainer.isPresent() && await this.genericFilterContainer.isDisplayed();
+
+        if (isOpen) {
+            await this.showHideWorkFilterBtn.click();
+        }
+    }
+
     async clickWorkFilterLoctionInputWithLabel(locationLabel){
         await element(by.xpath(`//div[contains(@class,'xui-generic-filter')]//div[contains(@class,'govuk-checkboxes__item')]/label[contains(text(),'${locationLabel}')]/../input`)).click();
     }
@@ -64,7 +80,12 @@ class MyWorkPage extends TaskList {
         if (locationAtPos > locCount || locationAtPos <= 0){
             throw Error('location pos is out of bound');
         }
-        await this.workFilterLocationContainers.get(locationAtPos - 1).click();
+
+        const locInput = await this.workFilterLocationContainers.get(locationAtPos - 1);
+        if(!(await locInput.isSelected())){
+            await locInput.click();
+
+        }
     }
 
     async getListOfSelectedLocations(){

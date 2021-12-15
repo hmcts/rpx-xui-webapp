@@ -5,16 +5,17 @@ const FeatureNames = {
   currentWAFeature: 'mc-work-allocation-active-feature',
   workAllocation: 'MC_Work_Allocation',
   noticeOfChange: 'MC_Notice_of_Change',
-  waMvpPaginationFeature: 'mc-mvp-wa-pagination'
+  waMvpPaginationFeature: 'mc-mvp-wa-pagination',
+  userTypeRoles: 'mc-user-type-roles'
 };
 
 const FooterDataNavigation = {
   items: [
-    { text: 'Accessibility', href: '/accessibility', target: '_blank' },
-    { text: 'Terms and conditions', href: '/terms-and-conditions', target: '_blank' },
-    { text: 'Cookies', href: '/cookies', target: '_blank' },
-    { text: 'Privacy policy', href: '/privacy-policy', target: '_blank' },
-    { text: 'Get help', href: '/get-help', target: '_blank' }
+    {text: 'Accessibility', href: '/accessibility', target: '_blank'},
+    {text: 'Terms and conditions', href: '/terms-and-conditions', target: '_blank'},
+    {text: 'Cookies', href: '/cookies', target: '_blank'},
+    {text: 'Privacy policy', href: '/privacy-policy', target: '_blank'},
+    {text: 'Get help', href: '/get-help', target: '_blank'}
   ]
 };
 
@@ -104,8 +105,6 @@ const redirectUrl = {
   localhost: 'https://idam-web-public.aat.platform.hmcts.net'
 };
 
-
-
 const appHeaderTitle = {name: 'Manage cases', url: '/'};
 
 // Making the base URL for case details a constant.
@@ -114,20 +113,26 @@ const caseDetailsUrl: string = '/cases/case-details/';
 const serviceMessagesFeatureToggleKey: string = 'mc-service-messages';
 const serviceMessageCookie: string = 'service_messages';
 
+const caseAllocatorRole: string = 'case-allocator-role';
+
 export class AppConstants {
-  static FOOTER_DATA = null;
-  static FOOTER_DATA_NAVIGATION = FooterDataNavigation;
-  static APP_HEADER_TITLE = appHeaderTitle;
-  static ENVIRONMENT_NAMES = environmentNames;
-  static REDIRECT_URL = redirectUrl;
-  static HELP_CONTACT_DETAILS = helpContactDetails;
-  static DEFAULT_USER_THEME = defaultUserTheme;
-  static FEATURE_NAMES = FeatureNames;
-  static CASE_DETAILS_URL = caseDetailsUrl;
-  static SERVICE_MESSAGES_FEATURE_TOGGLE_KEY = serviceMessagesFeatureToggleKey;
-  static SERVICE_MESSAGE_COOKIE = serviceMessageCookie;
-  static DEFAULT_MENU_ITEMS = defaultMenuItems;
+  public static FOOTER_DATA = null;
+  public static FOOTER_DATA_NAVIGATION = FooterDataNavigation;
+  public static APP_HEADER_TITLE = appHeaderTitle;
+  public static ENVIRONMENT_NAMES = environmentNames;
+  public static REDIRECT_URL = redirectUrl;
+  public static HELP_CONTACT_DETAILS = helpContactDetails;
+  public static DEFAULT_USER_THEME = defaultUserTheme;
+  public static FEATURE_NAMES = FeatureNames;
+  public static CASE_DETAILS_URL = caseDetailsUrl;
+  public static SERVICE_MESSAGES_FEATURE_TOGGLE_KEY = serviceMessagesFeatureToggleKey;
+  public static SERVICE_MESSAGE_COOKIE = serviceMessageCookie;
+  public static CASE_ALLOCATOR_ROLE = caseAllocatorRole;
+  public static DEFAULT_MENU_ITEMS = defaultMenuItems;
 }
 
 export const LD_FLAG_REMOVE_USER_FROM_CASE_MC: string = 'remove-user-from-case-mc';
 export const LD_FLAG_MC_APPLICATION_THEMES: string = 'mc-application-themes';
+export const LEGAL_OPS_ROLE_LIST: string[] = ['caseworker-ia-caseofficer'];
+export const JUDICIAL_ROLE_LIST: string[] = ['caseworker-ia-iacjudge'];
+export const SERVICE_OPTIONS_LIST = [{key: 'IA', label: 'Immigration and Asylum'}];

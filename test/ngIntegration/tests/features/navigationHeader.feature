@@ -1,7 +1,7 @@
 @ng @test
 Feature: Navigation header tabs
 
-    Scenario Outline: Primanry nav headers for user "<roleType>" "<useridentifier>" and roles "<rolesIdentifiers>"
+    Scenario Outline: Primary nav headers for user "<roleType>" "<useridentifier>" and roles "<rolesIdentifiers>"
         Given I set MOCK with user identifer "<useridentifier>" role type "<roleType>" and role identifiers "<rolesIdentifiers>"
 
         Given I start MockApp

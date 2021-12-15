@@ -9,10 +9,10 @@ var CaseListPage = require('./CaseListPage');
 var CreateCaseStartPage = require('./createCaseStartPage');
 const SearchCasePage = require('../pageObjects/searchPage');
 const taskListPage = require('../pageObjects/workAllocation/taskListPage');
-const taskManagerPage = require('../pageObjects/workAllocation/taskManagerPage');
+const taskManagerPage = require('./workAllocation/taskManagerPage');
 const myWorkPage = require('../pageObjects/workAllocation/myWorkPage');
+const allWorkPage = require("../../features/pageObjects/workAllocation/allWorkPage");
 const globalSearchPage = require('./globalSearchCases');
-
 
 const createCaseStartPage = new CreateCaseStartPage();
 const caseListPage = new CaseListPage();
@@ -35,7 +35,7 @@ function HeaderPage() {
     this.globalHeaderContainerWithStyle = element(by.xpath("//exui-hmcts-global-header/.."));
 
     this.caseReferenceSearchBox = $('.hmcts-primary-navigation__search exui-case-reference-search-box');
-    
+
     this.primaryNavBar = element(by.css(".hmcts-primary-navigation__container"));
     this.primaryNavBar_NavItems = element(by.css(".hmcts-primary-navigation__nav ul"));
     this.primaryNavBar_rightSideItems = element(by.css(".hmcts-primary-navigation__search ul"));
@@ -85,7 +85,7 @@ function HeaderPage() {
         await ele.click();
         await browserUtil.waitForLD();
       });
-      
+
     }
 
 
@@ -96,14 +96,14 @@ function HeaderPage() {
   };
 
     this.clickAppLogoLink = async function(){
-       await this.headerAppLogoLink.click(); 
+       await this.headerAppLogoLink.click();
     }
 
     this.caseList = function(){
       return element(by.xpath("//a[contains(text(),'Case list')]"))
     };
-    this.createCase =  function() { 
-      return element(by.xpath("//li/a[contains(text(),'Create case')]")) 
+    this.createCase =  function() {
+      return element(by.xpath("//li/a[contains(text(),'Create case')]"))
     };
 
     this.taskList = function(){
@@ -121,25 +121,25 @@ function HeaderPage() {
 
   this.clickManageCases = async function () {
     await BrowserWaits.retryWithActionCallback(async () => {
-      await BrowserWaits.waitForElement(this.manageCases);  
+      await BrowserWaits.waitForElement(this.manageCases);
       await this.manageCases.click();
       await browserUtil.waitForLD();
     });
-    //await BrowserWaits.waitForElement($('exui-case-list'));  
+    //await BrowserWaits.waitForElement($('exui-case-list'));
   };
 
   this.clickCaseList = async function () {
-    await BrowserWaits.waitForElement(this.caseList());  
+    await BrowserWaits.waitForElement(this.caseList());
     await BrowserWaits.waitForElementClickable(this.caseList());
     await this.caseList().click();
     await browserUtil.waitForLD();
-    expect(await caseListPage.amOnPage()).to.be.true 
+    expect(await caseListPage.amOnPage()).to.be.true
   };
 
   this.clickCreateCase = async function () {
     await BrowserWaits.retryWithActionCallback(async () => {
-      await caseListPage.waitForSpinnerToDissappear(); 
-      await BrowserWaits.waitForElement(this.createCase()); 
+      await caseListPage.waitForSpinnerToDissappear();
+      await BrowserWaits.waitForElement(this.createCase());
       await BrowserWaits.waitForElementClickable(this.createCase());
       await this.createCase().click();
       await browserUtil.waitForLD();
@@ -154,7 +154,7 @@ function HeaderPage() {
       await this.taskList().click();
       await browserUtil.waitForLD();
     });
-    
+
   };
 
   this.clickTaskManager = async function () {
@@ -169,16 +169,16 @@ function HeaderPage() {
 
   this.clickFindCase = async function () {
     await BrowserWaits.retryWithActionCallback(async () => {
-      await BrowserWaits.waitForElement(this.findCase);  
+      await BrowserWaits.waitForElement(this.findCase);
       await this.findCase.click();
 
       var searchPageHeader = element(by.xpath("//*[@id = 'content']//h1[contains(text() , 'Search')]"));
-      await BrowserWaits.waitForElement(searchPageHeader); 
+      await BrowserWaits.waitForElement(searchPageHeader);
     });
   };
 
   this.clickSignOut = async function () {
-    await BrowserWaits.waitForElement(this.signOut);  
+    await BrowserWaits.waitForElement(this.signOut);
     this.signOut.click();
     browser.sleep(SHORT_DELAY);
   };
@@ -215,7 +215,7 @@ function HeaderPage() {
       } else {
         throw new Error(`Tab ${tabText} is not present in navigation tabs headers ${primaryTabs} `);
       }
-    }); 
+    });
   };
 
   this.getPrimaryTabsDisplayed = async function  () {
@@ -229,7 +229,7 @@ function HeaderPage() {
       }
       return tabsText;
     });
-    
+
   }
 
 
@@ -244,7 +244,7 @@ function HeaderPage() {
       }
       return tabsText;
     });
-    
+
   }
 
   this.isPrimaryTabPageDisplayed = async function(primaryTab){
@@ -274,7 +274,7 @@ function HeaderPage() {
         retValue = await globalSearchPage.amOnPage();
         break;
       case 'All work':
-        throw new Error('All work Test pageObject not implemented/applied to tests');
+        retValue = await allWorkPage.amOnPage();
         break;
       default:
         throw new Error(`Tab "${primaryTab}" is not recognised or not implemeted in test to handle.`);

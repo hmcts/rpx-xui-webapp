@@ -134,4 +134,3 @@ class SearchPage {
   }
 }
 module.exports = SearchPage;
-

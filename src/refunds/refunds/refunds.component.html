@@ -1,0 +1,16 @@
+<exui-app-header></exui-app-header>
+<div class="govuk-width-container">
+  <div class="page">
+    <main id="content" role="main">
+      <xuilib-loading-spinner *ngIf="!userDataLoaded"></xuilib-loading-spinner>
+      <ccpay-payment-lib
+        *ngIf="userDataLoaded"
+        [CCD_CASE_NUMBER]="ccdCaseNumber"
+        VIEW="refund-list"
+        [TAKEPAYMENT]="false"
+      >
+      </ccpay-payment-lib>
+    </main>
+  </div>
+</div>
+<exui-app-footer></exui-app-footer>

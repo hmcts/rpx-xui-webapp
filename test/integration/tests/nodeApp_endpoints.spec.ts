@@ -4,6 +4,9 @@ import {http} from './utils';
 import Request from './utils/request';
 import { setTestContext } from './utils/helper';
 
+const nodeAppDataModels = require('../../dataModels/nodeApp')
+const testUsers = require('../../e2e/config/appTestConfig');
+
 describe('nodeApp endpoint', () => {
   const userName = 'lukesuperuserxui@mailnesia.com';
   const password = 'Monday01';
@@ -22,7 +25,7 @@ describe('nodeApp endpoint', () => {
   it('external/configuration-ui', async () => {
     const response = await Request.get('external/configuration-ui', null, 200);
     expect(response.status).to.equal(200);
-    expect(response.data).to.have.all.keys('clientId', 'idamWeb', 'launchDarklyClientId', 'oAuthCallback', 'oidcEnabled', 'protocol','ccdGatewayUrl');
+    expect(response.data).to.have.all.keys('clientId', 'idamWeb', 'launchDarklyClientId', 'oAuthCallback', 'oidcEnabled', 'protocol', 'ccdGatewayUrl', 'substantiveEnabled','accessManagementEnabled');
     expect(response.data.launchDarklyClientId).to.equal('5de6610b23ce5408280f2268');
     expect(response.data.clientId).to.equal('xuiwebapp');
   });
@@ -47,13 +50,40 @@ describe('nodeApp endpoint', () => {
 
     const response = await Request.get('api/user/details', null, 200);
     expect(response.status).to.equal(200);
-    expect(response.data).to.have.all.keys('canShareCases', 'sessionTimeout', 'userInfo','locationInfo');
-    expect(response.data.userInfo.roles).to.be.an('array');
-    if (configRes.data.oidcEnabled) {
-      expect(response.data.userInfo).to.have.all.keys('uid', 'family_name', 'given_name','name', 'sub', 'roles', 'token');
-    } else {
-      expect(response.data.userInfo).to.have.all.keys('id', 'forename', 'surname', 'email', 'active', 'roles', 'token');
+    const actualLocationObjKeys = response.data;
+    const expectedUserDetailsObj_oidc = nodeAppDataModels.getUserDetails_oidc();
+    expect(actualLocationObjKeys).to.have.all.keys(Object.keys(expectedUserDetailsObj_oidc));
+
+    if (actualLocationObjKeys.roleAssignmentInfo.length > 0){
+      expect(actualLocationObjKeys.roleAssignmentInfo[0]).to.have.all.keys(Object.keys(expectedUserDetailsObj_oidc.roleAssignmentInfo[0]));
     }
+
+    expect(actualLocationObjKeys.userInfo.roles).to.be.an('array');
+
+    if (configRes.data.oidcEnabled) {
+      expect(actualLocationObjKeys.userInfo).to.have.all.keys(Object.keys(expectedUserDetailsObj_oidc.userInfo));
+    } else {
+      expect(actualLocationObjKeys.userInfo).to.have.all.keys(Object.keys(nodeAppDataModels.getUserDetails_oauth().userInfo));
+    }
+  });
+
+  it('api/user/details role-assignment case allocator *****(to be enabled: localtionInfo on access-management integration)****', async () => {
+
+    const matchingUsers = testUsers.users.filter(user => user.userIdentifier === 'IAC_Judge_WA_R2_CaseAllocator');
+    if (matchingUsers.length === 0){
+      throw new Error(`Users details with identfier "IAC_Judge_WA_R2_CaseAllocator" not found in test user config`);
+    }
+
+    await Request.withSession(matchingUsers[0].email, 'Welcome01');
+   
+    const response = await Request.get('api/user/details', null, 200);
+    expect(response.status).to.equal(200);
+    const actualLocationObjKeys = response.data;
+    const expectedUserDetailsObj_oidc = nodeAppDataModels.getUserDetails_oidc();
+    expect(actualLocationObjKeys).to.have.all.keys(Object.keys(expectedUserDetailsObj_oidc));
+
+    expect(actualLocationObjKeys.roleAssignmentInfo[0].isCaseAllocator).to.be.true;
+
   });
 
   it('api/user/details without session', async () => {
@@ -70,5 +100,5 @@ describe('nodeApp endpoint', () => {
     expect(JSON.stringify(response.data)).to.have.lengthOf.below(6);
   });
 
-  
+
 });

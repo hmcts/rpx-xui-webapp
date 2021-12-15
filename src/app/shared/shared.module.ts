@@ -10,6 +10,7 @@ import * as fromAppContainers from '../containers';
 import * as fromAppDirectives from '../directives';
 import { HealthCheckGuard } from './guards/health-check.guard';
 import { HealthCheckService } from './services/health-check.service';
+import { McLaunchDarklyService } from './services/mc-launch-darkly-service';
 
 /**
  * Shared Module
@@ -39,7 +40,8 @@ import { HealthCheckService } from './services/health-check.service';
   providers: [
     HealthCheckGuard,
     HealthCheckService,
-    WindowService
+    WindowService,
+    McLaunchDarklyService
   ],
 })
 export class SharedModule {}

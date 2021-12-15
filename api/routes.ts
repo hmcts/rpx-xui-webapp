@@ -7,6 +7,8 @@ import healthCheck from './healthCheck';
 import authInterceptor from './lib/middleware/auth';
 import { router as nocRouter } from './noc/routes';
 import { router as organisationRouter } from './organisations';
+import { router as waSupportedJurisdictionRouter } from './waSupportedJurisdictions';
+import roleAccessRouter from './roleAccess/routes';
 import userRouter from './user/routes';
 
 const router = express.Router({mergeParams: true});
@@ -25,10 +27,13 @@ router.use(authInterceptor);
 
 router.use('/user', userRouter);
 
+router.use('/role-access', roleAccessRouter);
+
 // TODO: potentially can be moved to proxy but with onRes callback
 router.use('/caseshare', caseShareRoutes);
 router.use('/noc', nocRouter);
 router.use('/organisation', organisationRouter);
+router.use('/wa-supported-jurisdiction', waSupportedJurisdictionRouter);
 router.use('/globalSearch', globalSearchRoutes);
 
 // @ts-ignore

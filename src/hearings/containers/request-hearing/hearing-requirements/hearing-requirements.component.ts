@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {select, Store} from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import {Subscription} from 'rxjs';
 import * as _ from 'underscore';
 import * as fromHearingStore from '../../../../hearings/store';

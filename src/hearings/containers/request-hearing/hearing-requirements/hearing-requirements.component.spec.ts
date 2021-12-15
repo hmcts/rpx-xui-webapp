@@ -17,7 +17,7 @@ class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
 }
 
-describe('HearingRequirementsComponent', () => {
+fdescribe('HearingRequirementsComponent', () => {
   let component: HearingRequirementsComponent;
   let fixture: ComponentFixture<HearingRequirementsComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
@@ -176,6 +176,7 @@ describe('HearingRequirementsComponent', () => {
   });
 
   it('should call convertMapToArray during onint call', () => {
+    fixture.detectChanges();
     expect(component).toBeDefined();
     const caseFlags = _.groupBy(component.hearingValueModel.caseFlags.flags, 'partyName');
     const caseFlagConverted = component.convertMapToArray(caseFlags);
@@ -183,14 +184,15 @@ describe('HearingRequirementsComponent', () => {
   });
 
   it('should assign values to caseFlags once convertMapToArray is called', () => {
+    fixture.detectChanges();
     component.assignHearingValue(hearingValueModel);
     expect(component.hearingValueModel).toEqual(hearingValueModel);
     expect(component.caseFlags.length).toEqual(2);
   });
 
   it('should call unsubscribe', () => {
-    spyOn(component.hearingStoreSub, 'unsubscribe');
     fixture.detectChanges();
+    spyOn(component.hearingStoreSub, 'unsubscribe');
     component.ngOnDestroy();
     expect(component.hearingStoreSub.unsubscribe).toHaveBeenCalled();
   });

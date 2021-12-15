@@ -2,7 +2,6 @@ import { Component, DebugElement, Input } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatTabsModule } from '@angular/material';
 import { By } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseField, CaseTab, CaseView } from '@hmcts/ccd-case-ui-toolkit';
@@ -240,7 +239,7 @@ describe('CaseViewerContainerComponent', () => {
   });
 
   it('should return the two tabs', (done: DoneFn) => {
-    component.tabs$.subscribe((tabs: CaseTab[]) => {
+    component.prependedTabs$.subscribe((tabs: CaseTab[]) => {
       expect(tabs.length).toBe(TABS.length);
       expect(tabs[0].id).toBe('tasks');
       expect(tabs[1].id).toBe('roles-and-access');

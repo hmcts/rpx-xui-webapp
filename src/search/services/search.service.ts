@@ -73,8 +73,10 @@ export class SearchService {
       otherReferences: searchParameters.otherReferences,
       parties: [{
         addressLine1: searchParameters.address,
-        dateOfBirth: searchParameters.dateOfBirth,
-        dateOfDeath: searchParameters.dateOfDeath,
+        // Ensure dates have a leading zero for numbers less than 10; regex matches single digits between
+        // non-alphanumeric boundaries and prepends a 0 to the capturing group
+        dateOfBirth: searchParameters.dateOfBirth ? searchParameters.dateOfBirth.replace(/\b(\d)\b/g, '0$1') : null,
+        dateOfDeath: searchParameters.dateOfDeath ? searchParameters.dateOfDeath.replace(/\b(\d)\b/g, '0$1') : null,
         emailAddress: searchParameters.emailAddress,
         partyName: searchParameters.fullName,
         postCode: searchParameters.postcode

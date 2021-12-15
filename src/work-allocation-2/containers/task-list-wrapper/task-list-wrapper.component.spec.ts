@@ -80,10 +80,6 @@ describe('TaskListWrapperComponent', () => {
     mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem'])
   }));
 
-  it('should create', () => {
-    expect(component).toBeDefined();
-  });
-
   describe('onActionHandler()', () => {
     const exampleTask = getMockTasks()[0];
     const firstAction = exampleTask.actions[0];

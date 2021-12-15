@@ -31,6 +31,7 @@ export const SERVICES_WORK_ALLOCATION_TASK_API_PATH = 'services.work_allocation.
 export const SERVICES_ROLE_ASSIGNMENT_API_PATH = 'services.role_assignment.roleApi';
 export const SERVICES_CASE_CASEWORKER_REF_PATH = "services.case.caseworkerApi";
 export const SERVICES_CASE_JUDICIALWORKER_REF_PATH = "services.case.judicialworkerApi";
+export const SERVICES_LOCATION_API_PATH = "services.location_api";
 
 export const SERVICES_HEARINGS_COMPONENT_API = 'services.hearings.componentApi';
 
@@ -55,15 +56,20 @@ export const SERVICES_PAYMENTS_URL = 'services.payments';
 
 export const SERVICES_PRD_API_URL = 'services.prd.api';
 
-export const PROTOCOL = 'protocol';
-export const MICROSERVICE = 'microservice';
-export const NOW = 'now';
+export const SERVICES_REFUNDS_API_URL = 'services.refunds'
+export const SERVICES_LOCATION_REF_API_URL = 'services.locationref.api'
+
+export const PROTOCOL = 'protocol'
+export const MICROSERVICE = 'microservice'
+export const NOW = 'now'
 
 export const SESSION_SECRET = 'sessionSecret';
 
 export const ENVIRONMENT = 'environment';
 
 export const JURISDICTIONS = 'jurisdictions';
+
+export const WA_SUPPORTED_JURISDICTIONS = 'waSupportedJurisdictions';
 
 export const WILDCARD_SEARCH_FIELDS = 'wildcardSearchFields';
 
@@ -86,6 +92,8 @@ export const FEATURE_TERMS_AND_CONDITIONS_ENABLED = 'termsAndConditionsEnabled';
 export const FEATURE_HELMET_ENABLED = 'helmetEnabled';
 export const FEATURE_REDIS_ENABLED = 'redisEnabled';
 export const FEATURE_OIDC_ENABLED = 'oidcEnabled';
+export const FEATURE_SUBSTANTIVE_ROLE_ENABLED = 'substantiveRoleEnabled';
+export const FEATURE_ACCESS_MANAGEMENT_ENABLED = 'accessManagementEnabled';
 
 export const FEATURE_WORKALLOCATION_ENABLED = 'workAllocationEnabled';
 

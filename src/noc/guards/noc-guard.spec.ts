@@ -3,7 +3,7 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { AppConstants, LD_FLAG_MC_APPLICATION_THEMES } from '../../app/app.constants';
-import { Theme } from '../../app/containers';
+import { Theme } from '../../app/models/theme.model';
 import { UserDetails } from '../../app/models/user-details.model';
 import * as fromActions from '../../app/store';
 import { NocGuard } from './noc-guard';
@@ -32,7 +32,7 @@ describe('NocGuard', () => {
         'pui-finance-manager',
         'pui-organisation-manager',
         'pui-user-manager'
-      ],
+      ]
     }
   };
   const USER_2: UserDetails = {

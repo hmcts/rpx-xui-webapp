@@ -176,7 +176,6 @@ fdescribe('HearingRequirementsComponent', () => {
   });
 
   it('should call convertMapToArray during onint call', () => {
-    fixture.detectChanges();
     expect(component).toBeDefined();
     const caseFlags = _.groupBy(component.hearingValueModel.caseFlags.flags, 'partyName');
     const caseFlagConverted = component.convertMapToArray(caseFlags);
@@ -184,14 +183,12 @@ fdescribe('HearingRequirementsComponent', () => {
   });
 
   it('should assign values to caseFlags once convertMapToArray is called', () => {
-    fixture.detectChanges();
     component.assignHearingValue(hearingValueModel);
     expect(component.hearingValueModel).toEqual(hearingValueModel);
     expect(component.caseFlags.length).toEqual(2);
   });
 
   it('should call unsubscribe', () => {
-    fixture.detectChanges();
     spyOn(component.hearingStoreSub, 'unsubscribe');
     component.ngOnDestroy();
     expect(component.hearingStoreSub.unsubscribe).toHaveBeenCalled();

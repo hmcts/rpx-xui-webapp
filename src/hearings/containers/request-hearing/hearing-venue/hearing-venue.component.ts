@@ -59,7 +59,7 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
       this.selectedLocations$.subscribe(selectedLocations => {
           this.appendLocation(selectedLocations);
           const strLocations = selectedLocations.map(location => location.region).join(',');
-          this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions({region: strLocations}));
+         // this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions({region: strLocations}));
       });
     } else {
       this.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
@@ -142,9 +142,9 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
   }
 
   public ngOnDestroy(): void {
-    super.unsubscribe();
-    if (this.selectedLocationsSub) {
-      this.selectedLocationsSub.unsubscribe();
-    }
+    // super.unsubscribe();
+    // if (this.selectedLocationsSub) {
+    //   this.selectedLocationsSub.unsubscribe();
+    // }
   }
 }

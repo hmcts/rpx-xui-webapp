@@ -9,33 +9,47 @@
     </div>
     <div class="page">
       <div *ngIf="serviceIds" class="search-location">
-        <div class="govuk-form-group">
-          <div class="location-picker-custom">
-            <div class="search-location">
-              <label id="input-selected-location-label" class="govuk-body">
-                Search for a location by name
-              </label>
-              <br>
-              <exui-search-location class="search-location"
-                                    [selectedLocations$]="selectedLocations$"
-                                    [control]="findLocationFormGroup.controls.locationSelectedFormControl"
-                                    [disabled]=false
-                                    [serviceIds]="serviceIds"
-                                    [locationType]="'hearing'"></exui-search-location>
-              <a href="javascript:void(0)" (click)="addSelection()" class="govuk-button govuk-button--secondary"
-                 data-module="govuk-button">
-                Add location
-              </a>
+        <form  [formGroup]="findLocationFormGroup" class="form" action="hearing-judge">
+          <div class="govuk-form-group">      
+            <div class="govuk-form-group">
+              <div class="location-picker-custom">
+                <div class="search-location">
+                  <label id="input-selected-location-label" class="govuk-body">
+                        Search for a location by name
+                  </label>
+                  <br>
+                  <span  *ngIf="!findLocationFormGroup.controls.locationSelectedFormControl.valid && 
+                                 findLocationFormGroup.controls.locationSelectedFormControl.errors.required && 
+                                 findLocationFormGroup.controls.locationSelectedFormControl.dirty" 
+                      id="event-name-error" 
+                      class="govuk-error-message">
+                    <span class="govuk-visually-hidden">Error:</span> Enter a valid location
+                  </span>
+                  <exui-search-location class="search-location"
+                    [selectedLocations$]="selectedLocations$"
+                    [control]="findLocationFormGroup.controls.locationSelectedFormControl"
+                    [locations$]="locationsFound$"
+                    [disabled]=false 
+                    [serviceIds]="serviceIds"
+                    [locationType]="'hearing'"></exui-search-location>
+                    <a href="javascript:void(0)" (click)="addSelection()" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                      Add location
+                  </a>
+                </div>
+                <ul *ngIf="(selectedLocations$ | async)?.length" class="hmcts-filter-tags selection-container">
+                  <li class="location-selection"  *ngFor="let selection of selectedLocations$ | async">
+                      <a class="hmcts-filter__tag" (click)="removeSelection(selection)" href="javascript:void(0)">    
+                          {{ selection.court_name }}
+                      </a>
+                  </li>
+                </ul>
+              </div>
             </div>
-            <ul *ngIf="(selectedLocations$ | async)?.length" class="hmcts-filter-tags selection-container">
-              <li class="location-selection" *ngFor="let selection of selectedLocations$ | async">
-                <a class="hmcts-filter__tag" (click)="removeSelection(selection)" href="javascript:void(0)">
-                  {{ selection.court_name }}
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
+            <div class="govuk-inset-text">
+                You can check the venue has the required facilities or reasonable adjustments using<br> <a href="https://www.gov.uk/find-court-tribunal" target="_blank">Court Finder (opens in new tab)</a>
+            </div>      
+          </div>      
+        </form>   
       </div>
     </div>
     <div class="govuk-inset-text">

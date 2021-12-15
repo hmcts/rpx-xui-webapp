@@ -23,7 +23,7 @@
     "build:ng": "node --max_old_space_size=8192 node_modules/@angular/cli/bin/ng build --prod build",
     "build:docker": "docker build -t xui .",
     "lint": "yarn lint:ng && yarn lint:node",
-    "test": "ng test --code-coverage --no-watch --no-progress --browsers=ChromeHeadlessCI --source-map=true",
+    "test": "cd api && yarn coverage && cd .. && yarn test:ng",
     "test:ng": "ng test",
     "test:ng:watch": "ng test --watch=true",
     "lint:ng": "ng lint",

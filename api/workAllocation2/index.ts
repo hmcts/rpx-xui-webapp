@@ -21,7 +21,7 @@ import {
   handlePostSearch
 } from './caseWorkerService';
 
-import { CASE_EVENT_TASKS, JUDICIAL_WORKERS_LOCATIONS } from './constants/mock.data';
+import { JUDICIAL_WORKERS_LOCATIONS } from './constants/mock.data';
 import { TASK_ROLES } from './constants/task-roles.mock.data';
 import { PaginationParameter } from './interfaces/caseSearchParameter';
 import { Caseworker } from './interfaces/common';
@@ -42,7 +42,8 @@ import {
   getRoleAssignmentsByQuery,
   getSubstantiveRoles,
   getTypesOfWorkByUserId,
-  getUniqueCasesCount, handlePost,
+  getUniqueCasesCount,
+  handlePost,
   mapCasesFromData,
   mapCaseworkerData,
   paginate,
@@ -100,7 +101,7 @@ export async function getTypesOfWork(req: EnhancedRequest, res: Response, next: 
     const response = await getTypesOfWorkByUserId(path, req);
     let typesOfWork = [];
     if (response && response.work_types) {
-      typesOfWork = response.work_types.map(work => ({ key: work.id, label: work.label }));
+      typesOfWork = response.work_types.map(work => ({key: work.id, label: work.label}));
     }
     res.status(200);
     res.send(typesOfWork);
@@ -135,13 +136,13 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     // filter out task type from search parameters as not currently available until release 2.1
     searchRequest.search_parameters = searchRequest.search_parameters.filter(
       searchParam => searchParam.key !== 'taskType'
-    );
-    const sortParam = searchRequest.sorting_parameters.find(sort => sort.sort_by === 'created_date');
+    )
+    const sortParam = searchRequest.sorting_parameters.find(sort => sort.sort_by === 'created_date')
     if (sortParam) {
       sortParam.sort_by = 'dueDate';
     }
     delete searchRequest.pagination_parameters;
-    const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
+    const {status, data} = await handleTaskSearch(postTaskPath, searchRequest, req);
     const currentUser = req.body.currentUser ? req.body.currentUser : '';
     res.status(status);
     // Assign actions to the tasks on the data from the API.
@@ -149,7 +150,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     if (data) {
       // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
       // These should be mocked as if we were getting them from the user themselves
-      returnData = { tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records };
+      returnData = {tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records};
     }
     res.send(returnData);
   } catch (error) {
@@ -187,7 +188,7 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
     search_by: 'caseworker',
   };
   try {
-    const { status, data } = await handleTaskSearch(`${basePath}`, searchRequest, req);
+    const {status, data} = await handleTaskSearch(`${basePath}`, searchRequest, req);
     return res.send(data.tasks as TaskList).status(status);
   } catch (e) {
     next(e);
@@ -198,8 +199,8 @@ export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Resp
   const caseId = req.params.caseId;
   const eventId = req.params.eventId;
   try {
-    const payload = {caseId, eventId};
-    const {status, data} = await handlePost(`${baseWorkAllocationTaskUrl}/task/search-for-completable`,  payload, req);
+    const payload = { caseId, eventId };
+    const { status, data } = await handlePost(`${baseWorkAllocationTaskUrl}/task/search-for-completable`, payload, req);
     return res.send(data).status(status);
   } catch (e) {
     next(e);
@@ -213,7 +214,7 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
 
   try {
     const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action);
-    const { status, data } = await handleTaskPost(getTaskPath, req.body, req);
+    const {status, data} = await handleTaskPost(getTaskPath, req.body, req);
     res.status(status);
     res.send(data);
   } catch (error) {
@@ -241,7 +242,7 @@ export async function retrieveAllCaseWorkers(req: EnhancedRequest, res: Response
   const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
   const jurisdictions = getWASupportedJurisdictionsList();
   const payload = prepareRoleApiRequest(jurisdictions);
-  const { data } = await handlePostRoleAssignments(roleApiPath, payload, req);
+  const {data} = await handlePostRoleAssignments(roleApiPath, payload, req);
   const userIds = getUserIdsFromRoleApiResponse(data);
   const userUrl = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
   const userResponse = await handlePostCaseWorkersRefData(userUrl, userIds, req);
@@ -326,7 +327,7 @@ export async function searchCaseWorker(req: EnhancedRequest, res: Response, next
   try {
     const postTaskPath: string = prepareCaseWorkerSearchUrl(baseUrl);
 
-    const { status, data } = await handlePostSearch(postTaskPath, req.body, req);
+    const {status, data} = await handlePostSearch(postTaskPath, req.body, req);
     res.status(status);
     res.send(data);
   } catch (error) {
@@ -343,7 +344,7 @@ export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Re
       'case_type': req.body.searchRequest.caseTypeId,
       'event_id': req.body.searchRequest.eventId,
     };
-    const { status, data } = await handlePostSearch(postTaskPath, reqBody, req);
+    const {status, data} = await handlePostSearch(postTaskPath, reqBody, req);
     res.status(status);
     res.send(data);
   } catch (error) {
@@ -354,9 +355,9 @@ export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Re
 
 export async function getRolesCategory(req: EnhancedRequest, res: Response, next: NextFunction) {
   const personRoles = [
-    { roleId: 'judicial', roleName: 'Judicial' },
-    { roleId: 'legalOps', roleName: 'Legal Ops' },
-    { roleId: 'admin', roleName: 'Admin' }];
+    {roleId: 'judicial', roleName: 'Judicial'},
+    {roleId: 'legalOps', roleName: 'Legal Ops'},
+    {roleId: 'admin', roleName: 'Admin'}];
   return res.send(personRoles).status(200);
 }
 

@@ -68,12 +68,11 @@ export class HearingStageComponent extends RequestHearingPageFlow implements OnI
   }
 
   public checkFormData(): void {
+    this.hearingStageSelectionError = null;
+    this.validationErrors = [];
     if (!this.stageForm.valid) {
       this.hearingStageSelectionError = HearingStageEnum.SelectHearingStageError;
       this.validationErrors.push({ id: this.hearingStageOptions[0].key, message: HearingStageEnum.SelectHearingStageError });
-    } else {
-      this.hearingStageSelectionError = null;
-      this.validationErrors = [];
     }
   }
 

@@ -3,12 +3,12 @@ export interface RoleCaseData {
   case_name: string;
   case_id: string;
   case_category: string;
-  case_type: string;
+  case_type?: string;
   case_role: string;
   role_category: string;
   role?: string;
   jurisdiction: string;
-  jurisdictionId: string;
+  jurisdictionId?: string;
   location_id: string;
   startDate: Date;
   endDate: Date;

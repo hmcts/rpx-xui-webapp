@@ -85,7 +85,13 @@ describe('HearingStageComponent', () => {
         },
         lastError: null,
       },
-      hearingRequest: null,
+      hearingRequest: {
+        hearingRequestMainModel: {
+          hearingDetails: {
+            hearingType: 'Final'
+          }
+        }
+      },
       hearingConditions: null,
     }
   };
@@ -126,13 +132,13 @@ describe('HearingStageComponent', () => {
 
   it('should set hearingtype', () => {
     fixture.detectChanges();
-    expect(component.hearingType).toEqual(initialState.hearings.hearingValues.serviceHearingValuesModel.hearingType);
+    expect(component.hearingType).toEqual(initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.hearingType);
   });
 
   it('should initialise control value to hearing type from store', () => {
     fixture.detectChanges();
     component.ngAfterContentInit();
-    expect(component.stageForm.controls['stage-option'].value).toEqual(initialState.hearings.hearingValues.serviceHearingValuesModel.hearingType);
+    expect(component.stageForm.controls['stage-option'].value).toEqual(initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.hearingType);
   });
 
   it('should call unsubscribe', () => {
@@ -153,6 +159,7 @@ describe('HearingStageComponent', () => {
   });
 
   it('should check form data', () => {
+    component.stageForm.controls['stage-option'].setValue('Final');
     component.checkFormData();
     expect(component.hearingStageSelectionError).toBe(null);
     component.stageForm.controls['stage-option'].setValue('');

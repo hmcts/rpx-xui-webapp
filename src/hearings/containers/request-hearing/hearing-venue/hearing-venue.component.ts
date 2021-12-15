@@ -103,34 +103,34 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
   }
 
   public prepareHearingRequestData(): void {
-    // const locations: HearingLocationModel[] = this.selectedLocations.map(locationByEPIMSModel => {
-    //   return {
-    //     locationType: 'hearing',
-    //     locationId: locationByEPIMSModel.epims_id,
-    //     locationName: locationByEPIMSModel.court_name
-    //   } as HearingLocationModel;
-    // });
-    // this.hearingRequestMainModel = {
-    //   ...this.hearingRequestMainModel,
-    //   hearingDetails: {
-    //     ...this.hearingRequestMainModel.hearingDetails,
-    //     hearingLocations: locations
-    //   }
-    // };
+    const locations: HearingLocationModel[] = this.selectedLocations.map(locationByEPIMSModel => {
+      return {
+        locationType: 'hearing',
+        locationId: locationByEPIMSModel.epims_id,
+        locationName: locationByEPIMSModel.court_name
+      } as HearingLocationModel;
+    });
+    this.hearingRequestMainModel = {
+      ...this.hearingRequestMainModel,
+      hearingDetails: {
+        ...this.hearingRequestMainModel.hearingDetails,
+        hearingLocations: locations
+      }
+    };
   }
 
   public isFormValid(): boolean {
-    return true; // this.findLocationFormGroup.valid;
+    return this.findLocationFormGroup.valid;
   }
 
   public checkFormData(): void {
-    // if (this.selectedLocations.length === 0) {
-    //   this.findLocationFormGroup.setErrors({
-    //     locationNotSelected: true
-    //   });
-    // } else {
-    //   this.findLocationFormGroup.setErrors(null);
-    // }
+    if (this.selectedLocations.length === 0) {
+      this.findLocationFormGroup.setErrors({
+        locationNotSelected: true
+      });
+    } else {
+      this.findLocationFormGroup.setErrors(null);
+    }
   }
 
   public getLocationSearchFocus() {
@@ -143,8 +143,8 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
 
   public ngOnDestroy(): void {
     super.unsubscribe();
-    // if (this.selectedLocationsSub) {
-    //   this.selectedLocationsSub.unsubscribe();
-    // }
+    if (this.selectedLocationsSub) {
+      this.selectedLocationsSub.unsubscribe();
+    }
   }
 }

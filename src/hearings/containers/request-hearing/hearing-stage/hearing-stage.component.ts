@@ -34,9 +34,9 @@ export class HearingStageComponent extends RequestHearingPageFlow implements OnI
   }
 
   public ngOnInit() {
-    this.hearingStoreSub = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesModel)).subscribe(
+    this.hearingStoreSub = this.hearingStore.pipe(select(fromHearingStore.getHearingRequest)).subscribe(
       hearingValueModel => {
-        this.hearingType = hearingValueModel && hearingValueModel.hearingType ? hearingValueModel.hearingType : this.hearingType;
+        this.hearingType = hearingValueModel && hearingValueModel.hearingRequestMainModel && hearingValueModel.hearingRequestMainModel.hearingDetails ? hearingValueModel.hearingRequestMainModel.hearingDetails.hearingType : this.hearingType;
       }
     );
   }

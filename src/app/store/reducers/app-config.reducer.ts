@@ -1,7 +1,5 @@
 import { TCDocument } from '@hmcts/rpx-xui-common-lib';
-import { UserDetails } from '../../../app/models/user-details.model';
-import { ConfigurationModel } from '../../models/configuration.model';
-import {TermsAndCondition} from '../../models/TermsAndCondition';
+import { ConfigurationModel, TermsAndCondition, UserDetails } from '../../models';
 import * as fromActions from '../actions/';
 
 export interface AppConfigState {
@@ -110,7 +108,6 @@ export function reducer(
         ...state
       };
   }
-  return state;
 }
 
 

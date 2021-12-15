@@ -283,7 +283,7 @@ select::-ms-expand {
     font-size: 16px;
   }
   p {
-    font-size: 16px;
+    font-size: 19px;
     margin-bottom: 25px;
     white-space: normal;
   }
@@ -391,9 +391,4 @@ button:focus {
   a:focus {
     background-color: #ffdd00 !important;
   }
-}
-
-exui-task-list {
-  display: block;
-  min-height: 250px;
 }

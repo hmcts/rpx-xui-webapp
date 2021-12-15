@@ -11,15 +11,31 @@ const MockApp = require('../../nodeMock/app');
 const browserUtil = require('../util/browserUtil');
 const customReporter = require('../../e2e/support/reportLogger');
 
-const isParallelExecution = true;
+const isParallelExecution = argv.parallel ? argv.parallel=== "true" : true;
 
+const chromeOptArgs = [ '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'];
+
+const perfLoggingPrefs = {
+    'enableNetwork': true,
+    'enablePage': false
+};
+
+const loggingPrefs = {
+    performance: 'ALL',
+    browser: 'ALL'
+};
+
+if (!argv.head ){
+    chromeOptArgs.push('--headless');
+}
 const jenkinsConfig = [
 
     {
         browserName: 'chrome',
         acceptInsecureCerts: true,
         nogui: true,
-        chromeOptions: { args: ['--headless', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'] }
+        chromeOptions: { args: chromeOptArgs, perfLoggingPrefs: perfLoggingPrefs  },
+        loggingPrefs: loggingPrefs
     }
 ];
 
@@ -28,7 +44,8 @@ const localConfig = [
 
         browserName: 'chrome',
         acceptInsecureCerts: true,
-        chromeOptions: { args: ['--headless1', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
+        chromeOptions: { args: chromeOptArgs, perfLoggingPrefs: perfLoggingPrefs },
+        loggingPrefs: loggingPrefs,
         proxy: {
             proxyType: 'manual',
             httpProxy: 'proxyout.reform.hmcts.net:8080',
@@ -63,7 +80,7 @@ const config = {
     beforeLaunch(){
         if (isParallelExecution) {
             MockApp.setServerPort(3001);
-            MockApp.init();
+            MockApp.init(3002);
             MockApp.startServer();
         }    
     },
@@ -91,6 +108,12 @@ const config = {
             MockApp.setLogMessageCallback(customReporter.AddMessage);
         }    
         MockApp.setLogMessageCallback(customReporter.AddJson);
+
+        //Set default explict timeout default value to 10sec
+        const customWaits = require('../../e2e/support/customWaits');
+        customWaits.setDefaultWaitTime(8000);
+        customWaits.setRetryCount(2);
+
     },
     cucumberOpts: {
         strict: true,
@@ -120,7 +143,9 @@ const config = {
                 reportName: 'XUI Manage Cases Functional Tests',
                 // openReportInBrowser: true,
                 jsonDir: 'reports/tests/ngIntegration',
-                reportPath: 'reports/tests/ngIntegration'
+                reportPath: 'reports/tests/ngIntegration',
+                displayDuration : true,
+                durationInMS : false
             }
         }
     ]
@@ -132,10 +157,11 @@ function getBDDTags() {
     let tags = [];
     if (!process.env.TEST_URL ||
         process.env.TEST_URL.includes("pr-") ||
-        process.env.TEST_URL.includes("localhost")) {
-        tags.push("@ng");
+        process.env.TEST_URL.includes("localhost")) { 
         if (argv.tags){
             tags = argv.tags.split(',');
+        }else{
+            tags = ["@ng", "~@ignore","~@wa2"];
         }
     }else{
         tags.push("@none"); 

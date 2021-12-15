@@ -1,19 +1,18 @@
-import * as fromFeature from '../../store';
-
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import {
   AlertService,
   CaseUIToolkitModule,
   ErrorNotifierService
 } from '@hmcts/ccd-case-ui-toolkit';
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { Store, StoreModule, combineReducers } from '@ngrx/store';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
 
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CaseDetailsHomeComponent } from '..';
-import { InfoMessage } from '../../../work-allocation/enums';
-import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
 import { reducers } from '../../../app/store';
+import { InfoMessage } from '../../../work-allocation/enums';
+import * as fromFeature from '../../store';
 
 describe('CaseDetailsHomeComponent', () => {
   let component: CaseDetailsHomeComponent;
@@ -73,9 +72,10 @@ describe('CaseDetailsHomeComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should not have a success message that is shown', () => {
+    it('should have a success message that is shown', () => {
       // as data has been set up beforehand to have been redirected from avialable tasks
       // the alert service will have been called
+      expect(mockAlertService.setPreserveAlerts).toHaveBeenCalled();
       expect(mockAlertService.success).toHaveBeenCalled();
     });
 

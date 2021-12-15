@@ -1,3 +1,5 @@
+import { RoleCategory } from '../../../role-access/models';
+
 export interface Assignee {
   userId: string;
   userName?: string;
@@ -16,6 +18,7 @@ export interface Caseworker {
   lastName: string;
   email: string;
   location: Location;
+  roleCategory: RoleCategory
 }
 
 export interface JudicialWorker {
@@ -33,6 +36,34 @@ export interface LocationSummary {
 
 export interface Location extends LocationSummary {
   services: string[];
+}
+
+export interface CaseSearchParameter {
+  ccdId?: string;
+  eventId?: string;
+  jurisdiction?: string[];
+  location?: string[];
+  postEventState?: string;
+  preEventState?: string;
+  state?: string[];
+  user?: string[];
+}
+
+export interface CaseSearchParameters {
+  parameters: CaseSearchParameter[];
+}
+
+export interface SearchCaseParameter {
+  key: string;
+  operator: string;
+  values: string[];
+}
+
+export interface SearchCaseRequest {
+  search_parameters: SearchCaseParameter[];
+  sorting_parameters: SortParameter[];
+  search_by?: string;
+  pagination_parameters?: PaginationParameter;
 }
 
 export interface SearchTaskParameter {

@@ -164,6 +164,7 @@ defineSupportCode(function ({ Given, When, Then }) {
   Given(/^I should be redirected to the Idam login page$/, async function () {
 
     await BrowserWaits.retryWithActionCallback(async () => {
+      await BrowserWaits.waitForElement(loginPage.signinTitle);
       await expect(loginPage.signinTitle.getText())
         .to
         .eventually
@@ -301,6 +302,7 @@ defineSupportCode(function ({ Given, When, Then }) {
   });
 
   Given('I am logged into Expert UI with test user identified as {string}', async function (testUserIdentifier) {
+    const world = this;
 
     const matchingUsers = testConfig.users.filter(user => user.userIdentifier === testUserIdentifier);
     if (matchingUsers.length === 0 ){

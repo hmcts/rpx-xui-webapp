@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { RoleCategory } from 'api/roleAccess/models/allocate-role.enum';
 import { mergeMap } from 'rxjs/operators';
 
 import { Answer, ExclusionNavigationEvent, RoleExclusion } from '../../models';
 import { AnswerHeaderText, AnswerLabelText, ExclusionMessageText } from '../../models/enums';
-import { RoleExclusionsService } from '../../services';
+import { AllocateRoleService, RoleExclusionsService } from '../../services';
 import { handleError } from '../../utils';
 
 @Component({
@@ -24,7 +25,8 @@ export class DeleteExclusionComponent implements OnInit {
 
   constructor(private readonly route: ActivatedRoute,
               private readonly router: Router,
-              private readonly roleExclusionsService: RoleExclusionsService) {}
+              private readonly roleExclusionsService: RoleExclusionsService,
+              private readonly allocateService: AllocateRoleService) {}
 
   public ngOnInit(): void {
     const paramMap$ = this.route.queryParamMap;
@@ -32,7 +34,14 @@ export class DeleteExclusionComponent implements OnInit {
         return this.getExclusionFromQuery(queryMap);
       })).subscribe(exclusions => {
         this.roleExclusion = exclusions.find(excl => excl.id === this.exclusionId);
-        this.populateAnswers(this.roleExclusion);
+        if (this.roleExclusion.userType.toUpperCase() === RoleCategory.JUDICIAL) {
+          this.allocateService.getCaseRolesUserDetails([this.roleExclusion.actorId]).subscribe(userDetails => {
+            if (userDetails[0]) {
+              this.roleExclusion.name = userDetails[0].known_as;
+              this.populateAnswers(this.roleExclusion);
+            }
+          })
+        }
       });
   }
 

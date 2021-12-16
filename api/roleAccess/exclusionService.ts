@@ -106,6 +106,7 @@ export function mapResponseToExclusions(roleAssignments: RoleAssignment[],
     type: roleAssignment.roleType,
     userType: roleAssignment.roleCategory,
     notes: roleAssignment.attributes.notes,
+    actorId: roleAssignment.actorId,
   }));
 }
 

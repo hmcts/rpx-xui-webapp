@@ -4,36 +4,36 @@ import { sanitiseMetadataFieldName, isStringOrNumber, getFilterType, mapCaseRole
 
 describe('Utils', () => {
     const caseRolesData: any[] = [
-        {
-          actions: [
-            {
-              id: 'reallocate',
-              title: 'Reallocate'
-            },
-            {
-              id: 'remove',
-              title: 'Remove Allocation'
-            }
-          ],
-          actorId: '519e0c40-d30e-4f42-8a4c-2c79838f0e4e',
-          end: null,
-          id: '13daef07-dbd2-4106-9099-711c4505f04f',
-          location: null,
-          roleCategory: RoleCategory.JUDICIAL,
-          roleName: 'hearing-judge',
-          start: '2021-12-09T00:00:00Z'
-        }
-      ];
-      const data: CaseRoleDetails[] = [
-        {
-          idam_id: '519e0c40-d30e-4f42-8a4c-2c79838f0e4e',
-          sidam_id: '519e0c40-d30e-4f42-8a4c-2c79838f0e4e',
-          known_as: 'Tom',
-          surname: 'Cruz',
-          full_name: 'Tom Cruz',
-          email_id: '330085EMP-@ejudiciary.net',
-        }
-      ];
+      {
+        actions: [
+          {
+            id: 'reallocate',
+            title: 'Reallocate'
+          },
+          {
+            id: 'remove',
+            title: 'Remove Allocation'
+          }
+        ],
+        actorId: '519e0c40-d30e-4f42-8a4c-2c79838f0e4e',
+        end: null,
+        id: '13daef07-dbd2-4106-9099-711c4505f04f',
+        location: null,
+        roleCategory: RoleCategory.JUDICIAL,
+        roleName: 'hearing-judge',
+        start: '2021-12-09T00:00:00Z'
+      }
+    ];
+    const data: CaseRoleDetails[] = [
+      {
+        idam_id: '519e0c40-d30e-4f42-8a4c-2c79838f0e4e',
+        sidam_id: '519e0c40-d30e-4f42-8a4c-2c79838f0e4e',
+        known_as: 'Tom',
+        surname: 'Cruz',
+        full_name: 'Tom Cruz',
+        email_id: '330085EMP-@ejudiciary.net',
+      }
+    ];
     it('should determine string or number', () => {
         expect(isStringOrNumber('string')).toEqual(true);
         expect(isStringOrNumber(1)).toEqual(true);
@@ -66,7 +66,7 @@ describe('Utils', () => {
         name: 'Tom Cruz',
         userType: 'JUDICIAL',
         notes: '',
-        added: new Date(2021,12,31),
+        added: new Date(2021, 12, 31),
         email: 'test@mail.com'
     }]
       const result = mapCaseRolesForExclusions(roleExclusions, data);

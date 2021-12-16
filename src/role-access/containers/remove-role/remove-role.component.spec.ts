@@ -31,7 +31,7 @@ describe('RemoveRoleComponent', () => {
     'back'
   ]);
   const allworkUrl = `work/all-work/cases`;
-  window.history.pushState({ returnUrl: allworkUrl }, '', allworkUrl);
+  window.history.pushState({ backUrl: allworkUrl }, '', allworkUrl);
 
   class AllocateRoleMockService extends AllocateRoleService {
     public confirmAllocation(allocateRoleStateData: AllocateRoleStateData): Observable<any> {

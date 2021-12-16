@@ -28,7 +28,7 @@
         <a *ngFor="let action of item.actions"
            href="javascript:void(0)"
            [routerLink]="['/', 'role-access', 'allocate-role', action.id]"
-           [queryParams]="queryParams(item)" [state]="{returnUrl: returnUrl}">{{action.title}}</a>
+           [queryParams]="queryParams(item)" [state]="{backUrl: backUrl}">{{action.title}}</a>
       </td>
     </tr>
   </ng-container>

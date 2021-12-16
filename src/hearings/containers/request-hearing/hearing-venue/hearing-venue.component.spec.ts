@@ -7,7 +7,6 @@ import { SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
 import {LocationByEPIMSModel} from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import {provideMockStore} from '@ngrx/store/testing';
 import {Observable, of} from 'rxjs';
-import {ACTION} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
 import {HearingVenueComponent} from './hearing-venue.component';
 
@@ -43,8 +42,8 @@ class MockLocationSearchContainerComponent {
 fdescribe('HearingVenueComponent', () => {
   let component: HearingVenueComponent;
   let fixture: ComponentFixture<HearingVenueComponent>;
- // const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
-//  const hearingsService = new HearingsService(mockedHttpClient);
+  const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
+  const hearingsService = new HearingsService(mockedHttpClient);
  // hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 
   const initialState = {
@@ -54,8 +53,52 @@ fdescribe('HearingVenueComponent', () => {
           {
             hmctsServiceID: 'SSCS'
           }
-        ]
+        ],
       },
+      hearingRequest: {
+        hearingRequestMainModel: {
+          requestDetails: {
+            requestTimeStamp: null
+          },
+          hearingDetails: {
+            duration: null,
+            hearingType: null,
+            hearingLocations: [],
+            hearingIsLinkedFlag: false,
+            hearingWindow: null,
+            privateHearingRequiredFlag: false,
+            panelRequirements: null,
+            autolistFlag: false,
+            nonStandardHearingDurationReasons: [],
+            hearingPriorityType: null,
+            numberOfPhysicalAttendees: null,
+            hearingInWelshFlag: false,
+            facilitiesRequired: [],
+            listingComments: null,
+            hearingRequester: null,
+            leadJudgeContractType: null
+          },
+          caseDetails: {
+            hmctsServiceCode: null,
+            caseRef: null,
+            requestTimeStamp: null,
+            hearingID: null,
+            externalCaseReference: null,
+            caseDeepLink: null,
+            hmctsInternalCaseName: null,
+            publicCaseName: null,
+            caseAdditionalSecurityFlag: false,
+            caseInterpreterRequiredFlag: false,
+            caseCategories: [],
+            caseManagementLocationCode: null,
+            caserestrictedFlag: false,
+            caseSLAStartDate: null
+          },
+          partyDetails: []
+        },
+        lastError: null
+      },
+      hearingConditions: {}
     }
   };
 
@@ -65,7 +108,7 @@ fdescribe('HearingVenueComponent', () => {
       declarations: [HearingVenueComponent, MockLocationSearchContainerComponent, MockHearingPartiesComponent ],
       providers: [
         provideMockStore({initialState}),
-    //    {provide: HearingsService, useValue: hearingsService},
+        {provide: HearingsService, useValue: hearingsService},
         FormBuilder
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]

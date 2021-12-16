@@ -4,7 +4,7 @@ import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { first, map, mergeMap } from 'rxjs/operators';
-import { getJudicialUserIds, getJudicialUserIdsFromExclusions } from '../../../cases/utils/utils';
+import { getJudicialUserIds, getJudicialUserIdsFromExclusions, mapCaseRoles, mapCaseRolesForExclusions } from '../../../cases/utils/utils';
 import { UserDetails } from '../../../app/models/user-details.model';
 import * as fromRoot from '../../../app/store';
 import { CaseRole, RoleExclusion } from '../../../role-access/models';
@@ -37,12 +37,12 @@ export class RolesAndAccessContainerComponent implements OnInit {
     const jurisdiction = this.caseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
     this.roles$ = this.allocateService.getCaseRoles(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id).pipe(
       mergeMap((caseRoles: CaseRole[]) => this.allocateService.getCaseRolesUserDetails(getJudicialUserIds(caseRoles)).pipe(
-        map((caseRolesWithUserDetails: CaseRoleDetails[]) => this.mapCaseRoles(caseRoles, caseRolesWithUserDetails))
+        map((caseRolesWithUserDetails: CaseRoleDetails[]) => mapCaseRoles(caseRoles, caseRolesWithUserDetails))
       )),
     );
     this.exclusions$ = this.roleExclusionsService.getCurrentUserRoleExclusions(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id).pipe(
       mergeMap((exclusions: RoleExclusion[]) => this.allocateService.getCaseRolesUserDetails(getJudicialUserIdsFromExclusions(exclusions)).pipe(
-        map((caseRolesWithUserDetails: CaseRoleDetails[]) => this.mapCaseRolesForExclusions(exclusions, caseRolesWithUserDetails))
+        map((caseRolesWithUserDetails: CaseRoleDetails[]) => mapCaseRolesForExclusions(exclusions, caseRolesWithUserDetails))
       )),
     );
 
@@ -50,29 +50,6 @@ export class RolesAndAccessContainerComponent implements OnInit {
     // as this will enable the loading caseworkers if not
     // present in session storage
     this.caseworkerDataService.getAll().pipe(first()).subscribe();
-  }
-
-  public mapCaseRolesForExclusions(exclusions: RoleExclusion[], caseRolesWithUserDetails: CaseRoleDetails[]): RoleExclusion[] {
-    exclusions.forEach(exclusion => {
-      if (caseRolesWithUserDetails.find(detail => detail.sidam_id === exclusion.actorId)) {
-        exclusion.name = caseRolesWithUserDetails.find(detail => detail.sidam_id === exclusion.actorId).known_as;
-      }
-    });
-    return exclusions
-  }
-
-  public mapCaseRoles(caseRoles: CaseRole[], caseRolesWithUserDetails: CaseRoleDetails[]): CaseRole[] {
-    return caseRoles.map(role => {
-      const userDetails = caseRolesWithUserDetails.find(detail => detail.sidam_id === role.actorId);
-      if (!userDetails) {
-        return role;
-      }
-      return {
-        ...role,
-        name: userDetails.full_name,
-        email: userDetails.email_id,
-      };
-    });
   }
 
   public applyJurisdiction(caseDetails: CaseView): void {

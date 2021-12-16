@@ -11,7 +11,7 @@ import { CaseRolesTableComponent } from '../../../role-access/components/case-ro
 import { ExclusionsTableComponent } from '../../../role-access/components/exclusions-table/exclusions-table.component';
 import { CaseRole, RoleCategory, RoleExclusion } from '../../../role-access/models';
 import { CaseRoleDetails } from '../../../role-access/models/case-role-details.interface';
-import { AllocateRoleService, RoleExclusionsService } from '../../../role-access/services';
+import { RoleExclusionsService } from '../../../role-access/services';
 import { RoleExclusionsMockService } from '../../../role-access/services/role-exclusions.mock.service';
 import { initialMockState } from '../../../role-access/testing/app-initial-state.mock';
 import { RolesAndAccessComponent } from '../../components/roles-and-access/roles-and-access.component';
@@ -212,11 +212,5 @@ describe('RolesContainerComponent', () => {
       expect(caseRoles.length).toBe(1);
       expect(caseRoles[0].name).toBe('Tom Cruz');
     });
-  });
-
-  it('should map caseRoles', () => {
-    const result = component.mapCaseRoles(caseRolesData, data);
-    expect(result.length).toBe(1);
-    expect(result[0].name).toBe('Tom Cruz');
   });
 });

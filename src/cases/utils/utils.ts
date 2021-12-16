@@ -1,3 +1,4 @@
+import { CaseRoleDetails } from '../../role-access/models/case-role-details.interface';
 import { CaseRole, RoleCategory, RoleExclusion } from '../../role-access/models';
 
 export function isStringOrNumber(value: any): boolean {
@@ -33,4 +34,27 @@ export function getJudicialUserIds(caseRoles: CaseRole[]): string[] {
 export function getJudicialUserIdsFromExclusions(exclusions: RoleExclusion[]): string[] {
   const userIds = exclusions.filter(role => role.userType.toUpperCase() === RoleCategory.JUDICIAL).map(exclusionRole => exclusionRole.actorId);
   return userIds;
+}
+
+export function mapCaseRolesForExclusions(exclusions: RoleExclusion[], caseRolesWithUserDetails: CaseRoleDetails[]): RoleExclusion[] {
+  exclusions.forEach(exclusion => {
+    if (caseRolesWithUserDetails.find(detail => detail.sidam_id === exclusion.actorId)) {
+      exclusion.name = caseRolesWithUserDetails.find(detail => detail.sidam_id === exclusion.actorId).known_as;
+    }
+  });
+  return exclusions
+}
+
+export function mapCaseRoles(caseRoles: CaseRole[], caseRolesWithUserDetails: CaseRoleDetails[]): CaseRole[] {
+  return caseRoles.map(role => {
+    const userDetails = caseRolesWithUserDetails.find(detail => detail.sidam_id === role.actorId);
+    if (!userDetails) {
+      return role;
+    }
+    return {
+      ...role,
+      name: userDetails.full_name,
+      email: userDetails.email_id,
+    };
+  });
 }

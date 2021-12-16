@@ -46,7 +46,9 @@ describe('HearingWelshComponent', () => {
       hearingRequest: {
         hearingRequestMainModel: {
           requestDetails: null,
-          hearingDetails: null,
+          hearingDetails: {
+            hearingInWelshFlag: true,
+          },
           partyDetails: []
         },
       },
@@ -90,6 +92,10 @@ describe('HearingWelshComponent', () => {
     errors = hearingInWelshFlag.errors;
     fixture.detectChanges();
     expect(errors).toBeTruthy();
+  });
+
+  it('should load default value', (): void => {
+    expect(component.welshForm.value['hearingInWelshFlag']).toBeTruthy();
   });
 
   it('should execute a continue action', (): void => {

@@ -2,8 +2,8 @@ const jwt = require('jsonwebtoken');
 const reportLogger = require('../../e2e/support/reportLogger');
 // const addContext = require('mochawesome/addContext');
 const MockApp = require('../../nodeMock/app');
-const config = require('../config/protractor-cucumber.conf');
-
+const minimist = require('minimist');
+const argv = minimist(process.argv.slice(2));
 
 const axios = require('axios');
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
@@ -19,7 +19,8 @@ const http = axios.create(axiosOptions);
 class BrowserUtil{
 
     async gotoHomePage(){
-        await browser.get(config.config.baseUrl);
+        const baseUrl =  argv.debug ? 'http://localhost:3000/': 'http://localhost:4200/';
+        await browser.get(baseUrl);
     }
 
     setAuthCookie(){
@@ -142,14 +143,23 @@ class BrowserUtil{
         return scenarioId ? scenarioId.value : null;
     }
 
+    async isTextPresentInElementWithCssSelector(cssSelector, text){
+        const elementtext = await $(cssSelector).getText();
+        return elementtext.includes(text);
+    }
+
     async addTextToElementWithCssSelector(cssSelector, text,append){
-        await browser.executeScript(() => {
+        return await browser.executeScript( () => {
             let div = document.querySelector(arguments[0]);
+            if(div === undefined || div == null){
+                return `no element found with query selector ${arguments[0]}`
+            }
             if (arguments[2]){
                 div.innerHTML += arguments[1];
             }else{
                 div.innerHTML = arguments[1];
             }
+            return "success";
             
         }, cssSelector, text, append);
     }

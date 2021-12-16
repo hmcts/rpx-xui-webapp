@@ -6,6 +6,7 @@ import { select, Store } from '@ngrx/store';
 import { combineLatest } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 import { map } from 'rxjs/operators';
+import { AppUtils } from '../../../app/app-utils';
 import { AppConstants } from '../../../app/app.constants';
 import { UserDetails } from '../../../app/models/user-details.model';
 import * as fromRoot from '../../../app/store';
@@ -13,7 +14,8 @@ import { FeatureVariation } from '../../models/feature-variation.model';
 
 @Component({
   selector: 'exui-case-viewer-container',
-  templateUrl: './case-viewer-container.component.html'
+  templateUrl: './case-viewer-container.component.html',
+  styleUrls: ['./case-viewer-container.component.scss']
 })
 export class CaseViewerContainerComponent implements OnInit {
   private static readonly FEATURE_WORK_ALLOCATION_RELEASE_1 = 'WorkAllocationRelease1';
@@ -53,8 +55,8 @@ export class CaseViewerContainerComponent implements OnInit {
   }
 
   private static enablePrependedTabs(feature: string, userDetails: UserDetails): boolean {
-    // TODO disabled now, this is from work allocation, this needed to be synced with work allocation once it's live
-    return false;
+    return feature === CaseViewerContainerComponent.FEATURE_WORK_ALLOCATION_RELEASE_2
+      && !!AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
   }
 
   public ngOnInit(): void {

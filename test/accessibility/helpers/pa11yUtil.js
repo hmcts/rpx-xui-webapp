@@ -4,7 +4,7 @@ const { conf } = require('../config/config');
 
 const jwt = require('jsonwebtoken');
 const puppeteer = require('puppeteer');
-
+const MockApp = require('../../nodeMock/app');
 
 const fs = require('fs');
 
@@ -23,7 +23,9 @@ async function initBrowser() {
 
     page = await testBrowser.newPage();
     await page.goto("http://localhost:4200/");
-    
+    await page.setCookie({ name: 'scenarioMockPort', value: '' + MockApp.serverPort })
+    // await page.goto("http://localhost:4200/");
+
 }
 
 async function pa11ytest(test, actions, startUrl, roles) {
@@ -63,9 +65,10 @@ async function pa11ytestRunner(test, actions, startUrl, roles) {
 
     let result;
 
-    // await initBrowser();
+  
     // await setScenarioCookie(test);
     try {
+        await initBrowser();
         result = await pa11y(startUrl, {
             browser: testBrowser,
             page: page,

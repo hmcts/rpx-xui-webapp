@@ -78,4 +78,3 @@ Then(/^search criteria details should be reset$/, async function () {
   expect(await searchPage.hasSearchReturnedResults()).to.be.false;
 });
 });
-

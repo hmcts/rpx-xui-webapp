@@ -7,19 +7,27 @@ const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
 const CucumberReporter = require('../../../e2e/support/reportLogger');
 
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
+const workAllocationDataModel = require("../../../dataModels/workAllocation");
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Given('I navigate to home page', async function () {
-        await browserUtil.gotoHomePage();
-        await headerpage.waitForPrimaryNavDisplay();
-        await browserUtil.waitForLD();
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await browserUtil.gotoHomePage();
+            await BrowserWaits.retryWithActionCallback(async () => {
+                await headerpage.waitForPrimaryNavDisplay();
+                await browserUtil.waitForLD();
+            });
+            
+        });  
     });
 
     Given('I navigate page route {string}', async function (routeUrl) {
         await browser.get(routeUrl);
-        await headerpage.waitForPrimaryNavDisplay();
-        await browserUtil.waitForLD();
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await headerpage.waitForPrimaryNavDisplay();
+            await browserUtil.waitForLD();
+        });        
     });
 
     Given('I init MockApp', async function () {
@@ -56,10 +64,39 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Given('I set MOCK request {string} intercept with reference {string}', async function(url,reference){
         global.scenarioData[reference] = null;
         MockApp.addIntercept(url,(req,res,next) => {
+            CucumberReporter.AddMessage(`${url} request body`)
+            CucumberReporter.AddJson(req.body)
             global.scenarioData[reference] = req.body;
             next();
         })
      });
+
+    Given('I set MOCK request {string} response log to report', async function (url) {
+        MockApp.addIntercept(url, (req, res, next) => { 
+            CucumberReporter.AddJson(req.body)
+            let send = res.send;
+            res.send = function (body) {
+                CucumberReporter.AddMessage('Intercept response or api ' + url);
+                CucumberReporter.AddJson(body)
+                send.call(this, body);
+            }
+            next();
+        })
+    });
+
+    Given('I set MOCK request {string} intercept, hold response with reference {string}', async function (url,reference) {
+        MockApp.addIntercept(url, (req, res, next) => {
+            CucumberReporter.AddJson(req.body)
+            let send = res.send;
+            res.send = function (body) {
+                CucumberReporter.AddMessage('Intercept response or api ' + url);
+                CucumberReporter.AddJson(body)
+                global.scenarioData[reference] = body;
+                send.call(this, body);
+            }
+            next();
+        })
+    });
 
      Given('I reset reference {string} value to null', async function(reference){
          global.scenarioData[reference] = null;
@@ -100,6 +137,37 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
        }
         
         
+     });
+
+
+    Given('I set MOCK find person response for jurisdictions', async function(datatable){
+        const personsConfigHashes = datatable.hashes();
+
+        const allPersons = [];
+        for (let i = 0; i < personsConfigHashes.length; i++) {
+            const inputperson = personsConfigHashes[i];
+            const person = workAllocationDataModel.getFindPersonObj();
+
+            for (const key of Object.keys(inputperson)){
+                person[key] = inputperson[key];
+            }
+
+           
+            allPersons.push(person);
+            
+        }
+
+        MockApp.onPost('/workallocation2/findPerson', (req,res) => {
+            const inputJurisdiction = req.body.searchOptions.jurisdiction;
+            const filterdUsersForJurisdiction = [];
+            for (const p of allPersons){
+                if (p.domain === inputJurisdiction){
+                    filterdUsersForJurisdiction.push(p);
+                }  
+            }
+            res.send(filterdUsersForJurisdiction);
+        });
+
      });
 
 

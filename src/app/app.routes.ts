@@ -1,4 +1,5 @@
 import { ExtraOptions, Routes } from '@angular/router';
+import { FeatureToggleGuard } from '@hmcts/rpx-xui-common-lib';
 import {
   AccessibilityComponent,
   ApplicationRoutingComponent,
@@ -38,6 +39,11 @@ export const ROUTES: Routes = [
     path: 'tasks',
     canActivate: [AuthGuard, AcceptTermsGuard],
     loadChildren: '../work-allocation/work-allocation.module#WorkAllocationModule'
+  },
+  {
+    path: 'role-access',
+    canActivate: [AuthGuard, AcceptTermsGuard],
+    loadChildren: '../role-access/role-access.module#RoleAccessModule'
   },
   // TODO: remove redundant redirections
   { path: 'case/:jurisdiction/:case-type/:cid', redirectTo: 'cases/case-details/:cid', pathMatch: 'full' },
@@ -133,6 +139,16 @@ export const ROUTES: Routes = [
     component: SignedOutComponent,
     data: {
       title: 'You have been signed out'
+    }
+  },
+  {
+    path: 'refunds',
+    canActivate: [AuthGuard, AcceptTermsGuard, FeatureToggleGuard],
+    loadChildren: '../refunds/refunds.module#RefundsModule',
+    data: {
+      title: 'Refunds',
+      needsFeaturesEnabled: ['feature-refunds'],
+      featureDisabledRedirect: '/'
     }
   },
   {

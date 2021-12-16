@@ -1,3 +1,5 @@
+import { CaseRole, RoleCategory } from '../../role-access/models';
+
 export function isStringOrNumber(value: any): boolean {
     return (typeof value === 'string' && value.length !== 0) || (typeof value === 'number');
 }
@@ -21,4 +23,11 @@ export function escapeRegExp(string: string): string {
 
 export function replaceAll(str: string, find: string, replace: string): string {
   return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+}
+
+export function getJudicialUserIds(caseRoles: CaseRole[]): string[] {
+  const userIds = caseRoles
+  .filter(role => role.roleCategory === RoleCategory.JUDICIAL)
+  .map(caseRole => caseRole.actorId);
+  return userIds;
 }

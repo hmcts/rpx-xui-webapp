@@ -60,7 +60,7 @@ describe('RemoveRoleComponent', () => {
       return of(null);
     }
 
-    public getCaseRolesUserDetails(caseRoles: CaseRole[]): Observable<CaseRoleDetails[]> {
+    public getCaseRolesUserDetails(caseRoles: string[]): Observable<CaseRoleDetails[]> {
       const caseRoleDetail: CaseRoleDetails = {
         idam_id: '999999999',
         surname: '',

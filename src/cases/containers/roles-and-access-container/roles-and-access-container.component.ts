@@ -4,6 +4,7 @@ import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { first, map, mergeMap } from 'rxjs/operators';
+import { getJudicialUserIds } from '../../../cases/utils/utils';
 import { UserDetails } from '../../../app/models/user-details.model';
 import * as fromRoot from '../../../app/store';
 import { CaseRole, RoleExclusion } from '../../../role-access/models';
@@ -35,7 +36,7 @@ export class RolesAndAccessContainerComponent implements OnInit {
     this.applyJurisdiction(this.caseDetails);
     const jurisdiction = this.caseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
     this.roles$ = this.allocateService.getCaseRoles(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id).pipe(
-      mergeMap((caseRoles: CaseRole[]) => this.allocateService.getCaseRolesUserDetails(caseRoles).pipe(
+      mergeMap((caseRoles: CaseRole[]) => this.allocateService.getCaseRolesUserDetails(getJudicialUserIds(caseRoles)).pipe(
         map((caseRolesWithUserDetails: CaseRoleDetails[]) => this.mapCaseRoles(caseRoles, caseRolesWithUserDetails))
       )),
     );

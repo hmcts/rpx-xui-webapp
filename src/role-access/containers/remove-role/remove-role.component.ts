@@ -10,6 +10,7 @@ import { Answer, CaseRole, RemoveAllocationNavigationEvent } from '../../models'
 import { CaseRoleDetails } from '../../models/case-role-details.interface';
 import { RemoveRoleText } from '../../models/enums/answer-text';
 import { AllocateRoleService } from '../../services';
+import { getJudicialUserIds } from '../../../cases/utils/utils';
 
 @Component({
   selector: 'exui-remove-role',
@@ -67,7 +68,7 @@ export class RemoveRoleComponent implements OnInit {
     const jurisdiction = queryMap.get('jurisdiction');
     const caseType = queryMap.get('caseType');
     return this.allocateRoleService.getCaseRoles(this.caseId, jurisdiction, caseType, this.assignmentId).pipe(
-      mergeMap((caseRoles: CaseRole[]) => this.allocateRoleService.getCaseRolesUserDetails(caseRoles).pipe(
+      mergeMap((caseRoles: CaseRole[]) => this.allocateRoleService.getCaseRolesUserDetails(getJudicialUserIds(caseRoles)).pipe(
         map((caseRolesWithUserDetails: CaseRoleDetails[]) => this.mapCaseRoles(caseRoles, caseRolesWithUserDetails))
       )),
     );

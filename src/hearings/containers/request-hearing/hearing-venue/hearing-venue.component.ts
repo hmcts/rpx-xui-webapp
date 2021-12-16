@@ -17,7 +17,7 @@ import { SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
   templateUrl: './hearing-venue.component.html',
   styleUrls: ['./hearing-venue.component.scss']
 })
-export class HearingVenueComponent implements OnInit, OnDestroy {
+export class HearingVenueComponent extends RequestHearingPageFlow  implements OnInit, OnDestroy {
   public locationType: string;
   public selectedLocations$: Observable<LocationByEPIMSModel[]>;
   public locationsFound$: Observable<LocationByEPIMSModel[]>;
@@ -27,8 +27,11 @@ export class HearingVenueComponent implements OnInit, OnDestroy {
 
   @ViewChild(SearchLocationComponent) public searchLocationComponent: SearchLocationComponent;
   public selectedLocationsSub: Subscription;
+  private selectedLocations: LocationByEPIMSModel[];
 
-  constructor(private readonly hearingStore: Store<fromHearingStore.State>, fb: FormBuilder) {
+  constructor(public readonly hearingStore: Store<fromHearingStore.State>, fb: FormBuilder,
+              protected readonly hearingsService: HearingsService) {
+    super(hearingStore, hearingsService);
     this.findLocationFormGroup =  fb.group({
       locationSelectedFormControl: [null, Validators.required]
     });
@@ -44,12 +47,16 @@ export class HearingVenueComponent implements OnInit, OnDestroy {
       this.serviceIds = id ? id : this.serviceIds;
     });
 
+    this.selectedLocations$.subscribe(selectedLocations => {
+      this.selectedLocations = selectedLocations;
+    });
+
     this.getLocationSearchFocus();
   }
 
   public addSelection(): void {
     if (this.findLocationFormGroup.controls.locationSelectedFormControl.value) {
-      this.selectedLocationsSub = this.selectedLocations$.subscribe(selectedLocations => {
+      this.selectedLocations$.subscribe(selectedLocations => {
           this.appendLocation(selectedLocations);
       });
     } else {
@@ -77,6 +84,49 @@ export class HearingVenueComponent implements OnInit, OnDestroy {
         this.searchLocationComponent.autoCompleteInputBox &&
         this.searchLocationComponent.autoCompleteInputBox.nativeElement) {
           this.searchLocationComponent.autoCompleteInputBox.nativeElement.focus();
+    }
+  }
+
+  public executeAction(action: ACTION): void {
+    if (action === ACTION.CONTINUE) {
+      this.checkFormData();
+      if (this.isFormValid()) {
+        this.prepareHearingRequestData();
+        super.navigateAction(action);
+      }
+    } else if (action === ACTION.BACK) {
+      super.navigateAction(action);
+    }
+  }
+
+  public prepareHearingRequestData(): void {
+    const locations: HearingLocationModel[] = this.selectedLocations.map(locationByEPIMSModel => {
+      return {
+        locationType: 'hearing',
+        locationId: locationByEPIMSModel.epims_id,
+        locationName: locationByEPIMSModel.court_name
+      } as HearingLocationModel;
+    });
+    this.hearingRequestMainModel = {
+      ...this.hearingRequestMainModel,
+      hearingDetails: {
+        ...this.hearingRequestMainModel.hearingDetails,
+        hearingLocations: locations
+      }
+    };
+  }
+
+  public isFormValid(): boolean {
+    return this.findLocationFormGroup.valid;
+  }
+
+  public checkFormData(): void {
+    if (this.selectedLocations.length === 0) {
+      this.findLocationFormGroup.setErrors({
+        locationNotSelected: true
+      });
+    } else {
+      this.findLocationFormGroup.setErrors(null);
     }
   }
 

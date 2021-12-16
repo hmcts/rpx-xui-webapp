@@ -29,7 +29,12 @@
           </div>
           <form  [formGroup]="findLocationFormGroup" class="form" action="hearing-judge">
             <div class="govuk-form-group">      
-              <div class="govuk-form-group">
+              <div class="govuk-form-group"
+                    [ngClass]="{
+                      'govuk-form-group--error': !findLocationFormGroup.controls.locationSelectedFormControl.valid && 
+                      findLocationFormGroup.controls.locationSelectedFormControl.errors.required && 
+                      findLocationFormGroup.controls.locationSelectedFormControl.dirty
+                    }">
                 <div class="location-picker-custom">
                   <div class="search-location">
                     <label id="input-selected-location-label" class="govuk-body">

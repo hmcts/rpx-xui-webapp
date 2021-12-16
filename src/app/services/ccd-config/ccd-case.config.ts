@@ -102,20 +102,15 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getCaseHistoryUrl(caseId: string, eventId: string) {
-    return (
-      this.getCaseDataUrl() +
-      `/internal` +
-      `/cases/${caseId}` +
-      `/events/${eventId}`
-    );
+    return `${this.getCaseDataUrl()}/internal/cases/${caseId}/events/${eventId}`;
   }
 
   public getCreateOrUpdateDraftsUrl(ctid: string) {
-    return this.getCaseDataUrl() + `/internal/case-types/${ctid}/drafts/`;
+    return `${this.getCaseDataUrl()}/internal/case-types/${ctid}/drafts/`;
   }
 
   public getViewOrDeleteDraftsUrl(did: string) {
-    return this.getCaseDataUrl() + `/drafts/${did}`;
+    return `${this.getCaseDataUrl()}/drafts/${did}`;
   }
 
   public getActivityUrl() {

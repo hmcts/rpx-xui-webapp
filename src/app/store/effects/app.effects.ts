@@ -4,9 +4,9 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs/internal/observable/of';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { AuthService } from '../../services/auth/auth.service';
+import { AppConfigService } from '../../services/config/configuration.services';
 import { SessionStorageService } from '../../services/session-storage/session-storage.service';
 import { TermsConditionsService } from '../../services/terms-and-conditions/terms-and-conditions.service';
-import { AppConfigService } from '../../services/config/configuration.services';
 import { UserService } from '../../services/user/user.service';
 import * as fromActions from '../actions';
 

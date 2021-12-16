@@ -1,8 +1,8 @@
 import { initialMockState } from '../role-access/testing/app-initial-state.mock';
 import { AppUtils } from './app-utils';
 import { AppConstants, LEGAL_OPS_ROLE_LIST } from './app.constants';
-import { NavigationItem } from './models/theming.model';
 import { Theme } from './models/theme.model';
+import { NavigationItem } from './models/theming.model';
 import { UserRole } from './models/user-details.model';
 
 describe('getEnvironment', () => {

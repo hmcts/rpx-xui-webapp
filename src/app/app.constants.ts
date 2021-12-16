@@ -1,7 +1,7 @@
 import { BadgeColour, ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib';
 import { ApplicationTheme, NavigationItem } from './models/theming.model';
 
-const FeatureNames = {
+const featureNames = {
   currentWAFeature: 'mc-work-allocation-active-feature',
   workAllocation: 'MC_Work_Allocation',
   noticeOfChange: 'MC_Notice_of_Change',
@@ -9,7 +9,7 @@ const FeatureNames = {
   userTypeRoles: 'mc-user-type-roles'
 };
 
-const FooterDataNavigation = {
+const footerDataNavigation = {
   items: [
     {text: 'Accessibility', href: '/accessibility', target: '_blank'},
     {text: 'Terms and conditions', href: '/terms-and-conditions', target: '_blank'},
@@ -117,13 +117,13 @@ const caseAllocatorRole: string = 'case-allocator-role';
 
 export class AppConstants {
   public static FOOTER_DATA = null;
-  public static FOOTER_DATA_NAVIGATION = FooterDataNavigation;
+  public static FOOTER_DATA_NAVIGATION = footerDataNavigation;
   public static APP_HEADER_TITLE = appHeaderTitle;
   public static ENVIRONMENT_NAMES = environmentNames;
   public static REDIRECT_URL = redirectUrl;
   public static HELP_CONTACT_DETAILS = helpContactDetails;
   public static DEFAULT_USER_THEME = defaultUserTheme;
-  public static FEATURE_NAMES = FeatureNames;
+  public static FEATURE_NAMES = featureNames;
   public static CASE_DETAILS_URL = caseDetailsUrl;
   public static SERVICE_MESSAGES_FEATURE_TOGGLE_KEY = serviceMessagesFeatureToggleKey;
   public static SERVICE_MESSAGE_COOKIE = serviceMessageCookie;

@@ -1,8 +1,8 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { FilterPersistence } from '@hmcts/rpx-xui-common-lib';
 import { AppConstants, JUDICIAL_ROLE_LIST, LEGAL_OPS_ROLE_LIST } from './app.constants';
-import { NavigationItem } from './models/theming.model';
 import { Theme, UserTypeRole } from './models/theme.model';
+import { NavigationItem } from './models/theming.model';
 import { UserDetails, UserRole } from './models/user-details.model';
 
 export class AppUtils {
@@ -23,6 +23,7 @@ export class AppUtils {
           return AppConstants.ENVIRONMENT_NAMES.ithc;
         case AppConstants.ENVIRONMENT_NAMES.perftest:
           return AppConstants.ENVIRONMENT_NAMES.perftest;
+        default:
       }
     }
     return AppConstants.ENVIRONMENT_NAMES.prod;
@@ -173,6 +174,7 @@ export class AppUtils {
         userRole = 'Admin';
         break;
       }
+      default:
     }
     return userRole;
   }
@@ -208,6 +210,7 @@ export class AppUtils {
         theme.backgroundColor = '#202020';
         theme.logoType = 'myhmcts';
         break;
+      default:
     }
   }
 

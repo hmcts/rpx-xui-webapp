@@ -95,4 +95,23 @@ describe('DeleteExclusionComponent', () => {
     const additionalState = {state: {showMessage: true, messageText: ExclusionMessageText.Delete}};
     expect(routerMock.navigate).toHaveBeenCalledWith([goToCaseUrl], additionalState);
   });
+  it('populateAnswers', () => {
+    const someExclusion = {
+      actorId: null,
+      id: '',
+      type: '',
+      name: 'some name',
+      userType: null,
+      notes: 'notes',
+      added: new Date(2021, 12, 31),
+      email: ''
+    };
+    component.populateAnswers(someExclusion);
+    component.answers[0].label = AnswerLabelText.Person;
+    component.answers[0].value = exclusion.name;
+    component.answers[1].label = AnswerLabelText.DescribeExclusion;
+    component.answers[1].value = someExclusion.notes;
+    component.answers[2].label = AnswerLabelText.DateAdded;
+    component.answers[2].value = new Date(someExclusion.added).toLocaleDateString('en-GB');
+  });
 });

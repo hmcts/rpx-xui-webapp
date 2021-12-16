@@ -26,7 +26,7 @@ class CaseManager {
         this.cancelLink = $("form .cancel a");
 
         this.formFields = 'ccd-case-edit-form>div';
-
+        this.ccdCaseDetails = $('ccd-case-viewer');
         this.ccdCaseEdit = $('ccd-case-edit')
         this.exuiCaseHomeComp = $("exui-case-home");
         this.checkYourAnswers = $(".check-your-answers");
@@ -170,15 +170,21 @@ class CaseManager {
 
 
     async AmOnCaseDetailsPage(){
-        expect(this.ccdCaseEdit.isPresent()).to.be.equal;
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await this.ccdCaseDetails.isPresent()).to.be.true;
+        });
     }
 
     async AmOnCCDCaseEditPage() {
-        expect(this.exuiCaseHomeComp.isPresent()).to.be.equal;
-    }
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await this.exuiCaseHomeComp.isPresent()).to.be.true;
+        });
+    }    
 
     async AmOnChekYourAnswersPage() {
-        expect(this.checkYourAnswers.isPresent()).to.be.equal;
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await this.checkYourAnswers.isPresent()).to.be.true;
+        });
     }
 
     async _formFillPage(pageCounter) {
@@ -216,7 +222,16 @@ class CaseManager {
         cucumberReporter.AddMessage("Submitting page: " + thisPageUrl);
         console.log("Submitting : " + thisPageUrl )
 
+        let retryCounter = 0;
         await BrowserWaits.retryWithActionCallback(async () => {
+            if (retryCounter > 0){
+                let isValidationDisplayed = await caseEditPage.isValidationErrorDisplayed();
+                cucumberReporter.AddJson(`******* Is Validation error message displayed : ${isValidationDisplayed}`);
+                if (isValidationDisplayed){
+                    cucumberReporter.AddJson(`******* Validation error message : ${await caseEditPage.getValidationErrorMessageDisplayed()}`);
+                }
+            }
+            retryCounter++;
             await continieElement.click();
             browser.waitForAngular();
             await BrowserWaits.waitForPageNavigation(thisPageUrl);

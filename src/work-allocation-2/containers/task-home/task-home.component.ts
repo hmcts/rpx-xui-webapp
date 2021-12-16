@@ -1,13 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, Router, RoutesRecognized } from '@angular/router';
-import { FilterService, FilterSetting, SubNavigation } from '@hmcts/rpx-xui-common-lib';
-import { FilterConfig, FilterFieldConfig } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
-import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { ActivatedRouteSnapshot, NavigationEnd, Router, RoutesRecognized } from '@angular/router';
+import { FilterPersistence, SubNavigation } from '@hmcts/rpx-xui-common-lib';
+import { select, Store } from '@ngrx/store';
+import { Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
-import { Location } from '../../models/dtos';
-import { TaskSortField } from '../../models/tasks';
-import { LocationDataService } from '../../services';
+import { ErrorMessage } from '../../../app/models';
+import * as fromRoot from '../../../app/store';
+import { SortField } from '../../models/common';
 
 @Component({
   selector: 'exui-task-home',
@@ -15,25 +15,10 @@ import { LocationDataService } from '../../services';
   styleUrls: ['task-home.component.scss']
 })
 export class TaskHomeComponent implements OnInit, OnDestroy {
-  private static FILTER_NAME = 'locations';
-  public toggleFilter = false;
-  public showFilteredText = false;
-  public sortedBy: TaskSortField;
+  public persistence$: Observable<FilterPersistence>;
+  public sortedBy: SortField;
   public pageTitle: string;
-  public fieldsConfig: FilterConfig = {
-    persistence: 'session',
-    id: TaskHomeComponent.FILTER_NAME,
-    fields: [],
-    cancelButtonText: 'Reset to default',
-    applyButtonText: 'Apply'
-  };
-  public defaultLocations: string[] = [];
-  public fieldsSettings: FilterSetting = {
-    fields: [],
-    id: TaskHomeComponent.FILTER_NAME,
-  };
-  public selectedLocations: string[] = [];
-  public jurisdiction: string = 'Immigration & Asylum';
+  public error: ErrorMessage = null;
   /**
    * Take in the Router so we can navigate when actions are clicked and
    * to identify which sub-navigation item to highlight.
@@ -45,21 +30,21 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
   public subNavigationItems: SubNavigation[] = [
     this.MY_TASKS,
     {text: 'Available tasks', href: '/work/my-work/available', active: false},
-    {text: 'My cases', href: '/work/my-work/mycases', active: false}
+    {text: 'My cases', href: '/work/my-work/my-cases', active: false}
   ];
+
   private routeSubscription: Subscription;
-  private locationSubscription: Subscription;
-  private selectedLocationsSubscription: Subscription;
 
   constructor(
-    private readonly router: Router,
-    private readonly route: ActivatedRoute,
-    private readonly filterService: FilterService,
-    private readonly locationService: LocationDataService
+    private readonly store: Store<fromRoot.State>,
+    private readonly router: Router
   ) {
   }
 
   public ngOnInit(): void {
+    this.persistence$ = this.store.pipe(select(fromRoot.getUserDetails)).pipe(
+      map(AppUtils.getFilterPersistenceByRoleType)
+    );
     this.routeSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         // Set up the active navigation item.
@@ -75,33 +60,11 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
 
     // Set up the page data.
     this.setupPageData(this.router.routerState.root.snapshot);
-
-    this.locationSubscription = this.locationService.getLocations()
-      .subscribe((locations: Location[]) => {
-        this.setUpLocationFilter(locations);
-      });
-
-    this.selectedLocationsSubscription = this.filterService.getStream(TaskHomeComponent.FILTER_NAME)
-      .pipe(
-        filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
-      )
-      .subscribe((f: FilterSetting) => {
-        this.showFilteredText = this.hasBeenFiltered(f, this.defaultLocations);
-        this.toggleFilter = false;
-        this.selectedLocations = f.fields.find((field) => field.name === TaskHomeComponent.FILTER_NAME).value;
-      });
   }
 
   public ngOnDestroy(): void {
     if (this.routeSubscription) {
       this.routeSubscription.unsubscribe();
-    }
-    if (this.locationSubscription) {
-      this.locationSubscription.unsubscribe();
-    }
-
-    if (this.selectedLocationsSubscription) {
-      this.selectedLocationsSubscription.unsubscribe();
     }
   }
 
@@ -133,35 +96,7 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  private hasBeenFiltered(f: FilterSetting, defaultLocations: string[]): boolean {
-    const selectedFields = f.fields.find(field => field.name === TaskHomeComponent.FILTER_NAME);
-    return selectedFields.value.filter((v: string) => defaultLocations.indexOf(v) === -1).length > 0;
-  }
-
-  private setUpLocationFilter(locations: Location[]): void {
-    const field: FilterFieldConfig = {
-      name: TaskHomeComponent.FILTER_NAME,
-      options: locations.map((location) => ({
-        key: location.id,
-        label: location.locationName
-      })),
-      minSelected: 1,
-      maxSelected: 10,
-      minSelectedError: 'At least one location is required',
-      maxSelectedError: 'Maximum locations selected',
-      subTitle: 'Shows tasks and cases for the selected locations:',
-      type: 'checkbox'
-    };
-
-    if (this.route.snapshot.data && this.route.snapshot.data.location) {
-      const location: Location = this.route.snapshot.data.location;
-      this.defaultLocations = [`${location.id}`];
-      this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
-        name: TaskHomeComponent.FILTER_NAME,
-        value: [`${location.id}`]
-      }];
-      // this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
-    }
-    this.fieldsConfig.fields.push(field);
+  public errorChangedHandler(error: ErrorMessage) {
+    this.error = error;
   }
 }

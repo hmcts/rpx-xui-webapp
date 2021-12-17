@@ -5,7 +5,6 @@ import {Observable, of, Subscription} from 'rxjs';
 import {map} from 'rxjs/operators';
 import * as fromHearingStore from '../../../../hearings/store';
 import {HearingLocationModel} from '../../../models/hearingLocation.model';
-import {HearingRequestMainModel} from '../../../models/hearingRequestMain.model';
 import {ACTION} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
 import {RequestHearingPageFlow} from '../request-hearing.page.flow';
@@ -132,8 +131,5 @@ export class HearingVenueComponent extends RequestHearingPageFlow  implements On
 
   public ngOnDestroy(): void {
     super.unsubscribe();
-    // if (this.selectedLocationsSub) {
-    //   this.selectedLocationsSub.unsubscribe();
-    // }
   }
 }

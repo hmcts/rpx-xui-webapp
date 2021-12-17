@@ -1,4 +1,3 @@
-@ignore
 Feature: Test case type case list and find case workflow
 
   Background:

@@ -63,6 +63,12 @@ export enum PartyType {
   ORG = 'ORG',
 }
 
+export enum RadioOptions {
+  YES = 'Yes',
+  NO = 'No',
+  CHOOSE_DATE_RANGE = 'Choose a date range'
+ }
+
 export enum DOW {
   Monday = 'Monday',
   Tuesday = 'Tuesday',
@@ -90,4 +96,42 @@ export enum HearingCategory {
   CancellationReasonCodes = 'CancellationReasonCodes',
   NonStdDurationReasonCodes = 'NonStdDurationReasonCodes',
   EntityRoleCodes = 'EntityRoleCodes'
+}
+
+export enum HearingDateEnum {
+  DisplayMonth = 'DD MMMM YYYY',
+  DefaultFormat = 'DD-MM-YYYY'
+}
+
+export enum HearingDatePriorityEnum {
+  LengthError = 'Enter a valid hearing length',
+  LengthMinutesError = 'The minutes entered must be a multiple of 5',
+  TotalLengthError = 'Enter a valid length of hearing, it must be between 5 minutes and 6 hours',
+  PriorityError = 'Select the priority level of the hearing',
+  PriorityDateError = 'Select if the hearing needs to take place on a specific date',
+  DateRangeError = 'Enter a valid date range for the hearing to take place on',
+  WeekendError = 'Hearing date cannot be on the weekend',
+  InValidHearingDateError = 'Enter a valid hearing date',
+  DatePastError = 'The hearing dates cannot be in the past',
+  EarliestHearingDateError = 'The earliest hearing date must be before the latest hearing date',
+}
+
+export enum HearingDatePriorityConstEnum {
+  MinHours = 0,
+  MaxHours = 6,
+  TotalMinMinutes = 5,
+  TotalMaxMinutes = 360,
+  MinutesMuliplier = 5,
+}
+
+export enum ACTION {
+  BACK = 'BACK',
+  CONTINUE = 'CONTINUE',
+  SUBMIT = 'SUBMIT',
+  CANCEL = 'CANCEL',
+}
+
+export enum CONDITION_OPERATOR {
+  INCLUDE = 'INCLUDE',
+  NOT_INCLUDE = 'NOT INCLUDE',
 }

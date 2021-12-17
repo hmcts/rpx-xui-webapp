@@ -90,3 +90,17 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
     next(error);
   }
 }
+
+/**
+ * submitHearingRequest - submit hearing request
+ */
+export async function submitHearingRequest(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const reqBody = req.body;
+  const markupPath: string = `${hearingsUrl}/hearing`;
+  try {
+    const {status, data}: { status: number, data: ServiceHearingValuesModel } = await handlePost(markupPath, reqBody, req);
+    res.status(status).send(data);
+  } catch (error) {
+    next(error);
+  }
+}

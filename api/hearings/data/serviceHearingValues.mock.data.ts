@@ -67,26 +67,26 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
     flags: [
       {
         partyName: 'Jane and Smith',
-        flagId: 'Language Interpreter',
+        flagId: 'PF0015',
         flagDescription: 'Spanish interpreter required',
         flagStatus: 'ACTIVE',
       },
       {
         partyName: 'Jane and Smith',
-        flagId: 'Sign language interpreter',
+        flagId: 'RA0042',
         flagDescription: 'Sign language interpreter required',
         flagStatus: 'ACTIVE',
       },
       {
         partyName: 'Jane and Smith',
-        flagId: 'Reasonable adjustment',
+        flagId: 'RA0001',
         flagDescription: 'Hearing loop required',
         flagStatus: 'ACTIVE',
       },
       {
         partyName: 'DWP',
-        flagId: 'case flag 1',
-        flagDescription: 'case flag 1 description',
+        flagId: 'RA0005',
+        flagDescription: 'Physical access and facilities',
         flagStatus: 'ACTIVE',
       },
     ],
@@ -94,18 +94,18 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   },
   screenFlow: [
     {
-      screenName: 'hearing-requirement',
+      screenName: 'hearing-requirements',
       navigation: [
         {
-          resultValue1: 'additional-facilities',
+          resultValue: 'hearing-facilities',
         },
       ],
     },
     {
-      screenName: 'additional-facilities',
+      screenName: 'hearing-facilities',
       navigation: [
         {
-          resultValue1: 'hearing-stage',
+          resultValue: 'hearing-stage',
         },
       ],
     },
@@ -113,55 +113,55 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       screenName: 'hearing-stage',
       navigation: [
         {
-          resultValue1: 'how-party-attend',
+          resultValue: 'hearing-attendance',
         },
       ],
     },
     {
-      screenName: 'how-party-attend',
+      screenName: 'hearing-attendance',
       navigation: [
         {
-          resultValue1: 'location-search',
+          resultValue: 'hearing-venue',
         },
       ],
     },
     {
-      screenName: 'location-search',
+      screenName: 'hearing-venue',
       conditionKey: 'region',
       navigation: [
         {
-          conditionOperator: 'EQUAL',
+          conditionOperator: 'INCLUDE',
           conditionValue: 'Wales',
-          resultValue1: 'welsh-hearing',
+          resultValue: 'hearing-welsh',
         },
         {
-          conditionOperator: 'NOT EQUAL',
+          conditionOperator: 'NOT INCLUDE',
           conditionValue: 'Wales',
-          resultValue1: 'specify-judge',
+          resultValue: 'hearing-judge',
         },
       ],
     },
     {
-      screenName: 'welsh-hearing',
+      screenName: 'hearing-welsh',
       navigation: [
         {
-          resultValue1: 'specify-judge',
+          resultValue: 'hearing-judge',
         },
       ],
     },
     {
-      screenName: 'specify-judge',
+      screenName: 'hearing-judge',
       navigation: [
         {
-          resultValue1: 'require-panel-or-not',
+          resultValue: 'hearing-panel',
         },
       ],
     },
     {
-      screenName: 'require-panel-or-not',
+      screenName: 'hearing-panel',
       navigation: [
         {
-          resultValue1: 'hearing-timing',
+          resultValue: 'hearing-timing',
         },
       ],
     },
@@ -169,15 +169,15 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       screenName: 'hearing-timing',
       navigation: [
         {
-          resultValue1: 'additional-instruction',
+          resultValue: 'hearing-additional-instructions',
         },
       ],
     },
     {
-      screenName: 'additional-instruction',
+      screenName: 'hearing-additional-instructions',
       navigation: [
         {
-          resultValue1: 'check-answers',
+          resultValue: 'hearing-check-answers',
         },
       ],
     },

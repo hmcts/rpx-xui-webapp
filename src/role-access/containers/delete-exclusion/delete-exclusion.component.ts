@@ -40,17 +40,21 @@ export class DeleteExclusionComponent implements OnInit {
     paramMap$.pipe(mergeMap(queryMap => {
         return this.getExclusionFromQuery(queryMap);
       })).subscribe(exclusions => {
-        this.roleExclusion = exclusions.find(excl => excl.id === this.exclusionId);
-        if (this.roleExclusion.userType.toUpperCase() === RoleCategory.JUDICIAL) {
-          this.allocateService.getCaseRolesUserDetails([this.roleExclusion.actorId]).subscribe(userDetails => {
-            if (userDetails[0]) {
-              this.roleExclusion.name = userDetails[0].known_as;
-              this.populateAnswers(this.roleExclusion);
-            }
-          })
-        }
-        this.getNamesIfNeeded();
+        this.findAndSetExclusion(exclusions);
       });
+  }
+
+  public findAndSetExclusion(exclusions: RoleExclusion[]): void {
+    this.roleExclusion = exclusions.find(excl => excl.id === this.exclusionId);
+      if (this.roleExclusion.userType.toUpperCase() === RoleCategory.JUDICIAL) {
+        this.allocateService.getCaseRolesUserDetails([this.roleExclusion.actorId]).subscribe(userDetails => {
+          if (userDetails[0]) {
+            this.roleExclusion.name = userDetails[0].known_as;
+            this.populateAnswers(this.roleExclusion);
+          }
+      })
+    } 
+    this.getNamesIfNeeded();
   }
 
   public getExclusionFromQuery(queryMap: ParamMap) {
@@ -70,7 +74,9 @@ export class DeleteExclusionComponent implements OnInit {
 
   private getNamesIfNeeded(): void {
     if (!this.roleExclusion.name) {
+      console.log('getting names');
       this.caseworkerDataService.getAll().pipe(first()).subscribe(caseworkers => {
+        console.log('c', caseworkers);
         const caseworker = caseworkers.find(givenCaseworker => givenCaseworker.idamId === this.roleExclusion.actorId);
         this.roleExclusion.name = `${caseworker.firstName}-${caseworker.lastName}`;
         this.answers = [];

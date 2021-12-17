@@ -7,6 +7,7 @@ import {of} from 'rxjs';
 import {ErrorMessage} from 'src/app/models';
 import {ACTION} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
+import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 import {HearingWelshComponent} from './hearing-welsh.component';
 
 @Component({
@@ -42,7 +43,15 @@ describe('HearingWelshComponent', () => {
         ]
       },
       hearingValues: null,
-      hearingRequest: null,
+      hearingRequest: {
+        hearingRequestMainModel: {
+          requestDetails: null,
+          hearingDetails: {
+            hearingInWelshFlag: true,
+          },
+          partyDetails: []
+        },
+      },
       hearingConditions: null,
     }
   };
@@ -71,17 +80,34 @@ describe('HearingWelshComponent', () => {
   });
 
   it('should check hearingInWelshFlag', (): void => {
-    fixture.detectChanges();
     let errors;
     const hearingInWelshFlag = component.welshForm.controls.hearingInWelshFlag;
 
     hearingInWelshFlag.setValue(true);
     errors = hearingInWelshFlag.errors;
+    fixture.detectChanges();
     expect(errors).toBeNull();
 
     hearingInWelshFlag.setValue(null);
     errors = hearingInWelshFlag.errors;
+    fixture.detectChanges();
     expect(errors).toBeTruthy();
+  });
+
+  it('should load default value', (): void => {
+    expect(component.welshForm.value['hearingInWelshFlag']).toBeTruthy();
+  });
+
+  it('should execute a continue action', (): void => {
+    spyOn(RequestHearingPageFlow.prototype, 'navigateAction');
+    component.executeAction(ACTION.CONTINUE);
+    expect(RequestHearingPageFlow.prototype.navigateAction).toHaveBeenCalledWith(ACTION.CONTINUE);
+  });
+
+  it('should execute a back action', (): void => {
+    spyOn(RequestHearingPageFlow.prototype, 'navigateAction');
+    component.executeAction(ACTION.BACK);
+    expect(RequestHearingPageFlow.prototype.navigateAction).toHaveBeenCalledWith(ACTION.BACK);
   });
 
   afterEach(() => {

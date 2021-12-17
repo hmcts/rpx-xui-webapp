@@ -30,7 +30,8 @@ export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next
       req
     );
     const substantiveRoles = await getSubstantiveRoles(req);
-    const substantiveJudicialLegalOps = judicialAndLegalOps.filter(judicialAndLegalOp => substantiveRoles.find(role => role.roleId === judicialAndLegalOp.roleName));
+    const substantiveJudicialLegalOps =
+     judicialAndLegalOps.filter(judicialAndLegalOp => substantiveRoles.find(role => role.roleId === judicialAndLegalOp.roleName));
     return res.status(response.status).send(substantiveJudicialLegalOps);
   } catch (error) {
     next(error);

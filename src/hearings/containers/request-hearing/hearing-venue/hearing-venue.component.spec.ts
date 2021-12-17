@@ -44,7 +44,6 @@ describe('HearingVenueComponent', () => {
   let fixture: ComponentFixture<HearingVenueComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
- // hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 
   const initialState = {
     hearings: {

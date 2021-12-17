@@ -56,6 +56,16 @@ export class BookingWrapperComponent implements OnInit {
         if (this.bookingProcess.selectedBookingOption === 1) {
           this.bookingNavigationCurrentState = BookingState.LOCATION;
         } else {
+          this.router.navigate(
+            ['/work/my-work/list'],
+            {
+              state: {
+                location: {
+                  id: this.bookingProcess.location.epims_id
+                }
+              }
+            }
+          );
           this.router.navigate(['/work/my-work/list']);
           // TODO: redirect to view tasks and cases
         }

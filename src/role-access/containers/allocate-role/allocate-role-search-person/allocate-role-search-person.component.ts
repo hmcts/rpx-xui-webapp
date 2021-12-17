@@ -5,7 +5,6 @@ import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { $enum as EnumUtil } from 'ts-enum-util';
 
-import * as fromAppStore from '../../../../app/store';
 import { PERSON_ERROR_MESSAGE } from '../../../constants';
 import {
   Actions,
@@ -38,16 +37,7 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
   public subscription: Subscription;
   public roleType: SpecificRole;
 
-  constructor(private readonly appStore: Store<fromAppStore.State>,
-              private readonly store: Store<fromFeature.State>) {
-    this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
-      userDetails => {
-        console.log('before', this.userId);
-        this.userId = userDetails.userInfo.id;
-        console.log('after',this.userId);
-      }
-    );
-  }
+  constructor(private readonly store: Store<fromFeature.State>) {}
 
   public ngOnInit(): void {
     this.findPersonControl = this.formGroup.value.findPersonControl;

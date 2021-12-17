@@ -5,6 +5,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable, of } from 'rxjs';
+import { CaseworkerDataService } from 'src/work-allocation-2/services';
+
+import { Caseworker } from '../../../work-allocation-2/models/dtos';
 import { AnswersComponent } from '../../components';
 import { AllocateRoleStateData, CaseRole, RemoveAllocationNavigationEvent, Role, RoleCategory, TypeOfRole } from '../../models';
 import { CaseRoleDetails } from '../../models/case-role-details.interface';
@@ -20,6 +23,15 @@ class WrapperComponent {
   @ViewChild(RemoveRoleComponent) public appComponentRef: RemoveRoleComponent;
 }
 
+const mockCaseworker: Caseworker = {
+  idamId: '999999999',
+  firstName: 'test',
+  lastName: 'testing',
+  email: 'test@test.com',
+  location: null,
+  roleCategory: RoleCategory.LEGAL_OPERATIONS
+}
+
 describe('RemoveRoleComponent', () => {
   let component: RemoveRoleComponent;
   let wrapper: WrapperComponent;
@@ -30,6 +42,7 @@ describe('RemoveRoleComponent', () => {
   const locationMock = jasmine.createSpyObj('Location', [
     'back'
   ]);
+  const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getAll']);
   const allworkUrl = `work/all-work/cases`;
   window.history.pushState({ returnUrl: allworkUrl }, '', allworkUrl);
 
@@ -44,9 +57,10 @@ describe('RemoveRoleComponent', () => {
           added: Date.UTC(2021, 6, 1),
           id: '999999999',
           actorId: '999999999',
-          name: 'Judge Rinder',
+          name: 'Mr Test',
           notes: 'Test exclusion',
-          roleCategory: RoleCategory.JUDICIAL,
+          roleName: TypeOfRole.CaseManager,
+          roleCategory: RoleCategory.LEGAL_OPERATIONS,
           email: 'user@test.com'
         }
       ] as unknown as CaseRole[]);
@@ -65,7 +79,7 @@ describe('RemoveRoleComponent', () => {
         idam_id: '999999999',
         surname: '',
         email_id: 'user@test.com',
-        full_name: 'Judge Rinder',
+        full_name: 'Mr Test',
         known_as: '',
         sidam_id: '999999999'
       };
@@ -89,8 +103,8 @@ describe('RemoveRoleComponent', () => {
                 roles: [
                   {
                     name: 'test user name',
-                    roleCategory: RoleCategory.JUDICIAL,
-                    roleName: TypeOfRole.LeadJudge,
+                    roleCategory: RoleCategory.LEGAL_OPERATIONS,
+                    roleName: TypeOfRole.CaseManager,
                     location: '1234567',
                     start: '2021-07-13T00:29:10.656Z',
                     end: '2021-07-15T00:29:10.656Z',
@@ -125,6 +139,10 @@ describe('RemoveRoleComponent', () => {
         {
           provide: AllocateRoleService,
           useClass: AllocateRoleMockService
+        },
+        {
+          provide: CaseworkerDataService,
+          useValue: mockCaseworkerDataService
         }
       ]
     })
@@ -133,6 +151,7 @@ describe('RemoveRoleComponent', () => {
 
   beforeEach(() => {
     routerMock.getCurrentNavigation.and.returnValue({ extras: { state: { backUrl: allworkUrl } } });
+    mockCaseworkerDataService.getAll.and.returnValue(of([mockCaseworker]));
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
@@ -153,7 +172,7 @@ describe('RemoveRoleComponent', () => {
     const ELEMENT_0 = fixture.debugElement.nativeElement.querySelectorAll('.govuk-summary-list__key')[0];
     expect(ELEMENT_0.textContent).toContain(AnswerLabelText.TypeOfRole);
     const ELEMENT_0_VALUE = fixture.debugElement.nativeElement.querySelectorAll('.govuk-summary-list__value')[0];
-    expect(ELEMENT_0_VALUE.textContent).toContain('Judge Rinder');
+    expect(ELEMENT_0_VALUE.textContent).toContain(TypeOfRole.CaseManager);
     const ELEMENT_1 = fixture.debugElement.nativeElement.querySelectorAll('.govuk-summary-list__key')[1];
     expect(ELEMENT_1.textContent).toContain(AnswerLabelText.Person);
     const ELEMENT_1_VALUE = fixture.debugElement.nativeElement.querySelectorAll('.govuk-summary-list__value')[1];

@@ -55,8 +55,8 @@ export class RemoveRoleComponent implements OnInit {
             }
           }
         }
+        console.log('role is sjsj', this.role);
         this.populateAnswers(this.role);
-        console.log('rolly', this.role);
         this.getNamesIfNeeded();
     });
   }
@@ -67,10 +67,10 @@ export class RemoveRoleComponent implements OnInit {
     this.answers.push({label: 'Person', value: person});
   }
 
-  public getNamesIfNeeded(): void {
+  private getNamesIfNeeded(): void {
     if (!this.role.name) {
       this.caseworkerDataService.getAll().pipe(first()).subscribe(caseworkers => {
-        const caseworker = caseworkers.find(caseworker => caseworker.idamId === this.role.actorId);
+        const caseworker = caseworkers.find(givenCaseworker => givenCaseworker.idamId === this.role.actorId);
         this.role.name = `${caseworker.firstName}-${caseworker.lastName}`;
         this.role.email = caseworker.email;
         this.answers = [];
@@ -116,7 +116,6 @@ export class RemoveRoleComponent implements OnInit {
             }
           }),
         error => {
-          console.log(error);
           handleFatalErrors(error.status, this.router);
         }
       );

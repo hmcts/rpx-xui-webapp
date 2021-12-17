@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
 
 import { CaseRole, RoleCategory, RoleExclusion } from '../../../role-access/models';
@@ -8,7 +8,7 @@ import { Caseworker } from '../../../work-allocation-2/models/dtos';
   selector: 'exui-roles-and-access',
   templateUrl: './roles-and-access.component.html'
 })
-export class RolesAndAccessComponent implements OnInit {
+export class RolesAndAccessComponent implements OnInit, OnChanges {
   public namedExclusions: RoleExclusion[];
   public exclusionsNotNamed: boolean = false;
   public legalOpsRoles: CaseRole[] = [];
@@ -74,7 +74,7 @@ export class RolesAndAccessComponent implements OnInit {
         role => {
           const caseWorker = this.caseworkers.find(caseworker => caseworker.idamId === role.actorId);
           if (caseWorker) {
-            role.name = `${caseWorker.firstName}-${caseWorker.lastName}`;
+            role.name = `${caseWorker.firstName} ${caseWorker.lastName}`;
           }
         }
       );

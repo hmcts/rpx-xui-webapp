@@ -39,8 +39,8 @@ export class BookingCheckComponent implements OnInit {
     this.bookingService.refreshRoleAssignments().pipe(
       switchMap(() => {
         const payload: BookingRequest = {
-          locationId: this.bookingProcess.locationId,
-          regionId: this.bookingProcess.regionId,
+          locationId: this.bookingProcess.location.epims_id,
+          regionId: this.bookingProcess.location.region_id,
           beginDate: this.bookingProcess.startDate,
           endDate: this.bookingProcess.endDate
         };

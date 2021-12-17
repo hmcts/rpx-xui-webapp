@@ -30,7 +30,7 @@
                         <button
                           [disabled]="checkIfButtonDisabled(booking.beginTime)"
                           role="button"
-                          class="govuk-button govuk-button--secondary" 
+                          class="govuk-button govuk-button--secondary"
                           attr.aria-label="{{booking.locationName}} {{booking.beginTime | date:'dd LLLL yyyy'}} to {{booking.endTime | date:'dd LLLL yyyy'}}"
                           (click)="onExistingBookingSelected(booking.base_location_id)"
                         >
@@ -44,7 +44,7 @@
             </ng-container>
             <div class="govuk-radios__item">
               <input class="govuk-radios__input" id="type-1" name="bookingType" type="radio"
-                (change)="onSelectOption(1)" [value]="1" formControlName="bookingType" [checked]="bookingProcess.selectedBookingOption" />
+                (change)="onSelectOption(1)" [value]="1" formControlName="bookingType" [checked]="bookingProcess.selectedBookingOption===1" />
               <label class="govuk-label govuk-radios__label" for="type-1">
                 Create a new booking
               </label>

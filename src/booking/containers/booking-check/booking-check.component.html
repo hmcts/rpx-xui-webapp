@@ -7,7 +7,7 @@
   <div class="govuk-summary-list__row">
     <dt class="govuk-summary-list__key">Location</dt>
     <dd class="govuk-summary-list__value">
-      <p class="govuk-body">{{bookingProcess.locationName}}</p>
+      <p class="govuk-body">{{bookingProcess.location.court_name}}</p>
     </dd>
     <dd class="govuk-summary-list__actions">
       <a id="change-location" class="govuk-link" (click)="onEventTrigger(bookingNavigationEvent.CHANGELOCATIONCLICK)"

@@ -39,7 +39,7 @@ class MockLocationSearchContainerComponent {
   public autoCompleteInputBox: MockAutoCompleteInputBox = new MockAutoCompleteInputBox();
 }
 
-fdescribe('HearingVenueComponent', () => {
+describe('HearingVenueComponent', () => {
   let component: HearingVenueComponent;
   let fixture: ComponentFixture<HearingVenueComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);

@@ -15,7 +15,7 @@ class WrapperComponent {
   @ViewChild(InfoMessageContainerComponent) public appComponentRef: InfoMessageContainerComponent;
 }
 
-fdescribe('WorkAllocation', () => {
+describe('WorkAllocation', () => {
 
   describe('InfoMessageContainerComponent', () => {
     let router: Router;

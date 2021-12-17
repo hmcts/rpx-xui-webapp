@@ -536,10 +536,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@v1.4.20-reset-button":
-  version "1.4.20-reset-button"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.20-reset-button.tgz#93cbffa788ad9b7f57a363c230a2dfd329180776"
-  integrity sha512-61nhMMrsBEZvoMMn1VYkxQOeYSZ4/P33iNwe6+BsnlzSFllosiB/r4DSqANkFULI/Xh9atwyW7e6ujWCu4COiQ==
+"@hmcts/rpx-xui-common-lib@1.5.1-find-person-hide-user":
+  version "1.5.1-find-person-hide-user"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.5.1-find-person-hide-user.tgz#5834b3f39a9853c082c3b6dd8f62331738968f7e"
+  integrity sha512-SDSyR20Eh0/EXHcqQI9RSl31jbB5MNW/ae9/DmtIP7FisPdA7R9rhVdiX9BtIonvDfosP9MAGHx/HBsYWfhMWg==
   dependencies:
     tslib "^1.9.0"
 

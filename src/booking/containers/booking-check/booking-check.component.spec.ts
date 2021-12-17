@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
+import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { BookingProcess } from '../../models';
 import { BookingService } from '../../services';
 import { BookingCheckComponent } from './booking-check.component';
@@ -10,6 +11,7 @@ describe('BookingCheckComponent', () => {
   let component: BookingCheckComponent;
   let fixture: ComponentFixture<BookingCheckComponent>;
   const mockBookingServiceSpy = jasmine.createSpyObj('BookingService', ['createBooking', 'refreshRoleAssignments']);
+  const mockWindowService = jasmine.createSpyObj('WindowService', ['removeLocalStorage']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -19,7 +21,14 @@ describe('BookingCheckComponent', () => {
         ReactiveFormsModule
       ],
       providers: [
-        { provide: BookingService, useValue: mockBookingServiceSpy }
+        {
+          provide: BookingService,
+          useValue: mockBookingServiceSpy
+        },
+        {
+          provide: WindowService,
+          useValue: mockWindowService
+        }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(BookingCheckComponent);

@@ -100,13 +100,13 @@ export function mapResponseToExclusions(roleAssignments: RoleAssignment[],
   }
   return roleAssignments.map(roleAssignment => ({
     added: roleAssignment.created,
+    actorId: roleAssignment.actorId,
     email: roleAssignment.actorId ? getEmail(roleAssignment.actorId, req) : null,
     id: roleAssignment.id,
     name: roleAssignment.actorId ? getUserName(roleAssignment.actorId, req) : null,
     type: roleAssignment.roleType,
     userType: roleAssignment.roleCategory,
     notes: roleAssignment.attributes.notes,
-    actorId: roleAssignment.actorId,
   }));
 }
 

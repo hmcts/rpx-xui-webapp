@@ -2,9 +2,11 @@ import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
-import { Caseworker } from '../../../work-allocation-2/models/dtos';
+import { first, map, mergeMap } from 'rxjs/operators';
+
 import { SessionStorageService } from '../../../app/services';
+import { Caseworker } from '../../../work-allocation-2/models/dtos';
+import { CaseworkerDataService } from '../../../work-allocation-2/services';
 import { handleFatalErrors } from '../../../work-allocation-2/utils';
 import { Answer, CaseRole, RemoveAllocationNavigationEvent } from '../../models';
 import { CaseRoleDetails } from '../../models/case-role-details.interface';
@@ -33,7 +35,8 @@ export class RemoveRoleComponent implements OnInit {
               private readonly router: Router,
               private readonly location: Location,
               private readonly allocateRoleService: AllocateRoleService,
-              private readonly sessionStorageService: SessionStorageService) {
+              private readonly sessionStorageService: SessionStorageService,
+              private readonly caseworkerDataService: CaseworkerDataService) {
 
     }
 
@@ -53,13 +56,28 @@ export class RemoveRoleComponent implements OnInit {
             }
           }
         }
+        console.log('role is sjsj', this.role);
         this.populateAnswers(this.role);
+        this.getNamesIfNeeded();
     });
   }
 
   public populateAnswers(assignment: CaseRole): void {
-    this.answers.push({label: 'Type of role', value: assignment.name});
-    this.answers.push({label: 'Person', value: assignment.email});
+    const person = assignment.email ? `${assignment.name}\n${assignment.email}` : 'Awaiting person details';
+    this.answers.push({label: 'Type of role', value: assignment.roleName});
+    this.answers.push({label: 'Person', value: person});
+  }
+
+  private getNamesIfNeeded(): void {
+    if (!this.role.name) {
+      this.caseworkerDataService.getAll().pipe(first()).subscribe(caseworkers => {
+        const caseworker = caseworkers.find(givenCaseworker => givenCaseworker.idamId === this.role.actorId);
+        this.role.name = `${caseworker.firstName}-${caseworker.lastName}`;
+        this.role.email = caseworker.email;
+        this.answers = [];
+        this.populateAnswers(this.role);
+      });
+    }
   }
 
   public getRoleAssignmentFromQuery(queryMap: ParamMap): Observable<CaseRole[]> {
@@ -99,7 +117,6 @@ export class RemoveRoleComponent implements OnInit {
             }
           }),
         error => {
-          console.log(error);
           handleFatalErrors(error.status, this.router);
         }
       );

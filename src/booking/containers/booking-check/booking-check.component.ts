@@ -47,7 +47,13 @@ export class BookingCheckComponent implements OnInit {
         return this.bookingService.createBooking(payload);
       })
     ).subscribe(() => {
-      this.router.navigate(['/work/my-work/list']);
+      this.router.navigate(['/work/my-work/list'], {
+        state: {
+          location: {
+            id: this.bookingProcess.location.epims_id
+          }
+        }
+      });
     });
   }
 }

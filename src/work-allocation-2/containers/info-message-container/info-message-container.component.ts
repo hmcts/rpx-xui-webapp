@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 
 import { InformationMessage } from '../../models/comms';
-import { InfoMessageCommService } from '../../services';
+import { first, map } from 'rxjs/operators';
 
 @Component({
   selector: 'exui-info-message-container',
@@ -32,7 +33,11 @@ export class InfoMessageContainerComponent implements OnInit {
   ) { }
 
   public ngOnInit(): void {
-    this.router.events.subscribe(event => {
+    this.router.events
+      .pipe(
+        first()
+      )
+      .subscribe(event => {
       if (event instanceof NavigationStart) {
         // keep the current url the navigation started from
         this.currentUrl = this.router.url;
@@ -53,6 +58,7 @@ export class InfoMessageContainerComponent implements OnInit {
   public getInfoMessages(): void {
     // subscribe to the info message communication service
     this.messageService.infoMessageChangeEmitted$.subscribe(messages => {
+      console.log(messages);
       this.infoMessages = messages;
 
       // add any additional information messages that have been passed in the state (i.e. role access exclusion)

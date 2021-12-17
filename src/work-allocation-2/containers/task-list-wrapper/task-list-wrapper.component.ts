@@ -8,6 +8,7 @@ import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 
 import { SessionStorageService } from '../../../app/services';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { ListConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, SortOrder, TaskActionIds, TaskService } from '../../enums';
 import { Caseworker, Location } from '../../interfaces/common';
@@ -16,7 +17,6 @@ import { PaginationParameter, SearchTaskRequest, SortParameter } from '../../mod
 import { InvokedTaskAction, Task, TaskServiceConfig } from '../../models/tasks';
 import {
   CaseworkerDataService,
-  InfoMessageCommService,
   LocationDataService,
   WASupportedJurisdictionsService,
   WorkAllocationTaskService
@@ -25,7 +25,6 @@ import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../..
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html',
-  providers: [InfoMessageCommService]
 })
 export class TaskListWrapperComponent implements OnDestroy, OnInit {
 

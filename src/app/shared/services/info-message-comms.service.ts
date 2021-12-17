@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { InformationMessage } from '../models/comms';
+import { InformationMessage } from '../../../work-allocation-2/models/comms';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class InfoMessageCommService {
 
   public infoMessageSource: BehaviorSubject<InformationMessage[]> = new BehaviorSubject<InformationMessage[]>([]);
@@ -29,6 +29,7 @@ export class InfoMessageCommService {
    * Helper function to remove all previous messages, and add a new message.
    */
   public nextMessage(message: InformationMessage): void {
+    console.log(message, 'nextMessage');
     this.removeAllMessages();
     this.addMessage(message);
   }

@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { Caseworker } from '../../../work-allocation-2/models/dtos';
 import { SessionStorageService } from '../../../app/services';
 import { handleFatalErrors } from '../../../work-allocation-2/utils';
@@ -31,6 +32,7 @@ export class RemoveRoleComponent implements OnInit {
   constructor(private readonly route: ActivatedRoute,
               private readonly router: Router,
               private readonly location: Location,
+              private readonly messageService: InfoMessageCommService,
               private readonly allocateRoleService: AllocateRoleService,
               private readonly sessionStorageService: SessionStorageService) {
 
@@ -90,15 +92,19 @@ export class RemoveRoleComponent implements OnInit {
   public onNavEvent(navEvent: RemoveAllocationNavigationEvent): void {
     switch (navEvent) {
       case RemoveAllocationNavigationEvent.REMOVE_ROLE_ALLOCATION: {
-        this.allocateRoleService.removeAllocation(this.assignmentId).subscribe(() =>
-        this.router.navigate([this.returnUrl], {
-          state: {
-              showMessage: true,
-              messageText: RemoveRoleText.infoMessage
-            }
-          }),
+        this.allocateRoleService.removeAllocation(this.assignmentId).subscribe(() => {
+            const message: any = {type: 'success', message: RemoveRoleText.infoMessage};
+            this.router.navigate([this.returnUrl], {
+              state: {
+                showMessage: true,
+                retainMessages: true,
+                messageText: RemoveRoleText.infoMessage,
+              }
+            }).then(() => {
+              this.messageService.nextMessage(message);
+            });
+          },
         error => {
-          console.log(error);
           handleFatalErrors(error.status, this.router);
         }
       );

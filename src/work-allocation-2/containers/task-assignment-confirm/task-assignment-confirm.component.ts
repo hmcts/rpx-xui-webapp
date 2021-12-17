@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AlertService, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
 import { Person } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 import { map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { AssignHintText, InfoMessage, InfoMessageType, TaskActionType } from '../../enums';
 import { InformationMessage } from '../../models/comms';
 import { Task } from '../../models/tasks';
-import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
+import { WorkAllocationTaskService } from '../../services';
 import { handleFatalErrors } from '../../utils';
 
 @Component({
@@ -65,11 +66,11 @@ export class TaskAssignmentConfirmComponent implements OnInit {
   }
 
   public onChange(): void {
-    this.router.navigate([this.rootPath, this.taskId, this.verb.toLowerCase()], {state: this.selectedPerson});
+    this.router.navigate([this.rootPath, this.taskId, this.verb.toLowerCase()], { state: this.selectedPerson });
   }
 
   public onSubmit(): void {
-    this.assignTask = this.taskService.assignTask(this.taskId, {userId: this.selectedPerson.id}).subscribe({
+    this.assignTask = this.taskService.assignTask(this.taskId, { userId: this.selectedPerson.id }).subscribe({
       next: () => this.reportSuccessAndReturn(),
       error: (error: any) => {
         const handledStatus = handleFatalErrors(error.status, this.router);
@@ -101,8 +102,8 @@ export class TaskAssignmentConfirmComponent implements OnInit {
   private reportSuccessAndReturn(): void {
     const message = this.verb === 'Assign' ? InfoMessage.ASSIGNED_TASK : InfoMessage.REASSIGNED_TASK;
     this.returnWithMessage(
-      {type: InfoMessageType.SUCCESS, message},
-      {badRequest: false}
+      { type: InfoMessageType.SUCCESS, message },
+      { badRequest: false }
     );
   }
 
@@ -110,7 +111,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     this.returnWithMessage({
       type: InfoMessageType.WARNING,
       message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
-    }, {badRequest: true});
+    }, { badRequest: true });
   }
 
   private returnWithMessage(message: InformationMessage, state: any): void {
@@ -119,12 +120,12 @@ export class TaskAssignmentConfirmComponent implements OnInit {
         state = {
           showMessage: true,
           messageText: message.message
-        }
+        };
       } else {
         this.messageService.nextMessage(message);
       }
     }
     // Use returnUrl to return the user to the "All work" or "My work" screen, depending on which one they started from
-    this.router.navigate([this.returnUrl], {state: {...state, retainMessages: true}});
+    this.router.navigate([this.returnUrl], { state: { ...state, retainMessages: true } });
   }
 }

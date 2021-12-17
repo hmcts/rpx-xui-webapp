@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
+import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { BookingProcess } from '../../models';
 import { BookingService } from '../../services';
 import { BookingCheckComponent } from './booking-check.component';
@@ -9,18 +11,29 @@ describe('BookingCheckComponent', () => {
   let component: BookingCheckComponent;
   let fixture: ComponentFixture<BookingCheckComponent>;
   const mockBookingServiceSpy = jasmine.createSpyObj('BookingService', ['createBooking', 'refreshRoleAssignments']);
+  const mockWindowService = jasmine.createSpyObj('WindowService', ['removeLocalStorage']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [BookingCheckComponent],
-      imports: [RouterTestingModule],
+      imports: [
+        RouterTestingModule,
+        ReactiveFormsModule
+      ],
       providers: [
-        { provide: BookingService, useValue: mockBookingServiceSpy }
+        {
+          provide: BookingService,
+          useValue: mockBookingServiceSpy
+        },
+        {
+          provide: WindowService,
+          useValue: mockWindowService
+        }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(BookingCheckComponent);
     component = fixture.componentInstance;
-    component.bookingProcess = {} as BookingProcess;
+    component.bookingProcess = { location: { court_name: 'London Court' } } as BookingProcess;
     fixture.detectChanges();
   }));
 
@@ -39,10 +52,10 @@ describe('BookingCheckComponent', () => {
 
     it('should display the correct location', () => {
       const location = fixture.debugElement.nativeElement.querySelector('.govuk-summary-list__row').childNodes[1];
-      component.bookingProcess = { locationName: 'London' } as BookingProcess;
+      component.bookingProcess = { location: { court_name: 'London Court' } } as BookingProcess;
 
       fixture.detectChanges();
-      expect(location.textContent).toContain('London');
+      expect(location.textContent).toContain('London Court');
     });
 
     it('should display the correct values on row for today only case', () => {
@@ -50,6 +63,7 @@ describe('BookingCheckComponent', () => {
       component.bookingProcess = {
         startDate: new Date('Thu Dec 02 2021 09:00:00 GMT+0000'),
         endDate: new Date('Sun Dec 02 2021 23:59:59 GMT+0000'),
+        location: { court_name: 'London Court' }
       } as BookingProcess;
 
       fixture.detectChanges();
@@ -63,6 +77,7 @@ describe('BookingCheckComponent', () => {
       component.bookingProcess = {
         startDate: new Date('Thu Dec 02 2021 09:00:00 GMT+0000'),
         endDate: new Date('Sun Dec 05 2021 23:59:59 GMT+0000'),
+        location: { court_name: 'London Court' }
       } as BookingProcess;
 
       fixture.detectChanges();
@@ -76,6 +91,7 @@ describe('BookingCheckComponent', () => {
       component.bookingProcess = {
         startDate: new Date('Thu Dec 02 2021 09:00:00 GMT+0000'),
         endDate: new Date('Sun Dec 12 2021 23:59:59 GMT+0000'),
+        location: { court_name: 'London Court' }
       } as BookingProcess;
 
       fixture.detectChanges();

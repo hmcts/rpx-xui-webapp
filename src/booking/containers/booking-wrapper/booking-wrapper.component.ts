@@ -57,7 +57,6 @@ export class BookingWrapperComponent implements OnInit {
           this.bookingNavigationCurrentState = BookingState.LOCATION;
         } else {
           this.router.navigate(['/work/my-work/list']);
-          // TODO: redirect to view tasks and cases
         }
         break;
       case BookingNavigationEvent.LOCATIONCONTINUE:

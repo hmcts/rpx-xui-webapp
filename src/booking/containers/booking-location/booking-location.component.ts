@@ -1,4 +1,9 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
+import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { select, Store } from '@ngrx/store';
+import * as fromRoot from '../../../app/store';
 import { BookingNavigationEvent, BookingProcess } from '../../models';
 
 @Component({
@@ -6,21 +11,65 @@ import { BookingNavigationEvent, BookingProcess } from '../../models';
   templateUrl: './booking-location.component.html',
   styleUrls: ['./booking-location.component.scss']
 })
-export class BookingLocationComponent {
+export class BookingLocationComponent implements AfterViewInit, OnInit {
 
   @Input() public bookingProcess: BookingProcess;
 
   @Output() public bookingProcessChange = new EventEmitter<BookingProcess>();
   @Output() public eventTrigger = new EventEmitter();
 
-  constructor() { }
+  public jurisdictions: string;
+  public findLocationFormGroup: FormGroup;
+  public formError: boolean;
 
-  public onInputValueChange(value: string) {
-    this.bookingProcess.locationName = value;
+  @ViewChild(SearchLocationComponent) public searchLocationComponent: SearchLocationComponent;
+
+  constructor(
+    private readonly fb: FormBuilder,
+    private readonly store: Store<fromRoot.State>,
+    ) {
+    this.findLocationFormGroup = this.fb.group({
+      locationSelectedFormControl: [null, Validators.required]
+    });
   }
 
-  public onEventTrigger() {
-    this.eventTrigger.emit(BookingNavigationEvent.LOCATIONCONTINUE);
+  public ngOnInit(): void {
+    this.getJurisdictions();
   }
 
+  public ngAfterViewInit(): void {
+    this.getLocationSearchFocus();
+    this.findLocationFormGroup.controls.locationSelectedFormControl.setValue(this.bookingProcess.location);
+  }
+
+  public onLocationChanged(location: LocationByEPIMSModel): void {
+    this.bookingProcess.location = location;
+    if (location) {
+      this.formError = false;
+    }
+  }
+
+  public onContinueClick(): void {
+    this.formError = !this.bookingProcess.location;
+    if (!this.bookingProcess.location) {
+      this.getLocationSearchFocus();
+    } else {
+      this.eventTrigger.emit(BookingNavigationEvent.LOCATIONCONTINUE);
+    }
+  }
+
+  public getLocationSearchFocus(): void {
+    if (this.searchLocationComponent &&
+      this.searchLocationComponent.autoCompleteInputBox &&
+      this.searchLocationComponent.autoCompleteInputBox.nativeElement) {
+      this.searchLocationComponent.autoCompleteInputBox.nativeElement.focus();
+    }
+  }
+
+  // get a comma separated list of unique jurisdictions from the user role assignment info
+  private getJurisdictions(): void {
+    this.store.pipe(select(fromRoot.getUserDetails)).subscribe(user => {
+      this.jurisdictions = Array.from(new Set(user.roleAssignmentInfo.map(a => a.jurisdiction))).toString();
+    });
+  }
 }

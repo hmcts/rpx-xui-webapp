@@ -1,10 +1,10 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { BookingProcess } from '../../models';
-
 import { ReactiveFormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
+import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { of } from 'rxjs';
+import { BookingProcess } from '../../models';
 import { Booking } from '../../models/booking.interface';
 import { BookingService } from '../../services';
 import { BookingHomeComponent } from './booking-home.component';
@@ -50,6 +50,7 @@ describe('BookingHomeComponent', () => {
   let component: BookingHomeComponent;
   let fixture: ComponentFixture<BookingHomeComponent>;
   const bookingService = jasmine.createSpyObj<BookingService>('BookingService', ['getBookings', 'getBookingLocation', 'refreshRoleAssignments']);
+  const mockWindowService = jasmine.createSpyObj('WindowService', ['removeLocalStorage']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -60,7 +61,14 @@ describe('BookingHomeComponent', () => {
       declarations: [ BookingHomeComponent ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
       providers: [
-        { provide: BookingService, useValue: bookingService }
+        {
+          provide: BookingService,
+          useValue: bookingService
+        },
+        {
+          provide: WindowService,
+          useValue: mockWindowService
+        }
       ]
     })
     .compileComponents();

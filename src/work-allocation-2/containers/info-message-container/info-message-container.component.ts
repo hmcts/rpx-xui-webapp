@@ -58,7 +58,6 @@ export class InfoMessageContainerComponent implements OnInit {
   public getInfoMessages(): void {
     // subscribe to the info message communication service
     this.messageService.infoMessageChangeEmitted$.subscribe(messages => {
-      console.log(messages);
       this.infoMessages = messages;
 
       // add any additional information messages that have been passed in the state (i.e. role access exclusion)

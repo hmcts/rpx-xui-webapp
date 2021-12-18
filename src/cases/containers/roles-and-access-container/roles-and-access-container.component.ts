@@ -49,7 +49,6 @@ export class RolesAndAccessContainerComponent implements OnInit {
     // as this will enable the loading caseworkers if not
     // present in session storage
     this.caseworkerDataService.getAll().pipe(first()).subscribe();
-    this.exclusions$ = this.roleExclusionsService.getCurrentUserRoleExclusions(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id);
   }
 
   public loadExclusions(jurisdiction: any) {

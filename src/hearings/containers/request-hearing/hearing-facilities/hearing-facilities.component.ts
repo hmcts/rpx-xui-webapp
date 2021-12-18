@@ -1,6 +1,10 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Store} from '@ngrx/store';
-import {ACTION} from '../../../models/hearings.enum';
+import {ActivatedRoute} from '@angular/router';
+import {select, Store} from '@ngrx/store';
+import {Subscription} from 'rxjs';
+import {CaseFlagReferenceModel} from '../../../models/caseFlagReference.model';
+import {ACTION, CaseFlagType} from '../../../models/hearings.enum';
+import {ServiceHearingValuesModel} from '../../../models/serviceHearingValues.model';
 import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import {RequestHearingPageFlow} from '../request-hearing.page.flow';
@@ -10,13 +14,23 @@ import {RequestHearingPageFlow} from '../request-hearing.page.flow';
   templateUrl: './hearing-facilities.component.html',
 })
 export class HearingFacilitiesComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
+  public hearingStoreSub: Subscription;
+  public hearingValueModel: ServiceHearingValuesModel;
+  public caseFlagsRefData: CaseFlagReferenceModel[];
+  public caseFlagType: CaseFlagType = CaseFlagType.NON_REASONABLE_ADJUSTMENT;
 
-  constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
+  constructor(private readonly route: ActivatedRoute,
+              protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService) {
     super(hearingStore, hearingsService);
+    this.caseFlagsRefData = this.route.snapshot.data.caseFlags;
   }
 
-  public ngOnInit(): void {
+  public ngOnInit() {
+    this.hearingStoreSub = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesModel)).subscribe(
+      hearingValueModel => {
+        this.hearingValueModel = hearingValueModel;
+      });
   }
 
   public executeAction(action: ACTION): void {

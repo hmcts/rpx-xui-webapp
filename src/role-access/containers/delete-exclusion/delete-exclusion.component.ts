@@ -53,8 +53,10 @@ export class DeleteExclusionComponent implements OnInit {
           this.populateAnswers(this.roleExclusion);
         }
       })
+    } else {
+      this.populateAnswers(this.roleExclusion);
+      this.getNamesIfNeeded();
     }
-    this.getNamesIfNeeded();
   }
 
   public getExclusionFromQuery(queryMap: ParamMap) {

@@ -1,4 +1,3 @@
-@fullfunctional
 Feature: Verify new entry timestamp
 
     Background: Login as professional user

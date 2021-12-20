@@ -6,7 +6,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
-import { SharedModule } from '../../../app/shared/shared.module';
 import { initialMockState } from '../../../role-access/testing/app-initial-state.mock';
 
 import { ALL_LOCATIONS } from '../../components/constants/locations';
@@ -47,7 +46,6 @@ describe('TaskHomeComponent', () => {
         CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        SharedModule,
         WorkAllocationComponentsModule,
         ExuiCommonLibModule
       ],

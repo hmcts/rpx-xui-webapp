@@ -25,6 +25,10 @@ export async function postFindPersonSearch(req: EnhancedRequest, res: Response, 
       const headers = setHeaders(req);
       const response = await http.post(`${JUDICIAL_REF_URL}/refdata/judicial/users/search`, { searchString }, { headers });
       searchResult = response.data ? response.data : [];
+      if (req.body.userId) {
+        const userId = req.body.userId;
+        searchResult = searchResult.filter(person => person.idamId !== userId);
+      }
       searchResult = searchResult.map((s: any) => ({ ...searchResult, name: s.fullName, email: s.emailId, id: s.idamId }));
     } catch (e) {
       if (e.status === 404) {

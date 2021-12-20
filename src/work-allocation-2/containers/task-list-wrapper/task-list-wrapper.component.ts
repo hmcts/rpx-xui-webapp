@@ -278,20 +278,24 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
    * action.
    */
   public onActionHandler(taskAction: InvokedTaskAction): void {
-    if (taskAction.action.id === TaskActionIds.GO) {
-      const goToCaseUrl = `/cases/case-details/${taskAction.task.case_id}`;
-      this.router.navigate([goToCaseUrl]);
-      return;
+    try {
+      if (taskAction.action.id === TaskActionIds.GO) {
+        const goToCaseUrl = `/cases/case-details/${taskAction.task.case_id}`;
+        this.router.navigate([goToCaseUrl]);
+        return;
+      }
+      if (this.returnUrl.includes('manager') && taskAction.action.id === TaskActionIds.RELEASE) {
+        this.specificPage = 'manager';
+      }
+      const state = {
+        returnUrl: this.returnUrl,
+        showAssigneeColumn: taskAction.action.id !== TaskActionIds.ASSIGN
+      };
+      const actionUrl = `/work/${taskAction.task.id}/${taskAction.action.id}/${this.specificPage}`;
+      this.router.navigate([actionUrl], { state });
+    } catch (error) {
+      console.error('onActionHandler', error, taskAction);
     }
-    if (this.returnUrl.includes('manager') && taskAction.action.id === TaskActionIds.RELEASE) {
-      this.specificPage = 'manager';
-    }
-    const state = {
-      returnUrl: this.returnUrl,
-      showAssigneeColumn: taskAction.action.id !== TaskActionIds.ASSIGN
-    };
-    const actionUrl = `/work/${taskAction.task.id}/${taskAction.action.id}/${this.specificPage}`;
-    this.router.navigate([actionUrl], { state });
   }
 
   // Do the actual load. This is separate as it's called from two methods.

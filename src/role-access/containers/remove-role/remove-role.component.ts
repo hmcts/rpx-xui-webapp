@@ -46,7 +46,7 @@ export class RemoveRoleComponent implements OnInit {
       return this.getRoleAssignmentFromQuery(queryMap);
     })).subscribe((caseRoles: CaseRole[]) => {
       this.role = caseRoles.find(role => role.id === this.assignmentId);
-      if (this.role && !this.role.email && this.role.actorId) {
+      if (!this.role.email && this.role.actorId) {
         const caseworkers = JSON.parse(this.sessionStorageService.getItem('caseworkers'));
         if (caseworkers) {
           const caseWorker = (caseworkers as Caseworker[]).find(caseworker => caseworker.idamId === this.role.actorId);
@@ -55,10 +55,8 @@ export class RemoveRoleComponent implements OnInit {
           }
         }
       }
-      if (this.role) {
-        this.populateAnswers(this.role);
-        this.getNamesIfNeeded();
-      }
+      this.populateAnswers(this.role);
+      this.getNamesIfNeeded();
     });
   }
 

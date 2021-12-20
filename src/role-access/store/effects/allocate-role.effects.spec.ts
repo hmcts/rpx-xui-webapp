@@ -4,7 +4,7 @@ import { cold, hot } from 'jasmine-marbles';
 import { of } from 'rxjs';
 import { Go } from '../../../app/store';
 import * as routeAction from '../../../app/store/index';
-import { Actions, AllocateRoleState, AllocateTo, DurationOfRole } from '../../models';
+import { Actions as RoleActions, Actions, AllocateRoleState, AllocateTo, DurationOfRole } from '../../models';
 import { RoleAllocationMessageText } from '../../models/enums/allocation-text';
 import { AllocateRoleService } from '../../services';
 import * as allocateRoleAction from '../actions/allocate-role.action';
@@ -49,12 +49,18 @@ describe('Allocate Role Effects', () => {
       allocateRoleServiceMock.confirmAllocation.and.returnValue(of({
       }));
       const action = new allocateRoleAction.ConfirmAllocation(STATE_DATA);
+      const message: any = {
+        type: 'success',
+        message: RoleAllocationMessageText.Add
+      };
       const completion = new routeAction.CreateCaseGo({
         path: [`work/my-work/cases`],
         caseId: '111111',
         extras: {
           state: {
             showMessage: true,
+            retainMessages: true,
+            message,
             messageText: RoleAllocationMessageText.Add,
           }
         }

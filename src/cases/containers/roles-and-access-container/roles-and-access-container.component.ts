@@ -4,9 +4,11 @@ import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { first, map, mergeMap } from 'rxjs/operators';
+import { getJudicialUserIds, getJudicialUserIdsFromExclusions, mapCaseRoles, mapCaseRolesForExclusions } from '../../../cases/utils/utils';
 import { UserDetails } from '../../../app/models/user-details.model';
 import * as fromRoot from '../../../app/store';
 import { CaseRole, RoleExclusion } from '../../../role-access/models';
+import { Caseworker } from '../../../work-allocation-2/models/dtos';
 import { CaseRoleDetails } from '../../../role-access/models/case-role-details.interface';
 import { AllocateRoleService, RoleExclusionsService } from '../../../role-access/services';
 import { CaseworkerDataService } from '../../../work-allocation-2/services';
@@ -18,6 +20,7 @@ import { CaseworkerDataService } from '../../../work-allocation-2/services';
 export class RolesAndAccessContainerComponent implements OnInit {
   public caseDetails: CaseView;
   public showAllocateRoleLink: boolean = false;
+  public caseworkers$: Observable<Caseworker[]>;
   public exclusions$: Observable<RoleExclusion[]>;
   public roles$: Observable<CaseRole[]>;
   public jurisdictionFieldId = '[JURISDICTION]';
@@ -31,15 +34,16 @@ export class RolesAndAccessContainerComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    // We need this call. No active subscribers are needed
+    // as this will enable the loading caseworkers if not
+    // present in session storage
+    this.caseworkers$ = this.caseworkerDataService.getAll().pipe(first());
+
     this.caseDetails = this.route.snapshot.data.case as CaseView;
     this.applyJurisdiction(this.caseDetails);
     const jurisdiction = this.caseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
-    this.roles$ = this.allocateService.getCaseRoles(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id).pipe(
-      mergeMap((caseRoles: CaseRole[]) => this.allocateService.getCaseRolesUserDetails(caseRoles).pipe(
-        map((caseRolesWithUserDetails: CaseRoleDetails[]) => this.mapCaseRoles(caseRoles, caseRolesWithUserDetails))
-      )),
-    );
-    this.exclusions$ = this.roleExclusionsService.getCurrentUserRoleExclusions(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id);
+    this.loadRoles(jurisdiction);
+    this.loadExclusions(jurisdiction);
 
     // We need this call. No active subscribers are needed
     // as this will enable the loading caseworkers if not
@@ -47,18 +51,20 @@ export class RolesAndAccessContainerComponent implements OnInit {
     this.caseworkerDataService.getAll().pipe(first()).subscribe();
   }
 
-  public mapCaseRoles(caseRoles: CaseRole[], caseRolesWithUserDetails: CaseRoleDetails[]): CaseRole[] {
-    return caseRoles.map(role => {
-      const userDetails = caseRolesWithUserDetails.find(detail => detail.sidam_id === role.actorId);
-      if (!userDetails) {
-        return role;
-      }
-      return {
-        ...role,
-        name: userDetails.full_name,
-        email: userDetails.email_id,
-      };
-    });
+  public loadExclusions(jurisdiction: any) {
+    this.exclusions$ = this.roleExclusionsService.getCurrentUserRoleExclusions(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id).pipe(
+      mergeMap((exclusions: RoleExclusion[]) => this.allocateService.getCaseRolesUserDetails(getJudicialUserIdsFromExclusions(exclusions)).pipe(
+        map((caseRolesWithUserDetails: CaseRoleDetails[]) => mapCaseRolesForExclusions(exclusions, caseRolesWithUserDetails))
+      ))
+    );
+  }
+
+  public loadRoles(jurisdiction: any) {
+    this.roles$ = this.allocateService.getCaseRoles(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id).pipe(
+      mergeMap((caseRoles: CaseRole[]) => this.allocateService.getCaseRolesUserDetails(getJudicialUserIds(caseRoles)).pipe(
+        map((caseRolesWithUserDetails: CaseRoleDetails[]) => mapCaseRoles(caseRoles, caseRolesWithUserDetails))
+      ))
+    );
   }
 
   public applyJurisdiction(caseDetails: CaseView): void {

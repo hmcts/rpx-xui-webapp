@@ -6,7 +6,8 @@ const FeatureNames = {
   workAllocation: 'MC_Work_Allocation',
   noticeOfChange: 'MC_Notice_of_Change',
   waMvpPaginationFeature: 'mc-mvp-wa-pagination',
-  userTypeRoles: 'mc-user-type-roles'
+  userTypeRoles: 'mc-user-type-roles',
+  booking: 'mc-booking-active'
 };
 
 const FooterData = {

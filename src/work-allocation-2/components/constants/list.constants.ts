@@ -5,6 +5,7 @@ export const LIST_CONSTANTS = {
     Default: DEFAULT_EMPTY_MESSAGE,
     AvailableTasks: DEFAULT_EMPTY_MESSAGE,
     MyCases: 'You have no assigned tasks.',
+    MyAccess: 'Cases you have been granted access to are displayed here.',
     MyTasks: 'You have no assigned tasks.',
     TaskManager: DEFAULT_EMPTY_MESSAGE,
     AllWork: 'Change your selection to view tasks.',
@@ -15,6 +16,7 @@ export const LIST_CONSTANTS = {
     AllWorkCases: 'AllWorkCases',
     AvailableTasks: 'AvailableTasks',
     MyCases: 'MyCases',
+    MyAccess: 'MyAccess',
     MyTasks: 'MyTasks',
     TaskManager: 'TaskManager'
   },

@@ -1,6 +1,7 @@
 const SESSION = {
   AvailableTasks: 'availableTasksSort',
   MyCases: 'myCasesSort',
+  MyAccess: 'myAccessSort',
   MyTasks: 'myTasksSort',
   AllWork: 'allWorkSort',
   AllWorkCases: 'allWorkCasesSort',

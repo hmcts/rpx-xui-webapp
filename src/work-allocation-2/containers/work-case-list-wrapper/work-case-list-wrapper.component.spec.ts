@@ -6,6 +6,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { getMockCases, MockRouter } from '../../tests/utils.spec';
 import { CaseworkerDataService, InfoMessageCommService, WorkAllocationCaseService, WorkAllocationFeatureService } from '../../services';
+import { MyAccessComponent } from '../my-access/my-access.component';
 import { MyCasesComponent } from '../my-cases/my-cases.component';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
@@ -37,7 +38,7 @@ describe('WorkCaseListWrapperComponent', () => {
         CdkTableModule,
         PaginationModule
       ],
-      declarations: [MyCasesComponent, WorkCaseListWrapperComponent, WorkCaseListComponent],
+      declarations: [MyCasesComponent, MyAccessComponent, WorkCaseListWrapperComponent, WorkCaseListComponent],
       providers: [
         { provide: ChangeDetectorRef, useValue: mockRef },
         { provide: WorkAllocationCaseService, useValue: mockWorkAllocationService },

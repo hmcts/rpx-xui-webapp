@@ -29,7 +29,6 @@ export class InfoMessageCommService {
    * Helper function to remove all previous messages, and add a new message.
    */
   public nextMessage(message: InformationMessage): void {
-    console.log(message, 'nextMessage');
     this.removeAllMessages();
     this.addMessage(message);
   }

@@ -1,27 +1,27 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { TASK_ACTIONS } from 'api/workAllocation/constants/actions';
 import { of, throwError } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
-import { FieldConfig } from '../../models/common';
 import { InformationMessage } from '../../models/comms';
 import * as dtos from '../../models/dtos';
 import { InvokedTaskAction, Task } from '../../models/tasks';
-import { InfoMessageCommService, LocationDataService, WorkAllocationTaskService } from '../../services';
+import { LocationDataService, WorkAllocationTaskService } from '../../services';
 import { getMockLocations, getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
 
 @Component({
-  template: `<exui-available-tasks></exui-available-tasks>`
+  template: `
+    <exui-available-tasks></exui-available-tasks>`
 })
 class WrapperComponent {
   @ViewChild(AvailableTasksComponent) public appComponentRef: AvailableTasksComponent;
@@ -62,7 +62,7 @@ describe('AvailableTasksComponent', () => {
         WorkAllocationComponentsModule,
         PaginationModule
       ],
-      declarations: [ AvailableTasksComponent, WrapperComponent, TaskListComponent ],
+      declarations: [AvailableTasksComponent, WrapperComponent, TaskListComponent],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
         { provide: LocationDataService, useValue: mockLocationService },
@@ -178,7 +178,7 @@ describe('AvailableTasksComponent', () => {
 
       const claimTaskErrorsSpy = spyOn(component, 'claimTaskErrors');
 
-      mockTaskService.claimTask.and.returnValue(throwError({status: errorStatusCode}));
+      mockTaskService.claimTask.and.returnValue(throwError({ status: errorStatusCode }));
 
       const taskId = '123456';
       component.claimTask(taskId);
@@ -205,9 +205,10 @@ describe('AvailableTasksComponent', () => {
       expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${firstTask.id}`], {
         state: {
           showMessage: true,
-          messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS}
+          messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
+        }
+      });
     });
-  });
 
     it('should call claimTaskErrors() with the error\'s status code, so that the User can see that the claim of ' +
       'a task has been unsuccessful.', () => {
@@ -216,7 +217,7 @@ describe('AvailableTasksComponent', () => {
 
       const claimTaskErrorsSpy = spyOn(component, 'claimTaskErrors');
 
-      mockTaskService.claimTask.and.returnValue(throwError({status: errorStatusCode}));
+      mockTaskService.claimTask.and.returnValue(throwError({ status: errorStatusCode }));
 
       const firstTask = getMockTasks()[1];
       component.claimTaskAndGo(firstTask);
@@ -315,19 +316,18 @@ describe('AvailableTasksComponent', () => {
       });
     });
 
-
     [
-      { statusCode: 403, routeUrl: '/not-authorised' , action: TaskActionIds.CLAIM },
+      { statusCode: 403, routeUrl: '/not-authorised', action: TaskActionIds.CLAIM },
       { statusCode: 401, routeUrl: '/not-authorised', action: TaskActionIds.CLAIM },
-      { statusCode: 500, routeUrl: '/service-down', action: TaskActionIds.CLAIM},
-      { statusCode: 400, routeUrl: '/work/my-work/available', action: TaskActionIds.CLAIM},
+      { statusCode: 500, routeUrl: '/service-down', action: TaskActionIds.CLAIM },
+      { statusCode: 400, routeUrl: '/work/my-work/available', action: TaskActionIds.CLAIM },
       { statusCode: 403, routeUrl: '/not-authorised', action: TaskActionIds.CLAIM_AND_GO },
       { statusCode: 401, routeUrl: '/not-authorised', action: TaskActionIds.CLAIM_AND_GO },
       { statusCode: 500, routeUrl: '/service-down', action: TaskActionIds.CLAIM_AND_GO },
       { statusCode: 400, routeUrl: '/work/my-work/available', action: TaskActionIds.CLAIM_AND_GO },
     ].forEach(scr => {
       it('should call claimTask with the task id, so that the task can be \'claimed\' by the User.', () => {
-        mockTaskService.claimTask.and.returnValue(throwError({status: scr.statusCode}));
+        mockTaskService.claimTask.and.returnValue(throwError({ status: scr.statusCode }));
 
         taskAction.action.id = scr.action;
         component.onActionHandler(taskAction);

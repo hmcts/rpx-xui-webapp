@@ -282,7 +282,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
     const thisAction = caseAction.action;
     let actionUrl = '';
     if (thisAction.id === Actions.Reallocate) {
-      actionUrl = `role-access/allocate-role/${thisAction.id}?caseId=${actionedCase.case_id}&roleCategory=${actionedCase.role_category}&assignmentId=${actionedCase.id}&caseType=${actionedCase.case_type}&jurisdiction=${actionedCase.jurisdictionId}&userName=${actionedCase.assignee}&typeOfRole=${actionedCase.case_role}`;
+      actionUrl = `role-access/allocate-role/${thisAction.id}?caseId=${actionedCase.case_id}&roleCategory=${actionedCase.role_category}&assignmentId=${actionedCase.id}&caseType=${actionedCase.case_type}&jurisdiction=${actionedCase.jurisdictionId}&actorId=${actionedCase.assignee}&typeOfRole=${actionedCase.case_role}`;
     } else if (thisAction.id === Actions.Remove) {
       actionUrl = `role-access/allocate-role/${thisAction.id}?caseId=${actionedCase.case_id}&assignmentId=${actionedCase.id}&caseType=${actionedCase.case_type}&jurisdiction=${actionedCase.jurisdictionId}&typeOfRole=${actionedCase.case_role}`;
     }
@@ -309,8 +309,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
           item.jurisdiction = this.allJurisdictions.find(jur => jur.id === item.jurisdiction).name;
         }
         if (this.allRoles && this.allRoles.find(role => role.roleId === item.case_role)) {
-          item.case_role = this.allRoles.find(role => role.roleId === item.case_role).roleName;
-          item.role = item.case_role;
+          item.role = this.allRoles.find(role => role.roleId === item.case_role).roleName;
         }
       });
       this.ref.detectChanges();

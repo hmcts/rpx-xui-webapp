@@ -60,7 +60,7 @@ describe('RemoveRoleComponent', () => {
           name: 'Mr Test',
           notes: 'Test exclusion',
           roleName: TypeOfRole.CaseManager,
-          roleCategory: RoleCategory.LEGAL_OPERATIONS,
+          roleCategory: RoleCategory.JUDICIAL,
           email: 'user@test.com'
         }
       ] as unknown as CaseRole[]);

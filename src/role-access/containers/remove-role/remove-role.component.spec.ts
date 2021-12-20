@@ -32,7 +32,7 @@ const mockCaseworker: Caseworker = {
   roleCategory: RoleCategory.LEGAL_OPERATIONS
 };
 
-fdescribe('RemoveRoleComponent', () => {
+describe('RemoveRoleComponent', () => {
   let component: RemoveRoleComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -184,7 +184,7 @@ fdescribe('RemoveRoleComponent', () => {
     expect(locationMock.back).toHaveBeenCalled();
     component.onNavEvent(RemoveAllocationNavigationEvent.REMOVE_ROLE_ALLOCATION);
     const message: any = { type: 'success', message: RemoveRoleText.infoMessage };
-    const additionalState = { state: { showMessage: true, retainMessage: true, message, messageText: RemoveRoleText.infoMessage } };
+    const additionalState = { state: { showMessage: true, retainMessages: true, message, messageText: RemoveRoleText.infoMessage } };
     expect(routerMock.navigate).toHaveBeenCalledWith([allworkUrl], additionalState);
   });
 

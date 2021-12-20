@@ -1,10 +1,10 @@
+import { AppUtils } from '../../../app/app-utils';
 import { Component } from '@angular/core';
 import { UserInfo, UserRole } from '../../../app/models/user-details.model';
 import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
 import { FieldConfig } from '../../models/common';
 import { SearchCaseRequest } from '../../models/dtos';
 import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-case-list-wrapper.component';
-import { AppUtils } from '../../../app/app-utils';
 
 @Component({
   selector: 'exui-my-access',
@@ -13,15 +13,15 @@ import { AppUtils } from '../../../app/app-utils';
 export class MyAccessComponent extends WorkCaseListWrapperComponent {
 
   public get emptyMessage(): string {
-    return ListConstants.EmptyMessage.MyCases;
+    return ListConstants.EmptyMessage.MyAccess;
   }
 
   public get sortSessionKey(): string {
-    return SortConstants.Session.MyCases;
+    return SortConstants.Session.MyAccess;
   }
 
   public get view(): string {
-    return 'myAccess'; //ListConstants.View.MyCases;
+    return ListConstants.View.MyAccess;
   }
 
   public get fields(): FieldConfig[] {

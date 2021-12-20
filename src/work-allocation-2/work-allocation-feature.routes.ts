@@ -15,6 +15,7 @@ import {
   TaskHomeComponent,
   WorkAllocationHomeComponent,
 } from './containers';
+import { MyAccessComponent } from './containers/my-access/my-access.component';
 import { MyCasesComponent } from './containers/my-cases/my-cases.component';
 import { WorkAllocationFeatureToggleGuard } from './guards';
 import { TaskResolver } from './resolvers';
@@ -57,6 +58,13 @@ export const ROUTES: Routes = [
             component: MyCasesComponent,
             data: {
               title: 'HMCTS Manage cases | My work | My cases', subTitle: 'My cases'
+            }
+          },
+          {
+            path: 'my-access',
+            component: MyAccessComponent,
+            data: {
+              title: 'HMCTS Manage cases | My work | My access', subTitle: 'My access'
             }
           }
         ]

@@ -155,6 +155,7 @@ describe('RemoveRoleComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
+    component.assignmentId = '999999999';
     fixture.detectChanges();
   });
 

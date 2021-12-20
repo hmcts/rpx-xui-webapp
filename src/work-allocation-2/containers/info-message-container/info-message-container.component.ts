@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
-import { tap } from 'rxjs/operators';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 
 import { InformationMessage } from '../../models/comms';

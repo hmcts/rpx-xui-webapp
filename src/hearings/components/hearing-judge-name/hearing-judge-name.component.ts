@@ -10,6 +10,7 @@ export class HearingJudgeNameComponent {
   @Input() public subTitle;
   @Input() public domain;
   @Input() public personControl: FormGroup;
+  @Input() public placeholderContent;
   public personFormGroup: FormGroup;
 
   constructor(private readonly formBuilder: FormBuilder) {

@@ -21,6 +21,7 @@ import { Role } from '../../../role-access/models';
 import { UserInfo } from '../../../app/models';
 import { JudicialWorkerDataService } from '../../../work-allocation-2/services/judicialworker-data.service';
 import { concatMap } from 'rxjs-compat/operator/concatMap';
+import { switchMap } from 'rxjs-compat/operator/switchMap';
 
 @Component({
   templateUrl: 'work-case-list-wrapper.component.html',
@@ -286,8 +287,29 @@ export class WorkCaseListWrapperComponent implements OnInit {
   protected doLoad(): void {
     this.showSpinner$ = this.loadingService.isLoading;
     const loadingToken = this.loadingService.register();
-    // this.performSearchPagination().pipe().concatmap(this.judicialWorkerDataService.getCaseRolesUserDetails) // cases.filter(theCase => theCase.role_category === 'JUDICIAL').map(thisCase => thisCase.assignee)
-    this.performSearchPagination().subscribe(result => {
+    const observ1$ = this.performSearchPagination();
+    const mappedSearchResult$ = observ1$.pipe(mergeMap(result => {
+      // this.performSearchPagination().pipe().concatmap(this.judicialWorkerDataService.getCaseRolesUserDetails) 
+      // cases.filter(theCase => theCase.role_category === 'JUDICIAL').map(thisCase => thisCase.assignee)
+      if(result.cases.filter(theCase => theCase.role_category === 'JUDICIAL').map(thisCase => thisCase.assignee)) {
+        const userIds = result.cases.filter(theCase => theCase.role_category === 'JUDICIAL').map(thisCase => thisCase.assignee);
+        this.judicialWorkerDataService.getCaseRolesUserDetails(userIds).pipe(switchMap(judicialData => {
+          result.cases.forEach(judicialCase => {
+            const theJUser = judicialUsers.find(judicialUser => judicialUser.sidam_id === judicialCase.assignee);
+            if (theJUser) {
+              judicialCase.assigneeName = theJUser.known_as;
+            }
+          });
+          return of(result);
+        }))
+        // add your logic here
+        return of(result);
+      } else {
+        return of(result);
+      }
+    }));
+
+    mappedSearchResult$.subscribe(result => {
       this.loadingService.unregister(loadingToken);
       this.cases = result.cases;
       this.casesTotal = result.total_records;

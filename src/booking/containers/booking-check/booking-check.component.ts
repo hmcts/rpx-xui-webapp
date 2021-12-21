@@ -1,6 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
+import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { switchMap } from 'rxjs/operators';
+import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';
+import { TaskListFilterComponent } from '../../../work-allocation-2/components';
 import { BookingNavigationEvent, BookingProcess, BookingRequest } from '../../models';
 import { BookingService } from '../../services';
 
@@ -21,7 +24,9 @@ export class BookingCheckComponent implements OnInit {
 
   constructor(
     private readonly bookingService: BookingService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly windowService: WindowService
   ) { }
 
   public ngOnInit() {
@@ -39,15 +44,24 @@ export class BookingCheckComponent implements OnInit {
     this.bookingService.refreshRoleAssignments().pipe(
       switchMap(() => {
         const payload: BookingRequest = {
-          locationId: this.bookingProcess.locationId,
-          regionId: this.bookingProcess.regionId,
+          locationId: this.bookingProcess.location.epims_id,
+          regionId: this.bookingProcess.location.region_id,
           beginDate: this.bookingProcess.startDate,
           endDate: this.bookingProcess.endDate
         };
         return this.bookingService.createBooking(payload);
       })
     ).subscribe(() => {
-      this.router.navigate(['/work/my-work/list']);
+      this.sessionStorageService.removeItem(TaskListFilterComponent.FILTER_NAME);
+      this.windowService.removeLocalStorage(TaskListFilterComponent.FILTER_NAME);
+
+      this.router.navigate(['/work/my-work/list'], {
+        state: {
+          location: {
+            id: this.bookingProcess.location.epims_id
+          }
+        }
+      });
     });
   }
 }

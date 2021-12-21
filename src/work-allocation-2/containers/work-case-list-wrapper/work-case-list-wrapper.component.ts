@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { AlertService, Jurisdiction, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
+import { mergeMap, switchMap } from 'rxjs/operators';
 import { JurisdictionsService } from '../../../work-allocation-2/services/juridictions.service';
 import { AppConstants } from '../../../app/app.constants';
 import { SessionStorageService } from '../../../app/services';
@@ -20,8 +20,6 @@ import { AllocateRoleService } from '../../../role-access/services';
 import { Role } from '../../../role-access/models';
 import { UserInfo } from '../../../app/models';
 import { JudicialWorkerDataService } from '../../../work-allocation-2/services/judicialworker-data.service';
-import { concatMap } from 'rxjs-compat/operator/concatMap';
-import { switchMap } from 'rxjs-compat/operator/switchMap';
 
 @Component({
   templateUrl: 'work-case-list-wrapper.component.html',
@@ -287,23 +285,19 @@ export class WorkCaseListWrapperComponent implements OnInit {
   protected doLoad(): void {
     this.showSpinner$ = this.loadingService.isLoading;
     const loadingToken = this.loadingService.register();
-    const observ1$ = this.performSearchPagination();
-    const mappedSearchResult$ = observ1$.pipe(mergeMap(result => {
-      // this.performSearchPagination().pipe().concatmap(this.judicialWorkerDataService.getCaseRolesUserDetails) 
-      // cases.filter(theCase => theCase.role_category === 'JUDICIAL').map(thisCase => thisCase.assignee)
-      if(result.cases.filter(theCase => theCase.role_category === 'JUDICIAL').map(thisCase => thisCase.assignee)) {
-        const userIds = result.cases.filter(theCase => theCase.role_category === 'JUDICIAL').map(thisCase => thisCase.assignee);
-        this.judicialWorkerDataService.getCaseRolesUserDetails(userIds).pipe(switchMap(judicialData => {
-          result.cases.forEach(judicialCase => {
-            const theJUser = judicialUsers.find(judicialUser => judicialUser.sidam_id === judicialCase.assignee);
-            if (theJUser) {
-              judicialCase.assigneeName = theJUser.known_as;
-            }
-          });
-          return of(result);
-        }))
-        // add your logic here
-        return of(result);
+    const casesSearch$ = this.performSearchPagination();
+    const mappedSearchResult$ = casesSearch$.pipe(mergeMap(result => {
+      const jucidicalUserIds = result.cases.filter(theCase => theCase.role_category === 'JUDICIAL').map(thisCase => thisCase.assignee);
+      if(jucidicalUserIds && jucidicalUserIds.length > 0) {
+          return this.judicialWorkerDataService.getCaseRolesUserDetails(jucidicalUserIds).pipe(switchMap((judicialUserData) => {
+            result.cases.forEach(judicialCase => {
+              const theJUser = judicialUserData.find(judicialUser => judicialUser.sidam_id === judicialCase.assignee);
+              if (theJUser) {
+                judicialCase.assigneeName = theJUser.known_as;
+              }
+            })
+            return of(result);
+          }));
       } else {
         return of(result);
       }

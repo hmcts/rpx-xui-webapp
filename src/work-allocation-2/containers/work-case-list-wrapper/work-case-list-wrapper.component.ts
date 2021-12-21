@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService, Jurisdiction, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { JurisdictionsService } from '../../../work-allocation-2/services/juridictions.service';
 import { AppConstants } from '../../../app/app.constants';
@@ -19,6 +19,8 @@ import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../..
 import { AllocateRoleService } from '../../../role-access/services';
 import { Role } from '../../../role-access/models';
 import { UserInfo } from '../../../app/models';
+import { JudicialWorkerDataService } from '../../../work-allocation-2/services/judicialworker-data.service';
+import { concatMap } from 'rxjs-compat/operator/concatMap';
 
 @Component({
   templateUrl: 'work-case-list-wrapper.component.html',
@@ -33,7 +35,6 @@ export class WorkCaseListWrapperComponent implements OnInit {
   public locations$: Observable<Location[]>;
   public waSupportedJurisdictions$: Observable<string[]>;
   public pagination: PaginationParameter;
-  public isPaginationEnabled$: Observable<boolean>;
   public backUrl: string = null;
   private pCases: Case[];
   protected allJurisdictions: Jurisdiction[];
@@ -67,10 +68,9 @@ export class WorkCaseListWrapperComponent implements OnInit {
     protected readonly featureToggleService: FeatureToggleService,
     protected readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService,
     protected readonly jurisdictionsService: JurisdictionsService,
-    protected readonly rolesService: AllocateRoleService
-  ) {
-    this.isPaginationEnabled$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.waMvpPaginationFeature);
-  }
+    protected readonly rolesService: AllocateRoleService,
+    protected readonly judicialWorkerDataService: JudicialWorkerDataService
+  ) {}
 
   public get cases(): Case[] {
     return this.pCases;
@@ -177,18 +177,10 @@ export class WorkCaseListWrapperComponent implements OnInit {
       };
     }
 
-    this.isPaginationEnabled$.subscribe({
-      next: (result: boolean) => {
-        if (!result) {
-          this.pagination = null;
-        } else {
-          this.pagination = {
-            page_number: 1,
-            page_size: 25
-          };
-        }
-      }
-    });
+    this.pagination = {
+      page_number: 1,
+      page_size: 25
+    };
   }
 
   /**
@@ -294,7 +286,8 @@ export class WorkCaseListWrapperComponent implements OnInit {
   protected doLoad(): void {
     this.showSpinner$ = this.loadingService.isLoading;
     const loadingToken = this.loadingService.register();
-    this.isPaginationEnabled$.pipe(mergeMap(enabled => enabled ? this.performSearchPagination() : this.performSearch())).subscribe(result => {
+    // this.performSearchPagination().pipe().concatmap(this.judicialWorkerDataService.getCaseRolesUserDetails) // cases.filter(theCase => theCase.role_category === 'JUDICIAL').map(thisCase => thisCase.assignee)
+    this.performSearchPagination().subscribe(result => {
       this.loadingService.unregister(loadingToken);
       this.cases = result.cases;
       this.casesTotal = result.total_records;

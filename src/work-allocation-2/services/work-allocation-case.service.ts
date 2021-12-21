@@ -46,8 +46,8 @@ export class WorkAllocationCaseService {
                 {
                   ...refinedItem,
                   actions: {},
-                  dateSubmitted: result.data.myAccess.filter( item => item.id === refinedItem.case_id)[0].dateSubmitted,
-                  access: result.data.myAccess.filter( item => item.id === refinedItem.case_id)[0].accessProcess
+                  dateSubmitted: result.data.myAccess.filter( item => item.id == refinedItem.case_id)[0].dateSubmitted,
+                  access: result.data.myAccess.filter( item => item.id == refinedItem.case_id)[0].accessProcess
                 }
               )
             );

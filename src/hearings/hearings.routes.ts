@@ -16,6 +16,7 @@ import {HearingVenueComponent} from './containers/request-hearing/hearing-venue/
 import {HearingWelshComponent} from './containers/request-hearing/hearing-welsh/hearing-welsh.component';
 import {RequestHearingComponent} from './containers/request-hearing/request-hearing.component';
 import {ViewHearingComponent} from './containers/view-hearing/view-hearing.component';
+import { HearingCategory } from './models/hearings.enum';
 import {RefDataResolver} from './resolvers/ref-data/ref-data-resolver.resolve';
 
 export const ROUTES: Routes = [
@@ -81,7 +82,8 @@ export const ROUTES: Routes = [
         component: HearingStageComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Hearings | Request Hearing | Hearing Stage'
+          title: 'HMCTS Hearings | Request Hearing | Hearing Stage',
+          category: HearingCategory.HearingType
         }
       },
       {
@@ -130,7 +132,8 @@ export const ROUTES: Routes = [
         component: HearingTimingComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Manage cases | Request Hearing | Hearing Timing'
+          title: 'HMCTS Manage cases | Request Hearing | Hearing Timing',
+          category: HearingCategory.Priority
         }
       },
       {

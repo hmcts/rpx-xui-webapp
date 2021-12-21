@@ -448,16 +448,15 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.8.4-EUI-4329-data-validation-r3":
-  version "4.8.4-EUI-4329-data-validation-r3"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.8.4-EUI-4329-data-validation-r3.tgz#fa6185442f9f70330412ce9be9549bd4a156ff2b"
-  integrity sha512-7YxpPVuJwNpwqlctG3CjwJ2KzQpxsYdrrWJlasmeC6aG8sfqXxs1TC01YA4Zq+IgiN/pC3bSBBc2Okxe2AZd8A==
+"@hmcts/ccd-case-ui-toolkit@4.8.4-EUI-4329-data-validation-r4":
+  version "4.8.4-EUI-4329-data-validation-r4"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.8.4-EUI-4329-data-validation-r4.tgz#ae1f5d2b2dbe55ddee9f862a79048a17ac61a997"
+  integrity sha512-dKi7aARt4jdYXKmvnNLpguHlg+jbD9j+dQlf+B15XwvLFRE40X26NJJGStXeXQU8LuQrjT0jpdIdSm4PJq23HQ==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
-    "@hmcts/ccpay-web-component" "3.0.3"
     braces "^2.3.1"
     enhanced-resolve "3.3.0"
     file-saver "^2.0.2"
@@ -476,17 +475,10 @@
     underscore "^1.9.1"
     yargs-parser "18.1.2"
 
-"@hmcts/ccpay-web-component@3.0.3":
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-3.0.3.tgz#d8f2c335e439515e0b87784414229301d9a8c05f"
-  integrity sha512-EIANuq103rLEA7LglNreLpPeo0aQtxfReXNd7A76V66tUwyQhwERMlpwKmOhO0eoA8HpcK0yV0mXNLh1aUifXA==
-  dependencies:
-    tslib "^1.9.0"
-
-"@hmcts/ccpay-web-component@4.0.2":
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-4.0.2.tgz#e09a3401c577f157dfb5d437a2a8e0e3a3a990c5"
-  integrity sha512-WOAfryrSZS/mbIIgRJwqbweJIhQaFzImwb7JMJOTZs5FDVzfqRs/yehyn4/6iysoIuaKkM76HnaruDW+AaWuCg==
+"@hmcts/ccpay-web-component@3.0.27":
+  version "3.0.27"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-3.0.27.tgz#c331f6d947773458f2ad93079b0bbe2ef5ce40e5"
+  integrity sha512-84b2CYuuJBo+MG6nMFGEjHIZz5tHIzpuN2rSZ+D1rsNvaKHUONyqxRB1HDNoSRRFcqqTIUjXVSWNOPQacHJTig==
   dependencies:
     tslib "^1.9.0"
 

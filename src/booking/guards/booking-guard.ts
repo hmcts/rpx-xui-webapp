@@ -5,7 +5,7 @@ import {select, Store} from '@ngrx/store';
 import {combineLatest, Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 import {AppConstants} from '../../app/app.constants';
-import {RoleAssignmentInfo, UserDetails} from '../../app/models';
+import {UserDetails} from '../../app/models';
 import * as fromActions from '../../app/store';
 import {RoleCategory} from '../models';
 
@@ -18,20 +18,20 @@ export class BookingGuard implements CanActivate {
               private readonly featureToggleService: FeatureToggleService) {
   }
 
-  public hasAccess(roleCategory: string, roleAssignments: RoleAssignmentInfo[]): boolean {
-    return roleCategory !== RoleCategory.JUDICIAL && roleAssignments.some( roleAssignment => 'bookable' in roleAssignment && roleAssignment.bookable === true );
+  public hasAccess(userDetails: UserDetails): boolean {
+    const { roleAssignmentInfo, userInfo } = userDetails;
+    return userInfo.roleCategory === RoleCategory.JUDICIAL && roleAssignmentInfo.some( roleAssignment => 'bookable' in roleAssignment && roleAssignment.bookable === true );
   }
 
   public canActivate(): Observable<boolean> {
     const userDetails$: Observable<UserDetails> = this.store.pipe(select(fromActions.getUserDetails));
     const bookingFeatureToggle$: Observable<boolean> = this.featureToggleService.getValueOnce(AppConstants.FEATURE_NAMES.booking, false);
     const userAccess$ = combineLatest([userDetails$, bookingFeatureToggle$]);
-    return userAccess$.pipe(map(([details, bookingFeatureToggle]) => {
-      const { roleAssignmentInfo, userInfo } = details;
+    return userAccess$.pipe(map(([userDetails, bookingFeatureToggle]) => {
       if (!bookingFeatureToggle) {
         return false;
       }
-      return this.hasAccess(userInfo.roleCategory, roleAssignmentInfo);
+      return this.hasAccess(userDetails);
     })).pipe(tap(hasAccesss => {
       if (!hasAccesss) {
         this.router.navigate([BookingGuard.defaultUrl]);

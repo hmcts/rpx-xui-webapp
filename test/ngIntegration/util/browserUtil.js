@@ -15,7 +15,7 @@ const axiosOptions = {
 axios.defaults.withCredentials = true;
 
 const http = axios.create(axiosOptions);
-
+const nodeAppMockData = require('../../nodeMock/nodeApp/mockData'); 
 class BrowserUtil{
 
     async gotoHomePage(){
@@ -59,22 +59,9 @@ class BrowserUtil{
     }
 
     setUserDetailsWithRoles(rolesArray) {
-        MockApp.onGet('/api/user/details', (req, res) => {
-            res.send({
-                "canShareCases": true, "sessionTimeout": {
-                    "idleModalDisplayTime": 10, "pattern": "-solicitor", "totalIdleTime": 50
-                },
-                "userInfo": {
-                    "id": "***REMOVED***",
-                    "forename": "Luke",
-                    "surname": "Wilson",
-                    "email": "lukesuperuserxui@mailnesia.com",
-                    "active": true,
-                    "roles": rolesArray
-                }
-            });
-        });
-}
+        nodeAppMockData.getUserDetailsWithRoles(rolesArray);
+       
+    }
 
 
     async waitForLD(){

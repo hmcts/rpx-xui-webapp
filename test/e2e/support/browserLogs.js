@@ -8,6 +8,11 @@ class BrowserLogs {
         this.networklogs = []
         this.browserlogs = [];
 
+        this.ignoreItemsList = [
+            "activity/cases",
+            "/api/monitoring-tools"
+        ];
+
     }
 
     clearLogs(){
@@ -18,18 +23,49 @@ class BrowserLogs {
 
     async getBrowserLogs(){
         let browserLog = await browser.manage().logs().get('browser');
-        const browserErrorLogs = [];
-
+        let browserErrorLogs = []
         for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++) {
             if (browserLog[browserLogCounter].level.value > 900) {
-                browserLog[browserLogCounter]['time'] = (new Date(browserLog[browserLogCounter]['timestamp'])).toISOString()
-                let perfItem = { ...browserLog[browserLogCounter], time: (new Date(browserLog[browserLogCounter]['timestamp'])).toISOString() }
-                browserErrorLogs.push(perfItem);
+                try {
+                    browserLog[browserLogCounter]['time'] = (new Date(browserLog[browserLogCounter]['timestamp'])).toISOString()
+                } catch (err) {
+                    browserLog[browserLogCounter]['time'] = browserLog[browserLogCounter]['timestamp'] + "" + err;
+                }
+
+                let ignore = false;
+                for (const ignoreItem of this.ignoreItemsList){
+                    if (browserLog[browserLogCounter]['message'].includes(ignoreItem)){
+                        ignore = true;
+                        break;
+                    }    
+                }
+                if (!ignore){
+                    browserErrorLogs.push(`${browserLog[browserLogCounter]['time']} : [${browserLog[browserLogCounter]['level']}] ${browserLog[browserLogCounter]['message']} `);
+                }
             }
         }
-        this.browserlogs.push(...browserErrorLogs);
+        return browserErrorLogs;
+    }
+
+    async printBrowserLogs(){
+        const browserErrorLogs = await this.getBrowserLogs();
+        this.browserlogs.push(...browserErrorLogs)
+        for (const log of browserErrorLogs) {
+            cucumberReporter.AddMessage(log);
+        }
         return this.browserlogs;
     }
+
+    async printAllBrowserLogs(){
+        const browserErrorLogs = await this.getBrowserLogs();
+        this.browserlogs.push(...browserErrorLogs)
+        for (const log of this.browserlogs) {
+            cucumberReporter.AddMessage(log);
+        }
+        return this.browserlogs;
+    }
+
+
 
     async getNetworkLogs(){
         let browserLog = await browser.manage().logs().get('performance');

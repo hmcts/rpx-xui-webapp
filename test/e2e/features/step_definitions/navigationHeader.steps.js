@@ -4,6 +4,9 @@ const cucumberReporter = require('../../support/reportLogger');
 var { defineSupportCode } = require('cucumber');
 const SoftAssert = require('../../../ngIntegration/util/softAssert');
 const constants = require('../../support/constants');
+const featureToggleUtil = require('../../../ngIntegration/util/featureToggleUtil');
+const browserUtil = require("../../../ngIntegration/util/browserUtil");
+const headerpage = require('../pageObjects/headerPage');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -40,8 +43,22 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     When('I click on primary navigation header tab {string}, I see selected tab page displayed', async function (headerTabLabel) {
         await browserWaits.retryWithActionCallback(async () => {
-            await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
-            expect(await headerPage.isPrimaryTabPageDisplayed(headerTabLabel)).to.be.true
+            try{
+                await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
+                expect(await headerPage.isPrimaryTabPageDisplayed(headerTabLabel)).to.be.true
+            }catch(err){
+                await cucumberReporter.AddMessage(`LD config for "mc-menu-items"`);
+                await cucumberReporter.AddJson(featureToggleUtil.getFeatureToggleValue('mc-menu-items')); 
+ 
+                await cucumberReporter.AddMessage(`****** Retrying with page app reload *******`);
+                await browser.refresh();
+                await browserWaits.retryWithActionCallback(async () => {
+                    await headerpage.waitForPrimaryNavDisplay();
+                    await browserUtil.waitForLD();
+                });  
+                throw new Error(err);
+            }
+            
         });
     });
 
@@ -126,7 +143,13 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I validate header displayed for user type {string}', async function(userType){
         let i = 0;
         await browserWaits.retryWithActionCallback(async (i) => {
-            await browserWaits.waitForSeconds(i*2);
+            await browserUtil.gotoHomePage();
+            await browserWaits.retryWithActionCallback(async () => {
+                await headerpage.waitForPrimaryNavDisplay();
+                await browserUtil.waitForLD();
+
+                featureToggleUtil.printFeatureToggleValue("mc-menu-theme");
+            });  
             await headerPage.validateHeaderDisplayedForUserType(userType);
             i++;
         });

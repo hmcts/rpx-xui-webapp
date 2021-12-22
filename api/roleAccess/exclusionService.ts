@@ -1,6 +1,7 @@
 import { AxiosResponse } from 'axios';
-import { sendPost } from '../common/crudService';
 import { NextFunction, Response } from 'express';
+import { UserInfo } from '../auth/interfaces/UserInfo';
+import { sendPost } from '../common/crudService';
 import { getConfigValue } from '../configuration';
 import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
 import { http } from '../lib/http';
@@ -9,7 +10,6 @@ import { setHeaders } from '../lib/proxy';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { RoleCategory } from './models/allocate-role.enum';
 import { CaseRoleRequestPayload, RoleExclusion } from './models/caseRoleRequestPayload';
-import { UserInfo } from 'auth/interfaces/UserInfo';
 import { release2ContentType } from './models/release2ContentType';
 
 const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);

@@ -74,7 +74,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     });
   }
 
-  protected executeAction(action: ACTION): void {
+  public executeAction(action: ACTION): void {
     if (action === ACTION.CONTINUE) {
       if (this.isFormValid()) {
         this.prepareHearingRequestData();

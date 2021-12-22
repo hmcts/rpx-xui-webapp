@@ -325,6 +325,18 @@ describe('HearingAttendanceComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should call prepareHearingRequestData when executeAction is called with a valid form', () => {
+    component.attendanceFormGroup.controls.estimation.setValue(1);
+    (component.attendanceFormGroup.controls.parties as FormArray).controls.forEach(element => {
+      (element as FormGroup).value.partyChannel =  {
+        key: 'inperson',
+        value_en: 'In person',
+      } as RefDataModel;
+    });
+    component.executeAction(ACTION.CONTINUE);
+    expect(component.prepareHearingRequestData).toHaveBeenCalled();
+  });
+
   it('should true when calling isFormValid with partyChannel', () => {
     component.attendanceFormGroup.controls.estimation.setValue(1);
     (component.attendanceFormGroup.controls.parties as FormArray).controls.forEach(element => {

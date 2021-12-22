@@ -47,6 +47,13 @@ export class AppConfig extends AbstractAppConfig {
         access_management_basic_view_mock: val
       }
     });
+
+    this.featureToggleService.getValue('case-access-management-view-case-mock', {}).subscribe({
+      next: (val) => this.config = {
+        ...this.config,
+        access_management_case_view_mock: val
+      }
+    });
   }
 
   public load(): Promise<void> {
@@ -196,6 +203,10 @@ export class AppConfig extends AbstractAppConfig {
 
   public getAccessManagementBasicViewMock(): {} {
     return this.config.access_management_basic_view_mock;
+  }
+
+  public getAccessManagemenViewCaseMock(): {} {
+    return this.config.access_management_case_view_mock;
   }
 
   public getLocationRefApiUrl(): string {

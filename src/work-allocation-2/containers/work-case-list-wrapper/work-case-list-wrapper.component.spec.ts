@@ -20,7 +20,7 @@ describe('WorkCaseListWrapperComponent', () => {
   let fixture: ComponentFixture<WorkCaseListWrapperComponent>;
   const mockRef = jasmine.createSpyObj('mockRef', ['']);
   const mockRouter = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate']);
-  const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['searchCase', 'getCase']);
+  const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['searchCase', 'getCase', 'getMyCases']);
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['']);
@@ -55,6 +55,7 @@ describe('WorkCaseListWrapperComponent', () => {
     component = fixture.componentInstance;
     const cases: Case[] = getMockCases();
     mockWorkAllocationService.searchCase.and.returnValue(of({ cases }));
+    mockWorkAllocationService.getMyCases.and.returnValue(of({ cases }));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockCaseworkerDataService.getAll.and.returnValue(of([]));

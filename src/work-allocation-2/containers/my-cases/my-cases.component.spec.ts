@@ -26,7 +26,7 @@ describe('MyCasesComponent', () => {
   let fixture: ComponentFixture<WrapperComponent>;
 
   let router: Router;
-  const mockCaseService = jasmine.createSpyObj('mockCaseService', ['searchCase']);
+  const mockCaseService = jasmine.createSpyObj('mockCaseService', ['searchCase', 'getMyCases']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
@@ -62,7 +62,7 @@ describe('MyCasesComponent', () => {
     component = wrapper.appComponentRef;
     router = TestBed.get(Router);
     const cases: Case[] = getMockCases();
-    mockCaseService.searchCase.and.returnValue(of({ cases }));
+    mockCaseService.getMyCases.and.returnValue(of({ cases }));
     mockCaseworkerService.getAll.and.returnValue(of([]));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
@@ -73,7 +73,7 @@ describe('MyCasesComponent', () => {
   it('should make a call to load cases using the default search request', () => {
     const searchRequest = component.getSearchCaseRequestPagination();
     const payload = { searchRequest, view: component.view };
-    expect(mockCaseService.searchCase).toHaveBeenCalledWith(payload);
+    expect(mockCaseService.getMyCases).toHaveBeenCalledWith(payload);
     expect(component.cases).toBeDefined();
     expect(component.cases.length).toEqual(2);
   });

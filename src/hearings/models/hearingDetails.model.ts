@@ -19,4 +19,5 @@ export interface HearingDetailsModel {
   listingComments?: string;
   hearingRequester?: string;
   leadJudgeContractType?: string;
+  totalParticipantAttendingHearing?: number;
 }

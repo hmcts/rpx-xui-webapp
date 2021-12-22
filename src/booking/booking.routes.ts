@@ -1,6 +1,7 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { BookingHomeComponent, BookingWrapperComponent } from './containers';
+import { BookingGuard } from './guards/booking-guard';
 
 export const ROUTES: Routes = [
   {
@@ -11,7 +12,7 @@ export const ROUTES: Routes = [
       {
         path: '',
         component: BookingHomeComponent,
-        canActivate: [],
+        canActivate: [BookingGuard],
         data: {
           title: 'Booking'
         }

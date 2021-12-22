@@ -27,6 +27,6 @@ export interface Period {
 }
 
 export interface SpecificRole {
-  id: string,
-  name: string
+  id: string;
+  name: string;
 }

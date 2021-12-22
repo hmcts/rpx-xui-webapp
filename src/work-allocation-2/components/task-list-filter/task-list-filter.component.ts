@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FilterPersistence, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
 import { forkJoin, Subscription } from 'rxjs';
-import { filter, tap } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { ErrorMessage } from '../../../app/models';
 import { Location } from '../../models/dtos';
 import { LocationDataService } from '../../services';
@@ -85,7 +85,6 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   public subscribeToSelectedLocations(): void {
     this.selectedLocationsSubscription = this.filterService.getStream(TaskListFilterComponent.FILTER_NAME)
       .pipe(
-        tap(console.log),
         filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
       )
       .subscribe((f: FilterSetting) => {

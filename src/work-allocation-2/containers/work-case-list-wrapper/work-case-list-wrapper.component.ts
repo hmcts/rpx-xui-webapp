@@ -288,7 +288,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
     const casesSearch$ = this.performSearchPagination();
     const mappedSearchResult$ = casesSearch$.pipe(mergeMap(result => {
       const jucidicalUserIds = result.cases.filter(theCase => theCase.role_category === 'JUDICIAL').map(thisCase => thisCase.assignee);
-      if(jucidicalUserIds && jucidicalUserIds.length > 0) {
+      if (jucidicalUserIds && jucidicalUserIds.length > 0) {
           return this.judicialWorkerDataService.getCaseRolesUserDetails(jucidicalUserIds).pipe(switchMap((judicialUserData) => {
             const judicialNamedCases = result.cases.map(judicialCase => {
               const currentCase = judicialCase;
@@ -297,7 +297,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
                 currentCase.actorName = theJUser.known_as;
                 return currentCase;
               }
-              return judicialCase;
+              return currentCase;
             });
             result.cases = judicialNamedCases;
             return of(result);

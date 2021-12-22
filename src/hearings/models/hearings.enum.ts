@@ -103,6 +103,10 @@ export enum HearingDateEnum {
   DefaultFormat = 'DD-MM-YYYY'
 }
 
+export enum HearingStageEnum {
+  SelectHearingStageError = 'Select a hearing stage',
+}
+
 export enum HearingDatePriorityEnum {
   LengthError = 'Enter a valid hearing length',
   LengthMinutesError = 'The minutes entered must be a multiple of 5',

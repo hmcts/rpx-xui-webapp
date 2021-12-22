@@ -1,11 +1,19 @@
-@ng
+@ng 
 Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
     Background: User and mock data setup
         Given I set MOCK request "/workallocation2/findPerson" response log to report
+        Given I set MOCK request "/api/role-access/roles/post" response log to report
 
         Given I set MOCK case details with reference "caseDetails"
         Given I set MOCK case details "caseDetails" property "Jurisdiction" as "IA"
+
+
+        Given I set MOCK case workers
+            | email                   | firstName   | lastName | roleCategory     |
+            | caseworker_user1@gov.uk | caseworker1 | cw       | LEGAL_OPERATIONS |
+            | caseworker_user2@gov.uk | caseworker2 | cw       | LEGAL_OPERATIONS |
+
 
         Given I set MOCK find person response for jurisdictions
             | domain    | id   | email                   | name           | knownAs       |
@@ -18,17 +26,17 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
 
         Given I set MOCK case roles
-            | name        | roleCategory     | roleName     | email                   | start | end |
-            | user1 judge | JUDICIAL         | Lead judge   | judge_lead_1@gov.uk     | 1     | 2   |
-            | user1 judge | JUDICIAL         | Lead judge   | judge_lead_1@gov.uk     | 2     | 2   |
-            | user1 judge | JUDICIAL         | Lead judge   | judge_lead_1@gov.uk     | 3     | 4   |
-            | user1 judge | JUDICIAL         | Lead judge   | judge_lead_1@gov.uk     | 4     | 4   |
-            | user1 judge | JUDICIAL         | Lead judge   | judge_lead_1@gov.uk     | 5     | 8   |
-            | user1 judge | JUDICIAL         | Lead judge   | judge_lead_1@gov.uk     | 6     | 8   |
-            | user1 judge | JUDICIAL         | Lead judge   | judge_lead_1@gov.uk     | 7     | 8   |
-            | user1 judge | JUDICIAL         | Lead judge   | judge_lead_1@gov.uk     | 8     | 8   |
-            | admin1 a    | LEGAL_OPERATIONS | Case manager | caseworker_user1@gov.uk | 9     | 20  |
-            | admin1 b    | LEGAL_OPERATIONS | Case manager | caseworker_user2@gov.uk | 9     | 20  |
+            | name        | roleCategory     | roleName     | email                   | start | end | type | userType         |
+            | user1 judge | JUDICIAL         | lead-judge   | judge_lead_1@gov.uk     | 1     | 2   | CASE | JUDICIAL         |
+            | user1 judge | JUDICIAL         | lead-judge   | judge_lead_1@gov.uk     | 2     | 2   | CASE | JUDICIAL         |
+            | user1 judge | JUDICIAL         | lead-judge   | judge_lead_1@gov.uk     | 3     | 4   | CASE | JUDICIAL         |
+            | user1 judge | JUDICIAL         | lead-judge   | judge_lead_1@gov.uk     | 4     | 4   | CASE | JUDICIAL         |
+            | user1 judge | JUDICIAL         | lead-judge   | judge_lead_1@gov.uk     | 5     | 8   | CASE | JUDICIAL         |
+            | user1 judge | JUDICIAL         | lead-judge   | judge_lead_1@gov.uk     | 6     | 8   | CASE | JUDICIAL         |
+            | user1 judge | JUDICIAL         | lead-judge   | judge_lead_1@gov.uk     | 7     | 8   | CASE | JUDICIAL         |
+            | user1 judge | JUDICIAL         | lead-judge   | judge_lead_1@gov.uk     | 8     | 8   | CASE | JUDICIAL         |
+            | admin1 a    | LEGAL_OPERATIONS | case-manager | caseworker_user1@gov.uk | 9     | 20  | CASE | LEGAL_OPERATIONS |
+            | admin1 b    | LEGAL_OPERATIONS | case-manager | caseworker_user2@gov.uk | 9     | 20  | CASE | LEGAL_OPERATIONS |
 
 
         Given I set MOCK case role exclusions
@@ -125,12 +133,11 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
         Then I see Allocate role work flow page "Check your changes" with caption "Reallocate a lead judge" is displayed
 
-        Then I see Check your answers page has total 3 questions
+        Then I see Check your answers page has total 2 questions
         Then I see Check your answers page has questions and answers with change link
-            | Question                          | Answer                         |
-            | Who the role will be allocated to | Allocate to another person     |
-            | Person                            | Lead judge(judge_user1@gov.uk) |
-            | Duration of role                  | Indefinite                     |
+            | Question         | Answer                         |
+            | Person           | Lead judge(judge_user1@gov.uk) |
+            | Duration of role | Indefinite                     |
 
         When I click button with label "Confirm allocation" in work flow  Check your answers page
         Then I see case details page displayed with tab "Roles and access" selected
@@ -184,7 +191,7 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
         Then I validate date input field "Access ends" is displayed "No" in work flow page
         When I click continue in work flow page "Duration of role"
 
-        Then I see Allocate role work flow page "Check your answers" with caption "Reallocate a legal ops case manager" is displayed
+        Then I see Allocate role work flow page "Check your changes" with caption "Reallocate a legal ops case manager" is displayed
 
         Then I see Check your answers page has total 2 questions
         Then I see Check your answers page has questions and answers with change link
@@ -236,7 +243,7 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
         # When I click continue in work flow page "Choose how to allocate the role"
 
         Then I see Allocate role work flow page "Find the person" with caption "Reallocate a legal ops case manager" is displayed
-        When I enter find person search input "jud" in work flow
+        When I enter find person search input "cas" in work flow
         Then I see find person search results in work flow
             | Person                                  |
             | caseworker1 cw(caseworker_user1@gov.uk) |
@@ -250,14 +257,13 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
         Then I validate date input field "Access ends" is displayed "No" in work flow page
         When I click continue in work flow page "Duration of role"
 
-        Then I see Allocate role work flow page "Check your answers" with caption "Reallocate a legal ops case manager" is displayed
+        Then I see Allocate role work flow page "Check your changes" with caption "Reallocate a legal ops case manager" is displayed
 
-        Then I see Check your answers page has total 3 questions
+        Then I see Check your answers page has total 2 questions
         Then I see Check your answers page has questions and answers with change link
-            | Question                          | Answer                                  |
-            | Who the role will be allocated to | Allocate to another person              |
-            | Person                            | caseworker1 cw(caseworker_user1@gov.uk) |
-            | Duration of role                  | Indefinite                              |
+            | Question         | Answer                                  |
+            | Person           | caseworker1 cw(caseworker_user1@gov.uk) |
+            | Duration of role | Indefinite                              |
 
         When I click button with label "Confirm allocation" in work flow  Check your answers page
         Then I see case details page displayed with tab "Roles and access" selected

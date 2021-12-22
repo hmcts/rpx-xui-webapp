@@ -40,9 +40,8 @@ function HeaderPage() {
 
     this.validateHeaderDisplayedForUserType = async function(userType){
       if (userType.toLowerCase() === 'caseworker'){
-        await BrowserWaits.waitForElement(this.myHMCTSHeader);
         expect(await this.jcmLogoImg.isPresent(),"JCM logo displayed").to.be.false;
-        expect(await this.myHMCTSHeader.isPresent(),"MyHMCTS not displayed").to.be.true;
+        expect(await this.myHMCTSHeader.isPresent(),"MyHMCTS is displayed").to.be.false;
         expect(await this.headerLink.getText(),"Header link mismatch").to.includes("Manage Cases");
         expect(await this.globalHeaderContainerWithStyle.getAttribute('style')).to.includes("background-color: rgb(32, 32, 32);");
 
@@ -54,8 +53,9 @@ function HeaderPage() {
         expect(await this.globalHeaderContainerWithStyle.getAttribute('style')).to.includes("background-color: rgb(141, 15, 14);");
 
       } else if (userType.toLowerCase() === 'solicitor') {
+        await BrowserWaits.waitForElement(this.myHMCTSHeader);
         expect(await this.jcmLogoImg.isPresent(), "JCM displayed").to.be.false;
-        expect(await this.myHMCTSHeader.isPresent(), "MyHMCTS displayed").to.be.false;
+        expect(await this.myHMCTSHeader.isPresent(), "MyHMCTS displayed").to.be.true;
         expect(await this.headerLink.getText(), "Header link mismatch").to.includes("Manage Cases");
         expect(await this.globalHeaderContainerWithStyle.getAttribute('style')).to.includes("background-color: rgb(32, 32, 32);");
 
@@ -197,7 +197,7 @@ function HeaderPage() {
     await BrowserWaits.retryWithActionCallback(async () => {
       const primaryTabs = this.getPrimaryTabsDisplayed();
       const tabEle = this.getTabElementWithText(tabText).click();
-      await BrowserUtil.waitForLD();
+      await BrowserWaits.waitForElement(tabEle);
       if (tabEle) {
         await tabEle.click();
       } else {

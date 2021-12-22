@@ -8,6 +8,7 @@ const CucumberReporter = require('../../../e2e/support/reportLogger');
 
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
 const workAllocationDataModel = require("../../../dataModels/workAllocation");
+const reportLogger = require('../../../e2e/support/reportLogger');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -57,10 +58,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         const userDetails = nodeAppMockData.getUserDetailsWithRoles(roles);
         CucumberReporter.AddJson(userDetails)
-        MockApp.onGet('/api/user/details', (req,res) => {
-            CucumberReporter.AddJson(userDetails)
-            res.send(userDetails);
-        });
+       
      });
 
     Given('I set MOCK request {string} intercept with reference {string}', async function(url,reference){
@@ -115,22 +113,26 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
          switch (apiMethod.toLowerCase()){
             case 'get':
                  MockApp.onGet(apiEndpoint, (req, res) => {
+                     reportLogger.AddMessage(`Mock response code returned ${responseCode}`);
                      res.status(responseCode).send({ error: "Test error from mock" });
                  });
                  break;
              case 'post':
                  MockApp.onPost(apiEndpoint, (req, res) => {
+                     reportLogger.AddMessage(`Mock response code returned ${responseCode}`);
                      res.status(responseCode).send({ error: "Test error from mock" });
                  });
                  break;
              case 'put':
                  MockApp.onPut(apiEndpoint, (req, res) => {
+                     reportLogger.AddMessage(`Mock response code returned ${responseCode}`);
                      res.status(responseCode).send({ error: "Test error from mock" });
                  });
                  break;
              case 'delete':
                  MockApp.onDelete(apiEndpoint, (req, res) => {
-                     res.status(responseCode).send({ error: "Test error from mock" });
+                    reportLogger.AddMessage(`Mock response code returned ${responseCode}`);
+                    res.status(responseCode).send({ error: "Test error from mock" });
                  });
                  break;
 
@@ -154,10 +156,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 person[key] = inputperson[key];
             }
 
-           
+            
             allPersons.push(person);
             
         }
+        CucumberReporter.AddMessage("Find persons mock db")
+        CucumberReporter.AddJson(allPersons)
 
         MockApp.onPost('/workallocation2/findPerson', (req,res) => {
             const inputJurisdiction = req.body.searchOptions.jurisdiction;
@@ -167,6 +171,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                     filterdUsersForJurisdiction.push(p);
                 }  
             }
+            CucumberReporter.AddMessage("Find persons mock response for req.")
+            CucumberReporter.AddJson(req.body)
+
+            CucumberReporter.AddJson(filterdUsersForJurisdiction)
+ 
             res.send(filterdUsersForJurisdiction);
         });
 

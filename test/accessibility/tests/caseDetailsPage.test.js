@@ -12,6 +12,8 @@ const MockApp = require('../../nodeMock/app');
 
 const ccdApi = require('../../nodeMock/ccd/ccdApi');
 const caseDetailsPageLocators = require('../appLocators/caseDetails');
+const nodeAppMockData = require('../../nodeMock/nodeApp/mockData');
+
 
 describe('Case details page', function () {
     const caseDetailsRoute = 'cases/case-details/1547480421733777/'
@@ -22,6 +24,9 @@ describe('Case details page', function () {
         ccdApi.caseDetailsResponse.case_type.jurisdiction.id = "IA";
         ccdApi.caseDetailsResponse.case_type.jurisdiction.name = "Immigration & Asylu";
         ccdApi.caseDetailsResponse.case_type.jurisdiction.description = "Immigration & Asylu";
+
+        nodeAppMockData.init();
+        nodeAppMockData.userDetails.userInfo.uid = "810b5601-4a8a-4c82-9294-34f087f2e67f";
         done();
     });
     after(async function (done) {

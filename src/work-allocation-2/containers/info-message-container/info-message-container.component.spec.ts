@@ -1,9 +1,8 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { InfoMessageCommService } from '../../services';
-import {InfoMessage, InfoMessageType} from './../../enums';
 import { InfoMessageContainerComponent } from '..';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';

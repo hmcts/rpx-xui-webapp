@@ -1,16 +1,17 @@
-import {Component, Input} from '@angular/core';
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {FormBuilder, ReactiveFormsModule} from '@angular/forms';
-import {By} from '@angular/platform-browser';
-import {ActivatedRoute} from '@angular/router';
-import {RouterTestingModule} from '@angular/router/testing';
-import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
-import {provideMockStore} from '@ngrx/store/testing';
-import {of} from 'rxjs';
-import {ACTION} from '../../../models/hearings.enum';
-import {RefDataModel} from '../../../models/refData.model';
-import {HearingsService} from '../../../services/hearings.service';
-import {HearingStageComponent} from './hearing-stage.component';
+import { Component, Input, NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
+import { provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs';
+import { HearingRequestMainModel } from '../../../../hearings/models/hearingRequestMain.model';
+import { ACTION, HearingStageEnum } from '../../../models/hearings.enum';
+import { RefDataModel } from '../../../models/refData.model';
+import { HearingsService } from '../../../services/hearings.service';
+import { HearingStageComponent } from './hearing-stage.component';
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -84,7 +85,13 @@ describe('HearingStageComponent', () => {
         },
         lastError: null,
       },
-      hearingRequest: null,
+      hearingRequest: {
+        hearingRequestMainModel: {
+          hearingDetails: {
+            hearingType: 'Final'
+          }
+        }
+      },
       hearingConditions: null,
     }
   };
@@ -94,8 +101,8 @@ describe('HearingStageComponent', () => {
       imports: [ReactiveFormsModule, RouterTestingModule],
       declarations: [HearingStageComponent, MockHearingPartiesComponent],
       providers: [
-        provideMockStore({initialState}),
-        {provide: HearingsService, useValue: hearingsService},
+        provideMockStore({ initialState }),
+        { provide: HearingsService, useValue: hearingsService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -108,6 +115,7 @@ describe('HearingStageComponent', () => {
         },
         FormBuilder
       ],
+      schemas: [NO_ERRORS_SCHEMA],
     })
       .compileComponents();
 
@@ -124,13 +132,13 @@ describe('HearingStageComponent', () => {
 
   it('should set hearingtype', () => {
     fixture.detectChanges();
-    expect(component.hearingType).toEqual(initialState.hearings.hearingValues.serviceHearingValuesModel.hearingType);
+    expect(component.hearingType).toEqual(initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.hearingType);
   });
 
   it('should initialise control value to hearing type from store', () => {
     fixture.detectChanges();
-    component.ngAfterViewInit();
-    expect(component.stageForm.controls['stage-option'].value).toEqual(initialState.hearings.hearingValues.serviceHearingValuesModel.hearingType);
+    component.ngAfterContentInit();
+    expect(component.stageForm.controls['stage-option'].value).toEqual(initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.hearingType);
   });
 
   it('should call unsubscribe', () => {
@@ -148,6 +156,32 @@ describe('HearingStageComponent', () => {
     for (let index = 0; index < radioLabels.length; index++) {
       expect(radioLabels[index].nativeElement.innerText).toEqual(source[index].value_en);
     }
+  });
+
+  it('should check form data', () => {
+    component.stageForm.controls['stage-option'].setValue('Final');
+    component.checkFormData();
+    expect(component.hearingStageSelectionError).toBe(null);
+    component.stageForm.controls['stage-option'].setValue('');
+    component.checkFormData();
+    expect(component.hearingStageSelectionError).toBe(HearingStageEnum.SelectHearingStageError);
+  });
+
+  it('should check form valid', () => {
+    component.stageForm.controls['stage-option'].setValue('Final');
+    expect(component.isFormValid()).toBe(true);
+  });
+
+  it('should execute Action', () => {
+    (component as any).hearingRequestMainModel = {} as HearingRequestMainModel;
+    component.stageForm.controls['stage-option'].setValue('');
+    component.executeAction(ACTION.CONTINUE);
+    expect(component.hearingStageSelectionError).toBe(HearingStageEnum.SelectHearingStageError);
+    component.stageForm.controls['stage-option'].setValue('Final');
+    component.executeAction(ACTION.CONTINUE);
+    expect(component.hearingStageSelectionError).toBe(null);
+    component.executeAction(ACTION.BACK);
+    expect(component.hearingStageSelectionError).toBe(null);
   });
 
   afterEach(() => {

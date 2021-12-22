@@ -290,12 +290,16 @@ export class WorkCaseListWrapperComponent implements OnInit {
       const jucidicalUserIds = result.cases.filter(theCase => theCase.role_category === 'JUDICIAL').map(thisCase => thisCase.assignee);
       if(jucidicalUserIds && jucidicalUserIds.length > 0) {
           return this.judicialWorkerDataService.getCaseRolesUserDetails(jucidicalUserIds).pipe(switchMap((judicialUserData) => {
-            result.cases.forEach(judicialCase => {
+            const judicialNamedCases = result.cases.map(judicialCase => {
+              const currentCase = judicialCase;
               const theJUser = judicialUserData.find(judicialUser => judicialUser.sidam_id === judicialCase.assignee);
               if (theJUser) {
-                judicialCase.assigneeName = theJUser.known_as;
+                currentCase.actorName = theJUser.known_as;
+                return currentCase;
               }
-            })
+              return judicialCase;
+            });
+            result.cases = judicialNamedCases;
             return of(result);
           }));
       } else {

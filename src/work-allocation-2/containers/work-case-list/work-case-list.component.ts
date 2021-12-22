@@ -25,6 +25,7 @@ export class WorkCaseListComponent implements OnChanges {
   @Input() public sortedBy: SortField;
   @Input() public addActionsColumn: boolean = true;
   @Input() public pagination: PaginationParameter;
+  @Input() public view: string;
   @Input() public showManage = {};
 
   /**

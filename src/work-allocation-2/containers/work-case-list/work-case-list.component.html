@@ -1,4 +1,4 @@
-<div *ngIf="pagination; else tableSummary" class="pagination-top"
+<div *ngIf="pagination && view !== 'MyAccess'" class="pagination-top"
   attr.aria-label="{{ casesTotal }} results have been found" role="status">
   <span class="text-16" id="search-result-summary__text">Showing
     <span class="govuk-!-font-weight-bold">{{ getFirstResult() }}</span>
@@ -8,12 +8,18 @@
     <span class="govuk-!-font-weight-bold">{{ casesTotal || 0 }}</span> results</span>
 </div>
 
-<ng-template #tableSummary>
-  <div class="pagination-top" attr.aria-label="{{ casesTotal }} results have been found" role="status">
-    <span class="text-16">Showing <span class="govuk-!-font-weight-bold">{{
-        casesTotal || 0 }} </span>results</span>
-  </div>
-</ng-template>
+<div *ngIf="!pagination && view === 'MyAccess' && casesTotal > 0" class="pagination-top"
+  attr.aria-label="{{ casesTotal }} results have been found" role="status">
+  <span class="text-16" id="search-result-summary__text">Displaying
+    <span class="govuk-!-font-weight-bold">{{ casesTotal }}</span>
+    of
+    <span class="govuk-!-font-weight-bold">{{ casesTotal || 0 }}</span> cases</span>
+</div>
+
+<div *ngIf="!pagination && view !== 'MyAccess'" class="pagination-top" attr.aria-label="{{ casesTotal }} results have been found" role="status">
+  <span class="text-16">Showing <span class="govuk-!-font-weight-bold">{{
+      casesTotal || 0 }} </span>results</span>
+</div>
 
 <!-- Reset Sorting Button -->
 <div *ngIf="showResetSortButton" class="reset-sort-button"><button type="button"

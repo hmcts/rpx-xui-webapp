@@ -3,6 +3,7 @@ import { AllWorkHomeComponent } from './all-work-home/all-work-home.component';
 import { AllWorkTaskComponent } from './all-work-task/all-work-task.component';
 import { AvailableTasksComponent } from './available-tasks/available-tasks.component';
 import { InfoMessageContainerComponent } from './info-message-container/info-message-container.component';
+import { MyAccessComponent } from './my-access/my-access.component';
 import { MyCasesComponent } from './my-cases/my-cases.component';
 import { MyTasksComponent } from './my-tasks/my-tasks.component';
 import { TaskActionContainerComponent } from './task-action/task-action-container.component';
@@ -21,6 +22,7 @@ export const containers: any[] = [
   InfoMessageContainerComponent,
   MyTasksComponent,
   MyCasesComponent,
+  MyAccessComponent,
   TaskActionContainerComponent,
   TaskAssignmentContainerComponent,
   TaskHomeComponent,

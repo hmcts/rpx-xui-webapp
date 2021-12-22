@@ -192,8 +192,11 @@ export class WorkCaseListWrapperComponent implements OnInit {
     const searchRequest = this.getSearchCaseRequestPagination();
     if (this.view === 'AllWorkCases') {
       return this.caseService.getCases({searchRequest, view: this.view});
+    } else if (this.view === 'MyCases') {
+      return this.caseService.getMyCases({searchRequest, view: this.view});
+    } else {
+      return this.caseService.getMyAccess({searchRequest, view: this.view});
     }
-    return this.caseService.getMyCases({searchRequest, view: this.view});
   }
 
   /**

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { Observable, Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { debounceTime, filter } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 
@@ -34,7 +34,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public showSpinner$: Observable<boolean>;
   public sortedBy: SortField;
   public pagination: PaginationParameter;
-  private pTasks: Task[];
+  private pTasks: Task[] = [];
   public selectedLocations: string[] = [];
   private tasksLoaded: boolean = false;
   protected userDetailsKey: string = 'userDetails';
@@ -143,7 +143,6 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     this.taskServiceConfig = this.getTaskServiceConfig();
     this.loadCaseWorkersAndLocations();
     this.setupTaskList();
-    this.loadTasks();
   }
 
   public ngOnDestroy(): void {
@@ -155,20 +154,14 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public loadCaseWorkersAndLocations() {
     this.selectedLocationsSubscription = this.filterService.getStream('locations')
       .pipe(
+        debounceTime(200),
         filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
       )
       .subscribe((f: FilterSetting) => {
         const newLocations = f.fields.find((field) => field.name === 'locations').value;
         this.resetPagination(this.selectedLocations, newLocations);
         this.selectedLocations = newLocations;
-        // timeout ensures tasks are loaded on initial local setting
-        // waits for initial setting to be persisted via task-filter-component
-        setTimeout(() => {
-          if (this.tasksLoaded || this.filterService.isInitialSetting) {
-            this.doLoad();
-            this.filterService.isInitialSetting = false;
-          }
-        }, 1);
+        this.doLoad();
     });
   }
 

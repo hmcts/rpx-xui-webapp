@@ -4,7 +4,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
+import { FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
 import { of, throwError } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -14,7 +15,7 @@ import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
 import { InformationMessage } from '../../models/comms';
 import * as dtos from '../../models/dtos';
 import { InvokedTaskAction, Task } from '../../models/tasks';
-import { LocationDataService, WorkAllocationTaskService } from '../../services';
+import { CaseworkerDataService, LocationDataService, WorkAllocationTaskService } from '../../services';
 import { getMockLocations, getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
@@ -49,6 +50,8 @@ describe('AvailableTasksComponent', () => {
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
+  const mockFilterService = jasmine.createSpyObj('mockFilterService', ['getStream']);
+  const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getAll']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
@@ -68,6 +71,8 @@ describe('AvailableTasksComponent', () => {
         { provide: LocationDataService, useValue: mockLocationService },
         { provide: Router, useValue: mockRouter },
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
+        { provide: CaseworkerDataService, useValue: mockCaseworkerDataService },
+        { provide: FilterService, useValue: mockFilterService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: AlertService, useValue: mockAlertService },
         { provide: LoadingService, useValue: mockLoadingService },
@@ -78,6 +83,17 @@ describe('AvailableTasksComponent', () => {
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
     mockLocationService.getLocations.and.returnValue(of(mockLocations));
+    const filterFields: FilterSetting = {
+      id: 'locations',
+      fields: [
+        {
+          name: 'locations',
+          value: ['231596']
+        }
+      ]
+    };
+    mockCaseworkerDataService.getAll.and.returnValue(of([]));
+    mockFilterService.getStream.and.returnValue(of(filterFields));
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({ tasks }));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
@@ -89,10 +105,13 @@ describe('AvailableTasksComponent', () => {
     fixture.destroy();
   });
 
-  it('should make a call to load tasks using the default search request', () => {
+  it('should make a call to load tasks using the default search request', fakeAsync(() => {
+    component.ngOnInit();
+    tick(500);
+    fixture.detectChanges();
     expect(component.tasks).toBeDefined();
     expect(component.tasks.length).toEqual(2);
-  });
+  }));
 
   it('should allow searching via location', () => {
     mockSessionStorageService.getItem.and.returnValue(userInfo);
@@ -121,14 +140,17 @@ describe('AvailableTasksComponent', () => {
     expect(headerCells[headerCells.length - 1].textContent.trim()).toEqual('');
   });
 
-  it('should not show the footer when there are tasks', () => {
+  it('should not show the footer when there are tasks', fakeAsync(() => {
+    tick(500);
+    component.ngOnInit();
+    fixture.detectChanges();
     const element = fixture.debugElement.nativeElement;
     const footerRow = element.querySelector('.footer-row');
     expect(footerRow).toBeDefined();
     const footerRowClass = footerRow.getAttribute('class');
     expect(footerRowClass).toContain('footer-row');
     expect(footerRowClass).not.toContain('shown');
-  });
+  }));
 
   it('should show the footer when there are no tasks', () => {
     spyOnProperty(component, 'tasks').and.returnValue([]);

@@ -42,6 +42,7 @@ class MessageBanner{
 
     async isMessageTextDisplayed(expectedMessage){
         const allMessages = await this.getBannerMessagesDisplayed();
+        cucumberReporter.AddMessage(`Case details tasks tab banner messages : ${JSON.stringify(allMessages)}`);
         const matchingMessages = await ArrayUtil.filter(allMessages,async (message) => {
             return message.includes(expectedMessage);
         });

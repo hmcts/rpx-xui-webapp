@@ -1,10 +1,9 @@
-@ng
+@ng 
 Feature: WA Release 2: All work
 
     Background: Mock and browser setup
         Given I init MockApp
 
-    @ignore
     Scenario Outline:  All work Tasks, colums and column links for "<UserType>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK tasks with permissions for view "All work" and assigned state ""
@@ -19,13 +18,13 @@ Feature: WA Release 2: All work
             | test_cw_4@test.com | cw4       | test     | 1234-1234-1234-1234 | 10004       | Location 4            |
             | test_cw_5@test.com | cw5       | test     | 1234-1234-1234-1235 | 10005       | Location 5            |
         Given I set MOCK tasks with attributes for view "All work"
-            | index | permissions                | assignee            | case_name | location_name   | task_title       | dueDate | case_category        |
-            | 0     | Manage,Read,Execute,Cancel | 1234-1234-1234-1231 | case 1    | test location 1 | test auto task 1 | 10      | auto test category 1 |
-            | 1     | Manage                     | 1234-1234-1234-1232 | case 2    | test location 2 | test auto task 2 | 20      | auto test category 2 |
-            | 2     | Read                       | 1234-1234-1234-1233 | case 3    | test location 3 | test auto task 3 | 30      | auto test category 3 |
-            | 3     | Manage,Read                | 1234-1234-1234-1234 | case 4    | test location 4 | test auto task 4 | -10     | auto test category 4 |
-            | 4     | Manage                     | 1234-1234-1234-1235 | case 5    | test location 5 | test auto task 5 | -20     | auto test category 5 |
-            | 5     | Read                       |                     | case 6    | test location 6 | test auto task 6 | -30     | auto test category 6 |
+            | index | permissions                | assignee            | case_name | location_name   | task_title       | dueDate | created_date | case_category        |
+            | 0     | Manage,Read,Execute,Cancel | 1234-1234-1234-1231 | case 1    | test location 1 | test auto task 1 | -1       | -10          | auto test category 1 |
+            | 1     | Manage                     | 1234-1234-1234-1231 | case 2    | test location 2 | test auto task 2 | 0        | -10          | auto test category 2 |
+            | 2     | Read                       | 1234-1234-1234-1231 | case 3    | test location 3 | test auto task 3 | 1        | -10          | auto test category 3 |
+            | 3     | Manage,Read                | 1234-1234-1234-1231 | case 4    | test location 4 | test auto task 4 | -10      | -20          | auto test category 4 |
+            | 4     | Manage                     | 1234-1234-1234-1231 | case 5    | test location 5 | test auto task 5 | -20      | -30          | auto test category 5 |
+            | 5     | Read                       | 1234-1234-1234-1231 | case 6    | test location 6 | test auto task 6 | -30      | -40          | auto test category 6 |
 
         Given I start MockApp
         Given I navigate to home page
@@ -41,10 +40,17 @@ Feature: WA Release 2: All work
             | Due date      | Yes        | No    |
             | Priority      | Yes        | No    |
 
-        Then I validate task table values displayed
-            | row | Case name | Case category        | Location        | Task             | Date | Person |
-            | 1   | case 1    | auto test category 1 | test location 1 | test auto task 1 | 10   | cw1    |
-            | 2   | case 2    | auto test category 2 | test location 2 | test auto task 2 | 20   | cw2    |
+        Then If current user "<UserType>" is "Judge", I validate task table values displayed
+            | row | Case name | Case category        | Location        | Task             | Task created |
+            | 1   | case 1    | auto test category 1 | test location 1 | test auto task 1 | -10          |
+            | 2   | case 2    | auto test category 2 | test location 2 | test auto task 2 | -10          |
+
+        Then If current user "<UserType>" is "Caseworker", I validate task table values displayed
+            | row | Case name | Case category        | Location        | Task             | Due date | Priority |
+            | 1   | case 1    | auto test category 1 | test location 1 | test auto task 1 | -1       | HIGH     |
+            | 2   | case 2    | auto test category 2 | test location 2 | test auto task 2 | 0        | MEDIUM   |
+            | 3   | case 3    | auto test category 3 | test location 3 | test auto task 3 | 1        | LOW      |
+
         Then I validate task list columns are links
             | ColumnHeader |
             | Case name    |
@@ -55,11 +61,11 @@ Feature: WA Release 2: All work
 
         When I click on primary navigation header tab "My work", I see selected tab page displayed
         When I click task column link "Task" at row 1
-        Then I see case details page
+        Then I validate case details task tab page is displayed
         Examples:
             | UserIdentifier     | UserType   | Roles                                              |
-            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |
+            | IAC_Judge_WA_R2 | Judge | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker |
 
     Scenario Outline: Tasks pagnation control display with only 1 page of items
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
@@ -79,7 +85,7 @@ Feature: WA Release 2: All work
         Examples:
             | UserIdentifier  | UserType | Roles                                           |
             # | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            | IAC_Judge_WA_R2 | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker |
+            | IAC_Judge_WA_R2 | Judge | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker |
 
     Scenario:  Tasks sort column persist in session with Caseworker user
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer ,task-supervisor,case-allocator" with reference "userDetails"
@@ -98,8 +104,7 @@ Feature: WA Release 2: All work
         Then I validate task list page results text displayed as "Showing 1 to 25 of 140 results"
 
         When I click task list table header column "Case name", I validate task list table sorted with column "Case name" in order "asc"
-        When I click on primary navigation header tab "Case list", I see selected tab page displayed
-        Then I see case list page displayed
+        When I click on primary navigation header tab "My work", I see selected tab page displayed
         When I click on primary navigation header tab "All work", I see selected tab page displayed
         Then I validate tasks count in page 25
         Then I validate task list page results text displayed as "Showing 1 to 25 of 140 results"

@@ -1,4 +1,4 @@
-@ng @known_bug @EUI-4837
+@ng @known_bug @EUI-4837  
 Feature: WA Release 2: Roles and access tab (EUI-4837)
         https://tools.hmcts.net/jira/browse/EUI-3782 ???
         known bug EUI-4837
@@ -110,11 +110,11 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
             | user1 legal | LEGAL_OPERATIONS | Case manager | case_manager_1@gov.uk |       |     |
 
         Given I set MOCK case role exclusions
-            | name    | userType | type | notes            | added |
-            | judge 1 | Judicial | lead | Test exclusion 1 | -5    |
-            | judge 2 | Judicial | lead | Test exclusion 2 | -5    |
-            | judge 3 | Judicial | lead | Test exclusion 3 | -15   |
-            | judge 4 | Judicial | lead | Test exclusion 4 | -55   |
+            | name    | userType |  notes            | added |
+            | judge 1 | Judicial |  Test exclusion 1 | -5    |
+            | judge 2 | Judicial | Test exclusion 2 | -5    |
+            | judge 3 | Judicial |  Test exclusion 3 | -15   |
+            | judge 4 | Judicial | Test exclusion 4 | -55   |
 
         Given I start MockApp
         Given I navigate to home page
@@ -176,7 +176,6 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
             | headerName |
             | Name       |
             | Role       |
-            | Location   |
             | Start      |
             | End        |
 
@@ -189,7 +188,6 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
             | headerName |
             | Name       |
             | Role       |
-            | Location   |
             | Start      |
             | End        |
 
@@ -199,18 +197,17 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
 
         Then I validate case roles table has headers for role category "Exclusions" in case roles and access page
             | headerName |
-            | Type       |
             | Name       |
             | User type  |
             | Notes      |
             | Added      |
 
         Then I validate case roles table for role category "Exclusions" has data
-            | Name    | User type | Type | Notes            | Added |
-            | judge 1 | Judicial  | lead | Test exclusion 1 | -5    |
-            | judge 2 | Judicial  | lead | Test exclusion 2 | -5    |
-            | judge 3 | Judicial  | lead | Test exclusion 3 | -15   |
-            | judge 4 | Judicial  | lead | Test exclusion 4 | -55   |
+            | Name    | User type |  Notes            | Added |
+            | judge 1 | Judicial  |  Test exclusion 1 | -5    |
+            | judge 2 | Judicial  |  Test exclusion 2 | -5    |
+            | judge 3 | Judicial  |  Test exclusion 3 | -15   |
+            | judge 4 | Judicial  |  Test exclusion 4 | -55   |
 
 
         Then I validate case roles "Manage" link displayed status is "true" for category "Judicial"

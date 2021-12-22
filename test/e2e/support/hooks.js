@@ -108,23 +108,7 @@ defineSupportCode(({ Before,After }) => {
         try{
             await CucumberReportLog.AddScreenshot(global.screenShotUtils);
             if (scenario.result.status === 'failed') {
-                let browserLog = await browser.manage().logs().get('browser');
-                let browserErrorLogs = []
-                for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++) {
-                    if (browserLog[browserLogCounter].level.value > 900) {
-                        try{
-                            browserLog[browserLogCounter]['time'] = (new Date(browserLog[browserLogCounter]['time'])).toISOString()
-                        }
-                        catch(err){
-                            browserLog[browserLogCounter]['timeConversionError']= err;
-                        }
-                        browserErrorLogs.push(browserLog[browserLogCounter]);
-                    }
-                }
-                CucumberReportLog.AddJson(browserErrorLogs);
-                if (global.scenarioData['featureToggles']){
-                    CucumberReportLog.AddJson(global.scenarioData['featureToggles'])
-                }
+                await BrowserLogs.printAllBrowserLogs();
             } 
             
             await CucumberReportLog.AddMessage("Cleared browser logs after successful scenario.");
@@ -136,7 +120,6 @@ defineSupportCode(({ Before,After }) => {
         }     
         await clearSession();
        
-
     });
 
     async function clearSession(){

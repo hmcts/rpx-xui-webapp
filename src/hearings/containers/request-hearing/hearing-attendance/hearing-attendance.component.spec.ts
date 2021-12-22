@@ -18,7 +18,7 @@ class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
 }
 
-fdescribe('HearingAttendanceComponent', () => {
+describe('HearingAttendanceComponent', () => {
   let component: HearingAttendanceComponent;
   let fixture: ComponentFixture<HearingAttendanceComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);

@@ -1,8 +1,10 @@
 import { Case } from '../models/cases';
+import { CaseSearchParameters, SearchCaseRequest } from '../models/dtos';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { CaseSearchParameters, SearchCaseRequest } from '../models/dtos';
+import { Observable, of } from 'rxjs';
+import { switchMap} from 'rxjs/operators';
 
 const BASE_URL: string = '/workallocation2/case';
 export enum ACTION {
@@ -15,8 +17,7 @@ export enum ACTION {
 
 @Injectable({ providedIn: 'root' })
 export class WorkAllocationCaseService {
-
-  constructor(private readonly http: HttpClient) { }
+  constructor(private readonly http: HttpClient, private readonly featureToggleService: FeatureToggleService) { }
 
   public getCase(caseId: string): Observable<Case> {
     const url = `${BASE_URL}/${caseId}`;
@@ -35,6 +36,30 @@ export class WorkAllocationCaseService {
     return this.http.post<Case[]>(`/workallocation2/my-work/cases`, body);
   }
 
+  public getMyAccess(body: { searchRequest: SearchCaseRequest, view: string }): Observable<Case[]> {
+    return  this.http.post<Case[]>(`/workallocation2/my-work/cases`, body).pipe(
+      switchMap((caseList) => {
+        return  this.featureToggleService.getValue('case-access-management-specific-access-mock', false).pipe(
+          switchMap((result: any) => {
+            let refinedList = caseList['cases'].filter((item: any) => result.scenarios.myAccess.includes(item.case_id));
+            refinedList = refinedList.map((refinedItem) => (
+                {
+                  ...refinedItem,
+                  actions: {},
+                  dateSubmitted: result.data.myAccess.filter( item => item.id == refinedItem.case_id)[0].dateSubmitted,
+                  access: result.data.myAccess.filter( item => item.id == refinedItem.case_id)[0].accessProcess
+                }
+              )
+            );
+            caseList['cases'] = refinedList;
+            caseList['total'] = refinedList.length;
+            caseList['total_records'] = refinedList.length;
+            return of(caseList);
+          })
+        );
+      })
+    );
+  }
   public getCases(body: { searchRequest: SearchCaseRequest, view: string }): Observable<Case[]> {
     return this.http.post<Case[]>(`/workallocation2/all-work/cases`, body);
   }

@@ -79,7 +79,6 @@ describe('AllWorkCaseComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
-    component.isPaginationEnabled$ = of(true);
     const cases: Case[] = getMockCases();
     mockCaseService.getCases.and.returnValue(of({cases}));
     mockCaseworkerService.getAll.and.returnValue(of([]));

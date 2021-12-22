@@ -53,7 +53,6 @@ describe('WorkCaseListWrapperComponent', () => {
     }).compileComponents();
     fixture = TestBed.createComponent(WorkCaseListWrapperComponent);
     component = fixture.componentInstance;
-    component.isPaginationEnabled$ = of(false);
     const cases: Case[] = getMockCases();
     mockWorkAllocationService.searchCase.and.returnValue(of({ cases }));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));

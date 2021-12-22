@@ -23,7 +23,6 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
   public selectedLocations: LocationByEPIMSModel[] = [];
   public selectedLocations$: Observable<LocationByEPIMSModel[]>;
   public serviceIds: string = 'SSCS';
-  public hearingRequestMainModel: HearingRequestMainModel;
 
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService,

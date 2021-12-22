@@ -61,6 +61,54 @@ export const DEFAULT_PRIORITIES_REF: RefDataModel[] = [
   },
 ];
 
+export const DEFAULT_PARTYCHANNEL_REF: RefDataModel[] = [
+  {
+    key: 'inperson',
+    value_en: 'In person',
+    value_cy: '',
+    hintText_EN: 'in person',
+    hintTextCY: '',
+    order: 1,
+    parentKey: null,
+  },
+  {
+    key: 'byphone',
+    value_en: 'By phone',
+    value_cy: '',
+    hintText_EN: 'By Phone',
+    hintTextCY: '',
+    order: 2,
+    parentKey: null,
+  },
+  {
+    key: 'bymobile',
+    value_en: 'By mobile',
+    value_cy: '',
+    hintText_EN: 'By mobile',
+    hintTextCY: '',
+    order: 3,
+    parentKey: null,
+  },
+  {
+    key: 'byvideo',
+    value_en: 'By video',
+    value_cy: '',
+    hintText_EN: 'By video',
+    hintTextCY: '',
+    order: 4,
+    parentKey: null,
+  },
+  {
+    key: 'notattending',
+    value_en: 'Not attending',
+    value_cy: '',
+    hintText_EN: 'not attending',
+    hintTextCY: '',
+    order: 5,
+    parentKey: null,
+  },
+];
+
 export const SSCS_STAGES: RefDataByServiceModel = {
   serviceID: 'SSCS',
   values: DEFAULT_STAGES_REF,
@@ -71,6 +119,11 @@ export const SSCS_PRIORITIES: RefDataByServiceModel = {
   values: DEFAULT_PRIORITIES_REF,
 };
 
+export const SSCS_PARTY_CHANNEL: RefDataByServiceModel = {
+  serviceID: 'SSCS',
+  values: DEFAULT_PARTYCHANNEL_REF,
+};
+
 export const ALL_REF_DATA: RefDataByCategoryModel[] = [
   {
     categoryKey: 'HearingType',
@@ -79,5 +132,9 @@ export const ALL_REF_DATA: RefDataByCategoryModel[] = [
   {
     categoryKey: 'Priority',
     services: [SSCS_PRIORITIES],
+  },
+  {
+    categoryKey: 'PartyChannel',
+    services: [SSCS_PARTY_CHANNEL],
   },
 ];

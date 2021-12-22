@@ -47,7 +47,7 @@ export class LocationResolver implements Resolve<Location> {
   }
 
   private extractLocation(userDetails: UserDetails, workers: Caseworker[] | JudicialWorker[]): Location {
-    const id = userDetails.userInfo.id;
+    const id = userDetails.userInfo.id ? userDetails.userInfo.id : userDetails.userInfo.uid;
     const worker = workers.find((cw: Caseworker) => cw.idamId === id);
     return worker ? worker.location : null;
   }

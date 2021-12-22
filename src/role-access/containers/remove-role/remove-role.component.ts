@@ -12,6 +12,7 @@ import { Answer, CaseRole, RemoveAllocationNavigationEvent } from '../../models'
 import { CaseRoleDetails } from '../../models/case-role-details.interface';
 import { RemoveRoleText } from '../../models/enums/answer-text';
 import { AllocateRoleService } from '../../services';
+import { getJudicialUserIds } from '../../../cases/utils/utils';
 
 @Component({
   selector: 'exui-remove-role',
@@ -28,7 +29,7 @@ export class RemoveRoleComponent implements OnInit {
   public hint = RemoveRoleText.hint;
   public role: CaseRole;
 
-  private returnUrl: string;
+  private backUrl: string;
 
   constructor(private readonly route: ActivatedRoute,
               private readonly router: Router,
@@ -40,7 +41,7 @@ export class RemoveRoleComponent implements OnInit {
     }
 
   public ngOnInit(): void {
-    this.returnUrl = window.history.state && window.history.state.returnUrl ? window.history.state.returnUrl : '';
+    this.backUrl = window.history.state && window.history.state.backUrl ? window.history.state.backUrl : '';
     const paramMap$ = this.route.queryParamMap;
     paramMap$.pipe(mergeMap(queryMap => {
         return this.getRoleAssignmentFromQuery(queryMap);
@@ -85,7 +86,7 @@ export class RemoveRoleComponent implements OnInit {
     const jurisdiction = queryMap.get('jurisdiction');
     const caseType = queryMap.get('caseType');
     return this.allocateRoleService.getCaseRoles(this.caseId, jurisdiction, caseType, this.assignmentId).pipe(
-      mergeMap((caseRoles: CaseRole[]) => this.allocateRoleService.getCaseRolesUserDetails(caseRoles).pipe(
+      mergeMap((caseRoles: CaseRole[]) => this.allocateRoleService.getCaseRolesUserDetails(getJudicialUserIds(caseRoles)).pipe(
         map((caseRolesWithUserDetails: CaseRoleDetails[]) => this.mapCaseRoles(caseRoles, caseRolesWithUserDetails))
       )),
     );
@@ -109,7 +110,7 @@ export class RemoveRoleComponent implements OnInit {
     switch (navEvent) {
       case RemoveAllocationNavigationEvent.REMOVE_ROLE_ALLOCATION: {
         this.allocateRoleService.removeAllocation(this.assignmentId).subscribe(() =>
-        this.router.navigate([this.returnUrl], {
+        this.router.navigate([this.backUrl], {
           state: {
               showMessage: true,
               messageText: RemoveRoleText.infoMessage

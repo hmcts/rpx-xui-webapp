@@ -278,9 +278,9 @@ export class WorkCaseListWrapperComponent implements OnInit {
     const thisAction = caseAction.action;
     let actionUrl = '';
     if (thisAction.id === Actions.Reallocate) {
-      actionUrl = `role-access/allocate-role/${thisAction.id}?caseId=${actionedCase.case_id}&roleCategory=${actionedCase.role_category}&assignmentId=${actionedCase.id}&caseType=${actionedCase.case_category}&jurisdiction=${actionedCase.jurisdiction}&userName=${actionedCase.assignee}&typeOfRole=${actionedCase.case_role}`;
+      actionUrl = `role-access/allocate-role/${thisAction.id}?caseId=${actionedCase.case_id}&roleCategory=${actionedCase.role_category}&assignmentId=${actionedCase.id}&caseType=${actionedCase.case_type}&jurisdiction=${actionedCase.jurisdictionId}&userName=${actionedCase.assignee}&typeOfRole=${actionedCase.case_role}`;
     } else if (thisAction.id === Actions.Remove) {
-      actionUrl = `role-access/allocate-role/${thisAction.id}?caseId=${actionedCase.case_id}&assignmentId=${actionedCase.id}&caseType=${actionedCase.case_category}&jurisdiction=${actionedCase.jurisdiction}&typeOfRole=${actionedCase.case_role}`;
+      actionUrl = `role-access/allocate-role/${thisAction.id}?caseId=${actionedCase.case_id}&assignmentId=${actionedCase.id}&caseType=${actionedCase.case_type}&jurisdiction=${actionedCase.jurisdictionId}&typeOfRole=${actionedCase.case_role}`;
     }
     this.router.navigateByUrl(actionUrl, {state: {backUrl: this.backUrl}});
   }

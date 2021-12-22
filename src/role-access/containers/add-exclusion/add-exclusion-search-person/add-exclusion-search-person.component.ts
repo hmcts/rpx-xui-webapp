@@ -54,7 +54,11 @@ export class AddExclusionSearchPersonComponent implements OnInit {
   }
 
   public selectedPerson(person: Person): void {
-    this.person = person;
+    if (person && !person.domain) {
+      this.person = { ... person, domain: this.personRole };
+    } else {
+      this.person = person;
+    }
   }
 
   private getDisplayName(selectedPerson: Person): string {

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { RoleCategory } from 'api/roleAccess/models/allocate-role.enum';
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { first, mergeMap } from 'rxjs/operators';
@@ -8,7 +9,7 @@ import { Caseworker } from '../../../work-allocation-2/interfaces/common';
 import { CaseworkerDataService } from '../../../work-allocation-2/services';
 import { Answer, ExclusionNavigationEvent, RoleExclusion } from '../../models';
 import { AnswerHeaderText, AnswerLabelText, ExclusionMessageText } from '../../models/enums';
-import { RoleExclusionsService } from '../../services';
+import { AllocateRoleService, RoleExclusionsService } from '../../services';
 import { handleError } from '../../utils';
 
 @Component({
@@ -30,6 +31,7 @@ export class DeleteExclusionComponent implements OnInit {
   constructor(private readonly route: ActivatedRoute,
               private readonly router: Router,
               private readonly roleExclusionsService: RoleExclusionsService,
+              private readonly allocateService: AllocateRoleService,
               private readonly caseworkerDataService: CaseworkerDataService) {}
 
   public ngOnInit(): void {
@@ -38,10 +40,23 @@ export class DeleteExclusionComponent implements OnInit {
     paramMap$.pipe(mergeMap(queryMap => {
         return this.getExclusionFromQuery(queryMap);
       })).subscribe(exclusions => {
-        this.roleExclusion = exclusions.find(excl => excl.id === this.exclusionId);
-        this.populateAnswers(this.roleExclusion);
-        this.getNamesIfNeeded();
+        this.findAndSetExclusion(exclusions);
       });
+  }
+
+  public findAndSetExclusion(exclusions: RoleExclusion[]): void {
+    this.roleExclusion = exclusions.find(excl => excl.id === this.exclusionId);
+    if (this.roleExclusion.userType.toUpperCase() === RoleCategory.JUDICIAL) {
+      this.allocateService.getCaseRolesUserDetails([this.roleExclusion.actorId]).subscribe(userDetails => {
+        if (userDetails[0]) {
+          this.roleExclusion.name = userDetails[0].known_as;
+          this.populateAnswers(this.roleExclusion);
+        }
+      })
+    } else {
+      this.populateAnswers(this.roleExclusion);
+      this.getNamesIfNeeded();
+    }
   }
 
   public getExclusionFromQuery(queryMap: ParamMap) {
@@ -62,7 +77,9 @@ export class DeleteExclusionComponent implements OnInit {
 
   private getNamesIfNeeded(): void {
     if (!this.roleExclusion.name) {
+      console.log('getting names');
       this.caseworkerDataService.getAll().pipe(first()).subscribe(caseworkers => {
+        console.log('c', caseworkers);
         const caseworker = caseworkers.find(givenCaseworker => givenCaseworker.idamId === this.roleExclusion.actorId);
         this.roleExclusion.name = `${caseworker.firstName}-${caseworker.lastName}`;
         this.answers = [];

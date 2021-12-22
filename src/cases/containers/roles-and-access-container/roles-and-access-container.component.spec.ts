@@ -11,7 +11,7 @@ import { CaseRolesTableComponent } from '../../../role-access/components/case-ro
 import { ExclusionsTableComponent } from '../../../role-access/components/exclusions-table/exclusions-table.component';
 import { CaseRole, RoleCategory, RoleExclusion } from '../../../role-access/models';
 import { CaseRoleDetails } from '../../../role-access/models/case-role-details.interface';
-import { AllocateRoleService, RoleExclusionsService } from '../../../role-access/services';
+import { RoleExclusionsService } from '../../../role-access/services';
 import { RoleExclusionsMockService } from '../../../role-access/services/role-exclusions.mock.service';
 import { initialMockState } from '../../../role-access/testing/app-initial-state.mock';
 import { RolesAndAccessComponent } from '../../components/roles-and-access/roles-and-access.component';
@@ -213,10 +213,43 @@ describe('RolesContainerComponent', () => {
       expect(caseRoles[0].name).toBe('Tom Cruz');
     });
   });
+});
 
-  it('should map caseRoles', () => {
-    const result = component.mapCaseRoles(caseRolesData, data);
-    expect(result.length).toBe(1);
-    expect(result[0].name).toBe('Tom Cruz');
+describe('RolesContainerComponent', () => {
+  let component: RolesAndAccessContainerComponent;
+  const route = jasmine.createSpyObj('route', ['navigate']);
+  const store = jasmine.createSpyObj('route', ['pipe']);
+  const roleExclusionsService = jasmine.createSpyObj('route', ['getCurrentUserRoleExclusions']);
+  const allocateService = jasmine.createSpyObj('route', ['getCaseRoles', 'getCaseRolesUserDetails']);
+  const caseworkerDataService = jasmine.createSpyObj('route', ['loadAll']);
+
+  it('loadRoles', () => {
+    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService);
+    const caseDetails = {} as CaseView;
+    caseDetails.case_id = '123456789';
+    caseDetails.case_type = {
+        id: '334',
+        name: '',
+        description: '',
+        jurisdiction: {
+            id: '',
+            name: '',
+            description: '',
+        },
+        printEnabled: false
+    }
+    component.caseDetails = caseDetails;
+    const caseRoles = [{roleCategory: 'JUDICIAL', actorId: '234'}];
+    allocateService.getCaseRoles.and.returnValue(of(caseRoles));
+    const caseUserDetails = [{known_as: 'some', idam_id: '234'}];
+    allocateService.getCaseRolesUserDetails.and.returnValue(of(caseUserDetails));
+    const casefield = {};
+    component.loadRoles(casefield);
+    component.roles$.subscribe(roles => {
+      expect(roles).not.toBeNull();
+      expect(roles.length).toEqual(1);
+      expect(roles[0].actorId).toEqual('234');
+      expect(roles[0].roleCategory).toEqual('JUDICIAL');
+    });
   });
 });

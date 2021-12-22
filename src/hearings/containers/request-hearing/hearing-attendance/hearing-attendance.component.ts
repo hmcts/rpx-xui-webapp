@@ -41,26 +41,26 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   }
 
   public ngOnInit(): void {
-      this.hearingStore.pipe(select(fromHearingStore.getHearingList)).pipe(
-        map(hearingList => hearingList.hearingListMainModel ? hearingList.hearingListMainModel.hmctsServiceID : '')
-      ).subscribe(serviceId => {
-        this.partyChannels = this.hearingsRefDataService.getRefData('PartyChannel', serviceId);
+    this.hearingStore.pipe(select(fromHearingStore.getHearingList)).pipe(
+      map(hearingList => hearingList.hearingListMainModel ? hearingList.hearingListMainModel.hmctsServiceID : '')
+    ).subscribe(serviceId => {
+      this.partyChannels = this.hearingsRefDataService.getRefData('PartyChannel', serviceId);
+    });
+
+    if (!this.hearingRequestMainModel.partyDetails.length) {
+      this.initialiseFromHearingValues();
+    } else {
+      this.hearingRequestMainModel.partyDetails.forEach(partyDetail => {
+        (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues({
+          partyName: partyDetail.partyName,
+          partyChannel: partyDetail.partyChannel,
+        } as PartyUnavailabilityModel) as FormGroup);
       });
 
-      if (!this.hearingRequestMainModel.partyDetails.length) {
-        this.initialiseFromHearingValues();
-      } else {
-        this.hearingRequestMainModel.partyDetails.forEach(partyDetail => {
-          (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues({
-            partyName: partyDetail.partyName,
-            partyChannel: partyDetail.partyChannel,
-          } as PartyUnavailabilityModel) as FormGroup);
-        });
+      this.attendanceFormGroup.controls.estimation.setValue(this.hearingRequestMainModel.hearingDetails.totalParticipantAttendingHearing);
+    }
 
-        this.attendanceFormGroup.controls.estimation.setValue(this.hearingRequestMainModel.hearingDetails.totalParticipantAttendingHearing);
-      }
-
-      this.partiesFormArray = this.attendanceFormGroup.controls.parties as FormArray;
+    this.partiesFormArray = this.attendanceFormGroup.controls.parties as FormArray;
   }
 
   public initialiseFromHearingValues() {

@@ -1,14 +1,14 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import { FormArray, FormBuilder, ReactiveFormsModule, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
-import { RefDataModel } from 'src/hearings/models/refData.model';
-import { ValidatorsUtils } from 'src/hearings/utils/validators.utils';
+import { RefDataModel } from '../../../../../api/hearings/models/refData.model';
 import {ACTION} from '../../../models/hearings.enum';
 import { HearingsRefDataService } from '../../../services/hearings-ref-data.service';
 import {HearingsService} from '../../../services/hearings.service';
+import { ValidatorsUtils } from '../../../utils/validators.utils';
 import {HearingAttendanceComponent} from './hearing-attendance.component';
 @Component({
   selector: 'exui-hearing-parties-title',

@@ -3,14 +3,14 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {select, Store} from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ACTION } from 'src/hearings/models/hearings.enum';
-import { PartyUnavailabilityModel } from 'src/hearings/models/partyUnavilability.model';
-import { RefDataModel } from 'src/hearings/models/refData.model';
-import { HearingsRefDataService } from 'src/hearings/services/hearings-ref-data.service';
-import { ValidatorsUtils } from 'src/hearings/utils/validators.utils';
+import { PartyUnavailabilityModel } from '../../../../../api/hearings/models/partyUnavilability.model';
+import { RefDataModel } from '../../../../../api/hearings/models/refData.model';
+import { ACTION } from '../../../models/hearings.enum';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
+import { HearingsRefDataService } from '../../../services/hearings-ref-data.service';
 import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
+import { ValidatorsUtils } from '../../../utils/validators.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 @Component({
   selector: 'exui-hearing-attendance',

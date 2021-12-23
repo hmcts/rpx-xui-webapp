@@ -1,7 +1,9 @@
 import {HearingConditions} from '../../models/hearingConditions';
 import * as fromActions from '../actions';
 
-export const initialHearingConditionsState: HearingConditions = {};
+export const initialHearingConditionsState: HearingConditions = {
+  region: 'Wales'
+};
 
 export function hearingConditionsReducer(currentState = initialHearingConditionsState,
                                          action: fromActions.HearingConditionsAction): HearingConditions {

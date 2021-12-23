@@ -113,6 +113,17 @@ describe('AllWorkCaseComponent', () => {
     expect(headerCells[headerCells.length - 1].textContent.trim()).toEqual('');
   });
 
+  it('should show judicial names when available', () => {
+    const firstMockCase = component.cases[0];
+    const secondMockCase = component.cases[1];
+
+    expect(firstMockCase.assignee).not.toBe(undefined);
+    expect(firstMockCase.actorName).toBe('Test');
+
+    expect(secondMockCase.assignee).toBe(undefined);
+    expect(secondMockCase.actorName).toBe(undefined);
+  });
+
   it('should not show the footer when there are cases', () => {
     const element = fixture.debugElement.nativeElement;
     const footerRow = element.querySelector('.footer-row');

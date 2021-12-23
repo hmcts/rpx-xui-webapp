@@ -1,6 +1,6 @@
 var EC = protractor.ExpectedConditions;
 const CucumberReporter = require('./reportLogger');
-
+const BrowserLogs = require('./browserLogs');
 class BrowserWaits{
     constructor(){
         this.waitTime = 30000; 
@@ -143,10 +143,11 @@ class BrowserWaits{
                 return retVal;
             }
             catch (err) {
+                await BrowserLogs.printBrowserLogs();
                 error = err
                 retryCounter += 1;
                 CucumberReporter.AddMessage(`Actions success Condition ${actionMessage ? actionMessage : ''} failed ${err.message} ${err.stack}. `);
-                CucumberReporter.AddMessage(`Retrying attempt ${retryCounter}. `); 
+                CucumberReporter.AddMessage(`************************** Retrying attempt ${retryCounter} **************************`); 
             }
         }
         if (!isSuccess){

@@ -1,5 +1,5 @@
 
-@ng @integration_todo
+@ng @integration_todo 
 Feature: WA Release 2: Case details Tasks tab (Integration to be done)
 
     Requirements from 
@@ -17,16 +17,16 @@ Feature: WA Release 2: Case details Tasks tab (Integration to be done)
         Given I set MOCK case details "caseDetails" property "Jurisdiction" as "IA"
 
         Given I set MOCK case tasks with userDetails from reference "userDetails"
-            | task_title                                | assignee    | assigneeName | created_date | dueDate | permissions        | warnings | description                                                                             |
-            | Task 1                                    | thissession | Test user    | -10          | -1      | Own,Manage,Execute | true     | Click link to proceed to next step [test link next step](/case/case-details/${case_id}) |
+            | task_title                                | assignee    | assigneeName | created_date | due_date | permissions        | warnings | description                                                                             |
+            | Task 1                                    | thissession | XUI test auto    | -10          | -1      | Own,Manage,Execute | true     | Click link to proceed to next step [test link next step](/case/case-details/${case_id}) |
             | Task 2                                    | someone     | Test 2 user  | -10          | 0       | Own,Manage,Execute | true     | Click link to proceed to next step [test link next step](/case/case-details/${case_id}) |
             | Task 3                                    |             |              | -10          | 1       | Own,Manage,Execute | true     |                                                                                         |
             | Task 4                                    |             |              | -10          | 10      |                    | true     |                                                                                         |
             | Task 5                                    |             |              | -10          | 10      |                    | true     |                                                                                         |
-            | 6 Permissions OME assined to me           | thissession | Test user    | -10          | 10      | Own,Manage,Execute | true     |                                                                                         |
+            | 6 Permissions OME assined to me           | thissession | XUI test auto    | -10          | 10      | Own,Manage,Execute | true     |                                                                                         |
             | 7 Permissions OME assigned to someother   | someone     | Test 3 user  | -10          | 10      | Own,Manage,Execute | true     |                                                                                         |
             | 8 Permissions OME unassigned              |             |              | -10          | 10      | Own,Manage,Execute | true     |                                                                                         |
-            | 9 Permissions ME assined to me            | thissession | Test user    | -10          | 10      | Manage,Execute     | true     |                                                                                         |
+            | 9 Permissions ME assined to me            | thissession | XUI test auto    | -10          | 10      | Manage,Execute     | true     |                                                                                         |
             | 10 Permissions ME assigned to someother   | someone     | Test 4 user  | -10          | 10      | Manage,Execute     | true     |                                                                                         |
             | 11 Permissions ME unassigned              |             |              | -10          | 10      | Manage,Execute     | true     |                                                                                         |
             | 12 Permissions M assigned to someother    | someone     | Test 5 user  | -10          | 10      | Manage             | true     |                                                                                         |
@@ -104,7 +104,7 @@ Feature: WA Release 2: Case details Tasks tab (Integration to be done)
             | Task created | <TaskcreatedIsDisplayed> |             | -10       |
             | Priority     | <PriorityIsDisplayed>    |             | LOW       |
             | Due date     | <DuedateIsDisplayed>     |             | 10        |
-            | Assigned to  | true                     |             | Test user |
+            | Assigned to  | true                     |             | XUI test auto |
             | Manage       | true                     | link        | Reassign  |
             | Manage       | true                     | link        | Unassign  |
             | Next steps   | true                     |             |           |
@@ -133,7 +133,7 @@ Feature: WA Release 2: Case details Tasks tab (Integration to be done)
             | Task created | <TaskcreatedIsDisplayed> |             | -10       |
             | Priority     | <PriorityIsDisplayed>    |             | LOW       |
             | Due date     | <DuedateIsDisplayed>     |             | 10        |
-            | Assigned to  | true                     |             | Test user |
+            | Assigned to  | true                     |             | XUI test auto |
             | Manage       | true                     | link        | Reassign  |
             | Manage       | true                     | link        | Unassign  |
             | Next steps   | true                     |             |           |
@@ -196,6 +196,6 @@ Feature: WA Release 2: Case details Tasks tab (Integration to be done)
             | Next steps   | false                    |             |            |
         Examples:
             | roles                                                             | PriorityIsDisplayed | DuedateIsDisplayed | TaskcreatedIsDisplayed |
-            | caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor | true                | true               | false                  |
-            | caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor   | false               | false              | true                   |
+            | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor | true | true | false |
+            | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor | false | false | true |
 

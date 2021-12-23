@@ -13,7 +13,7 @@ Feature: WA Release 2: My cases
         Then I validate work allocation cases table columns displayed
             | ColumnHeader  |
             | Case name     |
-            | Jurisdiction  |
+            | Service  |
             | Case category |
             | Case role     |
             | Start         |

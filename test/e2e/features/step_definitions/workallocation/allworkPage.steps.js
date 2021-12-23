@@ -32,10 +32,18 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I see filter {string} is enabled in all work page', async function (filterItem) {
+        if (Object.keys(filtersToIgnore).includes(filterItem)) {
+            reportLogger.AddMessage(`${filterItem} in test ignored for reason : ${filtersToIgnore[filterItem]}`);
+            return;
+        }
         expect(await allWorkPage.isFilterItemEnbled(filterItem)).to.be.true
     });
 
     Then('I see filter {string} is disabled in all work page', async function (filterItem) {
+        if (Object.keys(filtersToIgnore).includes(filterItem)) {
+            reportLogger.AddMessage(`${filterItem} in test ignored for reason : ${filtersToIgnore[filterItem]}`);
+            return;
+        }
         expect(await allWorkPage.isFilterItemEnbled(filterItem)).to.be.false
     });
 

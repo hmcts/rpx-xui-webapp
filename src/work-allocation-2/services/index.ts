@@ -1,5 +1,4 @@
 import { CaseworkerDataService } from './caseworker-data.service';
-import { InfoMessageCommService } from './info-message-comms.service';
 import { JudicialWorkerDataService } from './judicialworker-data.service';
 import { LocationDataService } from './location-data.service';
 import { WASupportedJurisdictionsService } from './wa-supported-jurisdiction.service';
@@ -9,7 +8,6 @@ import { WorkAllocationTaskService } from './work-allocation-task.service';
 
 export {
   CaseworkerDataService,
-  InfoMessageCommService,
   JudicialWorkerDataService,
   LocationDataService,
   WASupportedJurisdictionsService,

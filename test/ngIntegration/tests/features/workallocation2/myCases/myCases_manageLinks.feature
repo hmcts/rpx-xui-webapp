@@ -10,7 +10,7 @@ Feature: WA Release 2: My cases - Manage links
 
 
     Scenario Outline:  My cases, colums and column links for "<UserType>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
 
 
         Given I start MockApp

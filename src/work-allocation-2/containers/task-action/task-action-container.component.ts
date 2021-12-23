@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 
 import { ConfigConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, SortOrder, TaskActionType, TaskService } from '../../enums';
@@ -10,7 +11,7 @@ import { FieldConfig } from '../../models/common';
 import { RouteData } from '../../models/common/route-data';
 import { InformationMessage } from '../../models/comms';
 import { TaskServiceConfig } from '../../models/tasks';
-import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
+import { WorkAllocationTaskService } from '../../services';
 import { ACTION } from '../../services/work-allocation-task.service';
 import { getAssigneeName, handleFatalErrors } from '../../utils';
 

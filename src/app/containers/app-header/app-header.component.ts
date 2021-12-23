@@ -105,9 +105,12 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     if (userDetails.userInfo) {
       this.userRoles = userDetails.userInfo.roles;
       const applicationTheme: ApplicationTheme = await this.getApplicationThemeForUser().pipe(first()).toPromise();
-      const menuItems: NavigationItem[] = await this.featureToggleService.getValue('mc-menu-items', this.defaultMenuItems).pipe(first()).toPromise();
-      this.hideNavigationListener(this.store);
-      this.setAppHeaderProperties(applicationTheme, menuItems);
+      // const menuItems: NavigationItem[] = await this.featureToggleService.getValue('mc-menu-items', this.defaultMenuItems).pipe(first()).toPromise();
+      this.featureToggleService.getValue('mc-menu-items', this.defaultMenuItems).subscribe(menuItems => {
+        this.hideNavigationListener(this.store);
+        this.setAppHeaderProperties(applicationTheme, menuItems);
+      });
+
     }
   }
 

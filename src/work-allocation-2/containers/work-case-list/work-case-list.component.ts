@@ -31,7 +31,7 @@ export class WorkCaseListComponent implements OnChanges {
   /**
    * The message to display when there are no cases to display in the list.
    */
-  @Input() public emptyMessage: string = ListConstants.EmptyMessage.Default;
+  @Input() public emptyMessage: string = ListConstants.EmptyMessage.DefaultCases;
 
   // TODO: Need to re-read the LLD, but I believe it says pass in the caseServiceConfig into this CaseListComponent.
   // Therefore we will not need this.

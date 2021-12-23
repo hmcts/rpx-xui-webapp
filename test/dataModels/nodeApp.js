@@ -17,7 +17,7 @@ class NodeApp{
             "userInfo": {
                 "uid": v4(),
                 "given_name": "XUI test",
-                "family_name": "Judge",
+                "family_name": "auto",
                 "name": "test name",
                 "sub": "juser8@mailinator.com",
                 "roles": [

@@ -26,12 +26,14 @@ export class LocationResolver implements Resolve<Location> {
   ) {
   }
 
-  public resolve(): Observable<Location> {
+  public resolve(): Observable<any> {
     return this.userDetails()
       .pipe(
         first(),
         mergeMap((userDetails: UserDetails) => this.getJudicialWorkersOrCaseWorkers(userDetails)
-            .map((caseWorkers) => this.extractLocation(userDetails, caseWorkers))
+          .pipe(
+            map((caseWorkers) => this.extractLocation(userDetails, caseWorkers))
+          )
         ),
         catchError(error => {
           handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
@@ -45,12 +47,12 @@ export class LocationResolver implements Resolve<Location> {
   }
 
   private extractLocation(userDetails: UserDetails, workers: Caseworker[] | JudicialWorker[]): Location {
-    const id = userDetails.userInfo.id;
+    const id = userDetails.userInfo.id ? userDetails.userInfo.id : userDetails.userInfo.uid;
     const worker = workers.find((cw: Caseworker) => cw.idamId === id);
     return worker ? worker.location : null;
   }
 
-  private getJudicialWorkersOrCaseWorkers(userDetails: UserDetails): Observable<Caseworker[]> | Observable<JudicialWorker[]> {
+  private getJudicialWorkersOrCaseWorkers(userDetails: UserDetails): Observable<any[]> {
     const role = AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
     return role === UserRole.LegalOps ? this.caseworkerDataService.getAll() : this.judicialWorkerDataService.getAll();
   }

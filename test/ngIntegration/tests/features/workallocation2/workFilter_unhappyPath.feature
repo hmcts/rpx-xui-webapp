@@ -46,6 +46,7 @@ Feature: WA Release 2: My work - Work filters - Uhhappy paths
 
     Scenario Outline:  Work filters api error <responseCode> on apply
         Given I set MOCK with "wa_release_2" release user and roles "<Roles>"
+        Given I init MockApp
         Given I start MockApp
         Given I navigate to home page
         # When I click on primary navigation header "My work"

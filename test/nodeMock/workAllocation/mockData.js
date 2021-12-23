@@ -1,12 +1,12 @@
 const { v4 } = require('uuid');
 const ArrayUtil = require("../../e2e/utils/ArrayUtil");
 const WorkAllocationDataModels = require("../../dataModels/workAllocation");
-
+const nodeAppMock = require('../nodeApp/mockData');
 class WorkAllocationMockData {
 
     constructor() {
         this.init();  
-        
+        this.WorkAllocationDataModels = WorkAllocationDataModels;
     }
 
     init(){
@@ -15,7 +15,7 @@ class WorkAllocationMockData {
 
     setDefaultData(){
         this.findPersonsAllAdata = [];
-        
+        this.caseWorkersList = this.getPersonList(20); 
 
         this.exclusions = this.getCaseExclusions([
             { added: '2021-10-12T12:14:42.230129Z', name: 'judeg a', userType: 'JUDICIAL', type: 'CASE', id: '12345678901' },
@@ -41,6 +41,7 @@ class WorkAllocationMockData {
         this.allWorkCases = this.getWACases(125);
 
         this.taskDetails = { task: this.getRelease2TaskDetails() } 
+
 
     }
 
@@ -198,11 +199,15 @@ class WorkAllocationMockData {
     }
 
     getCaseworkersList(count) {
-        return this.getPersonList(count);
+        return this.caseWorkersList;
     }
 
     getJudicialList(count) {
-        return this.getPersonList(count);
+        const judgeUsers = [];
+        for(let i = 0; i < count; i++){
+            judgeUsers.push(WorkAllocationDataModels.getRefDataJudge('fnuser-'+i,'snjudge-'+i,`testjudge_${i}@judidicial.com`));
+        }
+        return judgeUsers;
     }
 
     getTaskDetails() {
@@ -248,7 +253,12 @@ class WorkAllocationMockData {
 
     getRelease2CaseWithPermission(permissions, view, assignState) {
         view = view.replace(" ", "");
+        const validRoleTypes = WorkAllocationDataModels.getValidRoles();
         const waCase = WorkAllocationDataModels.getRelease2Case();
+        const max = validRoleTypes.length - 1;
+        const min = 0; 
+        waCase.case_role = validRoleTypes[Math.floor(Math.random() * (max - min + 1) + min)].roleId;
+        waCase.role_category = waCase.case_role === 'case-manager' ? "LEGAL_OPERATIONS" : "JUDICIAL";
         waCase.permissions = permissions;
         waCase.actions = WorkAllocationDataModels.getRelease2CaseActions(permissions, view, assignState);
 
@@ -349,9 +359,9 @@ class WorkAllocationMockData {
                     taskTemplate[taskAttribute] = dateObj.toISOString();
                 } else if (taskAttribute.toLowerCase().includes('permissions')) {
                     if (task[taskAttribute] === '') {
-                        taskTemplate[taskAttribute] = [];
+                        taskTemplate[taskAttribute].values = [];
                     } else {
-                        taskTemplate[taskAttribute] = task[taskAttribute].split(',');
+                        taskTemplate[taskAttribute].values = task[taskAttribute].split(',');
                     }
                 } else if (taskAttribute.toLowerCase().includes('warnings')) {
                     const val = task[taskAttribute].toLowerCase();
@@ -359,12 +369,12 @@ class WorkAllocationMockData {
                 } else if (taskAttribute.toLowerCase().trim() === 'assignee') {
                     const val = task[taskAttribute].toLowerCase();
                     if (val.includes('session')) {
-                        taskTemplate[taskAttribute] = userDetails.userInfo.id;
+                        taskTemplate[taskAttribute] = nodeAppMock.userDetails.userInfo.given_name+' '+ nodeAppMock.userDetails.userInfo.family_name;
                     } else if (val === '' || val === undefined) {
                         taskTemplate[taskAttribute] = null;
                         taskTemplate['assigneeName'] = null;
                     } else {
-                        taskTemplate[taskAttribute] = v4();
+                        taskTemplate[taskAttribute] = this.caseWorkersList[0].idamId;
                     }
                 } else if (taskAttribute.toLowerCase().includes('description')) {
                     const val = task[taskAttribute];
@@ -431,6 +441,19 @@ class WorkAllocationMockData {
         ]
     }
 
+
+    getTypeOfWorks(){
+        return [
+            { key: "hearing_work", label: "Hearing work"},
+            { key: "upper_tribunal", label: "Upper Tribunal" },
+            { key: "routine_work", label: "Routine work" },
+            { key: "decision_making_work", label: "Decision-making work" },
+            { key: "applications", label: "Applications" },
+            { key: "priority", label: "Priority" },
+            { key: "access_requests", label: "Access requests" },
+            { key: "error_management", label: "Error management" }
+        ]
+    }
 
 
 }

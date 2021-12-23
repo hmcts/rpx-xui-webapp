@@ -5,7 +5,6 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of } from 'rxjs';
 import { mergeMap, switchMap } from 'rxjs/operators';
 import { JurisdictionsService } from '../../../work-allocation-2/services/juridictions.service';
-import { AppConstants } from '../../../app/app.constants';
 import { SessionStorageService } from '../../../app/services';
 import { Actions } from '../../../role-access/models';
 import { ListConstants } from '../../components/constants';
@@ -287,9 +286,9 @@ export class WorkCaseListWrapperComponent implements OnInit {
     const loadingToken = this.loadingService.register();
     const casesSearch$ = this.performSearchPagination();
     const mappedSearchResult$ = casesSearch$.pipe(mergeMap(result => {
-      const jucidicalUserIds = result.cases.filter(theCase => theCase.role_category === 'JUDICIAL').map(thisCase => thisCase.assignee);
-      if (jucidicalUserIds && jucidicalUserIds.length > 0) {
-          return this.judicialWorkerDataService.getCaseRolesUserDetails(jucidicalUserIds).pipe(switchMap((judicialUserData) => {
+      const judicialUserIds = result.cases.filter(theCase => theCase.role_category === 'JUDICIAL').map(thisCase => thisCase.assignee);
+      if (judicialUserIds && judicialUserIds.length > 0 && this.view !== 'MyCases') {
+          return this.judicialWorkerDataService.getCaseRolesUserDetails(judicialUserIds).pipe(switchMap((judicialUserData) => {
             const judicialNamedCases = result.cases.map(judicialCase => {
               const currentCase = judicialCase;
               const theJUser = judicialUserData.find(judicialUser => judicialUser.sidam_id === judicialCase.assignee);

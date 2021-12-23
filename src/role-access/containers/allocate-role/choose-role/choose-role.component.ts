@@ -53,7 +53,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
         this.typeOfRole = allocateRoleStateData.typeOfRole;
       }
     );
-    this.radioOptionControl = new FormControl(this.typeOfRole ? this.typeOfRole : '', [Validators.required]);
+    this.radioOptionControl = new FormControl(this.typeOfRole ? this.typeOfRole.name : '', [Validators.required]);
     this.formGroup = new FormGroup({[this.radioControlName]: this.radioOptionControl});
     this.allocateRoleService.getValidRoles().subscribe(roles =>
         this.optionsList = this.getOptions(roles.filter(role => role.roleCategory === this.roleCategory)));

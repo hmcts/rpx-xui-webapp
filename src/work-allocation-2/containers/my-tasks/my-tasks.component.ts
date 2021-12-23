@@ -32,8 +32,6 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
     return this.isCurrentUserJudicial() ? ConfigConstants.MyWorkTasksForJudicial : ConfigConstants.MyWorkTasksForLegalOps;
   }
 
-  public filteredLocations: string[] = [];
-
   public getSearchTaskRequestPagination(): SearchTaskRequest {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
@@ -41,9 +39,9 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
       const id = userInfo.id ? userInfo.id : userInfo.uid;
       const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
       const searchParameters = [
-        { key: 'user', operator: 'IN', values: [ id ] },
+        { key: 'user', operator: 'IN', values: [id] },
         { key: 'state', operator: 'IN', values: ['assigned'] }
-      ]
+      ];
       const locationParameter = this.getLocationParameter();
       if (locationParameter) {
         searchParameters.push(locationParameter);
@@ -57,18 +55,18 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
     }
   }
 
+  /**
+   * Handle the paging event
+   */
+  public onPaginationEvent(pageNumber: number): void {
+    this.onPaginationHandler(pageNumber);
+  }
+
   private getLocationParameter(): SearchTaskParameter {
     if (this.selectedLocations && this.selectedLocations.length > 0) {
       return { key: 'location', operator: 'IN', values: this.selectedLocations };
     } else {
       return null;
     }
-  }
-
-  /**
-   * Handle the paging event
-   */
-   public onPaginationEvent(pageNumber: number): void {
-    this.onPaginationHandler(pageNumber);
   }
 }

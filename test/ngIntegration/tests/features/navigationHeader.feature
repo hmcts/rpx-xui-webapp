@@ -1,15 +1,15 @@
-@ng @test
+@ng 
 Feature: Navigation header tabs
 
     Scenario Outline: Primanry nav headers for user "<roleType>" "<useridentifier>" and roles "<rolesIdentifiers>"
         Given I set MOCK with user identifer "<useridentifier>" role type "<roleType>" and role identifiers "<rolesIdentifiers>"
 
         Given I start MockApp
-        Given I navigate to home page
+        # Given I navigate to home page
         Then I validate header displayed for user type "<roleType>"
         Then I see primary navigation tabs "<mainHeaders>" in main header
         Then I see primary navigation tabs "<rightColumnHeaders>" in right side header column
-        Then I validate 16-digit Case reference search box isDisplayed? is "<16-digitCaseRef>"
+        # Then I validate 16-digit Case reference search box isDisplayed? is "<16-digitCaseRef>"
 
         Examples:
             | roleType   | useridentifier    | rolesIdentifiers                 | mainHeaders                                               | rightColumnHeaders | 16-digitCaseRef |

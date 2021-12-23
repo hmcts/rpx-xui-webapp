@@ -15,6 +15,15 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | 12348 | Test loc 4   |
             | 12349 | Test loc 5   |
 
+        Given I set MOCK find person response for jurisdictions
+            | domain   | id   | email                   | name           | knownAs       |
+            | Judicial | 1231 | judge_user1@gov.uk      | user1 judge        | Lead judge    |
+            | Judicial | 1232 | judge_user2@gov.uk      | user2 judge        | Hearing judge |
+            | legalOps | 1233 | caseworker_user1@gov.uk | caseworker1 cw | Case worker   |
+            | legalOps | 1234 | caseworker_user1@gov.uk | caseworker2 cw | Case worker   |
+            | Admin    | 1235 | admin_user1@gov.uk      | admin1 a       | Case worker   |
+            | Admin    | 1236 | admin_user2@gov.uk      | admin2 a       | Case worker   |
+
         Given I set MOCK request "/workallocation2/findPerson" response log to report
         Given I set MOCK request "/workallocation2/findPerson" intercept with reference "findpersonRequest"
 
@@ -37,7 +46,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Given I set MOCK request "/workallocation2/all-work/cases" intercept with reference "caseSearchRequest"
 
 
-    Scenario: WITH_SESSION Tasks filters state, with user role "Caseworker"
+    Scenario: Tasks filters state, with user role "Caseworker"
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I start MockApp
@@ -79,7 +88,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Then I see filter "Priority" is displayed in all work page
         Then I see filter "Priority" is enabled in all work page
 
-    Scenario Outline: WITH_SESSION Tasks filter selection, with user role "Caseworker"
+    Scenario Outline: "Caseworker" Tasks filter, filetr role type <Person_Role_Type>
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I start MockApp
@@ -124,23 +133,19 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         When I click Apply filter button in all work page
         When I wait for reference "taskSearchRequest" value not null
         Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value           |
-            | location     | <locationId>    |
-            | user       | <person_id>     |
-            | jurisdiction | <Jurisdiction>  |
-            | taskType     | <Task_type>     |
-            | priority     | <Priority>      |
+            | key          | value          |
+            | location     | <locationId>   |
+            | user         | <person_id>    |
+            | jurisdiction | <Jurisdiction> |
+            | taskType     | <Task_type>    |
+            | priority     | <Priority>     |
         Examples:
-            | Jurisdiction | locationName | locationId | Task_Category          | Person_search | Person_name                             | person_id                            | Person_Role_Type | Task_type | Priority |
-            | IA           |              |            | All                    |               |                                         |                                      | Legal Ops        | Legal Ops | High     |
-            | IA           | Test loc 3   | 12347      | All                    |               |                                         |                                      | Legal Ops        | Legal Ops | High     |
-            | IA           | Test loc 3   | 12347      | None / Available tasks |               |                                         |                                      | Legal Ops        | Legal Ops | High     |
-            | IA           | Test loc 3   | 12347      | Specific person        | cas           | caseworker1 cw(caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops        | Legal Ops | High     |
-            | IA           | Test loc 3   | 12347      | Specific person        | jud           | caseworker1 cw(caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Judicial         | Legal Ops | High     |
-            | IA           | Test loc 3   | 12347      | Specific person        | adm           | admin1 a(admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     | High     |
-            | IA           | Test loc 3   | 12347      | Specific person        | adm           | admin1 a(admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     | All      |
+            | Jurisdiction | locationName | locationId | Task_Category   | Person_search | Person_name                             | person_id                            | Person_Role_Type | Task_type | Priority |
+            | IA           | Test loc 3   | 12347      | Specific person | cas           | caseworker1 cw(caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops        | Legal Ops | High     |
+            | IA           | Test loc 3   | 12347      | Specific person | jud           | Lead judge(judge_user1@gov.uk)          | 1231                                 | Judicial         | Legal Ops | High     |
+            | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a(admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     | High     |
 
-    Scenario: WITH_SESSION Tasks filters state, with user role "Judicial"
+    Scenario: "Judicial" Tasks filters state
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I start MockApp
@@ -182,7 +187,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Then I see filter "Priority" is not displayed in all work page
 
 
-    Scenario Outline: WITH_SESSION Tasks filter selection, with user role "Judicial"
+    Scenario Outline: "Judicial" Tasks filter selection, with person role type <Person_Role_Type>
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I start MockApp
@@ -226,23 +231,19 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         When I click Apply filter button in all work page
         When I wait for reference "taskSearchRequest" value not null
         Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value           |
-            | location     | <locationId>    |
-            | person       | <person_id>     |
-            | jurisdiction | <Jurisdiction>  |
-            | taskType     | <Task_type>     |
+            | key          | value          |
+            | location     | <locationId>   |
+            | user         | <person_id>    |
+            | jurisdiction | <Jurisdiction> |
+            | taskType     | <Task_type>    |
         Examples:
-            | Jurisdiction | locationName | locationId | Task_Category          | Person_search | Person_name                             | person_id                            | Person_Role_Type | Task_type |
-            | IA           |              |            | All                    |               |                                         |                                      | Legal Ops        | Legal Ops |
-            | IA           | Test loc 3   | 12347      | All                    |               |                                         |                                      | Legal Ops        | Legal Ops |
-            | IA           | Test loc 3   | 12347      | None / Available tasks |               |                                         |                                      | Legal Ops        | Legal Ops |
-            | IA           | Test loc 3   | 12347      | Specific person        | cas           | caseworker1 cw(caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops        | Legal Ops |
-            | IA           | Test loc 3   | 12347      | Specific person        | jud           | caseworker1 cw(caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Judicial         | Legal Ops |
-            | IA           | Test loc 3   | 12347      | Specific person        | adm           | admin1 a(admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     |
-            | IA           | Test loc 3   | 12347      | Specific person        | adm           | admin1 a(admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     |
+            | Jurisdiction | locationName | locationId | Task_Category   | Person_search | Person_name                             | person_id                            | Person_Role_Type | Task_type |
+            | IA           | Test loc 3   | 12347      | Specific person | cas           | caseworker1 cw(caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops        | Legal Ops |
+            | IA           | Test loc 3   | 12347      | Specific person | jud           | Lead judge(judge_user1@gov.uk)          | 1231                                 | Judicial         | Legal Ops |
+            | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a(admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     |
 
-    Scenario: WITH_SESSION Cases filter selection, with user role "Caseworker"
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
+    Scenario: "Caseworker" Cases filters state
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "task-supervisor,case-allocator,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I start MockApp
 
@@ -281,7 +282,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Then I see filter "Person input" is displayed in all work page
         Then I see filter "Person input" is disabled in all work page
 
-    Scenario Outline: WITH_SESSION Case filter selection, with user role "Caseworker"
+    Scenario Outline: "Caseworker" Case filter selection, with role type <Role_Type>
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I start MockApp
@@ -327,20 +328,16 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         When I wait for reference "caseSearchRequest" value not null
         Then I validate task search request with reference "caseSearchRequest" have search parameters
             | key          | value          |
-            | location_id     | <locationId>   |
-            | actorId       | <person_id>    |
+            | location_id  | <locationId>   |
+            | actorId      | <person_id>    |
             | jurisdiction | <Jurisdiction> |
-            | role | <Role_Type> |
+            | role         | <Role_Type>    |
         Examples:
-            | Jurisdiction | locationName | locationId | Person_radio           | Person_search | Person_name                             | person_id                            | Role_Type |
-            | IA           |              |            | All                    |               |                                         |                                      | Legal Ops |
-            | IA           | Test loc 3   | 12347      | All                    |               |                                         |                                      | Legal Ops |
-            | IA           | Test loc 3   | 12347      | Specific person        | cas           | caseworker1 cw(caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops |
-            | IA           | Test loc 3   | 12347      | Specific person        | jud           | caseworker1 cw(caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Judicial  |
-            | IA           | Test loc 3   | 12347      | Specific person        | adm           | admin1 a(admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin     |
-            | IA           | Test loc 3   | 12347      | Specific person        | adm           | admin1 a(admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin     |
+            | Jurisdiction | locationName | locationId | Person_radio    | Person_search | Person_name                    | person_id                            | Role_Type |
+            | IA           | Test loc 3   | 12347      | Specific person | jud           | Lead judge(judge_user1@gov.uk) | 1231                                 | Judicial  |
+            | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a(admin_user1@gov.uk)   | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin     |
 
-    Scenario Outline: WITH_SESSION Case filter selection, with user role "Judicial"
+    Scenario Outline: "Judicial" Case filter selection, with role type <Role_Type>
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I start MockApp
@@ -391,11 +388,6 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | jurisdiction | <Jurisdiction> |
             | role         | <Role_Type>    |
         Examples:
-            | Jurisdiction | locationName | locationId | Person_radio    | Person_search | Person_name                             | person_id                            | Role_Type |
-            | IA           |              |            | All             |               |                                         |                                      | Legal Ops |
-            | IA           | Test loc 3   | 12347      | All             |               |                                         |                                      | Legal Ops |
-            | IA           | Test loc 3   | 12347      | Specific person | cas           | caseworker1 cw(caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops |
-            | IA           | Test loc 3   | 12347      | Specific person | jud           | caseworker1 cw(caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Judicial  |
-            | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a(admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin     |
-            | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a(admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin     |
-
+            | Jurisdiction | locationName | locationId | Person_radio    | Person_search | Person_name                    | person_id                            | Role_Type |
+            | IA           | Test loc 3   | 12347      | Specific person | jud           | Lead judge(judge_user1@gov.uk) | 1231                                 | Judicial  |
+            | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a(admin_user1@gov.uk)   | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin     |

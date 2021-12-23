@@ -10,12 +10,13 @@ import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/se
 import { Observable, throwError } from 'rxjs';
 import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { TaskActionConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { InfoMessage, InfoMessageType } from '../../enums';
 import { InformationMessage } from '../../models/comms';
 import { Task } from '../../models/tasks';
-import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
+import { WorkAllocationTaskService } from '../../services';
 import { ACTION } from '../../services/work-allocation-task.service';
 import { getMockTasks } from '../../tests/utils.spec';
 import { TaskActionContainerComponent } from './task-action-container.component';

@@ -1,11 +1,11 @@
-@ng @wa2 @wa
+@ng @wa2 @wa    
 Feature: WA Release 2: All work > cases - Manage links
 
     Background: Mock and browser setup
         Given I init MockApp
         Given I set MOCK workallocation cases with permissions for view "AllWorkCases"
             | Roles          | Count |
-            | task-supervisor | 10    |
+            | case-allocator | 10    |
             |                | 90    |
 
 
@@ -27,7 +27,7 @@ Feature: WA Release 2: All work > cases - Manage links
             | 12    |                   |
 
         Examples:
-            | UserIdentifier  | UserType | Roles                                                          |
+            | UserIdentifier  | UserType | Roles                                                           |
             # | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer,,task-supervisor |
             | IAC_Judge_WA_R2 | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor |
 

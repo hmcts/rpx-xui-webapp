@@ -1,6 +1,6 @@
 
 
-
+const CucumberReporter = require("../../e2e/support/reportLogger");
 class FeatureToggleUtil{
 
     getFeatureToggleValue(featureToggleName){
@@ -11,6 +11,11 @@ class FeatureToggleUtil{
 
         return featurToggles[featureToggleName].value;
 
+    }
+
+    printFeatureToggleValue(featureToggleName){
+        CucumberReporter.AddMessage(`Feature toggle value for ${featureToggleName}`);
+        CucumberReporter.AddJson(this.getFeatureToggleValue(featureToggleName));
     }
 
 }

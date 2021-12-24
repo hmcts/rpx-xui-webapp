@@ -2,9 +2,9 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService, Jurisdiction, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Observable } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
-import { AppConstants } from '../../../app/app.constants';
+import { Observable, of } from 'rxjs';
+import { mergeMap, switchMap } from 'rxjs/operators';
+
 import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -24,6 +24,7 @@ import {
 } from '../../services';
 import { JurisdictionsService } from '../../services/juridictions.service';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
+import { JudicialWorkerDataService } from '../../services/judicialworker-data.service';
 
 @Component({
   templateUrl: 'work-case-list-wrapper.component.html',
@@ -37,7 +38,6 @@ export class WorkCaseListWrapperComponent implements OnInit {
   public locations$: Observable<Location[]>;
   public waSupportedJurisdictions$: Observable<string[]>;
   public pagination: PaginationParameter;
-  public isPaginationEnabled$: Observable<boolean>;
   public backUrl: string = null;
   protected allJurisdictions: Jurisdiction[];
   protected allRoles: Role[];
@@ -71,10 +71,9 @@ export class WorkCaseListWrapperComponent implements OnInit {
     protected readonly featureToggleService: FeatureToggleService,
     protected readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService,
     protected readonly jurisdictionsService: JurisdictionsService,
-    protected readonly rolesService: AllocateRoleService
-  ) {
-    this.isPaginationEnabled$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.waMvpPaginationFeature);
-  }
+    protected readonly rolesService: AllocateRoleService,
+    protected readonly judicialWorkerDataService: JudicialWorkerDataService
+  ) {}
 
   public get cases(): Case[] {
     return this.pCases;
@@ -181,18 +180,10 @@ export class WorkCaseListWrapperComponent implements OnInit {
       };
     }
 
-    this.isPaginationEnabled$.subscribe({
-      next: (result: boolean) => {
-        if (!result) {
-          this.pagination = null;
-        } else {
-          this.pagination = {
-            page_number: 1,
-            page_size: 25
-          };
-        }
-      }
-    });
+    this.pagination = {
+      page_number: 1,
+      page_size: 25
+    };
   }
 
   /**
@@ -298,7 +289,29 @@ export class WorkCaseListWrapperComponent implements OnInit {
   protected doLoad(): void {
     this.showSpinner$ = this.loadingService.isLoading;
     const loadingToken = this.loadingService.register();
-    this.isPaginationEnabled$.pipe(mergeMap(enabled => enabled ? this.performSearchPagination() : this.performSearch())).subscribe(result => {
+    const casesSearch$ = this.performSearchPagination();
+    const mappedSearchResult$ = casesSearch$.pipe(mergeMap(result => {
+      const judicialUserIds = result.cases.filter(theCase => theCase.role_category === 'JUDICIAL').map(thisCase => thisCase.assignee);
+      if (judicialUserIds && judicialUserIds.length > 0 && this.view !== 'MyCases') {
+          return this.judicialWorkerDataService.getCaseRolesUserDetails(judicialUserIds).pipe(switchMap((judicialUserData) => {
+            const judicialNamedCases = result.cases.map(judicialCase => {
+              const currentCase = judicialCase;
+              const theJUser = judicialUserData.find(judicialUser => judicialUser.sidam_id === judicialCase.assignee);
+              if (theJUser) {
+                currentCase.actorName = theJUser.known_as;
+                return currentCase;
+              }
+              return currentCase;
+            });
+            result.cases = judicialNamedCases;
+            return of(result);
+          }));
+      } else {
+        return of(result);
+      }
+    }));
+
+    mappedSearchResult$.subscribe(result => {
       this.loadingService.unregister(loadingToken);
       this.cases = result.cases;
       this.casesTotal = result.total_records;

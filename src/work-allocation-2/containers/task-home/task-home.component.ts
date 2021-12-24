@@ -49,13 +49,17 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
     this.routeSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         // Set up the active navigation item.
+        debugger;
         this.setupActiveSubNavigationItem(this.router.url);
       }
       if (event instanceof RoutesRecognized) {
         // Set up the page data.
+        debugger;
         this.setupPageData(event.state.root);
       }
     });
+    
+    debugger;
     // Set up the active navigation item.
     this.setupActiveSubNavigationItem(this.router.url);
 

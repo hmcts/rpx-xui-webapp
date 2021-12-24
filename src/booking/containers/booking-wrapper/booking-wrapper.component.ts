@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { bookingBackButtonVisibilityStates, bookingCheckVisibilityStates, bookingDateVisibilityStates, bookingHomeVisibilityStates, bookingLocationVisibilityStates } from '../../constants/pageVisibilityStates';
 import { BookingNavigation, BookingNavigationEvent, BookingProcess, BookingState } from '../../models';
-
+import * as routeAction from '../../../app/store/index';
 @Component({
   selector: 'exui-booking-wrapper',
   templateUrl: './booking-wrapper.component.html',
@@ -23,6 +23,7 @@ export class BookingWrapperComponent implements OnInit {
   constructor(private readonly router: Router) { }
 
   public ngOnInit() {
+
     this.bookingNavigationCurrentState = BookingState.HOME;
   }
 
@@ -35,6 +36,7 @@ export class BookingWrapperComponent implements OnInit {
   }
 
   public navigationHandler(navEvent: BookingNavigationEvent) {
+
     switch (navEvent) {
       case BookingNavigationEvent.BACK:
         switch (this.bookingNavigationCurrentState) {
@@ -56,7 +58,30 @@ export class BookingWrapperComponent implements OnInit {
         if (this.bookingProcess.selectedBookingOption === 1) {
           this.bookingNavigationCurrentState = BookingState.LOCATION;
         } else {
-          this.router.navigate(['/work/my-work/list']);
+          //this.router.navigate(['/work/my-work/list']);
+          debugger;
+          // this.router.navigate(
+          //   ['/work/my-work/list'],
+          //   {
+          //     state: {
+          //       location: {
+          //         ids: this.bookingProcess.selectedBookingLocationIds
+          //         // id: locationId
+          //        // ids: [locationId]
+          //       }
+          //     }
+          //   }
+          // );
+          
+          return new routeAction.Go({
+            path: [`/work/my-work/list`],
+            extras: {
+              state: {
+                showMessage: true,
+                message: { type: '99999999999', message: '99999999999' }
+              }
+            }
+          });
         }
         break;
       case BookingNavigationEvent.LOCATIONCONTINUE:

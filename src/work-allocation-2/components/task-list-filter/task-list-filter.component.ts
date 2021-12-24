@@ -144,7 +144,9 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       this.defaultLocations = [`${location.id}`];
     } else if (history.state && history.state.location) {
       const location: Location = history.state.location;
-      this.defaultLocations = [`${location.id}`];
+      
+      //this.defaultLocations = `${location.ids}`;
+       this.defaultLocations = [`${location.id}`];
     } else {
       // as some judicial workers do not have a set location set their default to be all locations
       this.defaultLocations = this.allLocations;

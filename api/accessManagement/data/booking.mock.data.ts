@@ -7,14 +7,15 @@ export const bookings: Bookings = {
       {
         appointmentId: '101',
         base_location_id: '231596',
-        beginTime: new Date('2021-11-29T00:00:00Z'),
+        beginTime: new Date('2022-01-29T00:00:00Z'),
         contract_type_id: '102',
-        created: new Date('2021-02-23T06:37:58Z'),
-        endTime: new Date('2021-12-24T00:00:00Z'),
+        created: new Date('2022-01-23T06:37:58Z'),
+        endTime: new Date('2022-12-24T00:00:00Z'),
         region_id: '104',
         roleId: 'caseworker',
         userId: '21334a2b-79ce-44eb-9168-2d49a744be9c'
       },
+      
       {
         appointmentId: '102',
         base_location_id: '366796',
@@ -51,10 +52,10 @@ export const bookings: Bookings = {
       {
         appointmentId: '103',
         base_location_id: '366796',
-        beginTime: new Date('2021-12-02T00:00:00Z'),
+        beginTime: new Date('2022-02-24T00:00:00Z'),
         contract_type_id: '102',
-        created: new Date('2021-02-23T06:37:58Z'),
-        endTime: new Date('2021-12-31T00:00:00Z'),
+        created: new Date('2022-02-23T06:37:58Z'),
+        endTime: new Date('2022-12-31T00:00:00Z'),
         region_id: '104',
         roleId: 'caseworker',
         userId: '21334a2b-79ce-44eb-9168-2d49a744be9c'

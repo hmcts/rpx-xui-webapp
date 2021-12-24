@@ -27,13 +27,17 @@ export const ROUTES: Routes = [
   },
   {
     path: 'booking',
-    canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: '../booking/booking.module#BookingModule'
+   // canActivate: [AuthGuard, AcceptTermsGuard],
+   loadChildren: '../booking/booking.module#BookingModule'
+   //loadChildren: '../work-allocation/work-allocation.module#WorkAllocationModule'
   },
+  
   {
     path: 'cases',
     canActivate: [AuthGuard, AcceptTermsGuard],
     loadChildren: '../cases/cases.module#CasesModule'
+    //loadChildren: '../work-allocation-2/work-allocation2.module#WorkAllocationModule2'
+   // loadChildren: '../booking/booking.module#BookingModule'
   },
   {
     path: 'work',

@@ -59,6 +59,8 @@ export class BookingCheckComponent implements OnInit {
         state: {
           location: {
             id: this.bookingProcess.location.epims_id
+            
+            //ids: [this.bookingProcess.location.epims_id]
           }
         }
       });

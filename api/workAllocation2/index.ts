@@ -21,7 +21,6 @@ import {
   handlePostSearch
 } from './caseWorkerService';
 
-import { JUDICIAL_WORKERS_LOCATIONS } from './constants/mock.data';
 import { TASK_ROLES } from './constants/task-roles.mock.data';
 import { PaginationParameter } from './interfaces/caseSearchParameter';
 import { Caseworker } from './interfaces/common';
@@ -236,27 +235,6 @@ export async function retrieveAllCaseWorkers(req: EnhancedRequest, res: Response
   const caseWorkerReferenceData = mapCaseworkerData(userResponse.data, data.roleAssignmentResponse);
   req.session.caseworkers = caseWorkerReferenceData;
   return caseWorkerReferenceData;
-}
-
-/**
- * Get All JudicialWorkers
- */
-export async function getAllJudicialWorkers(req: EnhancedRequest, res: Response, next: NextFunction) {
-  try {
-    const judicialWorkers: any[] = await retrieveAllJudicialWorkers();
-    res.status(200);
-    res.send(judicialWorkers);
-  } catch (error) {
-    next(error);
-  }
-}
-
-export async function retrieveAllJudicialWorkers(): Promise<any[]> {
-  return new Promise<any[]>(resolve => {
-    setTimeout(() => {
-      resolve(JUDICIAL_WORKERS_LOCATIONS);
-    }, 0);
-  });
 }
 
 /**

@@ -222,9 +222,10 @@ describe('RolesContainerComponent', () => {
   const roleExclusionsService = jasmine.createSpyObj('route', ['getCurrentUserRoleExclusions']);
   const allocateService = jasmine.createSpyObj('route', ['getCaseRoles', 'getCaseRolesUserDetails']);
   const caseworkerDataService = jasmine.createSpyObj('route', ['loadAll']);
+  const sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem', 'setItem']);
 
   it('loadRoles', () => {
-    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService);
+    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService);
     const caseDetails = {} as CaseView;
     caseDetails.case_id = '123456789';
     caseDetails.case_type = {

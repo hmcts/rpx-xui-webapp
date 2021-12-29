@@ -12,6 +12,7 @@ import {
   AllocateRoleNavigationEvent,
   AllocateRoleState,
   AllocateRoleStateData,
+  AllocateTo,
   RoleCategory,
   SpecificRole
 } from '../../../models';
@@ -60,7 +61,11 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
       switch (navEvent) {
         case AllocateRoleNavigationEvent.CONTINUE:
           const person = this.person;
-          this.store.dispatch(new fromFeature.ChoosePersonAndGo({person, allocateRoleState: AllocateRoleState.CHOOSE_DURATION}));
+          this.store.dispatch(new fromFeature.ChoosePersonAndGo({
+              person,
+              allocateRoleState: AllocateRoleState.CHOOSE_DURATION,
+              allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON
+            }));
           break;
         default:
           throw new Error('Invalid option');

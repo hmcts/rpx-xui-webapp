@@ -13,6 +13,6 @@ describe('JudicialWorkerDataService', () => {
     const service = new JudicialWorkerDataService(mockHttpService, mockSessionStorageService);
     mockHttpService.get.and.returnValue(Observable.of([]));
     service.getCaseRolesUserDetails(['id1']);
-    expect(mockHttpService.get).toHaveBeenCalledWith(`${JudicialWorkerDataService.roleUrl}/getJudicialUsers`, {userIds: ['id1']});
+    expect(mockHttpService.post).toHaveBeenCalledWith(`${JudicialWorkerDataService.roleUrl}/getJudicialUsers`, {userIds: ['id1']});
   });
 });

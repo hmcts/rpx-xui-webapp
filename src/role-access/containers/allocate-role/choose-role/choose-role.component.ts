@@ -4,8 +4,9 @@ import { ActivatedRoute } from '@angular/router';
 import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
+import { SessionStorageService } from '../../../../app/services';
 import { UserRole } from '../../../../app/models';
-import { CHOOSE_A_ROLE, ERROR_MESSAGE } from '../../../constants';
+import { CHOOSE_A_ROLE, ERROR_MESSAGE, ERROR_MESSAGE_EXISTING_ROLE } from '../../../constants';
 import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, Role, RoleCategory, SpecificRole } from '../../../models';
 import { RoleAllocationTitleText } from '../../../models/enums';
 import { OptionsModel } from '../../../models/options-model';
@@ -18,8 +19,10 @@ import * as fromFeature from '../../../store';
 })
 export class ChooseRoleComponent implements OnInit, OnDestroy {
   public ERROR_MESSAGE = ERROR_MESSAGE;
+  public ERROR_MESSAGE_EXISTING_ROLE = ERROR_MESSAGE_EXISTING_ROLE;
   @Input() public navEvent: AllocateRoleNavigation;
 
+  public error: any;
   public title = RoleAllocationTitleText.NonExclusionChoose;
   public caption: string = '';
   public optionsList: OptionsModel[];
@@ -37,7 +40,8 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
 
   constructor(private readonly store: Store<fromFeature.State>,
               private readonly route: ActivatedRoute,
-              private readonly allocateRoleService: AllocateRoleService) {
+              private readonly allocateRoleService: AllocateRoleService,
+              private readonly sessionStorageService: SessionStorageService) {
   }
 
   public ngOnInit(): void {
@@ -65,6 +69,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
       this.radioOptionControl.setErrors({
         invalid: true
       });
+      this.error = ERROR_MESSAGE;
       return;
     }
     this.dispatchEvent(navEvent, roleCategory, isLegalOpsOrJudicialRole);
@@ -79,6 +84,15 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
           id: roleOption ? roleOption.optionId : roleChosen,
           name: roleChosen
         };
+
+        if (this.sessionStorageService.getItem('caseRoles').includes(typeOfRole.id)) {
+          this.radioOptionControl.setErrors({
+            invalid: true
+          });
+          this.error = ERROR_MESSAGE_EXISTING_ROLE;
+          return;
+        }
+
         switch (roleCategory) {
           case RoleCategory.JUDICIAL: {
             switch (isLegalOpsOrJudicialRole) {

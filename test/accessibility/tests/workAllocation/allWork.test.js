@@ -32,7 +32,9 @@ describe('Work Allocation: ', function () {
 
     it('All work:  Tasks', async function () {
         const userDetails = userDetailsMock.withIACJudicialUser('IAC_Judge_WA_R2');
-        userDetails.userInfo.roles.push('case-allocator,task-supervisor');
+        userDetails.userInfo.roles.push('case-allocator');
+        userDetails.userInfo.roles.push( 'task-supervisor');
+
         await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator(primaryNavLocators.header))

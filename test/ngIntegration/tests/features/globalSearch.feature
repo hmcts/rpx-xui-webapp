@@ -128,6 +128,8 @@ Feature: Global search
     Scenario: Date fields validation error
         When I input date field "Date of birth" with format DD-MM-YYYY "302-21-2021" in global search page
         When I click search button in global search page
+        When I input field "16-digit case reference" with value "1234567890123456" in global search Page
+
         Then I see error message "Enter a valid date of birth" for field "Date of birth" in global search Page
         When I input date field "Date of birth" with format DD-MM-YYYY "" in global search page
         When I click search button in global search page
@@ -155,6 +157,7 @@ Feature: Global search
             | 0     | CHALLENGED       | Test case 1           | 1234567812345678 | Test Jurisdiction   | Case created | Test location 1  |
             | 1     | SPECIFIC         | Test case 2           | 8765432187654321 | Test Jurisdiction   | Case created | Test location 2  |
         Given I start MockApp
+        When I input field "16-digit case reference" with value "1234567890123456" in global search Page
 
         When I click search button in global search page
         Then I see global search results page
@@ -172,6 +175,7 @@ Feature: Global search
             | caseStartRecord | casesReturned | moreResultsToGo |
             | 1               | 25            | true            |
         Given I start MockApp
+        When I input field "16-digit case reference" with value "1234567890123456" in global search Page
 
         When I click search button in global search page
         Then I see global search results page
@@ -206,6 +210,7 @@ Feature: Global search
             | 1               | 10            | false           |
 
         Given I start MockApp
+        When I input field "16-digit case reference" with value "1234567890123456" in global search Page
 
         When I click search button in global search page
         Then I see global search results page
@@ -224,6 +229,7 @@ Feature: Global search
             | 0     | CHALLENGED       | Test case 1           | 1234567812345678 | Test Jurisdiction   | Case created | Test location 1  |
             | 1     | SPECIFIC         | Test case 2           | 8765432187654321 | Test Jurisdiction   | Case created | Test location 2  |
         Given I start MockApp
+        When I input field "16-digit case reference" with value "1234567890123456" in global search Page
 
         When I click search button in global search page
         Then I see global search results page
@@ -245,6 +251,7 @@ Feature: Global search
             | 1     | SPECIFIC         | Test case 2           | 8765432187654321 | Test Jurisdiction   | Case created | Test location 2  |
 
         Given I start MockApp
+        When I input field "16-digit case reference" with value "1234567890123456" in global search Page
 
         When I click search button in global search page
         Then I see global search results page
@@ -261,6 +268,7 @@ Feature: Global search
 
         Given I set global search mock results count 0
         Given I start MockApp
+        When I input field "16-digit case reference" with value "1234567890123456" in global search Page
 
         Then I validate case search field is displayed in header
         When I input case reference in header search field "1234567812345678"

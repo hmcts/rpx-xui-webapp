@@ -5,6 +5,8 @@ var { defineSupportCode } = require('cucumber');
 const SoftAssert = require('../../../ngIntegration/util/softAssert');
 const constants = require('../../support/constants');
 
+const browserUtil = require('../../../ngIntegration/util/browserUtil');
+
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I see header tab Task list', async function () {
@@ -38,9 +40,23 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I click on primary navigation header tab {string}, I see selected tab page displayed', async function (headerTabLabel) {
+        let isTabClickSuccess = false;
+
         await browserWaits.retryWithActionCallback(async () => {
-            await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
-            expect(await headerPage.isPrimaryTabPageDisplayed(headerTabLabel)).to.be.true
+
+            try{
+                await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
+                isTabClickSuccess = true;
+                expect(await headerPage.isPrimaryTabPageDisplayed(headerTabLabel)).to.be.true
+            }
+            catch(err){
+                if (!isTabClickSuccess){
+                    await browser.refresh();
+                    await browserUtil.waitForLD();
+                    throw new Error("Error navaigating to tab "+err);
+                }
+            }
+            
         });
     });
 
@@ -66,6 +82,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             if (counter > 0){
                 cucumberReporter.AddMessage("Expected Navigation tabs not present, Refreshing browser to get LD config again");
                 await browser.refresh();
+                await browserUtil.waitForLD();
             }
             counter++;
 
@@ -125,8 +142,15 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I validate header displayed for user type {string}', async function(userType){
         let i = 0;
         await browserWaits.retryWithActionCallback(async (i) => {
-            await browserWaits.waitForSeconds(i*2);
-            await headerPage.validateHeaderDisplayedForUserType(userType);
+            try{
+                await browserWaits.waitForSeconds(i * 2);
+                await headerPage.validateHeaderDisplayedForUserType(userType);
+            }
+            catch(err){
+                await browser.refresh();
+                await browserUtil.waitForLD();
+                throw new Error(`${userType} header validation failed , retryimng again with page refresh. ${err}`);
+            } 
             i++;
         });
 

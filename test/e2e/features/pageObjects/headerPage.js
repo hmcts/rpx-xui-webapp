@@ -269,7 +269,7 @@ function HeaderPage() {
       case 'My work':
         retValue = await myWorkPage.amOnPage();
         break;
-      case 'Search cases':
+      case 'Search':
         retValue = await globalSearchPage.amOnPage();
         break;
       case 'All work':

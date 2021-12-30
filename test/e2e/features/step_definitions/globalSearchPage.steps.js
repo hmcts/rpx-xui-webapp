@@ -43,6 +43,14 @@ defineSupportCode(function ({ Given, When, Then }) {
         await globalSearchResultsPage.changeSearchLink.click();
     });
 
+    When('I click Change search link in global search results page, then I see global search Page', async function () {
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await globalSearchResultsPage.changeSearchLink.click();
+            expect(await globalSearchPage.amOnPage()).to.be.true
+        });
+        
+    });
+
     When('I input field {string} with value {string} in global search Page', async function(fieldName,fieldValue){
         switch(fieldName.toLowerCase()){
             case '16-digit case reference':
@@ -308,7 +316,7 @@ defineSupportCode(function ({ Given, When, Then }) {
         const scenarios = datatable.hashes();
         const softAssert = new SoftAssert();
         for (const scenario of scenarios){
-            await headerPage.clickPrimaryNavigationWithLabel('Search cases');
+            await headerPage.clickPrimaryNavigationWithLabel('Search');
             expect(await globalSearchPage.amOnPage()).to.be.true
 
             softAssert.setScenario(`${scenario.ScenarioDescription} : ${scenario.caseReference}`);

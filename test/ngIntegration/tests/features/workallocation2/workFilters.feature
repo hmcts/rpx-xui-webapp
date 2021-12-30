@@ -27,6 +27,7 @@ Feature: WA Release 2: My work - Work filters
         Given I set MOCK with "wa_release_2" release user and roles "<Roles>"
         Given I start MockApp
         Given I navigate to home page
+        Then I see primary navigation tabs "My work" in main header
         # When I click on primary navigation header "My work"
         Then I see work filter button displayed
         Then I validate work filter button text is "Show work filter"
@@ -89,6 +90,8 @@ Feature: WA Release 2: My work - Work filters
             | true            | IA           | 12345           |
         Given I start MockApp
         Given I navigate to home page
+        Then I see primary navigation tabs "My work" in main header
+
         # When I click on primary navigation header "My work"
 
         Then I see work filter button displayed
@@ -129,6 +132,8 @@ Feature: WA Release 2: My work - Work filters
             | true            | IA           | 12345           |
         Given I start MockApp
         Given I navigate to home page
+        Then I see primary navigation tabs "My work" in main header
+
         # When I click on primary navigation header "My work"
         Then I see work filter button displayed
         Then I validate work filter button text is "Show work filter"
@@ -180,6 +185,8 @@ Feature: WA Release 2: My work - Work filters
             | true            | IA           | 12345           |
         Given I start MockApp
         Given I navigate to home page
+        Then I see primary navigation tabs "My work" in main header
+
         # When I click on primary navigation header "My work"
         Then I see work filter button displayed
         Then I validate work filter button text is "Show work filter"
@@ -247,6 +254,8 @@ Feature: WA Release 2: My work - Work filters
             | true            | IA           | 12345           |
         Given I start MockApp
         Given I navigate to home page
+        Then I see primary navigation tabs "My work" in main header
+
         When I click on primary navigation header "My work"
         Then I see work filter button displayed
 

@@ -55,9 +55,9 @@ export class LocationResolver implements Resolve<Location> {
     } else {
       if (workers && workers.length > 0) {
         const worker = (workers as CaseRoleDetails[])[0];
-        const judicialAppointment = worker.appointments.find(appt => appt.location !== 'National');
-        if (judicialAppointment) {
-          return { id: judicialAppointment.epimms_id, locationName: judicialAppointment.location, services: [] }
+        const jAppt = worker.appointments.find(appt => appt.location !== 'National' && appt.epimms_id && appt.epimms_id !== '');
+        if (jAppt) {
+          return { id: jAppt.epimms_id, locationName: jAppt.location, services: [] }
         }
       }
       return null;

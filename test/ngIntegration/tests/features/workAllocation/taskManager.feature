@@ -3,7 +3,7 @@ Feature: WA Release 1: Task manager
 
     Background: Mock and browser setup
         Given I init MockApp
-        Given I set MOCK with "wa_release_1" release user and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer"
+        Given I set MOCK with "wa_release_1" release user and roles "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer"
 
     Scenario: Task manager columns data validation
         Given I set MOCK Task manager tasks count 25

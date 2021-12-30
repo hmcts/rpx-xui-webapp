@@ -2,7 +2,7 @@
 Feature: Global search
 
     Background: Setup
-        Given I set MOCK with user "CASEWORKER_GLOBALSEARCH" and roles "caseworker,caseworker-befta_master,caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer"
+        Given I set MOCK with user "CASEWORKER_GLOBALSEARCH" and roles "caseworker,caseworker-befta_master,caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer" with reference "mockUserDetails"
         Given I start MockApp
         Given I navigate to home page
         Then I click on primary navigation header tab "Search cases", I see selected tab page displayed

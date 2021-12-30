@@ -85,7 +85,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
           name: roleChosen
         };
 
-        if (this.sessionStorageService.getItem('caseRoles').includes(typeOfRole.id)) {
+        if (this.sessionStorageService.getItem('caseRoles') && this.sessionStorageService.getItem('caseRoles').includes(typeOfRole.id)) {
           this.radioOptionControl.setErrors({
             invalid: true
           });

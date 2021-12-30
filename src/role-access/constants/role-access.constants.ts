@@ -9,6 +9,12 @@ export const ERROR_MESSAGE = {
   fieldId: 'choose-radio-option-error-message'
 };
 
+export const ERROR_MESSAGE_EXISTING_ROLE = {
+  title: 'There is a problem',
+  description: 'This role already exists. Select a different role or cancel',
+  fieldId: 'choose-radio-option-error-message'
+};
+
 export const PERSON_ERROR_MESSAGE = {
   title: 'There is a problem',
   description: 'You must select a name',

@@ -38,7 +38,8 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
   private static getOptions(): OptionsModel[] {
     return [
       {optionId: RoleCategory.JUDICIAL, optionValue: RoleCategory.JUDICIAL, label: PersonRole.JUDICIAL},
-      {optionId: RoleCategory.LEGAL_OPERATIONS, optionValue: RoleCategory.LEGAL_OPERATIONS, label: PersonRole.CASEWORKER}
+      {optionId: RoleCategory.LEGAL_OPERATIONS, optionValue: RoleCategory.LEGAL_OPERATIONS, label: PersonRole.CASEWORKER},
+      {optionId: RoleCategory.ADMIN, optionValue: RoleCategory.ADMIN, label: PersonRole.ADMIN}
     ];
   }
 

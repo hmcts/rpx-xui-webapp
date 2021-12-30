@@ -37,7 +37,11 @@ describe('AllocateRolePersonComponent', () => {
     const continueEvent = AllocateRoleNavigationEvent.CONTINUE;
     component.navigationHandler(continueEvent);
     expect(component.formGroup.valid).toBeTruthy();
-    expect(mockStore.dispatch).toHaveBeenCalledWith(new ChoosePersonAndGo({person: examplePerson, allocateRoleState: AllocateRoleState.CHOOSE_DURATION}));
+    expect(mockStore.dispatch).toHaveBeenCalledWith(new ChoosePersonAndGo({
+      person: examplePerson,
+      allocateRoleState: AllocateRoleState.CHOOSE_DURATION,
+      allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON
+    }));
   });
 
   it('should set person correctly when given by child component', () => {

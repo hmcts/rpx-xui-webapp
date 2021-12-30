@@ -56,7 +56,7 @@ export class ChooseAllocateToAndGo implements Action {
 
 export class ChoosePersonAndGo implements Action {
   public readonly type = AllocateRoleActionTypes.CHOOSE_PERSON_AND_GO;
-  constructor(public payload: { person: Person, allocateRoleState: AllocateRoleState }) {
+  constructor(public payload: { person: Person, allocateRoleState: AllocateRoleState, allocateTo: AllocateTo }) {
   }
 }
 

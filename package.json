@@ -70,7 +70,7 @@
     "@angular/platform-browser-dynamic": "^7.2.13",
     "@angular/router": "^7.2.13",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccd-case-ui-toolkit": "4.9.2-state-machine",
+    "@hmcts/ccd-case-ui-toolkit": "4.9.3-state-machine",
     "@hmcts/ccpay-web-component": "3.0.27",
     "@hmcts/frontend": "0.0.39-alpha",
     "@hmcts/media-viewer": "2.7.9",

@@ -1,4 +1,4 @@
-@search @fullfunctional
+@search @fullfunctional 
 Feature: search criteria workflow
 
   Background:
@@ -26,8 +26,7 @@ Feature: search criteria workflow
 
     When I select search criteria jurisdiction "<Jurisdiction>" case type "<CaseType>" state "Any" in case list page
     When I click search Reset in case list page
-    When I select search criteria jurisdiction "<Jurisdiction>" case type "<CaseType>" state "Any" in case list page
-    When I click search Apply in case list page
+    When I select search criteria jurisdiction "<Jurisdiction>" case type "<CaseType>" state "Any" in case list page and click apply
     Then I see results returned
     When I open first case in case list page
     Then I see case details page

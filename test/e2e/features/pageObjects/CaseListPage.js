@@ -84,6 +84,7 @@ class CaseListPage{
             await browser.executeScript('arguments[0].scrollIntoView()',
                 this.searchApplyBtn);
             await BrowserWaits.waitForElementClickable(this.searchApplyBtn);
+            CucumberReportLogger.AddMessage("Clicking Apply in case list Work basket filter.");
             await this.searchApplyBtn.click();
         });
     }

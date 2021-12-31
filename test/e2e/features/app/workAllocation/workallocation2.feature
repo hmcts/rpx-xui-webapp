@@ -102,8 +102,7 @@ Feature: WA Release 2: : Work allocations My work, All work
         Then I validate I am on My work page
         When I click on primary navigation header tab "Case list", I see selected tab page displayed
 
-        When I select search criteria jurisdiction "Immigration & Asylum" case type "Appeal* RIA-4747" state "Any" in case list page
-        When I click search Apply in case list page
+        When I select search criteria jurisdiction "Immigration & Asylum" case type "Appeal* RIA-4747" state "Any" in case list page and click apply
         When I open first case in case list page
         Then I see case details page
 

@@ -1,22 +1,26 @@
-
 const cucumberReporter = require('./reportLogger');
 
 class BrowserLogs {
 
 
-    constructor(){
+    constructor() {
         this.networklogs = []
         this.browserlogs = [];
 
+        this.ignoreItemsList = [
+            "activity/cases",
+            "/api/monitoring-tools"
+        ];
+
     }
 
-    clearLogs(){
+    clearLogs() {
         this.networklogs = [];
         this.browserlogs = [];
 
     }
 
-    async getBrowserLogs(){
+    async getBrowserLogs() {
         let browserLog = await browser.manage().logs().get('browser');
         let browserErrorLogs = []
         for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++) {
@@ -26,13 +30,23 @@ class BrowserLogs {
                 } catch (err) {
                     browserLog[browserLogCounter]['time'] = browserLog[browserLogCounter]['timestamp'] + "" + err;
                 }
-                browserErrorLogs.push(`${browserLog[browserLogCounter]['time']} : [${browserLog[browserLogCounter]['level']}] ${browserLog[browserLogCounter]['message']} `);
+
+                let ignore = false;
+                for (const ignoreItem of this.ignoreItemsList) {
+                    if (browserLog[browserLogCounter]['message'].includes(ignoreItem)) {
+                        ignore = true;
+                        break;
+                    }
+                }
+                if (!ignore) {
+                    browserErrorLogs.push(`${browserLog[browserLogCounter]['time']} : [${browserLog[browserLogCounter]['level']}] ${browserLog[browserLogCounter]['message']} `);
+                }
             }
         }
         return browserErrorLogs;
     }
 
-    async printBrowserLogs(){
+    async printBrowserLogs() {
         const browserErrorLogs = await this.getBrowserLogs();
         this.browserlogs.push(...browserErrorLogs)
         for (const log of browserErrorLogs) {
@@ -41,7 +55,7 @@ class BrowserLogs {
         return this.browserlogs;
     }
 
-    async printAllBrowserLogs(){
+    async printAllBrowserLogs() {
         const browserErrorLogs = await this.getBrowserLogs();
         this.browserlogs.push(...browserErrorLogs)
         for (const log of this.browserlogs) {
@@ -52,29 +66,29 @@ class BrowserLogs {
 
 
 
-    async getNetworkLogs(){
+    async getNetworkLogs() {
         let browserLog = await browser.manage().logs().get('performance');
         const browserErrorLogs = [];
 
         const methods = [];
         for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++) {
             const networkMessage = JSON.parse(browserLog[browserLogCounter].message);
-           
+
             browserLog[browserLogCounter]['time'] = (new Date(browserLog[browserLogCounter]['timestamp'])).toISOString()
-           
-            if (!methods.includes(networkMessage.message.method)){
+
+            if (!methods.includes(networkMessage.message.method)) {
                 methods.push(networkMessage.message.method);
             }
 
             if (networkMessage.message.method === 'Network.responseReceived' ||
-                networkMessage.message.method === 'Network.requestWillBeSent'){
-                try{
+                networkMessage.message.method === 'Network.requestWillBeSent') {
+                try {
                     browserLog[browserLogCounter].requestDetails = {
                         method: networkMessage.message.params.request.method,
                         url: networkMessage.message.params.request.url
                     };
 
-                    if (networkMessage.message.method === 'Network.responseReceived'){
+                    if (networkMessage.message.method === 'Network.responseReceived') {
                         browserLog[browserLogCounter].responseDetails = {
                             status: networkMessage.message.params.response.status + ' ' + networkMessage.message.params.response.statusText,
                             url: networkMessage.message.params.response.url
@@ -84,12 +98,12 @@ class BrowserLogs {
                     delete perfItem.message;
 
                     browserErrorLogs.push(perfItem);
-                }catch(err){
-                   console.log(err); 
+                } catch (err) {
+                    console.log(err);
                     // cucumberReporter.AddMessage('');
                     // cucumberReporter.AddJson(networkMessage);
                 }
-                
+
 
             }
 

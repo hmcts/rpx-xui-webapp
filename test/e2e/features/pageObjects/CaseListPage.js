@@ -55,16 +55,9 @@ class CaseListPage{
 
     async _waitForSearchComponent(){
         await BrowserWaits.waitForElement(this.searchFilterContainer);
-        await this.waitForSpinnerToDissappear();
+        await BrowserWaits.waitForSpinnerToDissappear();
     }
 
-    async waitForSpinnerToDissappear(){
-        await BrowserWaits.waitForCondition(async () => {
-            const isSpinnerPresent = await $(".loading-spinner-in-action").isPresent();
-            CucumberReportLogger.AddMessage('Waiting for spinner to dissappear.');
-            return !isSpinnerPresent;
-        },'Spinner is still displayed after waiting ');
-    }
     _getOptionSelectorWithText(optionText){
         return by.xpath("//option[text() = '"+optionText+"']");
     }
@@ -87,7 +80,7 @@ class CaseListPage{
     async clickSearchApplyBtn(){ 
         await BrowserWaits.retryWithActionCallback(async () => {
             await this._waitForSearchComponent();
-            await this.waitForSpinnerToDissappear();
+            await BrowserWaits.waitForSpinnerToDissappear();
             await browser.executeScript('arguments[0].scrollIntoView()',
                 this.searchApplyBtn);
             await BrowserWaits.waitForElementClickable(this.searchApplyBtn);

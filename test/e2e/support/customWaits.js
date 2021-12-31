@@ -154,6 +154,14 @@ class BrowserWaits{
             throw new Error(`Action failed to meet success condition after ${this.retriesCount} retry attempts.`,error.stack);
         }
     }
+
+    async waitForSpinnerToDissappear(){
+        await this.waitForCondition(async () => {
+            const isSpinnerPresent = await $("div.spinner-container").isPresent();
+            CucumberReportLogger.AddMessage('Waiting for spinner to dissappear.');
+            return !isSpinnerPresent;
+        }, 'Spinner is still displayed after waiting ');
+    }
 }
 
 module.exports =new  BrowserWaits(); 

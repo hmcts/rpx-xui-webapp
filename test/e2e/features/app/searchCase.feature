@@ -18,8 +18,8 @@ Feature: search criteria workflow
     Then I see case details page
 
     Examples:
-    | Jurisdiction | CaseType |
-      | Manage probate application | Grant of representation |
+      | Jurisdiction   | CaseType           |
+      | Family Divorce | XUI Test Case type |
 
 
   Scenario Outline:  search criteria apply workflow from Search Case Page
@@ -33,5 +33,5 @@ Feature: search criteria workflow
     Then I see case details page
 
     Examples:
-    | Jurisdiction | CaseType |
-      | Manage probate application | Grant of representation |
+      | Jurisdiction   | CaseType           |
+      | Family Divorce | XUI Test Case type |

@@ -7,7 +7,7 @@ CustomError = require('../../utils/errors/custom-error.js');
 const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
 
 const BrowserWaits = require('../../support/customWaits');
-
+const browserUtil = require('../../../ngIntegration/util/browserUtil');
 var {defineSupportCode} = require('cucumber');
 defineSupportCode(function ({And, But, Given, Then, When}) {
   let searchPage= new SearchPage();
@@ -17,8 +17,14 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
     });
 
     When('I click on Case list',async function(){
+      let attemptCounter = 0;
       await BrowserWaits.retryWithActionCallback(async () => {
-        await headerPage.waitForSpinnerToDissappear();
+        if (attemptCounter > 0){
+          await browser.refresh();
+          await browserUtil.waitForLD();
+        }
+        attemptCounter++; 
+        await BrowserWaits.waitForSpinnerToDissappear();
         await headerPage.clickCaseList();
       });
        

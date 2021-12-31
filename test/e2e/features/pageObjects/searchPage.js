@@ -36,17 +36,12 @@ class SearchPage {
     this.firstResultCaseLink = $("ccd-search-result>table>tbody>tr:nth-of-type(1)>td:nth-of-type(1)>a"); 
   }
 
-  async waitForSpinnerToDissappear() {
-  await BrowserWaits.waitForConditionAsync(async () => {
-    return !(await $(".loading-spinner-in-action").isPresent());
-  }, 40000);
-};
 
   async _waitForSearchComponent() {
     await BrowserWaits.retryWithActionCallback(async () => {
       await BrowserWaits.waitForElement(this.searchFilterContainer);
     }, "Wait for search page, search input form to display");
-    await this.waitForSpinnerToDissappear();
+    await BrowserWaits.waitForSpinnerToDissappear();
 
   }
 
@@ -74,6 +69,7 @@ class SearchPage {
   async clickApplyButton() {
     await this._waitForSearchComponent();
     await BrowserWaits.waitForElement(this.applyButton);
+    await BrowserWaits.waitForSpinnerToDissappear();
     await BrowserWaits.waitForElementClickable(this.applyButton);
 
     await browser.executeScript('arguments[0].scrollIntoView()',
@@ -84,7 +80,7 @@ class SearchPage {
   async clickResetButton() {
     await BrowserWaits.retryWithActionCallback(async () => {
       await this._waitForSearchComponent();
-      await this.waitForSpinnerToDissappear();
+      await BrowserWaits.waitForSpinnerToDissappear();
       await BrowserWaits.waitForElement(this.resetButton);
       await browser.executeScript('arguments[0].scrollIntoView()',
         this.resetButton);
@@ -100,7 +96,7 @@ class SearchPage {
     var thisPageUrl = await browser.getCurrentUrl();
 
     await BrowserWaits.retryWithActionCallback(async () =>{
-      await this.waitForSpinnerToDissappear();
+      await BrowserWaits.waitForSpinnerToDissappear();
       await browser.executeScript('arguments[0].scrollIntoView()',
         this.firstResultCaseLink);
       await this.firstResultCaseLink.click();

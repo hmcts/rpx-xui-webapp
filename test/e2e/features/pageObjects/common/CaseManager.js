@@ -74,7 +74,7 @@ class CaseManager {
             let isJurisdictionSelected = false;
             while (retryOnJurisdiction < 3 && !isJurisdictionSelected) {
                 try {
-                    await this.app.waitForSpinnerToDissappear();
+                    await BrowserWaits.waitForSpinnerToDissappear();
                     await this.createCaseStartPage.selectJurisdiction(jurisdiction);
                     isJurisdictionSelected = true;
                 }
@@ -317,14 +317,18 @@ class CaseManager {
                 this._appendFormPageValues(fieldName1, phone_uk);
                 break;
             case "ccd-write-address-field":
-                await ccdField.$('.form-control').sendKeys("SW1");
-                await ccdField.$('button').click();
-                var addressSelectionField = ccdField.$('select.form-control')
-                await BrowserWaits.waitForElement(addressSelectionField);
-                var addressToSelect = addressSelectionField.$("option:nth-of-type(2)");
-                await BrowserWaits.waitForElement(addressToSelect);
-                await addressToSelect.click();
-                cucumberReporter.AddMessage(fieldName + " : 2nd option selected");
+                await BrowserWaits.retryWithActionCallback(async () => {
+                    await ccdField.$('.form-control').clear();
+                    await ccdField.$('.form-control').sendKeys("SW1");
+                    await ccdField.$('button').click();
+                    var addressSelectionField = ccdField.$('select.form-control')
+                    await BrowserWaits.waitForElement(addressSelectionField);
+                    var addressToSelect = addressSelectionField.$("option:nth-of-type(2)");
+                    await BrowserWaits.waitForElement(addressToSelect);
+                    await addressToSelect.click();
+                    cucumberReporter.AddMessage(fieldName + " : 2nd option selected");
+                }); 
+                
                 break;
             case "ccd-write-email-field":
                 await ccdField.$('input.form-control').sendKeys("test@autotest.com ");

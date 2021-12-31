@@ -76,6 +76,7 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
       }
    
   });
+});
 
 Then(/^Case details should be displayed based on selected search criteria$/, async function () {
   var searchPage = new SearchPage();

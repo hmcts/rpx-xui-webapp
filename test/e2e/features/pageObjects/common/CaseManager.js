@@ -177,8 +177,16 @@ class CaseManager {
     }
 
     async AmOnCCDCaseEditPage() {
+        let retryCounter = 0;
         await BrowserWaits.retryWithActionCallback(async () => {
-            expect(await this.exuiCaseHomeComp.isPresent()).to.be.true;
+
+            let retryCounter = 0;
+            if (retryCounter > 0){
+                await this.createCaseStartPage.clickStartButton();
+            }
+            retryCounter++;
+
+            expect(await this.ccdCaseEdit.isPresent()).to.be.true;
         });
     }    
 

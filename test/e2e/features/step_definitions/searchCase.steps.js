@@ -63,8 +63,18 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
   });
 
   Then('I see results returned', async function () {
-    await searchPage.waitForAtleastOneSearchResult();
-    await expect(await searchPage.hasSearchReturnedResults()).to.be.true;
+    let retryCounter =0;
+    await BrowserWaits.retryWithActionCallback(async () => {
+      if (retryCounter > 0){
+        await searchPage.clickApplyButton();
+      }
+      retryCounter++;
+
+      await searchPage.waitForAtleastOneSearchResult();
+      await expect(await searchPage.hasSearchReturnedResults()).to.be.true;
+    });
+
+   
   });
 
 Then(/^Case details should be displayed based on selected search criteria$/, async function () {

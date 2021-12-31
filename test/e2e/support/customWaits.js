@@ -158,7 +158,7 @@ class BrowserWaits{
     async waitForSpinnerToDissappear(){
         await this.waitForCondition(async () => {
             const isSpinnerPresent = await $("div.spinner-container").isPresent();
-            CucumberReportLogger.AddMessage('Waiting for spinner to dissappear.');
+            CucumberReporter.AddMessage('Waiting for spinner to dissappear.');
             return !isSpinnerPresent;
         }, 'Spinner is still displayed after waiting ');
     }

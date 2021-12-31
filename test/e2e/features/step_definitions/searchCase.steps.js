@@ -5,7 +5,7 @@ Dropdown = require('../pageObjects/webdriver-components/dropdown.js');
 TextField = require('../pageObjects/webdriver-components/textField.js');
 CustomError = require('../../utils/errors/custom-error.js');
 const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
-
+const CucumberReporter = require("../../support/reportLogger");
 const BrowserWaits = require('../../support/customWaits');
 const browserUtil = require('../../../ngIntegration/util/browserUtil');
 var {defineSupportCode} = require('cucumber');
@@ -65,15 +65,15 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
   Then('I see results returned', async function () {
     let retryCounter =0;
     await BrowserWaits.retryWithActionCallback(async () => {
-      if (retryCounter > 0){
+  
+      try{
+        await searchPage.waitForAtleastOneSearchResult();
+        await expect(await searchPage.hasSearchReturnedResults()).to.be.true;
+      }catch(err){
+        CucumberReporter.AddMessage(`Retrying by clicking workbasket Apply`);
         await searchPage.clickApplyButton();
+        throw new Error(err);
       }
-      retryCounter++;
-
-      await searchPage.waitForAtleastOneSearchResult();
-      await expect(await searchPage.hasSearchReturnedResults()).to.be.true;
-    });
-
    
   });
 

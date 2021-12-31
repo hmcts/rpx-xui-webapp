@@ -35,8 +35,18 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I wait to see case results displayed', {timeout : 120*1000} ,async function(){
-        CucumberReportLogger.AddMessage("Step started");
-        await caseListPage.waitForCaseResultsToDisplay();
+        await BrowserWaits.retryWithActionCallback(async () => {
+            try{
+                CucumberReportLogger.AddMessage("Step started");
+                await caseListPage.waitForCaseResultsToDisplay();
+
+            }catch(err){
+                await caseListPage.clickSearchApplyBtn();
+                throw new Error(err);
+            }
+        });
+        
+
     });
 
     When('I open first case in case list page', async function () {

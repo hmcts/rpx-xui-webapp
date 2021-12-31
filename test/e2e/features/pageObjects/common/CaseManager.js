@@ -100,7 +100,7 @@ class CaseManager {
             let isCaseStartPageDisplayed = false;
             while (startCasePageRetry < 3 && !isCaseStartPageDisplayed) {
                 try {
-                    await this.app.waitForSpinnerToDissappear();
+                    await BrowserWaits.waitForSpinnerToDissappear();
                     await this.createCaseStartPage.clickStartButton();
                     await BrowserWaits.waitForPageNavigation(thisPageUrl);
                     isCaseStartPageDisplayed = true;
@@ -177,16 +177,15 @@ class CaseManager {
     }
 
     async AmOnCCDCaseEditPage() {
-        let retryCounter = 0;
         await BrowserWaits.retryWithActionCallback(async () => {
-
-            let retryCounter = 0;
-            if (retryCounter > 0){
+            try{
+                await BrowserWaits.waitForElement(this.ccdCaseEdit);
+                expect(await this.ccdCaseEdit.isPresent()).to.be.true;
+            }catch(err){
                 await this.createCaseStartPage.clickStartButton();
+                throw new Error(err);
             }
-            retryCounter++;
-
-            expect(await this.ccdCaseEdit.isPresent()).to.be.true;
+            
         });
     }    
 

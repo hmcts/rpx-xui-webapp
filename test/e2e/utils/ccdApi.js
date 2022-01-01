@@ -9,42 +9,58 @@ class CcdApi {
         this.password = 'Monday01';
     }
     async getCaseCreationpagesApiRes() {
-        await Request.withSession(this.userName, this.password);
-        let reqPath = `data/internal/case-types/xuiTestCaseType/event-triggers/createCase?ignore-warning=false`;
-        const response = await Request.get(reqPath, { experimental: true });
-        expect(response.status, `${reqPath} ccd api faild status code: ${response.status}`).to.eql(200);
-        return response.data;
+        
+        return await BrowserWaits.retryWithActionCallback(async () => {
+            await Request.withSession(this.userName, this.password);
+            let reqPath = `data/internal/case-types/xuiTestCaseType/event-triggers/createCase?ignore-warning=false`;
+            const response = await Request.get(reqPath, { experimental: true });
+            expect(response.status, `${reqPath} ccd api faild status code: ${response.status}`).to.eql(200);
+            return response.data;
+        });
+        
     }
     async getWorkbasketAPIRes(reqPath) {
-        await Request.withSession(this.userName, this.password);
-        const response = await Request.get(reqPath, { experimental: true });
-        expect(response.status, `${reqPath} ccd api faild status code: ${response.status}`).to.eql(200);
-        return response.data;
+        return await BrowserWaits.retryWithActionCallback(async () => {
+            await Request.withSession(this.userName, this.password);
+            const response = await Request.get(reqPath, { experimental: true });
+            expect(response.status, `${reqPath} ccd api faild status code: ${response.status}`).to.eql(200);
+            return response.data;
+        });
+        
     }
 
     async getSearchInputsAPIRes(reqPath) {
-        await Request.withSession(this.userName, this.password);
-        const response = await Request.get(reqPath, { experimental: true });
-        expect(response.status, `${reqPath} ccd api faild status code: ${response.status}`).to.eql(200);
-        return response.data;
+        return await BrowserWaits.retryWithActionCallback(async () => {
+            await Request.withSession(this.userName, this.password);
+            const response = await Request.get(reqPath, { experimental: true });
+            expect(response.status, `${reqPath} ccd api faild status code: ${response.status}`).to.eql(200);
+            return response.data;
+        });
+        
     }
 
     async getCasesApiReq(reqURL) {
-        await Request.withSession(this.userName, this.password);
-        let reqData = { size: 25 }
-        const response = await Request.post(reqURL, reqData, { experimental: true });
-        expect(response.status, `${reqURL} ccd api faild status code: ${response.status}`).to.eql(200);
-        return response.data;
+        return await BrowserWaits.retryWithActionCallback(async () => {
+            await Request.withSession(this.userName, this.password);
+            let reqData = { size: 25 }
+            const response = await Request.post(reqURL, reqData, { experimental: true });
+            expect(response.status, `${reqURL} ccd api faild status code: ${response.status}`).to.eql(200);
+            return response.data;
+        });
+        
     }
 
     async getCaseResultsResponse() {
-        let caseId = await this._getCaseId();
-        await Request.withSession(this.userName, this.password);
-        let reqPath = `data/internal/cases/${caseId}`;
-        console.log("search case URL ::"+reqPath);
-        const response = await Request.get(reqPath, { experimental: true });
-        expect(response.status, `${reqPath} ccd api faild status code: ${response.status}`).to.eql(200);
-        return response.data;
+        return await BrowserWaits.retryWithActionCallback(async () => {
+            let caseId = await this._getCaseId();
+            await Request.withSession(this.userName, this.password);
+            let reqPath = `data/internal/cases/${caseId}`;
+            console.log("search case URL ::" + reqPath);
+            const response = await Request.get(reqPath, { experimental: true });
+            expect(response.status, `${reqPath} ccd api faild status code: ${response.status}`).to.eql(200);
+            return response.data;
+        });
+       
     }
 
 

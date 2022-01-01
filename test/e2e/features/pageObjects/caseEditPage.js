@@ -283,6 +283,8 @@ class caseEditPage {
         let buttonEnable = await this.continueButton.isEnabled();
         expect(buttonEnable).to.eql(true);
 
+        await browser.executeScript('arguments[0].scrollIntoView()',
+            $('button[type=submit]').getWebElement()) 
         await this.continueButton.click();
         let e = $("#TextField");
         await e.sendKeys(protractor.Key.ENTER);

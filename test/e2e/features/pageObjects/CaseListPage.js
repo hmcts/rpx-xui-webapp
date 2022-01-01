@@ -99,9 +99,9 @@ class CaseListPage{
 
     async waitForCaseResultsToDisplay(){
         await BrowserWaits.waitForElement(this.searchResultsTopPagination);
-        CucumberReportLogger.AddMessage("starting wait for 2 sec for list to render  : " + new Date().toTimeString());
+        await CucumberReportLogger.AddMessage("starting wait for 2 sec for list to render  : " + new Date().toTimeString());
         await BrowserWaits.waitForSeconds(2);
-        CucumberReportLogger.AddMessage("wait complete : " + new Date().toTimeString());
+       await  CucumberReportLogger.AddMessage("wait complete : " + new Date().toTimeString());
 
     }
 
@@ -115,7 +115,7 @@ class CaseListPage{
 
     async clickFirstCaseLink(){
         let currentPageUrl = await browser.getCurrentUrl();
-        CucumberReportLogger.AddMessage(` Before navigation :   ${currentPageUrl}`);
+        await CucumberReportLogger.AddMessage(` Before navigation :   ${currentPageUrl}`);
 
         await BrowserWaits.waitForElement(this.ccdCaseSearchResult);
         let isNavigationSuccess = false;
@@ -127,10 +127,10 @@ class CaseListPage{
                 isNavigationSuccess = true;
             }catch(err){
                 retryAttemptsCounter++;
-                CucumberReportLogger.AddMessage(`Error openning first case from case list. Retrying attempt ${retryAttemptsCounter} :   ${err}`); 
+                await CucumberReportLogger.AddMessage(`Error openning first case from case list. Retrying attempt ${retryAttemptsCounter} :   ${err}`); 
             }
         } 
-        CucumberReportLogger.AddMessage(` After navigation :   ${await browser.getCurrentUrl()}`);
+        await CucumberReportLogger.AddMessage(` After navigation :   ${await browser.getCurrentUrl()}`);
 
     }
 

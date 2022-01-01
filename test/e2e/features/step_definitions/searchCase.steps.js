@@ -31,7 +31,15 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
     });
 
   Then(/^Search page should be displayed$/, async function () {
-    expect(await new SearchPage().amOnPage()).to.be.true;
+
+    await BrowserWaits.retryWithActionCallback(async () => {
+      try{
+        expect(await new SearchPage().amOnPage()).to.be.true;
+
+      }catch(err){
+        await headerPage.clickFindCase();
+      }
+    });
   });
 
   When(/^I enter mandatory fields jurisdiction,case type and click on apply button$/, async function () {
@@ -54,7 +62,14 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
   });
 
   When('I click apply to perform case search', async function () {
-    await searchPage.clickApplyButton();
+    await BrowserWaits.retryWithActionCallback(async () => {
+      try{
+        await searchPage.clickApplyButton();
+      }catch(err){
+        await BrowserWaits.waitForSeconds(5);
+        throw new Error(err);
+      }
+    }); 
   });
 
   When('I open first case in search results', async function () {
@@ -63,7 +78,6 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
   });
 
   Then('I see results returned', async function () {
-    let retryCounter =0;
     await BrowserWaits.retryWithActionCallback(async () => {
   
       try{

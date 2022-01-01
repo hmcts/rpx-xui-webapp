@@ -9,7 +9,9 @@ class BrowserLogs {
 
         this.ignoreItemsList = [
             "activity/cases",
-            "/api/monitoring-tools"
+            "/api/monitoring-tools",
+            "dc.services.visualstudio.com",
+            "ERROR ["
         ];
 
     }

@@ -19,26 +19,40 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     When('I select search criteria jurisdiction {string} case type {string} state {string} in case list page', 
     async function(jurisdiction,caseType,state){
-        await caseListPage.selectJurisdiction(jurisdiction);
-        await caseListPage.selectCaseType(caseType);
-        await caseListPage.selectState(state);
-    });
-
-    When('I select search criteria jurisdiction {string} case type {string} state {string} in case list page and click apply',
-        async function (jurisdiction, caseType, state) {
+        await BrowserWaits.retryWithActionCallback(async () => {
             try{
                 await caseListPage.selectJurisdiction(jurisdiction);
                 await caseListPage.selectCaseType(caseType);
                 await caseListPage.selectState(state);
-                await caseListPage.clickSearchApplyBtn();
             }catch(err){
+
                 await headerPage.clickManageCases();
                 await browserUtil.waitForLD();
                 await headerPage.clickCaseList();
                 throw new Error(err);
             }
-            
+        });
+        
+    });
 
+    When('I select search criteria jurisdiction {string} case type {string} state {string} in case list page and click apply',
+        async function (jurisdiction, caseType, state) {
+           
+            await BrowserWaits.retryWithActionCallback(async () => {
+                try {
+                    await caseListPage.selectJurisdiction(jurisdiction);
+                    await caseListPage.selectCaseType(caseType);
+                    await caseListPage.selectState(state);
+                    await caseListPage.clickSearchApplyBtn();
+                } catch (err) {
+                    await headerPage.clickManageCases();
+                    await browserUtil.waitForLD();
+                    await headerPage.clickCaseList();
+                    throw new Error(err);
+                }
+
+            });
+            
         });
 
     When('I click search Apply in case list page', async function(){
@@ -53,10 +67,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await BrowserWaits.waitForSpinnerToDissappear();
     });
 
-    Then('I wait to see case results displayed', {timeout : 120*1000} ,async function(){
+    Then('I wait to see case results displayed', {timeout : 180*1000} ,async function(){
         await BrowserWaits.retryWithActionCallback(async () => {
             try{
-                CucumberReportLogger.AddMessage("Step started");
+                await CucumberReportLogger.AddMessage("Step started");
                 await caseListPage.waitForCaseResultsToDisplay();
 
             }catch(err){

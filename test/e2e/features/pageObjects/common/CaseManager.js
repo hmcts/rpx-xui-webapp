@@ -182,6 +182,7 @@ class CaseManager {
                 await BrowserWaits.waitForElement(this.ccdCaseEdit);
                 expect(await this.ccdCaseEdit.isPresent()).to.be.true;
             }catch(err){
+
                 await this.createCaseStartPage.clickStartButton();
                 throw new Error(err);
             }
@@ -230,23 +231,24 @@ class CaseManager {
         cucumberReporter.AddMessage("Submitting page: " + thisPageUrl);
         console.log("Submitting : " + thisPageUrl )
 
-        let retryCounter = 0;
         await BrowserWaits.retryWithActionCallback(async () => {
-            if (retryCounter > 0){
-                let isValidationDisplayed = await caseEditPage.isValidationErrorDisplayed();
+
+            try{
+                await continieElement.click();
+                browser.waitForAngular();
+                await BrowserWaits.waitForPageNavigation(thisPageUrl);
+            }catch(err){
+                let isValidationDisplayed = await this.caseEditPage.isValidationErrorDisplayed();
                 cucumberReporter.AddJson(`******* Is Validation error message displayed : ${isValidationDisplayed}`);
-                if (isValidationDisplayed){
-                    cucumberReporter.AddJson(`******* Validation error message : ${await caseEditPage.getValidationErrorMessageDisplayed()}`);
+                if (isValidationDisplayed) {
+                    cucumberReporter.AddJson(`******* Validation error message : ${await this.caseEditPage.getValidationErrorMessageDisplayed()}`);
                 }
+
+                throw new Error(err);
             }
-            retryCounter++;
-            await continieElement.click();
-            browser.waitForAngular();
-            await BrowserWaits.waitForPageNavigation(thisPageUrl);
+          
+           
         });
-
-        var nextPageUrl = await browser.getCurrentUrl();
-
 
     }
     async excludeFieldValues(fieldName){

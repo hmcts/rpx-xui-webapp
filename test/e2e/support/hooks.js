@@ -108,9 +108,7 @@ defineSupportCode(({ Before,After }) => {
             await CucumberReportLog.AddScreenshot(global.screenShotUtils);
             if (scenario.result.status === 'failed') {
                 await BrowserLogs.printAllBrowserLogs();
-                if (global.scenarioData['featureToggles']){
-                    CucumberReportLog.AddJson(global.scenarioData['featureToggles'])
-                }
+               
             } 
             
             await CucumberReportLog.AddMessage("Cleared browser logs after successful scenario.");

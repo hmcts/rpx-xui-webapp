@@ -90,13 +90,6 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     this.role = this.route.snapshot.queryParamMap.get('role') as RoleCategory;
     this.domain = this.setDomain(this.role);
     this.rootPath = this.router.url.split('/')[1];
-    this.route.paramMap
-      .pipe(map(() => window.history.state)).subscribe(person => {
-      if (person.name) {
-        this.defaultPerson = `${person.name}(${person.email})`;
-        this.person = person;
-      }
-    });
   }
 
   public isCurrentUserJudicial(): boolean {
@@ -123,7 +116,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
       // Pass the returnUrl in the `state` parameter, so it can be used for navigation by the Task Assignment Confirm
       // component
       this.router.navigate([this.rootPath, this.taskId, this.verb.toLowerCase(), 'confirm'],
-        {state: {...this.person, returnUrl: this.returnUrl}});
+        {state: { selectedPerson: this.person, returnUrl: this.returnUrl, roleCategory: this.role}});
     } else {
       this.formGroup.setErrors({
         invalid: true

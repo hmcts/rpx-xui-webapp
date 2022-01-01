@@ -85,7 +85,10 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
   }
 
   private setUpDefaultRoleType(isCurrentUserJudicial: boolean, roles: TaskRole[]): RoleCategory {
-    if (roles.length) {
+    const roleCategory = this.route.snapshot.queryParamMap.get('roleCategory');
+    if (roleCategory && (roleCategory as RoleCategory) !== null) {
+      return roleCategory as RoleCategory;
+    } else if (roles.length) {
       const role = this.userWithOwnPermission(roles);
       if (role) {
         return role.role_category === 'judicial' ? RoleCategory.JUDICIAL : RoleCategory.LEGAL_OPERATIONS;

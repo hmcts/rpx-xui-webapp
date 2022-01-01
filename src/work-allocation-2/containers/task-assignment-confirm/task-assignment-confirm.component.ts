@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
 import { Person } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
-import { map } from 'rxjs/operators';
+import { RoleCategory } from '../../../role-access/models';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -27,6 +27,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
   public selectedPerson: Person;
   public assignHintText: string;
   public isUserJudicial: boolean;
+  public roleCategory: RoleCategory
 
   constructor(
     private readonly taskService: WorkAllocationTaskService,
@@ -34,6 +35,11 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     private readonly router: Router,
     private readonly messageService: InfoMessageCommService,
     private readonly sessionStorageService: SessionStorageService) {
+      const state = this.router.getCurrentNavigation().extras.state;
+      if (state) {
+        this.selectedPerson = state.selectedPerson;
+        this.roleCategory = state.roleCategory;
+      }
   }
 
   private get returnUrl(): string {
@@ -58,15 +64,11 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     this.taskId = this.route.snapshot.params['taskId'];
     this.rootPath = this.router.url.split('/')[1];
     this.task = this.route.snapshot.data.taskAndCaseworkers.task.task;
-    this.route.paramMap
-      .pipe(map(() => window.history.state)).subscribe(person => {
-      this.selectedPerson = person;
-    });
     this.assignHintText = this.verb === 'Assign' ? AssignHintText.CHECK_ASSIGNING : AssignHintText.CHECK_REASSIGNING;
   }
 
   public onChange(): void {
-    this.router.navigate([this.rootPath, this.taskId, this.verb.toLowerCase()], { state: this.selectedPerson });
+    this.router.navigate([this.rootPath, this.taskId, this.verb.toLowerCase()], { state: this.selectedPerson, queryParams: { roleCategory: this.roleCategory } });
   }
 
   public onSubmit(): void {

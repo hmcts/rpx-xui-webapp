@@ -35,10 +35,10 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     private readonly router: Router,
     private readonly messageService: InfoMessageCommService,
     private readonly sessionStorageService: SessionStorageService) {
-      const state = this.router.getCurrentNavigation().extras.state;
-      if (state) {
-        this.selectedPerson = state.selectedPerson;
-        this.roleCategory = state.roleCategory;
+      const navigation = this.router.getCurrentNavigation();
+      if (navigation && navigation.extras && navigation.extras.state) {
+          this.selectedPerson = navigation.extras.state.selectedPerson;
+          this.roleCategory = navigation.extras.state.roleCategory;
       }
   }
 
@@ -58,17 +58,29 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      this.isUserJudicial = AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
+      if (userInfo) {
+        this.isUserJudicial = AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
+      }
     }
     this.verb = this.route.snapshot.data.verb as TaskActionType;
     this.taskId = this.route.snapshot.params['taskId'];
-    this.rootPath = this.router.url.split('/')[1];
+    if (this.router && this.router.url) {
+      this.rootPath = this.router.url.split('/')[1];
+    }
     this.task = this.route.snapshot.data.taskAndCaseworkers.task.task;
     this.assignHintText = this.verb === 'Assign' ? AssignHintText.CHECK_ASSIGNING : AssignHintText.CHECK_REASSIGNING;
   }
 
   public onChange(): void {
-    this.router.navigate([this.rootPath, this.taskId, this.verb.toLowerCase()], { state: this.selectedPerson, queryParams: { roleCategory: this.roleCategory } });
+    this.router.navigate(
+      [this.rootPath, this.taskId, this.verb.toLowerCase()],
+      {
+        state: this.selectedPerson,
+        queryParams: {
+          roleCategory: this.roleCategory
+        }
+      }
+    );
   }
 
   public onSubmit(): void {

@@ -80,14 +80,9 @@ class CaseManager {
                 }
                 catch (error) {
                     await BrowserLogs.printBrowserLogs();
-                    cucumberReporter.AddMessage("Jurisdiction option not found after 30sec. Retrying again");
+                    cucumberReporter.AddMessage("Jurisdiction option not found after 30sec. Retrying again with browser refresh");
                     retryOnJurisdiction++;
-                    await this.manageCasesHeaderLink.click();
-                    await BrowserUtil.waitForLD();
-                    await this._waitForSearchComponent();
-                    await await BrowserWaits.waitForElement(this.caseListContainer);
-                    await this.caseCreateheaderLink.click();
-                    await this.createCaseStartPage.amOnPage();
+                    await browser.refresh()
                 }
             }
 

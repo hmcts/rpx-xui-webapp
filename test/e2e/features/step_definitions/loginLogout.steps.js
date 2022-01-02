@@ -82,7 +82,9 @@ defineSupportCode(function ({ Given, When, Then }) {
         console.log(err);
           await browser.driver.manage()
             .deleteAllCookies();
-          await browser.get(config.config.baseUrl);
+          const baseUrl = process.env.TEST_URL || 'http://localhost:3000/'
+
+          await browser.get(baseUrl);
           await BrowserWaits.waitForElement(loginPage.emailAddress);
           await loginPage.loginWithCredentials(username, password);
           loginAttemptRetryCounter++;
@@ -340,7 +342,8 @@ defineSupportCode(function ({ Given, When, Then }) {
   Given(/^I navigate to Expert UI Url direct link$/, async function () {
     await browser.driver.manage()
       .deleteAllCookies();
-    await browser.get(config.config.baseUrl + '/cases/case-filter');
+    const baseUrl = process.env.TEST_URL || 'http://localhost:3000/'
+    await browser.get(baseUrl + '/cases/case-filter');
   });
 
   Then(/^I should be redirected back to Login page after direct link$/, async function () {

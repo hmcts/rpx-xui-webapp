@@ -39,7 +39,7 @@ class SearchPage {
 
   async _waitForSearchComponent() {
     await BrowserWaits.retryWithActionCallback(async () => {
-      await BrowserWaits.waitForElement(this.searchFilterContainer);
+      await BrowserWaits.waitForElement(this.searchFilterContainer,"search page filters display",10);
     }, "Wait for search page, search input form to display");
     await BrowserWaits.waitForSpinnerToDissappear();
 

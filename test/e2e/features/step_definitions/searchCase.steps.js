@@ -9,6 +9,8 @@ const CucumberReporter = require("../../support/reportLogger");
 const BrowserWaits = require('../../support/customWaits');
 const browserUtil = require('../../../ngIntegration/util/browserUtil');
 var {defineSupportCode} = require('cucumber');
+const { browser } = require('protractor');
+const config = require('../../utils/config/config.js');
 defineSupportCode(function ({And, But, Given, Then, When}) {
   let searchPage= new SearchPage();
 
@@ -52,8 +54,20 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
   });
 
   When('I enter search fields jurisdiction {string} case type {string}', async function (jurisdiction,caseType) {
-    await searchPage.selectJurisdiction(jurisdiction);
-    await searchPage.selectCaseType(caseType);
+    await BrowserWaits.retryWithActionCallback(async () => {
+      try{
+        await searchPage.selectJurisdiction(jurisdiction);
+        await searchPage.selectCaseType(caseType);
+      }catch(err){
+        await CucumberReporter.AddScreenshot(global.screenShotUtils);
+        await CucumberReporter.AddMessage("Retrying with page refresh");
+        const baseUrl = process.env.TEST_URL || 'http://localhost:3000/'
+        await browser.get(baseUrl +'cases/case-search');
+        throw new Error(err);
+      }
+      
+    });
+   
   });
 
   When('I reset case search fields', async function(){

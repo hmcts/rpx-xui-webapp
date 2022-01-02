@@ -75,10 +75,11 @@ export async function getUserId(username, password) {
 
 async function  authenticateAndGetcookies(username, password)  {
 
-    const browser = await puppeteer.launch(getPuppeteerLaunchOptions());
+    let browser = null;
     let page =null;
 
     try{
+        browser = await puppeteer.launch(getPuppeteerLaunchOptions());
         page = await browser.newPage();
         await page.goto(config.baseUrl);
 

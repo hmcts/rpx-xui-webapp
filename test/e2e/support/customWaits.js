@@ -95,6 +95,7 @@ class BrowserWaits{
 
             return currentPageUrl !== nextPage;
         }, this.waitTime, "Navigation to next page taking too long " + this.waitTime + ". Current page " + currentPageUrl + ". Errors => " + pageErrors);
+        return await browser.getCurrentUrl();
     }
 
     async waitForBrowserReadyState(waitInSec) {

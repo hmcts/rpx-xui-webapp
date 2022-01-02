@@ -9,7 +9,7 @@ const BrowserUtil = require('../../../../ngIntegration/util/browserUtil');
 const App = require('./application');
 const BrowserLogs = require('../../../support/browserLogs');
 const { accessibilityCheckerAuditor } = require('../../../../accessibility/helpers/accessibilityAuditor');
-
+const config = require('../../../config/functional.conf');
 class CaseManager {
 
     constructor() {
@@ -97,7 +97,13 @@ class CaseManager {
                 try {
                     await BrowserWaits.waitForSpinnerToDissappear();
                     await this.createCaseStartPage.clickStartButton();
-                    await BrowserWaits.waitForPageNavigation(thisPageUrl);
+                    const nextPageUrl = await BrowserWaits.waitForPageNavigation(thisPageUrl);
+                    if (nextPageUrl.includes("service-down") ){
+                        await browser.get(config.config.baseUrl +"cases/case-filter")
+                        await cucumberReporter.AddScreenshot(global.screenShotUtils);
+                        cucumberReporter.AddMessage("Service error occured Retrying again ");
+                        throw new Error("Service error occured Retrying again ");
+                    }
                     isCaseStartPageDisplayed = true;
                 }
                 catch (err) {

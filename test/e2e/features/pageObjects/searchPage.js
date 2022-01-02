@@ -8,9 +8,9 @@ class SearchPage {
   constructor(){
     this.header = '#content h1';
     this.jurisdiction = $('#s-jurisdiction');
-    this.searchFilterContainer= $("ccd-search-filters form");
+    this.searchFilterContainer = $("ccd-search-filters form,ccd-workbasket-filters form");
     this.caseType = $('#s-case-type');
-    this.applyButton = $('ccd-search-filters button:not(.button-secondary)');
+    this.applyButton = $('ccd-search-filters button:not(.button-secondary),ccd-workbasket-filters button:not(.button-secondary)');
     this.resetButton = $('#reset');
     this.caseReference='#\\[CASE_REFERENCE\\]';
     this.sccaseNumber='#caseReference';

@@ -310,10 +310,14 @@ class caseEditPage {
         await BrowserWaits.waitForElementClickable(continieElement);
         var thisPageUrl = await browser.getCurrentUrl();
         console.log("Submitting : " + thisPageUrl);
-        await continieElement.click();
-        await BrowserWaits.waitForPageNavigation(thisPageUrl);
-        let page3 = await element(by.css("ccd-case-edit-page h1"));
-        expect(await page3.getText()).to.contains("Page 3");
+
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await continieElement.click();
+            await BrowserWaits.waitForPageNavigation(thisPageUrl);
+            let page3 = await element(by.css("ccd-case-edit-page h1"));
+            expect(await page3.getText()).to.contains("Page 3");
+        });
+        
     }
 
     async _getKeyVal(field) {

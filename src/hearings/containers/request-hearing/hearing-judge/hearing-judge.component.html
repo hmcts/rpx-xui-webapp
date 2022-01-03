@@ -48,11 +48,8 @@
       </div>
       <div class="govuk-form-group" id="excluejudge">
         <div class="govuk-form-group">
-          <label class="govuk-label govuk-!-font-weight-bold" for="exclude-judgename">Exclude a judge (optional)</label>
-          <div>
-            <input class="govuk-input govuk-!-width-one-third" name="input-autocomplete" type="text" placeholder="'e.g. John Smith'">
-            <div class="govuk-button govuk-button--secondary govuk-!-margin-left-2" data-module="govuk-button" id="exludeanotherjudge">Exclude judge</div>
-          </div>
+          <exui-hearing-judge-names-list [subTitle]="'Exclude a judge (optional)'" [domain]="'Judicial'" [judgeList]= "judgeList"
+            [placeholderContent]="'e.g. John Smith'"></exui-hearing-judge-names-list>
         </div>
       </div>
     </form>

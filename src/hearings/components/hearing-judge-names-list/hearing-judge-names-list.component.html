@@ -1,0 +1,17 @@
+<div class="exclude-person">
+  <div class="person-input">
+    <xuilib-find-person #personControl title="" boldTitle="" [subTitle]="subTitle" showAutocomplete="true"
+      (personSelected)="updatePersonControls($event)" [findPersonGroup]="personFormGroup" [domain]="domain"
+      [placeholderContent]="placeholderContent" [selectedPerson]="displayedJudgeName(selectedJudge)" [isNoResultsShown]="true"
+      [showUpdatedColor]="true" [selectedPersons]="judgeList">
+    </xuilib-find-person>
+  </div>
+  <div class="person-button">
+    <div class="govuk-button govuk-button--secondary" data-module="govuk-button" (click)="excludeJudge();">Exclude judge</div>
+  </div>
+</div>
+<ul class="hmcts-filter-tags selection-container">
+  <li class="location-selection" *ngFor="let judge of judgeList">
+    <a class="hmcts-filter__tag" (click)="removeSelectedJudge(judge)" href="javascript:void(0)"> {{displayedJudgeName(judge)}} </a>
+  </li>
+</ul>

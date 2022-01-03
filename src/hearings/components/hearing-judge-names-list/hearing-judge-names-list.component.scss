@@ -1,0 +1,26 @@
+:host ::ng-deep .govuk-form-group {
+  .govuk-hint {
+    font-weight: bold;
+    color: #0b0c0c;
+    margin-bottom: 15px;
+  }
+  .govuk-input {
+    width: 98% !important;
+  }
+}
+
+.exclude-person {
+  display: flex;
+  margin-bottom: 30px;
+  .person-input {
+    flex-grow: 3;
+  }
+  .person-button {
+    display: flex;
+    align-items: flex-end;
+    flex-grow: 2;
+    .govuk-button{
+      margin-bottom: 3px;
+    }
+  }
+}

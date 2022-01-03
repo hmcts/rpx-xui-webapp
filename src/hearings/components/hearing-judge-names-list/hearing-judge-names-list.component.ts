@@ -13,7 +13,7 @@ export class HearingJudgeNamesListComponent {
   @Input() public placeholderContent: string;
   @Input() public judgeList: Person[];
   @ViewChild('personControl') public personControl;
-  private selectedJudge: Person;
+  public selectedJudge: Person;
   public personFormGroup: FormGroup;
 
   constructor(private readonly formBuilder: FormBuilder) {

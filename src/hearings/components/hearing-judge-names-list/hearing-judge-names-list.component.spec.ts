@@ -37,7 +37,7 @@ describe('HearingJudgeNamesListComponent', () => {
 
   it('should update person controls of selectedJudge', () => {
     component.updatePersonControls(judgeDetails);
-    expect((component as any).selectedJudge).toBe(judgeDetails);
+    expect(component.selectedJudge).toBe(judgeDetails);
   });
 
   it('should check displayed Judge Name', () => {

@@ -9,91 +9,97 @@ class CcdApi {
         this.password = 'Monday01';
     }
     async getCaseCreationpagesApiRes() {
-        let i = 0; 
-        return await BrowserWaits.retryWithActionCallback(async (i) => {
-            if(i > 0){
-                CucumberReportLogger.AddMessage(`[ RETRY ] API error occured, waiting for ${i*10} sec  before retrying`);
-                await BrowserWaits.waitForSeconds(i * 10);
-            }
-            i++;
-            await Request.withSession(this.userName, this.password);
-            let reqPath = `data/internal/case-types/xuiTestCaseType/event-triggers/createCase?ignore-warning=false`;
-            const response = await Request.get(reqPath, { experimental: true });
-            expect(response.status, `${reqPath} ccd api faild status code: ${response.status}`).to.eql(200);
-            return response.data;
-        });
+        try{
+            return await BrowserWaits.retryWithActionCallback(async () => {
+
+                await Request.withSession(this.userName, this.password);
+                let reqPath = `data/internal/case-types/xuiTestCaseType/event-triggers/createCase?ignore-warning=false`;
+                const response = await Request.get(reqPath, { experimental: true });
+                expect(response.status, `${reqPath} ccd api faild status code: ${response.status}`).to.eql(200);
+                return response.data;
+            });
+        }catch(err){
+            CucumberReportLogger.AddMessage("Error occured, will attempt again in 5sec "+err);
+            await BrowserWaits.waitForSeconds(5); 
+            throw new Error(err);
+        }
+       
         
     }
     async getWorkbasketAPIRes(reqPath) {
-        let i = 0; 
+        try {
+            return await BrowserWaits.retryWithActionCallback(async () => {
 
-        return await BrowserWaits.retryWithActionCallback(async (i) => {
-            if (i > 0) {
-                CucumberReportLogger.AddMessage(`[ RETRY ] API error occured, waiting for ${i * 10} sec  before retrying`);
-                await BrowserWaits.waitForSeconds(i * 10);
-            }
-            i++;
-            await Request.withSession(this.userName, this.password);
-            const response = await Request.get(reqPath, { experimental: true });
-            expect(response.status, `${reqPath} ccd api faild status code: ${response.status}`).to.eql(200);
-            return response.data;
-        });
+                await Request.withSession(this.userName, this.password);
+                const response = await Request.get(reqPath, { experimental: true });
+                expect(response.status, `${reqPath} ccd api faild status code: ${response.status}`).to.eql(200);
+                return response.data;
+            });
+        } catch (err) {
+            CucumberReportLogger.AddMessage("Error occured, will attempt again in 5sec " + err);
+            await BrowserWaits.waitForSeconds(5);
+            throw new Error(err);
+        }
+       
         
     }
 
     async getSearchInputsAPIRes(reqPath) {
-        let i = 0; 
+        try {
+            return await BrowserWaits.retryWithActionCallback(async () => {
 
-        return await BrowserWaits.retryWithActionCallback(async (i) => {
-            if (i > 0) {
-                CucumberReportLogger.AddMessage(`[ RETRY ] API error occured, waiting for ${i * 10} sec  before retrying`);
-                await BrowserWaits.waitForSeconds(i * 10);
-            }
-            i++;
-            await Request.withSession(this.userName, this.password);
-            const response = await Request.get(reqPath, { experimental: true });
-            expect(response.status, `${reqPath} ccd api faild status code: ${response.status}`).to.eql(200);
-            return response.data;
-        });
+                await Request.withSession(this.userName, this.password);
+                const response = await Request.get(reqPath, { experimental: true });
+                expect(response.status, `${reqPath} ccd api faild status code: ${response.status}`).to.eql(200);
+                return response.data;
+            });
+        } catch (err) {
+            CucumberReportLogger.AddMessage("Error occured, will attempt again in 5sec " + err);
+            await BrowserWaits.waitForSeconds(5);
+            throw new Error(err);
+        }
+       
         
     }
 
     async getCasesApiReq(reqURL) {
-        let i = 0; 
+        try {
+            return await BrowserWaits.retryWithActionCallback(async () => {
 
-        return await BrowserWaits.retryWithActionCallback(async (i) => {
-            if (i > 0) {
-                CucumberReportLogger.AddMessage(`[ RETRY ] API error occured, waiting for ${i * 10} sec  before retrying`);
-                await BrowserWaits.waitForSeconds(i * 10);
-            }
-            i++;
-            await Request.withSession(this.userName, this.password);
-            let reqData = { size: 25 }
-            const response = await Request.post(reqURL, reqData, { experimental: true });
-            expect(response.status, `${reqURL} ccd api faild status code: ${response.status}`).to.eql(200);
-            return response.data;
-        });
+                await Request.withSession(this.userName, this.password);
+                let reqData = { size: 25 }
+                const response = await Request.post(reqURL, reqData, { experimental: true });
+                expect(response.status, `${reqURL} ccd api faild status code: ${response.status}`).to.eql(200);
+                return response.data;
+            });
+        } catch (err) {
+            CucumberReportLogger.AddMessage("Error occured, will attempt again in 5sec " + err);
+            await BrowserWaits.waitForSeconds(5);
+            throw new Error(err);
+        }
+       
         
     }
 
     async getCaseResultsResponse() {
-        let i = 0; 
+        try {
+            return await BrowserWaits.retryWithActionCallback(async () => {
 
-        return await BrowserWaits.retryWithActionCallback(async (i) => {
-            if (i > 0) {
-                CucumberReportLogger.AddMessage(`[ RETRY ] API error occured, waiting for ${i * 10} sec  before retrying`);
-                await BrowserWaits.waitForSeconds(i * 10);
-            }
-            i++;
-            let caseId = await this._getCaseId();
-            await Request.withSession(this.userName, this.password);
-            let reqPath = `data/internal/cases/${caseId}`;
-            console.log("search case URL ::" + reqPath);
-            const response = await Request.get(reqPath, { experimental: true });
-            expect(response.status, `${reqPath} ccd api faild status code: ${response.status}`).to.eql(200);
-            return response.data;
-        });
-       
+                let caseId = await this._getCaseId();
+                await Request.withSession(this.userName, this.password);
+                let reqPath = `data/internal/cases/${caseId}`;
+                console.log("search case URL ::" + reqPath);
+                const response = await Request.get(reqPath, { experimental: true });
+                expect(response.status, `${reqPath} ccd api faild status code: ${response.status}`).to.eql(200);
+                return response.data;
+            });
+
+        } catch (err) {
+            CucumberReportLogger.AddMessage("Error occured, will attempt again in 5sec " + err);
+            await BrowserWaits.waitForSeconds(5);
+            throw new Error(err);
+        }
+        
     }
 
 

@@ -136,8 +136,8 @@ class BrowserWaits{
         let isSuccess = false;
         let error = null;
         while (retryCounter <= this.retriesCount) {
-           
-            await this.waitForSeconds(retryCounter);
+            CucumberReporter.AddMessage(`Sleeping for ${retryCounter * 5}sec before performing action.`);  
+            await this.waitForSeconds(retryCounter*5);
             try {
                 const retVal = await callback();
                 isSuccess = true;

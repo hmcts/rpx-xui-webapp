@@ -61,7 +61,16 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
       }catch(err){
         await CucumberReporter.AddScreenshot(global.screenShotUtils);
         await CucumberReporter.AddMessage("Retrying with page refresh");
-        await  headerPage.clickFindCase();
+        const currentUrl = await browser.getCurrentUrl();
+        if (currentUrl.includes("service-down")){
+          await CucumberReporter.AddMessage("Service error occured, clicking find case again");
+          await headerPage.clickFindCase();
+
+        }else{
+          await CucumberReporter.AddMessage("Refreshing page");
+          await browser.refresh();
+
+        }
         throw new Error(err);
       }
       

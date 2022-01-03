@@ -6,12 +6,13 @@ class BrowserLogs {
     constructor() {
         this.networklogs = []
         this.browserlogs = [];
+        this.javascriptErrors = []
 
         this.ignoreItemsList = [
             "activity/cases",
             "/api/monitoring-tools",
-            "dc.services.visualstudio.com",
-            "ERROR ["
+            "dc.services.visualstudio.com"
+            
         ];
 
     }
@@ -19,6 +20,7 @@ class BrowserLogs {
     clearLogs() {
         this.networklogs = [];
         this.browserlogs = [];
+        this.javascriptErrors = []
 
     }
 
@@ -37,10 +39,13 @@ class BrowserLogs {
                 for (const ignoreItem of this.ignoreItemsList) {
                     if (browserLog[browserLogCounter]['message'].includes(ignoreItem)) {
                         ignore = true;
-                        break;
-                    }
+                        break; 
+                    } 
                 }
-                if (!ignore) {
+                
+                if (browserLog[browserLogCounter]['message'].includes("ERROR [")) {
+                    this.javascriptErrors.push(`${browserLog[browserLogCounter]['time']} : [${browserLog[browserLogCounter]['level']}] ${browserLog[browserLogCounter]['message']} `);
+                }else if (!ignore) {
                     browserErrorLogs.push(`${browserLog[browserLogCounter]['time']} : [${browserLog[browserLogCounter]['level']}] ${browserLog[browserLogCounter]['message']} `);
                 }
             }
@@ -60,7 +65,14 @@ class BrowserLogs {
     async printAllBrowserLogs() {
         const browserErrorLogs = await this.getBrowserLogs();
         this.browserlogs.push(...browserErrorLogs)
+
+        cucumberReporter.AddMessage("************* Netwrok errors *****************");
         for (const log of this.browserlogs) {
+            cucumberReporter.AddMessage(log);
+        }
+
+        cucumberReporter.AddMessage("************* Javascript errors *****************");
+        for (const log of this.javascriptErrors) {
             cucumberReporter.AddMessage(log);
         }
         return this.browserlogs;

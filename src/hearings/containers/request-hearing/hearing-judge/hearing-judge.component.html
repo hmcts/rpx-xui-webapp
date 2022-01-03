@@ -1,3 +1,61 @@
-<p>
-  hearing-judge works!
-</p>
+<xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem'"></xuilib-hmcts-error-summary>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <exui-hearing-parties-title></exui-hearing-parties-title>
+    <h1 class="govuk-heading-l">Do you want a specific judge?</h1>
+    <form class="form" [formGroup]="hearingJudgeForm">
+      <div class="govuk-form-group govuk-!-margin-top-5">
+        <fieldset class="govuk-fieldset">
+          <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="specificJudgeName" name="specificJudge" (change)="showSpecificJudge('Yes');"
+                formControlName="specificJudge" type="radio" value="Yes" data-aria-controls="conditional-judge">
+              <label class="govuk-label govuk-radios__label" for="specificJudgeName">Yes</label>
+            </div>
+            <div class="govuk-radios__conditional" [ngClass]="{'govuk-radios__conditional--hidden': specificJudgeSelection !=='Yes'}">
+              <div class="govuk-form-group govuk-!-width-one-half">
+                <exui-hearing-judge-name [subTitle]="'Name of the judge'" [domain]="'Judicial'" [personControl]="hearingJudgeForm.controls.findPersonControl"
+                  [placeholderContent]="'e.g. John Smith'"></exui-hearing-judge-name>
+              </div>
+            </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="noSpecificJudge" name="specificJudge" (change)="showSpecificJudge('No');"
+                formControlName="specificJudge" type="radio" value="No" data-aria-controls="conditional-judge-type">
+              <label class="govuk-label govuk-radios__label" for="specificJudge">No</label>
+            </div>
+            <div class="govuk-radios__conditional" [ngClass]="{'govuk-radios__conditional--hidden': specificJudgeSelection !=='No'}">
+              <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                    <h1 class="govuk-fieldset__heading">Select all judge types that apply</h1>
+                  </legend>
+                  <div class="govuk-form-group" id="facilitiesList">
+                    <fieldset class="govuk-fieldset">
+                      <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                        <div class="govuk-checkboxes__item" *ngFor="let judgeType of hearingJudgeTypes">
+                          <input class="govuk-checkboxes__input" id="{{judgeType.key}}" name="judgecontract" type="checkbox" [value]="judgeType.value_en">
+                          <label class="govuk-label govuk-checkboxes__label" for="{{judgeType.key}}" >{{judgeType.value_en}}</label>
+                        </div>
+                      </div>
+                    </fieldset>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      <div class="govuk-form-group" id="excluejudge">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-!-font-weight-bold" for="exclude-judgename">Exclude a judge (optional)</label>
+          <div>
+            <input class="govuk-input govuk-!-width-one-third" name="input-autocomplete" type="text" placeholder="'e.g. John Smith'">
+            <div class="govuk-button govuk-button--secondary govuk-!-margin-left-2" data-module="govuk-button" id="exludeanotherjudge">Exclude judge</div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+

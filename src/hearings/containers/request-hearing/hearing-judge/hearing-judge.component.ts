@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { PersonRole } from '@hmcts/rpx-xui-common-lib/lib/models';
 import { Store } from '@ngrx/store';
+import { Person } from '../../../../hearings/models/person.model';
 import { RefDataModel } from '../../../../hearings/models/refData.model';
 import { ACTION, RadioOptions } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
@@ -16,6 +17,7 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 export class HearingJudgeComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
   public hearingJudgeForm: FormGroup;
   public specificJudgeSelection: string;
+  public judgeList: Person[] = [];
   public hearingJudgeTypes: RefDataModel[];
   public validationErrors: { id: string, message: string }[] = [];
   public personRole: PersonRole;

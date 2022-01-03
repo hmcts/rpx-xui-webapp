@@ -1,10 +1,12 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { PersonRole } from '@hmcts/rpx-xui-common-lib/lib/models';
 import { Store } from '@ngrx/store';
+import { HearingJudgeNamesListComponent } from '../../../../hearings/components';
 import { Person } from '../../../../hearings/models/person.model';
 import { RefDataModel } from '../../../../hearings/models/refData.model';
+import { ValidatorsUtils } from '../../../../hearings/utils/validators.utils';
 import { ACTION, RadioOptions } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
@@ -21,6 +23,7 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
   public hearingJudgeTypes: RefDataModel[];
   public validationErrors: { id: string, message: string }[] = [];
   public personRole: PersonRole;
+  @ViewChild('excludedJudge') public excludedJudge: HearingJudgeNamesListComponent;
 
   constructor(private readonly route: ActivatedRoute,
               private readonly formBuilder: FormBuilder,
@@ -64,14 +67,26 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
   }
 
   public executeAction(action: ACTION): void {
-    if (this.isFormValid()) {
+    if (action === ACTION.CONTINUE) {
+      this.checkFormData();
+      if (this.isFormValid()) {
+        super.navigateAction(action);
+      }
+    } else if (action === ACTION.BACK) {
       super.navigateAction(action);
+    }
+  }
+
+  public checkFormData() {
+    this.validationErrors = [];
+    if (!this.excludedJudge.isExcludeJudgeInputValid()) {
+      this.validationErrors.push(this.excludedJudge.validationError);
     }
   }
 
   public isFormValid(): boolean {
     // TODO verify if form group is valid
-    return true;
+    return this.excludedJudge.isExcludeJudgeInputValid();
   }
 
   public ngOnDestroy(): void {

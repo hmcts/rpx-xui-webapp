@@ -42,6 +42,12 @@ describe('ValidatorsUtils', () => {
     expect(form.hasError('isValid')).toBeFalsy();
   }));
 
+  it('should check errorValidator', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
+    const form = new FormControl();
+    form.setValidators(service.errorValidator('message'));
+    expect(form.hasError('error')).toBeFalsy();
+  }));
+
   it('should check hearingDateValidator', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
     const form = new FormGroup({
       day: new FormControl(),

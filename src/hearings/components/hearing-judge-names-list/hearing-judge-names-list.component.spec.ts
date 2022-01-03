@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Person } from '../../../hearings/models/person.model';
 import { HearingJudgeNamesListComponent } from './hearing-judge-names-list.component';
 
@@ -55,5 +55,29 @@ describe('HearingJudgeNamesListComponent', () => {
     component.judgeList = [judgeDetails];
     component.removeSelectedJudge(judgeDetails);
     expect(component.judgeList.length).toBe(0);
+  });
+
+  it('should check exclude judge', () => {
+    component.selectedJudge = judgeDetails;
+    component.judgeList = [];
+    component.personControl = {};
+    component.personControl.findPersonControl = new FormControl();
+    component.personControl.isPersonSelectionCompleted = true;
+    component.excludeJudge();
+    expect(component.judgeList.length).toBe(1);
+    component.removeSelectedJudge(judgeDetails);
+    expect(component.judgeList.length).toBe(0);
+  });
+
+  it('should check exclude judge is valid input or not', () => {
+    component.selectedJudge = judgeDetails;
+    component.judgeList = [];
+    component.personControl = {};
+    component.personControl.findPersonControl = new FormControl();
+    component.personControl.findPersonGroup = new FormGroup({});
+    component.personControl.findPersonControl.value = 'jam';
+    expect(component.isExcludeJudgeInputValid()).toBe(false);
+    component.personControl.findPersonControl.value = '';
+    expect(component.isExcludeJudgeInputValid()).toBe(true);
   });
 });

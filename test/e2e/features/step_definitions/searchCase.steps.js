@@ -61,8 +61,7 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
       }catch(err){
         await CucumberReporter.AddScreenshot(global.screenShotUtils);
         await CucumberReporter.AddMessage("Retrying with page refresh");
-        const baseUrl = process.env.TEST_URL ? process.env.TEST_URL : 'http://localhost:3000/'
-        await browser.get(baseUrl +'cases/case-search');
+        await  headerPage.clickFindCase();
         throw new Error(err);
       }
       

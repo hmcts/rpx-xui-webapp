@@ -58,5 +58,11 @@ export class ValidatorsUtils {
         ? null : { isValid: false };
     };
   }
+
+  public errorValidator(message: string): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      return { error: message };
+    };
+  }
 }
 

@@ -3,7 +3,7 @@
     <xuilib-find-person #personControl title="" boldTitle="" [subTitle]="subTitle" showAutocomplete="true"
       (personSelected)="updatePersonControls($event)" [findPersonGroup]="personFormGroup" [domain]="domain"
       [placeholderContent]="placeholderContent" [selectedPerson]="displayedJudgeName(selectedJudge)" [isNoResultsShown]="true"
-      [showUpdatedColor]="true" [selectedPersons]="judgeList">
+      [showUpdatedColor]="true" [idValue]="'Exclude'" [selectedPersons]="judgeList">
     </xuilib-find-person>
   </div>
   <div class="person-button">

@@ -383,17 +383,23 @@ class CaseManager {
                 break;
 
             case "ccd-write-document-field":
-                var fileToUpload = path.resolve(__dirname, "../../../documents/dummy.pdf");
-                await ccdField.$('input.form-control').sendKeys(fileToUpload);
+                await BrowserWaits.retryWithActionCallback(async () => {
+                    var fileToUpload = path.resolve(__dirname, "../../../documents/dummy.pdf");
+                    await ccdField.$('input.form-control').sendKeys(fileToUpload);
 
-                await BrowserWaits.waitForCondition(async () => {
-                    let isUploadDone = await ccdField.element(by.xpath('span[contains(text(),"Uploading")]')).isPresent();
-                    console.log("file upload status : " + isUploadDone);
-                    return !isUploadDone;
+                    await BrowserWaits.waitForCondition(async () => {
+                        let isUploadDone = await ccdField.element(by.xpath('span[contains(text(),"Uploading")]')).isPresent();
+                        console.log("file upload status : " + isUploadDone);
+                        return !isUploadDone;
+                    });
+                    let uploadError = await ccdField.element(by.xpath('span[contains(text(),"error")]')).isPresent();
+                    if (uploadError) {
+                        throw new Error('File upload error occured');
+                    }
+                    cucumberReporter.AddMessage(fieldName + " : dummy.pdf");
+                    this._appendFormPageValues(fieldName1, "dummy.pdf");
+                    await browser.sleep(5000); 
                 });
-                cucumberReporter.AddMessage(fieldName + " : dummy.pdf");
-                this._appendFormPageValues(fieldName1, "dummy.pdf");
-                await browser.sleep(5000);
                 break;
             case "ccd-write-multi-select-list-field":
                 var selectionFields = ccdField.$$(".multiple-choice input");

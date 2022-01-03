@@ -42,7 +42,11 @@ class BrowserWaits{
         const startTime = Date.now();
         const waitTimeInMilliSec = waitInSec ? waitInSec * 1000 : this.waitTime;
         CucumberReporter.AddMessage("starting wait for element clickable max in sec " + waitTimeInMilliSec+ " : " + element.locator().toString());
-        await browser.wait(EC.elementToBeClickable(element), waitTimeInMilliSec, "Error waitForElementClickable : " + element.locator().toString());
+        try{
+            await browser.wait(EC.elementToBeClickable(element), waitTimeInMilliSec, "Error waitForElementClickable : " + element.locator().toString());
+        }catch(err){
+            CucumberReporter.AddMessage(`Wait for element clikable failed ${element.locator().toString()}, not throwing exception to let test fail in next step if required state not met`);  
+        }
         CucumberReporter.AddMessage("wait done in sec " + (Date.now() - startTime) / 1000); 
     }
 

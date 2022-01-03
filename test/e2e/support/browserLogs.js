@@ -56,9 +56,12 @@ class BrowserLogs {
     async printBrowserLogs() {
         const browserErrorLogs = await this.getBrowserLogs();
         this.browserlogs.push(...browserErrorLogs)
+        cucumberReporter.AddMessage("--------------------- Network logs Start---------------------");
         for (const log of browserErrorLogs) {
             cucumberReporter.AddMessage(log);
         }
+        cucumberReporter.AddMessage("--------------------- Network logs End -----------------------");
+
         return this.browserlogs;
     }
 

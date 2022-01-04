@@ -11,7 +11,6 @@ describe('Hearing Conditions Reducer', () => {
         expect(hearingsState).toEqual(initialState);
       });
     });
-
     describe('Save action', () => {
       it('should save hearing conditions', () => {
         const initialState = fromHearingConditionsReducer.initialHearingConditionsState;

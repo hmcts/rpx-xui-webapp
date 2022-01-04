@@ -371,11 +371,9 @@ describe('HearingAttendanceComponent', () => {
     spyOn(component, 'isFormValid').and.callThrough();
     fixture.detectChanges();
   });
-
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
   it('should call prepareHearingRequestData when executeAction is called with a valid form', () => {
     component.attendanceFormGroup.controls.estimation.setValue(1);
     (component.attendanceFormGroup.controls.parties as FormArray).controls.forEach(element => {
@@ -387,7 +385,6 @@ describe('HearingAttendanceComponent', () => {
     component.executeAction(ACTION.CONTINUE);
     expect(component.prepareHearingRequestData).toHaveBeenCalled();
   });
-
   it('should true when calling isFormValid with partyChannel', () => {
     component.attendanceFormGroup.controls.estimation.setValue(1);
     (component.attendanceFormGroup.controls.parties as FormArray).controls.forEach(element => {
@@ -400,7 +397,6 @@ describe('HearingAttendanceComponent', () => {
     expect((component.attendanceFormGroup.controls.parties as FormArray).length).toBeGreaterThan(0);
     expect(formValid).toEqual(true);
   });
-
   it('should false when calling isFormValid without partyChannel', () => {
     component.attendanceFormGroup.controls.estimation.setValue(1);
     (component.attendanceFormGroup.controls.parties as FormArray).controls.forEach(element => {
@@ -410,7 +406,6 @@ describe('HearingAttendanceComponent', () => {
     expect((component.attendanceFormGroup.controls.parties as FormArray).length).toBeGreaterThan(0);
     expect(formValid).toEqual(false);
   });
-
   it('should render parties from the hearingvaluemodel', () => {
     const store = jasmine.createSpyObj('store', ['pipe', 'dispatch', 'select']);
     const noneNaviationInitialState = initialState;

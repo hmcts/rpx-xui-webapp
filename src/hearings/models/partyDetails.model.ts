@@ -1,4 +1,3 @@
-
 import { PartyType } from './hearings.enum';
 import { IndividualDetailsModel } from './individualDetails.model';
 import { OrganisationDetailsModel } from './organisationDetails.model';

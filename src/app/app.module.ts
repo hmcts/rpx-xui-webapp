@@ -3,6 +3,8 @@ import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, ErrorHandler, NgModule } from 
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ExtraOptions, RouterModule } from '@angular/router';
+import { PaymentLibModule } from '@hmcts/ccpay-web-component';
+import { ExuiCommonLibModule, FeatureToggleService, LaunchDarklyService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 // ngrx modules - START
 import { EffectsModule } from '@ngrx/effects';
@@ -12,6 +14,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { storeFreeze } from 'ngrx-store-freeze';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { environment } from '../environments/environment';
+import { ENVIRONMENT_CONFIG, EnvironmentConfig } from '../models/environmentConfig.model';
 import { initApplication } from './app-initilizer';
 // app routes
 import { ROUTES, routingConfiguration } from './app.routes';
@@ -19,9 +22,6 @@ import { AppComponent } from './containers/app/app.component';
 // common provider
 import { ProvidersModule } from './providers/providers.module';
 import { AcceptTermsService } from './services/acceptTerms/acceptTerms.service';
-import { ExuiCommonLibModule, FeatureToggleService, LaunchDarklyService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
-import { PaymentLibModule } from '@hmcts/ccpay-web-component';
-import { ENVIRONMENT_CONFIG, EnvironmentConfig } from '../models/environmentConfig.model';
 import { CaseShareService } from './services/case/share-case.service';
 import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
 import { AbstractAppInsights, AppInsightsWrapper } from './services/logger/appInsightsWrapper';

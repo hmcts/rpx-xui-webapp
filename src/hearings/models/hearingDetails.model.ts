@@ -1,6 +1,7 @@
-import {HearingLocationModel} from './hearingLocation.model';
-import {HearingWindowModel} from './hearingWindow.model';
-import {PanelRequirementsModel} from './panelRequirements.model';
+
+import { HearingLocationModel } from './hearingLocation.model';
+import { HearingWindowModel } from './hearingWindow.model';
+import { PanelRequirementsModel } from './panelRequirements.model';
 
 export interface HearingDetailsModel {
   duration: number;
@@ -19,4 +20,5 @@ export interface HearingDetailsModel {
   listingComments?: string;
   hearingRequester?: string;
   leadJudgeContractType?: string;
+  totalParticipantAttendingHearing?: number;
 }

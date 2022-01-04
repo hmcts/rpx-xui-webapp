@@ -25,7 +25,8 @@ class NodeApp{
                     "caseworker-ia",
                     "caseworker-ia-iacjudge"
                 ],
-                "token": "Bearer eyJ0eXAiOiJKV1Q"
+                "token": "Bearer eyJ0eXAiOiJKV1Q",
+                "roleCategory":"LEGAL_OPERATIONS"
             }
         }
     }

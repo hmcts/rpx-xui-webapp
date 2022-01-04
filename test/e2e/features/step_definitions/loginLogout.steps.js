@@ -193,18 +193,24 @@ defineSupportCode(function ({ Given, When, Then }) {
   Then('I should be redirected to EUI dashboard page', async function () {
 
     const world = this;
-    await BrowserUtil.waitForLD();
-    await BrowserWaits.retryForPageLoad($("exui-header"), function(message){
-      world.attach("Redirected to EUI dashboard , attempt reload : "+message);
+  
+    await BrowserWaits.retryWithActionCallback(async () => {
+      try{
+        await BrowserUtil.waitForLD();
+        await BrowserWaits.waitForElement($("exui-header .hmcts-primary-navigation__item"));
+        await expect(loginPage.dashboard_header.isDisplayed()).to.eventually.be.true;
+        await expect(loginPage.dashboard_header.getText())
+          .to
+          .eventually
+          .contains('Case list');
+
+        await BrowserUtil.waitForLD();
+      }catch(err){
+        await browser.get(config.config.baseUrl);
+        throw new Error(err);
+      }
+      
     });
-
-    await expect(loginPage.dashboard_header.isDisplayed()).to.eventually.be.true;
-    await expect(loginPage.dashboard_header.getText())
-      .to
-      .eventually
-      .contains('Case list');
-
-    await BrowserUtil.waitForLD();
 
   });
 

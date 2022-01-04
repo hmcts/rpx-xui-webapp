@@ -43,7 +43,7 @@ class BrowserLogs {
                     } 
                 }
                 
-                if (browserLog[browserLogCounter]['message'].includes("ERROR [")) {
+                if (browserLog[browserLogCounter]['message'].includes("ERROR [") || browserLog[browserLogCounter]['message'].includes(".js")) {
                     this.javascriptErrors.push(`${browserLog[browserLogCounter]['time']} : [${browserLog[browserLogCounter]['level']}] ${browserLog[browserLogCounter]['message']} `);
                 }else if (!ignore) {
                     browserErrorLogs.push(`${browserLog[browserLogCounter]['time']} : [${browserLog[browserLogCounter]['level']}] ${browserLog[browserLogCounter]['message']} `);

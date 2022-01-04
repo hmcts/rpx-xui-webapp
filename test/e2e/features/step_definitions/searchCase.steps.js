@@ -78,6 +78,34 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
    
   });
 
+  When('I enter search fields jurisdiction {string} case type {string} and click apply', async function (jurisdiction, caseType) {
+    await BrowserWaits.retryWithActionCallback(async () => {
+      try {
+        await searchPage.selectJurisdiction(jurisdiction);
+        await searchPage.selectCaseType(caseType);
+        await BrowserWaits.waitForElementClickable(searchPage.applyButton);
+        await searchPage.clickApplyButton();
+
+      } catch (err) {
+        await CucumberReporter.AddScreenshot(global.screenShotUtils);
+        await CucumberReporter.AddMessage("Retrying with page refresh");
+        const currentUrl = await browser.getCurrentUrl();
+        if (currentUrl.includes("service-down")) {
+          await CucumberReporter.AddMessage("Service error occured, clicking find case again");
+          await headerPage.clickFindCase();
+
+        } else {
+          await CucumberReporter.AddMessage("Refreshing page");
+          await browser.refresh();
+
+        }
+        throw new Error(err);
+      }
+
+    });
+
+  });
+
   When('I reset case search fields', async function(){
     await searchPage.clickResetButton();
 

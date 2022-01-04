@@ -11,8 +11,7 @@ Feature: search criteria workflow
     Then Search page should be displayed
     When I enter search fields jurisdiction "<Jurisdiction>" case type "<CaseType>"
     When I reset case search fields
-    When I enter search fields jurisdiction "<Jurisdiction>" case type "<CaseType>"
-    When I click apply to perform case search
+    When I enter search fields jurisdiction "<Jurisdiction>" case type "<CaseType>" and click apply
     Then I see results returned
     When I open first case in search results
     Then I see case details page

@@ -1,8 +1,6 @@
-
 import { HearingLocationModel } from './hearingLocation.model';
 import { HearingWindowModel } from './hearingWindow.model';
 import { PanelRequirementsModel } from './panelRequirements.model';
-
 export interface HearingDetailsModel {
   duration: number;
   hearingType: string;

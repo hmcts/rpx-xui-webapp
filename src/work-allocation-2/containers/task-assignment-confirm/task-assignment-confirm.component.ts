@@ -75,7 +75,10 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     this.router.navigate(
       [this.rootPath, this.taskId, this.verb.toLowerCase()],
       {
-        state: this.selectedPerson,
+        state: {
+          person: this.selectedPerson,
+          returnUrl: this.returnUrl
+        },
         queryParams: {
           roleCategory: this.roleCategory
         }
@@ -97,7 +100,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
   }
 
   public onCancel(): void {
-    // Use returnUrl to return the user to the "All work" or "My work" screen, depending on which one they started from
+    // Use returnUrl to return the user to the "All work", "My work" or "Cases - Tasks" screen, depending on which one they started from
     this.router.navigate([this.returnUrl]);
   }
 

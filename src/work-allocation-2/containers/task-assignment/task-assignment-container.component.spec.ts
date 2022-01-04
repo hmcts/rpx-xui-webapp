@@ -165,7 +165,7 @@ describe('TaskAssignmentContainerComponent2', () => {
     const findPersonControl = new FormControl('test');
     tacComponent.formGroup.addControl('findPersonControl', findPersonControl);
     tacComponent.cancel();
-    expect(locationStub.back).toHaveBeenCalledWith();
+    expect(mockRouter.navigate).toHaveBeenCalled();
   });
 
   it('should redirect to the fallback URL (\'\') on cancelling task assignment, if the return URL is not in the history', () => {
@@ -175,7 +175,7 @@ describe('TaskAssignmentContainerComponent2', () => {
     const findPersonControl = new FormControl('test');
     tacComponent.formGroup.addControl('findPersonControl', findPersonControl);
     tacComponent.cancel();
-    expect(locationStub.back).toHaveBeenCalledWith();
+    expect(mockRouter.navigate).toHaveBeenCalled();
   });
 
   it('should display the correct verb on screen', () => {

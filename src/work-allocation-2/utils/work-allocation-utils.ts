@@ -14,6 +14,8 @@ export enum REDIRECTS {
   ServiceDown = '/service-down'
 }
 
+export const RETURN_URL: string = 'returnUrl';
+
 export const WILDCARD_SERVICE_DOWN: FatalRedirect[] = [
   { status: 0, redirectTo: REDIRECTS.ServiceDown }
 ];

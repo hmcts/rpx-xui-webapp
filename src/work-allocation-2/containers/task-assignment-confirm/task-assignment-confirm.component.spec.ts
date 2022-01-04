@@ -144,10 +144,19 @@ describe('TaskAssignmentConfirmComponent', () => {
   });
 
   it('should go back to the "Find the person" page on clicking "Change", displaying the correct verb', () => {
+    window.history.pushState({ returnUrl: 'all-work/tasks', showAssigneeColumn: false }, '', 'all-work/tasks');
     component.verb = TaskActionType.Assign;
     fixture.detectChanges();
     component.onChange();
-    expect(router.navigate).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith([ 'test', 'task1111111', 'assign' ], {
+      state: {
+        returnUrl: 'all-work/tasks',
+        person: SELECTED_PERSON
+      },
+      queryParams: {
+        roleCategory: undefined
+      }
+    });
   });
 
   it('should redirect to the "All work" page on cancelling task assignment', () => {

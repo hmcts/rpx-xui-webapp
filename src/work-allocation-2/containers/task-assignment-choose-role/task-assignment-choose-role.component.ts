@@ -29,10 +29,23 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
   public form: FormGroup;
 
   constructor(private readonly fb: FormBuilder,
-              private readonly location: Location,
               private readonly router: Router,
               private readonly sessionStorageService: SessionStorageService,
               private readonly route: ActivatedRoute) {
+  }
+
+  private get returnUrl(): string {
+    // Default URL is '' because this is the only sensible return navigation if the user has used browser navigation
+    // buttons, which clear the `window.history.state` object
+    let url: string = '';
+
+    // The returnUrl is undefined if the user has used browser navigation buttons, so check for its presence
+    if (window && window.history && window.history.state && window.history.state.returnUrl) {
+      // Truncate any portion of the URL beginning with '#', as is appended when clicking "Manage" on a task
+      url = window.history.state.returnUrl.split('#')[0];
+    }
+
+    return url;
   }
 
   private static getOptions(): OptionsModel[] {
@@ -43,7 +56,7 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
     ];
   }
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     const isJudicial = this.isCurrentUserJudicial();
     const taskId = this.route.snapshot.paramMap.get('taskId');
     this.verb = this.route.snapshot.data.verb;
@@ -56,7 +69,7 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
   }
 
   public cancel(): void {
-    this.location.back();
+    this.router.navigate([this.returnUrl]);
   }
 
   public submit(values: any, valid: boolean): void {

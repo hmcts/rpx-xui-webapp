@@ -112,10 +112,12 @@ export const ROUTES: Routes = [
       },
       {
         path: 'hearing-judge',
+        resolve: {hearingStages: RefDataResolver},
         component: HearingJudgeComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Manage cases | Request Hearing | Specify Judge'
+          title: 'HMCTS Manage cases | Request Hearing | Specify Judge',
+          category: HearingCategory.JudgeType
         }
       },
       {

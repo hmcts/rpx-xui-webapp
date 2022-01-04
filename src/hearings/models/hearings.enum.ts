@@ -95,7 +95,8 @@ export enum HearingCategory {
   PanelMemberSpecialism = 'PanelMemberSpecialism',
   CancellationReasonCodes = 'CancellationReasonCodes',
   NonStdDurationReasonCodes = 'NonStdDurationReasonCodes',
-  EntityRoleCodes = 'EntityRoleCodes'
+  EntityRoleCodes = 'EntityRoleCodes',
+  JudgeType = 'JudgeType',
 }
 
 export enum HearingDateEnum {

@@ -1,6 +1,35 @@
 /* tslint:disable:object-literal-sort-keys */
-import {RefDataByCategoryModel, RefDataByServiceModel, RefDataModel} from '../models/refData.model';
+import { RefDataByCategoryModel, RefDataByServiceModel, RefDataModel } from '../models/refData.model';
 
+export const DEFAULT_JUDGE_TYPES_REF: RefDataModel[] = [
+  {
+    key: 'tribunalJudge',
+    value_en: 'Tribunal Judge',
+    value_cy: '',
+    hintText_EN: 'Tribunal',
+    hintTextCY: '',
+    order: 1,
+    parentKey: null,
+  },
+  {
+    key: 'deputyTribunalJudge',
+    value_en: 'Deputy Tribunal Judge',
+    value_cy: '',
+    hintText_EN: 'Deputy',
+    hintTextCY: '',
+    order: 2,
+    parentKey: null,
+  },
+  {
+    key: 'regionalTribunalJudge',
+    value_en: 'Regional Tribunal Judge',
+    value_cy: '',
+    hintText_EN: 'Regional',
+    hintTextCY: '',
+    order: 3,
+    parentKey: null,
+  },
+];
 export const DEFAULT_STAGES_REF: RefDataModel[] = [
   {
     key: 'initial',
@@ -123,6 +152,10 @@ export const SSCS_PARTY_CHANNEL: RefDataByServiceModel = {
   serviceID: 'SSCS',
   values: DEFAULT_PARTYCHANNEL_REF,
 };
+export const SSCS_JUDGE_TYPES: RefDataByServiceModel = {
+  serviceID: 'SSCS',
+  values: DEFAULT_JUDGE_TYPES_REF,
+};
 
 export const ALL_REF_DATA: RefDataByCategoryModel[] = [
   {
@@ -136,5 +169,9 @@ export const ALL_REF_DATA: RefDataByCategoryModel[] = [
   {
     categoryKey: 'PartyChannel',
     services: [SSCS_PARTY_CHANNEL],
+  },
+  {
+    categoryKey: 'JudgeType',
+    services: [SSCS_JUDGE_TYPES],
   },
 ];

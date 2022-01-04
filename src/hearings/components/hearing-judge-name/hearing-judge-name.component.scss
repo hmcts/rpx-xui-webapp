@@ -1,0 +1,10 @@
+:host ::ng-deep .govuk-form-group {
+  .govuk-hint{
+    font-weight: bold;
+    color: #0b0c0c;
+    margin-bottom: 5px;
+  }
+  .govuk-input{
+    width: 80% !important;
+  }
+}

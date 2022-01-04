@@ -12,11 +12,11 @@ describe('Hearing Conditions Reducer', () => {
       });
     });
 
-    fdescribe('Save action', () => {
+    describe('Save action', () => {
       it('should save hearing conditions', () => {
         const initialState = fromHearingConditionsReducer.initialHearingConditionsState;
         console.log('state', initialState);
-        const action = new fromHearingConditionsActions.SaveHearingConditions({region: 'Wales'});
+        const action = new fromHearingConditionsActions.SaveHearingConditions({ region: 'Wales' });
         console.log('action', action);
         const hearingsState = fromHearingConditionsReducer.hearingConditionsReducer(initialState, action);
         console.log('hearingsState', hearingsState);

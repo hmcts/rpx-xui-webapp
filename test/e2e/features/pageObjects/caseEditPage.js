@@ -25,14 +25,17 @@ class caseEditPage {
 
     async validateWorkbasketInputs(reqPath) {
         let workBasketFields = await CcdApi.getWorkbasketAPIRes(reqPath);
-        let WBfieldIdPresent;
-        if (workBasketFields) {
-            for (var i = 0; i < workBasketFields.workbasketInputs.length; i++) {
-                WBfieldIdPresent = $(`#${workBasketFields.workbasketInputs[i].field.id}`);
-                await BrowserWaits.waitForElement(WBfieldIdPresent);
-                expect(await WBfieldIdPresent.isPresent(), `Case creation ${WBfieldIdPresent} field should be present`).to.be.true;
+        await BrowserWaits.retryWithActionCallback(async () => {
+            let WBfieldIdPresent;
+            if (workBasketFields) {
+                for (var i = 0; i < workBasketFields.workbasketInputs.length; i++) {
+                    WBfieldIdPresent = $(`#${workBasketFields.workbasketInputs[i].field.id}`);
+                    await BrowserWaits.waitForElement(WBfieldIdPresent);
+                    expect(await WBfieldIdPresent.isPresent(), `Case creation ${WBfieldIdPresent} field should be present`).to.be.true;
+                }
             }
-        }
+        });
+        
     }
 
     async validateSearchInputs(reqPath) {

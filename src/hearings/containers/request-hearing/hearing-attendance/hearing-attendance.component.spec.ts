@@ -1,15 +1,15 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
-import {provideMockStore} from '@ngrx/store/testing';
-import {of} from 'rxjs';
+import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
+import { provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs';
 import { RefDataModel } from '../../../../../api/hearings/models/refData.model';
-import {ACTION} from '../../../models/hearings.enum';
+import { ACTION } from '../../../models/hearings.enum';
 import { HearingsRefDataService } from '../../../services/hearings-ref-data.service';
-import {HearingsService} from '../../../services/hearings.service';
+import { HearingsService } from '../../../services/hearings.service';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
-import {HearingAttendanceComponent} from './hearing-attendance.component';
+import { HearingAttendanceComponent } from './hearing-attendance.component';
 @Component({
   selector: 'exui-hearing-parties-title',
   template: '',
@@ -303,9 +303,9 @@ describe('HearingAttendanceComponent', () => {
       imports: [ReactiveFormsModule],
       declarations: [HearingAttendanceComponent, MockHearingPartiesComponent],
       providers: [
-        provideMockStore({initialState}),
-        {provide: HearingsService, useValue: hearingsService},
-        {provide: HearingsRefDataService, useValue: hearingsRefDataService},
+        provideMockStore({ initialState }),
+        { provide: HearingsService, useValue: hearingsService },
+        { provide: HearingsRefDataService, useValue: hearingsRefDataService },
         ValidatorsUtils,
         FormBuilder
       ],
@@ -328,7 +328,7 @@ describe('HearingAttendanceComponent', () => {
   it('should call prepareHearingRequestData when executeAction is called with a valid form', () => {
     component.attendanceFormGroup.controls.estimation.setValue(1);
     (component.attendanceFormGroup.controls.parties as FormArray).controls.forEach(element => {
-      (element as FormGroup).value.partyChannel =  {
+      (element as FormGroup).value.partyChannel = {
         key: 'inperson',
         value_en: 'In person',
       } as RefDataModel;
@@ -340,7 +340,7 @@ describe('HearingAttendanceComponent', () => {
   it('should true when calling isFormValid with partyChannel', () => {
     component.attendanceFormGroup.controls.estimation.setValue(1);
     (component.attendanceFormGroup.controls.parties as FormArray).controls.forEach(element => {
-      (element as FormGroup).value.partyChannel =  {
+      (element as FormGroup).value.partyChannel = {
         key: 'inperson',
         value_en: 'In person',
       } as RefDataModel;

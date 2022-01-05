@@ -74,6 +74,7 @@ class SearchPage {
 
     await browser.executeScript('arguments[0].scrollIntoView()',
       this.applyButton); 
+    expect(await this.applyButton.isEnabled(),"Apply buttin is not enabled").to.be.true 
     await this.applyButton.click();
   }
 

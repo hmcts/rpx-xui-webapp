@@ -1,6 +1,7 @@
 Dropdown = require('./webdriver-components/dropdown.js')
 Button = require('./webdriver-components/button.js')
 var BrowserWaits = require("../../support/customWaits");
+const RuntimeTestData = require('../../support/runtimeTestData');
 
 const headerPage = require('./headerPage');
 class SearchPage {
@@ -54,6 +55,16 @@ class SearchPage {
     await BrowserWaits.waitForElement(optionElement);
  
     await optionElement.click();
+    RuntimeTestData.searchCasesInputs.jurisdiction = option;
+    const caseTypeElements = this.caseType.$$("option");
+    const caseTypesSize = await caseTypeElements.count();
+    RuntimeTestData.searchCasesInputs.casetypes = [];
+    for (let i = 0; i < caseTypesSize; i++) {
+      const option = await caseTypeElements.get(i);
+      const optionText = await option.getText();
+      RuntimeTestData.searchCasesInputs.casetypes.push(option);
+
+    }  
   }
 
   async selectCaseType(option){
@@ -64,6 +75,8 @@ class SearchPage {
     await BrowserWaits.waitForElement(optionElement);
 
     await optionElement.click();
+    RuntimeTestData.searchCasesInputs.casetype = option; 
+
   }
 
   async clickApplyButton() {

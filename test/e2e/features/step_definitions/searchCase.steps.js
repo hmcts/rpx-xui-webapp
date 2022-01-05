@@ -1,4 +1,6 @@
 let SearchPage = require('../pageObjects/searchPage.js');
+let CaseListPage = require('../pageObjects/CaseListPage');
+
 let TestData = require('../../utils/TestData.js');
 const headerPage = require('../pageObjects/headerPage');
 Dropdown = require('../pageObjects/webdriver-components/dropdown.js');
@@ -11,9 +13,13 @@ const browserUtil = require('../../../ngIntegration/util/browserUtil');
 var {defineSupportCode} = require('cucumber');
 const { browser } = require('protractor');
 const config = require('../../utils/config/config.js');
+
+const RuntimeTestData = require("../../support/runtimeTestData");
+
+
 defineSupportCode(function ({And, But, Given, Then, When}) {
   let searchPage= new SearchPage();
-
+  let caseListPage = new CaseListPage();
   When(/^I click on search button$/, async function () {
     await headerPage.clickFindCase();
     });
@@ -128,14 +134,49 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
   });
 
   Then('I see results returned', async function () {
+    const caseListContainer = $("exui-case-list");
+    const searchCasesContainer = $("exui-search-case");
+
+    let isCaseListPage = await caseListContainer.isPresent();
+    let isSearchCasesPage = await searchCasesContainer.isPresent();
+    
+
     await BrowserWaits.retryWithActionCallback(async () => {
   
       try{
         await searchPage.waitForAtleastOneSearchResult();
         await expect(await searchPage.hasSearchReturnedResults()).to.be.true;
       }catch(err){
-        CucumberReporter.AddMessage(`Retrying by clicking workbasket Apply`);
-        await searchPage.clickApplyButton();
+        CucumberReporter.AddMessage(`Retrying steps select inputs and click apply`);
+
+        if (isSearchCasesPage){
+          const caseTypeToSelect = RuntimeTestData.searchCasesInputs.casetype;
+          for (const caseType of RuntimeTestData.searchCasesInputs.casetypes) {
+            if (caseType !== caseTypeToSelect) {
+              await searchPage.selectCaseType(caseType);
+              break;
+            }
+          }
+          await BrowserWaits.waitForSeconds(2);
+          await searchPage.selectCaseType(caseTypeToSelect);
+
+          await searchPage.clickApplyButton();
+
+
+        } else if (isCaseListPage){
+          const caseTypeToSelect = RuntimeTestData.workbasketInputs.casetype;
+          for (const caseType of RuntimeTestData.workbasketInputs.casetypes) {
+            if (caseType !== caseTypeToSelect) {
+              await caseListPage.selectCaseType(caseType);
+              break;
+            }
+          }
+          await BrowserWaits.waitForSeconds(2);
+          await caseListPage.selectCaseType(caseTypeToSelect);
+
+          await caseListPage.clickApplyButton();
+        }
+       
         throw new Error(err);
       }
    

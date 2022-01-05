@@ -1,7 +1,7 @@
 
 const BrowserWaits = require('../../support/customWaits');
 const TaskMessageBanner = require("./messageBanner");
-
+const RuntimeTestData = require('../../support/runtimeTestData');
 const CucumberReportLogger = require('../../support/reportLogger');
 class CaseListPage{
 
@@ -64,17 +64,33 @@ class CaseListPage{
 
     async selectJurisdiction(jurisdiction){
         await this._waitForSearchComponent();
-        await this.jurisdictionSelectElement.element(this._getOptionSelectorWithText(jurisdiction)).click(); 
+
+        await this.jurisdictionSelectElement.element(this._getOptionSelectorWithText(jurisdiction)).click();
+        RuntimeTestData.workbasketInputs.jurisdiction = jurisdiction;
+        const caseTypeElements = this.caseTypeSelectElement.$$("option");
+        const caseTypesSize = await caseTypeElements.count();
+        RuntimeTestData.workbasketInputs.casetypes = [];
+        for (let i = 0; i < caseTypesSize; i++){
+            const option = await caseTypeElements.get(i);
+            const optionText = await option.getText();
+            RuntimeTestData.workbasketInputs.casetypes.push(option);
+ 
+        } 
     }
 
     async selectCaseType(caseType) {
         await this._waitForSearchComponent();
         await this.caseTypeSelectElement.element(this._getOptionSelectorWithText(caseType)).click();
+        CucumberReportLogger.AddMessage(await this.caseTypeSelectElement.getText());
+        RuntimeTestData.workbasketInputs.casetype = caseType; 
+
     }
 
     async selectState(state) {
         await this._waitForSearchComponent();
         await this.stateSelectElement.element(this._getOptionSelectorWithText(state)).click();
+        RuntimeTestData.workbasketInputs.state = state; 
+
     }
 
     async clickSearchApplyBtn(){ 

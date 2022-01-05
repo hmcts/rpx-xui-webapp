@@ -2,7 +2,8 @@ var CcdApi = require('../../utils/ccdApi');
 var BrowserWaits = require('../../support/customWaits');
 const CucumberReportLogger = require('../../support/reportLogger');
 Button = require('./webdriver-components/button.js');
-
+const RuntimeTestData = require("../../support/runtimeTestData");
+const CaseListPage = require("../pageObjects/CaseListPage");
 class caseEditPage {
     constructor() {
         this.userName = 'lukesuperuserxui@mailnesia.com';
@@ -13,6 +14,8 @@ class caseEditPage {
         this.checkURanswerPageData;
 
         this.validationErrorContainer = $('ccd-case-edit-page .error-summary');
+
+        this.caseListPage = new CaseListPage();
     }
 
     async isValidationErrorDisplayed(){
@@ -26,14 +29,28 @@ class caseEditPage {
     async validateWorkbasketInputs(reqPath) {
         let workBasketFields = await CcdApi.getWorkbasketAPIRes(reqPath);
         await BrowserWaits.retryWithActionCallback(async () => {
-            let WBfieldIdPresent;
-            if (workBasketFields) {
-                for (var i = 0; i < workBasketFields.workbasketInputs.length; i++) {
-                    WBfieldIdPresent = $(`#${workBasketFields.workbasketInputs[i].field.id}`);
-                    await BrowserWaits.waitForElement(WBfieldIdPresent);
-                    expect(await WBfieldIdPresent.isPresent(), `Case creation ${WBfieldIdPresent} field should be present`).to.be.true;
+            try{
+                let WBfieldIdPresent;
+                if (workBasketFields) {
+                    for (var i = 0; i < workBasketFields.workbasketInputs.length; i++) {
+                        WBfieldIdPresent = $(`#${workBasketFields.workbasketInputs[i].field.id}`);
+                        await BrowserWaits.waitForElement(WBfieldIdPresent);
+                        expect(await WBfieldIdPresent.isPresent(), `Case creation ${WBfieldIdPresent} field should be present`).to.be.true;
+                    }
                 }
+            }catch(err){
+                const caseTypeToSelect = RuntimeTestData.workbasketInputs.casetype; 
+                for (const caseType of RuntimeTestData.workbasketInputs.casetypes){
+                    if (caseType !== caseTypeToSelect){
+                        await this.caseListPage.selectCaseType(caseType);
+                        break;
+                    }
+                }
+                await BrowserWaits.waitForSeconds(2);
+                await this.caseListPage.selectCaseType(caseTypeToSelect); 
+                throw new Error(err);
             }
+            
         });
         
     }

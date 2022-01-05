@@ -11,13 +11,18 @@
     <form [formGroup]="attendanceFormGroup" class="form" action="hearing-judge">
       <div  class="govuk-form-group"
             [ngClass]="{'govuk-form-group--error' : !selectionValid}">
+         <span *ngIf=" !selectionValid" 
+              id="estimation-name-error" 
+              class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error:</span> Select how each party will attend the hearing
+          </span>
         <div *ngFor="let partyControl of partiesFormArray.controls; let i=index" class="party-row">
           <label class="govuk-label">
               <strong>{{ partyControl.value.partyName }}</strong>
           </label>
           <select class="govuk-select" id="{{'partyChannel' + i}}" name="party1Channel" 
             [formControl]="formGroupControl(partyControl, 'partyChannel')">
-            <option  [ngValue]="null">Please select</option>
+            <option value="" disabled selected hidden>Please select</option>
             <option *ngFor="let party of partyChannels | async" [ngValue]="party.key">{{party.value_en}}</option>
           </select>
         </div>
@@ -33,6 +38,11 @@
           <div id="attendance-number-hint" class="govuk-hint">
               Estimate how many people will attend in person, excluding judicial members. This number will determine the room size.
           </div>
+          <span *ngIf=" !attendanceFormGroup.controls.estimation.valid && attendanceFormGroup.controls.estimation.dirty" 
+              id="estimation-name-error" 
+              class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error:</span> Enter a valid number off attendees
+          </span>
           <input [formControl]="attendanceFormGroup.controls.estimation" style="width: 80px;" class="govuk-input" id="attendance-number" name="attendance-number" value="" type="text" aria-describedby="attendance-number-hint">
       </div>
   </form>

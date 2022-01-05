@@ -39,8 +39,7 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
   constructor(
     private readonly store: Store<fromRoot.State>,
     private readonly router: Router
-  ) {
-  }
+  ) {}
 
   public ngOnInit(): void {
     this.persistence$ = this.store.pipe(select(fromRoot.getUserDetails)).pipe(
@@ -49,17 +48,13 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
     this.routeSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         // Set up the active navigation item.
-        debugger;
         this.setupActiveSubNavigationItem(this.router.url);
       }
       if (event instanceof RoutesRecognized) {
         // Set up the page data.
-        debugger;
         this.setupPageData(event.state.root);
       }
     });
-    
-    debugger;
     // Set up the active navigation item.
     this.setupActiveSubNavigationItem(this.router.url);
 

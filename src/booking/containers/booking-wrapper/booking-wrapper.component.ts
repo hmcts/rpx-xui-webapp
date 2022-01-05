@@ -23,7 +23,6 @@ export class BookingWrapperComponent implements OnInit {
   constructor(private readonly router: Router) { }
 
   public ngOnInit() {
-
     this.bookingNavigationCurrentState = BookingState.HOME;
   }
 
@@ -36,7 +35,6 @@ export class BookingWrapperComponent implements OnInit {
   }
 
   public navigationHandler(navEvent: BookingNavigationEvent) {
-
     switch (navEvent) {
       case BookingNavigationEvent.BACK:
         switch (this.bookingNavigationCurrentState) {
@@ -58,30 +56,16 @@ export class BookingWrapperComponent implements OnInit {
         if (this.bookingProcess.selectedBookingOption === 1) {
           this.bookingNavigationCurrentState = BookingState.LOCATION;
         } else {
-          //this.router.navigate(['/work/my-work/list']);
-          debugger;
-          // this.router.navigate(
-          //   ['/work/my-work/list'],
-          //   {
-          //     state: {
-          //       location: {
-          //         ids: this.bookingProcess.selectedBookingLocationIds
-          //         // id: locationId
-          //        // ids: [locationId]
-          //       }
-          //     }
-          //   }
-          // );
-          
-          return new routeAction.Go({
-            path: [`/work/my-work/list`],
-            extras: {
+          this.router.navigate(
+            ['/work/my-work/list'],
+            {
               state: {
-                showMessage: true,
-                message: { type: '99999999999', message: '99999999999' }
+                location: {
+                   ids: this.bookingProcess.selectedBookingLocationIds
+                }
               }
             }
-          });
+          );
         }
         break;
       case BookingNavigationEvent.LOCATIONCONTINUE:

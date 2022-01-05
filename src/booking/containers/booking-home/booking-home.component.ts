@@ -56,9 +56,6 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
         this.existingBookings = result;
         this.orderByCurrentThenFuture();
         this.bookingProcess.selectedBookingLocationIds = result.filter(p => new Date().getTime() < new Date(p.beginTime).getTime()).sort(this.sortBookings).map(p => p.base_location_id);
-
-
-         //this.existingBookings.filter(p => new Date().getTime() < new Date(p.beginTime).getTime()).sort(this.sortBookings);
       });
     });
   }
@@ -71,7 +68,6 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
     const featureBookings: Booking[] = this.existingBookings.filter(p => new Date().getTime() < new Date(p.beginTime).getTime()).sort(this.sortBookings);
     const currentBookings: Booking[] = this.existingBookings.filter(p => new Date().getTime() > new Date(p.beginTime).getTime()).sort(this.sortBookings);
     this.existingBookings = currentBookings.sort(this.sortBookings).concat(featureBookings.sort(this.sortBookings));
-    //this.bookingProcess.selectedBookingLocationIds = featureBookings
   }
 
   private sortBookings(current, next) {
@@ -96,7 +92,6 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
   }
 
   public onEventTrigger() {
-
     this.eventTrigger.emit(BookingNavigationEvent.HOMECONTINUE);
   }
 
@@ -104,16 +99,12 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
     this.refreshAssignmentsSubscription = this.bookingService.refreshRoleAssignments().subscribe(response => {
       this.sessionStorageService.removeItem(TaskListFilterComponent.FILTER_NAME);
       this.windowService.removeLocalStorage(TaskListFilterComponent.FILTER_NAME);
-
       this.router.navigate(
         ['/work/my-work/list'],
         {
           state: {
             location: {
-              id: this.bookingProcess.selectedBookingLocationIds
-              
-              // id: locationId
-             // ids: [locationId]
+              id: locationId
             }
           }
         }

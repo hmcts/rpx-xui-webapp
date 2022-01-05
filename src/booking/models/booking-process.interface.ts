@@ -4,7 +4,6 @@ export interface BookingProcess {
   selectedBookingOption: number;
   location: LocationByEPIMSModel;
   selectedBookingLocationIds: [];
-  
   selectedDateOption: number;
   startDate: Date;
   endDate: Date;

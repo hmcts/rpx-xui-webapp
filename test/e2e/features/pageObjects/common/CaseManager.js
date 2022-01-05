@@ -405,6 +405,8 @@ class CaseManager {
 
                     let uploadError = isStatusDisplayed || statusMessage.includes("error");
                     if (uploadError) {
+                        await ccdField.$('input.form-control').sendKeys("");
+
                         throw new Error(`file upload error occured : Status message is displayed : ${isStatusDisplayed} : ${statusMessage}` );
                     }
                     cucumberReporter.AddMessage(fieldName + " : dummy.pdf");

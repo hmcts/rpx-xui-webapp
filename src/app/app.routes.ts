@@ -26,18 +26,13 @@ export const ROUTES: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'booking',
-   // canActivate: [AuthGuard, AcceptTermsGuard],
-   loadChildren: '../booking/booking.module#BookingModule'
-   //loadChildren: '../work-allocation/work-allocation.module#WorkAllocationModule'
+    canActivate: [AuthGuard, AcceptTermsGuard],
+    loadChildren: '../booking/booking.module#BookingModule'
   },
-  
   {
     path: 'cases',
     canActivate: [AuthGuard, AcceptTermsGuard],
     loadChildren: '../cases/cases.module#CasesModule'
-    //loadChildren: '../work-allocation-2/work-allocation2.module#WorkAllocationModule2'
-   // loadChildren: '../booking/booking.module#BookingModule'
   },
   {
     path: 'work',

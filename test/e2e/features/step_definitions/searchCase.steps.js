@@ -213,7 +213,7 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
           await BrowserWaits.waitForSeconds(2);
           await caseListPage.selectCaseType(caseTypeToSelect);
 
-          await caseListPage.clickApplyButton();
+          await caseListPage.clickSearchApplyBtn();
         }
        
         throw new Error(err);

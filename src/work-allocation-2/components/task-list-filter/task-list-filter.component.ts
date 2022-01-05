@@ -37,11 +37,13 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   };
   public allLocations: string[] = [];
   public defaultLocations: string[] = [];
+  public defaultTypesOfWork: string[] = [];
   public fieldsSettings: FilterSetting = {
     id: TaskListFilterComponent.FILTER_NAME,
     fields: [],
   };
   public selectedLocations: string[] = [];
+  public selectedTypesOfWork: string[] = [];
   public toggleFilter = false;
   public errorSubscription: Subscription;
   private subscription: Subscription;
@@ -82,6 +84,17 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     return this.defaultLocations;
   }
 
+  public getDefaultTypesOfWork(): string[] {
+    if (this.fieldsConfig && this.fieldsConfig.cancelSetting) {
+      this.fieldsConfig.cancelSetting.fields.forEach(field => {
+        if (field.name === 'types-of-work') {
+          this.defaultTypesOfWork = field.value;
+        }
+      });
+    }
+    return this.defaultTypesOfWork;
+  }
+
   public subscribeToSelectedLocations(): void {
     this.selectedLocationsSubscription = this.filterService.getStream(TaskListFilterComponent.FILTER_NAME)
       .pipe(
@@ -89,7 +102,8 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       )
       .subscribe((f: FilterSetting) => {
         this.selectedLocations = f.fields.find((field) => field.name === TaskListFilterComponent.FILTER_NAME).value;
-        this.showFilteredText = this.hasBeenFiltered(f, this.getDefaultLocations());
+        this.selectedTypesOfWork = f.fields.find((field) => field.name === 'types-of-work').value;
+        this.showFilteredText = this.hasBeenFiltered(f, this.getDefaultLocations(), this.getDefaultTypesOfWork());
         this.toggleFilter = false;
       });
   }
@@ -188,13 +202,15 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     this.fieldsConfig.fields.push(field);
   }
 
-  private hasBeenFiltered(f: FilterSetting, defaultLocations: string[]): boolean {
+  private hasBeenFiltered(f: FilterSetting, defaultLocations: string[], defaultTypesOfWork: string[]): boolean {
     const selectedFields = f.fields.find(field => field.name === TaskListFilterComponent.FILTER_NAME);
+    const selectedTypeOfWorksFields = f.fields.find(field => field.name === 'types-of-work');
     // check if selected fields are the same as cancelled filter settings
     const containsNonDefaultFields = selectedFields.value.filter((v: string) => defaultLocations.indexOf(v) === -1).length > 0;
+    const containsNonDefaultTypeOfWorkFields = selectedTypeOfWorksFields.value.filter((v: string) => defaultTypesOfWork.indexOf(v) === -1).length > 0;
     // check if the amount of fields selected is the same as the amount in the cancel settings
-    const notSameSize = !(defaultLocations.length === selectedFields.value.length);
-    return (containsNonDefaultFields || notSameSize) && (defaultLocations.length !== 0);
+    const notSameSize = !(defaultLocations.length === selectedFields.value.length) || !(defaultTypesOfWork.length === selectedTypeOfWorksFields.value.length);
+    return (containsNonDefaultFields || notSameSize || containsNonDefaultTypeOfWorkFields) && (defaultLocations.length !== 0) && (defaultTypesOfWork.length !== 0);
   }
 
 }

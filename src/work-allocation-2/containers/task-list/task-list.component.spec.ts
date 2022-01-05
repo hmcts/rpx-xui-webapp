@@ -114,8 +114,8 @@ describe('TaskListComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should return the fields as an array with a \'manage\' entry, so that we can' +
-    'display the manage column in the table.', async () => {
+  it('should return the fields as an array with a \'manage\' entry, so that we can ' +
+    'display the manage column in the table. kuda', () => {
 
     const fields = ['caseReference', 'caseName', 'caseCategory', 'location', 'task', 'dueDate'];
     const fieldsWithManage = [...fields, 'manage'];

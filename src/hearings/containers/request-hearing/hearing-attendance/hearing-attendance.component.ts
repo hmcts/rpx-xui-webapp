@@ -36,7 +36,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     private readonly fb: FormBuilder) {
     super(hearingStore, hearingsService);
     this.attendanceFormGroup = fb.group({
-      estimation: [null, [this.validatorsUtils.numberLargerThanValidator(-1)]],
+      estimation: [null, [this.validatorsUtils.numberLargerThanValidator(0)]],
       parties: fb.array([])
     });
   }

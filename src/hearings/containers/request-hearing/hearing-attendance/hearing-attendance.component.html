@@ -22,7 +22,7 @@
           </label>
           <select class="govuk-select" id="{{'partyChannel' + i}}" name="party1Channel" 
             [formControl]="formGroupControl(partyControl, 'partyChannel')">
-            <option value="" disabled selected hidden>Please select</option>
+            <option value="" selected>Please select</option>
             <option *ngFor="let party of partyChannels | async" [ngValue]="party.key">{{party.value_en}}</option>
           </select>
         </div>

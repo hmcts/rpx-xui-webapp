@@ -66,6 +66,8 @@ class CaseListPage{
         await this._waitForSearchComponent();
 
         await this.jurisdictionSelectElement.element(this._getOptionSelectorWithText(jurisdiction)).click();
+        CucumberReportLogger.LogTestDataInput(`Case list page Jurisdiction : ${jurisdiction}`);
+
         RuntimeTestData.workbasketInputs.jurisdiction = jurisdiction;
         const caseTypeElements = this.caseTypeSelectElement.$$("option");
         const caseTypesSize = await caseTypeElements.count();
@@ -73,7 +75,7 @@ class CaseListPage{
         for (let i = 0; i < caseTypesSize; i++){
             const option = await caseTypeElements.get(i);
             const optionText = await option.getText();
-            RuntimeTestData.workbasketInputs.casetypes.push(option);
+            RuntimeTestData.workbasketInputs.casetypes.push(optionText);
  
         } 
     }
@@ -81,7 +83,7 @@ class CaseListPage{
     async selectCaseType(caseType) {
         await this._waitForSearchComponent();
         await this.caseTypeSelectElement.element(this._getOptionSelectorWithText(caseType)).click();
-        CucumberReportLogger.AddMessage(await this.caseTypeSelectElement.getText());
+        CucumberReportLogger.LogTestDataInput(`Case list page Case type : ${caseType}`);
         RuntimeTestData.workbasketInputs.casetype = caseType; 
 
     }

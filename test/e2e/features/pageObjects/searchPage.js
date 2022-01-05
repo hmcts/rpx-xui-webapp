@@ -2,7 +2,7 @@ Dropdown = require('./webdriver-components/dropdown.js')
 Button = require('./webdriver-components/button.js')
 var BrowserWaits = require("../../support/customWaits");
 const RuntimeTestData = require('../../support/runtimeTestData');
-
+const CucumberReportLogger = require("../../support/reportLogger");
 const headerPage = require('./headerPage');
 class SearchPage {
 
@@ -55,6 +55,9 @@ class SearchPage {
     await BrowserWaits.waitForElement(optionElement);
  
     await optionElement.click();
+
+    CucumberReportLogger.LogTestDataInput(`Search  page Jurisdiction : ${option}`);
+
     RuntimeTestData.searchCasesInputs.jurisdiction = option;
     const caseTypeElements = this.caseType.$$("option");
     const caseTypesSize = await caseTypeElements.count();
@@ -62,7 +65,7 @@ class SearchPage {
     for (let i = 0; i < caseTypesSize; i++) {
       const option = await caseTypeElements.get(i);
       const optionText = await option.getText();
-      RuntimeTestData.searchCasesInputs.casetypes.push(option);
+      RuntimeTestData.searchCasesInputs.casetypes.push(optionText);
 
     }  
   }
@@ -75,6 +78,8 @@ class SearchPage {
     await BrowserWaits.waitForElement(optionElement);
 
     await optionElement.click();
+    CucumberReportLogger.LogTestDataInput(`Search  page case type : ${option}`);
+
     RuntimeTestData.searchCasesInputs.casetype = option; 
 
   }

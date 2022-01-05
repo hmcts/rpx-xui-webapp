@@ -3,10 +3,14 @@
 class RuntimeTestData{
 
     constructor(){
-        this.workbasketInputs = { jurisdiction: "", casetype: "", state: "", casetypes : []}
-        this.searchCasesInputs = { jurisdiction: "", casetype: "", casetypes:[]}
-
+      this.init(); 
     }
+
+   init(){
+       this.workbasketInputs = { jurisdiction: "", casetype: "", state: "", casetypes: [] }
+       this.searchCasesInputs = { jurisdiction: "", casetype: "", casetypes: [] }
+
+   } 
 
 }
 

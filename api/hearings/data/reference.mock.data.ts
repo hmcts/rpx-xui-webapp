@@ -110,15 +110,6 @@ export const DEFAULT_PARTYCHANNEL_REF: RefDataModel[] = [
     parentKey: null,
   },
   {
-    key: 'bymobile',
-    value_en: 'By mobile',
-    value_cy: '',
-    hintText_EN: 'By mobile',
-    hintTextCY: '',
-    order: 3,
-    parentKey: null,
-  },
-  {
     key: 'byvideo',
     value_en: 'By video',
     value_cy: '',

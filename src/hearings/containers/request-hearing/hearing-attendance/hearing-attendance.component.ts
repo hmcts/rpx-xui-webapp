@@ -36,7 +36,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     private readonly fb: FormBuilder) {
     super(hearingStore, hearingsService);
     this.attendanceFormGroup = fb.group({
-      estimation: [null, [this.validatorsUtils.numberLargerThanValidator(0)]],
+      estimation: [null, [this.validatorsUtils.numberLargerThanValidator(-1)]],
       parties: fb.array([])
     });
   }
@@ -73,6 +73,11 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
           });
         }
       });
+  }
+
+  public get bothNotAttendingRule(): boolean {
+    return !((this.attendanceFormGroup.controls.parties as FormArray).controls.filter(control => control.value &&
+      control.value.partyChannel !== 'notattending').length === 0);
   }
 
   public executeAction(action: ACTION): void {

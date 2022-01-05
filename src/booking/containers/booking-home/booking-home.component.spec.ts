@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 import { BookingProcess } from '../../models';
 import { Booking } from '../../models/booking.interface';
@@ -51,7 +52,10 @@ describe('BookingHomeComponent', () => {
   let fixture: ComponentFixture<BookingHomeComponent>;
   const bookingService = jasmine.createSpyObj<BookingService>('BookingService', ['getBookings', 'getBookingLocation', 'refreshRoleAssignments']);
   const mockWindowService = jasmine.createSpyObj('WindowService', ['removeLocalStorage']);
-
+  const flags = {
+    enabledFlag: true,
+    disabledFlag: false
+  };
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -68,6 +72,12 @@ describe('BookingHomeComponent', () => {
         {
           provide: WindowService,
           useValue: mockWindowService
+        },
+        {
+          provide: FeatureToggleService,
+          useValue: {
+            isEnabled: (flag) => of(flags[flag])
+          }
         }
       ]
     })

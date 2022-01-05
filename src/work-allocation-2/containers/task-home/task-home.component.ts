@@ -39,7 +39,8 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
   constructor(
     private readonly store: Store<fromRoot.State>,
     private readonly router: Router
-  ) {}
+  ) {
+  }
 
   public ngOnInit(): void {
     this.persistence$ = this.store.pipe(select(fromRoot.getUserDetails)).pipe(

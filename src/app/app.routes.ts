@@ -26,6 +26,7 @@ export const ROUTES: Routes = [
     pathMatch: 'full'
   },
   {
+    path: 'booking',
     canActivate: [AuthGuard, AcceptTermsGuard],
     loadChildren: '../booking/booking.module#BookingModule'
   },

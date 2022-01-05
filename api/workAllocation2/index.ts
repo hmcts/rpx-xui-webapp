@@ -16,6 +16,7 @@ import {
   handleCaseWorkerForLocation,
   handleCaseWorkerForLocationAndService,
   handleCaseWorkerForService,
+  handleCaseWorkersForServicesPost,
   handlePostCaseWorkersRefData,
   handlePostRoleAssignments,
   handlePostSearch
@@ -23,6 +24,7 @@ import {
 
 import { TASK_ROLES } from './constants/task-roles.mock.data';
 import { PaginationParameter } from './interfaces/caseSearchParameter';
+import { ServiceCaseworkerData } from './interfaces/caseworkerPayload';
 import { Caseworker } from './interfaces/common';
 import { TaskList } from './interfaces/task';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
@@ -44,6 +46,7 @@ import {
   getUniqueCasesCount,
   mapCasesFromData,
   mapCaseworkerData,
+  mapCaseworkerDataForServices,
   paginate,
   prepareCaseWorkerForLocation,
   prepareCaseWorkerForLocationAndService,
@@ -53,6 +56,7 @@ import {
   preparePaginationUrl,
   preparePostTaskUrlAction,
   prepareRoleApiRequest,
+  prepareRoleApiRequestForServices,
   prepareRoleApiUrl,
   prepareSearchTaskUrl,
   prepareTaskSearchForCompletable,
@@ -236,6 +240,24 @@ export async function retrieveAllCaseWorkers(req: EnhancedRequest, res: Response
   req.session.caseworkers = caseWorkerReferenceData;
   return caseWorkerReferenceData;
 }
+
+export async function retrieveCaseWorkersForServices(req: EnhancedRequest, res: Response): Promise<Caseworker[]> {
+  if (req.session && req.session.caseworkers) {
+    return req.session.caseworkers;
+  }
+  const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
+  const jurisdictions = req.body.serviceIds as string [];
+  const roles = {}; // get the roles from the endpoint
+  const payload = prepareRoleApiRequestForServices(jurisdictions, roles);
+  const data: ServiceCaseworkerData [] = await handleCaseWorkersForServicesPost(roleApiPath, payload, req);
+  const userIds = getUserIdsFromRoleApiResponse(data);
+  const userUrl = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
+  const userResponse = await handlePostCaseWorkersRefData(userUrl, userIds, req);
+  const caseWorkerReferenceData = mapCaseworkerDataForServices(userResponse.data, data);
+  req.session.caseworkers = caseWorkerReferenceData;
+  return caseWorkerReferenceData;
+}
+
 
 /**
  * Get CaseWorkers for Location

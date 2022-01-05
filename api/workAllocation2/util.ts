@@ -15,6 +15,7 @@ import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX, ViewType } from './constants/actions';
 import { Case } from './interfaces/case';
 import { PaginationParameter } from './interfaces/caseSearchParameter';
+import { CaseworkerPayload, ServiceCaseworkerData } from './interfaces/caseworkerPayload';
 import { Action, Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/common';
 import { Person, PersonRole } from './interfaces/person';
 import { RoleCaseData } from './interfaces/roleCaseData';
@@ -138,6 +139,29 @@ export function assignActionsToCases(cases: any[], isAllocator: boolean): any[] 
   return casesWithActions;
 }
 
+export function mapCaseworkerDataForServices(caseWorkerData: CaseworkerApi[], roleAssignments: ServiceCaseworkerData[]): Caseworker[] {
+  const caseworkers: Caseworker[] = [];
+  roleAssignments.forEach(roleAssignment => {
+    // populate caseworkers data
+  });
+  return caseworkers;
+  // const caseworkers: Caseworker[] = [];
+  // if (caseWorkerData) {
+  //   caseWorkerData.forEach((caseWorkerApi: CaseworkerApi) => {
+  //     const thisCaseWorker: Caseworker = {
+  //       email: caseWorkerApi.email_id,
+  //       firstName: caseWorkerApi.first_name,
+  //       idamId: caseWorkerApi.id,
+  //       lastName: caseWorkerApi.last_name,
+  //       location: mapCaseworkerPrimaryLocation(caseWorkerApi.base_location),
+  //       roleCategory: getRoleCategory(roleAssignments, caseWorkerApi),
+  //     };
+  //     caseworkers.push(thisCaseWorker);
+  //   });
+  // }
+  // return caseworkers;
+}
+
 export function mapCaseworkerData(caseWorkerData: CaseworkerApi[], roleAssignments: RoleAssignment[]): Caseworker[] {
   const caseworkers: Caseworker[] = [];
   if (caseWorkerData) {
@@ -178,6 +202,34 @@ export function mapCaseworkerPrimaryLocation(baseLocation: LocationApi[]): Locat
 }
 
 export function prepareRoleApiRequest(jurisdictions: string[], locationId?: number): any {
+  const attributes: any = {
+    jurisdiction: jurisdictions,
+  };
+
+  const payload = {
+    attributes,
+    roleName: ['hearing-centre-admin', 'case-manager', 'ctsc', 'tribunal-caseworker',
+      'hmcts-legal-operations', 'task-supervisor', 'hmcts-admin',
+      'national-business-centre', 'senior-tribunal-caseworker', 'case-allocator'],
+    roleType: ['ORGANISATION'],
+    validAt: Date.UTC,
+  };
+  if (locationId) {
+    payload.attributes.primaryLocation = [locationId];
+  }
+  return payload;
+}
+
+export function prepareRoleApiRequestForServices(jurisdictions: string[], roles: any, locationId?: number): CaseworkerPayload [] {
+  // const payloads: []
+  jurisdictions.forEach(jurisdiction => {
+    // populate payload
+    // attributes jurisdiction array will alwaus have just one jurisdiction
+    // roleName filter by jurisdiction roles
+    // roleType: ['ORGANISATION'],
+    // validAt: Date.UTC,
+  })
+
   const attributes: any = {
     jurisdiction: jurisdictions,
   };

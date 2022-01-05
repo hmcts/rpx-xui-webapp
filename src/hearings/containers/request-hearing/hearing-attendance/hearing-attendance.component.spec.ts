@@ -371,3 +371,4 @@ describe('HearingAttendanceComponent', () => {
     fixture.destroy();
   });
 });
+

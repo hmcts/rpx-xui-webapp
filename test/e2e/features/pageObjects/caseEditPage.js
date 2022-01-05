@@ -13,7 +13,7 @@ class caseEditPage {
         this.continueButton = new Button('button[type=submit]');
         this.checkURanswerPageData;
 
-        this.validationErrorContainer = $('ccd-case-edit-page .error-summary');
+        this.validationErrorContainer = $('ccd-case-edit-page .govuk-error-summary');
 
         this.caseListPage = new CaseListPage();
     }

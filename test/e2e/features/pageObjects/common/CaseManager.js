@@ -386,15 +386,26 @@ class CaseManager {
                 await BrowserWaits.retryWithActionCallback(async () => {
                     var fileToUpload = path.resolve(__dirname, "../../../documents/dummy.pdf");
                     await ccdField.$('input.form-control').sendKeys(fileToUpload);
+                    const statusMessageELement = ccdField.$("span.error-message") 
+                    let statusMessage = "";
 
                     await BrowserWaits.waitForCondition(async () => {
-                        let isUploadDone = await ccdField.element(by.xpath('span[contains(text(),"Uploading")]')).isPresent();
-                        console.log("file upload status : " + isUploadDone);
-                        return !isUploadDone;
+                        let isStatusDisplayed = await statusMessageELement.isPresent();
+                        if (isStatusDisplayed){
+                            statusMessage = await statusMessageELement.getText(); 
+                        }
+                        console.log(`file upload status : Status message is displayed : ${isStatusDisplayed} : ${statusMessage}` );
+                        return !isStatusDisplayed || statusMessage.includes("error");
                     });
-                    let uploadError = await ccdField.element(by.xpath('span[contains(text(),"error")]')).isPresent();
+
+                    let isStatusDisplayed = await statusMessageELement.isPresent();
+                    if (isStatusDisplayed) {
+                        statusMessage = await statusMessageELement.getText();
+                    }
+
+                    let uploadError = isStatusDisplayed || statusMessage.includes("error");
                     if (uploadError) {
-                        throw new Error('File upload error occured');
+                        throw new Error(`file upload error occured : Status message is displayed : ${isStatusDisplayed} : ${statusMessage}` );
                     }
                     cucumberReporter.AddMessage(fieldName + " : dummy.pdf");
                     this._appendFormPageValues(fieldName1, "dummy.pdf");

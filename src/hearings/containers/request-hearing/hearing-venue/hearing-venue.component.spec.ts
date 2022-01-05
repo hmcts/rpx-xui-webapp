@@ -1,14 +1,15 @@
-import {Component, CUSTOM_ELEMENTS_SCHEMA, Input} from '@angular/core';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {AbstractControl, FormBuilder, ReactiveFormsModule} from '@angular/forms';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { ACTION } from '../../../models/hearings.enum';
 import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
 import { SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
-import {LocationByEPIMSModel} from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
-import {provideMockStore} from '@ngrx/store/testing';
-import {Observable, of} from 'rxjs';
-import {HearingsService} from '../../../services/hearings.service';
-import {HearingVenueComponent} from './hearing-venue.component';
+import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { provideMockStore } from '@ngrx/store/testing';
+import { Observable, of } from 'rxjs';
+import { HearingsService } from '../../../services/hearings.service';
+import { HearingVenueComponent } from './hearing-venue.component';
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -19,7 +20,7 @@ class MockHearingPartiesComponent {
 }
 
 class NativeElement {
-  public focus() {}
+  public focus() { }
 }
 class MockAutoCompleteInputBox {
   public nativeElement: NativeElement = new NativeElement();
@@ -39,7 +40,7 @@ class MockLocationSearchContainerComponent {
   public autoCompleteInputBox: MockAutoCompleteInputBox = new MockAutoCompleteInputBox();
 }
 
-describe('HearingVenueComponent', () => {
+fdescribe('HearingVenueComponent', () => {
   let component: HearingVenueComponent;
   let fixture: ComponentFixture<HearingVenueComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
@@ -104,10 +105,10 @@ describe('HearingVenueComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
-      declarations: [HearingVenueComponent, MockLocationSearchContainerComponent, MockHearingPartiesComponent ],
+      declarations: [HearingVenueComponent, MockLocationSearchContainerComponent, MockHearingPartiesComponent],
       providers: [
-        provideMockStore({initialState}),
-        {provide: HearingsService, useValue: hearingsService},
+        provideMockStore({ initialState }),
+        { provide: HearingsService, useValue: hearingsService },
         FormBuilder
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -117,18 +118,39 @@ describe('HearingVenueComponent', () => {
 
   beforeEach(() => {
     const fb = TestBed.get(FormBuilder);
-    const form =  fb.group({
+    const form = fb.group({
       locationSelectedFormControl: [null]
     });
     fixture = TestBed.createComponent(HearingVenueComponent);
     component = fixture.componentInstance;
+    component.selectedLocations$ = of([{
+      epims_id: '1',
+      court_name: 'wolverhampton court',
+      region: 'welsh'
+    }] as LocationByEPIMSModel[]);
     fixture.detectChanges();
     spyOn(component, 'removeSelection').and.callThrough();
     spyOn(component.selectedLocations$, 'subscribe').and.returnValue(of([]));
     spyOn(component, 'getLocationSearchFocus').and.callThrough();
     spyOn(component, 'appendLocation').and.callThrough();
+    spyOn(component, 'prepareHearingRequestData').and.callThrough();
+    spyOn(component, 'isFormValid').and.callThrough();
     component.searchLocationComponent = new MockLocationSearchContainerComponent() as unknown as SearchLocationComponent;
     spyOn(component.searchLocationComponent.autoCompleteInputBox.nativeElement, 'focus');
+  });
+
+  it('should call prepareHearingRequestData when executeAction is called with a valid form', () => {
+    component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
+    fixture.detectChanges();
+    component.executeAction(ACTION.CONTINUE);
+    expect(component.prepareHearingRequestData).toHaveBeenCalled();
+  });
+
+  it('should true when calling isFormValid with partyChannel', () => {
+    component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
+    fixture.detectChanges();
+    const formValid = component.isFormValid();
+    expect(formValid).toEqual(true);
   });
 
   it('should initialise component', async () => {
@@ -167,7 +189,7 @@ describe('HearingVenueComponent', () => {
   });
 
   it('should remove selection in selection list', async () => {
-    const location =  {
+    const location = {
       court_venue_id: '100',
       epims_id: '219164',
       is_hearing_location: 'Y',
@@ -192,7 +214,7 @@ describe('HearingVenueComponent', () => {
   });
 
   it('should show error when there is no locations found', async (done) => {
-    const location =  {
+    const location = {
       court_venue_id: '100',
       epims_id: '219164',
       is_hearing_location: 'Y',
@@ -217,7 +239,7 @@ describe('HearingVenueComponent', () => {
       expect(errorElement).toBeDefined();
     });
 
-    component.selectedLocations$ = of([ location ]);
+    component.selectedLocations$ = of([location]);
 
     component.removeSelection(location);
     fixture.detectChanges();

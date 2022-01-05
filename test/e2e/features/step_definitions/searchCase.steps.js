@@ -118,11 +118,50 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
   });
 
   When('I click apply to perform case search', async function () {
+    const caseListContainer = $("exui-case-list");
+    const searchCasesContainer = $("exui-search-case");
+
+    let isCaseListPage = await caseListContainer.isPresent();
+    let isSearchCasesPage = await searchCasesContainer.isPresent();
+
+    
     await BrowserWaits.retryWithActionCallback(async () => {
       try{
-        await searchPage.clickApplyButton();
+        if (isSearchCasesPage){
+          await searchPage.clickApplyButton();
+ 
+        } else if (isCaseListPage){
+          await caseListPage.clickApplyButton();
+        }else{
+          throw new Error("Not case list or search page to perform filter apply action on workbasket or search inputs."); 
+        }
       }catch(err){
-        await BrowserWaits.waitForSeconds(5);
+        CucumberReporter.AddMessage(`Retrying steps select inputs and click apply`);
+
+        if (isSearchCasesPage) {
+          const caseTypeToSelect = RuntimeTestData.searchCasesInputs.casetype;
+          for (const caseType of RuntimeTestData.searchCasesInputs.casetypes) {
+            if (caseType !== caseTypeToSelect) {
+              await searchPage.selectCaseType(caseType);
+              break;
+            }
+          }
+          await BrowserWaits.waitForSeconds(2);
+          await searchPage.selectCaseType(caseTypeToSelect);
+
+
+        } else if (isCaseListPage) {
+          const caseTypeToSelect = RuntimeTestData.workbasketInputs.casetype;
+          for (const caseType of RuntimeTestData.workbasketInputs.casetypes) {
+            if (caseType !== caseTypeToSelect) {
+              await caseListPage.selectCaseType(caseType);
+              break;
+            }
+          }
+          await BrowserWaits.waitForSeconds(2);
+          await caseListPage.selectCaseType(caseTypeToSelect);
+
+        }
         throw new Error(err);
       }
     }); 

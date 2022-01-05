@@ -41,7 +41,8 @@ export class HearingJudgeNamesListComponent {
   }
   public isExcludeJudgeInputValid(): boolean {
     if (this.personControl.findPersonControl.value.length > 0) {
-      const message = this.selectedJudge ? HearingJudgeSelectionEnum.ExcludeJudge : HearingJudgeSelectionEnum.ExcludeFullNameJudge;
+      const isJudgeSelected = this.selectedJudge && this.personControl && this.personControl.isPersonSelectionCompleted;
+      const message = isJudgeSelected ? HearingJudgeSelectionEnum.ExcludeJudge : HearingJudgeSelectionEnum.ExcludeFullNameJudge;
       this.validationError = { id: 'inputSelectPersonExclude', message };
       this.personControl.findPersonGroup.setValidators([this.validatorsUtils.errorValidator(message)]);
       this.personControl.findPersonGroup.updateValueAndValidity();

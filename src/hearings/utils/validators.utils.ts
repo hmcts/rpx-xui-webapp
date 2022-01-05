@@ -5,7 +5,12 @@ import { HearingDateEnum } from '../models/hearings.enum';
 
 @Injectable({ providedIn: 'root' })
 export class ValidatorsUtils {
-  numberLargerThanValidator: any;
+  public numberLargerThanValidator(greaterThan: number): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const inputNumber = Number(control.value);
+      return control.value ? !isNaN(Number(control.value)) && inputNumber >= greaterThan ? null : { isValid: false } : { isValid: false };
+    };
+  }
 
   public numberMinMaxValidator(minNumber: number, maxNumber: number): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {

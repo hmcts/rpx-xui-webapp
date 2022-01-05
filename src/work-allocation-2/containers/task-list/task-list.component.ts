@@ -57,10 +57,7 @@ export class TaskListComponent implements OnChanges {
       return false;
     }
     const {defaultSortFieldName, defaultSortDirection} = this.taskServiceConfig;
-    if (this.sortedBy.fieldName === defaultSortFieldName && this.sortedBy.order === defaultSortDirection) {
-      return false;
-    }
-    return true;
+    return !(this.sortedBy.fieldName === defaultSortFieldName && this.sortedBy.order === defaultSortDirection);
   }
 
   public selectTaskFromUrlHash(url: string): Task | null {

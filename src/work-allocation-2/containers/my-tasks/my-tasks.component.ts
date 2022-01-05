@@ -43,8 +43,12 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
         { key: 'state', operator: 'IN', values: ['assigned'] }
       ];
       const locationParameter = this.getLocationParameter();
+      const typesOfWorkParameter = this.getTypesOfWorkParameter();
       if (locationParameter) {
         searchParameters.push(locationParameter);
+      }
+      if (typesOfWorkParameter) {
+        searchParameters.push(typesOfWorkParameter);
       }
       return {
         search_parameters: searchParameters,
@@ -65,6 +69,14 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
   private getLocationParameter(): SearchTaskParameter {
     if (this.selectedLocations && this.selectedLocations.length > 0) {
       return { key: 'location', operator: 'IN', values: this.selectedLocations };
+    } else {
+      return null;
+    }
+  }
+
+  private getTypesOfWorkParameter(): SearchTaskParameter {
+    if (this.selectedWorkTypes && this.selectedWorkTypes.length > 0) {
+      return { key: 'work_type', operator: 'IN', values: this.selectedWorkTypes };
     } else {
       return null;
     }

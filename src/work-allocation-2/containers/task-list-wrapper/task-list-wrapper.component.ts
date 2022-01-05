@@ -36,6 +36,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public pagination: PaginationParameter;
   private pTasks: Task[] = [];
   public selectedLocations: string[] = [];
+  public selectedWorkTypes: string[] = [];
   private tasksLoaded: boolean = false;
   protected userDetailsKey: string = 'userDetails';
 
@@ -159,8 +160,10 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       )
       .subscribe((f: FilterSetting) => {
         const newLocations = f.fields.find((field) => field.name === 'locations').value;
+        const newWorkTypes = f.fields.find((field) => field.name === 'types-of-work').value;
         this.resetPagination(this.selectedLocations, newLocations);
         this.selectedLocations = newLocations;
+        this.selectedWorkTypes = newWorkTypes.filter(workType => workType !== 'types_of_work_all');
         this.doLoad();
     });
   }

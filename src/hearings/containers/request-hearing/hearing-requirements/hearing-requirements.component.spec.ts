@@ -1,9 +1,9 @@
 import {Component, CUSTOM_ELEMENTS_SCHEMA, Input} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {ActivatedRoute} from '@angular/router';
 import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
-import * as _ from 'underscore';
 import {ACTION} from '../../../models/hearings.enum';
 import {ServiceHearingValuesModel} from '../../../models/serviceHearingValues.model';
 import {HearingsService} from '../../../services/hearings.service';
@@ -157,6 +157,16 @@ describe('HearingRequirementsComponent', () => {
       providers: [
         provideMockStore({initialState}),
         {provide: HearingsService, useValue: hearingsService},
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                caseFlags: null,
+              },
+            },
+          },
+        }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
@@ -173,19 +183,6 @@ describe('HearingRequirementsComponent', () => {
   it('should set option collection', () => {
     expect(component).toBeDefined();
     expect(component.hearingValueModel).toEqual(hearingValueModel);
-  });
-
-  it('should call convertMapToArray during onint call', () => {
-    expect(component).toBeDefined();
-    const caseFlags = _.groupBy(component.hearingValueModel.caseFlags.flags, 'partyName');
-    const caseFlagConverted = component.convertMapToArray(caseFlags);
-    expect(caseFlagConverted.length).toBeGreaterThan(0);
-  });
-
-  it('should assign values to caseFlags once convertMapToArray is called', () => {
-    component.assignHearingValue(hearingValueModel);
-    expect(component.hearingValueModel).toEqual(hearingValueModel);
-    expect(component.caseFlags.length).toEqual(2);
   });
 
   it('should call unsubscribe', () => {

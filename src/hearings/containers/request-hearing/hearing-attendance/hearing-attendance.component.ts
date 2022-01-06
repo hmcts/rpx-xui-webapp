@@ -22,7 +22,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   public attendanceFormGroup: FormGroup;
   public validationErrors: { id: string, message: string }[] = [];
   public hint: string = 'Where known, contact details for remote attendees will be included in the request.';
-  public title: string = 'How will each party attend the hearing?';
+  public title: string = ' How will each participant attend the hearing?';
   public partiesFormArray: FormArray;
   public formValid: boolean = true;
   public partyChannels: Observable<RefDataModel[]>;
@@ -73,11 +73,6 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
           });
         }
       });
-  }
-
-  public get bothNotAttendingRule(): boolean {
-    return !((this.attendanceFormGroup.controls.parties as FormArray).controls.filter(control => control.value &&
-      control.value.partyChannel !== 'notattending').length === 0);
   }
 
   public executeAction(action: ACTION): void {

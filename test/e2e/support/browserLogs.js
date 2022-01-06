@@ -1,12 +1,19 @@
-
 const cucumberReporter = require('./reportLogger');
 
 class BrowserLogs {
 
 
-    constructor(){
+    constructor() {
         this.networklogs = []
         this.browserlogs = [];
+        this.javascriptErrors = []
+
+        this.ignoreItemsList = [
+            "activity/cases",
+            "/api/monitoring-tools",
+            "dc.services.visualstudio.com"
+            
+        ];
 
         this.ignoreItemsList = [
             "activity/cases",
@@ -15,13 +22,14 @@ class BrowserLogs {
 
     }
 
-    clearLogs(){
+    clearLogs() {
         this.networklogs = [];
         this.browserlogs = [];
+        this.javascriptErrors = []
 
     }
 
-    async getBrowserLogs(){
+    async getBrowserLogs() {
         let browserLog = await browser.manage().logs().get('browser');
         let browserErrorLogs = []
         for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++) {
@@ -33,13 +41,16 @@ class BrowserLogs {
                 }
 
                 let ignore = false;
-                for (const ignoreItem of this.ignoreItemsList){
-                    if (browserLog[browserLogCounter]['message'].includes(ignoreItem)){
+                for (const ignoreItem of this.ignoreItemsList) {
+                    if (browserLog[browserLogCounter]['message'].includes(ignoreItem)) {
                         ignore = true;
-                        break;
-                    }    
+                        break; 
+                    } 
                 }
-                if (!ignore){
+                
+                if (browserLog[browserLogCounter]['message'].includes("ERROR [") || browserLog[browserLogCounter]['message'].includes(".js")) {
+                    this.javascriptErrors.push(`${browserLog[browserLogCounter]['time']} : [${browserLog[browserLogCounter]['level']}] ${browserLog[browserLogCounter]['message']} `);
+                }else if (!ignore) {
                     browserErrorLogs.push(`${browserLog[browserLogCounter]['time']} : [${browserLog[browserLogCounter]['level']}] ${browserLog[browserLogCounter]['message']} `);
                 }
             }
@@ -47,19 +58,29 @@ class BrowserLogs {
         return browserErrorLogs;
     }
 
-    async printBrowserLogs(){
+    async printBrowserLogs() {
         const browserErrorLogs = await this.getBrowserLogs();
         this.browserlogs.push(...browserErrorLogs)
+        cucumberReporter.AddMessage("--------------------- Network logs Start---------------------");
         for (const log of browserErrorLogs) {
             cucumberReporter.AddMessage(log);
         }
+        cucumberReporter.AddMessage("--------------------- Network logs End -----------------------");
+
         return this.browserlogs;
     }
 
-    async printAllBrowserLogs(){
+    async printAllBrowserLogs() {
         const browserErrorLogs = await this.getBrowserLogs();
         this.browserlogs.push(...browserErrorLogs)
+
+        cucumberReporter.AddMessage("************* Netwrok errors *****************");
         for (const log of this.browserlogs) {
+            cucumberReporter.AddMessage(log);
+        }
+
+        cucumberReporter.AddMessage("************* Javascript errors *****************");
+        for (const log of this.javascriptErrors) {
             cucumberReporter.AddMessage(log);
         }
         return this.browserlogs;
@@ -67,29 +88,29 @@ class BrowserLogs {
 
 
 
-    async getNetworkLogs(){
+    async getNetworkLogs() {
         let browserLog = await browser.manage().logs().get('performance');
         const browserErrorLogs = [];
 
         const methods = [];
         for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++) {
             const networkMessage = JSON.parse(browserLog[browserLogCounter].message);
-           
+
             browserLog[browserLogCounter]['time'] = (new Date(browserLog[browserLogCounter]['timestamp'])).toISOString()
-           
-            if (!methods.includes(networkMessage.message.method)){
+
+            if (!methods.includes(networkMessage.message.method)) {
                 methods.push(networkMessage.message.method);
             }
 
             if (networkMessage.message.method === 'Network.responseReceived' ||
-                networkMessage.message.method === 'Network.requestWillBeSent'){
-                try{
+                networkMessage.message.method === 'Network.requestWillBeSent') {
+                try {
                     browserLog[browserLogCounter].requestDetails = {
                         method: networkMessage.message.params.request.method,
                         url: networkMessage.message.params.request.url
                     };
 
-                    if (networkMessage.message.method === 'Network.responseReceived'){
+                    if (networkMessage.message.method === 'Network.responseReceived') {
                         browserLog[browserLogCounter].responseDetails = {
                             status: networkMessage.message.params.response.status + ' ' + networkMessage.message.params.response.statusText,
                             url: networkMessage.message.params.response.url
@@ -99,12 +120,12 @@ class BrowserLogs {
                     delete perfItem.message;
 
                     browserErrorLogs.push(perfItem);
-                }catch(err){
-                   console.log(err); 
+                } catch (err) {
+                    console.log(err);
                     // cucumberReporter.AddMessage('');
                     // cucumberReporter.AddJson(networkMessage);
                 }
-                
+
 
             }
 

@@ -47,15 +47,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
                 expect(await headerPage.isPrimaryTabPageDisplayed(headerTabLabel)).to.be.true
             }catch(err){
-                await cucumberReporter.AddMessage(`LD config for "mc-menu-items"`);
-                await cucumberReporter.AddJson(featureToggleUtil.getFeatureToggleValue('mc-menu-items')); 
- 
-                await cucumberReporter.AddMessage(`****** Retrying with page app reload *******`);
-                await browser.refresh();
-                await browserWaits.retryWithActionCallback(async () => {
-                    await headerpage.waitForPrimaryNavDisplay();
-                    await browserUtil.waitForLD();
-                });  
+                await headerPage.clickManageCases();
                 throw new Error(err);
             }
             

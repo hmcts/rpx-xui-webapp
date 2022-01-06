@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {select, Store} from '@ngrx/store';
 import {Subscription} from 'rxjs';
@@ -14,10 +14,28 @@ import {RequestHearingPageFlow} from '../request-hearing.page.flow';
   templateUrl: './hearing-requirements.component.html',
 })
 export class HearingRequirementsComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
-  public hearingStoreSub: Subscription;
+  public hearingValuesSub: Subscription;
   public hearingValueModel: ServiceHearingValuesModel;
   public caseFlagsRefData: CaseFlagReferenceModel[];
   public caseFlagType: CaseFlagType = CaseFlagType.REASONABLE_ADJUSTMENT;
+  public lostFocus: boolean = false;
+  public hearingListSub: Subscription;
+  public referenceId: string;
+
+  @HostListener('window:focus', ['$event'])
+  public onFocus(): void {
+    console.log('onFocus');
+    if (this.lostFocus) {
+      this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.referenceId));
+      this.lostFocus = false;
+    }
+  }
+
+  @HostListener('window:blur', ['$event'])
+  public onBlur(): void {
+    console.log('onBlur');
+    this.lostFocus = true;
+  }
 
   constructor(private readonly route: ActivatedRoute,
               protected readonly hearingStore: Store<fromHearingStore.State>,
@@ -27,7 +45,12 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   }
 
   public ngOnInit() {
-    this.hearingStoreSub = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesModel)).subscribe(
+    this.hearingListSub = this.hearingStore.pipe(select(fromHearingStore.getHearingList)).subscribe(
+      hearingList => {
+        this.referenceId = hearingList.hearingListMainModel ? hearingList.hearingListMainModel.caseRef : '';
+      }
+    );
+    this.hearingValuesSub = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesModel)).subscribe(
       hearingValueModel => {
         this.hearingValueModel = hearingValueModel;
       });
@@ -39,6 +62,11 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
 
   public ngOnDestroy() {
     super.unsubscribe();
-    this.hearingStoreSub.unsubscribe();
+    if (this.hearingListSub) {
+      this.hearingListSub.unsubscribe();
+    }
+    if (this.hearingValuesSub) {
+      this.hearingValuesSub.unsubscribe();
+    }
   }
 }

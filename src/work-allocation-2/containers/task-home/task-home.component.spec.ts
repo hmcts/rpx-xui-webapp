@@ -92,7 +92,6 @@ describe('TaskHomeComponent', () => {
         ExuiCommonLibModule,
         RouterTestingModule,
         WorkAllocationComponentsModule,
-        ExuiCommonLibModule
       ],
       declarations: [TaskHomeComponent, WrapperComponent, InfoMessageContainerComponent, ErrorMessageComponent],
       providers: [
@@ -117,6 +116,10 @@ describe('TaskHomeComponent', () => {
 
   it('should create', () => {
     expect(component).toBeDefined();
+  });
+
+  afterAll(() => {
+    TestBed.resetTestingModule();
   });
 
 });

@@ -1,4 +1,4 @@
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
@@ -6,13 +6,14 @@ import { of } from 'rxjs';
 
 import { Caseworker } from '../../../work-allocation-2/models/dtos';
 import { AnswersComponent } from '../../components/answers/answers.component';
-import { ExclusionNavigationEvent, RoleCategory, RoleExclusion } from '../../models';
+import { ExclusionNavigationEvent, RoleCategory } from '../../models';
 import { AnswerHeaderText, AnswerLabelText, ExclusionMessageText } from '../../models/enums';
-import { AllocateRoleService, RoleExclusionsService } from '../../services';
+import { RoleExclusionsService } from '../../services';
 import { DeleteExclusionComponent } from './delete-exclusion.component';
 
 @Component({
-  template: `<exui-delete-exclusion></exui-delete-exclusion>`
+  template: `
+    <exui-delete-exclusion></exui-delete-exclusion>`
 })
 class WrapperComponent {
   @ViewChild(DeleteExclusionComponent) public appComponentRef: DeleteExclusionComponent;
@@ -25,7 +26,7 @@ const mockCaseworker: Caseworker = {
   email: 'test@test.com',
   location: null,
   roleCategory: RoleCategory.LEGAL_OPERATIONS
-}
+};
 
 describe('DeleteExclusionComponent', () => {
   let component: DeleteExclusionComponent;
@@ -41,15 +42,15 @@ describe('DeleteExclusionComponent', () => {
   const goToCaseUrl = `cases/case-details/${exampleCaseId}/roles-and-access`;
   const jurisdiction = 'Jurisdiction';
   const caseType = 'caseType';
-  const exclusion = {caseId: exampleCaseId, exclusionId, jurisdiction, caseType, name: 'Sample Name', type: 'test', userType: 'LEGAL_OPERATIONS'};
+  const exclusion = { caseId: exampleCaseId, exclusionId, jurisdiction, caseType, name: 'Sample Name', type: 'test', userType: 'LEGAL_OPERATIONS' };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       schemas: [
         NO_ERRORS_SCHEMA
       ],
-      imports: [ HttpClientModule ],
-      declarations: [ AnswersComponent, DeleteExclusionComponent, WrapperComponent ],
+      imports: [HttpClientTestingModule],
+      declarations: [AnswersComponent, DeleteExclusionComponent, WrapperComponent],
       providers: [
         {
           provide: ActivatedRoute,
@@ -80,7 +81,7 @@ describe('DeleteExclusionComponent', () => {
         }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -93,7 +94,7 @@ describe('DeleteExclusionComponent', () => {
 
   afterEach(() => {
     fixture.destroy();
-  })
+  });
 
   it('should create', () => {
     expect(component).toBeDefined();
@@ -110,7 +111,7 @@ describe('DeleteExclusionComponent', () => {
     expect(routerMock.navigateByUrl).toHaveBeenCalledWith(goToCaseUrl);
     mockRoleExclusionService.deleteExclusion.and.returnValue(of(200));
     component.onNavEvent(ExclusionNavigationEvent.DELETE_EXCLUSION);
-    const additionalState = {state: {showMessage: true, messageText: ExclusionMessageText.Delete}};
+    const additionalState = { state: { showMessage: true, messageText: ExclusionMessageText.Delete } };
     expect(routerMock.navigate).toHaveBeenCalledWith([goToCaseUrl], additionalState);
   });
   it('populateAnswers', () => {
@@ -149,15 +150,15 @@ describe('DeleteExclusionComponent with no name', () => {
   const goToCaseUrl = `cases/case-details/${exampleCaseId}/roles-and-access`;
   const jurisdiction = 'Jurisdiction';
   const caseType = 'caseType';
-  const exclusion = {id: exclusionId, notes: null, added: new Date('21-01-2022'), caseId: exampleCaseId, jurisdiction, caseType, name: 'Sample Name', type: 'test', userType: 'LEGAL_OPERATIONS'};
+  const exclusion = { id: exclusionId, notes: null, added: new Date('21-01-2022'), caseId: exampleCaseId, jurisdiction, caseType, name: 'Sample Name', type: 'test', userType: 'LEGAL_OPERATIONS' };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       schemas: [
         NO_ERRORS_SCHEMA
       ],
-      imports: [ HttpClientModule ],
-      declarations: [ AnswersComponent, DeleteExclusionComponent, WrapperComponent ],
+      imports: [HttpClientTestingModule],
+      declarations: [AnswersComponent, DeleteExclusionComponent, WrapperComponent],
       providers: [
         {
           provide: ActivatedRoute,
@@ -192,7 +193,7 @@ describe('DeleteExclusionComponent with no name', () => {
         }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -205,7 +206,7 @@ describe('DeleteExclusionComponent with no name', () => {
 
   afterEach(() => {
     fixture.destroy();
-  })
+  });
 
   it('should create', () => {
     expect(component).toBeDefined();
@@ -230,14 +231,14 @@ describe('DeleteExclusionComponent with no name', () => {
     mockAllocateRoleService.getCaseRolesUserDetails.and.returnValue(userDetails);
     component.findAndSetExclusion([exclusion]);
     expect(component.roleExclusion.name).toBe('Sample Name');
-  })
+  });
 
   it('should navigate correctly on click', () => {
     component.onNavEvent(ExclusionNavigationEvent.CANCEL);
     expect(routerMock.navigateByUrl).toHaveBeenCalledWith(goToCaseUrl);
     mockRoleExclusionService.deleteExclusion.and.returnValue(of(200));
     component.onNavEvent(ExclusionNavigationEvent.DELETE_EXCLUSION);
-    const additionalState = {state: {showMessage: true, messageText: ExclusionMessageText.Delete}};
+    const additionalState = { state: { showMessage: true, messageText: ExclusionMessageText.Delete } };
     expect(routerMock.navigate).toHaveBeenCalledWith([goToCaseUrl], additionalState);
   });
   it('populateAnswers', () => {

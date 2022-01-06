@@ -150,7 +150,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE',
       },
     ],
-    flagAmendURL: '/',
+    flagAmendURL: '/flag/amend',
   },
   screenFlow: [
     {

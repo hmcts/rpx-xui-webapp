@@ -26,7 +26,7 @@ export interface ServiceHearingValuesModel {
   parties: PartyUnavailabilityModel[];
   caseFlags: {
     flags: PartyFlagsModel[],
-    flagAmendURL: '/',
+    flagAmendURL: string,
   };
   screenFlow: ScreenNavigationModel[];
   vocabulary: VocabularyModel[];

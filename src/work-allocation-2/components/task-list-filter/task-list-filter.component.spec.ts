@@ -59,7 +59,6 @@ describe('TaskListFilterComponent', () => {
     }
   ];
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
-  const SELECTED_LOCATIONS = {id: 'locations', fields: [{name: 'locations', value: ['231596', '698118']}]};
   const filterSettings = {
     id: 'locations',
     fields: [{
@@ -71,7 +70,7 @@ describe('TaskListFilterComponent', () => {
     }]
   };
   const mockFilterService: any = {
-    getStream: () => of(SELECTED_LOCATIONS),
+    getStream: () => of(filterSettings),
     get: jasmine.createSpy(),
     persist: jasmine.createSpy(),
     givenErrors: {
@@ -139,7 +138,7 @@ describe('TaskListFilterComponent', () => {
     fixture.detectChanges();
     const applyButton: DebugElement = fixture.debugElement.query(By.css('#applyFilter'));
     applyButton.nativeElement.click();
-    expect(component.selectedLocations.length).toEqual(2);
+    expect(component.selectedLocations.length).toEqual(10);
 
   }));
 

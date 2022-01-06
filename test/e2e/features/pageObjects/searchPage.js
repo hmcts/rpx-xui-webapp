@@ -1,16 +1,17 @@
 Dropdown = require('./webdriver-components/dropdown.js')
 Button = require('./webdriver-components/button.js')
 var BrowserWaits = require("../../support/customWaits");
-
+const RuntimeTestData = require('../../support/runtimeTestData');
+const CucumberReportLogger = require("../../support/reportLogger");
 const headerPage = require('./headerPage');
 class SearchPage {
 
   constructor(){
     this.header = '#content h1';
     this.jurisdiction = $('#s-jurisdiction');
-    this.searchFilterContainer= $("ccd-search-filters form");
+    this.searchFilterContainer = $("ccd-search-filters form,ccd-workbasket-filters form");
     this.caseType = $('#s-case-type');
-    this.applyButton = $('ccd-search-filters button:not(.button-secondary)');
+    this.applyButton = $('ccd-search-filters button:not(.button-secondary),ccd-workbasket-filters button:not(.button-secondary)');
     this.resetButton = $('#reset');
     this.caseReference='#\\[CASE_REFERENCE\\]';
     this.sccaseNumber='#caseReference';
@@ -36,17 +37,12 @@ class SearchPage {
     this.firstResultCaseLink = $("ccd-search-result>table>tbody>tr:nth-of-type(1)>td:nth-of-type(1)>a"); 
   }
 
-  async waitForSpinnerToDissappear() {
-  await BrowserWaits.waitForConditionAsync(async () => {
-    return !(await $(".loading-spinner-in-action").isPresent());
-  }, 40000);
-};
 
   async _waitForSearchComponent() {
     await BrowserWaits.retryWithActionCallback(async () => {
-      await BrowserWaits.waitForElement(this.searchFilterContainer);
+      await BrowserWaits.waitForElement(this.searchFilterContainer,"search page filters display",10);
     }, "Wait for search page, search input form to display");
-    await this.waitForSpinnerToDissappear();
+    await BrowserWaits.waitForSpinnerToDissappear();
 
   }
 
@@ -59,6 +55,19 @@ class SearchPage {
     await BrowserWaits.waitForElement(optionElement);
  
     await optionElement.click();
+
+    CucumberReportLogger.LogTestDataInput(`Search  page Jurisdiction : ${option}`);
+
+    RuntimeTestData.searchCasesInputs.jurisdiction = option;
+    const caseTypeElements = this.caseType.$$("option");
+    const caseTypesSize = await caseTypeElements.count();
+    RuntimeTestData.searchCasesInputs.casetypes = [];
+    for (let i = 0; i < caseTypesSize; i++) {
+      const option = await caseTypeElements.get(i);
+      const optionText = await option.getText();
+      RuntimeTestData.searchCasesInputs.casetypes.push(optionText);
+
+    }  
   }
 
   async selectCaseType(option){
@@ -69,22 +78,28 @@ class SearchPage {
     await BrowserWaits.waitForElement(optionElement);
 
     await optionElement.click();
+    CucumberReportLogger.LogTestDataInput(`Search  page case type : ${option}`);
+
+    RuntimeTestData.searchCasesInputs.casetype = option; 
+
   }
 
   async clickApplyButton() {
     await this._waitForSearchComponent();
     await BrowserWaits.waitForElement(this.applyButton);
+    await BrowserWaits.waitForSpinnerToDissappear();
     await BrowserWaits.waitForElementClickable(this.applyButton);
 
     await browser.executeScript('arguments[0].scrollIntoView()',
       this.applyButton); 
+    expect(await this.applyButton.isEnabled(),"Apply buttin is not enabled").to.be.true 
     await this.applyButton.click();
   }
 
   async clickResetButton() {
     await BrowserWaits.retryWithActionCallback(async () => {
       await this._waitForSearchComponent();
-      await this.waitForSpinnerToDissappear();
+      await BrowserWaits.waitForSpinnerToDissappear();
       await BrowserWaits.waitForElement(this.resetButton);
       await browser.executeScript('arguments[0].scrollIntoView()',
         this.resetButton);
@@ -100,7 +115,7 @@ class SearchPage {
     var thisPageUrl = await browser.getCurrentUrl();
 
     await BrowserWaits.retryWithActionCallback(async () =>{
-      await this.waitForSpinnerToDissappear();
+      await BrowserWaits.waitForSpinnerToDissappear();
       await browser.executeScript('arguments[0].scrollIntoView()',
         this.firstResultCaseLink);
       await this.firstResultCaseLink.click();

@@ -40,7 +40,7 @@ class MockLocationSearchContainerComponent {
   public autoCompleteInputBox: MockAutoCompleteInputBox = new MockAutoCompleteInputBox();
 }
 
-fdescribe('HearingVenueComponent', () => {
+describe('HearingVenueComponent', () => {
   let component: HearingVenueComponent;
   let fixture: ComponentFixture<HearingVenueComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
@@ -152,7 +152,6 @@ fdescribe('HearingVenueComponent', () => {
   });
 
   it('should set hearingList.hearingListMainModel to SSCS', () => {
-    // component.ngOnInit();
     fixture.whenStable().then(() => {
       fixture.detectChanges();
       component.selectedLocations$.subscribe(selectedLocations => {
@@ -216,7 +215,6 @@ fdescribe('HearingVenueComponent', () => {
     component.findLocationFormGroup.controls.locationSelectedFormControl.markAsDirty();
     fixture.detectChanges();
     const result = component.isLocationValid();
-    // expect(component.findLocationFormGroup.controls.locationSelectedFormControl.errors.required).toBeTruthy();
     expect(component.validationErrors).toEqual([]);
     expect(result).toEqual(true);
   });

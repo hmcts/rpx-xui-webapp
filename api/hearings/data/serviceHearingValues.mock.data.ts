@@ -1,6 +1,6 @@
 /* tslint:disable:object-literal-sort-keys */
-import {RequirementType} from '../models/hearings.enum';
-import {ServiceHearingValuesModel} from '../models/serviceHearingValues.model';
+import { RequirementType } from '../models/hearings.enum';
+import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
 
 export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   autoListFlag: false,
@@ -44,7 +44,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   hearingIsLinkedFlag: false,
   parties: [
     {
-      partyName: 'Jane and Smith',
+      partyName: 'Jane Smith',
       partyChannel: '',
       unavailability: [
         {
@@ -66,19 +66,19 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   caseFlags: {
     flags: [
       {
-        partyName: 'Jane and Smith',
+        partyName: 'Jane Smith',
         flagId: 'PF0015',
         flagDescription: 'Spanish interpreter required',
         flagStatus: 'ACTIVE',
       },
       {
-        partyName: 'Jane and Smith',
+        partyName: 'Jane Smith',
         flagId: 'RA0042',
         flagDescription: 'Sign language interpreter required',
         flagStatus: 'ACTIVE',
       },
       {
-        partyName: 'Jane and Smith',
+        partyName: 'Jane Smith',
         flagId: 'RA0001',
         flagDescription: 'Hearing loop required',
         flagStatus: 'ACTIVE',

@@ -18,13 +18,13 @@ import { SortField } from '../../models/common';
 import { Location, PaginationParameter, SearchCaseRequest, SortParameter } from '../../models/dtos';
 import {
   CaseworkerDataService,
+  JudicialWorkerDataService,
   LocationDataService,
   WASupportedJurisdictionsService,
   WorkAllocationCaseService
 } from '../../services';
 import { JurisdictionsService } from '../../services/juridictions.service';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
-import { JudicialWorkerDataService } from '../../services/judicialworker-data.service';
 
 @Component({
   templateUrl: 'work-case-list-wrapper.component.html',

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
 import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { select, Store } from '@ngrx/store';
+import { HearingErrorMessage } from 'api/hearings/models/hearings.enum';
 import { Observable, of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import * as fromHearingStore from '../../../../hearings/store';
@@ -79,7 +80,7 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
       });
     } else {
       this.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
-      this.setLocationError('Enter a valid location');
+      this.setLocationError(HearingErrorMessage.ENTER_A_VALID_LOCATION);
     }
   }
 
@@ -156,12 +157,12 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
     let returnValue: boolean = true;
     if (this.findLocationFormGroup.controls.locationSelectedFormControl.valid) {
       returnValue = false;
-      this.setLocationError('Enter a valid location');
+      this.setLocationError(HearingErrorMessage.ENTER_A_VALID_LOCATION);
     }
 
     if (!this.selectedLocations.length) {
       returnValue = false;
-      this.setLocationError('Enter a location');
+      this.setLocationError(HearingErrorMessage.ENTER_A_LOCATION);
     }
     return returnValue;
   }

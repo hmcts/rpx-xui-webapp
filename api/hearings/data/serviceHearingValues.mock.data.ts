@@ -44,7 +44,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   hearingIsLinkedFlag: false,
   parties: [
     {
-      partyName: 'Jane and Smith',
+      partyName: 'Jane Smith',
       partyChannel: '',
       unavailability: [
         {

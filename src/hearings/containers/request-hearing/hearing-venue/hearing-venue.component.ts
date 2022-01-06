@@ -42,12 +42,21 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
   }
 
   public ngOnInit(): void {
+    this.reInitiateState();
     this.hearingStore.pipe(select(fromHearingStore.getHearingList)).pipe(
       map(hearingList => hearingList.hearingListMainModel ? hearingList.hearingListMainModel.hmctsServiceID : '')
     ).subscribe(id => {
       this.serviceIds = id ? id : this.serviceIds;
     });
 
+    this.selectedLocations$.subscribe(selectedLocations => {
+      this.selectedLocations = selectedLocations;
+    });
+
+    this.getLocationSearchFocus();
+  }
+
+  public reInitiateState() {
     if (this.hearingRequestMainModel.hearingDetails &&
       this.hearingRequestMainModel.hearingDetails.hearingLocations &&
       this.hearingRequestMainModel.hearingDetails.hearingLocations.length) {
@@ -55,16 +64,11 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
         return {
           epims_id: hearingLocationModel.locationId,
           court_name: hearingLocationModel.locationName,
+          region: hearingLocationModel.region
         } as LocationByEPIMSModel;
       });
       this.selectedLocations$ = of(locations);
     }
-
-    this.selectedLocations$.subscribe(selectedLocations => {
-      this.selectedLocations = selectedLocations;
-    });
-
-    this.getLocationSearchFocus();
   }
 
   public addSelection(): void {
@@ -135,7 +139,8 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
       return {
         locationType: 'hearing',
         locationId: locationByEPIMSModel.epims_id,
-        locationName: locationByEPIMSModel.court_name
+        locationName: locationByEPIMSModel.court_name,
+        region: locationByEPIMSModel.region,
       } as HearingLocationModel;
     });
     this.hearingRequestMainModel = {

@@ -63,7 +63,14 @@ fdescribe('HearingVenueComponent', () => {
           hearingDetails: {
             duration: null,
             hearingType: null,
-            hearingLocations: [],
+            hearingLocations: [
+              {
+                locationType: 'region',
+                locationId: '123',
+                locationName: 'test location',
+                region: 'Wales',
+              }
+            ],
             hearingIsLinkedFlag: false,
             hearingWindow: null,
             privateHearingRequiredFlag: false,
@@ -130,6 +137,7 @@ fdescribe('HearingVenueComponent', () => {
     }] as LocationByEPIMSModel[]);
     fixture.detectChanges();
     spyOn(component, 'removeSelection').and.callThrough();
+    spyOn(component, 'reInitiateState').and.callThrough();
     spyOn(component.selectedLocations$, 'subscribe').and.returnValue(of([]));
     spyOn(component, 'getLocationSearchFocus').and.callThrough();
     spyOn(component, 'appendLocation').and.callThrough();
@@ -137,6 +145,28 @@ fdescribe('HearingVenueComponent', () => {
     spyOn(component, 'isFormValid').and.callThrough();
     component.searchLocationComponent = new MockLocationSearchContainerComponent() as unknown as SearchLocationComponent;
     spyOn(component.searchLocationComponent.autoCompleteInputBox.nativeElement, 'focus');
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should set hearingList.hearingListMainModel to SSCS', () => {
+    // component.ngOnInit();
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      component.selectedLocations$.subscribe(selectedLocations => {
+        expect(selectedLocations).toEqual([
+          {
+            epims_id: '123',
+            court_name: 'test location',
+            region: 'Wales',
+          } as LocationByEPIMSModel
+        ]);
+      });
+      expect(component.reInitiateState).toHaveBeenCalled();
+      expect(component.serviceIds).toEqual('SSCS');
+    });
   });
 
   it('should call prepareHearingRequestData when executeAction is called with a valid form', () => {
@@ -152,6 +182,45 @@ fdescribe('HearingVenueComponent', () => {
     const formValid = component.isFormValid();
     expect(formValid).toEqual(true);
   });
+
+  it('should return false for isFormValid when a location is selected and not added', () => {
+    const location: LocationByEPIMSModel = {
+      epims_id: '123',
+      court_name: 'Test Caurt Name',
+      region: 'Wales'
+    } as LocationByEPIMSModel;
+
+    component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(location);
+    fixture.detectChanges();
+    const formValid = component.isFormValid();
+    expect(formValid).toEqual(false);
+  });
+
+  it('should return false for isLocationValid when locationSelectedformcontrol is not valid and is dirty', () => {
+    component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
+    component.findLocationFormGroup.controls.locationSelectedFormControl.markAsDirty();
+    fixture.detectChanges();
+    const formValid = component.isLocationValid();
+    expect(component.findLocationFormGroup.controls.locationSelectedFormControl.errors.required).toBeTruthy();
+    expect(formValid).toEqual(false);
+  });
+
+  it('should return true for isLocationValid when locationSelectedformcontrol is not valid and is dirty', () => {
+    const location: LocationByEPIMSModel = {
+      epims_id: '123',
+      court_name: 'Test Caurt Name',
+      region: 'Wales'
+    } as LocationByEPIMSModel;
+
+    component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(location);
+    component.findLocationFormGroup.controls.locationSelectedFormControl.markAsDirty();
+    fixture.detectChanges();
+    const result = component.isLocationValid();
+    // expect(component.findLocationFormGroup.controls.locationSelectedFormControl.errors.required).toBeTruthy();
+    expect(component.validationErrors).toEqual([]);
+    expect(result).toEqual(true);
+  });
+
 
   it('should initialise component', async () => {
     expect(component).toBeDefined();

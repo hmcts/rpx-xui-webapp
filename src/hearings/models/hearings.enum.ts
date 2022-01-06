@@ -95,12 +95,17 @@ export enum HearingCategory {
   PanelMemberSpecialism = 'PanelMemberSpecialism',
   CancellationReasonCodes = 'CancellationReasonCodes',
   NonStdDurationReasonCodes = 'NonStdDurationReasonCodes',
-  EntityRoleCodes = 'EntityRoleCodes'
+  EntityRoleCodes = 'EntityRoleCodes',
+  JudgeType = 'JudgeType',
 }
 
 export enum HearingDateEnum {
   DisplayMonth = 'DD MMMM YYYY',
   DefaultFormat = 'DD-MM-YYYY'
+}
+
+export enum HearingStageEnum {
+  SelectHearingStageError = 'Select a hearing stage',
 }
 
 export enum HearingDatePriorityEnum {

@@ -1,4 +1,4 @@
-import { UserInfo } from 'auth/interfaces/UserInfo';
+import { UserInfo } from '../auth/interfaces/UserInfo';
 import { AxiosResponse } from 'axios';
 import * as express from 'express';
 import { NextFunction, Response } from 'express';
@@ -12,7 +12,6 @@ import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { JudicialUserDto } from './dtos/judicial-user-dto';
 import { RoleCategory } from './models/allocate-role.enum';
 import { CaseRoleRequestPayload, RoleExclusion } from './models/caseRoleRequestPayload';
-import { UserInfo } from '../auth/interfaces/UserInfo';
 import { release2ContentType } from './models/release2ContentType';
 
 const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);

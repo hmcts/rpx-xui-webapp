@@ -5,17 +5,18 @@ import { Router } from '@angular/router';
 import { LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
-import { PaginationParameter } from '../../../work-allocation-2/models/dtos';
+import { PaginationParameter } from '../../models/dtos';
 
 import { Task, TaskAction, TaskServiceConfig } from '../../../work-allocation-2/models/tasks';
 import { TaskFieldConfig } from '../../../work-allocation/models/tasks';
-import { TaskListComponent } from './task-list.component';
+import { ConfigConstants } from '../../components/constants';
+import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { SortOrder, TaskService } from '../../enums';
 import { FieldConfig, SortField } from '../../models/common';
-import { ConfigConstants } from '../../components/constants';
-import { getMockTasks, MockRouter } from '../../tests/utils.spec';
-import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { WorkAllocationTaskService } from '../../services';
+import { getMockTasks, MockRouter } from '../../tests/utils.spec';
+import { TaskListComponent } from './task-list.component';
+
 
 @Component({
   template: `
@@ -24,7 +25,7 @@ import { WorkAllocationTaskService } from '../../services';
       [tasks]='tasks'
       [tasksTotal]="tasksTotal"
       [taskServiceConfig]="taskServiceConfig"
-      [sortedBy]="SortField"
+      [sortedBy]="sortedBy"
       [pagination]="pagination"></exui-task-list>`
 })
 class WrapperComponent {

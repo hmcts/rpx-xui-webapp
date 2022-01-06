@@ -528,10 +528,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.4.21-case-share-fix-r1":
-  version "1.4.21-case-share-fix-r1"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.21-case-share-fix-r1.tgz#007ecf69dd5924ac8f1e8ac62848da1e514a38ee"
-  integrity sha512-GnF1Fu62FYFadwzd4i0hjIDlqnXQhIYAWmBo68fQ12KzCve1c3AUh/4kEVpIzLrja2/ISgJFIZyh9EGx49MuZQ==
+"@hmcts/rpx-xui-common-lib@1.4.21-case-share-fix-r2":
+  version "1.4.21-case-share-fix-r2"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.21-case-share-fix-r2.tgz#b761e8b0a474abeee4002aabcd0595e88341efce"
+  integrity sha512-PftWRfXR31A2RSD9mrgP27m1GDBAqm/DeIEgqRfUHuebuowrNpHy8zocrR99aWgsM99+G5MwVNJlTtZjBj/tqw==
   dependencies:
     tslib "^1.9.0"
 

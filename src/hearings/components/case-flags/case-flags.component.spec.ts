@@ -1051,6 +1051,11 @@ describe('CaseFlagsComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should displayCaseFlagsGroup', () => {
+    component.displayCaseFlagsGroup();
+    expect(component.caseFlagsGroup.length).toBe(2);
+  });
+
   it('should call convertMapToArray during onint call', () => {
     expect(component).toBeDefined();
     const caseFlags = _.groupBy(component.hearingValueModel.caseFlags.flags, 'partyName');

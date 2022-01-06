@@ -43,7 +43,7 @@ Feature: WA Release 2: My work - Work filters - Uhhappy paths
             | Caseworker IAC | caseworker-ia-caseofficer,caseworker-ia-admofficer |
     # | Judge          | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
-
+@test
     Scenario Outline:  Work filters api error <responseCode> on apply
         Given I set MOCK with "wa_release_2" release user and roles "<Roles>"
         Given I init MockApp
@@ -58,7 +58,7 @@ Feature: WA Release 2: My work - Work filters - Uhhappy paths
         Then I validate work filter button text is "Hide work filter"
         Then I validate location filter is displayed
         
-        Given I set MOCK api method "post" endpoint "/workallocation2/task/" with error response code <responseCode>
+        Given I set MOCK api method "post" endpoint "/workallocation2/task" with error response code <responseCode>
         Given I start MockApp
 
         When I click work location filter Apply button

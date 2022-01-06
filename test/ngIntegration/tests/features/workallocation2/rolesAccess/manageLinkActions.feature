@@ -1,4 +1,4 @@
-@ng 
+@ng
 Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
     Background: User and mock data setup
@@ -133,11 +133,12 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
         Then I see Allocate role work flow page "Check your changes" with caption "Reallocate a lead judge" is displayed
 
-        Then I see Check your answers page has total 2 questions
+        Then I see Check your answers page has total 3 questions
         Then I see Check your answers page has questions and answers with change link
-            | Question         | Answer                         |
-            | Person           | Lead judge(judge_user1@gov.uk) |
-            | Duration of role | Indefinite                     |
+            | Question                          | Answer                         |
+            | Who the role will be allocated to | Allocate to another person     |
+            | Person                            | Lead judge(judge_user1@gov.uk) |
+            | Duration of role                  | Indefinite                     |
 
         When I click button with label "Confirm allocation" in work flow  Check your answers page
         Then I see case details page displayed with tab "Roles and access" selected
@@ -193,11 +194,12 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
         Then I see Allocate role work flow page "Check your changes" with caption "Reallocate a legal ops case manager" is displayed
 
-        Then I see Check your answers page has total 2 questions
+        Then I see Check your answers page has total 3 questions
         Then I see Check your answers page has questions and answers with change link
-            | Question         | Answer                  |
-            | Person           | caseworker_user1@gov.uk |
-            | Duration of role | Indefinite              |
+            | Question                          | Answer                     |
+            | Who the role will be allocated to | Allocate to another person |
+            | Person                            | caseworker_user1@gov.uk    |
+            | Duration of role                  | Indefinite                 |
 
         When I click button with label "Confirm allocation" in work flow  Check your answers page
         Then I see case details page displayed with tab "Roles and access" selected
@@ -206,7 +208,7 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
 
 
-    Scenario: Leagk Ops user Reallocate a Legal Ops role
+    Scenario: Legal Ops user Reallocate a Legal Ops role
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
@@ -259,11 +261,12 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
         Then I see Allocate role work flow page "Check your changes" with caption "Reallocate a legal ops case manager" is displayed
 
-        Then I see Check your answers page has total 2 questions
+        Then I see Check your answers page has total 3 questions
         Then I see Check your answers page has questions and answers with change link
-            | Question         | Answer                                  |
-            | Person           | caseworker1 cw(caseworker_user1@gov.uk) |
-            | Duration of role | Indefinite                              |
+            | Question                          | Answer                                  |
+            | Who the role will be allocated to | Allocate to another person              |
+            | Person                            | caseworker1 cw(caseworker_user1@gov.uk) |
+            | Duration of role                  | Indefinite                              |
 
         When I click button with label "Confirm allocation" in work flow  Check your answers page
         Then I see case details page displayed with tab "Roles and access" selected
@@ -319,11 +322,12 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
         Then I see Allocate role work flow page "Check your changes" with caption "Reallocate a lead judge" is displayed
 
-        Then I see Check your answers page has total 2 questions
+        Then I see Check your answers page has total 3 questions
         Then I see Check your answers page has questions and answers with change link
-            | Question         | Answer             |
-            | Person           | judge_user1@gov.uk |
-            | Duration of role | Indefinite         |
+            | Question                          | Answer                     |
+            | Who the role will be allocated to | Allocate to another person |
+            | Person                            | judge_user1@gov.uk         |
+            | Duration of role                  | Indefinite                 |
 
         When I click button with label "Confirm allocation" in work flow  Check your answers page
         Then I see case details page displayed with tab "Roles and access" selected

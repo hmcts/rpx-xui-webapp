@@ -121,5 +121,4 @@ describe('TaskHomeComponent', () => {
   afterAll(() => {
     TestBed.resetTestingModule();
   });
-
 });

@@ -9,6 +9,7 @@ import { router as organisationRouter } from './organisations';
 import { router as waSupportedJurisdictionRouter } from './waSupportedJurisdictions';
 import roleAccessRouter from './roleAccess/routes';
 import userRouter from './user/routes';
+import { router as locationsRouter } from './locations/routes';
 
 const router = express.Router({mergeParams: true});
 
@@ -28,6 +29,7 @@ router.use('/user', userRouter);
 
 router.use('/role-access', roleAccessRouter);
 
+router.use('/locations', locationsRouter);
 // TODO: potentially can be moved to proxy but with onRes callback
 router.use('/caseshare', caseShareRoutes);
 router.use('/noc', nocRouter);

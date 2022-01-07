@@ -1,4 +1,4 @@
-import { UserInfo } from 'auth/interfaces/UserInfo';
+import { UserInfo } from '../auth/interfaces/UserInfo';
 import { AxiosResponse } from 'axios';
 import * as express from 'express';
 import { NextFunction, Response } from 'express';

@@ -15,6 +15,8 @@ Feature: WA Release 2: My work to  Available tasks to pagination sorting
         Given I start MockApp
 
         Given I navigate to home page
+        Then I see primary navigation tabs "My work" in main header
+
         When I navigate to My work sub navigation tab "Available tasks"
         Then I validate tasks count in page 25
         Then I validate task table pagination controls, is displayed state is "true"
@@ -74,6 +76,8 @@ Feature: WA Release 2: My work to  Available tasks to pagination sorting
         Given I start MockApp
 
         Given I navigate to home page
+        Then I see primary navigation tabs "My work" in main header
+
         When I navigate to My work sub navigation tab "Available tasks"
         Then I validate tasks count in page 20
         Then I validate task table pagination controls, is displayed state is "false"
@@ -95,6 +99,8 @@ Feature: WA Release 2: My work to  Available tasks to pagination sorting
         Given I start MockApp
 
         Given I navigate to home page
+        Then I see primary navigation tabs "My work" in main header
+
         When I navigate to My work sub navigation tab "Available tasks"
         Then I validate tasks count in page 0
         Then I validate task table pagination controls, is displayed state is "false"

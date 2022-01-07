@@ -16,7 +16,7 @@ const { Given, When, Then } = require('cucumber');
 
 const CucumberReportLog = require("./reportLogger");
 const BrowserLogs = require('./browserLogs');
-
+const RuntimetestData = require("./runtimeTestData");
 // defineSupportCode(function({After }) {
 //     registerHandler("BeforeFeature", { timeout: 500 * 1000 }, function() {
 //         var origFn = browser.driver.controlFlow().execute;
@@ -94,7 +94,8 @@ const BrowserLogs = require('./browserLogs');
 
 
 defineSupportCode(({ Before,After }) => {
-    Before(async function (scenario) {
+    Before(function (scenario) {
+        RuntimetestData.init();
         global.scenarioData = {};
         const world = this
         

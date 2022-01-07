@@ -42,7 +42,11 @@ class BrowserWaits{
         const startTime = Date.now();
         const waitTimeInMilliSec = waitInSec ? waitInSec * 1000 : this.waitTime;
         CucumberReporter.AddMessage("starting wait for element clickable max in sec " + waitTimeInMilliSec+ " : " + element.locator().toString());
-        await browser.wait(EC.elementToBeClickable(element), waitTimeInMilliSec, "Error waitForElementClickable : " + element.locator().toString());
+        try{
+            await browser.wait(EC.elementToBeClickable(element), waitTimeInMilliSec, "Error waitForElementClickable : " + element.locator().toString());
+        }catch(err){
+            CucumberReporter.AddMessage(`Wait for element clikable failed ${element.locator().toString()}, not throwing exception to let test fail in next step if required state not met`);  
+        }
         CucumberReporter.AddMessage("wait done in sec " + (Date.now() - startTime) / 1000); 
     }
 
@@ -95,6 +99,7 @@ class BrowserWaits{
 
             return currentPageUrl !== nextPage;
         }, this.waitTime, "Navigation to next page taking too long " + this.waitTime + ". Current page " + currentPageUrl + ". Errors => " + pageErrors);
+        return await browser.getCurrentUrl();
     }
 
     async waitForBrowserReadyState(waitInSec) {
@@ -135,8 +140,8 @@ class BrowserWaits{
         let isSuccess = false;
         let error = null;
         while (retryCounter <= this.retriesCount) {
-           
-            await this.waitForSeconds(retryCounter);
+            CucumberReporter.AddMessage(`Sleeping for ${retryCounter * 5}sec before performing action.`);  
+            await this.waitForSeconds(retryCounter*5);
             try {
                 const retVal = await callback();
                 isSuccess = true;
@@ -147,12 +152,20 @@ class BrowserWaits{
                 error = err
                 retryCounter += 1;
                 CucumberReporter.AddMessage(`Actions success Condition ${actionMessage ? actionMessage : ''} failed ${err.message} ${err.stack}. `);
-                CucumberReporter.AddMessage(`************************** Retrying attempt ${retryCounter} **************************`); 
+                CucumberReporter.AddMessage(`************** [ Retrying attempt ${retryCounter}. ] **************`); 
             }
         }
         if (!isSuccess){
             throw new Error(`Action failed to meet success condition after ${this.retriesCount} retry attempts.`,error.stack);
         }
+    }
+
+    async waitForSpinnerToDissappear(){
+        await this.waitForCondition(async () => {
+            const isSpinnerPresent = await $("div.spinner-container").isPresent();
+            CucumberReporter.AddMessage('Waiting for spinner to dissappear.');
+            return !isSpinnerPresent;
+        }, 'Spinner is still displayed after waiting ');
     }
 }
 

@@ -153,8 +153,8 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       maxSelected: 10,
       minSelectedError: 'At least one location is required',
       maxSelectedError: 'Maximum locations selected',
-      subTitle: 'Shows tasks and cases for the selected locations:',
-      type: 'checkbox'
+      subTitle: 'Search for a location by name',
+      type: 'find-location'
     };
     if (this.route.snapshot.data && this.route.snapshot.data.location) {
       const location: Location = this.route.snapshot.data.location;

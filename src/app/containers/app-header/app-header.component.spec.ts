@@ -4,7 +4,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Action, Store, StoreModule } from '@ngrx/store';
 import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
-import { AppConstants } from 'src/app/app.constants';
+import { AppConstants } from '../../../app/app.constants';
 import { LoggerService } from '../../services/logger/logger.service';
 import * as fromActions from '../../store';
 import { AppHeaderComponent } from './app-header.component';
@@ -100,7 +100,7 @@ describe('AppHeaderComponent', () => {
     it('should take a theme and update the app header properties.', () => {
 
       const defaultTheme = AppConstants.DEFAULT_USER_THEME;
-      const menuItems = AppConstants.DEFAULT_MENU_ITEMS
+      const menuItems = AppConstants.DEFAULT_MENU_ITEMS;
 
       component.setAppHeaderProperties(defaultTheme, menuItems);
 

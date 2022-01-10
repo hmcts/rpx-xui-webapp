@@ -1,20 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
+import { AppUtils } from '../../../app/app-utils';
+import { UserInfo, UserRole } from '../../../app/models';
 
 import { ConfigConstants } from '../../components/constants';
-import { InfoMessage, InfoMessageType, TaskActionType, TaskService, TaskSort } from '../../enums';
+import { InfoMessage, InfoMessageType, SortOrder, TaskActionType, TaskService } from '../../enums';
+import { FieldConfig } from '../../models/common';
+import { RouteData } from '../../models/common/route-data';
 import { InformationMessage } from '../../models/comms';
-import { TaskFieldConfig, TaskServiceConfig } from '../../models/tasks';
+import { TaskServiceConfig } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { ACTION } from '../../services/work-allocation-task.service';
 import { handleFatalErrors } from '../../utils';
 
-interface RouteData {
-  verb: TaskActionType;
-  successMessage: InfoMessage;
-  description?: string;
-  actionTitle?: string;
-}
 
 @Component({
   selector: 'exui-task-action-container',
@@ -23,36 +22,37 @@ interface RouteData {
 export class TaskActionContainerComponent implements OnInit {
   public tasks: any [];
   public sortedBy: any;
-  public addActionsColumn: boolean = false;
-
   public routeData: RouteData;
-
+  protected userDetailsKey: string = 'userDetails';
+  public isJudicial: boolean;
   constructor(
     private readonly taskService: WorkAllocationTaskService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly messageService: InfoMessageCommService
+    private readonly messageService: InfoMessageCommService,
+    private readonly sessionStorageService: SessionStorageService
   ) {}
 
-  public get fields(): TaskFieldConfig[] {
-    return ConfigConstants.TaskActionsWithAssignee;
+  public get fields(): FieldConfig[] {
+    return this.isJudicial ? ConfigConstants.TaskActionsWithAssigneeForJudicial : ConfigConstants.TaskActionsWithAssigneeForLegalOps;
   }
 
   private get returnUrl(): string {
-    let url: string;
     if (window && window.history && window.history.state) {
-      url = window.history.state.returnUrl;
+      const url = window.history.state.returnUrl;
+      return url.split('/').splice(0, 3).join('/');
     }
-    return url || '/work/my-work/list';
+    return '/work/my-work/list';
   }
 
   public taskServiceConfig: TaskServiceConfig = {
     service: TaskService.IAC,
-    defaultSortDirection: TaskSort.ASC,
+    defaultSortDirection: SortOrder.ASC,
     defaultSortFieldName: 'dueDate',
     fields: this.fields,
   };
   public ngOnInit(): void {
+    this.isJudicial = this.isCurrentUserJudicial();
     // Set up the default sorting.
     this.sortedBy = {
       fieldName: this.taskServiceConfig.defaultSortFieldName,
@@ -65,6 +65,16 @@ export class TaskActionContainerComponent implements OnInit {
     if (!this.routeData.actionTitle) {
       this.routeData.actionTitle = `${this.routeData.verb} task`;
     }
+  }
+
+  public isCurrentUserJudicial(): boolean {
+    const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
+    if (userInfoStr) {
+      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const isJudge = AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
+      return isJudge;
+    }
+    return false
   }
 
   public performAction(): void {

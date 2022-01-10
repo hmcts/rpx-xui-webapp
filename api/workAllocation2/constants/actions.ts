@@ -1,4 +1,4 @@
-import { Action } from '../interfaces/task';
+import { Action } from '../interfaces/common';
 
 export const ASSIGN: Action = {
   id: 'assign',
@@ -32,14 +32,32 @@ export const REASSIGN: Action = {
   id: 'reassign',
   title: 'Reassign task',
 };
+export const RE_ALLOCATE: Action = {
+  id: 'reallocate',
+  title: 'Reallocate',
+};
+export const REMOVE_ALLOCATE: Action = {
+  id: 'remove',
+  title: 'Remove Allocation',
+};
 
 export const VIEW_PERMISSIONS_ACTIONS_MATRIX = {
   // This matrix is for configuring permissions and actions defined in the work allocation permission table
   // level 1 - select a view, like 'MyTasks'
   // level 2 - select a permission, like 'Manage'
   // level 3 - return the actions array, like [REASSIGN, RELEASE, GO]
-  ActiveTasks: {
-    Manage: [REASSIGN, RELEASE, CLAIM],
+  ActiveTasksAssignedCurrentUser: {
+    Execute: [CLAIM, REASSIGN, RELEASE],
+  },
+  ActiveTasksAssignedOtherUser: {
+    Execute: [CLAIM],
+    Manage: [REASSIGN, RELEASE],
+  },
+  ActiveTasksUnassigned: {
+    Execute: [CLAIM],
+  },
+  AllCases: {
+    Manage: [RE_ALLOCATE, REMOVE_ALLOCATE],
   },
   AllWorkAssigned: {
     Cancel: [CANCEL],
@@ -54,6 +72,9 @@ export const VIEW_PERMISSIONS_ACTIONS_MATRIX = {
   AvailableTasks: {
     Manage: [CLAIM, CLAIM_AND_GO],
   },
+  MyCases: {
+    Manage: [REASSIGN, RELEASE, GO],
+  },
   MyTasks: {
     Manage: [REASSIGN, RELEASE, GO],
   },
@@ -66,4 +87,16 @@ export enum TaskPermission {
   OWN = 'Own',
   EXECUTE = 'Execute',
   CANCEL = 'Cancel',
+}
+
+export enum ViewType {
+  ACTIVE_TASKS = 'ActiveTasks',
+  ACTIVE_TASKS_ASSIGNED_CURRENT = 'ActiveTasksAssignedCurrentUser',
+  ACTIVE_TASKS_ASSIGNED_OTHER = 'ActiveTasksAssignedOtherUser',
+  ACTIVE_TASKS_UNASSIGNED = 'ActiveTasksUnassigned',
+  ALL_WORK = 'AllWork',
+  ALL_WORK_ASSIGNED = 'AllWorkAssigned',
+  ALL_WORK_UNASSIGNED = 'AllWorkUnassigned',
+  AVAILABLE_TASKS = 'AvailableTasks',
+  MY_TASKS = 'MyTasks',
 }

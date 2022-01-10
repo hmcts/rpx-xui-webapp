@@ -1,11 +1,10 @@
-@fullfunctional
 Feature: Test case type case list and find case workflow
 
   Background:
     When I navigate to Expert UI Url
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
-    
+
     Scenario: Validate workbasket inputs against the API response
         When I click on Case list
         Then I am on case list page
@@ -58,7 +57,7 @@ Feature: Test case type case list and find case workflow
         When I click on search button
         Then Search page should be displayed
         When I enter search fields jurisdiction "Family Divorce" case type "Divorce case - v115.00"
-        When I reset case search fields 
+        When I reset case search fields
         When I enter search fields jurisdiction "Family Divorce" case type "XUI Test Case type"
         When I click apply to perform case search
         Then I see results returned

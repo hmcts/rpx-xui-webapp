@@ -113,12 +113,12 @@ export class SearchFormComponent implements OnInit, OnDestroy {
       [SearchFormControl.ADDRESS_LINE_1]: '',
       [SearchFormControl.POSTCODE]: ['', SearchValidators.postcodeValidator()],
       [SearchFormControl.EMAIL]: ['', Validators.email],
-      [SearchFormControl.DATE_OF_BIRTH_DAY]: ['', SearchValidators.dayValidator()],
-      [SearchFormControl.DATE_OF_BIRTH_MONTH]: ['', SearchValidators.monthValidator()],
-      [SearchFormControl.DATE_OF_BIRTH_YEAR]: ['', SearchValidators.yearValidator()],
-      [SearchFormControl.DATE_OF_DEATH_DAY]: ['', SearchValidators.dayValidator()],
-      [SearchFormControl.DATE_OF_DEATH_MONTH]: ['', SearchValidators.monthValidator()],
-      [SearchFormControl.DATE_OF_DEATH_YEAR]: ['', SearchValidators.yearValidator()],
+      [SearchFormControl.DATE_OF_BIRTH_DAY]: '',
+      [SearchFormControl.DATE_OF_BIRTH_MONTH]: '',
+      [SearchFormControl.DATE_OF_BIRTH_YEAR]: '',
+      [SearchFormControl.DATE_OF_DEATH_DAY]: '',
+      [SearchFormControl.DATE_OF_DEATH_MONTH]: '',
+      [SearchFormControl.DATE_OF_DEATH_YEAR]: '',
       [SearchFormControl.SERVICES_LIST]: ''
     }, {
       validators: [SearchValidators.dateComparisonValidator(), SearchValidators.searchFormValidator()]
@@ -182,6 +182,9 @@ export class SearchFormComponent implements OnInit, OnDestroy {
   private validateForm(): boolean {
     // Reset validation error messages
     this.resetValidationErrorMessages();
+    // Re-evaluate date fields validity
+    this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).updateValueAndValidity();
+    this.formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).updateValueAndValidity();
 
     if (!this.formGroup.valid) {
       // Case reference
@@ -200,16 +203,14 @@ export class SearchFormComponent implements OnInit, OnDestroy {
         this.emailErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.EMAIL] };
       }
       // Date of birth
-      if (!this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).valid ||
-          !this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_MONTH).valid ||
-          !this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_YEAR).valid) {
+      // In the latest version of the XUI Common Library Date component, the validator is attached to the day field but covers the month and year, too
+      if (!this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).valid) {
         this.searchValidationErrors.push({ controlId: SearchFormControl.DATE_OF_BIRTH_DAY, documentHRef: 'dateOfBirth', errorMessage: SearchFormErrorMessage.DATE_OF_BIRTH });
         this.dateOfBirthErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.DATE_OF_BIRTH] };
       }
       // Date of death
-      if (!this.formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).valid ||
-          !this.formGroup.get(SearchFormControl.DATE_OF_DEATH_MONTH).valid ||
-          !this.formGroup.get(SearchFormControl.DATE_OF_DEATH_YEAR).valid) {
+      // As above for date of birth
+      if (!this.formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).valid) {
         this.searchValidationErrors.push({ controlId: SearchFormControl.DATE_OF_DEATH_DAY, documentHRef: 'dateOfDeath', errorMessage: SearchFormErrorMessage.DATE_OF_DEATH });
         this.dateOfDeathErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.DATE_OF_DEATH] };
       }

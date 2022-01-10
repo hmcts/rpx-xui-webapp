@@ -31,7 +31,7 @@ class GlobalSearchResultsPage{
 
     async isNoResultsPageDisplayed(){
         try{
-            await BrowserWaits.waitForElement(this.noResultsPageHeader );
+            await BrowserWaits.waitForElement(this.noResultsPageHeader,null,120 );
             return true;
         }catch(err){
             cucumberReporter.AddMessage(err);

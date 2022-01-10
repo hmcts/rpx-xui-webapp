@@ -40,6 +40,11 @@ export const ROUTES: Routes = [
     canActivate: [AuthGuard, AcceptTermsGuard],
     loadChildren: '../work-allocation/work-allocation.module#WorkAllocationModule'
   },
+  {
+    path: 'role-access',
+    canActivate: [AuthGuard, AcceptTermsGuard],
+    loadChildren: '../role-access/role-access.module#RoleAccessModule'
+  },
   // TODO: remove redundant redirections
   { path: 'case/:jurisdiction/:case-type/:cid', redirectTo: 'cases/case-details/:cid', pathMatch: 'full' },
   { path: 'case/:cid', redirectTo: 'cases/case-details/:cid', pathMatch: 'full' },
@@ -138,6 +143,16 @@ export const ROUTES: Routes = [
     data: {
       title: 'Search cases',
       needsFeaturesEnabled: ['feature-global-search'],
+      featureDisabledRedirect: '/'
+    }
+  },
+  {
+    path: 'refunds',
+    canActivate: [AuthGuard, AcceptTermsGuard, FeatureToggleGuard],
+    loadChildren: '../refunds/refunds.module#RefundsModule',
+    data: {
+      title: 'Refunds',
+      needsFeaturesEnabled: ['feature-refunds'],
       featureDisabledRedirect: '/'
     }
   },

@@ -158,12 +158,19 @@ describe('SearchFormComponent', () => {
 
   it('should isAnyError function return correct state', () => {
     component.formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).setValue(32);
+    component.formGroup.get(SearchFormControl.DATE_OF_BIRTH_MONTH).setValue(12);
+    component.formGroup.get(SearchFormControl.DATE_OF_BIRTH_YEAR).setValue(2021);
     component.onSubmit();
-    expect(component.isAnyError()).toEqual(true);
-
-    component.formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).setValue(10);
-    component.onSubmit();
+    // No errors expected because date validation is performed by the XUI Common Library Date component (not part of this test), so no
+    // validator is attached directly to the day field. Also, date comparison form validation passes because "date of death" is empty
     expect(component.isAnyError()).toEqual(false);
+
+    component.formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).setValue(null);
+    component.formGroup.get(SearchFormControl.DATE_OF_BIRTH_MONTH).setValue(null);
+    component.formGroup.get(SearchFormControl.DATE_OF_BIRTH_YEAR).setValue(null);
+    component.onSubmit();
+    // Error expected because no search criteria have been provided and form validation fails
+    expect(component.isAnyError()).toEqual(true);
   });
 
   it('should validateForm function return correct state', () => {

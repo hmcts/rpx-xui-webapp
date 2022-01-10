@@ -61,36 +61,6 @@ export class SearchValidators {
     };
   }
 
-  public static dayValidator(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      if (control.value === null || control.value === '') { return; }
-      if (control.value === 0 || control.value > 31) {
-        return {dateDay : true};
-      }
-      return null;
-    };
-  }
-
-  public static monthValidator(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      if (control.value === null || control.value === '') { return; }
-      if (control.value === 0 || control.value > 12) {
-        return {dateMonth : true};
-      }
-      return null;
-    };
-  }
-
-  public static yearValidator(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      if (control.value === null || control.value === '') { return; }
-      if (control.value === 0 || control.value < 1900) {
-        return {dateYear : true};
-      }
-      return null;
-    };
-  }
-
   public static dateComparisonValidator(): ValidatorFn {
     return (formGroup: AbstractControl): ValidationErrors | null => {
       // Set values to empty strings if they are not truthy
@@ -101,21 +71,18 @@ export class SearchValidators {
       const dateOfDeathMonth = formGroup.get(SearchFormControl.DATE_OF_DEATH_MONTH).value || '';
       const dateOfDeathYear = formGroup.get(SearchFormControl.DATE_OF_DEATH_YEAR).value || '';
 
-      // No comparison possible if either date has one or more blank fields (should no longer happen once the revised xuilib-gov-uk-date
-      // component with built-in validation is released in XUI Common Lib)
-      if (dateOfBirthDay === '' || dateOfBirthMonth === '' || dateOfBirthYear === '' ||
-          dateOfDeathDay === '' || dateOfDeathMonth === '' || dateOfDeathYear === '') {
+      // No comparison possible if either date is invalid (check validation status of day field, since XUI Common Library Date component
+      // attaches the validator to this field), or either date is completely empty (valid because both date fields are optional)
+      if (formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).invalid ||
+          formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).invalid ||
+          (dateOfBirthDay === '' && dateOfBirthMonth === '' && dateOfBirthYear === '') ||
+          (dateOfDeathDay === '' && dateOfDeathMonth === '' && dateOfDeathYear === '')) {
         return null;
       }
 
       // Form the dates. **Note: month ranges from 0-11 for the Date constructor!**
       const dateOfBirth = new Date(dateOfBirthYear, dateOfBirthMonth - 1, dateOfBirthDay);
       const dateOfDeath = new Date(dateOfDeathYear, dateOfDeathMonth - 1, dateOfDeathDay);
-
-      // Do not compare if one of the dates is not well formed
-      if (dateOfBirth.getFullYear() < 1900 || dateOfDeath.getFullYear() < 1900) {
-        return null;
-      }
 
       // Compare
       if (dateOfBirth > dateOfDeath) {

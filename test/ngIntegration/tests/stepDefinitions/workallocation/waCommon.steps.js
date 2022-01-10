@@ -100,7 +100,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
 
-    Given('I set MOCK with user {string} and roles {string}', async function (useridentifier, roles) {
+    Given('I set MOCK with user {string} and roles {string} with reference {string}', async function (useridentifier, roles,mockUserRef) {
         const testUserIdamId = testData.users.filter(testUser => testUser.userIdentifier === useridentifier)[0];
         if (!testUserIdamId) {
             throw new Error("Provided user identifer is not configured in test data. " + releaseUer);
@@ -110,12 +110,26 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await CucumberReporter.AddMessage(`${useridentifier} id ${testUserIdamId.idamId}`);
 
         roles = roles.split(",");
+        const userDetails = nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, userIdamID);
+        CucumberReporter.AddJson(userDetails);
+        global.scenarioData[mockUserRef] = userDetails;
         MockApp.onGet("/api/user/details", (req, res) => {
-            const userDetails = nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, userIdamID);
+            CucumberReporter.AddMessage("User details api response");
             CucumberReporter.AddJson(userDetails);
+
             res.send(userDetails);
         });
 
+    });
+
+    Given('I set MOCK user with reference {string} roleAssignmentInfo', async function(userDetailsRef, locatiosInfo){
+        const userDetails = global.scenarioData[userDetailsRef];
+        const locationInfos = [];
+        for (let loc of locatiosInfo.hashes()){
+            loc.isCaseAllocator = loc.isCaseAllocator === "true"
+            locationInfos.push(loc);
+        }
+        userDetails.roleAssignmentInfo = locationInfos;
     });
 
 
@@ -239,7 +253,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I validate task request body in reference {string} has locations set', async function(reference, locationsDatatable){
-       const reqBody = global.scenario[reference];
+       const reqBody = global.scenarioData[reference];
        return "Pending";
 
     });

@@ -1,9 +1,9 @@
-@ng @wa1 
+@ng @wa1
 Feature: WA Release 1: Available Tasks Task list
 
     Background: Mock and browser setup
         Given I init MockApp
-        Given I set MOCK with "wa_release_1" release user and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer"
+        Given I set MOCK with "wa_release_1" release user and roles "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer"
 
     Scenario: Available Tasks columns data validation
         Given I set MOCK available tasks count 25
@@ -78,18 +78,3 @@ Feature: WA Release 1: Available Tasks Task list
 
         Then I see Available tasks page displayed
         Then I validate Available tasks sort column persist in session
-
-    Scenario: Avaiable Tasks error responses
-        Given I set MOCK available tasks count 150
-        Given I start MockApp
-        Given I navigate to home page
-        When I click on primary navigation header tab "Task list", I see selected tab page displayed
-        Then I see Task list sub navigation tabs
-        When I click sub navigation tab Available tasks
-
-        Then I see Available tasks page displayed
-        Then I validate error responses on available tasks page
-
-
-
-

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ApplicationTheme } from 'src/app/models/theming.model';
+import { ApplicationTheme } from '../../../app/models/theming.model';
 import { AppConstants } from '../../app.constants';
 import { AppTitleModel } from '../../models/app-title.model';
 import { NavItemsModel } from '../../models/nav-item.model';

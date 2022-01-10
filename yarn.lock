@@ -528,10 +528,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.6.2-refactoring-search-location":
-  version "1.6.2-refactoring-search-location"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.2-refactoring-search-location.tgz#d7fa11f107a899f20eaec1aadf8e60ac05971380"
-  integrity sha512-fhBTrkkYuEpWywJbpX6dhU1n2+sAlMui4js7zTHaBximjztoSHHyz2Ni/nT5nHIiyep1xx9OED+LeBznOq2rcQ==
+"@hmcts/rpx-xui-common-lib@1.6.1-refactoring-search-location-rename-variable":
+  version "1.6.1-refactoring-search-location-rename-variable"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.1-refactoring-search-location-rename-variable.tgz#9a2b6d971f09aaab45ade60e1c3ffd97cd8bf975"
+  integrity sha512-sJ3SIXw7CBZotJU9Kpbh4C5VZFUxSnTx2X/K9pi07+igsbGTUbdjl+5TjNGvWo62woRyHmfgfLvJC9QOFypsVQ==
   dependencies:
     tslib "^1.9.0"
 

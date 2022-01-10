@@ -128,6 +128,36 @@ export const DEFAULT_PARTYCHANNEL_REF: RefDataModel[] = [
     parentKey: null,
   },
 ];
+export const DEFAULT_HEARING_CANCEL_REF: RefDataModel[] = [
+  {
+    key: 'reasoneone',
+    value_en: 'Reason 1',
+    value_cy: '',
+    hintText_EN: 'reason 1',
+    hintTextCY: '',
+    order: 1,
+    parentKey: null,
+  },
+  {
+    key: 'reasonetwo',
+    value_en: 'Reason 2',
+    value_cy: '',
+    hintText_EN: 'Reason 2',
+    hintTextCY: '',
+    order: 2,
+    parentKey: null,
+  },
+  {
+    key: 'reasonthree',
+    value_en: 'Reason 3',
+    value_cy: '',
+    hintText_EN: 'Reason 3',
+    hintTextCY: '',
+    order: 4,
+    parentKey: null,
+  },
+];
+
 
 export const SSCS_STAGES: RefDataByServiceModel = {
   serviceID: 'SSCS',
@@ -147,6 +177,10 @@ export const SSCS_JUDGE_TYPES: RefDataByServiceModel = {
   serviceID: 'SSCS',
   values: DEFAULT_JUDGE_TYPES_REF,
 };
+export const SSCS_CANCEL_HEARING: RefDataByServiceModel = {
+  serviceID: 'SSCS',
+  values: DEFAULT_HEARING_CANCEL_REF,
+};
 
 export const ALL_REF_DATA: RefDataByCategoryModel[] = [
   {
@@ -164,5 +198,9 @@ export const ALL_REF_DATA: RefDataByCategoryModel[] = [
   {
     categoryKey: 'JudgeType',
     services: [SSCS_JUDGE_TYPES],
+  },
+  {
+    categoryKey: 'CancelHearing',
+    services: [SSCS_CANCEL_HEARING],
   },
 ];

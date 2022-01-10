@@ -2,9 +2,43 @@
 <div class="govuk-width-container">
   <div class="page">
     <main id="content" role="main">
-      <p>
-        cancel-hearing works!
-      </p>
+      <a href="javascript:void(0)" class="govuk-back-link">Back</a>
+
+      <div class="govuk-grid-row">
+        <xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem'"></xuilib-hmcts-error-summary>
+
+        <div class="govuk-grid-column-two-thirds">
+          <form class="form" [formGroup]="hearingCancelForm">
+            <h1 class="govuk-heading-l">
+                Are you sure you want to cancel this hearing?
+            </h1>
+            <exui-hearing-parties-title></exui-hearing-parties-title>
+            <div class="govuk-form-group">
+              <fieldset class="govuk-fieldset">
+                  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                      <h1 class="govuk-fieldset__heading">
+                          Why is this hearing being cancelled?
+                      </h1>
+                  </legend>
+                  <div id="other-panel-roles-hint" class="govuk-hint">
+                      Select all that apply.
+                  </div>
+                  <div class="govuk-checkboxes" formArrayName="reasons" data-module="govuk-checkboxes">
+                    <div class="govuk-checkboxes__item" *ngFor="let reason of hearingCancelOptions;index as pos" [formGroupName]="pos">
+                      <input class="govuk-checkboxes__input" id="{{reason.key}}" name="pos" type="checkbox" formControlName="selected" [value]="reason.value_en">
+                      <label class="govuk-label govuk-checkboxes__label" for="{{reason.key}}" >{{reason.value_en}}</label>
+                    </div>
+                  </div>
+              </fieldset>
+            </div>
+            <button class="govuk-button" data-module="govuk-button">Continue</button>
+          </form>
+
+          <p class="govuk-body">
+            <a href="index" class="govuk-link">Do not cancel hearing</a>
+          </p>
+        </div>
+      </div>
     </main>
   </div>
 </div>

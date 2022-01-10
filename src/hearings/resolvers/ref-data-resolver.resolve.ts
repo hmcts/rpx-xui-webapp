@@ -3,10 +3,10 @@ import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap, take } from 'rxjs/operators';
-import { HearingCategory } from '../../models/hearings.enum';
-import { RefDataModel } from '../../models/refData.model';
-import { HearingsRefDataService } from '../../services/hearings-ref-data.service';
-import * as fromHearingStore from '../../store';
+import { HearingCategory } from '../models/hearings.enum';
+import { RefDataModel } from '../models/refData.model';
+import { HearingsRefDataService } from '../services/hearings-ref-data.service';
+import * as fromHearingStore from '../store';
 
 @Injectable({
   providedIn: 'root'

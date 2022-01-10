@@ -1,4 +1,6 @@
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {ActivatedRoute} from '@angular/router';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
 import {ACTION} from '../../../models/hearings.enum';
@@ -33,7 +35,18 @@ describe('HearingFacilitiesComponent', () => {
       providers: [
         provideMockStore({initialState}),
         {provide: HearingsService, useValue: hearingsService},
-      ]
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                caseFlags: null,
+              },
+            },
+          },
+        }
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingFacilitiesComponent);

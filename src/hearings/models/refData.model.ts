@@ -6,6 +6,7 @@ export interface RefDataModel {
   hintTextCY: string;
   order: number;
   parentKey: string;
+  selected?: boolean;
 }
 
 export interface RefDataByServiceModel {

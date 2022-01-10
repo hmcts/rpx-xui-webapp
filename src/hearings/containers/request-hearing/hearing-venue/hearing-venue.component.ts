@@ -18,7 +18,7 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 })
 export class HearingVenueComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
   public locationType: string;
-  public locationsDisplayedInDrop: LocationByEPIMSModel[];
+  public displayedLocations: LocationByEPIMSModel[];
   public selectedLocation: LocationByEPIMSModel;
   public serviceIds: string = 'SSCS';
   public findLocationFormGroup: FormGroup;
@@ -35,7 +35,7 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
       locationSelectedFormControl: [null, Validators.required]
     });
 
-    this.locationsDisplayedInDrop = [];
+    this.displayedLocations = [];
     this.selectedLocations = [];
   }
 
@@ -62,7 +62,7 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
     selectedLocations.push(this.findLocationFormGroup.controls.locationSelectedFormControl.value as LocationByEPIMSModel);
     this.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
     this.findLocationFormGroup.controls.locationSelectedFormControl.markAsPristine();
-    this.locationsDisplayedInDrop = [];
+    this.displayedLocations = [];
   }
 
   public removeSelection(location: LocationByEPIMSModel): void {

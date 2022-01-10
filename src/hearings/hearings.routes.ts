@@ -16,8 +16,9 @@ import {HearingVenueComponent} from './containers/request-hearing/hearing-venue/
 import {HearingWelshComponent} from './containers/request-hearing/hearing-welsh/hearing-welsh.component';
 import {RequestHearingComponent} from './containers/request-hearing/request-hearing.component';
 import {ViewHearingComponent} from './containers/view-hearing/view-hearing.component';
-import { HearingCategory } from './models/hearings.enum';
-import {RefDataResolver} from './resolvers/ref-data/ref-data-resolver.resolve';
+import {HearingCategory} from './models/hearings.enum';
+import {CaseFlagsResolver} from './resolvers/case-flags.resolver';
+import {RefDataResolver} from './resolvers/ref-data-resolver.resolve';
 
 export const ROUTES: Routes = [
   {
@@ -62,6 +63,7 @@ export const ROUTES: Routes = [
       },
       {
         path: 'hearing-requirements',
+        resolve: {caseFlags: CaseFlagsResolver},
         component: HearingRequirementsComponent,
         canActivate: [HealthCheckGuard],
         data: {
@@ -70,6 +72,7 @@ export const ROUTES: Routes = [
       },
       {
         path: 'hearing-facilities',
+        resolve: {caseFlags: CaseFlagsResolver},
         component: HearingFacilitiesComponent,
         canActivate: [HealthCheckGuard],
         data: {

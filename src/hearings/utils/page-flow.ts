@@ -4,7 +4,7 @@ import {select, Store} from '@ngrx/store';
 import {combineLatest, Observable} from 'rxjs';
 import {take} from 'rxjs/operators';
 import {HearingConditions} from '../models/hearingConditions';
-import {CONDITION_OPERATOR} from '../models/hearings.enum';
+import {ConditionOperator} from '../models/hearings.enum';
 import {ScreenNavigationModel} from '../models/screenNavigation.model';
 import * as fromHearingStore from '../store';
 import {AbstractPageFlow} from './abstract-page-flow';
@@ -38,10 +38,10 @@ export class PageFlow implements AbstractPageFlow {
             const conditionValue = hearingConditions[screenModel.conditionKey];
             screenModel.navigation.forEach(navigationModel => {
               switch (navigationModel.conditionOperator) {
-                case CONDITION_OPERATOR.INCLUDE:
+                case ConditionOperator.INCLUDE:
                   nextPage = conditionValue.includes(navigationModel.conditionValue) ? navigationModel.resultValue : nextPage;
                   break;
-                case CONDITION_OPERATOR.NOT_INCLUDE:
+                case ConditionOperator.NOT_INCLUDE:
                   nextPage = !conditionValue.includes(navigationModel.conditionValue) ? navigationModel.resultValue : nextPage;
                   break;
                 default:
@@ -69,10 +69,10 @@ export class PageFlow implements AbstractPageFlow {
               const conditionValue = hearingConditions[navModel.conditionKey];
               const navigation = navModel.navigation.find(nav => nav.resultValue === this.getCurrentPage());
               if (navigation) {
-                if (navigation.conditionOperator === CONDITION_OPERATOR.INCLUDE) {
+                if (navigation.conditionOperator === ConditionOperator.INCLUDE) {
                   lastPage = conditionValue.includes(navigation.conditionValue) ? navModel.screenName : lastPage;
                   break;
-                } else if (navigation.conditionOperator === CONDITION_OPERATOR.NOT_INCLUDE) {
+                } else if (navigation.conditionOperator === ConditionOperator.NOT_INCLUDE) {
                   lastPage = !conditionValue.includes(navigation.conditionValue) ? navModel.screenName : lastPage;
                   break;
                 }

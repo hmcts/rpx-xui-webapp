@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
 import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { select, Store } from '@ngrx/store';
-import { Observable, of, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import * as fromHearingStore from '../../../../hearings/store';
 import { HearingLocationModel } from '../../../models/hearingLocation.model';

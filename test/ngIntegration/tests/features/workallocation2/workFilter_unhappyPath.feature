@@ -43,7 +43,6 @@ Feature: WA Release 2: My work - Work filters - Uhhappy paths
             | Caseworker IAC | caseworker-ia-caseofficer,caseworker-ia-admofficer |
     # | Judge          | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
-@test
     Scenario Outline:  Work filters api error <responseCode> on apply
         Given I set MOCK with "wa_release_2" release user and roles "<Roles>"
         Given I init MockApp

@@ -16,6 +16,7 @@ const { Given, When, Then } = require('cucumber');
 
 const CucumberReportLog = require("./reportLogger");
 const BrowserLogs = require('./browserLogs');
+const browserUtil = require("../../ngIntegration/util/browserUtil");
 const RuntimetestData = require("./runtimeTestData");
 // defineSupportCode(function({After }) {
 //     registerHandler("BeforeFeature", { timeout: 500 * 1000 }, function() {
@@ -109,6 +110,10 @@ defineSupportCode(({ Before,After }) => {
         try{
             await CucumberReportLog.AddScreenshot(global.screenShotUtils);
             if (scenario.result.status === 'failed') {
+                CucumberReportLog.AddMessage("****************** User details ******************"); 
+                CucumberReportLog.AddJson(JSON.parse(await browserUtil.getFromSessionStorage('userDetails')))
+                CucumberReportLog.AddMessage("****************** User details ******************"); 
+
                 await BrowserLogs.printAllBrowserLogs();
             } 
             
@@ -116,6 +121,9 @@ defineSupportCode(({ Before,After }) => {
             if (global.scenarioData['featureToggles']) {
                 //CucumberReportLog.AddJson(global.scenarioData['featureToggles'])
             }
+           
+
+
         }catch(err) {
             CucumberReportLog.AddMessage("Error in hooks with browserlogs or screenshots. See error details : " + err);
         }     

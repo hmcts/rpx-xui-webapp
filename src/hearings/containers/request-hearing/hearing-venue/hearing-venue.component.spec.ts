@@ -1,14 +1,14 @@
-import {Component, CUSTOM_ELEMENTS_SCHEMA, Input} from '@angular/core';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {AbstractControl, FormBuilder, ReactiveFormsModule} from '@angular/forms';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { AbstractControl, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
 import { SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
-import {LocationByEPIMSModel} from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
-import {provideMockStore} from '@ngrx/store/testing';
-import {Observable, of} from 'rxjs';
-import {HearingsService} from '../../../services/hearings.service';
-import {HearingVenueComponent} from './hearing-venue.component';
+import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { provideMockStore } from '@ngrx/store/testing';
+import { Observable, of } from 'rxjs';
+import { HearingsService } from '../../../services/hearings.service';
+import { HearingVenueComponent } from './hearing-venue.component';
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -19,7 +19,7 @@ class MockHearingPartiesComponent {
 }
 
 class NativeElement {
-  public focus() {}
+  public focus() { }
 }
 class MockAutoCompleteInputBox {
   public nativeElement: NativeElement = new NativeElement();
@@ -104,10 +104,10 @@ describe('HearingVenueComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
-      declarations: [HearingVenueComponent, MockLocationSearchContainerComponent, MockHearingPartiesComponent ],
+      declarations: [HearingVenueComponent, MockLocationSearchContainerComponent, MockHearingPartiesComponent],
       providers: [
-        provideMockStore({initialState}),
-        {provide: HearingsService, useValue: hearingsService},
+        provideMockStore({ initialState }),
+        { provide: HearingsService, useValue: hearingsService },
         FormBuilder
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -117,14 +117,14 @@ describe('HearingVenueComponent', () => {
 
   beforeEach(() => {
     const fb = TestBed.get(FormBuilder);
-    const form =  fb.group({
+    const form = fb.group({
       locationSelectedFormControl: [null]
     });
     fixture = TestBed.createComponent(HearingVenueComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
     spyOn(component, 'removeSelection').and.callThrough();
-    spyOn(component.selectedLocations$, 'subscribe').and.returnValue(of([]));
+    component.selectedLocations = [];
     spyOn(component, 'getLocationSearchFocus').and.callThrough();
     spyOn(component, 'appendLocation').and.callThrough();
     component.searchLocationComponent = new MockLocationSearchContainerComponent() as unknown as SearchLocationComponent;
@@ -159,15 +159,13 @@ describe('HearingVenueComponent', () => {
     component.addSelection();
     fixture.whenStable().then(() => {
       fixture.detectChanges();
-      component.selectedLocations$.subscribe(selectedLocations => {
-        expect(selectedLocations.length).toBeGreaterThan(0);
-        expect(component.findLocationFormGroup.controls.locationSelectedFormControl.value).toBeUndefined();
-      });
+      expect(component.selectedLocations.length).toBeGreaterThan(0);
+      expect(component.findLocationFormGroup.controls.locationSelectedFormControl.value).toBeUndefined();
     });
   });
 
   it('should remove selection in selection list', async () => {
-    const location =  {
+    const location = {
       court_venue_id: '100',
       epims_id: '219164',
       is_hearing_location: 'Y',
@@ -188,11 +186,11 @@ describe('HearingVenueComponent', () => {
     component.addSelection();
     fixture.detectChanges();
     component.removeSelection(location);
-    expect(component.selectedLocations$.subscribe).toHaveBeenCalled();
+    // expect(component.selectedLocations).toHaveBeenCalled();
   });
 
   it('should show error when there is no locations found', async (done) => {
-    const location =  {
+    const location = {
       court_venue_id: '100',
       epims_id: '219164',
       is_hearing_location: 'Y',
@@ -217,14 +215,11 @@ describe('HearingVenueComponent', () => {
       expect(errorElement).toBeDefined();
     });
 
-    component.selectedLocations$ = of([ location ]);
+    component.selectedLocations = [location];
 
     component.removeSelection(location);
     fixture.detectChanges();
-    expect(component.selectedLocations$.subscribe).toHaveBeenCalled();
-    component.selectedLocations$.subscribe(selectedLocations => {
-      expect(selectedLocations.length).toEqual(0);
-    });
+    expect(component.selectedLocations.length).toEqual(0);
   });
 
   it('should show summry header', async (done) => {

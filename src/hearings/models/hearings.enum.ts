@@ -97,7 +97,7 @@ export enum HearingCategory {
   NonStdDurationReasonCodes = 'NonStdDurationReasonCodes',
   EntityRoleCodes = 'EntityRoleCodes',
   JudgeType = 'JudgeType',
-  CancelHearing = 'CancelHearing',
+  CancelHearingReason = 'CancelHearingReason',
 }
 
 export enum HearingDateEnum {

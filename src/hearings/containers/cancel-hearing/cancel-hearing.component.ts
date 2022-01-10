@@ -48,10 +48,4 @@ export class CancelHearingComponent implements OnInit {
   public isFormValid(): boolean {
     return this.hearingCancelForm.valid;
   }
-
-  public checkFormData(): void {
-    this.hearingCancelSelectionError = null;
-    this.validationErrors = [];
-    // TODO: check form data
-  }
 }

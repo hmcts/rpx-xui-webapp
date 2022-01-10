@@ -8,7 +8,7 @@ import { Observable, of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import * as fromHearingStore from '../../../../hearings/store';
 import { HearingLocationModel } from '../../../models/hearingLocation.model';
-import { ACTION, CONDITION_OPERATOR } from '../../../models/hearings.enum';
+import { ACTION } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 

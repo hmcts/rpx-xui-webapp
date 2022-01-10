@@ -209,6 +209,7 @@ defineSupportCode(function ({ Given, When, Then }) {
         }
         expect( await globalSearchPage.errorSummaryContainer.isPresent() && await globalSearchPage.errorSummaryContainer.isDisplayed()).to.be.true
         expect( await globalSearchPage.errorSummaryContainer.getText()).to.includes(errormessage)
+        await CucumberReportLogger.AddScreenshot(global.screenshotUtils);
 
     });
 
@@ -335,7 +336,7 @@ defineSupportCode(function ({ Given, When, Then }) {
         const scenarios = datatable.hashes();
         const softAssert = new SoftAssert();
         for (const scenario of scenarios) {
-            await headerPage.clickPrimaryNavigationWithLabel('Search cases');
+            await headerPage.clickPrimaryNavigationWithLabel('Search');
             expect(await globalSearchPage.amOnPage()).to.be.true
 
             softAssert.setScenario(`${scenario.ScenarioDescription} : ${scenario.caseReference}`);

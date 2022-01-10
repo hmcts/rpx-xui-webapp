@@ -1,11 +1,11 @@
-@ng
+@ng @test 
 Feature: Global search
 
     Background: Setup
         Given I set MOCK with user "CASEWORKER_GLOBALSEARCH" and roles "caseworker,caseworker-befta_master,caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer" with reference "mockUserDetails"
         Given I start MockApp
         Given I navigate to home page
-        Then I click on primary navigation header tab "Search cases", I see selected tab page displayed
+        Then I click on primary navigation header tab "Search", I see selected tab page displayed
         Then I see global search Page
 
     Scenario: Search page field validation
@@ -146,6 +146,13 @@ Feature: Global search
         When I click search button in global search page
         Then I see global search results page
 
+        When I click Change search link in global search results page
+        Then I see global search Page
+
+        When I input date field "Date of birth" with format DD-MM-YYYY "30-01-2000" in global search page
+        When I input date field "Date of death" with format DD-MM-YYYY "30-01-1999" in global search page
+        When I click search button in global search page
+        Then I see error message "The date of death cannot be earlier than the date of birth" for field "Date of death" in global search Page
 
     Scenario: Case search results view column values
         Given I set set global search mock results response and resultInfo
@@ -264,23 +271,7 @@ Feature: Global search
         When I click action link "Specific access" at row 2 in global search results page
         Then I see case details specific access request page
 
-    Scenario: Search from header with 0 result
 
-        Given I set global search mock results count 0
-        Given I start MockApp
-        When I input field "16-digit case reference" with value "1234567890123456" in global search Page
-
-        Then I validate case search field is displayed in header
-        When I input case reference in header search field "1234567812345678"
-        When I click find in header search
-        Then I validate global search no results page is displayed
-        Then I validate global searh no results page displays message "This 16-digit case reference could not be found"
-        Then I validate global searh no results page displays message "Try searching again or go back"
-        Then I validate global search no results back link displayed
-        When I click global search no results back link
-        Then I see global search Page
-
-@test
     Scenario: Search from header all valid case refence formats 
         Given I set global search mock results count 1
         Given I start MockApp
@@ -295,36 +286,6 @@ Feature: Global search
             | 16 digit with wild card and hyphen | 1234-1234-123*-1234 |
             | 16 digit with wild card and space  | 1234 1234 123* 1234 |
 
-    Scenario: Search from header with 1 result with challenged access
-
-        Given I set global search mock results count 1
-        Given I set global search mock results with values
-            | index | processForAccess |
-            | 0     | CHALLENGED       |
-
-        Given I start MockApp
-
-        Then I validate case search field is displayed in header
-        When I input case reference in header search field "1234567812345678"
-        When I click find in header search
-        Then I see case details challenged access request page
-
-    Scenario: Search from header with 1 result with speciic access
-        Given I set global search mock results count 1
-        Given I set global search mock results with values
-            | index | processForAccess |
-            | 0     | SPECIFIC         |
-
-        Given I start MockApp
-
-        Then I validate case search field is displayed in header
-        When I input case reference in header search field "1234567812345678"
-        When I click find in header search
-        Then I see case details specific access request page
-
-
-
-    @test
     Scenario: Search from header all invalid case refence formats
         Given I set global search mock results count 1
         Given I start MockApp

@@ -10,8 +10,8 @@ class GlobalSearchMockData{
         this.searchResponse = globalSearchDataModel.getResults();
 
        
-        // this.searchResponse.results[10].processForAccess = "CHALLENGED";
-        // this.searchResponse.results[11].processForAccess = "SPECIFIC";
+        this.searchResponse.results[10].processForAccess = "CHALLENGED";
+        this.searchResponse.results[11].processForAccess = "SPECIFIC";
         // this.searchResponse.results[11].baseLocationName = "Demo location";
         // const singleCase = [];
         // singleCase.push(this.searchResponse.results[10]);

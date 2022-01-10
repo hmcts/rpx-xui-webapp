@@ -24,10 +24,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         globalSearchMockData.mockName = "TEST_UPDATED_1"
 
-        MockApp.onPost('/api/globalsearch/results' ,(req,res)=>{
-            res.send(globalSearchMockData.getResults());
-        });
-
     });
 
 
@@ -68,10 +64,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
         }
 
-        MockApp.onPost('/api/globalsearch/results', (req, res) => {
-            CucumberReporter.AddJson(globalSearchMockData.getResults());
-            res.send(globalSearchMockData.getResults());
-        });
 
     });
 

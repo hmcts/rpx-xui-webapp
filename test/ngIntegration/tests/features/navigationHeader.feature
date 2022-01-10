@@ -1,4 +1,4 @@
-@ng @test
+@ng
 Feature: Navigation header tabs
 
     Scenario Outline: Primary nav headers for user "<roleType>" "<useridentifier>" and roles "<rolesIdentifiers>"

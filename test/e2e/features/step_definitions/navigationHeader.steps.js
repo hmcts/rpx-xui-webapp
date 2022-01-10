@@ -100,6 +100,46 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         
     })
 
+    Then('I do not see primary navigation tabs does not exist excluding {string}', async function (displayedTabs,allTabsDatatable) {
+        const tableHashes = allTabsDatatable.hashes();
+        const displayedTabArr = [];
+        for (const dusplayedTab of displayedTabs.split(",")){
+            displayedTabArr.push(dusplayedTab.trim());
+        }
+        const navigationTabsArr = []; 
+        for (const hash of tableHashes){
+            if (!displayedTabArr.includes(hash.Tabs)){
+                navigationTabsArr.push(hash.Tabs);
+            }
+        }
+
+        cucumberReporter.AddMessage("Tabs not to be displaued " + navigationTabsArr); 
+        await browserWaits.retryWithActionCallback(async () => {
+            try {
+                const softAssert = new SoftAssert();
+                for (let i = 0; i < navigationTabsArr.length; i++) {
+                    const headerlabel = navigationTabsArr[i].trim();
+                    try {
+                        await browserWaits.waitForConditionAsync(async () => {
+                            return !(await headerPage.isTabPresentInMainNav(headerlabel));
+                        });
+                    } catch (err) {
+
+                    }
+                    softAssert.setScenario('Nav header in main tab ' + headerlabel);
+                    await softAssert.assert(async () => expect(await headerPage.isTabPresentInMainNav(headerlabel), headerlabel + " tab is present main nav in " + await headerPage.getPrimaryTabsDisplayed()).to.be.false);
+
+                }
+                softAssert.finally();
+            } catch (err) {
+                await browser.get(config.config.baseUrl);
+                throw new Error(err);
+            }
+
+        });
+
+    })
+
     Then('I see primary navigation tabs {string} in right side header column', async function (navigationTabs) {
         await browserWaits.retryWithActionCallback(async () => {
             try{
@@ -141,17 +181,17 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     })
 
     Then('I validate header displayed for user type {string}', async function(userType){
-        let i = 0;
-        await browserWaits.retryWithActionCallback(async (i) => {
-            await browserUtil.gotoHomePage();
-            await browserWaits.retryWithActionCallback(async () => {
+        await browserWaits.retryWithActionCallback(async () => {
+            
+            try{
+                await headerPage.validateHeaderDisplayedForUserType(userType);
+            }catch(err){
+                const baseUrl = process.env.TEST_URL ? process.env.TEST_URL : 'http://localhost:3000/';
+                await browser.get(baseUrl);
                 await headerpage.waitForPrimaryNavDisplay();
                 await browserUtil.waitForLD();
-
-                featureToggleUtil.printFeatureToggleValue("mc-menu-theme");
-            });  
-            await headerPage.validateHeaderDisplayedForUserType(userType);
-            i++;
+                throw new Error(err);
+            } 
         });
 
     });

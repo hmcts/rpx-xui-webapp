@@ -25,7 +25,7 @@ export const ROUTES: Routes = [
     resolve: {hearingCancelOptions: RefDataResolver},
     component: CancelHearingComponent,
     data: {
-      category: HearingCategory.CancelHearing
+      category: HearingCategory.CancelHearingReason
     },
     children: [
       {

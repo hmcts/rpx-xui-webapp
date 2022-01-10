@@ -130,7 +130,7 @@ export const DEFAULT_PARTYCHANNEL_REF: RefDataModel[] = [
 ];
 export const DEFAULT_HEARING_CANCEL_REF: RefDataModel[] = [
   {
-    key: 'reasoneone',
+    key: 'reasoneOne',
     value_en: 'Reason 1',
     value_cy: '',
     hintText_EN: 'reason 1',
@@ -139,7 +139,7 @@ export const DEFAULT_HEARING_CANCEL_REF: RefDataModel[] = [
     parentKey: null,
   },
   {
-    key: 'reasonetwo',
+    key: 'reasoneTwo',
     value_en: 'Reason 2',
     value_cy: '',
     hintText_EN: 'Reason 2',
@@ -148,7 +148,7 @@ export const DEFAULT_HEARING_CANCEL_REF: RefDataModel[] = [
     parentKey: null,
   },
   {
-    key: 'reasonthree',
+    key: 'reasonThree',
     value_en: 'Reason 3',
     value_cy: '',
     hintText_EN: 'Reason 3',
@@ -199,7 +199,7 @@ export const ALL_REF_DATA: RefDataByCategoryModel[] = [
     services: [SSCS_JUDGE_TYPES],
   },
   {
-    categoryKey: 'CancelHearing',
+    categoryKey: 'CancelHearingReason',
     services: [SSCS_CANCEL_HEARING],
   },
 ];

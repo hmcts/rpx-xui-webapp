@@ -158,7 +158,6 @@ export const DEFAULT_HEARING_CANCEL_REF: RefDataModel[] = [
   },
 ];
 
-
 export const SSCS_STAGES: RefDataByServiceModel = {
   serviceID: 'SSCS',
   values: DEFAULT_STAGES_REF,

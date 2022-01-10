@@ -1,42 +1,42 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
-import {LocationByEPIMSModel} from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { select, Store } from '@ngrx/store';
-import {Observable, of, Subscription} from 'rxjs';
-import {map} from 'rxjs/operators';
+import { Observable, of, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import * as fromHearingStore from '../../../../hearings/store';
-import {HearingLocationModel} from '../../../models/hearingLocation.model';
-import {ACTION} from '../../../models/hearings.enum';
-import {HearingsService} from '../../../services/hearings.service';
-import {RequestHearingPageFlow} from '../request-hearing.page.flow';
+import { HearingLocationModel } from '../../../models/hearingLocation.model';
+import { ACTION } from '../../../models/hearings.enum';
+import { HearingsService } from '../../../services/hearings.service';
+import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-venue',
   templateUrl: './hearing-venue.component.html',
   styleUrls: ['./hearing-venue.component.scss']
 })
-export class HearingVenueComponent extends RequestHearingPageFlow  implements OnInit, OnDestroy {
+export class HearingVenueComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
   public locationType: string;
-  public selectedLocations$: Observable<LocationByEPIMSModel[]>;
-  public locationsFound$: Observable<LocationByEPIMSModel[]>;
+  public locationsDisplayedInDrop: LocationByEPIMSModel[];
   public selectedLocation: LocationByEPIMSModel;
   public serviceIds: string = 'SSCS';
   public findLocationFormGroup: FormGroup;
 
   @ViewChild(SearchLocationComponent) public searchLocationComponent: SearchLocationComponent;
   public selectedLocationsSub: Subscription;
-  private selectedLocations: LocationByEPIMSModel[];
+  public selectedLocations: LocationByEPIMSModel[];
 
-  constructor(public readonly hearingStore: Store<fromHearingStore.State>, fb: FormBuilder,
-              protected readonly hearingsService: HearingsService) {
+  constructor(
+    public readonly hearingStore: Store<fromHearingStore.State>, fb: FormBuilder,
+    protected readonly hearingsService: HearingsService) {
     super(hearingStore, hearingsService);
-    this.findLocationFormGroup =  fb.group({
+    this.findLocationFormGroup = fb.group({
       locationSelectedFormControl: [null, Validators.required]
     });
 
-    this.selectedLocations$ = of([]);
-    this.locationsFound$ = of([]);
+    this.locationsDisplayedInDrop = [];
+    this.selectedLocations = [];
   }
 
   public ngOnInit(): void {
@@ -46,18 +46,12 @@ export class HearingVenueComponent extends RequestHearingPageFlow  implements On
       this.serviceIds = id ? id : this.serviceIds;
     });
 
-    this.selectedLocations$.subscribe(selectedLocations => {
-      this.selectedLocations = selectedLocations;
-    });
-
     this.getLocationSearchFocus();
   }
 
   public addSelection(): void {
     if (this.findLocationFormGroup.controls.locationSelectedFormControl.value) {
-      this.selectedLocations$.subscribe(selectedLocations => {
-          this.appendLocation(selectedLocations);
-      });
+      this.appendLocation(this.selectedLocations);
     } else {
       this.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
       this.findLocationFormGroup.controls.locationSelectedFormControl.markAsDirty();
@@ -68,21 +62,19 @@ export class HearingVenueComponent extends RequestHearingPageFlow  implements On
     selectedLocations.push(this.findLocationFormGroup.controls.locationSelectedFormControl.value as LocationByEPIMSModel);
     this.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
     this.findLocationFormGroup.controls.locationSelectedFormControl.markAsPristine();
-    this.locationsFound$ = of([]);
+    this.locationsDisplayedInDrop = [];
   }
 
   public removeSelection(location: LocationByEPIMSModel): void {
-    this.selectedLocations$.subscribe(selectedLocations => {
-      const index = selectedLocations.findIndex(selectedLocation => selectedLocation.epims_id === location.epims_id);
-      selectedLocations.splice(index, 1);
-    });
+    const index = this.selectedLocations.findIndex(selectedLocation => selectedLocation.epims_id === location.epims_id);
+    this.selectedLocations.splice(index, 1);
   }
 
   public getLocationSearchFocus() {
     if (this.searchLocationComponent &&
-        this.searchLocationComponent.autoCompleteInputBox &&
-        this.searchLocationComponent.autoCompleteInputBox.nativeElement) {
-          this.searchLocationComponent.autoCompleteInputBox.nativeElement.focus();
+      this.searchLocationComponent.autoCompleteInputBox &&
+      this.searchLocationComponent.autoCompleteInputBox.nativeElement) {
+      this.searchLocationComponent.autoCompleteInputBox.nativeElement.focus();
     }
   }
 

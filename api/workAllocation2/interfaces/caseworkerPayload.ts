@@ -1,3 +1,5 @@
+import { RoleAssignment } from "../../user/interfaces/roleAssignment";
+
 export interface CaseworkerPayload {
     attributes: any;
     roleName: string [];
@@ -7,5 +9,7 @@ export interface CaseworkerPayload {
 
 export interface ServiceCaseworkerData {
     jurisdiction: string;
-    data: [];
+    data: {
+        roleAssignmentResponse: RoleAssignment[];
+    }
 }

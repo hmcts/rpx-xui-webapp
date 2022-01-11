@@ -9,9 +9,12 @@ import {
 } from '../configuration/references';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
+import { Role } from '../roleAccess/models/roleType';
+import { getAllRoles, getSubstantiveRoles } from '../roleAccess/roleAssignmentService';
 import { getWASupportedJurisdictionsList } from '../waSupportedJurisdictions';
 import * as caseServiceMock from './caseService.mock';
 import {
+  getUserIdsFromJurisdictionRoleResponse,
   getUserIdsFromRoleApiResponse,
   handleCaseWorkerForLocation,
   handleCaseWorkerForLocationAndService,
@@ -24,8 +27,8 @@ import {
 
 import { TASK_ROLES } from './constants/task-roles.mock.data';
 import { PaginationParameter } from './interfaces/caseSearchParameter';
-import { ServiceCaseworkerData } from './interfaces/caseworkerPayload';
-import { Caseworker } from './interfaces/common';
+import { CaseworkerPayload, ServiceCaseworkerData } from './interfaces/caseworkerPayload';
+import { Caseworker, CaseworkersByService } from './interfaces/common';
 import { TaskList } from './interfaces/task';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { checkIfCaseAllocator } from './roleService';
@@ -41,12 +44,11 @@ import {
   getCaseIdListFromRoles,
   getCaseTypesFromRoleAssignments,
   getRoleAssignmentsByQuery,
-  getSubstantiveRoles,
   getTypesOfWorkByUserId,
   getUniqueCasesCount,
   mapCasesFromData,
   mapCaseworkerData,
-  mapCaseworkerDataForServices,
+  getCaseworkerDataForServices,
   paginate,
   prepareCaseWorkerForLocation,
   prepareCaseWorkerForLocationAndService,
@@ -61,7 +63,8 @@ import {
   prepareSearchTaskUrl,
   prepareTaskSearchForCompletable,
   removeEmptyValues,
-  searchCasesById
+  searchCasesById,
+  getSessionCaseworkerInfo
 } from './util';
 
 caseServiceMock.init();
@@ -225,6 +228,19 @@ export async function getAllCaseWorkers(req: EnhancedRequest, res: Response, nex
   }
 }
 
+/**
+ * Get All CaseWorkers
+ */
+ export async function getCaseWorkersFromServices(req: EnhancedRequest, res: Response, next: NextFunction) {
+  try {
+    const caseworkersByService: CaseworkersByService[] = await retrieveCaseWorkersForServices(req, res);
+    res.status(200);
+    res.send(caseworkersByService);
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function retrieveAllCaseWorkers(req: EnhancedRequest, res: Response): Promise<Caseworker[]> {
   if (req.session && req.session.caseworkers) {
     return req.session.caseworkers;
@@ -241,21 +257,39 @@ export async function retrieveAllCaseWorkers(req: EnhancedRequest, res: Response
   return caseWorkerReferenceData;
 }
 
-export async function retrieveCaseWorkersForServices(req: EnhancedRequest, res: Response): Promise<Caseworker[]> {
-  if (req.session && req.session.caseworkers) {
-    return req.session.caseworkers;
-  }
+export async function retrieveCaseWorkersForServices(req: EnhancedRequest, res: Response): Promise<CaseworkersByService[]> {
   const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
   const jurisdictions = req.body.serviceIds as string [];
-  const roles = {}; // get the roles from the endpoint
-  const payload = prepareRoleApiRequestForServices(jurisdictions, roles);
-  const data: ServiceCaseworkerData [] = await handleCaseWorkersForServicesPost(roleApiPath, payload, req);
-  const userIds = getUserIdsFromRoleApiResponse(data);
+  // will need to check specific jurisdiction have caseworkers in session
+  let newJurisdictions: string[];
+  let sessionCaseworkersByService: CaseworkersByService[] = [];
+  if (req.session && req.session.caseworkersByService) {
+    const sessionCaseworkerInfo = getSessionCaseworkerInfo(jurisdictions, req.session.caseworkersByService);
+    newJurisdictions = sessionCaseworkerInfo[0];
+    sessionCaseworkersByService = sessionCaseworkerInfo[1];
+  }
+  if (!newJurisdictions) {
+    // if there is no new jurisdictions array then there is no session - use given jurisdictions to get caseworker data
+    newJurisdictions = jurisdictions;
+  } else if (newJurisdictions.length === 0) {
+    // if the array is empty then all services are in the session - use session data
+    return sessionCaseworkersByService;
+  }
+  const roleResponse = await getAllRoles(req); // get the roles from the endpoint
+  const roles: Role[] = roleResponse.data;
+
+  const payloads: CaseworkerPayload[] = prepareRoleApiRequestForServices(newJurisdictions, roles);
+  const data: ServiceCaseworkerData[] = await handleCaseWorkersForServicesPost(roleApiPath, payloads, req);
+  const userIds = getUserIdsFromJurisdictionRoleResponse(data);
   const userUrl = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
   const userResponse = await handlePostCaseWorkersRefData(userUrl, userIds, req);
-  const caseWorkerReferenceData = mapCaseworkerDataForServices(userResponse.data, data);
-  req.session.caseworkers = caseWorkerReferenceData;
-  return caseWorkerReferenceData;
+
+  const caseWorkerReferenceData = getCaseworkerDataForServices(userResponse.data, data);
+  // note have to merge any new service caseworker data for full session as well as services specified in params
+  req.session.caseworkersByService = req.session && req.session.caseworkersByService ?
+   [...req.session.caseworkersByService, ...caseWorkerReferenceData] : caseWorkerReferenceData;
+  const fullCaseworkerByServiceInfo = [...caseWorkerReferenceData, ...sessionCaseworkersByService]
+  return fullCaseworkerByServiceInfo;
 }
 
 

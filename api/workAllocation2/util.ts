@@ -12,7 +12,7 @@ import { ElasticSearchQuery } from '../searchCases/interfaces/ElasticSearchQuery
 import { CASE_ALLOCATOR_ROLE } from '../user/constants';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 
-import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX, ViewType, COMPLETE } from './constants/actions';
+import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX, ViewType } from './constants/actions';
 import { Case } from './interfaces/case';
 import { PaginationParameter } from './interfaces/caseSearchParameter';
 import { Action, Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/common';

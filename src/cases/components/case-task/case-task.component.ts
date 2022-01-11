@@ -62,6 +62,15 @@ export class CaseTaskComponent implements OnInit {
     if (!task.description) {
       return '';
     }
+    // Append task id as a querystring to the task description url
+    // The url format will be like the following markdown
+    // 'Click link to proceed to next step [test link next step](/cases/case-details/1547652071308205/trigger/editAppealAfterSubmit)'
+    const description = task.description;
+    const taskIdQueryString = description.includes('?') ? `&tid=${task.id}` : `?tid=${task.id}`;
+    const closeBracketPosition = description.lastIndexOf(')');
+    if (closeBracketPosition > -1) {
+      task.description = [description.slice(0, closeBracketPosition), taskIdQueryString, description.slice(closeBracketPosition)].join('');
+    }
     return CaseTaskComponent.VARIABLES.reduce((description: string, variable: string) => {
       if (variable === CaseTaskComponent.TASK_ID_VARIABLE) {
         return replaceAll(description, variable, task.id);

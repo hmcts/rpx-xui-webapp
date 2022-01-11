@@ -9,8 +9,6 @@ describe('CCD Endpoints',  () => {
     const userName = config.users.solicitor;
     const password = 'Monday01';
 
-    // const userName = 'peterxuisuperuser@mailnesia.com';
-    // const password = 'Monday01';
     beforeEach(function ()  {
         this.timeout(120000);
 

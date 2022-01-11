@@ -369,12 +369,13 @@ class WorkAllocationMockData {
                 } else if (taskAttribute.toLowerCase().trim() === 'assignee') {
                     const val = task[taskAttribute].toLowerCase();
                     if (val.includes('session')) {
-                        taskTemplate[taskAttribute] = nodeAppMock.userDetails.userInfo.given_name+' '+ nodeAppMock.userDetails.userInfo.family_name;
+                        taskTemplate[taskAttribute] = nodeAppMock.userDetails.userInfo.uid ? nodeAppMock.userDetails.userInfo.uid : nodeAppMock.userDetails.userInfo.id;
                     } else if (val === '' || val === undefined) {
                         taskTemplate[taskAttribute] = null;
-                        taskTemplate['assigneeName'] = null;
-                    } else {
+                    } else if (val === 'someone' ) {
                         taskTemplate[taskAttribute] = this.caseWorkersList[0].idamId;
+                    }  else {
+                        taskTemplate[taskAttribute] = task[taskAttribute];
                     }
                 } else if (taskAttribute.toLowerCase().includes('description')) {
                     const val = task[taskAttribute];

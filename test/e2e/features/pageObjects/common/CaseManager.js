@@ -9,7 +9,7 @@ const BrowserUtil = require('../../../../ngIntegration/util/browserUtil');
 const App = require('./application');
 const BrowserLogs = require('../../../support/browserLogs');
 const { accessibilityCheckerAuditor } = require('../../../../accessibility/helpers/accessibilityAuditor');
-
+const config = require('../../../config/functional.conf');
 class CaseManager {
 
     constructor() {
@@ -74,20 +74,15 @@ class CaseManager {
             let isJurisdictionSelected = false;
             while (retryOnJurisdiction < 3 && !isJurisdictionSelected) {
                 try {
-                    await this.app.waitForSpinnerToDissappear();
+                    await BrowserWaits.waitForSpinnerToDissappear();
                     await this.createCaseStartPage.selectJurisdiction(jurisdiction);
                     isJurisdictionSelected = true;
                 }
                 catch (error) {
                     await BrowserLogs.printBrowserLogs();
-                    cucumberReporter.AddMessage("Jurisdiction option not found after 30sec. Retrying again");
+                    cucumberReporter.AddMessage("Jurisdiction option not found after 30sec. Retrying again with browser refresh");
                     retryOnJurisdiction++;
-                    await this.manageCasesHeaderLink.click();
-                    await BrowserUtil.waitForLD();
-                    await this._waitForSearchComponent();
-                    await await BrowserWaits.waitForElement(this.caseListContainer);
-                    await this.caseCreateheaderLink.click();
-                    await this.createCaseStartPage.amOnPage();
+                    await browser.refresh()
                 }
             }
 
@@ -100,9 +95,15 @@ class CaseManager {
             let isCaseStartPageDisplayed = false;
             while (startCasePageRetry < 3 && !isCaseStartPageDisplayed) {
                 try {
-                    await this.app.waitForSpinnerToDissappear();
+                    await BrowserWaits.waitForSpinnerToDissappear();
                     await this.createCaseStartPage.clickStartButton();
-                    await BrowserWaits.waitForPageNavigation(thisPageUrl);
+                    const nextPageUrl = await BrowserWaits.waitForPageNavigation(thisPageUrl);
+                    if (nextPageUrl.includes("service-down") ){
+                        await browser.get(config.config.baseUrl +"cases/case-filter")
+                        await cucumberReporter.AddScreenshot(global.screenShotUtils);
+                        cucumberReporter.AddMessage("Service error occured Retrying again ");
+                        throw new Error("Service error occured Retrying again ");
+                    }
                     isCaseStartPageDisplayed = true;
                 }
                 catch (err) {
@@ -178,7 +179,15 @@ class CaseManager {
 
     async AmOnCCDCaseEditPage() {
         await BrowserWaits.retryWithActionCallback(async () => {
-            expect(await this.exuiCaseHomeComp.isPresent()).to.be.true;
+            try{
+                await BrowserWaits.waitForElement(this.ccdCaseEdit);
+                expect(await this.ccdCaseEdit.isPresent()).to.be.true;
+            }catch(err){
+
+                await this.createCaseStartPage.clickStartButton();
+                throw new Error(err);
+            }
+            
         });
     }    
 
@@ -223,23 +232,24 @@ class CaseManager {
         cucumberReporter.AddMessage("Submitting page: " + thisPageUrl);
         console.log("Submitting : " + thisPageUrl )
 
-        let retryCounter = 0;
         await BrowserWaits.retryWithActionCallback(async () => {
-            if (retryCounter > 0){
-                let isValidationDisplayed = await caseEditPage.isValidationErrorDisplayed();
+
+            try{
+                await continieElement.click();
+                browser.waitForAngular();
+                await BrowserWaits.waitForPageNavigation(thisPageUrl);
+            }catch(err){
+                let isValidationDisplayed = await this.caseEditPage.isValidationErrorDisplayed();
                 cucumberReporter.AddJson(`******* Is Validation error message displayed : ${isValidationDisplayed}`);
-                if (isValidationDisplayed){
-                    cucumberReporter.AddJson(`******* Validation error message : ${await caseEditPage.getValidationErrorMessageDisplayed()}`);
+                if (isValidationDisplayed) {
+                    cucumberReporter.AddJson(`******* Validation error message : ${await this.caseEditPage.getValidationErrorMessageDisplayed()}`);
                 }
+
+                throw new Error(err);
             }
-            retryCounter++;
-            await continieElement.click();
-            browser.waitForAngular();
-            await BrowserWaits.waitForPageNavigation(thisPageUrl);
+          
+           
         });
-
-        var nextPageUrl = await browser.getCurrentUrl();
-
 
     }
     async excludeFieldValues(fieldName){
@@ -317,14 +327,18 @@ class CaseManager {
                 this._appendFormPageValues(fieldName1, phone_uk);
                 break;
             case "ccd-write-address-field":
-                await ccdField.$('.form-control').sendKeys("SW1");
-                await ccdField.$('button').click();
-                var addressSelectionField = ccdField.$('select.form-control')
-                await BrowserWaits.waitForElement(addressSelectionField);
-                var addressToSelect = addressSelectionField.$("option:nth-of-type(2)");
-                await BrowserWaits.waitForElement(addressToSelect);
-                await addressToSelect.click();
-                cucumberReporter.AddMessage(fieldName + " : 2nd option selected");
+                await BrowserWaits.retryWithActionCallback(async () => {
+                    await ccdField.$('.form-control').clear();
+                    await ccdField.$('.form-control').sendKeys("SW1");
+                    await ccdField.$('button').click();
+                    var addressSelectionField = ccdField.$('select.form-control')
+                    await BrowserWaits.waitForElement(addressSelectionField);
+                    var addressToSelect = addressSelectionField.$("option:nth-of-type(2)");
+                    await BrowserWaits.waitForElement(addressToSelect);
+                    await addressToSelect.click();
+                    cucumberReporter.AddMessage(fieldName + " : 2nd option selected");
+                }); 
+                
                 break;
             case "ccd-write-email-field":
                 await ccdField.$('input.form-control').sendKeys("test@autotest.com ");
@@ -369,17 +383,36 @@ class CaseManager {
                 break;
 
             case "ccd-write-document-field":
-                var fileToUpload = path.resolve(__dirname, "../../../documents/dummy.pdf");
-                await ccdField.$('input.form-control').sendKeys(fileToUpload);
+                await BrowserWaits.retryWithActionCallback(async () => {
+                    var fileToUpload = path.resolve(__dirname, "../../../documents/dummy.pdf");
+                    await ccdField.$('input.form-control').sendKeys(fileToUpload);
+                    const statusMessageELement = ccdField.$("span.error-message") 
+                    let statusMessage = "";
 
-                await BrowserWaits.waitForCondition(async () => {
-                    let isUploadDone = await ccdField.element(by.xpath('span[contains(text(),"Uploading")]')).isPresent();
-                    console.log("file upload status : " + isUploadDone);
-                    return !isUploadDone;
+                    await BrowserWaits.waitForCondition(async () => {
+                        let isStatusDisplayed = await statusMessageELement.isPresent();
+                        if (isStatusDisplayed){
+                            statusMessage = await statusMessageELement.getText(); 
+                        }
+                        console.log(`file upload status : Status message is displayed : ${isStatusDisplayed} : ${statusMessage}` );
+                        return !isStatusDisplayed || statusMessage.includes("error");
+                    });
+
+                    let isStatusDisplayed = await statusMessageELement.isPresent();
+                    if (isStatusDisplayed) {
+                        statusMessage = await statusMessageELement.getText();
+                    }
+
+                    let uploadError = isStatusDisplayed || statusMessage.includes("error");
+                    if (uploadError) {
+                        await ccdField.$('input.form-control').sendKeys("");
+
+                        throw new Error(`file upload error occured : Status message is displayed : ${isStatusDisplayed} : ${statusMessage}` );
+                    }
+                    cucumberReporter.AddMessage(fieldName + " : dummy.pdf");
+                    this._appendFormPageValues(fieldName1, "dummy.pdf");
+                    await browser.sleep(5000); 
                 });
-                cucumberReporter.AddMessage(fieldName + " : dummy.pdf");
-                this._appendFormPageValues(fieldName1, "dummy.pdf");
-                await browser.sleep(5000);
                 break;
             case "ccd-write-multi-select-list-field":
                 var selectionFields = ccdField.$$(".multiple-choice input");

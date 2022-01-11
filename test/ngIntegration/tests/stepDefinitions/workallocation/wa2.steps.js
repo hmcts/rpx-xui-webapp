@@ -69,6 +69,36 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         })
     });
 
+    Given('I set MOCK judicial users end point {string} for WA release 2', async function (endpoint, personsDatatable) {
+        const personshashes = personsDatatable.hashes();
+        const personsResponseBody = [];
+        for (let i = 0; i < personshashes.length; i++) {
+            let person = workAllocationDataModel.getRefDataJudge();
+            personsResponseBody.push(person);
+            let personHashKeys = Object.keys(personshashes[i]);
+            personHashKeys.forEach(key => {
+                person[key] = personshashes[i][key];
+            })
+
+        }
+        MockApp.onPost(endpoint, (req, res) => {
+            const reqUser = req.data.userIds;
+            if (reqUser.length === 0){
+                res.send(personsResponseBody);
+            }else{
+                const requestedUser = [];
+                for (const forUserId of reqUser){
+                    for (const personInMock of personsResponseBody){
+                        if (personInMock.sidam_id === forUserId){
+                            requestedUser.push(personInMock);
+                            break; 
+                        }
+                   } 
+                }
+                res.send(requestedUser);
+            } 
+        })
+    });
 
     Given('I set MOCK tasks with permissions for view {string} and assigned state {string}', async function (inputView,assignedState ,taskPermissionsTable) {
         const taskPermissionHashes = taskPermissionsTable.hashes(); 

@@ -35,7 +35,7 @@ function HeaderPage() {
     this.clickPrimaryNavigationWithLabel = async function(label){
       const ele = element(by.xpath(`//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'${label}')]`));
       await BrowserWaits.retryWithActionCallback(async () => {
-        await this.waitForSpinnerToDissappear();
+        await BrowserWaits.waitForSpinnerToDissappear();
         await BrowserWaits.waitForElement(ele);
         await BrowserWaits.waitForElementClickable(ele);
         await ele.click();
@@ -43,13 +43,6 @@ function HeaderPage() {
       });
       
     }
-
-
-  this.waitForSpinnerToDissappear = async function(){
-    await BrowserWaits.waitForConditionAsync(async () => {
-      return !(await $(".loading-spinner-in-action").isPresent());
-    },40000);
-  };
 
     this.clickAppLogoLink = async function(){
        await this.headerAppLogoLink.click(); 
@@ -94,7 +87,7 @@ function HeaderPage() {
 
   this.clickCreateCase = async function () {
     await BrowserWaits.retryWithActionCallback(async () => {
-      await caseListPage.waitForSpinnerToDissappear(); 
+      await BrowserWaits.waitForSpinnerToDissappear(); 
       await BrowserWaits.waitForElement(this.createCase()); 
       await BrowserWaits.waitForElementClickable(this.createCase());
       await this.createCase().click();

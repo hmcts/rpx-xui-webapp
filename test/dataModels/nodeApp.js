@@ -67,7 +67,8 @@ class NodeApp{
             "caseId": "1234567890",
             "caseType": "mock test case type", 
             "jurisdiction": "IA",
-            "isCaseAllocator": true
+            "isCaseAllocator": true,
+            "substantive" : true
         }
     }
 

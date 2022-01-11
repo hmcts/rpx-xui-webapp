@@ -1,7 +1,7 @@
 # Requirements
 # https://tools.hmcts.net/confluence/display/EUI/Work+Allocation-+Release+2#WorkAllocationRelease2-ManagelinklogicforTasksandCases
 
-@ng @wa2 @wa 
+@ng @wa2 @wa @test
 Feature: WA Release 2: All work > cases - Manage links - Action work flow
 
     Background: Mock and browser setup
@@ -66,9 +66,10 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
 
         Then I see Allocate role work flow page "Check your changes" with caption "Reallocate a lead judge" is displayed
 
-        Then I see Check your answers page has total 2 questions
+        Then I see Check your answers page has total 3 questions
         Then I see Check your answers page has questions and answers with change link
             | Question         | Answer                         |
+            | Who the role will be allocated to | Allocate to another person |
             | Person           | Lead judge(judge_user1@gov.uk) |
             | Duration of role | Indefinite                     |
 
@@ -126,9 +127,10 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
 
         Then I see Allocate role work flow page "Check your changes" with caption "Reallocate a legal ops case manager" is displayed
 
-        Then I see Check your answers page has total 2 questions
+        Then I see Check your answers page has total 3 questions
         Then I see Check your answers page has questions and answers with change link
             | Question         | Answer                                |
+            | Who the role will be allocated to | Allocate to another person |
             | Person           | Jane 0 Doe(testemail0@testdomain.com) |
             | Duration of role | Indefinite                            |
 

@@ -6,11 +6,11 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {Store, StoreModule} from '@ngrx/store';
 import {of} from 'rxjs';
 import {HearingCategory} from 'src/hearings/models/hearings.enum';
-import {HearingsRefDataService} from 'src/hearings/services/hearings-ref-data.service';
-import {metaReducers} from '../../../app/app.module';
-import {reducers} from '../../../app/store';
-import {RefDataModel} from '../../models/refData.model';
-import * as fromHearingStore from '../../store';
+import {metaReducers} from '../../app/app.module';
+import {reducers} from '../../app/store';
+import {RefDataModel} from '../models/refData.model';
+import {HearingsRefDataService} from '../services/hearings-ref-data.service';
+import * as fromHearingStore from '../store';
 import {RefDataResolver} from './ref-data-resolver.resolve';
 
 describe('Ref Data Resolver', () => {

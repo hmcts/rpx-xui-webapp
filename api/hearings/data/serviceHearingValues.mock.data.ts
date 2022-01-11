@@ -1,6 +1,6 @@
 /* tslint:disable:object-literal-sort-keys */
-import { RequirementType } from '../models/hearings.enum';
-import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
+import {RequirementType} from '../models/hearings.enum';
+import {ServiceHearingValuesModel} from '../models/serviceHearingValues.model';
 
 export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   autoListFlag: false,
@@ -67,30 +67,90 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
     flags: [
       {
         partyName: 'Jane Smith',
-        flagId: 'PF0015',
-        flagDescription: 'Spanish interpreter required',
-        flagStatus: 'ACTIVE',
-      },
-      {
-        partyName: 'Jane Smith',
+        flagParentId: 'RA0008',
         flagId: 'RA0042',
         flagDescription: 'Sign language interpreter required',
         flagStatus: 'ACTIVE',
       },
       {
         partyName: 'Jane Smith',
-        flagId: 'RA0001',
+        flagParentId: 'RA0032',
+        flagId: 'RA0053',
         flagDescription: 'Hearing loop required',
         flagStatus: 'ACTIVE',
       },
       {
+        partyName: 'Jane Smith',
+        flagParentId: 'RA0002',
+        flagId: 'RA0013',
+        flagDescription: 'Larger font size',
+        flagStatus: 'ACTIVE',
+      },
+      {
+        partyName: 'Jane Smith',
+        flagParentId: 'RA0003',
+        flagId: 'RA0016',
+        flagDescription: 'Reading documents for customer',
+        flagStatus: 'ACTIVE',
+      },
+      {
+        partyName: 'Jane Smith',
+        flagParentId: 'RA0008',
+        flagId: 'RA0042',
+        flagDescription: 'Sign Language Interpreter',
+        flagStatus: 'ACTIVE',
+      },
+      {
+        partyName: 'Jane Smith',
+        flagParentId: 'PF0001',
+        flagId: 'PF0015',
+        flagDescription: 'Language Interpreter',
+        flagStatus: 'ACTIVE',
+      },
+      {
+        partyName: 'Jane Smith',
+        flagParentId: 'CF0001',
+        flagId: 'CF0007',
+        flagDescription: 'Urgent flag',
+        flagStatus: 'ACTIVE',
+      },
+      {
         partyName: 'DWP',
+        flagParentId: 'RA0001',
         flagId: 'RA0005',
         flagDescription: 'Physical access and facilities',
         flagStatus: 'ACTIVE',
       },
+      {
+        partyName: 'DWP',
+        flagParentId: 'CF0001',
+        flagId: 'CF0002',
+        flagDescription: 'Complex Case',
+        flagStatus: 'ACTIVE',
+      },
+      {
+        partyName: 'DWP',
+        flagParentId: 'PF0001',
+        flagId: 'PF0002',
+        flagDescription: 'Vulnerable user',
+        flagStatus: 'ACTIVE',
+      },
+      {
+        partyName: 'DWP',
+        flagParentId: 'PF0001',
+        flagId: 'PF0011',
+        flagDescription: 'Banning order',
+        flagStatus: 'ACTIVE',
+      },
+      {
+        partyName: 'DWP',
+        flagParentId: 'CF0001',
+        flagId: 'CF0006',
+        flagDescription: 'Potential fraud',
+        flagStatus: 'ACTIVE',
+      },
     ],
-    flagAmendURL: '/',
+    flagAmendURL: '/flag/amend',
   },
   screenFlow: [
     {

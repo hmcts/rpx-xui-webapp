@@ -82,7 +82,7 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role judiciary (EU
         When I select Choose a role option "Hearing judge" in work flow
         When I click continue in work flow page "Choose a role"
 
-        Then I see Allocate role work flow page "Choose how to allocate the role" with caption "Allocate a lead judge" is displayed
+        Then I see Allocate role work flow page "Choose how to allocate the role" with caption "Allocate a hearing judge" is displayed
         When I select Choose how to allocate option "Allocate to another person" in work flow
         When I click continue in work flow page "Choose how to allocate the role"
 
@@ -219,7 +219,7 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role judiciary (EU
 
         Given I start MockApp
         Given I navigate to home page
-        When I click on primary navigation header tab "Create case", I see selected tab page displayed
+        When I click on primary navigation header tab "Case list", I see selected tab page displayed
         When I open first case in case list page
         Then I see case details page
         Then I see case details tab label "Roles and access" is displayed is "true"

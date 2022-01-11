@@ -34,13 +34,13 @@ class MockLocationSearchContainerComponent {
   @Input() public serviceIds: string = '';
   @Input() public locationType: string = '';
   @Input() public disabled: boolean = false;
-  @Input() public selectedLocations$: Observable<LocationByEPIMSModel[]>;
+  @Input() public selectedLocations: LocationByEPIMSModel[];
   @Input() public submitted?: boolean = true;
   @Input() public control: AbstractControl;
   public autoCompleteInputBox: MockAutoCompleteInputBox = new MockAutoCompleteInputBox();
 }
 
-describe('HearingVenueComponent', () => {
+fdescribe('HearingVenueComponent', () => {
   let component: HearingVenueComponent;
   let fixture: ComponentFixture<HearingVenueComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
@@ -137,7 +137,6 @@ describe('HearingVenueComponent', () => {
     }] as LocationByEPIMSModel[];
     fixture.detectChanges();
     spyOn(component, 'removeSelection').and.callThrough();
-    component.selectedLocations = [];
     spyOn(component, 'reInitiateState').and.callThrough();
     spyOn(component, 'getLocationSearchFocus').and.callThrough();
     spyOn(component, 'appendLocation').and.callThrough();

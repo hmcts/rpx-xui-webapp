@@ -23,7 +23,11 @@ import {RefDataResolver} from './resolvers/ref-data-resolver.resolve';
 export const ROUTES: Routes = [
   {
     path: 'cancel',
+    resolve: {hearingCancelOptions: RefDataResolver},
     component: CancelHearingComponent,
+    data: {
+      category: HearingCategory.CancelHearingReason
+    },
     children: [
       {
         path: '',

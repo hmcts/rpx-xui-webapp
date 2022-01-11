@@ -20,6 +20,7 @@ import { MyTasksComponent } from './my-tasks.component';
   template: `
     <exui-my-tasks></exui-my-tasks>`
 })
+
 class WrapperComponent {
   @ViewChild(MyTasksComponent) public appComponentRef: MyTasksComponent;
 }

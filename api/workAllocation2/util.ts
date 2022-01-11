@@ -12,7 +12,7 @@ import { ElasticSearchQuery } from '../searchCases/interfaces/ElasticSearchQuery
 import { CASE_ALLOCATOR_ROLE } from '../user/constants';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 
-import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX, ViewType } from './constants/actions';
+import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX, ViewType, COMPLETE } from './constants/actions';
 import { Case } from './interfaces/case';
 import { PaginationParameter } from './interfaces/caseSearchParameter';
 import { Action, Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/common';
@@ -211,8 +211,9 @@ export function getActionsByPermissions(view, permissions: TaskPermission[]): Ac
         actionList = !manageActionList.includes(undefined) ? manageActionList : actionList;
         break;
       case TaskPermission.EXECUTE:
+      case TaskPermission.OWN:
         // if on active tasks and there is no manage permission do not add execute actions
-        if (view.includes(ViewType.ACTIVE_TASKS) && !permissions.includes(TaskPermission.MANAGE)) {
+        if ((view.includes(ViewType.ACTIVE_TASKS) && !permissions.includes(TaskPermission.MANAGE))) {
           break;
         }
         const executeActionList = actionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX[view][TaskPermission.EXECUTE]);
@@ -228,6 +229,7 @@ export function getActionsByPermissions(view, permissions: TaskPermission[]): Ac
   });
   // Note sorting is implemented to order all possible action lists the same
   // Currently sorting by id but can be changed
+  actionList =  Array.from(new Set(actionList));
   return actionList.sort((a, b) => a.id.localeCompare(b.id));
 }
 

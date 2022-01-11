@@ -528,10 +528,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.6.0-rc2":
-  version "1.6.0-rc2"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.0-rc2.tgz#b886aebae44bc53f957639ecbc06e3522e74f4c8"
-  integrity sha512-rUtXEEme/+5CqSeU9pgmmyyzxByEum77YtBlBbTo6dFjbZje9sfsfJoa6ARa15m1u5LEkbpZFRHkwlHIxNFOhw==
+"@hmcts/rpx-xui-common-lib@1.4.27-no-courtname-fontsize":
+  version "1.4.27-no-courtname-fontsize"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.27-no-courtname-fontsize.tgz#035feb6988690ef4504539b75a6a4baf5ccbc256"
+  integrity sha512-jg8AyCqTNBj/048uri3BM9R3yHLkPyDnik2gUSoorLSmrq83RU6Shr6y8aRbDAb6DTlURb3nacodFPtkHNMhDQ==
   dependencies:
     tslib "^1.9.0"
 

@@ -1,4 +1,4 @@
-@ng
+@ng 
 Feature: WA Release 2: My work - Work filters - Uhhappy paths
 
     Background: Mock and browser setup
@@ -19,7 +19,7 @@ Feature: WA Release 2: My work - Work filters - Uhhappy paths
             | id    | locationName  |
             | 12345 | Aldgate Tower |
 
-        Given I set MOCK request "/workallocation2/taskWithPagination" intercept with reference "workallocationTaskRequest"
+        Given I set MOCK request "/workallocation2/task" intercept with reference "workallocationTaskRequest"
         Given I set MOCK request "/workallocation2/my-work/cases" intercept with reference "workallocationCasesRequest"
 
 
@@ -59,7 +59,6 @@ Feature: WA Release 2: My work - Work filters - Uhhappy paths
         
         Given I set MOCK api method "post" endpoint "/workallocation2/task" with error response code <responseCode>
         Given I start MockApp
-
         When I click work location filter Apply button
 
         Then I see error message of type "page" displayed with message "<error>"

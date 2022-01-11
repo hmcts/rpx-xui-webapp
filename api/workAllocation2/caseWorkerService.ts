@@ -67,17 +67,17 @@ export async function handleCaseWorkersForServicesPost(path: string, payloads: C
     const headers = setHeaders(req);
     headers.pageNumber = 0;
     headers.size = MAX_RECORDS;
-    const data = new Array<ServiceCaseworkerData>()
+    const data = new Array<ServiceCaseworkerData>();
     // sort
     // direction
-    payloads.forEach(async (payload) => {
+    for (const payload of payloads) {
         const response: AxiosResponse = await http.post(path, payload, { headers });
         if (response.data.roleAssignmentResponse.length >= MAX_RECORDS) {
             logger.warn('Case workers now returning MAX_RECORDS', response.data.roleAssignmentResponse.length);
         }
         const caseworkerService = { jurisdiction: payload.attributes.jurisdiction[0], data: response.data }
         data.push(caseworkerService);
-    })
+    }
     return data;
 }
 
@@ -108,10 +108,10 @@ export function getUserIdsFromRoleApiResponse(response: any): string [] {
     return userIds;
 }
 
-export function getUserIdsFromRoleApiResponses(data: any[]): string [] {
+export function getUserIdsFromJurisdictionRoleResponse(response: any): string [] {
     let userIds = new Array<string>();
-    data.forEach(roleAssignmentResponse => {
-        roleAssignmentResponse.forEach(roleAssignment => {
+    response.forEach(jurisdictionRoleResponse => {
+        jurisdictionRoleResponse.data.roleAssignmentResponse.forEach(roleAssignment => {
             userIds = [...userIds, roleAssignment.actorId];
         });
     })

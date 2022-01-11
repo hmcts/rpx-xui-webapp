@@ -21,7 +21,7 @@ import {
   WASupportedJurisdictionsService,
   WorkAllocationTaskService
 } from '../../services';
-import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
+import { getAllCaseworkersFromServices, getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html',
@@ -166,8 +166,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public setupTaskList() {
-    this.caseworkerService.getAll().subscribe(caseworkers => {
-      this.caseworkers = [ ...caseworkers ];
+    this.caseworkerService.getCaseworkersForService(['DIVORCE','PROBATE','FR','PUBLICLAW','IA','SSCS','EMPLOYMENT','HRS','CIVIL','CMC']).subscribe(caseworkersByService => {
+      this.caseworkers = getAllCaseworkersFromServices(caseworkersByService);
     }, error => {
       handleFatalErrors(error.status, this.router);
     });

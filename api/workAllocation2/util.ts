@@ -8,6 +8,7 @@ import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
 import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 import { release2ContentType } from '../roleAccess/models/release2ContentType';
+import { Role } from '../roleAccess/models/roleType';
 import { ElasticSearchQuery } from '../searchCases/interfaces/ElasticSearchQuery';
 import { CASE_ALLOCATOR_ROLE } from '../user/constants';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
@@ -16,7 +17,7 @@ import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX, ViewType } from './con
 import { Case } from './interfaces/case';
 import { PaginationParameter } from './interfaces/caseSearchParameter';
 import { CaseworkerPayload, ServiceCaseworkerData } from './interfaces/caseworkerPayload';
-import { Action, Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/common';
+import { Action, Caseworker, CaseworkerApi, CaseworkersByService, Location, LocationApi } from './interfaces/common';
 import { Person, PersonRole } from './interfaces/person';
 import { RoleCaseData } from './interfaces/roleCaseData';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
@@ -139,27 +140,32 @@ export function assignActionsToCases(cases: any[], isAllocator: boolean): any[] 
   return casesWithActions;
 }
 
-export function mapCaseworkerDataForServices(caseWorkerData: CaseworkerApi[], roleAssignments: ServiceCaseworkerData[]): Caseworker[] {
-  const caseworkers: Caseworker[] = [];
-  roleAssignments.forEach(roleAssignment => {
-    // populate caseworkers data
+export function getSessionCaseworkerInfo(serviceIds: string[], caseworkersByServices: CaseworkersByService[]): [string[], CaseworkersByService[]] {
+  const caseworkersInSession: CaseworkersByService[] = [];
+  const servicesNotInSession: string[] = [];
+  serviceIds.forEach(thisService => {
+    const currentCaseworkers = caseworkersByServices.find(caseworkerServiceList => caseworkerServiceList.service === thisService);
+    if (currentCaseworkers && currentCaseworkers.caseworkers) {
+      caseworkersInSession.push(currentCaseworkers);
+    } else {
+      servicesNotInSession.push(thisService);
+    }
   });
-  return caseworkers;
-  // const caseworkers: Caseworker[] = [];
-  // if (caseWorkerData) {
-  //   caseWorkerData.forEach((caseWorkerApi: CaseworkerApi) => {
-  //     const thisCaseWorker: Caseworker = {
-  //       email: caseWorkerApi.email_id,
-  //       firstName: caseWorkerApi.first_name,
-  //       idamId: caseWorkerApi.id,
-  //       lastName: caseWorkerApi.last_name,
-  //       location: mapCaseworkerPrimaryLocation(caseWorkerApi.base_location),
-  //       roleCategory: getRoleCategory(roleAssignments, caseWorkerApi),
-  //     };
-  //     caseworkers.push(thisCaseWorker);
-  //   });
-  // }
-  // return caseworkers;
+  return [servicesNotInSession, caseworkersInSession];
+}
+
+export function getCaseworkerDataForServices(caseWorkerData: CaseworkerApi[], roleAssignmentsByService: ServiceCaseworkerData[]): CaseworkersByService[] {
+  const allNewCaseworkersByService: CaseworkersByService[] = [];
+  roleAssignmentsByService.forEach(roleAssignmentByService => {
+    const roleAssignmentResponse = roleAssignmentByService.data.roleAssignmentResponse;
+    const caseworkersByCurrentService: CaseworkersByService = {service: roleAssignmentByService.jurisdiction, caseworkers: []};
+    if (roleAssignmentResponse && roleAssignmentResponse.length > 0) {
+      const caseworkers = mapCaseworkerData(caseWorkerData, roleAssignmentResponse);
+      caseworkersByCurrentService.caseworkers = caseworkers;
+    }
+    allNewCaseworkersByService.push(caseworkersByCurrentService);
+  });
+  return allNewCaseworkersByService;
 }
 
 export function mapCaseworkerData(caseWorkerData: CaseworkerApi[], roleAssignments: RoleAssignment[]): Caseworker[] {
@@ -220,32 +226,32 @@ export function prepareRoleApiRequest(jurisdictions: string[], locationId?: numb
   return payload;
 }
 
-export function prepareRoleApiRequestForServices(jurisdictions: string[], roles: any, locationId?: number): CaseworkerPayload [] {
-  // const payloads: []
+export function prepareRoleApiRequestForServices(jurisdictions: string[], roles: Role[], locationId?: number): CaseworkerPayload [] {
+  // note that this could be moved to index method if required
+  const roleIds = getRoleIdsFromRoles(roles);
+  const payloads: CaseworkerPayload[] = [];
   jurisdictions.forEach(jurisdiction => {
-    // populate payload
-    // attributes jurisdiction array will alwaus have just one jurisdiction
-    // roleName filter by jurisdiction roles
-    // roleType: ['ORGANISATION'],
-    // validAt: Date.UTC,
+    const attributes: any = {
+      jurisdiction: [jurisdiction],
+    };
+    if (locationId) {
+      attributes.primaryLocation = [locationId];
+    }
+    const payload = {
+      attributes,
+      roleName: roleIds,
+      roleType: ['ORGANISATION'],
+      validAt: Date.UTC,
+    };
+    payloads.push(payload);
   })
+  return payloads;
+}
 
-  const attributes: any = {
-    jurisdiction: jurisdictions,
-  };
-
-  const payload = {
-    attributes,
-    roleName: ['hearing-centre-admin', 'case-manager', 'ctsc', 'tribunal-caseworker',
-      'hmcts-legal-operations', 'task-supervisor', 'hmcts-admin',
-      'national-business-centre', 'senior-tribunal-caseworker', 'case-allocator'],
-    roleType: ['ORGANISATION'],
-    validAt: Date.UTC,
-  };
-  if (locationId) {
-    payload.attributes.primaryLocation = [locationId];
-  }
-  return payload;
+export function getRoleIdsFromRoles(roles: Role[]): string[] {
+  const roleIds = [];
+  roles.forEach(role => roleIds.push(role.name));
+  return roleIds;
 }
 
 /**

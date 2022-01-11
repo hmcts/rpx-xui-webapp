@@ -65,7 +65,8 @@ class NodeApp{
         return {
             "primaryLocation": location,
             "jurisdiction": "IA",
-            "isCaseAllocator": true
+            "isCaseAllocator": true,
+            "substantive" : true
         }
     }
 

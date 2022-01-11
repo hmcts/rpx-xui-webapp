@@ -1,4 +1,4 @@
-@ng
+@ng 
 Feature: WA Release 2: My work - Work filters - Uhhappy paths
 
     Background: Mock and browser setup
@@ -19,7 +19,7 @@ Feature: WA Release 2: My work - Work filters - Uhhappy paths
             | id    | locationName  |
             | 12345 | Aldgate Tower |
 
-        Given I set MOCK request "/workallocation2/taskWithPagination" intercept with reference "workallocationTaskRequest"
+        Given I set MOCK request "/workallocation2/task" intercept with reference "workallocationTaskRequest"
         Given I set MOCK request "/workallocation2/my-work/cases" intercept with reference "workallocationCasesRequest"
 
 
@@ -43,7 +43,6 @@ Feature: WA Release 2: My work - Work filters - Uhhappy paths
             | Caseworker IAC | caseworker-ia-caseofficer,caseworker-ia-admofficer |
     # | Judge          | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
-
     Scenario Outline:  Work filters api error <responseCode> on apply
         Given I set MOCK with "wa_release_2" release user and roles "<Roles>"
         Given I init MockApp
@@ -58,9 +57,8 @@ Feature: WA Release 2: My work - Work filters - Uhhappy paths
         Then I validate work filter button text is "Hide work filter"
         Then I validate location filter is displayed
         
-        Given I set MOCK api method "post" endpoint "/workallocation2/task/" with error response code <responseCode>
+        Given I set MOCK api method "post" endpoint "/workallocation2/task" with error response code <responseCode>
         Given I start MockApp
-
         When I click work location filter Apply button
 
         Then I see error message of type "page" displayed with message "<error>"

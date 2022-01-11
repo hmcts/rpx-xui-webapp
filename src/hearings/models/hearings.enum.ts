@@ -136,7 +136,12 @@ export enum ACTION {
   CANCEL = 'CANCEL',
 }
 
-export enum CONDITION_OPERATOR {
+export enum ConditionOperator {
   INCLUDE = 'INCLUDE',
   NOT_INCLUDE = 'NOT INCLUDE',
+}
+
+export enum CaseFlagType {
+  REASONABLE_ADJUSTMENT = 'Reasonable adjustment',
+  NON_REASONABLE_ADJUSTMENT = 'Non reasonable adjustment'
 }

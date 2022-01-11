@@ -1,3 +1,14 @@
-<p>
-  hearing-facilities works!
-</p>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-three-quarters">
+    <exui-hearing-parties-title></exui-hearing-parties-title>
+    <h1 class="govuk-heading-l">
+      Do you require any additional facilities?
+    </h1>
+    <exui-case-flags
+      [info]="'Any active flags on this case may require additional facilities at the hearing.'"
+      [hearingValueModel]="hearingValueModel"
+      [caseFlagsRefData]="caseFlagsRefData"
+      [caseFlagType]="caseFlagType">
+    </exui-case-flags>
+  </div>
+</div>

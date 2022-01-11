@@ -271,8 +271,7 @@ function setUpcaseConfig() {
         
     //     res.send(caseDetailsLabelShowCondition().getCase());
     // });
-    waMockDataService.allWorkTasks.tasks[0].actions.push({ id: 'mark-as-done', title: 'Mark as done' });
-    waMockDataService.allWorkTasks.tasks[0].permissions.push("Execute");
+    
 
     mockInstance.onGet('/api/user/details', (req, res) => {
         const roles = ['task-supervisor','case-allocator','caseworker', 'caseworker-ia', 'caseworker-ia-caseofficer','task-supervisor','case-allocator'];

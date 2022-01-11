@@ -1,7 +1,7 @@
 
 const BrowserWaits = require('../../support/customWaits');
 const TaskMessageBanner = require("./messageBanner");
-
+const RuntimeTestData = require('../../support/runtimeTestData');
 const CucumberReportLogger = require('../../support/reportLogger');
 class CaseListPage{
 
@@ -55,42 +55,54 @@ class CaseListPage{
 
     async _waitForSearchComponent(){
         await BrowserWaits.waitForElement(this.searchFilterContainer);
-        await this.waitForSpinnerToDissappear();
+        await BrowserWaits.waitForSpinnerToDissappear();
     }
 
-    async waitForSpinnerToDissappear(){
-        await BrowserWaits.waitForCondition(async () => {
-            const isSpinnerPresent = await $(".loading-spinner-in-action").isPresent();
-            CucumberReportLogger.AddMessage('Waiting for spinner to dissappear.');
-            return !isSpinnerPresent;
-        },'Spinner is still displayed after waiting ');
-    }
     _getOptionSelectorWithText(optionText){
         return by.xpath("//option[text() = '"+optionText+"']");
     }
 
     async selectJurisdiction(jurisdiction){
         await this._waitForSearchComponent();
-        await this.jurisdictionSelectElement.element(this._getOptionSelectorWithText(jurisdiction)).click(); 
+
+        await this.jurisdictionSelectElement.element(this._getOptionSelectorWithText(jurisdiction)).click();
+        CucumberReportLogger.LogTestDataInput(`Case list page Jurisdiction : ${jurisdiction}`);
+
+        RuntimeTestData.workbasketInputs.jurisdiction = jurisdiction;
+        const caseTypeElements = this.caseTypeSelectElement.$$("option");
+        const caseTypesSize = await caseTypeElements.count();
+        RuntimeTestData.workbasketInputs.casetypes = [];
+        for (let i = 0; i < caseTypesSize; i++){
+            const option = await caseTypeElements.get(i);
+            const optionText = await option.getText();
+            RuntimeTestData.workbasketInputs.casetypes.push(optionText);
+ 
+        } 
     }
 
     async selectCaseType(caseType) {
         await this._waitForSearchComponent();
         await this.caseTypeSelectElement.element(this._getOptionSelectorWithText(caseType)).click();
+        CucumberReportLogger.LogTestDataInput(`Case list page Case type : ${caseType}`);
+        RuntimeTestData.workbasketInputs.casetype = caseType; 
+
     }
 
     async selectState(state) {
         await this._waitForSearchComponent();
         await this.stateSelectElement.element(this._getOptionSelectorWithText(state)).click();
+        RuntimeTestData.workbasketInputs.state = state; 
+
     }
 
     async clickSearchApplyBtn(){ 
         await BrowserWaits.retryWithActionCallback(async () => {
             await this._waitForSearchComponent();
-            await this.waitForSpinnerToDissappear();
+            await BrowserWaits.waitForSpinnerToDissappear();
             await browser.executeScript('arguments[0].scrollIntoView()',
                 this.searchApplyBtn);
             await BrowserWaits.waitForElementClickable(this.searchApplyBtn);
+            CucumberReportLogger.AddMessage("Clicking Apply in case list Work basket filter.");
             await this.searchApplyBtn.click();
         });
     }
@@ -105,9 +117,9 @@ class CaseListPage{
 
     async waitForCaseResultsToDisplay(){
         await BrowserWaits.waitForElement(this.searchResultsTopPagination);
-        CucumberReportLogger.AddMessage("starting wait for 2 sec for list to render  : " + new Date().toTimeString());
+        await CucumberReportLogger.AddMessage("starting wait for 2 sec for list to render  : " + new Date().toTimeString());
         await BrowserWaits.waitForSeconds(2);
-        CucumberReportLogger.AddMessage("wait complete : " + new Date().toTimeString());
+       await  CucumberReportLogger.AddMessage("wait complete : " + new Date().toTimeString());
 
     }
 
@@ -121,7 +133,7 @@ class CaseListPage{
 
     async clickFirstCaseLink(){
         let currentPageUrl = await browser.getCurrentUrl();
-        CucumberReportLogger.AddMessage(` Before navigation :   ${currentPageUrl}`);
+        await CucumberReportLogger.AddMessage(` Before navigation :   ${currentPageUrl}`);
 
         await BrowserWaits.waitForElement(this.ccdCaseSearchResult);
         let isNavigationSuccess = false;
@@ -133,10 +145,10 @@ class CaseListPage{
                 isNavigationSuccess = true;
             }catch(err){
                 retryAttemptsCounter++;
-                CucumberReportLogger.AddMessage(`Error openning first case from case list. Retrying attempt ${retryAttemptsCounter} :   ${err}`); 
+                await CucumberReportLogger.AddMessage(`Error openning first case from case list. Retrying attempt ${retryAttemptsCounter} :   ${err}`); 
             }
         } 
-        CucumberReportLogger.AddMessage(` After navigation :   ${await browser.getCurrentUrl()}`);
+        await CucumberReportLogger.AddMessage(` After navigation :   ${await browser.getCurrentUrl()}`);
 
     }
 

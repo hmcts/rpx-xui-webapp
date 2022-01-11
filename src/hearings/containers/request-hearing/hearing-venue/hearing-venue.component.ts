@@ -1,22 +1,23 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
-import {LocationByEPIMSModel} from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { select, Store } from '@ngrx/store';
-import {Observable, of, Subscription} from 'rxjs';
-import {map} from 'rxjs/operators';
+import { HearingErrorMessage } from 'api/hearings/models/hearings.enum';
+import { Observable, of, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import * as fromHearingStore from '../../../../hearings/store';
-import {HearingLocationModel} from '../../../models/hearingLocation.model';
-import {ACTION} from '../../../models/hearings.enum';
-import {HearingsService} from '../../../services/hearings.service';
-import {RequestHearingPageFlow} from '../request-hearing.page.flow';
+import { HearingLocationModel } from '../../../models/hearingLocation.model';
+import { ACTION } from '../../../models/hearings.enum';
+import { HearingsService } from '../../../services/hearings.service';
+import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-venue',
   templateUrl: './hearing-venue.component.html',
   styleUrls: ['./hearing-venue.component.scss']
 })
-export class HearingVenueComponent extends RequestHearingPageFlow  implements OnInit, OnDestroy {
+export class HearingVenueComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
   public locationType: string;
   public selectedLocations$: Observable<LocationByEPIMSModel[]>;
   public locationsFound$: Observable<LocationByEPIMSModel[]>;
@@ -27,11 +28,13 @@ export class HearingVenueComponent extends RequestHearingPageFlow  implements On
   @ViewChild(SearchLocationComponent) public searchLocationComponent: SearchLocationComponent;
   public selectedLocationsSub: Subscription;
   private selectedLocations: LocationByEPIMSModel[];
+  public validationErrors: { id: string, message: string }[] = [];
 
-  constructor(public readonly hearingStore: Store<fromHearingStore.State>, fb: FormBuilder,
-              protected readonly hearingsService: HearingsService) {
+  constructor(
+    public readonly hearingStore: Store<fromHearingStore.State>, fb: FormBuilder,
+    protected readonly hearingsService: HearingsService) {
     super(hearingStore, hearingsService);
-    this.findLocationFormGroup =  fb.group({
+    this.findLocationFormGroup = fb.group({
       locationSelectedFormControl: [null, Validators.required]
     });
 
@@ -40,6 +43,7 @@ export class HearingVenueComponent extends RequestHearingPageFlow  implements On
   }
 
   public ngOnInit(): void {
+    this.reInitiateState();
     this.hearingStore.pipe(select(fromHearingStore.getHearingList)).pipe(
       map(hearingList => hearingList.hearingListMainModel ? hearingList.hearingListMainModel.hmctsServiceID : '')
     ).subscribe(id => {
@@ -53,15 +57,36 @@ export class HearingVenueComponent extends RequestHearingPageFlow  implements On
     this.getLocationSearchFocus();
   }
 
+  public reInitiateState() {
+    if (this.hearingRequestMainModel.hearingDetails &&
+      this.hearingRequestMainModel.hearingDetails.hearingLocations &&
+      this.hearingRequestMainModel.hearingDetails.hearingLocations.length) {
+      const locations: LocationByEPIMSModel[] = this.hearingRequestMainModel.hearingDetails.hearingLocations.map(hearingLocationModel => {
+        return {
+          epims_id: hearingLocationModel.locationId,
+          court_name: hearingLocationModel.locationName,
+          region: hearingLocationModel.region
+        } as LocationByEPIMSModel;
+      });
+      this.selectedLocations$ = of(locations);
+    }
+  }
+
   public addSelection(): void {
     if (this.findLocationFormGroup.controls.locationSelectedFormControl.value) {
       this.selectedLocations$.subscribe(selectedLocations => {
-          this.appendLocation(selectedLocations);
+        this.appendLocation(selectedLocations);
+        this.validationErrors = [];
       });
     } else {
       this.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
-      this.findLocationFormGroup.controls.locationSelectedFormControl.markAsDirty();
+      this.setLocationError(HearingErrorMessage.ENTER_A_VALID_LOCATION);
     }
+  }
+
+  private setLocationError(message: string) {
+    this.findLocationFormGroup.controls.locationSelectedFormControl.markAsDirty();
+    this.validationErrors.push({ id: 'input-selected-location-label', message });
   }
 
   public appendLocation(selectedLocations: LocationByEPIMSModel[]) {
@@ -80,15 +105,25 @@ export class HearingVenueComponent extends RequestHearingPageFlow  implements On
 
   public getLocationSearchFocus() {
     if (this.searchLocationComponent &&
-        this.searchLocationComponent.autoCompleteInputBox &&
-        this.searchLocationComponent.autoCompleteInputBox.nativeElement) {
-          this.searchLocationComponent.autoCompleteInputBox.nativeElement.focus();
+      this.searchLocationComponent.autoCompleteInputBox &&
+      this.searchLocationComponent.autoCompleteInputBox.nativeElement) {
+      this.searchLocationComponent.autoCompleteInputBox.nativeElement.focus();
+    }
+  }
+
+  public isLocationValid() {
+    if (!this.findLocationFormGroup.controls.locationSelectedFormControl.valid &&
+      this.findLocationFormGroup.controls.locationSelectedFormControl.errors.required &&
+      this.findLocationFormGroup.controls.locationSelectedFormControl.dirty) {
+      return false;
+    } else {
+      this.validationErrors = [];
+      return true;
     }
   }
 
   public executeAction(action: ACTION): void {
     if (action === ACTION.CONTINUE) {
-      this.checkFormData();
       if (this.isFormValid()) {
         this.prepareHearingRequestData();
         super.navigateAction(action);
@@ -99,11 +134,14 @@ export class HearingVenueComponent extends RequestHearingPageFlow  implements On
   }
 
   public prepareHearingRequestData(): void {
+    const outcome = this.selectedLocations.filter(x => x.region && x.region.toLowerCase() === 'wales').length ? { region: 'Wales' } : { region: 'other' };
+    this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(outcome));
     const locations: HearingLocationModel[] = this.selectedLocations.map(locationByEPIMSModel => {
       return {
         locationType: 'hearing',
         locationId: locationByEPIMSModel.epims_id,
-        locationName: locationByEPIMSModel.court_name
+        locationName: locationByEPIMSModel.court_name,
+        region: locationByEPIMSModel.region,
       } as HearingLocationModel;
     });
     this.hearingRequestMainModel = {
@@ -116,17 +154,17 @@ export class HearingVenueComponent extends RequestHearingPageFlow  implements On
   }
 
   public isFormValid(): boolean {
-    return this.findLocationFormGroup.valid;
-  }
-
-  public checkFormData(): void {
-    if (this.selectedLocations.length === 0) {
-      this.findLocationFormGroup.setErrors({
-        locationNotSelected: true
-      });
-    } else {
-      this.findLocationFormGroup.setErrors(null);
+    let returnValue: boolean = true;
+    if (this.findLocationFormGroup.controls.locationSelectedFormControl.valid) {
+      returnValue = false;
+      this.setLocationError(HearingErrorMessage.ENTER_A_VALID_LOCATION);
     }
+
+    if (!this.selectedLocations.length) {
+      returnValue = false;
+      this.setLocationError(HearingErrorMessage.ENTER_A_LOCATION);
+    }
+    return returnValue;
   }
 
   public ngOnDestroy(): void {

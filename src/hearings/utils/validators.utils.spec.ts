@@ -1,5 +1,5 @@
 import { inject, TestBed } from '@angular/core/testing';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { ValidatorsUtils } from './validators.utils';
 
 describe('ValidatorsUtils', () => {
@@ -80,6 +80,17 @@ describe('ValidatorsUtils', () => {
     form.controls.earliestHearing.get('day').setValue('12');
     form.controls.earliestHearing.get('month').setValue('12');
     form.controls.earliestHearing.get('year').setValue('2021');
+    expect(form.hasError('isValid')).toBeFalsy();
+  }));
+
+  it('should check formArraySelectedValidator', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
+    const form = new FormGroup({
+      arrayControl: new FormArray([new FormGroup({
+        selection: new FormGroup({})
+      })]
+      ),
+    });
+    form.setValidators(service.formArraySelectedValidator());
     expect(form.hasError('isValid')).toBeFalsy();
   }));
 });

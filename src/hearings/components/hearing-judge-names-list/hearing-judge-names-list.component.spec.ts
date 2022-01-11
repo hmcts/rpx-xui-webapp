@@ -73,6 +73,7 @@ describe('HearingJudgeNamesListComponent', () => {
     component.selectedJudge = judgeDetails;
     component.judgeList = [];
     component.personControl = {};
+    component.personControl.isPersonSelectionCompleted = true;
     component.personControl.findPersonControl = new FormControl();
     component.personControl.findPersonGroup = new FormGroup({});
     component.personControl.findPersonControl.value = 'jam';

@@ -8,7 +8,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { HearingJudgeNamesListComponent } from '../../../../hearings/components';
 import { RefDataModel } from '../../../../hearings/models/refData.model';
-import { ACTION, RadioOptions } from '../../../models/hearings.enum';
+import { ACTION, HearingJudgeSelectionEnum, RadioOptions } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingJudgeComponent } from './hearing-judge.component';
 
@@ -68,6 +68,7 @@ describe('HearingJudgeComponent', () => {
 
     fixture = TestBed.createComponent(HearingJudgeComponent);
     component = fixture.componentInstance;
+    component.hearingJudgeTypes = judgeTypes;
     fixture.detectChanges();
   });
 
@@ -84,8 +85,19 @@ describe('HearingJudgeComponent', () => {
     component.excludedJudge = childComponent;
     component.excludedJudge.validationError = { id: 'elementId', message: 'Error Message' };
     component.checkFormData();
+    component.showExcludeJudgeError();
     expect(childComponent.isExcludeJudgeInputValid).toHaveBeenCalled();
-    expect(component.validationErrors.length).toBe(1);
+    expect(component.validationErrors.length).toBeGreaterThan(0);
+  });
+
+  it('should check RadioButton selection', () => {
+    component.hearingJudgeForm.get('specificJudge').setValue(null);
+    component.showRadioButtonError();
+    expect(component.specificJudgeSelectionError).toBe(HearingJudgeSelectionEnum.SelectionError);
+    component.hearingJudgeForm.get('specificJudge').setValue(RadioOptions.NO);
+    component.showSpecificJudge(RadioOptions.NO);
+    component.showRadioButtonError();
+    expect(component.selectJudgeTypesError).toBe(HearingJudgeSelectionEnum.SelectOneJudgeError);
   });
 
   it('should check form valid', () => {

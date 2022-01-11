@@ -1,6 +1,6 @@
 <div class="exclude-person">
   <div class="person-input">
-    <xuilib-find-person #personControl title="" boldTitle="" [subTitle]="subTitle" showAutocomplete="true"
+    <xuilib-find-person #personControl [subTitle]="subTitle" showAutocomplete="true"
       (personSelected)="updatePersonControls($event)" [findPersonGroup]="personFormGroup" [domain]="domain"
       [placeholderContent]="placeholderContent" [selectedPerson]="displayedJudgeName(selectedJudge)" [isNoResultsShown]="true"
       [showUpdatedColor]="true" [idValue]="'Exclude'" [selectedPersons]="judgeList">

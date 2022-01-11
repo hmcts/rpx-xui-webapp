@@ -10,8 +10,7 @@ Feature: Share Case page features
     Scenario: Verify User can Deselect a case from list of selected cases
         When I click on Case list
         Then I am on case list page
-        When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page
-        When I click search Apply in case list page
+        When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page and click apply
         Then I wait to see case results displayed
         Then I see case list table header has Select all checkbox column
         Then I see case list table each case row has checkbox column
@@ -32,8 +31,7 @@ Feature: Share Case page features
     Scenario: Verify Clicking Back after removing case(s) from the share a case screen
         When I click on Case list
         Then I am on case list page
-        When I select search criteria jurisdiction "Family Divorce" case type "Contested Financial Remedy" state "Application Drafted" in case list page
-        When I click search Apply in case list page
+        When I select search criteria jurisdiction "Family Divorce" case type "Contested Financial Remedy" state "Application Drafted" in case list page and click apply
         Then I wait to see case results displayed
         Then I see case list table header has Select all checkbox column
         Then I see case list table each case row has checkbox column
@@ -46,16 +44,14 @@ Feature: Share Case page features
         When I click deselect button for case 1 from share case page
         When I click back link in share case page
         Then I am on case list page
-        When I select search criteria jurisdiction "Family Divorce" case type "Contested Financial Remedy" state "Application Drafted" in case list page
-        When I click search Apply in case list page
+        When I select search criteria jurisdiction "Family Divorce" case type "Contested Financial Remedy" state "Application Drafted" in case list page and click apply
         Then I wait to see case results displayed
         Then I see case list table has 2 rows selected
 
     Scenario: Verify Case details individual case expand collapse feature
         When I click on Case list
         Then I am on case list page
-        When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page
-        When I click search Apply in case list page
+        When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page and click apply
         Then I wait to see case results displayed
         Then I see case list table header has Select all checkbox column
         Then I see case list table each case row has checkbox column
@@ -80,8 +76,7 @@ Feature: Share Case page features
     Scenario: Verify Case details Open all/Close all
         When I click on Case list
         Then I am on case list page
-        When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page
-        When I click search Apply in case list page
+        When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page and click apply
         Then I wait to see case results displayed
         Then I see case list table header has Select all checkbox column
         Then I see case list table each case row has checkbox column
@@ -124,8 +119,7 @@ Feature: Share Case page features
     Scenario: Verify Add user to share a case with
         When I click on Case list
         Then I am on case list page
-        When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page
-        When I click search Apply in case list page
+        When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page and click apply
         Then I wait to see case results displayed
         Then I see case list table header has Select all checkbox column
         Then I see case list table each case row has checkbox column
@@ -149,8 +143,7 @@ Feature: Share Case page features
     Scenario: Verify Add a user with atleast one case already shared
         When I click on Case list
         Then I am on case list page
-        When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page
-        When I click search Apply in case list page
+        When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page and click apply
         Then I wait to see case results displayed
         Then I see case list table header has Select all checkbox column
         Then I see case list table each case row has checkbox column
@@ -174,8 +167,7 @@ Feature: Share Case page features
     Scenario: Verify Remove user to share a case with
         When I click on Case list
         Then I am on case list page
-        When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page
-        When I click search Apply in case list page
+        When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page and click apply
         Then I wait to see case results displayed
         Then I see case list table header has Select all checkbox column
         Then I see case list table each case row has checkbox column
@@ -194,8 +186,7 @@ Feature: Share Case page features
     Scenario: Verify add and Remove user to share a case with
         When I click on Case list
         Then I am on case list page
-        When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page
-        When I click search Apply in case list page
+        When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page and click apply
         Then I wait to see case results displayed
         Then I see case list table header has Select all checkbox column
         Then I see case list table each case row has checkbox column
@@ -221,8 +212,7 @@ Feature: Share Case page features
     Scenario: Verify back link on check and confirm page and changes persist in Share case page
         When I click on Case list
         Then I am on case list page
-        When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page
-        When I click search Apply in case list page
+        When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page and click apply
         Then I wait to see case results displayed
         Then I see case list table header has Select all checkbox column
         Then I see case list table each case row has checkbox column
@@ -251,8 +241,7 @@ Feature: Share Case page features
     Scenario: Verify change link on check and confirm page and changes persist in Share case page
         When I click on Case list
         Then I am on case list page
-        When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page
-        When I click search Apply in case list page
+        When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page and click apply
         Then I wait to see case results displayed
         Then I see case list table header has Select all checkbox column
         Then I see case list table each case row has checkbox column
@@ -322,8 +311,7 @@ Feature: Share Case page features
     Scenario: Verify Completion o share case journey
         When I click on Case list
         Then I am on case list page
-        When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page
-        When I click search Apply in case list page
+        When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page and click apply
         Then I wait to see case results displayed
         Then I see case list table header has Select all checkbox column
         Then I see case list table each case row has checkbox column

@@ -87,12 +87,11 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role judiciary (EU
         When I click continue in work flow page "Choose how to allocate the role"
 
         Then I see Allocate role work flow page "Find the person" with caption "Allocate a hearing judge" is displayed
-        When I enter find person search input "jud" in work flow
+        When I enter find person search input "user1" in work flow
         Then I see find person search results in work flow
-            | Person                            |
-            | Lead judge(judge_user1@gov.uk)    |
-            | Hearing judge(judge_user2@gov.uk) |
-        When I select find person result "judge_user1@gov.uk" in work flow
+            | Person                      |
+            | user1 j(judge_user1@gov.uk) |
+        When I select find person result "user1 j(judge_user1@gov.uk) " in work flow
         When I click continue in work flow page "Find the person"
 
         Then I see Allocate role work flow page "Duration of role" with caption "Allocate a hearing judge" is displayed
@@ -105,11 +104,11 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role judiciary (EU
 
         Then I see Check your answers page has total 4 questions
         Then I see Check your answers page has questions and answers with change link
-            | Question                          | Answer                     |
-            | Type of role                      | Lead judge                 |
-            | Who the role will be allocated to | Allocate to another person |
-            | Duration of role                  | 7 days                     |
-            | Person                            | judge_user1@gov.uk         |
+            | Question                          | Answer                      |
+            | Type of role                      | Lead judge                  |
+            | Who the role will be allocated to | Allocate to another person  |
+            | Duration of role                  | 7 days                      |
+            | Person                            | user1 j(judge_user1@gov.uk) |
 
         When I click button with label "Confirm allocation" in work flow  Check your answers page
         Then I see case details page displayed with tab "Roles and access" selected
@@ -212,7 +211,7 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role judiciary (EU
 
     Scenario: Roles and access - Legal ops user allocates judicial role
 
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
@@ -234,11 +233,10 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role judiciary (EU
 
 
         Then I see Allocate role work flow page "Find the person" with caption "Allocate a hearing judge" is displayed
-        When I enter find person search input "jud" in work flow
+        When I enter find person search input "user1" in work flow
         Then I see find person search results in work flow
-            | Person                            |
-            | Lead judge(judge_user1@gov.uk)    |
-            | Hearing judge(judge_user2@gov.uk) |
+            | Person                      |
+            | user1 j(judge_user1@gov.uk) |
         When I select find person result "judge_user1@gov.uk" in work flow
         When I click continue in work flow page "Find the person"
 
@@ -250,12 +248,13 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role judiciary (EU
 
         Then I see Allocate role work flow page "Check your answers" with caption "Allocate a hearing judge" is displayed
 
-        Then I see Check your answers page has total 3 questions
+        Then I see Check your answers page has total 4 questions
         Then I see Check your answers page has questions and answers with change link
-            | Question         | Answer             |
-            | Type of role     | Lead judge         |
-            | Duration of role | Indefinite         |
-            | Person           | judge_user1@gov.uk |
+            | Question                          | Answer                     |
+            | Who the role will be allocated to | Allocate to another person |
+            | Type of role                      | Lead judge                 |
+            | Duration of role                  | Indefinite                 |
+            | Person                            | judge_user1@gov.uk         |
 
         When I click button with label "Confirm allocation" in work flow  Check your answers page
         Then I see case details page displayed with tab "Roles and access" selected

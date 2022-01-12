@@ -77,8 +77,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             CucumberReporter.AddJson(req.body)
             let send = res.send;
             res.send = function (body) {
-                CucumberReporter.AddMessage('Intercept response or api ' + url);
-                CucumberReporter.AddJson(body)
+                CucumberReporter.AddMessage('------------------------------Mock response intercept---------------------------');
+                CucumberReporter.AddMessage('Intercept response on api ' + url);
+                CucumberReporter.AddMessage('response code ' + res.status);
+                CucumberReporter.AddJson(JSON.parse(body))
+                CucumberReporter.AddMessage('------------------------------Mock response intercept---------------------------');
                 send.call(this, body);
             }
             next();

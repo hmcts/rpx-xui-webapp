@@ -136,18 +136,13 @@ class CaseListPage{
         await CucumberReportLogger.AddMessage(` Before navigation :   ${currentPageUrl}`);
 
         await BrowserWaits.waitForElement(this.ccdCaseSearchResult);
-        let isNavigationSuccess = false;
-        let retryAttemptsCounter = 0;
-        while (retryAttemptsCounter <= 3 && !isNavigationSuccess ){
-            try{
-                await this.caseListRows.get(0).$("td a").click();
-                await BrowserWaits.waitForPageNavigation(currentPageUrl); 
-                isNavigationSuccess = true;
-            }catch(err){
-                retryAttemptsCounter++;
-                await CucumberReportLogger.AddMessage(`Error openning first case from case list. Retrying attempt ${retryAttemptsCounter} :   ${err}`); 
-            }
-        } 
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await BrowserWaits.waitForSpinnerToDissappear(); 
+            await this.caseListRows.get(0).$("td a").click();
+            await BrowserWaits.waitForPageNavigation(currentPageUrl); 
+        });
+
+      
         await CucumberReportLogger.AddMessage(` After navigation :   ${await browser.getCurrentUrl()}`);
 
     }

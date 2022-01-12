@@ -1,4 +1,4 @@
-@ng 
+@ng
 Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
     Background: Mock and browser setup
@@ -17,8 +17,8 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
         Given I set MOCK find person response for jurisdictions
             | domain   | id   | email                   | name           | knownAs       |
-            | Judicial | 1231 | judge_user1@gov.uk      | user1 judge        | Lead judge    |
-            | Judicial | 1232 | judge_user2@gov.uk      | user2 judge        | Hearing judge |
+            | Judicial | 1231 | judge_user1@gov.uk      | user1 j    | Lead judge    |
+            | Judicial | 1232 | judge_user2@gov.uk      | user2 j    | Hearing judge |
             | legalOps | 1233 | caseworker_user1@gov.uk | caseworker1 cw | Case worker   |
             | legalOps | 1234 | caseworker_user1@gov.uk | caseworker2 cw | Case worker   |
             | Admin    | 1235 | admin_user1@gov.uk      | admin1 a       | Case worker   |
@@ -142,7 +142,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Examples:
             | Jurisdiction | locationName | locationId | Task_Category   | Person_search | Person_name                             | person_id                            | Person_Role_Type | Task_type | Priority |
             | IA           | Test loc 3   | 12347      | Specific person | cas           | caseworker1 cw(caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops        | Legal Ops | High     |
-            | IA           | Test loc 3   | 12347      | Specific person | jud           | Lead judge(judge_user1@gov.uk)          | 1231                                 | Judicial         | Legal Ops | High     |
+            | IA           | Test loc 3   | 12347      | Specific person | user1           | user1 j(judge_user1@gov.uk)             | 1231                                 | Judicial         | Legal Ops | High     |
             | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a(admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     | High     |
 
     Scenario: "Judicial" Tasks filters state
@@ -239,7 +239,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Examples:
             | Jurisdiction | locationName | locationId | Task_Category   | Person_search | Person_name                             | person_id                            | Person_Role_Type | Task_type |
             | IA           | Test loc 3   | 12347      | Specific person | cas           | caseworker1 cw(caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops        | Legal Ops |
-            | IA           | Test loc 3   | 12347      | Specific person | jud           | Lead judge(judge_user1@gov.uk)          | 1231                                 | Judicial         | Legal Ops |
+            | IA           | Test loc 3   | 12347      | Specific person | user1           | user1 j(judge_user1@gov.uk)             | 1231                                 | Judicial         | Legal Ops |
             | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a(admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     |
 
     Scenario: "Caseworker" Cases filters state
@@ -334,7 +334,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | role         | <Role_Type>    |
         Examples:
             | Jurisdiction | locationName | locationId | Person_radio    | Person_search | Person_name                    | person_id                            | Role_Type |
-            | IA           | Test loc 3   | 12347      | Specific person | jud           | Lead judge(judge_user1@gov.uk) | 1231                                 | Judicial  |
+            | IA           | Test loc 3   | 12347      | Specific person | user1           | user1 j(judge_user1@gov.uk) | 1231                                 | Judicial  |
             | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a(admin_user1@gov.uk)   | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin     |
 
     Scenario Outline: "Judicial" Case filter selection, with role type <Role_Type>
@@ -389,5 +389,5 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | role         | <Role_Type>    |
         Examples:
             | Jurisdiction | locationName | locationId | Person_radio    | Person_search | Person_name                    | person_id                            | Role_Type |
-            | IA           | Test loc 3   | 12347      | Specific person | jud           | Lead judge(judge_user1@gov.uk) | 1231                                 | Judicial  |
+            | IA           | Test loc 3   | 12347      | Specific person | user1           | user1 j(judge_user1@gov.uk) | 1231                                 | Judicial  |
             | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a(admin_user1@gov.uk)   | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin     |

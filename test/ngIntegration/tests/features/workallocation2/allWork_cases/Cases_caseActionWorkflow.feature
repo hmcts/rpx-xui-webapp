@@ -1,7 +1,7 @@
 # Requirements
 # https://tools.hmcts.net/confluence/display/EUI/Work+Allocation-+Release+2#WorkAllocationRelease2-ManagelinklogicforTasksandCases
 
-@ng @wa2 @wa
+@ng @wa2 @wa 
 Feature: WA Release 2: All work > cases - Manage links - Action work flow
 
     Background: Mock and browser setup
@@ -47,15 +47,14 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
         Then I see Allocate role work flow page "Find the person" with caption "Reallocate a lead judge" is displayed
 
         Given I reset reference "findPersonRequest" value to null
-        When I enter find person search input "jud" in work flow
+        When I enter find person search input "user1" in work flow
         Then I validate find person request body from reference "findPersonRequest"
             | jurisdiction | Judicial |
-            | searchTerm   | jud      |
+            | searchTerm   | user1      |
         Then I see find person search results in work flow
             | Person                            |
-            | Lead judge(judge_user1@gov.uk)    |
-            | Hearing judge(judge_user2@gov.uk) |
-        When I select find person result "judge_user1@gov.uk" in work flow
+            | user1 j(judge_user1@gov.uk)    |
+        When I select find person result "user1 j(judge_user1@gov.uk) " in work flow
         When I click continue in work flow page "Find the person"
 
         Then I see Allocate role work flow page "Duration of role" with caption "Reallocate a lead judge" is displayed
@@ -70,7 +69,7 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
         Then I see Check your answers page has questions and answers with change link
             | Question                          | Answer                         |
             | Who the role will be allocated to | Allocate to another person     |
-            | Person                            | Lead judge(judge_user1@gov.uk) |
+            | Person | user1 j(judge_user1@gov.uk) |
             | Duration of role                  | Indefinite                     |
 
         When I click button with label "Confirm allocation" in work flow  Check your answers page
@@ -177,8 +176,8 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
         # | searchTerm   | cas       |
         Then I see find person search results in work flow
             | Person                         |
-            | Lead judge(judge_user1@gov.uk) |
-        When I select find person result "Lead judge(judge_user1@gov.uk)" in work flow
+            | user1 j(judge_user1@gov.uk) |
+        When I select find person result "user1 j(judge_user1@gov.uk) " in work flow
         When I click continue in work flow page "Find the person"
 
         Then I see Allocate role work flow page "Duration of role" with caption "Reallocate a lead judge" is displayed
@@ -193,7 +192,7 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
         Then I see Check your answers page has questions and answers with change link
             | Question                          | Answer                         |
             | Who the role will be allocated to | Allocate to another person     |
-            | Person                            | Lead judge(judge_user1@gov.uk) |
+            | Person | user1 j(judge_user1@gov.uk) |
             | Duration of role                  | Indefinite                     |
 
         When I click button with label "Confirm allocation" in work flow  Check your answers page
@@ -229,7 +228,7 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
         Then I see Check your answers page has questions and answers without change link
             | Question     | Answer                         |
             | Type of role | Lead judge                     |
-            | Person       | Lead judge(judge_user1@gov.uk) |
+            | Person | user1 j(judge_user1@gov.uk) |
 
         When I click button with label "Remove allocation" in work flow  Check your answers page
         Then I see All work cases page displayed

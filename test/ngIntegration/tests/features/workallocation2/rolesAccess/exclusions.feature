@@ -45,7 +45,6 @@ Feature: WA Release 2: Exclusions
         Then I see following options returned to Select in Find person search result of exclusions work flow
             | Person              |
             | <findPersonResult1> |
-            | <findPersonResult2> |
         When I select Person "<findPersonResult1>" from Find person search result in exclusions work flow
         When I click continue in add exclusion work flow page "Find the person"
         Then I see Add an exclusion work flow page "Describe the exclusion" is displayed
@@ -67,7 +66,7 @@ Feature: WA Release 2: Exclusions
 
         Examples:
             | Useridentifier     | Roles                                              | ExclusionRole | findPersonSearchWith | findPersonResult1  | findPersonResult2  | ExclusionDescription         |
-            | IAC_CaseOfficer_R2 | caseworker-ia-caseofficer,caseworker-ia-admofficer | Judicial      | Judge                | judge_user1@gov.uk | judge_user2@gov.uk | Judicial role user exclusion |
+            | IAC_CaseOfficer_R2 | caseworker-ia-caseofficer,caseworker-ia-admofficer | Judicial      | user1                | judge_user1@gov.uk | judge_user2@gov.uk | Judicial role user exclusion |
     # | IAC_Judge_WA_R2    | caseworker-ia-iacjudge,caseworker-ia,caseworker    | Legal Ops     | caseworker           | caseworker_user1@gov.uk | caseworker_user2@gov.uk | caseworker role user exclusion |
     # | IAC_CaseOfficer_R2 | caseworker-ia-caseofficer,caseworker-ia-admofficer | Admin         | admin                | admin_user1@gov.uk      | admin_user2@gov.uk      | admin role user exclusion      |
 

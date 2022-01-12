@@ -73,7 +73,7 @@ class WorkAllocationMockData {
 
             let caseCount = casePermissionHashes[i]['Count'];
             for (let j = 0; j < caseCount; j++) {
-                cases.push(this.getRelease2CaseWithPermission(casePermissionHashes[i]['Roles'].split(","), view));
+                cases.push(this.getRelease2CaseWithPermission([casePermissionHashes[i]['Roles'].split(",")], view));
             }
             const validRoleTypes = WorkAllocationDataModels.getValidRoles();
 
@@ -306,9 +306,21 @@ class WorkAllocationMockData {
                    results.push({ ...judge, name: judge.full_name, email: judge.email_id, id: judge.sidam_id });
             } 
            }
-        } else if (jurisdiction.jurisdiction === 'LegalOps'){
+        } else if (searchOptions.jurisdiction === 'LegalOps'){
             for (const cw of this.caseWorkersList) {
                 if (cw.firstName.includes(searchOptions.searchTerm) || cw.lastName.includes(searchOptions.searchTerm) ) {
+                    results.push(cw);
+                }
+            }
+        } else if (searchOptions.jurisdiction === 'All'){
+            for (const judge of this.judgeUsers) {
+                if (judge.full_name.includes(searchOptions.searchTerm)) {
+
+                    results.push({ ...judge, name: judge.full_name, email: judge.email_id, id: judge.sidam_id });
+                }
+            }
+            for (const cw of this.caseWorkersList) {
+                if (cw.firstName.includes(searchOptions.searchTerm) || cw.lastName.includes(searchOptions.searchTerm)) {
                     results.push(cw);
                 }
             }

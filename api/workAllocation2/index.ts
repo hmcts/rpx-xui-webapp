@@ -20,8 +20,6 @@ import {
   handlePostRoleAssignments,
   handlePostSearch
 } from './caseWorkerService';
-
-import { TASK_ROLES } from './constants/task-roles.mock.data';
 import { PaginationParameter } from './interfaces/caseSearchParameter';
 import { Caseworker } from './interfaces/common';
 import { TaskList } from './interfaces/task';

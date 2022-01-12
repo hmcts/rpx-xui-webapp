@@ -35,10 +35,12 @@ class MockLocationSearchContainerComponent {
   @Input() public locationType: string = '';
   @Input() public disabled: boolean = false;
   @Input() public selectedLocations: LocationByEPIMSModel[];
+  @Input() public displayedLocations: LocationByEPIMSModel[];
   @Input() public submitted?: boolean = true;
   @Input() public control: AbstractControl;
   public autoCompleteInputBox: MockAutoCompleteInputBox = new MockAutoCompleteInputBox();
 }
+
 
 fdescribe('HearingVenueComponent', () => {
   let component: HearingVenueComponent;
@@ -272,8 +274,10 @@ fdescribe('HearingVenueComponent', () => {
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(location);
     component.addSelection();
     fixture.detectChanges();
+    const selectedLocationPreviousLength = component.selectedLocations.length;
+    expect(component.selectedLocations.length).toBeGreaterThan(0);
     component.removeSelection(location);
-    // expect(component.selectedLocations).toHaveBeenCalled();
+    expect(component.selectedLocations.length).toBeLessThan(selectedLocationPreviousLength);
   });
 
   it('should show error when there is no locations found', async (done) => {

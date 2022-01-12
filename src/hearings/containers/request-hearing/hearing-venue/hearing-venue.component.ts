@@ -32,7 +32,7 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
     protected readonly hearingsService: HearingsService) {
     super(hearingStore, hearingsService);
     this.findLocationFormGroup = fb.group({
-      locationSelectedFormControl: fb.array([]),
+      locationSelectedFormControl: [null, Validators.required]
     });
 
     this.displayedLocations = [];

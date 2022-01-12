@@ -25,8 +25,16 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         expect(await myWorkPage.showHideWorkFilterBtn.getText()).to.contains(btntext);
     });
 
-    When('I click work filter button', async function () {
-        await BrowserWaits.retryWithActionCallback(async () => await myWorkPage.showHideWorkFilterBtn.click());
+    When('I click work filter button to {string} filter', async function (filterStateTo) {
+        await BrowserWaits.retryWithActionCallback(async () => {
+            const buttonText = await myWorkPage.showHideWorkFilterBtn.getText();
+            if (buttonText.toLowerCase().includes(filterStateTo.toLowerCase())){
+                await myWorkPage.showHideWorkFilterBtn.click();
+            } 
+            const afterClickButtonText = await myWorkPage.showHideWorkFilterBtn.getText();
+            expect(afterClickButtonText.toLowerCase()).to.not.include(filterStateTo);
+
+        } );
     });
 
     Then('I validate location filter is displayed', async function () {

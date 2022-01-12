@@ -17,7 +17,7 @@ class NodeApp{
             "userInfo": {
                 "uid": v4(),
                 "given_name": "XUI test",
-                "family_name": "Judge",
+                "family_name": "auto",
                 "name": "test name",
                 "sub": "juser8@mailinator.com",
                 "roles": [
@@ -25,7 +25,8 @@ class NodeApp{
                     "caseworker-ia",
                     "caseworker-ia-iacjudge"
                 ],
-                "token": "Bearer eyJ0eXAiOiJKV1Q"
+                "token": "Bearer eyJ0eXAiOiJKV1Q",
+                "roleCategory":"LEGAL_OPERATIONS"
             }
         }
     }
@@ -64,7 +65,8 @@ class NodeApp{
         return {
             "primaryLocation": location,
             "jurisdiction": "IA",
-            "isCaseAllocator": true
+            "isCaseAllocator": true,
+            "substantive" : true
         }
     }
 

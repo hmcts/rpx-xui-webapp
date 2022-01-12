@@ -43,7 +43,7 @@ class WorkAllocationModels {
             "case_id": "1620409659381330",
             "case_category": "Protection",
             "case_name": "Jo Fly " + Math.floor((Math.random() * 100) + 1),
-            "permissions": [],
+            "permissions": { values : []},
             "actions": []
         };
     }
@@ -62,7 +62,9 @@ class WorkAllocationModels {
             "startDate": "2021-02-16T18:58:48.987+0000",
             "endDate": "2021-02-16T18:58:48.987+0000",
             "jurisdiction":"Test jurisdiction",
-            "case_role":"Mock Test case role"
+            "case_role":"Mock Test case role",
+            "role" : "case role",
+            "role_category" : "role-categpry"
         };
     }
 
@@ -244,6 +246,55 @@ class WorkAllocationModels {
         roles.push(caseManager);
         return roles;
     }
+
+
+    getRefDataJudge(fullName,surname,email){
+        return {
+            "sidam_id": v4(),
+            "object_id": "018a0310-f122-4377-9504-f635301f39ed-test2",
+            "known_as": "Joe",
+            "surname": surname ? surname : "snjudge",
+            "full_name": fullName ? fullName : 'fntest',
+            "post_nominals": "Ms",
+            "email_id": email ? email : 'test@judicial.com',
+            "appointments": [
+                {
+                    "base_location_id": "1032",
+                    "epimms_id": null,
+                    "court_name": "Social Entitlement",
+                    "cft_region_id": "2",
+                    "cft_region": "London",
+                    "location_id": "14",
+                    "location": "London",
+                    "is_principal_appointment": "true",
+                    "appointment": "Tribunal Member Disability",
+                    "appointment_type": "Fee Paid",
+                    "service_code": null,
+                    "roles": [],
+                    "start_date": "2018-12-05",
+                    "end_date": null
+                }
+            ],
+            "authorisations": [
+                {
+                    "jurisdiction": "Authorisation Tribunals",
+                    "ticket_description": "Social Security and Child Support",
+                    "ticket_code": "357",
+                    "service_code": "BBA3",
+                    "start_date": "2013-12-05T00:00",
+                    "end_date": null
+                },
+                {
+                    "jurisdiction": "Authorisation Tribunals",
+                    "ticket_description": "03 - Disability Living Allowance",
+                    "ticket_code": "365",
+                    "service_code": "BBA3",
+                    "start_date": "1901-01-01T00:00",
+                    "end_date": null
+                }
+            ]
+        }
+    }
 }
 
 
@@ -256,7 +307,7 @@ const ACTIONS = {
     AssignToMe: { id: 'claim', title: 'Assign to me' },
     AssignToMeAndGoToTasks: { id: 'claim-and-go', title: 'Assign to me and go to case' },
     Assign: { id: 'assign', title: 'Assign task' },
-    MarkAsDone: { id: 'mark-as-done', title: 'Mark as done' },
+    MarkAsDone: { id: 'complete', title: 'Mark as done' },
     Cancel: { id: 'cancel', title: 'Cancel task' },
 }
 

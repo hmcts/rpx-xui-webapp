@@ -457,6 +457,7 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
     assignee: roleAssignment.actorId,
     // hmctsCaseCategory will be available only if an event has been triggered
     case_category: caseDetail.case_data && caseDetail.case_data.hmctsCaseCategory ? caseDetail.case_data.hmctsCaseCategory : '',
+    case_type: caseDetail.case_type_id,
     case_id: caseDetail.id,
     case_name: caseDetail.case_data && caseDetail.case_data.caseName ? caseDetail.case_data.caseName : caseDetail.id,
     case_role: roleAssignment.roleName,
@@ -464,6 +465,7 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
     endDate: roleAssignment.endTime,
     id: roleAssignment.id,
     jurisdiction: caseDetail.jurisdiction,
+    jurisdictionId: caseDetail.jurisdiction,
     role_category: roleAssignment.roleCategory,
     location_id: caseDetail.case_data &&
     caseDetail.case_data.caseManagementLocation &&

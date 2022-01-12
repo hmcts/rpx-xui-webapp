@@ -31,7 +31,15 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I validate location filter is displayed', async function () {
         await BrowserWaits.retryWithActionCallback(async () => {
-            expect(await myWorkPage.genericFilterContainer.isPresent()).to.be.true;;
+            try{
+                await BrowserWaits.waitForSeconds(1);
+                expect(await myWorkPage.genericFilterContainer.isPresent()).to.be.true;;
+            }catch(err){
+
+                await myWorkPage.showHideWorkFilterBtn.click();
+                throw new Error(err); 
+           }
+
         });
     });
 
@@ -59,7 +67,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await myWorkPage.clickWorkFilterLoctionInputWithLabel(workLocationLabel);
     });
 
-    Then('I validate following work location selected', async function (locationsDatatable) {
+    async function validateLocationsSelected(locationsDatatable){
         const selectedLocations = await myWorkPage.getListOfSelectedLocations();
         const locationNameHashes = locationsDatatable.hashes();
         const locationNamesArr = [];
@@ -68,9 +76,21 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         }
         expect(selectedLocations, 'actual missing expected locations').to.have.same.members(locationNamesArr);
         //expect(locationNamesArr,'actual has more locations selected').to.include.all.members(selectedLocations);
+    }
 
-
+    Then('I validate following work location selected', async function (locationsDatatable) {
+        validateLocationsSelected(locationsDatatable); 
     });
+
+    Then('I validate following work location selected, if {string} equals {string}', async function (var1,var2,locationsDatatable) {
+        if(var1 === var2){
+            validateLocationsSelected(locationsDatatable);
+        }else{
+            reportLogger.AddMessage(`skiping step as condition not matching for scenario, ${var1} != ${var2}`);
+        }
+    });
+
+
 
     When('I click work location filter Apply button', async function () {
         await myWorkPage.waitForWorkFilterToDisplay();

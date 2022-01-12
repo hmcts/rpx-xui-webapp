@@ -17,6 +17,7 @@ export class ChooseRadioOptionComponent {
   @Input() public radioControlName: string;
   @Input() public description: string = null;
   @Input() public submitted: boolean = false;
+  @Input() public errorText: string = 'Please select an option';
 
   constructor() {}
 

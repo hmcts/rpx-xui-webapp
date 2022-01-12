@@ -174,6 +174,10 @@ export class AppConfig extends AbstractAppConfig {
     return this.workallocationUrl;
   }
 
+  public getRefundsUrl(): string {
+    return 'api/refund';
+  }
+
   private featureToggleWorkAllocation(): void {
     this.featureToggleService
       .isEnabled(AppConstants.FEATURE_NAMES.workAllocation)
@@ -184,10 +188,6 @@ export class AppConfig extends AbstractAppConfig {
             WorkAllocationTaskService.WorkAllocationUrl
           )
       );
-  }
-
-  public getRefundsUrl(): string {
-    return '';
   }
 
   public getAccessManagementMode(): boolean {

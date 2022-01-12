@@ -89,29 +89,6 @@ describe('HmctsGlobalHeaderComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  xit('should show the Case search button as inactive when the currentUrl does not match', () => {
-    const searchButton = fixture.debugElement.nativeElement.querySelector('.hmcts-search-toggle__button');
-    expect(searchButton).toBeDefined();
-    expect(searchButton.textContent).toBe('Find case');
-    expect(searchButton.getAttribute('aria-current')).not.toEqual('true');
-  });
-
-  xit('should show the Case search button as active when the currentUrl matches', () => {
-    // Get hold of the search button.
-    const searchButton = fixture.debugElement.nativeElement.querySelector('.hmcts-search-toggle__button');
-    expect(searchButton.getAttribute('aria-current')).not.toEqual('true');
-
-    // And get its href value.
-    const href = searchButton.getAttribute('href');
-
-    // Set the currentUrl to be the same as the search button's href.
-    component.currentUrl = href;
-    fixture.detectChanges();
-
-    // And now it should show be "active", which gives a different rendering.
-    expect(searchButton.getAttribute('aria-current')).toEqual('true');
-  });
-
   it('should onEmitSubMenu', () => {
     const menuItem = {href: '/noc', text: null};
     component.onEmitSubMenu(menuItem);

@@ -17,6 +17,7 @@ class CaseRolesTable{
 
     async isTableDisplayed(){
         reportLogger.AddMessage(`Table locator: ${this.taskDetailsTable.locator().toString()}`);
+       
         return this.taskDetailsTable.isPresent();
     }
 

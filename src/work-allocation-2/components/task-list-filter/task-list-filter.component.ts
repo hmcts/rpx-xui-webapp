@@ -37,7 +37,6 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   };
   public allLocations: string[] = [];
   public defaultLocations: string[] = [];
-  public locationFields: FilterSetting;
   public fieldsSettings: FilterSetting = {
     id: TaskListFilterComponent.FILTER_NAME,
     fields: [],
@@ -61,13 +60,13 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     this.fieldsConfig.persistence = this.persistence || 'session';
     this.subscription = forkJoin([this.locationDataService.getLocations(), this.taskTypesService.getTypesOfWork()])
       .subscribe(([locations, typesOfWork]: [Location[], any[]]) => {
-        locations.forEach((location) => this.allLocations.push(location.id.toString()));
+        this.allLocations = locations.map((location) => location.id.toString());
         this.setUpLocationFilter(locations);
         this.setUpTypesOfWorkFilter(typesOfWork);
         this.persistFirstSetting();
+        this.subscribeToSelectedLocations();
       });
     this.setErrors();
-    this.subscribeToSelectedLocations();
     this.toggleFilter = false;
   }
 

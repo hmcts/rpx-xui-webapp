@@ -14,9 +14,6 @@ const findPersonPage = require('../../pageObjects/workAllocation/common/findPers
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
-  
- 
-
 
     Then('In workflow {string}, I see find person page displayed with caption {string}', async function (workflow,findPersonCaption) {
         const workFlowPage = workflowUtil.getWorlflowPageObject(workflow);

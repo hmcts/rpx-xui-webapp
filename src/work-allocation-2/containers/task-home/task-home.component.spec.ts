@@ -14,6 +14,7 @@ import { WorkAllocationComponentsModule } from '../../components/work-allocation
 import { LocationDataService, WorkAllocationTaskService } from '../../services';
 import { InfoMessageContainerComponent } from '../info-message-container/info-message-container.component';
 import { TaskHomeComponent } from './task-home.component';
+import { SessionStorageService } from '../../../app/services';
 
 @Component({
   template: `
@@ -40,6 +41,7 @@ describe('TaskHomeComponent', () => {
       unsubscribe: () => null
     }
   };
+  const sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem']);
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -57,6 +59,9 @@ describe('TaskHomeComponent', () => {
         {
           provide: FilterService, useValue: mockFilterService
         },
+        {
+          provide: SessionStorageService, useValue: sessionStorageService
+        }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);

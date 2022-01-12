@@ -60,7 +60,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
      Then('I validate tasks column sorting', async function(){
          let tasksRequested = false; 
          let sortColumnInRequestParam = "";
-         await MockUtil.setMockResponse("POST", "/workallocation/taskWithPagination/", (req, res) => {
+         await MockUtil.setMockResponse("POST", "/workallocation/taskWithPagination", (req, res) => {
              CucumberReporter.AddMessage("get tasks with sort request body:");
              CucumberReporter.AddJson(req.body);
              sortColumnInRequestParam = WAUtil.getTaskListReqSearchParam(req.body);

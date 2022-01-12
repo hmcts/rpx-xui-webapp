@@ -10,12 +10,13 @@ import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/se
 import { Observable, throwError } from 'rxjs';
 import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { TaskActionConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { InfoMessage, InfoMessageType } from '../../enums';
 import { InformationMessage } from '../../models/comms';
 import { Task } from '../../models/tasks';
-import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
+import { WorkAllocationTaskService } from '../../services';
 import { ACTION } from '../../services/work-allocation-task.service';
 import { getMockTasks } from '../../tests/utils.spec';
 import { TaskActionContainerComponent } from './task-action-container.component';
@@ -179,96 +180,4 @@ describe('WorkAllocation', () => {
     });
 
   });
-
-  [
-    {statusCode: 403, routeUrl: '/not-authorised'},
-    {statusCode: 401, routeUrl: '/not-authorised'},
-    {statusCode: 500, routeUrl: '/service-down'},
-    {statusCode: 400, routeUrl: '/service-down'},
-    {statusCode: 404, routeUrl: '/'}
-
-  ].forEach(scr => {
-    describe(`TaskActionContainerComponent negative scenarios error response code ${scr.statusCode}`, () => {
-      let component: TaskActionContainerComponent;
-      let wrapper: WrapperComponent;
-      let fixture: ComponentFixture<WrapperComponent>;
-      let router: Router;
-      const mockTasks = getMockTasks();
-
-      const mockWorkAllocationService = {
-        performActionOnTask: jasmine.createSpy('performActionOnTask').and.returnValue(throwError({status: scr.statusCode}))
-      };
-      const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
-      const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
-      const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
-
-      beforeEach(() => {
-        TestBed.configureTestingModule({
-          declarations: [
-            TaskActionContainerComponent, WrapperComponent, TaskListComponent,
-            ErrorMessageComponent, NothingComponent
-          ],
-          imports: [
-            WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule, PaginationModule,
-            RouterTestingModule.withRoutes(
-              [
-                {path: 'mywork/list', component: NothingComponent}
-              ]
-            )
-          ],
-          providers: [
-            {provide: WorkAllocationTaskService, useValue: mockWorkAllocationService},
-            {provide: SessionStorageService, useValue: mockSessionStorageService},
-            {
-              provide: ActivatedRoute,
-              useValue: {
-                snapshot: {
-                  data: {
-                    taskAndCaseworkers: {
-                      task: {task: mockTasks[0]}, caseworkers: []
-                    },
-                    ...TaskActionConstants.Unassign
-                  }
-                },
-                params: Observable.of({task: mockTasks[0]})
-              }
-            },
-            {provide: InfoMessageCommService, useValue: mockInfoMessageCommService}
-          ]
-        }).compileComponents();
-        fixture = TestBed.createComponent(WrapperComponent);
-        wrapper = fixture.componentInstance;
-        component = wrapper.appComponentRef;
-        router = TestBed.get(Router);
-
-        wrapper.tasks = null;
-        window.history.pushState({returnUrl: 'mywork/list'}, '', 'mywork/list');
-        fixture.detectChanges();
-      });
-
-      afterEach(() => {
-        fixture.destroy();
-      });
-
-      it(`On Submit error response ${scr.statusCode}`, () => {
-        const navigateSpy = spyOn(router, 'navigate');
-        const navigateByUrlSpy = spyOn(router, 'navigateByUrl');
-
-        const submit: HTMLButtonElement = fixture.debugElement.nativeElement.querySelector('#submit-button');
-        submit.click();
-        if (scr.statusCode === 404) {
-          expect(navigateByUrlSpy).toHaveBeenCalled();
-          expect(mockInfoMessageCommService.nextMessage).toHaveBeenCalledWith(
-            {type: InfoMessageType.WARNING, message: InfoMessage.TASK_NO_LONGER_AVAILABLE}
-          );
-        } else {
-          expect(navigateSpy).toHaveBeenCalledWith([scr.routeUrl]);
-
-        }
-      });
-
-    });
-
-  });
-
 });

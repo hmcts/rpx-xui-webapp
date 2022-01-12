@@ -6,7 +6,7 @@ Feature: WA Release 2: All work > cases - Manage links
         Given I set MOCK workallocation cases with permissions for view "AllWorkCases"
             | Roles          | Count |
             | case-allocator | 10    |
-            |                | 90    |
+            | case-allocator | 90 |
 
 
     Scenario Outline:  My cases, colums and column links for "<UserType>"

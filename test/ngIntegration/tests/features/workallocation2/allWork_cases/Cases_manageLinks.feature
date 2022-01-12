@@ -1,4 +1,4 @@
-@ng @wa2 @wa    
+@ng @wa2 @wa
 Feature: WA Release 2: All work > cases - Manage links
 
     Background: Mock and browser setup
@@ -6,7 +6,7 @@ Feature: WA Release 2: All work > cases - Manage links
         Given I set MOCK workallocation cases with permissions for view "AllWorkCases"
             | Roles          | Count |
             | case-allocator | 10    |
-            | case-allocator | 90 |
+            | case-allocator | 90    |
 
 
     Scenario Outline:  My cases, colums and column links for "<UserType>"
@@ -24,7 +24,7 @@ Feature: WA Release 2: All work > cases - Manage links
         Then I validate manage link actions for cases
             | index | actions           |
             | 1     | Reallocate,Remove |
-            | 12    |                   |
+            | 12    | Reallocate,Remove |
 
         Examples:
             | UserIdentifier  | UserType | Roles                                                           |

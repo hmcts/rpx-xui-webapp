@@ -70,10 +70,8 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
         return PersonRole.ADMIN;
       case RoleCategory.JUDICIAL:
         return PersonRole.JUDICIAL;
-      case RoleCategory.LEGAL_OPERATIONS:
-        return PersonRole.CASEWORKER;
       default:
-        throw new Error('Invalid rolecategory' + roleCategory);
+        return PersonRole.CASEWORKER;
     }
   }
 

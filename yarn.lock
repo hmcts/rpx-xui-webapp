@@ -528,10 +528,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.5.3-judge-selection":
-  version "1.5.3-judge-selection"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.5.3-judge-selection.tgz#f9319412ab55ae285904fdf4780534345d97a5f4"
-  integrity sha512-VrXK+ZQfVGkaFNUzUQw5pk96KTKK6IBvT9J8JyGqBuVpc/p++UHDPmCiYa1AaMShttnK2GC4oeP2n+rGNVz0RA==
+"@hmcts/rpx-xui-common-lib@1.6.5-flickering-search-location-rename-variable":
+  version "1.6.5-flickering-search-location-rename-variable"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.5-flickering-search-location-rename-variable.tgz#31c7194e49ca4c08ca519bb41f71ed8927d08631"
+  integrity sha512-fspXv6317Vu18iU2Iie1grbkHS+vzwgZyBrqk2UzBfl2nDbMx1CXsho0bPlTDETjFGl4oVWIoGEQwwoBIExwQw==
   dependencies:
     tslib "^1.9.0"
 

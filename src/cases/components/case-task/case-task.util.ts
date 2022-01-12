@@ -10,12 +10,14 @@ export const appendTaskIdAsQueryStringToTaskDescription = (task: Task): string =
   // So, instead of modifying the url, we decided that the safest approach is to
   // append task id as a querystring.
 
-  const taskDescription = task.description;
-  if (taskDescription) {
-    const taskIdQueryString = taskDescription.includes('?') ? `&tid=${task.id}` : `?tid=${task.id}`;
-    const closeBracketPosition = taskDescription.lastIndexOf(')');
-    if (closeBracketPosition > -1) {
-      return [taskDescription.slice(0, closeBracketPosition), taskIdQueryString, taskDescription.slice(closeBracketPosition)].join('');
+  if (task) {
+    const taskDescription = task.description;
+    if (taskDescription) {
+      const taskIdQueryString = taskDescription.includes('?') ? `&tid=${task.id}` : `?tid=${task.id}`;
+      const closeBracketPosition = taskDescription.lastIndexOf(')');
+      if (closeBracketPosition > -1) {
+        return [taskDescription.slice(0, closeBracketPosition), taskIdQueryString, taskDescription.slice(closeBracketPosition)].join('');
+      }
     }
   }
 

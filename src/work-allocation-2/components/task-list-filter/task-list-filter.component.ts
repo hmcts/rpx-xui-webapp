@@ -1,18 +1,16 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FilterPersistence, FilterService } from '@hmcts/rpx-xui-common-lib';
-import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
-import { forkJoin, Subscription } from 'rxjs';
+import { FilterConfig, FilterError, FilterFieldConfig, FilterPersistence, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
+import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { ErrorMessage } from '../../../app/models';
 import { Location } from '../../models/dtos';
-import { LocationDataService } from '../../services';
 import { TaskTypesService } from '../../services/task-types.service';
 
 export const LOCATION_ERROR: ErrorMessage = {
   title: 'There is a problem',
   description: 'At least one location is required',
-  fieldId: 'task_assignment_caseworker'
+  fieldId: 'locations'
 };
 
 @Component({
@@ -36,7 +34,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     cancelSetting: null
   };
   public allLocations: string[] = [];
-  public defaultLocations: string[] = [];
+  public defaultLocations: any[] = [];
   public defaultTypesOfWork: string[] = [];
   public fieldsSettings: FilterSetting = {
     id: TaskListFilterComponent.FILTER_NAME,
@@ -54,16 +52,14 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
    */
   constructor(private readonly route: ActivatedRoute,
               private readonly filterService: FilterService,
-              private readonly taskTypesService: TaskTypesService,
-              private readonly locationDataService: LocationDataService) {
+              private readonly taskTypesService: TaskTypesService) {
   }
 
   public ngOnInit(): void {
     this.fieldsConfig.persistence = this.persistence || 'session';
-    this.subscription = forkJoin([this.locationDataService.getLocations(), this.taskTypesService.getTypesOfWork()])
-      .subscribe(([locations, typesOfWork]: [Location[], any[]]) => {
-        this.allLocations = locations.map((location) => location.id.toString());
-        this.setUpLocationFilter(locations);
+    this.subscription = this.taskTypesService.getTypesOfWork()
+      .subscribe((typesOfWork: any[]) => {
+        this.setUpLocationFilter();
         this.setUpTypesOfWorkFilter(typesOfWork);
         this.persistFirstSetting();
         this.subscribeToSelectedLocationsAndTypesOfWork();
@@ -131,10 +127,11 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   }
 
   private setErrors(): void {
-    this.errorSubscription = this.filterService.givenErrors.subscribe(value => {
-      if (value) {
+    this.errorSubscription = this.filterService.givenErrors.subscribe((errors: FilterError[]) => {
+      if (errors) {
         this.error = LOCATION_ERROR;
-        this.error.description = value;
+        this.error.multiple = true;
+        this.error.errors = errors;
       } else {
         this.error = null;
       }
@@ -142,26 +139,19 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     });
   }
 
-  private setUpLocationFilter(locations: Location[]): void {
+  private setUpLocationFilter(): void {
     const field: FilterFieldConfig = {
       name: TaskListFilterComponent.FILTER_NAME,
-      options: locations.map((location) => ({
-        key: location.id,
-        label: location.locationName
-      })),
+      options: [],
       minSelected: 1,
-      maxSelected: 10,
-      minSelectedError: 'At least one location is required',
-      maxSelectedError: 'Maximum locations selected',
-      subTitle: 'Search for a location by name',
+      maxSelected: null,
+      displayMinSelectedError: true,
+      minSelectedError: 'Enter a location',
       type: 'find-location'
     };
     if (this.route.snapshot.data && this.route.snapshot.data.location) {
       const location: Location = this.route.snapshot.data.location;
-      this.defaultLocations = [`${location.id}`];
-    } else {
-      // as some judicial workers do not have a set location set their default to be all locations
-      this.defaultLocations = this.allLocations;
+      this.defaultLocations = [location];
     }
     this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
       name: TaskListFilterComponent.FILTER_NAME,
@@ -206,7 +196,11 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     const selectedFields = f.fields.find(field => field.name === TaskListFilterComponent.FILTER_NAME);
     const selectedTypeOfWorksFields = f.fields.find(field => field.name === 'types-of-work');
     // check if selected fields are the same as cancelled filter settings
-    const containsNonDefaultFields = selectedFields.value.filter((v: string) => defaultLocations.indexOf(v) === -1).length > 0;
+    const containsNonDefaultFields = selectedFields.value
+      .map((location: any) => location.epims_id)
+      .filter((v: string) => defaultLocations
+        .map((location: any) => location.epims_id)
+        .indexOf(v) === -1).length > 0;
     const containsNonDefaultTypeOfWorkFields = selectedTypeOfWorksFields.value.filter((v: string) => defaultTypesOfWork.indexOf(v) === -1).length > 0;
     // check if the amount of fields selected is the same as the amount in the cancel settings
     const notSameSize = !(defaultLocations.length === selectedFields.value.length) || !(defaultTypesOfWork.length === selectedTypeOfWorksFields.value.length);

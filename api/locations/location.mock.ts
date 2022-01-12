@@ -1,13 +1,13 @@
 /* tslint:disable:max-line-length */
 import MockAdapter from 'axios-mock-adapter';
-import {HttpMockAdapter} from '../common/httpMockAdapter';
-import {ALL_COURT_LOCATIONS} from './data/location.mock.data';
-import {toEpimsLocation} from "./models/location.model";
+import { HttpMockAdapter } from '../common/httpMockAdapter';
+import { ALL_COURT_LOCATIONS } from './data/location.mock.data';
+import { toEpimsLocation } from './models/location.model';
 
 export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
-  const getHearingsUrl = /http:\/\/rd-professional-api-aat.service.core-compute-aat.internal\/refdata\/location\/court-venues\/venue-search\?search-string=[\w]*/;
-
+  const getHearingsUrl = /http:\/\/rd-professional-api-demo.service.core-compute-demo.internal\/refdata\/location\/court-venues\/venue-search\?search-string=[\w]*/;
+  const getLocationsById = /http:\/\/rd-professional-api-demo.service.core-compute-demo.internal\/refdata\/location\/court-locations\?epimms_id=[\w]*/;
   mock.onGet(getHearingsUrl).reply(config => {
     const requestURL = config.url;
     const searchTermStartIdx = config.url.indexOf('=');
@@ -33,6 +33,19 @@ export const init = () => {
       .map(locationModel => toEpimsLocation(locationModel))
       .filter((locationByEPIMSModel, index, locationByEPIMSModelArray) =>
         locationByEPIMSModelArray.findIndex(t => (t.epims_id === locationByEPIMSModel.epims_id)) === index);
+    return [
+      200,
+      searchResult,
+    ];
+  });
+
+  mock.onGet(getLocationsById).reply(config => {
+    const requestURL = config.url;
+    const searchTermStartIdx = config.url.indexOf('=');
+    const searchTermEndIdx = config.url.length;
+    const searchTerm = requestURL.substring(searchTermStartIdx + 1, searchTermEndIdx);
+    const searchResult = ALL_COURT_LOCATIONS
+      .find(location => location.epims_id === searchTerm);
     return [
       200,
       searchResult,

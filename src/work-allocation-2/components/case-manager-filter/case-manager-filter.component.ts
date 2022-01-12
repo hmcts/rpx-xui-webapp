@@ -6,7 +6,6 @@ import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { PersonRole } from '../../../../api/workAllocation2/interfaces/person';
 import { AppUtils } from '../../../app/app-utils';
-import { SERVICE_OPTIONS_LIST } from '../../../app/app.constants';
 import * as fromAppStore from '../../../app/store';
 import { Location } from '../../models/dtos';
 
@@ -44,8 +43,8 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       ]
     }
   };
-  private sub: Subscription;
   public appStoreSub: Subscription;
+  private sub: Subscription;
 
   constructor(private readonly filterService: FilterService, private readonly appStore: Store<fromAppStore.State>) {
 
@@ -54,7 +53,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
   private static initServiceFilter(jurisdictions: string[]): FilterFieldConfig {
     return {
       name: 'jurisdiction',
-      options: jurisdictions.map(service => ({key: service, label: service})),
+      options: jurisdictions.map(service => ({ key: service, label: service })),
       minSelected: 1,
       maxSelected: 1,
       minSelectedError: 'You must select a service',
@@ -70,7 +69,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
     }
     return {
       name: 'location_id',
-      options: locations.map(loc => ({key: loc.id, label: loc.locationName})),
+      options: locations.map(loc => ({ key: loc.id, label: loc.locationName })),
       minSelected: 1,
       maxSelected: 1,
       minSelectedError: 'You must select a location',
@@ -99,7 +98,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       ],
       minSelected: 1,
       maxSelected: 1,
-      domain: 'All',
+      domain: PersonRole.ALL,
       findPersonField: 'person',
       lineBreakBefore: true,
       minSelectedError: 'You must select a role type',
@@ -191,7 +190,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
         filter((f: FilterSetting) => !f.reset),
       ).subscribe((f: FilterSetting) => {
         const fields = f.fields.reduce((acc, field: { name: string, value: string[] }) => {
-          return {...acc, [field.name]: field.value[0]};
+          return { ...acc, [field.name]: field.value[0] };
         }, {});
         this.selectChanged.emit(fields);
       });

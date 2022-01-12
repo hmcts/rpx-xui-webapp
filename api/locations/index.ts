@@ -2,7 +2,9 @@ import { NextFunction, Response } from 'express';
 import { handleGet } from '../common/mockService';
 import { getConfigValue } from '../configuration';
 import { SERVICES_PRD_API_URL} from '../configuration/references';
+import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
+import { setHeaders } from '../lib/proxy';
 import * as mock from '../locations/location.mock';
 import {LocationTypeEnum} from './data/locationType.enum';
 import {SERVICES_COURT_TYPE_MAPPINGS} from './data/serviceCourtType.mapping';
@@ -20,7 +22,6 @@ const url: string = getConfigValue(SERVICES_PRD_API_URL);
  * @example searchTerm = any search term for postcode | site name | venue name |court name | court address etc.
  */
 export async function getLocations(req: EnhancedRequest, res: Response, next: NextFunction) {
-  // @ts-ignore
   const searchTerm = req.query.searchTerm;
   const serviceIds = req.query.serviceIds;
   const locationType = req.query.locationType;
@@ -37,6 +38,17 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
       result = data.filter(location => location.is_case_management_location === 'Y');
     }
     res.status(status).send(result);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getLocationsById(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const ids = req.query.ids;
+  const path: string = `${url}/refdata/location/court-locations?epimms_id={}`;
+  try {
+    const { status, data} = await handleGet(path.replace('{}', ids), req);
+    res.status(status).send(data);
   } catch (error) {
     next(error);
   }

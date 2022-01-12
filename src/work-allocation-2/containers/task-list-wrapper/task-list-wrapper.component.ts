@@ -22,6 +22,7 @@ import {
   WorkAllocationTaskService
 } from '../../services';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
+import { LocationModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html',
@@ -34,13 +35,14 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public showSpinner$: Observable<boolean>;
   public sortedBy: SortField;
   public pagination: PaginationParameter;
-  private pTasks: Task[] = [];
   public selectedLocations: string[] = [];
   public selectedWorkTypes: string[] = [];
-  private tasksLoaded: boolean = false;
+  public taskServiceConfig: TaskServiceConfig;
   protected userDetailsKey: string = 'userDetails';
-
+  private pTasks: Task[] = [];
+  private tasksLoaded: boolean = false;
   private selectedLocationsSubscription: Subscription;
+  private pTasksTotal: number;
 
   /**
    * Take in the Router so we can navigate when actions are clicked.
@@ -60,7 +62,6 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected filterService: FilterService
   ) {
   }
-  public taskServiceConfig: TaskServiceConfig;
 
   public get tasks(): Task[] {
     return this.pTasks;
@@ -70,33 +71,16 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     this.pTasks = value;
   }
 
-  private pTasksTotal: number;
   public get tasksTotal(): number {
     return this.pTasksTotal;
   }
+
   public set tasksTotal(value: number) {
     this.pTasksTotal = value;
   }
 
   public get fields(): FieldConfig[] {
     return [];
-  }
-
-  public getTaskServiceConfig(): TaskServiceConfig {
-    return {
-      service: TaskService.IAC,
-      defaultSortDirection: SortOrder.ASC,
-      defaultSortFieldName: this.getDateField('dueDate'),
-      fields: this.fields
-    };
-  }
-
-  public getDateField(defaultSortColumn: string): string {
-    const field = this.fields.find(currentField => currentField.isDate);
-    if (field) {
-      return field.sortName;
-    }
-    return defaultSortColumn;
   }
 
   public get emptyMessage(): string {
@@ -113,7 +97,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   /**
    * To be overridden.
    */
-   public get pageSessionKey(): string {
+  public get pageSessionKey(): string {
     return 'pageSessionKey';
   }
 
@@ -140,6 +124,23 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     return false;
   }
 
+  public getTaskServiceConfig(): TaskServiceConfig {
+    return {
+      service: TaskService.IAC,
+      defaultSortDirection: SortOrder.ASC,
+      defaultSortFieldName: this.getDateField('dueDate'),
+      fields: this.fields
+    };
+  }
+
+  public getDateField(defaultSortColumn: string): string {
+    const field = this.fields.find(currentField => currentField.isDate);
+    if (field) {
+      return field.sortName;
+    }
+    return defaultSortColumn;
+  }
+
   public ngOnInit(): void {
     this.taskServiceConfig = this.getTaskServiceConfig();
     this.loadCaseWorkersAndLocations();
@@ -162,15 +163,15 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
         const newLocations = f.fields.find((field) => field.name === 'locations').value;
         const newWorkTypes = f.fields.find((field) => field.name === 'types-of-work').value;
         this.resetPagination(this.selectedLocations, newLocations);
-        this.selectedLocations = newLocations;
+        this.selectedLocations = (newLocations as unknown as LocationModel[]).map((l) => l.epims_id);
         this.selectedWorkTypes = newWorkTypes.filter(workType => workType !== 'types_of_work_all');
         this.doLoad();
-    });
+      });
   }
 
   public setupTaskList() {
     this.caseworkerService.getAll().subscribe(caseworkers => {
-      this.caseworkers = [ ...caseworkers ];
+      this.caseworkers = [...caseworkers];
     }, error => {
       handleFatalErrors(error.status, this.router);
     });
@@ -227,7 +228,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
    * Get a search task request appropriate to the current view,
    * sort order, etc.
    */
-   public getSearchTaskRequestPagination(): SearchTaskRequest {
+  public getSearchTaskRequestPagination(): SearchTaskRequest {
     return {
       search_parameters: [],
       sorting_parameters: [this.getSortParameter()],
@@ -245,7 +246,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public getPaginationParameter(): PaginationParameter {
     const savedPaginationNumber = JSON.parse(this.sessionStorageService.getItem(this.pageSessionKey));
     if (savedPaginationNumber && typeof savedPaginationNumber === 'number') {
-      return {...this.pagination, page_number: savedPaginationNumber};
+      return { ...this.pagination, page_number: savedPaginationNumber };
     }
     return { ...this.pagination };
   }
@@ -294,35 +295,10 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     }
   }
 
-  // Do the actual load. This is separate as it's called from two methods.
-  private doLoad(): void {
-    this.showSpinner$ = this.loadingService.isLoading;
-    const loadingToken = this.loadingService.register();
-    this.performSearchPagination().subscribe(result => {
-        this.loadingService.unregister(loadingToken);
-        this.tasks = result.tasks;
-        this.tasksTotal = result.total_records;
-        this.tasks.forEach(task => task.assigneeName = getAssigneeName(this.caseworkers, task.assignee));
-        this.tasksLoaded = true;
-        this.ref.detectChanges();
-      }, error => {
-        this.loadingService.unregister(loadingToken);
-        handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
-    });
-  }
-
   public onPaginationHandler(pageNumber: number): void {
     this.pagination.page_number = pageNumber;
     this.sessionStorageService.setItem(this.pageSessionKey, pageNumber.toString());
     this.loadTasks();
-  }
-
-  // reset pagination when filter is applied
-  private resetPagination(selectedLocations: string[], newLocations: string[]): void {
-    if (this.selectedLocations !== newLocations && this.selectedLocations.length !== 0) {
-      this.pagination.page_number = 1;
-      this.sessionStorageService.setItem(this.pageSessionKey, '1');
-    }
   }
 
   public isCurrentUserJudicial(): boolean {
@@ -332,5 +308,30 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       return AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
     }
     return false;
+  }
+
+  // Do the actual load. This is separate as it's called from two methods.
+  private doLoad(): void {
+    this.showSpinner$ = this.loadingService.isLoading;
+    const loadingToken = this.loadingService.register();
+    this.performSearchPagination().subscribe(result => {
+      this.loadingService.unregister(loadingToken);
+      this.tasks = result.tasks;
+      this.tasksTotal = result.total_records;
+      this.tasks.forEach(task => task.assigneeName = getAssigneeName(this.caseworkers, task.assignee));
+      this.tasksLoaded = true;
+      this.ref.detectChanges();
+    }, error => {
+      this.loadingService.unregister(loadingToken);
+      handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
+    });
+  }
+
+  // reset pagination when filter is applied
+  private resetPagination(selectedLocations: string[], newLocations: string[]): void {
+    if (this.selectedLocations !== newLocations && selectedLocations.length !== 0) {
+      this.pagination.page_number = 1;
+      this.sessionStorageService.setItem(this.pageSessionKey, '1');
+    }
   }
 }

@@ -1,8 +1,8 @@
 
-@ng @integration_todo
+@ng @integration_todo @test
 Feature: WA Release 2: Case details Tasks tab (Integration to be done)
 
-    Requirements from 
+    Requirements from
     https://tools.hmcts.net/confluence/pages/viewpage.action?pageId=1466503344#WorkAllocationRelease2and2.1-ManagelinklogicforTasksandCases
 
 
@@ -12,32 +12,37 @@ Feature: WA Release 2: Case details Tasks tab (Integration to be done)
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
+        Given I set MOCK request "/workallocation2/case/task/:caseid" response log to report
 
         Given I set MOCK case details with reference "caseDetails"
         Given I set MOCK case details "caseDetails" property "Jurisdiction" as "IA"
-
+        Given I set MOCK case list values
+            | case_id          |
+            | 1234567812345678 |
+            | 1234567812345679 |
         Given I set MOCK case tasks with userDetails from reference "userDetails"
-            | task_title                                | assignee    | assigneeName | created_date | dueDate | permissions        | warnings | description                                                                             |
-            | Task 1                                    | thissession | Test user    | -10          | -1      | Own,Manage,Execute | true     | Click link to proceed to next step [test link next step](/case/case-details/${case_id}) |
-            | Task 2                                    | someone     | Test 2 user  | -10          | 0       | Own,Manage,Execute | true     | Click link to proceed to next step [test link next step](/case/case-details/${case_id}) |
-            | Task 3                                    |             |              | -10          | 1       | Own,Manage,Execute | true     |                                                                                         |
-            | Task 4                                    |             |              | -10          | 10      |                    | true     |                                                                                         |
-            | Task 5                                    |             |              | -10          | 10      |                    | true     |                                                                                         |
-            | 6 Permissions OME assined to me           | thissession | Test user    | -10          | 10      | Own,Manage,Execute | true     |                                                                                         |
-            | 7 Permissions OME assigned to someother   | someone     | Test 3 user  | -10          | 10      | Own,Manage,Execute | true     |                                                                                         |
-            | 8 Permissions OME unassigned              |             |              | -10          | 10      | Own,Manage,Execute | true     |                                                                                         |
-            | 9 Permissions ME assined to me            | thissession | Test user    | -10          | 10      | Manage,Execute     | true     |                                                                                         |
-            | 10 Permissions ME assigned to someother   | someone     | Test 4 user  | -10          | 10      | Manage,Execute     | true     |                                                                                         |
-            | 11 Permissions ME unassigned              |             |              | -10          | 10      | Manage,Execute     | true     |                                                                                         |
-            | 12 Permissions M assigned to someother    | someone     | Test 5 user  | -10          | 10      | Manage             | true     |                                                                                         |
-            | 13 Permissions M unassigned               |             |              | -10          | 10      | Manage             | true     |                                                                                         |
-            | 14 Permissions none assigned to someother | someone     | Test 6 user  | -10          | 10      |                    | true     |                                                                                         |
-            | 15 Permissions none unassigned            |             |              | -10          | 10      |                    | true     |                                                                                         |
-# https://tools.hmcts.net/confluence/pages/viewpage.action?pageId=1466503344#WorkAllocationRelease2and2.1-ManagelinklogicforTasksandCases
+            | id                 | task_title                                | assignee    | assigneeName | created_date | dueDate | permissions        | warnings | description                                                                                                                                                              |
+            | 987654321987654321 | Task 1                                    | thissession | Test user    | -10          | -1      | Own,Manage,Execute | true     | Click link to proceed to next step [test link next step](/case/case-details/${case_id})                                                                                  |
+            | 987654321987654322 | Task 2                                    | someone     | Test 2 user  | -10          | 0       | Own,Manage,Execute | true     | Click link to proceed to [next step 1](/case/case-details/${case_id}) or \n Click link to proceed to [next step 2](/case/case-details/${case_id}/${task_id}/testaction2) |
+            |                    | Task 3                                    |             |              | -10          | 1       | Own,Manage,Execute | true     |                                                                                                                                                                          |
+            |                    | Task 4                                    |             |              | -10          | 10      |                    | true     |                                                                                                                                                                          |
+            |                    | Task 5                                    |             |              | -10          | 10      |                    | true     |                                                                                                                                                                          |
+            |                    | 6 Permissions OME assined to me           | thissession | Test user    | -10          | 10      | Own,Manage,Execute | true     |                                                                                                                                                                          |
+            |                    | 7 Permissions OME assigned to someother   | someone     | Test 3 user  | -10          | 10      | Own,Manage,Execute | true     |                                                                                                                                                                          |
+            |                    | 8 Permissions OME unassigned              |             |              | -10          | 10      | Own,Manage,Execute | true     |                                                                                                                                                                          |
+            |                    | 9 Permissions ME assined to me            | thissession | Test user    | -10          | 10      | Manage,Execute     | true     |                                                                                                                                                                          |
+            |                    | 10 Permissions ME assigned to someother   | someone     | Test 4 user  | -10          | 10      | Manage,Execute     | true     |                                                                                                                                                                          |
+            |                    | 11 Permissions ME unassigned              |             |              | -10          | 10      | Manage,Execute     | true     |                                                                                                                                                                          |
+            |                    | 12 Permissions M assigned to someother    | someone     | Test 5 user  | -10          | 10      | Manage             | true     |                                                                                                                                                                          |
+            |                    | 13 Permissions M unassigned               |             |              | -10          | 10      | Manage             | true     |                                                                                                                                                                          |
+            |                    | 14 Permissions none assigned to someother | someone     | Test 6 user  | -10          | 10      |                    | true     |                                                                                                                                                                          |
+            |                    | 15 Permissions none unassigned            |             |              | -10          | 10      |                    | true     |                                                                                                                                                                          |
+        # https://tools.hmcts.net/confluence/pages/viewpage.action?pageId=1466503344#WorkAllocationRelease2and2.1-ManagelinklogicforTasksandCases
 
         Given I start MockApp
         Given I navigate to home page
         When I click on primary navigation header tab "Case list", I see selected tab page displayed
+
         When I open first case in case list page
         Then I see case details page
         Then I see case details tab label "Tasks" is displayed is "true"
@@ -51,26 +56,34 @@ Feature: WA Release 2: Case details Tasks tab (Integration to be done)
 
 
         Then I validate task tab active task at position 1 with task name "Task 1" has attributes
-            | name         | isDisplayed              | contentType | text                                                   |
-            | Task created | <TaskcreatedIsDisplayed> |             | -10                                                    |
-            | Priority     | <PriorityIsDisplayed>    |             | HIGH                                                   |
-            | Due date     | <DuedateIsDisplayed>     |             | -1                                                     |
-            | Assigned to  | true                     |             |                                                        |
-            | Manage       | true                     | link        | Reassign                                               |
-            | Manage       | true                     | link        | Unassign                                               |
-            | Next steps   | true                     |             | Click link to proceed to next step test link next step |
-            | Next steps   | true                     | link        | test link next step                                    |
+            | name         | isDisplayed              | contentType     | text                                                   | href                               |
+            | Task created | <TaskcreatedIsDisplayed> |                 | -10                                                    |                                    |
+            | Priority     | <PriorityIsDisplayed>    |                 | HIGH                                                   |                                    |
+            | Due date     | <DuedateIsDisplayed>     |                 | -1                                                     |                                    |
+            | Assigned to  | true                     |                 |                                                        |                                    |
+            | Manage       | true                     | link            | Reassign                                               |                                    |
+            | Manage       | true                     | link            | Unassign                                               |                                    |
+            | Next steps   | true                     |                 | Click link to proceed to next step test link next step |                                    |
+            | Next steps   | true                     | link            | test link next step                                    |                                    |
+            | Next steps   | true                     | linkURLContains | test link next step                                    | case/case-details/1234567812345678 |
+            | Next steps   | true                     | linkURLContains | test link next step                                    | tid=987654321987654321             |
+
 
         Then I validate task tab active task at position 2 with task name "Task 2" has attributes
-            | name         | isDisplayed              | contentType | text         |
-            | Task created | <TaskcreatedIsDisplayed> |             | -10          |
-            | Priority     | <PriorityIsDisplayed>    |             | MEDIUM       |
-            | Due date     | <DuedateIsDisplayed>     |             | 0            |
-            | Assigned to  | true                     |             |              |
-            | Manage       | true                     | link        | Assign to me |
-            | Manage       | true                     | link        | Reassign     |
-            | Manage       | true                     | link        | Unassign     |
-            | Next steps   | false                    |             |              |
+            | name         | isDisplayed              | contentType     | text                              | href                                                              |
+            | Task created | <TaskcreatedIsDisplayed> |                 | -10                               |                                                                   |
+            | Priority     | <PriorityIsDisplayed>    |                 | MEDIUM                            |                                                                   |
+            | Due date     | <DuedateIsDisplayed>     |                 | 0                                 |                                                                   |
+            | Assigned to  | true                     |                 |                                   |                                                                   |
+            | Manage       | true                     | link            | Assign to me                      |                                                                   |
+            | Manage       | true                     | link            | Reassign                          |                                                                   |
+            | Manage       | true                     | link            | Unassign                          |                                                                   |
+            | Next steps   | true                     | link            | Click link to proceed next step 1 |                                                                   |
+            | Next steps   | true                     | link            | Click link to proceed next step 2 |                                                                   |
+            | Next steps   | true                     | linkURLContains | Click link to proceed next step 1 | case/case-details/1234567812345678                                |
+            | Next steps   | true                     | linkURLContains | Click link to proceed next step 2 | case/case-details/1234567812345678/987654321987654322/testaction2 |
+
+
 
         Then I validate task tab active task at position 3 with task name "Task 3" has attributes
             | name         | isDisplayed              | contentType | text         |
@@ -195,7 +208,7 @@ Feature: WA Release 2: Case details Tasks tab (Integration to be done)
             | Manage       | false                    |             |            |
             | Next steps   | false                    |             |            |
         Examples:
-            | roles                                                             | PriorityIsDisplayed | DuedateIsDisplayed | TaskcreatedIsDisplayed |
-            | caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor | true                | true               | false                  |
-            | caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor   | false               | false              | true                   |
+            | roles                                                                            | PriorityIsDisplayed | DuedateIsDisplayed | TaskcreatedIsDisplayed |
+            | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor | true                | true               | false                  |
+            | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor   | false               | false              | true                   |
 

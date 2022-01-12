@@ -108,7 +108,7 @@ module.exports = {
                 res.send(responseBody);
             },
             '/data/internal/searchCases': (req, res) => {
-                res.send(ccdMockData.getWorkbasketCases());
+                res.send(ccdMockData.caseList);
             },
         
         }

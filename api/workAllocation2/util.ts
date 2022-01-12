@@ -211,8 +211,9 @@ export function getActionsByPermissions(view, permissions: TaskPermission[]): Ac
         actionList = !manageActionList.includes(undefined) ? manageActionList : actionList;
         break;
       case TaskPermission.EXECUTE:
+      case TaskPermission.OWN:
         // if on active tasks and there is no manage permission do not add execute actions
-        if (view.includes(ViewType.ACTIVE_TASKS) && !permissions.includes(TaskPermission.MANAGE)) {
+        if ((view.includes(ViewType.ACTIVE_TASKS) && !permissions.includes(TaskPermission.MANAGE))) {
           break;
         }
         const executeActionList = actionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX[view][TaskPermission.EXECUTE]);
@@ -228,6 +229,7 @@ export function getActionsByPermissions(view, permissions: TaskPermission[]): Ac
   });
   // Note sorting is implemented to order all possible action lists the same
   // Currently sorting by id but can be changed
+  actionList =  Array.from(new Set(actionList));
   return actionList.sort((a, b) => a.id.localeCompare(b.id));
 }
 

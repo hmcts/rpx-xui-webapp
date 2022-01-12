@@ -319,22 +319,25 @@ const taskActionsMatrix = {
     mytasks: {
         Read: [],
         Refer: [],
+        Own: [ACTIONS.Unassign, ACTIONS.GoToTasks],
         Manage: [ACTIONS.Reassign, ACTIONS.Unassign, ACTIONS.GoToTasks],
-        Execute: [ACTIONS.MarkAsDone],
+        Execute: [ACTIONS.Unassign, ACTIONS.GoToTasks],
         Cancel: [ACTIONS.Cancel]
 
     },
     availabletasks: {
         Read: [],
         Refer: [],
-        Manage: [ACTIONS.AssignToMe, ACTIONS.AssignToMeAndGoToTasks],
-        Execute: [],
+        Own: [ACTIONS.AssignToMe, ACTIONS.AssignToMeAndGoToTasks],
+        Manage: [],
+        Execute: [ACTIONS.AssignToMe, ACTIONS.AssignToMeAndGoToTasks],
         Cancel: []
     },
     allwork: {
         unassigned: {
             Read: [],
             Refer: [],
+            Own: [ACTIONS.MarkAsDone],
             Manage: [ACTIONS.Assign, ACTIONS.GoToTasks],
             Execute: [ACTIONS.MarkAsDone],
             Cancel: [ACTIONS.Cancel]
@@ -342,6 +345,7 @@ const taskActionsMatrix = {
         assigned: {
             Read: [],
             Refer: [],
+            Own: [ACTIONS.MarkAsDone],
             Manage: [ACTIONS.Reassign, ACTIONS.Unassign, ACTIONS.GoToTasks],
             Execute: [ACTIONS.MarkAsDone],
             Cancel: [ACTIONS.Cancel]

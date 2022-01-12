@@ -52,7 +52,6 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
     const options = new Array<OptionsModel>();
     const roleCategories = this.taskRoles.filter(role => role.role_category !== null && role.role_category !== undefined)
       .map(taskRole => taskRole.role_category as RoleCategory);
-    
     roleCategories.forEach(roleCategory => {
       if (!options.find(option => option.optionId === roleCategory)) {
         options.push({
@@ -66,7 +65,7 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
   }
 
   public getLabel(roleCategory: RoleCategory) {
-    switch(roleCategory) {
+    switch (roleCategory) {
       case RoleCategory.ADMIN:
         return PersonRole.ADMIN;
       case RoleCategory.JUDICIAL:

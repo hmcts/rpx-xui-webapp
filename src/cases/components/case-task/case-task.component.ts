@@ -11,6 +11,7 @@ import { Caseworker } from '../../../work-allocation-2/models/dtos';
 import { Task, TaskPermission } from '../../../work-allocation-2/models/tasks';
 import { WorkAllocationTaskService } from '../../../work-allocation-2/services';
 import { getAssigneeName, handleTasksFatalErrors, REDIRECTS } from '../../../work-allocation-2/utils';
+import { appendTaskIdAsQueryStringToTaskDescription } from './case-task.util';
 
 @Component({
   selector: 'exui-case-task',
@@ -62,15 +63,10 @@ export class CaseTaskComponent implements OnInit {
     if (!task.description) {
       return '';
     }
-    // Append task id as a querystring to the task description url
-    // The url format will be like the following markdown
-    // 'Click link to proceed to next step [test link next step](/cases/case-details/1547652071308205/trigger/editAppealAfterSubmit)'
-    const taskDescription = task.description;
-    const taskIdQueryString = taskDescription.includes('?') ? `&tid=${task.id}` : `?tid=${task.id}`;
-    const closeBracketPosition = taskDescription.lastIndexOf(')');
-    if (closeBracketPosition > -1) {
-      task.description = [taskDescription.slice(0, closeBracketPosition), taskIdQueryString, taskDescription.slice(closeBracketPosition)].join('');
-    }
+
+    // Append task id as querystring to task description markdown
+    task.description = appendTaskIdAsQueryStringToTaskDescription(task);
+
     return CaseTaskComponent.VARIABLES.reduce((description: string, variable: string) => {
       if (variable === CaseTaskComponent.TASK_ID_VARIABLE) {
         return replaceAll(description, variable, task.id);

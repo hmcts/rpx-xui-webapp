@@ -294,7 +294,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
   }
 
   public isFormValid() {
-    return this.priorityForm.valid;
+    return this.validationErrors.length === 0;
   }
 
   public ngOnDestroy(): void {

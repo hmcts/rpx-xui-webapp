@@ -1,15 +1,16 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { By } from '@angular/platform-browser';
-import { ACTION } from '../../../models/hearings.enum';
-import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
-import { SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
-import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
-import { provideMockStore } from '@ngrx/store/testing';
-import { Observable, of } from 'rxjs';
-import { HearingsService } from '../../../services/hearings.service';
-import { HearingVenueComponent } from './hearing-venue.component';
+import {Component, CUSTOM_ELEMENTS_SCHEMA, Input} from '@angular/core';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {AbstractControl, FormBuilder, ReactiveFormsModule} from '@angular/forms';
+import {By} from '@angular/platform-browser';
+import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
+import {SearchLocationComponent} from '@hmcts/rpx-xui-common-lib';
+import {LocationByEPIMSModel} from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import {provideMockStore} from '@ngrx/store/testing';
+import {Observable, of} from 'rxjs';
+import {ACTION} from '../../../models/hearings.enum';
+import {HearingsService} from '../../../services/hearings.service';
+import {initialState} from '../hearing.store.state.test';
+import {HearingVenueComponent} from './hearing-venue.component';
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -20,8 +21,10 @@ class MockHearingPartiesComponent {
 }
 
 class NativeElement {
-  public focus() { }
+  public focus() {
+  }
 }
+
 class MockAutoCompleteInputBox {
   public nativeElement: NativeElement = new NativeElement();
 }
@@ -46,79 +49,13 @@ describe('HearingVenueComponent', () => {
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
 
-  const initialState = {
-    hearings: {
-      hearingList: {
-        hearingListMainModel: [
-          {
-            hmctsServiceID: 'SSCS'
-          }
-        ],
-      },
-      hearingRequest: {
-        hearingRequestMainModel: {
-          requestDetails: {
-            requestTimeStamp: null
-          },
-          hearingDetails: {
-            duration: null,
-            hearingType: null,
-            hearingLocations: [
-              {
-                locationType: 'region',
-                locationId: '123',
-                locationName: 'test location',
-                region: 'Wales',
-              }
-            ],
-            hearingIsLinkedFlag: false,
-            hearingWindow: null,
-            privateHearingRequiredFlag: false,
-            panelRequirements: null,
-            autolistFlag: false,
-            nonStandardHearingDurationReasons: [],
-            hearingPriorityType: null,
-            numberOfPhysicalAttendees: null,
-            hearingInWelshFlag: false,
-            facilitiesRequired: [],
-            listingComments: null,
-            hearingRequester: null,
-            leadJudgeContractType: null
-          },
-          caseDetails: {
-            hmctsServiceCode: null,
-            caseRef: null,
-            requestTimeStamp: null,
-            hearingID: null,
-            externalCaseReference: null,
-            caseDeepLink: null,
-            hmctsInternalCaseName: null,
-            publicCaseName: null,
-            caseAdditionalSecurityFlag: false,
-            caseInterpreterRequiredFlag: false,
-            caseCategories: [],
-            caseManagementLocationCode: null,
-            caserestrictedFlag: false,
-            caseSLAStartDate: null
-          },
-          partyDetails: []
-        },
-        lastError: null
-      },
-      hearingConditions: {},
-      hearingValues: {
-        serviceHearingValuesModel: {}
-      }
-    }
-  };
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       declarations: [HearingVenueComponent, MockLocationSearchContainerComponent, MockHearingPartiesComponent],
       providers: [
-        provideMockStore({ initialState }),
-        { provide: HearingsService, useValue: hearingsService },
+        provideMockStore({initialState}),
+        {provide: HearingsService, useValue: hearingsService},
         FormBuilder
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -127,10 +64,6 @@ describe('HearingVenueComponent', () => {
   }));
 
   beforeEach(() => {
-    const fb = TestBed.get(FormBuilder);
-    const form = fb.group({
-      locationSelectedFormControl: [null]
-    });
     fixture = TestBed.createComponent(HearingVenueComponent);
     component = fixture.componentInstance;
     component.selectedLocations$ = of([{

@@ -4,9 +4,10 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {RouterTestingModule} from '@angular/router/testing';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
-import {ErrorMessage} from 'src/app/models';
+import {ErrorMessage} from '../../../../app/models';
 import {ACTION} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
+import {initialState} from '../hearing.store.state.test';
 import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 import {HearingWelshComponent} from './hearing-welsh.component';
 
@@ -32,29 +33,6 @@ describe('HearingWelshComponent', () => {
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
-
-  const initialState = {
-    hearings: {
-      hearingList: {
-        hearingListMainModel: [
-          {
-            hmctsServiceID: 'SSCS'
-          }
-        ]
-      },
-      hearingValues: null,
-      hearingRequest: {
-        hearingRequestMainModel: {
-          requestDetails: null,
-          hearingDetails: {
-            hearingInWelshFlag: true,
-          },
-          partyDetails: []
-        },
-      },
-      hearingConditions: null,
-    }
-  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({

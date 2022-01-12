@@ -1,17 +1,18 @@
-import { Component, Input, NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { By } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
-import { provideMockStore } from '@ngrx/store/testing';
-import { of } from 'rxjs';
-import { HearingRequestMainModel } from '../../../../hearings/models/hearingRequestMain.model';
-import { ACTION, HearingStageEnum } from '../../../models/hearings.enum';
-import { RefDataModel } from '../../../models/refData.model';
-import { HearingsService } from '../../../services/hearings.service';
-import { HearingStageComponent } from './hearing-stage.component';
+import {Component, Input, NO_ERRORS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {FormBuilder, ReactiveFormsModule} from '@angular/forms';
+import {By} from '@angular/platform-browser';
+import {ActivatedRoute} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
+import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
+import {provideMockStore} from '@ngrx/store/testing';
+import {of} from 'rxjs';
+import {HearingRequestMainModel} from '../../../models/hearingRequestMain.model';
+import {ACTION, HearingStageEnum} from '../../../models/hearings.enum';
+import {RefDataModel} from '../../../models/refData.model';
+import {HearingsService} from '../../../services/hearings.service';
+import {initialState} from '../hearing.store.state.test';
+import {HearingStageComponent} from './hearing-stage.component';
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -68,41 +69,13 @@ describe('HearingStageComponent', () => {
     },
   ];
 
-  const initialState = {
-    hearings: {
-      hearingList: {
-        caseHearingMainModel: [
-          {
-            hmctsServiceID: 'SSCS'
-          }
-        ]
-      },
-      hearingValues: {
-        serviceHearingValuesModel: {
-          autoListFlag: false,
-          hearingType: 'Final',
-          lastError: null,
-        },
-        lastError: null,
-      },
-      hearingRequest: {
-        hearingRequestMainModel: {
-          hearingDetails: {
-            hearingType: 'Final'
-          }
-        }
-      },
-      hearingConditions: null,
-    }
-  };
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule],
       declarations: [HearingStageComponent, MockHearingPartiesComponent],
       providers: [
-        provideMockStore({ initialState }),
-        { provide: HearingsService, useValue: hearingsService },
+        provideMockStore({initialState}),
+        {provide: HearingsService, useValue: hearingsService},
         {
           provide: ActivatedRoute,
           useValue: {

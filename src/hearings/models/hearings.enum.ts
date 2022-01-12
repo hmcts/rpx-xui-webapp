@@ -67,7 +67,7 @@ export enum RadioOptions {
   YES = 'Yes',
   NO = 'No',
   CHOOSE_DATE_RANGE = 'Choose a date range'
- }
+}
 
 export enum DOW {
   Monday = 'Monday',
@@ -97,6 +97,7 @@ export enum HearingCategory {
   NonStdDurationReasonCodes = 'NonStdDurationReasonCodes',
   EntityRoleCodes = 'EntityRoleCodes',
   JudgeType = 'JudgeType',
+  CancelHearingReason = 'CancelHearingReason',
 }
 
 export enum HearingDateEnum {
@@ -106,6 +107,14 @@ export enum HearingDateEnum {
 
 export enum HearingStageEnum {
   SelectHearingStageError = 'Select a hearing stage',
+}
+
+export enum HearingJudgeSelectionEnum {
+  ValidNameError = 'Please enter a valid Name',
+  SelectOneJudgeError = 'Please select at least one judge type',
+  SelectionError = 'Please select that applies',
+  ExcludeJudge = 'Exclude judge before continue',
+  ExcludeFullNameJudge = 'Enter a full name to exclude a judge, or delete the name to stop the judge being excluded.'
 }
 
 export enum HearingDatePriorityEnum {

@@ -5,13 +5,13 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Store, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs/internal/observable/of';
 import { metaReducers } from '../../app/app.module';
-import { UserDetails } from '../../app/models/user-details.model';
+import { UserDetails } from '../../app/models';
 import { reducers } from '../../app/store';
 import * as fromCaseList from '../../app/store/reducers';
 import { Location } from '../models/dtos';
-import { CaseworkerDataService } from '../services';
-import { JudicialWorkerDataService } from '../services/judicialworker-data.service';
+import { CaseworkerDataService, JudicialWorkerDataService } from '../services';
 import { LocationResolver } from './location-resolver.service';
+import { LocationModel } from 'api/locations/models/location.model';
 
 describe('LocationResolver', () => {
 
@@ -113,16 +113,16 @@ describe('LocationResolver', () => {
   it('resolves caseworkers location', inject([LocationResolver], (service: LocationResolver) => {
     spyOn(store, 'pipe').and.returnValue(of(CASE_WORKER));
     spyOn(caseworkerDataService, 'getAll').and.returnValue(of(CASE_WORKERS));
-    service.resolve().subscribe((location: Location) => {
-      expect(location.locationName).toEqual(CASE_WORKERS[0].location.locationName);
+    service.resolve().subscribe((location: LocationModel) => {
+      expect(location.court_name).toEqual(CASE_WORKERS[0].location.locationName);
     });
   }));
 
   it('resolves judicialworkers location', inject([LocationResolver], (service: LocationResolver) => {
     spyOn(store, 'pipe').and.returnValue(of(JUDICIAL_WORKER));
     spyOn(judicialWorkerDataService, 'getCaseRolesUserDetails').and.returnValue(of(JUDICIAL_WORKERS));
-    service.resolve().subscribe((location: Location) => {
-      expect(location.locationName).toEqual(JUDICIAL_WORKERS[0].location.locationName);
+    service.resolve().subscribe((location: LocationModel) => {
+      expect(location.court_name).toEqual(JUDICIAL_WORKERS[0].location.locationName);
     });
   }));
 });

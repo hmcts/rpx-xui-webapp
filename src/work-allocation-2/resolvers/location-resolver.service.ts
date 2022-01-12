@@ -1,41 +1,44 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Resolve, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { EMPTY } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 import { catchError, first, map, mergeMap } from 'rxjs/operators';
-import { CaseRoleDetails } from '../../role-access/models/case-role-details.interface';
+import { LocationModel } from '../../../api/locations/models/location.model';
 import { AppUtils } from '../../app/app-utils';
-import { UserDetails, UserRole } from '../../app/models/user-details.model';
+import { UserDetails, UserRole } from '../../app/models';
 import * as fromRoot from '../../app/store';
 import * as fromCaseList from '../../app/store/reducers';
+import { CaseRoleDetails } from '../../role-access/models/case-role-details.interface';
 import { Caseworker, Location } from '../models/dtos';
-import { CaseworkerDataService } from '../services';
-import { JudicialWorkerDataService } from '../services/judicialworker-data.service';
+import { CaseworkerDataService, JudicialWorkerDataService } from '../services';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../utils';
 
 @Injectable({
   providedIn: 'root'
 })
-export class LocationResolver implements Resolve<Location> {
+export class LocationResolver implements Resolve<LocationModel> {
 
   constructor(
     private readonly store: Store<fromCaseList.State>,
     private readonly router: Router,
+    private readonly http: HttpClient,
     private readonly caseworkerDataService: CaseworkerDataService,
     private readonly judicialWorkerDataService: JudicialWorkerDataService
   ) {
   }
 
-  public resolve(): Observable<any> {
+  public resolve(): Observable<LocationModel> {
     return this.userDetails()
       .pipe(
         first(),
         mergeMap((userDetails: UserDetails) => this.getJudicialWorkersOrCaseWorkers(userDetails)
           .pipe(
-            map((caseWorkers) => this.extractLocation(userDetails, caseWorkers))
+            map((caseWorkers) => this.extractLocation(userDetails, caseWorkers)),
           )
         ),
+        mergeMap((location: Location) => this.getLocations(location)),
         catchError(error => {
           handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
           return EMPTY;
@@ -57,7 +60,7 @@ export class LocationResolver implements Resolve<Location> {
         const worker = (workers as CaseRoleDetails[])[0];
         const jAppt = worker.appointments.find(appt => appt.location !== 'National' && appt.epimms_id && appt.epimms_id !== '');
         if (jAppt) {
-          return { id: jAppt.epimms_id, locationName: jAppt.location, services: [] }
+          return { id: jAppt.epimms_id, locationName: jAppt.location, services: [] };
         }
       }
       return null;
@@ -68,5 +71,12 @@ export class LocationResolver implements Resolve<Location> {
     const id = userDetails.userInfo.id ? userDetails.userInfo.id : userDetails.userInfo.uid;
     const role = AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
     return role === UserRole.LegalOps ? this.caseworkerDataService.getAll() : this.judicialWorkerDataService.getCaseRolesUserDetails([id]);
+  }
+
+  private getLocations(location: Location): Observable<LocationModel> {
+    if (!location) {
+      return null;
+    }
+    return this.http.get<LocationModel>(`api/locations/getLocationsById?ids=${location.id}`);
   }
 }

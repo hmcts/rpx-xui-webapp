@@ -5,8 +5,8 @@ Feature: WA Release 2: My cases - Manage links
         Given I init MockApp
         Given I set MOCK workallocation cases with permissions for view "My cases"
             | Roles          | Count |
-            | task-supervisor | 10    |
-            |                | 90    |
+            | case-allocator | 10    |
+            | case-allocator | 90    |
 
 
     Scenario Outline:  My cases, colums and column links for "<UserType>"
@@ -24,10 +24,10 @@ Feature: WA Release 2: My cases - Manage links
         Then I validate manage link actions for cases
             | index | actions           |
             | 1     | Reallocate,Remove |
-            | 12    |                   |
+            | 12    | Reallocate,Remove |
 
         Examples:
-            | UserIdentifier     | UserType   | Roles                                              |
+            | UserIdentifier  | UserType | Roles                                           |
             # | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+            | IAC_Judge_WA_R2 | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker |
 

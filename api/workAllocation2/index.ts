@@ -28,7 +28,7 @@ import { TaskList } from './interfaces/task';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { checkIfCaseAllocator } from './roleService';
 import * as roleServiceMock from './roleService.mock';
-import { handleTaskGet, handleTaskPost, handleTaskSearch } from './taskService';
+import { handleTaskGet, handleTaskPost, handleTaskRolesGet, handleTaskSearch } from './taskService';
 import {
   assignActionsToCases,
   assignActionsToTasks,
@@ -112,10 +112,12 @@ export async function getTypesOfWork(req: EnhancedRequest, res: Response, next: 
  * getTask
  */
 export async function getTaskRoles(req: EnhancedRequest, res: Response, next: NextFunction) {
-
   try {
-    res.status(200);
-    res.send(TASK_ROLES);
+    const taskId = req.params.taskId;
+    const path = `${baseWorkAllocationTaskUrl}/task/${taskId}/roles`;
+    const {status, data} = await handleTaskRolesGet(path, req);
+    res.status(status);
+    res.send(data.roles);
   } catch (error) {
     next(error);
   }

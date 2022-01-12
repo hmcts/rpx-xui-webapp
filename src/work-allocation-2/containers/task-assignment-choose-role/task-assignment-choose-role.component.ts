@@ -24,9 +24,9 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
   public description: string = 'Which role type are you reassigning the task to?';
   public submitted: boolean = true;
   public optionsList: OptionsModel[];
-  public roles = TaskAssignmentChooseRoleComponent.getOptions();
   public taskRoles: TaskRole[] = [];
   public form: FormGroup;
+  public roles: OptionsModel[];
 
   constructor(private readonly fb: FormBuilder,
               private readonly router: Router,
@@ -48,19 +48,42 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
     return url;
   }
 
-  private static getOptions(): OptionsModel[] {
-    return [
-      {optionId: RoleCategory.JUDICIAL, optionValue: RoleCategory.JUDICIAL, label: PersonRole.JUDICIAL},
-      {optionId: RoleCategory.LEGAL_OPERATIONS, optionValue: RoleCategory.LEGAL_OPERATIONS, label: PersonRole.CASEWORKER},
-      {optionId: RoleCategory.ADMIN, optionValue: RoleCategory.ADMIN, label: PersonRole.ADMIN}
-    ];
+  public getOptions(): OptionsModel[] {
+    const options = new Array<OptionsModel>();
+    const roleCategories = this.taskRoles.filter(role => role.role_category !== null && role.role_category !== undefined)
+      .map(taskRole => taskRole.role_category as RoleCategory);
+    
+    roleCategories.forEach(roleCategory => {
+      if (!options.find(option => option.optionId === roleCategory)) {
+        options.push({
+            optionId: roleCategory,
+            optionValue: roleCategory,
+            label: this.getLabel(roleCategory)
+          });
+      }
+    });
+    return options;
+  }
+
+  public getLabel(roleCategory: RoleCategory) {
+    switch(roleCategory) {
+      case RoleCategory.ADMIN:
+        return PersonRole.ADMIN;
+      case RoleCategory.JUDICIAL:
+        return PersonRole.JUDICIAL;
+      case RoleCategory.LEGAL_OPERATIONS:
+        return PersonRole.CASEWORKER;
+      default:
+        throw new Error('Invalid rolecategory' + roleCategory);
+    }
   }
 
   public ngOnInit(): void {
+    this.taskRoles = this.route.snapshot.data.roles;
+    this.roles = this.getOptions();
     const isJudicial = this.isCurrentUserJudicial();
     const taskId = this.route.snapshot.paramMap.get('taskId');
     this.verb = this.route.snapshot.data.verb;
-    this.taskRoles = this.route.snapshot.data.roles;
     this.setCaptionAndDescription(this.verb);
     this.form = this.fb.group({
       role: [this.setUpDefaultRoleType(isJudicial, this.taskRoles), Validators.required],

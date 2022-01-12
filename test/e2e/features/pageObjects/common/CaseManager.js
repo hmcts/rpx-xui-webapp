@@ -406,7 +406,8 @@ class CaseManager {
 
                     let uploadError = isStatusDisplayed || statusMessage.includes("error");
                     if (uploadError) {
-                        await ccdField.$('input.form-control').sendKeys("");
+                        var fileToUpload1 = path.resolve(__dirname, "../../../documents/dummy1.pdf");
+                        await ccdField.$('input.form-control').sendKeys(fileToUpload1);
 
                         throw new Error(`file upload error occured : Status message is displayed : ${isStatusDisplayed} : ${statusMessage}` );
                     }

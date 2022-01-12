@@ -105,6 +105,16 @@ describe('ChooseRoleComponent', () => {
     expect(component.radioOptionControl.errors).toBeTruthy();
   });
 
+  it('should navigationHandler with success', () => {
+    const navEvent: AllocateRoleNavigationEvent = AllocateRoleNavigationEvent.CONTINUE;
+    const roleCategory: RoleCategory = RoleCategory.JUDICIAL;
+    const isLegalOpsOrJudicialRole: UserRole = UserRole.Judicial;
+    component.radioOptionControl.setValue('Lead judge');
+    spyOn(component, 'dispatchEvent');
+    component.navigationHandler(navEvent, roleCategory, isLegalOpsOrJudicialRole);
+    expect(component.dispatchEvent).toHaveBeenCalledWith(navEvent, roleCategory, isLegalOpsOrJudicialRole);
+  });
+
   it('should dispatchEvent for legal ops assign judicial role', () => {
     const navEvent: AllocateRoleNavigationEvent = AllocateRoleNavigationEvent.CONTINUE;
     const roleCategory: RoleCategory = RoleCategory.JUDICIAL;

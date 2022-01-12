@@ -19,7 +19,13 @@ const caseListPage = new CaseListPage();
 const searchCasePage = new SearchCasePage();
 
 function HeaderPage() {
+    this.jcmLogoImg = element(by.xpath("//div[contains(@class,'hmcts-header__container')]//a//img[@src='/assets/images/govuk-crest-jcm.png']"));
+    this.myHMCTSHeader = element(by.xpath("//div[contains(@class,'hmcts-header__container')]//a//span[contains(text(),'MyHMCTS')]"));
+    this.headerLink = $('div.hmcts-header__container a.hmcts-header__link');
+    this.globalHeaderContainerWithStyle = element(by.xpath("//exui-hmcts-global-header/.."));
 
+    this.caseReferenceSearchBox = $('.hmcts-primary-navigation__search exui-case-reference-search-box');
+    
     this.primaryNavBar = element(by.css(".hmcts-primary-navigation__container"));
     this.primaryNavBar_NavItems = element(by.css(".hmcts-primary-navigation__nav ul"));
     this.primaryNavBar_rightSideItems = element(by.css(".hmcts-primary-navigation__search ul"));
@@ -32,24 +38,50 @@ function HeaderPage() {
       return await this.headerAppLogoLink.isPresent();
     }
 
+    this.validateHeaderDisplayedForUserType = async function(userType){
+      if (userType.toLowerCase() === 'caseworker'){
+        expect(await this.jcmLogoImg.isPresent(),"JCM logo displayed").to.be.false;
+        expect(await this.myHMCTSHeader.isPresent(),"MyHMCTS is displayed").to.be.false;
+        expect(await this.headerLink.getText(),"Header link mismatch").to.includes("Manage Cases");
+        expect(await this.globalHeaderContainerWithStyle.getAttribute('style')).to.includes("background-color: rgb(32, 32, 32);");
+
+      } else if (userType.toLowerCase() === 'judicial'){
+        await BrowserWaits.waitForElement(this.jcmLogoImg);
+        expect(await this.jcmLogoImg.isPresent(), "JCM logo not displayed").to.be.true;
+        expect(await this.myHMCTSHeader.isPresent(),"MyHMCTS is displayed").to.be.false;
+        expect(await this.headerLink.getText(), "Header link mismatch").to.includes("Judicial Case Manager");
+        expect(await this.globalHeaderContainerWithStyle.getAttribute('style')).to.includes("background-color: rgb(141, 15, 14);");
+
+      } else if (userType.toLowerCase() === 'solicitor') {
+        await BrowserWaits.waitForElement(this.myHMCTSHeader);
+        expect(await this.jcmLogoImg.isPresent(), "JCM displayed").to.be.false;
+        expect(await this.myHMCTSHeader.isPresent(), "MyHMCTS displayed").to.be.true;
+        expect(await this.headerLink.getText(), "Header link mismatch").to.includes("Manage Cases");
+        expect(await this.globalHeaderContainerWithStyle.getAttribute('style')).to.includes("background-color: rgb(32, 32, 32);");
+
+      }else{
+        throw new Error(`User type ${userType} is not recognized`);
+      }
+    }
+
     this.clickPrimaryNavigationWithLabel = async function(label){
-      const ele = element(by.xpath(`//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'${label}')]`));
       await BrowserWaits.retryWithActionCallback(async () => {
-        await this.waitForSpinnerToDissappear();
-        await BrowserWaits.waitForElement(ele);
-        await BrowserWaits.waitForElementClickable(ele);
-        await ele.click();
-        await browserUtil.waitForLD();
+        try {
+          const ele = element(by.xpath(`//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'${label}')]`));
+          await BrowserWaits.waitForSpinnerToDissappear();
+          await BrowserWaits.waitForElement(ele);
+          await BrowserWaits.waitForElementClickable(ele);
+          await ele.click();
+          await browserUtil.waitForLD();
+        } catch (err) {
+          await browser.refresh();
+          throw new Error(err);
+        }
+
+        
       });
       
     }
-
-
-  this.waitForSpinnerToDissappear = async function(){
-    await BrowserWaits.waitForConditionAsync(async () => {
-      return !(await $(".loading-spinner-in-action").isPresent());
-    },40000);
-  };
 
     this.clickAppLogoLink = async function(){
        await this.headerAppLogoLink.click(); 
@@ -94,7 +126,7 @@ function HeaderPage() {
 
   this.clickCreateCase = async function () {
     await BrowserWaits.retryWithActionCallback(async () => {
-      await caseListPage.waitForSpinnerToDissappear(); 
+      await BrowserWaits.waitForSpinnerToDissappear(); 
       await BrowserWaits.waitForElement(this.createCase()); 
       await BrowserWaits.waitForElementClickable(this.createCase());
       await this.createCase().click();
@@ -165,7 +197,7 @@ function HeaderPage() {
     await BrowserWaits.retryWithActionCallback(async () => {
       const primaryTabs = this.getPrimaryTabsDisplayed();
       const tabEle = this.getTabElementWithText(tabText).click();
-      await BrowserUtil.waitForLD();
+      await BrowserWaits.waitForElement(tabEle);
       if (tabEle) {
         await tabEle.click();
       } else {

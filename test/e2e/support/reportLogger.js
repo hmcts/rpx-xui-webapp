@@ -31,6 +31,10 @@ class CucumberReportLog{
 
     }
 
+    LogTestDataInput(message){
+        this.AddMessage(`>>>>>>> [ Test data input ]: ${message}`);
+    }
+
     AddMessage(message){
         if (!this.scenarioWorld){
             return;
@@ -77,7 +81,7 @@ class CucumberReportLog{
             return;
         }
         const decodedImage = await this.getScreenshot(onbrowser);
-        this.scenarioWorld.attach(decodedImage, 'image/png');
+        await this.scenarioWorld.attach(decodedImage, 'image/png');
        
     }
 

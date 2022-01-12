@@ -167,7 +167,6 @@ class MockApp{
         app.use(cookieParser());
         app.use(express.json()); 
 
-
         app.get('/requestLogs',(req,res) =>{
             res.set('content-type', 'application/json');
             res.send(this.requestLogs);
@@ -272,13 +271,24 @@ function setUpcaseConfig() {
         
     //     res.send(caseDetailsLabelShowCondition().getCase());
     // });
+    
 
     mockInstance.onGet('/api/user/details', (req, res) => {
-        const roles = ['caseworker', 'caseworker-ia', 'caseworker-ia-iacjudge','task-supervisor','case-allocator'];
-        const idamid = '44d5d2c2-7112-4bef-8d05-baaa610bf463';
+        const roles = ['task-supervisor','case-allocator','caseworker', 'caseworker-ia', 'caseworker-ia-caseofficer','task-supervisor','case-allocator'];
+        // const roles = ['caseworker','caseworker-ia','caseworker-ia-caseofficer','task-supervisor'];
+
+        const idamid = '810b5601-4a8a-4c82-9294-34f087f2e67f';
+        // setTimeout(() => {
+        //     res.send(nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, idamid));
+
+        // },10);
+
+
         res.send(nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, idamid));
 
+
     });
+
 
 }
 

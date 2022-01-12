@@ -3,7 +3,7 @@ import { Router } from 'express';
 import {
   getAllCaseWorkers,
   getAllCaseWorkersForLocation,
-  getAllJudicialWorkers, getCases,
+  getCases,
   getCaseWorkersForLocationAndService,
   getCaseWorkersForService, getMyCases,
   getRolesCategory,
@@ -32,8 +32,6 @@ router.use('/caseworker/search', searchCaseWorker);
 router.use('/caseworker', getAllCaseWorkers);
 
 router.use('/findPerson', postFindPersonSearch);
-
-router.use('/judicialworker', getAllJudicialWorkers);
 
 router.use('/location/:locationId', getLocationById);
 router.use('/location', getLocations);

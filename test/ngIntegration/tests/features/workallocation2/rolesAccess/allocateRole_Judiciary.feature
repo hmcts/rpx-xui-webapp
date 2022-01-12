@@ -79,14 +79,14 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role judiciary (EU
         When I click add link for role category "JUDICIAL" in case roles and access page
 
         Then I see Allocate role work flow page "Choose a role" with caption "Allocate a judicial role" is displayed
-        When I select Choose a role option "Lead judge" in work flow
+        When I select Choose a role option "Hearing judge" in work flow
         When I click continue in work flow page "Choose a role"
 
-        Then I see Allocate role work flow page "Choose how to allocate the role" with caption "Allocate a lead judge" is displayed
+        Then I see Allocate role work flow page "Choose how to allocate the role" with caption "Allocate a hearing judge" is displayed
         When I select Choose how to allocate option "Allocate to another person" in work flow
         When I click continue in work flow page "Choose how to allocate the role"
 
-        Then I see Allocate role work flow page "Find the person" with caption "Allocate a lead judge" is displayed
+        Then I see Allocate role work flow page "Find the person" with caption "Allocate a hearing judge" is displayed
         When I enter find person search input "jud" in work flow
         Then I see find person search results in work flow
             | Person                            |
@@ -95,13 +95,13 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role judiciary (EU
         When I select find person result "judge_user1@gov.uk" in work flow
         When I click continue in work flow page "Find the person"
 
-        Then I see Allocate role work flow page "Duration of role" with caption "Allocate a lead judge" is displayed
+        Then I see Allocate role work flow page "Duration of role" with caption "Allocate a hearing judge" is displayed
         When I select duration option "7 days" in work flow
         Then I validate date input field "Access starts" is displayed "No" in work flow page
         Then I validate date input field "Access ends" is displayed "No" in work flow page
         When I click continue in work flow page "Duration of role"
 
-        Then I see Allocate role work flow page "Check your answers" with caption "Allocate a lead judge" is displayed
+        Then I see Allocate role work flow page "Check your answers" with caption "Allocate a hearing judge" is displayed
 
         Then I see Check your answers page has total 4 questions
         Then I see Check your answers page has questions and answers with change link
@@ -229,11 +229,11 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role judiciary (EU
         When I click add link for role category "JUDICIAL" in case roles and access page
 
         Then I see Allocate role work flow page "Choose a role" with caption "Allocate a judicial role" is displayed
-        When I select Choose a role option "Lead judge" in work flow
+        When I select Choose a role option "Hearing judge" in work flow
         When I click continue in work flow page "Choose a role"
 
 
-        Then I see Allocate role work flow page "Find the person" with caption "Allocate a lead judge" is displayed
+        Then I see Allocate role work flow page "Find the person" with caption "Allocate a hearing judge" is displayed
         When I enter find person search input "jud" in work flow
         Then I see find person search results in work flow
             | Person                            |
@@ -242,13 +242,13 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role judiciary (EU
         When I select find person result "judge_user1@gov.uk" in work flow
         When I click continue in work flow page "Find the person"
 
-        Then I see Allocate role work flow page "Duration of role" with caption "Allocate a lead judge" is displayed
+        Then I see Allocate role work flow page "Duration of role" with caption "Allocate a hearing judge" is displayed
         When I select duration option "Indefinite" in work flow
         Then I validate date input field "Access starts" is displayed "No" in work flow page
         Then I validate date input field "Access ends" is displayed "No" in work flow page
         When I click continue in work flow page "Duration of role"
 
-        Then I see Allocate role work flow page "Check your answers" with caption "Allocate a lead judge" is displayed
+        Then I see Allocate role work flow page "Check your answers" with caption "Allocate a hearing judge" is displayed
 
         Then I see Check your answers page has total 3 questions
         Then I see Check your answers page has questions and answers with change link

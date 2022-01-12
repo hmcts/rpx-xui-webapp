@@ -1,4 +1,4 @@
-@ng 
+@ng
 Feature: WA Release 2: My work - Work filters
 
     Background: Mock and browser setup
@@ -19,7 +19,7 @@ Feature: WA Release 2: My work - Work filters
             | id    | locationName  |
             | 12345 | Aldgate Tower |
 
-        Given I set MOCK request "/workallocation2/taskWithPagination" intercept with reference "workallocationTaskRequest"
+        Given I set MOCK request "/workallocation2/task" intercept with reference "workallocationTaskRequest"
         Given I set MOCK request "/workallocation2/my-work/cases" intercept with reference "workallocationCasesRequest"
 
 
@@ -76,9 +76,9 @@ Feature: WA Release 2: My work - Work filters
             | Glasgow       |
             | Newcastle     |
         Examples:
-            | UserType       | Roles                                              |
-            | Caseworker IAC | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-    # | Judge          | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+            | UserType       | Roles                                                            |
+            | Caseworker IAC | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |
+    # | Judge          | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
 
 
@@ -115,9 +115,9 @@ Feature: WA Release 2: My work - Work filters
             | locationName |
             | Bradford     |
         Examples:
-            | UserType | Roles                                           |
-            # | Caseworker IAC | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker |
+            | UserType | Roles                                                         |
+            # | Caseworker IAC | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |
+            | Judge    | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker |
 
 
 
@@ -168,13 +168,13 @@ Feature: WA Release 2: My work - Work filters
             | Aldgate Tower |
 
         Examples:
-            | UserType       | Roles                                              |
-            | Caseworker IAC | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-    # | Judge          | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+            | UserType       | Roles                                                            |
+            | Caseworker IAC | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |
+    # | Judge          | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
 
     Scenario Outline:  Work filters applied selection persistence within and across session "<UserType>"
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles " caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<Roles>" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
@@ -209,8 +209,8 @@ Feature: WA Release 2: My work - Work filters
             | Bradford      |
             | Newcastle     |
 
-        When I click on primary navigation header "Case list"
-        Then I see case list page displayed
+        When I click on primary navigation header tab "All work", I see selected tab page displayed
+
         When I click on primary navigation header "My work"
         Then I validate location filter is not displayed
         When I click work filter button
@@ -228,16 +228,19 @@ Feature: WA Release 2: My work - Work filters
         Then I validate location filter is not displayed
         When I click work filter button
         Then I validate location filter is displayed
-        Then I validate following work location selected
+        Then I validate following work location selected, if "Judge" equals "<UserType>"
             | locationName  |
             | Aldgate Tower |
             | Bradford      |
             | Newcastle     |
+        Then I validate following work location selected, if "Caseworker IAC" equals "<UserType>"
+            | locationName  |
+            | Aldgate Tower |
 
         Examples:
-            | UserType | Roles                                           |
-            # | Caseworker IAC | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker |
+            | UserType       | Roles                                                                            |
+            | Caseworker IAC | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor |
+            | Judge          | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor    |
 
 
     Scenario Outline:  Work filters applied to all sub navigation tabs "<UserType>"
@@ -287,8 +290,8 @@ Feature: WA Release 2: My work - Work filters
             | Newcastle     |
 
         Examples:
-            | UserType       | Roles                                              |
-            | Caseworker IAC | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-# | Judge          | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+            | UserType       | Roles                                                            |
+            | Caseworker IAC | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |
+# | Judge          | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
 

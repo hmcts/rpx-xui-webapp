@@ -5,6 +5,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable, of } from 'rxjs';
+import { CaseworkerDataService } from 'src/work-allocation-2/services';
+
+import { Caseworker } from '../../../work-allocation-2/models/dtos';
 import { AnswersComponent } from '../../components';
 import { AllocateRoleStateData, CaseRole, RemoveAllocationNavigationEvent, Role, RoleCategory, TypeOfRole } from '../../models';
 import { CaseRoleDetails } from '../../models/case-role-details.interface';
@@ -20,6 +23,15 @@ class WrapperComponent {
   @ViewChild(RemoveRoleComponent) public appComponentRef: RemoveRoleComponent;
 }
 
+const mockCaseworker: Caseworker = {
+  idamId: '999999999',
+  firstName: 'test',
+  lastName: 'testing',
+  email: 'test@test.com',
+  location: null,
+  roleCategory: RoleCategory.LEGAL_OPERATIONS
+};
+
 describe('RemoveRoleComponent', () => {
   let component: RemoveRoleComponent;
   let wrapper: WrapperComponent;
@@ -30,8 +42,9 @@ describe('RemoveRoleComponent', () => {
   const locationMock = jasmine.createSpyObj('Location', [
     'back'
   ]);
+  const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getAll']);
   const allworkUrl = `work/all-work/cases`;
-  window.history.pushState({ returnUrl: allworkUrl }, '', allworkUrl);
+  window.history.pushState({ backUrl: allworkUrl }, '', allworkUrl);
 
   class AllocateRoleMockService extends AllocateRoleService {
     public confirmAllocation(allocateRoleStateData: AllocateRoleStateData): Observable<any> {
@@ -44,8 +57,9 @@ describe('RemoveRoleComponent', () => {
           added: Date.UTC(2021, 6, 1),
           id: '999999999',
           actorId: '999999999',
-          name: 'Judge Rinder',
+          name: 'Mr Test',
           notes: 'Test exclusion',
+          roleName: TypeOfRole.CaseManager,
           roleCategory: RoleCategory.JUDICIAL,
           email: 'user@test.com'
         }
@@ -60,12 +74,12 @@ describe('RemoveRoleComponent', () => {
       return of(null);
     }
 
-    public getCaseRolesUserDetails(caseRoles: CaseRole[]): Observable<CaseRoleDetails[]> {
+    public getCaseRolesUserDetails(caseRoles: string[]): Observable<CaseRoleDetails[]> {
       const caseRoleDetail: CaseRoleDetails = {
         idam_id: '999999999',
         surname: '',
         email_id: 'user@test.com',
-        full_name: 'Judge Rinder',
+        full_name: 'Mr Test',
         known_as: '',
         sidam_id: '999999999'
       };
@@ -89,8 +103,8 @@ describe('RemoveRoleComponent', () => {
                 roles: [
                   {
                     name: 'test user name',
-                    roleCategory: RoleCategory.JUDICIAL,
-                    roleName: TypeOfRole.LeadJudge,
+                    roleCategory: RoleCategory.LEGAL_OPERATIONS,
+                    roleName: TypeOfRole.CaseManager,
                     location: '1234567',
                     start: '2021-07-13T00:29:10.656Z',
                     end: '2021-07-15T00:29:10.656Z',
@@ -125,6 +139,10 @@ describe('RemoveRoleComponent', () => {
         {
           provide: AllocateRoleService,
           useClass: AllocateRoleMockService
+        },
+        {
+          provide: CaseworkerDataService,
+          useValue: mockCaseworkerDataService
         }
       ]
     })
@@ -133,9 +151,11 @@ describe('RemoveRoleComponent', () => {
 
   beforeEach(() => {
     routerMock.getCurrentNavigation.and.returnValue({ extras: { state: { backUrl: allworkUrl } } });
+    mockCaseworkerDataService.getAll.and.returnValue(of([mockCaseworker]));
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
+    component.assignmentId = '999999999';
     fixture.detectChanges();
   });
 
@@ -153,7 +173,7 @@ describe('RemoveRoleComponent', () => {
     const ELEMENT_0 = fixture.debugElement.nativeElement.querySelectorAll('.govuk-summary-list__key')[0];
     expect(ELEMENT_0.textContent).toContain(AnswerLabelText.TypeOfRole);
     const ELEMENT_0_VALUE = fixture.debugElement.nativeElement.querySelectorAll('.govuk-summary-list__value')[0];
-    expect(ELEMENT_0_VALUE.textContent).toContain('Judge Rinder');
+    expect(ELEMENT_0_VALUE.textContent).toContain(TypeOfRole.CaseManager);
     const ELEMENT_1 = fixture.debugElement.nativeElement.querySelectorAll('.govuk-summary-list__key')[1];
     expect(ELEMENT_1.textContent).toContain(AnswerLabelText.Person);
     const ELEMENT_1_VALUE = fixture.debugElement.nativeElement.querySelectorAll('.govuk-summary-list__value')[1];
@@ -164,45 +184,9 @@ describe('RemoveRoleComponent', () => {
     component.onNavEvent(RemoveAllocationNavigationEvent.CANCEL);
     expect(locationMock.back).toHaveBeenCalled();
     component.onNavEvent(RemoveAllocationNavigationEvent.REMOVE_ROLE_ALLOCATION);
-    const additionalState = { state: { showMessage: true, messageText: RemoveRoleText.infoMessage } };
+    const message: any = { type: 'success', message: RemoveRoleText.infoMessage };
+    const additionalState = { state: { showMessage: true, retainMessages: true, message, messageText: RemoveRoleText.infoMessage } };
     expect(routerMock.navigate).toHaveBeenCalledWith([allworkUrl], additionalState);
-  });
-
-  it('should map caseRoles', () => {
-    const data: CaseRoleDetails[] = [
-      {
-        idam_id: '519e0c40-d30e-4f42-8a4c-2c79838f0e4e',
-        sidam_id: '519e0c40-d30e-4f42-8a4c-2c79838f0e4e',
-        known_as: 'Tom',
-        surname: 'Cruz',
-        full_name: 'Tom Cruz',
-        email_id: '330085EMP-@ejudiciary.net',
-      }
-    ];
-    const caseRolesData: any[] = [
-      {
-        actions: [
-          {
-            id: 'reallocate',
-            title: 'Reallocate'
-          },
-          {
-            id: 'remove',
-            title: 'Remove Allocation'
-          }
-        ],
-        actorId: '519e0c40-d30e-4f42-8a4c-2c79838f0e4e',
-        end: null,
-        id: '13daef07-dbd2-4106-9099-711c4505f04f',
-        location: null,
-        roleCategory: RoleCategory.JUDICIAL,
-        roleName: 'hearing-judge',
-        start: '2021-12-09T00:00:00Z'
-      }
-    ];
-    const result = component.mapCaseRoles(caseRolesData, data);
-    expect(result.length).toBe(1);
-    expect(result[0].name).toBe('Tom Cruz');
   });
 
   describe('navigationHandler cancel', () => {

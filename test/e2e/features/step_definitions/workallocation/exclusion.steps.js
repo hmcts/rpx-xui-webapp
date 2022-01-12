@@ -50,7 +50,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const dataTablehashes = resultsDatatable.hashes();
         let retryCounter = 0;
         await BrowserWaits.retryWithActionCallback(async () => {
-            await BrowserWaits.waitForSeconds(retryCounter * 2);
+            await BrowserWaits.waitForSeconds(0.5);
             retryCounter++;
             for (let i = 0; i < dataTablehashes.length; i++) {
                 const expectedPerson = dataTablehashes[i]['Person'];

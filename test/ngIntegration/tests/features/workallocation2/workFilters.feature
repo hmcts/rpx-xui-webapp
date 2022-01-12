@@ -32,7 +32,7 @@ Feature: WA Release 2: My work - Work filters
         Then I validate work filter button text is "Show work filter"
         Then I validate work location filter batch and hint labels are not displayed
         Then I validate location filter is not displayed
-        When I click work filter button
+        When I click work filter button to "Show" filter
         Then I validate work filter button text is "Hide work filter"
         Then I validate location filter is displayed
         When I click work location filter with label "Bradford"
@@ -42,9 +42,9 @@ Feature: WA Release 2: My work - Work filters
             | Aldgate Tower |
             | Bradford      |
             | Newcastle     |
-        When I click work filter button
+        When I click work filter button to "Hide" filter
         Then I validate location filter is not displayed
-        When I click work filter button
+        When I click work filter button to "Show" filter
         Then I validate location filter is displayed
         Then I validate following work location selected
             | locationName  |
@@ -55,7 +55,7 @@ Feature: WA Release 2: My work - Work filters
 
         Then I validate location filter is not displayed
         Then I validate work location filter batch and hint labels are displayed
-        When I click work filter button
+        When I click work filter button to "Show" filter
         Then I validate location filter is displayed
         Then I validate following work location selected
             | locationName  |
@@ -65,9 +65,9 @@ Feature: WA Release 2: My work - Work filters
 
         When I click work location filter with label "Bradford"
         When I click work location filter with label "Hatton Cross"
-        When I click work filter button
+        When I click work filter button to "Hide" filter
         Then I validate location filter is not displayed
-        When I click work filter button
+        When I click work filter button to "Show" filter
         Then I validate location filter is displayed
 
         Then I validate following work location selected
@@ -95,7 +95,7 @@ Feature: WA Release 2: My work - Work filters
         Then I validate work filter button text is "Show work filter"
         Then I validate work location filter batch and hint labels are not displayed
         Then I validate location filter is not displayed
-        When I click work filter button
+        When I click work filter button to "Show" filter
         Then I validate work filter button text is "Hide work filter"
         Then I validate location filter is displayed
         Then I validate My work filter locations displayed
@@ -134,7 +134,7 @@ Feature: WA Release 2: My work - Work filters
         Then I validate work filter button text is "Show work filter"
         Then I validate work location filter batch and hint labels are not displayed
         Then I validate location filter is not displayed
-        When I click work filter button
+        When I click work filter button to "Show" filter
         Then I validate work filter button text is "Hide work filter"
         Then I validate location filter is displayed
         Then I validate My work filter locations displayed
@@ -157,11 +157,11 @@ Feature: WA Release 2: My work - Work filters
 
         Then I validate location filter is not displayed
         Then I validate work location filter batch and hint labels are displayed
-        When I click work filter button
+        When I click work filter button to "Show" filter
         When I click work location filter Reset button
         Then I validate location filter is not displayed
         Then I validate work location filter batch and hint labels are not displayed
-        When I click work filter button
+        When I click work filter button to "Show" filter
         Then I validate work locations selected count is 1
         Then I validate following work location selected
             | locationName  |
@@ -185,7 +185,7 @@ Feature: WA Release 2: My work - Work filters
         Then I validate work filter button text is "Show work filter"
         Then I validate work location filter batch and hint labels are not displayed
         Then I validate location filter is not displayed
-        When I click work filter button
+        When I click work filter button to "Show" filter
         Then I validate work filter button text is "Hide work filter"
         Then I validate location filter is displayed
         When I click work location filter with label "Bradford"
@@ -201,7 +201,7 @@ Feature: WA Release 2: My work - Work filters
         Then I validate location filter is not displayed
         Then I validate work location filter batch and hint labels are displayed
 
-        When I click work filter button
+        When I click work filter button to "Show" filter
         Then I validate location filter is displayed
         Then I validate following work location selected
             | locationName  |
@@ -213,7 +213,7 @@ Feature: WA Release 2: My work - Work filters
 
         When I click on primary navigation header "My work"
         Then I validate location filter is not displayed
-        When I click work filter button
+        When I click work filter button to "Show" filter
         Then I validate location filter is displayed
         Then I validate following work location selected
             | locationName  |
@@ -226,7 +226,7 @@ Feature: WA Release 2: My work - Work filters
         Then I am on Idam login page
         Given I navigate to home page
         Then I validate location filter is not displayed
-        When I click work filter button
+        When I click work filter button to "Show" filter
         Then I validate location filter is displayed
         Then I validate following work location selected, if "Judge" equals "<UserType>"
             | locationName  |
@@ -253,7 +253,7 @@ Feature: WA Release 2: My work - Work filters
         When I click on primary navigation header "My work"
         Then I see work filter button displayed
 
-        When I click work filter button
+        When I click work filter button to "Show" filter
         Then I validate location filter is displayed
         When I click work location filter with label "Bradford"
         When I click work location filter with label "Newcastle"

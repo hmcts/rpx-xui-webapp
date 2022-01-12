@@ -73,7 +73,7 @@ class WorkAllocationMockData {
 
             let caseCount = casePermissionHashes[i]['Count'];
             for (let j = 0; j < caseCount; j++) {
-                cases.push(this.getRelease2CaseWithPermission([casePermissionHashes[i]['Roles'].split(",")], view));
+                cases.push(this.getRelease2CaseWithPermission(casePermissionHashes[i]['Roles'].split(","), view));
             }
             const validRoleTypes = WorkAllocationDataModels.getValidRoles();
 

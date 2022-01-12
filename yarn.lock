@@ -448,10 +448,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.9.0-rc.4":
-  version "4.9.0-rc.4"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.9.0-rc.4.tgz#8382cf2af641e9424ea285274cd3ac2e37f5abf5"
-  integrity sha512-pIHwg1x1ncYomqynI58JzhglBT/k63zsu7K0PL6GhVfc2LLj09QLfV1bUiTIAgc8eJ1nlS1McZ+oWlTSOKv30A==
+"@hmcts/ccd-case-ui-toolkit@4.9.0-rc.5":
+  version "4.9.0-rc.5"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.9.0-rc.5.tgz#7568f21d553315766a5d6954331850023e707e29"
+  integrity sha512-kEahe3lZui/sIkpanxe86OSnTwmnkoYYw+3EIE2nf6S5tulEtxmEr8Lth236CwdTKA6Gwf7I1jVu9fxfY0nRCA==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -528,10 +528,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.4.27-no-courtname-fontsize":
-  version "1.4.27-no-courtname-fontsize"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.27-no-courtname-fontsize.tgz#035feb6988690ef4504539b75a6a4baf5ccbc256"
-  integrity sha512-jg8AyCqTNBj/048uri3BM9R3yHLkPyDnik2gUSoorLSmrq83RU6Shr6y8aRbDAb6DTlURb3nacodFPtkHNMhDQ==
+"@hmcts/rpx-xui-common-lib@1.6.0-rc1":
+  version "1.6.0-rc1"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.0-rc1.tgz#fc56ed5ac64f3e834f78970fd28e39415118dd9d"
+  integrity sha512-ceAAyq73N0JGENMxGtHW8fsEIy/4lpsDoU9P4wLcZWHP5teqMNVMsK4T8V30yxpZegpfpjM6ZTKFCbA/oFhemQ==
   dependencies:
     tslib "^1.9.0"
 

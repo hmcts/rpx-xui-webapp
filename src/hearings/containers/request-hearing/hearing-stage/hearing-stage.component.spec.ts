@@ -130,7 +130,7 @@ describe('HearingStageComponent', () => {
     expect(component.stageForm.controls['stage-option']).toBeDefined();
   });
 
-  it('should set hearingtype', () => {
+  it('should set hearing type', () => {
     fixture.detectChanges();
     expect(component.hearingType).toEqual(initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.hearingType);
   });
@@ -142,11 +142,9 @@ describe('HearingStageComponent', () => {
   });
 
   it('should call unsubscribe', () => {
-    component.ngOnInit();
-    spyOn(component.hearingStoreSub, 'unsubscribe');
-    fixture.detectChanges();
+    spyOn(component.hearingStateSub, 'unsubscribe');
     component.ngOnDestroy();
-    expect(component.hearingStoreSub.unsubscribe).toHaveBeenCalled();
+    expect(component.hearingStateSub.unsubscribe).toHaveBeenCalled();
   });
 
   it('should be in the same order as service', () => {

@@ -49,7 +49,7 @@ describe('HearingVenueComponent', () => {
   const initialState = {
     hearings: {
       hearingList: {
-        caseHearingMainModel: [
+        hearingListMainModel: [
           {
             hmctsServiceID: 'SSCS'
           }
@@ -105,7 +105,10 @@ describe('HearingVenueComponent', () => {
         },
         lastError: null
       },
-      hearingConditions: {}
+      hearingConditions: {},
+      hearingValues: {
+        serviceHearingValuesModel: {}
+      }
     }
   };
 

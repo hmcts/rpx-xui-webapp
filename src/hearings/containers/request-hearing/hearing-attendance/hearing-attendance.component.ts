@@ -1,24 +1,23 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { select, Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { PartyUnavailabilityModel } from '../../../../../api/hearings/models/partyUnavilability.model';
-import { RefDataModel } from '../../../../../api/hearings/models/refData.model';
-import { ACTION } from '../../../models/hearings.enum';
-import { PartyDetailsModel } from '../../../models/partyDetails.model';
-import { HearingsRefDataService } from '../../../services/hearings-ref-data.service';
-import { HearingsService } from '../../../services/hearings.service';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Store} from '@ngrx/store';
+import {Observable} from 'rxjs';
+import {PartyUnavailabilityModel} from '../../../../../api/hearings/models/partyUnavilability.model';
+import {RefDataModel} from '../../../../../api/hearings/models/refData.model';
+import {ACTION} from '../../../models/hearings.enum';
+import {PartyDetailsModel} from '../../../models/partyDetails.model';
+import {HearingsRefDataService} from '../../../services/hearings-ref-data.service';
+import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import { ValidatorsUtils } from '../../../utils/validators.utils';
-import { RequestHearingPageFlow } from '../request-hearing.page.flow';
+import {ValidatorsUtils} from '../../../utils/validators.utils';
+import {RequestHearingPageFlow} from '../request-hearing.page.flow';
+
 @Component({
   selector: 'exui-hearing-attendance',
   templateUrl: './hearing-attendance.component.html',
   styleUrls: ['./hearing-attendance.component.scss']
 })
 export class HearingAttendanceComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
-  public hearingStoreSub: Subscription;
   public attendanceFormGroup: FormGroup;
   public validationErrors: { id: string, message: string }[] = [];
   public hint: string = 'Where known, contact details for remote attendees will be included in the request.';
@@ -42,12 +41,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   }
 
   public ngOnInit(): void {
-    this.hearingStore.pipe(select(fromHearingStore.getHearingList)).pipe(
-      map(hearingList => hearingList.hearingListMainModel ? hearingList.hearingListMainModel.hmctsServiceID : '')
-    ).subscribe(serviceId => {
-      this.partyChannels = this.hearingsRefDataService.getRefData('PartyChannel', serviceId);
-    });
-
+    this.partyChannels = this.hearingsRefDataService.getRefData('PartyChannel', this.hearingListMainModel.hmctsServiceID);
     if (!this.hearingRequestMainModel.partyDetails.length) {
       this.initialiseFromHearingValues();
     } else {
@@ -60,19 +54,13 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
 
       this.attendanceFormGroup.controls.estimation.setValue(this.hearingRequestMainModel.hearingDetails.totalParticipantAttendingHearing);
     }
-
     this.partiesFormArray = this.attendanceFormGroup.controls.parties as FormArray;
   }
 
   public initialiseFromHearingValues() {
-    this.hearingStoreSub = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesModel)).subscribe(
-      hearingValueModel => {
-        if (hearingValueModel) {
-          hearingValueModel.parties.forEach(x => {
-            (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues(x) as FormGroup);
-          });
-        }
-      });
+    this.serviceHearingValuesModel.parties.forEach((x: PartyUnavailabilityModel) => {
+      (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues(x) as FormGroup);
+    });
   }
 
   public executeAction(action: ACTION): void {
@@ -121,8 +109,8 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
         formValid = false;
         selectionValid = false;
         this.validationErrors.push({
-          id: `partyChannel${(this.attendanceFormGroup.controls.parties as FormArray).
-            controls.indexOf(element)}`, message: 'Select how each participant will attend the hearing'
+          id: `partyChannel${(this.attendanceFormGroup.controls.parties as FormArray).controls.indexOf(element)}`,
+          message: 'Select how each participant will attend the hearing'
         });
       }
     });
@@ -130,7 +118,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     this.attendanceFormGroup.controls.estimation.markAsDirty();
     if (!this.attendanceFormGroup.controls.estimation.valid) {
       formValid = false;
-      this.validationErrors.push({ id: 'attendance-number', message: 'Enter a valid number of attendees' });
+      this.validationErrors.push({id: 'attendance-number', message: 'Enter a valid number of attendees'});
     }
 
     this.selectionValid = selectionValid;

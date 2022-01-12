@@ -36,7 +36,7 @@ describe('HearingWelshComponent', () => {
   const initialState = {
     hearings: {
       hearingList: {
-        caseHearingMainModel: [
+        hearingListMainModel: [
           {
             hmctsServiceID: 'SSCS'
           }

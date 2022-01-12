@@ -24,7 +24,7 @@ describe('HearingRequirementsComponent', () => {
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 
-  const hearingValueModel: ServiceHearingValuesModel = {
+  const serviceHearingValuesModel: ServiceHearingValuesModel = {
     autoListFlag: false,
     hearingType: 'Final',
     caseType: 'Personal Independence Payment',
@@ -136,14 +136,14 @@ describe('HearingRequirementsComponent', () => {
   const initialState = {
     hearings: {
       hearingList: {
-        caseHearingMainModel: [
+        hearingListMainModel: [
           {
             hmctsServiceID: 'SSCS'
           }
         ]
       },
       hearingValues: {
-        serviceHearingValuesModel: hearingValueModel,
+        serviceHearingValuesModel,
         lastError: null,
       },
       hearingRequest: null,
@@ -182,13 +182,13 @@ describe('HearingRequirementsComponent', () => {
 
   it('should set option collection', () => {
     expect(component).toBeDefined();
-    expect(component.hearingValueModel).toEqual(hearingValueModel);
+    expect(component.serviceHearingValuesModel).toEqual(serviceHearingValuesModel);
   });
 
   it('should call unsubscribe', () => {
-    spyOn(component.hearingStoreSub, 'unsubscribe');
+    spyOn(component.hearingStateSub, 'unsubscribe');
     component.ngOnDestroy();
-    expect(component.hearingStoreSub.unsubscribe).toHaveBeenCalled();
+    expect(component.hearingStateSub.unsubscribe).toHaveBeenCalled();
   });
 
   afterEach(() => {

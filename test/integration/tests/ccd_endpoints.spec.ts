@@ -6,11 +6,9 @@ import Request from './utils/request';
 import { setTestContext} from './utils/helper';
 
 describe('CCD Endpoints',  () => {
-    const userName = 'lukesuperuserxui@mailnesia.com';
+    const userName = config.users.solicitor;
     const password = 'Monday01';
 
-    // const userName = 'peterxuisuperuser@mailnesia.com';
-    // const password = 'Monday01';
     beforeEach(function ()  {
         this.timeout(120000);
 

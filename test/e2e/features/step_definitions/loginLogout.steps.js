@@ -82,7 +82,9 @@ defineSupportCode(function ({ Given, When, Then }) {
         console.log(err);
           await browser.driver.manage()
             .deleteAllCookies();
-          await browser.get(config.config.baseUrl);
+          const baseUrl = process.env.TEST_URL || 'http://localhost:3000/'
+
+          await browser.get(baseUrl);
           await BrowserWaits.waitForElement(loginPage.emailAddress);
           await loginPage.loginWithCredentials(username, password);
           loginAttemptRetryCounter++;
@@ -191,18 +193,24 @@ defineSupportCode(function ({ Given, When, Then }) {
   Then('I should be redirected to EUI dashboard page', async function () {
 
     const world = this;
-    await BrowserUtil.waitForLD();
-    await BrowserWaits.retryForPageLoad($("exui-header"), function(message){
-      world.attach("Redirected to EUI dashboard , attempt reload : "+message);
+  
+    await BrowserWaits.retryWithActionCallback(async () => {
+      try{
+        await BrowserUtil.waitForLD();
+        await BrowserWaits.waitForElement($("exui-header .hmcts-primary-navigation__item"));
+        await expect(loginPage.dashboard_header.isDisplayed()).to.eventually.be.true;
+        await expect(loginPage.dashboard_header.getText())
+          .to
+          .eventually
+          .contains('Case list');
+
+        await BrowserUtil.waitForLD();
+      }catch(err){
+        await browser.get(config.config.baseUrl);
+        throw new Error(err);
+      }
+      
     });
-
-    await expect(loginPage.dashboard_header.isDisplayed()).to.eventually.be.true;
-    await expect(loginPage.dashboard_header.getText())
-      .to
-      .eventually
-      .contains('Case list');
-
-    await BrowserUtil.waitForLD();
 
   });
 
@@ -340,7 +348,8 @@ defineSupportCode(function ({ Given, When, Then }) {
   Given(/^I navigate to Expert UI Url direct link$/, async function () {
     await browser.driver.manage()
       .deleteAllCookies();
-    await browser.get(config.config.baseUrl + '/cases/case-filter');
+    const baseUrl = process.env.TEST_URL || 'http://localhost:3000/'
+    await browser.get(baseUrl + '/cases/case-filter');
   });
 
   Then(/^I should be redirected back to Login page after direct link$/, async function () {

@@ -65,13 +65,20 @@ function HeaderPage() {
     }
 
     this.clickPrimaryNavigationWithLabel = async function(label){
-      const ele = element(by.xpath(`//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'${label}')]`));
       await BrowserWaits.retryWithActionCallback(async () => {
-        await BrowserWaits.waitForSpinnerToDissappear();
-        await BrowserWaits.waitForElement(ele);
-        await BrowserWaits.waitForElementClickable(ele);
-        await ele.click();
-        await browserUtil.waitForLD();
+        try {
+          const ele = element(by.xpath(`//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'${label}')]`));
+          await BrowserWaits.waitForSpinnerToDissappear();
+          await BrowserWaits.waitForElement(ele);
+          await BrowserWaits.waitForElementClickable(ele);
+          await ele.click();
+          await browserUtil.waitForLD();
+        } catch (err) {
+          await browser.refresh();
+          throw new Error(err);
+        }
+
+        
       });
       
     }

@@ -1,4 +1,4 @@
-@ng 
+@ng @test 
 Feature: WA Release 2: My work - Work filters - Uhhappy paths
 
     Background: Mock and browser setup
@@ -32,7 +32,7 @@ Feature: WA Release 2: My work - Work filters - Uhhappy paths
         Then I validate work filter button text is "Show work filter"
         Then I validate work location filter batch and hint labels are not displayed
         Then I validate location filter is not displayed
-        When I click work filter button
+        When I click work filter button to "Show" filter
         Then I validate work filter button text is "Hide work filter"
         Then I validate location filter is displayed
         When I click work location filter with label "Aldgate Tower"
@@ -53,10 +53,11 @@ Feature: WA Release 2: My work - Work filters - Uhhappy paths
         Then I validate work filter button text is "Show work filter"
         Then I validate work location filter batch and hint labels are not displayed
         Then I validate location filter is not displayed
-        When I click work filter button
+        When I click work filter button to "Show" filter
         Then I validate work filter button text is "Hide work filter"
         Then I validate location filter is displayed
-        
+
+        Given I set MOCK request "/workallocation2/task" response log to report
         Given I set MOCK api method "post" endpoint "/workallocation2/task" with error response code <responseCode>
         Given I start MockApp
         When I click work location filter Apply button

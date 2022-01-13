@@ -9,6 +9,7 @@ const CucumberReporter = require('../../../e2e/support/reportLogger');
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
 const workAllocationDataModel = require("../../../dataModels/workAllocation");
 const reportLogger = require('../../../e2e/support/reportLogger');
+const workAllocationMockData = require('../../../nodeMock/workAllocation/mockData');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -76,8 +77,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             CucumberReporter.AddJson(req.body)
             let send = res.send;
             res.send = function (body) {
-                CucumberReporter.AddMessage('Intercept response or api ' + url);
-                CucumberReporter.AddJson(body)
+                CucumberReporter.AddMessage('------------------------------Mock response intercept---------------------------');
+                CucumberReporter.AddMessage('Intercept response on api ' + url);
+                CucumberReporter.AddMessage('response code ' + res.status);
+                CucumberReporter.AddJson(JSON.parse(body))
+                CucumberReporter.AddMessage('------------------------------Mock response intercept---------------------------');
                 send.call(this, body);
             }
             next();
@@ -147,37 +151,30 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Given('I set MOCK find person response for jurisdictions', async function(datatable){
         const personsConfigHashes = datatable.hashes();
 
-        const allPersons = [];
-        for (let i = 0; i < personsConfigHashes.length; i++) {
-            const inputperson = personsConfigHashes[i];
-            const person = workAllocationDataModel.getFindPersonObj();
+        for (const person of personsConfigHashes) {
 
-            for (const key of Object.keys(inputperson)){
-                person[key] = inputperson[key];
+            if (person.domain === 'Judicial'){
+                const judge = JSON.parse(JSON.stringify(workAllocationMockData.judgeUsers[0]));
+                judge.sidam_id = person.id;
+                judge.email_id = person.email;
+                judge.full_name = person.name;
+
+                workAllocationMockData.judgeUsers.push(judge);
+            } else if (person.domain === 'Legal Ops'){
+                const cw = JSON.parse(JSON.stringify(workAllocationMockData.caseWorkersList[0]));
+                const fullNameArr = person.name.split(" ");
+                cw.idamId = person.id;
+                cw.email = person.email;
+                cw.firstName = fullNameArr[0];
+                cw.lastName = fullNameArr[1];
+
+                workAllocationMockData.caseWorkersList.push(cw); 
             }
-
-            
-            allPersons.push(person);
+           
             
         }
-        CucumberReporter.AddMessage("Find persons mock db")
-        CucumberReporter.AddJson(allPersons)
+       
 
-        MockApp.onPost('/workallocation2/findPerson', (req,res) => {
-            const inputJurisdiction = req.body.searchOptions.jurisdiction;
-            const filterdUsersForJurisdiction = [];
-            for (const p of allPersons){
-                if (p.domain === inputJurisdiction){
-                    filterdUsersForJurisdiction.push(p);
-                }  
-            }
-            CucumberReporter.AddMessage("Find persons mock response for req.")
-            CucumberReporter.AddJson(req.body)
-
-            CucumberReporter.AddJson(filterdUsersForJurisdiction)
- 
-            res.send(filterdUsersForJurisdiction);
-        });
 
      });
 

@@ -117,12 +117,11 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
         # When I click continue in work flow page "Choose how to allocate the role"
 
         Then I see Allocate role work flow page "Find the person" with caption "Reallocate a lead judge" is displayed
-        When I enter find person search input "jud" in work flow
+        When I enter find person search input "user1" in work flow
         Then I see find person search results in work flow
-            | Person                            |
-            | Lead judge(judge_user1@gov.uk)    |
-            | Hearing judge(judge_user2@gov.uk) |
-        When I select find person result "judge_user1@gov.uk" in work flow
+            | Person                      |
+            | user1 j(judge_user1@gov.uk) |
+        When I select find person result "user1 j(judge_user1@gov.uk)" in work flow
         When I click continue in work flow page "Find the person"
 
         Then I see Allocate role work flow page "Duration of role" with caption "Reallocate a lead judge" is displayed
@@ -135,10 +134,10 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
         Then I see Check your answers page has total 3 questions
         Then I see Check your answers page has questions and answers with change link
-            | Question                          | Answer                         |
-            | Who the role will be allocated to | Allocate to another person     |
-            | Person                            | Lead judge(judge_user1@gov.uk) |
-            | Duration of role                  | Indefinite                     |
+            | Question                          | Answer                      |
+            | Who the role will be allocated to | Allocate to another person  |
+            | Person                            | user1 j(judge_user1@gov.uk) |
+            | Duration of role                  | Indefinite                  |
 
         When I click button with label "Confirm allocation" in work flow  Check your answers page
         Then I see case details page displayed with tab "Roles and access" selected
@@ -306,11 +305,10 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
 
         Then I see Allocate role work flow page "Find the person" with caption "Reallocate a lead judge" is displayed
-        When I enter find person search input "cas" in work flow
+        When I enter find person search input "user1" in work flow
         Then I see find person search results in work flow
-            | Person                            |
-            | Lead judge(judge_user1@gov.uk)    |
-            | Hearing judge(judge_user2@gov.uk) |
+            | Person                      |
+            | user1 j(judge_user1@gov.uk) |
         When I select find person result "judge_user1@gov.uk" in work flow
         When I click continue in work flow page "Find the person"
 
@@ -324,10 +322,10 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
         Then I see Check your answers page has total 3 questions
         Then I see Check your answers page has questions and answers with change link
-            | Question                          | Answer                     |
-            | Who the role will be allocated to | Allocate to another person |
-            | Person                            | judge_user1@gov.uk         |
-            | Duration of role                  | Indefinite                 |
+            | Question                          | Answer                      |
+            | Who the role will be allocated to | Allocate to another person  |
+            | Person                            | user1 j(judge_user1@gov.uk) |
+            | Duration of role                  | Indefinite                  |
 
         When I click button with label "Confirm allocation" in work flow  Check your answers page
         Then I see case details page displayed with tab "Roles and access" selected
@@ -371,9 +369,9 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
         Then I see Check your answers page has total 2 questions
         Then I see Check your answers page has questions and answers without change link
-            | Question     | Answer                         |
-            | Type of role | Lead judge                     |
-            | Person       | Lead judge(judge_user1@gov.uk) |
+            | Question     | Answer                      |
+            | Type of role | Lead judge                  |
+            | Person       | user1 j(judge_user1@gov.uk) |
 
         When I click button with label "Remove allocation" in work flow  Check your answers page
         Then I see case details page displayed with tab "Roles and access" selected

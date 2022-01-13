@@ -60,7 +60,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
      Then('I validate tasks column sorting', async function(){
          let tasksRequested = false; 
          let sortColumnInRequestParam = "";
-         await MockUtil.setMockResponse("POST", "/workallocation/taskWithPagination/", (req, res) => {
+         await MockUtil.setMockResponse("POST", "/workallocation/taskWithPagination", (req, res) => {
              CucumberReporter.AddMessage("get tasks with sort request body:");
              CucumberReporter.AddJson(req.body);
              sortColumnInRequestParam = WAUtil.getTaskListReqSearchParam(req.body);
@@ -163,7 +163,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await taskListPage.clickColumnHeader(columnHeaders[1]);
         expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal("ascending");
 
-        await headerPage.getTabElementWithText('Case list').click();
+        await headerPage.getTabElementWithText('Create case').click();
         expect(await caseListPage.amOnPage()).to.be.true;
         await headerPage.getTabElementWithText('Task manager').click();
         await taskManagerPage.amOnPage();

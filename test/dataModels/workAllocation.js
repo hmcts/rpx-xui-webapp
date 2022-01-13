@@ -250,7 +250,7 @@ class WorkAllocationModels {
 
     getRefDataJudge(fullName,surname,email){
         return {
-            "sidam_id": null,
+            "sidam_id": v4(),
             "object_id": "018a0310-f122-4377-9504-f635301f39ed-test2",
             "known_as": "Joe",
             "surname": surname ? surname : "snjudge",
@@ -307,7 +307,7 @@ const ACTIONS = {
     AssignToMe: { id: 'claim', title: 'Assign to me' },
     AssignToMeAndGoToTasks: { id: 'claim-and-go', title: 'Assign to me and go to case' },
     Assign: { id: 'assign', title: 'Assign task' },
-    MarkAsDone: { id: 'mark-as-done', title: 'Mark as done' },
+    MarkAsDone: { id: 'complete', title: 'Mark as done' },
     Cancel: { id: 'cancel', title: 'Cancel task' },
 }
 
@@ -319,22 +319,25 @@ const taskActionsMatrix = {
     mytasks: {
         Read: [],
         Refer: [],
+        Own: [ACTIONS.Unassign, ACTIONS.GoToTasks],
         Manage: [ACTIONS.Reassign, ACTIONS.Unassign, ACTIONS.GoToTasks],
-        Execute: [ACTIONS.MarkAsDone],
+        Execute: [ACTIONS.Unassign, ACTIONS.GoToTasks],
         Cancel: [ACTIONS.Cancel]
 
     },
     availabletasks: {
         Read: [],
         Refer: [],
-        Manage: [ACTIONS.AssignToMe, ACTIONS.AssignToMeAndGoToTasks],
-        Execute: [],
+        Own: [ACTIONS.AssignToMe, ACTIONS.AssignToMeAndGoToTasks],
+        Manage: [],
+        Execute: [ACTIONS.AssignToMe, ACTIONS.AssignToMeAndGoToTasks],
         Cancel: []
     },
     allwork: {
         unassigned: {
             Read: [],
             Refer: [],
+            Own: [ACTIONS.MarkAsDone],
             Manage: [ACTIONS.Assign, ACTIONS.GoToTasks],
             Execute: [ACTIONS.MarkAsDone],
             Cancel: [ACTIONS.Cancel]
@@ -342,6 +345,7 @@ const taskActionsMatrix = {
         assigned: {
             Read: [],
             Refer: [],
+            Own: [ACTIONS.MarkAsDone],
             Manage: [ACTIONS.Reassign, ACTIONS.Unassign, ACTIONS.GoToTasks],
             Execute: [ACTIONS.MarkAsDone],
             Cancel: [ACTIONS.Cancel]

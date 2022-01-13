@@ -72,6 +72,19 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     return url;
   }
 
+  private get service(): string {
+    // Default URL is '' because this is the only sensible return navigation if the user has used browser navigation
+    // buttons, which clear the `window.history.state` object
+    let service: string = '';
+
+    // The returnUrl is undefined if the user has used browser navigation buttons, so check for its presence
+    if (window && window.history && window.history.state && window.history.state.service) {
+      service = window.history.state.service;
+    }
+
+    return service;
+  }
+
   private get showAssigneeColumn(): boolean {
     if (window && window.history && window.history.state) {
       return !!window.history.state.showAssigneeColumn;

@@ -10,7 +10,7 @@ import {
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { Role } from '../roleAccess/models/roleType';
-import { getAllRoles, getSubstantiveRoles } from '../roleAccess/roleAssignmentService';
+import { getAllRoles } from '../roleAccess/roleAssignmentService';
 import { getWASupportedJurisdictionsList } from '../waSupportedJurisdictions';
 import * as caseServiceMock from './caseService.mock';
 import {
@@ -64,7 +64,8 @@ import {
   prepareTaskSearchForCompletable,
   removeEmptyValues,
   searchCasesById,
-  getSessionCaseworkerInfo
+  getSessionCaseworkerInfo,
+  getSubstantiveRoles
 } from './util';
 
 caseServiceMock.init();
@@ -290,6 +291,36 @@ export async function retrieveCaseWorkersForServices(req: EnhancedRequest, res: 
    [...req.session.caseworkersByService, ...caseWorkerReferenceData] : caseWorkerReferenceData;
   const fullCaseworkerByServiceInfo = [...caseWorkerReferenceData, ...sessionCaseworkersByService]
   return fullCaseworkerByServiceInfo;
+}
+
+export async function retrieveCaseWorkersForSpecificService(req: EnhancedRequest, res: Response): Promise<Caseworker[]> {
+  const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
+  const jurisdiction = req.body.serviceId as string;
+  let jurisdictionInSession: string;
+  let sessionCaseworkers: Caseworker[];
+  if (req.session && req.session.caseworkersByService) {
+    const sessionCaseworkerInfo = getSessionCaseworkerInfo([jurisdiction], req.session.caseworkersByService);
+    jurisdictionInSession = sessionCaseworkerInfo[0][0];
+    sessionCaseworkers = sessionCaseworkerInfo[1][0].caseworkers;
+  }
+  if (jurisdictionInSession) {
+    // if there is jurisdiction is stored then return the caseworkers in session
+    return sessionCaseworkers;
+  } 
+  const roleResponse = await getAllRoles(req); // get the roles from the endpoint
+  const roles: Role[] = roleResponse.data;
+
+  const payloads: CaseworkerPayload[] = prepareRoleApiRequestForServices([jurisdiction], roles);
+  const data: ServiceCaseworkerData[] = await handleCaseWorkersForServicesPost(roleApiPath, payloads, req);
+  const userIds = getUserIdsFromJurisdictionRoleResponse(data);
+  const userUrl = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
+  const userResponse = await handlePostCaseWorkersRefData(userUrl, userIds, req);
+
+  const caseWorkerReferenceData = getCaseworkerDataForServices(userResponse.data, data);
+  // note have to merge any new service caseworker data for full session as well as services specified in params
+  req.session.caseworkersByService = req.session && req.session.caseworkersByService ?
+   [...req.session.caseworkersByService, ...caseWorkerReferenceData] : caseWorkerReferenceData;
+  return caseWorkerReferenceData[0].caseworkers;
 }
 
 

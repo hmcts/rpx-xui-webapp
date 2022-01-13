@@ -23,7 +23,7 @@ import {
   WorkAllocationCaseService
 } from '../../services';
 import { JurisdictionsService } from '../../services/juridictions.service';
-import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
+import { getAllCaseworkersFromServices, getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 import { JudicialWorkerDataService } from '../../services/judicialworker-data.service';
 
 @Component({
@@ -32,11 +32,12 @@ import { JudicialWorkerDataService } from '../../services/judicialworker-data.se
 export class WorkCaseListWrapperComponent implements OnInit {
 
   public specificPage: string = '';
-  public caseworkers: Caseworker[];
+  public caseworkers: Caseworker[] = [];
   public showSpinner$: Observable<boolean>;
   public sortedBy: SortField;
   public locations$: Observable<Location[]>;
   public waSupportedJurisdictions$: Observable<string[]>;
+  public supportedJurisdictions: string[];
   public pagination: PaginationParameter;
   public backUrl: string = null;
   protected allJurisdictions: Jurisdiction[];
@@ -142,6 +143,9 @@ export class WorkCaseListWrapperComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    // get supported jurisdictions on initialisation in order to get caseworkers by these services
+    this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
+
     this.rolesService.getValidRoles().subscribe(allRoles => this.allRoles = allRoles);
     this.jurisdictionsService.getJurisdictions().subscribe(jur => this.allJurisdictions = jur);
     this.setupCaseWorkers();
@@ -149,8 +153,14 @@ export class WorkCaseListWrapperComponent implements OnInit {
   }
 
   public setupCaseWorkers(): void {
-    this.caseworkerService.getAll().subscribe(caseworkers => {
-      this.caseworkers = [...caseworkers];
+    const caseworkersByService$ = this.waSupportedJurisdictions$.switchMap(jurisdictions => 
+      this.caseworkerService.getCaseworkersForServices(jurisdictions)
+    )
+    // currently get caseworkers for all supported services
+    // in future change, could get caseworkers by specific service from filter changes
+    // however regrdless would likely need this initialisation
+    caseworkersByService$.subscribe(caseworkersByServices => {
+      this.caseworkers = getAllCaseworkersFromServices(caseworkersByServices);
       const userInfoStr = this.sessionStorageService.getItem('userDetails');
       if (userInfoStr) {
         const userInfo: UserInfo = JSON.parse(userInfoStr);

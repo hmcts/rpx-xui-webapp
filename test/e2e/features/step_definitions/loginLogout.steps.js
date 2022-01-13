@@ -330,7 +330,6 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   });
 
- // hrs.tester@hmcts.net/passwOrd01hrs
   Given('I am logged into Expert UI with hrs testes user details', async function () {
     await loginPage.givenIAmLoggedIn(config.config.params.hrsTesterUser, config.config.params.hrsTesterPassword);
     const world = this;

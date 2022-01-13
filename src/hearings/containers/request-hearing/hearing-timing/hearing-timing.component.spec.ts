@@ -231,6 +231,11 @@ describe('HearingTimingComponent', () => {
     expect(component.priorityForm.valid).toBeFalsy();
   });
 
+  it('should check if form is valid', () => {
+    component.validationErrors = [];
+    expect(component.isFormValid()).toBeTruthy();
+  });
+
   afterEach(() => {
     fixture.destroy();
   });

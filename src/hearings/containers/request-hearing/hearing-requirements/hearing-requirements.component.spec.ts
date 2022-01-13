@@ -6,6 +6,7 @@ import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
 import {ACTION} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
+import * as fromHearingStore from '../../../store';
 import {initialState, serviceHearingValuesModel} from '../hearing.store.state.test';
 import {HearingRequirementsComponent} from './hearing-requirements.component';
 
@@ -51,6 +52,19 @@ describe('HearingRequirementsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should window onFocus', () => {
+    const storeDispatchSpy = spyOn(component.hearingStore, 'dispatch');
+    component.lostFocus = true;
+    component.onFocus();
+    expect(component.lostFocus).toBeFalsy();
+    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.LoadHearingValues(this.referenceId));
+  });
+
+  it('should window onblur', () => {
+    component.onBlur();
+    expect(component.lostFocus).toBeTruthy();
   });
 
   it('should set option collection', () => {

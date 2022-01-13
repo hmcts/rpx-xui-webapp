@@ -293,7 +293,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     }
   }
 
-  public isFormValid() {
+  public isFormValid(): boolean {
     return this.validationErrors.length === 0;
   }
 

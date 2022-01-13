@@ -225,6 +225,8 @@ const serviceMessageCookie: string = 'service_messages';
 
 const caseAllocatorRole: string = 'case-allocator-role';
 
+const activityTrackerMode: string = 'mc-activity-tracker-mode';
+
 export class AppConstants {
   public static FOOTER_DATA = null;
   public static FOOTER_DATA_NAVIGATION = FooterDataNavigation;
@@ -240,6 +242,7 @@ export class AppConstants {
   public static SERVICE_MESSAGES_FEATURE_TOGGLE_KEY = serviceMessagesFeatureToggleKey;
   public static SERVICE_MESSAGE_COOKIE = serviceMessageCookie;
   public static CASE_ALLOCATOR_ROLE = caseAllocatorRole;
+  public static ACTIVITY_TRACKER_MODE = activityTrackerMode;
 }
 
 export const LD_FLAG_REMOVE_USER_FROM_CASE_MC: string = 'remove-user-from-case-mc';

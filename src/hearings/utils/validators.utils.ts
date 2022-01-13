@@ -64,5 +64,17 @@ export class ValidatorsUtils {
         ? null : { isValid: false };
     };
   }
+
+  public errorValidator(message: string): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      return { error: message };
+    };
+  }
+
+  public formArraySelectedValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      return control.value.every((option) => option.selected === false) ? { isValid: false } : null;
+    };
+  }
 }
 

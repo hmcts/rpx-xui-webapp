@@ -1,35 +1,82 @@
 export  const config =  {
     baseUrl: getBaseUrl(),
-    jurisdictions : [
-        {
-            id: 'DIVORCE',
-            caseTypeIds : [
-                'DIVORCE',
-                'FinancialRemedyMVP2',
-                'FinancialRemedyContested'
-            ]
-        },
-        {
-            id: 'IA',
-            caseTypeIds: [
-                'Asylum'
-            ]
-        },
-        {
-            id: 'PROBATE',
-            caseTypeIds: [
-                'GrantOfRepresentation'
-            ]
-        }
-    ],
-    em: {
-        docId: '249cfa9e-622c-4877-a588-e9daa3fe10d8'
+    jurisdictions : {
+        aat: [
+            {
+                id: 'DIVORCE',
+                caseTypeIds: [
+                    'DIVORCE',
+                    'FinancialRemedyMVP2',
+                    'FinancialRemedyContested'
+                ]
+            },
+            {
+                id: 'IA',
+                caseTypeIds: [
+                    'Asylum'
+                ]
+            },
+            {
+                id: 'PROBATE',
+                caseTypeIds: [
+                    'GrantOfRepresentation'
+                ]
+            }
+        ],
+        demo: [
+            {
+                id: 'DIVORCE',
+                caseTypeIds: [
+                    'DIVORCE',
+                    'FinancialRemedyMVP2',
+                    'FinancialRemedyMVP2'
+                ]
+            },
+            {
+                id: 'IA',
+                caseTypeIds: [
+                    'Asylum'
+                ]
+            },
+            {
+                id: 'PROBATE',
+                caseTypeIds: [
+                    'GrantOfRepresentation'
+                ]
+            } 
+        ]
     },
+    jurisdcitionNames: {
+        aat: ['Family Divorce', 'Public Law', 'Immigration & Asylum', 'Manage probate application'],
+        demo: ['Family Divorce - v104-26.1', 'Public Law', 'Immigration & Asylum']
+    },
+    em: {
+        aat: {
+            docId: '249cfa9e-622c-4877-a588-e9daa3fe10d8'
+        },
+        demo: {
+            docId: '005ed16f-be03-4620-a8ee-9bc90635f6f2'
+        } 
+    },
+    testEnv: process.env.TEST_ENV ? process.env.TEST_ENV : 'aat',
     users : {
-        solicitor: 'lukesuperuserxui@mailnesia.com',
-        caseOfficer_r1: 'xui_caseofficer@justice.gov.uk',
-        caseOfficer_r2: 'xui_auto_co_r2@justice.gov.uk'
-    }
+       aat: {
+            solicitor: { e: 'lukesuperuserxui@mailnesia.com', sec:'Monday01'},
+            caseOfficer_r1: { e: 'xui_caseofficer@justice.gov.uk', sec: 'Welcome01' },
+            caseOfficer_r2: { e: 'xui_auto_co_r2@justice.gov.uk', sec: 'Welcome01' }
+       },
+       demo: {
+           solicitor: { e: 'peterxuisuperuser@mailnesia.com', sec: 'Monday01' },
+           caseOfficer_r1: { e: 'xui_caseofficer@justice.gov.uk', sec: 'Welcome01' },
+           caseOfficer_r2: { e: 'xui_auto_co_r3@justice.gov.uk', sec: 'Welcome01' }
+       }
+    },
+    configuratioUi: {
+        aat: ['clientId', 'idamWeb', 'launchDarklyClientId', 'oAuthCallback', 'oidcEnabled', 'protocol', 'ccdGatewayUrl', 'substantiveEnabled'],
+        demo: ['clientId', 'idamWeb', 'launchDarklyClientId', 'oAuthCallback', 'oidcEnabled', 'protocol', 'ccdGatewayUrl', 'substantiveEnabled','accessManagementEnabled']
+    },
+    
+
 };
 
 function getBaseUrl() {

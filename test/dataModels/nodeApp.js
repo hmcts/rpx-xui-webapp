@@ -7,7 +7,12 @@ class NodeApp{
         return {
             "canShareCases": false,
             "roleAssignmentInfo": [
-                this.getUserDetailsLocationInfo()
+                {
+                    ...this.getUserDetailsLocationInfo(),
+                    caseId:'',
+                    caseType:''
+                }
+                
             ],
             "sessionTimeout": {
                 "idleModalDisplayTime": 10,

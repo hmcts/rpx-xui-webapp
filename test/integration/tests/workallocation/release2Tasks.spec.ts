@@ -3,7 +3,7 @@ import { v4 as uuid } from 'uuid';
 // import mocha from 'mocha';
 import { config } from '../config/config';
 import { getUserId, getXSRFToken } from '../utils/authUtil';
-import { setTestContext } from '../utils/helper';
+import { setTestContext,reporterJson,reporterMsg } from '../utils/helper';
 
 import Request from '../utils/request';
 
@@ -11,11 +11,11 @@ import TaskRequestBody from '../utils/wa/taskRequestBody';
 const workAllocationDataModels = require( '../../../dataModels/workAllocation');
 
 describe('Work allocations Release 2: Tasks', () => {
-    const userName = config.users.solicitor;
-    const password = 'Monday01';
+    const userName = config.users[config.testEnv].solicitor.e;
+    const password = config.users[config.testEnv].solicitor.sec;
 
-    const caseOfficer = config.users.caseOfficer_r2;
-    const caseofficerPass = 'Welcome01';
+    const caseOfficer = config.users[config.testEnv].caseOfficer_r2.e;
+    const caseofficerPass = config.users[config.testEnv].caseOfficer_r2.sec;
 
     beforeEach(function() {
         setTestContext(this);
@@ -35,7 +35,7 @@ describe('Work allocations Release 2: Tasks', () => {
             'content-length': JSON.stringify(reqBody).length
         };
 
-        const response = await Request.post(`workallocation2/taskWithPagination`, reqBody, headers, 200);
+        const response = await Request.post(`workallocation2/task`, reqBody, headers, 200);
         expect(response.status).to.equal(200);
         const actual = response.data;
         const expected = workAllocationDataModels.getRelease2Tasks();
@@ -58,7 +58,7 @@ describe('Work allocations Release 2: Tasks', () => {
             'content-length': JSON.stringify(reqBody).length
         };
 
-        const response = await Request.post(`workallocation2/taskWithPagination`, reqBody, headers, 200);
+        const response = await Request.post(`workallocation2/task`, reqBody, headers, 200);
         expect(response.status).to.equal(200);
         const actual = response.data;
         const expected = workAllocationDataModels.getRelease2Tasks();
@@ -70,7 +70,7 @@ describe('Work allocations Release 2: Tasks', () => {
     });
 
 
-    it('case officer, `Task manager tasks`', async function () {
+    it('case officer, `All work tasks`', async function () {
         this.timeout(60000);
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
@@ -81,7 +81,7 @@ describe('Work allocations Release 2: Tasks', () => {
             'content-length': JSON.stringify(reqBody).length
         };
 
-        const response = await Request.post(`workallocation2/taskWithPagination`, reqBody, headers, 200);
+        const response = await Request.post(`workallocation2/task`, reqBody, headers, 200);
         expect(response.status).to.equal(200);
         const actual = response.data;
         const expected = workAllocationDataModels.getRelease2Tasks();
@@ -108,7 +108,7 @@ describe('Work allocations Release 2: Tasks', () => {
             'content-length': JSON.stringify(reqBody).length
         };
 
-        const tasksRes = await Request.post(`workallocation2/taskWithPagination`, reqBody, headersForGetTasks, 200);
+        const tasksRes = await Request.post(`workallocation2/task`, reqBody, headersForGetTasks, 200);
         const caseworkerRes = await Request.get(`workallocation2/caseworker`, headers, 200);
 
 
@@ -151,7 +151,7 @@ describe('Work allocations Release 2: Tasks', () => {
             'content-length': JSON.stringify(reqBody).length
         };
 
-        const tasksRes = await Request.post(`workallocation2/taskWithPagination`, reqBody, headersForGetTasks, 200);
+        const tasksRes = await Request.post(`workallocation2/task`, reqBody, headersForGetTasks, 200);
         const caseworkerRes = await Request.get(`workallocation2/caseworker`, headers, 200);
 
 
@@ -186,7 +186,7 @@ describe('Work allocations Release 2: Tasks', () => {
             'content-length': JSON.stringify(reqBody).length
         };
 
-        const tasksRes = await Request.post(`workallocation2/taskWithPagination`, reqBody, headersForGetTasks, 200);
+        const tasksRes = await Request.post(`workallocation2/task`, reqBody, headersForGetTasks, 200);
 
 
         const assignTaskReqBody = {}
@@ -216,7 +216,7 @@ describe('Work allocations Release 2: Tasks', () => {
             'content-length': JSON.stringify(reqBody).length
         };
 
-        const tasksRes = await Request.post(`workallocation2/taskWithPagination`, reqBody, headersForGetTasks, 200);
+        const tasksRes = await Request.post(`workallocation2/task`, reqBody, headersForGetTasks, 200);
 
 
         const assignTaskReqBody = {}
@@ -246,7 +246,7 @@ describe('Work allocations Release 2: Tasks', () => {
             'content-length': JSON.stringify(reqBody).length
         };
 
-        const tasksRes = await Request.post(`workallocation2/taskWithPagination`, reqBody, headersForGetTasks, 200);
+        const tasksRes = await Request.post(`workallocation2/task`, reqBody, headersForGetTasks, 200);
 
 
         const assignTaskReqBody = {}
@@ -273,7 +273,7 @@ describe('Work allocations Release 2: Tasks', () => {
             'content-length': JSON.stringify(taskRequestObj.getRequestBody()).length
         };
 
-        const response = await Request.post(`workallocation2/taskWithPagination`, taskRequestObj.getRequestBody(), headers, 200);
+        const response = await Request.post(`workallocation2/task`, taskRequestObj.getRequestBody(), headers, 200);
         expect(response.status).to.equal(200);
         expect(response.data).to.have.all.keys('tasks', 'total_records');
 
@@ -283,7 +283,7 @@ describe('Work allocations Release 2: Tasks', () => {
         const totalRecords = response.data.total_records;
         if (totalRecords > 10) {
             taskRequestObj.withPageNumber(2);
-            const response = await Request.post(`workallocation2/taskWithPagination`, taskRequestObj.getRequestBody(), headers, 200);
+            const response = await Request.post(`workallocation2/task`, taskRequestObj.getRequestBody(), headers, 200);
             expect(response.status).to.equal(200);
             expect(response.data).to.have.all.keys('tasks', 'total_records');
             //expect(response.data.tasks.length).to.equal(response.data.total_records > 20 ? 10 : response.data.total_records - 10);
@@ -328,7 +328,8 @@ describe('Work allocations Release 2: Tasks', () => {
             default:
                 throw new Error(`${view} is not recognized or not implemented in test`);
         }
-
+        reporterMsg(`Search request body for view "${view}"`);
+        reporterJson(taskRequestBody);
         return taskRequestBody;
     }
 

@@ -16,7 +16,7 @@ const userDetailsMock = require('../../mockUtil/userDetails');
 
 const myWorkLocators = require('../../appLocators/myWork');
 
-describe('Work Allocation: ', function () {
+xdescribe('Work Allocation: ', function () {
 
     before(async function (done) {
         MockApp.init();
@@ -27,7 +27,7 @@ describe('Work Allocation: ', function () {
         done();
     });
 
-    
+
     it('My work: My tasks', async function () {
         userDetailsMock.withIACJudicialUser('IAC_Judge_WA_R2');
         await MockApp.startServer();

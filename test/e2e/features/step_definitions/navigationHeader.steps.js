@@ -49,7 +49,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
                 expect(await headerPage.isPrimaryTabPageDisplayed(headerTabLabel)).to.be.true
             }catch(err){
-                await browser.refresh();
+                await headerPage.refreshBrowser();
                 throw new Error(err);
             }
             
@@ -93,7 +93,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 }
                 softAssert.finally();
             }catch(err){
-                await browser.get(config.config.baseUrl);
+                await headerPage.refreshBrowser();
                 throw new Error(err);
             }
            

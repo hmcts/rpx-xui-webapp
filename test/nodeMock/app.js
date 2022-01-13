@@ -73,7 +73,7 @@ class MockApp{
         }
     }
 
-    onRequest(endPoint, method,req,res,callback){
+    async onRequest(endPoint, method,req,res,callback){
         try{
             const scenarioId = this.getCookieFromRequest(req, "scenarioId");
             const scenarioMockPort = this.getCookieFromRequest(req, 'scenarioMockPort');

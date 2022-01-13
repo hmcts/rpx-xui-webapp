@@ -1,16 +1,16 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, RoutesRecognized } from '@angular/router';
-import { combineLatest, Subscription } from 'rxjs';
 import { CookieService, FeatureToggleService, FeatureUser, GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import { LoggerService } from '../../services/logger/logger.service';
+import { combineLatest, Subscription } from 'rxjs';
 
 import { propsExist } from '../../../../api/lib/objectUtilities';
 import { environment as config } from '../../../environments/environment';
 import { UserDetails, UserInfo } from '../../models/user-details.model';
-import * as fromRoot from '../../store';
+import { LoggerService } from '../../services/logger/logger.service';
 import { EnvironmentService } from '../../shared/services/environment.service';
+import * as fromRoot from '../../store';
 
 @Component({
   selector: 'exui-root',
@@ -137,16 +137,16 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   public initializeFeature(userInfo: UserInfo, ldClientId: string) {
-      if (userInfo) {
+    if (userInfo) {
 
-        const featureUser: FeatureUser = {
-          key: userInfo.id || userInfo.uid,
-          custom: {
-            roles: userInfo.roles,
-            orgId: '-1'
-          }
-        };
-        this.featureService.initialize(featureUser, ldClientId);
+      const featureUser: FeatureUser = {
+        key: userInfo.id || userInfo.uid,
+        custom: {
+          roles: userInfo.roles,
+          orgId: '-1'
+        }
+      };
+      this.featureService.initialize(featureUser, ldClientId);
     }
   }
 
@@ -169,6 +169,9 @@ export class AppComponent implements OnInit, OnDestroy {
     // Google Analytics
     this.cookieService.deleteCookieByPartialMatch('_ga');
     this.cookieService.deleteCookieByPartialMatch('_gid');
+    // DynaTrace
+    this.cookieService.deleteCookieByPartialMatch('rxVisitor');
+    this.cookieService.deleteCookieByPartialMatch('dt');
     const domainElements = window.location.hostname.split('.');
     for (let i = 0; i < domainElements.length; i++) {
       const domainName = domainElements.slice(i).join('.');
@@ -176,9 +179,12 @@ export class AppComponent implements OnInit, OnDestroy {
       this.cookieService.deleteCookieByPartialMatch('_gid', '/', domainName);
       this.cookieService.deleteCookieByPartialMatch('_ga', '/', `.${domainName}`);
       this.cookieService.deleteCookieByPartialMatch('_gid', '/', `.${domainName}`);
+
+      this.cookieService.deleteCookieByPartialMatch('rxVisitor', '/', domainName);
+      this.cookieService.deleteCookieByPartialMatch('dt', '/', domainName);
+      this.cookieService.deleteCookieByPartialMatch('rxVisitor', '/', `.${domainName}`);
+      this.cookieService.deleteCookieByPartialMatch('dt', '/', `.${domainName}`);
     }
-    // DynaTrace
-    this.cookieService.deleteCookieByPartialMatch('rxVisitor');
   }
 
   /**

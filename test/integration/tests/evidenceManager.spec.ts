@@ -9,7 +9,7 @@ import { setTestContext } from './utils/helper';
 
 
 describe('Evidence Manager Endpoints', () => {
-    const userName = 'lukesuperuserxui@mailnesia.com';
+    const userName = config.users.solicitor;
     const password = 'Monday01';
 
     // const userName = 'peterxuisuperuser@mailnesia.com';

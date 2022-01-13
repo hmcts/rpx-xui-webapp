@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { MatDialogModule } from '@angular/material';
 import {
@@ -35,6 +36,8 @@ import { OrganisationModule } from '../organisation/organisation.module';
 import { casesRouting } from './case-feature.routes';
 // from components
 import * as fromComponents from './components';
+// from directives
+import * as fromDirectives from './directives';
 // from containers
 import * as fromContainers from './containers';
 import { ActivityResolver } from './resolvers/activity.resolver';
@@ -42,6 +45,7 @@ import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-tr
 // from services
 import * as fromServices from './services';
 import { effects, reducers } from './store';
+import { PriorityFieldComponentModule } from '../work-allocation-2/components/priority-field/priority.module';
 
 @NgModule({
   imports: [
@@ -61,9 +65,11 @@ import { effects, reducers } from './store';
     CaseListFiltersModule,
     WorkbasketFiltersModule,
     ExuiCommonLibModule,
-    LoadingModule
+    LoadingModule,
+    ReactiveFormsModule,
+    PriorityFieldComponentModule
   ],
-  declarations: [...fromComponents.components, ...fromContainers.containers],
+  declarations: [...fromComponents.components, ...fromContainers.containers, ...fromDirectives.directives],
   providers: [
     PlaceholderService,
     CasesService,

@@ -11,6 +11,8 @@ var BrowserWaits = require('../../support/customWaits');
 var CaseManager = require('../pageObjects/common/CaseManager');
 
 var { defineSupportCode } = require('cucumber');
+const CCDCaseDetails = require("../../../nodeMock/ccd/ccdCaseConfig/caseDetailsConfigGenerator");
+const caseDetailsPage = require("../pageObjects/caseDetailsPage");
 
 const creatCaseStepTimeout = 600*1000;
 
@@ -45,7 +47,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await iacCase.createCase(false);
     })
 
-    When('I create Hearing Recordings case', { timeout: creatCaseStepTimeout }, async function () {
+    When('I create Hearing Recordings case', { timeout: creatCaseStepTimeout }, async function () { 
         await hearingRecordingsCase.createCase();
     })
 

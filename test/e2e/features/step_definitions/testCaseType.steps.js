@@ -69,7 +69,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('Validate create case form pages fields against the api response', async function () {
         var caseData = {
-            "Reference": "1610530239070028",
+            "Reference": "1610530255167708",
             "Appicant Postcode": "SW19 8JW"
         };
         await caseManager.createCase(caseData, false, true);
@@ -77,7 +77,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     
     Then('I should be able to fill the form pages', async function () {
         var caseData = {
-            "Reference": "1610530239070028",
+            "Reference": "1610530255167708",
             "Appicant Postcode": "SW19 8JW"
         };
         await caseManager.createCase(caseData, false);
@@ -93,7 +93,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('Validate mandatory fields functionality', async function(){
-        await caseEditPage.validateMandatoryFields();
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await caseEditPage.validateMandatoryFields();
+        });
     });
 
     Then('Validate event pages display show condition logic', async function(){

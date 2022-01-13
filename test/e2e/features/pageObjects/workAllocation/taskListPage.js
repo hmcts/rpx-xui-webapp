@@ -3,7 +3,7 @@ const BrowserWaits = require('../../../support/customWaits');
 var cucumberReporter = require('../../../support/reportLogger');
 const { $ } = require('protractor');
 
-var TaskMessageBanner = require('./taskMessageBanner');
+var TaskMessageBanner = require('../messageBanner');
 
 class TaskListPage extends TaskList {
 
@@ -56,7 +56,7 @@ class TaskListPage extends TaskList {
 
     async isMyTasksDisplayed(){
         expect(await this.amOnPage(), "Not on Task list page ").to.be.true;
-        await this.waitForSpinnerToDissappear();
+        await BrowserWaits.waitForSpinnerToDissappear();
         try {
             await BrowserWaits.waitForElement(this.myTasksContaine);
             return true;
@@ -68,7 +68,7 @@ class TaskListPage extends TaskList {
 
     async isAvailableTasksDisplayed(){
         expect(await this.amOnPage(), "Not on Task list page ").to.be.true;
-        await this.waitForSpinnerToDissappear();
+        await BrowserWaits.waitForSpinnerToDissappear();
         try{
             await BrowserWaits.waitForElement(this.availableTasksContainer); 
             return true;

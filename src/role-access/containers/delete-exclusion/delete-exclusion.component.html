@@ -1,0 +1,27 @@
+<exui-app-header></exui-app-header>
+<div class="govuk-width-container">
+  <div class="page">
+    <main id="content" role="main">
+      <div class="govuk-grid-row">
+        <div class="govuk-main-wrapper">
+          <exui-answers [caption]="caption" [heading]="heading" [hint]="hint" [answers]="answers">
+          </exui-answers>
+          <div class="govuk-button-group">
+            <button class="govuk-button govuk-!-margin-right-3" type="button"
+              (click)="onNavEvent(exclusionNavigationEvent.DELETE_EXCLUSION)">
+              Delete exclusion
+            </button>
+            <div class="govuk-grid-column-full govuk-!-padding-left-0">
+              <p>
+                <a class='govuk-body' (click)="onNavEvent(exclusionNavigationEvent.CANCEL)" href="javascript:void(0)">
+                  Cancel
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+<exui-app-footer></exui-app-footer>

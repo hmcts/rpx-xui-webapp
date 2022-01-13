@@ -51,7 +51,7 @@ describe('WorkAllocation', () => {
       const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(TASK_NAME);
-      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_ID}`); // No spaces
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_ID}/tasks`); // No spaces
     });
 
     it('should remove the link if case id is changed to undefined', () => {
@@ -65,7 +65,7 @@ describe('WorkAllocation', () => {
       const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(TASK_NAME);
-      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_ID}`); // No spaces
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_ID}/tasks`); // No spaces
 
       // Clear out the value of taskName and we should no longer have the anchor.
       wrapper.caseId = undefined;
@@ -84,7 +84,7 @@ describe('WorkAllocation', () => {
       const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(TASK_NAME);
-      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_ID}`); // No spaces
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_ID}/tasks`); // No spaces
 
       // Make taskName undefined and we should no longer have the anchor.
       wrapper.caseId = null;

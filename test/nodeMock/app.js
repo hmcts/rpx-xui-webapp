@@ -86,10 +86,10 @@ class MockApp{
             }
         }catch(err){
             console.log(err);
-            CucumberReporter.AddMessage(`*********************** Mock error occured  on server with port ${this.serverPort} ******************** `);
+            CucumberReporter.AddMessage(`*********************** Mock onRequest error occured  on server with port ${this.serverPort} ******************** `);
             CucumberReporter.AddMessage(err);
             CucumberReporter.AddMessage("*************************************************************** ");
-            res.status(500).send({message:'MOCK error', err:err.message});
+            res.status(555).send({message:'MOCK onRequest error', err:err.message});
         }
     }
 
@@ -113,7 +113,10 @@ class MockApp{
                 reqCallback = () =>  http.delete(`http://localhost:${port}${urlPath}`, { headers }); 
                 break;
             default:
-                res.status(500).send({error: 'mock proxy error'});
+                CucumberReporter.AddMessage(`*********************** Mock onProxy unknown method  error occured  on server with port ${this.serverPort} ******************** `);
+                CucumberReporter.AddMessage(err);
+                CucumberReporter.AddMessage("*************************************************************** ");
+                res.status(555).send({ error: 'mock proxy error, unknown req method ' + req.method});
 
         }
 
@@ -122,7 +125,11 @@ class MockApp{
             res.status(response.status).send(response.data)
         }
         catch(err){
-            res.status(500).send({mockError: err});
+            console.log(err);
+            CucumberReporter.AddMessage(`*********************** Mock onProxy error occured  on server with port ${this.serverPort} ******************** `);
+            CucumberReporter.AddMessage(err);
+            CucumberReporter.AddMessage("*************************************************************** ");
+            res.status(555).send({ message: 'MOCK onProxy error', err: err.message });
         }
          
     }

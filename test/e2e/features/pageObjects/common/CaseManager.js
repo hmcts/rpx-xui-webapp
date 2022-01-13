@@ -10,6 +10,9 @@ const App = require('./application');
 const BrowserLogs = require('../../../support/browserLogs');
 const { accessibilityCheckerAuditor } = require('../../../../accessibility/helpers/accessibilityAuditor');
 const config = require('../../../config/functional.conf');
+
+const HeaderPage = require('../headerPage');
+const headerPage = new HeaderPage(); 
 class CaseManager {
 
     constructor() {
@@ -71,20 +74,22 @@ class CaseManager {
     async startCaseCreation(jurisdiction, caseType, event){
         await BrowserWaits.retryWithActionCallback(async ()=> {
             let retryOnJurisdiction = 0;
-            let isJurisdictionSelected = false;
-            while (retryOnJurisdiction < 3 && !isJurisdictionSelected) {
+            await BrowserWaits.retryWithActionCallback(async () => {
                 try {
                     await BrowserWaits.waitForSpinnerToDissappear();
                     await this.createCaseStartPage.selectJurisdiction(jurisdiction);
-                    isJurisdictionSelected = true;
                 }
                 catch (error) {
                     await BrowserLogs.printBrowserLogs();
                     cucumberReporter.AddMessage("Jurisdiction option not found after 30sec. Retrying again with browser refresh");
                     retryOnJurisdiction++;
-                    await browser.refresh()
+                    await headerPage.refreshBrowser();
+                    throw new Errro(error); 
+
                 }
-            }
+            });
+               
+            
 
             await this.createCaseStartPage.selectCaseType(caseType);
             await this.createCaseStartPage.selectEvent(event);
@@ -92,25 +97,25 @@ class CaseManager {
             var thisPageUrl = await browser.getCurrentUrl();
 
             let startCasePageRetry = 0;
-            let isCaseStartPageDisplayed = false;
-            while (startCasePageRetry < 3 && !isCaseStartPageDisplayed) {
+            await BrowserWaits.retryWithActionCallback(async () => {
                 try {
                     await BrowserWaits.waitForSpinnerToDissappear();
                     await this.createCaseStartPage.clickStartButton();
                     const nextPageUrl = await BrowserWaits.waitForPageNavigation(thisPageUrl);
-                    if (nextPageUrl.includes("service-down") ){
-                        await browser.get(config.config.baseUrl +"cases/case-filter")
+                    if (nextPageUrl.includes("service-down")) {
+                        await browser.get(config.config.baseUrl + "cases/case-filter")
                         await cucumberReporter.AddScreenshot(global.screenShotUtils);
                         cucumberReporter.AddMessage("Service error occured Retrying again ");
                         throw new Error("Service error occured Retrying again ");
                     }
-                    isCaseStartPageDisplayed = true;
                 }
                 catch (err) {
                     cucumberReporter.AddMessage("Case start page not displayed in  30sec. Retrying again " + err);
                     startCasePageRetry++;
+                    throw new Error(err);
                 }
-            }
+            });
+            
         });    
    } 
 

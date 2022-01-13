@@ -34,6 +34,12 @@ function HeaderPage() {
 
     this.headerAppLogoLink = $('.hmcts-header__logo a');
 
+    this.refreshBrowser = async function(){
+      await browser.refresh();
+      await this.waitForPrimaryNavDisplay();
+      await browserUtil.waitForLD();
+    }
+
     this.amOnPage = async function(){
       return await this.headerAppLogoLink.isPresent();
     }
@@ -64,6 +70,8 @@ function HeaderPage() {
       }
     }
 
+
+
     this.clickPrimaryNavigationWithLabel = async function(label){
       await BrowserWaits.retryWithActionCallback(async () => {
         try {
@@ -74,8 +82,7 @@ function HeaderPage() {
           await ele.click();
           await browserUtil.waitForLD();
         } catch (err) {
-          await browser.refresh();
-          throw new Error(err);
+          await this.refreshBrowser();
         }
 
         

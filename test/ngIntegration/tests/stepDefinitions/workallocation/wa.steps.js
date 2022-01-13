@@ -167,8 +167,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         await headerPage.getTabElementWithText('Create case').click();
         expect(await caseCreatePage.amOnPage()).to.be.true;
-        await headerPage.getTabElementWithText('Task manager').click();
-        await taskManagerPage.amOnPage();
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await headerPage.getTabElementWithText('Task manager').click();
+            await taskManagerPage.amOnPage();
+
+        });
         await taskManagerPage.waitForTable();
         expect(await taskManagerPage.getColumnSortState(columnHeaders[1])).to.equal("ascending");
 

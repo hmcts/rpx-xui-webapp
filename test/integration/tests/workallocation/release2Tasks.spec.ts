@@ -29,7 +29,7 @@ describe('Work allocations Release 2: Tasks', () => {
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
-        const reqBody = getSearchTaskReqBody("MyTasks", ["3db21928-cbbc-4364-bd91-137c7031fe17"], ["698118"],'caseworker').getRequestBody();
+        const reqBody = getSearchTaskReqBody("MyTasks", ["3db21928-cbbc-4364-bd91-137c7031fe17"], [config.workallocation[config.testEnv].locationId],'caseworker').getRequestBody();
         const headers = {
             'X-XSRF-TOKEN': xsrfToken,
             'content-length': JSON.stringify(reqBody).length
@@ -52,7 +52,7 @@ describe('Work allocations Release 2: Tasks', () => {
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
-        const reqBody = getSearchTaskReqBody("AvailableTasks", ["77f9a4a4-1bf1-4903-aa6c-cab334875d91"], ["698118"], 'caseworker').getRequestBody();
+        const reqBody = getSearchTaskReqBody("AvailableTasks", ["77f9a4a4-1bf1-4903-aa6c-cab334875d91"], [config.workallocation[config.testEnv].locationId], 'caseworker').getRequestBody();
         const headers = {
             'X-XSRF-TOKEN': xsrfToken,
             'content-length': JSON.stringify(reqBody).length
@@ -75,7 +75,7 @@ describe('Work allocations Release 2: Tasks', () => {
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
-        const reqBody = getSearchTaskReqBody("TaskManager", ["77f9a4a4-1bf1-4903-aa6c-cab334875d91"], ["698118"], 'caseworker').getRequestBody();
+        const reqBody = getSearchTaskReqBody("AllWork", ["77f9a4a4-1bf1-4903-aa6c-cab334875d91"], [config.workallocation[config.testEnv].locationId], 'caseworker').getRequestBody();
         const headers = {
             'X-XSRF-TOKEN': xsrfToken,
             'content-length': JSON.stringify(reqBody).length
@@ -102,7 +102,7 @@ describe('Work allocations Release 2: Tasks', () => {
         };
 
         const userDetailsRes = await Request.get('api/user/details', { 'X-XSRF-TOKEN': xsrfToken }, 200);
-        const reqBody = getSearchTaskReqBody("AvailableTasks", [userDetailsRes.data.userInfo.id], ["698118"], 'caseworker').getRequestBody();
+        const reqBody = getSearchTaskReqBody("AvailableTasks", [userDetailsRes.data.userInfo.id], [config.workallocation[config.testEnv].locationId], 'caseworker').getRequestBody();
         const headersForGetTasks = {
             'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
             'content-length': JSON.stringify(reqBody).length
@@ -145,7 +145,7 @@ describe('Work allocations Release 2: Tasks', () => {
 
         const userDetailsRes = await Request.get('api/user/details', { 'X-XSRF-TOKEN': xsrfToken }, 200);
         const sessionUserIdamId = userDetailsRes.data.userInfo.id ? userDetailsRes.data.userInfo.id : userDetailsRes.data.userInfo.uid;
-        const reqBody = getSearchTaskReqBody("MyTasks", [sessionUserIdamId], ["698118"], 'caseworker').getRequestBody();
+        const reqBody = getSearchTaskReqBody("MyTasks", [sessionUserIdamId], [config.workallocation[config.testEnv].locationId], 'caseworker').getRequestBody();
         const headersForGetTasks = {
             'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
             'content-length': JSON.stringify(reqBody).length
@@ -180,7 +180,7 @@ describe('Work allocations Release 2: Tasks', () => {
         const userDetailsRes = await Request.get('api/user/details', { 'X-XSRF-TOKEN': xsrfToken }, 200);
         const sessionUserIdamId = userDetailsRes.data.userInfo.id ? userDetailsRes.data.userInfo.id : userDetailsRes.data.userInfo.uid;
 
-        const reqBody = getSearchTaskReqBody("MyTasks", [sessionUserIdamId], ["698118"], 'caseworker').getRequestBody();
+        const reqBody = getSearchTaskReqBody("MyTasks", [sessionUserIdamId], [config.workallocation[config.testEnv].locationId], 'caseworker').getRequestBody();
         const headersForGetTasks = {
             'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
             'content-length': JSON.stringify(reqBody).length
@@ -210,7 +210,7 @@ describe('Work allocations Release 2: Tasks', () => {
             'X-XSRF-TOKEN': xsrfToken,
         };
 
-        const reqBody = getSearchTaskReqBody("TaskManager", [], ["698118"], 'caseworker').getRequestBody();
+        const reqBody = getSearchTaskReqBody("AllWork", [], [config.workallocation[config.testEnv].locationId], 'caseworker').getRequestBody();
         const headersForGetTasks = {
             'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
             'content-length': JSON.stringify(reqBody).length
@@ -240,7 +240,7 @@ describe('Work allocations Release 2: Tasks', () => {
             'X-XSRF-TOKEN': xsrfToken,
         };
 
-        const reqBody = getSearchTaskReqBody('TaskManager', [], ["698118"], 'caseworker').getRequestBody();
+        const reqBody = getSearchTaskReqBody('AllWork', [], [config.workallocation[config.testEnv].locationId], 'caseworker').getRequestBody();
         const headersForGetTasks = {
             'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
             'content-length': JSON.stringify(reqBody).length
@@ -266,7 +266,7 @@ describe('Work allocations Release 2: Tasks', () => {
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
-        const taskRequestObj = getSearchTaskReqBody("TaskManager", ["77f9a4a4-1bf1-4903-aa6c-cab334875d91"], ["698118"], 'caseworker');
+        const taskRequestObj = getSearchTaskReqBody("AllWork", ["77f9a4a4-1bf1-4903-aa6c-cab334875d91"], [config.workallocation[config.testEnv].locationId], 'caseworker');
         taskRequestObj.withPageNumber(1);
         const headers = {
             'X-XSRF-TOKEN': xsrfToken,
@@ -318,9 +318,11 @@ describe('Work allocations Release 2: Tasks', () => {
             case 'AvailableTasks':
                 taskRequestBody.searchWithlocation(null);
                 taskRequestBody.searchWithState('unassigned');
+                taskRequestBody.searchBy(userType ? userType : 'caseworker');
+
                 break;
 
-            case 'TaskManager':
+            case 'AllWork':
                 taskRequestBody.searchWithlocation(null);
                 taskRequestBody.searchWithUser(null);
 
@@ -328,8 +330,7 @@ describe('Work allocations Release 2: Tasks', () => {
             default:
                 throw new Error(`${view} is not recognized or not implemented in test`);
         }
-        reporterMsg(`Search request body for view "${view}"`);
-        reporterJson(taskRequestBody);
+       
         return taskRequestBody;
     }
 

@@ -36,7 +36,20 @@ class WorkAllocationModels {
     getRelease2Task() {
         return {
             "id": v4(),
+            "assignee":'',
+            "auto_assigned":false,
+            "case_management_category":"test",
+            "case_type_id":"",
+            "created_date":'',
+            "due_date":'',
+            "execution_type":'',
+            "jurisdiction":"",
             "task_title": "Review application decision",
+            "name":'',
+            "region":'',
+            "security_classification":'',
+            "task_state":'',
+            "task_system":'',
             "dueDate": "2021-05-12T16:00:00.000+0000",
             "location_name": "Glasgow",
             "location": "765320",
@@ -44,7 +57,11 @@ class WorkAllocationModels {
             "case_category": "Protection",
             "case_name": "Jo Fly " + Math.floor((Math.random() * 100) + 1),
             "permissions": { values : []},
-            "actions": []
+            "actions": [],
+            "type":"",
+            "warning_list":[],
+            "warnings":'',
+            "work_type_id":''
         };
     }
 

@@ -154,7 +154,7 @@ class WorkAllocationMockData {
     getMyWorkAvailableTasks(count) {
         let tasks = { tasks: [], total_records: count };
         for (let i = 0; i < count; i++) {
-            tasks.tasks.push(this.getRelease2TaskWithPermissions(["Manage", "Read"], "AvailableTasks", null));
+            tasks.tasks.push(this.getRelease2TaskWithPermissions(["Manage", "Read","Own"], "AvailableTasks", null));
         }
         return tasks;
     }

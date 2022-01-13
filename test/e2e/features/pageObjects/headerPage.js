@@ -80,7 +80,6 @@ function HeaderPage() {
           await BrowserWaits.waitForElement(ele);
           await BrowserWaits.waitForElementClickable(ele);
           await ele.click();
-          await browserUtil.waitForLD();
         } catch (err) {
           await this.refreshBrowser();
         }

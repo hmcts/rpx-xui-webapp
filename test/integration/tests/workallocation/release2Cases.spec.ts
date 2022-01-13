@@ -11,11 +11,11 @@ import CaseRequestBody from '../utils/wa/caseRequestBody';
 const workAllocationDataModels = require('../../../dataModels/workAllocation');
 
 describe('Work allocation Release 2:  Cases', () => {
-    const userName = config.users.solicitor;
-    const password = 'Monday01';
+    const userName = config.users[config.testEnv].solicitor.e;
+    const password = config.users[config.testEnv].solicitor.sec;
 
-    const caseOfficer = config.users.caseOfficer_r2;
-    const caseofficerPass = 'Welcome01';
+    const caseOfficer = config.users[config.testEnv].caseOfficer_r2.e;
+    const caseofficerPass = config.users[config.testEnv].caseOfficer_r2.sec;
 
     beforeEach(function() {
         setTestContext(this);

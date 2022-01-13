@@ -137,8 +137,8 @@ class Request {
             }
 
             if (!isExpectedResponseReceived){
-                console.log(retVal);
-                console.log(error);
+                // console.log(retVal);
+                // console.log(error);
                 retryAttemptCounter++;
                 const status = retVal  ? retVal.status : "unknown";
                 const responseBody = retVal  ? retVal.data : "unknown"; 

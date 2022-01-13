@@ -10,8 +10,8 @@ import Request from '../utils/request';
 const workAllocationDataModels = require('../../../dataModels/workAllocation');
 
 describe('Work allocation Release 2: Find person', () => {
-    const caseOfficer = config.users.caseOfficer_r2;
-    const caseofficerPass = 'Welcome01';
+    const caseOfficer = config.users[config.testEnv].caseOfficer_r2.e;
+    const caseofficerPass = config.users[config.testEnv].caseOfficer_r2.sec;
 
     beforeEach(function () {
         setTestContext(this);

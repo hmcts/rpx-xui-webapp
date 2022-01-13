@@ -74,13 +74,16 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Given('I set MOCK request {string} response log to report', async function (url) {
         MockApp.addIntercept(url, (req, res, next) => { 
-            CucumberReporter.AddJson(req.body)
             let send = res.send;
             res.send = function (body) {
-                CucumberReporter.AddMessage('------------------------------Mock response intercept---------------------------');
-                CucumberReporter.AddMessage('Intercept response on api ' + url);
-                CucumberReporter.AddMessage('response code ' + res.status);
-                CucumberReporter.AddJson(JSON.parse(body))
+                CucumberReporter.AddMessage(` ------------------------------Mock response intercept from server with port "${MockApp.serverPort }" ---------------------------`);
+                CucumberReporter.AddMessage('Intercept response on MOCK api ' + url);
+                CucumberReporter.AddMessage('response code ' + res.statusCode);
+                try{
+                    CucumberReporter.AddJson(body)
+                }catch(err){
+                    CucumberReporter.AddMessage(body)
+                }
                 CucumberReporter.AddMessage('------------------------------Mock response intercept---------------------------');
                 send.call(this, body);
             }

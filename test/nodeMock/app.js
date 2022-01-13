@@ -18,7 +18,7 @@ const { getDLCaseConfig} = require('../ngIntegration/mockData/ccdCaseMock');
 const nodeAppMock = require('./nodeApp/mockData');
 
 const waMockDataService = require('./workAllocation/mockData');
-
+const CucumberReporter = require('../e2e/support/reportLogger');
 
 const port = 3001;
 class MockApp{
@@ -85,7 +85,10 @@ class MockApp{
                 callback(req, res);
             }
         }catch(err){
-            console.log(err); 
+            console.log(err);
+            CucumberReporter.AddMessage(`*********************** Mock error occured  on server with port ${this.serverPort} ******************** `);
+            CucumberReporter.AddMessage(err);
+            CucumberReporter.AddMessage("*************************************************************** ");
             res.status(500).send({message:'MOCK error', err:err.message});
         }
     }

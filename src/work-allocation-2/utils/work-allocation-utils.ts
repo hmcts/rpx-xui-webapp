@@ -1,4 +1,8 @@
 import { NavigationExtras } from '@angular/router';
+import { PersonRole } from '@hmcts/rpx-xui-common-lib';
+import { RoleCategory } from '../../role-access/models';
+import { OptionsModel } from '../../role-access/models/options-model';
+import { TaskRole } from '../models/tasks/TaskRole';
 
 interface Navigator {
   navigate(commands: any[], extras?: NavigationExtras): Promise<boolean>;
@@ -89,3 +93,30 @@ export const getAssigneeName = (caseworkers: any [], assignee: string): string =
   }
   return null
 };
+
+export function getOptions(taskRoles: TaskRole[]): OptionsModel[] {
+  const options = new Array<OptionsModel>();
+  const roleCategories = taskRoles.filter(role => role.role_category !== null && role.role_category !== undefined)
+    .map(taskRole => taskRole.role_category as RoleCategory);
+  roleCategories.forEach(roleCategory => {
+    if (!options.find(option => option.optionId === roleCategory)) {
+      options.push({
+          optionId: roleCategory,
+          optionValue: roleCategory,
+          label: this.getLabel(roleCategory)
+        });
+    }
+  });
+  return options;
+}
+
+export function getLabel(roleCategory: RoleCategory) {
+  switch (roleCategory) {
+    case RoleCategory.ADMIN:
+      return PersonRole.ADMIN;
+    case RoleCategory.JUDICIAL:
+      return PersonRole.JUDICIAL;
+    default:
+      return PersonRole.CASEWORKER;
+  }
+}

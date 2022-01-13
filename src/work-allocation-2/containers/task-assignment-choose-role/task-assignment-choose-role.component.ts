@@ -1,9 +1,8 @@
-import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
-import { PersonRole } from '@hmcts/rpx-xui-common-lib';
+import { getOptions } from '../../../work-allocation-2/utils';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { RoleCategory } from '../../../role-access/models';
@@ -48,36 +47,9 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
     return url;
   }
 
-  public getOptions(): OptionsModel[] {
-    const options = new Array<OptionsModel>();
-    const roleCategories = this.taskRoles.filter(role => role.role_category !== null && role.role_category !== undefined)
-      .map(taskRole => taskRole.role_category as RoleCategory);
-    roleCategories.forEach(roleCategory => {
-      if (!options.find(option => option.optionId === roleCategory)) {
-        options.push({
-            optionId: roleCategory,
-            optionValue: roleCategory,
-            label: this.getLabel(roleCategory)
-          });
-      }
-    });
-    return options;
-  }
-
-  public getLabel(roleCategory: RoleCategory) {
-    switch (roleCategory) {
-      case RoleCategory.ADMIN:
-        return PersonRole.ADMIN;
-      case RoleCategory.JUDICIAL:
-        return PersonRole.JUDICIAL;
-      default:
-        return PersonRole.CASEWORKER;
-    }
-  }
-
   public ngOnInit(): void {
     this.taskRoles = this.route.snapshot.data.roles;
-    this.roles = this.getOptions();
+    this.roles = getOptions(this.taskRoles);
     const isJudicial = this.isCurrentUserJudicial();
     const taskId = this.route.snapshot.paramMap.get('taskId');
     this.verb = this.route.snapshot.data.verb;

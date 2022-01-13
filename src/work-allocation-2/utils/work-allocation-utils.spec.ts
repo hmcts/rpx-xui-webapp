@@ -117,7 +117,7 @@ describe('WorkAllocationUtils', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith([REDIRECTS.NotAuthorised]);
   });
   it('getOptions should return', () => {
-      const taskRoles = [{
+    const taskRoles = [{
         role_category: 'ADMIN',
         role_name: '',
         permissions: [],

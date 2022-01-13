@@ -28,6 +28,8 @@ const ArrayUtil = require("../../../../e2e/utils/ArrayUtil");
 
 const headerpage = require('../../../../e2e/features/pageObjects/headerPage');
 const taskActionPage = require('../../../../e2e/features/pageObjects/workAllocation/taskActionPage');
+const CreateCasePage = require('../../../../e2e/features/pageObjects/caseCreatedPage');
+
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -36,7 +38,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     const availableTask_actions = ["Assign to me"];
     const taskManager_action = ["Reassign task", "Unassign task"];
 
-
+    const caseCreatePage = new CreateCasePage();
     const caseListPage = new CaseListPage();
     Given('I set MOCK My tasks count {int}', async function (taskCount) {
         const alltasks = workAllocationMockData.getMyTasks(taskCount);
@@ -164,7 +166,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal("ascending");
 
         await headerPage.getTabElementWithText('Create case').click();
-        expect(await caseListPage.amOnPage()).to.be.true;
+        expect(await caseCreatePage.amOnPage()).to.be.true;
         await headerPage.getTabElementWithText('Task manager').click();
         await taskManagerPage.amOnPage();
         await taskManagerPage.waitForTable();

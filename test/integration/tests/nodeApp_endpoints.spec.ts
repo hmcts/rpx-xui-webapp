@@ -6,9 +6,10 @@ import { setTestContext } from './utils/helper';
 
 const nodeAppDataModels = require('../../dataModels/nodeApp')
 const testUsers = require('../../e2e/config/appTestConfig');
+const config = require('./config/config').config;
 
 describe('nodeApp endpoint', () => {
-  const userName = 'lukesuperuserxui@mailnesia.com';
+  const userName = config.users.solicitor;
   const password = 'Monday01';
 
   // const userName = 'peterxuisuperuser@mailnesia.com';

@@ -1,4 +1,6 @@
-class TaskRequestBody{
+import { reporterJson, reporterMsg, setTestContext } from '../../utils/helper';
+
+class TaskRequestBody {
 
     requestBody:any;
 
@@ -9,13 +11,13 @@ class TaskRequestBody{
                 sorting_parameters: [{ sort_by: "dueDate", sort_order: "asc"}],
                 search_parameters:[],
                 pagination_parameters: { page_number: 1, page_size:25},
-                view:''
-            }
-        }
+            },
+            view: ''
+        };
     }
 
     inView(view:string){
-        this.requestBody.searchRequest.view = view;
+        this.requestBody.view = view;
         return this;
     }
 
@@ -105,6 +107,7 @@ class TaskRequestBody{
     }
 
     getRequestBody(){
+        reporterJson(this.requestBody);
         return this.requestBody;
     }
 

@@ -32,7 +32,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 await myWorkPage.showHideWorkFilterBtn.click();
             } 
             const afterClickButtonText = await myWorkPage.showHideWorkFilterBtn.getText();
-            expect(afterClickButtonText.toLowerCase()).to.not.include(filterStateTo);
+            expect(afterClickButtonText.toLowerCase().includes(filterStateTo)).to.be.false;
 
         } );
     });

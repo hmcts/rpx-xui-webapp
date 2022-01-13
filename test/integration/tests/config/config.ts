@@ -61,7 +61,7 @@ export  const config =  {
     testEnv: process.env.TEST_ENV ? process.env.TEST_ENV : 'aat',
     users : {
        aat: {
-            solicitor: { e: 'lukesuperuserxui@mailnesia.com', sec:'Monday01'},
+            solicitor: { e: 'lukesuperuserxui@mailnesia.com', sec: 'Monday01'},
             caseOfficer_r1: { e: 'xui_caseofficer@justice.gov.uk', sec: 'Welcome01' },
             caseOfficer_r2: { e: 'xui_auto_co_r2@justice.gov.uk', sec: 'Welcome01' }
        },
@@ -75,6 +75,14 @@ export  const config =  {
         aat: ['clientId', 'idamWeb', 'launchDarklyClientId', 'oAuthCallback', 'oidcEnabled', 'protocol', 'ccdGatewayUrl', 'substantiveEnabled'],
         demo: ['clientId', 'idamWeb', 'launchDarklyClientId', 'oAuthCallback', 'oidcEnabled', 'protocol', 'ccdGatewayUrl', 'substantiveEnabled','accessManagementEnabled']
     },
+    workallocation:{
+        aat:{
+            locationId: '698118'
+        },
+        demo: {
+            locationId: '231596'
+        }
+    }
     
 
 };

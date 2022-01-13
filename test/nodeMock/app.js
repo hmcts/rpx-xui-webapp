@@ -85,11 +85,12 @@ class MockApp{
                 callback(req, res);
             }
         }catch(err){
+            await http.post(`http://localhost:${port}/mockerror`, err, { headers })
             console.log(err);
             CucumberReporter.AddMessage(`*********************** Mock onRequest error occured  on server with port ${this.serverPort} ******************** `);
             CucumberReporter.AddMessage(err);
             CucumberReporter.AddMessage("*************************************************************** ");
-            res.status(555).send({message:'MOCK onRequest error', err:err.message});
+            res.status(550).send({message:'MOCK onRequest error', err:err.message});
         }
     }
 
@@ -113,10 +114,11 @@ class MockApp{
                 reqCallback = () =>  http.delete(`http://localhost:${port}${urlPath}`, { headers }); 
                 break;
             default:
+                await http.post(`http://localhost:${port}/mockerror`, err, { headers })
                 CucumberReporter.AddMessage(`*********************** Mock onProxy unknown method  error occured  on server with port ${this.serverPort} ******************** `);
                 CucumberReporter.AddMessage(err);
                 CucumberReporter.AddMessage("*************************************************************** ");
-                res.status(555).send({ error: 'mock proxy error, unknown req method ' + req.method});
+                res.status(551).send({ error: 'mock proxy error, unknown req method ' + req.method});
 
         }
 
@@ -125,11 +127,12 @@ class MockApp{
             res.status(response.status).send(response.data)
         }
         catch(err){
+            await http.post(`http://localhost:${port}/mockerror`, err, { headers })
             console.log(err);
             CucumberReporter.AddMessage(`*********************** Mock onProxy error occured  on server with port ${this.serverPort} ******************** `);
             CucumberReporter.AddMessage(err);
             CucumberReporter.AddMessage("*************************************************************** ");
-            res.status(555).send({ message: 'MOCK onProxy error', err: err.message });
+            res.status(552).send({ message: 'MOCK onProxy error', err: err.message });
         }
          
     }
@@ -181,6 +184,14 @@ class MockApp{
             res.set('content-type', 'application/json');
             res.send(this.requestLogs);
         } );
+
+        app.post('/mockerror', (req,res) => {
+            console.log(err);
+            CucumberReporter.AddMessage(`*********************** Mock main server reporting error to server with port ${this.serverPort} ******************** `);
+            CucumberReporter.AddMessage(req.body);
+            CucumberReporter.AddMessage("*************************************************************** "); 
+            res.send(""); 
+        });
 
         app.get('/proxy/port', (req,res) => {
             this.clientPortCounter++;

@@ -66,7 +66,6 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
   }
 
   public addSelection(): void {
-    console.log(this.findLocationFormGroup.controls.locationSelectedFormControl.value);
     if (this.findLocationFormGroup.controls.locationSelectedFormControl.value) {
       this.appendLocation(this.selectedLocations);
       this.validationErrors = [];

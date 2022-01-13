@@ -32,11 +32,11 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public caseworkers: Caseworker[];
   public locations: Location[] = new Array<Location>();
   public showSpinner$: Observable<boolean>;
+  public waSupportedJurisdictions$: Observable<string[]>;
   public sortedBy: SortField;
   public pagination: PaginationParameter;
   private pTasks: Task[] = [];
   public selectedLocations: string[] = [];
-  private tasksLoaded: boolean = false;
   protected userDetailsKey: string = 'userDetails';
 
   private selectedLocationsSubscription: Subscription;
@@ -140,6 +140,9 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public ngOnInit(): void {
+    // get supported jurisdictions on initialisation in order to get caseworkers by these services
+    this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
+
     this.taskServiceConfig = this.getTaskServiceConfig();
     this.loadCaseWorkersAndLocations();
     this.setupTaskList();
@@ -166,7 +169,11 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public setupTaskList() {
-    this.caseworkerService.getCaseworkersForService(['DIVORCE','PROBATE','FR','PUBLICLAW','IA','SSCS','EMPLOYMENT','HRS','CIVIL','CMC']).subscribe(caseworkersByService => {
+    const caseworkersByService$ = this.waSupportedJurisdictions$.switchMap(jurisdictions => 
+      this.caseworkerService.getCaseworkersForServices(jurisdictions)
+    )
+    // similar to case list wrapper changes
+    caseworkersByService$.subscribe(caseworkersByService => {
       this.caseworkers = getAllCaseworkersFromServices(caseworkersByService);
     }, error => {
       handleFatalErrors(error.status, this.router);
@@ -282,7 +289,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       }
       const state = {
         returnUrl: this.returnUrl,
-        showAssigneeColumn: taskAction.action.id !== TaskActionIds.ASSIGN
+        showAssigneeColumn: taskAction.action.id !== TaskActionIds.ASSIGN,
+        service: taskAction.task.jurisdiction
       };
       const actionUrl = `/work/${taskAction.task.id}/${taskAction.action.id}/${this.specificPage}`;
       this.router.navigate([actionUrl], { state });

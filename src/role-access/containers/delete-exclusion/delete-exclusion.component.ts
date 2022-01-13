@@ -26,6 +26,7 @@ export class DeleteExclusionComponent implements OnInit {
   public hint = AnswerHeaderText.CheckInformation;
   public exclusionId: string;
   public caseId: string;
+  public jurisdiction: string;
   public roleExclusion: RoleExclusion;
 
   constructor(private readonly route: ActivatedRoute,
@@ -62,9 +63,9 @@ export class DeleteExclusionComponent implements OnInit {
   public getExclusionFromQuery(queryMap: ParamMap) {
     this.exclusionId = queryMap.get('exclusionId');
     this.caseId = queryMap.get('caseId');
-    const jurisdiction = queryMap.get('jurisdiction');
+    this.jurisdiction = queryMap.get('jurisdiction');
     const caseType = queryMap.get('caseType');
-    return this.roleExclusionsService.getCurrentUserRoleExclusions(this.caseId, jurisdiction, caseType, this.exclusionId);
+    return this.roleExclusionsService.getCurrentUserRoleExclusions(this.caseId, this.jurisdiction, caseType, this.exclusionId);
   }
 
   public populateAnswers(exclusion: RoleExclusion): void {
@@ -76,9 +77,7 @@ export class DeleteExclusionComponent implements OnInit {
 
   private getNamesIfNeeded(): void {
     if (!this.roleExclusion.name) {
-      console.log('getting names');
-      this.caseworkerDataService.getAll().pipe(first()).subscribe(caseworkers => {
-        console.log('c', caseworkers);
+      this.caseworkerDataService.getCaseworkersForSpecificService(this.jurisdiction).pipe(first()).subscribe(caseworkers => {
         const caseworker = caseworkers.find(givenCaseworker => givenCaseworker.idamId === this.roleExclusion.actorId);
         this.roleExclusion.name = `${caseworker.firstName}-${caseworker.lastName}`;
         this.answers = [];

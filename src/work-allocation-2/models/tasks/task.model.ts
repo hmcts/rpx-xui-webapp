@@ -15,4 +15,5 @@ export default interface Task {
   actions: TaskAction[];
   warnings?: boolean;
   derivedIcon?: string;
+  jurisdiction?: string;
 }

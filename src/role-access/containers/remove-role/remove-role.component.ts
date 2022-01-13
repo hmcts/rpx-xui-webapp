@@ -24,6 +24,7 @@ export class RemoveRoleComponent implements OnInit {
   public caption = null;
   public caseId: string;
   public assignmentId: string;
+  public jurisdiction: string;
   public heading = RemoveRoleText.heading;
   public hint = RemoveRoleText.hint;
   public role: CaseRole;
@@ -69,9 +70,9 @@ export class RemoveRoleComponent implements OnInit {
   public getRoleAssignmentFromQuery(queryMap: ParamMap): Observable<CaseRole[]> {
     this.assignmentId = queryMap.get('assignmentId');
     this.caseId = queryMap.get('caseId');
-    const jurisdiction = queryMap.get('jurisdiction');
+    this.jurisdiction = queryMap.get('jurisdiction');
     const caseType = queryMap.get('caseType');
-    return this.allocateRoleService.getCaseRoles(this.caseId, jurisdiction, caseType, this.assignmentId).pipe(
+    return this.allocateRoleService.getCaseRoles(this.caseId, this.jurisdiction, caseType, this.assignmentId).pipe(
       mergeMap((caseRoles: CaseRole[]) => this.allocateRoleService.getCaseRolesUserDetails(getJudicialUserIds(caseRoles)).pipe(
         map((caseRolesWithUserDetails: CaseRoleDetails[]) => mapCaseRoles(caseRoles, caseRolesWithUserDetails))
       )),
@@ -110,7 +111,7 @@ export class RemoveRoleComponent implements OnInit {
 
   private getNamesIfNeeded(): void {
     if (!this.role.name) {
-      this.caseworkerDataService.getAll().pipe(first()).subscribe(caseworkers => {
+      this.caseworkerDataService.getCaseworkersForSpecificService(this.jurisdiction).pipe(first()).subscribe(caseworkers => {
         const caseworker = caseworkers.find(givenCaseworker => givenCaseworker.idamId === this.role.actorId);
         this.role.name = `${caseworker.firstName}-${caseworker.lastName}`;
         this.role.email = caseworker.email;

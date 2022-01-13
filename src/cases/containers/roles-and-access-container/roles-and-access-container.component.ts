@@ -36,21 +36,16 @@ export class RolesAndAccessContainerComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    // We need this call. No active subscribers are needed
-    // as this will enable the loading caseworkers if not
-    // present in session storage
-    this.caseworkers$ = this.caseworkerDataService.getAll().pipe(first());
 
     this.caseDetails = this.route.snapshot.data.case as CaseView;
     this.applyJurisdiction(this.caseDetails);
     const jurisdiction = this.caseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
-    this.loadRoles(jurisdiction);
-    this.loadExclusions(jurisdiction);
-
     // We need this call. No active subscribers are needed
     // as this will enable the loading caseworkers if not
     // present in session storage
-    this.caseworkerDataService.getAll().pipe(first()).subscribe();
+    this.caseworkers$ = this.caseworkerDataService.getCaseworkersForSpecificService(jurisdiction.value).pipe(first());
+    this.loadRoles(jurisdiction);
+    this.loadExclusions(jurisdiction);
   }
 
   public loadExclusions(jurisdiction: any) {

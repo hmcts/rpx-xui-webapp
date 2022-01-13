@@ -115,3 +115,60 @@ export const refreshRoleAssignmentsError = {
   errorMessage: 'User Ids list is empty',
   timeStamp: '2019-05-28 14:02:47.071'
 };
+
+export const createRoleAssignmentsError = {
+  errorCode: '400',
+  status: 'BAD_REQUEST',
+  errorMessage: 'Role name is invalid',
+  timeStamp: '2019-05-28 14:02:47.071'
+}
+
+export const createRoleAssignmentResponse = {
+  "roleAssignmentResponse" : {
+    "roleRequest" : {
+      "id" : "0c6f56f5-4457-485e-a0de-828e6dfa1e33",
+      "authenticatedUserId" : "***REMOVED***",
+      "correlationId" : "003352d0-e699-48bc-b6f5-5810411e60af",
+      "assignerId" : "***REMOVED***",
+      "requestType" : "CREATE",
+      "process" : "businessProcess1",
+      "reference" : "cf07ea33-31c0-4442-b2df-e2032d21b496",
+      "replaceExisting" : false,
+      "status" : "APPROVED",
+      "created" : "2021-01-28T18:16:49.100121Z",
+      "log" : "Request has been approved"
+    },
+    "requestedRoles" : [ {
+      "id" : "3ccabbf2-71fa-4c5d-af39-5675d25e9fcc",
+      "actorIdType" : "IDAM",
+      "actorId" : "cf07ea33-31c0-4442-b2df-e2032d21b496",
+      "roleType" : "ORGANISATION",
+      "roleName" : "judge",
+      "classification" : "PUBLIC",
+      "grantType" : "STANDARD",
+      "roleCategory" : "JUDICIAL",
+      "readOnly" : false,
+      "beginTime" : "2021-01-01T00:00:00Z",
+      "endTime" : "2023-01-01T00:00:00Z",
+      "process" : "businessProcess1",
+      "reference" : "cf07ea33-31c0-4442-b2df-e2032d21b496",
+      "status" : "LIVE",
+      "created" : "2021-01-28T18:16:49.100155Z",
+      "log" : "Create requested with replace: false\nCreate approved : judicial_organisational_role_mapping_service_create\nApproved : validate_role_assignment_against_patterns",
+      "attributes" : {
+        "jurisdiction" : "divorce",
+        "region" : "south-east",
+        "contractType" : "SALARIED"
+      },
+      "notes" : [ {
+        "userId" : "003352d0-e699-48bc-b6f5-5810411e60ag",
+        "time" : "2020-01-01T00:00Z",
+        "comment" : "Need Access to case number 1234567890123456 for a month"
+      }, {
+        "userId" : "52aa3810-af1f-11ea-b3de-0242ac130004",
+        "time" : "2020-01-02T00:00Z",
+        "comment" : "Access granted for 6 months"
+      } ]
+    } ]
+  }
+};

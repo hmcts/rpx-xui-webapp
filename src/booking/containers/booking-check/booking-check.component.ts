@@ -1,8 +1,10 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
-import { switchMap } from 'rxjs/operators';
-import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';
+import { of } from 'rxjs';
+import { catchError, switchMap } from 'rxjs/operators';
+import { SessionStorageService } from '../../../app/services';
 import { TaskListFilterComponent } from '../../../work-allocation-2/components';
 import { BookingNavigationEvent, BookingProcess, BookingRequest } from '../../models';
 import { BookingService } from '../../services';
@@ -50,18 +52,48 @@ export class BookingCheckComponent implements OnInit {
           endDate: this.bookingProcess.endDate
         };
         return this.bookingService.createBooking(payload);
+      }),
+      catchError(err => {
+        this.redirect(err);
+        return of(false);
       })
-    ).subscribe(() => {
-      this.sessionStorageService.removeItem(TaskListFilterComponent.FILTER_NAME);
-      this.windowService.removeLocalStorage(TaskListFilterComponent.FILTER_NAME);
+    ).pipe(
+      switchMap(() => this.bookingService.createRoleAssignments()),
+      catchError(() => {
+        this.router.navigate(['/booking/role-mapping-error']);
+        return of(false);
+      })
+      )
+      .subscribe(response => {
 
-      this.router.navigate(['/work/my-work/list'], {
-        state: {
-          location: {
-            id: this.bookingProcess.location.epims_id
+      if (response) {
+        this.sessionStorageService.removeItem(TaskListFilterComponent.FILTER_NAME);
+        this.windowService.removeLocalStorage(TaskListFilterComponent.FILTER_NAME);
+
+        this.router.navigate(['/work/my-work/list'], {
+          state: {
+            location: {
+              id: this.bookingProcess.location.epims_id
+            }
           }
-        }
-      });
+        });
+      }
     });
+  }
+
+  public redirect(error: HttpErrorResponse) {
+    switch (error.status) {
+        case 401:
+        case 403:
+          this.router.navigate(['/not-authorised']);
+          break;
+        case 400:
+        case 500:
+        case 503:
+          this.router.navigate(['/service-down']);
+          break;
+      default:
+        this.router.navigate(['/booking/error']);
+      }
   }
 }

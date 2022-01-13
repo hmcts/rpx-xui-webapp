@@ -23,4 +23,10 @@ export class BookingService {
   public refreshRoleAssignments(): Observable<any> {
     return this.http.post<BookingResponseSuccess | BookingResponseError>('/am/role-mapping/judicial/refresh', null);
   }
+
+  public createRoleAssignments(): Observable<any> {
+    return this.http.post<BookingResponseSuccess | BookingResponseError>('/am/role-mapping/create', null);
+  }
+
+
 }

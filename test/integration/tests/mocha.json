@@ -12,7 +12,7 @@
   "slow": 75,
   "timeout": 180000,
   "ui": "bdd",
-  "spec" : ["./test/integration/tests/*.spec.ts"],
-  "exclude": [],
+  "spec" : ["./test/integration/tests/**/*.spec.ts"],
+  "exclude": ["./test/integration/tests/workallocation/release2*.spec.ts"],
   "file": ["./test/integration/tests/utils/helper.ts"]
 }

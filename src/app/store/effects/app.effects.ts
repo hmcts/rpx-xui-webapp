@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
+import { RoleService } from '@hmcts/rpx-xui-common-lib';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs/internal/observable/of';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { SessionStorageService } from 'src/app/services/session-storage/session-storage.service';
 import { TermsConditionsService } from 'src/app/services/terms-and-conditions/terms-and-conditions.service';
 import { AppConfigService } from '../../services/config/configuration.services';
-import * as fromActions from '../actions';
 import { UserService } from '../../services/user/user.service';
-import { SessionStorageService } from 'src/app/services/session-storage/session-storage.service';
+import * as fromActions from '../actions';
 
 @Injectable()
 export class AppEffects {
@@ -17,7 +18,8 @@ export class AppEffects {
     private readonly authService: AuthService,
     private readonly termsService: TermsConditionsService,
     private readonly userService: UserService,
-    private readonly sessionStorageService: SessionStorageService
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly roleService: RoleService
   ) { }
 
   @Effect()
@@ -88,6 +90,7 @@ export class AppEffects {
     switchMap(() => {
       return this.userService.getUserDetails().pipe(
         tap((userDetails) => this.sessionStorageService.setItem('userDetails', JSON.stringify(userDetails.userInfo))),
+        tap(userDetails => this.roleService.roles = userDetails.userInfo.roles),
         map(userDetails => new fromActions.LoadUserDetailsSuccess(userDetails)),
         catchError(err => of(new fromActions.LoadUserDetailsFail(err)))
       );

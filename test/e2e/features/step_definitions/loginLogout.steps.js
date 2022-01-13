@@ -82,7 +82,9 @@ defineSupportCode(function ({ Given, When, Then }) {
         console.log(err);
           await browser.driver.manage()
             .deleteAllCookies();
-          await browser.get(config.config.baseUrl);
+          const baseUrl = process.env.TEST_URL || 'http://localhost:3000/'
+
+          await browser.get(baseUrl);
           await BrowserWaits.waitForElement(loginPage.emailAddress);
           await loginPage.loginWithCredentials(username, password);
           loginAttemptRetryCounter++;
@@ -164,6 +166,7 @@ defineSupportCode(function ({ Given, When, Then }) {
   Given(/^I should be redirected to the Idam login page$/, async function () {
 
     await BrowserWaits.retryWithActionCallback(async () => {
+      await BrowserWaits.waitForElement(loginPage.signinTitle);
       await expect(loginPage.signinTitle.getText())
         .to
         .eventually
@@ -190,18 +193,24 @@ defineSupportCode(function ({ Given, When, Then }) {
   Then('I should be redirected to EUI dashboard page', async function () {
 
     const world = this;
-    await BrowserUtil.waitForLD();
-    await BrowserWaits.retryForPageLoad($("exui-header"), function(message){
-      world.attach("Redirected to EUI dashboard , attempt reload : "+message);
+  
+    await BrowserWaits.retryWithActionCallback(async () => {
+      try{
+        await BrowserUtil.waitForLD();
+        await BrowserWaits.waitForElement($("exui-header .hmcts-primary-navigation__item"));
+        await expect(loginPage.dashboard_header.isDisplayed()).to.eventually.be.true;
+        await expect(loginPage.dashboard_header.getText())
+          .to
+          .eventually
+          .contains('Case list');
+
+        await BrowserUtil.waitForLD();
+      }catch(err){
+        await browser.get(config.config.baseUrl);
+        throw new Error(err);
+      }
+      
     });
-
-    await expect(loginPage.dashboard_header.isDisplayed()).to.eventually.be.true;
-    await expect(loginPage.dashboard_header.getText())
-      .to
-      .eventually
-      .contains('Case list');
-
-    await BrowserUtil.waitForLD();
 
   });
 
@@ -301,6 +310,7 @@ defineSupportCode(function ({ Given, When, Then }) {
   });
 
   Given('I am logged into Expert UI with test user identified as {string}', async function (testUserIdentifier) {
+    const world = this;
 
     const matchingUsers = testConfig.users.filter(user => user.userIdentifier === testUserIdentifier);
     if (matchingUsers.length === 0 ){
@@ -320,7 +330,6 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   });
 
- // hrs.tester@hmcts.net/passwOrd01hrs
   Given('I am logged into Expert UI with hrs testes user details', async function () {
     await loginPage.givenIAmLoggedIn(config.config.params.hrsTesterUser, config.config.params.hrsTesterPassword);
     const world = this;
@@ -338,7 +347,8 @@ defineSupportCode(function ({ Given, When, Then }) {
   Given(/^I navigate to Expert UI Url direct link$/, async function () {
     await browser.driver.manage()
       .deleteAllCookies();
-    await browser.get(config.config.baseUrl + '/cases/case-filter');
+    const baseUrl = process.env.TEST_URL || 'http://localhost:3000/'
+    await browser.get(baseUrl + '/cases/case-filter');
   });
 
   Then(/^I should be redirected back to Login page after direct link$/, async function () {

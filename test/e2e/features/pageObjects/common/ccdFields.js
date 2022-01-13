@@ -18,7 +18,7 @@ class CcdFields {
     this.docUploadField = element(by.xpath('//input[@class=\'form-control bottom-30\']'));
     this.describeDocField = $("#uploadTheNoticeOfDecisionDocs_0_description");
 
-    this.uploadDone = element(by.xpath('span[contains(text(),"Uploading")]'));
+    this.uploadDone = element(by.xpath('//ccd-write-document-field//span[contains(text(),"Uploading")]'));
 
   }
 

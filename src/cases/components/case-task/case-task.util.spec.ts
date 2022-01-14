@@ -42,6 +42,20 @@ describe('CaseTaskUtil', () => {
     expect(appendedTaskDescription).toEqual('Click link to proceed to next step [test link next step](/cases/case-details/1547652071308205/trigger/editAppealAfterSubmit?tid=0d22d838-b25a-11eb-a18c-f2d58a9b7bc6)');
   });
 
+  it('should return task id appended to url as querystring for multiple urls', () => {
+    const taskToCheck = task;
+    task.description = 'first link [first](/first/test/link) second link [second](/second/test/link)';
+    const appendedTaskDescription = appendTaskIdAsQueryStringToTaskDescription(taskToCheck);
+    expect(appendedTaskDescription).toEqual('first link [first](/first/test/link?tid=0d22d838-b25a-11eb-a18c-f2d58a9b7bc6) second link [second](/second/test/link?tid=0d22d838-b25a-11eb-a18c-f2d58a9b7bc6)');
+  });
+
+  it('should return task id appended to url as querystring for multiple urls already having querystring', () => {
+    const taskToCheck = task;
+    task.description = 'first link [first](/first/test/link?abc=123) second link [second](/second/test/link) third link [third](/third/test/link?cde=456)';
+    const appendedTaskDescription = appendTaskIdAsQueryStringToTaskDescription(taskToCheck);
+    expect(appendedTaskDescription).toEqual('first link [first](/first/test/link?abc=123&tid=0d22d838-b25a-11eb-a18c-f2d58a9b7bc6) second link [second](/second/test/link?tid=0d22d838-b25a-11eb-a18c-f2d58a9b7bc6) third link [third](/third/test/link?cde=456&tid=0d22d838-b25a-11eb-a18c-f2d58a9b7bc6)');
+  });
+
   it('should return task id appended to url as querystring with already existing querystrings in the url', () => {
     const taskToCheck = task;
     taskToCheck.description = 'Click link to proceed to next step [test link next step](/cases/case-details/1547652071308205/trigger/editAppealAfterSubmit?abc=123)';

@@ -39,7 +39,7 @@ exports.config = {
         reporter: 'test/accessibility/reporter/customReporter.js',
         // reporter: 'spec',
 
-        timeout: 120000
+        timeout: 180000
     },
     beforeLaunch() {
         if (isParallelExecution) {

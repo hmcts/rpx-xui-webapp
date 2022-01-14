@@ -24,6 +24,8 @@ function report(runner) {
     function onPass(test) {
         console.log('\n');
         console.log('\t[ PASS ] ' + test.title);
+        console.log('\t\t screenshots ' + test.screenshots);
+
         console.log('\n');
         tests.push(getTestDetails(test))
         passCounter++;
@@ -37,6 +39,8 @@ function report(runner) {
         console.log('\n');
         console.log('\t[ FAIL ] ' + test.title);
         console.log('\t\t' + err.message);
+        console.log('\t\t screenshots ' + test.screenshots);
+
         console.log('\n');
         // console.log(test);
         tests.push(getTestDetails(test))
@@ -89,7 +93,8 @@ function getTestDetails(test) {
         name: test.title,
         status: test.state,
         error: test.err ? test.err.message : "",
-        a11yResult: test.ctx.a11yResult
+        a11yResult: test.ctx.a11yResult,
+        screenshots:test.ctx.screenshots
     };
 
 }

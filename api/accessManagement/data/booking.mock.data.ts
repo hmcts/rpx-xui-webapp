@@ -2,15 +2,15 @@ import { BookingResponse, BookingResponseError, Bookings } from '../models';
 /* disabling linting on this file as we don't want to sort the keys or add a comma at the end of the last key */
 /* tslint:disable */
 export const bookings: Bookings = {
-  'bookings':
+  'bookings' :
     [
       {
-        appointmentId: '101',
-        base_location_id: '231596',
-        beginTime: new Date('2021-11-29T00:00:00Z'),
+        appointmentId: '1011',
+        base_location_id: '227101',
+        beginTime: new Date('2022-02-29T00:00:00Z'),
         contract_type_id: '102',
-        created: new Date('2021-02-23T06:37:58Z'),
-        endTime: new Date('2021-12-24T00:00:00Z'),
+        created: new Date('2022-01-23T06:37:58Z'),
+        endTime: new Date('2022-12-24T00:00:00Z'),
         region_id: '104',
         roleId: 'caseworker',
         userId: '21334a2b-79ce-44eb-9168-2d49a744be9c'
@@ -50,16 +50,15 @@ export const bookings: Bookings = {
       },
       {
         appointmentId: '103',
-        base_location_id: '366796',
-        beginTime: new Date('2021-12-02T00:00:00Z'),
+        base_location_id: '231596',
+        beginTime: new Date('2022-02-24T00:00:00Z'),
         contract_type_id: '102',
-        created: new Date('2021-02-23T06:37:58Z'),
-        endTime: new Date('2021-12-31T00:00:00Z'),
+        created: new Date('2022-02-23T06:37:58Z'),
+        endTime: new Date('2022-12-31T00:00:00Z'),
         region_id: '104',
         roleId: 'caseworker',
         userId: '21334a2b-79ce-44eb-9168-2d49a744be9c'
       },
-
       {
         appointmentId: '103',
         base_location_id: '324339',
@@ -71,7 +70,6 @@ export const bookings: Bookings = {
         roleId: 'caseworker',
         userId: '21334a2b-79ce-44eb-9168-2d49a744be9c'
       },
-
       {
         appointmentId: '103',
         base_location_id: '324339',

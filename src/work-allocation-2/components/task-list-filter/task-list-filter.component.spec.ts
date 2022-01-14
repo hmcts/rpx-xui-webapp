@@ -1,14 +1,12 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { Component, DebugElement, ViewChild } from '@angular/core';
+import { Component, DebugElement, ViewChild, inject } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
-import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
-import { initialMockState } from '../../../role-access/testing/app-initial-state.mock';
-
 import { LocationDataService, WorkAllocationTaskService } from '../../services';
 import { ALL_LOCATIONS } from '../constants/locations';
 import { TaskListFilterComponent } from './task-list-filter.component';
@@ -44,6 +42,7 @@ describe('TaskListFilterComponent', () => {
       unsubscribe: () => null
     }
   };
+  let mockRouter: jasmine.SpyObj<Router>;
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -112,6 +111,15 @@ describe('TaskListFilterComponent', () => {
 
   it('should set the persistence to be local storage if the  user is a judicial user', () => {
     expect(component.fieldsConfig.persistence).toBe('local');
+  });
+
+  it('should set booking locations', () => {
+    mockRouter = TestBed.get(Router);
+    spyOn(mockRouter, 'getCurrentNavigation').and.returnValue({extras: {state: {location: {ids: ['231596', '231596']}}}});
+    fixture = TestBed.createComponent(WrapperComponent);
+    wrapper = fixture.componentInstance;
+    component = wrapper.appComponentRef;
+    expect(component.bookingLocations.length).toEqual(2);
   });
 
   afterAll(() => {

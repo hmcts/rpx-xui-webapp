@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FilterPersistence, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
 import { Subscription } from 'rxjs';
@@ -41,6 +41,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     fields: [],
   };
   public selectedLocations: string[] = [];
+  public bookingLocations: string[] = [];
   public toggleFilter = false;
   public errorSubscription: Subscription;
   private locationSubscription: Subscription;
@@ -51,7 +52,11 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
    */
   constructor(private readonly route: ActivatedRoute,
               private readonly filterService: FilterService,
-              private readonly locationService: LocationDataService) {
+              private readonly locationService: LocationDataService,
+              private readonly router: Router) {
+    if (this.router.getCurrentNavigation() && this.router.getCurrentNavigation().extras.state.location) {
+      this.bookingLocations = this.router.getCurrentNavigation().extras.state.location.ids;
+    }
   }
 
   public ngOnInit(): void {
@@ -85,7 +90,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
         filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
       )
       .subscribe((f: FilterSetting) => {
-        this.selectedLocations = f.fields.find((field) => field.name === TaskListFilterComponent.FILTER_NAME).value;
+        this.selectedLocations = this.bookingLocations && this.bookingLocations.length > 0 ? this.bookingLocations :  f.fields.find((field) => field.name === TaskListFilterComponent.FILTER_NAME).value;
         this.showFilteredText = this.hasBeenFiltered(f, this.getDefaultLocations());
         this.toggleFilter = false;
       });
@@ -107,10 +112,8 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
 
   // EUI-4408 - If stream not yet started, persist first session settings in filter service
   private persistFirstSetting(): void {
-    if (!this.filterService.get(TaskListFilterComponent.FILTER_NAME)) {
       this.filterService.persist(this.fieldsSettings, this.fieldsConfig.persistence);
       this.filterService.isInitialSetting = true;
-    }
   }
 
   private setErrors(): void {
@@ -139,7 +142,9 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       subTitle: 'Shows tasks and cases for the selected locations:',
       type: 'checkbox'
     };
-    if (this.route.snapshot.data && this.route.snapshot.data.location) {
+    if (this.bookingLocations && this.bookingLocations.length > 0) {
+      this.defaultLocations = this.bookingLocations ;
+    } else if ( this.route.snapshot.data && this.route.snapshot.data.location ) {
       const location: Location = this.route.snapshot.data.location;
       this.defaultLocations = [`${location.id}`];
     } else if (history.state && history.state.location) {

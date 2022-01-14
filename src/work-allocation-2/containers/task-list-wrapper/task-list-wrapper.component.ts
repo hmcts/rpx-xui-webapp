@@ -173,8 +173,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       this.caseworkerService.getCaseworkersForServices(jurisdictions)
     )
     // similar to case list wrapper changes
-    caseworkersByService$.subscribe(caseworkersByService => {
-      this.caseworkers = getAllCaseworkersFromServices(caseworkersByService);
+    caseworkersByService$.subscribe(caseworkers => {
+      this.caseworkers = caseworkers;
     }, error => {
       handleFatalErrors(error.status, this.router);
     });

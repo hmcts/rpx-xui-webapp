@@ -159,8 +159,8 @@ export class WorkCaseListWrapperComponent implements OnInit {
     // currently get caseworkers for all supported services
     // in future change, could get caseworkers by specific service from filter changes
     // however regrdless would likely need this initialisation
-    caseworkersByService$.subscribe(caseworkersByServices => {
-      this.caseworkers = getAllCaseworkersFromServices(caseworkersByServices);
+    caseworkersByService$.subscribe(caseworkers => {
+      this.caseworkers = caseworkers;
       const userInfoStr = this.sessionStorageService.getItem('userDetails');
       if (userInfoStr) {
         const userInfo: UserInfo = JSON.parse(userInfoStr);

@@ -35,16 +35,8 @@ export class LocationResolver implements Resolve<Location> {
         first(),
         mergeMap((userDetails: UserDetails) => this.getJudicialWorkersOrCaseWorkers(userDetails)
           .pipe(
-            map((caseWorkersByService) => {
-              if (this.userRole === UserRole.LegalOps) {
-                let caseworkers = [];
-                caseWorkersByService.forEach(caseworkersBySpecificService => {
-                  caseworkers = [...caseworkers, ...caseworkersBySpecificService.caseworkers];
-                });
-                this.extractLocation(userDetails, caseworkers);
-              } else {
-                this.extractLocation(userDetails, caseWorkersByService)
-              }
+            map((caseWorkers) => {
+              this.extractLocation(userDetails, caseWorkers);
             })
           )
         ),

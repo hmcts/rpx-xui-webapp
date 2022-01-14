@@ -19,6 +19,8 @@ import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../utils';
 })
 export class LocationResolver implements Resolve<Location> {
 
+  private userRole: string 
+
   constructor(
     private readonly store: Store<fromCaseList.State>,
     private readonly router: Router,
@@ -33,7 +35,17 @@ export class LocationResolver implements Resolve<Location> {
         first(),
         mergeMap((userDetails: UserDetails) => this.getJudicialWorkersOrCaseWorkers(userDetails)
           .pipe(
-            map((caseWorkers) => this.extractLocation(userDetails, caseWorkers))
+            map((caseWorkersByService) => {
+              if (this.userRole === UserRole.LegalOps) {
+                let caseworkers = [];
+                caseWorkersByService.forEach(caseworkersBySpecificService => {
+                  caseworkers = [...caseworkers, ...caseworkersBySpecificService.caseworkers];
+                });
+                this.extractLocation(userDetails, caseworkers);
+              } else {
+                this.extractLocation(userDetails, caseWorkersByService)
+              }
+            })
           )
         ),
         catchError(error => {
@@ -66,7 +78,14 @@ export class LocationResolver implements Resolve<Location> {
 
   private getJudicialWorkersOrCaseWorkers(userDetails: UserDetails): Observable<any[]> {
     const id = userDetails.userInfo.id ? userDetails.userInfo.id : userDetails.userInfo.uid;
-    const role = AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
-    return role === UserRole.LegalOps ? this.caseworkerDataService.getAll() : this.judicialWorkerDataService.getCaseRolesUserDetails([id]);
+    this.userRole = AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
+    let jurisdictions: string[] = [];
+    userDetails.roleAssignmentInfo.forEach(roleAssignment => {
+      const roleJurisdiction = roleAssignment.jurisdiction;
+      if (roleJurisdiction && !jurisdictions.includes(roleJurisdiction)) {
+        jurisdictions.push(roleJurisdiction);
+      }
+    })
+    return this.userRole === UserRole.Judicial ? this.judicialWorkerDataService.getCaseRolesUserDetails([id]) : this.caseworkerDataService.getCaseworkersForServices(jurisdictions);
   }
 }

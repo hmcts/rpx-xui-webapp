@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
 import { EMPTY, forkJoin, Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, mergeMap } from 'rxjs/operators';
 import { Caseworker } from '../models/dtos';
 
 import { Task } from '../models/tasks';
@@ -23,7 +23,12 @@ export class TaskResolver implements Resolve<{ task: Task; caseworkers: Casework
         return EMPTY;
       })
     );
-    const caseworker$ = this.caseworkerService.getAll();
+    const caseworker$ = task$
+    .pipe(
+      mergeMap((task) => {
+        return this.caseworkerService.getCaseworkersForSpecificService(task.task.jurisdiction);
+      })
+    );
     return forkJoin({task: task$, caseworkers: caseworker$});
   }
 }

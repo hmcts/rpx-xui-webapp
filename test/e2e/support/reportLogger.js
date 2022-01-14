@@ -31,6 +31,10 @@ class CucumberReportLog{
 
     }
 
+    LogTestDataInput(message){
+        this.AddMessage(`>>>>>>> [ Test data input ]: ${message}`);
+    }
+
     AddMessage(message){
         if (!this.scenarioWorld){
             return;

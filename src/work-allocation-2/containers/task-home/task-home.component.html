@@ -4,7 +4,6 @@
   <h3 class="govuk-heading-xl">My work</h3>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <p>Access tasks and cases.</p>
       <exui-task-list-filter (errorChanged)="errorChangedHandler($event)" [persistence]="persistence$ | async">
       </exui-task-list-filter>
       <xuilib-hmcts-sub-navigation [items]="subNavigationItems" label="Sub navigation"></xuilib-hmcts-sub-navigation>

@@ -167,7 +167,9 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     };
     if (this.route.snapshot.data && this.route.snapshot.data.location) {
       const location: Location = this.route.snapshot.data.location;
-      this.defaultLocations = [location];
+      if (location) {
+        this.defaultLocations = [location];
+      }
     }
     this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
       name: TaskListFilterComponent.FILTER_NAME,

@@ -63,7 +63,7 @@ describe('TaskAssignmentChooseRoleComponent', () => {
     const nativeElement = fixture.debugElement.nativeElement as HTMLElement;
     const radios: any = nativeElement.querySelectorAll('.govuk-radios__item');
     const input = radios[1].firstChild;
-    expect(input.checked).toBeTruthy();
+    expect(input.checked).toBeFalsy();
   });
 
   it('should set the caption to reassign', () => {

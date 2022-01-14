@@ -66,6 +66,38 @@ class TaskRequestBody {
         return this;
     }
 
+    searchWithJurisdiction(jurisdiction: string) {
+        const jurisdictionConfig = this.requestBody.searchRequest.search_parameters.filter(searchField => searchField.key === "jurisdiction");
+        if (jurisdictionConfig.length === 0) {
+            this.requestBody.searchRequest.search_parameters.push({
+                key: 'jurisdiction',
+                operator: 'IN',
+                values: jurisdiction ? [jurisdiction] : []
+            })
+        } else {
+            if (jurisdiction) {
+                jurisdictionConfig[0].values.push(jurisdiction);
+            }
+        }
+        return this;
+    }
+
+
+    searchWithTaskType(taskType: string) {
+        const taskTypeConfig = this.requestBody.searchRequest.search_parameters.filter(searchField => searchField.key === "taskType");
+        if (taskTypeConfig.length === 0) {
+            this.requestBody.searchRequest.search_parameters.push({
+                key: 'taskType',
+                operator: 'IN',
+                values: taskType ? [taskType] : []
+            })
+        } else {
+            if (taskType) {
+                taskTypeConfig[0].values.push(taskType);
+            }
+        }
+        return this;
+    }
     searchWithAllLocations() {
         const searchParamsWithAllLocations = [];
         for (const searchParam of this.requestBody.searchRequest.search_parameters) {
@@ -107,7 +139,7 @@ class TaskRequestBody {
     }
 
     getRequestBody(){
-        reporterJson(this.requestBody);
+        // reporterJson(this.requestBody);
         return this.requestBody;
     }
 

@@ -68,7 +68,7 @@ export  const config =  {
        demo: {
            solicitor: { e: 'peterxuisuperuser@mailnesia.com', sec: 'Monday01' },
            caseOfficer_r1: { e: 'xui_caseofficer@justice.gov.uk', sec: 'Welcome01' },
-           caseOfficer_r2: { e: 'xui_auto_co_r3@justice.gov.uk', sec: 'Welcome01' }
+           caseOfficer_r2: { e: 'CRD_func_test_demo_user@justice.gov.uk', sec: 'AldgateT0wer' }
        }
     },
     configuratioUi: {
@@ -83,7 +83,6 @@ export  const config =  {
             locationId: '231596'
         }
     }
-    
 
 };
 

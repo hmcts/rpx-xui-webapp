@@ -85,7 +85,7 @@ class MockApp{
                 callback(req, res);
             }
         }catch(err){
-            await http.post(`http://localhost:${port}/mockerror`, err, { headers })
+            await http.post(`http://localhost:${port}/mockerror`, {error:err}, { headers })
             console.log(err);
             CucumberReporter.AddMessage(`*********************** Mock onRequest error occured  on server with port ${this.serverPort} ******************** `);
             CucumberReporter.AddMessage(err);
@@ -127,7 +127,13 @@ class MockApp{
             res.status(response.status).send(response.data)
         }
         catch(err){
-            await http.post(`http://localhost:${port}/mockerror`, err, { headers })
+
+            if (response.status < 510){
+                res.status(response.status).send(response.data);
+                return; 
+            }
+
+            await http.post(`http://localhost:${port}/mockerror`, {error:err}, { headers })
             console.log(err);
             CucumberReporter.AddMessage(`*********************** Mock onProxy error occured  on server with port ${this.serverPort} ******************** `);
             CucumberReporter.AddMessage(err);

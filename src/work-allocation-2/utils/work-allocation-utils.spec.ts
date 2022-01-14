@@ -120,19 +120,19 @@ describe('WorkAllocationUtils', () => {
     const taskRoles = [{
         role_category: 'ADMIN',
         role_name: '',
-        permissions: [],
+        permissions: ['OWN'],
         authorisations: []
       },
       {
         role_category: 'LEGAL_OPERATIONS',
         role_name: '',
-        permissions: [],
+        permissions: ['EXECUTE'],
         authorisations: []
       },
       {
         role_category: 'JUDICIAL',
         role_name: '',
-        permissions: [],
+        permissions: ['OWN'],
         authorisations: []
       }
     ];

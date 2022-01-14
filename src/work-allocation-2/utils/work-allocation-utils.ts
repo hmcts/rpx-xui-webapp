@@ -2,7 +2,7 @@ import { NavigationExtras } from '@angular/router';
 import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { RoleCategory } from '../../role-access/models';
 import { OptionsModel } from '../../role-access/models/options-model';
-import { TaskRole } from '../models/tasks/TaskRole';
+import { Permissions, TaskRole } from '../models/tasks/TaskRole';
 
 interface Navigator {
   navigate(commands: any[], extras?: NavigationExtras): Promise<boolean>;
@@ -96,8 +96,9 @@ export const getAssigneeName = (caseworkers: any [], assignee: string): string =
 
 export function getOptions(taskRoles: TaskRole[]): OptionsModel[] {
   const options = new Array<OptionsModel>();
-  const roleCategories = taskRoles.filter(role => role.role_category !== null && role.role_category !== undefined)
-    .map(taskRole => taskRole.role_category as RoleCategory);
+  const roleCategories = taskRoles.filter(role => role.role_category !== null && role.role_category !== undefined
+    && (roleIncludes(role.permissions, Permissions.Own) || roleIncludes(role.permissions, Permissions.Execute))).
+    map(taskRole => taskRole.role_category as RoleCategory);
   roleCategories.forEach(roleCategory => {
     if (!options.find(option => option.optionId === roleCategory)) {
       options.push({
@@ -110,7 +111,7 @@ export function getOptions(taskRoles: TaskRole[]): OptionsModel[] {
   return options;
 }
 
-export function getLabel(roleCategory: RoleCategory) {
+export function getLabel(roleCategory: RoleCategory): PersonRole {
   switch (roleCategory) {
     case RoleCategory.ADMIN:
       return PersonRole.ADMIN;
@@ -119,4 +120,16 @@ export function getLabel(roleCategory: RoleCategory) {
     default:
       return PersonRole.CASEWORKER;
   }
+}
+
+export function roleIncludes(roles: string[], permission: string): boolean {
+  let includesRole = false;
+  if (roles && permission) {
+    roles.forEach(role => {
+      if (role.toLocaleLowerCase() === permission.toLocaleLowerCase()) {
+        includesRole = true;
+      }
+    })
+  }
+  return includesRole;
 }

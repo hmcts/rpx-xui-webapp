@@ -33,8 +33,8 @@ describe('Work allocation Release 2:  Cases', () => {
         expect(response.status).to.equal(200);
 
         const expectedCases = workAllocationDataModels.getRelease2Cases();
-        const expectedCaseKeys = Object.keys(expectedCases.cases[0]);
-
+        let expectedCaseKeys = Object.keys(expectedCases.cases[0]);
+        expectedCaseKeys = expectedCaseKeys.filter(key => !['endDate'].includes(key));
         expect(response.data).to.have.all.keys(Object.keys(expectedCases));
         if (response.data.cases.length > 0) {
             const actualKeys = Object.keys(response.data.cases[0]);
@@ -57,7 +57,8 @@ describe('Work allocation Release 2:  Cases', () => {
         expect(response.status).to.equal(200);
 
         const expectedCases = workAllocationDataModels.getRelease2Cases();
-        const expectedCaseKeys = Object.keys(expectedCases.cases[0]);
+        let expectedCaseKeys = Object.keys(expectedCases.cases[0]);
+        expectedCaseKeys = expectedCaseKeys.filter(key => !['endDate'].includes(key));
 
         expect(response.data).to.have.all.keys(Object.keys(expectedCases));
         if (response.data.cases.length > 0) {

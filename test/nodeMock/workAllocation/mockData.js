@@ -446,8 +446,8 @@ class WorkAllocationMockData {
     getTaskRoles(){
         return [
             {
-                "role_category": "legal-ops",
-                "role_name": "tribunal-caseworker",
+                "role_category": "JUDICIAL",
+                "role_name": "lead-judge",
                 "permissions": [
                     "OWN",
                     "EXECUTE",
@@ -461,7 +461,7 @@ class WorkAllocationMockData {
                 ]
             },
             {
-                "role_category": "legal-ops",
+                "role_category": "LEGAL_OPERATIONS",
                 "role_name": "case-manager",
                 "permissions": [
                     "EXECUTE",
@@ -475,8 +475,8 @@ class WorkAllocationMockData {
                 ]
             },
             {
-                "role_category": "judiciary",
-                "role_name": "judge",
+                "role_category": "JUDICIAL",
+                "role_name": "hearing-judge",
                 "permissions": [
                     "EXECUTE",
                     "READ"

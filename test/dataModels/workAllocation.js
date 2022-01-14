@@ -211,20 +211,19 @@ class WorkAllocationModels {
             end: "2021-02-16T18:58:48.987+0000",
             id: v4(),
             location:"test location",
-            name:"caserole name",
             roleCategory: roleCategory ? roleCategory : "test-case-role",
             roleName:'',
             start: "2020-09-16T18:58:48.987+0000",
             end:'',
-            email:'test@test.com',
-            actorid: v4()
+            actorId: v4()
         }
     }
 
     getCaseExclusion() {
         return {
+            "actorId": "",
             "added": 1627776000000,
-            "name": "Judge Birch",
+            "id":"",
             "notes": "this case been remitted from Upper Tribunal and required different judge",
             "type": "Other",
             "userType": "Judicial"

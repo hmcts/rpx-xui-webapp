@@ -17,6 +17,13 @@ export async function handleTaskGet(path: string, req: EnhancedRequest): Promise
     return response.data;
 }
 
+export async function handleTaskRolesGet(path: string, req: EnhancedRequest): Promise<any> {
+  logger.info('getting task Roles for', path);
+  const headers = setHeaders(req);
+  const response: AxiosResponse = await http.get(path, { headers });
+  return response;
+}
+
 export async function handleTaskSearch(path: string, payload: any, req: EnhancedRequest): Promise<any> {
   logger.info('search task for', payload);
   const headers = setHeaders(req);

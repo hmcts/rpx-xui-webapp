@@ -68,12 +68,14 @@ class WorkAllocationModels {
     getRelease2Case() {
         return {
             "id": v4(),
-            "task_title": "Review FTPA application",
-            "location_name": "Glasgow",
+            "assignee":"",
             "case_id": "1620409659381330",
             "case_category": "Protection",
+            "case_type":"",
+            "jurisdiction":"IA",
+            "jurisdictionId":"IA",
+            "location_id":"",
             "case_name": "Jo Fly " + Math.floor((Math.random() * 100) + 1),
-            "permissions": [],
             "actions": [],
             "assignee": v4(),
             "startDate": "2021-02-16T18:58:48.987+0000",
@@ -81,7 +83,8 @@ class WorkAllocationModels {
             "jurisdiction":"Test jurisdiction",
             "case_role":"Mock Test case role",
             "role" : "case role",
-            "role_category" : "role-categpry"
+            "role_category" : "role-categpry",
+            
         };
     }
 
@@ -102,8 +105,11 @@ class WorkAllocationModels {
             cases.push(this.getRelease2Case());
         }
         return {
+            case_types_results: [{ total: 13, case_type_id: "Asylum" }],
             cases: cases,
-            total_records: 100
+            total_records: 100,
+            total:13,
+            unique_cases:5
         }
     }
 

@@ -33,6 +33,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   @Input() public persistence: FilterPersistence;
   @Output() public errorChanged: EventEmitter<ErrorMessage> = new EventEmitter();
   public showFilteredText = false;
+  public noDefaultLocationMessage = 'Use the work filter to show tasks and cases based on service, work type and location';
   public error: ErrorMessage;
   public fieldsConfig: FilterConfig = {
     persistence: 'session',

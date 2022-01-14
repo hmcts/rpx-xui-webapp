@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
+import { LocationModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { Observable, Subscription } from 'rxjs';
 import { debounceTime, filter } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
@@ -22,7 +23,6 @@ import {
   WorkAllocationTaskService
 } from '../../services';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
-import { LocationModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html',
@@ -166,7 +166,9 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
         this.resetPagination(this.selectedLocations, newLocations);
         this.selectedLocations = (newLocations as unknown as LocationModel[]).map((l) => l.epims_id);
         this.selectedWorkTypes = newWorkTypes.filter(workType => workType !== 'types_of_work_all');
-        this.doLoad();
+        if (this.selectedLocations.length) {
+          this.doLoad();
+        }
       });
   }
 

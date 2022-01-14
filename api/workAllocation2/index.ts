@@ -134,8 +134,8 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     // filter out task type from search parameters as not currently available until release 2.1
     searchRequest.search_parameters = searchRequest.search_parameters.filter(
       searchParam => searchParam.key !== 'taskType'
-    )
-    const sortParam = searchRequest.sorting_parameters.find(sort => sort.sort_by === 'created_date')
+    );
+    const sortParam = searchRequest.sorting_parameters.find(sort => sort.sort_by === 'created_date');
     if (sortParam) {
       sortParam.sort_by = 'dueDate';
     }
@@ -213,7 +213,7 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
  */
 export async function getAllCaseWorkers(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const caseworkers: Caseworker[] = await retrieveAllCaseWorkers(req, res);
+    const caseworkers: Caseworker[] = await retrieveAllCaseWorkers(req);
     res.status(200);
     res.send(caseworkers);
   } catch (error) {
@@ -221,7 +221,7 @@ export async function getAllCaseWorkers(req: EnhancedRequest, res: Response, nex
   }
 }
 
-export async function retrieveAllCaseWorkers(req: EnhancedRequest, res: Response): Promise<Caseworker[]> {
+export async function retrieveAllCaseWorkers(req: EnhancedRequest): Promise<Caseworker[]> {
   if (req.session && req.session.caseworkers) {
     return req.session.caseworkers;
   }
@@ -318,7 +318,7 @@ export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Re
   }
 }
 
-export async function getRolesCategory(req: EnhancedRequest, res: Response, next: NextFunction) {
+export async function getRolesCategory(req: EnhancedRequest, res: Response) {
   const personRoles = [
     {roleId: 'judicial', roleName: 'Judicial'},
     {roleId: 'legalOps', roleName: 'Legal Ops'},
@@ -359,8 +359,7 @@ export async function getMyCases(req: EnhancedRequest, res: Response) {
       result.unique_cases = getUniqueCasesCount(mappedCases);
       // amount of unique cases already given by case id
       // result.unique_cases = caseIdList.length;
-      const cases = assignActionsToCases(mappedCases, userIsCaseAllocator);
-      result.cases = cases;
+      result.cases = assignActionsToCases(mappedCases, userIsCaseAllocator);
       return res.send(result).status(200);
     } else {
       return res.send([]).status(200);

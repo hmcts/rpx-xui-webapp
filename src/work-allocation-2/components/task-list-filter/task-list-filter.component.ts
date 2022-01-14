@@ -1,11 +1,20 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FilterConfig, FilterError, FilterFieldConfig, FilterPersistence, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
-import { Subscription } from 'rxjs';
+import {
+  FilterConfig,
+  FilterError,
+  FilterFieldConfig,
+  FilterPersistence,
+  FilterService,
+  FilterSetting
+} from '@hmcts/rpx-xui-common-lib';
+import { combineLatest, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { ErrorMessage } from '../../../app/models';
 import { Location } from '../../models/dtos';
+import { WASupportedJurisdictionsService } from '../../services';
 import { TaskTypesService } from '../../services/task-types.service';
+import { servicesMap } from '../../utils';
 
 export const LOCATION_ERROR: ErrorMessage = {
   title: 'There is a problem',
@@ -52,13 +61,15 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
    */
   constructor(private readonly route: ActivatedRoute,
               private readonly filterService: FilterService,
+              private readonly service: WASupportedJurisdictionsService,
               private readonly taskTypesService: TaskTypesService) {
   }
 
   public ngOnInit(): void {
     this.fieldsConfig.persistence = this.persistence || 'session';
-    this.subscription = this.taskTypesService.getTypesOfWork()
-      .subscribe((typesOfWork: any[]) => {
+    this.subscription = combineLatest([this.taskTypesService.getTypesOfWork(), this.service.getWASupportedJurisdictions()])
+      .subscribe(([typesOfWork, services]: [any[], string[]]) => {
+        this.setUpServicesFilter(services);
         this.setUpLocationFilter();
         this.setUpTypesOfWorkFilter(typesOfWork);
         this.persistFirstSetting();
@@ -97,8 +108,10 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
         filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
       )
       .subscribe((f: FilterSetting) => {
-        this.selectedLocations = f.fields.find((field) => field.name === TaskListFilterComponent.FILTER_NAME).value;
-        this.selectedTypesOfWork = f.fields.find((field) => field.name === 'types-of-work').value;
+        const selectedLocations = f.fields.find((field) => field.name === TaskListFilterComponent.FILTER_NAME);
+        this.selectedLocations = selectedLocations ? selectedLocations.value : [];
+        const typesOfWork = f.fields.find((field) => field.name === 'types-of-work');
+        this.selectedTypesOfWork = typesOfWork ? typesOfWork.value : [];
         this.showFilteredText = this.hasBeenFiltered(f, this.getDefaultLocations(), this.getDefaultTypesOfWork());
         this.toggleFilter = false;
       });
@@ -145,6 +158,8 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       options: [],
       minSelected: 1,
       maxSelected: null,
+      lineBreakBefore: true,
+      findPersonField: 'services',
       displayMinSelectedError: true,
       minSelectedError: 'Enter a location',
       type: 'find-location'
@@ -192,6 +207,41 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     this.fieldsConfig.fields.push(field);
   }
 
+  private setUpServicesFilter(services: any[]): void {
+    if (!services.length) {
+      return;
+    }
+    const field: FilterFieldConfig = {
+      name: 'services',
+      options: [
+        {
+          key: 'services_all',
+          label: 'Select all',
+          selectAll: true
+        },
+        ...services.map(service => {
+          return {
+            key: service,
+            label: servicesMap[service] || service
+          };
+        })
+      ],
+      minSelected: 1,
+      maxSelected: null,
+      lineBreakBefore: false,
+      displayMinSelectedError: true,
+      minSelectedError: 'Select a service',
+      title: 'Services',
+      type: 'checkbox-large'
+    };
+    this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
+      name: 'services',
+      value: ['services_all', ...services]
+    }];
+    this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
+    this.fieldsConfig.fields.push(field);
+  }
+
   private hasBeenFiltered(f: FilterSetting, defaultLocations: string[], defaultTypesOfWork: string[]): boolean {
     const selectedFields = f.fields.find(field => field.name === TaskListFilterComponent.FILTER_NAME);
     const selectedTypeOfWorksFields = f.fields.find(field => field.name === 'types-of-work');
@@ -201,9 +251,15 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       .filter((v: string) => defaultLocations
         .map((location: any) => location.epims_id)
         .indexOf(v) === -1).length > 0;
-    const containsNonDefaultTypeOfWorkFields = selectedTypeOfWorksFields.value.filter((v: string) => defaultTypesOfWork.indexOf(v) === -1).length > 0;
+    const containsNonDefaultTypeOfWorkFields = selectedTypeOfWorksFields ?
+      selectedTypeOfWorksFields.value.filter((v: string) => defaultTypesOfWork.indexOf(v) === -1).length > 0
+      : false;
     // check if the amount of fields selected is the same as the amount in the cancel settings
-    const notSameSize = !(defaultLocations.length === selectedFields.value.length) || !(defaultTypesOfWork.length === selectedTypeOfWorksFields.value.length);
+    const notSameSize = !(defaultLocations.length === selectedFields.value.length)
+      || (selectedTypeOfWorksFields && !(defaultTypesOfWork.length === selectedTypeOfWorksFields.value.length));
+    if (!defaultTypesOfWork.length) {
+      return (containsNonDefaultFields || notSameSize || containsNonDefaultTypeOfWorkFields) && (defaultLocations.length !== 0);
+    }
     return (containsNonDefaultFields || notSameSize || containsNonDefaultTypeOfWorkFields) && (defaultLocations.length !== 0) && (defaultTypesOfWork.length !== 0);
   }
 

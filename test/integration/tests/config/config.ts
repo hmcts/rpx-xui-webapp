@@ -77,10 +77,20 @@ export  const config =  {
     },
     workallocation:{
         aat:{
-            locationId: '698118'
+            locationId: '698118',
+            judgeUser: {
+                email: "330085EMP-@ejudiciary.net",
+                id: "519e0c40-d30e-4f42-8a4c-2c79838f0e4e",
+                name: "Tom Cruz"
+            }
         },
         demo: {
-            locationId: '231596'
+            locationId: '231596',
+            judgeUser: {
+                email: "330085EMP-@ejudiciary.net",
+                id: "519e0c40-d30e-4f42-8a4c-2c79838f0e4e",
+                name: "Tom Cruz"
+            }
         }
     }
 

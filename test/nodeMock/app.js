@@ -128,8 +128,8 @@ class MockApp{
         }
         catch(err){
 
-            if (response && response.status < 510){
-                res.status(response.status).send(response.data);
+            if (err.response.status < 510){
+                res.status(err.response.status ).send(err.response.body);
                 return; 
             }
 
@@ -307,7 +307,7 @@ function setUpcaseConfig() {
         const roles = ['task-supervisor','case-allocator','caseworker', 'caseworker-ia', 'caseworker-ia-caseofficer','task-supervisor','case-allocator'];
         // const roles = ['caseworker','caseworker-ia','caseworker-ia-caseofficer','task-supervisor'];
 
-        const idamid = '810b5601-4a8a-4c82-9294-34f087f2e67f';
+        const idamid = 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8';
         // setTimeout(() => {
         //     res.send(nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, idamid));
 

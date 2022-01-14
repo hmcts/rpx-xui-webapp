@@ -190,7 +190,11 @@
                 </table>
              
             </div>
-            <img ng-src="{{test.a11yResult.screenshot}}" alt="a11y test page" width="500" height="500">
+            <div ng-repeat="screenshot in test.screenshots">
+                <div>---------------------- Attempt {{$index +1}} ---------------------- </div>
+                <img ng-src="{{screenshot}}" alt="a11y test page" width="500" height="500">
+            </div>
+            <!-- <img ng-src="{{test.a11yResult.screenshot}}" alt="a11y test page" width="500" height="500"> -->
 
         </div>
     </div>

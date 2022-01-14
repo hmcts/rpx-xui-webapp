@@ -111,7 +111,7 @@ class MockApp{
                 reqCallback = () =>  http.put(`http://localhost:${port}${urlPath}`, req.body,{ headers }); 
                 break;
             case 'delete':
-                reqCallback = () =>  http.delete(`http://localhost:${port}${urlPath}`, { headers }); 
+                reqCallback =  () =>  http.delete(`http://localhost:${port}${urlPath}`, { headers }); 
                 break;
             default:
                 await http.post(`http://localhost:${port}/mockerror`, { error: err}, { headers })
@@ -121,19 +121,19 @@ class MockApp{
                 res.status(551).send({ error: 'mock proxy error, unknown req method ' + req.method});
 
         }
-
+        let response = null;
         try{
-            let response = await reqCallback();
+            response = await reqCallback();
             res.status(response.status).send(response.data)
         }
         catch(err){
 
-            if (response.status < 510){
+            if (response && response.status < 510){
                 res.status(response.status).send(response.data);
                 return; 
             }
 
-            await http.post(`http://localhost:${port}/mockerror`, {error:err}, { headers })
+            await http.post(`http://localhost:${port}/mockerror`, { error: err}, { headers })
             console.log(err);
             CucumberReporter.AddMessage(`*********************** Mock onProxy error occured  on server with port ${this.serverPort} ******************** `);
             CucumberReporter.AddMessage(err);
@@ -193,6 +193,9 @@ class MockApp{
 
         app.post('/mockerror', (req,res) => {
             CucumberReporter.AddMessage(`*********************** Mock main server reporting error to server with port ${this.serverPort} ******************** `);
+            console.log(`*********************** Mock main server reporting error to server with port ${this.serverPort} ******************** `);
+
+            console.log(req.body);
             CucumberReporter.AddMessage(req.body);
             CucumberReporter.AddJson(req.body);
             CucumberReporter.AddMessage("*************************************************************** "); 

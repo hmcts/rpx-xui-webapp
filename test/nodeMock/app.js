@@ -114,7 +114,7 @@ class MockApp{
                 reqCallback = () =>  http.delete(`http://localhost:${port}${urlPath}`, { headers }); 
                 break;
             default:
-                await http.post(`http://localhost:${port}/mockerror`, err, { headers })
+                await http.post(`http://localhost:${port}/mockerror`, { error: err}, { headers })
                 CucumberReporter.AddMessage(`*********************** Mock onProxy unknown method  error occured  on server with port ${this.serverPort} ******************** `);
                 CucumberReporter.AddMessage(err);
                 CucumberReporter.AddMessage("*************************************************************** ");
@@ -188,6 +188,7 @@ class MockApp{
         app.post('/mockerror', (req,res) => {
             CucumberReporter.AddMessage(`*********************** Mock main server reporting error to server with port ${this.serverPort} ******************** `);
             CucumberReporter.AddMessage(req.body);
+            CucumberReporter.AddJson(req.body);
             CucumberReporter.AddMessage("*************************************************************** "); 
             res.send(""); 
         });

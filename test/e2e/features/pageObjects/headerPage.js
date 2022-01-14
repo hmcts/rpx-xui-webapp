@@ -12,7 +12,7 @@ const taskListPage = require('../pageObjects/workAllocation/taskListPage');
 const taskManagerPage = require('./workAllocation/taskManagerPage');
 const myWorkPage = require('../pageObjects/workAllocation/myWorkPage');
 const allWorkPage = require("../../features/pageObjects/workAllocation/allWorkPage");
-
+const CucumberReporter = require('../../support/reportLogger');
 
 const createCaseStartPage = new CreateCaseStartPage();
 const caseListPage = new CaseListPage();
@@ -80,8 +80,11 @@ function HeaderPage() {
           await BrowserWaits.waitForElement(ele);
           await BrowserWaits.waitForElementClickable(ele);
           await ele.click();
+          await CucumberReporter.AddMessage(`Primary nav tab clicked successfully. "${label}"`);
         } catch (err) {
+          await CucumberReporter.AddMessage(`Failed to click Primary nav tab . "${label}"`);
           await this.refreshBrowser();
+          throw new Error(err);
         }
 
         

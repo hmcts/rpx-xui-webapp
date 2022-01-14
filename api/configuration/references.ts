@@ -24,7 +24,8 @@ export const MAX_LOG_LINE = 'maxLogLine';
 export const HEALTH = 'health';
 
 export const SERVICES_CCD_COMPONENT_API_PATH = 'services.ccd.componentApi';
-export const SERVICES_CCD_ACTIVITY_API_PATH = 'services.ccd.activityApi';
+export const SERVICES_CCD_ACTIVITY_API_PATH_POLLING = 'services.ccd.activityApi.polling';
+export const SERVICES_CCD_ACTIVITY_API_PATH_SOCKET = 'services.ccd.activityApi.socket';
 export const SERVICES_CCD_DATA_STORE_API_PATH = 'services.ccd.dataApi';
 export const SERVICES_CCD_CASE_ASSIGNMENT_API_PATH = 'services.ccd.caseAssignmentApi';
 export const SERVICES_WORK_ALLOCATION_TASK_API_PATH = 'services.work_allocation.taskApi';
@@ -114,7 +115,8 @@ export const PACT_BROKER_USERNAME = 'pact.brokerUsername';
 export const PACT_BROKER_PASSWORD = 'pact.brokerPassword';
 
 export const proxiedReferences = {
-  SERVICES_CCD_ACTIVITY_API_PATH,
+  SERVICES_CCD_ACTIVITY_API_PATH_POLLING,
+  SERVICES_CCD_ACTIVITY_API_PATH_SOCKET,
   SERVICES_CCD_COMPONENT_API_PATH,
   SERVICES_DOCUMENTS_API_PATH,
   SERVICES_DOCUMENTS_API_PATH_V2,

@@ -242,6 +242,19 @@ export async function getAllCaseWorkers(req: EnhancedRequest, res: Response, nex
   }
 }
 
+/**
+ * Get All CaseWorkers
+ */
+ export async function getCaseWorkersForSpecificService(req: EnhancedRequest, res: Response, next: NextFunction) {
+  try {
+    const caseworkers: Caseworker[] = await retrieveCaseWorkersForSpecificService(req, res);
+    res.status(200);
+    res.send(caseworkers);
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function retrieveAllCaseWorkers(req: EnhancedRequest, res: Response): Promise<Caseworker[]> {
   if (req.session && req.session.caseworkers) {
     return req.session.caseworkers;

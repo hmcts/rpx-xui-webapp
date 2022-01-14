@@ -308,7 +308,6 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
         this.tasks = result.tasks;
         this.tasksTotal = result.total_records;
         this.tasks.forEach(task => task.assigneeName = getAssigneeName(this.caseworkers, task.assignee));
-        this.tasksLoaded = true;
         this.ref.detectChanges();
       }, error => {
         this.loadingService.unregister(loadingToken);

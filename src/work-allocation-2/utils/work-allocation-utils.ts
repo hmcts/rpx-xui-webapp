@@ -87,5 +87,10 @@ export const getAssigneeName = (caseworkers: any [], assignee: string): string =
     const assignedCW = caseworkers.filter(cw => cw.idamId === assignee)[0];
     return `${assignedCW.firstName} ${assignedCW.lastName}`;
   }
-  return null
+  return null;
+};
+
+export const servicesMap: {[key: string]: string} =  {
+  IA: 'Immigration and Asylum',
+  SCSS: 'Social security and child support'
 };

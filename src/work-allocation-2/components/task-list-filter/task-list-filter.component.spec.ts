@@ -9,7 +9,7 @@ import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs/internal/observable/of';
 
-import { LocationDataService, WorkAllocationTaskService } from '../../services';
+import { LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { TaskTypesService } from '../../services/task-types.service';
 import { ALL_LOCATIONS } from '../constants/locations';
 import { TaskListFilterComponent } from './task-list-filter.component';
@@ -77,15 +77,24 @@ describe('TaskListFilterComponent', () => {
     postcode: 'AB11 6LT'
   };
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
+  const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
+  mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
   const filterSettings = {
     id: 'locations',
-    fields: [{
-      name: 'locations',
-      value: [LOCATION]
-    }, {
-      name: 'types-of-work',
-      value: ['types_of_work_all', ...typesOfWork.map(t => t.key)]
-    }]
+    fields: [
+      {
+        id: 'services',
+        value: ['services_all', 'IA']
+      },
+      {
+        name: 'locations',
+        value: [LOCATION]
+      },
+      {
+        name: 'types-of-work',
+        value: ['types_of_work_all', ...typesOfWork.map(t => t.key)]
+      }
+    ]
   };
   const mockFilterService: any = {
     getStream: () => of(filterSettings),
@@ -122,9 +131,8 @@ describe('TaskListFilterComponent', () => {
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
         { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },
         { provide: TaskTypesService, useValue: { getTypesOfWork: () => of(typesOfWork) } },
-        {
-          provide: FilterService, useValue: mockFilterService
-        },
+        { provide: FilterService, useValue: mockFilterService },
+        { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
@@ -171,17 +179,13 @@ describe('TaskListFilterComponent', () => {
 
   }));
 
-  it('should set the filter without local storage', () => {
-    expect(mockFilterService.persist).toHaveBeenCalledWith(filterSettings, 'local');
-  });
-
   it('should set the persistence to be local storage if the  user is a judicial user', () => {
     expect(component.fieldsConfig.persistence).toBe('local');
   });
 
   it('should show types of work filter with all types of work filters selected', () => {
-    expect(component.fieldsSettings.fields.length).toBe(2);
-    const typesOfWorkSelectedFields = component.fieldsSettings.fields[1];
+    expect(component.fieldsSettings.fields.length).toBe(3);
+    const typesOfWorkSelectedFields = component.fieldsSettings.fields[2];
     expect(typesOfWorkSelectedFields.value.length).toBe(typesOfWork.length + 1);
   });
 

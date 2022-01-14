@@ -1,14 +1,12 @@
 import { NextFunction, Response } from 'express';
 import { handleGet } from '../common/mockService';
 import { getConfigValue } from '../configuration';
-import { SERVICES_PRD_API_URL} from '../configuration/references';
-import { http } from '../lib/http';
+import { SERVICES_PRD_API_URL } from '../configuration/references';
 import { EnhancedRequest } from '../lib/models';
-import { setHeaders } from '../lib/proxy';
 import * as mock from '../locations/location.mock';
-import {LocationTypeEnum} from './data/locationType.enum';
-import {SERVICES_COURT_TYPE_MAPPINGS} from './data/serviceCourtType.mapping';
-import {LocationModel} from './models/location.model';
+import { LocationTypeEnum } from './data/locationType.enum';
+import { SERVICES_COURT_TYPE_MAPPINGS } from './data/serviceCourtType.mapping';
+import { LocationModel } from './models/location.model';
 
 mock.init();
 
@@ -30,7 +28,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   // tslint:disable-next-line:max-line-length
   const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${courtTypeIds}`;
   try {
-    const {status, data}: { status: number, data: LocationModel[] } = await handleGet(markupPath, req);
+    const { status, data }: { status: number, data: LocationModel[] } = await handleGet(markupPath, req);
     let result: LocationModel[] = data;
     if (locationType === LocationTypeEnum.HEARING) {
       result = data.filter(location => location.is_hearing_location === 'Y');
@@ -47,7 +45,7 @@ export async function getLocationsById(req: EnhancedRequest, res: Response, next
   const ids = req.query.ids;
   const path: string = `${url}/refdata/location/court-locations?epimms_id={}`;
   try {
-    const { status, data} = await handleGet(path.replace('{}', ids), req);
+    const { status, data } = await handleGet(path.replace('{}', ids), req);
     res.status(status).send(data);
   } catch (error) {
     next(error);

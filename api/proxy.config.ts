@@ -12,7 +12,7 @@ export const initProxy = (app: Express) => {
     rewrite: true,
     rewriteUrl: '/socket.io',
     source: '/socket.io',
-    target: getConfigValue(proxiedReferences.SERVICES_CCD_ACTIVITY_API_PATH_SOCKET),
+    target: getConfigValue(proxiedReferences.SERVICES_CCD_ACTIVITY_API_PATH),
     ws: true
   });
 
@@ -20,7 +20,7 @@ export const initProxy = (app: Express) => {
     rewrite: true,
     skipAuth: true,
     source: '/activity',
-    target: getConfigValue(proxiedReferences.SERVICES_CCD_ACTIVITY_API_PATH_SOCKET)
+    target: getConfigValue(proxiedReferences.SERVICES_CCD_ACTIVITY_API_PATH)
   });
 
   applyProxy(app, {

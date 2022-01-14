@@ -34,7 +34,7 @@ export class TasksContainerComponent implements OnInit {
         mergeMap((tasks) => {
           this.tasks = tasks;
           this.warningIncluded = this.tasks.some(task => task.warnings);
-          return this.caseworkerService.getCaseworkersForSpecificService(tasks[0].jurisdiction);
+          return this.caseworkerService.getCaseworkersForServices([tasks[0].jurisdiction]);
         })
       ).subscribe(caseworkers => {
         this.caseworkers = caseworkers;

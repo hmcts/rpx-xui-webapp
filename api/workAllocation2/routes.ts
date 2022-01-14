@@ -6,7 +6,6 @@ import {
   getCases,
   getCaseWorkersForLocationAndService,
   getCaseWorkersForService,
-  getCaseWorkersForSpecificService,
   getCaseWorkersFromServices,
   getMyCases,
   getRolesCategory,
@@ -34,7 +33,6 @@ router.use('/caseworker/service/:serviceId', getCaseWorkersForService);
 router.use('/caseworker/search', searchCaseWorker);
 router.use('/caseworker', getAllCaseWorkers);
 router.use('/retrieveCaseWorkersForServices', getCaseWorkersFromServices);
-router.use('/retrieveCaseWorkersForSpecificService', getCaseWorkersForSpecificService);
 
 router.use('/findPerson', postFindPersonSearch);
 

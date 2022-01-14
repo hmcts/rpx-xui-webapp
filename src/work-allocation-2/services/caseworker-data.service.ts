@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 import { SessionStorageService } from '../../app/services';
 import { Caseworker, CaseworkersByService } from '../models/dtos';
-import { getSessionStorageKeyForServiceId, setCaseworkers } from '../utils';
+import { getAllCaseworkersFromServices, getSessionStorageKeyForServiceId, setCaseworkers } from '../utils';
 
 @Injectable({ providedIn: 'root' })
 export class CaseworkerDataService {
@@ -24,7 +24,7 @@ export class CaseworkerDataService {
       tap(caseworkers => this.sessionStorageService.setItem(CaseworkerDataService.caseworkersKey, JSON.stringify(caseworkers)))
     );
   }
-  public getCaseworkersForServices(serviceIds: string[]): Observable<CaseworkersByService[]> {
+  public getCaseworkersForServices(serviceIds: string[]): Observable<Caseworker[]> {
     const storedServices = [];
     const newServices = [];
     const storedCaseworkersByService = [];
@@ -39,7 +39,7 @@ export class CaseworkerDataService {
     });
     // if all services are stored then return the stored caseworkers by service
     if (storedServices.length === serviceIds.length) {
-      return of(storedCaseworkersByService as CaseworkersByService[]);
+      return of(getAllCaseworkersFromServices(storedCaseworkersByService) as Caseworker[]);
     }
     // all serviceIds passed in as node layer getting used anyway and caseworkers also stored there
     return this.http.post<CaseworkersByService[]>(CaseworkerDataService.caseWorkerForServices, {serviceIds}).pipe(
@@ -50,20 +50,9 @@ export class CaseworkerDataService {
             setCaseworkers(caseworkerListByService.service, caseworkerListByService.caseworkers, this.sessionStorageService);
           }
         })
-      })
-    );
-  }
-  // similar to above but allows to just give caseworkers for specific service saving having to sort this out on front end components/resolvers
-  public getCaseworkersForSpecificService(serviceId: string): Observable<Caseworker[]> {
-    const serviceKey = getSessionStorageKeyForServiceId(serviceId);
-    if (this.sessionStorageService.getItem(serviceKey)) {
-      const caseworkers = JSON.parse(this.sessionStorageService.getItem(serviceKey));
-      return of(caseworkers as Caseworker[]);
-    }
-    // all serviceIds passed in as node layer getting used anyway and caseworkers also stored there
-    return this.http.post<Caseworker[]>(CaseworkerDataService.caseWorkerForSpecificService, {serviceId}).pipe(
-      tap(caseworkers=> {
-        setCaseworkers(serviceId, caseworkers, this.sessionStorageService);
+      }),
+      map(caseworkersByService => {
+        return getAllCaseworkersFromServices(caseworkersByService);
       })
     );
   }

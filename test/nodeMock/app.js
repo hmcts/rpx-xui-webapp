@@ -186,7 +186,6 @@ class MockApp{
         } );
 
         app.post('/mockerror', (req,res) => {
-            console.log(err);
             CucumberReporter.AddMessage(`*********************** Mock main server reporting error to server with port ${this.serverPort} ******************** `);
             CucumberReporter.AddMessage(req.body);
             CucumberReporter.AddMessage("*************************************************************** "); 

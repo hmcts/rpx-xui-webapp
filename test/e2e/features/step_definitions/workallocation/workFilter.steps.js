@@ -28,10 +28,16 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     When('I click work filter button to {string} filter', async function (filterStateTo) {
         await BrowserWaits.retryWithActionCallback(async () => {
             const buttonText = await myWorkPage.showHideWorkFilterBtn.getText();
+            reportLogger.AddMessage(`Button text before click "${buttonText}"`);
             if (buttonText.toLowerCase().includes(filterStateTo.toLowerCase())){
+                reportLogger.AddMessage(`Clicking button with text "${buttonText}"`);
+
                 await myWorkPage.showHideWorkFilterBtn.click();
+                await BrowserWaits.waitForSeconds(1);
             } 
             const afterClickButtonText = await myWorkPage.showHideWorkFilterBtn.getText();
+            reportLogger.AddMessage(`Button text after click "${afterClickButtonText}"`);
+
             expect(afterClickButtonText.toLowerCase().includes(filterStateTo)).to.be.false;
 
         } );

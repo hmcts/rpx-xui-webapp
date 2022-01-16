@@ -6,6 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
+import { ErrorMessage } from 'src/app/models';
 
 import { ErrorMessageComponent } from '../../../app/components';
 import { SessionStorageService } from '../../../app/services';
@@ -116,6 +117,30 @@ describe('TaskHomeComponent', () => {
 
   it('should create', () => {
     expect(component).toBeDefined();
+  });
+
+  it('should override locations error message', () => {
+    const error: ErrorMessage = {
+      description: 'At least one location is required',
+      fieldId: 'locations',
+      multiple: true,
+      title: 'There is a problem',
+      errors: [
+        {name: 'services', error: 'Select a service'},
+        {name: 'locations', error: 'Search for a location by name'},
+        {name: 'types-of-work', error: 'Select a type of work'}
+      ]
+    };
+
+    component.errorChangedHandler(error);
+    expect(component.error.errors[1].error).toEqual('Enter a location');
+  });
+
+  it('should return null if no error message to display', () => {
+    const error: ErrorMessage = null;
+
+    component.errorChangedHandler(error);
+    expect(component.error).toBeNull();
   });
 
   afterAll(() => {

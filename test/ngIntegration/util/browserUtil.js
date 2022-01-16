@@ -68,6 +68,7 @@ class BrowserUtil{
         try{
             return await this.waitForNetworkResponse('app.launchdarkly.com/sdk/evalx');
         }catch(err){
+            reportLogger.AddMessage(err);
             console.log(err);
             return false;
         }

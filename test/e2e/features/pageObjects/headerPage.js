@@ -40,14 +40,14 @@ function HeaderPage() {
 
     this.navigateToRoute = async function(route){
       await browser.get(config.config.baseUrl + route);
-      await this.waitForPrimaryNavDisplay();
-      await browserUtil.waitForLD(); 
+      await browserUtil.waitForLD();
+      await this.waitForPrimaryNavDisplay(); 
     }
 
     this.refreshBrowser = async function(){
-      await browser.refresh();
-      await this.waitForPrimaryNavDisplay();
+      await browser.get(await browser.getCurrentUrl());
       await browserUtil.waitForLD();
+      await this.waitForPrimaryNavDisplay();
     }
 
     this.amOnPage = async function(){

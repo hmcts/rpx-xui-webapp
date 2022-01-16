@@ -38,7 +38,7 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
   constructor(
     private readonly store: Store<fromRoot.State>,
     private readonly router: Router,
-    private sessionStorageService: SessionStorageService
+    private readonly sessionStorageService: SessionStorageService
   ) {
   }
 
@@ -106,6 +106,14 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
   }
 
   public errorChangedHandler(error: ErrorMessage) {
+    // Override location error message
+    // https://tools.hmcts.net/jira/browse/EUI-4582
+    if (error && error.errors) {
+      const locationsErrorIndex = error.errors.findIndex(x => x.name.toLowerCase() === 'locations');
+      if (locationsErrorIndex > -1) {
+        error.errors[locationsErrorIndex].error = 'Enter a location';
+      }
+    }
     this.error = error;
   }
 }

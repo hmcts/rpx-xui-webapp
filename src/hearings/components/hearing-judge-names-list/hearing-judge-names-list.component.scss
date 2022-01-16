@@ -1,11 +1,20 @@
-:host ::ng-deep .govuk-form-group {
-  .govuk-hint {
-    font-weight: bold;
-    color: #0b0c0c;
-    margin-bottom: 15px;
+:host ::ng-deep .exclude-person{
+  .govuk-form-group {
+    .govuk-hint {
+      font-weight: bold;
+      color: #0b0c0c;
+      margin-bottom: 15px;
+    }
+    .govuk-input {
+      width: 98% !important;
+    }
   }
-  .govuk-input {
-    width: 98% !important;
+  &.column-view{
+    .govuk-form-group {
+      .govuk-input {
+        width: 80% !important;
+      }
+    }
   }
 }
 
@@ -22,6 +31,13 @@
     .govuk-button{
       min-width: 140px;
       margin-bottom: 3px;
+    }
+  }
+  &.column-view{
+    margin-bottom: 15px;
+    flex-direction: column;
+    .person-button{
+      margin-top: 15px;
     }
   }
 }

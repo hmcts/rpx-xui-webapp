@@ -259,7 +259,7 @@ export async function getAllCaseWorkersForLocation(req: EnhancedRequest, res: Re
 export async function getCaseWorkersForService(req: EnhancedRequest, res: Response, next: NextFunction) {
 
   try {
-    const getCaseWorkerPath: string = prepareCaseWorkerForService(baseUrl, req.params.serviceId);
+    const getCaseWorkerPath: string = prepareCaseWorkerForService(baseCaseWorkerRefUrl, req.params.serviceId);
 
     const jsonResponse = await handleCaseWorkerForService(getCaseWorkerPath, req);
     res.status(200);

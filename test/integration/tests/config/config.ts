@@ -72,7 +72,7 @@ export  const config =  {
        }
     },
     configuratioUi: {
-        aat: ['clientId', 'idamWeb', 'launchDarklyClientId', 'oAuthCallback', 'oidcEnabled', 'protocol', 'ccdGatewayUrl', 'substantiveEnabled'],
+        aat: ['clientId', 'idamWeb', 'launchDarklyClientId', 'oAuthCallback', 'oidcEnabled', 'protocol', 'ccdGatewayUrl', 'substantiveEnabled','accessManagementEnabled'],
         demo: ['clientId', 'idamWeb', 'launchDarklyClientId', 'oAuthCallback', 'oidcEnabled', 'protocol', 'ccdGatewayUrl', 'substantiveEnabled','accessManagementEnabled']
     },
     workallocation:{

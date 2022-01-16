@@ -18,6 +18,9 @@ const createCaseStartPage = new CreateCaseStartPage();
 const caseListPage = new CaseListPage();
 const searchCasePage = new SearchCasePage();
 
+const config = require('../../config/conf');
+
+
 function HeaderPage() {
     this.jcmLogoImg = element(by.xpath("//div[contains(@class,'hmcts-header__container')]//a//img[@src='/assets/images/govuk-crest-jcm.png']"));
     this.myHMCTSHeader = element(by.xpath("//div[contains(@class,'hmcts-header__container')]//a//span[contains(text(),'MyHMCTS')]"));
@@ -33,6 +36,13 @@ function HeaderPage() {
     this.manageCases = element(by.css(".hmcts-header .hmcts-header__link"));
 
     this.headerAppLogoLink = $('.hmcts-header__logo a');
+
+
+    this.navigateToRoute = async function(route){
+      await browser.get(config.config.baseUrl + route);
+      await this.waitForPrimaryNavDisplay();
+      await browserUtil.waitForLD(); 
+    }
 
     this.refreshBrowser = async function(){
       await browser.refresh();

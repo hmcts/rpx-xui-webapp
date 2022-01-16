@@ -3,7 +3,7 @@ import { v4 as uuid } from 'uuid';
 // import mocha from 'mocha';
 import { config } from '../config/config';
 import { getUserId, getXSRFToken } from '../utils/authUtil';
-import { setTestContext } from '../utils/helper';
+import { reporterMsg, setTestContext } from '../utils/helper';
 
 import Request from '../utils/request';
 
@@ -35,10 +35,14 @@ describe('Work allocations Release 2', () => {
         const response = await Request.get(`workallocation2/location`, headers, 200);
         expect(response.status).to.equal(200);
         expect(response.data).to.be.an('array');
-
-        const actualLocationObjKeys = Object.keys(response.data[0]);
-        const expectedLocationObjKeys = Object.keys(workAllocationDataModels.getLocation());
-        expect(actualLocationObjKeys).to.include.members(expectedLocationObjKeys);
+        if (response.data.length > 0){
+            const actualLocationObjKeys = Object.keys(response.data[0]);
+            const expectedLocationObjKeys = Object.keys(workAllocationDataModels.getLocation());
+            expect(actualLocationObjKeys).to.include.members(expectedLocationObjKeys);
+        }else{
+            reporterMsg(`No locations returned`);
+        }
+        
     });
 
     it('case officer,get caseworkers /workallocation2/caseworker', async function () {

@@ -8,6 +8,7 @@ const browserUtil = require('../../util/browserUtil');
 const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
 const CucumberReporter = require('../../../e2e/support/reportLogger');
 const dummyCaseDetails = require('../../../nodeMock/ccd/caseDetails_data');
+const ccdMockData = require('../../../nodeMock/ccd/ccdApi');
 
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
 const workAlloctionMockData = require('../../../nodeMock/workAllocation/mockData');
@@ -122,6 +123,31 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             CucumberReporter.AddJson(tasks);
             res.send(tasks);
         });
+    });
+
+    Given('I set MOCK case list values', async function(caseListAttributesDatatable){
+        const cases = ccdMockData.caseList.results;
+        const inputDatatableHashes = caseListAttributesDatatable.hashes();
+        
+        for (let i = 0; i < inputDatatableHashes.length; i++){
+            const caseItem = cases[i];
+            const inputHash = inputDatatableHashes[i];
+            
+            const keys = Object.keys(inputHash);
+            for(const caseAttrib of keys){
+                if (caseAttrib.startsWith('case_fields.')){
+                    const caseFieldAttrib = caseAttrib.replace('case_fields.',''); 
+                    caseItem['case_fields'][caseFieldAttrib] = inputHash[caseAttrib];  
+                } else if (caseAttrib.startsWith('case_fields_formatted.')){
+                    const caseFieldAttrib = caseAttrib.replace('case_fields_formatted.', '');
+                    caseItem['case_fields_formatted'][caseFieldAttrib] = inputHash[caseAttrib];  
+                }else{
+                    caseItem[caseAttrib] = inputHash[caseAttrib]; 
+                }
+            } 
+
+        }
+        
     });
 });
 

@@ -6,7 +6,6 @@ import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
 import {SearchLocationComponent} from '@hmcts/rpx-xui-common-lib';
 import {LocationByEPIMSModel} from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import {provideMockStore} from '@ngrx/store/testing';
-import {Observable, of} from 'rxjs';
 import {ACTION} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
 import {initialState} from '../hearing.store.state.test';
@@ -37,7 +36,8 @@ class MockLocationSearchContainerComponent {
   @Input() public serviceIds: string = '';
   @Input() public locationType: string = '';
   @Input() public disabled: boolean = false;
-  @Input() public selectedLocations$: Observable<LocationByEPIMSModel[]>;
+  @Input() public selectedLocations: LocationByEPIMSModel[];
+  @Input() public displayedLocations: LocationByEPIMSModel[];
   @Input() public submitted?: boolean = true;
   @Input() public control: AbstractControl;
   public autoCompleteInputBox: MockAutoCompleteInputBox = new MockAutoCompleteInputBox();
@@ -66,15 +66,14 @@ describe('HearingVenueComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(HearingVenueComponent);
     component = fixture.componentInstance;
-    component.selectedLocations$ = of([{
+    component.selectedLocations = [{
       epims_id: '1',
       court_name: 'wolverhampton court',
       region: 'welsh'
-    }] as LocationByEPIMSModel[]);
+    }] as LocationByEPIMSModel[];
     fixture.detectChanges();
     spyOn(component, 'removeSelection').and.callThrough();
     spyOn(component, 'reInitiateState').and.callThrough();
-    spyOn(component.selectedLocations$, 'subscribe').and.returnValue(of([]));
     spyOn(component, 'getLocationSearchFocus').and.callThrough();
     spyOn(component, 'appendLocation').and.callThrough();
     spyOn(component, 'prepareHearingRequestData').and.callThrough();
@@ -90,15 +89,14 @@ describe('HearingVenueComponent', () => {
   it('should set hearingList.hearingListMainModel to SSCS', () => {
     fixture.whenStable().then(() => {
       fixture.detectChanges();
-      component.selectedLocations$.subscribe(selectedLocations => {
-        expect(selectedLocations).toEqual([
-          {
-            epims_id: '123',
-            court_name: 'test location',
-            region: 'Wales',
-          } as LocationByEPIMSModel
-        ]);
-      });
+      expect(component.selectedLocations).toEqual([
+        {
+          epims_id: '123',
+          court_name: 'test location',
+          region: 'Wales',
+        } as LocationByEPIMSModel
+      ]);
+
       expect(component.reInitiateState).toHaveBeenCalled();
       expect(component.serviceIds).toEqual('SSCS');
     });
@@ -184,10 +182,8 @@ describe('HearingVenueComponent', () => {
     component.addSelection();
     fixture.whenStable().then(() => {
       fixture.detectChanges();
-      component.selectedLocations$.subscribe(selectedLocations => {
-        expect(selectedLocations.length).toBeGreaterThan(0);
-        expect(component.findLocationFormGroup.controls.locationSelectedFormControl.value).toBeUndefined();
-      });
+      expect(component.selectedLocations.length).toBeGreaterThan(0);
+      expect(component.findLocationFormGroup.controls.locationSelectedFormControl.value).toBeUndefined();
     });
   });
 
@@ -212,8 +208,10 @@ describe('HearingVenueComponent', () => {
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(location);
     component.addSelection();
     fixture.detectChanges();
+    const selectedLocationPreviousLength = component.selectedLocations.length;
+    expect(component.selectedLocations.length).toBeGreaterThan(0);
     component.removeSelection(location);
-    expect(component.selectedLocations$.subscribe).toHaveBeenCalled();
+    expect(component.selectedLocations.length).toBeLessThan(selectedLocationPreviousLength);
   });
 
   it('should show error when there is no locations found', async (done) => {
@@ -242,14 +240,10 @@ describe('HearingVenueComponent', () => {
       expect(errorElement).toBeDefined();
     });
 
-    component.selectedLocations$ = of([location]);
-
+    component.selectedLocations = [location];
     component.removeSelection(location);
     fixture.detectChanges();
-    expect(component.selectedLocations$.subscribe).toHaveBeenCalled();
-    component.selectedLocations$.subscribe(selectedLocations => {
-      expect(selectedLocations.length).toEqual(0);
-    });
+    expect(component.selectedLocations.length).toEqual(0);
   });
 
   it('should show summry header', async (done) => {
@@ -310,4 +304,3 @@ describe('HearingVenueComponent', () => {
     fixture.destroy();
   });
 });
-

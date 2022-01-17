@@ -6,6 +6,7 @@ import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
 import { SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
 import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { provideMockStore } from '@ngrx/store/testing';
+import { Observable, of } from 'rxjs';
 import { ACTION } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingVenueComponent } from './hearing-venue.component';
@@ -39,7 +40,7 @@ class MockLocationSearchContainerComponent {
   public autoCompleteInputBox: MockAutoCompleteInputBox = new MockAutoCompleteInputBox();
 }
 
-fdescribe('HearingVenueComponent', () => {
+describe('HearingVenueComponent', () => {
   let component: HearingVenueComponent;
   let fixture: ComponentFixture<HearingVenueComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
@@ -365,3 +366,4 @@ fdescribe('HearingVenueComponent', () => {
     fixture.destroy();
   });
 });
+

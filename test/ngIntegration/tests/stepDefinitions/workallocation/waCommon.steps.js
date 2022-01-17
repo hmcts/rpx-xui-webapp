@@ -20,7 +20,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
    const testData = require('../../../../e2e/config/appTestConfig');
     Given('I set MOCK with {string} release user and roles', async function (releaseUer,datatableroles ) {
-        const testUserIdamId = testData.users.filter(testUser => testUser.release === releaseUer)[0];
+        const testUserIdamId = testData.users[testData.testEnv].filter(testUser => testUser.release === releaseUer)[0];
         if (!testUserIdamId) {
             throw new Error("Provided release user is not configured in test data. " + releaseUer);
         }
@@ -35,7 +35,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Given('I set MOCK with {string} release user and roles {string}', async function (releaseUer, roles) {
-        const testUserIdamId = testData.users.filter(testUser => testUser.release === releaseUer)[0];
+        const testUserIdamId = testData.users[testData.testEnv].filter(testUser => testUser.release === releaseUer)[0];
         if (!testUserIdamId) {
             throw new Error("Provided release user is not configured in test data. " + releaseUer);
         }
@@ -63,7 +63,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Given('I set MOCK location for person of type {string} in release {string}', async function (userType, release, locationDetailsDataTable) {
-        const testUser = testData.users.filter(testUser => testUser.release === release)[0];
+        const testUser = testData.users[testData.testEnv].filter(testUser => testUser.release === release)[0];
         if (!testUser) {
             throw new Error("Provided release user is not configured in test data. " + release);
         }
@@ -94,7 +94,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
 
     Given('I set MOCK with user {string} and roles {string} with reference {string}', async function (useridentifier, roles,mockUserRef) {
-        const testUserIdamId = testData.users.filter(testUser => testUser.userIdentifier === useridentifier)[0];
+        const testUserIdamId = testData.users[testData.testEnv].filter(testUser => testUser.userIdentifier === useridentifier)[0];
         if (!testUserIdamId) {
             throw new Error("Provided user identifer is not configured in test data. " + releaseUer);
         }
@@ -122,7 +122,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Given('I set MOCK with user identifer {string} role type {string} and role identifiers {string}', async function (useridentifier,roleType ,roleIdentifiers) {
         const roles = [];
-        const testUserIdamId = testData.users.filter(testUser => testUser.userIdentifier === useridentifier)[0];
+        const testUserIdamId = testData.users[testData.testEnv].filter(testUser => testUser.userIdentifier === useridentifier)[0];
         if (!testUserIdamId) {
             throw new Error("Provided user identifer is not configured in test data. " + useridentifier);
         }

@@ -1,7 +1,7 @@
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { AlertService, CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { of } from 'rxjs';
 
@@ -109,21 +109,20 @@ const CASE_VIEW: CaseView = {
   ]
 };
 
-describe('TasksContainerComponent', () => {
+fdescribe('TasksContainerComponent', () => {
   const mockAlertService = jasmine.createSpyObj('alertService', ['success', 'setPreserveAlerts', 'error']);
   const mockWACaseService = jasmine.createSpyObj('waCaseService', ['getTasksByCaseId']);
+  const mockHttpService = jasmine.createSpyObj('mockHttpService', ['put', 'get', 'post']);
   let component: TasksContainerComponent;
   let fixture: ComponentFixture<TasksContainerComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [TaskAlertBannerComponent, TasksContainerComponent],
-      imports: [
-        HttpClientModule
-      ],
       providers: [
         {provide: AlertService, useValue: mockAlertService},
         {provide: WorkAllocationCaseService, useValue: mockWACaseService},
+        {provide: HttpClient, useValue: mockHttpService},
         {
           provide: ActivatedRoute,
           useValue: {
@@ -134,7 +133,8 @@ describe('TasksContainerComponent', () => {
                   caseworkers: null
                 },
                 case: CASE_VIEW
-              }
+              },
+              paramMap: convertToParamMap({cId: '1234567890123456'}),
             }
           }
         },
@@ -151,6 +151,7 @@ describe('TasksContainerComponent', () => {
   });
 
   it('should correctly show task alert when warnings are present', () => {
+    mockHttpService.get.and.returnValue(of(getMockTasks()));
     // as the mock tasks include a warning the task alert banner should be displayed
     expect(component.warningIncluded).toBe(true);
   });

@@ -34,7 +34,7 @@ const userInfo =
     "roles":["caseworker","caseworker-ia","caseworker-ia-caseofficer"],
     "token":"eXaMpLeToKeN"}`;
 
-describe('MyTasksComponent', () => {
+fdescribe('MyTasksComponent', () => {
   let component: MyTasksComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -43,7 +43,7 @@ describe('MyTasksComponent', () => {
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
-  const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
+  const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getCaseworkersForServices']);
   const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
@@ -78,7 +78,7 @@ describe('MyTasksComponent', () => {
     router = TestBed.get(Router);
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({tasks}));
-    mockCaseworkerService.getAll.and.returnValue(of([]));
+    mockCaseworkerService.getCaseworkersForServices.and.returnValue(of([]));
     const filterFields: FilterSetting = {
       id: 'locations',
       fields: [
@@ -95,9 +95,9 @@ describe('MyTasksComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should make a call to load tasks using the default search request', fakeAsync(() => {
+  it('should make a call to load tasks using the default search request', async(() => {
     component.ngOnInit();
-    tick(500);
+    // tick(500);
     fixture.detectChanges();
     const searchRequest = component.getSearchTaskRequestPagination();
     const payload = {searchRequest, view: component.view};

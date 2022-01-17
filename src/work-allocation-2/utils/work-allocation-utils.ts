@@ -86,7 +86,7 @@ export const handleTasksFatalErrors = (status: number, navigator: Navigator, fat
 };
 
 export const getAllCaseworkersFromServices = (caseworkersByService: CaseworkersByService[]): Caseworker[] => {
-  var allCaseworkers: Caseworker[] = [];
+  let allCaseworkers: Caseworker[] = [];
   caseworkersByService.forEach(caseworkerListByService => {
     allCaseworkers = allCaseworkers.concat(caseworkerListByService.caseworkers)
   });

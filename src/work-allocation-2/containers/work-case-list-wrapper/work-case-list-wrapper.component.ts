@@ -16,6 +16,7 @@ import { Caseworker } from '../../interfaces/common';
 import { Case, CaseFieldConfig, CaseServiceConfig, InvokedCaseAction } from '../../models/cases';
 import { SortField } from '../../models/common';
 import { Location, PaginationParameter, SearchCaseRequest, SortParameter } from '../../models/dtos';
+import { JudicialWorkerDataService } from '../../services/judicialworker-data.service';
 import {
   CaseworkerDataService,
   LocationDataService,
@@ -23,8 +24,7 @@ import {
   WorkAllocationCaseService
 } from '../../services';
 import { JurisdictionsService } from '../../services/juridictions.service';
-import { getAllCaseworkersFromServices, getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
-import { JudicialWorkerDataService } from '../../services/judicialworker-data.service';
+import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
   templateUrl: 'work-case-list-wrapper.component.html',
@@ -153,9 +153,9 @@ export class WorkCaseListWrapperComponent implements OnInit {
   }
 
   public setupCaseWorkers(): void {
-    const caseworkersByService$ = this.waSupportedJurisdictions$.switchMap(jurisdictions => 
+    const caseworkersByService$ = this.waSupportedJurisdictions$.switchMap(jurisdictions =>
       this.caseworkerService.getCaseworkersForServices(jurisdictions)
-    )
+    );
     // currently get caseworkers for all supported services
     // in future change, could get caseworkers by specific service from filter changes
     // however regrdless would likely need this initialisation

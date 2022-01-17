@@ -97,16 +97,17 @@ class CaseManager {
                 try {
                     await BrowserWaits.waitForSpinnerToDissappear();
                     await this.createCaseStartPage.clickStartButton();
+                    const nextPageUrl = await BrowserWaits.waitForPageNavigation(thisPageUrl); 
+                    isCaseStartPageDisplayed = true;
+                }
+                catch (err) {
                     const nextPageUrl = await BrowserWaits.waitForPageNavigation(thisPageUrl);
-                    if (nextPageUrl.includes("service-down") ){
-                        await browser.get(config.config.baseUrl +"cases/case-filter")
+                    if (nextPageUrl.includes("service-down")) {
+                        await browser.get(config.config.baseUrl + "cases/case-filter")
                         await cucumberReporter.AddScreenshot(global.screenShotUtils);
                         cucumberReporter.AddMessage("Service error occured Retrying again ");
                         throw new Error("Service error occured Retrying again ");
                     }
-                    isCaseStartPageDisplayed = true;
-                }
-                catch (err) {
                     cucumberReporter.AddMessage("Case start page not displayed in  30sec. Retrying again " + err);
                     startCasePageRetry++;
                 }
@@ -405,7 +406,8 @@ class CaseManager {
 
                     let uploadError = isStatusDisplayed || statusMessage.includes("error");
                     if (uploadError) {
-                        await ccdField.$('input.form-control').sendKeys("");
+                        var fileToUpload1 = path.resolve(__dirname, "../../../documents/dummy1.pdf");
+                        await ccdField.$('input.form-control').sendKeys(fileToUpload1);
 
                         throw new Error(`file upload error occured : Status message is displayed : ${isStatusDisplayed} : ${statusMessage}` );
                     }

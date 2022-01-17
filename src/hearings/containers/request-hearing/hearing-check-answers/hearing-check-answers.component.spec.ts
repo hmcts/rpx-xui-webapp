@@ -3,6 +3,7 @@ import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
 import {ACTION} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
+import {initialState} from '../hearing.store.state.test';
 import {HearingCheckAnswersComponent} from './hearing-check-answers.component';
 
 describe('CheckAnswersComponent', () => {
@@ -11,21 +12,6 @@ describe('CheckAnswersComponent', () => {
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
-
-  const initialState = {
-    hearings: {
-      hearingList: {
-        caseHearingMainModel: [
-          {
-            hmctsServiceID: 'SSCS'
-          }
-        ]
-      },
-      hearingValues: null,
-      hearingRequest: null,
-      hearingConditions: null,
-    }
-  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({

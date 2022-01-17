@@ -14,6 +14,7 @@ import {PartyUnavailabilityRange} from '../../../models/partyUnavilabilityRange.
 import {RefDataModel} from '../../../models/refData.model';
 import {HearingsService} from '../../../services/hearings.service';
 import {ValidatorsUtils} from '../../../utils/validators.utils';
+import {initialState} from '../hearing.store.state.test';
 import {HearingTimingComponent} from './hearing-timing.component';
 
 @Component({
@@ -44,21 +45,6 @@ describe('HearingTimingComponent', () => {
       parentKey: null,
     }];
 
-  const initialState = {
-    hearings: {
-      hearingList: {
-        caseHearingMainModel: [
-          {
-            hmctsServiceID: 'SSCS'
-          }
-        ]
-      },
-      hearingValues: null,
-      hearingRequest: null,
-      hearingConditions: null,
-    }
-  };
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule,
@@ -82,9 +68,6 @@ describe('HearingTimingComponent', () => {
       schemas: [NO_ERRORS_SCHEMA],
     })
       .compileComponents();
-  });
-
-  beforeEach(() => {
     mockStore = TestBed.get(Store);
     mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
     fixture = TestBed.createComponent(HearingTimingComponent);
@@ -246,6 +229,11 @@ describe('HearingTimingComponent', () => {
   it('should check date selection format', () => {
     component.checkFormData();
     expect(component.priorityForm.valid).toBeFalsy();
+  });
+
+  it('should check if form is valid', () => {
+    component.validationErrors = [];
+    expect(component.isFormValid()).toBeTruthy();
   });
 
   afterEach(() => {

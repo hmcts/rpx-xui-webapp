@@ -109,7 +109,7 @@ describe('AvailableTasksComponent', () => {
     fixture.destroy();
   });
 
-  fit('should make a call to load tasks using the default search request', fakeAsync(() => {
+  it('should make a call to load tasks using the default search request', fakeAsync(() => {
     component.ngOnInit();
     tick(500);
     fixture.detectChanges();
@@ -144,7 +144,7 @@ describe('AvailableTasksComponent', () => {
     expect(headerCells[headerCells.length - 1].textContent.trim()).toEqual('');
   });
 
-  fit('should not show the footer when there are tasks', fakeAsync(() => {
+  it('should not show the footer when there are tasks', fakeAsync(() => {
     component.ngOnInit();
     tick(500);
     fixture.detectChanges();

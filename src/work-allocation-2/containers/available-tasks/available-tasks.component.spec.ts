@@ -15,7 +15,7 @@ import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
 import { InformationMessage } from '../../models/comms';
 import * as dtos from '../../models/dtos';
 import { InvokedTaskAction, Task } from '../../models/tasks';
-import { CaseworkerDataService, LocationDataService, WorkAllocationTaskService } from '../../services';
+import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { getMockLocations, getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
@@ -51,10 +51,11 @@ describe('AvailableTasksComponent', () => {
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockFilterService = jasmine.createSpyObj('mockFilterService', ['getStream']);
-  const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getAll']);
+  const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getCaseworkersForServices']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
+  const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -76,7 +77,8 @@ describe('AvailableTasksComponent', () => {
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: AlertService, useValue: mockAlertService },
         { provide: LoadingService, useValue: mockLoadingService },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+        { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
@@ -92,8 +94,9 @@ describe('AvailableTasksComponent', () => {
         }
       ]
     };
-    mockCaseworkerDataService.getAll.and.returnValue(of([]));
+    mockCaseworkerDataService.getCaseworkersForServices.and.returnValue(of([]));
     mockFilterService.getStream.and.returnValue(of(filterFields));
+    mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['Service1', 'Service2']));
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({ tasks }));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
@@ -105,9 +108,9 @@ describe('AvailableTasksComponent', () => {
     fixture.destroy();
   });
 
-  fit('should make a call to load tasks using the default search request', async(() => {
+  fit('should make a call to load tasks using the default search request', fakeAsync(() => {
     component.ngOnInit();
-    // tick(500);
+    tick(500);
     fixture.detectChanges();
     expect(component.tasks).toBeDefined();
     expect(component.tasks.length).toEqual(2);
@@ -140,9 +143,9 @@ describe('AvailableTasksComponent', () => {
     expect(headerCells[headerCells.length - 1].textContent.trim()).toEqual('');
   });
 
-  fit('should not show the footer when there are tasks', async(() => {
-    // tick(500);
+  fit('should not show the footer when there are tasks', fakeAsync(() => {
     component.ngOnInit();
+    tick(500);
     fixture.detectChanges();
     const element = fixture.debugElement.nativeElement;
     const footerRow = element.querySelector('.footer-row');

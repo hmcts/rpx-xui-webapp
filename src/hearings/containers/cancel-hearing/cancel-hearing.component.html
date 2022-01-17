@@ -14,21 +14,21 @@
             <p class="govuk-body">Jane Smith vs DWP</p>
             <div class="govuk-form-group" 
             [ngClass]="{'govuk-form-group--error' : !selectionValid}">
-              <span *ngIf=" !selectionValid" 
-                  id="estimation-name-error" 
-                  class="govuk-error-message">
-                 <span class="govuk-visually-hidden">Select at least one valid reason</span>
-              </span>
               <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
                     <h1 class="govuk-fieldset__heading">
                       Why is this hearing being cancelled?
                     </h1>
                 </legend>
+                <span *ngIf=" !selectionValid" 
+                  id="estimation-name-error" 
+                  class="govuk-error-message">
+                 <span>{{ cancelHearingMessageEnum.SELECT_AT_LEAST_ONE_REASON }}</span>
+              </span>
                 <div class="govuk-hint">
                     Select all that apply.
                 </div>
-                <div class="govuk-checkboxes" formArrayName="reasons" data-module="govuk-checkboxes">
+                <div id="hearing-option-container" class="govuk-checkboxes" formArrayName="reasons" data-module="govuk-checkboxes">
                   <div class="govuk-checkboxes__item" *ngFor="let reason of hearingCancelOptions;index as pos" [formGroupName]="pos">
                     <input class="govuk-checkboxes__input" id="{{reason.key}}" name="pos" type="checkbox" formControlName="selected" [value]="reason.value_en">
                     <label class="govuk-label govuk-checkboxes__label" for="{{reason.key}}" >{{reason.value_en}}</label>

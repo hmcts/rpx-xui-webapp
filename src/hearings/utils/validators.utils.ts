@@ -5,16 +5,6 @@ import { HearingDateEnum } from '../models/hearings.enum';
 
 @Injectable({ providedIn: 'root' })
 export class ValidatorsUtils {
-  public customValidateArray(): ValidatorFn {
-    return (formArray: FormArray): { [key: string]: any } | null => {
-      let valid: boolean = true;
-      formArray.controls.forEach((x: FormControl) => {
-        valid = valid && x.value.value_en === true;
-      });
-      return valid ? null : { error: 'Not all a' };
-    };
-  }
-
   public numberLargerThanValidator(greaterThan: number): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const inputNumber = Number(control.value);

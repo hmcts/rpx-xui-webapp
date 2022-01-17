@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { HearingListMainModel } from '../models/hearingListMain.model';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
 import { ACTION } from '../models/hearings.enum';
@@ -34,6 +34,7 @@ export class HearingsService {
     if (ignore) {
       return this.http.put<HearingRequestMainModel>('api/hearings/cancelHearings?caseId=${caseId}`', hearingRequestMainModel);
     }
+    return of(null);
   }
 
   public submitHearingRequest(hearingRequestMainModel: HearingRequestMainModel): Observable<HearingRequestMainModel> {

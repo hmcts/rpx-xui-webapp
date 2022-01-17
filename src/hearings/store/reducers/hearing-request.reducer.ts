@@ -1,5 +1,6 @@
 import { HearingRequestStateData } from '../../models/hearingRequestStateData.model';
 import * as fromActions from '../actions';
+import { NAVIGATE_BEGINNING_CANCEL_REQUEST } from '../actions';
 
 export const initialHearingRequestState: HearingRequestStateData = {
   hearingRequestMainModel: {
@@ -23,7 +24,7 @@ export const initialHearingRequestState: HearingRequestStateData = {
       listingComments: null,
       hearingRequester: null,
       leadJudgeContractType: null,
-      cancelationReasion: []
+      cancelationReason: []
     },
     caseDetails: {
       hmctsServiceCode: null,
@@ -54,12 +55,12 @@ export function hearingRequestReducer(currentState = initialHearingRequestState,
         ...initialHearingRequestState
       };
     }
-    case fromActions.UPDATE_HEARING_REQUEST: {
+    case fromActions.NAVIGATE_BEGINNING_CANCEL_REQUEST:
+    case fromActions.UPDATE_HEARING_REQUEST:
       return {
         ...currentState,
         hearingRequestMainModel: action.payload
       };
-    }
     default: {
       return {
         ...currentState

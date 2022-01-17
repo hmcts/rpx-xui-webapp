@@ -4,6 +4,7 @@ import { HearingRequestMainModel } from '../../models/hearingRequestMain.model';
 import { ACTION } from '../../models/hearings.enum';
 import { HearingsService } from '../../services/hearings.service';
 import * as fromHearingStore from '../../store';
+import { NavigateBeginningCancelRequest } from '../../store/actions/hearing-request.action';
 
 export abstract class RequestHearingPageFlow {
   protected navigationSub: Subscription;

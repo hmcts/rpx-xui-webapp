@@ -34,6 +34,10 @@ export class CancelHearingComponent extends RequestHearingPageFlow implements On
     return ACTION;
   }
 
+  public get cancelHearingMessageEnum() {
+    return CancelHearingMessages;
+  }
+
   public ngOnInit(): void {
     this.hearingCancelOptions = this.route.snapshot.data.hearingCancelOptions;
     this.initForm();
@@ -49,7 +53,7 @@ export class CancelHearingComponent extends RequestHearingPageFlow implements On
       order: [val.order],
       parentKey: [val.parentKey],
       selected: [!!val.selected]
-    })), this.validatorsUtils.customValidateArray);
+    })));
   }
 
   public initForm(): void {
@@ -60,11 +64,13 @@ export class CancelHearingComponent extends RequestHearingPageFlow implements On
 
   public isFormValid(): boolean {
     this.selectionValid = true;
-    if (this.hearingCancelForm.valid) {
+    const isReasons = (this.hearingCancelForm.controls.reasons as FormArray).controls
+      .filter(reason => reason.value.selected === true).length > 0;
+    if (!isReasons) {
       this.validationErrors.push({
-        id: `sdsad`, message: CancelHearingMessages.NOT_SELECTED_A_REASON
+        id: `hearing-option-container`, message: CancelHearingMessages.NOT_SELECTED_A_REASON
       });
-      return this.selectionValid = false;
+      this.selectionValid = false;
     }
     return this.selectionValid;
   }
@@ -85,7 +91,7 @@ export class CancelHearingComponent extends RequestHearingPageFlow implements On
       ...this.hearingRequestMainModel,
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
-        cancelationReasion: this.getChosenReasons()
+        cancelationReason: this.getChosenReasons()
       }
     };
   }
@@ -93,8 +99,7 @@ export class CancelHearingComponent extends RequestHearingPageFlow implements On
   public getChosenReasons(): RefDataModel[] {
     const mappedReason: RefDataModel[] = [];
     const reasonChosen = (this.hearingCancelForm.controls.reasons as FormArray).controls
-      .filter(reason => reason.value.value_en === true);
-
+      .filter(reason => reason.value.selected === true);
     reasonChosen.forEach(element => {
       mappedReason.push({
         key: element.value.key,
@@ -106,7 +111,6 @@ export class CancelHearingComponent extends RequestHearingPageFlow implements On
         parentKey: element.value.parentKey,
       } as RefDataModel);
     });
-    console.log(reasonChosen);
     return mappedReason;
   }
 }

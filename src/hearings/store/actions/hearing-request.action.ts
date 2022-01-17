@@ -43,4 +43,6 @@ export type HearingRequestAction =
   | ResetHearingRequest
   | NavigateBackHearingRequest
   | UpdateHearingRequest
-  | SubmitHearingRequest;
+  | SubmitHearingRequest
+  | NavigateBeginningCancelRequest;
+

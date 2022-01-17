@@ -57,7 +57,7 @@ export class HearingRequestEffects {
   @Effect({ dispatch: false })
   public backBeginningNavigation$ = this.actions$.pipe(
     ofType(hearingRequestActions.NAVIGATE_BEGINNING_CANCEL_REQUEST),
-    map((action: hearingRequestActions.NavigateBackHearingRequest) => action.payload),
+    map((action: hearingRequestActions.NavigateBeginningCancelRequest) => action.payload),
     switchMap(payload => {
       return this.hearingsService.cancelHearingRequest(payload).pipe(
         tap(

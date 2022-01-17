@@ -13,7 +13,7 @@ import { SessionStorageService } from '../../../app/services';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { FieldType } from '../../enums';
 import { Task } from '../../models/tasks';
-import { CaseworkerDataService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
+import { CaseworkerDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockTasks } from '../../tests/utils.spec';
 import { MyTasksComponent } from './my-tasks.component';
 
@@ -48,6 +48,8 @@ fdescribe('MyTasksComponent', () => {
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
   const mockFilterService = jasmine.createSpyObj('mockFilterService', ['getStream']);
+  const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
+  
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -66,7 +68,8 @@ fdescribe('MyTasksComponent', () => {
         { provide: CaseworkerDataService, useValue: mockCaseworkerService },
         { provide: WorkAllocationFeatureService, useValue: mockFeatureService },
         { provide: LoadingService, useValue: mockLoadingService },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+        { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService }
       ]
     }).compileComponents();
   }));
@@ -88,7 +91,7 @@ fdescribe('MyTasksComponent', () => {
         }
       ]
     };
-
+    mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['Service1', 'Service2']));
     mockFilterService.getStream.and.returnValue(of(filterFields));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));

@@ -162,7 +162,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       lineBreakBefore: true,
       findPersonField: 'services',
       displayMinSelectedError: true,
-      minSelectedError: 'Enter a location',
+      minSelectedError: 'Search for a location by name',
       type: 'find-location'
     };
     if (this.route.snapshot.data && this.route.snapshot.data.location) {

@@ -32,6 +32,10 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     return ListConstants.View.AvailableTasks;
   }
 
+  public get emptyMessage(): string {
+    return ListConstants.EmptyMessage.AvailableTasks;
+  }
+
   /**
    * TODO: When implementing filtering this may need to be changed to get location(s) from filter
    * Override the default.

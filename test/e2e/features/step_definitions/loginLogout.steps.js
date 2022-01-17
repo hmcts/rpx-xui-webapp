@@ -312,7 +312,7 @@ defineSupportCode(function ({ Given, When, Then }) {
   Given('I am logged into Expert UI with test user identified as {string}', async function (testUserIdentifier) {
     const world = this;
 
-    const matchingUsers = testConfig.users.filter(user => user.userIdentifier === testUserIdentifier);
+    const matchingUsers = testConfig.users[testConfig.testEnv].filter(user => user.userIdentifier === testUserIdentifier);
     if (matchingUsers.length === 0 ){
       throw new Error(`Test user with identifier ${testUserIdentifier} is not found, check app test config anf fix test issue`);
     }

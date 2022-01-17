@@ -44,7 +44,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     cancelSetting: null
   };
   public allLocations: string[] = [];
-  public defaultLocations: any[] = [];
+  public defaultLocations: any[] = null;
   public defaultTypesOfWork: string[] = [];
   public fieldsSettings: FilterSetting = {
     id: TaskListFilterComponent.FILTER_NAME,

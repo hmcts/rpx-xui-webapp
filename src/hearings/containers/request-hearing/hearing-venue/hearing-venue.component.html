@@ -48,9 +48,9 @@
                       <span class="govuk-visually-hidden">Error:</span> Enter a valid location
                     </span>
                     <exui-search-location class="search-location"
-                      [selectedLocations$]="selectedLocations$"
+                      [selectedLocations]="selectedLocations"
                       [control]="findLocationFormGroup.controls.locationSelectedFormControl"
-                      [locations$]="locationsFound$"
+                      [displayedLocations]="displayedLocations"
                       [disabled]=false 
                       [serviceIds]="serviceIds"
                       [locationType]="'hearing'"></exui-search-location>
@@ -58,8 +58,8 @@
                         Add location
                     </a>
                   </div>
-                  <ul *ngIf="(selectedLocations$ | async)?.length" class="hmcts-filter-tags selection-container">
-                    <li class="location-selection"  *ngFor="let selection of selectedLocations$ | async">
+                  <ul *ngIf="selectedLocations.length" class="hmcts-filter-tags selection-container">
+                    <li class="location-selection"  *ngFor="let selection of selectedLocations">
                         <a class="hmcts-filter__tag" (click)="removeSelection(selection)" href="javascript:void(0)">    
                             {{ selection.court_name }}
                         </a>

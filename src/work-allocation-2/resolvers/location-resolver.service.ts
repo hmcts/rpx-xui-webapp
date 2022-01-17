@@ -4,11 +4,12 @@ import { select, Store } from '@ngrx/store';
 import { EMPTY } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 import { catchError, first, map, mergeMap } from 'rxjs/operators';
-import { CaseRoleDetails } from '../../role-access/models/case-role-details.interface';
+
 import { AppUtils } from '../../app/app-utils';
 import { UserDetails, UserRole } from '../../app/models/user-details.model';
 import * as fromRoot from '../../app/store';
 import * as fromCaseList from '../../app/store/reducers';
+import { CaseRoleDetails } from '../../role-access/models/case-role-details.interface';
 import { Caseworker, Location } from '../models/dtos';
 import { CaseworkerDataService } from '../services';
 import { JudicialWorkerDataService } from '../services/judicialworker-data.service';
@@ -19,7 +20,7 @@ import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../utils';
 })
 export class LocationResolver implements Resolve<Location> {
 
-  private userRole: string 
+  private userRole: string;
 
   constructor(
     private readonly store: Store<fromCaseList.State>,
@@ -61,7 +62,7 @@ export class LocationResolver implements Resolve<Location> {
         const worker = (workers as CaseRoleDetails[])[0];
         const jAppt = worker.appointments.find(appt => appt.location !== 'National' && appt.epimms_id && appt.epimms_id !== '');
         if (jAppt) {
-          return { id: jAppt.epimms_id, locationName: jAppt.location, services: [] }
+          return { id: jAppt.epimms_id, locationName: jAppt.location, services: [] };
         }
       }
       return null;
@@ -71,7 +72,7 @@ export class LocationResolver implements Resolve<Location> {
   private getJudicialWorkersOrCaseWorkers(userDetails: UserDetails): Observable<any[]> {
     const id = userDetails.userInfo.id ? userDetails.userInfo.id : userDetails.userInfo.uid;
     this.userRole = AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
-    let jurisdictions: string[] = [];
+    const jurisdictions: string[] = [];
     userDetails.roleAssignmentInfo.forEach(roleAssignment => {
       const roleJurisdiction = roleAssignment.jurisdiction;
       if (roleJurisdiction && !jurisdictions.includes(roleJurisdiction)) {

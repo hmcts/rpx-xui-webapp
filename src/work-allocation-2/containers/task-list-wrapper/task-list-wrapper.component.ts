@@ -21,7 +21,7 @@ import {
   WASupportedJurisdictionsService,
   WorkAllocationTaskService
 } from '../../services';
-import { getAllCaseworkersFromServices, getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
+import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html',
@@ -169,9 +169,9 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public setupTaskList() {
-    const caseworkersByService$ = this.waSupportedJurisdictions$.switchMap(jurisdictions => 
+    const caseworkersByService$ = this.waSupportedJurisdictions$.switchMap(jurisdictions =>
       this.caseworkerService.getCaseworkersForServices(jurisdictions)
-    )
+    );
     // similar to case list wrapper changes
     caseworkersByService$.subscribe(caseworkers => {
       this.caseworkers = caseworkers;

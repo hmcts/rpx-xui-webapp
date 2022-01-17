@@ -8,9 +8,9 @@ describe('Task Resolver', () => {
 
   it('resolves on success', () => {
     const mockService = jasmine.createSpyObj('WorkAllocationTaskService', ['getTask']);
-    const mockCaseWorkerService = jasmine.createSpyObj('CaseworkerDataService', ['getAll']);
+    const mockCaseWorkerService = jasmine.createSpyObj('CaseworkerDataService', ['getCaseworkersForServices']);
     mockService.getTask.and.returnValue(of(null));
-    mockCaseWorkerService.getAll.and.returnValue(of([] as Caseworker[]));
+    mockCaseWorkerService.getCaseworkersForServices.and.returnValue(of([] as Caseworker[]));
     const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
     const taskResolver = new TaskResolver(mockService, mockRouter, mockCaseWorkerService);
     const route = jasmine.createSpyObj('Route', ['']);

@@ -63,7 +63,8 @@ export async function handlePostRoleAssignments(path: string, payload: any, req:
     return response;
 }
 
-export async function handleCaseWorkersForServicesPost(path: string, payloads: CaseworkerPayload [], req: EnhancedRequest): Promise<ServiceCaseworkerData[]> {
+export async function handleCaseWorkersForServicesPost(path: string, payloads: CaseworkerPayload [], req: EnhancedRequest):
+ Promise<ServiceCaseworkerData[]> {
     const headers = setHeaders(req);
     headers.pageNumber = 0;
     headers.size = MAX_RECORDS;
@@ -75,7 +76,7 @@ export async function handleCaseWorkersForServicesPost(path: string, payloads: C
         if (response.data.roleAssignmentResponse.length >= MAX_RECORDS) {
             logger.warn('Case workers now returning MAX_RECORDS', response.data.roleAssignmentResponse.length);
         }
-        const caseworkerService = { jurisdiction: payload.attributes.jurisdiction[0], data: response.data }
+        const caseworkerService = { jurisdiction: payload.attributes.jurisdiction[0], data: response.data };
         data.push(caseworkerService);
     }
     return data;
@@ -114,6 +115,6 @@ export function getUserIdsFromJurisdictionRoleResponse(response: any): string []
         jurisdictionRoleResponse.data.roleAssignmentResponse.forEach(roleAssignment => {
             userIds = [...userIds, roleAssignment.actorId];
         });
-    })
+    });
     return userIds;
 }

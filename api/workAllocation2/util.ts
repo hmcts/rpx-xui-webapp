@@ -140,7 +140,8 @@ export function assignActionsToCases(cases: any[], isAllocator: boolean): any[] 
   return casesWithActions;
 }
 
-export function getSessionCaseworkerInfo(serviceIds: string[], caseworkersByServices: CaseworkersByService[]): [string[], CaseworkersByService[]] {
+export function getSessionCaseworkerInfo(serviceIds: string[], caseworkersByServices: CaseworkersByService[]):
+ [string[], CaseworkersByService[]] {
   const caseworkersInSession: CaseworkersByService[] = [];
   const servicesNotInSession: string[] = [];
   serviceIds.forEach(thisService => {
@@ -154,7 +155,8 @@ export function getSessionCaseworkerInfo(serviceIds: string[], caseworkersByServ
   return [servicesNotInSession, caseworkersInSession];
 }
 
-export function getCaseworkerDataForServices(caseWorkerData: CaseworkerApi[], roleAssignmentsByService: ServiceCaseworkerData[]): CaseworkersByService[] {
+export function getCaseworkerDataForServices(caseWorkerData: CaseworkerApi[], roleAssignmentsByService: ServiceCaseworkerData[]):
+ CaseworkersByService[] {
   const allNewCaseworkersByService: CaseworkersByService[] = [];
   roleAssignmentsByService.forEach(roleAssignmentByService => {
     const roleAssignmentResponse = roleAssignmentByService.data.roleAssignmentResponse;
@@ -226,7 +228,7 @@ export function prepareRoleApiRequest(jurisdictions: string[], locationId?: numb
   return payload;
 }
 
-export function prepareRoleApiRequestForServices(jurisdictions: string[], roles: Role[], locationId?: number): CaseworkerPayload [] {
+export function prepareServiceRoleApiRequest(jurisdictions: string[], roles: Role[], locationId?: number): CaseworkerPayload[] {
   // note that this could be moved to index method if required
   const roleIds = getRoleIdsFromRoles(roles);
   const payloads: CaseworkerPayload[] = [];
@@ -244,7 +246,7 @@ export function prepareRoleApiRequestForServices(jurisdictions: string[], roles:
       validAt: Date.UTC,
     };
     payloads.push(payload);
-  })
+  });
   return payloads;
 }
 
@@ -550,7 +552,7 @@ export function getSubstantiveRoles(roleAssignments: RoleAssignment[]): RoleAssi
 // Note: array type may need to be changed depending on where pagination called
 export function paginate<T>(array: T[], pageNumber: number, pageSize: number): T[] {
   return array.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
-};
+}
 
 export function removeEmptyValues(searchRequests: SearchTaskParameter[]): SearchTaskParameter[] {
   return searchRequests.filter((searchRequest: SearchTaskParameter) => searchRequest.values && searchRequest.values.length > 0);

@@ -1,6 +1,6 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, ViewChild } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
@@ -105,9 +105,9 @@ describe('AvailableTasksComponent', () => {
     fixture.destroy();
   });
 
-  it('should make a call to load tasks using the default search request', fakeAsync(() => {
+  fit('should make a call to load tasks using the default search request', async(() => {
     component.ngOnInit();
-    tick(500);
+    // tick(500);
     fixture.detectChanges();
     expect(component.tasks).toBeDefined();
     expect(component.tasks.length).toEqual(2);
@@ -140,8 +140,8 @@ describe('AvailableTasksComponent', () => {
     expect(headerCells[headerCells.length - 1].textContent.trim()).toEqual('');
   });
 
-  it('should not show the footer when there are tasks', fakeAsync(() => {
-    tick(500);
+  fit('should not show the footer when there are tasks', async(() => {
+    // tick(500);
     component.ngOnInit();
     fixture.detectChanges();
     const element = fixture.debugElement.nativeElement;

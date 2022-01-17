@@ -58,14 +58,14 @@ import {
   preparePaginationUrl,
   preparePostTaskUrlAction,
   prepareRoleApiRequest,
-  prepareRoleApiRequestForServices,
   prepareRoleApiUrl,
   prepareSearchTaskUrl,
   prepareTaskSearchForCompletable,
   removeEmptyValues,
   searchCasesById,
   getSessionCaseworkerInfo,
-  getSubstantiveRoles
+  getSubstantiveRoles,
+  prepareServiceRoleApiRequest
 } from './util';
 
 caseServiceMock.init();
@@ -142,8 +142,8 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     // filter out task type from search parameters as not currently available until release 2.1
     searchRequest.search_parameters = searchRequest.search_parameters.filter(
       searchParam => searchParam.key !== 'taskType'
-    )
-    const sortParam = searchRequest.sorting_parameters.find(sort => sort.sort_by === 'created_date')
+    );
+    const sortParam = searchRequest.sorting_parameters.find(sort => sort.sort_by === 'created_date');
     if (sortParam) {
       sortParam.sort_by = 'dueDate';
     }
@@ -232,7 +232,7 @@ export async function getAllCaseWorkers(req: EnhancedRequest, res: Response, nex
 /**
  * Get All CaseWorkers
  */
- export async function getCaseWorkersFromServices(req: EnhancedRequest, res: Response, next: NextFunction) {
+export async function getCaseWorkersFromServices(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
     const caseworkersByService: CaseworkersByService[] = await retrieveCaseWorkersForServices(req, res);
     res.status(200);
@@ -258,6 +258,7 @@ export async function retrieveAllCaseWorkers(req: EnhancedRequest, res: Response
   return caseWorkerReferenceData;
 }
 
+// similar as above but checks services
 export async function retrieveCaseWorkersForServices(req: EnhancedRequest, res: Response): Promise<CaseworkersByService[]> {
   const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
   const jurisdictions = req.body.serviceIds as string [];
@@ -279,7 +280,7 @@ export async function retrieveCaseWorkersForServices(req: EnhancedRequest, res: 
   const roleResponse = await getAllRoles(req); // get the roles from the endpoint
   const roles: Role[] = roleResponse.data;
 
-  const payloads: CaseworkerPayload[] = prepareRoleApiRequestForServices(newJurisdictions, roles);
+  const payloads: CaseworkerPayload[] = prepareServiceRoleApiRequest(newJurisdictions, roles);
   const data: ServiceCaseworkerData[] = await handleCaseWorkersForServicesPost(roleApiPath, payloads, req);
   const userIds = getUserIdsFromJurisdictionRoleResponse(data);
   if (userIds.length === 0) {
@@ -292,7 +293,7 @@ export async function retrieveCaseWorkersForServices(req: EnhancedRequest, res: 
   // note have to merge any new service caseworker data for full session as well as services specified in params
   req.session.caseworkersByService = req.session && req.session.caseworkersByService ?
    [...req.session.caseworkersByService, ...caseWorkerReferenceData] : caseWorkerReferenceData;
-  const fullCaseworkerByServiceInfo = [...caseWorkerReferenceData, ...sessionCaseworkersByService]
+  const fullCaseworkerByServiceInfo = [...caseWorkerReferenceData, ...sessionCaseworkersByService];
   return fullCaseworkerByServiceInfo;
 }
 

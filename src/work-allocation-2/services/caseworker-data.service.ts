@@ -11,7 +11,6 @@ import { getAllCaseworkersFromServices, getSessionStorageKeyForServiceId, setCas
 export class CaseworkerDataService {
   public static caseWorkerUrl: string = '/workallocation2/caseworker';
   public static caseWorkerForServices: string = 'workallocation2/retrieveCaseWorkersForServices';
-  public static caseWorkerForSpecificService: string = 'workallocation2/retrieveCaseWorkersForSpecificService';
   public static caseworkersKey: string = 'caseworkers';
   public constructor(private readonly http: HttpClient, private readonly sessionStorageService: SessionStorageService) {}
 
@@ -28,13 +27,13 @@ export class CaseworkerDataService {
     const storedServices = [];
     const newServices = [];
     const storedCaseworkersByService = [];
-    serviceIds.forEach(service => {
-      const serviceKey = getSessionStorageKeyForServiceId(service);
+    serviceIds.forEach(serviceId => {
+      const serviceKey = getSessionStorageKeyForServiceId(serviceId);
       if (this.sessionStorageService.getItem(serviceKey)) {
-        storedServices.push(service);
-        storedCaseworkersByService.push({service: service, caseworkers: JSON.parse(this.sessionStorageService.getItem(serviceKey))});
+        storedServices.push(serviceId);
+        storedCaseworkersByService.push({service: serviceId, caseworkers: JSON.parse(this.sessionStorageService.getItem(serviceKey))});
       } else {
-        newServices.push(service);
+        newServices.push(serviceId);
       }
     });
     // if all services are stored then return the stored caseworkers by service
@@ -46,10 +45,10 @@ export class CaseworkerDataService {
       tap(caseworkersByService => {
         caseworkersByService.forEach(caseworkerListByService => {
           // for any new service, ensure that they are then stored in the session
-          if(newServices.includes(caseworkerListByService.service)) {
+          if (newServices.includes(caseworkerListByService.service)) {
             setCaseworkers(caseworkerListByService.service, caseworkerListByService.caseworkers, this.sessionStorageService);
           }
-        })
+        });
       }),
       map(caseworkersByService => {
         return getAllCaseworkersFromServices(caseworkersByService);

@@ -11,5 +11,5 @@ export interface ServiceCaseworkerData {
     jurisdiction: string;
     data: {
         roleAssignmentResponse: RoleAssignment[];
-    }
+    };
 }

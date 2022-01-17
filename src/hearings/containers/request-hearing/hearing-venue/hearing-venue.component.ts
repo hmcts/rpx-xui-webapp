@@ -1,14 +1,14 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
-import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
-import { Store } from '@ngrx/store';
-import { HearingErrorMessage } from 'api/hearings/models/hearings.enum';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {SearchLocationComponent} from '@hmcts/rpx-xui-common-lib';
+import {LocationByEPIMSModel} from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import {Store} from '@ngrx/store';
+import {HearingErrorMessage} from 'api/hearings/models/hearings.enum';
 import * as fromHearingStore from '../../../../hearings/store';
-import { HearingLocationModel } from '../../../models/hearingLocation.model';
-import { ACTION } from '../../../models/hearings.enum';
-import { HearingsService } from '../../../services/hearings.service';
-import { RequestHearingPageFlow } from '../request-hearing.page.flow';
+import {HearingLocationModel} from '../../../models/hearingLocation.model';
+import {ACTION} from '../../../models/hearings.enum';
+import {HearingsService} from '../../../services/hearings.service';
+import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-venue',
@@ -50,12 +50,12 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
       this.hearingRequestMainModel.hearingDetails.hearingLocations.length) {
       this.selectedLocations =
         this.hearingRequestMainModel.hearingDetails.hearingLocations.map(hearingLocationModel => {
-        return {
-          epims_id: hearingLocationModel.locationId,
-          court_name: hearingLocationModel.locationName,
-          region: hearingLocationModel.region
-        } as LocationByEPIMSModel;
-      });
+          return {
+            epims_id: hearingLocationModel.locationId,
+            court_name: hearingLocationModel.locationName,
+            region: hearingLocationModel.region
+          } as LocationByEPIMSModel;
+        });
     }
   }
 
@@ -63,7 +63,6 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
     if (this.findLocationFormGroup.controls.locationSelectedFormControl.value) {
       this.appendLocation(this.selectedLocations);
       this.validationErrors = [];
-
     } else {
       this.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
       this.setLocationError(HearingErrorMessage.ENTER_A_VALID_LOCATION);
@@ -72,7 +71,7 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
 
   private setLocationError(message: string) {
     this.findLocationFormGroup.controls.locationSelectedFormControl.markAsDirty();
-    this.validationErrors.push({ id: 'input-selected-location-label', message });
+    this.validationErrors.push({id: 'input-selected-location-label', message});
   }
 
   public appendLocation(selectedLocations: LocationByEPIMSModel[]) {
@@ -118,7 +117,7 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
   }
 
   public prepareHearingRequestData(): void {
-    const outcome = this.selectedLocations.filter(x => x.region && x.region.toLowerCase() === 'wales').length ? { region: 'Wales' } : { region: 'other' };
+    const outcome = this.selectedLocations.filter(x => x.region && x.region.toLowerCase() === 'wales').length ? {region: 'Wales'} : {region: 'other'};
     this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(outcome));
     const locations: HearingLocationModel[] = this.selectedLocations.map(locationByEPIMSModel => {
       return {

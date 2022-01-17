@@ -21,7 +21,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   numberOfPhysicalAttendees: 2,
   hearingInWelshFlag: false,
   hearingLocations: [
-    '196538'
+    '196538', '219164'
   ],
   facilitiesRequired: [],
   listingComments: '',

@@ -50,3 +50,10 @@ export function getAccessManagementServiceAPIOverrides(accessManagementAPI) {
         ...defaultConfig,
     }
 }
+
+export function getJudicialRefDataAPIOverrides(judicialRefApiUrl) {
+    return {
+        "services.case.judicialApi": judicialRefApiUrl,
+        ...defaultConfig,
+    }
+}

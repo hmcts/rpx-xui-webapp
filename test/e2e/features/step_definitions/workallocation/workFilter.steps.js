@@ -38,7 +38,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             const afterClickButtonText = await myWorkPage.showHideWorkFilterBtn.getText();
             reportLogger.AddMessage(`Button text after click "${afterClickButtonText}"`);
 
-            expect(afterClickButtonText.toLowerCase().includes(filterStateTo)).to.be.false;
+            expect(afterClickButtonText.toLowerCase().includes(filterStateTo.toLowerCase())).to.be.false;
 
         } );
     });

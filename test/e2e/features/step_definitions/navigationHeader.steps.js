@@ -39,8 +39,14 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     When('I click on primary navigation header tab {string}, I see selected tab page displayed', async function (headerTabLabel) {
         await browserWaits.retryWithActionCallback(async () => {
-            await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
-            expect(await headerPage.isPrimaryTabPageDisplayed(headerTabLabel)).to.be.true
+            try{
+                await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
+                expect(await headerPage.isPrimaryTabPageDisplayed(headerTabLabel)).to.be.true
+            }catch(err){
+                await headerPage.clickManageCases();
+                throw new Error(err);
+            }
+            
         });
     });
 

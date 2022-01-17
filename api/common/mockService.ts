@@ -19,7 +19,7 @@ export async function handleGet(path: string, req: EnhancedRequest): Promise<Axi
   try {
     logger.info('handle get method', path);
     const headers = setHeaders(req);
-    return await httpMock.get(path, { headers });
+    return await httpMock.get(path, {headers});
   } catch (e) {
     exists(e, 'message') ? logger.error(e.message) : logger.error('Error in get response');
     throw e;
@@ -40,7 +40,7 @@ export async function handlePost<T>(path: string, body: T, req: EnhancedRequest)
   try {
     logger.info('handle post method', path);
     const headers = setHeaders(req);
-    return await httpMock.post(path, body, { headers });
+    return await httpMock.post(path, body, {headers});
   } catch (e) {
     exists(e, 'message') ? logger.error(e.message) : logger.error('Error in post response');
     throw e;
@@ -60,7 +60,7 @@ export async function handlePut<T>(path: string, body: T, req: EnhancedRequest):
   try {
     logger.info('handle put method', path);
     const headers = setHeaders(req);
-    return await httpMock.put(path, body, { headers });
+    return await httpMock.put(path, body, {headers});
   } catch (e) {
     exists(e, 'message') ? logger.error(e.message) : logger.error('Error in put response');
     throw e;

@@ -54,7 +54,11 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
               private readonly filterService: FilterService,
               private readonly locationService: LocationDataService,
               private readonly router: Router) {
-    if (this.router.getCurrentNavigation() && this.router.getCurrentNavigation().extras.state.location) {
+
+    if (this.router.getCurrentNavigation()
+        && this.router.getCurrentNavigation().extras
+        && this.router.getCurrentNavigation().extras.state
+        && this.router.getCurrentNavigation().extras.state.location) {
       this.bookingLocations = this.router.getCurrentNavigation().extras.state.location.ids;
     }
   }

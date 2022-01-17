@@ -9,8 +9,7 @@ Feature: Verify new entry timestamp
   Scenario Outline: User adds a new comment to a case and timestamp shows current time
         When I click on Case list
         Then I am on case list page
-        When I select search criteria jurisdiction "<Jurisdiction>" case type "<CaseType>" state "Any" in case list page
-        When I click search Apply in case list page
+        When I select search criteria jurisdiction "<Jurisdiction>" case type "<CaseType>" state "Any" in case list page and click apply
         Then I wait to see case results displayed
         When I open first case in search results
         Then I see case details page

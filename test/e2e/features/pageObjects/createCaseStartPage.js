@@ -76,7 +76,7 @@ class CreateCaseStartPage {
       await BrowserWaits.waitForElement(this.caseCaseFilterContainer);
       return true;
     }catch(err){
-      CucumberRepprter.AddMessage("Create case page not displayed "+err.message+" : "+err.stack);
+      await CucumberRepprter.AddMessage("Create case page not displayed "+err.message+" : "+err.stack);
       return false;
     }
 

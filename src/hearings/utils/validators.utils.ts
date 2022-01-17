@@ -1,10 +1,20 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, ValidatorFn } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, ValidatorFn } from '@angular/forms';
 import * as moment from 'moment';
 import { HearingDateEnum } from '../models/hearings.enum';
 
 @Injectable({ providedIn: 'root' })
 export class ValidatorsUtils {
+  public customValidateArray(): ValidatorFn {
+    return (formArray: FormArray): { [key: string]: any } | null => {
+      let valid: boolean = true;
+      formArray.controls.forEach((x: FormControl) => {
+        valid = valid && x.value.value_en === true;
+      });
+      return valid ? null : { error: 'Not all a' };
+    };
+  }
+
   public numberLargerThanValidator(greaterThan: number): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const inputNumber = Number(control.value);

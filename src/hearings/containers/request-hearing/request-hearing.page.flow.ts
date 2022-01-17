@@ -1,16 +1,17 @@
-import {select, Store} from '@ngrx/store';
-import {Subscription} from 'rxjs';
-import {HearingRequestMainModel} from '../../models/hearingRequestMain.model';
-import {ACTION} from '../../models/hearings.enum';
-import {HearingsService} from '../../services/hearings.service';
+import { select, Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { HearingRequestMainModel } from '../../models/hearingRequestMain.model';
+import { ACTION } from '../../models/hearings.enum';
+import { HearingsService } from '../../services/hearings.service';
 import * as fromHearingStore from '../../store';
 
 export abstract class RequestHearingPageFlow {
   protected navigationSub: Subscription;
   protected hearingRequestMainModel: HearingRequestMainModel;
 
-  public constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
-                     protected readonly hearingsService: HearingsService) {
+  public constructor(
+    protected readonly hearingStore: Store<fromHearingStore.State>,
+    protected readonly hearingsService: HearingsService) {
     this.navigationSub = this.hearingsService.navigateAction$.subscribe(
       (action: ACTION) => this.executeAction(action)
     );
@@ -23,7 +24,10 @@ export abstract class RequestHearingPageFlow {
   public navigateAction(action: ACTION): void {
     switch (action) {
       case ACTION.BACK:
-        this.hearingStore.dispatch(new fromHearingStore.NavigateBackHearingRequest());
+        this.hearingStore.dispatch(new fromHearingStore.NavigateBackHearingRequest(this.hearingRequestMainModel));
+        break;
+      case ACTION.CANCEL:
+        this.hearingStore.dispatch(new fromHearingStore.NavigateBeginningCancelRequest(this.hearingRequestMainModel));
         break;
       case ACTION.CONTINUE:
         this.hearingStore.dispatch(new fromHearingStore.UpdateHearingRequest(this.hearingRequestMainModel));

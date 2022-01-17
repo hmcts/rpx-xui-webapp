@@ -1,5 +1,5 @@
 import { NextFunction, Response } from 'express';
-import { handleGet, handlePost } from '../common/mockService';
+import { handleGet, handlePost, handlePut } from '../common/mockService';
 import { getConfigValue } from '../configuration';
 import { SERVICES_HEARINGS_COMPONENT_API, SERVICES_PRD_API_URL } from '../configuration/references';
 import * as mock from '../hearings/hearing.mock';
@@ -9,6 +9,7 @@ import { HearingListMainModel } from './models/hearingListMain.model';
 import { hearingStatusMappings } from './models/hearingStatusMappings';
 import { RefDataByCategoryModel, RefDataByServiceModel } from './models/refData.model';
 import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
+import { HearingListModel } from './models/hearingList.model';
 
 mock.init();
 
@@ -98,7 +99,22 @@ export async function submitHearingRequest(req: EnhancedRequest, res: Response, 
   const reqBody = req.body;
   const markupPath: string = `${hearingsUrl}/hearing`;
   try {
-    const {status, data}: { status: number, data: ServiceHearingValuesModel } = await handlePost(markupPath, reqBody, req);
+    const { status, data }: { status: number, data: ServiceHearingValuesModel } = await handlePost(markupPath, reqBody, req);
+    res.status(status).send(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
+
+/**
+ * submitHearingRequest - submit hearing request
+ */
+export async function updateHearingRequest(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const reqBody = req.body;
+  const markupPath: string = `${hearingsUrl}/hearing`;
+  try {
+    const { status, data }: { status: number, data: HearingListModel } = await handlePut(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     next(error);

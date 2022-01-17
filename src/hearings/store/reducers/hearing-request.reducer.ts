@@ -1,4 +1,4 @@
-import {HearingRequestStateData} from '../../models/hearingRequestStateData.model';
+import { HearingRequestStateData } from '../../models/hearingRequestStateData.model';
 import * as fromActions from '../actions';
 
 export const initialHearingRequestState: HearingRequestStateData = {
@@ -23,6 +23,7 @@ export const initialHearingRequestState: HearingRequestStateData = {
       listingComments: null,
       hearingRequester: null,
       leadJudgeContractType: null,
+      cancelationReasion: []
     },
     caseDetails: {
       hmctsServiceCode: null,
@@ -46,7 +47,7 @@ export const initialHearingRequestState: HearingRequestStateData = {
 };
 
 export function hearingRequestReducer(currentState = initialHearingRequestState,
-                                      action: fromActions.HearingRequestAction): HearingRequestStateData {
+  action: fromActions.HearingRequestAction): HearingRequestStateData {
   switch (action.type) {
     case fromActions.RESET_HEARING_REQUEST: {
       return {

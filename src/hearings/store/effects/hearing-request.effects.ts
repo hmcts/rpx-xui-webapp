@@ -1,16 +1,16 @@
-import {Injectable} from '@angular/core';
-import {Router} from '@angular/router';
-import {Actions, Effect, ofType} from '@ngrx/effects';
-import {Action, select, Store} from '@ngrx/store';
-import {Observable, of} from 'rxjs';
-import {catchError, map, switchMap, tap} from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Action, select, Store } from '@ngrx/store';
+import { Observable, of } from 'rxjs';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import * as fromAppStoreActions from '../../../app/store/actions';
-import {HttpError} from '../../../models/httpError.model';
-import {ScreenNavigationModel} from '../../models/screenNavigation.model';
-import {HearingsService} from '../../services/hearings.service';
+import { HttpError } from '../../../models/httpError.model';
+import { ScreenNavigationModel } from '../../models/screenNavigation.model';
+import { HearingsService } from '../../services/hearings.service';
 import * as fromHearingReducers from '../../store/reducers';
 import * as fromHearingSelectors from '../../store/selectors';
-import {AbstractPageFlow} from '../../utils/abstract-page-flow';
+import { AbstractPageFlow } from '../../utils/abstract-page-flow';
 import * as hearingRequestActions from '../actions/hearing-request.action';
 
 @Injectable()
@@ -46,6 +46,31 @@ export class HearingRequestEffects {
     })
   );
 
+  // @Effect({ dispatch: false })
+  // public backBeginningNavigation$ = this.actions$.pipe(
+  //   ofType(hearingRequestActions.NAVIGATE_BEGINNING_CANCEL_REQUEST),
+  //   tap(() => {
+  //     return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']).then();
+  //   })
+  // );
+
+  @Effect({ dispatch: false })
+  public backBeginningNavigation$ = this.actions$.pipe(
+    ofType(hearingRequestActions.NAVIGATE_BEGINNING_CANCEL_REQUEST),
+    map((action: hearingRequestActions.NavigateBackHearingRequest) => action.payload),
+    switchMap(payload => {
+      return this.hearingsService.cancelHearingRequest(payload).pipe(
+        tap(
+          () => {
+            return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']).then();
+          }),
+        catchError(error => {
+          return HearingRequestEffects.handleError(error);
+        })
+      );
+    })
+  );
+
   @Effect({ dispatch: false })
   public continueNavigation$ = this.actions$.pipe(
     ofType(hearingRequestActions.UPDATE_HEARING_REQUEST),
@@ -74,7 +99,7 @@ export class HearingRequestEffects {
 
   public static handleError(error: HttpError): Observable<Action> {
     if (error && error.status && error.status >= 400) {
-      return of(new fromAppStoreActions.Go({path: ['/service-down']}));
+      return of(new fromAppStoreActions.Go({ path: ['/service-down'] }));
     }
   }
 }

@@ -12,7 +12,7 @@ import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Task } from '../../models/tasks';
-import { CaseworkerDataService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
+import { CaseworkerDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListWrapperComponent } from './task-list-wrapper.component';
 
@@ -30,6 +30,7 @@ xdescribe('TaskListWrapperComponent', () => {
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
   const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getAll']);
+  const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
   const mockFilterService: any = {
     getStream: () => of(null),
     get: () => SELECTED_LOCATIONS,
@@ -61,7 +62,8 @@ xdescribe('TaskListWrapperComponent', () => {
         { provide: LoadingService, useValue: mockLoadingService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: FilterService, useValue: mockFilterService },
-        { provide: CaseworkerDataService, useValue: mockCaseworkerDataService }
+        { provide: CaseworkerDataService, useValue: mockCaseworkerDataService },
+        { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(TaskListWrapperComponent);
@@ -72,6 +74,7 @@ xdescribe('TaskListWrapperComponent', () => {
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockCaseworkerDataService.getAll.and.returnValue(of([]));
     mockSessionStorageService.getItem.and.returnValue('1');
+    mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of([]));
     fixture.detectChanges();
   }));
 

@@ -10,7 +10,7 @@ import Request from '../utils/request';
 const workAllocationDataModels = require('../../../dataModels/workAllocation');
 
 describe('Work allocation Release 2: Find person', () => {
-    const caseOfficer = 'xui_auto_co_r2@justice.gov.uk';
+    const caseOfficer = config.users.caseOfficer_r2;
     const caseofficerPass = 'Welcome01';
 
     beforeEach(function () {

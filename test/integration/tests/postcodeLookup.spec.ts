@@ -3,10 +3,11 @@ import { expect } from 'chai';
 import { getXSRFToken } from './utils/authUtil'
 import Request from './utils/request';
 import { setTestContext } from './utils/helper';
+const config = require('./config/config').config;
 
 
 describe('CCD Endpoints', () => {
-    const userName = 'lukesuperuserxui@mailnesia.com';
+    const userName = config.users.solicitor;
     const password = 'Monday01';
 
     // const userName = 'peterxuisuperuser@mailnesia.com';

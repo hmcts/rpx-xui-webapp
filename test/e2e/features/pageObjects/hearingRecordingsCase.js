@@ -1,7 +1,7 @@
 
 var BrowserWaits = require("../../support/customWaits");
 var CcdFields = require("./common/ccdFields");
-
+const caseDetailsPage = require('../pageObjects/caseDetailsPage');
 class HearingRecordingsCase {
 
     constructor() {
@@ -29,6 +29,7 @@ class HearingRecordingsCase {
       await BrowserWaits.waitForElementClickable(this.submitBtn);
       await BrowserWaits.retryWithActionCallback(async () => {
         await this.submitBtn.click();
+        expect(await caseDetailsPage.amOnPage()).to.be.true
       });
     }
 

@@ -147,11 +147,11 @@ fdescribe('TasksContainerComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TasksContainerComponent);
     component = fixture.componentInstance;
+    mockHttpService.get.and.returnValue(of(getMockTasks()));
     fixture.detectChanges();
   });
 
   it('should correctly show task alert when warnings are present', () => {
-    mockHttpService.get.and.returnValue(of(getMockTasks()));
     // as the mock tasks include a warning the task alert banner should be displayed
     expect(component.warningIncluded).toBe(true);
   });

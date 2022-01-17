@@ -42,7 +42,7 @@ class MockLocationSearchContainerComponent {
 }
 
 
-describe('HearingVenueComponent', () => {
+fdescribe('HearingVenueComponent', () => {
   let component: HearingVenueComponent;
   let fixture: ComponentFixture<HearingVenueComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);

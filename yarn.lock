@@ -448,10 +448,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.9.0-EUI-4785-mandatory-validation-fix":
-  version "4.9.0-EUI-4785-mandatory-validation-fix"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.9.0-EUI-4785-mandatory-validation-fix.tgz#b9d52b0768334fef95b6f19b0f474f2814e1c8b8"
-  integrity sha512-LCo82ePSLfjQmgKKdgTOys24z3nMEvY50zgu+KS6yfn0EO5vBc396CpNtpmPEnGGA822sq9ZcWB7Qkrme1va3g==
+"@hmcts/ccd-case-ui-toolkit@4.9.0-EUI-4785-mandatory-field-validation":
+  version "4.9.0-EUI-4785-mandatory-field-validation"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.9.0-EUI-4785-mandatory-field-validation.tgz#4ac232d7ab7568cef008fd85399a9bd6794c8778"
+  integrity sha512-YcHsOTxSov7/MuV8diXFA/SPF3ftYWOhbXYRkcMsP8WtCk6BeId9kWZ0x1h2JFLIvbBO1eiKszpezDjMDMcsZQ==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

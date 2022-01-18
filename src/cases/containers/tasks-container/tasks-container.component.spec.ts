@@ -162,4 +162,8 @@ describe('TasksContainerComponent', () => {
     component.onTaskRefreshRequired();
     expect(component.tasks.length).toEqual(1);
   });
+
+  afterAll(() => {
+    TestBed.resetTestingModule();
+  });
 });

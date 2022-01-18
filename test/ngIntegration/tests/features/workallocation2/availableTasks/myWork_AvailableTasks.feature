@@ -63,7 +63,7 @@ Feature: WA Release 2: My work -  Available tasks
 
 
     Scenario: Available Tasks sort column persist in session with Caseworker user
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "ccaseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer ,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer ,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions | Count |

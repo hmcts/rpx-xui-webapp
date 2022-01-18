@@ -1,9 +1,8 @@
-import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
-import { PersonRole } from '@hmcts/rpx-xui-common-lib';
+import { getOptions } from '../../../work-allocation-2/utils';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { RoleCategory } from '../../../role-access/models';
@@ -24,9 +23,9 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
   public description: string = 'Which role type are you reassigning the task to?';
   public submitted: boolean = true;
   public optionsList: OptionsModel[];
-  public roles = TaskAssignmentChooseRoleComponent.getOptions();
   public taskRoles: TaskRole[] = [];
   public form: FormGroup;
+  public roles: OptionsModel[];
 
   constructor(private readonly fb: FormBuilder,
               private readonly router: Router,
@@ -48,19 +47,12 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
     return url;
   }
 
-  private static getOptions(): OptionsModel[] {
-    return [
-      {optionId: RoleCategory.JUDICIAL, optionValue: RoleCategory.JUDICIAL, label: PersonRole.JUDICIAL},
-      {optionId: RoleCategory.LEGAL_OPERATIONS, optionValue: RoleCategory.LEGAL_OPERATIONS, label: PersonRole.CASEWORKER},
-      {optionId: RoleCategory.ADMIN, optionValue: RoleCategory.ADMIN, label: PersonRole.ADMIN}
-    ];
-  }
-
   public ngOnInit(): void {
+    this.taskRoles = this.route.snapshot.data.roles;
+    this.roles = getOptions(this.taskRoles);
     const isJudicial = this.isCurrentUserJudicial();
     const taskId = this.route.snapshot.paramMap.get('taskId');
     this.verb = this.route.snapshot.data.verb;
-    this.taskRoles = this.route.snapshot.data.roles;
     this.setCaptionAndDescription(this.verb);
     this.form = this.fb.group({
       role: [this.setUpDefaultRoleType(isJudicial, this.taskRoles), Validators.required],

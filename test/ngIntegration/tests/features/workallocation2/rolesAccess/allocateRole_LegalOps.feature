@@ -1,6 +1,6 @@
-@ng @known_bug @EUI-4803  
+@ng @known_bug @EUI-4803
 Feature: WA Release 2: Roles and access - Allocate and Remove Role Legal Ops (EUI-4803)
-        https://tools.hmcts.net/jira/browse/EUI-3800
+    https://tools.hmcts.net/jira/browse/EUI-3800
 
     Background: Case details setup
         Given I set MOCK case details with reference "caseDetails"
@@ -29,8 +29,8 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role Legal Ops (EU
             | 08a3d216-c6ab-4e92-a7e3-ca3661e6be82 | admin2      | a        | admin_user2@gov.uk      | ADMIN            |
 
         Given I set MOCK case roles
-            | name        | roleCategory     | roleName     | email                   | start | end |
-           
+            | name | roleCategory | roleName | email | start | end |
+
     Scenario: Roles and access - LegalOps user allocates role - Allocate role, reserve to me for duration Indefinite
 
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,task-supervisor,case-allocator" with reference "userDetails"
@@ -269,12 +269,13 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role Legal Ops (EU
 
         Then I see Allocate role work flow page "Check your answers" with caption "Allocate a legal ops case manager" is displayed
 
-        Then I see Check your answers page has total 3 questions
+        Then I see Check your answers page has total 4 questions
         Then I see Check your answers page has questions and answers with change link
-            | Question         | Answer                  |
-            | Type of role     | Case manager            |
-            | Duration of role | Indefinite              |
-            | Person           | caseworker_user1@gov.uk |
+            | Question                          | Answer                     |
+            | Type of role                      | Case manager               |
+            | Who the role will be allocated to | Allocate to another person |
+            | Duration of role                  | Indefinite                 |
+            | Person                            | caseworker_user1@gov.uk    |
 
         When I click button with label "Confirm allocation" in work flow  Check your answers page
         Then I see case details page displayed with tab "Roles and access" selected

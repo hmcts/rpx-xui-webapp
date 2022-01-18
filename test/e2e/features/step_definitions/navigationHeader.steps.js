@@ -22,7 +22,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     When('I click on primary navigation header {string}', async function (headerTabLabel) {
         await browserWaits.retryWithActionCallback(async () => {
-            await headerPage.clickTabWithText(headerTabLabel);
+            try{
+                await headerPage.clickTabWithText(headerTabLabel);
+            }catch(err){
+                await headerPage.refreshBrowser(); 
+                throw new Error(err);
+            }
         }, 'Click header tab with text ' + headerTabLabel);
        
     });
@@ -43,12 +48,13 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I click on primary navigation header tab {string}, I see selected tab page displayed', async function (headerTabLabel) {
+
         await browserWaits.retryWithActionCallback(async () => {
             try{
                 await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
                 expect(await headerPage.isPrimaryTabPageDisplayed(headerTabLabel)).to.be.true
             }catch(err){
-                await headerPage.clickManageCases();
+                await headerPage.refreshBrowser();
                 throw new Error(err);
             }
             
@@ -92,7 +98,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 }
                 softAssert.finally();
             }catch(err){
-                await browser.get(config.config.baseUrl);
+                await headerPage.refreshBrowser();
                 throw new Error(err);
             }
            

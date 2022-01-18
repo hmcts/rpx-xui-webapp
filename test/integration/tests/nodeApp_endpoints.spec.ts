@@ -6,10 +6,11 @@ import { setTestContext } from './utils/helper';
 
 const nodeAppDataModels = require('../../dataModels/nodeApp')
 const testUsers = require('../../e2e/config/appTestConfig');
+const config = require('./config/config').config;
 
 describe('nodeApp endpoint', () => {
-  const userName = 'lukesuperuserxui@mailnesia.com';
-  const password = 'Monday01';
+  const userName = config.users[config.testEnv].solicitor.e;
+  const password = config.users[config.testEnv].solicitor.sec;
 
   // const userName = 'peterxuisuperuser@mailnesia.com';
   // const password = 'Monday01';
@@ -25,7 +26,7 @@ describe('nodeApp endpoint', () => {
   it('external/configuration-ui', async () => {
     const response = await Request.get('external/configuration-ui', null, 200);
     expect(response.status).to.equal(200);
-    expect(response.data).to.have.all.keys('clientId', 'idamWeb', 'launchDarklyClientId', 'oAuthCallback', 'oidcEnabled', 'protocol', 'ccdGatewayUrl','substantiveEnabled');
+    expect(response.data).to.have.all.keys(config.configuratioUi[config.testEnv]);
     expect(response.data.launchDarklyClientId).to.equal('5de6610b23ce5408280f2268');
     expect(response.data.clientId).to.equal('xuiwebapp');
   });
@@ -69,7 +70,7 @@ describe('nodeApp endpoint', () => {
 
   // it('api/user/details role-assignment case allocator *****(to be enabled: localtionInfo on access-management integration)****', async () => {
 
-  //   const matchingUsers = testUsers.users.filter(user => user.userIdentifier === 'IAC_Judge_WA_R2_CaseAllocator');
+  //   const matchingUsers = testUsers.users['aat'].filter(user => user.userIdentifier === 'IAC_Judge_WA_R2_CaseAllocator');
   //   if (matchingUsers.length === 0){
   //     throw new Error(`Users details with identfier "IAC_Judge_WA_R2_CaseAllocator" not found in test user config`);
   //   }

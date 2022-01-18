@@ -732,9 +732,9 @@ describe('workAllocation.utils', () => {
 
     it('should get correct actions for available tasks for certain permissions', () => {
       expect(getActionsByPermissions('AvailableTasks', [TaskPermission.CANCEL, TaskPermission.MANAGE]))
-        .to.deep.equal([CLAIM, CLAIM_AND_GO]);
-      expect(getActionsByPermissions('AvailableTasks', [TaskPermission.EXECUTE])).to.deep.equal([]);
-      expect(getActionsByPermissions('AvailableTasks', [TaskPermission.MANAGE, TaskPermission.CANCEL]))
+        .to.deep.equal([]);
+      expect(getActionsByPermissions('AvailableTasks', [TaskPermission.EXECUTE])).to.deep.equal([CLAIM, CLAIM_AND_GO]);
+      expect(getActionsByPermissions('AvailableTasks', [TaskPermission.MANAGE, TaskPermission.EXECUTE, TaskPermission.CANCEL]))
         .to.deep.equal([CLAIM, CLAIM_AND_GO]);
     });
 
@@ -742,6 +742,12 @@ describe('workAllocation.utils', () => {
       expect(getActionsByPermissions('AllWorkAssigned', [TaskPermission.MANAGE])).to.deep.equal([GO, REASSIGN, RELEASE]);
       expect(getActionsByPermissions('AllWorkAssigned', [TaskPermission.EXECUTE])).to.deep.equal([COMPLETE]);
       expect(getActionsByPermissions('AllWorkUnassigned', [TaskPermission.MANAGE, TaskPermission.EXECUTE]))
+        .to.deep.equal([ASSIGN, COMPLETE, GO]);
+      // EUI-5046 - ensure test includes check that own gives correct actions as well
+      expect(getActionsByPermissions('AllWorkUnassigned', [TaskPermission.MANAGE, TaskPermission.OWN]))
+        .to.deep.equal([ASSIGN, COMPLETE, GO]);
+      // ensure that in unlikely scenario of below that no duplication occurs
+      expect(getActionsByPermissions('AllWorkUnassigned', [TaskPermission.MANAGE, TaskPermission.EXECUTE, TaskPermission.OWN]))
         .to.deep.equal([ASSIGN, COMPLETE, GO]);
     });
 
@@ -751,8 +757,7 @@ describe('workAllocation.utils', () => {
       expect(getActionsByPermissions('ActiveTasksAssignedCurrentUser', [
         TaskPermission.MANAGE, TaskPermission.EXECUTE])).to.deep.equal([CLAIM, REASSIGN, RELEASE]);
       expect(getActionsByPermissions('ActiveTasksAssignedCurrentUser', [
-        TaskPermission.MANAGE, TaskPermission.EXECUTE, TaskPermission.OWN,
-      ])).to.deep.equal([CLAIM, REASSIGN, RELEASE]);
+        TaskPermission.MANAGE, TaskPermission.EXECUTE, TaskPermission.OWN])).to.deep.equal([CLAIM, REASSIGN, RELEASE]);
 
       expect(getActionsByPermissions('ActiveTasksAssignedOtherUser', [TaskPermission.MANAGE])).to.deep.equal([REASSIGN, RELEASE]);
       expect(getActionsByPermissions('ActiveTasksAssignedOtherUser', [TaskPermission.EXECUTE])).to.deep.equal([]);
@@ -837,7 +842,7 @@ describe('workAllocation.utils', () => {
         type: 'example',
         case_type_id: 'Asylum',
         case_data: {
-          appealType: 'Asylum',
+          hmctsCaseCategory: 'Asylum',
           caseManagementLocation: {
             baseLocation: '001',
           },
@@ -850,25 +855,26 @@ describe('workAllocation.utils', () => {
         case_type_id: 'Test',
         jurisdiction: 'IA',
         case_data: {
-          appealType: 'Test',
+          hmctsCaseCategory: 'Test',
           caseManagementLocation: {
             baseLocation: '001',
           },
         },
       },
     ];
-    const mockRoleAssignment: RoleAssignment[] = [{
-      id: '1',
-      actorId: 'person1',
-      roleName: 'example-role',
-      endTime: new Date('01-01-2022'),
-      beginTime: new Date('01-01-2021'),
-      roleCategory: 'LEGAL_OPERATIONS',
-      attributes: {
-        caseId: '123',
-        primaryLocation: '001',
+    const mockRoleAssignment: RoleAssignment[] = [
+      {
+        id: '1',
+        actorId: 'person1',
+        roleName: 'example-role',
+        endTime: new Date('01-01-2022'),
+        beginTime: new Date('01-01-2021'),
+        roleCategory: 'LEGAL_OPERATIONS',
+        attributes: {
+          caseId: '123',
+          primaryLocation: '001',
+        },
       },
-    },
       {
         id: '2',
         actorId: 'person1',
@@ -924,7 +930,8 @@ describe('workAllocation.utils', () => {
         endDate: new Date('01-01-2022'),
         assignee: 'person1',
         role_category: 'LEGAL_OPERATIONS',
-      }];
+      }
+    ];
     it('should return empty list if there is nothing given', () => {
       expect(mapCasesFromData(null, null, null)).to.deep.equal([]);
       expect(mapCasesFromData(null, firstRoleAssignment, null)).to.deep.equal([]);
@@ -1307,7 +1314,7 @@ describe('workAllocation.utils', () => {
               },
               'appealReferenceNumber': 'HU/50152/2021',
               'isRemissionsEnabled': 'No',
-              'appealType': 'refusalOfHumanRights',
+              'hmctsCaseCategory': 'refusalOfHumanRights',
               'appellantNationalities': [
                 {
                   'id': '1',
@@ -1373,7 +1380,7 @@ describe('workAllocation.utils', () => {
                 'values': [],
               },
               'appellantGivenNames': 'Joe',
-              'appealType': 'protection',
+              'hmctsCaseCategory': 'protection',
               'appellantTitle': 'Mr',
               'appellantNationalities': [
                 {
@@ -1427,7 +1434,7 @@ describe('workAllocation.utils', () => {
               'uploadAddendumEvidenceActionAvailable': 'No',
               'appealReferenceNumber': 'PA/50015/2019',
               'appellantGivenNames': 'James',
-              'appealType': 'protection',
+              'hmctsCaseCategory': 'protection',
               'appellantFamilyName': 'Bond',
               'hearingCentre': 'taylorHouse',
               'caseName': 'PA/50015/2019-Bond',

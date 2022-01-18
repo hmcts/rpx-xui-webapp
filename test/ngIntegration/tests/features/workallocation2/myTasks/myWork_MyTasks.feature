@@ -1,10 +1,9 @@
-@ng 
+@ng @test
 Feature: WA Release 2: My work - My Tasks
 
     Background: Mock and browser setup
         Given I init MockApp
 
-    @ignore
     Scenario Outline:  My Tasks, colums and column links for "<UserType>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
@@ -19,7 +18,7 @@ Feature: WA Release 2: My work - My Tasks
             | test_cw_4@test.com | cw4       | test     | 1234-1234-1234-1234 | 10004       | Location 4            |
             | test_cw_5@test.com | cw5       | test     | 1234-1234-1234-1235 | 10005       | Location 5            |
         Given I set MOCK tasks with attributes for view "My tasks"
-            | index | permissions                | assignee            | case_name | location_name   | task_title       | due_date | created_date | case_category        |
+            | index | permissions                | assignee            | case_name | location_name   | task_title       | dueDate | created_date | case_category        |
             | 0     | Manage,Read,Execute,Cancel | 1234-1234-1234-1231 | case 1    | test location 1 | test auto task 1 | -1      | -10          | auto test category 1 |
             | 1     | Manage                     | 1234-1234-1234-1231 | case 2    | test location 2 | test auto task 2 | 0       | -10          | auto test category 2 |
             | 2     | Read                       | 1234-1234-1234-1231 | case 3    | test location 3 | test auto task 3 | 1       | -10          | auto test category 3 |
@@ -64,6 +63,7 @@ Feature: WA Release 2: My work - My Tasks
         When I click on primary navigation header tab "My work", I see selected tab page displayed
         When I click task column link "Task" at row 1
         Then I see case details page
+        Then I validate case details task tab page is displayed
         Examples:
             | UserIdentifier     | UserType   | Roles                                              |
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |

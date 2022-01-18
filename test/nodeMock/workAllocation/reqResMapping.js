@@ -46,16 +46,11 @@ module.exports = {
             res.send(workAllocationMockData.exclusions);
         },
         '/workallocation2/case/task/:caseid': (req,res) => {
-            const tasks = [
-                { task_title: 'task 1', dueDate: -1, created_date: -10, permissions: "Own,Execute,Manage" , warnings:"true",assignee:"soneone"},
-                { task_title: 'task 2', dueDate: 0, created_date: -10, permissions: "Own,Execute,Manage", warnings: "true", assignee: "soneone" },
-                { task_title: 'task 3', dueDate: 1, created_date: -10, permissions: "Own,Execute,Manage", warnings: "true", assignee: "soneone"},
-                { task_title: 'task 4', dueDate: 10, created_date: -10, permissions: "Own,Execute,Manage", warnings: "true", assignee: "soneone" }
-            ];
-            res.send(workAllocationMockData.getCaseTasks(tasks));
+            
+            res.send(workAllocationMockData.caseTasks);
         },
         '/workallocation2/judicialworker' : (req,res) => {
-            res.send(workAllocationMockData.getJudicialList(20));
+            res.send(workAllocationMockData.judgeUsers);
         },
         '/api/wa-supported-jurisdiction/get': (req,res) => {
             res.send(['IA']);
@@ -223,9 +218,8 @@ module.exports = {
             res.status(204).send();
         },
         '/workallocation2/findPerson': (req, res) => {
-            workAllocationMockData.findPersonResponse(req.body.searchOptions.searchTerm, null).then((response) =>{
-                res.send(response);
-            });
+               res.send(workAllocationMockData.findPersonResponse(req.body.searchOptions));
+        
             
         },
         '/api/user/exclusions/confirm' : (req,res)=>{

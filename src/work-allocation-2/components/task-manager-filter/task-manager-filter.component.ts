@@ -244,10 +244,10 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    if (this.appStoreSub) {
+    if (this.appStoreSub && !this.appStoreSub.closed) {
       this.appStoreSub.unsubscribe();
     }
-    if (this.filterSub) {
+    if (this.filterSub && !this.filterSub.closed) {
       this.filterSub.unsubscribe();
     }
   }

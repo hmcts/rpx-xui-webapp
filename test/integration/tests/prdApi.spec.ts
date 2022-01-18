@@ -9,11 +9,9 @@ import { setTestContext } from './utils/helper';
 
 
 describe('Case share ', () => {
-    const userName = 'lukesuperuserxui@mailnesia.com';
-    const password = 'Monday01';
+    const userName = config.users[config.testEnv].solicitor.e;
+    const password = config.users[config.testEnv].solicitor.sec;
 
-    // const userName = 'peterxuisuperuser@mailnesia.com';
-    // const password = 'Monday01';
     beforeEach(function () {
         this.timeout(120000);
 

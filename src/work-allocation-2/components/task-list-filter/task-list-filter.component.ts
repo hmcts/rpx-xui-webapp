@@ -55,7 +55,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   public toggleFilter = false;
   public errorSubscription: Subscription;
   private subscription: Subscription;
-  private sub: Subscription;
+  private selectedLocationsSubscription: Subscription;
 
   /**
    * Accept the SessionStorageService for adding to and retrieving from sessionStorage.
@@ -104,7 +104,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   }
 
   public subscribeToSelectedLocationsAndTypesOfWork(): void {
-    this.sub = this.filterService.getStream(TaskListFilterComponent.FILTER_NAME)
+    this.selectedLocationsSubscription = this.filterService.getStream(TaskListFilterComponent.FILTER_NAME)
       .pipe(
         filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
       )
@@ -119,15 +119,15 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    if (this.subscription) {
+    if (this.subscription && !this.subscription.closed) {
       this.subscription.unsubscribe();
     }
 
-    if (this.sub) {
-      this.sub.unsubscribe();
+    if (this.selectedLocationsSubscription && !this.selectedLocationsSubscription.closed) {
+      this.selectedLocationsSubscription.unsubscribe();
     }
 
-    if (this.errorSubscription) {
+    if (this.errorSubscription && !this.errorSubscription.closed) {
       this.errorSubscription.unsubscribe();
     }
   }

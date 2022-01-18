@@ -7,7 +7,12 @@ class NodeApp{
         return {
             "canShareCases": false,
             "roleAssignmentInfo": [
-                this.getUserDetailsLocationInfo()
+                {
+                    ...this.getUserDetailsLocationInfo(),
+                    caseId:'',
+                    caseType:''
+                }
+                
             ],
             "sessionTimeout": {
                 "idleModalDisplayTime": 10,
@@ -63,10 +68,10 @@ class NodeApp{
         const location = Math.floor((Math.random() * 100009) + 10001);
         const isCaseAllocator = Math.floor((Math.random() * 1) + 0) === 0 ? false : true;
         return {
-            "primaryLocation": location,
+            // "primaryLocation": location,
             "jurisdiction": "IA",
             "isCaseAllocator": true,
-            "substantive" : true
+            // "substantive" : true
         }
     }
 

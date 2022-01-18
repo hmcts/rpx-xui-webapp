@@ -1,7 +1,7 @@
-@fullfunctional 
+@__fullfunctional 
 Feature: WA Release 2: : Work allocations My work, All work
 
-    Scenario Outline: View tasks, E2E journey of Caseworker-ia-officer user
+    Scenario Outline: View tasks, E2E journey of "<useridentifier>" user
         When I navigate to Expert UI Url
         Given I am logged into Expert UI with test user identified as "<useridentifier>"
         Then I validate I am on My work page
@@ -58,15 +58,14 @@ Feature: WA Release 2: : Work allocations My work, All work
         Then I validate work allocation cases table columns displayed
             | ColumnHeader  |
             | Case name     |
-            | Jurisdiction  |
+            | Service  |
             | Case category |
             | Case role     |
             | Start         |
             | End           |
 
 
-    Scenario: My work tabs
-
+    Scenario: All work tabs
         When I navigate to Expert UI Url
         Given I am logged into Expert UI with test user identified as "IAC_CaseOfficer_R2"
         Then I validate I am on My work page
@@ -92,27 +91,13 @@ Feature: WA Release 2: : Work allocations My work, All work
             | Location      |
             | Role          |
             | Person        |
-
-
-
-    Scenario: Case details WA Tabs
-
-        When I navigate to Expert UI Url
-        Given I am logged into Expert UI with test user identified as "IAC_CaseOfficer_R2"
-        Then I validate I am on My work page
-        When I click on primary navigation header tab "Case list", I see selected tab page displayed
-
-        When I select search criteria jurisdiction "Immigration & Asylum" case type "Appeal* RIA-4747" state "Any" in case list page and click apply
-        When I open first case in case list page
-        Then I see case details page
-
-        Then I see case details tab label "Tasks" is displayed is "true"
-        When I click tab with label "Tasks" in case details page
-        Then I validate case details task tab page is displayed
-
-
-        Then I see case details tab label "Roles and access" is displayed is "true"
-        When I click tab with label "Roles and access" in case details page
-        Then I see Roles and access page is displayed
-
+        When I navigate to My work sub navigation tab "Cases"
+        Then I validate work allocation cases table columns displayed
+            | ColumnHeader  |
+            | Case name     |
+            | Service       |
+            | Case category |
+            | Case role     |
+            | Start         |
+            | End           |
 

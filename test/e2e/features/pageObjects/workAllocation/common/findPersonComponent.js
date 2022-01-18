@@ -66,14 +66,17 @@ class FindPersonComponent{
     }
 
     async getPersonsReturned(){
-        const results = this.searchResultsContainer.$$(".mat-option-text");
-        const resultCount = await results.count();
-        const resulttexts = [];
-        for(let i = 0; i < resultCount; i++){
-            const resultItem = await results.get(i);
-            resulttexts.push(await resultItem.getText());
-        }
-        return resulttexts;
+        return await BrowserWaits.retryWithActionCallback(async () => {
+            const results = this.searchResultsContainer.$$(".mat-option-text");
+            const resultCount = await results.count();
+            const resulttexts = [];
+            for (let i = 0; i < resultCount; i++) {
+                const resultItem = await results.get(i);
+                resulttexts.push(await resultItem.getText());
+            }
+            return resulttexts;
+        });
+        
     }
 
     getResultElementWithText(resulttext){

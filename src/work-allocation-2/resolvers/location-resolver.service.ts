@@ -6,6 +6,7 @@ import { EMPTY } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 import { catchError, first, map, mergeMap } from 'rxjs/operators';
 import { LocationModel } from '../../../api/locations/models/location.model';
+
 import { AppUtils } from '../../app/app-utils';
 import { UserDetails, UserRole } from '../../app/models';
 import * as fromRoot from '../../app/store';
@@ -19,6 +20,8 @@ import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../utils';
   providedIn: 'root'
 })
 export class LocationResolver implements Resolve<LocationModel> {
+
+  private userRole: string;
 
   constructor(
     private readonly store: Store<fromCaseList.State>,
@@ -69,8 +72,15 @@ export class LocationResolver implements Resolve<LocationModel> {
 
   private getJudicialWorkersOrCaseWorkers(userDetails: UserDetails): Observable<any[]> {
     const id = userDetails.userInfo.id ? userDetails.userInfo.id : userDetails.userInfo.uid;
-    const role = AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
-    return role === UserRole.LegalOps ? this.caseworkerDataService.getAll() : this.judicialWorkerDataService.getCaseRolesUserDetails([id]);
+    this.userRole = AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
+    const jurisdictions: string[] = [];
+    userDetails.roleAssignmentInfo.forEach(roleAssignment => {
+      const roleJurisdiction = roleAssignment.jurisdiction;
+      if (roleJurisdiction && !jurisdictions.includes(roleJurisdiction)) {
+        jurisdictions.push(roleJurisdiction);
+      }
+    })
+    return this.userRole === UserRole.Judicial ? this.judicialWorkerDataService.getCaseRolesUserDetails([id]) : this.caseworkerDataService.getCaseworkersForServices(jurisdictions);
   }
 
   private getLocations(location: Location): Observable<LocationModel> {

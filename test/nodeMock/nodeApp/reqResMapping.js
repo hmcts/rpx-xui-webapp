@@ -31,7 +31,7 @@ module.exports = {
 
         '/api/user/details': (req, res) => {
             setTimeout(() => {
-                reportLogger.AddJson(nodeAppMockData.userDetails);
+                // reportLogger.AddJson(nodeAppMockData.userDetails.userInfo);
                 res.send(nodeAppMockData.userDetails);
 
             },1) 

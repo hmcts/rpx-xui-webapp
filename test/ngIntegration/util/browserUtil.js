@@ -156,6 +156,15 @@ class BrowserUtil{
             element);
     }
 
-}
+    async getFromSessionStorage(key){
+        return await browser.executeScript('return window.sessionStorage["'+key+'"]',
+            key);
+    }
 
+    async getFromLocalStorage(key) {
+        return await browser.executeScript('return window.localStorage["' + key + '"]',
+            key);
+    }
+
+}
 module.exports = new BrowserUtil();

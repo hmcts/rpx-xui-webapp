@@ -13,6 +13,8 @@ const customReporter = require('../../e2e/support/reportLogger');
 
 const isParallelExecution = argv.parallel ? argv.parallel=== "true" : true;
 
+process.env['TEST_URL'] = argv.debug ? 'http://localhost:3000/' : 'http://localhost:4200/'
+
 const chromeOptArgs = [ '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'];
 
 const perfLoggingPrefs = {
@@ -67,7 +69,7 @@ const config = {
     framework: 'custom',
     frameworkPath: require.resolve('protractor-cucumber-framework'),
     specs: ['../tests/features/**/*.feature'],
-    baseUrl: argv.debug ? 'http://localhost:3000/': 'http://localhost:4200/',
+    baseUrl: process.env['TEST_URL'] ,
     params: {
 
     },

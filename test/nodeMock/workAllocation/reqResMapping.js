@@ -107,7 +107,7 @@ module.exports = {
                 res.status(500).send({ error: 'mock error occured', stack: e.stack });
             }
         },
-        '/workallocation/task/': (req, res) => {
+        '/workallocation/task': (req, res) => {
 
             if (req.body.view === "MyTasks"){
                 res.send(workAllocationMockData.getMyTasks(10));
@@ -119,7 +119,7 @@ module.exports = {
                 throw new Error("Unrecognised task list view : "+req.body.view);
             }
         },
-        '/workallocation2/task/': (req, res) => {
+        '/workallocation2/task': (req, res) => {
             const pageNum = req.body.searchRequest.pagination_parameters.page_number;
             const pageSize = req.body.searchRequest.pagination_parameters.page_size;
 
@@ -142,7 +142,7 @@ module.exports = {
                 res.status(500).send({ error: 'mock error occured', stack: e.stack });
             }
         },
-        '/workallocation/taskWithPagination/': (req, res) => {
+        '/workallocation/taskWithPagination': (req, res) => {
             const pageNum = req.body.searchRequest.pagination_parameters.page_number;
             const pageSize = req.body.searchRequest.pagination_parameters.page_size;
 
@@ -164,7 +164,7 @@ module.exports = {
                 res.status(500).send({ error: 'mock error occured', stack: e.stack });
             }
         },
-        '/workallocation2/taskWithPagination/': (req, res) => {
+        '/workallocation2/taskWithPagination': (req, res) => {
             const pageNum = req.body.searchRequest.pagination_parameters.page_number;
             const pageSize = req.body.searchRequest.pagination_parameters.page_size;
 

@@ -1,16 +1,17 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { provideMockStore } from '@ngrx/store/testing';
-import { of } from 'rxjs';
-import { HearingJudgeNamesListComponent } from '../../../../hearings/components';
-import { RefDataModel } from '../../../../hearings/models/refData.model';
-import { ACTION, HearingJudgeSelectionEnum, RadioOptions } from '../../../models/hearings.enum';
-import { HearingsService } from '../../../services/hearings.service';
-import { HearingJudgeComponent } from './hearing-judge.component';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {NO_ERRORS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {ReactiveFormsModule} from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
+import {provideMockStore} from '@ngrx/store/testing';
+import {of} from 'rxjs';
+import {HearingJudgeNamesListComponent} from '../../../components';
+import {ACTION, HearingJudgeSelectionEnum, RadioOptions} from '../../../models/hearings.enum';
+import {RefDataModel} from '../../../models/refData.model';
+import {HearingsService} from '../../../services/hearings.service';
+import {initialState} from '../hearing.store.state.test';
+import {HearingJudgeComponent} from './hearing-judge.component';
 
 describe('HearingJudgeComponent', () => {
   let component: HearingJudgeComponent;
@@ -30,28 +31,13 @@ describe('HearingJudgeComponent', () => {
       parentKey: null,
     }];
 
-  const initialState = {
-    hearings: {
-      hearingList: {
-        caseHearingMainModel: [
-          {
-            hmctsServiceID: 'SSCS'
-          }
-        ]
-      },
-      hearingValues: null,
-      hearingRequest: null,
-      hearingConditions: null,
-    }
-  };
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
       declarations: [HearingJudgeComponent, HearingJudgeNamesListComponent],
       providers: [
-        provideMockStore({ initialState }),
-        { provide: HearingsService, useValue: hearingsService },
+        provideMockStore({initialState}),
+        {provide: HearingsService, useValue: hearingsService},
         {
           provide: ActivatedRoute,
           useValue: {
@@ -83,7 +69,7 @@ describe('HearingJudgeComponent', () => {
 
   it('should check form data', () => {
     component.excludedJudge = childComponent;
-    component.excludedJudge.validationError = { id: 'elementId', message: 'Error Message' };
+    component.excludedJudge.validationError = {id: 'elementId', message: 'Error Message'};
     component.checkFormData();
     component.showExcludeJudgeError();
     expect(childComponent.isExcludeJudgeInputValid).toHaveBeenCalled();

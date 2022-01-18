@@ -11,12 +11,39 @@ class RequestHearingPageFlowSpec extends RequestHearingPageFlow {
 }
 
 describe('RequestHearingPageFlow', () => {
-  const hearingRequestMainModel = {
-    hearingRequestMainModel: {
-      requestDetails: null,
-      hearingDetails: null,
-      partyDetails: null,
-    }
+  const hearingState = {
+      hearingList: {
+        hearingListMainModel: [
+          {
+            hmctsServiceID: 'SSCS'
+          }
+        ]
+      },
+      hearingValues: {
+        serviceHearingValuesModel: {
+          autoListFlag: false,
+          hearingType: 'Final',
+          lastError: null,
+        },
+        lastError: null,
+      },
+      hearingRequest: {
+        hearingRequestMainModel: {
+          requestDetails: null,
+          hearingDetails: {
+            duration: 1,
+            hearingType: '',
+            hearingLocations: [],
+            hearingWindow: null,
+            panelRequirements: null,
+            autolistFlag: false,
+            hearingPriorityType: '',
+            hearingInWelshFlag: true,
+          },
+          partyDetails: []
+        },
+      },
+      hearingConditions: null,
   };
   let requestHearingPageFlow;
   const mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
@@ -26,13 +53,13 @@ describe('RequestHearingPageFlow', () => {
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 
   beforeEach(() => {
-    mockStore.pipe.and.returnValue(of(hearingRequestMainModel));
+    mockStore.pipe.and.returnValue(of(hearingState));
     requestHearingPageFlow = new RequestHearingPageFlowSpec(mockStore, hearingsService);
   });
 
   it('should navigate continue', () => {
     requestHearingPageFlow.navigateAction(ACTION.CONTINUE);
-    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.UpdateHearingRequest(hearingRequestMainModel.hearingRequestMainModel));
+    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.UpdateHearingRequest(hearingState.hearingRequest.hearingRequestMainModel));
   });
 
   it('should navigate continue', () => {
@@ -42,7 +69,7 @@ describe('RequestHearingPageFlow', () => {
 
   it('should navigate submit', () => {
     requestHearingPageFlow.navigateAction(ACTION.SUBMIT);
-    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.SubmitHearingRequest(hearingRequestMainModel.hearingRequestMainModel));
+    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.SubmitHearingRequest(hearingState.hearingRequest.hearingRequestMainModel));
   });
 
   afterEach(() => {

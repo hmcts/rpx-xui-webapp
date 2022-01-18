@@ -1,7 +1,6 @@
 import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {select, Store} from '@ngrx/store';
-import {Subscription} from 'rxjs';
+import {Store} from '@ngrx/store';
 import {ErrorMessage} from '../../../../app/models';
 import {ACTION} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
@@ -15,7 +14,6 @@ import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 export class HearingWelshComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public error: ErrorMessage = null;
   public welshForm: FormGroup;
-  public hearingStoreSub: Subscription;
   public hearingInWelshFlag: boolean = false;
 
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
@@ -25,14 +23,9 @@ export class HearingWelshComponent extends RequestHearingPageFlow implements OnI
   }
 
   public ngOnInit(): void {
+    this.hearingInWelshFlag = this.hearingRequestMainModel.hearingDetails ?
+      this.hearingRequestMainModel.hearingDetails.hearingInWelshFlag : false;
     this.initForm();
-    this.hearingStoreSub = this.hearingStore.pipe(select(fromHearingStore.getHearingRequest)).subscribe(
-      hearingRequestModel => {
-        this.hearingInWelshFlag = hearingRequestModel && hearingRequestModel.hearingRequestMainModel
-        && hearingRequestModel.hearingRequestMainModel.hearingDetails ?
-          hearingRequestModel.hearingRequestMainModel.hearingDetails.hearingInWelshFlag : false;
-      }
-    );
   }
 
   public ngAfterViewInit(): void {
@@ -64,8 +57,5 @@ export class HearingWelshComponent extends RequestHearingPageFlow implements OnI
 
   public ngOnDestroy(): void {
     super.unsubscribe();
-    if (this.hearingStoreSub) {
-      this.hearingStoreSub.unsubscribe();
-    }
   }
 }

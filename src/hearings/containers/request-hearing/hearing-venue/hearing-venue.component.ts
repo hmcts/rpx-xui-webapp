@@ -3,10 +3,9 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {SearchLocationComponent} from '@hmcts/rpx-xui-common-lib';
 import {LocationByEPIMSModel} from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import {Store} from '@ngrx/store';
-import {HearingErrorMessage} from 'api/hearings/models/hearings.enum';
 import * as fromHearingStore from '../../../../hearings/store';
 import {HearingLocationModel} from '../../../models/hearingLocation.model';
-import {ACTION} from '../../../models/hearings.enum';
+import {ACTION, HearingErrorMessage} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
 import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 

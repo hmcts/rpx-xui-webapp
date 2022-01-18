@@ -136,6 +136,7 @@ function HeaderPage() {
   };
 
   this.clickCaseList = async function () {
+    await BrowserWaits.waitForSpinnerToDissappear();
     await BrowserWaits.waitForElement(this.caseList());  
     await BrowserWaits.waitForElementClickable(this.caseList());
     await this.caseList().click();
@@ -144,6 +145,8 @@ function HeaderPage() {
   };
 
   this.clickCreateCase = async function () {
+    await BrowserWaits.waitForSpinnerToDissappear();
+
     await BrowserWaits.retryWithActionCallback(async () => {
       await BrowserWaits.waitForSpinnerToDissappear(); 
       await BrowserWaits.waitForElement(this.createCase()); 
@@ -155,6 +158,8 @@ function HeaderPage() {
   };
 
   this.clickTaskList = async function () {
+    await BrowserWaits.waitForSpinnerToDissappear();
+
     await BrowserWaits.retryWithActionCallback(async () => {
       await BrowserWaits.waitForElement(this.taskList());
       await BrowserWaits.waitForElementClickable(this.taskList());

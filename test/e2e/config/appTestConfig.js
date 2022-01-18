@@ -5,77 +5,91 @@ const data = {
             {
                 idamId: "12b6a360-7f19-4985-b065-94320a891eaa",
                 email: "lukesuperuserxui@mailnesia.com",
-                release: "general", userIdentifier: "PROD_LIKE"
+                release: "general", userIdentifier: "PROD_LIKE",
+                key:"Monday01"
             },
             {
                 idamId: "12b6a360-7f19-4985-b065-94320a891eaa",
                 email: "lukesuperuserxui@mailnesia.com",
-                release: "general", userIdentifier: "SOLICITOR"
+                release: "general", userIdentifier: "SOLICITOR",
+                key: "Monday01"
             },
             {
                 idamId: "12b6a360-7f19-4985-b065-94320a891eaa",
                 email: "xui_auto_co_r1@justice.gov.uk",
-                release: "wa_release_1", userIdentifier: "IAC_CaseOfficer_R1"
+                release: "wa_release_1", userIdentifier: "IAC_CaseOfficer_R1",
+                key: "Welcome01"
             },
             {
                 idamId: "3db21928-cbbc-4364-bd91-137c7031fe17",
                 email: "xui_auto_co_r2@justice.gov.uk",
-                release: "wa_release_2", userIdentifier: "IAC_CaseOfficer_R2"
+                release: "wa_release_2", userIdentifier: "IAC_CaseOfficer_R2",
+                key: "Welcome01"
             },
             {
                 idamId: "7cfa4921-ecbe-4a0c-ba67-543201b9cde9",
                 email: "xui_auto_adm_r1@justice.gov.uk",
-                release: "wa_release_1", userIdentifier: "IAC_AdmOfficer_R1"
+                release: "wa_release_1", userIdentifier: "IAC_AdmOfficer_R1",
+                key: "Welcome01"
             },
             {
                 idamId: "4beb7bbe-5cc9-4f92-9c4d-620bd705dc8a",
                 email: "xui_auto_adm_r2@justice.gov.uk",
-                release: "wa_release_2", userIdentifier: "IAC_AdmOfficer_R2"
+                release: "wa_release_2", userIdentifier: "IAC_AdmOfficer_R2",
+                key: "Welcome01"
             },
             {
                 idamId: "4fd5803c-a1ae-4790-b735-dc262e8322b8",
                 email: "xui_iac_judge_1@mailinator.com",
-                release: "wa_release_1", userIdentifier: "IAC_Judge_WA_R1"
+                release: "wa_release_1", userIdentifier: "IAC_Judge_WA_R1",
+                key: "Welcome01"
             },
             {
                 idamId: "38eb0c5e-29c7-453e-b92d-f2029aaed6c3",
                 email: "xui_iac_judge_2@mailinator.com",
-                release: "wa_release_2", userIdentifier: "IAC_Judge_WA_R2"
+                release: "wa_release_2", userIdentifier: "IAC_Judge_WA_R2",
+                key: "Welcome01"
             },
             {
                 idamId: "44d5d2c2-7112-4bef-8d05-baaa610bf463",
                 email: "juser8@mailinator.com",
-                release: "wa_release_2", userIdentifier: "IAC_Judge_WA_R2_CaseAllocator"
+                release: "wa_release_2", userIdentifier: "IAC_Judge_WA_R2_CaseAllocator",
+                key: "Welcome01"
             },
 
             {
                 idamId: "10c6b21d-5bd0-4047-8ca6-bb3dd4e83c9c",
                 email: "xui_auto_co_r1_withPagination@justice.gov.uk",
-                release: "wa_release_1", userIdentifier: "IAC_CaseOfficer_R1_withPagination"
+                release: "wa_release_1", userIdentifier: "IAC_CaseOfficer_R1_withPagination",
+                key: "Welcome01"
             },
 
 
             {
                 idamId: "16ce0689-bea9-4bd8-add0-722291656529",
                 email: "xui_auto_co_r1_withoutPagination@justice.gov.uk",
-                release: "wa_release_1", userIdentifier: "IAC_CaseOfficer_R1_withoutPagination"
+                release: "wa_release_1", userIdentifier: "IAC_CaseOfficer_R1_withoutPagination",
+                key: "Welcome01"
             },
             {
                 idamId: "ba02568f-6a46-478d-9f1a-1ce4dea496aa",
                 email: "test@mailnesia.com",
-                release: "general", userIdentifier: "CASEWORKER_GLOBALSEARCH"
+                release: "general", userIdentifier: "CASEWORKER_GLOBALSEARCH",
+                key: "Welcome01"
             },
 
             {
                 idamId: "4beb7bbe-5cc9-4f92-9c4d-620bd705dc8a",
                 email: "test@mailnesia.com",
-                release: "general", userIdentifier: "WA2"
+                release: "general", userIdentifier: "WA2",
+                key: "Welcome01"
             },
 
             {
                 idamId: "810b5601-4a8a-4c82-9294-34f087f2e67f",
                 email: "test@mailnesia.com",
-                release: "general", userIdentifier: "WA2_GLOBAL-SEARCH"
+                release: "general", userIdentifier: "WA2_GLOBAL-SEARCH",
+                key: "Welcome01"
             },
 
 
@@ -98,9 +112,10 @@ const data = {
                 release: "wa_release_1", userIdentifier: "IAC_CaseOfficer_R1"
             },
             {
-                idamId: "3db21928-cbbc-4364-bd91-137c7031fe17",
-                email: "xui_auto_co_r2@justice.gov.uk",
-                release: "wa_release_2", userIdentifier: "IAC_CaseOfficer_R2"
+                idamId: "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+                email: "CRD_func_test_demo_user@justice.gov.uk",
+                release: "wa_release_2", userIdentifier: "IAC_CaseOfficer_R2",
+                key:"AldgateT0wer"
             },
             {
                 idamId: "7cfa4921-ecbe-4a0c-ba67-543201b9cde9",
@@ -118,9 +133,10 @@ const data = {
                 release: "wa_release_1", userIdentifier: "IAC_Judge_WA_R1"
             },
             {
-                idamId: "38eb0c5e-29c7-453e-b92d-f2029aaed6c3",
-                email: "xui_iac_judge_2@mailinator.com",
-                release: "wa_release_2", userIdentifier: "IAC_Judge_WA_R2"
+                idamId: "519e0c40-d30e-4f42-8a4c-2c79838f0e4e",
+                email: "330085EMP-@ejudiciary.net",
+                release: "wa_release_2", userIdentifier: "IAC_Judge_WA_R2",
+                key:"Hmcts1234"
             },
             {
                 idamId: "44d5d2c2-7112-4bef-8d05-baaa610bf463",

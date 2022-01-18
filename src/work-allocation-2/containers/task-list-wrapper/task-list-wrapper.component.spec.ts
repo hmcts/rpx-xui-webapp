@@ -16,7 +16,7 @@ import { CaseworkerDataService, WASupportedJurisdictionsService, WorkAllocationF
 import { getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListWrapperComponent } from './task-list-wrapper.component';
 
-xdescribe('TaskListWrapperComponent', () => {
+describe('TaskListWrapperComponent', () => {
   let component: TaskListWrapperComponent;
   let fixture: ComponentFixture<TaskListWrapperComponent>;
   const SELECTED_LOCATIONS = { id: 'locations', fields: [{ name: 'locations', value: ['231596', '698118'] }] };
@@ -89,7 +89,7 @@ xdescribe('TaskListWrapperComponent', () => {
     const secondAction = exampleTask.actions[1];
     const firstTaskAction = { task: exampleTask, action: firstAction };
     const secondTaskAction = { task: exampleTask, action: secondAction };
-    xit('should handle an action', () => {
+    it('should handle an action', () => {
       // need to spy on the router and set up the task action
       spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`/mywork/list`);
       const navigateCallsBefore = mockRouter.navigateCalls.length;
@@ -101,7 +101,7 @@ xdescribe('TaskListWrapperComponent', () => {
       // need to verify correct properties were called
       const lastNavigateCall = mockRouter.navigateCalls.pop();
       expect(lastNavigateCall.commands).toEqual([`/work/${exampleTask.id}/${firstAction.id}/`]);
-      const exampleNavigateCall = { state: { returnUrl: '/mywork/list', showAssigneeColumn: true } };
+      const exampleNavigateCall = { state: { returnUrl: '/mywork/list', showAssigneeColumn: true, service: undefined } };
       expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
     });
 
@@ -117,7 +117,7 @@ xdescribe('TaskListWrapperComponent', () => {
       // need to verify correct properties were called
       const lastNavigateCall = mockRouter.navigateCalls.pop();
       expect(lastNavigateCall.commands).toEqual([`/work/${exampleTask.id}/${secondAction.id}/`]);
-      const exampleNavigateCall = { state: { returnUrl: '/mywork/manager', showAssigneeColumn: true } };
+      const exampleNavigateCall = { state: { returnUrl: '/mywork/manager', showAssigneeColumn: true, service: undefined } };
       expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
     });
     it('User should be Judicial', () => {

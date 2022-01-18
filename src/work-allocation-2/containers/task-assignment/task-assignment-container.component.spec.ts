@@ -198,4 +198,30 @@ describe('TaskAssignmentContainerComponent2', () => {
     const titleElement = fixture.debugElement.nativeElement.querySelector('.govuk-caption-l');
     expect(titleElement.textContent).toContain(TaskActionType.Assign);
   });
+
+  it('should return true if current user is judicial', () => {
+    const userDetails = {
+      id: 'id123',
+      forename: 'John',
+      surname: 'Smith',
+      email: 'john.smith@email.com',
+      roles: ['caseworker-ia-iacjudge']
+    };
+    mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
+    component.isCurrentUserJudicial();
+    expect(component.isCurrentUserJudicial()).toEqual(true);
+  });
+
+  it('should return false if current user is not judicial', () => {
+    const userDetails = {
+      id: 'id123',
+      forename: 'John',
+      surname: 'Smith',
+      email: 'john.smith@email.com',
+      roles: ['caseworker-ia-iacjudge']
+    };
+    mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
+    component.isCurrentUserJudicial();
+    expect(component.isCurrentUserJudicial()).toEqual(false);
+  });
 });

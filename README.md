@@ -71,7 +71,7 @@ Adding new files into /config should be avoided, as it increases complexity.
 It increases complexity if we were to add files to /config as we already have the Preview and AAT Jenkins enviromental
 values contained within values.preview.template.yaml and values.aat.template.yaml.
 
-# Setting up Secrets locally (Required)
+# Setting up Secrets locally (Required) 
 
 You need to setup secrets locally before you run the project. Why? - When you push this application
 up through AKS deployed through Flux to AAT, ITHC and Prod, the application will take in the secrets on these environments.

@@ -242,7 +242,7 @@ export async function getCaseWorkersFromServices(req: EnhancedRequest, res: Resp
   }
 }
 
-export async function retrieveAllCaseWorkers(req: EnhancedRequest, res: Response): Promise<Caseworker[]> {
+export async function retrieveAllCaseWorkers(req: EnhancedRequest): Promise<Caseworker[]> {
   if (req.session && req.session.caseworkers) {
     return req.session.caseworkers;
   }

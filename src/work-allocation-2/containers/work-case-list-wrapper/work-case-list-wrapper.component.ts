@@ -16,7 +16,6 @@ import { Caseworker } from '../../interfaces/common';
 import { Case, CaseFieldConfig, CaseServiceConfig, InvokedCaseAction } from '../../models/cases';
 import { SortField } from '../../models/common';
 import { Location, PaginationParameter, SearchCaseRequest, SortParameter } from '../../models/dtos';
-import { JudicialWorkerDataService } from '../../services/judicialworker-data.service';
 import {
   CaseworkerDataService,
   JudicialWorkerDataService,

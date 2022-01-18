@@ -145,6 +145,6 @@ Feature: WA Release 2: Exclusion workflow - Change links
 
         Examples:
             | Useridentifier     | Roles                                              | ExclusionRole | findPersonSearchWith | findPersonResult1  | findPersonResult2  | ExclusionDescription         |
-            | IAC_CaseOfficer_R2 | caseworker-ia-caseofficer,caseworker-ia-admofficer | Judicial      | user1                | judge_user1@gov.uk | judge_user2@gov.uk | Judicial role user exclusion |
-# | IAC_Judge_WA_R2    | caseworker-ia-iacjudge,caseworker-ia,caseworker    | Legal Ops     | caseworker           | caseworker_user1@gov.uk | caseworker_user2@gov.uk | caseworker role user exclusion |
-# | IAC_CaseOfficer_R2 | caseworker-ia-caseofficer,caseworker-ia-admofficer | Admin         | admin                | admin_user1@gov.uk      | admin_user2@gov.uk      | admin role user exclusion      |
+            | IAC_CaseOfficer_R2 | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer | Judicial | user1 | judge_user1@gov.uk | judge_user2@gov.uk | Judicial role user exclusion |
+# | IAC_Judge_WA_R2    | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker    | Legal Ops     | caseworker           | caseworker_user1@gov.uk | caseworker_user2@gov.uk | caseworker role user exclusion |
+# | IAC_CaseOfficer_R2 | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer | Admin         | admin                | admin_user1@gov.uk      | admin_user2@gov.uk      | admin role user exclusion      |

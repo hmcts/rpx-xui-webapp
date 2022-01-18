@@ -1,11 +1,9 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {select, Store} from '@ngrx/store';
-import {Subscription} from 'rxjs';
+import {Store} from '@ngrx/store';
 import * as fromHearingStore from '../../../../hearings/store';
 import {CaseFlagReferenceModel} from '../../../models/caseFlagReference.model';
 import {ACTION, CaseFlagType} from '../../../models/hearings.enum';
-import {ServiceHearingValuesModel} from '../../../models/serviceHearingValues.model';
 import {HearingsService} from '../../../services/hearings.service';
 import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 
@@ -14,23 +12,33 @@ import {RequestHearingPageFlow} from '../request-hearing.page.flow';
   templateUrl: './hearing-requirements.component.html',
 })
 export class HearingRequirementsComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
-  public hearingStoreSub: Subscription;
-  public hearingValueModel: ServiceHearingValuesModel;
   public caseFlagsRefData: CaseFlagReferenceModel[];
   public caseFlagType: CaseFlagType = CaseFlagType.REASONABLE_ADJUSTMENT;
+  public lostFocus: boolean = false;
+  public referenceId: string;
+
+  @HostListener('window:focus', ['$event'])
+  public onFocus(): void {
+    if (this.lostFocus) {
+      this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.referenceId));
+      this.lostFocus = false;
+    }
+  }
+
+  @HostListener('window:blur', ['$event'])
+  public onBlur(): void {
+    this.lostFocus = true;
+  }
 
   constructor(private readonly route: ActivatedRoute,
-              protected readonly hearingStore: Store<fromHearingStore.State>,
+              public readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService) {
     super(hearingStore, hearingsService);
     this.caseFlagsRefData = this.route.snapshot.data.caseFlags;
   }
 
   public ngOnInit() {
-    this.hearingStoreSub = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesModel)).subscribe(
-      hearingValueModel => {
-        this.hearingValueModel = hearingValueModel;
-      });
+    this.referenceId = this.hearingListMainModel.caseRef;
   }
 
   protected executeAction(action: ACTION): void {
@@ -39,6 +47,5 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
 
   public ngOnDestroy() {
     super.unsubscribe();
-    this.hearingStoreSub.unsubscribe();
   }
 }

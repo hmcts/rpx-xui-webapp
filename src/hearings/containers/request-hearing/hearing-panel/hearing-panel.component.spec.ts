@@ -9,6 +9,7 @@ import { HearingJudgeNamesListComponent } from '../../../../hearings/components'
 import { RefDataModel } from '../../../../hearings/models/refData.model';
 import {ACTION, RadioOptions} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
+import {initialState} from '../hearing.store.state.test';
 import {HearingPanelComponent} from './hearing-panel.component';
 
 describe('HearingPanelComponent', () => {
@@ -18,21 +19,6 @@ describe('HearingPanelComponent', () => {
   const childComponent = jasmine.createSpyObj('HearingJudgeNamesListComponent', ['isExcludeJudgeInputValid']);
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
-
-  const initialState = {
-    hearings: {
-      hearingList: {
-        caseHearingMainModel: [
-          {
-            hmctsServiceID: 'SSCS'
-          }
-        ]
-      },
-      hearingValues: null,
-      hearingRequest: null,
-      hearingConditions: null,
-    }
-  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({

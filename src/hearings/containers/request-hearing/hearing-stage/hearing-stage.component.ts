@@ -1,8 +1,7 @@
 import { AfterContentInit, Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { select, Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
+import { Store } from '@ngrx/store';
 import * as fromHearingStore from '../../../../hearings/store';
 import { ACTION, HearingStageEnum } from '../../../models/hearings.enum';
 import { RefDataModel } from '../../../models/refData.model';
@@ -15,7 +14,6 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 })
 export class HearingStageComponent extends RequestHearingPageFlow implements OnInit, OnDestroy, AfterContentInit {
   public hearingStageOptions: RefDataModel[];
-  public hearingStoreSub: Subscription;
   public stageForm: FormGroup;
   public hearingType: string;
   public hearingStageSelectionError: string;
@@ -34,11 +32,8 @@ export class HearingStageComponent extends RequestHearingPageFlow implements OnI
   }
 
   public ngOnInit() {
-    this.hearingStoreSub = this.hearingStore.pipe(select(fromHearingStore.getHearingRequest)).subscribe(
-      hearingValueModel => {
-        this.hearingType = hearingValueModel && hearingValueModel.hearingRequestMainModel && hearingValueModel.hearingRequestMainModel.hearingDetails ? hearingValueModel.hearingRequestMainModel.hearingDetails.hearingType : this.hearingType;
-      }
-    );
+    this.hearingType = this.hearingRequestMainModel.hearingDetails ?
+      this.hearingRequestMainModel.hearingDetails.hearingType : this.hearingType;
   }
 
   public executeAction(action: ACTION): void {
@@ -82,8 +77,5 @@ export class HearingStageComponent extends RequestHearingPageFlow implements OnI
 
   public ngOnDestroy(): void {
     super.unsubscribe();
-    if (this.hearingStoreSub) {
-      this.hearingStoreSub.unsubscribe();
-    }
   }
 }

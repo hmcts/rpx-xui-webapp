@@ -9,7 +9,6 @@ import { provideMockStore } from '@ngrx/store/testing';
 import * as moment from 'moment';
 import { of } from 'rxjs';
 import { ErrorMessage } from '../../../../app/models';
-import { HearingWindowModel } from '../../../../hearings/models/hearingWindow.model';
 import { ACTION, HearingDatePriorityEnum, RadioOptions } from '../../../models/hearings.enum';
 import { PartyUnavailabilityRange } from '../../../models/partyUnavilabilityRange.model';
 import { RefDataModel } from '../../../models/refData.model';
@@ -79,6 +78,12 @@ describe('HearingTimingComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should check initForm', () => {
+    component.priorityFormInfo.startDate = new Date('02-03-2021');
+    component.initForm();
+    expect(component.firstHearingFormGroup.get('firstHearingDate_day').value).toBe(3);
   });
 
   it('should set checkedHearingAvailability', () => {

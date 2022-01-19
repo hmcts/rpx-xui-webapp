@@ -54,7 +54,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     return this.priorityForm.controls.firstHearing as FormGroup;
   }
 
-  private get dateRangeHearingFormGroup(): FormGroup {
+  public get dateRangeHearingFormGroup(): FormGroup {
     return this.priorityForm.controls.dateRangeHearing as FormGroup;
   }
 

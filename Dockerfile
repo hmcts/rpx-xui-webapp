@@ -1,4 +1,5 @@
-FROM hmctspublic.azurecr.io/base/node:12-alpine as base
+ARG PLATFORM=""
+FROM hmctspublic.azurecr.io/base/node${PLATFORM}:12-alpine as base
 
 LABEL maintainer = "HMCTS Expert UI <https://github.com/hmcts>"
 

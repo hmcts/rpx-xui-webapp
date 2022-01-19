@@ -180,14 +180,11 @@ export class AppConfig extends AbstractAppConfig {
 
   private featureToggleWorkAllocation(): void {
     this.featureToggleService
-      .isEnabled(AppConstants.FEATURE_NAMES.workAllocation)
+    .getValue(AppConstants.FEATURE_NAMES.currentWAFeature, 'WorkAllocationRelease2')
       .subscribe(
-        (isFeatureEnabled) =>
-          this.workallocationUrl = AppUtils.getFeatureToggledUrl(
-            isFeatureEnabled,
-            WorkAllocationTaskService.WorkAllocationUrl
-          )
-      );
+        (currentWorkAllocationFeature) =>
+        this.workallocationUrl = currentWorkAllocationFeature === 'WorkAllocationRelease2'
+          ? 'workallocation2' : 'workallocation1');
   }
 
   public getAccessManagementMode(): boolean {

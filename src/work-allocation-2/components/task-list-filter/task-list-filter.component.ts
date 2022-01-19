@@ -170,6 +170,8 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       if (location) {
         this.defaultLocations = [location];
       }
+    } else {
+      this.defaultLocations = [];
     }
     this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
       name: TaskListFilterComponent.FILTER_NAME,
@@ -222,12 +224,14 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
           label: 'Select all',
           selectAll: true
         },
-        ...services.map(service => {
-          return {
-            key: service,
-            label: servicesMap[service] || service
-          };
-        })
+        ...services
+          .sort()
+          .map(service => {
+            return {
+              key: service,
+              label: servicesMap[service] || service
+            };
+          })
       ],
       minSelected: 1,
       maxSelected: null,
@@ -249,16 +253,16 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     const selectedFields = f.fields.find(field => field.name === TaskListFilterComponent.FILTER_NAME);
     const selectedTypeOfWorksFields = f.fields.find(field => field.name === 'types-of-work');
     // check if selected fields are the same as cancelled filter settings
-    const containsNonDefaultFields = selectedFields.value
+    const containsNonDefaultFields = selectedFields.value ? selectedFields.value
       .map((location: any) => location.epims_id)
       .filter((v: string) => defaultLocations
         .map((location: any) => location.epims_id)
-        .indexOf(v) === -1).length > 0;
+        .indexOf(v) === -1).length > 0 : false;
     const containsNonDefaultTypeOfWorkFields = selectedTypeOfWorksFields ?
       selectedTypeOfWorksFields.value.filter((v: string) => defaultTypesOfWork.indexOf(v) === -1).length > 0
       : false;
     // check if the amount of fields selected is the same as the amount in the cancel settings
-    const notSameSize = !(defaultLocations.length === selectedFields.value.length)
+    const notSameSize = (selectedFields.value && !(defaultLocations.length === selectedFields.value.length))
       || (selectedTypeOfWorksFields && !(defaultTypesOfWork.length === selectedTypeOfWorksFields.value.length));
     if (!defaultTypesOfWork.length) {
       return (containsNonDefaultFields || notSameSize || containsNonDefaultTypeOfWorkFields) && (defaultLocations.length !== 0);

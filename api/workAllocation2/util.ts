@@ -368,10 +368,10 @@ export async function getRoleAssignmentsByQuery(query: any, req: express.Request
 
 export async function searchCasesById(queryParams: string, query: any, req: express.Request): Promise<any> {
   const url = getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH);
-  const path = `${url}/searchCases?ctid=${queryParams}`;
+  const path = `${url}/searchCases`;
   const headers = setHeaders(req);
   try {
-    const result = await http.post(path, query, {headers});
+    const result = await http.post(path, query, {headers , params: { ctid: queryParams }});
     return result.data;
   } catch (e) {
     console.error(e);

@@ -134,7 +134,8 @@ export enum HearingDatePriorityConstEnum {
   MinHours = 0,
   MaxHours = 6,
   TotalMinMinutes = 5,
-  TotalMaxMinutes = 360,
+  TotalMaxMinutes = 55,
+  TotalMinutes = 360,
   MinutesMuliplier = 5,
 }
 

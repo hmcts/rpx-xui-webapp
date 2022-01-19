@@ -36,7 +36,7 @@ describe('ValidatorsUtils', () => {
       hours: new FormControl(),
       minutes: new FormControl()
     });
-    form.setValidators(service.minutesValidator(5, 360));
+    form.setValidators(service.minutesValidator(5, 55, 360));
     form.controls.hours.setValue('0');
     form.controls.minutes.setValue('10');
     expect(form.hasError('isValid')).toBeFalsy();

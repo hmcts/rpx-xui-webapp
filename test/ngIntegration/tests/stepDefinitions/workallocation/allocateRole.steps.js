@@ -23,20 +23,19 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I validate find person request body from reference {string}', async function (requesrRef, datatable) {
 
-        await BrowserWaits.waitForCondition(() => global.scenarioData[requesrRef] !== null );
-        const res = global.scenarioData[requesrRef];
-
-        const datatableHashes = datatable.rowsHash();
-
-        for (const key of Object.keys(datatableHashes)){
-            expect(res.searchOptions[key],`${key} value is mismatched`).to.equal(datatableHashes[key]);
+        try{
+            await BrowserWaits.waitForCondition(() => global.scenarioData[requesrRef] !== null);
+            const res = global.scenarioData[requesrRef];
+            const datatableHashes = datatable.rowsHash();
+            for (const key of Object.keys(datatableHashes)) {
+                expect(res.searchOptions[key], `${key} value is mismatched`).to.equal(datatableHashes[key]);
+            }
+        }
+        catch(err){
+            global.scenarioData[requesrRef] = null;
+            throw new Error(err); 
         }
 
-        
-
-
     });
-
-
 
 });

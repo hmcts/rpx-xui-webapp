@@ -7,6 +7,7 @@ import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
+import { CaseRoleDetails } from 'src/role-access/models/case-role-details.interface';
 import { SessionStorageService } from '../../../app/services';
 import { reducers } from '../../../app/store';
 import { ALL_LOCATIONS } from '../../components/constants/locations';
@@ -15,12 +16,13 @@ import { Case } from '../../models/cases';
 import { Location } from '../../models/dtos';
 import {
   CaseworkerDataService,
+  JudicialWorkerDataService,
   LocationDataService,
   WASupportedJurisdictionsService,
   WorkAllocationCaseService,
   WorkAllocationFeatureService
 } from '../../services';
-import { getMockCases } from '../../tests/utils.spec';
+import { getMockCaseRoles, getMockCases } from '../../tests/utils.spec';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { AllWorkCaseComponent } from './all-work-case.component';
 
@@ -48,7 +50,7 @@ describe('AllWorkCaseComponent', () => {
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
   const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
-
+  const mockJudicialWorkerService = jasmine.createSpyObj('mockJudicialWorkerService', ['getCaseRolesUserDetails']);
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -70,7 +72,8 @@ describe('AllWorkCaseComponent', () => {
         {provide: WorkAllocationFeatureService, useValue: mockFeatureService},
         {provide: LoadingService, useValue: mockLoadingService},
         {provide: FeatureToggleService, useValue: mockFeatureToggleService},
-        {provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService}
+        {provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService},
+        { provide: JudicialWorkerDataService, useValue: mockJudicialWorkerService }
       ]
     }).compileComponents();
   }));
@@ -79,14 +82,16 @@ describe('AllWorkCaseComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
-    component.isPaginationEnabled$ = of(true);
     const cases: Case[] = getMockCases();
+    const caseRoles: CaseRoleDetails[] = getMockCaseRoles();
     mockCaseService.getCases.and.returnValue(of({cases}));
     mockCaseworkerService.getAll.and.returnValue(of([]));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockLocationService.getLocations.and.returnValue(of(ALL_LOCATIONS as unknown as Location[]));
     mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
+    mockJudicialWorkerService.getCaseRolesUserDetails.and.returnValue(of( caseRoles ));
+    mockSessionStorageService.getItem.and.returnValue(undefined);
     fixture.detectChanges();
   });
 
@@ -106,6 +111,17 @@ describe('AllWorkCaseComponent', () => {
     }
     // Make sure Manage + heading is blank.
     expect(headerCells[headerCells.length - 1].textContent.trim()).toEqual('');
+  });
+
+  it('should show judicial names when available', () => {
+    const firstMockCase = component.cases[0];
+    const secondMockCase = component.cases[1];
+
+    expect(firstMockCase.assignee).not.toBe(undefined);
+    expect(firstMockCase.actorName).toBe('Test');
+
+    expect(secondMockCase.assignee).toBe(undefined);
+    expect(secondMockCase.actorName).toBe(undefined);
   });
 
   it('should not show the footer when there are cases', () => {

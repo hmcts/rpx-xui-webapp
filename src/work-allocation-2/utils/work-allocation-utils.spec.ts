@@ -1,4 +1,5 @@
-import { handleFatalErrors, REDIRECTS, treatAsFatal, WILDCARD_SERVICE_DOWN } from './work-allocation-utils';
+import { PersonRole } from '@hmcts/rpx-xui-common-lib';
+import { getOptions, handleFatalErrors, REDIRECTS, treatAsFatal, WILDCARD_SERVICE_DOWN } from './work-allocation-utils';
 
 describe('WorkAllocationUtils', () => {
   let mockRouter: any;
@@ -114,5 +115,34 @@ describe('WorkAllocationUtils', () => {
     // ensure that a 415 has been treated as fatal and sent to not authorised
     expect(secondStatus).toEqual(0);
     expect(mockRouter.navigate).toHaveBeenCalledWith([REDIRECTS.NotAuthorised]);
+  });
+  it('getOptions should return', () => {
+    const taskRoles = [{
+        role_category: 'ADMIN',
+        role_name: '',
+        permissions: ['OWN'],
+        authorisations: []
+      },
+      {
+        role_category: 'LEGAL_OPERATIONS',
+        role_name: '',
+        permissions: ['EXECUTE'],
+        authorisations: []
+      },
+      {
+        role_category: 'JUDICIAL',
+        role_name: '',
+        permissions: ['OWN'],
+        authorisations: []
+      }
+    ];
+    const options = getOptions(taskRoles);
+    expect(options.length).toEqual(3);
+    expect(options[0].optionId).toEqual('ADMIN');
+    expect(options[0].label).toEqual(PersonRole.ADMIN);
+    expect(options[1].optionId).toEqual('LEGAL_OPERATIONS');
+    expect(options[1].label).toEqual(PersonRole.CASEWORKER);
+    expect(options[2].optionId).toEqual('JUDICIAL');
+    expect(options[2].label).toEqual(PersonRole.JUDICIAL);
   });
 });

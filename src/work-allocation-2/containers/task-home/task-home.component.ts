@@ -4,8 +4,9 @@ import { FilterPersistence, SubNavigation } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { SessionStorageService } from '../../../app/services';
 import { AppUtils } from '../../../app/app-utils';
-import { ErrorMessage } from '../../../app/models';
+import { ErrorMessage, UserInfo } from '../../../app/models';
 import * as fromRoot from '../../../app/store';
 import { SortField } from '../../models/common';
 
@@ -29,19 +30,27 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
    */
   public subNavigationItems: SubNavigation[] = [
     this.MY_TASKS,
-    {text: 'Available tasks', href: '/work/my-work/available', active: false},
-    {text: 'My cases', href: '/work/my-work/my-cases', active: false}
+    {text: 'Available tasks', href: '/work/my-work/available', active: false}
   ];
 
   private routeSubscription: Subscription;
 
   constructor(
     private readonly store: Store<fromRoot.State>,
-    private readonly router: Router
+    private readonly router: Router,
+    private sessionStorageService: SessionStorageService
   ) {
   }
 
   public ngOnInit(): void {
+    const userInfoStr = this.sessionStorageService.getItem('userDetails');
+    if (userInfoStr) {
+        const userInfo: UserInfo = JSON.parse(userInfoStr);
+        if (userInfo && userInfo.roleCategory && userInfo.roleCategory !== 'ADMIN') {
+          this.subNavigationItems.push({text: 'My cases', href: '/work/my-work/my-cases', active: false});
+        }
+    }
+
     this.persistence$ = this.store.pipe(select(fromRoot.getUserDetails)).pipe(
       map(AppUtils.getFilterPersistenceByRoleType)
     );

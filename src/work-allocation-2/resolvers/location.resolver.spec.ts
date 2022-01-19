@@ -120,7 +120,7 @@ describe('LocationResolver', () => {
 
   it('resolves judicialworkers location', inject([LocationResolver], (service: LocationResolver) => {
     spyOn(store, 'pipe').and.returnValue(of(JUDICIAL_WORKER));
-    spyOn(judicialWorkerDataService, 'getAll').and.returnValue(of(JUDICIAL_WORKERS));
+    spyOn(judicialWorkerDataService, 'getCaseRolesUserDetails').and.returnValue(of(JUDICIAL_WORKERS));
     service.resolve().subscribe((location: Location) => {
       expect(location.locationName).toEqual(JUDICIAL_WORKERS[0].location.locationName);
     });

@@ -1,4 +1,4 @@
-@ng
+@ng  
 Feature: WA Release 2: My work - Work filters - Uhhappy paths
 
     Background: Mock and browser setup
@@ -19,7 +19,7 @@ Feature: WA Release 2: My work - Work filters - Uhhappy paths
             | id    | locationName  |
             | 12345 | Aldgate Tower |
 
-        Given I set MOCK request "/workallocation2/taskWithPagination" intercept with reference "workallocationTaskRequest"
+        Given I set MOCK request "/workallocation2/task" intercept with reference "workallocationTaskRequest"
         Given I set MOCK request "/workallocation2/my-work/cases" intercept with reference "workallocationCasesRequest"
 
 
@@ -32,7 +32,7 @@ Feature: WA Release 2: My work - Work filters - Uhhappy paths
         Then I validate work filter button text is "Show work filter"
         Then I validate work location filter batch and hint labels are not displayed
         Then I validate location filter is not displayed
-        When I click work filter button
+        When I click work filter button to "Show" filter
         Then I validate work filter button text is "Hide work filter"
         Then I validate location filter is displayed
         When I click work location filter with label "Aldgate Tower"
@@ -43,9 +43,9 @@ Feature: WA Release 2: My work - Work filters - Uhhappy paths
             | Caseworker IAC | caseworker-ia-caseofficer,caseworker-ia-admofficer |
     # | Judge          | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
-
     Scenario Outline:  Work filters api error <responseCode> on apply
         Given I set MOCK with "wa_release_2" release user and roles "<Roles>"
+        Given I init MockApp
         Given I start MockApp
         Given I navigate to home page
         # When I click on primary navigation header "My work"
@@ -53,13 +53,13 @@ Feature: WA Release 2: My work - Work filters - Uhhappy paths
         Then I validate work filter button text is "Show work filter"
         Then I validate work location filter batch and hint labels are not displayed
         Then I validate location filter is not displayed
-        When I click work filter button
+        When I click work filter button to "Show" filter
         Then I validate work filter button text is "Hide work filter"
         Then I validate location filter is displayed
-        
-        Given I set MOCK api method "post" endpoint "/workallocation2/task/" with error response code <responseCode>
-        Given I start MockApp
 
+        Given I set MOCK request "/workallocation2/task" response log to report
+        Given I set MOCK api method "post" endpoint "/workallocation2/task" with error response code <responseCode>
+        Given I start MockApp
         When I click work location filter Apply button
 
         Then I see error message of type "page" displayed with message "<error>"

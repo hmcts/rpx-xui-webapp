@@ -1,9 +1,8 @@
-import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
-import { PersonRole } from '@hmcts/rpx-xui-common-lib';
+import { getOptions } from '../../../work-allocation-2/utils';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { RoleCategory } from '../../../role-access/models';
@@ -24,29 +23,36 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
   public description: string = 'Which role type are you reassigning the task to?';
   public submitted: boolean = true;
   public optionsList: OptionsModel[];
-  public roles = TaskAssignmentChooseRoleComponent.getOptions();
   public taskRoles: TaskRole[] = [];
   public form: FormGroup;
+  public roles: OptionsModel[];
 
   constructor(private readonly fb: FormBuilder,
-              private readonly location: Location,
               private readonly router: Router,
               private readonly sessionStorageService: SessionStorageService,
               private readonly route: ActivatedRoute) {
   }
 
-  private static getOptions(): OptionsModel[] {
-    return [
-      {optionId: RoleCategory.JUDICIAL, optionValue: RoleCategory.JUDICIAL, label: PersonRole.JUDICIAL},
-      {optionId: RoleCategory.LEGAL_OPERATIONS, optionValue: RoleCategory.LEGAL_OPERATIONS, label: PersonRole.CASEWORKER}
-    ];
+  private get returnUrl(): string {
+    // Default URL is '' because this is the only sensible return navigation if the user has used browser navigation
+    // buttons, which clear the `window.history.state` object
+    let url: string = '';
+
+    // The returnUrl is undefined if the user has used browser navigation buttons, so check for its presence
+    if (window && window.history && window.history.state && window.history.state.returnUrl) {
+      // Truncate any portion of the URL beginning with '#', as is appended when clicking "Manage" on a task
+      url = window.history.state.returnUrl.split('#')[0];
+    }
+
+    return url;
   }
 
-  public ngOnInit() {
+  public ngOnInit(): void {
+    this.taskRoles = this.route.snapshot.data.roles;
+    this.roles = getOptions(this.taskRoles);
     const isJudicial = this.isCurrentUserJudicial();
     const taskId = this.route.snapshot.paramMap.get('taskId');
     this.verb = this.route.snapshot.data.verb;
-    this.taskRoles = this.route.snapshot.data.roles;
     this.setCaptionAndDescription(this.verb);
     this.form = this.fb.group({
       role: [this.setUpDefaultRoleType(isJudicial, this.taskRoles), Validators.required],
@@ -55,7 +61,7 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
   }
 
   public cancel(): void {
-    this.location.back();
+    this.router.navigate([this.returnUrl]);
   }
 
   public submit(values: any, valid: boolean): void {
@@ -84,7 +90,10 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
   }
 
   private setUpDefaultRoleType(isCurrentUserJudicial: boolean, roles: TaskRole[]): RoleCategory {
-    if (roles.length) {
+    const roleCategory = this.route.snapshot.queryParamMap.get('roleCategory');
+    if (roleCategory && (roleCategory as RoleCategory) !== null) {
+      return roleCategory as RoleCategory;
+    } else if (roles.length) {
       const role = this.userWithOwnPermission(roles);
       if (role) {
         return role.role_category === 'judicial' ? RoleCategory.JUDICIAL : RoleCategory.LEGAL_OPERATIONS;

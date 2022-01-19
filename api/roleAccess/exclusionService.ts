@@ -1,4 +1,4 @@
-import { UserInfo } from 'auth/interfaces/UserInfo';
+import { UserInfo } from '../auth/interfaces/UserInfo';
 import { AxiosResponse } from 'axios';
 import * as express from 'express';
 import { NextFunction, Response } from 'express';
@@ -38,19 +38,23 @@ export async function confirmUserExclusion(req: EnhancedRequest, res: Response, 
   const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
   let roleCategory: string;
   let assigneeId: string;
-  if (body.exclusionOption === 'Exclude another person') {
-    roleCategory = getCorrectRoleCategory(body.person.domain);
-    assigneeId = body.person.id;
-  } else {
-    roleCategory = currentUser.roleCategory;
-    assigneeId = currentUserId;
-  }
+  try {
+    if (body.exclusionOption === 'Exclude another person') {
+      roleCategory = getCorrectRoleCategory(body.person.domain);
+      assigneeId = body.person.id;
+    } else {
+      roleCategory = currentUser.roleCategory;
+      assigneeId = currentUserId;
+    }
 
-  const roleAssignmentsBody = prepareExclusionBody(currentUserId, assigneeId, body, roleCategory);
-  const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
-  const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
-  const { status, data } = response;
-  return res.status(status).send(data);
+    const roleAssignmentsBody = prepareExclusionBody(currentUserId, assigneeId, body, roleCategory);
+    const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
+    const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
+    const { status, data } = response;
+    return res.status(status).send(data);
+  } catch (error) {
+    next(error)
+  }
 }
 
 export function prepareExclusionBody(currentUserId: string, assigneeId: string, body: any, roleCategory: string): any {
@@ -96,6 +100,7 @@ export function mapResponseToExclusions(roleAssignments: RoleAssignment[],
   }
   return roleAssignments.map(roleAssignment => ({
     added: roleAssignment.created,
+    actorId: roleAssignment.actorId,
     email: roleAssignment.actorId ? getEmail(roleAssignment.actorId, req) : null,
     id: roleAssignment.id,
     name: roleAssignment.actorId ? getUserName(roleAssignment.actorId, req) : null,
@@ -160,7 +165,7 @@ export function getCorrectRoleCategory(domain: string): RoleCategory {
     case 'Admin':
       return RoleCategory.ADMIN;
     default:
-      throw new Error('Invalid roleCategory');
+      throw new Error('Invalid roleCategory ' + domain);
   }
 }
 

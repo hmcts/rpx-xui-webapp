@@ -15,11 +15,12 @@ import { Observable } from 'rxjs';
 
 import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { TaskActionConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { TaskActionType } from '../../enums';
 import { Task } from '../../models/tasks';
-import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
+import { WorkAllocationTaskService } from '../../services';
 import { getMockTasks } from '../../tests/utils.spec';
 import { TaskAssignmentContainerComponent } from './task-assignment-container.component';
 
@@ -164,7 +165,7 @@ describe('TaskAssignmentContainerComponent2', () => {
     const findPersonControl = new FormControl('test');
     tacComponent.formGroup.addControl('findPersonControl', findPersonControl);
     tacComponent.cancel();
-    expect(locationStub.back).toHaveBeenCalledWith();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['all-work/tasks']);
   });
 
   it('should redirect to the fallback URL (\'\') on cancelling task assignment, if the return URL is not in the history', () => {
@@ -174,7 +175,7 @@ describe('TaskAssignmentContainerComponent2', () => {
     const findPersonControl = new FormControl('test');
     tacComponent.formGroup.addControl('findPersonControl', findPersonControl);
     tacComponent.cancel();
-    expect(locationStub.back).toHaveBeenCalledWith();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['']);
   });
 
   it('should display the correct verb on screen', () => {

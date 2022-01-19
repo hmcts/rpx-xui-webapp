@@ -70,6 +70,7 @@ export function allocateRoleReducer(currentState = allocateRoleInitialState,
     case AllocateRoleActionTypes.CHOOSE_PERSON_AND_GO: {
       return {
         ...currentState,
+        allocateTo: action.payload.allocateTo,
         person: action.payload.person,
         state: action.payload.allocateRoleState
       };

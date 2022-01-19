@@ -4,6 +4,7 @@ import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { $enum as EnumUtil } from 'ts-enum-util';
+
 import { PERSON_ERROR_MESSAGE } from '../../../constants';
 import {
   Actions,
@@ -11,6 +12,7 @@ import {
   AllocateRoleNavigationEvent,
   AllocateRoleState,
   AllocateRoleStateData,
+  AllocateTo,
   RoleCategory,
   SpecificRole
 } from '../../../models';
@@ -31,11 +33,12 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
   public findPersonControl: FormControl;
   public personName: string;
   public person: Person;
+  public userId: string;
+  public appStoreSub: Subscription;
   public subscription: Subscription;
   public roleType: SpecificRole;
 
-  constructor(private readonly store: Store<fromFeature.State>) {
-  }
+  constructor(private readonly store: Store<fromFeature.State>) {}
 
   public ngOnInit(): void {
     this.findPersonControl = this.formGroup.value.findPersonControl;
@@ -58,7 +61,11 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
       switch (navEvent) {
         case AllocateRoleNavigationEvent.CONTINUE:
           const person = this.person;
-          this.store.dispatch(new fromFeature.ChoosePersonAndGo({person, allocateRoleState: AllocateRoleState.CHOOSE_DURATION}));
+          this.store.dispatch(new fromFeature.ChoosePersonAndGo({
+              person,
+              allocateRoleState: AllocateRoleState.CHOOSE_DURATION,
+              allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON
+            }));
           break;
         default:
           throw new Error('Invalid option');

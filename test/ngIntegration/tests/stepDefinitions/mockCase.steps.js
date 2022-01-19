@@ -94,9 +94,13 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                     dateObj.setDate(dateObj.getDate() + parseInt(hash[key]));
                     hash[key] = dateObj.toISOString();
                 }
+
+                if(key === 'role-name'){
+                    hash[key] = hash[key].toLowerCase().split(" ").join("-"); 
+                }
             }
         }
-        // workAlloctionMockData.caseRoles = workAlloctionMockData.getCaseRoles(dateTableHashes);
+        workAlloctionMockData.caseRoles = workAlloctionMockData.getCaseRoles(dateTableHashes);
         
     }); 
 

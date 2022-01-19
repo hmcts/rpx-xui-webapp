@@ -170,8 +170,13 @@ describe('HearingTimingComponent', () => {
   });
 
   it('should get getFormData', () => {
+    component.hearingRequestMainModel.hearingDetails.duration = 70;
+    component.hearingRequestMainModel.hearingDetails.hearingPriorityType = 'Urgent';
     component.hearingRequestMainModel.hearingDetails.hearingWindow = { hearingWindowStartDateRange: '', hearingWindowEndDateRange: '' };
     component.getFormData();
+    expect(component.priorityFormInfo.hours).toBe('1');
+    expect(component.priorityFormInfo.minutes).toBe('10');
+    expect(component.priorityFormInfo.priority).toBe('Urgent');
     expect(component.checkedHearingAvailability).toBe(RadioOptions.NO);
     component.hearingRequestMainModel.hearingDetails.hearingWindow.hearingWindowStartDateRange = '01-01-2021';
     component.getFormData();
@@ -182,8 +187,9 @@ describe('HearingTimingComponent', () => {
   });
 
   it('should check Hearing Length', () => {
+    component.priorityForm.controls.durationLength.get('hours').setValue('10');
     component.showHearingLengthError();
-    expect(component.hearingLengthErrorValue).toBe(HearingDatePriorityEnum.TotalLengthError);
+    expect(component.hearingLengthErrorValue).toBe(HearingDatePriorityEnum.LengthError);
     component.priorityForm.controls.durationLength.markAsDirty();
     component.priorityForm.controls.durationLength.get('hours').setValue('1');
     component.priorityForm.controls.durationLength.get('minutes').setValue('qer');
@@ -242,8 +248,19 @@ describe('HearingTimingComponent', () => {
   it('should set prepareHearingRequestData', () => {
     component.priorityForm.controls.durationLength.get('hours').setValue('1');
     component.priorityForm.controls.durationLength.get('minutes').setValue('5');
+    component.firstHearingFormGroup.get('firstHearingDate_day').setValue('ewr');
+    component.firstHearingFormGroup.get('firstHearingDate_month').setValue('10');
+    component.firstHearingFormGroup.get('firstHearingDate_year').setValue('2020');
+    const hearingAvailability = component.priorityForm.controls.specificDate;
+    hearingAvailability.setValue(RadioOptions.YES);
+    component.showDateAvailability();
     component.prepareHearingRequestData();
     expect(component.hearingRequestMainModel.hearingDetails.duration).toBe(65);
+    expect(component.hearingRequestMainModel.hearingDetails.hearingWindow.hearingWindowStartDateRange.length).toBeGreaterThan(1);
+    hearingAvailability.setValue(RadioOptions.CHOOSE_DATE_RANGE);
+    component.showDateAvailability();
+    component.prepareHearingRequestData();
+    expect(component.hearingRequestMainModel.hearingDetails.hearingWindow.hearingWindowStartDateRange.length).toBeGreaterThan(1);
   });
 
   it('should check date selection format', () => {

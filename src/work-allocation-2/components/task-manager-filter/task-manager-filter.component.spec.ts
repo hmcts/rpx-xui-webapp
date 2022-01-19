@@ -1,5 +1,5 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, DebugElement, ViewChild } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
@@ -45,7 +45,7 @@ describe('TaskManagerFilterComponent', () => {
       imports: [
         CdkTableModule,
         ExuiCommonLibModule,
-        HttpClientModule,
+        HttpClientTestingModule,
         RouterTestingModule,
         ExuiCommonLibModule
       ],

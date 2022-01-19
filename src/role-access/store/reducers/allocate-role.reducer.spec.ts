@@ -80,7 +80,11 @@ describe('Allocate Role Reducer', () => {
     describe('ChoosePersonAndGo action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.allocateRoleInitialState;
-        const action = new fromActions.ChoosePersonAndGo({ person: {id: '111111', name: 'test', domain: 'test'}, allocateRoleState: AllocateRoleState.CHOOSE_DURATION });
+        const action = new fromActions.ChoosePersonAndGo({
+          person: {id: '111111', name: 'test', domain: 'test'},
+          allocateRoleState: AllocateRoleState.CHOOSE_DURATION,
+          allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON
+        });
         const state = fromReducer.allocateRoleReducer(initialState, action);
         expect(state.person).toEqual({id: '111111', name: 'test', domain: 'test'});
       });

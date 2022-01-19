@@ -76,7 +76,7 @@ describe("Task management api, Search task", () => {
         "search_parameters": [
             {
                 "key": "caseId",
-                "operator": "AFTER",
+                "operator": "IN",
                 "values": [
                     "f782bde3-8d51-11eb-a9a4-06d032acc76d"
                 ]

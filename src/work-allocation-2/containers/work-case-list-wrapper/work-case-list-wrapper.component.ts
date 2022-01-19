@@ -2,27 +2,32 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService, Jurisdiction, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Observable } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
-import { JurisdictionsService } from '../../../work-allocation-2/services/juridictions.service';
-import { AppConstants } from '../../../app/app.constants';
+import { Observable, of } from 'rxjs';
+import { mergeMap, switchMap } from 'rxjs/operators';
+
+import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
-import { Actions } from '../../../role-access/models';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
+import { Actions, Role } from '../../../role-access/models';
+import { AllocateRoleService } from '../../../role-access/services';
 import { ListConstants } from '../../components/constants';
 import { CaseService, InfoMessage, InfoMessageType, SortOrder } from '../../enums';
 import { Caseworker } from '../../interfaces/common';
 import { Case, CaseFieldConfig, CaseServiceConfig, InvokedCaseAction } from '../../models/cases';
 import { SortField } from '../../models/common';
 import { Location, PaginationParameter, SearchCaseRequest, SortParameter } from '../../models/dtos';
-import { CaseworkerDataService, InfoMessageCommService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationCaseService } from '../../services';
+import {
+  CaseworkerDataService,
+  LocationDataService,
+  WASupportedJurisdictionsService,
+  WorkAllocationCaseService
+} from '../../services';
+import { JurisdictionsService } from '../../services/juridictions.service';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
-import { AllocateRoleService } from '../../../role-access/services';
-import { Role } from '../../../role-access/models';
-import { UserInfo } from '../../../app/models';
+import { JudicialWorkerDataService } from '../../services/judicialworker-data.service';
 
 @Component({
   templateUrl: 'work-case-list-wrapper.component.html',
-  providers: [InfoMessageCommService]
 })
 export class WorkCaseListWrapperComponent implements OnInit {
 
@@ -33,12 +38,11 @@ export class WorkCaseListWrapperComponent implements OnInit {
   public locations$: Observable<Location[]>;
   public waSupportedJurisdictions$: Observable<string[]>;
   public pagination: PaginationParameter;
-  public isPaginationEnabled$: Observable<boolean>;
   public backUrl: string = null;
-  private pCases: Case[];
   protected allJurisdictions: Jurisdiction[];
   protected allRoles: Role[];
   protected defaultLocation: string = 'all';
+  private pCases: Case[];
   /**
    * Mock CaseServiceConfig.
    */
@@ -67,10 +71,9 @@ export class WorkCaseListWrapperComponent implements OnInit {
     protected readonly featureToggleService: FeatureToggleService,
     protected readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService,
     protected readonly jurisdictionsService: JurisdictionsService,
-    protected readonly rolesService: AllocateRoleService
-  ) {
-    this.isPaginationEnabled$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.waMvpPaginationFeature);
-  }
+    protected readonly rolesService: AllocateRoleService,
+    protected readonly judicialWorkerDataService: JudicialWorkerDataService
+  ) {}
 
   public get cases(): Case[] {
     return this.pCases;
@@ -164,7 +167,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
     // Try to get the sort order out of the session.
     const stored = this.sessionStorageService.getItem(this.sortSessionKey);
     if (stored) {
-      const {fieldName, order} = JSON.parse(stored);
+      const { fieldName, order } = JSON.parse(stored);
       this.sortedBy = {
         fieldName,
         order: order as SortOrder
@@ -177,18 +180,10 @@ export class WorkCaseListWrapperComponent implements OnInit {
       };
     }
 
-    this.isPaginationEnabled$.subscribe({
-      next: (result: boolean) => {
-        if (!result) {
-          this.pagination = null;
-        } else {
-          this.pagination = {
-            page_number: 1,
-            page_size: 25
-          };
-        }
-      }
-    });
+    this.pagination = {
+      page_number: 1,
+      page_size: 25
+    };
   }
 
   /**
@@ -215,15 +210,15 @@ export class WorkCaseListWrapperComponent implements OnInit {
 
   public performSearch(): Observable<any> {
     const searchRequest = this.getSearchCaseRequestPagination();
-    return this.caseService.searchCase({searchRequest, view: this.view});
+    return this.caseService.searchCase({ searchRequest, view: this.view });
   }
 
   public performSearchPagination(): Observable<any> {
     const searchRequest = this.getSearchCaseRequestPagination();
     if (this.view === 'AllWorkCases') {
-      return this.caseService.getCases({searchRequest, view: this.view});
+      return this.caseService.getCases({ searchRequest, view: this.view });
     }
-    return this.caseService.getMyCases({searchRequest, view: this.view});
+    return this.caseService.getMyCases({ searchRequest, view: this.view });
   }
 
   /**
@@ -246,7 +241,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
   }
 
   public getPaginationParameter(): PaginationParameter {
-    return {...this.pagination};
+    return { ...this.pagination };
   }
 
   /**
@@ -263,7 +258,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
     if (this.sortedBy.fieldName === fieldName && this.sortedBy.order === SortOrder.ASC) {
       order = SortOrder.DESC;
     }
-    this.sortedBy = {fieldName, order};
+    this.sortedBy = { fieldName, order };
     this.sessionStorageService.setItem(this.sortSessionKey, JSON.stringify(this.sortedBy));
 
     this.loadCases();
@@ -278,11 +273,11 @@ export class WorkCaseListWrapperComponent implements OnInit {
     const thisAction = caseAction.action;
     let actionUrl = '';
     if (thisAction.id === Actions.Reallocate) {
-      actionUrl = `role-access/allocate-role/${thisAction.id}?caseId=${actionedCase.case_id}&roleCategory=${actionedCase.role_category}&assignmentId=${actionedCase.id}&caseType=${actionedCase.case_category}&jurisdiction=${actionedCase.jurisdiction}&userName=${actionedCase.assignee}&typeOfRole=${actionedCase.case_role}`;
+      actionUrl = `role-access/allocate-role/${thisAction.id}?caseId=${actionedCase.case_id}&roleCategory=${actionedCase.role_category}&assignmentId=${actionedCase.id}&caseType=${actionedCase.case_type}&jurisdiction=${actionedCase.jurisdictionId}&actorId=${actionedCase.assignee}&typeOfRole=${actionedCase.case_role}`;
     } else if (thisAction.id === Actions.Remove) {
-      actionUrl = `role-access/allocate-role/${thisAction.id}?caseId=${actionedCase.case_id}&assignmentId=${actionedCase.id}&caseType=${actionedCase.case_category}&jurisdiction=${actionedCase.jurisdiction}&typeOfRole=${actionedCase.case_role}`;
+      actionUrl = `role-access/allocate-role/${thisAction.id}?caseId=${actionedCase.case_id}&assignmentId=${actionedCase.id}&caseType=${actionedCase.case_type}&jurisdiction=${actionedCase.jurisdictionId}&typeOfRole=${actionedCase.case_role}`;
     }
-    this.router.navigateByUrl(actionUrl, {state: {backUrl: this.backUrl}});
+    this.router.navigateByUrl(actionUrl, { state: { backUrl: this.backUrl } });
   }
 
   public onPaginationHandler(pageNumber: number): void {
@@ -294,7 +289,29 @@ export class WorkCaseListWrapperComponent implements OnInit {
   protected doLoad(): void {
     this.showSpinner$ = this.loadingService.isLoading;
     const loadingToken = this.loadingService.register();
-    this.isPaginationEnabled$.pipe(mergeMap(enabled => enabled ? this.performSearchPagination() : this.performSearch())).subscribe(result => {
+    const casesSearch$ = this.performSearchPagination();
+    const mappedSearchResult$ = casesSearch$.pipe(mergeMap(result => {
+      const judicialUserIds = result.cases.filter(theCase => theCase.role_category === 'JUDICIAL').map(thisCase => thisCase.assignee);
+      if (judicialUserIds && judicialUserIds.length > 0 && this.view !== 'MyCases') {
+          return this.judicialWorkerDataService.getCaseRolesUserDetails(judicialUserIds).pipe(switchMap((judicialUserData) => {
+            const judicialNamedCases = result.cases.map(judicialCase => {
+              const currentCase = judicialCase;
+              const theJUser = judicialUserData.find(judicialUser => judicialUser.sidam_id === judicialCase.assignee);
+              if (theJUser) {
+                currentCase.actorName = theJUser.known_as;
+                return currentCase;
+              }
+              return currentCase;
+            });
+            result.cases = judicialNamedCases;
+            return of(result);
+          }));
+      } else {
+        return of(result);
+      }
+    }));
+
+    mappedSearchResult$.subscribe(result => {
       this.loadingService.unregister(loadingToken);
       this.cases = result.cases;
       this.casesTotal = result.total_records;
@@ -305,8 +322,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
           item.jurisdiction = this.allJurisdictions.find(jur => jur.id === item.jurisdiction).name;
         }
         if (this.allRoles && this.allRoles.find(role => role.roleId === item.case_role)) {
-          item.case_role = this.allRoles.find(role => role.roleId === item.case_role).roleName;
-          item.role = item.case_role;
+          item.role = this.allRoles.find(role => role.roleId === item.case_role).roleName;
         }
       });
       this.ref.detectChanges();

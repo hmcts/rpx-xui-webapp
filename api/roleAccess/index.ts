@@ -13,6 +13,7 @@ import { toRoleAssignmentBody } from './dtos/to-role-assignment-dto';
 import { getEmail, getJudicialUsersFromApi, getUserName, mapRoleCategory } from './exclusionService';
 import { CaseRoleRequestPayload } from './models/caseRoleRequestPayload';
 import { release2ContentType } from './models/release2ContentType';
+import { getSubstantiveRoles } from './roleAssignmentService';
 
 const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
 
@@ -28,7 +29,10 @@ export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next
       req.body.exclusionId,
       req
     );
-    return res.status(response.status).send(judicialAndLegalOps);
+    const substantiveRoles = await getSubstantiveRoles(req);
+    const substantiveJudicialLegalOps =
+     judicialAndLegalOps.filter(judicialAndLegalOp => substantiveRoles.find(role => role.roleId === judicialAndLegalOp.roleName));
+    return res.status(response.status).send(substantiveJudicialLegalOps);
   } catch (error) {
     next(error);
   }

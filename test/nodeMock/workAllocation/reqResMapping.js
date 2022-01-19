@@ -3,6 +3,11 @@ const workAllocationMockData = require('./mockData');
 module.exports = {
     mockServiceResetCallbacks: [() => workAllocationMockData.setDefaultData()],
     get: {
+        
+        '/workallocation2/task/types-of-work': (req, res) => {
+            const typeOfWorks = workAllocationMockData.getTypeOfWorks();
+            res.send(typeOfWorks);
+        },
         '/workallocation/location': (req, res) => {
             res.send(workAllocationMockData.getLocationList(20));
         },
@@ -41,16 +46,11 @@ module.exports = {
             res.send(workAllocationMockData.exclusions);
         },
         '/workallocation2/case/task/:caseid': (req,res) => {
-            const tasks = [
-                { task_title: 'task 1', dueDate: -1, created_date: -10, permissions: "Own,Execute,Manage" , warnings:"true"},
-                { task_title: 'task 2', dueDate: 0, created_date: -10, permissions: "Own,Execute,Manage", warnings: "true" },
-                { task_title: 'task 3', dueDate: 1, created_date: -10, permissions: "Own,Execute,Manage", warnings: "true"},
-                { task_title: 'task 4', dueDate: 10, created_date: -10, permissions: "Own,Execute,Manage", warnings: "true" }
-            ];
-            res.send(workAllocationMockData.getCaseTasks(tasks));
+            
+            res.send(workAllocationMockData.caseTasks);
         },
         '/workallocation2/judicialworker' : (req,res) => {
-            res.send(workAllocationMockData.getJudicialList(20));
+            res.send(workAllocationMockData.judgeUsers);
         },
         '/api/wa-supported-jurisdiction/get': (req,res) => {
             res.send(['IA']);
@@ -102,7 +102,7 @@ module.exports = {
                 res.status(500).send({ error: 'mock error occured', stack: e.stack });
             }
         },
-        '/workallocation/task/': (req, res) => {
+        '/workallocation/task': (req, res) => {
 
             if (req.body.view === "MyTasks"){
                 res.send(workAllocationMockData.getMyTasks(10));
@@ -114,13 +114,14 @@ module.exports = {
                 throw new Error("Unrecognised task list view : "+req.body.view);
             }
         },
-        '/workallocation2/task/': (req, res) => {
+        '/workallocation2/task': (req, res) => {
             const pageNum = req.body.searchRequest.pagination_parameters.page_number;
             const pageSize = req.body.searchRequest.pagination_parameters.page_size;
 
             const requestedView = req.body.view;
             let tasks = [];
             if (requestedView === "MyTasks") {
+                
                 tasks = workAllocationMockData.myWorkMyTasks;
             } else if (requestedView === "AvailableTasks") {
                 tasks = workAllocationMockData.myWorkAvailableTasks;
@@ -136,7 +137,7 @@ module.exports = {
                 res.status(500).send({ error: 'mock error occured', stack: e.stack });
             }
         },
-        '/workallocation/taskWithPagination/': (req, res) => {
+        '/workallocation/taskWithPagination': (req, res) => {
             const pageNum = req.body.searchRequest.pagination_parameters.page_number;
             const pageSize = req.body.searchRequest.pagination_parameters.page_size;
 
@@ -158,7 +159,7 @@ module.exports = {
                 res.status(500).send({ error: 'mock error occured', stack: e.stack });
             }
         },
-        '/workallocation2/taskWithPagination/': (req, res) => {
+        '/workallocation2/taskWithPagination': (req, res) => {
             const pageNum = req.body.searchRequest.pagination_parameters.page_number;
             const pageSize = req.body.searchRequest.pagination_parameters.page_size;
 
@@ -217,9 +218,8 @@ module.exports = {
             res.status(204).send();
         },
         '/workallocation2/findPerson': (req, res) => {
-            workAllocationMockData.findPersonResponse(req.body.searchOptions.searchTerm, null).then((response) =>{
-                res.send(response);
-            });
+               res.send(workAllocationMockData.findPersonResponse(req.body.searchOptions));
+        
             
         },
         '/api/user/exclusions/confirm' : (req,res)=>{
@@ -260,7 +260,10 @@ module.exports = {
         },
         '/api/role-access/exclusions/delete' : (req,res) => {
             res.status(204).send();
-        }
+        },
+        '/api/role-access/roles/getJudicialUsers': (req,res) => {
+            res.send(workAllocationMockData.getJudicialList(20));
+        } 
     }
    
 }

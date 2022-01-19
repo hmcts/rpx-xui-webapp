@@ -16,7 +16,8 @@ const { Given, When, Then } = require('cucumber');
 
 const CucumberReportLog = require("./reportLogger");
 const BrowserLogs = require('./browserLogs');
-
+const browserUtil = require("../../ngIntegration/util/browserUtil");
+const RuntimetestData = require("./runtimeTestData");
 // defineSupportCode(function({After }) {
 //     registerHandler("BeforeFeature", { timeout: 500 * 1000 }, function() {
 //         var origFn = browser.driver.controlFlow().execute;
@@ -94,7 +95,8 @@ const BrowserLogs = require('./browserLogs');
 
 
 defineSupportCode(({ Before,After }) => {
-    Before(async function (scenario) {
+    Before(function (scenario) {
+        RuntimetestData.init();
         global.scenarioData = {};
         const world = this
         
@@ -108,35 +110,25 @@ defineSupportCode(({ Before,After }) => {
         try{
             await CucumberReportLog.AddScreenshot(global.screenShotUtils);
             if (scenario.result.status === 'failed') {
-                let browserLog = await browser.manage().logs().get('browser');
-                let browserErrorLogs = []
-                for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++) {
-                    if (browserLog[browserLogCounter].level.value > 900) {
-                        try{
-                            browserLog[browserLogCounter]['time'] = (new Date(browserLog[browserLogCounter]['time'])).toISOString()
-                        }
-                        catch(err){
-                            browserLog[browserLogCounter]['timeConversionError']= err;
-                        }
-                        browserErrorLogs.push(browserLog[browserLogCounter]);
-                    }
-                }
-                CucumberReportLog.AddJson(browserErrorLogs);
-                if (global.scenarioData['featureToggles']){
-                    CucumberReportLog.AddJson(global.scenarioData['featureToggles'])
-                }
+                CucumberReportLog.AddMessage("****************** User details ******************"); 
+                CucumberReportLog.AddJson(JSON.parse(await browserUtil.getFromSessionStorage('userDetails')))
+                CucumberReportLog.AddMessage("****************** User details ******************"); 
+
+                await BrowserLogs.printAllBrowserLogs();
             } 
             
             await CucumberReportLog.AddMessage("Cleared browser logs after successful scenario.");
             if (global.scenarioData['featureToggles']) {
                 //CucumberReportLog.AddJson(global.scenarioData['featureToggles'])
             }
+           
+
+
         }catch(err) {
             CucumberReportLog.AddMessage("Error in hooks with browserlogs or screenshots. See error details : " + err);
         }     
         await clearSession();
        
-
     });
 
     async function clearSession(){

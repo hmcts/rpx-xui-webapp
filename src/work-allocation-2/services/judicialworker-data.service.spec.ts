@@ -12,7 +12,7 @@ describe('JudicialWorkerDataService', () => {
   it('getAll should make correct api call', () => {
     const service = new JudicialWorkerDataService(mockHttpService, mockSessionStorageService);
     mockHttpService.get.and.returnValue(Observable.of([]));
-    service.getAll();
-    expect(mockHttpService.get).toHaveBeenCalledWith(JudicialWorkerDataService.JUDICIAL_WORKER_URL);
+    service.getCaseRolesUserDetails(['id1']);
+    expect(mockHttpService.post).toHaveBeenCalledWith(`${JudicialWorkerDataService.roleUrl}/getJudicialUsers`, {userIds: ['id1']});
   });
 });

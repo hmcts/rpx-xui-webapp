@@ -14,7 +14,11 @@ class MyWorkPage extends TaskList {
         this.showHideFilterHint = element(by.xpath("//button[contains(text(),'work filter')]/following-sibling::span[contains(text(),'All of your work may not be visible.')]"));
 
         this.genericFilterContainer = $('xuilib-generic-filter');
-        this.workFilterLocationContainers = $$('.xui-generic-filter .govuk-checkboxes__item');
+        this.workFilterLocationContainers = $$('.xui-generic-filter #checkbox_locations .govuk-checkboxes__item');
+
+
+        this.workFilterTypesOfWork = $$('.xui-generic-filter #checkbox_types-of-work .govuk-checkboxes__item');
+
 
         this.workFilterApplyBtn = $('xuilib-generic-filter #applyFilter');
         this.workFilterRestBtn = $('xuilib-generic-filter #cancelFilter');
@@ -53,6 +57,10 @@ class MyWorkPage extends TaskList {
 
     async getWorkFilterLocationsCount(){
         return await this.workFilterLocationContainers.count();
+    }
+
+    async getWorkFilterTypesOfCount() {
+        return await this.workFilterTypesOfWork.count();
     }
 
     async OpenWorkFilter(){
@@ -101,8 +109,22 @@ class MyWorkPage extends TaskList {
         return selectedLocations;
     }
 
+    async getListOfSelectedTypesOfWork() {
+        const selectedLocations = [];
+        const locationsCount = await this.getWorkFilterTypesOfCount();
+        for (let i = 0; i < locationsCount; i++) {
+            const locElement = await this.workFilterTypesOfWork.get(i);
+            const isLocationSelected = await locElement.$('input').isSelected();
+            if (isLocationSelected) {
+                selectedLocations.push(await locElement.$('label').getText());
+            }
+        }
+        return selectedLocations;
+    }
+
     async amOnPage() {
         try{
+            await BrowserWaits.waitForSpinnerToDissappear();
             await BrowserWaits.waitForConditionAsync(async () => {
                 const pageHeaderTitle = await this.pageHeader.getText();
                 return pageHeaderTitle.includes('My work');

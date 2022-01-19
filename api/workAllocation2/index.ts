@@ -20,16 +20,13 @@ import {
   handlePostRoleAssignments,
   handlePostSearch
 } from './caseWorkerService';
-
-import { JUDICIAL_WORKERS_LOCATIONS } from './constants/mock.data';
-import { TASK_ROLES } from './constants/task-roles.mock.data';
 import { PaginationParameter } from './interfaces/caseSearchParameter';
 import { Caseworker } from './interfaces/common';
 import { TaskList } from './interfaces/task';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { checkIfCaseAllocator } from './roleService';
 import * as roleServiceMock from './roleService.mock';
-import { handleTaskGet, handleTaskPost, handleTaskSearch } from './taskService';
+import { handleTaskGet, handleTaskPost, handleTaskRolesGet, handleTaskSearch } from './taskService';
 import {
   assignActionsToCases,
   assignActionsToTasks,
@@ -114,10 +111,12 @@ export async function getTypesOfWork(req: EnhancedRequest, res: Response, next: 
  * getTask
  */
 export async function getTaskRoles(req: EnhancedRequest, res: Response, next: NextFunction) {
-
   try {
-    res.status(200);
-    res.send(TASK_ROLES);
+    const taskId = req.params.taskId;
+    const path = `${baseWorkAllocationTaskUrl}/task/${taskId}/roles`;
+    const {status, data} = await handleTaskRolesGet(path, req);
+    res.status(status);
+    res.send(data.roles);
   } catch (error) {
     next(error);
   }
@@ -252,27 +251,6 @@ export async function retrieveAllCaseWorkers(req: EnhancedRequest, res: Response
 }
 
 /**
- * Get All JudicialWorkers
- */
-export async function getAllJudicialWorkers(req: EnhancedRequest, res: Response, next: NextFunction) {
-  try {
-    const judicialWorkers: any[] = await retrieveAllJudicialWorkers();
-    res.status(200);
-    res.send(judicialWorkers);
-  } catch (error) {
-    next(error);
-  }
-}
-
-export async function retrieveAllJudicialWorkers(): Promise<any[]> {
-  return new Promise<any[]>(resolve => {
-    setTimeout(() => {
-      resolve(JUDICIAL_WORKERS_LOCATIONS);
-    }, 0);
-  });
-}
-
-/**
  * Get CaseWorkers for Location
  */
 export async function getAllCaseWorkersForLocation(req: EnhancedRequest, res: Response, next: NextFunction) {
@@ -294,7 +272,7 @@ export async function getAllCaseWorkersForLocation(req: EnhancedRequest, res: Re
 export async function getCaseWorkersForService(req: EnhancedRequest, res: Response, next: NextFunction) {
 
   try {
-    const getCaseWorkerPath: string = prepareCaseWorkerForService(baseUrl, req.params.serviceId);
+    const getCaseWorkerPath: string = prepareCaseWorkerForService(baseCaseWorkerRefUrl, req.params.serviceId);
 
     const jsonResponse = await handleCaseWorkerForService(getCaseWorkerPath, req);
     res.status(200);

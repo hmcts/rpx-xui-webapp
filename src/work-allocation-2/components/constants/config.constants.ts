@@ -38,7 +38,7 @@ const CASE_NAME_AS_TEXT: FieldConfig = {
   views: TaskView.ALL_VIEWS
 };
 const CASE_ROLE: FieldConfig = {
-  name: 'case_role',
+  name: 'role',
   type: FieldType.STRING,
   columnLabel: 'Case role',
   sortName: 'caseRole',

@@ -1,9 +1,9 @@
-@ng @wa1 
+@ng @wa1
 Feature: WA Release 1: My Tasks Task list
 
     Background: Mock and browser setup
         Given I init MockApp
-        Given I set MOCK with "wa_release_1" release user and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer"
+        Given I set MOCK with "wa_release_1" release user and roles "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer"
 
 
     Scenario: My Tasks columns data validation
@@ -44,7 +44,7 @@ Feature: WA Release 1: My Tasks Task list
             | row | Case reference      | Case name      | Case category      | Location       | Task                     |
             | 1     | 1234-1234-1234-1234 | test case name | auto test category | London QA labs | Autotest validation task |
 
-    Scenario: WITH_SESSION : My Tasks pagination
+    Scenario: My Tasks pagination
         Given I set MOCK My tasks count 25
         Given I set MOCK request "/workallocation/taskWithPagination/" intercept with reference "taskSearchRequest"
         Given I start MockApp
@@ -73,7 +73,7 @@ Feature: WA Release 1: My Tasks Task list
             | 3          | 25       |
         Then I validate task list page results text displayed as "Showing 51 to 75 of 150 results"
 
-    Scenario: WITH_SESSION : My Tasks task counts
+    Scenario: My Tasks task counts
         Given I set MOCK My tasks count 150
         Given I start MockApp
         Given I navigate to home page
@@ -82,7 +82,7 @@ Feature: WA Release 1: My Tasks Task list
         Then I see My tasks page displayed
         Then I validate tasks count in page 25
 
-    Scenario: WITH_SESSION : My Tasks sort columns
+    Scenario: My Tasks sort columns
         Given I set MOCK My tasks count 150
         Given I start MockApp
         Given I navigate to home page
@@ -91,7 +91,7 @@ Feature: WA Release 1: My Tasks Task list
         Then I see My tasks page displayed
         Then I validate tasks column sorting
 
-    Scenario: WITH_SESSION : My Tasks sort column persist in session
+    Scenario: My Tasks sort column persist in session
         Given I set MOCK My tasks count 150
         Given I start MockApp
         Given I navigate to home page

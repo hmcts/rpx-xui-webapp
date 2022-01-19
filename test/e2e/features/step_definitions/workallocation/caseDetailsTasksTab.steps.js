@@ -4,19 +4,34 @@ const BrowserWaits = require('../../../support/customWaits');
 const SoftAssert = require('../../../../ngIntegration/util/softAssert');
 const caseDetailsTaskTabPage = require('../../pageObjects/workAllocation/caseDetailsTaskTab'); 
 const WorkAllocationDateUtil = require('../../pageObjects/workAllocation/common/workAllocationDateUtil');
+const caseDetailsPage = require("../../pageObjects/caseDetailsPage");
+const caseRolesAndAccessPage = require("../../pageObjects/workAllocation/caseRolesAccessPage");
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     When('I click manage link {string} for task at position {int} in case details tasks tab', async function(manageLinkText,taskPos){
-        const taskAttributes = await caseDetailsTaskTabPage.getAttributeElementssDisplayedForTaskAtPos(taskPos);
-        reportLogger.AddMessage(`Manage links dislayed for this task ${await taskAttributes['Manage'].getText()}`);
-        await caseDetailsTaskTabPage.clickLinkFromTaskAttribute(taskAttributes, 'Manage', manageLinkText)
+        
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await BrowserWaits.waitForSeconds(5);
+            const taskAttributes = await caseDetailsTaskTabPage.getAttributeElementssDisplayedForTaskAtPos(taskPos);
+            reportLogger.AddMessage(`Manage links dislayed for this task ${await taskAttributes['Manage'].getText()}`);
+            await caseDetailsTaskTabPage.clickLinkFromTaskAttribute(taskAttributes, 'Manage', manageLinkText)
+        });
+       
     });
 
     Then('I validate case details task tab page is displayed', async function(){
         await BrowserWaits.retryWithActionCallback(async () => {
-            await BrowserWaits.waitForElement(caseDetailsTaskTabPage.container);
-            expect(await caseDetailsTaskTabPage.container.isPresent(),'Task details ta page display ').be.true
+            try{
+                expect(await caseDetailsTaskTabPage.container.isPresent(), 'Task details ta page display ').be.true
+
+            }catch(err){
+                reportLogger.AddMessage("Error occured "+err);
+                await caseDetailsPage.clickTabWithLabel("Roles and access");
+                await caseRolesAndAccessPage.waitForPage();
+                await caseDetailsPage.clickTabWithLabel("Tasks");
+                throw new Error(err); 
+            }
 
         });
     }); 
@@ -87,7 +102,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                     contentText = WorkAllocationDateUtil.getDateFormat_D_Month_YYYY(contentText);
                 }
 
-                reportLogger.AddMessage(`Validating task attributes "${attribName}", attributeIsDisplayed "${attributeIsDisplayed}", validateContentType "${validateContentType}", content "${contentText}"`);
+                reportLogger.AddMessage(`Validating task attributes ${attribName}, attributeIsDisplayed ${attributeIsDisplayed}, validateContentType ${validateContentType}, content ${contentText}`);
 
 
                 if (attributeIsDisplayed.includes('true') || attributeIsDisplayed.includes('yes')) {
@@ -128,10 +143,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
                 }
                 softAssert.finally();
-            } 
-        });
 
-         
+            }   
+        });
+        
     });
 
 

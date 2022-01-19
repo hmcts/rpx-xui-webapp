@@ -198,7 +198,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    if (this.sub) {
+    if (this.sub && !this.sub.closed) {
       this.sub.unsubscribe();
     }
   }

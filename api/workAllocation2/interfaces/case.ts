@@ -38,8 +38,8 @@ export interface CaseAction {
 }
 
 export interface CaseInternalData {
-  appealType: string;
   caseName?: string;
+  hmctsCaseCategory?: string;
   caseManagementLocation?: CaseManagementLocation;
 }
 

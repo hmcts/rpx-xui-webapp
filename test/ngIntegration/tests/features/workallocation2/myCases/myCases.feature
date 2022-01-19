@@ -13,7 +13,7 @@ Feature: WA Release 2: My cases
         Then I validate work allocation cases table columns displayed
             | ColumnHeader  |
             | Case name     |
-            | Jurisdiction  |
+            | Service  |
             | Case category |
             | Case role     |
             | Start         |
@@ -34,8 +34,8 @@ Feature: WA Release 2: My cases
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK workallocation cases with permissions for view "My cases"
             | Roles          | Count |
-            | task-supervisor | 10    |
-            |                | 10    |
+            | case-allocator | 10 |
+            | case-allocator | 10 |
 
         Given I set MOCK request "/workallocation2/my-work/cases/" intercept with reference "taskSearchRequest"
         Given I start MockApp

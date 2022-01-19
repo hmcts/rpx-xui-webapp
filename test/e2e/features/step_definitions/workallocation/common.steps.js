@@ -23,6 +23,7 @@ const workflowUtil = require('../../pageObjects/common/workflowUtil');
 
 const taskListPage = require('../../../../e2e/features/pageObjects/workAllocation/taskListPage');
 const { checkYourAnswersHeading } = require('../../../../ngIntegration/tests/pageObjects/ccdCaseEditPages');
+const browserUtil = require('../../../../ngIntegration/util/browserUtil');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
     const taskListTable = new TaskListTable();
@@ -415,6 +416,26 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I validate WA cases table footer message is {string}', async function (message) {
         expect(await waCaseListTable.getTableFooterMessage()).to.include(message);
+    });
+
+    Given('I have a caseworker details other than logged in user with reference {string}', async function(caseWorkerRef){
+        const caseworkersInSessionStorage = await browserUtil.getFromSessionStorage('caseworkers');
+        const caseworkers = JSON.parse(caseworkersInSessionStorage);
+        
+        const loggedinuserDetailsInSessionStorage = await browserUtil.getFromSessionStorage('caseworkers');
+        const loggedInUser = JSON.parse(loggedinuserDetailsInSessionStorage);
+        const loggedinUserIdamId = loggedInUser.uid ? loggedInUser.uid : loggedInUser.id;
+        let caseWorkerForRef = null;
+        for (const cw of caseworkers){
+            if (cw.roleCategory === "LEGAL_OPERATIONS" && cw.idamId !== loggedinUserIdamId){
+                caseWorkerForRef = cw;
+                break; 
+            }
+        }
+
+        reportLogger.AddJson(caseWorkerForRef)
+        global.scenarioData[caseWorkerRef] = caseWorkerForRef; 
+
     });
 
 

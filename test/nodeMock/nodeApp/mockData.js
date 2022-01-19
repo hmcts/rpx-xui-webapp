@@ -2,6 +2,15 @@ const nodeAppDataModel = require('../../dataModels/nodeApp');
 
 class NodeAppMockData {
 
+    constructor(){
+
+    }
+
+    init(){
+        const roles = ['task-supervisor', 'case-allocator', 'caseworker', 'caseworker-ia', 'caseworker-ia-caseofficer', 'task-supervisor', 'case-allocator'];
+        this.userDetails = this.getUserDetailsWithRoles(roles); 
+    }
+
     getConfigurationValue(configurationKey) {
         return configurations[configurationKey];
     }
@@ -9,6 +18,7 @@ class NodeAppMockData {
     getUserDetailsWithRoles(roles) {
         const userDetails = nodeAppDataModel.getUserDetails_oidc();
         userDetails.userInfo.roles = roles;
+        this.userDetails = userDetails; 
         return userDetails;
     }
 
@@ -17,6 +27,8 @@ class NodeAppMockData {
         userDetails.userInfo.roles = roles;
         userDetails.userInfo.id = idamId;
         userDetails.userInfo.uid = idamId;
+        this.userDetails = userDetails; 
+
         return userDetails;
     }
 
@@ -27,7 +39,8 @@ class NodeAppMockData {
             "launchDarklyClientId": "5de6610b23ce5408280f2268",
             "manageCaseLink": "https://xui-webapp-aat.service.core-compute-aat.internal/cases",
             "manageOrgLink": "https://xui-mo-webapp-aat.service.core-compute-aat.internal",
-            "protocol": "http"
+            "protocol": "http",
+            "ccdGatewayUrl":"http://localhost:3001"
         };
     }
 

@@ -13,7 +13,7 @@ interface Item extends CaseRole {
   styleUrls: ['./case-roles-table.component.scss']
 })
 export class CaseRolesTableComponent implements OnInit {
-  public returnUrl: string;
+  public backUrl: string;
   public items: Item[] = [];
   @Input() public caseDetails: CaseView;
   @Input() public showAllocateRoleLink: boolean;
@@ -35,7 +35,7 @@ export class CaseRolesTableComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.returnUrl = this.router.url;
+    this.backUrl = this.router.url;
   }
 
   public queryParams(caseRole: CaseRole): any {

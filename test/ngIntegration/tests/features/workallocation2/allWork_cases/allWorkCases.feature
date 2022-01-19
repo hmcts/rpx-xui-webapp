@@ -1,4 +1,4 @@
-@ng  @wa2 @wa 
+@ng  @wa2 @wa
 Feature: WA Release 2: All work > Cases
 
     Background: Mock and browser setup
@@ -15,8 +15,9 @@ Feature: WA Release 2: All work > Cases
             | ColumnHeader  |
             | Case name     |
             | Case category |
-            | Role    |
-            | Location         |
+            | Role          |
+            | Location      |
+            | Person        |
 
         Then I validate work allocation table columns are links
             | ColumnHeader |
@@ -25,16 +26,16 @@ Feature: WA Release 2: All work > Cases
         When I click work allocation case column link "Case name" at row 1
         Then I see case details page
         Examples:
-            | UserIdentifier     | UserType   | Roles                                              |
+            | UserIdentifier  | UserType | Roles                                           |
             # | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+            | IAC_Judge_WA_R2 | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker |
 
     Scenario Outline: All cases pagnation control display with only 1 page of items
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK workallocation cases with permissions for view "AllWorkCases"
-            | Roles          | Count |
-            | task-supervisor | 10    |
-            |                | 10    |
+            | Roles           | Count |
+            | case-allocator | 10    |
+            | case-allocator | 10 |
 
         Given I set MOCK request "/workallocation2/my-work/cases/" intercept with reference "taskSearchRequest"
         Given I start MockApp
@@ -49,6 +50,6 @@ Feature: WA Release 2: All work > Cases
         Examples:
             | UserIdentifier     | UserType   | Roles                                              |
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            # | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+# | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
 

@@ -31,7 +31,7 @@ export class WorkCaseListComponent implements OnChanges {
   /**
    * The message to display when there are no cases to display in the list.
    */
-  @Input() public emptyMessage: string = ListConstants.EmptyMessage.Default;
+  @Input() public emptyMessage: string = ListConstants.EmptyMessage.DefaultCases;
 
   // TODO: Need to re-read the LLD, but I believe it says pass in the caseServiceConfig into this CaseListComponent.
   // Therefore we will not need this.
@@ -201,7 +201,7 @@ export class WorkCaseListComponent implements OnChanges {
   private addPersonInfoAndLocationInfo(cases: Case[]): Case[] {
     const caseworkers = JSON.parse(sessionStorage.getItem('caseworkers'));
     return cases.map((c: Case) => {
-      if (c.assignee && c.assignee.length) {
+      if (c.assignee && c.assignee.length && caseworkers && caseworkers.length > 0) {
         const actorName = caseworkers.find((caseworker) => caseworker.idamId === c.assignee);
         if (actorName) {
           c.actorName =  `${actorName.firstName} ${actorName.lastName}`;

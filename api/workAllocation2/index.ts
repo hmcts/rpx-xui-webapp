@@ -101,7 +101,7 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
  */
 export async function getTypesOfWork(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const path: string = `${baseWorkAllocationTaskUrl}/work-types?filter-by-user=false`;
+    const path: string = `${baseWorkAllocationTaskUrl}/work-types?filter-by-user=true`;
     const response = await getTypesOfWorkByUserId(path, req);
     let typesOfWork = [];
     if (response && response.work_types) {

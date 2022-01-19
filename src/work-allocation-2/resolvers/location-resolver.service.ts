@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Resolve, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { EMPTY } from 'rxjs';
+import { of } from 'rxjs/internal/observable/of';
 import { Observable } from 'rxjs/Observable';
 import { catchError, first, map, mergeMap } from 'rxjs/operators';
 import { LocationModel } from '../../../api/locations/models/location.model';
@@ -57,7 +58,7 @@ export class LocationResolver implements Resolve<LocationModel> {
     const id = userDetails.userInfo.id ? userDetails.userInfo.id : userDetails.userInfo.uid;
     if (workers && workers.length > 0 && workers[0].idamId) {
       const worker = workers.find((cw: Caseworker) => cw.idamId === id);
-      return worker ? worker.location : null;
+      return worker && worker.location && worker.location.id ? worker.location : null;
     } else {
       if (workers && workers.length > 0) {
         const worker = (workers as CaseRoleDetails[])[0];
@@ -85,7 +86,7 @@ export class LocationResolver implements Resolve<LocationModel> {
 
   private getLocations(location: Location): Observable<LocationModel> {
     if (!location) {
-      return null;
+      return of(null);
     }
     return this.http.get<LocationModel>(`api/locations/getLocationsById?ids=${location.id}`);
   }

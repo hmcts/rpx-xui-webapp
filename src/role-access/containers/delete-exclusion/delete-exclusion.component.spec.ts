@@ -1,4 +1,4 @@
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
@@ -48,7 +48,7 @@ describe('DeleteExclusionComponent', () => {
       schemas: [
         NO_ERRORS_SCHEMA
       ],
-      imports: [ HttpClientModule ],
+      imports: [ HttpClientTestingModule ],
       declarations: [ AnswersComponent, DeleteExclusionComponent, WrapperComponent ],
       providers: [
         {
@@ -156,7 +156,7 @@ describe('DeleteExclusionComponent with no name', () => {
       schemas: [
         NO_ERRORS_SCHEMA
       ],
-      imports: [ HttpClientModule ],
+      imports: [ HttpClientTestingModule ],
       declarations: [ AnswersComponent, DeleteExclusionComponent, WrapperComponent ],
       providers: [
         {

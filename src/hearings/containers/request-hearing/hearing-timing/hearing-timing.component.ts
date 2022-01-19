@@ -5,7 +5,6 @@ import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/
 import { select, Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { map } from 'rxjs/operators';
-import { HearingWindowModel } from '../../../../hearings/models/hearingWindow.model';
 import * as fromHearingStore from '../../../../hearings/store';
 import {
   ACTION,
@@ -14,6 +13,7 @@ import {
   HearingDatePriorityEnum,
   RadioOptions
 } from '../../../models/hearings.enum';
+import { HearingWindowModel } from '../../../models/hearingWindow.model';
 import { PartyUnavailabilityRange } from '../../../models/partyUnavilabilityRange.model';
 import { RefDataModel } from '../../../models/refData.model';
 import { HearingsService } from '../../../services/hearings.service';

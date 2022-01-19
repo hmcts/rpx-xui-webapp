@@ -2,7 +2,8 @@
 <div class="govuk-width-container">
   <div class="page">
     <main id="content" role="main">
-      <a href="javascript:void(0)" class="govuk-back-link">Back</a>
+       <a href="javascript:void(0)"
+           [routerLink]="['/', 'cases', 'case-details', caseId, 'hearings']">Back</a>
 
       <div class="govuk-grid-row">
         <xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem'"></xuilib-hmcts-error-summary>
@@ -40,7 +41,8 @@
           </form>
 
           <p class="govuk-body">
-            <a href="index" class="govuk-link">Do not cancel hearing</a>
+             <a href="javascript:void(0)"
+           [routerLink]="['/', 'cases', 'case-details', caseId, 'hearings']">Do not cancel hearing</a>
           </p>
         </div>
       </div>

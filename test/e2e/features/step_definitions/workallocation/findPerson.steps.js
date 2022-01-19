@@ -26,6 +26,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await workFlowPage.findPersonPage.inputSearchTerm(searchterm);
     });
 
+    When('In workflow {string}, I enter search term with caseworker reference {string} in find person input text', async function (workflow, caseworkerRef) {
+        const caseworker = global.scenarioData[caseworkerRef];
+        const workFlowPage = workflowUtil.getWorlflowPageObject(workflow);
+        await workFlowPage.findPersonPage.inputSearchTerm(caseworker.firstName);
+    });
+
     Then('In workflow {string}, I see following options available in find person results', async function (workflow,findPersonResultsDatatable) {
         const workFlowPage = workflowUtil.getWorlflowPageObject(workflow);
 
@@ -46,10 +52,22 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await workFlowPage.findPersonPage.selectPerson(person);
     });
 
+    When('In workflow {string}, I select find person result with caseworker reference {string}', async function (workflow, caseworkerRef) {
+        const caseworker = global.scenarioData[caseworkerRef];
+        const workFlowPage = workflowUtil.getWorlflowPageObject(workflow);
+        await workFlowPage.findPersonPage.selectPerson(caseworker.email);
+    });
+
     Then('In workflow {string}, I see find person is selected with {string}', async function (workflow,person) {
         const workFlowPage = workflowUtil.getWorlflowPageObject(workflow);
         expect(await workFlowPage.findPersonPage.isPersonSelected(person), `${person} is not selected`).to.be.true;
     });
 
+    Then('In workflow {string}, I see find person is selected with caseworker reference {string}', async function (workflow, caseworkerRef) {
+        const caseworker = global.scenarioData[caseworkerRef];
+
+        const workFlowPage = workflowUtil.getWorlflowPageObject(workflow);
+        expect(await workFlowPage.findPersonPage.isPersonSelected(caseworker.email), `${caseworker.email} is not selected`).to.be.true;
+    });
 
 });

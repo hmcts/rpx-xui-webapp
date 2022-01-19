@@ -79,19 +79,25 @@ class FindPersonComponent{
         
     }
 
-    getResultElementWithText(resulttext){
+    async getResultElementWithText(resulttext){
+        const elementWithResulst = element(by.xpath(`//*[contains(@class,'cdk-overlay-container')]//*[contains(@class,'mat-autocomplete-visible')]`));
+        CucumberReporter.AddMessage(await elementWithResulst.getText())
         return element(by.xpath(`//*[contains(@class,'cdk-overlay-container')]//*[contains(@class,'mat-autocomplete-visible')]//mat-option//*[contains(@class,'mat-option-text') and contains(text(),'${resulttext}')]`));
     }
 
     async isPersonReturned(result){
-        const resultElement = this.getResultElementWithText(result);
+        CucumberReporter.AddMessage(`Checking is person returned "${result}"`)
+
+        const resultElement = await this.getResultElementWithText(result);
         return await resultElement.isPresent() && resultElement.isDisplayed()
 
     }
 
     async selectPerson(result){
+        CucumberReporter.AddMessage(`Selecting is person returned "${result}"`)
+
         expect(await this.isPersonReturned(result),'Result is not found').to.be.true;
-        await this.getResultElementWithText(result).click();
+        await (await this.getResultElementWithText(result)).click();
     }
 
     async isPersonSelected(personText){

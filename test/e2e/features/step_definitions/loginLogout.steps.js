@@ -318,7 +318,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     }
 
     const userEmail = matchingUsers[0].email;
-    const key = 'Welcome01';
+    const key = matchingUsers[0].key;
 
     await loginPage.givenIAmLoggedIn(userEmail, key);
 

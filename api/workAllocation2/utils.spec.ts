@@ -551,9 +551,9 @@ describe('workAllocation.utils', () => {
 
     it('should get correct actions for available tasks for certain permissions', () => {
       expect(getActionsByPermissions('AvailableTasks', [TaskPermission.CANCEL, TaskPermission.MANAGE]))
-        .to.deep.equal([CLAIM, CLAIM_AND_GO]);
-      expect(getActionsByPermissions('AvailableTasks', [TaskPermission.EXECUTE])).to.deep.equal([]);
-      expect(getActionsByPermissions('AvailableTasks', [TaskPermission.MANAGE, TaskPermission.CANCEL]))
+        .to.deep.equal([]);
+      expect(getActionsByPermissions('AvailableTasks', [TaskPermission.EXECUTE])).to.deep.equal([CLAIM, CLAIM_AND_GO]);
+      expect(getActionsByPermissions('AvailableTasks', [TaskPermission.MANAGE, TaskPermission.EXECUTE, TaskPermission.CANCEL]))
         .to.deep.equal([CLAIM, CLAIM_AND_GO]);
     });
 

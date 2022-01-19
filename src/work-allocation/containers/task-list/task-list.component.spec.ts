@@ -433,4 +433,8 @@ describe('TaskListComponent', () => {
       expect(paginationSummary.innerText).toContain('Showing 1 to 2 of 2 results');
     });
   });
+
+  afterAll(() => {
+    TestBed.resetTestingModule();
+  });
 });

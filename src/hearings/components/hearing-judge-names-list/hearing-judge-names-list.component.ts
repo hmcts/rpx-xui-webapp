@@ -1,8 +1,8 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { HearingJudgeSelectionEnum } from '../../../hearings/models/hearings.enum';
-import { Person } from '../../../hearings/models/person.model';
-import { ValidatorsUtils } from '../../../hearings/utils/validators.utils';
+import { HearingJudgeSelectionEnum } from '../../models/hearings.enum';
+import { Person } from '../../models/person.model';
+import { ValidatorsUtils } from '../../utils/validators.utils';
 
 @Component({
   selector: 'exui-hearing-judge-names-list',

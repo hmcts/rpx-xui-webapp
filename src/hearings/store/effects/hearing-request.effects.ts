@@ -51,7 +51,11 @@ export class HearingRequestEffects {
     ofType(hearingRequestActions.UPDATE_HEARING_REQUEST),
     tap(() => {
       const nextPage = this.pageFlow.getNextPage(this.screenNavigations$);
-      return this.router.navigate(['hearings', 'request', nextPage]).then();
+      if (nextPage) {
+        return this.router.navigate(['hearings', 'request', nextPage]).then();
+      } else {
+        return of(new fromAppStoreActions.Go({path: ['/service-down']}));
+      }
     })
   );
 

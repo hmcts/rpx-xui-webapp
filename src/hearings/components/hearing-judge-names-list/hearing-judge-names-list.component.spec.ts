@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { Person } from '../../../hearings/models/person.model';
+import { Person } from '../../models/person.model';
 import { HearingJudgeNamesListComponent } from './hearing-judge-names-list.component';
 
 describe('HearingJudgeNamesListComponent', () => {

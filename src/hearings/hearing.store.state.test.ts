@@ -1,4 +1,5 @@
-import {ServiceHearingValuesModel} from '../../models/serviceHearingValues.model';
+import {PartyType} from './models/hearings.enum';
+import {ServiceHearingValuesModel} from './models/serviceHearingValues.model';
 
 export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   autoListFlag: false,
@@ -10,18 +11,26 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
     'Rate of Assessment / Payability Issues - complex'
   ],
   hearingWindow: {
-    range: {
-      start: '2021-11-23T09:00:00.000+0000',
-      end: '2021-11-30T09:00:00.000+0000'
+    hearingWindowDateRange: {
+      hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
+      hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000',
     },
-    firstDateTimeMustBe: ''
+    hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
   },
   duration: 45,
   hearingPriorityType: 'Standard',
   numberOfPhysicalAttendees: 2,
   hearingInWelshFlag: false,
-  hearingLocations: [
-    '196538', '219164'
+  hearingLocations: [{
+      locationId: '196538',
+      locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
+      region: 'North West',
+    },
+    {
+      locationId: '219164',
+      locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
+      region: 'Scotland',
+    },
   ],
   facilitiesRequired: [],
   listingComments: '',
@@ -58,26 +67,29 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   hearingIsLinkedFlag: false,
   parties: [
     {
-      partyName: 'Jane and Smith',
-      partyChannel: '',
-      unavailability: [
+      partyID: 'P1',
+      partyType: PartyType.IND,
+      partyName: 'Jane Smith',
+      partyChannel: 'inPerson',
+      unavailabilityRanges: [
         {
-          start: '2021-12-10T09:00:00.000+0000',
-          end: '2021-12-31T09:00:00.000+0000'
-        }
-      ]
+          unavailableFromDate: '2021-12-10T09:00:00.000+0000',
+          unavailableToDate: '2021-12-31T09:00:00.000+0000',
+        },
+      ],
     },
     {
+      partyID: 'P2',
+      partyType: PartyType.ORG,
       partyName: 'DWP',
-      partyChannel: '',
-      unavailability: [
+      partyChannel: 'inPerson',
+      unavailabilityRanges: [
         {
-          start: '2021-12-20T09:00:00.000+0000',
-          end: '2021-12-31T09:00:00.000+0000'
-        }
-      ]
-    }
-  ],
+          unavailableFromDate: '2021-12-20T09:00:00.000+0000',
+          unavailableToDate: '2021-12-31T09:00:00.000+0000',
+        },
+      ],
+    }],
   caseFlags: {
     flags: [
       {

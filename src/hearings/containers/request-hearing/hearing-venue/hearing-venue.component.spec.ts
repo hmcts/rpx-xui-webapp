@@ -6,9 +6,9 @@ import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
 import {SearchLocationComponent} from '@hmcts/rpx-xui-common-lib';
 import {LocationByEPIMSModel} from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import {provideMockStore} from '@ngrx/store/testing';
+import {initialState} from '../../../hearing.store.state.test';
 import {ACTION} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
-import {initialState} from '../hearing.store.state.test';
 import {HearingVenueComponent} from './hearing-venue.component';
 
 @Component({

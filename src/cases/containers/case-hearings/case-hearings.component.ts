@@ -1,12 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {select, Store} from '@ngrx/store';
 import * as moment from 'moment';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {UserRole} from '../../../app/models/user-details.model';
+import {UserRole} from '../../../app/models';
 import {RoleCategoryMappingService} from '../../../app/services/role-category-mapping/role-category-mapping.service';
 import * as fromAppStore from '../../../app/store';
+import {HearingConditions} from '../../../hearings/models/hearingConditions';
 import {HearingListModel} from '../../../hearings/models/hearingList.model';
 import {HearingListViewModel} from '../../../hearings/models/hearingListView.model';
 import {Actions, EXUISectionStatusEnum} from '../../../hearings/models/hearings.enum';
@@ -25,16 +26,18 @@ export class CaseHearingsComponent implements OnInit {
   public hearingsActions: Actions[] = [Actions.READ];
   public userRoles$: Observable<string[]>;
   public hasRequestAction: boolean = false;
+  public caseId: string = '';
 
   constructor(private readonly appStore: Store<fromAppStore.State>,
               private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly activatedRoute: ActivatedRoute,
-              private readonly roleCategoryMappingService: RoleCategoryMappingService) {
-    const caseID = this.activatedRoute.snapshot.params.cid;
+              private readonly roleCategoryMappingService: RoleCategoryMappingService,
+              private readonly router: Router) {
+    this.caseId = this.activatedRoute.snapshot.params.cid;
     this.userRoles$ = this.appStore.pipe(select(fromAppStore.getUserDetails)).pipe(
       map(userDetails => userDetails.userInfo.roles)
     );
-    this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(caseID));
+    this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
   }
 
   public ngOnInit(): void {
@@ -97,5 +100,16 @@ export class CaseHearingsComponent implements OnInit {
         return new Date(a.earliestHearingStartDateTime) > new Date(b.earliestHearingStartDateTime) ? -1 : 1;
       }
     );
+  }
+
+  public createHearingRequest(): void {
+    const hearingCondition: HearingConditions = {
+      mode: 'create',
+      isInit: true,
+      caseId: this.caseId
+    };
+    this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
+    this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
+    this.router.navigate(['/', 'hearings', 'request']).then();
   }
 }

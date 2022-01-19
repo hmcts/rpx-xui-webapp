@@ -1,21 +1,23 @@
-import {DefaultHearingWindowModel} from './defaultHearingWindow.model';
+import {HearingLocationModel} from './hearingLocation.model';
+import {HearingWindowModel} from "./hearingWindow.model";
 import {JudiciaryModel} from './judiciary.model';
+import {PartyDetailsModel} from './partyDetails.model';
 import {PartyFlagsModel} from './partyFlags.model';
-import {PartyUnavailabilityModel} from './partyUnavilability.model';
 import {ScreenNavigationModel} from './screenNavigation.model';
 import {VocabularyModel} from './vocabulary.model';
 
 export interface ServiceHearingValuesModel {
+  caseName: string;
   autoListFlag: boolean;
   hearingType: string;
   caseType: string;
   caseSubTypes: string[];
-  hearingWindow: DefaultHearingWindowModel;
+  hearingWindow: HearingWindowModel;
   duration: number;
   hearingPriorityType: string;
   numberOfPhysicalAttendees: number;
   hearingInWelshFlag: boolean;
-  hearingLocations: string[];
+  hearingLocations: HearingLocationModel[];
   facilitiesRequired: string[];
   listingComments: string;
   hearingRequester: string;
@@ -23,7 +25,7 @@ export interface ServiceHearingValuesModel {
   leadJudgeContractType: string;
   judiciary: JudiciaryModel;
   hearingIsLinkedFlag: boolean;
-  parties: PartyUnavailabilityModel[];
+  parties: PartyDetailsModel[];
   caseFlags: {
     flags: PartyFlagsModel[],
     flagAmendURL: string,

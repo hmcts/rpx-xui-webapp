@@ -1,24 +1,30 @@
 /* tslint:disable:object-literal-sort-keys */
-import {RequirementType} from '../models/hearings.enum';
+import {PartyType, RequirementType} from '../models/hearings.enum';
 import {ServiceHearingValuesModel} from '../models/serviceHearingValues.model';
 
 export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
+  caseName: 'Jane Smith vs DWP',
   autoListFlag: false,
   hearingType: 'Final',
   caseType: 'Personal Independence Payment',
   caseSubTypes: ['Conditions of Entitlement', 'Good cause', 'Rate of Assessment / Payability Issues - complex'],
   hearingWindow: {
-    range: {
-      start: '2021-11-23T09:00:00.000+0000',
-      end: '2021-11-30T09:00:00.000+0000',
+    hearingWindowDateRange: {
+      hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
+      hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000',
     },
-    firstDateTimeMustBe: '',
+    hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
   },
   duration: 45,
   hearingPriorityType: 'Standard',
   numberOfPhysicalAttendees: 2,
   hearingInWelshFlag: false,
-  hearingLocations: ['196538'],
+  hearingLocations: [{
+    locationId: '196538',
+    locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
+    region: 'North West',
+  },
+  ],
   facilitiesRequired: [],
   listingComments: '',
   hearingRequester: '',
@@ -44,22 +50,26 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   hearingIsLinkedFlag: false,
   parties: [
     {
+      partyID: 'P1',
+      partyType: PartyType.IND,
       partyName: 'Jane Smith',
-      partyChannel: '',
-      unavailability: [
+      partyChannel: 'byVideo',
+      unavailabilityRanges: [
         {
-          start: '2021-12-10T09:00:00.000+0000',
-          end: '2021-12-31T09:00:00.000+0000',
+          unavailableFromDate: '2021-12-10T09:00:00.000+0000',
+          unavailableToDate: '2021-12-31T09:00:00.000+0000',
         },
       ],
     },
     {
+      partyID: 'P2',
+      partyType: PartyType.ORG,
       partyName: 'DWP',
-      partyChannel: '',
-      unavailability: [
+      partyChannel: 'byVideo',
+      unavailabilityRanges: [
         {
-          start: '2021-12-20T09:00:00.000+0000',
-          end: '2021-12-31T09:00:00.000+0000',
+          unavailableFromDate: '2021-12-20T09:00:00.000+0000',
+          unavailableToDate: '2021-12-31T09:00:00.000+0000',
         },
       ],
     }],

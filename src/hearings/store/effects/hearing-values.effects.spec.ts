@@ -3,7 +3,7 @@ import {provideMockActions} from '@ngrx/effects/testing';
 import {cold, hot} from 'jasmine-marbles';
 import {of} from 'rxjs';
 import {Go} from '../../../app/store/actions';
-import {RequirementType} from '../../models/hearings.enum';
+import {PartyType, RequirementType} from '../../models/hearings.enum';
 import {ServiceHearingValuesModel} from '../../models/serviceHearingValues.model';
 import {HearingsService} from '../../services/hearings.service';
 import * as hearingValuesActions from '../actions/hearing-values.action';
@@ -32,16 +32,17 @@ describe('Hearing Values Effects', () => {
 
   describe('loadHearingValue$', () => {
     const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
+      caseName: 'Jane Smith vs DWP',
       autoListFlag: false,
       hearingType: 'Final',
       caseType: 'Personal Independence Payment',
       caseSubTypes: ['Conditions of Entitlement', 'Good cause', 'Rate of Assessment / Payability Issues - complex'],
       hearingWindow: {
-        range: {
-          start: '2021-11-23T09:00:00.000+0000',
-          end: '2021-11-30T09:00:00.000+0000',
+        hearingWindowDateRange: {
+          hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
+          hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000',
         },
-        firstDateTimeMustBe: '',
+        hearingWindowFirstDate: '',
       },
       duration: 45,
       hearingPriorityType: 'Standard',
@@ -73,22 +74,26 @@ describe('Hearing Values Effects', () => {
       hearingIsLinkedFlag: false,
       parties: [
         {
+          partyID: 'P1',
           partyName: 'Jane and Smith',
-          partyChannel: '',
-          unavailability: [
+          partyType: PartyType.IND,
+          partyChannel: 'byVideo',
+          unavailabilityRanges: [
             {
-              start: '2021-12-10T09:00:00.000+0000',
-              end: '2021-12-31T09:00:00.000+0000',
+              unavailableFromDate: '2021-12-10T09:00:00.000+0000',
+              unavailableToDate: '2021-12-31T09:00:00.000+0000',
             },
           ],
         },
         {
+          partyID: 'P2',
           partyName: 'DWP',
-          partyChannel: '',
-          unavailability: [
+          partyType: PartyType.ORG,
+          partyChannel: 'byVideo',
+          unavailabilityRanges: [
             {
-              start: '2021-12-20T09:00:00.000+0000',
-              end: '2021-12-31T09:00:00.000+0000',
+              unavailableFromDate: '2021-12-20T09:00:00.000+0000',
+              unavailableToDate: '2021-12-31T09:00:00.000+0000',
             },
           ],
         }],

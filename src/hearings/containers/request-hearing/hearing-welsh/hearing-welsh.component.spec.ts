@@ -5,9 +5,9 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
 import {ErrorMessage} from '../../../../app/models';
+import {initialState} from '../../../hearing.store.state.test';
 import {ACTION} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
-import {initialState} from '../hearing.store.state.test';
 import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 import {HearingWelshComponent} from './hearing-welsh.component';
 

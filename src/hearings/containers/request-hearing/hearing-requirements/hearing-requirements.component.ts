@@ -3,8 +3,11 @@ import {ActivatedRoute} from '@angular/router';
 import {Store} from '@ngrx/store';
 import * as fromHearingStore from '../../../../hearings/store';
 import {CaseFlagReferenceModel} from '../../../models/caseFlagReference.model';
+import {HearingConditions} from '../../../models/hearingConditions';
+import {HearingRequestMainModel} from '../../../models/hearingRequestMain.model';
 import {ACTION, CaseFlagType} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
+import {HearingsUtils} from '../../../utils/hearings.utils';
 import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 
 @Component({
@@ -37,8 +40,53 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     this.caseFlagsRefData = this.route.snapshot.data.caseFlags;
   }
 
-  public ngOnInit() {
-    this.referenceId = this.hearingListMainModel.caseRef;
+  public ngOnInit(): void {
+    if (this.hearingListMainModel) {
+      this.referenceId = this.hearingListMainModel.caseRef;
+    }
+    if (HearingsUtils.hasPropertyAndValue(this.hearingCondition, 'mode', 'create')
+      && HearingsUtils.hasPropertyAndValue(this.hearingCondition, 'isInit', true)
+      && this.serviceHearingValuesModel) {
+      this.initializeHearingRequestFromHearingValues();
+    }
+  }
+
+  public initializeHearingRequestFromHearingValues(): void {
+    const hearingRequestMainModel: HearingRequestMainModel = {
+      requestDetails: {
+        requestTimeStamp: null
+      },
+      hearingDetails: {
+        duration: this.serviceHearingValuesModel.duration,
+        hearingType: this.serviceHearingValuesModel.hearingType,
+        hearingLocations: this.serviceHearingValuesModel.hearingLocations,
+        hearingIsLinkedFlag: this.serviceHearingValuesModel.hearingIsLinkedFlag,
+        hearingWindow: this.serviceHearingValuesModel.hearingWindow,
+        privateHearingRequiredFlag: this.serviceHearingValuesModel.privateHearingRequiredFlag,
+        panelRequirements: null,
+        autolistFlag: this.serviceHearingValuesModel.autoListFlag,
+        hearingPriorityType: this.serviceHearingValuesModel.hearingPriorityType,
+        numberOfPhysicalAttendees: this.serviceHearingValuesModel.numberOfPhysicalAttendees,
+        hearingInWelshFlag: this.serviceHearingValuesModel.hearingInWelshFlag,
+        facilitiesRequired: this.serviceHearingValuesModel.facilitiesRequired,
+        listingComments: this.serviceHearingValuesModel.listingComments,
+        hearingRequester: this.serviceHearingValuesModel.hearingRequester,
+        leadJudgeContractType: this.serviceHearingValuesModel.leadJudgeContractType,
+        totalParticipantAttendingHearing: null
+      },
+      partyDetails: []
+    };
+    this.hearingStore.dispatch(new fromHearingStore.InitializeHearingRequest(hearingRequestMainModel));
+    this.initializeHearingCondition();
+  }
+
+  public initializeHearingCondition(): void {
+    const strRegions = this.serviceHearingValuesModel.hearingLocations.map(location => location.region).join(',');
+    const hearingCondition: HearingConditions = {
+      isInit: false,
+      region: strRegions
+    };
+    this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
   }
 
   protected executeAction(action: ACTION): void {

@@ -92,7 +92,7 @@ export const DEFAULT_PRIORITIES_REF: RefDataModel[] = [
 
 export const DEFAULT_PARTYCHANNEL_REF: RefDataModel[] = [
   {
-    key: 'inperson',
+    key: 'inPerson',
     value_en: 'In person',
     value_cy: '',
     hintText_EN: 'in person',
@@ -101,7 +101,7 @@ export const DEFAULT_PARTYCHANNEL_REF: RefDataModel[] = [
     parentKey: null,
   },
   {
-    key: 'byphone',
+    key: 'byPhone',
     value_en: 'By phone',
     value_cy: '',
     hintText_EN: 'By Phone',
@@ -110,7 +110,7 @@ export const DEFAULT_PARTYCHANNEL_REF: RefDataModel[] = [
     parentKey: null,
   },
   {
-    key: 'byvideo',
+    key: 'byVideo',
     value_en: 'By video',
     value_cy: '',
     hintText_EN: 'By video',
@@ -119,7 +119,7 @@ export const DEFAULT_PARTYCHANNEL_REF: RefDataModel[] = [
     parentKey: null,
   },
   {
-    key: 'notattending',
+    key: 'notAttending',
     value_en: 'Not attending',
     value_cy: '',
     hintText_EN: 'not attending',

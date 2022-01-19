@@ -1,5 +1,6 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import * as _ from 'underscore';
+import {PartyType, RequirementType} from '../../models/hearings.enum';
 import {ServiceHearingValuesModel} from '../../models/serviceHearingValues.model';
 import {CaseFlagsComponent} from './case-flags.component';
 
@@ -867,27 +868,28 @@ describe('CaseFlagsComponent', () => {
   ];
 
   const hearingValueModel: ServiceHearingValuesModel = {
+    caseName: 'Jane Smith vs DWP',
     autoListFlag: false,
     hearingType: 'Final',
     caseType: 'Personal Independence Payment',
-    caseSubTypes: [
-      'Conditions of Entitlement',
-      'Good cause',
-      'Rate of Assessment / Payability Issues - complex'
-    ],
+    caseSubTypes: ['Conditions of Entitlement', 'Good cause', 'Rate of Assessment / Payability Issues - complex'],
     hearingWindow: {
-      range: {
-        start: '2021-11-23T09:00:00.000+0000',
-        end: '2021-11-30T09:00:00.000+0000'
+      hearingWindowDateRange: {
+        hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
+        hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000',
       },
-      firstDateTimeMustBe: ''
+      hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
     },
     duration: 45,
     hearingPriorityType: 'Standard',
     numberOfPhysicalAttendees: 2,
     hearingInWelshFlag: false,
-    hearingLocations: [
-      '196538'
+    hearingLocations: [{
+      locationId: '196538',
+      locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
+      locationType: 'hearing',
+      region: 'North West',
+    },
     ],
     facilitiesRequired: [],
     listingComments: '',
@@ -895,101 +897,94 @@ describe('CaseFlagsComponent', () => {
     privateHearingRequiredFlag: false,
     leadJudgeContractType: '',
     judiciary: {
-      roleType: [
-        ''
-      ],
-      authorisationTypes: [
-        ''
-      ],
-      authorisationSubType: [
-        ''
-      ],
-      panelComposition: [
-        {
-          memberType: '',
-          count: 1
-        }
-      ],
+      roleType: [''],
+      authorisationTypes: [''],
+      authorisationSubType: [''],
+      panelComposition: [{
+        memberType: '',
+        count: 1,
+      }],
       judiciaryPreferences: [
         {
           memberID: '',
           memberType: '',
-          requirementType: 'EXCLUDE'
-        }
+          requirementType: RequirementType.EXCLUDE,
+        },
       ],
-      judiciarySpecialisms: [
-        ''
-      ]
+      judiciarySpecialisms: [''],
     },
     hearingIsLinkedFlag: false,
     parties: [
       {
-        partyName: 'Jane and Smith',
-        partyChannel: '',
-        unavailability: [
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyName: 'Jane Smith',
+        partyChannel: 'byVideo',
+        unavailabilityRanges: [
           {
-            start: '2021-12-10T09:00:00.000+0000',
-            end: '2021-12-31T09:00:00.000+0000'
-          }
-        ]
+            unavailableFromDate: '2021-12-10T09:00:00.000+0000',
+            unavailableToDate: '2021-12-31T09:00:00.000+0000',
+          },
+        ],
       },
       {
+        partyID: 'P2',
+        partyType: PartyType.ORG,
         partyName: 'DWP',
-        partyChannel: '',
-        unavailability: [
+        partyChannel: 'byVideo',
+        unavailabilityRanges: [
           {
-            start: '2021-12-20T09:00:00.000+0000',
-            end: '2021-12-31T09:00:00.000+0000'
-          }
-        ]
-      }
-    ],
+            unavailableFromDate: '2021-12-20T09:00:00.000+0000',
+            unavailableToDate: '2021-12-31T09:00:00.000+0000',
+          },
+        ],
+      }],
     caseFlags: {
       flags: [
         {
-          partyName: 'Jane and Smith',
+          partyName: 'Jane Smith',
           flagParentId: 'RA0008',
           flagId: 'RA0042',
           flagDescription: 'Sign language interpreter required',
           flagStatus: 'ACTIVE',
         },
         {
-          partyName: 'Jane and Smith',
+          partyName: 'Jane Smith',
           flagParentId: 'RA0032',
           flagId: 'RA0053',
           flagDescription: 'Hearing loop required',
           flagStatus: 'ACTIVE',
         },
         {
-          partyName: 'Jane and Smith',
+          partyName: 'Jane Smith',
           flagParentId: 'RA0002',
           flagId: 'RA0013',
           flagDescription: 'Larger font size',
           flagStatus: 'ACTIVE',
         },
         {
-          partyName: 'Jane and Smith',
+          partyName: 'Jane Smith',
           flagParentId: 'RA0003',
           flagId: 'RA0016',
           flagDescription: 'Reading documents for customer',
           flagStatus: 'ACTIVE',
         },
         {
-          partyName: 'Jane and Smith',
+          partyName: 'Jane Smith',
           flagParentId: 'RA0008',
           flagId: 'RA0042',
           flagDescription: 'Sign Language Interpreter',
           flagStatus: 'ACTIVE',
         },
         {
-          partyName: 'Jane and Smith',
+          partyName: 'Jane Smith',
           flagParentId: 'PF0001',
           flagId: 'PF0015',
           flagDescription: 'Language Interpreter',
           flagStatus: 'ACTIVE',
         },
         {
-          partyName: 'Jane and Smith',
+          partyName: 'Jane Smith',
           flagParentId: 'CF0001',
           flagId: 'CF0007',
           flagDescription: 'Urgent flag',
@@ -1031,9 +1026,104 @@ describe('CaseFlagsComponent', () => {
           flagStatus: 'ACTIVE',
         },
       ],
-      flagAmendURL: '/',
+      flagAmendURL: '/flag/amend',
     },
-  } as ServiceHearingValuesModel;
+    screenFlow: [
+      {
+        screenName: 'hearing-requirements',
+        navigation: [
+          {
+            resultValue: 'hearing-facilities',
+          },
+        ],
+      },
+      {
+        screenName: 'hearing-facilities',
+        navigation: [
+          {
+            resultValue: 'hearing-stage',
+          },
+        ],
+      },
+      {
+        screenName: 'hearing-stage',
+        navigation: [
+          {
+            resultValue: 'hearing-attendance',
+          },
+        ],
+      },
+      {
+        screenName: 'hearing-attendance',
+        navigation: [
+          {
+            resultValue: 'hearing-venue',
+          },
+        ],
+      },
+      {
+        screenName: 'hearing-venue',
+        conditionKey: 'region',
+        navigation: [
+          {
+            conditionOperator: 'INCLUDE',
+            conditionValue: 'Wales',
+            resultValue: 'hearing-welsh',
+          },
+          {
+            conditionOperator: 'NOT INCLUDE',
+            conditionValue: 'Wales',
+            resultValue: 'hearing-judge',
+          },
+        ],
+      },
+      {
+        screenName: 'hearing-welsh',
+        navigation: [
+          {
+            resultValue: 'hearing-judge',
+          },
+        ],
+      },
+      {
+        screenName: 'hearing-judge',
+        navigation: [
+          {
+            resultValue: 'hearing-panel',
+          },
+        ],
+      },
+      {
+        screenName: 'hearing-panel',
+        navigation: [
+          {
+            resultValue: 'hearing-timing',
+          },
+        ],
+      },
+      {
+        screenName: 'hearing-timing',
+        navigation: [
+          {
+            resultValue: 'hearing-additional-instructions',
+          },
+        ],
+      },
+      {
+        screenName: 'hearing-additional-instructions',
+        navigation: [
+          {
+            resultValue: 'hearing-check-answers',
+          },
+        ],
+      },
+    ],
+    vocabulary: [
+      {
+        word1: '',
+      },
+    ],
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({

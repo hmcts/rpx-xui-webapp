@@ -53,6 +53,7 @@ export function hearingRequestReducer(currentState = initialHearingRequestState,
         ...initialHearingRequestState
       };
     }
+    case fromActions.INITIALIZE_HEARING_REQUEST:
     case fromActions.UPDATE_HEARING_REQUEST: {
       return {
         ...currentState,

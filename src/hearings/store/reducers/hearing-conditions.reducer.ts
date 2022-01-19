@@ -12,10 +12,7 @@ export function hearingConditionsReducer(currentState = initialHearingConditions
       };
     }
     case fromActions.SAVE_HEARING_CONDITIONS: {
-      return {
-        ...currentState,
-        [Object.keys(action.payload)[0]]: Object.values(action.payload)[0]
-      };
+      return {...currentState, ...action.payload};
     }
     default: {
       return {

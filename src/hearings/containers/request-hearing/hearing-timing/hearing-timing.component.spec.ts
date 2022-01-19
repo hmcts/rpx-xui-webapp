@@ -9,12 +9,12 @@ import {provideMockStore} from '@ngrx/store/testing';
 import * as moment from 'moment';
 import {of} from 'rxjs';
 import {ErrorMessage} from '../../../../app/models';
+import {initialState} from '../../../hearing.store.state.test';
 import {ACTION, HearingDatePriorityEnum, RadioOptions} from '../../../models/hearings.enum';
-import {PartyUnavailabilityRange} from '../../../models/partyUnavilabilityRange.model';
 import {RefDataModel} from '../../../models/refData.model';
+import {UnavailabilityRangeModel} from '../../../models/unavailabilityRange.model';
 import {HearingsService} from '../../../services/hearings.service';
 import {ValidatorsUtils} from '../../../utils/validators.utils';
-import {initialState} from '../hearing.store.state.test';
 import {HearingTimingComponent} from './hearing-timing.component';
 
 @Component({
@@ -106,14 +106,14 @@ describe('HearingTimingComponent', () => {
 
   it('should check unavailable dates list', () => {
     component.partiesNotAvailableDates = [];
-    const unavailabilityDates: PartyUnavailabilityRange[] = [
+    const unavailabilityDates: UnavailabilityRangeModel[] = [
       {
-        start: '2021-12-10T09:00:00.000+0000',
-        end: '2021-12-31T09:00:00.000+0000',
+        unavailableFromDate: '2021-12-10T09:00:00.000+0000',
+        unavailableToDate: '2021-12-31T09:00:00.000+0000',
       },
       {
-        start: '2021-12-10T09:00:00.000+0000',
-        end: '2021-12-31T09:00:00.000+0000',
+        unavailableFromDate: '2021-12-10T09:00:00.000+0000',
+        unavailableToDate: '2021-12-31T09:00:00.000+0000',
       },
     ];
     component.checkUnavailableDatesList(unavailabilityDates);
@@ -123,20 +123,9 @@ describe('HearingTimingComponent', () => {
 
   it('should set unavailable dates', () => {
     component.partiesNotAvailableDates = [];
-    const unavailabilityDate: PartyUnavailabilityRange = {
-      start: '2021-12-10T09:00:00.000+0000',
-      end: '2021-12-11T09:00:00.000+0000',
-    };
-    component.checkUnavailableDatesList([unavailabilityDate]);
-    expect(component.partiesNotAvailableDates[0]).toBe('10 December 2021');
-  });
-
-
-  it('should set unavailable dates', () => {
-    component.partiesNotAvailableDates = [];
-    const unavailabilityDate: PartyUnavailabilityRange = {
-      start: '2021-12-10T09:00:00.000+0000',
-      end: '2021-12-11T09:00:00.000+0000',
+    const unavailabilityDate: UnavailabilityRangeModel = {
+      unavailableFromDate: '2021-12-10T09:00:00.000+0000',
+      unavailableToDate: '2021-12-11T09:00:00.000+0000',
     };
     component.checkUnavailableDatesList([unavailabilityDate]);
     expect(component.partiesNotAvailableDates[0]).toBe('10 December 2021');
@@ -186,7 +175,7 @@ describe('HearingTimingComponent', () => {
   it('should check date selection invalid', () => {
     component.firstDateOfHearingError = null;
     component.firstHearingFormGroup.get('firstHearingDate_day').setValue('12');
-    component.showChoosenDateError();
+    component.showChosenDateError();
     expect(component.firstDateOfHearingError.isInvalid).toBeTruthy();
   });
 
@@ -195,7 +184,7 @@ describe('HearingTimingComponent', () => {
     component.firstHearingFormGroup.get('firstHearingDate_day').setValue('25');
     component.firstHearingFormGroup.get('firstHearingDate_month').setValue('10');
     component.firstHearingFormGroup.get('firstHearingDate_year').setValue('2022');
-    component.showChoosenDateError();
+    component.showChosenDateError();
     expect(component.firstDateOfHearingError).toBe(null);
   });
 
@@ -204,7 +193,7 @@ describe('HearingTimingComponent', () => {
     component.firstHearingFormGroup.get('firstHearingDate_day').setValue('15');
     component.firstHearingFormGroup.get('firstHearingDate_month').setValue('10');
     component.firstHearingFormGroup.get('firstHearingDate_year').setValue('2022');
-    component.showChoosenDateError();
+    component.showChosenDateError();
     expect(component.firstDateOfHearingError.isInvalid).toBeTruthy();
   });
 
@@ -213,7 +202,7 @@ describe('HearingTimingComponent', () => {
     component.firstHearingFormGroup.get('firstHearingDate_day').setValue('15');
     component.firstHearingFormGroup.get('firstHearingDate_month').setValue('10');
     component.firstHearingFormGroup.get('firstHearingDate_year').setValue('2020');
-    component.showChoosenDateError();
+    component.showChosenDateError();
     expect(component.firstDateOfHearingError.isInvalid).toBeTruthy();
   });
 
@@ -222,7 +211,7 @@ describe('HearingTimingComponent', () => {
     component.firstHearingFormGroup.get('firstHearingDate_day').setValue('ewr');
     component.firstHearingFormGroup.get('firstHearingDate_month').setValue('10');
     component.firstHearingFormGroup.get('firstHearingDate_year').setValue('2020');
-    component.showChoosenDateError();
+    component.showChosenDateError();
     expect(component.firstDateOfHearingError.isInvalid).toBeTruthy();
   });
 

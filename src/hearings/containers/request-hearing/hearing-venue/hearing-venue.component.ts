@@ -78,11 +78,18 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
     this.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
     this.findLocationFormGroup.controls.locationSelectedFormControl.markAsPristine();
     this.displayedLocations = [];
+    this.updateHearingConditions();
   }
 
   public removeSelection(location: LocationByEPIMSModel): void {
     const index = this.selectedLocations.findIndex(selectedLocation => selectedLocation.epims_id === location.epims_id);
     this.selectedLocations.splice(index, 1);
+    this.updateHearingConditions();
+  }
+
+  public updateHearingConditions(): void {
+    const strRegions = this.selectedLocations.map(location => location.region).join(',');
+    this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions({region: strRegions}));
   }
 
   public getLocationSearchFocus() {
@@ -116,8 +123,6 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
   }
 
   public prepareHearingRequestData(): void {
-    const outcome = this.selectedLocations.filter(x => x.region && x.region.toLowerCase() === 'wales').length ? {region: 'Wales'} : {region: 'other'};
-    this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(outcome));
     const locations: HearingLocationModel[] = this.selectedLocations.map(locationByEPIMSModel => {
       return {
         locationType: 'hearing',

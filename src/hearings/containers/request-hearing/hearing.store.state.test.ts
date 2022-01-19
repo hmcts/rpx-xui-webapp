@@ -1,4 +1,4 @@
-import {ServiceHearingValuesModel} from '../../models/serviceHearingValues.model';
+import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
 
 export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   autoListFlag: false,
@@ -112,11 +112,12 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
 export const initialState = {
   hearings: {
     hearingList: {
-      hearingListMainModel: [
-        {
-          hmctsServiceID: 'SSCS'
-        }
-      ]
+      hearingListMainModel:
+      {
+        caseRef: '54354545453',
+        hmctsServiceID: 'SSCS',
+        caseHearings: []
+      }
     },
     hearingValues: {
       serviceHearingValuesModel,
@@ -151,7 +152,9 @@ export const initialState = {
           listingComments: null,
           hearingRequester: null,
           leadJudgeContractType: null,
-          totalParticipantAttendingHearing: 3
+          totalParticipantAttendingHearing: 3,
+          cancelationReason: [],
+          cancelledCaseHearing: null,
         },
         caseDetails: {
           hmctsServiceCode: null,

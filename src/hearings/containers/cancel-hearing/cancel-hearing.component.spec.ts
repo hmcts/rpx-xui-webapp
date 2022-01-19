@@ -1,11 +1,16 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HearingsService } from 'src/hearings/services/hearings.service';
+import { provideMockStore } from '@ngrx/store/testing';
+import { HearingListModel } from 'api/hearings/models/hearingList.model';
+import { Observable, of } from 'rxjs';
+import { ACTION, HearingListingStatusEnum, HMCStatus } from '../../../hearings/models/hearings.enum';
 import { RefDataModel } from '../../../hearings/models/refData.model';
+import { HearingsService } from '../../services/hearings.service';
+import { initialState } from '../request-hearing/hearing.store.state.test';
 import { CancelHearingComponent } from './cancel-hearing.component';
 
 describe('CancelHearingComponent', () => {
@@ -24,7 +29,25 @@ describe('CancelHearingComponent', () => {
       parentKey: null,
     }];
 
+  const HEARING_ID = 'h00001';
+  const CASE_REF = '5084035';
+
+  const CASE_HEARING_1: HearingListModel = {
+    hearingID: HEARING_ID,
+    hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
+    hearingType: 'Case management hearing',
+    hmcStatus: HMCStatus.HEARING_REQUESTD,
+    lastResponseReceivedDateTime: '',
+    responseVersion: 'rv1',
+    hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
+    listAssistCaseStatus: '',
+    hearingDaySchedule: null,
+  };
+  let mockStore: any;
+
   beforeEach(async(() => {
+    initialState.hearings.hearingList.hearingListMainModel.caseHearings.push(CASE_HEARING_1);
+    initialState.hearings.hearingList.hearingListMainModel.caseRef = CASE_REF;
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
       declarations: [CancelHearingComponent],
@@ -35,13 +58,17 @@ describe('CancelHearingComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                hearingCancelOptions: reasons
-              }
+                hearingCancelOptions: reasons,
+              },
             },
-          }
+            params: Observable.of({ hearingId: HEARING_ID }),
+          },
         },
+        provideMockStore({ initialState }),
+        { provide: HearingsService, useValue: hearingsService },
+        FormBuilder
       ],
-      schemas: [NO_ERRORS_SCHEMA],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
       .compileComponents();
   }));
@@ -49,10 +76,62 @@ describe('CancelHearingComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CancelHearingComponent);
     component = fixture.componentInstance;
+    component.hearingCancelOptions = reasons;
+    spyOn(component, 'initForm').and.callThrough();
+    spyOn(component, 'getChosenReasons').and.callThrough();
+    spyOn(component, 'prepareHearingRequestData').and.callThrough();
+    spyOn(component, 'isFormValid').and.callThrough();
+    mockStore = jasmine.createSpyObj('mockStore', ['unsubscribe', 'dispatch', 'pipe']);
+    mockStore.pipe.and.returnValue(of(initialState.hearings.hearingList));
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should assign hearingId in component', () => {
+    expect(component.hearingId).toEqual(HEARING_ID);
+  });
+
+  it('should call methods in oninit', () => {
+    expect(component.initForm).toHaveBeenCalled();
+    expect(component.hearingCancelOptions.length).toEqual(reasons.length);
+    expect(component.getReasonsTypeFormArray.length).toBeGreaterThan(0);
+  });
+
+  it('should localise casehearing variables', () => {
+    expect(component.caseId).toEqual(CASE_REF);
+    expect(component.caseHearing.hearingID).toEqual(CASE_HEARING_1.hearingID);
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should not call prepareHearingRequestData when executeAction is called with a valid form', () => {
+    component.executeAction(ACTION.BACK);
+    expect(component.prepareHearingRequestData).not.toHaveBeenCalled();
+  });
+
+  it('should call prepareHearingRequestData when executeAction is called with a valid form', () => {
+    (component.hearingCancelForm.controls.reasons as FormArray).controls
+      .forEach(reason => reason.value.selected = true);
+    component.executeAction(ACTION.CANCEL);
+    expect(component.prepareHearingRequestData).toHaveBeenCalled();
+    expect(component.getChosenReasons).toHaveBeenCalled();
+  });
+
+  it('should be true when calling isFormValid reasons selected', () => {
+    (component.hearingCancelForm.controls.reasons as FormArray).controls
+      .forEach(reason => reason.value.selected = true);
+    const formValid = component.isFormValid();
+    expect(formValid).toEqual(true);
+  });
+
+  it('should be false when calling isFormValid with no reasons selected', () => {
+    const formValid = component.isFormValid();
+    expect(component.validationErrors.length).toBeGreaterThan(0);
+    expect(formValid).toEqual(false);
   });
 });

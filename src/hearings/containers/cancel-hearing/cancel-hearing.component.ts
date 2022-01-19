@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { ACTION, CancelHearingMessages } from 'src/hearings/models/hearings.enum';
-import { RefDataModel } from 'src/hearings/models/refData.model';
+import { HearingListModel } from '../../../hearings/models/hearingList.model';
+import { RefDataModel } from '../../../hearings/models/refData.model';
 import { HearingsService } from '../../../hearings/services/hearings.service';
 import * as fromHearingStore from '../../store';
 import { ValidatorsUtils } from '../../utils/validators.utils';
@@ -19,15 +20,20 @@ export class CancelHearingComponent extends RequestHearingPageFlow implements On
   public hearingCancelSelectionError: string;
   public validationErrors: { id: string, message: string }[] = [];
   public selectionValid: boolean = true;
+  public hearingId: string;
+  public caseId: string;
+  public caseHearing: HearingListModel;
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly validatorsUtils: ValidatorsUtils,
     private readonly formBuilder: FormBuilder,
     protected readonly hearingStore: Store<fromHearingStore.State>,
-    protected readonly hearingsService: HearingsService,
-    private readonly fb: FormBuilder) {
+    protected readonly hearingsService: HearingsService) {
     super(hearingStore, hearingsService);
+    this.route.params.subscribe(params => {
+      this.hearingId = params.hearingId;
+    });
   }
 
   public get actionHearing() {
@@ -39,6 +45,12 @@ export class CancelHearingComponent extends RequestHearingPageFlow implements On
   }
 
   public ngOnInit(): void {
+    this.hearingStore.pipe(select(fromHearingStore.getHearingList)).subscribe(
+      hearingList => {
+        this.caseId = hearingList.hearingListMainModel ? hearingList.hearingListMainModel.caseRef : '';
+        const caseHearings = hearingList.hearingListMainModel.caseHearings.filter(caseHearing => caseHearing.hearingID === this.hearingId);
+        this.caseHearing = caseHearings.length ? caseHearings[0] : undefined;
+      });
     this.hearingCancelOptions = this.route.snapshot.data.hearingCancelOptions;
     this.initForm();
   }
@@ -91,7 +103,8 @@ export class CancelHearingComponent extends RequestHearingPageFlow implements On
       ...this.hearingRequestMainModel,
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
-        cancelationReason: this.getChosenReasons()
+        cancelationReason: this.getChosenReasons(),
+        cancelledCaseHearing: this.caseHearing,
       }
     };
   }
@@ -114,5 +127,3 @@ export class CancelHearingComponent extends RequestHearingPageFlow implements On
     return mappedReason;
   }
 }
-
-

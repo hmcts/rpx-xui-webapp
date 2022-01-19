@@ -1,8 +1,9 @@
-import {of} from 'rxjs';
-import {ACTION} from '../../models/hearings.enum';
-import {HearingsService} from '../../services/hearings.service';
+import { of } from 'rxjs';
+import { HearingRequestMainModel } from '../../models/hearingRequestMain.model';
+import { ACTION } from '../../models/hearings.enum';
+import { HearingsService } from '../../services/hearings.service';
 import * as fromHearingStore from '../../store';
-import {RequestHearingPageFlow} from './request-hearing.page.flow';
+import { RequestHearingPageFlow } from './request-hearing.page.flow';
 
 class RequestHearingPageFlowSpec extends RequestHearingPageFlow {
   public executeAction(action: ACTION): void {
@@ -12,38 +13,38 @@ class RequestHearingPageFlowSpec extends RequestHearingPageFlow {
 
 describe('RequestHearingPageFlow', () => {
   const hearingState = {
-      hearingList: {
-        hearingListMainModel: [
-          {
-            hmctsServiceID: 'SSCS'
-          }
-        ]
-      },
-      hearingValues: {
-        serviceHearingValuesModel: {
-          autoListFlag: false,
-          hearingType: 'Final',
-          lastError: null,
-        },
+    hearingList: {
+      hearingListMainModel: [
+        {
+          hmctsServiceID: 'SSCS'
+        }
+      ]
+    },
+    hearingValues: {
+      serviceHearingValuesModel: {
+        autoListFlag: false,
+        hearingType: 'Final',
         lastError: null,
       },
-      hearingRequest: {
-        hearingRequestMainModel: {
-          requestDetails: null,
-          hearingDetails: {
-            duration: 1,
-            hearingType: '',
-            hearingLocations: [],
-            hearingWindow: null,
-            panelRequirements: null,
-            autolistFlag: false,
-            hearingPriorityType: '',
-            hearingInWelshFlag: true,
-          },
-          partyDetails: []
+      lastError: null,
+    },
+    hearingRequest: {
+      hearingRequestMainModel: {
+        requestDetails: null,
+        hearingDetails: {
+          duration: 1,
+          hearingType: '',
+          hearingLocations: [],
+          hearingWindow: null,
+          panelRequirements: null,
+          autolistFlag: false,
+          hearingPriorityType: '',
+          hearingInWelshFlag: true,
         },
+        partyDetails: []
       },
-      hearingConditions: null,
+    },
+    hearingConditions: null,
   };
   let requestHearingPageFlow;
   const mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
@@ -59,7 +60,7 @@ describe('RequestHearingPageFlow', () => {
 
   it('should navigate continue', () => {
     requestHearingPageFlow.navigateAction(ACTION.CONTINUE);
-    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.UpdateHearingRequest(hearingState.hearingRequest.hearingRequestMainModel));
+    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.UpdateHearingRequest(hearingState.hearingRequest.hearingRequestMainModel as HearingRequestMainModel));
   });
 
   it('should navigate continue', () => {
@@ -69,7 +70,12 @@ describe('RequestHearingPageFlow', () => {
 
   it('should navigate submit', () => {
     requestHearingPageFlow.navigateAction(ACTION.SUBMIT);
-    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.SubmitHearingRequest(hearingState.hearingRequest.hearingRequestMainModel));
+    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.SubmitHearingRequest(hearingState.hearingRequest.hearingRequestMainModel as HearingRequestMainModel));
+  });
+
+  it('should navigate continue', () => {
+    requestHearingPageFlow.navigateAction(ACTION.CANCEL);
+    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.NavigateBeginningCancelRequest(hearingState.hearingRequest.hearingRequestMainModel as HearingRequestMainModel));
   });
 
   afterEach(() => {

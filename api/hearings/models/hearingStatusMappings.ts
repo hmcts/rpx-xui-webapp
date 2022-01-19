@@ -35,7 +35,7 @@ export const hearingStatusMappings: HearingStatusMapping[] = [
   },
   {
     hmcStatus: HMCStatus.CANCELLATION_REQUESTED,
-    exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+    exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
     exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLATION_REQUESTED,
   },
   {

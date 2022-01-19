@@ -13,9 +13,6 @@ export class ResetHearingRequest implements Action {
 
 export class NavigateBackHearingRequest implements Action {
   public readonly type = NAVIGATE_BACK_HEARING_REQUEST;
-
-  constructor(public payload: HearingRequestMainModel) {
-  }
 }
 
 export class UpdateHearingRequest implements Action {

@@ -31,7 +31,7 @@ export abstract class RequestHearingPageFlow {
   public navigateAction(action: ACTION): void {
     switch (action) {
       case ACTION.BACK:
-        this.hearingStore.dispatch(new fromHearingStore.NavigateBackHearingRequest(this.hearingRequestMainModel));
+        this.hearingStore.dispatch(new fromHearingStore.NavigateBackHearingRequest());
         break;
       case ACTION.CANCEL:
         this.hearingStore.dispatch(new fromHearingStore.NavigateBeginningCancelRequest(this.hearingRequestMainModel));

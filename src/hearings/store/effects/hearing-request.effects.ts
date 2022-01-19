@@ -4,6 +4,7 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action, select, Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { HearingListModel } from 'src/hearings/models/hearingList.model';
 import * as fromAppStoreActions from '../../../app/store/actions';
 import { HttpError } from '../../../models/httpError.model';
 import { ScreenNavigationModel } from '../../models/screenNavigation.model';
@@ -17,6 +18,7 @@ import * as hearingRequestActions from '../actions/hearing-request.action';
 export class HearingRequestEffects {
   public screenNavigations$: Observable<ScreenNavigationModel[]>;
   public caseId: string;
+  public caseHearings: HearingListModel[];
 
   constructor(
     private readonly actions$: Actions,
@@ -46,28 +48,22 @@ export class HearingRequestEffects {
     })
   );
 
-  // @Effect({ dispatch: false })
-  // public backBeginningNavigation$ = this.actions$.pipe(
-  //   ofType(hearingRequestActions.NAVIGATE_BEGINNING_CANCEL_REQUEST),
-  //   tap(() => {
-  //     return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']).then();
-  //   })
-  // );
-
   @Effect({ dispatch: false })
   public backBeginningNavigation$ = this.actions$.pipe(
     ofType(hearingRequestActions.NAVIGATE_BEGINNING_CANCEL_REQUEST),
     map((action: hearingRequestActions.NavigateBeginningCancelRequest) => action.payload),
     switchMap(payload => {
-      return this.hearingsService.cancelHearingRequest(payload).pipe(
-        tap(
-          () => {
+      const caseHearing = payload && payload.hearingDetails && payload.hearingDetails.cancelledCaseHearing ? { ...payload.hearingDetails.cancelledCaseHearing } : undefined;
+      if (caseHearing) {
+        return this.hearingsService.cancelHearingRequest(this.caseId, caseHearing).pipe(
+          tap(() => {
             return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']).then();
           }),
-        catchError(error => {
-          return HearingRequestEffects.handleError(error);
-        })
-      );
+          catchError(error => {
+            return HearingRequestEffects.handleError(error);
+          })
+        );
+      }
     })
   );
 

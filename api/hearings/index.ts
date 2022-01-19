@@ -106,13 +106,14 @@ export async function submitHearingRequest(req: EnhancedRequest, res: Response, 
   }
 }
 
-
 /**
- * submitHearingRequest - submit hearing request
+ * cancelHearingRequest - cancel hearing request
  */
-export async function updateHearingRequest(req: EnhancedRequest, res: Response, next: NextFunction) {
+export async function cancelHearingRequest(req: EnhancedRequest, res: Response, next: NextFunction) {
   const reqBody = req.body;
-  const markupPath: string = `${hearingsUrl}/hearing`;
+  const caseId = req.query.caseId;
+  const markupPath: string = `${hearingsUrl}/cancelHearings/${caseId}`;
+
   try {
     const { status, data }: { status: number, data: HearingListModel } = await handlePut(markupPath, reqBody, req);
     res.status(status).send(data);

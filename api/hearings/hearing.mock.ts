@@ -4,6 +4,8 @@ import { CASE_FLAG_REFERENCE_VALUES } from './data/caseFlagReference.mock.data';
 import { EMPTY_HEARINGS_LIST, HEARINGS_LIST } from './data/hearings.mock.data';
 import { ALL_REF_DATA } from './data/reference.mock.data';
 import { SERVICE_HEARING_VALUES } from './data/serviceHearingValues.mock.data';
+import { EXUISectionStatusEnum, HearingListingStatusEnum, EXUIDisplayStatusEnum, HMCStatus } from './models/hearings.enum';
+import { AxiosRequestConfig } from 'axios';
 
 export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
@@ -18,7 +20,7 @@ export const init = () => {
 
   const submitHearingRequest = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearing/;
 
-  const cancelHearingRequest = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearing/;
+  const cancelHearingRequest = /https:\/\/hearings.aat.service.core-compute-aat.internal\/cancelHearings\/[0-9]{16}/;
 
   mock.onGet(getHearingsUrl).reply(config => {
     const url = config.url;
@@ -65,10 +67,21 @@ export const init = () => {
     ];
   });
 
-  mock.onPost(cancelHearingRequest).reply(() => {
+  mock.onPut(cancelHearingRequest).reply((config: AxiosRequestConfig) => {
+    const data = JSON.parse(config.data);
+    const index = HEARINGS_LIST.caseHearings.findIndex(caseHearing => caseHearing.hearingID === data.hearingID);
+
+    if (index) {
+      HEARINGS_LIST.caseHearings[index].hearingListingStatus = HearingListingStatusEnum.CANCELLATION_REQUESTED;
+      HEARINGS_LIST.caseHearings[index].hmcStatus = HMCStatus.CANCELLATION_REQUESTED;
+    }
+
+    data.hearingListingStatus = HearingListingStatusEnum.CANCELLATION_REQUESTED;
+    data.exuiSectionStatus = EXUISectionStatusEnum.UPCOMING;
+    data.exuiDisplayStatus = EXUIDisplayStatusEnum.CANCELLATION_REQUESTED;
     return [
       200,
-      HEARINGS_LIST,
+      HEARINGS_LIST.caseHearings[index],
     ];
   });
 };

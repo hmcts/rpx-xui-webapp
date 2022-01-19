@@ -1,3 +1,4 @@
+import { HearingListModel } from './hearingList.model';
 import { HearingLocationModel } from './hearingLocation.model';
 import { HearingWindowModel } from './hearingWindow.model';
 import { PanelRequirementsModel } from './panelRequirements.model';
@@ -21,4 +22,5 @@ export interface HearingDetailsModel {
   leadJudgeContractType?: string;
   totalParticipantAttendingHearing?: number;
   cancelationReason: RefDataModel[];
+  cancelledCaseHearing: HearingListModel;
 }

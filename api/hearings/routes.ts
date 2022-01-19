@@ -1,6 +1,9 @@
 import * as express from 'express';
 import authInterceptor from '../lib/middleware/auth';
-import { getCaseFlagRefData, getHearings, getRefData, loadServiceHearingValues, submitHearingRequest, updateHearingRequest } from './index';
+import {
+  getCaseFlagRefData, getHearings, getRefData, loadServiceHearingValues,
+  submitHearingRequest, cancelHearingRequest
+} from './index';
 
 export const router = express.Router({ mergeParams: true });
 
@@ -10,4 +13,4 @@ router.get('/getCaseFlagRefData', getCaseFlagRefData);
 router.get('/getRefData', getRefData);
 router.post('/loadServiceHearingValues', loadServiceHearingValues);
 router.post('/submitHearingRequest', submitHearingRequest);
-router.post('/cancelHearings', updateHearingRequest)
+router.put('/cancelHearings', cancelHearingRequest);

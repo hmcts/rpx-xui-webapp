@@ -452,6 +452,7 @@
   version "4.7.6-tab-not-defined"
   resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.7.6-tab-not-defined.tgz#3a607e794c5d18a997568fdd53284c22fa0d0bb6"
   integrity sha512-Hg68GiUB85lwbhu6K/PaJoGpFnsPheR3nV/2UTCmhtn29XxFWFEPv1eyeQzN8xu7nICN9w2KVFo/HmumHjkbCw==
+
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

@@ -69,7 +69,7 @@ export interface SearchCaseRequest {
 export interface SearchTaskParameter {
   key: string;
   operator: string;
-  values: string[];
+  values: any;
 }
 
 export interface SortParameter {

@@ -42,7 +42,9 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
       const searchParameters = [
-        {key: 'state', operator: 'IN', values: ['unassigned']}
+        { key: 'available_tasks_only', operator: 'BOOLEAN', values: true },
+        // This will be later modifed from Service checkbox
+        { key: 'jurisdiction', operator: 'IN', values: ['IA'] }
       ];
       const locationParameter = this.getLocationParameter();
       if (locationParameter) {

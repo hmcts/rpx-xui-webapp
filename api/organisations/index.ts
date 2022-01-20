@@ -26,7 +26,7 @@ export async function handleOrganisationRoute(req: EnhancedRequest, res: Respons
     res.send(response.data);
   } catch (error) {
     const errReport = {
-      apiError: error.data.message,
+      apiError: error.data && error.data.message ? error.data.message : 'Unknown Error Occurred',
       apiStatusCode: error.status,
       message: 'Organisation route error',
     };

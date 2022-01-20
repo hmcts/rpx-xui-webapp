@@ -1,16 +1,16 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Store} from '@ngrx/store';
-import {Observable} from 'rxjs';
-import {ACTION} from '../../../models/hearings.enum';
-import {PartyDetailsModel} from '../../../models/partyDetails.model';
-import {PartyUnavailabilityModel} from '../../../models/partyUnavilability.model';
-import {RefDataModel} from '../../../models/refData.model';
-import {HearingsRefDataService} from '../../../services/hearings-ref-data.service';
-import {HearingsService} from '../../../services/hearings.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { ACTION } from '../../../models/hearings.enum';
+import { PartyDetailsModel } from '../../../models/partyDetails.model';
+import { PartyUnavailabilityModel } from '../../../models/partyUnavilability.model';
+import { RefDataModel } from '../../../models/refData.model';
+import { HearingsRefDataService } from '../../../services/hearings-ref-data.service';
+import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import {ValidatorsUtils} from '../../../utils/validators.utils';
-import {RequestHearingPageFlow} from '../request-hearing.page.flow';
+import { ValidatorsUtils } from '../../../utils/validators.utils';
+import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-attendance',
@@ -38,6 +38,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       estimation: [null, [this.validatorsUtils.numberLargerThanValidator(0)]],
       parties: fb.array([])
     });
+    this.partiesFormArray = fb.array([]);
   }
 
   public ngOnInit(): void {
@@ -118,7 +119,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     this.attendanceFormGroup.controls.estimation.markAsDirty();
     if (!this.attendanceFormGroup.controls.estimation.valid) {
       formValid = false;
-      this.validationErrors.push({id: 'attendance-number', message: 'Enter a valid number of attendees'});
+      this.validationErrors.push({ id: 'attendance-number', message: 'Enter a valid number of attendees' });
     }
 
     this.selectionValid = selectionValid;

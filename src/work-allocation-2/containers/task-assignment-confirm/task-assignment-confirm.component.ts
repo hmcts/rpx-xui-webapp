@@ -37,6 +37,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     private readonly sessionStorageService: SessionStorageService) {
       const navigation = this.router.getCurrentNavigation();
       if (navigation && navigation.extras && navigation.extras.state) {
+        console.log('navigation.extras.state', navigation.extras.state);
           this.selectedPerson = navigation.extras.state.selectedPerson;
           this.roleCategory = navigation.extras.state.roleCategory;
       }
@@ -91,7 +92,9 @@ export class TaskAssignmentConfirmComponent implements OnInit {
       next: () => this.reportSuccessAndReturn(),
       error: (error: any) => {
         console.log('error', error);
-        const handledStatus = handleTasksFatalErrors(error.status, this.router);
+        console.log('return url from task assignment confirm', this.returnUrl);
+        debugger;
+        const handledStatus = handleTasksFatalErrors(error.status, this.router, null, this.returnUrl);
 
         if (handledStatus > 0) {
           this.reportUnavailableErrorAndReturn();

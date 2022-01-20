@@ -64,14 +64,19 @@ export const handleFatalErrors = (status: number, navigator: Navigator, fatals?:
   }
 };
 
-export const handleTasksFatalErrors = (status: number, navigator: Navigator, fatals?: FatalRedirect[]): number => {
+export const handleTasksFatalErrors = (status: number, navigator: Navigator, fatals?: FatalRedirect[], returnUrl?: string): number => {
   debugger;
   switch (status) {
     case 401:
     case 403:
-      const destinationUrl = navigator.url.includes('/reassign/confirm')
-        ? navigator.url.replace('/reassign/confirm', '/person-not-authorised') : REDIRECTS.NotAuthorised;
-
+      let destinationUrl = '';
+      if (navigator.url.includes('/assign/confirm')) {
+        destinationUrl = navigator.url.replace('/assign/confirm', '/person-not-authorised')
+      } else if (navigator.url.includes('/reassign/confirm')) {
+        destinationUrl = navigator.url.replace('/reassign/confirm', '/person-not-authorised')
+      } else {
+        destinationUrl = REDIRECTS.NotAuthorised;
+      }
       navigator.navigate([ destinationUrl ]);
       return 0; // 0 indicates it has been handled.
     case 500:

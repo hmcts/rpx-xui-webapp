@@ -25,7 +25,7 @@ div[field="locations"] {
   }
 }
 
-div[field="types-of-work"] {
+div[field="types-of-work"], div[field="services"] {
   > div {
     flex-basis: calc(100% - 34px);
   }

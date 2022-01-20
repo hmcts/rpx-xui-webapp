@@ -89,6 +89,10 @@ describe('AvailableTasksComponent', () => {
         {
           name: 'locations',
           value: ['231596']
+        },
+        {
+          name: 'types-of-work',
+          value: ['hearing_work', 'upper_tribunal', 'decision_making_work']
         }
       ]
     };
@@ -120,6 +124,15 @@ describe('AvailableTasksComponent', () => {
     const searchParameter = component.getSearchTaskRequestPagination().search_parameters[1];
     expect(searchParameter.key).toBe('location');
     expect(searchParameter.values).toBe(exampleLocations);
+  });
+
+  it('should allow searching via work types', () => {
+    mockSessionStorageService.getItem.and.returnValue(userInfo);
+    const workTypes: string[] = ['hearing_work', 'upper_tribunal', 'decision_making_work'];
+    component.selectedWorkTypes = workTypes;
+    const searchParameter = component.getSearchTaskRequestPagination().search_parameters[2];
+    expect(searchParameter.key).toBe('work_type');
+    expect(searchParameter.values).toBe(workTypes);
   });
 
   it('should have all column headers, including "Manage +"', () => {

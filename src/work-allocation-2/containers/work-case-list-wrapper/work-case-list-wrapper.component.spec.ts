@@ -1,9 +1,9 @@
-import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { CdkTableModule } from '@angular/cdk/table';
 import { ChangeDetectorRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 
@@ -12,8 +12,8 @@ import { InfoMessageCommService } from '../../../app/shared/services/info-messag
 import { CaseRoleDetails } from '../../../role-access/models/case-role-details.interface';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Case } from '../../models/cases';
-import { getMockCaseRoles, getMockCases } from '../../tests/utils.spec';
 import { CaseworkerDataService, JudicialWorkerDataService, WorkAllocationCaseService, WorkAllocationFeatureService } from '../../services';
+import { getMockCaseRoles, getMockCases } from '../../tests/utils.spec';
 import { MyCasesComponent } from '../my-cases/my-cases.component';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { WorkCaseListWrapperComponent } from './work-case-list-wrapper.component';
@@ -65,7 +65,7 @@ describe('WorkCaseListWrapperComponent', () => {
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockCaseworkerDataService.getAll.and.returnValue(of([]));
-    mockJudicialWorkerService.getCaseRolesUserDetails.and.returnValue(of( caseRoles ))
+    mockJudicialWorkerService.getCaseRolesUserDetails.and.returnValue(of( caseRoles ));
     mockSessionStorageService.getItem.and.returnValue(undefined);
     fixture.detectChanges();
   }));

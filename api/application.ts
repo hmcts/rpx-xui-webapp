@@ -20,6 +20,7 @@ import { initProxy } from './proxy.config';
 import routes from './routes';
 import taskRouter from './workAllocation/routes';
 import workAllocation2Router from './workAllocation2/routes';
+import { processErrorInit } from './lib/processError.handler';
 
 export const app = express();
 
@@ -119,3 +120,5 @@ app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true }, ign
 // @ts-ignore
 const logger: JUILogger = log4jui.getLogger('Application');
 logger.info(`Started up using ${getConfigValue(PROTOCOL)}`);
+
+processErrorInit();

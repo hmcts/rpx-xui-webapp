@@ -99,7 +99,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       ],
       minSelected: 1,
       maxSelected: 1,
-      domain: 'All',
+      domain: PersonRole.ALL,
       findPersonField: 'person',
       lineBreakBefore: true,
       minSelectedError: 'You must select a role type',

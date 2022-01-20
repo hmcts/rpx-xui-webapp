@@ -26,6 +26,7 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
   public optionsList: OptionsModel[];
   public roles = TaskAssignmentChooseRoleComponent.getOptions();
   public taskRoles: TaskRole[] = [];
+  public service: string;
   public form: FormGroup;
 
   constructor(private readonly fb: FormBuilder,
@@ -59,6 +60,7 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
   public ngOnInit(): void {
     const isJudicial = this.isCurrentUserJudicial();
     const taskId = this.route.snapshot.paramMap.get('taskId');
+    this.service = this.route.snapshot.queryParamMap.get('service');
     this.verb = this.route.snapshot.data.verb;
     this.taskRoles = this.route.snapshot.data.roles;
     this.setCaptionAndDescription(this.verb);
@@ -77,7 +79,7 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
       const role = values.role;
       const taskId = values.taskId;
       const state = window.history.state;
-      this.router.navigate(['work', taskId, this.verb.toLowerCase(), 'person'], {queryParams: {role}, state});
+      this.router.navigate(['work', taskId, this.verb.toLowerCase(), 'person'], {queryParams: {role, service: this.service}, state});
     }
   }
 

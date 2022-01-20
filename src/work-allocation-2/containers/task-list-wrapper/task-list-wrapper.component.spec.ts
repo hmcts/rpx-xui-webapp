@@ -101,7 +101,7 @@ describe('TaskListWrapperComponent', () => {
       // need to verify correct properties were called
       const lastNavigateCall = mockRouter.navigateCalls.pop();
       expect(lastNavigateCall.commands).toEqual([`/work/${exampleTask.id}/${firstAction.id}/`]);
-      const exampleNavigateCall = { state: { returnUrl: '/mywork/list', showAssigneeColumn: true, service: undefined } };
+      const exampleNavigateCall = {queryParams: {service: undefined}, state: { returnUrl: '/mywork/list', showAssigneeColumn: true } };
       expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
     });
 
@@ -117,7 +117,7 @@ describe('TaskListWrapperComponent', () => {
       // need to verify correct properties were called
       const lastNavigateCall = mockRouter.navigateCalls.pop();
       expect(lastNavigateCall.commands).toEqual([`/work/${exampleTask.id}/${secondAction.id}/`]);
-      const exampleNavigateCall = { state: { returnUrl: '/mywork/manager', showAssigneeColumn: true, service: undefined } };
+      const exampleNavigateCall = {queryParams: {service: undefined}, state: { returnUrl: '/mywork/manager', showAssigneeColumn: true } };
       expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
     });
     it('User should be Judicial', () => {

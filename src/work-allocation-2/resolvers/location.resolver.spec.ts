@@ -4,19 +4,20 @@ import { inject, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs/internal/observable/of';
+
 import { metaReducers } from '../../app/app.module';
 import { UserDetails } from '../../app/models/user-details.model';
 import { reducers } from '../../app/store';
 import * as fromCaseList from '../../app/store/reducers';
+import { AllocateRoleService } from '../../role-access/services';
 import { Location } from '../models/dtos';
 import { CaseworkerDataService } from '../services';
-import { JudicialWorkerDataService } from '../services/judicialworker-data.service';
 import { LocationResolver } from './location-resolver.service';
 
 describe('LocationResolver', () => {
 
   let caseworkerDataService: CaseworkerDataService;
-  let judicialWorkerDataService: JudicialWorkerDataService;
+  let judicialWorkerDataService: AllocateRoleService;
   let store: Store<fromCaseList.State>;
 
   const CASE_WORKER: UserDetails = {
@@ -94,13 +95,13 @@ describe('LocationResolver', () => {
         providers: [
           LocationResolver,
           CaseworkerDataService,
-          JudicialWorkerDataService,
+          AllocateRoleService,
           {provide: APP_BASE_HREF, useValue: '/'}
         ]
       }
     );
     caseworkerDataService = TestBed.get(CaseworkerDataService) as CaseworkerDataService;
-    judicialWorkerDataService = TestBed.get(JudicialWorkerDataService) as JudicialWorkerDataService;
+    judicialWorkerDataService = TestBed.get(AllocateRoleService) as AllocateRoleService;
     store = TestBed.get(Store) as Store<fromCaseList.State>;
 
   });

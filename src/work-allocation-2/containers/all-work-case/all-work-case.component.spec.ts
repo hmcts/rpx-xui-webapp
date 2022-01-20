@@ -7,16 +7,17 @@ import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
-import { CaseRoleDetails } from 'src/role-access/models/case-role-details.interface';
+
 import { SessionStorageService } from '../../../app/services';
 import { reducers } from '../../../app/store';
+import { CaseRoleDetails } from '../../../role-access/models/case-role-details.interface';
+import { AllocateRoleService } from '../../../role-access/services';
 import { ALL_LOCATIONS } from '../../components/constants/locations';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Case } from '../../models/cases';
 import { Location } from '../../models/dtos';
 import {
   CaseworkerDataService,
-  JudicialWorkerDataService,
   LocationDataService,
   WASupportedJurisdictionsService,
   WorkAllocationCaseService,
@@ -50,7 +51,7 @@ describe('AllWorkCaseComponent', () => {
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
   const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
-  const mockJudicialWorkerService = jasmine.createSpyObj('mockJudicialWorkerService', ['getCaseRolesUserDetails']);
+  const mockAllocateRoleService = jasmine.createSpyObj('mockAllocateRoleService', ['getCaseRolesUserDetails', 'getValidRoles']);
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -73,7 +74,7 @@ describe('AllWorkCaseComponent', () => {
         {provide: LoadingService, useValue: mockLoadingService},
         {provide: FeatureToggleService, useValue: mockFeatureToggleService},
         {provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService},
-        { provide: JudicialWorkerDataService, useValue: mockJudicialWorkerService }
+        { provide: AllocateRoleService, useValue: mockAllocateRoleService }
       ]
     }).compileComponents();
   }));
@@ -90,7 +91,8 @@ describe('AllWorkCaseComponent', () => {
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockLocationService.getLocations.and.returnValue(of(ALL_LOCATIONS as unknown as Location[]));
     mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
-    mockJudicialWorkerService.getCaseRolesUserDetails.and.returnValue(of( caseRoles ));
+    mockAllocateRoleService.getCaseRolesUserDetails.and.returnValue(of( caseRoles ));
+    mockAllocateRoleService.getValidRoles.and.returnValue(of([]));
     mockSessionStorageService.getItem.and.returnValue(undefined);
     fixture.detectChanges();
   });

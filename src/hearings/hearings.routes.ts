@@ -1,29 +1,29 @@
-import {ModuleWithProviders} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {HealthCheckGuard} from '../app/shared/guards/health-check.guard';
-import {CancelHearingComponent} from './containers/cancel-hearing/cancel-hearing.component';
-import {ChangeHearingComponent} from './containers/change-hearing/change-hearing.component';
-import {HearingAdditionalInstructionsComponent} from './containers/request-hearing/hearing-additional-instructions/hearing-additional-instructions.component';
-import {HearingAttendanceComponent} from './containers/request-hearing/hearing-attendance/hearing-attendance.component';
-import {HearingCheckAnswersComponent} from './containers/request-hearing/hearing-check-answers/hearing-check-answers.component';
-import {HearingFacilitiesComponent} from './containers/request-hearing/hearing-facilities/hearing-facilities.component';
-import {HearingJudgeComponent} from './containers/request-hearing/hearing-judge/hearing-judge.component';
-import {HearingPanelComponent} from './containers/request-hearing/hearing-panel/hearing-panel.component';
-import {HearingRequirementsComponent} from './containers/request-hearing/hearing-requirements/hearing-requirements.component';
-import {HearingStageComponent} from './containers/request-hearing/hearing-stage/hearing-stage.component';
-import {HearingTimingComponent} from './containers/request-hearing/hearing-timing/hearing-timing.component';
-import {HearingVenueComponent} from './containers/request-hearing/hearing-venue/hearing-venue.component';
-import {HearingWelshComponent} from './containers/request-hearing/hearing-welsh/hearing-welsh.component';
-import {RequestHearingComponent} from './containers/request-hearing/request-hearing.component';
-import {ViewHearingComponent} from './containers/view-hearing/view-hearing.component';
-import {HearingCategory} from './models/hearings.enum';
-import {CaseFlagsResolver} from './resolvers/case-flags.resolver';
-import {RefDataResolver} from './resolvers/ref-data-resolver.resolve';
+import { ModuleWithProviders } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
+import { CancelHearingComponent } from './containers/cancel-hearing/cancel-hearing.component';
+import { ChangeHearingComponent } from './containers/change-hearing/change-hearing.component';
+import { HearingAdditionalInstructionsComponent } from './containers/request-hearing/hearing-additional-instructions/hearing-additional-instructions.component';
+import { HearingAttendanceComponent } from './containers/request-hearing/hearing-attendance/hearing-attendance.component';
+import { HearingCheckAnswersComponent } from './containers/request-hearing/hearing-check-answers/hearing-check-answers.component';
+import { HearingFacilitiesComponent } from './containers/request-hearing/hearing-facilities/hearing-facilities.component';
+import { HearingJudgeComponent } from './containers/request-hearing/hearing-judge/hearing-judge.component';
+import { HearingPanelComponent } from './containers/request-hearing/hearing-panel/hearing-panel.component';
+import { HearingRequirementsComponent } from './containers/request-hearing/hearing-requirements/hearing-requirements.component';
+import { HearingStageComponent } from './containers/request-hearing/hearing-stage/hearing-stage.component';
+import { HearingTimingComponent } from './containers/request-hearing/hearing-timing/hearing-timing.component';
+import { HearingVenueComponent } from './containers/request-hearing/hearing-venue/hearing-venue.component';
+import { HearingWelshComponent } from './containers/request-hearing/hearing-welsh/hearing-welsh.component';
+import { RequestHearingComponent } from './containers/request-hearing/request-hearing.component';
+import { ViewHearingComponent } from './containers/view-hearing/view-hearing.component';
+import { HearingCategory } from './models/hearings.enum';
+import { CaseFlagsResolver } from './resolvers/case-flags.resolver';
+import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
 
 export const ROUTES: Routes = [
   {
     path: 'cancel',
-    resolve: {hearingCancelOptions: RefDataResolver},
+    resolve: { hearingCancelOptions: RefDataResolver },
     component: CancelHearingComponent,
     data: {
       category: HearingCategory.CancelHearingReason
@@ -67,7 +67,7 @@ export const ROUTES: Routes = [
       },
       {
         path: 'hearing-requirements',
-        resolve: {caseFlags: CaseFlagsResolver},
+        resolve: { caseFlags: CaseFlagsResolver },
         component: HearingRequirementsComponent,
         canActivate: [HealthCheckGuard],
         data: {
@@ -76,16 +76,20 @@ export const ROUTES: Routes = [
       },
       {
         path: 'hearing-facilities',
-        resolve: {caseFlags: CaseFlagsResolver},
+        resolve: {
+          caseFlags: CaseFlagsResolver,
+          additionFacilitiesOptions: RefDataResolver
+        },
         component: HearingFacilitiesComponent,
         canActivate: [HealthCheckGuard],
         data: {
+          category: HearingCategory.FacilitiesList,
           title: 'HMCTS Hearings | Request Hearing | Additional Facilities'
         }
       },
       {
         path: 'hearing-stage',
-        resolve: {hearingStages: RefDataResolver},
+        resolve: { hearingStages: RefDataResolver },
         component: HearingStageComponent,
         canActivate: [HealthCheckGuard],
         data: {
@@ -119,7 +123,7 @@ export const ROUTES: Routes = [
       },
       {
         path: 'hearing-judge',
-        resolve: {hearingStages: RefDataResolver},
+        resolve: { hearingStages: RefDataResolver },
         component: HearingJudgeComponent,
         canActivate: [HealthCheckGuard],
         data: {
@@ -137,7 +141,7 @@ export const ROUTES: Routes = [
       },
       {
         path: 'hearing-timing',
-        resolve: {hearingPriorities: RefDataResolver},
+        resolve: { hearingPriorities: RefDataResolver },
         component: HearingTimingComponent,
         canActivate: [HealthCheckGuard],
         data: {

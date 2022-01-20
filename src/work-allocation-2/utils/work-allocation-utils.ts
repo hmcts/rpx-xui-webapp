@@ -6,6 +6,7 @@ import { Permissions, TaskRole } from '../models/tasks/TaskRole';
 
 interface Navigator {
   navigate(commands: any[], extras?: NavigationExtras): Promise<boolean>;
+  url: string;
 }
 
 export interface FatalRedirect {
@@ -64,10 +65,14 @@ export const handleFatalErrors = (status: number, navigator: Navigator, fatals?:
 };
 
 export const handleTasksFatalErrors = (status: number, navigator: Navigator, fatals?: FatalRedirect[]): number => {
+  debugger;
   switch (status) {
     case 401:
     case 403:
-      navigator.navigate([ REDIRECTS.NotAuthorised ]);
+      const destinationUrl = navigator.url.includes('/reassign/confirm')
+        ? navigator.url.replace('/reassign/confirm', '/person-not-authorised') : REDIRECTS.NotAuthorised;
+
+      navigator.navigate([ destinationUrl ]);
       return 0; // 0 indicates it has been handled.
     case 500:
     case 503:

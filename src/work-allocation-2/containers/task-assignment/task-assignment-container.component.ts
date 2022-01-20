@@ -28,6 +28,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   public location: Location;
 
   public domain = PersonRole.ALL;
+  public service: string;
   public formGroup: FormGroup = new FormGroup({});
   public person: Person;
   public taskId: string;
@@ -72,19 +73,6 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     return url;
   }
 
-  private get service(): string {
-    // Default URL is '' because this is the only sensible return navigation if the user has used browser navigation
-    // buttons, which clear the `window.history.state` object
-    let service: string = '';
-
-    // The returnUrl is undefined if the user has used browser navigation buttons, so check for its presence
-    if (window && window.history && window.history.state && window.history.state.service) {
-      service = window.history.state.service;
-    }
-
-    return service;
-  }
-
   private get showAssigneeColumn(): boolean {
     if (window && window.history && window.history.state) {
       return !!window.history.state.showAssigneeColumn;
@@ -101,6 +89,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
 
     this.taskId = this.route.snapshot.paramMap.get('taskId');
     this.role = this.route.snapshot.queryParamMap.get('role') as RoleCategory;
+    this.service = this.route.snapshot.queryParamMap.get('service');
     this.domain = this.setDomain(this.role);
     this.rootPath = this.router.url.split('/')[1];
   }

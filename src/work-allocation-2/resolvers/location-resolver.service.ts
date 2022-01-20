@@ -13,8 +13,9 @@ import { UserDetails, UserRole } from '../../app/models';
 import * as fromRoot from '../../app/store';
 import * as fromCaseList from '../../app/store/reducers';
 import { CaseRoleDetails } from '../../role-access/models/case-role-details.interface';
+import { AllocateRoleService } from '../../role-access/services';
 import { Caseworker, Location } from '../models/dtos';
-import { CaseworkerDataService, JudicialWorkerDataService } from '../services';
+import { CaseworkerDataService } from '../services';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../utils';
 
 @Injectable({
@@ -29,7 +30,7 @@ export class LocationResolver implements Resolve<LocationModel> {
     private readonly router: Router,
     private readonly http: HttpClient,
     private readonly caseworkerDataService: CaseworkerDataService,
-    private readonly judicialWorkerDataService: JudicialWorkerDataService
+    private readonly allocateRoleService: AllocateRoleService
   ) {
   }
 
@@ -81,7 +82,7 @@ export class LocationResolver implements Resolve<LocationModel> {
         jurisdictions.push(roleJurisdiction);
       }
     })
-    return this.userRole === UserRole.Judicial ? this.judicialWorkerDataService.getCaseRolesUserDetails([id]) : this.caseworkerDataService.getCaseworkersForServices(jurisdictions);
+    return this.userRole === UserRole.Judicial ? this.allocateRoleService.getCaseRolesUserDetails([id], jurisdictions) : this.caseworkerDataService.getCaseworkersForServices(jurisdictions);
   }
 
   private getLocations(location: Location): Observable<LocationModel> {

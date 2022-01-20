@@ -218,7 +218,7 @@ describe('TaskAssignmentContainerComponent2', () => {
       forename: 'John',
       surname: 'Smith',
       email: 'john.smith@email.com',
-      roles: ['caseworker-ia-iacjudge']
+      roles: ['caseworker-allocator']
     };
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
     component.isCurrentUserJudicial();

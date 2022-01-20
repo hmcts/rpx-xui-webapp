@@ -98,6 +98,7 @@
   },
   "jurisdictions": "JURISDICTIONS",
   "waSupportedJurisdictions": "WA_SUPPORTED_JURISDICTIONS",
+  "serviceRefDataMapping": "SERVICE_REF_DATA_MAPPING",
   "log4JConfig": {
     "__name": "LOG_4JS_CONFIG",
     "__format": "json"

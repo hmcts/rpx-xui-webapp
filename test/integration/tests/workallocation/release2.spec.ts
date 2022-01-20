@@ -11,10 +11,10 @@ import TaskRequestBody from '../utils/wa/taskRequestBody';
 const workAllocationDataModels = require('../../../dataModels/workAllocation');
 
 describe('Work allocations Release 2', () => {
-    const userName = 'lukesuperuserxui@mailnesia.com';
+    const userName = config.users.solicitor;
     const password = 'Monday01';
 
-    const caseOfficer = 'xui_auto_co_r2@justice.gov.uk';
+    const caseOfficer = config.users.caseOfficer_r2;
     const caseofficerPass = 'Welcome01';
 
     beforeEach(function () {

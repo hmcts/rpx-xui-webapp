@@ -48,7 +48,7 @@ export class DeleteExclusionComponent implements OnInit {
   public findAndSetExclusion(exclusions: RoleExclusion[]): void {
     this.roleExclusion = exclusions.find(excl => excl.id === this.exclusionId);
     if (this.roleExclusion.userType.toUpperCase() === RoleCategory.JUDICIAL) {
-      this.allocateService.getCaseRolesUserDetails([this.roleExclusion.actorId]).subscribe(userDetails => {
+      this.allocateService.getCaseRolesUserDetails([this.roleExclusion.actorId], [this.jurisdiction]).subscribe(userDetails => {
         if (userDetails[0]) {
           this.roleExclusion.name = userDetails[0].known_as;
           this.populateAnswers(this.roleExclusion);

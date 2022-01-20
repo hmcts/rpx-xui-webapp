@@ -289,11 +289,10 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       }
       const state = {
         returnUrl: this.returnUrl,
-        showAssigneeColumn: taskAction.action.id !== TaskActionIds.ASSIGN,
-        service: taskAction.task.jurisdiction
+        showAssigneeColumn: taskAction.action.id !== TaskActionIds.ASSIGN
       };
       const actionUrl = `/work/${taskAction.task.id}/${taskAction.action.id}/${this.specificPage}`;
-      this.router.navigate([actionUrl], { state });
+      this.router.navigate([actionUrl], {queryParams: {service: taskAction.task.jurisdiction},  state });
     } catch (error) {
       console.error('onActionHandler', error, taskAction);
     }

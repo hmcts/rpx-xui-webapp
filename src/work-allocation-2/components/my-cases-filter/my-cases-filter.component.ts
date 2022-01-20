@@ -63,7 +63,8 @@ export class MyCasesFilterComponent implements OnInit, OnDestroy {
     this.errorSubscription = this.filterService.givenErrors.subscribe(value => {
       if (value) {
         this.error = LOCATION_ERROR;
-        this.error.description = value;
+        // TODO - uncomment
+        // this.error.description = value;
       } else {
         this.error = null;
       }

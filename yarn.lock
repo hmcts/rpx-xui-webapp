@@ -536,10 +536,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.5.1-find-person-hide-user":
-  version "1.5.1-find-person-hide-user"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.5.1-find-person-hide-user.tgz#5834b3f39a9853c082c3b6dd8f62331738968f7e"
-  integrity sha512-SDSyR20Eh0/EXHcqQI9RSl31jbB5MNW/ae9/DmtIP7FisPdA7R9rhVdiX9BtIonvDfosP9MAGHx/HBsYWfhMWg==
+"@hmcts/rpx-xui-common-lib@1.6.1-staff-by-service":
+  version "1.6.1-staff-by-service"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.1-staff-by-service.tgz#4455094e1b31ea39b259e7b261c760b1b64520f6"
+  integrity sha512-Yb3ory5qr7vgm4V6bXlO2wbQjQ82L5pKvtHhdCTH5/d9w+0k0+yR6Xh1Of+CZj5CDwdQFjRkuD32lSWoN0+zbA==
   dependencies:
     tslib "^1.9.0"
 

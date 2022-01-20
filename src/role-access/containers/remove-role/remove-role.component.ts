@@ -73,7 +73,7 @@ export class RemoveRoleComponent implements OnInit {
     this.jurisdiction = queryMap.get('jurisdiction');
     const caseType = queryMap.get('caseType');
     return this.allocateRoleService.getCaseRoles(this.caseId, this.jurisdiction, caseType, this.assignmentId).pipe(
-      mergeMap((caseRoles: CaseRole[]) => this.allocateRoleService.getCaseRolesUserDetails(getJudicialUserIds(caseRoles)).pipe(
+      mergeMap((caseRoles: CaseRole[]) => this.allocateRoleService.getCaseRolesUserDetails(getJudicialUserIds(caseRoles), [this.jurisdiction]).pipe(
         map((caseRolesWithUserDetails: CaseRoleDetails[]) => mapCaseRoles(caseRoles, caseRolesWithUserDetails))
       )),
     );

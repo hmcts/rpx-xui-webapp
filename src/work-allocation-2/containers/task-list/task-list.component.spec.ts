@@ -481,4 +481,7 @@ describe('TaskListComponent', () => {
     });
   });
 
+  afterAll(() => {
+    TestBed.resetTestingModule();
+  });
 });

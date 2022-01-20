@@ -180,4 +180,8 @@ describe('WorkAllocation', () => {
     });
 
   });
+
+  afterAll(() => {
+    TestBed.resetTestingModule();
+  });
 });

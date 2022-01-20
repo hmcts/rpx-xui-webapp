@@ -76,4 +76,8 @@ describe('TaskHomeComponent', () => {
     expect(component).toBeDefined();
   });
 
+  afterAll(() => {
+    TestBed.resetTestingModule();
+  });
+
 });

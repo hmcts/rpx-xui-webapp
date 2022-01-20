@@ -33,7 +33,7 @@ Run `yarn lint` to execute all linting across both Angular and Node layers. Note
 is run on the build pipelines.
 Run `yarn lint:node` to execute note linting.
 
-## PACT
+## PACT 
 
 Run `yarn test-pact` to run the PACT tests.
 

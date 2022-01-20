@@ -117,9 +117,10 @@ describe('AvailableTasksComponent', () => {
     mockSessionStorageService.getItem.and.returnValue(userInfo);
     const exampleLocations = ['location1', 'location2', 'location3'];
     component.selectedLocations = exampleLocations;
-    const searchParameter = component.getSearchTaskRequestPagination().search_parameters[1];
-    expect(searchParameter.key).toBe('location');
-    expect(searchParameter.values).toBe(exampleLocations);
+    const searchParameter = component.getSearchTaskRequestPagination().search_parameters[0];
+    expect(searchParameter.key).toBe('available_tasks_only');
+    expect(searchParameter.operator).toBe('BOOLEAN');
+    expect(searchParameter.values).toBe(true);
   });
 
   it('should have all column headers, including "Manage +"', () => {

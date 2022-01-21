@@ -109,6 +109,10 @@ export enum HearingStageEnum {
   SelectHearingStageError = 'Select a hearing stage',
 }
 
+export enum HearingInstructionsEnum {
+  InstructionLength = 2000
+}
+
 export enum HearingJudgeSelectionEnum {
   ValidNameError = 'Please enter a valid Name',
   SelectOneJudgeError = 'Please select at least one judge type',

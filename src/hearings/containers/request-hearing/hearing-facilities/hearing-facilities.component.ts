@@ -3,7 +3,6 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { RefDataModel } from 'src/hearings/models/refData.model';
-import { ValidatorsUtils } from 'src/hearings/utils/validators.utils';
 import { CaseFlagReferenceModel } from '../../../models/caseFlagReference.model';
 import { ACTION, CaseFlagType, HearingFacilitiesEnum } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
@@ -26,7 +25,6 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
     private readonly route: ActivatedRoute,
     protected readonly hearingStore: Store<fromHearingStore.State>,
     protected readonly hearingsService: HearingsService,
-    private readonly validatorsUtils: ValidatorsUtils,
     protected fb: FormBuilder) {
     super(hearingStore, hearingsService);
     this.additionalFacilities = this.route.snapshot.data.additionFacilitiesOptions;

@@ -5,6 +5,8 @@ import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
 import {initialState, serviceHearingValuesModel} from '../../../hearing.store.state.test';
+import {HearingConditions} from '../../../models/hearingConditions';
+import {HearingRequestMainModel} from '../../../models/hearingRequestMain.model';
 import {ACTION} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
@@ -76,6 +78,80 @@ describe('HearingRequirementsComponent', () => {
     spyOn(component.hearingStateSub, 'unsubscribe');
     component.ngOnDestroy();
     expect(component.hearingStateSub.unsubscribe).toHaveBeenCalled();
+  });
+
+  it('should initialize hearing request from hearing values', () => {
+    const hearingRequestMainModel: HearingRequestMainModel = {
+      requestDetails: {
+        requestTimeStamp: null
+      },
+      hearingDetails: {
+        duration: 45,
+        hearingType: 'Final',
+        hearingLocations: [
+          {
+            locationId: '196538',
+            locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
+            region: 'North West',
+            locationType: 'hearing',
+          },
+          {
+            locationId: '219164',
+            locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
+            region: 'Scotland',
+            locationType: 'hearing',
+          }
+        ],
+        hearingIsLinkedFlag: false,
+        hearingWindow: {
+          hearingWindowDateRange: {
+            hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
+            hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000'
+          },
+          hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000'
+        },
+        privateHearingRequiredFlag: false,
+        panelRequirements: null,
+        autolistFlag: false,
+        hearingPriorityType: 'Standard',
+        numberOfPhysicalAttendees: 2,
+        hearingInWelshFlag: false,
+        facilitiesRequired: [],
+        listingComments: '',
+        hearingRequester: '',
+        leadJudgeContractType: '',
+        totalParticipantAttendingHearing: null
+      },
+      caseDetails: {
+        hmctsServiceCode: null,
+        caseRef: null,
+        requestTimeStamp: null,
+        hearingID: null,
+        caseDeepLink: null,
+        hmctsInternalCaseName: null,
+        publicCaseName: null,
+        caseAdditionalSecurityFlag: false,
+        caseCategories: [],
+        caseManagementLocationCode: null,
+        caserestrictedFlag: null,
+        caseSLAStartDate: null
+      },
+      partyDetails: []
+    };
+    const storeDispatchSpy = spyOn(component.hearingStore, 'dispatch');
+    component.initializeHearingRequestFromHearingValues();
+    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.InitializeHearingRequest(hearingRequestMainModel));
+  });
+
+
+  it('should initialize hearing condition', () => {
+    const hearingCondition: HearingConditions = {
+      isInit: false,
+      region: 'North West,Scotland'
+    };
+    const storeDispatchSpy = spyOn(component.hearingStore, 'dispatch');
+    component.initializeHearingCondition();
+    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.SaveHearingConditions(hearingCondition));
   });
 
   afterEach(() => {

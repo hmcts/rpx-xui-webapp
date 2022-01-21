@@ -18,6 +18,7 @@ export interface ServiceHearingValuesModel {
   numberOfPhysicalAttendees: number;
   hearingInWelshFlag: boolean;
   hearingLocations: HearingLocationModel[];
+  caseAdditionalSecurityFlag?: boolean;
   facilitiesRequired: string[];
   listingComments: string;
   hearingRequester: string;

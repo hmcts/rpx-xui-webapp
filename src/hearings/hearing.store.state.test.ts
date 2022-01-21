@@ -2,6 +2,7 @@ import {PartyType} from './models/hearings.enum';
 import {ServiceHearingValuesModel} from './models/serviceHearingValues.model';
 
 export const serviceHearingValuesModel: ServiceHearingValuesModel = {
+  caseName: 'Jane vs DWP',
   autoListFlag: false,
   hearingType: 'Final',
   caseType: 'Personal Independence Payment',
@@ -24,14 +25,17 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   hearingLocations: [{
       locationId: '196538',
       locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
+      locationType: 'hearing',
       region: 'North West',
     },
     {
       locationId: '219164',
       locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
+      locationType: 'hearing',
       region: 'Scotland',
     },
   ],
+  caseAdditionalSecurityFlag: false,
   facilitiesRequired: [],
   listingComments: '',
   hearingRequester: '',
@@ -194,6 +198,9 @@ export const initialState = {
       },
       lastError: null
     },
-    hearingConditions: null,
+    hearingConditions: {
+      mode: 'create',
+      isInit: true
+    },
   }
 };

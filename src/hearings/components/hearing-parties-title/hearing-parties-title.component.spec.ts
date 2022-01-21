@@ -23,4 +23,14 @@ describe('HearingPartiesTitleComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should return title', () => {
+    expect(component.caseTitle).toBe('Jane vs DWP');
+  });
+
+  it('should destroy subscription', () => {
+    const unsubscribeSpy = spyOn(component.serviceValueSub, 'unsubscribe');
+    component.ngOnDestroy();
+    expect(unsubscribeSpy).toHaveBeenCalled();
+  });
 });

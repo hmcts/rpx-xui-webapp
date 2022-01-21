@@ -52,9 +52,9 @@ export class HearingRequestEffects {
     tap(() => {
       const nextPage = this.pageFlow.getNextPage(this.screenNavigations$);
       if (nextPage) {
-        return this.router.navigate(['hearings', 'request', nextPage]).then();
+        return this.router.navigate(['hearings', 'request', nextPage]);
       } else {
-        return of(new fromAppStoreActions.Go({path: ['/service-down']}));
+        return this.router.navigate(['service-down']);
       }
     })
   );
@@ -67,7 +67,7 @@ export class HearingRequestEffects {
       return this.hearingsService.submitHearingRequest(payload).pipe(
         tap(
           () => {
-            return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']).then();
+            return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']);
           }),
         catchError(error => {
           return HearingRequestEffects.handleError(error);

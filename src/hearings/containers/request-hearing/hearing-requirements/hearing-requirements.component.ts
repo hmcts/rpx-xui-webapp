@@ -74,6 +74,20 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         leadJudgeContractType: this.serviceHearingValuesModel.leadJudgeContractType,
         totalParticipantAttendingHearing: null
       },
+      caseDetails: {
+        hmctsServiceCode: this.hearingListMainModel.hmctsServiceID || null,
+        caseRef: this.hearingListMainModel.caseRef || null,
+        requestTimeStamp: null,
+        hearingID: null,
+        caseDeepLink: null,
+        hmctsInternalCaseName: null,
+        publicCaseName: null,
+        caseAdditionalSecurityFlag: this.serviceHearingValuesModel.caseAdditionalSecurityFlag,
+        caseCategories: [],
+        caseManagementLocationCode: null,
+        caserestrictedFlag: null,
+        caseSLAStartDate: null,
+      },
       partyDetails: []
     };
     this.hearingStore.dispatch(new fromHearingStore.InitializeHearingRequest(hearingRequestMainModel));

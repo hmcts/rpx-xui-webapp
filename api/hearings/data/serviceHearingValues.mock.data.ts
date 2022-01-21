@@ -25,6 +25,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
     region: 'North West',
   },
   ],
+  caseAdditionalSecurityFlag: false,
   facilitiesRequired: [],
   listingComments: '',
   hearingRequester: '',

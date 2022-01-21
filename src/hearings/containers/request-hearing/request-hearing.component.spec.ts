@@ -60,7 +60,7 @@ describe('RequestHearingComponent', () => {
     expect(component.isCheckAnswerPage()).toBeTruthy();
   });
 
-  it('should purge date in store if page is destroyed', () => {
+  it('should purge data in store if page is destroyed', () => {
     const unsubscribeSpy = spyOn(component.hearingListSub, 'unsubscribe');
     const dispatchSpy = spyOn(mockStore, 'dispatch');
     component.ngOnDestroy();

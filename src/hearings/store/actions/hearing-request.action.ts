@@ -29,17 +29,9 @@ export class SubmitHearingRequest implements Action {
   }
 }
 
-export class NavigateBeginningCancelRequest implements Action {
-  public readonly type = NAVIGATE_BEGINNING_CANCEL_REQUEST;
-
-  constructor(public payload: HearingRequestMainModel) {
-  }
-}
-
 export type HearingRequestAction =
   | ResetHearingRequest
   | NavigateBackHearingRequest
   | UpdateHearingRequest
-  | SubmitHearingRequest
-  | NavigateBeginningCancelRequest;
+  | SubmitHearingRequest;
 

@@ -1,8 +1,6 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
-import { HearingListModel } from '../../../api/hearings/models/hearingList.model';
-import { HearingListingStatusEnum, HMCStatus } from '../models/hearings.enum';
 import { HearingsService } from './hearings.service';
 import { RefDataModel } from '../../../api/hearings/models/refData.model';
 

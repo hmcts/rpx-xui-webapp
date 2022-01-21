@@ -49,25 +49,6 @@ export class HearingRequestEffects {
   );
 
   @Effect({ dispatch: false })
-  public backBeginningNavigation$ = this.actions$.pipe(
-    ofType(hearingRequestActions.NAVIGATE_BEGINNING_CANCEL_REQUEST),
-    map((action: hearingRequestActions.NavigateBeginningCancelRequest) => action.payload),
-    switchMap(payload => {
-      const caseHearing = payload && payload.hearingDetails && payload.hearingDetails.cancelledCaseHearing ? { ...payload.hearingDetails.cancelledCaseHearing } : undefined;
-      if (caseHearing) {
-        return this.hearingsService.cancelHearingRequest(this.caseId, caseHearing).pipe(
-          tap(() => {
-            return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']).then();
-          }),
-          catchError(error => {
-            return HearingRequestEffects.handleError(error);
-          })
-        );
-      }
-    })
-  );
-
-  @Effect({ dispatch: false })
   public continueNavigation$ = this.actions$.pipe(
     ofType(hearingRequestActions.UPDATE_HEARING_REQUEST),
     tap(() => {

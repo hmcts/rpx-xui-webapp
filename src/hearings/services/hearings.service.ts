@@ -30,8 +30,8 @@ export class HearingsService {
       { caseReference: caseId });
   }
 
-  public cancelHearingRequest(caseId: string, hearingListModel: HearingListModel): Observable<HearingListModel> {
-    return this.http.put<HearingListModel>(`api/hearings/cancelHearings?caseId=${caseId}`, hearingListModel);
+  public cancelHearingRequest(hearingId: string): Observable<HearingListModel> {
+    return this.http.delete<HearingListModel>(`api/hearings/cancelHearings?hearingId=${hearingId}`);
   }
 
   public submitHearingRequest(hearingRequestMainModel: HearingRequestMainModel): Observable<HearingRequestMainModel> {

@@ -33,9 +33,6 @@ export abstract class RequestHearingPageFlow {
       case ACTION.BACK:
         this.hearingStore.dispatch(new fromHearingStore.NavigateBackHearingRequest());
         break;
-      case ACTION.CANCEL:
-        this.hearingStore.dispatch(new fromHearingStore.NavigateBeginningCancelRequest(this.hearingRequestMainModel));
-        break;
       case ACTION.CONTINUE:
         this.hearingStore.dispatch(new fromHearingStore.UpdateHearingRequest(this.hearingRequestMainModel));
         break;

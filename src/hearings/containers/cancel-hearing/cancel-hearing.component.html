@@ -8,7 +8,7 @@
       <div class="govuk-grid-row">
         <xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem'"></xuilib-hmcts-error-summary>
         <div class="govuk-grid-column-two-thirds">
-          <form class="form" [formGroup]="hearingCancelForm"  (ngSubmit)="executeAction(actionHearing.CANCEL)">
+          <form class="form" [formGroup]="hearingCancelForm"  (ngSubmit)="executeContinue()">
             <h1 class="govuk-heading-l">
                 Are you sure you want to cancel this hearing?
             </h1>
@@ -37,9 +37,8 @@
                 </div>
               </fieldset>
             </div>
-            <button class="govuk-button" data-module="govuk-button">Continue</button>
+            <button type="submit" class="govuk-button" data-module="govuk-button">Continue</button>
           </form>
-
           <p class="govuk-body">
              <a href="javascript:void(0)"
            [routerLink]="['/', 'cases', 'case-details', caseId, 'hearings']">Do not cancel hearing</a>

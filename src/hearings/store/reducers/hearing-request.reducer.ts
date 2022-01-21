@@ -24,8 +24,6 @@ export const initialHearingRequestState: HearingRequestStateData = {
       listingComments: null,
       hearingRequester: null,
       leadJudgeContractType: null,
-      cancelationReason: [],
-      cancelledCaseHearing: null,
     },
     caseDetails: {
       hmctsServiceCode: null,
@@ -57,7 +55,6 @@ export function hearingRequestReducer(
         ...initialHearingRequestState
       };
     }
-    case fromActions.NAVIGATE_BEGINNING_CANCEL_REQUEST:
     case fromActions.UPDATE_HEARING_REQUEST:
       return {
         ...currentState,

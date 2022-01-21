@@ -67,7 +67,7 @@ export const init = () => {
     ];
   });
 
-  mock.onPut(cancelHearingRequest).reply((config: AxiosRequestConfig) => {
+  mock.onDelete(cancelHearingRequest).reply((config: AxiosRequestConfig) => {
     const data = JSON.parse(config.data);
     const index = HEARINGS_LIST.caseHearings.findIndex(caseHearing => caseHearing.hearingID === data.hearingID);
 

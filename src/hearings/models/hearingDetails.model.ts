@@ -21,6 +21,4 @@ export interface HearingDetailsModel {
   hearingRequester?: string;
   leadJudgeContractType?: string;
   totalParticipantAttendingHearing?: number;
-  cancelationReason: RefDataModel[];
-  cancelledCaseHearing: HearingListModel;
 }

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
+import { tap } from 'rxjs/operators';
 import { ACTION, CancelHearingMessages } from 'src/hearings/models/hearings.enum';
 import { HearingListModel } from '../../../hearings/models/hearingList.model';
 import { RefDataModel } from '../../../hearings/models/refData.model';
@@ -14,7 +15,7 @@ import { RequestHearingPageFlow } from '../request-hearing/request-hearing.page.
   templateUrl: './cancel-hearing.component.html',
   styleUrls: ['./cancel-hearing.component.scss']
 })
-export class CancelHearingComponent extends RequestHearingPageFlow implements OnInit {
+export class CancelHearingComponent implements OnInit {
   public hearingCancelOptions: RefDataModel[];
   public hearingCancelForm: FormGroup;
   public hearingCancelSelectionError: string;
@@ -26,11 +27,11 @@ export class CancelHearingComponent extends RequestHearingPageFlow implements On
 
   constructor(
     private readonly route: ActivatedRoute,
+    private readonly router: Router,
     private readonly validatorsUtils: ValidatorsUtils,
     private readonly formBuilder: FormBuilder,
     protected readonly hearingStore: Store<fromHearingStore.State>,
     protected readonly hearingsService: HearingsService) {
-    super(hearingStore, hearingsService);
     this.route.params.subscribe(params => {
       this.hearingId = params.hearingId;
     });
@@ -48,8 +49,10 @@ export class CancelHearingComponent extends RequestHearingPageFlow implements On
     this.hearingStore.pipe(select(fromHearingStore.getHearingList)).subscribe(
       hearingList => {
         this.caseId = hearingList.hearingListMainModel ? hearingList.hearingListMainModel.caseRef : '';
-        const caseHearings = hearingList.hearingListMainModel.caseHearings.filter(caseHearing => caseHearing.hearingID === this.hearingId);
-        this.caseHearing = caseHearings.length ? caseHearings[0] : undefined;
+        if (hearingList.hearingListMainModel) {
+          const caseHearings = hearingList.hearingListMainModel.caseHearings.filter(caseHearing => caseHearing.hearingID === this.hearingId);
+          this.caseHearing = caseHearings.length ? caseHearings[0] : undefined;
+        }
       });
     this.hearingCancelOptions = this.route.snapshot.data.hearingCancelOptions;
     this.initForm();
@@ -87,27 +90,14 @@ export class CancelHearingComponent extends RequestHearingPageFlow implements On
     return this.selectionValid;
   }
 
-  public executeAction(actionHearing: ACTION): void {
-    if (actionHearing === ACTION.CANCEL) {
-      if (this.isFormValid()) {
-        this.prepareHearingRequestData();
-        super.navigateAction(ACTION.CANCEL);
-      }
-    } else if (actionHearing === ACTION.BACK) {
-      super.navigateAction(actionHearing);
+  public executeContinue(): void {
+    if (this.isFormValid()) {
+      this.hearingsService.cancelHearingRequest(this.hearingId).subscribe(
+          return this.router.navigate(['cases', 'case-details', this.hearingId, 'hearings']).then();
     }
   }
 
-  public prepareHearingRequestData() {
-    this.hearingRequestMainModel = {
-      ...this.hearingRequestMainModel,
-      hearingDetails: {
-        ...this.hearingRequestMainModel.hearingDetails,
-        cancelationReason: this.getChosenReasons(),
-        cancelledCaseHearing: this.caseHearing,
-      }
-    };
-  }
+  ///TODO post getChoseReason Delete does not have body??????
 
   public getChosenReasons(): RefDataModel[] {
     const mappedReason: RefDataModel[] = [];

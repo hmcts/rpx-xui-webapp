@@ -13,4 +13,4 @@ router.get('/getCaseFlagRefData', getCaseFlagRefData);
 router.get('/getRefData', getRefData);
 router.post('/loadServiceHearingValues', loadServiceHearingValues);
 router.post('/submitHearingRequest', submitHearingRequest);
-router.put('/cancelHearings', cancelHearingRequest);
+router.delete('/cancelHearings', cancelHearingRequest);

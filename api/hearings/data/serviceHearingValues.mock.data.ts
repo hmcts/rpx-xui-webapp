@@ -241,14 +241,6 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
         },
       ],
     },
-    {
-      screenName: 'cancel',
-      navigation: [
-        {
-          resultValue: 'hearings',
-        },
-      ],
-    },
   ],
   vocabulary: [
     {

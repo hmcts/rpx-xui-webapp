@@ -7,13 +7,13 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { HearingListModel } from 'api/hearings/models/hearingList.model';
 import { Observable, of } from 'rxjs';
-import { ACTION, HearingListingStatusEnum, HMCStatus } from '../../../hearings/models/hearings.enum';
+import { ACTION, CancelHearingMessages, HearingListingStatusEnum, HMCStatus } from '../../../hearings/models/hearings.enum';
 import { RefDataModel } from '../../../hearings/models/refData.model';
 import { HearingsService } from '../../services/hearings.service';
 import { initialState } from '../request-hearing/hearing.store.state.test';
 import { CancelHearingComponent } from './cancel-hearing.component';
 
-fdescribe('CancelHearingComponent', () => {
+describe('CancelHearingComponent', () => {
   let component: CancelHearingComponent;
   let fixture: ComponentFixture<CancelHearingComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
@@ -90,6 +90,8 @@ fdescribe('CancelHearingComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+    expect(component.actionHearing.BACK).toEqual(ACTION.BACK);
+    expect(component.cancelHearingMessageEnum.NOT_SELECTED_A_REASON).toEqual(CancelHearingMessages.NOT_SELECTED_A_REASON);
   });
 
   it('should assign hearingId in component', () => {

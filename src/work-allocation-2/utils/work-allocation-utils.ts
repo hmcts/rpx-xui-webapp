@@ -77,7 +77,7 @@ export const handleTasksFatalErrors = (status: number, navigator: Navigator, fat
       } else {
         destinationUrl = REDIRECTS.NotAuthorised;
       }
-      navigator.navigate([ destinationUrl ]);
+      navigator.navigate([ destinationUrl ], { state: { returnUrl: returnUrl }});
       return 0; // 0 indicates it has been handled.
     case 500:
     case 503:

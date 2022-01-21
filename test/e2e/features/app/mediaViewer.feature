@@ -1,4 +1,3 @@
-@fullfunctional
 Feature: Check media viewer
 
     Background:

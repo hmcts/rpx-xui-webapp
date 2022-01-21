@@ -73,11 +73,6 @@ describe('RequestHearingPageFlow', () => {
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.SubmitHearingRequest(hearingState.hearingRequest.hearingRequestMainModel as HearingRequestMainModel));
   });
 
-  it('should navigate continue', () => {
-    requestHearingPageFlow.navigateAction(ACTION.CANCEL);
-    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.NavigateBeginningCancelRequest(hearingState.hearingRequest.hearingRequestMainModel as HearingRequestMainModel));
-  });
-
   afterEach(() => {
     requestHearingPageFlow = null;
   });

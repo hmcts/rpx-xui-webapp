@@ -41,7 +41,6 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public taskServiceConfig: TaskServiceConfig;
   protected userDetailsKey: string = 'userDetails';
   private pTasks: Task[] = [];
-  private tasksLoaded: boolean = false;
   private selectedLocationsSubscription: Subscription;
   private pTasksTotal: number;
 
@@ -330,7 +329,6 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       this.tasks = result.tasks;
       this.tasksTotal = result.total_records;
       this.tasks.forEach(task => task.assigneeName = getAssigneeName(this.caseworkers, task.assignee));
-      this.tasksLoaded = true;
       this.ref.detectChanges();
     }, error => {
       this.loadingService.unregister(loadingToken);

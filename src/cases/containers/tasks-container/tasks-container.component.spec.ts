@@ -7,7 +7,7 @@ import { AlertService, CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { of } from 'rxjs';
 
 import { TaskAlertBannerComponent } from '../../../cases/components';
-import { WorkAllocationCaseService } from '../../../work-allocation-2/services';
+import { CaseworkerDataService, WorkAllocationCaseService } from '../../../work-allocation-2/services';
 import { getMockTasks } from '../../../work-allocation-2/tests/utils.spec';
 import { TasksContainerComponent } from './tasks-container.component';
 
@@ -114,6 +114,7 @@ describe('TasksContainerComponent', () => {
   const mockAlertService = jasmine.createSpyObj('alertService', ['success', 'setPreserveAlerts', 'error']);
   const mockWACaseService = jasmine.createSpyObj('waCaseService', ['getTasksByCaseId']);
   const mockHttpService = jasmine.createSpyObj('mockHttpService', ['put', 'get', 'post']);
+  const mockCaseworkerService = jasmine.createSpyObj('caseworkerService', ['getCaseworkersForServices']);
   let component: TasksContainerComponent;
   let fixture: ComponentFixture<TasksContainerComponent>;
 
@@ -127,6 +128,7 @@ describe('TasksContainerComponent', () => {
         {provide: AlertService, useValue: mockAlertService},
         {provide: WorkAllocationCaseService, useValue: mockWACaseService},
         {provide: HttpClient, useValue: mockHttpService},
+        {provide: CaseworkerDataService, useValue: mockCaseworkerService},
         {
           provide: ActivatedRoute,
           useValue: {
@@ -152,6 +154,7 @@ describe('TasksContainerComponent', () => {
     fixture = TestBed.createComponent(TasksContainerComponent);
     component = fixture.componentInstance;
     mockHttpService.get.and.returnValue(of(getMockTasks()));
+    mockCaseworkerService.getCaseworkersForServices.and.returnValue([]);
     fixture.detectChanges();
   });
 

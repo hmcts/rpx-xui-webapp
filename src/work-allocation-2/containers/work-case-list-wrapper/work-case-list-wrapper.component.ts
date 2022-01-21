@@ -18,7 +18,6 @@ import { SortField } from '../../models/common';
 import { Location, PaginationParameter, SearchCaseRequest, SortParameter } from '../../models/dtos';
 import {
   CaseworkerDataService,
-  JudicialWorkerDataService,
   LocationDataService,
   WASupportedJurisdictionsService,
   WorkAllocationCaseService

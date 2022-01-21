@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
+import { of } from 'rxjs';
 import { first, mergeMap } from 'rxjs/operators';
 import { Caseworker, TaskList } from '../../../work-allocation-2/models/dtos';
 import { Task } from '../../../work-allocation-2/models/tasks';
@@ -34,7 +35,11 @@ export class TasksContainerComponent implements OnInit {
         mergeMap((tasks) => {
           this.tasks = tasks;
           this.warningIncluded = this.tasks.some(task => task.warnings);
-          return this.caseworkerService.getCaseworkersForServices([tasks[0].jurisdiction]);
+          if (tasks && tasks.length > 0) {
+            return this.caseworkerService.getCaseworkersForServices([tasks[0].jurisdiction]);
+          } else {
+            return of([]);
+          }
         })
       ).subscribe(caseworkers => {
         this.caseworkers = caseworkers;

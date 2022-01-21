@@ -18,7 +18,7 @@ export const processErrorInit = () => {
 
     process.on('unhandledRejection', (reason, promise) => {
         // tslint:disable-next-line:new-parens
-        logger._logger.error((new Date).toUTCString() + 'Unhandled Rejection at:', promise, 'reason:', reason)
+        logger._logger.error((new Date).toUTCString() + ' Unhandled Rejection at:', promise, 'reason:', reason)
         // Application specific logging, throwing an error, or other logic here
     })
 

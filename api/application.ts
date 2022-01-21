@@ -121,4 +121,4 @@ app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true }, ign
 const logger: JUILogger = log4jui.getLogger('Application');
 logger.info(`Started up using ${getConfigValue(PROTOCOL)}`);
 
-processErrorInit();
+// processErrorInit();

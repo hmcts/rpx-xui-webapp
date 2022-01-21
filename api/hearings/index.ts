@@ -11,7 +11,6 @@ import { hearingStatusMappings } from './models/hearingStatusMappings';
 import { RefDataByCategoryModel, RefDataByServiceModel } from './models/refData.model';
 import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
 
-
 mock.init();
 
 const hearingsUrl: string = getConfigValue(SERVICES_HEARINGS_COMPONENT_API);
@@ -113,7 +112,8 @@ export async function submitHearingRequest(req: EnhancedRequest, res: Response, 
 export async function cancelHearingRequest(req: EnhancedRequest, res: Response, next: NextFunction) {
   const reqBody = req.body;
   const hearingId = req.query.hearingId;
-  const markupPath: string = `${hearingsUrl}/cancelHearings/${hearingId}`;
+  console.log(req.query.hearingId);
+  const markupPath: string = `${hearingsUrl}/hearing/${hearingId}`;
 
   try {
     const { status, data }: { status: number, data: HearingListModel } = await handleDelete(markupPath, reqBody, req);

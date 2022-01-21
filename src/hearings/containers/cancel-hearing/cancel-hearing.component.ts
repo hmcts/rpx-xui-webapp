@@ -92,12 +92,11 @@ export class CancelHearingComponent implements OnInit {
 
   public executeContinue(): void {
     if (this.isFormValid()) {
-      this.hearingsService.cancelHearingRequest(this.hearingId).subscribe(
-          return this.router.navigate(['cases', 'case-details', this.hearingId, 'hearings']).then();
+      this.hearingsService.cancelHearingRequest(this.hearingId, this.getChosenReasons()).subscribe(() => {
+        return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']).then();
+      });
     }
   }
-
-  ///TODO post getChoseReason Delete does not have body??????
 
   public getChosenReasons(): RefDataModel[] {
     const mappedReason: RefDataModel[] = [];

@@ -1,8 +1,8 @@
 import * as express from 'express';
 import authInterceptor from '../lib/middleware/auth';
 import {
-  getCaseFlagRefData, getHearings, getRefData, loadServiceHearingValues,
-  submitHearingRequest, cancelHearingRequest
+  cancelHearingRequest, getCaseFlagRefData, getHearings, getRefData,
+  loadServiceHearingValues, submitHearingRequest
 } from './index';
 
 export const router = express.Router({ mergeParams: true });

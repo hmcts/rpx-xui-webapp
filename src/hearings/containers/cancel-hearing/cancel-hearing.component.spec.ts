@@ -13,7 +13,7 @@ import { HearingsService } from '../../services/hearings.service';
 import { initialState } from '../request-hearing/hearing.store.state.test';
 import { CancelHearingComponent } from './cancel-hearing.component';
 
-describe('CancelHearingComponent', () => {
+fdescribe('CancelHearingComponent', () => {
   let component: CancelHearingComponent;
   let fixture: ComponentFixture<CancelHearingComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
@@ -31,6 +31,7 @@ describe('CancelHearingComponent', () => {
 
   const HEARING_ID = 'h00001';
   const CASE_REF = '5084035';
+  let mockHearingService: any;
 
   const CASE_HEARING_1: HearingListModel = {
     hearingID: HEARING_ID,
@@ -77,9 +78,10 @@ describe('CancelHearingComponent', () => {
     fixture = TestBed.createComponent(CancelHearingComponent);
     component = fixture.componentInstance;
     component.hearingCancelOptions = reasons;
+    mockHearingService = TestBed.get(HearingsService);
     spyOn(component, 'initForm').and.callThrough();
     spyOn(component, 'getChosenReasons').and.callThrough();
-    spyOn(component, 'prepareHearingRequestData').and.callThrough();
+    spyOn(mockHearingService, 'cancelHearingRequest').and.returnValue(of({}));
     spyOn(component, 'isFormValid').and.callThrough();
     mockStore = jasmine.createSpyObj('mockStore', ['unsubscribe', 'dispatch', 'pipe']);
     mockStore.pipe.and.returnValue(of(initialState.hearings.hearingList));
@@ -109,16 +111,16 @@ describe('CancelHearingComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should not call prepareHearingRequestData when executeAction is called with a valid form', () => {
-    component.executeAction(ACTION.BACK);
-    expect(component.prepareHearingRequestData).not.toHaveBeenCalled();
+  it('should not call cancelHearingRequest when executeAction is called with a valid form', () => {
+    component.executeContinue();
+    expect(mockHearingService.cancelHearingRequest).not.toHaveBeenCalled();
   });
 
-  it('should call prepareHearingRequestData when executeAction is called with a valid form', () => {
+  it('should call cancelHearingRequest when executeAction is called with a valid form', () => {
     (component.hearingCancelForm.controls.reasons as FormArray).controls
       .forEach(reason => reason.value.selected = true);
-    component.executeAction(ACTION.CANCEL);
-    expect(component.prepareHearingRequestData).toHaveBeenCalled();
+    component.executeContinue();
+    expect(mockHearingService.cancelHearingRequest).toHaveBeenCalled();
     expect(component.getChosenReasons).toHaveBeenCalled();
   });
 

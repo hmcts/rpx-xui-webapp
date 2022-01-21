@@ -1,10 +1,12 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { RequestOptions } from '@angular/http/src';
 import { Observable, of, Subject } from 'rxjs';
 import { HearingListModel } from '../models/hearingList.model';
 import { HearingListMainModel } from '../models/hearingListMain.model';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
 import { ACTION } from '../models/hearings.enum';
+import { RefDataModel } from '../models/refData.model';
 import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
 
 @Injectable()
@@ -30,8 +32,16 @@ export class HearingsService {
       { caseReference: caseId });
   }
 
-  public cancelHearingRequest(hearingId: string): Observable<HearingListModel> {
-    return this.http.delete<HearingListModel>(`api/hearings/cancelHearings?hearingId=${hearingId}`);
+  public cancelHearingRequest(hearingId: string, reasons: RefDataModel[]): Observable<any> {
+    const reasonIds: string[] = [];
+    reasons.forEach(reason => reasonIds.push(reason.key));
+    let httpParams = new HttpParams();
+    reasonIds.forEach(id => {
+      httpParams = httpParams.append('hearingId', id);
+    });
+    return this.http.delete<any>(`api/hearings/cancelHearings?hearingId=${hearingId}`, {
+      params: httpParams
+    });
   }
 
   public submitHearingRequest(hearingRequestMainModel: HearingRequestMainModel): Observable<HearingRequestMainModel> {

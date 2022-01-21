@@ -4,6 +4,7 @@ import { StoreModule } from '@ngrx/store';
 import { HearingListModel } from '../../../api/hearings/models/hearingList.model';
 import { HearingListingStatusEnum, HMCStatus } from '../models/hearings.enum';
 import { HearingsService } from './hearings.service';
+import { RefDataModel } from '../../../api/hearings/models/refData.model';
 
 describe('HearingsService', () => {
   beforeEach(() => {
@@ -68,17 +69,16 @@ describe('HearingsService', () => {
   });
 
   describe('cancelHearingRequest', () => {
-    const payload = {
-      hearingID: 'h100010',
-      hearingRequestDateTime: '2021-09-01T14:00:00.000+0000',
-      hearingType: 'Case management preliminary hearing - open',
-      hmcStatus: HMCStatus.COMPLETED,
-      lastResponseReceivedDateTime: '',
-      responseVersion: 'rv10',
-      hearingListingStatus: HearingListingStatusEnum.COMPLETED,
-      listAssistCaseStatus: '',
-      hearingDaySchedule: [],
-    } as HearingListModel;
+    const payload: RefDataModel[] = [
+      {
+        key: 'reasonone',
+        value_en: 'Reason 1',
+        value_cy: '',
+        hintText_EN: 'Reason 1',
+        hintTextCY: '',
+        order: 1,
+        parentKey: null,
+      }];
 
     it('should cancel hearing request', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
       service.cancelHearingRequest('1111222233334444', payload).subscribe(response => {

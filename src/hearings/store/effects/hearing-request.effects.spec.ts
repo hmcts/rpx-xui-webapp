@@ -47,54 +47,6 @@ describe('Hearing Request Effects', () => {
     effects = TestBed.get(HearingRequestEffects);
   });
 
-  describe('backBeginningNavigation$', () => {
-    const HEARING_REQUEST_MAIN_MODEL = initialState.hearings.hearingRequest.hearingRequestMainModel as HearingRequestMainModel;
-    const HEARING_ID = 'h00001';
-
-    HEARING_REQUEST_MAIN_MODEL.hearingDetails.cancelationReason = [
-      {
-        key: 'reasonone',
-        value_en: 'Reason 1',
-        value_cy: '',
-        hintText_EN: 'Reason 1',
-        hintTextCY: '',
-        order: 1,
-        parentKey: null,
-      }];
-
-    HEARING_REQUEST_MAIN_MODEL.hearingDetails.cancelledCaseHearing = {
-      hearingID: HEARING_ID,
-      hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
-      hearingType: 'Case management hearing',
-      hmcStatus: HMCStatus.HEARING_REQUESTD,
-      lastResponseReceivedDateTime: '',
-      responseVersion: 'rv1',
-      hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
-      listAssistCaseStatus: '',
-      hearingDaySchedule: null,
-    };
-
-    const CANCEL_HEARING_REQUEST_RESPONSE = {
-      hearingID: HEARING_ID,
-      hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
-      hearingType: 'Case management hearing',
-      hmcStatus: HMCStatus.HEARING_REQUESTD,
-      lastResponseReceivedDateTime: '',
-      responseVersion: 'rv1',
-      hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
-      listAssistCaseStatus: '',
-      hearingDaySchedule: null,
-    };
-
-    it('should return a response with service hearing values', () => {
-      hearingsServiceMock.cancelHearingRequest.and.returnValue(of(CANCEL_HEARING_REQUEST_RESPONSE));
-      const action = new hearingRequestActions.NavigateBeginningCancelRequest(HEARING_REQUEST_MAIN_MODEL);
-      effects.backBeginningNavigation$.subscribe(x => {
-        expect(effects['router'].navigate).toHaveBeenCalled();
-      });
-    });
-  });
-
   describe('handleError', () => {
     it('should handle 500', () => {
       const action$ = HearingRequestEffects.handleError({

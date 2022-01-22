@@ -13,6 +13,8 @@ import * as path from 'path';
 import { appInsights } from './lib/appInsights';
 import errorHandler from './lib/error.handler';
 import {removeCacheHeaders} from './lib/middleware/removeCacheHeaders';
+import {terminate} from './lib/terminate';
+import {processErrorInit} from "./lib/processError.handler";
 
 app.engine('html', ejs.renderFile);
 app.set('view engine', 'html');
@@ -38,6 +40,13 @@ app.use('/*', (req, res) => {
 
 app.use(appInsights);
 app.use(errorHandler);
-app.listen(process.env.PORT || 3000, () => {
+const server = app.listen(process.env.PORT || 3000, () => {
     console.log('Server listening on port 3000!');
 });
+
+const exitHandler = terminate(server, {
+  coredump: false,
+  timeout: 500,
+});
+
+processErrorInit(exitHandler);

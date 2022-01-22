@@ -3,6 +3,7 @@ import { inject, TestBed } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
 import { HearingsService } from './hearings.service';
 import { RefDataModel } from '../../../api/hearings/models/refData.model';
+import { HttpRequest } from '@angular/common/http';
 
 describe('HearingsService', () => {
   beforeEach(() => {
@@ -44,11 +45,9 @@ describe('HearingsService', () => {
       expect(req.request.method).toEqual('POST');
       req.flush(null);
     }));
-
   });
 
   describe('submitHearingRequest', () => {
-
     const payload = {
       requestDetails: null,
       hearingDetails: null,
@@ -63,7 +62,6 @@ describe('HearingsService', () => {
       expect(req.request.method).toEqual('POST');
       req.flush(null);
     }));
-
   });
 
   describe('cancelHearingRequest', () => {
@@ -79,13 +77,17 @@ describe('HearingsService', () => {
       }];
 
     it('should cancel hearing request', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
-      service.cancelHearingRequest('1111222233334444', payload).subscribe(response => {
+      service.cancelHearingRequest('h0002', payload).subscribe(response => {
         expect(response).toBeNull();
       });
 
-      const req = httpMock.expectOne('api/hearings/cancelHearings?caseId=1111222233334444');
-      expect(req.request.method).toEqual('PUT');
-      req.flush(null);
+      httpMock.expectOne((req: HttpRequest<any>) => {
+        expect(req.url).toBe('api/hearings/cancelHearings?hearingId=h0002');
+        expect(req.method).toBe('DELETE');
+        expect(req.params.get('reasonkey')).toEqual('reasonone');
+        return true;
+      })
+        .flush(null);
     }));
   });
 });

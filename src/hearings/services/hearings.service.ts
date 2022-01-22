@@ -35,7 +35,7 @@ export class HearingsService {
     reasons.forEach(reason => reasonIds.push(reason.key));
     let httpParams = new HttpParams();
     reasonIds.forEach(id => {
-      httpParams = httpParams.append('hearingId', id);
+      httpParams = httpParams.append('reasonkey', id);
     });
     return this.http.delete<any>(`api/hearings/cancelHearings?hearingId=${hearingId}`, {
       params: httpParams

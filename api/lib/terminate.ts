@@ -1,4 +1,3 @@
-import * as http from 'http';
 import {JUILogger} from './models';
 import * as log4jui from './log4jui';
 const logger: JUILogger = log4jui.getLogger('Terminate');

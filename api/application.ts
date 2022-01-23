@@ -14,14 +14,14 @@ import {
 import * as health from './health';
 import * as log4jui from './lib/log4jui';
 import { JUILogger } from './lib/models';
+import {processErrorInit} from "./lib/processError.handler";
+import {terminate} from "./lib/terminate";
 import * as tunnel from './lib/tunnel';
 import openRoutes from './openRoutes';
 import { initProxy } from './proxy.config';
 import routes from './routes';
 import taskRouter from './workAllocation/routes';
 import workAllocation2Router from './workAllocation2/routes';
-import {terminate} from "./lib/terminate";
-import {processErrorInit} from "./lib/processError.handler";
 
 export const app = express();
 

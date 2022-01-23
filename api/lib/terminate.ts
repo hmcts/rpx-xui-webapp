@@ -4,7 +4,7 @@ import * as log4jui from './log4jui';
 const logger: JUILogger = log4jui.getLogger('Terminate');
 
 export const terminate = (
-  server: http.Server,
+  // server: http.Server,
   options = { coredump: false, timeout: 500}
 ) => {
   // Exit function
@@ -22,7 +22,7 @@ export const terminate = (
     // TODO: disconnect from session store gracefully
 
     // Attempt a graceful shutdown
-    server.close(exit);
+    // server.close(exit);
     setTimeout(exit, options.timeout).unref();
   };
 };

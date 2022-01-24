@@ -56,5 +56,8 @@ export class RequestHearingComponent implements OnInit, OnDestroy {
     if (this.hearingListSub) {
       this.hearingListSub.unsubscribe();
     }
+    this.hearingStore.dispatch(new fromHearingStore.ResetHearingRequest());
+    this.hearingStore.dispatch(new fromHearingStore.ResetHearingValues());
+    this.hearingStore.dispatch(new fromHearingStore.ResetHearingConditions());
   }
 }

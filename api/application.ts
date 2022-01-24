@@ -14,8 +14,6 @@ import {
 import * as health from './health';
 import * as log4jui from './lib/log4jui';
 import { JUILogger } from './lib/models';
-import {processErrorInit} from "./lib/processError.handler";
-import {terminate} from "./lib/terminate";
 import * as tunnel from './lib/tunnel';
 import openRoutes from './openRoutes';
 import { initProxy } from './proxy.config';
@@ -121,10 +119,3 @@ app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true }, ign
 // @ts-ignore
 const logger: JUILogger = log4jui.getLogger('Application');
 logger.info(`Started up using ${getConfigValue(PROTOCOL)}`);
-
-const exitHandler = terminate({
-  coredump: false,
-  timeout: 500,
-});
-
-processErrorInit(exitHandler);

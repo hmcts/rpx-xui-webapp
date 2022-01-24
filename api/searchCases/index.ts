@@ -2,8 +2,12 @@ import { UserInfo } from '../auth/interfaces/UserInfo';
 import { getConfigValue } from '../configuration';
 import { caseMetaDataFiledsMapping } from '../configuration/mappings';
 import { WILDCARD_SEARCH_FIELDS, WILDCARD_SEARCH_ROLES } from '../configuration/references';
+import * as log4jui from '../lib/log4jui';
+import {JUILogger} from '../lib/models';
 import { fieldNameMapper } from '../lib/util';
 import { ElasticSearchQuery } from './interfaces/ElasticSearchQuery';
+
+const logger: JUILogger = log4jui.getLogger('searchCases');
 
 /**
  * Manually creating Elastic search query
@@ -16,16 +20,20 @@ export function modifyRequest(proxyReq, req) {
   const body = JSON.stringify(request);
 
   // console.log('request', req)
+  logger.info('setting headers');
 
   // Update header
   proxyReq.setHeader('content-type', 'application/json');
   proxyReq.setHeader('content-length', body.length);
 
   // Write out body changes to the proxyReq stream
+  logger.info('writing out body');
   proxyReq.write(body);
 
   // Remove body-parser body object from the request
+  logger.info('deleting body from request');
   delete req.body;
+  logger.info('ending proxy request');
   proxyReq.end();
 }
 

@@ -9,6 +9,7 @@ import { AppUtils } from '../../../app/app-utils';
 import { UserRole } from '../../../app/models';
 import * as fromAppStore from '../../../app/store';
 import { Location } from '../../models/dtos';
+import { getRoleCategory } from '../../utils';
 
 @Component({
   selector: 'exui-task-manager-filter',
@@ -172,15 +173,15 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
           label: 'All'
         },
         {
-          key: 'Judicial',
+          key: 'JUDICIAL',
           label: 'Judicial'
         },
         {
-          key: 'Legal Ops',
+          key: 'LEGAL_OPERATIONS',
           label: 'Legal Ops'
         },
         {
-          key: 'Admin',
+          key: 'ADMINISTRATOR',
           label: 'Admin'
         }
       ],
@@ -201,7 +202,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
         this.roleType = AppUtils.convertDomainToLabel(this.isLegalOpsOrJudicialRole);
         this.fieldsConfig.cancelSetting.fields.push({
           name: 'taskType',
-          value: [this.roleType]
+          value: [getRoleCategory(this.roleType)]
         },
         {
           name: 'role',
@@ -218,8 +219,6 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       TaskManagerFilterComponent.findPersonFilter(),
       TaskManagerFilterComponent.initTaskTypeFilter()
     ];
-    this.fieldsConfig.fields = this.isLegalOpsOrJudicialRole === UserRole.Judicial ?
-      this.fieldsConfig.fields.slice(0, -1) : this.fieldsConfig.fields;
     this.filterSub = this.filterService.getStream(TaskManagerFilterComponent.FILTER_NAME)
     .pipe(
       map((f: FilterSetting) => {

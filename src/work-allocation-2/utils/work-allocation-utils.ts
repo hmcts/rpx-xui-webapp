@@ -122,6 +122,17 @@ export function getLabel(roleCategory: RoleCategory): PersonRole {
   }
 }
 
+export function getRoleCategory(role: string): RoleCategory {
+  if (role === PersonRole.JUDICIAL) {
+    return RoleCategory.JUDICIAL;
+  } else if (role === PersonRole.CASEWORKER) {
+    return RoleCategory.LEGAL_OPERATIONS;
+  } else if (role === PersonRole.ADMIN) {
+    return RoleCategory.ADMINISTRATOR;
+  }
+  return null;
+}
+
 export function roleIncludes(roles: string[], permission: string): boolean {
   let includesRole = false;
   if (roles && permission) {

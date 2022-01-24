@@ -4,10 +4,12 @@ export enum TypeOfRole {
   CaseManager = 'Case manager'
 }
 
+// kept two admin references as seem to be used alternately
 export enum RoleCategory {
   JUDICIAL = 'JUDICIAL',
   LEGAL_OPERATIONS = 'LEGAL_OPERATIONS',
   ADMIN = 'ADMIN',
+  ADMINISTRATOR = 'ADMINISTRATOR'
 }
 
 export enum AllocateTo {

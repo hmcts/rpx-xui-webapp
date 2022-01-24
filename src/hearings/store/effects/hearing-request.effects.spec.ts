@@ -2,21 +2,17 @@ import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { provideMockStore } from '@ngrx/store/testing';
-import { of } from 'rxjs/internal/observable/of';
 import { initialState } from 'src/hearings/containers/request-hearing/hearing.store.state.test';
 import { Go } from '../../../app/store/actions';
-import { HearingRequestMainModel } from '../../models/hearingRequestMain.model';
-import { HearingListingStatusEnum, HMCStatus } from '../../models/hearings.enum';
 import { HearingsService } from '../../services/hearings.service';
 import { AbstractPageFlow } from '../../utils/abstract-page-flow';
-import * as hearingRequestActions from '../actions/hearing-request.action';
 import { HearingRequestEffects } from './hearing-request.effects';
 
 describe('Hearing Request Effects', () => {
   const actions$ = null;
   let effects: HearingRequestEffects;
   const hearingsServiceMock = jasmine.createSpyObj('HearingsService', [
-    'getAllHearings', 'cancelHearingRequest'
+    'getAllHearings',
   ]);
   const pageflowMock = jasmine.createSpyObj('AbstractPageFlow', [
     'getCurrentPage', 'getLastPage', 'getNextPage'

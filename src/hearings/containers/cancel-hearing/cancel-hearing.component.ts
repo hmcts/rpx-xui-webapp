@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { ACTION, CancelHearingMessages } from 'src/hearings/models/hearings.enum';
+import { ACTION, CancelHearingMessages } from '../../models/hearings.enum';
 import { HearingListModel } from '../../../hearings/models/hearingList.model';
 import { RefDataModel } from '../../../hearings/models/refData.model';
 import { HearingsService } from '../../../hearings/services/hearings.service';
@@ -35,9 +35,6 @@ export class CancelHearingComponent implements OnInit {
     });
   }
 
-  public get actionHearing() {
-    return ACTION;
-  }
 
   public get cancelHearingMessageEnum() {
     return CancelHearingMessages;

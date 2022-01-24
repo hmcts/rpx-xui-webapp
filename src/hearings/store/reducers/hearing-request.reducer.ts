@@ -1,6 +1,5 @@
 import { HearingRequestStateData } from '../../models/hearingRequestStateData.model';
 import * as fromActions from '../actions';
-import { NAVIGATE_BEGINNING_CANCEL_REQUEST } from '../actions';
 
 export const initialHearingRequestState: HearingRequestStateData = {
   hearingRequestMainModel: {

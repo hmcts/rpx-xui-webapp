@@ -88,12 +88,6 @@ describe('CancelHearingComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-    expect(component.actionHearing.BACK).toEqual(ACTION.BACK);
-    expect(component.cancelHearingMessageEnum.NOT_SELECTED_A_REASON).toEqual(CancelHearingMessages.NOT_SELECTED_A_REASON);
-  });
-
   it('should assign hearingId in component', () => {
     expect(component.hearingId).toEqual(HEARING_ID);
   });

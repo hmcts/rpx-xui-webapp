@@ -18,7 +18,6 @@ import * as hearingRequestActions from '../actions/hearing-request.action';
 export class HearingRequestEffects {
   public screenNavigations$: Observable<ScreenNavigationModel[]>;
   public caseId: string;
-  public caseHearings: HearingListModel[];
 
   constructor(
     private readonly actions$: Actions,

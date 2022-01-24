@@ -112,7 +112,6 @@ export async function submitHearingRequest(req: EnhancedRequest, res: Response, 
 export async function cancelHearingRequest(req: EnhancedRequest, res: Response, next: NextFunction) {
   const reqBody = req.body;
   const hearingId = req.query.hearingId;
-  console.log(req.query.hearingId);
   const markupPath: string = `${hearingsUrl}/hearing/${hearingId}`;
 
   try {

@@ -153,8 +153,6 @@ export const initialState = {
           hearingRequester: null,
           leadJudgeContractType: null,
           totalParticipantAttendingHearing: 3,
-          cancelationReason: [],
-          cancelledCaseHearing: null,
         },
         caseDetails: {
           hmctsServiceCode: null,

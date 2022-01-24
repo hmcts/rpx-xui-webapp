@@ -2,6 +2,7 @@ import { NavigationExtras } from '@angular/router';
 import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { RoleCategory } from '../../role-access/models';
 import { OptionsModel } from '../../role-access/models/options-model';
+import { TaskActionType } from '../enums';
 import { Permissions, TaskRole } from '../models/tasks/TaskRole';
 
 interface Navigator {
@@ -69,14 +70,9 @@ export const handleTasksFatalErrors = (status: number, navigator: Navigator, fat
   switch (status) {
     case 401:
     case 403:
-      let destinationUrl = '';
-      if (navigator.url.includes('/assign/confirm')) {
-        destinationUrl = navigator.url.replace('/assign/confirm', '/person-not-authorised')
-      } else if (navigator.url.includes('/reassign/confirm')) {
-        destinationUrl = navigator.url.replace('/reassign/confirm', '/person-not-authorised')
-      } else {
-        destinationUrl = REDIRECTS.NotAuthorised;
-      }
+      // For certain conditions, we have to navigate to a different error page
+      // if the selected person is not authorised to perform the task
+      const destinationUrl = getDestinationUrl(navigator.url);
       navigator.navigate([ destinationUrl ], { state: { returnUrl: returnUrl }});
       return 0; // 0 indicates it has been handled.
     case 500:
@@ -142,4 +138,16 @@ export function roleIncludes(roles: string[], permission: string): boolean {
     })
   }
   return includesRole;
+}
+
+export function getDestinationUrl(url: string): string {
+  if (url.includes(`/${TaskActionType.Assign}/confirm`)) {
+    return url.replace(`/${TaskActionType.Assign}/confirm`, '/person-not-authorised')
+  }
+  
+  if (url.includes(`/${TaskActionType.Reassign}/confirm`)) {
+    return url.replace(`/${TaskActionType.Reassign}/confirm`, '/person-not-authorised')
+  }
+
+  return REDIRECTS.NotAuthorised;
 }

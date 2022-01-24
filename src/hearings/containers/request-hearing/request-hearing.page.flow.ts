@@ -1,10 +1,10 @@
-import {select, Store} from '@ngrx/store';
-import {Subscription} from 'rxjs';
-import {HearingListMainModel} from '../../models/hearingListMain.model';
-import {HearingRequestMainModel} from '../../models/hearingRequestMain.model';
-import {ACTION} from '../../models/hearings.enum';
-import {ServiceHearingValuesModel} from '../../models/serviceHearingValues.model';
-import {HearingsService} from '../../services/hearings.service';
+import { select, Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { HearingListMainModel } from '../../models/hearingListMain.model';
+import { HearingRequestMainModel } from '../../models/hearingRequestMain.model';
+import { ACTION } from '../../models/hearings.enum';
+import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
+import { HearingsService } from '../../services/hearings.service';
 import * as fromHearingStore from '../../store';
 
 export abstract class RequestHearingPageFlow {
@@ -14,8 +14,9 @@ export abstract class RequestHearingPageFlow {
   public serviceHearingValuesModel: ServiceHearingValuesModel;
   public hearingRequestMainModel: HearingRequestMainModel;
 
-  public constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
-                     protected readonly hearingsService: HearingsService) {
+  public constructor(
+    protected readonly hearingStore: Store<fromHearingStore.State>,
+    protected readonly hearingsService: HearingsService) {
     this.navigationSub = this.hearingsService.navigateAction$.subscribe(
       (action: ACTION) => this.executeAction(action)
     );

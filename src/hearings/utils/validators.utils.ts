@@ -26,12 +26,12 @@ export class ValidatorsUtils {
     };
   }
 
-  public minutesValidator(minNumber: number, maxNumber: number): ValidatorFn {
+  public minutesValidator(minNumber: number, maxNumber: number, totalNumber: number): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const hours = Number(control.get('hours').value) || 0;
       const minutes = Number(control.get('minutes').value) || 0;
       const totalMinutes = (hours * 60) + minutes;
-      return totalMinutes >= minNumber && totalMinutes <= maxNumber ? null : { isValid: false };
+      return totalMinutes >= minNumber && minutes <= maxNumber && totalMinutes <= totalNumber ? null : { isValid: false };
     };
   }
 

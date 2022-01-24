@@ -82,4 +82,5 @@ export enum DOWUnavailabilityType {
 export enum HearingErrorMessage {
   ENTER_A_VALID_LOCATION = 'Enter a valid location',
   ENTER_A_LOCATION = 'Enter a location',
+  NOT_SELECTED_A_REASON = 'You have not selected a reason for cancelling the hearing',
 }

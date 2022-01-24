@@ -41,7 +41,7 @@ export const hearingStatusMappings: HearingStatusMapping[] = [
   {
     hmcStatus: HMCStatus.VACATED,
     exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
-    exuiDisplayStatus: EXUIDisplayStatusEnum.VACATED,
+    exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED,
   },
   {
     hmcStatus: HMCStatus.AWAITING_ACTUALS,

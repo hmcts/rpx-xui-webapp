@@ -33,7 +33,7 @@ export const initialHearingRequestState: HearingRequestStateData = {
       caseDeepLink: null,
       hmctsInternalCaseName: null,
       publicCaseName: null,
-      caseAdditionalSecurityFlag: false,
+      caseAdditionalSecurityFlag: null,
       caseInterpreterRequiredFlag: false,
       caseCategories: [],
       caseManagementLocationCode: null,

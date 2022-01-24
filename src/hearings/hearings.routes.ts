@@ -76,10 +76,14 @@ export const ROUTES: Routes = [
       },
       {
         path: 'hearing-facilities',
-        resolve: { caseFlags: CaseFlagsResolver },
+        resolve: {
+          caseFlags: CaseFlagsResolver,
+          additionFacilitiesOptions: RefDataResolver
+        },
         component: HearingFacilitiesComponent,
         canActivate: [HealthCheckGuard],
         data: {
+          category: HearingCategory.FacilitiesList,
           title: 'HMCTS Hearings | Request Hearing | Additional Facilities'
         }
       },

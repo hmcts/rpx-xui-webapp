@@ -1,4 +1,7 @@
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
 import {initialState} from '../../../hearing.store.state.test';
@@ -15,11 +18,13 @@ describe('HearingAdditionalInstructionsComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
+      imports: [ReactiveFormsModule, RouterTestingModule],
       declarations: [HearingAdditionalInstructionsComponent],
       providers: [
         provideMockStore({initialState}),
         {provide: HearingsService, useValue: hearingsService},
-      ]
+      ],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingAdditionalInstructionsComponent);
@@ -29,6 +34,13 @@ describe('HearingAdditionalInstructionsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should check form validity', () => {
+    spyOn(hearingsService, 'navigateAction$');
+    component.instructionsForm.controls['instructions'].setValue('instructions');
+    component.executeAction(ACTION.CONTINUE);
+    expect(component.isFormValid()).toBeTruthy();
   });
 
   afterEach(() => {

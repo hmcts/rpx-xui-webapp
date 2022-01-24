@@ -1,5 +1,5 @@
-import {Action} from '@ngrx/store';
-import {HearingRequestMainModel} from '../../models/hearingRequestMain.model';
+import { Action } from '@ngrx/store';
+import { HearingRequestMainModel } from '../../models/hearingRequestMain.model';
 
 export const RESET_HEARING_REQUEST = '[HEARING REQUEST] Reset Hearing Request';
 export const NAVIGATE_BACK_HEARING_REQUEST = '[HEARING REQUEST] Navigate Back Hearing Request';
@@ -42,3 +42,4 @@ export type HearingRequestAction =
   | InitializeHearingRequest
   | UpdateHearingRequest
   | SubmitHearingRequest;
+

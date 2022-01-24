@@ -37,6 +37,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       estimation: [null, [this.validatorsUtils.numberLargerThanValidator(0)]],
       parties: fb.array([])
     });
+    this.partiesFormArray = fb.array([]);
   }
 
   public ngOnInit(): void {

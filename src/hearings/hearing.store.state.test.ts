@@ -128,11 +128,12 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
 export const initialState = {
   hearings: {
     hearingList: {
-      hearingListMainModel: [
-        {
-          hmctsServiceID: 'SSCS'
-        }
-      ]
+      hearingListMainModel:
+      {
+        caseRef: '54354545453',
+        hmctsServiceID: 'SSCS',
+        caseHearings: []
+      }
     },
     hearingValues: {
       serviceHearingValuesModel,

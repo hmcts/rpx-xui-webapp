@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {ACTION} from '../../models/hearings.enum';
 import {HearingsService} from '../../services/hearings.service';
@@ -10,7 +10,7 @@ import {AbstractPageFlow} from '../../utils/abstract-page-flow';
   templateUrl: './request-hearing.component.html',
   styleUrls: ['./request-hearing.component.scss']
 })
-export class RequestHearingComponent {
+export class RequestHearingComponent implements OnDestroy {
 
   private static HEARING_CHECK_ANSWERS = 'hearing-check-answers';
 
@@ -35,4 +35,9 @@ export class RequestHearingComponent {
     return this.pageFlow.getCurrentPage() === RequestHearingComponent.HEARING_CHECK_ANSWERS;
   }
 
+  public ngOnDestroy(): void {
+    this.hearingStore.dispatch(new fromHearingStore.ResetHearingRequest());
+    this.hearingStore.dispatch(new fromHearingStore.ResetHearingValues());
+    this.hearingStore.dispatch(new fromHearingStore.ResetHearingConditions());
+  }
 }

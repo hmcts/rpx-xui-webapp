@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { RefDataModel } from 'src/hearings/models/refData.model';
+import { RefDataModel } from '../../../../hearings/models/refData.model';
 import { CaseFlagReferenceModel } from '../../../models/caseFlagReference.model';
 import { ACTION, CaseFlagType, HearingFacilitiesEnum } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';

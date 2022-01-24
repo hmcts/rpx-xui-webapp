@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormArray, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
@@ -8,7 +8,6 @@ import { ACTION } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import { initialState, serviceHearingValuesModel } from '../hearing.store.state.test';
 import { HearingFacilitiesComponent } from './hearing-facilities.component';
-import { RefDataModel } from 'src/hearings/models/refData.model';
 
 describe('HearingFacilitiesComponent', () => {
   let component: HearingFacilitiesComponent;

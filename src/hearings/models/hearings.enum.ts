@@ -156,5 +156,10 @@ export enum ConditionOperator {
 
 export enum CaseFlagType {
   REASONABLE_ADJUSTMENT = 'Reasonable adjustment',
-  NON_REASONABLE_ADJUSTMENT = 'Non reasonable adjustment'
+  NON_REASONABLE_ADJUSTMENT = 'Non reasonable adjustment',
+}
+
+export enum CancelHearingMessages {
+  NOT_SELECTED_A_REASON = 'You have not selected a reason for cancelling th hearing',
+  SELECT_AT_LEAST_ONE_REASON = 'Select at least one valid reason',
 }

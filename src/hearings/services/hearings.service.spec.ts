@@ -76,6 +76,7 @@ describe('HearingsService', () => {
       }];
 
     it('should cancel hearing request', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
+      const cancellationReasonCode: string = payload.map(reason => reason.key).toString();
       service.cancelHearingRequest('h0002', payload).subscribe(response => {
         expect(response).toBeNull();
       });
@@ -83,7 +84,7 @@ describe('HearingsService', () => {
       httpMock.expectOne((req: HttpRequest<any>) => {
         expect(req.url).toBe('api/hearings/cancelHearings?hearingId=h0002');
         expect(req.method).toBe('DELETE');
-        expect(req.params.get('reasonkey')).toEqual('reasonone');
+        expect(req.params.get('cancellationReasonCode')).toEqual(cancellationReasonCode);
         return true;
       })
         .flush(null);

@@ -37,7 +37,7 @@ export const containers: any[] = [
   AllWorkCaseComponent,
   WorkCaseListComponent,
   WorkCaseListWrapperComponent,
-	TaskAssignmentPersonNotAuthorisedComponent
+  TaskAssignmentPersonNotAuthorisedComponent
 ];
 
 export * from './available-tasks/available-tasks.component';

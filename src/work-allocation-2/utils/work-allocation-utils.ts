@@ -2,12 +2,11 @@ import { NavigationExtras } from '@angular/router';
 import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { RoleCategory } from '../../role-access/models';
 import { OptionsModel } from '../../role-access/models/options-model';
-import { TaskActionType } from '../enums';
 import { Permissions, TaskRole } from '../models/tasks/TaskRole';
 
 interface Navigator {
-  navigate(commands: any[], extras?: NavigationExtras): Promise<boolean>;
   url: string;
+  navigate(commands: any[], extras?: NavigationExtras): Promise<boolean>;
 }
 
 export interface FatalRedirect {
@@ -66,14 +65,17 @@ export const handleFatalErrors = (status: number, navigator: Navigator, fatals?:
 };
 
 export const handleTasksFatalErrors = (status: number, navigator: Navigator, fatals?: FatalRedirect[], returnUrl?: string): number => {
-  debugger;
   switch (status) {
     case 401:
     case 403:
-      // For certain conditions, we have to navigate to a different error page
-      // if the selected person is not authorised to perform the task
-      const destinationUrl = getDestinationUrl(navigator.url);
-      navigator.navigate([ destinationUrl ], { state: { returnUrl: returnUrl }});
+      if (returnUrl) {
+        // For certain conditions, we have to navigate to a different error page
+        // if the selected person is not authorised to perform the task
+        const destinationUrl = getDestinationUrl(navigator.url);
+        navigator.navigate([ destinationUrl ], { state: { returnUrl }});
+      } else {
+        navigator.navigate([ REDIRECTS.NotAuthorised ]);
+      }
       return 0; // 0 indicates it has been handled.
     case 500:
     case 503:
@@ -97,7 +99,7 @@ export const getAssigneeName = (caseworkers: any [], assignee: string): string =
     const assignedCW = caseworkers.filter(cw => cw.idamId === assignee)[0];
     return `${assignedCW.firstName} ${assignedCW.lastName}`;
   }
-  return null
+  return null;
 };
 
 export function getOptions(taskRoles: TaskRole[]): OptionsModel[] {
@@ -135,18 +137,18 @@ export function roleIncludes(roles: string[], permission: string): boolean {
       if (role.toLocaleLowerCase() === permission.toLocaleLowerCase()) {
         includesRole = true;
       }
-    })
+    });
   }
   return includesRole;
 }
 
 export function getDestinationUrl(url: string): string {
-  if (url.includes(`/${TaskActionType.Assign}/confirm`)) {
-    return url.replace(`/${TaskActionType.Assign}/confirm`, '/person-not-authorised')
+  if (url.includes('/assign/confirm')) {
+    return url.replace('/assign/confirm', '/person-not-authorised');
   }
-  
-  if (url.includes(`/${TaskActionType.Reassign}/confirm`)) {
-    return url.replace(`/${TaskActionType.Reassign}/confirm`, '/person-not-authorised')
+
+  if (url.includes('/reassign/confirm')) {
+    return url.replace('/reassign/confirm', '/person-not-authorised');
   }
 
   return REDIRECTS.NotAuthorised;

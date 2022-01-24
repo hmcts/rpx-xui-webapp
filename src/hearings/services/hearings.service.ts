@@ -6,6 +6,7 @@ import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
 import { ACTION } from '../models/hearings.enum';
 import { RefDataModel } from '../models/refData.model';
 import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
+import { HearingCancelRequestBody } from '../models/hearingCancelRequestBody';
 
 @Injectable()
 export class HearingsService {
@@ -31,14 +32,16 @@ export class HearingsService {
   }
 
   public cancelHearingRequest(hearingId: string, reasons: RefDataModel[]): Observable<any> {
-    const reasonIds: string[] = [];
-    reasons.forEach(reason => reasonIds.push(reason.key));
-    let httpParams = new HttpParams();
-    reasonIds.forEach(id => {
-      httpParams = httpParams.append('reasonkey', id);
-    });
-    return this.http.delete<any>(`api/hearings/cancelHearings?hearingId=${hearingId}`, {
-      params: httpParams
+    const cancellationReasonCode: string[] = reasons.map(reason => reason.key);
+    // reasons.forEach(reason => cancellationReasonCode.push(reason.key));
+    // let httpParams = new HttpParams();
+    // reasonIds.forEach(id => {
+    //   httpParams = httpParams.append('reasonkey', id);
+    // });
+    //  httpParams = httpParams.append('versionNumber', 1);
+    return this.http.delete<HearingCancelRequestBody>(`api/hearings/cancelHearings?hearingId=${hearingId}`, {
+      cancellationReasonCode,
+      versionNumber: 1
     });
   }
 

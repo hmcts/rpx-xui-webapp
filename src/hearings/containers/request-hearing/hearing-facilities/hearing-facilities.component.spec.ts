@@ -9,7 +9,7 @@ import { HearingsService } from '../../../services/hearings.service';
 import { initialState, serviceHearingValuesModel } from '../hearing.store.state.test';
 import { HearingFacilitiesComponent } from './hearing-facilities.component';
 
-describe('HearingFacilitiesComponent', () => {
+fdescribe('HearingFacilitiesComponent', () => {
   let component: HearingFacilitiesComponent;
   let fixture: ComponentFixture<HearingFacilitiesComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
@@ -154,6 +154,17 @@ describe('HearingFacilitiesComponent', () => {
     component.hearingFactilitiesForm.controls['addition-security-required'].setValue(undefined);
     const formValid = component.isFormValid();
     expect(formValid).toEqual(false);
+  });
+
+  it('should filter selection from previous values', () => {
+    component.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag = true;
+    component.hearingRequestMainModel.hearingDetails.facilitiesRequired = ['secureDock', 'witnessScreen'];
+    component = fixture.componentInstance;
+    component.ngOnInit();
+    fixture.detectChanges();
+    expect(component.additionalFacilities.filter(facility => facility.selected).length).
+      toEqual(component.hearingRequestMainModel.hearingDetails.facilitiesRequired.length);
+    expect(component.hearingFactilitiesForm.controls['addition-security-required'].value).toEqual('Yes');
   });
 
   afterEach(() => {

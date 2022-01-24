@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NullInjector } from '@angular/core/src/di/injector';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -36,9 +37,27 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
       'addition-security-required': ['', Validators.required],
       'addition-securities': this.additionalFacilities ? this.getHearingFacilitiesFormArray : [],
     });
+
+    if (this.hearingRequestMainModel.caseDetails &&
+      this.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag !== undefined &&
+      this.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag !== null) {
+      if (this.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag) {
+        this.hearingFactilitiesForm.controls['addition-security-required'].setValue('Yes');
+      } else {
+        this.hearingFactilitiesForm.controls['addition-security-required'].setValue('No');
+      }
+    }
   }
 
   public get getHearingFacilitiesFormArray(): FormArray {
+    if (this.hearingRequestMainModel.hearingDetails &&
+      this.hearingRequestMainModel.hearingDetails.facilitiesRequired &&
+      this.hearingRequestMainModel.hearingDetails.facilitiesRequired.length) {
+      const additionalFacilitiesValuated = this.additionalFacilities.filter(additionalFacility =>
+        this.hearingRequestMainModel.hearingDetails.facilitiesRequired.includes(additionalFacility.key));
+      additionalFacilitiesValuated.forEach(facailyValuated => facailyValuated.selected = true);
+    }
+
     return this.fb.array(this.additionalFacilities.map(val => this.fb.group({
       key: [val.key],
       value_en: [val.value_en],

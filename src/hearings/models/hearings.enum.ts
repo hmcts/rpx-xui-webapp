@@ -109,6 +109,10 @@ export enum HearingStageEnum {
   SelectHearingStageError = 'Select a hearing stage',
 }
 
+export enum HearingInstructionsEnum {
+  InstructionLength = 2000
+}
+
 export enum HearingFacilitiesEnum {
   additionSecurityError = 'Select an option for additional security.',
 }

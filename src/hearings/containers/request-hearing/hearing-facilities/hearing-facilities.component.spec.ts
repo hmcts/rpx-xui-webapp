@@ -9,7 +9,7 @@ import { HearingsService } from '../../../services/hearings.service';
 import { initialState, serviceHearingValuesModel } from '../hearing.store.state.test';
 import { HearingFacilitiesComponent } from './hearing-facilities.component';
 
-fdescribe('HearingFacilitiesComponent', () => {
+describe('HearingFacilitiesComponent', () => {
   let component: HearingFacilitiesComponent;
   let fixture: ComponentFixture<HearingFacilitiesComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);

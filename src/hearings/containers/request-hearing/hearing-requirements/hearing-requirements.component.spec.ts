@@ -1,14 +1,14 @@
-import {Component, CUSTOM_ELEMENTS_SCHEMA, Input} from '@angular/core';
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {ActivatedRoute} from '@angular/router';
-import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
-import {provideMockStore} from '@ngrx/store/testing';
-import {of} from 'rxjs';
-import {ACTION} from '../../../models/hearings.enum';
-import {HearingsService} from '../../../services/hearings.service';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
+import { provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs';
+import { ACTION } from '../../../models/hearings.enum';
+import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import {initialState, serviceHearingValuesModel} from '../hearing.store.state.test';
-import {HearingRequirementsComponent} from './hearing-requirements.component';
+import { initialState, serviceHearingValuesModel } from '../hearing.store.state.test';
+import { HearingRequirementsComponent } from './hearing-requirements.component';
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -29,8 +29,8 @@ describe('HearingRequirementsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [HearingRequirementsComponent, MockHearingPartiesComponent],
       providers: [
-        provideMockStore({initialState}),
-        {provide: HearingsService, useValue: hearingsService},
+        provideMockStore({ initialState }),
+        { provide: HearingsService, useValue: hearingsService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -59,7 +59,7 @@ describe('HearingRequirementsComponent', () => {
     component.lostFocus = true;
     component.onFocus();
     expect(component.lostFocus).toBeFalsy();
-    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.LoadHearingValues(this.referenceId));
+    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.LoadHearingValues(component.referenceId));
   });
 
   it('should window onblur', () => {

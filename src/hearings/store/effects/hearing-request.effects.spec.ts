@@ -1,11 +1,12 @@
-import {TestBed} from '@angular/core/testing';
-import {Router} from '@angular/router';
-import {provideMockActions} from '@ngrx/effects/testing';
-import {provideMockStore} from '@ngrx/store/testing';
-import {Go} from '../../../app/store/actions';
-import {HearingsService} from '../../services/hearings.service';
-import {AbstractPageFlow} from '../../utils/abstract-page-flow';
-import {HearingRequestEffects} from './hearing-request.effects';
+import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { provideMockActions } from '@ngrx/effects/testing';
+import { provideMockStore } from '@ngrx/store/testing';
+import { initialState } from 'src/hearings/containers/request-hearing/hearing.store.state.test';
+import { Go } from '../../../app/store/actions';
+import { HearingsService } from '../../services/hearings.service';
+import { AbstractPageFlow } from '../../utils/abstract-page-flow';
+import { HearingRequestEffects } from './hearing-request.effects';
 
 describe('Hearing Request Effects', () => {
   const actions$ = null;
@@ -16,26 +17,13 @@ describe('Hearing Request Effects', () => {
   const pageflowMock = jasmine.createSpyObj('AbstractPageFlow', [
     'getCurrentPage', 'getLastPage', 'getNextPage'
   ]);
+
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
-  const initialState = {
-    hearings: {
-      hearingList: {
-        caseHearingMainModel: [
-          {
-            hmctsServiceID: 'SSCS'
-          }
-        ]
-      },
-      hearingValues: null,
-      hearingRequest: null,
-      hearingConditions: null,
-    }
-  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({ initialState }),
         {
           provide: HearingsService,
           useValue: hearingsServiceMock,
@@ -61,7 +49,7 @@ describe('Hearing Request Effects', () => {
         status: 500,
         message: 'error'
       });
-      action$.subscribe(action => expect(action).toEqual(new Go({path: ['/service-down']})));
+      action$.subscribe(action => expect(action).toEqual(new Go({ path: ['/service-down'] })));
     });
   });
 });

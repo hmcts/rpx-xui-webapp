@@ -1,6 +1,6 @@
 /* tslint:disable:object-literal-sort-keys */
-import {RequirementType} from '../models/hearings.enum';
-import {ServiceHearingValuesModel} from '../models/serviceHearingValues.model';
+import { RequirementType } from '../models/hearings.enum';
+import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
 
 export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   autoListFlag: false,

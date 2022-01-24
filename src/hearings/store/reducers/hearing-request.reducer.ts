@@ -54,12 +54,11 @@ export function hearingRequestReducer(
         ...initialHearingRequestState
       };
     }
-    case fromActions.UPDATE_HEARING_REQUEST: {
+    case fromActions.UPDATE_HEARING_REQUEST:
       return {
         ...currentState,
         hearingRequestMainModel: action.payload
       };
-    }
     default: {
       return {
         ...currentState

@@ -1,10 +1,11 @@
 import { NextFunction, Response } from 'express';
-import { handleGet, handlePost } from '../common/mockService';
+import { handleDelete, handleGet, handlePost } from '../common/mockService';
 import { getConfigValue } from '../configuration';
 import { SERVICES_HEARINGS_COMPONENT_API, SERVICES_PRD_API_URL } from '../configuration/references';
 import * as mock from '../hearings/hearing.mock';
 import { EnhancedRequest } from '../lib/models';
 import { CaseFlagReferenceModel } from './models/caseFlagReference.model';
+import { HearingListModel } from './models/hearingList.model';
 import { HearingListMainModel } from './models/hearingListMain.model';
 import { hearingStatusMappings } from './models/hearingStatusMappings';
 import { RefDataByCategoryModel, RefDataByServiceModel } from './models/refData.model';
@@ -98,7 +99,23 @@ export async function submitHearingRequest(req: EnhancedRequest, res: Response, 
   const reqBody = req.body;
   const markupPath: string = `${hearingsUrl}/hearing`;
   try {
-    const {status, data}: { status: number, data: ServiceHearingValuesModel } = await handlePost(markupPath, reqBody, req);
+    const { status, data }: { status: number, data: ServiceHearingValuesModel } = await handlePost(markupPath, reqBody, req);
+    res.status(status).send(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * cancelHearingRequest - cancel hearing request
+ */
+export async function cancelHearingRequest(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const reqBody = req.body;
+  const hearingId = req.query.hearingId;
+  const markupPath: string = `${hearingsUrl}/hearing/${hearingId}`;
+
+  try {
+    const { status, data }: { status: number, data: HearingListModel } = await handleDelete(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     next(error);

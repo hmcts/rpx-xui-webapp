@@ -448,10 +448,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.8.3-no-refunds-rc.1":
-  version "4.8.3-no-refunds-rc.1"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.8.3-no-refunds-rc.1.tgz#7ba35fcd9e0adf5601d57ace79d7a933e35acefa"
-  integrity sha512-e5Aqvnjqo91hkDVaRbGBfgBEYfe+0WE6u1JDLOyg5PwGlwSK7GoEfamupzTdFAo6feP6QGlpBVs/doE15agHnQ==
+"@hmcts/ccd-case-ui-toolkit@4.9.0-ways-to-pay.1":
+  version "4.9.0-ways-to-pay.1"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.9.0-ways-to-pay.1.tgz#398cf44497b5180d96fb5aa058e1b1101b87c864"
+  integrity sha512-CSYImwkD00qpOFFCGXIRQ8HAEIymNi+qRJz7jM2LJ0LGSHFvYr6fwen6MNI8pgsfswR9+YZaK1Mn125Zc+jp7Q==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -475,10 +475,10 @@
     underscore "^1.9.1"
     yargs-parser "18.1.2"
 
-"@hmcts/ccpay-web-component@3.0.27":
-  version "3.0.27"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-3.0.27.tgz#c331f6d947773458f2ad93079b0bbe2ef5ce40e5"
-  integrity sha512-84b2CYuuJBo+MG6nMFGEjHIZz5tHIzpuN2rSZ+D1rsNvaKHUONyqxRB1HDNoSRRFcqqTIUjXVSWNOPQacHJTig==
+"@hmcts/ccpay-web-component@~4.0.1-beta24":
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-4.0.2.tgz#e09a3401c577f157dfb5d437a2a8e0e3a3a990c5"
+  integrity sha512-WOAfryrSZS/mbIIgRJwqbweJIhQaFzImwb7JMJOTZs5FDVzfqRs/yehyn4/6iysoIuaKkM76HnaruDW+AaWuCg==
   dependencies:
     tslib "^1.9.0"
 

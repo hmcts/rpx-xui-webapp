@@ -14,6 +14,11 @@ describe('HearingsBadgePipe', () => {
     expect(badge).toBe('govuk-tag govuk-tag--red');
   });
 
+  it('should return RED badge if cancelled', () => {
+    const badge = hearingsBadgePipe.transform(EXUIDisplayStatusEnum.CANCELLED);
+    expect(badge).toBe('govuk-tag govuk-tag--red');
+  });
+
   it('should return PURPLE badge if completed', () => {
     const badge = hearingsBadgePipe.transform(EXUIDisplayStatusEnum.COMPLETED);
     expect(badge).toBe('govuk-tag govuk-tag--purple');

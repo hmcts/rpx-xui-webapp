@@ -2,11 +2,13 @@ import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {ActivatedRoute} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
+import {Store} from '@ngrx/store';
 import {provideMockStore} from '@ngrx/store/testing';
 import * as moment from 'moment';
 import {of} from 'rxjs';
-import {UserRole} from '../../../app/models/user-details.model';
+import {UserRole} from '../../../app/models';
 import {RoleCategoryMappingService} from '../../../app/services/role-category-mapping/role-category-mapping.service';
+import {HearingConditions} from '../../../hearings/models/hearingConditions';
 import {HearingDayScheduleModel} from '../../../hearings/models/hearingDaySchedule.model';
 import {HearingListModel} from '../../../hearings/models/hearingList.model';
 import {HearingListMainModel} from '../../../hearings/models/hearingListMain.model';
@@ -18,12 +20,14 @@ import {
   HearingListingStatusEnum,
   HMCStatus
 } from '../../../hearings/models/hearings.enum';
+import * as fromHearingStore from '../../../hearings/store';
 import {CaseHearingsComponent} from './case-hearings.component';
 
 describe('CaseHearingsComponent', () => {
   let component: CaseHearingsComponent;
   let fixture: ComponentFixture<CaseHearingsComponent>;
-  let mockStore: any;
+  let mockStore: Store<fromHearingStore.State>;
+  let spyStore: any;
   let mockRoleCategoryMappingService: RoleCategoryMappingService;
 
   const HEARING_DAY_SCHEDULE_1: HearingDayScheduleModel = {
@@ -294,7 +298,6 @@ describe('CaseHearingsComponent', () => {
   };
 
   beforeEach(() => {
-    mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
     mockRoleCategoryMappingService = jasmine.createSpyObj('RoleCategoryMappingService', ['isJudicialOrLegalOpsCategory']);
     TestBed.configureTestingModule({
       declarations: [CaseHearingsComponent],
@@ -319,9 +322,11 @@ describe('CaseHearingsComponent', () => {
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(CaseHearingsComponent);
+    mockStore = TestBed.get(Store);
     component = fixture.componentInstance;
     // @ts-ignore
     mockRoleCategoryMappingService.isJudicialOrLegalOpsCategory.and.returnValue(of(UserRole.Judicial));
+    spyStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
     fixture.detectChanges();
   });
 
@@ -346,7 +351,7 @@ describe('CaseHearingsComponent', () => {
       }
     };
 
-    mockStore.pipe.and.returnValue(of(USER_DETAILS));
+    spyStore.pipe.and.returnValue(of(USER_DETAILS));
     // @ts-ignore
     mockRoleCategoryMappingService.isJudicialOrLegalOpsCategory.and.returnValue(of(UserRole.LegalOps));
     component.ngOnInit();
@@ -418,6 +423,19 @@ describe('CaseHearingsComponent', () => {
       expect(hearing[1].exuiDisplayStatus).toEqual(EXUIDisplayStatusEnum.COMPLETED);
       done();
     });
+  });
+
+  it('should create hearing request', () => {
+    const dispatchSpy = spyOn(mockStore, 'dispatch');
+    const hearingCondition: HearingConditions = {
+      mode: 'create',
+      isInit: true,
+      caseId: '1234'
+    };
+    component.createHearingRequest();
+    fixture.detectChanges();
+    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.LoadHearingValues(component.caseId)));
+    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions(hearingCondition)));
   });
 
   afterEach(() => {

@@ -1,17 +1,15 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormArray, FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { provideMockStore } from '@ngrx/store/testing';
-import { HearingListModel } from 'api/hearings/models/hearingList.model';
-import { Observable, of } from 'rxjs';
-import { ACTION, CancelHearingMessages, HearingListingStatusEnum, HMCStatus } from '../../../hearings/models/hearings.enum';
-import { RefDataModel } from '../../../hearings/models/refData.model';
-import { HearingsService } from '../../services/hearings.service';
-import { initialState } from '../request-hearing/hearing.store.state.test';
-import { CancelHearingComponent } from './cancel-hearing.component';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {FormArray, FormBuilder, ReactiveFormsModule} from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
+import {provideMockStore} from '@ngrx/store/testing';
+import {Observable, of} from 'rxjs';
+import {initialState} from '../../hearing.store.state.test';
+import {RefDataModel} from '../../models/refData.model';
+import {HearingsService} from '../../services/hearings.service';
+import {CancelHearingComponent} from './cancel-hearing.component';
 
 describe('CancelHearingComponent', () => {
   let component: CancelHearingComponent;
@@ -30,30 +28,16 @@ describe('CancelHearingComponent', () => {
     }];
 
   const HEARING_ID = 'h00001';
-  const CASE_REF = '5084035';
+  const CASE_REF = '54354545453';
   let mockHearingService: any;
-
-  const CASE_HEARING_1: HearingListModel = {
-    hearingID: HEARING_ID,
-    hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
-    hearingType: 'Case management hearing',
-    hmcStatus: HMCStatus.HEARING_REQUESTD,
-    lastResponseReceivedDateTime: '',
-    responseVersion: 'rv1',
-    hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
-    listAssistCaseStatus: '',
-    hearingDaySchedule: null,
-  };
   let mockStore: any;
 
   beforeEach(async(() => {
-    initialState.hearings.hearingList.hearingListMainModel.caseHearings.push(CASE_HEARING_1);
-    initialState.hearings.hearingList.hearingListMainModel.caseRef = CASE_REF;
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
       declarations: [CancelHearingComponent],
       providers: [
-        { provide: HearingsService, useValue: hearingsService },
+        {provide: HearingsService, useValue: hearingsService},
         {
           provide: ActivatedRoute,
           useValue: {
@@ -62,11 +46,11 @@ describe('CancelHearingComponent', () => {
                 hearingCancelOptions: reasons,
               },
             },
-            params: Observable.of({ hearingId: HEARING_ID }),
+            params: Observable.of({hearingId: HEARING_ID}),
           },
         },
-        provideMockStore({ initialState }),
-        { provide: HearingsService, useValue: hearingsService },
+        provideMockStore({initialState}),
+        {provide: HearingsService, useValue: hearingsService},
         FormBuilder
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -100,7 +84,7 @@ describe('CancelHearingComponent', () => {
 
   it('should localise casehearing variables', () => {
     expect(component.caseId).toEqual(CASE_REF);
-    expect(component.caseHearing.hearingID).toEqual(CASE_HEARING_1.hearingID);
+    expect(component.caseHearing.hearingID).toEqual(initialState.hearings.hearingList.hearingListMainModel.caseHearings[0].hearingID);
   });
 
   it('should create', () => {

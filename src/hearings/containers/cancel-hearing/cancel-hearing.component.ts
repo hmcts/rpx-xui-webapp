@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { select, Store } from '@ngrx/store';
-import { ACTION, CancelHearingMessages } from '../../models/hearings.enum';
-import { HearingListModel } from '../../../hearings/models/hearingList.model';
-import { RefDataModel } from '../../../hearings/models/refData.model';
-import { HearingsService } from '../../../hearings/services/hearings.service';
+import {Component, OnInit} from '@angular/core';
+import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {select, Store} from '@ngrx/store';
+import {HearingListModel} from '../../models/hearingList.model';
+import {CancelHearingMessages} from '../../models/hearings.enum';
+import {RefDataModel} from '../../models/refData.model';
+import {HearingsService} from '../../services/hearings.service';
 import * as fromHearingStore from '../../store';
-import { ValidatorsUtils } from '../../utils/validators.utils';
+import {ValidatorsUtils} from '../../utils/validators.utils';
+
 @Component({
   selector: 'exui-cancel-hearing',
   templateUrl: './cancel-hearing.component.html',
@@ -16,7 +17,6 @@ import { ValidatorsUtils } from '../../utils/validators.utils';
 export class CancelHearingComponent implements OnInit {
   public hearingCancelOptions: RefDataModel[];
   public hearingCancelForm: FormGroup;
-  public hearingCancelSelectionError: string;
   public validationErrors: { id: string, message: string }[] = [];
   public selectionValid: boolean = true;
   public hearingId: string;

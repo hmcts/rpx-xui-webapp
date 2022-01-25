@@ -1,4 +1,4 @@
-import { HearingRequestStateData } from '../../models/hearingRequestStateData.model';
+import {HearingRequestStateData} from '../../models/hearingRequestStateData.model';
 import * as fromActions from '../actions';
 
 export const initialHearingRequestState: HearingRequestStateData = {
@@ -45,20 +45,21 @@ export const initialHearingRequestState: HearingRequestStateData = {
   lastError: null,
 };
 
-export function hearingRequestReducer(
-  currentState = initialHearingRequestState,
-  action: fromActions.HearingRequestAction): HearingRequestStateData {
+export function hearingRequestReducer(currentState = initialHearingRequestState,
+                                      action: fromActions.HearingRequestAction): HearingRequestStateData {
   switch (action.type) {
     case fromActions.RESET_HEARING_REQUEST: {
       return {
         ...initialHearingRequestState
       };
     }
-    case fromActions.UPDATE_HEARING_REQUEST:
+    case fromActions.INITIALIZE_HEARING_REQUEST:
+    case fromActions.UPDATE_HEARING_REQUEST: {
       return {
         ...currentState,
         hearingRequestMainModel: action.payload
       };
+    }
     default: {
       return {
         ...currentState

@@ -4,12 +4,12 @@ import {FormArray, FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/f
 import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
+import {initialState} from '../../../hearing.store.state.test';
 import {ACTION} from '../../../models/hearings.enum';
 import {RefDataModel} from '../../../models/refData.model';
 import {HearingsRefDataService} from '../../../services/hearings-ref-data.service';
 import {HearingsService} from '../../../services/hearings.service';
 import {ValidatorsUtils} from '../../../utils/validators.utils';
-import {initialState} from '../hearing.store.state.test';
 import {HearingAttendanceComponent} from './hearing-attendance.component';
 
 @Component({
@@ -41,7 +41,6 @@ describe('HearingAttendanceComponent', () => {
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
-
 
     fixture = TestBed.createComponent(HearingAttendanceComponent);
     component = fixture.componentInstance;

@@ -7,11 +7,11 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
+import {initialState} from '../../../hearing.store.state.test';
 import {HearingRequestMainModel} from '../../../models/hearingRequestMain.model';
 import {ACTION, HearingStageEnum} from '../../../models/hearings.enum';
 import {RefDataModel} from '../../../models/refData.model';
 import {HearingsService} from '../../../services/hearings.service';
-import {initialState} from '../hearing.store.state.test';
 import {HearingStageComponent} from './hearing-stage.component';
 
 @Component({

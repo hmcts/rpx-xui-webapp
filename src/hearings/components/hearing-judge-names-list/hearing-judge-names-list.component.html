@@ -1,4 +1,4 @@
-<div class="exclude-person">
+<div class="exclude-person" [class.column-view]="isColumnView">
   <div class="person-input">
     <xuilib-find-person #personControl [subTitle]="subTitle" showAutocomplete="true"
       (personSelected)="updatePersonControls($event)" [findPersonGroup]="personFormGroup" [domain]="domain"
@@ -7,7 +7,7 @@
     </xuilib-find-person>
   </div>
   <div class="person-button">
-    <div class="govuk-button govuk-button--secondary" data-module="govuk-button" (click)="excludeJudge();">Exclude judge</div>
+    <div class="govuk-button govuk-button--secondary" data-module="govuk-button" (click)="excludeJudge();">{{submitButtonName}}</div>
   </div>
 </div>
 <ul class="hmcts-filter-tags selection-container">

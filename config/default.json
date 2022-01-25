@@ -79,6 +79,7 @@
   "sessionSecret": "secretSauce",
   "waSupportedJurisdictions": ["IA"],
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC",
+  "serviceRefDataMapping": [{"IA": "BFA1"}],
   "wildcardSearchFields": {
     "Benefit": [
       "generatedSurname",

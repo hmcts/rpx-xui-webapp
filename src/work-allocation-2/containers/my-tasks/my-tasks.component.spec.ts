@@ -13,7 +13,7 @@ import { SessionStorageService } from '../../../app/services';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { FieldType } from '../../enums';
 import { Task } from '../../models/tasks';
-import { CaseworkerDataService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
+import { CaseworkerDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockTasks } from '../../tests/utils.spec';
 import { MyTasksComponent } from './my-tasks.component';
 
@@ -43,11 +43,13 @@ describe('MyTasksComponent', () => {
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
-  const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
+  const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getCaseworkersForServices']);
   const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
   const mockFilterService = jasmine.createSpyObj('mockFilterService', ['getStream']);
+  const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -66,7 +68,8 @@ describe('MyTasksComponent', () => {
         { provide: CaseworkerDataService, useValue: mockCaseworkerService },
         { provide: WorkAllocationFeatureService, useValue: mockFeatureService },
         { provide: LoadingService, useValue: mockLoadingService },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+        { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService }
       ]
     }).compileComponents();
   }));
@@ -78,26 +81,31 @@ describe('MyTasksComponent', () => {
     router = TestBed.get(Router);
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({tasks}));
-    mockCaseworkerService.getAll.and.returnValue(of([]));
+    mockCaseworkerService.getCaseworkersForServices.and.returnValue(of([]));
     const filterFields: FilterSetting = {
       id: 'locations',
       fields: [
         {
           name: 'locations',
           value: ['231596']
+        },
+        {
+          name: 'types-of-work',
+          value: ['hearing_work', 'upper_tribunal', 'decision_making_work']
         }
       ]
     };
-
+    mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['Service1', 'Service2']));
     mockFilterService.getStream.and.returnValue(of(filterFields));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
+    mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of([]));
     fixture.detectChanges();
   });
 
-  it('should make a call to load tasks using the default search request', fakeAsync(() => {
+  it('should make a call to load tasks using the default search request', async(() => {
     component.ngOnInit();
-    tick(500);
+    // tick(500);
     fixture.detectChanges();
     const searchRequest = component.getSearchTaskRequestPagination();
     const payload = {searchRequest, view: component.view};
@@ -120,6 +128,15 @@ describe('MyTasksComponent', () => {
     const searchParameter = component.getSearchTaskRequestPagination().search_parameters[2];
     expect(searchParameter.key).toBe('location');
     expect(searchParameter.values).toBe(exampleLocations);
+  });
+
+  it('should allow searching via work types', () => {
+    mockSessionStorageService.getItem.and.returnValue(userInfo);
+    const workTypes: string[] = ['hearing_work', 'upper_tribunal', 'decision_making_work'];
+    component.selectedWorkTypes = workTypes;
+    const searchParameter = component.getSearchTaskRequestPagination().search_parameters[3];
+    expect(searchParameter.key).toBe('work_type');
+    expect(searchParameter.values).toBe(workTypes);
   });
 
   it('should have all column headers, including "Manage +"', () => {

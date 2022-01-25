@@ -30,6 +30,7 @@ const personRoles = [
 const mockAllocateRoleStateData: AllocateRoleStateData = {
   action: Actions.Allocate,
   caseId: '1234',
+  jurisdiction: 'IA',
   state: null,
   typeOfRole: null,
   allocateTo: null,

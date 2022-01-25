@@ -33,7 +33,14 @@ export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next
     const substantiveRoles = await getSubstantiveRoles(req);
     const substantiveJudicialLegalOps =
      judicialAndLegalOps.filter(judicialAndLegalOp => substantiveRoles.find(role => role.roleId === judicialAndLegalOp.roleName));
-    return res.status(response.status).send(substantiveJudicialLegalOps);
+    const finalRoles = [];
+    substantiveJudicialLegalOps.forEach(subRole => {
+      const currentRoleId = subRole.roleName;
+      subRole.roleName = substantiveRoles.find(role => role.roleId === subRole.roleName).roleName;
+      subRole.roleId = currentRoleId;
+      finalRoles.push(subRole);
+    })
+    return res.status(response.status).send(finalRoles);
   } catch (error) {
     next(error);
   }
@@ -79,6 +86,7 @@ export function mapResponseToCaseRoles(
     email: roleAssignment.actorId ? getEmail(roleAssignment.actorId, req) : null,
     end: roleAssignment.endTime ? roleAssignment.endTime.toString() : null,
     id: roleAssignment.id,
+    roleId: null,
     location: null,
     name: roleAssignment.actorId ? getUserName(roleAssignment.actorId, req) : null,
     roleCategory: mapRoleCategory(roleAssignment.roleCategory),

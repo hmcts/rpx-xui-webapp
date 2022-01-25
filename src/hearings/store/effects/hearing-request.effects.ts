@@ -4,7 +4,6 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action, select, Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
-import { HearingListModel } from 'src/hearings/models/hearingList.model';
 import * as fromAppStoreActions from '../../../app/store/actions';
 import { HttpError } from '../../../models/httpError.model';
 import { ScreenNavigationModel } from '../../models/screenNavigation.model';

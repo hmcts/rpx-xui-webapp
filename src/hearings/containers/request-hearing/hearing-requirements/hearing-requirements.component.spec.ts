@@ -81,7 +81,7 @@ describe('HearingRequirementsComponent', () => {
   });
 
   it('should initialize hearing request from hearing values', () => {
-    const hearingRequestMainModel: HearingRequestMainModel = {
+    const expectedHearingRequestMainModel: HearingRequestMainModel = {
       requestDetails: {
         requestTimeStamp: null
       },
@@ -92,14 +92,14 @@ describe('HearingRequirementsComponent', () => {
           {
             locationId: '196538',
             locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
-            region: 'North West',
             locationType: 'hearing',
+            region: 'North West',
           },
           {
             locationId: '219164',
             locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
-            region: 'Scotland',
             locationType: 'hearing',
+            region: 'Scotland',
           }
         ],
         hearingIsLinkedFlag: false,
@@ -123,8 +123,8 @@ describe('HearingRequirementsComponent', () => {
         totalParticipantAttendingHearing: null
       },
       caseDetails: {
-        hmctsServiceCode: null,
-        caseRef: null,
+        hmctsServiceCode: 'SSCS',
+        caseRef: '54354545453',
         requestTimeStamp: null,
         hearingID: null,
         caseDeepLink: null,
@@ -140,9 +140,8 @@ describe('HearingRequirementsComponent', () => {
     };
     const storeDispatchSpy = spyOn(component.hearingStore, 'dispatch');
     component.initializeHearingRequestFromHearingValues();
-    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.InitializeHearingRequest(hearingRequestMainModel));
+    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.InitializeHearingRequest(expectedHearingRequestMainModel));
   });
-
 
   it('should initialize hearing condition', () => {
     const hearingCondition: HearingConditions = {

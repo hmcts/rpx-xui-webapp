@@ -1,4 +1,4 @@
-import {PartyType} from './models/hearings.enum';
+import {HearingListingStatusEnum, HMCStatus, PartyType} from './models/hearings.enum';
 import {ServiceHearingValuesModel} from './models/serviceHearingValues.model';
 
 export const serviceHearingValuesModel: ServiceHearingValuesModel = {
@@ -128,11 +128,20 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
 export const initialState = {
   hearings: {
     hearingList: {
-      hearingListMainModel:
-      {
+      hearingListMainModel: {
         caseRef: '54354545453',
         hmctsServiceID: 'SSCS',
-        caseHearings: []
+        caseHearings: [{
+          hearingID: 'h00001',
+          hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
+          hearingType: 'Case management hearing',
+          hmcStatus: HMCStatus.HEARING_REQUESTD,
+          lastResponseReceivedDateTime: '',
+          responseVersion: 'rv1',
+          hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
+          listAssistCaseStatus: '',
+          hearingDaySchedule: null,
+        }]
       }
     },
     hearingValues: {

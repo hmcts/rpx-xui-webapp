@@ -81,17 +81,19 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     let startDate: Date = null;
     let firstDate: Date = null;
     let secondDate: Date = null;
-    let priority: string = null;
+    let priority: string;
     duration = this.hearingRequestMainModel.hearingDetails.duration ?
       this.hearingRequestMainModel.hearingDetails.duration : 0;
     hearingWindow = this.hearingRequestMainModel.hearingDetails.hearingWindow;
-    if (hearingWindow && hearingWindow.hearingWindowStartDateRange && hearingWindow.hearingWindowEndDateRange) {
+    if (hearingWindow && hearingWindow.hearingWindowDateRange
+      && hearingWindow.hearingWindowDateRange.hearingWindowStartDateRange && hearingWindow.hearingWindowDateRange.hearingWindowEndDateRange) {
       this.checkedHearingAvailability = RadioOptions.CHOOSE_DATE_RANGE;
-      firstDate = new Date(hearingWindow.hearingWindowStartDateRange);
-      secondDate = new Date(hearingWindow.hearingWindowEndDateRange);
-    } else if (hearingWindow && hearingWindow.hearingWindowStartDateRange && !hearingWindow.hearingWindowEndDateRange) {
+      firstDate = new Date(hearingWindow.hearingWindowDateRange.hearingWindowStartDateRange);
+      secondDate = new Date(hearingWindow.hearingWindowDateRange.hearingWindowEndDateRange);
+    } else if (hearingWindow && hearingWindow.hearingWindowDateRange
+      && hearingWindow.hearingWindowDateRange.hearingWindowStartDateRange && !hearingWindow.hearingWindowDateRange.hearingWindowEndDateRange) {
       this.checkedHearingAvailability = RadioOptions.YES;
-      startDate = new Date(hearingWindow.hearingWindowStartDateRange);
+      startDate = new Date(hearingWindow.hearingWindowDateRange.hearingWindowStartDateRange);
     } else if (hearingWindow) {
       this.checkedHearingAvailability = RadioOptions.NO;
     }
@@ -336,8 +338,11 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
         ...this.hearingRequestMainModel.hearingDetails,
         duration,
         hearingWindow: {
-          hearingWindowStartDateRange: firstDate,
-          hearingWindowEndDateRange: secondDate
+          hearingWindowDateRange: {
+            hearingWindowStartDateRange: firstDate,
+            hearingWindowEndDateRange: secondDate
+          },
+          hearingWindowFirstDate: firstDate
         },
         hearingPriorityType: this.priorityForm.value.priority
       }

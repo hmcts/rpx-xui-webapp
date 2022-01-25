@@ -42,4 +42,3 @@ export type HearingRequestAction =
   | InitializeHearingRequest
   | UpdateHearingRequest
   | SubmitHearingRequest;
-

@@ -26,7 +26,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   },
   ],
   caseAdditionalSecurityFlag: false,
-  facilitiesRequired: [],
+  facilitiesRequired: ['immigrationDetentionCentre'],
   listingComments: '',
   hearingRequester: '',
   privateHearingRequiredFlag: false,

@@ -157,7 +157,89 @@ export const DEFAULT_HEARING_CANCEL_REF: RefDataModel[] = [
     parentKey: null,
   },
 ];
-
+export const ADDITIONAL_HEARING_FACILITIES_REF: RefDataModel[] = [
+  {
+    key: 'immigrationDetentionCentre',
+    value_en: 'immigration detention centre',
+    value_cy: '',
+    hintText_EN: 'Immigration detention centre',
+    hintTextCY: '',
+    order: 1,
+    parentKey: null,
+  },
+  {
+    key: 'inCameraCourt',
+    value_en: 'in camera court',
+    value_cy: '',
+    hintText_EN: 'In camera court',
+    hintTextCY: '',
+    order: 2,
+    parentKey: null,
+  },
+  {
+    key: 'sameSexCourtroom',
+    value_en: 'same sex courtroom',
+    value_cy: '',
+    hintText_EN: 'Same sex courtroom',
+    hintTextCY: '',
+    order: 3,
+    parentKey: null,
+  },
+  {
+    key: 'secureDock',
+    value_en: 'secure dock',
+    value_cy: '',
+    hintText_EN: 'Secure Dock',
+    hintTextCY: '',
+    order: 4,
+    parentKey: null,
+  },
+  {
+    key: 'witnessScreen',
+    value_en: 'witness screen',
+    value_cy: '',
+    hintText_EN: 'Witness Screen',
+    hintTextCY: '',
+    order: 4,
+    parentKey: null,
+  },
+  {
+    key: 'witnessRoom',
+    value_en: 'witness room',
+    value_cy: '',
+    hintText_EN: 'Witness Room',
+    hintTextCY: '',
+    order: 5,
+    parentKey: null,
+  },
+  {
+    key: 'videoConferencing',
+    value_en: 'video conferencing',
+    value_cy: '',
+    hintText_EN: 'Video Conferencing',
+    hintTextCY: '',
+    order: 5,
+    parentKey: null,
+  },
+  {
+    key: 'VideoFacility',
+    value_en: 'videoFacility',
+    value_cy: '',
+    hintText_EN: 'Video Facility',
+    hintTextCY: '',
+    order: 5,
+    parentKey: null,
+  },
+  {
+    key: 'prisonVideoLink',
+    value_en: 'prison video link',
+    value_cy: '',
+    hintText_EN: 'Prison Video Link',
+    hintTextCY: '',
+    order: 5,
+    parentKey: null,
+  },
+];
 export const SSCS_STAGES: RefDataByServiceModel = {
   serviceID: 'SSCS',
   values: DEFAULT_STAGES_REF,
@@ -180,6 +262,10 @@ export const SSCS_CANCEL_HEARING: RefDataByServiceModel = {
   serviceID: 'SSCS',
   values: DEFAULT_HEARING_CANCEL_REF,
 };
+export const ADDITIONAL_HEARING_FACILITIES: RefDataByServiceModel = {
+  serviceID: 'SSCS',
+  values: ADDITIONAL_HEARING_FACILITIES_REF,
+};
 
 export const ALL_REF_DATA: RefDataByCategoryModel[] = [
   {
@@ -201,5 +287,9 @@ export const ALL_REF_DATA: RefDataByCategoryModel[] = [
   {
     categoryKey: 'CancelHearingReason',
     services: [SSCS_CANCEL_HEARING],
+  },
+  {
+    categoryKey: 'FacilitiesList',
+    services: [ADDITIONAL_HEARING_FACILITIES],
   },
 ];

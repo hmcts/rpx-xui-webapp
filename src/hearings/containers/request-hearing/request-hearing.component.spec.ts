@@ -6,7 +6,9 @@ import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
 import {ACTION} from '../../models/hearings.enum';
 import {HearingsService} from '../../services/hearings.service';
+import * as fromHearingStore from '../../store';
 import {AbstractPageFlow} from '../../utils/abstract-page-flow';
+import {initialState} from './hearing.store.state.test';
 import {RequestHearingComponent} from './request-hearing.component';
 
 describe('RequestHearingComponent', () => {
@@ -25,13 +27,12 @@ describe('RequestHearingComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {provide: AbstractPageFlow, useValue: mockPageFlow},
-        provideMockStore(),
+        provideMockStore({initialState}),
         {provide: HearingsService, useValue: hearingsService},
       ]
     })
       .compileComponents();
     mockStore = TestBed.get(Store);
-    mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
     fixture = TestBed.createComponent(RequestHearingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -59,6 +60,16 @@ describe('RequestHearingComponent', () => {
     expect(component.isCheckAnswerPage()).toBeTruthy();
   });
 
+  it('should purge data in store if page is destroyed', () => {
+    const unsubscribeSpy = spyOn(component.hearingListSub, 'unsubscribe');
+    const dispatchSpy = spyOn(mockStore, 'dispatch');
+    component.ngOnDestroy();
+    fixture.detectChanges();
+    expect(unsubscribeSpy).toHaveBeenCalled();
+    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.ResetHearingRequest()));
+    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.ResetHearingValues()));
+    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.ResetHearingConditions()));
+  });
 
   afterEach(() => {
     fixture.destroy();

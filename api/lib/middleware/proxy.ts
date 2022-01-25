@@ -37,6 +37,7 @@ export const applyProxy = (app, config) => {
         },
         onError: onProxyError,
         target: config.target,
+        proxyTimeout: 500,
     };
 
     if (config.onReq) {

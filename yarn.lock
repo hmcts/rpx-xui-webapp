@@ -452,7 +452,6 @@
   version "4.7.6-tab-not-defined"
   resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.7.6-tab-not-defined.tgz#3a607e794c5d18a997568fdd53284c22fa0d0bb6"
   integrity sha512-Hg68GiUB85lwbhu6K/PaJoGpFnsPheR3nV/2UTCmhtn29XxFWFEPv1eyeQzN8xu7nICN9w2KVFo/HmumHjkbCw==
-
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -537,11 +536,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.5.1-find-person-hide-user":
-  version "1.5.1-find-person-hide-user"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.5.1-find-person-hide-user.tgz#5834b3f39a9853c082c3b6dd8f62331738968f7e"
-  integrity sha512-SDSyR20Eh0/EXHcqQI9RSl31jbB5MNW/ae9/DmtIP7FisPdA7R9rhVdiX9BtIonvDfosP9MAGHx/HBsYWfhMWg==
-
+"@hmcts/rpx-xui-common-lib@1.6.1-staff-by-service-2":
+  version "1.6.1-staff-by-service-2"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.1-staff-by-service-2.tgz#fc526779a8de4dafca77ef4f4bd89ee014f40ebd"
+  integrity sha512-tGe6/xjyKMHkBVBrfncYP3dhifgddqY0mp/kgsEncfhXD8ox7NGC1XCkDLBjNoyunBjoykVSHGS388DWP7VdnQ==
   dependencies:
     tslib "^1.9.0"
 

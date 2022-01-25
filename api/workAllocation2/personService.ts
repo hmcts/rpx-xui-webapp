@@ -4,6 +4,7 @@ import { SERVICES_CASE_JUDICIAL_REF_PATH } from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
+import { getServiceRefDataMappingList } from '../serviceRefData';
 import { PERSON } from './constants/mock.data';
 import { PersonRole } from './interfaces/person';
 import { applySearchFilter } from './util';
@@ -18,13 +19,25 @@ export async function postFindPersonSearch(req: EnhancedRequest, res: Response, 
     return;
   }
   const searchString = req.body.searchOptions.searchTerm;
-  const domain = req.body.searchOptions.jurisdiction as PersonRole;
+  const domain = req.body.searchOptions.userRole as PersonRole;
+  const services = req.body.searchOptions.services as string[];
+  const serviceCodes: string[] = [];
+  const serviceRefDataMapping = getServiceRefDataMappingList();
+  // add the service refernces in order to search by service
+  serviceRefDataMapping.forEach(serviceRef => {
+    if (services.includes(Object.keys(serviceRef)[0])) {
+      serviceCodes.push(Object.values(serviceRef)[0] as string);
+    }
+  });
   let searchResult: any = [];
   if (domain === PersonRole.JUDICIAL) {
     try {
       const headers = setHeaders(req);
-      const response = await http.post(`${JUDICIAL_REF_URL}/refdata/judicial/users/search`, { searchString }, { headers });
-      searchResult = response.data ? response.data : [];
+      for (const serviceCode of serviceCodes) {
+        const response
+         = await http.post(`${JUDICIAL_REF_URL}/refdata/judicial/users/search`, { searchString, serviceCode }, { headers });
+        searchResult = response.data ? [...response.data, ...searchResult] : searchResult;
+      }
       if (req.body.userId) {
         const userId = req.body.userId;
         searchResult = searchResult.filter(person => person.idamId !== userId);

@@ -20,10 +20,7 @@ export async function getSubstantiveRoles(req: EnhancedRequest) {
     return req.session.subStantiveRoles as []
   }
 
-  const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
-  const fullPath = `${basePath}/am/role-assignments/roles`;
-  const headers = setHeaders(req);
-  const response: AxiosResponse = await http.get(fullPath, { headers });
+  const response = await getAllRoles(req);
   const results = (response.data as Role[]);
   const filteredResults = results.filter(filterRoleAssignments());
   const substantiveRoles = filteredResults.map(roleApi => ({
@@ -33,6 +30,15 @@ export async function getSubstantiveRoles(req: EnhancedRequest) {
   }));
   req.session.subStantiveRoles = substantiveRoles;
   return substantiveRoles;
+}
+
+export async function getAllRoles(req: EnhancedRequest): Promise<AxiosResponse<Role[]>> {
+
+  const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+  const fullPath = `${basePath}/am/role-assignments/roles`;
+  const headers = setHeaders(req);
+  const response: AxiosResponse<Role[]> = await http.get(fullPath, { headers });
+  return response;
 }
 
 function filterRoleAssignments(): (value: Role, index: number, array: Role[]) => unknown {

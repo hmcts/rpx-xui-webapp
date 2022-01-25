@@ -38,6 +38,7 @@ describe('Allocate Role Effects', () => {
 
       const STATE_DATA = {
         caseId: '111111',
+        jurisdiction: 'IA',
         state: AllocateRoleState.CHOOSE_ROLE,
         typeOfRole: null,
         allocateTo: AllocateTo.RESERVE_TO_ME,

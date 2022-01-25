@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { getJudicialUsers } from '../roleAccess';
 
 import {
   getAllCaseWorkers,
@@ -57,5 +58,7 @@ router.use('/roles/:caseId/show-allocate-role-link', showAllocateRoleLink);
 
 router.use('/my-work/cases', getMyCases);
 router.use('/all-work/cases', getCases);
+
+router.use('/getJudicialUsers', getJudicialUsers);
 
 export default router;

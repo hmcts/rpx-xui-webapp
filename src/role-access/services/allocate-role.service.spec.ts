@@ -3,7 +3,7 @@ import { inject, TestBed } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
 import { AllocateRoleService } from '.';
-import { Actions, AllocateRoleState, AllocateTo, DurationOfRole, RoleCategory } from '../models';
+import { Actions, AllocateRoleState, AllocateRoleStateData, AllocateTo, DurationOfRole, RoleCategory } from '../models';
 import { CaseRoleDetails } from '../models/case-role-details.interface';
 
 const mockRoles = [{ roleId: '1', roleName: 'Role 1' },
@@ -37,8 +37,9 @@ describe('AllocateRoleService', () => {
   });
 
   describe('confirmAllocation', () => {
-    const STATE_DATA = {
+    const STATE_DATA: AllocateRoleStateData = {
       caseId: '111111',
+      jurisdiction: 'IA',
       state: AllocateRoleState.CHOOSE_ROLE,
       typeOfRole: null,
       allocateTo: AllocateTo.RESERVE_TO_ME,
@@ -123,7 +124,7 @@ describe('AllocateRoleService', () => {
           start: '2021-12-09T00:00:00Z'
         }
       ];
-      service.getCaseRolesUserDetails(caseRoles).subscribe(response => {
+      service.getCaseRolesUserDetails(caseRoles, ['IA']).subscribe(response => {
         expect(response.length).toBe(1);
         expect(response).toEqual(data);
       });

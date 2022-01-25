@@ -9,6 +9,7 @@ export class HearingsBadgePipe implements PipeTransform {
   public transform(value: EXUIDisplayStatusEnum): string {
     switch (value) {
       case EXUIDisplayStatusEnum.VACATED:
+      case EXUIDisplayStatusEnum.CANCELLED:
         return 'govuk-tag govuk-tag--red';
       case EXUIDisplayStatusEnum.COMPLETED:
         return 'govuk-tag govuk-tag--purple';

@@ -113,6 +113,14 @@ export enum HearingPanelSelectionEnum {
   SelectionError = 'Please select that applies',
 }
 
+export enum HearingInstructionsEnum {
+  InstructionLength = 2000
+}
+
+export enum HearingFacilitiesEnum {
+  additionSecurityError = 'Select an option for additional security.',
+}
+
 export enum HearingJudgeSelectionEnum {
   ValidNameError = 'Please enter a valid Name',
   SelectOneJudgeError = 'Please select at least one judge type',
@@ -138,7 +146,8 @@ export enum HearingDatePriorityConstEnum {
   MinHours = 0,
   MaxHours = 6,
   TotalMinMinutes = 5,
-  TotalMaxMinutes = 360,
+  TotalMaxMinutes = 55,
+  TotalMinutes = 360,
   MinutesMuliplier = 5,
 }
 
@@ -156,5 +165,10 @@ export enum ConditionOperator {
 
 export enum CaseFlagType {
   REASONABLE_ADJUSTMENT = 'Reasonable adjustment',
-  NON_REASONABLE_ADJUSTMENT = 'Non reasonable adjustment'
+  NON_REASONABLE_ADJUSTMENT = 'Non reasonable adjustment',
+}
+
+export enum CancelHearingMessages {
+  NOT_SELECTED_A_REASON = 'You have not selected a reason for cancelling th hearing',
+  SELECT_AT_LEAST_ONE_REASON = 'Select at least one valid reason',
 }

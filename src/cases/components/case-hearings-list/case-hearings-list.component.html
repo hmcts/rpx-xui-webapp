@@ -30,7 +30,7 @@
       </div>
       <div *ngIf="hasDeleteAction" class="div-action">
         <a href="javascript:void(0)"
-           [routerLink]="['/', 'hearings', 'cancel']">Cancel hearing</a>&nbsp;&nbsp;&nbsp;&nbsp;
+           [routerLink]="['/', 'hearings', 'cancel', hearing.hearingID]">Cancel hearing</a>&nbsp;&nbsp;&nbsp;&nbsp;
       </div>
       <div *ngIf="hasReadOnlyAction" class="div-action">
         <a href="javascript:void(0)"

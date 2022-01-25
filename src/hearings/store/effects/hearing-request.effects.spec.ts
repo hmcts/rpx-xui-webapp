@@ -1,29 +1,31 @@
-import { TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
-import { provideMockActions } from '@ngrx/effects/testing';
-import { provideMockStore } from '@ngrx/store/testing';
-import { initialState } from 'src/hearings/containers/request-hearing/hearing.store.state.test';
-import { Go } from '../../../app/store/actions';
-import { HearingsService } from '../../services/hearings.service';
-import { AbstractPageFlow } from '../../utils/abstract-page-flow';
-import { HearingRequestEffects } from './hearing-request.effects';
+import {TestBed} from '@angular/core/testing';
+import {Router} from '@angular/router';
+import {provideMockActions} from '@ngrx/effects/testing';
+import {provideMockStore} from '@ngrx/store/testing';
+import {cold} from 'jasmine-marbles';
+import {Go} from '../../../app/store/actions';
+import {initialState} from '../../hearing.store.state.test';
+import {HearingsService} from '../../services/hearings.service';
+import {AbstractPageFlow} from '../../utils/abstract-page-flow';
+import * as hearingRequestActions from '../actions/hearing-request.action';
+import {HearingRequestEffects} from './hearing-request.effects';
 
 describe('Hearing Request Effects', () => {
-  const actions$ = null;
+  let actions$;
   let effects: HearingRequestEffects;
+  let router: Router;
   const hearingsServiceMock = jasmine.createSpyObj('HearingsService', [
     'getAllHearings',
   ]);
   const pageflowMock = jasmine.createSpyObj('AbstractPageFlow', [
     'getCurrentPage', 'getLastPage', 'getNextPage'
   ]);
-
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({ initialState }),
+        provideMockStore({initialState}),
         {
           provide: HearingsService,
           useValue: hearingsServiceMock,
@@ -41,6 +43,18 @@ describe('Hearing Request Effects', () => {
       ]
     });
     effects = TestBed.get(HearingRequestEffects);
+    router = TestBed.get(Router);
+  });
+
+  describe('continueNavigation$', () => {
+    it('should navigate to error page if continue with no page', () => {
+      const action = new hearingRequestActions.UpdateHearingRequest(null);
+      actions$ = cold('-a', {a: action});
+      const navigateAction = new hearingRequestActions.UpdateHearingRequest(null);
+      const expected = cold('-b', {b: navigateAction});
+      expect(effects.continueNavigation$).toBeObservable(expected);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['service-down']);
+    });
   });
 
   describe('handleError', () => {
@@ -49,7 +63,7 @@ describe('Hearing Request Effects', () => {
         status: 500,
         message: 'error'
       });
-      action$.subscribe(action => expect(action).toEqual(new Go({ path: ['/service-down'] })));
+      action$.subscribe(action => expect(action).toEqual(new Go({path: ['/service-down']})));
     });
   });
 });

@@ -1,15 +1,14 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {NO_ERRORS_SCHEMA} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
+import {ReactiveFormsModule} from '@angular/forms';
+import {RouterTestingModule} from '@angular/router/testing';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
-import { HearingJudgeNamesListComponent } from '../../../../hearings/components';
-import { RefDataModel } from '../../../../hearings/models/refData.model';
+import {HearingJudgeNamesListComponent} from '../../../components';
+import {initialState} from '../../../hearing.store.state.test';
 import {ACTION, RadioOptions} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
-import {initialState} from '../hearing.store.state.test';
 import {HearingPanelComponent} from './hearing-panel.component';
 
 describe('HearingPanelComponent', () => {
@@ -47,7 +46,7 @@ describe('HearingPanelComponent', () => {
 
   it('should check form data', () => {
     component.excludedJudge = childComponent;
-    component.excludedJudge.validationError = { id: 'elementId', message: 'Error Message' };
+    component.excludedJudge.validationError = {id: 'elementId', message: 'Error Message'};
     component.checkFormData();
     expect(component.validationErrors.length).toBeGreaterThan(0);
   });

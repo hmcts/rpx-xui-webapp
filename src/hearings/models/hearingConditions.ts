@@ -1,3 +1,3 @@
 export interface HearingConditions {
-  [key: string]: string;
+  [key: string]: any;
 }

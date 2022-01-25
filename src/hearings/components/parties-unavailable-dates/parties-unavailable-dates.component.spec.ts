@@ -1,18 +1,15 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { PartiesUnavailableDatesComponent } from './parties-unavailable-dates.component';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {PartiesUnavailableDatesComponent} from './parties-unavailable-dates.component';
 
 describe('PartiesUnavailableDatesComponent', () => {
   let component: PartiesUnavailableDatesComponent;
   let fixture: ComponentFixture<PartiesUnavailableDatesComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [PartiesUnavailableDatesComponent]
     })
       .compileComponents();
-  }));
-
-  beforeEach(() => {
     fixture = TestBed.createComponent(PartiesUnavailableDatesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

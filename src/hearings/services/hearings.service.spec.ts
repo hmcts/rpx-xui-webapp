@@ -2,7 +2,7 @@ import { HttpRequest } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
-import { RefDataModel } from '../../hearings/models/refData.model';
+import { RefDataModel } from '../models/refData.model';
 import { HearingsService } from './hearings.service';
 
 describe('HearingsService', () => {

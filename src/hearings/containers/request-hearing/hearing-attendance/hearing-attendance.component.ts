@@ -1,16 +1,15 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { ACTION } from '../../../models/hearings.enum';
-import { PartyDetailsModel } from '../../../models/partyDetails.model';
-import { PartyUnavailabilityModel } from '../../../models/partyUnavilability.model';
-import { RefDataModel } from '../../../models/refData.model';
-import { HearingsRefDataService } from '../../../services/hearings-ref-data.service';
-import { HearingsService } from '../../../services/hearings.service';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Store} from '@ngrx/store';
+import {Observable} from 'rxjs';
+import {ACTION} from '../../../models/hearings.enum';
+import {PartyDetailsModel} from '../../../models/partyDetails.model';
+import {RefDataModel} from '../../../models/refData.model';
+import {HearingsRefDataService} from '../../../services/hearings-ref-data.service';
+import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import { ValidatorsUtils } from '../../../utils/validators.utils';
-import { RequestHearingPageFlow } from '../request-hearing.page.flow';
+import {ValidatorsUtils} from '../../../utils/validators.utils';
+import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-attendance',
@@ -48,9 +47,11 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     } else {
       this.hearingRequestMainModel.partyDetails.forEach(partyDetail => {
         (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues({
+          partyID: partyDetail.partyID,
+          partyType: partyDetail.partyType,
           partyName: partyDetail.partyName,
           partyChannel: partyDetail.partyChannel,
-        } as PartyUnavailabilityModel) as FormGroup);
+        } as PartyDetailsModel) as FormGroup);
       });
 
       this.attendanceFormGroup.controls.estimation.setValue(this.hearingRequestMainModel.hearingDetails.totalParticipantAttendingHearing);
@@ -59,9 +60,10 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   }
 
   public initialiseFromHearingValues() {
-    this.serviceHearingValuesModel.parties.forEach((x: PartyUnavailabilityModel) => {
+    this.serviceHearingValuesModel.parties.forEach((x: PartyDetailsModel) => {
       (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues(x) as FormGroup);
     });
+    this.attendanceFormGroup.controls.estimation.setValue(this.serviceHearingValuesModel.numberOfPhysicalAttendees);
   }
 
   public executeAction(action: ACTION): void {
@@ -78,10 +80,13 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   public prepareHearingRequestData() {
     const partyDetails: PartyDetailsModel[] = [];
     (this.attendanceFormGroup.controls.parties as FormArray).controls.forEach(control => {
-      partyDetails.push({
+      const partyDetail: PartyDetailsModel = {
+        partyID: control.value.partyID,
+        partyType: control.value.partyType,
         partyName: control.value.partyName,
         partyChannel: control.value.partyChannel,
-      } as PartyDetailsModel);
+      };
+      partyDetails.push(partyDetail);
     });
 
     this.hearingRequestMainModel = {
@@ -119,7 +124,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     this.attendanceFormGroup.controls.estimation.markAsDirty();
     if (!this.attendanceFormGroup.controls.estimation.valid) {
       formValid = false;
-      this.validationErrors.push({ id: 'attendance-number', message: 'Enter a valid number of attendees' });
+      this.validationErrors.push({id: 'attendance-number', message: 'Enter a valid number of attendees'});
     }
 
     this.selectionValid = selectionValid;
@@ -127,11 +132,13 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     return formValid;
   }
 
-  public patchValues(party: PartyUnavailabilityModel): FormGroup {
+  public patchValues(party: PartyDetailsModel): FormGroup {
     return this.fb.group({
+      partyID: [party.partyID],
+      partyType: [party.partyType],
       partyName: [party.partyName],
       partyChannel: [party.partyChannel, Validators.required],
-      unavailability: [party.unavailability],
+      unavailabilityRanges: [party.unavailabilityRanges],
     });
   }
 

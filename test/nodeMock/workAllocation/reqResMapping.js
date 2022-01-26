@@ -1,5 +1,5 @@
 const workAllocationMockData = require('./mockData');
-
+const CucumberReporter = require('../../e2e/support/reportLogger');
 module.exports = {
     mockServiceResetCallbacks: [() => workAllocationMockData.setDefaultData()],
     get: {
@@ -57,6 +57,15 @@ module.exports = {
         },
         '/workallocation2/task/:taskId/roles' : (req,res) => {
             res.send(workAllocationMockData.getTaskRoles());
+        },
+        '/api/wa-supported-jurisdiction/get' : (req,res) => {
+            res.send(workAllocationMockData.waSupportedJusridictions);
+        },
+        '/api/locations/getLocationsById' : (req,res) => {
+            res.send(workAllocationMockData.getLocationById(req.query.ids));
+        },
+        '/api/locations/getLocations': (req, res) => {
+            res.send(workAllocationMockData.searchLocations(req.query.serviceIds, req.query.searchTerm));
         }
     },
     post: {
@@ -218,7 +227,9 @@ module.exports = {
             res.status(204).send();
         },
         '/workallocation2/findPerson': (req, res) => {
-               res.send(workAllocationMockData.findPersonResponse(req.body.searchOptions));
+            const response = workAllocationMockData.findPersonResponse(req.body.searchOptions);
+            CucumberReporter.AddJson(response);
+            res.send(response);
         
             
         },
@@ -262,7 +273,26 @@ module.exports = {
             res.status(204).send();
         },
         '/api/role-access/roles/getJudicialUsers': (req,res) => {
+            const allJudicialUsers = workAllocationMockData.getJudicialList(20);
+            const services = req.body.services;
+            const userids = req.body.userIds;
+
+
+            for (const userid of userids){
+                const judicialuser = JSON.parse(JSON.stringify(allJudicialUsers[0]));
+                judicialuser.sidam_id = userid;
+                for (const appointment of judicialuser.appointments){
+                    appointment.base_location_id = workAllocationMockData.locationsByServices[0].locations[0].epims_id;
+                    appointment.epimms_id = workAllocationMockData.locationsByServices[0].locations[0].epims_id; 
+ 
+                }
+
+            }
+
             res.send(workAllocationMockData.getJudicialList(20));
+        },
+        '/workallocation2/retrieveCaseWorkersForServices' : (req,res) => {
+            res.send(workAllocationMockData.retrieveCaseWorkersForServices(req.body.serviceIds))
         } 
     }
    

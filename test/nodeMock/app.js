@@ -85,12 +85,14 @@ class MockApp{
                 callback(req, res);
             }
         }catch(err){
-            await http.post(`http://localhost:${port}/mockerror`, {error:err}, { headers })
+            if(port !== 3001){
+                await http.post(`http://localhost:${port}/mockerror`, { error: err })
+            }
             console.log(err);
             CucumberReporter.AddMessage(`*********************** Mock onRequest error occured  on server with port ${this.serverPort} ******************** `);
             CucumberReporter.AddMessage(err);
             CucumberReporter.AddMessage("*************************************************************** ");
-            res.status(550).send({message:'MOCK onRequest error', err:err.message});
+            res.status(550).send({message:'MOCK onRequest error', err:err.message, stack:err.stack});
         }
     }
 
@@ -128,7 +130,7 @@ class MockApp{
         }
         catch(err){
 
-            if (err.response.status < 510){
+            if (err.response.status && err.response.status < 510){
                 res.status(err.response.status ).send(err.response.body);
                 return; 
             }
@@ -302,12 +304,15 @@ function setUpcaseConfig() {
     //     res.send(caseDetailsLabelShowCondition().getCase());
     // });
     
-
+    // const idamid = 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8';
+    const idamid = '519e0c40-d30e-4f42-8a4c-2c79838f0e4e'; //Judicial
+    const workAllocationMockData = require('./workAllocation/mockData');
+    workAllocationMockData.init();
+    workAllocationMockData.addCaseworkerWithIdamId(idamid, 'IA');
     mockInstance.onGet('/api/user/details', (req, res) => {
-        const roles = ['task-supervisor','case-allocator','caseworker', 'caseworker-ia', 'caseworker-ia-caseofficer','task-supervisor','case-allocator'];
+        // const roles = ['task-supervisor','case-allocator','caseworker', 'caseworker-ia', 'caseworker-ia-caseofficer','task-supervisor','case-allocator'];
         // const roles = ['caseworker','caseworker-ia','caseworker-ia-caseofficer','task-supervisor'];
-
-        const idamid = 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8';
+        const roles = ['caseworker', 'caseworker-ia', 'caseworker-ia-iacjudge', 'task-supervisor'];
         // setTimeout(() => {
         //     res.send(nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, idamid));
 

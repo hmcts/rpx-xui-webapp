@@ -17,6 +17,7 @@ const waMockData = require('../../../../nodeMock/workAllocation/mockData');
 
 const ArrayUtil = require("../../../../e2e/utils/ArrayUtil");
 
+
 defineSupportCode(function ({ And, But, Given, Then, When }) {
     const waCasesTable = new WACasesTable();
 
@@ -31,6 +32,15 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         }
         
 
+    });
+
+    Given('I set MOCK caseworkers for service {string}', async function(service, datatable){
+    // step definition code here
+        const datatableHashes = datatable.hashes();
+        for (const userhash of datatableHashes){
+            waMockData.addCaseworker(userhash,service);
+
+        }
     });
 
 

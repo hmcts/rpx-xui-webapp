@@ -14,3 +14,4 @@ router.get('/getRefData', getRefData);
 router.post('/loadServiceHearingValues', loadServiceHearingValues);
 router.post('/submitHearingRequest', submitHearingRequest);
 router.delete('/cancelHearings', cancelHearingRequest);
+router.get('/getHearingDetail', getHearingDetail);

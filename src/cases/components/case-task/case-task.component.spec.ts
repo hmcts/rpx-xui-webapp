@@ -269,7 +269,7 @@ describe('CaseTaskComponent', () => {
       permissions: ['Own', 'Execute', 'Manage']
     };
     const result = CaseTaskComponent.replaceVariablesWithRealValues(task);
-    expect(result).toBe('[Link the appeal](/cases/case-details/1620409659381330/trigger/linkAppeal/linkAppealreasonForLinkAppealPageId)');
+    expect(result).toBe(`[Link the appeal](/cases/case-details/1620409659381330/trigger/linkAppeal/linkAppealreasonForLinkAppealPageId?tid=${task.id})`);
   });
   it('getDueDateTitle should be Task created', () => {
       component.isUserJudicial = true;

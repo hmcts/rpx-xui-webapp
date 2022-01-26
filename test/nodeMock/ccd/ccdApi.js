@@ -31,6 +31,7 @@ class CCDApi{
 
     setDefaultData(){
         this.caseDetailsResponse = JSON.parse(JSON.stringify(caseDetailsData));
+        this.caseList = this.getWorkbasketCases(); 
     }
 
     getJurisdictions(){

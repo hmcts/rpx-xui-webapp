@@ -31,15 +31,16 @@ export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next
       req
     );
     const substantiveRoles = await getSubstantiveRoles(req);
-    const substantiveJudicialLegalOps =
-     judicialAndLegalOps.filter(judicialAndLegalOp => substantiveRoles.find(role => role.roleId === judicialAndLegalOp.roleName));
     const finalRoles = [];
-    substantiveJudicialLegalOps.forEach(subRole => {
-      const currentRoleId = subRole.roleName;
-      subRole.roleName = substantiveRoles.find(role => role.roleId === subRole.roleName).roleName;
-      subRole.roleId = currentRoleId;
-      finalRoles.push(subRole);
-    })
+    judicialAndLegalOps.forEach(unknownRole => {
+      const substantiveRole = substantiveRoles.find(role => role.roleId === unknownRole.roleName);
+      if (substantiveRole) {
+        const currentRoleId = unknownRole.roleName;
+        unknownRole.roleName = substantiveRole.roleName;
+        unknownRole.roleId = currentRoleId;
+        finalRoles.push(unknownRole);
+      }
+    });
     return res.status(response.status).send(finalRoles);
   } catch (error) {
     next(error);

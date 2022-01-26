@@ -15,7 +15,7 @@ Feature: WA Release 2: Case details Tasks tab
 
         Given I set MOCK case details with reference "caseDetails"
         Given I set MOCK case details "caseDetails" property "Jurisdiction" as "IA"
-        Given I set MOCK persons end point "/workallocation2/caseworker" for WA release 2
+        Given I set MOCK caseworkers for service "IA"
             | idamId                               | firstName   | lastName | email                   | roleCategory     |
             | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Test 2      | user     | caseworker_user1@gov.uk | LEGAL_OPERATIONS |
             | 08a3d216-c6ab-4e92-a7e3-ca3661e6be81 | Test 3      | user     | caseworker_user2@gov.uk | LEGAL_OPERATIONS |

@@ -55,10 +55,20 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
     // All of the below is in order to ensure the name is shown for roles if present
     // if not present this will be ignored
     if (this.legalOpsRoles && this.legalOpsRoles.length > 0 && !this.legalOpsRoles[0].name) {
+      // checking one name will reveal whether caseworker names are avaiable
       this.legalRolesNotNamed = true;
     };
-    if (this.exclusions && this.exclusions.length > 0 && !this.exclusions[0].name) {
-      this.exclusionsNotNamed = true;
+    if (this.exclusions && this.exclusions.length > 0) {
+      for (const exclusion of this.exclusions) {
+        // some exclusions are judicial so this checks whether any exclusion is missing a name
+        if (exclusion.userType === RoleCategory.LEGAL_OPERATIONS) {
+          if (!exclusion.name) {
+            this.exclusionsNotNamed = true;
+          } else {
+            break;
+          }
+        }
+      }
     }
     if (this.caseworkers && this.legalOpsRoles && this.legalOpsRoles.length > 0) {
       this.namedLegalRoles = this.checkSetNamedRoles(this.legalOpsRoles, this.legalRolesNotNamed);

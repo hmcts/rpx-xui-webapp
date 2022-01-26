@@ -452,7 +452,6 @@
   version "4.7.6-tab-not-defined"
   resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.7.6-tab-not-defined.tgz#3a607e794c5d18a997568fdd53284c22fa0d0bb6"
   integrity sha512-Hg68GiUB85lwbhu6K/PaJoGpFnsPheR3nV/2UTCmhtn29XxFWFEPv1eyeQzN8xu7nICN9w2KVFo/HmumHjkbCw==
-
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -496,10 +495,10 @@
   resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.39-alpha.tgz#782d4a4698dae040dd72b26711f04a8d8299d25c"
   integrity sha512-M1364rFLuvktYz5+jVjJ5ZmNUx0/SgoAvH3RsIaT2wFqFf92emuiRyXqax5oSEC5kM9Jpw0rcxEcRbBJWMoglg==
 
-"@hmcts/media-viewer@2.7.9":
-  version "2.7.9"
-  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.7.9.tgz#6fa22f7e2a9b65e418afe32059369b332fbc29b3"
-  integrity sha512-0QEbYZgLSVLUspcUgtqZSc2HcKOls5XnEFSHaj6kNOi9OahTXgywQLGKmQziMcSZi9buaH1MqnQd+tMCCPO7AQ==
+"@hmcts/media-viewer@2.7.12":
+  version "2.7.12"
+  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.7.12.tgz#e5f4030e1bbd9dfab770997a96eec3e5c6beb73a"
+  integrity sha512-GVA1Nw/zidOvbqn5Mg8qB8BupS3/848962zFR0nP3VNi/FfT0SvgGut3/VGU/9KBL4ofy5QjxP/j8ZIzQHz2FA==
   dependencies:
     "@swimlane/ngx-datatable" "^16.0.2"
     angular-tree-component "^8.5.6"
@@ -537,11 +536,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.5.1-find-person-hide-user":
-  version "1.5.1-find-person-hide-user"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.5.1-find-person-hide-user.tgz#5834b3f39a9853c082c3b6dd8f62331738968f7e"
-  integrity sha512-SDSyR20Eh0/EXHcqQI9RSl31jbB5MNW/ae9/DmtIP7FisPdA7R9rhVdiX9BtIonvDfosP9MAGHx/HBsYWfhMWg==
-
+"@hmcts/rpx-xui-common-lib@1.6.1-staff-by-service-2":
+  version "1.6.1-staff-by-service-2"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.1-staff-by-service-2.tgz#fc526779a8de4dafca77ef4f4bd89ee014f40ebd"
+  integrity sha512-tGe6/xjyKMHkBVBrfncYP3dhifgddqY0mp/kgsEncfhXD8ox7NGC1XCkDLBjNoyunBjoykVSHGS388DWP7VdnQ==
   dependencies:
     tslib "^1.9.0"
 

@@ -8,6 +8,7 @@ import { AllocateRoleAction, AllocateRoleActionTypes } from '../actions';
 
 export const allocateRoleInitialState: AllocateRoleStateData = {
   caseId: null,
+  jurisdiction: null,
   state: AllocateRoleState.CHOOSE_ROLE,
   typeOfRole: null,
   allocateTo: null,
@@ -36,6 +37,7 @@ export function allocateRoleReducer(currentState = allocateRoleInitialState,
       return {
         ...currentState,
         caseId: action.payload.caseId,
+        jurisdiction: action.payload.jurisdiction,
         roleCategory: action.payload.roleCategory
       };
     }
@@ -43,6 +45,7 @@ export function allocateRoleReducer(currentState = allocateRoleInitialState,
       return {
         ...currentState,
         caseId: action.payload.caseId,
+        jurisdiction: action.payload.jurisdiction,
         assignmentId: action.payload.assignmentId,
         state: action.payload.state,
         personToBeRemoved: action.payload.personToBeRemoved,

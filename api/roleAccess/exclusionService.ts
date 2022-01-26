@@ -1,7 +1,7 @@
-import { UserInfo } from '../auth/interfaces/UserInfo';
 import { AxiosResponse } from 'axios';
 import * as express from 'express';
 import { NextFunction, Response } from 'express';
+import { UserInfo } from '../auth/interfaces/UserInfo';
 import { sendPost } from '../common/crudService';
 import { getConfigValue } from '../configuration';
 import { SERVICES_CASE_JUDICIAL_REF_PATH, SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
@@ -53,7 +53,7 @@ export async function confirmUserExclusion(req: EnhancedRequest, res: Response, 
     const { status, data } = response;
     return res.status(status).send(data);
   } catch (error) {
-    next(error)
+    next(error);
   }
 }
 
@@ -169,7 +169,8 @@ export function getCorrectRoleCategory(domain: string): RoleCategory {
   }
 }
 
-export  function getJudicialUsersFromApi(req: express.Request, ids: string[]): Promise<AxiosResponse<JudicialUserDto[]>> {
+export function
+ getJudicialUsersFromApi(req: express.Request, ids: string[], serviceCode: string): Promise<AxiosResponse<JudicialUserDto[]>> {
   const headers = setHeaders(req);
-  return http.post(`${JUDICIAL_REF_URL}/refdata/judicial/users`, { sidam_ids: ids }, { headers });
+  return http.post(`${JUDICIAL_REF_URL}/refdata/judicial/users`, { sidam_ids: ids, serviceCode }, { headers });
 }

@@ -44,6 +44,7 @@ import {
   getRoleAssignmentsByQuery,
   getTypesOfWorkByUserId,
   getUniqueCasesCount,
+  handlePost,
   mapCasesFromData,
   mapCaseworkerData,
   getCaseworkerDataForServices,
@@ -196,6 +197,18 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
   try {
     const {status, data} = await handleTaskSearch(`${basePath}`, searchRequest, req);
     return res.send(data.tasks as TaskList).status(status);
+  } catch (e) {
+    next(e);
+  }
+}
+
+export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+  const caseId = req.params.caseId;
+  const eventId = req.params.eventId;
+  try {
+    const payload = { caseId, eventId };
+    const { status, data } = await handlePost(`${baseWorkAllocationTaskUrl}/task/search-for-completable`, payload, req);
+    return res.send(data).status(status);
   } catch (e) {
     next(e);
   }

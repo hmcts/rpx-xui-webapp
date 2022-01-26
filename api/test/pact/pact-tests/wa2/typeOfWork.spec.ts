@@ -47,7 +47,7 @@ describe("Task management api, work types", () => {
                 withRequest: {
                     method: "GET",
                     path: "/work-types",
-                    query: "filter-by-user=false",
+                    query: "filter-by-user=true",
                     headers: {
                         'Authorization': 'Bearer someAuthorizationToken',
                         'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',

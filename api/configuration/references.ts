@@ -70,6 +70,8 @@ export const JURISDICTIONS = 'jurisdictions';
 
 export const WA_SUPPORTED_JURISDICTIONS = 'waSupportedJurisdictions';
 
+export const SERVICE_REF_DATA_MAPPING = 'serviceRefDataMapping';
+
 export const WILDCARD_SEARCH_FIELDS = 'wildcardSearchFields';
 
 export const WILDCARD_SEARCH_ROLES = 'wildcardSearchRoles';

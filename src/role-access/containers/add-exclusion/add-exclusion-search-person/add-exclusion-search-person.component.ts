@@ -22,6 +22,7 @@ export class AddExclusionSearchPersonComponent implements OnInit {
   public person: Person;
   public subscription: Subscription;
   public personRole: PersonRole;
+  public services: string[];
 
   constructor(private readonly store: Store<fromFeature.State>) {
   }
@@ -34,6 +35,7 @@ export class AddExclusionSearchPersonComponent implements OnInit {
     this.personName = exclusion && exclusion.person ? this.getDisplayName(exclusion.person) : null;
     this.person = exclusion.person;
     this.personRole = exclusion.personRole;
+    this.services = [exclusion.jurisdiction];
   }
 
   public navigationHandler(navEvent: ExclusionNavigationEvent): void {

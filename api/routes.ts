@@ -6,6 +6,7 @@ import healthCheck from './healthCheck';
 import authInterceptor from './lib/middleware/auth';
 import { router as nocRouter } from './noc/routes';
 import { router as organisationRouter } from './organisations';
+import { router as serviceRefDataRouter } from './serviceRefData';
 import { router as waSupportedJurisdictionRouter } from './waSupportedJurisdictions';
 import roleAccessRouter from './roleAccess/routes';
 import userRouter from './user/routes';
@@ -35,6 +36,7 @@ router.use('/caseshare', caseShareRoutes);
 router.use('/noc', nocRouter);
 router.use('/organisation', organisationRouter);
 router.use('/wa-supported-jurisdiction', waSupportedJurisdictionRouter);
+router.use('/service-ref-data', serviceRefDataRouter);
 
 // @ts-ignore
 export default router;

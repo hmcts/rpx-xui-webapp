@@ -4,6 +4,9 @@ import { RoleCategory } from '../../role-access/models';
 import { OptionsModel } from '../../role-access/models/options-model';
 import { Permissions, TaskRole } from '../models/tasks/TaskRole';
 
+import { ISessionStorageService } from '../interfaces/common';
+import { Caseworker, CaseworkersByService } from '../models/dtos';
+
 interface Navigator {
   navigate(commands: any[], extras?: NavigationExtras): Promise<boolean>;
 }
@@ -86,8 +89,33 @@ export const handleTasksFatalErrors = (status: number, navigator: Navigator, fat
   }
 };
 
+export const getAllCaseworkersFromServices = (caseworkersByService: CaseworkersByService[]): Caseworker[] => {
+  let allCaseworkers: Caseworker[] = [];
+  caseworkersByService.forEach(caseworkerListByService => {
+    allCaseworkers = allCaseworkers.concat(caseworkerListByService.caseworkers)
+  });
+  return allCaseworkers;
+}
+
+export const getSessionStorageKeyForServiceId = (serviceId: string): string => {
+  return `${serviceId}-caseworkers`;
+}
+
+export const getCaseworkers = (serviceId: string, sessionStorageService: ISessionStorageService): Caseworker[] => {
+  const sessionKey = getSessionStorageKeyForServiceId(serviceId);
+  const value = sessionStorageService.getItem(sessionKey);
+  if (value) {
+    return JSON.parse(value) as Caseworker[];
+  }
+}
+
+export const setCaseworkers = (serviceId: string, caseworkers: Caseworker[], sessionStorageService: ISessionStorageService): void => {
+  const sessionKey = getSessionStorageKeyForServiceId(serviceId);
+  sessionStorageService.setItem(sessionKey, JSON.stringify(caseworkers));
+}
+
 export const getAssigneeName = (caseworkers: any [], assignee: string): string => {
-  if (assignee && caseworkers.some(cw => cw.idamId === assignee)) {
+  if (assignee && caseworkers && caseworkers.some(cw => cw.idamId === assignee)) {
     const assignedCW = caseworkers.filter(cw => cw.idamId === assignee)[0];
     return `${assignedCW.firstName} ${assignedCW.lastName}`;
   }

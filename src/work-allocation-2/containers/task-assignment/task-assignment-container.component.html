@@ -23,7 +23,8 @@
       (personSelected)="selectedPerson($event)"
       [selectedPerson]="defaultPerson"
       [domain]="domain"
-      [userIncluded]="false">
+      [userIncluded]="false"
+      [services]="[service]">
     </xuilib-find-person>
 
     <button class="govuk-button govuk-!-margin-right-1" type="submit" (click)="assign()">Continue</button>

@@ -37,6 +37,7 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
   public appStoreSub: Subscription;
   public subscription: Subscription;
   public roleType: SpecificRole;
+  public services: string[];
 
   constructor(private readonly store: Store<fromFeature.State>) {}
 
@@ -54,6 +55,7 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
     this.personName = allocateRoleStateData && allocateRoleStateData.person ? this.getDisplayName(allocateRoleStateData.person) : null;
     this.person = allocateRoleStateData.person;
     this.roleType = allocateRoleStateData.typeOfRole;
+    this.services = [allocateRoleStateData.jurisdiction];
   }
 
   public navigationHandler(navEvent: AllocateRoleNavigationEvent): void {

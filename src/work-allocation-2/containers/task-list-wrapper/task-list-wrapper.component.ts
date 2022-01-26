@@ -33,6 +33,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public caseworkers: Caseworker[];
   public locations: Location[] = new Array<Location>();
   public showSpinner$: Observable<boolean>;
+  public waSupportedJurisdictions$: Observable<string[]>;
   public sortedBy: SortField;
   public pagination: PaginationParameter;
   public selectedLocations: string[] = [];
@@ -40,7 +41,6 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public taskServiceConfig: TaskServiceConfig;
   protected userDetailsKey: string = 'userDetails';
   private pTasks: Task[] = [];
-  private tasksLoaded: boolean = false;
   private selectedLocationsSubscription: Subscription;
   private pTasksTotal: number;
 
@@ -142,6 +142,9 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public ngOnInit(): void {
+    // get supported jurisdictions on initialisation in order to get caseworkers by these services
+    this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
+
     this.taskServiceConfig = this.getTaskServiceConfig();
     this.loadCaseWorkersAndLocations();
     this.setupTaskList();
@@ -173,8 +176,12 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public setupTaskList() {
-    this.caseworkerService.getAll().subscribe(caseworkers => {
-      this.caseworkers = [...caseworkers];
+    const caseworkersByService$ = this.waSupportedJurisdictions$.switchMap(jurisdictions =>
+      this.caseworkerService.getCaseworkersForServices(jurisdictions)
+    );
+    // similar to case list wrapper changes
+    caseworkersByService$.subscribe(caseworkers => {
+      this.caseworkers = caseworkers;
     }, error => {
       handleFatalErrors(error.status, this.router);
     });
@@ -292,7 +299,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
         showAssigneeColumn: taskAction.action.id !== TaskActionIds.ASSIGN
       };
       const actionUrl = `/work/${taskAction.task.id}/${taskAction.action.id}/${this.specificPage}`;
-      this.router.navigate([actionUrl], { state });
+      this.router.navigate([actionUrl], {queryParams: {service: taskAction.task.jurisdiction},  state });
     } catch (error) {
       console.error('onActionHandler', error, taskAction);
     }
@@ -322,7 +329,6 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       this.tasks = result.tasks;
       this.tasksTotal = result.total_records;
       this.tasks.forEach(task => task.assigneeName = getAssigneeName(this.caseworkers, task.assignee));
-      this.tasksLoaded = true;
       this.ref.detectChanges();
     }, error => {
       this.loadingService.unregister(loadingToken);

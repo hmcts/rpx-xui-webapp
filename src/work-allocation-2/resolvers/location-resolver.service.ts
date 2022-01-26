@@ -7,13 +7,15 @@ import { of } from 'rxjs/internal/observable/of';
 import { Observable } from 'rxjs/Observable';
 import { catchError, first, map, mergeMap } from 'rxjs/operators';
 import { LocationModel } from '../../../api/locations/models/location.model';
+
 import { AppUtils } from '../../app/app-utils';
 import { UserDetails, UserRole } from '../../app/models';
 import * as fromRoot from '../../app/store';
 import * as fromCaseList from '../../app/store/reducers';
 import { CaseRoleDetails } from '../../role-access/models/case-role-details.interface';
+import { AllocateRoleService } from '../../role-access/services';
 import { Caseworker, Location } from '../models/dtos';
-import { CaseworkerDataService, JudicialWorkerDataService } from '../services';
+import { CaseworkerDataService } from '../services';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../utils';
 
 @Injectable({
@@ -21,12 +23,14 @@ import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../utils';
 })
 export class LocationResolver implements Resolve<LocationModel> {
 
+  private userRole: string;
+
   constructor(
     private readonly store: Store<fromCaseList.State>,
     private readonly router: Router,
     private readonly http: HttpClient,
     private readonly caseworkerDataService: CaseworkerDataService,
-    private readonly judicialWorkerDataService: JudicialWorkerDataService
+    private readonly allocateRoleService: AllocateRoleService
   ) {
   }
 
@@ -70,8 +74,15 @@ export class LocationResolver implements Resolve<LocationModel> {
 
   private getJudicialWorkersOrCaseWorkers(userDetails: UserDetails): Observable<any[]> {
     const id = userDetails.userInfo.id ? userDetails.userInfo.id : userDetails.userInfo.uid;
-    const role = AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
-    return role === UserRole.LegalOps ? this.caseworkerDataService.getAll() : this.judicialWorkerDataService.getCaseRolesUserDetails([id]);
+    this.userRole = AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
+    const jurisdictions: string[] = [];
+    userDetails.roleAssignmentInfo.forEach(roleAssignment => {
+      const roleJurisdiction = roleAssignment.jurisdiction;
+      if (roleJurisdiction && !jurisdictions.includes(roleJurisdiction)) {
+        jurisdictions.push(roleJurisdiction);
+      }
+    })
+    return this.userRole === UserRole.Judicial ? this.allocateRoleService.getCaseRolesUserDetails([id], jurisdictions) : this.caseworkerDataService.getCaseworkersForServices(jurisdictions);
   }
 
   private getLocations(location: Location): Observable<LocationModel> {

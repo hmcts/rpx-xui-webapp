@@ -431,6 +431,11 @@ class WorkAllocationMockData {
                         delete taskTemplate[taskAttribute];
                     }
                 }
+                else if (taskAttribute.toLowerCase().includes('id')) {
+                    if (task[taskAttribute] !== ''){
+                        taskTemplate[taskAttribute] = task[taskAttribute];
+                    }
+                }
                 else {
                     taskTemplate[taskAttribute] = task[taskAttribute];
                 }

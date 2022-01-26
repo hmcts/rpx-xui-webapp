@@ -536,10 +536,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.6.1-staff-by-service-2":
-  version "1.6.1-staff-by-service-2"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.1-staff-by-service-2.tgz#fc526779a8de4dafca77ef4f4bd89ee014f40ebd"
-  integrity sha512-tGe6/xjyKMHkBVBrfncYP3dhifgddqY0mp/kgsEncfhXD8ox7NGC1XCkDLBjNoyunBjoykVSHGS388DWP7VdnQ==
+"@hmcts/rpx-xui-common-lib@1.6.7-generic-filter-show-cancel-button":
+  version "1.6.7-generic-filter-show-cancel-button"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.7-generic-filter-show-cancel-button.tgz#58daf46a538e4258b7dcfba5d2c132a8ee36f1b4"
+  integrity sha512-IoXRXLT+C72lTH400PkYgDXCzXLpHWLp4tOZFeWCLdnJFeGaLMbNK4ZyUeWCEa+m4X1MZfh1ONB76vvnZpOcgw==
   dependencies:
     tslib "^1.9.0"
 

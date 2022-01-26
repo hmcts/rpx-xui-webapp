@@ -135,7 +135,7 @@ describe('AvailableTasksComponent', () => {
     mockSessionStorageService.getItem.and.returnValue(userInfo);
     const workTypes: string[] = ['hearing_work', 'upper_tribunal', 'decision_making_work'];
     component.selectedWorkTypes = workTypes;
-    const searchParameter = component.getSearchTaskRequestPagination().search_parameters[2];
+    const searchParameter = component.getSearchTaskRequestPagination().search_parameters[3];
     expect(searchParameter.key).toBe('work_type');
     expect(searchParameter.values).toBe(workTypes);
   });

@@ -2,31 +2,33 @@ import { UserInfo } from '../auth/interfaces/UserInfo';
 import { getConfigValue } from '../configuration';
 import { caseMetaDataFiledsMapping } from '../configuration/mappings';
 import { WILDCARD_SEARCH_FIELDS, WILDCARD_SEARCH_ROLES } from '../configuration/references';
-import { fieldNameMapper } from '../lib/util';
+import { exists, fieldNameMapper } from '../lib/util';
 import { ElasticSearchQuery } from './interfaces/ElasticSearchQuery';
 
 /**
  * Manually creating Elastic search query
  */
 export function modifyRequest(proxyReq, req) {
+  if (!req.body || !Object.keys(req.body).length || !exists(req, 'session.passport.user.info')) {
+    return;
+  }
   const userInfo = req.session.passport.user.userinfo as UserInfo;
   const request = prepareElasticQuery(req.query, req.body, userInfo);
 
-  // Write out body changes to the proxyReq stream
   const body = JSON.stringify(request);
-
-  console.log('request', req)
 
   // Update header
   proxyReq.setHeader('content-type', 'application/json');
-  proxyReq.setHeader('content-length', body.length);
 
-  // Write out body changes to the proxyReq stream
-  proxyReq.write(body);
+  if (body) {
+    proxyReq.setHeader('content-length', Buffer.byteLength(body));
+    // Write out body changes to the proxyReq stream
+    proxyReq.write(body);
+    // Remove body-parser body object from the request
+    delete req.body;
+    proxyReq.end();
+  }
 
-  // Remove body-parser body object from the request
-  delete req.body;
-  proxyReq.end();
 }
 
 export function userCanPerformWildCardSearch(userInfo: UserInfo): boolean {

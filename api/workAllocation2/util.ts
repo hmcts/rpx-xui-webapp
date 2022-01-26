@@ -1,8 +1,8 @@
 import { AxiosResponse } from 'axios';
 import * as express from 'express';
-import { release2ContentType } from '../roleAccess/models/release2ContentType';
 import { getConfigValue } from '../configuration';
 import { SERVICES_CCD_DATA_STORE_API_PATH, SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
+import { release2ContentType } from '../roleAccess/models/release2ContentType';
 
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';

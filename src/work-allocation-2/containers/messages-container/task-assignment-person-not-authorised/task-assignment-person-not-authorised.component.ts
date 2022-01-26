@@ -11,7 +11,7 @@ export class TaskAssignmentPersonNotAuthorisedComponent {
 
   constructor(private readonly router: Router) {
     const currentNavigation = this.router.getCurrentNavigation();
-    if (currentNavigation) {
+    if (currentNavigation && currentNavigation.extras && currentNavigation.extras.state) {
       this.returnUrl = currentNavigation.extras.state.returnUrl;
     }
   }

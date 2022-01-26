@@ -5,7 +5,7 @@ export const LIST_CONSTANTS = {
   EmptyMessage: {
     Default: DEFAULT_EMPTY_MESSAGE,
     DefaultCases: DEFAULT_CASES_EMPTY_MESSAGE,
-    AvailableTasks: DEFAULT_EMPTY_MESSAGE,
+    AvailableTasks: 'There are no available tasks. Use the location filter to view available tasks at other locations.',
     MyCases: 'You have no assigned cases.',
     MyTasks: 'You have no assigned tasks.',
     TaskManager: DEFAULT_EMPTY_MESSAGE,

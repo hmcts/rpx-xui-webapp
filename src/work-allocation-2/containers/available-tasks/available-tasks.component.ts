@@ -32,6 +32,10 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     return ListConstants.View.AvailableTasks;
   }
 
+  public get emptyMessage(): string {
+    return ListConstants.EmptyMessage.AvailableTasks;
+  }
+
   /**
    * TODO: When implementing filtering this may need to be changed to get location(s) from filter
    * Override the default.
@@ -47,8 +51,12 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
         { key: 'jurisdiction', operator: 'IN', values: ['IA'] }
       ];
       const locationParameter = this.getLocationParameter();
+      const typesOfWorkParameter = this.getTypesOfWorkParameter();
       if (locationParameter) {
         searchParameters.push(locationParameter);
+      }
+      if (typesOfWorkParameter) {
+        searchParameters.push(typesOfWorkParameter);
       }
       return {
         search_parameters: searchParameters,
@@ -100,7 +108,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
    * that the Task is no longer available.
    */
   public claimTaskErrors(status: number): void {
-    const REDIRECT_404 = [{status: 404, redirectTo: REDIRECTS.ServiceDown}];
+    const REDIRECT_404 = [{ status: 404, redirectTo: REDIRECTS.ServiceDown }];
     const handledStatus = handleTasksFatalErrors(status, this.router, REDIRECT_404);
     if (handledStatus > 0) {
       this.infoMessageCommService.nextMessage({
@@ -137,6 +145,14 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
   private getLocationParameter(): SearchTaskParameter {
     if (this.selectedLocations && this.selectedLocations.length > 0) {
       return { key: 'location', operator: 'IN', values: this.selectedLocations };
+    } else {
+      return null;
+    }
+  }
+
+  private getTypesOfWorkParameter(): SearchTaskParameter {
+    if (this.selectedWorkTypes && this.selectedWorkTypes.length > 0) {
+      return { key: 'work_type', operator: 'IN', values: this.selectedWorkTypes };
     } else {
       return null;
     }

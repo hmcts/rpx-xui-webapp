@@ -21,6 +21,11 @@ export interface Caseworker {
   roleCategory: RoleCategory
 }
 
+export interface CaseworkersByService {
+  service: string;
+  caseworkers: Caseworker[];
+}
+
 export interface JudicialWorker {
   idamId: string;
   firstName: string;

@@ -28,6 +28,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   public location: Location;
 
   public domain = PersonRole.ALL;
+  public service: string;
   public formGroup: FormGroup = new FormGroup({});
   public person: Person;
   public taskId: string;
@@ -88,6 +89,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
 
     this.taskId = this.route.snapshot.paramMap.get('taskId');
     this.role = this.route.snapshot.queryParamMap.get('role') as RoleCategory;
+    this.service = this.route.snapshot.queryParamMap.get('service');
     this.domain = this.setDomain(this.role);
     this.rootPath = this.router.url.split('/')[1];
   }

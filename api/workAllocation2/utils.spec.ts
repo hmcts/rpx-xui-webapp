@@ -6,11 +6,14 @@ import { mockReq, mockRes } from 'sinon-express-mock';
 import { http } from '../lib/http';
 
 import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
+import { Role } from '../roleAccess/models/roleType';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { ASSIGN, CLAIM, CLAIM_AND_GO, COMPLETE, GO, REASSIGN, RELEASE, TaskPermission } from './constants/actions';
-import { Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/common';
+import { Caseworker, CaseworkerApi, CaseworkersByService, Location, LocationApi } from './interfaces/common';
 import { PersonRole } from './interfaces/person';
 import { RoleCaseData } from './interfaces/roleCaseData';
+import { ServiceCaseworkerData } from './interfaces/caseworkerPayload';
+
 import {
   applySearchFilter,
   assignActionsToTasks,
@@ -21,7 +24,10 @@ import {
   getActionsByPermissions,
   getCaseAllocatorLocations,
   getCaseIdListFromRoles,
+  getCaseworkerDataForServices,
   getRoleAssignmentsByQuery,
+  getRoleIdsFromRoles,
+  getSessionCaseworkerInfo,
   getSubstantiveRoles,
   getTypesOfWorkByUserId,
   getUniqueCasesCount,
@@ -33,10 +39,131 @@ import {
   preparePaginationUrl,
   preparePostTaskUrlAction,
   prepareRoleApiRequest,
-  prepareSearchTaskUrl
+  prepareSearchCaseUrl,
+  prepareSearchTaskUrl,
+  prepareServiceRoleApiRequest
 } from './util';
 
 chai.use(sinonChai);
+
+const LOCATIONAPI_1: LocationApi = {
+  is_primary: true,
+  location: 'Test One',
+  location_id: '1',
+  services: ['a', 'b'],
+};
+const LOCATIONAPI_2: LocationApi = {
+  is_primary: false,
+  location: 'Test Two',
+  location_id: '2',
+  services: ['a', 'c'],
+};
+const LOCATIONAPI_3: LocationApi = {
+  is_primary: true,
+  location: 'Test Three',
+  location_id: '3',
+  services: ['b', 'c'],
+};
+
+const LOCATION_1: Location = {
+  id: '1',
+  locationName: 'Test One',
+  services: ['a', 'b'],
+};
+const LOCATION_2: Location = {
+  id: '3',
+  locationName: 'Test Three',
+  services: ['b', 'c'],
+};
+
+const CASEWORKERAPI_1: CaseworkerApi = {
+  base_location: [LOCATIONAPI_1, LOCATIONAPI_2],
+  email_id: 'nametest@test.com',
+  first_name: 'Name',
+  id: '1',
+  last_name: 'Test',
+};
+const CASEWORKERAPI_2: CaseworkerApi = {
+  base_location: [LOCATIONAPI_2, LOCATIONAPI_3],
+  email_id: 'firstlast@test.com',
+  first_name: 'First',
+  id: '2',
+  last_name: 'Last',
+};
+const CASEWORKERAPI_3: CaseworkerApi = {
+  base_location: [LOCATIONAPI_1, LOCATIONAPI_3],
+  email_id: 'onetwo@test.com',
+  first_name: 'One',
+  id: '3',
+  last_name: 'Two',
+};
+const CASEWORKERAPI_4: CaseworkerApi = {
+  base_location: [],
+  email_id: 'fourthtest@test.com',
+  first_name: 'Fourth',
+  id: '4',
+  last_name: 'Test',
+};
+
+const CASEWORKER_1: Caseworker = {
+  email: 'nametest@test.com',
+  firstName: 'Name',
+  idamId: '1',
+  lastName: 'Test',
+  location: LOCATION_1,
+  roleCategory: RoleCategory.LEGAL_OPERATIONS,
+};
+const CASEWORKER_2: Caseworker = {
+  email: 'firstlast@test.com',
+  firstName: 'First',
+  idamId: '2',
+  lastName: 'Last',
+  location: LOCATION_2,
+  roleCategory: RoleCategory.ADMIN,
+};
+const CASEWORKER_3: Caseworker = {
+  email: 'onetwo@test.com',
+  firstName: 'One',
+  idamId: '3',
+  lastName: 'Two',
+  location: LOCATION_2,
+  roleCategory: RoleCategory.LEGAL_OPERATIONS,
+};
+const CASEWORKER_4: Caseworker = {
+  email: 'fourthtest@test.com',
+  firstName: 'Fourth',
+  idamId: '4',
+  lastName: 'Test',
+  location: null,
+  roleCategory: null,
+};
+
+const mockRoleAssignments: RoleAssignment[] = [
+  {
+    id: '123',
+    attributes: null,
+    actorId: '1',
+    roleCategory: RoleCategory.LEGAL_OPERATIONS,
+  },
+  {
+    id: '123',
+    attributes: null,
+    actorId: '2',
+    roleCategory: RoleCategory.ADMIN,
+  },
+  {
+    id: '123',
+    attributes: null,
+    actorId: '3',
+    roleCategory: RoleCategory.LEGAL_OPERATIONS,
+  },
+  {
+    id: '123',
+    attributes: null,
+    actorId: '5',
+    roleCategory: RoleCategory.LEGAL_OPERATIONS,
+  },
+];
 
 const firstRoleAssignment: RoleAssignment[] = [{
   id: '1',
@@ -216,6 +343,16 @@ describe('workAllocation.utils', () => {
 
   });
 
+  describe('prepareSearchCaseUrl', () => {
+
+    it('should correctly format with a baseUrl', () => {
+      const BASE_URL: string = 'base';
+      const url = prepareSearchCaseUrl(BASE_URL);
+      expect(url).to.equal('base/case');
+    });
+
+  });
+
   describe('prepareSearchTaskUrl', () => {
 
     it('should correctly format with a baseUrl', () => {
@@ -319,124 +456,168 @@ describe('workAllocation.utils', () => {
     });
   });
 
+  describe('getSessionCaseworkerInfo', () => {
+
+    it('should get correct session case worker info with no services', ()=> {
+      const serviceIds = ['IA'];
+      const caseworkersByServices: CaseworkersByService[] = [
+        {
+          service: 'IA',
+          caseworkers: [
+            {
+              email: 'nametest@test.com',
+              firstName: 'Name',
+              idamId: '1',
+              lastName: 'Test',
+              location: { id: '1', locationName: 'Test One', services: ['a', 'b'] },
+              roleCategory: 'LEGAL_OPERATIONS'
+            },
+            {
+              email: 'firstlast@test.com',
+              firstName: 'First',
+              idamId: '2',
+              lastName: 'Last',
+              location: { id: '3', locationName: 'Test Three', services: ['b', 'c'] },
+              roleCategory: 'ADMIN'
+            },
+            {
+              email: 'onetwo@test.com',
+              firstName: 'One',
+              idamId: '3',
+              lastName: 'Two',
+              location: { id: '3', locationName: 'Test Three', services: ['b', 'c'] },
+              roleCategory: 'LEGAL_OPERATIONS'
+            },
+            {
+              email: 'fourthtest@test.com',
+              firstName: 'Fourth',
+              idamId: '4',
+              lastName: 'Test',
+              location: null,
+              roleCategory: null
+            }
+          ]
+        }
+      ];
+      
+      const result = getSessionCaseworkerInfo(serviceIds, caseworkersByServices);
+      expect(result).to.deep.equal([[], [{service: 'IA', caseworkers: caseworkersByServices[0].caseworkers}]])
+    });
+  });
+
+  describe('getCaseworkerDataForServices', () => {
+
+    it('should get correct case worker data for services', () => {
+      const caseworkerData: CaseworkerApi[] = [
+        CASEWORKERAPI_1,
+        CASEWORKERAPI_2,
+        CASEWORKERAPI_3,
+        CASEWORKERAPI_4
+      ];
+
+      const serviceCaseworkerData: ServiceCaseworkerData[] = [
+        {
+          jurisdiction: 'IA',
+          data: {
+            roleAssignmentResponse: mockRoleAssignments
+          }
+        }
+      ];
+      const expectedCaseWorkers: Caseworker[] = [
+        {
+          email: 'nametest@test.com',
+          firstName: 'Name',
+          idamId: '1',
+          lastName: 'Test',
+          location: { id: '1', locationName: 'Test One', services: ['a', 'b'] },
+          roleCategory: 'LEGAL_OPERATIONS'
+        },
+        {
+          email: 'firstlast@test.com',
+          firstName: 'First',
+          idamId: '2',
+          lastName: 'Last',
+          location: { id: '3', locationName: 'Test Three', services: ['b', 'c'] },
+          roleCategory: 'ADMIN'
+        },
+        {
+          email: 'onetwo@test.com',
+          firstName: 'One',
+          idamId: '3',
+          lastName: 'Two',
+          location: { id: '3', locationName: 'Test Three', services: ['b', 'c'] },
+          roleCategory: 'LEGAL_OPERATIONS'
+        },
+        {
+          email: 'fourthtest@test.com',
+          firstName: 'Fourth',
+          idamId: '4',
+          lastName: 'Test',
+          location: null,
+          roleCategory: null
+        }
+      ];
+
+      const caseworkersByService = getCaseworkerDataForServices(caseworkerData, serviceCaseworkerData);
+      expect(caseworkersByService[0].service).to.be.equal('IA');
+      expect(caseworkersByService[0].caseworkers[0]).to.deep.equal(expectedCaseWorkers[0]);
+      expect(caseworkersByService[0].caseworkers[1]).to.deep.equal(expectedCaseWorkers[1]);
+      expect(caseworkersByService[0].caseworkers[2]).to.deep.equal(expectedCaseWorkers[2]);
+      expect(caseworkersByService[0].caseworkers[3]).to.deep.equal(expectedCaseWorkers[3]);
+    });
+  });
+
+  describe('prepareServiceRoleApiRequest', () => {
+
+    it('should correctly prepare a payload with jurisdictions and role parameters', () => {
+      const jurisdictions: string[] = ['IA', 'Not-IA'];
+      const roles: Role[] = [
+        {name: 'lead-judge', label: null, description: null, category: null, substantive: null, patterns: null},
+        {name: 'hearing-judge', label: null, description: null, category: null, substantive: null, patterns: null}
+      ];
+
+      const caseworkerPayload = prepareServiceRoleApiRequest(jurisdictions, roles);
+      expect(caseworkerPayload[0].attributes.jurisdiction).to.deep.equal(['IA']);
+      expect(caseworkerPayload[0].roleName).to.deep.equal(['lead-judge', 'hearing-judge']);
+      expect(caseworkerPayload[0].roleType).to.deep.equal(['ORGANISATION']);
+      expect(caseworkerPayload[1].attributes.jurisdiction).to.deep.equal(['Not-IA']);
+      expect(caseworkerPayload[1].roleName).to.deep.equal(['lead-judge', 'hearing-judge']);
+      expect(caseworkerPayload[1].roleType).to.deep.equal(['ORGANISATION']);
+    });
+
+    it('should correctly prepare a payload with jurisdictions, role and location parameters', () => {
+      const jurisdictions: string[] = ['IA', 'Not-IA'];
+      const roles: Role[] = [
+        {name: 'lead-judge', label: null, description: null, category: null, substantive: null, patterns: null},
+        {name: 'hearing-judge', label: null, description: null, category: null, substantive: null, patterns: null}
+      ];
+      const locationId = 123987;
+
+      const caseworkerPayload = prepareServiceRoleApiRequest(jurisdictions, roles, locationId);
+      expect(caseworkerPayload[0].attributes.jurisdiction).to.deep.equal(['IA']);
+      expect(caseworkerPayload[0].attributes.primaryLocation).to.deep.equal([locationId]);
+      expect(caseworkerPayload[0].roleName).to.deep.equal(['lead-judge', 'hearing-judge']);
+      expect(caseworkerPayload[0].roleType).to.deep.equal(['ORGANISATION']);
+      expect(caseworkerPayload[1].attributes.jurisdiction).to.deep.equal(['Not-IA']);
+      expect(caseworkerPayload[1].attributes.primaryLocation).to.deep.equal([locationId]);
+      expect(caseworkerPayload[1].roleName).to.deep.equal(['lead-judge', 'hearing-judge']);
+      expect(caseworkerPayload[1].roleType).to.deep.equal(['ORGANISATION']);
+    });
+  });
+
+  describe('getRoleIdsFromRoles', () => {
+
+    it('should get role ids from roles', () => {
+      const roles: Role[] = [
+        {name: 'lead-judge', label: null, description: null, category: null, substantive: null, patterns: null},
+        {name: 'hearing-judge', label: null, description: null, category: null, substantive: null, patterns: null}
+      ];
+      const roleIds = getRoleIdsFromRoles(roles);
+      expect(roleIds).to.deep.equal(['lead-judge', 'hearing-judge']);
+    });
+  });
+
   describe('mapCaseworkerData', () => {
-
-    const LOCATIONAPI_1: LocationApi = {
-      is_primary: true,
-      location: 'Test One',
-      location_id: '1',
-      services: ['a', 'b'],
-    };
-    const LOCATIONAPI_2: LocationApi = {
-      is_primary: false,
-      location: 'Test Two',
-      location_id: '2',
-      services: ['a', 'c'],
-    };
-    const LOCATIONAPI_3: LocationApi = {
-      is_primary: true,
-      location: 'Test Three',
-      location_id: '3',
-      services: ['b', 'c'],
-    };
-
-    const LOCATION_1: Location = {
-      id: '1',
-      locationName: 'Test One',
-      services: ['a', 'b'],
-    };
-    const LOCATION_2: Location = {
-      id: '3',
-      locationName: 'Test Three',
-      services: ['b', 'c'],
-    };
-    const CASEWORKERAPI_1: CaseworkerApi = {
-      base_location: [LOCATIONAPI_1, LOCATIONAPI_2],
-      email_id: 'nametest@test.com',
-      first_name: 'Name',
-      id: '1',
-      last_name: 'Test',
-    };
-    const CASEWORKERAPI_2: CaseworkerApi = {
-      base_location: [LOCATIONAPI_2, LOCATIONAPI_3],
-      email_id: 'firstlast@test.com',
-      first_name: 'First',
-      id: '2',
-      last_name: 'Last',
-    };
-    const CASEWORKERAPI_3: CaseworkerApi = {
-      base_location: [LOCATIONAPI_1, LOCATIONAPI_3],
-      email_id: 'onetwo@test.com',
-      first_name: 'One',
-      id: '3',
-      last_name: 'Two',
-    };
-    const CASEWORKERAPI_4: CaseworkerApi = {
-      base_location: [],
-      email_id: 'fourthtest@test.com',
-      first_name: 'Fourth',
-      id: '4',
-      last_name: 'Test',
-    };
-    const CASEWORKER_1: Caseworker = {
-      email: 'nametest@test.com',
-      firstName: 'Name',
-      idamId: '1',
-      lastName: 'Test',
-      location: LOCATION_1,
-      roleCategory: RoleCategory.LEGAL_OPERATIONS,
-    };
-    const CASEWORKER_2: Caseworker = {
-      email: 'firstlast@test.com',
-      firstName: 'First',
-      idamId: '2',
-      lastName: 'Last',
-      location: LOCATION_2,
-      roleCategory: RoleCategory.ADMIN,
-    };
-    const CASEWORKER_3: Caseworker = {
-      email: 'onetwo@test.com',
-      firstName: 'One',
-      idamId: '3',
-      lastName: 'Two',
-      location: LOCATION_2,
-      roleCategory: RoleCategory.LEGAL_OPERATIONS,
-    };
-    const CASEWORKER_4: Caseworker = {
-      email: 'fourthtest@test.com',
-      firstName: 'Fourth',
-      idamId: '4',
-      lastName: 'Test',
-      location: null,
-      roleCategory: null,
-    };
-
-    const mockRoleAssignments: RoleAssignment[] = [
-      {
-        id: '123',
-        attributes: null,
-        actorId: '1',
-        roleCategory: RoleCategory.LEGAL_OPERATIONS,
-      },
-      {
-        id: '123',
-        attributes: null,
-        actorId: '2',
-        roleCategory: RoleCategory.ADMIN,
-      },
-      {
-        id: '123',
-        attributes: null,
-        actorId: '3',
-        roleCategory: RoleCategory.LEGAL_OPERATIONS,
-      },
-      {
-        id: '123',
-        attributes: null,
-        actorId: '5',
-        roleCategory: RoleCategory.LEGAL_OPERATIONS,
-      },
-    ];
 
     it('should map the primary location correctly', () => {
       // check function seals with no locations

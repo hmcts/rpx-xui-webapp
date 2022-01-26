@@ -1,0 +1,16 @@
+<div *ngFor="let section of template">
+  <div [innerHtml]="section.sectionHTMLTitle"></div>
+  <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+    <div class="govuk-summary-list__row" *ngFor="let answer of section.answers">
+      <dt class="govuk-summary-list__key">
+        {{ answer.answerTitle}
+      </dt>
+      <dd class="govuk-summary-list__value">
+        <div [innerHtml]="answer.answerSource | transformAnswer | async"></div>
+      </dd>
+      <dd class="govuk-summary-list__actions">
+        <a href="{{answer.changeLink}}"></a>
+      </dd>
+    </div>
+  </dl>
+</div>

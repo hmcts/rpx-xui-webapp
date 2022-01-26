@@ -8,5 +8,4 @@ export interface HearingRequestMainModel {
   hearingDetails: HearingDetailsModel;
   caseDetails?: CaseDetailsModel;
   partyDetails: PartyDetailsModel[];
-  hearingResponse?: Object;
 }

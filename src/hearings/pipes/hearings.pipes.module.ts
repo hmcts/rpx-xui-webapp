@@ -1,18 +1,16 @@
-import { TitleCasePipe } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
-import { CamelToTitleCasePipe } from './camel-to-titlecase.pipe';
+import { CamelToSentenceCasePipe } from './camel-to-sentencecase.pipe';
 import { HearingsBadgePipe } from './hearings-badge.pipe';
 
 @NgModule({
   declarations: [
     HearingsBadgePipe,
-    CamelToTitleCasePipe
+    CamelToSentenceCasePipe
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  providers: [TitleCasePipe],
   exports: [
     HearingsBadgePipe,
-    CamelToTitleCasePipe
+    CamelToSentenceCasePipe
   ]
 })
 export class HearingsPipesModule {

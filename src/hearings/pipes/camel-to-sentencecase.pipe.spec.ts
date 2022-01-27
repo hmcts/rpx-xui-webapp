@@ -1,4 +1,4 @@
-import { CamelToSentenceCasePipe } from './camel-to-titlecase.pipe';
+import { CamelToSentenceCasePipe } from './camel-to-sentencecase.pipe';
 
 describe('CamelToSentenceCasePipe', () => {
   let camelToTitleCasePipe: CamelToSentenceCasePipe;

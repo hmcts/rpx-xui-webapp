@@ -42,11 +42,13 @@ describe('getUserDetails', () => {
         },
       }
       req = mockReq(reqQuery)
-      await getUserDetails(req, res, next)
-      const response = {
-        canShareCases: true,
-      }
-      expect(res.send).to.have.been.calledWith(sinon.match(response))
+      getUserDetails(req, res, next).then(() => {
+        const response = {
+          canShareCases: true,
+        }
+        expect(res.send).to.have.been.calledWith(sinon.match(response))
+        next();
+      })
     })
 
     it('should return a false response when case share permission is non-existent', async () => {

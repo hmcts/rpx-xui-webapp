@@ -42,11 +42,13 @@ describe('getUserDetails', () => {
         },
       }
       req = mockReq(reqQuery)
-      await getUserDetails(req, res, next)
-      const response = {
-        canShareCases: true,
-      }
-      expect(res.send).to.have.been.calledWith(sinon.match(response))
+      getUserDetails(req, res, next).then(() => {
+        const response = {
+          canShareCases: true,
+        }
+        expect(res.send).to.have.been.calledWith(sinon.match(response))
+        next();
+      })
     })
 
     it('should return a false response when case share permission is non-existent', async () => {
@@ -65,11 +67,13 @@ describe('getUserDetails', () => {
         },
       }
       req = mockReq(reqQuery)
-      await getUserDetails(req, res, next)
-      const response = {
-        canShareCases: false
-      }
-      expect(res.send).to.have.been.calledWith(sinon.match(response))
+      getUserDetails(req, res, next).then(() => {
+        const response = {
+          canShareCases: false
+        }
+        expect(res.send).to.have.been.calledWith(sinon.match(response));
+        next()
+      })
     })
 
     it('should catch an error', async () => {
@@ -90,9 +94,10 @@ describe('getUserDetails', () => {
       req = mockReq(reqQuery)
       res.send.throws()
 
-      await getUserDetails(req, res, next)
-
-      expect(next).to.have.been.calledWith()
+      getUserDetails(req, res, next).then(() => {
+        expect(next).to.have.been.calledWith();
+        next()
+      })
     })
 });
 

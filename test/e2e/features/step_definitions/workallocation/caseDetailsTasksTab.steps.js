@@ -122,6 +122,15 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                             linktext = await linkElement.getText();
                             isLinkWithTextPresent = linktext.includes(contentText);
                             if (isLinkWithTextPresent) {
+                                if (validateContentType.toLowerCase().includes('urlcontains')) {
+                                    const linkHref = await linkElement.getAttribute('href');
+                                    const expectedHref = attributeHash.href;
+                                    reportLogger.AddMessage(`linl href expected "${expectedHref}", actual "${linkHref}"`);
+
+                                    softAssert.assert(async () => {
+                                        expect(linkHref.includes(expectedHref), `link href ${linkHref} not not contains "${expectedHref}"`).to.be.true;
+                                    });
+                                }
                                 break;
                             }
                         }

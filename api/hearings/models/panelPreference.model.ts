@@ -1,5 +1,4 @@
-import {RequirementType} from './hearings.enum';
-
+import { RequirementType } from './hearings.enum';
 export interface PanelPreferenceModel {
   memberID: string;
   memberType?: string;

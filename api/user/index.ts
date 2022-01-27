@@ -31,7 +31,6 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
       userInfo,
     });
   } catch (error) {
-    console.log('here');
     next(error);
   }
 }

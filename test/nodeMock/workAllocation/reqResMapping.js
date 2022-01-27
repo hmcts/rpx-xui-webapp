@@ -1,5 +1,7 @@
 const workAllocationMockData = require('./mockData');
 const CucumberReporter = require('../../e2e/support/reportLogger');
+const MockApp = require('../app');
+
 module.exports = {
     mockServiceResetCallbacks: [() => workAllocationMockData.setDefaultData()],
     get: {
@@ -277,7 +279,7 @@ module.exports = {
             const services = req.body.services;
             const userids = req.body.userIds;
 
-
+            const returnUsers = [];
             for (const userid of userids){
                 const judicialuser = JSON.parse(JSON.stringify(allJudicialUsers[0]));
                 judicialuser.sidam_id = userid;
@@ -286,13 +288,13 @@ module.exports = {
                     appointment.epimms_id = workAllocationMockData.locationsByServices[0].locations[0].epims_id; 
  
                 }
-
+                returnUsers.push(judicialuser);
             }
 
-            res.send(workAllocationMockData.getJudicialList(20));
+            res.send(returnUsers);
         },
         '/workallocation2/retrieveCaseWorkersForServices' : (req,res) => {
-            res.send(workAllocationMockData.retrieveCaseWorkersForServices(req.body.serviceIds))
+            res.send(workAllocationMockData.retrieveCaseWorkersForServices(req.body.serviceIds, req.body.fullServices))
         } 
     }
    

@@ -171,10 +171,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 cw.firstName = fullNameArr[0];
                 cw.lastName = fullNameArr[1];
 
-                workAllocationMockData.caseWorkersList.push(cw); 
+                workAllocationMockData.addCaseworker(cw,'IA'); 
+ 
             }
-           
-            
+
+             
         }
        
 

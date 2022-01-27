@@ -12,6 +12,7 @@ const TaskListTable = require('../../../../e2e/features/pageObjects/workAllocati
 const BrowserUtil = require('../../../util/browserUtil');
 const BrowserWaits = require('../../../../e2e/support/customWaits');
 
+const workallocationMockData = require('../../../../nodeMock/workAllocation/mockData');
 
 const userRolesConfig = require('../../../../e2e/config/userRolesConfig');
 
@@ -27,6 +28,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         const userIdamID = testUserIdamId.idamId;
         await CucumberReporter.AddMessage(`${releaseUer} id ${testUserIdamId.idamId}`);
+        workallocationMockData.addCaseworkerWithIdamId(userIdamID, 'IA'); 
+
         const datatablehashes = datatableroles.hashes();
         const roles = datatablehashes.map(roleHash => roleHash.ROLE);
         const userDetails = nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, userIdamID);
@@ -42,7 +45,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         const userIdamID = testUserIdamId.idamId;
         await CucumberReporter.AddMessage(`${releaseUer} id ${testUserIdamId.idamId}`);
-        
+        workallocationMockData.addCaseworkerWithIdamId(userIdamID, 'IA'); 
+ 
         roles = roles.split(",");
         const userDetails = nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, userIdamID);
 
@@ -101,6 +105,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         const userIdamID = testUserIdamId.idamId;
         await CucumberReporter.AddMessage(`${useridentifier} id ${testUserIdamId.idamId}`);
+        workallocationMockData.addCaseworkerWithIdamId(userIdamID,"IA"); 
 
         roles = roles.split(",");
         const userDetails = nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, userIdamID);
@@ -129,7 +134,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         const userIdamID = testUserIdamId.idamId;
         await CucumberReporter.AddMessage(`${useridentifier} id ${testUserIdamId.idamId}`);
-        
+        workallocationMockData.addCaseworkerWithIdamId(userIdamID,'IA'); 
+ 
         const rolesIdentifiersArr = roleIdentifiers.split(",");
         const roleidentifersForRoleType = userRolesConfig[roleType.toLowerCase()];
         if (!roleidentifersForRoleType){

@@ -9,7 +9,7 @@ import Request from '../utils/request';
 
 const workAllocationDataModels = require('../../../dataModels/workAllocation');
 
-describe('Work allocation Release 2: Find person', () => {
+describe('Work allocation Release 2: locations search', () => {
     const caseOfficer = config.users[config.testEnv].caseOfficer_r2.e;
     const caseofficerPass = config.users[config.testEnv].caseOfficer_r2.sec;
 
@@ -18,31 +18,26 @@ describe('Work allocation Release 2: Find person', () => {
         Request.clearSession();
     });
 
-    it('Find Person', async function () {
+
+    it('getLocationById', async function () {
         this.timeout(60000);
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
-        const reqBody = {
-            searchOptions : {
-                jurisdiction : 'All',
-                searchTerm : 'pri'
-            }
-        };
 
         const headers = {
             'X-XSRF-TOKEN': xsrfToken,
-            'content-length': JSON.stringify(reqBody).length
         };
 
-        const response = await Request.post(`workallocation2/findPerson`, reqBody, headers, 200);
+        const response = await Request.get(`api/locations/getLocationsById?ids=${config.workallocation[config.testEnv].locationId}`, headers, 200);
         expect(response.status).to.equal(200);
-        expect(response.data).to.be.an('array');
+        expect(response.data).to.be.an('object');
 
-        const expectedCases = workAllocationDataModels.getFindPersonObj();
-        expect(response.data[0]).to.have.all.keys(Object.keys(expectedCases));
+        expect(response.data).to.have.all.keys(['court_name', 'epims_id', 'site_name','court_address']);
 
     });
+
+
 
 });
 

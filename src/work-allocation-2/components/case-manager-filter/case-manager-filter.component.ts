@@ -65,6 +65,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       maxSelected: 1,
       minSelectedError: 'You must select a service',
       maxSelectedError: null,
+      changeResetFields: ['selectLocation', 'selectPerson', 'role', 'person', 'actorId'],
       title: 'Service',
       type: 'select'
     };
@@ -163,6 +164,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       maxSelected: 0,
       minSelectedError: 'You must select a person',
       maxSelectedError: null,
+      domainField: 'role',
       enableCondition: 'actorId=Specific person',
       type: 'find-person'
     };
@@ -181,7 +183,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       }
     );
     this.filterConfig.fields = [
-      CaseManagerFilterComponent.initServiceFilter(this.jurisdictions),
+      CaseManagerFilterComponent.initServiceFilter([...this.jurisdictions, 'SCSS' ]),
       CaseManagerFilterComponent.initSelectLocationFilter(),
       CaseManagerFilterComponent.initLocationFilter(),
       CaseManagerFilterComponent.initRoleTypeFilter(),
@@ -204,7 +206,6 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
         filter((f: FilterSetting) => f && f.hasOwnProperty('fields') && f.id === CaseManagerFilterComponent.FILTER_NAME),
         filter((f: FilterSetting) => !f.reset),
       ).subscribe((f: FilterSetting) => {
-        console.log('filter', f);
         const fields = f.fields.reduce((acc, field: { name: string, value: string[] }) => {
           if (field.name === 'location') {
             const value: any = field.value && field.value.length > 0 ? (field.value[0] as unknown as LocationByEPIMSModel).epims_id : '';
@@ -212,8 +213,6 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
           }
           return { ...acc, [field.name]: field.value[0] };
         }, {});
-
-        console.log('fields', fields);
         this.selectChanged.emit(fields);
       });
   }

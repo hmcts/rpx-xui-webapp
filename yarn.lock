@@ -496,10 +496,10 @@
   resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.39-alpha.tgz#782d4a4698dae040dd72b26711f04a8d8299d25c"
   integrity sha512-M1364rFLuvktYz5+jVjJ5ZmNUx0/SgoAvH3RsIaT2wFqFf92emuiRyXqax5oSEC5kM9Jpw0rcxEcRbBJWMoglg==
 
-"@hmcts/media-viewer@2.7.9":
-  version "2.7.9"
-  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.7.9.tgz#6fa22f7e2a9b65e418afe32059369b332fbc29b3"
-  integrity sha512-0QEbYZgLSVLUspcUgtqZSc2HcKOls5XnEFSHaj6kNOi9OahTXgywQLGKmQziMcSZi9buaH1MqnQd+tMCCPO7AQ==
+"@hmcts/media-viewer@2.7.12":
+  version "2.7.12"
+  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.7.12.tgz#e5f4030e1bbd9dfab770997a96eec3e5c6beb73a"
+  integrity sha512-GVA1Nw/zidOvbqn5Mg8qB8BupS3/848962zFR0nP3VNi/FfT0SvgGut3/VGU/9KBL4ofy5QjxP/j8ZIzQHz2FA==
   dependencies:
     "@swimlane/ngx-datatable" "^16.0.2"
     angular-tree-component "^8.5.6"
@@ -537,10 +537,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.6.1-adding-location-filter-bugfix":
-  version "1.6.1-adding-location-filter-bugfix"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.1-adding-location-filter-bugfix.tgz#6a11361c0c0b873e83c55c484ff0802be3862395"
-  integrity sha512-WiPxB/7YBY+v7L1g8Vh4Js0TOGw1PhW3TrylTB/aSIr4txIbGv1GCQvBeq2WA2LKy0m55DcancPmw2jai+ppoA==
+"@hmcts/rpx-xui-common-lib@v1.6.1-all-work-filter":
+  version "1.6.1-all-work-filter"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.1-all-work-filter.tgz#28ed6808ce48235a4b5a85ace74b81cb3df75bd2"
+  integrity sha512-mYxpE7WL5zt+GVewllDpOaVRYpv5MKgaA/R85XC66UaC1vN6uWN6jupuz1/y0fR0PWD8ik+rO64hUIl86mdNrw==
   dependencies:
     tslib "^1.9.0"
 

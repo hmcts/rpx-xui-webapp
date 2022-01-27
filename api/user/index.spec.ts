@@ -96,7 +96,7 @@ describe('getUserDetails', () => {
     })
 });
 
-describe('getUserRoleAssignments', async () => {
+describe('getUserRoleAssignments', () => {
 
     it('use session', async () =>  {
     const userInfo = {

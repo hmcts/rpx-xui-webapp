@@ -56,7 +56,7 @@
                   <div class="govuk-checkboxes" formArrayName="addition-securities" data-module="govuk-checkboxes">
                     <div class="govuk-checkboxes__item" *ngFor="let additionalFacility of additionalFacilities;index as pos" [formGroupName]="pos">
                       <input class="govuk-checkboxes__input" id="{{additionalFacility.key}}" name="pos" type="checkbox" formControlName="selected" [value]="additionalFacility.value_en">
-                      <label class="govuk-label govuk-checkboxes__label" for="{{additionalFacility.key}}" >{{additionalFacility.value_en}}</label>
+                      <label class="govuk-label govuk-checkboxes__label" for="{{additionalFacility.key}}" >{{additionalFacility.value_en | camelToTitleCase}}</label>
                     </div>
                   </div>
                 </div>

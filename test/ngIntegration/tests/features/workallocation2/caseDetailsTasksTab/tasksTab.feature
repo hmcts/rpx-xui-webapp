@@ -37,8 +37,8 @@ Feature: WA Release 2: Case details Tasks tab
             |                    | 13 Permissions M unassigned               |             |              | -10          | 10      | Manage             | true     |                                                                                                                                                                          |
             |                    | 14 Permissions none assigned to someother | someone     | Test 6 user  | -10          | 10      |                    | true     |                                                                                                                                                                          |
             |                    | 15 Permissions none unassigned            |             |              | -10          | 10      |                    | true     |                                                                                                                                                                          |
-        Given I set MOCK persons end point "/workallocation2/caseworker" for WA release 2
-            | idamId                               | firstName   | lastName | email                   | roleCategory     |
+        Given I set MOCK caseworkers for service "IA"
+            | idamId | firstName | lastName | email | roleCategory |
             | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Test 2      | user     | caseworker_user1@gov.uk | LEGAL_OPERATIONS |
             | 08a3d216-c6ab-4e92-a7e3-ca3661e6be81 | Test 3      | user     | caseworker_user2@gov.uk | LEGAL_OPERATIONS |
             | 08a3d216-c6ab-4e92-a7e3-ca3661e6be87 | Test 4      | user     | caseworker_user3@gov.uk | LEGAL_OPERATIONS |

@@ -109,7 +109,7 @@ ie.
 
 Note that this is connected into the application via the following pieces of code:
 ```javascript
-  keyVaults:
+  keyVaults: 
     rpx:
       secrets:
         - postgresql-admin-pw

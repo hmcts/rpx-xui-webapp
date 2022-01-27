@@ -18,7 +18,6 @@ import { SortField } from '../../models/common';
 import { Location, PaginationParameter, SearchCaseRequest, SortParameter } from '../../models/dtos';
 import {
   CaseworkerDataService,
-  JudicialWorkerDataService,
   LocationDataService,
   WASupportedJurisdictionsService,
   WorkAllocationCaseService
@@ -73,7 +72,8 @@ export class WorkCaseListWrapperComponent implements OnInit {
     protected readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService,
     protected readonly jurisdictionsService: JurisdictionsService,
     protected readonly rolesService: AllocateRoleService
-  ) {}
+  ) {
+  }
 
   public get cases(): Case[] {
     return this.pCases;
@@ -302,20 +302,20 @@ export class WorkCaseListWrapperComponent implements OnInit {
     const mappedSearchResult$ = casesSearch$.pipe(mergeMap(result => {
       const judicialUserIds = result.cases.filter(theCase => theCase.role_category === 'JUDICIAL').map(thisCase => thisCase.assignee);
       if (judicialUserIds && judicialUserIds.length > 0 && this.view !== 'MyCases') {
-          // may want to determine judicial workers by services in filter
-          return this.rolesService.getCaseRolesUserDetails(judicialUserIds, ['IA']).pipe(switchMap((judicialUserData) => {
-            const judicialNamedCases = result.cases.map(judicialCase => {
-              const currentCase = judicialCase;
-              const theJUser = judicialUserData.find(judicialUser => judicialUser.sidam_id === judicialCase.assignee);
-              if (theJUser) {
-                currentCase.actorName = theJUser.known_as;
-                return currentCase;
-              }
+        // may want to determine judicial workers by services in filter
+        return this.rolesService.getCaseRolesUserDetails(judicialUserIds, ['IA']).pipe(switchMap((judicialUserData) => {
+          const judicialNamedCases = result.cases.map(judicialCase => {
+            const currentCase = judicialCase;
+            const theJUser = judicialUserData.find(judicialUser => judicialUser.sidam_id === judicialCase.assignee);
+            if (theJUser) {
+              currentCase.actorName = theJUser.known_as;
               return currentCase;
-            });
-            result.cases = judicialNamedCases;
-            return of(result);
-          }));
+            }
+            return currentCase;
+          });
+          result.cases = judicialNamedCases;
+          return of(result);
+        }));
       } else {
         return of(result);
       }

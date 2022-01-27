@@ -5,6 +5,7 @@ import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/locat
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+import { PersonRole } from '../../../../api/workAllocation2/interfaces/person';
 
 import { AppUtils } from '../../../app/app-utils';
 import { UserRole } from '../../../app/models';
@@ -65,6 +66,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       maxSelected: 1,
       minSelectedError: 'You must select a service',
       maxSelectedError: null,
+      changeResetFields: ['selectLocation', 'selectPerson', 'role', 'person'],
       title: 'Service',
       type: 'select'
     };
@@ -135,16 +137,16 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       name: 'role',
       options: [
         {
-          key: 'Judicial',
-          label: 'Judicial'
+          key: PersonRole.JUDICIAL,
+          label: PersonRole.JUDICIAL
         },
         {
-          key: 'Legal Ops',
-          label: 'Legal Ops'
+          key: PersonRole.CASEWORKER,
+          label: PersonRole.CASEWORKER
         },
         {
-          key: 'Admin',
-          label: 'Admin'
+          key: PersonRole.ADMIN,
+          label: PersonRole.ADMIN
         }
       ],
       minSelected: 1,
@@ -166,6 +168,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       maxSelected: 0,
       minSelectedError: 'You must select a person',
       maxSelectedError: null,
+      domainField: 'role',
       enableCondition: 'selectPerson=Specific person',
       type: 'find-person'
     };
@@ -219,7 +222,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       }
     );
     this.fieldsConfig.fields = [
-      TaskManagerFilterComponent.initServiceFilter(this.jurisdictions),
+      TaskManagerFilterComponent.initServiceFilter([...this.jurisdictions, 'SCSS' ]),
       TaskManagerFilterComponent.initSelectLocationFilter(),
       TaskManagerFilterComponent.initLocationFilter(),
       TaskManagerFilterComponent.initPersonFilter(),
@@ -245,7 +248,6 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
         filter((f: FilterSetting) => f && f.hasOwnProperty('fields')),
         filter((f: FilterSetting) => !f.reset),
       ).subscribe((f: FilterSetting) => {
-        console.log('filter', f);
         const fields = f.fields.reduce((acc, field: { name: string, value: string[] }) => {
           if (field.name === 'location') {
             const value: any = field.value && field.value.length > 0 ? (field.value[0] as unknown as LocationByEPIMSModel).epims_id : '';

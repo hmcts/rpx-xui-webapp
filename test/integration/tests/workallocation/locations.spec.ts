@@ -33,7 +33,26 @@ describe('Work allocation Release 2: locations search', () => {
         expect(response.status).to.equal(200);
         expect(response.data).to.be.an('object');
 
-        expect(response.data).to.have.all.keys(['court_name', 'epims_id', 'site_name','court_address']);
+        expect(Object.keys(response.data)).to.have.members(['court_name', 'epims_id', 'site_name','court_address']);
+
+    });
+
+
+    it('getLocation', async function () {
+        this.timeout(60000);
+        await Request.withSession(caseOfficer, caseofficerPass);
+        const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
+
+
+        const headers = {
+            'X-XSRF-TOKEN': xsrfToken,
+        };
+
+        const response = await Request.get(`api/locations/getLocationsById?ids=${config.workallocation[config.testEnv].locationId}`, headers, 200);
+        expect(response.status).to.equal(200);
+        expect(response.data).to.be.an('object');
+
+        expect(Object.keys(response.data)).to.have.members(['court_name', 'epims_id', 'site_name', 'court_address']);
 
     });
 

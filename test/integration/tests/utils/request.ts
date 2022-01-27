@@ -131,6 +131,7 @@ class Request {
         let error = null;
         let isExpectedResponseReceived = false
         while (retryAttemptCounter < 3 && !isExpectedResponseReceived){
+            retryAttemptCounter++;
             isExpectedResponseReceived = false;
             retVal = null;
             error = null;
@@ -153,7 +154,6 @@ class Request {
             if (!isExpectedResponseReceived){
                 // console.log(retVal);
                 // console.log(error);
-                retryAttemptCounter++;
                 const status = retVal  ? retVal.status : "unknown";
                 const responseBody = retVal  ? retVal.data : "unknown"; 
                 let errorMessage = retVal ? `STATUS CODE : ${status} =>RESPONSE BODY :  ${JSON.stringify(responseBody)}` : `unknown request error occured  ` 

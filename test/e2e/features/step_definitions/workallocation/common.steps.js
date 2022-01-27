@@ -155,6 +155,13 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await taskListTable.clickTaskColLink(colName,rowPos);
     });
 
+    When('I click task column link {string} at row {int}, I see case details page', async function (colName, rowPos) {
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await taskListTable.clickTaskColLink(colName, rowPos);
+            expect(await caseDetailsPage.amOnPage(),'Case details page not displayed').to.be.true 
+        });
+    });
+
     Then('I validate manage link actions for tasks', async function (tasksDatatable) {
         const softAssert = new SoftAssert();
         const taskHashes = tasksDatatable.hashes();

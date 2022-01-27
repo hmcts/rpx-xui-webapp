@@ -61,7 +61,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I see case details page with message banner {string}', async function(expectedBannerMessage){
-        const actualBannerMessage = await caseDetailsPage.messageBanner.getBannerMessagesDisplayed();
-        expect(actualBannerMessage.join(",")).to.includes(expectedBannerMessage)
+        await BrowserWaits.retryWithActionCallback(async () => {
+            const actualBannerMessage = await caseDetailsPage.messageBanner.getBannerMessagesDisplayed();
+            expect(actualBannerMessage.join(",")).to.includes(expectedBannerMessage)
+        });
+        
     });
 });

@@ -1,5 +1,5 @@
 
-@ng @integration_todo
+@ng @integration_todo 
 Feature: WA Release 2: Case details Tasks tab
 
     Requirements from
@@ -12,7 +12,7 @@ Feature: WA Release 2: Case details Tasks tab
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
-        Given I set MOCK request "/workallocation2/case/task/:caseid" response log to report
+        # Given I set MOCK request "/workallocation2/case/task/:caseid" response log to report
 
         Given I set MOCK case details with reference "caseDetails"
         Given I set MOCK case details "caseDetails" property "Jurisdiction" as "IA"
@@ -21,7 +21,7 @@ Feature: WA Release 2: Case details Tasks tab
             | 1234567812345678 |
             | 1234567812345679 |
         Given I set MOCK case tasks with userDetails from reference "userDetails"
-            | id                 | task_title                                | assignee    | assigneeName | created_date | dueDate | permissions        | warnings | description                                                                                                                                                              |
+            | id                 | task_title                                | assignee    | assigneeName | created_date | due_date | permissions        | warnings | description                                                                                                                                                              |
             | 987654321987654321 | Task 1                                    | thissession | Test user    | -10          | -1      | Own,Manage,Execute | true     | Click link to proceed to next step [test link next step](/case/case-details/${case_id})                                                                                  |
             | 987654321987654322 | Task 2                                    | someone     | Test 2 user  | -10          | 0       | Own,Manage,Execute | true     | Click link to proceed to [next step 1](/case/case-details/${case_id}) or \n Click link to proceed to [next step 2](/case/case-details/${case_id}/${task_id}/testaction2) |
             |                    | Task 3                                    |             |              | -10          | 1       | Own,Manage,Execute | true     |                                                                                                                                                                          |

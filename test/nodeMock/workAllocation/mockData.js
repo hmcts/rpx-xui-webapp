@@ -6,7 +6,8 @@ class WorkAllocationMockData {
 
     constructor() {
         this.WorkAllocationDataModels = WorkAllocationDataModels;
-        this.init();  
+        this.init(); 
+        this.locationIdCounter = 0; 
     }
 
     init(){
@@ -114,13 +115,13 @@ class WorkAllocationMockData {
 
     getLocationsByServices(services){
        const  locationsByService = [];
-        let loctaionIdTracker = 10001;
+        
         for(const service of services){
             const byService = {service : service , locations : []};
             for(let i = 0; i < 20; i++){
                 const location = {
                     "court_venue_id": "382",
-                    "epims_id": ""+loctaionIdTracker,
+                    "epims_id": "" + this.locationIdCounter,
                     "is_hearing_location": "Y",
                     "is_case_management_location": "Y",
                     "site_name": service + ' Site ' + i,
@@ -137,12 +138,40 @@ class WorkAllocationMockData {
                 }
 
                 byService.locations.push(location); 
-                loctaionIdTracker++;
+                this.locationIdCounter++;
             }
             locationsByService.push(byService);
 
         }
         return locationsByService; 
+    }
+
+    getLocationsWithNames(locations) {
+        const returnValue = [];
+        
+        for (const locationName of locations) {
+            const location = {
+                "court_venue_id": "382",
+                "epims_id": "" + this.locationIdCounter,
+                "is_hearing_location": "Y",
+                "is_case_management_location": "Y",
+                "site_name": locationName,
+                "court_name": locationName,
+                "court_status": "Open",
+                "region_id": "2",
+                "region": "London",
+                "court_type_id": "23",
+                "court_type": "Immigration and Asylum Tribunal",
+                "cluster_name": "Tribunal",
+                "open_for_public": "Yes",
+                "court_address": "YORK HOUSE AND WELLINGTON HOUSE, 2-3 DUKES GREEN, FELTHAM, MIDDLESEX",
+                "postcode": "TW14 0LS"
+            }
+
+            returnValue.push(location);
+            this.locationIdCounter++;
+        }
+        return returnValue;
     }
 
     updateWASupportedJurisdictions(jurisdictions){
@@ -346,8 +375,8 @@ class WorkAllocationMockData {
         const persons = [];
         for (let ctr = 0; ctr < count; ctr++) {
             persons.push({
-                "firstName": forService ? forService + " Jane" : "Jane " + ctr,
-                "lastName": forService ? forService + " Doe" : "Doe",
+                "firstName": "Jane " + ctr,
+                "lastName": "Doe" + (forService ? forService : ''),
                 "idamId": "41a90c39-d756-4eba-8e85-5b5bf56b31f" + ctr,
                 "email": "testemail" + ctr + "@testdomain.com",
                 "roleCategory": roleCategory ? roleCategory : "LEGAL_OPERATIONS",
@@ -635,16 +664,24 @@ class WorkAllocationMockData {
         ]
     }
 
-    retrieveCaseWorkersForServices(services){
+    retrieveCaseWorkersForServices(services,allServices){
 
         const caseWorkerForServices = [];
         for(const byService of this.caseworkersByService){
-            if (services.includes(byService.service)){
+            if (allServices){
                 caseWorkerForServices.push(byService);
-           } 
+            } else if(services && services.includes(byService.service)){
+                caseWorkerForServices.push(byService);
+           }else{
+                //throw new Error(`retrieveCaseWorkersForServices request services or fullservices atre not set.`);
+           }
         }
         return caseWorkerForServices;
         
+    }
+
+    addLocationWithNamesToService(locations, service){
+
     }
 
     searchLocations(serviceIds, searchTerm){

@@ -1,20 +1,31 @@
-@ng
+@ng 
 Feature: WA Release 2: My work - Work filters
 
     Background: Mock and browser setup
         Given I init MockApp
-        Given I set MOCK locations for release "wa_release_2"
-            | id    | locationName  |
-            | 12345 | Aldgate Tower |
-            | 12346 | Birmingham    |
-            | 12347 | Bradford      |
-            | 12348 | Glasgow       |
-            | 12349 | Hatton Cross  |
-            | 12350 | Newcastle     |
-            | 12351 | Newport       |
-            | 12352 | North Shields |
-            | 12353 | Taylor House  |
+        Given I set MOCK locations with names in service "IA"
+            | locationName  |
+            | IA Court Aldgate Tower |
+            | IA Court Birmingham |
+            | IA Court Bradford |
+            | IA Court Glasgow |
+            | IA Court Hatton Cross |
+            | IA Court Newcastle |
+            | IA Court Newport |
+            | IA Court North Shields |
+            | IA Court Taylor House |
 
+        Given I set MOCK locations with names in service "SSCS"
+            | locationName           |
+            | SSCS Court Aldgate Tower |
+            | SSCS Court Birmingham |
+            | SSCS Court Bradford |
+            | SSCS Court Glasgow |
+            | SSCS Court Hatton Cross |
+            | SSCS Court Newcastle |
+            | SSCS Court Newport |
+            | SSCS Court North Shields |
+            | SSCS Court Taylor House |
         Given I set MOCK location for person of type "caseworker" in release "wa_release_2"
             | id    | locationName  |
             | 12345 | Aldgate Tower |
@@ -34,47 +45,31 @@ Feature: WA Release 2: My work - Work filters
         Then I validate location filter is not displayed
         When I click work filter button to "Show" filter
         Then I validate work filter button text is "Hide work filter"
-        Then I validate location filter is displayed
-        When I click work location filter with label "Bradford"
-        When I click work location filter with label "Newcastle"
-        Then I validate following work location selected
-            | locationName  |
-            | Aldgate Tower |
-            | Bradford      |
-            | Newcastle     |
-        When I click work filter button to "Hide" filter
-        Then I validate location filter is not displayed
-        When I click work filter button to "Show" filter
-        Then I validate location filter is displayed
-        Then I validate following work location selected
-            | locationName  |
-            | Aldgate Tower |
-        When I click work location filter with label "Glasgow"
-        When I click work location filter with label "Newcastle"
+
+
+        Then I validate my work filter services container displayed
+        Then I validate my work filter location search displayed
+        # Then I validate my work filter services listed
+        # Then I Validate my work filter services selected
+        # Then I validate my work filter locations selected
+
+
+        # When I select service "" in my work filter
+        # When I unselect service "" in my work filter
+        # When I search for location text "" in my work filters
+        # Then I see location search results in my work filter
+        # When I select locations search result "" in my work filter
+        # Then I see location "" selected in my work filter
+        # When I click add location button in my work filter
+
+
+        
         When I click work location filter Apply button
 
-        Then I validate location filter is not displayed
-        Then I validate work location filter batch and hint labels are displayed
+        Then I validate my work filter services container not displayed
         When I click work filter button to "Show" filter
-        Then I validate location filter is displayed
-        Then I validate following work location selected
-            | locationName  |
-            | Aldgate Tower |
-            | Glasgow       |
-            | Newcastle     |
-
-        When I click work location filter with label "Bradford"
-        When I click work location filter with label "Hatton Cross"
-        When I click work filter button to "Hide" filter
-        Then I validate location filter is not displayed
-        When I click work filter button to "Show" filter
-        Then I validate location filter is displayed
-
-        Then I validate following work location selected
-            | locationName  |
-            | Aldgate Tower |
-            | Glasgow       |
-            | Newcastle     |
+        Then I validate my work filter services container displayed
+        
         Examples:
             | UserType       | Roles                                                            |
             | Caseworker IAC | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |
@@ -82,7 +77,7 @@ Feature: WA Release 2: My work - Work filters
 
 
 
-    Scenario Outline:  Work filters location select and unselect "<UserType>"
+    Scenario Outline:  Work filters mandatory field validations
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles " caseworker-ia-caseofficer,caseworker-ia-admofficer, task-supervisor,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
@@ -96,202 +91,35 @@ Feature: WA Release 2: My work - Work filters
         Then I validate work location filter batch and hint labels are not displayed
         Then I validate location filter is not displayed
         When I click work filter button to "Show" filter
-        Then I validate work filter button text is "Hide work filter"
-        Then I validate location filter is displayed
-        Then I validate My work filter locations displayed
-        Then I validate work locations selected count is 1
-        Then I validate following work location selected
-            | locationName  |
-            | Aldgate Tower |
-        When I click work location filter with label "Bradford"
-        Then I validate work locations selected count is 2
-        Then I validate following work location selected
-            | locationName  |
-            | Aldgate Tower |
-            | Bradford      |
-        When I click work location filter with label "Aldgate Tower"
-        Then I validate work locations selected count is 1
-        Then I validate following work location selected
-            | locationName |
-            | Bradford     |
-        Examples:
+        When I unselect service "SSCS" in my work filter
+        When I unselect service "Immigration and Asylum" in my work filter
+        When I click work location filter Apply button
+        Then I see error message "Select a service" for service work filter in my work page
+        Then I see error message of type "message" displayed with message "Select a service"
+
+        When I select service "SSCS" in my work filter
+        When I select service "Immigration and Asylum" in my work filter
+
+        When I remove slected location "IA court" from my work filters
+
+        When I click work location filter Apply button
+        Then I see error message "Search for a location by name" for location work filter in my work page
+        Then I see error message of type "message" displayed with message "Enter a location"
+
+        When I search for location text "IA court" in my work filters
+        Then I see location search results in my work filter
+        |name|
+        |IA court 0|
+        When I select locations search result "IA court 0" in my work filter
+        When I click add location button in my work filter
+        Then I see location "IA court 0" selected in my work filter
+        When I click work location filter Apply button
+        Then I validate my work filter services container not displayed
+
+
+        Examples:   
             | UserType | Roles                                                         |
             # | Caseworker IAC | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |
             | Judge    | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker |
-
-
-
-
-    Scenario Outline:  Work filters Reset for "<UserType>"
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles " caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator" with reference "userDetails"
-        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
-            | true            | IA           | 12345           |
-        Given I start MockApp
-        Given I navigate to home page
-        # When I click on primary navigation header "My work"
-        Then I see work filter button displayed
-        Then I validate work filter button text is "Show work filter"
-        Then I validate work location filter batch and hint labels are not displayed
-        Then I validate location filter is not displayed
-        When I click work filter button to "Show" filter
-        Then I validate work filter button text is "Hide work filter"
-        Then I validate location filter is displayed
-        Then I validate My work filter locations displayed
-        Then I validate work locations selected count is 1
-        Then I validate following work location selected
-            | locationName  |
-            | Aldgate Tower |
-        When I click work location filter with label "Bradford"
-        Then I validate work locations selected count is 2
-        Then I validate following work location selected
-            | locationName  |
-            | Aldgate Tower |
-            | Bradford      |
-        When I click work location filter with label "Aldgate Tower"
-        Then I validate work locations selected count is 1
-        Then I validate following work location selected
-            | locationName |
-            | Bradford     |
-        When I click work location filter Apply button
-
-        Then I validate location filter is not displayed
-        Then I validate work location filter batch and hint labels are displayed
-        When I click work filter button to "Show" filter
-        When I click work location filter Reset button
-        Then I validate location filter is not displayed
-        Then I validate work location filter batch and hint labels are not displayed
-        When I click work filter button to "Show" filter
-        Then I validate work locations selected count is 1
-        Then I validate following work location selected
-            | locationName  |
-            | Aldgate Tower |
-
-        Examples:
-            | UserType       | Roles                                                            |
-            | Caseworker IAC | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |
-    # | Judge          | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker    |
-
-
-    Scenario Outline:  Work filters applied selection persistence within and across session "<UserType>"
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<Roles>" with reference "userDetails"
-        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
-            | true            | IA           | 12345           |
-        Given I start MockApp
-        Given I navigate to home page
-        # When I click on primary navigation header "My work"
-        Then I see work filter button displayed
-        Then I validate work filter button text is "Show work filter"
-        Then I validate work location filter batch and hint labels are not displayed
-        Then I validate location filter is not displayed
-        When I click work filter button to "Show" filter
-        Then I validate work filter button text is "Hide work filter"
-        Then I validate location filter is displayed
-        When I click work location filter with label "Bradford"
-        When I click work location filter with label "Newcastle"
-        Then I validate following work location selected
-            | locationName  |
-            | Aldgate Tower |
-            | Bradford      |
-            | Newcastle     |
-
-        When I click work location filter Apply button
-
-        Then I validate location filter is not displayed
-        Then I validate work location filter batch and hint labels are displayed
-
-        When I click work filter button to "Show" filter
-        Then I validate location filter is displayed
-        Then I validate following work location selected
-            | locationName  |
-            | Aldgate Tower |
-            | Bradford      |
-            | Newcastle     |
-
-        When I click on primary navigation header tab "All work", I see selected tab page displayed
-
-        When I click on primary navigation header "My work"
-        Then I validate location filter is not displayed
-        When I click work filter button to "Show" filter
-        Then I validate location filter is displayed
-        Then I validate following work location selected
-            | locationName  |
-            | Aldgate Tower |
-            | Bradford      |
-            | Newcastle     |
-
-
-        When I select the sign out link
-        Then I am on Idam login page
-        Given I navigate to home page
-        Then I validate location filter is not displayed
-        When I click work filter button to "Show" filter
-        Then I validate location filter is displayed
-        Then I validate following work location selected, if "Judge" equals "<UserType>"
-            | locationName  |
-            | Aldgate Tower |
-            | Bradford      |
-            | Newcastle     |
-        Then I validate following work location selected, if "Caseworker IAC" equals "<UserType>"
-            | locationName  |
-            | Aldgate Tower |
-
-        Examples:
-            | UserType       | Roles                                                                            |
-            | Caseworker IAC | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor |
-            | Judge          | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor    |
-
-
-    Scenario Outline:  Work filters applied to all sub navigation tabs "<UserType>"
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles " caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator" with reference "userDetails"
-        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
-            | isCaseAllocator | jurisdiction | primaryLocation |
-            | true            | IA           | 12345           |
-        Given I start MockApp
-        Given I navigate to home page
-        When I click on primary navigation header "My work"
-        Then I see work filter button displayed
-
-        When I click work filter button to "Show" filter
-        Then I validate location filter is displayed
-        When I click work location filter with label "Bradford"
-        When I click work location filter with label "Newcastle"
-        Then I validate following work location selected
-            | locationName  |
-            | Aldgate Tower |
-            | Bradford      |
-            | Newcastle     |
-        Given I reset reference "workallocationTaskRequest" value to null
-        When I click work location filter Apply button
-        When I wait for reference "workallocationTaskRequest" value not null
-
-        Then I validate task request body in reference "workallocationTaskRequest" has locations set
-            | locationName  |
-            | Aldgate Tower |
-            | Bradford      |
-            | Newcastle     |
-        Given I reset reference "workallocationTaskRequest" value to null
-        When I click My work sub navigation tab "Available tasks"
-        When I wait for reference "workallocationTaskRequest" value not null
-        Then I validate task request body in reference "workallocationTaskRequest" has locations set
-            | locationName  |
-            | Aldgate Tower |
-            | Bradford      |
-            | Newcastle     |
-
-        Given I reset reference "workallocationCasesRequest" value to null
-        When I click My work sub navigation tab "My cases"
-        When I wait for reference "workallocationCasesRequest" value not null
-        Then I validate task request body in reference "workallocationCasesRequest" has locations set
-            | locationName  |
-            | Aldgate Tower |
-            | Bradford      |
-            | Newcastle     |
-
-        Examples:
-            | UserType       | Roles                                                            |
-            | Caseworker IAC | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |
-# | Judge          | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
 

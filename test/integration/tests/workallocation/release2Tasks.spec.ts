@@ -52,7 +52,7 @@ describe('Work allocations Release 2: Tasks', () => {
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
-        const reqBody = getSearchTaskReqBody("AvailableTasks", ["77f9a4a4-1bf1-4903-aa6c-cab334875d91"], [config.workallocation[config.testEnv].locationId], 'caseworker').getRequestBody();
+        const reqBody = getSearchTaskReqBody("AvailableTasks", [], [config.workallocation[config.testEnv].locationId], 'caseworker').getRequestBody();
         const headers = {
             'X-XSRF-TOKEN': xsrfToken,
             'content-length': JSON.stringify(reqBody).length
@@ -67,7 +67,7 @@ describe('Work allocations Release 2: Tasks', () => {
 
         expect(actual).to.have.all.keys(Object.keys(expected));
         if (actual.tasks.length > 0 ) {
-            expect(actual.tasks[0]).to.include.members(expectedKeys);
+            expect(Object.keys(actual.tasks[0])).to.include.members(expectedKeys);
 
         }
     });
@@ -93,7 +93,7 @@ describe('Work allocations Release 2: Tasks', () => {
 
         expect(actual).to.have.all.keys(Object.keys(expected));
         if (actual.tasks.length > 0 ) {
-            expect(expectedKeys).to.include.members(actual.tasks[0]);
+            expect(expectedKeys).to.include.members(Object.keys(actual.tasks[0]));
 
         }
     });

@@ -25,7 +25,7 @@ describe('Work allocation Release 2: persons, caseworkers and judicial users', (
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
         const reqBody = {
-            serviceids:['IA']
+            serviceIds:['IA']
         };
 
         const headers = {
@@ -39,7 +39,7 @@ describe('Work allocation Release 2: persons, caseworkers and judicial users', (
 
         const expectedCases = workAllocationDataModels.getFindPersonObj();
         expect(response.data[0]).to.have.all.keys(['service','caseworkers']);
-        expect(response.data[0].caseworkers[0]).to.have.all.keys(Object.keys(expectedCases));
+        expect(Object.keys(response.data[0].caseworkers[0])).to.have.members(Object.keys(expectedCases));
 
     });
 
@@ -52,7 +52,7 @@ describe('Work allocation Release 2: persons, caseworkers and judicial users', (
 
         const reqBody = {
             services: ['IA'],
-            userIds:['12345']
+            userIds:[config.workallocation[config.testEnv].judgeUser.id]
         };
 
         const headers = {
@@ -75,7 +75,7 @@ describe('Work allocation Release 2: persons, caseworkers and judicial users', (
         const reqBody = {
             searchOptions : {
                 services : ['IA'],
-                searchTerm : 'pri',
+                searchTerm : 'Tom',
                 userRole:'Judicial'
             }
         };
@@ -90,7 +90,7 @@ describe('Work allocation Release 2: persons, caseworkers and judicial users', (
         expect(response.data).to.be.an('array');
 
         const expectedCases = workAllocationDataModels.getFindPersonObj();
-        expect(response.data[0]).to.have.all.keys(Object.keys(expectedCases));
+        expect(Object.keys(response.data[0])).to.have.all.keys(Object.keys(expectedCases));
 
     });
 

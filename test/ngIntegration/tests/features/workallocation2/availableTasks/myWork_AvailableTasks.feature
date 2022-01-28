@@ -53,9 +53,9 @@ Feature: WA Release 2: My work -  Available tasks
             | 3   | case 3    | auto test category 3 | test location 3 | test auto task 3 | 1        | LOW      |
 
         Then I see manage link displayed for task at position 1
-        Then I see manage link displayed for task at position 2
-        Then I see manage link displayed for task at position 4
-        Then I see manage link displayed for task at position 5
+        Then I see manage link not displayed for task at position 2
+        Then I see manage link not displayed for task at position 4
+        Then I see manage link not displayed for task at position 5
 
         Then I see manage link not displayed for task at position 3
         Then I see manage link not displayed for task at position 6

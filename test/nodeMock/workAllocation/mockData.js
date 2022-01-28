@@ -5,9 +5,10 @@ const nodeAppMock = require('../nodeApp/mockData');
 class WorkAllocationMockData {
 
     constructor() {
+        this.locationIdCounter = 10000; 
+
         this.WorkAllocationDataModels = WorkAllocationDataModels;
         this.init(); 
-        this.locationIdCounter = 0; 
     }
 
     init(){
@@ -16,11 +17,13 @@ class WorkAllocationMockData {
 
     setDefaultData(){
         this.findPersonsAllAdata = [];
+        this.waSupportedJusridictions = ['IA', 'SSCS'];
+
+        this.locationsByServices = this.getLocationsByServices(this.waSupportedJusridictions);
+
         this.caseWorkersList = this.getPersonList(20); 
         this.judgeUsers = this.setUpJudicialUsersList(20);
-        this.waSupportedJusridictions = ['IA', 'SSCS'];
         
-        this.locationsByServices = this.getLocationsByServices(this.waSupportedJusridictions );
         this.caseworkersByService = this.getCaseworkersByService(this.waSupportedJusridictions);
 
         this.exclusions = this.getCaseExclusions([
@@ -131,8 +134,8 @@ class WorkAllocationMockData {
                     "epims_id": "" + this.locationIdCounter,
                     "is_hearing_location": "Y",
                     "is_case_management_location": "Y",
-                    "site_name": service + ' Site ' + i,
-                    "court_name": service + ' court ' + i,
+                    "site_name": service + ' Site ' + this.locationIdCounter,
+                    "court_name": service + ' court ' + this.locationIdCounter,
                     "court_status": "Open",
                     "region_id": "2",
                     "region": "London",
@@ -219,14 +222,23 @@ class WorkAllocationMockData {
     setUpJudicialUsersList(count){
         this.judgeUsers = [];
         for (let i = 0; i < count; i++) {
-            this.judgeUsers.push(WorkAllocationDataModels.getRefDataJudge('fnuser-' + i, 'snjudge-' + i, `testjudge_${i}@judidicial.com`));
+            this.addJudgeUsers('fnuser-' + i, 'snjudge-' + i, `testjudge_${i}@judidicial.com`);
         }
         return this.judgeUsers;
     }
 
     addJudgeUsers(idamId,firtName, surname, email){
         const judge = WorkAllocationDataModels.getRefDataJudge(firtName, surname, email);
-        judge.sidam_id = idamId; 
+        judge.sidam_id = idamId;
+        let location = null;
+        for(const service of this.locationsByServices){
+            location = service.locations[0];
+            break;
+        }
+        judge.appointments[0]['base_location_id'] = location.epims_id;
+        judge.appointments[0]['epimms_id'] = location.epims_id;
+        judge.appointments[0]['court_name'] = location.court_name;
+        
         this.judgeUsers.push(judge);
         return judge; 
     }

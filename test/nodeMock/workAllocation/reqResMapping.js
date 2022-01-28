@@ -288,11 +288,13 @@ module.exports = {
                 }
             }
             if (returnUsers.length > 0){
-                res.send(returnUsers);
-
-            }else{
-                res.status(404).send({error:'user with id not found'});
+                let i = 0;
+                for (const userid of userids) {
+                    i++;
+                    returnUsers.push(workAllocationMockData.addJudgeUsers(userid,'someJudgefn_'+i, 'judicialln_'+i,i+'_judicial_test@hmcts.net')); 
+                }
             }
+            res.send(returnUsers);
         },
         '/workallocation2/retrieveCaseWorkersForServices' : (req,res) => {
             res.send(workAllocationMockData.retrieveCaseWorkersForServices(req.body.serviceIds, req.body.fullServices))

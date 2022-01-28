@@ -227,7 +227,8 @@ class WorkAllocationMockData {
     addJudgeUsers(idamId,firtName, surname, email){
         const judge = WorkAllocationDataModels.getRefDataJudge(firtName, surname, email);
         judge.sidam_id = idamId; 
-        this.judgeUsers.push(judge); 
+        this.judgeUsers.push(judge);
+        return judge; 
     }
 
     setCaseRoleAssignment(caseRole){

@@ -162,6 +162,15 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         });
     });
 
+    Then('I see manage link displayed for task at position {int}', async function(row){
+        expect(await taskListTable.isManageLinkPresent(row)).to.be.true;    
+    });
+
+
+    Then('I see manage link not displayed for task at position {int}', async function (row) {
+        expect(await taskListTable.isManageLinkPresent(row)).to.be.false;
+    });
+
     Then('I validate manage link actions for tasks', async function (tasksDatatable) {
         const softAssert = new SoftAssert();
         const taskHashes = tasksDatatable.hashes();

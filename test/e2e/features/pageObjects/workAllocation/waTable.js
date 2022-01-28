@@ -179,10 +179,8 @@ class WAListTable {
     }
 
     async isManageLinkPresent(position) {
-        return await browserUtil.stepWithRetry(async () => {
-            const row = await this.getTableRowAt(position);
-            return await row.$('button[id^="manage_"]').isPresent();
-        });
+        const row = await this.getTableRowAt(position);
+        return await row.$('button[id^="manage_"]').isPresent();
     }
 
     async clickManageLinkForRowAt(position) {

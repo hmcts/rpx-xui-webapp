@@ -70,3 +70,57 @@ Feature: WA Release 2: All work - Task assignment work flows
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator | 4 | Reassign task | Reassign | You've reassigned a task to somebody else. |
             | IAC_Judge_WA_R2 | Judge | caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator | 1 | Assign task | Assign | You've assigned a task. It will be in the selected person's My tasks. |
 
+
+@test
+    Scenario Outline:  Task assign to unauthorised user "<UserType>" action "<action>"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK api method "post" endpoint "/workallocation2/task/:taskId/assign" with error response code <errorCode>
+
+        Given I start MockApp
+        Given I navigate to home page
+
+        When I click on primary navigation header tab "All work", I see selected tab page displayed
+        Then I validate tasks count in page 25
+
+        Given I capture task details at row <taskAtRow> with reference "taskDetails"
+
+        When I open Manage link for task at row <taskAtRow>
+        Then I see action link "<action>" is present for task with Manage link open
+        When I click action link "<action>" on task with Manage link open
+        Then In workflow "<action>", I see select role type page displayed with header "Choose a role type"
+        Then In workflow "<action>", I see select role type page displayed with caption "<action>"
+        Then In workflow "<action>", I see select role type radio options "Legal Ops,Judicial"
+        Then In workflow "<action>", I select role type radio options "Legal Ops"
+        When In workflow "<action>", I click continue
+
+        Then In workflow "<action>", I see find person page displayed with caption "<action>"
+        When In workflow "<action>", I enter search term "jane" in find person input text
+
+        When In workflow "<action>", I select find person result "testemail0@testdomain.com"
+        Then In workflow "<action>", I see find person is selected with "testemail0@testdomain.com"
+
+        When In workflow "<action>", I click continue
+
+
+        Then I see task check your changes page for action "<action>" displayed
+
+        Given I update object values in reference "taskDetails"
+            | Person | test23 person |
+
+        Then I validate task details displayed in check your changes page matching reference "taskDetails"
+
+        Then I validate column "Person" value is set to "Jane 0 Doe" in task check your changes page
+        When I click submit button "<submitBtnLabel>" in task check your changes page
+        
+
+        Then I see see page task assignment person not authorised page
+        Then I see see page task assignment authorisation error message "The person you selected is not authorised to perform this task. Select back to search again."
+        When I click back button in task assignment authorisation error page
+
+        Then I see All work Tasks page
+
+        Examples:
+            | UserIdentifier     | UserType   | Roles                                                                             | taskAtRow | action        | submitBtnLabel | errorCode                                                         |
+            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator | 4         | Reassign task | Reassign       | 401                            |
+            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator    | 1         | Assign task   | Assign         | 403 |
+

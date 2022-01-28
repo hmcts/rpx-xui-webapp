@@ -25,9 +25,44 @@ const taskListPage = require('../../../../e2e/features/pageObjects/workAllocatio
 const { checkYourAnswersHeading } = require('../../../../ngIntegration/tests/pageObjects/ccdCaseEditPages');
 const browserUtil = require('../../../../ngIntegration/util/browserUtil');
 
+
+const taskAssignmentPersonNotAuthorisedPage  = require('../../pageObjects/workAllocation/common/taskAssignmentPersonNotAuthorisedPage');
+
 defineSupportCode(function ({ And, But, Given, Then, When }) {
     const taskListTable = new TaskListTable();
     const waCaseListTable = new casesTable();
+
+    Then('I see My work My Tasks page', async function(){
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await myWorkPage.amOnPage();
+            await myWorkPage.amOnMyTasksTab();
+        }); 
+    });
+
+    Then('I see My work Available tasks page', async function () {
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await myWorkPage.amOnPage();
+            expect(await myWorkPage.isAvailableTasksDisplayed()).to.be.true;
+        });
+    });
+
+    Then('I see My work My cases page', async function () {
+        throw new Error('Step def not implemented'); 
+    });
+
+    Then('I see All work Tasks page', async function () {
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await allWorkPage.amOnPage();
+            expect(await allWorkPage.isTasksContainerDisplayed()).to.be.true;
+        });
+    });
+
+    Then('I see All work Cases page', async function () {
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await allWorkPage.amOnPage();
+            expect(await allWorkPage.isCasesContainerDisplayed()).to.be.true;
+        });
+    });
 
     Then('I validate task list page results text displayed as {string}', async function (pagnationResultText) {
         expect(await taskListTable.getPaginationResultText()).to.include(pagnationResultText);
@@ -438,5 +473,23 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     });
 
+    Then('I see see page task assignment person not authorised page', async function(){
+        try{
+            await BrowserWaits.waitForElement(taskAssignmentPersonNotAuthorisedPage.container); 
+        }catch(err){
+            throw new Error("Task assignment person authorised page is not displayed.");
+        }
+        
+    });
+
+    Then('I see see page task assignment authorisation error message {string}', async function(message){
+        await BrowserWaits.waitForElement(taskAssignmentPersonNotAuthorisedPage.container); 
+        expect(await taskAssignmentPersonNotAuthorisedPage.message.getText()).to.includes(message); 
+    });
+
+    When('I click back button in task assignment authorisation error page', async function(){
+        await BrowserWaits.waitForElement(taskAssignmentPersonNotAuthorisedPage.container); 
+        await taskAssignmentPersonNotAuthorisedPage.backButton.click(); 
+     });
 
 });

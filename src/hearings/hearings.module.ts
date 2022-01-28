@@ -11,7 +11,6 @@ import {SharedModule} from '../app/shared/shared.module';
 import * as fromComponents from './components';
 import * as fromContainers from './containers';
 import {hearingsRouting} from './hearings.routes';
-import { HearingsPipesModule } from './pipes/hearings.pipes.module';
 import {HearingsService} from './services/hearings.service';
 import {effects, reducers} from './store';
 import {AbstractPageFlow} from './utils/abstract-page-flow';
@@ -28,7 +27,6 @@ import {PageFlow} from './utils/page-flow';
     SharedModule,
     FormsModule,
     ReactiveFormsModule,
-    HearingsPipesModule,
     ExuiCommonLibModule,
   ],
   declarations: [...fromComponents.components, ...fromContainers.containers],

@@ -183,7 +183,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       }
     );
     this.filterConfig.fields = [
-      CaseManagerFilterComponent.initServiceFilter([...this.jurisdictions, 'SCSS' ]),
+      CaseManagerFilterComponent.initServiceFilter(this.jurisdictions),
       CaseManagerFilterComponent.initSelectLocationFilter(),
       CaseManagerFilterComponent.initLocationFilter(),
       CaseManagerFilterComponent.initRoleTypeFilter(),

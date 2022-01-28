@@ -287,7 +287,7 @@ module.exports = {
                     }
                 }
             }
-            if (returnUsers.length > 0){
+            if (returnUsers.length === 0){
                 let i = 0;
                 for (const userid of userids) {
                     i++;

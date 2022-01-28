@@ -12,8 +12,11 @@ const TaskListTable = require('../../../../e2e/features/pageObjects/workAllocati
 const BrowserUtil = require('../../../util/browserUtil');
 const BrowserWaits = require('../../../../e2e/support/customWaits');
 
+const workallocationMockData = require('../../../../nodeMock/workAllocation/mockData');
 
 const userRolesConfig = require('../../../../e2e/config/userRolesConfig');
+
+const userUtil = require('../../../util/userRole');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
     const taskListTable = new TaskListTable();
@@ -27,10 +30,13 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         const userIdamID = testUserIdamId.idamId;
         await CucumberReporter.AddMessage(`${releaseUer} id ${testUserIdamId.idamId}`);
+
         const datatablehashes = datatableroles.hashes();
         const roles = datatablehashes.map(roleHash => roleHash.ROLE);
         const userDetails = nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, userIdamID);
-
+        if (userUtil.getUserRoleType(roles) === 'LEGAL_OPS') {
+            workallocationMockData.addCaseworkerWithIdamId(userIdamID, "IA");
+        }
 
     });
 
@@ -44,6 +50,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await CucumberReporter.AddMessage(`${releaseUer} id ${testUserIdamId.idamId}`);
         
         roles = roles.split(",");
+        if (userUtil.getUserRoleType(roles) === 'LEGAL_OPS') {
+            workallocationMockData.addCaseworkerWithIdamId(userIdamID, "IA");
+        } 
         const userDetails = nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, userIdamID);
 
     });
@@ -102,7 +111,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const userIdamID = testUserIdamId.idamId;
         await CucumberReporter.AddMessage(`${useridentifier} id ${testUserIdamId.idamId}`);
 
+       
+
         roles = roles.split(",");
+        if (userUtil.getUserRoleType(roles) === 'LEGAL_OPS') {
+            workallocationMockData.addCaseworkerWithIdamId(userIdamID, "IA");
+        }
         const userDetails = nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, userIdamID);
         CucumberReporter.AddJson(userDetails);
         global.scenarioData[mockUserRef] = userDetails;
@@ -129,7 +143,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         const userIdamID = testUserIdamId.idamId;
         await CucumberReporter.AddMessage(`${useridentifier} id ${testUserIdamId.idamId}`);
-        
+
+      
+ 
         const rolesIdentifiersArr = roleIdentifiers.split(",");
         const roleidentifersForRoleType = userRolesConfig[roleType.toLowerCase()];
         if (!roleidentifersForRoleType){
@@ -144,7 +160,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             roles.push(...rolesForIdentifier);
         }
         const userDetails = nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, userIdamID);
-
+        if (userUtil.getUserRoleType(roles) === 'LEGAL_OPS') {
+            workallocationMockData.addCaseworkerWithIdamId(userIdamID, "IA");
+        }
         
 
     });
@@ -239,6 +257,23 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
        const reqBody = global.scenarioData[reference];
        return "Pending";
 
+    });
+
+    Given('I set MOCK locations with names in service {string}', async function(service, locationNamesDatatable){
+        const locationNamesHashes = locationNamesDatatable.hashes();
+        const locationNames = [];
+        for (const locationNameHash of locationNamesHashes){
+            locationNames.push(locationNameHash.locationName); 
+        } 
+        
+        const locationsArray = workallocationMockData.getLocationsWithNames(locationNames);
+
+        for (const locationsByService of workallocationMockData.locationsByServices){
+            if (locationsByService.service === service){
+                locationsByService.locations.push(...locationsArray);
+            }
+        }
+    
     });
   
 

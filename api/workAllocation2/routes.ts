@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { getJudicialUsers } from '../roleAccess';
 
 import {
   getAllCaseWorkers,
@@ -12,6 +13,7 @@ import {
   getTask,
   getTaskRoles,
   getTasksByCaseId,
+  getTasksByCaseIdAndEventId,
   getTypesOfWork,
   postTaskAction,
   postTaskSearchForCompletable,
@@ -48,6 +50,7 @@ router.use('/task/:taskId', getTask);
 router.use('/task', searchTask);
 
 router.use('/case/task/:caseId', getTasksByCaseId);
+router.use('/case/tasks/:caseId/event/:eventId', getTasksByCaseIdAndEventId);
 
 router.use('/exclusion/rolesCategory', getRolesCategory);
 
@@ -55,5 +58,7 @@ router.use('/roles/:caseId/show-allocate-role-link', showAllocateRoleLink);
 
 router.use('/my-work/cases', getMyCases);
 router.use('/all-work/cases', getCases);
+
+router.use('/getJudicialUsers', getJudicialUsers);
 
 export default router;

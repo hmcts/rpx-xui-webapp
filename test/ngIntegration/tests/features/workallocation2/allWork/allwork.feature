@@ -1,4 +1,4 @@
-@ng 
+@ng @test
 Feature: WA Release 2: All work
 
     Background: Mock and browser setup
@@ -56,11 +56,10 @@ Feature: WA Release 2: All work
             | Case name    |
             | Task         |
 
-        When I click task column link "Case name" at row 1
-        Then I see case details page
+        When I click task column link "Case name" at row 1, I see case details page
 
         When I click on primary navigation header tab "My work", I see selected tab page displayed
-        When I click task column link "Task" at row 1
+        When I click task column link "Task" at row 1, I see case details page
         Then I validate case details task tab page is displayed
         Examples:
             | UserIdentifier     | UserType   | Roles                                              |

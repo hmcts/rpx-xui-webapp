@@ -1,4 +1,6 @@
 const workAllocationMockData = require('./mockData');
+const CucumberReporter = require('../../e2e/support/reportLogger');
+const MockApp = require('../app');
 
 module.exports = {
     mockServiceResetCallbacks: [() => workAllocationMockData.setDefaultData()],
@@ -47,7 +49,7 @@ module.exports = {
         },
         '/workallocation2/case/task/:caseid': (req,res) => {
             
-            res.send(workAllocationMockData.caseTasks);
+            res.send(workAllocationMockData.getCaseTasksForCaseId(req.params.caseid));
         },
         '/workallocation2/judicialworker' : (req,res) => {
             res.send(workAllocationMockData.judgeUsers);
@@ -57,6 +59,15 @@ module.exports = {
         },
         '/workallocation2/task/:taskId/roles' : (req,res) => {
             res.send(workAllocationMockData.getTaskRoles());
+        },
+        '/api/wa-supported-jurisdiction/get' : (req,res) => {
+            res.send(workAllocationMockData.waSupportedJusridictions);
+        },
+        '/api/locations/getLocationsById' : (req,res) => {
+            res.send(workAllocationMockData.getLocationById(req.query.ids));
+        },
+        '/api/locations/getLocations': (req, res) => {
+            res.send(workAllocationMockData.searchLocations(req.query.serviceIds, req.query.searchTerm));
         }
     },
     post: {
@@ -218,7 +229,9 @@ module.exports = {
             res.status(204).send();
         },
         '/workallocation2/findPerson': (req, res) => {
-               res.send(workAllocationMockData.findPersonResponse(req.body.searchOptions));
+            const response = workAllocationMockData.findPersonResponse(req.body.searchOptions);
+            CucumberReporter.AddJson(response);
+            res.send(response);
         
             
         },
@@ -262,7 +275,27 @@ module.exports = {
             res.status(204).send();
         },
         '/api/role-access/roles/getJudicialUsers': (req,res) => {
-            res.send(workAllocationMockData.getJudicialList(20));
+            const allJudicialUsers = workAllocationMockData.judgeUsers;
+            const services = req.body.services;
+            const userids = req.body.userIds;
+
+            const returnUsers = [];
+            for (const userid of userids){
+                for (const mockedUser of allJudicialUsers){
+                    if (mockedUser.sidam_id === userid){
+                        returnUsers.push(mockedUser);
+                    }
+                }
+            }
+            if (returnUsers.length > 0){
+                res.send(returnUsers);
+
+            }else{
+                res.status(404).send({error:'user with id not found'});
+            }
+        },
+        '/workallocation2/retrieveCaseWorkersForServices' : (req,res) => {
+            res.send(workAllocationMockData.retrieveCaseWorkersForServices(req.body.serviceIds, req.body.fullServices))
         } 
     }
    

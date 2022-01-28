@@ -181,8 +181,8 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
 
         Then I validate case roles table for role category "Judicial" has data
             | Name        | Role          | Start | End |
-            | user1 judge | Lead judge    | 2     | 4   |
-            | user1 judge | Hearing judge | 6     | 6   |
+            | fnuser | Lead judge | 2 | 4 |
+            | fnuser | Hearing judge | 6 | 6 |
 
         Then I validate case roles table has headers for role category "Legal Ops" in case roles and access page
             | headerName |
@@ -204,10 +204,10 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
 
         Then I validate case roles table for role category "Exclusions" has data
             | Name    | User type |  Notes            | Added |
-            | judge 1 | Judicial  |  Test exclusion 1 | -5    |
-            | judge 2 | Judicial  |  Test exclusion 2 | -5    |
-            | judge 3 | Judicial  |  Test exclusion 3 | -15   |
-            | judge 4 | Judicial  |  Test exclusion 4 | -55   |
+            | Joe | Judicial  |  Test exclusion 1 | -5    |
+            | Joe | Judicial  |  Test exclusion 2 | -5    |
+            | Joe | Judicial  |  Test exclusion 3 | -15   |
+            | Joe | Judicial  |  Test exclusion 4 | -55   |
 
 
         Then I validate case roles "Manage" link displayed status is "true" for category "Judicial"
@@ -266,8 +266,8 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
 
         Then I validate case roles table for role category "Judicial" has data
             | Name        | Role          | Start | End |
-            | user1 judge | Lead judge    | 1     | 1   |
-            | user1 judge | Hearing judge | 10    | 10  |
+            | fnuser | Lead judge | 1 | 1 |
+            | fnuser | Hearing judge | 10 | 10 |
 
         Then I validate case roles table has headers for role category "Legal Ops" in case roles and access page
             | headerName |
@@ -289,10 +289,10 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
 
         Then I validate case roles table for role category "Exclusions" has data
             | Name    | User type | Notes            | Added |
-            | judge 1 | Judicial  | Test exclusion 1 | -5    |
-            | judge 2 | Judicial  | Test exclusion 2 | -5    |
-            | judge 3 | Judicial  | Test exclusion 3 | -15   |
-            | judge 4 | Judicial  | Test exclusion 4 | -55   |
+            | Joe | Judicial  | Test exclusion 1 | -5    |
+            | Joe | Judicial  | Test exclusion 2 | -5    |
+            | Joe | Judicial  | Test exclusion 3 | -15   |
+            | Joe | Judicial  | Test exclusion 4 | -55   |
 
         Then I validate case roles "Manage" link displayed status is "false" for category "Judicial"
         Then I validate case roles "Manage" link displayed status is "false" for category "Legal Ops"

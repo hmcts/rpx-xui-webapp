@@ -34,14 +34,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     });
 
-    Given('I set MOCK caseworkers for service {string}', async function(service, datatable){
-    // step definition code here
-        const datatableHashes = datatable.hashes();
-        for (const userhash of datatableHashes){
-            waMockData.addCaseworker(userhash,service);
-
-        }
-    });
+    
 
 
 

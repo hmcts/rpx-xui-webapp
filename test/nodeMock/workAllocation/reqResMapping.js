@@ -49,7 +49,7 @@ module.exports = {
         },
         '/workallocation2/case/task/:caseid': (req,res) => {
             
-            res.send(workAllocationMockData.caseTasks);
+            res.send(workAllocationMockData.getCaseTasksForCaseId(req.params.caseid));
         },
         '/workallocation2/judicialworker' : (req,res) => {
             res.send(workAllocationMockData.judgeUsers);
@@ -275,23 +275,24 @@ module.exports = {
             res.status(204).send();
         },
         '/api/role-access/roles/getJudicialUsers': (req,res) => {
-            const allJudicialUsers = workAllocationMockData.getJudicialList(20);
+            const allJudicialUsers = workAllocationMockData.judgeUsers;
             const services = req.body.services;
             const userids = req.body.userIds;
 
             const returnUsers = [];
             for (const userid of userids){
-                const judicialuser = JSON.parse(JSON.stringify(allJudicialUsers[0]));
-                judicialuser.sidam_id = userid;
-                for (const appointment of judicialuser.appointments){
-                    appointment.base_location_id = workAllocationMockData.locationsByServices[0].locations[0].epims_id;
-                    appointment.epimms_id = workAllocationMockData.locationsByServices[0].locations[0].epims_id; 
- 
+                for (const mockedUser of allJudicialUsers){
+                    if (mockedUser.sidam_id === userid){
+                        returnUsers.push(mockedUser);
+                    }
                 }
-                returnUsers.push(judicialuser);
             }
+            if (returnUsers.length > 0){
+                res.send(returnUsers);
 
-            res.send(returnUsers);
+            }else{
+                res.status(404).send({error:'user with id not found'});
+            }
         },
         '/workallocation2/retrieveCaseWorkersForServices' : (req,res) => {
             res.send(workAllocationMockData.retrieveCaseWorkersForServices(req.body.serviceIds, req.body.fullServices))

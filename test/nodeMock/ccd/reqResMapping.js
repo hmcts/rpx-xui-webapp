@@ -4,7 +4,7 @@ module.exports = {
     mockServiceResetCallbacks: [() => ccdMockData.setDefaultData()],
     get: {
             '/data/internal/cases/:caseid': (req,res) => {
-                res.send(ccdMockData.caseDetailsResponse);
+                res.send(ccdMockData.getCaseDetailsWithID(req.params.caseid));
             },
             '/aggregated/caseworkers/:uid/jurisdictions': (req, res) => {
             res.send(ccdMockData.getJurisdictions());

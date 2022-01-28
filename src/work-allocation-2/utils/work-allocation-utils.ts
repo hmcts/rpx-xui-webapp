@@ -131,7 +131,7 @@ export const servicesMap: {[key: string]: string} =  {
 export function getOptions(taskRoles: TaskRole[], sessionStorageService: ISessionStorageService): OptionsModel[] {
   const options = new Array<OptionsModel>();
   // Consider role categories only with either OWN or EXECUTE permissions
-  const roleCategories = taskRoles.filter(role => role.role_category !== null && role.role_category !== undefined
+  const roleCategories = taskRoles.filter(role => role.role_category
     && (roleIncludes(role.permissions, Permissions.Own) || roleIncludes(role.permissions, Permissions.Execute))).
     map(taskRole => taskRole.role_category as RoleCategory);
 
@@ -155,7 +155,7 @@ export function getOptions(taskRoles: TaskRole[], sessionStorageService: ISessio
 
 export function getRoleCategoryToBeSelectedByDefault(taskRoles: TaskRole[], sessionStorageService: ISessionStorageService): RoleCategory {
   // Consider only role categories with OWN permission for radio button default selection
-  const uniqueRoleCategoriesWithOwnPermissions = taskRoles.filter(role => role.role_category !== null && role.role_category !== undefined
+  const uniqueRoleCategoriesWithOwnPermissions = taskRoles.filter(role => role.role_category
     && (roleIncludes(role.permissions, Permissions.Own))).
     map(taskRole => taskRole.role_category as RoleCategory).
     filter((role, index, taskRolesToFilter) => {

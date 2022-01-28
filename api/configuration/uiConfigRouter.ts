@@ -3,13 +3,13 @@ import {getConfigValue, showFeature} from './index'
 import {
   FEATURE_ACCESS_MANAGEMENT_ENABLED,
   FEATURE_OIDC_ENABLED,
+  FEATURE_SUBSTANTIVE_ROLE_ENABLED,
   LAUNCH_DARKLY_CLIENT_ID,
   PROTOCOL,
   SERVICES_CCD_COMPONENT_API_PATH,
   SERVICES_IDAM_CLIENT_ID,
   SERVICES_IDAM_LOGIN_URL,
-  SERVICES_IDAM_OAUTH_CALLBACK_URL,
-  FEATURE_SUBSTANTIVE_ROLE_ENABLED
+  SERVICES_IDAM_OAUTH_CALLBACK_URL, SERVICES_ROLE_ASSIGNMENT_API_PATH
 } from './references'
 
 export const router = express.Router({mergeParams: true})
@@ -35,6 +35,8 @@ async function uiConfigurationRouter(req, res) {
     oidcEnabled: showFeature(FEATURE_OIDC_ENABLED),
     protocol: getConfigValue(PROTOCOL),
     substantiveEnabled: showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED),
+    serviceRoleAssignment: getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH),
+
   })
 }
 

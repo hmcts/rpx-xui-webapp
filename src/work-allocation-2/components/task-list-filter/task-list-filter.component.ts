@@ -119,15 +119,15 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    if (this.subscription) {
+    if (this.subscription && !this.subscription.closed) {
       this.subscription.unsubscribe();
     }
 
-    if (this.selectedLocationsSubscription) {
+    if (this.selectedLocationsSubscription && !this.selectedLocationsSubscription.closed) {
       this.selectedLocationsSubscription.unsubscribe();
     }
 
-    if (this.errorSubscription) {
+    if (this.errorSubscription && !this.errorSubscription.closed) {
       this.errorSubscription.unsubscribe();
     }
   }

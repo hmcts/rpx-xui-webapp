@@ -37,8 +37,8 @@ class WorkAllocationMockData {
             { added: '2021-10-12T12:14:42.230129Z', name: 'legal a', userType: 'LEGAL_OPERATIONS', type: 'CASE', id: '12345678904', roleCategory: 'LEGAL_OPERATIONS', roleName: 'case-manager' }
         ]);
         const tasks = [
-            { task_title: 'task 1', dueDate: -1, created_date: -10, permissions: "Own,Execute,Manage", warnings: "true", assignee: this.caseWorkersList[0].idamId },
-            { task_title: 'task 2', dueDate: 0, created_date: -10, permissions: "Own,Execute,Manage", warnings: "true", assignee: this.judgeUsers[0].sidam_id },
+            { task_title: 'task 1', dueDate: -1, created_date: -10, permissions: "Own,Execute,Manage", warnings: "true", assignee: this.caseWorkersList[0].idamId, description: 'Click link to proceed to next step [case details link next step](/case/case-details/${[CASE_REFERENCE]})'},
+            { task_title: 'task 2', dueDate: 0, created_date: -10, permissions: "Own,Execute,Manage", warnings: "true", assignee: this.judgeUsers[0].sidam_id, description: 'Click link to proceed to task [Task link next step](/case/case-details/${[id]})'},
             { task_title: 'task 3', dueDate: 1, created_date: -10, permissions: "Own,Execute,Manage", warnings: "true", assignee: "soneone" },
             { task_title: 'task 4', dueDate: 10, created_date: -10, permissions: "Own,Execute,Manage", warnings: "true", assignee: "soneone" }
         ];
@@ -54,6 +54,13 @@ class WorkAllocationMockData {
         this.allWorkCases = this.getWACases(125);
 
         this.taskDetails = { task: this.getRelease2TaskDetails() } 
+    }
+
+    getCaseTasksForCaseId(caseId){
+        for (const task of this.caseTasks){
+            task.case_id = caseId; 
+        }
+        return this.caseTasks;
     }
 
     addCaseworkerWithIdamId(idamId, service){
@@ -215,6 +222,12 @@ class WorkAllocationMockData {
             this.judgeUsers.push(WorkAllocationDataModels.getRefDataJudge('fnuser-' + i, 'snjudge-' + i, `testjudge_${i}@judidicial.com`));
         }
         return this.judgeUsers;
+    }
+
+    addJudgeUsers(idamId,firtName, surname, email){
+        const judge = WorkAllocationDataModels.getRefDataJudge(firtName, surname, email);
+        judge.sidam_id = idamId; 
+        this.judgeUsers.push(judge); 
     }
 
     setCaseRoleAssignment(caseRole){

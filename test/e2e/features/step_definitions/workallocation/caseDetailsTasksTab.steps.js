@@ -108,7 +108,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 if (attributeIsDisplayed.includes('true') || attributeIsDisplayed.includes('yes')) {
                     softAssert.setScenario(`Task attribute displayed and match content`);
 
-                    await softAssert.assert(async () => expect(Object.keys(taskAttributes)).to.includes(attribName));
+                    await softAssert.assert(async () => expect(Object.keys(taskAttributes), `Task details missing : ${attribName}`).to.includes(attribName));
                     await softAssert.assert(async () => expect(await taskAttributes[attribName].getText()).to.includes(contentText));
 
                     if (validateContentType.toLowerCase().includes('link')) {

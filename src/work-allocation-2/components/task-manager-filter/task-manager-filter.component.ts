@@ -222,7 +222,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       }
     );
     this.fieldsConfig.fields = [
-      TaskManagerFilterComponent.initServiceFilter([...this.jurisdictions, 'SCSS' ]),
+      TaskManagerFilterComponent.initServiceFilter(this.jurisdictions),
       TaskManagerFilterComponent.initSelectLocationFilter(),
       TaskManagerFilterComponent.initLocationFilter(),
       TaskManagerFilterComponent.initPersonFilter(),

@@ -9,6 +9,13 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
         Given I set MOCK case details "caseDetails" property "Jurisdiction" as "IA"
 
 
+        Given I add MOCK judicial user
+            | idamId                               | firstName | lastName | email                   |
+            | 38eb0c5e-29c7-453e-b92d-f2029aaed6c3 | user1     | judge    | caseworker_user1@gov.uk |
+            | 18a3d216-c6ab-4e92-a7e3-ca3661e6be81 | user2     | judge    | caseworker_user2@gov.uk |
+            | 18a3d216-c6ab-4e92-a7e3-ca3661e6be87 | Test 4    | user     | caseworker_user3@gov.uk |
+            | 1db21928-cbbc-4364-bd91-137c7031fe17 | XUI test  | auto     | caseworker_user6@gov.uk |
+
     Scenario: Case with roles - 0 judicial, 0 LegalOps, 0 Exclusions
 
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
@@ -110,10 +117,10 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
             | user1 legal | LEGAL_OPERATIONS | Case manager | case_manager_1@gov.uk |       |     |
 
         Given I set MOCK case role exclusions
-            | name    | userType |  notes            | added |
-            | judge 1 | Judicial |  Test exclusion 1 | -5    |
+            | name    | userType | notes            | added |
+            | judge 1 | Judicial | Test exclusion 1 | -5    |
             | judge 2 | Judicial | Test exclusion 2 | -5    |
-            | judge 3 | Judicial |  Test exclusion 3 | -15   |
+            | judge 3 | Judicial | Test exclusion 3 | -15   |
             | judge 4 | Judicial | Test exclusion 4 | -55   |
 
         Given I start MockApp
@@ -138,7 +145,6 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
         Then I validate for role category "Legal Ops" case roles no data message displayed status is "false" in case roles and access page
         Then I validate for role category "Exclusions" case roles no data message displayed status is "false" in case roles and access page
 
-
     Scenario: Case with roles - Validate columns and data displayed
 
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
@@ -147,17 +153,17 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
             | true            | IA           | 12345           |
 
         Given I set MOCK case roles
-            | name        | roleCategory     | roleName      | email                 | start | end |
-            | user1 judge | JUDICIAL         | Lead judge    | judge_lead_1@gov.uk   | 2     | 4   |
-            | user1 judge | JUDICIAL         | Hearing judge | judge_lead_1@gov.uk   | 6     | 6   |
-            | user1 legal | LEGAL_OPERATIONS | Case manager  | case_manager_1@gov.uk | 10    | 100 |
+            | actorId                              | name        | roleCategory     | roleName      | email                 | start | end |
+            | 38eb0c5e-29c7-453e-b92d-f2029aaed6c3 | user1 judge | JUDICIAL         | Lead judge    | judge_lead_1@gov.uk   | 2     | 4   |
+            | 18a3d216-c6ab-4e92-a7e3-ca3661e6be81 | user1 judge | JUDICIAL         | Hearing judge | judge_lead_1@gov.uk   | 6     | 6   |
+            | 18a3d216-c6ab-4e92-a7e3-ca3661e6be87 | user1 legal | LEGAL_OPERATIONS | Case manager  | case_manager_1@gov.uk | 10    | 100 |
 
         Given I set MOCK case role exclusions
-            | name    | userType | type | notes            | added |
-            | judge 1 | Judicial | lead | Test exclusion 1 | -5    |
-            | judge 2 | Judicial | lead | Test exclusion 2 | -5    |
-            | judge 3 | Judicial | lead | Test exclusion 3 | -15   |
-            | judge 4 | Judicial | lead | Test exclusion 4 | -55   |
+            | idamId                               | name    | userType | type | notes            | added |
+            | 38eb0c5e-29c7-453e-b92d-f2029aaed6c3 | judge 1 | Judicial | lead | Test exclusion 1 | -5    |
+            | 18a3d216-c6ab-4e92-a7e3-ca3661e6be81 | judge 2 | Judicial | lead | Test exclusion 2 | -5    |
+            | 18a3d216-c6ab-4e92-a7e3-ca3661e6be87 | judge 3 | Judicial | lead | Test exclusion 3 | -15   |
+            | 1db21928-cbbc-4364-bd91-137c7031fe17 | judge 4 | Judicial | lead | Test exclusion 4 | -55   |
 
         Given I start MockApp
         Given I navigate to home page
@@ -181,8 +187,8 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
 
         Then I validate case roles table for role category "Judicial" has data
             | Name        | Role          | Start | End |
-            | fnuser | Lead judge | 2 | 4 |
-            | fnuser | Hearing judge | 6 | 6 |
+            | user1 judge | Lead judge    | 2     | 4   |
+            | user2 judge | Hearing judge | 6     | 6   |
 
         Then I validate case roles table has headers for role category "Legal Ops" in case roles and access page
             | headerName |
@@ -203,11 +209,11 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
             | Added      |
 
         Then I validate case roles table for role category "Exclusions" has data
-            | Name    | User type |  Notes            | Added |
-            | Joe | Judicial  |  Test exclusion 1 | -5    |
-            | Joe | Judicial  |  Test exclusion 2 | -5    |
-            | Joe | Judicial  |  Test exclusion 3 | -15   |
-            | Joe | Judicial  |  Test exclusion 4 | -55   |
+            | Name | User type | Notes            | Added |
+            | Joe  | Judicial  | Test exclusion 1 | -5    |
+            | Joe  | Judicial  | Test exclusion 2 | -5    |
+            | Joe  | Judicial  | Test exclusion 3 | -15   |
+            | Joe  | Judicial  | Test exclusion 4 | -55   |
 
 
         Then I validate case roles "Manage" link displayed status is "true" for category "Judicial"
@@ -232,17 +238,18 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
             | false           | IA           | 12345           |
 
         Given I set MOCK case roles
-            | name        | roleCategory     | roleName      | email                 | start | end |
-            | user1 judge | JUDICIAL         | Lead judge    | judge_lead_1@gov.uk   | 1     | 1   |
-            | user1 judge | JUDICIAL         | Hearing judge | judge_lead_1@gov.uk   | 10    | 10  |
-            | user1 legal | LEGAL_OPERATIONS | Case manager  | case_manager_1@gov.uk | 10    | 20  |
+            | actorId                              | name        | roleCategory     | roleName      | email                 | start | end |
+            | 38eb0c5e-29c7-453e-b92d-f2029aaed6c3 | user1 judge | JUDICIAL         | Lead judge    | judge_lead_1@gov.uk   | 1     | 1   |
+            | 18a3d216-c6ab-4e92-a7e3-ca3661e6be81 | user1 judge | JUDICIAL         | Hearing judge | judge_lead_1@gov.uk   | 10    | 10  |
+            |                                      | user1 legal | LEGAL_OPERATIONS | Case manager  | case_manager_1@gov.uk | 10    | 20  |
 
         Given I set MOCK case role exclusions
-            | name    | userType | type | notes            | added |
-            | judge 1 | Judicial | lead | Test exclusion 1 | -5    |
-            | judge 2 | Judicial | lead | Test exclusion 2 | -5    |
-            | judge 3 | Judicial | lead | Test exclusion 3 | -15   |
-            | judge 4 | Judicial | lead | Test exclusion 4 | -55   |
+
+            | idamId                               | name    | userType | type | notes            | added |
+            | 38eb0c5e-29c7-453e-b92d-f2029aaed6c3 | judge 1 | Judicial | lead | Test exclusion 1 | -5    |
+            | 18a3d216-c6ab-4e92-a7e3-ca3661e6be81 | judge 2 | Judicial | lead | Test exclusion 2 | -5    |
+            | 18a3d216-c6ab-4e92-a7e3-ca3661e6be87 | judge 3 | Judicial | lead | Test exclusion 3 | -15   |
+            | 1db21928-cbbc-4364-bd91-137c7031fe17 | judge 4 | Judicial | lead | Test exclusion 4 | -55   |
 
         Given I start MockApp
         Given I navigate to home page
@@ -266,8 +273,8 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
 
         Then I validate case roles table for role category "Judicial" has data
             | Name        | Role          | Start | End |
-            | fnuser | Lead judge | 1 | 1 |
-            | fnuser | Hearing judge | 10 | 10 |
+            | user1 judge | Lead judge    | 1     | 1   |
+            | user2 judge | Hearing judge | 10    | 10  |
 
         Then I validate case roles table has headers for role category "Legal Ops" in case roles and access page
             | headerName |
@@ -288,11 +295,11 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
             | Added      |
 
         Then I validate case roles table for role category "Exclusions" has data
-            | Name    | User type | Notes            | Added |
-            | Joe | Judicial  | Test exclusion 1 | -5    |
-            | Joe | Judicial  | Test exclusion 2 | -5    |
-            | Joe | Judicial  | Test exclusion 3 | -15   |
-            | Joe | Judicial  | Test exclusion 4 | -55   |
+            | Name | User type | Notes            | Added |
+            | Joe  | Judicial  | Test exclusion 1 | -5    |
+            | Joe  | Judicial  | Test exclusion 2 | -5    |
+            | Joe  | Judicial  | Test exclusion 3 | -15   |
+            | Joe  | Judicial  | Test exclusion 4 | -55   |
 
         Then I validate case roles "Manage" link displayed status is "false" for category "Judicial"
         Then I validate case roles "Manage" link displayed status is "false" for category "Legal Ops"

@@ -156,8 +156,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I click task column link {string} at row {int}, I see case details page', async function (colName, rowPos) {
-        await BrowserWaits.retryWithActionCallback(async () => {
+        
+        await BrowserWaits.waitForPageNavigationOnAction(async () => {
             await taskListTable.clickTaskColLink(colName, rowPos);
+        });
+
+        await BrowserWaits.retryWithActionCallback(async () => {
             expect(await caseDetailsPage.amOnPage(),'Case details page not displayed').to.be.true 
         });
     });

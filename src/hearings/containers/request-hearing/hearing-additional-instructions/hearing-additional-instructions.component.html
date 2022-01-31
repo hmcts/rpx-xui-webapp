@@ -10,7 +10,7 @@
           This hearing request will need to be manually reviewed before listing if you enter additional details.
       </div>
       <form class="form" [formGroup]="instructionsForm">
-        <textarea class="govuk-textarea govuk-!-margin-bottom-1" id="additionalInstructionsTextarea" formControlName="instructions" name="additional-instructions-text" value="" rows="10"></textarea>
+        <textarea class="govuk-textarea govuk-!-margin-bottom-1" id="additionalInstructionsTextarea" formControlName="instructions" name="additional-instructions-text" value="" rows="10" maxlength="instructionLength"></textarea>
         <div id="with-hint-info" class="govuk-hint govuk-character-count__message govuk-!-margin-bottom-7" aria-live="polite">
             You can enter up to {{instructionLength | number: '' : 'en' }} characters
         </div>

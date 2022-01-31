@@ -15,3 +15,4 @@ export interface PartyFlagsDisplayModel {
   displayName: string;
   displayPath: string[];
 }
+

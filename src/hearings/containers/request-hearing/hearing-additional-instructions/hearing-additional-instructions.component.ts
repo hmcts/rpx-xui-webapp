@@ -50,7 +50,7 @@ export class HearingAdditionalInstructionsComponent extends RequestHearingPageFl
       ...this.hearingRequestMainModel,
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
-        listingComments: this.instructionsForm.value.instructions.slice(0, this.instructionLength)
+        listingComments: this.instructionsForm.value
       }
     };
   }

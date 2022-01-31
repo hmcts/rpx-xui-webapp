@@ -61,7 +61,7 @@ export class RolesAndAccessContainerComponent implements OnInit {
       mergeMap((caseRoles: CaseRole[]) => this.allocateService.getCaseRolesUserDetails(getJudicialUserIds(caseRoles), [jurisdiction.value]).pipe(
         map((caseRolesWithUserDetails: CaseRoleDetails[]) => mapCaseRoles(caseRoles, caseRolesWithUserDetails))
       )),
-      tap(roles => this.sessionStorageService.setItem('caseRoles', roles.map(role => role.roleName).toString()))
+      tap(roles => this.sessionStorageService.setItem('caseRoles', roles.map(role => role.roleId).toString()))
     );
   }
 

@@ -282,8 +282,8 @@ module.exports = {
                 const judicialuser = JSON.parse(JSON.stringify(allJudicialUsers[0]));
                 judicialuser.sidam_id = userid;
                 for (const appointment of judicialuser.appointments){
-                    appointment.base_location_id = workAllocationMockData.locationsByServices[0].locations[0].epims_id;
-                    appointment.epimms_id = workAllocationMockData.locationsByServices[0].locations[0].epims_id; 
+                    appointment.base_location_id = workAllocationMockData.locationsByServices[0].locations[0].epimms_id;
+                    appointment.epimms_id = workAllocationMockData.locationsByServices[0].locations[0].epimms_id; 
  
                 }
 

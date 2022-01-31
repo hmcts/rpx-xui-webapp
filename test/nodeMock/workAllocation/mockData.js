@@ -71,7 +71,7 @@ class WorkAllocationMockData {
                 const personWithIdamd = JSON.parse(JSON.stringify(this.getPersonList(1)[0]));
                 personWithIdamd.idamId = idamId;
                 personWithIdamd.location = {
-                    id: locationsByService[0].epims_id,
+                    id: locationsByService[0].epimms_id,
                         locationName: locationsByService[0].court_name
                 }; 
                 byservice.caseworkers.push(personWithIdamd);
@@ -103,7 +103,7 @@ class WorkAllocationMockData {
 
 
                 personWithIdamd.location = {
-                    id: locationsByService[0].epims_id,
+                    id: locationsByService[0].epimms_id,
                     locationName: locationsByService[0].court_name
                 };
                 byservice.caseworkers.push(personWithIdamd);
@@ -120,7 +120,7 @@ class WorkAllocationMockData {
             for(let i = 0; i < 20; i++){
                 const location = {
                     "court_venue_id": "382",
-                    "epims_id": ""+loctaionIdTracker,
+                    "epimms_id": ""+loctaionIdTracker,
                     "is_hearing_location": "Y",
                     "is_case_management_location": "Y",
                     "site_name": service + ' Site ' + i,
@@ -166,7 +166,7 @@ class WorkAllocationMockData {
 
             let loctionTracker = 0;
             for (const cw of cwByService.caseworkers){
-                cw.location = { id: locationsForThisService[loctionTracker].epims_id ,
+                cw.location = { id: locationsForThisService[loctionTracker].epimms_id ,
                     locationName: locationsForThisService[loctionTracker].court_name };
 
                 loctionTracker++;
@@ -681,7 +681,7 @@ class WorkAllocationMockData {
 
         let locationMatchingId = null;
         for (const location of allLocations) {
-            if (location.epims_id === locationId) {
+            if (location.epimms_id === locationId) {
                 locationMatchingId = location;
                 break;
             }

@@ -19,7 +19,6 @@ export class PageFlow implements AbstractPageFlow {
   }
 
   public getCurrentPage(): string {
-    console.log('this.router', this.router);
     const urlPaths: string[] = this.router.url.split('/');
     let lastPath = urlPaths[urlPaths.length - 1];
     if (lastPath.indexOf('#') > -1) {
@@ -35,7 +34,6 @@ export class PageFlow implements AbstractPageFlow {
       .subscribe(([hearingConditions, screenNavigationModels]: [HearingConditions, ScreenNavigationModel[]]) => {
       const screenModel = screenNavigationModels.find(screenNavigationModel =>
         screenNavigationModel.screenName === this.getCurrentPage());
-      console.log('screenModel', JSON.stringify(screenModel));
       if (screenModel) {
         if (!screenModel.conditionKey) {
           nextPage = screenModel.navigation[0].resultValue;

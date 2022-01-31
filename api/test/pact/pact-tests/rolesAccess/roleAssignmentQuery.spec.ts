@@ -17,9 +17,9 @@ const pactSetUp = new PactTestSetup({ provider: 'am_api_getroles_assignments_by_
 const caseId = "12345";
 describe("access management service, query role assignments", () => {
 
-    const roles = [{ roleName: 'lead-judge', roleCategory: 'JUDICIAL' }, 
-    { roleName: 'hearing-judge', roleCategory: 'JUDICIAL' }, 
-    { roleName: 'case-worker', roleCategory: 'LEGAL_OPERATIONS'}];
+    const roles = [{ roleName: 'lead-judge', roleCategory: 'JUDICIAL', displayName:'Lead judge' }, 
+        { roleName: 'hearing-judge', roleCategory: 'JUDICIAL', displayName: 'Hearing judge' }, 
+        { roleName: 'case-worker', roleCategory: 'LEGAL_OPERATIONS', displayName: 'Case worker'}];
 
     const REQUEST_BODY = {
         queryRequests: [
@@ -86,9 +86,12 @@ describe("access management service, query role assignments", () => {
                 const dummyRole = getDummyCaseRole();
                 dummyRole.name = role.roleName;
                 dummyRole.category = role.roleCategory;
+                dummyRole.label  = role.displayName
                 rolesResponseBody.push(dummyRole);
 
-            } 
+            }
+          
+
             const getRolesInteraction = {
                 state: "returned role assignments for caseId",
                 uponReceiving: "query role assignments for caseId",
@@ -132,6 +135,7 @@ describe("access management service, query role assignments", () => {
 
             const { getRolesByCaseId } = requireReloaded('../../../../roleAccess/index');
 
+          
             const req = mockReq({
                 headers: {
                     'Authorization': 'Bearer someAuthorizationToken',
@@ -178,7 +182,7 @@ function assertResponses(dto: any) {
     expect(dto[0].end).to.be.equal("2022-01-11T00:00:00Z");
     expect(dto[0].start).to.be.equal("2022-01-11T00:00:00Z");
     expect(dto[0].roleCategory).to.be.equal("JUDICIAL");
-    expect(dto[0].roleName).to.be.equal("lead-judge");
+    expect(dto[0].roleName).to.be.equal("Lead judge");
 }
 
 

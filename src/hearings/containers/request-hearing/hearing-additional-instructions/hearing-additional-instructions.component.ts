@@ -1,27 +1,31 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { Store } from '@ngrx/store';
-import { ACTION, HearingInstructionsEnum } from '../../../models/hearings.enum';
-import { HearingsService } from '../../../services/hearings.service';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
+import {Store} from '@ngrx/store';
+import {ACTION, HearingInstructionsEnum} from '../../../models/hearings.enum';
+import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import { RequestHearingPageFlow } from '../request-hearing.page.flow';
+import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-additional-instructions',
   templateUrl: './hearing-additional-instructions.component.html',
 })
 export class HearingAdditionalInstructionsComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
+
   public instructionsForm: FormGroup;
   public instructionLength: number = HearingInstructionsEnum.InstructionLength;
 
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService,
-              private readonly formBuilder: FormBuilder) {
-    super(hearingStore, hearingsService);
+              private readonly formBuilder: FormBuilder,
+              protected readonly route: ActivatedRoute) {
+    super(hearingStore, hearingsService, route);
   }
 
   public ngOnInit(): void {
     this.initForm();
+    this.fragmentFocus();
   }
 
   public initForm(): void {

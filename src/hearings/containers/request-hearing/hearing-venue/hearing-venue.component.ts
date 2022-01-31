@@ -1,5 +1,6 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
 import {SearchLocationComponent} from '@hmcts/rpx-xui-common-lib';
 import {LocationByEPIMSModel} from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import {Store} from '@ngrx/store';
@@ -14,7 +15,7 @@ import {RequestHearingPageFlow} from '../request-hearing.page.flow';
   templateUrl: './hearing-venue.component.html',
   styleUrls: ['./hearing-venue.component.scss']
 })
-export class HearingVenueComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
+export class HearingVenueComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public locationType: string;
   public displayedLocations: LocationByEPIMSModel[];
   public selectedLocation: LocationByEPIMSModel;
@@ -25,10 +26,10 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
   public selectedLocations: LocationByEPIMSModel[];
   public validationErrors: { id: string, message: string }[] = [];
 
-  constructor(
-    public readonly hearingStore: Store<fromHearingStore.State>, fb: FormBuilder,
-    protected readonly hearingsService: HearingsService) {
-    super(hearingStore, hearingsService);
+  constructor(public readonly hearingStore: Store<fromHearingStore.State>, fb: FormBuilder,
+              protected readonly hearingsService: HearingsService,
+              protected readonly route: ActivatedRoute) {
+    super(hearingStore, hearingsService, route);
     this.findLocationFormGroup = fb.group({
       locationSelectedFormControl: [null, Validators.required]
     });
@@ -152,6 +153,10 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
       this.setLocationError(HearingErrorMessage.ENTER_A_LOCATION);
     }
     return returnValue;
+  }
+
+  public ngAfterViewInit(): void {
+    this.fragmentFocus();
   }
 
   public ngOnDestroy(): void {

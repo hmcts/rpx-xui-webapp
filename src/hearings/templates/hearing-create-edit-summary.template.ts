@@ -1,157 +1,164 @@
+import {AnswerSource} from '../models/hearings.enum';
 import {Section} from '../models/section';
 
-export const requestHearingAnswersTemplate: Section[] = [
+export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
   {
     sectionHTMLTitle: '<h1 class="govuk-heading-l">Check your answers before sending your request</h1>',
     sectionOrder: 1,
     answers: [
       {
         answerTitle: 'Case name',
-        answerSource: 'CASE_NAME',
+        answerSource: AnswerSource.CASE_NAME,
         answerOrder: 1
       },
       {
         answerTitle: 'Type',
-        answerSource: 'TYPE',
+        answerSource: AnswerSource.Type,
         answerOrder: 2
       }
     ],
   },
   {
-    sectionHTMLTitle: '<h2 class="govuk-heading-m">Requirements and facilities</h2>',
+    sectionHTMLTitle: '<h2 class="govuk-heading-m">Hearing requirements</h2>',
     sectionOrder: 2,
     answers: [
       {
-        answerTitle: 'Hearing requirements',
-        answerSource: 'CASE_FLAGS',
+        answerTitle: 'Reasonable adjustments',
+        answerSource: AnswerSource.CASE_FLAGS,
         answerOrder: 1,
-        changeLink: '/hearing-requirement'
-      },
+        changeLink: '/hearings/request/hearing-requirements#linkAmendFlags',
+      }
+    ],
+  },
+  {
+    sectionHTMLTitle: '<h2 class="govuk-heading-m">Additional facilities</h2>',
+    sectionOrder: 3,
+    answers: [
       {
         answerTitle: 'Will additional security be required?',
-        answerSource: 'ADDITIONAL_SECURITY_REQUIRED',
+        answerSource: AnswerSource.ADDITIONAL_SECURITY_REQUIRED,
         answerOrder: 2,
-        changeLink: '/hearing-facilities#radioRequired'
+        changeLink: '/hearings/request/hearing-facilities#additionalSecurityYes',
       },
       {
         answerTitle: 'Select any additional facilities required',
-        answerSource: 'ADDITIONAL_FACILITIES_REQUIRED',
+        answerSource: AnswerSource.ADDITIONAL_FACILITIES_REQUIRED,
         answerOrder: 3,
-        changeLink: '/hearing-facilities#checkboxRequired'
+        changeLink: '/hearings/request/hearing-facilities#immigrationDetentionCentre',
       }
     ],
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Stage</h2>',
-    sectionOrder: 3,
+    sectionOrder: 4,
     answers: [
       {
         answerTitle: 'What stage is this hearing at?',
-        answerSource: 'STAGE',
+        answerSource: AnswerSource.STAGE,
         answerOrder: 1,
-        changeLink: '/hearing-stage'
+        changeLink: '/hearings/request/hearing-stage#initial'
       },
     ],
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Attendance</h2>',
-    sectionOrder: 4,
+    sectionOrder: 5,
     answers: [
       {
         answerTitle: 'How will each party attend the hearing?',
-        answerSource: 'HOW_ATTENDANT',
+        answerSource: AnswerSource.HOW_ATTENDANT,
         answerOrder: 1,
-        changeLink: '/hearing-attendance#attendance'
+        changeLink: '/hearings/request/hearing-attendance#partyChannel0',
       },
       {
         answerTitle: 'How many people will attend the hearing in person?',
-        answerSource: 'ATTENDANT_PERSON_AMOUNT',
+        answerSource: AnswerSource.ATTENDANT_PERSON_AMOUNT,
         answerOrder: 2,
-        changeLink: '/hearing-attendance#personAmount'
+        changeLink: '/hearings/request/hearing-attendance#attendance-number',
       },
     ],
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Venue</h2>',
-    sectionOrder: 5,
+    sectionOrder: 6,
     answers: [
       {
         answerTitle: 'What are the hearing venue details?',
-        answerSource: 'VENUE',
+        answerSource: AnswerSource.VENUE,
         answerOrder: 1,
-        changeLink: '/hearing-venue'
+        changeLink: '/hearings/request/hearing-venue#inputLocationSearch'
       },
     ],
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Judge details</h2>',
-    sectionOrder: 6,
+    sectionOrder: 7,
     answers: [
       {
         answerTitle: 'Do you want a specific judge?',
-        answerSource: 'NEED_JUDGE',
+        answerSource: AnswerSource.NEED_JUDGE,
         answerOrder: 1,
-        changeLink: '/hearing-judge#radioJudgeNeeded'
+        changeLink: '/hearings/request/hearing-judge#specificJudgeName',
       },
       {
         answerTitle: 'Name of the judge',
-        answerSource: 'JUDGE_NAME',
+        answerSource: AnswerSource.JUDGE_NAME,
         answerOrder: 2,
-        changeLink: '/hearing-judge#inputJudge'
+        changeLink: '/hearings/request/hearing-judge#inputSelectPerson',
       },
       {
         answerTitle: 'Exclude a judge',
-        answerSource: 'JUDGE_EXCLUSION',
+        answerSource: AnswerSource.JUDGE_EXCLUSION,
         answerOrder: 3,
-        changeLink: '/hearing-judge#excludeJudges'
+        changeLink: '/hearings/request/hearing-judge#inputSelectPersonExclude',
       },
     ],
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Panel details</h2>',
-    sectionOrder: 7,
+    sectionOrder: 8,
     answers: [
       {
         answerTitle: 'Do you require a panel for this hearing?',
-        answerSource: 'HEARING_PANEL',
+        answerSource: AnswerSource.HEARING_PANEL,
         answerOrder: 1,
-        changeLink: '/hearing-panel'
+        changeLink: '/hearings/request/hearing-panel#specificPanelSelection'
       },
     ],
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Length, date and priority level of hearing</h2>',
-    sectionOrder: 8,
+    sectionOrder: 9,
     answers: [
       {
         answerTitle: 'Length of hearing',
-        answerSource: 'HEARING_LENGTH',
+        answerSource: AnswerSource.HEARING_LENGTH,
         answerOrder: 1,
-        changeLink: '/hearing-timing#length'
+        changeLink: '/hearings/request/hearing-timing#durationhours',
       },
       {
         answerTitle: 'Does the hearing need to take place on a specific date?',
-        answerSource: 'HEARING_SPECIFIC_DATE',
+        answerSource: AnswerSource.HEARING_SPECIFIC_DATE,
         answerOrder: 2,
-        changeLink: '/hearing-timing#radioSpecificDate'
+        changeLink: '/hearings/request/hearing-timing#noSpecificDate',
       },
       {
         answerTitle: 'What is the priority of this hearing?',
-        answerSource: 'HEARING_PRIORITY',
+        answerSource: AnswerSource.HEARING_PRIORITY,
         answerOrder: 2,
-        changeLink: '/hearing-timing#radioPriority'
+        changeLink: '/hearings/request/hearing-timing#urgent',
       },
     ],
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Additional instructions</h2>',
-    sectionOrder: 9,
+    sectionOrder: 10,
     answers: [
       {
         answerTitle: 'Enter any additional instructions for the hearing',
-        answerSource: 'ADDITIONAL_INSTRUCTION',
+        answerSource: AnswerSource.ADDITIONAL_INSTRUCTION,
         answerOrder: 1,
-        changeLink: '/hearing-additional-instructions'
+        changeLink: '/hearings/request/hearing-additional-instructions#additionalInstructionsTextarea',
       },
     ],
   },

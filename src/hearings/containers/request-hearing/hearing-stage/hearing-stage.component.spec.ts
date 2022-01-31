@@ -84,6 +84,7 @@ describe('HearingStageComponent', () => {
                 hearingStages: source
               }
             },
+            fragment: of('point-to-me'),
           }
         },
         FormBuilder
@@ -110,7 +111,7 @@ describe('HearingStageComponent', () => {
 
   it('should initialise control value to hearing type from store', () => {
     fixture.detectChanges();
-    component.ngAfterContentInit();
+    component.ngAfterViewInit();
     expect(component.stageForm.controls['stage-option'].value).toEqual(initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.hearingType);
   });
 

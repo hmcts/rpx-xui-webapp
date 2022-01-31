@@ -48,12 +48,13 @@ describe('Hearing Request Effects', () => {
 
   describe('continueNavigation$', () => {
     it('should navigate to error page if continue with no page', () => {
+      pageflowMock.getNextPage.and.returnValue('next');
       const action = new hearingRequestActions.UpdateHearingRequest(null);
       actions$ = cold('-a', {a: action});
       const navigateAction = new hearingRequestActions.UpdateHearingRequest(null);
       const expected = cold('-b', {b: navigateAction});
       expect(effects.continueNavigation$).toBeObservable(expected);
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['service-down']);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'next']);
     });
   });
 

@@ -1,15 +1,18 @@
 <div *ngFor="let section of template">
+  <div *ngIf="section.insetInfo" class="govuk-inset-text">
+    {{ section.insetInfo }}
+  </div>
   <div [innerHtml]="section.sectionHTMLTitle"></div>
   <dl class="govuk-summary-list govuk-!-margin-bottom-9">
     <div class="govuk-summary-list__row" *ngFor="let answer of section.answers">
       <dt class="govuk-summary-list__key">
-        {{ answer.answerTitle}
+        {{ answer.answerTitle }}
       </dt>
       <dd class="govuk-summary-list__value">
         <div [innerHtml]="answer.answerSource | transformAnswer | async"></div>
       </dd>
       <dd class="govuk-summary-list__actions">
-        <a href="{{answer.changeLink}}"></a>
+        <a *ngIf="answer.changeLink" href="javascript:void(0)" (click)="changeAnswer(answer.changeLink)">Change</a>
       </dd>
     </div>
   </dl>

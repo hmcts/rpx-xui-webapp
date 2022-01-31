@@ -19,8 +19,13 @@ export class PageFlow implements AbstractPageFlow {
   }
 
   public getCurrentPage(): string {
+    console.log('this.router', this.router);
     const urlPaths: string[] = this.router.url.split('/');
-    return urlPaths[urlPaths.length - 1];
+    let lastPath = urlPaths[urlPaths.length - 1];
+    if (lastPath.indexOf('#') > -1) {
+      lastPath = lastPath.substring(0, lastPath.indexOf('#'));
+    }
+    return lastPath;
   }
 
   public getNextPage(screensNavigations$: Observable<ScreenNavigationModel[]>): string {
@@ -30,6 +35,7 @@ export class PageFlow implements AbstractPageFlow {
       .subscribe(([hearingConditions, screenNavigationModels]: [HearingConditions, ScreenNavigationModel[]]) => {
       const screenModel = screenNavigationModels.find(screenNavigationModel =>
         screenNavigationModel.screenName === this.getCurrentPage());
+      console.log('screenModel', JSON.stringify(screenModel));
       if (screenModel) {
         if (!screenModel.conditionKey) {
           nextPage = screenModel.navigation[0].resultValue;
@@ -50,6 +56,8 @@ export class PageFlow implements AbstractPageFlow {
             });
           }
         }
+      } else {
+        throw new Error('Current screen not found');
       }
     });
     return nextPage;

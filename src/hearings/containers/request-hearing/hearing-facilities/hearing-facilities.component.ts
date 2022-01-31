@@ -1,20 +1,19 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NullInjector } from '@angular/core/src/di/injector';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { RefDataModel } from '../../../../hearings/models/refData.model';
-import { CaseFlagReferenceModel } from '../../../models/caseFlagReference.model';
-import { ACTION, CaseFlagType, HearingFacilitiesEnum } from '../../../models/hearings.enum';
-import { HearingsService } from '../../../services/hearings.service';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
+import {Store} from '@ngrx/store';
+import {CaseFlagReferenceModel} from '../../../models/caseFlagReference.model';
+import {ACTION, CaseFlagType, HearingFacilitiesEnum} from '../../../models/hearings.enum';
+import {RefDataModel} from '../../../models/refData.model';
+import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import { RequestHearingPageFlow } from '../request-hearing.page.flow';
+import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-facilities',
   templateUrl: './hearing-facilities.component.html',
 })
-export class HearingFacilitiesComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
+export class HearingFacilitiesComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public caseFlagsRefData: CaseFlagReferenceModel[];
   public caseFlagType: CaseFlagType = CaseFlagType.NON_REASONABLE_ADJUSTMENT;
   public hearingFactilitiesForm: FormGroup;
@@ -22,12 +21,13 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
   public validationErrors: { id: string, message: string }[] = [];
   public additionalFacilities: RefDataModel[];
   public additionSecurityRequiredValid: boolean = true;
+
   constructor(
-    private readonly route: ActivatedRoute,
+    protected readonly route: ActivatedRoute,
     protected readonly hearingStore: Store<fromHearingStore.State>,
     protected readonly hearingsService: HearingsService,
     protected fb: FormBuilder) {
-    super(hearingStore, hearingsService);
+    super(hearingStore, hearingsService, route);
     this.additionalFacilities = this.route.snapshot.data.additionFacilitiesOptions;
     this.caseFlagsRefData = this.route.snapshot.data.caseFlags;
   }
@@ -47,6 +47,10 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
         this.hearingFactilitiesForm.controls['addition-security-required'].setValue('No');
       }
     }
+  }
+
+  public ngAfterViewInit(): void {
+    this.fragmentFocus();
   }
 
   public get getHearingFacilitiesFormArray(): FormArray {
@@ -110,7 +114,10 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
     this.validationErrors = [];
     if (!this.hearingFactilitiesForm.controls['addition-security-required'].valid) {
       this.additionSecurityError = HearingFacilitiesEnum.additionSecurityError;
-      this.validationErrors.push({ id: 'addition-security-confirmation', message: HearingFacilitiesEnum.additionSecurityError });
+      this.validationErrors.push({
+        id: 'addition-security-confirmation',
+        message: HearingFacilitiesEnum.additionSecurityError
+      });
       return false;
     }
     return true;

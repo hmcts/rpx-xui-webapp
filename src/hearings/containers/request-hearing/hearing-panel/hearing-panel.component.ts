@@ -1,18 +1,19 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Person } from '@hmcts/rpx-xui-common-lib';
-import { Store } from '@ngrx/store';
-import { HearingJudgeNamesListComponent } from '../../../../hearings/components';
-import { ACTION, HearingPanelSelectionEnum } from '../../../models/hearings.enum';
-import { HearingsService } from '../../../services/hearings.service';
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
+import {Person} from '@hmcts/rpx-xui-common-lib';
+import {Store} from '@ngrx/store';
+import {HearingJudgeNamesListComponent} from '../../../components';
+import {ACTION, HearingPanelSelectionEnum} from '../../../models/hearings.enum';
+import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import { RequestHearingPageFlow } from '../request-hearing.page.flow';
+import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-panel',
   templateUrl: './hearing-panel.component.html',
 })
-export class HearingPanelComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
+export class HearingPanelComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public panelJudgeForm: FormGroup;
   public validationErrors: { id: string, message: string }[] = [];
   public includedJudgeList: Person[] = [];
@@ -24,8 +25,9 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
 
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService,
-              private readonly formBuilder: FormBuilder) {
-    super(hearingStore, hearingsService);
+              private readonly formBuilder: FormBuilder,
+              protected readonly route: ActivatedRoute) {
+    super(hearingStore, hearingsService, route);
   }
 
   public ngOnInit(): void {
@@ -59,11 +61,16 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     this.panelSelectionError = null;
     if (!this.panelJudgeForm.controls.specificPanel.valid) {
       this.panelSelectionError = HearingPanelSelectionEnum.SelectionError;
-      this.validationErrors.push({ id: 'specific-panel-selection', message: HearingPanelSelectionEnum.SelectionError });
+      this.validationErrors.push({id: 'specific-panel-selection', message: HearingPanelSelectionEnum.SelectionError});
     }
   }
+
   public isFormValid(): boolean {
     return this.panelJudgeForm.valid;
+  }
+
+  public ngAfterViewInit(): void {
+    this.fragmentFocus();
   }
 
   public ngOnDestroy(): void {

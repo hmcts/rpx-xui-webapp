@@ -1,6 +1,7 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
@@ -23,6 +24,12 @@ describe('HearingAdditionalInstructionsComponent', () => {
       providers: [
         provideMockStore({initialState}),
         {provide: HearingsService, useValue: hearingsService},
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            fragment: of('point-to-me'),
+          },
+        },
       ],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();

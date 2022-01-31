@@ -14,19 +14,19 @@
     </td>
   </tr>
   <tr class="govuk-table__row" *ngFor="let hearing of hearingList$ | async">
-    <td class="govuk-table__header govuk-!-width-one-quarter gds-font">{{ hearing.hearingType}}</td>
+    <td class="govuk-table__header govuk-table-width-30-percent gds-font">{{ hearing.hearingType}}</td>
     <td
-      class="govuk-table__cell govuk-!-width-one-quarter gds-font">
+      class="govuk-table__cell govuk-table-width-15-percent gds-font">
       {{ hearing.earliestHearingStartDateTime ? (hearing.earliestHearingStartDateTime | date:'d MMMM yyyy') : '' }}
     </td>
-    <td class="govuk-table__cell govuk-!-width-one-quarter gds-font">
+    <td class="govuk-table__cell govuk-table-width-25-percent gds-font">
       <strong [ngClass]="hearing.exuiDisplayStatus | hearingsBadge">{{ hearing.exuiDisplayStatus }}
       </strong>
     </td>
-    <td class="govuk-table__cell govuk-!-width-one-quarter">
+    <td class="govuk-table__cell govuk-table-width-30-percent">
       <div *ngIf="hasUpdateAction" class="div-action">
         <a href="javascript:void(0)"
-           [routerLink]="['/', 'hearings', 'change']">View or edit hearing</a>&nbsp;&nbsp;&nbsp;&nbsp;
+           [routerLink]="['/', 'hearings', 'request', 'hearing-view-edit-summary']">View or edit hearing</a>&nbsp;&nbsp;&nbsp;&nbsp;
       </div>
       <div *ngIf="hasDeleteAction" class="div-action">
         <a href="javascript:void(0)"

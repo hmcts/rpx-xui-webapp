@@ -62,6 +62,7 @@ describe('HearingTimingComponent', () => {
                 hearingPriorities: priorities
               }
             },
+            fragment: of('point-to-me'),
           }
         },
       ],

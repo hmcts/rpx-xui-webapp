@@ -6,11 +6,11 @@
       <h1 class="govuk-heading-l">
         Do you require any additional facilities?
       </h1>
+      <div class="govuk-inset-text">
+         Any active flags on this case may require additional facilities at the hearing.
+      </div>
       <exui-case-flags
-        [info]="'Any active flags on this case may require additional facilities at the hearing.'"
-        [hearingValueModel]="serviceHearingValuesModel"
-        [caseFlagsRefData]="caseFlagsRefData"
-        [caseFlagType]="caseFlagType">
+        [caseFlagsRefData]="caseFlagsRefData">
       </exui-case-flags>
     </div>
     <div class="govuk-grid-column-three-quarters">

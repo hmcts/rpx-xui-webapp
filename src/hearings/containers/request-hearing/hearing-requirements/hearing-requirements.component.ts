@@ -1,20 +1,20 @@
-import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {Store} from '@ngrx/store';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
 import * as fromHearingStore from '../../../../hearings/store';
-import {CaseFlagReferenceModel} from '../../../models/caseFlagReference.model';
-import {HearingConditions} from '../../../models/hearingConditions';
-import {HearingRequestMainModel} from '../../../models/hearingRequestMain.model';
-import {ACTION, CaseFlagType} from '../../../models/hearings.enum';
-import {HearingsService} from '../../../services/hearings.service';
-import {HearingsUtils} from '../../../utils/hearings.utils';
-import {RequestHearingPageFlow} from '../request-hearing.page.flow';
+import { CaseFlagReferenceModel } from '../../../models/caseFlagReference.model';
+import { HearingConditions } from '../../../models/hearingConditions';
+import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
+import { ACTION, CaseFlagType } from '../../../models/hearings.enum';
+import { HearingsService } from '../../../services/hearings.service';
+import { HearingsUtils } from '../../../utils/hearings.utils';
+import { RequestHearingRefDataPageFlow } from '../request-hearing-ref-data.page.flow';
 
 @Component({
   selector: 'exui-hearing-requirements',
   templateUrl: './hearing-requirements.component.html',
 })
-export class HearingRequirementsComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
+export class HearingRequirementsComponent extends RequestHearingRefDataPageFlow implements OnInit, OnDestroy {
   public caseFlagsRefData: CaseFlagReferenceModel[];
   public caseFlagType: CaseFlagType = CaseFlagType.REASONABLE_ADJUSTMENT;
   public lostFocus: boolean = false;
@@ -33,10 +33,11 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     this.lostFocus = true;
   }
 
-  constructor(private readonly route: ActivatedRoute,
-              public readonly hearingStore: Store<fromHearingStore.State>,
-              protected readonly hearingsService: HearingsService) {
-    super(hearingStore, hearingsService);
+  constructor(
+    public readonly route: ActivatedRoute,
+    public readonly hearingStore: Store<fromHearingStore.State>,
+    public readonly hearingsService: HearingsService) {
+    super(hearingStore, hearingsService, route);
     this.caseFlagsRefData = this.route.snapshot.data.caseFlags;
   }
 
@@ -49,6 +50,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       && this.serviceHearingValuesModel) {
       this.initializeHearingRequestFromHearingValues();
     }
+    this.displayCaseFlagsGroup();
   }
 
   public initializeHearingRequestFromHearingValues(): void {

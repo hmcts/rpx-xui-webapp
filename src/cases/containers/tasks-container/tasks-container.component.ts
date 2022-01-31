@@ -1,10 +1,9 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { of } from 'rxjs';
 import { first, mergeMap } from 'rxjs/operators';
-import { Caseworker, TaskList } from '../../../work-allocation-2/models/dtos';
+import { Caseworker, } from '../../../work-allocation-2/models/dtos';
 import { Task } from '../../../work-allocation-2/models/tasks';
 import { CaseworkerDataService, WorkAllocationCaseService } from '../../../work-allocation-2/services';
 
@@ -14,7 +13,6 @@ import { CaseworkerDataService, WorkAllocationCaseService } from '../../../work-
   styleUrls: ['./tasks-container.component.scss']
 })
 export class TasksContainerComponent implements OnInit {
-  public static CASE_TASKS_URL: string = '/workallocation2/case/task';
 
   public caseDetails: CaseView;
   public tasks: Task[] = [];
@@ -22,13 +20,15 @@ export class TasksContainerComponent implements OnInit {
   public caseworkers: Caseworker[] = [];
   public warningIncluded: boolean;
 
-  constructor(private readonly http: HttpClient, private readonly waCaseService: WorkAllocationCaseService, private readonly route: ActivatedRoute, private readonly caseworkerService: CaseworkerDataService) { }
+  constructor(private readonly waCaseService: WorkAllocationCaseService,
+              private readonly route: ActivatedRoute,
+              private readonly caseworkerService: CaseworkerDataService) { }
 
   public ngOnInit(): void {
     // note: internal logic used to be stored in resolver - resolver removed for smoother navigation purposes
     // i.e. navigating before loading
     const caseId = this.route.snapshot.paramMap.get('cid');
-    const tasks$ = this.http.get<Task[]>(`${TasksContainerComponent.CASE_TASKS_URL}/${caseId}`);
+    const tasks$ = this.waCaseService.getTasksByCaseId(caseId);
     tasks$
       .pipe(
         first(),

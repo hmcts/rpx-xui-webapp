@@ -28,4 +28,21 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             
         }
     });
+
+    Given('I set MOCK caseworkers for service {string}', async function (service, datatable) {
+        // step definition code here
+        const datatableHashes = datatable.hashes();
+        for (const userhash of datatableHashes) {
+            workAlloctionMockData.addCaseworker(userhash, service);
+
+        }
+    });
+
+    Given('I add MOCK judicial user', async function (datatable) {
+        const dtHashes = datatable.hashes();
+        for (const hash of dtHashes) {
+            workAlloctionMockData.addJudgeUsers(hash.idamId, hash.firstName, hash.lastName, hash.email);
+
+        }
+    });
 });

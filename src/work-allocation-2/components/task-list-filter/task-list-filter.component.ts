@@ -41,7 +41,8 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     fields: [],
     cancelButtonText: 'Reset to default',
     applyButtonText: 'Apply',
-    cancelSetting: null
+    cancelSetting: null,
+    showCancelFilterButton: false
   };
   public allLocations: string[] = [];
   public defaultLocations: any[] = null;

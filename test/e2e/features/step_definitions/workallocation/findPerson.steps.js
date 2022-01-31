@@ -49,7 +49,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     When('In workflow {string}, I select find person result {string}', async function (workflow,person) {
         const workFlowPage = workflowUtil.getWorlflowPageObject(workflow);
-        await workFlowPage.findPersonPage.selectPerson(person);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await workFlowPage.findPersonPage.selectPerson(person);
+        });
     });
 
     When('In workflow {string}, I select find person result with caseworker reference {string}', async function (workflow, caseworkerRef) {

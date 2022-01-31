@@ -26,29 +26,6 @@ describe('getUserDetails', () => {
         sandbox.restore()
     })
 
-    xit('should return a true response when case share permission is existent', async () => {
-      const reqQuery = {
-        session: {
-          passport: {
-            user: {
-              tokenset: {
-                accessToken: '124'
-              },
-              userinfo: {
-                roles: ['pui-case-manager'],
-              },
-            },
-          },
-        },
-      }
-      req = mockReq(reqQuery)
-      await getUserDetails(req, res, next)
-      const response = {
-        canShareCases: true,
-      }
-      expect(res.send).to.have.been.calledWith(sinon.match(response))
-    })
-
     it('should return a false response when case share permission is non-existent', async () => {
       const reqQuery = {
         session: {

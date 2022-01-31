@@ -9,7 +9,6 @@ import { setHeaders } from '../lib/proxy';
 import { handleLocationGet } from '../workAllocation2/locationService';
 import { prepareGetLocationsUrl } from '../workAllocation2/util';
 import { LocationTypeEnum } from './data/locationType.enum';
-import { SERVICES_COURT_TYPE_MAPPINGS } from './data/serviceCourtType.mapping';
 import { LocationModel } from './models/location.model';
 
 const url: string = getConfigValue(SERVICES_LOCATION_API_PATH);
@@ -23,7 +22,7 @@ const url: string = getConfigValue(SERVICES_LOCATION_API_PATH);
  */
 export async function getLocations(req: EnhancedRequest, res: Response, next: NextFunction) {
   const searchTerm = req.query.searchTerm;
-  const serviceIds = req.query.serviceIds;
+  // const serviceIds = req.query.serviceIds;
   const locationType = req.query.locationType;
   /* const serviceIdArray = serviceIds.split(',');
   const courtTypeIds = getCourtTypeIdsByService(serviceIdArray); */
@@ -49,15 +48,15 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
  * Get locations
  *
  */
- export async function getLocationsById(req: EnhancedRequest, res: Response, next: NextFunction) {
+export async function getLocationsById(req: EnhancedRequest, res: Response, next: NextFunction) {
   const id = req.query.ids;
   try {
     const basePath = getConfigValue(SERVICES_LOCATION_API_PATH);
     const path: string = prepareGetLocationsUrl(basePath);
     const response = await handleLocationGet(path, req);
-    const filteredResults = response.data.court_venues.filter(court_venue =>
-      court_venue.epimms_id === id
-    )
+    const filteredResults = response.data.court_venues.filter(courtVenue =>
+      courtVenue.epimms_id === id
+    );
     const mappedLocationModel = mapCourtVenuesToLocationModels(filteredResults);
     res.send(mappedLocationModel).status(response.status);
   } catch (error) {
@@ -65,18 +64,18 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   }
 }
 
-function getCourtTypeIdsByService(serviceIdArray: string[]): string {
+/* function getCourtTypeIdsByService(serviceIdArray: string[]): string {
   const courtTypeIdsArray = serviceIdArray.map(serviceId => SERVICES_COURT_TYPE_MAPPINGS[serviceId])
     .reduce(concatCourtTypeWithoutDuplicates);
   if (courtTypeIdsArray) {
     return courtTypeIdsArray.join(',');
   }
   return '';
-}
+} */
 
-function concatCourtTypeWithoutDuplicates(array1: number[], array2: number[]) {
+/* function concatCourtTypeWithoutDuplicates(array1: number[], array2: number[]) {
   return array1.concat(array2.filter(item => array1.indexOf(item) < 0));
-}
+} */
 
 function mapCourtVenuesToLocationModels(courtVenues: CourtVenue[]): CourtVenue {
   return courtVenues[0];

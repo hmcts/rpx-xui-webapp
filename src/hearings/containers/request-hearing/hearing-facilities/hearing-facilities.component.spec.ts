@@ -126,12 +126,15 @@ describe('HearingFacilitiesComponent', () => {
     component = fixture.componentInstance;
     spyOn(component, 'prepareHearingRequestData').and.callThrough();
     spyOn(component, 'isFormValid').and.callThrough();
+    spyOn(component, 'displayCaseFlagsGroup').and.callThrough();
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
     expect(component.hearingFactilitiesForm).toBeTruthy();
+    expect(component.displayCaseFlagsGroup).toHaveBeenCalled();
+    expect(component.hearingFactilitiesForm).toBeDefined();
   });
 
   it('should call getHearingFacilitiesFormArray method', () => {

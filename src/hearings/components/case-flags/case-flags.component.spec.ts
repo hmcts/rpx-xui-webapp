@@ -1,8 +1,8 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import * as _ from 'underscore';
-import {PartyType, RequirementType} from '../../models/hearings.enum';
-import {ServiceHearingValuesModel} from '../../models/serviceHearingValues.model';
-import {CaseFlagsComponent} from './case-flags.component';
+import { PartyType, RequirementType } from '../../models/hearings.enum';
+import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
+import { CaseFlagsComponent } from './case-flags.component';
 
 describe('CaseFlagsComponent', () => {
   let component: CaseFlagsComponent;
@@ -1133,7 +1133,6 @@ describe('CaseFlagsComponent', () => {
     fixture = TestBed.createComponent(CaseFlagsComponent);
     component = fixture.componentInstance;
     component.caseFlagsRefData = caseFlagsRefData;
-    component.hearingValueModel = hearingValueModel;
     fixture.detectChanges();
   });
 
@@ -1141,16 +1140,7 @@ describe('CaseFlagsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should displayCaseFlagsGroup', () => {
-    component.displayCaseFlagsGroup();
-    expect(component.caseFlagsGroup.length).toBe(2);
-  });
-
   it('should call convertMapToArray during onint call', () => {
     expect(component).toBeDefined();
-    const caseFlags = _.groupBy(component.hearingValueModel.caseFlags.flags, 'partyName');
-    const caseFlagConverted = component.convertMapToArray(caseFlags);
-    expect(caseFlagConverted.length).toBeGreaterThan(0);
   });
-
 });

@@ -18,9 +18,9 @@ export function modifyRequest(proxyReq, req) {
   const body = JSON.stringify(request);
 
   // Update header
-  proxyReq.setHeader('content-type', 'application/json');
 
   if (body) {
+    proxyReq.setHeader('content-type', 'application/json');
     proxyReq.setHeader('content-length', Buffer.byteLength(body));
     // Write out body changes to the proxyReq stream
     proxyReq.write(body);

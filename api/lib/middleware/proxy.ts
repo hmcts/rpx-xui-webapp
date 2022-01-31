@@ -16,7 +16,11 @@ export const onProxyError = (err, req, res) => {
       );
     }
 
-    res.status(500).send({
+    if (!res.headersSent) {
+      res.writeHead(500, { 'content-type': 'application/json' });
+    }
+
+    res.send({
         error: 'Error when connecting to remote server',
         status: 504,
     });

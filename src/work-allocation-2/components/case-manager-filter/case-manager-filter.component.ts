@@ -28,6 +28,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
     fields: [],
     cancelButtonText: 'Reset to default',
     applyButtonText: 'Apply',
+    showCancelFilterButton:  true,
     cancelSetting: {
       id: CaseManagerFilterComponent.FILTER_NAME,
       fields: [

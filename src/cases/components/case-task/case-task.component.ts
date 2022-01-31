@@ -114,7 +114,7 @@ export class CaseTaskComponent implements OnInit {
       showAssigneeColumn: true
     };
     const actionUrl = `/work/${task.id}/${option.id}`;
-    this.router.navigate([actionUrl], {state});
+    this.router.navigate([actionUrl], { queryParams: {service: task.jurisdiction}, state });
   }
 
   /**

@@ -67,11 +67,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Given('I set MOCK case details with reference {string}', async function(caseDetailsReference){
-       const caseDetails = JSON.parse(JSON.stringify(dummyCaseDetails));
+        const caseDetails = ccdMockData.caseDetailsResponse;
         global.scenarioData[caseDetailsReference] = caseDetails;
-        MockApp.onGet('/data/internal/cases/:caseid', (req, res) => {
-            res.send(caseDetails);
-        });
+        // MockApp.onGet('/data/internal/cases/:caseid', (req, res) => {
+        //     res.send(caseDetails);
+        // });
     });
 
     Given('I set MOCK case details {string} property {string} as {string}', async function(caseDetailsRef, property, value){
@@ -122,11 +122,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const userDetails = global.scenarioData[userDetailsRef];
 
         const dateTableHashes = caseTasksDatatable.hashes();
-        const tasks = workAlloctionMockData.getCaseTasks(dateTableHashes, userDetails);
-        MockApp.onGet('/workallocation2/case/task/:caseid', (req, res) => {
-            CucumberReporter.AddJson(tasks);
-            res.send(tasks);
-        });
+        workAlloctionMockData.caseTasks = workAlloctionMockData.getCaseTasks(dateTableHashes, userDetails);
+        
     });
 
     Given('I set MOCK case list values', async function(caseListAttributesDatatable){

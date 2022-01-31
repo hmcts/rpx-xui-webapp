@@ -20,8 +20,16 @@ const nodeAppMock = require('./nodeApp/mockData');
 const waMockDataService = require('./workAllocation/mockData');
 const CucumberReporter = require('../e2e/support/reportLogger');
 
+const nodeMockConfig = require('./config');
+
 const port = 3001;
 class MockApp{
+
+    constructor(){
+        this.logMessageCallback = null;
+        this.logJSONCallback = null;
+    }
+
     init(clientPortStart){
         this.requestLogs = [];
         this.clientPortCounter = clientPortStart ? clientPortStart : 3002;
@@ -39,9 +47,8 @@ class MockApp{
             delete: { ...requestMapping.delete}
         };
         // this.configurations = Object.assign({}, configurations)
-        this.logMessageCallback = null;
-
-        this.mockDataServices = []
+      
+        this.mockDataServices = [];
 
         for (const mockDataService of requestMapping.mockServiceResetCallbacks) {
             mockDataService();
@@ -49,6 +56,7 @@ class MockApp{
         console.log("Mock Config Initialized");
         return "done";
     }
+
 
 
     initialiseMockDataServices(){
@@ -63,13 +71,32 @@ class MockApp{
         this.logMessageCallback = callback;
     }
 
+    setLogJSONCallback(callback) {
+        this.logJSONCallback = callback;
+    }
+
     logMessage(message){
-        const msg = '[NODE_MOCK_'+this.serverPort+"] " + message;
-        this.requestLogs.push(msg);
+        const msg = "[NODE_MOCK] " + message;
         if (this.logMessageCallback){
             this.logMessageCallback(msg);
-        }else{
-            console.log(msg);
+
+        }
+        console.log(msg);
+
+    }
+
+    logJSON(json) {
+        if (this.logJSONCallback) {
+            this.logJSONCallback(json);
+        }
+        console.log(json);
+
+    }
+
+    logRequestDetails(req){
+        this.logMessage(`${req.method} : ${req.originalUrl}`);
+        if (req.method === 'POST' || req.method === 'PUT' ){
+            this.logJSON(req.body);
         }
     }
 
@@ -89,10 +116,11 @@ class MockApp{
                 await http.post(`http://localhost:${port}/mockerror`, { error: err })
             }
             console.log(err);
-            CucumberReporter.AddMessage(`*********************** Mock onRequest error occured  on server with port ${this.serverPort} ******************** `);
-            CucumberReporter.AddMessage(err);
-            CucumberReporter.AddMessage("*************************************************************** ");
-            res.status(550).send({message:'MOCK onRequest error', err:err.message, stack:err.stack});
+            const logErrorMessge = { message: 'MOCK onRequest error', err: err.message, stack: err.stack };
+            this.logMessage(`*********************** Mock onRequest error occured  on server with port ${this.serverPort} ******************** `);
+            this.logJSON(logErrorMessge);
+            this.logMessage("*************************************************************** ");
+            res.status(550).send(logErrorMessge);
         }
     }
 
@@ -130,7 +158,7 @@ class MockApp{
         }
         catch(err){
 
-            if (err.response.status && err.response.status < 510){
+            if (err.response && err.response.status < 510){
                 res.status(err.response.status ).send(err.response.body);
                 return; 
             }
@@ -211,6 +239,40 @@ class MockApp{
 
         this.intercepts.forEach(intercept =>{
             app.use(intercept.url, intercept.callback);
+        });
+        
+        // app.use('/', (req,res,next) =>{
+        //     this.logMessageCallback(`[ Node Requested ] ${req.method} : ${req.originalUrl}`);
+        //     next();
+        // });
+
+        nodeMockConfig.logRequests.forEach(url => {
+            app.use(url, (req,res,next)=>{
+                this.logRequestDetails(req);
+                next();
+            });
+        });
+        
+        nodeMockConfig.logResponses.forEach(url => {
+            app.use(url, (req, res, next) => {
+                let send = res.send;
+                const logMessagesCallBackLocal = this.logMessageCallback;
+                const logJSONCallbackLocal = this.logJSONCallback;
+                res.send = function (body) {
+
+                    logMessagesCallBackLocal(` ------------------------------Mock response intercept from server with port "${MockApp.serverPort}" ---------------------------`);
+                    logMessagesCallBackLocal('Intercept response on MOCK api ' + url);
+                    logMessagesCallBackLocal('response code ' + res.statusCode);
+                    try {
+                        logJSONCallbackLocal(body)
+                    } catch (err) {
+                        logMessagesCallBackLocal(body)
+                    }
+                    logMessagesCallBackLocal('------------------------------Mock response intercept---------------------------');
+                    send.call(this, body);
+                }
+                next();
+            });
         }); 
 
         for (const [key, value] of Object.entries(this.conf.get)) {
@@ -308,6 +370,7 @@ function setUpcaseConfig() {
     const idamid = '519e0c40-d30e-4f42-8a4c-2c79838f0e4e'; //Judicial
     const workAllocationMockData = require('./workAllocation/mockData');
     workAllocationMockData.init();
+
     workAllocationMockData.addCaseworkerWithIdamId(idamid, 'IA');
     mockInstance.onGet('/api/user/details', (req, res) => {
         // const roles = ['task-supervisor','case-allocator','caseworker', 'caseworker-ia', 'caseworker-ia-caseofficer','task-supervisor','case-allocator'];

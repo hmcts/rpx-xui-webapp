@@ -82,7 +82,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         }
         MockApp.onPost(endpoint, (req, res) => {
-            const reqUser = req.data.userIds;
+            const reqUser = req.body.userIds;
             if (reqUser.length === 0){
                 res.send(personsResponseBody);
             }else{

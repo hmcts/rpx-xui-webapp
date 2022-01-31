@@ -85,14 +85,6 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
           name: roleChosen
         };
 
-        if (this.sessionStorageService.getItem('caseRoles') && this.sessionStorageService.getItem('caseRoles').includes(typeOfRole.id)) {
-          this.radioOptionControl.setErrors({
-            invalid: true
-          });
-          this.error = ERROR_MESSAGE_EXISTING_ROLE;
-          return;
-        }
-
         switch (roleCategory) {
           case RoleCategory.JUDICIAL: {
             switch (isLegalOpsOrJudicialRole) {

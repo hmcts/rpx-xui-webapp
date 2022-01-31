@@ -5,8 +5,10 @@ const nodeAppMock = require('../nodeApp/mockData');
 class WorkAllocationMockData {
 
     constructor() {
+        this.locationIdCounter = 10000; 
+
         this.WorkAllocationDataModels = WorkAllocationDataModels;
-        this.init();  
+        this.init(); 
     }
 
     init(){
@@ -15,11 +17,13 @@ class WorkAllocationMockData {
 
     setDefaultData(){
         this.findPersonsAllAdata = [];
+        this.waSupportedJusridictions = ['IA', 'SSCS'];
+
+        this.locationsByServices = this.getLocationsByServices(this.waSupportedJusridictions);
+
         this.caseWorkersList = this.getPersonList(20); 
         this.judgeUsers = this.setUpJudicialUsersList(20);
-        this.waSupportedJusridictions = ['IA', 'SSCS'];
         
-        this.locationsByServices = this.getLocationsByServices(this.waSupportedJusridictions );
         this.caseworkersByService = this.getCaseworkersByService(this.waSupportedJusridictions);
 
         this.exclusions = this.getCaseExclusions([
@@ -36,8 +40,8 @@ class WorkAllocationMockData {
             { added: '2021-10-12T12:14:42.230129Z', name: 'legal a', userType: 'LEGAL_OPERATIONS', type: 'CASE', id: '12345678904', roleCategory: 'LEGAL_OPERATIONS', roleName: 'case-manager' }
         ]);
         const tasks = [
-            { task_title: 'task 1', dueDate: -1, created_date: -10, permissions: "Own,Execute,Manage", warnings: "true", assignee: this.caseWorkersList[0].idamId },
-            { task_title: 'task 2', dueDate: 0, created_date: -10, permissions: "Own,Execute,Manage", warnings: "true", assignee: this.judgeUsers[0].sidam_id },
+            { task_title: 'task 1', dueDate: -1, created_date: -10, permissions: "Own,Execute,Manage", warnings: "true", assignee: this.caseWorkersList[0].idamId, description: 'Click link to proceed to next step [case details link next step](/case/case-details/${[CASE_REFERENCE]})'},
+            { task_title: 'task 2', dueDate: 0, created_date: -10, permissions: "Own,Execute,Manage", warnings: "true", assignee: this.judgeUsers[0].sidam_id, description: 'Click link to proceed to task [Task link next step](/case/case-details/${[id]})'},
             { task_title: 'task 3', dueDate: 1, created_date: -10, permissions: "Own,Execute,Manage", warnings: "true", assignee: "soneone" },
             { task_title: 'task 4', dueDate: 10, created_date: -10, permissions: "Own,Execute,Manage", warnings: "true", assignee: "soneone" }
         ];
@@ -53,6 +57,13 @@ class WorkAllocationMockData {
         this.allWorkCases = this.getWACases(125);
 
         this.taskDetails = { task: this.getRelease2TaskDetails() } 
+    }
+
+    getCaseTasksForCaseId(caseId){
+        for (const task of this.caseTasks){
+            task.case_id = caseId; 
+        }
+        return this.caseTasks;
     }
 
     addCaseworkerWithIdamId(idamId, service){
@@ -114,17 +125,17 @@ class WorkAllocationMockData {
 
     getLocationsByServices(services){
        const  locationsByService = [];
-        let loctaionIdTracker = 10001;
+        
         for(const service of services){
             const byService = {service : service , locations : []};
             for(let i = 0; i < 20; i++){
                 const location = {
                     "court_venue_id": "382",
-                    "epims_id": ""+loctaionIdTracker,
+                    "epims_id": "" + this.locationIdCounter,
                     "is_hearing_location": "Y",
                     "is_case_management_location": "Y",
-                    "site_name": service + ' Site ' + i,
-                    "court_name": service + ' court ' + i,
+                    "site_name": service + ' Site ' + this.locationIdCounter,
+                    "court_name": service + ' court ' + this.locationIdCounter,
                     "court_status": "Open",
                     "region_id": "2",
                     "region": "London",
@@ -137,12 +148,40 @@ class WorkAllocationMockData {
                 }
 
                 byService.locations.push(location); 
-                loctaionIdTracker++;
+                this.locationIdCounter++;
             }
             locationsByService.push(byService);
 
         }
         return locationsByService; 
+    }
+
+    getLocationsWithNames(locations) {
+        const returnValue = [];
+        
+        for (const locationName of locations) {
+            const location = {
+                "court_venue_id": "382",
+                "epims_id": "" + this.locationIdCounter,
+                "is_hearing_location": "Y",
+                "is_case_management_location": "Y",
+                "site_name": locationName,
+                "court_name": locationName,
+                "court_status": "Open",
+                "region_id": "2",
+                "region": "London",
+                "court_type_id": "23",
+                "court_type": "Immigration and Asylum Tribunal",
+                "cluster_name": "Tribunal",
+                "open_for_public": "Yes",
+                "court_address": "YORK HOUSE AND WELLINGTON HOUSE, 2-3 DUKES GREEN, FELTHAM, MIDDLESEX",
+                "postcode": "TW14 0LS"
+            }
+
+            returnValue.push(location);
+            this.locationIdCounter++;
+        }
+        return returnValue;
     }
 
     updateWASupportedJurisdictions(jurisdictions){
@@ -183,9 +222,25 @@ class WorkAllocationMockData {
     setUpJudicialUsersList(count){
         this.judgeUsers = [];
         for (let i = 0; i < count; i++) {
-            this.judgeUsers.push(WorkAllocationDataModels.getRefDataJudge('fnuser-' + i, 'snjudge-' + i, `testjudge_${i}@judidicial.com`));
+            this.addJudgeUsers('fnuser-' + i, 'snjudge-' + i, `testjudge_${i}@judidicial.com`);
         }
         return this.judgeUsers;
+    }
+
+    addJudgeUsers(idamId,firtName, surname, email){
+        const judge = WorkAllocationDataModels.getRefDataJudge(firtName, surname, email);
+        judge.sidam_id = idamId;
+        let location = null;
+        for(const service of this.locationsByServices){
+            location = service.locations[0];
+            break;
+        }
+        judge.appointments[0]['base_location_id'] = location.epims_id;
+        judge.appointments[0]['epimms_id'] = location.epims_id;
+        judge.appointments[0]['court_name'] = location.court_name;
+        
+        this.judgeUsers.push(judge);
+        return judge; 
     }
 
     setCaseRoleAssignment(caseRole){
@@ -346,8 +401,8 @@ class WorkAllocationMockData {
         const persons = [];
         for (let ctr = 0; ctr < count; ctr++) {
             persons.push({
-                "firstName": forService ? forService + " Jane" : "Jane " + ctr,
-                "lastName": forService ? forService + " Doe" : "Doe",
+                "firstName": "Jane " + ctr,
+                "lastName": "Doe" + (forService ? forService : ''),
                 "idamId": "41a90c39-d756-4eba-8e85-5b5bf56b31f" + ctr,
                 "email": "testemail" + ctr + "@testdomain.com",
                 "roleCategory": roleCategory ? roleCategory : "LEGAL_OPERATIONS",
@@ -635,16 +690,24 @@ class WorkAllocationMockData {
         ]
     }
 
-    retrieveCaseWorkersForServices(services){
+    retrieveCaseWorkersForServices(services,allServices){
 
         const caseWorkerForServices = [];
         for(const byService of this.caseworkersByService){
-            if (services.includes(byService.service)){
+            if (allServices){
                 caseWorkerForServices.push(byService);
-           } 
+            } else if(services && services.includes(byService.service)){
+                caseWorkerForServices.push(byService);
+           }else{
+                //throw new Error(`retrieveCaseWorkersForServices request services or fullservices atre not set.`);
+           }
         }
         return caseWorkerForServices;
         
+    }
+
+    addLocationWithNamesToService(locations, service){
+
     }
 
     searchLocations(serviceIds, searchTerm){

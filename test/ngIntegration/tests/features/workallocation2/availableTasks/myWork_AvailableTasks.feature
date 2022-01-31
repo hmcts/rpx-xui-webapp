@@ -1,4 +1,4 @@
-@ng  
+@ng 
 Feature: WA Release 2: My work -  Available tasks
 
     Background: Mock and browser setup
@@ -51,6 +51,14 @@ Feature: WA Release 2: My work -  Available tasks
             | 1   | case 1    | auto test category 1 | test location 1 | test auto task 1 | -1       | HIGH     |
             | 2   | case 2    | auto test category 2 | test location 2 | test auto task 2 | 0        | MEDIUM   |
             | 3   | case 3    | auto test category 3 | test location 3 | test auto task 3 | 1        | LOW      |
+
+        Then I see manage link displayed for task at position 1
+        Then I see manage link not displayed for task at position 2
+        Then I see manage link not displayed for task at position 4
+        Then I see manage link not displayed for task at position 5
+
+        Then I see manage link not displayed for task at position 3
+        Then I see manage link not displayed for task at position 6
 
         Then I validate task list columns are links
             | ColumnHeader |

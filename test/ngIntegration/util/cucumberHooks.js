@@ -23,6 +23,9 @@ defineSupportCode(({ Before, After, BeforeAll }) => {
 
     Before(async function (scenario) {
         await CucumberReportLog.setScenarioWorld(this);
+        MockApp.setLogMessageCallback((msg) => CucumberReportLog.AddMessage(msg));
+        MockApp.setLogJSONCallback((json) => CucumberReportLog.AddJson(json));
+
         const scenarioServerPort = MockApp.serverPort;
         await CucumberReportLog.AddMessage("Scenario executing with mock server on port " + scenarioServerPort);
         await browser.manage().addCookie({ name: 'scenarioMockPort', value: scenarioServerPort + "", domain: 'localhost:3000' });

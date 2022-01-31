@@ -270,13 +270,13 @@ class WorkAllocationModels {
     }
 
 
-    getRefDataJudge(fullName,surname,email){
+    getRefDataJudge(firstName,surname,email){
         return {
             "sidam_id": v4(),
             "object_id": "018a0310-f122-4377-9504-f635301f39ed-test2",
             "known_as": "Joe",
             "surname": surname ? surname : "snjudge",
-            "full_name": fullName ? fullName : 'fntest',
+            "full_name": firstName ? `${firstName} ${surname}` : 'fntest',
             "post_nominals": "Ms",
             "email_id": email ? email : 'test@judicial.com',
             "appointments": [

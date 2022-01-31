@@ -1,33 +1,41 @@
-<div class="govuk-inset-text">
-  {{ info }}
-</div>
-<div class="govuk-form-group">
-  <table *ngFor="let caseFlags of caseFlagsGroup" class="govuk-table">
-    <thead class="govuk-table__head">
-    <tr class="govuk-table__row">
-      <th scope="col" class="govuk-table__header govuk-table__header_name">{{ caseFlags.name }}</th>
-      <th scope="col" class="govuk-table__header govuk-table__header_comments">Comments</th>
-      <th scope="col" class="govuk-table__header govuk-table__header_flag-status">Flag status</th>
-    </tr>
-    </thead>
-    <tbody class="govuk-table__body">
-    <tr class="govuk-table__row" *ngFor="let partyFlag of caseFlags.partyFlags">
-      <td class="govuk-table__cell">
-        <label>
-          {{ partyFlag.displayName }}
-        </label>
-      </td>
-      <td class="govuk-table__cell">
-        <label>
-          {{ partyFlag.flagDescription }}
-        </label>
-      </td>
-      <td class="govuk-table__cell">
-        <label class="govuk-tag">
-          {{ partyFlag.flagStatus}}
-        </label>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+<div *ngFor="let caseFlags of caseFlagsRefDataFiltered" class="govuk-form-group">
+  <div *ngIf="caseFlags.isVisible">
+    <h1 [ngClass]="{
+      'govuk-heading-l': level === 1,
+      'govuk-heading-m': level === 2,
+      'govuk-heading-s': level > 2
+      
+    }">{{ caseFlags.name }}</h1>
+    <table *ngFor="let partyFlag of caseFlags.partyFlagDetails" class="govuk-table">
+       <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th scope="col" class="govuk-table__header govuk-table__header_name">{{ caseFlags.name }}</th>
+        <th scope="col" class="govuk-table__header govuk-table__header_comments">Comments</th>
+        <th scope="col" class="govuk-table__header govuk-table__header_flag-status">Flag status</th>
+      </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">
+          <label>
+            {{ partyFlag.partyName }}
+          </label>
+        </td>
+        <td class="govuk-table__cell">
+          <label>
+            {{ partyFlag.flagDescription }}
+          </label>
+        </td>
+        <td class="govuk-table__cell">
+          <label class="govuk-tag">
+            {{ partyFlag.flagStatus}}
+          </label>
+        </td>
+      </tr>
+    </table>
+  </div>
+   <exui-case-flags *ngIf="caseFlags.childFlags.length"
+        [caseFlagsRefData]="caseFlags.childFlags"
+        [level]="level + 1">
+  </exui-case-flags>
 </div>

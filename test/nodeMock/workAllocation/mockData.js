@@ -162,7 +162,7 @@ class WorkAllocationMockData {
         for (const locationName of locations) {
             const location = {
                 "court_venue_id": "382",
-                "epims_id": "" + this.locationIdCounter,
+                "epimms_id": "" + this.locationIdCounter,
                 "is_hearing_location": "Y",
                 "is_case_management_location": "Y",
                 "site_name": locationName,
@@ -235,8 +235,8 @@ class WorkAllocationMockData {
             location = service.locations[0];
             break;
         }
-        judge.appointments[0]['base_location_id'] = location.epims_id;
-        judge.appointments[0]['epimms_id'] = location.epims_id;
+        judge.appointments[0]['base_location_id'] = location.epimms_id;
+        judge.appointments[0]['epimms_id'] = location.epimms_id;
         judge.appointments[0]['court_name'] = location.court_name;
         
         this.judgeUsers.push(judge);

@@ -163,7 +163,6 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       lineBreakBefore: true,
       findLocationField: 'services',
       displayMinSelectedError: true,
-      enableAddLocationButton: true,
       minSelectedError: 'Search for a location by name',
       type: 'find-location',
       enableAddLocationButton: true

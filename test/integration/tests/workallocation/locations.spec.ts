@@ -33,7 +33,7 @@ describe('Work allocation Release 2: locations search', () => {
         expect(response.status).to.equal(200);
         expect(response.data).to.be.an('object');
 
-        expect(Object.keys(response.data)).to.have.members(['court_name', 'epims_id', 'site_name','court_address']);
+        expect(Object.keys(response.data)).to.have.members(['court_name', 'epimms_id', 'site_name','court_address']);
 
     });
 
@@ -52,7 +52,7 @@ describe('Work allocation Release 2: locations search', () => {
         expect(response.status).to.equal(200);
         expect(response.data).to.be.an('object');
 
-        expect(Object.keys(response.data)).to.have.members(['court_name', 'epims_id', 'site_name', 'court_address']);
+        expect(Object.keys(response.data)).to.have.members(['court_name', 'epimms_id', 'site_name', 'court_address']);
 
     });
 

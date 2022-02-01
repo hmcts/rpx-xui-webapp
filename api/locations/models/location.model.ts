@@ -26,7 +26,7 @@ export interface LocationModel {
   is_hearing_location: string;
 }
 
-export interface LocationByEPIMSModel {
+export interface LocationByEPIMMSModel {
   epimms_id: string;
   site_name: string;
   court_name?: string;
@@ -50,7 +50,7 @@ export interface LocationByEPIMSModel {
   is_hearing_location: string;
 }
 
-export function toEpimsLocation(locationModel: LocationModel): LocationByEPIMSModel {
+export function toEpimmsLocation(locationModel: LocationModel): LocationByEPIMMSModel {
   return {
     epimms_id: locationModel.epimms_id,
     site_name: locationModel.site_name,

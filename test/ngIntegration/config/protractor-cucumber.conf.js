@@ -97,6 +97,7 @@ const config = {
             browserInstance: browser
         });
 
+       
         if (isParallelExecution){
             MockApp.getNextAvailableClientPort().then(res => {
                 MockApp.setServerPort(res.data.port);
@@ -107,9 +108,8 @@ const config = {
         }else{
             MockApp.setServerPort(3001);
             //await MockApp.startServer();
-            MockApp.setLogMessageCallback(customReporter.AddMessage);
         }    
-        MockApp.setLogMessageCallback(customReporter.AddJson);
+       
 
         //Set default explict timeout default value to 10sec
         const customWaits = require('../../e2e/support/customWaits');

@@ -1,13 +1,68 @@
 import { PersonRole } from '@hmcts/rpx-xui-common-lib';
-import { getOptions, handleFatalErrors, REDIRECTS, treatAsFatal, WILDCARD_SERVICE_DOWN } from './work-allocation-utils';
+import { getCurrentUserRoleCategory } from '.';
+import {
+  getOptions,
+  getRoleCategoryToBeSelectedByDefault,
+  handleFatalErrors,
+  REDIRECTS,
+  treatAsFatal,
+  WILDCARD_SERVICE_DOWN
+} from './work-allocation-utils';
 
 describe('WorkAllocationUtils', () => {
   let mockRouter: any;
+  let sessionStorageService: any;
+
+  const taskRoles = [{
+      role_category: 'ADMIN',
+      role_name: '',
+      permissions: ['OWN'],
+      authorisations: []
+    },
+    {
+      role_category: 'LEGAL_OPERATIONS',
+      role_name: '',
+      permissions: ['EXECUTE'],
+      authorisations: []
+    },
+    {
+      role_category: 'JUDICIAL',
+      role_name: '',
+      permissions: ['OWN'],
+      authorisations: []
+    }
+  ];
+
+  const taskRolesWithOneOwnPermission = [{
+    role_category: 'LEGAL_OPERATIONS',
+    role_name: '',
+    permissions: ['EXECUTE'],
+    authorisations: []
+  },
+  {
+    role_category: 'JUDICIAL',
+    role_name: '',
+    permissions: ['OWN'],
+    authorisations: []
+  }];
+
+  const userInfo = {
+    id: 'user-123',
+    active: true,
+    forename: 'Test',
+    surname: 'User',
+    email: 'testuser@test.com',
+    roles: null,
+    roleCategory: 'LEGAL_OPERATIONS'
+  };
+
+  beforeEach(() => {
+    sessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem']);
+    sessionStorageService.getItem.and.returnValue(JSON.stringify(userInfo));
+    mockRouter = jasmine.createSpyObj('router', ['navigate']);
+  });
 
   it('should send back the status if it is 400', () => {
-    mockRouter = {
-      navigate: jasmine.createSpy('navigate')
-    };
     // test can handle fatal errors for 400 and 402 errors
     const firstStatus = handleFatalErrors(400, mockRouter);
     expect(firstStatus).toEqual(400);
@@ -15,9 +70,6 @@ describe('WorkAllocationUtils', () => {
   });
 
   it('should send back the status if it is not 500, 401 or 403', () => {
-    mockRouter = {
-      navigate: jasmine.createSpy('navigate')
-    };
     // ensure that the statuses are sent back and mockRouter.navigate has not been called
     const secondStatus = handleFatalErrors(402, mockRouter);
     expect(secondStatus).toEqual(402);
@@ -25,9 +77,6 @@ describe('WorkAllocationUtils', () => {
   });
 
   it('should return the status if there are no fatal changes', () => {
-    mockRouter = {
-      navigate: jasmine.createSpy('navigate')
-    };
     // ensure that the status of a 404 error is returned and navigate has not been called
     const firstStatus = treatAsFatal(404, mockRouter, []);
     expect(firstStatus).toEqual(404);
@@ -35,9 +84,6 @@ describe('WorkAllocationUtils', () => {
   });
 
   it('should attempt to navigate to the correct error pages', () => {
-    mockRouter = {
-      navigate: jasmine.createSpy('navigate')
-    };
     // should get correct redirect for 500
     const serviceDown = handleFatalErrors(500, mockRouter);
     expect(serviceDown).toEqual(0);
@@ -55,9 +101,6 @@ describe('WorkAllocationUtils', () => {
   });
 
   it('should allow setting a fatal redirect', () => {
-    mockRouter = {
-      navigate: jasmine.createSpy('navigate')
-    };
     // set fatal redirect for 404 and 415 as example
     const REDIRECT_TEST = [{ status: 404, redirectTo: REDIRECTS.ServiceDown }, { status: 415, redirectTo: REDIRECTS.NotAuthorised }];
     const firstStatus = treatAsFatal(404, mockRouter, REDIRECT_TEST);
@@ -80,9 +123,6 @@ describe('WorkAllocationUtils', () => {
   });
 
   it('should allow setting wildcard to ensure all errors sent to service down', () => {
-    mockRouter = {
-      navigate: jasmine.createSpy('navigate')
-    };
     // test wildcard with 402 error
     const firstStatus = treatAsFatal(402, mockRouter, WILDCARD_SERVICE_DOWN);
 
@@ -99,9 +139,6 @@ describe('WorkAllocationUtils', () => {
   });
 
   it('should ensure correctly setting redirects for handling of all errors', () => {
-    mockRouter = {
-      navigate: jasmine.createSpy('navigate')
-    };
     // set fatal redirect for 404 and 415 as example
     const REDIRECT_TEST = [{ status: 404, redirectTo: REDIRECTS.ServiceDown }, { status: 415, redirectTo: REDIRECTS.NotAuthorised }];
     const firstStatus = handleFatalErrors(404, mockRouter, REDIRECT_TEST);
@@ -116,27 +153,9 @@ describe('WorkAllocationUtils', () => {
     expect(secondStatus).toEqual(0);
     expect(mockRouter.navigate).toHaveBeenCalledWith([REDIRECTS.NotAuthorised]);
   });
-  it('getOptions should return', () => {
-    const taskRoles = [{
-        role_category: 'ADMIN',
-        role_name: '',
-        permissions: ['OWN'],
-        authorisations: []
-      },
-      {
-        role_category: 'LEGAL_OPERATIONS',
-        role_name: '',
-        permissions: ['EXECUTE'],
-        authorisations: []
-      },
-      {
-        role_category: 'JUDICIAL',
-        role_name: '',
-        permissions: ['OWN'],
-        authorisations: []
-      }
-    ];
-    const options = getOptions(taskRoles);
+
+  it('getOptions should return with user role category selected by default', () => {
+    const options = getOptions(taskRoles, sessionStorageService);
     expect(options.length).toEqual(3);
     expect(options[0].optionId).toEqual('ADMIN');
     expect(options[0].label).toEqual(PersonRole.ADMIN);
@@ -144,5 +163,36 @@ describe('WorkAllocationUtils', () => {
     expect(options[1].label).toEqual(PersonRole.CASEWORKER);
     expect(options[2].optionId).toEqual('JUDICIAL');
     expect(options[2].label).toEqual(PersonRole.JUDICIAL);
+    expect(sessionStorageService.getItem).toHaveBeenCalled();
+    expect(options[1].checked).toEqual('checked');
   });
+
+  it('getOptions should return with user role category own permission selected by default', () => {
+    const options = getOptions(taskRolesWithOneOwnPermission, sessionStorageService);
+    expect(options.length).toEqual(2);
+    expect(options[0].optionId).toEqual('LEGAL_OPERATIONS');
+    expect(options[0].label).toEqual(PersonRole.CASEWORKER);
+    expect(options[1].optionId).toEqual('JUDICIAL');
+    expect(options[1].label).toEqual(PersonRole.JUDICIAL);
+    expect(sessionStorageService.getItem).toHaveBeenCalledTimes(0);
+    expect(options[1].checked).toEqual('checked');
+  });
+
+  it('should return current user role category if only one role category with own permission', () => {
+    const defaultRoleCategory = getRoleCategoryToBeSelectedByDefault(taskRolesWithOneOwnPermission, sessionStorageService);
+    expect(sessionStorageService.getItem).toHaveBeenCalledTimes(0);
+    expect(defaultRoleCategory).toEqual('JUDICIAL');
+  });
+
+  it('should return current user role category if more than one role category with own permission', () => {
+    const defaultRoleCategory = getRoleCategoryToBeSelectedByDefault(taskRoles, sessionStorageService);
+    expect(sessionStorageService.getItem).toHaveBeenCalled();
+    expect(defaultRoleCategory).toEqual('LEGAL_OPERATIONS');
+  });
+
+  it('should get current user role category', () => {
+    const currentUserRoleCategory = getCurrentUserRoleCategory(sessionStorageService);
+    expect(sessionStorageService.getItem).toHaveBeenCalled();
+    expect(currentUserRoleCategory).toEqual('LEGAL_OPERATIONS');
+  })
 });

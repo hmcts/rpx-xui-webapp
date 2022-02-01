@@ -15,7 +15,7 @@ Feature: WA Release 2: Roles and access - Allocate and Remove Role Legal Ops (EU
             | Admin     | 1235 | admin_user1@gov.uk      | admin1 a       | Case worker   |
             | Admin     | 1236 | admin_user2@gov.uk      | admin2 a       | Case worker   |
 
-        Given I set MOCK persons end point "/workallocation2/caseworker" for WA release 2
+        Given I set MOCK caseworkers for service "IA"
             | idamId                               | firstName   | lastName | email                   | roleCategory     |
             | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | caseworker1 | cw       | caseworker_user1@gov.uk | LEGAL_OPERATIONS |
             | 08a3d216-c6ab-4e92-a7e3-ca3661e6be81 | caseworker2 | cw       | caseworker_user2@gov.uk | LEGAL_OPERATIONS |

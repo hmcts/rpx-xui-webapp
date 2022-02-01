@@ -7,18 +7,34 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | Permissions | Count |
             | Manage      | 140   |
             | Read        | 10    |
-        Given I set MOCK locations for WA release 2
-            | id    | locationName |
-            | 12345 | Test loc 1   |
-            | 12346 | Test loc 2   |
-            | 12347 | Test loc 3   |
-            | 12348 | Test loc 4   |
-            | 12349 | Test loc 5   |
+        Given I set MOCK locations with names in service "IA"
+            | id    | locationName           |
+            | 20001 | IA Court Aldgate Tower |
+            | 20002 | IA Court Birmingham    |
+            | 2003  | IA Court Bradford      |
+            | 20004 | IA Court Glasgow       |
+            | 20005 | IA Court Hatton Cross  |
+            | 20006 | IA Court Newcastle     |
+            | 20007 | IA Court Newport       |
+            | 20008 | IA Court North Shields |
+            | 12347 | IA Court Taylor House  |
+
+        Given I set MOCK locations with names in service "SSCS"
+            | id    | locationName             |
+            | 20010 | SSCS Court Aldgate Tower |
+            | 20011 | SSCS Court Birmingham    |
+            | 20012 | SSCS Court Bradford      |
+            | 20013 | SSCS Court Glasgow       |
+            | 20014 | SSCS Court Hatton Cross  |
+            | 20015 | SSCS Court Newcastle     |
+            | 20016 | SSCS Court Newport       |
+            | 20017 | SSCS Court North Shields |
+            | 20018 | SSCS Court Taylor House  |
 
         Given I set MOCK find person response for jurisdictions
             | domain   | id   | email                   | name           | knownAs       |
-            | Judicial | 1231 | judge_user1@gov.uk      | user1 j    | Lead judge    |
-            | Judicial | 1232 | judge_user2@gov.uk      | user2 j    | Hearing judge |
+            | Judicial | 1231 | judge_user1@gov.uk      | user1 j        | Lead judge    |
+            | Judicial | 1232 | judge_user2@gov.uk      | user2 j        | Hearing judge |
             | legalOps | 1233 | caseworker_user1@gov.uk | caseworker1 cw | Case worker   |
             | legalOps | 1234 | caseworker_user1@gov.uk | caseworker2 cw | Case worker   |
             | Admin    | 1235 | admin_user1@gov.uk      | admin1 a       | Case worker   |
@@ -45,7 +61,6 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Given I set MOCK request "/workallocation2/task" intercept with reference "taskSearchRequest"
         Given I set MOCK request "/workallocation2/all-work/cases" intercept with reference "caseSearchRequest"
 
-
     Scenario: Tasks filters state, with user role "Caseworker"
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
 
@@ -63,15 +78,15 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | option |
             | IA     |
 
-        Then I see filter "Case Location" is displayed in all work page
-        Then I see filter "Case Location" is enabled in all work page
-        Then I validate filter item "Case Location" select or radio options present in all work page
-            | option     |
-            | Test loc 1 |
-            | Test loc 2 |
-            | Test loc 3 |
-            | Test loc 4 |
-            | Test loc 5 |
+
+        Then I see filter "Location" is displayed in all work page
+        Then I validate filter item "Location radios" select or radio options present in all work page
+            | option                |
+            | All                   |
+            | Search for a location |
+        When I see location search input is disabled in all work filters
+
+
 
         Then I see filter "Person" is displayed in all work page
 
@@ -105,17 +120,24 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | option |
             | IA     |
 
-        Then I see filter "Case Location" is displayed in all work page
-        Then I see filter "Case Location" is enabled in all work page
-        Then I validate filter item "Case Location" select or radio options present in all work page
-            | option     |
-            | Test loc 1 |
-            | Test loc 2 |
-            | Test loc 3 |
-            | Test loc 4 |
-            | Test loc 5 |
+        Then I see filter "Location" is displayed in all work page
+        Then I validate filter item "Location radios" select or radio options present in all work page
+            | option                |
+            | All                   |
+            | Search for a location |
+        When I see location search input is disabled in all work filters
+        When I select filter item "Location radios" select or radio option "Search for a location" in all work page
+        Then I see location search input is enabled in all work filters
+        Then I enter location search "IA Court Taylor House" in all work filter
+        Then I see location search results in all work filter
+            | location              |
+            | IA Court Taylor House |
+        Then I select location search result "IA Court Taylor House" in all work filter
+        Then I see location "IA Court Taylor House" selected in all work filter
 
-        When I select filter item "Case Location" select or radio option "<locationName>" in all work page
+
+
+
         When I select filter item "Person" select or radio option "<Task_Category>" in all work page
         When I select filter item "Person role type" select or radio option "<Person_Role_Type>" in all work page
 
@@ -142,7 +164,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Examples:
             | Jurisdiction | locationName | locationId | Task_Category   | Person_search | Person_name                             | person_id                            | Person_Role_Type | Task_type | Priority |
             | IA           | Test loc 3   | 12347      | Specific person | cas           | caseworker1 cw(caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops        | Legal Ops | High     |
-            | IA           | Test loc 3   | 12347      | Specific person | user1           | user1 j(judge_user1@gov.uk)             | 1231                                 | Judicial         | Legal Ops | High     |
+            | IA           | Test loc 3   | 12347      | Specific person | user1         | user1 j(judge_user1@gov.uk)             | 1231                                 | Judicial         | Legal Ops | High     |
             | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a(admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     | High     |
 
     Scenario: "Judicial" Tasks filters state
@@ -162,15 +184,12 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | option |
             | IA     |
 
-        Then I see filter "Case Location" is displayed in all work page
-        Then I see filter "Case Location" is enabled in all work page
-        Then I validate filter item "Case Location" select or radio options present in all work page
-            | option     |
-            | Test loc 1 |
-            | Test loc 2 |
-            | Test loc 3 |
-            | Test loc 4 |
-            | Test loc 5 |
+        Then I see filter "Location" is displayed in all work page
+        Then I validate filter item "Location radios" select or radio options present in all work page
+            | option                |
+            | All                   |
+            | Search for a location |
+        When I see location search input is disabled in all work filters
 
         Then I see filter "Person" is displayed in all work page
 
@@ -204,17 +223,22 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | option |
             | IA     |
 
-        Then I see filter "Case Location" is displayed in all work page
-        Then I see filter "Case Location" is enabled in all work page
-        Then I validate filter item "Case Location" select or radio options present in all work page
-            | option     |
-            | Test loc 1 |
-            | Test loc 2 |
-            | Test loc 3 |
-            | Test loc 4 |
-            | Test loc 5 |
+        Then I see filter "Location" is displayed in all work page
+        Then I validate filter item "Location radios" select or radio options present in all work page
+            | option                |
+            | All                   |
+            | Search for a location |
+        When I see location search input is disabled in all work filters
+        When I select filter item "Location radios" select or radio option "Search for a location" in all work page
+        Then I see location search input is enabled in all work filters
+        Then I enter location search "IA Court Taylor House" in all work filter
+        Then I see location search results in all work filter
+            | location              |
+            | IA Court Taylor House |
+        Then I select location search result "IA Court Taylor House" in all work filter
+        Then I see location "IA Court Taylor House" selected in all work filter
 
-        When I select filter item "Case Location" select or radio option "<locationName>" in all work page
+
         When I select filter item "Person" select or radio option "<Task_Category>" in all work page
         When I select filter item "Person role type" select or radio option "<Person_Role_Type>" in all work page
 
@@ -239,7 +263,7 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Examples:
             | Jurisdiction | locationName | locationId | Task_Category   | Person_search | Person_name                             | person_id                            | Person_Role_Type | Task_type |
             | IA           | Test loc 3   | 12347      | Specific person | cas           | caseworker1 cw(caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops        | Legal Ops |
-            | IA           | Test loc 3   | 12347      | Specific person | user1           | user1 j(judge_user1@gov.uk)             | 1231                                 | Judicial         | Legal Ops |
+            | IA           | Test loc 3   | 12347      | Specific person | user1         | user1 j(judge_user1@gov.uk)             | 1231                                 | Judicial         | Legal Ops |
             | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a(admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     |
 
     Scenario: "Caseworker" Cases filters state
@@ -262,15 +286,14 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | option |
             | IA     |
 
-        Then I see filter "Case Location" is displayed in all work page
-        Then I see filter "Case Location" is enabled in all work page
-        Then I validate filter item "Case Location" select or radio options present in all work page
-            | option     |
-            | Test loc 1 |
-            | Test loc 2 |
-            | Test loc 3 |
-            | Test loc 4 |
-            | Test loc 5 |
+        Then I see filter "Location" is displayed in all work page
+        Then I validate filter item "Location radios" select or radio options present in all work page
+            | option                |
+            | All                   |
+            | Search for a location |
+        When I see location search input is disabled in all work filters
+
+
 
         Then I see filter "Role type" is displayed in all work page
 
@@ -301,17 +324,22 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | option |
             | IA     |
 
-        Then I see filter "Case Location" is displayed in all work page
-        Then I see filter "Case Location" is enabled in all work page
-        Then I validate filter item "Case Location" select or radio options present in all work page
-            | option     |
-            | Test loc 1 |
-            | Test loc 2 |
-            | Test loc 3 |
-            | Test loc 4 |
-            | Test loc 5 |
+        Then I see filter "Location" is displayed in all work page
+        Then I validate filter item "Location radios" select or radio options present in all work page
+            | option                |
+            | All                   |
+            | Search for a location |
+        When I see location search input is disabled in all work filters
+        When I select filter item "Location radios" select or radio option "Search for a location" in all work page
+        Then I see location search input is enabled in all work filters
+        Then I enter location search "IA Court Taylor House" in all work filter
+        Then I see location search results in all work filter
+            | location              |
+            | IA Court Taylor House |
+        Then I select location search result "IA Court Taylor House" in all work filter
+        Then I see location "IA Court Taylor House" selected in all work filter
 
-        When I select filter item "Case Location" select or radio option "<locationName>" in all work page
+
         When I select filter item "Person" select or radio option "<Person_radio>" in all work page
         When I select filter item "Role type" select or radio option "<Role_Type>" in all work page
 
@@ -333,9 +361,9 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | jurisdiction | <Jurisdiction> |
             | role         | <Role_Type>    |
         Examples:
-            | Jurisdiction | locationName | locationId | Person_radio    | Person_search | Person_name                    | person_id                            | Role_Type |
-            | IA           | Test loc 3   | 12347      | Specific person | user1           | user1 j(judge_user1@gov.uk) | 1231                                 | Judicial  |
-            | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a(admin_user1@gov.uk)   | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin     |
+            | Jurisdiction | locationName | locationId | Person_radio    | Person_search | Person_name                  | person_id                            | Role_Type |
+            | IA           | Test loc 3   | 12347      | Specific person | user1         | user1 j(judge_user1@gov.uk)  | 1231                                 | Judicial  |
+            | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a(admin_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin     |
 
     Scenario Outline: "Judicial" Case filter selection, with role type <Role_Type>
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
@@ -356,17 +384,23 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | option |
             | IA     |
 
-        Then I see filter "Case Location" is displayed in all work page
-        Then I see filter "Case Location" is enabled in all work page
-        Then I validate filter item "Case Location" select or radio options present in all work page
-            | option     |
-            | Test loc 1 |
-            | Test loc 2 |
-            | Test loc 3 |
-            | Test loc 4 |
-            | Test loc 5 |
+        Then I see filter "Location" is displayed in all work page
+        Then I validate filter item "Location radios" select or radio options present in all work page
+            | option                |
+            | All                   |
+            | Search for a location |
+        When I see location search input is disabled in all work filters
+        When I select filter item "Location radios" select or radio option "Search for a location" in all work page
+        Then I see location search input is enabled in all work filters
+        Then I enter location search "IA Court Taylor House" in all work filter
+        Then I see location search results in all work filter
+            | location              |
+            | IA Court Taylor House |
+        Then I select location search result "IA Court Taylor House" in all work filter
+        Then I see location "IA Court Taylor House" selected in all work filter
 
-        When I select filter item "Case Location" select or radio option "<locationName>" in all work page
+
+
         When I select filter item "Person" select or radio option "<Person_radio>" in all work page
         When I select filter item "Role type" select or radio option "<Role_Type>" in all work page
 
@@ -388,6 +422,6 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | jurisdiction | <Jurisdiction> |
             | role         | <Role_Type>    |
         Examples:
-            | Jurisdiction | locationName | locationId | Person_radio    | Person_search | Person_name                    | person_id                            | Role_Type |
-            | IA           | Test loc 3   | 12347      | Specific person | user1           | user1 j(judge_user1@gov.uk) | 1231                                 | Judicial  |
-            | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a(admin_user1@gov.uk)   | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin     |
+            | Jurisdiction | locationName | locationId | Person_radio    | Person_search | Person_name                  | person_id                            | Role_Type |
+            | IA           | Test loc 3   | 12347      | Specific person | user1         | user1 j(judge_user1@gov.uk)  | 1231                                 | Judicial  |
+            | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a(admin_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin     |

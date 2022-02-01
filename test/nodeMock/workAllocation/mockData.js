@@ -159,14 +159,14 @@ class WorkAllocationMockData {
     getLocationsWithNames(locations) {
         const returnValue = [];
         
-        for (const locationName of locations) {
-            const location = {
+        for (const location of locations) {
+            const locationOBj = {
                 "court_venue_id": "382",
                 "epimms_id": "" + this.locationIdCounter,
                 "is_hearing_location": "Y",
                 "is_case_management_location": "Y",
-                "site_name": locationName,
-                "court_name": locationName,
+                "site_name": location.locationName,
+                "court_name": location.locationName,
                 "court_status": "Open",
                 "region_id": "2",
                 "region": "London",
@@ -178,7 +178,7 @@ class WorkAllocationMockData {
                 "postcode": "TW14 0LS"
             }
 
-            returnValue.push(location);
+            returnValue.push(locationOBj);
             this.locationIdCounter++;
         }
         return returnValue;

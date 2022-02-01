@@ -263,7 +263,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const locationNamesHashes = locationNamesDatatable.hashes();
         const locationNames = [];
         for (const locationNameHash of locationNamesHashes){
-            locationNames.push(locationNameHash.locationName); 
+            locationNames.push({ locationName: locationNameHash.locationName, id: locationNameHash.id}); 
         } 
         
         const locationsArray = workallocationMockData.getLocationsWithNames(locationNames);

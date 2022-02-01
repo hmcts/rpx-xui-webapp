@@ -4,28 +4,28 @@ Feature: WA Release 2: My work - Work filters
     Background: Mock and browser setup
         Given I init MockApp
         Given I set MOCK locations with names in service "IA"
-            | locationName  |
-            | IA Court Aldgate Tower |
-            | IA Court Birmingham |
-            | IA Court Bradford |
-            | IA Court Glasgow |
-            | IA Court Hatton Cross |
-            | IA Court Newcastle |
-            | IA Court Newport |
-            | IA Court North Shields |
-            | IA Court Taylor House |
+            | id    | locationName           |
+            | 20001 | IA Court Aldgate Tower |
+            | 20002 | IA Court Birmingham    |
+            | 2003  | IA Court Bradford      |
+            | 20004 | IA Court Glasgow       |
+            | 20005 | IA Court Hatton Cross  |
+            | 20006 | IA Court Newcastle     |
+            | 20007 | IA Court Newport       |
+            | 20008 | IA Court North Shields |
+            | 20009 | IA Court Taylor House  |
 
         Given I set MOCK locations with names in service "SSCS"
-            | locationName           |
-            | SSCS Court Aldgate Tower |
-            | SSCS Court Birmingham |
-            | SSCS Court Bradford |
-            | SSCS Court Glasgow |
-            | SSCS Court Hatton Cross |
-            | SSCS Court Newcastle |
-            | SSCS Court Newport |
-            | SSCS Court North Shields |
-            | SSCS Court Taylor House |
+            | id    | locationName             |
+            | 20010 | SSCS Court Aldgate Tower |
+            | 20011 | SSCS Court Birmingham    |
+            | 20012 | SSCS Court Bradford      |
+            | 20013 | SSCS Court Glasgow       |
+            | 20014 | SSCS Court Hatton Cross  |
+            | 20015 | SSCS Court Newcastle     |
+            | 20016 | SSCS Court Newport       |
+            | 20017 | SSCS Court North Shields |
+            | 20018 | SSCS Court Taylor House  |
         Given I set MOCK location for person of type "caseworker" in release "wa_release_2"
             | id    | locationName  |
             | 12345 | Aldgate Tower |

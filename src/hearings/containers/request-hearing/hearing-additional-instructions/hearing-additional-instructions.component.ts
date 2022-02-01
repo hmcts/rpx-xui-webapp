@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {Store} from '@ngrx/store';
@@ -11,7 +11,7 @@ import {RequestHearingPageFlow} from '../request-hearing.page.flow';
   selector: 'exui-hearing-additional-instructions',
   templateUrl: './hearing-additional-instructions.component.html',
 })
-export class HearingAdditionalInstructionsComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
+export class HearingAdditionalInstructionsComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
 
   public instructionsForm: FormGroup;
   public instructionLength: number = HearingInstructionsEnum.InstructionLength;
@@ -25,7 +25,6 @@ export class HearingAdditionalInstructionsComponent extends RequestHearingPageFl
 
   public ngOnInit(): void {
     this.initForm();
-    this.fragmentFocus();
   }
 
   public initForm(): void {
@@ -57,6 +56,10 @@ export class HearingAdditionalInstructionsComponent extends RequestHearingPageFl
 
   public isFormValid(): boolean {
     return this.instructionsForm.valid;
+  }
+
+  public ngAfterViewInit(): void {
+    this.fragmentFocus();
   }
 
   public ngOnDestroy(): void {

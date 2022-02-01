@@ -26,7 +26,8 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
   public selectedLocations: LocationByEPIMSModel[];
   public validationErrors: { id: string, message: string }[] = [];
 
-  constructor(public readonly hearingStore: Store<fromHearingStore.State>, fb: FormBuilder,
+  constructor(public readonly hearingStore: Store<fromHearingStore.State>,
+              protected readonly fb: FormBuilder,
               protected readonly hearingsService: HearingsService,
               protected readonly route: ActivatedRoute) {
     super(hearingStore, hearingsService, route);

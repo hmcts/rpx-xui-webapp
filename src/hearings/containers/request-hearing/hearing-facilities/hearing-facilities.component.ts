@@ -22,11 +22,10 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
   public additionalFacilities: RefDataModel[];
   public additionSecurityRequiredValid: boolean = true;
 
-  constructor(
-    protected readonly route: ActivatedRoute,
-    protected readonly hearingStore: Store<fromHearingStore.State>,
-    protected readonly hearingsService: HearingsService,
-    protected fb: FormBuilder) {
+  constructor(protected readonly route: ActivatedRoute,
+              protected readonly hearingStore: Store<fromHearingStore.State>,
+              protected readonly hearingsService: HearingsService,
+              protected fb: FormBuilder) {
     super(hearingStore, hearingsService, route);
     this.additionalFacilities = this.route.snapshot.data.additionFacilitiesOptions;
     this.caseFlagsRefData = this.route.snapshot.data.caseFlags;

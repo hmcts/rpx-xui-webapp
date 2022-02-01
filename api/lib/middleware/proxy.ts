@@ -17,8 +17,8 @@ export const onProxyError = (err, req, res) => {
     }
 
     res.status(500).send({
-        error: 'Error when connecting to remote server',
-        status: 504,
+      error: 'Error when connecting to remote server',
+      status: 504,
     });
 };
 
@@ -37,6 +37,7 @@ export const applyProxy = (app, config) => {
         },
         onError: onProxyError,
         target: config.target,
+        proxyTimeout: 500,
     };
 
     if (config.onReq) {

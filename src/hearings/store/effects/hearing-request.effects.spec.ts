@@ -102,6 +102,16 @@ describe('Hearing Request Effects', () => {
       expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-create-edit-summary']);
     });
 
+    it('should navigate to hearing tab page if going back on VIEW mode', () => {
+      effects.mode = Mode.VIEW;
+      const action = new hearingRequestActions.NavigateBackHearingRequest();
+      actions$ = cold('-a', {a: action});
+      const navigateAction = new hearingRequestActions.NavigateBackHearingRequest();
+      const expected = cold('-b', {b: navigateAction});
+      expect(effects.backNavigation$).toBeObservable(expected);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['cases', 'case-details', '54354545453', 'hearings']);
+    });
+
     it('should navigate to hearing-view-edit-summary page if going back on VIEW_EDIT mode', () => {
       effects.mode = Mode.VIEW_EDIT;
       const action = new hearingRequestActions.NavigateBackHearingRequest();

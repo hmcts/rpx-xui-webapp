@@ -9,8 +9,7 @@ import {HttpError} from '../../../models/httpError.model';
 import {Mode} from '../../models/hearings.enum';
 import {ScreenNavigationModel} from '../../models/screenNavigation.model';
 import {HearingsService} from '../../services/hearings.service';
-import * as fromHearingReducers from '../../store/reducers';
-import * as fromHearingSelectors from '../../store/selectors';
+import * as fromStore from '../../store';
 import {AbstractPageFlow} from '../../utils/abstract-page-flow';
 import * as hearingRequestActions from '../actions/hearing-request.action';
 
@@ -22,17 +21,17 @@ export class HearingRequestEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly hearingStore: Store<fromHearingReducers.State>,
+    private readonly hearingStore: Store<fromStore.State>,
     private readonly hearingsService: HearingsService,
     private readonly pageFlow: AbstractPageFlow,
     private readonly router: Router
   ) {
-    this.screenNavigations$ = this.hearingStore.pipe(select(fromHearingSelectors.getHearingValuesModel)).pipe(
+    this.screenNavigations$ = this.hearingStore.pipe(select(fromStore.getHearingValuesModel)).pipe(
       map(hearingValuesModel => hearingValuesModel.screenFlow));
-    this.hearingStore.pipe(select(fromHearingSelectors.getHearingConditions)).subscribe(
-      hearingConditions => {
-        this.caseId = hearingConditions.hasOwnProperty('caseId') ? hearingConditions['caseId'] : '';
-        this.mode = hearingConditions.hasOwnProperty('mode') ? hearingConditions['mode'] : Mode.CREATE;
+    this.hearingStore.pipe(select(fromStore.getHearingsFeatureState)).subscribe(
+      state => {
+        this.caseId = state.hearingList.hearingListMainModel ? state.hearingList.hearingListMainModel.caseRef : '';
+        this.mode = state.hearingConditions.hasOwnProperty('mode') ? state.hearingConditions['mode'] : Mode.CREATE;
       }
     );
   }
@@ -50,8 +49,10 @@ export class HearingRequestEffects {
           return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']);
         case Mode.CREATE_EDIT:
           return this.router.navigate(['hearings', 'request', 'hearing-create-edit-summary']);
-        case Mode.VIEW_EDIT:
+        case Mode.VIEW:
           return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']);
+        case Mode.VIEW_EDIT:
+          return this.router.navigate(['hearings', 'request', 'hearing-view-edit-summary']);
         default:
           return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']);
       }

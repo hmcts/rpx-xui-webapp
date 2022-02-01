@@ -25,8 +25,7 @@
     </td>
     <td class="govuk-table__cell govuk-table-width-30-percent">
       <div *ngIf="hasUpdateAction" class="div-action">
-        <a href="javascript:void(0)"
-           [routerLink]="['/', 'hearings', 'request', 'hearing-view-edit-summary']">View or edit hearing</a>&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="javascript:void(0)" (click)="viewAndEdit()">View or edit hearing</a>&nbsp;&nbsp;&nbsp;&nbsp;
       </div>
       <div *ngIf="hasDeleteAction" class="div-action">
         <a href="javascript:void(0)"

@@ -1,7 +1,11 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
+import {HearingConditions} from '../../../hearings/models/hearingConditions';
 import {HearingListViewModel} from '../../../hearings/models/hearingListView.model';
-import {Actions, EXUISectionStatusEnum} from '../../../hearings/models/hearings.enum';
+import {Actions, EXUISectionStatusEnum, Mode} from '../../../hearings/models/hearings.enum';
+import * as fromHearingStore from '../../../hearings/store';
 
 @Component({
   selector: 'exui-case-hearings-list',
@@ -22,6 +26,10 @@ export class CaseHearingsListComponent implements OnInit {
   public hasDeleteAction: boolean = false;
   public hasReadOnlyAction: boolean = false;
 
+  constructor(private readonly hearingStore: Store<fromHearingStore.State>,
+              private readonly router: Router) {
+  }
+
   public ngOnInit(): void {
     if (this.status === EXUISectionStatusEnum.PAST_AND_CANCELLED) {
       this.hasReadOnlyAction = true;
@@ -36,5 +44,13 @@ export class CaseHearingsListComponent implements OnInit {
         this.hasReadOnlyAction = true;
       }
     }
+  }
+
+  public viewAndEdit(): void {
+    const hearingCondition: HearingConditions = {
+      mode: Mode.VIEW,
+    };
+    this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
+    this.router.navigate(['/', 'hearings', 'request', 'hearing-view-edit-summary']);
   }
 }

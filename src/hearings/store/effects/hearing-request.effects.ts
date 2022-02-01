@@ -9,7 +9,8 @@ import {HttpError} from '../../../models/httpError.model';
 import {Mode} from '../../models/hearings.enum';
 import {ScreenNavigationModel} from '../../models/screenNavigation.model';
 import {HearingsService} from '../../services/hearings.service';
-import * as fromStore from '../../store';
+import * as fromHearingReducers from '../../store/reducers';
+import * as fromHearingSelectors from '../../store/selectors';
 import {AbstractPageFlow} from '../../utils/abstract-page-flow';
 import * as hearingRequestActions from '../actions/hearing-request.action';
 
@@ -21,14 +22,14 @@ export class HearingRequestEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly hearingStore: Store<fromStore.State>,
+    private readonly hearingStore: Store<fromHearingReducers.State>,
     private readonly hearingsService: HearingsService,
     private readonly pageFlow: AbstractPageFlow,
     private readonly router: Router
   ) {
-    this.screenNavigations$ = this.hearingStore.pipe(select(fromStore.getHearingValuesModel)).pipe(
+    this.screenNavigations$ = this.hearingStore.pipe(select(fromHearingSelectors.getHearingValuesModel)).pipe(
       map(hearingValuesModel => hearingValuesModel.screenFlow));
-    this.hearingStore.pipe(select(fromStore.getHearingsFeatureState)).subscribe(
+    this.hearingStore.pipe(select(fromHearingReducers.getHearingsFeatureState)).subscribe(
       state => {
         this.caseId = state.hearingList.hearingListMainModel ? state.hearingList.hearingListMainModel.caseRef : '';
         this.mode = state.hearingConditions.hasOwnProperty('mode') ? state.hearingConditions['mode'] : Mode.CREATE;

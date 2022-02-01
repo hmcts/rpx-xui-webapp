@@ -12,7 +12,7 @@ export class TypeConverter extends AbstractConverter {
   public transformAnswer(): Observable<string> {
     return this.hearingState.pipe(
       map(state => {
-        let result = `${state.hearingValues.serviceHearingValuesModel.caseType} \n <ul>`;
+        let result = `${state.hearingValues.serviceHearingValuesModel.caseType} \n<ul>`;
         state.hearingValues.serviceHearingValuesModel.caseSubTypes.forEach(
           subType => result += `<li>- ${subType.toString()}</li>`
         );

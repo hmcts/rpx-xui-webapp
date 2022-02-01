@@ -45,15 +45,15 @@ export class HearingRequestEffects {
         case Mode.CREATE:
           const backPage = this.pageFlow.getLastPage(this.screenNavigations$);
           if (backPage) {
-            return this.router.navigate(['hearings', 'request', backPage]).then();
+            return this.router.navigate(['hearings', 'request', backPage]);
           }
-          return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']).then();
+          return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']);
         case Mode.CREATE_EDIT:
           return this.router.navigate(['hearings', 'request', 'hearing-create-edit-summary']);
         case Mode.VIEW_EDIT:
-          return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']).then();
+          return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']);
         default:
-          return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']).then();
+          return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']);
       }
     })
   );

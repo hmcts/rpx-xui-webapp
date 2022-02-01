@@ -1,11 +1,12 @@
 import { NavigationExtras } from '@angular/router';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
 import { PersonRole } from '@hmcts/rpx-xui-common-lib';
+import { UserInfo } from '../../app/models';
 import { RoleCategory } from '../../role-access/models';
 import { OptionsModel } from '../../role-access/models/options-model';
-import { Permissions, TaskRole } from '../models/tasks/TaskRole';
-
 import { ISessionStorageService } from '../interfaces/common';
 import { Caseworker, CaseworkersByService } from '../models/dtos';
+import { Permissions, TaskRole } from '../models/tasks/TaskRole';
 
 interface Navigator {
   navigate(commands: any[], extras?: NavigationExtras): Promise<boolean>;
@@ -127,21 +128,43 @@ export const servicesMap: {[key: string]: string} =  {
   SCSS: 'Social security and child support'
 };
 
-export function getOptions(taskRoles: TaskRole[]): OptionsModel[] {
+export function getOptions(taskRoles: TaskRole[], sessionStorageService: ISessionStorageService): OptionsModel[] {
   const options = new Array<OptionsModel>();
-  const roleCategories = taskRoles.filter(role => role.role_category !== null && role.role_category !== undefined
+  // Consider role categories only with either OWN or EXECUTE permissions
+  const roleCategories = taskRoles.filter(role => role.role_category
     && (roleIncludes(role.permissions, Permissions.Own) || roleIncludes(role.permissions, Permissions.Execute))).
     map(taskRole => taskRole.role_category as RoleCategory);
+
+  // Decide the category to be selected by default
+  const roleCategoryToSelectByDefault = getRoleCategoryToBeSelectedByDefault(taskRoles, sessionStorageService);
   roleCategories.forEach(roleCategory => {
     if (!options.find(option => option.optionId === roleCategory)) {
-      options.push({
-          optionId: roleCategory,
-          optionValue: roleCategory,
-          label: this.getLabel(roleCategory)
-        });
+      const option: OptionsModel = {
+        optionId: roleCategory,
+        optionValue: roleCategory,
+        label: this.getLabel(roleCategory)
+      };
+      if (roleCategory === roleCategoryToSelectByDefault) {
+        option.checked = 'checked';
+      }
+      options.push(option);
     }
   });
   return options;
+}
+
+export function getRoleCategoryToBeSelectedByDefault(taskRoles: TaskRole[], sessionStorageService: ISessionStorageService): RoleCategory {
+  // Consider only role categories with OWN permission for radio button default selection
+  const uniqueRoleCategoriesWithOwnPermissions = taskRoles.filter(role => role.role_category
+    && (roleIncludes(role.permissions, Permissions.Own))).
+    map(taskRole => taskRole.role_category as RoleCategory).
+    filter((role, index, taskRolesToFilter) => {
+      return taskRolesToFilter.indexOf(role) === index;
+    });
+
+  // If more than one role category with OWN permission then use current user's role category
+  return uniqueRoleCategoriesWithOwnPermissions.length === 1
+    ? uniqueRoleCategoriesWithOwnPermissions[0] : getCurrentUserRoleCategory(sessionStorageService);
 }
 
 export function getLabel(roleCategory: RoleCategory): PersonRole {
@@ -165,4 +188,13 @@ export function roleIncludes(roles: string[], permission: string): boolean {
     })
   }
   return includesRole;
+}
+
+export function getCurrentUserRoleCategory(sessionStorageService: ISessionStorageService): RoleCategory {
+  const userInfoStr = sessionStorageService.getItem('userDetails');
+  if (userInfoStr) {
+    const userInfo: UserInfo = JSON.parse(userInfoStr);
+    return userInfo.roleCategory as RoleCategory;
+  }
+  return null;
 }

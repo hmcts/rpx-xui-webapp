@@ -134,8 +134,8 @@ describe('Work allocations MVP', () => {
 
         let i = 1;
         while (tasksRes.data.tasks.length > i && i < 5){
-           
-            const assignTaskRes = await Request.post(`workallocation/task/${tasksRes.data.tasks[i - 1].id}/claim`, assignTaskReqBody, assignTasksHeader, 204);
+            i++;
+            const assignTaskRes = await Request.post(`workallocation/task/${tasksRes.data.tasks[i + 1].id}/claim`, assignTaskReqBody, assignTasksHeader, 204);
             expect(assignTaskRes.status).to.equal(204);
         }
 

@@ -1,5 +1,7 @@
 const workAllocationMockData = require('./mockData');
 const CucumberReporter = require('../../e2e/support/reportLogger');
+const MockApp = require('../app');
+
 module.exports = {
     mockServiceResetCallbacks: [() => workAllocationMockData.setDefaultData()],
     get: {
@@ -47,7 +49,7 @@ module.exports = {
         },
         '/workallocation2/case/task/:caseid': (req,res) => {
             
-            res.send(workAllocationMockData.caseTasks);
+            res.send(workAllocationMockData.getCaseTasksForCaseId(req.params.caseid));
         },
         '/workallocation2/judicialworker' : (req,res) => {
             res.send(workAllocationMockData.judgeUsers);
@@ -273,26 +275,29 @@ module.exports = {
             res.status(204).send();
         },
         '/api/role-access/roles/getJudicialUsers': (req,res) => {
-            const allJudicialUsers = workAllocationMockData.getJudicialList(20);
+            const allJudicialUsers = workAllocationMockData.judgeUsers;
             const services = req.body.services;
             const userids = req.body.userIds;
 
-
+            const returnUsers = [];
             for (const userid of userids){
-                const judicialuser = JSON.parse(JSON.stringify(allJudicialUsers[0]));
-                judicialuser.sidam_id = userid;
-                for (const appointment of judicialuser.appointments){
-                    appointment.base_location_id = workAllocationMockData.locationsByServices[0].locations[0].epimms_id;
-                    appointment.epimms_id = workAllocationMockData.locationsByServices[0].locations[0].epimms_id; 
- 
+                for (const mockedUser of allJudicialUsers){
+                    if (mockedUser.sidam_id === userid){
+                        returnUsers.push(mockedUser);
+                    }
                 }
-
             }
-
-            res.send(workAllocationMockData.getJudicialList(20));
+            if (returnUsers.length === 0){
+                let i = 0;
+                for (const userid of userids) {
+                    i++;
+                    returnUsers.push(workAllocationMockData.addJudgeUsers(userid,'someJudgefn_'+i, 'judicialln_'+i,i+'_judicial_test@hmcts.net')); 
+                }
+            }
+            res.send(returnUsers);
         },
         '/workallocation2/retrieveCaseWorkersForServices' : (req,res) => {
-            res.send(workAllocationMockData.retrieveCaseWorkersForServices(req.body.serviceIds))
+            res.send(workAllocationMockData.retrieveCaseWorkersForServices(req.body.serviceIds, req.body.fullServices))
         } 
     }
    

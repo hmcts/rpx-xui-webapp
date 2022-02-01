@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import { FilterService } from '@hmcts/rpx-xui-common-lib';
+import { FilterService, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models';
+import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
@@ -17,10 +18,7 @@ import { Location } from '../../models/dtos';
   encapsulation: ViewEncapsulation.None
 })
 export class TaskManagerFilterComponent implements OnInit, OnDestroy {
-
-  private static readonly FILTER_NAME: string = 'all-tasks';
-
-  @Input() public locations: Location[] = [];
+  private static readonly FILTER_NAME: string = 'all-work-tasks-filter';
   @Input() public jurisdictions: string[] = [];
   @Output() public selectionChanged: EventEmitter<any> = new EventEmitter<any>();
 
@@ -29,12 +27,6 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   public roleType: string;
   public isLegalOpsOrJudicialRole: UserRole;
 
-  public ALL_LOCATIONS: Location[] = [{
-    id: '**ALL_LOCATIONS**',
-    locationName: 'All locations',
-    services: []
-  }];
-
   public fieldsConfig: FilterConfig = {
     persistence: 'local',
     enableDisabledButton: true,
@@ -42,6 +34,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
     fields: [],
     cancelButtonText: 'Reset to default',
     applyButtonText: 'Apply',
+    showCancelFilterButton: true,
     cancelSetting: {
       id: TaskManagerFilterComponent.FILTER_NAME,
       fields: [
@@ -50,8 +43,8 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
           value: ['IA']
         },
         {
-          name: 'location',
-          value: ['**ALL_LOCATIONS**']
+          name: 'selectLocation',
+          value: ['location_all']
         },
         {
           name: 'selectPerson',
@@ -68,29 +61,46 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   private static initServiceFilter(jurisdictions: string[]): FilterFieldConfig {
     return {
       name: 'service',
-      options: jurisdictions.map(service => ({key: service, label: service})),
+      options: jurisdictions.map(service => ({ key: service, label: service })),
       minSelected: 1,
       maxSelected: 1,
       minSelectedError: 'You must select a service',
       maxSelectedError: null,
+      changeResetFields: ['selectLocation', 'selectPerson', 'role', 'person'],
       title: 'Service',
       type: 'select'
     };
   }
 
-  private static initCaseLocationFilter(locations: Location[]): FilterFieldConfig {
-    if (!locations) {
-      locations = [];
-    }
+  private static initLocationFilter(): FilterFieldConfig {
+
     return {
       name: 'location',
-      options: locations.map(loc => ({key: loc.id, label: loc.locationName})),
+      options: [],
+      minSelected: 1,
+      maxSelected: 1,
+      findLocationField: 'service',
+      enableCondition: 'selectLocation=search',
+      minSelectedError: 'You must select a location',
+      maxSelectedError: null,
+      enableAddLocationButton: false,
+      type: 'find-location'
+    };
+  }
+
+  private static initSelectLocationFilter(): FilterFieldConfig {
+    return {
+      name: 'selectLocation',
+      options: [
+        { key: 'location_all', label: 'All' },
+        { key: 'search', label: 'Search for a location' }
+      ],
       minSelected: 1,
       maxSelected: 1,
       minSelectedError: 'You must select a location',
       maxSelectedError: null,
-      title: 'Case Location',
-      type: 'select'
+      title: 'Location',
+      type: 'radio'
     };
   }
 
@@ -127,16 +137,16 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       name: 'role',
       options: [
         {
-          key: 'Judicial',
-          label: 'Judicial'
+          key: PersonRole.JUDICIAL,
+          label: PersonRole.JUDICIAL
         },
         {
-          key: 'Legal Ops',
-          label: 'Legal Ops'
+          key: PersonRole.CASEWORKER,
+          label: PersonRole.CASEWORKER
         },
         {
-          key: 'Admin',
-          label: 'Admin'
+          key: PersonRole.ADMIN,
+          label: PersonRole.ADMIN
         }
       ],
       minSelected: 1,
@@ -158,6 +168,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       maxSelected: 0,
       minSelectedError: 'You must select a person',
       maxSelectedError: null,
+      domainField: 'role',
       enableCondition: 'selectPerson=Specific person',
       type: 'find-person'
     };
@@ -200,19 +211,20 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
         this.isLegalOpsOrJudicialRole = userDetails.userInfo && userDetails.userInfo.roles ? AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles) : null;
         this.roleType = AppUtils.convertDomainToLabel(this.isLegalOpsOrJudicialRole);
         this.fieldsConfig.cancelSetting.fields.push({
-          name: 'taskType',
-          value: [this.roleType]
-        },
-        {
-          name: 'role',
-          value: [this.roleType]
-        },
+            name: 'taskType',
+            value: [this.roleType]
+          },
+          {
+            name: 'role',
+            value: [this.roleType]
+          },
         );
       }
     );
     this.fieldsConfig.fields = [
       TaskManagerFilterComponent.initServiceFilter(this.jurisdictions),
-      TaskManagerFilterComponent.initCaseLocationFilter(this.ALL_LOCATIONS.concat(this.locations)),
+      TaskManagerFilterComponent.initSelectLocationFilter(),
+      TaskManagerFilterComponent.initLocationFilter(),
       TaskManagerFilterComponent.initPersonFilter(),
       TaskManagerFilterComponent.initRoleTypeFilter(),
       TaskManagerFilterComponent.findPersonFilter(),
@@ -221,26 +233,30 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
     this.fieldsConfig.fields = this.isLegalOpsOrJudicialRole === UserRole.Judicial ?
       this.fieldsConfig.fields.slice(0, -1) : this.fieldsConfig.fields;
     this.filterSub = this.filterService.getStream(TaskManagerFilterComponent.FILTER_NAME)
-    .pipe(
-      map((f: FilterSetting) => {
-        if (f === null) {
-          f = {
-            id: TaskManagerFilterComponent.FILTER_NAME,
-            reset: false,
-            fields: this.fieldsConfig.cancelSetting.fields
-          };
+      .pipe(
+        map((f: FilterSetting) => {
+          if (f === null) {
+            f = {
+              id: TaskManagerFilterComponent.FILTER_NAME,
+              reset: false,
+              fields: this.fieldsConfig.cancelSetting.fields
+            };
+            return f;
+          }
           return f;
-        }
-        return f;
-      }),
-      filter((f: FilterSetting) => f && f.hasOwnProperty('fields')),
-      filter((f: FilterSetting) => !f.reset),
+        }),
+        filter((f: FilterSetting) => f && f.hasOwnProperty('fields')),
+        filter((f: FilterSetting) => !f.reset),
       ).subscribe((f: FilterSetting) => {
         const fields = f.fields.reduce((acc, field: { name: string, value: string[] }) => {
-          return {...acc, [field.name]: field.value[0]};
+          if (field.name === 'location') {
+            const value: any = field.value && field.value.length > 0 ? (field.value[0] as unknown as LocationByEPIMSModel).epims_id : '';
+            return { ...acc, [field.name]: value };
+          }
+          return { ...acc, [field.name]: field.value[0] };
         }, {});
         this.selectionChanged.emit(fields);
-    });
+      });
   }
 
   public ngOnDestroy(): void {

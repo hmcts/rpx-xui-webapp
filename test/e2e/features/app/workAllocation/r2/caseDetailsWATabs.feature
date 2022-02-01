@@ -13,8 +13,7 @@ Feature: WA Release 2: : Case details WA tabs tabs
             | Case name    |
             | Task         |
 
-        When I click task column link "Case name" at row 1
-        Then I see case details page
+        When I click task column link "Case name" at row 1, I see case details page
 
         Then I see case details tab label "Tasks" is displayed is "true"
         When I click tab with label "Tasks" in case details page
@@ -35,8 +34,7 @@ Feature: WA Release 2: : Case details WA tabs tabs
             | Case name    |
             | Task         |
 
-        When I click task column link "Case name" at row 1
-        Then I see case details page
+        When I click task column link "Case name" at row 1, I see case details page
 
         Then I see case details tab label "Roles and access" is displayed is "true"
         When I click tab with label "Roles and access" in case details page
@@ -93,8 +91,7 @@ Feature: WA Release 2: : Case details WA tabs tabs
             | Case name    |
             | Task         |
 
-        When I click task column link "Case name" at row 1
-        Then I see case details page
+        When I click task column link "Case name" at row 1, I see case details page
 
         Then I see case details tab label "Roles and access" is displayed is "true"
         When I click tab with label "Roles and access" in case details page

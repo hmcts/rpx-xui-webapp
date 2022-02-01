@@ -41,7 +41,8 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     fields: [],
     cancelButtonText: 'Reset to default',
     applyButtonText: 'Apply',
-    cancelSetting: null
+    cancelSetting: null,
+    showCancelFilterButton: false
   };
   public allLocations: string[] = [];
   public defaultLocations: any[] = null;
@@ -162,6 +163,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       lineBreakBefore: true,
       findLocationField: 'services',
       displayMinSelectedError: true,
+      enableAddLocationButton: true,
       minSelectedError: 'Search for a location by name',
       type: 'find-location',
       enableAddLocationButton: true

@@ -22,7 +22,6 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
   public caption: string = 'Reassign task';
   public description: string = 'Which role type are you reassigning the task to?';
   public submitted: boolean = true;
-  public optionsList: OptionsModel[];
   public taskRoles: TaskRole[] = [];
   public service: string;
   public form: FormGroup;
@@ -50,7 +49,7 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
 
   public ngOnInit(): void {
     this.taskRoles = this.route.snapshot.data.roles;
-    this.roles = getOptions(this.taskRoles);
+    this.roles = getOptions(this.taskRoles, this.sessionStorageService);
     const isJudicial = this.isCurrentUserJudicial();
     const taskId = this.route.snapshot.paramMap.get('taskId');
     this.service = this.route.snapshot.queryParamMap.get('service');

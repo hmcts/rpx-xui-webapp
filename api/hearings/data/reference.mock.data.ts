@@ -30,6 +30,7 @@ export const DEFAULT_JUDGE_TYPES_REF: RefDataModel[] = [
     parentKey: null,
   },
 ];
+
 export const DEFAULT_STAGES_REF: RefDataModel[] = [
   {
     key: 'initial',
@@ -128,6 +129,7 @@ export const DEFAULT_PARTYCHANNEL_REF: RefDataModel[] = [
     parentKey: null,
   },
 ];
+
 export const DEFAULT_HEARING_CANCEL_REF: RefDataModel[] = [
   {
     key: 'reasoneOne',
@@ -157,6 +159,7 @@ export const DEFAULT_HEARING_CANCEL_REF: RefDataModel[] = [
     parentKey: null,
   },
 ];
+
 export const ADDITIONAL_HEARING_FACILITIES_REF: RefDataModel[] = [
   {
     key: 'immigrationDetentionCentre',
@@ -240,6 +243,131 @@ export const ADDITIONAL_HEARING_FACILITIES_REF: RefDataModel[] = [
     parentKey: null,
   },
 ];
+
+export const LIST_OFF_VALUES_REF: RefDataModel[] = [{
+  key: 'DisabilityQualifiedPanelMember',
+  value_en: 'Disability qualified panel member',
+  value_cy: '',
+  hintText_EN: 'true',
+  hintTextCY: 'false',
+  order: 1,
+  parentKey: '3',
+}, {
+  key: 'MedicallyQualifiedPanelMember',
+  value_en: 'Medically qualified panel member',
+  value_cy: '',
+  hintText_EN: 'true',
+  hintTextCY: 'false',
+  order: 1,
+  parentKey: '3',
+  child_nodes: [{
+    key: 'Cardiologist',
+    value_en: 'Cardiologist',
+    value_cy: '',
+    hintText_EN: 'true',
+    hintTextCY: 'false',
+    order: 1,
+    parentKey: '3',
+    child_nodes: []
+  },
+  {
+    key: 'Carer',
+    value_en: 'Carer',
+    value_cy: '',
+    hintText_EN: 'true',
+    hintTextCY: 'false',
+    order: 1,
+    parentKey: '3',
+    child_nodes: []
+  },
+  {
+    key: 'EyeSurgeon',
+    value_en: 'Medically qualified panel member',
+    value_cy: '',
+    hintText_EN: 'true',
+    hintTextCY: 'false',
+    order: 1,
+    parentKey: '3',
+    child_nodes: []
+  },
+  {
+    key: 'GeneralPractitioner',
+    value_en: 'General Practitioner',
+    value_cy: '',
+    hintText_EN: 'true',
+    hintTextCY: 'false',
+    order: 1,
+    parentKey: '3',
+    child_nodes: []
+  }]
+}, {
+  key: 'MedicallyQualifiedPanelMember',
+  value_en: 'Medically qualified panel member',
+  value_cy: '',
+  hintText_EN: 'true',
+  hintTextCY: 'false',
+  order: 1,
+  parentKey: '3',
+  child_nodes: [{
+    key: 'Cardiologist',
+    value_en: 'Cardiologist',
+    value_cy: '',
+    hintText_EN: 'true',
+    hintTextCY: 'false',
+    order: 1,
+    parentKey: '3',
+    child_nodes: []
+  },
+  {
+    key: 'Carer',
+    value_en: 'Carer',
+    value_cy: '',
+    hintText_EN: 'true',
+    hintTextCY: 'false',
+    order: 1,
+    parentKey: '3',
+    child_nodes: []
+  },
+  {
+    key: 'EyeSurgeon',
+    value_en: 'Medically qualified panel member',
+    value_cy: '',
+    hintText_EN: 'true',
+    hintTextCY: 'false',
+    order: 1,
+    parentKey: '3',
+    child_nodes: []
+  },
+  {
+    key: 'GeneralPractitioner',
+    value_en: 'General Practitioner',
+    value_cy: '',
+    hintText_EN: 'true',
+    hintTextCY: 'false',
+    order: 1,
+    parentKey: '3',
+    child_nodes: []
+  }]
+}, {
+  key: 'FinanciallyQualifiedPanelMember',
+  value_en: 'Financially qualified panel member',
+  value_cy: '',
+  hintText_EN: 'true',
+  hintTextCY: 'false',
+  order: 1,
+  parentKey: '3',
+  child_nodes: []
+}, {
+  key: 'RegionalMedicalMember',
+  value_en: 'Regional Medical Member',
+  value_cy: '',
+  hintText_EN: 'true',
+  hintTextCY: 'false',
+  order: 1,
+  parentKey: '3',
+  child_nodes: []
+}];
+
 export const SSCS_STAGES: RefDataByServiceModel = {
   serviceID: 'SSCS',
   values: DEFAULT_STAGES_REF,
@@ -266,6 +394,10 @@ export const ADDITIONAL_HEARING_FACILITIES: RefDataByServiceModel = {
   serviceID: 'SSCS',
   values: ADDITIONAL_HEARING_FACILITIES_REF,
 };
+export const LIST_OFF_VALUES: RefDataByServiceModel = {
+  serviceID: 'SSCS',
+  values: LIST_OFF_VALUES_REF,
+};
 
 export const ALL_REF_DATA: RefDataByCategoryModel[] = [
   {
@@ -291,5 +423,9 @@ export const ALL_REF_DATA: RefDataByCategoryModel[] = [
   {
     categoryKey: 'FacilitiesList',
     services: [ADDITIONAL_HEARING_FACILITIES],
+  },
+  {
+    categoryKey: 'ListOffValues',
+    services: [LIST_OFF_VALUES],
   },
 ];

@@ -1,0 +1,9 @@
+<div *ngFor="let multiSelect of multiSelect" class="multi-selection-container">
+  <div [ngSwitch]="controlType">
+    <!-- the same view can be shown in more than one case -->
+    <div *ngSwitchCase="controlTypeEnum.CheckBox">...</div>
+    <div *ngSwitchCase="controlTypeEnum.TextBox">...</div>
+    <div *ngSwitchCase="controlTypeEnum.RadioButton">...</div>
+    <div *ngSwitchCase="controlTypeEnum.Select">...</div>
+  </div>
+</div>

@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { Person } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { HearingJudgeNamesListComponent } from '../../../../hearings/components';
@@ -22,10 +23,13 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
   @ViewChild('includedJudge') public includedJudge: HearingJudgeNamesListComponent;
   @ViewChild('excludedJudge') public excludedJudge: HearingJudgeNamesListComponent;
 
-  constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
-              protected readonly hearingsService: HearingsService,
-              private readonly formBuilder: FormBuilder) {
+  constructor(
+    protected readonly hearingStore: Store<fromHearingStore.State>,
+    protected readonly hearingsService: HearingsService,
+    protected readonly route: ActivatedRoute,
+    private readonly formBuilder: FormBuilder) {
     super(hearingStore, hearingsService);
+    this.panelSelection = this.route.snapshot.data.listOffValues;
   }
 
   public ngOnInit(): void {

@@ -133,10 +133,12 @@ export const ROUTES: Routes = [
       },
       {
         path: 'hearing-panel',
+        resolve: { listOffValues: RefDataResolver },
         component: HearingPanelComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Manage cases | Request Hearing | Require Panel Or Not'
+          title: 'HMCTS Manage cases | Request Hearing | Require Panel Or Not',
+          category: HearingCategory.ListOffValues
         }
       },
       {

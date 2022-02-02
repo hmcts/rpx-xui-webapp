@@ -550,7 +550,7 @@ class WorkAllocationMockData {
         const caseRolesRes = [];
         for (const role of roles) {
             const caseRoleObj = WorkAllocationDataModels.getCaseRole(role.roleCategory);
-
+            caseRoleObj['roleId'] = role.roleName;
             for (let key of Object.keys(role)) {
                 caseRoleObj[key] = role[key];
             }

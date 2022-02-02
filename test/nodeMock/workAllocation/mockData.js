@@ -82,7 +82,7 @@ class WorkAllocationMockData {
                 const personWithIdamd = JSON.parse(JSON.stringify(this.getPersonList(1)[0]));
                 personWithIdamd.idamId = idamId;
                 personWithIdamd.location = {
-                    id: locationsByService[0].epims_id,
+                    id: locationsByService[0].epimms_id,
                         locationName: locationsByService[0].court_name
                 }; 
                 byservice.caseworkers.push(personWithIdamd);
@@ -114,7 +114,7 @@ class WorkAllocationMockData {
 
 
                 personWithIdamd.location = {
-                    id: locationsByService[0].epims_id,
+                    id: locationsByService[0].epimms_id,
                     locationName: locationsByService[0].court_name
                 };
                 byservice.caseworkers.push(personWithIdamd);
@@ -131,7 +131,7 @@ class WorkAllocationMockData {
             for(let i = 0; i < 20; i++){
                 const location = {
                     "court_venue_id": "382",
-                    "epims_id": "" + this.locationIdCounter,
+                    "epimms_id": "" + this.locationIdCounter,
                     "is_hearing_location": "Y",
                     "is_case_management_location": "Y",
                     "site_name": service + ' Site ' + this.locationIdCounter,
@@ -162,7 +162,7 @@ class WorkAllocationMockData {
         for (const location of locations) {
             const locationOBj = {
                 "court_venue_id": "382",
-                "epims_id": "" + location.id ? location.id : this.locationIdCounter,
+                "epimms_id": "" + this.locationIdCounter,
                 "is_hearing_location": "Y",
                 "is_case_management_location": "Y",
                 "site_name": location.locationName,
@@ -205,7 +205,7 @@ class WorkAllocationMockData {
 
             let loctionTracker = 0;
             for (const cw of cwByService.caseworkers){
-                cw.location = { id: locationsForThisService[loctionTracker].epims_id ,
+                cw.location = { id: locationsForThisService[loctionTracker].epimms_id ,
                     locationName: locationsForThisService[loctionTracker].court_name };
 
                 loctionTracker++;
@@ -235,8 +235,8 @@ class WorkAllocationMockData {
             location = service.locations[0];
             break;
         }
-        judge.appointments[0]['base_location_id'] = location.epims_id;
-        judge.appointments[0]['epimms_id'] = location.epims_id;
+        judge.appointments[0]['base_location_id'] = location.epimms_id;
+        judge.appointments[0]['epimms_id'] = location.epimms_id;
         judge.appointments[0]['court_name'] = location.court_name;
         
         this.judgeUsers.push(judge);
@@ -744,7 +744,7 @@ class WorkAllocationMockData {
 
         let locationMatchingId = null;
         for (const location of allLocations) {
-            if (location.epims_id === locationId) {
+            if (location.epimms_id === locationId) {
                 locationMatchingId = location;
                 break;
             }

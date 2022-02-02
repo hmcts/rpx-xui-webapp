@@ -10,7 +10,7 @@ import * as fromAppStore from '../../../app/store';
 import {HearingConditions} from '../../../hearings/models/hearingConditions';
 import {HearingListModel} from '../../../hearings/models/hearingList.model';
 import {HearingListViewModel} from '../../../hearings/models/hearingListView.model';
-import {Actions, EXUISectionStatusEnum} from '../../../hearings/models/hearings.enum';
+import {Actions, EXUISectionStatusEnum, Mode} from '../../../hearings/models/hearings.enum';
 import * as fromHearingStore from '../../../hearings/store';
 
 @Component({
@@ -104,7 +104,7 @@ export class CaseHearingsComponent implements OnInit {
 
   public createHearingRequest(): void {
     const hearingCondition: HearingConditions = {
-      mode: 'create',
+      mode: Mode.CREATE,
       isInit: true,
       caseId: this.caseId
     };

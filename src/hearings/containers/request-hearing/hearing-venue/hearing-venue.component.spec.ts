@@ -2,10 +2,12 @@ import {Component, CUSTOM_ELEMENTS_SCHEMA, Input} from '@angular/core';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {AbstractControl, FormBuilder, ReactiveFormsModule} from '@angular/forms';
 import {By} from '@angular/platform-browser';
+import {ActivatedRoute} from '@angular/router';
 import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
 import {SearchLocationComponent} from '@hmcts/rpx-xui-common-lib';
 import {LocationByEPIMSModel} from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import {provideMockStore} from '@ngrx/store/testing';
+import {of} from 'rxjs';
 import {initialState} from '../../../hearing.store.state.test';
 import {ACTION} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
@@ -55,6 +57,12 @@ describe('HearingVenueComponent', () => {
       providers: [
         provideMockStore({initialState}),
         {provide: HearingsService, useValue: hearingsService},
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            fragment: of('point-to-me'),
+          },
+        },
         FormBuilder
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]

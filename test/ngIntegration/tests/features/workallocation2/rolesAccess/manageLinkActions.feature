@@ -1,4 +1,4 @@
-@ng @test
+@ng  
 Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
     Background: User and mock data setup
@@ -79,7 +79,6 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
         When I click action row link "Remove" for role category "Judiciary" in Roles and access page
 
-
     Scenario: Judicial user Reallocate a Judiciary role
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
@@ -116,7 +115,7 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
         # When I select Choose how to allocate option "Reserve to me" in work flow
         # When I click continue in work flow page "Choose how to allocate the role"
 
-        Then I see Allocate role work flow page "Find the person" with caption "Reallocate a judicial role" is displayed
+        Then I see Allocate role work flow page "Find the person" with caption "Reallocate a lead judge" is displayed
         When I enter find person search input "user1" in work flow
         Then I see find person search results in work flow
             | Person                      |
@@ -124,13 +123,13 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
         When I select find person result "user1 j(judge_user1@gov.uk)" in work flow
         When I click continue in work flow page "Find the person"
 
-        Then I see Allocate role work flow page "Duration of role" with caption "Reallocate a judicial role" is displayed
+        Then I see Allocate role work flow page "Duration of role" with caption "Reallocate a lead judge" is displayed
         When I select duration option "Indefinite" in work flow
         Then I validate date input field "Access starts" is displayed "No" in work flow page
         Then I validate date input field "Access ends" is displayed "No" in work flow page
         When I click continue in work flow page "Duration of role"
 
-        Then I see Allocate role work flow page "Check your changes" with caption "Reallocate a judicial role" is displayed
+        Then I see Allocate role work flow page "Check your changes" with caption "Reallocate a lead judge" is displayed
 
         Then I see Check your answers page has total 3 questions
         Then I see Check your answers page has questions and answers with change link
@@ -176,7 +175,7 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
         When I click action row link "Reallocate" for role category "Legal Ops" in Roles and access page
 
 
-        Then I see Allocate role work flow page "Find the person" with caption "Reallocate a legal operations role" is displayed
+        Then I see Allocate role work flow page "Find the person" with caption "Reallocate a legal ops case manager" is displayed
         When I enter find person search input "cas" in work flow
         Then I see find person search results in work flow
             | Person                                  |
@@ -185,7 +184,7 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
         When I select find person result "caseworker_user1@gov.uk" in work flow
         When I click continue in work flow page "Find the person"
 
-        Then I see Allocate role work flow page "Duration of role" with caption "Reallocate a legal operations role" is displayed
+        Then I see Allocate role work flow page "Duration of role" with caption "Reallocate a legal ops case manager" is displayed
         When I select duration option "Indefinite" in work flow
         Then I validate date input field "Access starts" is displayed "No" in work flow page
         Then I validate date input field "Access ends" is displayed "No" in work flow page
@@ -203,8 +202,6 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
         When I click button with label "Confirm allocation" in work flow  Check your answers page
         Then I see case details page displayed with tab "Roles and access" selected
         Then I see case details page with message banner "You've reallocated a role"
-
-
 
 
     Scenario: Legal Ops user Reallocate a Legal Ops role
@@ -243,7 +240,7 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
         # When I select Choose how to allocate option "Allocate to another person" in work flow
         # When I click continue in work flow page "Choose how to allocate the role"
 
-        Then I see Allocate role work flow page "Find the person" with caption "Reallocate a legal operations role" is displayed
+        Then I see Allocate role work flow page "Find the person" with caption "Reallocate a legal ops case manager" is displayed
         When I enter find person search input "cas" in work flow
         Then I see find person search results in work flow
             | Person                                  |
@@ -252,7 +249,7 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
         When I select find person result "caseworker_user1@gov.uk" in work flow
         When I click continue in work flow page "Find the person"
 
-        Then I see Allocate role work flow page "Duration of role" with caption "Reallocate a legal operations role" is displayed
+        Then I see Allocate role work flow page "Duration of role" with caption "Reallocate a legal ops case manager" is displayed
         When I select duration option "Indefinite" in work flow
         Then I validate date input field "Access starts" is displayed "No" in work flow page
         Then I validate date input field "Access ends" is displayed "No" in work flow page
@@ -304,7 +301,7 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
         When I click action row link "Reallocate" for role category "Judicial" in Roles and access page
 
 
-        Then I see Allocate role work flow page "Find the person" with caption "Reallocate a judicial role" is displayed
+        Then I see Allocate role work flow page "Find the person" with caption "Reallocate a lead judge" is displayed
         When I enter find person search input "user1" in work flow
         Then I see find person search results in work flow
             | Person                      |
@@ -312,7 +309,7 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
         When I select find person result "judge_user1@gov.uk" in work flow
         When I click continue in work flow page "Find the person"
 
-        Then I see Allocate role work flow page "Duration of role" with caption "Reallocate a judicial role" is displayed
+        Then I see Allocate role work flow page "Duration of role" with caption "Reallocate a lead judge" is displayed
         When I select duration option "Indefinite" in work flow
         Then I validate date input field "Access starts" is displayed "No" in work flow page
         Then I validate date input field "Access ends" is displayed "No" in work flow page

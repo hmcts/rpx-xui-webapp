@@ -232,7 +232,7 @@ export const ADDITIONAL_HEARING_FACILITIES_REF: RefDataModel[] = [
   },
   {
     key: 'prisonVideoLink',
-    value_en: 'prison video link',
+    value_en: 'Prison video link',
     value_cy: '',
     hintText_EN: 'Prison Video Link',
     hintTextCY: '',

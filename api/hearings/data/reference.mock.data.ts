@@ -160,7 +160,7 @@ export const DEFAULT_HEARING_CANCEL_REF: RefDataModel[] = [
 export const ADDITIONAL_HEARING_FACILITIES_REF: RefDataModel[] = [
   {
     key: 'immigrationDetentionCentre',
-    value_en: 'immigration detention centre',
+    value_en: 'Immigration detention centre',
     value_cy: '',
     hintText_EN: 'Immigration detention centre',
     hintTextCY: '',
@@ -169,7 +169,7 @@ export const ADDITIONAL_HEARING_FACILITIES_REF: RefDataModel[] = [
   },
   {
     key: 'inCameraCourt',
-    value_en: 'in camera court',
+    value_en: 'In camera court',
     value_cy: '',
     hintText_EN: 'In camera court',
     hintTextCY: '',
@@ -178,7 +178,7 @@ export const ADDITIONAL_HEARING_FACILITIES_REF: RefDataModel[] = [
   },
   {
     key: 'sameSexCourtroom',
-    value_en: 'same sex courtroom',
+    value_en: 'Same-sex courtroom',
     value_cy: '',
     hintText_EN: 'Same sex courtroom',
     hintTextCY: '',
@@ -187,7 +187,7 @@ export const ADDITIONAL_HEARING_FACILITIES_REF: RefDataModel[] = [
   },
   {
     key: 'secureDock',
-    value_en: 'secure dock',
+    value_en: 'Secure dock',
     value_cy: '',
     hintText_EN: 'Secure Dock',
     hintTextCY: '',
@@ -196,7 +196,7 @@ export const ADDITIONAL_HEARING_FACILITIES_REF: RefDataModel[] = [
   },
   {
     key: 'witnessScreen',
-    value_en: 'witness screen',
+    value_en: 'Witness screen',
     value_cy: '',
     hintText_EN: 'Witness Screen',
     hintTextCY: '',
@@ -205,7 +205,7 @@ export const ADDITIONAL_HEARING_FACILITIES_REF: RefDataModel[] = [
   },
   {
     key: 'witnessRoom',
-    value_en: 'witness room',
+    value_en: 'Witness room',
     value_cy: '',
     hintText_EN: 'Witness Room',
     hintTextCY: '',
@@ -214,7 +214,7 @@ export const ADDITIONAL_HEARING_FACILITIES_REF: RefDataModel[] = [
   },
   {
     key: 'videoConferencing',
-    value_en: 'video conferencing',
+    value_en: 'Video conferencing',
     value_cy: '',
     hintText_EN: 'Video Conferencing',
     hintTextCY: '',
@@ -223,7 +223,7 @@ export const ADDITIONAL_HEARING_FACILITIES_REF: RefDataModel[] = [
   },
   {
     key: 'VideoFacility',
-    value_en: 'videoFacility',
+    value_en: 'Video facility',
     value_cy: '',
     hintText_EN: 'Video Facility',
     hintTextCY: '',

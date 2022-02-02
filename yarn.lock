@@ -448,10 +448,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.9.0":
-  version "4.9.0"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.9.0.tgz#5e91a2cbab03ab2243a4ad6e807a32fc5b5cc823"
-  integrity sha512-h1Sw0g+tQU2ybF/9j49kLGD6v1ubWdKk7wZClqINA0ye80GSTW29Bk4Bm8t++IaD24CrdUhvNnywlnifC4l2gA==
+"@hmcts/ccd-case-ui-toolkit@4.11.3":
+  version "4.11.3"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.11.3.tgz#e15bd6945e1e69f3f767034263206f39a01d5f2d"
+  integrity sha512-ev6OQ16Ae5Zvjvdf4ZdpZgNXFcEPd+5cWrjvAoC1VlFOA3gTRVonFSZmWCWMyWTbhRmHPqaVS9ZTwFcJVfQ+cg==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -475,10 +475,10 @@
     underscore "^1.9.1"
     yargs-parser "18.1.2"
 
-"@hmcts/ccpay-web-component@3.0.27":
-  version "3.0.27"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-3.0.27.tgz#c331f6d947773458f2ad93079b0bbe2ef5ce40e5"
-  integrity sha512-84b2CYuuJBo+MG6nMFGEjHIZz5tHIzpuN2rSZ+D1rsNvaKHUONyqxRB1HDNoSRRFcqqTIUjXVSWNOPQacHJTig==
+"@hmcts/ccpay-web-component@5.0.2":
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-5.0.2.tgz#bb23e6c895f9d05fc06286d5ae64e09addff31c8"
+  integrity sha512-iK0exJGDM+BQuWsByqTJHaXBynX6JR3DpzUWYsC6Rq0mBQnnEYYix5GfLQ2cjGdl5EB99sjSfE01AregwEMKAA==
   dependencies:
     tslib "^1.9.0"
 
@@ -487,10 +487,10 @@
   resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.39-alpha.tgz#782d4a4698dae040dd72b26711f04a8d8299d25c"
   integrity sha512-M1364rFLuvktYz5+jVjJ5ZmNUx0/SgoAvH3RsIaT2wFqFf92emuiRyXqax5oSEC5kM9Jpw0rcxEcRbBJWMoglg==
 
-"@hmcts/media-viewer@2.7.9":
-  version "2.7.9"
-  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.7.9.tgz#6fa22f7e2a9b65e418afe32059369b332fbc29b3"
-  integrity sha512-0QEbYZgLSVLUspcUgtqZSc2HcKOls5XnEFSHaj6kNOi9OahTXgywQLGKmQziMcSZi9buaH1MqnQd+tMCCPO7AQ==
+"@hmcts/media-viewer@2.7.12":
+  version "2.7.12"
+  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.7.12.tgz#e5f4030e1bbd9dfab770997a96eec3e5c6beb73a"
+  integrity sha512-GVA1Nw/zidOvbqn5Mg8qB8BupS3/848962zFR0nP3VNi/FfT0SvgGut3/VGU/9KBL4ofy5QjxP/j8ZIzQHz2FA==
   dependencies:
     "@swimlane/ngx-datatable" "^16.0.2"
     angular-tree-component "^8.5.6"
@@ -528,10 +528,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.6.0-rc1":
-  version "1.6.0-rc1"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.0-rc1.tgz#fc56ed5ac64f3e834f78970fd28e39415118dd9d"
-  integrity sha512-ceAAyq73N0JGENMxGtHW8fsEIy/4lpsDoU9P4wLcZWHP5teqMNVMsK4T8V30yxpZegpfpjM6ZTKFCbA/oFhemQ==
+"@hmcts/rpx-xui-common-lib@1.4.27-no-courtname-fontsize":
+  version "1.4.27-no-courtname-fontsize"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.27-no-courtname-fontsize.tgz#035feb6988690ef4504539b75a6a4baf5ccbc256"
+  integrity sha512-jg8AyCqTNBj/048uri3BM9R3yHLkPyDnik2gUSoorLSmrq83RU6Shr6y8aRbDAb6DTlURb3nacodFPtkHNMhDQ==
   dependencies:
     tslib "^1.9.0"
 

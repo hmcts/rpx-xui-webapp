@@ -102,10 +102,11 @@ export class TaskActionContainerComponent implements OnInit {
         // be possible are the ones above.
         break;
     }
-    // add hasAssignee - only false if complete action and assignee not present
-    const hasAssignee = action === Actions.Complete.toString() ? !!(this.tasks[0].assignee): true;
+    // add hasNoAssigneeOnComplete - only false if complete action and assignee not present
+    const hasNoAssigneeOnComplete = action === Actions.Complete.toString() ? !(this.tasks[0].assignee): false;
+    console.log('complete', hasNoAssigneeOnComplete);
     if (action) {
-      this.taskService.performActionOnTask(this.tasks[0].id, action, hasAssignee).subscribe(() => {
+      this.taskService.performActionOnTask(this.tasks[0].id, action, hasNoAssigneeOnComplete).subscribe(() => {
         this.reportSuccessAndReturn();
       }, error => {
         const handledStatus = handleFatalErrors(error.status, this.router);

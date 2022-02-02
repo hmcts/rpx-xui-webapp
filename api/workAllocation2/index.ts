@@ -220,7 +220,7 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
 
   try {
     // Additional setting to mark unassigned tasks as done - need to assign task before completing
-    if (!req.body.hasAssignee) {
+    if (req.body.hasNoAssigneeOnComplete === true) {
       req.body = {
         completion_options: {
            assign_and_complete: true

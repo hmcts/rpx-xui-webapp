@@ -1,4 +1,4 @@
-import {caseFlagsRefData, serviceHearingValuesModel} from '../hearing.store.state.test';
+import {caseFlagsRefData, serviceHearingValuesModel} from '../hearing.test.data';
 import {CaseFlagType} from '../models/hearings.enum';
 import {CaseFlagsUtils} from './case-flags.utils';
 

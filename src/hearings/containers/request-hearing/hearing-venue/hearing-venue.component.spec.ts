@@ -8,7 +8,7 @@ import {SearchLocationComponent} from '@hmcts/rpx-xui-common-lib';
 import {LocationByEPIMSModel} from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
-import {initialState} from '../../../hearing.store.state.test';
+import {initialState} from '../../../hearing.test.data';
 import {ACTION} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
 import {HearingVenueComponent} from './hearing-venue.component';

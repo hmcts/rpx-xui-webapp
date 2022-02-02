@@ -7,7 +7,7 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
 import {HearingJudgeNamesListComponent} from '../../../components';
-import {initialState} from '../../../hearing.store.state.test';
+import {initialState} from '../../../hearing.test.data';
 import {ACTION, RadioOptions} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
 import {HearingPanelComponent} from './hearing-panel.component';

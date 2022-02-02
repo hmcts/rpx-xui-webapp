@@ -30,7 +30,6 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
   public title: string;
   public boldTitle: string = 'Find the person';
   public formGroup: FormGroup = new FormGroup({});
-  public findPersonControl: FormControl;
   public personName: string;
   public person: Person;
   public userId: string;
@@ -42,7 +41,6 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
   constructor(private readonly store: Store<fromFeature.State>) {}
 
   public ngOnInit(): void {
-    this.findPersonControl = this.formGroup.value.findPersonControl;
     this.subscription = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(allocateRoleStateData => this.setData(allocateRoleStateData));
   }
 

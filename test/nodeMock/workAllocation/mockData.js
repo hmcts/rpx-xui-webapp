@@ -131,7 +131,7 @@ class WorkAllocationMockData {
             for(let i = 0; i < 20; i++){
                 const location = {
                     "court_venue_id": "382",
-                    "epimms_id": ""+loctaionIdTracker,
+                    "epimms_id": "" + this.locationIdCounter,
                     "is_hearing_location": "Y",
                     "is_case_management_location": "Y",
                     "site_name": service + ' Site ' + this.locationIdCounter,

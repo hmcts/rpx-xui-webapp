@@ -5,7 +5,7 @@ import { CancelHearingComponent } from './containers/cancel-hearing/cancel-heari
 import { ChangeHearingComponent } from './containers/change-hearing/change-hearing.component';
 import { HearingAdditionalInstructionsComponent } from './containers/request-hearing/hearing-additional-instructions/hearing-additional-instructions.component';
 import { HearingAttendanceComponent } from './containers/request-hearing/hearing-attendance/hearing-attendance.component';
-import { HearingCheckAnswersComponent } from './containers/request-hearing/hearing-check-answers/hearing-check-answers.component';
+import { HearingCreateEditSummaryComponent } from './containers/request-hearing/hearing-create-edit-summary/hearing-create-edit-summary.component';
 import { HearingFacilitiesComponent } from './containers/request-hearing/hearing-facilities/hearing-facilities.component';
 import { HearingJudgeComponent } from './containers/request-hearing/hearing-judge/hearing-judge.component';
 import { HearingPanelComponent } from './containers/request-hearing/hearing-panel/hearing-panel.component';
@@ -13,6 +13,7 @@ import { HearingRequirementsComponent } from './containers/request-hearing/heari
 import { HearingStageComponent } from './containers/request-hearing/hearing-stage/hearing-stage.component';
 import { HearingTimingComponent } from './containers/request-hearing/hearing-timing/hearing-timing.component';
 import { HearingVenueComponent } from './containers/request-hearing/hearing-venue/hearing-venue.component';
+import {HearingViewEditSummaryComponent} from './containers/request-hearing/hearing-view-edit-summary/hearing-view-edit-summary.component';
 import { HearingWelshComponent } from './containers/request-hearing/hearing-welsh/hearing-welsh.component';
 import { RequestHearingComponent } from './containers/request-hearing/request-hearing.component';
 import { ViewHearingComponent } from './containers/view-hearing/view-hearing.component';
@@ -160,11 +161,19 @@ export const ROUTES: Routes = [
         }
       },
       {
-        path: 'hearing-check-answers',
-        component: HearingCheckAnswersComponent,
+        path: 'hearing-create-edit-summary',
+        component: HearingCreateEditSummaryComponent,
         canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Manage cases | Request Hearing | Check Answers'
+        }
+      },
+      {
+        path: 'hearing-view-edit-summary',
+        component: HearingViewEditSummaryComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Manage cases | Amend Hearing | Check Answers'
         }
       },
     ]

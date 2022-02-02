@@ -1,28 +1,30 @@
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
 import {initialState} from '../../../hearing.store.state.test';
 import {ACTION} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
-import {HearingCheckAnswersComponent} from './hearing-check-answers.component';
+import {HearingCreateEditSummaryComponent} from './hearing-create-edit-summary.component';
 
-describe('CheckAnswersComponent', () => {
-  let component: HearingCheckAnswersComponent;
-  let fixture: ComponentFixture<HearingCheckAnswersComponent>;
+describe('HearingCreateEditSummaryComponent', () => {
+  let component: HearingCreateEditSummaryComponent;
+  let fixture: ComponentFixture<HearingCreateEditSummaryComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingCheckAnswersComponent],
+      declarations: [HearingCreateEditSummaryComponent],
       providers: [
         provideMockStore({initialState}),
         {provide: HearingsService, useValue: hearingsService},
-      ]
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(HearingCheckAnswersComponent);
+    fixture = TestBed.createComponent(HearingCreateEditSummaryComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

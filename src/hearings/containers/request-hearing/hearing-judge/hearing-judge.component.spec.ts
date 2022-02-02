@@ -46,6 +46,7 @@ describe('HearingJudgeComponent', () => {
                 hearingJudgeTypes: judgeTypes
               }
             },
+            fragment: of('point-to-me'),
           }
         },
       ],

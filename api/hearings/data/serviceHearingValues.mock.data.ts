@@ -248,7 +248,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       screenName: 'hearing-additional-instructions',
       navigation: [
         {
-          resultValue: 'hearing-check-answers',
+          resultValue: 'hearing-create-edit-summary',
         },
       ],
     },

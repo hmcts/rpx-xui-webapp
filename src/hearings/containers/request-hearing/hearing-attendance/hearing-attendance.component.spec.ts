@@ -1,6 +1,7 @@
 import {Component, CUSTOM_ELEMENTS_SCHEMA, Input} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {FormArray, FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
 import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
@@ -36,6 +37,12 @@ describe('HearingAttendanceComponent', () => {
         provideMockStore({initialState}),
         {provide: HearingsService, useValue: hearingsService},
         {provide: HearingsRefDataService, useValue: hearingsRefDataService},
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            fragment: of('point-to-me'),
+          },
+        },
         ValidatorsUtils,
         FormBuilder
       ],

@@ -66,7 +66,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       maxSelected: 1,
       minSelectedError: 'You must select a service',
       maxSelectedError: null,
-      changeResetFields: ['selectLocation', 'selectPerson', 'role', 'person', 'actorId'],
+      changeResetFields: ['selectLocation', 'selectPerson', 'role', 'person', 'actorId', 'findPersonControl'],
       title: 'Service',
       type: 'select'
     };

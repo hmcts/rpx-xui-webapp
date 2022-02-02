@@ -1,13 +1,20 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { RouterModule } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { FeatureUser } from '@hmcts/rpx-xui-common-lib';
-import { Observable, of } from 'rxjs';
-import { RoleCategoryMappingService } from 'src/app/services/role-category-mapping/role-category-mapping.service';
-import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, HearingListingStatusEnum } from '../../../hearings/models/hearings.enum';
-import { HearingsPipesModule } from '../../../hearings/pipes/hearings.pipes.module';
-import { CaseHearingsListComponent } from './case-hearings-list.component';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {By} from '@angular/platform-browser';
+import {Router, RouterModule} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
+import {FeatureUser} from '@hmcts/rpx-xui-common-lib';
+import {Store} from '@ngrx/store';
+import {Observable, of} from 'rxjs';
+import {RoleCategoryMappingService} from 'src/app/services/role-category-mapping/role-category-mapping.service';
+import {
+  Actions,
+  EXUIDisplayStatusEnum,
+  EXUISectionStatusEnum,
+  HearingListingStatusEnum
+} from '../../../hearings/models/hearings.enum';
+import {HearingsPipesModule} from '../../../hearings/pipes/hearings.pipes.module';
+import * as fromHearingStore from '../../../hearings/store';
+import {CaseHearingsListComponent} from './case-hearings-list.component';
 
 class MockRoleCategoryMappingService {
   public initialize = (user: FeatureUser, clientId: string): void => {
@@ -22,6 +29,8 @@ describe('CaseHearingsListComponent', () => {
   let roleCategoryMappingService: RoleCategoryMappingService;
   let fixture: ComponentFixture<CaseHearingsListComponent>;
   const mockFeatureService = new MockRoleCategoryMappingService();
+  const mockStore = jasmine.createSpyObj('Store', ['dispatch']);
+  let router: any;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -31,7 +40,10 @@ describe('CaseHearingsListComponent', () => {
         HearingsPipesModule
       ],
       declarations: [CaseHearingsListComponent],
-      providers: []
+      providers: [{
+        provide: Store,
+        useValue: mockStore
+      }]
     }).compileComponents();
   }));
 
@@ -69,6 +81,7 @@ describe('CaseHearingsListComponent', () => {
       hearingDaySchedule: [],
     }]);
     component.actions = [Actions.DELETE];
+    router = TestBed.get(Router);
     fixture.detectChanges();
   });
 
@@ -113,5 +126,13 @@ describe('CaseHearingsListComponent', () => {
     component.ngOnInit();
     fixture.detectChanges();
     expect(component.hasReadOnlyAction).toBeTruthy();
+  });
+
+  it('should viewAndEdit', () => {
+    const navigateSpy = spyOn(router, 'navigate');
+    component.viewAndEdit();
+    fixture.detectChanges();
+    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.SaveHearingConditions({mode: 'view'}));
+    expect(navigateSpy).toHaveBeenCalledWith(['/', 'hearings', 'request', 'hearing-view-edit-summary']);
   });
 });

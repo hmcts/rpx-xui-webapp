@@ -1,13 +1,13 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { provideMockStore } from '@ngrx/store/testing';
-import { of } from 'rxjs';
-import { initialState, serviceHearingValuesModel } from '../../../hearing.store.state.test';
-import { ACTION } from '../../../models/hearings.enum';
-import { HearingsService } from '../../../services/hearings.service';
-import { HearingFacilitiesComponent } from './hearing-facilities.component';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {ReactiveFormsModule} from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
+import {provideMockStore} from '@ngrx/store/testing';
+import {of} from 'rxjs';
+import {initialState, serviceHearingValuesModel} from '../../../hearing.store.state.test';
+import {ACTION} from '../../../models/hearings.enum';
+import {HearingsService} from '../../../services/hearings.service';
+import {HearingFacilitiesComponent} from './hearing-facilities.component';
 
 describe('HearingFacilitiesComponent', () => {
   let component: HearingFacilitiesComponent;
@@ -105,8 +105,8 @@ describe('HearingFacilitiesComponent', () => {
       imports: [ReactiveFormsModule],
       declarations: [HearingFacilitiesComponent],
       providers: [
-        provideMockStore({ initialState }),
-        { provide: HearingsService, useValue: hearingsService },
+        provideMockStore({initialState}),
+        {provide: HearingsService, useValue: hearingsService},
         {
           provide: ActivatedRoute,
           useValue: {
@@ -116,6 +116,7 @@ describe('HearingFacilitiesComponent', () => {
                 additionFacilitiesOptions: ADDITIONAL_FACILITIES_OPTIONS,
               },
             },
+            fragment: of('point-to-me'),
           },
         }
       ],
@@ -162,8 +163,7 @@ describe('HearingFacilitiesComponent', () => {
     component = fixture.componentInstance;
     component.ngOnInit();
     fixture.detectChanges();
-    expect(component.additionalFacilities.filter(facility => facility.selected).length).
-      toEqual(component.hearingRequestMainModel.hearingDetails.facilitiesRequired.length);
+    expect(component.additionalFacilities.filter(facility => facility.selected).length).toEqual(component.hearingRequestMainModel.hearingDetails.facilitiesRequired.length);
     expect(component.hearingFactilitiesForm.controls['addition-security-required'].value).toEqual('Yes');
   });
 

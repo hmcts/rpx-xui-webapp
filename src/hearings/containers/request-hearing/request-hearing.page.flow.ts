@@ -1,3 +1,4 @@
+import {ActivatedRoute} from '@angular/router';
 import {select, Store} from '@ngrx/store';
 import {Subscription} from 'rxjs';
 import {HearingConditions} from '../../models/hearingConditions';
@@ -17,7 +18,8 @@ export abstract class RequestHearingPageFlow {
   public hearingCondition: HearingConditions;
 
   public constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
-                     protected readonly hearingsService: HearingsService) {
+                     protected readonly hearingsService: HearingsService,
+                     protected readonly route?: ActivatedRoute) {
     this.navigationSub = this.hearingsService.navigateAction$.subscribe(
       (action: ACTION) => this.executeAction(action)
     );
@@ -28,6 +30,16 @@ export abstract class RequestHearingPageFlow {
         this.hearingRequestMainModel = hearingState.hearingRequest.hearingRequestMainModel;
         this.hearingCondition = hearingState.hearingConditions;
       });
+  }
+
+  public fragmentFocus(): void {
+    this.route.fragment.subscribe(frag => {
+      const element = document.getElementById(frag);
+      if (element) {
+        element.scrollIntoView();
+        element.focus();
+      }
+    });
   }
 
   public navigateAction(action: ACTION): void {

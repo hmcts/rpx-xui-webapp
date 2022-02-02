@@ -1,5 +1,6 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {ACTION} from '../../../models/hearings.enum';
@@ -16,7 +17,7 @@ import {RequestHearingPageFlow} from '../request-hearing.page.flow';
   templateUrl: './hearing-attendance.component.html',
   styleUrls: ['./hearing-attendance.component.scss']
 })
-export class HearingAttendanceComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
+export class HearingAttendanceComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public attendanceFormGroup: FormGroup;
   public validationErrors: { id: string, message: string }[] = [];
   public hint: string = 'Where known, contact details for remote attendees will be included in the request.';
@@ -26,13 +27,13 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   public partyChannels: Observable<RefDataModel[]>;
   public selectionValid: boolean = true;
 
-  constructor(
-    protected readonly hearingStore: Store<fromHearingStore.State>,
-    protected readonly hearingsService: HearingsService,
-    private readonly validatorsUtils: ValidatorsUtils,
-    private readonly hearingsRefDataService: HearingsRefDataService,
-    private readonly fb: FormBuilder) {
-    super(hearingStore, hearingsService);
+  constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
+              protected readonly hearingsService: HearingsService,
+              private readonly validatorsUtils: ValidatorsUtils,
+              private readonly hearingsRefDataService: HearingsRefDataService,
+              private readonly fb: FormBuilder,
+              protected readonly route: ActivatedRoute) {
+    super(hearingStore, hearingsService, route);
     this.attendanceFormGroup = fb.group({
       estimation: [null, [this.validatorsUtils.numberLargerThanValidator(0)]],
       parties: fb.array([])
@@ -140,6 +141,10 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       partyChannel: [party.partyChannel, Validators.required],
       unavailabilityRanges: [party.unavailabilityRanges],
     });
+  }
+
+  public ngAfterViewInit(): void {
+    this.fragmentFocus();
   }
 
   public ngOnDestroy(): void {

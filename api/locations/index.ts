@@ -9,6 +9,7 @@ import { setHeaders } from '../lib/proxy';
 import { handleLocationGet } from '../workAllocation2/locationService';
 import { prepareGetLocationsUrl } from '../workAllocation2/util';
 import { LocationTypeEnum } from './data/locationType.enum';
+import { SERVICES_COURT_TYPE_MAPPINGS } from './data/serviceCourtType.mapping';
 import { LocationModel } from './models/location.model';
 
 const url: string = getConfigValue(SERVICES_LOCATION_API_PATH);
@@ -22,13 +23,13 @@ const url: string = getConfigValue(SERVICES_LOCATION_API_PATH);
  */
 export async function getLocations(req: EnhancedRequest, res: Response, next: NextFunction) {
   const searchTerm = req.query.searchTerm;
-  // const serviceIds = req.query.serviceIds;
+  const serviceIds = req.query.serviceIds;
   const locationType = req.query.locationType;
-  /* const serviceIdArray = serviceIds.split(',');
-  const courtTypeIds = getCourtTypeIdsByService(serviceIdArray); */
+  const serviceIdArray = serviceIds.split(',');
+  const courtTypeIds = getCourtTypeIdsByService(serviceIdArray);
   // tslint:disable-next-line:max-line-length
-  // const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${courtTypeIds}`;
-  const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}`;
+  const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${courtTypeIds}`;
+  // const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}`;
   try {
     const headers = setHeaders(req);
     const response: AxiosResponse<any> = await http.get(markupPath, { headers });
@@ -64,18 +65,18 @@ export async function getLocationsById(req: EnhancedRequest, res: Response, next
   }
 }
 
-/* function getCourtTypeIdsByService(serviceIdArray: string[]): string {
+function getCourtTypeIdsByService(serviceIdArray: string[]): string {
   const courtTypeIdsArray = serviceIdArray.map(serviceId => SERVICES_COURT_TYPE_MAPPINGS[serviceId])
     .reduce(concatCourtTypeWithoutDuplicates);
   if (courtTypeIdsArray) {
     return courtTypeIdsArray.join(',');
   }
   return '';
-} */
+}
 
-/* function concatCourtTypeWithoutDuplicates(array1: number[], array2: number[]) {
+function concatCourtTypeWithoutDuplicates(array1: number[], array2: number[]) {
   return array1.concat(array2.filter(item => array1.indexOf(item) < 0));
-} */
+}
 
 function mapCourtVenuesToLocationModels(courtVenues: CourtVenue[]): CourtVenue {
   return courtVenues[0];

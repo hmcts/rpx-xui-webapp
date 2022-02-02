@@ -68,9 +68,9 @@ export class WorkAllocationTaskService {
     return this.http.get<TaskRole[]>(url);
   }
 
-  public performActionOnTask(taskId: string, action: ACTION): Observable<Response> {
+  public performActionOnTask(taskId: string, action: ACTION, hasAssignee?: boolean): Observable<Response> {
     // Make a POST with an empty payload.
-    return this.http.post<any>(this.getActionUrl(taskId, action), {});
+    return this.http.post<any>(this.getActionUrl(taskId, action), {hasAssignee});
   }
 
   public getActionUrl(taskId: string, action: ACTION): string {

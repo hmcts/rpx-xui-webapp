@@ -1,22 +1,22 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { PersonRole } from '@hmcts/rpx-xui-common-lib/lib/models';
-import { Store } from '@ngrx/store';
-import { HearingJudgeNameComponent, HearingJudgeNamesListComponent } from '../../../../hearings/components';
-import { Person } from '../../../../hearings/models/person.model';
-import { RefDataModel } from '../../../../hearings/models/refData.model';
-import { ValidatorsUtils } from '../../../../hearings/utils/validators.utils';
-import { ACTION, HearingJudgeSelectionEnum, RadioOptions } from '../../../models/hearings.enum';
-import { HearingsService } from '../../../services/hearings.service';
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
+import {PersonRole} from '@hmcts/rpx-xui-common-lib/lib/models';
+import {Store} from '@ngrx/store';
+import {HearingJudgeNameComponent, HearingJudgeNamesListComponent} from '../../../components';
+import {ACTION, HearingJudgeSelectionEnum, RadioOptions} from '../../../models/hearings.enum';
+import {Person} from '../../../models/person.model';
+import {RefDataModel} from '../../../models/refData.model';
+import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import { RequestHearingPageFlow } from '../request-hearing.page.flow';
+import {ValidatorsUtils} from '../../../utils/validators.utils';
+import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-judge',
   templateUrl: './hearing-judge.component.html',
 })
-export class HearingJudgeComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
+export class HearingJudgeComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public hearingJudgeForm: FormGroup;
   public specificJudgeSelection: string;
   public judgeList: Person[] = [];
@@ -28,12 +28,12 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
   @ViewChild('hearingJudgeInfo') public hearingJudgeInfo: HearingJudgeNameComponent;
   @ViewChild('excludedJudge') public excludedJudge: HearingJudgeNamesListComponent;
 
-  constructor(private readonly route: ActivatedRoute,
+  constructor(protected readonly route: ActivatedRoute,
               private readonly formBuilder: FormBuilder,
               protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService,
               private readonly validatorsUtils: ValidatorsUtils) {
-    super(hearingStore, hearingsService);
+    super(hearingStore, hearingsService, route);
     this.hearingJudgeTypes = this.route.snapshot.data.hearingStages;
   }
 
@@ -96,12 +96,12 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
   public showRadioButtonError(): void {
     if (!this.hearingJudgeForm.controls.specificJudge.valid) {
       this.specificJudgeSelectionError = HearingJudgeSelectionEnum.SelectionError;
-      this.validationErrors.push({ id: 'specific-judge-selection', message: HearingJudgeSelectionEnum.SelectionError });
+      this.validationErrors.push({id: 'specific-judge-selection', message: HearingJudgeSelectionEnum.SelectionError});
     } else if (this.specificJudgeSelection === RadioOptions.YES && !this.hearingJudgeInfo.isJudgeInputValid() && !this.hearingJudgeForm.controls.findPersonControl.get('email').valid) {
       this.validationErrors.push(this.hearingJudgeInfo.validationError);
     } else if (this.specificJudgeSelection === RadioOptions.NO && !this.hearingJudgeForm.controls.judgeType.valid) {
       this.selectJudgeTypesError = HearingJudgeSelectionEnum.SelectOneJudgeError;
-      this.validationErrors.push({ id: 'judgeTypes', message: HearingJudgeSelectionEnum.SelectOneJudgeError });
+      this.validationErrors.push({id: 'judgeTypes', message: HearingJudgeSelectionEnum.SelectOneJudgeError});
     }
   }
 
@@ -121,6 +121,10 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
 
   public isFormValid(): boolean {
     return this.excludedJudge.isExcludeJudgeInputValid() && this.hearingJudgeForm.valid;
+  }
+
+  public ngAfterViewInit(): void {
+    this.fragmentFocus();
   }
 
   public ngOnDestroy(): void {

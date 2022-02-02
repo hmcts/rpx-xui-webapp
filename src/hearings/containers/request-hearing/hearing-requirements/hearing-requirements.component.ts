@@ -1,4 +1,4 @@
-import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Store} from '@ngrx/store';
 import * as fromHearingStore from '../../../../hearings/store';
@@ -14,7 +14,7 @@ import {RequestHearingPageFlow} from '../request-hearing.page.flow';
   selector: 'exui-hearing-requirements',
   templateUrl: './hearing-requirements.component.html',
 })
-export class HearingRequirementsComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
+export class HearingRequirementsComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public caseFlagsRefData: CaseFlagReferenceModel[];
   public caseFlagType: CaseFlagType = CaseFlagType.REASONABLE_ADJUSTMENT;
   public lostFocus: boolean = false;
@@ -33,10 +33,10 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     this.lostFocus = true;
   }
 
-  constructor(private readonly route: ActivatedRoute,
+  constructor(protected readonly route: ActivatedRoute,
               public readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService) {
-    super(hearingStore, hearingsService);
+    super(hearingStore, hearingsService, route);
     this.caseFlagsRefData = this.route.snapshot.data.caseFlags;
   }
 
@@ -105,6 +105,10 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
 
   protected executeAction(action: ACTION): void {
     super.navigateAction(action);
+  }
+
+  public ngAfterViewInit(): void {
+    this.fragmentFocus();
   }
 
   public ngOnDestroy() {

@@ -92,7 +92,7 @@ describe('PageFlow', () => {
       screenName: 'hearing-additional-instructions',
       navigation: [
         {
-          resultValue: 'hearing-check-answers',
+          resultValue: 'hearing-create-edit-summary',
         },
       ],
     },

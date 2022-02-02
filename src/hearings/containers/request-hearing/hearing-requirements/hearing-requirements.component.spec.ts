@@ -41,6 +41,7 @@ describe('HearingRequirementsComponent', () => {
                 caseFlags: null,
               },
             },
+            fragment: of('point-to-me'),
           },
         }
       ],

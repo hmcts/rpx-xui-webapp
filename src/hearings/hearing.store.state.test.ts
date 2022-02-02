@@ -209,6 +209,7 @@ export const initialState = {
       lastError: null
     },
     hearingConditions: {
+      caseId: '1111222233334444',
       mode: 'create',
       isInit: true
     },

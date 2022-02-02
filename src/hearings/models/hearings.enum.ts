@@ -178,3 +178,30 @@ export enum CancelHearingMessages {
   NOT_SELECTED_A_REASON = 'You have not selected a reason for cancelling th hearing',
   SELECT_AT_LEAST_ONE_REASON = 'Select at least one valid reason',
 }
+
+export enum AnswerSource {
+  CASE_NAME,
+  Type,
+  CASE_FLAGS,
+  ADDITIONAL_SECURITY_REQUIRED,
+  ADDITIONAL_FACILITIES_REQUIRED,
+  STAGE,
+  HOW_ATTENDANT,
+  ATTENDANT_PERSON_AMOUNT,
+  VENUE,
+  NEED_JUDGE,
+  JUDGE_NAME,
+  JUDGE_EXCLUSION,
+  HEARING_PANEL,
+  HEARING_LENGTH,
+  HEARING_SPECIFIC_DATE,
+  HEARING_PRIORITY,
+  ADDITIONAL_INSTRUCTION
+}
+
+export enum Mode {
+  CREATE = 'create',
+  CREATE_EDIT = 'create-edit',
+  VIEW = 'view',
+  VIEW_EDIT = 'view-edit'
+}

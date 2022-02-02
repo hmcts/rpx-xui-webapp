@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Person } from '@hmcts/rpx-xui-common-lib';
@@ -13,7 +13,7 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
   selector: 'exui-hearing-panel',
   templateUrl: './hearing-panel.component.html',
 })
-export class HearingPanelComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
+export class HearingPanelComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public panelJudgeForm: FormGroup;
   public validationErrors: { id: string, message: string }[] = [];
   public includedJudgeList: Person[] = [];
@@ -66,8 +66,13 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
       this.validationErrors.push({ id: 'specific-panel-selection', message: HearingPanelSelectionEnum.SelectionError });
     }
   }
+
   public isFormValid(): boolean {
     return this.panelJudgeForm.valid;
+  }
+
+  public ngAfterViewInit(): void {
+    this.fragmentFocus();
   }
 
   public ngOnDestroy(): void {

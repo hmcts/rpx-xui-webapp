@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {ErrorMessagesModel, GovUiConfigModel} from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
@@ -24,7 +24,7 @@ import {RequestHearingPageFlow} from '../request-hearing.page.flow';
   templateUrl: './hearing-timing.component.html',
   styleUrls: ['./hearing-timing.component.scss']
 })
-export class HearingTimingComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
+export class HearingTimingComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public priorityForm: FormGroup;
   public priorities: RefDataModel[];
   public checkedHearingAvailability: string;
@@ -42,11 +42,11 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
   public priorityFormInfo: { hours: string, minutes: string, startDate: Date, firstDate: Date, secondDate: Date, priority: string };
 
   constructor(private readonly formBuilder: FormBuilder,
-              private readonly route: ActivatedRoute,
+              protected readonly route: ActivatedRoute,
               private readonly validatorsUtils: ValidatorsUtils,
               protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService) {
-    super(hearingStore, hearingsService);
+    super(hearingStore, hearingsService, route);
   }
 
   public get firstHearingFormGroup(): FormGroup {
@@ -351,6 +351,10 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
 
   public isFormValid(): boolean {
     return this.validationErrors.length === 0;
+  }
+
+  public ngAfterViewInit(): void {
+    this.fragmentFocus();
   }
 
   public ngOnDestroy(): void {

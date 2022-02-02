@@ -163,9 +163,9 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       lineBreakBefore: true,
       findLocationField: 'services',
       displayMinSelectedError: true,
-      enableAddLocationButton: true,
       minSelectedError: 'Search for a location by name',
-      type: 'find-location'
+      type: 'find-location',
+      enableAddLocationButton: true
     };
     if (this.route.snapshot.data && this.route.snapshot.data.location) {
       const location: Location = this.route.snapshot.data.location;
@@ -256,9 +256,9 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     const selectedTypeOfWorksFields = f.fields.find(field => field.name === 'types-of-work');
     // check if selected fields are the same as cancelled filter settings
     const containsNonDefaultFields = selectedFields.value ? selectedFields.value
-      .map((location: any) => location.epims_id)
+      .map((location: any) => location.epimms_id)
       .filter((v: string) => defaultLocations
-        .map((location: any) => location.epims_id)
+        .map((location: any) => location.epimms_id)
         .indexOf(v) === -1).length > 0 : false;
     const containsNonDefaultTypeOfWorkFields = selectedTypeOfWorksFields ?
       selectedTypeOfWorksFields.value.filter((v: string) => defaultTypesOfWork.indexOf(v) === -1).length > 0

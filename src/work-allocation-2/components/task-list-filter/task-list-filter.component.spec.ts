@@ -62,7 +62,7 @@ describe('TaskListFilterComponent', () => {
   ];
   const LOCATION = {
     court_venue_id: '100',
-    epims_id: '219164',
+    epimms_id: '219164',
     is_hearing_location: 'Y',
     is_case_management_location: 'Y',
     site_name: 'Aberdeen Tribunal Hearing Centre',

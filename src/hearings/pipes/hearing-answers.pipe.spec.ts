@@ -1,24 +1,37 @@
 import {TestBed} from '@angular/core/testing';
+import {ActivatedRoute} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {provideMockStore} from '@ngrx/store/testing';
 import {cold} from 'jasmine-marbles';
-import {initialState} from '../hearing.test.data';
+import {caseFlagsRefData, initialState} from '../hearing.test.data';
 import {AnswerSource} from '../models/hearings.enum';
 import {HearingAnswersPipe} from './hearing-answers.pipe';
 
-describe('HearingAnswersPipe', () => {
+fdescribe('HearingAnswersPipe', () => {
 
   let hearingAnswersPipe: HearingAnswersPipe;
   let store: Store<any>;
+  let router: any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         provideMockStore({initialState}),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                caseFlags: caseFlagsRefData,
+              },
+            },
+          },
+        }
       ]
     });
     store = TestBed.get(Store);
-    hearingAnswersPipe = new HearingAnswersPipe(store);
+    router = TestBed.get(ActivatedRoute);
+    hearingAnswersPipe = new HearingAnswersPipe(store, router);
   });
 
   it('should transform case name', () => {

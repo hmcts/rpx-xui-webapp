@@ -10,11 +10,29 @@ import { HearingListMainModel } from './models/hearingListMain.model';
 import { hearingStatusMappings } from './models/hearingStatusMappings';
 import { RefDataByCategoryModel, RefDataByServiceModel } from './models/refData.model';
 import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
+import { HearingResponseMainModel } from './models/hearingResponseMain.model';
 
 mock.init();
 
 const hearingsUrl: string = getConfigValue(SERVICES_HEARINGS_COMPONENT_API);
 const prdUrl: string = getConfigValue(SERVICES_PRD_API_URL);
+
+/**
+ * getHearing from case ID
+ */
+export async function getHearing(req: EnhancedRequest, res: Response, next: NextFunction) {
+  // @ts-ignore
+  const hearingId: string = req.query.hearingId;
+  const markupPath: string = `${hearingsUrl}/hearing/${hearingId}`;
+
+  try {
+    const { status, data }: { status: number, data: HearingResponseMainModel[] } = await handleGet(markupPath, req);
+    const response = data.filter(dataRecord => dataRecord.caseDetails && dataRecord.caseDetails.hearingID.toLowerCase());
+    res.status(status).send(response);
+  } catch (error) {
+    next(error);
+  }
+}
 
 /**
  * getHearings from case ID

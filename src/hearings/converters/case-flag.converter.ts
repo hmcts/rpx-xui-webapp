@@ -28,7 +28,7 @@ export class CaseFlagConverter extends AbstractConverter implements OnDestroy {
     const caseFlagsGroup = CaseFlagsUtils.displayCaseFlagsGroup(partyFlags, this.caseFlagsRefData, CaseFlagType.REASONABLE_ADJUSTMENT);
     let result = '';
     caseFlagsGroup.forEach(flagsGroup => {
-      result += `<strong class="bold">${flagsGroup.name}</strong> \n<ul>`;
+      result += `<strong class="bold">${flagsGroup.name}</strong>\n<ul>`;
       flagsGroup.partyFlags.forEach(flag => result += `<li>${flag.displayName}</li>`);
       result += '</ul><br>';
     });

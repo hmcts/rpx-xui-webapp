@@ -484,10 +484,10 @@
     underscore "^1.9.1"
     yargs-parser "18.1.2"
 
-"@hmcts/ccpay-web-component@3.0.27":
-  version "3.0.27"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-3.0.27.tgz#c331f6d947773458f2ad93079b0bbe2ef5ce40e5"
-  integrity sha512-84b2CYuuJBo+MG6nMFGEjHIZz5tHIzpuN2rSZ+D1rsNvaKHUONyqxRB1HDNoSRRFcqqTIUjXVSWNOPQacHJTig==
+"@hmcts/ccpay-web-component@5.0.2":
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-5.0.2.tgz#bb23e6c895f9d05fc06286d5ae64e09addff31c8"
+  integrity sha512-iK0exJGDM+BQuWsByqTJHaXBynX6JR3DpzUWYsC6Rq0mBQnnEYYix5GfLQ2cjGdl5EB99sjSfE01AregwEMKAA==
   dependencies:
     tslib "^1.9.0"
 
@@ -537,10 +537,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.6.7-find-person-bug-fix-v4":
-  version "1.6.7-find-person-bug-fix-v4"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.7-find-person-bug-fix-v4.tgz#482a07ed39415464040baaf54912c465f76d6ade"
-  integrity sha512-13Xk6AJp73C9opE7stru0yv+XBqWHBUwyO3yVCQDdvBtr8Q3ScWyVmAiL6wX5XqXonCxtCyEXJmOJ+ii+OfPWw==
+"@hmcts/rpx-xui-common-lib@1.6.7-location-integration":
+  version "1.6.7-location-integration"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.7-location-integration.tgz#1a2db8c5391f42a7d01506a6c48cbde4dc1a2fa5"
+  integrity sha512-BfsM76c0sHhzcnlTrnv6Za16Scno4rJSxfK8rdgS3ZBuYoVj0JzOU4djfnEzRMa1Bamy0SjW+kwZu51YCSttxA==
   dependencies:
     tslib "^1.9.0"
 

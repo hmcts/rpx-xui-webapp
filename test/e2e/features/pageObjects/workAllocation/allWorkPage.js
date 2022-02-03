@@ -28,7 +28,9 @@ class AllWork extends TaskList {
 
         this.FILTER_ITEMS = {
             'Service': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Service")]/..//select'),
-            'Case Location': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Case Location")]/..//select'),
+            'Location':  $('.all-work-filter #selectLocation'),
+            'Location radios': new GovUKRadios('css', '.all-work-filter #selectLocation .govuk-radios'),
+            'Location search': $('.all-work-filter  #location xuilib-find-location .search-location exui-search-location input') ,
             'Person': new GovUKRadios('xpath','//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Person")]/..//div[contains(@class,"govuk-radios")]'),
             'Person role type': new Select('xpath','//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//select[contains(@id,"select_role")]'),
             'Person input': element(by.xpath('//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//xuilib-find-person//input')),
@@ -38,10 +40,12 @@ class AllWork extends TaskList {
             
         } 
 
-        this.selectOrRadioFilterItems = ['Service', 'Case Location', 'Person role type', 'Task type', 'Priority','Person','Role type'];
+        this.selectOrRadioFilterItems = ['Service', 'Case Location', 'Person role type', 'Task type', 'Priority', 'Person', 'Role type','Location radios'];
 
         this.filterApplyBtn = $('exui-all-work-home xuilib-generic-filter #applyFilter');
         this.filterResetBtn = $('exui-all-work-home xuilib-generic-filter #cancelFilter');
+
+        this.filterSearchResults = $$('.cdk-overlay-container mat-option');
     }
 
 
@@ -50,7 +54,7 @@ class AllWork extends TaskList {
         
         const filtersItems = Object.keys(this.FILTER_ITEMS);
         if (!filtersItems.includes(filterItem)){
-            throw new Error(`Filter item "${filterItem}" not recognised or not implemented in test`);
+            throw new Error(`Filter item "${filterItem}" not recognised or not implemented in test.${filtersItems}`);
         }
 
         if (this.selectOrRadioFilterItems.includes(filterItem)){
@@ -63,7 +67,7 @@ class AllWork extends TaskList {
     async isFilterItemEnbled(filterItem) {
         const filtersItems = Object.keys(this.FILTER_ITEMS);
         if (!filtersItems.includes(filterItem)) {
-            throw new Error(`Filter item "${filterItem}" not recognised or not implemented in test`);
+            throw new Error(`Filter item "${filterItem}" not recognised or not implemented in test.${filtersItems}`);
         }
         return await this.FILTER_ITEMS[filterItem].isDisplayed() 
         && await this.FILTER_ITEMS[filterItem].isEnabled();
@@ -73,7 +77,7 @@ class AllWork extends TaskList {
     async getFilterSelectOrRadioOptions(filterItem){
         const filtersItems = Object.keys(this.FILTER_ITEMS);
         if (!filtersItems.includes(filterItem)) {
-            throw new Error(`Filter item "${filterItem}" not recognised or not implemented in test`);
+            throw new Error(`Filter item "${filterItem}" not recognised or not implemented in test.${filtersItems}`);
         }
         if (this.selectOrRadioFilterItems.includes(filterItem)) {
             return await this.FILTER_ITEMS[filterItem].getOptions();
@@ -85,12 +89,12 @@ class AllWork extends TaskList {
     async setFilterSelectOrRadioOptions(filterItem,option) {
         const filtersItems = Object.keys(this.FILTER_ITEMS);
         if (!filtersItems.includes(filterItem)) {
-            throw new Error(`Filter item "${filterItem}" not recognised or not implemented in test`);
+            throw new Error(`Filter item "${filterItem}" not recognised or not implemented in test.${filtersItems}`);
         }
         if (this.selectOrRadioFilterItems.includes(filterItem)) {
             return await this.FILTER_ITEMS[filterItem].selectOption(option);
         } else {
-            throw new Error(`filter item ${filterItem} is not a select or a Radio item.`);
+            throw new Error(`filter item ${filterItem} is not a select or a Radio item..${filtersItems}`);
         }
     }
 
@@ -162,6 +166,41 @@ class AllWork extends TaskList {
             }
         }
         return false;
+    }
+
+    async getSearchResults(){
+        const count = await this.filterSearchResults.count();
+        const results = [];
+        for(let i = 0 ; i < count ; i ++){
+            const e = await this.filterSearchResults.get(i);
+            results.push(await e.getText()); 
+        }
+        return results;
+    }
+
+    async isSearchResultPresent(result){
+        const searchResults = await this.getSearchResults();
+        for (const searchResult of searchResults){
+            if (searchResult.includes(result)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    async selectSearchResult(result){
+        const count = await this.filterSearchResults.count();
+        const results = [];
+        for (let i = 0; i < count; i++) {
+            const e = await this.filterSearchResults.get(i);
+            const eText = await e.getText();
+            results.push(eText);
+            if (eText.includes(result)){
+                await e.click();
+                return;
+            }
+        }
+        throw new Error(`Search result ${result} not found in results ${results}`); 
     }
 
 

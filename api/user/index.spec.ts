@@ -9,7 +9,7 @@ import { CASE_ALLOCATOR_ROLE, LEGAL_OPS_TYPE } from './constants'
 import { getUserDetails, getUserRoleAssignments } from './index'
 
 chai.use(sinonChai)
-describe('getUserDetails', () => {
+xdescribe('getUserDetails', () => {
 
     let sandbox
     let next

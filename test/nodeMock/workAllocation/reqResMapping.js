@@ -261,7 +261,7 @@ module.exports = {
             if(Object.keys(req.body).includes('assignmentId')){
                 const reqAssignmentId = req.body.assignmentId;
             
-                const caseRole = workAllocationMockData.getCaseRole();
+                const caseRole = workAllocationMockData.caseRoles[0];
                 caseRole.id = reqAssignmentId;
                 caseRolesAssignment.push(caseRole);
             

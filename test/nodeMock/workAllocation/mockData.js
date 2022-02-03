@@ -82,7 +82,7 @@ class WorkAllocationMockData {
                 const personWithIdamd = JSON.parse(JSON.stringify(this.getPersonList(1)[0]));
                 personWithIdamd.idamId = idamId;
                 personWithIdamd.location = {
-                    id: locationsByService[0].epims_id,
+                    id: locationsByService[0].epimms_id,
                         locationName: locationsByService[0].court_name
                 }; 
                 byservice.caseworkers.push(personWithIdamd);
@@ -114,7 +114,7 @@ class WorkAllocationMockData {
 
 
                 personWithIdamd.location = {
-                    id: locationsByService[0].epims_id,
+                    id: locationsByService[0].epimms_id,
                     locationName: locationsByService[0].court_name
                 };
                 byservice.caseworkers.push(personWithIdamd);
@@ -131,11 +131,12 @@ class WorkAllocationMockData {
             for(let i = 0; i < 20; i++){
                 const location = {
                     "court_venue_id": "382",
-                    "epims_id": "" + this.locationIdCounter,
+                    "epimms_id": "" + this.locationIdCounter,
                     "is_hearing_location": "Y",
                     "is_case_management_location": "Y",
                     "site_name": service + ' Site ' + this.locationIdCounter,
                     "court_name": service + ' court ' + this.locationIdCounter,
+                    "venue_name": service + ' court ' + this.locationIdCounter,
                     "court_status": "Open",
                     "region_id": "2",
                     "region": "London",
@@ -159,14 +160,15 @@ class WorkAllocationMockData {
     getLocationsWithNames(locations) {
         const returnValue = [];
         
-        for (const locationName of locations) {
-            const location = {
+        for (const location of locations) {
+            const locationOBj = {
                 "court_venue_id": "382",
-                "epims_id": "" + this.locationIdCounter,
+                "epimms_id": "" + this.locationIdCounter,
                 "is_hearing_location": "Y",
                 "is_case_management_location": "Y",
-                "site_name": locationName,
-                "court_name": locationName,
+                "site_name": location.locationName,
+                "court_name": location.locationName,
+                "venue_name":  location.locationName,
                 "court_status": "Open",
                 "region_id": "2",
                 "region": "London",
@@ -178,7 +180,7 @@ class WorkAllocationMockData {
                 "postcode": "TW14 0LS"
             }
 
-            returnValue.push(location);
+            returnValue.push(locationOBj);
             this.locationIdCounter++;
         }
         return returnValue;
@@ -205,7 +207,7 @@ class WorkAllocationMockData {
 
             let loctionTracker = 0;
             for (const cw of cwByService.caseworkers){
-                cw.location = { id: locationsForThisService[loctionTracker].epims_id ,
+                cw.location = { id: locationsForThisService[loctionTracker].epimms_id ,
                     locationName: locationsForThisService[loctionTracker].court_name };
 
                 loctionTracker++;
@@ -235,8 +237,8 @@ class WorkAllocationMockData {
             location = service.locations[0];
             break;
         }
-        judge.appointments[0]['base_location_id'] = location.epims_id;
-        judge.appointments[0]['epimms_id'] = location.epims_id;
+        judge.appointments[0]['base_location_id'] = location.epimms_id;
+        judge.appointments[0]['epimms_id'] = location.epimms_id;
         judge.appointments[0]['court_name'] = location.court_name;
         
         this.judgeUsers.push(judge);
@@ -550,7 +552,7 @@ class WorkAllocationMockData {
         const caseRolesRes = [];
         for (const role of roles) {
             const caseRoleObj = WorkAllocationDataModels.getCaseRole(role.roleCategory);
-
+            caseRoleObj['roleId'] = role.roleName;
             for (let key of Object.keys(role)) {
                 caseRoleObj[key] = role[key];
             }
@@ -744,7 +746,7 @@ class WorkAllocationMockData {
 
         let locationMatchingId = null;
         for (const location of allLocations) {
-            if (location.epims_id === locationId) {
+            if (location.epimms_id === locationId) {
                 locationMatchingId = location;
                 break;
             }

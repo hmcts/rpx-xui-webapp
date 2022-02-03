@@ -296,13 +296,14 @@ describe('CaseTaskComponent', () => {
 
     it('should handle an action that redirects', () => {
       const state = {returnUrl: '/case-details/123243430403904/tasks', keepUrl: true, showAssigneeColumn: true};
+      const queryParams = { service: 'IA' }
 
       // need to check that navigate has been called
       component.onActionHandler(exampleTask, secondOption);
       expect(mockRouter.navigate).toHaveBeenCalled();
 
       // need to verify correct properties were called
-      expect(mockRouter.navigate).toHaveBeenCalledWith([`/work/${exampleTask.id}/${secondOption.id}`], {state});
+      expect(mockRouter.navigate).toHaveBeenCalledWith([`/work/${exampleTask.id}/${secondOption.id}`], {queryParams, state});
       expect(component.returnUrl).toBe('/case-details/123243430403904/tasks');
     });
   });

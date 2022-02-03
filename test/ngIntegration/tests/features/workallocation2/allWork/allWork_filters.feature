@@ -135,9 +135,6 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         Then I select location search result "IA Court Taylor House" in all work filter
         Then I see location "IA Court Taylor House" selected in all work filter
 
-
-
-
         When I select filter item "Person" select or radio option "<Task_Category>" in all work page
         When I select filter item "Person role type" select or radio option "<Person_Role_Type>" in all work page
 
@@ -161,6 +158,14 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | jurisdiction | <Jurisdiction> |
             | taskType     | <Task_type>    |
             | priority     | <Priority>     |
+
+        Given I reset reference "taskSearchRequest" value to null
+        When I select filter item "Person" select or radio option "All" in all work page
+        When I select filter item "Location radios" select or radio option "All" in all work page
+        When I click Apply filter button in all work page
+        When I wait for reference "taskSearchRequest" value not null
+        Then I validate task search request with reference "taskSearchRequest" does not have search patameter key "user"
+        Then I validate task search request with reference "taskSearchRequest" does not have search patameter key "location"
         Examples:
             | Jurisdiction | locationName | locationId | Task_Category   | Person_search | Person_name                             | person_id                            | Person_Role_Type | Task_type | Priority |
             | IA           | Test loc 3   | 12347      | Specific person | cas           | caseworker1 cw(caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops        | Legal Ops | High     |
@@ -260,6 +265,16 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
             | user         | <person_id>    |
             | jurisdiction | <Jurisdiction> |
             | taskType     | <Task_type>    |
+
+
+        Given I reset reference "taskSearchRequest" value to null
+        When I select filter item "Person" select or radio option "All" in all work page
+        When I select filter item "Location radios" select or radio option "All" in all work page
+        When I click Apply filter button in all work page
+        When I wait for reference "taskSearchRequest" value not null
+        Then I validate task search request with reference "taskSearchRequest" does not have search patameter key "user"
+        Then I validate task search request with reference "taskSearchRequest" does not have search patameter key "location"
+
         Examples:
             | Jurisdiction | locationName | locationId | Task_Category   | Person_search | Person_name                             | person_id                            | Person_Role_Type | Task_type |
             | IA           | Test loc 3   | 12347      | Specific person | cas           | caseworker1 cw(caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops        | Legal Ops |

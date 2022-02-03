@@ -223,8 +223,8 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
     if (req.body.hasNoAssigneeOnComplete === true) {
       req.body = {
         completion_options: {
-           assign_and_complete: true
-         }
+           assign_and_complete: true,
+         },
       }
     }
     const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action);

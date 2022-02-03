@@ -9,7 +9,7 @@ import {provideMockStore} from '@ngrx/store/testing';
 import * as moment from 'moment';
 import {of} from 'rxjs';
 import {ErrorMessage} from '../../../../app/models';
-import {initialState} from '../../../hearing.store.state.test';
+import {initialState} from '../../../hearing.test.data';
 import {ACTION, HearingDatePriorityEnum, RadioOptions} from '../../../models/hearings.enum';
 import {RefDataModel} from '../../../models/refData.model';
 import {UnavailabilityRangeModel} from '../../../models/unavailabilityRange.model';

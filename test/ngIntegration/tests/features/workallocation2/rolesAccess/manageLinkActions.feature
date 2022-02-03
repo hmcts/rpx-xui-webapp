@@ -1,4 +1,4 @@
-@ng
+@ng  
 Feature: WA Release 2:  Roles and access - case role  manage links and actions
 
     Background: User and mock data setup
@@ -78,7 +78,6 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
             | Remove      |
 
         When I click action row link "Remove" for role category "Judiciary" in Roles and access page
-
 
     Scenario: Judicial user Reallocate a Judiciary role
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
@@ -203,8 +202,6 @@ Feature: WA Release 2:  Roles and access - case role  manage links and actions
         When I click button with label "Confirm allocation" in work flow  Check your answers page
         Then I see case details page displayed with tab "Roles and access" selected
         Then I see case details page with message banner "You've reallocated a role"
-
-
 
 
     Scenario: Legal Ops user Reallocate a Legal Ops role

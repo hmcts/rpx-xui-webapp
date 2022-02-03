@@ -24,8 +24,8 @@ export class WorkAllocationTaskService {
    * Call the API to complete a task.
    * @param taskId specifies which task should be completed.
    */
-  public completeTask(taskId: string): Observable<Response> {
-    return this.performActionOnTask(taskId, ACTION.COMPLETE);
+  public completeTask(taskId: string, hasNoAssigneeOnComplete: boolean): Observable<Response> {
+    return this.performActionOnTask(taskId, ACTION.COMPLETE, hasNoAssigneeOnComplete);
   }
 
   public cancelTask(taskId: string): Observable<Response> {
@@ -68,9 +68,9 @@ export class WorkAllocationTaskService {
     return this.http.get<TaskRole[]>(url);
   }
 
-  public performActionOnTask(taskId: string, action: ACTION): Observable<Response> {
+  public performActionOnTask(taskId: string, action: ACTION, hasNoAssigneeOnComplete?: boolean): Observable<Response> {
     // Make a POST with an empty payload.
-    return this.http.post<any>(this.getActionUrl(taskId, action), {});
+    return this.http.post<any>(this.getActionUrl(taskId, action), {hasNoAssigneeOnComplete});
   }
 
   public getActionUrl(taskId: string, action: ACTION): string {

@@ -1,38 +1,37 @@
-@ng 
+@ng
 Feature: WA Release 2: My work - Work filters
 
     Background: Mock and browser setup
         Given I init MockApp
         Given I set MOCK locations with names in service "IA"
-            | locationName  |
-            | IA Court Aldgate Tower |
-            | IA Court Birmingham |
-            | IA Court Bradford |
-            | IA Court Glasgow |
-            | IA Court Hatton Cross |
-            | IA Court Newcastle |
-            | IA Court Newport |
-            | IA Court North Shields |
-            | IA Court Taylor House |
+            | id    | locationName           |
+            | 20001 | IA Court Aldgate Tower |
+            | 20002 | IA Court Birmingham    |
+            | 2003  | IA Court Bradford      |
+            | 20004 | IA Court Glasgow       |
+            | 20005 | IA Court Hatton Cross  |
+            | 20006 | IA Court Newcastle     |
+            | 20007 | IA Court Newport       |
+            | 20008 | IA Court North Shields |
+            | 20009 | IA Court Taylor House  |
 
         Given I set MOCK locations with names in service "SSCS"
-            | locationName           |
-            | SSCS Court Aldgate Tower |
-            | SSCS Court Birmingham |
-            | SSCS Court Bradford |
-            | SSCS Court Glasgow |
-            | SSCS Court Hatton Cross |
-            | SSCS Court Newcastle |
-            | SSCS Court Newport |
-            | SSCS Court North Shields |
-            | SSCS Court Taylor House |
+            | id    | locationName             |
+            | 20010 | SSCS Court Aldgate Tower |
+            | 20011 | SSCS Court Birmingham    |
+            | 20012 | SSCS Court Bradford      |
+            | 20013 | SSCS Court Glasgow       |
+            | 20014 | SSCS Court Hatton Cross  |
+            | 20015 | SSCS Court Newcastle     |
+            | 20016 | SSCS Court Newport       |
+            | 20017 | SSCS Court North Shields |
+            | 20018 | SSCS Court Taylor House  |
         Given I set MOCK location for person of type "caseworker" in release "wa_release_2"
             | id    | locationName  |
             | 12345 | Aldgate Tower |
 
         Given I set MOCK request "/workallocation2/task" intercept with reference "workallocationTaskRequest"
         Given I set MOCK request "/workallocation2/my-work/cases" intercept with reference "workallocationCasesRequest"
-
 
     Scenario Outline:  Work filters show hide button and Apply for "<UserType>"
         Given I set MOCK with "wa_release_2" release user and roles "<Roles>"
@@ -63,18 +62,17 @@ Feature: WA Release 2: My work - Work filters
         # When I click add location button in my work filter
 
 
-        
+
         When I click work location filter Apply button
 
         Then I validate my work filter services container not displayed
         When I click work filter button to "Show" filter
         Then I validate my work filter services container displayed
-        
+
         Examples:
             | UserType       | Roles                                                            |
             | Caseworker IAC | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |
     # | Judge          | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker    |
-
 
 
     Scenario Outline:  Work filters mandatory field validations
@@ -106,18 +104,18 @@ Feature: WA Release 2: My work - Work filters
         Then I see error message "Search for a location by name" for location work filter in my work page
         Then I see error message of type "message" displayed with message "Enter a location"
 
-        When I search for location text "IA court" in my work filters
+        When I search for location text "IA Court Taylor" in my work filters
         Then I see location search results in my work filter
-        |name|
-        |IA court 0|
-        When I select locations search result "IA court 0" in my work filter
+            | name                  |
+            | IA Court Taylor House |
+        When I select locations search result "IA Court Taylor House" in my work filter
         When I click add location button in my work filter
-        Then I see location "IA court 0" selected in my work filter
+        Then I see location "IA Court Taylor House" selected in my work filter
         When I click work location filter Apply button
         Then I validate my work filter services container not displayed
 
 
-        Examples:   
+        Examples:
             | UserType | Roles                                                         |
             # | Caseworker IAC | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |
             | Judge    | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker |

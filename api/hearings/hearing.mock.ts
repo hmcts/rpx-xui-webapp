@@ -5,11 +5,14 @@ import { CASE_FLAG_REFERENCE_VALUES } from './data/caseFlagReference.mock.data';
 import { EMPTY_HEARINGS_LIST, HEARINGS_LIST } from './data/hearings.mock.data';
 import { ALL_REF_DATA } from './data/reference.mock.data';
 import { SERVICE_HEARING_VALUES } from './data/serviceHearingValues.mock.data';
+import { HEARING_RESPONSE_RESULT } from './data/hearingResponse.mock.data';
 
 export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
 
   const getHearingsUrl = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearings\/[0-9]{16}/;
+
+  const getHearingInfoUrl = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearing\/[\w]*/;
 
   const getRefDataUrl = /http:\/\/rd-professional-api-aat.service.core-compute-aat.internal\/refdata\/lov\/[\w]*\/[\w]*/;
 
@@ -36,6 +39,13 @@ export const init = () => {
         EMPTY_HEARINGS_LIST,
       ];
     }
+  });
+
+  mock.onGet(getHearingInfoUrl).reply(config => {
+    return [
+      200,
+      HEARING_RESPONSE_RESULT,
+    ];
   });
 
   mock.onGet(getRefDataUrl).reply(() => {

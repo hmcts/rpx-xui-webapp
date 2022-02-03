@@ -38,7 +38,7 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const id = userInfo.id ? userInfo.id : userInfo.uid;
       const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
-      const searchParameters = [
+      const searchParameters: SearchTaskParameter [] = [
         { key: 'user', operator: 'IN', values: [id] },
         { key: 'state', operator: 'IN', values: ['assigned'] }
       ];

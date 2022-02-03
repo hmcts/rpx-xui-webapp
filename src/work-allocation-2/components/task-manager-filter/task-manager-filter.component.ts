@@ -66,7 +66,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       maxSelected: 1,
       minSelectedError: 'You must select a service',
       maxSelectedError: null,
-      changeResetFields: ['selectLocation', 'selectPerson', 'role', 'person'],
+      changeResetFields: ['selectLocation', 'selectPerson', 'role', 'person', 'findPersonControl'],
       title: 'Service',
       type: 'select'
     };
@@ -125,6 +125,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       maxSelected: 1,
       minSelectedError: 'You must select a person',
       maxSelectedError: null,
+      changeResetFields: ['person', 'findPersonControl'],
       lineBreakBefore: true,
       findPersonField: 'person',
       title: 'Person',
@@ -151,6 +152,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       ],
       minSelected: 1,
       maxSelected: 1,
+      changeResetFields: ['person', 'findPersonControl'],
       minSelectedError: 'You must select a role type',
       maxSelectedError: null,
       enableCondition: 'selectPerson=Specific person',

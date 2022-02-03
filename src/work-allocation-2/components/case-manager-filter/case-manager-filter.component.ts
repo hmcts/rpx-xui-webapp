@@ -66,7 +66,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       maxSelected: 1,
       minSelectedError: 'You must select a service',
       maxSelectedError: null,
-      changeResetFields: ['selectLocation', 'selectPerson', 'role', 'person', 'actorId'],
+      changeResetFields: ['selectLocation', 'selectPerson', 'role', 'person', 'actorId', 'findPersonControl'],
       title: 'Service',
       type: 'select'
     };
@@ -124,6 +124,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       minSelected: 1,
       maxSelected: 1,
       domain: PersonRole.ALL,
+      changeResetFields: ['findPersonControl', 'person'],
       findPersonField: 'person',
       lineBreakBefore: true,
       minSelectedError: 'You must select a role type',
@@ -150,6 +151,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       maxSelected: 1,
       lineBreakBefore: true,
       findPersonField: 'person',
+      changeResetFields: ['findPersonControl', 'person'],
       minSelectedError: 'You must select a person',
       maxSelectedError: null,
       title: 'Person',

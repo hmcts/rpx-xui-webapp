@@ -28,8 +28,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         if (searchInput === ''){
             return;
         }
+
+        await workFlowPage.findPersonPage.inputSearchTerm(searchInput);
         await BrowserWaits.retryWithActionCallback(async () => {
-            await workFlowPage.findPersonPage.inputSearchTerm(searchInput);
             const results = await workFlowPage.findPersonPage.getPersonsReturned();
             expect(results.length > 0, `No find person results returned for input "${searchInput}"`).to.be.true;
             await BrowserWaits.waitForSeconds(1);

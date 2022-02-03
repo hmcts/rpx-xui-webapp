@@ -42,7 +42,7 @@ export async function postFindPersonSearch(req: EnhancedRequest, res: Response, 
         const userId = req.body.userId;
         searchResult = searchResult.filter(person => person.idamId !== userId);
       }
-      searchResult = searchResult.map((s: any) => ({ ...searchResult, name: s.fullName, email: s.emailId, id: s.idamId }));
+      searchResult = searchResult.map((s: any) => ({ ...s, name: s.fullName, email: s.emailId, id: s.idamId }));
     } catch (e) {
       if (e.status === 404) {
         res.status(200);

@@ -103,7 +103,7 @@ Create the folder: `/Volumes/mnt/secrets/rpx`
 ie.
 We create the file postgresql-admin-pw (no extension).
 Within the file we have one line of characters which is the secret.
-3. If you want to test the secrets locally override the default mountPoint with the following additional option added to .addTo
+3. If you want to test the secrets locally override the default mountPoint with the following additional option added to .addTo 
 ie. 
 `propertiesVolume.addTo(secretsConfig, { mountPoint: '/Volumes/mnt/secrets/' });`
 

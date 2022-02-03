@@ -1,4 +1,7 @@
 'use strict';
+const minimist = require('minimist');
+const argv = minimist(process.argv.slice(2));
+
 const Cucumber = require('cucumber');
 const { defineSupportCode } = require('cucumber');
 const fs = require('fs');
@@ -14,6 +17,7 @@ const targetJson = `${jsonReports}/cucumber_report.json`;
 // var targetXML = xmlReports + "/cucumber_report.xml";
 const { Given, When, Then } = require('cucumber');
 
+const BrowserWaits = require('./customWaits');
 const CucumberReportLog = require("./reportLogger");
 const BrowserLogs = require('./browserLogs');
 const browserUtil = require("../../ngIntegration/util/browserUtil");
@@ -105,7 +109,7 @@ defineSupportCode(({ Before,After }) => {
 
     After(async function(scenario) {
         CucumberReportLog.AddMessage("scenario completed with status : " + scenario.result.status);
-
+        // await BrowserWaits.waitForSeconds(600);
         const world = this;
         try{
             await CucumberReportLog.AddScreenshot(global.screenShotUtils);

@@ -104,7 +104,6 @@ export class TaskActionContainerComponent implements OnInit {
     }
     // add hasNoAssigneeOnComplete - only false if complete action and assignee not present
     const hasNoAssigneeOnComplete = action === Actions.Complete.toString() ? !(this.tasks[0].assignee): false;
-    console.log('complete', hasNoAssigneeOnComplete);
     if (action) {
       this.taskService.performActionOnTask(this.tasks[0].id, action, hasNoAssigneeOnComplete).subscribe(() => {
         this.reportSuccessAndReturn();

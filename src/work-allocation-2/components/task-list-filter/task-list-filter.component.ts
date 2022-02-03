@@ -72,7 +72,6 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   }
 
   private static hasBeenFiltered(f: FilterSetting, cancelSetting: FilterSetting, assignedTasks: Task[], currentTasks: Task[], pathname): boolean {
-    console.log('hasBeenFiltered', pathname);
     if (pathname.includes('work/my-work/list')) {
       return assignedTasks.length !== currentTasks.length;
     }

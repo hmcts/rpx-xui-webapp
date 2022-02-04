@@ -21,7 +21,6 @@ Feature: Work allocation 2 feature route guards
             | /role-access/allocate-role/allocate?caseId=1620409659381330&roleCategory=JUDICIAL                                                                                                                                                                 |
             | /role-access/allocate-role/remove?caseId=1620409659381330&roleCategory=JUDICIAL&assignmentId=ed78f621-c444-426a-98e1-2b375b97f00c&actorId=44d5d2c2-7112-4bef-8d05-baaa610bf463&userName=ed78f621-c444-426a-98e1-2b375b97f00c&typeOfRole=judge     |
             | /role-access/allocate-role/reallocate?caseId=1620409659381330&roleCategory=JUDICIAL&assignmentId=850e92e1-7fe7-450c-ada3-a3bce6cb70a7&actorId=44d5d2c2-7112-4bef-8d05-baaa610bf463&userName=850e92e1-7fe7-450c-ada3-a3bce6cb70a7&typeOfRole=judge |
-            | /role-access/add-exclusion?caseId=1620409659381330&jurisdiction=IA                                                                                                                                                                                |
             | /role-access/delete-exclusion/1620409659381330                                                                                                                                                                                                    |
 
     # Scenario Outline: Release 2 routes for case allocator

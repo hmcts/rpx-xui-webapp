@@ -115,7 +115,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         roles = roles.split(",");
         if (userUtil.getUserRoleType(roles) === 'LEGAL_OPS') {
-            workallocationMockData.addCaseworkerWithIdamId(userIdamID, "IA");
+            // workallocationMockData.addCaseworkerWithIdamId(userIdamID, "IA");
         }
         const userDetails = nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, userIdamID);
         CucumberReporter.AddJson(userDetails);
@@ -275,6 +275,5 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         }
     
     });
-  
-
 });
+

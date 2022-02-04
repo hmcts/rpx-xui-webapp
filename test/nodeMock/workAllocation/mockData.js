@@ -405,7 +405,7 @@ class WorkAllocationMockData {
             persons.push({
                 "firstName": "Jane " + ctr,
                 "lastName": "Doe" + (forService ? forService : ''),
-                "idamId": "41a90c39-d756-4eba-8e85-5b5bf56b31f" + ctr,
+                "idamId": "00000-d756-4eba-8e85-5b5bf56b31f" + ctr,
                 "email": "testemail" + ctr + "@testdomain.com",
                 "roleCategory": roleCategory ? roleCategory : "LEGAL_OPERATIONS",
                 "location": {
@@ -581,7 +581,7 @@ class WorkAllocationMockData {
         const tasks = [];
         for (let task of tasksObjects) {
             const taskTemplate = this.getRelease2TaskDetails();
-
+            let taskPermissions = [];
             const taskAttributes = Object.keys(task);
             for (const taskAttribute of taskAttributes) {
                 if (taskAttribute.toLowerCase().includes('date')) {
@@ -592,8 +592,11 @@ class WorkAllocationMockData {
                     if (task[taskAttribute] === '') {
                         taskTemplate[taskAttribute].values = [];
                     } else {
-                        taskTemplate[taskAttribute].values = task[taskAttribute].split(',');
+                        taskPermissions = task[taskAttribute].split(','); 
+                        taskTemplate[taskAttribute].values = taskPermissions;
+
                     }
+
                 } else if (taskAttribute.toLowerCase().includes('warnings')) {
                     const val = task[taskAttribute].toLowerCase();
                     taskTemplate[taskAttribute] = val.includes('true') || val.includes('yes');
@@ -608,6 +611,8 @@ class WorkAllocationMockData {
                     }  else {
                         taskTemplate[taskAttribute] = task[taskAttribute];
                     }
+                    taskTemplate.task_state= taskTemplate[taskAttribute] ? 'assigned':'unassigned'
+
                 } else if (taskAttribute.toLowerCase().includes('description')) {
                     const val = task[taskAttribute];
                     if (val !== '' || val !== undefined) {
@@ -625,7 +630,9 @@ class WorkAllocationMockData {
                     taskTemplate[taskAttribute] = task[taskAttribute];
                 }
             }
+            taskTemplate.actions = WorkAllocationDataModels.getRelease2TaskActions(taskPermissions, 'AllWork', taskTemplate.task_state); 
 
+            taskTemplate.jurisdiction = "IA";
             tasks.push(taskTemplate);
 
         }

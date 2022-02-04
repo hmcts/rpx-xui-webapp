@@ -8,10 +8,10 @@
       <div class="govuk-error-summary__body">
         <ul class="govuk-list govuk-error-summary__list">
           <li *ngIf="hasDisagreeError$ | async">
-            <a href="noc#affirmation">Tick the box to confirm all the information is accurate and matches what is written on the case</a>
+            <a href="noc#affirmation">Tick the box to confirm all these details are accurate and match what is written on the case</a>
           </li>
           <li *ngIf="hasNotifyEveryPartyError$ | async">
-            <a href="noc#notifyEveryParty">Tick the box to confirm you’ve served notice of this change on every party to the claim and on the former legal representative</a>
+            <a href="noc#notifyEveryParty">Tick the box to confirm you have served notice of this change on every party to the case, including the former legal representative (if there was one)</a>
           </li>
         </ul>
       </div>

@@ -24,10 +24,10 @@ import {
   handlePostRoleAssignments,
   handlePostSearch
 } from './caseWorkerService';
+import { ViewType } from './constants/actions';
 import { PaginationParameter } from './interfaces/caseSearchParameter';
 import { CaseworkerPayload, ServiceCaseworkerData } from './interfaces/caseworkerPayload';
 import { Caseworker, CaseworkersByService } from './interfaces/common';
-import { TaskList } from './interfaces/task';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { checkIfCaseAllocator } from './roleService';
 import * as roleServiceMock from './roleService.mock';
@@ -195,7 +195,9 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
   };
   try {
     const { status, data } = await handleTaskSearch(`${basePath}`, searchRequest, req);
-    return res.send(data.tasks as TaskList).status(status);
+    const currentUser = req.body.currentUser ? req.body.currentUser : '';
+    const actionedTasks = assignActionsToTasks(data.tasks, ViewType.MY_TASKS, currentUser);
+    return res.send(actionedTasks).status(status);
   } catch (e) {
     next(e);
   }

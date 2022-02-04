@@ -2,7 +2,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
+import { ActionViews } from 'api/workAllocation/constants/actions';
 import { Subscription } from 'rxjs';
+import { Action } from 'rxjs/internal/scheduler/Action';
 import { $enum as EnumUtil } from 'ts-enum-util';
 
 import { PERSON_ERROR_MESSAGE } from '../../../constants';
@@ -54,7 +56,8 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
     this.title = getTitleText(allocateRoleStateData.typeOfRole, action, allocateRoleStateData.roleCategory);
     this.personName = allocateRoleStateData && allocateRoleStateData.person ? this.getDisplayName(allocateRoleStateData.person) : null;
     this.person = allocateRoleStateData.person;
-    this.userIncluded = allocateRoleStateData.person ? false : true;
+    // hide user when allocate as user can select allocate to me
+    this.userIncluded = action === 'Allocate' ? false : true;
     this.assignedUser = allocateRoleStateData.personToBeRemoved ? allocateRoleStateData.personToBeRemoved.id : null;
     this.roleType = allocateRoleStateData.typeOfRole;
     this.services = [allocateRoleStateData.jurisdiction];

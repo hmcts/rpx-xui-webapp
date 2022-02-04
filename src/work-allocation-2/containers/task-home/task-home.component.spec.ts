@@ -30,7 +30,8 @@ describe('TaskHomeComponent', () => {
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
   let router: Router;
-  const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
+  const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask', 'getUsersAssignedTasks']);
+  mockTaskService.getUsersAssignedTasks.and.returnValue(of([]));
   const typesOfWork = [
     {
       key: 'hearing_work',

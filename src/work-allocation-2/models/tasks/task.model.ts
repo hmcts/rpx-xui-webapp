@@ -17,3 +17,8 @@ export default interface Task {
   derivedIcon?: string;
   jurisdiction?: string;
 }
+
+export interface TaskResponse {
+  tasks: Task[];
+  total_records: number;
+}

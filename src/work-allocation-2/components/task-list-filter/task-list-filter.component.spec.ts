@@ -1,7 +1,9 @@
 import { CdkTableModule } from '@angular/cdk/table';
+import { Location as AngularLocation } from '@angular/common';
+
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, DebugElement, ViewChild } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -76,9 +78,12 @@ describe('TaskListFilterComponent', () => {
     court_address: 'AB1, 48 HUNTLY STREET, ABERDEEN test1',
     postcode: 'AB11 6LT'
   };
-  const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
+  const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask', 'getUsersAssignedTasks', 'currentTasks$']);
+  const locationService = jasmine.createSpyObj('locationService', ['path']);
   const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
   mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
+  mockTaskService.getUsersAssignedTasks.and.returnValue(of([]));
+  mockTaskService.currentTasks$.and.returnValue(of([null]));
   const filterSettings = {
     id: 'locations',
     fields: [
@@ -128,6 +133,7 @@ describe('TaskListFilterComponent', () => {
             }
           }
         },
+        { provide: AngularLocation, useValue: locationService },
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
         { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },
         { provide: TaskTypesService, useValue: { getTypesOfWork: () => of(typesOfWork) } },
@@ -160,30 +166,12 @@ describe('TaskListFilterComponent', () => {
     expect(button.nativeElement.innerText).toContain('Hide work filter');
   });
 
-  it('should select two locations', fakeAsync(() => {
-    const button: DebugElement = fixture.debugElement.query(By.css('.govuk-button.hmcts-button--secondary'));
-    button.nativeElement.click();
-
-    fixture.detectChanges();
-    const checkBoxes: DebugElement = fixture.debugElement.query(By.css('.govuk-checkboxes'));
-    const firstLocation = checkBoxes.nativeElement.children[0];
-    const secondLocation = checkBoxes.nativeElement.children[1];
-
-    firstLocation.click();
-    secondLocation.click();
-
-    fixture.detectChanges();
-    const applyButton: DebugElement = fixture.debugElement.query(By.css('#applyFilter'));
-    applyButton.nativeElement.click();
-    expect(component.selectedLocations.length).toEqual(1);
-
-  }));
-
   it('should set the persistence to be local storage if the  user is a judicial user', () => {
     expect(component.fieldsConfig.persistence).toBe('local');
   });
 
   it('should show types of work filter with all types of work filters selected', () => {
+
     expect(component.fieldsSettings.fields.length).toBe(3);
     const typesOfWorkSelectedFields = component.fieldsSettings.fields[2];
     expect(typesOfWorkSelectedFields.value.length).toBe(typesOfWork.length + 1);

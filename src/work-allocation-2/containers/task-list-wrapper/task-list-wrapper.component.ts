@@ -16,6 +16,7 @@ import { Caseworker, Location } from '../../interfaces/common';
 import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter, SearchTaskRequest, SortParameter } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskServiceConfig } from '../../models/tasks';
+import { TaskResponse } from '../../models/tasks/task.model';
 import {
   CaseworkerDataService,
   LocationDataService,
@@ -231,7 +232,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     this.doLoad();
   }
 
-  public performSearchPagination(): Observable<any> {
+  public performSearchPagination(): Observable<TaskResponse> {
     const searchRequest = this.getSearchTaskRequestPagination();
     return this.taskService.searchTask({ searchRequest, view: this.view });
   }
@@ -326,7 +327,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   private doLoad(): void {
     this.showSpinner$ = this.loadingService.isLoading;
     const loadingToken = this.loadingService.register();
-    this.performSearchPagination().subscribe(result => {
+    this.performSearchPagination().subscribe((result: TaskResponse) => {
       this.loadingService.unregister(loadingToken);
       this.tasks = result.tasks;
       this.tasksTotal = result.total_records;

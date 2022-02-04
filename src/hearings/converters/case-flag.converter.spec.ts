@@ -7,7 +7,7 @@ import {Subscription} from 'rxjs';
 import {caseFlagsRefData, initialState} from '../hearing.test.data';
 import {CaseFlagConverter} from './case-flag.converter';
 
-fdescribe('CaseFlagConverter', () => {
+describe('CaseFlagConverter', () => {
 
   let caseFlagConverter: CaseFlagConverter;
   let store: Store<any>;

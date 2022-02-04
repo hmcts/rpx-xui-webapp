@@ -78,7 +78,7 @@ describe('CaseTaskComponent', () => {
       location: null,
       taskName: null,
       dueDate: new Date(),
-      actions: [],
+      actions: [{ id: 'reassign', title: 'Reassign task'}, { id: 'unclaim', title: 'Unassign task'}],
       warnings: false,
       derivedIcon: null
     };

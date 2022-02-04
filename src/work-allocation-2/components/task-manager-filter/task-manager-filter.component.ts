@@ -181,7 +181,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
           label: 'Legal Ops'
         },
         {
-          key: 'ADMINISTRATOR',
+          key: 'ADMIN',
           label: 'Admin'
         }
       ],

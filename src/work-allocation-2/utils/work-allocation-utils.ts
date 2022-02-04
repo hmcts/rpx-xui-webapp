@@ -128,7 +128,7 @@ export function getRoleCategory(role: string): RoleCategory {
   } else if (role === PersonRole.CASEWORKER) {
     return RoleCategory.LEGAL_OPERATIONS;
   } else if (role === PersonRole.ADMIN) {
-    return RoleCategory.ADMINISTRATOR;
+    return RoleCategory.ADMIN;
   }
   return null;
 }

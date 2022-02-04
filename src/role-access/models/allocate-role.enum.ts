@@ -25,6 +25,7 @@ export enum DurationOfRole {
 
 export enum Actions {
   Allocate = 'allocate',
+  Complete = 'complete',
   Reallocate = 'reallocate',
   Remove = 'remove'
 }

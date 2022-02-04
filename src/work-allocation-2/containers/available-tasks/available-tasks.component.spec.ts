@@ -1,6 +1,6 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, ViewChild } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
@@ -15,7 +15,7 @@ import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
 import { InformationMessage } from '../../models/comms';
 import * as dtos from '../../models/dtos';
 import { InvokedTaskAction, Task } from '../../models/tasks';
-import { CaseworkerDataService, LocationDataService, WorkAllocationTaskService } from '../../services';
+import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { getMockLocations, getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
@@ -51,10 +51,11 @@ describe('AvailableTasksComponent', () => {
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockFilterService = jasmine.createSpyObj('mockFilterService', ['getStream']);
-  const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getAll']);
+  const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getCaseworkersForServices']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
+  const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -76,7 +77,8 @@ describe('AvailableTasksComponent', () => {
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: AlertService, useValue: mockAlertService },
         { provide: LoadingService, useValue: mockLoadingService },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+        { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
@@ -89,14 +91,20 @@ describe('AvailableTasksComponent', () => {
         {
           name: 'locations',
           value: ['231596']
+        },
+        {
+          name: 'types-of-work',
+          value: ['hearing_work', 'upper_tribunal', 'decision_making_work']
         }
       ]
     };
-    mockCaseworkerDataService.getAll.and.returnValue(of([]));
+    mockCaseworkerDataService.getCaseworkersForServices.and.returnValue(of([]));
     mockFilterService.getStream.and.returnValue(of(filterFields));
+    mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['Service1', 'Service2']));
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({ tasks }));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
+    mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of([]));
     router = TestBed.get(Router);
     fixture.detectChanges();
   });
@@ -117,9 +125,19 @@ describe('AvailableTasksComponent', () => {
     mockSessionStorageService.getItem.and.returnValue(userInfo);
     const exampleLocations = ['location1', 'location2', 'location3'];
     component.selectedLocations = exampleLocations;
-    const searchParameter = component.getSearchTaskRequestPagination().search_parameters[1];
-    expect(searchParameter.key).toBe('location');
-    expect(searchParameter.values).toBe(exampleLocations);
+    const searchParameter = component.getSearchTaskRequestPagination().search_parameters[0];
+    expect(searchParameter.key).toBe('available_tasks_only');
+    expect(searchParameter.operator).toBe('BOOLEAN');
+    expect(searchParameter.value).toBe(true);
+  });
+
+  it('should allow searching via work types', () => {
+    mockSessionStorageService.getItem.and.returnValue(userInfo);
+    const workTypes: string[] = ['hearing_work', 'upper_tribunal', 'decision_making_work'];
+    component.selectedWorkTypes = workTypes;
+    const searchParameter = component.getSearchTaskRequestPagination().search_parameters[3];
+    expect(searchParameter.key).toBe('work_type');
+    expect(searchParameter.values).toBe(workTypes);
   });
 
   it('should have all column headers, including "Manage +"', () => {
@@ -141,8 +159,8 @@ describe('AvailableTasksComponent', () => {
   });
 
   it('should not show the footer when there are tasks', fakeAsync(() => {
-    tick(500);
     component.ngOnInit();
+    tick(500);
     fixture.detectChanges();
     const element = fixture.debugElement.nativeElement;
     const footerRow = element.querySelector('.footer-row');

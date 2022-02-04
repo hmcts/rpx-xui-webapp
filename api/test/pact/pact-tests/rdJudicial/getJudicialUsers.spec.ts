@@ -20,6 +20,7 @@ const locationId = "123456";
 
 const REQUEST_BODY = {
     sidam_ids: ['004b7164-0943-41b5-95fc-39794af4a9fe', '004b7164-0943-41b5-95fc-39794af4a9ff'],
+    serviceCode: 'BFA1'
 };
 
 const user1 = getDumyJudgeUserDetails();
@@ -90,7 +91,7 @@ describe("Judicial ref data api, get all judge users", () => {
            
             const configValues = getJudicialRefDataAPIOverrides(pactSetUp.provider.mockService.baseUrl)
             configValues['services.role_assignment.roleApi'] = 'http://localhost:8080';
-
+            configValues['serviceRefDataMapping'] = [{ "IA": "BFA1" }];
 
             sandbox.stub(config, 'get').callsFake((prop) => {
                 return configValues[prop];
@@ -106,6 +107,7 @@ describe("Judicial ref data api, get all judge users", () => {
                 },
                 body: {
                     userIds: ['004b7164-0943-41b5-95fc-39794af4a9fe', '004b7164-0943-41b5-95fc-39794af4a9ff'],
+                    services:['IA']
                 } 
 
             });

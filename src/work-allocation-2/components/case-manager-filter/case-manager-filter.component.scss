@@ -29,3 +29,7 @@
 .cases-container .govuk-section-break--visible:not(.elevated-break) {
   display: none !important;
 }
+
+.cases-container .auto-complete-container {
+  min-width: 100% !important;
+}

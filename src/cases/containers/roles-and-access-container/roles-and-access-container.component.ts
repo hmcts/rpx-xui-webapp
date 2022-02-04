@@ -36,37 +36,32 @@ export class RolesAndAccessContainerComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    // We need this call. No active subscribers are needed
-    // as this will enable the loading caseworkers if not
-    // present in session storage
-    this.caseworkers$ = this.caseworkerDataService.getAll().pipe(first());
 
     this.caseDetails = this.route.snapshot.data.case as CaseView;
     this.applyJurisdiction(this.caseDetails);
     const jurisdiction = this.caseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
-    this.loadRoles(jurisdiction);
-    this.loadExclusions(jurisdiction);
-
     // We need this call. No active subscribers are needed
     // as this will enable the loading caseworkers if not
     // present in session storage
-    this.caseworkerDataService.getAll().pipe(first()).subscribe();
+    this.caseworkers$ = this.caseworkerDataService.getCaseworkersForServices([jurisdiction.value]).pipe(first());
+    this.loadRoles(jurisdiction);
+    this.loadExclusions(jurisdiction);
   }
 
-  public loadExclusions(jurisdiction: any) {
+  public loadExclusions(jurisdiction: any): void {
     this.exclusions$ = this.roleExclusionsService.getCurrentUserRoleExclusions(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id).pipe(
-      mergeMap((exclusions: RoleExclusion[]) => this.allocateService.getCaseRolesUserDetails(getJudicialUserIdsFromExclusions(exclusions)).pipe(
+      mergeMap((exclusions: RoleExclusion[]) => this.allocateService.getCaseRolesUserDetails(getJudicialUserIdsFromExclusions(exclusions), [jurisdiction]).pipe(
         map((caseRolesWithUserDetails: CaseRoleDetails[]) => mapCaseRolesForExclusions(exclusions, caseRolesWithUserDetails))
       ))
     );
   }
 
-  public loadRoles(jurisdiction: any) {
+  public loadRoles(jurisdiction: any): void {
     this.roles$ = this.allocateService.getCaseRoles(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id).pipe(
-      mergeMap((caseRoles: CaseRole[]) => this.allocateService.getCaseRolesUserDetails(getJudicialUserIds(caseRoles)).pipe(
+      mergeMap((caseRoles: CaseRole[]) => this.allocateService.getCaseRolesUserDetails(getJudicialUserIds(caseRoles), [jurisdiction.value]).pipe(
         map((caseRolesWithUserDetails: CaseRoleDetails[]) => mapCaseRoles(caseRoles, caseRolesWithUserDetails))
       )),
-      tap(roles => this.sessionStorageService.setItem('caseRoles', roles.map(role => role.roleName).toString()))
+      tap(roles => this.sessionStorageService.setItem('caseRoles', roles.map(role => role.roleId).toString()))
     );
   }
 

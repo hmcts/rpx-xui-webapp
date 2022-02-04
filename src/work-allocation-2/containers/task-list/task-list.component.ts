@@ -1,13 +1,13 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { PaginationParameter } from '../../models/dtos';
 
+import { isDefined } from '@angular/compiler/src/util';
 import { ListConstants } from '../../components/constants';
 import { SortOrder } from '../../enums';
 import { FieldConfig, SortField } from '../../models/common';
 import { InvokedTaskAction, Task, TaskAction, TaskServiceConfig } from '../../models/tasks';
-import { isDefined } from '@angular/compiler/src/util';
 
 @Component({
   selector: 'exui-task-list',
@@ -57,10 +57,7 @@ export class TaskListComponent implements OnChanges {
       return false;
     }
     const {defaultSortFieldName, defaultSortDirection} = this.taskServiceConfig;
-    if (this.sortedBy.fieldName === defaultSortFieldName && this.sortedBy.order === defaultSortDirection) {
-      return false;
-    }
-    return true;
+    return !(this.sortedBy.fieldName === defaultSortFieldName && this.sortedBy.order === defaultSortDirection);
   }
 
   public selectTaskFromUrlHash(url: string): Task | null {

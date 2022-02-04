@@ -30,18 +30,17 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
   public title: string;
   public boldTitle: string = 'Find the person';
   public formGroup: FormGroup = new FormGroup({});
-  public findPersonControl: FormControl;
   public personName: string;
   public person: Person;
   public userId: string;
   public appStoreSub: Subscription;
   public subscription: Subscription;
   public roleType: SpecificRole;
+  public services: string[];
 
   constructor(private readonly store: Store<fromFeature.State>) {}
 
   public ngOnInit(): void {
-    this.findPersonControl = this.formGroup.value.findPersonControl;
     this.subscription = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(allocateRoleStateData => this.setData(allocateRoleStateData));
   }
 
@@ -54,6 +53,7 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
     this.personName = allocateRoleStateData && allocateRoleStateData.person ? this.getDisplayName(allocateRoleStateData.person) : null;
     this.person = allocateRoleStateData.person;
     this.roleType = allocateRoleStateData.typeOfRole;
+    this.services = [allocateRoleStateData.jurisdiction];
   }
 
   public navigationHandler(navEvent: AllocateRoleNavigationEvent): void {

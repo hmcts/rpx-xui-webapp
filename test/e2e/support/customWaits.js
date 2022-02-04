@@ -102,6 +102,16 @@ class BrowserWaits{
         return await browser.getCurrentUrl();
     }
 
+
+    async waitForPageNavigationOnAction(callback) {
+        const beforeActionUrl = await browser.getCurrentUrl();
+        await callback();
+        await this.waitForPageNavigation(beforeActionUrl); 
+
+         return await browser.getCurrentUrl();
+    }
+
+
     async waitForBrowserReadyState(waitInSec) {
         let resolvedWaitTime = waitInSec ? waitInSec * 1000 : this.waitTime;
 

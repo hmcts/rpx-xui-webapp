@@ -108,7 +108,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 if (attributeIsDisplayed.includes('true') || attributeIsDisplayed.includes('yes')) {
                     softAssert.setScenario(`Task attribute displayed and match content`);
 
-                    await softAssert.assert(async () => expect(Object.keys(taskAttributes)).to.includes(attribName));
+                    await softAssert.assert(async () => expect(Object.keys(taskAttributes), `Task details missing : ${attribName}`).to.includes(attribName));
                     await softAssert.assert(async () => expect(await taskAttributes[attribName].getText()).to.includes(contentText));
 
                     if (validateContentType.toLowerCase().includes('link')) {
@@ -122,6 +122,15 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                             linktext = await linkElement.getText();
                             isLinkWithTextPresent = linktext.includes(contentText);
                             if (isLinkWithTextPresent) {
+                                if (validateContentType.toLowerCase().includes('urlcontains')) {
+                                    const linkHref = await linkElement.getAttribute('href');
+                                    const expectedHref = attributeHash.href;
+                                    reportLogger.AddMessage(`linl href expected "${expectedHref}", actual "${linkHref}"`);
+
+                                    softAssert.assert(async () => {
+                                        expect(linkHref.includes(expectedHref), `link href ${linkHref} not not contains "${expectedHref}"`).to.be.true;
+                                    });
+                                }
                                 break;
                             }
                         }

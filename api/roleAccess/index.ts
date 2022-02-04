@@ -6,6 +6,7 @@ import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
+import { getServiceRefDataMappingList } from '../serviceRefData';
 import { refreshRoleAssignmentForUser } from '../user';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { CaseRole } from '../workAllocation2/interfaces/caseRole';
@@ -30,9 +31,17 @@ export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next
       req
     );
     const substantiveRoles = await getSubstantiveRoles(req);
-    const substantiveJudicialLegalOps =
-     judicialAndLegalOps.filter(judicialAndLegalOp => substantiveRoles.find(role => role.roleId === judicialAndLegalOp.roleName));
-    return res.status(response.status).send(substantiveJudicialLegalOps);
+    const finalRoles = [];
+    judicialAndLegalOps.forEach(unknownRole => {
+      const substantiveRole = substantiveRoles.find(role => role.roleId === unknownRole.roleName);
+      if (substantiveRole) {
+        const currentRoleId = unknownRole.roleName;
+        unknownRole.roleName = substantiveRole.roleName;
+        unknownRole.roleId = currentRoleId;
+        finalRoles.push(unknownRole);
+      }
+    });
+    return res.status(response.status).send(finalRoles);
   } catch (error) {
     next(error);
   }
@@ -40,9 +49,22 @@ export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next
 
 export async function getJudicialUsers(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const userIds = req.body.userIds;
+  const services = req.body.services ? req.body.services : userIds;
+  const serviceCodes: string[] = [];
+  const serviceRefDataMapping = getServiceRefDataMappingList();
+  // add the service refernces in order to search by service
+  serviceRefDataMapping.forEach(serviceRef => {
+    if (services.includes(Object.keys(serviceRef)[0])) {
+      serviceCodes.push(Object.values(serviceRef)[0] as string);
+    }
+  })
   try {
-    const response = await getJudicialUsersFromApi(req, userIds);
-    return res.status(200).send(response.data);
+    let searchResult: any[] = [];
+    for (const serviceCode of serviceCodes) {
+      const response = await getJudicialUsersFromApi(req, userIds, serviceCode);
+      searchResult = response.data ? [...response.data, ...searchResult] : searchResult;
+    }
+    return res.status(200).send(searchResult);
   } catch (error) {
     next(error);
   }
@@ -65,6 +87,7 @@ export function mapResponseToCaseRoles(
     email: roleAssignment.actorId ? getEmail(roleAssignment.actorId, req) : null,
     end: roleAssignment.endTime ? roleAssignment.endTime.toString() : null,
     id: roleAssignment.id,
+    roleId: null,
     location: null,
     name: roleAssignment.actorId ? getUserName(roleAssignment.actorId, req) : null,
     roleCategory: mapRoleCategory(roleAssignment.roleCategory),

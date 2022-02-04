@@ -1,12 +1,13 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { HttpClient } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { AlertService, CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { of } from 'rxjs';
 
 import { TaskAlertBannerComponent } from '../../../cases/components';
-import { WorkAllocationCaseService } from '../../../work-allocation-2/services';
+import { CaseworkerDataService, WorkAllocationCaseService, WorkAllocationTaskService } from '../../../work-allocation-2/services';
 import { getMockTasks } from '../../../work-allocation-2/tests/utils.spec';
 import { TasksContainerComponent } from './tasks-container.component';
 
@@ -112,6 +113,7 @@ const CASE_VIEW: CaseView = {
 describe('TasksContainerComponent', () => {
   const mockAlertService = jasmine.createSpyObj('alertService', ['success', 'setPreserveAlerts', 'error']);
   const mockWACaseService = jasmine.createSpyObj('waCaseService', ['getTasksByCaseId']);
+  const mockCaseworkerService = jasmine.createSpyObj('caseworkerService', ['getCaseworkersForServices']);
   let component: TasksContainerComponent;
   let fixture: ComponentFixture<TasksContainerComponent>;
 
@@ -124,6 +126,7 @@ describe('TasksContainerComponent', () => {
       providers: [
         {provide: AlertService, useValue: mockAlertService},
         {provide: WorkAllocationCaseService, useValue: mockWACaseService},
+        {provide: CaseworkerDataService, useValue: mockCaseworkerService},
         {
           provide: ActivatedRoute,
           useValue: {
@@ -134,7 +137,8 @@ describe('TasksContainerComponent', () => {
                   caseworkers: null
                 },
                 case: CASE_VIEW
-              }
+              },
+              paramMap: convertToParamMap({cId: '1234567890123456'}),
             }
           }
         },
@@ -147,6 +151,8 @@ describe('TasksContainerComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TasksContainerComponent);
     component = fixture.componentInstance;
+    mockWACaseService.getTasksByCaseId.and.returnValue(of(getMockTasks()));
+    mockCaseworkerService.getCaseworkersForServices.and.returnValue([]);
     fixture.detectChanges();
   });
 
@@ -160,5 +166,9 @@ describe('TasksContainerComponent', () => {
     mockWACaseService.getTasksByCaseId.and.returnValue(of([firstTask]))
     component.onTaskRefreshRequired();
     expect(component.tasks.length).toEqual(1);
+  });
+
+  afterAll(() => {
+    TestBed.resetTestingModule();
   });
 });

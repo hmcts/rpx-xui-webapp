@@ -1,7 +1,11 @@
 import { NavigationExtras } from '@angular/router';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
 import { PersonRole } from '@hmcts/rpx-xui-common-lib';
+import { UserInfo } from '../../app/models';
 import { RoleCategory } from '../../role-access/models';
 import { OptionsModel } from '../../role-access/models/options-model';
+import { ISessionStorageService } from '../interfaces/common';
+import { Caseworker, CaseworkersByService } from '../models/dtos';
 import { Permissions, TaskRole } from '../models/tasks/TaskRole';
 
 interface Navigator {
@@ -86,29 +90,81 @@ export const handleTasksFatalErrors = (status: number, navigator: Navigator, fat
   }
 };
 
+export const getAllCaseworkersFromServices = (caseworkersByService: CaseworkersByService[]): Caseworker[] => {
+  let allCaseworkers: Caseworker[] = [];
+  caseworkersByService.forEach(caseworkerListByService => {
+    allCaseworkers = allCaseworkers.concat(caseworkerListByService.caseworkers)
+  });
+  return allCaseworkers;
+}
+
+export const getSessionStorageKeyForServiceId = (serviceId: string): string => {
+  return `${serviceId}-caseworkers`;
+}
+
+export const getCaseworkers = (serviceId: string, sessionStorageService: ISessionStorageService): Caseworker[] => {
+  const sessionKey = getSessionStorageKeyForServiceId(serviceId);
+  const value = sessionStorageService.getItem(sessionKey);
+  if (value) {
+    return JSON.parse(value) as Caseworker[];
+  }
+}
+
+export const setCaseworkers = (serviceId: string, caseworkers: Caseworker[], sessionStorageService: ISessionStorageService): void => {
+  const sessionKey = getSessionStorageKeyForServiceId(serviceId);
+  sessionStorageService.setItem(sessionKey, JSON.stringify(caseworkers));
+}
+
 export const getAssigneeName = (caseworkers: any [], assignee: string): string => {
-  if (assignee && caseworkers.some(cw => cw.idamId === assignee)) {
+  if (assignee && caseworkers && caseworkers.some(cw => cw.idamId === assignee)) {
     const assignedCW = caseworkers.filter(cw => cw.idamId === assignee)[0];
     return `${assignedCW.firstName} ${assignedCW.lastName}`;
   }
-  return null
+  return null;
 };
 
-export function getOptions(taskRoles: TaskRole[]): OptionsModel[] {
+export const servicesMap: {[key: string]: string} =  {
+  IA: 'Immigration and Asylum',
+  SCSS: 'Social security and child support'
+};
+
+export function getOptions(taskRoles: TaskRole[], sessionStorageService: ISessionStorageService): OptionsModel[] {
   const options = new Array<OptionsModel>();
-  const roleCategories = taskRoles.filter(role => role.role_category !== null && role.role_category !== undefined
+  // Consider role categories only with either OWN or EXECUTE permissions
+  const roleCategories = taskRoles.filter(role => role.role_category
     && (roleIncludes(role.permissions, Permissions.Own) || roleIncludes(role.permissions, Permissions.Execute))).
     map(taskRole => taskRole.role_category as RoleCategory);
+
+  // Decide the category to be selected by default
+  const roleCategoryToSelectByDefault = getRoleCategoryToBeSelectedByDefault(taskRoles, sessionStorageService);
   roleCategories.forEach(roleCategory => {
     if (!options.find(option => option.optionId === roleCategory)) {
-      options.push({
-          optionId: roleCategory,
-          optionValue: roleCategory,
-          label: this.getLabel(roleCategory)
-        });
+      const option: OptionsModel = {
+        optionId: roleCategory,
+        optionValue: roleCategory,
+        label: this.getLabel(roleCategory)
+      };
+      if (roleCategory === roleCategoryToSelectByDefault) {
+        option.checked = 'checked';
+      }
+      options.push(option);
     }
   });
   return options;
+}
+
+export function getRoleCategoryToBeSelectedByDefault(taskRoles: TaskRole[], sessionStorageService: ISessionStorageService): RoleCategory {
+  // Consider only role categories with OWN permission for radio button default selection
+  const uniqueRoleCategoriesWithOwnPermissions = taskRoles.filter(role => role.role_category
+    && (roleIncludes(role.permissions, Permissions.Own))).
+    map(taskRole => taskRole.role_category as RoleCategory).
+    filter((role, index, taskRolesToFilter) => {
+      return taskRolesToFilter.indexOf(role) === index;
+    });
+
+  // If more than one role category with OWN permission then use current user's role category
+  return uniqueRoleCategoriesWithOwnPermissions.length === 1
+    ? uniqueRoleCategoriesWithOwnPermissions[0] : getCurrentUserRoleCategory(sessionStorageService);
 }
 
 export function getLabel(roleCategory: RoleCategory): PersonRole {
@@ -143,4 +199,13 @@ export function roleIncludes(roles: string[], permission: string): boolean {
     })
   }
   return includesRole;
+}
+
+export function getCurrentUserRoleCategory(sessionStorageService: ISessionStorageService): RoleCategory {
+  const userInfoStr = sessionStorageService.getItem('userDetails');
+  if (userInfoStr) {
+    const userInfo: UserInfo = JSON.parse(userInfoStr);
+    return userInfo.roleCategory as RoleCategory;
+  }
+  return null;
 }

@@ -38,13 +38,17 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const id = userInfo.id ? userInfo.id : userInfo.uid;
       const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
-      const searchParameters = [
+      const searchParameters: SearchTaskParameter [] = [
         { key: 'user', operator: 'IN', values: [id] },
         { key: 'state', operator: 'IN', values: ['assigned'] }
       ];
       const locationParameter = this.getLocationParameter();
+      const typesOfWorkParameter = this.getTypesOfWorkParameter();
       if (locationParameter) {
         searchParameters.push(locationParameter);
+      }
+      if (typesOfWorkParameter) {
+        searchParameters.push(typesOfWorkParameter);
       }
       return {
         search_parameters: searchParameters,
@@ -65,6 +69,14 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
   private getLocationParameter(): SearchTaskParameter {
     if (this.selectedLocations && this.selectedLocations.length > 0) {
       return { key: 'location', operator: 'IN', values: this.selectedLocations };
+    } else {
+      return null;
+    }
+  }
+
+  private getTypesOfWorkParameter(): SearchTaskParameter {
+    if (this.selectedWorkTypes && this.selectedWorkTypes.length > 0) {
+      return { key: 'work_type', operator: 'IN', values: this.selectedWorkTypes };
     } else {
       return null;
     }

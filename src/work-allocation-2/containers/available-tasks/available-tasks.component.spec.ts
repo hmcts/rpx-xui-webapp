@@ -128,7 +128,7 @@ describe('AvailableTasksComponent', () => {
     const searchParameter = component.getSearchTaskRequestPagination().search_parameters[0];
     expect(searchParameter.key).toBe('available_tasks_only');
     expect(searchParameter.operator).toBe('BOOLEAN');
-    expect(searchParameter.values).toBe(true);
+    expect(searchParameter.value).toBe(true);
   });
 
   it('should allow searching via work types', () => {

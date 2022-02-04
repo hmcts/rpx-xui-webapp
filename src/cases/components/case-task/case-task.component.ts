@@ -150,6 +150,7 @@ export class CaseTaskComponent implements OnInit {
       if (task.actions.find(action => action.id === 'unclaim')) {
         taskActions.push({id: 'unclaim', text: 'Unassign task'});
       }
+      return taskActions;
     } else {
       if (permissions.includes(TaskPermission.EXECUTE) && permissions.includes(TaskPermission.MANAGE)) {
         return [

@@ -89,6 +89,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
         this.setUpServicesFilter(services);
         this.setUpLocationFilter();
         this.setUpTypesOfWorkFilter(typesOfWork);
+        this.persistFirstSetting();
         this.subscribeToFilters(assignedTasks);
       });
     this.setErrors();
@@ -115,11 +116,13 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     ])
       .pipe(
         map(([f, tasks]: [FilterSetting, Task[]]) => {
-          f = {
-            id: TaskListFilterComponent.FILTER_NAME,
-            reset: false,
-            fields: this.fieldsConfig.cancelSetting.fields
-          };
+          if (!f) {
+            f = {
+              id: TaskListFilterComponent.FILTER_NAME,
+              reset: false,
+              fields: this.fieldsConfig.cancelSetting.fields
+            };
+          }
           return [f, tasks];
         }),
         filter(([f]: [FilterSetting, Task[]]) => f && f.hasOwnProperty('fields'))
@@ -129,6 +132,14 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
         this.toggleFilter = false;
       });
   }
+
+  private persistFirstSetting(): void {
+    if (!this.filterService.get(TaskListFilterComponent.FILTER_NAME)) {
+      this.filterService.persist(this.fieldsSettings, this.fieldsConfig.persistence);
+      this.filterService.isInitialSetting = true;
+    }
+  }
+
 
   private setErrors(): void {
     this.errorSubscription = this.filterService.givenErrors.subscribe((errors: FilterError[]) => {

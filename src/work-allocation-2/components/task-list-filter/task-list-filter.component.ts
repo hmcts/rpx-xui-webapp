@@ -1,3 +1,4 @@
+import { Location as AngularLocation } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
@@ -9,10 +10,13 @@ import {
   FilterSetting
 } from '@hmcts/rpx-xui-common-lib';
 import { combineLatest, Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
+
+import * as _ from 'underscore';
 import { ErrorMessage } from '../../../app/models';
 import { Location } from '../../models/dtos';
-import { WASupportedJurisdictionsService } from '../../services';
+import Task from '../../models/tasks/task.model';
+import { WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { TaskTypesService } from '../../services/task-types.service';
 import { servicesMap } from '../../utils';
 
@@ -51,8 +55,6 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     id: TaskListFilterComponent.FILTER_NAME,
     fields: [],
   };
-  public selectedLocations: string[] = [];
-  public selectedTypesOfWork: string[] = [];
   public toggleFilter = false;
   public errorSubscription: Subscription;
   private subscription: Subscription;
@@ -62,61 +64,35 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
    * Accept the SessionStorageService for adding to and retrieving from sessionStorage.
    */
   constructor(private readonly route: ActivatedRoute,
+              private readonly location: AngularLocation,
               private readonly filterService: FilterService,
+              private readonly taskService: WorkAllocationTaskService,
               private readonly service: WASupportedJurisdictionsService,
               private readonly taskTypesService: TaskTypesService) {
   }
 
+  private static hasBeenFiltered(f: FilterSetting, cancelSetting: FilterSetting, assignedTasks: Task[], currentTasks: Task[], pathname): boolean {
+    if (pathname.includes('work/my-work/list')) {
+      return assignedTasks.length !== currentTasks.length;
+    }
+    return !_.isEqual(f.fields, cancelSetting.fields);
+  }
+
   public ngOnInit(): void {
     this.fieldsConfig.persistence = this.persistence || 'session';
-    this.subscription = combineLatest([this.taskTypesService.getTypesOfWork(), this.service.getWASupportedJurisdictions()])
-      .subscribe(([typesOfWork, services]: [any[], string[]]) => {
+    this.subscription = combineLatest([
+      this.taskTypesService.getTypesOfWork(),
+      this.service.getWASupportedJurisdictions(),
+      this.taskService.getUsersAssignedTasks()
+    ])
+      .subscribe(([typesOfWork, services, assignedTasks]: [any[], string[], Task[]]) => {
         this.setUpServicesFilter(services);
         this.setUpLocationFilter();
         this.setUpTypesOfWorkFilter(typesOfWork);
         this.persistFirstSetting();
-        this.subscribeToSelectedLocationsAndTypesOfWork();
+        this.subscribeToFilters(assignedTasks);
       });
     this.setErrors();
-    this.toggleFilter = false;
-  }
-
-  // if there is no local storage available, default locations need to be reset
-  public getDefaultLocations(): string[] {
-    if (this.fieldsConfig && this.fieldsConfig.cancelSetting) {
-      this.fieldsConfig.cancelSetting.fields.forEach(field => {
-        if (field.name === 'locations') {
-          this.defaultLocations = field.value;
-        }
-      });
-    }
-    return this.defaultLocations;
-  }
-
-  public getDefaultTypesOfWork(): string[] {
-    if (this.fieldsConfig && this.fieldsConfig.cancelSetting) {
-      this.fieldsConfig.cancelSetting.fields.forEach(field => {
-        if (field.name === 'types-of-work') {
-          this.defaultTypesOfWork = field.value;
-        }
-      });
-    }
-    return this.defaultTypesOfWork;
-  }
-
-  public subscribeToSelectedLocationsAndTypesOfWork(): void {
-    this.selectedLocationsSubscription = this.filterService.getStream(TaskListFilterComponent.FILTER_NAME)
-      .pipe(
-        filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
-      )
-      .subscribe((f: FilterSetting) => {
-        const selectedLocations = f.fields.find((field) => field.name === TaskListFilterComponent.FILTER_NAME);
-        this.selectedLocations = selectedLocations ? selectedLocations.value : [];
-        const typesOfWork = f.fields.find((field) => field.name === 'types-of-work');
-        this.selectedTypesOfWork = typesOfWork ? typesOfWork.value : [];
-        this.showFilteredText = this.hasBeenFiltered(f, this.getDefaultLocations(), this.getDefaultTypesOfWork());
-        this.toggleFilter = false;
-      });
   }
 
   public ngOnDestroy(): void {
@@ -133,13 +109,37 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     }
   }
 
-  // EUI-4408 - If stream not yet started, persist first session settings in filter service
+  private subscribeToFilters(assignedTasks: Task[]): void {
+    this.selectedLocationsSubscription = combineLatest([
+      this.filterService.getStream(TaskListFilterComponent.FILTER_NAME),
+      this.taskService.currentTasks$
+    ])
+      .pipe(
+        map(([f, tasks]: [FilterSetting, Task[]]) => {
+          if (!f) {
+            f = {
+              id: TaskListFilterComponent.FILTER_NAME,
+              reset: false,
+              fields: this.fieldsConfig.cancelSetting.fields
+            };
+          }
+          return [f, tasks];
+        }),
+        filter(([f]: [FilterSetting, Task[]]) => f && f.hasOwnProperty('fields'))
+      )
+      .subscribe(([f, currentTasks]: [FilterSetting, Task[]]) => {
+        this.showFilteredText = TaskListFilterComponent.hasBeenFiltered(f, this.fieldsConfig.cancelSetting, assignedTasks, currentTasks, this.location.path());
+        this.toggleFilter = false;
+      });
+  }
+
   private persistFirstSetting(): void {
     if (!this.filterService.get(TaskListFilterComponent.FILTER_NAME)) {
       this.filterService.persist(this.fieldsSettings, this.fieldsConfig.persistence);
       this.filterService.isInitialSetting = true;
     }
   }
+
 
   private setErrors(): void {
     this.errorSubscription = this.filterService.givenErrors.subscribe((errors: FilterError[]) => {
@@ -249,27 +249,6 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     }];
     this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
     this.fieldsConfig.fields.push(field);
-  }
-
-  private hasBeenFiltered(f: FilterSetting, defaultLocations: string[], defaultTypesOfWork: string[]): boolean {
-    const selectedFields = f.fields.find(field => field.name === TaskListFilterComponent.FILTER_NAME);
-    const selectedTypeOfWorksFields = f.fields.find(field => field.name === 'types-of-work');
-    // check if selected fields are the same as cancelled filter settings
-    const containsNonDefaultFields = selectedFields.value ? selectedFields.value
-      .map((location: any) => location.epimms_id)
-      .filter((v: string) => defaultLocations
-        .map((location: any) => location.epimms_id)
-        .indexOf(v) === -1).length > 0 : false;
-    const containsNonDefaultTypeOfWorkFields = selectedTypeOfWorksFields ?
-      selectedTypeOfWorksFields.value.filter((v: string) => defaultTypesOfWork.indexOf(v) === -1).length > 0
-      : false;
-    // check if the amount of fields selected is the same as the amount in the cancel settings
-    const notSameSize = (selectedFields.value && !(defaultLocations.length === selectedFields.value.length))
-      || (selectedTypeOfWorksFields && !(defaultTypesOfWork.length === selectedTypeOfWorksFields.value.length));
-    if (!defaultTypesOfWork.length) {
-      return (containsNonDefaultFields || notSameSize || containsNonDefaultTypeOfWorkFields) && (defaultLocations.length !== 0);
-    }
-    return (containsNonDefaultFields || notSameSize || containsNonDefaultTypeOfWorkFields) && (defaultLocations.length !== 0) && (defaultTypesOfWork.length !== 0);
   }
 
 }

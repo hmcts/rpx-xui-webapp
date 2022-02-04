@@ -1,9 +1,12 @@
+import { of } from 'rxjs/internal/observable/of';
 import { ListConstants } from '../components/constants';
 import { SearchTaskRequest, TaskSearchParameters } from '../models/dtos';
 import { ACTION, WorkAllocationTaskService } from './work-allocation-task.service';
 
 describe('WorkAllocation', () => {
   const mockHttpService = jasmine.createSpyObj('mockHttpService', ['put', 'get', 'post']);
+
+  mockHttpService.post.and.returnValue(of({}));
 
   describe('WorkAllocationTaskService', () => {
     it('should be Truthy', () => {
@@ -25,7 +28,7 @@ describe('WorkAllocation', () => {
 
     it('assignTask should make correct api call', () => {
       const service = new WorkAllocationTaskService(mockHttpService);
-      const user = {id: 'id1'};
+      const user = { id: 'id1' };
       service.assignTask('123456', user);
       expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation2/task/123456/assign', user);
     });

@@ -6,7 +6,7 @@ import {ActivatedRoute} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {provideMockStore} from '@ngrx/store/testing';
 import {Observable, of} from 'rxjs';
-import {initialState} from '../../hearing.store.state.test';
+import {initialState} from '../../hearing.test.data';
 import {RefDataModel} from '../../models/refData.model';
 import {HearingsService} from '../../services/hearings.service';
 import {CancelHearingComponent} from './cancel-hearing.component';

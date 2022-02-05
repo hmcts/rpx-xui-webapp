@@ -8,10 +8,11 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { RefDataModel } from '../../../models/refData.model';
 import { HearingJudgeNamesListComponent } from '../../../components';
-import { initialState } from '../../../hearing.store.state.test';
 import { ACTION, RadioOptions } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingPanelComponent } from './hearing-panel.component';
+import { initialState } from '../../../../hearings/hearing.test.data';
+
 
 describe('HearingPanelComponent', () => {
   let component: HearingPanelComponent;

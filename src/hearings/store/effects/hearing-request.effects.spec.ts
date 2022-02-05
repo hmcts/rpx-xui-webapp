@@ -4,7 +4,7 @@ import {provideMockActions} from '@ngrx/effects/testing';
 import {provideMockStore} from '@ngrx/store/testing';
 import {cold} from 'jasmine-marbles';
 import {Go} from '../../../app/store/actions';
-import {initialState} from '../../hearing.store.state.test';
+import {initialState} from '../../hearing.test.data';
 import {Mode} from '../../models/hearings.enum';
 import {HearingsService} from '../../services/hearings.service';
 import {AbstractPageFlow} from '../../utils/abstract-page-flow';

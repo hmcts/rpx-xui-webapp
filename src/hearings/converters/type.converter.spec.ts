@@ -2,7 +2,7 @@ import {TestBed} from '@angular/core/testing';
 import {Store} from '@ngrx/store';
 import {provideMockStore} from '@ngrx/store/testing';
 import {cold} from 'jasmine-marbles';
-import {initialState} from '../hearing.store.state.test';
+import {initialState} from '../hearing.test.data';
 import {TypeConverter} from './type.converter';
 
 describe('TypeConverter', () => {

@@ -170,6 +170,8 @@ export enum ConditionOperator {
 }
 
 export enum CaseFlagType {
+  PARTY_FLAGS = 'Party',
+  CASE_FLAG = 'Case',
   REASONABLE_ADJUSTMENT = 'Reasonable adjustment',
   NON_REASONABLE_ADJUSTMENT = 'Non reasonable adjustment',
 }

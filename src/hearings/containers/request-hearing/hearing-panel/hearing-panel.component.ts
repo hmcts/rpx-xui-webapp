@@ -1,8 +1,11 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Person } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
+import { ControlTypeEnum } from 'src/hearings/models/hearings.enum';
+import { RefDataModel } from '../../../models/refData.model';
+
 import { HearingJudgeNamesListComponent } from '../../../../hearings/components';
 import { ACTION, HearingPanelSelectionEnum } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
@@ -14,12 +17,15 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
   templateUrl: './hearing-panel.component.html',
 })
 export class HearingPanelComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
+  public multiSelectArray: FormArray;
   public panelJudgeForm: FormGroup;
   public validationErrors: { id: string, message: string }[] = [];
   public includedJudgeList: Person[] = [];
   public excludedJudgeList: Person[] = [];
   public panelSelection: string;
+  public multiSelection: RefDataModel[];
   public panelSelectionError: string;
+  public configLevels: { level: number, controlType: ControlTypeEnum }[];
   @ViewChild('includedJudge') public includedJudge: HearingJudgeNamesListComponent;
   @ViewChild('excludedJudge') public excludedJudge: HearingJudgeNamesListComponent;
 
@@ -29,16 +35,90 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     protected readonly route: ActivatedRoute,
     private readonly formBuilder: FormBuilder) {
     super(hearingStore, hearingsService);
-    this.panelSelection = this.route.snapshot.data.listOffValues;
+    this.multiSelection = this.route.snapshot.data.listOffValues;
+    this.configLevels = [
+      {
+        controlType: ControlTypeEnum.CHECK_BOX,
+        level: 1,
+      },
+      {
+        controlType: ControlTypeEnum.SELECT,
+        level: 2,
+      }
+    ];
   }
 
   public ngOnInit(): void {
     this.initForm();
   }
 
+  public arrayValidator(min: number) {
+    return (c: AbstractControl): { [key: string]: any } => {
+      if (c.value.length >= min) {
+        return null;
+      }
+
+      return null; // { minLengthArray: { valid: false } };
+    };
+  }
+
   public initForm(): void {
     this.panelJudgeForm = this.formBuilder.group({
       specificPanel: ['', Validators.required],
+      multiSelect: this.formBuilder.array([], this.arrayValidator(1))
+    });
+
+    this.panelJudgeForm.controls.multiSelect = this.convertRefDataModelToArray(this.multiSelection);
+  }
+
+  public convertArrayToRefDataMode(array: FormArray): RefDataModel[] {
+    const listValues: RefDataModel[] = [];
+    (array as FormArray).controls.forEach(control => {
+      const refDataModel: RefDataModel = {
+        key: control.value.key,
+        value_en: control.value.value_en,
+        value_cy: control.value.value_cy,
+        hintText_EN: control.value.hintText_EN,
+        hintTextCY: control.value.hintTextCY,
+        order: control.value.order,
+        parentKey: control.value.parentKey,
+        child_nodes: control.value && control.value.child_nodes ? control.value.child_nodes : [],
+        selected: control.value.selected,
+      };
+      listValues.push(refDataModel);
+    });
+    return listValues;
+  }
+
+  public convertRefDataModelToArray(dataSource: RefDataModel[]): FormArray {
+    const dataSourceArray = this.formBuilder.array([], this.arrayValidator(1));
+    dataSource.forEach(listOfValue => {
+      (dataSourceArray as FormArray).push(this.patchValues({
+        key: listOfValue.key,
+        value_en: listOfValue.value_en,
+        value_cy: listOfValue.value_cy,
+        hintText_EN: listOfValue.hintText_EN,
+        hintTextCY: listOfValue.hintTextCY,
+        order: listOfValue.order,
+        parentKey: listOfValue.parentKey,
+        child_nodes: listOfValue.child_nodes,
+        selected: !listOfValue.selected ? false : true,
+      } as RefDataModel) as FormGroup);
+    });
+    return dataSourceArray;
+  }
+
+  public patchValues(refDataModel: RefDataModel): FormGroup {
+    return this.formBuilder.group({
+      key: [refDataModel.key],
+      value_en: [refDataModel.value_en],
+      value_cy: [refDataModel.value_cy],
+      hintText_EN: [refDataModel.hintText_EN],
+      hintTextCY: [refDataModel.hintText_EN],
+      order: [refDataModel.order],
+      parentKey: [refDataModel.parentKey],
+      selected: [refDataModel.selected, Validators.required],
+      child_nodes: refDataModel.child_nodes && refDataModel.child_nodes.length > 0 ? this.convertRefDataModelToArray(refDataModel.child_nodes) : []
     });
   }
 
@@ -60,6 +140,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
 
   public checkFormData(): void {
     this.validationErrors = [];
+    this.convertArrayToRefDataMode(this.panelJudgeForm.controls.multiSelect as FormArray);
     this.panelSelectionError = null;
     if (!this.panelJudgeForm.controls.specificPanel.valid) {
       this.panelSelectionError = HearingPanelSelectionEnum.SelectionError;

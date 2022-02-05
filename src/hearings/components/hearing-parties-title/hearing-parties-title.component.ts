@@ -1,7 +1,7 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {select, Store} from '@ngrx/store';
-import {Subscription} from 'rxjs';
-import {ServiceHearingValuesModel} from '../../models/serviceHearingValues.model';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { select, Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
 import * as fromHearingStore from '../../store';
 
 @Component({
@@ -18,7 +18,7 @@ export class HearingPartiesTitleComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.serviceValueSub = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesModel)).subscribe((hearingValueModel: ServiceHearingValuesModel) =>
-      this.caseTitle = hearingValueModel.caseName
+      this.caseTitle = hearingValueModel ? hearingValueModel.caseName : ''
     );
   }
 

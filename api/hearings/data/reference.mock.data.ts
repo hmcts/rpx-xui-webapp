@@ -253,7 +253,7 @@ export const LIST_OFF_VALUES_REF: RefDataModel[] = [{
   order: 1,
   parentKey: '3',
 }, {
-  key: 'MedicallyQualifiedPanelMember',
+  key: 'MedicallyQualifiedPanelMember1',
   value_en: 'Medically qualified panel member',
   value_cy: '',
   hintText_EN: 'true',
@@ -268,7 +268,7 @@ export const LIST_OFF_VALUES_REF: RefDataModel[] = [{
     hintTextCY: 'false',
     order: 1,
     parentKey: '3',
-    child_nodes: []
+    child_nodes: [],
   },
   {
     key: 'Carer',
@@ -278,7 +278,7 @@ export const LIST_OFF_VALUES_REF: RefDataModel[] = [{
     hintTextCY: 'false',
     order: 1,
     parentKey: '3',
-    child_nodes: []
+    child_nodes: [],
   },
   {
     key: 'EyeSurgeon',
@@ -288,7 +288,7 @@ export const LIST_OFF_VALUES_REF: RefDataModel[] = [{
     hintTextCY: 'false',
     order: 1,
     parentKey: '3',
-    child_nodes: []
+    child_nodes: [],
   },
   {
     key: 'GeneralPractitioner',
@@ -298,8 +298,8 @@ export const LIST_OFF_VALUES_REF: RefDataModel[] = [{
     hintTextCY: 'false',
     order: 1,
     parentKey: '3',
-    child_nodes: []
-  }]
+    child_nodes: [],
+  }],
 }, {
   key: 'MedicallyQualifiedPanelMember',
   value_en: 'Medically qualified panel member',
@@ -316,7 +316,7 @@ export const LIST_OFF_VALUES_REF: RefDataModel[] = [{
     hintTextCY: 'false',
     order: 1,
     parentKey: '3',
-    child_nodes: []
+    child_nodes: [],
   },
   {
     key: 'Carer',
@@ -326,7 +326,7 @@ export const LIST_OFF_VALUES_REF: RefDataModel[] = [{
     hintTextCY: 'false',
     order: 1,
     parentKey: '3',
-    child_nodes: []
+    child_nodes: [],
   },
   {
     key: 'EyeSurgeon',
@@ -336,7 +336,7 @@ export const LIST_OFF_VALUES_REF: RefDataModel[] = [{
     hintTextCY: 'false',
     order: 1,
     parentKey: '3',
-    child_nodes: []
+    child_nodes: [],
   },
   {
     key: 'GeneralPractitioner',
@@ -346,8 +346,8 @@ export const LIST_OFF_VALUES_REF: RefDataModel[] = [{
     hintTextCY: 'false',
     order: 1,
     parentKey: '3',
-    child_nodes: []
-  }]
+    child_nodes: [],
+  }],
 }, {
   key: 'FinanciallyQualifiedPanelMember',
   value_en: 'Financially qualified panel member',
@@ -356,7 +356,7 @@ export const LIST_OFF_VALUES_REF: RefDataModel[] = [{
   hintTextCY: 'false',
   order: 1,
   parentKey: '3',
-  child_nodes: []
+  child_nodes: [],
 }, {
   key: 'RegionalMedicalMember',
   value_en: 'Regional Medical Member',
@@ -365,7 +365,7 @@ export const LIST_OFF_VALUES_REF: RefDataModel[] = [{
   hintTextCY: 'false',
   order: 1,
   parentKey: '3',
-  child_nodes: []
+  child_nodes: [],
 }];
 
 export const SSCS_STAGES: RefDataByServiceModel = {

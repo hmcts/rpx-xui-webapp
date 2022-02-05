@@ -21,7 +21,18 @@
                  [submitButtonName]="'Add another person'" [isColumnView]="true"></exui-hearing-judge-names-list>
                 <exui-hearing-judge-names-list #excludedJudge [subTitle]="'Exclude specific panel members (optional)'" [domain]="'Judicial'" [judgeList]= "excludedJudgeList"
                  [submitButtonName]="'Exclude another person'" [isColumnView]="true"></exui-hearing-judge-names-list>
-                <exui-multi-level-selector></exui-multi-level-selector>
+                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                    <h1 class="govuk-fieldset__heading">
+                        Select any other panel roles required (optional)
+                    </h1>
+                </legend>
+                <div id="other-panel-roles-hint" class="govuk-hint">
+                    Select all that apply.
+                </div>
+                <exui-multi-level-selector *ngIf="configLevels"
+                  [multiSelect]="panelJudgeForm.controls.multiSelect"
+                  [configLevels]="configLevels"
+                ></exui-multi-level-selector>
               </div>
             </div>
             <div class="govuk-radios__item">

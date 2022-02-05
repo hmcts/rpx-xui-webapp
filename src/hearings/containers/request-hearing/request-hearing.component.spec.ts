@@ -4,7 +4,7 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {Store} from '@ngrx/store';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
-import {initialState} from '../../hearing.store.state.test';
+import {initialState} from '../../hearing.test.data';
 import {ACTION} from '../../models/hearings.enum';
 import {HearingsService} from '../../services/hearings.service';
 import * as fromHearingStore from '../../store';

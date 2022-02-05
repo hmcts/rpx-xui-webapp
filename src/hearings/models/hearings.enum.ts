@@ -205,3 +205,11 @@ export enum Mode {
   VIEW = 'view',
   VIEW_EDIT = 'view-edit'
 }
+
+export enum ControlTypeEnum {
+  TEXT_BOX,
+  SELECT,
+  RADIO_BUTTON,
+  CHECK_BOX,
+  TEXT_AREA
+}

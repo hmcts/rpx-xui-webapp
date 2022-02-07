@@ -37,7 +37,7 @@ describe('CaseFlagConverter', () => {
 
   it('should transform case flag', () => {
     const result$ = caseFlagConverter.transformAnswer();
-    const caseFlags = '<strong class="bold">Jane Smith</strong>\n<ul><li>Sign Language Interpreter</li><li>Hearing Loop</li><li>Larger font size</li><li>Reading documents for customer</li><li>Sign Language Interpreter</li><li>Language Interpreter</li></ul><br><strong class="bold">DWP</strong>\n<ul><li>Physical access and facilities</li></ul><br>';
+    const caseFlags = '<strong class=\'bold\'>Jane Smith</strong>\n<ul><li>Sign Language Interpreter</li><li>Hearing Loop</li><li>Larger font size</li><li>Reading documents for customer</li><li>Sign Language Interpreter</li><li>Language Interpreter</li></ul><br><strong class=\'bold\'>DWP</strong>\n<ul><li>Physical access and facilities</li></ul><br>';
     const expected = cold('(b|)', {b: caseFlags});
     expect(result$).toBeObservable(expected);
   });

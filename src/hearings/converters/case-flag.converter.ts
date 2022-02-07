@@ -23,7 +23,11 @@ export class CaseFlagConverter extends AbstractAnswerConverter implements OnDest
   public transformAnswer(): Observable<string> {
     let partyFlags: PartyFlagsModel[] = [];
     this.storeSub = this.hearingState.subscribe(
-      state => partyFlags = state.hearingValues.serviceHearingValuesModel.caseFlags.flags
+      state => {
+        if (state.hearingValues.serviceHearingValuesModel && state.hearingValues.serviceHearingValuesModel.caseFlags) {
+          partyFlags = state.hearingValues.serviceHearingValuesModel.caseFlags.flags;
+        }
+      }
     );
     const caseFlagsGroup = CaseFlagsUtils.displayCaseFlagsGroup(partyFlags, this.caseFlagsRefData, CaseFlagType.REASONABLE_ADJUSTMENT);
     let result = '';

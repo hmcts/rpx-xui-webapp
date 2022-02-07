@@ -1,3 +1,4 @@
+import {Location} from '@angular/common';
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {Actions, Effect, ofType} from '@ngrx/effects';
@@ -25,7 +26,8 @@ export class HearingRequestEffects {
     private readonly hearingStore: Store<fromHearingReducers.State>,
     private readonly hearingsService: HearingsService,
     private readonly pageFlow: AbstractPageFlow,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly location: Location,
   ) {
     this.screenNavigations$ = this.hearingStore.pipe(select(fromHearingSelectors.getHearingValuesModel)).pipe(
       map(hearingValuesModel => hearingValuesModel.screenFlow));
@@ -43,17 +45,10 @@ export class HearingRequestEffects {
     tap(() => {
       switch (this.mode) {
         case Mode.CREATE:
-          const backPage = this.pageFlow.getLastPage(this.screenNavigations$);
-          if (backPage) {
-            return this.router.navigate(['hearings', 'request', backPage]);
-          }
-          return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']);
         case Mode.CREATE_EDIT:
-          return this.router.navigate(['hearings', 'request', 'hearing-create-edit-summary']);
         case Mode.VIEW:
-          return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']);
         case Mode.VIEW_EDIT:
-          return this.router.navigate(['hearings', 'request', 'hearing-view-edit-summary']);
+          return this.location.back();
         default:
           return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']);
       }

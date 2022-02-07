@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ControlTypeEnum } from 'src/hearings/models/hearings.enum';
-import { RefDataModel } from 'src/hearings/models/refData.model';
+import { ControlTypeEnum } from '../../models/hearings.enum';
+import { RefDataModel } from '../../models/refData.model';
 import { MultiLevelSelectorComponent } from '..';
 
 class DataModelConvertor {
@@ -195,7 +195,7 @@ describe('MultiLevelSelectorComponent', () => {
     component = fixture.componentInstance;
     const modelConvertor = new DataModelConvertor(component.fb);
     component.level = 1;
-    component.multiSelect = modelConvertor.convertRefDataModelToArray(LIST_OFF_VALUES_REF);
+    component.multiLevelSelect = modelConvertor.convertRefDataModelToArray(LIST_OFF_VALUES_REF);
     component.configLevels = [
       {
         controlType: ControlTypeEnum.CHECK_BOX,

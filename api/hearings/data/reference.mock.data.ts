@@ -244,14 +244,14 @@ export const ADDITIONAL_HEARING_FACILITIES_REF: RefDataModel[] = [
   },
 ];
 
-export const LIST_OFF_VALUES_REF: RefDataModel[] = [{
+export const OTHER_PANEL_ROLES: RefDataModel[] = [{
   key: 'DisabilityQualifiedPanelMember',
   value_en: 'Disability qualified panel member',
   value_cy: '',
   hintText_EN: 'true',
   hintTextCY: 'false',
   order: 1,
-  parentKey: '3',
+  parentKey: null,
 }, {
   key: 'MedicallyQualifiedPanelMember1',
   value_en: 'Medically qualified panel member',
@@ -259,7 +259,7 @@ export const LIST_OFF_VALUES_REF: RefDataModel[] = [{
   hintText_EN: 'true',
   hintTextCY: 'false',
   order: 1,
-  parentKey: '3',
+  parentKey: null,
   child_nodes: [{
     key: 'Cardiologist',
     value_en: 'Cardiologist',
@@ -267,7 +267,7 @@ export const LIST_OFF_VALUES_REF: RefDataModel[] = [{
     hintText_EN: 'true',
     hintTextCY: 'false',
     order: 1,
-    parentKey: '3',
+    parentKey: 'MedicallyQualifiedPanelMember1',
     child_nodes: [],
   },
   {
@@ -277,7 +277,7 @@ export const LIST_OFF_VALUES_REF: RefDataModel[] = [{
     hintText_EN: 'true',
     hintTextCY: 'false',
     order: 1,
-    parentKey: '3',
+    parentKey: 'MedicallyQualifiedPanelMember1',
     child_nodes: [],
   },
   {
@@ -287,7 +287,7 @@ export const LIST_OFF_VALUES_REF: RefDataModel[] = [{
     hintText_EN: 'true',
     hintTextCY: 'false',
     order: 1,
-    parentKey: '3',
+    parentKey: 'MedicallyQualifiedPanelMember1',
     child_nodes: [],
   },
   {
@@ -297,17 +297,17 @@ export const LIST_OFF_VALUES_REF: RefDataModel[] = [{
     hintText_EN: 'true',
     hintTextCY: 'false',
     order: 1,
-    parentKey: '3',
+    parentKey: 'MedicallyQualifiedPanelMember1',
     child_nodes: [],
   }],
 }, {
-  key: 'MedicallyQualifiedPanelMember',
+  key: 'MedicallyQualifiedPanelMember2',
   value_en: 'Medically qualified panel member',
   value_cy: '',
   hintText_EN: 'true',
   hintTextCY: 'false',
   order: 1,
-  parentKey: '3',
+  parentKey: null,
   child_nodes: [{
     key: 'Cardiologist',
     value_en: 'Cardiologist',
@@ -315,7 +315,7 @@ export const LIST_OFF_VALUES_REF: RefDataModel[] = [{
     hintText_EN: 'true',
     hintTextCY: 'false',
     order: 1,
-    parentKey: '3',
+    parentKey: 'MedicallyQualifiedPanelMember2',
     child_nodes: [],
   },
   {
@@ -325,7 +325,7 @@ export const LIST_OFF_VALUES_REF: RefDataModel[] = [{
     hintText_EN: 'true',
     hintTextCY: 'false',
     order: 1,
-    parentKey: '3',
+    parentKey: 'MedicallyQualifiedPanelMember2',
     child_nodes: [],
   },
   {
@@ -335,7 +335,7 @@ export const LIST_OFF_VALUES_REF: RefDataModel[] = [{
     hintText_EN: 'true',
     hintTextCY: 'false',
     order: 1,
-    parentKey: '3',
+    parentKey: 'MedicallyQualifiedPanelMember2',
     child_nodes: [],
   },
   {
@@ -345,7 +345,7 @@ export const LIST_OFF_VALUES_REF: RefDataModel[] = [{
     hintText_EN: 'true',
     hintTextCY: 'false',
     order: 1,
-    parentKey: '3',
+    parentKey: 'MedicallyQualifiedPanelMember2',
     child_nodes: [],
   }],
 }, {
@@ -355,7 +355,7 @@ export const LIST_OFF_VALUES_REF: RefDataModel[] = [{
   hintText_EN: 'true',
   hintTextCY: 'false',
   order: 1,
-  parentKey: '3',
+  parentKey: null,
   child_nodes: [],
 }, {
   key: 'RegionalMedicalMember',
@@ -364,7 +364,7 @@ export const LIST_OFF_VALUES_REF: RefDataModel[] = [{
   hintText_EN: 'true',
   hintTextCY: 'false',
   order: 1,
-  parentKey: '3',
+  parentKey: null,
   child_nodes: [],
 }];
 
@@ -394,9 +394,9 @@ export const ADDITIONAL_HEARING_FACILITIES: RefDataByServiceModel = {
   serviceID: 'SSCS',
   values: ADDITIONAL_HEARING_FACILITIES_REF,
 };
-export const LIST_OFF_VALUES: RefDataByServiceModel = {
+export const SSCS_OTHER_PANEL_ROLES: RefDataByServiceModel = {
   serviceID: 'SSCS',
-  values: LIST_OFF_VALUES_REF,
+  values: OTHER_PANEL_ROLES,
 };
 
 export const ALL_REF_DATA: RefDataByCategoryModel[] = [
@@ -426,6 +426,6 @@ export const ALL_REF_DATA: RefDataByCategoryModel[] = [
   },
   {
     categoryKey: 'ListOffValues',
-    services: [LIST_OFF_VALUES],
+    services: [SSCS_OTHER_PANEL_ROLES],
   },
 ];

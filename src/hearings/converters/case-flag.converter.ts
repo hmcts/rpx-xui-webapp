@@ -7,9 +7,9 @@ import {CaseFlagType} from '../models/hearings.enum';
 import {PartyFlagsModel} from '../models/partyFlags.model';
 import * as fromHearingStore from '../store';
 import {CaseFlagsUtils} from '../utils/case-flags.utils';
-import {AbstractConverter} from './abstract.converter';
+import {AbstractAnswerConverter} from './abstract.answer.converter';
 
-export class CaseFlagConverter extends AbstractConverter implements OnDestroy {
+export class CaseFlagConverter extends AbstractAnswerConverter implements OnDestroy {
 
   public caseFlagsRefData: CaseFlagReferenceModel[];
   public storeSub: Subscription;
@@ -28,7 +28,7 @@ export class CaseFlagConverter extends AbstractConverter implements OnDestroy {
     const caseFlagsGroup = CaseFlagsUtils.displayCaseFlagsGroup(partyFlags, this.caseFlagsRefData, CaseFlagType.REASONABLE_ADJUSTMENT);
     let result = '';
     caseFlagsGroup.forEach(flagsGroup => {
-      result += `<strong class="bold">${flagsGroup.name}</strong>\n<ul>`;
+      result += `<strong class='bold'>${flagsGroup.name}</strong>\n<ul>`;
       flagsGroup.partyFlags.forEach(flag => result += `<li>${flag.displayName}</li>`);
       result += '</ul><br>';
     });

@@ -3,6 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {AbstractAnswerConverter} from '../converters/abstract.answer.converter';
+import {CaseFlagConverter} from '../converters/case-flag.converter';
 import {CaseNameAnswerConverter} from '../converters/case-name.answer.converter';
 import {DefaultAnswerConverter} from '../converters/default.answer.converter';
 import {NeedWelshAnswerConverter} from '../converters/need-welsh.answer.converter';

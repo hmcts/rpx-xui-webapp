@@ -31,9 +31,9 @@ export class YesNoService {
         return value;
       case 'string':
         return YesNoService.YES_INPUTS.indexOf(value.toUpperCase()) !== -1;
+      default:
+        return false;
     }
-
-    return false;
   }
 
   private isNo(value: any): boolean {
@@ -42,8 +42,8 @@ export class YesNoService {
         return !value;
       case 'string':
         return YesNoService.NO_INPUTS.indexOf(value.toUpperCase()) !== -1;
+      default:
+        return false;
     }
-
-    return false;
   }
 }

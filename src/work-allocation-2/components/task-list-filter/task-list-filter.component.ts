@@ -75,6 +75,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     if (pathname.includes('work/my-work/list')) {
       return assignedTasks.length !== currentTasks.length;
     }
+    console.log(f.fields, cancelSetting.fields);
     return !_.isEqual(f.fields, cancelSetting.fields);
   }
 

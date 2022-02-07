@@ -62,7 +62,6 @@ import {
   prepareSearchTaskUrl,
   prepareServiceRoleApiRequest,
   prepareTaskSearchForCompletable,
-  removeEmptyValues,
   searchCasesById
 } from './util';
 
@@ -136,9 +135,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
   try {
     const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
     const postTaskPath = preparePaginationUrl(req, basePath);
-    const searchRequest = {
-      ...req.body.searchRequest, search_parameters: removeEmptyValues(req.body.searchRequest.search_parameters),
-    };
+    const searchRequest = req.body.searchRequest;
     // filter out task type from search parameters as not currently available until release 2.1
     searchRequest.search_parameters = searchRequest.search_parameters.filter(
       searchParam => searchParam.key !== 'taskType'

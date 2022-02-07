@@ -64,18 +64,26 @@ export class HearingRequestEffects {
   public continueNavigation$ = this.actions$.pipe(
     ofType(hearingRequestActions.UPDATE_HEARING_REQUEST),
     tap(() => {
+      const nextPage = this.pageFlow.getNextPage(this.screenNavigations$);
       switch (this.mode) {
         case Mode.CREATE:
-          const nextPage = this.pageFlow.getNextPage(this.screenNavigations$);
           if (nextPage) {
             return this.router.navigate(['hearings', 'request', nextPage]);
           } else {
             throw new Error('Next page not found');
           }
         case Mode.CREATE_EDIT:
-          return this.router.navigate(['hearings', 'request', 'hearing-create-edit-summary']);
+          if (nextPage === 'hearing-welsh') {
+            return this.router.navigate(['hearings', 'request', nextPage]);
+          } else {
+            return this.router.navigate(['hearings', 'request', 'hearing-create-edit-summary']);
+          }
         case Mode.VIEW_EDIT:
-          return this.router.navigate(['hearings', 'request', 'hearing-view-edit-summary']);
+          if (nextPage === 'hearing-welsh') {
+            return this.router.navigate(['hearings', 'request', nextPage]);
+          } else {
+            return this.router.navigate(['hearings', 'request', 'hearing-view-edit-summary']);
+          }
         default:
           return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']);
       }

@@ -2,9 +2,9 @@ import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import * as fromHearingStore from '../store';
-import {AbstractConverter} from './abstract.converter';
+import {AbstractAnswerConverter} from './abstract.answer.converter';
 
-export class TypeConverter extends AbstractConverter {
+export class VenueAnswerConverter extends AbstractAnswerConverter {
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>) {
     super(hearingStore);
   }
@@ -12,9 +12,9 @@ export class TypeConverter extends AbstractConverter {
   public transformAnswer(): Observable<string> {
     return this.hearingState.pipe(
       map(state => {
-        let result = `${state.hearingValues.serviceHearingValuesModel.caseType} \n<ul>`;
-        state.hearingValues.serviceHearingValuesModel.caseSubTypes.forEach(
-          subType => result += `<li>- ${subType.toString()}</li>`
+        let result = '<ul>';
+        state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingLocations.forEach(
+          location => result += `<li>${location.locationName}</li>`
         );
         result += '</ul>';
         return result;

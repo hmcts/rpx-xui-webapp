@@ -190,6 +190,7 @@ export enum AnswerSource {
   HOW_ATTENDANT,
   ATTENDANT_PERSON_AMOUNT,
   VENUE,
+  NEED_WELSH,
   NEED_JUDGE,
   JUDGE_NAME,
   JUDGE_EXCLUSION,
@@ -198,6 +199,10 @@ export enum AnswerSource {
   HEARING_SPECIFIC_DATE,
   HEARING_PRIORITY,
   ADDITIONAL_INSTRUCTION
+}
+
+export enum IsHiddenSource {
+  WELSH_LOCATION,
 }
 
 export enum Mode {

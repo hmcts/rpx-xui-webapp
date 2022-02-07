@@ -3,7 +3,7 @@ import {Observable} from 'rxjs';
 import * as fromHearingStore from '../store';
 import {State} from '../store/reducers';
 
-export abstract class AbstractConverter {
+export abstract class AbstractAnswerConverter {
   public hearingState: Observable<State>;
 
   protected constructor(protected readonly hearingStore: Store<fromHearingStore.State>) {

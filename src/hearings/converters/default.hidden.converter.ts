@@ -1,14 +1,14 @@
 import {Store} from '@ngrx/store';
 import {Observable, of} from 'rxjs';
 import * as fromHearingStore from '../store';
-import {AbstractConverter} from './abstract.converter';
+import {AbstractHiddenConverter} from './abstract.hidden.converter';
 
-export class DefaultConverter extends AbstractConverter {
+export class DefaultHiddenConverter extends AbstractHiddenConverter {
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>) {
     super(hearingStore);
   }
 
-  public transformAnswer(): Observable<string> {
-    return of('Not implement yet');
+  public transformHidden(): Observable<boolean> {
+    return of(false);
   }
 }

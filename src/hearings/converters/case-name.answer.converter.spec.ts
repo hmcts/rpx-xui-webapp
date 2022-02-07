@@ -3,11 +3,11 @@ import {Store} from '@ngrx/store';
 import {provideMockStore} from '@ngrx/store/testing';
 import {cold} from 'jasmine-marbles';
 import {initialState} from '../hearing.test.data';
-import {CaseNameConverter} from './case-name.converter';
+import {CaseNameAnswerConverter} from './case-name.answer.converter';
 
-describe('CaseNameConverter', () => {
+describe('CaseNameAnswerConverter', () => {
 
-  let caseNameConverter: CaseNameConverter;
+  let caseNameAnswerConverter: CaseNameAnswerConverter;
   let store: Store<any>;
 
   beforeEach(() => {
@@ -17,11 +17,11 @@ describe('CaseNameConverter', () => {
       ]
     });
     store = TestBed.get(Store);
-    caseNameConverter = new CaseNameConverter(store);
+    caseNameAnswerConverter = new CaseNameAnswerConverter(store);
   });
 
   it('should transform case name', () => {
-    const result$ = caseNameConverter.transformAnswer();
+    const result$ = caseNameAnswerConverter.transformAnswer();
     const caseName = 'Jane vs DWP';
     const expected = cold('b', {b: caseName});
     expect(result$).toBeObservable(expected);

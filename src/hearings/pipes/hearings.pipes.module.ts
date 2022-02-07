@@ -1,16 +1,19 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {HearingAnswersPipe} from './hearing-answers.pipe';
-import { HearingsBadgePipe } from './hearings-badge.pipe';
+import {HearingsBadgePipe} from './hearings-badge.pipe';
+import {ShowHidePipe} from './show-hide.pipe';
 
 @NgModule({
   declarations: [
     HearingsBadgePipe,
-    HearingAnswersPipe
+    HearingAnswersPipe,
+    ShowHidePipe
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   exports: [
     HearingsBadgePipe,
-    HearingAnswersPipe
+    HearingAnswersPipe,
+    ShowHidePipe
   ]
 })
 export class HearingsPipesModule {

@@ -3,11 +3,11 @@ import {Store} from '@ngrx/store';
 import {provideMockStore} from '@ngrx/store/testing';
 import {cold} from 'jasmine-marbles';
 import {initialState} from '../hearing.test.data';
-import {TypeConverter} from './type.converter';
+import {TypeAnswerConverter} from './type.answer.converter';
 
-describe('TypeConverter', () => {
+describe('TypeAnswerConverter', () => {
 
-  let typeConverter: TypeConverter;
+  let typeAnswerConverter: TypeAnswerConverter;
   let store: Store<any>;
 
   beforeEach(() => {
@@ -17,11 +17,11 @@ describe('TypeConverter', () => {
       ]
     });
     store = TestBed.get(Store);
-    typeConverter = new TypeConverter(store);
+    typeAnswerConverter = new TypeAnswerConverter(store);
   });
 
   it('should transform type', () => {
-    const result$ = typeConverter.transformAnswer();
+    const result$ = typeAnswerConverter.transformAnswer();
     const type = 'Personal Independence Payment \n<ul><li>- Conditions of Entitlement</li><li>- Good cause</li><li>- Rate of Assessment / Payability Issues - complex</li></ul>';
     const expected = cold('b', {b: type});
     expect(result$).toBeObservable(expected);

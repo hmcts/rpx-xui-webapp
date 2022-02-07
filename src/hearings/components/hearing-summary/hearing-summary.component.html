@@ -1,19 +1,21 @@
 <div *ngFor="let section of template">
-  <div *ngIf="section.insetInfo" class="govuk-inset-text">
-    {{ section.insetInfo }}
-  </div>
-  <div [innerHtml]="section.sectionHTMLTitle"></div>
-  <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-    <div class="govuk-summary-list__row" *ngFor="let answer of section.answers">
-      <dt class="govuk-summary-list__key">
-        {{ answer.answerTitle }}
-      </dt>
-      <dd class="govuk-summary-list__value">
-        <div [innerHtml]="answer.answerSource | transformAnswer | async"></div>
-      </dd>
-      <dd class="govuk-summary-list__actions">
-        <a *ngIf="answer.changeLink" href="javascript:void(0)" (click)="changeAnswer(answer.changeLink)">Change</a>
-      </dd>
+  <div *ngIf="section.isHiddenSource === undefined ? true : !(section.isHiddenSource | isHidden | async)">
+    <div *ngIf="section.insetInfo" class="govuk-inset-text">
+      {{ section.insetInfo }}
     </div>
-  </dl>
+    <div [innerHtml]="section.sectionHTMLTitle"></div>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9" *ngFor="let answer of section.answers">
+      <div *ngIf="answer.isHiddenSource === undefined ? true : !(answer.isHiddenSource | isHidden | async)" class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          {{ answer.answerTitle }}
+        </dt>
+        <dd class="govuk-summary-list__value">
+          <div [innerHtml]="answer.answerSource | transformAnswer | async"></div>
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a *ngIf="answer.changeLink" href="javascript:void(0)" (click)="changeAnswer(answer.changeLink)">Change</a>
+        </dd>
+      </div>
+    </dl>
+  </div>
 </div>

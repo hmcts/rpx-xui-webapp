@@ -537,13 +537,6 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.6.7-find-person-bug-fix-v6":
-  version "1.6.7-find-person-bug-fix-v6"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.7-find-person-bug-fix-v6.tgz#f75482b29a63a7c7567d3f417945c26f5206540d"
-  integrity sha512-0yJVOpQmQ4jgBFkSlDroo0eQyp1bmnA81xuIIdmwF8Y4N50EUUpzH0+YXw7T800zN7UgNfiZtmIr97YriW4/QQ==
-  dependencies:
-    tslib "^1.9.0"
-
 "@hmcts/rpx-xui-node-lib@2.25.4":
   version "2.25.4"
   resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-node-lib/-/rpx-xui-node-lib-2.25.4.tgz#f4fc79741fbf6bbbe395a1149b90f4f27df998ea"

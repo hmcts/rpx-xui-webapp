@@ -34,7 +34,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     protected readonly route: ActivatedRoute,
     private readonly formBuilder: FormBuilder) {
     super(hearingStore, hearingsService);
-    this.multiLevelSelection = this.route.snapshot.data.listOffValues;
+    this.multiLevelSelection = this.route.snapshot.data.otherPanelRoles;
     this.configLevels = [
       {
         controlType: ControlTypeEnum.CHECK_BOX,
@@ -81,17 +81,17 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
 
   public convertRefDataModelToArray(dataSource: RefDataModel[]): FormArray {
     const dataSourceArray = this.formBuilder.array([]);
-    dataSource.forEach(listOfValue => {
+    dataSource.forEach(otherPanelRoles => {
       (dataSourceArray as FormArray).push(this.patchValues({
-        key: listOfValue.key,
-        value_en: listOfValue.value_en,
-        value_cy: listOfValue.value_cy,
-        hintText_EN: listOfValue.hintText_EN,
-        hintTextCY: listOfValue.hintTextCY,
-        order: listOfValue.order,
-        parentKey: listOfValue.parentKey,
-        child_nodes: listOfValue.child_nodes,
-        selected: !listOfValue.selected ? false : true,
+        key: otherPanelRoles.key,
+        value_en: otherPanelRoles.value_en,
+        value_cy: otherPanelRoles.value_cy,
+        hintText_EN: otherPanelRoles.hintText_EN,
+        hintTextCY: otherPanelRoles.hintTextCY,
+        order: otherPanelRoles.order,
+        parentKey: otherPanelRoles.parentKey,
+        child_nodes: otherPanelRoles.child_nodes,
+        selected: !otherPanelRoles.selected ? false : true,
       } as RefDataModel) as FormGroup);
     });
     return dataSourceArray;

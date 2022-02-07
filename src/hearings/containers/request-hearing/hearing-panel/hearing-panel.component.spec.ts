@@ -22,7 +22,7 @@ describe('HearingPanelComponent', () => {
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 
-  const LIST_OFF_VALUES_REF: RefDataModel[] = [
+  const OTHER_PANEL_ROLES: RefDataModel[] = [
     {
       key: 'DisabilityQualifiedPanelMember',
       value_en: 'Disability qualified panel member',
@@ -160,7 +160,7 @@ describe('HearingPanelComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                listOffValues: LIST_OFF_VALUES_REF,
+                otherPanelRoles: OTHER_PANEL_ROLES,
               },
             },
           },

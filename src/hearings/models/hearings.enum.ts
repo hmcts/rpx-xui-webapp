@@ -97,7 +97,7 @@ export enum HearingCategory {
   NonStdDurationReasonCodes = 'NonStdDurationReasonCodes',
   EntityRoleCodes = 'EntityRoleCodes',
   JudgeType = 'JudgeType',
-  ListOffValues = 'ListOffValues',
+  OtherPanelRoles = 'OtherPanelRoles',
   CancelHearingReason = 'CancelHearingReason',
 }
 

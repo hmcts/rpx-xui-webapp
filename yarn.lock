@@ -537,6 +537,13 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
+"@hmcts/rpx-xui-common-lib@1.6.7-hide-assigned-user":
+  version "1.6.7-hide-assigned-user"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.7-hide-assigned-user.tgz#c989ae33c85d256b02a769e7c5051038d2a3d49b"
+  integrity sha512-ToMNDbeOkr8jquYrJ0yFwu2KznUlZ0HO1veeBIbICow82mit36WAIMBcOyZB0AF21U7B7iffwKYZATjoFcnM5A==
+  dependencies:
+    tslib "^1.9.0"
+
 "@hmcts/rpx-xui-node-lib@2.25.4":
   version "2.25.4"
   resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-node-lib/-/rpx-xui-node-lib-2.25.4.tgz#f4fc79741fbf6bbbe395a1149b90f4f27df998ea"

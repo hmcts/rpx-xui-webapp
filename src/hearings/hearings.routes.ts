@@ -160,6 +160,9 @@ export const ROUTES: Routes = [
       },
       {
         path: 'hearing-create-edit-summary',
+        resolve: {
+          caseFlags: CaseFlagsResolver,
+        },
         component: HearingCreateEditSummaryComponent,
         canActivate: [HealthCheckGuard],
         data: {

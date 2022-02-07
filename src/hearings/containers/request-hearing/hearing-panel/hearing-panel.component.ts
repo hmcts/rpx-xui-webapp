@@ -71,7 +71,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     this.panelJudgeForm.controls.multiSelect = this.convertRefDataModelToArray(this.multiSelection);
   }
 
-  public convertArrayToRefDataMode(array: FormArray): RefDataModel[] {
+  public convertArrayToRefDataModel(array: FormArray): RefDataModel[] {
     const listValues: RefDataModel[] = [];
     (array as FormArray).controls.forEach(control => {
       const refDataModel: RefDataModel = {
@@ -140,7 +140,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
 
   public checkFormData(): void {
     this.validationErrors = [];
-    this.convertArrayToRefDataMode(this.panelJudgeForm.controls.multiSelect as FormArray);
+    this.convertArrayToRefDataModel(this.panelJudgeForm.controls.multiSelect as FormArray);
     this.panelSelectionError = null;
     if (!this.panelJudgeForm.controls.specificPanel.valid) {
       this.panelSelectionError = HearingPanelSelectionEnum.SelectionError;

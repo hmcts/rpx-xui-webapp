@@ -425,7 +425,7 @@ export const ALL_REF_DATA: RefDataByCategoryModel[] = [
     services: [ADDITIONAL_HEARING_FACILITIES],
   },
   {
-    categoryKey: 'ListOffValues',
+    categoryKey: 'OtherPanelRoles',
     services: [SSCS_OTHER_PANEL_ROLES],
   },
 ];

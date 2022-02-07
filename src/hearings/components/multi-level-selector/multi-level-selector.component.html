@@ -31,7 +31,7 @@
     </div>
   </div>
   <div *ngSwitchCase="controlCategory.SELECT" [formGroup]="formGroup">
-    <label class="govuk-label"> Choose specialism</label>
+    <label class="govuk-label">Choose specialism</label>
     <select formControlName="item" class="govuk-select" id="select1" name="select-name">
       <option value="" selected>Please select</option>
       <option *ngFor="let childNode of multiLevelSelect.controls; let i=index" [ngValue]="childNode.value.key">{{childNode.value.value_en}}</option>

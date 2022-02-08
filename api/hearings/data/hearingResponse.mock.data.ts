@@ -61,7 +61,7 @@ export const HEARING_RESPONSE_RESULT: HearingResponseMainModel[] = [
       partyChannel: 'inperson',
     } as PartyDetailsModel,
     hearingResponse: {
-      listAssistTransacrtionID: '123456789',
+      listAssistTransactionID: '123456789',
       receivedDateTime: '2021-11-30T09:00:00.000+0000',
       responseVersion: 0,
       laCaseStatus: 'tbd',

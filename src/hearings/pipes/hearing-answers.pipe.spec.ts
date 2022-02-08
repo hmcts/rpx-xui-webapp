@@ -55,4 +55,17 @@ describe('HearingAnswersPipe', () => {
     expect(result$).toBeObservable(expected);
   });
 
+  it('should transform venue', () => {
+    const result$ = hearingAnswersPipe.transform(AnswerSource.VENUE);
+    const caseFlags = '<ul><li>LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL</li><li>ABERDEEN TRIBUNAL HEARING CENTRE</li></ul>';
+    const expected = cold('b', {b: caseFlags});
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform need welsh', () => {
+    const result$ = hearingAnswersPipe.transform(AnswerSource.NEED_WELSH);
+    const needWelsh = 'Yes';
+    const expected = cold('b', {b: needWelsh});
+    expect(result$).toBeObservable(expected);
+  });
 });

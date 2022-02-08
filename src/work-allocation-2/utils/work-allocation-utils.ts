@@ -1,12 +1,11 @@
 import { NavigationExtras } from '@angular/router';
-import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
 import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { UserInfo } from '../../app/models';
 import { RoleCategory } from '../../role-access/models';
 import { OptionsModel } from '../../role-access/models/options-model';
 import { ISessionStorageService } from '../interfaces/common';
 import { Caseworker, CaseworkersByService } from '../models/dtos';
-import { Permissions, TaskRole } from '../models/tasks/TaskRole';
+import { TaskPermission, TaskRole } from '../models/tasks';
 
 interface Navigator {
   navigate(commands: any[], extras?: NavigationExtras): Promise<boolean>;
@@ -132,7 +131,7 @@ export function getOptions(taskRoles: TaskRole[], sessionStorageService: ISessio
   const options = new Array<OptionsModel>();
   // Consider role categories only with either OWN or EXECUTE permissions
   const roleCategories = taskRoles.filter(role => role.role_category
-    && (roleIncludes(role.permissions, Permissions.Own) || roleIncludes(role.permissions, Permissions.Execute))).
+    && (roleIncludes(role.permissions, TaskPermission.OWN) || roleIncludes(role.permissions, TaskPermission.EXECUTE))).
     map(taskRole => taskRole.role_category as RoleCategory);
 
   // Decide the category to be selected by default
@@ -156,7 +155,7 @@ export function getOptions(taskRoles: TaskRole[], sessionStorageService: ISessio
 export function getRoleCategoryToBeSelectedByDefault(taskRoles: TaskRole[], sessionStorageService: ISessionStorageService): RoleCategory {
   // Consider only role categories with OWN permission for radio button default selection
   const uniqueRoleCategoriesWithOwnPermissions = taskRoles.filter(role => role.role_category
-    && (roleIncludes(role.permissions, Permissions.Own))).
+    && (roleIncludes(role.permissions, TaskPermission.OWN))).
     map(taskRole => taskRole.role_category as RoleCategory).
     filter((role, index, taskRolesToFilter) => {
       return taskRolesToFilter.indexOf(role) === index;

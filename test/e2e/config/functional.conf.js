@@ -6,7 +6,7 @@ var screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenSho
 
 const BrowserUtil = require('.././../ngIntegration/util/browserUtil');
 chai.use(chaiAsPromised);
-
+process.env.TEST_URL = "https://manage-case.aat.platform.hmcts.net/";
 const argv = minimist(process.argv.slice(2));
 
 

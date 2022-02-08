@@ -97,6 +97,7 @@ export enum HearingCategory {
   NonStdDurationReasonCodes = 'NonStdDurationReasonCodes',
   EntityRoleCodes = 'EntityRoleCodes',
   JudgeType = 'JudgeType',
+  OtherPanelRoles = 'OtherPanelRoles',
   CancelHearingReason = 'CancelHearingReason',
 }
 
@@ -205,4 +206,12 @@ export enum Mode {
   CREATE_EDIT = 'create-edit',
   VIEW = 'view',
   VIEW_EDIT = 'view-edit'
+}
+
+export enum ControlTypeEnum {
+  TEXT_BOX,
+  SELECT,
+  RADIO_BUTTON,
+  CHECK_BOX,
+  TEXT_AREA
 }

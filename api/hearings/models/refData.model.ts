@@ -6,6 +6,7 @@ export interface RefDataModel {
   hintTextCY: string;
   order: number;
   parentKey: string;
+  child_nodes?: RefDataModel[];
 }
 
 export interface RefDataByServiceModel {

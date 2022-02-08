@@ -40,7 +40,7 @@ Feature: WA Release 2: My work - Work filters
         # When I click on primary navigation header "My work"
         Then I see work filter button displayed
         Then I validate work filter button text is "Show work filter"
-        Then I validate work location filter batch and hint labels are not displayed
+        # Then I validate work location filter batch and hint labels are not displayed
         Then I validate location filter is not displayed
         When I click work filter button to "Show" filter
         Then I validate work filter button text is "Hide work filter"
@@ -89,7 +89,7 @@ Feature: WA Release 2: My work - Work filters
 
         Then I see work filter button displayed
         Then I validate work filter button text is "Show work filter"
-        Then I validate work location filter batch and hint labels are not displayed
+        # Then I validate work location filter batch and hint labels are not displayed
         Then I validate location filter is not displayed
         When I click work filter button to "Show" filter
         When I unselect service "SSCS" in my work filter

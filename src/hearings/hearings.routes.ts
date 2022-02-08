@@ -13,7 +13,7 @@ import { HearingRequirementsComponent } from './containers/request-hearing/heari
 import { HearingStageComponent } from './containers/request-hearing/hearing-stage/hearing-stage.component';
 import { HearingTimingComponent } from './containers/request-hearing/hearing-timing/hearing-timing.component';
 import { HearingVenueComponent } from './containers/request-hearing/hearing-venue/hearing-venue.component';
-import {HearingViewEditSummaryComponent} from './containers/request-hearing/hearing-view-edit-summary/hearing-view-edit-summary.component';
+import { HearingViewEditSummaryComponent } from './containers/request-hearing/hearing-view-edit-summary/hearing-view-edit-summary.component';
 import { HearingWelshComponent } from './containers/request-hearing/hearing-welsh/hearing-welsh.component';
 import { RequestHearingComponent } from './containers/request-hearing/request-hearing.component';
 import { ViewHearingComponent } from './containers/view-hearing/view-hearing.component';
@@ -134,10 +134,12 @@ export const ROUTES: Routes = [
       },
       {
         path: 'hearing-panel',
+        resolve: { otherPanelRoles: RefDataResolver },
         component: HearingPanelComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Manage cases | Request Hearing | Require Panel Or Not'
+          title: 'HMCTS Manage cases | Request Hearing | Require Panel Or Not',
+          category: HearingCategory.OtherPanelRoles
         }
       },
       {

@@ -12,8 +12,8 @@
       <div  class="govuk-form-group"
             [ngClass]="{'govuk-form-group--error' : !selectionValid}">
          <span *ngIf=" !selectionValid"
-              id="party-selection-error"
-              class="govuk-error-message">
+            id="party-selection-error"
+            class="govuk-error-message">
             <span class="govuk-visually-hidden">Error:</span> Select how each party will attend the hearing
           </span>
         <div *ngFor="let partyControl of partiesFormArray.controls; let i=index" class="party-row">

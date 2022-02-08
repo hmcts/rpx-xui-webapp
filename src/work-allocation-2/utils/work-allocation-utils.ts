@@ -173,8 +173,10 @@ export function getLabel(roleCategory: RoleCategory): PersonRole {
       return PersonRole.ADMIN;
     case RoleCategory.JUDICIAL:
       return PersonRole.JUDICIAL;
-    default:
+    case RoleCategory.LEGAL_OPERATIONS:
       return PersonRole.CASEWORKER;
+    default:
+      throw new Error('Invalid roleCategory ' + roleCategory);
   }
 }
 

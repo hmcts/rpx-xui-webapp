@@ -1,4 +1,4 @@
-@__fullfunctional 
+@fullfunctional 
 Feature: WA Release 2: : Work allocations My work, All work
 
     Scenario Outline: View tasks, E2E journey of "<useridentifier>" user

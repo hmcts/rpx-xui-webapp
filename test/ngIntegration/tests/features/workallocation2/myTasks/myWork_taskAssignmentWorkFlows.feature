@@ -18,10 +18,11 @@ Feature: WA Release 2: My work - My tasks - Task assignment
         Given I set MOCK task details for WA release2
             | case_name        | case_category      | location_name |
             | Allwork test scr | auto test category | London QA lab |
-
+@test
     Scenario Outline:  Task Manage links for "<UserType>" action "<action>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
-       
+        Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
+
         Given I start MockApp
         Given I navigate to home page
 
@@ -69,7 +70,8 @@ Feature: WA Release 2: My work - My tasks - Task assignment
 
     Scenario Outline:  Task Manage links for "<UserType>" action "<action>" cancel in check your changes page
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
-       
+        Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
+
         Given I start MockApp
         Given I navigate to home page
 
@@ -116,7 +118,8 @@ Feature: WA Release 2: My work - My tasks - Task assignment
 
     Scenario Outline:  Task Manage links for "<UserType>" action "<action>" cancel in find person page
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
-      
+        Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
+
         Given I start MockApp
         Given I navigate to home page
 

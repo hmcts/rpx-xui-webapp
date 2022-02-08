@@ -67,7 +67,7 @@ Feature: WA Release 2: All work
 
         When I click task column link "Case name" at row 1, I see case details page
 
-        When I click on primary navigation header tab "My work", I see selected tab page displayed
+        When I click on primary navigation header tab "All work", I see selected tab page displayed
         When I click task column link "Task" at row 1, I see case details page
         Then I validate case details task tab page is displayed
         Examples:

@@ -33,7 +33,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         const datatablehashes = datatableroles.hashes();
         const roles = datatablehashes.map(roleHash => roleHash.ROLE);
-        const userDetails = nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, userIdamID);
+        const userDetails = nodeAppMock.setUserDetailsWithRolesAndIdamId(roles, userIdamID);
         if (userUtil.getUserRoleType(roles) === 'LEGAL_OPS') {
             workallocationMockData.addCaseworkerWithIdamId(userIdamID, "IA");
         }
@@ -53,7 +53,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         if (userUtil.getUserRoleType(roles) === 'LEGAL_OPS') {
             workallocationMockData.addCaseworkerWithIdamId(userIdamID, "IA");
         } 
-        const userDetails = nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, userIdamID);
+        const userDetails = nodeAppMock.setUserDetailsWithRolesAndIdamId(roles, userIdamID);
 
     });
     
@@ -117,7 +117,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         if (userUtil.getUserRoleType(roles) === 'LEGAL_OPS') {
             // workallocationMockData.addCaseworkerWithIdamId(userIdamID, "IA");
         }
-        const userDetails = nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, userIdamID);
+        const userDetails = nodeAppMock.setUserDetailsWithRolesAndIdamId(roles, userIdamID);
         CucumberReporter.AddJson(userDetails);
         global.scenarioData[mockUserRef] = userDetails;
        
@@ -159,7 +159,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
             roles.push(...rolesForIdentifier);
         }
-        const userDetails = nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, userIdamID);
+        const userDetails = nodeAppMock.setUserDetailsWithRolesAndIdamId(roles, userIdamID);
         if (userUtil.getUserRoleType(roles) === 'LEGAL_OPS') {
             workallocationMockData.addCaseworkerWithIdamId(userIdamID, "IA");
         }
@@ -274,6 +274,21 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
         }
     
+    });
+
+    Given('I set MOCK person with user {string} and roles {string}', async function(userIdentifier, roles){
+        const rolesArr = roles.split(",");
+        const testUserIdamId = testData.users[testData.testEnv].filter(testUser => testUser.userIdentifier === userIdentifier)[0];
+
+        const roleCategory = userUtil.getUserRoleType(rolesArr);
+        let person = null;
+        if (roleCategory === "LEGAL_OPS"){
+            person = workallocationMockData.addCaseworkerWithIdamId(testUserIdamId.idamId,'IA')
+        } else if (roleCategory === "JUDICIAL"){
+            person = workallocationMockData.addJudgeUsers(testUserIdamId.idamId,'testMockUserFN','test','testjudge@hmcts.net') 
+        }
+        CucumberReporter.AddMessage(`For roles "${roles}" Person of type "${roleCategory} is added"`);
+        CucumberReporter.AddJson(person);
     });
 });
 

@@ -72,11 +72,19 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   }
 
   private static hasBeenFiltered(f: FilterSetting, cancelSetting: FilterSetting, assignedTasks: Task[], currentTasks: Task[], pathname): boolean {
+    const baseLocations = cancelSetting.fields.find(field => field.name === 'locations');
+    const locations = f.fields.find(field => field.name === 'locations');
+    const fieldsNoLocations = f.fields.filter(field => field.name !== 'locations');
+    const cancelFieldsNoLocations = cancelSetting.fields.filter(field => field.name !== 'locations');
     if (pathname.includes('work/my-work/list')) {
       return assignedTasks.length !== currentTasks.length;
     }
-    console.log(f.fields, cancelSetting.fields);
-    return !_.isEqual(f.fields, cancelSetting.fields);
+    return !_.isEqual(fieldsNoLocations, cancelFieldsNoLocations) || !TaskListFilterComponent.hasBaseLocations(locations, baseLocations);
+  }
+
+  private static hasBaseLocations(locations, baseLocations): boolean {
+    const result = locations.value.filter(location => baseLocations.value.find(baseLocation => _.isEqual(location, baseLocation)));
+    return result.length >= baseLocations.value.length;
   }
 
   public ngOnInit(): void {
@@ -140,7 +148,6 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       this.filterService.isInitialSetting = true;
     }
   }
-
 
   private setErrors(): void {
     this.errorSubscription = this.filterService.givenErrors.subscribe((errors: FilterError[]) => {

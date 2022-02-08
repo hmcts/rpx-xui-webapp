@@ -126,9 +126,7 @@ module.exports = {
             }
         },
         '/workallocation2/task': (req, res) => {
-            const pageNum = req.body.searchRequest.pagination_parameters.page_number;
-            const pageSize = req.body.searchRequest.pagination_parameters.page_size;
-
+           
             const requestedView = req.body.view;
             let tasks = [];
             if (requestedView === "MyTasks") {
@@ -142,37 +140,47 @@ module.exports = {
                 throw new Error("Unrecognised task list view : " + requestedView);
             }
             try {
-                res.send(getTaskPageRecords(tasks, pageNum, pageSize));
+                if (req.body.searchRequest.pagination_parameters) {
+                    const pageNum = req.body.searchRequest.pagination_parameters.page_number;
+                    const pageSize = req.body.searchRequest.pagination_parameters.page_size;
+                    res.send(getTaskPageRecords(tasks, pageNum, pageSize));
+                } else {
+                    res.send(tasks);
+                }
 
             } catch (e) {
                 res.status(500).send({ error: 'mock error occured', stack: e.stack });
             }
         },
         '/workallocation/taskWithPagination': (req, res) => {
-            const pageNum = req.body.searchRequest.pagination_parameters.page_number;
-            const pageSize = req.body.searchRequest.pagination_parameters.page_size;
+            
 
             const requestedView = req.body.view;
             let tasks = [];
             if (requestedView === "MyTasks") {
-                tasks = global.scenarioData && global.scenarioData['workallocation1.mytasks'] ? global.scenarioData['workallocation1.mytasks'] : workAllocationMockData.getMyTasks(pageSize * 5);
+                tasks = global.scenarioData && global.scenarioData['workallocation1.mytasks'] ? global.scenarioData['workallocation1.mytasks'] : workAllocationMockData.getMyTasks(200);
             } else if (requestedView === "AvailableTasks") {
-                tasks = global.scenarioData && global.scenarioData['workallocation1.availabletasks'] ? global.scenarioData['workallocation1.availabletasks'] : workAllocationMockData.getAvailableTasks(pageSize * 5);
+                tasks = global.scenarioData && global.scenarioData['workallocation1.availabletasks'] ? global.scenarioData['workallocation1.availabletasks'] : workAllocationMockData.getAvailableTasks(200);
             } else if (requestedView === "TaskManager" ) {
-                tasks = global.scenarioData && global.scenarioData['workallocation1.taskmanager'] ? global.scenarioData['workallocation1.taskmanager'] : workAllocationMockData.getTaskManagerTasks(pageSize * 5);
+                tasks = global.scenarioData && global.scenarioData['workallocation1.taskmanager'] ? global.scenarioData['workallocation1.taskmanager'] : workAllocationMockData.getTaskManagerTasks(200);
             } else {
                 throw new Error("Unrecognised task list view : " + requestedView);
             }
             try {
-                res.send(getTaskPageRecords(tasks, pageNum, pageSize));
+                if (req.body.searchRequest.pagination_parameters){
+                    const pageNum = req.body.searchRequest.pagination_parameters.page_number;
+                    const pageSize = req.body.searchRequest.pagination_parameters.page_size;
+                    res.send(getTaskPageRecords(tasks, pageNum, pageSize));
+                }else{
+                    res.send(tasks); 
+                }
 
             } catch (e) {
                 res.status(500).send({ error: 'mock error occured', stack: e.stack });
             }
         },
         '/workallocation2/taskWithPagination': (req, res) => {
-            const pageNum = req.body.searchRequest.pagination_parameters.page_number;
-            const pageSize = req.body.searchRequest.pagination_parameters.page_size;
+            
 
             const requestedView = req.body.view;
             let tasks = [];
@@ -192,7 +200,13 @@ module.exports = {
             }
             
             try { 
-                res.send(getTaskPageRecords(tasks, pageNum, pageSize));
+                if (req.body.searchRequest.pagination_parameters) {
+                    const pageNum = req.body.searchRequest.pagination_parameters.page_number;
+                    const pageSize = req.body.searchRequest.pagination_parameters.page_size;
+                    res.send(getTaskPageRecords(tasks, pageNum, pageSize));
+                } else {
+                    res.send(tasks);
+                }
 
             } catch (e) {
                 res.status(500).send({ error: 'mock error occured', stack: e.stack });

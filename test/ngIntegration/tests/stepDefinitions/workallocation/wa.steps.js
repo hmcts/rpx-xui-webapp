@@ -169,7 +169,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         expect(await caseCreatePage.amOnPage()).to.be.true;
         await BrowserWaits.retryWithActionCallback(async () => {
             await headerPage.getTabElementWithText('Task manager').click();
-            await taskManagerPage.amOnPage();
+            expect(await taskManagerPage.amOnPage()).to.be.true;
 
         });
         await taskManagerPage.waitForTable();

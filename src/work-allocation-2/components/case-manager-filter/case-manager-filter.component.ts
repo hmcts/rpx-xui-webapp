@@ -22,7 +22,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
   @Input() public jurisdictions: string[] = [];
   @Output() public selectChanged: EventEmitter<any> = new EventEmitter<any>();
   public filterConfig: FilterConfig = {
-    persistence: 'session',
+    persistence: 'local',
     enableDisabledButton: true,
     id: CaseManagerFilterComponent.FILTER_NAME,
     fields: [],

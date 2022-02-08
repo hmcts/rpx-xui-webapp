@@ -67,7 +67,7 @@ class WorkAllocationMockData {
     }
 
     addCaseworkerWithIdamId(idamId, service){
-        let caseworketByService = null;
+        let user = null;
 
         let locationsByService = null;
         for(const byService of this.locationsByServices){
@@ -86,9 +86,11 @@ class WorkAllocationMockData {
                         locationName: locationsByService[0].court_name
                 }; 
                 byservice.caseworkers.push(personWithIdamd);
+                user = personWithIdamd; 
                 break; 
             }
         }
+        return user;
     }
 
     addCaseworker(caseworker, service) {

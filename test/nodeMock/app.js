@@ -377,12 +377,12 @@ function setUpcaseConfig() {
         // const roles = ['caseworker','caseworker-ia','caseworker-ia-caseofficer','task-supervisor'];
         const roles = ['caseworker', 'caseworker-ia', 'caseworker-ia-iacjudge', 'task-supervisor'];
         // setTimeout(() => {
-        //     res.send(nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, idamid));
+        //     res.send(nodeAppMock.setUserDetailsWithRolesAndIdamId(roles, idamid));
 
         // },10);
 
 
-        res.send(nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, idamid));
+        res.send(nodeAppMock.setUserDetailsWithRolesAndIdamId(roles, idamid));
 
 
     });

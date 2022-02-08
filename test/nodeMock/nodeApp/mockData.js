@@ -22,7 +22,7 @@ class NodeAppMockData {
         return userDetails;
     }
 
-    getUserDetailsWithRolesAndIdamId(roles,idamId) {
+    setUserDetailsWithRolesAndIdamId(roles,idamId) {
         const userDetails = nodeAppDataModel.getUserDetails_oidc();
         userDetails.userInfo.roles = roles;
         userDetails.userInfo.id = idamId;

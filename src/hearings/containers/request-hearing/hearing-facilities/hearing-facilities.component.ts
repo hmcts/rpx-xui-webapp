@@ -46,8 +46,6 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
         this.hearingFactilitiesForm.controls['addition-security-required'].setValue('No');
       }
     }
-
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingsFacilitiesData());
   }
 
   public ngAfterViewInit(): void {

@@ -34,7 +34,8 @@ export class HearingAnswersPipe implements PipeTransform {
         converter = new AdditionalSecurityConverter(this.hearingStore);
         break;
       case AnswerSource.ADDITIONAL_FACILITIES_REQUIRED:
-        converter = new AdditionalFacilitiesConverter(this.hearingStore);
+        converter = new AdditionalFacilitiesConverter(this.hearingStore, this.route);
+        break;
       case AnswerSource.CASE_FLAGS:
         converter = new CaseFlagConverter(this.hearingStore, this.route);
         break;

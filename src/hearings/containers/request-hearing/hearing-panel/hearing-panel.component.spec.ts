@@ -149,6 +149,12 @@ describe('HearingPanelComponent', () => {
     }];
 
   beforeEach(() => {
+
+    initialState.hearings.hearingRequest.hearingRequestMainModel
+      .hearingDetails.panelRequirements = {
+      panelSpecialisms: ['DisabilityQualifiedPanelMember', '', 'Cardiologist']
+    };
+
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
       declarations: [HearingPanelComponent, HearingJudgeNamesListComponent],
@@ -172,6 +178,7 @@ describe('HearingPanelComponent', () => {
     fixture = TestBed.createComponent(HearingPanelComponent);
     component = fixture.componentInstance;
     spyOn(component, 'fragmentFocus').and.callFake(() => { });
+    spyOn(component, 'prepareData').and.callThrough();
     fixture.detectChanges();
   });
 
@@ -186,16 +193,22 @@ describe('HearingPanelComponent', () => {
 
   it('should check form data', () => {
     component.excludedJudge = childComponent;
-    component.excludedJudge.validationError = { id: 'elementId', message: 'Error Message' };
+    component.panelJudgeForm.controls.specificPanel.setValue('');
     component.checkFormData();
     expect(component.validationErrors.length).toBeGreaterThan(0);
   });
 
   it('should check form valid', () => {
+    component.panelJudgeForm.controls.specificPanel.setValue('');
     expect(component.isFormValid()).toBeFalsy();
     component.showSpecificPanel(RadioOptions.YES);
     expect(component.panelSelection).toBe(RadioOptions.YES);
     expect(component.isFormValid()).toBeTruthy();
+  });
+
+  it('should prepare data when form is valid', () => {
+    component.executeAction(ACTION.CONTINUE);
+    expect(component.prepareData).toHaveBeenCalled();
   });
 
   afterEach(() => {

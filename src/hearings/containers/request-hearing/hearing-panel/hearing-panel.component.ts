@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Person } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
@@ -22,8 +22,9 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
   public includedJudgeList: Person[] = [];
   public excludedJudgeList: Person[] = [];
   public panelSelection: string;
-  public multiLevelSelection: RefDataModel[];
+  public multiLevelSelections: RefDataModel[];
   public panelSelectionError: string;
+  public hasValidationRequested: boolean = false;
   public configLevels: { level: number, controlType: ControlTypeEnum }[];
   @ViewChild('includedJudge') public includedJudge: HearingJudgeNamesListComponent;
   @ViewChild('excludedJudge') public excludedJudge: HearingJudgeNamesListComponent;
@@ -34,7 +35,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     protected readonly route: ActivatedRoute,
     private readonly formBuilder: FormBuilder) {
     super(hearingStore, hearingsService);
-    this.multiLevelSelection = this.route.snapshot.data.otherPanelRoles;
+    this.multiLevelSelections = this.route.snapshot.data.otherPanelRoles;
     this.configLevels = [
       {
         controlType: ControlTypeEnum.CHECK_BOX,
@@ -47,6 +48,18 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     ];
   }
 
+  public childNodesValidation(): boolean {
+    let childNodeValid: boolean = true;
+    const panelRoles = this.convertArrayToRefDataModel(this.panelJudgeForm.controls.multiLevelSelect as FormArray);
+    panelRoles.filter(panelRole => panelRole.selected && panelRole.child_nodes && panelRole.child_nodes.length)
+      .forEach(selectedPanelRole => {
+        if (selectedPanelRole.child_nodes.filter(x => x.selected).length === 0) {
+          childNodeValid = false;
+        }
+      });
+    return childNodeValid;
+  }
+
   public ngOnInit(): void {
     this.initForm();
   }
@@ -57,11 +70,72 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
       multiLevelSelect: this.formBuilder.array([])
     });
 
-    this.panelJudgeForm.controls.multiLevelSelect = this.convertRefDataModelToArray(this.multiLevelSelection);
+
+    this.initialiseHearingPanels();
+    this.panelJudgeForm.controls.multiLevelSelect = this.convertRefDataModelToArray(this.multiLevelSelections);
+  }
+
+  public initialiseHearingPanels() {
+    this.panelSelection = '';
+    if (this.hearingRequestMainModel.hearingDetails) {
+      if (this.hearingRequestMainModel.hearingDetails.panelRequirements) {
+        if (this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms) {
+          let counter = 0;
+          this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms.forEach(panelSpecialism => {
+
+            if (panelSpecialism) {
+              this.multiLevelSelections.filter(multiLevelSelection => multiLevelSelection.key === panelSpecialism)
+                .forEach(multiLevelSelectionFiltered => {
+                  multiLevelSelectionFiltered.selected = true;
+                });
+              this.multiLevelSelections.filter(multiLevelSelection => multiLevelSelection.key !== panelSpecialism)
+                .forEach(multiLevelSelectionNotFound => {
+                  const storedIndex = counter;
+                  if (this.multiLevelSelections[storedIndex]) {
+                    const parentFound = this.multiLevelSelections[storedIndex];
+                    if (parentFound.child_nodes) {
+                      parentFound.child_nodes
+                        .filter(node => node.key === panelSpecialism)
+                        .forEach(specialim => {
+                          specialim.selected = true;
+                          parentFound.selected = true;
+                        });
+                    }
+                  }
+                });
+            }
+            counter++;
+          });
+
+          if (this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms.length) {
+            this.showSpecificPanel('Yes');
+          } else {
+            this.showSpecificPanel('No');
+          }
+        }
+      }
+    }
+  }
+
+  public prepareData() {
+    const panelRoles = this.convertArrayToRefDataModel(this.panelJudgeForm.controls.multiLevelSelect as FormArray);
+    const panelRolesSelected = panelRoles
+      .map(selected => !selected.child_nodes || !selected.child_nodes.length ? selected.selected ? selected.key : ''
+        : selected.child_nodes.filter(child => child.selected).length ? selected.child_nodes.filter(child => child.selected)[0].key : '');
+
+    this.hearingRequestMainModel = {
+      ...this.hearingRequestMainModel,
+      hearingDetails: {
+        ...this.hearingRequestMainModel.hearingDetails,
+        panelRequirements: {
+          panelSpecialisms: [...panelRolesSelected]
+        }
+      }
+    };
   }
 
   public convertArrayToRefDataModel(array: FormArray): RefDataModel[] {
-    const listValues: RefDataModel[] = [];
+    const panelRoles: RefDataModel[] = [];
     (array as FormArray).controls.forEach(control => {
       const refDataModel: RefDataModel = {
         key: control.value.key,
@@ -74,13 +148,13 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
         child_nodes: control.value && control.value.child_nodes ? control.value.child_nodes : [],
         selected: control.value.selected,
       };
-      listValues.push(refDataModel);
+      panelRoles.push(refDataModel);
     });
-    return listValues;
+    return panelRoles;
   }
 
-  public convertRefDataModelToArray(dataSource: RefDataModel[]): FormArray {
-    const dataSourceArray = this.formBuilder.array([]);
+  public convertRefDataModelToArray(dataSource: RefDataModel[], validator: boolean = false): FormArray {
+    const dataSourceArray = !validator ? this.formBuilder.array([]) : this.formBuilder.array([]);
     dataSource.forEach(otherPanelRoles => {
       (dataSourceArray as FormArray).push(this.patchValues({
         key: otherPanelRoles.key,
@@ -120,6 +194,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     if (action === ACTION.CONTINUE) {
       this.checkFormData();
       if (this.isFormValid()) {
+        this.prepareData();
         super.navigateAction(action);
       }
     } else if (action === ACTION.BACK) {
@@ -129,7 +204,6 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
 
   public checkFormData(): void {
     this.validationErrors = [];
-    this.convertArrayToRefDataModel(this.panelJudgeForm.controls.multiLevelSelect as FormArray);
     this.panelSelectionError = null;
     if (!this.panelJudgeForm.controls.specificPanel.valid) {
       this.panelSelectionError = HearingPanelSelectionEnum.SelectionError;
@@ -138,6 +212,11 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
   }
 
   public isFormValid(): boolean {
+    this.hasValidationRequested = true;
+    if (!this.childNodesValidation()) {
+      this.validationErrors.push({ id: 'panel-role-selector', message: HearingPanelSelectionEnum.PanelRowChildError });
+      return false;
+    }
     return this.panelJudgeForm.valid;
   }
 

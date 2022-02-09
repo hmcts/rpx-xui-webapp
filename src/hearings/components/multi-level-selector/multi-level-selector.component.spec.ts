@@ -39,7 +39,7 @@ class DataModelConvertor {
   }
 }
 
-describe('MultiLevelSelectorComponent', () => {
+fdescribe('MultiLevelSelectorComponent', () => {
   let component: MultiLevelSelectorComponent;
   let fixture: ComponentFixture<MultiLevelSelectorComponent>;
 
@@ -194,7 +194,8 @@ describe('MultiLevelSelectorComponent', () => {
     fixture = TestBed.createComponent(MultiLevelSelectorComponent);
     component = fixture.componentInstance;
     const modelConvertor = new DataModelConvertor(component.fb);
-    component.level = 1;
+    component.level = 2;
+    component.hasValidationRequested = true;
     component.multiLevelSelect = modelConvertor.convertRefDataModelToArray(LIST_OFF_VALUES_REF);
     component.configLevels = [
       {
@@ -212,5 +213,21 @@ describe('MultiLevelSelectorComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
     expect(component.controlType).toEqual(component.configLevels[component.level - 1].controlType);
+  });
+
+  it('should return true for validation', () => {
+    component.formGroup.controls.item.setValue({
+      key: 'Cardiologist',
+      value_en: 'Cardiologist',
+      value_cy: '',
+      hintText_EN: 'true',
+      hintTextCY: 'false',
+      order: 1,
+      parentKey: '3',
+      child_nodes: [],
+      selected: false,
+    });
+    fixture.detectChanges();
+    expect(component.checkValidationWhenRequested).toEqual(true);
   });
 });

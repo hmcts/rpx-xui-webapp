@@ -16,7 +16,7 @@ export class NocCheckYourAnswersComponent implements OnInit {
   @Input()
   public qAndA$: Observable<NocAnswer[]>;
 
-  constructor(private store: Store<fromFeature.State>) {  }
+  constructor(private readonly store: Store<fromFeature.State>) {  }
 
   public ngOnInit() {
     this.caseReference$ = this.store.pipe(select(fromFeature.caseReference));

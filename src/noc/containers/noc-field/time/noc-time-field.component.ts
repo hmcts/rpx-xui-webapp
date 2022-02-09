@@ -12,7 +12,7 @@ export class NocTimeFieldComponent extends AbstractFieldWriteComponent implement
   public timeControl: FormControl;
   public timeGroup: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private readonly formBuilder: FormBuilder) {
     super();
   }
 

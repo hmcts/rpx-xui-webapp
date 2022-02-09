@@ -139,15 +139,21 @@ export function getOptions(taskRoles: TaskRole[], sessionStorageService: ISessio
   const roleCategoryToSelectByDefault = getRoleCategoryToBeSelectedByDefault(taskRoles, sessionStorageService);
   roleCategories.forEach(roleCategory => {
     if (!options.find(option => option.optionId === roleCategory)) {
+      let label;
+      try {
+        label = this.getLabel(roleCategory);
+      } catch (error) {}
       const option: OptionsModel = {
         optionId: roleCategory,
         optionValue: roleCategory,
-        label: this.getLabel(roleCategory)
+        label
       };
       if (roleCategory === roleCategoryToSelectByDefault) {
         option.checked = 'checked';
       }
-      options.push(option);
+      if (label) {
+        options.push(option);
+      }
     }
   });
   return options;
@@ -173,8 +179,10 @@ export function getLabel(roleCategory: RoleCategory): PersonRole {
       return PersonRole.ADMIN;
     case RoleCategory.JUDICIAL:
       return PersonRole.JUDICIAL;
-    default:
+    case RoleCategory.LEGAL_OPERATIONS:
       return PersonRole.CASEWORKER;
+    default:
+      throw new Error('Invalid roleCategory ' + roleCategory);
   }
 }
 

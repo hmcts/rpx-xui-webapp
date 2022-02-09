@@ -1,5 +1,6 @@
 import { PersonRole } from '@hmcts/rpx-xui-common-lib';
-import { getCurrentUserRoleCategory } from '.';
+import { RoleCategory } from '../../role-access/models';
+import { getCurrentUserRoleCategory, getLabel } from '.';
 import {
   getOptions,
   getRoleCategoryToBeSelectedByDefault,
@@ -194,5 +195,22 @@ describe('WorkAllocationUtils', () => {
     const currentUserRoleCategory = getCurrentUserRoleCategory(sessionStorageService);
     expect(sessionStorageService.getItem).toHaveBeenCalled();
     expect(currentUserRoleCategory).toEqual('LEGAL_OPERATIONS');
-  })
+  });
+
+  it('getLabel', () => {
+    let label = getLabel(RoleCategory.LEGAL_OPERATIONS);
+    expect(label).toEqual('Legal Ops');
+
+    label = getLabel(RoleCategory.ADMIN);
+    expect(label).toEqual('Admin');
+
+    label = getLabel(RoleCategory.JUDICIAL);
+    expect(label).toEqual('Judicial');
+
+    try {
+      getLabel('some' as RoleCategory);
+    } catch (error) {
+      expect(error.message).toContain('Invalid roleCategory')
+    }
+  });
 });

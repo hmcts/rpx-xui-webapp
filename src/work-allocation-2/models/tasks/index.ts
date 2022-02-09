@@ -2,6 +2,7 @@ import InvokedTaskAction from './invoked-task-action.model';
 import TaskAction from './task-action.model';
 import TaskServiceConfig from './task-service-config.model';
 import { TaskPermission } from './task-permission.model';
+import { TaskRole } from './task-role.model';
 import Task from './task.model';
 
 export {
@@ -9,5 +10,6 @@ export {
   Task,
   TaskAction,
   TaskServiceConfig,
-  TaskPermission
+  TaskPermission,
+  TaskRole
 };

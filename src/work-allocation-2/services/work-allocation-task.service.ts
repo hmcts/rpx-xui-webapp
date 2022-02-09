@@ -9,7 +9,7 @@ import { UserInfo, UserRole } from '../../app/models';
 import { SearchTaskRequest, TaskSearchParameters } from '../models/dtos';
 import { Task } from '../models/tasks';
 import { TaskResponse } from '../models/tasks/task.model';
-import { TaskRole } from '../models/tasks/TaskRole';
+import { TaskRole } from '../models/tasks';
 
 const BASE_URL: string = '/workallocation2/task';
 

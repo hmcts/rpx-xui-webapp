@@ -7,7 +7,7 @@ import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { RoleCategory } from '../../../role-access/models';
 import { OptionsModel } from '../../../role-access/models/options-model';
-import { Permissions, TaskRole } from '../../models/tasks/TaskRole';
+import { TaskPermission, TaskRole } from '../../models/tasks';
 
 @Component({
   selector: 'exui-task-assignment-choose-role',
@@ -104,6 +104,7 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
   }
 
   private userWithOwnPermission(roles: TaskRole[]): TaskRole {
-    return roles.find(role => role.permissions.includes(Permissions.Own));
+    // EUI-5236 - TaskPermission instead of Permission (i.e. not all caps)
+    return roles.find(role => role.permissions.includes(TaskPermission.OWN));
   }
 }

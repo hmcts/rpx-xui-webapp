@@ -15,12 +15,10 @@ export class AdditionalFacilitiesConverter extends AbstractConverter {
     return this.hearingState.pipe(
       map(state => {
         const facilities = state.hearingReferenceData.hearingFacilities;
+        const selection = state.hearingRequest.hearingRequestMainModel.hearingDetails.facilitiesRequired
+          .map((facility: string) => AdditionalFacilitiesConverter.getFacilityValue(facilities, facility));
+        const result = selection.join(', ');
 
-        let result = `<ul>`;
-        state.hearingRequest.hearingRequestMainModel.hearingDetails.facilitiesRequired.forEach(
-          facilitiesKey => result += `<li>- ${AdditionalFacilitiesConverter.getFacilityValue(facilities, facilitiesKey)}</li>`
-        );
-        result += '</ul>';
         return result;
       })
     );

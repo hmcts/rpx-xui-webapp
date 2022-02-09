@@ -4,7 +4,7 @@ import {ActivatedRoute} from '@angular/router';
 import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
-import {initialState, serviceHearingValuesModel} from '../../../hearing.store.state.test';
+import {initialState, serviceHearingValuesModel} from '../../../hearing.test.data';
 import {HearingConditions} from '../../../models/hearingConditions';
 import {HearingRequestMainModel} from '../../../models/hearingRequestMain.model';
 import {ACTION} from '../../../models/hearings.enum';

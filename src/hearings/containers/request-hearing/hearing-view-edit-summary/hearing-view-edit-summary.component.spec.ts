@@ -2,7 +2,7 @@ import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
-import {initialState} from '../../../hearing.store.state.test';
+import {initialState} from '../../../hearing.test.data';
 import {ACTION} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
 import {HearingViewEditSummaryComponent} from './hearing-view-edit-summary.component';

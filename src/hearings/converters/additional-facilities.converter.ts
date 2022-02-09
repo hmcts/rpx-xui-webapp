@@ -8,9 +8,14 @@ import {AbstractConverter} from './abstract.converter';
 
 export class AdditionalFacilitiesConverter extends AbstractConverter {
 
-  constructor(protected readonly hearingStore: Store<fromHearingStore.State>, 
+  constructor(
+    protected readonly hearingStore: Store<fromHearingStore.State>,
     protected readonly route: ActivatedRoute) {
     super(hearingStore);
+  }
+
+  private static getFacilityValue(hearingFacilities: RefDataModel[], key: string): string {
+    return hearingFacilities.find(facility => facility.key === key).value_en;
   }
 
   public transformAnswer(): Observable<string> {
@@ -24,9 +29,5 @@ export class AdditionalFacilitiesConverter extends AbstractConverter {
         return result;
       })
     );
-  }
-
-  private static getFacilityValue(hearingFacilities: RefDataModel[], key: string): string {
-    return hearingFacilities.find(facility => facility.key === key).value_en;
   }
 }

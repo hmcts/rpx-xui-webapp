@@ -1,11 +1,11 @@
 import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
-import { CourtVenue } from 'workAllocation2/interfaces/location';
 import { getConfigValue } from '../configuration';
 import { SERVICES_LOCATION_API_PATH } from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
+import { CourtVenue } from '../workAllocation2/interfaces/location';
 import { handleLocationGet } from '../workAllocation2/locationService';
 import { prepareGetLocationsUrl } from '../workAllocation2/util';
 import { LocationTypeEnum } from './data/locationType.enum';

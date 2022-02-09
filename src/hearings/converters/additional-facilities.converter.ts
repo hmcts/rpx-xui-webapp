@@ -14,17 +14,14 @@ export class AdditionalFacilitiesConverter extends AbstractConverter {
   }
 
   public transformAnswer(): Observable<string> {
-
-    console.log(this.route.snapshot.data);
-
     return this.hearingState.pipe(
       map(state => {
-        // const facilities = state.hearingReferenceData.hearingFacilities;
-        // const selection = state.hearingRequest.hearingRequestMainModel.hearingDetails.facilitiesRequired
-        //   .map((facility: string) => AdditionalFacilitiesConverter.getFacilityValue(facilities, facility));
-        // const result = selection.join(', ');
+        const facilities = this.route.snapshot.data.additionFacilitiesOptions;
+        const selection = state.hearingRequest.hearingRequestMainModel.hearingDetails.facilitiesRequired
+          .map((facility: string) => AdditionalFacilitiesConverter.getFacilityValue(facilities, facility));
+        const result = selection.join(', ');
 
-        return 'NOT IMPLEMENTED';
+        return result;
       })
     );
   }

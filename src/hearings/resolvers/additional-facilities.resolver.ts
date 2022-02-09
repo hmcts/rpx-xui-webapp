@@ -17,14 +17,14 @@ export class AdditionalFacilitiesResolver extends RefDataResolver implements Res
     protected readonly hearingsDataService: HearingsRefDataService,
     protected readonly hearingStore: Store<fromHearingStore.State>
   ) {
-    super(hearingsDataService, hearingStore)
+    super(hearingsDataService, hearingStore);
   }
 
   public resolve(route?: ActivatedRouteSnapshot): Observable<RefDataModel[]> {
     route.data = {
       ...route.data,
       category: HearingCategory.FacilitiesList
-    }
+    };
 
     return super.resolve(route);
   }

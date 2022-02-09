@@ -12,10 +12,8 @@ export class AdditionalSecurityConverter extends AbstractConverter {
   public transformAnswer(): Observable<string> {
     return this.hearingState.pipe(
       map(state => {
-        const result = state.hearingRequest.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag ?
+        return state.hearingRequest.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag ?
           'Yes' : 'No';
-
-        return result;
       })
     );
   }

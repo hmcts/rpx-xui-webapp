@@ -49,6 +49,7 @@ export function exclusionReducer(currentState = initialState, action: ExclusionA
     case ExclusionActionTypes.SAVE_PERSON_ROLE_AND_GO: {
       return {
         ...currentState,
+        person: action.payload.personRole === currentState.personRole ? currentState.person : null,
         personRole: action.payload.personRole,
         state: action.payload.exclusionState
       };

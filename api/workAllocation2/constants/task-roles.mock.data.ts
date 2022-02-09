@@ -2,7 +2,7 @@ import { TaskRole } from '../interfaces/TaskRole';
 
 export const TASK_ROLES: TaskRole[] = [
   {
-    'role_category': 'legal-ops',
+    'role_category': 'LEGAL_OPERATIONS',
     'role_name': 'tribunal-caseworker',
     'permissions': [
       'OWN',
@@ -17,7 +17,7 @@ export const TASK_ROLES: TaskRole[] = [
     ],
   },
   {
-    'role_category': 'legal-ops',
+    'role_category': 'LEGAL_OPERATIONS',
     'role_name': 'case-manager',
     'permissions': [
       'EXECUTE',
@@ -31,7 +31,7 @@ export const TASK_ROLES: TaskRole[] = [
     ],
   },
   {
-    'role_category': 'judiciary',
+    'role_category': 'JUDICIAL',
     'role_name': 'judge',
     'permissions': [
       'EXECUTE',

@@ -24,9 +24,8 @@ export class AdditionalFacilitiesConverter extends AbstractConverter {
         const facilities = this.route.snapshot.data.additionFacilitiesOptions;
         const selection = state.hearingRequest.hearingRequestMainModel.hearingDetails.facilitiesRequired
           .map((facility: string) => AdditionalFacilitiesConverter.getFacilityValue(facilities, facility));
-        const result = selection.join(', ');
 
-        return result;
+        return selection.join(', ');
       })
     );
   }

@@ -2,6 +2,7 @@ import {Pipe, PipeTransform} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {AbstractConverter} from '../converters/abstract.converter';
+import { AdditionalFacilitiesConverter } from '../converters/additional-facilities.converter';
 import { AdditionalSecurityConverter } from '../converters/additional-security.converter';
 import {CaseNameConverter} from '../converters/case-name.converter';
 import {DefaultConverter} from '../converters/default.converter';
@@ -28,6 +29,9 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.ADDITIONAL_SECURITY_REQUIRED:
         converter = new AdditionalSecurityConverter(this.hearingStore);
+        break;
+      case AnswerSource.ADDITIONAL_FACILITIES_REQUIRED:
+        converter = new AdditionalFacilitiesConverter(this.hearingStore);
         break;
       default:
         break;

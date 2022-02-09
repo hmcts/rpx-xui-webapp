@@ -7,6 +7,7 @@ export interface RefDataModel {
   order: number;
   parentKey: string;
   selected?: boolean;
+  child_nodes?: RefDataModel[];
 }
 
 export interface RefDataByServiceModel {

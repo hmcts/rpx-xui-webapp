@@ -97,6 +97,7 @@ export enum HearingCategory {
   NonStdDurationReasonCodes = 'NonStdDurationReasonCodes',
   EntityRoleCodes = 'EntityRoleCodes',
   JudgeType = 'JudgeType',
+  OtherPanelRoles = 'OtherPanelRoles',
   CancelHearingReason = 'CancelHearingReason',
 }
 
@@ -169,6 +170,8 @@ export enum ConditionOperator {
 }
 
 export enum CaseFlagType {
+  PARTY_FLAGS = 'Party',
+  CASE_FLAG = 'Case',
   REASONABLE_ADJUSTMENT = 'Reasonable adjustment',
   NON_REASONABLE_ADJUSTMENT = 'Non reasonable adjustment',
 }
@@ -203,4 +206,12 @@ export enum Mode {
   CREATE_EDIT = 'create-edit',
   VIEW = 'view',
   VIEW_EDIT = 'view-edit'
+}
+
+export enum ControlTypeEnum {
+  TEXT_BOX,
+  SELECT,
+  RADIO_BUTTON,
+  CHECK_BOX,
+  TEXT_AREA
 }

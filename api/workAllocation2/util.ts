@@ -327,9 +327,6 @@ export async function handlePost(path: string, payload: any, req: EnhancedReques
 }
 
 export async function getCaseIdListFromRoles(roleAssignmentList: RoleAssignment[], req: EnhancedRequest): Promise<Case[]> {
-  if (!roleAssignmentList) {
-    return Promise.resolve([]);
-  }
   const data: CaseDataType = getCaseDataFromRoleAssignments(roleAssignmentList);
 
   const casePromises: Array<Promise<CaseList>> = getCaseListPromises(data, req);

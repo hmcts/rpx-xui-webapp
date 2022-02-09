@@ -71,7 +71,7 @@
     "@angular/platform-browser-dynamic": "^7.2.13",
     "@angular/router": "^7.2.13",
     "@hmcts/ccpay-web-component": "5.0.2",
-    "@hmcts/ccd-case-ui-toolkit": "4.11.2",
+    "@hmcts/ccd-case-ui-toolkit": "4.13.1-case-flags-tab-and-banner-message",
     "@hmcts/frontend": "0.0.39-alpha",
     "@hmcts/media-viewer": "2.7.12",
     "@hmcts/nodejs-healthcheck": "^1.7.0",

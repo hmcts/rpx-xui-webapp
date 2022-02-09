@@ -60,7 +60,7 @@
                     "functions": "never",
                     "typeLiterals": "ignore"
                 },
-                "esSpecCompliant": true
+                  "esSpecCompliant": true
             }
         ],
         "ordered-imports": { "severity": "warning" }

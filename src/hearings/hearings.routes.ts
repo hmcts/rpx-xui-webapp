@@ -18,6 +18,7 @@ import { HearingWelshComponent } from './containers/request-hearing/hearing-wels
 import { RequestHearingComponent } from './containers/request-hearing/request-hearing.component';
 import { ViewHearingComponent } from './containers/view-hearing/view-hearing.component';
 import { HearingCategory } from './models/hearings.enum';
+import { AdditionalFacilitiesResolver } from './resolvers/additional-facilities.resolver';
 import { CaseFlagsResolver } from './resolvers/case-flags.resolver';
 import { HearingStageResolver } from './resolvers/hearing-stage.resolver';
 import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
@@ -165,7 +166,8 @@ export const ROUTES: Routes = [
         path: 'hearing-create-edit-summary',
         resolve: {
           caseFlags: CaseFlagsResolver,
-          hearingStageOptions: HearingStageResolver
+          hearingStageOptions: HearingStageResolver,
+          additionFacilitiesOptions: AdditionalFacilitiesResolver
         },
         component: HearingCreateEditSummaryComponent,
         canActivate: [HealthCheckGuard],

@@ -1,7 +1,7 @@
 import { HearingDayScheduleModel } from './hearingDaySchedule.model';
 
 export interface HearingResponseModel {
-  listAssistTransacrtionID: string;
+  listAssistTransactionID: string;
   receivedDateTime: string;
   responseVersion: number;
   laCaseStatus: string;

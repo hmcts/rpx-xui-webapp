@@ -27,7 +27,7 @@ export  const config =  {
     },
     users : {
         solicitor: 'lukesuperuserxui@mailnesia.com',
-        caseOfficer_r1: 'xui_caseofficer@justice.gov.uk',
+        caseOfficer_r1: 'xui_auto_co_r1@justice.gov.uk',
         caseOfficer_r2: 'xui_auto_co_r2@justice.gov.uk'
     }
 };

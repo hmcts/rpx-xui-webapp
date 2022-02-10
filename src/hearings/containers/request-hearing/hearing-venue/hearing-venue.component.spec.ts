@@ -215,9 +215,9 @@ describe('HearingVenueComponent', () => {
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(location);
     component.addSelection();
     fixture.detectChanges();
-    expect(component.selectedLocations.length).toBe(2);
+    expect(component.selectedLocations.length).toBe(3);
     component.removeSelection(location);
-    expect(component.selectedLocations.length).toBe(1);
+    expect(component.selectedLocations.length).toBe(2);
   });
 
   it('should show error when there is no locations found', async (done) => {

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
@@ -24,10 +24,13 @@ import { getTitleText } from '../../../utils';
   templateUrl: './allocate-role-search-person.component.html'
 })
 export class AllocateRoleSearchPersonComponent implements OnInit {
+  public allocateAction = 'Allocate';
   public ERROR_MESSAGE = PERSON_ERROR_MESSAGE;
   @Input() public navEvent: AllocateRoleNavigation;
   public domain = PersonRole.JUDICIAL;
   public title: string;
+  public assignedUser: string;
+  public userIncluded: boolean = true;
   public boldTitle: string = 'Find the person';
   public formGroup: FormGroup = new FormGroup({});
   public personName: string;
@@ -52,6 +55,9 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
     this.title = getTitleText(allocateRoleStateData.typeOfRole, action, allocateRoleStateData.roleCategory);
     this.personName = allocateRoleStateData && allocateRoleStateData.person ? this.getDisplayName(allocateRoleStateData.person) : null;
     this.person = allocateRoleStateData.person;
+    // hide user when allocate as user can select allocate to me
+    this.userIncluded = !(allocateRoleStateData.action === Actions.Allocate);
+    this.assignedUser = allocateRoleStateData.personToBeRemoved ? allocateRoleStateData.personToBeRemoved.id : null;
     this.roleType = allocateRoleStateData.typeOfRole;
     this.services = [allocateRoleStateData.jurisdiction];
   }

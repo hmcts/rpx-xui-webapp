@@ -23,6 +23,7 @@ export class AddExclusionSearchPersonComponent implements OnInit {
   public subscription: Subscription;
   public personRole: PersonRole;
   public services: string[];
+  public assignedUser: string;
 
   constructor(private readonly store: Store<fromFeature.State>) {
   }
@@ -36,6 +37,7 @@ export class AddExclusionSearchPersonComponent implements OnInit {
     this.person = exclusion.person;
     this.personRole = exclusion.personRole;
     this.services = [exclusion.jurisdiction];
+    this.assignedUser = exclusion.person ? exclusion.person.id : null;
   }
 
   public navigationHandler(navEvent: ExclusionNavigationEvent): void {

@@ -94,5 +94,7 @@ describe('AllocateRolePersonComponent', () => {
     expect(component.title).toBe('Allocate a lead judge');
     expect(component.personName).toBe('test2');
     expect(component.roleType).toEqual({id: 'lead-judge', name: 'Lead judge'});
+    expect(component.assignedUser).toEqual('p111111');
+    expect(component.userIncluded).toEqual(false);
   });
 });

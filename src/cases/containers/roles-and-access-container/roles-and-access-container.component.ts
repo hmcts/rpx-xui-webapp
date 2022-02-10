@@ -50,7 +50,7 @@ export class RolesAndAccessContainerComponent implements OnInit {
 
   public loadExclusions(jurisdiction: any): void {
     this.exclusions$ = this.roleExclusionsService.getCurrentUserRoleExclusions(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id).pipe(
-      mergeMap((exclusions: RoleExclusion[]) => this.allocateService.getCaseRolesUserDetails(getJudicialUserIdsFromExclusions(exclusions), [jurisdiction]).pipe(
+      mergeMap((exclusions: RoleExclusion[]) => this.allocateService.getCaseRolesUserDetails(getJudicialUserIdsFromExclusions(exclusions), [jurisdiction.value]).pipe(
         map((caseRolesWithUserDetails: CaseRoleDetails[]) => mapCaseRolesForExclusions(exclusions, caseRolesWithUserDetails))
       ))
     );

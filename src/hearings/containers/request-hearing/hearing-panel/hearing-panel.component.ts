@@ -22,7 +22,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
   public includedJudgeList: Person[] = [];
   public excludedJudgeList: Person[] = [];
   public panelSelection: string;
-  public multiLevelSelections: RefDataModel[];
+  public multiLevelSelections: RefDataModel[] = [];
   public panelSelectionError: string;
   public hasValidationRequested: boolean = false;
   public configLevels: { level: number, controlType: ControlTypeEnum }[];
@@ -77,39 +77,37 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
 
   public initialiseHearingPanels(): void {
     this.panelSelection = '';
-    if (this.hearingRequestMainModel.hearingDetails) {
-      if (this.hearingRequestMainModel.hearingDetails.panelRequirements) {
-        if (this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms) {
-          let counter = 0;
-          this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms.forEach(panelSpecialism => {
-            if (panelSpecialism) {
-              this.multiLevelSelections.filter(multiLevelSelection => multiLevelSelection.key === panelSpecialism)
-                .forEach(multiLevelSelectionFiltered => {
-                  multiLevelSelectionFiltered.selected = true;
-                });
-              this.multiLevelSelections.filter(multiLevelSelection => multiLevelSelection.key !== panelSpecialism)
-                .forEach(() => {
-                  const storedIndex = counter;
-                  if (this.multiLevelSelections[storedIndex]) {
-                    const parentFound = this.multiLevelSelections[storedIndex];
-                    if (parentFound.child_nodes) {
-                      parentFound.child_nodes
-                        .filter(node => node.key === panelSpecialism)
-                        .forEach(specialim => {
-                          specialim.selected = true;
-                          parentFound.selected = true;
-                        });
-                    }
-                  }
-                });
-            }
-            counter++;
-          });
-
-          this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms.length ?
-            this.showSpecificPanel('Yes') : this.showSpecificPanel('No');
+    if (this.hearingRequestMainModel.hearingDetails &&
+      this.hearingRequestMainModel.hearingDetails.panelRequirements &&
+      this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms) {
+      let counter = 0;
+      this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms.forEach(panelSpecialism => {
+        if (panelSpecialism) {
+          this.multiLevelSelections.filter(multiLevelSelection => multiLevelSelection.key === panelSpecialism)
+            .forEach(multiLevelSelectionFiltered => {
+              multiLevelSelectionFiltered.selected = true;
+            });
+          this.multiLevelSelections.filter(multiLevelSelection => multiLevelSelection.key !== panelSpecialism)
+            .forEach(() => {
+              const storedIndex = counter;
+              if (this.multiLevelSelections[storedIndex]) {
+                const parentFound = this.multiLevelSelections[storedIndex];
+                if (parentFound.child_nodes) {
+                  parentFound.child_nodes
+                    .filter(node => node.key === panelSpecialism)
+                    .forEach(specialim => {
+                      specialim.selected = true;
+                      parentFound.selected = true;
+                    });
+                }
+              }
+            });
         }
-      }
+        counter++;
+      });
+
+      this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms.length ?
+        this.showSpecificPanel('Yes') : this.showSpecificPanel('No');
     }
   }
 

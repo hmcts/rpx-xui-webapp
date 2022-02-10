@@ -103,6 +103,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     };
   }
 
+  /*TODO: This doesn't not need to be a function all*/
   public formGroupControl(formGroup: FormGroup, controlName: string) {
     return formGroup.controls[controlName];
   }

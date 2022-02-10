@@ -8,7 +8,7 @@
     <div class="govuk-inset-text">
       {{ hint }}
     </div>
-    <form [formGroup]="attendanceFormGroup" class="form" action="hearing-judge">
+    <form [formGroup]="attendanceFormGroup" class="form">
       <div  class="govuk-form-group"
             [ngClass]="{'govuk-form-group--error' : !selectionValid}">
          <span *ngIf=" !selectionValid"

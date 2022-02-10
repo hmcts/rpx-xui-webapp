@@ -79,8 +79,8 @@ export function prepareCaseWorkerForLocationAndService(baseUrl: string, location
 export function preparePaginationUrl(req: EnhancedRequest, postPath: string): string {
   if (req.body && req.body.searchRequest && req.body.searchRequest.pagination_parameters) {
     const paginationConfig = req.body.searchRequest.pagination_parameters;
-    const pageNumber = paginationConfig.page_number - 1;
     const pageSize = paginationConfig.page_size;
+    const pageNumber = (paginationConfig.page_number - 1) * pageSize;
     return `${postPath}?first_result=${pageNumber}&max_results=${pageSize}`;
   }
   return postPath;

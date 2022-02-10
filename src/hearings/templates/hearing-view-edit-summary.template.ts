@@ -1,4 +1,4 @@
-import {AnswerSource} from '../models/hearings.enum';
+import {AnswerSource, IsHiddenSource} from '../models/hearings.enum';
 import {Section} from '../models/section';
 
 export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
@@ -7,11 +7,13 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
     sectionOrder: 1,
     answers: [
       {
+        id: 'caseName',
         answerTitle: 'Case name',
         answerSource: AnswerSource.CASE_NAME,
         answerOrder: 1
       },
       {
+        id: 'type',
         answerTitle: 'Type',
         answerSource: AnswerSource.Type,
         answerOrder: 2
@@ -24,6 +26,7 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
     sectionOrder: 2,
     answers: [
       {
+        id: 'caseFlags',
         answerTitle: 'Reasonable adjustments',
         answerSource: AnswerSource.CASE_FLAGS,
         answerOrder: 1,
@@ -36,12 +39,14 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
     sectionOrder: 3,
     answers: [
       {
+        id: 'additionalSecurityRequired',
         answerTitle: 'Will additional security be required?',
         answerSource: AnswerSource.ADDITIONAL_SECURITY_REQUIRED,
         answerOrder: 2,
         changeLink: '/hearings/request/hearing-facilities#additionalSecurityYes',
       },
       {
+        id: 'additionalFacilitiesRequired',
         answerTitle: 'Select any additional facilities required',
         answerSource: AnswerSource.ADDITIONAL_FACILITIES_REQUIRED,
         answerOrder: 3,
@@ -54,6 +59,7 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
     sectionOrder: 4,
     answers: [
       {
+        id: 'stage',
         answerTitle: 'What stage is this hearing at?',
         answerSource: AnswerSource.STAGE,
         answerOrder: 1,
@@ -66,12 +72,14 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
     sectionOrder: 5,
     answers: [
       {
+        id: 'howAttendant',
         answerTitle: 'How will each party attend the hearing?',
         answerSource: AnswerSource.HOW_ATTENDANT,
         answerOrder: 1,
         changeLink: '/hearings/request/hearing-attendance#partyChannel0',
       },
       {
+        id: 'attendantPersonAmount',
         answerTitle: 'How many people will attend the hearing in person?',
         answerSource: AnswerSource.ATTENDANT_PERSON_AMOUNT,
         answerOrder: 2,
@@ -80,10 +88,11 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
     ],
   },
   {
-    sectionHTMLTitle: '<h2 class="govuk-heading-m">Venue</h2>',
+    sectionHTMLTitle: '<h2 class="govuk-heading-m">Hearing venue</h2>',
     sectionOrder: 6,
     answers: [
       {
+        id: 'venue',
         answerTitle: 'What are the hearing venue details?',
         answerSource: AnswerSource.VENUE,
         answerOrder: 1,
@@ -92,22 +101,39 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
     ],
   },
   {
-    sectionHTMLTitle: '<h2 class="govuk-heading-m">Judge details</h2>',
+    sectionHTMLTitle: '<h2 class="govuk-heading-m">Language requirements</h2>',
     sectionOrder: 7,
     answers: [
       {
+        id: 'needWelsh',
+        answerTitle: 'Does this hearing need to be in Welsh?',
+        answerSource: AnswerSource.NEED_WELSH,
+        answerOrder: 1,
+        changeLink: '/hearings/request/hearing-welsh#welsh_hearing_yes'
+      },
+    ],
+    isHiddenSource: IsHiddenSource.WELSH_LOCATION
+  },
+  {
+    sectionHTMLTitle: '<h2 class="govuk-heading-m">Judge details</h2>',
+    sectionOrder: 8,
+    answers: [
+      {
+        id: 'needJudge',
         answerTitle: 'Do you want a specific judge?',
         answerSource: AnswerSource.NEED_JUDGE,
         answerOrder: 1,
         changeLink: '/hearings/request/hearing-judge#specificJudgeName',
       },
       {
+        id: 'judgeName',
         answerTitle: 'Name of the judge',
         answerSource: AnswerSource.JUDGE_NAME,
         answerOrder: 2,
         changeLink: '/hearings/request/hearing-judge#inputSelectPerson',
       },
       {
+        id: 'judgeExclusion',
         answerTitle: 'Exclude a judge',
         answerSource: AnswerSource.JUDGE_EXCLUSION,
         answerOrder: 3,
@@ -117,9 +143,10 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Panel details</h2>',
-    sectionOrder: 8,
+    sectionOrder: 9,
     answers: [
       {
+        id: 'hearingPanel',
         answerTitle: 'Do you require a panel for this hearing?',
         answerSource: AnswerSource.HEARING_PANEL,
         answerOrder: 1,
@@ -129,21 +156,24 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Length, date and priority level of hearing</h2>',
-    sectionOrder: 9,
+    sectionOrder: 10,
     answers: [
       {
+        id: 'hearingLength',
         answerTitle: 'Length of hearing',
         answerSource: AnswerSource.HEARING_LENGTH,
         answerOrder: 1,
         changeLink: '/hearings/request/hearing-timing#durationhours',
       },
       {
+        id: 'hearingSpecificDate',
         answerTitle: 'Does the hearing need to take place on a specific date?',
         answerSource: AnswerSource.HEARING_SPECIFIC_DATE,
         answerOrder: 2,
         changeLink: '/hearings/request/hearing-timing#noSpecificDate',
       },
       {
+        id: 'hearingPriority',
         answerTitle: 'What is the priority of this hearing?',
         answerSource: AnswerSource.HEARING_PRIORITY,
         answerOrder: 2,
@@ -153,9 +183,10 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Additional instructions</h2>',
-    sectionOrder: 10,
+    sectionOrder: 11,
     answers: [
       {
+        id: 'additionalInstruction',
         answerTitle: 'Enter any additional instructions for the hearing',
         answerSource: AnswerSource.ADDITIONAL_INSTRUCTION,
         answerOrder: 1,
@@ -164,3 +195,4 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
     ],
   },
 ];
+

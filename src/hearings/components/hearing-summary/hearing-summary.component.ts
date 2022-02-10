@@ -1,5 +1,5 @@
-import {Component, Input} from '@angular/core';
-import {Router} from '@angular/router';
+import {AfterViewInit, Component, Input} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 import {select, Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {HearingConditions} from '../../models/hearingConditions';
@@ -11,19 +11,35 @@ import * as fromHearingStore from '../../store';
   selector: 'exui-hearing-summary',
   templateUrl: './hearing-summary.component.html',
 })
-export class HearingSummaryComponent {
+export class HearingSummaryComponent implements AfterViewInit {
 
   @Input() public template: Section[];
   @Input() public mode: Mode;
   private hearingState$: Observable<fromHearingStore.State>;
 
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
-              protected readonly router: Router) {
+              protected readonly router: Router,
+              protected readonly route: ActivatedRoute) {
     this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
   }
 
-  public changeAnswer(changeLink: string): void {
+  public ngAfterViewInit(): void {
+    this.fragmentFocus();
+  }
+
+  public fragmentFocus(): void {
+    this.route.fragment.subscribe(frag => {
+      const element = document.getElementById(frag);
+      if (element) {
+        element.scrollIntoView();
+        element.focus();
+      }
+    });
+  }
+
+  public changeAnswer(id: string, changeLink: string): void {
     const hearingCondition: HearingConditions = {
+      fragmentId: id,
       mode: this.mode,
     };
     this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));

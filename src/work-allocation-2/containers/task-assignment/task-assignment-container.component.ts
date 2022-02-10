@@ -26,6 +26,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   public caseworker: Caseworker;
   public verb: TaskActionType;
   public location: Location;
+  public assignedUser: string;
 
   public domain = PersonRole.ALL;
   public service: string;
@@ -84,6 +85,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     this.isJudicial = this.isCurrentUserJudicial();
     // Get the task from the route, which will have been put there by the resolver.
     const task = this.route.snapshot.data.taskAndCaseworkers.task.task;
+    this.assignedUser = task.assignee;
     this.tasks = [task];
     this.verb = this.route.snapshot.data.verb as TaskActionType;
 

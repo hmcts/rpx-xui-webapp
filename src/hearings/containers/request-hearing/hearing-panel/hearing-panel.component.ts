@@ -152,8 +152,8 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     return panelRoles;
   }
 
-  public convertRefDataModelToArray(dataSource: RefDataModel[], validator: boolean = false): FormArray {
-    const dataSourceArray = !validator ? this.formBuilder.array([]) : this.formBuilder.array([]);
+  public convertRefDataModelToArray(dataSource: RefDataModel[]): FormArray {
+    const dataSourceArray = this.formBuilder.array([]);
     dataSource.forEach(otherPanelRoles => {
       (dataSourceArray as FormArray).push(this.patchValues({
         key: otherPanelRoles.key,

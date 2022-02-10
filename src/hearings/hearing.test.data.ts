@@ -1098,11 +1098,17 @@ export const initialState = {
           hearingType: 'Final',
           hearingLocations: [
             {
-              locationType: 'region',
-              locationId: '123',
-              locationName: 'test location',
-              region: 'Wales',
-            }
+              locationId: '196538',
+              locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
+              locationType: 'hearing',
+              region: 'North West',
+            },
+            {
+              locationId: '219164',
+              locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
+              locationType: 'hearing',
+              region: 'Scotland',
+            },
           ],
           hearingIsLinkedFlag: false,
           hearingWindow: null,
@@ -1140,11 +1146,15 @@ export const initialState = {
         },
         partyDetails: [
           {
+            partyID: 'P1',
             partyName: 'Jane and Smith',
+            partyType: PartyType.IND,
             partyChannel: 'inperson'
           },
           {
+            partyID: 'P2',
             partyName: 'DWP',
+            partyType: PartyType.ORG,
             partyChannel: 'bymobile'
           }
         ]

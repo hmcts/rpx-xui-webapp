@@ -13,7 +13,6 @@ import { HearingsService } from '../../../services/hearings.service';
 import { HearingPanelComponent } from './hearing-panel.component';
 import { initialState } from '../../../../hearings/hearing.test.data';
 
-
 describe('HearingPanelComponent', () => {
   let component: HearingPanelComponent;
   let fixture: ComponentFixture<HearingPanelComponent>;

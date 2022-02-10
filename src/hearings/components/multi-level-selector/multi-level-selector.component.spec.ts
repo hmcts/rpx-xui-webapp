@@ -39,7 +39,7 @@ class DataModelConvertor {
   }
 }
 
-fdescribe('MultiLevelSelectorComponent', () => {
+describe('MultiLevelSelectorComponent', () => {
   let component: MultiLevelSelectorComponent;
   let fixture: ComponentFixture<MultiLevelSelectorComponent>;
 
@@ -61,7 +61,7 @@ fdescribe('MultiLevelSelectorComponent', () => {
       hintTextCY: 'false',
       order: 1,
       parentKey: '3',
-      selected: false,
+      selected: true,
       child_nodes: [{
         key: 'Cardiologist',
         value_en: 'Cardiologist',
@@ -71,7 +71,7 @@ fdescribe('MultiLevelSelectorComponent', () => {
         order: 1,
         parentKey: '3',
         child_nodes: [],
-        selected: false,
+        selected: true,
       },
       {
         key: 'Carer',
@@ -193,6 +193,7 @@ fdescribe('MultiLevelSelectorComponent', () => {
       .compileComponents();
     fixture = TestBed.createComponent(MultiLevelSelectorComponent);
     component = fixture.componentInstance;
+    spyOn(component, 'ngAfterViewInit').and.callFake(() => { });
     const modelConvertor = new DataModelConvertor(component.fb);
     component.level = 2;
     component.hasValidationRequested = true;
@@ -229,5 +230,21 @@ fdescribe('MultiLevelSelectorComponent', () => {
     });
     fixture.detectChanges();
     expect(component.checkValidationWhenRequested).toEqual(true);
+  });
+
+  it('should deselect node', () => {
+    component.deSelectChildNodes(component.multiLevelSelect.controls[1]);
+    fixture.detectChanges();
+    component.multiLevelSelect.controls[1].value.child_nodes.forEach(node => {
+      expect(node.selected).toEqual(false);
+    });
+  });
+
+  it('should assign selected option to item control', () => {
+    component.level = 2;
+    component.multiLevelSelect = (component.multiLevelSelect.controls[1] as FormGroup).controls['child_nodes'] as FormArray;
+    component.assignSelectedOptionToItemControl();
+    fixture.detectChanges();
+    expect(component.formGroup.controls.item.value).toEqual('Cardiologist');
   });
 });

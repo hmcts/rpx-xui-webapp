@@ -26,7 +26,14 @@ export class MultiLevelSelectorComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    this.assignSelectedOptionToItemControl();
+  }
+
+  public assignSelectedOptionToItemControl() {
     if (this.controlType === ControlTypeEnum.SELECT) {
+      console.log('length controls', (this.multiLevelSelect as FormArray).controls.length);
+      console.log('filtered controls', (this.multiLevelSelect as FormArray).controls
+        .filter(control => control.value && control.value.selected === true).length);
       (this.multiLevelSelect as FormArray).controls
         .filter(control => control.value && control.value.selected === true)
         .forEach(selectedControl => this.formGroup.controls.item.setValue(selectedControl.value.key));

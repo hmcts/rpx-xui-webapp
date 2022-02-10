@@ -82,14 +82,13 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
         if (this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms) {
           let counter = 0;
           this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms.forEach(panelSpecialism => {
-
             if (panelSpecialism) {
               this.multiLevelSelections.filter(multiLevelSelection => multiLevelSelection.key === panelSpecialism)
                 .forEach(multiLevelSelectionFiltered => {
                   multiLevelSelectionFiltered.selected = true;
                 });
               this.multiLevelSelections.filter(multiLevelSelection => multiLevelSelection.key !== panelSpecialism)
-                .forEach(multiLevelSelectionNotFound => {
+                .forEach(() => {
                   const storedIndex = counter;
                   if (this.multiLevelSelections[storedIndex]) {
                     const parentFound = this.multiLevelSelections[storedIndex];
@@ -119,8 +118,8 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
 
   public prepareData() {
     const panelRoles = this.convertArrayToRefDataModel(this.panelJudgeForm.controls.multiLevelSelect as FormArray);
-    const panelRolesSelected = panelRoles
-      .map(selected => !selected.child_nodes || !selected.child_nodes.length ? selected.selected ? selected.key : ''
+    const panelRolesSelected = panelRoles.filter(panelRole => panelRole.selected)
+      .map(selected => !selected.child_nodes || !selected.child_nodes.length ? selected.key
         : selected.child_nodes.filter(child => child.selected).length ? selected.child_nodes.filter(child => child.selected)[0].key : '');
 
     this.hearingRequestMainModel = {

@@ -9,11 +9,6 @@ class Application{
         return await this.loadingSpinner.isPresent();
     }
 
-    async waitForSpinnerToDissappear() {
-        await BrowserWaits.waitForCondition(async () => {
-            return !(await this.loadingSpinner.isPresent());
-        });
-    }
 
 }
 

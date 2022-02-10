@@ -37,7 +37,7 @@ class WAListTable {
     }
 
     async waitForSpinnerToDissappear() {
-        await this.spinner.waitForSpinnerToDissappear();
+        await BrowserWaits.waitForSpinnerToDissappear();
     }
 
     async waitForTable() {

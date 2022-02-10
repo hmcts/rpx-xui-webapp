@@ -1,6 +1,27 @@
 import {HearingListingStatusEnum, HMCStatus, PartyType} from './models/hearings.enum';
 import {ServiceHearingValuesModel} from './models/serviceHearingValues.model';
 
+export const facilitiesListRefData = [
+  {
+      key: 'immigrationDetentionCentre',
+      value_en: 'Immigration detention centre',
+      value_cy: '',
+      hintText_EN: 'Immigration detention centre',
+      hintTextCY: '',
+      order: 1,
+      parentKey: null
+  },
+  {
+      key: 'inCameraCourt',
+      value_en: 'In camera court',
+      value_cy: '',
+      hintText_EN: 'In camera court',
+      hintTextCY: '',
+      order: 2,
+      parentKey: null
+  }
+];
+
 export const caseFlagsRefData = [
   {
     name: 'Case',
@@ -1098,7 +1119,10 @@ export const initialState = {
           hearingPriorityType: null,
           numberOfPhysicalAttendees: null,
           hearingInWelshFlag: true,
-          facilitiesRequired: [],
+          facilitiesRequired: [
+            'immigrationDetentionCentre',
+            'inCameraCourt'
+          ],
           listingComments: null,
           hearingRequester: null,
           leadJudgeContractType: null,

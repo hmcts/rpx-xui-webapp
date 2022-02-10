@@ -15,8 +15,8 @@ export class RefDataResolver implements Resolve<RefDataModel[]> {
   public serviceId: string = 'SSCS';
 
   constructor(
-    private readonly hearingsDataService: HearingsRefDataService,
-    private readonly hearingStore: Store<fromHearingStore.State>
+    protected readonly hearingsDataService: HearingsRefDataService,
+    protected readonly hearingStore: Store<fromHearingStore.State>
   ) { }
 
   public resolve(route?: ActivatedRouteSnapshot): Observable<RefDataModel[]> {

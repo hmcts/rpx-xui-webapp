@@ -4,11 +4,11 @@ import {cold} from 'jasmine-marbles';
 import {of, Subscription} from 'rxjs';
 import {caseFlagsRefData, initialState} from '../hearing.test.data';
 import {State} from '../store/reducers';
-import {CaseFlagConverter} from './case-flag.converter';
+import {CaseFlagAnswerConverter} from './case-flag.answer.converter';
 
-describe('CaseFlagConverter', () => {
+describe('CaseFlagAnswerConverter', () => {
 
-  let caseFlagConverter: CaseFlagConverter;
+  let caseFlagConverter: CaseFlagAnswerConverter;
   let router: any;
 
   beforeEach(() => {
@@ -27,7 +27,7 @@ describe('CaseFlagConverter', () => {
       ]
     });
     router = TestBed.get(ActivatedRoute);
-    caseFlagConverter = new CaseFlagConverter(router);
+    caseFlagConverter = new CaseFlagAnswerConverter(router);
     caseFlagConverter.storeSub = new Subscription();
   });
 

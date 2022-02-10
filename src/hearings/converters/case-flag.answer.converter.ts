@@ -8,7 +8,7 @@ import {State} from '../store';
 import {CaseFlagsUtils} from '../utils/case-flags.utils';
 import {AnswerConverter} from './answer.converter';
 
-export class CaseFlagConverter implements AnswerConverter, OnDestroy {
+export class CaseFlagAnswerConverter implements AnswerConverter, OnDestroy {
 
   public caseFlagsRefData: CaseFlagReferenceModel[];
   public storeSub: Subscription;

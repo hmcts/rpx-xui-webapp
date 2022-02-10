@@ -4,6 +4,7 @@ import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {AbstractConverter} from '../converters/abstract.converter';
 import { AdditionalFacilitiesConverter } from '../converters/additional-facilities.converter';
+import { AdditionalInstructionsConverter } from '../converters/additional-instructions.converter';
 import { AdditionalSecurityConverter } from '../converters/additional-security.converter';
 import {CaseFlagConverter} from '../converters/case-flag.converter';
 import {CaseNameConverter} from '../converters/case-name.converter';
@@ -38,6 +39,9 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.CASE_FLAGS:
         converter = new CaseFlagConverter(this.hearingStore, this.route);
+        break;
+      case AnswerSource.ADDITIONAL_INSTRUCTION:
+        converter = new AdditionalInstructionsConverter(this.hearingStore);
         break;
       default:
         break;

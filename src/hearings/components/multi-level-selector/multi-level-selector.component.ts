@@ -29,7 +29,7 @@ export class MultiLevelSelectorComponent implements AfterViewInit {
     this.assignSelectedOptionToItemControl();
   }
 
-  public assignSelectedOptionToItemControl() {
+  public assignSelectedOptionToItemControl(): void {
     if (this.controlType === ControlTypeEnum.SELECT) {
       console.log('length controls', (this.multiLevelSelect as FormArray).controls.length);
       console.log('filtered controls', (this.multiLevelSelect as FormArray).controls
@@ -40,7 +40,7 @@ export class MultiLevelSelectorComponent implements AfterViewInit {
     }
   }
 
-  public deSelectChildNodes(control: AbstractControl) {
+  public deSelectChildNodes(control: AbstractControl): void {
     if (control.value && control.value.child_nodes && control.value.child_nodes.length) {
       control.value.child_nodes.forEach(node => {
         node.selected = false;

@@ -75,7 +75,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     this.panelJudgeForm.controls.multiLevelSelect = this.convertRefDataModelToArray(this.multiLevelSelections);
   }
 
-  public initialiseHearingPanels() {
+  public initialiseHearingPanels(): void {
     this.panelSelection = '';
     if (this.hearingRequestMainModel.hearingDetails) {
       if (this.hearingRequestMainModel.hearingDetails.panelRequirements) {
@@ -106,17 +106,14 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
             counter++;
           });
 
-          if (this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms.length) {
-            this.showSpecificPanel('Yes');
-          } else {
-            this.showSpecificPanel('No');
-          }
+          this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms.length ?
+            this.showSpecificPanel('Yes') : this.showSpecificPanel('No');
         }
       }
     }
   }
 
-  public prepareData() {
+  public prepareData(): void {
     const panelRoles = this.convertArrayToRefDataModel(this.panelJudgeForm.controls.multiLevelSelect as FormArray);
     const panelRolesSelected = panelRoles.filter(panelRole => panelRole.selected)
       .map(selected => !selected.child_nodes || !selected.child_nodes.length ? selected.key
@@ -184,7 +181,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     });
   }
 
-  public showSpecificPanel(judgeSelection: string) {
+  public showSpecificPanel(judgeSelection: string): void {
     this.panelSelection = judgeSelection;
     this.panelJudgeForm.controls.specificPanel.setValue(this.panelSelection);
   }

@@ -3,6 +3,8 @@ import {ActivatedRoute} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {AbstractConverter} from '../converters/abstract.converter';
+import { AdditionalFacilitiesConverter } from '../converters/additional-facilities.converter';
+import { AdditionalSecurityConverter } from '../converters/additional-security.converter';
 import {CaseFlagConverter} from '../converters/case-flag.converter';
 import {CaseNameConverter} from '../converters/case-name.converter';
 import {DefaultConverter} from '../converters/default.converter';
@@ -27,6 +29,12 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.Type:
         converter = new TypeConverter(this.hearingStore);
+        break;
+      case AnswerSource.ADDITIONAL_SECURITY_REQUIRED:
+        converter = new AdditionalSecurityConverter(this.hearingStore);
+        break;
+      case AnswerSource.ADDITIONAL_FACILITIES_REQUIRED:
+        converter = new AdditionalFacilitiesConverter(this.hearingStore, this.route);
         break;
       case AnswerSource.CASE_FLAGS:
         converter = new CaseFlagConverter(this.hearingStore, this.route);

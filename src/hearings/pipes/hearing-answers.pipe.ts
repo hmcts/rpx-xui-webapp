@@ -1,8 +1,7 @@
 import {Pipe, PipeTransform} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
-import {AbstractAnswerConverter} from '../converters/abstract.answer.converter';
+import {AnswerConverter} from '../converters/answer.converter';
 import {CaseFlagConverter} from '../converters/case-flag.converter';
 import {CaseNameAnswerConverter} from '../converters/case-name.answer.converter';
 import {DefaultAnswerConverter} from '../converters/default.answer.converter';
@@ -10,39 +9,38 @@ import {NeedWelshAnswerConverter} from '../converters/need-welsh.answer.converte
 import {TypeAnswerConverter} from '../converters/type.answer.converter';
 import {VenueAnswerConverter} from '../converters/venue.answer.converter';
 import {AnswerSource} from '../models/hearings.enum';
-import * as fromHearingStore from '../store';
+import {State} from '../store';
 
 @Pipe({
   name: 'transformAnswer'
 })
 export class HearingAnswersPipe implements PipeTransform {
 
-  constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
-              protected readonly route: ActivatedRoute) {
+  constructor(protected readonly route: ActivatedRoute) {
   }
 
-  public transform(answerSource: AnswerSource): Observable<string> {
-    let converter: AbstractAnswerConverter = new DefaultAnswerConverter(this.hearingStore);
+  public transform(answerSource: AnswerSource, hearingState$: Observable<State>): Observable<string> {
+    let converter: AnswerConverter = new DefaultAnswerConverter();
     switch (answerSource) {
       case AnswerSource.CASE_NAME:
-        converter = new CaseNameAnswerConverter(this.hearingStore);
+        converter = new CaseNameAnswerConverter();
         break;
       case AnswerSource.Type:
-        converter = new TypeAnswerConverter(this.hearingStore);
+        converter = new TypeAnswerConverter();
         break;
       case AnswerSource.CASE_FLAGS:
-        converter = new CaseFlagConverter(this.hearingStore, this.route);
+        converter = new CaseFlagConverter(this.route);
         break;
       case AnswerSource.VENUE:
-        converter = new VenueAnswerConverter(this.hearingStore);
+        converter = new VenueAnswerConverter();
         break;
       case AnswerSource.NEED_WELSH:
-        converter = new NeedWelshAnswerConverter(this.hearingStore);
+        converter = new NeedWelshAnswerConverter();
         break;
       default:
         break;
     }
-    return converter.transformAnswer();
+    return converter.transformAnswer(hearingState$);
   }
 
 }

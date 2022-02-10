@@ -1,22 +1,11 @@
-import {TestBed} from '@angular/core/testing';
-import {Store} from '@ngrx/store';
-import {provideMockStore} from '@ngrx/store/testing';
-import {initialState} from '../hearing.test.data';
 import {DefaultAnswerConverter} from './default.answer.converter';
 
 describe('DefaultAnswerConverter', () => {
 
   let defaultAnswerConverter: DefaultAnswerConverter;
-  let store: Store<any>;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [
-        provideMockStore({initialState}),
-      ]
-    });
-    store = TestBed.get(Store);
-    defaultAnswerConverter = new DefaultAnswerConverter(store);
+    defaultAnswerConverter = new DefaultAnswerConverter();
   });
 
   it('should return default converter', () => {

@@ -1122,11 +1122,15 @@ export const initialState = {
         },
         partyDetails: [
           {
+            partyID: 'P1',
             partyName: 'Jane and Smith',
+            partyType: PartyType.IND,
             partyChannel: 'inperson'
           },
           {
+            partyID: 'P2',
             partyName: 'DWP',
+            partyType: PartyType.ORG,
             partyChannel: 'bymobile'
           }
         ]

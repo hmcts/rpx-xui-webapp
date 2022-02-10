@@ -537,10 +537,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.6.7-location-filter-improvements":
-  version "1.6.7-location-filter-improvements"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.7-location-filter-improvements.tgz#06497691e322d93e448f15b164b6b2597a927110"
-  integrity sha512-o3JkdPb/5XL3e846rgorQtCclmD9rJ8jtzHHoZrjvQNHxmWUWzY6sA+xP+8jVBsNSgrAzYK5PGbs4oNLmZnTVQ==
+"@hmcts/rpx-xui-common-lib@1.6.7-location-filter-improvements-3":
+  version "1.6.7-location-filter-improvements-3"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.7-location-filter-improvements-3.tgz#add828fcec2408c350dc85860031753d9477738c"
+  integrity sha512-YKXuR17refsLT0zHMsA52VBiwBx7czkiu1COzl65IUeaQ1Z40JtXylVeK3O0vFAw/GFS3SMTtX2yEFDqG6Y4+w==
   dependencies:
     tslib "^1.9.0"
 

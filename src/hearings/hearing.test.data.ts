@@ -1,5 +1,26 @@
-import {HearingListingStatusEnum, HMCStatus, PartyType} from './models/hearings.enum';
-import {ServiceHearingValuesModel} from './models/serviceHearingValues.model';
+import { HearingListingStatusEnum, HMCStatus, PartyType } from './models/hearings.enum';
+import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
+
+export const hearingStageRefData = [
+  {
+    key: 'initial',
+    value_en: 'Initial',
+    value_cy: '',
+    hintText_EN: 'Initial',
+    hintTextCY: '',
+    order: 1,
+    parentKey: null
+  },
+  {
+    key: 'final',
+    value_en: 'Final',
+    value_cy: '',
+    hintText_EN: 'Final',
+    hintTextCY: '',
+    order: 2,
+    parentKey: null
+  }
+];
 
 export const caseFlagsRefData = [
   {
@@ -882,17 +903,17 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   numberOfPhysicalAttendees: 2,
   hearingInWelshFlag: false,
   hearingLocations: [{
-      locationId: '196538',
-      locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
-      locationType: 'hearing',
-      region: 'North West',
-    },
-    {
-      locationId: '219164',
-      locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
-      locationType: 'hearing',
-      region: 'Scotland',
-    },
+    locationId: '196538',
+    locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
+    locationType: 'hearing',
+    region: 'North West',
+  },
+  {
+    locationId: '219164',
+    locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
+    locationType: 'hearing',
+    region: 'Scotland',
+  },
   ],
   caseAdditionalSecurityFlag: false,
   facilitiesRequired: [],
@@ -1074,7 +1095,7 @@ export const initialState = {
         },
         hearingDetails: {
           duration: null,
-          hearingType: 'Final',
+          hearingType: 'final',
           hearingLocations: [
             {
               locationType: 'region',

@@ -6,6 +6,7 @@ import {AbstractConverter} from '../converters/abstract.converter';
 import {CaseFlagConverter} from '../converters/case-flag.converter';
 import {CaseNameConverter} from '../converters/case-name.converter';
 import {DefaultConverter} from '../converters/default.converter';
+import {StageConverter} from '../converters/stage.converter';
 import {TypeConverter} from '../converters/type.converter';
 import {AnswerSource} from '../models/hearings.enum';
 import * as fromHearingStore from '../store';
@@ -30,6 +31,9 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.CASE_FLAGS:
         converter = new CaseFlagConverter(this.hearingStore, this.route);
+        break;
+      case AnswerSource.STAGE:
+        converter = new StageConverter(this.hearingStore, this.route);
         break;
       default:
         break;

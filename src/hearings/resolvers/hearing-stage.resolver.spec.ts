@@ -40,13 +40,13 @@ describe('HearingStage Resolver', () => {
     expect(service).toBeTruthy();
   });
 
-  it('resolves reference data for the facility list', inject([HearingStageResolver], (service: HearingStageResolver) => {
+  it('resolves reference data for the hearing stage', inject([HearingStageResolver], (service: HearingStageResolver) => {
     spyOn(store, 'pipe').and.returnValue(of('serviceName'));
     spyOn(hearingsDataService, 'getRefData').and.returnValue(of(dataRef));
     spyOn(service, 'getReferenceData$').and.callThrough();
     const route = new ActivatedRouteSnapshot();
     route.data = {
-      title: 'HMCTS Manage cases | Request Hearing | Date Priority Hearing'
+      title: 'HMCTS Hearings | Request Hearing | Hearing Stage'
     };
     service.resolve(route).subscribe((refData: RefDataModel[]) => {
       expect(service.getReferenceData$).toHaveBeenCalled();

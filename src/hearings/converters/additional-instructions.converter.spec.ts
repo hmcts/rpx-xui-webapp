@@ -2,14 +2,14 @@ import {cold} from 'jasmine-marbles';
 import {of} from 'rxjs';
 import {initialState} from '../hearing.test.data';
 import {State} from '../store';
-import {AdditionalInstructionsConverter} from './additional-instructions.converter';
+import {AdditionalInstructionsAnswerConverter} from './additional-instructions.answer.converter';
 
-describe('AdditionalInstructionsConverter', () => {
+describe('AdditionalInstructionsAnswerConverter', () => {
 
-  let converter: AdditionalInstructionsConverter;
+  let converter: AdditionalInstructionsAnswerConverter;
 
   beforeEach(() => {
-    converter = new AdditionalInstructionsConverter();
+    converter = new AdditionalInstructionsAnswerConverter();
   });
 
   it('should transform additional instructions', () => {

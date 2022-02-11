@@ -1,14 +1,7 @@
 import {Pipe, PipeTransform} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Observable} from 'rxjs';
-import {AbstractConverter} from '../converters/abstract.converter';
-import { AdditionalFacilitiesConverter } from '../converters/additional-facilities.converter';
-import { AdditionalInstructionsConverter } from '../converters/additional-instructions.converter';
-import { AdditionalSecurityConverter } from '../converters/additional-security.converter';
-import {CaseFlagConverter} from '../converters/case-flag.converter';
-import {CaseNameConverter} from '../converters/case-name.converter';
-import {DefaultConverter} from '../converters/default.converter';
-import {TypeConverter} from '../converters/type.converter';
+import { AdditionalInstructionsAnswerConverter } from '../converters/additional-instructions.answer.converter';
 import {AdditionalFacilitiesAnswerConverter} from '../converters/additional-facilities.answer.converter';
 import {AdditionalSecurityAnswerConverter} from '../converters/additional-security.answer.converter';
 import {AnswerConverter} from '../converters/answer.converter';
@@ -54,7 +47,7 @@ export class HearingAnswersPipe implements PipeTransform {
         converter = new NeedWelshAnswerConverter();
         break;
       case AnswerSource.ADDITIONAL_INSTRUCTION:
-        converter = new AdditionalInstructionsConverter(this.hearingStore);
+        converter = new AdditionalInstructionsAnswerConverter();
         break;
       default:
         break;

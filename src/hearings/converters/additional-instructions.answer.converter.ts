@@ -3,7 +3,7 @@ import {map} from 'rxjs/operators';
 import {State} from '../store';
 import {AnswerConverter} from './answer.converter';
 
-export class AdditionalInstructionsConverter implements AnswerConverter {
+export class AdditionalInstructionsAnswerConverter implements AnswerConverter {
 
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(

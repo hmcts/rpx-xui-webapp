@@ -16,7 +16,7 @@ describe('AdditionalInstructionsAnswerConverter', () => {
     const STATE: State = initialState.hearings;
     const result$ = converter.transformAnswer(of(STATE));
     const listingComments = 'blah blah blah';
-    const expected = cold('b', {b: listingComments});
+    const expected = cold('(b|)', {b: listingComments});
     expect(result$).toBeObservable(expected);
   });
 

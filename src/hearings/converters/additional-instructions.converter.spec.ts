@@ -1,28 +1,20 @@
-import {TestBed} from '@angular/core/testing';
-import {Store} from '@ngrx/store';
-import {provideMockStore} from '@ngrx/store/testing';
 import {cold} from 'jasmine-marbles';
+import {of} from 'rxjs';
 import {initialState} from '../hearing.test.data';
-import {AbstractConverter} from './abstract.converter';
+import {State} from '../store';
 import {AdditionalInstructionsConverter} from './additional-instructions.converter';
 
 describe('AdditionalInstructionsConverter', () => {
 
-  let converter: AbstractConverter;
-  let store: Store<any>;
+  let converter: AdditionalInstructionsConverter;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [
-        provideMockStore({initialState}),
-      ]
-    });
-    store = TestBed.get(Store);
-    converter = new AdditionalInstructionsConverter(store);
+    converter = new AdditionalInstructionsConverter();
   });
 
   it('should transform additional instructions', () => {
-    const result$ = converter.transformAnswer();
+    const STATE: State = initialState.hearings;
+    const result$ = converter.transformAnswer(of(STATE));
     const listingComments = 'blah blah blah';
     const expected = cold('b', {b: listingComments});
     expect(result$).toBeObservable(expected);

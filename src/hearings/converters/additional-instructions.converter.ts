@@ -1,18 +1,12 @@
-import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import * as fromHearingStore from '../store';
-import {AbstractConverter} from './abstract.converter';
+import {State} from '../store';
+import {AnswerConverter} from './answer.converter';
 
-export class AdditionalInstructionsConverter extends AbstractConverter {
+export class AdditionalInstructionsConverter implements AnswerConverter {
 
-  constructor(
-    protected readonly hearingStore: Store<fromHearingStore.State>) {
-    super(hearingStore);
-  }
-
-  public transformAnswer(): Observable<string> {
-    return this.hearingState.pipe(
+  public transformAnswer(hearingState$: Observable<State>): Observable<string> {
+    return hearingState$.pipe(
       map(state => {
         const additionalInstructions = state.hearingRequest.hearingRequestMainModel.hearingDetails.listingComments;
         if (!additionalInstructions) {

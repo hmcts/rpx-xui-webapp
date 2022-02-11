@@ -25,7 +25,7 @@ export class PartyChannelsConverter implements AnswerConverter {
             const name = party.partyName;
             const value = PartyChannelsConverter.getPartyChannelValue(partyChannels, party);
             if (index === 0) {
-              return `<ul><li>Jane and Smith - ${value}</li>`;
+              return `<ul><li>${name} - ${value}</li>`;
             }
             return index === partyChannels.length - 1 ? `${acc}<li>${name} - ${value}</li></ul>` : `${acc}<li>${name} - ${value}</li>`;
           }, '');

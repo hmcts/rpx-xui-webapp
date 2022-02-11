@@ -8,8 +8,8 @@ import {CaseFlagAnswerConverter} from '../converters/case-flag.answer.converter'
 import {CaseNameAnswerConverter} from '../converters/case-name.answer.converter';
 import {DefaultAnswerConverter} from '../converters/default.answer.converter';
 import {NeedWelshAnswerConverter} from '../converters/need-welsh.answer.converter';
-import { NumberOfAttendancesConverter } from '../converters/number-of-attendances.converter';
-import { PartyChannelsConverter } from '../converters/party-channels.converter';
+import { NumberOfAttendancesAnswerConverter } from '../converters/number-of-attendances-answer.converter';
+import { PartyChannelsAnswerConverter } from '../converters/party-channels-answer.converter';
 import {TypeAnswerConverter} from '../converters/type.answer.converter';
 import {VenueAnswerConverter} from '../converters/venue.answer.converter';
 import {AnswerSource} from '../models/hearings.enum';
@@ -45,10 +45,10 @@ export class HearingAnswersPipe implements PipeTransform {
         converter = new VenueAnswerConverter();
         break;
       case AnswerSource.HOW_ATTENDANT:
-        converter = new PartyChannelsConverter(this.route);
+        converter = new PartyChannelsAnswerConverter(this.route);
         break;
       case AnswerSource.ATTENDANT_PERSON_AMOUNT:
-        converter = new NumberOfAttendancesConverter();
+        converter = new NumberOfAttendancesAnswerConverter();
         break;
       case AnswerSource.NEED_WELSH:
         converter = new NeedWelshAnswerConverter();

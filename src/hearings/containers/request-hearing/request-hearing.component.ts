@@ -31,7 +31,7 @@ export class RequestHearingComponent implements OnDestroy {
     this.hearingsService.navigateAction(ACTION.SUBMIT);
   }
 
-  public isCheckAnswerPage(): boolean {
+  public get isCheckAnswerPage(): boolean {
     return this.pageFlow.getCurrentPage() === RequestHearingComponent.HEARING_CREATE_EDIT_SUMMARY;
   }
 

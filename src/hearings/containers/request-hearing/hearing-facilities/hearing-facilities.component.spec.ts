@@ -163,7 +163,7 @@ describe('HearingFacilitiesComponent', () => {
     component = fixture.componentInstance;
     component.ngOnInit();
     fixture.detectChanges();
-    expect(component.additionalFacilities.filter(facility => facility.selected).length).toEqual(component.hearingRequestMainModel.hearingDetails.facilitiesRequired.length);
+
     expect(component.hearingFactilitiesForm.controls['addition-security-required'].value).toEqual('Yes');
   });
 

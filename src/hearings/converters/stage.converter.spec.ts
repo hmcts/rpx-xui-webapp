@@ -3,13 +3,15 @@ import { ActivatedRoute } from '@angular/router';
 import {Store} from '@ngrx/store';
 import {provideMockStore} from '@ngrx/store/testing';
 import {cold} from 'jasmine-marbles';
+import {of} from 'rxjs';
 import {hearingStageRefData, initialState} from '../hearing.test.data';
-import {AbstractConverter} from './abstract.converter';
+import { State } from '../store';
+import { AnswerConverter } from './answer.converter';
 import {StageConverter} from './stage.converter';
 
 describe('StageConverter', () => {
 
-  let converter: AbstractConverter;
+  let converter: AnswerConverter;
   let store: Store<any>;
   let router: any;
 
@@ -31,11 +33,12 @@ describe('StageConverter', () => {
     });
     store = TestBed.get(Store);
     router = TestBed.get(ActivatedRoute);
-    converter = new StageConverter(store, router);
+    converter = new StageConverter(router);
   });
 
   it('should transform hearing stage', () => {
-    const result$ = converter.transformAnswer();
+    const STATE: State = initialState.hearings;
+    const result$ = converter.transformAnswer(of(STATE));
     const hearingType = 'Final';
     const expected = cold('b', {b: hearingType});
     expect(result$).toBeObservable(expected);

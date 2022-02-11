@@ -194,7 +194,7 @@ describe('workAllocation2', () => {
       await searchTask(req, response, next);
       // Should have the correct URL and the appropriate payload.
       const args = spy.getCall(0).args;
-      expect(args[0]).to.equal(`${baseWorkAllocationTaskUrl}/task?first_result=2&max_results=11`);
+      expect(args[0]).to.equal(`${baseWorkAllocationTaskUrl}/task?first_result=22&max_results=11`);
       expect(args[1]).to.deep.equal({
         search_parameters: [],
         sorting_parameters: [],

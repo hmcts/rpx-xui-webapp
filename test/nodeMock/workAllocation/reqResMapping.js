@@ -126,9 +126,7 @@ module.exports = {
             }
         },
         '/workallocation2/task': (req, res) => {
-            const pageNum = req.body.searchRequest.pagination_parameters.page_number;
-            const pageSize = req.body.searchRequest.pagination_parameters.page_size;
-
+           
             const requestedView = req.body.view;
             let tasks = [];
             if (requestedView === "MyTasks") {
@@ -142,37 +140,47 @@ module.exports = {
                 throw new Error("Unrecognised task list view : " + requestedView);
             }
             try {
-                res.send(getTaskPageRecords(tasks, pageNum, pageSize));
+                if (req.body.searchRequest.pagination_parameters) {
+                    const pageNum = req.body.searchRequest.pagination_parameters.page_number;
+                    const pageSize = req.body.searchRequest.pagination_parameters.page_size;
+                    res.send(getTaskPageRecords(tasks, pageNum, pageSize));
+                } else {
+                    res.send(tasks);
+                }
 
             } catch (e) {
                 res.status(500).send({ error: 'mock error occured', stack: e.stack });
             }
         },
         '/workallocation/taskWithPagination': (req, res) => {
-            const pageNum = req.body.searchRequest.pagination_parameters.page_number;
-            const pageSize = req.body.searchRequest.pagination_parameters.page_size;
+            
 
             const requestedView = req.body.view;
             let tasks = [];
             if (requestedView === "MyTasks") {
-                tasks = global.scenarioData && global.scenarioData['workallocation1.mytasks'] ? global.scenarioData['workallocation1.mytasks'] : workAllocationMockData.getMyTasks(pageSize * 5);
+                tasks = global.scenarioData && global.scenarioData['workallocation1.mytasks'] ? global.scenarioData['workallocation1.mytasks'] : workAllocationMockData.getMyTasks(200);
             } else if (requestedView === "AvailableTasks") {
-                tasks = global.scenarioData && global.scenarioData['workallocation1.availabletasks'] ? global.scenarioData['workallocation1.availabletasks'] : workAllocationMockData.getAvailableTasks(pageSize * 5);
+                tasks = global.scenarioData && global.scenarioData['workallocation1.availabletasks'] ? global.scenarioData['workallocation1.availabletasks'] : workAllocationMockData.getAvailableTasks(200);
             } else if (requestedView === "TaskManager" ) {
-                tasks = global.scenarioData && global.scenarioData['workallocation1.taskmanager'] ? global.scenarioData['workallocation1.taskmanager'] : workAllocationMockData.getTaskManagerTasks(pageSize * 5);
+                tasks = global.scenarioData && global.scenarioData['workallocation1.taskmanager'] ? global.scenarioData['workallocation1.taskmanager'] : workAllocationMockData.getTaskManagerTasks(200);
             } else {
                 throw new Error("Unrecognised task list view : " + requestedView);
             }
             try {
-                res.send(getTaskPageRecords(tasks, pageNum, pageSize));
+                if (req.body.searchRequest.pagination_parameters){
+                    const pageNum = req.body.searchRequest.pagination_parameters.page_number;
+                    const pageSize = req.body.searchRequest.pagination_parameters.page_size;
+                    res.send(getTaskPageRecords(tasks, pageNum, pageSize));
+                }else{
+                    res.send(tasks); 
+                }
 
             } catch (e) {
                 res.status(500).send({ error: 'mock error occured', stack: e.stack });
             }
         },
         '/workallocation2/taskWithPagination': (req, res) => {
-            const pageNum = req.body.searchRequest.pagination_parameters.page_number;
-            const pageSize = req.body.searchRequest.pagination_parameters.page_size;
+            
 
             const requestedView = req.body.view;
             let tasks = [];
@@ -192,7 +200,13 @@ module.exports = {
             }
             
             try { 
-                res.send(getTaskPageRecords(tasks, pageNum, pageSize));
+                if (req.body.searchRequest.pagination_parameters) {
+                    const pageNum = req.body.searchRequest.pagination_parameters.page_number;
+                    const pageSize = req.body.searchRequest.pagination_parameters.page_size;
+                    res.send(getTaskPageRecords(tasks, pageNum, pageSize));
+                } else {
+                    res.send(tasks);
+                }
 
             } catch (e) {
                 res.status(500).send({ error: 'mock error occured', stack: e.stack });
@@ -261,7 +275,7 @@ module.exports = {
             if(Object.keys(req.body).includes('assignmentId')){
                 const reqAssignmentId = req.body.assignmentId;
             
-                const caseRole = workAllocationMockData.getCaseRole();
+                const caseRole = workAllocationMockData.caseRoles[0];
                 caseRole.id = reqAssignmentId;
                 caseRolesAssignment.push(caseRole);
             
@@ -287,12 +301,14 @@ module.exports = {
                     }
                 }
             }
-            if (returnUsers.length > 0){
-                res.send(returnUsers);
-
-            }else{
-                res.status(404).send({error:'user with id not found'});
+            if (returnUsers.length === 0){
+                let i = 0;
+                for (const userid of userids) {
+                    i++;
+                    returnUsers.push(workAllocationMockData.addJudgeUsers(userid,'someJudgefn_'+i, 'judicialln_'+i,i+'_judicial_test@hmcts.net')); 
+                }
             }
+            res.send(returnUsers);
         },
         '/workallocation2/retrieveCaseWorkersForServices' : (req,res) => {
             res.send(workAllocationMockData.retrieveCaseWorkersForServices(req.body.serviceIds, req.body.fullServices))

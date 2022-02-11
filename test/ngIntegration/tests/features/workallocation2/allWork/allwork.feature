@@ -1,4 +1,4 @@
-@ng @test
+@ng 
 Feature: WA Release 2: All work
 
     Background: Mock and browser setup
@@ -51,6 +51,15 @@ Feature: WA Release 2: All work
             | 2   | case 2    | auto test category 2 | test location 2 | test auto task 2 | 0        | MEDIUM   |
             | 3   | case 3    | auto test category 3 | test location 3 | test auto task 3 | 1        | LOW      |
 
+
+        Then I see manage link displayed for task at position 1
+        Then I see manage link displayed for task at position 2
+        Then I see manage link displayed for task at position 4
+        Then I see manage link displayed for task at position 5
+
+        Then I see manage link not displayed for task at position 3
+        Then I see manage link not displayed for task at position 6
+
         Then I validate task list columns are links
             | ColumnHeader |
             | Case name    |
@@ -58,7 +67,7 @@ Feature: WA Release 2: All work
 
         When I click task column link "Case name" at row 1, I see case details page
 
-        When I click on primary navigation header tab "My work", I see selected tab page displayed
+        When I click on primary navigation header tab "All work", I see selected tab page displayed
         When I click task column link "Task" at row 1, I see case details page
         Then I validate case details task tab page is displayed
         Examples:

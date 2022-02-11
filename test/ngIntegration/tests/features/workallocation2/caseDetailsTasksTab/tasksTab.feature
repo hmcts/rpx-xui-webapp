@@ -1,5 +1,5 @@
 
-@ng @integration_todo @test
+@ng @integration_todo 
 Feature: WA Release 2: Case details Tasks tab
 
     Requirements from
@@ -9,6 +9,10 @@ Feature: WA Release 2: Case details Tasks tab
 
     Scenario Outline: Task tab content displayed
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>,task-supervisor,case-allocator" with reference "userDetails"
+        
+        # Given I set MOCK person with user "IAC_CaseOfficer_R2" and roles "<Roles>,task-supervisor,case-allocator"
+
+        
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
@@ -20,9 +24,9 @@ Feature: WA Release 2: Case details Tasks tab
             | case_id          | case_fields.[CASE_REFERENCE] | case_fields_formatted.[CASE_REFERENCE] |
             | 1234567812345678 | 1234567812345678             | 1234567812345678                       |
             | 1234567812345679 | 1234567812345679             | 1234567812345679                       |
-           Given I set MOCK caseworkers for service "IA"
+        Given I set MOCK caseworkers for service "IA"
             | idamId                               | firstName   | lastName | email                   | roleCategory     |
-            | 3db21928-cbbc-4364-bd91-137c7031fe17 | Test 2 | user | caseworker_user1@gov.uk | LEGAL_OPERATIONS |
+            | 3db21928-cbbc-4364-bd91-137c7031fe10 | Test 2      | user     | caseworker_user1@gov.uk | LEGAL_OPERATIONS |
             | 08a3d216-c6ab-4e92-a7e3-ca3661e6be81 | Test 3      | user     | caseworker_user2@gov.uk | LEGAL_OPERATIONS |
             | 08a3d216-c6ab-4e92-a7e3-ca3661e6be87 | Test 4      | user     | caseworker_user3@gov.uk | LEGAL_OPERATIONS |
             | 3db21928-cbbc-4364-bd91-137c7031fe17 | XUI test    | auto     | caseworker_user6@gov.uk | LEGAL_OPERATIONS |
@@ -32,43 +36,44 @@ Feature: WA Release 2: Case details Tasks tab
             | 08a3d216-c6ab-4e92-a7e3-ca3661e6be82 | admin2      | a        | admin_user2@gov.uk      | ADMIN            |
 
         Given I add MOCK judicial user
-            | idamId                               | firstName   | lastName | email                   | 
-            | 38eb0c5e-29c7-453e-b92d-f2029aaed6c3 | Test 2 | user | caseworker_user1@gov.uk |
-            | 18a3d216-c6ab-4e92-a7e3-ca3661e6be81 | Test 3      | user     | caseworker_user2@gov.uk | 
-            | 18a3d216-c6ab-4e92-a7e3-ca3661e6be87 | Test 4      | user     | caseworker_user3@gov.uk | 
-            | 1db21928-cbbc-4364-bd91-137c7031fe17 | XUI test    | auto     | caseworker_user6@gov.uk | 
+            | idamId                               | firstName   | lastName | email                   |
+            | 38eb0c5e-29c7-453e-b92d-f2029aaed6c3 | Test 5      | judge    | caseworker_user1@gov.uk |
+            | 18a3d216-c6ab-4e92-a7e3-ca3661e6be81 | Test 6      | judge    | caseworker_user2@gov.uk |
+            | 18a3d216-c6ab-4e92-a7e3-ca3661e6be87 | Test 4      | user     | caseworker_user3@gov.uk |
+            | 1db21928-cbbc-4364-bd91-137c7031fe17 | XUI test    | auto     | caseworker_user6@gov.uk |
             | 18a3d216-c6ab-4e92-a7e3-ca3661e6be83 | caseworker7 | cw       | caseworker_user7@gov.uk |
-            | 18a3d216-c6ab-4e92-a7e3-ca3661e6be82 | caseworker8 | cw       | caseworker_user8@gov.uk | 
-            | 18a3d216-c6ab-4e92-a7e3-ca3661e6be83 | admin1      | a        | admin_user1@gov.uk      | 
-            | 18a3d216-c6ab-4e92-a7e3-ca3661e6be82 | admin2      | a        | admin_user2@gov.uk      | 
+            | 18a3d216-c6ab-4e92-a7e3-ca3661e6be82 | caseworker8 | cw       | caseworker_user8@gov.uk |
+            | 18a3d216-c6ab-4e92-a7e3-ca3661e6be83 | admin1      | a        | admin_user1@gov.uk      |
+            | 18a3d216-c6ab-4e92-a7e3-ca3661e6be82 | admin2      | a        | admin_user2@gov.uk      |
+
+        # Given I set MOCK judicial users end point "/api/role-access/roles/getJudicialUsers" for WA release 2
+        #     | sidamId                              | full_name        |
+        #     | 08a3d216-c6ab-4e92-a7e3-ca3661e6be86 | Test 5  judge    |
+        #     | 08a3d216-c6ab-4e92-a7e3-ca3661e6be85 | Test 6  judge    |
+        #     | 18a3d216-c6ab-4e92-a7e3-ca3661e6be83 | user 1  jud      |
+        #     | 18a3d216-c6ab-4e92-a7e3-ca3661e6be82 | user 2  jud      |
+        #     | 18a3d216-c6ab-4e92-a7e3-ca3661e6be83 | user 3       jud |
+        #     | 18a3d216-c6ab-4e92-a7e3-ca3661e6be82 | user 4       jud |
 
         Given I set MOCK case tasks with userDetails from reference "userDetails"
-            | id                 | task_title                                | assignee    | assigneeName | created_date | due_date | permissions        | warnings | description                                                                                                                                                            |
-            | 987654321987654321 | Task 1                                    | thissession | Test user    | -10          | -1       | Own,Manage,Execute | true     | Click link to proceed to next step [test link next step](/case/case-details/${[case_id]})                                                                              |
-            | 987654321987654322 | Task 2                                    | thissession | Test 2 user  | -10          | 0        | Own,Manage,Execute | true     | Click link to proceed [next step 1](/case/case-details/${[case_id]}) or \n Click link to proceed to [next step 2](/case/case-details/${[case_id]}/${[id]}/testaction2) |
-            |                    | Task 3                                    |             |              | -10          | 1        | Own,Manage,Execute | true     |                                                                                                                                                                        |
-            |                    | Task 4                                    |             |              | -10          | 10       |                    | true     |                                                                                                                                                                        |
-            |                    | Task 5                                    |             |              | -10          | 10       |                    | true     |                                                                                                                                                                        |
-            |                    | 6 Permissions OME assined to me           | thissession | Test user    | -10          | 10       | Own,Manage,Execute | true     |                                                                                                                                                                        |
-            |                    | 7 Permissions OME assigned to someother   | someone     | Test 3 user  | -10          | 10       | Own,Manage,Execute | true     |                                                                                                                                                                        |
-            |                    | 8 Permissions OME unassigned              |             |              | -10          | 10       | Own,Manage,Execute | true     |                                                                                                                                                                        |
-            |                    | 9 Permissions ME assined to me            | thissession | Test user    | -10          | 10       | Manage,Execute     | true     |                                                                                                                                                                        |
-            |                    | 10 Permissions ME assigned to someother   | someone     | Test 4 user  | -10          | 10       | Manage,Execute     | true     |                                                                                                                                                                        |
-            |                    | 11 Permissions ME unassigned              |             |              | -10          | 10       | Manage,Execute     | true     |                                                                                                                                                                        |
-            |                    | 12 Permissions M assigned to someother    | someone     | Test 5 user  | -10          | 10       | Manage             | true     |                                                                                                                                                                        |
-            |                    | 13 Permissions M unassigned               |             |              | -10          | 10       | Manage             | true     |                                                                                                                                                                        |
-            |                    | 14 Permissions none assigned to someother | someone     | Test 6 user  | -10          | 10       |                    | true     |                                                                                                                                                                        |
-            |                    | 15 Permissions none unassigned            |             |              | -10          | 10       |                    | true     |                                                                                                                                                                        |
+            | id                 | task_title                                | assignee                             | assigneeName | created_date | due_date | permissions                          | warnings | description                                                                                                                                                            |
+            | 987654321987654321 | Task 1                                    | thissession                          | Test user    | -10          | -1       | Own,Read,Refer,Manage,Execute,Cancel | true     | Click link to proceed to next step [test link next step](/case/case-details/${[case_id]})                                                                              |
+            | 987654321987654322 | Task 2                                    | thissession                          | Test 2 user  | -10          | 0        | Own,Manage,Execute                   | true     | Click link to proceed [next step 1](/case/case-details/${[case_id]}) or \n Click link to proceed to [next step 2](/case/case-details/${[case_id]}/${[id]}/testaction2) |
+            |                    | Task 3                                    |                                      |              | -10          | 1        | Own,Manage,Execute                   | true     |                                                                                                                                                                        |
+            |                    | Task 4                                    |                                      |              | -10          | 10       |                                      | true     |                                                                                                                                                                        |
+            |                    | Task 5                                    |                                      |              | -10          | 10       |                                      | true     |                                                                                                                                                                        |
+            |                    | 6 Permissions OME assined to me           | thissession                          | Test user    | -10          | 10       | Own,Manage,Execute                   | true     |                                                                                                                                                                        |
+            |                    | 7 Permissions OME assigned to someother   | 08a3d216-c6ab-4e92-a7e3-ca3661e6be81 | Test 3 user  | -10          | 10       | Own,Manage,Execute                   | true     |                                                                                                                                                                        |
+            |                    | 8 Permissions OME unassigned              |                                      |              | -10          | 10       | Own,Manage,Execute                   | true     |                                                                                                                                                                        |
+            |                    | 9 Permissions ME assined to me            | thissession                          | Test user    | -10          | 10       | Manage,Execute                       | true     |                                                                                                                                                                        |
+            |                    | 10 Permissions ME assigned to someother   | 08a3d216-c6ab-4e92-a7e3-ca3661e6be87 | Test 4 user  | -10          | 10       | Manage,Execute                       | true     |                                                                                                                                                                        |
+            |                    | 11 Permissions ME unassigned              |                                      |              | -10          | 10       | Manage,Execute                       | true     |                                                                                                                                                                        |
+            |                    | 12 Permissions M assigned to someother    | 38eb0c5e-29c7-453e-b92d-f2029aaed6c3 | Test 5 user  | -10          | 10       | Manage                               | true     |                                                                                                                                                                        |
+            |                    | 13 Permissions M unassigned               |                                      |              | -10          | 10       | Manage                               | true     |                                                                                                                                                                        |
+            |                    | 14 Permissions none assigned to someother | 18a3d216-c6ab-4e92-a7e3-ca3661e6be81 | Test 6 user  | -10          | 10       |                                      | true     |                                                                                                                                                                        |
+            |                    | 15 Permissions none unassigned            |                                      |              | -10          | 10       |                                      | true     |                                                                                                                                                                        |
 
 
-        Given I set MOCK judicial users end point "/api/role-access/roles/getJudicialUsers" for WA release 2
-            | sidamId                              | full_name        |
-            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be86 | Test 5  judge    |
-            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be85 | Test 6  judge    |
-            | 18a3d216-c6ab-4e92-a7e3-ca3661e6be83 | user 1  jud      |
-            | 18a3d216-c6ab-4e92-a7e3-ca3661e6be82 | user 2  jud      |
-            | 18a3d216-c6ab-4e92-a7e3-ca3661e6be83 | user 3       jud |
-            | 18a3d216-c6ab-4e92-a7e3-ca3661e6be82 | user 4       jud |
 
         Given I start MockApp
         Given I navigate to home page

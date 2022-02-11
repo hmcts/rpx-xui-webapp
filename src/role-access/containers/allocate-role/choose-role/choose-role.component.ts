@@ -4,10 +4,16 @@ import { ActivatedRoute } from '@angular/router';
 import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { SessionStorageService } from '../../../../app/services';
 import { UserRole } from '../../../../app/models';
-import { CHOOSE_A_ROLE, ERROR_MESSAGE, ERROR_MESSAGE_EXISTING_ROLE } from '../../../constants';
-import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, Role, RoleCategory, SpecificRole } from '../../../models';
+import { CHOOSE_A_ROLE, ERROR_MESSAGE } from '../../../constants';
+import {
+  AllocateRoleNavigation,
+  AllocateRoleNavigationEvent,
+  AllocateRoleState,
+  Role,
+  RoleCategory,
+  SpecificRole
+} from '../../../models';
 import { RoleAllocationTitleText } from '../../../models/enums';
 import { OptionsModel } from '../../../models/options-model';
 import { AllocateRoleService } from '../../../services';
@@ -19,7 +25,6 @@ import * as fromFeature from '../../../store';
 })
 export class ChooseRoleComponent implements OnInit, OnDestroy {
   public ERROR_MESSAGE = ERROR_MESSAGE;
-  public ERROR_MESSAGE_EXISTING_ROLE = ERROR_MESSAGE_EXISTING_ROLE;
   @Input() public navEvent: AllocateRoleNavigation;
 
   public error: any;
@@ -40,8 +45,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
 
   constructor(private readonly store: Store<fromFeature.State>,
               private readonly route: ActivatedRoute,
-              private readonly allocateRoleService: AllocateRoleService,
-              private readonly sessionStorageService: SessionStorageService) {
+              private readonly allocateRoleService: AllocateRoleService) {
   }
 
   public ngOnInit(): void {
@@ -55,12 +59,12 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
     this.allocateRoleStateDataSub = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(
       allocateRoleStateData => {
         this.typeOfRole = allocateRoleStateData.typeOfRole;
+        this.radioOptionControl = new FormControl(this.typeOfRole ? this.typeOfRole.name : '', [Validators.required]);
+        this.formGroup = new FormGroup({ [this.radioControlName]: this.radioOptionControl });
       }
     );
-    this.radioOptionControl = new FormControl(this.typeOfRole ? this.typeOfRole.name : '', [Validators.required]);
-    this.formGroup = new FormGroup({[this.radioControlName]: this.radioOptionControl});
     this.allocateRoleService.getValidRoles().subscribe(roles =>
-        this.optionsList = this.getOptions(roles.filter(role => role.roleCategory === this.roleCategory)));
+      this.optionsList = this.getOptions(roles.filter(role => role.roleCategory === this.roleCategory)));
   }
 
   public navigationHandler(navEvent: AllocateRoleNavigationEvent, roleCategory: RoleCategory, isLegalOpsOrJudicialRole: UserRole): void {
@@ -84,14 +88,6 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
           id: roleOption ? roleOption.optionId : roleChosen,
           name: roleChosen
         };
-
-        if (this.sessionStorageService.getItem('caseRoles') && this.sessionStorageService.getItem('caseRoles').includes(typeOfRole.id)) {
-          this.radioOptionControl.setErrors({
-            invalid: true
-          });
-          this.error = ERROR_MESSAGE_EXISTING_ROLE;
-          return;
-        }
 
         switch (roleCategory) {
           case RoleCategory.JUDICIAL: {
@@ -138,7 +134,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
   }
 
   public getOptions(roles: Role[]): OptionsModel[] {
-    return roles.map(role => ({optionId: role.roleId, optionValue: role.roleName}));
+    return roles.map(role => ({ optionId: role.roleId, optionValue: role.roleName }));
   }
 
   public ngOnDestroy(): void {

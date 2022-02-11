@@ -1,4 +1,4 @@
-@ng  
+@ng 
 Feature: WA Release 2: My work -  Available tasks
 
     Background: Mock and browser setup
@@ -6,6 +6,7 @@ Feature: WA Release 2: My work -  Available tasks
 
     Scenario Outline:  Available Tasks, columns and column links for "<UserType>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
 
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions | Count |
@@ -52,6 +53,14 @@ Feature: WA Release 2: My work -  Available tasks
             | 2   | case 2    | auto test category 2 | test location 2 | test auto task 2 | 0        | MEDIUM   |
             | 3   | case 3    | auto test category 3 | test location 3 | test auto task 3 | 1        | LOW      |
 
+        Then I see manage link displayed for task at position 1
+        Then I see manage link not displayed for task at position 2
+        Then I see manage link not displayed for task at position 4
+        Then I see manage link not displayed for task at position 5
+
+        Then I see manage link not displayed for task at position 3
+        Then I see manage link not displayed for task at position 6
+
         Then I validate task list columns are links
             | ColumnHeader |
 
@@ -64,6 +73,7 @@ Feature: WA Release 2: My work -  Available tasks
 
     Scenario: Available Tasks sort column persist in session with Caseworker user
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer ,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK person with user "AC_CaseOfficer_R2" and roles "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer ,task-supervisor,case-allocator"
 
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions | Count |

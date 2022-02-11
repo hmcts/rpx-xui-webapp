@@ -62,7 +62,7 @@ export  const config =  {
     users : {
        aat: {
             solicitor: { e: 'lukesuperuserxui@mailnesia.com', sec: 'Monday01'},
-            caseOfficer_r1: { e: 'xui_caseofficer@justice.gov.uk', sec: 'Welcome01' },
+            caseOfficer_r1: { e: 'xui_auto_co_r1@justice.gov.uk', sec: 'Welcome01' },
             caseOfficer_r2: { e: 'xui_auto_co_r2@justice.gov.uk', sec: 'Welcome01' }
        },
        demo: {

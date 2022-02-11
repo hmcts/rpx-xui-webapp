@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.9.15-state-machine":
-  version "4.9.15-state-machine"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.9.15-state-machine.tgz#c4151d658bb581c00836e285c4e8bc4f14ddcc09"
-  integrity sha512-qnLvrHwd95mC7JJndpgE5+JUjNYsMvnvViCrUpmer1O6py/GBF4CSpyUAW4Sv2Voc406baTwNAJ3JsYY/ET1PQ==
+"@hmcts/ccd-case-ui-toolkit@4.12.1":
+  version "4.12.1"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.12.1.tgz#27e1619f08f9767304614e7e50b0b21d2485a263"
+  integrity sha512-yT9+KZTY3zKBWcouVxtyiM2j2RROGFMCSdbjXah36N/7KlFOlx9MEWK8HvM/f+PoTEM3vWSYBW3GMOLf8dF0xQ==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -484,10 +484,10 @@
     underscore "^1.9.1"
     yargs-parser "18.1.2"
 
-"@hmcts/ccpay-web-component@3.0.27":
-  version "3.0.27"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-3.0.27.tgz#c331f6d947773458f2ad93079b0bbe2ef5ce40e5"
-  integrity sha512-84b2CYuuJBo+MG6nMFGEjHIZz5tHIzpuN2rSZ+D1rsNvaKHUONyqxRB1HDNoSRRFcqqTIUjXVSWNOPQacHJTig==
+"@hmcts/ccpay-web-component@5.0.2":
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccpay-web-component/-/ccpay-web-component-5.0.2.tgz#bb23e6c895f9d05fc06286d5ae64e09addff31c8"
+  integrity sha512-iK0exJGDM+BQuWsByqTJHaXBynX6JR3DpzUWYsC6Rq0mBQnnEYYix5GfLQ2cjGdl5EB99sjSfE01AregwEMKAA==
   dependencies:
     tslib "^1.9.0"
 
@@ -537,10 +537,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.6.1-staff-by-service-2":
-  version "1.6.1-staff-by-service-2"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.1-staff-by-service-2.tgz#fc526779a8de4dafca77ef4f4bd89ee014f40ebd"
-  integrity sha512-tGe6/xjyKMHkBVBrfncYP3dhifgddqY0mp/kgsEncfhXD8ox7NGC1XCkDLBjNoyunBjoykVSHGS388DWP7VdnQ==
+"@hmcts/rpx-xui-common-lib@1.6.7-hide-assigned-user-2":
+  version "1.6.7-hide-assigned-user-2"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.7-hide-assigned-user-2.tgz#23013d6903caba50223ee601275b3daf8413a6d6"
+  integrity sha512-3944SSdMvonX6/l7f7122M3CAwtQrCSjqb2+b/ByAebah8l6+JV5+f52YstTw4dipgg9m+d0rEtMv1QGI0Zovg==
   dependencies:
     tslib "^1.9.0"
 

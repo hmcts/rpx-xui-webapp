@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
+import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
@@ -17,24 +18,31 @@ import { Location } from '../../models/dtos';
 })
 export class CaseManagerFilterComponent implements OnInit, OnDestroy {
 
-  private static FILTER_NAME: string = 'cases';
-  @Input() public locations: Location[] = [];
+  private static FILTER_NAME: string = 'all-work-cases-filter';
   @Input() public jurisdictions: string[] = [];
-  @Input() public defaultLocation: string = 'all';
   @Output() public selectChanged: EventEmitter<any> = new EventEmitter<any>();
   public filterConfig: FilterConfig = {
-    persistence: 'session',
+    persistence: 'local',
     enableDisabledButton: true,
     id: CaseManagerFilterComponent.FILTER_NAME,
     fields: [],
     cancelButtonText: 'Reset to default',
     applyButtonText: 'Apply',
+    showCancelFilterButton:  true,
     cancelSetting: {
       id: CaseManagerFilterComponent.FILTER_NAME,
       fields: [
         {
           name: 'jurisdiction',
           value: ['IA']
+        },
+        {
+          name: 'selectLocation',
+          value: ['location_all']
+        },
+        {
+          name: 'selectPerson',
+          value: ['All']
         },
         {
           name: 'actorId',
@@ -58,24 +66,41 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       maxSelected: 1,
       minSelectedError: 'You must select a service',
       maxSelectedError: null,
+      changeResetFields: ['selectLocation', 'selectPerson', 'role', 'person', 'actorId', 'findPersonControl'],
       title: 'Service',
       type: 'select'
     };
   }
 
-  private static initCaseLocationFilter(locations: Location[]): FilterFieldConfig {
-    if (!locations) {
-      locations = [];
-    }
+  private static initLocationFilter(): FilterFieldConfig {
+
     return {
-      name: 'location_id',
-      options: locations.map(loc => ({ key: loc.id, label: loc.locationName })),
+      name: 'location',
+      options: [],
+      minSelected: 1,
+      maxSelected: 1,
+      findLocationField: 'service',
+      enableCondition: 'selectLocation=search',
+      minSelectedError: 'You must select a location',
+      maxSelectedError: null,
+      enableAddLocationButton: false,
+      type: 'find-location'
+    };
+  }
+
+  private static initSelectLocationFilter(): FilterFieldConfig {
+    return {
+      name: 'selectLocation',
+      options: [
+        { key: 'location_all', label: 'All' },
+        { key: 'search', label: 'Search for a location' }
+      ],
       minSelected: 1,
       maxSelected: 1,
       minSelectedError: 'You must select a location',
       maxSelectedError: null,
-      title: 'Case Location',
-      type: 'select'
+      title: 'Location',
+      type: 'radio'
     };
   }
 
@@ -99,6 +124,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       minSelected: 1,
       maxSelected: 1,
       domain: PersonRole.ALL,
+      changeResetFields: ['findPersonControl', 'person'],
       findPersonField: 'person',
       lineBreakBefore: true,
       minSelectedError: 'You must select a role type',
@@ -125,6 +151,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       maxSelected: 1,
       lineBreakBefore: true,
       findPersonField: 'person',
+      changeResetFields: ['findPersonControl', 'person'],
       minSelectedError: 'You must select a person',
       maxSelectedError: null,
       title: 'Person',
@@ -140,6 +167,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       maxSelected: 0,
       minSelectedError: 'You must select a person',
       maxSelectedError: null,
+      domainField: 'role',
       enableCondition: 'actorId=Specific person',
       type: 'find-person'
     };
@@ -155,20 +183,12 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
             value: [roleType]
           }
         );
-        this.filterConfig.cancelSetting.fields.push({
-            name: 'location_id',
-            value: [this.defaultLocation.toString()]
-          },
-        );
       }
     );
     this.filterConfig.fields = [
       CaseManagerFilterComponent.initServiceFilter(this.jurisdictions),
-      CaseManagerFilterComponent.initCaseLocationFilter([{
-        id: 'all',
-        locationName: 'All locations',
-        services: []
-      }, ...this.locations]),
+      CaseManagerFilterComponent.initSelectLocationFilter(),
+      CaseManagerFilterComponent.initLocationFilter(),
       CaseManagerFilterComponent.initRoleTypeFilter(),
       CaseManagerFilterComponent.initPersonFilter(),
       CaseManagerFilterComponent.findPersonFilter()
@@ -190,6 +210,10 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
         filter((f: FilterSetting) => !f.reset),
       ).subscribe((f: FilterSetting) => {
         const fields = f.fields.reduce((acc, field: { name: string, value: string[] }) => {
+          if (field.name === 'location') {
+            const value: any = field.value && field.value.length > 0 ? (field.value[0] as unknown as LocationByEPIMMSModel).epimms_id : '';
+            return { ...acc, [field.name]: value };
+          }
           return { ...acc, [field.name]: field.value[0] };
         }, {});
         this.selectChanged.emit(fields);

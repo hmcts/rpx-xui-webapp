@@ -5,9 +5,10 @@ const nodeAppMock = require('../nodeApp/mockData');
 class WorkAllocationMockData {
 
     constructor() {
+        this.locationIdCounter = 10000; 
+
         this.WorkAllocationDataModels = WorkAllocationDataModels;
         this.init(); 
-        this.locationIdCounter = 0; 
     }
 
     init(){
@@ -16,11 +17,13 @@ class WorkAllocationMockData {
 
     setDefaultData(){
         this.findPersonsAllAdata = [];
+        this.waSupportedJusridictions = ['IA', 'SSCS'];
+
+        this.locationsByServices = this.getLocationsByServices(this.waSupportedJusridictions);
+
         this.caseWorkersList = this.getPersonList(20); 
         this.judgeUsers = this.setUpJudicialUsersList(20);
-        this.waSupportedJusridictions = ['IA', 'SSCS'];
         
-        this.locationsByServices = this.getLocationsByServices(this.waSupportedJusridictions );
         this.caseworkersByService = this.getCaseworkersByService(this.waSupportedJusridictions);
 
         this.exclusions = this.getCaseExclusions([
@@ -64,7 +67,7 @@ class WorkAllocationMockData {
     }
 
     addCaseworkerWithIdamId(idamId, service){
-        let caseworketByService = null;
+        let user = null;
 
         let locationsByService = null;
         for(const byService of this.locationsByServices){
@@ -79,13 +82,15 @@ class WorkAllocationMockData {
                 const personWithIdamd = JSON.parse(JSON.stringify(this.getPersonList(1)[0]));
                 personWithIdamd.idamId = idamId;
                 personWithIdamd.location = {
-                    id: locationsByService[0].epims_id,
+                    id: locationsByService[0].epimms_id,
                         locationName: locationsByService[0].court_name
                 }; 
                 byservice.caseworkers.push(personWithIdamd);
+                user = personWithIdamd; 
                 break; 
             }
         }
+        return user;
     }
 
     addCaseworker(caseworker, service) {
@@ -111,7 +116,7 @@ class WorkAllocationMockData {
 
 
                 personWithIdamd.location = {
-                    id: locationsByService[0].epims_id,
+                    id: locationsByService[0].epimms_id,
                     locationName: locationsByService[0].court_name
                 };
                 byservice.caseworkers.push(personWithIdamd);
@@ -128,11 +133,12 @@ class WorkAllocationMockData {
             for(let i = 0; i < 20; i++){
                 const location = {
                     "court_venue_id": "382",
-                    "epims_id": "" + this.locationIdCounter,
+                    "epimms_id": "" + this.locationIdCounter,
                     "is_hearing_location": "Y",
                     "is_case_management_location": "Y",
-                    "site_name": service + ' Site ' + i,
-                    "court_name": service + ' court ' + i,
+                    "site_name": service + ' Site ' + this.locationIdCounter,
+                    "court_name": service + ' court ' + this.locationIdCounter,
+                    "venue_name": service + ' court ' + this.locationIdCounter,
                     "court_status": "Open",
                     "region_id": "2",
                     "region": "London",
@@ -156,14 +162,15 @@ class WorkAllocationMockData {
     getLocationsWithNames(locations) {
         const returnValue = [];
         
-        for (const locationName of locations) {
-            const location = {
+        for (const location of locations) {
+            const locationOBj = {
                 "court_venue_id": "382",
-                "epims_id": "" + this.locationIdCounter,
+                "epimms_id": "" + location.id,
                 "is_hearing_location": "Y",
                 "is_case_management_location": "Y",
-                "site_name": locationName,
-                "court_name": locationName,
+                "site_name": location.locationName,
+                "court_name": location.locationName,
+                "venue_name":  location.locationName,
                 "court_status": "Open",
                 "region_id": "2",
                 "region": "London",
@@ -175,7 +182,7 @@ class WorkAllocationMockData {
                 "postcode": "TW14 0LS"
             }
 
-            returnValue.push(location);
+            returnValue.push(locationOBj);
             this.locationIdCounter++;
         }
         return returnValue;
@@ -202,7 +209,7 @@ class WorkAllocationMockData {
 
             let loctionTracker = 0;
             for (const cw of cwByService.caseworkers){
-                cw.location = { id: locationsForThisService[loctionTracker].epims_id ,
+                cw.location = { id: locationsForThisService[loctionTracker].epimms_id ,
                     locationName: locationsForThisService[loctionTracker].court_name };
 
                 loctionTracker++;
@@ -219,15 +226,25 @@ class WorkAllocationMockData {
     setUpJudicialUsersList(count){
         this.judgeUsers = [];
         for (let i = 0; i < count; i++) {
-            this.judgeUsers.push(WorkAllocationDataModels.getRefDataJudge('fnuser-' + i, 'snjudge-' + i, `testjudge_${i}@judidicial.com`));
+            this.addJudgeUsers('fnuser-' + i, 'snjudge-' + i, `testjudge_${i}@judidicial.com`);
         }
         return this.judgeUsers;
     }
 
     addJudgeUsers(idamId,firtName, surname, email){
         const judge = WorkAllocationDataModels.getRefDataJudge(firtName, surname, email);
-        judge.sidam_id = idamId; 
-        this.judgeUsers.push(judge); 
+        judge.sidam_id = idamId;
+        let location = null;
+        for(const service of this.locationsByServices){
+            location = service.locations[0];
+            break;
+        }
+        judge.appointments[0]['base_location_id'] = location.epimms_id;
+        judge.appointments[0]['epimms_id'] = location.epimms_id;
+        judge.appointments[0]['court_name'] = location.court_name;
+        
+        this.judgeUsers.push(judge);
+        return judge; 
     }
 
     setCaseRoleAssignment(caseRole){
@@ -390,7 +407,7 @@ class WorkAllocationMockData {
             persons.push({
                 "firstName": "Jane " + ctr,
                 "lastName": "Doe" + (forService ? forService : ''),
-                "idamId": "41a90c39-d756-4eba-8e85-5b5bf56b31f" + ctr,
+                "idamId": "00000-d756-4eba-8e85-5b5bf56b31f" + ctr,
                 "email": "testemail" + ctr + "@testdomain.com",
                 "roleCategory": roleCategory ? roleCategory : "LEGAL_OPERATIONS",
                 "location": {
@@ -537,7 +554,7 @@ class WorkAllocationMockData {
         const caseRolesRes = [];
         for (const role of roles) {
             const caseRoleObj = WorkAllocationDataModels.getCaseRole(role.roleCategory);
-
+            caseRoleObj['roleId'] = role.roleName;
             for (let key of Object.keys(role)) {
                 caseRoleObj[key] = role[key];
             }
@@ -566,7 +583,7 @@ class WorkAllocationMockData {
         const tasks = [];
         for (let task of tasksObjects) {
             const taskTemplate = this.getRelease2TaskDetails();
-
+            let taskPermissions = [];
             const taskAttributes = Object.keys(task);
             for (const taskAttribute of taskAttributes) {
                 if (taskAttribute.toLowerCase().includes('date')) {
@@ -577,8 +594,11 @@ class WorkAllocationMockData {
                     if (task[taskAttribute] === '') {
                         taskTemplate[taskAttribute].values = [];
                     } else {
-                        taskTemplate[taskAttribute].values = task[taskAttribute].split(',');
+                        taskPermissions = task[taskAttribute].split(','); 
+                        taskTemplate[taskAttribute].values = taskPermissions;
+
                     }
+
                 } else if (taskAttribute.toLowerCase().includes('warnings')) {
                     const val = task[taskAttribute].toLowerCase();
                     taskTemplate[taskAttribute] = val.includes('true') || val.includes('yes');
@@ -593,6 +613,8 @@ class WorkAllocationMockData {
                     }  else {
                         taskTemplate[taskAttribute] = task[taskAttribute];
                     }
+                    taskTemplate.task_state= taskTemplate[taskAttribute] ? 'assigned':'unassigned'
+
                 } else if (taskAttribute.toLowerCase().includes('description')) {
                     const val = task[taskAttribute];
                     if (val !== '' || val !== undefined) {
@@ -610,7 +632,9 @@ class WorkAllocationMockData {
                     taskTemplate[taskAttribute] = task[taskAttribute];
                 }
             }
+            taskTemplate.actions = WorkAllocationDataModels.getRelease2TaskActions(taskPermissions, 'AllWork', taskTemplate.task_state); 
 
+            taskTemplate.jurisdiction = "IA";
             tasks.push(taskTemplate);
 
         }
@@ -731,7 +755,7 @@ class WorkAllocationMockData {
 
         let locationMatchingId = null;
         for (const location of allLocations) {
-            if (location.epims_id === locationId) {
+            if (location.epimms_id === locationId) {
                 locationMatchingId = location;
                 break;
             }

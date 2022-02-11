@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
+import { Actions } from 'src/role-access/models';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -101,9 +102,10 @@ export class TaskActionContainerComponent implements OnInit {
         // be possible are the ones above.
         break;
     }
-
+    // add hasNoAssigneeOnComplete - only false if complete action and assignee not present
+    const hasNoAssigneeOnComplete = action === Actions.Complete.toString() ? !(this.tasks[0].assignee) : false;
     if (action) {
-      this.taskService.performActionOnTask(this.tasks[0].id, action).subscribe(() => {
+      this.taskService.performActionOnTask(this.tasks[0].id, action, hasNoAssigneeOnComplete).subscribe(() => {
         this.reportSuccessAndReturn();
       }, error => {
         const handledStatus = handleFatalErrors(error.status, this.router);

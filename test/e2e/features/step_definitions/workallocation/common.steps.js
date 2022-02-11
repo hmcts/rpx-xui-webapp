@@ -191,10 +191,23 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I click task column link {string} at row {int}, I see case details page', async function (colName, rowPos) {
-        await BrowserWaits.retryWithActionCallback(async () => {
+        
+        await BrowserWaits.waitForPageNavigationOnAction(async () => {
             await taskListTable.clickTaskColLink(colName, rowPos);
+        });
+
+        await BrowserWaits.retryWithActionCallback(async () => {
             expect(await caseDetailsPage.amOnPage(),'Case details page not displayed').to.be.true 
         });
+    });
+
+    Then('I see manage link displayed for task at position {int}', async function(row){
+        expect(await taskListTable.isManageLinkPresent(row)).to.be.true;    
+    });
+
+
+    Then('I see manage link not displayed for task at position {int}', async function (row) {
+        expect(await taskListTable.isManageLinkPresent(row)).to.be.false;
     });
 
     Then('I validate manage link actions for tasks', async function (tasksDatatable) {

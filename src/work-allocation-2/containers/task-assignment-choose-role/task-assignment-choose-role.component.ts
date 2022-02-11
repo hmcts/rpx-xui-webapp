@@ -7,7 +7,7 @@ import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { RoleCategory } from '../../../role-access/models';
 import { OptionsModel } from '../../../role-access/models/options-model';
-import { Permissions, TaskRole } from '../../models/tasks/TaskRole';
+import { TaskPermission, TaskRole } from '../../models/tasks';
 
 @Component({
   selector: 'exui-task-assignment-choose-role',
@@ -22,7 +22,6 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
   public caption: string = 'Reassign task';
   public description: string = 'Which role type are you reassigning the task to?';
   public submitted: boolean = true;
-  public optionsList: OptionsModel[];
   public taskRoles: TaskRole[] = [];
   public service: string;
   public form: FormGroup;
@@ -50,7 +49,7 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
 
   public ngOnInit(): void {
     this.taskRoles = this.route.snapshot.data.roles;
-    this.roles = getOptions(this.taskRoles);
+    this.roles = getOptions(this.taskRoles, this.sessionStorageService);
     const isJudicial = this.isCurrentUserJudicial();
     const taskId = this.route.snapshot.paramMap.get('taskId');
     this.service = this.route.snapshot.queryParamMap.get('service');
@@ -105,6 +104,7 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
   }
 
   private userWithOwnPermission(roles: TaskRole[]): TaskRole {
-    return roles.find(role => role.permissions.includes(Permissions.Own));
+    // EUI-5236 - TaskPermission instead of Permission (i.e. not all caps)
+    return roles.find(role => role.permissions.includes(TaskPermission.OWN));
   }
 }

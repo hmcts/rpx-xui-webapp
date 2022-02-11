@@ -62,7 +62,7 @@ export  const config =  {
     users : {
        aat: {
             solicitor: { e: 'lukesuperuserxui@mailnesia.com', sec: 'Monday01'},
-            caseOfficer_r1: { e: 'xui_caseofficer@justice.gov.uk', sec: 'Welcome01' },
+            caseOfficer_r1: { e: 'xui_auto_co_r1@justice.gov.uk', sec: 'Welcome01' },
             caseOfficer_r2: { e: 'xui_auto_co_r2@justice.gov.uk', sec: 'Welcome01' }
        },
        demo: {
@@ -85,7 +85,7 @@ export  const config =  {
             }
         },
         demo: {
-            locationId: '231596',
+            locationId: '765324',
             judgeUser: {
                 email: "330085EMP-@ejudiciary.net",
                 id: "519e0c40-d30e-4f42-8a4c-2c79838f0e4e",

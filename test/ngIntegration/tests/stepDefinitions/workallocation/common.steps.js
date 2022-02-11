@@ -159,6 +159,16 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
 
+    Then('I validate task search request with reference {string} does not have search patameter key {string}', async function (requestReference, searchKey) {
+        const reqBody = global.scenarioData[requestReference];
+
+        const reqSearchParams = reqBody.searchRequest.search_parameters;
+        const searchParametersMatchingType = await ArrayUtil.filter(reqSearchParams, async (searchObj) => searchObj.key === searchKey);
+
+        expect(searchParametersMatchingType.length, `Search parameter mathcing key "${searchKey}" found in request body ${reqBody} `).to.equal(0); 
+
+    });
+
     Given('I set MOCK case workers for release {string}', async function(forRelease,datatable){
         const persons = getPersonResponse(datatable);
         let url = null;

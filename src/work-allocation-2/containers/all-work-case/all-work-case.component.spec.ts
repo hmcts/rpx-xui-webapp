@@ -123,7 +123,7 @@ describe('AllWorkCaseComponent', () => {
     expect(firstMockCase.actorName).toBe('Test');
 
     expect(secondMockCase.assignee).toBe(undefined);
-    expect(secondMockCase.actorName).toBe(undefined);
+    expect(secondMockCase.actorName).toBe(null);
   });
 
   it('should not show the footer when there are cases', () => {

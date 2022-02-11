@@ -24,10 +24,10 @@ import {
   handlePostRoleAssignments,
   handlePostSearch
 } from './caseWorkerService';
+import { ViewType } from './constants/actions';
 import { PaginationParameter } from './interfaces/caseSearchParameter';
 import { CaseworkerPayload, ServiceCaseworkerData } from './interfaces/caseworkerPayload';
 import { Caseworker, CaseworkersByService } from './interfaces/common';
-import { TaskList } from './interfaces/task';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { checkIfCaseAllocator } from './roleService';
 import * as roleServiceMock from './roleService.mock';
@@ -36,17 +36,19 @@ import {
   assignActionsToCases,
   assignActionsToTasks,
   constructElasticSearchQuery,
-  constructRoleAssignmentCaseAllocatorQuery,
   constructRoleAssignmentQuery,
   filterByLocationId,
   getCaseIdListFromRoles,
   getCaseTypesFromRoleAssignments,
+  getCaseworkerDataForServices,
   getRoleAssignmentsByQuery,
+  getSessionCaseworkerInfo,
+  getSubstantiveRoles,
   getTypesOfWorkByUserId,
   getUniqueCasesCount,
+  handlePost,
   mapCasesFromData,
   mapCaseworkerData,
-  getCaseworkerDataForServices,
   paginate,
   prepareCaseWorkerForLocation,
   prepareCaseWorkerForLocationAndService,
@@ -58,12 +60,9 @@ import {
   prepareRoleApiRequest,
   prepareRoleApiUrl,
   prepareSearchTaskUrl,
+  prepareServiceRoleApiRequest,
   prepareTaskSearchForCompletable,
-  removeEmptyValues,
-  searchCasesById,
-  getSessionCaseworkerInfo,
-  getSubstantiveRoles,
-  prepareServiceRoleApiRequest
+  searchCasesById
 } from './util';
 
 caseServiceMock.init();
@@ -105,7 +104,7 @@ export async function getTypesOfWork(req: EnhancedRequest, res: Response, next: 
     const response = await getTypesOfWorkByUserId(path, req);
     let typesOfWork = [];
     if (response && response.work_types) {
-      typesOfWork = response.work_types.map(work => ({key: work.id, label: work.label}));
+      typesOfWork = response.work_types.map(work => ({ key: work.id, label: work.label }));
     }
     res.status(200);
     res.send(typesOfWork);
@@ -121,7 +120,7 @@ export async function getTaskRoles(req: EnhancedRequest, res: Response, next: Ne
   try {
     const taskId = req.params.taskId;
     const path = `${baseWorkAllocationTaskUrl}/task/${taskId}/roles`;
-    const {status, data} = await handleTaskRolesGet(path, req);
+    const { status, data } = await handleTaskRolesGet(path, req);
     res.status(status);
     res.send(data.roles);
   } catch (error) {
@@ -136,19 +135,13 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
   try {
     const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
     const postTaskPath = preparePaginationUrl(req, basePath);
-    const searchRequest = {
-      ...req.body.searchRequest, search_parameters: removeEmptyValues(req.body.searchRequest.search_parameters),
-    };
-    // filter out task type from search parameters as not currently available until release 2.1
-    searchRequest.search_parameters = searchRequest.search_parameters.filter(
-      searchParam => searchParam.key !== 'taskType'
-    );
+    const searchRequest = req.body.searchRequest;
     const sortParam = searchRequest.sorting_parameters.find(sort => sort.sort_by === 'created_date');
     if (sortParam) {
       sortParam.sort_by = 'dueDate';
     }
     delete searchRequest.pagination_parameters;
-    const {status, data} = await handleTaskSearch(postTaskPath, searchRequest, req);
+    const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
     const currentUser = req.body.currentUser ? req.body.currentUser : '';
     res.status(status);
     // Assign actions to the tasks on the data from the API.
@@ -156,7 +149,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     if (data) {
       // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
       // These should be mocked as if we were getting them from the user themselves
-      returnData = {tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records};
+      returnData = { tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records };
     }
     res.send(returnData);
   } catch (error) {
@@ -194,8 +187,22 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
     search_by: 'caseworker',
   };
   try {
-    const {status, data} = await handleTaskSearch(`${basePath}`, searchRequest, req);
-    return res.send(data.tasks as TaskList).status(status);
+    const { status, data } = await handleTaskSearch(`${basePath}`, searchRequest, req);
+    const currentUser = req.body.currentUser ? req.body.currentUser : '';
+    const actionedTasks = assignActionsToTasks(data.tasks, ViewType.MY_TASKS, currentUser);
+    return res.send(actionedTasks).status(status);
+  } catch (e) {
+    next(e);
+  }
+}
+
+export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+  const caseId = req.params.caseId;
+  const eventId = req.params.eventId;
+  try {
+    const payload = { caseId, eventId };
+    const { status, data } = await handlePost(`${baseWorkAllocationTaskUrl}/task/search-for-completable`, payload, req);
+    return res.send(data).status(status);
   } catch (e) {
     next(e);
   }
@@ -207,8 +214,16 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
 export async function postTaskAction(req: EnhancedRequest, res: Response, next: NextFunction) {
 
   try {
+    // Additional setting to mark unassigned tasks as done - need to assign task before completing
+    if (req.body.hasNoAssigneeOnComplete === true) {
+      req.body = {
+        completion_options: {
+           assign_and_complete: true,
+         },
+      }
+    }
     const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action);
-    const {status, data} = await handleTaskPost(getTaskPath, req.body, req);
+    const { status, data } = await handleTaskPost(getTaskPath, req.body, req);
     res.status(status);
     res.send(data);
   } catch (error) {
@@ -249,7 +264,7 @@ export async function retrieveAllCaseWorkers(req: EnhancedRequest): Promise<Case
   const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
   const jurisdictions = getWASupportedJurisdictionsList();
   const payload = prepareRoleApiRequest(jurisdictions);
-  const {data} = await handlePostRoleAssignments(roleApiPath, payload, req);
+  const { data } = await handlePostRoleAssignments(roleApiPath, payload, req);
   const userIds = getUserIdsFromRoleApiResponse(data);
   const userUrl = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
   const userResponse = await handlePostCaseWorkersRefData(userUrl, userIds, req);
@@ -292,7 +307,7 @@ export async function retrieveCaseWorkersForServices(req: EnhancedRequest, res: 
   const caseWorkerReferenceData = getCaseworkerDataForServices(userResponse.data, data);
   // note have to merge any new service caseworker data for full session as well as services specified in params
   req.session.caseworkersByService = req.session && req.session.caseworkersByService ?
-   [...req.session.caseworkersByService, ...caseWorkerReferenceData] : caseWorkerReferenceData;
+    [...req.session.caseworkersByService, ...caseWorkerReferenceData] : caseWorkerReferenceData;
   const fullCaseworkerByServiceInfo = [...caseWorkerReferenceData, ...sessionCaseworkersByService];
   return fullCaseworkerByServiceInfo;
 }
@@ -352,7 +367,7 @@ export async function searchCaseWorker(req: EnhancedRequest, res: Response, next
   try {
     const postTaskPath: string = prepareCaseWorkerSearchUrl(baseUrl);
 
-    const {status, data} = await handlePostSearch(postTaskPath, req.body, req);
+    const { status, data } = await handlePostSearch(postTaskPath, req.body, req);
     res.status(status);
     res.send(data);
   } catch (error) {
@@ -369,7 +384,7 @@ export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Re
       'case_type': req.body.searchRequest.caseTypeId,
       'event_id': req.body.searchRequest.eventId,
     };
-    const {status, data} = await handlePostSearch(postTaskPath, reqBody, req);
+    const { status, data } = await handlePostSearch(postTaskPath, reqBody, req);
     res.status(status);
     res.send(data);
   } catch (error) {
@@ -380,9 +395,9 @@ export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Re
 
 export async function getRolesCategory(req: EnhancedRequest, res: Response) {
   const personRoles = [
-    {roleId: 'judicial', roleName: 'Judicial'},
-    {roleId: 'legalOps', roleName: 'Legal Ops'},
-    {roleId: 'admin', roleName: 'Admin'}];
+    { roleId: 'judicial', roleName: 'Judicial' },
+    { roleId: 'legalOps', roleName: 'Legal Ops' },
+    { roleId: 'admin', roleName: 'Admin' }];
   return res.send(personRoles).status(200);
 }
 
@@ -437,10 +452,6 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
   logger.info('getting all work cases', searchParameters);
 
   try {
-
-    // get users case allocations
-    const caseAllocatorQuery = constructRoleAssignmentCaseAllocatorQuery(searchParameters, req);
-    logger.info('case-allocator query', JSON.stringify(caseAllocatorQuery, null, 2));
     // get case allocator locations
     const locations = [];
     searchParameters.filter(param => param.key === 'location_id').forEach(location => {

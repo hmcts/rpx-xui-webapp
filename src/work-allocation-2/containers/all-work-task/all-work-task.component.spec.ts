@@ -144,17 +144,16 @@ describe('AllWorkTaskComponent', () => {
       roles: ['caseworker-ia-caseofficer'],
       uid: '1233434'
     }));
-    const selection = {location: 'exampleLocation', service: 'IA', selectPerson: 'All', person: null, taskType: 'Judicial', priority: 'High' };
+    const selection = {location: 'exampleLocation', service: 'IA', selectPerson: 'All', person: null, taskType: 'JUDICIAL', priority: 'High' };
     component.onSelectionChanged(selection);
     const searchRequest = component.getSearchTaskRequestPagination();
     expect(searchRequest.search_parameters).toContain({key: 'jurisdiction', operator: 'IN', values: ['IA']});
     expect(searchRequest.search_parameters).toContain({key: 'location', operator: 'IN', values: ['exampleLocation']});
-    // TODO: Edit test to check actual search parameters
     // expect(searchRequest.search_parameters).toContain({key: 'taskCategory', operator: 'IN', values: ['All']});
 
     // Confirm that person is not searched for when no person available
     expect(searchRequest.search_parameters).not.toContain({key: 'person', operator: 'IN', values: []});
-    // expect(searchRequest.search_parameters).toContain({key: 'taskType', operator: 'IN', values: ['Judicial']});
+    expect(searchRequest.search_parameters).toContain({key: 'role_category', operator: 'IN', values: ['JUDICIAL']});
     // expect(searchRequest.search_parameters).toContain({key: 'priority', operator: 'IN', values: ['High']});
   })
 

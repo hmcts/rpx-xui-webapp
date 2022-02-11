@@ -11,6 +11,7 @@ import { Caseworker } from '../../../work-allocation-2/models/dtos';
 import { Task, TaskPermission } from '../../../work-allocation-2/models/tasks';
 import { WorkAllocationTaskService } from '../../../work-allocation-2/services';
 import { getAssigneeName, handleTasksFatalErrors, REDIRECTS } from '../../../work-allocation-2/utils';
+import { appendTaskIdAsQueryStringToTaskDescription } from './case-task.util';
 
 @Component({
   selector: 'exui-case-task',
@@ -62,6 +63,10 @@ export class CaseTaskComponent implements OnInit {
     if (!task.description) {
       return '';
     }
+
+    // Append task id as querystring to task description markdown
+    task.description = appendTaskIdAsQueryStringToTaskDescription(task);
+
     return CaseTaskComponent.VARIABLES.reduce((description: string, variable: string) => {
       if (variable === CaseTaskComponent.TASK_ID_VARIABLE) {
         return replaceAll(description, variable, task.id);
@@ -109,7 +114,7 @@ export class CaseTaskComponent implements OnInit {
       showAssigneeColumn: true
     };
     const actionUrl = `/work/${task.id}/${option.id}`;
-    this.router.navigate([actionUrl], {state});
+    this.router.navigate([actionUrl], { queryParams: {service: task.jurisdiction}, state });
   }
 
   /**
@@ -138,10 +143,14 @@ export class CaseTaskComponent implements OnInit {
     }
 
     if (this.isTaskAssignedToCurrentUser(task)) {
-      return [
-        {id: 'reassign', text: 'Reassign task'},
-        {id: 'unclaim', text: 'Unassign task'}
-      ];
+      const taskActions = [];
+      if (task.actions.find(action => action.id === 'reassign')) {
+        taskActions.push({id: 'reassign', text: 'Reassign task'});
+      }
+      if (task.actions.find(action => action.id === 'unclaim')) {
+        taskActions.push({id: 'unclaim', text: 'Unassign task'});
+      }
+      return taskActions;
     } else {
       if (permissions.includes(TaskPermission.EXECUTE) && permissions.includes(TaskPermission.MANAGE)) {
         return [

@@ -1,6 +1,6 @@
 import { Component, } from '@angular/core';
 import { Person } from '@hmcts/rpx-xui-common-lib';
-import { combineLatest, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
@@ -12,13 +12,23 @@ import { PaginationParameter, SearchTaskRequest } from '../../models/dtos';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
 @Component({
-    selector: 'exui-all-work-tasks',
-    templateUrl: 'all-work-task.component.html',
-    styleUrls: ['all-work-task.component.scss']
+  selector: 'exui-all-work-tasks',
+  templateUrl: 'all-work-task.component.html',
+  styleUrls: ['all-work-task.component.scss']
 })
 export class AllWorkTaskComponent extends TaskListWrapperComponent {
   private static ALL_TASKS = 'All';
   private static AVAILABLE_TASKS = 'None / Available tasks';
+  public locations: Location[];
+  public waSupportedJurisdictions$: Observable<string[]>;
+  public sortedBy: SortField = {
+    fieldName: '',
+    order: SortOrder.NONE
+  };
+  public pagination: PaginationParameter = {
+    page_number: 1,
+    page_size: 25
+  };
   private selectedLocation: Location = {
     id: '**ALL LOCATIONS**',
     locationName: '',
@@ -28,19 +38,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   private selectedTaskCategory: string = 'All';
   private selectedPerson: string = '';
   private selectedTaskType: string = 'All';
-  public locations$: Observable<Location[]>;
-  public locations: Location[];
-  public waSupportedJurisdictions$: Observable<string[]>;
 
-  public sortedBy: SortField = {
-    fieldName: '',
-    order: SortOrder.NONE
-  };
-
-  public pagination: PaginationParameter = {
-    page_number: 1,
-    page_size: 25
-  };
   public get emptyMessage(): string {
     return ListConstants.EmptyMessage.AllWork;
   }
@@ -62,7 +60,6 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   }
 
   public loadCaseWorkersAndLocations(): void {
-    this.locations$ = this.locationService.getLocations();
     this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
   }
 
@@ -73,16 +70,19 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
       const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
       const searchParameters = [
         {key: 'jurisdiction', operator: 'IN', values: [this.selectedJurisdiction]},
-        this.getStateParameter(),
-        {key: 'taskType', operator: 'IN', values: [this.selectedTaskType]},
+        this.getStateParameter()
       ];
-      const personParameter = {key: 'user', operator: 'IN', values: [this.selectedPerson]};
+      const personParameter = { key: 'user', operator: 'IN', values: [this.selectedPerson] };
       const locationParameter = this.getLocationParameter();
+      const taskTypeParameter = this.getTaskTypeParameter();
       if (this.selectedPerson) {
         searchParameters.push(personParameter);
-      };
+      }
       if (locationParameter) {
         searchParameters.push(locationParameter);
+      };
+      if (taskTypeParameter) {
+        searchParameters.push(taskTypeParameter);
       };
       return {
         search_parameters: searchParameters,
@@ -93,10 +93,26 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     }
   }
 
+  /**
+   * Handle the paging event
+   */
+  public onPaginationEvent(pageNumber: number): void {
+    this.onPaginationHandler(pageNumber);
+  }
+
+  public onSelectionChanged(selection: { location: string, service: string, selectPerson: string, person: Person, taskType: string }): void {
+    this.selectedLocation.id = selection.location;
+    this.selectedJurisdiction = selection.service;
+    this.selectedTaskCategory = selection.selectPerson;
+    this.selectedPerson = selection.person ? selection.person.id : null;
+    this.selectedTaskType = selection.taskType;
+    this.onPaginationHandler(1);
+  }
+
   private getLocationParameter(): any {
     let values: string[];
     if (this.selectedLocation && this.selectedLocation.id !== FilterConstants.Options.Locations.ALL.id) {
-      values = [ this.selectedLocation.id ];
+      values = this.selectedLocation.id ? [this.selectedLocation.id] : [];
     } else {
       values = this.locations.map(loc => loc.id);
     }
@@ -108,26 +124,16 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
       if (this.selectedTaskCategory === AllWorkTaskComponent.AVAILABLE_TASKS) {
         return { key: 'state', operator: 'IN', values: ['unassigned'] };
       } else {
-        return { key: 'state', operator: 'IN', values: ['assigned']};
+        return { key: 'state', operator: 'IN', values: ['assigned'] };
       }
     } else {
-      return { key: 'state', operator: 'IN', values: ['assigned', 'unassigned']};
+      return { key: 'state', operator: 'IN', values: ['assigned', 'unassigned'] };
     }
   }
 
-  /**
-   * Handle the paging event
-   */
-   public onPaginationEvent(pageNumber: number): void {
-    this.onPaginationHandler(pageNumber);
-  }
-
-  public onSelectionChanged(selection: {location: string, service: string, selectPerson: string, person: Person, taskType: string}): void {
-    this.selectedLocation.id = selection.location;
-    this.selectedJurisdiction = selection.service;
-    this.selectedTaskCategory = selection.selectPerson;
-    this.selectedPerson = selection.person ? selection.person.id : null;
-    this.selectedTaskType = selection.taskType;
-    this.onPaginationHandler(1);
+  private getTaskTypeParameter(): any {
+    if (this.selectedTaskType && this.selectedTaskType !== AllWorkTaskComponent.ALL_TASKS) {
+      return {key: 'role_category', operator: 'IN', values: [this.selectedTaskType]};
+    }
   }
 }

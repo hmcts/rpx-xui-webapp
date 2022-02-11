@@ -49,7 +49,7 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
         Given I reset reference "findPersonRequest" value to null
         When I enter find person search input "user1" in work flow
         Then I validate find person request body from reference "findPersonRequest"
-            | jurisdiction | Judicial |
+            | userRole | Judicial |
             | searchTerm   | user1    |
         Then I see find person search results in work flow
             | Person                      |
@@ -110,7 +110,7 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
         Given I reset reference "findPersonRequest" value to null
         When I enter find person search input "cas" in work flow
         # Then I validate find person request body from reference "findPersonRequest"
-        #     | jurisdiction | legal ops |
+        #     | userRole | legal ops |
         # | searchTerm   | cas       |
         Then I see find person search results in work flow
             | Person                                  |
@@ -172,7 +172,7 @@ Feature: WA Release 2: All work > cases - Manage links - Action work flow
         Given I reset reference "findPersonRequest" value to null
         When I enter find person search input "user1" in work flow
         # Then I validate find person request body from reference "findPersonRequest"
-        #     | jurisdiction | legal ops |
+        #     | userRole | legal ops |
         # | searchTerm   | cas       |
         Then I see find person search results in work flow
             | Person                      |

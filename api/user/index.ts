@@ -6,11 +6,12 @@ import { getConfigValue } from '../configuration';
 import { CASE_SHARE_PERMISSIONS, SERVICES_ROLE_ASSIGNMENT_API_PATH, SESSION_TIMEOUTS } from '../configuration/references';
 import { http } from '../lib/http';
 import { setHeaders } from '../lib/proxy';
+import {exists} from '../lib/util';
 import { LocationInfo, RoleAssignment } from './interfaces/roleAssignment';
 import { getMappedRoleCategory, getOrganisationRoles, isCurrentUserCaseAllocator } from './utils';
 
 export async function getUserDetails(req, res: Response, next: NextFunction): Promise<Response> {
-  if (!req.session || !req.session.passport || !req.session.passport.user) {
+  if (!exists(req, 'session.passport.user')) {
     return res.send({}).status(200);
   }
 

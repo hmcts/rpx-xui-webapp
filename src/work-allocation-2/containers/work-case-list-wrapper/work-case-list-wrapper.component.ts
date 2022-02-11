@@ -8,7 +8,7 @@ import { mergeMap, switchMap } from 'rxjs/operators';
 import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
-import { Actions, Role } from '../../../role-access/models';
+import { Actions, Role, RoleCategory } from '../../../role-access/models';
 import { AllocateRoleService } from '../../../role-access/services';
 import { ListConstants } from '../../components/constants';
 import { CaseService, InfoMessage, InfoMessageType, SortOrder } from '../../enums';
@@ -72,7 +72,8 @@ export class WorkCaseListWrapperComponent implements OnInit {
     protected readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService,
     protected readonly jurisdictionsService: JurisdictionsService,
     protected readonly rolesService: AllocateRoleService
-  ) {}
+  ) {
+  }
 
   public get cases(): Case[] {
     return this.pCases;
@@ -301,20 +302,20 @@ export class WorkCaseListWrapperComponent implements OnInit {
     const mappedSearchResult$ = casesSearch$.pipe(mergeMap(result => {
       const judicialUserIds = result.cases.filter(theCase => theCase.role_category === 'JUDICIAL').map(thisCase => thisCase.assignee);
       if (judicialUserIds && judicialUserIds.length > 0 && this.view !== 'MyCases') {
-          // may want to determine judicial workers by services in filter
-          return this.rolesService.getCaseRolesUserDetails(judicialUserIds, ['IA']).pipe(switchMap((judicialUserData) => {
-            const judicialNamedCases = result.cases.map(judicialCase => {
-              const currentCase = judicialCase;
-              const theJUser = judicialUserData.find(judicialUser => judicialUser.sidam_id === judicialCase.assignee);
-              if (theJUser) {
-                currentCase.actorName = theJUser.known_as;
-                return currentCase;
-              }
+        // may want to determine judicial workers by services in filter
+        return this.rolesService.getCaseRolesUserDetails(judicialUserIds, ['IA']).pipe(switchMap((judicialUserData) => {
+          const judicialNamedCases = result.cases.map(judicialCase => {
+            const currentCase = judicialCase;
+            const theJUser = judicialUserData.find(judicialUser => judicialUser.sidam_id === judicialCase.assignee);
+            if (theJUser) {
+              currentCase.actorName = theJUser.known_as;
               return currentCase;
-            });
-            result.cases = judicialNamedCases;
-            return of(result);
-          }));
+            }
+            return currentCase;
+          });
+          result.cases = judicialNamedCases;
+          return of(result);
+        }));
       } else {
         return of(result);
       }
@@ -326,7 +327,9 @@ export class WorkCaseListWrapperComponent implements OnInit {
       this.casesTotal = result.total_records;
       this.uniqueCases = result.unique_cases;
       this.cases.forEach(item => {
-        item.assigneeName = getAssigneeName(this.caseworkers, item.assignee);
+        if (item.role_category !== RoleCategory.JUDICIAL) {
+          item.actorName = getAssigneeName(this.caseworkers, item.assignee);
+        }
         if (this.allJurisdictions && this.allJurisdictions.find(jur => jur.id === item.jurisdiction)) {
           item.jurisdiction = this.allJurisdictions.find(jur => jur.id === item.jurisdiction).name;
         }

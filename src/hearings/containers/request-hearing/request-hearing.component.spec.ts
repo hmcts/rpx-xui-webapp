@@ -57,7 +57,7 @@ describe('RequestHearingComponent', () => {
   it('should check is answer page', () => {
     spyOn(hearingsService, 'navigateAction');
     mockPageFlow.getCurrentPage.and.returnValue('hearing-create-edit-summary');
-    expect(component.isCheckAnswerPage()).toBeTruthy();
+    expect(component.isCheckAnswerPage).toBeTruthy();
   });
 
   it('should purge data in store if page is destroyed', () => {

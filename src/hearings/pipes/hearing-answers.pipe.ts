@@ -1,6 +1,5 @@
 import {Pipe, PipeTransform} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {AbstractConverter} from '../converters/abstract.converter';
 import { AdditionalFacilitiesConverter } from '../converters/additional-facilities.converter';
@@ -10,35 +9,49 @@ import {CaseFlagConverter} from '../converters/case-flag.converter';
 import {CaseNameConverter} from '../converters/case-name.converter';
 import {DefaultConverter} from '../converters/default.converter';
 import {TypeConverter} from '../converters/type.converter';
+import {AdditionalFacilitiesAnswerConverter} from '../converters/additional-facilities.answer.converter';
+import {AdditionalSecurityAnswerConverter} from '../converters/additional-security.answer.converter';
+import {AnswerConverter} from '../converters/answer.converter';
+import {CaseFlagAnswerConverter} from '../converters/case-flag.answer.converter';
+import {CaseNameAnswerConverter} from '../converters/case-name.answer.converter';
+import {DefaultAnswerConverter} from '../converters/default.answer.converter';
+import {NeedWelshAnswerConverter} from '../converters/need-welsh.answer.converter';
+import {TypeAnswerConverter} from '../converters/type.answer.converter';
+import {VenueAnswerConverter} from '../converters/venue.answer.converter';
 import {AnswerSource} from '../models/hearings.enum';
-import * as fromHearingStore from '../store';
+import {State} from '../store';
 
 @Pipe({
   name: 'transformAnswer'
 })
 export class HearingAnswersPipe implements PipeTransform {
 
-  constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
-              protected readonly route: ActivatedRoute) {
+  constructor(protected readonly route: ActivatedRoute) {
   }
 
-  public transform(answerSource: AnswerSource): Observable<string> {
-    let converter: AbstractConverter = new DefaultConverter(this.hearingStore);
+  public transform(answerSource: AnswerSource, hearingState$: Observable<State>): Observable<string> {
+    let converter: AnswerConverter = new DefaultAnswerConverter();
     switch (answerSource) {
       case AnswerSource.CASE_NAME:
-        converter = new CaseNameConverter(this.hearingStore);
+        converter = new CaseNameAnswerConverter();
         break;
       case AnswerSource.Type:
-        converter = new TypeConverter(this.hearingStore);
+        converter = new TypeAnswerConverter();
         break;
       case AnswerSource.ADDITIONAL_SECURITY_REQUIRED:
-        converter = new AdditionalSecurityConverter(this.hearingStore);
+        converter = new AdditionalSecurityAnswerConverter();
         break;
       case AnswerSource.ADDITIONAL_FACILITIES_REQUIRED:
-        converter = new AdditionalFacilitiesConverter(this.hearingStore, this.route);
+        converter = new AdditionalFacilitiesAnswerConverter(this.route);
         break;
       case AnswerSource.CASE_FLAGS:
-        converter = new CaseFlagConverter(this.hearingStore, this.route);
+        converter = new CaseFlagAnswerConverter(this.route);
+        break;
+      case AnswerSource.VENUE:
+        converter = new VenueAnswerConverter();
+        break;
+      case AnswerSource.NEED_WELSH:
+        converter = new NeedWelshAnswerConverter();
         break;
       case AnswerSource.ADDITIONAL_INSTRUCTION:
         converter = new AdditionalInstructionsConverter(this.hearingStore);
@@ -46,7 +59,7 @@ export class HearingAnswersPipe implements PipeTransform {
       default:
         break;
     }
-    return converter.transformAnswer();
+    return converter.transformAnswer(hearingState$);
   }
 
 }

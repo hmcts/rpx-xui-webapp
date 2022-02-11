@@ -1,4 +1,4 @@
-import {AnswerSource} from '../models/hearings.enum';
+import {AnswerSource, IsHiddenSource} from '../models/hearings.enum';
 import {Section} from '../models/section';
 
 export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
@@ -79,7 +79,7 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
     ],
   },
   {
-    sectionHTMLTitle: '<h2 class="govuk-heading-m">Venue</h2>',
+    sectionHTMLTitle: '<h2 class="govuk-heading-m">Hearing venue</h2>',
     sectionOrder: 6,
     answers: [
       {
@@ -91,8 +91,21 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
     ],
   },
   {
-    sectionHTMLTitle: '<h2 class="govuk-heading-m">Judge details</h2>',
+    sectionHTMLTitle: '<h2 class="govuk-heading-m">Language requirements</h2>',
     sectionOrder: 7,
+    answers: [
+      {
+        answerTitle: 'Does this hearing need to be in Welsh?',
+        answerSource: AnswerSource.NEED_WELSH,
+        answerOrder: 1,
+        changeLink: '/hearings/request/hearing-welsh#welsh_hearing_yes'
+      },
+    ],
+    isHiddenSource: IsHiddenSource.WELSH_LOCATION
+  },
+  {
+    sectionHTMLTitle: '<h2 class="govuk-heading-m">Judge details</h2>',
+    sectionOrder: 8,
     answers: [
       {
         answerTitle: 'Do you want a specific judge?',
@@ -116,7 +129,7 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Panel details</h2>',
-    sectionOrder: 8,
+    sectionOrder: 9,
     answers: [
       {
         answerTitle: 'Do you require a panel for this hearing?',
@@ -128,7 +141,7 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Length, date and priority level of hearing</h2>',
-    sectionOrder: 9,
+    sectionOrder: 10,
     answers: [
       {
         answerTitle: 'Length of hearing',
@@ -152,7 +165,7 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Additional instructions</h2>',
-    sectionOrder: 10,
+    sectionOrder: 11,
     answers: [
       {
         answerTitle: 'Enter any additional instructions for the hearing',

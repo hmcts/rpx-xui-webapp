@@ -1,3 +1,4 @@
+import {Location} from '@angular/common';
 import {TestBed} from '@angular/core/testing';
 import {Router} from '@angular/router';
 import {provideMockActions} from '@ngrx/effects/testing';
@@ -22,6 +23,7 @@ describe('Hearing Request Effects', () => {
     'getCurrentPage', 'getLastPage', 'getNextPage'
   ]);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+  const mockLocation = jasmine.createSpyObj('Location', ['back']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -38,6 +40,10 @@ describe('Hearing Request Effects', () => {
         {
           provide: Router,
           useValue: mockRouter,
+        },
+        {
+          provide: Location,
+          useValue: mockLocation,
         },
         HearingRequestEffects,
         provideMockActions(() => actions$)
@@ -89,7 +95,7 @@ describe('Hearing Request Effects', () => {
       const navigateAction = new hearingRequestActions.NavigateBackHearingRequest();
       const expected = cold('-b', {b: navigateAction});
       expect(effects.backNavigation$).toBeObservable(expected);
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'last']);
+      expect(mockLocation.back).toHaveBeenCalled();
     });
 
     it('should navigate to hearing-create-edit-summary page if going back on CREATE_EDIT mode', () => {
@@ -99,7 +105,7 @@ describe('Hearing Request Effects', () => {
       const navigateAction = new hearingRequestActions.NavigateBackHearingRequest();
       const expected = cold('-b', {b: navigateAction});
       expect(effects.backNavigation$).toBeObservable(expected);
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-create-edit-summary']);
+      expect(mockLocation.back).toHaveBeenCalled();
     });
 
     it('should navigate to hearing tab page if going back on VIEW mode', () => {
@@ -109,7 +115,7 @@ describe('Hearing Request Effects', () => {
       const navigateAction = new hearingRequestActions.NavigateBackHearingRequest();
       const expected = cold('-b', {b: navigateAction});
       expect(effects.backNavigation$).toBeObservable(expected);
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['cases', 'case-details', '54354545453', 'hearings']);
+      expect(mockLocation.back).toHaveBeenCalled();
     });
 
     it('should navigate to hearing-view-edit-summary page if going back on VIEW_EDIT mode', () => {
@@ -119,7 +125,7 @@ describe('Hearing Request Effects', () => {
       const navigateAction = new hearingRequestActions.NavigateBackHearingRequest();
       const expected = cold('-b', {b: navigateAction});
       expect(effects.backNavigation$).toBeObservable(expected);
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-view-edit-summary']);
+      expect(mockLocation.back).toHaveBeenCalled();
     });
   });
 

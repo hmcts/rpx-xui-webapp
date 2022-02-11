@@ -1,9 +1,9 @@
-import {AnswerSource} from './hearings.enum';
+import {AnswerSource, IsHiddenSource} from './hearings.enum';
 
 export interface Answer {
   answerTitle: string;
   answerSource: AnswerSource;
   answerOrder: number;
   changeLink?: string;
-  isHidden?: boolean; // default false
+  isHiddenSource?: IsHiddenSource;
 }

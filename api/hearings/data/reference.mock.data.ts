@@ -1,5 +1,5 @@
 /* tslint:disable:object-literal-sort-keys */
-import { RefDataByCategoryModel, RefDataByServiceModel, RefDataModel } from '../models/refData.model';
+import {RefDataByCategoryModel, RefDataByServiceModel, RefDataModel} from '../models/refData.model';
 
 export const DEFAULT_JUDGE_TYPES_REF: RefDataModel[] = [
   {
@@ -269,8 +269,7 @@ export const OTHER_PANEL_ROLES: RefDataModel[] = [{
     order: 1,
     parentKey: 'MedicallyQualifiedPanelMember1',
     child_nodes: [],
-  },
-  {
+  }, {
     key: 'Carer',
     value_en: 'Carer',
     value_cy: '',
@@ -279,8 +278,7 @@ export const OTHER_PANEL_ROLES: RefDataModel[] = [{
     order: 1,
     parentKey: 'MedicallyQualifiedPanelMember1',
     child_nodes: [],
-  },
-  {
+  }, {
     key: 'EyeSurgeon',
     value_en: 'Medically qualified panel member',
     value_cy: '',
@@ -289,8 +287,7 @@ export const OTHER_PANEL_ROLES: RefDataModel[] = [{
     order: 1,
     parentKey: 'MedicallyQualifiedPanelMember1',
     child_nodes: [],
-  },
-  {
+  }, {
     key: 'GeneralPractitioner',
     value_en: 'General Practitioner',
     value_cy: '',
@@ -317,8 +314,7 @@ export const OTHER_PANEL_ROLES: RefDataModel[] = [{
     order: 1,
     parentKey: 'MedicallyQualifiedPanelMember2',
     child_nodes: [],
-  },
-  {
+  }, {
     key: 'Carer',
     value_en: 'Carer',
     value_cy: '',
@@ -327,8 +323,7 @@ export const OTHER_PANEL_ROLES: RefDataModel[] = [{
     order: 1,
     parentKey: 'MedicallyQualifiedPanelMember2',
     child_nodes: [],
-  },
-  {
+  }, {
     key: 'EyeSurgeon',
     value_en: 'Medically qualified panel member',
     value_cy: '',
@@ -337,8 +332,7 @@ export const OTHER_PANEL_ROLES: RefDataModel[] = [{
     order: 1,
     parentKey: 'MedicallyQualifiedPanelMember2',
     child_nodes: [],
-  },
-  {
+  }, {
     key: 'GeneralPractitioner',
     value_en: 'General Practitioner',
     value_cy: '',

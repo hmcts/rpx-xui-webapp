@@ -1,10 +1,13 @@
 import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { RoleCategory } from '../../role-access/models';
-import { getCurrentUserRoleCategory, getLabel } from '.';
 import {
+  getLabel,
   getOptions,
+  getDestinationUrl,
+  getCurrentUserRoleCategory,
   getRoleCategoryToBeSelectedByDefault,
   handleFatalErrors,
+  handleTasksFatalErrors,
   REDIRECTS,
   treatAsFatal,
   WILDCARD_SERVICE_DOWN
@@ -212,5 +215,46 @@ describe('WorkAllocationUtils', () => {
     } catch (error) {
       expect(error.message).toContain('Invalid roleCategory')
     }
+  });
+
+  it('should attempt to navigate to the correct error page for task related errors', () => {
+    const taskId = 'd2f13dad-494c-11ec-9740-b6b84d919277';
+    const returnUrl = '/work/my-work/list';
+    mockRouter = {
+      navigate: jasmine.createSpy('navigate'),
+      url: `/work/${taskId}/reassign/confirm`
+    };
+
+    // should get correct redirect for 500
+    const serviceDown = handleTasksFatalErrors(500, mockRouter);
+    expect(serviceDown).toEqual(0);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([ REDIRECTS.ServiceDown ]);
+
+    // correct redirect for 401
+    const unAuthorised = handleTasksFatalErrors(401, mockRouter);
+    expect(unAuthorised).toEqual(0);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([ REDIRECTS.NotAuthorised ]);
+
+    // correct redirect for 403
+    const isForbidden = handleTasksFatalErrors(403, mockRouter);
+    expect(isForbidden).toEqual(0);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([ REDIRECTS.NotAuthorised ]);
+
+    // correct redirect for 401 with url param set
+    const personNotAuthorised = handleTasksFatalErrors(401, mockRouter, null, returnUrl);
+    expect(personNotAuthorised).toEqual(0);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([ `/work/${taskId}/person-not-authorised` ], { state: { returnUrl }});
+  });
+
+  it('should return correct destination url for task assignment error', () => {
+    const url = '/work/case-id-1234/assign/confirm';
+    const destinationUrl = getDestinationUrl(url);
+    expect(destinationUrl).toEqual('/work/case-id-1234/person-not-authorised');
+  });
+
+  it('should return correct destination url for task reassignment error', () => {
+    const url = '/work/case-id-1234/reassign/confirm';
+    const destinationUrl = getDestinationUrl(url);
+    expect(destinationUrl).toEqual('/work/case-id-1234/person-not-authorised');
   });
 });

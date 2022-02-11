@@ -16,6 +16,7 @@ import {
   TaskHomeComponent,
   WorkAllocationHomeComponent,
 } from './containers';
+import { TaskAssignmentPersonNotAuthorisedComponent } from './containers/messages-container/task-assignment-person-not-authorised/task-assignment-person-not-authorised.component';
 import { MyCasesComponent } from './containers/my-cases/my-cases.component';
 import { TaskAssignmentChooseRoleComponent } from './containers/task-assignment-choose-role/task-assignment-choose-role.component';
 import { WorkAllocationFeatureToggleGuard } from './guards';
@@ -161,6 +162,10 @@ export const ROUTES: Routes = [
                 data: TaskActionConstants.UnassignNonManager
               }
             ]
+          },
+          {
+            path: 'person-not-authorised',
+            component: TaskAssignmentPersonNotAuthorisedComponent
           }
         ]
       }

@@ -10,7 +10,7 @@ import { AssignHintText, InfoMessage, InfoMessageType, TaskActionType } from '..
 import { InformationMessage } from '../../models/comms';
 import { Task } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
-import { handleFatalErrors } from '../../utils';
+import { handleTasksFatalErrors } from '../../utils';
 
 @Component({
   selector: 'exui-task-assignment-confirm',
@@ -90,7 +90,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     this.assignTask = this.taskService.assignTask(this.taskId, { userId: this.selectedPerson.id }).subscribe({
       next: () => this.reportSuccessAndReturn(),
       error: (error: any) => {
-        const handledStatus = handleFatalErrors(error.status, this.router);
+        const handledStatus = handleTasksFatalErrors(error.status, this.router, null, this.returnUrl);
 
         if (handledStatus > 0) {
           this.reportUnavailableErrorAndReturn();

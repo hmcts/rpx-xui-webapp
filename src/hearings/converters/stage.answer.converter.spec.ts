@@ -1,15 +1,15 @@
 import {TestBed} from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {provideMockStore} from '@ngrx/store/testing';
 import {cold} from 'jasmine-marbles';
 import {of} from 'rxjs';
 import {hearingStageRefData, initialState} from '../hearing.test.data';
-import { State } from '../store';
-import { AnswerConverter } from './answer.converter';
-import {StageConverter} from './stage.converter';
+import {State} from '../store';
+import {AnswerConverter} from './answer.converter';
+import {StageAnswerConverter} from './stage.answer.converter';
 
-describe('StageConverter', () => {
+describe('StageAnswerConverter', () => {
 
   let converter: AnswerConverter;
   let store: Store<any>;
@@ -33,7 +33,7 @@ describe('StageConverter', () => {
     });
     store = TestBed.get(Store);
     router = TestBed.get(ActivatedRoute);
-    converter = new StageConverter(router);
+    converter = new StageAnswerConverter(router);
   });
 
   it('should transform hearing stage', () => {

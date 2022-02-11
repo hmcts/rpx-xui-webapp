@@ -5,7 +5,7 @@ import {AnswerConverter} from './answer.converter';
 import {RefDataModel} from '../models/refData.model';
 import { State } from '../store';
 
-export class StageConverter implements AnswerConverter {
+export class StageAnswerConverter implements AnswerConverter {
 
   constructor(
     protected readonly route: ActivatedRoute) {
@@ -22,7 +22,7 @@ export class StageConverter implements AnswerConverter {
       map(state => {
         const selection = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingType;
 
-        return StageConverter.getHearingTypeDisplayValue(hearingStageOptions, selection);
+        return StageAnswerConverter.getHearingTypeDisplayValue(hearingStageOptions, selection);
       })
     );
   }

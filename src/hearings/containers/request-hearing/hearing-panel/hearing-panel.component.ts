@@ -1,15 +1,15 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Person } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import { ControlTypeEnum } from '../../../models/hearings.enum';
 import { RefDataModel } from '../../../models/refData.model';
 import { HearingJudgeNamesListComponent } from '../../../../hearings/components';
-import { ACTION, HearingPanelSelectionEnum } from '../../../models/hearings.enum';
+import { ACTION, HearingPanelSelectionEnum, ControlTypeEnum } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
+
 
 @Component({
   selector: 'exui-hearing-panel',
@@ -48,20 +48,20 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     ];
   }
 
+  public ngOnInit(): void {
+    this.initForm();
+  }
+
   public childNodesValidation(): boolean {
     let childNodeValid: boolean = true;
     const panelRoles = this.convertArrayToRefDataModel(this.panelJudgeForm.controls.multiLevelSelect as FormArray);
     panelRoles.filter(panelRole => panelRole.selected && panelRole.child_nodes && panelRole.child_nodes.length)
       .forEach(selectedPanelRole => {
-        if (selectedPanelRole.child_nodes.filter(x => x.selected).length === 0) {
+        if (selectedPanelRole.child_nodes.filter(node => node.selected).length === 0) {
           childNodeValid = false;
         }
       });
     return childNodeValid;
-  }
-
-  public ngOnInit(): void {
-    this.initForm();
   }
 
   public initForm(): void {
@@ -77,33 +77,29 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
 
   public initialiseHearingPanels(): void {
     this.panelSelection = '';
+    let doneOnce: boolean = false;
     if (this.hearingRequestMainModel.hearingDetails &&
       this.hearingRequestMainModel.hearingDetails.panelRequirements &&
       this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms) {
-      let counter = 0;
       this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms.forEach(panelSpecialism => {
-        if (panelSpecialism) {
-          this.multiLevelSelections.filter(multiLevelSelection => multiLevelSelection.key === panelSpecialism)
-            .forEach(multiLevelSelectionFiltered => {
-              multiLevelSelectionFiltered.selected = true;
-            });
-          this.multiLevelSelections.filter(multiLevelSelection => multiLevelSelection.key !== panelSpecialism)
-            .forEach(() => {
-              const storedIndex = counter;
-              if (this.multiLevelSelections[storedIndex]) {
-                const parentFound = this.multiLevelSelections[storedIndex];
-                if (parentFound.child_nodes) {
-                  parentFound.child_nodes
-                    .filter(node => node.key === panelSpecialism)
-                    .forEach(specialim => {
-                      specialim.selected = true;
-                      parentFound.selected = true;
-                    });
-                }
-              }
-            });
-        }
-        counter++;
+        doneOnce = false;
+        this.multiLevelSelections.forEach(multiLevelSelectionFiltered => {
+          if (multiLevelSelectionFiltered.key === panelSpecialism) {
+            multiLevelSelectionFiltered.selected = true;
+          } else {
+            if (multiLevelSelectionFiltered.child_nodes) {
+              multiLevelSelectionFiltered.child_nodes
+                .filter(node => node.key === panelSpecialism)
+                .forEach(specialim => {
+                  if (!doneOnce) {
+                    specialim.selected = true;
+                    multiLevelSelectionFiltered.selected = true;
+                    doneOnce = true;
+                  }
+                });
+            }
+          }
+        });
       });
 
       this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms.length ?
@@ -111,12 +107,18 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     }
   }
 
+  public getSelectedKey(panelRoles: RefDataModel[]): string {
+    const result = panelRoles.filter(panelRole => panelRole.selected)
+      .map(selected => !selected.child_nodes || !selected.child_nodes.length ? selected.key
+        : this.getSelectedKey(selected.child_nodes));
+    return result.length ? result[0] : '';
+  }
+
   public prepareData(): void {
     const panelRoles = this.convertArrayToRefDataModel(this.panelJudgeForm.controls.multiLevelSelect as FormArray);
     const panelRolesSelected = panelRoles.filter(panelRole => panelRole.selected)
       .map(selected => !selected.child_nodes || !selected.child_nodes.length ? selected.key
-        : selected.child_nodes.filter(child => child.selected).length ? selected.child_nodes.filter(child => child.selected)[0].key : '');
-
+        : this.getSelectedKey(selected.child_nodes));
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
       hearingDetails: {
@@ -130,7 +132,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
 
   public convertArrayToRefDataModel(array: FormArray): RefDataModel[] {
     const panelRoles: RefDataModel[] = [];
-    (array as FormArray).controls.forEach(control => {
+    array.controls.forEach(control => {
       const refDataModel: RefDataModel = {
         key: control.value.key,
         value_en: control.value.value_en,
@@ -150,7 +152,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
   public convertRefDataModelToArray(dataSource: RefDataModel[]): FormArray {
     const dataSourceArray = this.formBuilder.array([]);
     dataSource.forEach(otherPanelRoles => {
-      (dataSourceArray as FormArray).push(this.patchValues({
+      dataSourceArray.push(this.patchValues({
         key: otherPanelRoles.key,
         value_en: otherPanelRoles.value_en,
         value_cy: otherPanelRoles.value_cy,

@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, Input } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ControlTypeEnum } from '../../models/hearings.enum';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'exui-multi-level-selector',
@@ -13,25 +14,27 @@ export class MultiLevelSelectorComponent implements AfterViewInit {
   @Input() public hasValidationRequested: boolean = false;
   @Input() public level: number = 1;
   public formGroup: FormGroup;
+  public subscription: Subscription;
   constructor(public fb: FormBuilder) {
     this.formGroup = fb.group({ item: ['', Validators.required] });
-    this.formGroup.controls.item.valueChanges.subscribe(value => {
-      (this.multiLevelSelect as FormArray).controls.forEach(x => {
-        x.value.selected = false;
-      });
-      (this.multiLevelSelect as FormArray).controls.filter(x => x.value.key === value).forEach(x => {
-        x.value.selected = true;
+    this.subscription = this.formGroup.controls.item.valueChanges.subscribe(value => {
+      this.multiLevelSelect.controls.forEach(control => {
+        if (control.value.key === value) {
+          control.value.selected = true;
+        } else {
+          control.value.selected = false;
+        }
       });
     });
   }
 
-  ngAfterViewInit(): void {
+  public ngAfterViewInit(): void {
     this.assignSelectedOptionToItemControl();
   }
 
   public assignSelectedOptionToItemControl(): void {
     if (this.controlType === ControlTypeEnum.SELECT) {
-      (this.multiLevelSelect as FormArray).controls
+      this.multiLevelSelect.controls
         .filter(control => control.value && control.value.selected)
         .forEach(selectedControl => this.formGroup.controls.item.setValue(selectedControl.value.key));
     }
@@ -62,5 +65,11 @@ export class MultiLevelSelectorComponent implements AfterViewInit {
 
   public getValue(value: FormGroup): FormArray {
     return value.controls.child_nodes as FormArray;
+  }
+
+  public ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 }

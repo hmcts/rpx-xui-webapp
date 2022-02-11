@@ -39,6 +39,13 @@ describe('HearingAnswersPipe', () => {
     expect(result$).toBeObservable(expected);
   });
 
+  it('should transform case number', () => {
+    const result$ = hearingAnswersPipe.transform(AnswerSource.CASE_NUMBER, of(STATE));
+    const caseNumber = '1111-2222-3333-4444';
+    const expected = cold('(b|)', {b: caseNumber});
+    expect(result$).toBeObservable(expected);
+  });
+
   it('should transform type', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.Type, of(STATE));
     const type = 'Personal Independence Payment \n<ul><li>- Conditions of Entitlement</li><li>- Good cause</li><li>- Rate of Assessment / Payability Issues - complex</li></ul>';

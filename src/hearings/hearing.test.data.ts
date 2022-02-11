@@ -1069,7 +1069,7 @@ export const initialState = {
   hearings: {
     hearingList: {
       hearingListMainModel: {
-        caseRef: '54354545453',
+        caseRef: '1111222233334444',
         hmctsServiceID: 'SSCS',
         caseHearings: [{
           hearingID: 'h00001',

@@ -125,7 +125,7 @@ describe('HearingRequirementsComponent', () => {
       },
       caseDetails: {
         hmctsServiceCode: 'SSCS',
-        caseRef: '54354545453',
+        caseRef: '1111222233334444',
         requestTimeStamp: null,
         hearingID: null,
         caseDeepLink: null,

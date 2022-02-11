@@ -1,10 +1,9 @@
 import {AnswerSource, IsHiddenSource} from './hearings.enum';
 
 export interface Answer {
-  id?: string;
+  id: string;
   answerTitle: string;
   answerSource: AnswerSource;
-  answerOrder: number;
   changeLink?: string;
   isHiddenSource?: IsHiddenSource;
 }

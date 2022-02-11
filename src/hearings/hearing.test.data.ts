@@ -1164,7 +1164,8 @@ export const initialState = {
     hearingConditions: {
       caseId: '1111222233334444',
       mode: 'create',
-      isInit: true
+      isInit: true,
+      fragmentId: 'venue'
     },
   }
 };

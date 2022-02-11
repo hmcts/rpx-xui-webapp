@@ -6,6 +6,7 @@ import {AdditionalSecurityAnswerConverter} from '../converters/additional-securi
 import {AnswerConverter} from '../converters/answer.converter';
 import {CaseFlagAnswerConverter} from '../converters/case-flag.answer.converter';
 import {CaseNameAnswerConverter} from '../converters/case-name.answer.converter';
+import {CaseNumberAnswerConverter} from '../converters/case-number.answer.converter';
 import {DefaultAnswerConverter} from '../converters/default.answer.converter';
 import {NeedWelshAnswerConverter} from '../converters/need-welsh.answer.converter';
 import {TypeAnswerConverter} from '../converters/type.answer.converter';
@@ -26,6 +27,9 @@ export class HearingAnswersPipe implements PipeTransform {
     switch (answerSource) {
       case AnswerSource.CASE_NAME:
         converter = new CaseNameAnswerConverter();
+        break;
+      case AnswerSource.CASE_NUMBER:
+        converter = new CaseNumberAnswerConverter();
         break;
       case AnswerSource.Type:
         converter = new TypeAnswerConverter();

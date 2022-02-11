@@ -58,8 +58,8 @@ const config = {
 
     caseworker_iac_off_username: process.env.CASEWORKER_IAC_OFF_USERNAME ? process.env.CASEWORKER_IAC_OFF_USERNAME :'xui_auto_co_r1@justice.gov.uk' ,
     caseworker_iac_off_password: process.env.CASEWORKER_IAC_OFF_PASSWORD ? process.env.CASEWORKER_IAC_OFF_PASSWORD :'Welcome01',
-    hrsTesterUser: 'hrs.tester@hmcts.net',
-    hrsTesterPassword: 'passwOrd01hrs'
+    hrsTesterUser: 'xui.hrs.tester@hmcts.net',
+    hrsTesterPassword: 'Monday01'
 
   },
   directConnect: true,

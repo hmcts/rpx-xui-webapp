@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { cold } from 'jasmine-marbles';
 import { of } from 'rxjs';
 import { caseFlagsRefData, initialState, partyChannelsRefData } from '../hearing.test.data';
-import { AnswerSource } from '../models/hearings.enum';
+import { AnswerSource, PartyType } from '../models/hearings.enum';
 import { State } from '../store';
 import { HearingAnswersPipe } from './hearing-answers.pipe';
 
@@ -55,6 +55,20 @@ describe('HearingAnswersPipe', () => {
   });
 
   it('should transform party flags', () => {
+    STATE.hearingRequest.hearingRequestMainModel.partyDetails = [
+      {
+        partyID: 'P1',
+        partyName: 'Jane and Smith',
+        partyType: PartyType.IND,
+        partyChannel: 'inPerson'
+      },
+      {
+        partyID: 'P2',
+        partyName: 'DWP',
+        partyType: PartyType.ORG,
+        partyChannel: 'byVideo'
+      }
+    ];
     const result$ = hearingAnswersPipe.transform(AnswerSource.HOW_ATTENDANT, of(STATE));
     const partyFlags = '<ul><li>Jane and Smith - In person</li><li>DWP - By video</li></ul>';
     const expected = cold('(b|)', { b: partyFlags });

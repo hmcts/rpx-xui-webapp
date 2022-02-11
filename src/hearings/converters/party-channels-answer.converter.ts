@@ -13,14 +13,14 @@ export class PartyChannelsAnswerConverter implements AnswerConverter {
   }
 
   private static getPartyChannelValue(refData: RefDataModel[], party: PartyDetailsModel): string {
-    return refData.find(facility => facility.key === party.partyChannel).value_en;
+    return refData.find(ref => ref.key === party.partyChannel).value_en;
   }
 
   public transformAnswer(hearingState$: Observable<fromHearingStore.State>): Observable<string> {
     return hearingState$.pipe(
       map(state => {
         const partyChannels = this.route.snapshot.data.partyChannels;
-        const  parties = state.hearingValues.serviceHearingValuesModel.parties;
+        const  parties = state.hearingRequest.hearingRequestMainModel.partyDetails;
         return parties
           .reduce((acc: string, party: PartyDetailsModel, index: number) => {
             const name = party.partyName;

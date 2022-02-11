@@ -56,14 +56,14 @@ describe('HearingAnswersPipe', () => {
 
   it('should transform party flags', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.HOW_ATTENDANT, of(STATE));
-    const partyFlags = '<ul><li>Jane Smith - In person</li><li>DWP - In person</li></ul>';
+    const partyFlags = '<ul><li>Jane and Smith - In person</li><li>DWP - By video</li></ul>';
     const expected = cold('(b|)', { b: partyFlags });
     expect(result$).toBeObservable(expected);
   });
 
   it('should transform number of attendees', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.ATTENDANT_PERSON_AMOUNT, of(STATE));
-    const expected = cold('(b|)', { b: '2' });
+    const expected = cold('(b|)', { b: '3' });
     expect(result$).toBeObservable(expected);
   });
 

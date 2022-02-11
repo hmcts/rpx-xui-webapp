@@ -59,6 +59,10 @@ export class AllocateRoleEffects {
           return of(new routeAction.Go({
             path: [REDIRECTS.NotAuthorised]
           }));
+        case 422:
+          return of(new routeAction.Go({
+            path: [REDIRECTS.UserNotAssignable]
+          }));
         case 400:
         case 500:
         case 503:

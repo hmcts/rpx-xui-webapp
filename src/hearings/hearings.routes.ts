@@ -166,11 +166,8 @@ export const ROUTES: Routes = [
         path: 'hearing-create-edit-summary',
         resolve: {
           caseFlags: CaseFlagsResolver,
-<<<<<<< HEAD
-          hearingStageOptions: HearingStageResolver
-=======
+          hearingStageOptions: HearingStageResolver,
           additionFacilitiesOptions: AdditionalFacilitiesResolver
->>>>>>> feature/hearings-part2
         },
         component: HearingCreateEditSummaryComponent,
         canActivate: [HealthCheckGuard],

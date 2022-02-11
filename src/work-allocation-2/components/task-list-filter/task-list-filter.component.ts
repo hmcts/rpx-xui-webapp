@@ -166,6 +166,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     const field: FilterFieldConfig = {
       name: TaskListFilterComponent.FILTER_NAME,
       options: [],
+      locationTitle: 'Search for a location by name',
       minSelected: 1,
       maxSelected: null,
       lineBreakBefore: true,

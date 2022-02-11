@@ -8,6 +8,7 @@ import { AdditionalSecurityConverter } from '../converters/additional-security.c
 import {CaseFlagConverter} from '../converters/case-flag.converter';
 import {CaseNameConverter} from '../converters/case-name.converter';
 import {DefaultConverter} from '../converters/default.converter';
+import { NumberOfAttendancesConverter } from '../converters/number-of-attendances.converter';
 import { PartyChannelsConverter } from '../converters/party-channels.converter';
 import {TypeConverter} from '../converters/type.converter';
 import {AnswerSource} from '../models/hearings.enum';
@@ -39,6 +40,9 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.HOW_ATTENDANT:
         converter = new PartyChannelsConverter(this.hearingStore, this.route);
+        break;
+      case AnswerSource.ATTENDANT_PERSON_AMOUNT:
+        converter = new NumberOfAttendancesConverter(this.hearingStore, this.route);
         break;
       case AnswerSource.CASE_FLAGS:
         converter = new CaseFlagConverter(this.hearingStore, this.route);

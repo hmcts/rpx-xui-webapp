@@ -39,7 +39,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
     const path: string = prepareGetLocationsUrl(basePath);
     const response = await handleLocationGet(path, req);
     const newLocations = response.data.court_venues.filter(venue => venue.is_case_management_location === 'Y').
-                         map(venue => ({id: venue.epimms_id, locationName: venue.venue_name }));
+                         map(venue => ({id: venue.epimms_id, locationName: venue.site_name }));
     res.send(newLocations).status(response.status);
   } catch (error) {
     next(error);
@@ -50,7 +50,7 @@ export function mapLocations(venues: CourtVenue []): Location [] {
   const locations = [];
   venues.forEach(venue => locations.push({
                               id: venue.epimms_id,
-                              locationName: venue.venue_name,
+                              locationName: venue.site_name,
                             }));
   return locations;
 }

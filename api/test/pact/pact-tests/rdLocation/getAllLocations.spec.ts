@@ -23,12 +23,12 @@ describe("Locations ref data api, get all locations for service", () => {
            {
                 "is_case_management_location": 'Y',
                 "epimms_id": '1234',
-                "venue_name": 'test loc 1'
+                "site_name": 'test loc 1'
            },
             {
                 "is_case_management_location": 'Y',
                 "epimms_id": '1235',
-                "venue_name": 'test loc 2'
+                "site_name": 'test loc 2'
             },
         ]
     };

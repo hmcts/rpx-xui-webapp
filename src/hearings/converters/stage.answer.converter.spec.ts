@@ -40,7 +40,7 @@ describe('StageAnswerConverter', () => {
     const STATE: State = initialState.hearings;
     const result$ = converter.transformAnswer(of(STATE));
     const hearingType = 'Final';
-    const expected = cold('b', {b: hearingType});
+    const expected = cold('(b|)', {b: hearingType});
     expect(result$).toBeObservable(expected);
   });
 

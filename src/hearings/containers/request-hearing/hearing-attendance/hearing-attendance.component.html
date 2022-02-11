@@ -21,7 +21,7 @@
               <strong>{{ partyControl.value.partyName }}</strong>
           </label>
           <select class="govuk-select" id="{{'partyChannel' + i}}" name="party1Channel"
-            [formControl]="formGroupControl(partyControl, 'partyChannel')">
+            [formControl]="partyControl.get('partyChannel')">
             <option value="" selected>Please select</option>
             <option *ngFor="let party of partyChannels | async" [ngValue]="party.key">{{party.value_en}}</option>
           </select>

@@ -6,7 +6,7 @@ import { RefDataModel } from '../models/refData.model';
 import * as fromHearingStore from '../store';
 import { AnswerConverter } from './answer.converter';
 
-export class PartyChannelsConverter implements AnswerConverter {
+export class PartyChannelsAnswerConverter implements AnswerConverter {
 
   constructor(
     protected readonly route: ActivatedRoute) {
@@ -23,7 +23,7 @@ export class PartyChannelsConverter implements AnswerConverter {
         return state.hearingValues.serviceHearingValuesModel.parties
           .reduce((acc: string, party: PartyDetailsModel, index: number) => {
             const name = party.partyName;
-            const value = PartyChannelsConverter.getPartyChannelValue(partyChannels, party);
+            const value = PartyChannelsAnswerConverter.getPartyChannelValue(partyChannels, party);
             if (index === 0) {
               return `<ul><li>${name} - ${value}</li>`;
             }

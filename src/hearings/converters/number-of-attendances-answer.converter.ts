@@ -3,12 +3,10 @@ import { map } from 'rxjs/operators';
 import * as fromHearingStore from '../store';
 import { AnswerConverter } from './answer.converter';
 
-export class NumberOfAttendancesConverter implements AnswerConverter {
+export class NumberOfAttendancesAnswerConverter implements AnswerConverter {
   public transformAnswer(hearingState$: Observable<fromHearingStore.State>): Observable<string> {
     return hearingState$.pipe(
-      map(state => {
-        return state.hearingValues.serviceHearingValuesModel.numberOfPhysicalAttendees.toString();
-      })
+      map(state => state.hearingValues.serviceHearingValuesModel.numberOfPhysicalAttendees.toString())
     );
   }
 }

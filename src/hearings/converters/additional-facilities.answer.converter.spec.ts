@@ -1,21 +1,19 @@
 import {TestBed} from '@angular/core/testing';
 import {ActivatedRoute} from '@angular/router';
-import {Store} from '@ngrx/store';
-import {provideMockStore} from '@ngrx/store/testing';
 import {cold} from 'jasmine-marbles';
+import {of} from 'rxjs';
 import {facilitiesListRefData, initialState} from '../hearing.test.data';
-import {AdditionalFacilitiesConverter} from './additional-facilities.converter';
+import {State} from '../store/reducers';
+import {AdditionalFacilitiesAnswerConverter} from './additional-facilities.answer.converter';
 
-describe('AdditionalFacilitiesConverter', () => {
+describe('AdditionalFacilitiesAnswerConverter', () => {
 
-  let converter: AdditionalFacilitiesConverter;
-  let store: Store<any>;
+  let converter: AdditionalFacilitiesAnswerConverter;
   let router: any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({initialState}),
         {
           provide: ActivatedRoute,
           useValue: {
@@ -28,15 +26,15 @@ describe('AdditionalFacilitiesConverter', () => {
         }
       ]
     });
-    store = TestBed.get(Store);
     router = TestBed.get(ActivatedRoute);
-    converter = new AdditionalFacilitiesConverter(store, router);
+    converter = new AdditionalFacilitiesAnswerConverter(router);
   });
 
   it('should transform additional facilities', () => {
-    const result$ = converter.transformAnswer();
+    const STATE: State = initialState.hearings;
+    const result$ = converter.transformAnswer(of(STATE));
     const additionalFacilities = 'Immigration detention centre, In camera court';
-    const expected = cold('b', {b: additionalFacilities});
+    const expected = cold('(b|)', {b: additionalFacilities});
     expect(result$).toBeObservable(expected);
   });
 });

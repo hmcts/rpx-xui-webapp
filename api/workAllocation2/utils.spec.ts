@@ -174,10 +174,10 @@ const firstRoleAssignment: RoleAssignment[] = [
       caseId: '4',
       caseType: 'caseType1',
       jurisdiction: 'jurisdiction1',
-    caseType: 'caseType1',
-    jurisdiction: 'jurisdiction1',
+      caseType: 'caseType1',
+      jurisdiction: 'jurisdiction1',
+    },
   },
-},
   {
     id: '2',
     attributes: {

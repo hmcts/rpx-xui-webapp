@@ -32,6 +32,13 @@ describe('HearingAnswersPipe', () => {
     hearingAnswersPipe = new HearingAnswersPipe(router);
   });
 
+  it('should transform additional instructions', () => {
+    const result$ = hearingAnswersPipe.transform(AnswerSource.ADDITIONAL_INSTRUCTION, of(STATE));
+    const listingComments = 'blah blah blah';
+    const expected = cold('(b|)', {b: listingComments});
+    expect(result$).toBeObservable(expected);
+  });
+
   it('should transform case name', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.CASE_NAME, of(STATE));
     const caseName = 'Jane vs DWP';

@@ -17,7 +17,7 @@ export default function errorHandler(err, req: Request, res: Response, next: Nex
       // remove any sensitive data
       delete err.request._header
     }
-    logger._logger.error(err)
+    logger._logger.error(err.data)
 
     const errorStatus = err.status ? err.status : 500
     const errorContent = err.data ? err.data : { message: 'Internal Server Error' }

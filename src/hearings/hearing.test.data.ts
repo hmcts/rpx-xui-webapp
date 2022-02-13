@@ -1,6 +1,27 @@
 import {HearingListingStatusEnum, HMCStatus, PartyType} from './models/hearings.enum';
 import {ServiceHearingValuesModel} from './models/serviceHearingValues.model';
 
+export const facilitiesListRefData = [
+  {
+      key: 'immigrationDetentionCentre',
+      value_en: 'Immigration detention centre',
+      value_cy: '',
+      hintText_EN: 'Immigration detention centre',
+      hintTextCY: '',
+      order: 1,
+      parentKey: null
+  },
+  {
+      key: 'inCameraCourt',
+      value_en: 'In camera court',
+      value_cy: '',
+      hintText_EN: 'In camera court',
+      hintTextCY: '',
+      order: 2,
+      parentKey: null
+  }
+];
+
 export const caseFlagsRefData = [
   {
     name: 'Case',
@@ -1077,11 +1098,17 @@ export const initialState = {
           hearingType: 'Final',
           hearingLocations: [
             {
-              locationType: 'region',
-              locationId: '123',
-              locationName: 'test location',
-              region: 'Wales',
-            }
+              locationId: '196538',
+              locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
+              locationType: 'hearing',
+              region: 'North West',
+            },
+            {
+              locationId: '219164',
+              locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
+              locationType: 'hearing',
+              region: 'Scotland',
+            },
           ],
           hearingIsLinkedFlag: false,
           hearingWindow: null,
@@ -1092,7 +1119,10 @@ export const initialState = {
           hearingPriorityType: null,
           numberOfPhysicalAttendees: null,
           hearingInWelshFlag: true,
-          facilitiesRequired: [],
+          facilitiesRequired: [
+            'immigrationDetentionCentre',
+            'inCameraCourt'
+          ],
           listingComments: null,
           hearingRequester: null,
           leadJudgeContractType: null,
@@ -1116,11 +1146,15 @@ export const initialState = {
         },
         partyDetails: [
           {
+            partyID: 'P1',
             partyName: 'Jane and Smith',
+            partyType: PartyType.IND,
             partyChannel: 'inperson'
           },
           {
+            partyID: 'P2',
             partyName: 'DWP',
+            partyType: PartyType.ORG,
             partyChannel: 'bymobile'
           }
         ]

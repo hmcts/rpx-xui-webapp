@@ -10,7 +10,6 @@ import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
-
 @Component({
   selector: 'exui-hearing-panel',
   templateUrl: './hearing-panel.component.html',
@@ -70,35 +69,34 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
       multiLevelSelect: this.formBuilder.array([])
     });
 
-
-    this.initialiseHearingPanels();
+    this.loadHearingPanels();
     this.panelJudgeForm.controls.multiLevelSelect = this.convertRefDataModelToArray(this.multiLevelSelections);
   }
 
-  public initialiseHearingPanels(): void {
+  public loadPanel(multi: RefDataModel, panelSpecialism: string): void {
+    if (multi.child_nodes && multi.child_nodes.length) {
+      multi.child_nodes.forEach(node => {
+        if (node.key.toLowerCase().trim() === panelSpecialism.toLocaleLowerCase().trim()) {
+          node.selected = multi.selected = true;
+          this.loadPanel(node, panelSpecialism);
+        }
+      });
+    } else {
+      if (multi.key === panelSpecialism) {
+        multi.selected = true;
+      }
+    }
+  }
+
+  public loadHearingPanels(): void {
     this.panelSelection = '';
-    let doneOnce: boolean = false;
-    if (this.hearingRequestMainModel.hearingDetails &&
+    if (
+      this.hearingRequestMainModel.hearingDetails &&
       this.hearingRequestMainModel.hearingDetails.panelRequirements &&
       this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms) {
       this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms.forEach(panelSpecialism => {
-        doneOnce = false;
         this.multiLevelSelections.forEach(multiLevelSelectionFiltered => {
-          if (multiLevelSelectionFiltered.key === panelSpecialism) {
-            multiLevelSelectionFiltered.selected = true;
-          } else {
-            if (multiLevelSelectionFiltered.child_nodes) {
-              multiLevelSelectionFiltered.child_nodes
-                .filter(node => node.key === panelSpecialism)
-                .forEach(specialim => {
-                  if (!doneOnce) {
-                    specialim.selected = true;
-                    multiLevelSelectionFiltered.selected = true;
-                    doneOnce = true;
-                  }
-                });
-            }
-          }
+          this.loadPanel(multiLevelSelectionFiltered, panelSpecialism);
         });
       });
 
@@ -107,18 +105,22 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     }
   }
 
-  public getSelectedKey(panelRoles: RefDataModel[]): string {
-    const result = panelRoles.filter(panelRole => panelRole.selected)
-      .map(selected => !selected.child_nodes || !selected.child_nodes.length ? selected.key
-        : this.getSelectedKey(selected.child_nodes));
-    return result.length ? result[0] : '';
+  public prepareChildren(panelRoles: RefDataModel[], accummulation: string[]) {
+    if (panelRoles) {
+      panelRoles.forEach(panelRole => {
+        if (panelRole.selected && (!panelRole.child_nodes || !panelRole.child_nodes.length)) {
+          accummulation.push(panelRole.key);
+        } else {
+          this.prepareChildren(panelRole.child_nodes, accummulation);
+        }
+      });
+    }
   }
 
   public prepareData(): void {
-    const panelRoles = this.convertArrayToRefDataModel(this.panelJudgeForm.controls.multiLevelSelect as FormArray);
-    const panelRolesSelected = panelRoles.filter(panelRole => panelRole.selected)
-      .map(selected => !selected.child_nodes || !selected.child_nodes.length ? selected.key
-        : this.getSelectedKey(selected.child_nodes));
+    const panelRoles: RefDataModel[] = this.convertArrayToRefDataModel(this.panelJudgeForm.controls.multiLevelSelect as FormArray);
+    const panelRolesSelected: string[] = [];
+    this.prepareChildren(panelRoles, panelRolesSelected);
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
       hearingDetails: {

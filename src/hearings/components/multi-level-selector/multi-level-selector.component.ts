@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, Input } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, Input, AfterViewInit, OnDestroy } from '@angular/core';
+import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ControlTypeEnum } from '../../models/hearings.enum';
 import { Subscription } from 'rxjs';
 
@@ -8,23 +8,21 @@ import { Subscription } from 'rxjs';
   templateUrl: './multi-level-selector.component.html',
   styleUrls: ['./multi-level-selector.component.scss']
 })
-export class MultiLevelSelectorComponent implements AfterViewInit {
+export class MultiLevelSelectorComponent implements AfterViewInit, OnDestroy {
   @Input() public multiLevelSelect: FormArray;
   @Input() public configLevels: { level: number, controlType: ControlTypeEnum }[];
-  @Input() public hasValidationRequested: boolean = false;
   @Input() public level: number = 1;
+  @Input() public hasValidationRequested: boolean = false;
   public formGroup: FormGroup;
-  public subscription: Subscription;
+  private subscription: Subscription;
   constructor(public fb: FormBuilder) {
-    this.formGroup = fb.group({ item: ['', Validators.required] });
+    this.formGroup = fb.group({ item: [''] });
     this.subscription = this.formGroup.controls.item.valueChanges.subscribe(value => {
-      this.multiLevelSelect.controls.forEach(control => {
-        if (control.value.key === value) {
-          control.value.selected = true;
-        } else {
-          control.value.selected = false;
-        }
-      });
+      if (this.multiLevelSelect) {
+        this.multiLevelSelect.controls.forEach(multiLevel => {
+          multiLevel.value.selected = multiLevel.value.key === value;
+        });
+      }
     });
   }
 
@@ -32,11 +30,25 @@ export class MultiLevelSelectorComponent implements AfterViewInit {
     this.assignSelectedOptionToItemControl();
   }
 
+  public get controlType(): ControlTypeEnum {
+    return this.configLevels[this.level - 1].controlType;
+  }
+
+  public get controlCategory() {
+    return ControlTypeEnum;
+  }
+
+  public getValue(value: FormGroup): FormArray {
+    return value.controls.child_nodes as FormArray;
+  }
+
   public assignSelectedOptionToItemControl(): void {
     if (this.controlType === ControlTypeEnum.SELECT) {
-      this.multiLevelSelect.controls
-        .filter(control => control.value && control.value.selected)
-        .forEach(selectedControl => this.formGroup.controls.item.setValue(selectedControl.value.key));
+      (this.multiLevelSelect as FormArray).controls.forEach(control => {
+        if (control.value && control.value.selected) {
+          this.formGroup.controls.item.setValue(control.value.key)
+        }
+      });
     }
   }
 
@@ -48,8 +60,10 @@ export class MultiLevelSelectorComponent implements AfterViewInit {
     }
   }
 
-  public get controlType(): ControlTypeEnum {
-    return this.configLevels[this.level - 1].controlType;
+  public ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   public get checkValidationWhenRequested() {
@@ -57,19 +71,5 @@ export class MultiLevelSelectorComponent implements AfterViewInit {
       return this.formGroup.controls.item.valid;
     }
     return true;
-  }
-
-  public get controlCategory() {
-    return ControlTypeEnum;
-  }
-
-  public getValue(value: FormGroup): FormArray {
-    return value.controls.child_nodes as FormArray;
-  }
-
-  public ngOnDestroy() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
   }
 }

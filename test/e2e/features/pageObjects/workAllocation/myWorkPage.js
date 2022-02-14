@@ -293,7 +293,7 @@ class MyWorkPage extends TaskList {
                 return;
             } 
         }
-        throw new Error(`location conating text ${location} is not found in selected location ${actualLocations}`);
+        throw new Error(`location conating text ${location} is not found in selected location "${actualLocations}"`);
     }
 
 

@@ -276,16 +276,28 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     
     });
 
-    Given('I set MOCK person with user {string} and roles {string}', async function(userIdentifier, roles){
+    Given('I set MOCK person with user {string} and roles {string}', async function(userIdentifier, roles, datatable){
         const rolesArr = roles.split(",");
         const testUserIdamId = testData.users[testData.testEnv].filter(testUser => testUser.userIdentifier === userIdentifier)[0];
+
+        const datatablehashes = datatable.hashes();
+        const locationId = datatablehashes[0].locationId 
+        const locationName = datatablehashes[0].locationName 
 
         const roleCategory = userUtil.getUserRoleType(rolesArr);
         let person = null;
         if (roleCategory === "LEGAL_OPS"){
             person = workallocationMockData.addCaseworkerWithIdamId(testUserIdamId.idamId,'IA')
+            person.location.id = locationId;
+            person.location.locationName = locationName;
+
         } else if (roleCategory === "JUDICIAL"){
-            person = workallocationMockData.addJudgeUsers(testUserIdamId.idamId,'testMockUserFN','test','testjudge@hmcts.net') 
+            person = workallocationMockData.addJudgeUsers(testUserIdamId.idamId,'testMockUserFN','test','testjudge@hmcts.net')
+            person.appointments[0].location_id = locationId;
+            person.appointments[0].base_location_id = locationId;
+            person.appointments[0].court_name = locationName;
+
+
         }
         CucumberReporter.AddMessage(`For roles "${roles}" Person of type "${roleCategory} is added"`);
         CucumberReporter.AddJson(person);

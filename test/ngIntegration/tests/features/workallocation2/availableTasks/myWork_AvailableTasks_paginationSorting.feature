@@ -8,7 +8,8 @@ Feature: WA Release 2: My work to  Available tasks to pagination sorting
     Scenario Outline: Available Tasks pagnation and sorting for user type "<UserType>" with roles "<Roles>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
-
+            | locationId | locationName           |
+            | 20001      | IA Court Aldgate Tower |
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 100   |

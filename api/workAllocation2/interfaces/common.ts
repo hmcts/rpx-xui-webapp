@@ -71,3 +71,9 @@ export interface Action {
     id: string;
     title: string;
 }
+
+export interface CaseDataType {
+  [key: string]: {
+    [key: string]: Set<string>;
+  };
+}

@@ -521,7 +521,7 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
     case_category: caseDetail.case_data && caseDetail.case_data.hmctsCaseCategory ? caseDetail.case_data.hmctsCaseCategory : '',
     case_type: caseDetail.case_type_id,
     case_id: caseDetail.id,
-    case_name: caseDetail.case_data && caseDetail.case_data.caseName ? caseDetail.case_data.caseName : caseDetail.id,
+    case_name: caseDetail.case_data && caseDetail.case_data.hmctsCaseNameInternal ? caseDetail.case_data.hmctsCaseNameInternal : caseDetail.id,
     case_role: roleAssignment.roleName,
     role: roleAssignment.roleName,
     endDate: roleAssignment.endTime,

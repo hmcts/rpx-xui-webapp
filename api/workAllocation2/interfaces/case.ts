@@ -41,6 +41,7 @@ export interface CaseInternalData {
   caseName?: string;
   hmctsCaseCategory?: string;
   caseManagementLocation?: CaseManagementLocation;
+  hmctsCaseNameInternal?: string;
 }
 
 export interface CaseManagementLocation {

@@ -538,7 +538,8 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
 }
 
 export function getCaseName(caseDetail: Case): string {
-  return caseDetail.case_data && caseDetail.case_data.hmctsCaseNameInternal ? caseDetail.case_data.hmctsCaseNameInternal : caseDetail.id;
+  return caseDetail.case_data && caseDetail.case_data.hmctsCaseNameInternal ?
+  caseDetail.case_data.hmctsCaseNameInternal : caseDetail.id;
 }
 
 export function getCaseTypesFromRoleAssignments(roleAssignments: RoleAssignment[]): string {

@@ -1,7 +1,7 @@
-import { Component, Input, AfterViewInit, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { ControlTypeEnum } from '../../models/hearings.enum';
 import { Subscription } from 'rxjs';
+import { ControlTypeEnum } from '../../models/hearings.enum';
 
 @Component({
   selector: 'exui-multi-level-selector',
@@ -14,7 +14,7 @@ export class MultiLevelSelectorComponent implements AfterViewInit, OnDestroy {
   @Input() public level: number = 1;
   @Input() public hasValidationRequested: boolean = false;
   public formGroup: FormGroup;
-  private subscription: Subscription;
+  private readonly subscription: Subscription;
   constructor(public fb: FormBuilder) {
     this.formGroup = fb.group({ item: [''] });
     this.subscription = this.formGroup.controls.item.valueChanges.subscribe(value => {
@@ -46,7 +46,7 @@ export class MultiLevelSelectorComponent implements AfterViewInit, OnDestroy {
     if (this.controlType === ControlTypeEnum.SELECT) {
       (this.multiLevelSelect as FormArray).controls.forEach(control => {
         if (control.value && control.value.selected) {
-          this.formGroup.controls.item.setValue(control.value.key)
+          this.formGroup.controls.item.setValue(control.value.key);
         }
       });
     }

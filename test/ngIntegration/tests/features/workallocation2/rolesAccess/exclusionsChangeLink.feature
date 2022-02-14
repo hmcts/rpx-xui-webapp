@@ -67,6 +67,8 @@ Feature: WA Release 2: Exclusion workflow - Change links
             | Person              |
             | <findPersonResult1> |
         When I select Person "<findPersonResult1>" from Find person search result in exclusions work flow
+        Then I see Person "<findPersonSearchWith>" is selected in Find person exclusions work flow
+        
         When I click continue in add exclusion work flow page "Find the person"
         Then I see Add an exclusion work flow page "Describe the exclusion" is displayed
         When I enter description "<ExclusionDescription>" in add exclusion Describe the exclusion page
@@ -91,6 +93,8 @@ Feature: WA Release 2: Exclusion workflow - Change links
             | Person              |
             | <findPersonResult1> |
         When I select Person "<findPersonResult1>" from Find person search result in exclusions work flow
+        Then I see Person "<findPersonSearchWith>" is selected in Find person exclusions work flow
+
         When I click continue in add exclusion work flow page "Find the person"
         Then I see Add an exclusion work flow page "Describe the exclusion" is displayed
         When I enter description "<ExclusionDescription>" in add exclusion Describe the exclusion page
@@ -108,9 +112,9 @@ Feature: WA Release 2: Exclusion workflow - Change links
         When I click change link for question "Person" in check your answers page
         Then I see Add an exclusion work flow page "Find the person" is displayed
         When I search with text "<findPersonSearchWith>" in Find the person page of exclusion work flow
-        Then I see following options returned to Select in Find person search result of exclusions work flow
-            | Person              |
-            | <findPersonResult1> |
+        
+        Then I see Person "<findPersonSearchWith>" is selected in Find person exclusions work flow
+       
         When I select Person "<findPersonResult1>" from Find person search result in exclusions work flow
         When I click continue in add exclusion work flow page "Find the person"
         Then I see Add an exclusion work flow page "Describe the exclusion" is displayed

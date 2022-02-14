@@ -1,4 +1,4 @@
-@fullfunctional
+@__fullfunctional
 Feature: WA Release 2: : Task Assign/Reassign
 
     Scenario: Reassign task from All work

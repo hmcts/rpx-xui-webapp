@@ -45,7 +45,8 @@ Feature: WA Release 2: My work - Available tasks - Manage links
     Scenario Outline:  Task Manage links for "<UserType>"  action "<actionLink>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
-
+            | locationId | locationName           |
+            | 20001      | IA Court Aldgate Tower |
         Given I start MockApp
         Given I navigate to home page
 

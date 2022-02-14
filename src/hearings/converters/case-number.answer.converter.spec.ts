@@ -12,11 +12,11 @@ describe('CaseNumberAnswerConverter', () => {
     caseNumberAnswerConverter = new CaseNumberAnswerConverter();
   });
 
-  it('should transform case name', () => {
+  it('should transform case number', () => {
     const STATE: State = initialState.hearings;
     const result$ = caseNumberAnswerConverter.transformAnswer(of(STATE));
-    const caseName = '1111-2222-3333-4444';
-    const expected = cold('(b|)', {b: caseName});
+    const caseNumber = '1111-2222-3333-4444';
+    const expected = cold('(b|)', {b: caseNumber});
     expect(result$).toBeObservable(expected);
   });
 

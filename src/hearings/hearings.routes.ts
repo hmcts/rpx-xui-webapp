@@ -20,6 +20,7 @@ import { ViewHearingComponent } from './containers/view-hearing/view-hearing.com
 import { HearingCategory } from './models/hearings.enum';
 import { AdditionalFacilitiesResolver } from './resolvers/additional-facilities.resolver';
 import { CaseFlagsResolver } from './resolvers/case-flags.resolver';
+import { HearingStageResolver } from './resolvers/hearing-stage.resolver';
 import { PartyChannelsResolverService } from './resolvers/party-channels-resolver.service';
 import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
 
@@ -166,8 +167,9 @@ export const ROUTES: Routes = [
         path: 'hearing-create-edit-summary',
         resolve: {
           caseFlags: CaseFlagsResolver,
+          hearingStageOptions: HearingStageResolver,
           additionFacilitiesOptions: AdditionalFacilitiesResolver,
-          partyChannels: PartyChannelsResolverService,
+          partyChannels: PartyChannelsResolverService
         },
         component: HearingCreateEditSummaryComponent,
         canActivate: [HealthCheckGuard],

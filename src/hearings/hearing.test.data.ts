@@ -1,6 +1,27 @@
 import { HearingListingStatusEnum, HMCStatus, PartyType } from './models/hearings.enum';
 import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
 
+export const hearingStageRefData = [
+  {
+    key: 'initial',
+    value_en: 'Initial',
+    value_cy: '',
+    hintText_EN: 'Initial',
+    hintTextCY: '',
+    order: 1,
+    parentKey: null
+  },
+  {
+    key: 'final',
+    value_en: 'Final',
+    value_cy: '',
+    hintText_EN: 'Final',
+    hintTextCY: '',
+    order: 2,
+    parentKey: null
+  }
+];
+
 export const facilitiesListRefData = [
   {
     key: 'immigrationDetentionCentre',
@@ -915,12 +936,12 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
     locationType: 'hearing',
     region: 'North West',
   },
-    {
-      locationId: '219164',
-      locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
-      locationType: 'hearing',
-      region: 'Scotland',
-    },
+  {
+    locationId: '219164',
+    locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
+    locationType: 'hearing',
+    region: 'Scotland',
+  },
   ],
   caseAdditionalSecurityFlag: false,
   facilitiesRequired: [],
@@ -1102,7 +1123,7 @@ export const initialState = {
         },
         hearingDetails: {
           duration: null,
-          hearingType: 'Final',
+          hearingType: 'final',
           hearingLocations: [
             {
               locationId: '196538',

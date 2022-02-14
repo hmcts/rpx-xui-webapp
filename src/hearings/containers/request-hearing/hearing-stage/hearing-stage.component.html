@@ -13,7 +13,7 @@
           <div class="govuk-radios">
             <div class="govuk-radios">
               <div *ngFor="let option of hearingStageOptions" class="govuk-radios__item">
-                <input class="govuk-radios__input" id="{{option.key}}" formControlName="stage-option" name="stage-option" type="radio" [value]="option.value_en">
+                <input class="govuk-radios__input" id="{{option.key}}" formControlName="stage-option" name="stage-option" type="radio" [value]="option.key">
                 <label class="govuk-label govuk-radios__label" [for]="option.key">{{option.value_en}}</label>
               </div>
             </div>
@@ -23,4 +23,3 @@
     </form>
   </div>
 </div>
-

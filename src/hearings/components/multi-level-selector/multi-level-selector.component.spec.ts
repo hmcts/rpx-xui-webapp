@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MultiLevelSelectorComponent } from '..';
 import { ControlTypeEnum } from '../../models/hearings.enum';
 import { RefDataModel } from '../../models/refData.model';
-import { MultiLevelSelectorComponent } from '..';
 
 class DataModelConvertor {
-  constructor(private fb: FormBuilder) { }
+  constructor(private readonly fb: FormBuilder) { }
   public patchValues = (refDataModel: RefDataModel) => {
     return this.fb.group({
       key: [refDataModel.key],

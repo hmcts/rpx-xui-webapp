@@ -6,14 +6,14 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { RefDataModel } from '../../../models/refData.model';
+import { initialState } from '../../../../hearings/hearing.test.data';
 import { HearingJudgeNamesListComponent } from '../../../components';
 import { ACTION, RadioOptions } from '../../../models/hearings.enum';
+import { RefDataModel } from '../../../models/refData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingPanelComponent } from './hearing-panel.component';
-import { initialState } from '../../../../hearings/hearing.test.data';
 
-describe('HearingPanelComponent', () => {
+fdescribe('HearingPanelComponent', () => {
   let component: HearingPanelComponent;
   let fixture: ComponentFixture<HearingPanelComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);

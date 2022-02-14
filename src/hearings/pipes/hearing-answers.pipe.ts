@@ -49,6 +49,7 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.ADDITIONAL_INSTRUCTION:
         converter = new AdditionalInstructionsAnswerConverter();
+        break;
       case AnswerSource.STAGE:
         converter = new StageAnswerConverter(this.route);
         break;

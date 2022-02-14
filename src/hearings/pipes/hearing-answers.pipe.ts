@@ -1,6 +1,7 @@
 import {Pipe, PipeTransform} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Observable} from 'rxjs';
+import {StageAnswerConverter} from '../converters/stage.answer.converter';
 import {AdditionalFacilitiesAnswerConverter} from '../converters/additional-facilities.answer.converter';
 import {AdditionalSecurityAnswerConverter} from '../converters/additional-security.answer.converter';
 import {AnswerConverter} from '../converters/answer.converter';
@@ -52,6 +53,9 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.NEED_WELSH:
         converter = new NeedWelshAnswerConverter();
+        break;
+      case AnswerSource.STAGE:
+        converter = new StageAnswerConverter(this.route);
         break;
       default:
         break;

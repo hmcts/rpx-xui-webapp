@@ -11,6 +11,7 @@ import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { Role } from '../roleAccess/models/roleType';
 import { getAllRoles } from '../roleAccess/roleAssignmentService';
+import {RoleAssignment} from '../user/interfaces/roleAssignment';
 import { getWASupportedJurisdictionsList } from '../waSupportedJurisdictions';
 import * as caseServiceMock from './caseService.mock';
 import {
@@ -429,14 +430,769 @@ export function getCaseListPromises(data: CaseDataType, req: EnhancedRequest): A
 
 export async function getMyCases(req: EnhancedRequest, res: Response): Promise<Response> {
   try {
-    const roleAssignments = req.session.roleAssignmentResponse;
-    const cases = await getCaseIdListFromRoles(roleAssignments, req);
+    // const roleAssignments = req.session.roleAssignmentResponse;
+    /* tslint:disable */
+    const roleAssignments = [
+      {
+        "attributes": {
+          "substantive": "Y",
+          "caseId": "1546434148507684",
+          "jurisdiction": "SSCS",
+          "caseType": "Benefit",
+        },
+      },
+      {
+        "attributes": {
+          "substantive": "Y",
+          "caseId": "1546435182187994",
+          "jurisdiction": "SSCS",
+          "caseType": "Benefit",
+        },
+      },
+      {
+        "attributes": {
+          "substantive": "Y",
+          "caseId": "1546516296364486",
+          "jurisdiction": "SSCS",
+          "caseType": "Benefit",
+        },
+      },
+      {
+        "attributes": {
+          "substantive": "Y",
+          "caseId": "1546517036278754",
+          "jurisdiction": "SSCS",
+          "caseType": "Benefit",
+        },
+      },
+      {
+        "attributes": {
+          "substantive": "Y",
+          "caseId": "1546516815889666",
+          "jurisdiction": "SSCS",
+          "caseType": "Benefit",
+        },
+      },
+      {
+        "id": "b774a8a3-991f-4cb7-b69a-afb6857bb2cb",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "case-manager",
+        "classification": "PUBLIC",
+        "grantType": "SPECIFIC",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "beginTime": "2022-02-10T00:00:00Z",
+        "created": "2022-02-10T12:28:07.477467Z",
+        "attributes": {
+          "substantive": "Y",
+          "caseId": "1547458486131483",
+          "jurisdiction": "IA",
+          "caseType": "Asylum",
+        },
+      },
+      {
+        "id": "501e512b-de4a-495f-ac30-be1f5b259d1f",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "case-manager",
+        "classification": "PUBLIC",
+        "grantType": "SPECIFIC",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "beginTime": "2022-02-09T00:00:00Z",
+        "created": "2022-02-09T14:13:03.846508Z",
+        "attributes": {
+          "substantive": "Y",
+          "caseId": "1547652071308205",
+          "jurisdiction": "IA",
+          "caseType": "Asylum",
+        },
+      },
+      {
+        "id": "538ea007-a710-4da8-93ed-f9d9a63ca950",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "case-manager",
+        "classification": "PUBLIC",
+        "grantType": "SPECIFIC",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "beginTime": "2022-02-08T00:00:00Z",
+        "created": "2022-02-08T15:11:42.900264Z",
+        "attributes": {
+          "substantive": "Y",
+          "caseId": "1637320083459991",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "a019e32d-e79a-47a5-8a53-a57cde0774e5",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "case-manager",
+        "classification": "PUBLIC",
+        "grantType": "SPECIFIC",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "beginTime": "2022-02-08T00:00:00Z",
+        "created": "2022-02-08T15:03:13.608116Z",
+        "attributes": {
+          "substantive": "Y",
+          "caseId": "1632416351878527",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "4304f8ad-a16a-441e-ba1b-7576fb7e3005",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "case-manager",
+        "classification": "PUBLIC",
+        "grantType": "SPECIFIC",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "beginTime": "2022-02-07T00:00:00Z",
+        "created": "2022-02-07T14:02:34.634049Z",
+        "attributes": {
+          "substantive": "Y",
+          "caseId": "1547653674561885",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "c360067c-ee6e-4778-91db-999678fbb8e8",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "conflict-of-interest",
+        "classification": "RESTRICTED",
+        "grantType": "EXCLUDED",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2022-02-04T14:55:26.972231Z",
+        "attributes": {
+          "notes": "cvbnm",
+          "substantive": "N",
+          "caseId": "1583164336903544",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "2a1094d8-61a9-4f1d-b841-dd616e6eec39",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "conflict-of-interest",
+        "classification": "RESTRICTED",
+        "grantType": "EXCLUDED",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2022-01-26T12:16:40.075757Z",
+        "attributes": {
+          "notes": "Mossa Kayad test Uday",
+          "substantive": "N",
+          "caseId": "1629704893555405",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "0ca51a1a-89d1-436c-b37a-12a78248841c",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "conflict-of-interest",
+        "classification": "RESTRICTED",
+        "grantType": "EXCLUDED",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2022-01-14T21:48:33.754355Z",
+        "attributes": {
+          "notes": "test",
+          "substantive": "N",
+          "caseId": "1547655745839752",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "2f002d19-cc52-435c-a2a5-2c9da0993edd",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "conflict-of-interest",
+        "classification": "RESTRICTED",
+        "grantType": "EXCLUDED",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2022-01-10T12:03:04.852755Z",
+        "attributes": {
+          "notes": "ALeena test",
+          "substantive": "N",
+          "caseId": "1576166009739484",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "e9fc7315-ea31-4af5-b14d-4cd5baf6ff79",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "case-manager",
+        "classification": "PUBLIC",
+        "grantType": "SPECIFIC",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "beginTime": "2021-12-29T00:00:00Z",
+        "created": "2021-12-29T22:14:31.23046Z",
+        "attributes": {
+          "substantive": "Y",
+          "caseId": "1576166009739484",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "56c10d80-072f-4df1-8698-da8190188f93",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "conflict-of-interest",
+        "classification": "RESTRICTED",
+        "grantType": "EXCLUDED",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2021-12-23T09:56:55.655273Z",
+        "attributes": {
+          "notes": "test",
+          "substantive": "N",
+          "caseId": "1630411367594061",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "e8db8fb1-f532-444f-9015-2a7095e2f96a",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "ORGANISATION",
+        "roleName": "case-allocator",
+        "classification": "PUBLIC",
+        "grantType": "STANDARD",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2021-11-10T13:42:36.670007Z",
+        "attributes": {
+          "substantive": "N",
+          "primaryLocation": "386417",
+          "jurisdiction": "IA"
+        }
+      },
+      {
+        "id": "866bf8cd-1618-466a-ab41-429ff3a8f7ef",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "ORGANISATION",
+        "roleName": "tribunal-caseworker",
+        "classification": "PUBLIC",
+        "grantType": "STANDARD",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2021-11-10T13:42:36.669981Z",
+        "attributes": {
+          "substantive": "N",
+          "primaryLocation": "386417",
+          "jurisdiction": "IA",
+          "workTypes": "hearing_work, routine_work, decision_making_work, applications"
+        }
+      },
+      {
+        "id": "2b9de94d-ceb6-4fc8-a360-b97ec50c9bbd",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "conflict-of-interest",
+        "classification": "RESTRICTED",
+        "grantType": "EXCLUDED",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2021-12-15T11:33:11.800777Z",
+        "attributes": {
+          "notes": "dsfghjk",
+          "substantive": "N",
+          "caseId": "1547659109799271",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "04886f58-4c1b-443d-a236-ff7bb028d104",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "conflict-of-interest",
+        "classification": "RESTRICTED",
+        "grantType": "EXCLUDED",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2021-12-15T11:30:41.42093Z",
+        "attributes": {
+          "notes": "xdfghj",
+          "substantive": "N",
+          "caseId": "1591628107549181",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "7b1eb762-60fc-4255-9b3b-f96a3c872738",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "conflict-of-interest",
+        "classification": "RESTRICTED",
+        "grantType": "EXCLUDED",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2021-12-15T11:23:53.774416Z",
+        "attributes": {
+          "notes": "dxcghj",
+          "substantive": "N",
+          "caseId": "1547660549698842",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "b9159226-56a7-4365-afa6-2134fe1e72cc",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "conflict-of-interest",
+        "classification": "RESTRICTED",
+        "grantType": "EXCLUDED",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2021-12-15T10:49:08.067288Z",
+        "attributes": {
+          "notes": "hcjgffx",
+          "substantive": "N",
+          "caseId": "1547655501759012",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "49a64e1c-0adb-4364-80a4-c9d4ddbd0199",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "conflict-of-interest",
+        "classification": "RESTRICTED",
+        "grantType": "EXCLUDED",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2021-12-15T10:41:03.527652Z",
+        "attributes": {
+          "notes": "jyguy",
+          "substantive": "N",
+          "caseId": "1547632828064129",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "49bc6b91-d8e0-4fc4-b122-d4ad271ab178",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "conflict-of-interest",
+        "classification": "RESTRICTED",
+        "grantType": "EXCLUDED",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2021-12-14T12:04:12.965118Z",
+        "attributes": {
+          "notes": "Test exclusion me",
+          "substantive": "N",
+          "caseId": "1547659663779917",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "a6e22c2f-a200-47d9-9fa4-dce55e4eedc6",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "conflict-of-interest",
+        "classification": "RESTRICTED",
+        "grantType": "EXCLUDED",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2021-12-14T11:06:21.278758Z",
+        "attributes": {
+          "notes": "Test",
+          "substantive": "N",
+          "caseId": "1589888528895043",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "357463a5-3ed3-4b5b-b4c1-52d5f9dc5693",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "conflict-of-interest",
+        "classification": "RESTRICTED",
+        "grantType": "EXCLUDED",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2021-11-25T16:13:04.207797Z",
+        "attributes": {
+          "notes": "Demo gtrg",
+          "substantive": "N",
+          "caseId": "1637847524140608",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "0f43a29a-f517-4330-961a-f691982748e9",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "conflict-of-interest",
+        "classification": "RESTRICTED",
+        "grantType": "EXCLUDED",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2021-11-17T17:06:01.531866Z",
+        "attributes": {
+          "notes": "sfasdf",
+          "substantive": "N",
+          "caseId": "1611919771917689",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "5330cb92-bbf9-4fc3-a11f-b69d0f8a8a59",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "conflict-of-interest",
+        "classification": "RESTRICTED",
+        "grantType": "EXCLUDED",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2021-11-15T17:05:01.001307Z",
+        "attributes": {
+          "notes": "fgf",
+          "substantive": "N",
+          "caseId": "1586880146002444",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "cfeab2cd-2970-4b16-9979-4cb0d6be435a",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "conflict-of-interest",
+        "classification": "RESTRICTED",
+        "grantType": "EXCLUDED",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2021-11-15T17:04:34.316044Z",
+        "attributes": {
+          "notes": "grg",
+          "substantive": "N",
+          "caseId": "1586880524841314",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "091e34c3-8ea6-4301-89f9-3f4387583e9f",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "conflict-of-interest",
+        "classification": "RESTRICTED",
+        "grantType": "EXCLUDED",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2021-11-15T17:01:11.084284Z",
+        "attributes": {
+          "notes": "ght",
+          "substantive": "N",
+          "caseId": "1547635047241543",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "d0e0b6cf-6784-4c46-9e9b-8250b8421450",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "conflict-of-interest",
+        "classification": "RESTRICTED",
+        "grantType": "EXCLUDED",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2021-11-15T16:51:14.618194Z",
+        "attributes": {
+          "notes": "ghhgghhg",
+          "substantive": "N",
+          "caseId": "1634920056536726",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "82dfd538-1898-4cdf-83ee-cb8e8c4a0a47",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "conflict-of-interest",
+        "classification": "RESTRICTED",
+        "grantType": "EXCLUDED",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2021-11-15T16:47:05.774553Z",
+        "attributes": {
+          "notes": "jkjk",
+          "substantive": "N",
+          "caseId": "1632319329130270",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "64b4f16f-cea3-48e8-91e8-e884afa81a7f",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "conflict-of-interest",
+        "classification": "RESTRICTED",
+        "grantType": "EXCLUDED",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2021-11-15T16:46:37.668989Z",
+        "attributes": {
+          "notes": "jhjh",
+          "substantive": "N",
+          "caseId": "1591280413848137",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "79ed832c-13dd-4bc2-8301-f11971343819",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "conflict-of-interest",
+        "classification": "RESTRICTED",
+        "grantType": "EXCLUDED",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2021-11-15T11:46:46.593103Z",
+        "attributes": {
+          "notes": "Test for Marc 2",
+          "substantive": "N",
+          "caseId": "1547466725650882",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "41afc9c7-04ff-4475-91a3-110c67eb1988",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "conflict-of-interest",
+        "classification": "RESTRICTED",
+        "grantType": "EXCLUDED",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2021-11-15T11:40:12.296762Z",
+        "attributes": {
+          "notes": "Testing with Sharon",
+          "substantive": "N",
+          "caseId": "1547458486131483",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "c465d1ad-baa5-446a-8007-42f4a7b9bcdb",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "conflict-of-interest",
+        "classification": "RESTRICTED",
+        "grantType": "EXCLUDED",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2021-11-10T14:11:11.165537Z",
+        "attributes": {
+          "notes": "test",
+          "substantive": "N",
+          "caseId": "1602078503323954",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "d49a4c64-063d-40f0-aa2d-74dbcc76ad39",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "ORGANISATION",
+        "roleName": "hmcts-legal-operations",
+        "classification": "PRIVATE",
+        "grantType": "BASIC",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": true,
+        "created": "2021-11-10T13:42:36.670018Z",
+        "attributes": {
+          "substantive": "N",
+          "primaryLocation": "386417"
+        }
+      },
+      {
+        "id": "fe6fdf68-4b2b-4865-841e-e69a750aa828",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "ORGANISATION",
+        "roleName": "task-supervisor",
+        "classification": "PUBLIC",
+        "grantType": "STANDARD",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2021-11-10T13:42:36.670014Z",
+        "attributes": {
+          "substantive": "N",
+          "primaryLocation": "386417",
+          "jurisdiction": "IA"
+        }
+      },
+      {
+        "id": "19277719-ec31-4db4-951d-9071e9ff1bde",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "conflict-of-interest",
+        "classification": "RESTRICTED",
+        "grantType": "EXCLUDED",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2021-11-10T09:59:34.127473Z",
+        "attributes": {
+          "notes": "gtg",
+          "substantive": "N",
+          "caseId": "1616413322379008",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "27b14567-7f84-457b-a6e6-c89f893c49cf",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "conflict-of-interest",
+        "classification": "RESTRICTED",
+        "grantType": "EXCLUDED",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2021-11-05T16:07:41.287693Z",
+        "attributes": {
+          "substantive": "N",
+          "caseId": "1551699977289495",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "1a13d7ee-685b-4a01-b7a5-eed67118d77b",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "conflict-of-interest",
+        "classification": "RESTRICTED",
+        "grantType": "EXCLUDED",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2021-11-04T10:33:07.354672Z",
+        "attributes": {
+          "substantive": "N",
+          "caseId": "1547650267790517",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "a81cf956-4460-4f9e-93fb-09b0ee216d16",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "conflict-of-interest",
+        "classification": "RESTRICTED",
+        "grantType": "EXCLUDED",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2021-11-04T10:16:39.488845Z",
+        "attributes": {
+          "substantive": "N",
+          "caseId": "1547590609729593",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+      {
+        "id": "b47590d6-227f-45e1-aefa-70af01926464",
+        "actorIdType": "IDAM",
+        "actorId": "db17f6f7-1abf-4223-8b5e-1eece04ee5d8",
+        "roleType": "CASE",
+        "roleName": "conflict-of-interest",
+        "classification": "RESTRICTED",
+        "grantType": "EXCLUDED",
+        "roleCategory": "LEGAL_OPERATIONS",
+        "readOnly": false,
+        "created": "2021-11-03T17:18:17.058733Z",
+        "attributes": {
+          "substantive": "N",
+          "caseId": "1576592382158119",
+          "jurisdiction": "IA",
+          "caseType": "Asylum"
+        }
+      },
+    ];
+    /* tslint:enable */
+    const cases = await getCaseIdListFromRoles(roleAssignments as RoleAssignment[], req);
 
     // search parameters passed in as null as there are no parameters for my cases
     const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
-    let checkedRoles = req && req.session && req.session.roleAssignmentResponse ? req.session.roleAssignmentResponse : null;
+    // let checkedRoles = req && req.session && req.session.roleAssignmentResponse ? req.session.roleAssignmentResponse : null;
+    let checkedRoles = roleAssignments;
     if (showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED)) {
-      checkedRoles = getSubstantiveRoles(req.session.roleAssignmentResponse);
+      checkedRoles = getSubstantiveRoles(roleAssignments as any) as any;
     }
 
     const result = {
@@ -446,7 +1202,7 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
     };
 
     if (cases.length) {
-      const mappedCases = checkedRoles ? mapCasesFromData(cases, checkedRoles, null) : [];
+      const mappedCases = checkedRoles ? mapCasesFromData(cases, checkedRoles as any, null) : [];
       result.total_records = mappedCases.length;
       result.unique_cases = getUniqueCasesCount(mappedCases);
       result.cases = assignActionsToCases(mappedCases, userIsCaseAllocator);

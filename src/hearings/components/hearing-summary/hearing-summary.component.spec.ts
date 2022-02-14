@@ -55,14 +55,14 @@ describe('HearingSummaryComponent', () => {
   });
 
   it('should change answer', () => {
-    const storeDispatch = spyOn(store, 'dispatch');
+    const storeDispatchSpy = spyOn(store, 'dispatch');
     component.mode = Mode.CREATE_EDIT;
     component.changeAnswer('venue', 'hearing/request/venue');
     const hearingCondition: HearingConditions = {
       fragmentId: 'venue',
       mode: Mode.CREATE_EDIT,
     };
-    expect(storeDispatch).toHaveBeenCalledWith(new fromHearingStore.SaveHearingConditions(hearingCondition));
+    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.SaveHearingConditions(hearingCondition));
     expect(routerMock.navigateByUrl).toHaveBeenCalledWith('hearing/request/venue');
   });
 });

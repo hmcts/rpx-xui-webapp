@@ -9,10 +9,10 @@ import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 import { Role } from '../roleAccess/models/roleType';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { ASSIGN, CLAIM, CLAIM_AND_GO, COMPLETE, GO, REASSIGN, RELEASE, TaskPermission } from './constants/actions';
+import { ServiceCaseworkerData } from './interfaces/caseworkerPayload';
 import { Caseworker, CaseworkerApi, CaseworkersByService, Location, LocationApi } from './interfaces/common';
 import { PersonRole } from './interfaces/person';
 import { RoleCaseData } from './interfaces/roleCaseData';
-import { ServiceCaseworkerData } from './interfaces/caseworkerPayload';
 
 import {
   applySearchFilter,
@@ -43,6 +43,8 @@ import {
   prepareSearchTaskUrl,
   prepareServiceRoleApiRequest
 } from './util';
+
+import * as util from './util';
 
 chai.use(sinonChai);
 
@@ -165,10 +167,13 @@ const mockRoleAssignments: RoleAssignment[] = [
   },
 ];
 
-const firstRoleAssignment: RoleAssignment[] = [{
-  id: '1',
-  attributes: {
-    caseId: '4',
+const firstRoleAssignment: RoleAssignment[] = [
+  {
+    id: '1',
+    attributes: {
+      caseId: '4',
+      caseType: 'caseType1',
+      jurisdiction: 'jurisdiction1',
   },
 },
   {
@@ -181,20 +186,27 @@ const firstRoleAssignment: RoleAssignment[] = [{
     id: '3',
     attributes: {
       caseId: '2',
+      caseType: 'caseType2',
+      jurisdiction: 'jurisdiction1',
     },
   },
   {
     id: '4',
     attributes: {
       caseId: '5',
+      caseType: 'caseType1',
+      jurisdiction: 'jurisdiction2',
     },
   }];
-const secondRoleAssignment: RoleAssignment[] = [{
-  id: '1',
-  attributes: {
-    caseId: '4',
+const secondRoleAssignment: RoleAssignment[] = [
+  {
+    id: '1',
+    attributes: {
+      caseId: '4',
+      caseType: 'caseType1',
+      jurisdiction: 'jurisdiction2',
+    },
   },
-},
   {
     id: '2',
     attributes: {
@@ -205,12 +217,16 @@ const secondRoleAssignment: RoleAssignment[] = [{
     id: '3',
     attributes: {
       caseId: '2',
+      caseType: 'caseType1',
+      jurisdiction: 'jurisdiction2',
     },
   },
   {
     id: '4',
     attributes: {
-      caseId: '5',
+      caseId: '4',
+      caseType: 'caseType1',
+      jurisdiction: 'jurisdiction2',
     },
   }];
 
@@ -499,7 +515,7 @@ describe('workAllocation.utils', () => {
           ]
         }
       ];
-      
+
       const result = getSessionCaseworkerInfo(serviceIds, caseworkersByServices);
       expect(result).to.deep.equal([[], [{service: 'IA', caseworkers: caseworkersByServices[0].caseworkers}]])
     });
@@ -803,15 +819,49 @@ describe('workAllocation.utils', () => {
   });
 
   describe('getCaseIdListFromRoles', () => {
+    const req = mockReq({
+      body: {
+        searchRequest: {
+          pagination_parameters: {
+            page_number: 11,
+            page_size: 3,
+          },
+        },
+        view: 'view',
+      },
+      session: {
+        caseworkers: null,
+      },
+    });
+
+    const mockCaseData: any[] = [
+      {
+        id: '123',
+        type: 'example',
+        case_type_id: 'Asylum',
+        jurisdiction: 'IA',
+      },
+      {
+        id: '456',
+        type: 'example2',
+        case_type_id: 'Test',
+        jurisdiction: 'IA',
+      },
+    ];
+
     const expectedCaseList = ['4', '2', '5'];
-    it('should return empty list if there is nothing given', () => {
-      expect(getCaseIdListFromRoles(null)).to.deep.equal([]);
+    sinon.stub(util, 'searchCasesById').resolves({
+      cases: mockCaseData,
     });
-    it('should return correct list of case ids', () => {
-      expect(getCaseIdListFromRoles(firstRoleAssignment)).to.deep.equal(expectedCaseList);
+
+    it('should return empty list if there is nothing given', async () => {
+      expect(await getCaseIdListFromRoles(null, req)).to.deep.equal([]);
     });
-    it('should avoid duplicating case ids', () => {
-      expect(getCaseIdListFromRoles(secondRoleAssignment)).to.deep.equal(expectedCaseList);
+    xit('should return correct list of case ids', async () => {
+      expect(await getCaseIdListFromRoles(firstRoleAssignment, req)).to.deep.equal(expectedCaseList);
+    });
+    it('should avoid duplicating case ids', async () => {
+      expect(await getCaseIdListFromRoles(secondRoleAssignment, req)).to.eql(mockCaseData);
     });
   });
 

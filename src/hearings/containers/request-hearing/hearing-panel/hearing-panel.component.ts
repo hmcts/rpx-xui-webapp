@@ -79,11 +79,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
       multi.child_nodes.forEach(node => {
         if (node.key.toLowerCase().trim() === panelSpecialism.toLocaleLowerCase().trim() && !skip && !multi.selected) {
           node.selected = multi.selected = true;
-          if (node.child_nodes && node.child_nodes.length) {
-            skip = this.loadPanel(node, panelSpecialism);
-          } else {
-            skip = true;
-          }
+          node.child_nodes && node.child_nodes.length ? skip = this.loadPanel(node, panelSpecialism) : skip = true;
         }
       });
     } else {
@@ -120,11 +116,8 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
   public preparePanelChildren(panelRoles: RefDataModel[], accummulation: string[]) {
     if (panelRoles) {
       panelRoles.forEach(panelRole => {
-        if (panelRole.selected && (!panelRole.child_nodes || !panelRole.child_nodes.length)) {
-          accummulation.push(panelRole.key);
-        } else {
+        panelRole.selected && (!panelRole.child_nodes || !panelRole.child_nodes.length) ? accummulation.push(panelRole.key) :
           this.preparePanelChildren(panelRole.child_nodes, accummulation);
-        }
       });
     }
   }

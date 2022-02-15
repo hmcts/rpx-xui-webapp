@@ -17,8 +17,16 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
 
     When('I navigate to My work sub navigation tab {string}', async function (secondaryNavTab) {
-        await headerPage.clickPrimaryNavigationWithLabel('My work');
-        await myWorkPage.clickSubNavigationTab(secondaryNavTab);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            try{
+                await headerPage.clickPrimaryNavigationWithLabel('My work');
+                await myWorkPage.clickSubNavigationTab(secondaryNavTab);
+            }catch(err){
+                headerPage.refreshBrowser();
+                throw new Error(err); 
+            }
+           
+        });   
        
     });
 

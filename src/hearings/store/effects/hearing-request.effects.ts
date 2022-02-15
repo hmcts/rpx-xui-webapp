@@ -20,6 +20,7 @@ export class HearingRequestEffects {
   public screenNavigations$: Observable<ScreenNavigationModel[]>;
   public caseId: string;
   public mode: Mode;
+  public fragmentId: string;
 
   constructor(
     private readonly actions$: Actions,
@@ -35,6 +36,7 @@ export class HearingRequestEffects {
       state => {
         this.caseId = state.hearingList.hearingListMainModel ? state.hearingList.hearingListMainModel.caseRef : '';
         this.mode = state.hearingConditions.hasOwnProperty('mode') ? state.hearingConditions['mode'] : Mode.CREATE;
+        this.fragmentId = state.hearingConditions.hasOwnProperty('fragmentId') ? state.hearingConditions['fragmentId'] : '';
       }
     );
   }
@@ -71,7 +73,7 @@ export class HearingRequestEffects {
           if (nextPage === 'hearing-welsh') {
             return this.router.navigate(['hearings', 'request', nextPage]);
           } else {
-            return this.router.navigate(['hearings', 'request', 'hearing-create-edit-summary']);
+            return this.router.navigate(['hearings', 'request', 'hearing-create-edit-summary'], { fragment: this.fragmentId });
           }
         case Mode.VIEW_EDIT:
           if (nextPage === 'hearing-welsh') {

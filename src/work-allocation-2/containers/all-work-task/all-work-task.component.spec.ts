@@ -7,11 +7,12 @@ import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 import { of, throwError } from 'rxjs';
+
 import { SessionStorageService } from '../../../app/services';
 import { reducers } from '../../../app/store';
 import { TaskListComponent } from '..';
-import { TaskFieldConfig } from '../../../work-allocation/models/tasks';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
+import { FieldConfig } from '../../models/common';
 import { Task } from '../../models/tasks';
 import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockTasks } from '../../tests/utils.spec';
@@ -35,7 +36,7 @@ class NothingComponent { }
   template: '<div class="xui-task-field">{{task.taskName}}</div>'
 })
 class TaskFieldComponent {
-  @Input() public config: TaskFieldConfig;
+  @Input() public config: FieldConfig;
   @Input() public task: Task;
 }
 

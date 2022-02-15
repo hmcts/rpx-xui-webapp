@@ -1,12 +1,13 @@
+import { isDefined } from '@angular/compiler/src/util';
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { PaginationParameter } from '../../models/dtos';
 
-import { isDefined } from '@angular/compiler/src/util';
+import { SessionStorageService } from '../../../app/services';
 import { ListConstants } from '../../components/constants';
 import { SortOrder } from '../../enums';
 import { FieldConfig, SortField } from '../../models/common';
+import { PaginationParameter } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskAction, TaskServiceConfig } from '../../models/tasks';
 
 @Component({
@@ -26,6 +27,7 @@ export class TaskListComponent implements OnChanges {
   @Input() public addActionsColumn: boolean = true;
   @Input() public pagination: PaginationParameter;
   @Input() public showManage = {};
+  @Input() public pageSessionKey: string;
 
   /**
    * The message to display when there are no tasks to display in the list.
@@ -49,7 +51,9 @@ export class TaskListComponent implements OnChanges {
 
   private selectedTask: Task;
 
-  constructor(private readonly router: Router) {
+  public defaultSortElement: HTMLElement;
+
+  constructor(private readonly router: Router, private readonly sessionStorageService: SessionStorageService) {
   }
 
   public get showResetSortButton(): boolean {
@@ -185,9 +189,11 @@ export class TaskListComponent implements OnChanges {
 
   public onResetSorting(): void {
     this.pagination.page_number = 1;
-    this.paginationEvent.emit(this.pagination.page_number);
-    const element = document.getElementById(`sort_by_${this.taskServiceConfig.defaultSortFieldName}`) as HTMLElement;
-    element.click();
+    this.sessionStorageService.setItem(this.pageSessionKey, this.pagination.page_number.toString());
+    if (!this.defaultSortElement) {
+      this.defaultSortElement = document.getElementById(`sort_by_${this.taskServiceConfig.defaultSortFieldName}`) as HTMLElement;
+    }
+    this.defaultSortElement.click();
   }
 
   public getFirstResult(): number {

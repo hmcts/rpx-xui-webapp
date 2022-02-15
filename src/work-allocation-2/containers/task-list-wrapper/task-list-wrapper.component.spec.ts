@@ -11,6 +11,7 @@ import { TaskListComponent } from '..';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
+import { TaskActionIds } from '../../enums';
 import { Task } from '../../models/tasks';
 import { CaseworkerDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockTasks, MockRouter } from '../../tests/utils.spec';
@@ -119,6 +120,20 @@ describe('TaskListWrapperComponent', () => {
       expect(lastNavigateCall.commands).toEqual([`/work/${exampleTask.id}/${secondAction.id}/`]);
       const exampleNavigateCall = {queryParams: {service: 'IA'}, state: { returnUrl: '/mywork/manager', showAssigneeColumn: true } };
       expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
+    });
+    it('should go to tasks page on GO', () => {
+      // need to spy on the router and set up the task action
+      spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`/mywork/list`);
+      const navigateCallsBefore = mockRouter.navigateCalls.length;
+
+      secondTaskAction.action.id = TaskActionIds.GO;
+      // need to check that navigate has been called
+      component.onActionHandler(secondTaskAction);
+      expect(mockRouter.navigateCalls.length).toBeGreaterThan(navigateCallsBefore);
+
+      // need to verify correct properties were called
+      const lastNavigateCall = mockRouter.navigateCalls.pop();
+      expect(lastNavigateCall.commands).toEqual([`/cases/case-details/${secondTaskAction.task.case_id}/tasks`]);
     });
     it('User should be Judicial', () => {
       mockSessionStorageService.getItem.and.returnValue('{\"sub\":\"juser8@mailinator.com\",\"uid\":\"44d5d2c2-7112-4bef-8d05-baaa610bf463\",\"roles\":[\"caseworker\",\"caseworker-ia-iacjudge\"],\"name\":\"XUI test Judge\",\"given_name\":\"XUI test\",\"family_name\":\"Judge\",\"token\":\"\"}');

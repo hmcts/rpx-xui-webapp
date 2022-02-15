@@ -154,7 +154,8 @@ describe('TaskAssignmentConfirmComponent', () => {
         person: SELECTED_PERSON
       },
       queryParams: {
-        roleCategory: undefined
+        roleCategory: undefined,
+        service: 'IA'
       }
     });
   });

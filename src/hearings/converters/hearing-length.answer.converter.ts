@@ -18,8 +18,6 @@ export class HearingLengthAnswerConverter implements AnswerConverter {
             return `${minutes} minutes`;
           } else if (hours > 0 && minutes === 0) {
             return `${hours} hour(s)`;
-          } else {
-            return '0 minutes';
           }
         }
         return '';

@@ -25,7 +25,7 @@ class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
 }
 
-describe('HearingTimingComponent', () => {
+fdescribe('HearingTimingComponent', () => {
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
@@ -90,7 +90,7 @@ describe('HearingTimingComponent', () => {
   it('should set checkedHearingAvailability', () => {
     const hearingAvailability = component.priorityForm.controls.specificDate;
     component.showDateAvailability();
-    expect(component.checkedHearingAvailability).toBe(null);
+    expect(component.checkedHearingAvailability).toBe(RadioOptions.CHOOSE_DATE_RANGE);
     hearingAvailability.setValue(RadioOptions.YES);
     component.showDateAvailability();
     expect(component.checkedHearingAvailability).toBe(RadioOptions.YES);
@@ -102,7 +102,7 @@ describe('HearingTimingComponent', () => {
   it('should set showHearingDateError', () => {
     const hearingAvailability = component.priorityForm.controls.specificDate;
     component.showHearingDateError();
-    expect(component.hearingPriorityDateError).toBe(HearingDatePriorityEnum.PriorityDateError);
+    expect(component.hearingPriorityDateError).toBe(null);
     hearingAvailability.setValue(RadioOptions.YES);
     component.showHearingDateError();
     expect(component.hearingPriorityDateError).toBe(HearingDatePriorityEnum.PriorityDateError);
@@ -260,7 +260,7 @@ describe('HearingTimingComponent', () => {
 
   it('should check date selection format', () => {
     component.checkFormData();
-    expect(component.priorityForm.valid).toBeFalsy();
+    expect(component.priorityForm.valid).toBeTruthy();
   });
 
   it('should check if form is valid', () => {

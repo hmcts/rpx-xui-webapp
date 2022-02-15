@@ -80,7 +80,8 @@ export class TaskAssignmentConfirmComponent implements OnInit {
           returnUrl: this.returnUrl
         },
         queryParams: {
-          roleCategory: this.roleCategory
+          roleCategory: this.roleCategory,
+          service: this.task.jurisdiction
         }
       }
     );

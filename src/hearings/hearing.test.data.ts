@@ -1144,7 +1144,7 @@ export const initialState = {
             'immigrationDetentionCentre',
             'inCameraCourt'
           ],
-          listingComments: null,
+          listingComments: 'blah blah blah',
           hearingRequester: null,
           leadJudgeContractType: null,
           totalParticipantAttendingHearing: 3

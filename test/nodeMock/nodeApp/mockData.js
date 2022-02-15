@@ -18,7 +18,9 @@ class NodeAppMockData {
     getUserDetailsWithRoles(roles) {
         const userDetails = nodeAppDataModel.getUserDetails_oidc();
         userDetails.userInfo.roles = roles;
-        this.userDetails = userDetails; 
+        userDetails.userInfo.roleCategory = this.getUserRoleType(roles);
+        this.userDetails = userDetails;
+ 
         return userDetails;
     }
 
@@ -27,9 +29,25 @@ class NodeAppMockData {
         userDetails.userInfo.roles = roles;
         userDetails.userInfo.id = idamId;
         userDetails.userInfo.uid = idamId;
+        userDetails.userInfo.roleCategory = this.getUserRoleType(roles);
         this.userDetails = userDetails; 
 
         return userDetails;
+    }
+
+    getUserRoleType(roles) {
+        let roleType = '';
+        for (const role of roles) {
+            if (role.includes('pui-case-manager')) {
+                roleType = 'SOLICITOR';
+                break;
+            } else if (role.includes('judge')) {
+                roleType = 'JUDICIAL';
+                break;
+            }
+        }
+
+        return roleType !== '' ? roleType : 'LEGAL_OPS'
     }
 
     getUIConfiguration() {

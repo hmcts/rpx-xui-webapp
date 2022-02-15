@@ -7,6 +7,7 @@ import {AdditionalSecurityAnswerConverter} from '../converters/additional-securi
 import {AnswerConverter} from '../converters/answer.converter';
 import {CaseFlagAnswerConverter} from '../converters/case-flag.answer.converter';
 import {CaseNameAnswerConverter} from '../converters/case-name.answer.converter';
+import {CaseNumberAnswerConverter} from '../converters/case-number.answer.converter';
 import {DefaultAnswerConverter} from '../converters/default.answer.converter';
 import {NeedWelshAnswerConverter} from '../converters/need-welsh.answer.converter';
 import { NumberOfAttendancesAnswerConverter } from '../converters/number-of-attendances-answer.converter';
@@ -30,17 +31,20 @@ export class HearingAnswersPipe implements PipeTransform {
       case AnswerSource.CASE_NAME:
         converter = new CaseNameAnswerConverter();
         break;
+      case AnswerSource.CASE_NUMBER:
+        converter = new CaseNumberAnswerConverter();
+        break;
       case AnswerSource.Type:
         converter = new TypeAnswerConverter();
+        break;
+      case AnswerSource.CASE_FLAGS:
+        converter = new CaseFlagAnswerConverter(this.route);
         break;
       case AnswerSource.ADDITIONAL_SECURITY_REQUIRED:
         converter = new AdditionalSecurityAnswerConverter();
         break;
       case AnswerSource.ADDITIONAL_FACILITIES_REQUIRED:
         converter = new AdditionalFacilitiesAnswerConverter(this.route);
-        break;
-      case AnswerSource.CASE_FLAGS:
-        converter = new CaseFlagAnswerConverter(this.route);
         break;
       case AnswerSource.VENUE:
         converter = new VenueAnswerConverter();

@@ -22,7 +22,8 @@ Feature: WA Release 2: My work - My tasks - Task assignment
     Scenario Outline:  Task Manage links for "<UserType>" action "<action>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
-
+            | locationId | locationName           |
+            | 20001      | IA Court Aldgate Tower |
         Given I start MockApp
         Given I navigate to home page
 
@@ -71,7 +72,8 @@ Feature: WA Release 2: My work - My tasks - Task assignment
     Scenario Outline:  Task Manage links for "<UserType>" action "<action>" cancel in check your changes page
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
-
+            | locationId | locationName           |
+            | 20001      | IA Court Aldgate Tower |
         Given I start MockApp
         Given I navigate to home page
 
@@ -119,7 +121,8 @@ Feature: WA Release 2: My work - My tasks - Task assignment
     Scenario Outline:  Task Manage links for "<UserType>" action "<action>" cancel in find person page
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
-
+            | locationId | locationName           |
+            | 20001      | IA Court Aldgate Tower |
         Given I start MockApp
         Given I navigate to home page
 
@@ -159,7 +162,7 @@ Feature: WA Release 2: My work - My tasks - Task assignment
 @test
     Scenario Outline:  Task assign to unaithorised user "<UserType>" action "<action>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
-        Given I set MOCK api method "post" endpoint "/workallocation2/task/:taskId/assign" with error response code "401"
+        Given I set MOCK api method "post" endpoint "/workallocation2/task/:taskId/assign" with error response code 401
         
         Given I start MockApp
         Given I navigate to home page

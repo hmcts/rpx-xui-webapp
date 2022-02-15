@@ -77,6 +77,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await exclusionWorkFlow.findPersonPage.selectPerson(selectPerson);
     });
 
+    Then('I see Person {string} is selected in Find person exclusions work flow', async function (selectPerson) {
+        await exclusionWorkFlow.findPersonPage.isPersonSelected(selectPerson);
+    });
 
     When('I select caseworker with reference {string} from Find person search result in exclusions work flow', async function (caseworkerRef) {
         const caseworker = global.scenarioData[caseworkerRef];

@@ -1,18 +1,21 @@
-import {Pipe, PipeTransform} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {Observable} from 'rxjs';
-import {StageAnswerConverter} from '../converters/stage.answer.converter';
-import {AdditionalFacilitiesAnswerConverter} from '../converters/additional-facilities.answer.converter';
-import {AdditionalSecurityAnswerConverter} from '../converters/additional-security.answer.converter';
-import {AnswerConverter} from '../converters/answer.converter';
-import {CaseFlagAnswerConverter} from '../converters/case-flag.answer.converter';
-import {CaseNameAnswerConverter} from '../converters/case-name.answer.converter';
-import {DefaultAnswerConverter} from '../converters/default.answer.converter';
-import {NeedWelshAnswerConverter} from '../converters/need-welsh.answer.converter';
-import {TypeAnswerConverter} from '../converters/type.answer.converter';
-import {VenueAnswerConverter} from '../converters/venue.answer.converter';
-import {AnswerSource} from '../models/hearings.enum';
-import {State} from '../store';
+import { Pipe, PipeTransform } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
+import { AdditionalFacilitiesAnswerConverter } from '../converters/additional-facilities.answer.converter';
+import { AdditionalSecurityAnswerConverter } from '../converters/additional-security.answer.converter';
+import { AnswerConverter } from '../converters/answer.converter';
+import { CaseFlagAnswerConverter } from '../converters/case-flag.answer.converter';
+import { CaseNameAnswerConverter } from '../converters/case-name.answer.converter';
+import { DefaultAnswerConverter } from '../converters/default.answer.converter';
+import { HearingLengthAnswerConverter } from '../converters/hearing-length.answer.converter';
+import { HearingPriorityAnswerConverter } from '../converters/hearing-priority.answer.converter';
+import { HearingSpecificDateAnswerConverter } from '../converters/hearing-specific-date.answer.converter';
+import { NeedWelshAnswerConverter } from '../converters/need-welsh.answer.converter';
+import { StageAnswerConverter } from '../converters/stage.answer.converter';
+import { TypeAnswerConverter } from '../converters/type.answer.converter';
+import { VenueAnswerConverter } from '../converters/venue.answer.converter';
+import { AnswerSource } from '../models/hearings.enum';
+import { State } from '../store';
 
 @Pipe({
   name: 'transformAnswer'
@@ -48,6 +51,15 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.STAGE:
         converter = new StageAnswerConverter(this.route);
+        break;
+      case AnswerSource.HEARING_LENGTH:
+        converter = new HearingLengthAnswerConverter();
+        break;
+      case AnswerSource.HEARING_SPECIFIC_DATE:
+        converter = new HearingSpecificDateAnswerConverter();
+        break;
+      case AnswerSource.HEARING_PRIORITY:
+        converter = new HearingPriorityAnswerConverter();
         break;
       default:
         break;

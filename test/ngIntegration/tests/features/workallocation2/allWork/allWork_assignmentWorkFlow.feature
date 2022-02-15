@@ -71,7 +71,6 @@ Feature: WA Release 2: All work - Task assignment work flows
             | IAC_Judge_WA_R2 | Judge | caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator | 1 | Assign task | Assign | You've assigned a task. It will be in the selected person's My tasks. |
 
 
-@test
     Scenario Outline:  Task assign to unauthorised user "<UserType>" action "<action>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
         Given I set MOCK api method "post" endpoint "/workallocation2/task/:taskId/assign" with error response code <errorCode>

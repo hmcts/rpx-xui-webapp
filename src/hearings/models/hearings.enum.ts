@@ -184,6 +184,7 @@ export enum CancelHearingMessages {
 
 export enum AnswerSource {
   CASE_NAME,
+  CASE_NUMBER,
   Type,
   CASE_FLAGS,
   ADDITIONAL_SECURITY_REQUIRED,

@@ -79,7 +79,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       options: [],
       minSelected: 1,
       maxSelected: 1,
-      findLocationField: 'service',
+      findLocationField: 'jurisdiction',
       enableCondition: 'selectLocation=search',
       minSelectedError: 'You must select a location',
       maxSelectedError: null,

@@ -29,7 +29,7 @@ export function generateHearingActuals(numberOfActuals: number): HearingActualsM
             'Directions hearing']
           ),
         },
-        actualHearingDays: generateActualHearingDay(2),
+        actualHearingDays: generateActualHearingDays(2),
       },
       hearingPlanned: {
         plannedHearingType: getRandomElement([1, 2, 3, 4, 5]),
@@ -88,7 +88,7 @@ function generateActualDayParties(numberOfDayParties: number): ActualDayParty[] 
   return dayParties;
 }
 
-function generateActualHearingDay(numberOfActualHearingDays: number): ActualHearingDay[] {
+function generateActualHearingDays(numberOfActualHearingDays: number): ActualHearingDay[] {
 
   const actualHearingDays: ActualHearingDay[] = [];
 

@@ -144,8 +144,6 @@ export async function cancelHearingRequest(req: EnhancedRequest, res: Response, 
 
 export async function getHearingActuals(req: EnhancedRequest, res: Response, next: NextFunction): Promise<void> {
   const hearingId = req.params.hearingId;
-  console.log('kuda', req.params);
-  console.log('hearingId', hearingId);
   try {
     const { status, data }: { status: number, data: HearingActualsModel } =
       await handleGet(`${hearingsUrl}/actuals/${hearingId}`, req);

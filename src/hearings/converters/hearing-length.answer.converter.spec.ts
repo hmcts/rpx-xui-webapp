@@ -36,7 +36,7 @@ describe('HearingLengthAnswerConverter', () => {
     converter = new HearingLengthAnswerConverter();
   });
 
-  it('should transform hearing stage', () => {
+  it('should transform hearing stage hours', () => {
     const STATE: State = initialState.hearings;
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDuration = '1 hour(s)';
@@ -44,4 +44,30 @@ describe('HearingLengthAnswerConverter', () => {
     expect(result$).toBeObservable(expected);
   });
 
+  it('should transform hearing stage minutes', () => {
+    const STATE: State = initialState.hearings;
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.duration = 45;
+    const result$ = converter.transformAnswer(of(STATE));
+    const hearingDuration = '45 minutes';
+    const expected = cold('(b|)', {b: hearingDuration});
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform hearing stage both hours and minutes', () => {
+    const STATE: State = initialState.hearings;
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.duration = 70;
+    const result$ = converter.transformAnswer(of(STATE));
+    const hearingDuration = '1 hour(s) and 10 minute(s)';
+    const expected = cold('(b|)', {b: hearingDuration});
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform hearing stage both hours and minutes', () => {
+    const STATE: State = initialState.hearings;
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.duration = null;
+    const result$ = converter.transformAnswer(of(STATE));
+    const hearingDuration = '';
+    const expected = cold('(b|)', {b: hearingDuration});
+    expect(result$).toBeObservable(expected);
+  });
 });

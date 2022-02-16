@@ -22,7 +22,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 await headerPage.clickPrimaryNavigationWithLabel('My work');
                 await myWorkPage.clickSubNavigationTab(secondaryNavTab);
             }catch(err){
-                headerPage.refreshBrowser();
+                await headerPage.refreshBrowser();
                 throw new Error(err); 
             }
            

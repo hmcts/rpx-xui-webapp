@@ -24,6 +24,7 @@ import {
   getActionsByPermissions,
   getCaseAllocatorLocations,
   getCaseIdListFromRoles,
+  getCaseName,
   getCaseworkerDataForServices,
   getRoleAssignmentsByQuery,
   getRoleIdsFromRoles,
@@ -43,6 +44,7 @@ import {
   prepareSearchTaskUrl,
   prepareServiceRoleApiRequest
 } from './util';
+import { Case } from './interfaces/case';
 
 import * as util from './util';
 
@@ -1539,6 +1541,19 @@ describe('workAllocation.utils', () => {
         expect(result.length).equal(2);
         expect(result[0].case_data.caseManagementLocation.baseLocation).to.equal('765324');
       });
+  });
+
+  describe('getCaseName', () => {
+    it('should return caseId when no caseName', () => {
+      const caseDetail = { id: '1234'} as Case;
+      const caseName = getCaseName(caseDetail);
+      expect(caseName).to.equal('1234');
+    });
+    it('should return caseName', () => {
+      const caseDetail = { id: '1234', case_data: { hmctsCaseNameInternal: 'caseName'}} as Case;
+      const caseName = getCaseName(caseDetail);
+      expect(caseName).to.equal('caseName');
+    });
   });
 
   describe('typesOfWork', () => {

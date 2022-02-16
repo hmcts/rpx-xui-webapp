@@ -139,11 +139,7 @@ describe('TaskAssignmentContainerComponent2', () => {
     compo.formGroup.addControl('findPersonControl', findPersonControl);
     compo.verb = TaskActionType.Reassign;
     compo.assign();
-    expect(mockRouter.navigate).toHaveBeenCalled();
-    // Check the third part of the URL passed to router.navigate() is "reassign"
-    expect(mockRouter.navigate.calls.argsFor(0)[0][2]).toEqual(TaskActionType.Reassign.toLowerCase());
-    // Check the fourth part of the URL passed to router.navigate() is "confirm"
-    expect(mockRouter.navigate.calls.argsFor(0)[0][3]).toEqual('confirm');
+    expect(mockRouter.navigate).not.toHaveBeenCalled();
   });
 
   it('should not re-direct to assign task confirmation page and throw form group error', () => {

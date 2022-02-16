@@ -5,6 +5,7 @@ import { CancelHearingComponent } from './containers/cancel-hearing/cancel-heari
 import { ChangeHearingComponent } from './containers/change-hearing/change-hearing.component';
 import { HearingAdditionalInstructionsComponent } from './containers/request-hearing/hearing-additional-instructions/hearing-additional-instructions.component';
 import { HearingAttendanceComponent } from './containers/request-hearing/hearing-attendance/hearing-attendance.component';
+import { HearingConfirmationComponent } from './containers/request-hearing/hearing-confirmation/hearing-confirmation.component';
 import { HearingCreateEditSummaryComponent } from './containers/request-hearing/hearing-create-edit-summary/hearing-create-edit-summary.component';
 import { HearingFacilitiesComponent } from './containers/request-hearing/hearing-facilities/hearing-facilities.component';
 import { HearingJudgeComponent } from './containers/request-hearing/hearing-judge/hearing-judge.component';
@@ -183,6 +184,14 @@ export const ROUTES: Routes = [
           title: 'HMCTS Manage cases | Amend Hearing | Check Answers'
         }
       },
+      {
+        path: 'hearing-confirmation',
+        component: HearingConfirmationComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Manage cases | Request Hearing | Confirmation'
+        }
+      }
     ]
   },
   {

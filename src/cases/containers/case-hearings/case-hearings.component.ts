@@ -1,16 +1,16 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {select, Store} from '@ngrx/store';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { select, Store } from '@ngrx/store';
 import * as moment from 'moment';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {UserRole} from '../../../app/models';
-import {RoleCategoryMappingService} from '../../../app/services/role-category-mapping/role-category-mapping.service';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { UserRole } from '../../../app/models';
+import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
 import * as fromAppStore from '../../../app/store';
-import {HearingConditions} from '../../../hearings/models/hearingConditions';
-import {HearingListModel} from '../../../hearings/models/hearingList.model';
-import {HearingListViewModel} from '../../../hearings/models/hearingListView.model';
-import {Actions, EXUISectionStatusEnum, Mode} from '../../../hearings/models/hearings.enum';
+import { HearingConditions } from '../../../hearings/models/hearingConditions';
+import { HearingListModel } from '../../../hearings/models/hearingList.model';
+import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
+import { Actions, EXUISectionStatusEnum, Mode } from '../../../hearings/models/hearings.enum';
 import * as fromHearingStore from '../../../hearings/store';
 
 @Component({

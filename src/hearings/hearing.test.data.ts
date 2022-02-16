@@ -22,6 +22,27 @@ export const hearingStageRefData = [
   }
 ];
 
+export const hearingPriorityRefData = [
+  {
+    key: 'urgent',
+    value_en: 'Urgent',
+    value_cy: '',
+    hintText_EN: 'Urgent',
+    hintTextCY: '',
+    order: 1,
+    parentKey: null
+  },
+  {
+    key: 'standard',
+    value_en: 'Standard',
+    value_cy: '',
+    hintText_EN: 'Standard',
+    hintTextCY: '',
+    order: 2,
+    parentKey: null
+  }
+];
+
 export const facilitiesListRefData = [
   {
     key: 'immigrationDetentionCentre',

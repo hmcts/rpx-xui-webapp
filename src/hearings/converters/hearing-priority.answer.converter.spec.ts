@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { cold } from 'jasmine-marbles';
 import { of } from 'rxjs';
-import { hearingStageRefData, initialState } from '../hearing.test.data';
+import { hearingPriorityRefData, initialState } from '../hearing.test.data';
 import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 import { HearingPriorityAnswerConverter } from './hearing-priority.answer.converter';
@@ -18,13 +18,13 @@ describe('HearingPriorityAnswerConverter', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({ initialState }),
+        provideMockStore({initialState}),
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
-                hearingStageOptions: hearingStageRefData,
+                hearingPriorities: hearingPriorityRefData,
               },
             },
           },
@@ -36,11 +36,11 @@ describe('HearingPriorityAnswerConverter', () => {
     converter = new HearingPriorityAnswerConverter(router);
   });
 
-  it('should transform hearing priority', () => {
+  it('should transform hearing stage', () => {
     const STATE: State = initialState.hearings;
     const result$ = converter.transformAnswer(of(STATE));
-    const hearingPriority = 'standard';
-    const expected = cold('(b|)', { b: hearingPriority });
+    const hearingPriorityType = 'Standard';
+    const expected = cold('(b|)', {b: hearingPriorityType});
     expect(result$).toBeObservable(expected);
   });
 

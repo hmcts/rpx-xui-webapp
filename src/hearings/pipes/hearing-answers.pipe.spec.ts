@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { cold } from 'jasmine-marbles';
 import { of } from 'rxjs';
-import { caseFlagsRefData, initialState } from '../hearing.test.data';
+import { caseFlagsRefData, hearingPriorityRefData, initialState } from '../hearing.test.data';
 import { AnswerSource, RadioOptions } from '../models/hearings.enum';
 import { State } from '../store/reducers';
 import { HearingAnswersPipe } from './hearing-answers.pipe';
@@ -21,6 +21,7 @@ describe('HearingAnswersPipe', () => {
           useValue: {
             snapshot: {
               data: {
+                hearingPriorities: hearingPriorityRefData,
                 caseFlags: caseFlagsRefData,
               },
             },
@@ -35,7 +36,7 @@ describe('HearingAnswersPipe', () => {
   it('should transform additional instructions', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.ADDITIONAL_INSTRUCTION, of(STATE));
     const listingComments = 'blah blah blah';
-    const expected = cold('(b|)', {b: listingComments});
+    const expected = cold('(b|)', { b: listingComments });
     expect(result$).toBeObservable(expected);
   });
 
@@ -49,7 +50,7 @@ describe('HearingAnswersPipe', () => {
   it('should transform case number', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.CASE_NUMBER, of(STATE));
     const caseNumber = '1111-2222-3333-4444';
-    const expected = cold('(b|)', {b: caseNumber});
+    const expected = cold('(b|)', { b: caseNumber });
     expect(result$).toBeObservable(expected);
   });
 
@@ -105,7 +106,7 @@ describe('HearingAnswersPipe', () => {
 
   it('should transform need hearing priority', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.HEARING_PRIORITY, of(STATE));
-    const hearingPriority = 'standard';
+    const hearingPriority = 'Standard';
     const expected = cold('(b|)', { b: hearingPriority });
     expect(result$).toBeObservable(expected);
   });

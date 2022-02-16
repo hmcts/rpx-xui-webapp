@@ -74,7 +74,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
 
     When('I select Person {string} from Find person search result in exclusions work flow', async function (selectPerson) {
-        await exclusionWorkFlow.findPersonPage.selectPerson(selectPerson);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await exclusionWorkFlow.findPersonPage.selectPerson(selectPerson);
+        });
     });
 
     Then('I see Person {string} is selected in Find person exclusions work flow', async function (selectPerson) {

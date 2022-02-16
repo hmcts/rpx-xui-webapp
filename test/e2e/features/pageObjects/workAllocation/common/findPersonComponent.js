@@ -94,9 +94,9 @@ class FindPersonComponent{
     }
 
     async selectPerson(result){
-        CucumberReporter.AddMessage(`Selecting is person returned "${result}"`)
+        CucumberReporter.AddMessage(` Select person "${result}"`)
 
-        expect(await this.isPersonReturned(result),'Result is not found').to.be.true;
+        expect(await this.isPersonReturned(result), `Result is not found "${result}"`).to.be.true;
         await (await this.getResultElementWithText(result)).click();
     }
 

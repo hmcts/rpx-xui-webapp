@@ -26,8 +26,8 @@ export function generateHearingActuals(numberOfActuals: number): HearingActualsM
             'Case management preliminary hearing - open',
             'Full hearing',
             'Initial hearing',
-            'Directions hearing']
-          ),
+            'Directions hearing',
+            ]),
         },
         actualHearingDays: generateActualHearingDays(2),
       },

@@ -7,6 +7,18 @@ Feature: WA Release 2: My work - My tasks - Task actions
             | Permissions | Count |
             | Manage      | 100   |
             | Read        | 40    |
+        Given I set MOCK locations with names in service "IA"
+            | id    | locationName           |
+            | 20001 | IA Court Aldgate Tower |
+            | 20002 | IA Court Birmingham    |
+            | 2003  | IA Court Bradford      |
+            | 20004 | IA Court Glasgow       |
+            | 20005 | IA Court Hatton Cross  |
+            | 20006 | IA Court Newcastle     |
+            | 20007 | IA Court Newport       |
+            | 20008 | IA Court North Shields |
+            | 20009 | IA Court Taylor House  |
+            
         Given I set MOCK tasks with attributes for view "My tasks"
             | index | permissions                | assignee            | case_name |
             | 0     | Manage,Read,Execute,Cancel |                     | case 1    |
@@ -25,7 +37,8 @@ Feature: WA Release 2: My work - My tasks - Task actions
     Scenario Outline:  Task Manage links for "<UserType>"  action "<actionLink>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
-
+            | locationId | locationName           |
+            | 20001      | IA Court Aldgate Tower |
         Given I start MockApp
         Given I navigate to home page
 
@@ -62,7 +75,8 @@ Feature: WA Release 2: My work - My tasks - Task actions
     Scenario Outline:  Task Manage links for "<UserType>"  action "<actionLink>" cancel workflow
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
-
+            | locationId | locationName           |
+            | 20001      | IA Court Aldgate Tower |
         Given I start MockApp
         Given I navigate to home page
 

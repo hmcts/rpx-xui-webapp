@@ -2,12 +2,14 @@ import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CaseAllocatorGuard } from '../app/guards/case-allocator.guard';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
+import { UserNotAssignableComponent } from './components';
 import { DeleteExclusionComponent, RemoveRoleComponent } from './containers';
 import { AddExclusionHomeComponent } from './containers/add-exclusion';
 import { AllocateRoleHomeComponent } from './containers/allocate-role';
 import { RoleAllocationsResolver } from './resolvers/role-allocations.resolver';
 
 export const ROUTES: Routes = [
+  { path: 'user-not-assignable', component: UserNotAssignableComponent },
   {
     path: 'add-exclusion',
     component: AddExclusionHomeComponent,

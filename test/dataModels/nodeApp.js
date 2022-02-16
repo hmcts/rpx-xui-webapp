@@ -31,7 +31,7 @@ class NodeApp{
                     "caseworker-ia-iacjudge"
                 ],
                 "token": "Bearer eyJ0eXAiOiJKV1Q",
-                "roleCategory":"LEGAL_OPERATIONS"
+                "roleCategory":"LEGAL_OPS"
             }
         }
     }
@@ -58,7 +58,9 @@ class NodeApp{
                     "caseworker-ia",
                     "caseworker-ia-iacjudge"
                 ],
-                "token": "Bearer eyJ0eXAiOiJKV1Q"
+                "token": "Bearer eyJ0eXAiOiJKV1Q",
+                "roleCategory": "LEGAL_OPS"
+
             }
         }
     }
@@ -71,7 +73,7 @@ class NodeApp{
             // "primaryLocation": location,
             "jurisdiction": "IA",
             "isCaseAllocator": true,
-            // "substantive" : true
+            "substantive" : true
         }
     }
 

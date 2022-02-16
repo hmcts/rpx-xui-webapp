@@ -56,7 +56,11 @@ describe('nodeApp endpoint', () => {
     expect(actualLocationObjKeys).to.have.all.keys(Object.keys(expectedUserDetailsObj_oidc));
 
     if (actualLocationObjKeys.roleAssignmentInfo.length > 0){
-      expect(actualLocationObjKeys.roleAssignmentInfo[0]).to.have.all.keys(Object.keys(expectedUserDetailsObj_oidc.roleAssignmentInfo[0]));
+      const actualRoleAssignmentObjKeys = Object.keys(actualLocationObjKeys.roleAssignmentInfo[0]);
+      console.log(actualRoleAssignmentObjKeys);
+      console.log(Object.keys(expectedUserDetailsObj_oidc.roleAssignmentInfo[0]));
+
+      expect(actualRoleAssignmentObjKeys).to.include.members(Object.keys(expectedUserDetailsObj_oidc.roleAssignmentInfo[0]));
     }
 
     expect(actualLocationObjKeys.userInfo.roles).to.be.an('array');

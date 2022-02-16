@@ -11,6 +11,7 @@ import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { Role } from '../roleAccess/models/roleType';
 import { getAllRoles } from '../roleAccess/roleAssignmentService';
+import {RoleAssignment} from '../user/interfaces/roleAssignment';
 import { getWASupportedJurisdictionsList } from '../waSupportedJurisdictions';
 import * as caseServiceMock from './caseService.mock';
 import {
@@ -25,9 +26,10 @@ import {
   handlePostSearch
 } from './caseWorkerService';
 import { ViewType } from './constants/actions';
+import {CaseList} from './interfaces/case';
 import { PaginationParameter } from './interfaces/caseSearchParameter';
 import { CaseworkerPayload, ServiceCaseworkerData } from './interfaces/caseworkerPayload';
-import { Caseworker, CaseworkersByService } from './interfaces/common';
+import {CaseDataType, Caseworker, CaseworkersByService} from './interfaces/common';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { checkIfCaseAllocator } from './roleService';
 import * as roleServiceMock from './roleService.mock';
@@ -39,7 +41,6 @@ import {
   constructRoleAssignmentQuery,
   filterByLocationId,
   getCaseIdListFromRoles,
-  getCaseTypesFromRoleAssignments,
   getCaseworkerDataForServices,
   getRoleAssignmentsByQuery,
   getSessionCaseworkerInfo,
@@ -412,40 +413,53 @@ export async function showAllocateRoleLink(req: EnhancedRequest, res: Response, 
   }
 }
 
-export async function getMyCases(req: EnhancedRequest, res: Response) {
-  const roleAssignments = req.session.roleAssignmentResponse;
-  const caseTypes: string = getCaseTypesFromRoleAssignments(roleAssignments);
-  const queryParams = caseTypes && caseTypes.length ? caseTypes : 'Asylum';
-  const caseIdList = getCaseIdListFromRoles(roleAssignments);
-  const query = constructElasticSearchQuery(caseIdList, 0, 10000);
-
-  try {
-    const result = await searchCasesById(queryParams, query, req);
-    if (result && result.cases) {
-      const caseData = result.cases;
-      // search parameters passed in as null as there are no parameters for my cases
-      const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
-      let checkedRoles = req && req.session && req.session.roleAssignmentResponse ? req.session.roleAssignmentResponse : null;
-      if (showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED)) {
-        checkedRoles = getSubstantiveRoles(req.session.roleAssignmentResponse);
+export function getCaseListPromises(data: CaseDataType, req: EnhancedRequest): Array<Promise<CaseList>> {
+  const casePromises: Array<Promise<CaseList>> = [];
+  for (const jurisdiction in data) {
+    if (data.hasOwnProperty(jurisdiction)) {
+      for (const caseType in data[jurisdiction]) {
+        if (data[jurisdiction].hasOwnProperty(caseType)) {
+          const query = constructElasticSearchQuery(Array.from(data[jurisdiction][caseType]), 0, 10000);
+          casePromises.push(searchCasesById(caseType, query, req));
+        }
       }
-      const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles, null) : [];
+    }
+  }
+  return casePromises;
+}
+
+export async function getMyCases(req: EnhancedRequest, res: Response): Promise<Response> {
+  try {
+    const roleAssignments = req.session.roleAssignmentResponse;
+    const cases = await getCaseIdListFromRoles(roleAssignments as RoleAssignment[], req);
+
+    // search parameters passed in as null as there are no parameters for my cases
+    const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
+    let checkedRoles = req && req.session && req.session.roleAssignmentResponse ? req.session.roleAssignmentResponse : null;
+    if (showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED)) {
+      checkedRoles = getSubstantiveRoles(roleAssignments as any) as any;
+    }
+
+    const result = {
+      cases,
+      total_records: 0,
+      unique_cases: 0,
+    };
+
+    if (cases.length) {
+      const mappedCases = checkedRoles ? mapCasesFromData(cases, checkedRoles as any, null) : [];
       result.total_records = mappedCases.length;
       result.unique_cases = getUniqueCasesCount(mappedCases);
-      // amount of unique cases already given by case id
-      // result.unique_cases = caseIdList.length;
       result.cases = assignActionsToCases(mappedCases, userIsCaseAllocator);
-      return res.send(result).status(200);
-    } else {
-      return res.send([]).status(200);
     }
+    return res.send(result).status(200);
   } catch (e) {
     console.log(e);
     return res.send(null).status(500);
   }
 }
 
-export async function getCases(req: EnhancedRequest, res: Response, next: NextFunction) {
+export async function getCases(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const searchParameters = req.body.searchRequest.search_parameters as SearchTaskParameter[];
   const pagination = req.body.searchRequest.pagination_parameters as PaginationParameter;
 
@@ -465,19 +479,14 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     logger.info('cases query', JSON.stringify(query, null, 2));
     const roleAssignmentResult = await getRoleAssignmentsByQuery(query, req);
 
-    const caseTypes: string = getCaseTypesFromRoleAssignments(roleAssignmentResult.roleAssignmentResponse);
-    const queryParams = caseTypes.length ? caseTypes : 'Asylum';
+    const cases = await getCaseIdListFromRoles(roleAssignmentResult.roleAssignmentResponse, req);
 
-    logger.info('caseTypes', queryParams);
+    const result = {
+      cases,
+      total_records: 0,
+      unique_cases: 0,
+    };
 
-    // get the case ids from the role assignments
-    const caseIdList = getCaseIdListFromRoles(roleAssignmentResult.roleAssignmentResponse);
-    const esQuery = constructElasticSearchQuery(caseIdList, 0, 10000);
-
-    logger.info('esQuery', JSON.stringify(esQuery, null, 2));
-
-    const result = await searchCasesById(queryParams, esQuery, req);
-    logger.info('elastic search results length ', result.cases.length);
     const caseData = filterByLocationId(result.cases, locations);
     logger.info('results filtered by location id', caseData.length);
 

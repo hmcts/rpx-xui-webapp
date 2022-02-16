@@ -1,4 +1,4 @@
-@ng @wa2 @wa 
+@ng @wa2 @wa  
 Feature: WA Release 2: My work - My tasks - Task assignment
 
     Background: Mock and browser setup
@@ -18,11 +18,23 @@ Feature: WA Release 2: My work - My tasks - Task assignment
         Given I set MOCK task details for WA release2
             | case_name        | case_category      | location_name |
             | Allwork test scr | auto test category | London QA lab |
-@test
+        Given I set MOCK locations with names in service "IA"
+            | id    | locationName           |
+            | 20001 | IA Court Aldgate Tower |
+            | 20002 | IA Court Birmingham    |
+            | 2003  | IA Court Bradford      |
+            | 20004 | IA Court Glasgow       |
+            | 20005 | IA Court Hatton Cross  |
+            | 20006 | IA Court Newcastle     |
+            | 20007 | IA Court Newport       |
+            | 20008 | IA Court North Shields |
+            | 20009 | IA Court Taylor House  |
+
     Scenario Outline:  Task Manage links for "<UserType>" action "<action>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
-
+            | locationId | locationName           |
+            | 20001      | IA Court Aldgate Tower |
         Given I start MockApp
         Given I navigate to home page
 
@@ -71,7 +83,8 @@ Feature: WA Release 2: My work - My tasks - Task assignment
     Scenario Outline:  Task Manage links for "<UserType>" action "<action>" cancel in check your changes page
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
-
+            | locationId | locationName           |
+            | 20001      | IA Court Aldgate Tower |
         Given I start MockApp
         Given I navigate to home page
 
@@ -119,7 +132,8 @@ Feature: WA Release 2: My work - My tasks - Task assignment
     Scenario Outline:  Task Manage links for "<UserType>" action "<action>" cancel in find person page
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
-
+            | locationId | locationName           |
+            | 20001      | IA Court Aldgate Tower |
         Given I start MockApp
         Given I navigate to home page
 
@@ -156,10 +170,13 @@ Feature: WA Release 2: My work - My tasks - Task assignment
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | 4         | Reassign task | Reassign       | You've reassigned a task to somebody else. |
 
 
-@test
     Scenario Outline:  Task assign to unaithorised user "<UserType>" action "<action>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
-        Given I set MOCK api method "post" endpoint "/workallocation2/task/:taskId/assign" with error response code "401"
+        Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
+            | locationId | locationName           |
+            | 20001      | IA Court Aldgate Tower |
+
+        Given I set MOCK api method "post" endpoint "/workallocation2/task/:taskId/assign" with error response code 401
         
         Given I start MockApp
         Given I navigate to home page

@@ -13,11 +13,21 @@ import { ElasticSearchQuery } from '../searchCases/interfaces/ElasticSearchQuery
 import { CASE_ALLOCATOR_ROLE } from '../user/constants';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 
+import {exists, reflect} from '../lib/util';
 import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX, ViewType } from './constants/actions';
-import { Case } from './interfaces/case';
+import {getCaseListPromises} from "./index";
+import {Case, CaseList} from './interfaces/case';
 import { PaginationParameter } from './interfaces/caseSearchParameter';
 import { CaseworkerPayload, ServiceCaseworkerData } from './interfaces/caseworkerPayload';
-import { Action, Caseworker, CaseworkerApi, CaseworkersByService, Location, LocationApi } from './interfaces/common';
+import {
+  Action,
+  CaseDataType,
+  Caseworker,
+  CaseworkerApi,
+  CaseworkersByService,
+  Location,
+  LocationApi
+} from './interfaces/common';
 import { Person, PersonRole } from './interfaces/person';
 import { RoleCaseData } from './interfaces/roleCaseData';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
@@ -316,20 +326,20 @@ export async function handlePost(path: string, payload: any, req: EnhancedReques
   return response;
 }
 
-export function getCaseIdListFromRoles(roleAssignmentList: RoleAssignment[]): string[] {
-  const caseIdList = [];
+export async function getCaseIdListFromRoles(roleAssignmentList: RoleAssignment[], req: EnhancedRequest): Promise<Case[]> {
   if (!roleAssignmentList) {
-    return [];
+    return Promise.resolve([]);
   }
-  roleAssignmentList.forEach(roleAssignment => {
-    if (roleAssignment.attributes) {
-      const caseId = roleAssignment.attributes.caseId;
-      if (caseId && !caseIdList.includes(caseId)) {
-        caseIdList.push(caseId);
-      }
-    }
-  });
-  return caseIdList;
+  const data: CaseDataType = getCaseDataFromRoleAssignments(roleAssignmentList);
+
+  const casePromises: Array<Promise<CaseList>> = getCaseListPromises(data, req);
+
+  const response = await Promise.all(casePromises.map(reflect));
+  const caseResults = response.filter(x => x.status === 'fulfilled' && x.value ).map( x => x.value );
+
+  let cases = [];
+  caseResults.forEach( caseResult => cases = [...cases, ...caseResult.cases]);
+  return cases;
 }
 
 export function constructElasticSearchQuery(caseIds: any[], page: number, size: number): ElasticSearchQuery {
@@ -366,12 +376,12 @@ export async function getRoleAssignmentsByQuery(query: any, req: express.Request
   return null;
 }
 
-export async function searchCasesById(queryParams: string, query: any, req: express.Request): Promise<any> {
+export async function searchCasesById(queryParams: string, query: any, req: express.Request): Promise<CaseList> {
   const url = getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH);
-  const path = `${url}/searchCases?ctid=${queryParams}`;
+  const path = `${url}/searchCases`;
   const headers = setHeaders(req);
   try {
-    const result = await http.post(path, query, {headers});
+    const result = await http.post(path, query, {headers , params: { ctid: queryParams }});
     return result.data;
   } catch (e) {
     console.error(e);
@@ -542,14 +552,26 @@ export function getCaseName(caseDetail: Case): string {
   caseDetail.case_data.hmctsCaseNameInternal : caseDetail.id;
 }
 
-export function getCaseTypesFromRoleAssignments(roleAssignments: RoleAssignment[]): string {
-  const caseTypes = roleAssignments
-    .filter((roleAssignment: RoleAssignment) => roleAssignment.attributes && roleAssignment.attributes.caseType)
-    .map((roleAssignment: RoleAssignment) => roleAssignment.attributes.caseType)
-    .reduce((query: string, caseType: string) => {
-      return query.includes(caseType) ? query : `${query}${caseType},`;
-    }, '');
-  return caseTypes[caseTypes.length - 1] === ',' ? caseTypes.slice(0, caseTypes.length - 1) : caseTypes;
+export function getCaseDataFromRoleAssignments(roleAssignments: RoleAssignment[]): CaseDataType {
+  const result: CaseDataType = {};
+
+  const roleAssignmentsFiltered = roleAssignments.filter( roleAssignment =>
+      exists(roleAssignment, 'attributes.jurisdiction') &&
+      exists(roleAssignment, 'attributes.caseType') &&
+      exists(roleAssignment, 'attributes.caseId')
+  );
+
+  roleAssignmentsFiltered.forEach( roleAssignment => {
+    const { jurisdiction, caseType, caseId } = roleAssignment.attributes;
+    if (!result[jurisdiction]) {
+      result[jurisdiction] = {};
+    }
+    if (!result[jurisdiction][caseType]) {
+      result[jurisdiction][caseType] = new Set();
+    }
+    result[jurisdiction][caseType].add(caseId);
+  });
+  return result;
 }
 
 export function getSubstantiveRoles(roleAssignments: RoleAssignment[]): RoleAssignment[] {

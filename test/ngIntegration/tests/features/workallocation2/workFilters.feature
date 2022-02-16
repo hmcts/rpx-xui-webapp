@@ -72,7 +72,6 @@ Feature: WA Release 2: My work - Work filters
             | Caseworker IAC | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |
     # | Judge          | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
-
     Scenario Outline:  Work filters mandatory field validations
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles " caseworker-ia-caseofficer,caseworker-ia-admofficer, task-supervisor,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK person with user "IAC_CaseOfficer_R2" and roles "<Roles>,task-supervisor,case-allocator"
@@ -100,7 +99,7 @@ Feature: WA Release 2: My work - Work filters
         When I select service "SSCS" in my work filter
         When I select service "Immigration and Asylum" in my work filter
 
-        When I remove slected location "IA court" from my work filters
+        When I remove slected location "IA Court" from my work filters
 
         When I click work location filter Apply button
         Then I see error message "Search for a location by name" for location work filter in my work page
@@ -119,7 +118,7 @@ Feature: WA Release 2: My work - Work filters
 
         Examples:
             | UserType | Roles                                                         |
-            # | Caseworker IAC | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            | Judge    | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker |
+            | Caseworker IAC | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |
+            # | Judge    | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker |
 
 

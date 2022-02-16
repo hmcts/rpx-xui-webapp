@@ -67,7 +67,7 @@ export class HearingAnswersPipe implements PipeTransform {
         converter = new HearingSpecificDateAnswerConverter();
         break;
       case AnswerSource.HEARING_PRIORITY:
-        converter = new HearingPriorityAnswerConverter();
+        converter = new HearingPriorityAnswerConverter(this.route);
         break;
       default:
         break;

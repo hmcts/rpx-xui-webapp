@@ -114,7 +114,7 @@ describe('HearingRequirementsComponent', () => {
         privateHearingRequiredFlag: false,
         panelRequirements: null,
         autolistFlag: false,
-        hearingPriorityType: 'Standard',
+        hearingPriorityType: 'standard',
         numberOfPhysicalAttendees: 2,
         hearingInWelshFlag: false,
         facilitiesRequired: [],

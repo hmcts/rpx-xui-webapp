@@ -920,7 +920,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
     hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
   },
   duration: 45,
-  hearingPriorityType: 'Standard',
+  hearingPriorityType: 'standard',
   numberOfPhysicalAttendees: 2,
   hearingInWelshFlag: false,
   hearingLocations: [{
@@ -1143,7 +1143,7 @@ export const initialState = {
           panelRequirements: null,
           autolistFlag: false,
           nonStandardHearingDurationReasons: [],
-          hearingPriorityType: 'Standard',
+          hearingPriorityType: 'standard',
           numberOfPhysicalAttendees: null,
           hearingInWelshFlag: true,
           facilitiesRequired: [

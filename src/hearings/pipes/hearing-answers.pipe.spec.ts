@@ -105,7 +105,7 @@ describe('HearingAnswersPipe', () => {
 
   it('should transform need hearing priority', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.HEARING_PRIORITY, of(STATE));
-    const hearingPriority = 'Standard';
+    const hearingPriority = 'standard';
     const expected = cold('(b|)', { b: hearingPriority });
     expect(result$).toBeObservable(expected);
   });

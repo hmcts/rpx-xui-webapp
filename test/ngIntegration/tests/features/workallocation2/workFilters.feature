@@ -26,9 +26,7 @@ Feature: WA Release 2: My work - Work filters
             | 20016 | SSCS Court Newport       |
             | 20017 | SSCS Court North Shields |
             | 20018 | SSCS Court Taylor House  |
-        Given I set MOCK location for person of type "caseworker" in release "wa_release_2"
-            | id    | locationName  |
-            | 12345 | Aldgate Tower |
+      
 
         Given I set MOCK request "/workallocation2/task" intercept with reference "workallocationTaskRequest"
         Given I set MOCK request "/workallocation2/my-work/cases" intercept with reference "workallocationCasesRequest"

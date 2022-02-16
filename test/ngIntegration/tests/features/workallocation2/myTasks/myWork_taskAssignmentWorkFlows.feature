@@ -170,9 +170,12 @@ Feature: WA Release 2: My work - My tasks - Task assignment
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | 4         | Reassign task | Reassign       | You've reassigned a task to somebody else. |
 
 
-@test
     Scenario Outline:  Task assign to unaithorised user "<UserType>" action "<action>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK person with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator"
+            | locationId | locationName           |
+            | 20001      | IA Court Aldgate Tower |
+
         Given I set MOCK api method "post" endpoint "/workallocation2/task/:taskId/assign" with error response code 401
         
         Given I start MockApp

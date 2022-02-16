@@ -25,7 +25,7 @@ class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
 }
 
-fdescribe('HearingTimingComponent', () => {
+describe('HearingTimingComponent', () => {
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
@@ -103,12 +103,6 @@ fdescribe('HearingTimingComponent', () => {
     const hearingAvailability = component.priorityForm.controls.specificDate;
     component.showHearingDateError();
     expect(component.hearingPriorityDateError).toBe(null);
-    hearingAvailability.setValue(RadioOptions.YES);
-    component.showHearingDateError();
-    expect(component.hearingPriorityDateError).toBe(HearingDatePriorityEnum.PriorityDateError);
-    hearingAvailability.setValue(RadioOptions.CHOOSE_DATE_RANGE);
-    component.showHearingDateError();
-    expect(component.hearingPriorityDateError).toBe(HearingDatePriorityEnum.PriorityDateError);
   });
 
   it('should check unavailable dates list', () => {

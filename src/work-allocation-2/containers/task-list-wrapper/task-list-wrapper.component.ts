@@ -290,7 +290,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public onActionHandler(taskAction: InvokedTaskAction): void {
     try {
       if (taskAction.action.id === TaskActionIds.GO) {
-        const goToCaseUrl = `/cases/case-details/${taskAction.task.case_id}`;
+        const goToCaseUrl = `/cases/case-details/${taskAction.task.case_id}/tasks`;
         this.router.navigate([goToCaseUrl]);
         return;
       }

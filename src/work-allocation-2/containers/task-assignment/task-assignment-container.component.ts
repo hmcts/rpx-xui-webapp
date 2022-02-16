@@ -116,7 +116,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   }
 
   public assign(): void {
-    if (this.formGroup && this.formGroup.value && this.formGroup.value.findPersonControl) {
+    if (this.formGroup && this.formGroup.value && this.formGroup.value.findPersonControl && this.formGroup.value.findPersonControl.email) {
       // Pass the returnUrl in the `state` parameter, so it can be used for navigation by the Task Assignment Confirm
       // component
       this.router.navigate([this.rootPath, this.taskId, this.verb.toLowerCase(), 'confirm'],

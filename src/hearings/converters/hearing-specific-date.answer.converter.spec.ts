@@ -37,15 +37,22 @@ describe('HearingSpecificDateAnswerConverter', () => {
     converter = new HearingSpecificDateAnswerConverter();
   });
 
-  it('should transform hearing stage', () => {
+  it('should transform hearing choose date range', () => {
     const STATE: State = initialState.hearings;
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingWindow = {
+      hearingWindowDateRange: {
+        hearingWindowStartDateRange: '12-12-2022',
+        hearingWindowEndDateRange: '12-12-2022',
+      },
+      hearingWindowFirstDate: null,
+    };
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDateRange = `${RadioOptions.CHOOSE_DATE_RANGE}<dt class="heading-h3 bottom-0">Earliest hearing date</dt>12 December 2022<dt class="heading-h3 bottom-0">Latest hearing date</dt>12 December 2022`;
     const expected = cold('(b|)', { b: hearingDateRange });
     expect(result$).toBeObservable(expected);
   });
 
-  it('should transform hearing stage', () => {
+  it('should transform hearing start date', () => {
     const STATE: State = initialState.hearings;
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingWindow = {
       hearingWindowDateRange: {
@@ -60,7 +67,7 @@ describe('HearingSpecificDateAnswerConverter', () => {
     expect(result$).toBeObservable(expected);
   });
 
-  it('should transform hearing stage', () => {
+  it('should transform hearing empty date', () => {
     const STATE: State = initialState.hearings;
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingWindow = {
       hearingWindowDateRange: {

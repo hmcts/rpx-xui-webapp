@@ -81,21 +81,29 @@ describe('HearingAnswersPipe', () => {
     expect(result$).toBeObservable(expected);
   });
 
-  it('should transform need welsh', () => {
+  it('should transform hearing length', () => {
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.duration = 60;
     const result$ = hearingAnswersPipe.transform(AnswerSource.HEARING_LENGTH, of(STATE));
     const hearingDuration = '1 hour(s)';
     const expected = cold('(b|)', { b: hearingDuration });
     expect(result$).toBeObservable(expected);
   });
 
-  it('should transform need welsh', () => {
+  it('should transform hearing specific date', () => {
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingWindow = {
+      hearingWindowDateRange: {
+        hearingWindowStartDateRange: '12-12-2022',
+        hearingWindowEndDateRange: '12-12-2022',
+      },
+      hearingWindowFirstDate: null,
+    };
     const result$ = hearingAnswersPipe.transform(AnswerSource.HEARING_SPECIFIC_DATE, of(STATE));
     const hearingDateRange = `${RadioOptions.CHOOSE_DATE_RANGE}<dt class="heading-h3 bottom-0">Earliest hearing date</dt>12 December 2022<dt class="heading-h3 bottom-0">Latest hearing date</dt>12 December 2022`;
     const expected = cold('(b|)', { b: hearingDateRange });
     expect(result$).toBeObservable(expected);
   });
 
-  it('should transform need welsh', () => {
+  it('should transform need hearing priority', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.HEARING_PRIORITY, of(STATE));
     const hearingPriority = 'Standard';
     const expected = cold('(b|)', { b: hearingPriority });

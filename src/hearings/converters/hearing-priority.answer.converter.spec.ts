@@ -36,7 +36,7 @@ describe('HearingPriorityAnswerConverter', () => {
     converter = new HearingPriorityAnswerConverter();
   });
 
-  it('should transform hearing stage', () => {
+  it('should transform hearing priority', () => {
     const STATE: State = initialState.hearings;
     const result$ = converter.transformAnswer(of(STATE));
     const hearingPriority = 'Standard';

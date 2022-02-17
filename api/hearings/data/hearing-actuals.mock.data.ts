@@ -1,12 +1,11 @@
-import { Party } from '../../../src/hearings/models/hearingActuals.model';
 import {
   ActualDayParty,
   ActualHearingDay,
   HearingActualsModel,
-  HearingResult,
-  PlannedHearing
+  PlannedHearing,
+  Party
 } from '../models/hearingActuals.model';
-import { HMCStatus } from '../models/hearings.enum';
+import { HearingResult, HMCStatus } from '../models/hearings.enum';
 import { getRandomElement, getRandomProperty } from './mock-data-utils';
 
 export function generateHearingActuals(numberOfActuals: number): HearingActualsModel[] {

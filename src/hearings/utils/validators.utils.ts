@@ -45,6 +45,7 @@ export class ValidatorsUtils {
         ? null : { isValid: false };
     };
   }
+
   public calcBusinessDays(startDate: moment.Moment, endDate: moment.Moment): number {
     const day = startDate;
     let businessDays = 0;

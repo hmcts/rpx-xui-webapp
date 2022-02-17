@@ -42,10 +42,10 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
   public priorityFormInfo: { hours: string, minutes: string, startDate: Date, firstDate: Date, secondDate: Date, priority: string };
 
   constructor(private readonly formBuilder: FormBuilder,
-    protected readonly route: ActivatedRoute,
-    private readonly validatorsUtils: ValidatorsUtils,
-    protected readonly hearingStore: Store<fromHearingStore.State>,
-    protected readonly hearingsService: HearingsService) {
+              protected readonly route: ActivatedRoute,
+              private readonly validatorsUtils: ValidatorsUtils,
+              protected readonly hearingStore: Store<fromHearingStore.State>,
+              protected readonly hearingsService: HearingsService) {
     super(hearingStore, hearingsService, route);
   }
 

@@ -10,6 +10,8 @@ import { CaseNameAnswerConverter } from '../converters/case-name.answer.converte
 import { CaseNumberAnswerConverter } from '../converters/case-number.answer.converter';
 import { DefaultAnswerConverter } from '../converters/default.answer.converter';
 import { NeedWelshAnswerConverter } from '../converters/need-welsh.answer.converter';
+import { NumberOfAttendancesAnswerConverter } from '../converters/number-of-attendances-answer.converter';
+import { PartyChannelsAnswerConverter } from '../converters/party-channels-answer.converter';
 import { StageAnswerConverter } from '../converters/stage.answer.converter';
 import { TypeAnswerConverter } from '../converters/type.answer.converter';
 import { VenueAnswerConverter } from '../converters/venue.answer.converter';
@@ -47,6 +49,12 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.VENUE:
         converter = new VenueAnswerConverter();
+        break;
+      case AnswerSource.HOW_ATTENDANT:
+        converter = new PartyChannelsAnswerConverter(this.route);
+        break;
+      case AnswerSource.ATTENDANT_PERSON_AMOUNT:
+        converter = new NumberOfAttendancesAnswerConverter();
         break;
       case AnswerSource.NEED_WELSH:
         converter = new NeedWelshAnswerConverter();

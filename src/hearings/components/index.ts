@@ -1,5 +1,6 @@
 
 import { CaseFlagsComponent } from './case-flags/case-flags.component';
+import { HearingConfirmationComponent } from './hearing-confirmation/hearing-confirmation.component';
 import { HearingJudgeNameComponent } from './hearing-judge-name/hearing-judge-name.component';
 import { HearingJudgeNamesListComponent } from './hearing-judge-names-list/hearing-judge-names-list.component';
 import { HearingPartiesTitleComponent } from './hearing-parties-title/hearing-parties-title.component';
@@ -15,6 +16,7 @@ export const components: any[] = [
   HearingJudgeNamesListComponent,
   MultiLevelSelectorComponent,
   HearingSummaryComponent,
+	HearingConfirmationComponent
 ];
 
 export * from '../components/case-flags/case-flags.component';

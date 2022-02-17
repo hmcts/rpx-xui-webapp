@@ -87,6 +87,7 @@ export enum DOWUnavailabilityType {
 
 export enum HearingCategory {
   Priority = 'Priority',
+  PartyChannel = 'PartyChannel',
   HearingType = 'HearingType',
   FacilitiesList = 'FacilitiesList',
   HearingChannels = 'HearingChannels',

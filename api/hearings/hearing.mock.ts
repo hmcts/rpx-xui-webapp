@@ -2,10 +2,9 @@ import { AxiosRequestConfig } from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { HttpMockAdapter } from '../common/httpMockAdapter';
 import { CASE_FLAG_REFERENCE_VALUES } from './data/caseFlagReference.mock.data';
-import { generateHearingActuals } from './data/hearing-actuals.mock.data';
+import { HEARING_ACTUAL } from './data/hearing-actuals.mock.data';
 import { HEARING_RESPONSE_RESULT } from './data/hearingResponse.mock.data';
 import { EMPTY_HEARINGS_LIST, HEARINGS_LIST } from './data/hearings.mock.data';
-import { getRandomElement } from './data/mock-data-utils';
 import { ALL_REF_DATA } from './data/reference.mock.data';
 import { SERVICE_HEARING_VALUES } from './data/serviceHearingValues.mock.data';
 
@@ -46,11 +45,9 @@ export const init = () => {
   });
 
   mock.onGet(getHearingsActualsUrl).reply(config => {
-    const actuals = generateHearingActuals(10);
-    const actual = getRandomElement(actuals);
     return [
       200,
-      actual,
+      HEARING_ACTUAL,
     ];
   });
 

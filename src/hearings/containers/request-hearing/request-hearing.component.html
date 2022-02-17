@@ -2,7 +2,7 @@
 <div class="govuk-width-container">
   <div class="page">
     <main id="content" role="main">
-      <a href="javascript:void(0)" (click)="onBack()" class="govuk-back-link">Back</a>
+      <a *ngIf="!isConfirmationPage" href="javascript:void(0)" (click)="onBack()" class="govuk-back-link">Back</a>
       <router-outlet></router-outlet>
       <button *ngIf="!isCheckAnswerPage && !isConfirmationPage" class="govuk-button" data-module="govuk-button" (click)="onContinue()">Continue</button>
       <button *ngIf="isCheckAnswerPage" class="govuk-button" data-module="govuk-button" (click)="onSubmit()">Submit request</button>

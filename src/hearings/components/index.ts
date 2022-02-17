@@ -16,7 +16,7 @@ export const components: any[] = [
   HearingJudgeNamesListComponent,
   MultiLevelSelectorComponent,
   HearingSummaryComponent,
-	HearingConfirmationComponent
+  HearingConfirmationComponent
 ];
 
 export * from '../components/case-flags/case-flags.component';

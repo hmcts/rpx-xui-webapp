@@ -5,7 +5,7 @@ import { SERVICES_HEARINGS_COMPONENT_API, SERVICES_PRD_API_URL } from '../config
 import * as mock from '../hearings/hearing.mock';
 import { EnhancedRequest } from '../lib/models';
 import { CaseFlagReferenceModel } from './models/caseFlagReference.model';
-import { HearingActualsModel } from './models/hearingActuals.model';
+import { HearingActualsMainModel } from './models/hearingActualsMainModel';
 import { HearingListModel } from './models/hearingList.model';
 import { HearingListMainModel } from './models/hearingListMain.model';
 import { HearingResponseMainModel } from './models/hearingResponseMain.model';
@@ -145,7 +145,7 @@ export async function cancelHearingRequest(req: EnhancedRequest, res: Response, 
 export async function getHearingActuals(req: EnhancedRequest, res: Response, next: NextFunction): Promise<void> {
   const hearingId = req.params.hearingId;
   try {
-    const { status, data }: { status: number, data: HearingActualsModel } =
+    const { status, data }: { status: number, data: HearingActualsMainModel } =
       await handleGet(`${hearingsUrl}/actuals/${hearingId}`, req);
     res.status(status).send(data);
   } catch (error) {

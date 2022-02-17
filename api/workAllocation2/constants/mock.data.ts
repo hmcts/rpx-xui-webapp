@@ -1,35 +1,39 @@
 /* tslint:disable */
-import { PersonRole } from "../interfaces/person";
-import  { v4 as uuidv4 } from 'uuid';
+import {Person, PersonRole} from "../interfaces/person";
+import {v4 as uuidv4} from 'uuid';
 
-export const PERSON = [
+export const PERSON: Person[] = [
   {
     id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
     name: 'Jacky Collins',
     email: 'jacky.collins@judicial.com',
     domain: PersonRole.JUDICIAL,
-    knownAs: 'Hearing Judge'
+    knownAs: 'Hearing Judge',
+    personalCode: 'p1000000'
   },
   {
     id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c2',
     name: 'Jasmine Chiswell',
     email: 'jasmine.chiswell@judicial.com',
     domain: PersonRole.JUDICIAL,
-    knownAs: 'Lead Judge'
+    knownAs: 'Lead Judge',
+    personalCode: 'p1000001'
   },
   {
     id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
     name: 'Jamie Vardy',
     email: 'jamie.vardy@judicial.com',
     domain: PersonRole.JUDICIAL,
-    knownAs: 'Lead Judge'
+    knownAs: 'Lead Judge',
+    personalCode: 'p1000002'
   },
   {
     id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c4',
     name: 'James Priest',
     email: 'james.priest@judicial.com',
     domain: PersonRole.JUDICIAL,
-    knownAs: 'Hearing Judge'
+    knownAs: 'Hearing Judge',
+    personalCode: 'p1000003'
   },
   {
     id: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
@@ -85,41 +89,43 @@ export const JUDICIAL_WORKERS_LOCATIONS = [
     domain: PersonRole.JUDICIAL,
     location: {
       id: '231596',
-      locationName:'Birmingham'
+      locationName: 'Birmingham'
     }
   }
 ]
 
-export const ASSIGNED_TASKS = { tasks: [
-  {
-    id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba1',
-    assignee: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
-    task_title: 'Review FTPA application',
-    created_date: '2021-05-05T16:00:00.000+0000',
-    dueDate: '2021-05-05T16:00:00.000+0000',
-    location_name: 'Birmingham',
-    location_id: '231596',
-    case_id: '1620409659381330',
-    case_category: 'EEA',
-    case_name: 'James Priest',
-    permissions: ['Read', 'Manage'],
-    task_type: 'Judicial',
-  },
-  {
-    id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba1',
-    assignee: 'id109',
-    task_title: 'Review FTPA application',
-    created_date: '2021-05-05T16:00:00.000+0000',
-    dueDate: '2021-05-05T16:00:00.000+0000',
-    location_name: 'Birmingham',
-    location_id: '231596',
-    case_id: '1620409659381330',
-    case_category: 'EEA',
-    case_name: 'James Priest',
-    permissions: ['Read', 'Manage'],
-    task_type: 'Judicial',
-  }
-]}
+export const ASSIGNED_TASKS = {
+  tasks: [
+    {
+      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba1',
+      assignee: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
+      task_title: 'Review FTPA application',
+      created_date: '2021-05-05T16:00:00.000+0000',
+      dueDate: '2021-05-05T16:00:00.000+0000',
+      location_name: 'Birmingham',
+      location_id: '231596',
+      case_id: '1620409659381330',
+      case_category: 'EEA',
+      case_name: 'James Priest',
+      permissions: ['Read', 'Manage'],
+      task_type: 'Judicial',
+    },
+    {
+      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba1',
+      assignee: 'id109',
+      task_title: 'Review FTPA application',
+      created_date: '2021-05-05T16:00:00.000+0000',
+      dueDate: '2021-05-05T16:00:00.000+0000',
+      location_name: 'Birmingham',
+      location_id: '231596',
+      case_id: '1620409659381330',
+      case_category: 'EEA',
+      case_name: 'James Priest',
+      permissions: ['Read', 'Manage'],
+      task_type: 'Judicial',
+    }
+  ]
+}
 
 export const JUDICIAL_MY_TASKS = {
   tasks: [
@@ -4551,7 +4557,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-22T10:00:59.155+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -4577,7 +4586,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-22T10:54:19.280+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -4603,7 +4615,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-22T11:04:39.501+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -4629,7 +4644,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-22T11:07:58.708+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -4655,7 +4673,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-22T11:22:09.850+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -4681,7 +4702,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-22T11:25:28.718+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -4707,7 +4731,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-22T11:26:18.975+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -4733,7 +4760,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-22T12:47:21.406+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -4759,7 +4789,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-22T12:47:31.212+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -4785,7 +4818,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-22T18:57:19.982+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -4811,7 +4847,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-22T18:57:21.055+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -4837,7 +4876,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-22T18:57:30.332+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -4863,7 +4905,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-22T18:58:29.350+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -4889,7 +4934,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-22T18:58:58.782+0000',
     'taskName': 'task name',
     'caseName': 'Bob Smith',
@@ -4915,7 +4963,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -4941,7 +4992,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -4967,7 +5021,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'José González',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'José González',
@@ -4993,7 +5050,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'José González',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'José González',
@@ -5019,7 +5079,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5045,7 +5108,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -5071,7 +5137,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -5097,7 +5166,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5123,7 +5195,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'José González',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'José González',
@@ -5149,7 +5224,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -5175,7 +5253,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5201,7 +5282,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5227,7 +5311,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5253,7 +5340,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5279,7 +5369,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -5305,7 +5398,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -5331,7 +5427,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5357,7 +5456,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5383,7 +5485,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5409,7 +5514,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5435,7 +5543,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5461,7 +5572,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5487,7 +5601,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5513,7 +5630,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'José González',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'José González',
@@ -5539,7 +5659,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5565,7 +5688,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5591,7 +5717,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -5617,7 +5746,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'José González',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'José González',
@@ -5643,7 +5775,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -5669,7 +5804,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -5695,7 +5833,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -5721,7 +5862,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -5747,7 +5891,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'José González',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'José González',
@@ -5773,7 +5920,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -5799,7 +5949,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -5825,7 +5978,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5851,7 +6007,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5877,7 +6036,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'José González',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'José González',
@@ -5903,7 +6065,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5929,7 +6094,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5955,7 +6123,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -5982,7 +6153,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6008,7 +6182,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'perftest team',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'perftest team',
@@ -6034,7 +6211,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6060,7 +6240,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6086,7 +6269,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6112,7 +6298,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6138,7 +6327,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6164,7 +6356,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6190,7 +6385,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6216,7 +6414,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6242,7 +6443,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6268,7 +6472,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6294,7 +6501,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6320,7 +6530,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6346,7 +6559,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6372,7 +6588,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6398,7 +6617,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6424,7 +6646,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6450,7 +6675,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6476,7 +6704,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6502,7 +6733,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6528,7 +6762,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6554,7 +6791,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6580,7 +6820,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6606,7 +6849,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6632,7 +6878,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6658,7 +6907,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6684,7 +6936,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6710,7 +6965,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6736,7 +6994,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6762,7 +7023,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6788,7 +7052,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6814,7 +7081,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6840,7 +7110,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6866,7 +7139,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6892,7 +7168,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6918,7 +7197,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6944,7 +7226,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6970,7 +7255,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -6996,7 +7284,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -7022,7 +7313,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -7048,7 +7342,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -7074,7 +7371,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -7100,7 +7400,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -7126,7 +7429,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -7152,7 +7458,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -7178,7 +7487,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -7204,7 +7516,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -7230,7 +7545,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Functional PostDeployment',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Functional PostDeployment',
@@ -7256,7 +7574,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',
@@ -7282,7 +7603,10 @@ export const AVAILABLE_TASKS = {
     'case_name': 'Bob Smith',
     'auto_assigned': false,
     'warnings': false,
-    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {'id': 'claim-and-go', 'title': 'Assign to me and go to case'}],
+    'actions': [{'id': 'claim', 'title': 'Assign to me'}, {
+      'id': 'claim-and-go',
+      'title': 'Assign to me and go to case'
+    }],
     'dueDate': '2021-05-24T16:00:00.000+0000',
     'taskName': 'Review the appeal',
     'caseName': 'Bob Smith',

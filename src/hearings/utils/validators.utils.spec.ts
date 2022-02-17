@@ -1,5 +1,7 @@
 import { inject, TestBed } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import * as moment from 'moment';
+import { HearingDateEnum } from '../models/hearings.enum';
 import { ValidatorsUtils } from './validators.utils';
 
 describe('ValidatorsUtils', () => {
@@ -61,6 +63,11 @@ describe('ValidatorsUtils', () => {
     form.controls.month.setValue('12');
     form.controls.year.setValue('2021');
     expect(form.hasError('isValid')).toBeFalsy();
+  }));
+
+  it('should check calcBusinessDays', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
+    expect(service.calcBusinessDays(moment('23-12-2022', HearingDateEnum.DefaultFormat), moment('26-12-2022', HearingDateEnum.DefaultFormat))).toBe(2);
+    expect(service.calcBusinessDays(moment('24-12-2022', HearingDateEnum.DefaultFormat), moment('25-12-2022', HearingDateEnum.DefaultFormat))).toBe(0);
   }));
 
   it('should check hearingDateRangeValidator', inject([ValidatorsUtils], (service: ValidatorsUtils) => {

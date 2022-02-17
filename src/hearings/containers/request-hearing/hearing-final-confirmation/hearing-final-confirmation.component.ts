@@ -1,15 +1,12 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
-import { ACTION } from 'src/hearings/models/hearings.enum';
-import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-final-confirmation',
   templateUrl: './hearing-final-confirmation.component.html'
 })
-export class HearingFinalConfirmationComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
+export class HearingFinalConfirmationComponent implements OnInit {
 
   public heading: string;
   public headingDescription: string;
@@ -18,9 +15,7 @@ export class HearingFinalConfirmationComponent extends RequestHearingPageFlow im
   public additionalDescription: string;
   public caseId: string;
 
-  constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
-              protected readonly hearingsService: HearingsService) {
-    super(hearingStore, hearingsService);
+  constructor(protected readonly hearingStore: Store<fromHearingStore.State>) {
   }
 
   public ngOnInit(): void {
@@ -34,13 +29,5 @@ export class HearingFinalConfirmationComponent extends RequestHearingPageFlow im
         this.additionalDescription = `If the hearing cannot be listed automatically, it will be sent to a member of staff to be processed.<br>
           A notice of hearing will be issued once the hearing is listed, you will not be notified of the listing.`;
       });
-  }
-
-  public executeAction(action: ACTION): void {
-    super.navigateAction(action);
-  }
-
-  public ngOnDestroy(): void {
-    super.unsubscribe();
   }
 }

@@ -95,7 +95,12 @@ export class HearingRequestEffects {
       return this.hearingsService.submitHearingRequest(payload).pipe(
         tap(
           () => {
-            return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']);
+            const nextPage = this.pageFlow.getNextPage(this.screenNavigations$);
+            if (nextPage) {
+              return this.router.navigate(['hearings', 'request', nextPage]);
+            } else {
+              throw new Error('Next page not found');
+            }
           }),
         catchError(error => {
           return HearingRequestEffects.handleError(error);

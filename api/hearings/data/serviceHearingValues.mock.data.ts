@@ -252,6 +252,14 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
         },
       ],
     },
+    {
+      screenName: 'hearing-create-edit-summary',
+      navigation: [
+        {
+          resultValue: 'hearing-confirmation',
+        },
+      ],
+    },
   ],
   vocabulary: [
     {

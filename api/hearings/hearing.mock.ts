@@ -14,7 +14,7 @@ export const init = () => {
 
   const getHearingsUrl = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearings\/[0-9]{16}/;
 
-  const getHearingsActualsUrl = /https:\/\/hearings.aat.service.core-compute-aat.internal\/actuals\/[0-9]{16}/;
+  const getHearingsActualsUrl = /https:\/\/hearings.aat.service.core-compute-aat.internal\/actuals\/[\w]*/;
 
   const getHearingInfoUrl = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearing\/[\w]*/;
 

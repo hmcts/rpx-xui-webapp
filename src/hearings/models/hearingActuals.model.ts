@@ -1,4 +1,4 @@
-import { HMCStatus } from './hearings.enum';
+import { HearingResult, HMCStatus } from './hearings.enum';
 
 export interface HearingActualsModel {
   hearingActuals: HearingActuals;
@@ -25,13 +25,13 @@ export interface Party {
   partyChannelSubType: string;
 }
 
-interface IndividualDetail {
+export interface IndividualDetail {
   title: string;
   firstName: string;
   lastName: string;
 }
 
-interface OrganisationDetails {
+export interface OrganisationDetails {
   name: string;
   cftOrganisationID: string;
 }
@@ -41,7 +41,7 @@ export interface HearingActuals {
   actualHearingDays: ActualHearingDay[];
 }
 
-interface HearingOutcome {
+export interface HearingOutcome {
   hearingFinalFlag: boolean;
   hearingResult: HearingResult;
   hearingResultDate: string;
@@ -57,27 +57,21 @@ export interface ActualHearingDay {
   actualDayParties: ActualDayParty[];
 }
 
-export enum HearingResult {
-  COMPLETED = 'COMPLETED',
-  ADJOURNED = 'ADJOURNED',
-  CANCELLED = 'CANCELLED',
-}
-
-interface PauseDateTime {
+export interface PauseDateTime {
   pauseStartTime: string;
   pauseEndTime: string;
 }
 
-interface ActualIndividualDetail {
+export interface ActualIndividualDetail {
   firstName: string;
   lastName: string;
 }
 
-interface ActualOrganisationDetails {
+export interface ActualOrganisationDetails {
   name: string;
 }
 
-interface ActualDayParty {
+export interface ActualDayParty {
   actualPartyId: number;
   didNotAttendFlag: boolean;
   actualIndividualDetails: ActualIndividualDetail;

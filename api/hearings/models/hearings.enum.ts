@@ -78,3 +78,9 @@ export enum DOWUnavailabilityType {
   PM = 'PM',
   ALL = 'ALL',
 }
+
+export enum HearingResult {
+  COMPLETED = 'COMPLETED',
+  ADJOURNED = 'ADJOURNED',
+  CANCELLED = 'CANCELLED',
+}

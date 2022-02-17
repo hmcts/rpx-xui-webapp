@@ -1090,7 +1090,7 @@ export const initialState = {
   hearings: {
     hearingList: {
       hearingListMainModel: {
-        caseRef: '54354545453',
+        caseRef: '1111222233334444',
         hmctsServiceID: 'SSCS',
         caseHearings: [{
           hearingID: 'h00001',
@@ -1144,7 +1144,7 @@ export const initialState = {
             'immigrationDetentionCentre',
             'inCameraCourt'
           ],
-          listingComments: null,
+          listingComments: 'blah blah blah',
           hearingRequester: null,
           leadJudgeContractType: null,
           totalParticipantAttendingHearing: 3
@@ -1185,7 +1185,8 @@ export const initialState = {
     hearingConditions: {
       caseId: '1111222233334444',
       mode: 'create',
-      isInit: true
+      isInit: true,
+      fragmentId: 'venue'
     },
   }
 };

@@ -240,6 +240,42 @@ describe('HearingTimingComponent', () => {
     expect(component.firstDateOfHearingError.isInvalid).toBeTruthy();
   });
 
+  it('should check showChosenDateRangeError', () => {
+    component.earliestDateOfHearingError = null;
+    component.earliestHearingFormGroup.get('earliestHearingDate_day').setValue('10');
+    component.earliestHearingFormGroup.get('earliestHearingDate_month').setValue('12');
+    component.earliestHearingFormGroup.get('earliestHearingDate_year').setValue('2022');
+    component.latestHearingFormGroup.get('latestHearingDate_day').setValue('11');
+    component.latestHearingFormGroup.get('latestHearingDate_month').setValue('12');
+    component.latestHearingFormGroup.get('latestHearingDate_year').setValue('2022');
+    component.showChosenDateRangeError();
+    expect(component.earliestDateOfHearingError.isInvalid).toBeTruthy();
+  });
+
+  it('should check showChosenDateRangeError before date check', () => {
+    component.earliestDateOfHearingError = null;
+    component.earliestHearingFormGroup.get('earliestHearingDate_day').setValue('13');
+    component.earliestHearingFormGroup.get('earliestHearingDate_month').setValue('12');
+    component.earliestHearingFormGroup.get('earliestHearingDate_year').setValue('2022');
+    component.latestHearingFormGroup.get('latestHearingDate_day').setValue('11');
+    component.latestHearingFormGroup.get('latestHearingDate_month').setValue('12');
+    component.latestHearingFormGroup.get('latestHearingDate_year').setValue('2022');
+    component.showChosenDateRangeError();
+    expect(component.earliestDateOfHearingError.isInvalid).toBeTruthy();
+  });
+
+  it('should check showChosenDateRangeError valid earliest date check', () => {
+    component.earliestDateOfHearingError = null;
+    component.earliestHearingFormGroup.get('earliestHearingDate_day').setValue('12');
+    component.earliestHearingFormGroup.get('earliestHearingDate_month').setValue('12');
+    component.earliestHearingFormGroup.get('earliestHearingDate_year').setValue('2016');
+    component.latestHearingFormGroup.get('latestHearingDate_day').setValue('11');
+    component.latestHearingFormGroup.get('latestHearingDate_month').setValue('12');
+    component.latestHearingFormGroup.get('latestHearingDate_year').setValue('2016');
+    component.showChosenDateRangeError();
+    expect(component.earliestDateOfHearingError.isInvalid).toBeTruthy();
+  });
+
   it('should set prepareHearingRequestData', () => {
     component.priorityForm.controls.durationLength.get('hours').setValue('1');
     component.priorityForm.controls.durationLength.get('minutes').setValue('5');

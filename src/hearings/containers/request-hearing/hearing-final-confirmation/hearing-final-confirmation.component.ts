@@ -25,7 +25,7 @@ export class HearingFinalConfirmationComponent implements OnInit {
         this.heading = 'Hearing request submitted';
         this.headingDescription = 'Your hearing request will now be processed';
         this.subheading = 'What happens next';
-        this.subheadingDescription = `You can <a href="/cases/case-details/${this.caseId}/hearings" class="govuk-link" (click)="onNavigate()">view the status of this request in the hearings tab</a>.`;
+        this.subheadingDescription = `You can <a href="/cases/case-details/${this.caseId}/hearings" class="govuk-link">view the status of this request in the hearings tab</a>.`;
         this.additionalDescription = `If the hearing cannot be listed automatically, it will be sent to a member of staff to be processed.<br>
           A notice of hearing will be issued once the hearing is listed, you will not be notified of the listing.`;
       });

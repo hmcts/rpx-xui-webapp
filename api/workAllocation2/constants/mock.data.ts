@@ -94,35 +94,35 @@ export const JUDICIAL_WORKERS_LOCATIONS = [
 ]
 
 export const ASSIGNED_TASKS = { tasks: [
-    {
-      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba1',
-      assignee: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
-      task_title: 'Review FTPA application',
-      created_date: '2021-05-05T16:00:00.000+0000',
-      dueDate: '2021-05-05T16:00:00.000+0000',
-      location_name: 'Birmingham',
-      location_id: '231596',
-      case_id: '1620409659381330',
-      case_category: 'EEA',
-      case_name: 'James Priest',
-      permissions: ['Read', 'Manage'],
-      task_type: 'Judicial',
-    },
-    {
-      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba1',
-      assignee: 'id109',
-      task_title: 'Review FTPA application',
-      created_date: '2021-05-05T16:00:00.000+0000',
-      dueDate: '2021-05-05T16:00:00.000+0000',
-      location_name: 'Birmingham',
-      location_id: '231596',
-      case_id: '1620409659381330',
-      case_category: 'EEA',
-      case_name: 'James Priest',
-      permissions: ['Read', 'Manage'],
-      task_type: 'Judicial',
-    }
-  ]}
+  {
+    id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba1',
+    assignee: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
+    task_title: 'Review FTPA application',
+    created_date: '2021-05-05T16:00:00.000+0000',
+    dueDate: '2021-05-05T16:00:00.000+0000',
+    location_name: 'Birmingham',
+    location_id: '231596',
+    case_id: '1620409659381330',
+    case_category: 'EEA',
+    case_name: 'James Priest',
+    permissions: ['Read', 'Manage'],
+    task_type: 'Judicial',
+  },
+  {
+    id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba1',
+    assignee: 'id109',
+    task_title: 'Review FTPA application',
+    created_date: '2021-05-05T16:00:00.000+0000',
+    dueDate: '2021-05-05T16:00:00.000+0000',
+    location_name: 'Birmingham',
+    location_id: '231596',
+    case_id: '1620409659381330',
+    case_category: 'EEA',
+    case_name: 'James Priest',
+    permissions: ['Read', 'Manage'],
+    task_type: 'Judicial',
+  }
+]}
 
 export const JUDICIAL_MY_TASKS = {
   tasks: [

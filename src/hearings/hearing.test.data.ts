@@ -1,5 +1,26 @@
-import {HearingListingStatusEnum, HMCStatus, PartyType} from './models/hearings.enum';
-import {ServiceHearingValuesModel} from './models/serviceHearingValues.model';
+import { HearingListingStatusEnum, HMCStatus, PartyType } from './models/hearings.enum';
+import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
+
+export const hearingStageRefData = [
+  {
+    key: 'initial',
+    value_en: 'Initial',
+    value_cy: '',
+    hintText_EN: 'Initial',
+    hintTextCY: '',
+    order: 1,
+    parentKey: null
+  },
+  {
+    key: 'final',
+    value_en: 'Final',
+    value_cy: '',
+    hintText_EN: 'Final',
+    hintTextCY: '',
+    order: 2,
+    parentKey: null
+  }
+];
 
 export const facilitiesListRefData = [
   {
@@ -903,17 +924,17 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   numberOfPhysicalAttendees: 2,
   hearingInWelshFlag: false,
   hearingLocations: [{
-      locationId: '196538',
-      locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
-      locationType: 'hearing',
-      region: 'North West',
-    },
-    {
-      locationId: '219164',
-      locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
-      locationType: 'hearing',
-      region: 'Scotland',
-    },
+    locationId: '196538',
+    locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
+    locationType: 'hearing',
+    region: 'North West',
+  },
+  {
+    locationId: '219164',
+    locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
+    locationType: 'hearing',
+    region: 'Scotland',
+  },
   ],
   caseAdditionalSecurityFlag: false,
   facilitiesRequired: [],
@@ -1069,7 +1090,7 @@ export const initialState = {
   hearings: {
     hearingList: {
       hearingListMainModel: {
-        caseRef: '54354545453',
+        caseRef: '1111222233334444',
         hmctsServiceID: 'SSCS',
         caseHearings: [{
           hearingID: 'h00001',
@@ -1095,7 +1116,7 @@ export const initialState = {
         },
         hearingDetails: {
           duration: null,
-          hearingType: 'Final',
+          hearingType: 'final',
           hearingLocations: [
             {
               locationId: '196538',
@@ -1123,7 +1144,7 @@ export const initialState = {
             'immigrationDetentionCentre',
             'inCameraCourt'
           ],
-          listingComments: null,
+          listingComments: 'blah blah blah',
           hearingRequester: null,
           leadJudgeContractType: null,
           totalParticipantAttendingHearing: 3
@@ -1164,7 +1185,8 @@ export const initialState = {
     hearingConditions: {
       caseId: '1111222233334444',
       mode: 'create',
-      isInit: true
+      isInit: true,
+      fragmentId: 'venue'
     },
   }
 };

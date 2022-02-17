@@ -28,7 +28,7 @@ describe('CancelHearingComponent', () => {
     }];
 
   const HEARING_ID = 'h00001';
-  const CASE_REF = '54354545453';
+  const CASE_REF = '1111222233334444';
   let mockHearingService: any;
   let mockStore: any;
 

@@ -32,10 +32,24 @@ describe('HearingAnswersPipe', () => {
     hearingAnswersPipe = new HearingAnswersPipe(router);
   });
 
+  it('should transform additional instructions', () => {
+    const result$ = hearingAnswersPipe.transform(AnswerSource.ADDITIONAL_INSTRUCTION, of(STATE));
+    const listingComments = 'blah blah blah';
+    const expected = cold('(b|)', {b: listingComments});
+    expect(result$).toBeObservable(expected);
+  });
+
   it('should transform case name', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.CASE_NAME, of(STATE));
     const caseName = 'Jane vs DWP';
     const expected = cold('(b|)', {b: caseName});
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform case number', () => {
+    const result$ = hearingAnswersPipe.transform(AnswerSource.CASE_NUMBER, of(STATE));
+    const caseNumber = '1111-2222-3333-4444';
+    const expected = cold('(b|)', {b: caseNumber});
     expect(result$).toBeObservable(expected);
   });
 

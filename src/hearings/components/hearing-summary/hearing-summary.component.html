@@ -15,7 +15,7 @@
             <div [innerHtml]="answer.answerSource | transformAnswer:hearingState$ | async"></div>
           </div>
           <div class="govuk-summary-list__actions">
-            <a *ngIf="answer.changeLink" href="javascript:void(0)" (click)="changeAnswer(answer.changeLink)">Change</a>
+            <a [id]="answer.id" *ngIf="answer.changeLink" href="javascript:void(0)" (click)="changeAnswer(answer.id, answer.changeLink)">Change</a>
           </div>
         </div>
       </ng-container>

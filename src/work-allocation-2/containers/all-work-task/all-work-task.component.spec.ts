@@ -16,6 +16,7 @@ import { Task } from '../../models/tasks';
 import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockTasks } from '../../tests/utils.spec';
 import { AllWorkTaskComponent } from './all-work-task.component';
+import { AllocateRoleService } from 'src/role-access/services';
 
 @Component({
   template: `
@@ -54,6 +55,7 @@ describe('AllWorkTaskComponent', () => {
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
   const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
   const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
+  const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -75,7 +77,8 @@ describe('AllWorkTaskComponent', () => {
         { provide: LoadingService, useValue: mockLoadingService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: LocationDataService, useValue: mockLocationService },
-        { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService }
+        { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService },
+        { provide: AllocateRoleService, useValue: mockRoleService }
       ]
     }).compileComponents();
   }));
@@ -87,6 +90,7 @@ describe('AllWorkTaskComponent', () => {
     router = TestBed.get(Router);
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({tasks}));
+    mockRoleService.getCaseRolesUserDetails.and.returnValue(of(tasks));
     mockCaseworkerService.getAll.and.returnValue(of([]));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
@@ -130,6 +134,7 @@ describe('AllWorkTaskComponent', () => {
     const searchRequest = component.getSearchTaskRequestPagination();
     const payload = {searchRequest, view: component.view};
     expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
+    expect(mockRoleService.getCaseRolesUserDetails).toHaveBeenCalled();
     expect(component.tasks).toBeDefined();
     expect(component.tasks.length).toEqual(2);
   });

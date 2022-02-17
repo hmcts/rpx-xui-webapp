@@ -25,6 +25,15 @@ describe('ValidatorsUtils', () => {
     expect(control.hasError('isValid')).toBeFalsy();
   }));
 
+
+  it('should check numberLargerThanValidator', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
+    const control = new FormControl();
+
+    control.setValidators(service.numberLargerThanValidator(0));
+    control.setValue(6);
+    expect(control.hasError('isValid')).toBeFalsy();
+  }));
+
   it('should check numberMultipleValidator', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
     const control = new FormControl();
 
@@ -63,6 +72,10 @@ describe('ValidatorsUtils', () => {
     form.controls.month.setValue('12');
     form.controls.year.setValue('2021');
     expect(form.hasError('isValid')).toBeFalsy();
+    form.controls.day.setValue('12');
+    form.controls.month.setValue('12');
+    form.controls.year.setValue('2022');
+    expect(form.hasError('isValid')).toBeFalsy();
   }));
 
   it('should check calcBusinessDays', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
@@ -86,7 +99,12 @@ describe('ValidatorsUtils', () => {
     form.setValidators(service.hearingDateRangeValidator());
     form.controls.earliestHearing.get('day').setValue('12');
     form.controls.earliestHearing.get('month').setValue('12');
-    form.controls.earliestHearing.get('year').setValue('2021');
+    form.controls.earliestHearing.get('year').setValue('2022');
+    expect(form.hasError('isValid')).toBeFalsy();
+    form.setValidators(service.hearingDateRangeValidator());
+    form.controls.latestHearing.get('day').setValue('12');
+    form.controls.latestHearing.get('month').setValue('12');
+    form.controls.latestHearing.get('year').setValue('2022');
     expect(form.hasError('isValid')).toBeFalsy();
   }));
 

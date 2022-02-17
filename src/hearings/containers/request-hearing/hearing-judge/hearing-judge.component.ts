@@ -63,6 +63,7 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
         id: '',
         knownAs: '',
         name: '',
+        personalCode: '',
       }),
       judgeType: this.getJudgeTypeFormArray,
     });

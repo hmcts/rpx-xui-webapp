@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
-import { HearingConfirmationSource } from 'src/hearings/models/hearings.enum';
 import * as fromHearingStore from '../../../store';
 
 @Component({
@@ -9,7 +8,6 @@ import * as fromHearingStore from '../../../store';
 })
 export class HearingFinalConfirmationComponent implements OnInit {
 
-  public readonly hearingConfirmationSource = HearingConfirmationSource.HEARING_REQUEST;
   public heading: string;
   public headingDescription: string;
   public subheading: string;

@@ -2,16 +2,18 @@
   <div  *ngSwitchCase="controlCategory.CHECK_BOX">
     <div class="govuk-checkboxes__item" *ngFor="let control of multiLevelSelect.controls; let i=index">
       <div class="govuk-checkboxes__item_top-level"  [formGroup]="control">
-        <input class="govuk-checkboxes__input" id="{{control.value.key}}" 
+        <input class="govuk-checkboxes__input" id="{{control.value.key}}" (click)="deSelectChildNodes(control)"
           formControlName="selected"
           name="pos" 
           type="checkbox">
         <label class="govuk-label govuk-checkboxes__label" for="{{control.value.key}}">{{control.value.value_en}}</label>
       </div>
-      <div *ngIf="control.value.child_nodes && control.value.child_nodes.length && control.value.selected" class ="govuk-form-group govuk-checkbox__conditional">
+      <div *ngIf="control.value.child_nodes && control.value.child_nodes.length && control.value.selected" 
+        class ="govuk-form-group govuk-checkbox__conditional">
         <exui-multi-level-selector class="multi-container"
           [configLevels]="configLevels"
           [multiLevelSelect]="getValue(control)"
+          [hasValidationRequested] = "hasValidationRequested"
           [level]="level + 1">
         </exui-multi-level-selector>
       </div>
@@ -24,13 +26,20 @@
           <label class="govuk-label govuk-radios__label" [for]="childNode.value.key">{{childNode.value.value_en}}</label>
           <exui-multi-level-selector class="multi-container" *ngIf="childNode.value.child_nodes && childNode.value.child_nodes.length"
             [configLevels]="configLevels"
+            [hasValidationRequested] = "hasValidationRequested"
             [multiLevelSelect]="getValue(childNode)"
-          [level]="level + 1">
+            [level]="level + 1">
         </exui-multi-level-selector>
         </div>
     </div>
   </div>
-  <div *ngSwitchCase="controlCategory.SELECT" [formGroup]="formGroup">
+  <div *ngSwitchCase="controlCategory.SELECT" [formGroup]="formGroup"
+       [ngClass]="{'govuk-form-group--error' : !checkValidationWhenRequested}">
+    <span *ngIf=" !checkValidationWhenRequested"
+            id="party-selection-error"
+            class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error:</span> Select how each party will attend the hearing
+    </span>
     <label class="govuk-label">Choose specialism</label>
     <select formControlName="item" class="govuk-select" id="select1" name="select-name">
       <option value="" selected>Please select</option>

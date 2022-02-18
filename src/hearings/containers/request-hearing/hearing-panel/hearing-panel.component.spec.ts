@@ -6,13 +6,12 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { RefDataModel } from '../../../models/refData.model';
+import { initialState } from '../../../../hearings/hearing.test.data';
 import { HearingJudgeNamesListComponent } from '../../../components';
 import { ACTION, RadioOptions } from '../../../models/hearings.enum';
+import { RefDataModel } from '../../../models/refData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingPanelComponent } from './hearing-panel.component';
-import { initialState } from '../../../../hearings/hearing.test.data';
-
 
 describe('HearingPanelComponent', () => {
   let component: HearingPanelComponent;
@@ -149,6 +148,12 @@ describe('HearingPanelComponent', () => {
     }];
 
   beforeEach(() => {
+
+    initialState.hearings.hearingRequest.hearingRequestMainModel
+      .hearingDetails.panelRequirements = {
+      panelSpecialisms: ['DisabilityQualifiedPanelMember', '', 'Cardiologist']
+    };
+
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
       declarations: [HearingPanelComponent, HearingJudgeNamesListComponent],
@@ -172,6 +177,7 @@ describe('HearingPanelComponent', () => {
     fixture = TestBed.createComponent(HearingPanelComponent);
     component = fixture.componentInstance;
     spyOn(component, 'fragmentFocus').and.callFake(() => { });
+    spyOn(component, 'prepareData').and.callThrough();
     fixture.detectChanges();
   });
 
@@ -186,16 +192,22 @@ describe('HearingPanelComponent', () => {
 
   it('should check form data', () => {
     component.excludedJudge = childComponent;
-    component.excludedJudge.validationError = { id: 'elementId', message: 'Error Message' };
+    component.panelJudgeForm.controls.specificPanel.setValue('');
     component.checkFormData();
     expect(component.validationErrors.length).toBeGreaterThan(0);
   });
 
   it('should check form valid', () => {
+    component.panelJudgeForm.controls.specificPanel.setValue('');
     expect(component.isFormValid()).toBeFalsy();
     component.showSpecificPanel(RadioOptions.YES);
     expect(component.panelSelection).toBe(RadioOptions.YES);
     expect(component.isFormValid()).toBeTruthy();
+  });
+
+  it('should prepare data when form is valid', () => {
+    component.executeAction(ACTION.CONTINUE);
+    expect(component.prepareData).toHaveBeenCalled();
   });
 
   afterEach(() => {

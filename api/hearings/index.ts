@@ -1,14 +1,15 @@
-import { NextFunction, Response } from 'express';
-import { handleDelete, handleGet, handlePost } from '../common/mockService';
-import { getConfigValue } from '../configuration';
-import { SERVICES_HEARINGS_COMPONENT_API} from '../configuration/references';
+import {NextFunction, Response} from 'express';
+import {handleDelete, handleGet, handlePost} from '../common/mockService';
+import {getConfigValue} from '../configuration';
+import {SERVICES_HEARINGS_COMPONENT_API} from '../configuration/references';
 import * as mock from '../hearings/hearing.mock';
-import { EnhancedRequest } from '../lib/models';
-import { HearingListModel } from './models/hearingList.model';
-import { HearingListMainModel } from './models/hearingListMain.model';
-import { HearingResponseMainModel } from './models/hearingResponseMain.model';
-import { hearingStatusMappings } from './models/hearingStatusMappings';
-import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
+import {EnhancedRequest} from '../lib/models';
+import {HearingActualsMainModel} from './models/hearingActualsMainModel';
+import {HearingListModel} from './models/hearingList.model';
+import {HearingListMainModel} from './models/hearingListMain.model';
+import {HearingResponseMainModel} from './models/hearingResponseMain.model';
+import {hearingStatusMappings} from './models/hearingStatusMappings';
+import {ServiceHearingValuesModel} from './models/serviceHearingValues.model';
 
 mock.init();
 
@@ -91,6 +92,17 @@ export async function cancelHearingRequest(req: EnhancedRequest, res: Response, 
 
   try {
     const { status, data }: { status: number, data: HearingListModel } = await handleDelete(markupPath, reqBody, req);
+    res.status(status).send(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getHearingActuals(req: EnhancedRequest, res: Response, next: NextFunction): Promise<void> {
+  const hearingId = req.params.hearingId;
+  try {
+    const { status, data }: { status: number, data: HearingActualsMainModel } =
+      await handleGet(`${hearingsUrl}/actuals/${hearingId}`, req);
     res.status(status).send(data);
   } catch (error) {
     next(error);

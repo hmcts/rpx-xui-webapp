@@ -11,18 +11,15 @@ mock.init();
 const prdUrl: string = getConfigValue(SERVICES_PRD_API_URL);
 
 /**
- * @overview searchJudicialUserByPersonalCodes from personalCodes, i.e. 'p1000000,p1000001'
- * @description API sample: /api/prd/judicial/searchJudicialUserByPersonalCodes?personalCodes=p1000000,p1000001
- * @example personalCodes=p1000000 | p1000000,p1000001 - pass single personalCode or multiple personalCodes split with ','
+ * @overview searchJudicialUserByPersonalCodes from personalCodes, i.e. ['p1000000','p1000001']
+ * @description API sample: POST /api/prd/judicial/searchJudicialUserByPersonalCodes
+ * @example with body {personal_code: ['p1000000','p1000001']}
  */
 export async function searchJudicialUserByPersonalCodes(req: EnhancedRequest, res: Response, next: NextFunction) {
-  // @ts-ignore
-  const strPersonalCodes = req.query.personalCodes;
-  const personalCodes: string[] = strPersonalCodes.split(',');
+  const reqBody = req.body;
   const markupPath: string = `${prdUrl}/refdata/judicial/users`;
-  const body = {personal_code: personalCodes};
   try {
-    const {status, data}: { status: number, data: JudicialUserModel[] } = await handlePost(markupPath, body, req);
+    const {status, data}: { status: number, data: JudicialUserModel[] } = await handlePost(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     next(error);

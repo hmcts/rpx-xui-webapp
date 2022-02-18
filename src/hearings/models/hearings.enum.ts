@@ -104,7 +104,8 @@ export enum HearingCategory {
 
 export enum HearingDateEnum {
   DisplayMonth = 'DD MMMM YYYY',
-  DefaultFormat = 'DD-MM-YYYY'
+  DefaultFormat = 'DD-MM-YYYY',
+  InvalidDate = 'Invalid date'
 }
 
 export enum HearingStageEnum {
@@ -113,6 +114,7 @@ export enum HearingStageEnum {
 
 export enum HearingPanelSelectionEnum {
   SelectionError = 'Please select that applies',
+  PanelRowChildError = 'Select a specialism for the panel member(s).'
 }
 
 export enum HearingInstructionsEnum {

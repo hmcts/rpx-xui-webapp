@@ -29,8 +29,12 @@
                 <div id="other-panel-roles-hint" class="govuk-hint">
                     Select all that apply.
                 </div>
-                <exui-multi-level-selector *ngIf="configLevels"
+                <span class="govuk-error-message" *ngIf="childNodesValidationError">
+                  <span class="govuk-visually-hidden">Error:</span> {{childNodesValidationError}}
+                </span>
+                <exui-multi-level-selector *ngIf="configLevels" id="panel-role-selector"
                   [multiLevelSelect]="panelJudgeForm.controls.multiLevelSelect"
+                  [hasValidationRequested]="hasValidationRequested"
                   [configLevels]="configLevels"
                 ></exui-multi-level-selector>
               </div>

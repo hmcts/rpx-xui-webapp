@@ -224,3 +224,9 @@ export enum ControlTypeEnum {
   CHECK_BOX,
   TEXT_AREA
 }
+
+export enum HearingResult {
+  COMPLETED = 'COMPLETED',
+  ADJOURNED = 'ADJOURNED',
+  CANCELLED = 'CANCELLED',
+}

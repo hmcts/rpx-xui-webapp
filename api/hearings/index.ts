@@ -51,7 +51,7 @@ export async function getHearings(req: EnhancedRequest, res: Response, next: Nex
 }
 
 /**
- * getHearing from case ID
+ * getHearing from hearing ID
  */
 export async function getHearing(req: EnhancedRequest, res: Response, next: NextFunction) {
   // @ts-ignore

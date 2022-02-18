@@ -2,22 +2,21 @@ import * as express from 'express';
 import authInterceptor from '../lib/middleware/auth';
 import {
   cancelHearingRequest,
-  getCaseFlagRefData,
-  getHearing, getHearingActuals,
+  getHearing,
+  getHearingActuals,
   getHearings,
-  getRefData,
   loadServiceHearingValues,
   submitHearingRequest
 } from './index';
 
-export const router = express.Router({ mergeParams: true });
+export const router = express.Router({mergeParams: true});
 
 router.use(authInterceptor);
-router.get('/hearingActuals/:hearingId', getHearingActuals);
+// request-amend journey
+router.post('/loadServiceHearingValues', loadServiceHearingValues);
 router.get('/getHearings', getHearings);
 router.get('/getHearing', getHearing);
-router.get('/getCaseFlagRefData', getCaseFlagRefData);
-router.get('/getRefData', getRefData);
-router.post('/loadServiceHearingValues', loadServiceHearingValues);
 router.post('/submitHearingRequest', submitHearingRequest);
 router.delete('/cancelHearings', cancelHearingRequest);
+// actual journey
+router.get('/hearingActuals/:hearingId', getHearingActuals);

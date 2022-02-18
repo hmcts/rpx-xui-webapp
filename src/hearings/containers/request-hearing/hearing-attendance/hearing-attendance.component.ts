@@ -1,16 +1,16 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { ACTION } from '../../../models/hearings.enum';
-import { PartyDetailsModel } from '../../../models/partyDetails.model';
-import { RefDataModel } from '../../../models/refData.model';
-import { HearingsRefDataService } from '../../../services/hearings-ref-data.service';
-import { HearingsService } from '../../../services/hearings.service';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
+import {Store} from '@ngrx/store';
+import {Observable} from 'rxjs';
+import {ACTION} from '../../../models/hearings.enum';
+import {LovRefDataModel} from '../../../models/lovRefData.model';
+import {PartyDetailsModel} from '../../../models/partyDetails.model';
+import {HearingsService} from '../../../services/hearings.service';
+import {LovRefDataService} from '../../../services/lov-ref-data.service';
 import * as fromHearingStore from '../../../store';
-import { ValidatorsUtils } from '../../../utils/validators.utils';
-import { RequestHearingPageFlow } from '../request-hearing.page.flow';
+import {ValidatorsUtils} from '../../../utils/validators.utils';
+import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-attendance',
@@ -24,14 +24,14 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   public title: string = ' How will each participant attend the hearing?';
   public partiesFormArray: FormArray;
   public formValid: boolean = true;
-  public partyChannels: Observable<RefDataModel[]>;
+  public partyChannels: Observable<LovRefDataModel[]>;
   public selectionValid: boolean = true;
 
   constructor(
     protected readonly hearingStore: Store<fromHearingStore.State>,
     protected readonly hearingsService: HearingsService,
     private readonly validatorsUtils: ValidatorsUtils,
-    private readonly hearingsRefDataService: HearingsRefDataService,
+    private readonly lovRefDataService: LovRefDataService,
     private readonly fb: FormBuilder,
     protected readonly route: ActivatedRoute) {
     super(hearingStore, hearingsService, route);
@@ -43,7 +43,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   }
 
   public ngOnInit(): void {
-    this.partyChannels = this.hearingsRefDataService.getRefData('PartyChannel', this.hearingListMainModel.hmctsServiceID);
+    this.partyChannels = this.lovRefDataService.getListOfValues('PartyChannel', this.hearingListMainModel.hmctsServiceID);
     if (!this.hearingRequestMainModel.partyDetails.length) {
       this.initialiseFromHearingValues();
     } else {
@@ -120,7 +120,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     this.attendanceFormGroup.controls.estimation.markAsDirty();
     if (!this.attendanceFormGroup.controls.estimation.valid) {
       formValid = false;
-      this.validationErrors.push({ id: 'attendance-number', message: 'Enter a valid number of attendees' });
+      this.validationErrors.push({id: 'attendance-number', message: 'Enter a valid number of attendees'});
     }
 
     this.selectionValid = selectionValid;

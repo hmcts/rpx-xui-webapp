@@ -4,7 +4,7 @@ import {ActivatedRoute} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {CaseFlagReferenceModel} from '../../../models/caseFlagReference.model';
 import {ACTION, CaseFlagType, HearingFacilitiesEnum} from '../../../models/hearings.enum';
-import {RefDataModel} from '../../../models/refData.model';
+import {LovRefDataModel} from '../../../models/lovRefData.model';
 import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import {RequestHearingPageFlow} from '../request-hearing.page.flow';
@@ -19,7 +19,7 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
   public hearingFactilitiesForm: FormGroup;
   public additionSecurityError: string;
   public validationErrors: { id: string, message: string }[] = [];
-  public additionalFacilities: RefDataModel[];
+  public additionalFacilities: LovRefDataModel[];
   public additionSecurityRequiredValid: boolean = true;
 
   constructor(protected readonly route: ActivatedRoute,

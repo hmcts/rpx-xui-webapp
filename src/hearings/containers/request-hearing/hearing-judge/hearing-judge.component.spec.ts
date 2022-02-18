@@ -9,7 +9,7 @@ import {of} from 'rxjs';
 import {HearingJudgeNamesListComponent} from '../../../components';
 import {initialState} from '../../../hearing.test.data';
 import {ACTION, HearingJudgeSelectionEnum, RadioOptions} from '../../../models/hearings.enum';
-import {RefDataModel} from '../../../models/refData.model';
+import {LovRefDataModel} from '../../../models/lovRefData.model';
 import {HearingsService} from '../../../services/hearings.service';
 import {HearingJudgeComponent} from './hearing-judge.component';
 
@@ -20,7 +20,7 @@ describe('HearingJudgeComponent', () => {
   const childComponent = jasmine.createSpyObj('HearingJudgeNamesListComponent', ['isExcludeJudgeInputValid']);
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
-  const judgeTypes: RefDataModel[] = [
+  const judgeTypes: LovRefDataModel[] = [
     {
       key: 'tribunalJudge',
       value_en: 'Tribunal Judge',

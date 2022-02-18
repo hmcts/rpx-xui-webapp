@@ -1,7 +1,7 @@
 import {ActivatedRoute} from '@angular/router';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {RefDataModel} from '../models/refData.model';
+import {LovRefDataModel} from '../models/lovRefData.model';
 import {State} from '../store';
 import {AnswerConverter} from './answer.converter';
 
@@ -10,7 +10,7 @@ export class AdditionalFacilitiesAnswerConverter implements AnswerConverter {
   constructor(protected readonly route: ActivatedRoute) {
   }
 
-  private static getFacilityValue(hearingFacilities: RefDataModel[], key: string): string {
+  private static getFacilityValue(hearingFacilities: LovRefDataModel[], key: string): string {
     return hearingFacilities.find(facility => facility.key === key).value_en;
   }
 

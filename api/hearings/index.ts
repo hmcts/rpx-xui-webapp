@@ -1,35 +1,29 @@
-import { NextFunction, Response } from 'express';
-import { handleDelete, handleGet, handlePost } from '../common/mockService';
-import { getConfigValue } from '../configuration';
-import { SERVICES_HEARINGS_COMPONENT_API, SERVICES_PRD_API_URL } from '../configuration/references';
+import {NextFunction, Response} from 'express';
+import {handleDelete, handleGet, handlePost} from '../common/mockService';
+import {getConfigValue} from '../configuration';
+import {SERVICES_HEARINGS_COMPONENT_API} from '../configuration/references';
 import * as mock from '../hearings/hearing.mock';
-import { EnhancedRequest } from '../lib/models';
-import { CaseFlagReferenceModel } from './models/caseFlagReference.model';
-import { HearingActualsMainModel } from './models/hearingActualsMainModel';
-import { HearingListModel } from './models/hearingList.model';
-import { HearingListMainModel } from './models/hearingListMain.model';
-import { HearingResponseMainModel } from './models/hearingResponseMain.model';
-import { hearingStatusMappings } from './models/hearingStatusMappings';
-import { RefDataByCategoryModel, RefDataByServiceModel } from './models/refData.model';
-import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
+import {EnhancedRequest} from '../lib/models';
+import {HearingActualsMainModel} from './models/hearingActualsMainModel';
+import {HearingListModel} from './models/hearingList.model';
+import {HearingListMainModel} from './models/hearingListMain.model';
+import {HearingResponseMainModel} from './models/hearingResponseMain.model';
+import {hearingStatusMappings} from './models/hearingStatusMappings';
+import {ServiceHearingValuesModel} from './models/serviceHearingValues.model';
 
 mock.init();
 
 const hearingsUrl: string = getConfigValue(SERVICES_HEARINGS_COMPONENT_API);
-const prdUrl: string = getConfigValue(SERVICES_PRD_API_URL);
 
 /**
- * getHearing from case ID
+ * loadServiceHearingValues - get details required to populate the hearing request/amend journey
  */
-export async function getHearing(req: EnhancedRequest, res: Response, next: NextFunction) {
-  // @ts-ignore
-  const hearingId: string = req.query.hearingId;
-  const markupPath: string = `${hearingsUrl}/hearing/${hearingId}`;
-
+export async function loadServiceHearingValues(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const reqBody = req.body;
+  const markupPath: string = `${hearingsUrl}/serviceHearingValues`;
   try {
-    const { status, data }: { status: number, data: HearingResponseMainModel[] } = await handleGet(markupPath, req);
-    const response = data.filter(dataRecord => dataRecord.caseDetails && dataRecord.caseDetails.hearingID.toLowerCase());
-    res.status(status).send(response);
+    const { status, data }: { status: number, data: ServiceHearingValuesModel } = await handlePost(markupPath, reqBody, req);
+    res.status(status).send(data);
   } catch (error) {
     next(error);
   }
@@ -58,55 +52,17 @@ export async function getHearings(req: EnhancedRequest, res: Response, next: Nex
 }
 
 /**
- * getRefData from category and service ID
+ * getHearing from hearing ID
  */
-export async function getRefData(req: EnhancedRequest, res: Response, next: NextFunction) {
+export async function getHearing(req: EnhancedRequest, res: Response, next: NextFunction) {
   // @ts-ignore
-  const category = req.query.category;
-  const service = req.query.service;
-  const markupPath: string = `${prdUrl}/refdata/lov/${category}/${service}`;
-  try {
-    const { status, data }: { status: number, data: RefDataByCategoryModel[] } = await handleGet(markupPath, req);
-    const refDataByCategory: RefDataByCategoryModel = data.find(refDataByCategoryModel =>
-      refDataByCategoryModel.categoryKey === category);
-    if (refDataByCategory && refDataByCategory.services) {
-      const refDataByService: RefDataByServiceModel = refDataByCategory.services.find(aService =>
-        aService.serviceID === service);
-      if (refDataByService && refDataByService.values) {
-        res.status(status).send(refDataByService.values);
-      } else {
-        res.status(status).send([]);
-      }
-    } else {
-      res.status(status).send([]);
-    }
-  } catch (error) {
-    next(error);
-  }
-}
+  const hearingId: string = req.query.hearingId;
+  const markupPath: string = `${hearingsUrl}/hearing/${hearingId}`;
 
-/**
- * getCaseFlagRefData
- */
-export async function getCaseFlagRefData(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const markupPath: string = `${prdUrl}/caseflagrefdata`;
   try {
-    const { status, data }: { status: number, data: CaseFlagReferenceModel[] } = await handleGet(markupPath, req);
-    res.status(status).send(data);
-  } catch (error) {
-    next(error);
-  }
-}
-
-/**
- * loadServiceHearingValues - get details required to populate the hearing request/amend journey
- */
-export async function loadServiceHearingValues(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const reqBody = req.body;
-  const markupPath: string = `${hearingsUrl}/serviceHearingValues`;
-  try {
-    const { status, data }: { status: number, data: ServiceHearingValuesModel } = await handlePost(markupPath, reqBody, req);
-    res.status(status).send(data);
+    const { status, data }: { status: number, data: HearingResponseMainModel[] } = await handleGet(markupPath, req);
+    const response = data.filter(dataRecord => dataRecord.caseDetails && dataRecord.caseDetails.hearingID.toLowerCase());
+    res.status(status).send(response);
   } catch (error) {
     next(error);
   }

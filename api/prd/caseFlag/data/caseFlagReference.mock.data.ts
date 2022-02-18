@@ -1,5 +1,5 @@
 /* tslint:disable:object-literal-sort-keys */
-import { CaseFlagReferenceModel } from '../models/caseFlagReference.model';
+import {CaseFlagReferenceModel} from '../models/caseFlagReference.model';
 
 export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
   {
@@ -762,9 +762,7 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 Path: [
                   'Party', 'Reasonable adjustment', 'Help or support from a third party',
                 ],
-                childFlags: [
-
-                ],
+                childFlags: [],
               },
               {
                 name: 'Good Things foundation',

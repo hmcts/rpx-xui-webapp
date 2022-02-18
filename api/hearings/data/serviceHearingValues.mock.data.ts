@@ -5,7 +5,7 @@ import {ServiceHearingValuesModel} from '../models/serviceHearingValues.model';
 export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   caseName: 'Jane Smith vs DWP',
   autoListFlag: false,
-  hearingType: 'Final',
+  hearingType: 'final',
   caseType: 'Personal Independence Payment',
   caseSubTypes: ['Conditions of Entitlement', 'Good cause', 'Rate of Assessment / Payability Issues - complex'],
   hearingWindow: {

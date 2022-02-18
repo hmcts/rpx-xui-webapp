@@ -4,7 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {select, Store} from '@ngrx/store';
 import {HearingListModel} from '../../models/hearingList.model';
 import {CancelHearingMessages} from '../../models/hearings.enum';
-import {RefDataModel} from '../../models/refData.model';
+import {LovRefDataModel} from '../../models/lovRefData.model';
 import {HearingsService} from '../../services/hearings.service';
 import * as fromHearingStore from '../../store';
 import {ValidatorsUtils} from '../../utils/validators.utils';
@@ -15,7 +15,7 @@ import {ValidatorsUtils} from '../../utils/validators.utils';
   styleUrls: ['./cancel-hearing.component.scss']
 })
 export class CancelHearingComponent implements OnInit {
-  public hearingCancelOptions: RefDataModel[];
+  public hearingCancelOptions: LovRefDataModel[];
   public hearingCancelForm: FormGroup;
   public validationErrors: { id: string, message: string }[] = [];
   public selectionValid: boolean = true;
@@ -93,8 +93,8 @@ export class CancelHearingComponent implements OnInit {
     }
   }
 
-  public getChosenReasons(): RefDataModel[] {
-    const mappedReason: RefDataModel[] = [];
+  public getChosenReasons(): LovRefDataModel[] {
+    const mappedReason: LovRefDataModel[] = [];
     const reasonChosen = (this.hearingCancelForm.controls.reasons as FormArray).controls
       .filter(reason => reason.value.selected === true);
     reasonChosen.forEach(element => {
@@ -106,7 +106,7 @@ export class CancelHearingComponent implements OnInit {
         hintTextCY: element.value.hintTextCY,
         order: element.value.order,
         parentKey: element.value.parentKey,
-      } as RefDataModel);
+      } as LovRefDataModel);
     });
     return mappedReason;
   }

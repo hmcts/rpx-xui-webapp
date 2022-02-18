@@ -59,7 +59,8 @@ export class SearchFormComponent implements OnInit, OnDestroy {
       name: 'fullName',
       hint: 'For example, name of a party or solicitor.',
       classes: 'govuk-input--width-20',
-      label: 'Full name',
+      // Label change to just 'Name' requested under EUI-5303
+      label: 'Name',
       type: 'text'
     };
     this.addressLine1Config = {

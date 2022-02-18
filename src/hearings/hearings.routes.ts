@@ -183,16 +183,16 @@ export const ROUTES: Routes = [
         data: {
           title: 'HMCTS Manage cases | Amend Hearing | Check Answers'
         }
+      },
+      {
+        path: 'hearing-confirmation',
+        component: HearingFinalConfirmationComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Manage cases | Request Hearing | Confirmation'
+        }
       }
     ]
-  },
-  {
-    path: 'hearing-confirmation',
-    component: HearingFinalConfirmationComponent,
-    canActivate: [HealthCheckGuard],
-    data: {
-      title: 'HMCTS Manage cases | Request Hearing | Confirmation'
-    }
   },
   {
     path: 'view',

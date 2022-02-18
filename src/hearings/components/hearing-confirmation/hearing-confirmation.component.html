@@ -1,13 +1,25 @@
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
-    <div class="govuk-panel govuk-panel--confirmation">
-      <h1 class="govuk-panel__title" [innerHtml]="heading"></h1>
-      <div class="govuk-panel__body" [innerHtml]="headingDescription"></div>
-    </div>
-    <div>
-      <h2 class="govuk-heading-m" [innerHtml]="subheading"></h2>
-      <div class="govuk-body" [innerHtml]="subheadingDescription"></div>
-      <div class="govuk-body" [innerHtml]="additionalDescription"></div>
+<main class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-panel govuk-panel--confirmation">
+        <h1 class="govuk-panel__title">{{heading}}</h1>
+        <div class="govuk-panel__body">{{headingDescription}}</div>
+      </div>
+      <div>
+        <h2 class="govuk-heading-m">{{subheading}}</h2>
+        <div class="govuk-body" *ngIf="confirmationSource !== hearingConfirmationSource.HEARING_REQUEST">
+          {{subheadingDescription}}
+        </div>
+        <div class="govuk-body" *ngIf="confirmationSource === hearingConfirmationSource.HEARING_REQUEST">
+          You can <a href="javascript:void(0)"
+            [routerLink]="['/', 'cases', 'case-details', caseId, 'hearings']" class="govuk-link">view the status of this request in the hearings tab</a>
+        </div>
+        <div class="govuk-body" *ngIf="confirmationSource !== hearingConfirmationSource.HEARING_REQUEST">
+          {{additionalDescription}}
+        </div>
+        <div class="govuk-body" *ngIf="confirmationSource === hearingConfirmationSource.HEARING_REQUEST"
+          [innerHtml]="additionalDescription"></div>
+      </div>
     </div>
   </div>
-</div>
+</main>

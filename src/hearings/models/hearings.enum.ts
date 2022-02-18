@@ -221,3 +221,7 @@ export enum ControlTypeEnum {
   CHECK_BOX,
   TEXT_AREA
 }
+
+export enum HearingConfirmationSource {
+  HEARING_REQUEST
+}

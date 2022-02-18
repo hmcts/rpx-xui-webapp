@@ -21,7 +21,7 @@ export class HearingsBadgePipe implements PipeTransform {
         return 'govuk-tag govuk-tag--grey';
       case EXUIDisplayStatusEnum.FAILURE:
         return 'govuk-tag govuk-tag--orange';
-      case EXUIDisplayStatusEnum.AWAITING_ACTUALS:
+      case EXUIDisplayStatusEnum.AWAITING_HEARING_ACTUALS:
         return 'govuk-tag govuk-tag--blue';
       case EXUIDisplayStatusEnum.ADJOURNED:
         return 'govuk-tag govuk-tag--yellow';

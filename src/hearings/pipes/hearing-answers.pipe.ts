@@ -9,6 +9,9 @@ import { CaseFlagAnswerConverter } from '../converters/case-flag.answer.converte
 import { CaseNameAnswerConverter } from '../converters/case-name.answer.converter';
 import { CaseNumberAnswerConverter } from '../converters/case-number.answer.converter';
 import { DefaultAnswerConverter } from '../converters/default.answer.converter';
+import { HearingLengthAnswerConverter } from '../converters/hearing-length.answer.converter';
+import { HearingPriorityAnswerConverter } from '../converters/hearing-priority.answer.converter';
+import { HearingSpecificDateAnswerConverter } from '../converters/hearing-specific-date.answer.converter';
 import { NeedWelshAnswerConverter } from '../converters/need-welsh.answer.converter';
 import { NumberOfAttendancesAnswerConverter } from '../converters/number-of-attendances-answer.converter';
 import { PartyChannelsAnswerConverter } from '../converters/party-channels-answer.converter';
@@ -64,6 +67,15 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.STAGE:
         converter = new StageAnswerConverter(this.route);
+        break;
+      case AnswerSource.HEARING_LENGTH:
+        converter = new HearingLengthAnswerConverter();
+        break;
+      case AnswerSource.HEARING_SPECIFIC_DATE:
+        converter = new HearingSpecificDateAnswerConverter();
+        break;
+      case AnswerSource.HEARING_PRIORITY:
+        converter = new HearingPriorityAnswerConverter(this.route);
         break;
       default:
         break;

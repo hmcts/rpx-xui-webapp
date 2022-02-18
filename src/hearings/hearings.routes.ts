@@ -166,6 +166,7 @@ export const ROUTES: Routes = [
       {
         path: 'hearing-create-edit-summary',
         resolve: {
+          hearingPriorities: RefDataResolver,
           caseFlags: CaseFlagsResolver,
           hearingStageOptions: HearingStageResolver,
           additionFacilitiesOptions: AdditionalFacilitiesResolver,

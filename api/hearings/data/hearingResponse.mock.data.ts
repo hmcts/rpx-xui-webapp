@@ -43,7 +43,7 @@ export const HEARING_RESPONSE_RESULT: HearingResponseMainModel[] = [
       privateHearingRequiredFlag: false,
       panelRequirements: null,
       autolistFlag: false,
-      hearingPriorityType: 'Standard',
+      hearingPriorityType: 'standard',
       numberOfPhysicalAttendees: 2,
       hearingInWelshFlag: false,
       facilitiesRequired: [

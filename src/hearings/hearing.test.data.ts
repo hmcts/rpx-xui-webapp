@@ -22,6 +22,27 @@ export const hearingStageRefData = [
   }
 ];
 
+export const hearingPriorityRefData = [
+  {
+    key: 'urgent',
+    value_en: 'Urgent',
+    value_cy: '',
+    hintText_EN: 'Urgent',
+    hintTextCY: '',
+    order: 1,
+    parentKey: null
+  },
+  {
+    key: 'standard',
+    value_en: 'Standard',
+    value_cy: '',
+    hintText_EN: 'Standard',
+    hintTextCY: '',
+    order: 2,
+    parentKey: null
+  }
+];
+
 export const facilitiesListRefData = [
   {
     key: 'immigrationDetentionCentre',
@@ -927,7 +948,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
     hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
   },
   duration: 45,
-  hearingPriorityType: 'Standard',
+  hearingPriorityType: 'standard',
   numberOfPhysicalAttendees: 2,
   hearingInWelshFlag: false,
   hearingLocations: [{
@@ -1122,7 +1143,7 @@ export const initialState = {
           requestTimeStamp: null
         },
         hearingDetails: {
-          duration: null,
+          duration: 60,
           hearingType: 'final',
           hearingLocations: [
             {
@@ -1139,12 +1160,18 @@ export const initialState = {
             },
           ],
           hearingIsLinkedFlag: false,
-          hearingWindow: null,
+          hearingWindow: {
+            hearingWindowDateRange: {
+              hearingWindowStartDateRange: '12-12-2022',
+              hearingWindowEndDateRange: '12-12-2022',
+            },
+            hearingWindowFirstDate: null,
+          },
           privateHearingRequiredFlag: false,
           panelRequirements: null,
           autolistFlag: false,
           nonStandardHearingDurationReasons: [],
-          hearingPriorityType: null,
+          hearingPriorityType: 'standard',
           numberOfPhysicalAttendees: null,
           hearingInWelshFlag: true,
           facilitiesRequired: [

@@ -45,7 +45,7 @@ describe('Hearing Values Effects', () => {
         hearingWindowFirstDate: '',
       },
       duration: 45,
-      hearingPriorityType: 'Standard',
+      hearingPriorityType: 'standard',
       numberOfPhysicalAttendees: 2,
       hearingInWelshFlag: false,
       hearingLocations: [],

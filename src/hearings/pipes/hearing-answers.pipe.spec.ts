@@ -2,9 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { cold } from 'jasmine-marbles';
 import { of } from 'rxjs';
-import { caseFlagsRefData, initialState, partyChannelsRefData } from '../hearing.test.data';
-import { AnswerSource, PartyType } from '../models/hearings.enum';
-import { State } from '../store';
+import { caseFlagsRefData, hearingPriorityRefData, initialState, partyChannelsRefData } from '../hearing.test.data';
+import { AnswerSource, PartyType, RadioOptions } from '../models/hearings.enum';
+import { State } from '../store/reducers';
 import { HearingAnswersPipe } from './hearing-answers.pipe';
 
 describe('HearingAnswersPipe', () => {
@@ -21,6 +21,7 @@ describe('HearingAnswersPipe', () => {
           useValue: {
             snapshot: {
               data: {
+                hearingPriorities: hearingPriorityRefData,
                 caseFlags: caseFlagsRefData,
                 partyChannels: partyChannelsRefData,
               },
@@ -36,7 +37,7 @@ describe('HearingAnswersPipe', () => {
   it('should transform additional instructions', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.ADDITIONAL_INSTRUCTION, of(STATE));
     const listingComments = 'blah blah blah';
-    const expected = cold('(b|)', {b: listingComments});
+    const expected = cold('(b|)', { b: listingComments });
     expect(result$).toBeObservable(expected);
   });
 
@@ -50,7 +51,7 @@ describe('HearingAnswersPipe', () => {
   it('should transform case number', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.CASE_NUMBER, of(STATE));
     const caseNumber = '1111-2222-3333-4444';
-    const expected = cold('(b|)', {b: caseNumber});
+    const expected = cold('(b|)', { b: caseNumber });
     expect(result$).toBeObservable(expected);
   });
 
@@ -106,6 +107,35 @@ describe('HearingAnswersPipe', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.NEED_WELSH, of(STATE));
     const needWelsh = 'Yes';
     const expected = cold('(b|)', { b: needWelsh });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform hearing length', () => {
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.duration = 60;
+    const result$ = hearingAnswersPipe.transform(AnswerSource.HEARING_LENGTH, of(STATE));
+    const hearingDuration = '1 hour(s)';
+    const expected = cold('(b|)', { b: hearingDuration });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform hearing specific date', () => {
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingWindow = {
+      hearingWindowDateRange: {
+        hearingWindowStartDateRange: '12-12-2022',
+        hearingWindowEndDateRange: '12-12-2022',
+      },
+      hearingWindowFirstDate: null,
+    };
+    const result$ = hearingAnswersPipe.transform(AnswerSource.HEARING_SPECIFIC_DATE, of(STATE));
+    const hearingDateRange = `${RadioOptions.CHOOSE_DATE_RANGE}<dt class="heading-h3 bottom-0">Earliest hearing date</dt>12 December 2022<dt class="heading-h3 bottom-0">Latest hearing date</dt>12 December 2022`;
+    const expected = cold('(b|)', { b: hearingDateRange });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform need hearing priority', () => {
+    const result$ = hearingAnswersPipe.transform(AnswerSource.HEARING_PRIORITY, of(STATE));
+    const hearingPriority = 'Standard';
+    const expected = cold('(b|)', { b: hearingPriority });
     expect(result$).toBeObservable(expected);
   });
 });

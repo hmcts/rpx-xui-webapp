@@ -104,7 +104,8 @@ export enum HearingCategory {
 
 export enum HearingDateEnum {
   DisplayMonth = 'DD MMMM YYYY',
-  DefaultFormat = 'DD-MM-YYYY'
+  DefaultFormat = 'DD-MM-YYYY',
+  InvalidDate = 'Invalid date'
 }
 
 export enum HearingStageEnum {

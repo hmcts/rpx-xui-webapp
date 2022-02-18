@@ -24,23 +24,30 @@ export const hearingStageRefData = [
 
 export const facilitiesListRefData = [
   {
-      key: 'immigrationDetentionCentre',
-      value_en: 'Immigration detention centre',
-      value_cy: '',
-      hintText_EN: 'Immigration detention centre',
-      hintTextCY: '',
-      order: 1,
-      parentKey: null
+    key: 'immigrationDetentionCentre',
+    value_en: 'Immigration detention centre',
+    value_cy: '',
+    hintText_EN: 'Immigration detention centre',
+    hintTextCY: '',
+    order: 1,
+    parentKey: null
   },
   {
-      key: 'inCameraCourt',
-      value_en: 'In camera court',
-      value_cy: '',
-      hintText_EN: 'In camera court',
-      hintTextCY: '',
-      order: 2,
-      parentKey: null
+    key: 'inCameraCourt',
+    value_en: 'In camera court',
+    value_cy: '',
+    hintText_EN: 'In camera court',
+    hintTextCY: '',
+    order: 2,
+    parentKey: null
   }
+];
+
+export const partyChannelsRefData = [
+  { key: 'inPerson', value_en: 'In person', value_cy: '', hintText_EN: 'in person', hintTextCY: '', order: 1, parentKey: null },
+  { key: 'byPhone', value_en: 'By phone', value_cy: '', hintText_EN: 'By Phone', hintTextCY: '', order: 2, parentKey: null },
+  { key: 'byVideo', value_en: 'By video', value_cy: '', hintText_EN: 'By video', hintTextCY: '', order: 4, parentKey: null },
+  { key: 'notAttending', value_en: 'Not attending', value_cy: '', hintText_EN: 'not attending', hintTextCY: '', order: 5, parentKey: null }
 ];
 
 export const caseFlagsRefData = [
@@ -1170,13 +1177,13 @@ export const initialState = {
             partyID: 'P1',
             partyName: 'Jane and Smith',
             partyType: PartyType.IND,
-            partyChannel: 'inperson'
+            partyChannel: 'inPerson'
           },
           {
             partyID: 'P2',
             partyName: 'DWP',
             partyType: PartyType.ORG,
-            partyChannel: 'bymobile'
+            partyChannel: 'byVideo'
           }
         ]
       },

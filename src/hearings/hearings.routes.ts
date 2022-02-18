@@ -193,6 +193,14 @@ export const ROUTES: Routes = [
         component: HearingActualAddEditSummaryComponent,
         canActivate: [HealthCheckGuard],
         data: {
+          title: 'HMCTS Manage cases | Amend Hearing | Check Answers'
+        }
+      },
+      {
+        path: 'hearing-actual-add-edit',
+        component: HearingActualAddEditSummaryComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
           title: 'HMCTS Manage cases | Hearing Actuals | Check details'
         }
       },

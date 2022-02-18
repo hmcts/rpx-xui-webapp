@@ -24,6 +24,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
   public multiLevelSelections: RefDataModel[] = [];
   public panelSelectionError: string;
   public hasValidationRequested: boolean = false;
+  public childNodesValidationError: string;
   public configLevels: { level: number, controlType: ControlTypeEnum }[];
   @ViewChild('includedJudge') public includedJudge: HearingJudgeNamesListComponent;
   @ViewChild('excludedJudge') public excludedJudge: HearingJudgeNamesListComponent;
@@ -207,6 +208,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
 
   public checkFormData(): void {
     this.validationErrors = [];
+    this.childNodesValidationError = null;
     this.panelSelectionError = null;
     if (!this.panelJudgeForm.controls.specificPanel.valid) {
       this.panelSelectionError = HearingPanelSelectionEnum.SelectionError;
@@ -217,6 +219,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
   public isFormValid(): boolean {
     this.hasValidationRequested = true;
     if (!this.childNodesValidation()) {
+      this.childNodesValidationError = HearingPanelSelectionEnum.PanelRowChildError;
       this.validationErrors.push({ id: 'panel-role-selector', message: HearingPanelSelectionEnum.PanelRowChildError });
       return false;
     }

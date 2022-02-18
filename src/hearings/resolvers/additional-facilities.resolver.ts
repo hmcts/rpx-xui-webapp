@@ -3,24 +3,24 @@ import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { HearingCategory } from '../models/hearings.enum';
-import { RefDataModel } from '../models/refData.model';
-import { HearingsRefDataService } from '../services/hearings-ref-data.service';
+import { LovRefDataModel } from '../models/lovRefData.model';
+import { LovRefDataService } from '../services/lov-ref-data.service';
 import * as fromHearingStore from '../store';
 import { RefDataResolver } from './ref-data-resolver.resolve';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AdditionalFacilitiesResolver extends RefDataResolver implements Resolve<RefDataModel[]> {
+export class AdditionalFacilitiesResolver extends RefDataResolver implements Resolve<LovRefDataModel[]> {
 
   constructor(
-    protected readonly hearingsDataService: HearingsRefDataService,
+    protected readonly lovRefDataService: LovRefDataService,
     protected readonly hearingStore: Store<fromHearingStore.State>
   ) {
-    super(hearingsDataService, hearingStore);
+    super(lovRefDataService, hearingStore);
   }
 
-  public resolve(route?: ActivatedRouteSnapshot): Observable<RefDataModel[]> {
+  public resolve(route?: ActivatedRouteSnapshot): Observable<LovRefDataModel[]> {
     route.data = {
       ...route.data,
       category: HearingCategory.FacilitiesList

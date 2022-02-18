@@ -8,6 +8,6 @@ export class CaseFlagsRefDataService {
   public constructor(private readonly http: HttpClient) { }
 
   public getCaseFlagsRefData(): Observable<CaseFlagReferenceModel[]> {
-    return this.http.get<CaseFlagReferenceModel[]>(`api/hearings/getCaseFlagRefData`);
+    return this.http.get<CaseFlagReferenceModel[]>(`api/prd/caseFlag/getCaseFlagRefData`);
   }
 }

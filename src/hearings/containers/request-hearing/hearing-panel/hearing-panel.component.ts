@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Person } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { ControlTypeEnum } from '../../../models/hearings.enum';
-import { RefDataModel } from '../../../models/refData.model';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingJudgeNamesListComponent } from '../../../../hearings/components';
 import { ACTION, HearingPanelSelectionEnum } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
@@ -22,7 +22,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
   public includedJudgeList: Person[] = [];
   public excludedJudgeList: Person[] = [];
   public panelSelection: string;
-  public multiLevelSelection: RefDataModel[];
+  public multiLevelSelection: LovRefDataModel[];
   public panelSelectionError: string;
   public configLevels: { level: number, controlType: ControlTypeEnum }[];
   @ViewChild('includedJudge') public includedJudge: HearingJudgeNamesListComponent;
@@ -60,10 +60,10 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     this.panelJudgeForm.controls.multiLevelSelect = this.convertRefDataModelToArray(this.multiLevelSelection);
   }
 
-  public convertArrayToRefDataModel(array: FormArray): RefDataModel[] {
-    const listValues: RefDataModel[] = [];
+  public convertArrayToRefDataModel(array: FormArray): LovRefDataModel[] {
+    const listValues: LovRefDataModel[] = [];
     (array as FormArray).controls.forEach(control => {
-      const refDataModel: RefDataModel = {
+      const refDataModel: LovRefDataModel = {
         key: control.value.key,
         value_en: control.value.value_en,
         value_cy: control.value.value_cy,
@@ -79,7 +79,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     return listValues;
   }
 
-  public convertRefDataModelToArray(dataSource: RefDataModel[]): FormArray {
+  public convertRefDataModelToArray(dataSource: LovRefDataModel[]): FormArray {
     const dataSourceArray = this.formBuilder.array([]);
     dataSource.forEach(otherPanelRoles => {
       (dataSourceArray as FormArray).push(this.patchValues({
@@ -92,12 +92,12 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
         parentKey: otherPanelRoles.parentKey,
         child_nodes: otherPanelRoles.child_nodes,
         selected: !otherPanelRoles.selected ? false : true,
-      } as RefDataModel) as FormGroup);
+      } as LovRefDataModel) as FormGroup);
     });
     return dataSourceArray;
   }
 
-  public patchValues(refDataModel: RefDataModel): FormGroup {
+  public patchValues(refDataModel: LovRefDataModel): FormGroup {
     return this.formBuilder.group({
       key: [refDataModel.key],
       value_en: [refDataModel.value_en],

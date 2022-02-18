@@ -11,7 +11,7 @@ import {of} from 'rxjs';
 import {ErrorMessage} from '../../../../app/models';
 import {initialState} from '../../../hearing.test.data';
 import {ACTION, HearingDatePriorityEnum, RadioOptions} from '../../../models/hearings.enum';
-import {RefDataModel} from '../../../models/refData.model';
+import {LovRefDataModel} from '../../../models/lovRefData.model';
 import {UnavailabilityRangeModel} from '../../../models/unavailabilityRange.model';
 import {HearingsService} from '../../../services/hearings.service';
 import {ValidatorsUtils} from '../../../utils/validators.utils';
@@ -34,7 +34,7 @@ describe('HearingTimingComponent', () => {
   let fixture: ComponentFixture<HearingTimingComponent>;
   let router: Router;
   let mockStore: any;
-  const priorities: RefDataModel[] = [
+  const priorities: LovRefDataModel[] = [
     {
       key: 'urgent',
       value_en: 'Urgent',

@@ -6,13 +6,12 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { RefDataModel } from '../../../models/refData.model';
 import { HearingJudgeNamesListComponent } from '../../../components';
+import { initialState } from '../../../hearing.test.data';
 import { ACTION, RadioOptions } from '../../../models/hearings.enum';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingPanelComponent } from './hearing-panel.component';
-import { initialState } from '../../../../hearings/hearing.test.data';
-
 
 describe('HearingPanelComponent', () => {
   let component: HearingPanelComponent;
@@ -22,7 +21,7 @@ describe('HearingPanelComponent', () => {
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 
-  const OTHER_PANEL_ROLES: RefDataModel[] = [
+  const OTHER_PANEL_ROLES: LovRefDataModel[] = [
     {
       key: 'DisabilityQualifiedPanelMember',
       value_en: 'Disability qualified panel member',

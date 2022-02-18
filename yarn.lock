@@ -537,10 +537,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.6.5-flickering-search-location-rename-variable":
-  version "1.6.5-flickering-search-location-rename-variable"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.5-flickering-search-location-rename-variable.tgz#31c7194e49ca4c08ca519bb41f71ed8927d08631"
-  integrity sha512-fspXv6317Vu18iU2Iie1grbkHS+vzwgZyBrqk2UzBfl2nDbMx1CXsho0bPlTDETjFGl4oVWIoGEQwwoBIExwQw==
+"@hmcts/rpx-xui-common-lib@1.6.6-hearings-part2":
+  version "1.6.6-hearings-part2"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.6-hearings-part2.tgz#a2d0bf642e8d50949a6e23d0c2b0ec29176a08b5"
+  integrity sha512-LbdmtY2FwRwbQJZYzUkZqS2qT8HkfI6+XGwEtpdIBGpawiiC7FJAkmm0agTmdBXORr1IjnVJ7+4AoVvDYAFRoA==
   dependencies:
     tslib "^1.9.0"
 

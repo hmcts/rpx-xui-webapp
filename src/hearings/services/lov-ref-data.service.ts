@@ -1,7 +1,7 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {LovRefDataModel} from '../models/LovRefData.model';
+import {LovRefDataModel} from '../models/lovRefData.model';
 
 @Injectable({providedIn: 'root'})
 export class LovRefDataService {

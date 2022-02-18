@@ -4,7 +4,8 @@ import * as fromHearingStore from '../../../store';
 
 @Component({
   selector: 'exui-hearing-final-confirmation',
-  templateUrl: './hearing-final-confirmation.component.html'
+  templateUrl: './hearing-final-confirmation.component.html',
+  styleUrls: ['./hearing-final-confirmation.component.scss']
 })
 export class HearingFinalConfirmationComponent implements OnInit {
 

@@ -1,8 +1,16 @@
-<exui-hearing-confirmation
-  *ngIf="caseId"
-  [heading]="heading"
-  [headingDescription]="headingDescription"
-  [subheading]="subheading"
-  [subheadingDescription]="subheadingDescription"
-  [additionalDescription]="additionalDescription">
-</exui-hearing-confirmation>
+<exui-app-header></exui-app-header>
+<div class="govuk-width-container">
+  <div class="page">
+    <main class="govuk-main-wrapper" id="content" role="main">
+      <exui-hearing-confirmation
+        *ngIf="caseId"
+        [heading]="heading"
+        [headingDescription]="headingDescription"
+        [subheading]="subheading"
+        [subheadingDescription]="subheadingDescription"
+        [additionalDescription]="additionalDescription">
+      </exui-hearing-confirmation>
+    </main>
+  </div>
+</div>
+<exui-app-footer></exui-app-footer>

@@ -1,9 +1,9 @@
 import {ActivatedRoute} from '@angular/router';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
+import {LovRefDataModel} from '../models/lovRefData.model';
+import {State} from '../store';
 import {AnswerConverter} from './answer.converter';
-import {RefDataModel} from '../models/refData.model';
-import { State } from '../store';
 
 export class StageAnswerConverter implements AnswerConverter {
 
@@ -11,7 +11,7 @@ export class StageAnswerConverter implements AnswerConverter {
     protected readonly route: ActivatedRoute) {
   }
 
-  private static getHearingTypeDisplayValue(hearingStageOptions: RefDataModel[], key: string): string {
+  private static getHearingTypeDisplayValue(hearingStageOptions: LovRefDataModel[], key: string): string {
     return hearingStageOptions.find(stage => stage.key === key).value_en;
   }
 

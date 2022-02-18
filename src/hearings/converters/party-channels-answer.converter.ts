@@ -1,10 +1,10 @@
-import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { PartyDetailsModel } from '../models/partyDetails.model';
-import { RefDataModel } from '../models/refData.model';
+import {ActivatedRoute} from '@angular/router';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {LovRefDataModel} from '../models/lovRefData.model';
+import {PartyDetailsModel} from '../models/partyDetails.model';
 import * as fromHearingStore from '../store';
-import { AnswerConverter } from './answer.converter';
+import {AnswerConverter} from './answer.converter';
 
 export class PartyChannelsAnswerConverter implements AnswerConverter {
 
@@ -12,7 +12,7 @@ export class PartyChannelsAnswerConverter implements AnswerConverter {
     protected readonly route: ActivatedRoute) {
   }
 
-  private static getPartyChannelValue(refData: RefDataModel[], party: PartyDetailsModel): string {
+  private static getPartyChannelValue(refData: LovRefDataModel[], party: PartyDetailsModel): string {
     return refData.find(ref => ref.key === party.partyChannel).value_en;
   }
 

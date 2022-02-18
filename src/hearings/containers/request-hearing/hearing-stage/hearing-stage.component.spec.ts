@@ -10,7 +10,7 @@ import {of} from 'rxjs';
 import {initialState} from '../../../hearing.test.data';
 import {HearingRequestMainModel} from '../../../models/hearingRequestMain.model';
 import {ACTION, HearingStageEnum} from '../../../models/hearings.enum';
-import {RefDataModel} from '../../../models/refData.model';
+import {LovRefDataModel} from '../../../models/lovRefData.model';
 import {HearingsService} from '../../../services/hearings.service';
 import {HearingStageComponent} from './hearing-stage.component';
 
@@ -30,7 +30,7 @@ describe('HearingStageComponent', () => {
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 
-  const source: RefDataModel[] = [
+  const source: LovRefDataModel[] = [
     {
       key: 'initial',
       value_en: 'Initial',

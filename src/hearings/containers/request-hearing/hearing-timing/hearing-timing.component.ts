@@ -12,8 +12,8 @@ import {
   HearingDatePriorityEnum,
   RadioOptions
 } from '../../../models/hearings.enum';
-import { HearingWindowModel } from '../../../models/hearingWindow.model';
-import {RefDataModel} from '../../../models/refData.model';
+import {HearingWindowModel} from '../../../models/hearingWindow.model';
+import {LovRefDataModel} from '../../../models/lovRefData.model';
 import {UnavailabilityRangeModel} from '../../../models/unavailabilityRange.model';
 import {HearingsService} from '../../../services/hearings.service';
 import {ValidatorsUtils} from '../../../utils/validators.utils';
@@ -26,7 +26,7 @@ import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 })
 export class HearingTimingComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public priorityForm: FormGroup;
-  public priorities: RefDataModel[];
+  public priorities: LovRefDataModel[];
   public checkedHearingAvailability: string;
   public partiesNotAvailableDates: string[] = [];
   public firstHearingDate: GovUiConfigModel;

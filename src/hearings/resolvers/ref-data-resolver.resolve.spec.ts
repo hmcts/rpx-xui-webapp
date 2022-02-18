@@ -8,15 +8,15 @@ import {of} from 'rxjs';
 import {HearingCategory} from 'src/hearings/models/hearings.enum';
 import {metaReducers} from '../../app/app.module';
 import {reducers} from '../../app/store';
-import {RefDataModel} from '../models/refData.model';
-import {HearingsRefDataService} from '../services/hearings-ref-data.service';
+import {LovRefDataModel} from '../models/lovRefData.model';
+import {LovRefDataService} from '../services/lov-ref-data.service';
 import * as fromHearingStore from '../store';
 import {RefDataResolver} from './ref-data-resolver.resolve';
 
 describe('Ref Data Resolver', () => {
-  let hearingsDataService: HearingsRefDataService;
+  let lovRefDataService: LovRefDataService;
   let store: Store<fromHearingStore.State>;
-  const dataRef: RefDataModel[] = [];
+  const dataRef: LovRefDataModel[] = [];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -27,12 +27,12 @@ describe('Ref Data Resolver', () => {
         ],
         providers: [
           RefDataResolver,
-          HearingsRefDataService,
+          LovRefDataService,
           {provide: APP_BASE_HREF, useValue: '/'}
         ]
       }
     );
-    hearingsDataService = TestBed.get(HearingsRefDataService) as HearingsRefDataService;
+    lovRefDataService = TestBed.get(LovRefDataService) as LovRefDataService;
     store = TestBed.get(Store) as Store<fromHearingStore.State>;
   });
 
@@ -43,16 +43,16 @@ describe('Ref Data Resolver', () => {
 
   it('resolves reference data', inject([RefDataResolver], (service: RefDataResolver) => {
     spyOn(store, 'pipe').and.returnValue(of('serviceName'));
-    spyOn(hearingsDataService, 'getRefData').and.returnValue(of(dataRef));
+    spyOn(lovRefDataService, 'getListOfValues').and.returnValue(of(dataRef));
     spyOn(service, 'getReferenceData$').and.callThrough();
     const route = new ActivatedRouteSnapshot();
     route.data = {
       title: 'HMCTS Manage cases | Request Hearing | Date Priority Hearing',
       category: HearingCategory.Priority
     };
-    service.resolve(route).subscribe((refData: RefDataModel[]) => {
+    service.resolve(route).subscribe((refData: LovRefDataModel[]) => {
       expect(service.getReferenceData$).toHaveBeenCalled();
-      expect(hearingsDataService.getRefData).toHaveBeenCalled();
+      expect(lovRefDataService.getListOfValues).toHaveBeenCalled();
       expect(refData).toEqual([]);
     });
   }));

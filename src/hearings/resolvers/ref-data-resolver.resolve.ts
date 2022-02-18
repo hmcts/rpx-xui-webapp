@@ -4,22 +4,22 @@ import { select, Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap, take } from 'rxjs/operators';
 import { HearingCategory } from '../models/hearings.enum';
-import { RefDataModel } from '../models/refData.model';
-import { HearingsRefDataService } from '../services/hearings-ref-data.service';
+import { LovRefDataModel } from '../models/lovRefData.model';
+import { LovRefDataService } from '../services/lov-ref-data.service';
 import * as fromHearingStore from '../store';
 
 @Injectable({
   providedIn: 'root'
 })
-export class RefDataResolver implements Resolve<RefDataModel[]> {
+export class RefDataResolver implements Resolve<LovRefDataModel[]> {
   public serviceId: string = 'SSCS';
 
   constructor(
-    protected readonly hearingsDataService: HearingsRefDataService,
+    protected readonly lovRefDataService: LovRefDataService,
     protected readonly hearingStore: Store<fromHearingStore.State>
   ) { }
 
-  public resolve(route?: ActivatedRouteSnapshot): Observable<RefDataModel[]> {
+  public resolve(route?: ActivatedRouteSnapshot): Observable<LovRefDataModel[]> {
     return this.getServiceId$()
       .pipe(
         switchMap(id => {
@@ -39,9 +39,9 @@ export class RefDataResolver implements Resolve<RefDataModel[]> {
     );
   }
 
-  public getReferenceData$(serviceId, category: HearingCategory): Observable<RefDataModel[]> {
-    return this.hearingsDataService.getRefData(category, serviceId).pipe(
-      catchError(error => {
+  public getReferenceData$(serviceId, category: HearingCategory): Observable<LovRefDataModel[]> {
+    return this.lovRefDataService.getListOfValues(category, serviceId).pipe(
+      catchError(() => {
         return [];
       })
     );

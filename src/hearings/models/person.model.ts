@@ -4,4 +4,5 @@ export interface Person {
   email?: string;
   domain: string;
   knownAs?: string;
+  personalCode?: string;
 }

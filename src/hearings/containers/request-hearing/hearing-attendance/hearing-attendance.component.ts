@@ -93,18 +93,12 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
 
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
-      partyDetails: [
-        ...partyDetails,
-      ],
+      partyDetails,
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
         totalParticipantAttendingHearing: parseInt(this.attendanceFormGroup.controls.estimation.value, 0)
       }
     };
-  }
-
-  public formGroupControl(formGroup: FormGroup, controlName: string) {
-    return formGroup.controls[controlName];
   }
 
   public isFormValid(): boolean {

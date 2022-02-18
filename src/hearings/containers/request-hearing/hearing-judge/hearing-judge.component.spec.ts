@@ -63,9 +63,19 @@ describe('HearingJudgeComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should check specificJudge seection', () => {
+  it('should check specificJudge section', () => {
     component.showSpecificJudge(RadioOptions.YES);
     expect(component.specificJudgeSelection).toBe(RadioOptions.YES);
+  });
+
+  it('should initForm', () => {
+    component.initForm();
+    expect(component.hearingJudgeForm.controls.findPersonControl.get('domain')).toBeTruthy();
+    expect(component.hearingJudgeForm.controls.findPersonControl.get('email')).toBeTruthy();
+    expect(component.hearingJudgeForm.controls.findPersonControl.get('id')).toBeTruthy();
+    expect(component.hearingJudgeForm.controls.findPersonControl.get('knownAs')).toBeTruthy();
+    expect(component.hearingJudgeForm.controls.findPersonControl.get('name')).toBeTruthy();
+    expect(component.hearingJudgeForm.controls.findPersonControl.get('personalCode')).toBeTruthy();
   });
 
   it('should check form data', () => {

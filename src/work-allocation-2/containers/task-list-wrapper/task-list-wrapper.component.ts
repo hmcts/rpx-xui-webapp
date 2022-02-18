@@ -330,8 +330,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     this.showSpinner$ = this.loadingService.isLoading;
     const loadingToken = this.loadingService.register();
     const tasksSearch$ = this.performSearchPagination();
-    const assignedJudicialUsers: string[] = [];
     const mappedSearchResult$ = tasksSearch$.pipe(mergeMap(((result: TaskResponse) => {
+      const assignedJudicialUsers: string[] = [];
       result.tasks.forEach(task => {
         task.assigneeName = getAssigneeName(this.caseworkers, task.assignee);
         if (!task.assigneeName) {

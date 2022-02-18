@@ -2,10 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { of } from 'rxjs';
-import { first, mergeMap } from 'rxjs/operators';
+import { first, mergeMap, switchMap } from 'rxjs/operators';
+
+import { AllocateRoleService } from '../../../role-access/services';
 import { Caseworker, } from '../../../work-allocation-2/models/dtos';
 import { Task } from '../../../work-allocation-2/models/tasks';
 import { CaseworkerDataService, WorkAllocationCaseService } from '../../../work-allocation-2/services';
+import { getAssigneeName } from '../../../work-allocation-2/utils';
 
 @Component({
   selector: 'exui-tasks-container',
@@ -22,7 +25,8 @@ export class TasksContainerComponent implements OnInit {
 
   constructor(private readonly waCaseService: WorkAllocationCaseService,
               private readonly route: ActivatedRoute,
-              private readonly caseworkerService: CaseworkerDataService) { }
+              private readonly caseworkerService: CaseworkerDataService,
+              private readonly rolesService: AllocateRoleService) { }
 
   public ngOnInit(): void {
     // note: internal logic used to be stored in resolver - resolver removed for smoother navigation purposes
@@ -40,15 +44,45 @@ export class TasksContainerComponent implements OnInit {
           } else {
             return of([]);
           }
-        })
-      ).subscribe(caseworkers => {
-        this.caseworkers = caseworkers;
-      });
+        })).pipe(mergeMap(caseworkers => {
+          this.caseworkers = caseworkers;
+          const assignedJudicialUsers: string[] = [];
+          this.tasks.forEach(task => {
+            task.assigneeName = getAssigneeName(this.caseworkers, task.assignee);
+            if (!task.assigneeName) {
+              assignedJudicialUsers.push(task.assignee);
+            }
+          });
+          return this.rolesService.getCaseRolesUserDetails(assignedJudicialUsers, [this.tasks[0].jurisdiction]).pipe(switchMap(judicialUserData => {
+            this.tasks.map(task => {
+              const judicialAssignedData = judicialUserData.find(judicialUser => judicialUser.sidam_id === task.assignee);
+              task.assigneeName = judicialAssignedData ? judicialAssignedData.known_as : task.assigneeName;
+            });
+            return of(this.tasks);
+          }));
+        })).subscribe(tasks => {
+          this.tasks = tasks;
+        });
     this.caseDetails = this.route.snapshot.data.case as CaseView;
   }
 
   public onTaskRefreshRequired(): void {
-    this.waCaseService.getTasksByCaseId(this.caseDetails.case_id).pipe(first()).subscribe(tasks => {
+    this.waCaseService.getTasksByCaseId(this.caseDetails.case_id).pipe(first(), mergeMap(taskList => {
+      const assignedJudicialUsers: string[] = [];
+      taskList.forEach(task => {
+        task.assigneeName = getAssigneeName(this.caseworkers, task.assignee);
+        if (!task.assigneeName) {
+          assignedJudicialUsers.push(task.assignee);
+        }
+      });
+      return this.rolesService.getCaseRolesUserDetails(assignedJudicialUsers, [this.tasks[0].jurisdiction]).pipe(switchMap(judicialUserData => {
+        taskList.map(task => {
+          const judicialAssignedData = judicialUserData.find(judicialUser => judicialUser.sidam_id === task.assignee);
+          task.assigneeName = judicialAssignedData ? judicialAssignedData.known_as : task.assigneeName;
+        });
+        return of(taskList);
+      }));
+    })).subscribe(tasks => {
       this.tasks = tasks;
       this.tasksRefreshed = true;
       this.warningIncluded = this.tasks.some(task => task.warnings);

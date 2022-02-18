@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
 import { CancelHearingComponent } from './containers/cancel-hearing/cancel-hearing.component';
 import { ChangeHearingComponent } from './containers/change-hearing/change-hearing.component';
+import { HearingActualAddEditSummaryComponent } from './containers/request-hearing/hearing-actual-add-edit-summary/hearing-actual-add-edit-summary.component';
 import { HearingAdditionalInstructionsComponent } from './containers/request-hearing/hearing-additional-instructions/hearing-additional-instructions.component';
 import { HearingAttendanceComponent } from './containers/request-hearing/hearing-attendance/hearing-attendance.component';
 import { HearingFinalConfirmationComponent } from './containers/request-hearing/hearing-final-confirmation/hearing-final-confirmation.component';
@@ -182,6 +183,14 @@ export const ROUTES: Routes = [
       {
         path: 'hearing-view-edit-summary',
         component: HearingViewEditSummaryComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Manage cases | Amend Hearing | Check Answers'
+        }
+      },
+      {
+        path: 'hearing-actual-add-edit',
+        component: HearingActualAddEditSummaryComponent,
         canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Manage cases | Amend Hearing | Check Answers'

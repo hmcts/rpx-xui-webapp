@@ -5,12 +5,13 @@ import { SERVICES_HEARINGS_COMPONENT_API, SERVICES_PRD_API_URL } from '../config
 import * as mock from '../hearings/hearing.mock';
 import { EnhancedRequest } from '../lib/models';
 import { CaseFlagReferenceModel } from './models/caseFlagReference.model';
+import { HearingActualsMainModel } from './models/hearingActualsMainModel';
 import { HearingListModel } from './models/hearingList.model';
 import { HearingListMainModel } from './models/hearingListMain.model';
+import { HearingResponseMainModel } from './models/hearingResponseMain.model';
 import { hearingStatusMappings } from './models/hearingStatusMappings';
 import { RefDataByCategoryModel, RefDataByServiceModel } from './models/refData.model';
 import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
-import { HearingResponseMainModel } from './models/hearingResponseMain.model';
 
 mock.init();
 
@@ -96,6 +97,7 @@ export async function getCaseFlagRefData(req: EnhancedRequest, res: Response, ne
     next(error);
   }
 }
+
 /**
  * loadServiceHearingValues - get details required to populate the hearing request/amend journey
  */
@@ -134,6 +136,17 @@ export async function cancelHearingRequest(req: EnhancedRequest, res: Response, 
 
   try {
     const { status, data }: { status: number, data: HearingListModel } = await handleDelete(markupPath, reqBody, req);
+    res.status(status).send(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getHearingActuals(req: EnhancedRequest, res: Response, next: NextFunction): Promise<void> {
+  const hearingId = req.params.hearingId;
+  try {
+    const { status, data }: { status: number, data: HearingActualsMainModel } =
+      await handleGet(`${hearingsUrl}/actuals/${hearingId}`, req);
     res.status(status).send(data);
   } catch (error) {
     next(error);

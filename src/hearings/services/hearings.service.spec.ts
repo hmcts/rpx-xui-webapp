@@ -90,4 +90,16 @@ describe('HearingsService', () => {
         .flush(null);
     }));
   });
+
+  describe('getHearingActuals', () => {
+    it('should hearing actuals by id', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
+      service.getHearingActuals('1111222233334444').subscribe(response => {
+        expect(response).toBeNull();
+      });
+
+      const req = httpMock.expectOne('api/hearings/hearingActuals/1111222233334444');
+      expect(req.request.method).toEqual('GET');
+      req.flush(null);
+    }));
+  });
 });

@@ -230,7 +230,7 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
   } catch (error) {
     if (req.params.action === 'complete' && error && error.status === 403) {
       // handle gracefully EUI-4998
-      return res.status(201);
+      return res.status(201).send('complete');
     }
     next(error);
   }

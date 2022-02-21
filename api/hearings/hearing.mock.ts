@@ -1,11 +1,8 @@
-import { AxiosRequestConfig } from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { HttpMockAdapter } from '../common/httpMockAdapter';
-import { CASE_FLAG_REFERENCE_VALUES } from './data/caseFlagReference.mock.data';
 import { HEARING_ACTUAL } from './data/hearing-actuals.mock.data';
 import { HEARING_RESPONSE_RESULT } from './data/hearingResponse.mock.data';
 import { EMPTY_HEARINGS_LIST, HEARINGS_LIST } from './data/hearings.mock.data';
-import { ALL_REF_DATA } from './data/reference.mock.data';
 import { SERVICE_HEARING_VALUES } from './data/serviceHearingValues.mock.data';
 
 export const init = () => {
@@ -16,10 +13,6 @@ export const init = () => {
   const getHearingsActualsUrl = /https:\/\/hearings.aat.service.core-compute-aat.internal\/actuals\/[\w]*/;
 
   const getHearingInfoUrl = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearing\/[\w]*/;
-
-  const getRefDataUrl = /http:\/\/rd-professional-api-aat.service.core-compute-aat.internal\/refdata\/lov\/[\w]*\/[\w]*/;
-
-  const getCaseFlagRefDataUrl = /http:\/\/rd-professional-api-aat.service.core-compute-aat.internal\/caseflagrefdata/;
 
   const postServiceHearingValues = /https:\/\/hearings.aat.service.core-compute-aat.internal\/serviceHearingValues/;
 
@@ -51,31 +44,17 @@ export const init = () => {
     ];
   });
 
-  mock.onPut(getHearingsActualsUrl).reply((config: AxiosRequestConfig) => {
+  mock.onPut(getHearingsActualsUrl).reply(() => {
     return [
       200,
       [],
     ];
   })
 
-  mock.onGet(getHearingInfoUrl).reply(config => {
+  mock.onGet(getHearingInfoUrl).reply(() => {
     return [
       200,
       HEARING_RESPONSE_RESULT,
-    ];
-  });
-
-  mock.onGet(getRefDataUrl).reply(() => {
-    return [
-      200,
-      ALL_REF_DATA,
-    ];
-  });
-
-  mock.onGet(getCaseFlagRefDataUrl).reply(() => {
-    return [
-      200,
-      CASE_FLAG_REFERENCE_VALUES,
     ];
   });
 
@@ -93,10 +72,17 @@ export const init = () => {
     ];
   });
 
-  mock.onDelete(cancelHearingRequest).reply((config: AxiosRequestConfig) => {
+  mock.onDelete(cancelHearingRequest).reply(() => {
     return [
       200,
       {},
+    ];
+  });
+
+  mock.onGet(getHearingsActualsUrl).reply(config => {
+    return [
+      200,
+      HEARING_ACTUAL,
     ];
   });
 };

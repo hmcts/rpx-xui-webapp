@@ -1,7 +1,7 @@
 /* tslint:disable:object-literal-sort-keys */
-import {RefDataByCategoryModel, RefDataByServiceModel, RefDataModel} from '../models/refData.model';
+import {LovRefDataByCategoryModel, LovRefDataByServiceModel, LovRefDataModel} from '../models/lovRefData.model';
 
-export const DEFAULT_JUDGE_TYPES_REF: RefDataModel[] = [
+export const DEFAULT_JUDGE_TYPES_REF: LovRefDataModel[] = [
   {
     key: 'tribunalJudge',
     value_en: 'Tribunal Judge',
@@ -31,7 +31,7 @@ export const DEFAULT_JUDGE_TYPES_REF: RefDataModel[] = [
   },
 ];
 
-export const DEFAULT_STAGES_REF: RefDataModel[] = [
+export const DEFAULT_STAGES_REF: LovRefDataModel[] = [
   {
     key: 'initial',
     value_en: 'Initial',
@@ -70,7 +70,7 @@ export const DEFAULT_STAGES_REF: RefDataModel[] = [
   },
 ];
 
-export const DEFAULT_PRIORITIES_REF: RefDataModel[] = [
+export const DEFAULT_PRIORITIES_REF: LovRefDataModel[] = [
   {
     key: 'urgent',
     value_en: 'Urgent',
@@ -91,7 +91,7 @@ export const DEFAULT_PRIORITIES_REF: RefDataModel[] = [
   },
 ];
 
-export const DEFAULT_PARTYCHANNEL_REF: RefDataModel[] = [
+export const DEFAULT_PARTYCHANNEL_REF: LovRefDataModel[] = [
   {
     key: 'inPerson',
     value_en: 'In person',
@@ -130,7 +130,7 @@ export const DEFAULT_PARTYCHANNEL_REF: RefDataModel[] = [
   },
 ];
 
-export const DEFAULT_HEARING_CANCEL_REF: RefDataModel[] = [
+export const DEFAULT_HEARING_CANCEL_REF: LovRefDataModel[] = [
   {
     key: 'reasoneOne',
     value_en: 'Reason 1',
@@ -160,7 +160,7 @@ export const DEFAULT_HEARING_CANCEL_REF: RefDataModel[] = [
   },
 ];
 
-export const ADDITIONAL_HEARING_FACILITIES_REF: RefDataModel[] = [
+export const ADDITIONAL_HEARING_FACILITIES_REF: LovRefDataModel[] = [
   {
     key: 'immigrationDetentionCentre',
     value_en: 'Immigration detention centre',
@@ -244,7 +244,7 @@ export const ADDITIONAL_HEARING_FACILITIES_REF: RefDataModel[] = [
   },
 ];
 
-export const OTHER_PANEL_ROLES: RefDataModel[] = [{
+export const OTHER_PANEL_ROLES: LovRefDataModel[] = [{
   key: 'DisabilityQualifiedPanelMember',
   value_en: 'Disability qualified panel member',
   value_cy: '',
@@ -362,38 +362,38 @@ export const OTHER_PANEL_ROLES: RefDataModel[] = [{
   child_nodes: [],
 }];
 
-export const SSCS_STAGES: RefDataByServiceModel = {
+export const SSCS_STAGES: LovRefDataByServiceModel = {
   serviceID: 'SSCS',
   values: DEFAULT_STAGES_REF,
 };
 
-export const SSCS_PRIORITIES: RefDataByServiceModel = {
+export const SSCS_PRIORITIES: LovRefDataByServiceModel = {
   serviceID: 'SSCS',
   values: DEFAULT_PRIORITIES_REF,
 };
 
-export const SSCS_PARTY_CHANNEL: RefDataByServiceModel = {
+export const SSCS_PARTY_CHANNEL: LovRefDataByServiceModel = {
   serviceID: 'SSCS',
   values: DEFAULT_PARTYCHANNEL_REF,
 };
-export const SSCS_JUDGE_TYPES: RefDataByServiceModel = {
+export const SSCS_JUDGE_TYPES: LovRefDataByServiceModel = {
   serviceID: 'SSCS',
   values: DEFAULT_JUDGE_TYPES_REF,
 };
-export const SSCS_CANCEL_HEARING: RefDataByServiceModel = {
+export const SSCS_CANCEL_HEARING: LovRefDataByServiceModel = {
   serviceID: 'SSCS',
   values: DEFAULT_HEARING_CANCEL_REF,
 };
-export const ADDITIONAL_HEARING_FACILITIES: RefDataByServiceModel = {
+export const ADDITIONAL_HEARING_FACILITIES: LovRefDataByServiceModel = {
   serviceID: 'SSCS',
   values: ADDITIONAL_HEARING_FACILITIES_REF,
 };
-export const SSCS_OTHER_PANEL_ROLES: RefDataByServiceModel = {
+export const SSCS_OTHER_PANEL_ROLES: LovRefDataByServiceModel = {
   serviceID: 'SSCS',
   values: OTHER_PANEL_ROLES,
 };
 
-export const ALL_REF_DATA: RefDataByCategoryModel[] = [
+export const ALL_REF_DATA: LovRefDataByCategoryModel[] = [
   {
     categoryKey: 'HearingType',
     services: [SSCS_STAGES],

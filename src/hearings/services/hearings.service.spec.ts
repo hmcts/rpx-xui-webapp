@@ -102,4 +102,20 @@ describe('HearingsService', () => {
       req.flush(null);
     }));
   });
+
+  describe('updateHearingActuals', () => {
+    const payload = {
+      hearingOutcome: null,
+      actualHearingDays: []
+    };
+    it('should update hearing actuals', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
+      service.updateHearingActuals('1111222233334444', payload).subscribe(response => {
+        expect(response).toBeNull();
+      });
+
+      const req = httpMock.expectOne('api/hearings/hearingActuals/1111222233334444');
+      expect(req.request.method).toEqual('PUT');
+      req.flush(null);
+    }));
+  });
 });

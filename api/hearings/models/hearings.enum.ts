@@ -84,3 +84,7 @@ export enum HearingResult {
   ADJOURNED = 'ADJOURNED',
   CANCELLED = 'CANCELLED',
 }
+
+export enum MemberType {
+  PANEL_MEMBER="PANEL_MEMBER"
+}

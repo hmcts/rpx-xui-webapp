@@ -7,7 +7,7 @@ import {
   getHearings,
   loadServiceHearingValues,
   submitHearingRequest,
-	updateHearingActuals
+  updateHearingActuals
 } from './index';
 
 export const router = express.Router({mergeParams: true});

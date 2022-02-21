@@ -37,20 +37,6 @@ export const init = () => {
     }
   });
 
-  mock.onGet(getHearingsActualsUrl).reply(config => {
-    return [
-      200,
-      HEARING_ACTUAL,
-    ];
-  });
-
-  mock.onPut(getHearingsActualsUrl).reply(() => {
-    return [
-      200,
-      [],
-    ];
-  })
-
   mock.onGet(getHearingInfoUrl).reply(() => {
     return [
       200,
@@ -83,6 +69,13 @@ export const init = () => {
     return [
       200,
       HEARING_ACTUAL,
+    ];
+  });
+
+  mock.onPut(getHearingsActualsUrl).reply(() => {
+    return [
+      200,
+      [],
     ];
   });
 };

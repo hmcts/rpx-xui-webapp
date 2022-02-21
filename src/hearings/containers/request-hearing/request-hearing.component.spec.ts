@@ -60,6 +60,12 @@ describe('RequestHearingComponent', () => {
     expect(component.isCheckAnswerPage).toBeTruthy();
   });
 
+  it('should check is confirmation page', () => {
+    spyOn(hearingsService, 'navigateAction');
+    mockPageFlow.getCurrentPage.and.returnValue('hearing-confirmation');
+    expect(component.isConfirmationPage).toBeTruthy();
+  });
+
   it('should purge data in store if page is destroyed', () => {
     const dispatchSpy = spyOn(mockStore, 'dispatch');
     component.ngOnDestroy();

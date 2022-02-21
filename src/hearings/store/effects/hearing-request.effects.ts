@@ -95,7 +95,7 @@ export class HearingRequestEffects {
       return this.hearingsService.submitHearingRequest(payload).pipe(
         tap(
           () => {
-            return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']);
+            return this.router.navigate(['hearings', 'request', 'hearing-confirmation']);
           }),
         catchError(error => {
           return HearingRequestEffects.handleError(error);

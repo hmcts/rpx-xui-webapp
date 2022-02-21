@@ -10,8 +10,6 @@ export const init = () => {
 
   const getHearingsUrl = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearings\/[0-9]{16}/;
 
-  const getHearingsActualsUrl = /https:\/\/hearings.aat.service.core-compute-aat.internal\/actuals\/[\w]*/;
-
   const getHearingInfoUrl = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearing\/[\w]*/;
 
   const postServiceHearingValues = /https:\/\/hearings.aat.service.core-compute-aat.internal\/serviceHearingValues/;
@@ -19,6 +17,8 @@ export const init = () => {
   const submitHearingRequest = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearing/;
 
   const cancelHearingRequest = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearing\/[\w]*/;
+
+  const hearingsActualsUrl = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearingActuals\/[\w]*/;
 
   mock.onGet(getHearingsUrl).reply(config => {
     const url = config.url;
@@ -65,14 +65,14 @@ export const init = () => {
     ];
   });
 
-  mock.onGet(getHearingsActualsUrl).reply(config => {
+  mock.onGet(hearingsActualsUrl).reply(config => {
     return [
       200,
       HEARING_ACTUAL,
     ];
   });
 
-  mock.onPut(getHearingsActualsUrl).reply(() => {
+  mock.onPut(hearingsActualsUrl).reply(() => {
     return [
       200,
       [],

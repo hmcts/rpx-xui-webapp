@@ -98,6 +98,9 @@ export async function cancelHearingRequest(req: EnhancedRequest, res: Response, 
   }
 }
 
+/**
+ * getHearingActuals - get hearing actuals from hearing ID
+ */
 export async function getHearingActuals(req: EnhancedRequest, res: Response, next: NextFunction): Promise<void> {
   const hearingId = req.params.hearingId;
   try {
@@ -109,6 +112,9 @@ export async function getHearingActuals(req: EnhancedRequest, res: Response, nex
   }
 }
 
+/**
+ * updateHearingActuals - update hearing actuals
+ */
 export async function updateHearingActuals(req: EnhancedRequest, res: Response, next: NextFunction) {
   const reqBody = req.body;
   const hearingId = req.query.hearingId;

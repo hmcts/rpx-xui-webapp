@@ -1,5 +1,5 @@
 import { NextFunction, Response } from 'express';
-import { handleDelete, handleGet, handlePost } from '../common/mockService';
+import { handleDelete, handleGet, handlePost, handlePut } from '../common/mockService';
 import { getConfigValue } from '../configuration';
 import { SERVICES_HEARINGS_COMPONENT_API, SERVICES_PRD_API_URL } from '../configuration/references';
 import * as mock from '../hearings/hearing.mock';
@@ -147,6 +147,18 @@ export async function getHearingActuals(req: EnhancedRequest, res: Response, nex
   try {
     const { status, data }: { status: number, data: HearingActualsMainModel } =
       await handleGet(`${hearingsUrl}/actuals/${hearingId}`, req);
+    res.status(status).send(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function updateHearingActuals(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const reqBody = req.body;
+  const hearingId = req.query.hearingId;
+  const markupPath = `${hearingsUrl}/actuals/${hearingId}`; 
+  try {
+    const { status, data }: { status: number, data: HearingActualsMainModel } = await handlePut(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     next(error);

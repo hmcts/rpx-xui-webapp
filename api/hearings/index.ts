@@ -135,8 +135,8 @@ export async function submitHearingActuals(req: EnhancedRequest, res: Response, 
   const hearingId = req.query.hearingId;
   const markupPath = `${hearingsUrl}/hearingActualsCompletion/${hearingId}`;
   try {
-    const { status, data }: { status: number, data: any } = await handlePost(markupPath, reqBody, req);
-    res.status(status).send(data);
+    const { status }: { status: number } = await handlePost(markupPath, reqBody, req);
+    res.sendStatus(status);
   } catch (error) {
     next(error);
   }

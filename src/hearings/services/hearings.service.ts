@@ -53,7 +53,7 @@ export class HearingsService {
     return this.http.put<HearingActualsModel>(`api/hearings/hearingActuals/${hearingId}`, hearingActualsModel);
   }
 
-  public submitHearingActuals(hearingId: string): Observable<any> {
-    return this.http.post<any>(`api/hearings/hearingActualsCompletion/${hearingId}`, {});
+  public submitHearingActuals(hearingId: string): Observable<number> {
+    return this.http.post<number>(`api/hearings/hearingActualsCompletion/${hearingId}`, null);
   }
 }

@@ -126,3 +126,18 @@ export async function updateHearingActuals(req: EnhancedRequest, res: Response, 
     next(error);
   }
 }
+
+/**
+ * submitHearingActuals - submit hearing actuals
+ */
+export async function submitHearingActuals(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const reqBody = req.body;
+  const hearingId = req.query.hearingId;
+  const markupPath = `${hearingsUrl}/hearingActualsCompletion/${hearingId}`;
+  try {
+    const { status, data }: { status: number, data: any } = await handlePost(markupPath, reqBody, req);
+    res.status(status).send(data);
+  } catch (error) {
+    next(error);
+  }
+}

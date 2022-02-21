@@ -1,27 +1,26 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { Person } from '@hmcts/rpx-xui-common-lib';
-import { Store } from '@ngrx/store';
-import { RefDataModel } from '../../../models/refData.model';
-import { HearingJudgeNamesListComponent } from '../../../../hearings/components';
-import { ACTION, HearingPanelSelectionEnum, ControlTypeEnum } from '../../../models/hearings.enum';
-import { HearingsService } from '../../../services/hearings.service';
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
+import {Person} from '@hmcts/rpx-xui-common-lib';
+import {Store} from '@ngrx/store';
+import {HearingJudgeNamesListComponent} from '../../../components';
+import {ACTION, ControlTypeEnum, HearingPanelSelectionEnum} from '../../../models/hearings.enum';
+import {LovRefDataModel} from '../../../models/lovRefData.model';
+import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import { RequestHearingPageFlow } from '../request-hearing.page.flow';
+import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-panel',
   templateUrl: './hearing-panel.component.html',
 })
 export class HearingPanelComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
-  public multiSelectArray: FormArray;
   public panelJudgeForm: FormGroup;
   public validationErrors: { id: string, message: string }[] = [];
   public includedJudgeList: Person[] = [];
   public excludedJudgeList: Person[] = [];
   public panelSelection: string;
-  public multiLevelSelections: RefDataModel[] = [];
+  public multiLevelSelections: LovRefDataModel[] = [];
   public panelSelectionError: string;
   public hasValidationRequested: boolean = false;
   public childNodesValidationError: string;
@@ -74,7 +73,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     this.panelJudgeForm.controls.multiLevelSelect = this.convertRefDataModelToArray(this.multiLevelSelections);
   }
 
-  public loadPanel(multi: RefDataModel, panelSpecialism: string): boolean {
+  public loadPanel(multi: LovRefDataModel, panelSpecialism: string): boolean {
     let skip = false;
     if (multi.child_nodes && multi.child_nodes.length) {
       multi.child_nodes.forEach(node => {
@@ -114,7 +113,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     }
   }
 
-  public preparePanelChildren(panelRoles: RefDataModel[], accummulation: string[]) {
+  public preparePanelChildren(panelRoles: LovRefDataModel[], accummulation: string[]) {
     if (panelRoles) {
       panelRoles.forEach(panelRole => {
         panelRole.selected && (!panelRole.child_nodes || !panelRole.child_nodes.length) ? accummulation.push(panelRole.key) :
@@ -124,7 +123,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
   }
 
   public prepareData(): void {
-    const panelRoles: RefDataModel[] = this.convertArrayToRefDataModel(this.panelJudgeForm.controls.multiLevelSelect as FormArray);
+    const panelRoles: LovRefDataModel[] = this.convertArrayToRefDataModel(this.panelJudgeForm.controls.multiLevelSelect as FormArray);
     const panelRolesSelected: string[] = [];
     this.preparePanelChildren(panelRoles, panelRolesSelected);
     this.hearingRequestMainModel = {
@@ -138,10 +137,10 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     };
   }
 
-  public convertArrayToRefDataModel(array: FormArray): RefDataModel[] {
-    const panelRoles: RefDataModel[] = [];
+  public convertArrayToRefDataModel(array: FormArray): LovRefDataModel[] {
+    const panelRoles: LovRefDataModel[] = [];
     array.controls.forEach(control => {
-      const refDataModel: RefDataModel = {
+      const refDataModel: LovRefDataModel = {
         key: control.value.key,
         value_en: control.value.value_en,
         value_cy: control.value.value_cy,
@@ -157,7 +156,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     return panelRoles;
   }
 
-  public convertRefDataModelToArray(dataSource: RefDataModel[]): FormArray {
+  public convertRefDataModelToArray(dataSource: LovRefDataModel[]): FormArray {
     const dataSourceArray = this.formBuilder.array([]);
     dataSource.forEach(otherPanelRoles => {
       dataSourceArray.push(this.patchValues({
@@ -170,12 +169,12 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
         parentKey: otherPanelRoles.parentKey,
         child_nodes: otherPanelRoles.child_nodes,
         selected: !otherPanelRoles.selected ? false : true,
-      } as RefDataModel) as FormGroup);
+      } as LovRefDataModel) as FormGroup);
     });
     return dataSourceArray;
   }
 
-  public patchValues(refDataModel: RefDataModel): FormGroup {
+  public patchValues(refDataModel: LovRefDataModel): FormGroup {
     return this.formBuilder.group({
       key: [refDataModel.key],
       value_en: [refDataModel.value_en],

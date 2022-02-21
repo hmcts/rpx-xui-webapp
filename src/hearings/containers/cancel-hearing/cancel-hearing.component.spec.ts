@@ -7,7 +7,7 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {provideMockStore} from '@ngrx/store/testing';
 import {Observable, of} from 'rxjs';
 import {initialState} from '../../hearing.test.data';
-import {RefDataModel} from '../../models/refData.model';
+import {LovRefDataModel} from '../../models/lovRefData.model';
 import {HearingsService} from '../../services/hearings.service';
 import {CancelHearingComponent} from './cancel-hearing.component';
 
@@ -16,7 +16,7 @@ describe('CancelHearingComponent', () => {
   let fixture: ComponentFixture<CancelHearingComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
-  const reasons: RefDataModel[] = [
+  const reasons: LovRefDataModel[] = [
     {
       key: 'reasonone',
       value_en: 'Reason 1',

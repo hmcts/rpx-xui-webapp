@@ -5,8 +5,8 @@ import {PersonRole} from '@hmcts/rpx-xui-common-lib/lib/models';
 import {Store} from '@ngrx/store';
 import {HearingJudgeNameComponent, HearingJudgeNamesListComponent} from '../../../components';
 import {ACTION, HearingJudgeSelectionEnum, RadioOptions} from '../../../models/hearings.enum';
+import {LovRefDataModel} from '../../../models/lovRefData.model';
 import {Person} from '../../../models/person.model';
-import {RefDataModel} from '../../../models/refData.model';
 import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import {ValidatorsUtils} from '../../../utils/validators.utils';
@@ -20,7 +20,7 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
   public hearingJudgeForm: FormGroup;
   public specificJudgeSelection: string;
   public judgeList: Person[] = [];
-  public hearingJudgeTypes: RefDataModel[];
+  public hearingJudgeTypes: LovRefDataModel[];
   public validationErrors: { id: string, message: string }[] = [];
   public personRole: PersonRole;
   public specificJudgeSelectionError: string;

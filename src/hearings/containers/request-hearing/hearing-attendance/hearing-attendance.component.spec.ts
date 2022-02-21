@@ -7,9 +7,9 @@ import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
 import {initialState} from '../../../hearing.test.data';
 import {ACTION} from '../../../models/hearings.enum';
-import {RefDataModel} from '../../../models/refData.model';
-import {HearingsRefDataService} from '../../../services/hearings-ref-data.service';
+import {LovRefDataModel} from '../../../models/lovRefData.model';
 import {HearingsService} from '../../../services/hearings.service';
+import {LovRefDataService} from '../../../services/lov-ref-data.service';
 import {ValidatorsUtils} from '../../../utils/validators.utils';
 import {HearingAttendanceComponent} from './hearing-attendance.component';
 
@@ -26,7 +26,7 @@ describe('HearingAttendanceComponent', () => {
   let fixture: ComponentFixture<HearingAttendanceComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
-  const hearingsRefDataService = new HearingsRefDataService(mockedHttpClient);
+  const lovRefDataService = new LovRefDataService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 
   beforeEach(() => {
@@ -36,7 +36,7 @@ describe('HearingAttendanceComponent', () => {
       providers: [
         provideMockStore({initialState}),
         {provide: HearingsService, useValue: hearingsService},
-        {provide: HearingsRefDataService, useValue: hearingsRefDataService},
+        {provide: LovRefDataService, useValue: lovRefDataService},
         {
           provide: ActivatedRoute,
           useValue: {
@@ -65,7 +65,7 @@ describe('HearingAttendanceComponent', () => {
       (element as FormGroup).value.partyChannel = {
         key: 'inperson',
         value_en: 'In person',
-      } as RefDataModel;
+      } as LovRefDataModel;
     });
     component.executeAction(ACTION.CONTINUE);
     expect(component.prepareHearingRequestData).toHaveBeenCalled();
@@ -76,7 +76,7 @@ describe('HearingAttendanceComponent', () => {
       (element as FormGroup).value.partyChannel = {
         key: 'inperson',
         value_en: 'In person',
-      } as RefDataModel;
+      } as LovRefDataModel;
     });
     const formValid = component.isFormValid();
     expect((component.attendanceFormGroup.controls.parties as FormArray).length).toBeGreaterThan(0);

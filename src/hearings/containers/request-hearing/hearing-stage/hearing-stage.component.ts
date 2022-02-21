@@ -4,7 +4,7 @@ import {ActivatedRoute} from '@angular/router';
 import {Store} from '@ngrx/store';
 import * as fromHearingStore from '../../../../hearings/store';
 import {ACTION, HearingStageEnum} from '../../../models/hearings.enum';
-import {RefDataModel} from '../../../models/refData.model';
+import {LovRefDataModel} from '../../../models/lovRefData.model';
 import {HearingsService} from '../../../services/hearings.service';
 import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 
@@ -13,7 +13,7 @@ import {RequestHearingPageFlow} from '../request-hearing.page.flow';
   templateUrl: './hearing-stage.component.html',
 })
 export class HearingStageComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
-  public hearingStageOptions: RefDataModel[];
+  public hearingStageOptions: LovRefDataModel[];
   public stageForm: FormGroup;
   public hearingType: string;
   public hearingStageSelectionError: string;

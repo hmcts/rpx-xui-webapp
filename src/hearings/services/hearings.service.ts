@@ -5,7 +5,7 @@ import { HearingActualsMainModel } from '../models/hearingActualsMainModel';
 import { HearingListMainModel } from '../models/hearingListMain.model';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
 import { ACTION } from '../models/hearings.enum';
-import { RefDataModel } from '../models/refData.model';
+import { LovRefDataModel } from '../models/lovRefData.model';
 import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
 
 @Injectable()
@@ -31,7 +31,7 @@ export class HearingsService {
       { caseReference: caseId });
   }
 
-  public cancelHearingRequest(hearingId: string, reasons: RefDataModel[]): Observable<any> {
+  public cancelHearingRequest(hearingId: string, reasons: LovRefDataModel[]): Observable<any> {
     const cancellationReasonCode: string = reasons.map(reason => reason.key).toString();
     let httpParams = new HttpParams();
     httpParams = httpParams.append('cancellationReasonCode', cancellationReasonCode);

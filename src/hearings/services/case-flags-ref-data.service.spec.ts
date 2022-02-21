@@ -27,7 +27,7 @@ describe('CaseFlagsRefDataService', () => {
         expect(response).toBeNull();
       });
 
-      const req = httpMock.expectOne('api/hearings/getCaseFlagRefData');
+      const req = httpMock.expectOne('api/prd/caseFlag/getCaseFlagRefData');
       expect(req.request.method).toEqual('GET');
       req.flush(null);
     }));

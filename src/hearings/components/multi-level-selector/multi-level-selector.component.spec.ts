@@ -1,12 +1,12 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MultiLevelSelectorComponent } from '..';
-import { ControlTypeEnum } from '../../models/hearings.enum';
-import { RefDataModel } from '../../models/refData.model';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {MultiLevelSelectorComponent} from '..';
+import {ControlTypeEnum} from '../../models/hearings.enum';
+import {LovRefDataModel} from '../../models/lovRefData.model';
 
 class DataModelConvertor {
-  constructor(private readonly fb: FormBuilder) { }
-  public patchValues = (refDataModel: RefDataModel) => {
+  constructor(private fb: FormBuilder) { }
+  public patchValues = (refDataModel: LovRefDataModel) => {
     return this.fb.group({
       key: [refDataModel.key],
       value_en: [refDataModel.value_en],
@@ -20,7 +20,7 @@ class DataModelConvertor {
     });
   }
 
-  public convertRefDataModelToArray = (dataSource: RefDataModel[]) => {
+  public convertRefDataModelToArray = (dataSource: LovRefDataModel[]) => {
     const dataSourceArray = this.fb.array([]);
     dataSource.forEach(listOfValue => {
       (dataSourceArray as FormArray).push(this.patchValues({
@@ -32,8 +32,8 @@ class DataModelConvertor {
         order: listOfValue.order,
         parentKey: listOfValue.parentKey,
         child_nodes: listOfValue.child_nodes,
-        selected: !listOfValue.selected ? false : true,
-      } as RefDataModel) as FormGroup);
+        selected: listOfValue.selected,
+      } as LovRefDataModel) as FormGroup);
     });
     return dataSourceArray;
   }
@@ -43,7 +43,7 @@ describe('MultiLevelSelectorComponent', () => {
   let component: MultiLevelSelectorComponent;
   let fixture: ComponentFixture<MultiLevelSelectorComponent>;
 
-  const LIST_OFF_VALUES_REF: RefDataModel[] = [
+  const LIST_OFF_VALUES_REF: LovRefDataModel[] = [
     {
       key: 'DisabilityQualifiedPanelMember',
       value_en: 'Disability qualified panel member',

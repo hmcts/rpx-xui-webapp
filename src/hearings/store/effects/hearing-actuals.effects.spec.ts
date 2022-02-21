@@ -2,8 +2,6 @@ import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { cold, hot } from 'jasmine-marbles';
 import { of } from 'rxjs';
-import { HearingActualsMainModel } from '../../../../api/hearings/models/hearingActualsMainModel';
-import { HearingResult, HMCStatus } from '../../../../api/hearings/models/hearings.enum';
 import { Go } from '../../../app/store';
 import { hearingActualsMainModel } from '../../hearing.test.data';
 import { HearingsService } from '../../services/hearings.service';
@@ -33,7 +31,7 @@ describe('Hearing Actuals Effects', () => {
 
   describe('loadHearingActual$', () => {
     it('should return a response with service hearing actuals', () => {
-      hearingsServiceMock.getHearingActuals.and.returnActual(of(hearingActualsMainModel));
+      hearingsServiceMock.getHearingActuals.and.returnValue(of(hearingActualsMainModel));
       const action = new hearingActualsActions.GetHearingActuals('1111222233334444');
       const completion = new hearingActualsActions.GetHearingActualsSuccess(hearingActualsMainModel);
       actions$ = hot('-a', { a: action });

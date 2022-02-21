@@ -938,12 +938,12 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
     locationType: 'hearing',
     region: 'North West',
   },
-  {
-    locationId: '219164',
-    locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
-    locationType: 'hearing',
-    region: 'Scotland',
-  },
+    {
+      locationId: '219164',
+      locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
+      locationType: 'hearing',
+      region: 'Scotland',
+    },
   ],
   caseAdditionalSecurityFlag: false,
   facilitiesRequired: [],
@@ -1094,111 +1094,6 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
     flagAmendURL: '/'
   },
 } as ServiceHearingValuesModel;
-
-export const initialState = {
-  hearings: {
-    hearingList: {
-      hearingListMainModel: {
-        caseRef: '1111222233334444',
-        hmctsServiceID: 'SSCS',
-        caseHearings: [{
-          hearingID: 'h00001',
-          hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
-          hearingType: 'Case management hearing',
-          hmcStatus: HMCStatus.HEARING_REQUESTD,
-          lastResponseReceivedDateTime: '',
-          responseVersion: 'rv1',
-          hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
-          listAssistCaseStatus: '',
-          hearingDaySchedule: null,
-        }]
-      }
-    },
-    hearingValues: {
-      serviceHearingValuesModel,
-      lastError: null
-    },
-    hearingRequest: {
-      hearingRequestMainModel: {
-        requestDetails: {
-          requestTimeStamp: null
-        },
-        hearingDetails: {
-          duration: null,
-          hearingType: 'final',
-          hearingLocations: [
-            {
-              locationId: '196538',
-              locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
-              locationType: 'hearing',
-              region: 'North West',
-            },
-            {
-              locationId: '219164',
-              locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
-              locationType: 'hearing',
-              region: 'Scotland',
-            },
-          ],
-          hearingIsLinkedFlag: false,
-          hearingWindow: null,
-          privateHearingRequiredFlag: false,
-          panelRequirements: null,
-          autolistFlag: false,
-          nonStandardHearingDurationReasons: [],
-          hearingPriorityType: null,
-          numberOfPhysicalAttendees: null,
-          hearingInWelshFlag: true,
-          facilitiesRequired: [
-            'immigrationDetentionCentre',
-            'inCameraCourt'
-          ],
-          listingComments: 'blah blah blah',
-          hearingRequester: null,
-          leadJudgeContractType: null,
-          totalParticipantAttendingHearing: 3
-        },
-        caseDetails: {
-          hmctsServiceCode: null,
-          caseRef: null,
-          requestTimeStamp: null,
-          hearingID: null,
-          externalCaseReference: null,
-          caseDeepLink: null,
-          hmctsInternalCaseName: null,
-          publicCaseName: null,
-          caseAdditionalSecurityFlag: false,
-          caseInterpreterRequiredFlag: false,
-          caseCategories: [],
-          caseManagementLocationCode: null,
-          caserestrictedFlag: false,
-          caseSLAStartDate: null
-        },
-        partyDetails: [
-          {
-            partyID: 'P1',
-            partyName: 'Jane and Smith',
-            partyType: PartyType.IND,
-            partyChannel: 'inPerson'
-          },
-          {
-            partyID: 'P2',
-            partyName: 'DWP',
-            partyType: PartyType.ORG,
-            partyChannel: 'byVideo'
-          }
-        ]
-      },
-      lastError: null
-    },
-    hearingConditions: {
-      caseId: '1111222233334444',
-      mode: 'create',
-      isInit: true,
-      fragmentId: 'venue'
-    },
-  }
-};
 
 export const hearingActualsMainModel: HearingActualsMainModel = {
   hearingActuals: {
@@ -1400,4 +1295,113 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
     ],
   },
   hmcStatus: HMCStatus.UPDATE_SUBMITTED,
+};
+
+export const initialState = {
+  hearings: {
+    hearingList: {
+      hearingListMainModel: {
+        caseRef: '1111222233334444',
+        hmctsServiceID: 'SSCS',
+        caseHearings: [{
+          hearingID: 'h00001',
+          hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
+          hearingType: 'Case management hearing',
+          hmcStatus: HMCStatus.HEARING_REQUESTD,
+          lastResponseReceivedDateTime: '',
+          responseVersion: 'rv1',
+          hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
+          listAssistCaseStatus: '',
+          hearingDaySchedule: null,
+        }]
+      }
+    },
+    hearingActuals: {
+      hearingActualsMainModel,
+      lastError: null,
+    },
+    hearingValues: {
+      serviceHearingValuesModel,
+      lastError: null
+    },
+    hearingRequest: {
+      hearingRequestMainModel: {
+        requestDetails: {
+          requestTimeStamp: null
+        },
+        hearingDetails: {
+          duration: null,
+          hearingType: 'final',
+          hearingLocations: [
+            {
+              locationId: '196538',
+              locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
+              locationType: 'hearing',
+              region: 'North West',
+            },
+            {
+              locationId: '219164',
+              locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
+              locationType: 'hearing',
+              region: 'Scotland',
+            },
+          ],
+          hearingIsLinkedFlag: false,
+          hearingWindow: null,
+          privateHearingRequiredFlag: false,
+          panelRequirements: null,
+          autolistFlag: false,
+          nonStandardHearingDurationReasons: [],
+          hearingPriorityType: null,
+          numberOfPhysicalAttendees: null,
+          hearingInWelshFlag: true,
+          facilitiesRequired: [
+            'immigrationDetentionCentre',
+            'inCameraCourt'
+          ],
+          listingComments: 'blah blah blah',
+          hearingRequester: null,
+          leadJudgeContractType: null,
+          totalParticipantAttendingHearing: 3
+        },
+        caseDetails: {
+          hmctsServiceCode: null,
+          caseRef: null,
+          requestTimeStamp: null,
+          hearingID: null,
+          externalCaseReference: null,
+          caseDeepLink: null,
+          hmctsInternalCaseName: null,
+          publicCaseName: null,
+          caseAdditionalSecurityFlag: false,
+          caseInterpreterRequiredFlag: false,
+          caseCategories: [],
+          caseManagementLocationCode: null,
+          caserestrictedFlag: false,
+          caseSLAStartDate: null
+        },
+        partyDetails: [
+          {
+            partyID: 'P1',
+            partyName: 'Jane and Smith',
+            partyType: PartyType.IND,
+            partyChannel: 'inPerson'
+          },
+          {
+            partyID: 'P2',
+            partyName: 'DWP',
+            partyType: PartyType.ORG,
+            partyChannel: 'byVideo'
+          }
+        ]
+      },
+      lastError: null
+    },
+    hearingConditions: {
+      caseId: '1111222233334444',
+      mode: 'create',
+      isInit: true,
+      fragmentId: 'venue'
+    },
+  },
 };

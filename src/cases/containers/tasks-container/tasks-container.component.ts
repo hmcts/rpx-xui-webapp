@@ -47,6 +47,9 @@ export class TasksContainerComponent implements OnInit {
           }
         })).pipe(mergeMap(caseworkers => {
           this.caseworkers = caseworkers;
+          if (this.tasks && this.tasks.length > 0) {
+            return of(this.tasks);
+          }
           return this.getAssignedNamesForTasks();
         })).subscribe(tasks => {
           this.tasks = tasks;

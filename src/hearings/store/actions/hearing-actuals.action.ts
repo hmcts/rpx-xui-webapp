@@ -19,7 +19,7 @@ export class GetHearingActuals implements Action {
 }
 
 export class GetHearingActualsSuccess implements Action {
-  public readonly type = GET_HEARING_ACTUALS;
+  public readonly type = GET_HEARING_ACTUALS_SUCCESS;
 
   constructor(public payload: HearingActualsMainModel) {
   }

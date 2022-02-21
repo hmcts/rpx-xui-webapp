@@ -105,7 +105,7 @@ export async function getHearingActuals(req: EnhancedRequest, res: Response, nex
   const hearingId = req.params.hearingId;
   try {
     const { status, data }: { status: number, data: HearingActualsMainModel } =
-      await handleGet(`${hearingsUrl}/actuals/${hearingId}`, req);
+      await handleGet(`${hearingsUrl}/hearingActuals/${hearingId}`, req);
     res.status(status).send(data);
   } catch (error) {
     next(error);
@@ -118,7 +118,7 @@ export async function getHearingActuals(req: EnhancedRequest, res: Response, nex
 export async function updateHearingActuals(req: EnhancedRequest, res: Response, next: NextFunction) {
   const reqBody = req.body;
   const hearingId = req.query.hearingId;
-  const markupPath = `${hearingsUrl}/actuals/${hearingId}`;
+  const markupPath = `${hearingsUrl}/hearingActuals/${hearingId}`;
   try {
     const { status, data }: { status: number, data: HearingActualsModel } = await handlePut(markupPath, reqBody, req);
     res.status(status).send(data);

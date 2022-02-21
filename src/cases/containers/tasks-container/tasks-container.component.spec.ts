@@ -165,12 +165,25 @@ describe('TasksContainerComponent', () => {
     expect(component.warningIncluded).toBe(true);
   });
 
+  it('should return an empty list if there are no tasks', () => {
+    mockWACaseService.getTasksByCaseId.and.returnValue(of([]));
+    mockRoleService.getCaseRolesUserDetails.and.returnValue(of([]));
+    component.ngOnInit();
+    fixture.detectChanges();
+    expect(component.tasks.length).toEqual(0);
+  });
+
+
   it('should refresh tasks when requested', () => {
     const firstTask = getMockTasks()[0];
     mockWACaseService.getTasksByCaseId.and.returnValue(of([firstTask]));
     component.onTaskRefreshRequired();
     expect(component.tasks.length).toEqual(1);
   });
+
+  afterEach(() => {
+    fixture.destroy();
+  })
 
   afterAll(() => {
     TestBed.resetTestingModule();

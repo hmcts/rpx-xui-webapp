@@ -69,7 +69,7 @@ describe('Hearing Values Effects', () => {
             requirementType: RequirementType.EXCLUDE,
           },
         ],
-        judiciarySpecialisms: [''],
+        judiciarySpecialisms: ['Cardiologist'],
       },
       hearingIsLinkedFlag: false,
       parties: [

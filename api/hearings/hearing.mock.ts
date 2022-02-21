@@ -51,10 +51,10 @@ export const init = () => {
     ];
   });
 
-  mock.onPut(getHearingsActualsUrl).reply(config => {
+  mock.onPut(getHearingsActualsUrl).reply((config: AxiosRequestConfig) => {
     return [
       200,
-      HEARING_ACTUAL
+      [],
     ];
   })
 

@@ -5,7 +5,7 @@ import { SERVICES_HEARINGS_COMPONENT_API, SERVICES_PRD_API_URL } from '../config
 import * as mock from '../hearings/hearing.mock';
 import { EnhancedRequest } from '../lib/models';
 import { CaseFlagReferenceModel } from './models/caseFlagReference.model';
-import { HearingActualsMainModel } from './models/hearingActualsMainModel';
+import { HearingActualsMainModel, HearingActualsModel } from './models/hearingActualsMainModel';
 import { HearingListModel } from './models/hearingList.model';
 import { HearingListMainModel } from './models/hearingListMain.model';
 import { HearingResponseMainModel } from './models/hearingResponseMain.model';
@@ -156,9 +156,9 @@ export async function getHearingActuals(req: EnhancedRequest, res: Response, nex
 export async function updateHearingActuals(req: EnhancedRequest, res: Response, next: NextFunction) {
   const reqBody = req.body;
   const hearingId = req.query.hearingId;
-  const markupPath = `${hearingsUrl}/actuals/${hearingId}`; 
+  const markupPath = `${hearingsUrl}/actuals/${hearingId}`;
   try {
-    const { status, data }: { status: number, data: HearingActualsMainModel } = await handlePut(markupPath, reqBody, req);
+    const { status, data }: { status: number, data: HearingActualsModel } = await handlePut(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     next(error);

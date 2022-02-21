@@ -1,10 +1,10 @@
 import {NextFunction, Response} from 'express';
-import {handleDelete, handleGet, handlePost} from '../common/mockService';
+import {handleDelete, handleGet, handlePost, handlePut} from '../common/mockService';
 import {getConfigValue} from '../configuration';
 import {SERVICES_HEARINGS_COMPONENT_API} from '../configuration/references';
 import * as mock from '../hearings/hearing.mock';
 import {EnhancedRequest} from '../lib/models';
-import {HearingActualsMainModel} from './models/hearingActualsMainModel';
+import {HearingActualsMainModel, HearingActualsModel} from './models/hearingActualsMainModel';
 import {HearingListModel} from './models/hearingList.model';
 import {HearingListMainModel} from './models/hearingListMain.model';
 import {HearingResponseMainModel} from './models/hearingResponseMain.model';
@@ -98,11 +98,29 @@ export async function cancelHearingRequest(req: EnhancedRequest, res: Response, 
   }
 }
 
+/**
+ * getHearingActuals - get hearing actuals from hearing ID
+ */
 export async function getHearingActuals(req: EnhancedRequest, res: Response, next: NextFunction): Promise<void> {
   const hearingId = req.params.hearingId;
   try {
     const { status, data }: { status: number, data: HearingActualsMainModel } =
-      await handleGet(`${hearingsUrl}/actuals/${hearingId}`, req);
+      await handleGet(`${hearingsUrl}/hearingActuals/${hearingId}`, req);
+    res.status(status).send(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * updateHearingActuals - update hearing actuals
+ */
+export async function updateHearingActuals(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const reqBody = req.body;
+  const hearingId = req.query.hearingId;
+  const markupPath = `${hearingsUrl}/hearingActuals/${hearingId}`;
+  try {
+    const { status, data }: { status: number, data: HearingActualsModel } = await handlePut(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     next(error);

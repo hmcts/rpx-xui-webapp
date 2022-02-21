@@ -2,7 +2,7 @@ import {TestBed} from '@angular/core/testing';
 import {provideMockActions} from '@ngrx/effects/testing';
 import {cold, hot} from 'jasmine-marbles';
 import {of} from 'rxjs';
-import {Go} from '../../../app/store/actions';
+import {Go} from '../../../app/store';
 import {PartyType, RequirementType} from '../../models/hearings.enum';
 import {ServiceHearingValuesModel} from '../../models/serviceHearingValues.model';
 import {HearingsService} from '../../services/hearings.service';

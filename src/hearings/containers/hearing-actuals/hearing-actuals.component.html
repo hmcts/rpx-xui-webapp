@@ -4,7 +4,6 @@
       {{ section.insetInfo }}
     </div>
     <div [innerHtml]="section.sectionHTMLTitle"></div>
-    <a *ngIf="section.changeLink" href="javascript:void(0)" (click)="changeAnswer(section.changeLink)">Change</a>
     <div class="govuk-summary-list govuk-!-margin-bottom-9">
       <ng-container *ngFor="let answer of section.answers">
         <div *ngIf="answer.isHiddenSource === undefined ? true : !(answer.isHiddenSource | isHidden:hearingState$ | async)"
@@ -24,258 +23,254 @@
   </div>
 </div>-->
 
+    <span style="margin-bottom: 10px; display: block;" class="govuk-caption-l">Jane Smith vs DWP</span>
+    <h1 class="govuk-heading-l" style="margin-right: 16px;margin-top:-10px;display:inline-block;vertical-align: top;">
+      Hearing details
+    </h1>
 
-<span style="margin-bottom: 10px; display: block;" class="govuk-caption-l">Jane Smith vs DWP</span>
-<h1 class="govuk-heading-l" style="margin-right: 16px;margin-top:-10px;display:inline-block;vertical-align: top;">
-  Hearing details
-</h1>
-
-
-<br>
+    <br>
 
 
-<dl class="govuk-summary-list">
-  <div class="govuk-summary-list__row">
-    <dt class="govuk-summary-list__key">
-      Hearing date
-    </dt>
-    <dd class="govuk-summary-list__value">
-      15 December 2021
-    </dd>
-    <dd class="govuk-summary-list__actions">
-    </dd>
-  </div>
-</dl>
-<br>
+    <dl class="govuk-summary-list">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Hearing date
+        </dt>
+        <dd class="govuk-summary-list__value">
+          15 December 2021
+        </dd>
+        <dd class="govuk-summary-list__actions">
+        </dd>
+      </div>
+    </dl>
+    <br>
 
-<h1 class="govuk-heading-m" style="display: inline-block;">
-  Hearing stage and result
+    <h1 class="govuk-heading-m" style="display: inline-block;">
+      Hearing stage and result
 
-</h1>
+    </h1>
 
-<span class="govuk-body"><a class="govuk-link govuk-!-margin-left-3" style="float:right;"
-                            href="actuals-details">Update</a></span>
-<!--        <strong style="vertical-align: middle; float: right;" class="govuk-tag govuk-tag&#45;&#45;green">Saved</strong>-->
+    <span class="govuk-body"><a class="govuk-link govuk-!-margin-left-3" style="float:right;" href="actuals-details">Update</a></span>
 
-<dl class="govuk-summary-list">
-  <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-    <dt class="govuk-summary-list__key">
-      Hearing stage
-    </dt>
-    <dd class="govuk-summary-list__value">
+    <dl class="govuk-summary-list">
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">
+          Hearing stage
+        </dt>
+        <dd class="govuk-summary-list__value">
 
 
-    </dd>
-  </div>
+        </dd>
+      </div>
 
 
-  <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-    <dt class="govuk-summary-list__key">
-      Hearing result
-    </dt>
-    <dd class="govuk-summary-list__value">
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">
+          Hearing result
+        </dt>
+        <dd class="govuk-summary-list__value">
 
-    </dd>
-  </div>
+        </dd>
+      </div>
 
-</dl>
+    </dl>
 
-<br>
+    <br>
 
-<h1 class="govuk-heading-m" style="display: inline-block;">
-  Hearing timings
-</h1>
+    <h1 class="govuk-heading-m" style="display: inline-block;">
+      Hearing timings
+    </h1>
 
-<span class="govuk-body"><a class="govuk-link govuk-!-margin-left-3" style="float:right;" href="actuals-date-and-time">Update</a></span>
-<!--        <strong style="vertical-align: middle; float: right;" class="govuk-tag govuk-tag&#45;&#45;green">Saved</strong>-->
+    <span class="govuk-body"><a class="govuk-link govuk-!-margin-left-3" style="float:right;"
+                                href="actuals-date-and-time">Update</a></span>
 
-<dl class="govuk-summary-list">
-  <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-    <dt class="govuk-summary-list__key">
-      Start time
-    </dt>
-    <dd class="govuk-summary-list__value">
-      13:00
-    </dd>
-  </div>
-  <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-    <dt class="govuk-summary-list__key">
-      Finish time
-    </dt>
-    <dd class="govuk-summary-list__value">
-      15:00
-    </dd>
-  </div>
-  <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-    <dt class="govuk-summary-list__key">
-      Pause time
-    </dt>
-    <dd class="govuk-summary-list__value">
+    <dl class="govuk-summary-list">
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">
+          Start time
+        </dt>
+        <dd class="govuk-summary-list__value">
+          13:00
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">
+          Finish time
+        </dt>
+        <dd class="govuk-summary-list__value">
+          15:00
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">
+          Pause time
+        </dt>
+        <dd class="govuk-summary-list__value">
 
-    </dd>
-  </div>
-  <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-    <dt class="govuk-summary-list__key">
-      Resume time
-    </dt>
-    <dd class="govuk-summary-list__value">
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">
+          Resume time
+        </dt>
+        <dd class="govuk-summary-list__value">
 
-    </dd>
-  </div>
-</dl>
+        </dd>
+      </div>
+    </dl>
 
-<br>
+    <br>
 
-<h1 class="govuk-heading-m" style="display: inline-block;">
-  Participants
-</h1>
+    <h1 class="govuk-heading-m" style="display: inline-block;">
+      Participants
+    </h1>
 
-<span class="govuk-body"><a class="govuk-link govuk-!-margin-left-3" style="float:right;"
-                            href="actuals-parties">Update</a></span>
-<!--        <strong style="vertical-align: middle; float: right;" class="govuk-tag govuk-tag&#45;&#45;green">Saved</strong>-->
+    <span class="govuk-body"><a class="govuk-link govuk-!-margin-left-3" style="float:right;" href="actuals-parties">Update</a></span>
 
-<dl class="govuk-summary-list">
-  <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-    <dt class="govuk-summary-list__key">
-      Jane Smith
-      <br><br>
-      Attendance type
-    </dt>
-    <dd class="govuk-summary-list__value">
-      <br><br>
-      Video - Teams
-    </dd>
-  </div>
-  <br>
-  <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-    <dt class="govuk-summary-list__key">
-      DWP <br><br>
-      Attendance type
-    </dt>
-    <dd class="govuk-summary-list__value">
-      <br><br>
-      Video - Teams
-    </dd>
-  </div>
-</dl>
+    <dl class="govuk-summary-list">
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">
+          Jane Smith
+          <br><br>
+          Attendance type
+        </dt>
+        <dd class="govuk-summary-list__value">
+          <br><br>
+          Video - Teams
+        </dd>
+      </div>
+      <br>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">
+          DWP <br><br>
+          Attendance type
+        </dt>
+        <dd class="govuk-summary-list__value">
+          <br><br>
+          Video - Teams
+        </dd>
+      </div>
+    </dl>
 
-<br>
-<h2 class="govuk-heading-s">
-  Attendee 1
-</h2>
+    <br>
+    <h2 class="govuk-heading-s">
+      Attendee 1
+    </h2>
 
-<dl class="govuk-summary-list">
-  <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-    <dt class="govuk-summary-list__key">
-      Role
-    </dt>
-    <dd class="govuk-summary-list__value">
-      Interpreter
-    </dd>
-  </div>
-  <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-    <dt class="govuk-summary-list__key">
-      First name
-    </dt>
-    <dd class="govuk-summary-list__value">
-      John
-    </dd>
-  </div>
-  <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-    <dt class="govuk-summary-list__key">
-      Last name
-    </dt>
-    <dd class="govuk-summary-list__value">
-      Smith
-    </dd>
-  </div>
-  <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-    <dt class="govuk-summary-list__key">
-      Attendance type
-    </dt>
-    <dd class="govuk-summary-list__value">
-      Video - Teams
-    </dd>
-  </div>
-  <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-    <dt class="govuk-summary-list__key">
-      Organisation
-    </dt>
-    <dd class="govuk-summary-list__value">
-      XYL Interpreters Ltd
-    </dd>
-  </div>
-  <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-    <dt class="govuk-summary-list__key">
-      Attendee representing
-    </dt>
-    <dd class="govuk-summary-list__value">
-      Jane Smith
-    </dd>
-  </div>
-</dl>
+    <dl class="govuk-summary-list">
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">
+          Role
+        </dt>
+        <dd class="govuk-summary-list__value">
+          Interpreter
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">
+          First name
+        </dt>
+        <dd class="govuk-summary-list__value">
+          John
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">
+          Last name
+        </dt>
+        <dd class="govuk-summary-list__value">
+          Smith
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">
+          Attendance type
+        </dt>
+        <dd class="govuk-summary-list__value">
+          Video - Teams
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">
+          Organisation
+        </dt>
+        <dd class="govuk-summary-list__value">
+          XYL Interpreters Ltd
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">
+          Attendee representing
+        </dt>
+        <dd class="govuk-summary-list__value">
+          Jane Smith
+        </dd>
+      </div>
+    </dl>
 
-<br>
-<h2 class="govuk-heading-s">
-  Attendee 2
-</h2>
+    <br>
+    <h2 class="govuk-heading-s">
+      Attendee 2
+    </h2>
 
-<dl class="govuk-summary-list">
-  <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-    <dt class="govuk-summary-list__key">
-      Role
-    </dt>
-    <dd class="govuk-summary-list__value">
-      Solicitor
-  </div>
-  <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-    <dt class="govuk-summary-list__key">
-      First name
-    </dt>
-    <dd class="govuk-summary-list__value">
-      Claire
-    </dd>
-  </div>
-  <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-    <dt class="govuk-summary-list__key">
-      Last name
-    </dt>
-    <dd class="govuk-summary-list__value">
-      Richards
-    </dd>
-  </div>
-  <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-    <dt class="govuk-summary-list__key">
-      Attendance type
-    </dt>
-    <dd class="govuk-summary-list__value">
-      Video - Teams
-    </dd>
-  </div>
-  <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-    <dt class="govuk-summary-list__key">
-      Organisation
-    </dt>
-    <dd class="govuk-summary-list__value">
-      XYZ Legal &amp; Co
-    </dd>
-  </div>
-  <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-    <dt class="govuk-summary-list__key">
-      Attendee representing
-    </dt>
-    <dd class="govuk-summary-list__value">
-      Jane Smith
-    </dd>
-  </div>
-</dl>
+    <dl class="govuk-summary-list">
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">
+          Role
+        </dt>
+        <dd class="govuk-summary-list__value">
+          Solicitor
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">
+          First name
+        </dt>
+        <dd class="govuk-summary-list__value">
+          Claire
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">
+          Last name
+        </dt>
+        <dd class="govuk-summary-list__value">
+          Richards
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">
+          Attendance type
+        </dt>
+        <dd class="govuk-summary-list__value">
+          Video - Teams
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">
+          Organisation
+        </dt>
+        <dd class="govuk-summary-list__value">
+          XYZ Legal &amp; Co
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">
+          Attendee representing
+        </dt>
+        <dd class="govuk-summary-list__value">
+          Jane Smith
+        </dd>
+      </div>
+    </dl>
 
-<br>
-<br>
+    <br>
+    <br>
 
-<h2 class="govuk-heading-m">Submit your hearing details</h2>
+    <h2 class="govuk-heading-m">Submit your hearing details</h2>
 
-<p class="govuk-body">Once you have entered the hearing details, select Submit hearing details.</p>
-<p class="govuk-body">Once submitted, you cannot change your answers again. The case will be saved and the hearing will
-  be marked as complete.</p>
-<br>
+    <p class="govuk-body">Once you have entered the hearing details, select Submit hearing details.</p>
+    <p class="govuk-body">Once submitted, you cannot change your answers again. The case will be saved and the hearing
+      will be marked as complete.</p>
+    <br>
+

@@ -61,7 +61,7 @@ export interface CaseSearchParameters {
 export interface SearchCaseParameter {
   key: string;
   operator: string;
-  values: string[];
+  values: string[] | string;
 }
 
 export interface SearchCaseRequest {

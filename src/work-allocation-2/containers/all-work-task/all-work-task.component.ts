@@ -34,7 +34,6 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     locationName: '',
     services: [],
   };
-  private selectedJurisdiction: any = 'Immigration and Asylum';
   private selectedTaskCategory: string = 'All';
   private selectedPerson: string = '';
   private selectedTaskType: string = 'All';
@@ -69,7 +68,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
       const searchParameters = [
-        {key: 'jurisdiction', operator: 'IN', values: [this.selectedJurisdiction]},
+        {key: 'jurisdiction', operator: 'IN', values: this.selectedServices},
         this.getStateParameter()
       ];
       const personParameter = { key: 'user', operator: 'IN', values: [this.selectedPerson] };
@@ -102,7 +101,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
 
   public onSelectionChanged(selection: { location: string, service: string, selectPerson: string, person: Person, taskType: string }): void {
     this.selectedLocation.id = selection.location;
-    this.selectedJurisdiction = selection.service;
+    this.selectedServices = [selection.service];
     this.selectedTaskCategory = selection.selectPerson;
     this.selectedPerson = selection.person ? selection.person.id : null;
     this.selectedTaskType = selection.taskType;

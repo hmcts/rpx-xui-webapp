@@ -55,11 +55,7 @@ export class CaseHearingsListComponent implements OnInit {
   }
 
   public addAndEdit(): void {
-    const hearingCondition: HearingConditions = {
-      mode: Mode.VIEW,
-    };
-    this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
-    this.router.navigate(['/', 'hearings', 'request', 'hearing-actual-add-edit']);
+    this.router.navigate(['/', 'hearings', 'actuals', 'hearing-actual-add-edit-summary']);
   }
 
   public hasAddEdit(hearing: HearingListViewModel): boolean {

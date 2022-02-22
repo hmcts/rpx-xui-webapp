@@ -50,7 +50,7 @@ describe('HearingsBadgePipe', () => {
   });
 
   it('should return BLUE badge if awaiting actual', () => {
-    const badge = hearingsBadgePipe.transform(EXUIDisplayStatusEnum.AWAITING_HEARING_ACTUALS);
+    const badge = hearingsBadgePipe.transform(EXUIDisplayStatusEnum.AWAITING_ACTUALS);
     expect(badge).toBe('govuk-tag govuk-tag--blue');
   });
 

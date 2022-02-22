@@ -63,6 +63,6 @@ export class CaseHearingsListComponent implements OnInit {
   }
 
   public hasAddEdit(hearing: HearingListViewModel): boolean {
-    return hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_HEARING_ACTUALS;
+    return hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_ACTUALS;
   }
 }

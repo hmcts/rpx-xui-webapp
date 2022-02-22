@@ -203,10 +203,10 @@ const CASE_HEARING_9: HearingListModel = {
   hearingID: 'h100009',
   hearingRequestDateTime: '2021-09-01T14:00:00.000+0000',
   hearingType: 'Pre-hearing review',
-  hmcStatus: HMCStatus.AWAITING_HEARING_ACTUALS,
+  hmcStatus: HMCStatus.AWAITING_ACTUALS,
   lastResponseReceivedDateTime: '',
   responseVersion: 'rv9',
-  hearingListingStatus: HearingListingStatusEnum.AWAITING_HEARING_ACTUALS,
+  hearingListingStatus: HearingListingStatusEnum.AWAITING_ACTUALS,
   listAssistCaseStatus: '',
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_9],
 };

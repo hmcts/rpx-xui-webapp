@@ -14,7 +14,7 @@ export enum HMCStatus {
   EXCEPTION = 'Exception',
   CANCELLATION_REQUESTED = 'Cancellation requested',
   VACATED = 'Vacated',
-  AWAITING_HEARING_ACTUALS = 'Awaiting Hearing Actuals',
+  AWAITING_ACTUALS = 'Awaiting Actuals',
   COMPLETED = 'Completed',
   ADJOURNED = 'Adjourned',
 }
@@ -29,7 +29,7 @@ export enum HearingListingStatusEnum {
   EXCEPTION = 'EXCEPTION',
   CANCELLATION_REQUESTED = 'CANCELLATION REQUESTED',
   VACATED = 'VACATED',
-  AWAITING_HEARING_ACTUALS = 'AWAITING HEARING ACTUALS',
+  AWAITING_ACTUALS = 'AWAITING ACTUALS',
   ADJOURNED = 'ADJOURNED',
 }
 
@@ -48,7 +48,7 @@ export enum EXUIDisplayStatusEnum {
   FAILURE = 'FAILURE',
   CANCELLATION_REQUESTED = 'CANCELLATION REQUESTED',
   VACATED = 'VACATED',
-  AWAITING_HEARING_ACTUALS = 'AWAITING HEARING ACTUALS',
+  AWAITING_ACTUALS = 'AWAITING HEARING ACTUALS',
   ADJOURNED = 'ADJOURNED',
 }
 
@@ -181,7 +181,7 @@ export enum CaseFlagType {
 }
 
 export enum CancelHearingMessages {
-  NOT_SELECTED_A_REASON = 'You have not selected a reason for cancelling the hearing',
+  NOT_SELECTED_A_REASON = 'You have not selected a reason for cancelling th hearing',
   SELECT_AT_LEAST_ONE_REASON = 'Select at least one valid reason',
 }
 

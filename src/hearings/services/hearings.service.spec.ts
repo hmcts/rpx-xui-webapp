@@ -118,4 +118,16 @@ describe('HearingsService', () => {
       req.flush(null);
     }));
   });
+
+  describe('submitHearingActuals', () => {
+    it('should submit hearing actuals', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
+      service.submitHearingActuals('1111222233334444').subscribe(response => {
+        expect(response).toBeNull();
+      });
+
+      const req = httpMock.expectOne('api/hearings/hearingActualsCompletion/1111222233334444');
+      expect(req.request.method).toEqual('POST');
+      req.flush(null);
+    }));
+  });
 });

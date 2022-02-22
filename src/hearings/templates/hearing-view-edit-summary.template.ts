@@ -126,7 +126,7 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
       {
         id: 'hearingPanel',
         answerTitle: 'Do you require a panel for this hearing?',
-        answerSource: AnswerSource.HEARING_PANEL,
+        answerSource: AnswerSource.HEARING_PANEL_REQUIRED,
         changeLink: '/hearings/request/hearing-panel#specificPanelSelection'
       },
     ],

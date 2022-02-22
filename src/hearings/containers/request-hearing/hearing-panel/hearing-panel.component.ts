@@ -131,6 +131,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
         panelRequirements: {
+          ...this.hearingRequestMainModel.hearingDetails.panelRequirements,
           panelSpecialisms: [...panelRolesSelected]
         }
       }

@@ -4,6 +4,6 @@ export interface PanelRequirementsModel {
   roleType?: string[];
   authorisationTypes?: string[];
   authorisationSubType?: string[];
-  panelPreferences?: PanelPreferenceModel;
+  panelPreferences?: PanelPreferenceModel[];
   panelSpecialisms?: string[];
 }

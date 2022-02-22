@@ -17,12 +17,11 @@ export class AdditionalFacilitiesAnswerConverter implements AnswerConverter {
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
       map(state => {
-        let result = '<ul>';
         const facilities = this.route.snapshot.data.additionFacilitiesOptions;
-        state.hearingRequest.hearingRequestMainModel.hearingDetails.facilitiesRequired
-        .map((facility: string) => result += `<li>${AdditionalFacilitiesAnswerConverter.getFacilityValue(facilities, facility)}</li>`);
-        result += '</ul>';
-        return result
+        const selection = state.hearingRequest.hearingRequestMainModel.hearingDetails.facilitiesRequired
+          .map((facility: string) => AdditionalFacilitiesAnswerConverter.getFacilityValue(facilities, facility));
+
+        return selection.join(', ');
       })
     );
   }

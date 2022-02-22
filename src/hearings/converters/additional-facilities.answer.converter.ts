@@ -20,8 +20,8 @@ export class AdditionalFacilitiesAnswerConverter implements AnswerConverter {
         let result = '<ul>';
         const facilities = this.route.snapshot.data.additionFacilitiesOptions;
         state.hearingRequest.hearingRequestMainModel.hearingDetails.facilitiesRequired
-          .map((facility: string) => result += `<li>${AdditionalFacilitiesAnswerConverter.getFacilityValue(facilities, facility)}</li>`);
-          result += '</ul>';
+        .map((facility: string) => result += `<li>${AdditionalFacilitiesAnswerConverter.getFacilityValue(facilities, facility)}</li>`);
+        result += '</ul>';
         return result
       })
     );

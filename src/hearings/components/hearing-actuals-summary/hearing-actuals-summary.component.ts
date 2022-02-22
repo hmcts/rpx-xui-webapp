@@ -8,10 +8,10 @@ import {Section} from '../../models/section';
 import * as fromHearingStore from '../../store';
 
 @Component({
-  selector: 'exui-hearing-actuals',
-  templateUrl: './hearing-actuals.component.html',
+  selector: 'exui-hearing-actuals-summary',
+  templateUrl: './hearing-actuals-summary.component.html',
 })
-export class HearingActualsComponent {
+export class HearingActualsSummaryComponent {
 
   @Input() public template: Section[];
   @Input() public mode: Mode;

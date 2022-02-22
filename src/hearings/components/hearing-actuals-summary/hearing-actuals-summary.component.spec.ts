@@ -4,18 +4,18 @@ import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
 import {caseFlagsRefData, initialState} from '../../hearing.test.data';
 import {HearingsPipesModule} from '../../pipes/hearings.pipes.module';
-import {HearingActualsComponent} from './hearing-actuals.component';
+import {HearingActualsSummaryComponent} from './hearing-actuals-summary.component';
 
 describe('HearingActualsComponent', () => {
   const routerMock = jasmine.createSpyObj('Router', [
     'navigate'
   ]);
-  let component: HearingActualsComponent;
-  let fixture: ComponentFixture<HearingActualsComponent>;
+  let component: HearingActualsSummaryComponent;
+  let fixture: ComponentFixture<HearingActualsSummaryComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualsComponent],
+      declarations: [HearingActualsSummaryComponent],
       imports: [
         HearingsPipesModule
       ],
@@ -39,7 +39,7 @@ describe('HearingActualsComponent', () => {
       ]
     })
       .compileComponents();
-    fixture = TestBed.createComponent(HearingActualsComponent);
+    fixture = TestBed.createComponent(HearingActualsSummaryComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,0 +1,47 @@
+<main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <span class="govuk-caption-l">Jane Smith vs DWP</span>
+      <h1 class="govuk-heading-l">
+        Hearing stage and result
+      </h1>
+      <br>
+      <form class="form" [formGroup]="hearingStageResultForm">
+        <!-- Hearing stage -->
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-!-font-weight-bold" for="hearingStage">
+            Hearing stage
+          </label>
+          <select class="govuk-select govuk-!-width-one-third" id="hearingStage" name="hearing-stage">
+            <option value="Initial" selected="">Initial</option>
+            <option value="Final">Final</option>
+            <option value="Substantial">Substantial</option>
+            <option value="Case management">Case management</option>
+          </select>
+        </div>
+        <br>
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+              <h1 class="govuk-fieldset__heading">
+                Hearing result
+              </h1>
+            </legend>
+            <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
+              <exui-multi-level-selector *ngIf="configLevels" id="hearing-result-selector"
+                [multiLevelSelect]="hearingStageResultForm.controls.multiLevelSelect"
+                [hasValidationRequested]="hasValidationRequested"
+                [configLevels]="configLevels"
+              ></exui-multi-level-selector>
+            </div>
+          </fieldset>
+        </div>
+        <div class="govuk-button-group">
+          <button class="govuk-button primary">
+            Save and continue
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>

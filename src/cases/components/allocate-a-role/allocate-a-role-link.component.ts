@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { CaseRole, RoleCategory } from '../../../role-access/models';
 
 @Component({
-    selector: 'allocate-a-role-link',
+    selector: 'exui-allocate-a-role-link',
     templateUrl: './allocate-a-role-link.component.html',
     styleUrls: ['./allocate-a-role-link.component.scss']
   })

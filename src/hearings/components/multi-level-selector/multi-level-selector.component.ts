@@ -52,14 +52,6 @@ export class MultiLevelSelectorComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  public radioButtonEventHandler(control: AbstractControl): void {
-    (this.multiLevelSelect as FormArray).controls.forEach(ctrl => {
-      ctrl.value.selected = ctrl === control;
-    });
-    // Set child nodes selected property to false
-    this.deSelectChildNodes(control);
-  }
-
   public deSelectChildNodes(control: AbstractControl): void {
     if (control.value && control.value.child_nodes && control.value.child_nodes.length) {
       control.value.child_nodes.forEach(node => {

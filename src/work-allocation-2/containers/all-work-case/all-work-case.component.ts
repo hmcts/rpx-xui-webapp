@@ -23,7 +23,6 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
     page_size: 25
   };
   public jurisdictions: string[];
-  private selectedJurisdiction: any = 'Immigration and Asylum';
   private selectedPerson: string = '';
   private selectedRole: string = 'All';
   private selectedLocation: Location = {
@@ -67,7 +66,7 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
       const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
       return {
         search_parameters: [
-          {key: 'jurisdiction', operator: 'EQUAL', values: this.selectedJurisdiction},
+          {key: 'jurisdiction', operator: 'EQUAL', values: this.selectedServices[0]},
           {key: 'location_id', operator: 'EQUAL', values: this.selectedLocation.id},
           {key: 'actorId', operator: 'EQUAL', values: this.selectedPerson},
           {key: 'role', operator: 'EQUAL', values: this.selectedRole},
@@ -88,7 +87,7 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
 
   public onSelectionChanged(selection: { location: string, jurisdiction: string, actorId: string, role: string, person: any }): void {
     this.selectedLocation.id = !selection.location ? '' : selection.location;
-    this.selectedJurisdiction = selection.jurisdiction;
+    this.selectedServices = [selection.jurisdiction];
     this.selectedPerson = selection.actorId === 'All' ? '' : selection.person.id;
     this.selectedRole = selection.role;
     this.pagination.page_number = 1;

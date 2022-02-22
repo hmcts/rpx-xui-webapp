@@ -10,6 +10,7 @@ import { of } from 'rxjs';
 
 import { TaskListComponent } from '..';
 import { SessionStorageService } from '../../../app/services';
+import { AllocateRoleService } from '../../../role-access/services';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { FieldType } from '../../enums';
 import { Task } from '../../models/tasks';
@@ -49,6 +50,7 @@ describe('MyTasksComponent', () => {
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
   const mockFilterService = jasmine.createSpyObj('mockFilterService', ['getStream']);
   const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
+  const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -69,7 +71,8 @@ describe('MyTasksComponent', () => {
         { provide: WorkAllocationFeatureService, useValue: mockFeatureService },
         { provide: LoadingService, useValue: mockLoadingService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
-        { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService }
+        { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
+        { provide: AllocateRoleService, useValue: mockRoleService }
       ]
     }).compileComponents();
   }));
@@ -99,7 +102,7 @@ describe('MyTasksComponent', () => {
     mockFilterService.getStream.and.returnValue(of(filterFields));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
-    mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of([]));
+    mockRoleService.getCaseRolesUserDetails.and.returnValue(of(tasks));
     fixture.detectChanges();
   });
 

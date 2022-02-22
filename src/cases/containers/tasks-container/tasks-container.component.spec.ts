@@ -7,7 +7,8 @@ import { AlertService, CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { of } from 'rxjs';
 
 import { TaskAlertBannerComponent } from '../../../cases/components';
-import { CaseworkerDataService, WorkAllocationCaseService, WorkAllocationTaskService } from '../../../work-allocation-2/services';
+import { AllocateRoleService } from '../../../role-access/services';
+import { CaseworkerDataService, WorkAllocationCaseService } from '../../../work-allocation-2/services';
 import { getMockTasks } from '../../../work-allocation-2/tests/utils.spec';
 import { TasksContainerComponent } from './tasks-container.component';
 
@@ -114,6 +115,7 @@ describe('TasksContainerComponent', () => {
   const mockAlertService = jasmine.createSpyObj('alertService', ['success', 'setPreserveAlerts', 'error']);
   const mockWACaseService = jasmine.createSpyObj('waCaseService', ['getTasksByCaseId']);
   const mockCaseworkerService = jasmine.createSpyObj('caseworkerService', ['getCaseworkersForServices']);
+  const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
   let component: TasksContainerComponent;
   let fixture: ComponentFixture<TasksContainerComponent>;
 
@@ -127,6 +129,7 @@ describe('TasksContainerComponent', () => {
         {provide: AlertService, useValue: mockAlertService},
         {provide: WorkAllocationCaseService, useValue: mockWACaseService},
         {provide: CaseworkerDataService, useValue: mockCaseworkerService},
+        {provide: AllocateRoleService, useValue: mockRoleService},
         {
           provide: ActivatedRoute,
           useValue: {
@@ -153,6 +156,7 @@ describe('TasksContainerComponent', () => {
     component = fixture.componentInstance;
     mockWACaseService.getTasksByCaseId.and.returnValue(of(getMockTasks()));
     mockCaseworkerService.getCaseworkersForServices.and.returnValue([]);
+    mockRoleService.getCaseRolesUserDetails.and.returnValue(of(getMockTasks()));
     fixture.detectChanges();
   });
 
@@ -161,12 +165,25 @@ describe('TasksContainerComponent', () => {
     expect(component.warningIncluded).toBe(true);
   });
 
+  it('should return an empty list if there are no tasks', () => {
+    mockWACaseService.getTasksByCaseId.and.returnValue(of([]));
+    mockRoleService.getCaseRolesUserDetails.and.returnValue(of([]));
+    component.ngOnInit();
+    fixture.detectChanges();
+    expect(component.tasks.length).toEqual(0);
+  });
+
+
   it('should refresh tasks when requested', () => {
     const firstTask = getMockTasks()[0];
-    mockWACaseService.getTasksByCaseId.and.returnValue(of([firstTask]))
+    mockWACaseService.getTasksByCaseId.and.returnValue(of([firstTask]));
     component.onTaskRefreshRequired();
     expect(component.tasks.length).toEqual(1);
   });
+
+  afterEach(() => {
+    fixture.destroy();
+  })
 
   afterAll(() => {
     TestBed.resetTestingModule();

@@ -78,7 +78,8 @@
     "icp_api": "SERVICES_ICP_API",
     "payments": "SERVICES_PAYMENTS_URL",
     "s2s": "SERVICES_S2S",
-    "termsAndConditions": "SERVICES_TERMS_AND_CONDITIONS"
+    "termsAndConditions": "SERVICES_TERMS_AND_CONDITIONS",
+    "payment_return_url": "SERVICES_PAYMENT_RETURN_URL"
   },
   "protocol": "PROTOCOL",
   "secureCookie": "SECURE_COOKIE",

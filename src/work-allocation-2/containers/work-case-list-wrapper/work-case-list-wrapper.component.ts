@@ -145,7 +145,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
     // get supported jurisdictions on initialisation in order to get caseworkers by these services
     this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
 
-    this.rolesService.getValidRoles().subscribe(allRoles => this.allRoles = allRoles);
+    this.rolesService.getValidRoles(['IA']).subscribe(allRoles => this.allRoles = allRoles);
     this.jurisdictionsService.getJurisdictions().subscribe(jur => this.allJurisdictions = jur);
     this.setupCaseWorkers();
     this.loadCases();

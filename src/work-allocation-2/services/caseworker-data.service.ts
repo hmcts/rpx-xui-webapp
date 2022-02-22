@@ -5,7 +5,7 @@ import { map, tap } from 'rxjs/operators';
 
 import { SessionStorageService } from '../../app/services';
 import { Caseworker, CaseworkersByService } from '../models/dtos';
-import { getAllCaseworkersFromServices, getSessionStorageKeyForServiceId, setCaseworkers } from '../utils';
+import { getAllCaseworkersFromServices, getCaseworkerSessionStorageKeyForServiceId, setCaseworkers } from '../utils';
 
 @Injectable({ providedIn: 'root' })
 export class CaseworkerDataService {
@@ -28,7 +28,7 @@ export class CaseworkerDataService {
     const newServices = [];
     const storedCaseworkersByService = [];
     serviceIds.forEach(serviceId => {
-      const serviceKey = getSessionStorageKeyForServiceId(serviceId);
+      const serviceKey = getCaseworkerSessionStorageKeyForServiceId(serviceId);
       if (this.sessionStorageService.getItem(serviceKey)) {
         storedServices.push(serviceId);
         storedCaseworkersByService.push({service: serviceId, caseworkers: JSON.parse(this.sessionStorageService.getItem(serviceKey))});

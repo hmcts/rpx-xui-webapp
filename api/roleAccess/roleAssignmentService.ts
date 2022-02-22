@@ -5,12 +5,22 @@ import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
 import { setHeaders } from '../lib/proxy';
 import { http } from '../lib/http';
 import { AxiosResponse } from 'axios';
-import { Role } from './models/roleType';
+import { Role, RolesByService } from './models/roleType';
 
 export async function getPossibleRoles(req: EnhancedRequest, res: Response, next: NextFunction): Promise<any> {
   try {
-    const roles = await getSubstantiveRoles(req);
-    return res.send(roles).status(200);
+    const serviceIds = req.body && req.body.serviceIds ? req.body.serviceIds : null;
+    let roles = await getSubstantiveRoles(req);
+    const rolesByService: RolesByService[] = [];
+    if (serviceIds) {
+      serviceIds.forEach(serviceId => {
+        // note: if service obtained, check role either includes service or does not specify service
+        const serviceRoles = roles.filter(role => 
+          role.roleJurisdiction && (!role.roleJurisdiction.values || (role.roleJurisdiction.values && role.roleJurisdiction.values.includes(serviceId))))
+        rolesByService.push({service: serviceId, roles: serviceRoles});
+      })
+    }
+    return res.send(rolesByService).status(200);
   } catch (error) {
       next(error);
   }
@@ -19,7 +29,6 @@ export async function getSubstantiveRoles(req: EnhancedRequest) {
   if (req.session.subStantiveRoles) {
     return req.session.subStantiveRoles as []
   }
-
   const response = await getAllRoles(req);
   const results = (response.data as Role[]);
   const filteredResults = results.filter(filterRoleAssignments());
@@ -27,6 +36,7 @@ export async function getSubstantiveRoles(req: EnhancedRequest) {
     roleCategory: roleApi.category,
     roleId: roleApi.name,
     roleName: roleApi.label,
+    roleJurisdiction: roleApi.patterns && roleApi.patterns[0].attributes ? roleApi.patterns[0].attributes.jurisdiction : null
   }));
   req.session.subStantiveRoles = substantiveRoles;
   return substantiveRoles;

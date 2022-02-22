@@ -55,8 +55,8 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
   public backUrl: string = 'work/all-work/cases';
 
   public ngOnInit(): void {
-    this.rolesService.getValidRoles().subscribe(allRoles => this.allRoles = allRoles);
     this.setUpLocationsAndJurisdictions();
+    this.rolesService.getValidRoles([this.selectedJurisdiction]).subscribe(allRoles => this.allRoles = allRoles);
     this.setupCaseWorkers();
   }
 

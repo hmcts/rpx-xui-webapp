@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { SessionStorageService } from '../../app/services';
-import { Actions, AllocateRoleStateData, CaseRole, Role, RoleCategory } from '../models';
+import { Actions, AllocateRoleStateData, CaseRole, Role, RoleCategory, RolesByService } from '../models';
 import { CaseRoleDetails } from '../models/case-role-details.interface';
+import { getAllRolesFromServices, getRoleSessionStorageKeyForServiceId, setRoles } from '../utils';
 
 @Injectable({ providedIn: 'root' })
 export class AllocateRoleService {
@@ -28,13 +29,36 @@ export class AllocateRoleService {
     return this.http.post(`${AllocateRoleService.allocateRoleBaseUrl}/delete`, body);
   }
 
-  public getValidRoles(): Observable<Role[]> {
-    if (this.sessionStorageService.getItem('AllRoles')) {
-      const roles = JSON.parse(this.sessionStorageService.getItem('AllRoles'));
-      return of(roles as Role[]);
+  public getValidRoles(serviceIds: string[]): Observable<Role[]> {
+    const storedServices = [];
+    const newServices = [];
+    const storedRolesByService = [];
+    serviceIds.forEach(serviceId => {
+      const serviceKey = getRoleSessionStorageKeyForServiceId(serviceId);
+      if (this.sessionStorageService.getItem(serviceKey)) {
+        storedServices.push(serviceId);
+        storedRolesByService.push({service: serviceId, caseworkers: JSON.parse(this.sessionStorageService.getItem(serviceKey))});
+      } else {
+        newServices.push(serviceId);
+      }
+    });
+    // if all services are stored then return the stored caseworkers by service
+    if (storedServices.length === serviceIds.length) {
+      return of(getAllRolesFromServices(storedRolesByService) as Role[]);
     }
-    return this.http.get<Role[]>(`${AllocateRoleService.allocateRoleBaseUrl}/valid-roles`).pipe(
-        tap(roles => this.sessionStorageService.setItem('AllRoles', JSON.stringify(roles)))
+    // all serviceIds passed in as node layer getting used anyway and caseworkers also stored there
+    return this.http.post<RolesByService[]>(`${AllocateRoleService.allocateRoleBaseUrl}/valid-roles`, {serviceIds}).pipe(
+      tap(rolesByService => {
+        rolesByService.forEach(roleListByService => {
+          // for any new service, ensure that they are then stored in the session
+          if (newServices.includes(roleListByService.service)) {
+            setRoles(roleListByService.service, roleListByService.roles, this.sessionStorageService);
+          }
+        });
+      }),
+      map(rolesByService => {
+        return getAllRolesFromServices(rolesByService);
+      })
     );
   }
 

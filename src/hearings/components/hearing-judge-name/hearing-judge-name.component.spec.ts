@@ -65,4 +65,20 @@ describe('HearingJudgeNameComponent', () => {
     expect(component.personSelectionFormControl.get('email').value).toBe('jacky.collins@judicial.com');
   });
 
+  it('should check set SelectedJudge', () => {
+    component.setSelectedJudge(judgeDetails);
+    expect(component.selectedJudge).toBe(judgeDetails);
+  });
+
+  it('should check displayed Judge Name', () => {
+    expect(component.displayedJudgeName(judgeDetails)).toBe(`Hearing Judge (jacky.collins@judicial.com)`);
+    const judgeDetailsWithoutKnownas: Person = {
+      id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
+      name: 'Jacky Collins',
+      email: 'jacky.collins@judicial.com',
+      domain: 'JUDICIAL',
+    };
+    expect(component.displayedJudgeName(judgeDetailsWithoutKnownas)).toBe(`Jacky Collins (jacky.collins@judicial.com)`);
+  });
+
 });

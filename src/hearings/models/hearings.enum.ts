@@ -58,6 +58,12 @@ export enum RequirementType {
   EXCLUDE = 'EXCLUDE',
 }
 
+export enum MemberType {
+  JUDGE = 'JUDGE',
+  PANEL_MEMBER = 'PANEL_MEMBER',
+  JUDICIAL = 'Judicial'
+}
+
 export enum PartyType {
   IND = 'IND',
   ORG = 'ORG',

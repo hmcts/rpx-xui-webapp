@@ -1,0 +1,87 @@
+<main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {{caseTitle}}
+      <h1 class="govuk-heading-l">
+        Hearing stage and result
+      </h1>
+      <br>
+      <form class="form" [formGroup]="hearingStageResultForm">
+        <!-- Hearing stage -->
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-!-font-weight-bold" for="hearingStage">
+            Hearing stage
+          </label>
+          <select class="govuk-select govuk-!-width-one-third" id="hearingStage" name="hearing-stage">
+            <option value="Initial" selected="">Initial</option>
+            <option value="Final">Final</option>
+            <option value="Substantial">Substantial</option>
+            <option value="Case management">Case management</option>
+          </select>
+        </div>
+        <br>
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+              <h1 class="govuk-fieldset__heading">
+                Hearing result
+              </h1>
+            </legend>
+            <div class="govuk-radios" data-module="govuk-radios">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="decision" formName="hearingResult" name="hearingResult"
+                  type="radio" value="decision" data-aria-controls="conditional-decision" (change)="onHearingResult('decision')">
+                <label class="govuk-label govuk-radios__label" for="decision">
+                  Heard, order or decision
+                </label>
+              </div>
+              <div class="govuk-radios__conditional" *ngIf="hearingResultType === 'decision'">
+                <div class="govuk-form-group">
+                  <label class="govuk-label" for="decision-reason">Hearing outcome</label>
+                  <select formControlName="decisionReason" class="govuk-select" id="decision-reason" name="decisionReason">
+                    <option value="">Please select</option>
+                  </select>
+                </div>
+              </div>
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="adjourned" formName="hearingResult" name="hearingResult"
+                  type="radio" value="adjourned" data-aria-controls="conditional-adjourned" (change)="onHearingResult('adjourned')">
+                <label class="govuk-label govuk-radios__label" for="adjourned">
+                  Part-heard, adjourned or postponed
+                </label>
+              </div>
+              <div class="govuk-radios__conditional" *ngIf="hearingResultType === 'adjourned'">
+                <div class="govuk-form-group">
+                  <label class="govuk-label" for="adjourned-reason">Select a reason for this result</label>
+                  <select formControlName="adjournedReason" class="govuk-select" id="adjourned-reason" name="adjournedReason">
+                    <option value="" selected>Please select</option>
+                  </select>
+                </div>
+              </div>
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="withdrawn" formName="hearingResult" name="hearingResult"
+                  type="radio" value="withdrawn" data-aria-controls="conditional-withdrawn" (change)="onHearingResult('withdrawn')">
+                <label class="govuk-label govuk-radios__label" for="withdrawn">
+                  Withdrawn, cancelled or vacated
+                </label>
+              </div>
+              <div class="govuk-radios__conditional" *ngIf="hearingResultType === 'withdrawn'">
+                <div class="govuk-form-group">
+                  <label class="govuk-label" for="withdrawn-reason">Select a reason for this result</label>
+                  <select formControlName="withdrawnReason" class="govuk-select" id="withdrawn-reason" name="withdrawnReason">
+                    <option value="" selected>Please select</option>
+                  </select>
+                </div>        
+              </div>
+            </div>
+          </fieldset>
+        </div>
+        <div class="govuk-button-group">
+          <button class="govuk-button primary">
+            Save and continue
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>

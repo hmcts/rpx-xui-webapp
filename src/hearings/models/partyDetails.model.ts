@@ -14,4 +14,5 @@ export interface PartyDetailsModel {
   organisationDetails?: OrganisationDetailsModel;
   unavailabilityDOW?: UnavailabilityDOWModel[];
   unavailabilityRanges?: UnavailabilityRangeModel[];
+  HMTLTitle?: string;
 }

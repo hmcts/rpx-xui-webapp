@@ -1,7 +1,6 @@
-import { HearingActualsMainModel } from '../../api/hearings/models/hearingActualsMainModel';
-import { HearingResult } from '../../api/hearings/models/hearings.enum';
-import { HearingListingStatusEnum, HMCStatus, PartyType } from './models/hearings.enum';
+import { HearingListingStatusEnum, HMCStatus, PartyType, HearingResult } from './models/hearings.enum';
 import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
+import { HearingActualsMainModel } from './models/hearingActualsMainModel';
 
 export const hearingStageRefData = [
   {

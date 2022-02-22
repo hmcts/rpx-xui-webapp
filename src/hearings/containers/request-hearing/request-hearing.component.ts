@@ -14,7 +14,6 @@ export class RequestHearingComponent implements OnDestroy {
 
   private static HEARING_CREATE_EDIT_SUMMARY = 'hearing-create-edit-summary';
   private static HEARING_CONFIRMATION = 'hearing-confirmation';
-  private static HEARING_ACTUALS_CONFIRMATION = 'hearing-actual-add-edit-summary';
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly pageFlow: AbstractPageFlow,
@@ -39,10 +38,6 @@ export class RequestHearingComponent implements OnDestroy {
 
   public get isConfirmationPage(): boolean {
     return this.pageFlow.getCurrentPage() === RequestHearingComponent.HEARING_CONFIRMATION;
-  }
-
-  public get isHearingActualPage(): boolean {
-    return this.pageFlow.getCurrentPage() === RequestHearingComponent.HEARING_ACTUALS_CONFIRMATION;
   }
 
   public ngOnDestroy(): void {

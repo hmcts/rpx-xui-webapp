@@ -12,6 +12,11 @@ export class HearingPanelIncludeMemberConverter implements AnswerConverter {
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
       map((state) => {
+        if (
+          !state.hearingRequest.hearingRequestMainModel.hearingDetails ||
+          !state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements
+        )
+          return;
         const panelRequirementsState =
           state.hearingRequest.hearingRequestMainModel.hearingDetails
             .panelRequirements;
@@ -20,8 +25,11 @@ export class HearingPanelIncludeMemberConverter implements AnswerConverter {
         const personalCodes = panelRequirementsState.panelPreferences
           .filter((ref) => ref.requirementType === RequirementType.MUSTINC)
           .map((ref) => ref.memberID);
+
         (panelDetailsResolverData as JudicialUserModel[])
-          .filter((routeData) => personalCodes.includes(routeData.personal_code))
+          .filter((routeData) =>
+            personalCodes.includes(routeData.personal_code)
+          )
           .forEach((data) => {
             let personDetails = panelRequirementsState.panelPreferences.find(
               (ref) => ref.memberID === data.personal_code

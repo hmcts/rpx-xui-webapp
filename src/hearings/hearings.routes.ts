@@ -27,6 +27,7 @@ import { CaseFlagsResolver } from './resolvers/case-flags.resolver';
 import { HearingStageResolver } from './resolvers/hearing-stage.resolver';
 import { PartyChannelsResolverService } from './resolvers/party-channels-resolver.service';
 import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
+import { JudicialUserSearchResolver } from './resolvers/ judicial-user-search-resolver.resolve';
 
 export const ROUTES: Routes = [
   {
@@ -153,7 +154,10 @@ export const ROUTES: Routes = [
       },
       {
         path: 'hearing-judge',
-        resolve: { hearingStages: RefDataResolver },
+        resolve: {
+          hearingStages: RefDataResolver,
+          judicialUsers: JudicialUserSearchResolver
+        },
         component: HearingJudgeComponent,
         canActivate: [HealthCheckGuard],
         data: {

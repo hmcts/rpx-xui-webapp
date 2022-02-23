@@ -6,6 +6,7 @@ import {
   getHearingActuals,
   getHearings,
   loadServiceHearingValues,
+  submitHearingActuals,
   submitHearingRequest,
   updateHearingActuals,
   updateHearingRequest
@@ -24,3 +25,4 @@ router.delete('/cancelHearings', cancelHearingRequest);
 // actual journey
 router.get('/hearingActuals/:hearingId', getHearingActuals);
 router.put('/hearingActuals/:hearingId', updateHearingActuals);
+router.post('/hearingActualsCompletion/:hearingId', submitHearingActuals);

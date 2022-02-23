@@ -48,7 +48,7 @@ Feature: WA Release 2: : Case details WA tabs tabs
         When I click continue in add exclusion work flow page "Choose the person's role"
         Then I see Add an exclusion work flow page "Find the person" is displayed
 
-        Given I have a caseworker details other than logged in user with reference "ExcludeCaseworker"
+        Given I have a caseworker details other than logged in user with reference "ExcludeCaseworker" for service "IA"
 
         When I search for caseworker from reference "ExcludeCaseworker" in Find the person page of exclusion work flow
 

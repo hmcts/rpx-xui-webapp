@@ -210,10 +210,10 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
 
         Then I validate case roles table for role category "Exclusions" has data
             | Name | User type | Notes            | Added |
-            | Joe  | Judicial  | Test exclusion 1 | -5    |
-            | Joe  | Judicial  | Test exclusion 2 | -5    |
-            | Joe  | Judicial  | Test exclusion 3 | -15   |
-            | Joe  | Judicial  | Test exclusion 4 | -55   |
+            | someJudgefn_1 judicialln_1 | Judicial | Test exclusion 1 | -5 |
+            | someJudgefn_2 judicialln_2 | Judicial | Test exclusion 2 | -5 |
+            | someJudgefn_3 judicialln_3 | Judicial | Test exclusion 3 | -15 |
+            | someJudgefn_4 judicialln_4 | Judicial | Test exclusion 4 | -55 |
 
 
         Then I validate case roles "Manage" link displayed status is "true" for category "Judicial"
@@ -296,10 +296,10 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
 
         Then I validate case roles table for role category "Exclusions" has data
             | Name | User type | Notes            | Added |
-            | Joe  | Judicial  | Test exclusion 1 | -5    |
-            | Joe  | Judicial  | Test exclusion 2 | -5    |
-            | Joe  | Judicial  | Test exclusion 3 | -15   |
-            | Joe  | Judicial  | Test exclusion 4 | -55   |
+            | someJudgefn_1 judicialln_1 | Judicial | Test exclusion 1 | -5 |
+            | someJudgefn_2 judicialln_2 | Judicial | Test exclusion 2 | -5 |
+            | someJudgefn_3 judicialln_3 | Judicial | Test exclusion 3 | -15 |
+            | someJudgefn_4 judicialln_4 | Judicial | Test exclusion 4 | -55 |
 
         Then I validate case roles "Manage" link displayed status is "false" for category "Judicial"
         Then I validate case roles "Manage" link displayed status is "false" for category "Legal Ops"

@@ -20,6 +20,9 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
   public caseTitle: string;
   public serviceValueSub: Subscription;
   public hearingTypes$: Observable<LovRefDataModel[]>;
+  public completeHearingActualReasons$: Observable<LovRefDataModel[]>;
+  public adjournHearingActualReasons$: Observable<LovRefDataModel[]>;
+  public cancelHearingActualReasons$: Observable<LovRefDataModel[]>;
   private hearingState$: Observable<fromHearingStore.State>;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
@@ -42,6 +45,9 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
       cancelledReason: ['']
     });
     this.hearingTypes$ = this.lovRefDataService.getListOfValues('HearingType', 'SSCS');
+    this.completeHearingActualReasons$ = this.lovRefDataService.getListOfValues('CompleteHearingActualReason', 'SSCS');
+    this.adjournHearingActualReasons$ = this.lovRefDataService.getListOfValues('AdjournHearingActualReason', 'SSCS');
+    this.cancelHearingActualReasons$ = this.lovRefDataService.getListOfValues('CancelHearingActualReason', 'SSCS');
     // TODO: Get the case title from hearing actuals API
     // Title is not returned by the API and need to liaise with the backend team
     this.caseTitle = 'Jane Smith vs DWP';

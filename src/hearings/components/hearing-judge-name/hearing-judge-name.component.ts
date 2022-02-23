@@ -44,6 +44,18 @@ export class HearingJudgeNameComponent {
     return true;
   }
 
+  public setSelectedJudge(judgeInfo: Person): void {
+    this.selectedJudge = judgeInfo;
+    this.personControl.isPersonSelectionCompleted = true;
+  }
+
+  public displayedJudgeName(judge: Person) {
+    if (judge && judge.knownAs) {
+      return `${judge.knownAs} (${judge.email})`;
+    }
+    return judge ? `${judge.name} (${judge.email})` : '';
+  }
+
   public setPersonSelectionToFormControl(selectedJudge: Person): void {
     const keys = Object.keys(selectedJudge);
     for (const key of keys) {

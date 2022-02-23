@@ -1,16 +1,19 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
-import {PersonRole} from '@hmcts/rpx-xui-common-lib/lib/models';
-import {Store} from '@ngrx/store';
-import {HearingJudgeNameComponent, HearingJudgeNamesListComponent} from '../../../components';
-import {ACTION, HearingJudgeSelectionEnum, RadioOptions} from '../../../models/hearings.enum';
-import {LovRefDataModel} from '../../../models/lovRefData.model';
-import {Person} from '../../../models/person.model';
-import {HearingsService} from '../../../services/hearings.service';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { PersonRole } from '@hmcts/rpx-xui-common-lib';
+import { Store } from '@ngrx/store';
+import { JudicialUserModel } from '../../../../hearings/models/judicialUser.model';
+import { PanelPreferenceModel } from '../../../../hearings/models/panelPreference.model';
+import { JudicialRefDataService } from '../../../../hearings/services/judicial-ref-data.service';
+import { HearingJudgeNameComponent, HearingJudgeNamesListComponent } from '../../../components';
+import { ACTION, HearingJudgeSelectionEnum, MemberType, RadioOptions, RequirementType } from '../../../models/hearings.enum';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
+import { Person } from '../../../models/person.model';
+import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import {ValidatorsUtils} from '../../../utils/validators.utils';
-import {RequestHearingPageFlow} from '../request-hearing.page.flow';
+import { ValidatorsUtils } from '../../../utils/validators.utils';
+import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-judge',
@@ -19,12 +22,14 @@ import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 export class HearingJudgeComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public hearingJudgeForm: FormGroup;
   public specificJudgeSelection: string;
-  public judgeList: Person[] = [];
+  public excludedJudgeList: Person[] = [];
   public hearingJudgeTypes: LovRefDataModel[];
+  public personalCodejudgeList: JudicialUserModel[] = [];
   public validationErrors: { id: string, message: string }[] = [];
-  public personRole: PersonRole;
+  public personRole = PersonRole.JUDICIAL;
   public specificJudgeSelectionError: string;
   public selectJudgeTypesError: string;
+  public hearingJudgeFormInfo: { includedJudges: string[], judgeTypes: string[], excludedJudges: string[] };
   @ViewChild('hearingJudgeInfo') public hearingJudgeInfo: HearingJudgeNameComponent;
   @ViewChild('excludedJudge') public excludedJudge: HearingJudgeNamesListComponent;
 
@@ -32,16 +37,39 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
               private readonly formBuilder: FormBuilder,
               protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService,
+              protected readonly judicialRefDataService: JudicialRefDataService,
               private readonly validatorsUtils: ValidatorsUtils) {
     super(hearingStore, hearingsService, route);
     this.hearingJudgeTypes = this.route.snapshot.data.hearingStages;
+    this.personalCodejudgeList = this.route.snapshot.data.judicialUsers;
   }
 
   public ngOnInit(): void {
+    this.getFormData();
     this.initForm();
+    this.setFormData();
+  }
+
+  public getFormData(): void {
+    let judgeTypes: string[];
+    let includedJudges: string[] = [];
+    let excludedJudges: string[] = [];
+    const panelRequirements = this.hearingRequestMainModel.hearingDetails.panelRequirements;
+    if (panelRequirements && panelRequirements.roleType && panelRequirements.roleType.length) {
+      this.specificJudgeSelection = RadioOptions.NO;
+      judgeTypes = panelRequirements.roleType;
+    } else if (panelRequirements && panelRequirements.panelPreferences) {
+      this.specificJudgeSelection = RadioOptions.YES;
+      includedJudges = panelRequirements.panelPreferences.filter(preferences => preferences.requirementType === RequirementType.MUSTINC).map(preferences => preferences.memberID);
+    }
+    excludedJudges = panelRequirements && panelRequirements.panelPreferences.filter(preferences => preferences.requirementType === RequirementType.EXCLUDE).map(preferences => preferences.memberID);
+    this.hearingJudgeFormInfo = {
+      includedJudges, judgeTypes, excludedJudges
+    };
   }
 
   public get getJudgeTypeFormArray(): FormArray {
+    const preselectedJudgeTypes: string[] = this.hearingJudgeFormInfo.judgeTypes;
     return this.formBuilder.array(this.hearingJudgeTypes.map(val => this.formBuilder.group({
       key: [val.key],
       value_en: [val.value_en],
@@ -50,13 +78,13 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
       hintTextCY: [val.hintTextCY],
       order: [val.order],
       parentKey: [val.parentKey],
-      selected: [!!val.selected]
+      selected: [!!val.selected || (preselectedJudgeTypes && preselectedJudgeTypes.includes(val.key))]
     })));
   }
 
   public initForm(): void {
     this.hearingJudgeForm = this.formBuilder.group({
-      specificJudge: ['', Validators.required],
+      specificJudge: [this.specificJudgeSelection, Validators.required],
       findPersonControl: this.formBuilder.group({
         domain: '',
         email: [''],
@@ -67,6 +95,40 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
       }),
       judgeType: this.getJudgeTypeFormArray,
     });
+  }
+
+  public setFormData(): void {
+    if (this.specificJudgeSelection) {
+      this.showSpecificJudge(this.specificJudgeSelection);
+    }
+    if (this.specificJudgeSelection === RadioOptions.YES) {
+      const includedJudge = this.personalCodejudgeList.find((judgeInfo) => this.hearingJudgeFormInfo.includedJudges.includes(judgeInfo.personal_code));
+      const judgeDetails = {
+        domain: this.personRole,
+        email: includedJudge.email_id,
+        id: includedJudge.sidam_id,
+        knownAs: includedJudge.known_as,
+        name: includedJudge.surname,
+        personalCode: includedJudge.personal_code,
+      };
+      this.hearingJudgeInfo.setSelectedJudge(judgeDetails);
+    }
+
+    if (this.hearingJudgeFormInfo.excludedJudges && this.hearingJudgeFormInfo.excludedJudges.length) {
+      this.personalCodejudgeList.forEach(judgeInfo => {
+        if (this.hearingJudgeFormInfo.excludedJudges.includes(judgeInfo.personal_code)) {
+          const judgeDetail = {
+            domain: this.personRole,
+            email: judgeInfo.email_id,
+            id: judgeInfo.sidam_id,
+            knownAs: judgeInfo.known_as,
+            name: judgeInfo.surname,
+            personalCode: judgeInfo.personal_code,
+          };
+          this.excludedJudgeList.push(judgeDetail);
+        }
+      });
+    }
   }
 
   public showSpecificJudge(judgeSelection: string) {
@@ -87,6 +149,7 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
     if (action === ACTION.CONTINUE) {
       this.checkFormData();
       if (this.isFormValid()) {
+        this.prepareHearingRequestData();
         super.navigateAction(action);
       }
     } else if (action === ACTION.BACK) {
@@ -94,15 +157,45 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
     }
   }
 
+  public prepareHearingRequestData(): void {
+    const panelPreferences: PanelPreferenceModel[] = [] as PanelPreferenceModel[];
+    let roleType: string[] = [];
+    if (this.hearingJudgeForm.value.specificJudge === RadioOptions.YES) {
+      const panelPreference: PanelPreferenceModel = {
+        memberID: this.hearingJudgeForm.value.findPersonControl.personalCode,
+        memberType: MemberType.JUDGE,
+        requirementType: RequirementType.MUSTINC
+      };
+      panelPreferences.push(panelPreference);
+    } else {
+      roleType = this.hearingJudgeForm.value.judgeType.filter(judgeType => judgeType.selected).map(judgeType => judgeType.key);
+    }
+    this.excludedJudge.judgeList.forEach(judgeInfo => {
+      const panelPreference: PanelPreferenceModel = {
+        memberID: judgeInfo.personalCode,
+        memberType: MemberType.JUDGE,
+        requirementType: RequirementType.EXCLUDE
+      };
+      panelPreferences.push(panelPreference);
+    });
+    this.hearingRequestMainModel = {
+      ...this.hearingRequestMainModel,
+      hearingDetails: {
+        ...this.hearingRequestMainModel.hearingDetails,
+        panelRequirements: { roleType, panelPreferences }
+      }
+    };
+  }
+
   public showRadioButtonError(): void {
     if (!this.hearingJudgeForm.controls.specificJudge.valid) {
       this.specificJudgeSelectionError = HearingJudgeSelectionEnum.SelectionError;
-      this.validationErrors.push({id: 'specific-judge-selection', message: HearingJudgeSelectionEnum.SelectionError});
+      this.validationErrors.push({ id: 'specific-judge-selection', message: HearingJudgeSelectionEnum.SelectionError });
     } else if (this.specificJudgeSelection === RadioOptions.YES && !this.hearingJudgeInfo.isJudgeInputValid() && !this.hearingJudgeForm.controls.findPersonControl.get('email').valid) {
       this.validationErrors.push(this.hearingJudgeInfo.validationError);
     } else if (this.specificJudgeSelection === RadioOptions.NO && !this.hearingJudgeForm.controls.judgeType.valid) {
       this.selectJudgeTypesError = HearingJudgeSelectionEnum.SelectOneJudgeError;
-      this.validationErrors.push({id: 'judgeTypes', message: HearingJudgeSelectionEnum.SelectOneJudgeError});
+      this.validationErrors.push({ id: 'judgeTypes', message: HearingJudgeSelectionEnum.SelectOneJudgeError });
     }
   }
 

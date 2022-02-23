@@ -13,10 +13,7 @@
             Hearing stage
           </label>
           <select class="govuk-select govuk-!-width-one-third" id="hearingStage" name="hearing-stage">
-            <option value="Initial" selected="">Initial</option>
-            <option value="Final">Final</option>
-            <option value="Substantial">Substantial</option>
-            <option value="Case management">Case management</option>
+            <option *ngFor="let hearingType of hearingTypes$ | async" [ngValue]="hearingType.key">{{hearingType.value_en}}</option>
           </select>
         </div>
         <br>
@@ -37,7 +34,7 @@
               </div>
               <div class="govuk-radios__conditional" *ngIf="hearingResultType === 'decision'">
                 <div class="govuk-form-group">
-                  <label class="govuk-label" for="decision-reason">Hearing outcome</label>
+                  <label class="govuk-label" id="dropdown-label" for="decision-reason">Hearing outcome</label>
                   <select formControlName="decisionReason" class="govuk-select" id="decision-reason" name="decisionReason">
                     <option value="">Please select</option>
                   </select>
@@ -52,7 +49,7 @@
               </div>
               <div class="govuk-radios__conditional" *ngIf="hearingResultType === 'adjourned'">
                 <div class="govuk-form-group">
-                  <label class="govuk-label" for="adjourned-reason">Select a reason for this result</label>
+                  <label class="govuk-label" id="dropdown-label" for="adjourned-reason">Select a reason for this result</label>
                   <select formControlName="adjournedReason" class="govuk-select" id="adjourned-reason" name="adjournedReason">
                     <option value="" selected>Please select</option>
                   </select>
@@ -67,7 +64,7 @@
               </div>
               <div class="govuk-radios__conditional" *ngIf="hearingResultType === 'withdrawn'">
                 <div class="govuk-form-group">
-                  <label class="govuk-label" for="withdrawn-reason">Select a reason for this result</label>
+                  <label class="govuk-label" id="dropdown-label" for="withdrawn-reason">Select a reason for this result</label>
                   <select formControlName="withdrawnReason" class="govuk-select" id="withdrawn-reason" name="withdrawnReason">
                     <option value="" selected>Please select</option>
                   </select>

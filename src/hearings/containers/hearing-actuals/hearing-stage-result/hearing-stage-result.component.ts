@@ -1,10 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
+import { HearingResult } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
-import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { LovRefDataService } from '../../../services/lov-ref-data.service';
 import * as fromHearingStore from '../../../store';
@@ -22,24 +21,30 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
   public serviceValueSub: Subscription;
   public hearingTypes$: Observable<LovRefDataModel[]>;
   private hearingState$: Observable<fromHearingStore.State>;
-  
+
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
-    private readonly hearingsService: HearingsService,
-    private readonly lovRefDataService: LovRefDataService,
-    private readonly formBuilder: FormBuilder,
-    private readonly route: ActivatedRoute) {
+              private readonly hearingsService: HearingsService,
+              private readonly lovRefDataService: LovRefDataService,
+              private readonly formBuilder: FormBuilder) {
     this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
-    this.hearingStageResultForm = this.formBuilder.group({});
   }
-  
+
+  public get hearingResultEnum() {
+    return HearingResult;
+  }
+
   public ngOnInit(): void {
-    this.hearingTypes$ = this.lovRefDataService.getListOfValues('HearingType', 'SSCS');
-    this.serviceValueSub = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesModel)).subscribe((hearingValueModel: ServiceHearingValuesModel) =>
-      this.caseTitle = hearingValueModel ? hearingValueModel.caseName : ''
-    );
-    this.hearingState$.subscribe(x => {
-      console.log('HEARING STATE', x);
+    this.hearingStageResultForm = this.formBuilder.group({
+      hearingStage: [''],
+      hearingResult: ['', Validators.required],
+      completedReason: [''],
+      adjournedReason: [''],
+      cancelledReason: ['']
     });
+    this.hearingTypes$ = this.lovRefDataService.getListOfValues('HearingType', 'SSCS');
+    // TODO: Get the case title from hearing actuals API
+    // Title is not returned by the API and need to liaise with the backend team
+    this.caseTitle = 'Jane Smith vs DWP';
   }
 
   public ngOnDestroy(): void {

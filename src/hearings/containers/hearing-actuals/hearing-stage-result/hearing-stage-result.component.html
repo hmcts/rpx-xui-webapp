@@ -1,7 +1,7 @@
 <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      {{caseTitle}}
+      <span class="govuk-caption-l">{{caseTitle}}</span>
       <h1 class="govuk-heading-l">
         Hearing stage and result
       </h1>
@@ -26,28 +26,28 @@
             </legend>
             <div class="govuk-radios" data-module="govuk-radios">
               <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="decision" formName="hearingResult" name="hearingResult"
-                  type="radio" value="decision" data-aria-controls="conditional-decision" (change)="onHearingResult('decision')">
-                <label class="govuk-label govuk-radios__label" for="decision">
+                <input class="govuk-radios__input" id="completed" formName="hearingResult" name="hearingResult"
+                  type="radio" value="completed" data-aria-controls="conditional-completed" (change)="onHearingResult(hearingResultEnum.COMPLETED)">
+                <label class="govuk-label govuk-radios__label" for="completed">
                   Heard, order or decision
                 </label>
               </div>
-              <div class="govuk-radios__conditional" *ngIf="hearingResultType === 'decision'">
+              <div class="govuk-radios__conditional" *ngIf="hearingResultType === hearingResultEnum.COMPLETED">
                 <div class="govuk-form-group">
-                  <label class="govuk-label" id="dropdown-label" for="decision-reason">Hearing outcome</label>
-                  <select formControlName="decisionReason" class="govuk-select" id="decision-reason" name="decisionReason">
+                  <label class="govuk-label" id="dropdown-label" for="completed-reason">Hearing outcome</label>
+                  <select formControlName="completedReason" class="govuk-select" id="completed-reason" name="completedReason">
                     <option value="">Please select</option>
                   </select>
                 </div>
               </div>
               <div class="govuk-radios__item">
                 <input class="govuk-radios__input" id="adjourned" formName="hearingResult" name="hearingResult"
-                  type="radio" value="adjourned" data-aria-controls="conditional-adjourned" (change)="onHearingResult('adjourned')">
+                  type="radio" value="adjourned" data-aria-controls="conditional-adjourned" (change)="onHearingResult(hearingResultEnum.ADJOURNED)">
                 <label class="govuk-label govuk-radios__label" for="adjourned">
                   Part-heard, adjourned or postponed
                 </label>
               </div>
-              <div class="govuk-radios__conditional" *ngIf="hearingResultType === 'adjourned'">
+              <div class="govuk-radios__conditional" *ngIf="hearingResultType === hearingResultEnum.ADJOURNED">
                 <div class="govuk-form-group">
                   <label class="govuk-label" id="dropdown-label" for="adjourned-reason">Select a reason for this result</label>
                   <select formControlName="adjournedReason" class="govuk-select" id="adjourned-reason" name="adjournedReason">
@@ -56,16 +56,16 @@
                 </div>
               </div>
               <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="withdrawn" formName="hearingResult" name="hearingResult"
-                  type="radio" value="withdrawn" data-aria-controls="conditional-withdrawn" (change)="onHearingResult('withdrawn')">
-                <label class="govuk-label govuk-radios__label" for="withdrawn">
+                <input class="govuk-radios__input" id="cancelled" formName="hearingResult" name="hearingResult"
+                  type="radio" value="cancelled" data-aria-controls="conditional-cancelled" (change)="onHearingResult(hearingResultEnum.CANCELLED)">
+                <label class="govuk-label govuk-radios__label" for="cancelled">
                   Withdrawn, cancelled or vacated
                 </label>
               </div>
-              <div class="govuk-radios__conditional" *ngIf="hearingResultType === 'withdrawn'">
+              <div class="govuk-radios__conditional" *ngIf="hearingResultType === hearingResultEnum.CANCELLED">
                 <div class="govuk-form-group">
-                  <label class="govuk-label" id="dropdown-label" for="withdrawn-reason">Select a reason for this result</label>
-                  <select formControlName="withdrawnReason" class="govuk-select" id="withdrawn-reason" name="withdrawnReason">
+                  <label class="govuk-label" id="dropdown-label" for="cancelled-reason">Select a reason for this result</label>
+                  <select formControlName="cancelledReason" class="govuk-select" id="cancelled-reason" name="cancelledReason">
                     <option value="" selected>Please select</option>
                   </select>
                 </div>        

@@ -55,7 +55,6 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
 
   public ngOnInit(): void {
     this.setUpLocationsAndJurisdictions();
-    this.rolesService.getValidRoles([this.selectedJurisdiction]).subscribe(allRoles => this.allRoles = allRoles);
     this.setupCaseWorkers();
   }
 

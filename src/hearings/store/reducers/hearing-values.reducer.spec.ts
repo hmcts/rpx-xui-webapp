@@ -1,3 +1,4 @@
+import { MemberType } from 'api/hearings/models/hearings.enum';
 import {PartyType, RequirementType} from '../../models/hearings.enum';
 import {ServiceHearingValuesModel} from '../../models/serviceHearingValues.model';
 import * as fromHearingValuesActions from '../actions/hearing-values.action';
@@ -57,6 +58,16 @@ describe('Hearing Values Reducer', () => {
             judiciarySpecialisms: [''],
           },
           hearingIsLinkedFlag: false,
+          panelRequirements: {
+            panelPreferences: [
+                {
+                    memberID: 'p1000000',
+                    memberType: MemberType.PANEL_MEMBER,
+                    requirementType: RequirementType.MUSTINC,
+                }
+            ],
+            panelSpecialisms: ['DisabilityQualifiedPanelMember', 'Cardiologist'],
+        },
           parties: [
             {
               partyID: 'P1',

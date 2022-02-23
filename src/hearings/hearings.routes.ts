@@ -21,6 +21,8 @@ import { HearingCategory } from './models/hearings.enum';
 import { AdditionalFacilitiesResolver } from './resolvers/additional-facilities.resolver';
 import { CaseFlagsResolver } from './resolvers/case-flags.resolver';
 import { HearingStageResolver } from './resolvers/hearing-stage.resolver';
+import { OtherPanelRolesResolver } from './resolvers/other-panel-roles.resolver';
+import { PanelDetailsResolver } from './resolvers/panel-details.resolver';
 import { PartyChannelsResolverService } from './resolvers/party-channels-resolver.service';
 import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
 
@@ -170,7 +172,9 @@ export const ROUTES: Routes = [
           caseFlags: CaseFlagsResolver,
           hearingStageOptions: HearingStageResolver,
           additionFacilitiesOptions: AdditionalFacilitiesResolver,
-          partyChannels: PartyChannelsResolverService
+          partyChannels: PartyChannelsResolverService,
+          panelDetails: PanelDetailsResolver,
+          otherPanelRoles: OtherPanelRolesResolver,
         },
         component: HearingCreateEditSummaryComponent,
         canActivate: [HealthCheckGuard],

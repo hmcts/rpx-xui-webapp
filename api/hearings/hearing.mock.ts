@@ -76,7 +76,7 @@ export const init = () => {
     ];
   });
 
-  mock.onGet(hearingsActualsUrl).reply(() => {
+  mock.onGet(hearingActualsUrl).reply(() => {
     return [
       200,
       HEARING_ACTUAL,

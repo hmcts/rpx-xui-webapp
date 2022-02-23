@@ -1,12 +1,7 @@
-import {Answer} from './answer';
 import {HearingActualsPartyDetailsModel} from './hearingActualsPartyDetails.model';
-import {IsHiddenSource} from './hearings.enum';
+import {Section} from './section';
 
-export interface ActualsSection {
-  insetInfo?: string;
-  sectionHTMLTitle: string;
-  answers?: Answer[];
-  isHiddenSource?: IsHiddenSource;
+export interface ActualsSection extends Section {
   updateLink?: string;
   parties?: Partial<HearingActualsPartyDetailsModel>[];
 }

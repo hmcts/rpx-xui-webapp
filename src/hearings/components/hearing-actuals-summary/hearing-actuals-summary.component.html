@@ -20,7 +20,7 @@
   <ng-container *ngIf="section.parties?.length">
 
     <dl class="govuk-summary-list" *ngFor="let party of section.parties">
-      <div [innerHTML]="party.HMTLTitle"></div>
+      <div [innerHTML]="party.HTMLTitle"></div>
       <div class="govuk-summary-list__row govuk-summary-list__row--no-actions" *ngIf="party.partyRole">
         <dt class="govuk-summary-list__key">
           Role

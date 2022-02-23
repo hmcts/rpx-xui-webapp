@@ -1,8 +1,8 @@
-import { ActivatedRoute } from "@angular/router";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
-import { State } from "../store";
-import { AnswerConverter } from "./answer.converter";
+import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { State } from '../store';
+import { AnswerConverter } from './answer.converter';
 
 export class HearingPanelOtherPanelRolesConverter implements AnswerConverter {
   constructor(protected readonly route: ActivatedRoute) {}
@@ -17,7 +17,7 @@ export class HearingPanelOtherPanelRolesConverter implements AnswerConverter {
         )
           return;
 
-        let selectedPanelRoles = "<ul>";
+        let selectedPanelRoles = '<ul>';
         const panelDetailsResolverData =
           this.route.snapshot.data.otherPanelRoles;
         if (
@@ -50,7 +50,7 @@ export class HearingPanelOtherPanelRolesConverter implements AnswerConverter {
             }
           );
         }
-        return selectedPanelRoles + "</ul>";
+        return selectedPanelRoles + '</ul>';
       })
     );
   }

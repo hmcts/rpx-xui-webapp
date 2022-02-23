@@ -1,17 +1,17 @@
-import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
-import { select, Store } from "@ngrx/store";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
-import { HearingRequestMainModel } from "../models/hearingRequestMain.model";
-import { HearingRequestStateData } from "../models/hearingRequestStateData.model";
-import { JudicialUserModel } from "../models/judicialUser.model";
-import { JudicialRefDataService } from "../services/judicial-ref-data.service";
-import { LovRefDataService } from "../services/lov-ref-data.service";
-import * as fromHearingStore from "../store";
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
+import { select, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
+import { HearingRequestStateData } from '../models/hearingRequestStateData.model';
+import { JudicialUserModel } from '../models/judicialUser.model';
+import { JudicialRefDataService } from '../services/judicial-ref-data.service';
+import { LovRefDataService } from '../services/lov-ref-data.service';
+import * as fromHearingStore from '../store';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 
 export class PanelDetailsResolver implements Resolve<JudicialUserModel[]> {

@@ -1,33 +1,33 @@
-import { Pipe, PipeTransform } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { Observable } from "rxjs";
-import { AdditionalFacilitiesAnswerConverter } from "../converters/additional-facilities.answer.converter";
-import { AdditionalInstructionsAnswerConverter } from "../converters/additional-instructions.answer.converter";
-import { AdditionalSecurityAnswerConverter } from "../converters/additional-security.answer.converter";
-import { AnswerConverter } from "../converters/answer.converter";
-import { CaseFlagAnswerConverter } from "../converters/case-flag.answer.converter";
-import { CaseNameAnswerConverter } from "../converters/case-name.answer.converter";
-import { CaseNumberAnswerConverter } from "../converters/case-number.answer.converter";
-import { DefaultAnswerConverter } from "../converters/default.answer.converter";
-import { HearingLengthAnswerConverter } from "../converters/hearing-length.answer.converter";
-import { HearingPanelRequiredConverter } from "../converters/hearing-panel-required.converter";
-import { HearingPanelExcludeMemberConverter } from "../converters/hearing-panel-exclude-members.converter";
-import { HearingPanelIncludeMemberConverter } from "../converters/hearing-panel-include-members.converter";
-import { HearingPanelOtherPanelRolesConverter } from "../converters/hearing-panel-other-panel-roles.converter";
-import { HearingPriorityAnswerConverter } from "../converters/hearing-priority.answer.converter";
-import { HearingSpecificDateAnswerConverter } from "../converters/hearing-specific-date.answer.converter";
-import { NeedWelshAnswerConverter } from "../converters/need-welsh.answer.converter";
-import { NumberOfAttendancesAnswerConverter } from "../converters/number-of-attendances-answer.converter";
-import { PartyChannelsAnswerConverter } from "../converters/party-channels-answer.converter";
-import { StageAnswerConverter } from "../converters/stage.answer.converter";
-import { TypeAnswerConverter } from "../converters/type.answer.converter";
-import { VenueAnswerConverter } from "../converters/venue.answer.converter";
-import { AnswerSource } from "../models/hearings.enum";
-import { JudicialRefDataService } from "../services/judicial-ref-data.service";
-import { State } from "../store";
+import { Pipe, PipeTransform } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
+import { AdditionalFacilitiesAnswerConverter } from '../converters/additional-facilities.answer.converter';
+import { AdditionalInstructionsAnswerConverter } from '../converters/additional-instructions.answer.converter';
+import { AdditionalSecurityAnswerConverter } from '../converters/additional-security.answer.converter';
+import { AnswerConverter } from '../converters/answer.converter';
+import { CaseFlagAnswerConverter } from '../converters/case-flag.answer.converter';
+import { CaseNameAnswerConverter } from '../converters/case-name.answer.converter';
+import { CaseNumberAnswerConverter } from '../converters/case-number.answer.converter';
+import { DefaultAnswerConverter } from '../converters/default.answer.converter';
+import { HearingLengthAnswerConverter } from '../converters/hearing-length.answer.converter';
+import { HearingPanelRequiredConverter } from '../converters/hearing-panel-required.converter';
+import { HearingPanelExcludeMemberConverter } from '../converters/hearing-panel-exclude-members.converter';
+import { HearingPanelIncludeMemberConverter } from '../converters/hearing-panel-include-members.converter';
+import { HearingPanelOtherPanelRolesConverter } from '../converters/hearing-panel-other-panel-roles.converter';
+import { HearingPriorityAnswerConverter } from '../converters/hearing-priority.answer.converter';
+import { HearingSpecificDateAnswerConverter } from '../converters/hearing-specific-date.answer.converter';
+import { NeedWelshAnswerConverter } from '../converters/need-welsh.answer.converter';
+import { NumberOfAttendancesAnswerConverter } from '../converters/number-of-attendances-answer.converter';
+import { PartyChannelsAnswerConverter } from '../converters/party-channels-answer.converter';
+import { StageAnswerConverter } from '../converters/stage.answer.converter';
+import { TypeAnswerConverter } from '../converters/type.answer.converter';
+import { VenueAnswerConverter } from '../converters/venue.answer.converter';
+import { AnswerSource } from '../models/hearings.enum';
+import { JudicialRefDataService } from '../services/judicial-ref-data.service';
+import { State } from '../store';
 
 @Pipe({
-  name: "transformAnswer",
+  name: 'transformAnswer',
 })
 export class HearingAnswersPipe implements PipeTransform {
   constructor(

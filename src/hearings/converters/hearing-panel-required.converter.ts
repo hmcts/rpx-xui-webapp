@@ -1,8 +1,8 @@
-import { ActivatedRoute } from "@angular/router";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
-import { State } from "../store";
-import { AnswerConverter } from "./answer.converter";
+import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { State } from '../store';
+import { AnswerConverter } from './answer.converter';
 
 export class HearingPanelRequiredConverter implements AnswerConverter {
   constructor(protected readonly route: ActivatedRoute) {}
@@ -17,8 +17,8 @@ export class HearingPanelRequiredConverter implements AnswerConverter {
         )
           return;
         return state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements.panelPreferences.length > 0
-          ? "Yes"
-          : "No";
+          ? 'Yes'
+          : 'No';
       })
     );
   }

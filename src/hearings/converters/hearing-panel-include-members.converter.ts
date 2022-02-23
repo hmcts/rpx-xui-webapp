@@ -1,10 +1,10 @@
-import { ActivatedRoute } from "@angular/router";
-import { MemberType, RequirementType } from "api/hearings/models/hearings.enum";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
-import { JudicialUserModel } from "../models/judicialUser.model";
-import { State } from "../store";
-import { AnswerConverter } from "./answer.converter";
+import { ActivatedRoute } from '@angular/router';
+import { MemberType, RequirementType } from 'api/hearings/models/hearings.enum';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { JudicialUserModel } from '../models/judicialUser.model';
+import { State } from '../store';
+import { AnswerConverter } from './answer.converter';
 
 export class HearingPanelIncludeMemberConverter implements AnswerConverter {
   constructor(protected readonly route: ActivatedRoute) {}
@@ -21,7 +21,7 @@ export class HearingPanelIncludeMemberConverter implements AnswerConverter {
           state.hearingRequest.hearingRequestMainModel.hearingDetails
             .panelRequirements;
         const panelDetailsResolverData = this.route.snapshot.data.panelDetails;
-        let result = "<ul>";
+        let result = '<ul>';
         const personalCodes = panelRequirementsState.panelPreferences
           .filter((ref) => ref.requirementType === RequirementType.MUSTINC)
           .map((ref) => ref.memberID);
@@ -31,7 +31,7 @@ export class HearingPanelIncludeMemberConverter implements AnswerConverter {
             personalCodes.includes(routeData.personal_code)
           )
           .forEach((data) => {
-            let personDetails = panelRequirementsState.panelPreferences.find(
+            const personDetails = panelRequirementsState.panelPreferences.find(
               (ref) => ref.memberID === data.personal_code
             );
             if (personDetails.memberType === MemberType.PANEL_MEMBER) {
@@ -41,7 +41,7 @@ export class HearingPanelIncludeMemberConverter implements AnswerConverter {
               result += `<li>${data.known_as}</li>`;
             }
           });
-        return result + "</ul>";
+        return result + '</ul>';
       })
     );
   }

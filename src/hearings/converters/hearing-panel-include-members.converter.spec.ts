@@ -1,21 +1,21 @@
-import { TestBed } from "@angular/core/testing";
-import { ActivatedRoute } from "@angular/router";
-import { provideMockStore } from "@ngrx/store/testing";
-import { cold } from "jasmine-marbles";
-import { of } from "rxjs";
-import { hearingPriorityRefData, initialState } from "../hearing.test.data";
-import { State } from "../store";
-import { AnswerConverter } from "./answer.converter";
-import { HearingPanelIncludeMemberConverter } from "./hearing-panel-include-members.converter";
-import { HttpClient } from "@angular/common/http";
-import { ALL_JUDICIAL_USERS } from "api/prd/judicial/data/judicial.mock.data";
+import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { provideMockStore } from '@ngrx/store/testing';
+import { cold } from 'jasmine-marbles';
+import { of } from 'rxjs';
+import { hearingPriorityRefData, initialState } from '../hearing.test.data';
+import { State } from '../store';
+import { AnswerConverter } from './answer.converter';
+import { HearingPanelIncludeMemberConverter } from './hearing-panel-include-members.converter';
+import { HttpClient } from '@angular/common/http';
+import { ALL_JUDICIAL_USERS } from 'api/prd/judicial/data/judicial.mock.data';
 
-describe("Hearing Panel include Member Converter", () => {
+describe('Hearing Panel include Member Converter', () => {
   let converter: AnswerConverter;
   let router: any;
 
-  const httpClientMock = jasmine.createSpyObj<HttpClient>("HttpClient", [
-    "get",
+  const httpClientMock = jasmine.createSpyObj<HttpClient>('HttpClient', [
+    'get',
   ]);
 
   beforeEach(() => {
@@ -50,11 +50,11 @@ describe("Hearing Panel include Member Converter", () => {
     converter = new HearingPanelIncludeMemberConverter(router);
   });
 
-  it("should transform include panel members as expected", () => {
+  it('should transform include panel members as expected', () => {
     const STATE: State = initialState.hearings;
     const result$ = converter.transformAnswer(of(STATE));
-    const transformedValue = "<ul><li>Jacky Collins</li></ul>";
-    const expected = cold("(b|)", { b: transformedValue });
+    const transformedValue = '<ul><li>Jacky Collins</li></ul>';
+    const expected = cold('(b|)', { b: transformedValue });
     expect(result$).toBeObservable(expected);
   });
 });

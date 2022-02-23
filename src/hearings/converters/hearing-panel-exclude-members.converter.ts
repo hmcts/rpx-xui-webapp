@@ -1,11 +1,11 @@
-import { ActivatedRoute } from "@angular/router";
-import { MemberType } from "api/hearings/models/hearings.enum";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
-import { RequirementType } from "../models/hearings.enum";
-import { JudicialUserModel } from "../models/judicialUser.model";
-import { State } from "../store";
-import { AnswerConverter } from "./answer.converter";
+import { ActivatedRoute } from '@angular/router';
+import { MemberType } from 'api/hearings/models/hearings.enum';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { RequirementType } from '../models/hearings.enum';
+import { JudicialUserModel } from '../models/judicialUser.model';
+import { State } from '../store';
+import { AnswerConverter } from './answer.converter';
 
 export class HearingPanelExcludeMemberConverter implements AnswerConverter {
   constructor(protected readonly route: ActivatedRoute) {}
@@ -23,7 +23,7 @@ export class HearingPanelExcludeMemberConverter implements AnswerConverter {
           state.hearingRequest.hearingRequestMainModel.hearingDetails
             .panelRequirements;
         const panelDetailsResolverData = this.route.snapshot.data.panelDetails;
-        let transformedResult = "<ul>";
+        let transformedResult = '<ul>';
         const personalCodes = panelRequirementsState.panelPreferences
           .filter((ref) => ref.requirementType === RequirementType.EXCLUDE)
           .map((ref) => ref.memberID);
@@ -33,7 +33,7 @@ export class HearingPanelExcludeMemberConverter implements AnswerConverter {
             personalCodes.includes(routeData.personal_code)
           )
           .forEach((data) => {
-            let personDetails = panelRequirementsState.panelPreferences.find(
+            const personDetails = panelRequirementsState.panelPreferences.find(
               (ref) => ref.memberID === data.personal_code
             );
             if (personDetails.memberType === MemberType.PANEL_MEMBER) {
@@ -43,7 +43,7 @@ export class HearingPanelExcludeMemberConverter implements AnswerConverter {
               transformedResult += `<li>${data.known_as}</li>`;
             }
           });
-        return transformedResult + "</ul>";
+        return transformedResult + '</ul>';
       })
     );
   }

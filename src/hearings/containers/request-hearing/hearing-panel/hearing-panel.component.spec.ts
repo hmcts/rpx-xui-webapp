@@ -159,7 +159,6 @@ describe('HearingPanelComponent', () => {
               requirementType: RequirementType.MUSTINC,
           }
       ],
-      
       panelSpecialisms: ['DisabilityQualifiedPanelMember', '', 'Cardiologist']
     };
 

@@ -2,14 +2,14 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
-import { LocationModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
-import { Observable, Subscription } from 'rxjs';
-import { debounceTime, filter } from 'rxjs/operators';
+import { Observable, of, Subscription } from 'rxjs';
+import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
+
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
-
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
+import { AllocateRoleService } from '../../../role-access/services';
 import { ListConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, SortOrder, TaskActionIds, TaskService } from '../../enums';
 import { Caseworker, Location } from '../../interfaces/common';
@@ -39,6 +39,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public pagination: PaginationParameter;
   public selectedLocations: string[] = [];
   public selectedWorkTypes: string[] = [];
+  public selectedServices: string[] = [];
   public taskServiceConfig: TaskServiceConfig;
   protected userDetailsKey: string = 'userDetails';
   private pTasks: Task[] = [];
@@ -60,7 +61,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected featureToggleService: FeatureToggleService,
     protected locationService: LocationDataService,
     protected waSupportedJurisdictionsService: WASupportedJurisdictionsService,
-    protected filterService: FilterService
+    protected filterService: FilterService,
+    protected rolesService: AllocateRoleService
   ) {
   }
 
@@ -327,11 +329,27 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   private doLoad(): void {
     this.showSpinner$ = this.loadingService.isLoading;
     const loadingToken = this.loadingService.register();
-    this.performSearchPagination().subscribe((result: TaskResponse) => {
+    const tasksSearch$ = this.performSearchPagination();
+    const mappedSearchResult$ = tasksSearch$.pipe(mergeMap(((result: TaskResponse) => {
+      const assignedJudicialUsers: string[] = [];
+      result.tasks.forEach(task => {
+        task.assigneeName = getAssigneeName(this.caseworkers, task.assignee);
+        if (!task.assigneeName) {
+          assignedJudicialUsers.push(task.assignee);
+        }
+      });
+      return this.rolesService.getCaseRolesUserDetails(assignedJudicialUsers, this.selectedServices).pipe(switchMap(((judicialUserData) => {
+        result.tasks.map(task => {
+          const judicialAssignedData = judicialUserData.find(judicialUser => judicialUser.sidam_id === task.assignee);
+          task.assigneeName = judicialAssignedData ? judicialAssignedData.known_as : task.assigneeName;
+        });
+        return of(result);
+      })));
+    })));
+    mappedSearchResult$.subscribe(result => {
       this.loadingService.unregister(loadingToken);
       this.tasks = result.tasks;
       this.tasksTotal = result.total_records;
-      this.tasks.forEach(task => task.assigneeName = getAssigneeName(this.caseworkers, task.assignee));
       this.ref.detectChanges();
     }, error => {
       this.loadingService.unregister(loadingToken);

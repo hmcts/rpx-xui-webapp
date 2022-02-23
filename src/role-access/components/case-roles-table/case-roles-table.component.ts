@@ -31,7 +31,7 @@ export class CaseRolesTableComponent implements OnInit {
 
   @Input()
   public set roles(value: CaseRole[]) {
-    if(value) {
+    if (value) {
       this.items = value.map((role) => ({ ...role, open: false }));
       this._roles = value;
     }

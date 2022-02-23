@@ -37,7 +37,7 @@ export class AllocateRoleService {
       const serviceKey = getRoleSessionStorageKeyForServiceId(serviceId);
       if (this.sessionStorageService.getItem(serviceKey)) {
         storedServices.push(serviceId);
-        storedRolesByService.push({service: serviceId, caseworkers: JSON.parse(this.sessionStorageService.getItem(serviceKey))});
+        storedRolesByService.push({service: serviceId, roles: JSON.parse(this.sessionStorageService.getItem(serviceKey))});
       } else {
         newServices.push(serviceId);
       }

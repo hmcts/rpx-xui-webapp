@@ -37,9 +37,10 @@ export class WorkCaseListWrapperComponent implements OnInit {
   public locations$: Observable<Location[]>;
   public waSupportedJurisdictions$: Observable<string[]>;
   public supportedJurisdictions: string[];
-  public selectedServices: string[] = [];
+  public selectedServices: string[] = ['IA'];
   public pagination: PaginationParameter;
   public backUrl: string = null;
+  public supportedRoles$: Observable<Role[]>;
   protected allJurisdictions: Jurisdiction[];
   protected allRoles: Role[];
   protected defaultLocation: string = 'all';
@@ -146,7 +147,6 @@ export class WorkCaseListWrapperComponent implements OnInit {
     // get supported jurisdictions on initialisation in order to get caseworkers by these services
     this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
 
-    this.rolesService.getValidRoles(['IA']).subscribe(allRoles => this.allRoles = allRoles);
     this.jurisdictionsService.getJurisdictions().subscribe(jur => this.allJurisdictions = jur);
     this.setupCaseWorkers();
     this.loadCases();
@@ -156,6 +156,9 @@ export class WorkCaseListWrapperComponent implements OnInit {
     const caseworkersByService$ = this.waSupportedJurisdictions$.switchMap(jurisdictions =>
       this.caseworkerService.getCaseworkersForServices(jurisdictions)
     );
+    this.waSupportedJurisdictions$.switchMap(jurisdictions =>
+      this.rolesService.getValidRoles(jurisdictions)
+    ).subscribe(roles => this.allRoles = roles);
     // currently get caseworkers for all supported services
     // in future change, could get caseworkers by specific service from filter changes
     // however regrdless would likely need this initialisation

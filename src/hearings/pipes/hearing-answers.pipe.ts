@@ -10,10 +10,10 @@ import { CaseNameAnswerConverter } from "../converters/case-name.answer.converte
 import { CaseNumberAnswerConverter } from "../converters/case-number.answer.converter";
 import { DefaultAnswerConverter } from "../converters/default.answer.converter";
 import { HearingLengthAnswerConverter } from "../converters/hearing-length.answer.converter";
-import { HearingPanelConverter } from "../converters/hearing-panel-converter";
-import { HearingPanelExcludeMemberConverter } from "../converters/hearing-panel-exclude-members";
-import { HearingPanelIncludeMemberConverter } from "../converters/hearing-panel-include-members";
-import { HearingPanelOtherPanelRolesConverter } from "../converters/hearing-panel-other-panel-roles";
+import { HearingPanelRequiredConverter } from "../converters/hearing-panel-required.converter";
+import { HearingPanelExcludeMemberConverter } from "../converters/hearing-panel-exclude-members.converter";
+import { HearingPanelIncludeMemberConverter } from "../converters/hearing-panel-include-members.converter";
+import { HearingPanelOtherPanelRolesConverter } from "../converters/hearing-panel-other-panel-roles.converter";
 import { HearingPriorityAnswerConverter } from "../converters/hearing-priority.answer.converter";
 import { HearingSpecificDateAnswerConverter } from "../converters/hearing-specific-date.answer.converter";
 import { NeedWelshAnswerConverter } from "../converters/need-welsh.answer.converter";
@@ -23,13 +23,17 @@ import { StageAnswerConverter } from "../converters/stage.answer.converter";
 import { TypeAnswerConverter } from "../converters/type.answer.converter";
 import { VenueAnswerConverter } from "../converters/venue.answer.converter";
 import { AnswerSource } from "../models/hearings.enum";
+import { JudicialRefDataService } from "../services/judicial-ref-data.service";
 import { State } from "../store";
 
 @Pipe({
   name: "transformAnswer",
 })
 export class HearingAnswersPipe implements PipeTransform {
-  constructor(protected readonly route: ActivatedRoute) {}
+  constructor(
+    protected readonly route: ActivatedRoute,
+    protected readonly judicialRefDataService: JudicialRefDataService
+  ) {}
 
   public transform(
     answerSource: AnswerSource,
@@ -83,7 +87,7 @@ export class HearingAnswersPipe implements PipeTransform {
         converter = new HearingPriorityAnswerConverter(this.route);
         break;
       case AnswerSource.HEARING_PANEL_REQUIRED:
-        converter = new HearingPanelConverter(this.route);
+        converter = new HearingPanelRequiredConverter(this.route);
         break;
       case AnswerSource.HEARING_PANEL_INCLUDE_MEMBERS:
         converter = new HearingPanelIncludeMemberConverter(this.route);

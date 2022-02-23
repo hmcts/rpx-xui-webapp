@@ -1,5 +1,6 @@
 import {TestBed} from '@angular/core/testing';
 import {provideMockActions} from '@ngrx/effects/testing';
+import { MemberType } from 'api/hearings/models/hearings.enum';
 import {cold, hot} from 'jasmine-marbles';
 import {of} from 'rxjs';
 import {Go} from '../../../app/store/actions';
@@ -72,6 +73,16 @@ describe('Hearing Values Effects', () => {
         judiciarySpecialisms: ['Cardiologist'],
       },
       hearingIsLinkedFlag: false,
+      panelRequirements: {
+        panelPreferences: [
+            {
+                memberID: 'p1000000',
+                memberType: MemberType.PANEL_MEMBER,
+                requirementType: RequirementType.MUSTINC,
+            },
+        ],
+        panelSpecialisms: ['Cardiologist'],
+    },
       parties: [
         {
           partyID: 'P1',

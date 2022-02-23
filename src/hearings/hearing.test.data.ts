@@ -1,4 +1,5 @@
-import { HearingListingStatusEnum, HMCStatus, PartyType } from './models/hearings.enum';
+import { MemberType } from 'api/hearings/models/hearings.enum';
+import { HearingListingStatusEnum, HMCStatus, PartyType, RequirementType } from './models/hearings.enum';
 import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
 
 export const hearingStageRefData = [
@@ -1168,7 +1169,21 @@ export const initialState = {
             hearingWindowFirstDate: null,
           },
           privateHearingRequiredFlag: false,
-          panelRequirements: null,
+          panelRequirements: {
+            panelPreferences: [
+              {
+                memberID: 'p1000000',
+                memberType: MemberType.PANEL_MEMBER,
+                requirementType: RequirementType.MUSTINC,
+            },
+            {
+                memberID: 'p1000003',
+                memberType: MemberType.PANEL_MEMBER,
+                requirementType: RequirementType.EXCLUDE,
+            },
+            ],
+            panelSpecialisms: ['DisabilityQualifiedPanelMember', 'Cardiologist'],
+          },
           autolistFlag: false,
           nonStandardHearingDurationReasons: [],
           hearingPriorityType: 'standard',

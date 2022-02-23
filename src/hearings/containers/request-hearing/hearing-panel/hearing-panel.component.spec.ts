@@ -5,10 +5,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
+import { MemberType } from 'api/hearings/models/hearings.enum';
 import { of } from 'rxjs';
 import { HearingJudgeNamesListComponent } from '../../../components';
 import { initialState } from '../../../hearing.test.data';
-import { ACTION, RadioOptions } from '../../../models/hearings.enum';
+import { ACTION, RadioOptions, RequirementType } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingPanelComponent } from './hearing-panel.component';
@@ -151,6 +152,14 @@ describe('HearingPanelComponent', () => {
 
     initialState.hearings.hearingRequest.hearingRequestMainModel
       .hearingDetails.panelRequirements = {
+        panelPreferences: [
+          {
+              memberID: 'p1000000',
+              memberType: MemberType.PANEL_MEMBER,
+              requirementType: RequirementType.MUSTINC,
+          }
+      ],
+      
       panelSpecialisms: ['DisabilityQualifiedPanelMember', '', 'Cardiologist']
     };
 

@@ -166,6 +166,8 @@ export enum ACTION {
   CONTINUE = 'CONTINUE',
   SUBMIT = 'SUBMIT',
   CANCEL = 'CANCEL',
+  VIEW_EDIT_REASON = 'VIEW EDIT REASON',
+  VIEW_EDIT_SUBMIT = 'VIEW EDIT SUBMIT'
 }
 
 export enum ConditionOperator {

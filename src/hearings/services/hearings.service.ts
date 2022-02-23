@@ -45,6 +45,10 @@ export class HearingsService {
     return this.http.post<HearingRequestMainModel>('api/hearings/submitHearingRequest', hearingRequestMainModel);
   }
 
+  public updateHearingRequest(hearingRequestMainModel: HearingRequestMainModel): Observable<HearingRequestMainModel> {
+    return this.http.put<HearingRequestMainModel>(`api/hearings/updateHearingRequest`, hearingRequestMainModel);
+  }
+
   public getHearingActuals(hearingId: string): Observable<HearingActualsMainModel> {
     return this.http.get<any>(`api/hearings/hearingActuals/${hearingId}`);
   }

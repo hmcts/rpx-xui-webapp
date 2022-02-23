@@ -16,6 +16,8 @@ export const init = () => {
 
   const submitHearingRequest = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearing/;
 
+  const updateHearingRequest = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearing/;
+
   const cancelHearingRequest = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearing\/[\w]*/;
 
   const hearingsActualsUrl = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearingActuals\/[\w]*/;
@@ -58,6 +60,13 @@ export const init = () => {
     ];
   });
 
+  mock.onPut(updateHearingRequest).reply(() => {
+    return [
+      200,
+      [],
+    ];
+  });
+
   mock.onDelete(cancelHearingRequest).reply(() => {
     return [
       200,
@@ -65,7 +74,7 @@ export const init = () => {
     ];
   });
 
-  mock.onGet(hearingsActualsUrl).reply(config => {
+  mock.onGet(hearingsActualsUrl).reply(() => {
     return [
       200,
       HEARING_ACTUAL,

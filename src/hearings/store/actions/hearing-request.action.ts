@@ -6,6 +6,8 @@ export const NAVIGATE_BACK_HEARING_REQUEST = '[HEARING REQUEST] Navigate Back He
 export const UPDATE_HEARING_REQUEST = '[HEARING REQUEST] Update Hearing Request';
 export const INITIALIZE_HEARING_REQUEST = '[HEARING REQUEST] Initialize Hearing Request';
 export const SUBMIT_HEARING_REQUEST = '[HEARING REQUEST] Submit Hearing Request';
+export const VIEW_EDIT_SUBMIT_HEARING_REASON = '[HEARING REQUEST AMEND] View Edit Submit Hearing Reason';
+export const VIEW_EDIT_SUBMIT_HEARING_REQUEST = '[HEARING REQUEST AMEND] View Edit Submit Hearing Request';
 
 export class ResetHearingRequest implements Action {
   public readonly type = RESET_HEARING_REQUEST;
@@ -36,9 +38,25 @@ export class SubmitHearingRequest implements Action {
   }
 }
 
+export class ViewEditSubmitHearingReason implements Action {
+  public readonly type = VIEW_EDIT_SUBMIT_HEARING_REASON;
+
+  constructor(public payload: HearingRequestMainModel) {
+  }
+}
+
+export class ViewEditSubmitHearingRequest implements Action {
+  public readonly type = VIEW_EDIT_SUBMIT_HEARING_REQUEST;
+
+  constructor(public payload: HearingRequestMainModel) {
+  }
+}
+
 export type HearingRequestAction =
   | ResetHearingRequest
   | NavigateBackHearingRequest
   | InitializeHearingRequest
   | UpdateHearingRequest
-  | SubmitHearingRequest;
+  | SubmitHearingRequest
+  | ViewEditSubmitHearingReason
+  | ViewEditSubmitHearingRequest;

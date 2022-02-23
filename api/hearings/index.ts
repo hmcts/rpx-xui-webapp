@@ -99,6 +99,20 @@ export async function cancelHearingRequest(req: EnhancedRequest, res: Response, 
 }
 
 /**
+ * updateHearingRequest - update hearing request
+ */
+export async function updateHearingRequest(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const reqBody = req.body;
+  const markupPath: string = `${hearingsUrl}/hearing`;
+  try {
+    const { status, data }: { status: number, data: HearingListModel } = await handlePut(markupPath, reqBody, req);
+    res.status(status).send(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
  * getHearingActuals - get hearing actuals from hearing ID
  */
 export async function getHearingActuals(req: EnhancedRequest, res: Response, next: NextFunction): Promise<void> {

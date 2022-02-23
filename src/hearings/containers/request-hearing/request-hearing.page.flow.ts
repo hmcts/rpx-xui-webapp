@@ -53,6 +53,12 @@ export abstract class RequestHearingPageFlow {
       case ACTION.SUBMIT:
         this.hearingStore.dispatch(new fromHearingStore.SubmitHearingRequest(this.hearingRequestMainModel));
         break;
+      case ACTION.VIEW_EDIT_REASON:
+        this.hearingStore.dispatch(new fromHearingStore.ViewEditSubmitHearingReason(this.hearingRequestMainModel));
+        break;
+      case ACTION.VIEW_EDIT_SUBMIT:
+        this.hearingStore.dispatch(new fromHearingStore.ViewEditSubmitHearingRequest(this.hearingRequestMainModel));
+        break;
       default:
         throw new Error('Invalid navigate action');
     }

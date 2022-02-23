@@ -104,6 +104,31 @@ export class HearingRequestEffects {
     })
   );
 
+  @Effect({dispatch: false})
+  public submitHearingReason$ = this.actions$.pipe(
+    ofType(hearingRequestActions.VIEW_EDIT_SUBMIT_HEARING_REASON),
+    tap(() => {
+      return this.router.navigate(['hearings', 'request', 'hearing-change-reason']);
+    })
+  );
+
+  @Effect({dispatch: false})
+  public viewEditSubmitHearingRequest$ = this.actions$.pipe(
+    ofType(hearingRequestActions.VIEW_EDIT_SUBMIT_HEARING_REQUEST),
+    map((action: hearingRequestActions.ViewEditSubmitHearingRequest) => action.payload),
+    switchMap(payload => {
+      return this.hearingsService.updateHearingRequest(payload).pipe(
+        tap(
+          () => {
+            return this.router.navigate(['hearings', 'request', 'hearing-confirmation']);
+          }),
+        catchError(error => {
+          return HearingRequestEffects.handleError(error);
+        })
+      );
+    })
+  );
+
   public static handleError(error: HttpError): Observable<Action> {
     if (error && error.status && error.status >= 400) {
       return of(new fromAppStoreActions.Go({path: ['/service-down']}));

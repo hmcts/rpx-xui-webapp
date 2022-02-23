@@ -14,6 +14,6 @@ export class RoleAccessSectionComponent {
     @Input() public showAllocateRoleLink: boolean = false;
     @Input() public roleRouterLink: string;
     @Input() public roleQueryParams: string;
-    @Input() public roleCategory: RoleCategory;
+    @Input() public roleCategory: string;
     @Input() public showAllocate: boolean;
 }

@@ -6,7 +6,7 @@
     [caseDetails]="caseDetails"
     [roleRouterLink]="['/', 'role-access', 'allocate-role', 'allocate']"
     [roleQueryParams]="{'caseId': caseId, 'jurisdiction': jurisdiction, 'roleCategory': 'JUDICIAL'}"
-    [roleCategory]="judicial"
+    roleCategory="JUDICIAL"
     [showAllocateRoleLink]="showAllocateRoleLink"
     showAllocate="true">
   </exui-role-access-section>
@@ -18,9 +18,21 @@
     [caseDetails]="caseDetails"
     [roleRouterLink]="['/', 'role-access', 'allocate-role', 'allocate']"
     [roleQueryParams]="{'caseId': caseId, 'jurisdiction': jurisdiction, 'roleCategory': 'LEGAL_OPERATIONS'}"
-    [roleCategory]="legalOps"
+    roleCategory="LEGAL_OPERATIONS"
     [showAllocateRoleLink]="showAllocateRoleLink"
     [showAllocate]="showLegalOpsAllocate">
+  </exui-role-access-section>
+
+  <exui-role-access-section
+    title="Admin"
+    [namedRoles]="namedAdminRoles"
+    [roles]="adminRoles"
+    [caseDetails]="caseDetails"
+    [roleRouterLink]="['/', 'role-access', 'allocate-role', 'allocate']"
+    [roleQueryParams]="{'caseId': caseId, 'jurisdiction': jurisdiction, 'roleCategory': 'ADMIN'}"
+    roleCategory="ADMIN"
+    [showAllocateRoleLink]="showAllocateRoleLink"
+    [showAllocate]="true">
   </exui-role-access-section>
 
   <h2 class="govuk-heading-m">Exclusions</h2>

@@ -3,10 +3,13 @@ import { RouterModule, Routes } from '@angular/router';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
 import { CancelHearingComponent } from './containers/cancel-hearing/cancel-hearing.component';
 import { ChangeHearingComponent } from './containers/change-hearing/change-hearing.component';
+import { HearingActualAddEditSummaryComponent } from './containers/hearing-actuals/hearing-actual-add-edit-summary/hearing-actual-add-edit-summary.component';
+import { HearingActualsComponent } from './containers/hearing-actuals/hearing-actuals.component';
 import { HearingAdditionalInstructionsComponent } from './containers/request-hearing/hearing-additional-instructions/hearing-additional-instructions.component';
 import { HearingAttendanceComponent } from './containers/request-hearing/hearing-attendance/hearing-attendance.component';
 import { HearingCreateEditSummaryComponent } from './containers/request-hearing/hearing-create-edit-summary/hearing-create-edit-summary.component';
 import { HearingFacilitiesComponent } from './containers/request-hearing/hearing-facilities/hearing-facilities.component';
+import { HearingFinalConfirmationComponent } from './containers/request-hearing/hearing-final-confirmation/hearing-final-confirmation.component';
 import { HearingJudgeComponent } from './containers/request-hearing/hearing-judge/hearing-judge.component';
 import { HearingPanelComponent } from './containers/request-hearing/hearing-panel/hearing-panel.component';
 import { HearingRequirementsComponent } from './containers/request-hearing/hearing-requirements/hearing-requirements.component';
@@ -25,6 +28,7 @@ import { OtherPanelRolesResolver } from './resolvers/other-panel-roles.resolver'
 import { PanelDetailsResolver } from './resolvers/panel-details.resolver';
 import { PartyChannelsResolverService } from './resolvers/party-channels-resolver.service';
 import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
+import { JudicialUserSearchResolver } from './resolvers/ judicial-user-search-resolver.resolve';
 
 export const ROUTES: Routes = [
   {
@@ -57,6 +61,20 @@ export const ROUTES: Routes = [
           title: 'HMCTS Manage cases | Change Hearing'
         }
       }
+    ]
+  },
+  {
+    path: 'actuals',
+    component: HearingActualsComponent,
+    children: [
+      {
+        path: 'hearing-actual-add-edit-summary',
+        component: HearingActualAddEditSummaryComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Manage cases | Hearing Actuals | Check details'
+        }
+      },
     ]
   },
   {
@@ -129,7 +147,10 @@ export const ROUTES: Routes = [
       },
       {
         path: 'hearing-judge',
-        resolve: { hearingStages: RefDataResolver },
+        resolve: {
+          hearingStages: RefDataResolver,
+          judicialUsers: JudicialUserSearchResolver
+        },
         component: HearingJudgeComponent,
         canActivate: [HealthCheckGuard],
         data: {
@@ -190,6 +211,22 @@ export const ROUTES: Routes = [
           title: 'HMCTS Manage cases | Amend Hearing | Check Answers'
         }
       },
+      {
+        path: 'hearing-actual-add-edit',
+        component: HearingActualAddEditSummaryComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Manage cases | Amend Hearing | Check Answers'
+        }
+      },
+      {
+        path: 'hearing-confirmation',
+        component: HearingFinalConfirmationComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Manage cases | Request Hearing | Confirmation'
+        }
+      }
     ]
   },
   {

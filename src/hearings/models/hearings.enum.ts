@@ -48,7 +48,7 @@ export enum EXUIDisplayStatusEnum {
   FAILURE = 'FAILURE',
   CANCELLATION_REQUESTED = 'CANCELLATION REQUESTED',
   VACATED = 'VACATED',
-  AWAITING_ACTUALS = 'AWAITING ACTUALS',
+  AWAITING_ACTUALS = 'AWAITING HEARING ACTUALS',
   ADJOURNED = 'ADJOURNED',
 }
 
@@ -56,6 +56,11 @@ export enum RequirementType {
   MUSTINC = 'MUSTINC',
   OPTINC = 'OPTINC',
   EXCLUDE = 'EXCLUDE',
+}
+
+export enum MemberType {
+  JUDGE = 'JUDGE',
+  PANEL_MEMBER = 'PANEL_MEMBER',
 }
 
 export enum PartyType {
@@ -143,6 +148,7 @@ export enum HearingDatePriorityEnum {
   WeekendError = 'Hearing date cannot be on the weekend',
   InValidHearingDateError = 'Enter a valid hearing date',
   DatePastError = 'The hearing dates cannot be in the past',
+  WeekDayError = 'Date range must include a weekday',
   EarliestHearingDateError = 'The earliest hearing date must be before the latest hearing date',
 }
 

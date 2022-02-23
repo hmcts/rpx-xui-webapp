@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { HearingActualsMainModel } from '../models/hearingActualsMainModel';
+import { HearingActualsMainModel, HearingActualsModel } from '../models/hearingActualsMainModel';
 import { HearingListMainModel } from '../models/hearingListMain.model';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
 import { ACTION } from '../models/hearings.enum';
@@ -47,5 +47,13 @@ export class HearingsService {
 
   public getHearingActuals(hearingId: string): Observable<HearingActualsMainModel> {
     return this.http.get<any>(`api/hearings/hearingActuals/${hearingId}`);
+  }
+
+  public updateHearingActuals(hearingId: string, hearingActualsModel: HearingActualsModel): Observable<HearingActualsModel> {
+    return this.http.put<HearingActualsModel>(`api/hearings/hearingActuals/${hearingId}`, hearingActualsModel);
+  }
+
+  public submitHearingActuals(hearingId: string): Observable<number> {
+    return this.http.post<number>(`api/hearings/hearingActualsCompletion/${hearingId}`, null);
   }
 }

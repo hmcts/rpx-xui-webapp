@@ -13,6 +13,7 @@ import {AbstractPageFlow} from '../../utils/abstract-page-flow';
 export class RequestHearingComponent implements OnDestroy {
 
   private static HEARING_CREATE_EDIT_SUMMARY = 'hearing-create-edit-summary';
+  private static HEARING_CONFIRMATION = 'hearing-confirmation';
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly pageFlow: AbstractPageFlow,
@@ -33,6 +34,10 @@ export class RequestHearingComponent implements OnDestroy {
 
   public get isCheckAnswerPage(): boolean {
     return this.pageFlow.getCurrentPage() === RequestHearingComponent.HEARING_CREATE_EDIT_SUMMARY;
+  }
+
+  public get isConfirmationPage(): boolean {
+    return this.pageFlow.getCurrentPage() === RequestHearingComponent.HEARING_CONFIRMATION;
   }
 
   public ngOnDestroy(): void {

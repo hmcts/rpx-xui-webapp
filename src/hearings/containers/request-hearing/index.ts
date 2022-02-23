@@ -2,6 +2,7 @@ import {HearingAdditionalInstructionsComponent} from './hearing-additional-instr
 import {HearingAttendanceComponent} from './hearing-attendance/hearing-attendance.component';
 import {HearingCreateEditSummaryComponent} from './hearing-create-edit-summary/hearing-create-edit-summary.component';
 import {HearingFacilitiesComponent} from './hearing-facilities/hearing-facilities.component';
+import {HearingFinalConfirmationComponent} from './hearing-final-confirmation/hearing-final-confirmation.component';
 import {HearingJudgeComponent} from './hearing-judge/hearing-judge.component';
 import {HearingPanelComponent} from './hearing-panel/hearing-panel.component';
 import {HearingRequirementsComponent} from './hearing-requirements/hearing-requirements.component';
@@ -27,5 +28,6 @@ export const containers: any[] = [
   HearingTimingComponent,
   HearingAdditionalInstructionsComponent,
   HearingCreateEditSummaryComponent,
-  HearingViewEditSummaryComponent
+  HearingViewEditSummaryComponent,
+  HearingFinalConfirmationComponent
 ];

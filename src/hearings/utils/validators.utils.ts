@@ -46,6 +46,19 @@ export class ValidatorsUtils {
     };
   }
 
+  public calcBusinessDays(startDate: moment.Moment, endDate: moment.Moment): number {
+    const day = startDate;
+    let businessDays = 0;
+
+    while (day.isSameOrBefore(endDate, 'day')) {
+      if (day.day() !== 0 && day.day() !== 6) {
+        businessDays++;
+      }
+      day.add(1, 'd');
+    }
+    return businessDays;
+  }
+
   public hearingDateRangeValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const firstDateRangeList = Object.values(control.value[Object.keys(control.value)[0]]);
@@ -57,10 +70,12 @@ export class ValidatorsUtils {
       const firstDate = moment(firstDateRangeList.join('-'), HearingDateEnum.DefaultFormat);
       const secondDate = moment(secondDateRangeList.join('-'), HearingDateEnum.DefaultFormat);
       const isLatestDate = (isValidFirstDate && isValidSecondDate) ? secondDate >= firstDate : (isValidFirstDate || isValidSecondDate);
+      const numberOfBusinessDays = this.calcBusinessDays(firstDate, secondDate);
       return (isValidFirstDate || isValidSecondDate) && (firstDateNullLength === 0 || firstDateNullLength === 3) && (secondDateNullLength === 0 || secondDateNullLength === 3) &&
         (firstDate.isValid() || secondDate.isValid()) && isLatestDate &&
         (isValidFirstDate ? (firstDate.isAfter() || firstDate.isSame(new Date(), 'd')) : true) &&
-        (isValidSecondDate ? (secondDate.isAfter() || secondDate.isSame(new Date(), 'd')) : true)
+        (isValidSecondDate ? (secondDate.isAfter() || secondDate.isSame(new Date(), 'd')) : true) &&
+        numberOfBusinessDays !== 0
         ? null : { isValid: false };
     };
   }
@@ -73,7 +88,7 @@ export class ValidatorsUtils {
 
   public formArraySelectedValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
-      return control.value.every((option) => option.selected === false) ? { isValid: false } : null;
+      return control.value.every((option) => !option.selected) ? { isValid: false } : null;
     };
   }
 }

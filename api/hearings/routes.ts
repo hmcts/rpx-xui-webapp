@@ -6,7 +6,9 @@ import {
   getHearingActuals,
   getHearings,
   loadServiceHearingValues,
-  submitHearingRequest
+  submitHearingActuals,
+  submitHearingRequest,
+  updateHearingActuals
 } from './index';
 
 export const router = express.Router({mergeParams: true});
@@ -20,3 +22,5 @@ router.post('/submitHearingRequest', submitHearingRequest);
 router.delete('/cancelHearings', cancelHearingRequest);
 // actual journey
 router.get('/hearingActuals/:hearingId', getHearingActuals);
+router.put('/hearingActuals/:hearingId', updateHearingActuals);
+router.post('/hearingActualsCompletion/:hearingId', submitHearingActuals);

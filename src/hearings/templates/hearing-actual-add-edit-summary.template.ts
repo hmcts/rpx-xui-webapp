@@ -1,7 +1,7 @@
+import {ActualsSection} from '../models/actualsSection';
 import {AnswerSource} from '../models/hearings.enum';
-import {Section} from '../models/section';
 
-export const HEARING_ACTUAL_ADD_EDIT_SUMMARY_TEMPLATE: Section[] = [
+export const HEARING_ACTUAL_ADD_EDIT_SUMMARY_TEMPLATE: ActualsSection[] = [
   {
     sectionHTMLTitle: '<span style="margin-bottom: 10px; display: block;" class="govuk-caption-l">Jane Smith vs DWP</span><h1 class="govuk-heading-l">Hearing details</h1>',
     answers: [

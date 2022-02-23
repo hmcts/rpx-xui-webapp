@@ -4,6 +4,6 @@ import {IsHiddenSource} from './hearings.enum';
 export interface Section {
   insetInfo?: string;
   sectionHTMLTitle: string;
-  answers: Answer[];
+  answers?: Answer[];
   isHiddenSource?: IsHiddenSource;
 }

@@ -13,6 +13,8 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
   public exclusionsNotNamed: boolean = false;
   public legalOpsRoles: CaseRole[] = [];
   public namedLegalRoles: CaseRole[];
+  public namedAdminRoles: CaseRole[];
+  public adminRoles: CaseRole[];
   public legalRolesNotNamed: boolean = false;
   public judicialRoles: CaseRole[] = [];
   public legalOps: RoleCategory = RoleCategory.LEGAL_OPERATIONS;

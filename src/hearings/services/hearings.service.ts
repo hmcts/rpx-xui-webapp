@@ -4,6 +4,7 @@ import { Observable, Subject } from 'rxjs';
 import { HearingActualsMainModel, HearingActualsModel } from '../models/hearingActualsMainModel';
 import { HearingListMainModel } from '../models/hearingListMain.model';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
+import {HearingResponseMainModel} from '../models/hearingResponseMain.model';
 import { ACTION } from '../models/hearings.enum';
 import { LovRefDataModel } from '../models/lovRefData.model';
 import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
@@ -39,6 +40,10 @@ export class HearingsService {
     return this.http.delete<any>(`api/hearings/cancelHearings?hearingId=${hearingId}`, {
       params: httpParams
     });
+  }
+
+  public loadHearingRequest(hearingId: string): Observable<HearingResponseMainModel> {
+    return this.http.get<HearingResponseMainModel>(`api/hearings/getHearing?hearingId=${hearingId}`);
   }
 
   public submitHearingRequest(hearingRequestMainModel: HearingRequestMainModel): Observable<HearingRequestMainModel> {

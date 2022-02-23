@@ -88,6 +88,23 @@ export class HearingRequestEffects {
   );
 
   @Effect({dispatch: false})
+  public loadHearingRequest$ = this.actions$.pipe(
+    ofType(hearingRequestActions.LOAD_HEARING_REQUEST),
+    map((action: hearingRequestActions.LoadHearingRequest) => action.payload),
+    switchMap(payload => {
+      return this.hearingsService.loadHearingRequest(payload).pipe(
+        tap(
+          (response) => {
+            console.log('response', response);
+          }),
+        catchError(error => {
+          return HearingRequestEffects.handleError(error);
+        })
+      );
+    })
+  );
+
+  @Effect({dispatch: false})
   public submitHearingRequest$ = this.actions$.pipe(
     ofType(hearingRequestActions.SUBMIT_HEARING_REQUEST),
     map((action: hearingRequestActions.SubmitHearingRequest) => action.payload),

@@ -1,5 +1,5 @@
+import {HearingResponseModel} from './hearingResponse.model';
 import {HearingRequestMainModel} from './hearingRequestMain.model';
-import { HearingResponseModel } from './hearingResponse.model';
 
 export interface HearingResponseMainModel extends HearingRequestMainModel {
   hearingResponse: HearingResponseModel;

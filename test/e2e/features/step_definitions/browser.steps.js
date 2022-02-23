@@ -17,7 +17,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Given('I navigate to page route {string}', async function (pageRoute) {
-        await headerPage.navigateToRoute(pageRoute);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await headerPage.navigateToRoute(pageRoute);
+        });
     });
 
     Then('I see page with css locator {string}', async function(cssLocator){

@@ -21,7 +21,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I click on primary navigation header {string}', async function (headerTabLabel) {
-        await headerPage.clickTabWithText(headerTabLabel);
+        await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
 
     });
 

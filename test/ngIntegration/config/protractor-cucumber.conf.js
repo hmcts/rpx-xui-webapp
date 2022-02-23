@@ -59,7 +59,7 @@ const localConfig = [
 
 if(isParallelExecution){
     jenkinsConfig[0].shardTestFiles = true;
-    jenkinsConfig[0].maxInstances = 6;
+    jenkinsConfig[0].maxInstances = 4;
 }
 
 const cap = (argv.local) ? localConfig : jenkinsConfig;
@@ -114,10 +114,12 @@ const config = {
         //Set default explict timeout default value to 10sec
         const customWaits = require('../../e2e/support/customWaits');
         customWaits.setDefaultWaitTime(8000);
+        customWaits.setLoglevelINFO();
         customWaits.setRetryCount(2);
 
     },
     cucumberOpts: {
+        'fail-fast': true,
         strict: true,
         // format: ['node_modules/cucumber-pretty'],
         format: ['node_modules/cucumber-pretty', 'json:reports/ngIntegrationtests/json/results.json'],

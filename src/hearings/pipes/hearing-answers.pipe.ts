@@ -23,7 +23,6 @@ import { StageAnswerConverter } from '../converters/stage.answer.converter';
 import { TypeAnswerConverter } from '../converters/type.answer.converter';
 import { VenueAnswerConverter } from '../converters/venue.answer.converter';
 import { AnswerSource } from '../models/hearings.enum';
-import { JudicialRefDataService } from '../services/judicial-ref-data.service';
 import { State } from '../store';
 
 @Pipe({
@@ -32,7 +31,6 @@ import { State } from '../store';
 export class HearingAnswersPipe implements PipeTransform {
   constructor(
     protected readonly route: ActivatedRoute,
-    protected readonly judicialRefDataService: JudicialRefDataService
   ) {}
 
   public transform(

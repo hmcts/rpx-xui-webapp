@@ -4,16 +4,14 @@ import { cold } from 'jasmine-marbles';
 import { of } from 'rxjs';
 import { caseFlagsRefData, hearingPriorityRefData, initialState, partyChannelsRefData } from '../hearing.test.data';
 import { AnswerSource, PartyType, RadioOptions } from '../models/hearings.enum';
-import { JudicialRefDataService } from '../services/judicial-ref-data.service';
 import { State } from '../store/reducers';
 import { HearingAnswersPipe } from './hearing-answers.pipe';
 
-describe('HearingAnswersPipe', () => {
+fdescribe('HearingAnswersPipe', () => {
 
   const STATE: State = initialState.hearings;
   let hearingAnswersPipe: HearingAnswersPipe;
   let router: any;
-  let judicialRefDataService: JudicialRefDataService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -33,10 +31,7 @@ describe('HearingAnswersPipe', () => {
       ]
     });
     router = TestBed.get(ActivatedRoute);
-    judicialRefDataService = TestBed.get(
-      JudicialRefDataService
-    ) as JudicialRefDataService;
-    hearingAnswersPipe = new HearingAnswersPipe(router, judicialRefDataService);
+    hearingAnswersPipe = new HearingAnswersPipe(router);
   });
 
   it('should transform additional instructions', () => {

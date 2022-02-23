@@ -2,6 +2,8 @@ import {ModuleWithProviders} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {HealthCheckGuard} from '../app/shared/guards/health-check.guard';
 import {CancelHearingComponent} from './containers/cancel-hearing/cancel-hearing.component';
+import {HearingActualAddEditSummaryComponent} from './containers/hearing-actuals/hearing-actual-add-edit-summary/hearing-actual-add-edit-summary.component';
+import {HearingActualsComponent} from './containers/hearing-actuals/hearing-actuals.component';
 import {HearingAdditionalInstructionsComponent} from './containers/request-hearing/hearing-additional-instructions/hearing-additional-instructions.component';
 import {HearingAttendanceComponent} from './containers/request-hearing/hearing-attendance/hearing-attendance.component';
 import {HearingChangeReasonComponent} from './containers/request-hearing/hearing-change-reason/hearing-change-reason.component';
@@ -19,6 +21,7 @@ import {HearingWelshComponent} from './containers/request-hearing/hearing-welsh/
 import {RequestHearingComponent} from './containers/request-hearing/request-hearing.component';
 import {ViewHearingComponent} from './containers/view-hearing/view-hearing.component';
 import {HearingCategory} from './models/hearings.enum';
+import {JudicialUserSearchResolver} from './resolvers/ judicial-user-search-resolver.resolve';
 import {AdditionalFacilitiesResolver} from './resolvers/additional-facilities.resolver';
 import {CaseFlagsResolver} from './resolvers/case-flags.resolver';
 import {HearingStageResolver} from './resolvers/hearing-stage.resolver';
@@ -42,6 +45,20 @@ export const ROUTES: Routes = [
           title: 'HMCTS Manage cases | Cancel Hearing'
         }
       }
+    ]
+  },
+  {
+    path: 'actuals',
+    component: HearingActualsComponent,
+    children: [
+      {
+        path: 'hearing-actual-add-edit-summary',
+        component: HearingActualAddEditSummaryComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Manage cases | Hearing Actuals | Check details'
+        }
+      },
     ]
   },
   {
@@ -114,7 +131,10 @@ export const ROUTES: Routes = [
       },
       {
         path: 'hearing-judge',
-        resolve: { hearingStages: RefDataResolver },
+        resolve: {
+          hearingStages: RefDataResolver,
+          judicialUsers: JudicialUserSearchResolver
+        },
         component: HearingJudgeComponent,
         canActivate: [HealthCheckGuard],
         data: {

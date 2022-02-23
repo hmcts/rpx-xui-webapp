@@ -4,7 +4,7 @@ import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {HearingConditions} from '../../../hearings/models/hearingConditions';
 import {HearingListViewModel} from '../../../hearings/models/hearingListView.model';
-import {Actions, EXUISectionStatusEnum, Mode} from '../../../hearings/models/hearings.enum';
+import {Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, Mode} from '../../../hearings/models/hearings.enum';
 import * as fromHearingStore from '../../../hearings/store';
 
 @Component({
@@ -52,5 +52,13 @@ export class CaseHearingsListComponent implements OnInit {
     };
     this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
     this.router.navigate(['/', 'hearings', 'request', 'hearing-view-edit-summary']);
+  }
+
+  public addAndEdit(): void {
+    this.router.navigate(['/', 'hearings', 'actuals', 'hearing-actual-add-edit-summary']);
+  }
+
+  public hasAddEdit(hearing: HearingListViewModel): boolean {
+    return hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_ACTUALS;
   }
 }

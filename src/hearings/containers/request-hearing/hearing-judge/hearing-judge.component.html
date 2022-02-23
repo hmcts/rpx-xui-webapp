@@ -18,7 +18,7 @@
             </div>
             <div class="govuk-radios__conditional" [ngClass]="{'govuk-radios__conditional--hidden': specificJudgeSelection !=='Yes'}">
               <div class="govuk-form-group govuk-!-width-one-half">
-                <exui-hearing-judge-name #hearingJudgeInfo [subTitle]="'Name of the judge'" [domain]="'Judicial'" [personSelectionFormControl]="hearingJudgeForm.controls.findPersonControl"
+                <exui-hearing-judge-name #hearingJudgeInfo [subTitle]="'Name of the judge'" [domain]="personRole" [personSelectionFormControl]="hearingJudgeForm.controls.findPersonControl"
                   [placeholderContent]="'e.g. John Smith'"></exui-hearing-judge-name>
               </div>
             </div>
@@ -54,7 +54,7 @@
       </div>
       <div class="govuk-form-group" id="excluejudge">
         <div class="govuk-form-group">
-          <exui-hearing-judge-names-list #excludedJudge [subTitle]="'Exclude a judge (optional)'" [domain]="'Judicial'" [judgeList]= "judgeList"
+          <exui-hearing-judge-names-list #excludedJudge [subTitle]="'Exclude a judge (optional)'" [domain]="personRole" [judgeList]= "excludedJudgeList"
             [placeholderContent]="'e.g. John Smith'" [submitButtonName]="'Exclude judge'"></exui-hearing-judge-names-list>
         </div>
       </div>

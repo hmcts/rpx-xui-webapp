@@ -48,7 +48,7 @@ export enum EXUIDisplayStatusEnum {
   FAILURE = 'FAILURE',
   CANCELLATION_REQUESTED = 'CANCELLATION REQUESTED',
   VACATED = 'VACATED',
-  AWAITING_ACTUALS = 'AWAITING ACTUALS',
+  AWAITING_ACTUALS = 'AWAITING HEARING ACTUALS',
   ADJOURNED = 'ADJOURNED',
 }
 
@@ -56,6 +56,11 @@ export enum RequirementType {
   MUSTINC = 'MUSTINC',
   OPTINC = 'OPTINC',
   EXCLUDE = 'EXCLUDE',
+}
+
+export enum MemberType {
+  JUDGE = 'JUDGE',
+  PANEL_MEMBER = 'PANEL_MEMBER',
 }
 
 export enum PartyType {

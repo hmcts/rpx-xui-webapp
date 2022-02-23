@@ -88,7 +88,7 @@ export class ValidatorsUtils {
 
   public formArraySelectedValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
-      return control.value.every((option) => option.selected === false) ? { isValid: false } : null;
+      return control.value.every((option) => !option.selected) ? { isValid: false } : null;
     };
   }
 }

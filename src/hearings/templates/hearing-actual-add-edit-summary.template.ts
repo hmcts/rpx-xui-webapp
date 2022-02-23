@@ -59,15 +59,15 @@ export const HEARING_ACTUAL_ADD_EDIT_SUMMARY_TEMPLATE: ActualsSection[] = [
     updateLink: 'hearing-actual/actuals-parties',
     parties: [
       {
-        HMTLTitle: '<h2 class="govuk-heading-s">Jane Smith</h2>',
+        HTMLTitle: '<h2 class="govuk-heading-s">Jane Smith</h2>',
         partyChannel: 'Video - Teams',
       },
       {
-        HMTLTitle: '<h2 class="govuk-heading-s">DWP</h2>',
+        HTMLTitle: '<h2 class="govuk-heading-s">DWP</h2>',
         partyChannel: 'Video - Teams',
       },
       {
-        HMTLTitle: '<h2 class="govuk-heading-s">Attendee 1</h2>',
+        HTMLTitle: '<h2 class="govuk-heading-s">Attendee 1</h2>',
         individualDetails: {
           title: 'Ms',
           firstName: 'Mary',
@@ -83,7 +83,7 @@ export const HEARING_ACTUAL_ADD_EDIT_SUMMARY_TEMPLATE: ActualsSection[] = [
         partyChannel: 'Letter',
       },
       {
-        HMTLTitle: '<h2 class="govuk-heading-s">Attendee 2</h2>',
+        HTMLTitle: '<h2 class="govuk-heading-s">Attendee 2</h2>',
         individualDetails: {
           title: 'Miss',
           firstName: 'Bob',

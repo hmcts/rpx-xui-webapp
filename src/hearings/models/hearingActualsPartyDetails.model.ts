@@ -1,14 +1,5 @@
-import {PartyType} from './hearings.enum';
-import {IndividualDetailsModel} from './individualDetails.model';
-import {OrganisationDetailsModel} from './organisationDetails.model';
+import {PartyDetailsModel} from './partyDetails.model';
 
-export interface HearingActualsPartyDetailsModel {
-  partyID?: string;
-  partyType?: PartyType;
-  partyName?: string;
-  partyChannel: string;
-  partyRole?: string;
-  individualDetails?: IndividualDetailsModel;
-  organisationDetails?: OrganisationDetailsModel;
-  HMTLTitle: string;
+export interface HearingActualsPartyDetailsModel extends PartyDetailsModel {
+  HTMLTitle: string;
 }

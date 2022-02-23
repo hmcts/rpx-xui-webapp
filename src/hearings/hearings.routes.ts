@@ -5,9 +5,9 @@ import { CancelHearingComponent } from './containers/cancel-hearing/cancel-heari
 import { ChangeHearingComponent } from './containers/change-hearing/change-hearing.component';
 import { HearingAdditionalInstructionsComponent } from './containers/request-hearing/hearing-additional-instructions/hearing-additional-instructions.component';
 import { HearingAttendanceComponent } from './containers/request-hearing/hearing-attendance/hearing-attendance.component';
-import { HearingFinalConfirmationComponent } from './containers/request-hearing/hearing-final-confirmation/hearing-final-confirmation.component';
 import { HearingCreateEditSummaryComponent } from './containers/request-hearing/hearing-create-edit-summary/hearing-create-edit-summary.component';
 import { HearingFacilitiesComponent } from './containers/request-hearing/hearing-facilities/hearing-facilities.component';
+import { HearingFinalConfirmationComponent } from './containers/request-hearing/hearing-final-confirmation/hearing-final-confirmation.component';
 import { HearingJudgeComponent } from './containers/request-hearing/hearing-judge/hearing-judge.component';
 import { HearingPanelComponent } from './containers/request-hearing/hearing-panel/hearing-panel.component';
 import { HearingRequirementsComponent } from './containers/request-hearing/hearing-requirements/hearing-requirements.component';
@@ -24,6 +24,7 @@ import { CaseFlagsResolver } from './resolvers/case-flags.resolver';
 import { HearingStageResolver } from './resolvers/hearing-stage.resolver';
 import { PartyChannelsResolverService } from './resolvers/party-channels-resolver.service';
 import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
+import { UsersInfoUsingCodesResolver } from './resolvers/users-info-using-codes-resolver.resolve';
 
 export const ROUTES: Routes = [
   {
@@ -128,7 +129,10 @@ export const ROUTES: Routes = [
       },
       {
         path: 'hearing-judge',
-        resolve: { hearingStages: RefDataResolver },
+        resolve: {
+          hearingStages: RefDataResolver,
+          usersInfo: UsersInfoUsingCodesResolver
+        },
         component: HearingJudgeComponent,
         canActivate: [HealthCheckGuard],
         data: {

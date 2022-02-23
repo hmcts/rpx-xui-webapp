@@ -160,7 +160,7 @@ describe('HearingJudgeComponent', () => {
 
   it('should check setFormData', () => {
     component.hearingJudgeInfo = personComponent;
-    component.setFormData([]);
+    component.setFormData();
     expect(component.excludedJudgeList.length).toBe(0);
     expect(personComponent.setSelectedJudge).not.toHaveBeenCalled();
     const personalCodeJudgeList: JudicialUserModel[] = [{
@@ -186,7 +186,8 @@ describe('HearingJudgeComponent', () => {
     component.specificJudgeSelection = RadioOptions.YES;
     component.hearingJudgeFormInfo.includedJudges = ['P0000001'];
     component.hearingJudgeFormInfo.excludedJudges = ['P0000002'];
-    component.setFormData(personalCodeJudgeList);
+    component.personalCodejudgeList = personalCodeJudgeList;
+    component.setFormData();
     expect(personComponent.setSelectedJudge).toHaveBeenCalled();
     expect(component.excludedJudgeList.length).toBe(1);
   });

@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { PersonRole } from '@hmcts/rpx-xui-common-lib/lib/models';
+import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { JudicialUserModel } from '../../../../hearings/models/judicialUser.model';
 import { PanelPreferenceModel } from '../../../../hearings/models/panelPreference.model';
@@ -24,8 +24,9 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
   public specificJudgeSelection: string;
   public excludedJudgeList: Person[] = [];
   public hearingJudgeTypes: LovRefDataModel[];
+  public personalCodejudgeList: JudicialUserModel[] = [];
   public validationErrors: { id: string, message: string }[] = [];
-  public personRole: PersonRole;
+  public personRole = PersonRole.JUDICIAL;
   public specificJudgeSelectionError: string;
   public selectJudgeTypesError: string;
   public hearingJudgeFormInfo: { includedJudges: string[], judgeTypes: string[], excludedJudges: string[] };
@@ -40,18 +41,19 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
               private readonly validatorsUtils: ValidatorsUtils) {
     super(hearingStore, hearingsService, route);
     this.hearingJudgeTypes = this.route.snapshot.data.hearingStages;
+    this.personalCodejudgeList = this.route.snapshot.data.usersInfo;
   }
 
   public ngOnInit(): void {
     this.getFormData();
     this.initForm();
+    this.setFormData();
   }
 
   public getFormData(): void {
     let judgeTypes: string[];
     let includedJudges: string[] = [];
     let excludedJudges: string[] = [];
-    let judgePersonalCodesList: string[] = [];
     const panelRequirements = this.hearingRequestMainModel.hearingDetails.panelRequirements;
     if (panelRequirements && panelRequirements.roleType && panelRequirements.roleType.length) {
       this.specificJudgeSelection = RadioOptions.NO;
@@ -64,12 +66,6 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
     this.hearingJudgeFormInfo = {
       includedJudges, judgeTypes, excludedJudges
     };
-    judgePersonalCodesList = includedJudges.concat(excludedJudges);
-    if (judgePersonalCodesList.length) {
-      this.judicialRefDataService.searchJudicialUserByPersonalCodes(judgePersonalCodesList).subscribe((judgeList: JudicialUserModel[]) => {
-        this.setFormData(judgeList);
-      });
-    }
   }
 
   public get getJudgeTypeFormArray(): FormArray {
@@ -101,11 +97,14 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
     });
   }
 
-  public setFormData(personalCodejudgeList?: JudicialUserModel[]): void {
+  public setFormData(): void {
+    if (this.specificJudgeSelection) {
+      this.showSpecificJudge(this.specificJudgeSelection);
+    }
     if (this.specificJudgeSelection === RadioOptions.YES) {
-      const includedJudge = personalCodejudgeList.find((judgeInfo) => this.hearingJudgeFormInfo.includedJudges.includes(judgeInfo.personal_code));
+      const includedJudge = this.personalCodejudgeList.find((judgeInfo) => this.hearingJudgeFormInfo.includedJudges.includes(judgeInfo.personal_code));
       const judgeDetails = {
-        domain: MemberType.JUDICIAL,
+        domain: this.personRole,
         email: includedJudge.email_id,
         id: includedJudge.sidam_id,
         knownAs: includedJudge.known_as,
@@ -116,10 +115,10 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
     }
 
     if (this.hearingJudgeFormInfo.excludedJudges && this.hearingJudgeFormInfo.excludedJudges.length) {
-      personalCodejudgeList.forEach(judgeInfo => {
+      this.personalCodejudgeList.forEach(judgeInfo => {
         if (this.hearingJudgeFormInfo.excludedJudges.includes(judgeInfo.personal_code)) {
           const judgeDetail = {
-            domain: MemberType.JUDICIAL,
+            domain: this.personRole,
             email: judgeInfo.email_id,
             id: judgeInfo.sidam_id,
             knownAs: judgeInfo.known_as,

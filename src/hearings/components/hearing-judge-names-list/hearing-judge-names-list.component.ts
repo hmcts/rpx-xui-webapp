@@ -59,8 +59,8 @@ export class HearingJudgeNamesListComponent {
 
   public displayedJudgeName(judge: Person) {
     if (judge && judge.knownAs) {
-      return `${judge.knownAs}(${judge.email})`;
+      return `${judge.knownAs} (${judge.email})`;
     }
-    return judge ? `${judge.name}(${judge.email})` : '';
+    return judge ? `${judge.name} (${judge.email})` : '';
   }
 }

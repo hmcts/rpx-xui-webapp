@@ -41,7 +41,7 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
               private readonly validatorsUtils: ValidatorsUtils) {
     super(hearingStore, hearingsService, route);
     this.hearingJudgeTypes = this.route.snapshot.data.hearingStages;
-    this.personalCodejudgeList = this.route.snapshot.data.usersInfo;
+    this.personalCodejudgeList = this.route.snapshot.data.judicialUsers;
   }
 
   public ngOnInit(): void {

@@ -131,7 +131,7 @@ export const ROUTES: Routes = [
         path: 'hearing-judge',
         resolve: {
           hearingStages: RefDataResolver,
-          usersInfo: UsersInfoUsingCodesResolver
+          judicialUsers: UsersInfoUsingCodesResolver
         },
         component: HearingJudgeComponent,
         canActivate: [HealthCheckGuard],

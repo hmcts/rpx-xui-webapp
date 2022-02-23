@@ -9,7 +9,7 @@ import { reducers } from '../../app/store';
 import { JudicialUserModel } from '../models/judicialUser.model';
 import { JudicialRefDataService } from '../services/judicial-ref-data.service';
 import * as fromHearingStore from '../store';
-import { UsersInfoUsingCodesResolver } from './users-info-using-codes-resolver.resolve';
+import { JudicialUserSearchResolver } from './ judicial-user-search-resolver.resolve';
 
 describe('Ref Data Resolver', () => {
   let judicialRefDataService: JudicialRefDataService;
@@ -24,7 +24,7 @@ describe('Ref Data Resolver', () => {
         HttpClientTestingModule,
       ],
       providers: [
-        UsersInfoUsingCodesResolver,
+        JudicialUserSearchResolver,
         JudicialRefDataService,
         { provide: APP_BASE_HREF, useValue: '/' }
       ]
@@ -35,11 +35,11 @@ describe('Ref Data Resolver', () => {
   });
 
   it('should be created', () => {
-    const service: UsersInfoUsingCodesResolver = TestBed.get(UsersInfoUsingCodesResolver);
+    const service: JudicialUserSearchResolver = TestBed.get(JudicialUserSearchResolver);
     expect(service).toBeTruthy();
   });
 
-  it('resolves reference data', inject([UsersInfoUsingCodesResolver], (service: UsersInfoUsingCodesResolver) => {
+  it('resolves reference data', inject([JudicialUserSearchResolver], (service: JudicialUserSearchResolver) => {
     spyOn(store, 'pipe').and.returnValue(of('serviceName'));
     spyOn(judicialRefDataService, 'searchJudicialUserByPersonalCodes').and.returnValue(of(dataRef));
     spyOn(service, 'getUsersByPanelRequirements$').and.callThrough();

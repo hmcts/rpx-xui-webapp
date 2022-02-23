@@ -11,7 +11,7 @@ import * as fromHearingStore from '../store';
 @Injectable({
   providedIn: 'root'
 })
-export class UsersInfoUsingCodesResolver implements Resolve<JudicialUserModel[]> {
+export class JudicialUserSearchResolver implements Resolve<JudicialUserModel[]> {
   constructor(
     protected readonly judicialRefDataService: JudicialRefDataService,
     protected readonly hearingStore: Store<fromHearingStore.State>

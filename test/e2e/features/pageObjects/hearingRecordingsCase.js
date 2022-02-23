@@ -1,5 +1,7 @@
 
 var BrowserWaits = require("../../support/customWaits");
+
+var BrowserUtil = require('../../../ngIntegration/util/browserUtil');
 var CcdFields = require("./common/ccdFields");
 const caseDetailsPage = require('../pageObjects/caseDetailsPage');
 class HearingRecordingsCase {
@@ -17,6 +19,8 @@ class HearingRecordingsCase {
     async createCase() {
       await BrowserWaits.waitForSeconds(3);
       await BrowserWaits.retryWithActionCallback(async () => {
+        await BrowserUtil.scrollToElement(this.addNewBtn);
+
         await this.addNewBtn.click();
         await BrowserWaits.waitForElement(this.ccdFields.docUploadField,5);
 
@@ -24,6 +28,7 @@ class HearingRecordingsCase {
       await BrowserWaits.waitForSeconds(3);
       await this.ccdFields.docUpload();
       await BrowserWaits.waitForSeconds(3);
+      await BrowserUtil.scrollToElement(this.continueBtn);
       await this.continueBtn.click();
       await BrowserWaits.waitForPresenceOfElement(this.submitBtn);
       await BrowserWaits.waitForElementClickable(this.submitBtn);

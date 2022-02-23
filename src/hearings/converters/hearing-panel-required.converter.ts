@@ -10,6 +10,12 @@ export class HearingPanelRequiredConverter implements AnswerConverter {
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
       map((state) => {
+        if (
+          !state.hearingRequest.hearingRequestMainModel.hearingDetails ||
+          !state.hearingRequest.hearingRequestMainModel.hearingDetails
+            .panelRequirements
+        )
+          return;
         return state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements.panelPreferences.length > 0
           ? "Yes"
           : "No";

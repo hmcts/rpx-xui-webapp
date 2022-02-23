@@ -13,6 +13,12 @@ export class HearingPanelExcludeMemberConverter implements AnswerConverter {
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
       map((state) => {
+        if (
+          !state.hearingRequest.hearingRequestMainModel.hearingDetails ||
+          !state.hearingRequest.hearingRequestMainModel.hearingDetails
+            .panelRequirements
+        )
+          return;
         const panelRequirementsState =
           state.hearingRequest.hearingRequestMainModel.hearingDetails
             .panelRequirements;

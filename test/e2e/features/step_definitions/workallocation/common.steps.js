@@ -473,11 +473,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         expect(await waCaseListTable.getTableFooterMessage()).to.include(message);
     });
 
-    Given('I have a caseworker details other than logged in user with reference {string}', async function(caseWorkerRef){
-        const caseworkersInSessionStorage = await browserUtil.getFromSessionStorage('caseworkers');
+    Given('I have a caseworker details other than logged in user with reference {string} for service {string}', async function(caseWorkerRef, service){
+        const caseworkersInSessionStorage = await browserUtil.getFromSessionStorage(`${service}-caseworkers`);
         const caseworkers = JSON.parse(caseworkersInSessionStorage);
         
-        const loggedinuserDetailsInSessionStorage = await browserUtil.getFromSessionStorage('caseworkers');
+        const loggedinuserDetailsInSessionStorage = await browserUtil.getFromSessionStorage('userDetails');
         const loggedInUser = JSON.parse(loggedinuserDetailsInSessionStorage);
         const loggedinUserIdamId = loggedInUser.uid ? loggedInUser.uid : loggedInUser.id;
         let caseWorkerForRef = null;

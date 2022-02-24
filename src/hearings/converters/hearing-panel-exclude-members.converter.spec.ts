@@ -9,8 +9,9 @@ import { AnswerConverter } from './answer.converter';
 import { HearingPanelExcludeMemberConverter } from './hearing-panel-exclude-members.converter';
 import { HttpClient } from '@angular/common/http';
 import { ALL_JUDICIAL_USERS } from 'api/prd/judicial/data/judicial.mock.data';
+import { MemberType, RequirementType } from '../models/hearings.enum';
 
-describe('Hearing Panel ExcludeMember Converter', () => {
+fdescribe('Hearing Panel ExcludeMember Converter', () => {
   let converter: AnswerConverter;
   let router: any;
 
@@ -52,6 +53,21 @@ describe('Hearing Panel ExcludeMember Converter', () => {
 
   it('should transform exclude panel members as expected', () => {
     const STATE: State = initialState.hearings;
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
+      panelPreferences: [
+        {
+          memberID: 'p1000000',
+          memberType: MemberType.PANEL_MEMBER,
+          requirementType: RequirementType.MUSTINC,
+      },
+      {
+          memberID: 'p1000003',
+          memberType: MemberType.PANEL_MEMBER,
+          requirementType: RequirementType.EXCLUDE,
+      },
+      ],
+      panelSpecialisms: ['DisabilityQualifiedPanelMember', 'Cardiologist'],
+  }
     const result$ = converter.transformAnswer(of(STATE));
     const transformedValue = '<ul><li>James Priest</li></ul>';
     const expected = cold('(b|)', { b: transformedValue });

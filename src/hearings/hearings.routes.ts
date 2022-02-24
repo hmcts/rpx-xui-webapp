@@ -25,7 +25,7 @@ import { AdditionalFacilitiesResolver } from './resolvers/additional-facilities.
 import { CaseFlagsResolver } from './resolvers/case-flags.resolver';
 import { HearingStageResolver } from './resolvers/hearing-stage.resolver';
 import { OtherPanelRolesResolver } from './resolvers/other-panel-roles.resolver';
-import { PanelDetailsResolver } from './resolvers/panel-details.resolver';
+import { PanelAndJudgeDetailsResolver } from './resolvers/panel-judge-details.resolver';
 import { PartyChannelsResolverService } from './resolvers/party-channels-resolver.service';
 import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
 import { JudicialUserSearchResolver } from './resolvers/ judicial-user-search-resolver.resolve';
@@ -194,7 +194,7 @@ export const ROUTES: Routes = [
           hearingStageOptions: HearingStageResolver,
           additionFacilitiesOptions: AdditionalFacilitiesResolver,
           partyChannels: PartyChannelsResolverService,
-          panelDetails: PanelDetailsResolver,
+          panelDetails: PanelAndJudgeDetailsResolver,
           otherPanelRoles: OtherPanelRolesResolver,
         },
         component: HearingCreateEditSummaryComponent,

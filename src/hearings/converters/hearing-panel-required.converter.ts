@@ -1,6 +1,7 @@
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { MemberType } from '../models/hearings.enum';
 import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 
@@ -16,7 +17,9 @@ export class HearingPanelRequiredConverter implements AnswerConverter {
             .panelRequirements
         )
           return;
-        return state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements.panelPreferences.length > 0
+        const panelPreferences = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements.panelPreferences || []
+        const hasPanelMembers = panelPreferences.filter((ref) => ref.memberType ===  MemberType.PANEL_MEMBER)
+        return hasPanelMembers.length > 0
           ? 'Yes'
           : 'No';
       })

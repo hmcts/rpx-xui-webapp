@@ -3,8 +3,7 @@ import { Section } from '../models/section';
 
 export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
   {
-    sectionHTMLTitle:
-      '<h1 class="govuk-heading-l">Check your answers before sending your request</h1>',
+    sectionHTMLTitle: '<h1 class="govuk-heading-l">Check your answers before sending your request</h1>',
     answers: [
       {
         id: 'caseName',
@@ -41,15 +40,13 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
         id: 'additionalSecurityRequired',
         answerTitle: 'Will additional security be required?',
         answerSource: AnswerSource.ADDITIONAL_SECURITY_REQUIRED,
-        changeLink:
-          '/hearings/request/hearing-facilities#additionalSecurityYes',
+        changeLink: '/hearings/request/hearing-facilities#additionalSecurityYes',
       },
       {
         id: 'additionalFacilitiesRequired',
         answerTitle: 'Select any additional facilities required',
         answerSource: AnswerSource.ADDITIONAL_FACILITIES_REQUIRED,
-        changeLink:
-          '/hearings/request/hearing-facilities#immigrationDetentionCentre',
+        changeLink: '/hearings/request/hearing-facilities#immigrationDetentionCentre',
       },
     ],
   },
@@ -141,24 +138,26 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
         answerTitle: 'Include specific panel members',
         answerSource: AnswerSource.HEARING_PANEL_INCLUDE_MEMBERS,
         changeLink: '/hearings/request/hearing-panel#specificPanelSelection',
+        isHiddenSource: IsHiddenSource.HEARING_PANEL_FIELD_SHOW_HIDE,
       },
       {
         id: 'excludePanelMembers',
         answerTitle: 'Exclude specific panel members',
         answerSource: AnswerSource.HEARING_PANEL_EXCLUDE_MEMBERS,
         changeLink: '/hearings/request/hearing-panel#specificPanelSelection',
+        isHiddenSource: IsHiddenSource.HEARING_PANEL_FIELD_SHOW_HIDE,
       },
       {
         id: 'otherPanelsRoles',
         answerTitle: 'Select any other panel roles required',
         answerSource: AnswerSource.HEARING_PANEL_OTHER_PANEL_ROLES,
         changeLink: '/hearings/request/hearing-panel#specificPanelSelection',
+        isHiddenSource: IsHiddenSource.HEARING_PANEL_FIELD_SHOW_HIDE,
       },
     ],
   },
   {
-    sectionHTMLTitle:
-      '<h2 class="govuk-heading-m">Length, date and priority level of hearing</h2>',
+    sectionHTMLTitle: '<h2 class="govuk-heading-m">Length, date and priority level of hearing</h2>',
     answers: [
       {
         id: 'hearingLength',
@@ -181,15 +180,13 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
     ],
   },
   {
-    sectionHTMLTitle:
-      '<h2 class="govuk-heading-m">Additional instructions</h2>',
+    sectionHTMLTitle: '<h2 class="govuk-heading-m">Additional instructions</h2>',
     answers: [
       {
         id: 'additionalInstruction',
         answerTitle: 'Enter any additional instructions for the hearing',
         answerSource: AnswerSource.ADDITIONAL_INSTRUCTION,
-        changeLink:
-          '/hearings/request/hearing-additional-instructions#additionalInstructionsTextarea',
+        changeLink: '/hearings/request/hearing-additional-instructions#additionalInstructionsTextarea',
       },
     ],
   },

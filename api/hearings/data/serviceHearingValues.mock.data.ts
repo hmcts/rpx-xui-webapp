@@ -1,6 +1,6 @@
 /* tslint:disable:object-literal-sort-keys */
-import { PartyType, RequirementType } from '../models/hearings.enum'
-import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model'
+import { PartyType, RequirementType } from '../models/hearings.enum';
+import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
 
 export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
     caseName: 'Jane Smith vs DWP',
@@ -30,7 +30,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
     facilitiesRequired: ['immigrationDetentionCentre'],
     listingComments: '',
     hearingRequester: '',
-    privateHearingRequiredFlag: true,
+    privateHearingRequiredFlag: false,
     leadJudgeContractType: '',
     judiciary: {
         roleType: [''],

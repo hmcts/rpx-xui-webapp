@@ -10,7 +10,7 @@ import {reducers} from '../../app/store';
 import { JudicialUserModel } from '../models/judicialUser.model';
 import {LovRefDataService} from '../services/lov-ref-data.service';
 import * as fromHearingStore from '../store';
-import { PanelDetailsResolver } from './panel-details.resolver';
+import { PanelAndJudgeDetailsResolver } from './panel-judge-details.resolver';
 import { provideMockStore } from '@ngrx/store/testing';
 import { initialState } from '../hearing.test.data';
 
@@ -28,7 +28,7 @@ describe('Panel details Resolver', () => {
         ],
         providers: [
           provideMockStore({ initialState }),
-          PanelDetailsResolver,
+          PanelAndJudgeDetailsResolver,
           LovRefDataService,
           {provide: APP_BASE_HREF, useValue: '/'}
         ]
@@ -39,11 +39,11 @@ describe('Panel details Resolver', () => {
   });
 
   it('should be created', () => {
-    const service: PanelDetailsResolver = TestBed.get(PanelDetailsResolver);
+    const service: PanelAndJudgeDetailsResolver = TestBed.get(PanelAndJudgeDetailsResolver);
     expect(service).toBeTruthy();
   });
 
-  it('resolves reference data for the panel details', inject([PanelDetailsResolver], (service: PanelDetailsResolver) => {
+  it('resolves reference data for the panel details', inject([PanelAndJudgeDetailsResolver], (service: PanelAndJudgeDetailsResolver) => {
     spyOn(store, 'pipe').and.returnValue(of('serviceName'));
     spyOn(service, 'getReferenceData$').and.callThrough();
     const route = new ActivatedRouteSnapshot();

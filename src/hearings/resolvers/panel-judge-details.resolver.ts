@@ -14,7 +14,7 @@ import * as fromHearingStore from '../store';
   providedIn: 'root',
 })
 
-export class PanelDetailsResolver implements Resolve<JudicialUserModel[]> {
+export class PanelAndJudgeDetailsResolver implements Resolve<JudicialUserModel[]> {
   public hearingRequestMainModel$: Observable<HearingRequestStateData>;
   public hearingRequestMainModel: HearingRequestMainModel;
   public constructor(
@@ -36,10 +36,10 @@ export class PanelDetailsResolver implements Resolve<JudicialUserModel[]> {
   public resolve(
     route?: ActivatedRouteSnapshot
   ): Observable<JudicialUserModel[]> {
-        return this.getReferenceData$(this.getPanelMemberId$());
+        return this.getReferenceData$(this.getPanelMemberId());
   }
 
-  public getPanelMemberId$(): string[] {
+  public getPanelMemberId(): string[] {
     return this.hearingRequestMainModel.hearingDetails.panelRequirements.panelPreferences.map(
       (ref) => ref.memberID
     );

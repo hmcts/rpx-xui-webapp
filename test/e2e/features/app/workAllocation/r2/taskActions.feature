@@ -25,12 +25,9 @@ Feature: WA Release 2: : Task Assign/Reassign
         When In workflow "Reassign task", I click continue
 
 
-
-
         Then In workflow "Reassign task", I see find person page displayed with caption "Reassign task"
 
-
-        Given I have a caseworker details other than logged in user with reference "ReassignToCaseworker"
+        Given I have a caseworker details other than logged in user with reference "ReassignToCaseworker" for service "IA"
 
         When In workflow "Reassign task", I enter search term with caseworker reference "ReassignToCaseworker" in find person input text
 

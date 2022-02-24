@@ -21,15 +21,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I click on primary navigation header {string}', async function (headerTabLabel) {
-        await browserWaits.retryWithActionCallback(async () => {
-            try{
-                await headerPage.clickTabWithText(headerTabLabel);
-            }catch(err){
-                await headerPage.refreshBrowser(); 
-                throw new Error(err);
-            }
-        }, 'Click header tab with text ' + headerTabLabel);
-       
+        await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
+
     });
 
     When('I click on header tab Task list', async function () {

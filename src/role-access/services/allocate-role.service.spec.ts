@@ -3,12 +3,21 @@ import { inject, TestBed } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
 import { AllocateRoleService } from '.';
-import { Actions, AllocateRoleState, AllocateRoleStateData, AllocateTo, DurationOfRole, RoleCategory } from '../models';
+import { Actions, AllocateRoleState, AllocateRoleStateData, AllocateTo, DurationOfRole, RoleCategory, RolesByService } from '../models';
 import { CaseRoleDetails } from '../models/case-role-details.interface';
 
 const mockRoles = [{ roleId: '1', roleName: 'Role 1' },
   { roleId: '2', roleName: 'Role 2' },
-  { roleId: '3', roleName: 'Role 3' }];
+  { roleId: '3', roleName: 'Role 3' },
+  { roleId: '4', roleName: 'Role 4' }];
+
+const mockRolesByService = [{service: 'IA',
+ roles: [{ roleId: '1', roleName: 'Role 1' },
+  { roleId: '2', roleName: 'Role 2' },
+  { roleId: '3', roleName: 'Role 3' }]},
+{service: 'SSCS', roles: {
+  roleId: '4', roleName: 'Role 4'
+}}];
 
 describe('AllocateRoleService', () => {
   let roleAssignmentService: AllocateRoleService;
@@ -20,18 +29,18 @@ describe('AllocateRoleService', () => {
     roleAssignmentService = new AllocateRoleService(mockHttp, sessionStorageService);
   });
   it('should be able to set judicial and legal ops roles', () => {
-    mockHttp.get.and.returnValue(of(mockRoles));
-    roleAssignmentService.getValidRoles().subscribe((roles) => {
-      expect(roles.length).toBe(3);
-      expect(roles).toBe(mockRoles);
+    mockHttp.post.and.returnValue(of(mockRolesByService));
+    roleAssignmentService.getValidRoles(['IA']).subscribe((roles) => {
+      expect(roles.length).toBe(4);
+      expect(roles).toEqual(mockRoles);
     });
-    expect(mockHttp.get).toHaveBeenCalledWith('/api/role-access/allocate-role/valid-roles');
+    expect(mockHttp.post).toHaveBeenCalledWith('/api/role-access/allocate-role/valid-roles', {serviceIds: ['IA']});
   });
 
   it('should be able to set judicial and legal ops roles from session storage', () => {
     sessionStorageService.getItem.and.returnValue(JSON.stringify(mockRoles));
-    mockHttp.get.and.returnValue(of(mockRoles));
-    roleAssignmentService.getValidRoles().subscribe(res => {
+    mockHttp.post.and.returnValue(of(mockRolesByService));
+    roleAssignmentService.getValidRoles(['IA']).subscribe(res => {
       expect(res).toEqual(mockRoles);
     });
   });

@@ -42,6 +42,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
   public typeOfRole: SpecificRole;
 
   public roleCategory: string = '';
+  public jurisdiction: string;
 
   constructor(private readonly store: Store<fromFeature.State>,
               private readonly route: ActivatedRoute,
@@ -54,6 +55,8 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
     // 2. legalOps: add legal Ops role journey
     this.roleCategory = this.route.snapshot.queryParams && this.route.snapshot.queryParams.roleCategory ?
       this.route.snapshot.queryParams.roleCategory : '';
+    this.jurisdiction = this.route.snapshot.queryParams && this.route.snapshot.queryParams.jurisdiction ?
+      this.route.snapshot.queryParams.jurisdiction : '';
     const userTypePlaceHolder = this.roleCategory === RoleCategory.JUDICIAL ? PersonRole.JUDICIAL.toLowerCase() : PersonRole.CASEWORKER.toLowerCase();
     this.caption = `Allocate a ${userTypePlaceHolder} role`;
     this.allocateRoleStateDataSub = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(
@@ -63,7 +66,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
         this.formGroup = new FormGroup({ [this.radioControlName]: this.radioOptionControl });
       }
     );
-    this.allocateRoleService.getValidRoles().subscribe(roles =>
+    this.allocateRoleService.getValidRoles([this.jurisdiction]).subscribe(roles =>
       this.optionsList = this.getOptions(roles.filter(role => role.roleCategory === this.roleCategory)));
   }
 

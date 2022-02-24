@@ -105,12 +105,12 @@ export const getAllCaseworkersFromServices = (caseworkersByService: CaseworkersB
   return allCaseworkers;
 }
 
-export const getSessionStorageKeyForServiceId = (serviceId: string): string => {
+export const getCaseworkerSessionStorageKeyForServiceId = (serviceId: string): string => {
   return `${serviceId}-caseworkers`;
 }
 
 export const getCaseworkers = (serviceId: string, sessionStorageService: ISessionStorageService): Caseworker[] => {
-  const sessionKey = getSessionStorageKeyForServiceId(serviceId);
+  const sessionKey = getCaseworkerSessionStorageKeyForServiceId(serviceId);
   const value = sessionStorageService.getItem(sessionKey);
   if (value) {
     return JSON.parse(value) as Caseworker[];
@@ -118,7 +118,7 @@ export const getCaseworkers = (serviceId: string, sessionStorageService: ISessio
 }
 
 export const setCaseworkers = (serviceId: string, caseworkers: Caseworker[], sessionStorageService: ISessionStorageService): void => {
-  const sessionKey = getSessionStorageKeyForServiceId(serviceId);
+  const sessionKey = getCaseworkerSessionStorageKeyForServiceId(serviceId);
   sessionStorageService.setItem(sessionKey, JSON.stringify(caseworkers));
 }
 

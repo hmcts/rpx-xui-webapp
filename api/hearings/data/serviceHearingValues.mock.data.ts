@@ -1,5 +1,5 @@
 /* tslint:disable:object-literal-sort-keys */
-import { MemberType, PartyType, RequirementType } from '../models/hearings.enum'
+import { PartyType, RequirementType } from '../models/hearings.enum'
 import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model'
 
 export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
@@ -52,21 +52,6 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
         judiciarySpecialisms: [''],
     },
     hearingIsLinkedFlag: false,
-    panelRequirements: {
-        panelPreferences: [
-            {
-                memberID: 'p1000000',
-                memberType: MemberType.PANEL_MEMBER,
-                requirementType: RequirementType.MUSTINC,
-            },
-            {
-                memberID: 'p1000003',
-                memberType: MemberType.PANEL_MEMBER,
-                requirementType: RequirementType.EXCLUDE,
-            },
-        ],
-        panelSpecialisms: ['DisabilityQualifiedPanelMember', 'Cardiologist'],
-    },
     parties: [
         {
             partyID: 'P1',

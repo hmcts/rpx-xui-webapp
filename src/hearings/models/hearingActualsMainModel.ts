@@ -12,6 +12,7 @@ export interface HearingPlannedModel {
 }
 
 export interface PlannedHearingModel {
+  plannedDate?: string;
   plannedStartTime: string;
   plannedEndTime: string;
   parties: PartyModel[];

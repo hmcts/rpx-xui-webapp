@@ -36,10 +36,10 @@ export class PanelAndJudgeDetailsResolver implements Resolve<JudicialUserModel[]
   public resolve(
     route?: ActivatedRouteSnapshot
   ): Observable<JudicialUserModel[]> {
-        return this.getReferenceData$(this.getPanelMemberId());
+        return this.getReferenceData$(this.getPanelMemberIds());
   }
 
-  public getPanelMemberId(): string[] {
+  public getPanelMemberIds(): string[] {
     return this.hearingRequestMainModel.hearingDetails.panelRequirements.panelPreferences.map(
       (ref) => ref.memberID
     );
@@ -49,9 +49,7 @@ export class PanelAndJudgeDetailsResolver implements Resolve<JudicialUserModel[]
     return this.judicialRefDataService
       .searchJudicialUserByPersonalCodes(serviceId)
       .pipe(
-        map((data) => {
-          return data.map((member) => member);
-        })
+        map((data) => data)
       );
   }
 }

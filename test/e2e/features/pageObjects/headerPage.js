@@ -225,6 +225,7 @@ function HeaderPage() {
       if (tabEle) {
         await tabEle.click();
       } else {
+        await this.refreshBrowser(); 
         throw new Error(`Tab ${tabText} is not present in navigation tabs headers ${primaryTabs} `);
       }
     }); 

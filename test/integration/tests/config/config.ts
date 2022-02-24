@@ -82,7 +82,13 @@ export  const config =  {
                 email: "330085EMP-@ejudiciary.net",
                 id: "519e0c40-d30e-4f42-8a4c-2c79838f0e4e",
                 name: "Tom Cruz"
-            }
+            },
+            legalOpsUser:{
+                email: "330085EMP-@ejudiciary.net",
+                id: "519e0c40-d30e-4f42-8a4c-2c79838f0e4e",
+                name: "Tom Cruz"
+            },
+            iaCaseIds: ["1546883526751282"]
         },
         demo: {
             locationId: '765324',
@@ -90,9 +96,11 @@ export  const config =  {
                 email: "330085EMP-@ejudiciary.net",
                 id: "519e0c40-d30e-4f42-8a4c-2c79838f0e4e",
                 name: "Tom Cruz"
-            }
+            },
+            iaCaseIds: ["1547458486131483"]
         }
     }
+
 
 };
 

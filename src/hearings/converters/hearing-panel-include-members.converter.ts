@@ -1,7 +1,7 @@
 import { ActivatedRoute } from '@angular/router';
-import { MemberType, RequirementType } from 'api/hearings/models/hearings.enum';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { MemberType, RequirementType } from '../models/hearings.enum';
 import { JudicialUserModel } from '../models/judicialUser.model';
 import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
@@ -36,8 +36,7 @@ export class HearingPanelIncludeMemberConverter implements AnswerConverter {
             );
             if (personDetails.memberType === MemberType.PANEL_MEMBER) {
               result += `<li>${data.full_name}</li>`;
-            } else {
-              // TODO - have to revisit after we have incl the member type enum for JUDGE
+            } else if (personDetails.memberType === MemberType.JUDGE) {
               result += `<li>${data.known_as}</li>`;
             }
           });

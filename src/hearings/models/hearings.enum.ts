@@ -219,7 +219,8 @@ export enum AnswerSource {
 
 export enum IsHiddenSource {
   WELSH_LOCATION,
-}
+  HEARING_PANEL_FIELD_SHOW_HIDE
+  }
 
 export enum Mode {
   CREATE = 'create',

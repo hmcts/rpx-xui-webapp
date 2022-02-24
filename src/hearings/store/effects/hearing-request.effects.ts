@@ -83,7 +83,7 @@ export class HearingRequestEffects {
           if (currentPage === 'hearing-venue') {
             return this.router.navigate(['hearings', 'request', 'hearing-welsh']);
           } else {
-            return this.router.navigate(['hearings', 'request', 'hearing-view-edit-summary']);
+            return this.router.navigate(['hearings', 'request', 'hearing-view-edit-summary'], { fragment: this.fragmentId });
           }
         default:
           return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']);

@@ -1,5 +1,6 @@
 import {Pipe, PipeTransform} from '@angular/core';
 import {Observable} from 'rxjs';
+import {AdditionalFacilitiesAmendedConverter} from '../converters/additional-facilities.amended.converter';
 import {AdditionalSecurityAmendedConverter} from '../converters/additional-security.amended.converter';
 import {DefaultAmendedConverter} from '../converters/default.amended.converter';
 import {IsAmendedConverter} from '../converters/is-amended.converter';
@@ -20,6 +21,9 @@ export class IsAmendedPipe implements PipeTransform {
         break;
       case AnswerSource.ADDITIONAL_SECURITY_REQUIRED:
         converter = new AdditionalSecurityAmendedConverter();
+        break;
+      case AnswerSource.ADDITIONAL_FACILITIES_REQUIRED:
+        converter = new AdditionalFacilitiesAmendedConverter();
         break;
       default:
         break;

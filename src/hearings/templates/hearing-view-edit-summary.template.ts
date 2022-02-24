@@ -59,6 +59,7 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
         answerTitle: 'Select any additional facilities required',
         answerSource: AnswerSource.ADDITIONAL_FACILITIES_REQUIRED,
         changeLink: '/hearings/request/hearing-facilities#immigrationDetentionCentre',
+        isAmendedSource: AnswerSource.ADDITIONAL_FACILITIES_REQUIRED,
       }
     ],
   },

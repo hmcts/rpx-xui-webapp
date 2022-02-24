@@ -187,6 +187,13 @@ export const ROUTES: Routes = [
       },
       {
         path: 'hearing-view-edit-summary',
+        resolve: {
+          hearingPriorities: RefDataResolver,
+          caseFlags: CaseFlagsResolver,
+          hearingStageOptions: HearingStageResolver,
+          additionFacilitiesOptions: AdditionalFacilitiesResolver,
+          partyChannels: PartyChannelsResolverService
+        },
         component: HearingViewEditSummaryComponent,
         canActivate: [HealthCheckGuard],
         data: {

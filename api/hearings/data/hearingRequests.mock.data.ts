@@ -1,5 +1,6 @@
 import {PartyType} from '../../../src/hearings/models/hearings.enum';
 import {HearingRequestMainModel} from '../models/hearingRequestMain.model';
+import {CategoryType} from "../models/hearings.enum";
 
 export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
   {
@@ -9,7 +10,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     },
     hearingDetails: {
       duration: 45,
-      hearingType: 'Final',
+      hearingType: 'final',
       hearingLocations: [
         {
           locationType: 'hearing',
@@ -37,7 +38,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         'inCameraCourt',
         'sameSexCourtroom',
       ],
-      listingComments: '',
+      listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
     },
@@ -50,9 +51,25 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseDeepLink: null,
       hmctsInternalCaseName: 'Jane Smith vs DWP',
       publicCaseName: 'Jane Smith vs DWP',
-      caseAdditionalSecurityFlag: null,
+      caseAdditionalSecurityFlag: false,
       caseInterpreterRequiredFlag: false,
-      caseCategories: [],
+      caseCategories: [
+        {
+          categoryType: CategoryType.CaseType,
+          categoryValue: 'Personal Independence Payment',
+        },
+        {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'Conditions of Entitlement',
+        },
+        {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'Good cause',
+        },
+        {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+        }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
       caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
@@ -94,7 +111,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     },
     hearingDetails: {
       duration: 45,
-      hearingType: 'Final',
+      hearingType: 'final',
       hearingLocations: [
         {
           locationType: 'hearing',
@@ -122,7 +139,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         'inCameraCourt',
         'sameSexCourtroom',
       ],
-      listingComments: '',
+      listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
     },
@@ -135,9 +152,25 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseDeepLink: null,
       hmctsInternalCaseName: 'Jane Smith vs DWP',
       publicCaseName: 'Jane Smith vs DWP',
-      caseAdditionalSecurityFlag: null,
+      caseAdditionalSecurityFlag: false,
       caseInterpreterRequiredFlag: false,
-      caseCategories: [],
+      caseCategories: [
+        {
+          categoryType: CategoryType.CaseType,
+          categoryValue: 'Personal Independence Payment',
+        },
+        {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'Conditions of Entitlement',
+        },
+        {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'Good cause',
+        },
+        {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+        }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
       caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
@@ -179,7 +212,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     },
     hearingDetails: {
       duration: 45,
-      hearingType: 'Final',
+      hearingType: 'final',
       hearingLocations: [
         {
           locationType: 'hearing',
@@ -207,7 +240,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         'inCameraCourt',
         'sameSexCourtroom',
       ],
-      listingComments: '',
+      listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
     },
@@ -220,9 +253,25 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseDeepLink: null,
       hmctsInternalCaseName: 'Jane Smith vs DWP',
       publicCaseName: 'Jane Smith vs DWP',
-      caseAdditionalSecurityFlag: null,
+      caseAdditionalSecurityFlag: false,
       caseInterpreterRequiredFlag: false,
-      caseCategories: [],
+      caseCategories: [
+        {
+          categoryType: CategoryType.CaseType,
+          categoryValue: 'Personal Independence Payment',
+        },
+        {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'Conditions of Entitlement',
+        },
+        {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'Good cause',
+        },
+        {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+        }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
       caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
@@ -264,7 +313,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     },
     hearingDetails: {
       duration: 45,
-      hearingType: 'Final',
+      hearingType: 'final',
       hearingLocations: [
         {
           locationType: 'hearing',
@@ -292,7 +341,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         'inCameraCourt',
         'sameSexCourtroom',
       ],
-      listingComments: '',
+      listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
     },
@@ -305,9 +354,25 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseDeepLink: null,
       hmctsInternalCaseName: 'Jane Smith vs DWP',
       publicCaseName: 'Jane Smith vs DWP',
-      caseAdditionalSecurityFlag: null,
+      caseAdditionalSecurityFlag: false,
       caseInterpreterRequiredFlag: false,
-      caseCategories: [],
+      caseCategories: [
+        {
+          categoryType: CategoryType.CaseType,
+          categoryValue: 'Personal Independence Payment',
+        },
+        {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'Conditions of Entitlement',
+        },
+        {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'Good cause',
+        },
+        {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+        }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
       caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
@@ -349,7 +414,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     },
     hearingDetails: {
       duration: 45,
-      hearingType: 'Final',
+      hearingType: 'final',
       hearingLocations: [
         {
           locationType: 'hearing',
@@ -377,7 +442,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         'inCameraCourt',
         'sameSexCourtroom',
       ],
-      listingComments: '',
+      listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
     },
@@ -390,9 +455,25 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseDeepLink: null,
       hmctsInternalCaseName: 'Jane Smith vs DWP',
       publicCaseName: 'Jane Smith vs DWP',
-      caseAdditionalSecurityFlag: null,
+      caseAdditionalSecurityFlag: false,
       caseInterpreterRequiredFlag: false,
-      caseCategories: [],
+      caseCategories: [
+        {
+          categoryType: CategoryType.CaseType,
+          categoryValue: 'Personal Independence Payment',
+        },
+        {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'Conditions of Entitlement',
+        },
+        {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'Good cause',
+        },
+        {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+        }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
       caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
@@ -434,7 +515,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     },
     hearingDetails: {
       duration: 45,
-      hearingType: 'Final',
+      hearingType: 'final',
       hearingLocations: [
         {
           locationType: 'hearing',
@@ -462,7 +543,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         'inCameraCourt',
         'sameSexCourtroom',
       ],
-      listingComments: '',
+      listingComments: 'Interpreter required',
       hearingRequester: '',
       leadJudgeContractType: '',
     },
@@ -475,9 +556,25 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       caseDeepLink: null,
       hmctsInternalCaseName: 'Jane Smith vs DWP',
       publicCaseName: 'Jane Smith vs DWP',
-      caseAdditionalSecurityFlag: null,
+      caseAdditionalSecurityFlag: false,
       caseInterpreterRequiredFlag: false,
-      caseCategories: [],
+      caseCategories: [
+        {
+          categoryType: CategoryType.CaseType,
+          categoryValue: 'Personal Independence Payment',
+        },
+        {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'Conditions of Entitlement',
+        },
+        {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'Good cause',
+        },
+        {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'Rate of Assessment / Payability Issues - complex',
+        }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
       caseSLAStartDate: '2021-11-23T09:00:00.000+0000',

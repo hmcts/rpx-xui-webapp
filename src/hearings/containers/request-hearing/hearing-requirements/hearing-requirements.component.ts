@@ -72,7 +72,6 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         listingComments: this.serviceHearingValuesModel.listingComments,
         hearingRequester: this.serviceHearingValuesModel.hearingRequester,
         leadJudgeContractType: this.serviceHearingValuesModel.leadJudgeContractType,
-        totalParticipantAttendingHearing: null
       },
       caseDetails: {
         hmctsServiceCode: this.hearingListMainModel.hmctsServiceID || null,

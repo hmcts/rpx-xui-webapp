@@ -1379,7 +1379,7 @@ export const initialState = {
           autolistFlag: false,
           nonStandardHearingDurationReasons: [],
           hearingPriorityType: 'standard',
-          numberOfPhysicalAttendees: null,
+          numberOfPhysicalAttendees: 3,
           hearingInWelshFlag: true,
           facilitiesRequired: [
             'immigrationDetentionCentre',
@@ -1388,7 +1388,6 @@ export const initialState = {
           listingComments: 'blah blah blah',
           hearingRequester: null,
           leadJudgeContractType: null,
-          totalParticipantAttendingHearing: 3
         },
         caseDetails: {
           hmctsServiceCode: null,
@@ -1458,7 +1457,7 @@ export const initialState = {
           autolistFlag: false,
           nonStandardHearingDurationReasons: [],
           hearingPriorityType: 'standard',
-          numberOfPhysicalAttendees: null,
+          numberOfPhysicalAttendees: 3,
           hearingInWelshFlag: true,
           facilitiesRequired: [
             'immigrationDetentionCentre',
@@ -1467,7 +1466,6 @@ export const initialState = {
           listingComments: 'blah blah blah',
           hearingRequester: null,
           leadJudgeContractType: null,
-          totalParticipantAttendingHearing: 3
         },
         caseDetails: {
           hmctsServiceCode: null,

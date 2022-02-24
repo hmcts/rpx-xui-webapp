@@ -121,7 +121,6 @@ describe('HearingRequirementsComponent', () => {
         listingComments: '',
         hearingRequester: '',
         leadJudgeContractType: '',
-        totalParticipantAttendingHearing: null
       },
       caseDetails: {
         hmctsServiceCode: 'SSCS',

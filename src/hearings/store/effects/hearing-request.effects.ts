@@ -32,7 +32,7 @@ export class HearingRequestEffects {
     private readonly location: Location,
   ) {
     this.screenNavigations$ = this.hearingStore.pipe(select(fromHearingSelectors.getHearingValuesModel)).pipe(
-      map(hearingValuesModel => hearingValuesModel.screenFlow));
+      map(hearingValuesModel => hearingValuesModel ? hearingValuesModel.screenFlow : []));
     this.hearingStore.pipe(select(fromHearingReducers.getHearingsFeatureState)).subscribe(
       state => {
         this.caseId = state.hearingList.hearingListMainModel ? state.hearingList.hearingListMainModel.caseRef : '';
@@ -62,23 +62,26 @@ export class HearingRequestEffects {
   public continueNavigation$ = this.actions$.pipe(
     ofType(hearingRequestActions.UPDATE_HEARING_REQUEST),
     tap(() => {
-      const nextPage = this.pageFlow.getNextPage(this.screenNavigations$);
+      let nextPage;
       switch (this.mode) {
         case Mode.CREATE:
+          nextPage = this.pageFlow.getNextPage(this.screenNavigations$);
           if (nextPage) {
             return this.router.navigate(['hearings', 'request', nextPage]);
           } else {
             throw new Error('Next page not found');
           }
         case Mode.CREATE_EDIT:
+          nextPage = this.pageFlow.getNextPage(this.screenNavigations$);
           if (nextPage === 'hearing-welsh') {
             return this.router.navigate(['hearings', 'request', nextPage]);
           } else {
             return this.router.navigate(['hearings', 'request', 'hearing-create-edit-summary'], { fragment: this.fragmentId });
           }
         case Mode.VIEW_EDIT:
-          if (nextPage === 'hearing-welsh') {
-            return this.router.navigate(['hearings', 'request', nextPage]);
+          const currentPage = this.pageFlow.getCurrentPage();
+          if (currentPage === 'hearing-venue') {
+            return this.router.navigate(['hearings', 'request', 'hearing-welsh']);
           } else {
             return this.router.navigate(['hearings', 'request', 'hearing-view-edit-summary']);
           }

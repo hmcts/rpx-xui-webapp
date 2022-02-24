@@ -18,12 +18,12 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
       {
         id: 'type',
         answerTitle: 'Type',
-        answerSource: AnswerSource.Type,
+        answerSource: AnswerSource.TYPE_FROM_REQUEST,
       },
       {
         id: 'status',
         answerTitle: 'Status',
-        answerSource: AnswerSource.Status,
+        answerSource: AnswerSource.STATUS,
       },
       {
         id: 'dateRequestSubmitted',
@@ -52,6 +52,7 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
         answerTitle: 'Will additional security be required?',
         answerSource: AnswerSource.ADDITIONAL_SECURITY_REQUIRED,
         changeLink: '/hearings/request/hearing-facilities#additionalSecurityYes',
+        isAmendedSource: AnswerSource.ADDITIONAL_SECURITY_REQUIRED,
       },
       {
         id: 'additionalFacilitiesRequired',

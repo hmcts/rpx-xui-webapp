@@ -58,6 +58,11 @@ export enum RequirementType {
   EXCLUDE = 'EXCLUDE',
 }
 
+export enum CategoryType {
+  CaseType = 'caseType',
+  CaseSubType = 'caseSubType',
+}
+
 export enum MemberType {
   JUDGE = 'JUDGE',
   PANEL_MEMBER = 'PANEL_MEMBER',
@@ -196,7 +201,8 @@ export enum AnswerSource {
   CASE_NAME,
   CASE_NUMBER,
   Type,
-  Status,
+  TYPE_FROM_REQUEST,
+  STATUS,
   DATE_REQUEST_SUBMITTED,
   CASE_FLAGS,
   ADDITIONAL_SECURITY_REQUIRED,

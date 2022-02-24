@@ -41,6 +41,7 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
     if (this.roles) {
       this.legalOpsRoles = this.roles.filter(role => role.roleCategory === RoleCategory.LEGAL_OPERATIONS);
       this.judicialRoles = this.roles.filter(role => role.roleCategory === RoleCategory.JUDICIAL);
+      this.adminRoles = this.roles.filter(role => role.roleCategory === RoleCategory.ADMIN);
     }
     this.showLegalOpsAllocate = this.showAllocateRoleLink && this.legalOpsRoles.length === 0;
   }

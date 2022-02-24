@@ -1,7 +1,7 @@
 <div class="govuk-width-container">
-  <a class="govuk-back-link">Back</a>
+  <a class="govuk-back-link" [routerLink]="['../']">Back</a>
   <main class="govuk-main-wrapper" id="main-content" role="main">
-    <div class="govuk-grid-row">
+    <div class="govuk-grid-row" *ngIf="form">
       <form [formGroup]="form" (submit)="submit(form.value, form.valid)">
         <span class="govuk-caption-l">Jane Smith vs DWP</span>
         <h1 class="govuk-heading-l">

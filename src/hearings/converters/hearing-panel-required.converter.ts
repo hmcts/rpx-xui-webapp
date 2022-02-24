@@ -11,9 +11,7 @@ export class HearingPanelRequiredConverter implements AnswerConverter {
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
       map((state) => {
-        if (state.hearingRequest.hearingRequestMainModel.hearingDetails && 
-          state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements) 
-          {
+        if (state.hearingRequest.hearingRequestMainModel.hearingDetails && state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements) {
             const panelPreferences = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements.panelPreferences || []
             const hasPanelMembers = panelPreferences.filter((ref) => ref.memberType ===  MemberType.PANEL_MEMBER)
             return hasPanelMembers.length > 0

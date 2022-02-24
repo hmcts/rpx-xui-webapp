@@ -1,9 +1,9 @@
 import MockAdapter from 'axios-mock-adapter';
-import { HttpMockAdapter } from '../common/httpMockAdapter';
-import { HEARING_ACTUAL } from './data/hearing-actuals.mock.data';
-import { HEARING_RESPONSE_RESULT } from './data/hearingResponse.mock.data';
-import { EMPTY_HEARINGS_LIST, HEARINGS_LIST } from './data/hearings.mock.data';
-import { SERVICE_HEARING_VALUES } from './data/serviceHearingValues.mock.data';
+import {HttpMockAdapter} from '../common/httpMockAdapter';
+import {HEARING_ACTUAL} from './data/hearing-actuals.mock.data';
+import {EMPTY_HEARINGS_LIST, HEARINGS_LIST} from './data/hearingLists.mock.data';
+import {HEARING_REQUEST_RESULTS} from './data/hearingRequests.mock.data';
+import {SERVICE_HEARING_VALUES} from './data/serviceHearingValues.mock.data';
 
 export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
@@ -41,10 +41,13 @@ export const init = () => {
     }
   });
 
-  mock.onGet(getHearingInfoUrl).reply(() => {
+  mock.onGet(getHearingInfoUrl).reply(config => {
+    const urlPaths: string[] = config.url.split('/');
+    const hearingId = urlPaths[urlPaths.length - 1];
+    const FOUND_A_HEARING = HEARING_REQUEST_RESULTS.find(hearing => hearing.caseDetails.hearingID === hearingId);
     return [
       200,
-      HEARING_RESPONSE_RESULT,
+      FOUND_A_HEARING,
     ];
   });
 

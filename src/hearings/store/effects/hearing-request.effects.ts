@@ -13,6 +13,7 @@ import {HearingsService} from '../../services/hearings.service';
 import * as fromHearingReducers from '../../store/reducers';
 import * as fromHearingSelectors from '../../store/selectors';
 import {AbstractPageFlow} from '../../utils/abstract-page-flow';
+import * as hearingRequestToCompareActions from '../actions/hearing-request-to-compare.action';
 import * as hearingRequestActions from '../actions/hearing-request.action';
 
 @Injectable()
@@ -94,8 +95,11 @@ export class HearingRequestEffects {
     switchMap(payload => {
       return this.hearingsService.loadHearingRequest(payload).pipe(
         tap(
-          (response) => {
-            console.log('response', response);
+          (hearingRequestMainModel) => {
+            // clone to immutable obj for comparison
+            this.hearingStore.dispatch(new hearingRequestToCompareActions.InitializeHearingRequestToCompare(hearingRequestMainModel));
+            // flush to the hearing request store
+            this.hearingStore.dispatch(new hearingRequestActions.InitializeHearingRequest(hearingRequestMainModel));
           }),
         catchError(error => {
           return HearingRequestEffects.handleError(error);

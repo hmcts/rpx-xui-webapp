@@ -46,7 +46,8 @@ export class CaseHearingsListComponent implements OnInit {
     }
   }
 
-  public viewAndEdit(): void {
+  public viewAndEdit(hearingId: string): void {
+    this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearingId));
     const hearingCondition: HearingConditions = {
       mode: Mode.VIEW,
     };

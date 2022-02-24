@@ -7,12 +7,14 @@ import { HearingValuesStateData } from '../../models/hearingValuesStateData';
 import * as fromHearingActuals from './hearing-actuals.reducer';
 import * as fromHearingConditions from './hearing-conditions.reducer';
 import * as fromHearingList from './hearing-list.reducer';
+import * as fromHearingRequestToCompare from './hearing-request-to-compare.reducer';
 import * as fromHearingRequest from './hearing-request.reducer';
 import * as fromHearingValues from './hearing-values.reducer';
 
 export interface State {
   hearingList: HearingListStateData;
   hearingValues: HearingValuesStateData;
+  hearingRequestToCompare: HearingRequestStateData;
   hearingRequest: HearingRequestStateData;
   hearingConditions: HearingConditions;
   hearingActuals: HearingActualsStateData;
@@ -21,6 +23,7 @@ export interface State {
 export const reducers: ActionReducerMap<State> = {
   hearingList: fromHearingList.hearingListReducer,
   hearingValues: fromHearingValues.hearingValuesReducer,
+  hearingRequestToCompare: fromHearingRequestToCompare.hearingRequestToCompareReducer,
   hearingRequest: fromHearingRequest.hearingRequestReducer,
   hearingConditions: fromHearingConditions.hearingConditionsReducer,
   hearingActuals: fromHearingActuals.hearingActualsReducer,
@@ -31,6 +34,7 @@ export const getHearingsFeatureState = createFeatureSelector<State>(
 );
 
 export * from './hearing-list.reducer';
+export * from './hearing-request-to-compare.reducer';
 export * from './hearing-request.reducer';
 export * from './hearing-values.reducer';
 export * from './hearing-conditions.reducer';

@@ -81,7 +81,8 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
         id: 'venue',
         answerTitle: 'What are the hearing venue details?',
         answerSource: AnswerSource.VENUE,
-        changeLink: '/hearings/request/hearing-venue#inputLocationSearch'
+        changeLink: '/hearings/request/hearing-venue#inputLocationSearch',
+        isAmendedSource: AnswerSource.VENUE,
       },
     ],
   },

@@ -97,6 +97,14 @@ export const ROUTES: Routes = [
         }
       },
       {
+        path: 'hearing-timing',
+        component: HearingActualsTimingComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Manage cases | Hearing Actuals | Hearing Timing'
+        }
+      },
+      {
         path: 'actuals-parties',
         resolve: {
           partyChannel: HearingPartyChannelResolver,

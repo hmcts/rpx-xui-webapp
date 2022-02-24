@@ -1376,21 +1376,7 @@ export const initialState = {
             hearingWindowFirstDate: null,
           },
           privateHearingRequiredFlag: false,
-          panelRequirements: {
-            panelPreferences: [
-              {
-                memberID: 'p1000000',
-                memberType: MemberType.PANEL_MEMBER,
-                requirementType: RequirementType.MUSTINC,
-            },
-            {
-                memberID: 'p1000003',
-                memberType: MemberType.PANEL_MEMBER,
-                requirementType: RequirementType.EXCLUDE,
-            },
-            ],
-            panelSpecialisms: ['DisabilityQualifiedPanelMember', 'Cardiologist'],
-          },
+          panelRequirements: null,
           autolistFlag: false,
           nonStandardHearingDurationReasons: [],
           hearingPriorityType: 'standard',

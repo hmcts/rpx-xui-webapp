@@ -10,8 +10,9 @@ import { HearingPanelOtherPanelRolesConverter } from './hearing-panel-other-pane
 import { HttpClient } from '@angular/common/http';
 import { ALL_JUDICIAL_USERS } from 'api/prd/judicial/data/judicial.mock.data';
 import { OTHER_PANEL_ROLES } from 'api/prd/lov/data/lov.mock.data';
+import { MemberType, RequirementType } from '../models/hearings.enum';
 
-describe('HearingPanelOtherPanelRolesConverter', () => {
+fdescribe('HearingPanelOtherPanelRolesConverter', () => {
   let converter: AnswerConverter;
   let router: any;
 
@@ -53,6 +54,21 @@ describe('HearingPanelOtherPanelRolesConverter', () => {
 
   it('should transform other panel roles as expected', () => {
     const STATE: State = initialState.hearings;
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
+      panelPreferences: [
+        {
+          memberID: 'p1000000',
+          memberType: MemberType.PANEL_MEMBER,
+          requirementType: RequirementType.MUSTINC,
+      },
+      {
+          memberID: 'p1000003',
+          memberType: MemberType.PANEL_MEMBER,
+          requirementType: RequirementType.EXCLUDE,
+      },
+      ],
+      panelSpecialisms: ['DisabilityQualifiedPanelMember', 'Cardiologist'],
+  }
     const result$ = converter.transformAnswer(of(STATE));
     const transformedValue = '<ul><li>Disability qualified panel member</li><li>Medically qualified panel member - Cardiologist</li></ul>';
     const expected = cold('(b|)', { b: transformedValue });

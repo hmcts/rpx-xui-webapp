@@ -12,7 +12,7 @@ import { ALL_JUDICIAL_USERS } from 'api/prd/judicial/data/judicial.mock.data';
 import { OTHER_PANEL_ROLES } from 'api/prd/lov/data/lov.mock.data';
 import { MemberType, RequirementType } from '../models/hearings.enum';
 
-fdescribe('HearingPanelOtherPanelRolesConverter', () => {
+describe('HearingPanelOtherPanelRolesConverter', () => {
   let converter: AnswerConverter;
   let router: any;
 

@@ -11,7 +11,7 @@ import { HttpClient } from '@angular/common/http';
 import { ALL_JUDICIAL_USERS } from 'api/prd/judicial/data/judicial.mock.data';
 import { MemberType, RequirementType } from '../models/hearings.enum';
 
-fdescribe('Hearing Panel ExcludeMember Converter', () => {
+describe('Hearing Panel ExcludeMember Converter', () => {
   let converter: AnswerConverter;
   let router: any;
 

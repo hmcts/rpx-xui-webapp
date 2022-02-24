@@ -52,7 +52,7 @@ describe('Hearing Panel include Member Converter', () => {
   });
 
   it('should transform include panel members as expected', () => {
-    let STATE: State = initialState.hearings;
+    const STATE: State = initialState.hearings;
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
         panelPreferences: [
           {

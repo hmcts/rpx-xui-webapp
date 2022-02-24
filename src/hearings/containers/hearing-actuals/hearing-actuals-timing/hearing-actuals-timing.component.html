@@ -1,0 +1,80 @@
+<div class="govuk-width-container">
+  <a class="govuk-back-link">Back</a>
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <form [formGroup]="form" (submit)="submit(form.value, form.valid)">
+        <span class="govuk-caption-l">Jane Smith vs DWP</span>
+        <h1 class="govuk-heading-l">
+          Hearing start and finish times
+        </h1>
+        <br>
+
+        <div class="govuk-form-group">
+          <label for="startTime" class="govuk-label govuk-!-font-weight-bold">Start time</label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-5" id="startTime" type="text"
+                 formControlName="startTime">
+        </div>
+
+        <div class="govuk-form-group">
+          <label for="finishTime" class="govuk-label govuk-!-font-weight-bold">Finish time</label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-5" id="finishTime" type="text"
+                 formControlName="finishTime">
+        </div>
+
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset" aria-describedby="changed-name-hint">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+              <h1 class="govuk-fieldset__heading">
+                Do you need to record times the hearing was paused?
+              </h1>
+            </legend>
+            <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="pauseResumeYes" formControlName="recordTimes" type="radio"
+                       value="yes">
+                <label class="govuk-label govuk-radios__label" for="pauseResumeYes">
+                  Yes
+                </label>
+              </div>
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="pauseResumeNo" formControlName="recordTimes" type="radio"
+                       value="no">
+                <label class="govuk-label govuk-radios__label" for="pauseResumeNo">
+                  No
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <div *ngIf="form.get('recordTimes').value === 'yes'">
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-!-font-weight-bold" for="pauseTime">
+              Pause time
+            </label>
+            <div class="govuk-hint">
+              For example, 13:35
+            </div>
+            <input class="govuk-input govuk-date-input__input govuk-input--width-5" id="pauseTime"
+                   type="text" formControlName="pauseTime">
+          </div>
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-!-font-weight-bold" for="resumeTime">
+              Resume time
+            </label>
+            <div class="govuk-hint">
+              For example, 13:55
+            </div>
+            <input class="govuk-input govuk-date-input__input govuk-input--width-5" id="resumeTime"
+                   formControlName="resumeTime"
+                   type="text">
+          </div>
+        </div>
+
+        <button class="govuk-button primary" data-module="govuk-button">
+          Save and continue
+        </button>
+      </form>
+    </div>
+  </main>
+</div>

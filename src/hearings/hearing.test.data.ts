@@ -1,6 +1,5 @@
-import { MemberType } from 'api/hearings/models/hearings.enum';
-import { HearingListingStatusEnum, HMCStatus, PartyType, RequirementType, HearingResult } from './models/hearings.enum';
 import { HearingActualsMainModel } from './models/hearingActualsMainModel';
+import { HearingListingStatusEnum, HearingResult, HMCStatus, PartyType } from './models/hearings.enum';
 import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
 
 export const hearingStageRefData = [

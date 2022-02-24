@@ -63,7 +63,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         hearingIsLinkedFlag: this.serviceHearingValuesModel.hearingIsLinkedFlag,
         hearingWindow: this.serviceHearingValuesModel.hearingWindow,
         privateHearingRequiredFlag: this.serviceHearingValuesModel.privateHearingRequiredFlag,
-        panelRequirements: this.serviceHearingValuesModel.panelRequirements,
+        panelRequirements: null,
         autolistFlag: this.serviceHearingValuesModel.autoListFlag,
         hearingPriorityType: this.serviceHearingValuesModel.hearingPriorityType,
         numberOfPhysicalAttendees: this.serviceHearingValuesModel.numberOfPhysicalAttendees,

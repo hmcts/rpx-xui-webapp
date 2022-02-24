@@ -85,6 +85,3 @@ export enum HearingResult {
   CANCELLED = 'CANCELLED',
 }
 
-export enum MemberType {
-  PANEL_MEMBER = "PANEL_MEMBER",
-}

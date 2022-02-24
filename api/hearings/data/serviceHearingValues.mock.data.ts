@@ -52,6 +52,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
         judiciarySpecialisms: [''],
     },
     hearingIsLinkedFlag: false,
+    panelRequirements: null,
     parties: [
         {
             partyID: 'P1',

@@ -86,5 +86,5 @@ export enum HearingResult {
 }
 
 export enum MemberType {
-  PANEL_MEMBER="PANEL_MEMBER"
+  PANEL_MEMBER = "PANEL_MEMBER",
 }

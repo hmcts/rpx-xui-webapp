@@ -6,12 +6,12 @@ import { of } from 'rxjs';
 import { hearingPriorityRefData, initialState } from '../hearing.test.data';
 import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
-import { HearingPanelIncludeMemberConverter } from './hearing-panel-include-members.converter';
+import { HearingPanelMemberDisplayConverter } from './hearing-panel-member-display.converter';
 import { HttpClient } from '@angular/common/http';
 import { ALL_JUDICIAL_USERS } from 'api/prd/judicial/data/judicial.mock.data';
 import { MemberType, RequirementType } from '../models/hearings.enum';
 
-describe('Hearing Panel include Member Converter', () => {
+describe('Hearing Panel include/exclude Member Converter', () => {
   let converter: AnswerConverter;
   let router: any;
 
@@ -47,11 +47,11 @@ describe('Hearing Panel include Member Converter', () => {
         },
       ],
     });
-    router = TestBed.get(ActivatedRoute);
-    converter = new HearingPanelIncludeMemberConverter(router);
+    router = TestBed.get(ActivatedRoute)
   });
 
   it('should transform include panel members as expected', () => {
+    converter = new HearingPanelMemberDisplayConverter(router, RequirementType.MUSTINC);
     const STATE: State = initialState.hearings;
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
         panelPreferences: [
@@ -70,6 +70,29 @@ describe('Hearing Panel include Member Converter', () => {
     }
     const result$ = converter.transformAnswer(of(STATE));
     const transformedValue = '<ul><li>Jacky Collins</li></ul>';
+    const expected = cold('(b|)', { b: transformedValue });
+    expect(result$).toBeObservable(expected);
+  });
+  it('should transform exclude panel members as expected', () => {
+    converter = new HearingPanelMemberDisplayConverter(router, RequirementType.EXCLUDE);
+    const STATE: State = initialState.hearings;
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
+        panelPreferences: [
+          {
+            memberID: 'p1000000',
+            memberType: MemberType.PANEL_MEMBER,
+            requirementType: RequirementType.MUSTINC,
+        },
+        {
+            memberID: 'p1000003',
+            memberType: MemberType.PANEL_MEMBER,
+            requirementType: RequirementType.EXCLUDE,
+        },
+        ],
+        panelSpecialisms: ['DisabilityQualifiedPanelMember', 'Cardiologist'],
+    }
+    const result$ = converter.transformAnswer(of(STATE));
+    const transformedValue = '<ul><li>James Priest</li></ul>';
     const expected = cold('(b|)', { b: transformedValue });
     expect(result$).toBeObservable(expected);
   });

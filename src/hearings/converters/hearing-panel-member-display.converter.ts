@@ -1,30 +1,29 @@
 import { ActivatedRoute } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MemberType, RequirementType } from '../models/hearings.enum';
 import { JudicialUserModel } from '../models/judicialUser.model';
 import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 
-export class HearingPanelExcludeMemberConverter implements AnswerConverter {
-  constructor(protected readonly route: ActivatedRoute) {}
+export class HearingPanelMemberDisplayConverter implements AnswerConverter {
+  constructor(protected readonly route: ActivatedRoute, protected readonly requirementType: RequirementType) {}
 
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
       map((state) => {
         if (
           !state.hearingRequest.hearingRequestMainModel.hearingDetails ||
-          !state.hearingRequest.hearingRequestMainModel.hearingDetails
-            .panelRequirements
+          !state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements
         )
           return;
         const panelRequirementsState =
           state.hearingRequest.hearingRequestMainModel.hearingDetails
             .panelRequirements;
         const panelDetailsResolverData = this.route.snapshot.data.panelDetails;
-        let transformedResult = '<ul>';
+        let result = '<ul>';
         const personalCodes = panelRequirementsState.panelPreferences
-          .filter((ref) => ref.requirementType === RequirementType.EXCLUDE)
+          .filter((ref) => ref.requirementType === RequirementType[this.requirementType])
           .map((ref) => ref.memberID);
 
         (panelDetailsResolverData as JudicialUserModel[])
@@ -36,12 +35,12 @@ export class HearingPanelExcludeMemberConverter implements AnswerConverter {
               (ref) => ref.memberID === data.personal_code
             );
             if (personDetails.memberType === MemberType.PANEL_MEMBER) {
-              transformedResult += `<li>${data.full_name}</li>`;
+              result += `<li>${data.full_name}</li>`;
             } else if (personDetails.memberType === MemberType.JUDGE) {
-              transformedResult += `<li>${data.known_as}</li>`;
+              result += `<li>${data.known_as}</li>`;
             }
           });
-        return transformedResult + '</ul>';
+        return result + '</ul>';
       })
     );
   }

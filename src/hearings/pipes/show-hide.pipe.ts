@@ -20,7 +20,7 @@ export class ShowHidePipe implements PipeTransform {
         break;
       case IsHiddenSource.HEARING_PANEL_FIELD_SHOW_HIDE:
           converter = new PanelFieldsHiddenConverter();
-          break;        
+          break;
       default:
         break;
     }

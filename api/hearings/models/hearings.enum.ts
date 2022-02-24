@@ -84,4 +84,3 @@ export enum HearingResult {
   ADJOURNED = 'ADJOURNED',
   CANCELLED = 'CANCELLED',
 }
-

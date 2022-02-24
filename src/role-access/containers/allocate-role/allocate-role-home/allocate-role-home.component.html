@@ -5,6 +5,10 @@
       <div class="govuk-grid-row">
         <exui-allocate-role-navigation (eventTrigger)="onNavEvent($event)">
           <div class="govuk-main-wrapper">
+            <!--
+              Error component when no roles to show
+              <exui-choose-role-error></exui-choose-role-error>
+            -->
             <exui-choose-role
               #chooseRole
               *ngIf="isComponentVisible(navigationCurrentState, chooseRoleVisibilityStates)"

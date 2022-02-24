@@ -127,7 +127,8 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
       roleCategory: RoleCategory[EnumUtil(RoleCategory).getKeyOrDefault(this.roleCategory)],
       action: Actions.Reallocate,
       period: null,
-      lastError: null
+      lastError: null,
+      roles: null
     };
     this.store.dispatch(new fromFeature.AllocateRoleInstantiate(allocateRoleState));
   }
@@ -137,6 +138,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
+    this.store.dispatch(new fromFeature.LoadRoles({jurisdiction: this.jurisdiction, roleCategory: this.roleCategory}));
     this.allocateRoleStateDataSub = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(
       allocateRoleStateData => {
         this.navigationCurrentState = allocateRoleStateData.state;

@@ -11,8 +11,7 @@ import { CaseNumberAnswerConverter } from '../converters/case-number.answer.conv
 import { DefaultAnswerConverter } from '../converters/default.answer.converter';
 import { HearingLengthAnswerConverter } from '../converters/hearing-length.answer.converter';
 import { HearingPanelRequiredConverter } from '../converters/hearing-panel-required.converter';
-import { HearingPanelExcludeMemberConverter } from '../converters/hearing-panel-exclude-members.converter';
-import { HearingPanelIncludeMemberConverter } from '../converters/hearing-panel-include-members.converter';
+import { HearingPanelMemberDisplayConverter } from '../converters/hearing-panel-member-display.converter';
 import { HearingPanelOtherPanelRolesConverter } from '../converters/hearing-panel-other-panel-roles.converter';
 import { HearingPriorityAnswerConverter } from '../converters/hearing-priority.answer.converter';
 import { HearingSpecificDateAnswerConverter } from '../converters/hearing-specific-date.answer.converter';
@@ -24,6 +23,7 @@ import { TypeAnswerConverter } from '../converters/type.answer.converter';
 import { VenueAnswerConverter } from '../converters/venue.answer.converter';
 import { AnswerSource } from '../models/hearings.enum';
 import { State } from '../store';
+import { RequirementType } from 'api/hearings/models/hearings.enum';
 
 @Pipe({
   name: 'transformAnswer',
@@ -88,10 +88,10 @@ export class HearingAnswersPipe implements PipeTransform {
         converter = new HearingPanelRequiredConverter(this.route);
         break;
       case AnswerSource.HEARING_PANEL_INCLUDE_MEMBERS:
-        converter = new HearingPanelIncludeMemberConverter(this.route);
+        converter = new HearingPanelMemberDisplayConverter(this.route, RequirementType.MUSTINC);
         break;
       case AnswerSource.HEARING_PANEL_EXCLUDE_MEMBERS:
-        converter = new HearingPanelExcludeMemberConverter(this.route);
+        converter = new HearingPanelMemberDisplayConverter(this.route, RequirementType.EXCLUDE);
         break;
       case AnswerSource.HEARING_PANEL_OTHER_PANEL_ROLES:
         converter = new HearingPanelOtherPanelRolesConverter(this.route);

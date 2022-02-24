@@ -9,7 +9,7 @@ import { AnswerConverter } from './answer.converter';
 import { HearingPanelRequiredConverter } from './hearing-panel-required.converter'
 import { HttpClient } from '@angular/common/http';
 
-fdescribe('Hearing Panel required Converter', () => {
+describe('Hearing Panel required Converter', () => {
   let converter: AnswerConverter;
   let router: any;
 

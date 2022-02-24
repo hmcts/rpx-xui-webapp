@@ -11,9 +11,24 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
         answerSource: AnswerSource.CASE_NAME,
       },
       {
+        id: 'caseNumber',
+        answerTitle: 'Case number',
+        answerSource: AnswerSource.CASE_NUMBER,
+      },
+      {
         id: 'type',
         answerTitle: 'Type',
         answerSource: AnswerSource.Type,
+      },
+      {
+        id: 'status',
+        answerTitle: 'Status',
+        answerSource: AnswerSource.Status,
+      },
+      {
+        id: 'dateRequestSubmitted',
+        answerTitle: 'Date request submitted',
+        answerSource: AnswerSource.DATE_REQUEST_SUBMITTED,
       }
     ],
   },

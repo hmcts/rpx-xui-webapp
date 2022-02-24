@@ -13,4 +13,5 @@ export class AllocateARoleLinkComponent {
     @Input() public showAllocateRoleLink: boolean = false;
     @Input() public roles: CaseRole[] = [];
     @Input() public roleCategory: RoleCategory;
+    @Input() public linkText: string;
 }

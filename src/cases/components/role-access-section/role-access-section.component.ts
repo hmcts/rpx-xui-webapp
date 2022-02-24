@@ -16,4 +16,5 @@ export class RoleAccessSectionComponent {
     @Input() public roleQueryParams: string;
     @Input() public roleCategory: string;
     @Input() public showAllocate: boolean;
+    @Input() public linkText = 'Allocate a role';
 }

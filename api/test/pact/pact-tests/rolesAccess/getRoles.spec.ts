@@ -89,6 +89,9 @@ describe("access management service, get roles", () => {
                 },
                 session:{
                     subStantiveRoles : null 
+                },
+                body:{
+                    serviceIds:["IA"]
                 }
             });
             let returnedResponse = null;
@@ -121,10 +124,10 @@ describe("access management service, get roles", () => {
 function assertResponses(dto: any) {
     console.log(dto);
     let i = 0;
-    for(const role of roles){
-        expect(dto[i].roleCategory).to.be.equal(role.roleCategory);
-        expect(dto[i].roleId).to.be.equal(role.roleId);
-        expect(dto[i].roleName).to.be.equal(role.roleName);
+    for (const role of roles) {
+        expect(dto[0].roles[i].roleCategory).to.be.equal(role.roleCategory);
+        expect(dto[0].roles[i].roleId).to.be.equal(role.roleId);
+        expect(dto[0].roles[i].roleName).to.be.equal(role.roleName);
         i++;
    }
 

@@ -15,7 +15,7 @@ router.post('/allocate-role/confirm', confirmAllocateRole);
 router.post('/allocate-role/reallocate', reallocateRole);
 router.post('/allocate-role/delete', deleteRoleByCaseAndRoleId);
 
-router.get('/allocate-role/valid-roles', getPossibleRoles);
+router.post('/allocate-role/valid-roles', getPossibleRoles);
 router.post('/roles/post', getRolesByCaseId);
 router.post('/roles/getJudicialUsers', getJudicialUsers);
 

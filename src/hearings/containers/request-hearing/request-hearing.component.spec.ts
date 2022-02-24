@@ -50,14 +50,14 @@ describe('RequestHearingComponent', () => {
 
   it('should check submit method', () => {
     spyOn(hearingsService, 'navigateAction');
-    component.onSubmit();
+    component.submitNewRequest();
     expect(hearingsService.navigateAction).toHaveBeenCalledWith(ACTION.SUBMIT);
   });
 
   it('should check is answer page', () => {
     spyOn(hearingsService, 'navigateAction');
     mockPageFlow.getCurrentPage.and.returnValue('hearing-create-edit-summary');
-    expect(component.isCheckAnswerPage).toBeTruthy();
+    expect(component.isCreateEditSummary).toBeTruthy();
   });
 
   it('should check is confirmation page', () => {

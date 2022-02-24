@@ -1344,7 +1344,7 @@ export const initialState = {
       serviceHearingValuesModel,
       lastError: null
     },
-    hearingRequest: {
+    hearingRequestToCompare: {
       hearingRequestMainModel: {
         requestDetails: {
           requestTimeStamp: null
@@ -1399,6 +1399,85 @@ export const initialState = {
           caseDeepLink: null,
           hmctsInternalCaseName: null,
           publicCaseName: null,
+          caseAdditionalSecurityFlag: false,
+          caseInterpreterRequiredFlag: false,
+          caseCategories: [],
+          caseManagementLocationCode: null,
+          caserestrictedFlag: false,
+          caseSLAStartDate: null
+        },
+        partyDetails: [
+          {
+            partyID: 'P1',
+            partyName: 'Jane and Smith',
+            partyType: PartyType.IND,
+            partyChannel: 'inPerson'
+          },
+          {
+            partyID: 'P2',
+            partyName: 'DWP',
+            partyType: PartyType.ORG,
+            partyChannel: 'byVideo'
+          }
+        ]
+      },
+      lastError: null
+    },
+    hearingRequest: {
+      hearingRequestMainModel: {
+        requestDetails: {
+          requestTimeStamp: null
+        },
+        hearingDetails: {
+          duration: 60,
+          hearingType: 'final',
+          hearingLocations: [
+            {
+              locationId: '196538',
+              locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
+              locationType: 'hearing',
+              region: 'North West',
+            },
+            {
+              locationId: '219164',
+              locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
+              locationType: 'hearing',
+              region: 'Scotland',
+            },
+          ],
+          hearingIsLinkedFlag: false,
+          hearingWindow: {
+            hearingWindowDateRange: {
+              hearingWindowStartDateRange: '12-12-2022',
+              hearingWindowEndDateRange: '12-12-2022',
+            },
+            hearingWindowFirstDate: null,
+          },
+          privateHearingRequiredFlag: false,
+          panelRequirements: null,
+          autolistFlag: false,
+          nonStandardHearingDurationReasons: [],
+          hearingPriorityType: 'standard',
+          numberOfPhysicalAttendees: null,
+          hearingInWelshFlag: true,
+          facilitiesRequired: [
+            'immigrationDetentionCentre',
+            'inCameraCourt'
+          ],
+          listingComments: 'blah blah blah',
+          hearingRequester: null,
+          leadJudgeContractType: null,
+          totalParticipantAttendingHearing: 3
+        },
+        caseDetails: {
+          hmctsServiceCode: null,
+          caseRef: null,
+          requestTimeStamp: null,
+          hearingID: null,
+          externalCaseReference: null,
+          caseDeepLink: null,
+          hmctsInternalCaseName: 'Jane vs DWP',
+          publicCaseName: 'Jane vs DWP',
           caseAdditionalSecurityFlag: false,
           caseInterpreterRequiredFlag: false,
           caseCategories: [],

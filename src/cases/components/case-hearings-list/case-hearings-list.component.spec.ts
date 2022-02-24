@@ -130,7 +130,7 @@ describe('CaseHearingsListComponent', () => {
 
   it('should viewAndEdit', () => {
     const navigateSpy = spyOn(router, 'navigate');
-    component.viewAndEdit();
+    component.viewAndEdit('h100000');
     fixture.detectChanges();
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.SaveHearingConditions({mode: 'view'}));
     expect(navigateSpy).toHaveBeenCalledWith(['/', 'hearings', 'request', 'hearing-view-edit-summary']);

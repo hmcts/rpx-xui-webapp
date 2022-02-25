@@ -1,6 +1,6 @@
 import { Person } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 import { Action } from '@ngrx/store';
-import { AllocateRoleState, AllocateRoleStateData, AllocateTo, DurationOfRole, Period, RoleCategory, SpecificRole } from '../../models';
+import { AllocateRoleState, AllocateRoleStateData, AllocateTo, DurationOfRole, Period, Role, RoleCategory, SpecificRole } from '../../models';
 
 export enum AllocateRoleActionTypes {
   CHANGE_NAVIGATION = '[ALLOCATE ROLE] Change Navigation',
@@ -12,6 +12,9 @@ export enum AllocateRoleActionTypes {
   CHOOSE_PERSON_AND_GO = '[ALLOCATE ROLE] Choose Person And Go',
   CHOOSE_DURATION_AND_GO = '[ALLOCATE ROLE] Choose Duration And Go',
   CONFIRM_ALLOCATION = '[ALLOCATE ROLE] Confirm Allocation',
+  LOAD_ROLES = '[ALLOCATE ROLE] Load Roles',
+  LOAD_ROLES_COMPLETE = '[ALLOCATE ROLE] Load Roles Complete',
+  NO_ROLES_FOUND = '[ALLOCATE ROLE] No Roles Found',
 }
 
 export class ChooseDurationAndGo implements Action {
@@ -33,6 +36,23 @@ export class AllocateRoleSetInitData implements Action {
 export class AllocateRoleInstantiate implements Action {
   public readonly type = AllocateRoleActionTypes.ALLOCATE_ROLE_INSTANTIATE;
   constructor(public payload: AllocateRoleStateData) {
+  }
+}
+
+export class NoRolesFound implements Action {
+  public readonly type = AllocateRoleActionTypes.NO_ROLES_FOUND;
+  constructor() {}
+}
+
+export class LoadRolesComplete implements Action {
+  public readonly type = AllocateRoleActionTypes.LOAD_ROLES_COMPLETE;
+  constructor(public payload: { roles: Role []}) {
+  }
+}
+
+export class LoadRoles implements Action {
+  public readonly type = AllocateRoleActionTypes.LOAD_ROLES;
+  constructor(public payload: { jurisdiction: string, roleCategory: RoleCategory }) {
   }
 }
 
@@ -74,4 +94,7 @@ export type AllocateRoleAction =
   | ChooseRoleAndGo
   | ChooseAllocateToAndGo
   | ChoosePersonAndGo
-  | ChooseDurationAndGo;
+  | ChooseDurationAndGo
+  | NoRolesFound
+  | LoadRoles
+  | LoadRolesComplete;

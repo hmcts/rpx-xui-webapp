@@ -10,3 +10,4 @@ export interface RolesByService {
   service: string;
   roles: Role[];
 }
+

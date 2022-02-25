@@ -1376,6 +1376,7 @@ export const initialState = {
           },
           privateHearingRequiredFlag: false,
           panelRequirements: null,
+          panelPreferences: null,
           autolistFlag: false,
           nonStandardHearingDurationReasons: [],
           hearingPriorityType: 'standard',

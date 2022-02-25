@@ -2,6 +2,7 @@ import {ModuleWithProviders} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {HealthCheckGuard} from '../app/shared/guards/health-check.guard';
 import {CancelHearingComponent} from './containers/cancel-hearing/cancel-hearing.component';
+import {CancelHearingComponent} from './containers/cancel-hearing/cancel-hearing.component';
 import {HearingActualAddEditSummaryComponent} from './containers/hearing-actuals/hearing-actual-add-edit-summary/hearing-actual-add-edit-summary.component';
 import {HearingActualsComponent} from './containers/hearing-actuals/hearing-actuals.component';
 import {HearingAdditionalInstructionsComponent} from './containers/request-hearing/hearing-additional-instructions/hearing-additional-instructions.component';
@@ -20,7 +21,7 @@ import {HearingViewEditSummaryComponent} from './containers/request-hearing/hear
 import {HearingWelshComponent} from './containers/request-hearing/hearing-welsh/hearing-welsh.component';
 import {RequestHearingComponent} from './containers/request-hearing/request-hearing.component';
 import {ViewHearingComponent} from './containers/view-hearing/view-hearing.component';
-import {HearingCategory} from './models/hearings.enum';
+import {HearingCategory, MemberType} from './models/hearings.enum';
 import {JudicialUserSearchResolver} from './resolvers/ judicial-user-search-resolver.resolve';
 import {AdditionalFacilitiesResolver} from './resolvers/additional-facilities.resolver';
 import {CaseFlagsResolver} from './resolvers/case-flags.resolver';
@@ -139,17 +140,22 @@ export const ROUTES: Routes = [
         canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Manage cases | Request Hearing | Specify Judge',
-          category: HearingCategory.JudgeType
+          category: HearingCategory.JudgeType,
+          memberType: MemberType.JUDGE
         }
       },
       {
         path: 'hearing-panel',
-        resolve: { otherPanelRoles: RefDataResolver },
+        resolve: {
+          otherPanelRoles: RefDataResolver,
+          judicialUsers: JudicialUserSearchResolver
+        },
         component: HearingPanelComponent,
         canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Manage cases | Request Hearing | Require Panel Or Not',
-          category: HearingCategory.OtherPanelRoles
+          category: HearingCategory.OtherPanelRoles,
+          memberType: MemberType.PANEL_MEMBER
         }
       },
       {

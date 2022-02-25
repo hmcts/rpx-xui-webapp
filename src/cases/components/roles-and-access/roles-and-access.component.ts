@@ -4,6 +4,31 @@ import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { CaseRole, RoleCategory, RoleExclusion } from '../../../role-access/models';
 import { Caseworker } from '../../../work-allocation-2/models/dtos';
 
+const mockAdminRoles: CaseRole[] = [{
+  name: 'Admin Role',
+  roleName: 'Admin Role',
+  id: 'admin-role',
+  location: null,
+  roleCategory: RoleCategory.ADMIN,
+  start: '01-01-2022',
+  end: '02-02-2023',
+  actorId: null,
+  actions: null,
+  email: 'admin-role@admin.com'
+},
+{
+  name: 'Admin Role 2',
+  roleName: 'Admin Role 2',
+  id: 'admin-role-2',
+  location: null,
+  roleCategory: RoleCategory.ADMIN,
+  start: '01-01-2021',
+  end: '03-03-2022',
+  actorId: null,
+  actions: null,
+  email: 'admin-role-2@admin.com'
+}]
+
 @Component({
   selector: 'exui-roles-and-access',
   templateUrl: './roles-and-access.component.html'
@@ -41,7 +66,7 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
     if (this.roles) {
       this.legalOpsRoles = this.roles.filter(role => role.roleCategory === RoleCategory.LEGAL_OPERATIONS);
       this.judicialRoles = this.roles.filter(role => role.roleCategory === RoleCategory.JUDICIAL);
-      this.adminRoles = this.roles.filter(role => role.roleCategory === RoleCategory.ADMIN);
+      this.adminRoles = this.roles.filter(role => role.roleCategory === RoleCategory.ADMIN).concat(mockAdminRoles);
     }
     this.showLegalOpsAllocate = this.showAllocateRoleLink && this.legalOpsRoles.length === 0;
   }

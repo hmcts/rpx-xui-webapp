@@ -1,5 +1,6 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
 import {initialState} from '../../../hearing.test.data';
@@ -17,6 +18,7 @@ describe('HearingViewEditSummaryComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [HearingActualAddEditSummaryComponent],
+      imports: [RouterTestingModule],
       providers: [
         provideMockStore({initialState}),
         {provide: HearingsService, useValue: hearingsService},

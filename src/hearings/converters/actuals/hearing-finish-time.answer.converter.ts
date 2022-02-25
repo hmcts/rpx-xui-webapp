@@ -4,9 +4,9 @@ import {State} from '../../store';
 import {AnswerConverter} from './answer.converter';
 
 export class HearingFinishTimeAnswerConverter implements AnswerConverter {
-  public transformAnswer(hearingActuals$: Observable<State>): Observable<string> {
-    return hearingActuals$.pipe(
-      map(state => state.hearingActuals.hearingActualsMainModel.hearingActuals.actualHearingDays[0].hearingDate)
+  public transformAnswer(hearingState$: Observable<State>): Observable<string> {
+    return hearingState$.pipe(
+      map(state => state.hearingActuals.hearingActualsMainModel.hearingActuals.actualHearingDays[0].hearingEndTime)
     );
   }
 }

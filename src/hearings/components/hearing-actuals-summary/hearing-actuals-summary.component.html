@@ -7,12 +7,12 @@
 
 
   <dl class="govuk-summary-list" *ngFor="let answer of section.answers">
-    <div *ngIf="answer.isHiddenSource === undefined ? true : !(answer.isHiddenSource | isHidden:hearingActuals$ | async)"
+    <div *ngIf="answer.isHiddenSource === undefined ? true : !(answer.isHiddenSource | isHidden:hearingState$ | async)"
          class="govuk-summary-list__row govuk-summary-list__row--no-actions">
       <dt class="govuk-summary-list__key">
         {{ answer.answerTitle }}
       </dt>
-      <dd class="govuk-summary-list__value" [innerHtml]="answer.answerSource | transformAnswer:hearingActuals$ | async"></dd>
+      <dd class="govuk-summary-list__value" [innerHtml]="answer.answerSource | transformAnswer:hearingState$ | async"></dd>
     </div>
   </dl>
 

@@ -1,5 +1,5 @@
 import {ActualsSection} from '../models/actualsSection';
-import {AnswerSource} from '../models/hearings.enum';
+import {HearingActualsAnswerSource} from '../models/hearings.enum';
 
 export const HEARING_ACTUAL_ADD_EDIT_SUMMARY_TEMPLATE: ActualsSection[] = [
   {
@@ -8,7 +8,7 @@ export const HEARING_ACTUAL_ADD_EDIT_SUMMARY_TEMPLATE: ActualsSection[] = [
       {
         id: 'caseName',
         answerTitle: 'Hearing date',
-        answerSource: AnswerSource.CASE_NAME,
+        answerSource: HearingActualsAnswerSource.HEARING_DATE,
       }
     ],
   },
@@ -60,7 +60,7 @@ export const HEARING_ACTUAL_ADD_EDIT_SUMMARY_TEMPLATE: ActualsSection[] = [
     parties: [
       {
         HTMLTitle: '<h2 class="govuk-heading-s">Jane Smith</h2>',
-        partyChannel: 'Video - Teams',
+        partyChannel: AnswerSource.,
       },
       {
         HTMLTitle: '<h2 class="govuk-heading-s">DWP</h2>',

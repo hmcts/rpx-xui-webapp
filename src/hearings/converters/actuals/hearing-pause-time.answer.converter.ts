@@ -6,7 +6,7 @@ import {AnswerConverter} from './answer.converter';
 export class HearingPauseTimeAnswerConverter implements AnswerConverter {
   public transformAnswer(hearingActuals$: Observable<State>): Observable<string> {
     return hearingActuals$.pipe(
-      map(state => state.hearingActuals.hearingActualsMainModel.hearingActuals.actualHearingDays[0].hearingDate)
+      map(state => state.hearingActuals.hearingActualsMainModel.hearingActuals.actualHearingDays[0].pauseDateTimes[0].pauseStartTime)
     );
   }
 }

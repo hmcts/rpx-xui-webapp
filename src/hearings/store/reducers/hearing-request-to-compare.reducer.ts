@@ -1,5 +1,5 @@
 import {HearingRequestStateData} from '../../models/hearingRequestStateData.model';
-import * as fromActions from '../actions';
+import * as fromCompareActions from '../actions/hearing-request-to-compare.action';
 
 export const initialHearingRequestToCompareState: HearingRequestStateData = {
   hearingRequestMainModel: {
@@ -41,19 +41,22 @@ export const initialHearingRequestToCompareState: HearingRequestStateData = {
       caseSLAStartDate: null,
     },
     partyDetails: [],
+    hearingResponse: {
+      listAssistTransactionID: null,
+      receivedDateTime: null,
+      responseVersion: null,
+      laCaseStatus: null,
+      hearingCancellationReason: null,
+      hearingDaySchedule: null,
+    }
   },
   lastError: null,
 };
 
 export function hearingRequestToCompareReducer(currentState = initialHearingRequestToCompareState,
-                                               action: fromActions.HearingRequestToCompareAction): HearingRequestStateData {
+                                               action: fromCompareActions.HearingRequestToCompareAction): HearingRequestStateData {
   switch (action.type) {
-    case fromActions.RESET_HEARING_REQUEST_TO_COMPARE: {
-      return {
-        ...initialHearingRequestToCompareState
-      };
-    }
-    case fromActions.INITIALIZE_HEARING_REQUEST_TO_COMPARE: {
+    case fromCompareActions.INITIALIZE_HEARING_REQUEST_TO_COMPARE: {
       return {
         ...currentState,
         hearingRequestMainModel: action.payload

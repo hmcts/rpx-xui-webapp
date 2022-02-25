@@ -1,10 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { select, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
+import { HearingActualsStateData } from 'src/hearings/models/hearingActualsStateData.model';
+import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { HearingResult } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
-import { HearingsService } from '../../../services/hearings.service';
 import { LovRefDataService } from '../../../services/lov-ref-data.service';
 import * as fromHearingStore from '../../../store';
 
@@ -18,18 +20,16 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
   public validationErrors: { id: string, message: string }[] = [];
   public hearingResultType: string;
   public caseTitle: string;
-  public serviceValueSub: Subscription;
   public hearingTypes$: Observable<LovRefDataModel[]>;
   public completeHearingActualReasons$: Observable<LovRefDataModel[]>;
   public adjournHearingActualReasons$: Observable<LovRefDataModel[]>;
   public cancelHearingActualReasons$: Observable<LovRefDataModel[]>;
-  private hearingState$: Observable<fromHearingStore.State>;
+  public hearingActuals: HearingActualsMainModel;
+  private sub: Subscription;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
-              private readonly hearingsService: HearingsService,
               private readonly lovRefDataService: LovRefDataService,
               private readonly formBuilder: FormBuilder) {
-    this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
   }
 
   public get hearingResultEnum() {
@@ -48,14 +48,25 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
     this.completeHearingActualReasons$ = this.lovRefDataService.getListOfValues('CompleteHearingActualReason', 'SSCS');
     this.adjournHearingActualReasons$ = this.lovRefDataService.getListOfValues('AdjournHearingActualReason', 'SSCS');
     this.cancelHearingActualReasons$ = this.lovRefDataService.getListOfValues('CancelHearingActualReason', 'SSCS');
+
+    this.sub = this.hearingStore.select(fromHearingStore.getHearingActuals)
+      .pipe(
+        filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel)
+      )
+      .subscribe((state: HearingActualsStateData) => {
+        this.hearingActuals = state.hearingActualsMainModel;
+        console.log('HEARING ACTUALS', this.hearingActuals);
+        this.hearingStageResultForm.get('hearingStage').setValue(this.hearingActuals.hearingPlanned.plannedHearingType);
+      });
+
     // TODO: Get the case title from hearing actuals API
     // Title is not returned by the API and need to liaise with the backend team
     this.caseTitle = 'Jane Smith vs DWP';
   }
 
   public ngOnDestroy(): void {
-    if (this.serviceValueSub) {
-      this.serviceValueSub.unsubscribe();
+    if (this.sub) {
+      this.sub.unsubscribe();
     }
   }
 

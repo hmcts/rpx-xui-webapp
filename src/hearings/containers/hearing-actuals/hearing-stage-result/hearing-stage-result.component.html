@@ -9,11 +9,11 @@
       <form class="form" [formGroup]="hearingStageResultForm">
         <!-- Hearing stage -->
         <div class="govuk-form-group">
-          <label class="govuk-label govuk-!-font-weight-bold" for="hearingStage">
+          <label class="govuk-label govuk-!-font-weight-bold" for="hearing-stage">
             Hearing stage
           </label>
-          <select class="govuk-select govuk-!-width-one-third" id="hearingStage" name="hearing-stage">
-            <option *ngFor="let hearingType of hearingTypes$ | async" [ngValue]="hearingType.key">{{hearingType.value_en}}</option>
+          <select class="govuk-select govuk-!-width-one-third" id="hearing-stage" name="hearingStage" formControlName="hearingStage">
+            <option *ngFor="let hearingType of hearingTypes$ | async" [ngValue]="hearingType.key" [selected]="">{{hearingType.value_en}}</option>
           </select>
         </div>
         <br>
@@ -75,11 +75,6 @@
               </div>
             </div>
           </fieldset>
-        </div>
-        <div class="govuk-button-group">
-          <button class="govuk-button primary">
-            Save and continue
-          </button>
         </div>
       </form>
     </div>

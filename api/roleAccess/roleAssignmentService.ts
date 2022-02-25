@@ -6,20 +6,7 @@ import { setHeaders } from '../lib/proxy';
 import { http } from '../lib/http';
 import { AxiosResponse } from 'axios';
 import { Role, RolesByService } from './models/roleType';
-
-// TODO: Remove when testing stops
-const mockAdminRoles: any[] = [{
-  roleCategory: 'ADMIN',
-  roleId: 'admin-role',
-  roleName: 'Admin Role',
-  roleJurisdiction: {values: ['IA']},
-},
-{
-  roleCategory: 'ADMIN',
-  roleId: 'admin-role-2',
-  roleName: 'Admin Role the second',
-  roleJurisdiction: {values: ['IA']},
-}]
+import { mockAdminRefinedRoles } from './roleData.mock';
 
 export async function getPossibleRoles(req: EnhancedRequest, res: Response, next: NextFunction): Promise<any> {
   try {
@@ -32,7 +19,7 @@ export async function getPossibleRoles(req: EnhancedRequest, res: Response, next
         const serviceRoles = roles.filter(role =>
           role.roleJurisdiction && (!role.roleJurisdiction.values
              || (role.roleJurisdiction.values && role.roleJurisdiction.values.includes(serviceId))))
-        rolesByService.push({service: serviceId, roles: serviceRoles.concat(mockAdminRoles)});
+        rolesByService.push({service: serviceId, roles: serviceRoles.concat(mockAdminRefinedRoles)});
       })
     }
     return res.send(rolesByService).status(200);

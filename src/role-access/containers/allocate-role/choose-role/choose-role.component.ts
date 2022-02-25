@@ -1,10 +1,11 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
+
 import { UserRole } from '../../../../app/models';
+import { getLabel } from '../../../../work-allocation-2/utils';
 import { CHOOSE_A_ROLE, ERROR_MESSAGE } from '../../../constants';
 import {
   AllocateRoleNavigation,
@@ -55,8 +56,8 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
       this.route.snapshot.queryParams.roleCategory : '';
     this.jurisdiction = this.route.snapshot.queryParams && this.route.snapshot.queryParams.jurisdiction ?
       this.route.snapshot.queryParams.jurisdiction : '';
-    const userTypePlaceHolder = this.roleCategory === RoleCategory.JUDICIAL ? PersonRole.JUDICIAL.toLowerCase() : PersonRole.CASEWORKER.toLowerCase();
-    this.caption = `Allocate a ${userTypePlaceHolder} role`;
+    const userTypePlaceHolder = getLabel(this.roleCategory as RoleCategory).toLowerCase();
+    this.caption = this.roleCategory === RoleCategory.ADMIN ? 'Allocate an admin role' : `Allocate a ${userTypePlaceHolder} role`;
     this.allocateRoleStateDataSub = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(
       allocateRoleStateData => {
         this.typeOfRole = allocateRoleStateData.typeOfRole;
@@ -124,6 +125,12 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
               default:
                 throw new Error('Invalid user role');
             }
+            break;
+          }
+          case RoleCategory.ADMIN: {
+            this.store.dispatch(new fromFeature.ChooseRoleAndGo({
+              typeOfRole, allocateRoleState: AllocateRoleState.SEARCH_PERSON
+            }));
             break;
           }
           default:

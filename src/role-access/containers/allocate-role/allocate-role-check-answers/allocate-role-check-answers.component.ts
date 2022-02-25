@@ -1,5 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
+import { RoleCategory } from 'api/roleAccess/models/allocate-role.enum';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { $enum as EnumUtil } from 'ts-enum-util';
@@ -64,6 +65,8 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
     } else {
       if (this.typeOfRole) {
         this.caption = `${action} a ${this.typeOfRole.toLowerCase()}`;
+      } else if (roleCategory === RoleCategory.ADMIN) {
+        this.caption = 'Allocate an admin role';
       } else {
         this.caption = roleCategory !== undefined ? `${action} a ${roleCategory.replace('_', ' ').toLowerCase()} role` : `${action} a role`;
       }

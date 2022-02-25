@@ -169,6 +169,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
     this.navigationHandler(event);
   }
 
+  // TODO: Need extra logic when we know admin roles
   public navigationHandler(navEvent: AllocateRoleNavigationEvent): void {
     switch (navEvent) {
       case AllocateRoleNavigationEvent.BACK: {
@@ -202,6 +203,8 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
                     throw new Error('Invalid user role');
                 }
                 break;
+              case RoleCategory.ADMIN:
+                this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ROLE));
               default:
                 throw new Error('Invalid user type');
             }
@@ -228,6 +231,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
                         }
                         break;
                       case RoleCategory.LEGAL_OPERATIONS:
+                      case RoleCategory.ADMIN:
                         this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
                         break;
                       default:
@@ -237,6 +241,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
                   case UserRole.LegalOps:
                     switch (this.roleCategory) {
                       case RoleCategory.JUDICIAL:
+                      case RoleCategory.ADMIN:
                         this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
                         break;
                       case RoleCategory.LEGAL_OPERATIONS:

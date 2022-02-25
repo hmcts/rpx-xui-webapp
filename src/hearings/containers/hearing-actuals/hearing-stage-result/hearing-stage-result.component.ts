@@ -25,7 +25,7 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
   public adjournHearingActualReasons$: Observable<LovRefDataModel[]>;
   public cancelHearingActualReasons$: Observable<LovRefDataModel[]>;
   public hearingActuals: HearingActualsMainModel;
-  private sub: Subscription;
+  public sub: Subscription;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly lovRefDataService: LovRefDataService,

@@ -41,10 +41,10 @@ describe('HearingStageResultComponent', () => {
   });
 
   it('should unsubscribe', () => {
-    component.serviceValueSub = new Observable().subscribe();
-    spyOn(component.serviceValueSub, 'unsubscribe').and.callThrough();
+    component.sub = new Observable().subscribe();
+    spyOn(component.sub, 'unsubscribe').and.callThrough();
     component.ngOnDestroy();
-    expect(component.serviceValueSub.unsubscribe).toHaveBeenCalled();
+    expect(component.sub.unsubscribe).toHaveBeenCalled();
   });
 
   it('should not display hearing result dropdowns by default', () => {

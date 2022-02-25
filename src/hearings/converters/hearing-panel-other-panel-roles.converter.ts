@@ -1,6 +1,7 @@
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { LovRefDataModel } from '../models/lovRefData.model';
 import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 
@@ -29,29 +30,42 @@ export class HearingPanelOtherPanelRolesConverter implements AnswerConverter {
               const data = panelDetailsResolverData.find(
                 (panelRoles) => panelRoles.key === panelSpecialism
               );
-              if (!data) {
-                let shouldSkip = false;
-                !shouldSkip &&
-                  panelDetailsResolverData.forEach((roles) => {
-                    const childNodesData =
-                      roles.child_nodes &&
-                      roles.child_nodes.find(
-                        (childNode) => childNode.key === panelSpecialism
-                      );
-                    if (!shouldSkip && childNodesData) {
-                      selectedPanelRoles += `<li>${roles.value_en} - ${childNodesData.value_en}</li>`;
-                      shouldSkip = true;
-                    }
-                    return;
-                  });
-              } else if (data) {
+              if (data) {
                 selectedPanelRoles += `<li>${data.value_en}</li>`;
-              }
+              } else {
+                  let shouldSkip = false;
+                  panelDetailsResolverData.forEach((role) => {
+                    if (!shouldSkip) {
+                      const transformedRoleText = this.getPanelRoleByKey(role, panelSpecialism)
+                      if (transformedRoleText) {
+                        selectedPanelRoles += transformedRoleText
+                        shouldSkip = true;
+                      }
+                    }
+                  });
+                }
             }
           );
         }
         return selectedPanelRoles + '</ul>';
       })
     );
+  }
+
+  public getPanelRoleByKey(panelDetailsResolverData: LovRefDataModel, panelSpecialism: string): string {
+    let skip = false;
+    let transformedText = ''
+    console.log(panelDetailsResolverData.key + panelSpecialism)
+    if (panelDetailsResolverData.child_nodes && panelDetailsResolverData.child_nodes.length) {
+      panelDetailsResolverData.child_nodes.forEach(childNode => {
+        if (childNode.key.toLowerCase().trim() === panelSpecialism.toLocaleLowerCase().trim() && !skip) {
+          skip = true
+          transformedText = `<li>${panelDetailsResolverData.value_en} - ${childNode.value_en}</li>`;
+        }
+      });
+    } else {
+      transformedText = ''
+    }
+    return transformedText
   }
 }

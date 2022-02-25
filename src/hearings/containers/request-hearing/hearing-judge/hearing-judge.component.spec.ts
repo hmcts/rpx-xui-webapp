@@ -13,7 +13,6 @@ import { ACTION, HearingJudgeSelectionEnum, MemberType, RadioOptions, Requiremen
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingJudgeComponent } from './hearing-judge.component';
-import { ALL_JUDICIAL_USERS } from 'api/prd/judicial/data/judicial.mock.data';
 
 describe('HearingJudgeComponent', () => {
   let component: HearingJudgeComponent;
@@ -46,8 +45,7 @@ describe('HearingJudgeComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                hearingJudgeTypes: judgeTypes,
-                judicialUsers: ALL_JUDICIAL_USERS
+                hearingJudgeTypes: judgeTypes
               }
             },
             fragment: of('point-to-me'),

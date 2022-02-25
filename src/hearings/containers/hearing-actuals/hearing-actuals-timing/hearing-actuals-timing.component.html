@@ -10,15 +10,15 @@
         <br>
 
         <div class="govuk-form-group">
-          <label for="startTime" class="govuk-label govuk-!-font-weight-bold">Start time</label>
-          <input class="govuk-input govuk-date-input__input govuk-input--width-5" id="startTime" type="text"
-                 formControlName="startTime">
+          <label for="hearingStartTime" class="govuk-label govuk-!-font-weight-bold">Start time</label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-5" id="hearingStartTime" type="text"
+                 formControlName="hearingStartTime">
         </div>
 
         <div class="govuk-form-group">
-          <label for="finishTime" class="govuk-label govuk-!-font-weight-bold">Finish time</label>
-          <input class="govuk-input govuk-date-input__input govuk-input--width-5" id="finishTime" type="text"
-                 formControlName="finishTime">
+          <label for="hearingEndTime" class="govuk-label govuk-!-font-weight-bold">Finish time</label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-5" id="hearingEndTime" type="text"
+                 formControlName="hearingEndTime">
         </div>
 
         <div class="govuk-form-group">
@@ -49,24 +49,24 @@
 
         <div *ngIf="form.get('recordTimes').value === 'yes'">
           <div class="govuk-form-group">
-            <label class="govuk-label govuk-!-font-weight-bold" for="pauseTime">
+            <label class="govuk-label govuk-!-font-weight-bold" for="pauseStartTime">
               Pause time
             </label>
             <div class="govuk-hint">
               For example, 13:35
             </div>
-            <input class="govuk-input govuk-date-input__input govuk-input--width-5" id="pauseTime"
-                   type="text" formControlName="pauseTime">
+            <input class="govuk-input govuk-date-input__input govuk-input--width-5" id="pauseStartTime"
+                   type="text" formControlName="pauseStartTime">
           </div>
           <div class="govuk-form-group">
-            <label class="govuk-label govuk-!-font-weight-bold" for="resumeTime">
+            <label class="govuk-label govuk-!-font-weight-bold" for="pauseEndTime">
               Resume time
             </label>
             <div class="govuk-hint">
               For example, 13:55
             </div>
-            <input class="govuk-input govuk-date-input__input govuk-input--width-5" id="resumeTime"
-                   formControlName="resumeTime"
+            <input class="govuk-input govuk-date-input__input govuk-input--width-5" id="pauseEndTime"
+                   formControlName="pauseEndTime"
                    type="text">
           </div>
         </div>

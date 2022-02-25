@@ -4,7 +4,7 @@ import * as moment from 'moment';
 import { HearingDateEnum } from '../models/hearings.enum';
 import { ValidatorsUtils } from './validators.utils';
 
-describe('ValidatorsUtils', () => {
+fdescribe('ValidatorsUtils', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
@@ -117,5 +117,24 @@ describe('ValidatorsUtils', () => {
     });
     form.setValidators(service.formArraySelectedValidator());
     expect(form.hasError('isValid')).toBeFalsy();
+  }));
+
+  it('should set time 12:00 as valid', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
+    const form = new FormGroup({
+      arrayControl: new FormControl('12:00', service.validTime())
+    });
+    form.get('arrayControl').setValue('12:00');
+    form.updateValueAndValidity();
+    expect(form.hasError('isValid')).toBeFalsy();
+  }));
+
+  it('should set time 33:00 as invalid', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
+    const form = new FormGroup({
+      arrayControl: new FormControl('', [service.validTime()])
+    });
+    form.get('arrayControl').setValue('33:00');
+    form.updateValueAndValidity();
+    console.log(form.errors);
+    expect(form.hasError('invalidTime')).toBeTruthy();
   }));
 });

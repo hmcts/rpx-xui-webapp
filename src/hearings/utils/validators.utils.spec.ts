@@ -4,7 +4,7 @@ import * as moment from 'moment';
 import { HearingDateEnum } from '../models/hearings.enum';
 import { ValidatorsUtils } from './validators.utils';
 
-fdescribe('ValidatorsUtils', () => {
+describe('ValidatorsUtils', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
@@ -130,11 +130,24 @@ fdescribe('ValidatorsUtils', () => {
 
   it('should set time 33:00 as invalid', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
     const form = new FormGroup({
-      arrayControl: new FormControl('', [service.validTime()])
+      arrayControl: new FormControl('33:00', [service.validTime()])
     });
-    form.get('arrayControl').setValue('33:00');
-    form.updateValueAndValidity();
-    console.log(form.errors);
-    expect(form.hasError('invalidTime')).toBeTruthy();
+    expect(form.get('arrayControl').hasError('invalidTime')).toBeTruthy();
+  }));
+
+  it('should set startTime 13:00 and endTime 12:00 to be invalid', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
+    const form = new FormGroup({
+      start: new FormControl('13:00', [service.validTime()]),
+      end: new FormControl('13:00', [service.validTime()])
+    }, { validators: [service.validateTimeRange('start', 'end')] });
+    expect(form.hasError('invalidTimeRange')).toBeTruthy();
+  }));
+
+  it('should set startTime 12:00 and endTime 13:00 to be valid', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
+    const form = new FormGroup({
+      start: new FormControl('12:00', [service.validTime()]),
+      end: new FormControl('13:00', [service.validTime()])
+    }, { validators: [service.validateTimeRange('start', 'end')] });
+    expect(form.valid).toBeTruthy();
   }));
 });

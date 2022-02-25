@@ -33,7 +33,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   private static getStartTime(hearingActuals: HearingActualsMainModel): string {
     const plannedTime = hearingActuals.hearingPlanned.plannedHearingDays[0].plannedStartTime;
     const actualTime = hearingActuals.hearingActuals.actualHearingDays[0].hearingStartTime;
-    return actualTime ? actualTime.match(/\d{2}:\d{2}/)[0] : plannedTime.match(/\d{2}:\d{2}/)[0];
+    return actualTime ? actualTime.match(this.timeMatcher)[0] : plannedTime.match(this.timeMatcher)[0];
   }
 
   private static getPauseStartTime(hearingActuals: HearingActualsMainModel): string {
@@ -43,7 +43,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
 
   private static getPauseEndTime(hearingActuals: HearingActualsMainModel): string {
     const actualTime = hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes[0];
-    return actualTime && actualTime.pauseEndTime ? actualTime.pauseEndTime(this.timeMatcher)[0] : null;
+    return actualTime && actualTime.pauseEndTime ? actualTime.pauseEndTime.match(this.timeMatcher)[0] : null;
   }
 
   private static getEndTime(hearingActuals: HearingActualsMainModel): string {

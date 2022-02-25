@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HearingActualsTimingComponent } from './hearing-actuals-timing.component';
 
-describe('HearingTimingComponent', () => {
+fdescribe('HearingTimingComponent', () => {
   let component: HearingActualsTimingComponent;
   let fixture: ComponentFixture<HearingActualsTimingComponent>;
 

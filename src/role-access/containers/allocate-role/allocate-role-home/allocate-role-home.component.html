@@ -7,7 +7,7 @@
           <div class="govuk-main-wrapper">
             <exui-choose-role-error
               #chooseRole
-              *ngIf="isComponentVisible(navigationCurrentState, chooseRoleVisibilityStates)"
+              *ngIf="isComponentVisible(navigationCurrentState, noRolesErrorVisibilityStates)"
               [navEvent]="navEvent">
             </exui-choose-role-error>
             <exui-choose-role

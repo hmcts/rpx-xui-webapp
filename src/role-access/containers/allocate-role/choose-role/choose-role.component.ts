@@ -16,7 +16,6 @@ import {
 } from '../../../models';
 import { RoleAllocationTitleText } from '../../../models/enums';
 import { OptionsModel } from '../../../models/options-model';
-import { AllocateRoleService } from '../../../services';
 import * as fromFeature from '../../../store';
 
 @Component({
@@ -65,9 +64,9 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
         this.formGroup = new FormGroup({ [this.radioControlName]: this.radioOptionControl });
       }
     );
-    
-    // this.allocateRoleService.getValidRoles([this.jurisdiction]).subscribe(roles =>
-    //   this.optionsList = this.getOptions(roles.filter(role => role.roleCategory === this.roleCategory)));
+    this.store.pipe(select(fromFeature.getAvailableRolesForService)).subscribe(roles =>
+      this.optionsList = this.getOptions(roles.filter(role => role.roleCategory === this.roleCategory))
+    );
   }
 
   public navigationHandler(navEvent: AllocateRoleNavigationEvent, roleCategory: RoleCategory, isLegalOpsOrJudicialRole: UserRole): void {

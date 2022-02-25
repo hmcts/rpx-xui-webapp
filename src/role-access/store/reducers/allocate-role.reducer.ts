@@ -90,7 +90,14 @@ export function allocateRoleReducer(currentState = allocateRoleInitialState,
     case AllocateRoleActionTypes.LOAD_ROLES_COMPLETE: {
       return {
         ...currentState,
-        roles: action.payload.roles
+        roles: action.payload.roles,
+        state: AllocateRoleState.CHOOSE_ROLE
+      }
+    }
+    case AllocateRoleActionTypes.NO_ROLES_FOUND: {
+      return {
+        ...currentState,
+        state: AllocateRoleState.NO_ROLES_FOUND
       }
     }
     default: {
@@ -103,3 +110,4 @@ export function allocateRoleReducer(currentState = allocateRoleInitialState,
 
 export const allocateRoleActiveState = (allocateRoleState: AllocateRoleStateData) => allocateRoleState.state;
 export const allocateRoleLastErrors = (allocateRoleState: AllocateRoleStateData) => allocateRoleState.lastError;
+export const availableRoles = (allocateRoleState: AllocateRoleStateData) => allocateRoleState.roles;

@@ -13,7 +13,8 @@ import {
   chooseAllocateToVisibilityStates,
   chooseDurationVisibilityStates,
   chooseRoleVisibilityStates,
-  searchPersonVisibilityStates
+  searchPersonVisibilityStates,
+  noRolesErrorVisibilityStates
 } from '../../../constants/allocate-role-page-visibility-states';
 import {
   Actions,
@@ -58,6 +59,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
   @ViewChild('checkAnswers', {read: AllocateRoleCheckAnswersComponent})
   public checkAnswersComponent: AllocateRoleCheckAnswersComponent;
 
+  public noRolesErrorVisibilityStates = noRolesErrorVisibilityStates;
   public chooseRoleVisibilityStates = chooseRoleVisibilityStates;
   public chooseAllocateToVisibilityStates = chooseAllocateToVisibilityStates;
   public searchPersonVisibilityStates = searchPersonVisibilityStates;

@@ -2,7 +2,6 @@ import {ModuleWithProviders} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {HealthCheckGuard} from '../app/shared/guards/health-check.guard';
 import {CancelHearingComponent} from './containers/cancel-hearing/cancel-hearing.component';
-import {CancelHearingComponent} from './containers/cancel-hearing/cancel-hearing.component';
 import {HearingActualAddEditSummaryComponent} from './containers/hearing-actuals/hearing-actual-add-edit-summary/hearing-actual-add-edit-summary.component';
 import {HearingActualsComponent} from './containers/hearing-actuals/hearing-actuals.component';
 import {HearingAdditionalInstructionsComponent} from './containers/request-hearing/hearing-additional-instructions/hearing-additional-instructions.component';

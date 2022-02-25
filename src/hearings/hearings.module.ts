@@ -31,7 +31,7 @@ import {PageFlow} from './utils/page-flow';
     ExuiCommonLibModule,
     HearingsPipesModule,
   ],
-  declarations: [...fromComponents.components, ...fromContainers.containers,],
+  declarations: [...fromComponents.components, ...fromContainers.containers],
   entryComponents: [],
   providers: [
     PageFlow,

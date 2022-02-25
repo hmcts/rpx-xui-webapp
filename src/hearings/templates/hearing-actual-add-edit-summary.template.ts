@@ -30,7 +30,7 @@ export const HEARING_ACTUAL_ADD_EDIT_SUMMARY_TEMPLATE: ActualsSection[] = [
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Hearing timings</h2>',
-    updateLink: 'hearing-actual/actuals-date-and-time',
+    updateLink: '/hearings/actuals/hearing-timing',
     answers: [
       {
         id: 'startTime',

@@ -7,6 +7,7 @@ import { initialState } from '../../../hearing.test.data';
 import { HearingStageResultComponent } from './hearing-stage-result.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Observable } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('HearingStageResultComponent', () => {
   let component: HearingStageResultComponent;
@@ -19,7 +20,8 @@ describe('HearingStageResultComponent', () => {
       declarations: [HearingStageResultComponent],
       imports: [
         ReactiveFormsModule,
-        HttpClientTestingModule
+        HttpClientTestingModule,
+        RouterTestingModule
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [

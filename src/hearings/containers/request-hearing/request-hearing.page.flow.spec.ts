@@ -11,7 +11,7 @@ class RequestHearingPageFlowSpec extends RequestHearingPageFlow {
   }
 }
 
-describe('RequestHearingPageFlow', () => {
+fdescribe('RequestHearingPageFlow', () => {
   const hearingState = {
     hearingList: {
       hearingListMainModel: [
@@ -71,6 +71,16 @@ describe('RequestHearingPageFlow', () => {
   it('should navigate submit', () => {
     requestHearingPageFlow.navigateAction(ACTION.SUBMIT);
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.SubmitHearingRequest(hearingState.hearingRequest.hearingRequestMainModel as HearingRequestMainModel));
+  });
+
+  it('should navigate to view edit reason page', () => {
+    requestHearingPageFlow.navigateAction(ACTION.VIEW_EDIT_REASON);
+    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.ViewEditSubmitHearingReason(hearingState.hearingRequest.hearingRequestMainModel as HearingRequestMainModel));
+  });
+
+  it('should navigate to view edit submit page', () => {
+    requestHearingPageFlow.navigateAction(ACTION.VIEW_EDIT_SUBMIT);
+    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.ViewEditSubmitHearingRequest(hearingState.hearingRequest.hearingRequestMainModel as HearingRequestMainModel));
   });
 
   afterEach(() => {

@@ -7,7 +7,7 @@ import { AnswerSource, PartyType, RadioOptions } from '../models/hearings.enum';
 import { State } from '../store/reducers';
 import { HearingAnswersPipe } from './hearing-answers.pipe';
 
-describe('HearingAnswersPipe', () => {
+fdescribe('HearingAnswersPipe', () => {
 
   const STATE: State = initialState.hearings;
   let hearingAnswersPipe: HearingAnswersPipe;
@@ -59,6 +59,13 @@ describe('HearingAnswersPipe', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.Type, of(STATE));
     const type = 'Personal Independence Payment \n<ul><li>- Conditions of Entitlement</li><li>- Good cause</li><li>- Rate of Assessment / Payability Issues - complex</li></ul>';
     const expected = cold('(b|)', { b: type });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform type from request', () => {
+    const result$ = hearingAnswersPipe.transform(AnswerSource.TYPE_FROM_REQUEST, of(STATE));
+    const type = 'Personal Independence Payment \n<ul><li>- Conditions of Entitlement</li><li>- Good cause</li><li>- Rate of Assessment / Payability Issues - complex</li></ul>';
+    const expected = cold('(b|)', {b: type});
     expect(result$).toBeObservable(expected);
   });
 

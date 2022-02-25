@@ -1,6 +1,7 @@
 import { HearingActualsMainModel } from './models/hearingActualsMainModel';
 import { HearingListingStatusEnum, HearingResult, HMCStatus, PartyType } from './models/hearings.enum';
 import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
+import {CategoryType} from "../../api/hearings/models/hearings.enum";
 
 export const hearingStageRefData = [
   {
@@ -1401,7 +1402,23 @@ export const initialState = {
           publicCaseName: null,
           caseAdditionalSecurityFlag: false,
           caseInterpreterRequiredFlag: false,
-          caseCategories: [],
+          caseCategories: [
+            {
+              categoryType: CategoryType.CaseType,
+              categoryValue: 'Personal Independence Payment',
+            },
+            {
+              categoryType: CategoryType.CaseSubType,
+              categoryValue: 'Conditions of Entitlement',
+            },
+            {
+              categoryType: CategoryType.CaseSubType,
+              categoryValue: 'Good cause',
+            },
+            {
+              categoryType: CategoryType.CaseSubType,
+              categoryValue: 'Rate of Assessment / Payability Issues - complex',
+            }],
           caseManagementLocationCode: null,
           caserestrictedFlag: false,
           caseSLAStartDate: null
@@ -1479,7 +1496,23 @@ export const initialState = {
           publicCaseName: 'Jane vs DWP',
           caseAdditionalSecurityFlag: false,
           caseInterpreterRequiredFlag: false,
-          caseCategories: [],
+          caseCategories: [
+            {
+              categoryType: CategoryType.CaseType,
+              categoryValue: 'Personal Independence Payment',
+            },
+            {
+              categoryType: CategoryType.CaseSubType,
+              categoryValue: 'Conditions of Entitlement',
+            },
+            {
+              categoryType: CategoryType.CaseSubType,
+              categoryValue: 'Good cause',
+            },
+            {
+              categoryType: CategoryType.CaseSubType,
+              categoryValue: 'Rate of Assessment / Payability Issues - complex',
+            }],
           caseManagementLocationCode: null,
           caserestrictedFlag: false,
           caseSLAStartDate: null

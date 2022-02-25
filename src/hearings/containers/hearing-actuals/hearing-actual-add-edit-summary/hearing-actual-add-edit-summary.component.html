@@ -1,4 +1,13 @@
-<exui-hearing-actuals-summary
-  [template]="template"
-  [mode]="mode">
-</exui-hearing-actuals-summary>
+<div class="govuk-width-container">
+  <a class="govuk-back-link" [routerLink]="['../hearing-actual-add-edit-summary']">Back</a>
+  <div class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <exui-hearing-actuals-summary
+        [template]="template"
+        [mode]="mode">
+      </exui-hearing-actuals-summary>
+
+      <button class="govuk-button" data-module="govuk-button">Submit hearing details</button>
+    </div>
+  </div>
+</div>

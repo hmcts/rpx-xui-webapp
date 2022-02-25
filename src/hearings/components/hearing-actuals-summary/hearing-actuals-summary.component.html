@@ -1,9 +1,12 @@
 <ng-container *ngFor="let section of template">
 
 
-  <div [innerHtml]="section.sectionHTMLTitle" [style.display]="section.updateLink ? 'inline-block' : ''"></div>
-
-  <span class="govuk-body" *ngIf="section.updateLink"><a class="govuk-link govuk-!-margin-left-3" style="float:right;" href="{{section.updateLink}}">Update</a></span>
+  <div class="govuk-grid-row">
+    <div [innerHtml]="section.sectionHTMLTitle" class="govuk-grid-column-one-half"></div>
+    <div class="govuk-grid-column-one-half" *ngIf="section.updateLink" style="text-align: right">
+      <a class="govuk-link" [routerLink]="[section.updateLink]">Update</a>
+    </div>
+  </div>
 
 
   <dl class="govuk-summary-list" *ngFor="let answer of section.answers">
@@ -12,7 +15,8 @@
       <dt class="govuk-summary-list__key">
         {{ answer.answerTitle }}
       </dt>
-      <dd class="govuk-summary-list__value" [innerHtml]="answer.answerSource | transformAnswer:hearingState$ | async"></dd>
+      <dd class="govuk-summary-list__value"
+          [innerHtml]="answer.answerSource | transformAnswer:hearingState$ | async"></dd>
     </div>
   </dl>
 
@@ -70,10 +74,7 @@
         </dd>
       </div>
     </dl>
-
   </ng-container>
-
-
 </ng-container>
 
 <br>
@@ -85,3 +86,7 @@
 <p class="govuk-body">Once submitted, you cannot change your answers again. The case will be saved and the hearing
   will be marked as complete.</p>
 <br>
+
+<pre>
+  {{template | json}}
+</pre>

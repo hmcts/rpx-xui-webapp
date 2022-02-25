@@ -1,14 +1,16 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
-import {Person} from '@hmcts/rpx-xui-common-lib';
-import {Store} from '@ngrx/store';
-import {HearingJudgeNamesListComponent} from '../../../components';
-import {ACTION, ControlTypeEnum, HearingPanelSelectionEnum} from '../../../models/hearings.enum';
-import {LovRefDataModel} from '../../../models/lovRefData.model';
-import {HearingsService} from '../../../services/hearings.service';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
+import { Store } from '@ngrx/store';
+import { JudicialUserModel } from '../../../../hearings/models/judicialUser.model';
+import { PanelPreferenceModel } from '../../../../hearings/models/panelPreference.model';
+import { HearingJudgeNamesListComponent } from '../../../components';
+import { ACTION, ControlTypeEnum, HearingPanelSelectionEnum, MemberType, RadioOptions, RequirementType } from '../../../models/hearings.enum';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
+import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import {RequestHearingPageFlow} from '../request-hearing.page.flow';
+import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-panel',
@@ -24,17 +26,20 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
   public panelSelectionError: string;
   public hasValidationRequested: boolean = false;
   public childNodesValidationError: string;
+  public personalCodejudgeList: JudicialUserModel[] = [];
+  public personRole = PersonRole.JUDICIAL;
   public configLevels: { level: number, controlType: ControlTypeEnum }[];
   @ViewChild('includedJudge') public includedJudge: HearingJudgeNamesListComponent;
   @ViewChild('excludedJudge') public excludedJudge: HearingJudgeNamesListComponent;
 
   constructor(
-    protected readonly hearingStore: Store<fromHearingStore.State>,
-    protected readonly hearingsService: HearingsService,
-    protected readonly route: ActivatedRoute,
-    private readonly formBuilder: FormBuilder) {
+          protected readonly hearingStore: Store<fromHearingStore.State>,
+          protected readonly hearingsService: HearingsService,
+          protected readonly route: ActivatedRoute,
+          private readonly formBuilder: FormBuilder) {
     super(hearingStore, hearingsService);
     this.multiLevelSelections = this.route.snapshot.data.otherPanelRoles;
+    this.personalCodejudgeList = this.route.snapshot.data.judicialUsers;
     this.configLevels = [
       {
         controlType: ControlTypeEnum.CHECK_BOX,
@@ -68,9 +73,32 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
       specificPanel: ['', Validators.required],
       multiLevelSelect: this.formBuilder.array([])
     });
-
+    this.excludedJudgeList = this.getPannelMemberList(RequirementType.EXCLUDE);
+    this.includedJudgeList = this.getPannelMemberList(RequirementType.MUSTINC);
     this.loadHearingPanels();
     this.panelJudgeForm.controls.multiLevelSelect = this.convertRefDataModelToArray(this.multiLevelSelections);
+  }
+
+  public getPannelMemberList(panelRequirementType: string): Person[] {
+    const selectedPanelList: Person[] = [];
+    const panelRequirements = this.hearingRequestMainModel.hearingDetails.panelRequirements;
+    const panelMemberIDs = panelRequirements && panelRequirements.panelPreferences && panelRequirements.panelPreferences.filter(preferences => preferences.memberType === MemberType.PANEL_MEMBER && preferences.requirementType === panelRequirementType).map(preferences => preferences.memberID);
+    if (panelMemberIDs && panelMemberIDs.length) {
+      this.personalCodejudgeList.forEach(judgeInfo => {
+        if (panelMemberIDs.includes(judgeInfo.personal_code)) {
+          const judgeDetail = {
+            domain: this.personRole,
+            email: judgeInfo.email_id,
+            id: judgeInfo.sidam_id,
+            knownAs: judgeInfo.known_as,
+            name: judgeInfo.surname,
+            personalCode: judgeInfo.personal_code,
+          };
+          selectedPanelList.push(judgeDetail);
+        }
+      });
+    }
+    return selectedPanelList;
   }
 
   public loadPanel(multi: LovRefDataModel, panelSpecialism: string): boolean {
@@ -111,6 +139,9 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
       this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms.length ?
         this.showSpecificPanel('Yes') : this.showSpecificPanel('No');
     }
+    if (this.excludedJudgeList.length || this.includedJudgeList.length) {
+      this.showSpecificPanel(RadioOptions.YES);
+    }
   }
 
   public preparePanelChildren(panelRoles: LovRefDataModel[], accummulation: string[]) {
@@ -125,13 +156,32 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
   public prepareData(): void {
     const panelRoles: LovRefDataModel[] = this.convertArrayToRefDataModel(this.panelJudgeForm.controls.multiLevelSelect as FormArray);
     const panelRolesSelected: string[] = [];
+    const selectedPanelMembers: PanelPreferenceModel[] = [] as PanelPreferenceModel[];
+    this.includedJudge.judgeList.forEach(judgeInfo => {
+      const panelPreference: PanelPreferenceModel = {
+        memberID: judgeInfo.personalCode,
+        memberType: MemberType.PANEL_MEMBER,
+        requirementType: RequirementType.MUSTINC
+      };
+      selectedPanelMembers.push(panelPreference);
+    });
+    this.excludedJudge.judgeList.forEach(judgeInfo => {
+      const panelPreference: PanelPreferenceModel = {
+        memberID: judgeInfo.personalCode,
+        memberType: MemberType.PANEL_MEMBER,
+        requirementType: RequirementType.EXCLUDE
+      };
+      selectedPanelMembers.push(panelPreference);
+    });
+    const panelRequirements = this.hearingRequestMainModel.hearingDetails.panelRequirements;
+    const selectedPanelJudges: PanelPreferenceModel[] = panelRequirements && panelRequirements.panelPreferences && panelRequirements.panelPreferences.filter(preferences => preferences.memberType === MemberType.JUDGE) || [];
     this.preparePanelChildren(panelRoles, panelRolesSelected);
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
         panelRequirements: {
-          ...this.hearingRequestMainModel.hearingDetails.panelRequirements,
+          panelPreferences: [...selectedPanelMembers, ...selectedPanelJudges],
           panelSpecialisms: [...panelRolesSelected]
         }
       }

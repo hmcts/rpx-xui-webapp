@@ -60,9 +60,9 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
       judgeTypes = panelRequirements.roleType;
     } else if (panelRequirements && panelRequirements.panelPreferences) {
       this.specificJudgeSelection = RadioOptions.YES;
-      includedJudges = panelRequirements.panelPreferences.filter(preferences => preferences.requirementType === RequirementType.MUSTINC).map(preferences => preferences.memberID);
+      includedJudges = panelRequirements.panelPreferences.filter(preferences => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.MUSTINC).map(preferences => preferences.memberID);
     }
-    excludedJudges = panelRequirements && panelRequirements.panelPreferences.filter(preferences => preferences.requirementType === RequirementType.EXCLUDE).map(preferences => preferences.memberID);
+    excludedJudges = panelRequirements && panelRequirements.panelPreferences.filter(preferences => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.EXCLUDE).map(preferences => preferences.memberID);
     this.hearingJudgeFormInfo = {
       includedJudges, judgeTypes, excludedJudges
     };
@@ -158,7 +158,7 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
   }
 
   public prepareHearingRequestData(): void {
-    const panelPreferences: PanelPreferenceModel[] = [] as PanelPreferenceModel[];
+    const selectedPanelJudges: PanelPreferenceModel[] = [] as PanelPreferenceModel[];
     let roleType: string[] = [];
     if (this.hearingJudgeForm.value.specificJudge === RadioOptions.YES) {
       const panelPreference: PanelPreferenceModel = {
@@ -166,7 +166,7 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
         memberType: MemberType.JUDGE,
         requirementType: RequirementType.MUSTINC
       };
-      panelPreferences.push(panelPreference);
+      selectedPanelJudges.push(panelPreference);
     } else {
       roleType = this.hearingJudgeForm.value.judgeType.filter(judgeType => judgeType.selected).map(judgeType => judgeType.key);
     }
@@ -176,13 +176,15 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
         memberType: MemberType.JUDGE,
         requirementType: RequirementType.EXCLUDE
       };
-      panelPreferences.push(panelPreference);
+      selectedPanelJudges.push(panelPreference);
     });
+    const panelRequirements = this.hearingRequestMainModel.hearingDetails.panelRequirements;
+    const selectedPanelMembers = panelRequirements && panelRequirements.panelPreferences.filter(preferences => preferences.memberType === MemberType.PANEL_MEMBER) || [];
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
-        panelRequirements: { roleType, panelPreferences }
+        panelRequirements: { roleType, panelPreferences: [...selectedPanelMembers, ...selectedPanelJudges] }
       }
     };
   }

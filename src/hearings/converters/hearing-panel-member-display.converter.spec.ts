@@ -3,12 +3,11 @@ import { ActivatedRoute } from '@angular/router';
 import { provideMockStore } from '@ngrx/store/testing';
 import { cold } from 'jasmine-marbles';
 import { of } from 'rxjs';
-import { hearingPriorityRefData, initialState } from '../hearing.test.data';
+import { ALL_JUDICIAL_USERS, hearingPriorityRefData, initialState } from '../hearing.test.data';
 import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 import { HearingPanelMemberDisplayConverter } from './hearing-panel-member-display.converter';
 import { HttpClient } from '@angular/common/http';
-import { ALL_JUDICIAL_USERS } from 'api/prd/judicial/data/judicial.mock.data';
 import { MemberType, RequirementType } from '../models/hearings.enum';
 
 describe('Hearing Panel include/exclude Member Converter', () => {

@@ -23,7 +23,7 @@ export class HearingPanelMemberDisplayConverter implements AnswerConverter {
         const panelDetailsResolverData = this.route.snapshot.data.panelDetails;
         let result = '<ul>';
         const personalCodes = panelRequirementsState.panelPreferences
-          .filter((ref) => ref.requirementType === RequirementType[this.requirementType])
+          .filter((ref) => ref.requirementType === RequirementType[this.requirementType] && ref.memberType === MemberType.PANEL_MEMBER)
           .map((ref) => ref.memberID);
 
         (panelDetailsResolverData as JudicialUserModel[])
@@ -31,14 +31,7 @@ export class HearingPanelMemberDisplayConverter implements AnswerConverter {
             personalCodes.includes(routeData.personal_code)
           )
           .forEach((data) => {
-            const personDetails = panelRequirementsState.panelPreferences.find(
-              (ref) => ref.memberID === data.personal_code
-            );
-            if (personDetails.memberType === MemberType.PANEL_MEMBER) {
               result += `<li>${data.full_name}</li>`;
-            } else if (personDetails.memberType === MemberType.JUDGE) {
-              result += `<li>${data.known_as}</li>`;
-            }
           });
         return result + '</ul>';
       })

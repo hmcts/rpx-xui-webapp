@@ -10,7 +10,9 @@ export class PanelFieldsHiddenConverter implements HiddenConverter {
     return hearingState$.pipe(map(state =>
       !state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements ||
       (state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements.panelPreferences &&
-      state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements.panelPreferences.filter(ref => ref.memberType === MemberType.PANEL_MEMBER).length === 0)
-    ));
+      state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements.panelPreferences.filter(ref => ref.memberType === MemberType.PANEL_MEMBER).length === 0)  ||
+      (state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms &&
+        state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms.length > 0)
+    ))
   }
 }

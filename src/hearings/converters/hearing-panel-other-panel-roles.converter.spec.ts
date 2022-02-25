@@ -8,7 +8,6 @@ import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 import { HearingPanelOtherPanelRolesConverter } from './hearing-panel-other-panel-roles.converter'
 import { HttpClient } from '@angular/common/http';
-import { ALL_JUDICIAL_USERS } from 'api/prd/judicial/data/judicial.mock.data';
 import { OTHER_PANEL_ROLES } from 'api/prd/lov/data/lov.mock.data';
 import { MemberType, RequirementType } from '../models/hearings.enum';
 

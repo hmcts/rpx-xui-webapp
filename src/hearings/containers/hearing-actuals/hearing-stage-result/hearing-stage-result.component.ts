@@ -55,7 +55,6 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
       )
       .subscribe((state: HearingActualsStateData) => {
         this.hearingActuals = state.hearingActualsMainModel;
-        console.log('HEARING ACTUALS', this.hearingActuals);
         this.hearingStageResultForm.get('hearingStage').setValue(this.hearingActuals.hearingPlanned.plannedHearingType);
       });
 

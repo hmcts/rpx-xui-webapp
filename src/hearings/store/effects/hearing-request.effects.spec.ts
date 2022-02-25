@@ -82,7 +82,7 @@ describe('Hearing Request Effects', () => {
       const navigateAction = new hearingRequestActions.UpdateHearingRequest(null);
       const expected = cold('-b', {b: navigateAction});
       expect(effects.continueNavigation$).toBeObservable(expected);
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-view-edit-summary']);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-view-edit-summary'], { fragment: 'venue' });
     });
   });
 

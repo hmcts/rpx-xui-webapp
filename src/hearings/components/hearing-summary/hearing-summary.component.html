@@ -15,7 +15,7 @@
             <div [innerHtml]="answer.answerSource | transformAnswer:hearingState$ | async"></div>
           </div>
           <div class="govuk-summary-list__actions">
-            <strong *ngIf="answer.isAmendedSource === undefined ? false : !(answer.isAmendedSource | isAmended:hearingState$ | async)"
+            <strong *ngIf="answer.isAmendedSource === undefined ? false : (answer.isAmendedSource | isAmended:hearingState$ | async)"
                     class="govuk-tag govuk-tag--green amended-flag">Amended</strong>
             <a [id]="answer.id" *ngIf="answer.changeLink" href="javascript:void(0)" (click)="changeAnswer(answer.id, answer.changeLink)">Change</a>
           </div>

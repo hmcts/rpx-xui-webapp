@@ -9,7 +9,7 @@ export class VenueAmendedConverter implements IsAmendedConverter {
     return hearingState$.pipe(map(state => {
       const objA = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.hearingLocations;
       const objB = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingLocations;
-      return _.isEqual(objA, objB);
+      return !_.isEqual(objA, objB);
     }));
   }
 }

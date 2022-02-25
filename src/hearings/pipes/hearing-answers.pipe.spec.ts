@@ -7,7 +7,7 @@ import { AnswerSource, PartyType, RadioOptions } from '../models/hearings.enum';
 import { State } from '../store/reducers';
 import { HearingAnswersPipe } from './hearing-answers.pipe';
 
-fdescribe('HearingAnswersPipe', () => {
+describe('HearingAnswersPipe', () => {
 
   const STATE: State = initialState.hearings;
   let hearingAnswersPipe: HearingAnswersPipe;

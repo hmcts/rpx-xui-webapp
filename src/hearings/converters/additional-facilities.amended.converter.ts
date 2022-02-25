@@ -9,7 +9,7 @@ export class AdditionalFacilitiesAmendedConverter implements IsAmendedConverter 
     return hearingState$.pipe(map(state => {
       const objA = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.facilitiesRequired;
       const objB = state.hearingRequest.hearingRequestMainModel.hearingDetails.facilitiesRequired;
-      return _.isEqual(objA, objB);
+      return !_.isEqual(objA, objB);
     }));
   }
 }

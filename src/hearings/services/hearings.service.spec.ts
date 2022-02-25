@@ -46,6 +46,19 @@ describe('HearingsService', () => {
     }));
   });
 
+  describe('loadHearingRequest', () => {
+    const payload = 'h100000';
+    it('should load hearing request', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
+      service.loadHearingRequest(payload).subscribe(response => {
+        expect(response).toBeNull();
+      });
+
+      const req = httpMock.expectOne('api/hearings/getHearing?hearingId=h100000');
+      expect(req.request.method).toEqual('GET');
+      req.flush(null);
+    }));
+  });
+
   describe('submitHearingRequest', () => {
     const payload = {
       requestDetails: null,
@@ -59,6 +72,23 @@ describe('HearingsService', () => {
 
       const req = httpMock.expectOne('api/hearings/submitHearingRequest');
       expect(req.request.method).toEqual('POST');
+      req.flush(null);
+    }));
+  });
+
+  describe('updateHearingRequest', () => {
+    const payload = {
+      requestDetails: null,
+      hearingDetails: null,
+      partyDetails: null,
+    };
+    it('should update hearing request', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
+      service.updateHearingRequest(payload).subscribe(response => {
+        expect(response).toBeNull();
+      });
+
+      const req = httpMock.expectOne('api/hearings/updateHearingRequest');
+      expect(req.request.method).toEqual('PUT');
       req.flush(null);
     }));
   });

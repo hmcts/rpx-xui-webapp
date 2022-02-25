@@ -9,7 +9,7 @@ export class AdditionalSecurityAmendedConverter implements IsAmendedConverter {
     return hearingState$.pipe(map(state => {
       const objA = state.hearingRequestToCompare.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag;
       const objB = state.hearingRequest.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag;
-      return _.isEqual(objA, objB);
+      return !_.isEqual(objA, objB);
     }));
   }
 }

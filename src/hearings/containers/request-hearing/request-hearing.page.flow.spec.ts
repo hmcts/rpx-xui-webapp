@@ -11,7 +11,7 @@ class RequestHearingPageFlowSpec extends RequestHearingPageFlow {
   }
 }
 
-fdescribe('RequestHearingPageFlow', () => {
+describe('RequestHearingPageFlow', () => {
   const hearingState = {
     hearingList: {
       hearingListMainModel: [

@@ -20,6 +20,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await BrowserWaits.retryWithActionCallback(async () => {
             try{
                 await headerPage.clickPrimaryNavigationWithLabel('My work');
+                await BrowserWaits.waitForSpinnerToDissappear();
                 await myWorkPage.clickSubNavigationTab(secondaryNavTab);
             }catch(err){
                 await headerPage.refreshBrowser();
@@ -44,6 +45,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 await allWorkPage.casesContainer.isPresent();
             }
         });
+        await BrowserWaits.waitForSpinnerToDissappear();
         
     });
 

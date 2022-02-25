@@ -57,7 +57,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     When('In workflow {string}, I select find person result with caseworker reference {string}', async function (workflow, caseworkerRef) {
         const caseworker = global.scenarioData[caseworkerRef];
         const workFlowPage = workflowUtil.getWorlflowPageObject(workflow);
-        await workFlowPage.findPersonPage.selectPerson(caseworker.email);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await workFlowPage.findPersonPage.selectPerson(caseworker.email);
+        });
     });
 
     Then('In workflow {string}, I see find person is selected with {string}', async function (workflow,person) {

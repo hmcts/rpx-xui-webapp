@@ -68,7 +68,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I see caseworker from reference {string} returned to Select in Find person search result of exclusions work flow', async function(caseworkerRef){
         const caseworker = global.scenarioData[caseworkerRef];
-        const personExpectedIsReturned = await exclusionWorkFlow.findPersonPage.isPersonReturned(caseworker.email);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            const personExpectedIsReturned = await exclusionWorkFlow.findPersonPage.isPersonReturned(caseworker.email);
+        });
 
     });
 

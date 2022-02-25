@@ -1,5 +1,6 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {ActivatedRoute, Router} from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
 import {caseFlagsRefData, initialState} from '../../hearing.test.data';
@@ -17,7 +18,8 @@ describe('HearingActualsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [HearingActualsSummaryComponent],
       imports: [
-        HearingsPipesModule
+        HearingsPipesModule,
+        RouterTestingModule
       ],
       providers: [
         provideMockStore({initialState}),

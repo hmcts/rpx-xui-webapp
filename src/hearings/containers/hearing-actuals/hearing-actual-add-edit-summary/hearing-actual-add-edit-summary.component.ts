@@ -3,8 +3,10 @@ import { Store } from '@ngrx/store';
 import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { HearingActualsStateData } from 'src/hearings/models/hearingActualsStateData.model';
+import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
 import * as fromHearingStore from '../../../store';
+import { HearingsService } from '../../../services/hearings.service';
+import { ACTION } from '../../../models/hearings.enum';
 
 @Component({
   selector: 'exui-hearing-actual-add-edit-summary',
@@ -14,7 +16,8 @@ export class HearingActualAddEditSummaryComponent implements OnInit {
   public hearingActualsMainModel: HearingActualsMainModel;
   public sub: Subscription;
   
-  constructor(private readonly hearingStore: Store<fromHearingStore.State>) {
+  constructor(private readonly hearingStore: Store<fromHearingStore.State>,
+              private readonly hearingsService: HearingsService) {
   }
 
   public ngOnInit(): void {
@@ -26,13 +29,15 @@ export class HearingActualAddEditSummaryComponent implements OnInit {
         this.hearingActualsMainModel = state.hearingActualsMainModel;
         console.log('HEARING ACTUALS', this.hearingActualsMainModel);
       });
-
-
   }
 
   public ngOnDestroy(): void {
     if (this.sub) {
       this.sub.unsubscribe();
     }
+  }
+
+  public onBack(): void {
+    this.hearingsService.navigateAction(ACTION.BACK);
   }
 }

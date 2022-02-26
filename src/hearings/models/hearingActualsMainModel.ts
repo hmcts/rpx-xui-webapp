@@ -7,11 +7,12 @@ export interface HearingActualsMainModel {
 }
 
 export interface HearingPlannedModel {
-  plannedHearingType: number;
+  plannedHearingType: string;
   plannedHearingDays: PlannedHearingModel[];
 }
 
 export interface PlannedHearingModel {
+  plannedDate?: string;
   plannedStartTime: string;
   plannedEndTime: string;
   parties: PartyModel[];

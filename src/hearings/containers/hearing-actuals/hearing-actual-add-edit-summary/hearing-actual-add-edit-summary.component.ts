@@ -11,6 +11,7 @@ import { ACTION } from '../../../models/hearings.enum';
 @Component({
   selector: 'exui-hearing-actual-add-edit-summary',
   templateUrl: './hearing-actual-add-edit-summary.component.html',
+  styleUrls: ['./hearing-actual-add-edit-summary.component.scss']
 })
 export class HearingActualAddEditSummaryComponent implements OnInit {
   public hearingActualsMainModel: HearingActualsMainModel;

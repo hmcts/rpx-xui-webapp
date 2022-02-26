@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
+import { HearingActualsMainModel, PartyModel } from '../../../models/hearingActualsMainModel';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
@@ -40,5 +40,15 @@ export class HearingActualAddEditSummaryComponent implements OnInit {
 
   public onBack(): void {
     this.hearingsService.navigateAction(ACTION.BACK);
+  }
+
+  public getRepresentingAttendee(partyId: number): string {
+    const party: PartyModel = this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties.find(x => x.partyId === partyId.toString());
+    console.log(party);
+    if (party && party.individualDetails) {
+      return `${party.individualDetails.firstName} ${party.individualDetails.lastName}`;
+    }
+
+    return '';
   }
 }

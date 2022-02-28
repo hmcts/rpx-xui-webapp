@@ -70,14 +70,6 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     return childNodeValid;
   }
 
-  public hasValidIncludeExcludeMembers(): boolean {
-    let isValid: boolean = false;
-    if (this.includedJudgeList.length || this.excludedJudgeList.length) {
-      return true
-    }
-    return isValid
-  }
-
   public initForm(): void {
     this.panelJudgeForm = this.formBuilder.group({
       specificPanel: ['', Validators.required],

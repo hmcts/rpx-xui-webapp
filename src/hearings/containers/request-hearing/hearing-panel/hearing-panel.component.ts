@@ -270,8 +270,8 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
       if (panelRolesValid) {
         if (!selectedPanelRoles.length) {
           if (!validIncludeOrExcludeSelection) {
-              this.panelSelectionError = HearingPanelSelectionEnum.SelectionError;
-              this.validationErrors.push({ id: 'specific-panel-selection', message: HearingPanelSelectionEnum.SelectionError });
+            this.panelSelectionError = HearingPanelSelectionEnum.SelectionError;
+            this.validationErrors.push({ id: 'specific-panel-selection', message: HearingPanelSelectionEnum.SelectionError });
             return false;
           }
       }} else {

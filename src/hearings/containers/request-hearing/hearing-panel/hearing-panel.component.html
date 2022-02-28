@@ -4,7 +4,7 @@
     <exui-hearing-parties-title></exui-hearing-parties-title>
     <h1 class="govuk-heading-l">Do you require a panel for this hearing?</h1>
     <form class="form" [formGroup]="panelJudgeForm">
-      <div class="govuk-form-group govuk-!-margin-top-5" [ngClass]="{'govuk-form-group--error': !!panelSelectionError}">
+      <div class="govuk-form-group govuk-!-margin-top-5">
         <fieldset class="govuk-fieldset" id="specific-panel-selection">
           <span class="govuk-error-message" *ngIf="panelSelectionError">
             <span class="govuk-visually-hidden">Error:</span> {{panelSelectionError}}
@@ -16,7 +16,7 @@
               <label class="govuk-label govuk-radios__label" for="specificPanelSelection">Yes</label>
             </div>
             <div class="govuk-radios__conditional" [ngClass]="{'govuk-radios__conditional--hidden': panelSelection !=='Yes'}">
-              <div class="govuk-form-group govuk-!-width-one-half">
+              <div class="govuk-form-group govuk-!-width-one-half" [ngClass]="{'govuk-form-group--error': !!panelSelectionError || !!childNodesValidationError}">
                 <exui-hearing-judge-names-list #includedJudge [subTitle]="'Include specific panel members (optional)'" [domain]="'Judicial'" [judgeList]= "includedJudgeList"
                  [submitButtonName]="'Add another person'" [isColumnView]="true"></exui-hearing-judge-names-list>
                 <exui-hearing-judge-names-list #excludedJudge [subTitle]="'Exclude specific panel members (optional)'" [domain]="'Judicial'" [judgeList]= "excludedJudgeList"

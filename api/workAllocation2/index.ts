@@ -1,5 +1,4 @@
 import { NextFunction, Response } from 'express';
-import { handleGet, handlePost } from '../common/mockService';
 import { getConfigValue, showFeature } from '../configuration';
 import {
   FEATURE_SUBSTANTIVE_ROLE_ENABLED,
@@ -10,41 +9,48 @@ import {
 } from '../configuration/references';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
-import { getWASupportedJurisdictionsList } from '../waSupportedJurisdictions/index';
+import { Role } from '../roleAccess/models/roleType';
+import { getAllRoles } from '../roleAccess/roleAssignmentService';
+import {RoleAssignment} from '../user/interfaces/roleAssignment';
+import { getWASupportedJurisdictionsList } from '../waSupportedJurisdictions';
 import * as caseServiceMock from './caseService.mock';
 import {
+  getUserIdsFromJurisdictionRoleResponse,
   getUserIdsFromRoleApiResponse,
   handleCaseWorkerForLocation,
   handleCaseWorkerForLocationAndService,
   handleCaseWorkerForService,
+  handleCaseWorkersForServicesPost,
   handlePostCaseWorkersRefData,
   handlePostRoleAssignments,
   handlePostSearch
 } from './caseWorkerService';
-
-import { JUDICIAL_WORKERS_LOCATIONS } from './constants/mock.data';
+import { ViewType } from './constants/actions';
+import {CaseList} from './interfaces/case';
 import { PaginationParameter } from './interfaces/caseSearchParameter';
-import { Caseworker } from './interfaces/common';
-import { TaskList } from './interfaces/task';
+import { CaseworkerPayload, ServiceCaseworkerData } from './interfaces/caseworkerPayload';
+import {CaseDataType, Caseworker, CaseworkersByService} from './interfaces/common';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { checkIfCaseAllocator } from './roleService';
 import * as roleServiceMock from './roleService.mock';
-import { handleGetTasksByCaseId } from './taskService';
-import * as taskServiceMock from './taskService.mock';
+import { handleTaskGet, handleTaskPost, handleTaskRolesGet, handleTaskSearch } from './taskService';
 import {
   assignActionsToCases,
   assignActionsToTasks,
   constructElasticSearchQuery,
-  constructRoleAssignmentCaseAllocatorQuery,
   constructRoleAssignmentQuery,
   filterByLocationId,
-  getCaseAllocatorLocations,
   getCaseIdListFromRoles,
-  getCaseTypesFromRoleAssignments,
+  getCaseworkerDataForServices,
   getRoleAssignmentsByQuery,
+  getSessionCaseworkerInfo,
   getSubstantiveRoles,
+  getTypesOfWorkByUserId,
+  getUniqueCasesCount,
+  handlePost,
   mapCasesFromData,
   mapCaseworkerData,
+  paginate,
   prepareCaseWorkerForLocation,
   prepareCaseWorkerForLocationAndService,
   prepareCaseWorkerForService,
@@ -55,11 +61,11 @@ import {
   prepareRoleApiRequest,
   prepareRoleApiUrl,
   prepareSearchTaskUrl,
+  prepareServiceRoleApiRequest,
   prepareTaskSearchForCompletable,
   searchCasesById
 } from './util';
 
-taskServiceMock.init();
 caseServiceMock.init();
 roleServiceMock.init();
 
@@ -79,10 +85,45 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
   try {
     const getTaskPath: string = prepareGetTaskUrl(baseWorkAllocationTaskUrl, req.params.taskId);
 
-    const jsonResponse = await handleGet(getTaskPath, req);
-
+    const jsonResponse = await handleTaskGet(getTaskPath, req);
+    if (jsonResponse && jsonResponse.task && jsonResponse.task.due_date) {
+      jsonResponse.task.dueDate = jsonResponse.task.due_date;
+    }
     res.status(200);
     res.send(jsonResponse);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * getTask
+ */
+export async function getTypesOfWork(req: EnhancedRequest, res: Response, next: NextFunction) {
+  try {
+    const path: string = `${baseWorkAllocationTaskUrl}/work-types?filter-by-user=true`;
+    const response = await getTypesOfWorkByUserId(path, req);
+    let typesOfWork = [];
+    if (response && response.work_types) {
+      typesOfWork = response.work_types.map(work => ({ key: work.id, label: work.label }));
+    }
+    res.status(200);
+    res.send(typesOfWork);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * getTask
+ */
+export async function getTaskRoles(req: EnhancedRequest, res: Response, next: NextFunction) {
+  try {
+    const taskId = req.params.taskId;
+    const path = `${baseWorkAllocationTaskUrl}/task/${taskId}/roles`;
+    const { status, data } = await handleTaskRolesGet(path, req);
+    res.status(status);
+    res.send(data.roles);
   } catch (error) {
     next(error);
   }
@@ -93,51 +134,24 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
  */
 export async function searchTask(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
+    const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
+    const postTaskPath = preparePaginationUrl(req, basePath);
     const searchRequest = req.body.searchRequest;
-    const view = req.body.view;
-    const currentUser = req.body.currentUser ? req.body.currentUser : '';
-    let promise;
-    if (searchRequest.search_by === 'judge') {
-      // TODO below call mock api will be replaced when real api is ready
-      if (view === 'MyTasks') {
-        const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'myTasks?view=judicial');
-        const postTaskPath = preparePaginationUrl(req, basePath);
-        promise = await handlePost(postTaskPath, searchRequest, req);
-      } else if (view === 'AvailableTasks') {
-        const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'availableTasks?view=judicial');
-        const postTaskPath = preparePaginationUrl(req, basePath);
-        promise = await handlePost(postTaskPath, searchRequest, req);
-      } else {
-        const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'allTasks?view=judicial');
-        const postTaskPath = preparePaginationUrl(req, basePath);
-        promise = await handlePost(postTaskPath, searchRequest, req);
-      }
-    } else {
-      if (view === 'MyTasks') {
-        const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'myTasks?view=caseworker');
-        const postTaskPath = preparePaginationUrl(req, basePath);
-        promise = await handlePost(postTaskPath, searchRequest, req);
-      } else if (view === 'AvailableTasks') {
-        const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'availableTasks?view=caseworker');
-        const postTaskPath = preparePaginationUrl(req, basePath);
-        promise = await handlePost(postTaskPath, searchRequest, req);
-      } else {
-        const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'allTasks?view=caseworker');
-        const postTaskPath = preparePaginationUrl(req, basePath);
-        promise = await handlePost(postTaskPath, searchRequest, req);
-      }
+    const sortParam = searchRequest.sorting_parameters.find(sort => sort.sort_by === 'created_date');
+    if (sortParam) {
+      sortParam.sort_by = 'dueDate';
     }
-    const {status, data} = promise;
+    delete searchRequest.pagination_parameters;
+    const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
+    const currentUser = req.body.currentUser ? req.body.currentUser : '';
     res.status(status);
     // Assign actions to the tasks on the data from the API.
     let returnData;
     if (data) {
       // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
       // These should be mocked as if we were getting them from the user themselves
-      returnData = {tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records};
+      returnData = { tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records };
     }
-
-    // Send the (possibly modified) data back in the Response.
     res.send(returnData);
   } catch (error) {
     next(error);
@@ -146,9 +160,50 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
 
 export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const caseId = req.params.caseId;
+  const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
+  const searchRequest = {
+    search_parameters: [
+      {
+        key: 'caseId',
+        operator: 'IN',
+        values: [
+          caseId,
+        ],
+      },
+      {
+        key: 'state',
+        operator: 'IN',
+        values: [
+          'assigned',
+          'unassigned',
+        ],
+      },
+    ],
+    sorting_parameters: [
+      {
+        sort_by: 'due_date',
+        sort_order: 'asc',
+      },
+    ],
+    search_by: 'caseworker',
+  };
   try {
-    const {status, data} = await handleGetTasksByCaseId(`${baseWorkAllocationTaskUrl}/task/${caseId}`, req);
-    return res.send(data as TaskList).status(status);
+    const { status, data } = await handleTaskSearch(`${basePath}`, searchRequest, req);
+    const currentUser = req.body.currentUser ? req.body.currentUser : '';
+    const actionedTasks = assignActionsToTasks(data.tasks, ViewType.MY_TASKS, currentUser);
+    return res.send(actionedTasks).status(status);
+  } catch (e) {
+    next(e);
+  }
+}
+
+export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+  const caseId = req.params.caseId;
+  const eventId = req.params.eventId;
+  try {
+    const payload = { caseId, eventId };
+    const { status, data } = await handlePost(`${baseWorkAllocationTaskUrl}/task/search-for-completable`, payload, req);
+    return res.send(data).status(status);
   } catch (e) {
     next(e);
   }
@@ -160,11 +215,23 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
 export async function postTaskAction(req: EnhancedRequest, res: Response, next: NextFunction) {
 
   try {
+    // Additional setting to mark unassigned tasks as done - need to assign task before completing
+    if (req.body.hasNoAssigneeOnComplete === true) {
+      req.body = {
+        completion_options: {
+           assign_and_complete: true,
+         },
+      }
+    }
     const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action);
-    const {status, data} = await handlePost(getTaskPath, req.body, req);
+    const { status, data } = await handleTaskPost(getTaskPath, req.body, req);
     res.status(status);
     res.send(data);
   } catch (error) {
+    if (req.params.action === 'complete' && error && error.status === 403) {
+      // handle gracefully EUI-4998
+      return res.status(201).send('complete');
+    }
     next(error);
   }
 }
@@ -174,7 +241,7 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
  */
 export async function getAllCaseWorkers(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const caseworkers: Caseworker[] = await retrieveAllCaseWorkers(req, res);
+    const caseworkers: Caseworker[] = await retrieveAllCaseWorkers(req);
     res.status(200);
     res.send(caseworkers);
   } catch (error) {
@@ -182,14 +249,27 @@ export async function getAllCaseWorkers(req: EnhancedRequest, res: Response, nex
   }
 }
 
-export async function retrieveAllCaseWorkers(req: EnhancedRequest, res: Response): Promise<Caseworker[]> {
+/**
+ * Get All CaseWorkers
+ */
+export async function getCaseWorkersFromServices(req: EnhancedRequest, res: Response, next: NextFunction) {
+  try {
+    const caseworkersByService: CaseworkersByService[] = await retrieveCaseWorkersForServices(req, res);
+    res.status(200);
+    res.send(caseworkersByService);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function retrieveAllCaseWorkers(req: EnhancedRequest): Promise<Caseworker[]> {
   if (req.session && req.session.caseworkers) {
     return req.session.caseworkers;
   }
   const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
   const jurisdictions = getWASupportedJurisdictionsList();
   const payload = prepareRoleApiRequest(jurisdictions);
-  const {data} = await handlePostRoleAssignments(roleApiPath, payload, req);
+  const { data } = await handlePostRoleAssignments(roleApiPath, payload, req);
   const userIds = getUserIdsFromRoleApiResponse(data);
   const userUrl = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
   const userResponse = await handlePostCaseWorkersRefData(userUrl, userIds, req);
@@ -198,25 +278,43 @@ export async function retrieveAllCaseWorkers(req: EnhancedRequest, res: Response
   return caseWorkerReferenceData;
 }
 
-/**
- * Get All JudicialWorkers
- */
-export async function getAllJudicialWorkers(req: EnhancedRequest, res: Response, next: NextFunction) {
-  try {
-    const judicialWorkers: any[] = await retrieveAllJudicialWorkers();
-    res.status(200);
-    res.send(judicialWorkers);
-  } catch (error) {
-    next(error);
+// similar as above but checks services
+export async function retrieveCaseWorkersForServices(req: EnhancedRequest, res: Response): Promise<CaseworkersByService[]> {
+  const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
+  const jurisdictions = req.body.serviceIds as string [];
+  // will need to check specific jurisdiction have caseworkers in session
+  let newJurisdictions: string[];
+  let sessionCaseworkersByService: CaseworkersByService[] = [];
+  if (req.session && req.session.caseworkersByService) {
+    const sessionCaseworkerInfo = getSessionCaseworkerInfo(jurisdictions, req.session.caseworkersByService);
+    newJurisdictions = sessionCaseworkerInfo[0];
+    sessionCaseworkersByService = sessionCaseworkerInfo[1];
   }
-}
+  if (!newJurisdictions) {
+    // if there is no new jurisdictions array then there is no session - use given jurisdictions to get caseworker data
+    newJurisdictions = jurisdictions;
+  } else if (newJurisdictions.length === 0) {
+    // if the array is empty then all services are in the session - use session data
+    return sessionCaseworkersByService;
+  }
+  const roleResponse = await getAllRoles(req); // get the roles from the endpoint
+  const roles: Role[] = roleResponse.data;
 
-export async function retrieveAllJudicialWorkers(): Promise<any[]> {
-  return new Promise<any[]>(resolve => {
-    setTimeout(() => {
-      resolve(JUDICIAL_WORKERS_LOCATIONS);
-    }, 0);
-  });
+  const payloads: CaseworkerPayload[] = prepareServiceRoleApiRequest(newJurisdictions, roles);
+  const data: ServiceCaseworkerData[] = await handleCaseWorkersForServicesPost(roleApiPath, payloads, req);
+  const userIds = getUserIdsFromJurisdictionRoleResponse(data);
+  if (userIds.length === 0) {
+    return sessionCaseworkersByService;
+  }
+  const userUrl = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
+  const userResponse = await handlePostCaseWorkersRefData(userUrl, userIds, req);
+
+  const caseWorkerReferenceData = getCaseworkerDataForServices(userResponse.data, data);
+  // note have to merge any new service caseworker data for full session as well as services specified in params
+  req.session.caseworkersByService = req.session && req.session.caseworkersByService ?
+    [...req.session.caseworkersByService, ...caseWorkerReferenceData] : caseWorkerReferenceData;
+  const fullCaseworkerByServiceInfo = [...caseWorkerReferenceData, ...sessionCaseworkersByService];
+  return fullCaseworkerByServiceInfo;
 }
 
 /**
@@ -241,7 +339,7 @@ export async function getAllCaseWorkersForLocation(req: EnhancedRequest, res: Re
 export async function getCaseWorkersForService(req: EnhancedRequest, res: Response, next: NextFunction) {
 
   try {
-    const getCaseWorkerPath: string = prepareCaseWorkerForService(baseUrl, req.params.serviceId);
+    const getCaseWorkerPath: string = prepareCaseWorkerForService(baseCaseWorkerRefUrl, req.params.serviceId);
 
     const jsonResponse = await handleCaseWorkerForService(getCaseWorkerPath, req);
     res.status(200);
@@ -274,7 +372,7 @@ export async function searchCaseWorker(req: EnhancedRequest, res: Response, next
   try {
     const postTaskPath: string = prepareCaseWorkerSearchUrl(baseUrl);
 
-    const {status, data} = await handlePostSearch(postTaskPath, req.body, req);
+    const { status, data } = await handlePostSearch(postTaskPath, req.body, req);
     res.status(status);
     res.send(data);
   } catch (error) {
@@ -291,7 +389,7 @@ export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Re
       'case_type': req.body.searchRequest.caseTypeId,
       'event_id': req.body.searchRequest.eventId,
     };
-    const {status, data} = await handlePostSearch(postTaskPath, reqBody, req);
+    const { status, data } = await handlePostSearch(postTaskPath, reqBody, req);
     res.status(status);
     res.send(data);
   } catch (error) {
@@ -300,11 +398,11 @@ export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Re
   }
 }
 
-export async function getRolesCategory(req: EnhancedRequest, res: Response, next: NextFunction) {
+export async function getRolesCategory(req: EnhancedRequest, res: Response) {
   const personRoles = [
-    {roleId: 'judicial', roleName: 'Judicial'},
-    {roleId: 'legalOps', roleName: 'Legal Ops'},
-    {roleId: 'admin', roleName: 'Admin'}];
+    { roleId: 'judicial', roleName: 'Judicial' },
+    { roleId: 'legalOps', roleName: 'Legal Ops' },
+    { roleId: 'admin', roleName: 'Admin' }];
   return res.send(personRoles).status(200);
 }
 
@@ -319,26 +417,45 @@ export async function showAllocateRoleLink(req: EnhancedRequest, res: Response, 
   }
 }
 
-export async function getMyCases(req: EnhancedRequest, res: Response) {
-  const roleAssignments = req.session.roleAssignmentResponse;
-  const caseTypes: string = getCaseTypesFromRoleAssignments(roleAssignments);
-  const queryParams = caseTypes && caseTypes.length ? caseTypes : 'Asylum';
-  const caseIdList = getCaseIdListFromRoles(roleAssignments);
-  const query = constructElasticSearchQuery(caseIdList, 0, 10000);
+export function getCaseListPromises(data: CaseDataType, req: EnhancedRequest): Array<Promise<CaseList>> {
+  const casePromises: Array<Promise<CaseList>> = [];
+  for (const jurisdiction in data) {
+    if (data.hasOwnProperty(jurisdiction)) {
+      for (const caseType in data[jurisdiction]) {
+        if (data[jurisdiction].hasOwnProperty(caseType)) {
+          const query = constructElasticSearchQuery(Array.from(data[jurisdiction][caseType]), 0, 10000);
+          casePromises.push(searchCasesById(caseType, query, req));
+        }
+      }
+    }
+  }
+  return casePromises;
+}
 
+export async function getMyCases(req: EnhancedRequest, res: Response): Promise<Response> {
   try {
-    const result = await searchCasesById(queryParams, query, req);
-    const caseData = result.cases;
-    result.total_records = result.cases.length;
+    const roleAssignments = req.session.roleAssignmentResponse;
+    const cases = await getCaseIdListFromRoles(roleAssignments as RoleAssignment[], req);
+
     // search parameters passed in as null as there are no parameters for my cases
     const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
     let checkedRoles = req && req.session && req.session.roleAssignmentResponse ? req.session.roleAssignmentResponse : null;
     if (showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED)) {
-      checkedRoles = getSubstantiveRoles(req.session.roleAssignmentResponse);
+      checkedRoles = getSubstantiveRoles(roleAssignments as any) as any;
     }
-    const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles, null) : [];
-    const cases = assignActionsToCases(mappedCases, userIsCaseAllocator, true);
-    result.cases = cases;
+
+    const result = {
+      cases,
+      total_records: 0,
+      unique_cases: 0,
+    };
+
+    if (cases.length) {
+      const mappedCases = checkedRoles ? mapCasesFromData(cases, checkedRoles as any, null) : [];
+      result.total_records = mappedCases.length;
+      result.unique_cases = getUniqueCasesCount(mappedCases);
+      result.cases = assignActionsToCases(mappedCases, userIsCaseAllocator);
+    }
     return res.send(result).status(200);
   } catch (e) {
     console.log(e);
@@ -346,48 +463,36 @@ export async function getMyCases(req: EnhancedRequest, res: Response) {
   }
 }
 
-export async function getCases(req: EnhancedRequest, res: Response, next: NextFunction) {
+export async function getCases(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const searchParameters = req.body.searchRequest.search_parameters as SearchTaskParameter[];
   const pagination = req.body.searchRequest.pagination_parameters as PaginationParameter;
 
   logger.info('getting all work cases', searchParameters);
 
   try {
-
-    // get users case allocations
-    const caseAllocatorQuery = constructRoleAssignmentCaseAllocatorQuery(searchParameters, req);
-    logger.info('case-allocator query', JSON.stringify(caseAllocatorQuery, null, 2));
-    const caseAllocatorResult = await getRoleAssignmentsByQuery(caseAllocatorQuery, req);
     // get case allocator locations
-    const locations = caseAllocatorResult.roleAssignmentResponse
-      ? getCaseAllocatorLocations(caseAllocatorResult.roleAssignmentResponse)
-      : [];
-    logger.info('case-allocator locations', locations);
+    const locations = [];
+    searchParameters.filter(param => param.key === 'location_id').forEach(location => {
+      if (location.values !== '') {
+        locations.push(location.values);
+      }
+    });
 
     // get all role assignments
     const query = constructRoleAssignmentQuery(searchParameters);
     logger.info('cases query', JSON.stringify(query, null, 2));
     const roleAssignmentResult = await getRoleAssignmentsByQuery(query, req);
 
-    logger.info('returned cases', JSON.stringify(roleAssignmentResult.roleAssignmentResponse));
+    const cases = await getCaseIdListFromRoles(roleAssignmentResult.roleAssignmentResponse, req);
 
-    const caseTypes: string = getCaseTypesFromRoleAssignments(roleAssignmentResult.roleAssignmentResponse);
-    const queryParams = caseTypes.length ? caseTypes : 'Asylum';
+    const result = {
+      cases,
+      total_records: 0,
+      unique_cases: 0,
+    };
 
-    logger.info('caseTypes', queryParams);
-
-    // get the case ids from the role assignments
-    const caseIds = getCaseIdListFromRoles(roleAssignmentResult.roleAssignmentResponse);
-    const esQuery = constructElasticSearchQuery(caseIds, 0, 10000);
-
-    logger.info('esQuery', JSON.stringify(esQuery, null, 2));
-
-    const result = await searchCasesById(queryParams, esQuery, req);
-
-    logger.info('elastic search results length ', result.cases.length);
     const caseData = filterByLocationId(result.cases, locations);
     logger.info('results filtered by location id', caseData.length);
-    result.total_records = caseData.length;
 
     const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
     let checkedRoles = roleAssignmentResult.roleAssignmentResponse;
@@ -395,7 +500,10 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
       checkedRoles = getSubstantiveRoles(roleAssignmentResult.roleAssignmentResponse);
     }
     const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles, pagination) : [];
-    result.cases = assignActionsToCases(mappedCases, userIsCaseAllocator, true);
+    result.total_records = mappedCases.length;
+    result.unique_cases = getUniqueCasesCount(mappedCases);
+    const roleCaseList = pagination ? paginate(mappedCases, pagination.page_number, pagination.page_size) : mappedCases;
+    result.cases = assignActionsToCases(roleCaseList, userIsCaseAllocator);
     return res.send(result).status(200);
   } catch (error) {
     console.error(error);

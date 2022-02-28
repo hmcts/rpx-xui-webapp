@@ -1,8 +1,7 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { HttpClientModule } from '@angular/common/http';
-import { Component, DebugElement, ViewChild } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Component, ViewChild } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
@@ -29,7 +28,48 @@ describe('TaskManagerFilterComponent', () => {
   let store: Store<fromStore.State>;
   let storePipeMock: any;
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
-  const SELECTED_LOCATIONS = { id: 'locations', fields: [ { name: 'locations', value: ['231596', '698118'] }] };
+  const typesOfWork = [
+    {
+      key: 'hearing_work',
+      label: 'Hearing work'
+    },
+    {
+      key: 'upper_tribunal',
+      label: 'Upper Tribunal'
+    },
+    {
+      key: 'routine_work',
+      label: 'Routine work'
+    },
+    {
+      key: 'decision_making_work',
+      label: 'Decision-making work'
+    },
+    {
+      key: 'applications',
+      label: 'Applications'
+    },
+    {
+      key: 'priority',
+      label: 'Priority'
+    },
+    {
+      key: 'access_requests',
+      label: 'Access requests'
+    },
+    {
+      key: 'error_management',
+      label: 'Error management'
+    }
+  ];
+  const SELECTED_LOCATIONS = {
+    id: 'locations', fields: [
+      { name: 'locations', value: ['231596', '698118'] },
+      {
+        name: 'types-of-work',
+        value: ['types_of_work_all', ...typesOfWork.map(t => t.key)]
+      }]
+  };
   const mockFilterService: any = {
     getStream: () => of(SELECTED_LOCATIONS),
     get: jasmine.createSpy(),
@@ -45,11 +85,11 @@ describe('TaskManagerFilterComponent', () => {
       imports: [
         CdkTableModule,
         ExuiCommonLibModule,
-        HttpClientModule,
+        HttpClientTestingModule,
         RouterTestingModule,
         ExuiCommonLibModule
       ],
-      declarations: [TaskManagerFilterComponent, WrapperComponent ],
+      declarations: [TaskManagerFilterComponent, WrapperComponent],
       providers: [
         provideMockStore(),
         { provide: WorkAllocationTaskService, useValue: mockTaskService },

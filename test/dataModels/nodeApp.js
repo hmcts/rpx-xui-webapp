@@ -7,7 +7,12 @@ class NodeApp{
         return {
             "canShareCases": false,
             "roleAssignmentInfo": [
-                this.getUserDetailsLocationInfo()
+                {
+                    ...this.getUserDetailsLocationInfo(),
+                    caseId:'',
+                    caseType:''
+                }
+                
             ],
             "sessionTimeout": {
                 "idleModalDisplayTime": 10,
@@ -17,7 +22,7 @@ class NodeApp{
             "userInfo": {
                 "uid": v4(),
                 "given_name": "XUI test",
-                "family_name": "Judge",
+                "family_name": "auto",
                 "name": "test name",
                 "sub": "juser8@mailinator.com",
                 "roles": [
@@ -25,8 +30,8 @@ class NodeApp{
                     "caseworker-ia",
                     "caseworker-ia-iacjudge"
                 ],
-                "roleCategory": "LEGAL_OPARATIONS",
-                "token": "Bearer eyJ0eXAiOiJKV1Q"
+                "token": "Bearer eyJ0eXAiOiJKV1Q",
+                "roleCategory":"LEGAL_OPS"
             }
         }
     }
@@ -53,8 +58,9 @@ class NodeApp{
                     "caseworker-ia",
                     "caseworker-ia-iacjudge"
                 ],
-                "roleCategory": "LEGAL_OPARATIONS",
-                "token": "Bearer eyJ0eXAiOiJKV1Q"
+                "token": "Bearer eyJ0eXAiOiJKV1Q",
+                "roleCategory": "LEGAL_OPS"
+
             }
         }
     }
@@ -64,8 +70,7 @@ class NodeApp{
         const location = Math.floor((Math.random() * 100009) + 10001);
         const isCaseAllocator = Math.floor((Math.random() * 1) + 0) === 0 ? false : true;
         return {
-            "caseId": "1234567890",
-            "caseType": "mock test case type", 
+            // "primaryLocation": location,
             "jurisdiction": "IA",
             "isCaseAllocator": true,
             "substantive" : true

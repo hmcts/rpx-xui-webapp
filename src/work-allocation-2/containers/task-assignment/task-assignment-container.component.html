@@ -18,11 +18,14 @@
 
   <div class="govuk-grid-row">
     <xuilib-find-person
-      title="{{verb}} task"
+      [title]="verb + ' task'"
       [findPersonGroup]="formGroup"
       (personSelected)="selectedPerson($event)"
       [selectedPerson]="defaultPerson"
-      [domain]="domain">
+      [domain]="domain"
+      [userIncluded]="true"
+      [assignedUser]="assignedUser"
+      [services]="[service]">
     </xuilib-find-person>
 
     <button class="govuk-button govuk-!-margin-right-1" type="submit" (click)="assign()">Continue</button>

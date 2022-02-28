@@ -40,12 +40,10 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
     this.hearingStageResultForm = this.formBuilder.group({
       hearingStage: [''],
       hearingResult: ['', Validators.required],
-      completedReason: [''],
       adjournedReason: [''],
       cancelledReason: ['']
     });
     this.hearingTypes$ = this.lovRefDataService.getListOfValues('HearingType', 'SSCS');
-    this.completeHearingActualReasons$ = this.lovRefDataService.getListOfValues('CompleteHearingActualReason', 'SSCS');
     this.adjournHearingActualReasons$ = this.lovRefDataService.getListOfValues('AdjournHearingActualReason', 'SSCS');
     this.cancelHearingActualReasons$ = this.lovRefDataService.getListOfValues('CancelHearingActualReason', 'SSCS');
 

@@ -34,15 +34,6 @@
                     Heard, order or decision
                   </label>
                 </div>
-                <div class="govuk-radios__conditional" *ngIf="hearingResultType === hearingResultEnum.COMPLETED">
-                  <div class="govuk-form-group">
-                    <label class="govuk-label" id="dropdown-label" for="completed-reason">Hearing outcome</label>
-                    <select formControlName="completedReason" class="govuk-select" id="completed-reason" name="completedReason">
-                      <option value="">Please select</option>
-                      <option *ngFor="let reason of completeHearingActualReasons$ | async" [ngValue]="reason.key">{{reason.value_en}}</option>
-                    </select>
-                  </div>
-                </div>
                 <div class="govuk-radios__item">
                   <input class="govuk-radios__input" id="adjourned" formName="hearingResult" name="hearingResult"
                     type="radio" value="adjourned" data-aria-controls="conditional-adjourned" (change)="onHearingResult(hearingResultEnum.ADJOURNED)">

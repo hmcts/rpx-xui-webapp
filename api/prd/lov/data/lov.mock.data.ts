@@ -160,36 +160,6 @@ export const DEFAULT_HEARING_CANCEL_REF: LovRefDataModel[] = [
   },
 ];
 
-export const DEFAULT_HEARING_ACTUAL_COMPLETE_REF: LovRefDataModel[] = [
-  {
-    key: 'decisionInFavourOfAppellant',
-    value_en: 'Decision in favour of Appellant',
-    value_cy: '',
-    hintText_EN: 'Decision in favour of Appellant',
-    hintTextCY: '',
-    order: 1,
-    parentKey: null,
-  },
-  {
-    key: 'decisionReserved',
-    value_en: 'Decision Reserved',
-    value_cy: '',
-    hintText_EN: 'Decision Reserved',
-    hintTextCY: '',
-    order: 2,
-    parentKey: null,
-  },
-  {
-    key: 'decisionRevisedAgainstAppeallant',
-    value_en: 'Decision Revised Against Appeallant',
-    value_cy: '',
-    hintText_EN: 'Decision Revised Against Appeallant',
-    hintTextCY: '',
-    order: 4,
-    parentKey: null,
-  },
-];
-
 export const DEFAULT_HEARING_ACTUAL_ADJOURN_REF: LovRefDataModel[] = [
   {
     key: 'postponedDueToExclusions',
@@ -500,10 +470,6 @@ export const SSCS_OTHER_PANEL_ROLES: LovRefDataByServiceModel = {
   serviceID: 'SSCS',
   values: OTHER_PANEL_ROLES,
 };
-export const SSCS_COMPLETE_HEARING_ACTUAL: LovRefDataByServiceModel = {
-  serviceID: 'SSCS',
-  values: DEFAULT_HEARING_ACTUAL_COMPLETE_REF,
-};
 export const SSCS_ADJOURN_HEARING_ACTUAL: LovRefDataByServiceModel = {
   serviceID: 'SSCS',
   values: DEFAULT_HEARING_ACTUAL_ADJOURN_REF,
@@ -529,10 +495,6 @@ export const ALL_REF_DATA: LovRefDataByCategoryModel[] = [
   {
     categoryKey: 'JudgeType',
     services: [SSCS_JUDGE_TYPES],
-  },
-  {
-    categoryKey: 'CompleteHearingActualReason',
-    services: [SSCS_COMPLETE_HEARING_ACTUAL],
   },
   {
     categoryKey: 'AdjournHearingActualReason',

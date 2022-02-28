@@ -12,8 +12,7 @@ import { ValidatorsUtils } from '../../../utils/validators.utils';
 
 @Component({
   selector: 'exui-hearing-actuals-timing',
-  templateUrl: './hearing-actuals-timing.component.html',
-  styleUrls: ['./hearing-actuals-timing.component.scss']
+  templateUrl: './hearing-actuals-timing.component.html'
 })
 export class HearingActualsTimingComponent implements OnInit, OnDestroy {
 

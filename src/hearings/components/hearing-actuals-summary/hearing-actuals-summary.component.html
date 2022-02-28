@@ -1,9 +1,9 @@
 <ng-container *ngFor="let section of template">
 
 
-  <div class="govuk-grid-row">
+  <div class="govuk-grid-row section-title">
     <div [innerHtml]="section.sectionHTMLTitle" class="govuk-grid-column-one-half"></div>
-    <div class="govuk-grid-column-one-half" *ngIf="section.updateLink" style="text-align: right">
+    <div class="govuk-grid-column-one-half" *ngIf="section.updateLink">
       <a class="govuk-link" [routerLink]="[section.updateLink]">Update</a>
     </div>
   </div>

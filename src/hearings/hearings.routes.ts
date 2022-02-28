@@ -63,7 +63,7 @@ export const ROUTES: Routes = [
     ]
   },
   {
-    path: 'actuals',
+    path: 'actuals/:id',
     component: HearingActualsComponent,
     children: [
       {

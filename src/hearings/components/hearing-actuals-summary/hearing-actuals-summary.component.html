@@ -3,8 +3,8 @@
 
   <div class="govuk-grid-row section-title">
     <div [innerHtml]="section.sectionHTMLTitle" class="govuk-grid-column-one-half"></div>
-    <div class="govuk-grid-column-one-half" *ngIf="section.updateLink">
-      <a class="govuk-link" [routerLink]="[section.updateLink]">Update</a>
+    <div class="govuk-grid-column-one-half update-link" *ngIf="section.updateLink">
+      <a class="govuk-link" [routerLink]="[section.updateLink | hearingUpdateLink: id]">Update</a>
     </div>
   </div>
 

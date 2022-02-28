@@ -1,9 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import * as moment from 'moment';
+import { combineLatest, Subscription } from 'rxjs';
+import { of } from 'rxjs/internal/observable/of';
+import { catchError, filter } from 'rxjs/operators';
 import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
 import { HearingsService } from '../../../services/hearings.service';
@@ -20,10 +22,12 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   public form: FormGroup;
   private hearingActuals: HearingActualsMainModel;
   private sub: Subscription;
+  private id: string;
 
   public constructor(private readonly fb: FormBuilder,
                      private readonly hearingStore: Store<fromHearingStore.State>,
                      private readonly router: Router,
+                     private readonly route: ActivatedRoute,
                      private readonly hearingsService: HearingsService,
                      private readonly validatorsUtils: ValidatorsUtils,
   ) {
@@ -32,38 +36,43 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   private static getStartTime(hearingActuals: HearingActualsMainModel): string {
     const plannedTime = hearingActuals.hearingPlanned.plannedHearingDays[0].plannedStartTime;
     const actualTime = hearingActuals.hearingActuals.actualHearingDays[0].hearingStartTime;
-    return actualTime ? actualTime.match(this.timeMatcher)[0] : plannedTime.match(this.timeMatcher)[0];
+    return actualTime ? HearingActualsTimingComponent.getTime(actualTime) : HearingActualsTimingComponent.getTime(plannedTime);
   }
 
   private static getPauseStartTime(hearingActuals: HearingActualsMainModel): string {
     const actualTime = hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes[0];
-    return actualTime && actualTime.pauseStartTime ? actualTime.pauseStartTime.match(this.timeMatcher)[0] : null;
+    return actualTime && actualTime.pauseStartTime ? HearingActualsTimingComponent.getTime(actualTime.pauseStartTime) : null;
   }
 
   private static getPauseEndTime(hearingActuals: HearingActualsMainModel): string {
     const actualTime = hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes[0];
-    return actualTime && actualTime.pauseEndTime ? actualTime.pauseEndTime.match(this.timeMatcher)[0] : null;
+    return actualTime && actualTime.pauseEndTime ? HearingActualsTimingComponent.getTime(actualTime.pauseEndTime) : null;
   }
 
   private static getEndTime(hearingActuals: HearingActualsMainModel): string {
     const plannedTime = hearingActuals.hearingPlanned.plannedHearingDays[0].plannedStartTime;
     const actualTime = hearingActuals.hearingActuals.actualHearingDays[0].hearingEndTime;
-    return actualTime ? actualTime.match(this.timeMatcher)[0] : plannedTime.match(this.timeMatcher)[0];
+    return actualTime ? HearingActualsTimingComponent.getTime(actualTime) : HearingActualsTimingComponent.getTime(plannedTime);
   }
 
-  private static replaceTime(time: string, value: string) {
+  private static replaceTime(time: string, value: string): string {
     if (!time) {
       return time;
     }
     return time.replace(this.timeMatcher, value);
   }
 
+  private static getTime(time: string): string {
+    return time ? moment(time).format('HH:mm') : null;
+  }
+
   public ngOnInit() {
-    this.sub = this.hearingStore.select(fromHearingStore.getHearingActuals)
+    this.sub = combineLatest([this.hearingStore.select(fromHearingStore.getHearingActuals), this.route.paramMap])
       .pipe(
-        filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel)
+        filter(([state, params]: [HearingActualsStateData, ParamMap]) => !!state.hearingActualsMainModel)
       )
-      .subscribe((state: HearingActualsStateData) => {
+      .subscribe(([state, params]: [HearingActualsStateData, ParamMap]) => {
+        this.id = params.get('id');
         this.hearingActuals = state.hearingActualsMainModel;
         this.form = this.createForm(this.hearingActuals);
       });
@@ -91,9 +100,14 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
           }
         ]
       };
-      this.hearingsService.updateHearingActuals('1', actuals).subscribe(() => {
-        this.router.navigate(['/hearings/actuals/hearing-actual-add-edit-summary']);
-      });
+      this.hearingsService.updateHearingActuals(this.id, actuals)
+        .pipe(
+          /*TODO: Unhappy path covered in another ticket*/
+          catchError(() => of(null)),
+        )
+        .subscribe(() => {
+          this.router.navigate([`/hearings/actuals/${this.id}/hearing-actual-add-edit-summary`]);
+        });
     }
   }
 

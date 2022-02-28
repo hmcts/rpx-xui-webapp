@@ -31,6 +31,9 @@ describe('HearingActualsComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
+              params: {
+                id: '123'
+              },
               data: {
                 caseFlags: caseFlagsRefData,
               },

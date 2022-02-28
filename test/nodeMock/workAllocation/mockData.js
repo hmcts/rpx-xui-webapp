@@ -540,9 +540,15 @@ class WorkAllocationMockData {
 
     }
 
-    getRoles() {
-        
-        return WorkAllocationDataModels.getValidRoles();
+    getRoles(services) {
+        const serviceRoles = [];
+        services.forEach(service => {
+            serviceRoles.push({
+                service:service,
+                roles: WorkAllocationDataModels.getValidRoles()
+            }) 
+        }); 
+        return serviceRoles;
 
     }
 

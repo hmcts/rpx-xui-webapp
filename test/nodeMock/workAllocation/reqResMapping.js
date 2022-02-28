@@ -38,9 +38,7 @@ module.exports = {
         '/workallocation2/exclusion/rolesCategory': (req, res)=>{
             res.send(workAllocationMockData.getExclusionRoleCategories());
         },
-        '/api/role-access/allocate-role/valid-roles' : (req,res) => {
-            res.send(workAllocationMockData.getRoles());
-        },
+       
         '/workallocation2/roles/:caseId' : (req,res) => { 
             res.send(workAllocationMockData.caseRoles);
         },
@@ -312,7 +310,10 @@ module.exports = {
         },
         '/workallocation2/retrieveCaseWorkersForServices' : (req,res) => {
             res.send(workAllocationMockData.retrieveCaseWorkersForServices(req.body.serviceIds, req.body.fullServices))
-        } 
+        } ,
+        '/api/role-access/allocate-role/valid-roles': (req, res) => {
+            res.send(workAllocationMockData.getRoles(req.body.serviceIds));
+        },
     }
    
 }

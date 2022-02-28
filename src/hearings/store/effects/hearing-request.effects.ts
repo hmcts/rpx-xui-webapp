@@ -99,9 +99,7 @@ export class HearingRequestEffects {
       return this.hearingsService.loadHearingRequest(payload).pipe(
         tap(
           (hearingRequestMainModel) => {
-            // clone to immutable obj for comparison
             this.hearingStore.dispatch(new hearingRequestToCompareActions.InitializeHearingRequestToCompare(hearingRequestMainModel));
-            // flush to the hearing request store
             this.hearingStore.dispatch(new hearingRequestActions.InitializeHearingRequest(hearingRequestMainModel));
           }),
         catchError(error => {

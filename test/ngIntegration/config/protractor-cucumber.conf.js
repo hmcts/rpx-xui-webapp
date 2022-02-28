@@ -14,7 +14,7 @@ const customReporter = require('../../e2e/support/reportLogger');
 const isParallelExecution = argv.parallel ? argv.parallel=== "true" : true;
 
 const testUrlFromEnv = process.env['TEST_URL']; 
-process.env['TEST_URL'] = argv.debug ? 'http://localhost:3000/' : 'http://localhost:4200/'
+global.baseUrl = argv.debug ? 'http://localhost:3000/' : 'http://localhost:4200/'
 
 const chromeOptArgs = [ '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'];
 

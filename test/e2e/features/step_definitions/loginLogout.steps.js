@@ -82,7 +82,7 @@ defineSupportCode(function ({ Given, When, Then }) {
         console.log(err);
           await browser.driver.manage()
             .deleteAllCookies();
-          const baseUrl = process.env.TEST_URL || 'http://localhost:3000/'
+          const baseUrl = global.baseUrl;
 
           await browser.get(baseUrl);
           await BrowserWaits.waitForElement(loginPage.emailAddress);

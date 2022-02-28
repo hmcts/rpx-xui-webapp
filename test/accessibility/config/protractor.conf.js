@@ -36,6 +36,7 @@ const localConfig = [
 ];
 
 const cap = (argv.local) ? localConfig : jenkinsConfig;
+global.baseUrl = process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net/'; 
 
 const config = {
     SELENIUM_PROMISE_MANAGER: false,

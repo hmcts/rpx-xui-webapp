@@ -186,7 +186,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             try{
                 await headerPage.validateHeaderDisplayedForUserType(userType);
             }catch(err){
-                const baseUrl = process.env.TEST_URL ? process.env.TEST_URL : 'http://localhost:3000/';
+                const baseUrl = global.baseUrl;
                 await browser.get(baseUrl);
                 await headerpage.waitForPrimaryNavDisplay();
                 await browserUtil.waitForLD();

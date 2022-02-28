@@ -35,7 +35,7 @@ const localConfig = [
 ];
 
 const cap = (argv.local) ? localConfig : jenkinsConfig;
-
+global.baseUrl = process.env.TEST_URL || 'http://localhost:3000/'; 
 const config = {
   SELENIUM_PROMISE_MANAGER: false,
   framework: 'custom',

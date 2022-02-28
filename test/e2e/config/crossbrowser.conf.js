@@ -5,6 +5,7 @@ const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
 var screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenShotUtils;
 
+global.baseUrl = process.env.TEST_URL || 'http://localhost:3000/').replace('https', 'http'; 
 
 const config = {
   framework: 'custom',

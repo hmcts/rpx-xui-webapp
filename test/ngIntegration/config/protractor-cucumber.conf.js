@@ -13,6 +13,7 @@ const customReporter = require('../../e2e/support/reportLogger');
 
 const isParallelExecution = argv.parallel ? argv.parallel=== "true" : true;
 
+const testUrlFromEnv = process.env['TEST_URL']; 
 process.env['TEST_URL'] = argv.debug ? 'http://localhost:3000/' : 'http://localhost:4200/'
 
 const chromeOptArgs = [ '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'];
@@ -159,9 +160,8 @@ const config = {
 
 function getBDDTags() {
     let tags = [];
-    if (!process.env.TEST_URL ||
-        process.env.TEST_URL.includes("pr-") ||
-        process.env.TEST_URL.includes("localhost")) { 
+    if (testUrlFromEnv.includes("pr-") ||
+        testUrlFromEnv.includes("localhost")) { 
         if (argv.tags){
             tags = argv.tags.split(',');
         }else{

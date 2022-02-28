@@ -2,22 +2,25 @@ import {Location} from '@angular/common';
 import {TestBed} from '@angular/core/testing';
 import {Router} from '@angular/router';
 import {provideMockActions} from '@ngrx/effects/testing';
+import {Store} from '@ngrx/store';
 import {provideMockStore} from '@ngrx/store/testing';
 import {cold} from 'jasmine-marbles';
 import {Go} from '../../../app/store/actions';
-import {initialState} from '../../hearing.test.data';
+import {hearingRequestMainModel, initialState} from '../../hearing.test.data';
 import {Mode} from '../../models/hearings.enum';
 import {HearingsService} from '../../services/hearings.service';
 import {AbstractPageFlow} from '../../utils/abstract-page-flow';
+import * as hearingRequestToCompareActions from '../actions/hearing-request-to-compare.action';
 import * as hearingRequestActions from '../actions/hearing-request.action';
 import {HearingRequestEffects} from './hearing-request.effects';
 
-describe('Hearing Request Effects', () => {
+fdescribe('Hearing Request Effects', () => {
   let actions$;
   let effects: HearingRequestEffects;
   let router: Router;
+  let store: any;
   const hearingsServiceMock = jasmine.createSpyObj('HearingsService', [
-    'getAllHearings',
+    'getAllHearings', 'loadHearingRequest', 'updateHearingRequest', 'submitHearingRequest',
   ]);
   const pageflowMock = jasmine.createSpyObj('AbstractPageFlow', [
     'getCurrentPage', 'getLastPage', 'getNextPage'
@@ -51,6 +54,7 @@ describe('Hearing Request Effects', () => {
     });
     effects = TestBed.get(HearingRequestEffects);
     router = TestBed.get(Router);
+    store = TestBed.get(Store);
   });
 
   describe('continueNavigation$', () => {
@@ -83,6 +87,21 @@ describe('Hearing Request Effects', () => {
       const expected = cold('-b', {b: navigateAction});
       expect(effects.continueNavigation$).toBeObservable(expected);
       expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-view-edit-summary'], { fragment: 'venue' });
+    });
+  });
+
+  describe('loadHearingRequest$', () => {
+    it('should load hearing requests', () => {
+      const dispatchSpy = spyOn(store, 'dispatch');
+      hearingsServiceMock.loadHearingRequest.and.returnValue(hearingRequestMainModel);
+      const action = new hearingRequestActions.LoadHearingRequest('h1000000');
+      actions$ = cold('-a', {a: action});
+      const expectedAction = new hearingRequestActions.LoadHearingRequest('h1000000');
+      const expected = cold('-b', {b: expectedAction});
+      // expect(effects.loadHearingRequest$).toBeObservable(expected);
+      expect(hearingsServiceMock.loadHearingRequest).toHaveBeenCalledWith('h1000000');
+      expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestToCompareActions.InitializeHearingRequestToCompare(hearingRequestMainModel));
+      expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestActions.InitializeHearingRequest(hearingRequestMainModel));
     });
   });
 

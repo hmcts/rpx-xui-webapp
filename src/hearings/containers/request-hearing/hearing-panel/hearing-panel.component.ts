@@ -58,8 +58,8 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     this.initForm();
   }
 
-  public childNodesValidation(defaultFlag): boolean {
-    let childNodeValid: boolean = defaultFlag;
+  public childNodesValidation(): boolean {
+    let childNodeValid: boolean = true;
     const panelRoles = this.convertArrayToRefDataModel(this.panelJudgeForm.controls.multiLevelSelect as FormArray);
     panelRoles.filter(panelRole => panelRole.selected && panelRole.child_nodes && panelRole.child_nodes.length)
       .forEach(selectedPanelRole => {
@@ -167,7 +167,8 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     const panelRoles: LovRefDataModel[] = this.convertArrayToRefDataModel(this.panelJudgeForm.controls.multiLevelSelect as FormArray);
     const panelRolesSelected: string[] = [];
     const selectedPanelMembers: PanelPreferenceModel[] = [] as PanelPreferenceModel[];
-    this.includedJudge.judgeList.forEach(judgeInfo => {
+    const hearingPanelRequiredFlag = this.panelJudgeForm.controls.specificPanel.value === "Yes"
+    hearingPanelRequiredFlag && this.includedJudge.judgeList.forEach(judgeInfo => {
       const panelPreference: PanelPreferenceModel = {
         memberID: judgeInfo.personalCode,
         memberType: MemberType.PANEL_MEMBER,
@@ -185,7 +186,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     });
     const panelRequirements = this.hearingRequestMainModel.hearingDetails.panelRequirements;
     const selectedPanelJudges: PanelPreferenceModel[] = panelRequirements && panelRequirements.panelPreferences && panelRequirements.panelPreferences.filter(preferences => preferences.memberType === MemberType.JUDGE) || [];
-    this.preparePanelChildren(panelRoles, panelRolesSelected);
+    hearingPanelRequiredFlag && this.preparePanelChildren(panelRoles, panelRolesSelected);
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
       hearingDetails: {
@@ -269,32 +270,21 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     this.validationErrors = [];
     this.childNodesValidationError = null;
     this.panelSelectionError = null;
-    const panelRoles: LovRefDataModel[] = this.convertArrayToRefDataModel(this.panelJudgeForm.controls.multiLevelSelect as FormArray).filter(role => role.selected)
-    const panelRolesValid = this.childNodesValidation(true)
-    const includeExcludeSelectionValid = this.includedJudgeList.length > 0 || this.excludedJudgeList.length > 0
-    if (panelRolesValid) {
-      if (!panelRoles.length) {
-        if (!includeExcludeSelectionValid) {
-          if (!this.includedJudgeList.length || !this.excludedJudgeList.length) {
-            this.panelSelectionError = HearingPanelSelectionEnum.SelectionError;
-            this.validationErrors.push({ id: 'specific-panel-selection', message: HearingPanelSelectionEnum.SelectionError });
-          } else {
-            this.childNodesValidationError = HearingPanelSelectionEnum.PanelRowChildError;
-            this.validationErrors.push({ id: 'panel-role-selector', message: HearingPanelSelectionEnum.PanelRowChildError });
-          }
+    const panelRequiredFlag = this.panelJudgeForm.controls.specificPanel.value === "Yes"
+    if (panelRequiredFlag) {
+      const selectedPanelRoles: LovRefDataModel[] = this.convertArrayToRefDataModel(this.panelJudgeForm.controls.multiLevelSelect as FormArray).filter(role => role.selected)
+      const panelRolesValid = this.childNodesValidation()
+      if (panelRolesValid) {
+        if (!selectedPanelRoles.length) {
+          this.panelSelectionError = HearingPanelSelectionEnum.SelectionError;
+          this.validationErrors.push({ id: 'specific-panel-selection', message: HearingPanelSelectionEnum.SelectionError });
           return false;
         }
-    }
-    }
-    else {
-      if (!this.includedJudgeList.length || !this.excludedJudgeList.length) {
-        this.panelSelectionError = HearingPanelSelectionEnum.SelectionError;
-        this.validationErrors.push({ id: 'specific-panel-selection', message: HearingPanelSelectionEnum.SelectionError });
-      } else {
-        this.childNodesValidationError = HearingPanelSelectionEnum.PanelRowChildError;
-        this.validationErrors.push({ id: 'panel-role-selector', message: HearingPanelSelectionEnum.PanelRowChildError });
+        } else {
+            this.childNodesValidationError = HearingPanelSelectionEnum.PanelRowChildError;
+            this.validationErrors.push({ id: 'panel-role-selector', message: HearingPanelSelectionEnum.PanelRowChildError });
+            return false;
       }
-      return false;
     }
     return this.panelJudgeForm.valid;
   }

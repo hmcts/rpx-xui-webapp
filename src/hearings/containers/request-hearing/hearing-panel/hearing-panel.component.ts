@@ -33,10 +33,10 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
   @ViewChild('excludedJudge') public excludedJudge: HearingJudgeNamesListComponent;
 
   constructor(
-          protected readonly hearingStore: Store<fromHearingStore.State>,
-          protected readonly hearingsService: HearingsService,
-          protected readonly route: ActivatedRoute,
-          private readonly formBuilder: FormBuilder) {
+    protected readonly hearingStore: Store<fromHearingStore.State>,
+    protected readonly hearingsService: HearingsService,
+    protected readonly route: ActivatedRoute,
+    private readonly formBuilder: FormBuilder) {
     super(hearingStore, hearingsService);
     this.multiLevelSelections = this.route.snapshot.data.otherPanelRoles;
     this.personalCodejudgeList = this.route.snapshot.data.judicialUsers;
@@ -181,6 +181,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
         panelRequirements: {
+          ...this.hearingRequestMainModel.hearingDetails.panelRequirements,
           panelPreferences: [...selectedPanelMembers, ...selectedPanelJudges],
           panelSpecialisms: [...panelRolesSelected]
         }

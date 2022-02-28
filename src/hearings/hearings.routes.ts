@@ -27,6 +27,7 @@ import { HearingStageResolver } from './resolvers/hearing-stage.resolver';
 import { PartyChannelsResolverService } from './resolvers/party-channels-resolver.service';
 import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
 import { JudicialUserSearchResolver } from './resolvers/ judicial-user-search-resolver.resolve';
+import { JudgeTypesResolverService } from './resolvers/judge-types-resolver.service';
 
 export const ROUTES: Routes = [
   {
@@ -196,7 +197,9 @@ export const ROUTES: Routes = [
           caseFlags: CaseFlagsResolver,
           hearingStageOptions: HearingStageResolver,
           additionFacilitiesOptions: AdditionalFacilitiesResolver,
-          partyChannels: PartyChannelsResolverService
+          partyChannels: PartyChannelsResolverService,
+          judgeTypes: JudgeTypesResolverService,
+          judicialUsers: JudicialUserSearchResolver
         },
         component: HearingCreateEditSummaryComponent,
         canActivate: [HealthCheckGuard],

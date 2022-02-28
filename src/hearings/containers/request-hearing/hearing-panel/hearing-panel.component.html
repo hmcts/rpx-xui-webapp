@@ -18,9 +18,9 @@
             <div class="govuk-radios__conditional" [ngClass]="{'govuk-radios__conditional--hidden': panelSelection !=='Yes'}">
               <div class="govuk-form-group govuk-!-width-one-half">
                 <exui-hearing-judge-names-list #includedJudge [subTitle]="'Include specific panel members (optional)'" [domain]="'Judicial'" [judgeList]= "includedJudgeList"
-                 [submitButtonName]="'Add another person'" [isColumnView]="true"></exui-hearing-judge-names-list>
+                 [submitButtonName]="'Add another person'" [idValue]="'Include'" [isColumnView]="true"></exui-hearing-judge-names-list>
                 <exui-hearing-judge-names-list #excludedJudge [subTitle]="'Exclude specific panel members (optional)'" [domain]="'Judicial'" [judgeList]= "excludedJudgeList"
-                 [submitButtonName]="'Exclude another person'" [isColumnView]="true"></exui-hearing-judge-names-list>
+                 [submitButtonName]="'Exclude another person'"  [idValue]="'Exclude'" [isColumnView]="true"></exui-hearing-judge-names-list>
                  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
                     <h1 class="govuk-fieldset__heading">
                         Select any other panel roles required (optional)

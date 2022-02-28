@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { HearingActualsStateData } from 'src/hearings/models/hearingActualsStateData.model';
+import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
 import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { HearingResult } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';

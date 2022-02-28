@@ -265,7 +265,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     if (panelRequiredFlag) {
       const selectedPanelRoles: LovRefDataModel[] = this.convertArrayToRefDataModel(this.panelJudgeForm.controls.multiLevelSelect as FormArray).filter(role => role.selected)
       const panelRolesValid = this.childNodesValidation()
-      const validIncludeOrExcludeSelection = this.includedJudgeList.length > 0 || this.excludedJudgeList.length > 0
+      const validIncludeOrExcludeSelection = this.includedJudge.judgeList.length > 0 || this.excludedJudge.judgeList.length > 0
       if (panelRolesValid) {
         if (!selectedPanelRoles.length) {
           if (!validIncludeOrExcludeSelection) {

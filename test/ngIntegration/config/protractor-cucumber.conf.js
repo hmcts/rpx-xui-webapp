@@ -89,6 +89,8 @@ const config = {
     },
 
     onPrepare() {
+        global.baseUrl = argv.debug ? 'http://localhost:3000/' : 'http://localhost:4200/'
+
         browser.waitForAngularEnabled(false);
         global.expect = chai.expect;
         global.assert = chai.assert;

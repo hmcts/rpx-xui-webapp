@@ -1,14 +1,66 @@
-import {Component} from '@angular/core';
-import {Mode} from '../../../models/hearings.enum';
-import {HEARING_ACTUAL_ADD_EDIT_SUMMARY_TEMPLATE} from '../../../templates/hearing-actual-add-edit-summary.template';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import {
+  ActualDayPartyModel,
+  ActualHearingDayModel,
+  HearingActualsMainModel,
+  HearingOutcomeModel,
+  PartyModel
+} from '../../../models/hearingActualsMainModel';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
+import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
+import * as fromHearingStore from '../../../store';
+import { HearingsService } from '../../../services/hearings.service';
+import { ACTION } from '../../../models/hearings.enum';
 
 @Component({
   selector: 'exui-hearing-actual-add-edit-summary',
   templateUrl: './hearing-actual-add-edit-summary.component.html',
+  styleUrls: ['./hearing-actual-add-edit-summary.component.scss']
 })
-export class HearingActualAddEditSummaryComponent {
+export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
+  public hearingActualsMainModel: HearingActualsMainModel;
+  public hearingOutcome: HearingOutcomeModel;
+  public actualHearingDay: ActualHearingDayModel;
+  public actualDayParties: ActualDayPartyModel[];
+  public sub: Subscription;
 
-  public template = HEARING_ACTUAL_ADD_EDIT_SUMMARY_TEMPLATE;
-  public mode = Mode.VIEW_EDIT;
+  constructor(private readonly hearingStore: Store<fromHearingStore.State>,
+              private readonly hearingsService: HearingsService) {
+  }
 
+  public ngOnInit(): void {
+    this.sub = this.hearingStore.select(fromHearingStore.getHearingActuals)
+      .pipe(
+        filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel)
+      )
+      .subscribe((state: HearingActualsStateData) => {
+        const hearingActualsMainModel = state.hearingActualsMainModel;
+        this.hearingOutcome = hearingActualsMainModel.hearingActuals.hearingOutcome;
+        this.actualHearingDay = hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0
+          ? hearingActualsMainModel.hearingActuals.actualHearingDays[0] : null;
+        this.actualDayParties = hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0
+          ? hearingActualsMainModel.hearingActuals.actualHearingDays.map(x => x.actualDayParties[0]) : [];
+        this.hearingActualsMainModel = hearingActualsMainModel;
+      });
+  }
+
+  public ngOnDestroy(): void {
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
+  }
+
+  public onBack(): void {
+    this.hearingsService.navigateAction(ACTION.BACK);
+  }
+
+  public getRepresentingAttendee(partyId: number): string {
+    const party: PartyModel = this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties.find(x => x.partyId === partyId.toString());
+    if (party && party.individualDetails) {
+      return `${party.individualDetails.firstName} ${party.individualDetails.lastName}`;
+    }
+    return '';
+  }
 }

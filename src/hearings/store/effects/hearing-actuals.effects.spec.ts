@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { cold, hot } from 'jasmine-marbles';
 import { of } from 'rxjs';
@@ -13,10 +14,11 @@ describe('Hearing Actuals Effects', () => {
   let actions$;
   let effects: HearingActualsEffects;
   const hearingsServiceMock = jasmine.createSpyObj('HearingsService', [
-    'getHearingActuals',
+    'getHearingActuals', 'updateHearingActuals'
   ]);
   beforeEach(() => {
     TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
       providers: [
         {
           provide: HearingsService,
@@ -37,6 +39,20 @@ describe('Hearing Actuals Effects', () => {
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.getHearingActuals$).toBeObservable(expected);
+    });
+  });
+
+  describe('updateHearingActual$', () => {
+    it('should return a response with service hearing actuals', () => {
+      hearingsServiceMock.updateHearingActuals.and.returnValue(of(hearingActualsMainModel));
+      const action = new hearingActualsActions.UpdateHearingActuals({
+        hearingId: '1111222233334444',
+        hearingActuals: hearingActualsMainModel.hearingActuals
+      });
+      const completion = new hearingActualsActions.UpdateHearingActualsSuccess(hearingActualsMainModel);
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.updateHearingActuals$).toBeObservable(expected);
     });
   });
 

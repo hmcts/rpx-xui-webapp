@@ -1,24 +1,24 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {By} from '@angular/platform-browser';
-import {Router, RouterModule} from '@angular/router';
-import {RouterTestingModule} from '@angular/router/testing';
-import {FeatureUser} from '@hmcts/rpx-xui-common-lib';
-import {Store} from '@ngrx/store';
-import {Observable, of} from 'rxjs';
-import {RoleCategoryMappingService} from 'src/app/services/role-category-mapping/role-category-mapping.service';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { Router, RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { FeatureUser } from '@hmcts/rpx-xui-common-lib';
+import { Store } from '@ngrx/store';
+import { Observable, of } from 'rxjs';
+import { RoleCategoryMappingService } from 'src/app/services/role-category-mapping/role-category-mapping.service';
 import {
   Actions,
   EXUIDisplayStatusEnum,
   EXUISectionStatusEnum,
   HearingListingStatusEnum
 } from '../../../hearings/models/hearings.enum';
-import {HearingsPipesModule} from '../../../hearings/pipes/hearings.pipes.module';
+import { HearingsPipesModule } from '../../../hearings/pipes/hearings.pipes.module';
 import * as fromHearingStore from '../../../hearings/store';
-import {CaseHearingsListComponent} from './case-hearings-list.component';
+import { CaseHearingsListComponent } from './case-hearings-list.component';
 
 class MockRoleCategoryMappingService {
   public initialize = (user: FeatureUser, clientId: string): void => {
-  }
+  };
   public isEnabled = (feature: string): Observable<boolean> => of(true);
   public getValue = <R>(key: string, defaultValue: R): Observable<R> => of(defaultValue);
   public getValueOnce = <R>(key: string, defaultValue: R): Observable<R> => of(defaultValue);
@@ -131,9 +131,9 @@ describe('CaseHearingsListComponent', () => {
 
   it('should viewAndEdit', () => {
     const navigateSpy = spyOn(router, 'navigate');
-    component.viewAndEdit(HEARINGS[0]);
+    component.viewAndEdit();
     fixture.detectChanges();
-    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.SaveHearingConditions({mode: 'view'}));
-    expect(navigateSpy).toHaveBeenCalledWith(['/', 'hearings', 'request', 'h555555', 'hearing-view-edit-summary']);
+    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.SaveHearingConditions({ mode: 'view' }));
+    expect(navigateSpy).toHaveBeenCalledWith(['/', 'hearings', 'request', 'hearing-view-edit-summary']);
   });
 });

@@ -4,8 +4,7 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { combineLatest, Subscription } from 'rxjs';
-import { of } from 'rxjs/internal/observable/of';
-import { catchError, filter } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
 import { HearingsService } from '../../../services/hearings.service';
@@ -69,7 +68,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   public ngOnInit() {
     this.sub = combineLatest([this.hearingStore.select(fromHearingStore.getHearingActuals), this.route.paramMap])
       .pipe(
-        filter(([state, params]: [HearingActualsStateData, ParamMap]) => !!state.hearingActualsMainModel)
+        filter(([state]: [HearingActualsStateData, ParamMap]) => !!state.hearingActualsMainModel)
       )
       .subscribe(([state, params]: [HearingActualsStateData, ParamMap]) => {
         this.id = params.get('id');
@@ -84,7 +83,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
 
   public submit(value: any, valid: boolean) {
     if (valid) {
-      const actuals = {
+      const hearingActuals = {
         ...this.hearingActuals.hearingActuals,
         actualHearingDays: [
           {
@@ -100,14 +99,10 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
           }
         ]
       };
-      this.hearingsService.updateHearingActuals(this.id, actuals)
-        .pipe(
-          /*TODO: Unhappy path covered in another ticket*/
-          catchError(() => of(null)),
-        )
-        .subscribe(() => {
-          this.router.navigate([`/hearings/actuals/${this.id}/hearing-actual-add-edit-summary`]);
-        });
+      this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
+        hearingId: this.id,
+        hearingActuals
+      }));
     }
   }
 

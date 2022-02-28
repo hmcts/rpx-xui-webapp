@@ -22,7 +22,7 @@ export function hearingActualsReducer(
         hearingActualsMainModel: action.payload
       };
     }
-    case fromActions.UPDATE_HEARING_ACTUALS: {
+    case fromActions.UPDATE_HEARING_ACTUALS_SUCCESS: {
       return {
         ...currentState,
         hearingActualsMainModel: action.payload

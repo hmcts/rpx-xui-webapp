@@ -274,6 +274,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
             return false;
           }
       }} else {
+          this.hasValidationRequested = true
           this.childNodesValidationError = HearingPanelSelectionEnum.PanelRowChildError;
           this.validationErrors.push({ id: 'panel-role-selector', message: HearingPanelSelectionEnum.PanelRowChildError });
           return false;

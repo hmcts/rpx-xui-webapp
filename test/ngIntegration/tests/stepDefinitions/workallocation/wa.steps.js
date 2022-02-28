@@ -28,6 +28,8 @@ const ArrayUtil = require("../../../../e2e/utils/ArrayUtil");
 
 const headerpage = require('../../../../e2e/features/pageObjects/headerPage');
 const taskActionPage = require('../../../../e2e/features/pageObjects/workAllocation/taskActionPage');
+const CreateCasePage = require('../../../../e2e/features/pageObjects/caseCreatedPage');
+
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -36,7 +38,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     const availableTask_actions = ["Assign to me"];
     const taskManager_action = ["Reassign task", "Unassign task"];
 
-
+    const caseCreatePage = new CreateCasePage();
     const caseListPage = new CaseListPage();
     Given('I set MOCK My tasks count {int}', async function (taskCount) {
         const alltasks = workAllocationMockData.getMyTasks(taskCount);
@@ -60,7 +62,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
      Then('I validate tasks column sorting', async function(){
          let tasksRequested = false; 
          let sortColumnInRequestParam = "";
-         await MockUtil.setMockResponse("POST", "/workallocation/taskWithPagination/", (req, res) => {
+         await MockUtil.setMockResponse("POST", "/workallocation/taskWithPagination", (req, res) => {
              CucumberReporter.AddMessage("get tasks with sort request body:");
              CucumberReporter.AddJson(req.body);
              sortColumnInRequestParam = WAUtil.getTaskListReqSearchParam(req.body);
@@ -163,10 +165,13 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await taskListPage.clickColumnHeader(columnHeaders[1]);
         expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal("ascending");
 
-        await headerPage.getTabElementWithText('Case list').click();
-        expect(await caseListPage.amOnPage()).to.be.true;
-        await headerPage.getTabElementWithText('Task manager').click();
-        await taskManagerPage.amOnPage();
+        await headerPage.getTabElementWithText('Create case').click();
+        expect(await caseCreatePage.amOnPage()).to.be.true;
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await headerPage.getTabElementWithText('Task manager').click();
+            expect(await taskManagerPage.amOnPage()).to.be.true;
+
+        });
         await taskManagerPage.waitForTable();
         expect(await taskManagerPage.getColumnSortState(columnHeaders[1])).to.equal("ascending");
 

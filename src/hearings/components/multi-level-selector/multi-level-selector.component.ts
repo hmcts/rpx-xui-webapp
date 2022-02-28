@@ -68,7 +68,7 @@ export class MultiLevelSelectorComponent implements AfterViewInit, OnDestroy {
 
   public get checkValidationWhenRequested() {
     if (this.hasValidationRequested) {
-      return this.formGroup.controls.item.value !== "";
+      return this.formGroup.controls.item.value !== '';
     }
     return true;
   }

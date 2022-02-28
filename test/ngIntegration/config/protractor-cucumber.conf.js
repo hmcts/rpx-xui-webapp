@@ -70,7 +70,7 @@ const config = {
     framework: 'custom',
     frameworkPath: require.resolve('protractor-cucumber-framework'),
     specs: ['../tests/features/**/*.feature'],
-    baseUrl: process.env['TEST_URL'] ,
+    baseUrl: global.baseUrl,
     params: {
 
     },

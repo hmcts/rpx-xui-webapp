@@ -18,7 +18,7 @@ const BrowserWaits = require('../../e2e/support/customWaits');
 defineSupportCode(({ Before, After, BeforeAll }) => {
     BeforeAll(async function(){
         const scenarioServerPort = MockApp.serverPort;
-        await browser.driver.get(config.config.baseUrl);
+        await browser.driver.get(global.baseUrl);
     });
 
     Before(async function (scenario) {

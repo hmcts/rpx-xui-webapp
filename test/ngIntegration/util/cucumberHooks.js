@@ -17,6 +17,8 @@ const BrowserWaits = require('../../e2e/support/customWaits');
 
 defineSupportCode(({ Before, After, BeforeAll }) => {
     BeforeAll(async function(){
+        global.baseUrl = argv.debug ? 'http://localhost:3000/' : 'http://localhost:4200/'
+
         const scenarioServerPort = MockApp.serverPort;
         await browser.driver.get(global.baseUrl);
     });

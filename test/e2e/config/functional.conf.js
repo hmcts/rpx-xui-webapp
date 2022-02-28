@@ -50,7 +50,6 @@ if (isParallelExecution) {
 }
 
 const cap = (argv.local) ? localConfig : jenkinsConfig;
-global.baseUrl = process.env.TEST_URL || 'http://localhost:3000/'; 
 const config = {
     SELENIUM_PROMISE_MANAGER: false,
     framework: 'custom',
@@ -77,6 +76,8 @@ const config = {
     multiCapabilities: cap,
 
     onPrepare() {
+        global.baseUrl = process.env.TEST_URL || 'http://localhost:3000/'; 
+
         browser.waitForAngularEnabled(false);
         global.expect = chai.expect;
         global.assert = chai.assert;
@@ -85,7 +86,7 @@ const config = {
         global.screenShotUtils = new screenShotUtils({
             browserInstance: browser
         });
-        browser.get(config.baseUrl);
+        browser.get(global.baseUrl);
     },
 
     cucumberOpts: {

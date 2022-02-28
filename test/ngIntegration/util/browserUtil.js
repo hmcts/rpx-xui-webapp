@@ -20,7 +20,7 @@ class BrowserUtil{
 
     async gotoHomePage(){
         const baseUrl =  argv.debug ? 'http://localhost:3000/': 'http://localhost:4200/';
-        await browser.get(baseUrl);
+        await browser.get(global.baseurl);
     }
 
     setAuthCookie(){

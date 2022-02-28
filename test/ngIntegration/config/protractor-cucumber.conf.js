@@ -15,7 +15,6 @@ const isParallelExecution = argv.parallel ? argv.parallel=== "true" : true;
 
 const testUrlFromEnv = process.env['TEST_URL']; 
 
-global.baseUrl = argv.debug ? 'http://localhost:3000/' : 'http://localhost:4200/'
 
 const chromeOptArgs = [ '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'];
 

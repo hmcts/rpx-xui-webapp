@@ -7,7 +7,7 @@
       <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Hearing date</dt>
-          <dd class="govuk-summary-list__value">{{hearingActualsMainModel.hearingActuals.actualHearingDays[0].hearingDate | date:"dd MMMM yyyy"}}</dd>
+          <dd class="govuk-summary-list__value">{{actualHearingDay.hearingDate | date:"dd MMMM yyyy"}}</dd>
         </div>
       </dl>
       <br>
@@ -18,19 +18,19 @@
       <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Hearing stage</dt>
-          <dd class="govuk-summary-list__value">{{hearingActualsMainModel.hearingActuals.hearingOutcome.hearingType}}</dd>
+          <dd class="govuk-summary-list__value">{{hearingOutcome.hearingType}}</dd>
         </div>
       </dl>
       <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Hearing result</dt>
-          <dd class="govuk-summary-list__value">{{hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResult}}</dd>
+          <dd class="govuk-summary-list__value">{{hearingOutcome.hearingResult}}</dd>
         </div>
       </dl>
-      <dl class="govuk-summary-list" *ngIf="hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResultReasonType.length > 0">
+      <dl class="govuk-summary-list" *ngIf="hearingOutcome.hearingResultReasonType.length > 0">
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Select a reason for this result</dt>
-          <dd class="govuk-summary-list__value">{{hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResultReasonType}}</dd>
+          <dd class="govuk-summary-list__value">{{hearingOutcome.hearingResultReasonType}}</dd>
         </div>
       </dl>
       <br>
@@ -41,28 +41,28 @@
       <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Start time</dt>
-          <dd class="govuk-summary-list__value">{{hearingActualsMainModel.hearingActuals.actualHearingDays[0].hearingStartTime | date:"HH:mm" }}</dd>
+          <dd class="govuk-summary-list__value">{{actualHearingDay.hearingStartTime | date:"HH:mm" }}</dd>
         </div>
       </dl>
       <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Finish time</dt>
-          <dd class="govuk-summary-list__value">{{hearingActualsMainModel.hearingActuals.actualHearingDays[0].hearingEndTime | date:"HH:mm" }}</dd>
+          <dd class="govuk-summary-list__value">{{actualHearingDay.hearingEndTime | date:"HH:mm" }}</dd>
         </div>
       </dl>
       <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Pause time</dt>
-          <dd class="govuk-summary-list__value" *ngIf="hearingActualsMainModel.hearingActuals.actualHearingDays[0].pauseDateTimes.length > 0">
-            {{hearingActualsMainModel.hearingActuals.actualHearingDays[0].pauseDateTimes[0].pauseStartTime}}
+          <dd class="govuk-summary-list__value" *ngIf="actualHearingDay.pauseDateTimes.length > 0">
+            {{actualHearingDay.pauseDateTimes[0].pauseStartTime}}
           </dd>
         </div>
       </dl>
       <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Resume time</dt>
-          <dd class="govuk-summary-list__value" *ngIf="hearingActualsMainModel.hearingActuals.actualHearingDays[0].pauseDateTimes.length > 0">
-            {{hearingActualsMainModel.hearingActuals.actualHearingDays[0].pauseDateTimes[0].pauseEndTime}}
+          <dd class="govuk-summary-list__value" *ngIf="actualHearingDay.pauseDateTimes.length > 0">
+            {{actualHearingDay.pauseDateTimes[0].pauseEndTime}}
           </dd>
         </div>
       </dl>
@@ -71,11 +71,11 @@
       <span class="govuk-body align-right">
         <a href="javascript:void(0)" [routerLink]="['/', 'hearing-actual', 'actuals-parties']" class="govuk-link">Update</a>
       </span>
-      <div *ngFor="let actualHearingDay of hearingActualsMainModel.hearingActuals.actualHearingDays">
+      <div *ngFor="let party of actualDayParties">
         <dl class="govuk-summary-list">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
-              {{actualHearingDay.actualDayParties[0].actualIndividualDetails.firstName}} {{actualHearingDay.actualDayParties[0].actualIndividualDetails.lastName}}
+              {{party.actualIndividualDetails.firstName}} {{party.actualIndividualDetails.lastName}}
               <br>
               <br>
               Attendance type
@@ -83,49 +83,49 @@
             <dd class="govuk-summary-list__value">
               <br>
               <br>
-              {{actualHearingDay.actualDayParties[0].partyChannelSubType}}
+              {{party.partyChannelSubType}}
             </dd>
             <dd class="govuk-summary-list__actions"></dd>
           </div>
         </dl>
       </div>
       <br>
-      <div *ngFor="let actualHearingDay of hearingActualsMainModel.hearingActuals.actualHearingDays; let i = index">
+      <div *ngFor="let party of actualDayParties; let i = index">
         <h2 class="govuk-heading-s">Attendee {{i + 1}}</h2>
         <dl class="govuk-summary-list">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Role</dt>
-            <dd class="govuk-summary-list__value">{{actualHearingDay.actualDayParties[0].partyRole}}</dd>
+            <dd class="govuk-summary-list__value">{{party.partyRole}}</dd>
           </div>
         </dl>
         <dl class="govuk-summary-list">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">First name</dt>
-            <dd class="govuk-summary-list__value">{{actualHearingDay.actualDayParties[0].actualIndividualDetails.firstName}}</dd>
+            <dd class="govuk-summary-list__value">{{party.actualIndividualDetails.firstName}}</dd>
           </div>
         </dl>
         <dl class="govuk-summary-list">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Last name</dt>
-            <dd class="govuk-summary-list__value">{{actualHearingDay.actualDayParties[0].actualIndividualDetails.lastName}}</dd>
+            <dd class="govuk-summary-list__value">{{party.actualIndividualDetails.lastName}}</dd>
           </div>
         </dl>
         <dl class="govuk-summary-list">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Attendance type</dt>
-            <dd class="govuk-summary-list__value">{{actualHearingDay.actualDayParties[0].partyChannelSubType}}</dd>
+            <dd class="govuk-summary-list__value">{{party.partyChannelSubType}}</dd>
           </div>
         </dl>
         <dl class="govuk-summary-list">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Organisation</dt>
-            <dd class="govuk-summary-list__value">{{actualHearingDay.actualDayParties[0].actualOrganisationDetails.name}}</dd>
+            <dd class="govuk-summary-list__value">{{party.actualOrganisationDetails.name}}</dd>
           </div>
         </dl>
         <dl class="govuk-summary-list">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Attendee representing</dt>
-            <dd class="govuk-summary-list__value" [innerHTML]="getRepresentingAttendee(actualHearingDay.actualDayParties[0].representedParty)"></dd>
+            <dd class="govuk-summary-list__value" [innerHTML]="getRepresentingAttendee(party.representedParty)"></dd>
           </div>
         </dl>
         <br> 

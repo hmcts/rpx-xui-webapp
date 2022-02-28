@@ -1,6 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { HearingActualsMainModel, PartyModel } from '../../../models/hearingActualsMainModel';
+import {
+  ActualDayPartyModel,
+  ActualHearingDayModel,
+  HearingActualsMainModel,
+  HearingOutcomeModel,
+  PartyModel
+} from '../../../models/hearingActualsMainModel';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
@@ -15,6 +21,9 @@ import { ACTION } from '../../../models/hearings.enum';
 })
 export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public hearingActualsMainModel: HearingActualsMainModel;
+  public hearingOutcome: HearingOutcomeModel;
+  public actualHearingDay: ActualHearingDayModel;
+  public actualDayParties: ActualDayPartyModel[];
   public sub: Subscription;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
@@ -27,7 +36,13 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
         filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel)
       )
       .subscribe((state: HearingActualsStateData) => {
-        this.hearingActualsMainModel = state.hearingActualsMainModel;
+        const hearingActualsMainModel = state.hearingActualsMainModel;
+        this.hearingOutcome = hearingActualsMainModel.hearingActuals.hearingOutcome;
+        this.actualHearingDay = hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0
+          ? hearingActualsMainModel.hearingActuals.actualHearingDays[0] : null;
+        this.actualDayParties = hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0
+          ? hearingActualsMainModel.hearingActuals.actualHearingDays.map(x => x.actualDayParties[0]) : [];
+        this.hearingActualsMainModel = hearingActualsMainModel;
       });
   }
 

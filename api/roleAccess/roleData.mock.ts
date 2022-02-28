@@ -10,7 +10,7 @@ export const mockAdminRoles: any[] = [{
   end: '02-02-2023',
   actorId: null,
   actions: null,
-  email: 'admin-role@admin.com'
+  email: 'admin-role@admin.com',
 },
 {
   name: 'Admin Role 2',
@@ -22,7 +22,7 @@ export const mockAdminRoles: any[] = [{
   end: '03-03-2022',
   actorId: null,
   actions: null,
-  email: 'admin-role-2@admin.com'
+  email: 'admin-role-2@admin.com',
 }]
 
 export const mockAdminRefinedRoles: any[] = [{

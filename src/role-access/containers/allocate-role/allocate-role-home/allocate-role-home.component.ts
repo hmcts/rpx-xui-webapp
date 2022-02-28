@@ -13,8 +13,8 @@ import {
   chooseAllocateToVisibilityStates,
   chooseDurationVisibilityStates,
   chooseRoleVisibilityStates,
-  searchPersonVisibilityStates,
-  noRolesErrorVisibilityStates
+  noRolesErrorVisibilityStates,
+  searchPersonVisibilityStates
 } from '../../../constants/allocate-role-page-visibility-states';
 import {
   Actions,
@@ -26,8 +26,7 @@ import {
   DEFINED_ROLES,
   DurationOfRole,
   RoleCategory,
-  SpecificRole,
-  TypeOfRole
+  SpecificRole
 } from '../../../models';
 import { AllocateRoleService } from '../../../services';
 import * as fromFeature from '../../../store';
@@ -129,8 +128,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
       roleCategory: RoleCategory[EnumUtil(RoleCategory).getKeyOrDefault(this.roleCategory)],
       action: Actions.Reallocate,
       period: null,
-      lastError: null,
-      roles: null
+      lastError: null
     };
     this.store.dispatch(new fromFeature.AllocateRoleInstantiate(allocateRoleState));
   }
@@ -205,6 +203,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
                 break;
               case RoleCategory.ADMIN:
                 this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ROLE));
+                break;
               default:
                 throw new Error('Invalid user type');
             }

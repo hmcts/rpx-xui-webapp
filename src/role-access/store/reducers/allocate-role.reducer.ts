@@ -54,7 +54,8 @@ export function allocateRoleReducer(currentState = allocateRoleInitialState,
         allocateTo: action.payload.allocateTo,
         durationOfRole: action.payload.durationOfRole,
         roleCategory: action.payload.roleCategory,
-        action: action.payload.action
+        action: action.payload.action,
+        roles: action.payload.roles
       };
     }
     case AllocateRoleActionTypes.CHOOSE_ROLE_AND_GO: {

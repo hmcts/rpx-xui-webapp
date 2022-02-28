@@ -1,38 +1,17 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
 
 import { getLabel } from '../../../../work-allocation-2/utils';
-import { CHOOSE_A_ROLE, ERROR_MESSAGE } from '../../../constants';
 import {
-  AllocateRoleNavigation,
-  SpecificRole
+  AllocateRoleNavigation
 } from '../../../models';
-import { RoleAllocationTitleText } from '../../../models/enums';
-import { OptionsModel } from '../../../models/options-model';
 
 @Component({
   selector: 'exui-choose-role-error',
   templateUrl: './choose-role-error.component.html',
 })
 export class ChooseRoleErrorComponent implements OnInit {
-  public ERROR_MESSAGE = ERROR_MESSAGE;
   @Input() public navEvent: AllocateRoleNavigation;
-
-  public error: any;
-  public title = RoleAllocationTitleText.NonExclusionChoose;
-  public caption: string = '';
-  public optionsList: OptionsModel[];
-  public submitted: boolean = false;
-
-  public formGroup: FormGroup;
-  public radioOptionControl: FormControl;
-  public radioControlName: string = CHOOSE_A_ROLE;
-
-  public allocateRoleStateDataSub: Subscription;
-
-  public typeOfRole: SpecificRole;
 
   public roleCategory: string = '';
   public jurisdiction: string;

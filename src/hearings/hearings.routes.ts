@@ -28,6 +28,8 @@ import { HearingStageResolver } from './resolvers/hearing-stage.resolver';
 import { PartyChannelsResolverService } from './resolvers/party-channels-resolver.service';
 import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
 import { JudicialUserSearchResolver } from './resolvers/ judicial-user-search-resolver.resolve';
+import { AdjournHearingActualReasonResolver } from './resolvers/adjourn-hearing-actual-reason.resolver';
+import { CancelHearingActualReasonResolver } from './resolvers/cancel-hearing-actual-reason.resolver';
 
 export const ROUTES: Routes = [
   {
@@ -76,9 +78,15 @@ export const ROUTES: Routes = [
       },
       {
         path: 'hearing-stage-result',
+        resolve: {
+          hearingTypes: RefDataResolver,
+          adjournHearingActualReasons: AdjournHearingActualReasonResolver,
+          cancelHearingActualReasons: CancelHearingActualReasonResolver
+        },
         component: HearingStageResultComponent,
         canActivate: [HealthCheckGuard],
         data: {
+          category: HearingCategory.HearingType,
           title: 'HMCTS Hearings | Request Hearing | Hearing Stage Result'
         }
       }

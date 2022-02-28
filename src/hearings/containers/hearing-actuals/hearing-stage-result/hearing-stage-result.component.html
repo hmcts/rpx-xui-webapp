@@ -15,7 +15,7 @@
               Hearing stage
             </label>
             <select class="govuk-select govuk-!-width-one-third" id="hearing-stage" name="hearingStage" formControlName="hearingStage">
-              <option *ngFor="let hearingType of hearingTypes$ | async" [ngValue]="hearingType.key" [selected]="">{{hearingType.value_en}}</option>
+              <option *ngFor="let hearingType of hearingTypes" [ngValue]="hearingType.key" [selected]="">{{hearingType.value_en}}</option>
             </select>
           </div>
           <br>
@@ -46,7 +46,7 @@
                     <label class="govuk-label" id="dropdown-label" for="adjourned-reason">Select a reason for this result</label>
                     <select formControlName="adjournedReason" class="govuk-select" id="adjourned-reason" name="adjournedReason">
                       <option value="" selected>Please select</option>
-                      <option *ngFor="let reason of adjournHearingActualReasons$ | async" [ngValue]="reason.key">{{reason.value_en}}</option>
+                      <option *ngFor="let reason of adjournHearingActualReasons" [ngValue]="reason.key">{{reason.value_en}}</option>
                     </select>
                   </div>
                 </div>
@@ -62,7 +62,7 @@
                     <label class="govuk-label" id="dropdown-label" for="cancelled-reason">Select a reason for this result</label>
                     <select formControlName="cancelledReason" class="govuk-select" id="cancelled-reason" name="cancelledReason">
                       <option value="" selected>Please select</option>
-                      <option *ngFor="let reason of cancelHearingActualReasons$ | async" [ngValue]="reason.key">{{reason.value_en}}</option>
+                      <option *ngFor="let reason of cancelHearingActualReasons" [ngValue]="reason.key">{{reason.value_en}}</option>
                     </select>
                   </div>        
                 </div>

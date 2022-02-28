@@ -1,13 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
 import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
+import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
 import { HearingResult } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
-import { LovRefDataService } from '../../../services/lov-ref-data.service';
 import * as fromHearingStore from '../../../store';
 
 @Component({
@@ -20,16 +20,18 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
   public validationErrors: { id: string, message: string }[] = [];
   public hearingResultType: string;
   public caseTitle: string;
-  public hearingTypes$: Observable<LovRefDataModel[]>;
-  public completeHearingActualReasons$: Observable<LovRefDataModel[]>;
-  public adjournHearingActualReasons$: Observable<LovRefDataModel[]>;
-  public cancelHearingActualReasons$: Observable<LovRefDataModel[]>;
+  public hearingTypes: LovRefDataModel[];
+  public adjournHearingActualReasons: LovRefDataModel[];
+  public cancelHearingActualReasons: LovRefDataModel[];
   public hearingActuals: HearingActualsMainModel;
   public sub: Subscription;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
-              private readonly lovRefDataService: LovRefDataService,
-              private readonly formBuilder: FormBuilder) {
+              private readonly formBuilder: FormBuilder,
+              protected readonly route: ActivatedRoute) {
+    this.hearingTypes = this.route.snapshot.data.hearingTypes;
+    this.adjournHearingActualReasons = this.route.snapshot.data.adjournHearingActualReasons;
+    this.cancelHearingActualReasons = this.route.snapshot.data.cancelHearingActualReasons;
   }
 
   public get hearingResultEnum() {
@@ -43,10 +45,6 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
       adjournedReason: [''],
       cancelledReason: ['']
     });
-    this.hearingTypes$ = this.lovRefDataService.getListOfValues('HearingType', 'SSCS');
-    this.adjournHearingActualReasons$ = this.lovRefDataService.getListOfValues('AdjournHearingActualReason', 'SSCS');
-    this.cancelHearingActualReasons$ = this.lovRefDataService.getListOfValues('CancelHearingActualReason', 'SSCS');
-
     this.sub = this.hearingStore.select(fromHearingStore.getHearingActuals)
       .pipe(
         filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel)

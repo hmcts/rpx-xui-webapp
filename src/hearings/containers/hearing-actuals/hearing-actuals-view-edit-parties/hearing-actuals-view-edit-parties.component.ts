@@ -33,6 +33,8 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
 
   public participants: string[] = [];
 
+  public caseTitle = 'Jane Smith vs DWP';
+
   private hearingActuals: HearingActualsMainModel;
 
   private sub: Subscription;
@@ -67,16 +69,17 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     return this.fb.group({
       firstName: [''],
       lastName: [''],
-      role: [''],
+      role: ['Please select'],
       attendanceType: ['Please select'],
       organisation: [''],
-      attendeeRepresenting: [''],
+      attendeeRepresenting: ['Please select'],
       isParty: [false]
     });
   }
 
   public addRow($event) {
     $event.preventDefault();
+    $event.target.blur();
     this.parties.push(this.initiateForm());
   }
 
@@ -86,17 +89,20 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
 
   private createForm(hearingActuals: HearingActualsMainModel) {
 
-    hearingActuals.hearingActuals.actualHearingDays[0].actualDayParties.forEach( dayParty => {
-      this.participants.push(`${dayParty.actualIndividualDetails.firstName} ${dayParty.actualIndividualDetails.lastName}`);
-      this.parties.push(this.fb.group({
-        firstName: [dayParty.actualIndividualDetails.firstName],
-        lastName: [dayParty.actualIndividualDetails.lastName],
-        role: [dayParty.partyRole],
-        attendanceType: [dayParty.partyChannelSubType],
-        organisation: [dayParty.actualOrganisationDetails.name],
-        attendeeRepresenting: [dayParty.representedParty],
-        isParty: [true]
-      }));
+    hearingActuals.hearingActuals.actualHearingDays.forEach( actualHearingDay => {
+
+      actualHearingDay.actualDayParties.forEach( dayParty => {
+        this.participants.push(`${dayParty.actualIndividualDetails.firstName} ${dayParty.actualIndividualDetails.lastName}`);
+        this.parties.push(this.fb.group({
+          firstName: [dayParty.actualIndividualDetails.firstName],
+          lastName: [dayParty.actualIndividualDetails.lastName],
+          role: [dayParty.partyRole],
+          attendanceType: [dayParty.partyChannelSubType],
+          organisation: [dayParty.actualOrganisationDetails.name],
+          attendeeRepresenting: [dayParty.representedParty],
+          isParty: [true]
+        }));
+      });
     });
 
     hearingActuals.hearingPlanned.plannedHearingDays[0].parties.forEach( party => {

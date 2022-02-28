@@ -7,7 +7,7 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-full">
 
-        <span class="govuk-caption-l">Jane Smith vs DWP</span>
+        <span class="govuk-caption-l">{{ caseTitle }}</span>
         <h1 class="govuk-heading-l">
           Participants
         </h1>
@@ -71,9 +71,9 @@
                 </td>
                 <td class="govuk-table__cell">
 
-                  <select class="govuk-select" *ngFor="let participant of participants" formControlName="attendeeRepresenting" aria-label="Who was this attenddee representing?">
+                  <select class="govuk-select" formControlName="attendeeRepresenting" aria-label="Who was this attenddee representing?">
                     <option value="Please select">Please select</option>
-                    <option value="{{ participant }}" selected="">{{ participant }}</option>
+                    <option *ngFor="let participant of participants" value="{{ participant }}" selected="">{{ participant }}</option>
                   </select>
 
                 </td>

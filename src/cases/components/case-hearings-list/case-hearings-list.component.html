@@ -25,8 +25,8 @@
     </td>
     <td class="govuk-table__cell govuk-table-width-30-percent">
       <div *ngIf="hasUpdateAction" class="div-action">
-        <ng-container *ngIf="!hasAddEdit(hearing)"><a href="javascript:void(0)" (click)="viewAndEdit()">View or edit</a>&nbsp;&nbsp;&nbsp;&nbsp;</ng-container>
-        <ng-container *ngIf="hasAddEdit(hearing)"><a href="javascript:void(0)" (click)="addAndEdit()">Add or edit</a>&nbsp;&nbsp;&nbsp;&nbsp;</ng-container>
+        <ng-container *ngIf="!hasAddEdit(hearing)"><a href="javascript:void(0)" (click)="viewAndEdit(hearing)">View or edit</a>&nbsp;&nbsp;&nbsp;&nbsp;</ng-container>
+        <ng-container *ngIf="hasAddEdit(hearing)"><a href="javascript:void(0)" (click)="addAndEdit(hearing)">Add or edit</a>&nbsp;&nbsp;&nbsp;&nbsp;</ng-container>
       </div>
       <div *ngIf="hasDeleteAction" class="div-action">
         <a href="javascript:void(0)"

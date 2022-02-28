@@ -31,6 +31,33 @@ describe('CaseHearingsListComponent', () => {
   const mockFeatureService = new MockRoleCategoryMappingService();
   const mockStore = jasmine.createSpyObj('Store', ['dispatch']);
   let router: any;
+  const HEARINGS = [{
+    hearingID: 'h555555',
+    hearingType: 'Directions hearing',
+    hmcStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
+    hearingRequestDateTime: '2021-08-05T16:00:00.000+0000',
+    lastResponseReceivedDateTime: '',
+    responseVersion: 'rv5',
+    earliestHearingStartDateTime: '',
+    hearingListingStatus: HearingListingStatusEnum.CANCELLED,
+    listAssistCaseStatus: '',
+    exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+    exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED,
+    hearingDaySchedule: [],
+  }, {
+    hearingID: 'h555555',
+    lastResponseReceivedDateTime: '',
+    hearingType: 'Directions hearing',
+    hearingRequestDateTime: '2021-08-05T16:00:00.000+0000',
+    hmcStatus: EXUISectionStatusEnum.UPCOMING,
+    responseVersion: 'rv5',
+    earliestHearingStartDateTime: '',
+    hearingListingStatus: HearingListingStatusEnum.CANCELLED,
+    listAssistCaseStatus: '',
+    exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
+    exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED,
+    hearingDaySchedule: [],
+  }];
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -53,33 +80,7 @@ describe('CaseHearingsListComponent', () => {
     component = fixture.componentInstance;
     component.actions = [Actions.DELETE];
     component.status = EXUISectionStatusEnum.PAST_AND_CANCELLED;
-    component.hearingList$ = of([{
-      hearingID: 'h555555',
-      hearingType: 'Directions hearing',
-      hmcStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
-      hearingRequestDateTime: '2021-08-05T16:00:00.000+0000',
-      lastResponseReceivedDateTime: '',
-      responseVersion: 'rv5',
-      earliestHearingStartDateTime: '',
-      hearingListingStatus: HearingListingStatusEnum.CANCELLED,
-      listAssistCaseStatus: '',
-      exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
-      exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED,
-      hearingDaySchedule: [],
-    }, {
-      hearingID: 'h555555',
-      lastResponseReceivedDateTime: '',
-      hearingType: 'Directions hearing',
-      hearingRequestDateTime: '2021-08-05T16:00:00.000+0000',
-      hmcStatus: EXUISectionStatusEnum.UPCOMING,
-      responseVersion: 'rv5',
-      earliestHearingStartDateTime: '',
-      hearingListingStatus: HearingListingStatusEnum.CANCELLED,
-      listAssistCaseStatus: '',
-      exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
-      exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED,
-      hearingDaySchedule: [],
-    }]);
+    component.hearingList$ = of(HEARINGS);
     component.actions = [Actions.DELETE];
     router = TestBed.get(Router);
     fixture.detectChanges();
@@ -130,9 +131,9 @@ describe('CaseHearingsListComponent', () => {
 
   it('should viewAndEdit', () => {
     const navigateSpy = spyOn(router, 'navigate');
-    component.viewAndEdit();
+    component.viewAndEdit(HEARINGS[0]);
     fixture.detectChanges();
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.SaveHearingConditions({mode: 'view'}));
-    expect(navigateSpy).toHaveBeenCalledWith(['/', 'hearings', 'request', 'hearing-view-edit-summary']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/', 'hearings', 'request', 'h555555', 'hearing-view-edit-summary']);
   });
 });

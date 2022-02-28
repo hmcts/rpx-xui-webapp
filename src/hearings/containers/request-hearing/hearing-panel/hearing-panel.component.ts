@@ -266,16 +266,18 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     if (panelRequiredFlag) {
       const selectedPanelRoles: LovRefDataModel[] = this.convertArrayToRefDataModel(this.panelJudgeForm.controls.multiLevelSelect as FormArray).filter(role => role.selected)
       const panelRolesValid = this.childNodesValidation()
+      const validIncludeOrExcludeSelection = this.includedJudgeList.length > 0 || this.excludedJudgeList.length > 0
       if (panelRolesValid) {
         if (!selectedPanelRoles.length) {
-          this.panelSelectionError = HearingPanelSelectionEnum.SelectionError;
-          this.validationErrors.push({ id: 'specific-panel-selection', message: HearingPanelSelectionEnum.SelectionError });
-          return false;
-        }
-        } else {
-            this.childNodesValidationError = HearingPanelSelectionEnum.PanelRowChildError;
-            this.validationErrors.push({ id: 'panel-role-selector', message: HearingPanelSelectionEnum.PanelRowChildError });
+          if (!validIncludeOrExcludeSelection) {
+              this.panelSelectionError = HearingPanelSelectionEnum.SelectionError;
+              this.validationErrors.push({ id: 'specific-panel-selection', message: HearingPanelSelectionEnum.SelectionError });
             return false;
+          }
+      }} else {
+          this.childNodesValidationError = HearingPanelSelectionEnum.PanelRowChildError;
+          this.validationErrors.push({ id: 'panel-role-selector', message: HearingPanelSelectionEnum.PanelRowChildError });
+          return false;
       }
     }
     return this.panelJudgeForm.valid;

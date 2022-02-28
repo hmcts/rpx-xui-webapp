@@ -167,7 +167,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     const panelRoles: LovRefDataModel[] = this.convertArrayToRefDataModel(this.panelJudgeForm.controls.multiLevelSelect as FormArray);
     const panelRolesSelected: string[] = [];
     const selectedPanelMembers: PanelPreferenceModel[] = [] as PanelPreferenceModel[];
-    const hearingPanelRequiredFlag = this.panelJudgeForm.controls.specificPanel.value === "Yes"
+    const hearingPanelRequiredFlag = this.panelJudgeForm.controls.specificPanel.value === RadioOptions.YES
     hearingPanelRequiredFlag && this.includedJudge.judgeList.forEach(judgeInfo => {
       const panelPreference: PanelPreferenceModel = {
         memberID: judgeInfo.personalCode,
@@ -270,7 +270,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     this.validationErrors = [];
     this.childNodesValidationError = null;
     this.panelSelectionError = null;
-    const panelRequiredFlag = this.panelJudgeForm.controls.specificPanel.value === "Yes"
+    const panelRequiredFlag = this.panelJudgeForm.controls.specificPanel.value === RadioOptions.YES
     if (panelRequiredFlag) {
       const selectedPanelRoles: LovRefDataModel[] = this.convertArrayToRefDataModel(this.panelJudgeForm.controls.multiLevelSelect as FormArray).filter(role => role.selected)
       const panelRolesValid = this.childNodesValidation()

@@ -3,6 +3,7 @@
   <main class="govuk-main-wrapper" id="main-content" role="main">
     <div class="govuk-grid-row" *ngIf="form">
       <form [formGroup]="form" (submit)="submit(form.value, form.valid)">
+        <!--TODO: Replace with real values when api is ready-->
         <span class="govuk-caption-l">Jane Smith vs DWP</span>
         <h1 class="govuk-heading-l">
           Hearing start and finish times

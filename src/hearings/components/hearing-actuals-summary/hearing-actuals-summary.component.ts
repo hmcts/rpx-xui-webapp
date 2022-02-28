@@ -9,6 +9,7 @@ import * as fromHearingStore from '../../store';
 @Component({
   selector: 'exui-hearing-actuals-summary',
   templateUrl: './hearing-actuals-summary.component.html',
+  styleUrls: ['./hearing-actuals-summary.component.scss']
 })
 export class HearingActualsSummaryComponent {
 

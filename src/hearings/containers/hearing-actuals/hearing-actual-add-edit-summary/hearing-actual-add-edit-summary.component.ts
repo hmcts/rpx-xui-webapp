@@ -4,7 +4,7 @@ import {HEARING_ACTUAL_ADD_EDIT_SUMMARY_TEMPLATE} from '../../../templates/heari
 
 @Component({
   selector: 'exui-hearing-actual-add-edit-summary',
-  templateUrl: './hearing-actual-add-edit-summary.component.html',
+  templateUrl: './hearing-actual-add-edit-summary.component.html'
 })
 export class HearingActualAddEditSummaryComponent {
 

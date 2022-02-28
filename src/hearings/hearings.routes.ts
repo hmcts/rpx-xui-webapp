@@ -29,6 +29,7 @@ import { AdditionalFacilitiesResolver } from './resolvers/additional-facilities.
 import { AdjournHearingActualReasonResolver } from './resolvers/adjourn-hearing-actual-reason.resolver';
 import { CancelHearingActualReasonResolver } from './resolvers/cancel-hearing-actual-reason.resolver';
 import { CaseFlagsResolver } from './resolvers/case-flags.resolver';
+import {HearingActualPartyChannelResolver} from './resolvers/hearing-actual-party-channel.resolver';
 import { HearingStageResolver } from './resolvers/hearing-stage.resolver';
 import { JudgeTypesResolverService } from './resolvers/judge-types-resolver.service';
 import { PanelRolesResolverService } from './resolvers/panel-roles-resolver.service';
@@ -95,19 +96,22 @@ export const ROUTES: Routes = [
         }
       },
       {
+        path: 'actuals-parties',
+        resolve: {
+          partyChannelActual: HearingActualPartyChannelResolver
+        },
+        component: HearingActualsViewEditPartiesComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Manage cases | Hearing Actuals | Update Participants'
+        }
+      },
+      {
         path: 'hearing-timing',
         component: HearingActualsTimingComponent,
         canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Manage cases | Hearing Actuals | Hearing Timing'
-        }
-      },
-      {
-        path: 'actuals-parties',
-        component: HearingActualsViewEditPartiesComponent,
-        canActivate: [HealthCheckGuard],
-        data: {
-          title: 'HMCTS Manage cases | Hearing Actuals | Update Participants'
         }
       },
     ]

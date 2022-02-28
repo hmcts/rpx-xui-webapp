@@ -56,7 +56,7 @@ export const HEARING_ACTUAL_ADD_EDIT_SUMMARY_TEMPLATE: ActualsSection[] = [
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Participants</h2>',
-    updateLink: 'hearings/actuals/actuals-parties',
+    updateLink: '/hearings/actuals/actuals-parties',
     parties: [
       {
         HTMLTitle: '<h2 class="govuk-heading-s">Jane Smith</h2>',

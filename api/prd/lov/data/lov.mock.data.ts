@@ -130,6 +130,45 @@ export const DEFAULT_PARTYCHANNEL_REF: LovRefDataModel[] = [
   },
 ];
 
+export const DEFAULT_PARTYCHANNEL_ACTUAL_REF: LovRefDataModel[] = [
+  {
+    key: 'teamsVideo',
+    value_en: 'Teams – video',
+    value_cy: '',
+    hintText_EN: 'Teams – video',
+    hintTextCY: '',
+    order: 1,
+    parentKey: null,
+  },
+  {
+    key: 'teamsPhone',
+    value_en: 'Teams – phone',
+    value_cy: '',
+    hintText_EN: 'Teams – phone',
+    hintTextCY: '',
+    order: 2,
+    parentKey: null,
+  },
+  {
+    key: 'channelSubChannel',
+    value_en: 'Channel - Sub-channel',
+    value_cy: '',
+    hintText_EN: 'Channel - Sub-channel',
+    hintTextCY: '',
+    order: 4,
+    parentKey: null,
+  },
+  {
+    key: 'didNotAttend',
+    value_en: 'Did not attend',
+    value_cy: '',
+    hintText_EN: 'Did not attend',
+    hintTextCY: '',
+    order: 5,
+    parentKey: null,
+  },
+];
+
 export const DEFAULT_HEARING_CANCEL_REF: LovRefDataModel[] = [
   {
     key: 'reasoneOne',
@@ -598,6 +637,11 @@ export const SSCS_PARTY_CHANNEL: LovRefDataByServiceModel = {
   serviceID: 'SSCS',
   values: DEFAULT_PARTYCHANNEL_REF,
 };
+
+export const SSCS_PARTY_CHANNEL_ACTUAL: LovRefDataByServiceModel = {
+  serviceID: 'SSCS',
+  values: DEFAULT_PARTYCHANNEL_ACTUAL_REF,
+};
 export const SSCS_JUDGE_TYPES: LovRefDataByServiceModel = {
   serviceID: 'SSCS',
   values: DEFAULT_JUDGE_TYPES_REF,
@@ -635,6 +679,10 @@ export const ALL_REF_DATA: LovRefDataByCategoryModel[] = [
   {
     categoryKey: 'PartyChannel',
     services: [SSCS_PARTY_CHANNEL],
+  },
+  {
+    categoryKey: 'PartyChannelActual',
+    services: [SSCS_PARTY_CHANNEL_ACTUAL],
   },
   {
     categoryKey: 'JudgeType',

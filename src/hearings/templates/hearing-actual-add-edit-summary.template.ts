@@ -14,7 +14,7 @@ export const HEARING_ACTUAL_ADD_EDIT_SUMMARY_TEMPLATE: ActualsSection[] = [
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Hearing stage and result</h2>',
-    updateLink: 'hearing-actual/stage-and-result',
+    updateLink: 'hearings/actuals/hearing-stage-result',
     answers: [
       {
         id: 'stage',

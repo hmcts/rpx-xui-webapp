@@ -160,6 +160,114 @@ export const DEFAULT_HEARING_CANCEL_REF: LovRefDataModel[] = [
   },
 ];
 
+export const DEFAULT_HEARING_ACTUAL_COMPLETE_REF: LovRefDataModel[] = [
+  {
+    key: 'decisionInFavourOfAppellant',
+    value_en: 'Decision in favour of Appellant',
+    value_cy: '',
+    hintText_EN: 'Decision in favour of Appellant',
+    hintTextCY: '',
+    order: 1,
+    parentKey: null,
+  },
+  {
+    key: 'decisionReserved',
+    value_en: 'Decision Reserved',
+    value_cy: '',
+    hintText_EN: 'Decision Reserved',
+    hintTextCY: '',
+    order: 2,
+    parentKey: null,
+  },
+  {
+    key: 'decisionRevisedAgainstAppeallant',
+    value_en: 'Decision Revised Against Appeallant',
+    value_cy: '',
+    hintText_EN: 'Decision Revised Against Appeallant',
+    hintTextCY: '',
+    order: 4,
+    parentKey: null,
+  },
+];
+
+export const DEFAULT_HEARING_ACTUAL_ADJOURN_REF: LovRefDataModel[] = [
+  {
+    key: 'postponedDueToExclusions',
+    value_en: 'Postponed, due to Exclusions',
+    value_cy: '',
+    hintText_EN: 'Postponed, due to Exclusions',
+    hintTextCY: '',
+    order: 1,
+    parentKey: null,
+  },
+  {
+    key: 'postponedDueToOtherReasons',
+    value_en: 'Postponed, due to Other Reasons',
+    value_cy: '',
+    hintText_EN: 'Postponed, due to Other Reasons',
+    hintTextCY: '',
+    order: 2,
+    parentKey: null,
+  },
+  {
+    key: 'postponedIncompleteTribunal',
+    value_en: 'Postponed, Incomplete Tribunal',
+    value_cy: '',
+    hintText_EN: 'Postponed, Incomplete Tribunal',
+    hintTextCY: '',
+    order: 4,
+    parentKey: null,
+  },
+  {
+    key: 'postponedNoReasonGiven',
+    value_en: 'Postponed, No Reason Given',
+    value_cy: '',
+    hintText_EN: 'Postponed, No Reason Given',
+    hintTextCY: '',
+    order: 4,
+    parentKey: null,
+  },
+  {
+    key: 'postponedOtherPartyUnableToAttend',
+    value_en: 'Postponed, Other Party unable to attend',
+    value_cy: '',
+    hintText_EN: 'Postponed, Other Party unable to attend',
+    hintTextCY: '',
+    order: 4,
+    parentKey: null,
+  },
+];
+
+export const DEFAULT_HEARING_ACTUAL_CANCEL_REF: LovRefDataModel[] = [
+  {
+    key: 'reasoneOne',
+    value_en: 'Reason 1',
+    value_cy: '',
+    hintText_EN: 'reason 1',
+    hintTextCY: '',
+    order: 1,
+    parentKey: null,
+  },
+  {
+    key: 'reasoneTwo',
+    value_en: 'Reason 2',
+    value_cy: '',
+    hintText_EN: 'Reason 2',
+    hintTextCY: '',
+    order: 2,
+    parentKey: null,
+  },
+  {
+    key: 'reasonThree',
+    value_en: 'Reason 3',
+    value_cy: '',
+    hintText_EN: 'Reason 3',
+    hintTextCY: '',
+    order: 4,
+    parentKey: null,
+  },
+];
+
 export const ADDITIONAL_HEARING_FACILITIES_REF: LovRefDataModel[] = [
   {
     key: 'immigrationDetentionCentre',
@@ -392,6 +500,18 @@ export const SSCS_OTHER_PANEL_ROLES: LovRefDataByServiceModel = {
   serviceID: 'SSCS',
   values: OTHER_PANEL_ROLES,
 };
+export const SSCS_COMPLETE_HEARING_ACTUAL: LovRefDataByServiceModel = {
+  serviceID: 'SSCS',
+  values: DEFAULT_HEARING_ACTUAL_COMPLETE_REF,
+};
+export const SSCS_ADJOURN_HEARING_ACTUAL: LovRefDataByServiceModel = {
+  serviceID: 'SSCS',
+  values: DEFAULT_HEARING_ACTUAL_ADJOURN_REF,
+};
+export const SSCS_CANCEL_HEARING_ACTUAL: LovRefDataByServiceModel = {
+  serviceID: 'SSCS',
+  values: DEFAULT_HEARING_ACTUAL_CANCEL_REF,
+};
 
 export const ALL_REF_DATA: LovRefDataByCategoryModel[] = [
   {
@@ -411,8 +531,16 @@ export const ALL_REF_DATA: LovRefDataByCategoryModel[] = [
     services: [SSCS_JUDGE_TYPES],
   },
   {
-    categoryKey: 'CancelHearingReason',
-    services: [SSCS_CANCEL_HEARING],
+    categoryKey: 'CompleteHearingActualReason',
+    services: [SSCS_COMPLETE_HEARING_ACTUAL],
+  },
+  {
+    categoryKey: 'AdjournHearingActualReason',
+    services: [SSCS_ADJOURN_HEARING_ACTUAL],
+  },
+  {
+    categoryKey: 'CancelHearingActualReason',
+    services: [SSCS_CANCEL_HEARING_ACTUAL],
   },
   {
     categoryKey: 'FacilitiesList',

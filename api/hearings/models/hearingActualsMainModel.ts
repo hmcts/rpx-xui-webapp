@@ -7,7 +7,7 @@ export interface HearingActualsMainModel {
 }
 
 export interface HearingPlannedModel {
-  plannedHearingType: number;
+  plannedHearingType: string;
   plannedHearingDays: PlannedHearingModel[];
 }
 

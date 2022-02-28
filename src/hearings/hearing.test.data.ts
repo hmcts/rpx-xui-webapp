@@ -1174,7 +1174,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
     ],
   },
   hearingPlanned: {
-    plannedHearingType: 1,
+    plannedHearingType: 'final',
     plannedHearingDays: [
       {
         plannedStartTime: '2021-03-12T09:00:00.000+0000',

@@ -118,7 +118,7 @@ export enum HearingStageEnum {
 }
 
 export enum HearingPanelSelectionEnum {
-  SelectionError = 'Enter panel members and roles',
+  SelectionError = 'Enter panel members or roles',
   PanelRowChildError = 'Select a specialism for the panel member(s).'
 }
 

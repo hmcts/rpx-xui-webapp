@@ -197,10 +197,14 @@ describe('HearingPanelComponent', () => {
     expect(component.panelSelection).toBe(RadioOptions.YES);
   });
 
-  it('should check form data', () => {
-    component.excludedJudge = childComponent;
-    component.panelJudgeForm.controls.specificPanel.setValue('');
-    component.checkFormData();
+  it('should fail the form validation when no panel member/roles are selected', () => {
+    component.panelJudgeForm.controls.multiLevelSelect.value.forEach(node => {
+      node.selected = false;
+    });
+    component.includedJudge.judgeList = [];
+    component.excludedJudge.judgeList = [];
+    component.panelJudgeForm.controls.specificPanel.setValue(RadioOptions.YES);
+    component.isFormValid();
     expect(component.validationErrors.length).toBeGreaterThan(0);
   });
 

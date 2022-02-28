@@ -110,6 +110,8 @@ export enum HearingCategory {
   JudgeType = 'JudgeType',
   OtherPanelRoles = 'OtherPanelRoles',
   CancelHearingReason = 'CancelHearingReason',
+  AdjournHearingActualReason = 'AdjournHearingActualReason',
+  CancelHearingActualReason = 'CancelHearingActualReason'
 }
 
 export enum HearingDateEnum {
@@ -123,7 +125,7 @@ export enum HearingStageEnum {
 }
 
 export enum HearingPanelSelectionEnum {
-  SelectionError = 'Please select that applies',
+  SelectionError = 'Enter panel members or roles',
   PanelRowChildError = 'Select a specialism for the panel member(s).'
 }
 

@@ -1,15 +1,14 @@
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import {provideMockStore} from '@ngrx/store/testing';
-import {Observable, of} from 'rxjs';
-import { HearingActualsMainModel } from 'src/hearings/models/hearingActualsMainModel';
-import {hearingActualsMainModel, initialState} from '../../../hearing.test.data';
-import {ACTION} from '../../../models/hearings.enum';
-import {HearingsService} from '../../../services/hearings.service';
-import {HearingActualAddEditSummaryComponent} from './hearing-actual-add-edit-summary.component';
+import { provideMockStore } from '@ngrx/store/testing';
+import { Observable, of } from 'rxjs';
+import { hearingActualsMainModel, initialState } from '../../../hearing.test.data';
+import { ACTION } from '../../../models/hearings.enum';
+import { HearingsService } from '../../../services/hearings.service';
+import { HearingActualAddEditSummaryComponent } from './hearing-actual-add-edit-summary.component';
 
-fdescribe('HearingViewEditSummaryComponent', () => {
+describe('HearingViewEditSummaryComponent', () => {
   let component: HearingActualAddEditSummaryComponent;
   let fixture: ComponentFixture<HearingActualAddEditSummaryComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);

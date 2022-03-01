@@ -47,13 +47,13 @@ export const ROUTES: Routes = [
         component: null,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Manage cases | Cancel Hearing'
+          title: 'HMCTS Hearings | Cancel Hearing'
         }
       }
     ]
   },
   {
-    path: 'actuals',
+    path: 'actuals/:id',
     component: HearingActualsComponent,
     children: [
       {
@@ -61,7 +61,7 @@ export const ROUTES: Routes = [
         component: HearingActualAddEditSummaryComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Manage cases | Hearing Actuals | Check details'
+          title: 'HMCTS Hearings | Hearing Actuals | Check details'
         }
       },
       {
@@ -69,7 +69,7 @@ export const ROUTES: Routes = [
         component: HearingActualsTimingComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Manage cases | Hearing Actuals | Hearing Timing'
+          title: 'HMCTS Hearings | Hearing Actuals | Hearing Timing'
         }
       },
       {
@@ -83,7 +83,7 @@ export const ROUTES: Routes = [
         canActivate: [HealthCheckGuard],
         data: {
           category: HearingCategory.HearingType,
-          title: 'HMCTS Hearings | Request Hearing | Hearing Stage Result'
+          title: 'HMCTS Hearings | Hearing Actuals | Hearing Stage Result'
         }
       }
     ]
@@ -97,7 +97,7 @@ export const ROUTES: Routes = [
         redirectTo: 'hearing-requirements',
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Manage cases | Request Hearing'
+          title: 'HMCTS Hearings | Request Hearing'
         }
       },
       {
@@ -153,7 +153,7 @@ export const ROUTES: Routes = [
         component: HearingWelshComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Manage cases | Request Hearing | Welsh Hearing'
+          title: 'HMCTS Hearings | Request Hearing | Welsh Hearing'
         }
       },
       {
@@ -165,7 +165,7 @@ export const ROUTES: Routes = [
         component: HearingJudgeComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Manage cases | Request Hearing | Specify Judge',
+          title: 'HMCTS Hearings | Request Hearing | Specify Judge',
           category: HearingCategory.JudgeType,
           memberType: MemberType.JUDGE
         }
@@ -179,7 +179,7 @@ export const ROUTES: Routes = [
         component: HearingPanelComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Manage cases | Request Hearing | Require Panel Or Not',
+          title: 'HMCTS Hearings | Request Hearing | Require Panel Or Not',
           category: HearingCategory.OtherPanelRoles,
           memberType: MemberType.PANEL_MEMBER
         }
@@ -190,7 +190,7 @@ export const ROUTES: Routes = [
         component: HearingTimingComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Manage cases | Request Hearing | Hearing Timing',
+          title: 'HMCTS Hearings | Request Hearing | Hearing Timing',
           category: HearingCategory.Priority
         }
       },
@@ -199,7 +199,7 @@ export const ROUTES: Routes = [
         component: HearingAdditionalInstructionsComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Manage cases | Request Hearing | Additional Instruction'
+          title: 'HMCTS Hearings | Request Hearing | Additional Instruction'
         }
       },
       {
@@ -216,7 +216,7 @@ export const ROUTES: Routes = [
         component: HearingCreateEditSummaryComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Manage cases | Request Hearing | Check Answers'
+          title: 'HMCTS Hearings | Request Hearing | Check Answers'
         }
       },
       {
@@ -233,7 +233,7 @@ export const ROUTES: Routes = [
         component: HearingViewEditSummaryComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Manage cases | Amend Hearing | Check Answers'
+          title: 'HMCTS Hearings | Amend Hearing | Check Answers'
         }
       },
       {
@@ -241,7 +241,7 @@ export const ROUTES: Routes = [
         component: HearingChangeReasonComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Manage cases | Amend Hearing | Change reason'
+          title: 'HMCTS Hearings | Amend Hearing | Change reason'
         }
       },
       {
@@ -249,7 +249,7 @@ export const ROUTES: Routes = [
         component: HearingFinalConfirmationComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Manage cases | Request Hearing | Confirmation'
+          title: 'HMCTS Hearings | Request Amend Hearing | Confirmation'
         }
       }
     ]
@@ -263,7 +263,7 @@ export const ROUTES: Routes = [
         component: null,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Manage cases | View Hearing'
+          title: 'HMCTS Hearings | View Hearing'
         }
       }
     ]

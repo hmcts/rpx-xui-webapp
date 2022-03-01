@@ -1147,7 +1147,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
     },
     actualHearingDays: [
       {
-        hearingDate: '2021-03-12',
+        hearingDate: '2021-03-12T09:00:00.000+0000',
         hearingStartTime: '2021-03-12T09:00:00.000+0000',
         hearingEndTime: '2021-03-13T10:00:00.000+0000',
         pauseDateTimes: [],

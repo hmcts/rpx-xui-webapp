@@ -77,7 +77,7 @@ export const init = () => {
   mock.onPut(hearingActualsUrl).reply(() => {
     return [
       200,
-      [],
+      HEARING_ACTUAL,
     ];
   });
 

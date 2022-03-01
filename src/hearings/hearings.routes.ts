@@ -217,7 +217,9 @@ export const ROUTES: Routes = [
           caseFlags: CaseFlagsResolver,
           hearingStageOptions: HearingStageResolver,
           additionFacilitiesOptions: AdditionalFacilitiesResolver,
-          partyChannels: PartyChannelsResolverService
+          partyChannels: PartyChannelsResolverService,
+          judgeTypes: JudgeTypesResolverService,
+          judicialUsers: JudicialUserSearchResolver
         },
         component: HearingViewEditSummaryComponent,
         canActivate: [HealthCheckGuard],

@@ -1,12 +1,12 @@
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import {provideMockStore} from '@ngrx/store/testing';
-import {of} from 'rxjs';
-import {initialState} from '../../../hearing.test.data';
-import {ACTION} from '../../../models/hearings.enum';
-import {HearingsService} from '../../../services/hearings.service';
-import {HearingActualAddEditSummaryComponent} from './hearing-actual-add-edit-summary.component';
+import { provideMockStore } from '@ngrx/store/testing';
+import { Observable, of } from 'rxjs';
+import { hearingActualsMainModel, initialState } from '../../../hearing.test.data';
+import { ACTION } from '../../../models/hearings.enum';
+import { HearingsService } from '../../../services/hearings.service';
+import { HearingActualAddEditSummaryComponent } from './hearing-actual-add-edit-summary.component';
 
 describe('HearingViewEditSummaryComponent', () => {
   let component: HearingActualAddEditSummaryComponent;
@@ -33,6 +33,25 @@ describe('HearingViewEditSummaryComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should unsubscribe', () => {
+    component.sub = new Observable().subscribe();
+    spyOn(component.sub, 'unsubscribe').and.callThrough();
+    component.ngOnDestroy();
+    expect(component.sub.unsubscribe).toHaveBeenCalled();
+  });
+
+  it('should check back method', () => {
+    spyOn(hearingsService, 'navigateAction');
+    component.onBack();
+    expect(hearingsService.navigateAction).toHaveBeenCalledWith(ACTION.BACK);
+  });
+
+  it('should return attending representative', () => {
+    component.hearingActualsMainModel = hearingActualsMainModel;
+    const attendingRepresentative = component.getRepresentingAttendee(3);
+    expect(attendingRepresentative).toEqual('Mary Jones');
   });
 
   afterEach(() => {

@@ -7,5 +7,5 @@ export const containers: any[] = [
   ...fromCancelHearing.containers,
   ...fromRequestHearing.containers,
   ...fromViewHearing.containers,
-  ...fromHearingActuals.containers,
+  ...fromHearingActuals.containers
 ];

@@ -46,8 +46,8 @@ export class CaseHearingsListComponent implements OnInit {
     }
   }
 
-  public viewAndEdit(hearingId: string): void {
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearingId));
+  public viewAndEdit(hearingID: string): void {
+    this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearingID));
     const hearingCondition: HearingConditions = {
       mode: Mode.VIEW,
     };
@@ -55,8 +55,8 @@ export class CaseHearingsListComponent implements OnInit {
     this.router.navigate(['/', 'hearings', 'request', 'hearing-view-edit-summary']);
   }
 
-  public addAndEdit(): void {
-    this.router.navigate(['/', 'hearings', 'actuals', 'hearing-actual-add-edit-summary']);
+  public addAndEdit(hearingID: string): void {
+    this.router.navigate(['/', 'hearings', 'actuals', hearingID, 'hearing-actual-add-edit-summary']);
   }
 
   public hasAddEdit(hearing: HearingListViewModel): boolean {

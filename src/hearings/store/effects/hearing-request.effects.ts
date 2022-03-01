@@ -18,6 +18,7 @@ import * as hearingRequestActions from '../actions/hearing-request.action';
 
 @Injectable()
 export class HearingRequestEffects {
+  public static WELSH_PAGE = 'hearing-welsh';
   public screenNavigations$: Observable<ScreenNavigationModel[]>;
   public caseId: string;
   public mode: Mode;
@@ -62,26 +63,23 @@ export class HearingRequestEffects {
   public continueNavigation$ = this.actions$.pipe(
     ofType(hearingRequestActions.UPDATE_HEARING_REQUEST),
     tap(() => {
-      let nextPage;
+      const nextPage = this.pageFlow.getNextPage(this.screenNavigations$);
       switch (this.mode) {
         case Mode.CREATE:
-          nextPage = this.pageFlow.getNextPage(this.screenNavigations$);
           if (nextPage) {
             return this.router.navigate(['hearings', 'request', nextPage]);
           } else {
             throw new Error('Next page not found');
           }
         case Mode.CREATE_EDIT:
-          nextPage = this.pageFlow.getNextPage(this.screenNavigations$);
-          if (nextPage === 'hearing-welsh') {
+          if (nextPage === HearingRequestEffects.WELSH_PAGE) {
             return this.router.navigate(['hearings', 'request', nextPage]);
           } else {
             return this.router.navigate(['hearings', 'request', 'hearing-create-edit-summary'], { fragment: this.fragmentId });
           }
         case Mode.VIEW_EDIT:
-          const currentPage = this.pageFlow.getCurrentPage();
-          if (currentPage === 'hearing-venue') {
-            return this.router.navigate(['hearings', 'request', 'hearing-welsh']);
+          if (nextPage === HearingRequestEffects.WELSH_PAGE) {
+            return this.router.navigate(['hearings', 'request', nextPage]);
           } else {
             return this.router.navigate(['hearings', 'request', 'hearing-view-edit-summary'], { fragment: this.fragmentId });
           }

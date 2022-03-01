@@ -97,8 +97,7 @@ export class HearingRequestEffects {
     map((action: hearingRequestActions.LoadHearingRequest) => action.payload),
     switchMap(payload => {
       return this.hearingsService.loadHearingRequest(payload).pipe(
-        tap(
-          (hearingRequestMainModel) => {
+        tap(hearingRequestMainModel => {
             this.hearingStore.dispatch(new hearingRequestToCompareActions.InitializeHearingRequestToCompare(hearingRequestMainModel));
             this.hearingStore.dispatch(new hearingRequestActions.InitializeHearingRequest(hearingRequestMainModel));
           }),

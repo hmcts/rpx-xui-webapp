@@ -29,6 +29,7 @@ import { CancelHearingActualReasonResolver } from './resolvers/cancel-hearing-ac
 import { CaseFlagsResolver } from './resolvers/case-flags.resolver';
 import { HearingStageResolver } from './resolvers/hearing-stage.resolver';
 import { JudgeTypesResolverService } from './resolvers/judge-types-resolver.service';
+import { PanelRolesResolverService } from './resolvers/panel-roles-resolver.service';
 import { PartyChannelsResolverService } from './resolvers/party-channels-resolver.service';
 import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
 
@@ -216,7 +217,8 @@ export const ROUTES: Routes = [
           additionFacilitiesOptions: AdditionalFacilitiesResolver,
           partyChannels: PartyChannelsResolverService,
           judgeTypes: JudgeTypesResolverService,
-          judicialUsers: JudicialUserSearchResolver
+          judicialUsers: JudicialUserSearchResolver,
+          otherPanelRoles: PanelRolesResolverService,
         },
         component: HearingCreateEditSummaryComponent,
         canActivate: [HealthCheckGuard],

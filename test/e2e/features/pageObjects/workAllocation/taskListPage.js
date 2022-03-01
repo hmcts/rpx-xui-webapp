@@ -27,6 +27,7 @@ class TaskListPage extends TaskList {
 
     async amOnPage() {
         try{
+            await BrowserWaits.waitForSpinnerToDissappear();
             await BrowserWaits.waitForElement(this.myTasksTab);
             return true;
         }

@@ -36,33 +36,55 @@ class WorkAllocationModels {
     getRelease2Task() {
         return {
             "id": v4(),
+            "assignee":'',
+            "auto_assigned":false,
+            "case_management_category":"test",
+            "case_type_id":"",
+            "created_date":'',
+            "due_date":'',
+            "execution_type":'',
+            "jurisdiction":"",
             "task_title": "Review application decision",
+            "name":'',
+            "region":'',
+            "security_classification":'',
+            "task_state":'',
+            "task_system":'',
             "dueDate": "2021-05-12T16:00:00.000+0000",
             "location_name": "Glasgow",
             "location": "765320",
             "case_id": "1620409659381330",
             "case_category": "Protection",
             "case_name": "Jo Fly " + Math.floor((Math.random() * 100) + 1),
-            "permissions": [],
-            "actions": []
+            "permissions": { values : []},
+            "actions": [],
+            "type":"",
+            "warning_list":[],
+            "warnings":'',
+            "work_type_id":''
         };
     }
 
     getRelease2Case() {
         return {
             "id": v4(),
-            "task_title": "Review FTPA application",
-            "location_name": "Glasgow",
+            "assignee":"",
             "case_id": "1620409659381330",
             "case_category": "Protection",
+            "case_type":"",
+            "jurisdiction":"IA",
+            "jurisdictionId":"IA",
+            "location_id":"",
             "case_name": "Jo Fly " + Math.floor((Math.random() * 100) + 1),
-            "permissions": [],
             "actions": [],
             "assignee": v4(),
             "startDate": "2021-02-16T18:58:48.987+0000",
             "endDate": "2021-02-16T18:58:48.987+0000",
             "jurisdiction":"Test jurisdiction",
-            "case_role":"Test case role"
+            "case_role":"Mock Test case role",
+            "role" : "case role",
+            "role_category" : "role-categpry",
+            
         };
     }
 
@@ -83,8 +105,11 @@ class WorkAllocationModels {
             cases.push(this.getRelease2Case());
         }
         return {
+            case_types_results: [{ total: 13, case_type_id: "Asylum" }],
             cases: cases,
-            total_records: 100
+            total_records: 100,
+            total:13,
+            unique_cases:5
         }
     }
 
@@ -186,20 +211,19 @@ class WorkAllocationModels {
             end: "2021-02-16T18:58:48.987+0000",
             id: v4(),
             location:"test location",
-            name:"caserole name",
             roleCategory: roleCategory ? roleCategory : "test-case-role",
             roleName:'',
             start: "2020-09-16T18:58:48.987+0000",
             end:'',
-            email:'test@test.com',
-            actorid: v4()
+            actorId: v4()
         }
     }
 
     getCaseExclusion() {
         return {
+            "actorId": "",
             "added": 1627776000000,
-            "name": "Judge Birch",
+            "id":"",
             "notes": "this case been remitted from Upper Tribunal and required different judge",
             "type": "Other",
             "userType": "Judicial"
@@ -220,6 +244,81 @@ class WorkAllocationModels {
             roleType:''
         }
     }
+
+    getValidRoles(){
+        const roles = [];
+        const leadJudge = this.getRole();
+        const hearingJudge = this.getRole();
+        const caseManager = this.getRole();
+
+        leadJudge.roleId = 'lead-judge';
+        leadJudge.roleName = 'Lead judge';
+        leadJudge.roleCategory = 'JUDICIAL';
+
+        hearingJudge.roleId = 'hearing-judge';
+        hearingJudge.roleName = 'Hearing judge';
+        hearingJudge.roleCategory = 'JUDICIAL';
+
+        caseManager.roleId = 'case-manager';
+        caseManager.roleName = 'Case manager';
+        caseManager.roleCategory = 'LEGAL_OPERATIONS';
+
+        roles.push(leadJudge);
+        roles.push(hearingJudge);
+        roles.push(caseManager);
+        return roles;
+    }
+
+
+    getRefDataJudge(firstName,surname,email){
+        const fn = firstName ? `${firstName} ${surname}` : 'fntest';
+        const ln = surname ? surname : "snjudge"; 
+        return {
+            "sidam_id": v4(),
+            "object_id": "018a0310-f122-4377-9504-f635301f39ed-test2",
+            "known_as": `${fn} ${ln}` ,
+            "surname": ln,
+            "full_name":fn ,
+            "post_nominals": "Ms",
+            "email_id": email ? email : 'test@judicial.com',
+            "appointments": [
+                {
+                    "base_location_id": "1032",
+                    "epimms_id": null,
+                    "court_name": "Social Entitlement",
+                    "cft_region_id": "2",
+                    "cft_region": "London",
+                    "location_id": "14",
+                    "location": "London",
+                    "is_principal_appointment": "true",
+                    "appointment": "Tribunal Member Disability",
+                    "appointment_type": "Fee Paid",
+                    "service_code": null,
+                    "roles": [],
+                    "start_date": "2018-12-05",
+                    "end_date": null
+                }
+            ],
+            "authorisations": [
+                {
+                    "jurisdiction": "Authorisation Tribunals",
+                    "ticket_description": "Social Security and Child Support",
+                    "ticket_code": "357",
+                    "service_code": "BBA3",
+                    "start_date": "2013-12-05T00:00",
+                    "end_date": null
+                },
+                {
+                    "jurisdiction": "Authorisation Tribunals",
+                    "ticket_description": "03 - Disability Living Allowance",
+                    "ticket_code": "365",
+                    "service_code": "BBA3",
+                    "start_date": "1901-01-01T00:00",
+                    "end_date": null
+                }
+            ]
+        }
+    }
 }
 
 
@@ -232,7 +331,7 @@ const ACTIONS = {
     AssignToMe: { id: 'claim', title: 'Assign to me' },
     AssignToMeAndGoToTasks: { id: 'claim-and-go', title: 'Assign to me and go to case' },
     Assign: { id: 'assign', title: 'Assign task' },
-    MarkAsDone: { id: 'mark-as-done', title: 'Mark as done' },
+    MarkAsDone: { id: 'complete', title: 'Mark as done' },
     Cancel: { id: 'cancel', title: 'Cancel task' },
 }
 
@@ -244,22 +343,25 @@ const taskActionsMatrix = {
     mytasks: {
         Read: [],
         Refer: [],
+        Own: [ACTIONS.Unassign, ACTIONS.GoToTasks],
         Manage: [ACTIONS.Reassign, ACTIONS.Unassign, ACTIONS.GoToTasks],
-        Execute: [ACTIONS.MarkAsDone],
+        Execute: [ACTIONS.Unassign, ACTIONS.GoToTasks],
         Cancel: [ACTIONS.Cancel]
 
     },
     availabletasks: {
         Read: [],
         Refer: [],
-        Manage: [ACTIONS.AssignToMe, ACTIONS.AssignToMeAndGoToTasks],
-        Execute: [],
+        Own: [ACTIONS.AssignToMe, ACTIONS.AssignToMeAndGoToTasks],
+        Manage: [],
+        Execute: [ACTIONS.AssignToMe, ACTIONS.AssignToMeAndGoToTasks],
         Cancel: []
     },
     allwork: {
         unassigned: {
             Read: [],
             Refer: [],
+            Own: [ACTIONS.MarkAsDone],
             Manage: [ACTIONS.Assign, ACTIONS.GoToTasks],
             Execute: [ACTIONS.MarkAsDone],
             Cancel: [ACTIONS.Cancel]
@@ -267,6 +369,7 @@ const taskActionsMatrix = {
         assigned: {
             Read: [],
             Refer: [],
+            Own: [ACTIONS.MarkAsDone],
             Manage: [ACTIONS.Reassign, ACTIONS.Unassign, ACTIONS.GoToTasks],
             Execute: [ACTIONS.MarkAsDone],
             Cancel: [ACTIONS.Cancel]
@@ -277,9 +380,11 @@ const taskActionsMatrix = {
 const caseActionsMatrix = {
     mycases: {
         "case-allocator": [CASE_ACTIONS.ReAllocate, CASE_ACTIONS.RemoveAllocation],
+        "task-supervisor": []
     },
     allworkcases:{
         "case-allocator": [CASE_ACTIONS.ReAllocate, CASE_ACTIONS.RemoveAllocation],
+        "task-supervisor": []
     }
 }
 

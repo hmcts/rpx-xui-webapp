@@ -5,9 +5,9 @@ import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-c
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
-import { ErrorMessage } from '../../../app/models/error-message.model';
+import { ErrorMessage } from '../../../app/models';
 import { Location } from '../../models/dtos';
-import { LocationDataService } from '../../services/location-data.service';
+import { LocationDataService } from '../../services';
 
 const LOCATION_ERROR: ErrorMessage = {
   title: 'There is a problem',
@@ -34,7 +34,6 @@ export class MyCasesFilterComponent implements OnInit, OnDestroy {
   };
   public allLocations: string[] = [];
   public defaultLocations: string[] = [];
-  public locationFields: FilterSetting;
   public fieldsSettings: FilterSetting = {
     fields: [],
     id: MyCasesFilterComponent.FILTER_NAME,
@@ -60,10 +59,10 @@ export class MyCasesFilterComponent implements OnInit, OnDestroy {
         locations.forEach((location) => this.allLocations.push(location.id.toString()));
         this.setUpLocationFilter(locations);
       });
-    this.errorSubscription = this.filterService.givenErrors.subscribe(value => {
+    this.errorSubscription = this.filterService.givenErrors.subscribe((value) => {
       if (value) {
         this.error = LOCATION_ERROR;
-        this.error.description = value;
+        this.error.description = value[0].error;
       } else {
         this.error = null;
       }

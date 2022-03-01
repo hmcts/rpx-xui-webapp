@@ -13,10 +13,12 @@ import {HearingsService} from '../../services/hearings.service';
 import * as fromHearingReducers from '../../store/reducers';
 import * as fromHearingSelectors from '../../store/selectors';
 import {AbstractPageFlow} from '../../utils/abstract-page-flow';
+import * as hearingRequestToCompareActions from '../actions/hearing-request-to-compare.action';
 import * as hearingRequestActions from '../actions/hearing-request.action';
 
 @Injectable()
 export class HearingRequestEffects {
+  public static WELSH_PAGE = 'hearing-welsh';
   public screenNavigations$: Observable<ScreenNavigationModel[]>;
   public caseId: string;
   public mode: Mode;
@@ -31,7 +33,7 @@ export class HearingRequestEffects {
     private readonly location: Location,
   ) {
     this.screenNavigations$ = this.hearingStore.pipe(select(fromHearingSelectors.getHearingValuesModel)).pipe(
-      map(hearingValuesModel => hearingValuesModel.screenFlow));
+      map(hearingValuesModel => hearingValuesModel ? hearingValuesModel.screenFlow : []));
     this.hearingStore.pipe(select(fromHearingReducers.getHearingsFeatureState)).subscribe(
       state => {
         this.caseId = state.hearingList.hearingListMainModel ? state.hearingList.hearingListMainModel.caseRef : '';
@@ -70,20 +72,37 @@ export class HearingRequestEffects {
             throw new Error('Next page not found');
           }
         case Mode.CREATE_EDIT:
-          if (nextPage === 'hearing-welsh') {
+          if (nextPage === HearingRequestEffects.WELSH_PAGE) {
             return this.router.navigate(['hearings', 'request', nextPage]);
           } else {
             return this.router.navigate(['hearings', 'request', 'hearing-create-edit-summary'], { fragment: this.fragmentId });
           }
         case Mode.VIEW_EDIT:
-          if (nextPage === 'hearing-welsh') {
+          if (nextPage === HearingRequestEffects.WELSH_PAGE) {
             return this.router.navigate(['hearings', 'request', nextPage]);
           } else {
-            return this.router.navigate(['hearings', 'request', 'hearing-view-edit-summary']);
+            return this.router.navigate(['hearings', 'request', 'hearing-view-edit-summary'], { fragment: this.fragmentId });
           }
         default:
           return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']);
       }
+    })
+  );
+
+  @Effect({dispatch: false})
+  public loadHearingRequest$ = this.actions$.pipe(
+    ofType(hearingRequestActions.LOAD_HEARING_REQUEST),
+    map((action: hearingRequestActions.LoadHearingRequest) => action.payload),
+    switchMap(payload => {
+      return this.hearingsService.loadHearingRequest(payload).pipe(
+        tap(hearingRequestMainModel => {
+            this.hearingStore.dispatch(new hearingRequestToCompareActions.InitializeHearingRequestToCompare(hearingRequestMainModel));
+            this.hearingStore.dispatch(new hearingRequestActions.InitializeHearingRequest(hearingRequestMainModel));
+          }),
+        catchError(error => {
+          return HearingRequestEffects.handleError(error);
+        })
+      );
     })
   );
 
@@ -93,6 +112,31 @@ export class HearingRequestEffects {
     map((action: hearingRequestActions.SubmitHearingRequest) => action.payload),
     switchMap(payload => {
       return this.hearingsService.submitHearingRequest(payload).pipe(
+        tap(
+          () => {
+            return this.router.navigate(['hearings', 'request', 'hearing-confirmation']);
+          }),
+        catchError(error => {
+          return HearingRequestEffects.handleError(error);
+        })
+      );
+    })
+  );
+
+  @Effect({dispatch: false})
+  public submitHearingReason$ = this.actions$.pipe(
+    ofType(hearingRequestActions.VIEW_EDIT_SUBMIT_HEARING_REASON),
+    tap(() => {
+      return this.router.navigate(['hearings', 'request', 'hearing-change-reason']);
+    })
+  );
+
+  @Effect({dispatch: false})
+  public viewEditSubmitHearingRequest$ = this.actions$.pipe(
+    ofType(hearingRequestActions.VIEW_EDIT_SUBMIT_HEARING_REQUEST),
+    map((action: hearingRequestActions.ViewEditSubmitHearingRequest) => action.payload),
+    switchMap(payload => {
+      return this.hearingsService.updateHearingRequest(payload).pipe(
         tap(
           () => {
             return this.router.navigate(['hearings', 'request', 'hearing-confirmation']);

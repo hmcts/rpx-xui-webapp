@@ -58,6 +58,11 @@ export enum RequirementType {
   EXCLUDE = 'EXCLUDE',
 }
 
+export enum CategoryType {
+  CaseType = 'caseType',
+  CaseSubType = 'caseSubType',
+}
+
 export enum MemberType {
   JUDGE = 'JUDGE',
   PANEL_MEMBER = 'PANEL_MEMBER',
@@ -173,6 +178,8 @@ export enum ACTION {
   CONTINUE = 'CONTINUE',
   SUBMIT = 'SUBMIT',
   CANCEL = 'CANCEL',
+  VIEW_EDIT_REASON = 'VIEW EDIT REASON',
+  VIEW_EDIT_SUBMIT = 'VIEW EDIT SUBMIT'
 }
 
 export enum ConditionOperator {
@@ -196,6 +203,9 @@ export enum AnswerSource {
   CASE_NAME,
   CASE_NUMBER,
   Type,
+  TYPE_FROM_REQUEST,
+  STATUS,
+  DATE_REQUEST_SUBMITTED,
   CASE_FLAGS,
   ADDITIONAL_SECURITY_REQUIRED,
   ADDITIONAL_FACILITIES_REQUIRED,

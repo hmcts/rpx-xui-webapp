@@ -56,7 +56,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
         } as PartyDetailsModel) as FormGroup);
       });
 
-      this.attendanceFormGroup.controls.estimation.setValue(this.hearingRequestMainModel.hearingDetails.totalParticipantAttendingHearing);
+      this.attendanceFormGroup.controls.estimation.setValue(this.hearingRequestMainModel.hearingDetails.numberOfPhysicalAttendees);
     }
     this.partiesFormArray = this.attendanceFormGroup.controls.parties as FormArray;
   }
@@ -96,7 +96,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       partyDetails,
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
-        totalParticipantAttendingHearing: parseInt(this.attendanceFormGroup.controls.estimation.value, 0)
+        numberOfPhysicalAttendees: parseInt(this.attendanceFormGroup.controls.estimation.value, 0)
       }
     };
   }

@@ -46,11 +46,16 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await exclusionWorkFlow.findPersonPage.inputSearchTerm(searchText);
     });
 
+    When('I search for caseworker from reference {string} in Find the person page of exclusion work flow', async function (caseworkerRef) {
+        const caseWorker = global.scenarioData[caseworkerRef];
+        await exclusionWorkFlow.findPersonPage.inputSearchTerm(caseWorker.firstName);
+    });
+
     Then('I see following options returned to Select in Find person search result of exclusions work flow', async function (resultsDatatable) {
         const dataTablehashes = resultsDatatable.hashes();
         let retryCounter = 0;
         await BrowserWaits.retryWithActionCallback(async () => {
-            await BrowserWaits.waitForSeconds(retryCounter * 2);
+            await BrowserWaits.waitForSeconds(0.5);
             retryCounter++;
             for (let i = 0; i < dataTablehashes.length; i++) {
                 const expectedPerson = dataTablehashes[i]['Person'];
@@ -61,11 +66,29 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     });
 
+    Then('I see caseworker from reference {string} returned to Select in Find person search result of exclusions work flow', async function(caseworkerRef){
+        const caseworker = global.scenarioData[caseworkerRef];
+        await BrowserWaits.retryWithActionCallback(async () => {
+            const personExpectedIsReturned = await exclusionWorkFlow.findPersonPage.isPersonReturned(caseworker.email);
+        });
 
-    When('I select Person {string} from Find person search result in exclusions work flow', async function (selectPerson) {
-        await exclusionWorkFlow.findPersonPage.selectPerson(selectPerson);
     });
 
+
+    When('I select Person {string} from Find person search result in exclusions work flow', async function (selectPerson) {
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await exclusionWorkFlow.findPersonPage.selectPerson(selectPerson);
+        });
+    });
+
+    Then('I see Person {string} is selected in Find person exclusions work flow', async function (selectPerson) {
+        await exclusionWorkFlow.findPersonPage.isPersonSelected(selectPerson);
+    });
+
+    When('I select caseworker with reference {string} from Find person search result in exclusions work flow', async function (caseworkerRef) {
+        const caseworker = global.scenarioData[caseworkerRef];
+        await exclusionWorkFlow.findPersonPage.selectPerson(caseworker.email);
+    });
 
 
     function getWorkflowPageObject(workFlowPage) {

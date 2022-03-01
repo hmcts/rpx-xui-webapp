@@ -1,9 +1,12 @@
+import { of } from 'rxjs/internal/observable/of';
 import { ListConstants } from '../components/constants';
 import { SearchTaskRequest, TaskSearchParameters } from '../models/dtos';
 import { ACTION, WorkAllocationTaskService } from './work-allocation-task.service';
 
 describe('WorkAllocation', () => {
   const mockHttpService = jasmine.createSpyObj('mockHttpService', ['put', 'get', 'post']);
+
+  mockHttpService.post.and.returnValue(of({}));
 
   describe('WorkAllocationTaskService', () => {
     it('should be Truthy', () => {
@@ -25,33 +28,33 @@ describe('WorkAllocation', () => {
 
     it('assignTask should make correct api call', () => {
       const service = new WorkAllocationTaskService(mockHttpService);
-      const user = {id: 'id1'};
+      const user = { id: 'id1' };
       service.assignTask('123456', user);
       expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation2/task/123456/assign', user);
     });
 
     it('completeTask should make correct api call', () => {
       const service = new WorkAllocationTaskService(mockHttpService);
-      service.completeTask('123456');
-      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation2/task/123456/complete', {});
+      service.completeTask('123456', true);
+      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation2/task/123456/complete', {hasNoAssigneeOnComplete: true});
     });
 
     it('cancelTask should make correct api call', () => {
       const service = new WorkAllocationTaskService(mockHttpService);
       service.cancelTask('123456');
-      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation2/task/123456/cancel', {});
+      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation2/task/123456/cancel', {hasNoAssigneeOnComplete: undefined});
     });
 
     it('claimTask should make correct api call', () => {
       const service = new WorkAllocationTaskService(mockHttpService);
       service.claimTask('123456');
-      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation2/task/123456/claim', {});
+      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation2/task/123456/claim', {hasNoAssigneeOnComplete: undefined});
     });
 
     it('unclaimTask should make correct api call', () => {
       const service = new WorkAllocationTaskService(mockHttpService);
       service.unclaimTask('123456');
-      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation2/task/123456/unclaim', {});
+      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation2/task/123456/unclaim', {hasNoAssigneeOnComplete: undefined});
     });
 
     it('postTask should make correct api call', () => {

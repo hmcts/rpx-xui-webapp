@@ -10,6 +10,7 @@ import * as fromHearingStore from '../../store';
 @Component({
   selector: 'exui-hearing-summary',
   templateUrl: './hearing-summary.component.html',
+  styleUrls: ['./hearing-summary.component.scss'],
 })
 export class HearingSummaryComponent implements AfterViewInit {
 

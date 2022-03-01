@@ -73,6 +73,16 @@ describe('RequestHearingPageFlow', () => {
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.SubmitHearingRequest(hearingState.hearingRequest.hearingRequestMainModel as HearingRequestMainModel));
   });
 
+  it('should navigate to view edit reason page', () => {
+    requestHearingPageFlow.navigateAction(ACTION.VIEW_EDIT_REASON);
+    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.ViewEditSubmitHearingReason(hearingState.hearingRequest.hearingRequestMainModel as HearingRequestMainModel));
+  });
+
+  it('should navigate to view edit submit page', () => {
+    requestHearingPageFlow.navigateAction(ACTION.VIEW_EDIT_SUBMIT);
+    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.ViewEditSubmitHearingRequest(hearingState.hearingRequest.hearingRequestMainModel as HearingRequestMainModel));
+  });
+
   afterEach(() => {
     requestHearingPageFlow = null;
   });

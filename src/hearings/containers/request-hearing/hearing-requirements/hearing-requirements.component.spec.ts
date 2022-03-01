@@ -121,7 +121,6 @@ describe('HearingRequirementsComponent', () => {
         listingComments: '',
         hearingRequester: '',
         leadJudgeContractType: '',
-        totalParticipantAttendingHearing: null
       },
       caseDetails: {
         hmctsServiceCode: 'SSCS',
@@ -129,8 +128,8 @@ describe('HearingRequirementsComponent', () => {
         requestTimeStamp: null,
         hearingID: null,
         caseDeepLink: null,
-        hmctsInternalCaseName: null,
-        publicCaseName: null,
+        hmctsInternalCaseName: 'Jane vs DWP',
+        publicCaseName: 'Jane vs DWP',
         caseAdditionalSecurityFlag: false,
         caseCategories: [],
         caseManagementLocationCode: null,

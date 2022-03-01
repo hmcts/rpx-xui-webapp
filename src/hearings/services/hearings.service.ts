@@ -1,12 +1,12 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-import { HearingActualsMainModel, HearingActualsModel } from '../models/hearingActualsMainModel';
-import { HearingListMainModel } from '../models/hearingListMain.model';
-import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
-import { ACTION } from '../models/hearings.enum';
-import { LovRefDataModel } from '../models/lovRefData.model';
-import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
+import {HttpClient, HttpParams} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable, Subject} from 'rxjs';
+import {HearingActualsMainModel, HearingActualsModel} from '../models/hearingActualsMainModel';
+import {HearingListMainModel} from '../models/hearingListMain.model';
+import {HearingRequestMainModel} from '../models/hearingRequestMain.model';
+import {ACTION} from '../models/hearings.enum';
+import {LovRefDataModel} from '../models/lovRefData.model';
+import {ServiceHearingValuesModel} from '../models/serviceHearingValues.model';
 
 @Injectable()
 export class HearingsService {
@@ -28,7 +28,7 @@ export class HearingsService {
 
   public loadHearingValues(caseId: string): Observable<ServiceHearingValuesModel> {
     return this.http.post<ServiceHearingValuesModel>(`api/hearings/loadServiceHearingValues`,
-      { caseReference: caseId });
+      {caseReference: caseId});
   }
 
   public cancelHearingRequest(hearingId: string, reasons: LovRefDataModel[]): Observable<any> {
@@ -41,8 +41,16 @@ export class HearingsService {
     });
   }
 
+  public loadHearingRequest(hearingId: string): Observable<HearingRequestMainModel> {
+    return this.http.get<HearingRequestMainModel>(`api/hearings/getHearing?hearingId=${hearingId}`);
+  }
+
   public submitHearingRequest(hearingRequestMainModel: HearingRequestMainModel): Observable<HearingRequestMainModel> {
     return this.http.post<HearingRequestMainModel>('api/hearings/submitHearingRequest', hearingRequestMainModel);
+  }
+
+  public updateHearingRequest(hearingRequestMainModel: HearingRequestMainModel): Observable<HearingRequestMainModel> {
+    return this.http.put<HearingRequestMainModel>(`api/hearings/updateHearingRequest`, hearingRequestMainModel);
   }
 
   public getHearingActuals(hearingId: string): Observable<HearingActualsMainModel> {

@@ -6,4 +6,5 @@ export interface Answer {
   answerSource: AnswerSource;
   changeLink?: string;
   isHiddenSource?: IsHiddenSource;
+  isAmendedSource?: AnswerSource;
 }

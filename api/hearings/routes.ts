@@ -8,7 +8,8 @@ import {
   loadServiceHearingValues,
   submitHearingActuals,
   submitHearingRequest,
-  updateHearingActuals
+  updateHearingActuals,
+  updateHearingRequest
 } from './index';
 
 export const router = express.Router({mergeParams: true});
@@ -19,6 +20,7 @@ router.post('/loadServiceHearingValues', loadServiceHearingValues);
 router.get('/getHearings', getHearings);
 router.get('/getHearing', getHearing);
 router.post('/submitHearingRequest', submitHearingRequest);
+router.put('/updateHearingRequest', updateHearingRequest);
 router.delete('/cancelHearings', cancelHearingRequest);
 // actual journey
 router.get('/hearingActuals/:hearingId', getHearingActuals);

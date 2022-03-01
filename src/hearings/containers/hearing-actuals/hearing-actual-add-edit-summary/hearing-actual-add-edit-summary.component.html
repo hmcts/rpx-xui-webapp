@@ -1,4 +1,4 @@
-<a class="govuk-back-link" href="javascript:history.back()" (click)="onBack()">Back</a>
+<a class="govuk-back-link" href="javascript:history.back()">Back</a>
 <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
   <div class="govuk-grid-row" *ngIf="hearingActualsMainModel">
     <div class="govuk-grid-column-two-thirds">
@@ -13,7 +13,8 @@
       <br>
       <h1 class="govuk-heading-m">Hearing stage and result</h1>
       <span class="govuk-body align-right">
-        <a href="javascript:void(0)" [routerLink]="['/', 'hearings', 'actuals', 'hearing-stage-result']" class="govuk-link">Update</a>
+        <a href="javascript:void(0)" [routerLink]="['/', 'hearings', 'actuals', 'hearing-stage-result']"
+           class="govuk-link">Update</a>
       </span>
       <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
@@ -34,10 +35,12 @@
         </div>
       </dl>
       <br>
-      <h1 class="govuk-heading-m">Hearing timings</h1>
-      <span class="govuk-body align-right">
-        <a href="javascript:void(0)" [routerLink]="['/', 'hearing-actual', 'actuals-date-and-time']" class="govuk-link">Update</a>
-      </span>
+      <div class="govuk-grid-row">
+        <h1 class="govuk-heading-m govuk-grid-column-two-thirds">Hearing timings</h1>
+        <div class="govuk-body govuk-grid-column-one-third text-right">
+          <a [routerLink]="['/', 'hearings', 'actuals' , id, 'hearing-timing']" class="govuk-link">Update</a>
+        </div>
+      </div>
       <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Start time</dt>
@@ -69,7 +72,8 @@
       <br>
       <h1 class="govuk-heading-m">Participants</h1>
       <span class="govuk-body align-right">
-        <a href="javascript:void(0)" [routerLink]="['/', 'hearing-actual', 'actuals-parties']" class="govuk-link">Update</a>
+        <a href="javascript:void(0)" [routerLink]="['/', 'hearing-actual', 'actuals-parties']"
+           class="govuk-link">Update</a>
       </span>
       <div *ngFor="let party of actualDayParties">
         <dl class="govuk-summary-list">

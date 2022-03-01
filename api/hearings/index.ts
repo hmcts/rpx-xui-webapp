@@ -7,7 +7,7 @@ import {EnhancedRequest} from '../lib/models';
 import {HearingActualsMainModel, HearingActualsModel} from './models/hearingActualsMainModel';
 import {HearingListModel} from './models/hearingList.model';
 import {HearingListMainModel} from './models/hearingListMain.model';
-import {HearingResponseMainModel} from './models/hearingResponseMain.model';
+import {HearingRequestMainModel} from './models/hearingRequestMain.model';
 import {hearingStatusMappings} from './models/hearingStatusMappings';
 import {ServiceHearingValuesModel} from './models/serviceHearingValues.model';
 
@@ -60,9 +60,8 @@ export async function getHearing(req: EnhancedRequest, res: Response, next: Next
   const markupPath: string = `${hearingsUrl}/hearing/${hearingId}`;
 
   try {
-    const { status, data }: { status: number, data: HearingResponseMainModel[] } = await handleGet(markupPath, req);
-    const response = data.filter(dataRecord => dataRecord.caseDetails && dataRecord.caseDetails.hearingID.toLowerCase());
-    res.status(status).send(response);
+    const { status, data }: { status: number, data: HearingRequestMainModel } = await handleGet(markupPath, req);
+    res.status(status).send(data);
   } catch (error) {
     next(error);
   }
@@ -92,6 +91,20 @@ export async function cancelHearingRequest(req: EnhancedRequest, res: Response, 
 
   try {
     const { status, data }: { status: number, data: HearingListModel } = await handleDelete(markupPath, reqBody, req);
+    res.status(status).send(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * updateHearingRequest - update hearing request
+ */
+export async function updateHearingRequest(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const reqBody = req.body;
+  const markupPath: string = `${hearingsUrl}/hearing`;
+  try {
+    const { status, data }: { status: number, data: HearingListModel } = await handlePut(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     next(error);

@@ -58,6 +58,11 @@ export enum RequirementType {
   EXCLUDE = 'EXCLUDE',
 }
 
+export enum CategoryType {
+  CaseType = 'caseType',
+  CaseSubType = 'caseSubType',
+}
+
 export enum PartyType {
   IND = 'IND',
   ORG = 'ORG',

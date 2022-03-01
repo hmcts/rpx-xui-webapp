@@ -138,7 +138,9 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.store.dispatch(new fromFeature.LoadRoles({jurisdiction: this.jurisdiction, roleCategory: this.roleCategory}));
+    if (this.action !== Actions.Reallocate) {
+      this.store.dispatch(new fromFeature.LoadRoles({jurisdiction: this.jurisdiction, roleCategory: this.roleCategory}));
+    }
     this.allocateRoleStateDataSub = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(
       allocateRoleStateData => {
         this.navigationCurrentState = allocateRoleStateData.state;

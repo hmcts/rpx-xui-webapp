@@ -9,16 +9,16 @@ import { Caseworker } from '../../../work-allocation-2/models/dtos';
   templateUrl: './roles-and-access.component.html'
 })
 export class RolesAndAccessComponent implements OnInit, OnChanges {
-  public namedExclusions: RoleExclusion[];
-  public exclusionsNotNamed: boolean = false;
+  public exclusionsNotNamed = false;
+  public legalRolesNotNamed = false;
   public legalOpsRoles: CaseRole[] = [];
+  public adminRoles: CaseRole[] = [];
   public namedLegalRoles: CaseRole[];
   public namedAdminRoles: CaseRole[];
-  public adminRoles: CaseRole[];
-  public legalRolesNotNamed: boolean = false;
   public judicialRoles: CaseRole[] = [];
-  public legalOps: RoleCategory = RoleCategory.LEGAL_OPERATIONS;
-  public judicial: RoleCategory = RoleCategory.JUDICIAL;
+  public namedExclusions: RoleExclusion[];
+  public legalOps = RoleCategory.LEGAL_OPERATIONS;
+  public judicial = RoleCategory.JUDICIAL;
   public caseId: string;
   public jurisdiction: string;
 
@@ -42,6 +42,7 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
       this.legalOpsRoles = this.roles.filter(role => role.roleCategory === RoleCategory.LEGAL_OPERATIONS);
       this.judicialRoles = this.roles.filter(role => role.roleCategory === RoleCategory.JUDICIAL);
       this.adminRoles = this.roles.filter(role => role.roleCategory === RoleCategory.ADMIN);
+      console.log(this.adminRoles);
     }
     this.showLegalOpsAllocate = this.showAllocateRoleLink && this.legalOpsRoles.length === 0;
   }

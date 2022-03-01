@@ -14,8 +14,7 @@
 
   <exui-role-access-section
     title="Legal Ops"
-    [namedRoles]="namedLegalRoles"
-    [roles]="legalOpsRoles"
+    [roles]="namedLegalRoles ? namedLegalRoles : legalOpsRoles"
     [caseDetails]="caseDetails"
     [roleRouterLink]="['/', 'role-access', 'allocate-role', 'allocate']"
     [roleQueryParams]="{'caseId': caseId, 'jurisdiction': jurisdiction, 'roleCategory': 'LEGAL_OPERATIONS'}"
@@ -27,8 +26,7 @@
 
   <exui-role-access-section
     title="Admin"
-    [namedRoles]="namedAdminRoles"
-    [roles]="adminRoles"
+    [roles]="namedAdminRoles ? namedAdminRoles : adminRoles"
     [caseDetails]="caseDetails"
     [roleRouterLink]="['/', 'role-access', 'allocate-role', 'allocate']"
     [roleQueryParams]="{'caseId': caseId, 'jurisdiction': jurisdiction, 'roleCategory': 'ADMIN'}"
@@ -40,7 +38,7 @@
 
   <h2 class="govuk-heading-m">Exclusions</h2>
 
-  <exui-exclusions-table [exclusions]="exclusions" [caseDetails]="caseDetails" [isCaseAllocator]="showAllocateRoleLink"></exui-exclusions-table>
+  <exui-exclusions-table [exclusions]="namedExclusions ? namedExclusions : exclusions" [caseDetails]="caseDetails" [isCaseAllocator]="showAllocateRoleLink"></exui-exclusions-table>
 
   <p>
     <a href="javascript:void(0)"

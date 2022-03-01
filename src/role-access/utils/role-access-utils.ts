@@ -24,7 +24,7 @@ export const getTitleText = (role: SpecificRole, action: string, roleCategory: s
     return role.name === TypeOfRole.CaseManager ? `${action} ${RoleCaptionText.ALegalOpsCaseManager}` : `${action} ${aOrAn} ${role.name.toLowerCase()}`;
   } else {
     if (roleCategory === RoleCategory.ADMIN) {
-      return 'Allocate an admin role';
+      return `${action} an admin role`;
     }
     return roleCategory  ? `${action} a ${roleCategory.replace('_', ' ').toLowerCase()} role` : `${action} a role`;
   }

@@ -10,7 +10,7 @@ import { CaseRole, RoleCategory } from '../../../role-access/models';
 export class AllocateARoleLinkComponent {
     @Input() public routerLink: string;
     @Input() public queryParams: string;
-    @Input() public showAllocateRoleLink: boolean = false;
+    @Input() public showAllocateRoleLink = false;
     @Input() public roles: CaseRole[] = [];
     @Input() public roleCategory: RoleCategory;
     @Input() public linkText: string;

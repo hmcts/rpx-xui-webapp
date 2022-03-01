@@ -13,7 +13,7 @@ import {
 export class ChooseRoleErrorComponent implements OnInit {
   @Input() public navEvent: AllocateRoleNavigation;
 
-  public roleCategory: string = '';
+  public roleCategory: string;
   public jurisdiction: string;
 
   constructor(private readonly route: ActivatedRoute) {

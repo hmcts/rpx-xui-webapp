@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -25,12 +26,15 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public actualHearingDay: ActualHearingDayModel;
   public actualDayParties: ActualDayPartyModel[];
   public sub: Subscription;
+  public id: string;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
+              private readonly route: ActivatedRoute,
               private readonly hearingsService: HearingsService) {
   }
 
   public ngOnInit(): void {
+    this.id = this.route.snapshot.params.id;
     this.sub = this.hearingStore.select(fromHearingStore.getHearingActuals)
       .pipe(
         filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel)

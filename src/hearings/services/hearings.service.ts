@@ -49,8 +49,8 @@ export class HearingsService {
     return this.http.get<any>(`api/hearings/hearingActuals/${hearingId}`);
   }
 
-  public updateHearingActuals(hearingId: string, hearingActualsModel: HearingActualsModel): Observable<HearingActualsModel> {
-    return this.http.put<HearingActualsModel>(`api/hearings/hearingActuals/${hearingId}`, hearingActualsModel);
+  public updateHearingActuals(hearingId: string, hearingActualsModel: HearingActualsModel): Observable<HearingActualsMainModel> {
+    return this.http.put<HearingActualsMainModel>(`api/hearings/hearingActuals/${hearingId}`, hearingActualsModel);
   }
 
   public submitHearingActuals(hearingId: string): Observable<number> {

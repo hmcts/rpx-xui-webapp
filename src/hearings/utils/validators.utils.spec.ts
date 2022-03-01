@@ -118,4 +118,36 @@ describe('ValidatorsUtils', () => {
     form.setValidators(service.formArraySelectedValidator());
     expect(form.hasError('isValid')).toBeFalsy();
   }));
+
+  it('should set time 12:00 as valid', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
+    const form = new FormGroup({
+      arrayControl: new FormControl('12:00', service.validTime())
+    });
+    form.get('arrayControl').setValue('12:00');
+    form.updateValueAndValidity();
+    expect(form.hasError('isValid')).toBeFalsy();
+  }));
+
+  it('should set time 33:00 as invalid', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
+    const form = new FormGroup({
+      arrayControl: new FormControl('33:00', [service.validTime()])
+    });
+    expect(form.get('arrayControl').hasError('invalidTime')).toBeTruthy();
+  }));
+
+  it('should set startTime 13:00 and endTime 12:00 to be invalid', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
+    const form = new FormGroup({
+      start: new FormControl('13:00', [service.validTime()]),
+      end: new FormControl('13:00', [service.validTime()])
+    }, { validators: [service.validateTimeRange('start', 'end')] });
+    expect(form.hasError('invalidTimeRange')).toBeTruthy();
+  }));
+
+  it('should set startTime 12:00 and endTime 13:00 to be valid', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
+    const form = new FormGroup({
+      start: new FormControl('12:00', [service.validTime()]),
+      end: new FormControl('13:00', [service.validTime()])
+    }, { validators: [service.validateTimeRange('start', 'end')] });
+    expect(form.valid).toBeTruthy();
+  }));
 });

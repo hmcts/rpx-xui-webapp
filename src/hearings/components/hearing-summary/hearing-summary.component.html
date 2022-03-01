@@ -6,8 +6,9 @@
     <div [innerHtml]="section.sectionHTMLTitle"></div>
     <div class="govuk-summary-list govuk-!-margin-bottom-9">
       <ng-container *ngFor="let answer of section.answers">
-        <div *ngIf="answer.isHiddenSource === undefined ? true : !(answer.isHiddenSource | isHidden:hearingState$ | async)"
-             class="govuk-summary-list__row">
+        <div
+          *ngIf="answer.isHiddenSource === undefined ? true : !(answer.isHiddenSource | isHidden:hearingState$ | async)"
+          class="govuk-summary-list__row">
           <div class="govuk-summary-list__key">
             {{ answer.answerTitle }}
           </div>
@@ -15,7 +16,8 @@
             <div [innerHtml]="answer.answerSource | transformAnswer:hearingState$ | async"></div>
           </div>
           <div class="govuk-summary-list__actions">
-            <a [id]="answer.id" *ngIf="answer.changeLink" href="javascript:void(0)" (click)="changeAnswer(answer.id, answer.changeLink)">Change</a>
+            <a [id]="answer.id" *ngIf="answer.changeLink" href="javascript:void(0)"
+               (click)="changeAnswer(answer.id, answer.changeLink)">Change</a>
           </div>
         </div>
       </ng-container>

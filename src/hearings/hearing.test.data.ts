@@ -23,6 +23,27 @@ export const hearingStageRefData = [
   }
 ];
 
+export const judicailUsersRefData = [{
+  sidam_id: '1102839232',
+  object_id: '1102839232',
+  known_as: 'Jacky Collins',
+  surname: 'Jacky Collins',
+  personal_code: 'P0000001',
+  full_name: 'Jacky Collins',
+  post_nominals: 'Jacky Collins',
+  email_id: 'jacky.collins@judicial.com',
+}];
+
+export const judgeRefData = [
+  {
+    id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
+    name: 'Jacky Collins',
+    email: 'jacky.collins@judicial.com',
+    domain: 'JUDICIAL',
+    personalCode: 'P0000001',
+    knownAs: 'Jacky Collins',
+  }];
+
 export const hearingPriorityRefData = [
   {
     key: 'urgent',
@@ -958,12 +979,12 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
     locationType: 'hearing',
     region: 'North West',
   },
-    {
-      locationId: '219164',
-      locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
-      locationType: 'hearing',
-      region: 'Scotland',
-    },
+  {
+    locationId: '219164',
+    locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
+    locationType: 'hearing',
+    region: 'Scotland',
+  },
   ],
   caseAdditionalSecurityFlag: false,
   facilitiesRequired: [],
@@ -1132,7 +1153,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
         pauseDateTimes: [],
         actualDayParties: [
           {
-            actualPartyId: 1,
+            actualPartyId: '1',
             actualIndividualDetails: {
               firstName: 'Bob',
               lastName: 'Jones',
@@ -1141,9 +1162,8 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               name: 'Company D',
             },
             didNotAttendFlag: false,
-            partyId: 1,
             partyChannelSubType: 'Fax',
-            partyRole: 1,
+            partyRole: 'Interpreter',
             representedParty: 5,
           },
         ],
@@ -1155,7 +1175,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
         pauseDateTimes: [],
         actualDayParties: [
           {
-            actualPartyId: 2,
+            actualPartyId: '2',
             actualIndividualDetails: {
               firstName: 'Mary',
               lastName: 'Jones',
@@ -1164,9 +1184,8 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               name: 'Company A',
             },
             didNotAttendFlag: true,
-            partyId: 2,
             partyChannelSubType: 'Other',
-            partyRole: 5,
+            partyRole: 'Interpreter',
             representedParty: 2,
           },
         ],
@@ -1190,8 +1209,8 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               cftOrganisationID: '54321',
               name: 'Company D',
             },
-            partyId: 3,
-            partyRole: 3,
+            partyId: '3',
+            partyRole: 'Interpreter',
             partyChannelSubType: 'Letter',
           },
           {
@@ -1204,8 +1223,8 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               cftOrganisationID: '54321',
               name: 'Company C',
             },
-            partyId: 5,
-            partyRole: 5,
+            partyId: '5',
+            partyRole: 'Interpreter',
             partyChannelSubType: 'Fax',
           },
         ],
@@ -1224,8 +1243,8 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               cftOrganisationID: '12345',
               name: 'Company E',
             },
-            partyId: 2,
-            partyRole: 2,
+            partyId: '2',
+            partyRole: 'Interpreter',
             partyChannelSubType: 'Email',
           },
           {
@@ -1238,8 +1257,8 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               cftOrganisationID: '12345',
               name: 'Company C',
             },
-            partyId: 3,
-            partyRole: 3,
+            partyId: '3',
+            partyRole: 'Interpreter',
             partyChannelSubType: 'Email',
           },
         ],
@@ -1258,8 +1277,8 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               cftOrganisationID: '67890',
               name: 'Company B',
             },
-            partyId: 1,
-            partyRole: 1,
+            partyId: '1',
+            partyRole: 'Interpreter',
             partyChannelSubType: 'Fax',
           },
           {
@@ -1272,8 +1291,8 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               cftOrganisationID: '54321',
               name: 'Company E',
             },
-            partyId: 3,
-            partyRole: 3,
+            partyId: '3',
+            partyRole: 'Interpreter',
             partyChannelSubType: 'Other',
           },
         ],
@@ -1292,8 +1311,8 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               cftOrganisationID: '67890',
               name: 'Company D',
             },
-            partyId: 3,
-            partyRole: 3,
+            partyId: '3',
+            partyRole: 'Interpreter',
             partyChannelSubType: 'Fax',
           },
           {
@@ -1306,8 +1325,8 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               cftOrganisationID: '54321',
               name: 'Company C',
             },
-            partyId: 4,
-            partyRole: 4,
+            partyId: '4',
+            partyRole: 'Interpreter',
             partyChannelSubType: 'Letter',
           },
         ],

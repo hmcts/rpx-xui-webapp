@@ -12,14 +12,15 @@ export interface HearingPlannedModel {
 }
 
 export interface PlannedHearingModel {
+  plannedDate?: string;
   plannedStartTime: string;
   plannedEndTime: string;
   parties: PartyModel[];
 }
 
 export interface PartyModel {
-  partyId: number;
-  partyRole: number;
+  partyId: string;
+  partyRole: string;
   individualDetails: IndividualDetailModel;
   organisationDetails: OrganisationDetailsModel;
   partyChannelSubType: string;
@@ -72,12 +73,11 @@ export interface ActualOrganisationDetailsModel {
 }
 
 export interface ActualDayPartyModel {
-  actualPartyId: number;
+  actualPartyId: string;
   didNotAttendFlag: boolean;
   actualIndividualDetails: ActualIndividualDetailModel;
   actualOrganisationDetails: ActualOrganisationDetailsModel;
   partyChannelSubType: string;
-  partyId: number;
-  partyRole: number;
+  partyRole: string;
   representedParty: number;
 }

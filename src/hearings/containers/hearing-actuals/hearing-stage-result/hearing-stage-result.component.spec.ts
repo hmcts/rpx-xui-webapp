@@ -51,7 +51,6 @@ describe('HearingStageResultComponent', () => {
 
   it('should not display hearing result dropdowns by default', () => {
     const nativeElement = fixture.debugElement.nativeElement;
-    expect(nativeElement.querySelector('#completed-reason')).toBeNull();
     expect(nativeElement.querySelector('#adjourned-reason')).toBeNull();
     expect(nativeElement.querySelector('#cancelled-reason')).toBeNull();
   });
@@ -62,21 +61,18 @@ describe('HearingStageResultComponent', () => {
     firstRadioButtonElement.click();
     fixture.detectChanges();
 
-    expect(nativeElement.querySelector('#completed-reason')).toBeDefined();
     expect(nativeElement.querySelector('#adjourned-reason')).toBeNull();
     expect(nativeElement.querySelector('#cancelled-reason')).toBeNull();
 
     const secondRadioButtonElement = nativeElement.querySelector('#adjourned');
     secondRadioButtonElement.click();
     fixture.detectChanges();
-    expect(nativeElement.querySelector('#completed-reason')).toBeNull();
     expect(nativeElement.querySelector('#adjourned-reason')).toBeDefined();
     expect(nativeElement.querySelector('#cancelled-reason')).toBeNull();
 
     const thirdRadioButtonElement = nativeElement.querySelector('#cancelled');
     thirdRadioButtonElement.click();
     fixture.detectChanges();
-    expect(nativeElement.querySelector('#completed-reason')).toBeNull();
     expect(nativeElement.querySelector('#adjourned-reason')).toBeNull();
     expect(nativeElement.querySelector('#cancelled-reason')).toBeDefined();
   });

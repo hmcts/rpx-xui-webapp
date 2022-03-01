@@ -105,6 +105,8 @@ export enum HearingCategory {
   JudgeType = 'JudgeType',
   OtherPanelRoles = 'OtherPanelRoles',
   CancelHearingReason = 'CancelHearingReason',
+  AdjournHearingActualReason = 'AdjournHearingActualReason',
+  CancelHearingActualReason = 'CancelHearingActualReason'
 }
 
 export enum HearingDateEnum {
@@ -118,7 +120,7 @@ export enum HearingStageEnum {
 }
 
 export enum HearingPanelSelectionEnum {
-  SelectionError = 'Please select that applies',
+  SelectionError = 'Enter panel members or roles',
   PanelRowChildError = 'Select a specialism for the panel member(s).'
 }
 
@@ -204,16 +206,31 @@ export enum AnswerSource {
   NEED_WELSH,
   NEED_JUDGE,
   JUDGE_NAME,
+  JUDGE_TYPES,
   JUDGE_EXCLUSION,
   HEARING_PANEL,
+  PANEL_INCLUSION,
+  PANEL_EXCLUSION,
   HEARING_LENGTH,
   HEARING_SPECIFIC_DATE,
   HEARING_PRIORITY,
   ADDITIONAL_INSTRUCTION
 }
 
+
+
+
+
+
+
+
 export enum IsHiddenSource {
   WELSH_LOCATION,
+  JUDGE_EXCLUSION,
+  PANEL_INCLUSION,
+  PANEL_EXCLUSION,
+  JUDGE_TYPES,
+  JUDGE_NAME
 }
 
 export enum Mode {

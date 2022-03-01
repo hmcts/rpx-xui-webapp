@@ -23,7 +23,7 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
   public hearingTypes: LovRefDataModel[];
   public adjournHearingActualReasons: LovRefDataModel[];
   public cancelHearingActualReasons: LovRefDataModel[];
-  public hearingActuals: HearingActualsMainModel;
+  public hearingActualsMainModel: HearingActualsMainModel;
   public sub: Subscription;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
@@ -50,8 +50,8 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
         filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel)
       )
       .subscribe((state: HearingActualsStateData) => {
-        this.hearingActuals = state.hearingActualsMainModel;
-        this.hearingStageResultForm.get('hearingStage').setValue(this.hearingActuals.hearingPlanned.plannedHearingType);
+        this.hearingActualsMainModel = state.hearingActualsMainModel;
+        this.hearingStageResultForm.get('hearingStage').setValue(this.hearingActualsMainModel.hearingPlanned.plannedHearingType);
       });
 
     // TODO: Get the case title from hearing actuals API
@@ -63,6 +63,32 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
     if (this.sub) {
       this.sub.unsubscribe();
     }
+  }
+
+  public onSubmit(): void {
+    this.hearingActualsMainModel = {
+      ...this.hearingActualsMainModel,
+      hearingActuals: {
+        ...this.hearingActualsMainModel.hearingActuals,
+        hearingOutcome: {
+          ...this.hearingActualsMainModel.hearingActuals.hearingOutcome,
+          hearingResultReasonType: this.getHearingResultReasonType(),
+          hearingResult: this.hearingResultType as HearingResult, 
+          hearingType: this.hearingStageResultForm.get('hearingStage').value
+        }
+      }
+    };
+    this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals('1', this.hearingActualsMainModel));
+  }
+
+  private getHearingResultReasonType(): string {
+    if (this.hearingResultType === this.hearingResultEnum.ADJOURNED) {
+      return this.hearingStageResultForm.get('adjournedReason').value;
+    }
+    if (this.hearingResultType === this.hearingResultEnum.CANCELLED) {
+      return this.hearingStageResultForm.get('cancelledReason').value;
+    }
+    return '';
   }
 
   public onHearingResult(hearingResultType: string): void {

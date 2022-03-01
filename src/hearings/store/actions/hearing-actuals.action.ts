@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { HearingActualsMainModel } from '../../models/hearingActualsMainModel';
+import { HearingActualsMainModel, HearingActualsModel } from '../../models/hearingActualsMainModel';
 
 export const RESET_HEARING_ACTUALS = '[HEARING ACTUALS] Reset Hearing Actuals';
 export const UPDATE_HEARING_ACTUALS = '[HEARING ACTUALS] Update Hearing Actuals';
@@ -28,14 +28,14 @@ export class GetHearingActualsSuccess implements Action {
 export class UpdateHearingActuals implements Action {
   public readonly type = UPDATE_HEARING_ACTUALS;
 
-  constructor(public payload: HearingActualsMainModel) {
+  constructor(public hearingId: string, public payload: HearingActualsMainModel) {
   }
 }
 
 export class SubmitHearingActuals implements Action {
   public readonly type = SUBMIT_HEARING_ACTUALS;
 
-  constructor(public payload: HearingActualsMainModel) {
+  constructor(public hearingId: string) {
   }
 }
 

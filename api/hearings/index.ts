@@ -131,7 +131,7 @@ export async function updateHearingActuals(req: EnhancedRequest, res: Response, 
  * submitHearingActuals - submit hearing actuals
  */
 export async function submitHearingActuals(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const hearingId = req.query.hearingId;
+  const hearingId = req.params.hearingId;
   const markupPath = `${hearingsUrl}/hearingActualsCompletion/${hearingId}`;
   try {
     const { status }: { status: number } = await handlePost(markupPath, null, req);

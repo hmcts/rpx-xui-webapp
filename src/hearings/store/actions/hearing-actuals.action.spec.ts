@@ -19,15 +19,14 @@ describe('Hearing Actuals Actions', () => {
 
   describe('UpdateHearingActuals', () => {
     it('should update hearing actuals action', () => {
-
-      const action = new fromHearingActualsAction.UpdateHearingActuals(payload);
+      const action = new fromHearingActualsAction.UpdateHearingActuals('1', payload);
       expect(action.type).toBe(fromHearingActualsAction.UPDATE_HEARING_ACTUALS);
     });
   });
 
   describe('SubmitHearingActuals', () => {
     it('should submit hearing actuals action', () => {
-      const action = new fromHearingActualsAction.SubmitHearingActuals(payload);
+      const action = new fromHearingActualsAction.SubmitHearingActuals('1');
       expect(action.type).toBe(fromHearingActualsAction.SUBMIT_HEARING_ACTUALS);
     });
   });

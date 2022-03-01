@@ -184,7 +184,11 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
       ...this.hearingRequestMainModel,
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
-        panelRequirements: { roleType, panelPreferences: [...selectedPanelMembers, ...selectedPanelJudges] }
+        panelRequirements: {
+          ...this.hearingRequestMainModel.hearingDetails.panelRequirements,
+          roleType,
+          panelPreferences: [...selectedPanelMembers, ...selectedPanelJudges]
+        }
       }
     };
   }

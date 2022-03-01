@@ -3,7 +3,9 @@ import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap, take } from 'rxjs/operators';
+import { MemberType } from '../models/hearings.enum';
 import { JudicialUserModel } from '../models/judicialUser.model';
+import { PanelPreferenceModel } from '../models/panelPreference.model';
 import { PanelRequirementsModel } from '../models/panelRequirements.model';
 import { JudicialRefDataService } from '../services/judicial-ref-data.service';
 import * as fromHearingStore from '../store';
@@ -22,13 +24,20 @@ export class JudicialUserSearchResolver implements Resolve<JudicialUserModel[]> 
       .pipe(
         switchMap(panelRequirements => {
           return of(
-            panelRequirements && panelRequirements.panelPreferences && panelRequirements.panelPreferences.filter(preferences => preferences.memberType === route.data['memberType']).map(preferences => preferences.memberID)
+            panelRequirements && panelRequirements.panelPreferences && panelRequirements.panelPreferences.filter(preferences => this.checkMemberType(preferences, route)).map(preferences => preferences.memberID)
           );
         }), take(1),
         switchMap((personalCodes) => {
           return personalCodes && personalCodes.length ? this.getUsersData$(personalCodes) : of([]);
         })
       );
+  }
+
+  private checkMemberType(preferences: PanelPreferenceModel, route: ActivatedRouteSnapshot): boolean {
+    if (route.data['memberType']) {
+      return preferences.memberType === route.data['memberType'];
+    }
+    return true;
   }
 
   public getUsersByPanelRequirements$(): Observable<PanelRequirementsModel> {

@@ -7,7 +7,7 @@ export interface HearingActualsMainModel {
 }
 
 export interface HearingPlannedModel {
-  plannedHearingType: number;
+  plannedHearingType: string;
   plannedHearingDays: PlannedHearingModel[];
 }
 
@@ -19,8 +19,8 @@ export interface PlannedHearingModel {
 }
 
 export interface PartyModel {
-  partyId: number;
-  partyRole: number;
+  partyId: string;
+  partyRole: string;
   individualDetails: IndividualDetailModel;
   organisationDetails: OrganisationDetailsModel;
   partyChannelSubType: string;
@@ -73,12 +73,11 @@ export interface ActualOrganisationDetailsModel {
 }
 
 export interface ActualDayPartyModel {
-  actualPartyId: number;
+  actualPartyId: string;
   didNotAttendFlag: boolean;
   actualIndividualDetails: ActualIndividualDetailModel;
   actualOrganisationDetails: ActualOrganisationDetailsModel;
   partyChannelSubType: string;
-  partyId: number;
-  partyRole: number;
+  partyRole: string;
   representedParty: number;
 }

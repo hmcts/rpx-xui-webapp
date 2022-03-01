@@ -6,6 +6,7 @@ import { ChangeHearingComponent } from './containers/change-hearing/change-heari
 import { HearingActualAddEditSummaryComponent } from './containers/hearing-actuals/hearing-actual-add-edit-summary/hearing-actual-add-edit-summary.component';
 import { HearingActualsTimingComponent } from './containers/hearing-actuals/hearing-actuals-timing/hearing-actuals-timing.component';
 import { HearingActualsComponent } from './containers/hearing-actuals/hearing-actuals.component';
+import { HearingStageResultComponent } from './containers/hearing-actuals/hearing-stage-result/hearing-stage-result.component';
 import { HearingAdditionalInstructionsComponent } from './containers/request-hearing/hearing-additional-instructions/hearing-additional-instructions.component';
 import { HearingAttendanceComponent } from './containers/request-hearing/hearing-attendance/hearing-attendance.component';
 import { HearingCreateEditSummaryComponent } from './containers/request-hearing/hearing-create-edit-summary/hearing-create-edit-summary.component';
@@ -24,6 +25,8 @@ import { ViewHearingComponent } from './containers/view-hearing/view-hearing.com
 import { HearingCategory, MemberType } from './models/hearings.enum';
 import { JudicialUserSearchResolver } from './resolvers/ judicial-user-search-resolver.resolve';
 import { AdditionalFacilitiesResolver } from './resolvers/additional-facilities.resolver';
+import { AdjournHearingActualReasonResolver } from './resolvers/adjourn-hearing-actual-reason.resolver';
+import { CancelHearingActualReasonResolver } from './resolvers/cancel-hearing-actual-reason.resolver';
 import { CaseFlagsResolver } from './resolvers/case-flags.resolver';
 import { HearingStageResolver } from './resolvers/hearing-stage.resolver';
 import { PartyChannelsResolverService } from './resolvers/party-channels-resolver.service';
@@ -82,6 +85,20 @@ export const ROUTES: Routes = [
           title: 'HMCTS Manage cases | Hearing Actuals | Hearing Timing'
         }
       },
+      {
+        path: 'hearing-stage-result',
+        resolve: {
+          hearingTypes: RefDataResolver,
+          adjournHearingActualReasons: AdjournHearingActualReasonResolver,
+          cancelHearingActualReasons: CancelHearingActualReasonResolver
+        },
+        component: HearingStageResultComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          category: HearingCategory.HearingType,
+          title: 'HMCTS Hearings | Request Hearing | Hearing Stage Result'
+        }
+      }
     ]
   },
   {

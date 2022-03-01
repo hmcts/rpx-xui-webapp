@@ -34,10 +34,10 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
   @ViewChild('excludedJudge') public excludedJudge: HearingJudgeNamesListComponent;
 
   constructor(
-          protected readonly hearingStore: Store<fromHearingStore.State>,
-          protected readonly hearingsService: HearingsService,
-          protected readonly route: ActivatedRoute,
-          private readonly formBuilder: FormBuilder) {
+    protected readonly hearingStore: Store<fromHearingStore.State>,
+    protected readonly hearingsService: HearingsService,
+    protected readonly route: ActivatedRoute,
+    private readonly formBuilder: FormBuilder) {
     super(hearingStore, hearingsService);
     this.multiLevelSelections = this.route.snapshot.data.otherPanelRoles;
     this.personalCodejudgeList = this.route.snapshot.data.judicialUsers;
@@ -183,6 +183,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
         panelRequirements: {
+          ...this.hearingRequestMainModel.hearingDetails.panelRequirements,
           panelPreferences: [...selectedPanelMembers, ...selectedPanelJudges],
           panelSpecialisms: [...panelRolesSelected]
         }
@@ -273,11 +274,12 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
             this.validationErrors.push({ id: 'specific-panel-selection', message: HearingPanelSelectionEnum.SelectionError });
             return false;
           }
-      }} else {
-          this.hasValidationRequested = true
-          this.childNodesValidationError = HearingPanelSelectionEnum.PanelRowChildError;
-          this.validationErrors.push({ id: 'panel-role-selector', message: HearingPanelSelectionEnum.PanelRowChildError });
-          return false;
+        }
+      } else {
+        this.hasValidationRequested = true
+        this.childNodesValidationError = HearingPanelSelectionEnum.PanelRowChildError;
+        this.validationErrors.push({ id: 'panel-role-selector', message: HearingPanelSelectionEnum.PanelRowChildError });
+        return false;
       }
     }
     return this.panelJudgeForm.valid;

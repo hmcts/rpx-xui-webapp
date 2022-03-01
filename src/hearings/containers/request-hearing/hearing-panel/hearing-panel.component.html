@@ -16,19 +16,16 @@
               <label class="govuk-label govuk-radios__label" for="specificPanelSelection">Yes</label>
             </div>
             <div class="govuk-radios__conditional" [ngClass]="{'govuk-radios__conditional--hidden': panelSelection !=='Yes'}">
-              <div class="govuk-form-group govuk-!-width-one-half" [ngClass]="{'govuk-form-group--error': !!panelSelectionError || !!childNodesValidationError}">
+              <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': !!panelSelectionError || !!childNodesValidationError}">
                 <exui-hearing-judge-names-list #includedJudge [subTitle]="'Include specific panel members (optional)'" [domain]="'Judicial'" [judgeList]= "includedJudgeList"
-                 [submitButtonName]="'Add another person'" [isColumnView]="true"></exui-hearing-judge-names-list>
+                  [placeholderContent]="'e.g. John Smith'" [submitButtonName]="'Include panel member'" [idValue]="'Include'" [isColumnView]="false"></exui-hearing-judge-names-list>
                 <exui-hearing-judge-names-list #excludedJudge [subTitle]="'Exclude specific panel members (optional)'" [domain]="'Judicial'" [judgeList]= "excludedJudgeList"
-                 [submitButtonName]="'Exclude another person'" [isColumnView]="true"></exui-hearing-judge-names-list>
+                  [placeholderContent]="'e.g. John Smith'" [submitButtonName]="'Exclude panel member'"  [idValue]="'Exclude'" [isColumnView]="false"></exui-hearing-judge-names-list>
                  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
                     <h1 class="govuk-fieldset__heading">
                         Select any other panel roles required (optional)
                     </h1>
                 </legend>
-                <div id="other-panel-roles-hint" class="govuk-hint">
-                    Select all that apply.
-                </div>
                 <span class="govuk-error-message" *ngIf="childNodesValidationError">
                   <span class="govuk-visually-hidden">Error:</span> {{childNodesValidationError}}
                 </span>

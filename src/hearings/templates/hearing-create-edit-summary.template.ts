@@ -1,5 +1,5 @@
-import {AnswerSource, IsHiddenSource} from '../models/hearings.enum';
-import {Section} from '../models/section';
+import { AnswerSource, IsHiddenSource } from '../models/hearings.enum';
+import { Section } from '../models/section';
 
 export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
   {
@@ -115,12 +115,21 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
         answerTitle: 'Name of the judge',
         answerSource: AnswerSource.JUDGE_NAME,
         changeLink: '/hearings/request/hearing-judge#inputSelectPerson',
+        isHiddenSource: IsHiddenSource.JUDGE_NAME
+      },
+      {
+        id: 'judgeTypes',
+        answerTitle: 'Select all judge types that apply',
+        answerSource: AnswerSource.JUDGE_TYPES,
+        changeLink: '/hearings/request/hearing-judge#judgeTypes',
+        isHiddenSource: IsHiddenSource.JUDGE_TYPES
       },
       {
         id: 'judgeExclusion',
         answerTitle: 'Exclude a judge',
         answerSource: AnswerSource.JUDGE_EXCLUSION,
         changeLink: '/hearings/request/hearing-judge#inputSelectPersonExclude',
+        isHiddenSource: IsHiddenSource.JUDGE_EXCLUSION
       },
     ],
   },
@@ -132,6 +141,20 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
         answerTitle: 'Do you require a panel for this hearing?',
         answerSource: AnswerSource.HEARING_PANEL,
         changeLink: '/hearings/request/hearing-panel#specificPanelSelection'
+      },
+      {
+        id: 'panelInclusion',
+        answerTitle: 'Include specific panel members',
+        answerSource: AnswerSource.PANEL_INCLUSION,
+        changeLink: '/hearings/request/hearing-panel#inputSelectPersonInclude',
+        isHiddenSource: IsHiddenSource.PANEL_INCLUSION
+      },
+      {
+        id: 'panelExclusion',
+        answerTitle: 'Exclude specific panel members',
+        answerSource: AnswerSource.PANEL_EXCLUSION,
+        changeLink: '/hearings/request/hearing-panel#inputSelectPersonExclude',
+        isHiddenSource: IsHiddenSource.PANEL_EXCLUSION
       },
     ],
   },

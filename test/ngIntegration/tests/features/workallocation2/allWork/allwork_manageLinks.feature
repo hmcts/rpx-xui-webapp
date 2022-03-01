@@ -1,4 +1,4 @@
-@ng  @wa2
+@ng
 Feature: WA Release 2: All work - Manage links
 
     Background: Mock and browser setup
@@ -20,7 +20,7 @@ Feature: WA Release 2: All work - Manage links
             | Allwork test scr | auto test category | London QA lab |
 
     Scenario Outline:  Task Manage links for "<UserType>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         # Given I set MOCK request "/workallocation2/taskWithPagination" response log to report
         Given I start MockApp
         Given I navigate to home page

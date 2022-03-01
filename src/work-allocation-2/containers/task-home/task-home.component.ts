@@ -1,12 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRouteSnapshot, NavigationEnd, Router, RoutesRecognized } from '@angular/router';
 import { FilterPersistence, SubNavigation } from '@hmcts/rpx-xui-common-lib';
-import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { of } from 'rxjs/internal/observable/of';
 import { AppUtils } from '../../../app/app-utils';
-import { ErrorMessage } from '../../../app/models';
-import * as fromRoot from '../../../app/store';
+import { ErrorMessage, UserInfo } from '../../../app/models';
+import { SessionStorageService } from '../../../app/services';
 import { SortField } from '../../models/common';
 
 @Component({
@@ -15,7 +14,7 @@ import { SortField } from '../../models/common';
   styleUrls: ['task-home.component.scss']
 })
 export class TaskHomeComponent implements OnInit, OnDestroy {
-  public persistence$: Observable<FilterPersistence>;
+  public persistence$: Observable<FilterPersistence> = of('local' as FilterPersistence);
   public sortedBy: SortField;
   public pageTitle: string;
   public error: ErrorMessage = null;
@@ -23,28 +22,31 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
    * Take in the Router so we can navigate when actions are clicked and
    * to identify which sub-navigation item to highlight.
    */
-  private readonly MY_TASKS: SubNavigation = {text: 'My tasks', href: '/work/my-work/list', active: true};
+  private readonly MY_TASKS: SubNavigation = { text: 'My tasks', href: '/work/my-work/list', active: true };
   /**
    * The sub-navigation items.
    */
   public subNavigationItems: SubNavigation[] = [
     this.MY_TASKS,
-    {text: 'Available tasks', href: '/work/my-work/available', active: false},
-    {text: 'My cases', href: '/work/my-work/my-cases', active: false}
+    { text: 'Available tasks', href: '/work/my-work/available', active: false }
   ];
 
   private routeSubscription: Subscription;
 
   constructor(
-    private readonly store: Store<fromRoot.State>,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly sessionStorageService: SessionStorageService
   ) {
   }
 
   public ngOnInit(): void {
-    this.persistence$ = this.store.pipe(select(fromRoot.getUserDetails)).pipe(
-      map(AppUtils.getFilterPersistenceByRoleType)
-    );
+    const userInfoStr = this.sessionStorageService.getItem('userDetails');
+    if (userInfoStr) {
+      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      if (userInfo && userInfo.roleCategory && userInfo.roleCategory !== 'ADMIN') {
+        this.subNavigationItems.push({ text: 'My cases', href: '/work/my-work/my-cases', active: false });
+      }
+    }
     this.routeSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         // Set up the active navigation item.
@@ -97,6 +99,14 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
   }
 
   public errorChangedHandler(error: ErrorMessage) {
+    // Override location error message
+    // https://tools.hmcts.net/jira/browse/EUI-4582
+    if (error && error.errors) {
+      const locationsErrorIndex = error.errors.findIndex(x => x.name.toLowerCase() === 'locations');
+      if (locationsErrorIndex > -1) {
+        error.errors[locationsErrorIndex].error = 'Enter a location';
+      }
+    }
     this.error = error;
   }
 }

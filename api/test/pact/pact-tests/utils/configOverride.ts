@@ -22,3 +22,38 @@ export function getSearchTaskOverrides(waTaskAPiUrl) {
         ...defaultConfig,
     }
 }
+
+export function getWorkAllocationAPIOverrides(waTaskAPiUrl) {
+    return {
+        "services.work_allocation.taskApi": waTaskAPiUrl,
+        ...defaultConfig,
+    }
+}
+
+export function getCaseworkerRefDataAPIOverrides(cwRefApiUrl) {
+    return {
+        "services.case.caseworkerApi": cwRefApiUrl,
+        ...defaultConfig,
+    }
+}
+
+export function getLocationsRefDataAPIOverrides(locationRefApiUrl) {
+    return {
+        "services.location_api": locationRefApiUrl,
+        ...defaultConfig,
+    }
+}
+
+export function getAccessManagementServiceAPIOverrides(accessManagementAPI) {
+    return {
+        "services.role_assignment.roleApi": accessManagementAPI,
+        ...defaultConfig,
+    }
+}
+
+export function getJudicialRefDataAPIOverrides(judicialRefApiUrl) {
+    return {
+        "services.case.judicialApi": judicialRefApiUrl,
+        ...defaultConfig,
+    }
+}

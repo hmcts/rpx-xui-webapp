@@ -54,8 +54,8 @@ export class CaseHearingsListComponent implements OnInit {
     this.router.navigate(['/', 'hearings', 'request', 'hearing-view-edit-summary']);
   }
 
-  public addAndEdit(): void {
-    this.router.navigate(['/', 'hearings', 'actuals', 'hearing-actual-add-edit-summary']);
+  public addAndEdit(hearing: HearingListViewModel): void {
+    this.router.navigate(['/', 'hearings', 'actuals', hearing.hearingID, 'hearing-actual-add-edit-summary']);
   }
 
   public hasAddEdit(hearing: HearingListViewModel): boolean {

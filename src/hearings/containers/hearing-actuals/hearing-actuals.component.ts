@@ -1,8 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { ACTION } from '../../models/hearings.enum';
-import { HearingsService } from '../../services/hearings.service';
 import * as actions from '../../store/actions/hearing-actuals.action';
 
 @Component({
@@ -14,19 +13,13 @@ export class HearingActualsComponent implements OnInit, OnDestroy {
 
   private sub: Subscription;
 
-  constructor(private readonly hearingsService: HearingsService, private store: Store<any>) {
+  public constructor(private store: Store<any>, private readonly route: ActivatedRoute) {
   }
 
   public ngOnInit(): void {
-    this.store.dispatch(new actions.GetHearingActuals('1'));
-  }
-
-  public onBack(): void {
-    this.hearingsService.navigateAction(ACTION.BACK);
-  }
-
-  public onSubmit(): void {
-    this.hearingsService.navigateAction(ACTION.SUBMIT);
+    this.sub = this.route.params.subscribe(params => {
+      this.store.dispatch(new actions.GetHearingActuals(params.id));
+    });
   }
 
   public ngOnDestroy(): void {

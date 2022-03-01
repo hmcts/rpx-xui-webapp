@@ -12,6 +12,7 @@ import { ValidatorsUtils } from '../../utils/validators.utils';
 export class HearingJudgeNamesListComponent {
   @Input() public subTitle: string;
   @Input() public domain: string;
+  @Input() public idValue: string;
   @Input() public placeholderContent: string = '';
   @Input() public submitButtonName: string = '';
   @Input() public isColumnView: boolean;

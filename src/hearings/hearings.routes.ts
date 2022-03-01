@@ -22,14 +22,15 @@ import { HearingWelshComponent } from './containers/request-hearing/hearing-wels
 import { RequestHearingComponent } from './containers/request-hearing/request-hearing.component';
 import { ViewHearingComponent } from './containers/view-hearing/view-hearing.component';
 import { HearingCategory, MemberType } from './models/hearings.enum';
-import { AdditionalFacilitiesResolver } from './resolvers/additional-facilities.resolver';
-import { CaseFlagsResolver } from './resolvers/case-flags.resolver';
-import { HearingStageResolver } from './resolvers/hearing-stage.resolver';
-import { PartyChannelsResolverService } from './resolvers/party-channels-resolver.service';
-import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
 import { JudicialUserSearchResolver } from './resolvers/ judicial-user-search-resolver.resolve';
+import { AdditionalFacilitiesResolver } from './resolvers/additional-facilities.resolver';
 import { AdjournHearingActualReasonResolver } from './resolvers/adjourn-hearing-actual-reason.resolver';
 import { CancelHearingActualReasonResolver } from './resolvers/cancel-hearing-actual-reason.resolver';
+import { CaseFlagsResolver } from './resolvers/case-flags.resolver';
+import { HearingStageResolver } from './resolvers/hearing-stage.resolver';
+import { JudgeTypesResolverService } from './resolvers/judge-types-resolver.service';
+import { PartyChannelsResolverService } from './resolvers/party-channels-resolver.service';
+import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
 
 export const ROUTES: Routes = [
   {
@@ -213,7 +214,9 @@ export const ROUTES: Routes = [
           caseFlags: CaseFlagsResolver,
           hearingStageOptions: HearingStageResolver,
           additionFacilitiesOptions: AdditionalFacilitiesResolver,
-          partyChannels: PartyChannelsResolverService
+          partyChannels: PartyChannelsResolverService,
+          judgeTypes: JudgeTypesResolverService,
+          judicialUsers: JudicialUserSearchResolver
         },
         component: HearingCreateEditSummaryComponent,
         canActivate: [HealthCheckGuard],

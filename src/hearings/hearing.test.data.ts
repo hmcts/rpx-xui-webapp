@@ -23,6 +23,27 @@ export const hearingStageRefData = [
   }
 ];
 
+export const judicailUsersRefData = [{
+  sidam_id: '1102839232',
+  object_id: '1102839232',
+  known_as: 'Jacky Collins',
+  surname: 'Jacky Collins',
+  personal_code: 'P0000001',
+  full_name: 'Jacky Collins',
+  post_nominals: 'Jacky Collins',
+  email_id: 'jacky.collins@judicial.com',
+}];
+
+export const judgeRefData = [
+  {
+    id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
+    name: 'Jacky Collins',
+    email: 'jacky.collins@judicial.com',
+    domain: 'JUDICIAL',
+    personalCode: 'P0000001',
+    knownAs: 'Jacky Collins',
+  }];
+
 export const hearingPriorityRefData = [
   {
     key: 'urgent',
@@ -958,12 +979,12 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
     locationType: 'hearing',
     region: 'North West',
   },
-    {
-      locationId: '219164',
-      locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
-      locationType: 'hearing',
-      region: 'Scotland',
-    },
+  {
+    locationId: '219164',
+    locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
+    locationType: 'hearing',
+    region: 'Scotland',
+  },
   ],
   caseAdditionalSecurityFlag: false,
   facilitiesRequired: [],

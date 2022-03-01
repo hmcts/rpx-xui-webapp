@@ -108,7 +108,7 @@ ie.
 `propertiesVolume.addTo(secretsConfig, { mountPoint: '/Volumes/mnt/secrets/' });`
 
 Note that this is connected into the application via the following pieces of code:
-```javascript
+```javascript 
   keyVaults:
     rpx:
       secrets:

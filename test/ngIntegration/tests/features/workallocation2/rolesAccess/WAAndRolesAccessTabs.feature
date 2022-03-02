@@ -1,8 +1,8 @@
-@ng  @wa2 @ignore
+@ng @ignore
 Feature: WA Release 2: Case details - "Tasks", "Roles and access" tabs visibility
 
     Scenario Outline: WA tab "<TabLabel>"" is displayed "<isDisplayed>"" in case details for user "<UserType>" "<UserIdentifier>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I start MockApp
         Given I navigate to home page
         When I click on primary navigation header tab "Case list", I see selected tab page displayed

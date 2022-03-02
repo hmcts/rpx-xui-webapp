@@ -9,7 +9,9 @@ import { HealthCheckService } from './services/health-check.service';
 import { MediaViewerModule } from '@hmcts/media-viewer';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, GOV_UI_COMPONENTS } from '@hmcts/rpx-xui-common-lib';
+import { InfoMessageCommService } from './services/info-message-comms.service';
 import { McLaunchDarklyService } from './services/mc-launch-darkly-service';
+import { TaskSupervisorGuard } from '../guards/task-supervisor.guard';
 
 /**
  * Shared Module
@@ -34,7 +36,8 @@ import { McLaunchDarklyService } from './services/mc-launch-darkly-service';
     HealthCheckGuard,
     HealthCheckService,
     WindowService,
-    McLaunchDarklyService
+    McLaunchDarklyService,
+    TaskSupervisorGuard
   ],
 })
 export class SharedModule {}

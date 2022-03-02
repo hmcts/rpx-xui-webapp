@@ -6,7 +6,7 @@ const BrowserUtil = require('../../../../ngIntegration/util/browserUtil');
 class CaseRolesAccessPage{
     constructor(){
         this.pageContainer = $('exui-roles-and-access-container');
-        this.legalOpsRolesAccessTable = new CaseRolesTable(`//h2[contains(text(),'Legal Ops')]/following-sibling::exui-case-roles-table[position()=1]`);
+        this.legalOpsRolesAccessTable = new CaseRolesTable(`//h2[contains(text(),'Legal Ops')]/following-sibling::div/exui-case-roles-table[position()=1]`);
         this.addLegalOpsRoleLink = element(by.xpath(`//h2[contains(text(),'Legal Ops')]/following-sibling::p[position()=1]/a[contains(text(),'Allocate a role')]`));
 
         this.judicialRolesAccessTable = new CaseRolesTable(`//h2[contains(text(),'Judiciary')]/following-sibling::exui-case-roles-table[position()=1]`);
@@ -72,7 +72,7 @@ class CaseRolesAccessPage{
         if (!isPresent){
             return false;
         }
-        return this.getAllocateRoleLinkForCategory(rolecategory).isDisplayed();
+        return await this.getAllocateRoleLinkForCategory(rolecategory).isDisplayed();
     }
 
     async clickAllocateRoleLinkForCategory(rolecategory){

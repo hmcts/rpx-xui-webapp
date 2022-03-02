@@ -5,3 +5,8 @@ export interface Role {
   roleName: string;
   roleCategory?: RoleCategory;
 }
+
+export interface RolesByService {
+  service: string;
+  roles: Role[];
+}

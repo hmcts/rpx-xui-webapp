@@ -12,7 +12,9 @@ import { filter } from 'rxjs/operators';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
 import * as fromHearingStore from '../../../store';
 import { HearingsService } from '../../../services/hearings.service';
-import { ACTION } from '../../../models/hearings.enum';
+import { ACTION, HearingResult } from '../../../models/hearings.enum';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'exui-hearing-actual-add-edit-summary',
@@ -24,10 +26,15 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public hearingOutcome: HearingOutcomeModel;
   public actualHearingDay: ActualHearingDayModel;
   public actualDayParties: ActualDayPartyModel[];
+  public adjournHearingActualReasons: LovRefDataModel[];
+  public cancelHearingActualReasons: LovRefDataModel[];
   public sub: Subscription;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
-              private readonly hearingsService: HearingsService) {
+              private readonly hearingsService: HearingsService,
+              private readonly route: ActivatedRoute) {
+    this.adjournHearingActualReasons = this.route.snapshot.data.adjournHearingActualReasons;
+    this.cancelHearingActualReasons = this.route.snapshot.data.cancelHearingActualReasons;
   }
 
   public ngOnInit(): void {
@@ -60,6 +67,22 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     const party: PartyModel = this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties.find(x => x.partyId === partyId.toString());
     if (party && party.individualDetails) {
       return `${party.individualDetails.firstName} ${party.individualDetails.lastName}`;
+    }
+    return '';
+  }
+
+  public getHearingResultReasonTypeDescription(hearingOutcome: HearingOutcomeModel): string {
+    if (hearingOutcome.hearingResult === HearingResult.ADJOURNED) {
+      const hearingActualReason = this.adjournHearingActualReasons && this.adjournHearingActualReasons.find(x => x.key === hearingOutcome.hearingResultReasonType);
+      if (hearingActualReason) {
+        return hearingActualReason.value_en;
+      }
+    }
+    if (hearingOutcome.hearingResult === HearingResult.CANCELLED) {
+      const hearingActualReason = this.cancelHearingActualReasons && this.cancelHearingActualReasons.find(x => x.key === hearingOutcome.hearingResultReasonType);
+      if (hearingActualReason) {
+        return hearingActualReason.value_en;
+      }
     }
     return '';
   }

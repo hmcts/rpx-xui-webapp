@@ -3,12 +3,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
-import { hearingActualsMainModel, initialState } from '../../../hearing.test.data';
-import { ACTION } from '../../../models/hearings.enum';
+import { hearingActualAdjournReasonsRefData, hearingActualCancelReasonsRefData, hearingActualsMainModel, initialState } from '../../../hearing.test.data';
+import { ACTION, HearingResult } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingActualAddEditSummaryComponent } from './hearing-actual-add-edit-summary.component';
 
-describe('HearingViewEditSummaryComponent', () => {
+describe('HearingActualAddEditSummaryComponent', () => {
   let component: HearingActualAddEditSummaryComponent;
   let fixture: ComponentFixture<HearingActualAddEditSummaryComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
@@ -52,6 +52,32 @@ describe('HearingViewEditSummaryComponent', () => {
     component.hearingActualsMainModel = hearingActualsMainModel;
     const attendingRepresentative = component.getRepresentingAttendee(3);
     expect(attendingRepresentative).toEqual('Mary Jones');
+  });
+
+  it('should return empty string for hearing result reason type completed', () => {
+    const hearingOutcome = hearingActualsMainModel.hearingActuals.hearingOutcome;
+    hearingOutcome.hearingResult = HearingResult.COMPLETED;
+    hearingOutcome.hearingResultReasonType = '';
+    const description = component.getHearingResultReasonTypeDescription(hearingOutcome);
+    expect(description).toEqual('');
+  });
+  
+  it('should return hearing result reason type description for adjourned', () => {
+    component.adjournHearingActualReasons = hearingActualAdjournReasonsRefData;
+    const hearingOutcome = hearingActualsMainModel.hearingActuals.hearingOutcome;
+    hearingOutcome.hearingResult = HearingResult.ADJOURNED;
+    hearingOutcome.hearingResultReasonType = 'postponedDueToOtherReasons';
+    const description = component.getHearingResultReasonTypeDescription(hearingOutcome);
+    expect(description).toEqual('Postponed, due to Other Reasons');
+  });
+
+  it('should return hearing result reason type description for cancelled', () => {
+    component.cancelHearingActualReasons = hearingActualCancelReasonsRefData;
+    const hearingOutcome = hearingActualsMainModel.hearingActuals.hearingOutcome;
+    hearingOutcome.hearingResult = HearingResult.CANCELLED;
+    hearingOutcome.hearingResultReasonType = 'reasoneTwo';
+    const description = component.getHearingResultReasonTypeDescription(hearingOutcome);
+    expect(description).toEqual('Reason 2');
   });
 
   afterEach(() => {

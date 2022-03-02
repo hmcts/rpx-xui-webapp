@@ -30,7 +30,7 @@
       <dl class="govuk-summary-list" *ngIf="hearingOutcome.hearingResultReasonType.length > 0">
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Select a reason for this result</dt>
-          <dd class="govuk-summary-list__value">{{hearingOutcome.hearingResultReasonType}}</dd>
+          <dd class="govuk-summary-list__value" [innerHTML]="getHearingResultReasonTypeDescription(hearingOutcome)"></dd>
         </div>
       </dl>
       <br>

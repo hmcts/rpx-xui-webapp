@@ -71,6 +71,10 @@ export const ROUTES: Routes = [
     children: [
       {
         path: 'hearing-actual-add-edit-summary',
+        resolve: {
+          adjournHearingActualReasons: AdjournHearingActualReasonResolver,
+          cancelHearingActualReasons: CancelHearingActualReasonResolver
+        },    
         component: HearingActualAddEditSummaryComponent,
         canActivate: [HealthCheckGuard],
         data: {

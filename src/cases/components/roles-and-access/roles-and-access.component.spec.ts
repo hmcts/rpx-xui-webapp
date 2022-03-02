@@ -8,6 +8,7 @@ import { ExclusionsTableComponent } from '../../../role-access/components/exclus
 import { CaseRole, RoleCategory, RoleExclusion } from '../../../role-access/models';
 import { Caseworker } from '../../../work-allocation-2/models/dtos';
 import { ShowAllocateLinkDirective } from '../../directives/show-allocate-link.directive';
+import { AllocateARoleLinkComponent, RoleAccessSectionComponent } from '..';
 import { RolesAndAccessComponent } from './roles-and-access.component';
 
 describe('RolesAndAccessComponent', () => {
@@ -22,6 +23,8 @@ describe('RolesAndAccessComponent', () => {
         CaseRolesTableComponent,
         ShowAllocateLinkDirective,
         ExclusionsTableComponent,
+        RoleAccessSectionComponent,
+        AllocateARoleLinkComponent
       ]
     })
       .compileComponents();

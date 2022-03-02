@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { filter, first } from 'rxjs/operators';
 import {
   ActualDayPartyModel,
   ActualHearingDayModel,
@@ -42,7 +42,8 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     this.id = this.route.snapshot.params.id;
     this.sub = this.hearingStore.select(fromHearingStore.getHearingActuals)
       .pipe(
-        filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel)
+        filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel),
+        first()
       )
       .subscribe((state: HearingActualsStateData) => {
         const hearingActualsMainModel = state.hearingActualsMainModel;

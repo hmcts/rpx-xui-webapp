@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { combineLatest, Subscription } from 'rxjs';
+import { filter, first } from 'rxjs/operators';
 import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
 import { HearingResult } from '../../../models/hearings.enum';
@@ -25,6 +25,7 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
   public cancelHearingActualReasons: LovRefDataModel[];
   public hearingActualsMainModel: HearingActualsMainModel;
   public sub: Subscription;
+  private id: string;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly formBuilder: FormBuilder,
@@ -45,11 +46,13 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
       adjournedReason: [''],
       cancelledReason: ['']
     });
-    this.sub = this.hearingStore.select(fromHearingStore.getHearingActuals)
+    this.sub = combineLatest([this.hearingStore.select(fromHearingStore.getHearingActuals), this.route.paramMap])
       .pipe(
-        filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel)
+        filter(([state]: [HearingActualsStateData, ParamMap]) => !!state.hearingActualsMainModel),
+        first()
       )
-      .subscribe((state: HearingActualsStateData) => {
+      .subscribe(([state, params]: [HearingActualsStateData, ParamMap]) => {
+        this.id = params.get('id');
         this.hearingActualsMainModel = state.hearingActualsMainModel;
         this.hearingStageResultForm.get('hearingStage').setValue(this.hearingActualsMainModel.hearingPlanned.plannedHearingType);
       });
@@ -66,19 +69,20 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
   }
 
   public onSubmit(): void {
-    this.hearingActualsMainModel = {
-      ...this.hearingActualsMainModel,
-      hearingActuals: {
-        ...this.hearingActualsMainModel.hearingActuals,
-        hearingOutcome: {
-          ...this.hearingActualsMainModel.hearingActuals.hearingOutcome,
-          hearingResultReasonType: this.getHearingResultReasonType(),
-          hearingResult: this.hearingResultType as HearingResult, 
-          hearingType: this.hearingStageResultForm.get('hearingStage').value
-        }
+    const hearingActuals = {
+      ...this.hearingActualsMainModel.hearingActuals,
+      hearingOutcome: {
+        ...this.hearingActualsMainModel.hearingActuals.hearingOutcome,
+        hearingResultReasonType: this.getHearingResultReasonType(),
+        hearingResult: this.hearingResultType as HearingResult,
+        hearingType: this.hearingStageResultForm.get('hearingStage').value
       }
     };
-    this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals('1', this.hearingActualsMainModel));
+
+    this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
+      hearingId: this.id,
+      hearingActuals
+    }));
   }
 
   private getHearingResultReasonType(): string {

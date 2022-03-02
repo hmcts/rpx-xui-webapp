@@ -61,7 +61,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
     const description = component.getHearingResultReasonTypeDescription(hearingOutcome);
     expect(description).toEqual('');
   });
-  
+
   it('should return hearing result reason type description for adjourned', () => {
     component.adjournHearingActualReasons = hearingActualAdjournReasonsRefData;
     const hearingOutcome = hearingActualsMainModel.hearingActuals.hearingOutcome;

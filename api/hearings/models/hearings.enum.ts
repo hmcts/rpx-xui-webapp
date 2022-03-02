@@ -19,6 +19,15 @@ export enum HMCStatus {
   ADJOURNED = 'Adjourned',
 }
 
+export enum LaCaseStatus {
+  CASE_CREATED = 'Case Created',
+  AWAITING_LISTING = 'Awaiting Listing',
+  LISTED = 'Listed',
+  PENDING_RELISTING = 'Pending Relisting',
+  HEARING_COMPLETED = 'Hearing Completed',
+  CASE_CLOSED = 'Case Closed',
+}
+
 export enum HearingListingStatusEnum {
   AWAITING_LISTING = 'AWAITING LISTING',
   UPDATE_REQUESTED = 'UPDATE REQUESTED',
@@ -31,6 +40,9 @@ export enum HearingListingStatusEnum {
   VACATED = 'VACATED',
   AWAITING_ACTUALS = 'AWAITING ACTUALS',
   ADJOURNED = 'ADJOURNED',
+  DRAFT = 'DRAFT',
+  PROVISIONAL = 'PROVISIONAL',
+  FIXED = 'FIXED'
 }
 
 export enum EXUISectionStatusEnum {

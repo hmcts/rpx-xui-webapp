@@ -5,6 +5,7 @@ export interface HearingResponseModel {
   receivedDateTime: string;
   responseVersion: number;
   laCaseStatus: string;
+  listingStatus: string;
   hearingCancellationReason: string;
   hearingDaySchedule: HearingDayScheduleModel;
 }

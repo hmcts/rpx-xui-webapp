@@ -26,7 +26,7 @@ describe('nodeApp endpoint', () => {
   it('external/configuration-ui', async () => {
     const response = await Request.get('external/configuration-ui', null, 200);
     expect(response.status).to.equal(200);
-    expect(response.data).to.have.all.keys('clientId', 'idamWeb', 'launchDarklyClientId', 'oAuthCallback', 'oidcEnabled', 'protocol', 'ccdGatewayUrl', 'substantiveEnabled','accessManagementEnabled');
+    expect(response.data).to.have.all.keys('clientId', 'idamWeb', 'launchDarklyClientId', 'oAuthCallback', 'oidcEnabled', 'protocol', 'ccdGatewayUrl', 'substantiveEnabled', 'accessManagementEnabled', 'paymentReturnUrl');
     expect(response.data.launchDarklyClientId).to.equal('5de6610b23ce5408280f2268');
     expect(response.data.clientId).to.equal('xuiwebapp');
   });
@@ -76,7 +76,7 @@ describe('nodeApp endpoint', () => {
   //   }
 
   //   await Request.withSession(matchingUsers[0].email, 'Welcome01');
-   
+
   //   const response = await Request.get('api/user/details', null, 200);
   //   expect(response.status).to.equal(200);
   //   const actualLocationObjKeys = response.data;

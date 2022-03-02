@@ -26,6 +26,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public hearingOutcome: HearingOutcomeModel;
   public actualHearingDay: ActualHearingDayModel;
   public actualDayParties: ActualDayPartyModel[];
+  public hearingTypes: LovRefDataModel[];
   public adjournHearingActualReasons: LovRefDataModel[];
   public cancelHearingActualReasons: LovRefDataModel[];
   public sub: Subscription;
@@ -34,6 +35,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly hearingsService: HearingsService,
               private readonly route: ActivatedRoute) {
+    this.hearingTypes = this.route.snapshot.data.hearingTypes;
     this.adjournHearingActualReasons = this.route.snapshot.data.adjournHearingActualReasons;
     this.cancelHearingActualReasons = this.route.snapshot.data.cancelHearingActualReasons;
   }
@@ -88,5 +90,10 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       }
     }
     return '';
+  }
+
+  public getHearingTypeDescription(hearingType: string): string {
+    const hearingTypeFromLookup = this.hearingTypes && this.hearingTypes.find(x => x.key.toLowerCase() === hearingType.toLowerCase());
+    return hearingTypeFromLookup ? hearingTypeFromLookup.value_en : '';
   }
 }

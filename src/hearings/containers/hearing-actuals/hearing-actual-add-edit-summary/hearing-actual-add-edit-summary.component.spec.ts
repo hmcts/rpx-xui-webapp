@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
-import { hearingActualAdjournReasonsRefData, hearingActualCancelReasonsRefData, hearingActualsMainModel, initialState } from '../../../hearing.test.data';
+import { hearingActualAdjournReasonsRefData, hearingActualCancelReasonsRefData, hearingActualsMainModel, hearingStageRefData, initialState } from '../../../hearing.test.data';
 import { ACTION, HearingResult } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingActualAddEditSummaryComponent } from './hearing-actual-add-edit-summary.component';
@@ -78,6 +78,12 @@ describe('HearingActualAddEditSummaryComponent', () => {
     hearingOutcome.hearingResultReasonType = 'reasoneTwo';
     const description = component.getHearingResultReasonTypeDescription(hearingOutcome);
     expect(description).toEqual('Reason 2');
+  });
+
+  it('should return correct hearing type from the hearing types', () => {
+    component.hearingTypes = hearingStageRefData;
+    const description = component.getHearingTypeDescription('initial');
+    expect(description).toEqual('Initial');
   });
 
   afterEach(() => {

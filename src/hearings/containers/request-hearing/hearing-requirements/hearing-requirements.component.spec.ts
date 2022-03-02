@@ -112,7 +112,7 @@ describe('HearingRequirementsComponent', () => {
           hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000'
         },
         privateHearingRequiredFlag: false,
-        panelRequirements: null,
+        panelRequirements: undefined,
         autolistFlag: false,
         hearingPriorityType: 'standard',
         numberOfPhysicalAttendees: 2,

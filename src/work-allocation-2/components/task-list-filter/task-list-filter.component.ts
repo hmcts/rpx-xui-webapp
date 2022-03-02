@@ -1,6 +1,7 @@
 import { Location as AngularLocation } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+
 import {
   FilterConfig,
   FilterError,
@@ -36,6 +37,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   private static readonly FILTER_NAME = 'locations';
   @Input() public persistence: FilterPersistence;
   @Output() public errorChanged: EventEmitter<ErrorMessage> = new EventEmitter();
+  public allowTypesOfWorkFilter = true;
   public showFilteredText = false;
   public noDefaultLocationMessage = 'Use the work filter to show tasks and cases based on service, work type and location';
   public error: ErrorMessage;
@@ -48,6 +50,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     cancelSetting: null,
     showCancelFilterButton: false
   };
+  public fieldsConfigAlt: FilterConfig = null;
   public allLocations: string[] = [];
   public defaultLocations: any[] = null;
   public defaultTypesOfWork: string[] = [];
@@ -57,6 +60,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   };
   public toggleFilter = false;
   public errorSubscription: Subscription;
+  private routeSubscription: Subscription;
   private subscription: Subscription;
   private selectedLocationsSubscription: Subscription;
 
@@ -64,6 +68,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
    * Accept the SessionStorageService for adding to and retrieving from sessionStorage.
    */
   constructor(private readonly route: ActivatedRoute,
+              private readonly router: Router,
               private readonly location: AngularLocation,
               private readonly filterService: FilterService,
               private readonly taskService: WorkAllocationTaskService,
@@ -98,10 +103,18 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
         this.setUpServicesFilter(services);
         this.setUpLocationFilter();
         this.setUpTypesOfWorkFilter(typesOfWork);
+        this.setupFieldsConfigAlt();
         this.persistFirstSetting();
         this.subscribeToFilters(assignedTasks);
       });
     this.setErrors();
+
+    this.setAllowTypesOfWorkFilter(this.router.url);
+    this.routeSubscription = this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.setAllowTypesOfWorkFilter(this.router.url);
+      }
+    });
   }
 
   public ngOnDestroy(): void {
@@ -115,6 +128,10 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
 
     if (this.errorSubscription && !this.errorSubscription.closed) {
       this.errorSubscription.unsubscribe();
+    }
+
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
     }
   }
 
@@ -258,6 +275,36 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     }];
     this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
     this.fieldsConfig.fields.push(field);
+  }
+
+  /**
+   * Sets the value of the allowTypesOfWorkFilter boolean determined by provided params
+   *
+   * @param {string} url - the url string to check against
+   * @param {string} myCaseUrl - the string to search for in the url
+   * @example
+   *  setAllowTypesOfWorkFilter();
+   */
+  private setAllowTypesOfWorkFilter(url: string, myCasesUrl = 'my-work/my-cases'): void {
+    this.allowTypesOfWorkFilter = !url.includes(myCasesUrl);
+  }
+
+  /**
+   * Creates a copy of the fieldsConfig object called fieldsConfigAlt with removed filters as per provided param
+   *
+   * @param {string[]} excludeFieldNames - array of field names to exclude from the filters
+   */
+  private setupFieldsConfigAlt(excludeFieldNames = ['types-of-work']): void {
+    // create a copy of the fieldsConfig
+    this.fieldsConfigAlt = {...this.fieldsConfig};
+
+    // remove the fields not needed e.g. 'types-of-work'
+    const fields = this.fieldsConfigAlt.fields.filter(field => field.name !== excludeFieldNames[0]);
+    this.fieldsConfigAlt.fields = fields;
+
+    // remove the cancelSetting fields not needed e.g. 'types-of-work'
+    const cancelSettingFields = this.fieldsConfigAlt.cancelSetting.fields.filter(field => field.name !== excludeFieldNames[0]);
+    this.fieldsConfigAlt.cancelSetting.fields = cancelSettingFields;
   }
 
 }

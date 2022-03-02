@@ -10,8 +10,14 @@
   </ng-container>
 </div>
 <div class="govuk-!-padding-3 filter govuk-!-margin-bottom-3" *ngIf="toggleFilter">
-  <xuilib-generic-filter
-    [config]="fieldsConfig"
-    [settings]="fieldsSettings"
-  ></xuilib-generic-filter>
+  <ng-container *ngIf="allowTypesOfWorkFilter; else noTypeOfWorkFilters">
+    <xuilib-generic-filter
+      [config]="fieldsConfig"
+      [settings]="fieldsSettings"></xuilib-generic-filter>
+  </ng-container>
+  <ng-template #noTypeOfWorkFilters>
+    <xuilib-generic-filter
+      [config]="fieldsConfigAlt"
+      [settings]="fieldsSettings"></xuilib-generic-filter>
+  </ng-template>
 </div>

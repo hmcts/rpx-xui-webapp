@@ -58,6 +58,8 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
     panelPreferences: [],
     panelSpecialisms: [
       "DisabilityQualifiedPanelMember",
+      "EyeSurgeon",
+      "GeneralPractitioner",
       "FinanciallyQualifiedPanelMember",
       "RegionalMedicalMember",
     ],

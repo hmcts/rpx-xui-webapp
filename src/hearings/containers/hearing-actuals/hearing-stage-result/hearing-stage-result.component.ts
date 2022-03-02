@@ -28,7 +28,7 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly formBuilder: FormBuilder,
-              protected readonly route: ActivatedRoute) {
+              private readonly route: ActivatedRoute) {
     this.hearingTypes = this.route.snapshot.data.hearingTypes;
     this.adjournHearingActualReasons = this.route.snapshot.data.adjournHearingActualReasons;
     this.cancelHearingActualReasons = this.route.snapshot.data.cancelHearingActualReasons;

@@ -10,10 +10,10 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   caseSubTypes: ['Conditions of Entitlement', 'Good cause', 'Rate of Assessment / Payability Issues - complex'],
   hearingWindow: {
     hearingWindowDateRange: {
-      hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
-      hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000',
+      hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
+      hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
     },
-    hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
+    hearingWindowFirstDate: '2022-12-01T09:00:00.000+0000',
   },
   duration: 45,
   hearingPriorityType: 'standard',
@@ -27,7 +27,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   ],
   caseAdditionalSecurityFlag: false,
   facilitiesRequired: ['immigrationDetentionCentre'],
-  listingComments: '',
+  listingComments: 'Additional instructions for the hearing',
   hearingRequester: '',
   privateHearingRequiredFlag: false,
   leadJudgeContractType: '',
@@ -49,6 +49,19 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
     judiciarySpecialisms: [''],
   },
   hearingIsLinkedFlag: false,
+  panelRequirements: {
+    roleType: [
+      'tribunalJudge',
+      'deputyTribunalJudge',
+      'regionalTribunalJudge',
+    ],
+    panelPreferences: [],
+    panelSpecialisms: [
+      "DisabilityQualifiedPanelMember",
+      "FinanciallyQualifiedPanelMember",
+      "RegionalMedicalMember",
+    ],
+  },
   parties: [
     {
       partyID: 'P1',

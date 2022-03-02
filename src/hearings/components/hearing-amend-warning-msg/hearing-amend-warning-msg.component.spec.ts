@@ -23,4 +23,14 @@ describe('HearingAmendWarningMsgComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should return false if not view-edit mode', () => {
+    expect(component.isViewEditMode).toBeFalsy();
+  });
+
+  it('should unsubscribe', () => {
+    const unsubscribeSpy = spyOn(component.hearingConditionsSub, 'unsubscribe');
+    component.ngOnDestroy();
+    expect(unsubscribeSpy).toHaveBeenCalled();
+  });
 });

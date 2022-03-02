@@ -20,9 +20,8 @@ export class HeaderComponent implements OnInit {
   @Input() public navItems: NavItemsModel[];
   @Input() public title: AppTitleModel;
   @Input() public userNav: UserNavModel;
-  @Input() public showFindCase: boolean;
   @Input() public backgroundColor: string;
-  @Input() public logoType: string;
+  @Input() public logo: string;
   @Input() public logoIsUsed: boolean = false;
   @Input() public showNavItems: Observable<boolean>;
   @Input() public currentUrl: string;

@@ -81,7 +81,7 @@ class CucumberReportLog{
             return;
         }
         const decodedImage = await this.getScreenshot(onbrowser);
-        this.scenarioWorld.attach(decodedImage, 'image/png');
+        await this.scenarioWorld.attach(decodedImage, 'image/png');
        
     }
 

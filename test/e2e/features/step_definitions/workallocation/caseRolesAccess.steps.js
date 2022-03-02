@@ -16,21 +16,24 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I validate for role category {string} case roles table displayed status is {string} in case roles and access page', async function (roleCategory, displayStatus){
-        const role = roleCategory.toLowerCase().replace(' ','');
-        const expectedIsDisplayed = displayStatus.toLowerCase().includes('true')
-        if (role.includes('judicia')){
-            expect(await caseRolesAndAccessPage.judicialRolesAccessTable.isTableDisplayed()).to.equal(expectedIsDisplayed)
+        await BrowserWaits.retryWithActionCallback(async () => {
+            const role = roleCategory.toLowerCase().replace(' ', '');
+            const expectedIsDisplayed = displayStatus.toLowerCase().includes('true')
+            if (role.includes('judicia')) {
+                expect(await caseRolesAndAccessPage.judicialRolesAccessTable.isTableDisplayed()).to.equal(expectedIsDisplayed)
 
-        } else if (role.includes('legalops')) {
-            expect(await caseRolesAndAccessPage.legalOpsRolesAccessTable.isTableDisplayed()).to.equal(expectedIsDisplayed)
+            } else if (role.includes('legalops')) {
+                expect(await caseRolesAndAccessPage.legalOpsRolesAccessTable.isTableDisplayed()).to.equal(expectedIsDisplayed)
 
-        } else if (role.includes('exclusion')) {
-            expect(await caseRolesAndAccessPage.exclusionTable.isTableDisplayed()).to.equal(expectedIsDisplayed)
+            } else if (role.includes('exclusion')) {
+                expect(await caseRolesAndAccessPage.exclusionTable.isTableDisplayed()).to.equal(expectedIsDisplayed)
 
-        }
-        else{
-            throw new Error(`${role} is not recognised or not implemented in test`);
-        }        
+            }
+            else {
+                throw new Error(`${role} is not recognised or not implemented in test`);
+            }  
+        });
+              
     });
 
     Then('I validate for role category {string} case roles no data message displayed status is {string} in case roles and access page', async function (roleCategory, displayStatus) {

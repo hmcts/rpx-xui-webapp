@@ -230,7 +230,8 @@ export const ROUTES: Routes = [
           additionFacilitiesOptions: AdditionalFacilitiesResolver,
           partyChannels: PartyChannelsResolverService,
           judgeTypes: JudgeTypesResolverService,
-          judicialUsers: JudicialUserSearchResolver
+          judicialUsers: JudicialUserSearchResolver,
+          otherPanelRoles: PanelRolesResolverService,
         },
         component: HearingViewEditSummaryComponent,
         canActivate: [HealthCheckGuard],

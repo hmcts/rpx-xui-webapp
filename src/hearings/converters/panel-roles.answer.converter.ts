@@ -21,18 +21,16 @@ export class PanelRolesAnswerConverter implements AnswerConverter {
           panelRoles.forEach(role => {
             if (role.key === specialismName) {
               selectedSpecialismName = role.value_en;
-              return;
             } else if (role.child_nodes && role.child_nodes.length) {
               role.child_nodes.forEach(specialism => {
                 if (specialismName === specialism.key && !selectedSpecialismName.length) {
                   selectedSpecialismName = `${role.value_en} - ${specialism.value_en}`;
-                  return;
                 }
               });
             }
           });
           selectedSpecialisms.push(selectedSpecialismName);
-        })
+        });
         return selectedSpecialisms.join('<br>');
       })
     );

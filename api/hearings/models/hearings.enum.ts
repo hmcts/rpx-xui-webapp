@@ -42,7 +42,7 @@ export enum HearingListingStatusEnum {
   ADJOURNED = 'ADJOURNED',
   DRAFT = 'DRAFT',
   PROVISIONAL = 'PROVISIONAL',
-  FIXED = 'FIXED'
+  FIXED = 'FIXED',
 }
 
 export enum EXUISectionStatusEnum {

@@ -2,6 +2,7 @@
 import {HearingLocationModel} from './hearingLocation.model';
 import {HearingWindowModel} from './hearingWindow.model';
 import {JudiciaryModel} from './judiciary.model';
+import { PanelRequirementsModel } from './panelRequirements.model';
 import {PartyDetailsModel} from './partyDetails.model';
 import {PartyFlagsModel} from './partyFlags.model';
 import {ScreenNavigationModel} from './screenNavigation.model';
@@ -24,6 +25,7 @@ export interface ServiceHearingValuesModel {
   listingComments: string;
   hearingRequester: string;
   privateHearingRequiredFlag: boolean;
+  panelRequirements: PanelRequirementsModel;
   leadJudgeContractType: string;
   judiciary: JudiciaryModel;
   hearingIsLinkedFlag: boolean;

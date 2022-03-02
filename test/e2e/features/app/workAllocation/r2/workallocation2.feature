@@ -1,4 +1,4 @@
-@__fullfunctional 
+@__fullfunctional  
 Feature: WA Release 2: : Work allocations My work, All work
 
     Scenario Outline: View tasks, E2E journey of "<useridentifier>" user
@@ -91,7 +91,7 @@ Feature: WA Release 2: : Work allocations My work, All work
             | Location      |
             | Role          |
             | Person        |
-        When I navigate to My work sub navigation tab "Cases"
+        When I navigate to My work sub navigation tab "My cases"
         Then I validate work allocation cases table columns displayed
             | ColumnHeader  |
             | Case name     |

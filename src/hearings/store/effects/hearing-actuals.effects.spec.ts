@@ -1,9 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { cold, hot } from 'jasmine-marbles';
-import { EMPTY, of } from 'rxjs';
-import { HearingResult } from '../../models/hearings.enum';
+import { of } from 'rxjs';
 import { Go } from '../../../app/store';
 import { hearingActualsMainModel } from '../../hearing.test.data';
 import { HearingsService } from '../../services/hearings.service';
@@ -20,14 +19,11 @@ describe('Hearing Actuals Effects', () => {
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
   beforeEach(() => {
     TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
       providers: [
         {
           provide: HearingsService,
           useValue: hearingsServiceMock,
-        },
-        {
-          provide: Router,
-          useValue: mockRouter,
         },
         HearingActualsEffects,
         provideMockActions(() => actions$)
@@ -47,32 +43,17 @@ describe('Hearing Actuals Effects', () => {
     });
   });
 
-  fdescribe('updateHearingActuals$', () => {
-    it('should update hearing actuals', () => {
-      const hearingActuals = hearingActualsMainModel.hearingActuals;
-      hearingActuals.hearingOutcome.hearingResultReasonType = 'Test Reason';
-      hearingActuals.hearingOutcome.hearingResult = HearingResult.ADJOURNED;
-      hearingActualsMainModel.hearingActuals = hearingActuals;
-
-      hearingsServiceMock.updateHearingActuals.and.returnValue(of(EMPTY));
-
-      const action = new hearingActualsActions.UpdateHearingActuals('1111222233334444', hearingActualsMainModel);
-      actions$ = hot('-a|', { a: action });
-      
-      const completion = EMPTY;
-      const expected = cold('-b|', { b: completion });
-
-      expected.subscribe(x => {
-        console.log('EXPECTED', x);
+  describe('updateHearingActual$', () => {
+    it('should return a response with service hearing actuals', () => {
+      hearingsServiceMock.updateHearingActuals.and.returnValue(of(hearingActualsMainModel));
+      const action = new hearingActualsActions.UpdateHearingActuals({
+        hearingId: '1111222233334444',
+        hearingActuals: hearingActualsMainModel.hearingActuals
       });
-
-      effects.updateHearingActuals$.subscribe(x => {
-        console.log('updateHearingActuals', x);
-      });
-      
-      // expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'actuals', 'hearing-actual-add-edit-summary']);
+      const completion = new hearingActualsActions.UpdateHearingActualsSuccess(hearingActualsMainModel);
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
       expect(effects.updateHearingActuals$).toBeObservable(expected);
-      
     });
   });
 

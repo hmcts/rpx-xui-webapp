@@ -38,6 +38,7 @@ describe('Hearing Values Reducer', () => {
           listingComments: '',
           hearingRequester: '',
           privateHearingRequiredFlag: false,
+          panelRequirements: null,
           leadJudgeContractType: '',
           judiciary: {
             roleType: [''],

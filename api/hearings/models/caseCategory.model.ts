@@ -1,4 +1,6 @@
+import {CategoryType} from './hearings.enum';
+
 export interface CaseCategoryModel {
-  categoryType: string;
+  categoryType: CategoryType;
   categoryValue: string;
 }

@@ -7,17 +7,11 @@ import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import * as fromAppStoreActions from '../../../app/store/actions';
 import * as hearingActualsActions from '../../../hearings/store/actions/hearing-actuals.action';
 import { HttpError } from '../../../models/httpError.model';
+import { HearingActualsMainModel } from '../../models/hearingActualsMainModel';
 import { HearingsService } from '../../services/hearings.service';
 
 @Injectable()
 export class HearingActualsEffects {
-
-  constructor(
-    private readonly actions$: Actions,
-    private readonly hearingsService: HearingsService,
-    private readonly router: Router
-  ) {
-  }
 
   @Effect()
   public getHearingActuals$ = this.actions$.pipe(
@@ -29,24 +23,24 @@ export class HearingActualsEffects {
       ))
   );
 
-  @Effect({dispatch: false})
+
+  @Effect()
   public updateHearingActuals$ = this.actions$.pipe(
     ofType(hearingActualsActions.UPDATE_HEARING_ACTUALS),
-    switchMap((action: hearingActualsActions.UpdateHearingActuals) => {
-      return this.hearingsService.updateHearingActuals(action.hearingId, action.payload.hearingActuals).pipe(
-        tap(
-          (response) => {
-						console.log('SUCCESS');
-						console.log('RESPONSE', response);
-            return this.router.navigate(['hearings', 'actuals', 'hearing-actual-add-edit-summary']);
-          }),
-        catchError(error => {
-					console.log('ERROR', error);
-          return HearingActualsEffects.handleError(error);
-        })
-      );
-    })
+    switchMap((action: any) => this.hearingsService.updateHearingActuals(action.payload.hearingId, action.payload.hearingActuals)
+      .pipe(
+        tap(() => this.router.navigate([`/hearings/actuals/${action.payload.hearingId}/hearing-actual-add-edit-summary`])),
+        map((response: HearingActualsMainModel) => new hearingActualsActions.UpdateHearingActualsSuccess(response)),
+        catchError(error => HearingActualsEffects.handleError(error))
+      ))
   );
+
+  constructor(
+    private readonly actions$: Actions,
+    private readonly router: Router,
+    private readonly hearingsService: HearingsService,
+  ) {
+  }
 
   public static handleError(error: HttpError): Observable<Action> {
     if (error && error.status && error.status >= 400) {

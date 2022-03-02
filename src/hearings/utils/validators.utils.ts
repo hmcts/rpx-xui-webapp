@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, ValidatorFn } from '@angular/forms';
+import { AbstractControl, FormGroup, ValidatorFn } from '@angular/forms';
 import * as moment from 'moment';
 import { HearingDateEnum } from '../models/hearings.enum';
 
@@ -40,8 +40,8 @@ export class ValidatorsUtils {
       const isValidDate = Object.values(control.value).every(value => value !== null);
       const selectedDate = moment(Object.values(control.value).join('-'), HearingDateEnum.DefaultFormat);
       return isValidDate && selectedDate.isValid() &&
-        (!selectedDate.isBefore() || selectedDate.isSame(new Date(), 'd')) &&
-        ((selectedDate.weekday() !== 6) && (selectedDate.weekday() !== 0))
+      (!selectedDate.isBefore() || selectedDate.isSame(new Date(), 'd')) &&
+      ((selectedDate.weekday() !== 6) && (selectedDate.weekday() !== 0))
         ? null : { isValid: false };
     };
   }
@@ -72,10 +72,10 @@ export class ValidatorsUtils {
       const isLatestDate = (isValidFirstDate && isValidSecondDate) ? secondDate >= firstDate : (isValidFirstDate || isValidSecondDate);
       const numberOfBusinessDays = this.calcBusinessDays(firstDate, secondDate);
       return (isValidFirstDate || isValidSecondDate) && (firstDateNullLength === 0 || firstDateNullLength === 3) && (secondDateNullLength === 0 || secondDateNullLength === 3) &&
-        (firstDate.isValid() || secondDate.isValid()) && isLatestDate &&
-        (isValidFirstDate ? (firstDate.isAfter() || firstDate.isSame(new Date(), 'd')) : true) &&
-        (isValidSecondDate ? (secondDate.isAfter() || secondDate.isSame(new Date(), 'd')) : true) &&
-        numberOfBusinessDays !== 0
+      (firstDate.isValid() || secondDate.isValid()) && isLatestDate &&
+      (isValidFirstDate ? (firstDate.isAfter() || firstDate.isSame(new Date(), 'd')) : true) &&
+      (isValidSecondDate ? (secondDate.isAfter() || secondDate.isSame(new Date(), 'd')) : true) &&
+      numberOfBusinessDays !== 0
         ? null : { isValid: false };
     };
   }
@@ -89,6 +89,28 @@ export class ValidatorsUtils {
   public formArraySelectedValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       return control.value.every((option) => !option.selected) ? { isValid: false } : null;
+    };
+  }
+
+  public validTime(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      if (control.value === null) {
+        return null;
+      }
+      return /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(control.value) ? null : { invalidTime: true };
+    };
+  }
+
+  public validateTimeRange(startTime: string, finishTime: string) {
+    return (formGroup: FormGroup) => {
+      const startTimeControl = formGroup.controls[startTime];
+      const finishTimeControl = formGroup.controls[finishTime];
+      if (!startTimeControl || !finishTimeControl || !startTimeControl.value || !finishTimeControl.value) {
+        return null;
+      }
+      const startTimeMoment = moment(startTimeControl.value, 'HH:mm');
+      const finishTimeMoment = moment(finishTimeControl.value, 'HH:mm');
+      return startTimeMoment.isBefore(finishTimeMoment) ? null : { invalidTimeRange: true };
     };
   }
 }

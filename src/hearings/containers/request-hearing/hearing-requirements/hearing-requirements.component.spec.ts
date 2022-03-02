@@ -112,7 +112,7 @@ describe('HearingRequirementsComponent', () => {
           hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000'
         },
         privateHearingRequiredFlag: false,
-        panelRequirements: null,
+        panelRequirements: undefined,
         autolistFlag: false,
         hearingPriorityType: 'standard',
         numberOfPhysicalAttendees: 2,
@@ -121,7 +121,6 @@ describe('HearingRequirementsComponent', () => {
         listingComments: '',
         hearingRequester: '',
         leadJudgeContractType: '',
-        totalParticipantAttendingHearing: null
       },
       caseDetails: {
         hmctsServiceCode: 'SSCS',
@@ -129,8 +128,8 @@ describe('HearingRequirementsComponent', () => {
         requestTimeStamp: null,
         hearingID: null,
         caseDeepLink: null,
-        hmctsInternalCaseName: null,
-        publicCaseName: null,
+        hmctsInternalCaseName: 'Jane vs DWP',
+        publicCaseName: 'Jane vs DWP',
         caseAdditionalSecurityFlag: false,
         caseCategories: [],
         caseManagementLocationCode: null,

@@ -11,9 +11,24 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
         answerSource: AnswerSource.CASE_NAME,
       },
       {
+        id: 'caseNumber',
+        answerTitle: 'Case number',
+        answerSource: AnswerSource.CASE_NUMBER,
+      },
+      {
         id: 'type',
         answerTitle: 'Type',
-        answerSource: AnswerSource.Type,
+        answerSource: AnswerSource.TYPE_FROM_REQUEST,
+      },
+      {
+        id: 'status',
+        answerTitle: 'Status',
+        answerSource: AnswerSource.STATUS,
+      },
+      {
+        id: 'dateRequestSubmitted',
+        answerTitle: 'Date request submitted',
+        answerSource: AnswerSource.DATE_REQUEST_SUBMITTED,
       }
     ],
   },
@@ -37,12 +52,14 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
         answerTitle: 'Will additional security be required?',
         answerSource: AnswerSource.ADDITIONAL_SECURITY_REQUIRED,
         changeLink: '/hearings/request/hearing-facilities#additionalSecurityYes',
+        isAmendedSource: AnswerSource.ADDITIONAL_SECURITY_REQUIRED,
       },
       {
         id: 'additionalFacilitiesRequired',
         answerTitle: 'Select any additional facilities required',
         answerSource: AnswerSource.ADDITIONAL_FACILITIES_REQUIRED,
         changeLink: '/hearings/request/hearing-facilities#immigrationDetentionCentre',
+        isAmendedSource: AnswerSource.ADDITIONAL_FACILITIES_REQUIRED,
       }
     ],
   },
@@ -81,7 +98,8 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
         id: 'venue',
         answerTitle: 'What are the hearing venue details?',
         answerSource: AnswerSource.VENUE,
-        changeLink: '/hearings/request/hearing-venue#inputLocationSearch'
+        changeLink: '/hearings/request/hearing-venue#inputLocationSearch',
+        isAmendedSource: AnswerSource.VENUE,
       },
     ],
   },
@@ -111,12 +129,21 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
         answerTitle: 'Name of the judge',
         answerSource: AnswerSource.JUDGE_NAME,
         changeLink: '/hearings/request/hearing-judge#inputSelectPerson',
+        isHiddenSource: IsHiddenSource.JUDGE_NAME
+      },
+      {
+        id: 'judgeTypes',
+        answerTitle: 'Select all judge types that apply',
+        answerSource: AnswerSource.JUDGE_TYPES,
+        changeLink: '/hearings/request/hearing-judge#judgeTypes',
+        isHiddenSource: IsHiddenSource.JUDGE_TYPES
       },
       {
         id: 'judgeExclusion',
         answerTitle: 'Exclude a judge',
         answerSource: AnswerSource.JUDGE_EXCLUSION,
         changeLink: '/hearings/request/hearing-judge#inputSelectPersonExclude',
+        isHiddenSource: IsHiddenSource.JUDGE_EXCLUSION
       },
     ],
   },
@@ -128,6 +155,20 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
         answerTitle: 'Do you require a panel for this hearing?',
         answerSource: AnswerSource.HEARING_PANEL,
         changeLink: '/hearings/request/hearing-panel#specificPanelSelection'
+      },
+      {
+        id: 'panelInclusion',
+        answerTitle: 'Include specific panel members',
+        answerSource: AnswerSource.PANEL_INCLUSION,
+        changeLink: '/hearings/request/hearing-panel#inputSelectPersonInclude',
+        isHiddenSource: IsHiddenSource.PANEL_INCLUSION
+      },
+      {
+        id: 'panelExclusion',
+        answerTitle: 'Exclude specific panel members',
+        answerSource: AnswerSource.PANEL_EXCLUSION,
+        changeLink: '/hearings/request/hearing-panel#inputSelectPersonExclude',
+        isHiddenSource: IsHiddenSource.PANEL_EXCLUSION
       },
     ],
   },

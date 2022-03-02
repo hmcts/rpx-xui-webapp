@@ -10,12 +10,13 @@ import * as fromHearingStore from '../../store';
 @Component({
   selector: 'exui-hearing-summary',
   templateUrl: './hearing-summary.component.html',
+  styleUrls: ['./hearing-summary.component.scss'],
 })
 export class HearingSummaryComponent implements AfterViewInit {
 
   @Input() public template: Section[];
   @Input() public mode: Mode;
-  private hearingState$: Observable<fromHearingStore.State>;
+  public hearingState$: Observable<fromHearingStore.State>;
 
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly router: Router,

@@ -13,6 +13,8 @@ import {AbstractPageFlow} from '../../utils/abstract-page-flow';
 export class RequestHearingComponent implements OnDestroy {
 
   private static HEARING_CREATE_EDIT_SUMMARY = 'hearing-create-edit-summary';
+  private static HEARING_VIEW_EDIT_SUMMARY = 'hearing-view-edit-summary';
+  private static HEARING_CHANGE_REASON = 'hearing-change-reason';
   private static HEARING_CONFIRMATION = 'hearing-confirmation';
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
@@ -28,12 +30,32 @@ export class RequestHearingComponent implements OnDestroy {
     this.hearingsService.navigateAction(ACTION.CONTINUE);
   }
 
-  public onSubmit(): void {
+  public submitNewRequest(): void {
     this.hearingsService.navigateAction(ACTION.SUBMIT);
   }
 
-  public get isCheckAnswerPage(): boolean {
+  public submitUpdatedRequest(): void {
+    this.hearingsService.navigateAction(ACTION.VIEW_EDIT_REASON);
+  }
+
+  public submitChangeRequest(): void {
+    this.hearingsService.navigateAction(ACTION.VIEW_EDIT_SUBMIT);
+  }
+
+  public get isSummary(): boolean {
+    return this.isCreateEditSummary || this.isViewEditSummary;
+  }
+
+  public get isCreateEditSummary(): boolean {
     return this.pageFlow.getCurrentPage() === RequestHearingComponent.HEARING_CREATE_EDIT_SUMMARY;
+  }
+
+  public get isViewEditSummary(): boolean {
+    return this.pageFlow.getCurrentPage() === RequestHearingComponent.HEARING_VIEW_EDIT_SUMMARY;
+  }
+
+  public get isViewEditReason(): boolean {
+    return this.pageFlow.getCurrentPage() === RequestHearingComponent.HEARING_CHANGE_REASON;
   }
 
   public get isConfirmationPage(): boolean {

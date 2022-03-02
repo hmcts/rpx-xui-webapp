@@ -1,5 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import {
   ActualDayPartyModel,
   ActualHearingDayModel,
@@ -7,14 +10,11 @@ import {
   HearingOutcomeModel,
   PartyModel
 } from '../../../models/hearingActualsMainModel';
-import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
-import * as fromHearingStore from '../../../store';
-import { HearingsService } from '../../../services/hearings.service';
 import { ACTION, HearingResult } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
-import { ActivatedRoute } from '@angular/router';
+import { HearingsService } from '../../../services/hearings.service';
+import * as fromHearingStore from '../../../store';
 
 @Component({
   selector: 'exui-hearing-actual-add-edit-summary',
@@ -29,6 +29,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public adjournHearingActualReasons: LovRefDataModel[];
   public cancelHearingActualReasons: LovRefDataModel[];
   public sub: Subscription;
+  public id: string;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly hearingsService: HearingsService,
@@ -38,6 +39,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
+    this.id = this.route.snapshot.params.id;
     this.sub = this.hearingStore.select(fromHearingStore.getHearingActuals)
       .pipe(
         filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel)

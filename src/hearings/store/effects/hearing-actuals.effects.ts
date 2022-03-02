@@ -35,10 +35,13 @@ export class HearingActualsEffects {
     switchMap((action: hearingActualsActions.UpdateHearingActuals) => {
       return this.hearingsService.updateHearingActuals(action.hearingId, action.payload.hearingActuals).pipe(
         tap(
-          () => {
+          (response) => {
+						console.log('SUCCESS');
+						console.log('RESPONSE', response);
             return this.router.navigate(['hearings', 'actuals', 'hearing-actual-add-edit-summary']);
           }),
         catchError(error => {
+					console.log('ERROR', error);
           return HearingActualsEffects.handleError(error);
         })
       );

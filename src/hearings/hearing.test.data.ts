@@ -953,20 +953,6 @@ export const caseFlagsRefData = [
   },
 ];
 
-export const hearingActualAdjournReasonsRefData = [
-  { key: 'postponedDueToExclusions', value_en: 'Postponed, due to Exclusions', value_cy: '', hintText_EN: 'Postponed, due to Exclusions', hintTextCY: '', order: 1, parentKey: null },
-  { key: 'postponedDueToOtherReasons', value_en: 'Postponed, due to Other Reasons', value_cy: '', hintText_EN: 'Postponed, due to Other Reasons', hintTextCY: '', order: 2, parentKey: null },
-  { key: 'postponedIncompleteTribunal', value_en: 'Postponed, Incomplete Tribunal', value_cy: '', hintText_EN: 'Postponed, Incomplete Tribunal', hintTextCY: '', order: 3, parentKey: null },
-  { key: 'postponedNoReasonGiven', value_en: 'Postponed, No Reason Given', value_cy: '', hintText_EN: 'Postponed, No Reason Given', hintTextCY: '', order: 4, parentKey: null },
-  { key: 'adjournedNoInterpreter', value_en: 'Adjourned, No Interpreter', value_cy: '', hintText_EN: 'Adjourned, No Interpreter', hintTextCY: '', order: 5, parentKey: null }
-];
-
-export const hearingActualCancelReasonsRefData = [
-  { key: 'reasoneOne', value_en: 'Reason 1', value_cy: '', hintText_EN: 'reason 1', hintTextCY: '', order: 1, parentKey: null },
-  { key: 'reasoneTwo', value_en: 'Reason 2', value_cy: '', hintText_EN: 'Reason 2', hintTextCY: '', order: 2, parentKey: null },
-  { key: 'reasonThree', value_en: 'Reason 3', value_cy: '', hintText_EN: 'Reason 3', hintTextCY: '', order: 4, parentKey: null }
-];
-
 export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   caseName: 'Jane vs DWP',
   autoListFlag: false,

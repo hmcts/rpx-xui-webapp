@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { combineLatest, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
 import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
@@ -30,6 +30,10 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly formBuilder: FormBuilder,
               private readonly route: ActivatedRoute) {
+    this.route.params.subscribe(params => {
+      this.id = params.id;
+    });
+
     this.hearingTypes = this.route.snapshot.data.hearingTypes;
     this.adjournHearingActualReasons = this.route.snapshot.data.adjournHearingActualReasons;
     this.cancelHearingActualReasons = this.route.snapshot.data.cancelHearingActualReasons;
@@ -46,13 +50,10 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
       adjournedReason: [''],
       cancelledReason: ['']
     });
-    this.sub = combineLatest([this.hearingStore.select(fromHearingStore.getHearingActuals), this.route.paramMap])
-      .pipe(
-        filter(([state]: [HearingActualsStateData, ParamMap]) => !!state.hearingActualsMainModel),
-        first()
-      )
-      .subscribe(([state, params]: [HearingActualsStateData, ParamMap]) => {
-        this.id = params.get('id');
+    this.sub = this.hearingStore.select(fromHearingStore.getHearingActuals).pipe(
+      filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel),
+      first()
+      ).subscribe((state: HearingActualsStateData) => {
         this.hearingActualsMainModel = state.hearingActualsMainModel;
         this.hearingStageResultForm.get('hearingStage').setValue(this.hearingActualsMainModel.hearingPlanned.plannedHearingType);
       });

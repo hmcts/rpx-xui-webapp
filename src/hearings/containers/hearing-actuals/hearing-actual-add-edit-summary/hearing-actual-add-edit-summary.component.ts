@@ -29,6 +29,8 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public hearingTypes: LovRefDataModel[];
   public adjournHearingActualReasons: LovRefDataModel[];
   public cancelHearingActualReasons: LovRefDataModel[];
+  public hearingTypeDescription: string;
+  public hearingResultReasonTypeDescription: string;
   public sub: Subscription;
   public id: string;
 
@@ -54,6 +56,8 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
           ? hearingActualsMainModel.hearingActuals.actualHearingDays[0] : null;
         this.actualDayParties = hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0
           ? hearingActualsMainModel.hearingActuals.actualHearingDays.map(x => x.actualDayParties[0]) : [];
+        this.hearingTypeDescription = this.getHearingTypeDescription(this.hearingOutcome.hearingType);
+        this.hearingResultReasonTypeDescription = this.getHearingResultReasonTypeDescription(this.hearingOutcome);
         this.hearingActualsMainModel = hearingActualsMainModel;
       });
   }
@@ -77,18 +81,15 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   }
 
   public getHearingResultReasonTypeDescription(hearingOutcome: HearingOutcomeModel): string {
-    if (hearingOutcome.hearingResult === HearingResult.ADJOURNED) {
-      const hearingActualReason = this.adjournHearingActualReasons && this.adjournHearingActualReasons.find(x => x.key === hearingOutcome.hearingResultReasonType);
-      if (hearingActualReason) {
-        return hearingActualReason.value_en;
-      }
+    const hearingActualReasonsRefData = hearingOutcome.hearingResult === HearingResult.COMPLETED
+      ? [] : hearingOutcome.hearingResult === HearingResult.ADJOURNED
+        ? this.adjournHearingActualReasons : this.cancelHearingActualReasons;
+
+    const hearingActualReason = hearingActualReasonsRefData && hearingActualReasonsRefData.find(refData => refData.key === hearingOutcome.hearingResultReasonType);
+    if (hearingActualReason) {
+      return hearingActualReason.value_en;
     }
-    if (hearingOutcome.hearingResult === HearingResult.CANCELLED) {
-      const hearingActualReason = this.cancelHearingActualReasons && this.cancelHearingActualReasons.find(x => x.key === hearingOutcome.hearingResultReasonType);
-      if (hearingActualReason) {
-        return hearingActualReason.value_en;
-      }
-    }
+
     return '';
   }
 

@@ -22,7 +22,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
     { key: 'postponedNoReasonGiven', value_en: 'Postponed, No Reason Given', value_cy: '', hintText_EN: 'Postponed, No Reason Given', hintTextCY: '', order: 4, parentKey: null },
     { key: 'adjournedNoInterpreter', value_en: 'Adjourned, No Interpreter', value_cy: '', hintText_EN: 'Adjourned, No Interpreter', hintTextCY: '', order: 5, parentKey: null }
   ];
-  
+
   const hearingActualCancelReasonsRefData = [
     { key: 'reasoneOne', value_en: 'Reason 1', value_cy: '', hintText_EN: 'reason 1', hintTextCY: '', order: 1, parentKey: null },
     { key: 'reasoneTwo', value_en: 'Reason 2', value_cy: '', hintText_EN: 'Reason 2', hintTextCY: '', order: 2, parentKey: null },

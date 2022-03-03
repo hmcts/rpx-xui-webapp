@@ -84,12 +84,12 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     const hearingActualReasonsRefData = hearingOutcome.hearingResult === HearingResult.COMPLETED
       ? [] : hearingOutcome.hearingResult === HearingResult.ADJOURNED
         ? this.adjournHearingActualReasons : this.cancelHearingActualReasons;
-    
+
     const hearingActualReason = hearingActualReasonsRefData && hearingActualReasonsRefData.find(refData => refData.key === hearingOutcome.hearingResultReasonType);
     if (hearingActualReason) {
       return hearingActualReason.value_en;
     }
-    
+
     return '';
   }
 

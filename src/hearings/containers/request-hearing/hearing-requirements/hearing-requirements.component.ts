@@ -5,7 +5,7 @@ import * as fromHearingStore from '../../../../hearings/store';
 import {CaseFlagReferenceModel} from '../../../models/caseFlagReference.model';
 import {HearingConditions} from '../../../models/hearingConditions';
 import {HearingRequestMainModel} from '../../../models/hearingRequestMain.model';
-import {ACTION, CaseFlagType} from '../../../models/hearings.enum';
+import {ACTION, CaseFlagType, Mode} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
 import {HearingsUtils} from '../../../utils/hearings.utils';
 import {RequestHearingPageFlow} from '../request-hearing.page.flow';
@@ -44,7 +44,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     if (this.hearingListMainModel) {
       this.referenceId = this.hearingListMainModel.caseRef;
     }
-    if (HearingsUtils.hasPropertyAndValue(this.hearingCondition, 'mode', 'create')
+    if (HearingsUtils.hasPropertyAndValue(this.hearingCondition, 'mode', Mode.CREATE)
       && HearingsUtils.hasPropertyAndValue(this.hearingCondition, 'isInit', true)
       && this.serviceHearingValuesModel) {
       this.initializeHearingRequestFromHearingValues();

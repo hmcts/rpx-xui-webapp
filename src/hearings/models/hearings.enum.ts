@@ -160,7 +160,7 @@ export enum HearingDatePriorityEnum {
 }
 
 export enum HearingStageResultEnum {
-  HearingResultError = 'Enter a hearing result',
+  HearingResultError = 'Select a hearing result',
   HearingResultReasonError = 'Select a reason for the hearing result'
 }
 

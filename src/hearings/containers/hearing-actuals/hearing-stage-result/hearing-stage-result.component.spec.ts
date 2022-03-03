@@ -1,16 +1,15 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { provideMockStore } from '@ngrx/store/testing';
-import { HearingsService } from '../../../services/hearings.service';
-import { initialState } from '../../../hearing.test.data';
-import { HearingStageResultComponent } from './hearing-stage-result.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Observable } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
-import * as fromHearingStore from '../../../store';
 import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
+import { Observable } from 'rxjs';
+import { hearingActualCancelReasonsRefData, initialState } from '../../../hearing.test.data';
 import { HearingResult } from '../../../models/hearings.enum';
+import { HearingsService } from '../../../services/hearings.service';
+import { HearingStageResultComponent } from './hearing-stage-result.component';
 
 describe('HearingStageResultComponent', () => {
   let component: HearingStageResultComponent;
@@ -84,8 +83,23 @@ describe('HearingStageResultComponent', () => {
 
   it('should update hearing outcome details on submit', () => {
     const storeDispatchSpy = spyOn(store, 'dispatch');
-    component.hearingResultType = HearingResult.ADJOURNED;
+    component.hearingResultType = HearingResult.COMPLETED;
     component.onSubmit();
+    expect(storeDispatchSpy).toHaveBeenCalled();
+  });
+
+  it('should be able to submit if the form is valid', () => {
+    const storeDispatchSpy = spyOn(store, 'dispatch');
+    component.cancelHearingActualReasons = hearingActualCancelReasonsRefData;
+    component.hearingStageResultForm.get('cancelledReason').setValue('reasoneTwo');
+    fixture.detectChanges();
+    component.hearingResultType = HearingResult.CANCELLED;
+    const nativeElement = fixture.debugElement.nativeElement;
+    nativeElement.querySelector('#cancelled').click();
+    fixture.detectChanges();
+    const cancelledReasonElement: HTMLSelectElement = nativeElement.querySelector('#cancelled-reason');
+    cancelledReasonElement.selectedIndex = 2;
+    nativeElement.querySelector('.govuk-button').click();
     expect(storeDispatchSpy).toHaveBeenCalled();
   });
 });

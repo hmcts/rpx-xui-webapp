@@ -107,6 +107,10 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
     return true;
   }
 
+  public onHearingResult(hearingResultType: string): void {
+    this.hearingResultType = hearingResultType;
+  }
+
   private getHearingResultReasonType(): string {
     if (this.hearingResultType === this.hearingResultEnum.ADJOURNED) {
       return this.hearingStageResultForm.get('adjournedReason').value;
@@ -115,9 +119,5 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
       return this.hearingStageResultForm.get('cancelledReason').value;
     }
     return '';
-  }
-
-  public onHearingResult(hearingResultType: string): void {
-    this.hearingResultType = hearingResultType;
   }
 }

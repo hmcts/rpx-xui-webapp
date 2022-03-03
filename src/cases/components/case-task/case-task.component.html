@@ -4,12 +4,12 @@
     <span class="hmcts-badge_right"></span>
 </p>
 <dl class="govuk-summary-list govuk-summary-list--no-border">
-    <div *ngIf="!isUserJudidical" class="govuk-summary-list__row">
+    <div *ngIf="!isUserJudicial" class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
             <span class="row-padding">Priority</span>
         </dt>
         <dd class="govuk-summary-list__value">
-            <exui-priority-field [dueDate]="toDate(task.dueDate)">
+            <exui-priority-field [dueDate]="toDate(task.due_date)">
             </exui-priority-field>
         </dd>
     </div>
@@ -17,7 +17,10 @@
         <dt class="govuk-summary-list__key">
             <span class="row-padding">{{getDueDateTitle()}}</span>
         </dt>
-        <dd class="govuk-summary-list__value">{{task.dueDate | date:'d MMMM yyyy'}}</dd>
+        <dd class="govuk-summary-list__value">
+            <span *ngIf="isUserJudicial">{{task.created_date | date:'d MMMM yyyy'}}</span>
+            <span *ngIf="!isUserJudicial">{{task.due_date | date:'d MMMM yyyy'}}</span>
+        </dd>
     </div>
     <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
@@ -31,7 +34,8 @@
         </dt>
         <dd class="govuk-summary-list__value">
             <ng-container *ngFor="let option of manageOptions">
-                <a [routerLink]="option.path" class="right">{{option.text}}</a>
+                <a [routerLink]="" tabindex="0" (click)="onActionHandler(task, option)" class="right"
+                  [id]="'action_' + option.id">{{option.text}}</a>
             </ng-container>
         </dd>
     </div>

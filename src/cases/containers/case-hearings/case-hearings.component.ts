@@ -55,7 +55,7 @@ export class CaseHearingsComponent implements OnInit {
     }
   }
 
-  public getHearingListByStatus(status: string): Observable<HearingListViewModel[]> {
+  public getHearingListByStatus(status: EXUISectionStatusEnum): Observable<HearingListViewModel[]> {
     return this.hearingStore.pipe(select(fromHearingStore.getHearingList)).pipe(
       map(hearingListStateData => {
           if (hearingListStateData && hearingListStateData.hearingListMainModel && hearingListStateData.hearingListMainModel.caseHearings) {

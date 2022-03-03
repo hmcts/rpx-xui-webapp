@@ -434,8 +434,17 @@ export function getCaseListPromises(data: CaseDataType, req: EnhancedRequest): A
 
 export async function getMyCases(req: EnhancedRequest, res: Response): Promise<Response> {
   try {
-    const roleAssignments = req.session.roleAssignmentResponse;
-    const cases = await getCaseIdListFromRoles(roleAssignments as RoleAssignment[], req);
+    const roleAssignments:RoleAssignment[] = req.session.roleAssignmentResponse;
+
+    // filter role assignments by service id(s)
+    // TODO: service id(s) will eventually come from res body, hardcoded here for now
+    const serviceIds = ['IA'];
+    const filteredRoleAssignments = roleAssignments.filter(roleAssignment =>
+      serviceIds.includes(roleAssignment.attributes.jurisdiction)
+    );
+
+    // get cases using either filteredRoleAssignments array or roleAssignments array if no serviceId filters are applied
+    const cases = await getCaseIdListFromRoles(!serviceIds.length ? roleAssignments : filteredRoleAssignments, req);
 
     // search parameters passed in as null as there are no parameters for my cases
     const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);

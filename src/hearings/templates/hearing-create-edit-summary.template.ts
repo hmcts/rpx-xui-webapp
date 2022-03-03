@@ -156,6 +156,13 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
         changeLink: '/hearings/request/hearing-panel#inputSelectPersonExclude',
         isHiddenSource: IsHiddenSource.PANEL_EXCLUSION
       },
+      {
+        id: 'panelRoles',
+        answerTitle: 'Select any other panel roles required',
+        answerSource: AnswerSource.PANEL_ROLES,
+        changeLink: '/hearings/request/hearing-panel#specificPanelSelection',
+        isHiddenSource: IsHiddenSource.PANEL_ROLES
+      },
     ],
   },
   {

@@ -459,8 +459,14 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
       unique_cases: 0,
     };
 
-    if (cases.length) {
-      const mappedCases = checkedRoles ? mapCasesFromData(cases, checkedRoles as any, null) : [];
+    // filter cases by locationIds
+    // TODO: locationIds will eventually come from req.body
+    const locationIds = []; // e.g. ['227101','698118']
+    const caseData = filterByLocationId(result.cases, locationIds);
+    logger.info('results filtered by location id', caseData.length);
+
+    if (caseData.length) {
+      const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles as any, null) : [];
       result.total_records = mappedCases.length;
       result.unique_cases = getUniqueCasesCount(mappedCases);
       result.cases = assignActionsToCases(mappedCases, userIsCaseAllocator);

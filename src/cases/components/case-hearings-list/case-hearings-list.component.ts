@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {HearingConditions} from '../../../hearings/models/hearingConditions';
@@ -22,12 +22,15 @@ export class CaseHearingsListComponent implements OnInit {
 
   @Input()
   public actions: Actions[];
+  public caseId: string;
   public hasUpdateAction: boolean = false;
   public hasDeleteAction: boolean = false;
   public hasReadOnlyAction: boolean = false;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
+              private readonly activatedRoute: ActivatedRoute,
               private readonly router: Router) {
+    this.caseId = this.activatedRoute.snapshot.params.cid;
   }
 
   public ngOnInit(): void {
@@ -47,6 +50,7 @@ export class CaseHearingsListComponent implements OnInit {
   }
 
   public viewAndEdit(hearingID: string): void {
+    this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
     this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearingID));
     const hearingCondition: HearingConditions = {
       mode: Mode.VIEW,

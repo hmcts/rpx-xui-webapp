@@ -43,13 +43,5 @@ describe('StageAnswerConverter', () => {
     const expected = cold('(b|)', {b: isAmended});
     expect(result$).toBeObservable(expected);
   });
-  it('should transform the amended flag when previous vs current hearing type are not equal', () => {
-    const STATE: State = initialState.hearings;
-    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingType = 'initial';
-    const result$ = converter.transformIsAmended(of(STATE));
-    const isAmended = true;
-    const expected = cold('(b|)', {b: isAmended});
-    expect(result$).toBeObservable(expected);
-  });
 });
 

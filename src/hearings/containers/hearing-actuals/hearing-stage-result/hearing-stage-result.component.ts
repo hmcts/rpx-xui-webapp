@@ -6,7 +6,7 @@ import { combineLatest, Subscription } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
 import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
-import { HearingResult } from '../../../models/hearings.enum';
+import { HearingResult, HearingStageResultEnum } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import * as fromHearingStore from '../../../store';
 
@@ -69,20 +69,42 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
   }
 
   public onSubmit(): void {
-    const hearingActuals = {
-      ...this.hearingActualsMainModel.hearingActuals,
-      hearingOutcome: {
-        ...this.hearingActualsMainModel.hearingActuals.hearingOutcome,
-        hearingResultReasonType: this.getHearingResultReasonType(),
-        hearingResult: this.hearingResultType as HearingResult,
-        hearingType: this.hearingStageResultForm.get('hearingStage').value
-      }
-    };
+    if (this.isFormValid()) {
+      const hearingActuals = {
+        ...this.hearingActualsMainModel.hearingActuals,
+        hearingOutcome: {
+          ...this.hearingActualsMainModel.hearingActuals.hearingOutcome,
+          hearingResultReasonType: this.getHearingResultReasonType(),
+          hearingResult: this.hearingResultType as HearingResult,
+          hearingType: this.hearingStageResultForm.get('hearingStage').value
+        }
+      };
 
-    this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
-      hearingId: this.id,
-      hearingActuals
-    }));
+      this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
+        hearingId: this.id,
+        hearingActuals
+      }));
+    }
+  }
+
+  public isFormValid(): boolean {
+    this.validationErrors = [];
+    if (!this.hearingResultType) {
+      this.validationErrors.push({
+        id: 'completed',
+        message: HearingStageResultEnum.HearingResultError
+      });
+      return false;
+    }
+    if (this.hearingResultType !== this.hearingResultEnum.COMPLETED &&
+        this.getHearingResultReasonType().length === 0) {
+      this.validationErrors.push({
+        id: this.hearingResultType === this.hearingResultEnum.ADJOURNED ? 'adjourned-reason' : 'cancelled-reason',
+        message: HearingStageResultEnum.HearingResultReasonError
+      });
+      return false;
+    }
+    return true;
   }
 
   private getHearingResultReasonType(): string {

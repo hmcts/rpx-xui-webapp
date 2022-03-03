@@ -159,6 +159,11 @@ export enum HearingDatePriorityEnum {
   EarliestHearingDateError = 'The earliest hearing date must be before the latest hearing date',
 }
 
+export enum HearingStageResultEnum {
+  HearingResultError = 'Enter a hearing result',
+  HearingResultReasonError = 'Select a reason for the hearing result'
+}
+
 export enum HearingErrorMessage {
   ENTER_A_VALID_LOCATION = 'Enter a valid location',
   ENTER_A_LOCATION = 'Enter a location',
@@ -195,7 +200,7 @@ export enum CaseFlagType {
 }
 
 export enum CancelHearingMessages {
-  NOT_SELECTED_A_REASON = 'You have not selected a reason for cancelling th hearing',
+  NOT_SELECTED_A_REASON = 'You have not selected a reason for cancelling the hearing',
   SELECT_AT_LEAST_ONE_REASON = 'Select at least one valid reason',
 }
 
@@ -226,13 +231,6 @@ export enum AnswerSource {
   HEARING_PRIORITY,
   ADDITIONAL_INSTRUCTION
 }
-
-
-
-
-
-
-
 
 export enum IsHiddenSource {
   WELSH_LOCATION,

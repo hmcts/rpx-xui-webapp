@@ -1,7 +1,6 @@
-import { LaCaseStatus } from 'api/hearings/models/hearings.enum';
 import { HearingActualsMainModel } from './models/hearingActualsMainModel';
 import { HearingRequestMainModel } from './models/hearingRequestMain.model';
-import { CategoryType, HearingListingStatusEnum, HearingResult, HMCStatus, PartyType } from './models/hearings.enum';
+import { CategoryType, HearingListingStatusEnum, HearingResult, HMCStatus, LaCaseStatus, ListingStatus, PartyType } from './models/hearings.enum';
 import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
 
 export const hearingStageRefData = [
@@ -1228,7 +1227,7 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
     receivedDateTime: '2021-11-30T09:00:00.000+0000',
     responseVersion: 0,
     laCaseStatus: LaCaseStatus.AWAITING_LISTING,
-    listingStatus: '',
+    listingStatus: ListingStatus.DRAFT,
     hearingCancellationReason: '123456543',
     hearingDaySchedule: {
       hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
@@ -1566,14 +1565,14 @@ export const initialState = {
     hearingRequest: {
       hearingRequestMainModel: {
         requestDetails: {
-          requestTimeStamp: null
+          requestTimeStamp: '2021-11-30T09:00:00.000+0000'
         },
         hearingResponse: {
           listAssistTransactionID: '',
           responseVersion: 1,
           receivedDateTime: '2021-11-30T09:00:00.000+0000',
           laCaseStatus: LaCaseStatus.AWAITING_LISTING,
-          listingStatus: '',
+          listingStatus: ListingStatus.FIXED,
           hearingCancellationReason: '',
           hearingDaySchedule: {
             hearingStartDateTime: '',

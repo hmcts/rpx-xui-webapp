@@ -9,8 +9,8 @@ export class DateRequestSubmittedAnswerConverter implements AnswerConverter {
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
       map(state => {
-        const hearingResponse = state.hearingRequest.hearingRequestMainModel.hearingResponse;
-        const receivedDateTime = moment(hearingResponse.receivedDateTime).format(HearingDateEnum.DisplayMonth);
+        const hearingResponse = state.hearingRequest.hearingRequestMainModel.requestDetails;
+        const receivedDateTime = moment(hearingResponse.requestTimeStamp).format(HearingDateEnum.DisplayMonth);
         return receivedDateTime;
       })
     );

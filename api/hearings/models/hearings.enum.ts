@@ -28,6 +28,12 @@ export enum LaCaseStatus {
   CASE_CLOSED = 'Case Closed',
 }
 
+export enum ListingStatus {
+  DRAFT = 'Draft',
+  PROVISIONAL = 'Provisional',
+  FIXED = 'Fixed',
+}
+
 export enum HearingListingStatusEnum {
   AWAITING_LISTING = 'AWAITING LISTING',
   UPDATE_REQUESTED = 'UPDATE REQUESTED',
@@ -40,9 +46,6 @@ export enum HearingListingStatusEnum {
   VACATED = 'VACATED',
   AWAITING_ACTUALS = 'AWAITING ACTUALS',
   ADJOURNED = 'ADJOURNED',
-  DRAFT = 'DRAFT',
-  PROVISIONAL = 'PROVISIONAL',
-  FIXED = 'FIXED',
 }
 
 export enum EXUISectionStatusEnum {

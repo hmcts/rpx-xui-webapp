@@ -31,9 +31,12 @@ export enum HearingListingStatusEnum {
   VACATED = 'VACATED',
   AWAITING_ACTUALS = 'AWAITING ACTUALS',
   ADJOURNED = 'ADJOURNED',
-  DRAFT = 'DRAFT',
-  PROVISIONAL = 'PROVISIONAL',
-  FIXED = 'FIXED'
+}
+
+export enum ListingStatus {
+  DRAFT = 'Draft',
+  PROVISIONAL = 'Provisional',
+  FIXED = 'Fixed',
 }
 
 export enum LaCaseStatus {

@@ -32,7 +32,12 @@
                 <td class="govuk-table__cell">
                   <select class="govuk-select" formControlName="attendanceType" aria-label="Attendee type">
                     <option value="Please select">Please select</option>
-                    <option *ngFor="let reason of partyChannelActuals" [ngValue]="reason.key">{{reason.value_en}}</option>
+                    <ng-container *ngFor="let reason of partyChannel">
+                      <option *ngIf="!reason.child_nodes" [ngValue]="reason.key">{{reason.value_en}}</option>
+                      <ng-container *ngIf="reason.child_nodes">
+                        <option *ngFor="let reason_child of reason.child_nodes" [ngValue]="reason_child.key">{{reason_child.value_en}}</option>
+                      </ng-container>
+                    </ng-container>
                   </select>
                 </td>
                 <td class="govuk-table__cell"></td>
@@ -61,7 +66,12 @@
                 <td class="govuk-table__cell">
                   <select class="govuk-select" formControlName="attendanceType" aria-label="Attendee type">
                     <option value="Please select">Please select</option>
-                    <option *ngFor="let reason of partyChannelActuals" [ngValue]="reason.key">{{reason.value_en}}</option>
+                    <ng-container *ngFor="let reason of partyChannel">
+                      <option *ngIf="!reason.child_nodes" [ngValue]="reason.key">{{reason.value_en}}</option>
+                      <ng-container *ngIf="reason.child_nodes">
+                        <option *ngFor="let reason_child of reason.child_nodes" [ngValue]="reason_child.key">{{reason_child.value_en}}</option>
+                      </ng-container>
+                    </ng-container>
                   </select>
                 </td>
                 <td class="govuk-table__cell">
@@ -73,7 +83,7 @@
 
                   <select class="govuk-select" formControlName="attendeeRepresenting" aria-label="Who was this attenddee representing?">
                     <option value="Please select">Please select</option>
-                    <option *ngFor="let participant of participants" value="{{ participant }}" selected="">{{ participant }}</option>
+                    <option *ngFor="let participant of participants" value="{{ participant.id }}" selected="">{{ participant.name }}</option>
                   </select>
 
                 </td>

@@ -11,7 +11,7 @@ import { RefDataResolver } from './ref-data-resolver.resolve';
 @Injectable({
   providedIn: 'root'
 })
-export class HearingActualPartyChannelResolver extends RefDataResolver implements Resolve<LovRefDataModel[]> {
+export class HearingPartyChannelResolver extends RefDataResolver implements Resolve<LovRefDataModel[]> {
 
   constructor(
     protected readonly lovRefDataService: LovRefDataService,
@@ -23,7 +23,7 @@ export class HearingActualPartyChannelResolver extends RefDataResolver implement
   public resolve(route?: ActivatedRouteSnapshot): Observable<LovRefDataModel[]> {
     route.data = {
       ...route.data,
-      category: HearingCategory.PartyChannelActual
+      category: HearingCategory.PartyChannel
     };
 
     return super.resolve(route);

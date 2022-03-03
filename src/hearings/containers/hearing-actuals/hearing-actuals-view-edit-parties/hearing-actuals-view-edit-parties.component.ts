@@ -17,7 +17,7 @@ import * as fromHearingStore from '../../../store';
 })
 export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy {
 
-  public partyChannelActuals: LovRefDataModel[];
+  public partyChannel: LovRefDataModel[];
 
   public columns: string[] = [
     'First name',
@@ -31,7 +31,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
 
   public partiesTable: FormGroup;
 
-  public participants: string[] = [];
+  public participants: any[] = [];
 
   public caseTitle = 'Jane Smith vs DWP';
 
@@ -50,7 +50,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   }
 
   public ngOnInit() {
-    this.partyChannelActuals = this.route.snapshot.data.partyChannelActual;
+    this.partyChannel = this.route.snapshot.data.partyChannel;
     this.sub = this.hearingStore.select(fromHearingStore.getHearingActuals)
       .pipe(
         filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel)
@@ -92,7 +92,10 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     hearingActuals.hearingActuals.actualHearingDays.forEach( actualHearingDay => {
 
       actualHearingDay.actualDayParties.forEach( dayParty => {
-        this.participants.push(`${dayParty.actualIndividualDetails.firstName} ${dayParty.actualIndividualDetails.lastName}`);
+        this.participants.push({
+          name: `${dayParty.actualIndividualDetails.firstName} ${dayParty.actualIndividualDetails.lastName}`,
+          id: dayParty.actualPartyId
+        });
         this.parties.push(this.fb.group({
           firstName: [dayParty.actualIndividualDetails.firstName],
           lastName: [dayParty.actualIndividualDetails.lastName],

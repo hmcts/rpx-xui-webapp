@@ -49,7 +49,7 @@ export class CaseHearingsListComponent implements OnInit {
     }
   }
 
-  public hasAddEdit(exuiDisplayStatus: EXUIDisplayStatusEnum): boolean {
+  public isAwaitingActual(exuiDisplayStatus: EXUIDisplayStatusEnum): boolean {
     return exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_ACTUALS;
   }
 

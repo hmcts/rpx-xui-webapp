@@ -33,6 +33,21 @@ export enum HearingListingStatusEnum {
   ADJOURNED = 'ADJOURNED',
 }
 
+export enum ListingStatus {
+  DRAFT = 'Draft',
+  PROVISIONAL = 'Provisional',
+  FIXED = 'Fixed',
+}
+
+export enum LaCaseStatus {
+  CASE_CREATED = 'Case Created',
+  AWAITING_LISTING = 'Awaiting Listing',
+  LISTED = 'Listed',
+  PENDING_RELISTING = 'Pending Relisting',
+  HEARING_COMPLETED = 'Hearing Completed',
+  CASE_CLOSED = 'Case Closed',
+}
+
 export enum EXUISectionStatusEnum {
   UPCOMING = 'Upcoming',
   PAST_AND_CANCELLED = 'Past and cancelled',
@@ -227,13 +242,6 @@ export enum AnswerSource {
   HEARING_PRIORITY,
   ADDITIONAL_INSTRUCTION
 }
-
-
-
-
-
-
-
 
 export enum IsHiddenSource {
   WELSH_LOCATION,

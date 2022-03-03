@@ -1,10 +1,12 @@
 import { HearingDayScheduleModel } from './hearingDaySchedule.model';
+import { LaCaseStatus, ListingStatus } from './hearings.enum';
 
 export interface HearingResponseModel {
   listAssistTransactionID: string;
   receivedDateTime: string;
   responseVersion: number;
-  laCaseStatus: string;
+  laCaseStatus: LaCaseStatus;
+  listingStatus: ListingStatus;
   hearingCancellationReason: string;
   hearingDaySchedule: HearingDayScheduleModel;
 }

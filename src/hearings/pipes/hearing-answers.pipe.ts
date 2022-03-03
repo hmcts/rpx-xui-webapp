@@ -8,6 +8,7 @@ import { AnswerConverter } from '../converters/answer.converter';
 import { CaseFlagAnswerConverter } from '../converters/case-flag.answer.converter';
 import { CaseNameAnswerConverter } from '../converters/case-name.answer.converter';
 import { CaseNumberAnswerConverter } from '../converters/case-number.answer.converter';
+import { DateRequestSubmittedAnswerConverter } from '../converters/date-request-submitted.answer.converter';
 import { DefaultAnswerConverter } from '../converters/default.answer.converter';
 import { HearingLengthAnswerConverter } from '../converters/hearing-length.answer.converter';
 import { HearingPanelAnswerConverter } from '../converters/hearing-panel.answer.converter';
@@ -24,6 +25,7 @@ import { PanelInclusionAnswerConverter } from '../converters/panel-inclusion.ans
 import { PanelRolesAnswerConverter } from '../converters/panel-roles.answer.converter';
 import { PartyChannelsAnswerConverter } from '../converters/party-channels-answer.converter';
 import { StageAnswerConverter } from '../converters/stage.answer.converter';
+import { StatusAnswerConverter } from '../converters/status.answer.converter';
 import { TypeFromRequestAnswerConverter } from '../converters/type-from-request.answer.converter';
 import { TypeAnswerConverter } from '../converters/type.answer.converter';
 import { VenueAnswerConverter } from '../converters/venue.answer.converter';
@@ -49,6 +51,12 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.Type:
         converter = new TypeAnswerConverter();
+        break;
+      case AnswerSource.STATUS:
+        converter = new StatusAnswerConverter();
+        break;
+      case AnswerSource.DATE_REQUEST_SUBMITTED:
+        converter = new DateRequestSubmittedAnswerConverter();
         break;
       case AnswerSource.TYPE_FROM_REQUEST:
         converter = new TypeFromRequestAnswerConverter();

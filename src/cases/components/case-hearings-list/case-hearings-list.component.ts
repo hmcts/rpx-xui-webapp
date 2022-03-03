@@ -53,7 +53,7 @@ export class CaseHearingsListComponent implements OnInit {
     return exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_ACTUALS;
   }
 
-  public isUnCancellable(exuiDisplayStatus: EXUIDisplayStatusEnum): boolean {
+  public isNonCancellable(exuiDisplayStatus: EXUIDisplayStatusEnum): boolean {
     return exuiDisplayStatus === EXUIDisplayStatusEnum.CANCELLATION_REQUESTED
       || exuiDisplayStatus === EXUIDisplayStatusEnum.FAILURE;
   }

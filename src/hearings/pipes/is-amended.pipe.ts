@@ -28,7 +28,7 @@ export class IsAmendedPipe implements PipeTransform {
         break;
       case AnswerSource.STAGE:
         converter = new StageAmendedConverter();
-        break;        
+        break;
       default:
         break;
     }

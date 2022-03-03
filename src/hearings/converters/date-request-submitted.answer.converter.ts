@@ -10,8 +10,7 @@ export class DateRequestSubmittedAnswerConverter implements AnswerConverter {
     return hearingState$.pipe(
       map(state => {
         const hearingResponse = state.hearingRequest.hearingRequestMainModel.requestDetails;
-        const receivedDateTime = moment(hearingResponse.requestTimeStamp).format(HearingDateEnum.DisplayMonth);
-        return receivedDateTime;
+        return moment(hearingResponse.requestTimeStamp).format(HearingDateEnum.DisplayMonth);
       })
     );
   }

@@ -49,6 +49,15 @@ export class CaseHearingsListComponent implements OnInit {
     }
   }
 
+  public hasAddEdit(exuiDisplayStatus: EXUIDisplayStatusEnum): boolean {
+    return exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_ACTUALS;
+  }
+
+  public isUnCancellable(exuiDisplayStatus: EXUIDisplayStatusEnum): boolean {
+    return exuiDisplayStatus === EXUIDisplayStatusEnum.CANCELLATION_REQUESTED
+      || exuiDisplayStatus === EXUIDisplayStatusEnum.FAILURE;
+  }
+
   public viewAndEdit(hearingID: string): void {
     this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
     this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearingID));
@@ -61,9 +70,5 @@ export class CaseHearingsListComponent implements OnInit {
 
   public addAndEdit(hearingID: string): void {
     this.router.navigate(['/', 'hearings', 'actuals', hearingID, 'hearing-actual-add-edit-summary']);
-  }
-
-  public hasAddEdit(hearing: HearingListViewModel): boolean {
-    return hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_ACTUALS;
   }
 }

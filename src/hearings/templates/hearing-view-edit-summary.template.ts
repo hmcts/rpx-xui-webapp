@@ -1,5 +1,5 @@
-import {AnswerSource, IsHiddenSource} from '../models/hearings.enum';
-import {Section} from '../models/section';
+import { AnswerSource, IsHiddenSource } from '../models/hearings.enum';
+import { Section } from '../models/section';
 
 export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
   {
@@ -169,6 +169,13 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
         answerSource: AnswerSource.PANEL_EXCLUSION,
         changeLink: '/hearings/request/hearing-panel#inputSelectPersonExclude',
         isHiddenSource: IsHiddenSource.PANEL_EXCLUSION
+      },
+      {
+        id: 'panelRoles',
+        answerTitle: 'Select any other panel roles required',
+        answerSource: AnswerSource.PANEL_ROLES,
+        changeLink: '/hearings/request/hearing-panel#specificPanelSelection',
+        isHiddenSource: IsHiddenSource.PANEL_ROLES
       },
     ],
   },

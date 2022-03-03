@@ -1,6 +1,6 @@
 import {PartyType} from '../../../src/hearings/models/hearings.enum';
 import {HearingRequestMainModel} from '../models/hearingRequestMain.model';
-import {CategoryType} from "../models/hearings.enum";
+import {CategoryType, LaCaseStatus, ListingStatus} from "../models/hearings.enum";
 
 export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
   {
@@ -92,7 +92,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listAssistTransactionID: '123456789',
       receivedDateTime: '2021-11-30T09:00:00.000+0000',
       responseVersion: 0,
-      laCaseStatus: 'tbd',
+      laCaseStatus: LaCaseStatus.AWAITING_LISTING,
+      listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
       hearingDaySchedule: {
         hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
@@ -193,7 +194,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listAssistTransactionID: '123456789',
       receivedDateTime: '2021-11-30T09:00:00.000+0000',
       responseVersion: 0,
-      laCaseStatus: 'tbd',
+      laCaseStatus: LaCaseStatus.AWAITING_LISTING,
+      listingStatus: ListingStatus.DRAFT,
       hearingCancellationReason: '123456543',
       hearingDaySchedule: {
         hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
@@ -294,7 +296,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listAssistTransactionID: '123456789',
       receivedDateTime: '2021-11-30T09:00:00.000+0000',
       responseVersion: 0,
-      laCaseStatus: 'tbd',
+      laCaseStatus: LaCaseStatus.AWAITING_LISTING,
+      listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
       hearingDaySchedule: {
         hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
@@ -395,7 +398,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listAssistTransactionID: '123456789',
       receivedDateTime: '2021-11-30T09:00:00.000+0000',
       responseVersion: 0,
-      laCaseStatus: 'tbd',
+      laCaseStatus: LaCaseStatus.AWAITING_LISTING,
+      listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
       hearingDaySchedule: {
         hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
@@ -496,7 +500,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listAssistTransactionID: '123456789',
       receivedDateTime: '2021-11-30T09:00:00.000+0000',
       responseVersion: 0,
-      laCaseStatus: 'tbd',
+      laCaseStatus: LaCaseStatus.AWAITING_LISTING,
+      listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
       hearingDaySchedule: {
         hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
@@ -597,7 +602,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listAssistTransactionID: '123456789',
       receivedDateTime: '2021-11-30T09:00:00.000+0000',
       responseVersion: 0,
-      laCaseStatus: 'tbd',
+      laCaseStatus: LaCaseStatus.AWAITING_LISTING,
+      listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
       hearingDaySchedule: {
         hearingStartDateTime: '2021-03-12T09:00:00.000+0000',

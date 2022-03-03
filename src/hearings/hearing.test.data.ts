@@ -1,7 +1,7 @@
-import {HearingActualsMainModel} from './models/hearingActualsMainModel';
-import {HearingRequestMainModel} from './models/hearingRequestMain.model';
-import {CategoryType, HearingListingStatusEnum, HearingResult, HMCStatus, PartyType} from './models/hearings.enum';
-import {ServiceHearingValuesModel} from './models/serviceHearingValues.model';
+import { HearingActualsMainModel } from './models/hearingActualsMainModel';
+import { HearingRequestMainModel } from './models/hearingRequestMain.model';
+import { CategoryType, HearingListingStatusEnum, HearingResult, HMCStatus, LaCaseStatus, ListingStatus, PartyType } from './models/hearings.enum';
+import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
 
 export const hearingStageRefData = [
   {
@@ -1152,106 +1152,107 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
 } as ServiceHearingValuesModel;
 
 export const hearingRequestMainModel: HearingRequestMainModel = {
-    requestDetails: {
-      requestTimeStamp: '2022-02-23T09:00:00.000+0000',
-      versionNumber: 1,
-    },
-    hearingDetails: {
-      duration: 45,
-      hearingType: 'final',
-      hearingLocations: [
-        {
-          locationType: 'hearing',
-          locationId: '196538',
-          locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
-          region: 'North West',
-        },
-      ],
-      hearingIsLinkedFlag: false,
-      hearingWindow: {
-        hearingWindowDateRange: {
-          hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
-          hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000',
-        },
-        hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
-      },
-      privateHearingRequiredFlag: false,
-      panelRequirements: null,
-      autolistFlag: false,
-      hearingPriorityType: 'standard',
-      numberOfPhysicalAttendees: 2,
-      hearingInWelshFlag: false,
-      facilitiesRequired: [
-        'immigrationDetentionCentre',
-        'inCameraCourt',
-        'sameSexCourtroom',
-      ],
-      listingComments: 'Interpreter required',
-      hearingRequester: '',
-      leadJudgeContractType: '',
-    },
-    caseDetails: {
-      hmctsServiceCode: 'SSCS',
-      caseRef: '1584618195804035',
-      requestTimeStamp: null,
-      hearingID: 'h100001',
-      externalCaseReference: null,
-      caseDeepLink: null,
-      hmctsInternalCaseName: 'Jane Smith vs DWP',
-      publicCaseName: 'Jane Smith vs DWP',
-      caseAdditionalSecurityFlag: false,
-      caseInterpreterRequiredFlag: false,
-      caseCategories: [
-        {
-          categoryType: CategoryType.CaseType,
-          categoryValue: 'Personal Independence Payment',
-        },
-        {
-          categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Conditions of Entitlement',
-        },
-        {
-          categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Good cause',
-        },
-        {
-          categoryType: CategoryType.CaseSubType,
-          categoryValue: 'Rate of Assessment / Payability Issues - complex',
-        }],
-      caseManagementLocationCode: null,
-      caserestrictedFlag: false,
-      caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
-    },
-    partyDetails: [
+  requestDetails: {
+    requestTimeStamp: '2022-02-23T09:00:00.000+0000',
+    versionNumber: 1,
+  },
+  hearingDetails: {
+    duration: 45,
+    hearingType: 'final',
+    hearingLocations: [
       {
-        partyID: 'P1',
-        partyName: 'Jane and Smith',
-        partyType: PartyType.IND,
-        partyChannel: 'inPerson',
-      },
-      {
-        partyID: 'P2',
-        partyName: 'DWP',
-        partyType: PartyType.ORG,
-        partyChannel: 'byVideo',
+        locationType: 'hearing',
+        locationId: '196538',
+        locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
+        region: 'North West',
       },
     ],
-    hearingResponse: {
-      listAssistTransactionID: '123456789',
-      receivedDateTime: '2021-11-30T09:00:00.000+0000',
-      responseVersion: 0,
-      laCaseStatus: 'tbd',
-      hearingCancellationReason: '123456543',
-      hearingDaySchedule: {
-        hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
-        hearingEndDateTime: '2021-03-12T16:00:00.000+0000',
-        listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
-        hearingVenueId: 'venue 4',
-        hearingRoomId: 'room 4',
-        hearingPanel: ['hearingJudgeId2'],
+    hearingIsLinkedFlag: false,
+    hearingWindow: {
+      hearingWindowDateRange: {
+        hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
+        hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000',
       },
+      hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
     },
-  };
+    privateHearingRequiredFlag: false,
+    panelRequirements: null,
+    autolistFlag: false,
+    hearingPriorityType: 'standard',
+    numberOfPhysicalAttendees: 2,
+    hearingInWelshFlag: false,
+    facilitiesRequired: [
+      'immigrationDetentionCentre',
+      'inCameraCourt',
+      'sameSexCourtroom',
+    ],
+    listingComments: 'Interpreter required',
+    hearingRequester: '',
+    leadJudgeContractType: '',
+  },
+  caseDetails: {
+    hmctsServiceCode: 'SSCS',
+    caseRef: '1584618195804035',
+    requestTimeStamp: null,
+    hearingID: 'h100001',
+    externalCaseReference: null,
+    caseDeepLink: null,
+    hmctsInternalCaseName: 'Jane Smith vs DWP',
+    publicCaseName: 'Jane Smith vs DWP',
+    caseAdditionalSecurityFlag: false,
+    caseInterpreterRequiredFlag: false,
+    caseCategories: [
+      {
+        categoryType: CategoryType.CaseType,
+        categoryValue: 'Personal Independence Payment',
+      },
+      {
+        categoryType: CategoryType.CaseSubType,
+        categoryValue: 'Conditions of Entitlement',
+      },
+      {
+        categoryType: CategoryType.CaseSubType,
+        categoryValue: 'Good cause',
+      },
+      {
+        categoryType: CategoryType.CaseSubType,
+        categoryValue: 'Rate of Assessment / Payability Issues - complex',
+      }],
+    caseManagementLocationCode: null,
+    caserestrictedFlag: false,
+    caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
+  },
+  partyDetails: [
+    {
+      partyID: 'P1',
+      partyName: 'Jane and Smith',
+      partyType: PartyType.IND,
+      partyChannel: 'inPerson',
+    },
+    {
+      partyID: 'P2',
+      partyName: 'DWP',
+      partyType: PartyType.ORG,
+      partyChannel: 'byVideo',
+    },
+  ],
+  hearingResponse: {
+    listAssistTransactionID: '123456789',
+    receivedDateTime: '2021-11-30T09:00:00.000+0000',
+    responseVersion: 0,
+    laCaseStatus: LaCaseStatus.AWAITING_LISTING,
+    listingStatus: ListingStatus.DRAFT,
+    hearingCancellationReason: '123456543',
+    hearingDaySchedule: {
+      hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
+      hearingEndDateTime: '2021-03-12T16:00:00.000+0000',
+      listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
+      hearingVenueId: 'venue 4',
+      hearingRoomId: 'room 4',
+      hearingPanel: ['hearingJudgeId2'],
+    },
+  },
+};
 
 export const hearingActualsMainModel: HearingActualsMainModel = {
   hearingActuals: {
@@ -1578,7 +1579,23 @@ export const initialState = {
     hearingRequest: {
       hearingRequestMainModel: {
         requestDetails: {
-          requestTimeStamp: null
+          requestTimeStamp: '2021-11-30T09:00:00.000+0000'
+        },
+        hearingResponse: {
+          listAssistTransactionID: '',
+          responseVersion: 1,
+          receivedDateTime: '2021-11-30T09:00:00.000+0000',
+          laCaseStatus: LaCaseStatus.AWAITING_LISTING,
+          listingStatus: ListingStatus.FIXED,
+          hearingCancellationReason: '',
+          hearingDaySchedule: {
+            hearingStartDateTime: '',
+            hearingEndDateTime: '',
+            listAssistSessionID: '',
+            hearingVenueId: '',
+            hearingRoomId: '',
+            hearingPanel: []
+          }
         },
         hearingDetails: {
           duration: 60,

@@ -1,20 +1,20 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { Router, RouterModule } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { FeatureUser } from '@hmcts/rpx-xui-common-lib';
-import { Store } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
-import { RoleCategoryMappingService } from 'src/app/services/role-category-mapping/role-category-mapping.service';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {By} from '@angular/platform-browser';
+import {ActivatedRoute, Router, RouterModule} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
+import {FeatureUser} from '@hmcts/rpx-xui-common-lib';
+import {Store} from '@ngrx/store';
+import {Observable, of} from 'rxjs';
+import {RoleCategoryMappingService} from 'src/app/services/role-category-mapping/role-category-mapping.service';
 import {
   Actions,
   EXUIDisplayStatusEnum,
   EXUISectionStatusEnum,
   HearingListingStatusEnum
 } from '../../../hearings/models/hearings.enum';
-import { HearingsPipesModule } from '../../../hearings/pipes/hearings.pipes.module';
+import {HearingsPipesModule} from '../../../hearings/pipes/hearings.pipes.module';
 import * as fromHearingStore from '../../../hearings/store';
-import { CaseHearingsListComponent } from './case-hearings-list.component';
+import {CaseHearingsListComponent} from './case-hearings-list.component';
 
 class MockRoleCategoryMappingService {
   public initialize = (user: FeatureUser, clientId: string): void => {
@@ -67,10 +67,22 @@ describe('CaseHearingsListComponent', () => {
         HearingsPipesModule
       ],
       declarations: [CaseHearingsListComponent],
-      providers: [{
-        provide: Store,
-        useValue: mockStore
-      }]
+      providers: [
+        {
+          provide: Store,
+          useValue: mockStore
+        },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              params: {
+                cid: '1111222233334444'
+              },
+            }
+          }
+        }
+      ]
     }).compileComponents();
   }));
 
@@ -133,7 +145,9 @@ describe('CaseHearingsListComponent', () => {
     const navigateSpy = spyOn(router, 'navigate');
     component.viewAndEdit('h100000');
     fixture.detectChanges();
-    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.SaveHearingConditions({ mode: 'view' }));
+    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.LoadHearingValues('1111222233334444'));
+    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.LoadHearingRequest('h100000'));
+    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.SaveHearingConditions({mode: 'view'}));
     expect(navigateSpy).toHaveBeenCalledWith(['/', 'hearings', 'request', 'hearing-view-edit-summary']);
   });
 });

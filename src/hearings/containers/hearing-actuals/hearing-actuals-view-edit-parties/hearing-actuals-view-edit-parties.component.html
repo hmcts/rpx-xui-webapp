@@ -31,7 +31,7 @@
                 <td class="govuk-table__cell">{{group.get('role').value}}</td>
                 <td class="govuk-table__cell">
                   <select class="govuk-select" formControlName="attendanceType" aria-label="Attendee type">
-                    <option value="Please select">Please select</option>
+                    <option [ngValue]="null">Please select</option>
                     <ng-container *ngFor="let reason of partyChannel">
                       <option *ngIf="!reason.child_nodes" [ngValue]="reason.key">{{reason.value_en}}</option>
                       <ng-container *ngIf="reason.child_nodes">
@@ -40,9 +40,7 @@
                     </ng-container>
                   </select>
                 </td>
-                <td class="govuk-table__cell"></td>
-                <td class="govuk-table__cell"></td>
-                <td class="govuk-table__cell"></td>
+                <td class="govuk-table__cell" colspan="3"></td>
               </tr>
 
 
@@ -58,14 +56,12 @@
                 <td class="govuk-table__cell">
                   <select class="govuk-select" formControlName="role" aria-label="Attendee role">
                     <option value="Please select">Please select</option>
-                    <option value="Interpreter" selected="">Interpreter</option>
-                    <option value="Solicitor">Solicitor</option>
-                    <option value="Barrister">Barrister</option>
+                    <option *ngFor="let role of hearingRole" [ngValue]="role.key">{{role.value_en}}</option>
                   </select>
                 </td>
                 <td class="govuk-table__cell">
                   <select class="govuk-select" formControlName="attendanceType" aria-label="Attendee type">
-                    <option value="Please select">Please select</option>
+                    <option [ngValue]="null">Please select</option>
                     <ng-container *ngFor="let reason of partyChannel">
                       <option *ngIf="!reason.child_nodes" [ngValue]="reason.key">{{reason.value_en}}</option>
                       <ng-container *ngIf="reason.child_nodes">

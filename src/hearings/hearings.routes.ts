@@ -35,6 +35,7 @@ import { JudgeTypesResolverService } from './resolvers/judge-types-resolver.serv
 import { PanelRolesResolverService } from './resolvers/panel-roles-resolver.service';
 import { PartyChannelsResolverService } from './resolvers/party-channels-resolver.service';
 import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
+import {HearingActualRoleResolver} from "./resolvers/hearing-actual-role.resolver";
 
 export const ROUTES: Routes = [
   {
@@ -98,7 +99,8 @@ export const ROUTES: Routes = [
       {
         path: 'actuals-parties',
         resolve: {
-          partyChannel: HearingPartyChannelResolver
+          partyChannel: HearingPartyChannelResolver,
+          hearingRole: HearingActualRoleResolver,
         },
         component: HearingActualsViewEditPartiesComponent,
         canActivate: [HealthCheckGuard],

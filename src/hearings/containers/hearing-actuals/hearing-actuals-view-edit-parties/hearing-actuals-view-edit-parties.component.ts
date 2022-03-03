@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, Renderer2} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {Store} from '@ngrx/store';
@@ -18,6 +18,7 @@ import * as fromHearingStore from '../../../store';
 export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy {
 
   public partyChannel: LovRefDataModel[];
+  public hearingRole: LovRefDataModel[];
 
   public columns: string[] = [
     'First name',
@@ -43,6 +44,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
                      private readonly hearingStore: Store<fromHearingStore.State>,
                      private readonly lovRefDataService: LovRefDataService,
                      private readonly route: ActivatedRoute,
+                     private readonly renderer: Renderer2
   ) {
     this.partiesTable = this.fb.group({
       parties: this.fb.array([])
@@ -51,12 +53,14 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
 
   public ngOnInit() {
     this.partyChannel = this.route.snapshot.data.partyChannel;
+    this.hearingRole = this.route.snapshot.data.hearingRole;
     this.sub = this.hearingStore.select(fromHearingStore.getHearingActuals)
       .pipe(
         filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel)
       )
       .subscribe((state: HearingActualsStateData) => {
-        this.hearingActuals = state.hearingActualsMainModel;
+        // create new deep clone otherwise cannot modify model
+        this.hearingActuals = JSON.parse(JSON.stringify(state.hearingActualsMainModel));
         this.createForm(this.hearingActuals);
       });
   }
@@ -81,6 +85,9 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     $event.preventDefault();
     $event.target.blur();
     this.parties.push(this.initiateForm());
+    setTimeout(() => {
+      this.renderer.selectRootElement('tr:last-child input').focus();
+    }, 100);
   }
 
   public ngOnDestroy() {
@@ -89,26 +96,13 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
 
   private createForm(hearingActuals: HearingActualsMainModel) {
 
-    hearingActuals.hearingActuals.actualHearingDays.forEach( actualHearingDay => {
-
-      actualHearingDay.actualDayParties.forEach( dayParty => {
-        this.participants.push({
-          name: `${dayParty.actualIndividualDetails.firstName} ${dayParty.actualIndividualDetails.lastName}`,
-          id: dayParty.actualPartyId
-        });
-        this.parties.push(this.fb.group({
-          firstName: [dayParty.actualIndividualDetails.firstName],
-          lastName: [dayParty.actualIndividualDetails.lastName],
-          role: [dayParty.partyRole],
-          attendanceType: [dayParty.partyChannelSubType],
-          organisation: [dayParty.actualOrganisationDetails.name],
-          attendeeRepresenting: [dayParty.representedParty],
-          isParty: [true]
-        }));
-      });
-    });
-
     hearingActuals.hearingPlanned.plannedHearingDays[0].parties.forEach( party => {
+
+      this.participants.push({
+        name: `${party.individualDetails.firstName} ${party.individualDetails.lastName}`,
+        id: party.partyId
+      });
+
       this.parties.push(this.fb.group({
         firstName: [party.individualDetails.firstName],
         lastName: [party.individualDetails.lastName],
@@ -116,8 +110,27 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
         attendanceType: [party.partyChannelSubType],
         organisation: [party.organisationDetails.name],
         attendeeRepresenting: [party.partyId],
-        isParty: [false]
+        isParty: [true]
       }));
+    });
+
+    hearingActuals.hearingActuals.actualHearingDays.forEach( actualHearingDay => {
+
+      actualHearingDay.actualDayParties.forEach( dayParty => {
+        if (dayParty.didNotAttendFlag) {
+          dayParty.partyChannelSubType = 'notAttending';
+        }
+
+        this.parties.push(this.fb.group({
+          firstName: [dayParty.actualIndividualDetails.firstName],
+          lastName: [dayParty.actualIndividualDetails.lastName],
+          role: [dayParty.partyRole],
+          attendanceType: [dayParty.partyChannelSubType],
+          organisation: [dayParty.actualOrganisationDetails.name],
+          attendeeRepresenting: [dayParty.representedParty],
+          isParty: [false]
+        }));
+      });
     });
 
   }

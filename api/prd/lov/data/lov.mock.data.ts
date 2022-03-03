@@ -660,6 +660,59 @@ export const OTHER_PANEL_ROLES: LovRefDataModel[] = [{
   child_nodes: [],
 }];
 
+export const HEARING_ROLES_REF: LovRefDataModel[] = [
+  {
+    key: 'appellant',
+    value_en: 'Appellant',
+    value_cy: '',
+    hintText_EN: 'Appellant',
+    hintTextCY: '',
+    order: 1,
+    parentKey: null,
+  },
+  {
+    key: 'claimant',
+    value_en: 'Claimant',
+    value_cy: '',
+    hintText_EN: 'Claimant',
+    hintTextCY: '',
+    order: 2,
+    parentKey: null,
+  },
+  {
+    key: 'interpreter',
+    value_en: 'Interpreter',
+    value_cy: '',
+    hintText_EN: 'Interpreter',
+    hintTextCY: '',
+    order: 3,
+    parentKey: null,
+  },
+  {
+    key: 'solicitor',
+    value_en: 'Solicitor',
+    value_cy: '',
+    hintText_EN: 'Solicitor',
+    hintTextCY: '',
+    order: 4,
+    parentKey: null,
+  },
+  {
+    key: 'barrister',
+    value_en: 'Barrister',
+    value_cy: '',
+    hintText_EN: 'Barrister',
+    hintTextCY: '',
+    order: 5,
+    parentKey: null,
+  },
+];
+
+export const HEARING_ROLES: LovRefDataByServiceModel = {
+  serviceID: 'SSCS',
+  values: HEARING_ROLES_REF,
+};
+
 export const SSCS_STAGES: LovRefDataByServiceModel = {
   serviceID: 'SSCS',
   values: DEFAULT_STAGES_REF,
@@ -732,5 +785,9 @@ export const ALL_REF_DATA: LovRefDataByCategoryModel[] = [
   {
     categoryKey: 'OtherPanelRoles',
     services: [SSCS_OTHER_PANEL_ROLES],
+  },
+  {
+    categoryKey: 'HearingRoles',
+    services: [HEARING_ROLES],
   },
 ];

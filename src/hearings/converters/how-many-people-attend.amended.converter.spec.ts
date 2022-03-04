@@ -35,11 +35,10 @@ describe('HowManyPeopleAttendAmendedConverter', () => {
     converter = new HowManyPeopleAttendAmendedConverter();
   });
 
-  it('should transform the amended flag when previous vs current people attend count are not equal', () => {
+  it('should not transform the amended flag when previous vs current people attend count are equal', () => {
     const STATE: State = initialState.hearings;
-    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.numberOfPhysicalAttendees = 2;
     const result$ = converter.transformIsAmended(of(STATE));
-    const isAmended = true;
+    const isAmended = false;
     const expected = cold('(b|)', {b: isAmended});
     expect(result$).toBeObservable(expected);
   });

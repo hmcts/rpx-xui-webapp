@@ -5,6 +5,25 @@ import { HearingDateEnum } from '../models/hearings.enum';
 
 @Injectable({ providedIn: 'root' })
 export class ValidatorsUtils {
+
+  private static validPauseTime(formGroup: FormGroup, pauseTime, startTimes: any, message: string, errorName): any {
+    const startTimeControl = formGroup.controls[startTimes.startTime];
+    const finishTimeControl = formGroup.controls[startTimes.endTime];
+
+    const pauseTimeControl = formGroup.controls[pauseTime];
+    if (!startTimeControl || !finishTimeControl || !startTimeControl.value || !finishTimeControl.value || !pauseTimeControl || !pauseTimeControl.value) {
+      return null;
+    }
+    const startTimeMoment = moment(startTimeControl.value, 'HH:mm');
+    const finishTimeMoment = moment(finishTimeControl.value, 'HH:mm');
+    const pauseTimeMoment = moment(pauseTimeControl.value, 'HH:mm');
+
+    if (pauseTimeMoment.isValid() && !pauseTimeMoment.isBetween(startTimeMoment, finishTimeMoment, null, '[]')) {
+      return { [errorName]: { [pauseTime]: { error: true, message } } };
+    }
+    return null;
+  }
+
   public numberLargerThanValidator(greaterThan: number): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const inputNumber = Number(control.value);
@@ -127,44 +146,9 @@ export class ValidatorsUtils {
     };
   }
 
-  public validatePauseStartTimeRange(pauseTime: string, startTimes: any, message: string): ValidatorFn {
-    return (formGroup: FormGroup) => {
-      const startTimeControl = formGroup.controls[startTimes.startTime];
-      const finishTimeControl = formGroup.controls[startTimes.endTime];
-
-      const pauseTimeControl = formGroup.controls[pauseTime];
-      if (!startTimeControl || !finishTimeControl || !startTimeControl.value || !finishTimeControl.value || !pauseTimeControl || !pauseTimeControl.value) {
-        return null;
-      }
-      const startTimeMoment = moment(startTimeControl.value, 'HH:mm');
-      const finishTimeMoment = moment(finishTimeControl.value, 'HH:mm');
-      const pauseTimeMoment = moment(pauseTimeControl.value, 'HH:mm');
-
-      if (pauseTimeMoment.isValid() && !pauseTimeMoment.isBetween(startTimeMoment, finishTimeMoment, null, '[]')) {
-        return { invalidPauseStartTimeRange: { [pauseTime]: { error: true, message} } };
-      }
-      return null;
-    };
+  public validatePauseTimeRange(pauseTime: string, startTimes: any, message: string, errorName): ValidatorFn {
+    return (formGroup: FormGroup) => ValidatorsUtils.validPauseTime(formGroup, pauseTime, startTimes, message, errorName);
   }
 
-  public validatePauseEndTimeRange(pauseTime: string, startTimes: any, message: string): ValidatorFn {
-    return (formGroup: FormGroup) => {
-      const startTimeControl = formGroup.controls[startTimes.startTime];
-      const finishTimeControl = formGroup.controls[startTimes.endTime];
-
-      const pauseTimeControl = formGroup.controls[pauseTime];
-      if (!startTimeControl || !finishTimeControl || !startTimeControl.value || !finishTimeControl.value || !pauseTimeControl || !pauseTimeControl.value) {
-        return null;
-      }
-      const startTimeMoment = moment(startTimeControl.value, 'HH:mm');
-      const finishTimeMoment = moment(finishTimeControl.value, 'HH:mm');
-      const pauseTimeMoment = moment(pauseTimeControl.value, 'HH:mm');
-
-      if (pauseTimeMoment.isValid() && !pauseTimeMoment.isBetween(startTimeMoment, finishTimeMoment, null, '[]')) {
-        return { invalidPauseEndTimeRange: { [pauseTime]: { error: true, message} } };
-      }
-      return null;
-    };
-  }
 }
 

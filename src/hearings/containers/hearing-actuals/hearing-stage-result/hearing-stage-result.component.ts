@@ -27,7 +27,7 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
   public sub: Subscription;
   public submitted = false;
   public adjournHearingErrorMessage = '';
-  public cancelHearingErrorMessage = '';  
+  public cancelHearingErrorMessage = '';
   private id: string;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
@@ -127,6 +127,7 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
       });
       return false;
     }
+    return true;
   }
 
   public onHearingResult(hearingResultType: string): void {

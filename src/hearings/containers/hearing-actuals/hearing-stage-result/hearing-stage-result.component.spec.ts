@@ -6,7 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable } from 'rxjs';
-import { hearingActualCancelReasonsRefData, initialState } from '../../../hearing.test.data';
+import { initialState } from '../../../hearing.test.data';
 import { HearingResult } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingStageResultComponent } from './hearing-stage-result.component';
@@ -17,6 +17,12 @@ describe('HearingStageResultComponent', () => {
   let store: any;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
+
+  const hearingActualCancelReasonsRefData = [
+    { key: 'reasoneOne', value_en: 'Reason 1', value_cy: '', hintText_EN: 'reason 1', hintTextCY: '', order: 1, parentKey: null },
+    { key: 'reasoneTwo', value_en: 'Reason 2', value_cy: '', hintText_EN: 'Reason 2', hintTextCY: '', order: 2, parentKey: null },
+    { key: 'reasonThree', value_en: 'Reason 3', value_cy: '', hintText_EN: 'Reason 3', hintTextCY: '', order: 4, parentKey: null }
+  ];
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

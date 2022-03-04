@@ -391,7 +391,6 @@ export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Re
       'case_type': req.body.searchRequest.caseTypeId,
       'event_id': req.body.searchRequest.eventId,
     };
-    console.log('ravi reqBody', reqBody)
     const { status, data } = await handlePostSearch(postTaskPath, reqBody, req);
     res.status(status);
     res.send(data);

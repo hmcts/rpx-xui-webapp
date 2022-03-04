@@ -3,6 +3,8 @@ import {Observable} from 'rxjs';
 import {AdditionalFacilitiesAmendedConverter} from '../converters/additional-facilities.amended.converter';
 import {AdditionalSecurityAmendedConverter} from '../converters/additional-security.amended.converter';
 import {DefaultAmendedConverter} from '../converters/default.amended.converter';
+import { HowManyPeopleAttendAmendedConverter } from '../converters/how-many-people-attend.amended.converter';
+import { HowPartyAttendAmendedConverter } from '../converters/how-party-attend.amended.converter';
 import {IsAmendedConverter} from '../converters/is-amended.converter';
 import { StageAmendedConverter } from '../converters/stage.amended.converter';
 import {VenueAmendedConverter} from '../converters/venue.amended.converter';
@@ -26,6 +28,11 @@ export class IsAmendedPipe implements PipeTransform {
       case AnswerSource.ADDITIONAL_FACILITIES_REQUIRED:
         converter = new AdditionalFacilitiesAmendedConverter();
         break;
+      case AnswerSource.HOW_ATTENDANT:
+        converter = new HowPartyAttendAmendedConverter();
+        break;
+      case AnswerSource.ATTENDANT_PERSON_AMOUNT:
+        converter = new HowManyPeopleAttendAmendedConverter();
       case AnswerSource.STAGE:
         converter = new StageAmendedConverter();
         break;

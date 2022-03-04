@@ -76,19 +76,21 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
     ],
   },
   {
-    sectionHTMLTitle: '<h2 class="govuk-heading-m">Attendance</h2>',
+    sectionHTMLTitle: '<h2 class="govuk-heading-m">Participant attendance</h2>',
     answers: [
       {
         id: 'howAttendant',
         answerTitle: 'How will each party attend the hearing?',
         answerSource: AnswerSource.HOW_ATTENDANT,
         changeLink: '/hearings/request/hearing-attendance#partyChannel0',
+        isAmendedSource: AnswerSource.HOW_ATTENDANT,
       },
       {
         id: 'attendantPersonAmount',
         answerTitle: 'How many people will attend the hearing in person?',
         answerSource: AnswerSource.ATTENDANT_PERSON_AMOUNT,
         changeLink: '/hearings/request/hearing-attendance#attendance-number',
+        isAmendedSource: AnswerSource.ATTENDANT_PERSON_AMOUNT,
       },
     ],
   },

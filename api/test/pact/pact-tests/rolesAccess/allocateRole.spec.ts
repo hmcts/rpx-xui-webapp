@@ -10,28 +10,28 @@ import { getAccessManagementServiceAPIOverrides } from '../utils/configOverride'
 import { requireReloaded } from '../utils/moduleUtil';
 
 const { Matchers } = require('@pact-foundation/pact');
-import { DateTimeMatcher } from '../utils/matchers';
+import { DateTimeMatcher, DateTimeMatcherWithPattern } from '../utils/matchers';
 const { somethingLike, iso8601DateTime, term } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'test_am_roleAssignment_createAssignment', port: 8000 });
 
 const allocateRoleData = {
-    caseId: '1234567812345678',
+    caseId: '1212121212121213',
     jurisdiction:'IA',
-    roleCategory: 'LEGAL_OPERATIONS',
+    roleCategory: 'JUDICIAL',
     typeOfRole: {
-       id:'allocate-case-worker' 
+        id:'lead-judge' 
     },
     period: {
-        startDate: '',
-        endDate: '' 
+        startDate: '2022-03-04T00:00:00.000Z',
+        endDate: null 
     },
     allocateTo: 'Allocate to another person',
     person: {
-        id:'10bac6bf-80a7-4c81-b2db-516aba826be1'
+        id:'14a21569-eb80-4681-b62c-6ae2ed069e5f'
     }
 
 }
-const currentUserId = '10bac6bf-80a7-4c81-b2db-516aba826be0';
+const currentUserId = '3168da13-00b3-41e3-81fa-cbc71ac28a0f';
 describe("access management service, allocate role", () => {
 
     const REQUEST_BODY = {
@@ -94,7 +94,7 @@ describe("access management service, allocate role", () => {
             await pactSetUp.provider.setup()
             const interaction = {
                 state: "The assignment request is valid with one requested role and replaceExisting flag as false",
-                uponReceiving: "add role assignment for exclusion",
+                uponReceiving: "add role assignment",
                 withRequest: {
                     method: "POST",
                     path: `/am/role-assignments`,
@@ -106,9 +106,9 @@ describe("access management service, allocate role", () => {
                     body: REQUEST_BODY,
                 },
                 willRespondWith: {
-                    status: 200,
+                    status: 201,
                     headers: {
-                        "content-type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0",
+                        "content-type": "application/vnd.uk.gov.hmcts.role-assignment-service.create-assignments+json",
                     },
                     body: RESPONSE_BODY,
                 },
@@ -124,7 +124,7 @@ describe("access management service, allocate role", () => {
                     headers: {
                         'Authorization': 'Bearer someAuthorizationToken',
                         'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-                        "content-type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0",
+                        "content-type": "application/json",
                     },
                 },
                 willRespondWith: {
@@ -162,7 +162,7 @@ describe("access management service, allocate role", () => {
                 headers: {
                     'Authorization': 'Bearer someAuthorizationToken',
                     'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-                    'content-type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0',
+                    'content-type': 'application/json',
                 },
                 session: {
                     passport: {

@@ -18,11 +18,11 @@ import { ValidatorsUtils } from '../../../utils/validators.utils';
 export class HearingActualsTimingComponent implements OnInit, OnDestroy {
 
   public static TIME_MATCHER = /\d{2}:\d{2}/;
-  private static ERROR_MESSAGE_VALID_TIME = 'Enter a valid time.';
-  private static ERROR_MESSAGE_START_TIME_BEFORE_FINISH_TIME = 'Start time must be before finish time';
-  private static ERROR_MESSAGE_PAUSE_TIME_BEFORE_RESUME_TIME = 'Pause time must be before resume time';
-  private static ERROR_MESSAGE_PAUSE_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES = 'Pause time must be between the hearing start and finish times';
-  private static ERROR_MESSAGE_RESUME_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES = 'Resume time must be between the hearing start and finish times';
+  private static readonly ERROR_MESSAGE_VALID_TIME = 'Enter a valid time.';
+  private static readonly ERROR_MESSAGE_START_TIME_BEFORE_FINISH_TIME = 'Start time must be before finish time';
+  private static readonly ERROR_MESSAGE_PAUSE_TIME_BEFORE_RESUME_TIME = 'Pause time must be before resume time';
+  private static readonly ERROR_MESSAGE_PAUSE_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES = 'Pause time must be between the hearing start and finish times';
+  private static readonly ERROR_MESSAGE_RESUME_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES = 'Resume time must be between the hearing start and finish times';
   public form: FormGroup;
   public caseTitle: string = 'Jane Smith vs DWP';
   public submitted: boolean = false;

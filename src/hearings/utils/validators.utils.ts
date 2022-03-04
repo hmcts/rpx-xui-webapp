@@ -92,16 +92,25 @@ export class ValidatorsUtils {
     };
   }
 
-  public validTime(): ValidatorFn {
+  public validTime(message: string): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
-      if (control.value === null) {
+      if (!control.value) {
         return null;
       }
-      return /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(control.value) ? null : { invalidTime: true };
+      return /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(control.value) ? null : { invalidTime: { error: true, message } };
     };
   }
 
-  public validateTimeRange(startTime: string, finishTime: string) {
+  public mandatory(message: string): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      if (control.value) {
+        return null;
+      }
+      return { mandatory: { error: true, message } };
+    };
+  }
+
+  public validateTimeRange(startTime: string, finishTime: string, message: string): ValidatorFn {
     return (formGroup: FormGroup) => {
       const startTimeControl = formGroup.controls[startTime];
       const finishTimeControl = formGroup.controls[finishTime];
@@ -110,7 +119,51 @@ export class ValidatorsUtils {
       }
       const startTimeMoment = moment(startTimeControl.value, 'HH:mm');
       const finishTimeMoment = moment(finishTimeControl.value, 'HH:mm');
-      return startTimeMoment.isBefore(finishTimeMoment) ? null : { invalidTimeRange: true };
+
+      if (startTimeMoment.isAfter(finishTimeMoment)) {
+        return { invalidTimeRange: { [startTime]: { error: true, message } } };
+      }
+      return null;
+    };
+  }
+
+  public validatePauseStartTimeRange(pauseTime: string, startTimes: any, message: string): ValidatorFn {
+    return (formGroup: FormGroup) => {
+      const startTimeControl = formGroup.controls[startTimes.startTime];
+      const finishTimeControl = formGroup.controls[startTimes.endTime];
+
+      const pauseTimeControl = formGroup.controls[pauseTime];
+      if (!startTimeControl || !finishTimeControl || !startTimeControl.value || !finishTimeControl.value || !pauseTimeControl || !pauseTimeControl.value) {
+        return null;
+      }
+      const startTimeMoment = moment(startTimeControl.value, 'HH:mm');
+      const finishTimeMoment = moment(finishTimeControl.value, 'HH:mm');
+      const pauseTimeMoment = moment(pauseTimeControl.value, 'HH:mm');
+
+      if (pauseTimeMoment.isValid() && !pauseTimeMoment.isBetween(startTimeMoment, finishTimeMoment, null, '[]')) {
+        return { invalidPauseStartTimeRange: { [pauseTime]: { error: true, message} } };
+      }
+      return null;
+    };
+  }
+
+  public validatePauseEndTimeRange(pauseTime: string, startTimes: any, message: string): ValidatorFn {
+    return (formGroup: FormGroup) => {
+      const startTimeControl = formGroup.controls[startTimes.startTime];
+      const finishTimeControl = formGroup.controls[startTimes.endTime];
+
+      const pauseTimeControl = formGroup.controls[pauseTime];
+      if (!startTimeControl || !finishTimeControl || !startTimeControl.value || !finishTimeControl.value || !pauseTimeControl || !pauseTimeControl.value) {
+        return null;
+      }
+      const startTimeMoment = moment(startTimeControl.value, 'HH:mm');
+      const finishTimeMoment = moment(finishTimeControl.value, 'HH:mm');
+      const pauseTimeMoment = moment(pauseTimeControl.value, 'HH:mm');
+
+      if (pauseTimeMoment.isValid() && !pauseTimeMoment.isBetween(startTimeMoment, finishTimeMoment, null, '[]')) {
+        return { invalidPauseEndTimeRange: { [pauseTime]: { error: true, message} } };
+      }
+      return null;
     };
   }
 }

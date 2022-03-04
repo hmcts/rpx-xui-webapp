@@ -57,8 +57,8 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
       return {
         search_parameters: [
           { key: 'user', operator: 'IN', values: [id] },
-          { key: 'services', operator: 'ANY', values: serviceFilters },
-          { key: 'locations', operator: 'ANY', values: locationFilters }
+          { key: 'services', operator: 'IN', values: serviceFilters },
+          { key: 'locations', operator: 'IN', values: locationFilters }
         ],
         sorting_parameters: [this.getSortParameter()],
         search_by: userRole

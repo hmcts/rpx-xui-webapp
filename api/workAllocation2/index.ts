@@ -475,7 +475,7 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
     const caseData = filterByLocationId(result.cases, locationIds);
     logger.info('results filtered by location id', caseData.length, locationIds);
 
-    if (caseData.length) {
+    if (caseData) {
       const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles as any, null) : [];
       result.total_records = mappedCases.length;
       result.unique_cases = getUniqueCasesCount(mappedCases);

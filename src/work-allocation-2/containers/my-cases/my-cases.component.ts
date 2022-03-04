@@ -36,9 +36,23 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const id = userInfo.id ? userInfo.id : userInfo.uid;
       const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
+
+      // get 'locations' key from local storage
+      const locationsFromLS = JSON.parse(localStorage.getItem('locations'));
+
+      // set service and location filters using data from local storage
+      let serviceFilters = [];
+      if (locationsFromLS && locationsFromLS['fields']) {
+        const services = locationsFromLS.fields.find(field => field.name === 'services');
+        if (services && services.hasOwnProperty('value')) {
+          serviceFilters = services.value.filter(s => s !== 'services_all');
+        }
+      }
+
       return {
         search_parameters: [
           { key: 'user', operator: 'IN', values: [id] },
+          { key: 'services', operator: 'EQUAL', values: serviceFilters }
         ],
         sorting_parameters: [this.getSortParameter()],
         search_by: userRole

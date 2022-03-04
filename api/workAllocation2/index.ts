@@ -436,9 +436,16 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
   try {
     const roleAssignments:RoleAssignment[] = req.session.roleAssignmentResponse;
 
+    // get 'service' and 'location' filters from search_parameters on request
+    const { search_parameters } = req.body.searchRequest;
+    const services = search_parameters.find(searchParam => searchParam.key === 'services');
+
+    let serviceIds = [];
+    if (services && services.hasOwnProperty('values')) {
+      serviceIds = services.values;
+    }
+
     // filter role assignments by service id(s)
-    // TODO: service id(s) will eventually come from res body, hardcoded here for now
-    const serviceIds = ['IA'];
     const filteredRoleAssignments = roleAssignments.filter(roleAssignment =>
       serviceIds.includes(roleAssignment.attributes.jurisdiction)
     );

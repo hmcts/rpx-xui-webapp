@@ -42,17 +42,23 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
 
       // set service and location filters using data from local storage
       let serviceFilters = [];
+      let locationFilters = [];
       if (locationsFromLS && locationsFromLS['fields']) {
         const services = locationsFromLS.fields.find(field => field.name === 'services');
+        const locations = locationsFromLS.fields.find(field => field.name === 'locations');
         if (services && services.hasOwnProperty('value')) {
           serviceFilters = services.value.filter(s => s !== 'services_all');
+        }
+        if (locations && locations.hasOwnProperty('value')) {
+          locationFilters = locations.value.map(l => l.epimms_id);
         }
       }
 
       return {
         search_parameters: [
           { key: 'user', operator: 'IN', values: [id] },
-          { key: 'services', operator: 'EQUAL', values: serviceFilters }
+          { key: 'services', operator: 'ANY', values: serviceFilters },
+          { key: 'locations', operator: 'ANY', values: locationFilters }
         ],
         sorting_parameters: [this.getSortParameter()],
         search_by: userRole

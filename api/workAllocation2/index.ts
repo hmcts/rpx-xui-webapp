@@ -439,10 +439,15 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
     // get 'service' and 'location' filters from search_parameters on request
     const { search_parameters } = req.body.searchRequest;
     const services = search_parameters.find(searchParam => searchParam.key === 'services');
+    const locations = search_parameters.find(searchParam => searchParam.key === 'locations');
 
     let serviceIds = [];
+    let locationIds = [];
     if (services && services.hasOwnProperty('values')) {
       serviceIds = services.values;
+    }
+    if (locations && locations.hasOwnProperty('values')) {
+      locationIds = locations.values;
     }
 
     // filter role assignments by service id(s)
@@ -467,10 +472,8 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
     };
 
     // filter cases by locationIds
-    // TODO: locationIds will eventually come from req.body
-    const locationIds = []; // e.g. ['227101','698118']
     const caseData = filterByLocationId(result.cases, locationIds);
-    logger.info('results filtered by location id', caseData.length);
+    logger.info('results filtered by location id', caseData.length, locationIds);
 
     if (caseData.length) {
       const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles as any, null) : [];

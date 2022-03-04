@@ -6,6 +6,7 @@ import {DefaultAmendedConverter} from '../converters/default.amended.converter';
 import { HowManyPeopleAttendAmendedConverter } from '../converters/how-many-people-attend.amended.converter';
 import { HowPartyAttendAmendedConverter } from '../converters/how-party-attend.amended.converter';
 import {IsAmendedConverter} from '../converters/is-amended.converter';
+import { StageAmendedConverter } from '../converters/stage.amended.converter';
 import {VenueAmendedConverter} from '../converters/venue.amended.converter';
 import {AnswerSource} from '../models/hearings.enum';
 import {State} from '../store';
@@ -32,6 +33,8 @@ export class IsAmendedPipe implements PipeTransform {
         break;
       case AnswerSource.ATTENDANT_PERSON_AMOUNT:
         converter = new HowManyPeopleAttendAmendedConverter();
+      case AnswerSource.STAGE:
+        converter = new StageAmendedConverter();
         break;
       default:
         break;

@@ -70,7 +70,8 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
         id: 'stage',
         answerTitle: 'What stage is this hearing at?',
         answerSource: AnswerSource.STAGE,
-        changeLink: '/hearings/request/hearing-stage#initial'
+        changeLink: '/hearings/request/hearing-stage#initial',
+        isAmendedSource: AnswerSource.STAGE,
       },
     ],
   },

@@ -121,33 +121,62 @@ describe('ValidatorsUtils', () => {
 
   it('should set time 12:00 as valid', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
     const form = new FormGroup({
-      arrayControl: new FormControl('12:00', service.validTime())
+      arrayControl: new FormControl('12:00', service.validTime('Enter a valid time')),
     });
     form.get('arrayControl').setValue('12:00');
     form.updateValueAndValidity();
     expect(form.hasError('isValid')).toBeFalsy();
   }));
 
+  it('should show error as mandatory', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
+    const form = new FormGroup({
+      arrayControl: new FormControl(null, [service.mandatory('Enter a time')])
+    });
+    expect(form.get('arrayControl').hasError('mandatory')).toBeTruthy();
+    expect(form.get('arrayControl').getError('mandatory').message).toBe('Enter a time');
+  }));
+
   it('should set time 33:00 as invalid', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
     const form = new FormGroup({
-      arrayControl: new FormControl('33:00', [service.validTime()])
+      arrayControl: new FormControl('33:00', [service.validTime('Enter a valid time')])
     });
     expect(form.get('arrayControl').hasError('invalidTime')).toBeTruthy();
   }));
 
   it('should set startTime 13:00 and endTime 12:00 to be invalid', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
     const form = new FormGroup({
-      start: new FormControl('13:00', [service.validTime()]),
-      end: new FormControl('13:00', [service.validTime()])
-    }, { validators: [service.validateTimeRange('start', 'end')] });
+      start: new FormControl('13:00', [service.validTime('Enter a valid start time')]),
+      end: new FormControl('12:00', [service.validTime('Enter a valid end time')])
+    }, { validators: [service.validateTimeRange('start', 'end', 'Start time must be before finish time')] });
     expect(form.hasError('invalidTimeRange')).toBeTruthy();
+    expect(form.getError('invalidTimeRange').start.message).toBe('Start time must be before finish time');
   }));
 
   it('should set startTime 12:00 and endTime 13:00 to be valid', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
     const form = new FormGroup({
-      start: new FormControl('12:00', [service.validTime()]),
-      end: new FormControl('13:00', [service.validTime()])
-    }, { validators: [service.validateTimeRange('start', 'end')] });
+      start: new FormControl('12:00', [service.validTime('Enter a valid start time')]),
+      end: new FormControl('13:00', [service.validTime('Enter a valid end time')]),
+    }, { validators: [service.validateTimeRange('start', 'end', 'Start time must be before finish time')] });
     expect(form.valid).toBeTruthy();
+  }));
+
+  it('should set pauseTime 9:30 to be invalid if not between the start time and end time', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
+    const form = new FormGroup({
+      start: new FormControl('12:00', [service.validTime('Enter a valid start time')]),
+      end: new FormControl('13:00', [service.validTime('Enter a valid end time')]),
+      pause: new FormControl('09:30', [service.validTime('Enter a valid end time')]),
+    }, { validators: [service.validatePauseStartTimeRange('pause', {startTime: 'start', endTime: 'end'}, 'Pause time must be between the hearing start and finish times')] });
+    expect(form.hasError('invalidPauseStartTimeRange')).toBeTruthy();
+    expect(form.getError('invalidPauseStartTimeRange').pause.message).toBe('Pause time must be between the hearing start and finish times');
+  }));
+
+  it('should set resumeTime 9:30 to be invalid if not between the start time and end time', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
+    const form = new FormGroup({
+      start: new FormControl('12:00', [service.validTime('Enter a valid start time')]),
+      end: new FormControl('13:00', [service.validTime('Enter a valid end time')]),
+      resume: new FormControl('09:30', [service.validTime('Enter a valid end time')]),
+    }, { validators: [service.validatePauseEndTimeRange('resume', {startTime: 'start', endTime: 'end'}, 'Resume time must be between the hearing start and finish times')] });
+    expect(form.hasError('invalidPauseEndTimeRange')).toBeTruthy();
+    expect(form.getError('invalidPauseEndTimeRange').resume.message).toBe('Resume time must be between the hearing start and finish times');
   }));
 });

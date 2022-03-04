@@ -12,10 +12,10 @@ import { requireReloaded } from '../utils/moduleUtil';
 const { Matchers } = require('@pact-foundation/pact');
 import { DateTimeMatcher } from '../utils/matchers';
 const { somethingLike, iso8601DateTime, term } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'am_api_add_role_assignment_allocate_role', port: 8000 });
+const pactSetUp = new PactTestSetup({ provider: 'test_am_roleAssignment_createAssignment', port: 8000 });
 
 const allocateRoleData = {
-    caseId: '10bac6bf-80a7-4c81-b2db-516aba826be6',
+    caseId: '1234567812345678',
     jurisdiction:'IA',
     roleCategory: 'LEGAL_OPERATIONS',
     typeOfRole: {
@@ -93,22 +93,22 @@ describe("access management service, allocate role", () => {
         before(async () => {
             await pactSetUp.provider.setup()
             const interaction = {
-                state: "added role assignments for exclusion",
+                state: "The assignment request is valid with one requested role and replaceExisting flag as false",
                 uponReceiving: "add role assignment for exclusion",
                 withRequest: {
                     method: "POST",
                     path: `/am/role-assignments`,
                     headers: {
+                        "Content-Type": "application/json",
                         'Authorization': 'Bearer someAuthorizationToken',
                         'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-                        "content-type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0",
                     },
                     body: REQUEST_BODY,
                 },
                 willRespondWith: {
                     status: 200,
                     headers: {
-                        "Content-Type": "application/json",
+                        "content-type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0",
                     },
                     body: RESPONSE_BODY,
                 },
@@ -130,7 +130,7 @@ describe("access management service, allocate role", () => {
                 willRespondWith: {
                     status: 200,
                     headers: {
-                        "Content-Type": "application/json",
+                        "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0",
                     },
                     body: RESPONSE_BODY_ACTOR_ROLES,
                 },

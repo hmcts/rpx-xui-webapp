@@ -12,7 +12,7 @@ import { requireReloaded } from '../utils/moduleUtil';
 const { Matchers } = require('@pact-foundation/pact');
 import { DateTimeMatcher } from '../utils/matchers';
 const { somethingLike, iso8601DateTime, term } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'am_api_get_role_assignments_for_actorId', port: 8000 });
+const pactSetUp = new PactTestSetup({ provider: 'test_am_roleAssignment_getAssignment', port: 8000 });
 
 const actorId = "12345";
 describe("access management service, get role assignemnts of actor", () => {
@@ -53,7 +53,7 @@ describe("access management service, get role assignemnts of actor", () => {
         before(async () => {
             await pactSetUp.provider.setup()
             const interaction = {
-                state: "returned role assignments for actorId",
+                state: "An actor with provided id is available in role assignment service",
                 uponReceiving: "get roles assignments for actorId",
                 withRequest: {
                     method: "GET",

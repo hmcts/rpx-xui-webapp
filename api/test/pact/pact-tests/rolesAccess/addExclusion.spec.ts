@@ -12,13 +12,13 @@ import { requireReloaded } from '../utils/moduleUtil';
 const { Matchers } = require('@pact-foundation/pact');
 import { DateTimeMatcher } from '../utils/matchers';
 const { somethingLike, iso8601DateTime, term } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'am_api_add_role_type_exclusion', port: 8000 });
+const pactSetUp = new PactTestSetup({ provider: 'test_am_roleAssignment_createAssignment', port: 8000 });
 
-const caseId = "10bac6bf-80a7-4c81-b2db-516aba826be6";
+const caseId = "1212121212121213";
 const jurisdicton = 'IA';
-const assigneeId = '10bac6bf-80a7-4c81-b2db-516aba826be0';
-const roleCategory = 'LEGAL_OPERATIONS';
-const currentUserId = '10bac6bf-80a7-4c81-b2db-516aba826be1';
+const assigneeId = '14a21569-eb80-4681-b62c-6ae2ed069e5f';
+const roleCategory = 'JUDICIAL';
+const currentUserId = '3168da13-00b3-41e3-81fa-cbc71ac28a0f';
 const exclusionDescriptionNotes = 'test eclusion description notes';
 describe("access management service, add exclusion", () => {
 
@@ -26,21 +26,23 @@ describe("access management service, add exclusion", () => {
 
     const REQUEST_BODY = {
         roleRequest: {
-            assignerId: currentUserId,
-            replaceExisting: false,
+            assignerId: somethingLike(currentUserId),
+            replaceExisting: somethingLike(false),
+           
         },
         requestedRoles: [{
-            roleType: 'CASE',
-            grantType: 'EXCLUDED',
-            classification: 'RESTRICTED',
+            roleType: somethingLike('CASE'),
+            grantType: somethingLike('EXCLUDED'),
+            classification: somethingLike('RESTRICTED'),
             attributes: {
-                caseId: caseId,
-                jurisdiction: jurisdicton,
+                caseId: somethingLike(caseId),
+                // caseType: somethingLike('Asylum'),
+                jurisdiction: somethingLike(jurisdicton),
                 notes: somethingLike(exclusionDescriptionNotes),
             },
             roleCategory: somethingLike(roleCategory),
             roleName: somethingLike('conflict-of-interest'),
-            actorIdType: 'IDAM',
+            actorIdType: somethingLike('IDAM'),
             actorId: somethingLike(assigneeId),
         }],
     };
@@ -57,7 +59,7 @@ describe("access management service, add exclusion", () => {
         before(async () => {
             await pactSetUp.provider.setup()
             const interaction = {
-                state: "added role assignments for exclusion",
+                state: "The assignment request is valid with one requested role and replaceExisting flag as false",
                 uponReceiving: "add role assignment for exclusion",
                 withRequest: {
                     method: "POST",
@@ -65,14 +67,14 @@ describe("access management service, add exclusion", () => {
                     headers: {
                         'Authorization': 'Bearer someAuthorizationToken',
                         'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-                        "content-type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0",
+                        "content-type": "application/json",
                     },
                     body: REQUEST_BODY,
                 },
                 willRespondWith: {
-                    status: 200,
+                    status: 201,
                     headers: {
-                        "Content-Type": "application/json",
+                        "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.create-assignments+json",
                     },
                     body: RESPONSE_BODY,
                 },
@@ -103,7 +105,7 @@ describe("access management service, add exclusion", () => {
                 headers: {
                     'Authorization': 'Bearer someAuthorizationToken',
                     'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-                    'content-type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0',
+                    'content-type': 'application/json',
                 },
                 session: {
                     passport: {
@@ -118,6 +120,7 @@ describe("access management service, add exclusion", () => {
                 body: {
                     caseId:caseId,
                     jurisdiction:'IA',
+                    caseeType:'Asylum',
                     exclusionDescription: exclusionDescriptionNotes,
                     exclusionOption:'',
                     person:{
@@ -130,7 +133,7 @@ describe("access management service, add exclusion", () => {
             let returnedResponse = null;
             const response = mockRes();
             response.send = (ret) => {
-                returnedResponse = ret
+                returnedResponse = ret 
             };
 
             try {

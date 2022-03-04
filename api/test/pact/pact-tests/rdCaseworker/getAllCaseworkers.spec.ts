@@ -12,7 +12,7 @@ import { requireReloaded } from '../utils/moduleUtil';
 const { Matchers } = require('@pact-foundation/pact');
 import { DateTimeMatcher } from '../utils/matchers';
 const { somethingLike, iso8601DateTime, term } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'rd_caseworker_ref_api_get_caseworkers_by_userIds', port: 8000 });
+const pactSetUp = new PactTestSetup({ provider: 'referenceData_caseworkerRefUsers', port: 8000 });
 
 const MockApp = require('../../../../../test/nodeMock/app');
 
@@ -20,11 +20,11 @@ const locationId = "123456";
 describe("Caseworker ref data api, get all caseworkers", () => {
 
     const REQUEST_BODY = {
-        userIds: ['004b7164-0943-41b5-95fc-39794af4a9fe', '004b7164-0943-41b5-95fc-39794af4a9fe'],
+        userIds: [somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe'), somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe')],
     };
 
     const baselocations = [
-        { location_id: '12345', location: 'test location', services: ['IA', 'IAC'], is_primary: true }
+        { location_id: somethingLike(1), location: somethingLike('National'), is_primary: somethingLike(true) }
     ];
     const RESPONSE_BODY = [
         {
@@ -33,14 +33,7 @@ describe("Caseworker ref data api, get all caseworkers", () => {
             "last_name": somethingLike("testln"),
             "id": somethingLike("004b7164-0943-41b5-95fc-39794af4a9fe"),
             "base_location": baselocations,
-        },
-        {
-            "email_id": somethingLike("test_person2@test.gov.uk"),
-            "first_name": somethingLike("testfn"),
-            "last_name": somethingLike("testln"),
-            "id": somethingLike("004b7164-0943-41b5-95fc-39794af4a9fe"),
-            "base_location": baselocations,
-        },
+        }
     ]
 
     describe("get /caseworker", () => {
@@ -53,7 +46,7 @@ describe("Caseworker ref data api, get all caseworkers", () => {
         before(async () => {
             await pactSetUp.provider.setup()
             const interaction = {
-                state: "returned list of caseworkers",
+                state: "A list of users for CRD request",
                 uponReceiving: "get list of caseworkers",
                 withRequest: {
                     method: "POST",
@@ -146,8 +139,8 @@ function assertResponses(dto: any) {
     expect(dto[0].lastName).to.be.equal("testln");
     expect(dto[0].roleCategory).to.be.equal("case-worker");
     expect(dto[0].idamId).to.be.equal("004b7164-0943-41b5-95fc-39794af4a9fe");
-    expect(dto[0].location.id).to.be.equal("12345");
-    expect(dto[0].location.locationName).to.be.equal("test location");
+    expect(dto[0].location.id).to.be.equal(1);
+    expect(dto[0].location.locationName).to.be.equal("National");
 
 }
 

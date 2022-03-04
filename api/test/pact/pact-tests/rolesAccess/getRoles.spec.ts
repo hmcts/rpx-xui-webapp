@@ -12,7 +12,7 @@ import { requireReloaded } from '../utils/moduleUtil';
 const { Matchers } = require('@pact-foundation/pact');
 import { DateTimeMatcher } from '../utils/matchers';
 const { somethingLike, iso8601DateTime, term } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'am_api_get_role_assignments_for_actorId', port: 8000 });
+const pactSetUp = new PactTestSetup({ provider: 'test_am_roleAssignment_getRoles', port: 8000 });
 
 const roles = [
     { roleCategory: 'LEGAL_OPERATIONS', roleId:'case-worker', roleName:'Case worker'},
@@ -57,7 +57,7 @@ describe("access management service, get roles", () => {
                 willRespondWith: {
                     status: 200,
                     headers: {
-                        "Content-Type": "application/json",
+                        "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0",
                     },
                     body: RESPONSE_BODY,
                 },

@@ -12,7 +12,7 @@ import { requireReloaded } from '../utils/moduleUtil';
 const { Matchers } = require('@pact-foundation/pact');
 import { DateTimeMatcher } from '../utils/matchers';
 const { somethingLike, iso8601DateTime, term } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'am_api_getroles_assignments_by_caseid', port: 8000 });
+const pactSetUp = new PactTestSetup({ provider: 'test_am_roleAssignment_queryAssignment', port: 8000 });
 
 const caseId = "12345";
 describe("access management service, query role assignments", () => {
@@ -60,7 +60,7 @@ describe("access management service, query role assignments", () => {
         before(async () => {
             await pactSetUp.provider.setup()
             const interaction = {
-                state: "returned role assignments for caseId",
+                state: "A list of role assignments for the search query",
                 uponReceiving: "query role assignments for caseId",
                 withRequest: {
                     method: "POST",
@@ -75,7 +75,7 @@ describe("access management service, query role assignments", () => {
                 willRespondWith: {
                     status: 200,
                     headers: {
-                        "Content-Type": "application/json",
+                        "content-type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0",
                     },
                     body: RESPONSE_BODY,
                 },
@@ -93,7 +93,7 @@ describe("access management service, query role assignments", () => {
           
 
             const getRolesInteraction = {
-                state: "returned role assignments for caseId",
+                state: "A list of role assignments for the search query",
                 uponReceiving: "query role assignments for caseId",
                 withRequest: {
                     method: "GET",
@@ -101,13 +101,13 @@ describe("access management service, query role assignments", () => {
                     headers: {
                         'Authorization': 'Bearer someAuthorizationToken',
                         'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-                        "content-type": "application/json",
+                        "content-type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0",
                     }
                 },
                 willRespondWith: {
                     status: 200,
                     headers: {
-                        "Content-Type": "application/json",
+                        "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0",
                     },
                     body: rolesResponseBody, 
                 },
@@ -140,7 +140,7 @@ describe("access management service, query role assignments", () => {
                 headers: {
                     'Authorization': 'Bearer someAuthorizationToken',
                     'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-                    'content-type': 'application/json',
+                    "content-type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0",
                 },
                 body:{
                     caseId: caseId,

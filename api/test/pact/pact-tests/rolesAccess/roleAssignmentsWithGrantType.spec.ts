@@ -12,7 +12,7 @@ import { requireReloaded } from '../utils/moduleUtil';
 const { Matchers } = require('@pact-foundation/pact');
 import { DateTimeMatcher } from '../utils/matchers';
 const { somethingLike, iso8601DateTime, term } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'am_api_getroles_assignments_by_caseid', port: 8000 });
+const pactSetUp = new PactTestSetup({ provider: 'test_am_roleAssignment_queryAssignment', port: 8000 });
 
 const caseId = "12345";
 describe("access management service, query role assignments", () => {
@@ -70,14 +70,14 @@ describe("access management service, query role assignments", () => {
                     headers: {
                         'Authorization': 'Bearer someAuthorizationToken',
                         'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-                        "content-type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0",
+                        "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0",
                     },
                     body: REQUEST_BODY,
                 },
                 willRespondWith: {
                     status: 200,
                     headers: {
-                        "Content-Type": "application/json",
+                        "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0",
                     },
                     body: RESPONSE_BODY,
                 },

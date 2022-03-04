@@ -12,7 +12,7 @@ import { requireReloaded } from '../utils/moduleUtil';
 const { Matchers } = require('@pact-foundation/pact');
 import { DateTimeMatcher } from '../utils/matchers';
 const { somethingLike, iso8601DateTime, term } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'am_api_add_role_assignment_delete_role', port: 8000 });
+const pactSetUp = new PactTestSetup({ provider: 'test_am_roleAssignment_deleteAssignment', port: 8000 });
 
 const allocateRoleData = {
     caseId: '10bac6bf-80a7-4c81-b2db-516aba826be6',
@@ -75,8 +75,8 @@ describe("access management service, allocate role", () => {
         before(async () => {
             await pactSetUp.provider.setup()
             const interaction = {
-                state: "added role assignments for exclusion",
-                uponReceiving: "add role assignment for exclusion",
+                state: "An actor with provided id is available in role assignment service",
+                uponReceiving: "delete role assignment",
                 withRequest: {
                     method: "DELETE",
                     path: `/am/role-assignments/${REQUEST_BODY.assigmentId}`,
@@ -88,11 +88,7 @@ describe("access management service, allocate role", () => {
                     body: REQUEST_BODY,
                 },
                 willRespondWith: {
-                    status: 200,
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: RESPONSE_BODY,
+                    status: 204
                 },
             };
 

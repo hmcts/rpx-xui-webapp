@@ -25,10 +25,10 @@
             <tbody class="govuk-table__body">
             <ng-container formArrayName="parties" *ngFor="let group of parties.controls ; let i=index">
 
-              <tr class="govuk-table__row" *ngIf="group.get('isParty').value" [formGroupName]="i">
+              <tr class="govuk-table__row" *ngIf="group.get('isParty').value" formGroupName="{{i}}">
                 <td class="govuk-table__cell">{{group.get('firstName').value}}</td>
                 <td class="govuk-table__cell">{{group.get('lastName').value}}</td>
-                <td class="govuk-table__cell">{{group.get('role').value}}</td>
+                <td class="govuk-table__cell">{{getRole(group.get('role').value)}}</td>
                 <td class="govuk-table__cell">
                   <select class="govuk-select" formControlName="attendanceType" aria-label="Attendee type">
                     <option [ngValue]="null">Please select</option>
@@ -44,7 +44,7 @@
               </tr>
 
 
-              <tr class="govuk-table__row" *ngIf="!group.get('isParty').value" [formGroupName]="i">
+              <tr class="govuk-table__row" *ngIf="!group.get('isParty').value" formGroupName="{{i}}">
                 <th scope="row" class="govuk-table__header">
                   <input class="govuk-input" formControlName="firstName" type="text"
                          aria-label="First name">

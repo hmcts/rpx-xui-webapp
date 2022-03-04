@@ -44,7 +44,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
                      private readonly hearingStore: Store<fromHearingStore.State>,
                      private readonly lovRefDataService: LovRefDataService,
                      private readonly route: ActivatedRoute,
-                     private readonly renderer: Renderer2
+                     private readonly renderer: Renderer2,
   ) {
     this.partiesTable = this.fb.group({
       parties: this.fb.array([])
@@ -140,4 +140,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     console.log(this.parties.value);
   }
 
+  public getRole(value: string): string {
+    return this.hearingRole.find( role => role.key === value).value_en;
+  }
 }

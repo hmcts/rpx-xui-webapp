@@ -1,13 +1,13 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
 import {ActivatedRoute, Router, RouterModule} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {FeatureUser} from '@hmcts/rpx-xui-common-lib';
 import {Store} from '@ngrx/store';
 import {Observable, of} from 'rxjs';
-import {RoleCategoryMappingService} from 'src/app/services/role-category-mapping/role-category-mapping.service';
+import {RoleCategoryMappingService} from '../../../app/services/role-category-mapping/role-category-mapping.service';
 import {HearingListViewModel} from '../../../hearings/models/hearingListView.model';
-import {Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum,} from '../../../hearings/models/hearings.enum';
+import {Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum} from '../../../hearings/models/hearings.enum';
 import {HearingsPipesModule} from '../../../hearings/pipes/hearings.pipes.module';
 import * as fromHearingStore from '../../../hearings/store';
 import {CaseHearingsListComponent} from './case-hearings-list.component';
@@ -264,33 +264,6 @@ describe('CaseHearingsListComponent', () => {
   const mockFeatureService = new MockRoleCategoryMappingService();
   const mockStore = jasmine.createSpyObj('Store', ['dispatch']);
   let router: any;
-  /*  const HEARINGS: HearingListViewModel[] = [{
-      hearingID: 'h555555',
-      hearingType: 'Directions hearing',
-      hmcStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
-      hearingRequestDateTime: '2021-08-05T16:00:00.000+0000',
-      lastResponseReceivedDateTime: '',
-      responseVersion: 'rv5',
-      earliestHearingStartDateTime: '',
-      hearingListingStatus: HearingListingStatusEnum.CANCELLED,
-      listAssistCaseStatus: '',
-      exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
-      exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED,
-      hearingDaySchedule: [],
-    }, {
-      hearingID: 'h555555',
-      lastResponseReceivedDateTime: '',
-      hearingType: 'Directions hearing',
-      hearingRequestDateTime: '2021-08-05T16:00:00.000+0000',
-      hmcStatus: EXUISectionStatusEnum.UPCOMING,
-      responseVersion: 'rv5',
-      earliestHearingStartDateTime: '',
-      hearingListingStatus: HearingListingStatusEnum.CANCELLED,
-      listAssistCaseStatus: '',
-      exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
-      exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED,
-      hearingDaySchedule: [],
-    }];*/
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -320,7 +293,6 @@ describe('CaseHearingsListComponent', () => {
     fixture = TestBed.createComponent(CaseHearingsListComponent);
     roleCategoryMappingService = new RoleCategoryMappingService(mockFeatureService);
     component = fixture.componentInstance;
-    component.status = EXUISectionStatusEnum.PAST_AND_CANCELLED;
     component.hearingList$ = of(UPCOMING_HEARING_LIST);
     component.actions = [Actions.DELETE];
     router = TestBed.get(Router);
@@ -386,21 +358,112 @@ describe('CaseHearingsListComponent', () => {
     expect(component.isNonCancellable(EXUIDisplayStatusEnum.UPDATE_REQUESTED)).toBeFalsy();
   });
 
-  fit('should return isNonCancellable is false if on other state', () => {
+  it('should show the right action links for UPCOMING section', () => {
     component.status = EXUISectionStatusEnum.UPCOMING;
     component.actions = [Actions.CREATE, Actions.DELETE, Actions.UPDATE, Actions.READ];
     component.ngOnInit();
     fixture.detectChanges();
-    const actionElement1 = fixture.debugElement.query(By.css('#link-add-or-edit-h100009')).nativeElement;
-    const actionElement2 = fixture.debugElement.query(By.css('#link-view-details-h100006')).nativeElement;
-    const actionElement3 = fixture.debugElement.query(By.css('#link-view-details-h100007')).nativeElement;
-    console.log('actionElement1', actionElement1.textContent);
-    console.log('actionElement2', actionElement2.textContent);
-    console.log('actionElement3', actionElement3.textContent);
+    const viewOrEdit1 = fixture.debugElement.query(By.css('#link-view-or-edit-h100001')).nativeElement;
+    expect(viewOrEdit1.textContent).toBe('View or edit');
+    const cancel1 = fixture.debugElement.query(By.css('#link-cancel-h100001')).nativeElement;
+    expect(cancel1.textContent).toBe('Cancel');
+    const viewDetails1 = fixture.debugElement.query(By.css('#link-view-details-h100001'));
+    expect(viewDetails1).toBeNull();
+    const addOrEdit1 = fixture.debugElement.query(By.css('#link-add-or-edit-h100001'));
+    expect(addOrEdit1).toBeNull();
+
+    const viewOrEdit3 = fixture.debugElement.query(By.css('#link-view-or-edit-h100003')).nativeElement;
+    expect(viewOrEdit3.textContent).toBe('View or edit');
+    const cancel3 = fixture.debugElement.query(By.css('#link-cancel-h100003')).nativeElement;
+    expect(cancel3.textContent).toBe('Cancel');
+    const viewDetails3 = fixture.debugElement.query(By.css('#link-view-details-h100003'));
+    expect(viewDetails3).toBeNull();
+    const addOrEdit3 = fixture.debugElement.query(By.css('#link-add-or-edit-h100003'));
+    expect(addOrEdit3).toBeNull();
+
+    const viewOrEdit4 = fixture.debugElement.query(By.css('#link-view-or-edit-h100004')).nativeElement;
+    expect(viewOrEdit4.textContent).toBe('View or edit');
+    const cancel4 = fixture.debugElement.query(By.css('#link-cancel-h100004')).nativeElement;
+    expect(cancel4.textContent).toBe('Cancel');
+    const viewDetails4 = fixture.debugElement.query(By.css('#link-view-details-h100004'));
+    expect(viewDetails4).toBeNull();
+    const addOrEdit4 = fixture.debugElement.query(By.css('#link-add-or-edit-h100004'));
+    expect(addOrEdit4).toBeNull();
+
+    const viewOrEdit6 = fixture.debugElement.query(By.css('#link-view-or-edit-h100006'));
+    expect(viewOrEdit6).toBeNull();
+    const cancel6 = fixture.debugElement.query(By.css('#link-cancel-h100006'));
+    expect(cancel6).toBeNull();
+    const viewDetails6 = fixture.debugElement.query(By.css('#link-view-details-h100006')).nativeElement;
+    expect(viewDetails6.textContent).toBe('View details');
+    const addOrEdit6 = fixture.debugElement.query(By.css('#link-add-or-edit-h100006'));
+    expect(addOrEdit6).toBeNull();
+
+    const viewOrEdit7 = fixture.debugElement.query(By.css('#link-view-or-edit-h100007'));
+    expect(viewOrEdit7).toBeNull();
+    const cancel7 = fixture.debugElement.query(By.css('#link-cancel-h100007'));
+    expect(cancel7).toBeNull();
+    const viewDetails7 = fixture.debugElement.query(By.css('#link-view-details-h100007')).nativeElement;
+    expect(viewDetails7.textContent).toBe('View details');
+    const addOrEdit7 = fixture.debugElement.query(By.css('#link-add-or-edit-h100007'));
+    expect(addOrEdit7).toBeNull();
+
+    const viewOrEdit9 = fixture.debugElement.query(By.css('#link-view-or-edit-h100009'));
+    expect(viewOrEdit9).toBeNull();
+    const cancel9 = fixture.debugElement.query(By.css('#link-cancel-h100009')).nativeElement;
+    expect(cancel9.textContent).toBe('Cancel');
+    const viewDetails9 = fixture.debugElement.query(By.css('#link-view-details-h100009'));
+    expect(viewDetails9).toBeNull();
+    const addOrEdit9 = fixture.debugElement.query(By.css('#link-add-or-edit-h100009')).nativeElement;
+    expect(addOrEdit9.textContent).toBe('Add or edit');
+  });
+
+  fit('should show the right action links for PAST_AND_CANCELLED section', () => {
+    component.hearingList$ = of(PAST_HEARING_LIST);
+    component.status = EXUISectionStatusEnum.PAST_AND_CANCELLED;
+    component.actions = [Actions.CREATE, Actions.DELETE, Actions.UPDATE, Actions.READ];
+    component.ngOnInit();
+    fixture.detectChanges();
+    const viewOrEdit8 = fixture.debugElement.query(By.css('#link-view-or-edit-h100008'));
+    expect(viewOrEdit8).toBeNull();
+    const cancel8 = fixture.debugElement.query(By.css('#link-cancel-h100008'));
+    expect(cancel8).toBeNull();
+    const viewDetails8 = fixture.debugElement.query(By.css('#link-view-details-h100008')).nativeElement;
+    expect(viewDetails8.textContent).toBe('View details');
+    const addOrEdit8 = fixture.debugElement.query(By.css('#link-add-or-edit-h100008'));
+    expect(addOrEdit8).toBeNull();
+
+    const viewOrEdit10 = fixture.debugElement.query(By.css('#link-view-or-edit-h100010'));
+    expect(viewOrEdit10).toBeNull();
+    const cancel10 = fixture.debugElement.query(By.css('#link-cancel-h100010'));
+    expect(cancel10).toBeNull();
+    const viewDetails10 = fixture.debugElement.query(By.css('#link-view-details-h100010')).nativeElement;
+    expect(viewDetails10.textContent).toBe('View details');
+    const addOrEdit10 = fixture.debugElement.query(By.css('#link-add-or-edit-h100010'));
+    expect(addOrEdit10).toBeNull();
+
+    const viewOrEdit11 = fixture.debugElement.query(By.css('#link-view-or-edit-h100011'));
+    expect(viewOrEdit11).toBeNull();
+    const cancel11 = fixture.debugElement.query(By.css('#link-cancel-h100011'));
+    expect(cancel11).toBeNull();
+    const viewDetails11 = fixture.debugElement.query(By.css('#link-view-details-h100011')).nativeElement;
+    expect(viewDetails11.textContent).toBe('View details');
+    const addOrEdit11 = fixture.debugElement.query(By.css('#link-add-or-edit-h100011'));
+    expect(addOrEdit11).toBeNull();
+
+    const viewOrEdit12 = fixture.debugElement.query(By.css('#link-view-or-edit-h100012'));
+    expect(viewOrEdit12).toBeNull();
+    const cancel12 = fixture.debugElement.query(By.css('#link-cancel-h100012'));
+    expect(cancel12).toBeNull();
+    const viewDetails12 = fixture.debugElement.query(By.css('#link-view-details-h100012')).nativeElement;
+    expect(viewDetails12.textContent).toBe('View details');
+    const addOrEdit12 = fixture.debugElement.query(By.css('#link-add-or-edit-h100012'));
+    expect(addOrEdit12).toBeNull();
   });
 
   it('should viewAndEdit', () => {
     const navigateSpy = spyOn(router, 'navigate');
+    component.status = EXUISectionStatusEnum.UPCOMING;
     component.viewAndEdit('h100000');
     fixture.detectChanges();
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.LoadHearingValues('1111222233334444'));

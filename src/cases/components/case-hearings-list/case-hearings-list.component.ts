@@ -35,10 +35,9 @@ export class CaseHearingsListComponent implements OnInit {
 
   public ngOnInit(): void {
     if (this.status === EXUISectionStatusEnum.PAST_AND_CANCELLED) {
-      console.log('PAST_AND_CANCELLED');
       this.hasReadOnlyAction = true;
-    } else {
-      console.log('UPCOMING');
+    }
+    if (this.status === EXUISectionStatusEnum.UPCOMING) {
       if (this.actions.includes(Actions.UPDATE)) {
         this.hasUpdateAction = true;
       }

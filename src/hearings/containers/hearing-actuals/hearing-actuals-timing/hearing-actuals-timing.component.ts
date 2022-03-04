@@ -159,14 +159,17 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
           'pauseStartTime',
           'pauseEndTime',
           HearingActualsTimingComponent.ERROR_MESSAGE_PAUSE_TIME_BEFORE_RESUME_TIME),
-        this.validatorsUtils.validatePauseStartTimeRange(
+        this.validatorsUtils.validatePauseTimeRange(
           'pauseStartTime',
           { startTime: 'hearingStartTime', endTime: 'hearingEndTime' },
-          HearingActualsTimingComponent.ERROR_MESSAGE_PAUSE_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES),
-        this.validatorsUtils.validatePauseEndTimeRange(
+          HearingActualsTimingComponent.ERROR_MESSAGE_PAUSE_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES,
+          'invalidPauseStartTimeRange'),
+        this.validatorsUtils.validatePauseTimeRange(
           'pauseEndTime',
           { startTime: 'hearingStartTime', endTime: 'hearingEndTime' },
-          HearingActualsTimingComponent.ERROR_MESSAGE_RESUME_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES)
+          HearingActualsTimingComponent.ERROR_MESSAGE_RESUME_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES,
+          'invalidPauseEndTimeRange'
+          )
       ],
     });
   }

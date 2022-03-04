@@ -8,7 +8,7 @@
         Hearing stage and result
       </h1>
       <br>
-      <form class="form" [formGroup]="hearingStageResultForm" (submit)="onSubmit()">
+      <form class="form" [formGroup]="hearingStageResultForm" (ngSubmit)="onSubmit()">
         <!-- Hearing stage -->
         <div class="govuk-form-group">
           <label class="govuk-label govuk-!-font-weight-bold" for="hearing-stage">
@@ -19,12 +19,16 @@
           </select>
         </div>
         <br>
-        <div class="govuk-form-group">
+        <div class="govuk-form-group"
+          [ngClass]="{'govuk-form-group--error': submitted && !f.valid && !f.hearingResult.valid}">
           <fieldset class="govuk-fieldset">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
               <h1 class="govuk-fieldset__heading">
                 Hearing result
               </h1>
+              <div class="govuk-error-message" *ngIf="submitted && !f.valid && !f.hearingResult.valid">
+                {{hearingStageResultEnum.HearingResultError}}
+              </div>
             </legend>
             <div class="govuk-radios" data-module="govuk-radios">
               <div class="govuk-radios__item">
@@ -42,8 +46,12 @@
                 </label>
               </div>
               <div class="govuk-radios__conditional" *ngIf="hearingResultType === hearingResultEnum.ADJOURNED">
-                <div class="govuk-form-group">
+                <div class="govuk-form-group"
+                  [ngClass]="{'govuk-form-group--error': submitted && adjournHearingErrorMessage.length > 0}">
                   <label class="govuk-label" id="dropdown-label" for="adjourned-reason">Select a reason for this result</label>
+                  <div class="govuk-error-message" *ngIf="submitted && adjournHearingErrorMessage.length > 0">
+                    {{adjournHearingErrorMessage}}
+                  </div>
                   <select formControlName="adjournedReason" class="govuk-select" id="adjourned-reason" name="adjournedReason">
                     <option value="" selected>Please select</option>
                     <option *ngFor="let reason of adjournHearingActualReasons" [ngValue]="reason.key">{{reason.value_en}}</option>
@@ -58,8 +66,12 @@
                 </label>
               </div>
               <div class="govuk-radios__conditional" *ngIf="hearingResultType === hearingResultEnum.CANCELLED">
-                <div class="govuk-form-group">
+                <div class="govuk-form-group"
+                  [ngClass]="{'govuk-form-group--error': submitted && cancelHearingErrorMessage.length > 0}">
                   <label class="govuk-label" id="dropdown-label" for="cancelled-reason">Select a reason for this result</label>
+                  <div class="govuk-error-message" *ngIf="submitted && cancelHearingErrorMessage.length > 0">
+                    {{cancelHearingErrorMessage}}
+                  </div>
                   <select formControlName="cancelledReason" class="govuk-select" id="cancelled-reason" name="cancelledReason">
                     <option value="" selected>Please select</option>
                     <option *ngFor="let reason of cancelHearingActualReasons" [ngValue]="reason.key">{{reason.value_en}}</option>

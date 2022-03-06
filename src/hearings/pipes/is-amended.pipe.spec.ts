@@ -5,7 +5,7 @@ import {AnswerSource} from '../models/hearings.enum';
 import {State} from '../store/reducers';
 import {IsAmendedPipe} from './is-amended.pipe';
 
-describe('IsAmendedPipe', () => {
+fdescribe('IsAmendedPipe', () => {
 
   let isAmendedPipe: IsAmendedPipe;
 
@@ -31,7 +31,31 @@ describe('IsAmendedPipe', () => {
 
   it('should transform is amended for additional facilities required', () => {
     const STATE: State = initialState.hearings;
-    const result$ = isAmendedPipe.transform(AnswerSource.ADDITIONAL_FACILITIES_REQUIRED, of(STATE));
+    const result$ = isAmendedPipe.transform(AnswerSource.ATTENDANT_PERSON_AMOUNT, of(STATE));
+    const isAmended = false;
+    const expected = cold('(b|)', {b: isAmended});
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform is amended for additional facilities required', () => {
+    const STATE: State = initialState.hearings;
+    const result$ = isAmendedPipe.transform(AnswerSource.PANEL_INCLUSION, of(STATE));
+    const isAmended = false;
+    const expected = cold('(b|)', {b: isAmended});
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform is amended for additional facilities required', () => {
+    const STATE: State = initialState.hearings;
+    const result$ = isAmendedPipe.transform(AnswerSource.PANEL_EXCLUSION, of(STATE));
+    const isAmended = false;
+    const expected = cold('(b|)', {b: isAmended});
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform is amended for additional facilities required', () => {
+    const STATE: State = initialState.hearings;
+    const result$ = isAmendedPipe.transform(AnswerSource.PANEL_ROLES, of(STATE));
     const isAmended = false;
     const expected = cold('(b|)', {b: isAmended});
     expect(result$).toBeObservable(expected);

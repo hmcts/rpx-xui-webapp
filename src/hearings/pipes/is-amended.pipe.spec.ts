@@ -5,7 +5,7 @@ import {AnswerSource} from '../models/hearings.enum';
 import {State} from '../store/reducers';
 import {IsAmendedPipe} from './is-amended.pipe';
 
-fdescribe('IsAmendedPipe', () => {
+describe('IsAmendedPipe', () => {
 
   let isAmendedPipe: IsAmendedPipe;
 

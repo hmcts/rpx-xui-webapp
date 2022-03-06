@@ -136,12 +136,14 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
           }
         });
       });
-
-      this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms.length ?
-        this.showSpecificPanel('Yes') : this.showSpecificPanel('No');
     }
-    if (this.excludedJudgeList.length || this.includedJudgeList.length) {
+    const hearingPanelRequirements = this.hearingRequestMainModel.hearingDetails.panelRequirements;
+    const panelSpecialismsLength = hearingPanelRequirements && hearingPanelRequirements.panelSpecialisms && hearingPanelRequirements.panelSpecialisms.length || 0;
+    if (panelSpecialismsLength || this.excludedJudgeList.length || this.includedJudgeList.length) {
       this.showSpecificPanel(RadioOptions.YES);
+    } else {
+      this.showSpecificPanel(RadioOptions.NO);
+
     }
   }
 
@@ -159,25 +161,27 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     const panelRolesSelected: string[] = [];
     const selectedPanelMembers: PanelPreferenceModel[] = [] as PanelPreferenceModel[];
     const hearingPanelRequiredFlag = this.panelJudgeForm.controls.specificPanel.value === RadioOptions.YES
-    hearingPanelRequiredFlag && this.includedJudge.judgeList.forEach(judgeInfo => {
-      const panelPreference: PanelPreferenceModel = {
-        memberID: judgeInfo.personalCode,
-        memberType: MemberType.PANEL_MEMBER,
-        requirementType: RequirementType.MUSTINC
-      };
-      selectedPanelMembers.push(panelPreference);
-    });
-    this.excludedJudge.judgeList.forEach(judgeInfo => {
-      const panelPreference: PanelPreferenceModel = {
-        memberID: judgeInfo.personalCode,
-        memberType: MemberType.PANEL_MEMBER,
-        requirementType: RequirementType.EXCLUDE
-      };
-      selectedPanelMembers.push(panelPreference);
-    });
+    if (hearingPanelRequiredFlag) {
+      this.includedJudge.judgeList.forEach(judgeInfo => {
+        const panelPreference: PanelPreferenceModel = {
+          memberID: judgeInfo.personalCode,
+          memberType: MemberType.PANEL_MEMBER,
+          requirementType: RequirementType.MUSTINC
+        };
+        selectedPanelMembers.push(panelPreference);
+      });
+      this.excludedJudge.judgeList.forEach(judgeInfo => {
+        const panelPreference: PanelPreferenceModel = {
+          memberID: judgeInfo.personalCode,
+          memberType: MemberType.PANEL_MEMBER,
+          requirementType: RequirementType.EXCLUDE
+        };
+        selectedPanelMembers.push(panelPreference);
+      });
+      this.preparePanelChildren(panelRoles, panelRolesSelected);
+    }
     const panelRequirements = this.hearingRequestMainModel.hearingDetails.panelRequirements;
     const selectedPanelJudges: PanelPreferenceModel[] = panelRequirements && panelRequirements.panelPreferences && panelRequirements.panelPreferences.filter(preferences => preferences.memberType === MemberType.JUDGE) || [];
-    hearingPanelRequiredFlag && this.preparePanelChildren(panelRoles, panelRolesSelected);
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
       hearingDetails: {

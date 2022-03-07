@@ -273,3 +273,11 @@ export enum HearingResult {
   ADJOURNED = 'ADJOURNED',
   CANCELLED = 'CANCELLED',
 }
+
+export enum HearingActualsTimingErrorMessages {
+  VALID_TIME = 'Enter a valid time.',
+  START_TIME_BEFORE_FINISH_TIME = 'Start time must be before finish time',
+  PAUSE_TIME_BEFORE_RESUME_TIME = 'Pause time must be before resume time',
+  PAUSE_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES = 'Pause time must be between the hearing start and finish times',
+  RESUME_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES = 'Resume time must be between the hearing start and finish times',
+}

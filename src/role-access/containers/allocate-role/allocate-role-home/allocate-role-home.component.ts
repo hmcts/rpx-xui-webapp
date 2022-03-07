@@ -93,15 +93,17 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
         this.isLegalOpsOrJudicialRole = AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
       }
     );
-    if (this.route.snapshot.queryParams) {
-      this.caseId = this.route.snapshot.queryParams.caseId ? this.route.snapshot.queryParams.caseId : null;
-      this.jurisdiction = this.route.snapshot.queryParams.jurisdiction ? this.route.snapshot.queryParams.jurisdiction : null;
-      this.caseType = this.route.snapshot.queryParams.caseType ? this.route.snapshot.queryParams.caseType : null;
-      this.assignmentId = this.route.snapshot.queryParams.assignmentId ? this.route.snapshot.queryParams.assignmentId : null;
-      this.roleCategory = this.route.snapshot.queryParams.roleCategory ? this.route.snapshot.queryParams.roleCategory : null;
-      this.userIdToBeRemoved = this.route.snapshot.queryParams.actorId ? this.route.snapshot.queryParams.actorId : null;
-      this.userNameToBeRemoved = this.route.snapshot.queryParams.userName ? this.route.snapshot.queryParams.userName : null;
-      const roleId = this.route.snapshot.queryParams.typeOfRole ? this.route.snapshot.queryParams.typeOfRole : null;
+    const queryParams = this.route.snapshot.queryParams;
+    if (queryParams) {
+      const { caseId, jurisdiction, caseType, assignmentId, roleCategory, actorId, userName, typeOfRole } = queryParams;
+      this.caseId = caseId ? caseId : null;
+      this.jurisdiction = jurisdiction ? jurisdiction : null;
+      this.caseType = caseType ? caseType : null;
+      this.assignmentId = assignmentId ? assignmentId : null;
+      this.roleCategory = roleCategory ? roleCategory : null;
+      this.userIdToBeRemoved = actorId ? actorId : null;
+      this.userNameToBeRemoved = userName ? userName : null;
+      const roleId = typeOfRole ? typeOfRole : null;
       this.setReallocatedRole(roleId);
       this.action = this.route.snapshot.routeConfig.path ? this.route.snapshot.routeConfig.path : null;
     }

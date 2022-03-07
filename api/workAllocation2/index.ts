@@ -1,4 +1,4 @@
-import { UserInfo } from 'auth/interfaces/UserInfo';
+import { UserInfo } from '../auth/interfaces/UserInfo';
 import { NextFunction, Response } from 'express';
 import { getConfigValue, showFeature } from '../configuration';
 import {

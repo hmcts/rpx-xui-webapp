@@ -3,9 +3,13 @@ import { Observable } from 'rxjs';
 import { AdditionalFacilitiesAmendedConverter } from '../converters/additional-facilities.amended.converter';
 import { AdditionalSecurityAmendedConverter } from '../converters/additional-security.amended.converter';
 import { DefaultAmendedConverter } from '../converters/default.amended.converter';
+import { HearingPanelAmendedConverter } from '../converters/hearing-panel.amended.converter';
 import { HowManyPeopleAttendAmendedConverter } from '../converters/how-many-people-attend.amended.converter';
 import { HowPartyAttendAmendedConverter } from '../converters/how-party-attend.amended.converter';
 import { IsAmendedConverter } from '../converters/is-amended.converter';
+import { PanelExclusionAmendedConverter } from '../converters/panel-exclusion.amended.converter';
+import { PanelInclusionAmendedConverter } from '../converters/panel-inclusion.amended.converter';
+import { PanelRolesAmendedConverter } from '../converters/panel-roles.amended.converter';
 import { StageAmendedConverter } from '../converters/stage.amended.converter';
 import { VenueAmendedConverter } from '../converters/venue.amended.converter';
 import { AnswerSource } from '../models/hearings.enum';
@@ -36,6 +40,18 @@ export class IsAmendedPipe implements PipeTransform {
         break;
       case AnswerSource.STAGE:
         converter = new StageAmendedConverter();
+        break;
+      case AnswerSource.HEARING_PANEL:
+        converter = new HearingPanelAmendedConverter();
+        break;
+      case AnswerSource.PANEL_INCLUSION:
+        converter = new PanelInclusionAmendedConverter();
+        break;
+      case AnswerSource.PANEL_EXCLUSION:
+        converter = new PanelExclusionAmendedConverter();
+        break;
+      case AnswerSource.PANEL_ROLES:
+        converter = new PanelRolesAmendedConverter();
         break;
       default:
         break;

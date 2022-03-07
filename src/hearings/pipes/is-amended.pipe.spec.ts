@@ -29,10 +29,34 @@ describe('IsAmendedPipe', () => {
     expect(result$).toBeObservable(expected);
   });
 
-  it('should transform is amended for additional facilities required', () => {
+  it('should transform is amended for additional person amount required', () => {
     const STATE: State = initialState.hearings;
-    const result$ = isAmendedPipe.transform(AnswerSource.ADDITIONAL_FACILITIES_REQUIRED, of(STATE));
+    const result$ = isAmendedPipe.transform(AnswerSource.ATTENDANT_PERSON_AMOUNT, of(STATE));
     const isAmended = false;
+    const expected = cold('(b|)', {b: isAmended});
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform is amended for panel inclusion', () => {
+    const STATE: State = initialState.hearings;
+    const result$ = isAmendedPipe.transform(AnswerSource.PANEL_INCLUSION, of(STATE));
+    const isAmended = true;
+    const expected = cold('(b|)', {b: isAmended});
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform is amended for panel exclusion', () => {
+    const STATE: State = initialState.hearings;
+    const result$ = isAmendedPipe.transform(AnswerSource.PANEL_EXCLUSION, of(STATE));
+    const isAmended = true;
+    const expected = cold('(b|)', {b: isAmended});
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform is amended for panel roles', () => {
+    const STATE: State = initialState.hearings;
+    const result$ = isAmendedPipe.transform(AnswerSource.PANEL_ROLES, of(STATE));
+    const isAmended = true;
     const expected = cold('(b|)', {b: isAmended});
     expect(result$).toBeObservable(expected);
   });

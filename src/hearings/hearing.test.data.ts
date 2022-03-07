@@ -1,6 +1,5 @@
 import {HearingActualsMainModel} from './models/hearingActualsMainModel';
 import {HearingRequestMainModel} from './models/hearingRequestMain.model';
-import {ServiceHearingValuesModel} from './models/serviceHearingValues.model';
 import {
   CategoryType,
   HearingListingStatusEnum,
@@ -9,8 +8,10 @@ import {
   LaCaseStatus,
   ListingStatus,
   MemberType,
-  PartyType, RequirementType
+  PartyType,
+  RequirementType
 } from './models/hearings.enum';
+import {ServiceHearingValuesModel} from './models/serviceHearingValues.model';
 
 export const hearingStageRefData = [
   {

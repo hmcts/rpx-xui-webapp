@@ -99,6 +99,7 @@ export function mapResponseToCaseRoles(
 export async function confirmAllocateRole(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   try {
     const body = req.body;
+    body.caseType = 'Asylum';
     // @ts-ignore
     const currentUser = req.session.passport.user.userinfo;
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;

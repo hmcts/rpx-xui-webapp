@@ -2,6 +2,7 @@ import { Person } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 import { AllocateTo, DurationOfRole, Period, RoleCategory, SpecificRole} from './allocate-role.enum';
 
 export interface AllocateRoleData {
+  caseType: string;
   caseId: string;
   action: string;
   assignmentId?: string;

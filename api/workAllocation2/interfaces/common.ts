@@ -28,6 +28,11 @@ export interface LocationApi {
     services: string[];
 }
 
+export interface CaseworkersByService {
+    service: string;
+    caseworkers: Caseworker[];
+}
+
 export interface Caseworker {
     firstName: string;
     lastName: string;
@@ -35,6 +40,7 @@ export interface Caseworker {
     email: string;
     location: Location;
     roleCategory: string;
+    service?: string;
 }
 
 export interface Judicialworker {
@@ -64,4 +70,10 @@ export interface Judicialworker {
 export interface Action {
     id: string;
     title: string;
+}
+
+export interface CaseDataType {
+  [key: string]: {
+    [key: string]: Set<string>;
+  };
 }

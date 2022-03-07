@@ -21,7 +21,30 @@ const CCDCaseConfig = require('./ccdCaseConfig/caseCreateConfigGenerator');
 const CCDWorkBasketInputGenerator = require('./ccdCaseConfig/workBasketInputGenerator');
 const CCDSearchInputGenerator = require('./ccdCaseConfig/searchInputGenerator');
 
+const caseDetailsData = require('./caseDetails_data');
+
 class CCDApi{
+
+    constructor(){
+        this.setDefaultData();
+    }
+
+    setDefaultData(){
+        this.caseDetailsResponse = JSON.parse(JSON.stringify(caseDetailsData));
+        this.caseList = this.getWorkbasketCases(); 
+    }
+
+    getCaseDetailsWithID(caseId){
+        this.caseDetailsResponse.case_id = caseId;
+        this.caseDetailsResponse['_links'].self.href = "http://ccd-data-store-api-demo.service.core-compute-demo.internal/internal/cases/" + caseId;
+        for (const metaDatField of this.caseDetailsResponse.metadataFields){
+            if (metaDatField.id === '[CASE_REFERENCE]'){
+                metaDatField.value = caseId;
+                break; 
+            }
+        }
+        return this.caseDetailsResponse 
+    }
 
     getJurisdictions(){
         return caseworkerJurisdictions; 
@@ -332,7 +355,7 @@ class CCDApi{
         for (let rowCounter = 0; rowCounter < 25; rowCounter++) {
             rows.push({
                 "supplementary_data" : null,
-                "case_id": "157125441721456" + rowCounter,
+                "case_id": "0_157125441721456" + rowCounter,
                 "case_fields": {
                     "solsConfirmSignSOT2": "You will sign a statement of truth on your client’s behalf.",
                     "solsConfirmSignSOT3": "The executor believes that all the information stated in the legal statement is true. They have authorised ${solsSolicitorFirmName} to sign a statement of truth on their behalf.",
@@ -345,7 +368,7 @@ class CCDApi{
                     "solsLifeInterestInfo": "You can’t use this service if there is a life interest in respect of the estate.",
                     "solsBeforeSubmitPage": "* Check the information you've given. You can do this on the next pagesn* Review the legal statement and declarationn* Get authorisation from your client to confirm and sign the statement of truth on their behalf",
                     "solsEntitledMinorityInfo": "You can’t use this service if there is a beneficiary under the age of 18.",
-                    "[CASE_REFERENCE]": 157125441721456 + "" + rowCounter,
+                    "[CASE_REFERENCE]": "1_157125441721456 " + rowCounter,
                     "solsStartPage": "# Check you can use this service to apply for a grant.",
                     "[STATE]": "SolAppCreated",
                     "solsSolicitorFirmName": "3ewq",
@@ -389,7 +412,7 @@ class CCDApi{
                     "solsLifeInterestInfo": "You can’t use this service if there is a life interest in respect of the estate.",
                     "solsBeforeSubmitPage": "* Check the information you've given. You can do this on the next pagesn* Review the legal statement and declarationn* Get authorisation from your client to confirm and sign the statement of truth on their behalf",
                     "solsEntitledMinorityInfo": "You can’t use this service if there is a beneficiary under the age of 18.",
-                    "[CASE_REFERENCE]": 157125441721456 + "" + rowCounter,
+                    "[CASE_REFERENCE]": "2_157125441721456 " + rowCounter,
                     "solsStartPage": "# Check you can use this service to ap.",
                     "[STATE]": "SolAppCreated",
                     "solsSolicitorFirmName": "3ewq",

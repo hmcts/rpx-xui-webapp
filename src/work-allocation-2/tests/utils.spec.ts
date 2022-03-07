@@ -1,5 +1,6 @@
 import { NavigationExtras } from '@angular/router';
 import { Observable, of } from 'rxjs';
+import { CaseRoleDetails } from 'src/role-access/models/case-role-details.interface';
 
 import { RoleCategory } from '../../role-access/models';
 import { ConfigConstants } from '../components/constants';
@@ -36,6 +37,27 @@ export function getMockCaseworkers(): Caseworker[] {
   ];
 }
 
+export function getMockCaseRoles(): CaseRoleDetails[] {
+  return [
+    {
+      sidam_id: '123456789',
+      known_as: 'Test',
+      full_name: 'Mr Test',
+      surname: 'Test',
+      idam_id: null,
+      email_id: 'test@test.com'
+    },
+    {
+      sidam_id: null,
+      known_as: 'Extra Testing',
+      full_name: 'Sir Testing',
+      surname: 'Testing',
+      idam_id: '023456780',
+      email_id: 'test@test.com'
+    }
+  ];
+}
+
 /**
  * Mock cases
  */
@@ -50,6 +72,8 @@ export function getMockCases(): Case[] {
       location: 'Taylor House',
       taskName: 'Review respondent evidence',
       dueDate: new Date(628021800000),
+      role_category: 'JUDICIAL',
+      assignee: '123456789',
       actions: [
         {
           id: 'reallocate',
@@ -70,6 +94,7 @@ export function getMockCases(): Case[] {
       location: 'Taylor House',
       taskName: 'Review appellant case',
       dueDate: new Date(628021800000),
+      role_category: 'LEGAL_OPERATIONS',
       actions: [
         {
           id: 'reallocate',
@@ -93,6 +118,7 @@ export function getMockTasks(): Task[] {
       assignee: null,
       assigneeName: null,
       id: '1549476532065586',
+      jurisdiction: 'IA',
       description: null,
       case_id: '1549476532065586',
       taskId: '1549476532065586',
@@ -118,6 +144,7 @@ export function getMockTasks(): Task[] {
       assigneeName: null,
       description: null,
       id: '1549476532065587',
+      jurisdiction: 'IA',
       case_id: '1549476532065587',
       taskId: '1549476532065587',
       caseName: 'Mankai Lit',

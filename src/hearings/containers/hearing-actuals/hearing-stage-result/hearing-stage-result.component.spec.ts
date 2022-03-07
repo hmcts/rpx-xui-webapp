@@ -94,6 +94,32 @@ describe('HearingStageResultComponent', () => {
     expect(storeDispatchSpy).toHaveBeenCalled();
   });
 
+  it('should fail validation if hearing result type not selected', () => {
+    const storeDispatchSpy = spyOn(store, 'dispatch');
+    component.onSubmit();
+    expect(component.f.hearingResult.valid).toEqual(false);
+    expect(component.validationErrors.length).toEqual(1);
+    expect(storeDispatchSpy).toHaveBeenCalledTimes(0);
+  });
+
+  it('should fail validation if adjourned reason not selected', () => {
+    const storeDispatchSpy = spyOn(store, 'dispatch');
+    component.hearingResultType = HearingResult.ADJOURNED;
+    component.onSubmit();
+    component.adjournHearingErrorMessage = 'Select a reason for the hearing result';
+    expect(component.validationErrors.length).toEqual(1);
+    expect(storeDispatchSpy).toHaveBeenCalledTimes(0);
+  });
+
+  it('should fail validation if cancelled reason not selected', () => {
+    const storeDispatchSpy = spyOn(store, 'dispatch');
+    component.hearingResultType = HearingResult.CANCELLED;
+    component.onSubmit();
+    component.cancelHearingErrorMessage = 'Select a reason for the hearing result';
+    expect(component.validationErrors.length).toEqual(1);
+    expect(storeDispatchSpy).toHaveBeenCalledTimes(0);
+  });
+
   it('should be able to submit if the form is valid', () => {
     const storeDispatchSpy = spyOn(store, 'dispatch');
     component.cancelHearingActualReasons = hearingActualCancelReasonsRefData;

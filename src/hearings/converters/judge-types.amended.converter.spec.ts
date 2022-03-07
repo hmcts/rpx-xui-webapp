@@ -14,8 +14,8 @@ describe('JudgeTypesAmendedConverter', () => {
 
   it('should transform judge type amended flag based on selection', () => {
     const STATE: State = initialState.hearings;
-    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {}
-    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements.roleType = ['tribunalJudge']
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {};
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements.roleType = ['tribunalJudge'];
     const result$ = judgeTypesAmendedConverter.transformIsAmended(of(STATE));
     const isAmended = true;
     const expected = cold('(b|)', {b: isAmended});

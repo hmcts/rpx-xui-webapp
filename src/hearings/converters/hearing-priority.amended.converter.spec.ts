@@ -14,7 +14,7 @@ describe('HearingPriorityAmendedConverter', () => {
 
   it('should transform hearing priority amended flag based on selection', () => {
     const STATE: State = initialState.hearings;
-    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingPriorityType = 'standard'
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingPriorityType = 'standard';
     const result$ = hearingPriorityAmendedConverter.transformIsAmended(of(STATE));
     const isAmended = false;
     const expected = cold('(b|)', {b: isAmended});

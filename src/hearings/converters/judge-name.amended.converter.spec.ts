@@ -15,12 +15,12 @@ describe('JudgeNameAmendedConverter', () => {
 
   it('should transform judge name amended flag based on selection', () => {
     const STATE: State = initialState.hearings;
-    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {}
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {};
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements.panelPreferences = [{
       memberID: 'P000001',
       memberType: MemberType.JUDGE,
       requirementType: RequirementType.MUSTINC
-    }]
+    }];
     const result$ = judgeNameAmendedConverter.transformIsAmended(of(STATE));
     const isAmended = true;
     const expected = cold('(b|)', {b: isAmended});

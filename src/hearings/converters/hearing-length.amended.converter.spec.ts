@@ -14,7 +14,7 @@ describe('HearingLengthAmendedConverter', () => {
 
   it('should transform hearing length amended flag based on selection', () => {
     const STATE: State = initialState.hearings;
-    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.duration = 30
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.duration = 30;
     const result$ = hearingLengthAmendedConverter.transformIsAmended(of(STATE));
     const isAmended = true;
     const expected = cold('(b|)', {b: isAmended});

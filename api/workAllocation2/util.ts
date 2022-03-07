@@ -277,21 +277,19 @@ export function getActionsByPermissions(view, permissions: TaskPermission[]): Ac
   permissions.forEach(permission => {
     switch (permission) {
       case TaskPermission.MANAGE:
-        const manageActionList = actionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX[view][TaskPermission.MANAGE]);
-        actionList = !manageActionList.includes(undefined) ? manageActionList : actionList;
+        actionList = getActionsFromMatrix(view, permission, actionList);
         break;
       case TaskPermission.EXECUTE:
       case TaskPermission.OWN:
-        // if on active tasks and there is no manage permission do not add execute actions
-        if ((view.includes(ViewType.ACTIVE_TASKS) && !permissions.includes(TaskPermission.MANAGE))) {
+        // if on active tasks and there is a manage permission add own actions
+        if (view.includes(ViewType.ACTIVE_TASKS) && permissions.includes(TaskPermission.MANAGE)) {
+          actionList = getActionsFromMatrix(view, TaskPermission.OWN, actionList);
           break;
         }
-        const executeActionList = actionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX[view][TaskPermission.EXECUTE]);
-        actionList = !executeActionList.includes(undefined) ? executeActionList : actionList;
+        actionList = getActionsFromMatrix(view, TaskPermission.EXECUTE, actionList);
         break;
       case TaskPermission.CANCEL:
-        const cancelActionList = actionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX[view][TaskPermission.CANCEL]);
-        actionList = !cancelActionList.includes(undefined) ? cancelActionList : actionList;
+        actionList = getActionsFromMatrix(view, permission, actionList);
         break;
       default:
         break;
@@ -301,6 +299,12 @@ export function getActionsByPermissions(view, permissions: TaskPermission[]): Ac
   // Currently sorting by id but can be changed
   actionList =  Array.from(new Set(actionList));
   return actionList.sort((a, b) => a.id.localeCompare(b.id));
+}
+
+export function getActionsFromMatrix(view, permission: TaskPermission, currentActionList: Action[]): Action[] {
+  const newActionList = currentActionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX[view][permission]);
+  currentActionList = !newActionList.includes(undefined) ? newActionList : currentActionList;
+  return currentActionList;
 }
 
 export function getActionsFromAllocatorRole(isAllocator: boolean): Action[] {

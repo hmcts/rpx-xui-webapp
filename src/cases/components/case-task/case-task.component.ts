@@ -28,7 +28,7 @@ export class CaseTaskComponent implements OnInit {
     CaseTaskComponent.CASE_ID_VARIABLE,
     CaseTaskComponent.TASK_ID_VARIABLE
   ];
-  public manageOptions: {id: string, text: string }[];
+  public manageOptions: {id: string, title: string }[];
   public isUserJudicial: boolean;
   private pTask: Task;
 
@@ -77,7 +77,7 @@ export class CaseTaskComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.manageOptions = this.getManageOptions(this.task);
+    this.manageOptions = this.task.actions;
   }
 
   public getAssigneeName(task: Task): string {
@@ -129,43 +129,6 @@ export class CaseTaskComponent implements OnInit {
       this.alertService.warning(InfoMessage.TASK_NO_LONGER_AVAILABLE);
       if (handledStatus === 400) {
         this.taskRefreshRequired.emit();
-      }
-    }
-  }
-
-  public getManageOptions(task: Task): {id: string, text: string} [] {
-    const permissions = task && task.permissions && task.permissions.values ? task.permissions.values : [];
-    if (!task.assignee) {
-      if (permissions.length === 0 || (permissions.length === 1 && permissions.includes(TaskPermission.MANAGE))) {
-        return [];
-      } else {
-        return [{id: 'claim', text: 'Assign to me'}];
-      }
-    }
-
-    if (this.isTaskAssignedToCurrentUser(task)) {
-      const taskActions = [];
-      if (task.actions.find(action => action.id === 'reassign')) {
-        taskActions.push({id: 'reassign', text: 'Reassign task'});
-      }
-      if (task.actions.find(action => action.id === 'unclaim')) {
-        taskActions.push({id: 'unclaim', text: 'Unassign task'});
-      }
-      return taskActions;
-    } else {
-      if (permissions.includes(TaskPermission.EXECUTE) && permissions.includes(TaskPermission.MANAGE)) {
-        return [
-          {id: 'claim', text: 'Assign to me'},
-          {id: 'reassign', text: 'Reassign task'},
-          {id: 'unclaim', text: 'Unassign task'}
-        ];
-      } else if (permissions.includes(TaskPermission.MANAGE)) {
-        return [
-          {id: 'reassign', text: 'Reassign task'},
-          {id: 'unclaim', text: 'Unassign task'}
-        ];
-      } else {
-        return [];
       }
     }
   }

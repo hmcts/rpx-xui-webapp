@@ -59,9 +59,15 @@ export const ROUTES: Routes = [
     children: [
       {
         path: 'hearing-actual-add-edit-summary',
+        resolve: {
+          hearingTypes: RefDataResolver,
+          adjournHearingActualReasons: AdjournHearingActualReasonResolver,
+          cancelHearingActualReasons: CancelHearingActualReasonResolver
+        },
         component: HearingActualAddEditSummaryComponent,
         canActivate: [HealthCheckGuard],
         data: {
+          category: HearingCategory.HearingType,
           title: 'HMCTS Hearings | Hearing Actuals | Check details'
         }
       },

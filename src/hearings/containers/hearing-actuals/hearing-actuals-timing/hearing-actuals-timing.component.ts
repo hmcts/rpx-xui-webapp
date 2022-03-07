@@ -4,7 +4,7 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { combineLatest, Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { filter, first } from 'rxjs/operators';
 import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
 import { HearingsService } from '../../../services/hearings.service';
@@ -69,7 +69,8 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   public ngOnInit() {
     this.sub = combineLatest([this.hearingStore.select(fromHearingStore.getHearingActuals), this.route.paramMap])
       .pipe(
-        filter(([state]: [HearingActualsStateData, ParamMap]) => !!state.hearingActualsMainModel)
+        filter(([state]: [HearingActualsStateData, ParamMap]) => !!state.hearingActualsMainModel),
+        first()
       )
       .subscribe(([state, params]: [HearingActualsStateData, ParamMap]) => {
         this.id = params.get('id');

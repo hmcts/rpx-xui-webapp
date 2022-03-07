@@ -4,6 +4,7 @@ import { ExclusionAction, ExclusionActionTypes } from '../actions';
 export const initialState: ExclusionStateData = {
   caseId: null,
   jurisdiction: null,
+  caseType: null,
   state: ExclusionState.CHOOSE_EXCLUSION,
   exclusionOption: null,
   personRole: null,
@@ -29,7 +30,8 @@ export function exclusionReducer(currentState = initialState, action: ExclusionA
       return {
         ...currentState,
         caseId: action.caseId,
-        jurisdiction: action.jurisdiction
+        jurisdiction: action.jurisdiction,
+        caseType: action.caseType
       };
     }
     case ExclusionActionTypes.UPDATE_DESCRIBE_EXCLUSION_TEXT: {

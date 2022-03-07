@@ -161,28 +161,32 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
         id: 'hearingPanel',
         answerTitle: 'Do you require a panel for this hearing?',
         answerSource: AnswerSource.HEARING_PANEL,
-        changeLink: '/hearings/request/hearing-panel#specificPanelSelection'
+        changeLink: '/hearings/request/hearing-panel#specificPanelSelection',
+        isAmendedSource: AnswerSource.HEARING_PANEL,
       },
       {
         id: 'panelInclusion',
         answerTitle: 'Include specific panel members',
         answerSource: AnswerSource.PANEL_INCLUSION,
         changeLink: '/hearings/request/hearing-panel#inputSelectPersonInclude',
-        isHiddenSource: IsHiddenSource.PANEL_INCLUSION
+        isHiddenSource: IsHiddenSource.PANEL_INCLUSION,
+        isAmendedSource: AnswerSource.PANEL_INCLUSION,
       },
       {
         id: 'panelExclusion',
         answerTitle: 'Exclude specific panel members',
         answerSource: AnswerSource.PANEL_EXCLUSION,
         changeLink: '/hearings/request/hearing-panel#inputSelectPersonExclude',
-        isHiddenSource: IsHiddenSource.PANEL_EXCLUSION
+        isHiddenSource: IsHiddenSource.PANEL_EXCLUSION,
+        isAmendedSource: AnswerSource.PANEL_EXCLUSION,
       },
       {
         id: 'panelRoles',
         answerTitle: 'Select any other panel roles required',
         answerSource: AnswerSource.PANEL_ROLES,
         changeLink: '/hearings/request/hearing-panel#specificPanelSelection',
-        isHiddenSource: IsHiddenSource.PANEL_ROLES
+        isHiddenSource: IsHiddenSource.PANEL_ROLES,
+        isAmendedSource: AnswerSource.PANEL_ROLES,
       },
     ],
   },

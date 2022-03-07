@@ -82,11 +82,9 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
 
   public onSubmit(): void {
     this.submitted = true;
-
     if (this.hearingResultType) {
       this.hearingStageResultForm.get('hearingResult').setValue(this.hearingResultType);
     }
-
     if (this.isFormValid()) {
       const hearingActuals = {
         ...this.hearingActualsMainModel.hearingActuals,
@@ -97,7 +95,6 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
           hearingType: this.hearingStageResultForm.get('hearingStage').value
         }
       };
-
       this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
         hearingId: this.id,
         hearingActuals
@@ -105,10 +102,20 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
     }
   }
 
-  public isFormValid(): boolean {
+  private isFormValid(): boolean {
     this.validationErrors = [];
     this.adjournHearingErrorMessage = '';
     this.cancelHearingErrorMessage = '';
+    if (!this.validateHearingResult()) {
+      return false;
+    }
+    if (!this.validateHearingResultReason(this.hearingResultType)) {
+      return false;
+    }
+    return true;
+  }
+
+  private validateHearingResult(): boolean {
     if (!this.f.hearingResult.valid) {
       this.validationErrors.push({
         id: 'completed',
@@ -116,9 +123,16 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
       });
       return false;
     }
-    if (this.hearingResultType !== this.hearingResultEnum.COMPLETED &&
-        this.getHearingResultReasonType().length === 0) {
-      if (this.hearingResultType === this.hearingResultEnum.ADJOURNED) {
+    return true;
+  }
+
+  private validateHearingResultReason(hearingResult: string): boolean {
+    const hearingResultReasonType = this.getHearingResultReasonType();
+    if (hearingResultReasonType === '') {
+      if (hearingResult === this.hearingResultEnum.COMPLETED) {
+        return true;
+      }
+      if (hearingResult === this.hearingResultEnum.ADJOURNED) {
         this.adjournHearingErrorMessage = this.hearingStageResultEnum.HearingResultReasonError;
       }
       if (this.hearingResultType === this.hearingResultEnum.CANCELLED) {

@@ -1,7 +1,17 @@
-import { HearingActualsMainModel } from './models/hearingActualsMainModel';
-import { HearingRequestMainModel } from './models/hearingRequestMain.model';
-import { CategoryType, HearingListingStatusEnum, HearingResult, HMCStatus, LaCaseStatus, ListingStatus, PartyType } from './models/hearings.enum';
-import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
+import {HearingActualsMainModel} from './models/hearingActualsMainModel';
+import {HearingRequestMainModel} from './models/hearingRequestMain.model';
+import {
+  CategoryType,
+  HearingListingStatusEnum,
+  HearingResult,
+  HMCStatus,
+  LaCaseStatus,
+  ListingStatus,
+  MemberType,
+  PartyType
+} from './models/hearings.enum';
+import {ServiceHearingValuesModel} from './models/serviceHearingValues.model';
+import {RequirementType} from "../../api/hearings/models/hearings.enum";
 
 export const hearingStageRefData = [
   {
@@ -1011,9 +1021,9 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
     ],
     judiciaryPreferences: [
       {
-        memberID: '',
-        memberType: '',
-        requirementType: 'EXCLUDE'
+        memberID: 'p1000000',
+        memberType: MemberType.JUDGE,
+        requirementType: RequirementType.EXCLUDE
       }
     ],
     judiciarySpecialisms: [

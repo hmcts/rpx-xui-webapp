@@ -68,6 +68,7 @@ export class IsAmendedPipe implements PipeTransform {
         break;
       case AnswerSource.HEARING_PRIORITY:
         converter = new HearingPriorityAmendedConverter();
+        break;
       case AnswerSource.HEARING_PANEL:
         converter = new HearingPanelAmendedConverter();
         break;

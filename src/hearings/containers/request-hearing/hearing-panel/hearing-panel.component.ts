@@ -136,12 +136,14 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
           }
         });
       });
-
-      this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms.length ?
-        this.showSpecificPanel('Yes') : this.showSpecificPanel('No');
     }
-    if (this.excludedJudgeList.length || this.includedJudgeList.length) {
+    const hearingPanelRequirements = this.hearingRequestMainModel.hearingDetails.panelRequirements;
+    const panelSpecialismsLength = hearingPanelRequirements && hearingPanelRequirements.panelSpecialisms && hearingPanelRequirements.panelSpecialisms.length || 0;
+    if (panelSpecialismsLength || this.excludedJudgeList.length || this.includedJudgeList.length) {
       this.showSpecificPanel(RadioOptions.YES);
+    } else {
+      this.showSpecificPanel(RadioOptions.NO);
+
     }
   }
 

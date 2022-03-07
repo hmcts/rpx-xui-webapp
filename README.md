@@ -120,7 +120,7 @@ which in turn uses `propertiesVolume.addTo()`
 
 # How Application Configuration (Node Config) Works
 
-The application picks up the configuration from the /config .json files.
+The application picks up the configuration from the /config .json files. 
 
 The references within *.json ie. production.json are set by the /charts/xui-terms-and-conditions/values.yaml file ie.
 POSTGRES_SERVER_PORT is set by POSTGRES_SERVER_PORT within values.yaml. <br><br>HOWEVER if there is a

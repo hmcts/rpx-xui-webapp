@@ -26,7 +26,7 @@ export class AllocateRoleReset implements Action {
 
 export class AllocateRoleSetInitData implements Action {
   public readonly type = AllocateRoleActionTypes.SET_INITIAL_DATA;
-  constructor(public payload: { caseId: string, jurisdiction: string, roleCategory: RoleCategory }) {
+  constructor(public payload: { caseId: string, jurisdiction: string, roleCategory: RoleCategory, caseType: string }) {
   }
 }
 

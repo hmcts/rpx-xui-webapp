@@ -6,6 +6,7 @@ import { HttpError } from './http-error.interface';
 export interface ExclusionStateData {
   caseId: string;
   jurisdiction: string;
+  caseType: string,
   state: ExclusionState;
   exclusionOption: ExcludeOption;
   personRole: PersonRole;

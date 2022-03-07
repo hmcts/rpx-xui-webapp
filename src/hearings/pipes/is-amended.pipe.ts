@@ -1,15 +1,15 @@
-import {Pipe, PipeTransform} from '@angular/core';
-import {Observable} from 'rxjs';
-import {AdditionalFacilitiesAmendedConverter} from '../converters/additional-facilities.amended.converter';
-import {AdditionalSecurityAmendedConverter} from '../converters/additional-security.amended.converter';
-import {DefaultAmendedConverter} from '../converters/default.amended.converter';
+import { Pipe, PipeTransform } from '@angular/core';
+import { Observable } from 'rxjs';
+import { AdditionalFacilitiesAmendedConverter } from '../converters/additional-facilities.amended.converter';
+import { AdditionalSecurityAmendedConverter } from '../converters/additional-security.amended.converter';
+import { DefaultAmendedConverter } from '../converters/default.amended.converter';
 import { HowManyPeopleAttendAmendedConverter } from '../converters/how-many-people-attend.amended.converter';
 import { HowPartyAttendAmendedConverter } from '../converters/how-party-attend.amended.converter';
-import {IsAmendedConverter} from '../converters/is-amended.converter';
+import { IsAmendedConverter } from '../converters/is-amended.converter';
 import { StageAmendedConverter } from '../converters/stage.amended.converter';
-import {VenueAmendedConverter} from '../converters/venue.amended.converter';
-import {AnswerSource} from '../models/hearings.enum';
-import {State} from '../store';
+import { VenueAmendedConverter } from '../converters/venue.amended.converter';
+import { AnswerSource } from '../models/hearings.enum';
+import { State } from '../store';
 
 @Pipe({
   name: 'isAmended'
@@ -33,6 +33,7 @@ export class IsAmendedPipe implements PipeTransform {
         break;
       case AnswerSource.ATTENDANT_PERSON_AMOUNT:
         converter = new HowManyPeopleAttendAmendedConverter();
+        break;
       case AnswerSource.STAGE:
         converter = new StageAmendedConverter();
         break;

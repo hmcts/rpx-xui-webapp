@@ -63,8 +63,8 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   }
 
   private static replaceTime(time: string, value: string): string {
-    if (!time) {
-      return time;
+    if (!time || !value) {
+      return null;
     }
     return time.replace(this.TIME_MATCHER, value);
   }

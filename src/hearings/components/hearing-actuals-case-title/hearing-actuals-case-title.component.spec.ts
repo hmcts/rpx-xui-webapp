@@ -1,6 +1,7 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { hearingRequestMainModel } from "src/hearings/hearing.test.data";
-import { HearingActualsCaseTitleComponent } from "./hearing-actuals-case-title.component";
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { hearingRequestMainModel } from '../../hearing.test.data';
+import { HearingActualsCaseTitleComponent } from './hearing-actuals-case-title.component';
 
 describe('HearingActualsCaseTitleComponent', () => {
   let component: HearingActualsCaseTitleComponent;
@@ -9,7 +10,7 @@ describe('HearingActualsCaseTitleComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [HearingActualsCaseTitleComponent],
-      providers: []
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
     .compileComponents();
   }));

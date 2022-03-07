@@ -1,5 +1,5 @@
-import { Component, Input } from "@angular/core";
-import { CaseDetailsModel } from "../../models/caseDetails.model";
+import { Component, Input } from '@angular/core';
+import { CaseDetailsModel } from '../../models/caseDetails.model';
 
 @Component({
   selector: 'exui-hearing-actuals-case-title',

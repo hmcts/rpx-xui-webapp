@@ -7,11 +7,11 @@ import {IsAmendedConverter} from './is-amended.converter';
 export class HearingSpecificDateAmendedConverter implements IsAmendedConverter {
   public transformIsAmended(hearingState$?: Observable<State>): Observable<boolean> {
     return hearingState$.pipe(map(state => {
-      const ObjAHearingWindow = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.hearingWindow;
-      const ObBHearingWindow = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingWindow;
+      const objAHearingWindow = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.hearingWindow;
+      const objBHearingWindow = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingWindow;
 
-      const objA = ObjAHearingWindow && ObjAHearingWindow.hearingWindowDateRange && ObjAHearingWindow.hearingWindowDateRange.hearingWindowStartDateRange;
-      const objB = ObBHearingWindow && ObBHearingWindow.hearingWindowDateRange && ObBHearingWindow.hearingWindowDateRange.hearingWindowStartDateRange;
+      const objA = objAHearingWindow && objAHearingWindow.hearingWindowDateRange && objAHearingWindow.hearingWindowDateRange.hearingWindowStartDateRange;
+      const objB = objBHearingWindow && objBHearingWindow.hearingWindowDateRange && objBHearingWindow.hearingWindowDateRange.hearingWindowStartDateRange;
       return !_.isEqual(objA, objB);
     }));
   }

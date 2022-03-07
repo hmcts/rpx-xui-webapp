@@ -8,10 +8,10 @@ import {IsAmendedConverter} from './is-amended.converter';
 export class JudgeExclusionAmendedConverter implements IsAmendedConverter {
   public transformIsAmended(hearingState$?: Observable<State>): Observable<boolean> {
     return hearingState$.pipe(map(state => {
-      const ObjAPanelRequirements = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.panelRequirements
-      const ObjBPanelRequirements = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements
-      const objA = ObjAPanelRequirements && ObjAPanelRequirements.panelPreferences.filter(panel => panel.memberType === MemberType.JUDGE && panel.requirementType === RequirementType.EXCLUDE);
-      const objB = ObjBPanelRequirements && ObjBPanelRequirements.panelPreferences.filter(panel => panel.memberType === MemberType.JUDGE && panel.requirementType === RequirementType.EXCLUDE);
+      const objAPanelRequirements = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.panelRequirements;
+      const objBPanelRequirements = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
+      const objA = objAPanelRequirements && objAPanelRequirements.panelPreferences.filter(panel => panel.memberType === MemberType.JUDGE && panel.requirementType === RequirementType.EXCLUDE);
+      const objB = objBPanelRequirements && objBPanelRequirements.panelPreferences.filter(panel => panel.memberType === MemberType.JUDGE && panel.requirementType === RequirementType.EXCLUDE);
       return !_.isEqual(objA, objB);
     }));
   }

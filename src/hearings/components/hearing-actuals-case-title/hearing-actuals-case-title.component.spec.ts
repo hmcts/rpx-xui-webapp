@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { hearingRequestMainModel } from "src/hearings/hearing.test.data";
 import { HearingActualsCaseTitleComponent } from "./hearing-actuals-case-title.component";
 
 describe('HearingActualsCaseTitleComponent', () => {
@@ -22,4 +23,11 @@ describe('HearingActualsCaseTitleComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should display case title if case details object is not empty', () => {
+    component.caseDetails = hearingRequestMainModel.caseDetails;
+    fixture.detectChanges();
+    const caseNameEl = fixture.debugElement.nativeElement.querySelector('.govuk-caption-l');
+    expect(caseNameEl.textContent).toContain('Jane Smith vs DWP');
+  })
 });

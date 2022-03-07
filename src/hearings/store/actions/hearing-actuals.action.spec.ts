@@ -7,7 +7,8 @@ describe('Hearing Actuals Actions', () => {
   const payload: HearingActualsMainModel = {
     hearingActuals: null,
     hearingPlanned: null,
-    hmcStatus: HMCStatus.AWAITING_ACTUALS
+    hmcStatus: HMCStatus.AWAITING_ACTUALS,
+    caseDetails: null
   };
 
   describe('Reset', () => {

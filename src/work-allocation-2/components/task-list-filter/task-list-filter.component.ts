@@ -280,8 +280,8 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   /**
    * Sets the value of the allowTypesOfWorkFilter boolean determined by provided params
    *
-   * @param {string} url - the url string to check against
-   * @param {string} myCaseUrl - the string to search for in the url
+   * @param url - the url string to check against
+   * @param myCaseUrl - the string to search for in the url
    * @example
    *  setAllowTypesOfWorkFilter();
    */
@@ -292,7 +292,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   /**
    * Creates a copy of the fieldsConfig object called fieldsConfigAlt with removed filters as per provided param
    *
-   * @param {string[]} excludeFieldNames - array of field names to exclude from the filters
+   * @param excludeFieldNames - array of field names to exclude from the filters
    */
   private setupFieldsConfigAlt(excludeFieldNames = ['types-of-work']): void {
     // create a copy of the fieldsConfig

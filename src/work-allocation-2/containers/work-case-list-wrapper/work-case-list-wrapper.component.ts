@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService, Jurisdiction, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
@@ -28,7 +28,7 @@ import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../..
 @Component({
   templateUrl: 'work-case-list-wrapper.component.html',
 })
-export class WorkCaseListWrapperComponent implements OnInit {
+export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
 
   public specificPage: string = '';
   public caseworkers: Caseworker[] = [];

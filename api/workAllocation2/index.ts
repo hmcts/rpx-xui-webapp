@@ -434,7 +434,7 @@ export function getCaseListPromises(data: CaseDataType, req: EnhancedRequest): A
 
 export async function getMyCases(req: EnhancedRequest, res: Response): Promise<Response> {
   try {
-    const roleAssignments:RoleAssignment[] = req.session.roleAssignmentResponse;
+    const roleAssignments: RoleAssignment[] = req.session.roleAssignmentResponse;
 
     // get 'service' and 'location' filters from search_parameters on request
     const { search_parameters } = req.body.searchRequest;

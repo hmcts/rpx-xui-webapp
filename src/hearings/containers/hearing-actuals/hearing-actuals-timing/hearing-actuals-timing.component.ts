@@ -7,6 +7,7 @@ import { combineLatest, Subscription } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
 import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
+import { HearingActualsTimingErrorMessages } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
@@ -18,11 +19,6 @@ import { ValidatorsUtils } from '../../../utils/validators.utils';
 export class HearingActualsTimingComponent implements OnInit, OnDestroy {
 
   public static TIME_MATCHER = /\d{2}:\d{2}/;
-  private static readonly ERROR_MESSAGE_VALID_TIME = 'Enter a valid time.';
-  private static readonly ERROR_MESSAGE_START_TIME_BEFORE_FINISH_TIME = 'Start time must be before finish time';
-  private static readonly ERROR_MESSAGE_PAUSE_TIME_BEFORE_RESUME_TIME = 'Pause time must be before resume time';
-  private static readonly ERROR_MESSAGE_PAUSE_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES = 'Pause time must be between the hearing start and finish times';
-  private static readonly ERROR_MESSAGE_RESUME_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES = 'Resume time must be between the hearing start and finish times';
   public form: FormGroup;
   public caseTitle: string = 'Jane Smith vs DWP';
   public submitted: boolean = false;
@@ -132,12 +128,12 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
       hearingStartTime: [HearingActualsTimingComponent.getStartTime(hearingActuals), [
         Validators.required,
         this.validatorsUtils.mandatory('Enter hearing start time'),
-        this.validatorsUtils.validTime(HearingActualsTimingComponent.ERROR_MESSAGE_VALID_TIME)
+        this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)
       ]
       ],
       hearingEndTime: [HearingActualsTimingComponent.getEndTime(hearingActuals), [
         this.validatorsUtils.mandatory('Enter hearing finish time'),
-        this.validatorsUtils.validTime(HearingActualsTimingComponent.ERROR_MESSAGE_VALID_TIME)
+        this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)
       ]
       ],
       recordTimes: [
@@ -146,31 +142,31 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
         [this.validatorsUtils.mandatory('Select if you need to record times the hearing was paused')]
       ],
       pauseStartTime: [HearingActualsTimingComponent.getPauseStartTime(hearingActuals), [
-        this.validatorsUtils.validTime(HearingActualsTimingComponent.ERROR_MESSAGE_VALID_TIME)]],
+        this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)]],
       pauseEndTime: [HearingActualsTimingComponent.getPauseEndTime(hearingActuals), [
-        this.validatorsUtils.validTime(HearingActualsTimingComponent.ERROR_MESSAGE_VALID_TIME)]],
+        this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)]],
     }, {
       updateOn: 'blur',
       validators: [
         this.validatorsUtils.validateTimeRange(
           'hearingStartTime',
           'hearingEndTime',
-          HearingActualsTimingComponent.ERROR_MESSAGE_START_TIME_BEFORE_FINISH_TIME),
+          HearingActualsTimingErrorMessages.START_TIME_BEFORE_FINISH_TIME),
         this.validatorsUtils.validateTimeRange(
           'pauseStartTime',
           'pauseEndTime',
-          HearingActualsTimingComponent.ERROR_MESSAGE_PAUSE_TIME_BEFORE_RESUME_TIME),
+          HearingActualsTimingErrorMessages.PAUSE_TIME_BEFORE_RESUME_TIME),
         this.validatorsUtils.validatePauseTimeRange(
           'pauseStartTime',
           { startTime: 'hearingStartTime', endTime: 'hearingEndTime' },
-          HearingActualsTimingComponent.ERROR_MESSAGE_PAUSE_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES,
+          HearingActualsTimingErrorMessages.PAUSE_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES,
           'invalidPauseStartTimeRange'),
         this.validatorsUtils.validatePauseTimeRange(
           'pauseEndTime',
           { startTime: 'hearingStartTime', endTime: 'hearingEndTime' },
-          HearingActualsTimingComponent.ERROR_MESSAGE_RESUME_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES,
+          HearingActualsTimingErrorMessages.RESUME_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES,
           'invalidPauseEndTimeRange'
-          )
+        )
       ],
     });
   }
@@ -186,11 +182,11 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
       if (value === 'yes') {
         this.form.get('pauseStartTime').setValidators([
           this.validatorsUtils.mandatory('Enter pause time'),
-          this.validatorsUtils.validTime(HearingActualsTimingComponent.ERROR_MESSAGE_VALID_TIME)
+          this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)
         ]);
         this.form.get('pauseEndTime').setValidators([
           this.validatorsUtils.mandatory('Enter resume time'),
-          this.validatorsUtils.validTime(HearingActualsTimingComponent.ERROR_MESSAGE_VALID_TIME)]
+          this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)]
         );
         this.form.updateValueAndValidity();
       } else {

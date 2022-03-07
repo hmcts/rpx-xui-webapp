@@ -21,6 +21,7 @@ describe('ChooseDurationComponent', () => {
   const ALLOCATE_ROLE_STATE_DATA: AllocateRoleStateData = {
     caseId: '1111111111111111',
     jurisdiction: 'IA',
+    caseType: 'Asylum',
     assignmentId: 'a123456',
     state: AllocateRoleState.CHOOSE_ALLOCATE_TO,
     typeOfRole: {id: 'lead-judge', name: 'Lead judge'},

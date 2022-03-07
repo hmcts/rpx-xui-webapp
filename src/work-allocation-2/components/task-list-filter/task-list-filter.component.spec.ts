@@ -181,6 +181,21 @@ describe('TaskListFilterComponent', () => {
     expect(component.allowTypesOfWorkFilter).toBe(true);
   });
 
+  it('should render filter with "Types of work" filter visible', () => {
+    component.toggleFilter = true;
+    fixture.detectChanges();
+    const taskListFilters = fixture.debugElement.query(By.css('#taskListFilter'));
+    expect(taskListFilters.nativeElement).toBeTruthy();
+  });
+
+  it('should render filter with "Types of work" filter NOT visible', () => {
+    component.allowTypesOfWorkFilter = false;
+    component.toggleFilter = true;
+    fixture.detectChanges();
+    const taskListFilters = fixture.debugElement.query(By.css('#taskListFilterNoTypeOfWorkFilter'));
+    expect(taskListFilters.nativeElement).toBeTruthy();
+  });
+
   it('should create a copy of the fieldsConfig property without types of work filters', () => {
     const fieldsConfigAlt = component.fieldsConfigAlt;
     const typesOfWorkKey = 'types-of-work';

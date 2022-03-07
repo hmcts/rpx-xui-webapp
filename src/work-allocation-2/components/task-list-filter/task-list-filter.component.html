@@ -12,11 +12,13 @@
 <div class="govuk-!-padding-3 filter govuk-!-margin-bottom-3" *ngIf="toggleFilter">
   <ng-container *ngIf="allowTypesOfWorkFilter; else noTypeOfWorkFilters">
     <xuilib-generic-filter
+      id="taskListFilter"
       [config]="fieldsConfig"
       [settings]="fieldsSettings"></xuilib-generic-filter>
   </ng-container>
   <ng-template #noTypeOfWorkFilters>
     <xuilib-generic-filter
+      id="taskListFilterNoTypeOfWorkFilter"
       [config]="fieldsConfigAlt"
       [settings]="fieldsSettings"></xuilib-generic-filter>
   </ng-template>

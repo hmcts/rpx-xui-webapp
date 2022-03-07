@@ -1,3 +1,4 @@
+import { UserInfo } from '../auth/interfaces/UserInfo';
 import { NextFunction, Response } from 'express';
 import { getConfigValue, showFeature } from '../configuration';
 import {
@@ -189,8 +190,9 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
   };
   try {
     const { status, data } = await handleTaskSearch(`${basePath}`, searchRequest, req);
-    const currentUser = req.body.currentUser ? req.body.currentUser : '';
-    const actionedTasks = assignActionsToTasks(data.tasks, ViewType.MY_TASKS, currentUser);
+    const currentUser: UserInfo = req.session.passport.user.userinfo;
+    const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
+    const actionedTasks = assignActionsToTasks(data.tasks, ViewType.ACTIVE_TASKS, currentUserId);
     return res.send(actionedTasks).status(status);
   } catch (e) {
     next(e);
@@ -200,8 +202,10 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
 export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const caseId = req.params.caseId;
   const eventId = req.params.eventId;
+  const caseType = req.params.caseType;
+  const jurisdiction = req.params.jurisdiction;
   try {
-    const payload = { caseId, eventId };
+    const payload = { case_id: caseId, event_id: eventId, case_jurisdiction: jurisdiction, case_type: caseType };
     const { status, data } = await handlePost(`${baseWorkAllocationTaskUrl}/task/search-for-completable`, payload, req);
     return res.send(data).status(status);
   } catch (e) {
@@ -221,7 +225,7 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
         completion_options: {
            assign_and_complete: true,
          },
-      }
+      };
     }
     const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action);
     const { status, data } = await handleTaskPost(getTaskPath, req.body, req);

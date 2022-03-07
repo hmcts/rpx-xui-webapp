@@ -6,8 +6,8 @@ describe('Lov RefData service', () => {
   describe('LovRefDataService', () => {
     it('getForService should make correct api call', () => {
       const service = new LovRefDataService(mockHttpService);
-      service.getListOfValues(HearingCategory.Priority, 'SSCS');
-      expect(mockHttpService.get).toHaveBeenCalledWith(`api/prd/lov/getLovRefData?category=Priority&service=SSCS`);
+      service.getListOfValues(HearingCategory.Priority, 'SSCS', false);
+      expect(mockHttpService.get).toHaveBeenCalledWith(`api/prd/lov/getLovRefData`, jasmine.any(Object));
     });
   });
 });

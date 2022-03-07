@@ -33,6 +33,7 @@ export class IsAmendedPipe implements PipeTransform {
         break;
       case AnswerSource.ATTENDANT_PERSON_AMOUNT:
         converter = new HowManyPeopleAttendAmendedConverter();
+        break;
       case AnswerSource.STAGE:
         converter = new StageAmendedConverter();
         break;

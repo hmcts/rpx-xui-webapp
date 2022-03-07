@@ -418,7 +418,7 @@ describe('CaseHearingsListComponent', () => {
     expect(addOrEdit9.textContent).toBe('Add or edit');
   });
 
-  fit('should show the right action links for PAST_AND_CANCELLED section', () => {
+  it('should show the right action links for PAST_AND_CANCELLED section', () => {
     component.hearingList$ = of(PAST_HEARING_LIST);
     component.status = EXUISectionStatusEnum.PAST_AND_CANCELLED;
     component.actions = [Actions.CREATE, Actions.DELETE, Actions.UPDATE, Actions.READ];

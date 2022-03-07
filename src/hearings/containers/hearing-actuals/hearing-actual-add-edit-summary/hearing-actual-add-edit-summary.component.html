@@ -57,7 +57,7 @@
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Pause time</dt>
           <dd class="govuk-summary-list__value" *ngIf="actualHearingDay.pauseDateTimes.length > 0">
-            {{actualHearingDay.pauseDateTimes[0].pauseStartTime}}
+            {{actualHearingDay.pauseDateTimes[0].pauseStartTime | date:"HH:mm" }}
           </dd>
         </div>
       </dl>
@@ -65,7 +65,7 @@
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Resume time</dt>
           <dd class="govuk-summary-list__value" *ngIf="actualHearingDay.pauseDateTimes.length > 0">
-            {{actualHearingDay.pauseDateTimes[0].pauseEndTime}}
+            {{actualHearingDay.pauseDateTimes[0].pauseEndTime | date:"HH:mm" }}
           </dd>
         </div>
       </dl>

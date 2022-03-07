@@ -70,7 +70,7 @@ export function prepareExclusionBody(currentUserId: string, assigneeId: string, 
         caseId: body.caseId,
         jurisdiction: body.jurisdiction,
         notes: body.exclusionDescription,
-        caseType: body.caseType
+        caseType: body.caseType,
       },
       roleCategory,
       roleName: 'conflict-of-interest',

@@ -177,6 +177,17 @@ describe('TaskListFilterComponent', () => {
     expect(typesOfWorkSelectedFields.value.length).toBe(typesOfWork.length + 1);
   });
 
+  it('should set allowTypesOfWorkFilter to true by default', () => {
+    expect(component.allowTypesOfWorkFilter).toBe(true);
+  });
+
+  it('should create a copy of the fieldsConfig property without types of work filters', () => {
+    const fieldsConfigAlt = component.fieldsConfigAlt;
+    const typesOfWorkKey = 'types-of-work';
+    expect(fieldsConfigAlt.fields.hasOwnProperty(typesOfWorkKey)).toBe(false);
+    expect(fieldsConfigAlt.cancelSetting.fields.hasOwnProperty(typesOfWorkKey)).toBe(false);
+  });
+
   afterAll(() => {
     component.ngOnDestroy();
   });

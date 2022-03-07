@@ -12,7 +12,7 @@ import { requireReloaded } from '../utils/moduleUtil';
 const { Matchers } = require('@pact-foundation/pact');
 import { DateTimeMatcher } from '../utils/matchers';
 const { somethingLike, iso8601DateTime, term } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'test_am_roleAssignment_getAssignment', port: 8000 });
+const pactSetUp = new PactTestSetup({ provider: 'am_roleAssignment_getAssignment', port: 8000 });
 
 const actorId = "12345";
 describe("access management service, get role assignemnts of actor", () => {
@@ -21,25 +21,30 @@ describe("access management service, get role assignemnts of actor", () => {
     const RESPONSE_BODY = {
         "roleAssignmentResponse": [
             {
-                "roleType":"",
-                "roleName":"",
+                "id": somethingLike("3ed4f960-e50b-4127-af30-47821d5799f7"),
+                "actorIdType": somethingLike("IDAM"),
+                "actorId": somethingLike("23486"),
+                "roleType": somethingLike("ORGANISATION"),
+                "roleName": somethingLike("senior-tribunal-caseworker"),
+                "classification": somethingLike("PRIVATE"),
+                "grantType": somethingLike("STANDARD"),
+                "roleCategory": somethingLike("LEGAL_OPERATIONS"),
+                "readOnly": somethingLike(false),
+                "beginTime": somethingLike(1646762003.936321),
+                "endTime": somethingLike(1646934803.936321),
+                "process": somethingLike("process"),
+                "reference": somethingLike("reference"),
+                "statusSequence": somethingLike(10),
+                "status": somethingLike("LIVE"),
+                "created": somethingLike(1646675603.936321),
+                "log": null,
                 "attributes": {
-                    "caseId":somethingLike("1234567812345678"),
-                    "caseType": somethingLike("test-case-type"),
-                    "jurisdiction": somethingLike("IA"),
-                    "substantive": somethingLike("Y")
-                }
-            },
-            {
-                "roleType": "",
-                "roleName": "",
-                "attributes": {
-                    "caseId": somethingLike("1234567812345679"),
-                    "caseType": somethingLike("test-case-type"),
-                    "jurisdiction": somethingLike("IA"),
-                    "substantive": somethingLike("Y")
-                }
-            }
+                    "primaryLocation": somethingLike("500A2S"),
+                    "jurisdiction": somethingLike("IA")
+                },
+                "notes": null,
+                "authorisations": []
+            } 
         ]
     };
 
@@ -67,7 +72,7 @@ describe("access management service, get role assignemnts of actor", () => {
                 willRespondWith: {
                     status: 200,
                     headers: {
-                        "Content-Type": "application/json",
+                        "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.get-assignments+json;charset=UTF-8;version=1.0",
                     },
                     body: RESPONSE_BODY,
                 },
@@ -130,14 +135,7 @@ describe("access management service, get role assignemnts of actor", () => {
 })
 
 function assertResponses(dto: any) {
-    expect(dto[0].caseId).to.be.equal("1234567812345678");
-    expect(dto[0].caseType).to.be.equal("test-case-type");
-    expect(dto[0].jurisdiction).to.be.equal("IA");
-    expect(dto[0].substantive).to.be.equal("Y");
-
-    expect(dto[1].caseId).to.be.equal("1234567812345679");
-    expect(dto[1].caseType).to.be.equal("test-case-type");
-    expect(dto[1].jurisdiction).to.be.equal("IA");
-    expect(dto[1].substantive).to.be.equal("Y");
+    expect(dto.length).to.be.equal(1);
+   
 }
 

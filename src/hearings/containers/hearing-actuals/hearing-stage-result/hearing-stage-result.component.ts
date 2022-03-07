@@ -118,12 +118,15 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
     }
     if (this.hearingResultType !== this.hearingResultEnum.COMPLETED &&
         this.getHearingResultReasonType().length === 0) {
-      this.hearingResultType === this.hearingResultEnum.ADJOURNED
-        ? this.adjournHearingErrorMessage = HearingStageResultEnum.HearingResultReasonError
-        : this.cancelHearingErrorMessage = HearingStageResultEnum.HearingResultReasonError;
+      if (this.hearingResultType === this.hearingResultEnum.ADJOURNED) {
+        this.adjournHearingErrorMessage = this.hearingStageResultEnum.HearingResultReasonError;
+      }
+      if (this.hearingResultType === this.hearingResultEnum.CANCELLED) {
+        this.cancelHearingErrorMessage = this.hearingStageResultEnum.HearingResultReasonError;
+      }
       this.validationErrors.push({
         id: this.hearingResultType === this.hearingResultEnum.ADJOURNED ? 'adjourned-reason' : 'cancelled-reason',
-        message: HearingStageResultEnum.HearingResultReasonError
+        message: this.hearingStageResultEnum.HearingResultReasonError
       });
       return false;
     }

@@ -50,6 +50,12 @@ describe('HearingStageResultComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+    expect(component.submitted).toEqual(false);
+    expect(component.adjournHearingErrorMessage.length).toEqual(0);
+    expect(component.cancelHearingErrorMessage.length).toEqual(0);
+    expect(component.validationErrors.length).toEqual(0);
+    expect(component.caseTitle).toEqual('Jane Smith vs DWP');
+    expect(component.f).toBeDefined();
   });
 
   it('should unsubscribe', () => {
@@ -57,6 +63,11 @@ describe('HearingStageResultComponent', () => {
     spyOn(component.sub, 'unsubscribe').and.callThrough();
     component.ngOnDestroy();
     expect(component.sub.unsubscribe).toHaveBeenCalled();
+  });
+
+  it('should return the correct hearing result based on the option selected', () => {
+    component.onHearingResult(HearingResult.COMPLETED);
+    expect(component.hearingResultType).toEqual(HearingResult.COMPLETED);
   });
 
   it('should not display hearing result dropdowns by default', () => {
@@ -91,6 +102,7 @@ describe('HearingStageResultComponent', () => {
     const storeDispatchSpy = spyOn(store, 'dispatch');
     component.hearingResultType = HearingResult.COMPLETED;
     component.onSubmit();
+    expect(component.submitted).toEqual(true);
     expect(storeDispatchSpy).toHaveBeenCalled();
   });
 

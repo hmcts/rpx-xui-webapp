@@ -19,6 +19,7 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
   public judicial: RoleCategory = RoleCategory.JUDICIAL;
   public caseId: string;
   public jurisdiction: string;
+  public caseType: string;
 
   @Input() public exclusions: RoleExclusion[] = [];
   @Input() public showAllocateRoleLink: boolean = false;
@@ -48,6 +49,9 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
     const jurisdictionField = this.caseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
     if (jurisdictionField) {
       this.jurisdiction = jurisdictionField.value;
+    }
+    if (this.caseDetails.case_type && this.caseDetails.case_type.id) {
+      this.caseType = this.caseDetails.case_type.id;
     }
   }
 

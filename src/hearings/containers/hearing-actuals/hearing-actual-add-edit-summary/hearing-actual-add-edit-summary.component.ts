@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { filter, first } from 'rxjs/operators';
 import {
   ActualDayPartyModel,
   ActualHearingDayModel,
@@ -11,7 +11,8 @@ import {
   PartyModel
 } from '../../../models/hearingActualsMainModel';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
-import { ACTION } from '../../../models/hearings.enum';
+import { ACTION, HearingResult } from '../../../models/hearings.enum';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 
@@ -25,19 +26,28 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public hearingOutcome: HearingOutcomeModel;
   public actualHearingDay: ActualHearingDayModel;
   public actualDayParties: ActualDayPartyModel[];
+  public hearingTypes: LovRefDataModel[];
+  public adjournHearingActualReasons: LovRefDataModel[];
+  public cancelHearingActualReasons: LovRefDataModel[];
+  public hearingTypeDescription: string;
+  public hearingResultReasonTypeDescription: string;
   public sub: Subscription;
   public id: string;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
-              private readonly route: ActivatedRoute,
-              private readonly hearingsService: HearingsService) {
+              private readonly hearingsService: HearingsService,
+              private readonly route: ActivatedRoute) {
+    this.hearingTypes = this.route.snapshot.data.hearingTypes;
+    this.adjournHearingActualReasons = this.route.snapshot.data.adjournHearingActualReasons;
+    this.cancelHearingActualReasons = this.route.snapshot.data.cancelHearingActualReasons;
   }
 
   public ngOnInit(): void {
     this.id = this.route.snapshot.params.id;
     this.sub = this.hearingStore.select(fromHearingStore.getHearingActuals)
       .pipe(
-        filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel)
+        filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel),
+        first()
       )
       .subscribe((state: HearingActualsStateData) => {
         const hearingActualsMainModel = state.hearingActualsMainModel;
@@ -46,6 +56,8 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
           ? hearingActualsMainModel.hearingActuals.actualHearingDays[0] : null;
         this.actualDayParties = hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0
           ? hearingActualsMainModel.hearingActuals.actualHearingDays.map(x => x.actualDayParties[0]) : [];
+        this.hearingTypeDescription = this.getHearingTypeDescription(this.hearingOutcome.hearingType);
+        this.hearingResultReasonTypeDescription = this.getHearingResultReasonTypeDescription(this.hearingOutcome);
         this.hearingActualsMainModel = hearingActualsMainModel;
       });
   }
@@ -66,5 +78,23 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       return `${party.individualDetails.firstName} ${party.individualDetails.lastName}`;
     }
     return '';
+  }
+
+  public getHearingResultReasonTypeDescription(hearingOutcome: HearingOutcomeModel): string {
+    const hearingActualReasonsRefData = hearingOutcome.hearingResult === HearingResult.COMPLETED
+      ? [] : hearingOutcome.hearingResult === HearingResult.ADJOURNED
+        ? this.adjournHearingActualReasons : this.cancelHearingActualReasons;
+
+    const hearingActualReason = hearingActualReasonsRefData && hearingActualReasonsRefData.find(refData => refData.key === hearingOutcome.hearingResultReasonType);
+    if (hearingActualReason) {
+      return hearingActualReason.value_en;
+    }
+
+    return '';
+  }
+
+  public getHearingTypeDescription(hearingType: string): string {
+    const hearingTypeFromLookup = this.hearingTypes && this.hearingTypes.find(x => x.key.toLowerCase() === hearingType.toLowerCase());
+    return hearingTypeFromLookup ? hearingTypeFromLookup.value_en : '';
   }
 }

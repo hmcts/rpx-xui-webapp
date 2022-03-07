@@ -16,6 +16,7 @@ describe('Hearing Actuals Effects', () => {
   const hearingsServiceMock = jasmine.createSpyObj('HearingsService', [
     'getHearingActuals', 'updateHearingActuals'
   ]);
+  const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
@@ -49,7 +50,7 @@ describe('Hearing Actuals Effects', () => {
         hearingId: '1111222233334444',
         hearingActuals: hearingActualsMainModel.hearingActuals
       });
-      const completion = new hearingActualsActions.UpdateHearingActualsSuccess(hearingActualsMainModel);
+      const completion = new hearingActualsActions.UpdateHearingActualsSuccess(hearingActualsMainModel.hearingActuals);
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.updateHearingActuals$).toBeObservable(expected);

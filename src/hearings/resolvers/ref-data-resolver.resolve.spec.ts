@@ -5,7 +5,7 @@ import {ActivatedRouteSnapshot} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {Store, StoreModule} from '@ngrx/store';
 import {of} from 'rxjs';
-import {HearingCategory} from 'src/hearings/models/hearings.enum';
+import {HearingCategory} from '../models/hearings.enum';
 import {metaReducers} from '../../app/app.module';
 import {reducers} from '../../app/store';
 import {LovRefDataModel} from '../models/lovRefData.model';

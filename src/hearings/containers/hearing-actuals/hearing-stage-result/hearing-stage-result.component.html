@@ -8,7 +8,7 @@
           Hearing stage and result
         </h1>
         <br>
-        <form class="form" [formGroup]="hearingStageResultForm">
+        <form class="form" [formGroup]="hearingStageResultForm" (submit)="onSubmit()">
           <!-- Hearing stage -->
           <div class="govuk-form-group">
             <label class="govuk-label govuk-!-font-weight-bold" for="hearing-stage">
@@ -71,7 +71,7 @@
           </div>
           <br>
           <div class="govuk-button-group">
-            <button class="govuk-button primary" data-module="govuk-button">
+            <button type="submit" class="govuk-button primary" data-module="govuk-button">
               Save and continue
             </button>
           </div>

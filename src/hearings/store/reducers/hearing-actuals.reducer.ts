@@ -25,7 +25,10 @@ export function hearingActualsReducer(
     case fromActions.UPDATE_HEARING_ACTUALS_SUCCESS: {
       return {
         ...currentState,
-        hearingActualsMainModel: action.payload
+        hearingActualsMainModel: {
+          ...currentState.hearingActualsMainModel,
+          hearingActuals: action.payload
+        }
       };
     }
     default: {

@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { filter, first } from 'rxjs/operators';
 import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
 import { HearingResult } from '../../../models/hearings.enum';
@@ -23,12 +23,17 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
   public hearingTypes: LovRefDataModel[];
   public adjournHearingActualReasons: LovRefDataModel[];
   public cancelHearingActualReasons: LovRefDataModel[];
-  public hearingActuals: HearingActualsMainModel;
+  public hearingActualsMainModel: HearingActualsMainModel;
   public sub: Subscription;
+  private id: string;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly formBuilder: FormBuilder,
-              protected readonly route: ActivatedRoute) {
+              private readonly route: ActivatedRoute) {
+    this.route.params.subscribe(params => {
+      this.id = params.id;
+    });
+
     this.hearingTypes = this.route.snapshot.data.hearingTypes;
     this.adjournHearingActualReasons = this.route.snapshot.data.adjournHearingActualReasons;
     this.cancelHearingActualReasons = this.route.snapshot.data.cancelHearingActualReasons;
@@ -45,13 +50,12 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
       adjournedReason: [''],
       cancelledReason: ['']
     });
-    this.sub = this.hearingStore.select(fromHearingStore.getHearingActuals)
-      .pipe(
-        filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel)
-      )
-      .subscribe((state: HearingActualsStateData) => {
-        this.hearingActuals = state.hearingActualsMainModel;
-        this.hearingStageResultForm.get('hearingStage').setValue(this.hearingActuals.hearingPlanned.plannedHearingType);
+    this.sub = this.hearingStore.select(fromHearingStore.getHearingActuals).pipe(
+      filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel),
+      first()
+      ).subscribe((state: HearingActualsStateData) => {
+        this.hearingActualsMainModel = state.hearingActualsMainModel;
+        this.hearingStageResultForm.get('hearingStage').setValue(this.hearingActualsMainModel.hearingPlanned.plannedHearingType);
       });
 
     // TODO: Get the case title from hearing actuals API
@@ -63,6 +67,33 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
     if (this.sub) {
       this.sub.unsubscribe();
     }
+  }
+
+  public onSubmit(): void {
+    const hearingActuals = {
+      ...this.hearingActualsMainModel.hearingActuals,
+      hearingOutcome: {
+        ...this.hearingActualsMainModel.hearingActuals.hearingOutcome,
+        hearingResultReasonType: this.getHearingResultReasonType(),
+        hearingResult: this.hearingResultType as HearingResult,
+        hearingType: this.hearingStageResultForm.get('hearingStage').value
+      }
+    };
+
+    this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
+      hearingId: this.id,
+      hearingActuals
+    }));
+  }
+
+  private getHearingResultReasonType(): string {
+    if (this.hearingResultType === this.hearingResultEnum.ADJOURNED) {
+      return this.hearingStageResultForm.get('adjournedReason').value;
+    }
+    if (this.hearingResultType === this.hearingResultEnum.CANCELLED) {
+      return this.hearingStageResultForm.get('cancelledReason').value;
+    }
+    return '';
   }
 
   public onHearingResult(hearingResultType: string): void {

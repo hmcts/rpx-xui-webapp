@@ -8,6 +8,7 @@ describe('Allocate Role Reducer', () => {
     const STATE_DATA = {
       caseId: '111111',
       jurisdiction: 'IA',
+      caseType: 'Asylum',
       state: AllocateRoleState.CHOOSE_ROLE,
       typeOfRole: null,
       allocateTo: AllocateTo.RESERVE_TO_ME,
@@ -45,7 +46,7 @@ describe('Allocate Role Reducer', () => {
     describe('AllocateRoleSetInitData action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.allocateRoleInitialState;
-        const action = new fromActions.AllocateRoleSetInitData({ caseId: '111111', jurisdiction: 'IA', roleCategory: RoleCategory.JUDICIAL });
+        const action = new fromActions.AllocateRoleSetInitData({ caseId: '111111', jurisdiction: 'IA', roleCategory: RoleCategory.JUDICIAL, caseType: 'Asylum' });
         const state = fromReducer.allocateRoleReducer(initialState, action);
         expect(state.state).toEqual(AllocateRoleState.CHOOSE_ROLE);
       });

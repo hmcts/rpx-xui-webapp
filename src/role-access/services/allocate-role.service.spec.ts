@@ -49,6 +49,7 @@ describe('AllocateRoleService', () => {
     const STATE_DATA: AllocateRoleStateData = {
       caseId: '111111',
       jurisdiction: 'IA',
+      caseType: 'Asylum',
       state: AllocateRoleState.CHOOSE_ROLE,
       typeOfRole: null,
       allocateTo: AllocateTo.RESERVE_TO_ME,

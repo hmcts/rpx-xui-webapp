@@ -14,9 +14,9 @@ import { JudgeNameAmendedConverter } from '../converters/judge-name.amended.conv
 import { NeedJudgeAmendedConverter } from '../converters/need-judge.amended.converter';
 import { JudgeTypesAmendedConverter } from '../converters/judge-types.amended.converter';
 import { StageAmendedConverter } from '../converters/stage.amended.converter';
-import {VenueAmendedConverter} from '../converters/venue.amended.converter';
-import {AnswerSource} from '../models/hearings.enum';
-import {State} from '../store';
+import { VenueAmendedConverter } from '../converters/venue.amended.converter';
+import { AnswerSource } from '../models/hearings.enum';
+import { State } from '../store';
 
 @Pipe({
   name: 'isAmended'

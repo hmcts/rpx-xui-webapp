@@ -8,7 +8,7 @@ export const HEARING_ACTUAL: HearingActualsMainModel = {
       hearingResult: HearingResult.CANCELLED,
       hearingResultDate: '2019-01-01',
       hearingResultReasonType: '',
-      hearingType: 'Pre-hearing review',
+      hearingType: 'final',
     },
     actualHearingDays: [
       {

@@ -8,10 +8,14 @@ import { HearingStageResultComponent } from './hearing-stage-result.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Observable } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
+import * as fromHearingStore from '../../../store';
+import { Store } from '@ngrx/store';
+import { HearingResult } from '../../../models/hearings.enum';
 
 describe('HearingStageResultComponent', () => {
   let component: HearingStageResultComponent;
   let fixture: ComponentFixture<HearingStageResultComponent>;
+  let store: any;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
 
@@ -34,6 +38,7 @@ describe('HearingStageResultComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HearingStageResultComponent);
+    store = TestBed.get(Store);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -75,5 +80,12 @@ describe('HearingStageResultComponent', () => {
     fixture.detectChanges();
     expect(nativeElement.querySelector('#adjourned-reason')).toBeNull();
     expect(nativeElement.querySelector('#cancelled-reason')).toBeDefined();
+  });
+
+  it('should update hearing outcome details on submit', () => {
+    const storeDispatchSpy = spyOn(store, 'dispatch');
+    component.hearingResultType = HearingResult.ADJOURNED;
+    component.onSubmit();
+    expect(storeDispatchSpy).toHaveBeenCalled();
   });
 });

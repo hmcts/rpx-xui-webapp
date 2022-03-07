@@ -36,7 +36,8 @@ export class CaseHearingsListComponent implements OnInit {
   public ngOnInit(): void {
     if (this.status === EXUISectionStatusEnum.PAST_AND_CANCELLED) {
       this.hasReadOnlyAction = true;
-    } else {
+    }
+    if (this.status === EXUISectionStatusEnum.UPCOMING) {
       if (this.actions.includes(Actions.UPDATE)) {
         this.hasUpdateAction = true;
       }
@@ -47,6 +48,15 @@ export class CaseHearingsListComponent implements OnInit {
         this.hasReadOnlyAction = true;
       }
     }
+  }
+
+  public isAwaitingActual(exuiDisplayStatus: EXUIDisplayStatusEnum): boolean {
+    return exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_ACTUALS;
+  }
+
+  public isNonCancellable(exuiDisplayStatus: EXUIDisplayStatusEnum): boolean {
+    return exuiDisplayStatus === EXUIDisplayStatusEnum.CANCELLATION_REQUESTED
+      || exuiDisplayStatus === EXUIDisplayStatusEnum.FAILURE;
   }
 
   public viewAndEdit(hearingID: string): void {
@@ -61,9 +71,5 @@ export class CaseHearingsListComponent implements OnInit {
 
   public addAndEdit(hearingID: string): void {
     this.router.navigate(['/', 'hearings', 'actuals', hearingID, 'hearing-actual-add-edit-summary']);
-  }
-
-  public hasAddEdit(hearing: HearingListViewModel): boolean {
-    return hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_ACTUALS;
   }
 }

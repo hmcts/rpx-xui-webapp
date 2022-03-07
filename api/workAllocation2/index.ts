@@ -202,8 +202,10 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
 export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const caseId = req.params.caseId;
   const eventId = req.params.eventId;
+  const caseType = req.params.caseType;
+  const jurisdiction = req.params.jurisdiction;
   try {
-    const payload = { caseId, eventId };
+    const payload = { case_id: caseId, event_id: eventId, case_jurisdiction: jurisdiction, case_type: caseType };
     const { status, data } = await handlePost(`${baseWorkAllocationTaskUrl}/task/search-for-completable`, payload, req);
     return res.send(data).status(status);
   } catch (e) {

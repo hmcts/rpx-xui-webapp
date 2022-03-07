@@ -22,7 +22,6 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   private hearingActuals: HearingActualsMainModel;
   private sub: Subscription;
   private id: string;
-  public caseTitle: string = 'Jane Smith vs DWP';
 
   public constructor(private readonly fb: FormBuilder,
                      private readonly hearingStore: Store<fromHearingStore.State>,

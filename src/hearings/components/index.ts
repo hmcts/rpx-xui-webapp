@@ -1,4 +1,5 @@
 import {CaseFlagsComponent} from './case-flags/case-flags.component';
+import { HearingActualsCaseTitleComponent } from './hearing-actuals-case-title/hearing-actuals-case-title.component';
 import {HearingAmendWarningMsgComponent} from './hearing-amend-warning-msg/hearing-amend-warning-msg.component';
 import {HearingConfirmationComponent} from './hearing-confirmation/hearing-confirmation.component';
 import {HearingJudgeNameComponent} from './hearing-judge-name/hearing-judge-name.component';
@@ -17,7 +18,8 @@ export const components: any[] = [
   MultiLevelSelectorComponent,
   HearingSummaryComponent,
   HearingConfirmationComponent,
-  HearingAmendWarningMsgComponent
+  HearingAmendWarningMsgComponent,
+  HearingActualsCaseTitleComponent
 ];
 
 export * from '../components/case-flags/case-flags.component';
@@ -29,3 +31,4 @@ export * from '../components/hearing-judge-names-list/hearing-judge-names-list.c
 export * from '../components/hearing-summary/hearing-summary.component';
 export * from '../components/hearing-confirmation/hearing-confirmation.component';
 export * from '../components/hearing-amend-warning-msg/hearing-amend-warning-msg.component';
+export * from '../components/hearing-actuals-case-title/hearing-actuals-case-title.component';

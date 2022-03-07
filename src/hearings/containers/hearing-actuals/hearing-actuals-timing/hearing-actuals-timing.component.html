@@ -3,7 +3,8 @@
   <main class="govuk-main-wrapper" id="main-content" role="main">
     <div class="govuk-grid-row" *ngIf="form">
       <form [formGroup]="form" (submit)="submit(form.value, form.valid)">
-        <span class="govuk-caption-l">{{caseTitle}}</span>
+        <exui-hearing-actuals-case-title *ngIf="hearingActuals"
+          [caseDetails]="hearingActuals.caseDetails"></exui-hearing-actuals-case-title>
         <h1 class="govuk-heading-l">
           Hearing start and finish times
         </h1>

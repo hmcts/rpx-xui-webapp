@@ -1,18 +1,19 @@
+import { CaseDetailsModel } from './caseDetails.model';
 import { HearingResult, HMCStatus } from './hearings.enum';
 
 export interface HearingActualsMainModel {
   hearingActuals: HearingActualsModel;
   hearingPlanned: HearingPlannedModel;
   hmcStatus: HMCStatus;
+  caseDetails: CaseDetailsModel;
 }
 
 export interface HearingPlannedModel {
   plannedHearingType: string;
-  plannedHearingDays: PlannedHearingModel[];
+  plannedHearingDays: PlannedHearingDayModel[];
 }
 
-export interface PlannedHearingModel {
-  plannedDate?: string;
+export interface PlannedHearingDayModel {
   plannedStartTime: string;
   plannedEndTime: string;
   parties: PartyModel[];

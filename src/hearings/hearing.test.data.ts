@@ -1438,6 +1438,38 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
     ],
   },
   hmcStatus: HMCStatus.UPDATE_SUBMITTED,
+  caseDetails: {
+    hmctsServiceCode: 'SSCS',
+    caseRef: '1584618195804035',
+    requestTimeStamp: null,
+    hearingID: 'h100001',
+    externalCaseReference: null,
+    caseDeepLink: null,
+    hmctsInternalCaseName: 'Jane Smith vs DWP',
+    publicCaseName: 'Jane Smith vs DWP',
+    caseAdditionalSecurityFlag: false,
+    caseInterpreterRequiredFlag: false,
+    caseCategories: [
+      {
+        categoryType: CategoryType.CaseType,
+        categoryValue: 'Personal Independence Payment',
+      },
+      {
+        categoryType: CategoryType.CaseSubType,
+        categoryValue: 'Conditions of Entitlement',
+      },
+      {
+        categoryType: CategoryType.CaseSubType,
+        categoryValue: 'Good cause',
+      },
+      {
+        categoryType: CategoryType.CaseSubType,
+        categoryValue: 'Rate of Assessment / Payability Issues - complex',
+      }],
+    caseManagementLocationCode: null,
+    caserestrictedFlag: false,
+    caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
+  },
 };
 
 export const initialState = {

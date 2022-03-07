@@ -141,6 +141,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   }
 
   public getRole(value: string): string {
-    return this.hearingRole.find( role => role.key === value).value_en;
+    const hearingRole = this.hearingRole.find( role => role.key === value);
+    return hearingRole ? hearingRole.value_en : value;
   }
 }

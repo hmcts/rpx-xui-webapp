@@ -45,7 +45,7 @@ export class IsAmendedPipe implements PipeTransform {
         converter = new StageAmendedConverter();
         break;
       case AnswerSource.NEED_JUDGE:
-        converter = new NeedJudgeAmendedConverter()
+        converter = new NeedJudgeAmendedConverter();
         break;
       case AnswerSource.JUDGE_NAME:
         converter = new JudgeNameAmendedConverter();

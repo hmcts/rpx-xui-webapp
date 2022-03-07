@@ -1455,6 +1455,8 @@ export const initialState = {
           responseVersion: 'rv1',
           hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
           listAssistCaseStatus: '',
+          hearingIsLinkedFlag: true,
+          hearingGroupRequestId: null,
           hearingDaySchedule: null,
         }]
       }

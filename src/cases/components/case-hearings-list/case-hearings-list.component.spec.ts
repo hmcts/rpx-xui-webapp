@@ -30,6 +30,8 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   earliestHearingStartDateTime: '',
   hearingListingStatus: 'UPDATE REQUESTED',
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: null,
   exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
   exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING
@@ -43,6 +45,8 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   earliestHearingStartDateTime: '',
   hearingListingStatus: 'AWAITING LISTING',
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: true,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [],
   exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
   exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING
@@ -56,6 +60,8 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   earliestHearingStartDateTime: '',
   hearingListingStatus: 'LISTED',
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [{
     hearingStartDateTime: '2021-05-04T09:00:00.000+0000',
     hearingEndDateTime: '2021-05-04T16:00:00.000+0000',
@@ -83,6 +89,8 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   earliestHearingStartDateTime: '',
   hearingListingStatus: 'UPDATE REQUESTED',
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [{
     hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
     hearingEndDateTime: '2021-03-12T16:00:00.000+0000',
@@ -110,6 +118,8 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   earliestHearingStartDateTime: '',
   hearingListingStatus: 'UPDATE SUBMITTED',
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [{
     hearingStartDateTime: '2021-04-12T09:00:00.000+0000',
     hearingEndDateTime: '2021-04-12T16:00:00.000+0000',
@@ -130,6 +140,8 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   earliestHearingStartDateTime: '',
   hearingListingStatus: 'EXCEPTION',
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [{
     hearingStartDateTime: '2021-05-02T09:00:00.000+0000',
     hearingEndDateTime: '2021-05-02T16:00:00.000+0000',
@@ -150,6 +162,8 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   earliestHearingStartDateTime: '',
   hearingListingStatus: 'CANCELLATION REQUESTED',
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [{
     hearingStartDateTime: '2021-07-12T09:00:00.000+0000',
     hearingEndDateTime: '2021-07-12T16:00:00.000+0000',
@@ -177,6 +191,8 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   earliestHearingStartDateTime: '',
   hearingListingStatus: 'AWAITING ACTUALS',
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [{
     hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
     hearingEndDateTime: '2021-03-12T16:00:00.000+0000',
@@ -199,6 +215,8 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
   earliestHearingStartDateTime: '',
   hearingListingStatus: 'VACATED',
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [],
   exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
   exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED
@@ -212,6 +230,8 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
   earliestHearingStartDateTime: '',
   hearingListingStatus: 'COMPLETED',
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [{
     hearingStartDateTime: '2021-04-12T09:00:00.000+0000',
     hearingEndDateTime: '2021-04-12T16:00:00.000+0000',
@@ -232,6 +252,8 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
   earliestHearingStartDateTime: '',
   hearingListingStatus: 'ADJOURNED',
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [{
     hearingStartDateTime: '2021-09-01T09:00:00.000+0000',
     hearingEndDateTime: '2021-09-01T16:00:00.000+0000',
@@ -252,6 +274,8 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
   earliestHearingStartDateTime: '',
   hearingListingStatus: 'VACATED',
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [],
   exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
   exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED
@@ -418,7 +442,7 @@ describe('CaseHearingsListComponent', () => {
     expect(addOrEdit9.textContent).toBe('Add or edit');
   });
 
-  fit('should show the right action links for PAST_AND_CANCELLED section', () => {
+  it('should show the right action links for PAST_AND_CANCELLED section', () => {
     component.hearingList$ = of(PAST_HEARING_LIST);
     component.status = EXUISectionStatusEnum.PAST_AND_CANCELLED;
     component.actions = [Actions.CREATE, Actions.DELETE, Actions.UPDATE, Actions.READ];

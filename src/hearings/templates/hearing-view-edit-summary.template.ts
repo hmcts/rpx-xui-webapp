@@ -1,5 +1,5 @@
-import {AnswerSource, IsHiddenSource} from '../models/hearings.enum';
-import {Section} from '../models/section';
+import { AnswerSource, IsHiddenSource } from '../models/hearings.enum';
+import { Section } from '../models/section';
 
 export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
   {
@@ -70,24 +70,27 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
         id: 'stage',
         answerTitle: 'What stage is this hearing at?',
         answerSource: AnswerSource.STAGE,
-        changeLink: '/hearings/request/hearing-stage#initial'
+        changeLink: '/hearings/request/hearing-stage#initial',
+        isAmendedSource: AnswerSource.STAGE,
       },
     ],
   },
   {
-    sectionHTMLTitle: '<h2 class="govuk-heading-m">Attendance</h2>',
+    sectionHTMLTitle: '<h2 class="govuk-heading-m">Participant attendance</h2>',
     answers: [
       {
         id: 'howAttendant',
         answerTitle: 'How will each party attend the hearing?',
         answerSource: AnswerSource.HOW_ATTENDANT,
         changeLink: '/hearings/request/hearing-attendance#partyChannel0',
+        isAmendedSource: AnswerSource.HOW_ATTENDANT,
       },
       {
         id: 'attendantPersonAmount',
         answerTitle: 'How many people will attend the hearing in person?',
         answerSource: AnswerSource.ATTENDANT_PERSON_AMOUNT,
         changeLink: '/hearings/request/hearing-attendance#attendance-number',
+        isAmendedSource: AnswerSource.ATTENDANT_PERSON_AMOUNT,
       },
     ],
   },
@@ -169,6 +172,13 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
         answerSource: AnswerSource.PANEL_EXCLUSION,
         changeLink: '/hearings/request/hearing-panel#inputSelectPersonExclude',
         isHiddenSource: IsHiddenSource.PANEL_EXCLUSION
+      },
+      {
+        id: 'panelRoles',
+        answerTitle: 'Select any other panel roles required',
+        answerSource: AnswerSource.PANEL_ROLES,
+        changeLink: '/hearings/request/hearing-panel#specificPanelSelection',
+        isHiddenSource: IsHiddenSource.PANEL_ROLES
       },
     ],
   },

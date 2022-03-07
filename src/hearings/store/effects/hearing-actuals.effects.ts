@@ -7,7 +7,6 @@ import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import * as fromAppStoreActions from '../../../app/store/actions';
 import * as hearingActualsActions from '../../../hearings/store/actions/hearing-actuals.action';
 import { HttpError } from '../../../models/httpError.model';
-import { HearingActualsMainModel, HearingActualsModel } from '../../models/hearingActualsMainModel';
 import { HearingsService } from '../../services/hearings.service';
 
 @Injectable()
@@ -29,8 +28,8 @@ export class HearingActualsEffects {
     ofType(hearingActualsActions.UPDATE_HEARING_ACTUALS),
     switchMap((action: any) => this.hearingsService.updateHearingActuals(action.payload.hearingId, action.payload.hearingActuals)
       .pipe(
+        map(() => new hearingActualsActions.UpdateHearingActualsSuccess(action.payload.hearingActuals)),
         tap(() => this.router.navigate([`/hearings/actuals/${action.payload.hearingId}/hearing-actual-add-edit-summary`])),
-        map((response: HearingActualsMainModel) => new hearingActualsActions.UpdateHearingActualsSuccess(response)),
         catchError(error => HearingActualsEffects.handleError(error))
       ))
   );

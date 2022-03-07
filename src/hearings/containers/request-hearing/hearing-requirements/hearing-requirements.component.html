@@ -4,9 +4,12 @@
     <h1 class="govuk-heading-l">
       Hearing requirements
     </h1>
-    <p class="govuk-body govuk-!-margin-bottom-2">{{ serviceHearingValuesModel.caseType}} </p>
+    <exui-hearing-amend-warning-msg
+      [warningMsg]="'Review the information on this page, it has been updated.'">
+    </exui-hearing-amend-warning-msg>
+    <p class="govuk-body govuk-!-margin-bottom-2">{{serviceHearingValuesModel.caseType}}</p>
     <ul class="govuk-list govuk-list--bullet">
-      <li *ngFor="let subType of serviceHearingValuesModel.caseSubTypes">{{ subType }}</li>
+      <li *ngFor="let subType of serviceHearingValuesModel.caseSubTypes">{{subType}}</li>
     </ul>
     <exui-case-flags
       [info]="'Any reasonable adjustments on this page will be included in the hearing request.'"

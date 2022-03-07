@@ -36,14 +36,14 @@ export class UpdateHearingActuals implements Action {
 export class UpdateHearingActualsSuccess implements Action {
   public readonly type = UPDATE_HEARING_ACTUALS_SUCCESS;
 
-  constructor(public payload: HearingActualsMainModel) {
+  constructor(public payload: HearingActualsModel) {
   }
 }
 
 export class SubmitHearingActuals implements Action {
   public readonly type = SUBMIT_HEARING_ACTUALS;
 
-  constructor(public payload: HearingActualsMainModel) {
+  constructor(public hearingId: string) {
   }
 }
 

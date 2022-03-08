@@ -2,7 +2,7 @@ import {HttpParams} from '@angular/common/http';
 import { HearingCategory } from '../models/hearings.enum';
 import { LovRefDataService } from './lov-ref-data.service';
 
-fdescribe('Lov RefData service', () => {
+describe('Lov RefData service', () => {
   const mockHttpService = jasmine.createSpyObj('mockHttpService', ['put', 'get', 'post']);
   describe('LovRefDataService', () => {
     it('getForService should make correct api call', () => {

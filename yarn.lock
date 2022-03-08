@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.13.1-case-flags-case-event-flow-error-message-fixes":
-  version "4.13.1-case-flags-case-event-flow-error-message-fixes"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.13.1-case-flags-case-event-flow-error-message-fixes.tgz#57f7df480d11277cb56a3942e461dfd372dd2afe"
-  integrity sha512-Yi7pKETEPXGQfMH66EVHyuReVgS6iVfVFftb1suXNWxflo+UxNHoORQrvogREBTeqaqU1yJQBfr1/jxilgLFFw==
+"@hmcts/ccd-case-ui-toolkit@4.13.1-case-flags-case-event-flow-error-message-fixes-2":
+  version "4.13.1-case-flags-case-event-flow-error-message-fixes-2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.13.1-case-flags-case-event-flow-error-message-fixes-2.tgz#37de70bcf914c3199295a6da4ee448d58d19599f"
+  integrity sha512-rjXL/Im6CutUB3KG3EMXXYLyVwyBXHAs6jzVQ7Adh3y9PKzkCEQdia1m02nRmJ1ls0Eu6zwxugY867ViCODtBw==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

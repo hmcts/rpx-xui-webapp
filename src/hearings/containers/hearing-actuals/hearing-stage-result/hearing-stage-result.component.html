@@ -48,7 +48,7 @@
               <div class="govuk-radios__conditional" *ngIf="hearingResultType === hearingResultEnum.ADJOURNED">
                 <div class="govuk-form-group"
                   [ngClass]="{'govuk-form-group--error': submitted && adjournHearingErrorMessage.length > 0}">
-                  <label class="govuk-label dropdown-label" for="adjourned-reason">Select a reason for this result</label>
+                  <label class="govuk-label govuk-!-font-weight-bold" for="adjourned-reason">Select a reason for this result</label>
                   <div class="govuk-error-message" *ngIf="submitted && adjournHearingErrorMessage.length > 0">
                     {{adjournHearingErrorMessage}}
                   </div>
@@ -68,7 +68,7 @@
               <div class="govuk-radios__conditional" *ngIf="hearingResultType === hearingResultEnum.CANCELLED">
                 <div class="govuk-form-group"
                   [ngClass]="{'govuk-form-group--error': submitted && cancelHearingErrorMessage.length > 0}">
-                  <label class="govuk-label dropdown-label" for="cancelled-reason">Select a reason for this result</label>
+                  <label class="govuk-label govuk-!-font-weight-bold" for="cancelled-reason">Select a reason for this result</label>
                   <div class="govuk-error-message" *ngIf="submitted && cancelHearingErrorMessage.length > 0">
                     {{cancelHearingErrorMessage}}
                   </div>

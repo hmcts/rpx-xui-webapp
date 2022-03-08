@@ -11,94 +11,99 @@ import { getUserDetails, getUserRoleAssignments } from './index'
 chai.use(sinonChai)
 xdescribe('getUserDetails', () => {
 
-  let sandbox
-  let next
-  let req
-  let res
+    let sandbox
+    let next
+    let req
+    let res
 
-  beforeEach(() => {
-    sandbox = sinon.createSandbox()
-    next = sandbox.spy()
-    res = mockRes()
-  })
+    beforeEach(() => {
+        sandbox = sinon.createSandbox()
+        next = sandbox.spy()
+        res = mockRes()
+    })
 
-  afterEach(() => {
-    sandbox.restore()
-  })
+    afterEach(() => {
+        sandbox.restore()
+    })
 
-  it('should return a true response when case share permission is existent', async () => {
-    const reqQuery = {
-      session: {
-        passport: {
-          user: {
-            tokenset: {
-              accessToken: '124'
-            },
-            userinfo: {
-              roles: ['pui-case-manager'],
-            },
-          },
-        },
-      },
-    }
-    req = mockReq(reqQuery)
-    await getUserDetails(req, res, next)
-    const response = {
-      canShareCases: true,
-    }
-    expect(res.send).to.have.been.calledWith(sinon.match(response))
-  })
-
-  it('should return a false response when case share permission is non-existent', async () => {
-    const reqQuery = {
-      session: {
-        passport: {
-          user: {
-            tokenset: {
-              accessToken: '124'
-            },
-            userinfo: {
-              roles: ['dummy'],
+    it('should return a true response when case share permission is existent', async () => {
+      const reqQuery = {
+        session: {
+          passport: {
+            user: {
+              tokenset: {
+                accessToken: '124'
+              },
+              userinfo: {
+                roles: ['pui-case-manager'],
+              },
             },
           },
         },
-      },
-    }
-    req = mockReq(reqQuery)
-    await getUserDetails(req, res, next)
-    const response = {
-      canShareCases: false
-    }
-    expect(res.send).to.have.been.calledWith(sinon.match(response))
-  })
+      }
+      req = mockReq(reqQuery)
+      getUserDetails(req, res, next).then(() => {
+        const response = {
+          canShareCases: true,
+        }
+        expect(res.send).to.have.been.calledWith(sinon.match(response))
+        next();
+      })
+    })
 
-  it('should catch an error', async () => {
-    const reqQuery = {
-      session: {
-        passport: {
-          user: {
-            tokenset: {
-              accessToken: '124'
-            },
-            userinfo: {
-              roles: [],
+    it('should return a false response when case share permission is non-existent', async () => {
+      const reqQuery = {
+        session: {
+          passport: {
+            user: {
+              tokenset: {
+                accessToken: '124'
+              },
+              userinfo: {
+                roles: ['dummy'],
+              },
             },
           },
         },
-      },
-    }
-    req = mockReq(reqQuery)
-    res.send.throws()
+      }
+      req = mockReq(reqQuery)
+      getUserDetails(req, res, next).then(() => {
+        const response = {
+          canShareCases: false
+        }
+        expect(res.send).to.have.been.calledWith(sinon.match(response));
+        next()
+      })
+    })
 
-    await getUserDetails(req, res, next)
+    it('should catch an error', async () => {
+      const reqQuery = {
+        session: {
+          passport: {
+            user: {
+              tokenset: {
+                accessToken: '124'
+              },
+              userinfo: {
+                roles: [],
+              },
+            },
+          },
+        },
+      }
+      req = mockReq(reqQuery)
+      res.send.throws()
 
-    expect(next).to.have.been.calledWith()
-  })
+      getUserDetails(req, res, next).then(() => {
+        expect(next).to.have.been.calledWith();
+        next()
+      })
+    })
 });
 
 describe('getUserRoleAssignments', () => {
 
-  it('use session', async () => {
+    it('use session', async () =>  {
     const userInfo = {
       forename: 'foreName',
       surname: 'surName',

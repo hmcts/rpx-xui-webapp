@@ -73,6 +73,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
   public allocateTo: AllocateTo;
   public assignmentId: string;
   public caseId: string;
+  public jurisdiction: string;
   public isLegalOpsOrJudicialRole: UserRole;
 
   public roleCategory: RoleCategory;
@@ -93,6 +94,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
     );
     if (this.route.snapshot.queryParams) {
       this.caseId = this.route.snapshot.queryParams.caseId ? this.route.snapshot.queryParams.caseId : null;
+      this.jurisdiction = this.route.snapshot.queryParams.jurisdiction ? this.route.snapshot.queryParams.jurisdiction : null;
       this.assignmentId = this.route.snapshot.queryParams.assignmentId ? this.route.snapshot.queryParams.assignmentId : null;
       this.roleCategory = this.route.snapshot.queryParams.roleCategory ? this.route.snapshot.queryParams.roleCategory : null;
       this.userIdToBeRemoved = this.route.snapshot.queryParams.actorId ? this.route.snapshot.queryParams.actorId : null;
@@ -104,7 +106,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
     if (this.action === Actions.Reallocate) {
       this.instantiateReallocateRoleData();
     } else {
-      this.store.dispatch(new fromFeature.AllocateRoleSetInitData({caseId: this.caseId, roleCategory: this.roleCategory}));
+      this.store.dispatch(new fromFeature.AllocateRoleSetInitData({caseId: this.caseId, jurisdiction: this.jurisdiction, roleCategory: this.roleCategory}));
     }
     const extras = this.router.getCurrentNavigation().extras;
     this.allocateRoleService.backUrl = extras.state && extras.state.backUrl ? extras.state.backUrl : `cases/case-details/${this.caseId}/roles-and-access`;
@@ -114,6 +116,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
     const personToBeRemoved: Person = {id: this.userIdToBeRemoved, name: this.userNameToBeRemoved, domain: this.roleCategory};
     const allocateRoleState: AllocateRoleStateData = {
       caseId: this.caseId,
+      jurisdiction: this.jurisdiction,
       assignmentId: this.assignmentId,
       state: this.instantiateState(),
       typeOfRole: this.typeOfRole,

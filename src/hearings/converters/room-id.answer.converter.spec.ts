@@ -6,7 +6,7 @@ import { cold } from 'jasmine-marbles';
 import { of } from 'rxjs';
 import { hearingStageRefData, initialState } from '../hearing.test.data';
 import { State } from '../store';
-import { RoomIdAnswerConverter } from './rom-id.answer.converter';
+import { RoomIdAnswerConverter } from './room-id.answer.converter';
 
 describe('RoomIdAnswerConverter', () => {
 

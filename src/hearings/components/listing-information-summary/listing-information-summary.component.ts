@@ -1,13 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { LaCaseStatus } from 'api/hearings/models/hearings.enum';
-import { Observable, Subscription } from 'rxjs';
-import { AnswerSource } from 'src/hearings/models/hearings.enum';
-import { LovRefDataModel } from 'src/hearings/models/lovRefData.model';
-import { HearingAnswersPipe } from 'src/hearings/pipes/hearing-answers.pipe';
-import { HearingRequestMainModel } from '../../../hearings/models/hearingRequestMain.model';
-import { ServiceHearingValuesModel } from '../../../hearings/models/serviceHearingValues.model';
+import { Observable } from 'rxjs';
+import { AnswerSource, LaCaseStatus } from '../../../hearings/models/hearings.enum';
+import { HearingAnswersPipe } from '../../../hearings/pipes/hearing-answers.pipe';
 import * as fromHearingStore from '../../store';
 
 @Component({

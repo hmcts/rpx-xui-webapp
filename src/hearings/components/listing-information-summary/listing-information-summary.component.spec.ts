@@ -1,10 +1,10 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { HearingsPipesModule } from 'src/hearings/pipes/hearings.pipes.module';
+import { HearingsPipesModule } from '../../../hearings/pipes/hearings.pipes.module';
 import { caseFlagsRefData, initialState } from '../../hearing.test.data';
 import { ListingInformationSummaryComponent } from './listing-information-summary.component';
 

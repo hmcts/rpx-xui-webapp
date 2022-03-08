@@ -27,7 +27,7 @@ import { PanelExclusionAnswerConverter } from '../converters/panel-exclusion.ans
 import { PanelInclusionAnswerConverter } from '../converters/panel-inclusion.answer.converter';
 import { PanelRolesAnswerConverter } from '../converters/panel-roles.answer.converter';
 import { PartyChannelsAnswerConverter } from '../converters/party-channels-answer.converter';
-import { RoomIdAnswerConverter } from '../converters/rom-id.answer.converter';
+import { RoomIdAnswerConverter } from '../converters/room-id.answer.converter';
 import { StageAnswerConverter } from '../converters/stage.answer.converter';
 import { StatusAnswerConverter } from '../converters/status.answer.converter';
 import { TypeFromRequestAnswerConverter } from '../converters/type-from-request.answer.converter';

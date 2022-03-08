@@ -591,6 +591,8 @@ class WorkAllocationMockData {
             const taskTemplate = this.getRelease2TaskDetails();
             let taskPermissions = [];
             const taskAttributes = Object.keys(task);
+
+            let taskAssignState = 'ActiveTasksUnassigned';
             for (const taskAttribute of taskAttributes) {
                 if (taskAttribute.toLowerCase().includes('date')) {
                     const dateObj = new Date();
@@ -611,12 +613,16 @@ class WorkAllocationMockData {
                 } else if (taskAttribute.toLowerCase().trim() === 'assignee') {
                     const val = task[taskAttribute].toLowerCase();
                     if (val.includes('session')) {
+                        taskAssignState = 'ActiveTasksAssignedCurrentUser'
                         taskTemplate[taskAttribute] = nodeAppMock.userDetails.userInfo.uid ? nodeAppMock.userDetails.userInfo.uid : nodeAppMock.userDetails.userInfo.id;
                     } else if (val === '' || val === undefined) {
                         taskTemplate[taskAttribute] = null;
                     } else if (val === 'someone' ) {
+                        taskAssignState = 'ActiveTasksAssignedOtherUser'
+
                         taskTemplate[taskAttribute] = this.caseWorkersList[0].idamId;
                     }  else {
+                        taskAssignState = 'ActiveTasksAssignedOtherUser'
                         taskTemplate[taskAttribute] = task[taskAttribute];
                     }
                     taskTemplate.task_state= taskTemplate[taskAttribute] ? 'assigned':'unassigned'
@@ -638,7 +644,7 @@ class WorkAllocationMockData {
                     taskTemplate[taskAttribute] = task[taskAttribute];
                 }
             }
-            taskTemplate.actions = WorkAllocationDataModels.getRelease2TaskActions(taskPermissions, 'AllWork', taskTemplate.task_state); 
+            taskTemplate.actions = WorkAllocationDataModels.getRelease2TaskActions(taskPermissions, taskAssignState, taskTemplate.task_state); 
 
             taskTemplate.jurisdiction = "IA";
             tasks.push(taskTemplate);

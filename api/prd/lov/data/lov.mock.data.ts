@@ -649,6 +649,10 @@ export const ALL_REF_DATA: LovRefDataByCategoryModel[] = [
     services: [SSCS_CANCEL_HEARING_ACTUAL],
   },
   {
+    categoryKey: 'CancelHearingReason',
+    services: [SSCS_CANCEL_HEARING],
+  },
+  {
     categoryKey: 'FacilitiesList',
     services: [ADDITIONAL_HEARING_FACILITIES],
   },

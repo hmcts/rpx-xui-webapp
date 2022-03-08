@@ -17,7 +17,6 @@ import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 })
 export class HearingVenueComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public locationType: string;
-  public displayedLocations: LocationByEPIMMSModel[];
   public selectedLocation: LocationByEPIMMSModel;
   public serviceIds: string = 'SSCS';
   public findLocationFormGroup: FormGroup;
@@ -35,14 +34,12 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
       locationSelectedFormControl: [null, Validators.required]
     });
 
-    this.displayedLocations = [];
     this.selectedLocations = [];
   }
 
   public ngOnInit(): void {
     this.reInitiateState();
     this.serviceIds = this.hearingListMainModel.hmctsServiceID;
-    this.getLocationSearchFocus();
   }
 
   public reInitiateState() {
@@ -79,7 +76,6 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
     selectedLocations.push(this.findLocationFormGroup.controls.locationSelectedFormControl.value as LocationByEPIMMSModel);
     this.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
     this.findLocationFormGroup.controls.locationSelectedFormControl.markAsPristine();
-    this.displayedLocations = [];
     this.updateHearingConditions();
   }
 
@@ -92,14 +88,6 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
   public updateHearingConditions(): void {
     const strRegions = this.selectedLocations.map(location => location.region).join(',');
     this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions({region: strRegions}));
-  }
-
-  public getLocationSearchFocus() {
-    if (this.searchLocationComponent &&
-      this.searchLocationComponent.autoCompleteInputBox &&
-      this.searchLocationComponent.autoCompleteInputBox.nativeElement) {
-      this.searchLocationComponent.autoCompleteInputBox.nativeElement.focus();
-    }
   }
 
   public isLocationValid() {

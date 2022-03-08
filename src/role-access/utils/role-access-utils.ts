@@ -1,9 +1,9 @@
 import { NavigationExtras } from '@angular/router';
-import { string } from '@pact-foundation/pact/dsl/matchers';
 
-import { RoleAccessHttpError, SpecificRole, TypeOfRole } from '../models';
+import { ISessionStorageService } from '../../work-allocation-2/interfaces/common';
+import { Role, RoleAccessHttpError, RolesByService, SpecificRole, TypeOfRole } from '../models';
 import { RoleCaptionText } from '../models/enums/allocation-text';
-import { InfoMessageType } from '../models/enums/info-message-type';
+import { InfoMessageType } from '../models/enums';
 
 interface Navigator {
   navigate(commands: any[], extras?: NavigationExtras): Promise<boolean>;
@@ -30,6 +30,31 @@ export const convertToName = (id: string): string => {
     return id.charAt(0).toUpperCase() + id.slice(1);
   }
   return '';
+}
+
+export const getAllRolesFromServices = (rolesByService: RolesByService[]): Role[] => {
+  let allRoles: Role[] = [];
+  rolesByService.forEach(roleListByService => {
+    allRoles = allRoles.concat(roleListByService.roles)
+  });
+  return allRoles;
+}
+
+export const getRoleSessionStorageKeyForServiceId = (serviceId: string): string => {
+  return `${serviceId}-roles`;
+}
+
+export const getRoles = (serviceId: string, sessionStorageService: ISessionStorageService): Role[] => {
+  const sessionKey = getRoleSessionStorageKeyForServiceId(serviceId);
+  const value = sessionStorageService.getItem(sessionKey);
+  if (value) {
+    return JSON.parse(value) as Role[];
+  }
+}
+
+export const setRoles = (serviceId: string, roles: Role[], sessionStorageService: ISessionStorageService): void => {
+  const sessionKey = getRoleSessionStorageKeyForServiceId(serviceId);
+  sessionStorageService.setItem(sessionKey, JSON.stringify(roles));
 }
 
 export const handleError = (error: RoleAccessHttpError, navigator: Navigator, defaultUrl: string): void => {

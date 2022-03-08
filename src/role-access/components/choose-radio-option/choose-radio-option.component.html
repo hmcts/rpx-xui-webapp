@@ -5,8 +5,9 @@
 <div class="govuk-form-group" [formGroup]="formGroup">
   <span id="error-message" class="govuk-error-message"
         *ngIf="formGroup.get(radioControlName).errors && submitted">
-    Please select an option
+        {{errorText}}
   </span>
+  <p *ngIf="description">{{description}}</p>
   <fieldset class="govuk-fieldset" [attr.aria-label]="title">
     <legend class="hidden-legend">{{title}}</legend>
     <div class="govuk-radios">
@@ -14,7 +15,7 @@
         <input class="govuk-radios__input" formControlName="{{radioControlName}}" [id]="option.optionId" type="radio"
                [value]="option.optionValue">
         <label class="govuk-label govuk-radios__label" [for]="option.optionId">
-          {{option.optionValue}}
+          {{option.label || option.optionValue}}
         </label>
       </div>
     </div>

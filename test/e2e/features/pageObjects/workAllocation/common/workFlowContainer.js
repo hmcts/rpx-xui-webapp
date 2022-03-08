@@ -8,7 +8,8 @@ class WorkFlowContainer{
             '.page .govuk-button-group button ',
             '.page .govuk-button-group button.govuk-button[type="submit"]',
             'exui-task-action-container button[type = "submit"]',
-            'exui-task-container-assignment button[type = "submit"]'
+            'exui-task-container-assignment button[type = "submit"]',
+            'exui-task-assignment-choose-role button[type="submit"]'
         ];
 
         const cancelLinks = [

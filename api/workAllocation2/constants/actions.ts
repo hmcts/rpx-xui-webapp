@@ -70,7 +70,7 @@ export const VIEW_PERMISSIONS_ACTIONS_MATRIX = {
     Manage: [ASSIGN, GO],
   },
   AvailableTasks: {
-    Manage: [CLAIM, CLAIM_AND_GO],
+    Execute: [CLAIM, CLAIM_AND_GO],
   },
   MyCases: {
     Manage: [REASSIGN, RELEASE, GO],

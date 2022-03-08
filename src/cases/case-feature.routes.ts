@@ -2,7 +2,6 @@ import { ModuleWithProviders } from '@angular/core';
 // routes
 import { RouterModule, Routes } from '@angular/router';
 import { CaseResolver, editorRouting, viewerRouting as caseViewRouting } from '@hmcts/ccd-case-ui-toolkit';
-import { CaseTasksResolverService } from '../app/resolvers/case-tasks-resolver.service';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
 import {
   CaseCreateSubmitComponent,
@@ -86,7 +85,7 @@ export const ROUTES: Routes = [
             children: editorRouting
           }
         ],
-        canActivate: [ HealthCheckGuard ],
+        canActivate: [HealthCheckGuard],
         data: {
           title: 'Create a case'
         }
@@ -95,7 +94,7 @@ export const ROUTES: Routes = [
         path: 'case-search',
         component: CaseSearchComponent,
         children: editorRouting,
-        canActivate: [ HealthCheckGuard ],
+        canActivate: [HealthCheckGuard],
         data: {
           title: 'Find a case'
         }
@@ -103,69 +102,36 @@ export const ROUTES: Routes = [
       {
         path: 'case-details/:cid',
         component: CaseDetailsHomeComponent,
-        resolve: { case: CaseResolver },
+        resolve: {case: CaseResolver},
         runGuardsAndResolvers: 'always',
         children: [
           {
             path: '',
-            component: CaseViewerContainerComponent
+            component: CaseViewerContainerComponent,
+            children: [
+              {
+                path: '',
+                pathMatch: 'full',
+              },
+              {
+                path: 'tasks',
+                component: TasksContainerComponent,
+              },
+              {
+                path: 'roles-and-access',
+                component: RolesAndAccessContainerComponent
+              }
+            ]
           },
-          ...caseViewRouting
-        ],
-        canActivate: [ HealthCheckGuard ],
+          ...caseViewRouting],
+        canActivate: [HealthCheckGuard],
         data: {
           title: 'Case Details'
         }
       }
-    ],
-    canActivate: [HealthCheckGuard],
-    data: {
-      title: 'Create a case'
-    }
+    ]
   },
-  {
-    path: 'case-search',
-    component: CaseSearchComponent,
-    children: editorRouting,
-    canActivate: [HealthCheckGuard],
-    data: {
-      title: 'Find a case'
-    }
-  },
-  {
-    path: 'case-details/:cid',
-    component: CaseDetailsHomeComponent,
-    resolve: {case: CaseResolver},
-    runGuardsAndResolvers: 'always',
-    children: [
-      {
-        path: '',
-        component: CaseViewerContainerComponent,
-        children: [
-          {
-            path: '',
-            pathMatch: 'full',
-          },
-          {
-            path: 'tasks',
-            component: TasksContainerComponent,
-            resolve: {
-              tasks: CaseTasksResolverService
-            }
-          },
-          {
-            path: 'roles-and-access',
-            component: RolesAndAccessContainerComponent
-          }
-        ]
-      },
-      ...caseViewRouting
-    ],
-    canActivate: [HealthCheckGuard],
-    data: {
-      title: 'Case Details'
-    }
-  }
+
 ];
 
 export const casesRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);

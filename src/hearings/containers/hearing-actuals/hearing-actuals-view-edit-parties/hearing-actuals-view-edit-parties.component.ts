@@ -51,7 +51,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     });
   }
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     this.partyChannel = this.route.snapshot.data.partyChannel;
     this.hearingRole = this.route.snapshot.data.hearingRole;
     this.sub = this.hearingStore.select(fromHearingStore.getHearingActuals)
@@ -65,15 +65,15 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       });
   }
 
-  public get parties() {
+  public get parties(): FormArray {
     return this.partiesTable.get('parties') as FormArray;
   }
 
-  public ngOnDestroy() {
+  public ngOnDestroy(): void {
     this.sub.unsubscribe();
   }
 
-  private createForm(hearingActuals: HearingActualsMainModel) {
+  private createForm(hearingActuals: HearingActualsMainModel): void {
 
     hearingActuals.hearingPlanned.plannedHearingDays[0].parties.forEach( party => {
 

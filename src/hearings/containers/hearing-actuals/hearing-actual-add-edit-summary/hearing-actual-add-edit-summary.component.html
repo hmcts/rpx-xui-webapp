@@ -72,7 +72,7 @@
       <br>
       <h1 class="govuk-heading-m">Participants</h1>
       <span class="govuk-body align-right">
-        <a href="javascript:void(0)" [routerLink]="['/', 'hearings', 'actuals', 'actuals-parties']" class="govuk-link">Update</a>
+        <a href="javascript:void(0)" [routerLink]="['/', 'hearings', 'actuals', id, 'actuals-parties']" class="govuk-link">Update</a>
       </span>
       <div *ngFor="let party of actualDayParties">
         <dl class="govuk-summary-list">

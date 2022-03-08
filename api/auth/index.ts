@@ -49,7 +49,12 @@ export const successCallback = (req: EnhancedRequest, res: Response, next: NextF
     next()
 }
 
+export const failureCallback = (req: EnhancedRequest, res: Response, next: NextFunction) => {
+    logger.warn(res.locals.message);
+}
+
 xuiNode.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, successCallback)
+xuiNode.on(AUTH.EVENT.AUTHENTICATE_FAILURE, failureCallback);
 
 export const getXuiNodeMiddleware = () => {
 

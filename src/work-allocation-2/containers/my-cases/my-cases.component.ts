@@ -47,7 +47,7 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
         const services = locationsFromLS.fields.find(field => field.name === 'services');
         const locations = locationsFromLS.fields.find(field => field.name === 'locations');
         if (services && services.hasOwnProperty('value')) {
-          serviceFilters = services.value.filter(s => s !== 'services_all');
+          serviceFilters = services.value;
         }
         if (locations && locations.hasOwnProperty('value')) {
           locationFilters = locations.value.map(l => l.epimms_id);

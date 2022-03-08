@@ -12,9 +12,9 @@ import { requireReloaded } from '../utils/moduleUtil';
 const { Matchers } = require('@pact-foundation/pact');
 import { DateTimeMatcher } from '../utils/matchers';
 const { somethingLike, iso8601DateTime, term } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'am_api_delete_role_type_exclusion', port: 8000 });
+const pactSetUp = new PactTestSetup({ provider: 'am_roleAssignment_deleteAssignment', port: 8000 });
 
-const exclusionId = "10bac6bf-80a7-4c81-b2db-516aba826be6";
+const exclusionId = "704c8b1c-e89b-436a-90f6-953b1dc40157";
 
 describe("access management service, delete exclusion", () => {
 
@@ -30,7 +30,7 @@ describe("access management service, delete exclusion", () => {
         before(async () => {
             await pactSetUp.provider.setup()
             const interaction = {
-                state: "deleted role assignments for exclusion",
+                state: "An actor with provided id is available in role assignment service",
                 uponReceiving: "delete role assignment for exclusion",
                 withRequest: {
                     method: "DELETE",
@@ -38,15 +38,11 @@ describe("access management service, delete exclusion", () => {
                     headers: {
                         'Authorization': 'Bearer someAuthorizationToken',
                         'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-                        "content-type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0",
+                        "content-type": "application/json",
                     },
                 },
                 willRespondWith: {
-                    status: 200,
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: RESPONSE_BODY,
+                    status: 204
                 },
             };
 
@@ -75,7 +71,7 @@ describe("access management service, delete exclusion", () => {
                 headers: {
                     'Authorization': 'Bearer someAuthorizationToken',
                     'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-                    'content-type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0',
+                    'content-type': 'application/json',
                 },
                 body:{
                     roleExclusion:{

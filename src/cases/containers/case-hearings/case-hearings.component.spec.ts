@@ -140,6 +140,8 @@ describe('CaseHearingsComponent', () => {
     responseVersion: 'rv1',
     hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
     listAssistCaseStatus: '',
+    hearingIsLinkedFlag: true,
+    hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_1],
   };
 
@@ -154,6 +156,8 @@ describe('CaseHearingsComponent', () => {
     responseVersion: 'rv2',
     hearingListingStatus: HearingListingStatusEnum.AWAITING_LISTING,
     listAssistCaseStatus: '',
+    hearingIsLinkedFlag: false,
+    hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_2],
   };
 
@@ -168,6 +172,8 @@ describe('CaseHearingsComponent', () => {
     responseVersion: 'rv3',
     hearingListingStatus: HearingListingStatusEnum.LISTED,
     listAssistCaseStatus: '',
+    hearingIsLinkedFlag: false,
+    hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_3],
   };
 
@@ -182,6 +188,8 @@ describe('CaseHearingsComponent', () => {
     responseVersion: 'rv4',
     hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
     listAssistCaseStatus: '',
+    hearingIsLinkedFlag: false,
+    hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_4],
   };
 
@@ -196,6 +204,8 @@ describe('CaseHearingsComponent', () => {
     responseVersion: 'rv5',
     hearingListingStatus: HearingListingStatusEnum.UPDATE_SUBMITTED,
     listAssistCaseStatus: '',
+    hearingIsLinkedFlag: false,
+    hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_5],
   };
 
@@ -210,6 +220,8 @@ describe('CaseHearingsComponent', () => {
     responseVersion: 'rv6',
     hearingListingStatus: HearingListingStatusEnum.EXCEPTION,
     listAssistCaseStatus: '',
+    hearingIsLinkedFlag: false,
+    hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_6],
   };
 
@@ -223,6 +235,8 @@ describe('CaseHearingsComponent', () => {
     responseVersion: 'rv7',
     hearingListingStatus: HearingListingStatusEnum.CANCELLATION_REQUESTED,
     listAssistCaseStatus: '',
+    hearingIsLinkedFlag: false,
+    hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_7],
     exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
   };
@@ -237,6 +251,8 @@ describe('CaseHearingsComponent', () => {
     responseVersion: 'rv8',
     hearingListingStatus: HearingListingStatusEnum.VACATED,
     listAssistCaseStatus: '',
+    hearingIsLinkedFlag: false,
+    hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_8],
     exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
   };
@@ -250,6 +266,8 @@ describe('CaseHearingsComponent', () => {
     responseVersion: 'rv9',
     hearingListingStatus: HearingListingStatusEnum.AWAITING_ACTUALS,
     listAssistCaseStatus: '',
+    hearingIsLinkedFlag: false,
+    hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_9],
     exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
     exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_ACTUALS,
@@ -264,6 +282,8 @@ describe('CaseHearingsComponent', () => {
     responseVersion: 'rv10',
     hearingListingStatus: HearingListingStatusEnum.COMPLETED,
     listAssistCaseStatus: '',
+    hearingIsLinkedFlag: false,
+    hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_10],
     exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
     exuiDisplayStatus: EXUIDisplayStatusEnum.COMPLETED,
@@ -278,6 +298,8 @@ describe('CaseHearingsComponent', () => {
     responseVersion: 'rv11',
     hearingListingStatus: HearingListingStatusEnum.ADJOURNED,
     listAssistCaseStatus: '',
+    hearingIsLinkedFlag: false,
+    hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_11],
     exuiDisplayStatus: EXUIDisplayStatusEnum.COMPLETED,
     exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
@@ -388,6 +410,8 @@ describe('CaseHearingsComponent', () => {
       hearingListingStatus: HearingListingStatusEnum.LISTED,
       exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
       listAssistCaseStatus: '',
+      hearingIsLinkedFlag: false,
+      hearingGroupRequestId: null,
       hearingDaySchedule: [HEARING_DAY_SCHEDULE_2],
     };
 
@@ -402,6 +426,8 @@ describe('CaseHearingsComponent', () => {
       hearingListingStatus: HearingListingStatusEnum.LISTED,
       exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
       listAssistCaseStatus: '',
+      hearingIsLinkedFlag: false,
+      hearingGroupRequestId: null,
       hearingDaySchedule: [HEARING_DAY_SCHEDULE_10],
     };
 

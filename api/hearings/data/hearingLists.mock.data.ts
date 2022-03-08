@@ -112,6 +112,8 @@ const CASE_HEARING_1: HearingListModel = {
   responseVersion: 'rv1',
   hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: 'g1000000',
   hearingDaySchedule: null,
 };
 
@@ -124,6 +126,8 @@ const CASE_HEARING_2: HearingListModel = {
   responseVersion: 'rv2',
   hearingListingStatus: HearingListingStatusEnum.AWAITING_LISTING,
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: true,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [],
 };
 
@@ -136,6 +140,8 @@ const CASE_HEARING_3: HearingListModel = {
   responseVersion: 'rv3',
   hearingListingStatus: HearingListingStatusEnum.LISTED,
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_1, HEARING_DAY_SCHEDULE_2],
 };
 
@@ -148,6 +154,8 @@ const CASE_HEARING_4: HearingListModel = {
   responseVersion: 'rv4',
   hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_3, HEARING_DAY_SCHEDULE_4],
 };
 
@@ -160,6 +168,8 @@ const CASE_HEARING_5: HearingListModel = {
   responseVersion: 'rv5',
   hearingListingStatus: HearingListingStatusEnum.UPDATE_SUBMITTED,
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_5],
 };
 
@@ -172,6 +182,8 @@ const CASE_HEARING_6: HearingListModel = {
   responseVersion: 'rv6',
   hearingListingStatus: HearingListingStatusEnum.EXCEPTION,
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_6],
 };
 
@@ -184,6 +196,8 @@ const CASE_HEARING_7: HearingListModel = {
   responseVersion: 'rv7',
   hearingListingStatus: HearingListingStatusEnum.CANCELLATION_REQUESTED,
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_7, HEARING_DAY_SCHEDULE_8],
 };
 
@@ -196,6 +210,8 @@ const CASE_HEARING_8: HearingListModel = {
   responseVersion: 'rv8',
   hearingListingStatus: HearingListingStatusEnum.VACATED,
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [],
 };
 
@@ -208,6 +224,8 @@ const CASE_HEARING_9: HearingListModel = {
   responseVersion: 'rv9',
   hearingListingStatus: HearingListingStatusEnum.AWAITING_ACTUALS,
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_9],
 };
 
@@ -220,6 +238,8 @@ const CASE_HEARING_10: HearingListModel = {
   responseVersion: 'rv10',
   hearingListingStatus: HearingListingStatusEnum.COMPLETED,
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_10],
 };
 
@@ -232,6 +252,8 @@ const CASE_HEARING_11: HearingListModel = {
   responseVersion: 'rv11',
   hearingListingStatus: HearingListingStatusEnum.ADJOURNED,
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_11],
 };
 
@@ -244,6 +266,8 @@ const CASE_HEARING_12: HearingListModel = {
   responseVersion: 'rv12',
   hearingListingStatus: HearingListingStatusEnum.VACATED,
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [],
 };
 

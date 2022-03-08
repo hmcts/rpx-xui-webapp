@@ -1,3 +1,4 @@
+import {HttpParams} from '@angular/common/http';
 import { HearingCategory } from '../models/hearings.enum';
 import { LovRefDataService } from './lov-ref-data.service';
 
@@ -7,9 +8,15 @@ fdescribe('Lov RefData service', () => {
     it('getForService should make correct api call', () => {
       const service = new LovRefDataService(mockHttpService);
       service.getListOfValues(HearingCategory.Priority, 'SSCS', false);
-      expect(mockHttpService.get).toHaveBeenCalledWith(`api/prd/lov/getLovRefData`, jasmine.any(Object));
-      // the below fails
-      // expect(mockHttpService.get).toHaveBeenCalledWith(`api/prd/lov/getLovRefData`, jasmine.objectContaining({ params: 'category=Priority&service=SSCS&isChildRequired=N' }));
+
+      const options = {
+        params: new HttpParams()
+          .set('category', HearingCategory.Priority)
+          .set('service', 'SSCS')
+          .set('isChildRequired', 'N')
+      };
+
+      expect(mockHttpService.get).toHaveBeenCalledWith(`api/prd/lov/getLovRefData`, options);
     });
   });
 });

@@ -31,11 +31,13 @@ class MyWorkPage extends TaskList {
         this.selectedLocations = $$('.xui-generic-filter#locations xuilib-find-location .location-picker-custom .location-selection a');
         this.workFilterlocationErrorMessage = $('.xui-generic-filter#locations #locations-error');
 
+        //Work type filters
+        this.workFilterWorkTypesContainer = $('.xui-generic-filter#types-of-work');
         this.workFilterTypesOfWork = $$('.xui-generic-filter #checkbox_types-of-work .govuk-checkboxes__item');
-
 
         this.workFilterApplyBtn = $('xuilib-generic-filter #applyFilter');
         this.workFilterRestBtn = $('xuilib-generic-filter #cancelFilter');
+        //end of work filter locators
 
         this.subNavListContainer = $('xuilib-hmcts-sub-navigation .hmcts-sub-navigation__list');
        
@@ -296,6 +298,25 @@ class MyWorkPage extends TaskList {
         throw new Error(`location conating text ${location} is not found in selected location "${actualLocations}"`);
     }
 
+
+    async isWorkFilterOfTypeDisplayed(filterType){
+
+        const filetTypeNormalized = filterType.toLowerCase().split(' ').join(''); 
+
+        let filetrContainer = null;
+        if (filetTypeNormalized.includes('service')){
+            filetrContainer = this.workFilterServicesContainer;
+        } else if (filetTypeNormalized.includes('location')){
+            filetrContainer = this.workFiltersLocationsContainer;
+        } else if (filetTypeNormalized.includes('worktype')) {
+            filetrContainer = this.workFilterWorkTypesContainer;
+        }else {
+            throw new Error(`${filterType} is not implemented in test. Please check Page object myWorkPage.js`);
+        }
+
+        return (await filetrContainer.isPresent()) && (await filetrContainer.isDisplayed()); 
+
+    }
 
 }
 

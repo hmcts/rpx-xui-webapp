@@ -15,7 +15,7 @@ export class JudicialMembersAnswerConverter implements AnswerConverter {
     return hearingState$.pipe(
       map(state => {
         const panelRequirements = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
-        const includedJudicials: string[] = panelRequirements && panelRequirements.panelPreferences.filter(preferences => preferences.requirementType === RequirementType.MUSTINC).map(preferences => preferences.memberID);
+        const includedJudicials: string[] = panelRequirements && panelRequirements.panelPreferences.filter(preferences => preferences.requirementType === RequirementType.MUSTINC).map(preferences => preferences.memberID) || [];
         const judicialNames: string[] = [];
         includedJudicials.forEach(judicialID => {
           const judgeInfo = judicialUsersList.find((judge) => judge.personal_code === judicialID);

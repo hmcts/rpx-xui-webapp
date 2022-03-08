@@ -201,7 +201,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       options: [
         {
           key: 'types_of_work_all',
-          label: 'Select all',
+          label: 'All work types',
           selectAll: true
         },
         ...typesOfWork

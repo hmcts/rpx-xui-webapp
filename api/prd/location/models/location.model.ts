@@ -50,7 +50,7 @@ export interface LocationByEPIMSModel {
   is_hearing_location: string;
 }
 
-export function toEpimsLocation(locationModel: LocationModel): LocationByEPIMSModel {
+export function toEpimmsLocation(locationModel: LocationModel): LocationByEPIMSModel {
   return {
     epimms_id: locationModel.epimms_id,
     site_name: locationModel.site_name,

@@ -50,7 +50,6 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     cancelSetting: null,
     showCancelFilterButton: false
   };
-  public fieldsConfigAlt: FilterConfig = null;
   public allLocations: string[] = [];
   public defaultLocations: any[] = null;
   public defaultTypesOfWork: string[] = [];
@@ -103,7 +102,6 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
         this.setUpServicesFilter(services);
         this.setUpLocationFilter();
         this.setUpTypesOfWorkFilter(typesOfWork);
-        this.setupFieldsConfigAlt();
         this.persistFirstSetting();
         this.subscribeToFilters(assignedTasks);
       });
@@ -282,29 +280,24 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
    *
    * @param url - the url string to check against
    * @param myCaseUrl - the string to search for in the url
-   * @example
-   *  setAllowTypesOfWorkFilter();
    */
   private setAllowTypesOfWorkFilter(url: string, myCasesUrl = 'my-work/my-cases'): void {
     this.allowTypesOfWorkFilter = !url.includes(myCasesUrl);
   }
 
   /**
-   * Creates a copy of the fieldsConfig object called fieldsConfigAlt with removed filters as per provided param
+   * Toggles the filter state
    *
-   * @param excludeFieldNames - array of field names to exclude from the filters
+   * @param showTypesOfWorkFilter - used to determine whether the types-of-work filters will be displayed
    */
-  private setupFieldsConfigAlt(excludeFieldNames = ['types-of-work']): void {
-    // create a copy of the fieldsConfig
-    this.fieldsConfigAlt = {...this.fieldsConfig};
-
-    // remove the fields not needed e.g. 'types-of-work'
-    const fields = this.fieldsConfigAlt.fields.filter(field => field.name !== excludeFieldNames[0]);
-    this.fieldsConfigAlt.fields = fields;
-
-    // remove the cancelSetting fields not needed e.g. 'types-of-work'
-    const cancelSettingFields = this.fieldsConfigAlt.cancelSetting.fields.filter(field => field.name !== excludeFieldNames[0]);
-    this.fieldsConfigAlt.cancelSetting.fields = cancelSettingFields;
+  public onToggleFilter(showTypesOfWorkFilter: boolean): void {
+    this.toggleFilter = !this.toggleFilter;
+    if (this.toggleFilter) {
+      setTimeout(() => {
+        const typesOfWorkParentElem = document.getElementById('types-of-work').closest('.contain-classes');
+        (typesOfWorkParentElem as HTMLElement).style.display = showTypesOfWorkFilter ? 'block' : 'none';
+      }, 0);
+    }
   }
 
 }

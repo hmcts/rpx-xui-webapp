@@ -13,7 +13,7 @@
         </h1>
         <br>
 
-        <form [formGroup]="partiesTable" (submit)="submitForm($event)">
+        <form [formGroup]="partiesTable">
 
           <table class="govuk-table gov-table--middle">
             <thead class="govuk-table__head">
@@ -89,7 +89,7 @@
             </tbody>
           </table>
 
-          <button class="govuk-button govuk-button--secondary" data-module="govuk-button" (click)="addRow($event)">
+          <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
             Add a participant
           </button>
 

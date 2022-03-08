@@ -11,7 +11,7 @@ import { RefDataResolver } from './ref-data-resolver.resolve';
 @Injectable({
   providedIn: 'root'
 })
-export class HearingPartyChannelResolver extends RefDataResolver implements Resolve<LovRefDataModel[]> {
+export class HearingActualPartyChannelResolverService extends RefDataResolver implements Resolve<LovRefDataModel[]> {
 
   constructor(
     protected readonly lovRefDataService: LovRefDataService,

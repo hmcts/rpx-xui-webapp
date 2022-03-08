@@ -209,6 +209,14 @@ describe('HearingViewEditSummaryComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('getRole should return the correct english role value', () => {
+    expect(component.getRole('barrister')).toEqual('Barrister');
+  });
+
+  it('getRole should return the provided key if role not found', () => {
+    expect(component.getRole('test')).toEqual('test');
+  });
+
   afterEach(() => {
     fixture.destroy();
   });

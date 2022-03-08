@@ -11,9 +11,9 @@ import { LovRefDataModel } from '../models/lovRefData.model';
 import { LovRefDataService } from '../services/lov-ref-data.service';
 import * as fromHearingStore from '../store';
 
-import { PartyChannelsResolverService } from './party-channels-resolver.service';
+import { HearingActualPartyChannelResolverService } from './hearing-actual-party-channel-resolver.service';
 
-describe('PartyChannelsResolverService', () => {
+describe('HearingActualPartyChannelResolverService', () => {
   let lovRefDataService: LovRefDataService;
   let store: Store<fromHearingStore.State>;
   const dataRef: LovRefDataModel[] = [];
@@ -26,7 +26,7 @@ describe('PartyChannelsResolverService', () => {
           HttpClientTestingModule,
         ],
         providers: [
-          PartyChannelsResolverService,
+          HearingActualPartyChannelResolverService,
           LovRefDataService,
           { provide: APP_BASE_HREF, useValue: '/' }
         ]
@@ -37,11 +37,11 @@ describe('PartyChannelsResolverService', () => {
   });
 
   it('should be created', () => {
-    const service: PartyChannelsResolverService = TestBed.get(PartyChannelsResolverService);
+    const service: HearingActualPartyChannelResolverService = TestBed.get(HearingActualPartyChannelResolverService);
     expect(service).toBeTruthy();
   });
 
-  it('resolves reference data for party channels', inject([PartyChannelsResolverService], (service: PartyChannelsResolverService) => {
+  it('resolves reference data for party channels', inject([HearingActualPartyChannelResolverService], (service: HearingActualPartyChannelResolverService) => {
     spyOn(store, 'pipe').and.returnValue(of('serviceName'));
     spyOn(lovRefDataService, 'getListOfValues').and.returnValue(of(dataRef));
     spyOn(service, 'getReferenceData$').and.callThrough();

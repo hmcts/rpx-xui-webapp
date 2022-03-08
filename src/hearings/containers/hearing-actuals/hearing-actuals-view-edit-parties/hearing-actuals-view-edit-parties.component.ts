@@ -69,27 +69,6 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     return this.partiesTable.get('parties') as FormArray;
   }
 
-  public initiateForm(): FormGroup {
-    return this.fb.group({
-      firstName: [''],
-      lastName: [''],
-      role: ['Please select'],
-      attendanceType: ['Please select'],
-      organisation: [''],
-      attendeeRepresenting: ['Please select'],
-      isParty: [false]
-    });
-  }
-
-  public addRow($event) {
-    $event.preventDefault();
-    $event.target.blur();
-    this.parties.push(this.initiateForm());
-    setTimeout(() => {
-      this.renderer.selectRootElement('tr:last-child input').focus();
-    }, 100);
-  }
-
   public ngOnDestroy() {
     this.sub.unsubscribe();
   }
@@ -133,11 +112,6 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       });
     });
 
-  }
-
-  public submitForm($event) {
-    $event.preventDefault();
-    console.log(this.parties.value);
   }
 
   public getRole(value: string): string {

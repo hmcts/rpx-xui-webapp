@@ -537,10 +537,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.6.9-find-persons-debounce":
-  version "1.6.9-find-persons-debounce"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.9-find-persons-debounce.tgz#4d6a7b5bb4563eece03c350820c77a4968ab6196"
-  integrity sha512-i/sIvMZ3U2fyuqEtkJpJ9IehlV74AyytRzoLSFxl1eMleQvM1iimV09uMcZDBY6ZrCVDNFMnsbGvdLTkeuSZrg==
+"@hmcts/rpx-xui-common-lib@1.6.11-hearing-part2":
+  version "1.6.11-hearing-part2"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.11-hearing-part2.tgz#8b840a21b0c656eafa6d29b1cb2463464aedd737"
+  integrity sha512-JXBBFsbhbiBeV+jKW84XZcU1D1MRfVBZ/AlLKK6gA0m/2hvxc92Amxq3DECe6k5eqP3/cbQTVkGl3dUWy/7TNA==
   dependencies:
     tslib "^1.9.0"
 

@@ -20,13 +20,13 @@
         </div>
         <br>
         <div class="govuk-form-group"
-          [ngClass]="{'govuk-form-group--error': submitted && !f.valid && !f.hearingResult.valid}">
+          [ngClass]="{'govuk-form-group--error': submitted && !formControls.valid && !formControls.hearingResult.valid}">
           <fieldset class="govuk-fieldset">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
               <h1 class="govuk-fieldset__heading">
                 Hearing result
               </h1>
-              <div class="govuk-error-message" *ngIf="submitted && !f.valid && !f.hearingResult.valid">
+              <div class="govuk-error-message" *ngIf="submitted && !formControls.valid && !formControls.hearingResult.valid">
                 {{hearingStageResultEnum.HearingResultError}}
               </div>
             </legend>
@@ -48,7 +48,7 @@
               <div class="govuk-radios__conditional" *ngIf="hearingResultType === hearingResultEnum.ADJOURNED">
                 <div class="govuk-form-group"
                   [ngClass]="{'govuk-form-group--error': submitted && adjournHearingErrorMessage.length > 0}">
-                  <label class="govuk-label" id="dropdown-label" for="adjourned-reason">Select a reason for this result</label>
+                  <label class="govuk-label dropdown-label" for="adjourned-reason">Select a reason for this result</label>
                   <div class="govuk-error-message" *ngIf="submitted && adjournHearingErrorMessage.length > 0">
                     {{adjournHearingErrorMessage}}
                   </div>
@@ -68,7 +68,7 @@
               <div class="govuk-radios__conditional" *ngIf="hearingResultType === hearingResultEnum.CANCELLED">
                 <div class="govuk-form-group"
                   [ngClass]="{'govuk-form-group--error': submitted && cancelHearingErrorMessage.length > 0}">
-                  <label class="govuk-label" id="dropdown-label" for="cancelled-reason">Select a reason for this result</label>
+                  <label class="govuk-label dropdown-label" for="cancelled-reason">Select a reason for this result</label>
                   <div class="govuk-error-message" *ngIf="submitted && cancelHearingErrorMessage.length > 0">
                     {{cancelHearingErrorMessage}}
                   </div>

@@ -50,7 +50,7 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
     return HearingStageResultEnum;
   }
 
-  public get f() {
+  public get formControls() {
     return this.hearingStageResultForm.controls;
   }
 
@@ -116,7 +116,7 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
   }
 
   private validateHearingResult(): boolean {
-    if (!this.f.hearingResult.valid) {
+    if (!this.formControls.hearingResult.valid) {
       this.validationErrors.push({
         id: 'completed',
         message: HearingStageResultEnum.HearingResultError

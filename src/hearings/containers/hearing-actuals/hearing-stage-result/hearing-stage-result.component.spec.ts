@@ -55,7 +55,7 @@ describe('HearingStageResultComponent', () => {
     expect(component.cancelHearingErrorMessage.length).toEqual(0);
     expect(component.validationErrors.length).toEqual(0);
     expect(component.caseTitle).toEqual('Jane Smith vs DWP');
-    expect(component.f).toBeDefined();
+    expect(component.formControls).toBeDefined();
   });
 
   it('should unsubscribe', () => {
@@ -109,7 +109,7 @@ describe('HearingStageResultComponent', () => {
   it('should fail validation if hearing result type not selected', () => {
     const storeDispatchSpy = spyOn(store, 'dispatch');
     component.onSubmit();
-    expect(component.f.hearingResult.valid).toEqual(false);
+    expect(component.formControls.hearingResult.valid).toEqual(false);
     expect(component.validationErrors.length).toEqual(1);
     expect(storeDispatchSpy).toHaveBeenCalledTimes(0);
   });

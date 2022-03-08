@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.13.1-case-flags-select-location-step-rc.2":
-  version "4.13.1-case-flags-select-location-step-rc.2"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.13.1-case-flags-select-location-step-rc.2.tgz#5dfe044f5883a579a1f2475b125cd454990c4bb5"
-  integrity sha512-LHFJlDizPgKmWAQQC4AzfSJLUTwH+AjjIFk4Z1xGoyXuNC/WMDxmPGIypUsUk1VeFIOUbSTtKPxP1CvTQvGKfQ==
+"@hmcts/ccd-case-ui-toolkit@4.13.1-case-flags-case-event-flow-error-message-fixes":
+  version "4.13.1-case-flags-case-event-flow-error-message-fixes"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.13.1-case-flags-case-event-flow-error-message-fixes.tgz#57f7df480d11277cb56a3942e461dfd372dd2afe"
+  integrity sha512-Yi7pKETEPXGQfMH66EVHyuReVgS6iVfVFftb1suXNWxflo+UxNHoORQrvogREBTeqaqU1yJQBfr1/jxilgLFFw==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

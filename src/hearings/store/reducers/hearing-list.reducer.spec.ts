@@ -39,6 +39,8 @@ describe('Hearing List Reducer', () => {
           listAssistCaseStatus: '',
           hearingListingStatus: HearingListingStatusEnum.CANCELLED,
           exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+          hearingIsLinkedFlag: true,
+          hearingGroupRequestId: null,
           hearingDaySchedule: [HEARING_DAY_SCHEDULE_1],
         };
         const HEARINGS_LIST: HearingListMainModel = {

@@ -1,5 +1,5 @@
 /* tslint:disable:object-literal-sort-keys */
-import {PartyType, RequirementType} from '../models/hearings.enum';
+import {MemberType, PartyType, RequirementType} from '../models/hearings.enum';
 import {ServiceHearingValuesModel} from '../models/serviceHearingValues.model';
 
 export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
@@ -41,8 +41,8 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
     }],
     judiciaryPreferences: [
       {
-        memberID: '',
-        memberType: '',
+        memberID: 'p1000000',
+        memberType: MemberType.JUDGE,
         requirementType: RequirementType.EXCLUDE,
       },
     ],

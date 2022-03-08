@@ -59,6 +59,10 @@ export class CaseHearingsListComponent implements OnInit {
       || exuiDisplayStatus === EXUIDisplayStatusEnum.FAILURE;
   }
 
+  public isManageLinksEnabled(hearingGroupRequestId: string): boolean {
+    return !!hearingGroupRequestId;
+  }
+
   public viewAndEdit(hearingID: string): void {
     this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
     this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearingID));

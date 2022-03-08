@@ -6,7 +6,14 @@ import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { UserRole } from '../../../../app/models';
 import { CHOOSE_A_ROLE, ERROR_MESSAGE } from '../../../constants';
-import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, Role, RoleCategory, SpecificRole } from '../../../models';
+import {
+  AllocateRoleNavigation,
+  AllocateRoleNavigationEvent,
+  AllocateRoleState,
+  Role,
+  RoleCategory,
+  SpecificRole
+} from '../../../models';
 import { RoleAllocationTitleText } from '../../../models/enums';
 import { OptionsModel } from '../../../models/options-model';
 import { AllocateRoleService } from '../../../services';
@@ -20,6 +27,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
   public ERROR_MESSAGE = ERROR_MESSAGE;
   @Input() public navEvent: AllocateRoleNavigation;
 
+  public error: any;
   public title = RoleAllocationTitleText.NonExclusionChoose;
   public caption: string = '';
   public optionsList: OptionsModel[];
@@ -34,6 +42,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
   public typeOfRole: SpecificRole;
 
   public roleCategory: string = '';
+  public jurisdiction: string;
 
   constructor(private readonly store: Store<fromFeature.State>,
               private readonly route: ActivatedRoute,
@@ -46,17 +55,19 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
     // 2. legalOps: add legal Ops role journey
     this.roleCategory = this.route.snapshot.queryParams && this.route.snapshot.queryParams.roleCategory ?
       this.route.snapshot.queryParams.roleCategory : '';
+    this.jurisdiction = this.route.snapshot.queryParams && this.route.snapshot.queryParams.jurisdiction ?
+      this.route.snapshot.queryParams.jurisdiction : '';
     const userTypePlaceHolder = this.roleCategory === RoleCategory.JUDICIAL ? PersonRole.JUDICIAL.toLowerCase() : PersonRole.CASEWORKER.toLowerCase();
     this.caption = `Allocate a ${userTypePlaceHolder} role`;
     this.allocateRoleStateDataSub = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(
       allocateRoleStateData => {
         this.typeOfRole = allocateRoleStateData.typeOfRole;
+        this.radioOptionControl = new FormControl(this.typeOfRole ? this.typeOfRole.name : '', [Validators.required]);
+        this.formGroup = new FormGroup({ [this.radioControlName]: this.radioOptionControl });
       }
     );
-    this.radioOptionControl = new FormControl(this.typeOfRole ? this.typeOfRole : '', [Validators.required]);
-    this.formGroup = new FormGroup({[this.radioControlName]: this.radioOptionControl});
-    this.allocateRoleService.getValidRoles().subscribe(roles =>
-        this.optionsList = this.getOptions(roles.filter(role => role.roleCategory === this.roleCategory)));
+    this.allocateRoleService.getValidRoles([this.jurisdiction]).subscribe(roles =>
+      this.optionsList = this.getOptions(roles.filter(role => role.roleCategory === this.roleCategory)));
   }
 
   public navigationHandler(navEvent: AllocateRoleNavigationEvent, roleCategory: RoleCategory, isLegalOpsOrJudicialRole: UserRole): void {
@@ -65,6 +76,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
       this.radioOptionControl.setErrors({
         invalid: true
       });
+      this.error = ERROR_MESSAGE;
       return;
     }
     this.dispatchEvent(navEvent, roleCategory, isLegalOpsOrJudicialRole);
@@ -79,6 +91,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
           id: roleOption ? roleOption.optionId : roleChosen,
           name: roleChosen
         };
+
         switch (roleCategory) {
           case RoleCategory.JUDICIAL: {
             switch (isLegalOpsOrJudicialRole) {
@@ -124,7 +137,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
   }
 
   public getOptions(roles: Role[]): OptionsModel[] {
-    return roles.map(role => ({optionId: role.roleId, optionValue: role.roleName}));
+    return roles.map(role => ({ optionId: role.roleId, optionValue: role.roleName }));
   }
 
   public ngOnDestroy(): void {

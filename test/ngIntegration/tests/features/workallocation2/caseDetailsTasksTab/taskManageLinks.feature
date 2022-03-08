@@ -1,19 +1,13 @@
 
-@ng  @wa2
-Feature: WA Release 2: Case details Tasks tab - Manage links
+@ng @integration_todo  
+Feature: WA Release 2: Case details Tasks tab - Manage links (@integration_todo)
 
     Feature Description
 
     Background: Mock setup
 
-        Given I set MOCK find persons database with persons
-            | email             | name          |
-            | Test12@justice.uk | test12 person |
-            | Test23@justice.uk | test23 person |
-            | Test34@justice.uk | test34 person |
-            | Test45@justice.uk | test45 person |
-
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,case-allocator" with reference "userDetails"
+      
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
             | true            | IA           | 12345           |
@@ -21,7 +15,7 @@ Feature: WA Release 2: Case details Tasks tab - Manage links
         Given I set MOCK case details "caseDetails" property "Jurisdiction" as "IA"
 
         Given I set MOCK case tasks with userDetails from reference "userDetails"
-            | task_title                                | assignee    | assigneeName | created_date | dueDate | permissions        | warnings | description                                                                             |
+            | task_title                                | assignee    | assigneeName | created_date | due_date | permissions        | warnings | description                                                                             |
             | Task 1                                    | thissession | Test user    | -10          | -1      | Own,Manage,Execute | true     | Click link to proceed to next step [test link next step](/case/case-details/${case_id}) |
             | Task 2                                    | someone     | Test 2 user  | -10          | 0       | Own,Manage,Execute | true     | Click link to proceed to next step [test link next step](/case/case-details/${case_id}) |
             | Task 3                                    |             |              | -10          | 1       | Own,Manage,Execute | true     |                                                                                         |
@@ -55,8 +49,9 @@ Feature: WA Release 2: Case details Tasks tab - Manage links
         Then I validate task tab active tasks displayed count 15
 
         When I click manage link "Assign to me" for task at position 7 in case details tasks tab
-        Then I see case details page with message banner "You've assigned task to yourself"
         Then I see case details tab label "Tasks" is displayed is "true"
+        Then I see case details page with message banner "You've assigned yourself a task"
+
     
     Scenario: Task manage link actions Reassign
 
@@ -76,17 +71,17 @@ Feature: WA Release 2: Case details Tasks tab - Manage links
 
         When I click manage link "Reassign" for task at position 7 in case details tasks tab
 
+        Then In workflow "Reassign task", I see select role type page displayed with header "Choose a role type"
+        Then In workflow "Reassign task", I see select role type page displayed with caption "Reassign task"
+        Then In workflow "Reassign task", I see select role type radio options "Legal Ops,Judicial"
+        Then In workflow "Reassign task", I select role type radio options "Legal Ops"
+        When In workflow "Reassign task", I click continue
 
         Then In workflow "Reassign task", I see find person page displayed with caption "Reassign task"
-        When In workflow "Reassign task", I enter search term "test" in find person input text
-        Then In workflow "Reassign task", I see following options available in find person results
-            | value             |
-            | Test12@justice.uk |
-            | Test23@justice.uk |
-            | Test34@justice.uk |
-            | Test45@justice.uk |
-        When In workflow "Reassign task", I select find person result "Test23@justice.uk"
-        Then In workflow "Reassign task", I see find person is selected with "Test23@justice.uk"
+        When In workflow "Reassign task", I enter search term "jane" in find person input text
+        
+        When In workflow "Reassign task", I select find person result "testemail0@testdomain.com"
+        Then In workflow "Reassign task", I see find person is selected with "testemail0@testdomain.com"
 
         When In workflow "Reassign task", I click continue
 
@@ -96,7 +91,7 @@ Feature: WA Release 2: Case details Tasks tab - Manage links
             | Case name        | Case category      | Location      |
             | Allwork test scr | auto test category | London QA lab |
 
-        Then I validate column "Person" value is set to "test23 person" in task check your changes page
+        Then I validate column "Person" value is set to "Jane 0 Doe" in task check your changes page
         When I click submit button "Reassign" in task check your changes page
         # Then I see navigation header tab page "My work"
         Then I see case details tab label "Tasks" is displayed is "true"

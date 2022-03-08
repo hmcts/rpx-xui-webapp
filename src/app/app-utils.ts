@@ -1,8 +1,8 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { FilterPersistence } from '@hmcts/rpx-xui-common-lib';
 import { AppConstants, JUDICIAL_ROLE_LIST, LEGAL_OPS_ROLE_LIST } from './app.constants';
-import { NavItemsModel } from './models/nav-item.model';
 import { Theme, UserTypeRole } from './models/theme.model';
+import { NavigationItem } from './models/theming.model';
 import { UserDetails, UserRole } from './models/user-details.model';
 
 export class AppUtils {
@@ -67,7 +67,7 @@ export class AppUtils {
   /**
    * Set the active property on the navigation items.
    */
-  public static setActiveLink(items: NavItemsModel[], currentUrl: string): NavItemsModel[] {
+  public static setActiveLink(items: NavigationItem[], currentUrl: string): NavigationItem[] {
     let fullUrl = false;
     let matchingUrl = '';
     [fullUrl, matchingUrl] = AppUtils.checkTabs(items, currentUrl);
@@ -85,7 +85,7 @@ export class AppUtils {
    * @param currentUrl - the url being tested
    * @return - a list including boolean stating whether the full url is given or the similar matching url
    */
-  public static checkTabs(items: NavItemsModel[], currentUrl: string): any[] {
+  public static checkTabs(items: NavigationItem[], currentUrl: string): any[] {
     let fullUrl = false;
     let maxLength = 0;
     let matchingUrl = '';
@@ -151,10 +151,10 @@ export class AppUtils {
   }
 
   public static isLegalOpsOrJudicial(userRoles: string[]): UserRole {
-    if (userRoles.some(userRole => LEGAL_OPS_ROLE_LIST.some(role => role === userRole))) {
-      return UserRole.LegalOps;
-    } else if (userRoles.some(userRole => JUDICIAL_ROLE_LIST.some(role => role === userRole))) {
+    if (userRoles.some(userRole => JUDICIAL_ROLE_LIST.some(role => role === userRole))) {
       return UserRole.Judicial;
+    } else if (userRoles.some(userRole => LEGAL_OPS_ROLE_LIST.some(role => role === userRole))) {
+      return UserRole.LegalOps;
     }
     return null;
   }
@@ -196,17 +196,17 @@ export class AppUtils {
       case 'Judicial':
         theme.appTitle.name = 'Judicial Case Manager';
         theme.backgroundColor = '#8d0f0e';
-        theme.logoType = 'judicial';
+        theme.logo = 'judicial';
         break;
       case 'LegalOps':
         theme.appTitle.name = 'Manage cases';
         theme.backgroundColor = '#202020';
-        theme.logoType = '';
+        theme.logo = '';
         break;
       case 'Solicitor':
         theme.appTitle.name = 'Manage cases';
         theme.backgroundColor = '#202020';
-        theme.logoType = 'myhmcts';
+        theme.logo = 'myhmcts';
         break;
     }
   }

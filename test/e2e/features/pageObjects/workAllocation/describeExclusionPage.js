@@ -36,6 +36,7 @@ class DescribeExclusionPage {
 
 
     async enterExclusionDescription(description){
+        await this.textArea.clear();
         await this.textArea.sendKeys(description);
     }
 

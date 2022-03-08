@@ -3,7 +3,7 @@ import {provideMockActions} from '@ngrx/effects/testing';
 import {cold, hot} from 'jasmine-marbles';
 import {of} from 'rxjs';
 import {Go} from '../../../app/store';
-import {PartyType, RequirementType} from '../../models/hearings.enum';
+import {MemberType, PartyType, RequirementType} from '../../models/hearings.enum';
 import {ServiceHearingValuesModel} from '../../models/serviceHearingValues.model';
 import {HearingsService} from '../../services/hearings.service';
 import * as hearingValuesActions from '../actions/hearing-values.action';
@@ -65,8 +65,8 @@ describe('Hearing Values Effects', () => {
         }],
         judiciaryPreferences: [
           {
-            memberID: '',
-            memberType: '',
+            memberID: 'p1000000',
+            memberType: MemberType.JUDGE,
             requirementType: RequirementType.EXCLUDE,
           },
         ],

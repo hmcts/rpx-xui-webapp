@@ -32,7 +32,7 @@ export const init = () => {
         || (location.court_address ? location.court_address.toLowerCase().includes(searchTerm.toLowerCase()) : false))
       .map(locationModel => toEpimsLocation(locationModel))
       .filter((locationByEPIMSModel, index, locationByEPIMSModelArray) =>
-        locationByEPIMSModelArray.findIndex(t => (t.epims_id === locationByEPIMSModel.epims_id)) === index);
+        locationByEPIMSModelArray.findIndex(t => (t.epimms_id === locationByEPIMSModel.epimms_id)) === index);
     return [
       200,
       searchResult,

@@ -3,7 +3,7 @@ import { Location as AngularLocation } from '@angular/common';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, DebugElement, ViewChild } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -181,27 +181,26 @@ describe('TaskListFilterComponent', () => {
     expect(component.allowTypesOfWorkFilter).toBe(true);
   });
 
-  it('should render filter with "Types of work" filter visible', () => {
-    component.toggleFilter = true;
+  it('should render filter with "Types of work" filter visible', fakeAsync(() => {
+    component.onToggleFilter(true);
     fixture.detectChanges();
-    const taskListFilters = fixture.debugElement.query(By.css('#taskListFilter'));
-    expect(taskListFilters.nativeElement).toBeTruthy();
-  });
+    tick(500);
+    const typesOfWorkParentDivElem = fixture.debugElement.query(By.css('#types-of-work')).parent;
+    const styles = getComputedStyle(typesOfWorkParentDivElem.nativeElement);
+    const displayProp = styles.getPropertyValue('display');
+    expect(displayProp).toEqual('block');
+  }));
 
-  it('should render filter with "Types of work" filter NOT visible', () => {
+  it('should render filter with "Types of work" filter NOT visible', fakeAsync(() => {
     component.allowTypesOfWorkFilter = false;
-    component.toggleFilter = true;
+    component.onToggleFilter(false);
     fixture.detectChanges();
-    const taskListFilters = fixture.debugElement.query(By.css('#taskListFilterNoTypeOfWorkFilter'));
-    expect(taskListFilters.nativeElement).toBeTruthy();
-  });
-
-  it('should create a copy of the fieldsConfig property without types of work filters', () => {
-    const fieldsConfigAlt = component.fieldsConfigAlt;
-    const typesOfWorkKey = 'types-of-work';
-    expect(fieldsConfigAlt.fields.hasOwnProperty(typesOfWorkKey)).toBe(false);
-    expect(fieldsConfigAlt.cancelSetting.fields.hasOwnProperty(typesOfWorkKey)).toBe(false);
-  });
+    tick(500);
+    const typesOfWorkParentDivElem = fixture.debugElement.query(By.css('#types-of-work')).parent;
+    const styles = getComputedStyle(typesOfWorkParentDivElem.nativeElement);
+    const displayProp = styles.getPropertyValue('display');
+    expect(displayProp).toEqual('none');
+  }));
 
   afterAll(() => {
     component.ngOnDestroy();

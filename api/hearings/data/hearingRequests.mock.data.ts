@@ -111,7 +111,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       versionNumber: 1,
     },
     hearingDetails: {
-      duration: 45,
+      duration: 50,
       hearingType: 'final',
       hearingLocations: [
         {
@@ -213,7 +213,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       versionNumber: 1,
     },
     hearingDetails: {
-      duration: 45,
+      duration: 55,
       hearingType: 'final',
       hearingLocations: [
         {
@@ -296,7 +296,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listAssistTransactionID: '123456789',
       receivedDateTime: '2021-11-30T09:00:00.000+0000',
       responseVersion: 0,
-      laCaseStatus: LaCaseStatus.AWAITING_LISTING,
+      laCaseStatus: LaCaseStatus.LISTED,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
       hearingDaySchedule: {
@@ -315,7 +315,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       versionNumber: 1,
     },
     hearingDetails: {
-      duration: 45,
+      duration: 60,
       hearingType: 'final',
       hearingLocations: [
         {
@@ -398,7 +398,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listAssistTransactionID: '123456789',
       receivedDateTime: '2021-11-30T09:00:00.000+0000',
       responseVersion: 0,
-      laCaseStatus: LaCaseStatus.AWAITING_LISTING,
+      laCaseStatus: LaCaseStatus.PENDING_RELISTING,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
       hearingDaySchedule: {
@@ -417,7 +417,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       versionNumber: 1,
     },
     hearingDetails: {
-      duration: 45,
+      duration: 65,
       hearingType: 'final',
       hearingLocations: [
         {
@@ -519,7 +519,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       versionNumber: 1,
     },
     hearingDetails: {
-      duration: 45,
+      duration: 70,
       hearingType: 'final',
       hearingLocations: [
         {
@@ -602,7 +602,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       listAssistTransactionID: '123456789',
       receivedDateTime: '2021-11-30T09:00:00.000+0000',
       responseVersion: 0,
-      laCaseStatus: LaCaseStatus.AWAITING_LISTING,
+      laCaseStatus: LaCaseStatus.CASE_CLOSED,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
       hearingDaySchedule: {

@@ -51,6 +51,8 @@ describe('Hearing List Effects', () => {
         hearingListingStatus: HearingListingStatusEnum.AWAITING_LISTING,
         listAssistCaseStatus: 'pending',
         exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+        hearingIsLinkedFlag: true,
+        hearingGroupRequestId: null,
         hearingDaySchedule: [HEARING_DAY_SCHEDULE_1],
       };
       const HEARINGS_LIST: HearingListMainModel = {

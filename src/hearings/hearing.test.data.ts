@@ -1,7 +1,17 @@
-import { HearingActualsMainModel } from './models/hearingActualsMainModel';
-import { HearingRequestMainModel } from './models/hearingRequestMain.model';
-import { CategoryType, HearingListingStatusEnum, HearingResult, HMCStatus, LaCaseStatus, ListingStatus, PartyType } from './models/hearings.enum';
-import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
+import {HearingActualsMainModel} from './models/hearingActualsMainModel';
+import {HearingRequestMainModel} from './models/hearingRequestMain.model';
+import {
+  CategoryType,
+  HearingListingStatusEnum,
+  HearingResult,
+  HMCStatus,
+  LaCaseStatus,
+  ListingStatus,
+  MemberType,
+  PartyType,
+  RequirementType
+} from './models/hearings.enum';
+import {ServiceHearingValuesModel} from './models/serviceHearingValues.model';
 
 export const hearingStageRefData = [
   {
@@ -1011,9 +1021,9 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
     ],
     judiciaryPreferences: [
       {
-        memberID: '',
-        memberType: '',
-        requirementType: 'EXCLUDE'
+        memberID: 'p1000000',
+        memberType: MemberType.JUDGE,
+        requirementType: RequirementType.EXCLUDE
       }
     ],
     judiciarySpecialisms: [
@@ -1455,6 +1465,8 @@ export const initialState = {
           responseVersion: 'rv1',
           hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
           listAssistCaseStatus: '',
+          hearingIsLinkedFlag: true,
+          hearingGroupRequestId: null,
           hearingDaySchedule: null,
         }]
       }
@@ -1579,7 +1591,7 @@ export const initialState = {
             hearingEndDateTime: '',
             listAssistSessionID: '',
             hearingVenueId: '',
-            hearingRoomId: '',
+            hearingRoomId: 'room 3',
             hearingPanel: []
           }
         },

@@ -11,7 +11,6 @@ import { router as serviceRefDataRouter } from './serviceRefData';
 import { router as waSupportedJurisdictionRouter } from './waSupportedJurisdictions';
 import roleAccessRouter from './roleAccess/routes';
 import userRouter from './user/routes';
-import { router as locationsRouter } from './locations/routes';
 
 const router = express.Router({mergeParams: true});
 

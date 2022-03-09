@@ -1,5 +1,5 @@
 
-@ng @integration_todo 
+@ng 
 Feature: WA Release 2: Case details Tasks tab
 
     Requirements from
@@ -127,6 +127,8 @@ Feature: WA Release 2: Case details Tasks tab
             | Priority     | <PriorityIsDisplayed>    |             | LOW          |
             | Due date     | <DuedateIsDisplayed>     |             | 1            |
             | Assigned to  | true                     |             |              |
+            | Manage       | true                     | link        | Mark as done |
+            | Manage       | true                     | link        | Assign task  |
             | Manage       | true                     | link        | Assign to me |
             | Manage       | true                     | link        | Assign       |
             | Next steps   | false                    |             |              |
@@ -159,15 +161,18 @@ Feature: WA Release 2: Case details Tasks tab
             | Next steps   | true                     |             |               |
 
         Then I validate task tab active task at position 7 with task name "7 Permissions OME assigned to someother" has attributes
-            | name         | isDisplayed              | contentType | text         |
-            | Task created | <TaskcreatedIsDisplayed> |             | -10          |
-            | Priority     | <PriorityIsDisplayed>    |             | LOW          |
-            | Due date     | <DuedateIsDisplayed>     |             | 10           |
-            | Assigned to  | true                     |             | Test 3 user  |
-            | Manage       | true                     | link        | Assign to me |
-            | Manage       | true                     | link        | Reassign     |
-            | Manage       | true                     | link        | Unassign     |
-            | Next steps   | false                    |             |              |
+            | name         | isDisplayed              | contentType | text          |
+            | Task created | <TaskcreatedIsDisplayed> |             | -10           |
+            | Priority     | <PriorityIsDisplayed>    |             | LOW           |
+            | Due date     | <DuedateIsDisplayed>     |             | 10            |
+            | Assigned to  | true                     |             | Test 3 user   |
+            | Manage       | true                     | link        | Assign to me  |
+            | Manage       | true                     | link        | Reassign task |
+            | Manage       | true                     | link        | Unassign task |
+            | Manage       | true                     | link        | Mark as done  |
+            | Manage       | true                     | link        | Reassign      |
+            | Manage       | true                     | link        | Unassign      |
+            | Next steps   | false                    |             |               |
 
         Then I validate task tab active task at position 8 with task name "8 Permissions OME unassigned" has attributes
             | name         | isDisplayed              | contentType | text         |
@@ -183,20 +188,19 @@ Feature: WA Release 2: Case details Tasks tab
             | Priority     | <PriorityIsDisplayed>    |             | LOW           |
             | Due date     | <DuedateIsDisplayed>     |             | 10            |
             | Assigned to  | true                     |             | XUI test auto |
-            | Manage       | true                     | link        | Reassign      |
-            | Manage       | true                     | link        | Unassign      |
+            | Manage       | true                     | link        | Mark as done  |
             | Next steps   | true                     |             |               |
 
         Then I validate task tab active task at position 10 with task name "10 Permissions ME assigned to someother" has attributes
-            | name         | isDisplayed              | contentType | text         |
-            | Task created | <TaskcreatedIsDisplayed> |             | -10          |
-            | Priority     | <PriorityIsDisplayed>    |             | LOW          |
-            | Due date     | <DuedateIsDisplayed>     |             | 10           |
-            | Assigned to  | true                     |             | Test 4 user  |
-            | Manage       | true                     | link        | Assign to me |
-            | Manage       | true                     | link        | Reassign     |
-            | Manage       | true                     | link        | Unassign     |
-            | Next steps   | false                    |             |              |
+            | name         | isDisplayed              | contentType | text          |
+            | Task created | <TaskcreatedIsDisplayed> |             | -10           |
+            | Priority     | <PriorityIsDisplayed>    |             | LOW           |
+            | Due date     | <DuedateIsDisplayed>     |             | 10            |
+            | Assigned to  | true                     |             | Test 4 user   |
+            | Manage       | true                     | link        | Reassign task |
+            | Manage       | true                     | link        | Unassign task |
+            | Manage       | true                     | link        | Mark as done  |
+            | Next steps   | false                    |             |               |
 
         Then I validate task tab active task at position 11 with task name "11 Permissions ME unassigned" has attributes
             | name         | isDisplayed              | contentType | text         |
@@ -223,7 +227,7 @@ Feature: WA Release 2: Case details Tasks tab
             | Priority     | <PriorityIsDisplayed>    |             | LOW        |
             | Due date     | <DuedateIsDisplayed>     |             | 10         |
             | Assigned to  | true                     |             | Unassigned |
-            | Manage       | false                    |             |            |
+            | Manage       | true                    |             |            |
             | Next steps   | false                    |             |            |
 
         Then I validate task tab active task at position 14 with task name "14 Permissions none assigned to someother" has attributes

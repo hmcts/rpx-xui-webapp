@@ -16,7 +16,7 @@ describe('StatusAnswerConverter', () => {
   it('should transform type from request', () => {
     const STATE: State = initialState.hearings;
     const result$ = statusAnswerConverter.transformAnswer(of(STATE));
-    const type = LaCaseStatus.AWAITING_LISTING;
+    const type = LaCaseStatus.LISTED;
     const expected = cold('(b|)', { b: type });
     expect(result$).toBeObservable(expected);
   });

@@ -8,7 +8,9 @@ import { AnswerConverter } from '../converters/answer.converter';
 import { CaseFlagAnswerConverter } from '../converters/case-flag.answer.converter';
 import { CaseNameAnswerConverter } from '../converters/case-name.answer.converter';
 import { CaseNumberAnswerConverter } from '../converters/case-number.answer.converter';
+import { DateRequestSubmittedTimeAnswerConverter } from '../converters/date-request-submitted-time.answer.converter';
 import { DateRequestSubmittedAnswerConverter } from '../converters/date-request-submitted.answer.converter';
+import { DateResponseReceivedAnswerConverter } from '../converters/date-response-received.answer.converter';
 import { DefaultAnswerConverter } from '../converters/default.answer.converter';
 import { HearingLengthAnswerConverter } from '../converters/hearing-length.answer.converter';
 import { HearingPanelAnswerConverter } from '../converters/hearing-panel.answer.converter';
@@ -17,6 +19,7 @@ import { HearingSpecificDateAnswerConverter } from '../converters/hearing-specif
 import { JudgeExclusionAnswerConverter } from '../converters/judge-exclusion.answer.converter';
 import { JudgeNameAnswerConverter } from '../converters/judge-name.answer.converter';
 import { JudgeTypesAnswerConverter } from '../converters/judge-types.answer.converter';
+import { JudicialMembersAnswerConverter } from '../converters/judicial-members.answer.converter';
 import { NeedJudgeAnswerConverter } from '../converters/need-judge.answer.converter';
 import { NeedWelshAnswerConverter } from '../converters/need-welsh.answer.converter';
 import { NumberOfAttendancesAnswerConverter } from '../converters/number-of-attendances-answer.converter';
@@ -24,6 +27,7 @@ import { PanelExclusionAnswerConverter } from '../converters/panel-exclusion.ans
 import { PanelInclusionAnswerConverter } from '../converters/panel-inclusion.answer.converter';
 import { PanelRolesAnswerConverter } from '../converters/panel-roles.answer.converter';
 import { PartyChannelsAnswerConverter } from '../converters/party-channels-answer.converter';
+import { RoomIdAnswerConverter } from '../converters/room-id.answer.converter';
 import { StageAnswerConverter } from '../converters/stage.answer.converter';
 import { StatusAnswerConverter } from '../converters/status.answer.converter';
 import { TypeFromRequestAnswerConverter } from '../converters/type-from-request.answer.converter';
@@ -57,6 +61,12 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.DATE_REQUEST_SUBMITTED:
         converter = new DateRequestSubmittedAnswerConverter();
+        break;
+      case AnswerSource.DATE_REQUEST_SUBMITTED_TIME:
+        converter = new DateRequestSubmittedTimeAnswerConverter();
+        break;
+      case AnswerSource.DATE_RESPONSE_RECEIVED:
+        converter = new DateResponseReceivedAnswerConverter();
         break;
       case AnswerSource.TYPE_FROM_REQUEST:
         converter = new TypeFromRequestAnswerConverter();
@@ -96,6 +106,12 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.HEARING_PRIORITY:
         converter = new HearingPriorityAnswerConverter(this.route);
+        break;
+      case AnswerSource.ROOM_ID:
+        converter = new RoomIdAnswerConverter();
+        break;
+      case AnswerSource.JUDICIAL_MEMBERS:
+        converter = new JudicialMembersAnswerConverter(this.route);
         break;
       case AnswerSource.NEED_JUDGE:
         converter = new NeedJudgeAnswerConverter();

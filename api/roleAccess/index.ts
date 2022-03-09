@@ -43,7 +43,7 @@ export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next
       }
     });
     // TODO: Remove mocked Admin roles after testing
-    return res.status(response.status).send(finalRoles.concat(mockAdminRoles));
+    return res.status(response.status).send(finalRoles);
   } catch (error) {
     next(error);
   }

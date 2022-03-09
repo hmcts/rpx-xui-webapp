@@ -16,7 +16,8 @@ import { prepareGetLocationsUrl } from '../workAllocation2/util';
 
 mock.init();
 
-const url: string = getConfigValue(SERVICES_PRD_API_URL);
+// const url: string = getConfigValue(SERVICES_PRD_API_URL);
+// TODO: CAM_BOOKING - check this
 const url: string = getConfigValue(SERVICES_LOCATION_API_PATH);
 
 /**

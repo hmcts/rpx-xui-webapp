@@ -12,24 +12,18 @@ import { requireReloaded } from '../utils/moduleUtil';
 const { Matchers } = require('@pact-foundation/pact');
 import { DateTimeMatcher } from '../utils/matchers';
 const { somethingLike, iso8601DateTime, term } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'rd_locations_ref_api_get_locations', port: 8000 });
+const pactSetUp = new PactTestSetup({ provider: 'referenceData_location', port: 8000 });
 
 const serviceCode = "BFA1";
 describe("Locations ref data api, get all locations for service", () => {
 
-
     const RESPONSE_BODY = {
         "court_venues": [
            {
-                "is_case_management_location": 'Y',
-                "epimms_id": '1234',
-                "site_name": 'test loc 1'
-           },
-            {
-                "is_case_management_location": 'Y',
-                "epimms_id": '1235',
-                "site_name": 'test loc 2'
-            },
+                "is_case_management_location": somethingLike('Y'),
+                "epimms_id": somethingLike('12345'),
+                "site_name": somethingLike('siteName1')
+           }
         ]
     };
 
@@ -43,8 +37,8 @@ describe("Locations ref data api, get all locations for service", () => {
         before(async () => {
             await pactSetUp.provider.setup()
             const interaction = {
-                state: "returned list of locations",
-                uponReceiving: "get list of locations",
+                state: "Court Venues exist for the service code provided",
+                uponReceiving: "get list of court venues for given service code",
                 withRequest: {
                     method: "GET",
                     path: `/refdata/location/court-venues/services`,
@@ -113,9 +107,8 @@ describe("Locations ref data api, get all locations for service", () => {
 })
 
 function assertResponses(dto: any) {
-    expect(dto[0].id).to.be.equal("1234");
-    expect(dto[0].locationName).to.be.equal("test loc 1");
-    expect(dto[1].id).to.be.equal("1235");
-    expect(dto[1].locationName).to.be.equal("test loc 2");
+    expect(dto[0].id).to.be.equal("12345");
+    expect(dto[0].locationName).to.be.equal("siteName1");
+   
 }
 

@@ -29,8 +29,11 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public hearingTypes: LovRefDataModel[];
   public adjournHearingActualReasons: LovRefDataModel[];
   public cancelHearingActualReasons: LovRefDataModel[];
+  public hearingResult: string;
   public hearingTypeDescription: string;
   public hearingResultReasonTypeDescription: string;
+  public validationErrors: { id: string, message: string }[] = [];
+  public submitted = false;
   public sub: Subscription;
   public id: string;
 
@@ -56,6 +59,8 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
           ? hearingActualsMainModel.hearingActuals.actualHearingDays[0] : null;
         this.actualDayParties = hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0
           ? hearingActualsMainModel.hearingActuals.actualHearingDays.map(x => x.actualDayParties[0]) : [];
+        this.hearingResult = this.hearingOutcome && this.hearingOutcome.hearingResult
+          ? this.hearingOutcome.hearingResult : '';
         this.hearingTypeDescription = this.getHearingTypeDescription(this.hearingOutcome.hearingType);
         this.hearingResultReasonTypeDescription = this.getHearingResultReasonTypeDescription(this.hearingOutcome);
         this.hearingActualsMainModel = hearingActualsMainModel;
@@ -71,6 +76,26 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public onBack(): void {
     this.hearingsService.navigateAction(ACTION.BACK);
   }
+
+  public onSubmitHearingDetails(): void {
+    this.submitted = true;
+		if (this.isValid()) {
+			this.hearingStore.dispatch(new fromHearingStore.SubmitHearingActuals(this.id));
+		}
+  }
+
+	private isValid(): boolean {
+		this.validationErrors = [];
+		if (this.hearingResult === '') {
+			this.validationErrors.push({
+				id: 'hearing-stage-result-update-link',
+				message: 'Enter a hearing result'
+			});
+			window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+			return false;
+		}
+		return true;
+	}
 
   public getRepresentingAttendee(partyId: number): string {
     const party: PartyModel = this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties.find(x => x.partyId === partyId.toString());

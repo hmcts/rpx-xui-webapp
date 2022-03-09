@@ -31,7 +31,7 @@
                   <input class="govuk-radios__input" id="completed" formName="hearingResult" name="hearingResult"
                     type="radio" value="completed" data-aria-controls="conditional-completed" (change)="onHearingResult(hearingResultEnum.COMPLETED)">
                   <label class="govuk-label govuk-radios__label" for="completed">
-                    Heard, order or decision
+                    Heard
                   </label>
                 </div>
                 <div class="govuk-radios__item">
@@ -54,7 +54,7 @@
                   <input class="govuk-radios__input" id="cancelled" formName="hearingResult" name="hearingResult"
                     type="radio" value="cancelled" data-aria-controls="conditional-cancelled" (change)="onHearingResult(hearingResultEnum.CANCELLED)">
                   <label class="govuk-label govuk-radios__label" for="cancelled">
-                    Withdrawn, cancelled or vacated
+                    Withdrawn, settled or vacated
                   </label>
                 </div>
                 <div class="govuk-radios__conditional" *ngIf="hearingResultType === hearingResultEnum.CANCELLED">

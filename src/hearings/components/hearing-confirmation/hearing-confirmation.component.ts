@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { HearingConfirmationSource } from 'src/hearings/models/hearings.enum';
 
 @Component({
   selector: 'exui-hearing-confirmation',
@@ -12,4 +13,9 @@ export class HearingConfirmationComponent {
   @Input() public subheading: string;
   @Input() public subheadingDescription: string;
   @Input() public additionalDescription: string;
+  @Input() public hearingConfirmationSource: HearingConfirmationSource;
+
+  public get hearingConfirmationSourceEnum() {
+    return HearingConfirmationSource;
+  }
 }

@@ -5,7 +5,7 @@ export const HEARING_ACTUAL: HearingActualsMainModel = {
   hearingActuals: {
     hearingOutcome: {
       hearingFinalFlag: false,
-      hearingResult: HearingResult.CANCELLED,
+      hearingResult: null,
       hearingResultDate: '2019-01-01',
       hearingResultReasonType: '',
       hearingType: 'final',

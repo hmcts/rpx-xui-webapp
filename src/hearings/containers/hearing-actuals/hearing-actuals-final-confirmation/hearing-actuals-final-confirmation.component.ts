@@ -4,10 +4,10 @@ import { HearingConfirmationSource } from 'src/hearings/models/hearings.enum';
 import * as fromHearingStore from '../../../store';
 
 @Component({
-  selector: 'exui-hearing-final-confirmation',
-  templateUrl: './hearing-final-confirmation.component.html'
+  selector: 'exui-hearing-actuals-final-confirmation',
+  templateUrl: './hearing-actuals-final-confirmation.component.html'
 })
-export class HearingFinalConfirmationComponent implements OnInit {
+export class HearingActualsFinalConfirmationComponent implements OnInit {
 
   public heading: string;
   public headingDescription: string;
@@ -27,11 +27,8 @@ export class HearingFinalConfirmationComponent implements OnInit {
     this.hearingStore.pipe(select(fromHearingStore.getHearingList)).subscribe(
       hearingList => {
         this.caseId = hearingList.hearingListMainModel ? hearingList.hearingListMainModel.caseRef : '';
-        this.heading = 'Hearing request submitted';
-        this.headingDescription = 'Your hearing request will now be processed';
+        this.heading = 'You have successfully submitted the hearing details.';
         this.subheading = 'What happens next';
-        this.additionalDescription = `If the hearing cannot be listed automatically, it will be sent to a member of staff to be processed.<br>
-          A notice of hearing will be issued once the hearing is listed, you will not be notified of the listing.`;
       });
   }
 }

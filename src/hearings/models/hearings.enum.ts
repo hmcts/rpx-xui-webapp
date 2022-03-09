@@ -273,3 +273,8 @@ export enum HearingResult {
   ADJOURNED = 'ADJOURNED',
   CANCELLED = 'CANCELLED',
 }
+
+export enum HearingConfirmationSource {
+  REQUEST,
+  ACTUALS
+}

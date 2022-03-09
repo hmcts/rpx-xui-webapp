@@ -1,4 +1,4 @@
-@ng  @wa2
+@ng @test
 Feature: WA Release 2: Exclusion workflow - Change links
 
     Background: Setup
@@ -15,7 +15,7 @@ Feature: WA Release 2: Exclusion workflow - Change links
             | Admin    | 1236 | admin_user2@gov.uk      | admin2 a       | Case worker   |
 
     Scenario Outline: Roles and access - "<Useridentifier>" - Exclusion work flow with option "Exclude another person"
-        Given I set MOCK with user "<Useridentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<Useridentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
 
 
         Given I start MockApp
@@ -39,7 +39,6 @@ Feature: WA Release 2: Exclusion workflow - Change links
         Then I see following options returned to Select in Find person search result of exclusions work flow
             | Person              |
             | <findPersonResult1> |
-            | <findPersonResult2> |
         When I select Person "<findPersonResult1>" from Find person search result in exclusions work flow
         When I click continue in add exclusion work flow page "Find the person"
         Then I see Add an exclusion work flow page "Describe the exclusion" is displayed
@@ -66,9 +65,10 @@ Feature: WA Release 2: Exclusion workflow - Change links
         When I search with text "<findPersonSearchWith>" in Find the person page of exclusion work flow
         Then I see following options returned to Select in Find person search result of exclusions work flow
             | Person              |
-            | <findPersonResult1> |
             | <findPersonResult2> |
-        When I select Person "<findPersonResult1>" from Find person search result in exclusions work flow
+        When I select Person "<findPersonResult2>" from Find person search result in exclusions work flow
+        Then I see Person "<findPersonSearchWith>" is selected in Find person exclusions work flow
+
         When I click continue in add exclusion work flow page "Find the person"
         Then I see Add an exclusion work flow page "Describe the exclusion" is displayed
         When I enter description "<ExclusionDescription>" in add exclusion Describe the exclusion page
@@ -79,7 +79,7 @@ Feature: WA Release 2: Exclusion workflow - Change links
             | Question                 | Answer                 |
             | Who is the exclusion for | Exclude another person |
             | What's the person's role | <ExclusionRole>        |
-            | Person                   | <findPersonResult1>    |
+            | Person                   | <findPersonResult2>    |
             | Describe the exclusion   | <ExclusionDescription> |
 
 
@@ -92,8 +92,9 @@ Feature: WA Release 2: Exclusion workflow - Change links
         Then I see following options returned to Select in Find person search result of exclusions work flow
             | Person              |
             | <findPersonResult1> |
-            | <findPersonResult2> |
         When I select Person "<findPersonResult1>" from Find person search result in exclusions work flow
+        Then I see Person "<findPersonSearchWith>" is selected in Find person exclusions work flow
+
         When I click continue in add exclusion work flow page "Find the person"
         Then I see Add an exclusion work flow page "Describe the exclusion" is displayed
         When I enter description "<ExclusionDescription>" in add exclusion Describe the exclusion page
@@ -111,11 +112,10 @@ Feature: WA Release 2: Exclusion workflow - Change links
         When I click change link for question "Person" in check your answers page
         Then I see Add an exclusion work flow page "Find the person" is displayed
         When I search with text "<findPersonSearchWith>" in Find the person page of exclusion work flow
-        Then I see following options returned to Select in Find person search result of exclusions work flow
-            | Person              |
-            | <findPersonResult1> |
-            | <findPersonResult2> |
-        When I select Person "<findPersonResult1>" from Find person search result in exclusions work flow
+
+        Then I see Person "<findPersonSearchWith>" is selected in Find person exclusions work flow
+
+        When I select Person "<findPersonResult2>" from Find person search result in exclusions work flow
         When I click continue in add exclusion work flow page "Find the person"
         Then I see Add an exclusion work flow page "Describe the exclusion" is displayed
         When I enter description "<ExclusionDescription>" in add exclusion Describe the exclusion page
@@ -148,7 +148,7 @@ Feature: WA Release 2: Exclusion workflow - Change links
 
 
         Examples:
-            | Useridentifier     | Roles                                              | ExclusionRole | findPersonSearchWith | findPersonResult1  | findPersonResult2  | ExclusionDescription         |
-            | IAC_CaseOfficer_R2 | caseworker-ia-caseofficer,caseworker-ia-admofficer | Judicial      | Judge                | judge_user1@gov.uk | judge_user2@gov.uk | Judicial role user exclusion |
-# | IAC_Judge_WA_R2    | caseworker-ia-iacjudge,caseworker-ia,caseworker    | Legal Ops     | caseworker           | caseworker_user1@gov.uk | caseworker_user2@gov.uk | caseworker role user exclusion |
-# | IAC_CaseOfficer_R2 | caseworker-ia-caseofficer,caseworker-ia-admofficer | Admin         | admin                | admin_user1@gov.uk      | admin_user2@gov.uk      | admin role user exclusion      |
+            | Useridentifier     | Roles                                                            | ExclusionRole | findPersonSearchWith | findPersonResult1  | findPersonResult2  | ExclusionDescription         |
+            | IAC_CaseOfficer_R2 | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer | Judicial      | user                | judge_user1@gov.uk | judge_user2@gov.uk | Judicial role user exclusion |
+# | IAC_Judge_WA_R2    | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker    | Legal Ops     | caseworker           | caseworker_user1@gov.uk | caseworker_user2@gov.uk | caseworker role user exclusion |
+# | IAC_CaseOfficer_R2 | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer | Admin         | admin                | admin_user1@gov.uk      | admin_user2@gov.uk      | admin role user exclusion      |

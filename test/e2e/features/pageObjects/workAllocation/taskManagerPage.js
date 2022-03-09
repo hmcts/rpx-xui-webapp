@@ -16,8 +16,8 @@ class TaskManagerPage extends TaskList{
 
     async amOnPage(){
         try{
-            await BrowserWaits.waitForElement(this.taskManagerlist); 
             await BrowserWaits.waitForSpinnerToDissappear();
+            await BrowserWaits.waitForElement(this.taskManagerlist); 
             return true;
         }catch(err){
             console.log("Task manager page not displayed : "+err);

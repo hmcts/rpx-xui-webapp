@@ -12,7 +12,7 @@ export class NocDateFieldComponent extends AbstractFieldWriteComponent implement
   public dateControl: FormControl;
   public dateGroup: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private readonly formBuilder: FormBuilder) {
     super();
   }
 

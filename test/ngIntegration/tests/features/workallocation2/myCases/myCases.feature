@@ -1,11 +1,11 @@
-@ng  @wa2  @wa2 @wa 
+@ng  @wa2 @wa 
 Feature: WA Release 2: My cases
 
     Background: Mock and browser setup
         Given I init MockApp
 
     Scenario Outline:  My cases, colums and column links for "<UserType>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I start MockApp
         Given I navigate to home page
         When I navigate to My work sub navigation tab "My cases"
@@ -13,7 +13,7 @@ Feature: WA Release 2: My cases
         Then I validate work allocation cases table columns displayed
             | ColumnHeader  |
             | Case name     |
-            | Jurisdiction  |
+            | Service  |
             | Case category |
             | Case role     |
             | Start         |
@@ -31,13 +31,13 @@ Feature: WA Release 2: My cases
             | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
     Scenario Outline: My cases pagnation control display with only 1 page of items
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK workallocation cases with permissions for view "My cases"
             | Roles          | Count |
-            | case-allocator | 10    |
-            |                | 10    |
+            | case-allocator | 10 |
+            | case-allocator | 10 |
 
-        Given I set MOCK request "/workallocation2/my-cases/" intercept with reference "taskSearchRequest"
+        Given I set MOCK request "/workallocation2/my-work/cases/" intercept with reference "taskSearchRequest"
         Given I start MockApp
 
         Given I navigate to home page

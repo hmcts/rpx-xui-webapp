@@ -14,7 +14,7 @@ properties([
 @Library("Infrastructure")
 
 def type      = "nodejs"
-def product   = "xui"
+def product   = "rpx"
 def component = "webapp"
 def channel   = '#xui-pipeline'
 
@@ -22,8 +22,8 @@ def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
-
-    enableFullFunctionalTest(30)
+    enableFortifyScan()
+    enableFullFunctionalTest(120)
     //enableSecurityScan()
     enableMutationTest()
     enableCrossBrowserTest()
@@ -63,6 +63,10 @@ withNightlyPipeline(type, product, component) {
             reportFiles          : 'Report.html',
             reportName           : 'Manage Cases a11y Test Report'
         ])
+    }
+
+    after('fortify-scan') {
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
     }
 
     after('fullFunctionalTest') {

@@ -1,6 +1,7 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import {By} from '@angular/platform-browser';
 import {ActivatedRoute} from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import {provideMockStore} from '@ngrx/store/testing';
@@ -215,6 +216,32 @@ describe('HearingViewEditSummaryComponent', () => {
 
   it('getRole should return the provided key if role not found', () => {
     expect(component.getRole('test')).toEqual('test');
+  });
+
+  it('should add a new FormGroup to the FormArray', () => {
+    const addBtn = fixture.debugElement.query(By.css('.btn-add'));
+
+    expect(component.parties.get([component.parties.length - 1]).value)
+      .not.toEqual(jasmine.objectContaining({ firstName: '', lastName: '', isParty: false }));
+
+    addBtn.nativeElement.click();
+    fixture.detectChanges();
+    expect(component.parties.get([component.parties.length - 1]).value)
+      .toEqual(jasmine.objectContaining({ firstName: '', lastName: '', isParty: false }));
+  });
+
+  it('should remove a FormGroup from the FormArray', () => {
+    expect(component.parties.length).toEqual(4);
+    const removeBtn = fixture.debugElement.query(By.css('.btn-remove:last-child'));
+    removeBtn.nativeElement.click();
+    fixture.detectChanges();
+    expect(component.parties.length).toEqual(3);
+  });
+
+  it('submit form should prevent default', () => {
+    const event = jasmine.createSpyObj(['preventDefault']);
+    component.submitForm(event);
+    expect(event.preventDefault).toHaveBeenCalled();
   });
 
   afterEach(() => {

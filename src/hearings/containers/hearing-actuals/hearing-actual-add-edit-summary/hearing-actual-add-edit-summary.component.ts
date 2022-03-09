@@ -11,7 +11,7 @@ import {
   PartyModel
 } from '../../../models/hearingActualsMainModel';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
-import { ACTION, HearingResult } from '../../../models/hearings.enum';
+import { ACTION, HearingActualAddEditSummaryEnum, HearingResult } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
@@ -43,6 +43,10 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     this.hearingTypes = this.route.snapshot.data.hearingTypes;
     this.adjournHearingActualReasons = this.route.snapshot.data.adjournHearingActualReasons;
     this.cancelHearingActualReasons = this.route.snapshot.data.cancelHearingActualReasons;
+  }
+
+  public get hearingActualAddEditSummaryEnum() {
+    return HearingActualAddEditSummaryEnum;
   }
 
   public ngOnInit(): void {
@@ -115,7 +119,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     if (this.hearingResult === '') {
       this.validationErrors.push({
         id: 'hearing-stage-result-update-link',
-        message: 'Enter a hearing result'
+        message: this.hearingActualAddEditSummaryEnum.HearingResultError
       });
       window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
       return false;

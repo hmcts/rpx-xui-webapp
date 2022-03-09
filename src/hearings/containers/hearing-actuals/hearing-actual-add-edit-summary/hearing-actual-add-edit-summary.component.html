@@ -20,7 +20,7 @@
             class="govuk-link">Update</a>
         </span>
         <div class="govuk-error-message" *ngIf="submitted && hearingResult === ''">
-          Enter a hearing result
+          {{hearingActualAddEditSummaryEnum.HearingResultError}}
         </div>
         <div [ngClass]="{'govuk-form-group govuk-form-group--error': submitted && hearingResult === ''}">
           <dl class="govuk-summary-list">

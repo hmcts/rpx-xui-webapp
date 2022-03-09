@@ -16,7 +16,7 @@
         </div>
 				<div class="govuk-body" *ngIf="caseId && hearingConfirmationSource === hearingConfirmationSourceEnum.ACTUALS">
           You can <a href="javascript:void(0)"
-            [routerLink]="['/', 'cases', 'case-details', caseId, 'hearings']" class="govuk-link">view the status of this hearing in the hearings tab</a>
+            [routerLink]="['/', 'cases', 'case-details', caseId, 'hearings']" class="govuk-link">view the status of this hearing in the hearings tab</a>.
         </div>
         <div class="govuk-body" *ngIf="additionalDescription"
           [innerHtml]="additionalDescription"></div>

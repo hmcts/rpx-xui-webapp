@@ -286,6 +286,10 @@ export enum HearingResult {
   CANCELLED = 'CANCELLED',
 }
 
+export enum HearingActualAddEditSummaryEnum {
+  HearingResultError = 'Enter a hearing result'
+}
+
 export enum HearingConfirmationSource {
   REQUEST,
   ACTUALS

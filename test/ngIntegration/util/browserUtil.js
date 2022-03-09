@@ -15,7 +15,7 @@ const axiosOptions = {
 axios.defaults.withCredentials = true;
 
 const http = axios.create(axiosOptions);
-
+const nodeAppMockData = require('../../nodeMock/nodeApp/mockData'); 
 class BrowserUtil{
 
     async gotoHomePage(){
@@ -59,28 +59,16 @@ class BrowserUtil{
     }
 
     setUserDetailsWithRoles(rolesArray) {
-        MockApp.onGet('/api/user/details', (req, res) => {
-            res.send({
-                "canShareCases": true, "sessionTimeout": {
-                    "idleModalDisplayTime": 10, "pattern": "-solicitor", "totalIdleTime": 50
-                },
-                "userInfo": {
-                    "id": "41a90c39-d756-4eba-8e85-5b5bf56b31f5",
-                    "forename": "Luke",
-                    "surname": "Wilson",
-                    "email": "lukesuperuserxui@mailnesia.com",
-                    "active": true,
-                    "roles": rolesArray
-                }
-            });
-        });
-}
+        nodeAppMockData.getUserDetailsWithRoles(rolesArray);
+       
+    }
 
 
     async waitForLD(){
         try{
             return await this.waitForNetworkResponse('app.launchdarkly.com/sdk/evalx');
         }catch(err){
+            reportLogger.AddMessage(err);
             console.log(err);
             return false;
         }
@@ -169,6 +157,15 @@ class BrowserUtil{
             element);
     }
 
-}
+    async getFromSessionStorage(key){
+        return await browser.executeScript('return window.sessionStorage["'+key+'"]',
+            key);
+    }
 
+    async getFromLocalStorage(key) {
+        return await browser.executeScript('return window.localStorage["' + key + '"]',
+            key);
+    }
+
+}
 module.exports = new BrowserUtil();

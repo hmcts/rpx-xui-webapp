@@ -23,10 +23,46 @@ const workflowUtil = require('../../pageObjects/common/workflowUtil');
 
 const taskListPage = require('../../../../e2e/features/pageObjects/workAllocation/taskListPage');
 const { checkYourAnswersHeading } = require('../../../../ngIntegration/tests/pageObjects/ccdCaseEditPages');
+const browserUtil = require('../../../../ngIntegration/util/browserUtil');
+
+
+const taskAssignmentPersonNotAuthorisedPage  = require('../../pageObjects/workAllocation/common/taskAssignmentPersonNotAuthorisedPage');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
     const taskListTable = new TaskListTable();
     const waCaseListTable = new casesTable();
+
+    Then('I see My work My Tasks page', async function(){
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await myWorkPage.amOnPage();
+            await myWorkPage.amOnMyTasksTab();
+        }); 
+    });
+
+    Then('I see My work Available tasks page', async function () {
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await myWorkPage.amOnPage();
+            expect(await myWorkPage.isAvailableTasksDisplayed()).to.be.true;
+        });
+    });
+
+    Then('I see My work My cases page', async function () {
+        throw new Error('Step def not implemented'); 
+    });
+
+    Then('I see All work Tasks page', async function () {
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await allWorkPage.amOnPage();
+            expect(await allWorkPage.isTasksContainerDisplayed()).to.be.true;
+        });
+    });
+
+    Then('I see All work Cases page', async function () {
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await allWorkPage.amOnPage();
+            expect(await allWorkPage.isCasesContainerDisplayed()).to.be.true;
+        });
+    });
 
     Then('I validate task list page results text displayed as {string}', async function (pagnationResultText) {
         expect(await taskListTable.getPaginationResultText()).to.include(pagnationResultText);
@@ -152,6 +188,26 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     When('I click task column link {string} at row {int}', async function(colName, rowPos){
         await taskListTable.clickTaskColLink(colName,rowPos);
+    });
+
+    When('I click task column link {string} at row {int}, I see case details page', async function (colName, rowPos) {
+        
+        await BrowserWaits.waitForPageNavigationOnAction(async () => {
+            await taskListTable.clickTaskColLink(colName, rowPos);
+        });
+
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await caseDetailsPage.amOnPage(),'Case details page not displayed').to.be.true 
+        });
+    });
+
+    Then('I see manage link displayed for task at position {int}', async function(row){
+        expect(await taskListTable.isManageLinkPresent(row)).to.be.true;    
+    });
+
+
+    Then('I see manage link not displayed for task at position {int}', async function (row) {
+        expect(await taskListTable.isManageLinkPresent(row)).to.be.false;
     });
 
     Then('I validate manage link actions for tasks', async function (tasksDatatable) {
@@ -343,20 +399,30 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     }
 
     Then('I see {string} task action page', async function(actionHeader){
-        expect(await taskActionPage.getPageHeader()).to.contain(actionHeader);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await taskActionPage.getPageHeader()).to.contain(actionHeader);
+        });
     });
 
     Then('I validate task action page has description {string}', async function (actionDescription) {
-        expect(await taskActionPage.getActionDescription()).to.contain(actionDescription);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await taskActionPage.getActionDescription()).to.contain(actionDescription);
+        });
+
     });
 
     When('I click {string} submit button in task action page', async function(actionSubmitBtnLabel){
-        expect(await taskActionPage.getSubmitBtnActionLabel()).to.contain(actionSubmitBtnLabel);
-        await taskActionPage.clickSubmit();
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await taskActionPage.getSubmitBtnActionLabel()).to.contain(actionSubmitBtnLabel);
+            await taskActionPage.clickSubmit();
+        });
+        
     });
 
     When('I click Cancel link in task action page', async function(){
-        await taskActionPage.clickCancelLink();
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await taskActionPage.clickCancelLink();
+        });
     });
 
     When('In workflow {string}, I click cancel link', async function (workflow){
@@ -391,8 +457,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I validate WA cases table footer displayed status is {string}', async function (displayStateBool) {
-        const expectedDisplayState = displayStateBool.toLowerCase().includes("true");
-        expect(await waCaseListTable.isTableFooterDisplayed()).to.equal(expectedDisplayState);
+       await BrowserWaits.retryWithActionCallback(async () => {
+           const expectedDisplayState = displayStateBool.toLowerCase().includes("true");
+           await BrowserWaits.waitForElement(waCaseListTable.tableFooter);
+           expect(await waCaseListTable.isTableFooterDisplayed()).to.equal(expectedDisplayState);
+       });
+        
     });
 
     Then('I validate WA tasks table footer message is {string}', async function (message) {
@@ -403,5 +473,43 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         expect(await waCaseListTable.getTableFooterMessage()).to.include(message);
     });
 
+    Given('I have a caseworker details other than logged in user with reference {string} for service {string}', async function(caseWorkerRef, service){
+        const caseworkersInSessionStorage = await browserUtil.getFromSessionStorage(`${service}-caseworkers`);
+        const caseworkers = JSON.parse(caseworkersInSessionStorage);
+        
+        const loggedinuserDetailsInSessionStorage = await browserUtil.getFromSessionStorage('userDetails');
+        const loggedInUser = JSON.parse(loggedinuserDetailsInSessionStorage);
+        const loggedinUserIdamId = loggedInUser.uid ? loggedInUser.uid : loggedInUser.id;
+        let caseWorkerForRef = null;
+        for (const cw of caseworkers){
+            if (cw.roleCategory === "LEGAL_OPERATIONS" && cw.idamId !== loggedinUserIdamId){
+                caseWorkerForRef = cw;
+                break; 
+            }
+        }
+
+        reportLogger.AddJson(caseWorkerForRef)
+        global.scenarioData[caseWorkerRef] = caseWorkerForRef; 
+
+    });
+
+    Then('I see see page task assignment person not authorised page', async function(){
+        try{
+            await BrowserWaits.waitForElement(taskAssignmentPersonNotAuthorisedPage.container); 
+        }catch(err){
+            throw new Error("Task assignment person authorised page is not displayed.");
+        }
+        
+    });
+
+    Then('I see see page task assignment authorisation error message {string}', async function(message){
+        await BrowserWaits.waitForElement(taskAssignmentPersonNotAuthorisedPage.container); 
+        expect(await taskAssignmentPersonNotAuthorisedPage.message.getText()).to.includes(message); 
+    });
+
+    When('I click back button in task assignment authorisation error page', async function(){
+        await BrowserWaits.waitForElement(taskAssignmentPersonNotAuthorisedPage.container); 
+        await taskAssignmentPersonNotAuthorisedPage.backButton.click(); 
+     });
 
 });

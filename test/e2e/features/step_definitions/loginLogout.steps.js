@@ -135,7 +135,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     await expect(loginPage.signinTitle.getText())
       .to
       .eventually
-      .equal('Sign in');
+      .equal('Sign in or create an account');
     await expect(loginPage.emailAddress.isDisplayed()).to.eventually.be.true;
     await expect(loginPage.password.isDisplayed()).to.eventually.be.true;
     browser.sleep(SHORT_DELAY);
@@ -170,22 +170,22 @@ defineSupportCode(function ({ Given, When, Then }) {
       await expect(loginPage.signinTitle.getText())
         .to
         .eventually
-        .equal('Sign in');
+        .equal('Sign in or create an account');
     });
     browser.sleep(LONG_DELAY);
-    
+
   });
 
 
   Then(/^I select the sign out link$/, async function () {
-    
+
     await BrowserWaits.retryWithActionCallback(async () => {
       browser.sleep(SHORT_DELAY);
       await expect(loginPage.signOutlink.isDisplayed()).to.eventually.be.true;
       browser.sleep(SHORT_DELAY);
       await loginPage.signOutlink.click();
     });
-   
+
     browser.sleep(SHORT_DELAY);
   });
 
@@ -193,7 +193,7 @@ defineSupportCode(function ({ Given, When, Then }) {
   Then('I should be redirected to EUI dashboard page', async function () {
 
     const world = this;
-  
+
     await BrowserWaits.retryWithActionCallback(async () => {
       try{
         await BrowserUtil.waitForLD();
@@ -209,7 +209,7 @@ defineSupportCode(function ({ Given, When, Then }) {
         await browser.get(config.config.baseUrl);
         throw new Error(err);
       }
-      
+
     });
 
   });
@@ -312,13 +312,13 @@ defineSupportCode(function ({ Given, When, Then }) {
   Given('I am logged into Expert UI with test user identified as {string}', async function (testUserIdentifier) {
     const world = this;
 
-    const matchingUsers = testConfig.users.filter(user => user.userIdentifier === testUserIdentifier);
+    const matchingUsers = testConfig.users[testConfig.testEnv].filter(user => user.userIdentifier === testUserIdentifier);
     if (matchingUsers.length === 0 ){
       throw new Error(`Test user with identifier ${testUserIdentifier} is not found, check app test config anf fix test issue`);
     }
-   
+
     const userEmail = matchingUsers[0].email;
-    const key = 'Welcome01';
+    const key = matchingUsers[0].key;
 
     await loginPage.givenIAmLoggedIn(userEmail, key);
 
@@ -356,7 +356,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     await expect(loginPage.signinTitle.getText())
       .to
       .eventually
-      .equal('Sign in');
+      .equal('Sign in or create an account');
     browser.sleep(LONG_DELAY);
   });
 

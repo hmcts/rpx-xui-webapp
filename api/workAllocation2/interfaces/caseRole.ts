@@ -3,6 +3,7 @@ import { RoleCategory } from '../../roleAccess/models/allocate-role.enum';
 export interface CaseRole {
   name: string;
   roleName: string;
+  roleId?: string;
   roleCategory: RoleCategory;
   location: string;
   start: string;

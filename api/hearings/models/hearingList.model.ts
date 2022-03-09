@@ -10,6 +10,8 @@ export interface HearingListModel {
   responseVersion: string;
   hearingListingStatus: string;
   listAssistCaseStatus: string;
+  hearingIsLinkedFlag: boolean;
+  hearingGroupRequestId: string;
   hearingDaySchedule: HearingDayScheduleModel[];
   exuiSectionStatus?: EXUISectionStatusEnum;
   exuiDisplayStatus?: EXUIDisplayStatusEnum;

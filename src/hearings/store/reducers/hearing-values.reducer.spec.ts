@@ -1,4 +1,4 @@
-import {PartyType, RequirementType} from '../../models/hearings.enum';
+import {MemberType, PartyType, RequirementType} from '../../models/hearings.enum';
 import {ServiceHearingValuesModel} from '../../models/serviceHearingValues.model';
 import * as fromHearingValuesActions from '../actions/hearing-values.action';
 import * as fromHearingValuesReducer from './hearing-values.reducer';
@@ -50,8 +50,8 @@ describe('Hearing Values Reducer', () => {
             }],
             judiciaryPreferences: [
               {
-                memberID: '',
-                memberType: '',
+                memberID: 'p1000000',
+                memberType: MemberType.JUDGE,
                 requirementType: RequirementType.EXCLUDE,
               },
             ],

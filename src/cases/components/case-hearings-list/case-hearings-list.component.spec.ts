@@ -30,6 +30,8 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   earliestHearingStartDateTime: '',
   hearingListingStatus: 'UPDATE REQUESTED',
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: true,
+  hearingGroupRequestId: null,
   hearingDaySchedule: null,
   exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
   exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING
@@ -43,6 +45,8 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   earliestHearingStartDateTime: '',
   hearingListingStatus: 'AWAITING LISTING',
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [],
   exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
   exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING
@@ -56,6 +60,8 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   earliestHearingStartDateTime: '',
   hearingListingStatus: 'LISTED',
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: 'g100000',
   hearingDaySchedule: [{
     hearingStartDateTime: '2021-05-04T09:00:00.000+0000',
     hearingEndDateTime: '2021-05-04T16:00:00.000+0000',
@@ -83,6 +89,8 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   earliestHearingStartDateTime: '',
   hearingListingStatus: 'UPDATE REQUESTED',
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [{
     hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
     hearingEndDateTime: '2021-03-12T16:00:00.000+0000',
@@ -110,6 +118,8 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   earliestHearingStartDateTime: '',
   hearingListingStatus: 'UPDATE SUBMITTED',
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [{
     hearingStartDateTime: '2021-04-12T09:00:00.000+0000',
     hearingEndDateTime: '2021-04-12T16:00:00.000+0000',
@@ -130,6 +140,8 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   earliestHearingStartDateTime: '',
   hearingListingStatus: 'EXCEPTION',
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [{
     hearingStartDateTime: '2021-05-02T09:00:00.000+0000',
     hearingEndDateTime: '2021-05-02T16:00:00.000+0000',
@@ -150,6 +162,8 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   earliestHearingStartDateTime: '',
   hearingListingStatus: 'CANCELLATION REQUESTED',
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [{
     hearingStartDateTime: '2021-07-12T09:00:00.000+0000',
     hearingEndDateTime: '2021-07-12T16:00:00.000+0000',
@@ -177,6 +191,8 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   earliestHearingStartDateTime: '',
   hearingListingStatus: 'AWAITING ACTUALS',
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [{
     hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
     hearingEndDateTime: '2021-03-12T16:00:00.000+0000',
@@ -199,6 +215,8 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
   earliestHearingStartDateTime: '',
   hearingListingStatus: 'VACATED',
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [],
   exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
   exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED
@@ -212,6 +230,8 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
   earliestHearingStartDateTime: '',
   hearingListingStatus: 'COMPLETED',
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [{
     hearingStartDateTime: '2021-04-12T09:00:00.000+0000',
     hearingEndDateTime: '2021-04-12T16:00:00.000+0000',
@@ -232,6 +252,8 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
   earliestHearingStartDateTime: '',
   hearingListingStatus: 'ADJOURNED',
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [{
     hearingStartDateTime: '2021-09-01T09:00:00.000+0000',
     hearingEndDateTime: '2021-09-01T16:00:00.000+0000',
@@ -252,6 +274,8 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
   earliestHearingStartDateTime: '',
   hearingListingStatus: 'VACATED',
   listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
   hearingDaySchedule: [],
   exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
   exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED
@@ -367,6 +391,10 @@ describe('CaseHearingsListComponent', () => {
     expect(viewOrEdit1.textContent).toBe('View or edit');
     const cancel1 = fixture.debugElement.query(By.css('#link-cancel-h100001')).nativeElement;
     expect(cancel1.textContent).toBe('Cancel');
+    const linkHearing1 = fixture.debugElement.query(By.css('#link-hearing-link-h100001')).nativeElement;
+    expect(linkHearing1.textContent).toBe('Link hearing');
+    const manageLinks1 = fixture.debugElement.query(By.css('#link-manage-links-h100001'));
+    expect(manageLinks1).toBeNull();
     const viewDetails1 = fixture.debugElement.query(By.css('#link-view-details-h100001'));
     expect(viewDetails1).toBeNull();
     const addOrEdit1 = fixture.debugElement.query(By.css('#link-add-or-edit-h100001'));
@@ -376,6 +404,10 @@ describe('CaseHearingsListComponent', () => {
     expect(viewOrEdit3.textContent).toBe('View or edit');
     const cancel3 = fixture.debugElement.query(By.css('#link-cancel-h100003')).nativeElement;
     expect(cancel3.textContent).toBe('Cancel');
+    const linkHearing3 = fixture.debugElement.query(By.css('#link-hearing-link-h100003'));
+    expect(linkHearing3).toBeNull();
+    const manageLinks3 = fixture.debugElement.query(By.css('#link-manage-links-h100003')).nativeElement;
+    expect(manageLinks3.textContent).toBe('Manage links');
     const viewDetails3 = fixture.debugElement.query(By.css('#link-view-details-h100003'));
     expect(viewDetails3).toBeNull();
     const addOrEdit3 = fixture.debugElement.query(By.css('#link-add-or-edit-h100003'));
@@ -385,6 +417,10 @@ describe('CaseHearingsListComponent', () => {
     expect(viewOrEdit4.textContent).toBe('View or edit');
     const cancel4 = fixture.debugElement.query(By.css('#link-cancel-h100004')).nativeElement;
     expect(cancel4.textContent).toBe('Cancel');
+    const linkHearing4 = fixture.debugElement.query(By.css('#link-hearing-link-h100004'));
+    expect(linkHearing4).toBeNull();
+    const manageLinks4 = fixture.debugElement.query(By.css('#link-manage-links-h100004'));
+    expect(manageLinks4).toBeNull();
     const viewDetails4 = fixture.debugElement.query(By.css('#link-view-details-h100004'));
     expect(viewDetails4).toBeNull();
     const addOrEdit4 = fixture.debugElement.query(By.css('#link-add-or-edit-h100004'));
@@ -394,6 +430,10 @@ describe('CaseHearingsListComponent', () => {
     expect(viewOrEdit6).toBeNull();
     const cancel6 = fixture.debugElement.query(By.css('#link-cancel-h100006'));
     expect(cancel6).toBeNull();
+    const linkHearing6 = fixture.debugElement.query(By.css('#link-hearing-link-h100006'));
+    expect(linkHearing6).toBeNull();
+    const manageLinks6 = fixture.debugElement.query(By.css('#link-manage-links-h100006'));
+    expect(manageLinks6).toBeNull();
     const viewDetails6 = fixture.debugElement.query(By.css('#link-view-details-h100006')).nativeElement;
     expect(viewDetails6.textContent).toBe('View details');
     const addOrEdit6 = fixture.debugElement.query(By.css('#link-add-or-edit-h100006'));
@@ -403,6 +443,10 @@ describe('CaseHearingsListComponent', () => {
     expect(viewOrEdit7).toBeNull();
     const cancel7 = fixture.debugElement.query(By.css('#link-cancel-h100007'));
     expect(cancel7).toBeNull();
+    const linkHearing7 = fixture.debugElement.query(By.css('#link-hearing-link-h100007'));
+    expect(linkHearing7).toBeNull();
+    const manageLinks7 = fixture.debugElement.query(By.css('#link-manage-links-h100007'));
+    expect(manageLinks7).toBeNull();
     const viewDetails7 = fixture.debugElement.query(By.css('#link-view-details-h100007')).nativeElement;
     expect(viewDetails7.textContent).toBe('View details');
     const addOrEdit7 = fixture.debugElement.query(By.css('#link-add-or-edit-h100007'));
@@ -412,6 +456,10 @@ describe('CaseHearingsListComponent', () => {
     expect(viewOrEdit9).toBeNull();
     const cancel9 = fixture.debugElement.query(By.css('#link-cancel-h100009')).nativeElement;
     expect(cancel9.textContent).toBe('Cancel');
+    const linkHearing9 = fixture.debugElement.query(By.css('#link-hearing-link-h100009'));
+    expect(linkHearing9).toBeNull();
+    const manageLinks9 = fixture.debugElement.query(By.css('#link-manage-links-h100009'));
+    expect(manageLinks9).toBeNull();
     const viewDetails9 = fixture.debugElement.query(By.css('#link-view-details-h100009'));
     expect(viewDetails9).toBeNull();
     const addOrEdit9 = fixture.debugElement.query(By.css('#link-add-or-edit-h100009')).nativeElement;
@@ -459,6 +507,12 @@ describe('CaseHearingsListComponent', () => {
     expect(viewDetails12.textContent).toBe('View details');
     const addOrEdit12 = fixture.debugElement.query(By.css('#link-add-or-edit-h100012'));
     expect(addOrEdit12).toBeNull();
+  });
+
+  it('should return the right flag depends on hearingGroupRequestId', () => {
+    expect(component.isManageLinksEnabled('g1000000')).toBeTruthy();
+    expect(component.isManageLinksEnabled(null)).toBeFalsy();
+    expect(component.isManageLinksEnabled(undefined)).toBeFalsy();
   });
 
   it('should viewAndEdit', () => {

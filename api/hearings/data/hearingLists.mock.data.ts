@@ -35,7 +35,7 @@ const HEARING_DAY_SCHEDULE_4: HearingDayScheduleModel = {
   hearingStartDateTime: '2021-03-13T09:00:00.000+0000',
   hearingEndDateTime: '2021-03-13T16:00:00.000+0000',
   listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc5',
-  hearingVenueId: 'venue 4',
+  hearingVenueId: '815833',
   hearingRoomId: 'room 4',
   hearingPanel: ['hearingJudgeId2'],
 };
@@ -80,7 +80,7 @@ const HEARING_DAY_SCHEDULE_9: HearingDayScheduleModel = {
   hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
   hearingEndDateTime: '2021-03-12T16:00:00.000+0000',
   listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
-  hearingVenueId: 'venue 4',
+  hearingVenueId: '815833',
   hearingRoomId: 'room 4',
   hearingPanel: ['hearingJudgeId2'],
 };

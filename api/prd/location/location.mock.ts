@@ -1,12 +1,24 @@
 /* tslint:disable:max-line-length */
 import MockAdapter from 'axios-mock-adapter';
-import {HttpMockAdapter} from '../../common/httpMockAdapter';
-import {ALL_COURT_LOCATIONS} from './data/location.mock.data';
-import {toEpimsLocation} from "./models/location.model";
+import { HttpMockAdapter } from '../../common/httpMockAdapter';
+import { ALL_COURT_LOCATIONS } from './data/location.mock.data';
+import { toEpimsLocation } from "./models/location.model";
 
 export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
   const getLocationsUrl = /http:\/\/rd-professional-api-aat.service.core-compute-aat.internal\/refdata\/location\/court-venues\/venue-search\?search-string=[\w]*/;
+  const getCourtLocationsUrl = /http:\/\/rd-professional-api-aat.service.core-compute-aat.internal\/refdata\/location\/court-locations\?epimms_id=[\w]*/;
+
+  mock.onGet(getCourtLocationsUrl).reply(config => {
+    const requestURL = config.url;
+    const courTypeIdStartIdx = config.url.lastIndexOf('=');
+    const courTypeIdsStr = requestURL.substring(courTypeIdStartIdx + 1);
+    const searchResult = ALL_COURT_LOCATIONS.find(location => location.epims_id === courTypeIdsStr);
+    return [
+      200,
+      searchResult,
+    ];
+  });
 
   mock.onGet(getLocationsUrl).reply(config => {
     const requestURL = config.url;

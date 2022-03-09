@@ -8,6 +8,7 @@ import { AnswerConverter } from '../converters/answer.converter';
 import { CaseFlagAnswerConverter } from '../converters/case-flag.answer.converter';
 import { CaseNameAnswerConverter } from '../converters/case-name.answer.converter';
 import { CaseNumberAnswerConverter } from '../converters/case-number.answer.converter';
+import { CourtLocationAnswerConverter } from '../converters/court-location.answer.converter';
 import { DateRequestSubmittedTimeAnswerConverter } from '../converters/date-request-submitted-time.answer.converter';
 import { DateRequestSubmittedAnswerConverter } from '../converters/date-request-submitted.answer.converter';
 import { DateResponseReceivedAnswerConverter } from '../converters/date-response-received.answer.converter';
@@ -82,6 +83,9 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.VENUE:
         converter = new VenueAnswerConverter();
+        break;
+      case AnswerSource.COURT_LOCATION:
+        converter = new CourtLocationAnswerConverter(this.route);
         break;
       case AnswerSource.HOW_ATTENDANT:
         converter = new PartyChannelsAnswerConverter(this.route);

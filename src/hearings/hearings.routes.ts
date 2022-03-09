@@ -28,6 +28,7 @@ import { AdditionalFacilitiesResolver } from './resolvers/additional-facilities.
 import { AdjournHearingActualReasonResolver } from './resolvers/adjourn-hearing-actual-reason.resolver';
 import { CancelHearingActualReasonResolver } from './resolvers/cancel-hearing-actual-reason.resolver';
 import { CaseFlagsResolver } from './resolvers/case-flags.resolver';
+import { CourtLocationsDataResolver } from './resolvers/court-locations-resolver.resolve';
 import { HearingStageResolver } from './resolvers/hearing-stage.resolver';
 import { JudgeTypesResolverService } from './resolvers/judge-types-resolver.service';
 import { PanelRolesResolverService } from './resolvers/panel-roles-resolver.service';
@@ -220,6 +221,7 @@ export const ROUTES: Routes = [
           judgeTypes: JudgeTypesResolverService,
           judicialUsers: JudicialUserSearchResolver,
           otherPanelRoles: PanelRolesResolverService,
+          courtLocation: CourtLocationsDataResolver,
         },
         component: HearingCreateEditSummaryComponent,
         canActivate: [HealthCheckGuard],
@@ -238,6 +240,7 @@ export const ROUTES: Routes = [
           judgeTypes: JudgeTypesResolverService,
           judicialUsers: JudicialUserSearchResolver,
           otherPanelRoles: PanelRolesResolverService,
+          courtLocation: CourtLocationsDataResolver,
         },
         component: HearingViewEditSummaryComponent,
         canActivate: [HealthCheckGuard],

@@ -10,10 +10,7 @@ import * as fromHearingStore from '../../../store';
 export class HearingActualsFinalConfirmationComponent implements OnInit {
 
   public heading: string;
-  public headingDescription: string;
   public subheading: string;
-  public subheadingDescription: string;
-  public additionalDescription: string;
   public caseId: string;
 
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>) {

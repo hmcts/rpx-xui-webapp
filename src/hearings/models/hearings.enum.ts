@@ -130,6 +130,7 @@ export enum HearingCategory {
 }
 
 export enum HearingDateEnum {
+  DisplayTime = 'HH:MM',
   DisplayMonth = 'DD MMMM YYYY',
   DefaultFormat = 'DD-MM-YYYY',
   InvalidDate = 'Invalid date'
@@ -226,7 +227,10 @@ export enum AnswerSource {
   TYPE_FROM_REQUEST,
   STATUS,
   DATE_REQUEST_SUBMITTED,
+  DATE_REQUEST_SUBMITTED_TIME,
+  DATE_RESPONSE_RECEIVED,
   CASE_FLAGS,
+  ROOM_ID,
   ADDITIONAL_SECURITY_REQUIRED,
   ADDITIONAL_FACILITIES_REQUIRED,
   STAGE,
@@ -236,6 +240,7 @@ export enum AnswerSource {
   NEED_WELSH,
   NEED_JUDGE,
   JUDGE_NAME,
+  JUDICIAL_MEMBERS,
   JUDGE_TYPES,
   JUDGE_EXCLUSION,
   HEARING_PANEL,
@@ -255,7 +260,9 @@ export enum IsHiddenSource {
   PANEL_EXCLUSION,
   PANEL_ROLES,
   JUDGE_TYPES,
-  JUDGE_NAME
+  JUDGE_NAME,
+  LISTED,
+  NOT_LISTED
 }
 
 export enum Mode {
@@ -282,4 +289,8 @@ export enum HearingResult {
 export enum HearingConfirmationSource {
   REQUEST,
   ACTUALS
+}
+
+export enum HearingTemplate {
+  LISTING_INFORMATION = 'Listing information summary',
 }

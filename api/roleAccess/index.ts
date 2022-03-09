@@ -15,7 +15,6 @@ import { getEmail, getJudicialUsersFromApi, getUserName, mapRoleCategory } from 
 import { CaseRoleRequestPayload } from './models/caseRoleRequestPayload';
 import { release2ContentType } from './models/release2ContentType';
 import { getSubstantiveRoles } from './roleAssignmentService';
-import { mockAdminRoles } from './roleData.mock';
 
 const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
 

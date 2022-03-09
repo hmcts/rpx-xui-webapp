@@ -8,7 +8,6 @@ import { HearingStageResultComponent } from './hearing-stage-result.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Observable } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
-import * as fromHearingStore from '../../../store';
 import { Store } from '@ngrx/store';
 import { HearingResult } from '../../../models/hearings.enum';
 

@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
 import { hearingActualsMainModel, hearingStageRefData, initialState } from '../../../hearing.test.data';
@@ -11,6 +12,7 @@ import { HearingActualAddEditSummaryComponent } from './hearing-actual-add-edit-
 describe('HearingActualAddEditSummaryComponent', () => {
   let component: HearingActualAddEditSummaryComponent;
   let fixture: ComponentFixture<HearingActualAddEditSummaryComponent>;
+  let store: any;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
@@ -29,7 +31,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
     { key: 'reasonThree', value_en: 'Reason 3', value_cy: '', hintText_EN: 'Reason 3', hintTextCY: '', order: 4, parentKey: null }
   ];
 
-  beforeEach(() => {
+  beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [HearingActualAddEditSummaryComponent],
       imports: [RouterTestingModule],
@@ -39,8 +41,11 @@ describe('HearingActualAddEditSummaryComponent', () => {
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
+  }));
 
+  beforeEach(() => {
     fixture = TestBed.createComponent(HearingActualAddEditSummaryComponent);
+    store = TestBed.get(Store);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -98,6 +103,22 @@ describe('HearingActualAddEditSummaryComponent', () => {
     component.hearingTypes = hearingStageRefData;
     const description = component.getHearingTypeDescription('initial');
     expect(description).toEqual('Initial');
+  });
+
+  it('should submit hearing details', () => {
+    const storeDispatchSpy = spyOn(store, 'dispatch');
+    component.hearingResult = HearingResult.COMPLETED;
+    component.onSubmitHearingDetails();
+    expect(component.submitted).toEqual(true);
+    expect(storeDispatchSpy).toHaveBeenCalled();
+  });
+
+  it('should fail submitting hearing details if hearing result is not selected', () => {
+    const storeDispatchSpy = spyOn(store, 'dispatch');
+    component.hearingResult = '';
+    component.onSubmitHearingDetails();
+    expect(component.submitted).toEqual(true);
+    expect(storeDispatchSpy).toHaveBeenCalledTimes(0);
   });
 
   afterEach(() => {

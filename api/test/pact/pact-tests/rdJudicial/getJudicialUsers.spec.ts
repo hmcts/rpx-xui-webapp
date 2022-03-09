@@ -10,9 +10,9 @@ import { getJudicialRefDataAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 
 const { Matchers } = require('@pact-foundation/pact');
-import { DateTimeMatcher } from '../utils/matchers';
+import { DateTimeMatcher2 } from '../utils/matchers';
 const { somethingLike, iso8601DateTime, term } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'rd_judicial_ref_api_get_users_by_userIds', port: 8000 });
+const pactSetUp = new PactTestSetup({ provider: 'referenceData_judicial', port: 8000 });
 
 const MockApp = require('../../../../../test/nodeMock/app');
 
@@ -43,7 +43,7 @@ describe("Judicial ref data api, get all judge users", () => {
     
     const RESPONSE_BODY = [];
     RESPONSE_BODY.push(user1); 
-    RESPONSE_BODY.push(user2); 
+    // RESPONSE_BODY.push(user2); 
 
     describe("post /refdata/judicial/users", () => {
         let sandbox: sinon.SinonSandbox = sinon.createSandbox();
@@ -55,7 +55,7 @@ describe("Judicial ref data api, get all judge users", () => {
         before(async () => {
             await pactSetUp.provider.setup()
             const interaction = {
-                state: "returned list of judicial users",
+                state: "return judicial user profiles along with their active appointments and authorisations",
                 uponReceiving: "get list of judicial users",
                 withRequest: {
                     method: "POST",
@@ -141,11 +141,6 @@ function assertResponses(dto: any) {
     expect(dto[0].full_name).to.be.equal("Tom cruz");
     expect(dto[0].email_id).to.be.equal("tom.cruz@hmcts.net");
 
-    expect(dto[1].sidam_id).to.be.equal(REQUEST_BODY.sidam_ids[1]); 
-    expect(dto[1].known_as).to.be.equal("Hearing judge");
-    expect(dto[1].surname).to.be.equal("hanks");
-    expect(dto[1].full_name).to.be.equal("Tom hanks");
-    expect(dto[1].email_id).to.be.equal("tom.hanks@hmcts.net");
 
 
 }
@@ -154,47 +149,39 @@ function assertResponses(dto: any) {
 
 function getDumyJudgeUserDetails(){
     return {
-            "sidam_id": "018a0310-f122-4377-9504-f635301f39ed-test2",
-            "object_id": "018a0310-f122-4377-9504-f635301f39ed-test2",
-            "known_as": "Joe",
-            "surname": "snjudge",
-            "full_name": 'fntest',
-            "post_nominals": "Ms",
-            "email_id":  'test@judicial.com',
+             "sidam_id": somethingLike("018a0310-f122-4377-9504-f635301f39ed-test2"),
+            "object_id": somethingLike("018a0310-f122-4377-9504-f635301f39ed-test2"),
+            "known_as": somethingLike("Joe"),
+            "surname": somethingLike("snjudge"),
+            "full_name": somethingLike('fntest'),
+            "post_nominals": somethingLike("Ms"),
+            "email_id": somethingLike('test@judicial.com'),
             "appointments": [
                 {
-                    "base_location_id": "1032",
-                    "epimms_id": null,
-                    "court_name": "Social Entitlement",
-                    "cft_region_id": "2",
-                    "cft_region": "London",
-                    "location_id": "14",
-                    "location": "London",
-                    "is_principal_appointment": "true",
-                    "appointment": "Tribunal Member Disability",
-                    "appointment_type": "Fee Paid",
-                    "service_code": null,
-                    "roles": [],
-                    "start_date": "2018-12-05",
-                    "end_date": null
+                    "base_location_id": somethingLike('testBaseLocID'),
+                    "epimms_id": somethingLike('testEpimmsId'),
+                    "court_name": somethingLike('Social Entitlement'),
+                    "cft_region_id": somethingLike("1"),
+                    "cft_region": somethingLike("National"),
+                    "location_id": somethingLike("1"),
+                    "location": somethingLike("National"),
+                    "is_principal_appointment": somethingLike("true"),
+                    "appointment": somethingLike("Tribunal Member Disability"),
+                    "appointment_type": somethingLike("Fee Paid"),
+                    "service_code": somethingLike('testServiceCode'),
+                    "roles": ['testTitle'],
+                    "start_date": somethingLike("2018-12-05"),
+                    "end_date": somethingLike('2022-03-04')
                 }
             ],
             "authorisations": [
                 {
-                    "jurisdiction": "Authorisation Tribunals",
-                    "ticket_description": "Social Security and Child Support",
-                    "ticket_code": "357",
-                    "service_code": "BBA3",
-                    "start_date": "2013-12-05T00:00",
-                    "end_date": null
-                },
-                {
-                    "jurisdiction": "Authorisation Tribunals",
-                    "ticket_description": "03 - Disability Living Allowance",
-                    "ticket_code": "365",
-                    "service_code": "BBA3",
-                    "start_date": "1901-01-01T00:00",
-                    "end_date": null
+                    "jurisdiction": somethingLike("Authorisation Tribunals"),
+                    "ticket_description": somethingLike("Social Security and Child Support"),
+                    "ticket_code": somethingLike("357"),
+                    "service_code": somethingLike("BBA3"),
+                    "start_date": somethingLike("2013-12-05T00:00"),
+                    "end_date": term(DateTimeMatcher2('2022-03-04T10:11:00.619526'))
                 }
             ]
         };

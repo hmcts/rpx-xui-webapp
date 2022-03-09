@@ -1,5 +1,5 @@
 import { HearingActualsMainModel } from '../models/hearingActualsMainModel';
-import { HearingResult, HMCStatus } from '../models/hearings.enum';
+import { HMCStatus } from '../models/hearings.enum';
 
 export const HEARING_ACTUAL: HearingActualsMainModel = {
   hearingActuals: {

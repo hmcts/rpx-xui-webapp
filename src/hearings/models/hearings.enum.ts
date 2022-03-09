@@ -273,3 +273,8 @@ export enum HearingResult {
   ADJOURNED = 'ADJOURNED',
   CANCELLED = 'CANCELLED',
 }
+
+export enum GroupLinkType {
+  ORDERED = 'Ordered',
+  SAME_SLOT = 'Same Slot',
+}

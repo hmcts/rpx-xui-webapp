@@ -1,4 +1,8 @@
 import {NextFunction, Response} from 'express';
+import {
+  LinkedHearingGroupMainModel,
+  LinkedHearingGroupResponseModel
+} from "../../src/hearings/models/linkHearings.model";
 import {handleDelete, handleGet, handlePost, handlePut} from '../common/mockService';
 import {getConfigValue} from '../configuration';
 import {SERVICES_HEARINGS_COMPONENT_API} from '../configuration/references';
@@ -9,6 +13,7 @@ import {HearingListModel} from './models/hearingList.model';
 import {HearingListMainModel} from './models/hearingListMain.model';
 import {HearingRequestMainModel} from './models/hearingRequestMain.model';
 import {hearingStatusMappings} from './models/hearingStatusMappings';
+import {ServiceLinkedCasesModel} from "./models/linkHearings.model";
 import {ServiceHearingValuesModel} from './models/serviceHearingValues.model';
 
 mock.init();
@@ -149,6 +154,77 @@ export async function submitHearingActuals(req: EnhancedRequest, res: Response, 
   try {
     const { status }: { status: number } = await handlePost(markupPath, null, req);
     res.sendStatus(status);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * loadServiceLinkedCases - get linked cases from service
+ */
+export async function loadServiceLinkedCases(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const reqBody = req.body;
+  const markupPath: string = `${hearingsUrl}/serviceLinkedCases`;
+  try {
+    const { status, data }: { status: number, data: ServiceLinkedCasesModel[] } = await handlePost(markupPath, reqBody, req);
+    res.status(status).send(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * getLinkedHearingGroup - get linked hearing group
+ */
+export async function getLinkedHearingGroup(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const caseReference: string = req.query.caseReference;
+  const hearingId: string = req.query.hearingId;
+  const markupPath: string = `${hearingsUrl}/linkedHearingGroup?caseReference=${caseReference}&hearingId=${hearingId}`;
+  try {
+    const { status, data }: { status: number, data: LinkedHearingGroupMainModel } = await handleGet(markupPath, req);
+    res.status(status).send(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * postLinkedHearingGroup - post linked hearing group
+ */
+export async function postLinkedHearingGroup(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const reqBody = req.body;
+  const markupPath: string = `${hearingsUrl}/linkedHearingGroup`;
+  try {
+    const {status, data}: { status: number, data: LinkedHearingGroupResponseModel } = await handlePost(markupPath, reqBody, req);
+    res.status(status).send(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * putLinkedHearingGroup - put linked hearing group
+ */
+export async function putLinkedHearingGroup(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const reqBody = req.body;
+  const markupPath: string = `${hearingsUrl}/linkedHearingGroup`;
+  try {
+    const {status, data}: { status: number, data: LinkedHearingGroupResponseModel } = await handlePut(markupPath, reqBody, req);
+    res.status(status).send(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * deleteLinkedHearingGroup - delete linked hearing group
+ */
+export async function deleteLinkedHearingGroup(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const reqBody = req.body;
+  const markupPath: string = `${hearingsUrl}/linkedHearingGroup`;
+  try {
+    const {status, data}: {status: number, data: LinkedHearingGroupResponseModel} = await handleDelete(markupPath, reqBody, req);
+    res.status(status).send(data);
   } catch (error) {
     next(error);
   }

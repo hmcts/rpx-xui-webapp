@@ -5,6 +5,11 @@ import {HearingActualsMainModel, HearingActualsModel} from '../models/hearingAct
 import {HearingListMainModel} from '../models/hearingListMain.model';
 import {HearingRequestMainModel} from '../models/hearingRequestMain.model';
 import {ACTION} from '../models/hearings.enum';
+import {
+  LinkedHearingGroupMainModel,
+  LinkedHearingGroupResponseModel,
+  ServiceLinkedCasesModel
+} from '../models/linkHearings.model';
 import {LovRefDataModel} from '../models/lovRefData.model';
 import {ServiceHearingValuesModel} from '../models/serviceHearingValues.model';
 
@@ -27,7 +32,7 @@ export class HearingsService {
   }
 
   public loadHearingValues(caseId: string): Observable<ServiceHearingValuesModel> {
-    return this.http.post<ServiceHearingValuesModel>(`api/hearings/loadServiceHearingValues`,
+    return this.http.post<ServiceHearingValuesModel>('api/hearings/loadServiceHearingValues',
       {caseReference: caseId});
   }
 
@@ -50,7 +55,7 @@ export class HearingsService {
   }
 
   public updateHearingRequest(hearingRequestMainModel: HearingRequestMainModel): Observable<HearingRequestMainModel> {
-    return this.http.put<HearingRequestMainModel>(`api/hearings/updateHearingRequest`, hearingRequestMainModel);
+    return this.http.put<HearingRequestMainModel>('api/hearings/updateHearingRequest', hearingRequestMainModel);
   }
 
   public getHearingActuals(hearingId: string): Observable<HearingActualsMainModel> {
@@ -63,5 +68,33 @@ export class HearingsService {
 
   public submitHearingActuals(hearingId: string): Observable<number> {
     return this.http.post<number>(`api/hearings/hearingActualsCompletion/${hearingId}`, null);
+  }
+
+  public loadServiceLinkedCases(caseReference: string, hearingId?: string): Observable<ServiceLinkedCasesModel[]> {
+    return this.http.post<ServiceLinkedCasesModel[]>('api/hearings/serviceLinkedCases', {
+      caseReference,
+      hearingId // could be null, empty string or missing
+    });
+  }
+
+  public getLinkedHearingGroup(caseReference: string, hearingId?: string): Observable<LinkedHearingGroupMainModel> {
+    return this.http.get<LinkedHearingGroupMainModel>(`api/hearings/linkedHearingGroup?caseReference=${caseReference}&hearingId=${hearingId}`);
+  }
+
+  public postLinkedHearingGroup(linkedHearingGroupMainModel: LinkedHearingGroupMainModel): Observable<LinkedHearingGroupResponseModel> {
+    return this.http.post<LinkedHearingGroupResponseModel>('api/hearings/linkedHearingGroup', linkedHearingGroupMainModel);
+  }
+
+  public putLinkedHearingGroup(linkedHearingGroupMainModel: LinkedHearingGroupMainModel): Observable<LinkedHearingGroupResponseModel> {
+    return this.http.put<LinkedHearingGroupResponseModel>('api/hearings/linkedHearingGroup', linkedHearingGroupMainModel);
+  }
+
+  public deleteLinkedHearingGroup(hearingGroupId: string, hearingIds: string): Observable<LinkedHearingGroupResponseModel> {
+    const options = {
+      params: new HttpParams()
+        .set('hearingGroupId', hearingGroupId)
+        .set('hearingIds', hearingIds)
+    };
+    return this.http.delete<LinkedHearingGroupResponseModel>('api/hearings/linkedHearingGroup', options);
   }
 }

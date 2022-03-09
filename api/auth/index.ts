@@ -1,4 +1,5 @@
 import { AUTH, AuthOptions, xuiNode } from '@hmcts/rpx-xui-node-lib';
+import { AppInsights } from 'applicationinsights-js';
 import { NextFunction, Response } from 'express';
 import { EnhancedRequest } from '../lib/models';
 
@@ -50,7 +51,10 @@ export const successCallback = (req: EnhancedRequest, res: Response, next: NextF
 }
 
 export const failureCallback = (req: EnhancedRequest, res: Response, next: NextFunction) => {
-    logger.warn(res.locals.message);
+    const errorMsg = `Auth Error: failureCallback() - ${res.locals.message}`;
+
+    logger.warn(errorMsg);
+    AppInsights.trackEvent(errorMsg);
 }
 
 xuiNode.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, successCallback)

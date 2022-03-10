@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {select, Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {HearingConditions} from '../../models/hearingConditions';
-import {Mode} from '../../models/hearings.enum';
+import {HearingTemplate, Mode} from '../../models/hearings.enum';
 import {Section} from '../../models/section';
 import * as fromHearingStore from '../../store';
 
@@ -16,6 +16,7 @@ export class HearingSummaryComponent implements AfterViewInit {
 
   @Input() public template: Section[];
   @Input() public mode: Mode;
+  public listingTemplate: string = HearingTemplate.LISTING_INFORMATION;
   public hearingState$: Observable<fromHearingStore.State>;
 
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,

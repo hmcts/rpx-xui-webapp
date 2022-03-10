@@ -1591,7 +1591,7 @@ export const initialState = {
             hearingEndDateTime: '',
             listAssistSessionID: '',
             hearingVenueId: '',
-            hearingRoomId: '',
+            hearingRoomId: 'room 3',
             hearingPanel: []
           }
         },

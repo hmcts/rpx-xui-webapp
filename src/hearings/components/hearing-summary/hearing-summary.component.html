@@ -3,7 +3,14 @@
     <div *ngIf="section.insetInfo" class="govuk-inset-text">
       {{ section.insetInfo }}
     </div>
-    <div [innerHtml]="section.sectionHTMLTitle"></div>
+    <div [ngSwitch]="section.sectionHTMLTitle">
+      <ng-container *ngSwitchCase="listingTemplate">
+        <exui-listing-information-summary></exui-listing-information-summary>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <div [innerHtml]="section.sectionHTMLTitle"></div>
+      </ng-container>
+    </div>
     <div class="govuk-summary-list govuk-!-margin-bottom-9">
       <ng-container *ngFor="let answer of section.answers">
         <div *ngIf="answer.isHiddenSource === undefined ? true : !(answer.isHiddenSource | isHidden:hearingState$ | async)"

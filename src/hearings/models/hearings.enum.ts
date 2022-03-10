@@ -290,11 +290,6 @@ export enum HearingActualAddEditSummaryEnum {
   HearingResultError = 'Enter a hearing result'
 }
 
-export enum HearingConfirmationSource {
-  REQUEST,
-  ACTUALS
-}
-
 export enum HearingTemplate {
   LISTING_INFORMATION = 'Listing information summary',
 }

@@ -1,4 +1,5 @@
-<div *ngFor="let section of template">
+<xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem'"></xuilib-hmcts-error-summary>
+<div id="hearing-summary" *ngFor="let section of template">
   <div *ngIf="section.isHiddenSource === undefined ? true : !(section.isHiddenSource | isHidden:hearingState$ | async)">
     <div *ngIf="section.insetInfo" class="govuk-inset-text">
       {{ section.insetInfo }}

@@ -101,7 +101,7 @@ export class HearingRequestEffects {
             this.hearingStore.dispatch(new hearingRequestActions.InitializeHearingRequest(hearingRequestMainModel));
           }),
         catchError(error => {
-          return HearingRequestEffects.handleError(error);
+          return HearingRequestEffects.handleError(error, this.hearingStore);
         })
       );
     })
@@ -118,7 +118,7 @@ export class HearingRequestEffects {
             return this.router.navigate(['hearings', 'request', 'hearing-confirmation']);
           }),
         catchError(error => {
-          return HearingRequestEffects.handleError(error);
+          return HearingRequestEffects.handleError(error, this.hearingStore);
         })
       );
     })
@@ -143,15 +143,15 @@ export class HearingRequestEffects {
             return this.router.navigate(['hearings', 'request', 'hearing-confirmation']);
           }),
         catchError(error => {
-          return HearingRequestEffects.handleError(error);
+          return HearingRequestEffects.handleError(error, this.hearingStore);
         })
       );
     })
   );
 
-  public static handleError(error: HttpError): Observable<Action> {
+  public static handleError(error: HttpError, hearingStore: Store<fromHearingReducers.State>): Observable<Action> {
     if (error && error.status && error.status >= 400) {
-			HearingsUtils.handleFatalErrors(error);
+      hearingStore.dispatch(new hearingRequestActions.SubmitHearingRequestFailure(error));
       return of(new fromAppStoreActions.Go({path: ['/service-down']}));
     }
   }

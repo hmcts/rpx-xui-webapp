@@ -294,3 +294,8 @@ export enum HearingActualAddEditSummaryEnum {
 export enum HearingTemplate {
   LISTING_INFORMATION = 'Listing information summary',
 }
+
+export enum GroupLinkType {
+  ORDERED = 'Ordered',
+  SAME_SLOT = 'Same Slot',
+}

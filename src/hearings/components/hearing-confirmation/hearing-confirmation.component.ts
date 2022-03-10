@@ -13,8 +13,4 @@ export class HearingConfirmationComponent {
   @Input() public subheading: string;
   @Input() public subheadingDescription: string;
   @Input() public additionalDescription: string;
-
-  public get hearingConfirmationSourceEnum() {
-    return HearingConfirmationSource;
-  }
 }

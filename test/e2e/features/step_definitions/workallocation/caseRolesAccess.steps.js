@@ -113,13 +113,15 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I validate add link for role category {string} is displayed in Roles and access page', async function (roleCategory) {
-        expect(await caseRolesAndAccessPage.isAllocateRoleLinkPresentForCategory(roleCategory)).to.be.true;
-
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await caseRolesAndAccessPage.isAllocateRoleLinkPresentForCategory(roleCategory)).to.be.true;
+        });
     });
 
     Then('I validate add link for role category {string} is not displayed in Roles and access page', async function (roleCategory) {
-        expect(await caseRolesAndAccessPage.isAllocateRoleLinkPresentForCategory(roleCategory)).to.be.false;
-
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await caseRolesAndAccessPage.isAllocateRoleLinkPresentForCategory(roleCategory)).to.be.false;
+        });
     });
 
     When('I click Add link for exclusions in roles and access page', async function (roleType){

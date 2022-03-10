@@ -15,9 +15,9 @@ const prdUrl: string = getConfigValue(SERVICES_PRD_API_URL);
  */
 export async function getLovRefData(req: EnhancedRequest, res: Response, next: NextFunction) {
   // @ts-ignore
-  const category = req.query.category;
-  const service = req.query.service;
-  const markupPath: string = `${prdUrl}/refdata/lov/${category}/${service}`;
+  const { service, category, isChildRequired }  = req.query;
+  const params = new URLSearchParams({service, isChildRequired});
+  const markupPath: string = `${prdUrl}/refdata/commondata/lov/categories/${category}?${params}`;
   try {
     const {status, data}: { status: number, data: LovRefDataByCategoryModel[] } = await handleGet(markupPath, req);
     const refDataByCategory: LovRefDataByCategoryModel = data.find(refDataByCategoryModel =>

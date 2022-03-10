@@ -28,7 +28,7 @@ export class RefDataResolver implements Resolve<LovRefDataModel[]> {
         }), take(1),
         switchMap((serviceId) => {
           const category = route.data['category'] ? route.data['category'] as HearingCategory : HearingCategory.Priority;
-          return this.getReferenceData$(serviceId, category);
+          return this.getReferenceData$(serviceId, category, route.data.isChildRequired);
         })
       );
   }
@@ -39,8 +39,8 @@ export class RefDataResolver implements Resolve<LovRefDataModel[]> {
     );
   }
 
-  public getReferenceData$(serviceId, category: HearingCategory): Observable<LovRefDataModel[]> {
-    return this.lovRefDataService.getListOfValues(category, serviceId).pipe(
+  public getReferenceData$(serviceId, category: HearingCategory, isChildRequired): Observable<LovRefDataModel[]> {
+    return this.lovRefDataService.getListOfValues(category, serviceId, isChildRequired).pipe(
       catchError(() => {
         return [];
       })

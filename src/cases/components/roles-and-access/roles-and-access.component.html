@@ -48,12 +48,8 @@
   </p>
 
   <h2 class="govuk-heading-m">Exclusions</h2>
-  <div *ngIf="!namedExclusions">
-    <exui-exclusions-table [exclusions]="exclusions" [caseDetails]="caseDetails" [isCaseAllocator]="showAllocateRoleLink"></exui-exclusions-table>
-  </div>
-  <div *ngIf="namedExclusions">
-    <exui-exclusions-table [exclusions]="namedExclusions" [caseDetails]="caseDetails" [isCaseAllocator]="showAllocateRoleLink"></exui-exclusions-table>
-  </div>
+  <exui-exclusions-table [exclusions]="exclusions" [caseDetails]="caseDetails"
+[isCaseAllocator]="showAllocateRoleLink"></exui-exclusions-table>
   <p>
     <a href="javascript:void(0)"
        [routerLink]="['/', 'role-access', 'add-exclusion']"

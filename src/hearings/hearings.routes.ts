@@ -105,7 +105,7 @@ export const ROUTES: Routes = [
           title: 'HMCTS Hearings | Hearing Actuals | Confirmation'
         }
       },
-			{
+      {
         path: 'actuals-parties',
         resolve: {
           partyChannel: HearingActualPartyChannelResolverService,

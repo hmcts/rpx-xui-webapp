@@ -7,6 +7,7 @@ export const UPDATE_HEARING_ACTUALS_SUCCESS = '[HEARING ACTUALS] Update Hearing 
 export const GET_HEARING_ACTUALS = '[HEARING ACTUALS] Get Hearing Actuals';
 export const GET_HEARING_ACTUALS_SUCCESS = '[HEARING ACTUALS] Get Hearing Actuals success';
 export const SUBMIT_HEARING_ACTUALS = '[HEARING ACTUALS] Submit Hearing Actuals';
+export const SUBMIT_HEARING_ACTUALS_SUCCESS = '[HEARING ACTUALS] Submit Hearing Actuals Success';
 
 export class ResetHearingActuals implements Action {
   public readonly type = RESET_HEARING_ACTUALS;
@@ -43,7 +44,14 @@ export class UpdateHearingActualsSuccess implements Action {
 export class SubmitHearingActuals implements Action {
   public readonly type = SUBMIT_HEARING_ACTUALS;
 
-  constructor(public hearingId: string) {
+  constructor(public payload: string) {
+  }
+}
+
+export class SubmitHearingActualsSuccess implements Action {
+  public readonly type = SUBMIT_HEARING_ACTUALS_SUCCESS;
+
+  constructor(public payload: string) {
   }
 }
 
@@ -53,4 +61,5 @@ export type HearingActualsAction =
   | GetHearingActualsSuccess
   | UpdateHearingActuals
   | UpdateHearingActualsSuccess
-  | SubmitHearingActuals;
+  | SubmitHearingActuals
+  | SubmitHearingActualsSuccess;

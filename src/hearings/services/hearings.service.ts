@@ -1,4 +1,4 @@
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpParams, HttpResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
 import {HearingActualsMainModel, HearingActualsModel} from '../models/hearingActualsMainModel';
@@ -61,7 +61,7 @@ export class HearingsService {
     return this.http.put<HearingActualsMainModel>(`api/hearings/hearingActuals/${hearingId}`, hearingActualsModel);
   }
 
-  public submitHearingActuals(hearingId: string): Observable<number> {
-    return this.http.post<number>(`api/hearings/hearingActualsCompletion/${hearingId}`, null);
+  public submitHearingActuals(hearingId: string): Observable<HttpResponse<number>> {
+    return this.http.post<HttpResponse<number>>(`api/hearings/hearingActualsCompletion/${hearingId}`, null);
   }
 }

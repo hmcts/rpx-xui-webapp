@@ -1,11 +1,11 @@
 import { HearingActualsMainModel } from '../models/hearingActualsMainModel';
-import { HearingResult, HMCStatus } from '../models/hearings.enum';
+import { HMCStatus } from '../models/hearings.enum';
 
 export const HEARING_ACTUAL: HearingActualsMainModel = {
   hearingActuals: {
     hearingOutcome: {
       hearingFinalFlag: false,
-      hearingResult: HearingResult.CANCELLED,
+      hearingResult: null,
       hearingResultDate: '2019-01-01',
       hearingResultReasonType: '',
       hearingType: 'final',

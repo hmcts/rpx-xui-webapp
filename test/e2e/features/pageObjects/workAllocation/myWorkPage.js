@@ -301,20 +301,20 @@ class MyWorkPage extends TaskList {
 
     async isWorkFilterOfTypeDisplayed(filterType){
 
-        const filetTypeNormalized = filterType.toLowerCase().split(' ').join(''); 
+        const filterTypeNormalized = filterType.toLowerCase().split(' ').join('');
 
-        let filetrContainer = null;
-        if (filetTypeNormalized.includes('service')){
-            filetrContainer = this.workFilterServicesContainer;
-        } else if (filetTypeNormalized.includes('location')){
-            filetrContainer = this.workFiltersLocationsContainer;
-        } else if (filetTypeNormalized.includes('worktype')) {
-            filetrContainer = this.workFilterWorkTypesContainer;
+        let filterContainer = null;
+        if (filterTypeNormalized.includes('service')){
+            filterContainer = this.workFilterServicesContainer;
+        } else if (filterTypeNormalized.includes('location')){
+            filterContainer = this.workFiltersLocationsContainer;
+        } else if (filterTypeNormalized.includes('worktype')) {
+            filterContainer = this.workFilterWorkTypesContainer;
         }else {
             throw new Error(`${filterType} is not implemented in test. Please check Page object myWorkPage.js`);
         }
 
-        return (await filetrContainer.isPresent()) && (await filetrContainer.isDisplayed()); 
+        return (await filterContainer.isPresent()) && (await filterContainer.isDisplayed());
 
     }
 

@@ -125,11 +125,13 @@ export enum HearingCategory {
   JudgeType = 'JudgeType',
   OtherPanelRoles = 'OtherPanelRoles',
   CancelHearingReason = 'CancelHearingReason',
+  HearingRoles = 'HearingRoles',
   AdjournHearingActualReason = 'AdjournHearingActualReason',
   CancelHearingActualReason = 'CancelHearingActualReason'
 }
 
 export enum HearingDateEnum {
+  DisplayTime = 'HH:MM',
   DisplayMonth = 'DD MMMM YYYY',
   DefaultFormat = 'DD-MM-YYYY',
   InvalidDate = 'Invalid date'
@@ -174,6 +176,11 @@ export enum HearingDatePriorityEnum {
   EarliestHearingDateError = 'The earliest hearing date must be before the latest hearing date',
 }
 
+export enum HearingStageResultEnum {
+  HearingResultError = 'Select a hearing result',
+  HearingResultReasonError = 'Select a reason for the hearing result'
+}
+
 export enum HearingErrorMessage {
   ENTER_A_VALID_LOCATION = 'Enter a valid location',
   ENTER_A_LOCATION = 'Enter a location',
@@ -210,7 +217,7 @@ export enum CaseFlagType {
 }
 
 export enum CancelHearingMessages {
-  NOT_SELECTED_A_REASON = 'You have not selected a reason for cancelling th hearing',
+  NOT_SELECTED_A_REASON = 'You have not selected a reason for cancelling the hearing',
   SELECT_AT_LEAST_ONE_REASON = 'Select at least one valid reason',
 }
 
@@ -221,7 +228,10 @@ export enum AnswerSource {
   TYPE_FROM_REQUEST,
   STATUS,
   DATE_REQUEST_SUBMITTED,
+  DATE_REQUEST_SUBMITTED_TIME,
+  DATE_RESPONSE_RECEIVED,
   CASE_FLAGS,
+  ROOM_ID,
   ADDITIONAL_SECURITY_REQUIRED,
   ADDITIONAL_FACILITIES_REQUIRED,
   STAGE,
@@ -231,6 +241,7 @@ export enum AnswerSource {
   NEED_WELSH,
   NEED_JUDGE,
   JUDGE_NAME,
+  JUDICIAL_MEMBERS,
   JUDGE_TYPES,
   JUDGE_EXCLUSION,
   HEARING_PANEL,
@@ -250,7 +261,9 @@ export enum IsHiddenSource {
   PANEL_EXCLUSION,
   PANEL_ROLES,
   JUDGE_TYPES,
-  JUDGE_NAME
+  JUDGE_NAME,
+  LISTED,
+  NOT_LISTED
 }
 
 export enum Mode {
@@ -272,4 +285,8 @@ export enum HearingResult {
   COMPLETED = 'COMPLETED',
   ADJOURNED = 'ADJOURNED',
   CANCELLED = 'CANCELLED',
+}
+
+export enum HearingTemplate {
+  LISTING_INFORMATION = 'Listing information summary',
 }

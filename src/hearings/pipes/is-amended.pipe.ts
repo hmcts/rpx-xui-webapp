@@ -1,12 +1,18 @@
-import { Pipe, PipeTransform } from '@angular/core';
-import { Observable } from 'rxjs';
-import { AdditionalFacilitiesAmendedConverter } from '../converters/additional-facilities.amended.converter';
-import { AdditionalSecurityAmendedConverter } from '../converters/additional-security.amended.converter';
-import { DefaultAmendedConverter } from '../converters/default.amended.converter';
-import { HearingPanelAmendedConverter } from '../converters/hearing-panel.amended.converter';
+import {Pipe, PipeTransform} from '@angular/core';
+import {Observable} from 'rxjs';
+import {AdditionalFacilitiesAmendedConverter} from '../converters/additional-facilities.amended.converter';
+import {AdditionalSecurityAmendedConverter} from '../converters/additional-security.amended.converter';
+import {DefaultAmendedConverter} from '../converters/default.amended.converter';
+import { HearingLengthAmendedConverter } from '../converters/hearing-length.amended.converter';
+import { HearingSpecificDateAmendedConverter } from '../converters/hearing-specific-date.amended.converter';
+import { HearingPriorityAmendedConverter } from '../converters/hearing-priority.amended.converter';
 import { HowManyPeopleAttendAmendedConverter } from '../converters/how-many-people-attend.amended.converter';
 import { HowPartyAttendAmendedConverter } from '../converters/how-party-attend.amended.converter';
-import { IsAmendedConverter } from '../converters/is-amended.converter';
+import {IsAmendedConverter} from '../converters/is-amended.converter';
+import { JudgeExclusionAmendedConverter } from '../converters/judge-exclusion.amended.converter';
+import { NeedJudgeAmendedConverter } from '../converters/need-judge.amended.converter';
+import { JudgeTypesAmendedConverter } from '../converters/judge-types.amended.converter';
+import { HearingPanelAmendedConverter } from '../converters/hearing-panel.amended.converter';
 import { PanelExclusionAmendedConverter } from '../converters/panel-exclusion.amended.converter';
 import { PanelInclusionAmendedConverter } from '../converters/panel-inclusion.amended.converter';
 import { PanelRolesAmendedConverter } from '../converters/panel-roles.amended.converter';
@@ -14,6 +20,7 @@ import { StageAmendedConverter } from '../converters/stage.amended.converter';
 import { VenueAmendedConverter } from '../converters/venue.amended.converter';
 import { AnswerSource } from '../models/hearings.enum';
 import { State } from '../store';
+import { JudgeNameAmendedConverter } from '../converters/judge-name.amended.converter';
 
 @Pipe({
   name: 'isAmended'
@@ -40,6 +47,27 @@ export class IsAmendedPipe implements PipeTransform {
         break;
       case AnswerSource.STAGE:
         converter = new StageAmendedConverter();
+        break;
+      case AnswerSource.NEED_JUDGE:
+        converter = new NeedJudgeAmendedConverter();
+        break;
+      case AnswerSource.JUDGE_NAME:
+        converter = new JudgeNameAmendedConverter();
+        break;
+      case AnswerSource.JUDGE_TYPES:
+        converter = new JudgeTypesAmendedConverter();
+        break;
+      case AnswerSource.JUDGE_EXCLUSION:
+        converter = new JudgeExclusionAmendedConverter();
+        break;
+      case AnswerSource.HEARING_LENGTH:
+        converter = new HearingLengthAmendedConverter();
+        break;
+      case AnswerSource.HEARING_SPECIFIC_DATE:
+        converter = new HearingSpecificDateAmendedConverter();
+        break;
+      case AnswerSource.HEARING_PRIORITY:
+        converter = new HearingPriorityAmendedConverter();
         break;
       case AnswerSource.HEARING_PANEL:
         converter = new HearingPanelAmendedConverter();

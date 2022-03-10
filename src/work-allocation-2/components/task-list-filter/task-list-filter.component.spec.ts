@@ -181,7 +181,7 @@ describe('TaskListFilterComponent', () => {
     expect(component.bookingLocations.length).toEqual(2);
   });
 
-  it('should show types of work filter with all types of work filters selected', () =>
+  it('should show types of work filter with all types of work filters selected', () => {
     expect(component.fieldsSettings.fields.length).toBe(3);
     const typesOfWorkSelectedFields = component.fieldsSettings.fields[2];
     expect(typesOfWorkSelectedFields.value.length).toBe(typesOfWork.length + 1);

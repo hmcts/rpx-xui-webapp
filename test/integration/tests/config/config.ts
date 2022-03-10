@@ -43,7 +43,7 @@ export  const config =  {
                 caseTypeIds: [
                     'GrantOfRepresentation'
                 ]
-            }
+            } 
         ]
     },
     jurisdcitionNames: {
@@ -56,7 +56,7 @@ export  const config =  {
         },
         demo: {
             docId: '005ed16f-be03-4620-a8ee-9bc90635f6f2'
-        }
+        } 
     },
     testEnv: process.env.TEST_ENV ? process.env.TEST_ENV : 'aat',
     users : {
@@ -72,8 +72,8 @@ export  const config =  {
        }
     },
     configuratioUi: {
-        aat: ['clientId', 'idamWeb', 'launchDarklyClientId', 'oAuthCallback', 'oidcEnabled', 'paymentReturnUrl', 'protocol', 'ccdGatewayUrl', 'substantiveEnabled','accessManagementEnabled'],
-        demo: ['clientId', 'idamWeb', 'launchDarklyClientId', 'oAuthCallback', 'oidcEnabled', 'paymentReturnUrl', 'protocol', 'ccdGatewayUrl', 'substantiveEnabled','accessManagementEnabled']
+        aat: ['clientId', 'idamWeb', 'launchDarklyClientId', 'oAuthCallback', 'oidcEnabled', 'protocol', 'ccdGatewayUrl', 'substantiveEnabled','accessManagementEnabled'],
+        demo: ['clientId', 'idamWeb', 'launchDarklyClientId', 'oAuthCallback', 'oidcEnabled', 'protocol', 'ccdGatewayUrl', 'substantiveEnabled','accessManagementEnabled']
     },
     workallocation:{
         aat:{

@@ -80,7 +80,7 @@ describe('nodeApp endpoint', () => {
   //   }
 
   //   await Request.withSession(matchingUsers[0].email, 'Welcome01');
-
+   
   //   const response = await Request.get('api/user/details', null, 200);
   //   expect(response.status).to.equal(200);
   //   const actualLocationObjKeys = response.data;

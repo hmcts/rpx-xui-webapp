@@ -53,8 +53,6 @@ export const SERVICES_TERMS_AND_CONDITIONS_URL = 'services.termsAndConditions';
 
 export const SERVICES_PAYMENTS_URL = 'services.payments';
 
-export const SERVICES_PAYMENT_RETURN_URL = 'services.payment_return_url'
-
 export const SERVICES_PRD_API_URL = 'services.prd.api';
 
 export const SERVICES_REFUNDS_API_URL = 'services.refunds';

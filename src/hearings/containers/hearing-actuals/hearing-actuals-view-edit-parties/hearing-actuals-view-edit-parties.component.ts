@@ -1,13 +1,13 @@
-import {Component, OnDestroy, OnInit, Renderer2} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
-import {Store} from '@ngrx/store';
-import {Subscription} from 'rxjs';
-import {filter} from 'rxjs/operators';
-import {HearingActualsMainModel} from '../../../models/hearingActualsMainModel';
-import {HearingActualsStateData} from '../../../models/hearingActualsStateData.model';
-import {LovRefDataModel} from '../../../models/lovRefData.model';
-import {LovRefDataService} from '../../../services/lov-ref-data.service';
+import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { combineLatest, Subscription } from 'rxjs';
+import { filter, first } from 'rxjs/operators';
+import { ActualDayPartyModel, HearingActualsMainModel, PartyModel } from '../../../models/hearingActualsMainModel';
+import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
+import { LovRefDataService } from '../../../services/lov-ref-data.service';
 import * as fromHearingStore from '../../../store';
 
 @Component({
@@ -28,7 +28,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     'Organisation (optional)',
     'Attendee representing',
     'Action',
-    ];
+  ];
 
   public partiesTable: FormGroup;
 
@@ -39,6 +39,8 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   private hearingActuals: HearingActualsMainModel;
 
   private sub: Subscription;
+
+  private id: string;
 
   public constructor(private readonly fb: FormBuilder,
                      private readonly hearingStore: Store<fromHearingStore.State>,
@@ -51,22 +53,40 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     });
   }
 
+  public get parties(): FormArray {
+    return this.partiesTable.get('parties') as FormArray;
+  }
+
+  private static toActualDayParties(parties: { parties: PartyModel[] }): ActualDayPartyModel[] {
+    return parties.parties.map((party: any) => ({
+      actualIndividualDetails: {
+        firstName: party.firstName,
+        lastName: party.lastName,
+      },
+      actualOrganisationDetails: {
+        name: party.organisation
+      },
+      actualPartyId: '',
+      didNotAttendFlag: false,
+      partyChannelSubType: party.attendanceType,
+      partyRole: party.role,
+      representedParty: 0
+    }));
+  }
+
   public ngOnInit(): void {
     this.partyChannel = this.route.snapshot.data.partyChannel;
     this.hearingRole = this.route.snapshot.data.hearingRole;
-    this.sub = this.hearingStore.select(fromHearingStore.getHearingActuals)
+    this.sub = combineLatest([this.hearingStore.select(fromHearingStore.getHearingActuals), this.route.paramMap])
       .pipe(
-        filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel)
+        filter(([state]: [HearingActualsStateData, ParamMap]) => !!state.hearingActualsMainModel),
+        first()
       )
-      .subscribe((state: HearingActualsStateData) => {
-        // create new deep clone otherwise cannot modify model
+      .subscribe(([state, params]: [HearingActualsStateData, ParamMap]) => {
+        this.id = params.get('id');
         this.hearingActuals = JSON.parse(JSON.stringify(state.hearingActualsMainModel));
         this.createForm(this.hearingActuals);
       });
-  }
-
-  public get parties(): FormArray {
-    return this.partiesTable.get('parties') as FormArray;
   }
 
   public initiateForm(): FormGroup {
@@ -99,9 +119,30 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     this.sub.unsubscribe();
   }
 
+  public submitForm(parties: { parties: PartyModel[] }): void {
+    const hearingActuals = {
+      ...this.hearingActuals.hearingActuals,
+      actualHearingDays: [
+        {
+          ...this.hearingActuals.hearingActuals.actualHearingDays[0],
+          actualDayParties: HearingActualsViewEditPartiesComponent.toActualDayParties(parties)
+        }
+      ]
+    };
+    this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
+      hearingId: this.id,
+      hearingActuals
+    }));
+  }
+
+  public getRole(value: string): string {
+    const hearingRole = this.hearingRole.find(role => role.key === value);
+    return hearingRole ? hearingRole.value_en : value;
+  }
+
   private createForm(hearingActuals: HearingActualsMainModel): void {
 
-    hearingActuals.hearingPlanned.plannedHearingDays[0].parties.forEach( party => {
+    hearingActuals.hearingPlanned.plannedHearingDays[0].parties.forEach(party => {
 
       this.participants.push({
         name: `${party.individualDetails.firstName} ${party.individualDetails.lastName}`,
@@ -119,9 +160,9 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       }));
     });
 
-    hearingActuals.hearingActuals.actualHearingDays.forEach( actualHearingDay => {
+    hearingActuals.hearingActuals.actualHearingDays.forEach(actualHearingDay => {
 
-      actualHearingDay.actualDayParties.forEach( dayParty => {
+      actualHearingDay.actualDayParties.forEach(dayParty => {
         if (dayParty.didNotAttendFlag) {
           dayParty.partyChannelSubType = 'notAttending';
         }
@@ -138,15 +179,5 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       });
     });
 
-  }
-
-  public submitForm($event): void {
-    $event.preventDefault();
-    // console.log(this.parties.value);
-  }
-
-  public getRole(value: string): string {
-    const hearingRole = this.hearingRole.find( role => role.key === value);
-    return hearingRole ? hearingRole.value_en : value;
   }
 }

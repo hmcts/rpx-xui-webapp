@@ -5,6 +5,7 @@ import {Actions, Effect, ofType} from '@ngrx/effects';
 import {Action, select, Store} from '@ngrx/store';
 import {Observable, of} from 'rxjs';
 import {catchError, map, switchMap, tap} from 'rxjs/operators';
+import { HearingsUtils } from 'src/hearings/utils/hearings.utils';
 import * as fromAppStoreActions from '../../../app/store/actions';
 import {HttpError} from '../../../models/httpError.model';
 import {Mode} from '../../models/hearings.enum';
@@ -150,6 +151,7 @@ export class HearingRequestEffects {
 
   public static handleError(error: HttpError): Observable<Action> {
     if (error && error.status && error.status >= 400) {
+			HearingsUtils.handleFatalErrors(error);
       return of(new fromAppStoreActions.Go({path: ['/service-down']}));
     }
   }

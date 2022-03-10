@@ -1,4 +1,5 @@
 import {NextFunction, Response} from 'express';
+import { throwError } from 'rxjs';
 import {handleDelete, handleGet, handlePost, handlePut} from '../common/mockService';
 import {getConfigValue} from '../configuration';
 import {SERVICES_HEARINGS_COMPONENT_API} from '../configuration/references';
@@ -75,7 +76,9 @@ export async function submitHearingRequest(req: EnhancedRequest, res: Response, 
   const markupPath: string = `${hearingsUrl}/hearing`;
   try {
     const { status, data }: { status: number, data: ServiceHearingValuesModel } = await handlePost(markupPath, reqBody, req);
-    res.status(status).send(data);
+    // res.status(status).send(data);
+		// throwError('custom error');
+		res.status(500).send(data);
   } catch (error) {
     next(error);
   }

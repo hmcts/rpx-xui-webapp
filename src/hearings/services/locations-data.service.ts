@@ -8,7 +8,7 @@ export class LocationsDataService {
   public constructor(private readonly http: HttpClient) {
   }
 
-  public getCourtLocations(locationId: string): Observable<LocationModel> {
-    return this.http.get<LocationModel>(`api/prd/location/getCourtLocations?epimms_id=${locationId}`);
+  public getLocationById(locationId: string): Observable<LocationModel> {
+    return this.http.get<LocationModel>(`api/prd/location/getLocationById?epimms_id=${locationId}`);
   }
 }

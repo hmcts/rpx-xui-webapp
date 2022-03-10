@@ -34,7 +34,7 @@ export class CourtLocationsDataResolver implements Resolve<LocationModel> {
   }
 
   public getCourtLocationData$(locationId: string): Observable<LocationModel> {
-    return this.locationsDataService.getCourtLocations(locationId).pipe(
+    return this.locationsDataService.getLocationById(locationId).pipe(
       catchError(() => {
         return [];
       })

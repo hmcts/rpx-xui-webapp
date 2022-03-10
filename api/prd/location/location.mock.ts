@@ -7,13 +7,13 @@ import { toEpimsLocation } from "./models/location.model";
 export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
   const getLocationsUrl = /http:\/\/rd-professional-api-aat.service.core-compute-aat.internal\/refdata\/location\/court-venues\/venue-search\?search-string=[\w]*/;
-  const getCourtLocationsUrl = /http:\/\/rd-professional-api-aat.service.core-compute-aat.internal\/refdata\/location\/court-locations\?epimms_id=[\w]*/;
+  const getLocationByIdUrl = /http:\/\/rd-professional-api-aat.service.core-compute-aat.internal\/refdata\/location\/court-locations\?epimms_id=[\w]*/;
 
-  mock.onGet(getCourtLocationsUrl).reply(config => {
+  mock.onGet(getLocationByIdUrl).reply(config => {
     const requestURL = config.url;
-    const courTypeIdStartIdx = config.url.lastIndexOf('=');
-    const courTypeIdsStr = requestURL.substring(courTypeIdStartIdx + 1);
-    const searchResult = ALL_COURT_LOCATIONS.find(location => location.epims_id === courTypeIdsStr);
+    const epimmsIDIdx = config.url.lastIndexOf('=');
+    const epimmsID = requestURL.substring(epimmsIDIdx + 1);
+    const searchResult = ALL_COURT_LOCATIONS.find(location => location.epims_id === epimmsID);
     return [
       200,
       searchResult,

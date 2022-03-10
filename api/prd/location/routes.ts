@@ -6,4 +6,4 @@ export const router = express.Router({ mergeParams: true });
 
 router.use(authInterceptor);
 router.get('/getLocations', getLocations);
-router.get('/getCourtLocations', getCourtLocations);
+router.get('/getLocationById', getCourtLocations);

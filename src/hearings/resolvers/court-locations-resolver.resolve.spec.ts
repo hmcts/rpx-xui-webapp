@@ -58,11 +58,11 @@ describe('CourtLocationsData Resolver', () => {
 
   it('resolves reference data', inject([CourtLocationsDataResolver], (service: CourtLocationsDataResolver) => {
     spyOn(store, 'pipe').and.returnValue(of('serviceName'));
-    spyOn(locationsDataService, 'getCourtLocations').and.returnValue(of(dataRef));
+    spyOn(locationsDataService, 'getLocationById').and.returnValue(of(dataRef));
     spyOn(service, 'getLocationId$').and.callThrough();
     service.resolve().subscribe((refData: LocationModel) => {
       expect(service.getLocationId$).toHaveBeenCalled();
-      expect(locationsDataService.getCourtLocations).toHaveBeenCalled();
+      expect(locationsDataService.getLocationById).toHaveBeenCalled();
       expect(refData).toEqual(dataRef);
     });
   }));

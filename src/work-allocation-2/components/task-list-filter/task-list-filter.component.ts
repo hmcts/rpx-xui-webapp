@@ -16,7 +16,7 @@ import * as _ from 'underscore';
 import { ErrorMessage } from '../../../app/models';
 import { Location } from '../../models/dtos';
 import Task from '../../models/tasks/task.model';
-import { WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
+import { LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { TaskTypesService } from '../../services/task-types.service';
 import { servicesMap } from '../../utils';
 
@@ -95,21 +95,23 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     return result.length >= baseLocations.value.length;
   }
 
-  public subscribeToSelectedLocations(): void {
-    this.selectedLocationsSubscription = this.filterService.getStream(TaskListFilterComponent.FILTER_NAME)
-      .pipe(
-        filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
-      )
-      .subscribe((f: FilterSetting) => {
-        this.selectedLocations = this.bookingLocations && this.bookingLocations.length > 0 ? this.bookingLocations :  f.fields.find((field) => field.name === TaskListFilterComponent.FILTER_NAME).value;
-        this.showFilteredText = this.hasBeenFiltered(f, this.getDefaultLocations());
-        this.toggleFilter = false;
-      });
-  }
+  // TODO: CAM_BOOKING - remove this
+  // public subscribeToSelectedLocations(): void {
+  //   this.selectedLocationsSubscription = this.filterService.getStream(TaskListFilterComponent.FILTER_NAME)
+  //     .pipe(
+  //       filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
+  //     )
+  //     .subscribe((f: FilterSetting) => {
+  //       this.selectedLocations = this.bookingLocations && this.bookingLocations.length > 0 ? this.bookingLocations :  f.fields.find((field) => field.name === TaskListFilterComponent.FILTER_NAME).value;
+  //       this.showFilteredText = this.hasBeenFiltered(f, this.getDefaultLocations());
+  //       this.toggleFilter = false;
+  //     });
+  // }
 
   public ngOnInit(): void {
     this.fieldsConfig.persistence = this.persistence || 'session';
     // TODO: CAM_BOOKING - are both subscriptions still needed, check this
+    // MASTER
     this.subscription = combineLatest([
       this.taskTypesService.getTypesOfWork(),
       this.service.getWASupportedJurisdictions(),
@@ -122,14 +124,17 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       this.subscribeToFilters(assignedTasks);
     });
 
-    this.locationSubscription = this.locationService.getLocations().subscribe((locations: Location[]) => {
-      locations.forEach((location) => this.allLocations.push(location.id.toString()));
-      this.setUpLocationFilter(locations);
-      this.persistFirstSetting();
-    });
+    // TODO: CAM_BOOKING - remove this
+    // 4347 - BOOKINGS-UI
+    // this.locationSubscription = this.locationService.getLocations().subscribe((locations: Location[]) => {
+    //   locations.forEach((location) => this.allLocations.push(location.id.toString()));
+    //   this.setUpLocationFilter(locations);
+    //   this.persistFirstSetting();
+    // });
+    //
 
     this.setErrors();
-    this.subscribeToSelectedLocations();
+    // this.subscribeToSelectedLocations();
     this.toggleFilter = false;
   }
 
@@ -212,12 +217,20 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       const location: Location = history.state.location;
       this.defaultLocations = [`${location.id}`]
     }
+    // } else {
+    //   if (defaultLocations) {
+    //     this.defaultLocations = [defaultLocations];
+    //     this.defaultLocations = ['366796'];
+    //   } else {
+    //     this.defaultLocations = [];
+    //   }
+    // }
     // TODO: CAM_BOOKING - check this logic
-    if (location) {
-      this.defaultLocations = [location];
-    } else {
-      this.defaultLocations = [];
-    }
+    // if (location) {
+    //   this.defaultLocations = [location];
+    // } else {
+    //   this.defaultLocations = [];
+    // }
 
     this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
       name: TaskListFilterComponent.FILTER_NAME,

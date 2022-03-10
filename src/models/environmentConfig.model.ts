@@ -11,5 +11,4 @@ export interface EnvironmentConfig {
   oidcEnabled: string;
   launchDarklyClientId?: string;
   accessManagementEnabled?: boolean;
-  paymentReturnUrl: string;
 }

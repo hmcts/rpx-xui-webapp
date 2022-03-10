@@ -202,8 +202,4 @@ export class AppConfig extends AbstractAppConfig {
   public getCamRoleAssignmentsApiUrl(): string {
     return this.config.cam_role_assignments_api_url;
   }
-
-  public getPaymentReturnUrl(): string {
-      return this.environmentService.get('paymentReturnUrl');
-  }
 }

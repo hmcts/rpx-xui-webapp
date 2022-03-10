@@ -5,7 +5,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { switchMap} from 'rxjs/operators';
-import { CaseSearchParameters, SearchCaseRequest } from '../models/dtos';
 import Task from '../models/tasks/task.model';
 
 const BASE_URL: string = '/workallocation2/case';

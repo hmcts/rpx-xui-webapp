@@ -38,8 +38,9 @@ export class BookingLocationComponent implements AfterViewInit, OnInit {
   }
 
   public ngAfterViewInit(): void {
-    this.getLocationSearchFocus();
-    this.findLocationFormGroup.controls.locationSelectedFormControl.setValue(this.bookingProcess.location);
+    // TODO: CAM_BOOKING - remomve these if no longer needed
+    // this.getLocationSearchFocus();
+    // this.findLocationFormGroup.controls.locationSelectedFormControl.setValue(this.bookingProcess.location);
   }
 
   public onLocationChanged(location: LocationByEPIMMSModel): void {
@@ -52,19 +53,21 @@ export class BookingLocationComponent implements AfterViewInit, OnInit {
   public onContinueClick(): void {
     this.formError = !this.bookingProcess.location;
     if (!this.bookingProcess.location) {
-      this.getLocationSearchFocus();
+      // TODO: CAM_BOOKING - remove this?
+      // this.getLocationSearchFocus();
     } else {
       this.eventTrigger.emit(BookingNavigationEvent.LOCATIONCONTINUE);
     }
   }
 
-  public getLocationSearchFocus(): void {
-    if (this.searchLocationComponent &&
-      this.searchLocationComponent.autoCompleteInputBox &&
-      this.searchLocationComponent.autoCompleteInputBox.nativeElement) {
-      this.searchLocationComponent.autoCompleteInputBox.nativeElement.focus();
-    }
-  }
+  // TODO: CAM_BOOKING - resolve focus
+  // public getLocationSearchFocus(): void {
+  //   if (this.searchLocationComponent &&
+  //     this.searchLocationComponent.autoCompleteInputBox &&
+  //     this.searchLocationComponent.autoCompleteInputBox.nativeElement) {
+  //     this.searchLocationComponent.autoCompleteInputBox.nativeElement.focus();
+  //   }
+  // }
 
   // get a comma separated list of unique jurisdictions from the user role assignment info
   private getJurisdictions(): void {

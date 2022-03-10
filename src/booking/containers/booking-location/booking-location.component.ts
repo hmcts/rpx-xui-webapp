@@ -42,7 +42,7 @@ export class BookingLocationComponent implements AfterViewInit, OnInit {
     this.findLocationFormGroup.controls.locationSelectedFormControl.setValue(this.bookingProcess.location);
   }
 
-  public onLocationChanged(location: LocationByEPIMSModel): void {
+  public onLocationChanged(location: LocationByEPIMMSModel): void {
     this.bookingProcess.location = location;
     if (location) {
       this.formError = false;

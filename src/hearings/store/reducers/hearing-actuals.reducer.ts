@@ -32,7 +32,6 @@ export function hearingActualsReducer(
       };
     }
     case fromActions.SUBMIT_HEARING_ACTUALS_SUCCESS: {
-      console.log('CURRENT STATE', currentState);
       return {
         ...currentState
       };

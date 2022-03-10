@@ -33,6 +33,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public hearingTypeDescription: string;
   public hearingResultReasonTypeDescription: string;
   public validationErrors: { id: string, message: string }[] = [];
+  public hearingStageResultErrorMessage = '';
   public submitted = false;
   public sub: Subscription;
   public id: string;
@@ -43,10 +44,6 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     this.hearingTypes = this.route.snapshot.data.hearingTypes;
     this.adjournHearingActualReasons = this.route.snapshot.data.adjournHearingActualReasons;
     this.cancelHearingActualReasons = this.route.snapshot.data.cancelHearingActualReasons;
-  }
-
-  public get hearingActualAddEditSummaryEnum() {
-    return HearingActualAddEditSummaryEnum;
   }
 
   public ngOnInit(): void {
@@ -116,11 +113,13 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
 
   private isValid(): boolean {
     this.validationErrors = [];
+    this.hearingStageResultErrorMessage = '';
     if (this.hearingResult === '') {
       this.validationErrors.push({
         id: 'hearing-stage-result-update-link',
-        message: this.hearingActualAddEditSummaryEnum.HearingResultError
+        message: HearingActualAddEditSummaryEnum.HearingResultError
       });
+      this.hearingStageResultErrorMessage = HearingActualAddEditSummaryEnum.HearingResultError;
       window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
       return false;
     }

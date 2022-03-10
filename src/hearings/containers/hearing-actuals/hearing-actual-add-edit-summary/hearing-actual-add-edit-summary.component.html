@@ -19,10 +19,10 @@
             id="hearing-stage-result-update-link"
             class="govuk-link">Update</a>
         </span>
-        <div class="govuk-error-message" *ngIf="submitted && hearingResult === ''">
-          {{hearingActualAddEditSummaryEnum.HearingResultError}}
+        <div class="govuk-error-message" *ngIf="hearingStageResultErrorMessage !== ''">
+          {{hearingStageResultErrorMessage}}
         </div>
-        <div [ngClass]="{'govuk-form-group govuk-form-group--error': submitted && hearingResult === ''}">
+        <div [ngClass]="{'govuk-form-group govuk-form-group--error': hearingStageResultErrorMessage !== ''}">
           <dl class="govuk-summary-list">
             <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">Hearing stage</dt>

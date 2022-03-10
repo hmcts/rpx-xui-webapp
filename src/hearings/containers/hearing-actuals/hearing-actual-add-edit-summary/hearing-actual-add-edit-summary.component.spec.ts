@@ -7,6 +7,7 @@ import { Observable, of } from 'rxjs';
 import { hearingActualsMainModel, hearingStageRefData, initialState } from '../../../hearing.test.data';
 import { ACTION, HearingResult } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
+import * as fromHearingStore from '../../../store';
 import { HearingActualAddEditSummaryComponent } from './hearing-actual-add-edit-summary.component';
 
 describe('HearingActualAddEditSummaryComponent', () => {
@@ -107,10 +108,11 @@ describe('HearingActualAddEditSummaryComponent', () => {
 
   it('should submit hearing details', () => {
     const storeDispatchSpy = spyOn(store, 'dispatch');
+    component.id = '1111222233334444';
     component.hearingResult = HearingResult.COMPLETED;
     component.onSubmitHearingDetails();
     expect(component.submitted).toEqual(true);
-    expect(storeDispatchSpy).toHaveBeenCalled();
+    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.SubmitHearingActuals(component.id));
   });
 
   it('should fail submitting hearing details if hearing result is not selected', () => {

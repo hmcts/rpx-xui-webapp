@@ -125,6 +125,7 @@ export enum HearingCategory {
   JudgeType = 'JudgeType',
   OtherPanelRoles = 'OtherPanelRoles',
   CancelHearingReason = 'CancelHearingReason',
+  HearingRoles = 'HearingRoles',
   AdjournHearingActualReason = 'AdjournHearingActualReason',
   CancelHearingActualReason = 'CancelHearingActualReason'
 }

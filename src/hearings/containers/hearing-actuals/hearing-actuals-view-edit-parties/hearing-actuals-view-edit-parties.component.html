@@ -13,7 +13,7 @@
         </h1>
         <br>
 
-        <form [formGroup]="partiesTable" (submit)="submitForm($event)">
+        <form [formGroup]="partiesTable" (submit)="submitForm(partiesTable.value)">
 
           <table class="govuk-table gov-table--middle">
             <thead class="govuk-table__head">

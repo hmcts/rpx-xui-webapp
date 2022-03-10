@@ -54,8 +54,8 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
         this.hearingOutcome = hearingActualsMainModel.hearingActuals.hearingOutcome;
         this.actualHearingDay = hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0
           ? hearingActualsMainModel.hearingActuals.actualHearingDays[0] : null;
-        this.actualDayParties = hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0
-          ? hearingActualsMainModel.hearingActuals.actualHearingDays.map(x => x.actualDayParties[0]) : [];
+        this.actualDayParties = hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0
+          ? hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties : [];
         this.hearingTypeDescription = this.getHearingTypeDescription(this.hearingOutcome.hearingType);
         this.hearingResultReasonTypeDescription = this.getHearingResultReasonTypeDescription(this.hearingOutcome);
         this.hearingActualsMainModel = hearingActualsMainModel;

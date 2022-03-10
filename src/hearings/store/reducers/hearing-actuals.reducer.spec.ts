@@ -26,7 +26,7 @@ describe('Hearing Actuals Reducer', () => {
         const { initialHearingActualsState } = fromHearingActualsReducer;
         const action = new fromHearingActualsActions.SubmitHearingActualsSuccess('1111222233334444');
         const state = fromHearingActualsReducer.hearingActualsReducer(initialHearingActualsState, action);
-        console.log('STATE', state.hearingActualsMainModel);
+        expect(state.hearingActualsMainModel).toEqual(null);
       });
     });
   });

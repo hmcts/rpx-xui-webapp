@@ -1,8 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
-import { HearingConfirmationSource } from '../../../models/hearings.enum';
-import * as fromHearingStore from '../../../store';
 import { Subscription } from 'rxjs';
+import * as fromHearingStore from '../../../store';
 
 @Component({
   selector: 'exui-hearing-actuals-final-confirmation',
@@ -16,10 +15,6 @@ export class HearingActualsFinalConfirmationComponent implements OnInit, OnDestr
   public sub: Subscription;
 
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>) {
-  }
-
-  public get hearingConfirmationSourceEnum(): typeof HearingConfirmationSource {
-    return HearingConfirmationSource;
   }
 
   public ngOnInit(): void {

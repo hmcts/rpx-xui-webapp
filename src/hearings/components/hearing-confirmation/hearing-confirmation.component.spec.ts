@@ -1,7 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HearingConfirmationSource } from '../../models/hearings.enum';
 import { HearingConfirmationComponent } from './hearing-confirmation.component';
 
 describe('HearingConfirmationComponent', () => {
@@ -26,7 +25,6 @@ describe('HearingConfirmationComponent', () => {
 
   it('should display anchor link with destination to hearings tab if subheading description is null or empty', () => {
     component.caseId = '1111222233334444';
-    component.hearingConfirmationSource = HearingConfirmationSource.ACTUALS;
     fixture.detectChanges();
     const subheadingDescriptionElement = fixture.debugElement.nativeElement.querySelector('.govuk-body');
     const anchorElement = subheadingDescriptionElement.querySelector('a');

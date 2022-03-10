@@ -33,7 +33,9 @@ export function hearingActualsReducer(
     }
     case fromActions.SUBMIT_HEARING_ACTUALS_SUCCESS: {
       return {
-        ...currentState
+        ...currentState,
+        hearingActualsMainModel: null,
+        lastError: null
       };
     }
     default: {

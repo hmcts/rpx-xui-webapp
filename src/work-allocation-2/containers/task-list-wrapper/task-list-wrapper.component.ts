@@ -334,7 +334,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       const assignedJudicialUsers: string[] = [];
       result.tasks.forEach(task => {
         task.assigneeName = getAssigneeName(this.caseworkers, task.assignee);
-        if (!task.assigneeName) {
+        if (!task.assigneeName && task.assignee) {
           assignedJudicialUsers.push(task.assignee);
         }
       });

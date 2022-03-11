@@ -84,7 +84,6 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
         first()
       )
       .subscribe(([state, params]: [HearingActualsStateData, ParamMap]) => {
-        console.log('nyama');
         this.id = params.get('id');
         this.hearingActuals = JSON.parse(JSON.stringify(state.hearingActualsMainModel));
         this.createForm(this.hearingActuals);
@@ -122,7 +121,6 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   }
 
   public submitForm(parties: { parties: PartyModel[] }): void {
-    console.log('nyama: submitForm', parties);
     const hearingActuals = {
       ...this.hearingActuals.hearingActuals,
       actualHearingDays: [
@@ -132,7 +130,6 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
         }
       ]
     };
-    console.log('nyama: after', parties);
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
       hearingActuals

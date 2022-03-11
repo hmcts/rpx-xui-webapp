@@ -1,7 +1,8 @@
-import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
+import {AfterViewInit, Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {select, Store} from '@ngrx/store';
-import {Observable} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
+import { map } from 'rxjs/operators';
 import {HearingConditions} from '../../models/hearingConditions';
 import {HearingButtonIds, HearingSummaryEnum, HearingTemplate, Mode} from '../../models/hearings.enum';
 import {Section} from '../../models/section';
@@ -12,13 +13,14 @@ import * as fromHearingStore from '../../store';
   templateUrl: './hearing-summary.component.html',
   styleUrls: ['./hearing-summary.component.scss'],
 })
-export class HearingSummaryComponent implements OnInit, AfterViewInit {
+export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Input() public template: Section[];
   @Input() public mode: Mode;
   public listingTemplate: string = HearingTemplate.LISTING_INFORMATION;
   public hearingState$: Observable<fromHearingStore.State>;
   public validationErrors: { id: string, message: string }[] = [];
+  public sub: Subscription;
 
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly router: Router,
@@ -27,7 +29,7 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit {
   }
 
   public ngOnInit(): void {
-    this.hearingState$.subscribe(state => {
+    this.sub = this.hearingState$.subscribe(state => {
       if (state.hearingRequest.lastError) {
         this.validationErrors = [];
         this.validationErrors.push({
@@ -38,20 +40,14 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit {
     });
   }
 
-  private getIdToScroll(): string {
-    switch (this.mode) {
-      case Mode.CREATE_EDIT:
-        return HearingButtonIds.SUBMIT_REQUEST;
-      case Mode.VIEW_EDIT:
-        return HearingButtonIds.SUBMIT_UPDATED_REQUEST;
-      default:
-        // The error message will not display if id property is empty
-        return 'random-id';
-    }
-  }
-
   public ngAfterViewInit(): void {
     this.fragmentFocus();
+  }
+
+  public ngOnDestroy(): void {
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
   }
 
   public fragmentFocus(): void {
@@ -71,5 +67,17 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit {
     };
     this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
     this.router.navigateByUrl(changeLink);
+  }
+
+  private getIdToScroll(): string {
+    switch (this.mode) {
+      case Mode.CREATE_EDIT:
+        return HearingButtonIds.SUBMIT_REQUEST;
+      case Mode.VIEW_EDIT:
+        return HearingButtonIds.SUBMIT_UPDATED_REQUEST;
+      default:
+        // The error message will not display if id property is empty
+        return 'random-id';
+    }
   }
 }

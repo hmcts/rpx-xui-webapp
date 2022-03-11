@@ -1,6 +1,7 @@
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {CUSTOM_ELEMENTS_SCHEMA, Renderer2, Type} from '@angular/core';
+import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import {By} from '@angular/platform-browser';
 import {ActivatedRoute} from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import {provideMockStore} from '@ngrx/store/testing';
@@ -13,6 +14,8 @@ describe('HearingViewEditSummaryComponent', () => {
   let fixture: ComponentFixture<HearingActualsViewEditPartiesComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const lovRefDataService = new LovRefDataService(mockedHttpClient);
+  let renderer: Renderer2;
+  let lastRowInput: any;
   const hearingRole = [
     {
       key: 'appellant',
@@ -183,6 +186,7 @@ describe('HearingViewEditSummaryComponent', () => {
         ReactiveFormsModule
       ],
       providers: [
+        Renderer2,
         provideMockStore({initialState}),
         {provide: LovRefDataService, useValue: lovRefDataService},
         {
@@ -202,6 +206,10 @@ describe('HearingViewEditSummaryComponent', () => {
 
     fixture = TestBed.createComponent(HearingActualsViewEditPartiesComponent);
     component = fixture.componentInstance;
+    renderer = fixture.componentRef.injector.get<Renderer2>(Renderer2 as Type<Renderer2>);
+    lastRowInput = jasmine.createSpyObj(['focus']);
+    // and spy on it
+    spyOn(renderer, 'selectRootElement').and.callFake(() => lastRowInput);
     fixture.detectChanges();
   });
 
@@ -215,6 +223,39 @@ describe('HearingViewEditSummaryComponent', () => {
 
   it('getRole should return the provided key if role not found', () => {
     expect(component.getRole('test')).toEqual('test');
+  });
+
+  it('should add a new FormGroup to the FormArray', fakeAsync(() => {
+    const addBtn = fixture.debugElement.query(By.css('.btn-add'));
+
+    expect(component.parties.get([component.parties.length - 1]).value)
+      .not.toEqual(jasmine.objectContaining({ firstName: '', lastName: '', isParty: false }));
+
+    addBtn.nativeElement.click();
+    expect(component.parties.get([component.parties.length - 1]).value)
+      .toEqual(jasmine.objectContaining({ firstName: '', lastName: '', isParty: false }));
+
+    tick(200);
+    fixture.detectChanges();
+
+    fixture.whenStable().then(() => {
+      expect(renderer.selectRootElement).toHaveBeenCalled();
+      expect(lastRowInput.focus).toHaveBeenCalled();
+    });
+  }));
+
+  it('should remove a FormGroup from the FormArray', () => {
+    expect(component.parties.length).toEqual(4);
+    const removeBtn = fixture.debugElement.query(By.css('.btn-remove:last-child'));
+    removeBtn.nativeElement.click();
+    fixture.detectChanges();
+    expect(component.parties.length).toEqual(3);
+  });
+
+  it('submit form should prevent default', () => {
+    const event = jasmine.createSpyObj(['preventDefault']);
+    component.submitForm(event);
+    expect(event.preventDefault).toHaveBeenCalled();
   });
 
   afterEach(() => {

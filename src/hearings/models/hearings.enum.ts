@@ -291,6 +291,10 @@ export enum HearingResult {
   CANCELLED = 'CANCELLED',
 }
 
+export enum HearingActualAddEditSummaryEnum {
+  HearingResultError = 'Enter a hearing result'
+}
+
 export enum HearingTemplate {
   LISTING_INFORMATION = 'Listing information summary',
 }
@@ -298,4 +302,9 @@ export enum HearingTemplate {
 export enum HearingButtonIds {
   SUBMIT_REQUEST = 'submit-request',
   SUBMIT_UPDATED_REQUEST = 'submit-updated-request'
+}
+
+export enum GroupLinkType {
+  ORDERED = 'Ordered',
+  SAME_SLOT = 'Same Slot',
 }

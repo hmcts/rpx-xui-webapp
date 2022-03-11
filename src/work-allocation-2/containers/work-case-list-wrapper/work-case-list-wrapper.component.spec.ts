@@ -2,8 +2,8 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { ChangeDetectorRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { getMockCases, getMockCaseRoles } from '../../tests/utils.spec';
-import { CaseworkerDataService, WorkAllocationCaseService, WorkAllocationFeatureService } from '../../services';
+import { getMockCases, getMockCaseRoles, getMockLocations } from '../../tests/utils.spec';
+import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationCaseService, WorkAllocationFeatureService } from '../../services';
 import { MyAccessComponent } from '../my-access/my-access.component';
 import { MyCasesComponent } from '../my-cases/my-cases.component';
 import { of } from 'rxjs';
@@ -18,13 +18,24 @@ import { WorkAllocationComponentsModule } from '../../components/work-allocation
 import { Case } from '../../models/cases';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { WorkCaseListWrapperComponent } from './work-case-list-wrapper.component';
+import * as dtos from '../../models/dtos';
+import { JurisdictionsService } from 'src/work-allocation-2/services/juridictions.service';
 
 describe('WorkCaseListWrapperComponent', () => {
+  const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
+  mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
+
+  const mockJurisdictionService = jasmine.createSpyObj('mockJurisdictionService', ['getJurisdictions']);
+  mockJurisdictionService.getJurisdictions.and.returnValue(of({}));
+
+
   let component: WorkCaseListWrapperComponent;
   let fixture: ComponentFixture<WorkCaseListWrapperComponent>;
+  const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
+  const mockLocations: dtos.Location[] = getMockLocations();
   const mockRef = jasmine.createSpyObj('mockRef', ['']);
   const mockRouter = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate']);
-  const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['searchCase', 'getCase', 'getMyCases']);
+  const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['searchCase', 'getCase', 'getMyCases', 'getMyAccess']);
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['']);
@@ -44,6 +55,8 @@ describe('WorkCaseListWrapperComponent', () => {
       ],
       declarations: [MyCasesComponent, MyAccessComponent, WorkCaseListWrapperComponent, WorkCaseListComponent],
       providers: [
+        { provide: LocationDataService, useValue: mockLocationService },
+        { provide: JurisdictionsService, useValue: mockJurisdictionService },
         { provide: ChangeDetectorRef, useValue: mockRef },
         { provide: WorkAllocationCaseService, useValue: mockWorkAllocationService },
         { provide: Router, useValue: mockRouter },
@@ -54,7 +67,9 @@ describe('WorkCaseListWrapperComponent', () => {
         { provide: LoadingService, useValue: mockLoadingService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: CaseworkerDataService, useValue: mockCaseworkerDataService },
-        { provide: AllocateRoleService, useValue: mockAllocateRoleService }
+        { provide: AllocateRoleService, useValue: mockAllocateRoleService },
+        { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService },
+
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WorkCaseListWrapperComponent);
@@ -63,6 +78,7 @@ describe('WorkCaseListWrapperComponent', () => {
     const caseRoles: CaseRoleDetails[] = getMockCaseRoles();
     mockWorkAllocationService.searchCase.and.returnValue(of({ cases }));
     mockWorkAllocationService.getMyCases.and.returnValue(of({ cases }));
+    mockWorkAllocationService.getMyAccess.and.returnValue(of({ cases }));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockCaseworkerDataService.getAll.and.returnValue(of([]));

@@ -42,7 +42,7 @@ describe('AllWorkCaseComponent', () => {
   let fixture: ComponentFixture<WrapperComponent>;
 
   const routerMock = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate']);
-  const mockCaseService = jasmine.createSpyObj('mockCaseService', ['searchCase', 'getCases']);
+  const mockCaseService = jasmine.createSpyObj('mockCaseService', ['searchCase', 'getCases', 'getMyAccess']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);

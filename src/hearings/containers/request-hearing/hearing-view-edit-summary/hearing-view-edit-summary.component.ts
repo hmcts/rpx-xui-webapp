@@ -41,7 +41,7 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
       if (stateChanged) {
         super.navigateAction(action);
       } else {
-        this.validationErrors.push({id: 'no-update', message: HearingViewEditSummaryMessages.NOT_UPDATED});
+        this.validationErrors = [{id: 'no-update', message: HearingViewEditSummaryMessages.NOT_UPDATED}];
       }
     });
     } else {

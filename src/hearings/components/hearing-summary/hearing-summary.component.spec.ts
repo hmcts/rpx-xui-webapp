@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Store} from '@ngrx/store';
@@ -41,7 +42,8 @@ describe('HearingSummaryComponent', () => {
             fragment: of('point-to-me'),
           },
         }
-      ]
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
       .compileComponents();
     fixture = TestBed.createComponent(HearingSummaryComponent);

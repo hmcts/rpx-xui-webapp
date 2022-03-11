@@ -11,7 +11,7 @@ import {
   PartyModel
 } from '../../../models/hearingActualsMainModel';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
-import { ACTION, HearingResult } from '../../../models/hearings.enum';
+import { ACTION, HearingActualAddEditSummaryEnum, HearingResult } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
@@ -29,8 +29,12 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public hearingTypes: LovRefDataModel[];
   public adjournHearingActualReasons: LovRefDataModel[];
   public cancelHearingActualReasons: LovRefDataModel[];
+  public hearingResult: string;
   public hearingTypeDescription: string;
   public hearingResultReasonTypeDescription: string;
+  public validationErrors: { id: string, message: string }[] = [];
+  public hearingStageResultErrorMessage = '';
+  public submitted = false;
   public sub: Subscription;
   public id: string;
 
@@ -56,6 +60,8 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
           ? hearingActualsMainModel.hearingActuals.actualHearingDays[0] : null;
         this.actualDayParties = hearingActualsMainModel.hearingActuals.actualHearingDays && hearingActualsMainModel.hearingActuals.actualHearingDays.length > 0
           ? hearingActualsMainModel.hearingActuals.actualHearingDays.map(x => x.actualDayParties[0]) : [];
+        this.hearingResult = this.hearingOutcome && this.hearingOutcome.hearingResult
+          ? this.hearingOutcome.hearingResult : '';
         this.hearingTypeDescription = this.getHearingTypeDescription(this.hearingOutcome.hearingType);
         this.hearingResultReasonTypeDescription = this.getHearingResultReasonTypeDescription(this.hearingOutcome);
         this.hearingActualsMainModel = hearingActualsMainModel;
@@ -70,6 +76,13 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
 
   public onBack(): void {
     this.hearingsService.navigateAction(ACTION.BACK);
+  }
+
+  public onSubmitHearingDetails(): void {
+    this.submitted = true;
+    if (this.isValid()) {
+      this.hearingStore.dispatch(new fromHearingStore.SubmitHearingActuals(this.id));
+    }
   }
 
   public getRepresentingAttendee(partyId: number): string {
@@ -96,5 +109,20 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public getHearingTypeDescription(hearingType: string): string {
     const hearingTypeFromLookup = this.hearingTypes && this.hearingTypes.find(x => x.key.toLowerCase() === hearingType.toLowerCase());
     return hearingTypeFromLookup ? hearingTypeFromLookup.value_en : '';
+  }
+
+  private isValid(): boolean {
+    this.validationErrors = [];
+    this.hearingStageResultErrorMessage = '';
+    if (this.hearingResult === '') {
+      this.validationErrors.push({
+        id: 'hearing-stage-result-update-link',
+        message: HearingActualAddEditSummaryEnum.HearingResultError
+      });
+      this.hearingStageResultErrorMessage = HearingActualAddEditSummaryEnum.HearingResultError;
+      window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+      return false;
+    }
+    return true;
   }
 }

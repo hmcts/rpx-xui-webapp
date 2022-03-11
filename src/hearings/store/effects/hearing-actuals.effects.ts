@@ -34,6 +34,17 @@ export class HearingActualsEffects {
       ))
   );
 
+  @Effect()
+  public submitHearingActuals$ = this.actions$.pipe(
+    ofType(hearingActualsActions.SUBMIT_HEARING_ACTUALS),
+    switchMap((action: any) => this.hearingsService.submitHearingActuals(action.payload)
+      .pipe(
+        map(() => new hearingActualsActions.SubmitHearingActualsSuccess(action.payload)),
+        tap(() => this.router.navigate([`/hearings/actuals/${action.payload}/hearing-actuals-confirmation`])),
+        catchError(error => HearingActualsEffects.handleError(error))
+      ))
+  );
+
   constructor(
     private readonly actions$: Actions,
     private readonly router: Router,

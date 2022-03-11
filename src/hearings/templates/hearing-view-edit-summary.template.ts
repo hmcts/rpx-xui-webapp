@@ -1,4 +1,4 @@
-import { AnswerSource, IsHiddenSource } from '../models/hearings.enum';
+import { AnswerSource, HearingTemplate, IsHiddenSource } from '../models/hearings.enum';
 import { Section } from '../models/section';
 
 export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
@@ -9,16 +9,19 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
         id: 'caseName',
         answerTitle: 'Case name',
         answerSource: AnswerSource.CASE_NAME,
+        isHiddenSource: IsHiddenSource.LISTED
       },
       {
         id: 'caseNumber',
         answerTitle: 'Case number',
         answerSource: AnswerSource.CASE_NUMBER,
+        isHiddenSource: IsHiddenSource.LISTED
       },
       {
         id: 'type',
         answerTitle: 'Type',
         answerSource: AnswerSource.TYPE_FROM_REQUEST,
+        isHiddenSource: IsHiddenSource.LISTED
       },
       {
         id: 'status',
@@ -29,8 +32,18 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
         id: 'dateRequestSubmitted',
         answerTitle: 'Date request submitted',
         answerSource: AnswerSource.DATE_REQUEST_SUBMITTED,
+      },
+      {
+        id: 'dateResponseReceived',
+        answerTitle: 'Date response received',
+        answerSource: AnswerSource.DATE_RESPONSE_RECEIVED,
+        isHiddenSource: IsHiddenSource.NOT_LISTED
       }
     ],
+  },
+  {
+    sectionHTMLTitle: HearingTemplate.LISTING_INFORMATION,
+    isHiddenSource: IsHiddenSource.NOT_LISTED
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Hearing requirements</h2>',

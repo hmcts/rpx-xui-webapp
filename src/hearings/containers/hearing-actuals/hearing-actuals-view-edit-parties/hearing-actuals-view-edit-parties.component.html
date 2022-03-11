@@ -83,13 +83,13 @@
                   </select>
 
                 </td>
-                <td class="govuk-table__cell"><a href="#" class="govuk-link">Remove</a></td>
+                <td class="govuk-table__cell"><a href="#" class="govuk-link btn-remove" (click)="removeRow($event, i)">Remove</a></td>
               </tr>
             </ng-container>
             </tbody>
           </table>
 
-          <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
+          <button class="govuk-button govuk-button--secondary btn-add" data-module="govuk-button" (click)="addRow($event)">
             Add a participant
           </button>
 

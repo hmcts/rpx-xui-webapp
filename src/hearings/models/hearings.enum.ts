@@ -195,6 +195,10 @@ export enum HearingDatePriorityConstEnum {
   MinutesMuliplier = 5,
 }
 
+export enum HearingSummaryEnum {
+ BackendError = 'There was a system error and your request could not be processed. Please try again.'
+}
+
 export enum ACTION {
   BACK = 'BACK',
   CONTINUE = 'CONTINUE',
@@ -289,4 +293,9 @@ export enum HearingResult {
 
 export enum HearingTemplate {
   LISTING_INFORMATION = 'Listing information summary',
+}
+
+export enum HearingButtonIds {
+  SUBMIT_REQUEST = 'submit-request',
+  SUBMIT_UPDATED_REQUEST = 'submit-updated-request'
 }

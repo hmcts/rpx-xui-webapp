@@ -1,6 +1,6 @@
 import {Component, OnDestroy} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {ACTION} from '../../models/hearings.enum';
+import {ACTION, HearingButtonIds} from '../../models/hearings.enum';
 import {HearingsService} from '../../services/hearings.service';
 import * as fromHearingStore from '../../store';
 import {AbstractPageFlow} from '../../utils/abstract-page-flow';
@@ -20,6 +20,10 @@ export class RequestHearingComponent implements OnDestroy {
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly pageFlow: AbstractPageFlow,
               private readonly hearingsService: HearingsService) {
+  }
+
+  public get hearingButtonIds(): typeof HearingButtonIds {
+    return HearingButtonIds;
   }
 
   public onBack(): void {

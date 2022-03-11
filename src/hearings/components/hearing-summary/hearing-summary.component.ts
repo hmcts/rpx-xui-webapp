@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {select, Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {HearingConditions} from '../../models/hearingConditions';
-import {HearingTemplate, Mode} from '../../models/hearings.enum';
+import {HearingButtonIds, HearingSummaryEnum, HearingTemplate, Mode} from '../../models/hearings.enum';
 import {Section} from '../../models/section';
 import * as fromHearingStore from '../../store';
 
@@ -29,11 +29,25 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit {
   public ngOnInit(): void {
     this.hearingState$.subscribe(state => {
       if (state.hearingRequest.lastError) {
+        this.validationErrors = [];
         this.validationErrors.push({
-          id: 'hearing-summary', message: 'There was a system error and your request could not be processed. Please try again.'
+          id: this.getIdToScroll(), message: HearingSummaryEnum.BackendError
         });
+        window.scrollTo({left: 0, top: 0, behavior: 'smooth'});
       }
     });
+  }
+
+  private getIdToScroll(): string {
+    switch(this.mode) {
+      case Mode.CREATE_EDIT:
+        return HearingButtonIds.SUBMIT_REQUEST;
+      case Mode.VIEW_EDIT:
+        return HearingButtonIds.SUBMIT_UPDATED_REQUEST;
+      default:
+        // The error message will not display if id property is empty
+        return 'random-id';
+    }
   }
 
   public ngAfterViewInit(): void {

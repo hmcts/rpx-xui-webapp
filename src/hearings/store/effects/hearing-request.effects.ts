@@ -5,7 +5,6 @@ import {Actions, Effect, ofType} from '@ngrx/effects';
 import {Action, select, Store} from '@ngrx/store';
 import {Observable, of} from 'rxjs';
 import {catchError, map, switchMap, tap} from 'rxjs/operators';
-import { HearingsUtils } from 'src/hearings/utils/hearings.utils';
 import * as fromAppStoreActions from '../../../app/store/actions';
 import {HttpError} from '../../../models/httpError.model';
 import {Mode} from '../../models/hearings.enum';
@@ -101,7 +100,7 @@ export class HearingRequestEffects {
             this.hearingStore.dispatch(new hearingRequestActions.InitializeHearingRequest(hearingRequestMainModel));
           }),
         catchError(error => {
-          return HearingRequestEffects.handleError(error, this.hearingStore);
+          return HearingRequestEffects.handleError(error);
         })
       );
     })
@@ -118,7 +117,8 @@ export class HearingRequestEffects {
             return this.router.navigate(['hearings', 'request', 'hearing-confirmation']);
           }),
         catchError(error => {
-          return HearingRequestEffects.handleError(error, this.hearingStore);
+					this.hearingStore.dispatch(new hearingRequestActions.SubmitHearingRequestFailure(error));
+          return of();
         })
       );
     })
@@ -143,16 +143,16 @@ export class HearingRequestEffects {
             return this.router.navigate(['hearings', 'request', 'hearing-confirmation']);
           }),
         catchError(error => {
-          return HearingRequestEffects.handleError(error, this.hearingStore);
+					this.hearingStore.dispatch(new hearingRequestActions.ViewEditSubmitHearingRequestFailure(error));
+          return of();
         })
       );
     })
   );
 
-  public static handleError(error: HttpError, hearingStore: Store<fromHearingReducers.State>): Observable<Action> {
+  public static handleError(error: HttpError): Observable<Action> {
     if (error && error.status && error.status >= 400) {
-      hearingStore.dispatch(new hearingRequestActions.SubmitHearingRequestFailure(error));
-      return of(new fromAppStoreActions.Go({path: ['/service-down']}));
+			return of(new fromAppStoreActions.Go({path: ['/service-down']}));
     }
   }
 }

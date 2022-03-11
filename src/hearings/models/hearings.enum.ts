@@ -126,7 +126,8 @@ export enum HearingCategory {
   OtherPanelRoles = 'OtherPanelRoles',
   CancelHearingReason = 'CancelHearingReason',
   AdjournHearingActualReason = 'AdjournHearingActualReason',
-  CancelHearingActualReason = 'CancelHearingActualReason'
+  CancelHearingActualReason = 'CancelHearingActualReason',
+  HearingChangeReason = 'HearingChangeReason'
 }
 
 export enum HearingDateEnum {
@@ -210,8 +211,17 @@ export enum CaseFlagType {
 }
 
 export enum CancelHearingMessages {
-  NOT_SELECTED_A_REASON = 'You have not selected a reason for cancelling th hearing',
+  NOT_SELECTED_A_REASON = 'You have not selected a reason for cancelling the hearing',
   SELECT_AT_LEAST_ONE_REASON = 'Select at least one valid reason',
+}
+
+export enum HearingChangeReasonMessages {
+  NOT_SELECTED_A_REASON = 'You have not selected a reason for changing the hearing',
+  SELECT_AT_LEAST_ONE_REASON = 'Select at least one valid reason',
+}
+
+export enum HearingViewEditSummaryMessages {
+  NOT_UPDATED = 'The request has not been updated',
 }
 
 export enum AnswerSource {

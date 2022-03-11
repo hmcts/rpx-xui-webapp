@@ -584,6 +584,36 @@ export const OTHER_PANEL_ROLES: LovRefDataModel[] = [{
   child_nodes: [],
 }];
 
+export const CHANGE_HEARING_REASON: LovRefDataModel[] = [
+  {
+    key: 'reasoneOne',
+    value_en: 'Reason 1',
+    value_cy: '',
+    hintText_EN: 'reason 1',
+    hintTextCY: '',
+    order: 1,
+    parentKey: null,
+  },
+  {
+    key: 'reasoneTwo',
+    value_en: 'Reason 2',
+    value_cy: '',
+    hintText_EN: 'Reason 2',
+    hintTextCY: '',
+    order: 2,
+    parentKey: null,
+  },
+  {
+    key: 'reasonThree',
+    value_en: 'Reason 3',
+    value_cy: '',
+    hintText_EN: 'Reason 3',
+    hintTextCY: '',
+    order: 4,
+    parentKey: null,
+  },
+];
+
 export const SSCS_STAGES: LovRefDataByServiceModel = {
   serviceID: 'SSCS',
   values: DEFAULT_STAGES_REF,
@@ -622,6 +652,10 @@ export const SSCS_CANCEL_HEARING_ACTUAL: LovRefDataByServiceModel = {
   serviceID: 'SSCS',
   values: DEFAULT_HEARING_ACTUAL_CANCEL_REF,
 };
+export const SSCS_CHANGE_HEARING_REASON: LovRefDataByServiceModel = {
+  serviceID: 'SSCS',
+  values: CHANGE_HEARING_REASON,
+};
 
 export const ALL_REF_DATA: LovRefDataByCategoryModel[] = [
   {
@@ -659,5 +693,9 @@ export const ALL_REF_DATA: LovRefDataByCategoryModel[] = [
   {
     categoryKey: 'OtherPanelRoles',
     services: [SSCS_OTHER_PANEL_ROLES],
+  },
+  {
+    categoryKey: 'HearingChangeReason',
+    services: [SSCS_CHANGE_HEARING_REASON],
   },
 ];

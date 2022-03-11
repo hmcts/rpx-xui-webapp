@@ -111,6 +111,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     this.routeSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.setAllowTypesOfWorkFilter(this.router.url);
+        this.toggleFilter = false;
       }
     });
   }

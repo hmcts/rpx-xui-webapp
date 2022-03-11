@@ -11,7 +11,7 @@ import {initialState} from '../../../hearing.test.data';
 import {LovRefDataService} from '../../../services/lov-ref-data.service';
 import { HearingActualsViewEditPartiesComponent } from './hearing-actuals-view-edit-parties.component';
 
-fdescribe('HearingViewEditSummaryComponent', () => {
+describe('HearingViewEditSummaryComponent', () => {
   let store: Store<any>;
   let component: HearingActualsViewEditPartiesComponent;
   let fixture: ComponentFixture<HearingActualsViewEditPartiesComponent>;

@@ -38,8 +38,8 @@ export class BookingLocationComponent implements AfterViewInit, OnInit {
   }
 
   public ngAfterViewInit(): void {
+    this.getLocationSearchFocus();
     // TODO: CAM_BOOKING - remomve these if no longer needed
-    // this.getLocationSearchFocus();
     // this.findLocationFormGroup.controls.locationSelectedFormControl.setValue(this.bookingProcess.location);
   }
 
@@ -60,14 +60,14 @@ export class BookingLocationComponent implements AfterViewInit, OnInit {
     }
   }
 
-  // TODO: CAM_BOOKING - resolve focus
-  // public getLocationSearchFocus(): void {
-  //   if (this.searchLocationComponent &&
-  //     this.searchLocationComponent.autoCompleteInputBox &&
-  //     this.searchLocationComponent.autoCompleteInputBox.nativeElement) {
-  //     this.searchLocationComponent.autoCompleteInputBox.nativeElement.focus();
-  //   }
-  // }
+  public getLocationSearchFocus(): void {
+     // TODO: CAM_BOOKING - resolve focus
+    //   if (this.searchLocationComponent &&
+    //     this.searchLocationComponent.autoCompleteInputBox &&
+    //     this.searchLocationComponent.autoCompleteInputBox.nativeElement) {
+    //     this.searchLocationComponent.autoCompleteInputBox.nativeElement.focus();
+    //   }
+  }
 
   // get a comma separated list of unique jurisdictions from the user role assignment info
   private getJurisdictions(): void {

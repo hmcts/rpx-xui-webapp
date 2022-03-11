@@ -12,15 +12,17 @@ import { requireReloaded } from '../utils/moduleUtil';
 const { Matchers } = require('@pact-foundation/pact');
 import { DateTimeMatcher } from '../utils/matchers';
 const { somethingLike, iso8601DateTime, term } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'am_api_getroles_assignments_by_caseid', port: 8000 });
+const pactSetUp = new PactTestSetup({ provider: 'am_roleAssignment_queryAssignment', port: 8000 });
 
 const caseId = "12345";
+const roles = [
+    { id: '13a234567-eb80-4681-b62c-6ae2ed069a5g', actorId: '14a21569-eb80-4681-b62c-6ae2ed069e5f', roleName: 'lead-judge', roleCategory: 'JUDICIAL', displayName: 'Lead judge' },
+    { id: '23a234567-eb80-4681-b62c-6ae2ed069a5h', actorId: '24a21569-eb80-4681-b62c-6ae2ed069e5g', roleName: 'hearing-judge', roleCategory: 'JUDICIAL', displayName: 'Hearing judge' },
+    { id: '33a234567-eb80-4681-b62c-6ae2ed069a5i', actorId: '34a21569-eb80-4681-b62c-6ae2ed069e5h', roleName: 'case-worker', roleCategory: 'LEGAL_OPERATIONS', displayName: 'Case worker' }];
+
 describe("access management service, query role assignments", () => {
 
-    const roles = [{ roleName: 'lead-judge', roleCategory: 'JUDICIAL', displayName:'Lead judge' }, 
-        { roleName: 'hearing-judge', roleCategory: 'JUDICIAL', displayName: 'Hearing judge' }, 
-        { roleName: 'case-worker', roleCategory: 'LEGAL_OPERATIONS', displayName: 'Case worker'}];
-
+   
     const REQUEST_BODY = {
         queryRequests: [
             {
@@ -36,17 +38,17 @@ describe("access management service, query role assignments", () => {
     const RESPONSE_BODY = {
         "roleAssignmentResponse": []
     };
-    for(const role of roles){
+    for(const role of []){
         const roleAssognmentRole = {
-            'id': '1234',
-            'actorId': '5678',
-            "roleCategory": "LEGAL_OPERATIONS",
-            "roleName": "case-worker",
+            'id': somethingLike('23a234567-eb80-4681-b62c-6ae2ed069a5g'),
+            'actorId': somethingLike('14a21569-eb80-4681-b62c-6ae2ed069e5f'),
+            "roleCategory": somethingLike("LEGAL_OPERATIONS"),
+            "roleName": somethingLike("case-worker"),
             "beginTime": term(DateTimeMatcher("2022-01-11T00:00:00Z")),
             "endTime": term(DateTimeMatcher("2022-01-11T00:00:00Z")),
         };
-        roleAssognmentRole.roleName = role.roleName;
-        roleAssognmentRole.roleCategory = role.roleCategory;
+        roleAssognmentRole.roleName = somethingLike(role.roleName);
+        roleAssognmentRole.roleCategory = somethingLike(role.roleCategory);
 
         RESPONSE_BODY.roleAssignmentResponse.push(roleAssognmentRole);
     }
@@ -60,7 +62,7 @@ describe("access management service, query role assignments", () => {
         before(async () => {
             await pactSetUp.provider.setup()
             const interaction = {
-                state: "returned role assignments for caseId",
+                state: "A list of role assignments for the search query",
                 uponReceiving: "query role assignments for caseId",
                 withRequest: {
                     method: "POST",
@@ -75,7 +77,7 @@ describe("access management service, query role assignments", () => {
                 willRespondWith: {
                     status: 200,
                     headers: {
-                        "Content-Type": "application/json",
+                        "content-type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0",
                     },
                     body: RESPONSE_BODY,
                 },
@@ -93,7 +95,7 @@ describe("access management service, query role assignments", () => {
           
 
             const getRolesInteraction = {
-                state: "returned role assignments for caseId",
+                state: "A list of role assignments for the search query",
                 uponReceiving: "query role assignments for caseId",
                 withRequest: {
                     method: "GET",
@@ -101,13 +103,13 @@ describe("access management service, query role assignments", () => {
                     headers: {
                         'Authorization': 'Bearer someAuthorizationToken',
                         'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-                        "content-type": "application/json",
+                        "content-type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0",
                     }
                 },
                 willRespondWith: {
                     status: 200,
                     headers: {
-                        "Content-Type": "application/json",
+                        "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0",
                     },
                     body: rolesResponseBody, 
                 },
@@ -140,7 +142,7 @@ describe("access management service, query role assignments", () => {
                 headers: {
                     'Authorization': 'Bearer someAuthorizationToken',
                     'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-                    'content-type': 'application/json',
+                    "content-type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0",
                 },
                 body:{
                     caseId: caseId,
@@ -178,11 +180,8 @@ describe("access management service, query role assignments", () => {
 function assertResponses(dto: any) {
 
     console.log(JSON.stringify(dto));
-    expect(dto[0].actorId).to.be.equal("5678");
-    expect(dto[0].end).to.be.equal("2022-01-11T00:00:00Z");
-    expect(dto[0].start).to.be.equal("2022-01-11T00:00:00Z");
-    expect(dto[0].roleCategory).to.be.equal("JUDICIAL");
-    expect(dto[0].roleName).to.be.equal("Lead judge");
+    expect(dto.length).to.be.equal(0);
+
 }
 
 

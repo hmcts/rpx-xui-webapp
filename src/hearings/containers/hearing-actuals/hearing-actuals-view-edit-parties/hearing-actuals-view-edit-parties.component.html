@@ -1,0 +1,109 @@
+<div class="govuk-width-container ">
+
+  <a class="govuk-back-link" [routerLink]="['../hearing-actual-add-edit-summary']">Back</a>
+
+  <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+
+        <span class="govuk-caption-l">{{ caseTitle }}</span>
+        <h1 class="govuk-heading-l">
+          Participants
+        </h1>
+        <br>
+
+        <form [formGroup]="partiesTable" (submit)="submitForm($event)">
+
+          <table class="govuk-table gov-table--middle">
+            <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header app-custom-class"
+                  *ngFor="let column of columns">{{ column }}</th>
+            </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+            <ng-container formArrayName="parties" *ngFor="let group of parties.controls ; let i=index">
+
+              <tr class="govuk-table__row" *ngIf="group.get('isParty').value" formGroupName="{{i}}">
+                <td class="govuk-table__cell">{{group.get('firstName').value}}</td>
+                <td class="govuk-table__cell">{{group.get('lastName').value}}</td>
+                <td class="govuk-table__cell">{{getRole(group.get('role').value)}}</td>
+                <td class="govuk-table__cell">
+                  <select class="govuk-select" formControlName="attendanceType" aria-label="Attendee type">
+                    <option [ngValue]="null">Please select</option>
+                    <ng-container *ngFor="let reason of partyChannel">
+                      <option *ngIf="!reason.child_nodes" [ngValue]="reason.key">{{reason.value_en}}</option>
+                      <ng-container *ngIf="reason.child_nodes">
+                        <option *ngFor="let reason_child of reason.child_nodes" [ngValue]="reason_child.key">{{reason_child.value_en}}</option>
+                      </ng-container>
+                    </ng-container>
+                  </select>
+                </td>
+                <td class="govuk-table__cell" colspan="3"></td>
+              </tr>
+
+
+              <tr class="govuk-table__row" *ngIf="!group.get('isParty').value" formGroupName="{{i}}">
+                <th scope="row" class="govuk-table__header">
+                  <input class="govuk-input" formControlName="firstName" type="text"
+                         aria-label="First name">
+                </th>
+                <th scope="row" class="govuk-table__header">
+                  <input class="govuk-input" formControlName="lastName" type="text"
+                         aria-label="Last name">
+                </th>
+                <td class="govuk-table__cell">
+                  <select class="govuk-select" formControlName="role" aria-label="Attendee role">
+                    <option value="Please select">Please select</option>
+                    <option *ngFor="let role of hearingRole" [ngValue]="role.key">{{role.value_en}}</option>
+                  </select>
+                </td>
+                <td class="govuk-table__cell">
+                  <select class="govuk-select" formControlName="attendanceType" aria-label="Attendee type">
+                    <option [ngValue]="null">Please select</option>
+                    <ng-container *ngFor="let reason of partyChannel">
+                      <option *ngIf="!reason.child_nodes" [ngValue]="reason.key">{{reason.value_en}}</option>
+                      <ng-container *ngIf="reason.child_nodes">
+                        <option *ngFor="let reason_child of reason.child_nodes" [ngValue]="reason_child.key">{{reason_child.value_en}}</option>
+                      </ng-container>
+                    </ng-container>
+                  </select>
+                </td>
+                <td class="govuk-table__cell">
+                  <input class="govuk-input" formControlName="organisation"
+                         type="text"
+                         aria-label="Attendee organisation (optional)">
+                </td>
+                <td class="govuk-table__cell">
+
+                  <select class="govuk-select" formControlName="attendeeRepresenting" aria-label="Who was this attenddee representing?">
+                    <option value="Please select">Please select</option>
+                    <option *ngFor="let participant of participants" value="{{ participant.id }}" selected="">{{ participant.name }}</option>
+                  </select>
+
+                </td>
+                <td class="govuk-table__cell"><a href="#" class="govuk-link btn-remove" (click)="removeRow($event, i)">Remove</a></td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+
+          <button class="govuk-button govuk-button--secondary btn-add" data-module="govuk-button" (click)="addRow($event)">
+            Add a participant
+          </button>
+
+
+          <br><br>
+
+          <button class="govuk-button primary" data-module="govuk-button">
+            Save and continue
+          </button>
+
+        </form>
+
+      </div>
+    </div>
+
+  </main>
+</div>

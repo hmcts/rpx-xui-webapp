@@ -20,5 +20,14 @@ describe('Hearing Actuals Reducer', () => {
         expect(hearingsState.hearingActualsMainModel).toEqual(hearingActualsMainModel);
       });
     });
+
+    describe('submit hearing actuals success action', () => {
+      it('should return the correct object', () => {
+        const { initialHearingActualsState } = fromHearingActualsReducer;
+        const action = new fromHearingActualsActions.SubmitHearingActualsSuccess('1111222233334444');
+        const state = fromHearingActualsReducer.hearingActualsReducer(initialHearingActualsState, action);
+        expect(state.hearingActualsMainModel).toEqual(null);
+      });
+    });
   });
 });

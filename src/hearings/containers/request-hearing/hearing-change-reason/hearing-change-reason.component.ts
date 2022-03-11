@@ -97,9 +97,8 @@ export class HearingChangeReasonComponent extends RequestHearingPageFlow impleme
 
   public getChosenReasons(): LovRefDataModel[] {
     const mappedReason: LovRefDataModel[] = [];
-    const reasonChosen = (this.hearingChangeReasonForm.controls.reasons as FormArray).controls
-      .filter(reason => reason.value.selected === true);
-    reasonChosen.forEach(element => {
+    const reasons = (this.hearingChangeReasonForm.controls.reasons as FormArray).controls
+      .forEach(reason => if ( reason.value.selected === true) {
       mappedReason.push({
         key: element.value.key,
         value_en: element.value.value_en,

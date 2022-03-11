@@ -33,6 +33,11 @@ describe('HearingViewEditSummaryComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should call cancelHearingRequest when executeAction is called with a valid form', () => {
+    component.executeAction(ACTION.VIEW_EDIT_SUBMIT)
+    expect(component.validationErrors.length).toEqual(0)
+  });
+
   afterEach(() => {
     fixture.destroy();
   });

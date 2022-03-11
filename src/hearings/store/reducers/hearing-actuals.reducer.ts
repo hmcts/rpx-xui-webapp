@@ -31,6 +31,11 @@ export function hearingActualsReducer(
         }
       };
     }
+    case fromActions.SUBMIT_HEARING_ACTUALS_SUCCESS: {
+      return {
+        ...initialHearingActualsState
+      };
+    }
     default: {
       return {
         ...currentState

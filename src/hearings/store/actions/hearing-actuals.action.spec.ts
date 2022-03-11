@@ -32,5 +32,4 @@ describe('Hearing Actuals Actions', () => {
       expect(action.type).toBe(fromHearingActualsAction.SUBMIT_HEARING_ACTUALS);
     });
   });
-
 });

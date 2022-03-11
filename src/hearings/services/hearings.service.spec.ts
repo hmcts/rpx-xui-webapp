@@ -160,4 +160,62 @@ describe('HearingsService', () => {
       req.flush(null);
     }));
   });
+
+  describe('link hearing services', () => {
+    it('should call loadServiceLinkedCases', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
+      service.loadServiceLinkedCases('1111222233334444', 'h1000000').subscribe(response => {
+        expect(response).toBeNull();
+      });
+
+      const req = httpMock.expectOne('api/hearings/serviceLinkedCases');
+      expect(req.request.method).toEqual('POST');
+      req.flush(null);
+    }));
+
+    it('should call getLinkedHearingGroup', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
+      service.getLinkedHearingGroup('1111222233334444', 'h1000000').subscribe(response => {
+        expect(response).toBeNull();
+      });
+
+      const req = httpMock.expectOne('api/hearings/linkedHearingGroup?caseReference=1111222233334444&hearingId=h1000000');
+      expect(req.request.method).toEqual('GET');
+      req.flush(null);
+    }));
+
+    it('should call postLinkedHearingGroup', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
+      service.postLinkedHearingGroup(null).subscribe(response => {
+        expect(response).toBeNull();
+      });
+
+      const req = httpMock.expectOne('api/hearings/linkedHearingGroup');
+      expect(req.request.method).toEqual('POST');
+      req.flush(null);
+    }));
+
+    it('should call putLinkedHearingGroup', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
+      service.putLinkedHearingGroup(null).subscribe(response => {
+        expect(response).toBeNull();
+      });
+
+      const req = httpMock.expectOne('api/hearings/linkedHearingGroup');
+      expect(req.request.method).toEqual('PUT');
+      req.flush(null);
+    }));
+
+    it('should call deleteLinkedHearingGroup', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
+      service.deleteLinkedHearingGroup('g100000', 'h1000000').subscribe(response => {
+        expect(response).toBeNull();
+      });
+
+      httpMock.expectOne((req: HttpRequest<any>) => {
+        expect(req.url).toBe('api/hearings/linkedHearingGroup');
+        expect(req.method).toBe('DELETE');
+        expect(req.params.get('hearingGroupId')).toEqual('g100000');
+        expect(req.params.get('hearingIds')).toEqual('h1000000');
+        return true;
+      })
+        .flush(null);
+    }));
+  });
+
 });

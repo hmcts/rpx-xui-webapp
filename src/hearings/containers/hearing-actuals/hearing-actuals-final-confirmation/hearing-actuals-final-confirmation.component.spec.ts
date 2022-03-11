@@ -3,16 +3,16 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
 import { initialState } from '../../../hearing.test.data';
-import { HearingFinalConfirmationComponent } from './hearing-final-confirmation.component';
+import { HearingActualsFinalConfirmationComponent } from './hearing-actuals-final-confirmation.component';
 
-describe('HearingFinalConfirmationComponent', () => {
-  let component: HearingFinalConfirmationComponent;
-  let fixture: ComponentFixture<HearingFinalConfirmationComponent>;
+describe('HearingActualsFinalConfirmationComponent', () => {
+  let component: HearingActualsFinalConfirmationComponent;
+  let fixture: ComponentFixture<HearingActualsFinalConfirmationComponent>;
   let mockStore: any;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingFinalConfirmationComponent],
+      declarations: [HearingActualsFinalConfirmationComponent],
       providers: [
         provideMockStore({initialState})
       ],
@@ -22,7 +22,7 @@ describe('HearingFinalConfirmationComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HearingFinalConfirmationComponent);
+    fixture = TestBed.createComponent(HearingActualsFinalConfirmationComponent);
     component = fixture.componentInstance;
     mockStore = jasmine.createSpyObj('mockStore', ['pipe']);
     mockStore.pipe.and.returnValue(of(initialState.hearings.hearingList));

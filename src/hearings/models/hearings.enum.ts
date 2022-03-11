@@ -125,6 +125,7 @@ export enum HearingCategory {
   JudgeType = 'JudgeType',
   OtherPanelRoles = 'OtherPanelRoles',
   CancelHearingReason = 'CancelHearingReason',
+  HearingRoles = 'HearingRoles',
   AdjournHearingActualReason = 'AdjournHearingActualReason',
   CancelHearingActualReason = 'CancelHearingActualReason'
 }
@@ -287,6 +288,15 @@ export enum HearingResult {
   CANCELLED = 'CANCELLED',
 }
 
+export enum HearingActualAddEditSummaryEnum {
+  HearingResultError = 'Enter a hearing result'
+}
+
 export enum HearingTemplate {
   LISTING_INFORMATION = 'Listing information summary',
+}
+
+export enum GroupLinkType {
+  ORDERED = 'Ordered',
+  SAME_SLOT = 'Same Slot',
 }

@@ -3,7 +3,9 @@ import { RouterModule, Routes } from '@angular/router';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
 import { CancelHearingComponent } from './containers/cancel-hearing/cancel-hearing.component';
 import { HearingActualAddEditSummaryComponent } from './containers/hearing-actuals/hearing-actual-add-edit-summary/hearing-actual-add-edit-summary.component';
+import { HearingActualsFinalConfirmationComponent } from './containers/hearing-actuals/hearing-actuals-final-confirmation/hearing-actuals-final-confirmation.component';
 import { HearingActualsTimingComponent } from './containers/hearing-actuals/hearing-actuals-timing/hearing-actuals-timing.component';
+import { HearingActualsViewEditPartiesComponent } from './containers/hearing-actuals/hearing-actuals-view-edit-parties/hearing-actuals-view-edit-parties.component';
 import { HearingActualsComponent } from './containers/hearing-actuals/hearing-actuals.component';
 import { HearingStageResultComponent } from './containers/hearing-actuals/hearing-stage-result/hearing-stage-result.component';
 import { HearingAdditionalInstructionsComponent } from './containers/request-hearing/hearing-additional-instructions/hearing-additional-instructions.component';
@@ -28,10 +30,10 @@ import { AdditionalFacilitiesResolver } from './resolvers/additional-facilities.
 import { AdjournHearingActualReasonResolver } from './resolvers/adjourn-hearing-actual-reason.resolver';
 import { CancelHearingActualReasonResolver } from './resolvers/cancel-hearing-actual-reason.resolver';
 import { CaseFlagsResolver } from './resolvers/case-flags.resolver';
-import { CourtLocationsDataResolver } from './resolvers/court-locations-resolver.resolve';
+import { HearingActualPartyChannelResolverService } from './resolvers/hearing-actual-party-channel-resolver.service';
+import { HearingActualRoleResolverService } from './resolvers/hearing-actual-role-resolver.service';
 import { HearingStageResolver } from './resolvers/hearing-stage.resolver';
 import { JudgeTypesResolverService } from './resolvers/judge-types-resolver.service';
-import { PanelRolesResolverService } from './resolvers/panel-roles-resolver.service';
 import { PartyChannelsResolverService } from './resolvers/party-channels-resolver.service';
 import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
 
@@ -93,7 +95,28 @@ export const ROUTES: Routes = [
           category: HearingCategory.HearingType,
           title: 'HMCTS Hearings | Hearing Actuals | Hearing Stage Result'
         }
-      }
+      },
+      {
+        path: 'hearing-actuals-confirmation',
+        component: HearingActualsFinalConfirmationComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Hearings | Hearing Actuals | Confirmation'
+        }
+      },
+      {
+        path: 'actuals-parties',
+        resolve: {
+          partyChannel: HearingActualPartyChannelResolverService,
+          hearingRole: HearingActualRoleResolverService,
+        },
+        component: HearingActualsViewEditPartiesComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Manage cases | Hearing Actuals | Update Participants',
+          isChildRequired: true
+        }
+      },
     ]
   },
   {

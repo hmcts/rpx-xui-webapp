@@ -60,7 +60,8 @@ describe('MyAccessComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
-    //component.isPaginationEnabled$ = of(false);
+    // TODO: CAM_BOOKING 0 not neeed
+    // component.isPaginationEnabled$ = of(false);
     router = TestBed.get(Router);
     const cases: Case[] = getMockCases();
     mockCaseService.searchCase.and.returnValue(of({ cases }));
@@ -71,7 +72,7 @@ describe('MyAccessComponent', () => {
     fixture.detectChanges();
   });
 
-  //on merge bookingUi and WA service isPaginationEnabled$ seems  not part of component so at this stage it s deactivated
+  // on merge bookingUi and WA service isPaginationEnabled$ seems not part of component so at this stage it s deactivated
   xit('should make a call to load cases using the default search request', () => {
     const searchRequest = component.getSearchCaseRequestPagination();
     const payload = { searchRequest, view: component.view };

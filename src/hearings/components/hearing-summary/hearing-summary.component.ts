@@ -39,7 +39,7 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit {
   }
 
   private getIdToScroll(): string {
-    switch(this.mode) {
+    switch (this.mode) {
       case Mode.CREATE_EDIT:
         return HearingButtonIds.SUBMIT_REQUEST;
       case Mode.VIEW_EDIT:

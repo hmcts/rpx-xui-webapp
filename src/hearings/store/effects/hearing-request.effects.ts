@@ -117,8 +117,9 @@ export class HearingRequestEffects {
             return this.router.navigate(['hearings', 'request', 'hearing-confirmation']);
           }),
         catchError(error => {
-					this.hearingStore.dispatch(new hearingRequestActions.SubmitHearingRequestFailure(error));
-          return of();
+          console.log('ERROR', error);
+          this.hearingStore.dispatch(new hearingRequestActions.SubmitHearingRequestFailure(error));
+          return of(error);
         })
       );
     })
@@ -143,8 +144,8 @@ export class HearingRequestEffects {
             return this.router.navigate(['hearings', 'request', 'hearing-confirmation']);
           }),
         catchError(error => {
-					this.hearingStore.dispatch(new hearingRequestActions.ViewEditSubmitHearingRequestFailure(error));
-          return of();
+          this.hearingStore.dispatch(new hearingRequestActions.ViewEditSubmitHearingRequestFailure(error));
+          return of(error);
         })
       );
     })
@@ -152,7 +153,7 @@ export class HearingRequestEffects {
 
   public static handleError(error: HttpError): Observable<Action> {
     if (error && error.status && error.status >= 400) {
-			return of(new fromAppStoreActions.Go({path: ['/service-down']}));
+      return of(new fromAppStoreActions.Go({path: ['/service-down']}));
     }
   }
 }

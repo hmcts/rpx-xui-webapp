@@ -1,11 +1,12 @@
 import {Location} from '@angular/common';
 import {TestBed} from '@angular/core/testing';
 import {Router} from '@angular/router';
+import { HttpError } from '@hmcts/ccd-case-ui-toolkit';
 import {provideMockActions} from '@ngrx/effects/testing';
 import {Store} from '@ngrx/store';
 import {provideMockStore} from '@ngrx/store/testing';
 import {cold} from 'jasmine-marbles';
-import {of} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {Go} from '../../../app/store/actions';
 import {hearingRequestMainModel, initialState} from '../../hearing.test.data';
 import {Mode} from '../../models/hearings.enum';
@@ -163,6 +164,7 @@ describe('Hearing Request Effects', () => {
 
   describe('submitHearingRequest$', () => {
     it('should submit hearing request', () => {
+      const dispatchSpy = spyOn(store, 'dispatch');
       hearingsServiceMock.submitHearingRequest.and.returnValue(of(hearingRequestMainModel));
       const action = new hearingRequestActions.SubmitHearingRequest(hearingRequestMainModel);
       actions$ = cold('-a', {a: action});
@@ -170,11 +172,32 @@ describe('Hearing Request Effects', () => {
       expect(effects.submitHearingRequest$).toBeObservable(expected);
       expect(hearingsServiceMock.submitHearingRequest).toHaveBeenCalled();
       expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-confirmation']);
+      expect(dispatchSpy).toHaveBeenCalledTimes(0);
+    });
+
+    it('should error submitting hearing request', () => {
+      const error: HttpError = {
+        status: 403,
+        error: null,
+        message: 'Http failure response: 403 Forbidden',
+        timestamp: '',
+        exception: '',
+        path: ''
+      }
+      const dispatchSpy = spyOn(store, 'dispatch');
+      hearingsServiceMock.submitHearingRequest.and.returnValue(Observable.throwError(error));
+      const action = new hearingRequestActions.SubmitHearingRequest(hearingRequestMainModel);
+      actions$ = cold('-a', {a: action});
+      const expected = cold('-b', {b: error});
+      expect(effects.submitHearingRequest$).toBeObservable(expected);
+      expect(hearingsServiceMock.submitHearingRequest).toHaveBeenCalled();
+      expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestActions.SubmitHearingRequestFailure(error));
     });
   });
 
-  describe('viewEditSubmitHearingRequest$', () => {
-    it('should view edit submit hearing request', () => {
+  describe('ViewEditSubmitHearingRequest$', () => {
+    it('should update hearing request', () => {
+      const dispatchSpy = spyOn(store, 'dispatch');
       hearingsServiceMock.updateHearingRequest.and.returnValue(of(hearingRequestMainModel));
       const action = new hearingRequestActions.ViewEditSubmitHearingRequest(hearingRequestMainModel);
       actions$ = cold('-a', {a: action});
@@ -182,6 +205,26 @@ describe('Hearing Request Effects', () => {
       expect(effects.viewEditSubmitHearingRequest$).toBeObservable(expected);
       expect(hearingsServiceMock.updateHearingRequest).toHaveBeenCalled();
       expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-confirmation']);
+      expect(dispatchSpy).toHaveBeenCalledTimes(0);
+    });
+
+    it('should error updating hearing request', () => {
+      const error: HttpError = {
+        status: 403,
+        error: null,
+        message: 'Http failure response: 403 Forbidden',
+        timestamp: '',
+        exception: '',
+        path: ''
+      }
+      const dispatchSpy = spyOn(store, 'dispatch');
+      hearingsServiceMock.updateHearingRequest.and.returnValue(Observable.throwError(error));
+      const action = new hearingRequestActions.ViewEditSubmitHearingRequest(hearingRequestMainModel);
+      actions$ = cold('-a', {a: action});
+      const expected = cold('-b', {b: error});
+      expect(effects.viewEditSubmitHearingRequest$).toBeObservable(expected);
+      expect(hearingsServiceMock.updateHearingRequest).toHaveBeenCalled();
+      expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestActions.ViewEditSubmitHearingRequestFailure(error));
     });
   });
 

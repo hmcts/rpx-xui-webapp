@@ -34,6 +34,7 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
   }
 
   public executeAction(action: ACTION): void {
+    if (action === ACTION.VIEW_EDIT_REASON || action === ACTION.VIEW_EDIT_SUBMIT) {
     this.initialAndCurrentStates$ = this.getInitialAndCurrentState();
     this.initialAndCurrentStates$.pipe(take(1)).subscribe(state => {
       const stateChanged = !_.isEqual(state[0], state[1]);
@@ -43,6 +44,9 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
         this.validationErrors.push({id: 'no-update', message: HearingViewEditSummaryMessages.NOT_UPDATED});
       }
     });
+    } else {
+      super.navigateAction(action);
+    }
   }
 
   public ngOnDestroy(): void {

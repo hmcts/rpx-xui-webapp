@@ -25,7 +25,6 @@ export class HearingChangeReasonResolver extends RefDataResolver implements Reso
       ...route.data,
       category: HearingCategory.HearingChangeReason
     };
-
     return super.resolve(route);
   }
 }

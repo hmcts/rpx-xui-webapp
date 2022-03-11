@@ -2,14 +2,17 @@ import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import {By} from '@angular/platform-browser';
-import {ActivatedRoute} from '@angular/router';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { Store } from '@ngrx/store';
 import {provideMockStore} from '@ngrx/store/testing';
+import { of } from 'rxjs/internal/observable/of';
 import {initialState} from '../../../hearing.test.data';
 import {LovRefDataService} from '../../../services/lov-ref-data.service';
 import { HearingActualsViewEditPartiesComponent } from './hearing-actuals-view-edit-parties.component';
 
-describe('HearingViewEditSummaryComponent', () => {
+fdescribe('HearingViewEditSummaryComponent', () => {
+  let store: Store<any>;
   let component: HearingActualsViewEditPartiesComponent;
   let fixture: ComponentFixture<HearingActualsViewEditPartiesComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
@@ -189,6 +192,9 @@ describe('HearingViewEditSummaryComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
+            paramMap: of(convertToParamMap({
+              id: '1',
+            })),
             snapshot: {
               data: {
                 partyChannel,
@@ -202,6 +208,7 @@ describe('HearingViewEditSummaryComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingActualsViewEditPartiesComponent);
+    store = TestBed.get(Store);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -239,9 +246,9 @@ describe('HearingViewEditSummaryComponent', () => {
   });
 
   it('submit form should prevent default', () => {
-    const event = jasmine.createSpyObj(['preventDefault']);
-    component.submitForm(event);
-    expect(event.preventDefault).toHaveBeenCalled();
+    spyOn(store, 'dispatch');
+    component.submitForm(component.partiesTable.value);
+    expect(store.dispatch).toHaveBeenCalled();
   });
 
   afterEach(() => {

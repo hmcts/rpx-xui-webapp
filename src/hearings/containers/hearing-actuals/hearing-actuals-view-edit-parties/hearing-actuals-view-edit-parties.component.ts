@@ -75,6 +75,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   }
 
   public ngOnInit(): void {
+    console.log('nyama: ngOnInit');
     this.partyChannel = this.route.snapshot.data.partyChannel;
     this.hearingRole = this.route.snapshot.data.hearingRole;
     this.sub = combineLatest([this.hearingStore.select(fromHearingStore.getHearingActuals), this.route.paramMap])
@@ -83,6 +84,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
         first()
       )
       .subscribe(([state, params]: [HearingActualsStateData, ParamMap]) => {
+        console.log('nyama');
         this.id = params.get('id');
         this.hearingActuals = JSON.parse(JSON.stringify(state.hearingActualsMainModel));
         this.createForm(this.hearingActuals);
@@ -120,6 +122,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   }
 
   public submitForm(parties: { parties: PartyModel[] }): void {
+    console.log('nyama: submitForm', parties);
     const hearingActuals = {
       ...this.hearingActuals.hearingActuals,
       actualHearingDays: [
@@ -129,6 +132,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
         }
       ]
     };
+    console.log('nyama: after', parties);
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
       hearingActuals
@@ -141,9 +145,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   }
 
   private createForm(hearingActuals: HearingActualsMainModel): void {
-
     hearingActuals.hearingPlanned.plannedHearingDays[0].parties.forEach(party => {
-
       this.participants.push({
         name: `${party.individualDetails.firstName} ${party.individualDetails.lastName}`,
         id: party.partyId

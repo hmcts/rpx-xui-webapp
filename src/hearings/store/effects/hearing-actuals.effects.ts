@@ -41,7 +41,7 @@ export class HearingActualsEffects {
       .pipe(
         map(() => new hearingActualsActions.SubmitHearingActualsSuccess(action.payload)),
         tap(() => this.router.navigate([`/hearings/actuals/${action.payload}/hearing-actuals-confirmation`])),
-        catchError(error => HearingActualsEffects.handleError(error))
+        catchError((error: HttpError) => of(new hearingActualsActions.SubmitHearingActualsFailure(error)))
       ))
   );
 

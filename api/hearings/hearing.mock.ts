@@ -1,3 +1,4 @@
+import { AxiosRequestConfig } from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import {HttpMockAdapter} from '../common/httpMockAdapter';
 import {HEARING_ACTUAL} from './data/hearing-actuals.mock.data';
@@ -15,13 +16,13 @@ export const init = () => {
 
   const postServiceHearingValues = /https:\/\/hearings.aat.service.core-compute-aat.internal\/serviceHearingValues/;
 
-  const submitHearingRequest = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearing/;
+  const submitHearingRequest = /https:\/\/hearings.aat.service.core-compute-aat.internal\/(hearing)\b/;
 
-  const updateHearingRequest = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearing/;
+  const updateHearingRequest = /https:\/\/hearings.aat.service.core-compute-aat.internal\/(hearing)\b/;
 
-  const cancelHearingRequest = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearing\/[\w]*/;
+  const cancelHearingRequest = /https:\/\/hearings.aat.service.core-compute-aat.internal\/(hearing)\b\/[\w]*/;
 
-  const hearingActualsUrl = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearingActuals\/[\w]*/;
+  const hearingActualsUrl = /https:\/\/hearings.aat.service.core-compute-aat.internal\/(hearingActuals)\b\/[\w]*/;
 
   const postHearingActualsUrl = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearingActualsCompletion\/[\w]*/;
 
@@ -100,9 +101,9 @@ export const init = () => {
     ];
   });
 
-  mock.onPost(postHearingActualsUrl).reply(() => {
+  mock.onPost(postHearingActualsUrl).reply((config: AxiosRequestConfig) => {
     return [
-      200,
+      400,
       [],
     ];
   });

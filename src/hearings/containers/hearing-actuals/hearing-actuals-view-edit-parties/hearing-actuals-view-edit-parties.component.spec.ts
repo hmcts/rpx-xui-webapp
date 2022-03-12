@@ -238,11 +238,19 @@ describe('HearingViewEditSummaryComponent', () => {
   });
 
   it('should remove a FormGroup from the FormArray', () => {
-    expect(component.parties.length).toEqual(4);
+    expect(component.parties.length).toEqual(2);
+    const addBtn = fixture.debugElement.query(By.css('.btn-add'));
+
+    expect(component.parties.get([component.parties.length - 1]).value)
+      .not.toEqual(jasmine.objectContaining({ firstName: '', lastName: '', isParty: false }));
+
+    addBtn.nativeElement.click();
+    fixture.detectChanges();
+
     const removeBtn = fixture.debugElement.query(By.css('.btn-remove:last-child'));
     removeBtn.nativeElement.click();
     fixture.detectChanges();
-    expect(component.parties.length).toEqual(3);
+    expect(component.parties.length).toEqual(2);
   });
 
   it('submit form should prevent default', () => {

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as moment from 'moment';
@@ -7,6 +7,7 @@ import { combineLatest, Subscription } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
 import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
+import { HearingActualsTimingErrorMessages } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
@@ -17,12 +18,14 @@ import { ValidatorsUtils } from '../../../utils/validators.utils';
 })
 export class HearingActualsTimingComponent implements OnInit, OnDestroy {
 
-  public static timeMatcher = /\d{2}:\d{2}/;
+  public static TIME_MATCHER = /\d{2}:\d{2}/;
   public form: FormGroup;
+  public caseTitle: string = 'Jane Smith vs DWP';
+  public submitted: boolean = false;
+  public errors: any[] = [];
   private hearingActuals: HearingActualsMainModel;
   private sub: Subscription;
   private id: string;
-  public caseTitle: string = 'Jane Smith vs DWP';
 
   public constructor(private readonly fb: FormBuilder,
                      private readonly hearingStore: Store<fromHearingStore.State>,
@@ -56,10 +59,10 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   }
 
   private static replaceTime(time: string, value: string): string {
-    if (!time) {
-      return time;
+    if (!time || !value) {
+      return null;
     }
-    return time.replace(this.timeMatcher, value);
+    return time.replace(this.TIME_MATCHER, value);
   }
 
   private static getTime(time: string): string {
@@ -76,6 +79,8 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
         this.id = params.get('id');
         this.hearingActuals = state.hearingActualsMainModel;
         this.form = this.createForm(this.hearingActuals);
+        this.subscribeToFormChanges(this.form);
+        this.subscribeToRecordPauseControl(this.form.get('recordTimes') as FormControl);
       });
   }
 
@@ -83,47 +88,143 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     this.sub.unsubscribe();
   }
 
-  public submit(value: any, valid: boolean) {
-    if (valid) {
-      const hearingActuals = {
-        ...this.hearingActuals.hearingActuals,
-        actualHearingDays: [
-          {
-            ...this.hearingActuals.hearingActuals.actualHearingDays[0],
-            hearingStartTime: HearingActualsTimingComponent.replaceTime(this.hearingActuals.hearingActuals.actualHearingDays[0].hearingStartTime, value.hearingStartTime),
-            hearingEndTime: HearingActualsTimingComponent.replaceTime(this.hearingActuals.hearingActuals.actualHearingDays[0].hearingEndTime, value.hearingEndTime),
-            pauseDateTimes: [
-              {
-                pauseStartTime: HearingActualsTimingComponent.replaceTime(this.hearingActuals.hearingActuals.actualHearingDays[0].hearingStartTime, value.pauseStartTime),
-                pauseEndTime: HearingActualsTimingComponent.replaceTime(this.hearingActuals.hearingActuals.actualHearingDays[0].hearingStartTime, value.pauseEndTime)
-              }
-            ]
-          }
-        ]
-      };
-      this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
-        hearingId: this.id,
-        hearingActuals
-      }));
+  public submit(value: any, valid: boolean): void {
+    this.submitted = true;
+    this.errors = [];
+    if (!valid) {
+      this.setErrors(this.form.errors);
+      return;
     }
+    this.submitted = false;
+    const hearingActuals = {
+      ...this.hearingActuals.hearingActuals,
+      actualHearingDays: [
+        {
+          ...this.hearingActuals.hearingActuals.actualHearingDays[0],
+          hearingStartTime: HearingActualsTimingComponent.replaceTime(this.hearingActuals.hearingActuals.actualHearingDays[0].hearingStartTime, value.hearingStartTime),
+          hearingEndTime: HearingActualsTimingComponent.replaceTime(this.hearingActuals.hearingActuals.actualHearingDays[0].hearingEndTime, value.hearingEndTime),
+          pauseDateTimes: [
+            {
+              pauseStartTime: HearingActualsTimingComponent.replaceTime(this.hearingActuals.hearingActuals.actualHearingDays[0].hearingStartTime, value.pauseStartTime),
+              pauseEndTime: HearingActualsTimingComponent.replaceTime(this.hearingActuals.hearingActuals.actualHearingDays[0].hearingStartTime, value.pauseEndTime)
+            }
+          ]
+        }
+      ]
+    };
+    this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
+      hearingId: this.id,
+      hearingActuals
+    }));
+  }
+
+  public updateControl(event: any, control: AbstractControl): void {
+    control.setValue(event.target.value);
+    control.updateValueAndValidity();
   }
 
   private createForm(hearingActuals: HearingActualsMainModel): FormGroup {
     return this.fb.group({
-      hearingStartTime: [HearingActualsTimingComponent.getStartTime(hearingActuals), [Validators.required, this.validatorsUtils.validTime()]],
-      hearingEndTime: [HearingActualsTimingComponent.getEndTime(hearingActuals), [Validators.required, this.validatorsUtils.validTime()]],
+      hearingStartTime: [HearingActualsTimingComponent.getStartTime(hearingActuals), [
+        Validators.required,
+        this.validatorsUtils.mandatory('Enter hearing start time'),
+        this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)
+      ]
+      ],
+      hearingEndTime: [HearingActualsTimingComponent.getEndTime(hearingActuals), [
+        this.validatorsUtils.mandatory('Enter hearing finish time'),
+        this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)
+      ]
+      ],
       recordTimes: [
         !HearingActualsTimingComponent.getPauseStartTime(hearingActuals) && !HearingActualsTimingComponent.getPauseEndTime(hearingActuals)
           ? null : 'yes',
-        [Validators.required]
+        [this.validatorsUtils.mandatory('Select if you need to record times the hearing was paused')]
       ],
-      pauseStartTime: [HearingActualsTimingComponent.getPauseStartTime(hearingActuals), [this.validatorsUtils.validTime()]],
-      pauseEndTime: [HearingActualsTimingComponent.getPauseEndTime(hearingActuals), [this.validatorsUtils.validTime()]],
+      pauseStartTime: [HearingActualsTimingComponent.getPauseStartTime(hearingActuals), [
+        this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)]],
+      pauseEndTime: [HearingActualsTimingComponent.getPauseEndTime(hearingActuals), [
+        this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)]],
     }, {
+      updateOn: 'blur',
       validators: [
-        this.validatorsUtils.validateTimeRange('hearingStartTime', 'hearingEndTime'),
-        this.validatorsUtils.validateTimeRange('pauseStartTime', 'pauseEndTime')
-      ]
+        this.validatorsUtils.validateTimeRange(
+          'hearingStartTime',
+          'hearingEndTime',
+          HearingActualsTimingErrorMessages.START_TIME_BEFORE_FINISH_TIME),
+        this.validatorsUtils.validateTimeRange(
+          'pauseStartTime',
+          'pauseEndTime',
+          HearingActualsTimingErrorMessages.PAUSE_TIME_BEFORE_RESUME_TIME),
+        this.validatorsUtils.validatePauseTimeRange(
+          'pauseStartTime',
+          { startTime: 'hearingStartTime', endTime: 'hearingEndTime' },
+          HearingActualsTimingErrorMessages.PAUSE_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES,
+          'invalidPauseStartTimeRange'),
+        this.validatorsUtils.validatePauseTimeRange(
+          'pauseEndTime',
+          { startTime: 'hearingStartTime', endTime: 'hearingEndTime' },
+          HearingActualsTimingErrorMessages.RESUME_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES,
+          'invalidPauseEndTimeRange'
+        )
+      ],
     });
+  }
+
+  private subscribeToFormChanges(form: FormGroup): void {
+    form.valueChanges.subscribe(() => {
+      this.submitted = false;
+    });
+  }
+
+  private subscribeToRecordPauseControl(control: FormControl): void {
+    control.valueChanges.subscribe((value: string) => {
+      if (value === 'yes') {
+        this.form.get('pauseStartTime').setValidators([
+          this.validatorsUtils.mandatory('Enter pause time'),
+          this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)
+        ]);
+        this.form.get('pauseEndTime').setValidators([
+          this.validatorsUtils.mandatory('Enter resume time'),
+          this.validatorsUtils.validTime(HearingActualsTimingErrorMessages.VALID_TIME)]
+        );
+        this.form.updateValueAndValidity();
+      } else {
+        this.form.get('pauseStartTime').setValue(null);
+        this.form.get('pauseEndTime').setValue(null);
+        this.form.get('pauseStartTime').clearValidators();
+        this.form.get('pauseEndTime').clearValidators();
+        this.form.get('pauseStartTime').updateValueAndValidity();
+        this.form.get('pauseEndTime').updateValueAndValidity();
+      }
+    });
+  }
+
+  private setErrors(errors: { [key: string]: string }): void {
+    this.errors = this.getAllErrorsMessagesFromControls(this.form);
+    if (!errors) {
+      return;
+    }
+    Object.keys(errors).forEach((key: string) => {
+      const error = errors[key];
+      if (error) {
+        this.errors = [...this.errors, ...this.getErrorMessages(error, key)];
+      }
+    });
+  }
+
+  private getErrorMessages(error: any, control: string): any[] {
+    return Object.keys(error).map((key) => ({ id: control, message: error[key].message }));
+  }
+
+  private getAllErrorsMessagesFromControls(form: FormGroup): any[] {
+    const errors = [];
+    Object.keys(form.controls).forEach((key: string) => {
+      const control = form.get(key);
+      if (control.errors) {
+        errors.push(...this.getErrorMessages(control.errors, key));
+      }
+    });
+    return errors;
   }
 }

@@ -2,9 +2,8 @@ import {AfterViewInit, Component, Input, OnDestroy, OnInit} from '@angular/core'
 import {ActivatedRoute, Router} from '@angular/router';
 import {select, Store} from '@ngrx/store';
 import {Observable, Subscription} from 'rxjs';
-import { map } from 'rxjs/operators';
 import {HearingConditions} from '../../models/hearingConditions';
-import {HearingButtonIds, HearingSummaryEnum, HearingTemplate, Mode} from '../../models/hearings.enum';
+import {HearingSummaryEnum, HearingTemplate, Mode} from '../../models/hearings.enum';
 import {Section} from '../../models/section';
 import * as fromHearingStore from '../../store';
 
@@ -33,7 +32,7 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy
       if (state.hearingRequest.lastError) {
         this.validationErrors = [];
         this.validationErrors.push({
-          id: this.getIdToScroll(), message: HearingSummaryEnum.BackendError
+          id: '', message: HearingSummaryEnum.BackendError
         });
         window.scrollTo({left: 0, top: 0, behavior: 'smooth'});
       }
@@ -67,17 +66,5 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy
     };
     this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
     this.router.navigateByUrl(changeLink);
-  }
-
-  private getIdToScroll(): string {
-    switch (this.mode) {
-      case Mode.CREATE_EDIT:
-        return HearingButtonIds.SUBMIT_REQUEST;
-      case Mode.VIEW_EDIT:
-        return HearingButtonIds.SUBMIT_UPDATED_REQUEST;
-      default:
-        // The error message will not display if id property is empty
-        return 'random-id';
-    }
   }
 }

@@ -299,11 +299,6 @@ export enum HearingTemplate {
   LISTING_INFORMATION = 'Listing information summary',
 }
 
-export enum HearingButtonIds {
-  SUBMIT_REQUEST = 'submit-request',
-  SUBMIT_UPDATED_REQUEST = 'submit-updated-request'
-}
-
 export enum GroupLinkType {
   ORDERED = 'Ordered',
   SAME_SLOT = 'Same Slot',

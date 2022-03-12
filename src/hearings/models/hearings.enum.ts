@@ -227,10 +227,6 @@ export enum HearingChangeReasonMessages {
   SELECT_AT_LEAST_ONE_REASON = 'Select at least one valid reason',
 }
 
-export enum HearingViewEditSummaryMessages {
-  NOT_UPDATED = 'The request has not been updated',
-}
-
 export enum AnswerSource {
   CASE_NAME,
   CASE_NUMBER,

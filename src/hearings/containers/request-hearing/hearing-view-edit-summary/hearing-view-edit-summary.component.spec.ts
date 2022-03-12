@@ -7,7 +7,7 @@ import {ACTION} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
 import {HearingViewEditSummaryComponent} from './hearing-view-edit-summary.component';
 
-describe('HearingViewEditSummaryComponent', () => {
+fdescribe('HearingViewEditSummaryComponent', () => {
   let component: HearingViewEditSummaryComponent;
   let fixture: ComponentFixture<HearingViewEditSummaryComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);

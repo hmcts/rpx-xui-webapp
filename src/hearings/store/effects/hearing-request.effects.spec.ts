@@ -193,5 +193,13 @@ describe('Hearing Request Effects', () => {
       });
       action$.subscribe(action => expect(action).toEqual(new Go({path: ['/hearings/error']})));
     });
+
+    it('should handle 4xx related errors', () => {
+      const action$ = HearingRequestEffects.handleError({
+        status: 403,
+        message: 'error'
+      });
+      action$.subscribe(action => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
+    });
   });
 });

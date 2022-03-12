@@ -77,5 +77,13 @@ describe('Hearing List Effects', () => {
       });
       action$.subscribe(action => expect(action).toEqual(new Go({path: ['/service-down']})));
     });
+
+    it('should handle 4xx related errors', () => {
+      const action$ = HearingListEffects.handleError({
+        status: 403,
+        message: 'error'
+      });
+      action$.subscribe(action => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
+    });
   });
 });

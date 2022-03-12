@@ -99,7 +99,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     }
   }
 
-  public getRepresentingAttendee(partyId: number): string {
+  public getRepresentingAttendee(partyId: string): string {
     const party: PartyModel = this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties.find(x => x.partyId === partyId.toString());
     if (party && party.individualDetails) {
       return `${party.individualDetails.firstName} ${party.individualDetails.lastName}`;

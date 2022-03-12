@@ -1,4 +1,4 @@
-import { HearingConditions } from '../models/hearingConditions';
+import {HearingConditions} from '../models/hearingConditions';
 
 export class HearingsUtils {
   public static hasPropertyAndValue(conditions: HearingConditions, propertyName: string, propertyValue: any): boolean {

@@ -207,25 +207,6 @@ describe('Hearing Request Effects', () => {
       expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-confirmation']);
       expect(dispatchSpy).toHaveBeenCalledTimes(0);
     });
-
-    it('should error updating hearing request', () => {
-      const error: HttpError = {
-        status: 403,
-        error: null,
-        message: 'Http failure response: 403 Forbidden',
-        timestamp: '',
-        exception: '',
-        path: ''
-      }
-      const dispatchSpy = spyOn(store, 'dispatch');
-      hearingsServiceMock.updateHearingRequest.and.returnValue(Observable.throwError(error));
-      const action = new hearingRequestActions.ViewEditSubmitHearingRequest(hearingRequestMainModel);
-      actions$ = cold('-a', {a: action});
-      const expected = cold('-b', {b: error});
-      expect(effects.viewEditSubmitHearingRequest$).toBeObservable(expected);
-      expect(hearingsServiceMock.updateHearingRequest).toHaveBeenCalled();
-      expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestActions.ViewEditSubmitHearingRequestFailure(error));
-    });
   });
 
   describe('handleError', () => {

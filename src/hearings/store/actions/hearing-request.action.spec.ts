@@ -44,16 +44,4 @@ describe('Hearing Request Actions', () => {
       expect(action.type).toBe(fromHearingRequestAction.SUBMIT_HEARING_REQUEST_FAILURE);
     });
   });
-
-  describe('ViewEditSubmitHearingRequestFailure', () => {
-    it('should view edit submit hearing request failure action', () => {
-      const payload = {
-        status: 403,
-        errors: null,
-        message: 'Http failure response: 403 Forbidden'
-      };
-      const action = new fromHearingRequestAction.ViewEditSubmitHearingRequestFailure(payload);
-      expect(action.type).toBe(fromHearingRequestAction.VIEW_EDIT_SUBMIT_HEARING_REQUEST_FAILURE);
-    });
-  });
 });

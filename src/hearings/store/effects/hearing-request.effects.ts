@@ -117,7 +117,6 @@ export class HearingRequestEffects {
             return this.router.navigate(['hearings', 'request', 'hearing-confirmation']);
           }),
         catchError(error => {
-          console.log('ERROR', error);
           this.hearingStore.dispatch(new hearingRequestActions.SubmitHearingRequestFailure(error));
           return of(error);
         })
@@ -144,8 +143,7 @@ export class HearingRequestEffects {
             return this.router.navigate(['hearings', 'request', 'hearing-confirmation']);
           }),
         catchError(error => {
-          this.hearingStore.dispatch(new hearingRequestActions.ViewEditSubmitHearingRequestFailure(error));
-          return of(error);
+          return HearingRequestEffects.handleError(error);
         })
       );
     })

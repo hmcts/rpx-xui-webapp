@@ -156,21 +156,5 @@ describe('Hearing Request Reducer', () => {
         expect(hearingsState).toEqual(initialHearingRequestState);
       });
     });
-
-    describe('View edit submit hearing request failure action', () => {
-      it('should call error response action', () => {
-        const initialHearingRequestState: HearingRequestStateData = {
-          hearingRequestMainModel: null,
-          lastError: {
-            status: 403,
-            errors: null,
-            message: 'Http failure response: 403 Forbidden'
-          },
-        };
-        const action = new fromHearingRequestActions.ViewEditSubmitHearingRequestFailure(initialHearingRequestState.lastError);
-        const hearingsState = fromHearingRequestReducer.hearingRequestReducer(initialHearingRequestState, action);
-        expect(hearingsState).toEqual(initialHearingRequestState);
-      });
-    });
   });
 });

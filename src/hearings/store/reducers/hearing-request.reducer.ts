@@ -85,12 +85,6 @@ export function hearingRequestReducer(currentState = initialHearingRequestState,
         lastError: action.payload
       }
     }
-    case fromActions.VIEW_EDIT_SUBMIT_HEARING_REQUEST_FAILURE: {
-      return {
-        ...currentState,
-        lastError: action.payload
-      }
-    }
     default: {
       return {
         ...currentState

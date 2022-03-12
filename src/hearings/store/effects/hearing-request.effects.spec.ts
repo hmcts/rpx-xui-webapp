@@ -197,7 +197,6 @@ describe('Hearing Request Effects', () => {
 
   describe('ViewEditSubmitHearingRequest$', () => {
     it('should update hearing request', () => {
-      const dispatchSpy = spyOn(store, 'dispatch');
       hearingsServiceMock.updateHearingRequest.and.returnValue(of(hearingRequestMainModel));
       const action = new hearingRequestActions.ViewEditSubmitHearingRequest(hearingRequestMainModel);
       actions$ = cold('-a', {a: action});
@@ -205,7 +204,6 @@ describe('Hearing Request Effects', () => {
       expect(effects.viewEditSubmitHearingRequest$).toBeObservable(expected);
       expect(hearingsServiceMock.updateHearingRequest).toHaveBeenCalled();
       expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-confirmation']);
-      expect(dispatchSpy).toHaveBeenCalledTimes(0);
     });
   });
 

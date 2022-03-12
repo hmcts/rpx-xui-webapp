@@ -18,7 +18,9 @@ import * as fromHearingStore from '../../../store';
 export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy {
 
   public partyChannel: LovRefDataModel[];
-  public hearingRole: LovRefDataModel[];
+  public hearingRoles: LovRefDataModel[] = [];
+  public immutablePartyRoles: LovRefDataModel[] = [];
+  public mutablePartyRoles: LovRefDataModel[] = [];
 
   public columns: string[] = [
     'First name',
@@ -55,7 +57,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     return this.partiesTable.get('parties') as FormArray;
   }
 
-  private static toActualParties(parties: { parties: PartyModel[] }, isParty: boolean): ActualDayPartyModel[] {
+  private static toActualParties(parties: { parties: PartyModel[] }): ActualDayPartyModel[] {
     return parties
       .parties
       .map((party: any) => ({
@@ -74,13 +76,17 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       }));
   }
 
-  private static hasActualParties(hearingActuals: HearingActualsMainModel): boolean {
-    return hearingActuals.hearingActuals.actualHearingDays[0].actualDayParties.length > 0;
+  private static hasActualParties(hearingActuals: HearingActualsMainModel, immutablePartyRoles: LovRefDataModel[]): boolean {
+    return hearingActuals.hearingActuals.actualHearingDays.length ? hearingActuals.hearingActuals.actualHearingDays[0].actualDayParties.some(
+      (actualDayParty: ActualDayPartyModel) => immutablePartyRoles
+        .map((partyRole: LovRefDataModel) => partyRole.key)
+        .includes(actualDayParty.partyRole)
+    ) : false;
   }
 
   public ngOnInit(): void {
     this.partyChannel = this.route.snapshot.data.partyChannel;
-    this.hearingRole = this.route.snapshot.data.hearingRole;
+    this.hearingRoles = this.route.snapshot.data.hearingRole;
     this.sub = combineLatest([this.hearingStore.select(fromHearingStore.getHearingActuals), this.route.paramMap])
       .pipe(
         filter(([state]: [HearingActualsStateData, ParamMap]) => !!state.hearingActualsMainModel),
@@ -89,6 +95,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       .subscribe(([state, params]: [HearingActualsStateData, ParamMap]) => {
         this.id = params.get('id');
         this.hearingActuals = JSON.parse(JSON.stringify(state.hearingActualsMainModel));
+        this.setUpRoleLists();
         this.createForm(this.hearingActuals);
       });
   }
@@ -124,7 +131,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   }
 
   public submitForm(parties: { parties: PartyModel[] }): void {
-    const actualParties = HearingActualsViewEditPartiesComponent.toActualParties(parties, false);
+    const actualParties = HearingActualsViewEditPartiesComponent.toActualParties(parties);
     const hearingActuals = {
       ...this.hearingActuals.hearingActuals,
       actualHearingDays: [
@@ -141,57 +148,67 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   }
 
   public getRole(value: string): string {
-    const hearingRole = this.hearingRole.find(role => role.key === value);
+    const hearingRole = this.hearingRoles.find(role => role.key === value);
     return hearingRole ? hearingRole.value_en : value;
   }
 
   private createForm(hearingActuals: HearingActualsMainModel): void {
-    if (HearingActualsViewEditPartiesComponent.hasActualParties(hearingActuals)) {
+    if (HearingActualsViewEditPartiesComponent.hasActualParties(hearingActuals, this.immutablePartyRoles)) {
       hearingActuals.hearingActuals.actualHearingDays[0].actualDayParties.forEach((party: ActualDayPartyModel) => {
-        this.addParticipantsAndParties(party);
+        this.addActualParticipantsAndParties(party);
       });
     } else {
       hearingActuals.hearingPlanned.plannedHearingDays[0].parties.forEach((party: PartyModel) => {
-        this.addParticipantsAndParties(party as unknown as ActualDayPartyModel);
+        this.addParties(party);
       });
     }
-
-    hearingActuals.hearingActuals.actualHearingDays.forEach(actualHearingDay => {
-
-      actualHearingDay.actualDayParties.forEach(dayParty => {
-        if (dayParty.didNotAttendFlag) {
-          dayParty.partyChannelSubType = 'notAttending';
-        }
-
-        this.parties.push(this.fb.group({
-          firstName: [dayParty.actualIndividualDetails.firstName],
-          lastName: [dayParty.actualIndividualDetails.lastName],
-          role: [dayParty.partyRole],
-          attendanceType: [dayParty.partyChannelSubType],
-          organisation: [dayParty.actualOrganisationDetails.name],
-          attendeeRepresenting: [dayParty.representedParty],
-          isParty: [false]
-        }));
-      });
-    });
-
   }
 
-  private addParticipantsAndParties(party: ActualDayPartyModel) {
-    this.participants.push({
-      name: `${party.actualIndividualDetails.firstName} ${party.actualIndividualDetails.lastName}`,
-      id: party.actualPartyId,
-    });
-
+  private addActualParticipantsAndParties(party: ActualDayPartyModel) {
+    if (party.partyRole === 'appellant' || party.partyRole === 'claimant') {
+      this.participants.push({
+        name: `${party.actualIndividualDetails.firstName} ${party.actualIndividualDetails.lastName}`,
+        id: party.actualPartyId,
+      });
+    }
     this.parties.push(this.fb.group({
       firstName: [party.actualIndividualDetails.firstName],
       lastName: [party.actualIndividualDetails.lastName],
       role: [party.partyRole],
       attendanceType: [party.partyChannelSubType],
       organisation: [party.actualOrganisationDetails.name],
-      attendeeRepresenting: [party.actualPartyId],
-      partyId: [party.actualPartyId],
+      attendeeRepresenting: [party.representedParty],
+      partyId: [null],
+      isParty: [party.partyRole === 'appellant' || party.partyRole === 'claimant']
+    }));
+  }
+
+  private addParties(party: PartyModel) {
+    if (party.partyId) {
+      this.participants.push({
+        name: `${party.individualDetails.firstName} ${party.individualDetails.lastName}`,
+        id: party.partyId,
+      });
+    }
+    this.parties.push(this.fb.group({
+      firstName: [party.individualDetails.firstName],
+      lastName: [party.individualDetails.lastName],
+      role: [party.partyRole],
+      attendanceType: [party.partyChannelSubType],
+      organisation: [party.organisationDetails.name],
+      attendeeRepresenting: [null],
+      partyId: [party.partyId],
       isParty: [true]
     }));
+  }
+
+  private setUpRoleLists(): void {
+    for (const role of this.hearingRoles) {
+      if (role.key === 'appellant' || role.key === 'claimant') {
+        this.immutablePartyRoles.push(role);
+      } else {
+        this.mutablePartyRoles.push(role);
+      }
+    }
   }
 }

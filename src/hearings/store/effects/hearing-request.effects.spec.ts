@@ -191,7 +191,7 @@ describe('Hearing Request Effects', () => {
         status: 500,
         message: 'error'
       });
-      action$.subscribe(action => expect(action).toEqual(new Go({path: ['/service-down']})));
+      action$.subscribe(action => expect(action).toEqual(new Go({path: ['/hearings/error']})));
     });
   });
 });

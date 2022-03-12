@@ -1,6 +1,6 @@
 <exui-app-header></exui-app-header>
 <div class="govuk-width-container">
-  <a class="govuk-back-link" href="javascript:history.go(-2)">Back</a>
+  <a class="govuk-back-link" [routerLink]="['/', 'cases', 'case-details', caseId, 'hearings']" href="javascript:void()">Back</a>
   <main class="govuk-main-wrapper govuk-main-wrapper--l" id="content" role="main">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">

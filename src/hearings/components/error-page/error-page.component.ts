@@ -17,11 +17,11 @@ export class ErrorPageComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.sub = this.hearingStore.select(fromHearingStore.getHearingsFeatureState).subscribe(state => {
-      console.log('STATE', state);
-      this.caseId = state.hearingList.hearingListMainModel.caseRef;
-      console.log('CASE ID', this.caseId);
-    });
+    this.sub = this.hearingStore.select(fromHearingStore.getHearingsFeatureState).subscribe(
+      state => {
+        this.caseId = state.hearingList.hearingListMainModel.caseRef;
+      }
+    );
   }
 
   public ngOnDestroy(): void {

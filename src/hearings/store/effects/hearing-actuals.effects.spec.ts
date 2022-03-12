@@ -69,11 +69,11 @@ describe('Hearing Actuals Effects', () => {
 
   describe('handleError', () => {
     it('should handle 500', () => {
-      const action$ = HearingListEffects.handleError({
+      const action$ = HearingActualsEffects.handleError({
         status: 500,
         message: 'error'
       });
-      action$.subscribe(action => expect(action).toEqual(new Go({ path: ['/service-down'] })));
+      action$.subscribe(action => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
     });
   });
 });

@@ -1,4 +1,5 @@
 import {CaseFlagsComponent} from './case-flags/case-flags.component';
+import { ErrorPageComponent } from './error-page/error-page.component';
 import {HearingAmendWarningMsgComponent} from './hearing-amend-warning-msg/hearing-amend-warning-msg.component';
 import {HearingConfirmationComponent} from './hearing-confirmation/hearing-confirmation.component';
 import {HearingJudgeNameComponent} from './hearing-judge-name/hearing-judge-name.component';
@@ -19,7 +20,8 @@ export const components: any[] = [
   HearingSummaryComponent,
   ListingInformationSummaryComponent,
   HearingConfirmationComponent,
-  HearingAmendWarningMsgComponent
+  HearingAmendWarningMsgComponent,
+  ErrorPageComponent
 ];
 
 export * from '../components/case-flags/case-flags.component';
@@ -32,3 +34,4 @@ export * from '../components/hearing-summary/hearing-summary.component';
 export * from '../components/listing-information-summary/listing-information-summary.component';
 export * from '../components/hearing-confirmation/hearing-confirmation.component';
 export * from '../components/hearing-amend-warning-msg/hearing-amend-warning-msg.component';
+export * from '../components/error-page/error-page.component';

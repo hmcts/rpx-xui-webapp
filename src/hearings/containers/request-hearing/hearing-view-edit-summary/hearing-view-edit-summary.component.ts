@@ -1,5 +1,5 @@
 import {Component, OnDestroy} from '@angular/core';
-import {select, Store} from '@ngrx/store';
+import {Store} from '@ngrx/store';
 import {ACTION, Mode} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';

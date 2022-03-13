@@ -59,7 +59,7 @@
       <dd class="govuk-summary-list__value" [innerHtml]="answerSource.ROOM_ID | transformAnswer:hearingState$ | async"></dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
-    <div class="govuk-summary-list__row" *ngIf="answerSource.JUDICIAL_MEMBERS | transformAnswer:hearingState$ | async">
+    <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">Judicial members</dt>
       <dd class="govuk-summary-list__value" [innerHtml]="answerSource.JUDICIAL_MEMBERS | transformAnswer:hearingState$ | async"></dd>
       <dd class="govuk-summary-list__actions"></dd>

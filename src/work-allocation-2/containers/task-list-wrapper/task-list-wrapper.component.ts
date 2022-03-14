@@ -325,6 +325,14 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     return false;
   }
 
+  public getCurrentUserRoleCategory() : string {
+    const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
+    if (userInfoStr) {
+      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      return userInfo.roleCategory;
+    }
+  }
+
   // Do the actual load. This is separate as it's called from two methods.
   private doLoad(): void {
     this.showSpinner$ = this.loadingService.isLoading;

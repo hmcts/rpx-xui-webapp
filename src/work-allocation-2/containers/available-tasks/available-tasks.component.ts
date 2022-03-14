@@ -17,7 +17,14 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
 export class AvailableTasksComponent extends TaskListWrapperComponent {
 
   public get fields(): FieldConfig[] {
-    return this.isCurrentUserJudicial() ? ConfigConstants.AvailableTasksForJudicial : ConfigConstants.AvailableTasksForLegalOps;
+    const userRoleCategory = this.getCurrentUserRoleCategory();
+    if (userRoleCategory) {
+      if (userRoleCategory === 'JUDICIAL') {
+        return ConfigConstants.AvailableTasksForJudicial;
+      } else {
+        return ConfigConstants.AvailableTasksForLegalOps;
+      }
+    }
   }
 
   public get sortSessionKey(): string {

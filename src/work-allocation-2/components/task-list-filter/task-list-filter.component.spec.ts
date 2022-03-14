@@ -3,7 +3,7 @@ import { Location as AngularLocation } from '@angular/common';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, DebugElement, ViewChild } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -176,6 +176,31 @@ describe('TaskListFilterComponent', () => {
     const typesOfWorkSelectedFields = component.fieldsSettings.fields[2];
     expect(typesOfWorkSelectedFields.value.length).toBe(typesOfWork.length + 1);
   });
+
+  it('should set allowTypesOfWorkFilter to true by default', () => {
+    expect(component.allowTypesOfWorkFilter).toBe(true);
+  });
+
+  it('should render filter with "Types of work" filter visible', fakeAsync(() => {
+    component.onToggleFilter(true);
+    fixture.detectChanges();
+    tick(500);
+    const typesOfWorkParentDivElem = fixture.debugElement.query(By.css('#types-of-work')).parent;
+    const styles = getComputedStyle(typesOfWorkParentDivElem.nativeElement);
+    const displayProp = styles.getPropertyValue('display');
+    expect(displayProp).toEqual('block');
+  }));
+
+  it('should render filter with "Types of work" filter NOT visible', fakeAsync(() => {
+    component.allowTypesOfWorkFilter = false;
+    component.onToggleFilter(false);
+    fixture.detectChanges();
+    tick(500);
+    const typesOfWorkParentDivElem = fixture.debugElement.query(By.css('#types-of-work')).parent;
+    const styles = getComputedStyle(typesOfWorkParentDivElem.nativeElement);
+    const displayProp = styles.getPropertyValue('display');
+    expect(displayProp).toEqual('none');
+  }));
 
   afterAll(() => {
     component.ngOnDestroy();

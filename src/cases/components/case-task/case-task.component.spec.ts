@@ -13,6 +13,14 @@ describe('CaseTaskComponent', () => {
   mockRouter.url = '/case-details/123243430403904/tasks';
   const component = new CaseTaskComponent(mockAlertService, mockRouter, mockSessionStorage, mockTaskService);
 
+  it('ngOnInit', () => {
+    component.task = {} as Task;
+    component.task.actions = [{id: 'id', title: 'actionName'}]
+    component.ngOnInit();
+    expect(component.manageOptions[0].id).toEqual('id');
+    expect(component.manageOptions[0].title).toEqual('actionName');
+  });
+
   it('isTaskAssignedToCurrentUser when no userDetails in sessionStorage', () => {
     const task: Task = {
       assignee: '3314e308-e83b-4f39-a414-6844e185e5ac',

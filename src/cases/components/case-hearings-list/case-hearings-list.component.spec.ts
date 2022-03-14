@@ -1,16 +1,16 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {By} from '@angular/platform-browser';
-import {ActivatedRoute, Router, RouterModule} from '@angular/router';
-import {RouterTestingModule} from '@angular/router/testing';
-import {FeatureUser} from '@hmcts/rpx-xui-common-lib';
-import {Store} from '@ngrx/store';
-import {Observable, of} from 'rxjs';
-import {RoleCategoryMappingService} from '../../../app/services/role-category-mapping/role-category-mapping.service';
-import {HearingListViewModel} from '../../../hearings/models/hearingListView.model';
-import {Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum} from '../../../hearings/models/hearings.enum';
-import {HearingsPipesModule} from '../../../hearings/pipes/hearings.pipes.module';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { FeatureUser } from '@hmcts/rpx-xui-common-lib';
+import { Store } from '@ngrx/store';
+import { Observable, of } from 'rxjs';
+import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
+import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
+import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, PartyType } from '../../../hearings/models/hearings.enum';
+import { HearingsPipesModule } from '../../../hearings/pipes/hearings.pipes.module';
 import * as fromHearingStore from '../../../hearings/store';
-import {CaseHearingsListComponent} from './case-hearings-list.component';
+import { CaseHearingsListComponent } from './case-hearings-list.component';
 
 class MockRoleCategoryMappingService {
   public initialize = (user: FeatureUser, clientId: string): void => {
@@ -68,14 +68,44 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba5',
     hearingVenueId: 'venue 1',
     hearingRoomId: 'room 1',
-    hearingPanel: []
+    hearingJudgeId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
+    attendees: [
+      {
+        partyID: 'P1',
+        partyName: 'Jane and Smith',
+        partyType: PartyType.IND,
+        partyChannel: 'inPerson',
+      },
+      {
+        partyID: 'P2',
+        partyName: 'DWP',
+        partyType: PartyType.ORG,
+        partyChannel: 'byVideo',
+      },
+    ],
   }, {
     hearingStartDateTime: '2021-05-05T09:00:00.000+0000',
     hearingEndDateTime: '2021-05-05T16:00:00.000+0000',
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba4',
     hearingVenueId: 'venue 2',
     hearingRoomId: 'room 2',
-    hearingPanel: []
+    hearingJudgeId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
+    attendees: [
+      {
+        partyID: 'P1',
+        partyName: 'Jane and Smith',
+        partyType: PartyType.IND,
+        partyChannel: 'inPerson',
+      },
+      {
+        partyID: 'P2',
+        partyName: 'DWP',
+        partyType: PartyType.ORG,
+        partyChannel: 'byVideo',
+      },
+    ],
   }],
   exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
   exuiDisplayStatus: EXUIDisplayStatusEnum.LISTED
@@ -97,14 +127,44 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc4',
     hearingVenueId: 'venue 3',
     hearingRoomId: 'room 3',
-    hearingPanel: []
+    hearingJudgeId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
+    attendees: [
+      {
+        partyID: 'P1',
+        partyName: 'Jane and Smith',
+        partyType: PartyType.IND,
+        partyChannel: 'inPerson',
+      },
+      {
+        partyID: 'P2',
+        partyName: 'DWP',
+        partyType: PartyType.ORG,
+        partyChannel: 'byVideo',
+      },
+    ],
   }, {
     hearingStartDateTime: '2021-03-13T09:00:00.000+0000',
     hearingEndDateTime: '2021-03-13T16:00:00.000+0000',
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc5',
     hearingVenueId: 'venue 4',
     hearingRoomId: 'room 4',
-    hearingPanel: []
+    hearingJudgeId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
+    attendees: [
+      {
+        partyID: 'P1',
+        partyName: 'Jane and Smith',
+        partyType: PartyType.IND,
+        partyChannel: 'inPerson',
+      },
+      {
+        partyID: 'P2',
+        partyName: 'DWP',
+        partyType: PartyType.ORG,
+        partyChannel: 'byVideo',
+      },
+    ],
   }],
   exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
   exuiDisplayStatus: EXUIDisplayStatusEnum.UPDATE_REQUESTED
@@ -126,7 +186,22 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc6',
     hearingVenueId: 'venue 5',
     hearingRoomId: 'room 5',
-    hearingPanel: []
+    hearingJudgeId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
+    attendees: [
+      {
+        partyID: 'P1',
+        partyName: 'Jane and Smith',
+        partyType: PartyType.IND,
+        partyChannel: 'inPerson',
+      },
+      {
+        partyID: 'P2',
+        partyName: 'DWP',
+        partyType: PartyType.ORG,
+        partyChannel: 'byVideo',
+      },
+    ],
   }],
   exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
   exuiDisplayStatus: EXUIDisplayStatusEnum.UPDATE_REQUESTED
@@ -148,7 +223,22 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b55',
     hearingVenueId: 'venue 1',
     hearingRoomId: 'room 1',
-    hearingPanel: []
+    hearingJudgeId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
+    attendees: [
+      {
+        partyID: 'P1',
+        partyName: 'Jane and Smith',
+        partyType: PartyType.IND,
+        partyChannel: 'inPerson',
+      },
+      {
+        partyID: 'P2',
+        partyName: 'DWP',
+        partyType: PartyType.ORG,
+        partyChannel: 'byVideo',
+      },
+    ],
   }],
   exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
   exuiDisplayStatus: EXUIDisplayStatusEnum.FAILURE
@@ -170,14 +260,44 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b44',
     hearingVenueId: 'venue 2',
     hearingRoomId: 'room 2',
-    hearingPanel: []
+    hearingJudgeId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
+    attendees: [
+      {
+        partyID: 'P1',
+        partyName: 'Jane and Smith',
+        partyType: PartyType.IND,
+        partyChannel: 'inPerson',
+      },
+      {
+        partyID: 'P2',
+        partyName: 'DWP',
+        partyType: PartyType.ORG,
+        partyChannel: 'byVideo',
+      },
+    ],
   }, {
     hearingStartDateTime: '2021-02-13T09:00:00.000+0000',
     hearingEndDateTime: '2021-02-13T16:00:00.000+0000',
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b34',
     hearingVenueId: 'venue 3',
     hearingRoomId: 'room 3',
-    hearingPanel: []
+    hearingJudgeId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
+    attendees: [
+      {
+        partyID: 'P1',
+        partyName: 'Jane and Smith',
+        partyType: PartyType.IND,
+        partyChannel: 'inPerson',
+      },
+      {
+        partyID: 'P2',
+        partyName: 'DWP',
+        partyType: PartyType.ORG,
+        partyChannel: 'byVideo',
+      },
+    ],
   }],
   exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
   exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLATION_REQUESTED
@@ -199,7 +319,22 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
     hearingVenueId: 'venue 4',
     hearingRoomId: 'room 4',
-    hearingPanel: []
+    hearingJudgeId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
+    attendees: [
+      {
+        partyID: 'P1',
+        partyName: 'Jane and Smith',
+        partyType: PartyType.IND,
+        partyChannel: 'inPerson',
+      },
+      {
+        partyID: 'P2',
+        partyName: 'DWP',
+        partyType: PartyType.ORG,
+        partyChannel: 'byVideo',
+      },
+    ],
   }],
   exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
   exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_ACTUALS
@@ -238,7 +373,22 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b66',
     hearingVenueId: 'venue 5',
     hearingRoomId: 'room 5',
-    hearingPanel: []
+    hearingJudgeId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
+    attendees: [
+      {
+        partyID: 'P1',
+        partyName: 'Jane and Smith',
+        partyType: PartyType.IND,
+        partyChannel: 'inPerson',
+      },
+      {
+        partyID: 'P2',
+        partyName: 'DWP',
+        partyType: PartyType.ORG,
+        partyChannel: 'byVideo',
+      },
+    ],
   }],
   exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
   exuiDisplayStatus: EXUIDisplayStatusEnum.COMPLETED
@@ -260,7 +410,22 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b33',
     hearingVenueId: 'venue 11',
     hearingRoomId: 'room 11',
-    hearingPanel: []
+    hearingJudgeId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
+    attendees: [
+      {
+        partyID: 'P1',
+        partyName: 'Jane and Smith',
+        partyType: PartyType.IND,
+        partyChannel: 'inPerson',
+      },
+      {
+        partyID: 'P2',
+        partyName: 'DWP',
+        partyType: PartyType.ORG,
+        partyChannel: 'byVideo',
+      },
+    ],
   }],
   exuiSectionStatus: EXUISectionStatusEnum.PAST_AND_CANCELLED,
   exuiDisplayStatus: EXUIDisplayStatusEnum.ADJOURNED
@@ -522,7 +687,7 @@ describe('CaseHearingsListComponent', () => {
     fixture.detectChanges();
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.LoadHearingValues('1111222233334444'));
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.LoadHearingRequest('h100000'));
-    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.SaveHearingConditions({mode: 'view'}));
+    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.SaveHearingConditions({ mode: 'view' }));
     expect(navigateSpy).toHaveBeenCalledWith(['/', 'hearings', 'request', 'hearing-view-edit-summary']);
   });
 

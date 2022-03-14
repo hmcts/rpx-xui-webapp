@@ -382,8 +382,8 @@ describe('HearingActualAddEditSummaryComponent display actual participants', () 
 
   it('should display form with actual parties involved', () => {
 
-    expect(component.participants.length).toBe(2);
-    expect(component.actualDayParties.length).toBe(1);
+    expect(component.parties.length).toBe(2);
+    expect(component.participants.length).toBe(1);
   });
 
   afterEach(() => {

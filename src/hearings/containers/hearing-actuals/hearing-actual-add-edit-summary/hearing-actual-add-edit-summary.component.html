@@ -83,7 +83,7 @@
       <span class="govuk-body align-right">
         <a href="javascript:void(0)" [routerLink]="['/', 'hearings', 'actuals', id, 'actuals-parties']" class="govuk-link">Update</a>
       </span>
-      <div *ngFor="let party of participants">
+      <div *ngFor="let party of parties">
         <dl class="govuk-summary-list">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
@@ -102,42 +102,42 @@
         </dl>
       </div>
       <br>
-      <div *ngFor="let party of actualDayParties; let i = index">
+      <div *ngFor="let participant of participants; let i = index">
         <h2 class="govuk-heading-s">Attendee {{i + 1}}</h2>
         <dl class="govuk-summary-list">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Role</dt>
-            <dd class="govuk-summary-list__value">{{party.partyRole}}</dd>
+            <dd class="govuk-summary-list__value">{{participant.partyRole}}</dd>
           </div>
         </dl>
         <dl class="govuk-summary-list">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">First name</dt>
-            <dd class="govuk-summary-list__value">{{party.actualIndividualDetails.firstName}}</dd>
+            <dd class="govuk-summary-list__value">{{participant.actualIndividualDetails.firstName}}</dd>
           </div>
         </dl>
         <dl class="govuk-summary-list">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Last name</dt>
-            <dd class="govuk-summary-list__value">{{party.actualIndividualDetails.lastName}}</dd>
+            <dd class="govuk-summary-list__value">{{participant.actualIndividualDetails.lastName}}</dd>
           </div>
         </dl>
         <dl class="govuk-summary-list">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Attendance type</dt>
-            <dd class="govuk-summary-list__value">{{party.partyChannelSubType}}</dd>
+            <dd class="govuk-summary-list__value">{{participant.partyChannelSubType}}</dd>
           </div>
         </dl>
         <dl class="govuk-summary-list">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Organisation</dt>
-            <dd class="govuk-summary-list__value">{{party.actualOrganisationDetails.name}}</dd>
+            <dd class="govuk-summary-list__value">{{participant.actualOrganisationDetails.name}}</dd>
           </div>
         </dl>
         <dl class="govuk-summary-list">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Attendee representing</dt>
-            <dd class="govuk-summary-list__value" [innerHTML]="getRepresentingAttendee(party.representedParty)"></dd>
+            <dd class="govuk-summary-list__value" [innerHTML]="getRepresentingAttendee(participant.representedParty)"></dd>
           </div>
         </dl>
         <br>

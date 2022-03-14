@@ -6,10 +6,10 @@ import {ActivatedRoute} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
-import { initialState } from 'src/hearings/hearing.test.data';
-import { ACTION } from 'src/hearings/models/hearings.enum';
-import { LovRefDataModel } from 'src/hearings/models/lovRefData.model';
-import { HearingsService } from 'src/hearings/services/hearings.service';
+import { initialState } from '../../../hearing.test.data';
+import { ACTION } from '../../../models/hearings.enum';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
+import { HearingsService } from '../../../services/hearings.service';
 import {HearingChangeReasonComponent} from './hearing-change-reason.component';
 
 describe('HearingChangeReasonComponent', () => {

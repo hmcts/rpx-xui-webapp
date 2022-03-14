@@ -55,14 +55,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   }
 
   public get fields(): FieldConfig[] {
-    const userRoleCategory = this.getCurrentUserRoleCategory();
-    if (userRoleCategory) {
-      if (userRoleCategory === 'JUDICIAL') {
-        return ConfigConstants.AllWorkTasksForJudicial;
-      } else {
-        return ConfigConstants.AllWorkTasksForLegalOps;
-      }
-    }
+    return this.isCurrentUserJudicial() ? ConfigConstants.AllWorkTasksForJudicial : ConfigConstants.AllWorkTasksForLegalOps;
   }
 
   public loadCaseWorkersAndLocations(): void {

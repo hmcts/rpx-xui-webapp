@@ -29,14 +29,7 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
   }
 
   public get fields(): FieldConfig[] {
-    const userRoleCategory = this.getCurrentUserRoleCategory();
-    if (userRoleCategory) {
-      if (userRoleCategory === 'JUDICIAL') {
-        return ConfigConstants.MyWorkTasksForJudicial;
-      } else {
-        return ConfigConstants.MyWorkTasksForLegalOps;
-      }
-    }
+    return this.isCurrentUserJudicial() ? ConfigConstants.MyWorkTasksForJudicial : ConfigConstants.MyWorkTasksForLegalOps;
   }
 
   public getSearchTaskRequestPagination(): SearchTaskRequest {

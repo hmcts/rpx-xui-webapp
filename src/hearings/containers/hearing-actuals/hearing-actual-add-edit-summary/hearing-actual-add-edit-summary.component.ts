@@ -26,8 +26,8 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public hearingOutcome: HearingOutcomeModel;
   public hearingRoles: LovRefDataModel[] = [];
   public actualHearingDay: ActualHearingDayModel;
-  public actualDayParties: ActualDayPartyModel[] = [];
   public participants: ActualDayPartyModel[] = [];
+  public parties: ActualDayPartyModel[] = [];
   public hearingTypes: LovRefDataModel[];
   public adjournHearingActualReasons: LovRefDataModel[];
   public cancelHearingActualReasons: LovRefDataModel[];
@@ -128,9 +128,9 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       const parties = hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties;
       for (const party of parties) {
         if (party.partyRole ===  PartyRoleOnly.Appellant || party.partyRole === PartyRoleOnly.Claimant) {
-          this.participants.push(party);
+          this.parties.push(party);
         } else {
-          this.actualDayParties.push(party);
+          this.participants.push(party);
         }
       }
     } else {
@@ -151,7 +151,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
             actualPartyId: party.partyId,
             partyRole: party.partyRole
           };
-          this.participants.push(actualDayParty);
+          this.parties.push(actualDayParty);
         }
       }
     }

@@ -1,12 +1,12 @@
 import { NextFunction, Response } from 'express';
 import { handleGet } from '../../common/mockService';
 import { getConfigValue } from '../../configuration';
-import { SERVICES_PRD_API_URL} from '../../configuration/references';
+import { SERVICES_PRD_API_URL } from '../../configuration/references';
 import { EnhancedRequest } from '../../lib/models';
-import {LocationTypeEnum} from './data/locationType.enum';
-import {SERVICES_COURT_TYPE_MAPPINGS} from './data/serviceCourtType.mapping';
+import { LocationTypeEnum } from './data/locationType.enum';
+import { SERVICES_COURT_TYPE_MAPPINGS } from './data/serviceCourtType.mapping';
 import * as mock from './location.mock';
-import {LocationModel} from './models/location.model';
+import { LocationModel } from './models/location.model';
 
 mock.init();
 
@@ -29,7 +29,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   // tslint:disable-next-line:max-line-length
   const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${courtTypeIds}`;
   try {
-    const {status, data}: { status: number, data: LocationModel[] } = await handleGet(markupPath, req);
+    const { status, data }: { status: number, data: LocationModel[] } = await handleGet(markupPath, req);
     let result: LocationModel[] = data;
     if (locationType === LocationTypeEnum.HEARING) {
       result = data.filter(location => location.is_hearing_location === 'Y');
@@ -53,4 +53,20 @@ function getCourtTypeIdsByService(serviceIdArray: string[]): string {
 
 function concatCourtTypeWithoutDuplicates(array1: number[], array2: number[]) {
   return array1.concat(array2.filter(item => array1.indexOf(item) < 0));
+}
+
+/**
+ * Gets court locations
+ * @description getCourtLocations from epimms_id
+ * @overview API sample: /api/locations/court-locations?epimms_id=812332
+ */
+export async function getCourtLocations(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const epimmsID = req.query.epimms_id;
+  const markupPath: string = `${url}/refdata/location/court-locations?epimms_id=${epimmsID}`;
+  try {
+    const { status, data }: { status: number, data: LocationModel } = await handleGet(markupPath, req);
+    res.status(status).send(data);
+  } catch (error) {
+    next(error);
+  }
 }

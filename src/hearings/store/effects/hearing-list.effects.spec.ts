@@ -1,15 +1,15 @@
-import {TestBed} from '@angular/core/testing';
-import {provideMockActions} from '@ngrx/effects/testing';
-import {cold, hot} from 'jasmine-marbles';
-import {of} from 'rxjs';
-import {Go} from '../../../app/store/actions';
-import {HearingDayScheduleModel} from '../../models/hearingDaySchedule.model';
-import {HearingListModel} from '../../models/hearingList.model';
-import {HearingListMainModel} from '../../models/hearingListMain.model';
-import {EXUISectionStatusEnum, HearingListingStatusEnum} from '../../models/hearings.enum';
-import {HearingsService} from '../../services/hearings.service';
+import { TestBed } from '@angular/core/testing';
+import { provideMockActions } from '@ngrx/effects/testing';
+import { cold, hot } from 'jasmine-marbles';
+import { of } from 'rxjs';
+import { Go } from '../../../app/store/actions';
+import { HearingDayScheduleModel } from '../../models/hearingDaySchedule.model';
+import { HearingListModel } from '../../models/hearingList.model';
+import { HearingListMainModel } from '../../models/hearingListMain.model';
+import { EXUISectionStatusEnum, HearingListingStatusEnum } from '../../models/hearings.enum';
+import { HearingsService } from '../../services/hearings.service';
 import * as hearingListActions from '../actions/hearing-list.action';
-import {HearingListEffects} from './hearing-list.effects';
+import { HearingListEffects } from './hearing-list.effects';
 
 describe('Hearing List Effects', () => {
   let actions$;
@@ -39,7 +39,9 @@ describe('Hearing List Effects', () => {
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba5',
         hearingVenueId: 'venue 1',
         hearingRoomId: 'room 1',
-        hearingPanel: ['child'],
+        hearingJudgeId: 'hearingJudgeId1',
+        panelMemberIds: ['hearingJudgeId1'],
+        attendees: [],
       };
       const CASE_HEARING_1: HearingListModel = {
         hearingID: 'h111111',
@@ -63,8 +65,8 @@ describe('Hearing List Effects', () => {
       hearingsServiceMock.getAllHearings.and.returnValue(of(HEARINGS_LIST));
       const action = new hearingListActions.LoadAllHearings('1111222233334444');
       const completion = new hearingListActions.LoadAllHearingsSuccess(HEARINGS_LIST);
-      actions$ = hot('-a', {a: action});
-      const expected = cold('-b', {b: completion});
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
       expect(effects.loadHearingList$).toBeObservable(expected);
     });
   });
@@ -75,7 +77,7 @@ describe('Hearing List Effects', () => {
         status: 500,
         message: 'error'
       });
-      action$.subscribe(action => expect(action).toEqual(new Go({path: ['/service-down']})));
+      action$.subscribe(action => expect(action).toEqual(new Go({ path: ['/service-down'] })));
     });
   });
 });

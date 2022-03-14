@@ -120,7 +120,7 @@ which in turn uses `propertiesVolume.addTo()`
 
 # How Application Configuration (Node Config) Works
 
-The application picks up the configuration from the /config .json files.
+The application picks up the configuration from the /config .json files. 
 
 The references within *.json ie. production.json are set by the /charts/xui-terms-and-conditions/values.yaml file ie.
 POSTGRES_SERVER_PORT is set by POSTGRES_SERVER_PORT within values.yaml. <br><br>HOWEVER if there is a
@@ -128,6 +128,7 @@ values.*.template.yaml file it will override the values within the values.yaml f
 pipelines, where values.*.template.yaml are available to the build pipeline.
 
 AKS uses a .json file in /config and the values.yaml from within charts/xui-terms-and-conditions ONLY.
+ 
  
 AKS does not use values.aat.template.yaml and values.previews.template.yaml
 

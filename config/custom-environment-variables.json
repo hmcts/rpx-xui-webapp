@@ -72,6 +72,7 @@
     },
     "case": {
       "caseworkerApi": "SERVICES_CASE_CASEWORKER_API",
+      "judicialApi": "SERVICES_CASE_JUDICIAL_API",
       "judicialworkerApi": "SERVICES_CASE_JUDICIALWORKER_API"
     },
     "markup_api": "SERVICES_MARKUP_API",

@@ -316,16 +316,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     this.loadTasks();
   }
 
-  public isCurrentUserJudicial(): boolean {
-    const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
-    if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
-      return AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
-    }
-    return false;
-  }
-
-  public getCurrentUserRoleCategory() : string {
+  public getCurrentUserRoleCategory(): string {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);

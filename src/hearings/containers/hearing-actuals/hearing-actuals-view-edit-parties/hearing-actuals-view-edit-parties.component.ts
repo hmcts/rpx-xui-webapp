@@ -36,7 +36,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
 
   public caseTitle = 'Jane Smith vs DWP';
 
-  private hearingActuals: HearingActualsMainModel;
+  public hearingActuals: HearingActualsMainModel;
 
   private sub: Subscription;
 

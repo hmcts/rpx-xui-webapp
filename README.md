@@ -129,6 +129,7 @@ pipelines, where values.*.template.yaml are available to the build pipeline.
 
 AKS uses a .json file in /config and the values.yaml from within charts/xui-terms-and-conditions ONLY.
  
+ 
 AKS does not use values.aat.template.yaml and values.previews.template.yaml
 
 DO NOT create a new .json file within /config as this increases the complexity of configuration. 

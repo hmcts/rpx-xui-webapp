@@ -15,7 +15,6 @@ import { getEmail, getJudicialUsersFromApi, getUserName, mapRoleCategory } from 
 import { CaseRoleRequestPayload } from './models/caseRoleRequestPayload';
 import { release2ContentType } from './models/release2ContentType';
 import { getSubstantiveRoles } from './roleAssignmentService';
-import { mockAdminRoles } from './roleData.mock';
 
 const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
 
@@ -43,7 +42,7 @@ export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next
       }
     });
     // TODO: Remove mocked Admin roles after testing
-    return res.status(response.status).send(finalRoles.concat(mockAdminRoles));
+    return res.status(response.status).send(finalRoles);
   } catch (error) {
     next(error);
   }

@@ -4,18 +4,34 @@ const BrowserWaits = require('../../../support/customWaits');
 const SoftAssert = require('../../../../ngIntegration/util/softAssert');
 const caseDetailsTaskTabPage = require('../../pageObjects/workAllocation/caseDetailsTaskTab'); 
 const WorkAllocationDateUtil = require('../../pageObjects/workAllocation/common/workAllocationDateUtil');
+const caseDetailsPage = require("../../pageObjects/caseDetailsPage");
+const caseRolesAndAccessPage = require("../../pageObjects/workAllocation/caseRolesAccessPage");
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     When('I click manage link {string} for task at position {int} in case details tasks tab', async function(manageLinkText,taskPos){
-        const taskAttributes = await caseDetailsTaskTabPage.getAttributeElementssDisplayedForTaskAtPos(taskPos);
-        reportLogger.AddMessage(`Manage links dislayed for this task ${await taskAttributes['Manage'].getText()}`);
-        await caseDetailsTaskTabPage.clickLinkFromTaskAttribute(taskAttributes, 'Manage', manageLinkText)
+        
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await BrowserWaits.waitForSeconds(5);
+            const taskAttributes = await caseDetailsTaskTabPage.getAttributeElementssDisplayedForTaskAtPos(taskPos);
+            reportLogger.AddMessage(`Manage links dislayed for this task ${await taskAttributes['Manage'].getText()}`);
+            await caseDetailsTaskTabPage.clickLinkFromTaskAttribute(taskAttributes, 'Manage', manageLinkText)
+        });
+       
     });
 
     Then('I validate case details task tab page is displayed', async function(){
         await BrowserWaits.retryWithActionCallback(async () => {
-            expect(await caseDetailsTaskTabPage.container.isPresent(),'Task details ta page display ').be.true
+            try{
+                expect(await caseDetailsTaskTabPage.container.isPresent(), 'Task details ta page display ').be.true
+
+            }catch(err){
+                reportLogger.AddMessage("Error occured "+err);
+                await caseDetailsPage.clickTabWithLabel("Roles and access");
+                await caseRolesAndAccessPage.waitForPage();
+                await caseDetailsPage.clickTabWithLabel("Tasks");
+                throw new Error(err); 
+            }
 
         });
     }); 
@@ -51,74 +67,86 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I validate task tab active task at position {int} with task name {string} has attributes', async function(position,taskNameExpected ,attributesDatatable){
-        const softAssert = new SoftAssert();
-        const taskName = await caseDetailsTaskTabPage.getTaskNameForTaskAtPosition(position);
-        let taskAttributes = null;
-
         await BrowserWaits.retryWithActionCallback(async () => {
-            taskAttributes = await caseDetailsTaskTabPage.getAttributeElementssDisplayedForTaskAtPos(position);
-            reportLogger.AddMessage(`*** Actual values displayed ***`);
+            const softAssert = new SoftAssert();
+            const taskName = await caseDetailsTaskTabPage.getTaskNameForTaskAtPosition(position);
+            let taskAttributes = null;
 
-            const actualDisplayValues = {};
-            for (const taskAttrib of Object.keys(taskAttributes)) {
-                const attriText = await taskAttributes[taskAttrib].getText();
-                actualDisplayValues[taskAttrib] = attriText;
-            }
-            reportLogger.FormatPrintJson(actualDisplayValues);
+            await BrowserWaits.retryWithActionCallback(async () => {
+                taskAttributes = await caseDetailsTaskTabPage.getAttributeElementssDisplayedForTaskAtPos(position);
+                reportLogger.AddMessage(`*** Actual values displayed ***`);
 
+                const actualDisplayValues = {};
+                for (const taskAttrib of Object.keys(taskAttributes)) {
+                    const attriText = await taskAttributes[taskAttrib].getText();
+                    actualDisplayValues[taskAttrib] = attriText;
+                }
+                reportLogger.FormatPrintJson(actualDisplayValues);
+
+            });
+
+
+            softAssert.setScenario("Task name match");
+            await softAssert.assert(async () => expect(taskName).to.includes(taskNameExpected));
+
+            const expectedAttributeHashes = attributesDatatable.hashes();
+
+            for (const attributeHash of expectedAttributeHashes) {
+
+                const attribName = attributeHash.name;
+                const attributeIsDisplayed = attributeHash.isDisplayed.toLowerCase();
+                const validateContentType = attributeHash.contentType;
+                let contentText = attributeHash.text;
+
+                if (attribName.toLowerCase().includes('date') || attribName.toLowerCase().includes('task created')) {
+                    contentText = WorkAllocationDateUtil.getDateFormat_D_Month_YYYY(contentText);
+                }
+
+                reportLogger.AddMessage(`Validating task attributes ${attribName}, attributeIsDisplayed ${attributeIsDisplayed}, validateContentType ${validateContentType}, content ${contentText}`);
+
+
+                if (attributeIsDisplayed.includes('true') || attributeIsDisplayed.includes('yes')) {
+                    softAssert.setScenario(`Task attribute displayed and match content`);
+
+                    await softAssert.assert(async () => expect(Object.keys(taskAttributes), `Task details missing : ${attribName}`).to.includes(attribName));
+                    await softAssert.assert(async () => expect(await taskAttributes[attribName].getText()).to.includes(contentText));
+
+                    if (validateContentType.toLowerCase().includes('link')) {
+                        const links = taskAttributes[attribName].$$('a');
+                        const linksCount = await links.count();
+
+                        let linktext = '';
+                        let isLinkWithTextPresent = false;
+                        for (let i = 0; i < linksCount; i++) {
+                            const linkElement = await links.get(i);
+                            linktext = await linkElement.getText();
+                            isLinkWithTextPresent = linktext.includes(contentText);
+                            if (isLinkWithTextPresent) {
+                                if (validateContentType.toLowerCase().includes('urlcontains')) {
+                                    const linkHref = await linkElement.getAttribute('href');
+                                    const expectedHref = attributeHash.href;
+                                    reportLogger.AddMessage(`linl href expected "${expectedHref}", actual "${linkHref}"`);
+
+                                    softAssert.assert(async () => {
+                                        expect(linkHref.includes(expectedHref), `link href ${linkHref} not not contains "${expectedHref}"`).to.be.true;
+                                    });
+                                }
+                                break;
+                            }
+                        }
+                        await softAssert.setScenario("Task attribute content link");
+                        await softAssert.assert(async () => expect(isLinkWithTextPresent).to.be.true, `${linktext} to include ${contentText}`);
+                    }
+                } else {
+                    await softAssert.setScenario("Task attribute not displayed");
+                    await softAssert.assert(async () => expect(Object.keys(taskAttributes)).to.not.includes(attribName));
+
+                }
+                softAssert.finally();
+
+            }   
         });
         
-
-        softAssert.setScenario("Task name match");
-        await softAssert.assert(async () => expect(taskName).to.includes(taskNameExpected));
-        
-        const expectedAttributeHashes = attributesDatatable.hashes();
-
-        for (const attributeHash of expectedAttributeHashes){
-
-            const attribName = attributeHash.name;
-            const attributeIsDisplayed = attributeHash.isDisplayed.toLowerCase();
-            const validateContentType = attributeHash.contentType;
-            let contentText = attributeHash.text;
-
-            if (attribName.toLowerCase().includes('date') || attribName.toLowerCase().includes('task created')){
-                contentText = WorkAllocationDateUtil.getDateFormat_D_Month_YYYY(contentText);
-            }
-            
-            reportLogger.AddMessage(`Validating task attributes ${attribName}, attributeIsDisplayed ${attributeIsDisplayed}, validateContentType ${validateContentType}, content ${contentText}`);
-            
-
-            if (attributeIsDisplayed.includes('true') || attributeIsDisplayed.includes('yes') ){
-                softAssert.setScenario(`Task attribute displayed and match content`);
-
-                await softAssert.assert(async () => expect(Object.keys(taskAttributes)).to.includes(attribName));
-                await softAssert.assert(async () => expect(await taskAttributes[attribName].getText()).to.includes(contentText) );
-
-                if (validateContentType.toLowerCase().includes('link')){
-                    const links = taskAttributes[attribName].$$('a');
-                    const linksCount = await links.count();
-
-                    let linktext = '';
-                    let isLinkWithTextPresent = false;
-                    for (let i = 0; i < linksCount;i++){
-                        const linkElement = await links.get(i);
-                        linktext = await linkElement.getText();
-                        isLinkWithTextPresent = linktext.includes(contentText);
-                        if (isLinkWithTextPresent){
-                            break;
-                        }
-                    }
-                    await softAssert.setScenario("Task attribute content link");
-                    await softAssert.assert(async () => expect(isLinkWithTextPresent).to.be.true, `${linktext} to include ${contentText}`);
-                }
-            }else{
-                await softAssert.setScenario("Task attribute not displayed");
-                await softAssert.assert(async () => expect(Object.keys(taskAttributes)).to.not.includes(attribName) );
-
-            }
-            softAssert.finally();
-
-        }   
     });
 
 

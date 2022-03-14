@@ -71,7 +71,7 @@ Adding new files into /config should be avoided, as it increases complexity.
 It increases complexity if we were to add files to /config as we already have the Preview and AAT Jenkins enviromental
 values contained within values.preview.template.yaml and values.aat.template.yaml.
 
-# Setting up Secrets locally (Required)
+# Setting up Secrets locally (Required) 
 
 You need to setup secrets locally before you run the project. Why? - When you push this application
 up through AKS deployed through Flux to AAT, ITHC and Prod, the application will take in the secrets on these environments.
@@ -120,7 +120,7 @@ which in turn uses `propertiesVolume.addTo()`
 
 # How Application Configuration (Node Config) Works
 
-The application picks up the configuration from the /config .json files.
+The application picks up the configuration from the /config .json files. 
 
 The references within *.json ie. production.json are set by the /charts/xui-terms-and-conditions/values.yaml file ie.
 POSTGRES_SERVER_PORT is set by POSTGRES_SERVER_PORT within values.yaml. <br><br>HOWEVER if there is a
@@ -196,4 +196,4 @@ Extended version of script below:
 (https://robferguson.org/blog/2017/09/09/a-simple-logging-service-for-angular-4/)
 
 END
-Trigger2
+Trigger2 Trigger3

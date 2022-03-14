@@ -7,7 +7,7 @@ class Select{
     }
 
     async isDisplayed(){
-        return await this.selectElement.isPresent();
+        return await this.selectElement.isPresent() && await this.selectElement.isDisplayed();
     }
 
     async isEnabled() {
@@ -56,8 +56,13 @@ class GovUKRadios{
     }
 
     async getRadioOptions(){
-        const labels = this.locatorType.toLowerCase() === 'css' ? $$(`${this.selector} .govuk-radios__item govuk-radios__label`) : element.all(by.xpath(`${this.selector}//div[contains(@class,"govuk-radios__item")]//label]`));
-    
+       
+        return this.getOptions();
+    }
+
+    async getOptions() {
+        const labels = this.locatorType.toLowerCase() === 'css' ? $$(`${this.selector} .govuk-radios__item .govuk-radios__label`) : element.all(by.xpath(`${this.selector}//div[contains(@class,"govuk-radios__item")]//label]`));
+
         const count = await labels.count();
         const options = [];
         for (let i = 0; i < count; i++) {
@@ -67,17 +72,21 @@ class GovUKRadios{
         return options;
     }
 
-    async selectOption(option){
-        const labels = this.locatorType.toLowerCase() === 'css' ? $$(`${this.selector} .govuk-radios__item govuk-radios__label`) : element.all(by.xpath(`${this.selector}//div[contains(@class,"govuk-radios__item")]//label`));
 
+    async selectOption(option){
+        const labels = this.locatorType.toLowerCase() === 'css' ? $$(`${this.selector} .govuk-radios__item .govuk-radios__label`) : element.all(by.xpath(`${this.selector}//div[contains(@class,"govuk-radios__item")]//label`));
+        const options = [];
         const count = await labels.count();
         for (let i = 0; i < count; i++) {
             const element = await labels.get(i);
             const optionVal = await element.getText();
+            options.push(optionVal);
             if (optionVal.includes(option)){
                 await element.click();
+                return;
             }
         }
+        throw new Error(`Radio option "${option}" not found in options "${options}"`);
     }
 
 }

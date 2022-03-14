@@ -1,9 +1,9 @@
-@ng @wa1 
+@ng @wa1
 Feature: WA Release 1: My Tasks Task list
 
     Background: Mock and browser setup
         Given I init MockApp
-        Given I set MOCK with "wa_release_1" release user and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer"
+        Given I set MOCK with "wa_release_1" release user and roles "caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer"
 
 
     Scenario: My Tasks columns data validation

@@ -54,7 +54,7 @@
       <div *ngIf="hasReadOnlyAction || isNonCancellable(hearing.exuiDisplayStatus)" class="div-action">
         <a id="link-view-details-{{hearing.hearingID}}"
            href="javascript:void(0)"
-           [routerLink]="['/', 'hearings', 'view']">View details</a></div>
+           (click)="viewDetails(hearing)">View details</a></div>
     </td>
   </tr>
   </tbody>

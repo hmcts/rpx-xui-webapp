@@ -1,5 +1,6 @@
-<ng-container [ngSwitch]="getStatusName() | async">
-  <details *ngSwitchCase="caseStatus.HEARING_COMPLETED" class="govuk-details" data-module="govuk-details">
+<ng-container [ngSwitch]="caseStatusName">
+  <details *ngSwitchCase="exuiDisplayStatus.CANCELLATION_REQUESTED && caseStatus.LISTED" class="govuk-details"
+    data-module="govuk-details">
     <summary class="govuk-details__summary">
       <span class="govuk-details__summary-text">
         Listing information summary
@@ -9,7 +10,7 @@
       <ng-container *ngTemplateOutlet="listingContent"></ng-container>
     </div>
   </details>
-  <div *ngSwitchCase="caseStatus.LISTED">
+  <div *ngSwitchCase="exuiDisplayStatus.LISTED">
     <h2 class="govuk-heading-m">Listing information summary</h2>
     <div class="listing-info">
       <ng-container *ngTemplateOutlet="listingContent"></ng-container>
@@ -21,52 +22,62 @@
   <dl class="govuk-summary-list">
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">Case name</dt>
-      <dd class="govuk-summary-list__value" [innerHtml]="answerSource.CASE_NAME | transformAnswer:hearingState$ | async"></dd>
+      <dd class="govuk-summary-list__value"
+        [innerHtml]="answerSource.CASE_NAME | transformAnswer:hearingState$ | async"></dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">Case number</dt>
-      <dd class="govuk-summary-list__value" [innerHtml]="answerSource.CASE_NUMBER | transformAnswer:hearingState$ | async"></dd>
+      <dd class="govuk-summary-list__value"
+        [innerHtml]="answerSource.CASE_NUMBER | transformAnswer:hearingState$ | async"></dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">Hearing stage</dt>
-      <dd class="govuk-summary-list__value" [innerHtml]="answerSource.STAGE | transformAnswer:hearingState$ | async"></dd>
+      <dd class="govuk-summary-list__value" [innerHtml]="answerSource.STAGE | transformAnswer:hearingState$ | async">
+      </dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">Hearing date</dt>
-      <dd class="govuk-summary-list__value" [innerHtml]="answerSource.DATE_RESPONSE_SUBMITTED | transformAnswer:hearingState$ | async"></dd>
+      <dd class="govuk-summary-list__value"
+        [innerHtml]="answerSource.DATE_RESPONSE_SUBMITTED | transformAnswer:hearingState$ | async"></dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">Time</dt>
-      <dd class="govuk-summary-list__value" [innerHtml]="answerSource.DATE_RESPONSE_SUBMITTED_TIME | transformAnswer:hearingState$ | async"></dd>
+      <dd class="govuk-summary-list__value"
+        [innerHtml]="answerSource.DATE_RESPONSE_SUBMITTED_TIME | transformAnswer:hearingState$ | async"></dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">Duration</dt>
-      <dd class="govuk-summary-list__value" [innerHtml]="answerSource.HEARING_RESPONSE_LENGTH | transformAnswer:hearingState$ | async"></dd>
+      <dd class="govuk-summary-list__value"
+        [innerHtml]="answerSource.HEARING_RESPONSE_LENGTH | transformAnswer:hearingState$ | async"></dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">Location</dt>
-      <dd class="govuk-summary-list__value" [innerHtml]="answerSource.COURT_LOCATION | transformAnswer:hearingState$ | async"></dd>
+      <dd class="govuk-summary-list__value"
+        [innerHtml]="answerSource.COURT_LOCATION | transformAnswer:hearingState$ | async"></dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">Room</dt>
-      <dd class="govuk-summary-list__value" [innerHtml]="answerSource.ROOM_ID | transformAnswer:hearingState$ | async"></dd>
+      <dd class="govuk-summary-list__value" [innerHtml]="answerSource.ROOM_ID | transformAnswer:hearingState$ | async">
+      </dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">Judicial members</dt>
-      <dd class="govuk-summary-list__value" [innerHtml]="answerSource.JUDICIAL_MEMBERS | transformAnswer:hearingState$ | async"></dd>
+      <dd class="govuk-summary-list__value"
+        [innerHtml]="answerSource.JUDICIAL_MEMBERS | transformAnswer:hearingState$ | async"></dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">How participants will attend</dt>
-      <dd class="govuk-summary-list__value" [innerHtml]="answerSource.PARTICIPANT_ATTENDENCE | transformAnswer:hearingState$ | async"></dd>
+      <dd class="govuk-summary-list__value"
+        [innerHtml]="answerSource.PARTICIPANT_ATTENDENCE | transformAnswer:hearingState$ | async"></dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
   </dl>

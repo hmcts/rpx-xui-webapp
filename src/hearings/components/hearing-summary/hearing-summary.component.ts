@@ -17,6 +17,7 @@ export class HearingSummaryComponent implements AfterViewInit {
   @Input() public template: Section[];
   @Input() public mode: Mode;
   public listingTemplate: string = HearingTemplate.LISTING_INFORMATION;
+  public partiesTemplate: string = HearingTemplate.PARTIES_TEMPLATE;
   public hearingState$: Observable<fromHearingStore.State>;
 
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,

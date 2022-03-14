@@ -7,6 +7,9 @@
       <ng-container *ngSwitchCase="listingTemplate">
         <exui-listing-information-summary></exui-listing-information-summary>
       </ng-container>
+      <ng-container *ngSwitchCase="partiesTemplate">
+        <exui-hearing-case-name></exui-hearing-case-name>
+      </ng-container>
       <ng-container *ngSwitchDefault>
         <div [innerHtml]="section.sectionHTMLTitle"></div>
       </ng-container>

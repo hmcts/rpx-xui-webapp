@@ -34,7 +34,7 @@ export class JudicialUserSearchResponseResolver implements Resolve<JudicialUserM
         let panelMemberIds: string[] = [];
         if (hearingRequest.hearingRequestMainModel) {
           panelMemberIds = hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.panelMemberIds || [];
-          panelMemberIds.push(hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.hearingJudgeId);
+          panelMemberIds = [...panelMemberIds, hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.hearingJudgeId];
         }
         return panelMemberIds;
       })

@@ -9,6 +9,8 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
 import { hearingActualsMainModel, hearingStageRefData, initialState } from '../../../hearing.test.data';
 import { ACTION, HearingResult } from '../../../models/hearings.enum';
+import { PartyChannelDisplayValuePipe } from '../../../pipes/party-channel-display-value.pipe';
+import { PartyRoleDisplayValuePipe } from '../../../pipes/party-role-display-value.pipe';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { HearingActualAddEditSummaryComponent } from './hearing-actual-add-edit-summary.component';
@@ -37,7 +39,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualAddEditSummaryComponent],
+      declarations: [HearingActualAddEditSummaryComponent, PartyChannelDisplayValuePipe, PartyRoleDisplayValuePipe],
       imports: [RouterTestingModule],
       providers: [
         provideMockStore({ initialState }),
@@ -73,7 +75,7 @@ describe('HearingActualAddEditSummaryComponent', () => {
 
   it('should return attending representative', () => {
     component.hearingActualsMainModel = hearingActualsMainModel;
-    const attendingRepresentative = component.getRepresentingAttendee(3);
+    const attendingRepresentative = component.getRepresentingAttendee('3');
     expect(attendingRepresentative).toEqual('Mary Jones');
   });
 
@@ -345,7 +347,7 @@ describe('HearingActualAddEditSummaryComponent display actual participants', () 
   ];
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualAddEditSummaryComponent],
+      declarations: [HearingActualAddEditSummaryComponent, PartyChannelDisplayValuePipe, PartyRoleDisplayValuePipe],
       imports: [
         RouterTestingModule,
         ReactiveFormsModule,

@@ -4,6 +4,8 @@ import { select, Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap, take } from 'rxjs/operators';
 import { JudicialUserModel } from '../models/judicialUser.model';
+import { PanelPreferenceModel } from '../models/panelPreference.model';
+import { PanelRequirementsModel } from '../models/panelRequirements.model';
 import { JudicialRefDataService } from '../services/judicial-ref-data.service';
 import * as fromHearingStore from '../store';
 
@@ -19,18 +21,27 @@ export class JudicialUserSearchResolver implements Resolve<JudicialUserModel[]> 
   public resolve(route?: ActivatedRouteSnapshot): Observable<JudicialUserModel[]> {
     return this.getUsersByPanelRequirements$()
       .pipe(
-        switchMap(judicialMemberIds => {
-          return of(judicialMemberIds);
+        switchMap(panelRequirements => {
+          return of(
+            panelRequirements && panelRequirements.panelPreferences && panelRequirements.panelPreferences.filter(preferences => this.checkMemberType(preferences, route)).map(preferences => preferences.memberID)
+          );
         }), take(1),
-        switchMap((judicialMemberIds) => {
-          return judicialMemberIds && judicialMemberIds.length ? this.getUsersData$(judicialMemberIds) : of([]);
+        switchMap((personalCodes) => {
+          return personalCodes && personalCodes.length ? this.getUsersData$(personalCodes) : of([]);
         })
       );
   }
 
-  public getUsersByPanelRequirements$(): Observable<string[]> {
-    return this.hearingStore.pipe(select(fromHearingStore.getHearingRequest)).pipe(
-      map(hearingRequest => hearingRequest.hearingRequestMainModel && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.hearingPanel)
+  private checkMemberType(preferences: PanelPreferenceModel, route: ActivatedRouteSnapshot): boolean {
+    if (route.data['memberType']) {
+      return preferences.memberType === route.data['memberType'];
+    }
+    return true;
+  }
+
+  public getUsersByPanelRequirements$(): Observable<PanelRequirementsModel> {
+    return this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).pipe(
+      map(hearingState => hearingState.hearingRequest && hearingState.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements)
     );
   }
 

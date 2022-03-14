@@ -18,7 +18,7 @@ import { HearingLengthAnswerConverter } from '../converters/hearing-length.answe
 import { HearingPanelAnswerConverter } from '../converters/hearing-panel.answer.converter';
 import { HearingPriorityAnswerConverter } from '../converters/hearing-priority.answer.converter';
 import { HearingResponseLengthAnswerConverter } from '../converters/hearing-response-length.answer.converter';
-import { HearingResponseStageAnswerConverter } from '../converters/hearing-response-stage.answer.converter';
+import { HearingResponseStatusAnswerConverter } from '../converters/hearing-response-status.answer.converter';
 import { HearingSpecificDateAnswerConverter } from '../converters/hearing-specific-date.answer.converter';
 import { JudgeExclusionAnswerConverter } from '../converters/judge-exclusion.answer.converter';
 import { JudgeNameAnswerConverter } from '../converters/judge-name.answer.converter';
@@ -113,7 +113,7 @@ export class HearingAnswersPipe implements PipeTransform {
         converter = new StageAnswerConverter(this.route);
         break;
       case AnswerSource.HEARING_RESPONSE_STATUS:
-        converter = new HearingResponseStageAnswerConverter();
+        converter = new HearingResponseStatusAnswerConverter();
         break;
       case AnswerSource.HEARING_LENGTH:
         converter = new HearingLengthAnswerConverter();

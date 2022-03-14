@@ -1,6 +1,6 @@
-import {PartyType} from '../../../src/hearings/models/hearings.enum';
-import {HearingRequestMainModel} from '../models/hearingRequestMain.model';
-import {CategoryType, LaCaseStatus, ListingStatus} from "../models/hearings.enum";
+import { PartyType } from '../../../src/hearings/models/hearings.enum';
+import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
+import { CategoryType, LaCaseStatus, ListingStatus } from "../models/hearings.enum";
 
 export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
   {
@@ -101,7 +101,22 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
-        hearingPanel: ['p1000001'],
+        hearingJudgeId: 'p1000001',
+        panelMemberIds: ['p1000001'],
+        attendees: [
+          {
+            partyID: 'P1',
+            partyName: 'Jane and Smith',
+            partyType: PartyType.IND,
+            partyChannel: 'inPerson',
+          },
+          {
+            partyID: 'P2',
+            partyName: 'DWP',
+            partyType: PartyType.ORG,
+            partyChannel: 'byVideo',
+          },
+        ],
       },
     },
   },
@@ -203,7 +218,22 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
-        hearingPanel: ['p1000001'],
+        hearingJudgeId: 'p1000001',
+        panelMemberIds: ['p1000001'],
+        attendees: [
+          {
+            partyID: 'P1',
+            partyName: 'Jane and Smith',
+            partyType: PartyType.IND,
+            partyChannel: 'inPerson',
+          },
+          {
+            partyID: 'P2',
+            partyName: 'DWP',
+            partyType: PartyType.ORG,
+            partyChannel: 'byVideo',
+          },
+        ],
       },
     },
   },
@@ -305,7 +335,22 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
-        hearingPanel: ['p1000002'],
+        hearingJudgeId: 'p1000001',
+        panelMemberIds: ['p1000001'],
+        attendees: [
+          {
+            partyID: 'P1',
+            partyName: 'Jane and Smith',
+            partyType: PartyType.IND,
+            partyChannel: 'inPerson',
+          },
+          {
+            partyID: 'P2',
+            partyName: 'DWP',
+            partyType: PartyType.ORG,
+            partyChannel: 'byVideo',
+          },
+        ],
       },
     },
   },
@@ -407,7 +452,22 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
-        hearingPanel: ['p1000001'],
+        hearingJudgeId: 'p1000001',
+        panelMemberIds: ['p1000001'],
+        attendees: [
+          {
+            partyID: 'P1',
+            partyName: 'Jane and Smith',
+            partyType: PartyType.IND,
+            partyChannel: 'inPerson',
+          },
+          {
+            partyID: 'P2',
+            partyName: 'DWP',
+            partyType: PartyType.ORG,
+            partyChannel: 'byVideo',
+          },
+        ],
       },
     },
   },
@@ -509,7 +569,22 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
-        hearingPanel: ['p1000001'],
+        hearingJudgeId: 'p1000001',
+        panelMemberIds: ['p1000001'],
+        attendees: [
+          {
+            partyID: 'P1',
+            partyName: 'Jane and Smith',
+            partyType: PartyType.IND,
+            partyChannel: 'inPerson',
+          },
+          {
+            partyID: 'P2',
+            partyName: 'DWP',
+            partyType: PartyType.ORG,
+            partyChannel: 'byVideo',
+          },
+        ],
       },
     },
   },
@@ -611,7 +686,22 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
-        hearingPanel: ['p1000001'],
+        hearingJudgeId: 'p1000001',
+        panelMemberIds: ['p1000001'],
+        attendees: [
+          {
+            partyID: 'P1',
+            partyName: 'Jane and Smith',
+            partyType: PartyType.IND,
+            partyChannel: 'inPerson',
+          },
+          {
+            partyID: 'P2',
+            partyName: 'DWP',
+            partyType: PartyType.ORG,
+            partyChannel: 'byVideo',
+          },
+        ],
       },
     },
   },

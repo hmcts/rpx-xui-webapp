@@ -47,7 +47,7 @@ describe('JudicialMembersAnswerConverter', () => {
       panelPreferences: JUDICAIL_USER_DETAILS
     };
     const result$ = converter.transformAnswer(of(STATE));
-    const option = judgeRefData[0].knownAs;
+    const option = 'Jacky Collins';
     const expected = cold('(b|)', { b: option });
     expect(result$).toBeObservable(expected);
   });

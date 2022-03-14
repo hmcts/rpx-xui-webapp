@@ -26,6 +26,7 @@ import { RequestHearingComponent } from './containers/request-hearing/request-he
 import { ViewHearingComponent } from './containers/view-hearing/view-hearing.component';
 import { HearingCategory, MemberType } from './models/hearings.enum';
 import { JudicialUserSearchResolver } from './resolvers/ judicial-user-search-resolver.resolve';
+import { JudicialUserSearchResponseResolver } from './resolvers/ judicial-user-search-response-resolver.resolve';
 import { AdditionalFacilitiesResolver } from './resolvers/additional-facilities.resolver';
 import { AdjournHearingActualReasonResolver } from './resolvers/adjourn-hearing-actual-reason.resolver';
 import { CancelHearingActualReasonResolver } from './resolvers/cancel-hearing-actual-reason.resolver';
@@ -264,6 +265,7 @@ export const ROUTES: Routes = [
           partyChannels: PartyChannelsResolverService,
           judgeTypes: JudgeTypesResolverService,
           judicialUsers: JudicialUserSearchResolver,
+          judicialResponseUsers: JudicialUserSearchResponseResolver,
           otherPanelRoles: PanelRolesResolverService,
           courtLocation: CourtLocationsDataResolver,
         },

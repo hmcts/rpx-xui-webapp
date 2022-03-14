@@ -6,6 +6,7 @@ import { combineLatest, Subscription } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
 import { ActualDayPartyModel, HearingActualsMainModel, PartyModel } from '../../../models/hearingActualsMainModel';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
+import { PartyRoleOnly } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { LovRefDataService } from '../../../services/lov-ref-data.service';
 import * as fromHearingStore from '../../../store';
@@ -165,7 +166,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   }
 
   private addActualParticipantsAndParties(party: ActualDayPartyModel) {
-    if (party.partyRole === 'appellant' || party.partyRole === 'claimant') {
+    if (party.partyRole ===  PartyRoleOnly.Appellant || party.partyRole === PartyRoleOnly.Claimant) {
       this.participants.push({
         name: `${party.actualIndividualDetails.firstName} ${party.actualIndividualDetails.lastName}`,
         id: party.actualPartyId,
@@ -179,7 +180,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       organisation: [party.actualOrganisationDetails.name],
       attendeeRepresenting: [party.representedParty],
       partyId: [null],
-      isParty: [party.partyRole === 'appellant' || party.partyRole === 'claimant']
+      isParty: [party.partyRole === PartyRoleOnly.Appellant || party.partyRole === PartyRoleOnly.Claimant],
     }));
   }
 
@@ -204,7 +205,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
 
   private setUpRoleLists(): void {
     for (const role of this.hearingRoles) {
-      if (role.key === 'appellant' || role.key === 'claimant') {
+      if (role.key === PartyRoleOnly.Claimant || role.key === PartyRoleOnly.Appellant) {
         this.immutablePartyRoles.push(role);
       } else {
         this.mutablePartyRoles.push(role);

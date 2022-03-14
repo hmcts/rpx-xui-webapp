@@ -11,7 +11,7 @@ import {
   PartyModel
 } from '../../../models/hearingActualsMainModel';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
-import { ACTION, HearingActualAddEditSummaryEnum, HearingResult } from '../../../models/hearings.enum';
+import { ACTION, HearingActualAddEditSummaryEnum, HearingResult, PartyRoleOnly } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
@@ -127,7 +127,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     if (HearingActualAddEditSummaryComponent.hasActualParties(hearingActualsMainModel, this.hearingRoles)) {
       const parties = hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties;
       for (const party of parties) {
-        if (party.partyRole === 'appellant' || party.partyRole === 'claimant') {
+        if (party.partyRole ===  PartyRoleOnly.Appellant || party.partyRole === PartyRoleOnly.Claimant) {
           this.participants.push(party);
         } else {
           this.actualDayParties.push(party);
@@ -136,7 +136,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     } else {
       const parties = hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties;
       for (const party of parties) {
-        if (party.partyRole === 'appellant' || party.partyRole === 'claimant') {
+        if (party.partyRole ===  PartyRoleOnly.Appellant || party.partyRole === PartyRoleOnly.Claimant) {
           const actualDayParty: ActualDayPartyModel = {
             actualIndividualDetails: {
               firstName: party.individualDetails.firstName,

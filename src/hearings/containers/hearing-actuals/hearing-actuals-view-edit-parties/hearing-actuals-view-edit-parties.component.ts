@@ -166,7 +166,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   }
 
   private addActualParticipantsAndParties(party: ActualDayPartyModel) {
-    if (party.partyRole ===  PartyRoleOnly.Appellant || party.partyRole === PartyRoleOnly.Claimant) {
+    if (party.partyRole === PartyRoleOnly.Appellant || party.partyRole === PartyRoleOnly.Claimant) {
       this.participants.push({
         name: `${party.actualIndividualDetails.firstName} ${party.actualIndividualDetails.lastName}`,
         id: party.actualPartyId,
@@ -206,9 +206,13 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   private setUpRoleLists(): void {
     for (const role of this.hearingRoles) {
       if (role.key === PartyRoleOnly.Claimant || role.key === PartyRoleOnly.Appellant) {
+
         this.immutablePartyRoles.push(role);
+
       } else {
+
         this.mutablePartyRoles.push(role);
+
       }
     }
   }

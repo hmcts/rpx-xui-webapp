@@ -85,6 +85,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       const partyDetail: PartyDetailsModel = {
         partyID: control.value.partyID,
         partyType: control.value.partyType,
+        partyRole: control.value.partyRole,
         partyName: control.value.partyName,
         partyChannel: control.value.partyChannel,
       };

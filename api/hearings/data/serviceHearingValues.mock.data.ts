@@ -70,6 +70,12 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       partyType: PartyType.IND,
       partyName: 'Jane Smith',
       partyChannel: 'byVideo',
+      partyRole: 'appellant',
+      individualDetails: {
+        title: 'Miss',
+        firstName: 'Jane',
+        lastName: 'Smith',
+      },
       unavailabilityRanges: [
         {
           unavailableFromDate: '2021-12-10T09:00:00.000+0000',
@@ -82,6 +88,12 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       partyType: PartyType.ORG,
       partyName: 'DWP',
       partyChannel: 'byVideo',
+      partyRole: 'claimant',
+      organisationDetails: {
+        name: 'DWP',
+        organisationType: 'GOV',
+        cftOrganisationID: 'O100000',
+      },
       unavailabilityRanges: [
         {
           unavailableFromDate: '2021-12-20T09:00:00.000+0000',

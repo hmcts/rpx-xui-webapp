@@ -9,7 +9,7 @@ export interface PartyDetailsModel {
   partyType: PartyType;
   partyName: string;
   partyChannel: string;
-  partyRole?: string;
+  partyRole: string;
   individualDetails?: IndividualDetailsModel;
   organisationDetails?: OrganisationDetailsModel;
   unavailabilityDOW?: UnavailabilityDOWModel[];

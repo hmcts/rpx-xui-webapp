@@ -7,9 +7,9 @@ import { UnavailabilityRangeModel } from './unavailabilityRange.model';
 export interface PartyDetailsModel {
   partyID: string;
   partyType: PartyType;
-  partyName: string;
-  partyChannel: string;
-  partyRole?: string;
+  partyName?: string;
+  partyChannel?: string;
+  partyRole: string;
   individualDetails?: IndividualDetailsModel;
   organisationDetails?: OrganisationDetailsModel;
   unavailabilityDOW?: UnavailabilityDOWModel[];

@@ -8,7 +8,6 @@ import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Store} from '@ngrx/store';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
-import { HearingListModel } from '../../../models/hearingList.model';
 @Component({
   selector: 'exui-hearing-change-reason',
   templateUrl: './hearing-change-reason.component.html',
@@ -18,9 +17,6 @@ export class HearingChangeReasonComponent extends RequestHearingPageFlow impleme
   public hearingChangeReasonForm: FormGroup;
   public validationErrors: { id: string, message: string }[] = [];
   public selectionValid: boolean = true;
-  public hearingId: string;
-  public caseId: string;
-  public caseHearing: HearingListModel;
 
   constructor(protected readonly route: ActivatedRoute,
               protected readonly router: Router,

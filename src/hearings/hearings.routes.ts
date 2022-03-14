@@ -39,6 +39,7 @@ import { JudgeTypesResolverService } from './resolvers/judge-types-resolver.serv
 import { PanelRolesResolverService } from './resolvers/panel-roles-resolver.service';
 import { PartyChannelsResolverService } from './resolvers/party-channels-resolver.service';
 import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
+import { HearingChangeReasonResolver } from './resolvers/hearing-change-reason.resolver'
 
 export const ROUTES: Routes = [
   {
@@ -277,6 +278,10 @@ export const ROUTES: Routes = [
       },
       {
         path: 'hearing-change-reason',
+        resolve: {
+          hearingTypes: RefDataResolver,
+          hearingChangeReason: HearingChangeReasonResolver
+        },
         component: HearingChangeReasonComponent,
         canActivate: [HealthCheckGuard],
         data: {

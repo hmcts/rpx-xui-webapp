@@ -1,18 +1,18 @@
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {ActivatedRoute} from '@angular/router';
-import {RouterTestingModule} from '@angular/router/testing';
-import {Store} from '@ngrx/store';
-import {provideMockStore} from '@ngrx/store/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
 import * as moment from 'moment';
-import {of} from 'rxjs';
-import {UserRole} from '../../../app/models';
-import {RoleCategoryMappingService} from '../../../app/services/role-category-mapping/role-category-mapping.service';
-import {HearingConditions} from '../../../hearings/models/hearingConditions';
-import {HearingDayScheduleModel} from '../../../hearings/models/hearingDaySchedule.model';
-import {HearingListModel} from '../../../hearings/models/hearingList.model';
-import {HearingListMainModel} from '../../../hearings/models/hearingListMain.model';
-import {HearingListViewModel} from '../../../hearings/models/hearingListView.model';
+import { of } from 'rxjs';
+import { UserRole } from '../../../app/models';
+import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
+import { HearingConditions } from '../../../hearings/models/hearingConditions';
+import { HearingDayScheduleModel } from '../../../hearings/models/hearingDaySchedule.model';
+import { HearingListModel } from '../../../hearings/models/hearingList.model';
+import { HearingListMainModel } from '../../../hearings/models/hearingListMain.model';
+import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
 import {
   Actions,
   EXUIDisplayStatusEnum,
@@ -21,7 +21,7 @@ import {
   HMCStatus
 } from '../../../hearings/models/hearings.enum';
 import * as fromHearingStore from '../../../hearings/store';
-import {CaseHearingsComponent} from './case-hearings.component';
+import { CaseHearingsComponent } from './case-hearings.component';
 
 describe('CaseHearingsComponent', () => {
   let component: CaseHearingsComponent;
@@ -36,7 +36,9 @@ describe('CaseHearingsComponent', () => {
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba5',
     hearingVenueId: 'venue 1',
     hearingRoomId: 'room 1',
-    hearingPanel: ['hearingJudgeId1'],
+    hearingJudgeId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
+    attendees: [],
   };
 
   const HEARING_DAY_SCHEDULE_2: HearingDayScheduleModel = {
@@ -45,7 +47,9 @@ describe('CaseHearingsComponent', () => {
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba4',
     hearingVenueId: 'venue 2',
     hearingRoomId: 'room 2',
-    hearingPanel: ['hearingJudgeId1'],
+    hearingJudgeId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
+    attendees: [],
   };
 
   const HEARING_DAY_SCHEDULE_3: HearingDayScheduleModel = {
@@ -54,7 +58,9 @@ describe('CaseHearingsComponent', () => {
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc4',
     hearingVenueId: 'venue 3',
     hearingRoomId: 'room 3',
-    hearingPanel: ['hearingJudgeId1'],
+    hearingJudgeId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
+    attendees: [],
   };
 
   const HEARING_DAY_SCHEDULE_4: HearingDayScheduleModel = {
@@ -63,7 +69,9 @@ describe('CaseHearingsComponent', () => {
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc5',
     hearingVenueId: 'venue 4',
     hearingRoomId: 'room 4',
-    hearingPanel: ['hearingJudgeId2'],
+    hearingJudgeId: 'hearingJudgeId2',
+    panelMemberIds: ['hearingJudgeId2'],
+    attendees: [],
   };
 
   const HEARING_DAY_SCHEDULE_5: HearingDayScheduleModel = {
@@ -72,7 +80,9 @@ describe('CaseHearingsComponent', () => {
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc6',
     hearingVenueId: 'venue 5',
     hearingRoomId: 'room 5',
-    hearingPanel: ['hearingJudgeId3'],
+    hearingJudgeId: 'hearingJudgeId3',
+    panelMemberIds: ['hearingJudgeId3'],
+    attendees: [],
   };
 
   const HEARING_DAY_SCHEDULE_6: HearingDayScheduleModel = {
@@ -81,7 +91,9 @@ describe('CaseHearingsComponent', () => {
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b55',
     hearingVenueId: 'venue 1',
     hearingRoomId: 'room 1',
-    hearingPanel: ['hearingJudgeId1'],
+    hearingJudgeId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
+    attendees: [],
   };
 
   const HEARING_DAY_SCHEDULE_7: HearingDayScheduleModel = {
@@ -90,7 +102,9 @@ describe('CaseHearingsComponent', () => {
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b44',
     hearingVenueId: 'venue 2',
     hearingRoomId: 'room 2',
-    hearingPanel: ['hearingJudgeId1'],
+    hearingJudgeId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
+    attendees: [],
   };
 
   const HEARING_DAY_SCHEDULE_8: HearingDayScheduleModel = {
@@ -99,7 +113,9 @@ describe('CaseHearingsComponent', () => {
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b34',
     hearingVenueId: 'venue 3',
     hearingRoomId: 'room 3',
-    hearingPanel: ['hearingJudgeId1'],
+    hearingJudgeId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
+    attendees: [],
   };
 
   const HEARING_DAY_SCHEDULE_9: HearingDayScheduleModel = {
@@ -108,7 +124,9 @@ describe('CaseHearingsComponent', () => {
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
     hearingVenueId: 'venue 4',
     hearingRoomId: 'room 4',
-    hearingPanel: ['hearingJudgeId2'],
+    hearingJudgeId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
+    attendees: [],
   };
 
   const HEARING_DAY_SCHEDULE_10: HearingDayScheduleModel = {
@@ -117,7 +135,9 @@ describe('CaseHearingsComponent', () => {
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b66',
     hearingVenueId: 'venue 5',
     hearingRoomId: 'room 5',
-    hearingPanel: ['hearingJudgeId3'],
+    hearingJudgeId: 'hearingJudgeId1',
+    panelMemberIds: ['hearingJudgeId1'],
+    attendees: [],
   };
 
   const HEARING_DAY_SCHEDULE_11: HearingDayScheduleModel = {
@@ -126,7 +146,9 @@ describe('CaseHearingsComponent', () => {
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b33',
     hearingVenueId: 'venue 11',
     hearingRoomId: 'room 11',
-    hearingPanel: ['child'],
+    hearingJudgeId: 'child',
+    panelMemberIds: ['child'],
+    attendees: [],
   };
 
   const CASE_HEARING_1: HearingListModel = {
@@ -326,7 +348,7 @@ describe('CaseHearingsComponent', () => {
       imports: [RouterTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({ initialState }),
         {
           provide: ActivatedRoute,
           useValue: {

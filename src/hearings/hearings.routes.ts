@@ -26,12 +26,14 @@ import { RequestHearingComponent } from './containers/request-hearing/request-he
 import { ViewHearingComponent } from './containers/view-hearing/view-hearing.component';
 import { HearingCategory, MemberType } from './models/hearings.enum';
 import { JudicialUserSearchResolver } from './resolvers/ judicial-user-search-resolver.resolve';
+import { JudicialUserSearchResponseResolver } from './resolvers/ judicial-user-search-response-resolver.resolve';
 import { AdditionalFacilitiesResolver } from './resolvers/additional-facilities.resolver';
 import { AdjournHearingActualReasonResolver } from './resolvers/adjourn-hearing-actual-reason.resolver';
 import { CancelHearingActualReasonResolver } from './resolvers/cancel-hearing-actual-reason.resolver';
 import { CaseFlagsResolver } from './resolvers/case-flags.resolver';
-import {HearingActualPartyChannelResolverService} from './resolvers/hearing-actual-party-channel-resolver.service';
-import {HearingActualRoleResolverService} from './resolvers/hearing-actual-role-resolver.service';
+import { CourtLocationsDataResolver } from './resolvers/court-locations-resolver.resolve';
+import { HearingActualPartyChannelResolverService } from './resolvers/hearing-actual-party-channel-resolver.service';
+import { HearingActualRoleResolverService } from './resolvers/hearing-actual-role-resolver.service';
 import { HearingStageResolver } from './resolvers/hearing-stage.resolver';
 import { JudgeTypesResolverService } from './resolvers/judge-types-resolver.service';
 import { PanelRolesResolverService } from './resolvers/panel-roles-resolver.service';
@@ -246,6 +248,7 @@ export const ROUTES: Routes = [
           judgeTypes: JudgeTypesResolverService,
           judicialUsers: JudicialUserSearchResolver,
           otherPanelRoles: PanelRolesResolverService,
+          courtLocation: CourtLocationsDataResolver,
         },
         component: HearingCreateEditSummaryComponent,
         canActivate: [HealthCheckGuard],
@@ -263,7 +266,9 @@ export const ROUTES: Routes = [
           partyChannels: PartyChannelsResolverService,
           judgeTypes: JudgeTypesResolverService,
           judicialUsers: JudicialUserSearchResolver,
+          judicialResponseUsers: JudicialUserSearchResponseResolver,
           otherPanelRoles: PanelRolesResolverService,
+          courtLocation: CourtLocationsDataResolver,
         },
         component: HearingViewEditSummaryComponent,
         canActivate: [HealthCheckGuard],

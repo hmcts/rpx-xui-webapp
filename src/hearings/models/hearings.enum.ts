@@ -234,16 +234,20 @@ export enum AnswerSource {
   TYPE_FROM_REQUEST,
   STATUS,
   DATE_REQUEST_SUBMITTED,
-  DATE_REQUEST_SUBMITTED_TIME,
+  DATE_RESPONSE_SUBMITTED_TIME,
+  DATE_RESPONSE_SUBMITTED,
   DATE_RESPONSE_RECEIVED,
   CASE_FLAGS,
   ROOM_ID,
   ADDITIONAL_SECURITY_REQUIRED,
   ADDITIONAL_FACILITIES_REQUIRED,
   STAGE,
+  HEARING_RESPONSE_STATUS,
   HOW_ATTENDANT,
+  PARTICIPANT_ATTENDENCE,
   ATTENDANT_PERSON_AMOUNT,
   VENUE,
+  COURT_LOCATION,
   NEED_WELSH,
   NEED_JUDGE,
   JUDGE_NAME,
@@ -255,9 +259,10 @@ export enum AnswerSource {
   PANEL_EXCLUSION,
   PANEL_ROLES,
   HEARING_LENGTH,
+  HEARING_RESPONSE_LENGTH,
   HEARING_SPECIFIC_DATE,
   HEARING_PRIORITY,
-  ADDITIONAL_INSTRUCTION
+  ADDITIONAL_INSTRUCTION,
 }
 
 export enum IsHiddenSource {
@@ -304,4 +309,12 @@ export enum HearingTemplate {
 export enum GroupLinkType {
   ORDERED = 'Ordered',
   SAME_SLOT = 'Same Slot',
+}
+
+export enum HearingActualsTimingErrorMessages {
+  VALID_TIME = 'Enter a valid time.',
+  START_TIME_BEFORE_FINISH_TIME = 'Start time must be before finish time',
+  PAUSE_TIME_BEFORE_RESUME_TIME = 'Pause time must be before resume time',
+  PAUSE_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES = 'Pause time must be between the hearing start and finish times',
+  RESUME_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES = 'Resume time must be between the hearing start and finish times',
 }

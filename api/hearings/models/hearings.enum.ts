@@ -78,6 +78,11 @@ export enum CategoryType {
   CaseSubType = 'caseSubType',
 }
 
+export enum MemberType {
+  JUDGE = 'JUDGE',
+  PANEL_MEMBER = 'PANEL_MEMBER',
+}
+
 export enum PartyType {
   IND = 'IND',
   ORG = 'ORG',
@@ -103,4 +108,9 @@ export enum HearingResult {
   COMPLETED = 'COMPLETED',
   ADJOURNED = 'ADJOURNED',
   CANCELLED = 'CANCELLED',
+}
+
+export enum GroupLinkType {
+  ORDERED = 'Ordered',
+  SAME_SLOT = 'Same Slot',
 }

@@ -1,7 +1,17 @@
-import { HearingActualsMainModel } from './models/hearingActualsMainModel';
-import { HearingRequestMainModel } from './models/hearingRequestMain.model';
-import { CategoryType, HearingListingStatusEnum, HearingResult, HMCStatus, LaCaseStatus, ListingStatus, PartyType } from './models/hearings.enum';
-import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
+import {HearingActualsMainModel} from './models/hearingActualsMainModel';
+import {HearingRequestMainModel} from './models/hearingRequestMain.model';
+import {
+  CategoryType,
+  HearingListingStatusEnum,
+  HearingResult,
+  HMCStatus,
+  LaCaseStatus,
+  ListingStatus,
+  MemberType,
+  PartyType,
+  RequirementType
+} from './models/hearings.enum';
+import {ServiceHearingValuesModel} from './models/serviceHearingValues.model';
 
 export const hearingStageRefData = [
   {
@@ -1011,9 +1021,9 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
     ],
     judiciaryPreferences: [
       {
-        memberID: '',
-        memberType: '',
-        requirementType: 'EXCLUDE'
+        memberID: 'p1000000',
+        memberType: MemberType.JUDGE,
+        requirementType: RequirementType.EXCLUDE
       }
     ],
     judiciarySpecialisms: [
@@ -1267,7 +1277,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
             },
             didNotAttendFlag: false,
             partyChannelSubType: 'Fax',
-            partyRole: 'Interpreter',
+            partyRole: 'interpreter',
             representedParty: 5,
           },
         ],
@@ -1289,7 +1299,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
             },
             didNotAttendFlag: true,
             partyChannelSubType: 'Other',
-            partyRole: 'Interpreter',
+            partyRole: 'interpreter',
             representedParty: 2,
           },
         ],
@@ -1314,7 +1324,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               name: 'Company D',
             },
             partyId: '3',
-            partyRole: 'Interpreter',
+            partyRole: 'interpreter',
             partyChannelSubType: 'Letter',
           },
           {
@@ -1328,7 +1338,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               name: 'Company C',
             },
             partyId: '5',
-            partyRole: 'Interpreter',
+            partyRole: 'interpreter',
             partyChannelSubType: 'Fax',
           },
         ],
@@ -1348,7 +1358,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               name: 'Company E',
             },
             partyId: '2',
-            partyRole: 'Interpreter',
+            partyRole: 'interpreter',
             partyChannelSubType: 'Email',
           },
           {
@@ -1362,7 +1372,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               name: 'Company C',
             },
             partyId: '3',
-            partyRole: 'Interpreter',
+            partyRole: 'interpreter',
             partyChannelSubType: 'Email',
           },
         ],
@@ -1382,7 +1392,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               name: 'Company B',
             },
             partyId: '1',
-            partyRole: 'Interpreter',
+            partyRole: 'interpreter',
             partyChannelSubType: 'Fax',
           },
           {
@@ -1396,7 +1406,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               name: 'Company E',
             },
             partyId: '3',
-            partyRole: 'Interpreter',
+            partyRole: 'interpreter',
             partyChannelSubType: 'Other',
           },
         ],
@@ -1416,7 +1426,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               name: 'Company D',
             },
             partyId: '3',
-            partyRole: 'Interpreter',
+            partyRole: 'interpreter',
             partyChannelSubType: 'Fax',
           },
           {
@@ -1430,7 +1440,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               name: 'Company C',
             },
             partyId: '4',
-            partyRole: 'Interpreter',
+            partyRole: 'interpreter',
             partyChannelSubType: 'Letter',
           },
         ],
@@ -1487,6 +1497,8 @@ export const initialState = {
           responseVersion: 'rv1',
           hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
           listAssistCaseStatus: '',
+          hearingIsLinkedFlag: true,
+          hearingGroupRequestId: null,
           hearingDaySchedule: null,
         }]
       }
@@ -1611,7 +1623,7 @@ export const initialState = {
             hearingEndDateTime: '',
             listAssistSessionID: '',
             hearingVenueId: '',
-            hearingRoomId: '',
+            hearingRoomId: 'room 3',
             hearingPanel: []
           }
         },

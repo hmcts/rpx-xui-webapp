@@ -38,6 +38,8 @@ export class CaseTaskComponent implements OnInit {
               protected taskService: WorkAllocationTaskService) {
   }
 
+  public userRoleCategory: string;
+
   public get task(): Task {
     return this.pTask;
   }
@@ -89,7 +91,8 @@ export class CaseTaskComponent implements OnInit {
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const userId = userInfo.id ? userInfo.id : userInfo.uid;
-      this.isUserJudicial = AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
+      this.userRoleCategory = userInfo.roleCategory;
+      this.isUserJudicial = userInfo.roleCategory !== UserRole.Judicial;
       return task.assignee && task.assignee === userId;
     }
     return false;

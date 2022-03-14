@@ -30,7 +30,14 @@ export class JudicialUserSearchResponseResolver implements Resolve<JudicialUserM
 
   public getUsersByPanelRequirements$(): Observable<string[]> {
     return this.hearingStore.pipe(select(fromHearingStore.getHearingRequest)).pipe(
-      map(hearingRequest => hearingRequest.hearingRequestMainModel && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.panelMemberIds)
+      map(hearingRequest => {
+        let panelMemberIds: string[] = [];
+        if (hearingRequest.hearingRequestMainModel) {
+          panelMemberIds = hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.panelMemberIds || [];
+          panelMemberIds.push(hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.hearingJudgeId);
+        }
+        return panelMemberIds;
+      })
     );
   }
 

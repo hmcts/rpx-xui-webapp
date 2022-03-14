@@ -101,7 +101,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
-        hearingJudgeId: 'p1000001',
+        hearingJudgeId: 'p1000002',
         panelMemberIds: ['p1000001'],
         attendees: [
           {
@@ -218,7 +218,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
-        hearingJudgeId: 'p1000001',
+        hearingJudgeId: 'p1000002',
         panelMemberIds: ['p1000001'],
         attendees: [
           {
@@ -335,7 +335,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
-        hearingJudgeId: 'p1000001',
+        hearingJudgeId: 'p1000002',
         panelMemberIds: ['p1000001'],
         attendees: [
           {
@@ -452,7 +452,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
-        hearingJudgeId: 'p1000001',
+        hearingJudgeId: 'p1000002',
         panelMemberIds: ['p1000001'],
         attendees: [
           {
@@ -569,7 +569,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
-        hearingJudgeId: 'p1000001',
+        hearingJudgeId: 'p1000002',
         panelMemberIds: ['p1000001'],
         attendees: [
           {
@@ -686,7 +686,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
-        hearingJudgeId: 'p1000001',
+        hearingJudgeId: 'p1000002',
         panelMemberIds: ['p1000001'],
         attendees: [
           {

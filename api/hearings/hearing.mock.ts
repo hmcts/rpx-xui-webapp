@@ -84,8 +84,10 @@ export const init = () => {
     // START : This few lines code jus to faciliate testing for specific hearing id of 100002
     // so that even the failure scenarios can be verified
     if (config.url.includes('/h100002')) {
-      throwError('dummy');
-      return;
+      return [
+        500,
+        null,
+      ];
     }
     // END
     return [

@@ -1038,6 +1038,11 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
       partyRole: 'appellant',
       partyName: 'Jane Smith',
       partyChannel: 'inPerson',
+      individualDetails: {
+        title: 'Mrs',
+        firstName: 'Jane',
+        lastName: 'Smith'
+      },
       unavailabilityRanges: [
         {
           unavailableFromDate: '2021-12-10T09:00:00.000+0000',
@@ -1051,6 +1056,11 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
       partyRole: 'claimant',
       partyName: 'DWP',
       partyChannel: 'inPerson',
+      organisationDetails: {
+        name: 'DWP',
+        organisationType: 'GOV',
+        cftOrganisationID: 'O100000'
+      },
       unavailabilityRanges: [
         {
           unavailableFromDate: '2021-12-20T09:00:00.000+0000',

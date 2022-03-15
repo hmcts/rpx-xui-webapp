@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
+import { throwError } from 'rxjs';
 import {HttpMockAdapter} from '../common/httpMockAdapter';
 import {HEARING_ACTUAL} from './data/hearing-actuals.mock.data';
 import {EMPTY_HEARINGS_LIST, HEARINGS_LIST} from './data/hearingLists.mock.data';
@@ -79,17 +80,17 @@ export const init = () => {
     ];
   });
 
-  mock.onDelete(cancelHearingRequest).reply(() => {
+  mock.onDelete(cancelHearingRequest).reply(config => {
+    // START : This few lines code jus to faciliate testing for specific hearing id of 100002
+    // so that even the failure scenarios can be verified
+    if (config.url.includes('/h100002')) {
+      throwError('dummy');
+      return;
+    }
+    // END
     return [
       200,
       {},
-    ];
-  });
-
-  mock.onGet(hearingActualsUrl).reply(() => {
-    return [
-      200,
-      HEARING_ACTUAL,
     ];
   });
 

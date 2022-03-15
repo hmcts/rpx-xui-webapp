@@ -74,9 +74,9 @@ export class CancelHearingComponent implements OnInit {
     const isReasons = (this.hearingCancelForm.controls.reasons as FormArray).controls
       .filter(reason => reason.value.selected === true).length > 0;
     if (!isReasons) {
-      this.validationErrors.push({
+      this.validationErrors = [{
         id: `hearing-option-container`, message: CancelHearingMessages.NOT_SELECTED_A_REASON
-      });
+      }];
       this.selectionValid = false;
     }
     return this.selectionValid;

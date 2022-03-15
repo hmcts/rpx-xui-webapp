@@ -14,7 +14,7 @@
         <div [innerHtml]="section.sectionHTMLTitle"></div>
       </ng-container>
     </div>
-    <div class="govuk-summary-list govuk-!-margin-bottom-9">
+    <div class="govuk-summary-list govuk-!-margin-bottom-9" *ngIf="!section.isHiddenMargin">
       <ng-container *ngFor="let answer of section.answers">
         <div *ngIf="answer.isHiddenSource === undefined ? true : !(answer.isHiddenSource | isHidden:hearingState$ | async)"
              class="govuk-summary-list__row">

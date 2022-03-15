@@ -38,7 +38,7 @@ describe('ReasonForCancellationAnswerConverter', () => {
   it('should transform hearing stage', () => {
     const STATE: State = initialState.hearings;
     const result$ = converter.transformAnswer(of(STATE));
-    const room = '123456543';
+    const room = '';
     const expected = cold('(b|)', { b: room });
     expect(result$).toBeObservable(expected);
   });

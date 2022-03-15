@@ -108,25 +108,32 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
 
     When('I click add link for role category {string} in case roles and access page', async function (roleType){
-        await caseRolesAndAccessPage.clickAllocateRoleLinkForCategory(roleType);
-
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await caseRolesAndAccessPage.clickAllocateRoleLinkForCategory(roleType);
+        });
     });
 
     Then('I validate add link for role category {string} is displayed in Roles and access page', async function (roleCategory) {
-        expect(await caseRolesAndAccessPage.isAllocateRoleLinkPresentForCategory(roleCategory)).to.be.true;
-
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await caseRolesAndAccessPage.isAllocateRoleLinkPresentForCategory(roleCategory)).to.be.true;
+        });
     });
 
     Then('I validate add link for role category {string} is not displayed in Roles and access page', async function (roleCategory) {
-        expect(await caseRolesAndAccessPage.isAllocateRoleLinkPresentForCategory(roleCategory)).to.be.false;
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await caseRolesAndAccessPage.isAllocateRoleLinkPresentForCategory(roleCategory)).to.be.false;
+        });
 
     });
 
     When('I click Add link for exclusions in roles and access page', async function (roleType){
-        await caseRolesAndAccessPage.clickAddExclusionLink();
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await caseRolesAndAccessPage.clickAddExclusionLink();
+        });
+
     });
 
-    Then('I click Add link for exclusions is displayed in Roles and access page', async function(){
+    Then('I click Add link for exclusions is displayed in Roles and access page', async function(){ 
         return caseRolesAndAccessPage.isExclusionAddLinkPresent();
    });
 

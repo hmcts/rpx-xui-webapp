@@ -537,10 +537,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.6.10":
-  version "1.6.10"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.10.tgz#4a00fb1c4f72dac98c370d59b035beb1e8151cd9"
-  integrity sha512-b4G5ngv+FjGpIapd53PoLwmqnSjlH4ZmlIrMqNzCgHGqBAX6xF9WM6pBRnJdUisWIXtDkRJtHrZv0pKbS4YyQQ==
+"@hmcts/rpx-xui-common-lib@1.6.7-radio-selection-change":
+  version "1.6.7-radio-selection-change"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.7-radio-selection-change.tgz#e39436791e29ce74bd14ee5e60819fa6d34bee1b"
+  integrity sha512-ja/mm3R1GC/fBqOyoDZXkpLt9jesb7W0260snWjzNxcY6PLvPWsGGAHAdafA90fwep8FZVVOzQbaYGz8fVat8A==
   dependencies:
     tslib "^1.9.0"
 

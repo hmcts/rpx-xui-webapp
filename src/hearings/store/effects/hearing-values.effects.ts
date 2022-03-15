@@ -1,18 +1,20 @@
 import {Injectable} from '@angular/core';
 import {Actions, Effect, ofType} from '@ngrx/effects';
-import {Action} from '@ngrx/store';
+import {Action, Store} from '@ngrx/store';
 import {Observable, of} from 'rxjs';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import * as fromAppStoreActions from '../../../app/store/actions';
 import * as hearingValuesActions from '../../../hearings/store/actions/hearing-values.action';
 import {HttpError} from '../../../models/httpError.model';
 import {HearingsService} from '../../services/hearings.service';
+import * as fromHearingReducers from '../../store/reducers';
 
 @Injectable()
 export class HearingValuesEffects {
 
   constructor(
     private readonly actions$: Actions,
+    private readonly hearingStore: Store<fromHearingReducers.State>,
     private readonly hearingsService: HearingsService,
   ) {
   }
@@ -26,7 +28,8 @@ export class HearingValuesEffects {
         map(
           (response) => new hearingValuesActions.LoadHearingValuesSuccess(response)),
         catchError(error => {
-          return HearingValuesEffects.handleError(error);
+          this.hearingStore.dispatch(new hearingValuesActions.LoadHearingValuesFailure(error));
+          return of(error);
         })
       );
     })

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import * as moment from 'moment';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { UserRole } from '../../../app/models';
 import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
@@ -23,10 +23,12 @@ export class CaseHearingsComponent implements OnInit {
   public upcomingStatus: EXUISectionStatusEnum = EXUISectionStatusEnum.UPCOMING;
   public pastAndCancelledHearings$: Observable<HearingListViewModel[]>;
   public pastAndCancelledStatus: EXUISectionStatusEnum = EXUISectionStatusEnum.PAST_AND_CANCELLED;
+  public hearingState$: Observable<fromHearingStore.State>;
   public hearingsActions: Actions[] = [Actions.READ];
   public userRoles$: Observable<string[]>;
   public hasRequestAction: boolean = false;
   public caseId: string = '';
+  public sub: Subscription;
 
   constructor(private readonly appStore: Store<fromAppStore.State>,
               private readonly hearingStore: Store<fromHearingStore.State>,
@@ -103,13 +105,23 @@ export class CaseHearingsComponent implements OnInit {
   }
 
   public createHearingRequest(): void {
-    const hearingCondition: HearingConditions = {
-      mode: Mode.CREATE,
-      isInit: true,
-      caseId: this.caseId
-    };
     this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
-    this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
-    this.router.navigate(['/', 'hearings', 'request']).then();
+    this.sub = this.hearingStore.select(fromHearingStore.getHearingValuesLastError).subscribe(
+      error => {
+        if (error) {
+          // Reset error before navigating to the error page
+          this.hearingStore.dispatch(new fromHearingStore.ResetHearingValuesLastError());
+          this.router.navigate(['/', 'hearings', 'error']);
+        } else {
+          const hearingCondition: HearingConditions = {
+            mode: Mode.CREATE,
+            isInit: true,
+            caseId: this.caseId
+          };
+          this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
+          this.router.navigate(['/', 'hearings', 'request']).then();
+        }
+      }
+    );
   }
 }

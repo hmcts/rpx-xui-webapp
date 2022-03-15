@@ -1,3 +1,4 @@
+import { HearingValuesStateData } from 'src/hearings/models/hearingValuesStateData';
 import {MemberType, PartyType, RequirementType} from '../../models/hearings.enum';
 import {ServiceHearingValuesModel} from '../../models/serviceHearingValues.model';
 import * as fromHearingValuesActions from '../actions/hearing-values.action';
@@ -111,6 +112,20 @@ describe('Hearing Values Reducer', () => {
         const action = new fromHearingValuesActions.LoadHearingValuesSuccess(SERVICE_HEARING_VALUES);
         const hearingsState = fromHearingValuesReducer.hearingValuesReducer(fromHearingValuesReducer.initialHearingValuesState, action);
         expect(hearingsState.serviceHearingValuesModel).toEqual(SERVICE_HEARING_VALUES);
+      });
+
+			it('should call error response action', () => {
+        const initialHearingValuesState: HearingValuesStateData = {
+          serviceHearingValuesModel: null,
+          lastError: {
+            status: 403,
+            errors: null,
+            message: 'Http failure response: 403 Forbidden'
+          },
+        };
+        const action = new fromHearingValuesActions.LoadHearingValuesFailure(initialHearingValuesState.lastError);
+        const hearingsState = fromHearingValuesReducer.hearingValuesReducer(initialHearingValuesState, action);
+        expect(hearingsState).toEqual(initialHearingValuesState);
       });
     });
   });

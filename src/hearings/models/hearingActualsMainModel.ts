@@ -1,18 +1,19 @@
+import { CaseDetailsModel } from './caseDetails.model';
 import { HearingResult, HMCStatus } from './hearings.enum';
 
 export interface HearingActualsMainModel {
   hearingActuals: HearingActualsModel;
   hearingPlanned: HearingPlannedModel;
   hmcStatus: HMCStatus;
+  caseDetails: CaseDetailsModel;
 }
 
 export interface HearingPlannedModel {
   plannedHearingType: string;
-  plannedHearingDays: PlannedHearingModel[];
+  plannedHearingDays: PlannedHearingDayModel[];
 }
 
-export interface PlannedHearingModel {
-  plannedDate?: string;
+export interface PlannedHearingDayModel {
   plannedStartTime: string;
   plannedEndTime: string;
   parties: PartyModel[];
@@ -21,12 +22,12 @@ export interface PlannedHearingModel {
 export interface PartyModel {
   partyId: string;
   partyRole: string;
-  individualDetails: IndividualDetailModel;
-  organisationDetails: OrganisationDetailsModel;
+  individualDetails?: IndividualDetailsModel;
+  organisationDetails?: OrganisationDetailsModel;
   partyChannelSubType: string;
 }
 
-export interface IndividualDetailModel {
+export interface IndividualDetailsModel {
   title: string;
   firstName: string;
   lastName: string;
@@ -63,7 +64,7 @@ export interface PauseDateTimeModel {
   pauseEndTime: string;
 }
 
-export interface ActualIndividualDetailModel {
+export interface ActualIndividualDetailsModel {
   firstName: string;
   lastName: string;
 }
@@ -75,7 +76,7 @@ export interface ActualOrganisationDetailsModel {
 export interface ActualDayPartyModel {
   actualPartyId: string;
   didNotAttendFlag: boolean;
-  actualIndividualDetails: ActualIndividualDetailModel;
+  actualIndividualDetails: ActualIndividualDetailsModel;
   actualOrganisationDetails: ActualOrganisationDetailsModel;
   partyChannelSubType: string;
   partyRole: string;

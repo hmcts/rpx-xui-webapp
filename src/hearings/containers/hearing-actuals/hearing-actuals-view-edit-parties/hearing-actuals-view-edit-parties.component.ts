@@ -179,7 +179,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       attendanceType: [party.partyChannelSubType],
       organisation: [party.actualOrganisationDetails.name],
       attendeeRepresenting: [party.representedParty],
-      partyId: [null],
+      partyId: [party.actualPartyId],
       isParty: [party.partyRole === PartyRoleOnly.Appellant || party.partyRole === PartyRoleOnly.Claimant],
     }));
   }

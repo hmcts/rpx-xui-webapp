@@ -45,12 +45,14 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public sub: Subscription;
   public id: string;
   public error$: Observable<HttpError>;
+  public partyChannels: LovRefDataModel[] = [];
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly hearingsService: HearingsService,
               private readonly route: ActivatedRoute) {
     this.hearingRoles = this.route.snapshot.data.hearingRole;
     this.hearingTypes = this.route.snapshot.data.hearingTypes;
+    this.partyChannels = this.route.snapshot.data.partyChannel;
     this.adjournHearingActualReasons = this.route.snapshot.data.adjournHearingActualReasons;
     this.cancelHearingActualReasons = this.route.snapshot.data.cancelHearingActualReasons;
   }

@@ -40,7 +40,6 @@ import { JudgeTypesResolverService } from './resolvers/judge-types-resolver.serv
 import { PanelRolesResolverService } from './resolvers/panel-roles-resolver.service';
 import { PartyChannelsResolverService } from './resolvers/party-channels-resolver.service';
 import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
-import { HearingChangeReasonResolver } from './resolvers/hearing-change-reason.resolver';
 
 export const ROUTES: Routes = [
   {

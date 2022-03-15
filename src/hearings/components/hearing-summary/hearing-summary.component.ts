@@ -1,9 +1,9 @@
-import {AfterViewInit, Component, Input} from '@angular/core';
+import {AfterViewInit, Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {select, Store} from '@ngrx/store';
-import {Observable} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import {HearingConditions} from '../../models/hearingConditions';
-import {HearingTemplate, Mode} from '../../models/hearings.enum';
+import {HearingSummaryEnum, HearingTemplate, Mode} from '../../models/hearings.enum';
 import {Section} from '../../models/section';
 import * as fromHearingStore from '../../store';
 
@@ -12,13 +12,15 @@ import * as fromHearingStore from '../../store';
   templateUrl: './hearing-summary.component.html',
   styleUrls: ['./hearing-summary.component.scss'],
 })
-export class HearingSummaryComponent implements AfterViewInit {
+export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Input() public template: Section[];
   @Input() public mode: Mode;
   public listingTemplate: string = HearingTemplate.LISTING_INFORMATION;
   public partiesTemplate: string = HearingTemplate.PARTIES_TEMPLATE;
   public hearingState$: Observable<fromHearingStore.State>;
+  public validationErrors: { id: string, message: string }[] = [];
+  public sub: Subscription;
 
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly router: Router,
@@ -26,8 +28,26 @@ export class HearingSummaryComponent implements AfterViewInit {
     this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
   }
 
+  public ngOnInit(): void {
+    this.sub = this.hearingState$.subscribe(state => {
+      if (state.hearingRequest.lastError) {
+        this.validationErrors = [];
+        this.validationErrors.push({
+          id: '', message: HearingSummaryEnum.BackendError
+        });
+        window.scrollTo({left: 0, top: 0, behavior: 'smooth'});
+      }
+    });
+  }
+
   public ngAfterViewInit(): void {
     this.fragmentFocus();
+  }
+
+  public ngOnDestroy(): void {
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
   }
 
   public fragmentFocus(): void {

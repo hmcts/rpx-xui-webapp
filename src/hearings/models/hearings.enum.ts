@@ -197,6 +197,10 @@ export enum HearingDatePriorityConstEnum {
   MinutesMuliplier = 5,
 }
 
+export enum HearingSummaryEnum {
+ BackendError = 'There was a system error and your request could not be processed. Please try again.'
+}
+
 export enum ACTION {
   BACK = 'BACK',
   CONTINUE = 'CONTINUE',
@@ -320,4 +324,9 @@ export enum HearingActualsTimingErrorMessages {
   PAUSE_TIME_BEFORE_RESUME_TIME = 'Pause time must be before resume time',
   PAUSE_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES = 'Pause time must be between the hearing start and finish times',
   RESUME_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES = 'Resume time must be between the hearing start and finish times',
+}
+
+export enum PartyRoleOnly {
+  Appellant = 'appellant',
+  Claimant = 'claimant',
 }

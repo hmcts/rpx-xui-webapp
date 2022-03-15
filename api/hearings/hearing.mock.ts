@@ -1,5 +1,4 @@
 import MockAdapter from 'axios-mock-adapter';
-import { throwError } from 'rxjs';
 import {HttpMockAdapter} from '../common/httpMockAdapter';
 import {HEARING_ACTUAL} from './data/hearing-actuals.mock.data';
 import {EMPTY_HEARINGS_LIST, HEARINGS_LIST} from './data/hearingLists.mock.data';

@@ -94,6 +94,13 @@ export const init = () => {
     ];
   });
 
+  mock.onGet(hearingActualsUrl).reply(() => {
+    return [
+      200,
+      HEARING_ACTUAL,
+    ];
+  });
+
   mock.onPut(hearingActualsUrl).reply(() => {
     return [
       200,

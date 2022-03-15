@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
 import * as fromHearingStore from '../../store';
 
 @Component({

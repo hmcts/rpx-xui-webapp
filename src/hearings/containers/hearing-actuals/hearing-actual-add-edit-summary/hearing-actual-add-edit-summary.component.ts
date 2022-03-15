@@ -180,5 +180,4 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     }
     return true;
   }
-
 }

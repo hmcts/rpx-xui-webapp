@@ -5,12 +5,12 @@ import { HearingDateEnum } from '../models/hearings.enum';
 import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 
-export class DateRequestSubmittedTimeAnswerConverter implements AnswerConverter {
+export class DateResponseSubmittedTimeAnswerConverter implements AnswerConverter {
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
       map(state => {
-        const hearingResponse = state.hearingRequest.hearingRequestMainModel.requestDetails;
-        return moment(hearingResponse.requestTimeStamp).format(HearingDateEnum.DisplayTime);
+        const hearingResponseTime = state.hearingRequest.hearingRequestMainModel.hearingResponse.receivedDateTime;
+        return moment(hearingResponseTime).format(HearingDateEnum.DisplayTime);
       })
     );
   }

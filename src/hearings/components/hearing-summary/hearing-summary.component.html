@@ -1,4 +1,17 @@
-<div *ngFor="let section of template">
+<div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
+  data-module="govuk-error-summary" *ngIf="validationErrors.length > 0">
+  <h2 class="govuk-error-summary__title" id="error-summary-title">
+    There is a problem
+  </h2>
+  <div class="govuk-error-summary__body">
+    <ul class="govuk-list govuk-error-summary__list">
+      <li *ngFor="let error of validationErrors">
+        <span class="govuk-error-message">{{error.message}}</span>
+      </li>
+    </ul>
+  </div>
+</div>
+<div id="hearing-summary" *ngFor="let section of template">
   <div *ngIf="section.isHiddenSource === undefined ? true : !(section.isHiddenSource | isHidden:hearingState$ | async)">
     <div *ngIf="section.insetInfo" class="govuk-inset-text">
       {{ section.insetInfo }}

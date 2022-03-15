@@ -3,7 +3,6 @@ import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap, take } from 'rxjs/operators';
-import { MemberType } from '../models/hearings.enum';
 import { JudicialUserModel } from '../models/judicialUser.model';
 import { PanelPreferenceModel } from '../models/panelPreference.model';
 import { PanelRequirementsModel } from '../models/panelRequirements.model';

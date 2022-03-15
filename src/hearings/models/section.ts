@@ -6,4 +6,5 @@ export interface Section {
   sectionHTMLTitle: string;
   answers?: Answer[];
   isHiddenSource?: IsHiddenSource;
+  isHiddenMargin?: boolean;
 }

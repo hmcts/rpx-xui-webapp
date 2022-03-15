@@ -1,10 +1,10 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Store} from '@ngrx/store';
-import {Observable} from 'rxjs';
-import {HearingConditions} from '../../../hearings/models/hearingConditions';
-import {HearingListViewModel} from '../../../hearings/models/hearingListView.model';
-import {Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, Mode} from '../../../hearings/models/hearings.enum';
+import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { HearingConditions } from '../../../hearings/models/hearingConditions';
+import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
+import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, Mode } from '../../../hearings/models/hearings.enum';
 import * as fromHearingStore from '../../../hearings/store';
 
 @Component({
@@ -71,6 +71,15 @@ export class CaseHearingsListComponent implements OnInit {
     };
     this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
     this.router.navigate(['/', 'hearings', 'request', 'hearing-view-edit-summary']);
+  }
+
+  public viewDetails(hearing: HearingListViewModel): void {
+    if (hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.CANCELLATION_REQUESTED) {
+      this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearing.hearingID));
+      this.router.navigate(['/', 'hearings', 'request', 'hearing-cancellation-summary']);
+    } else {
+      this.router.navigate(['/', 'hearings', 'view']);
+    }
   }
 
   public addAndEdit(hearingID: string): void {

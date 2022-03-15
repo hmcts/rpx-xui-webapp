@@ -46,6 +46,7 @@ export enum LaCaseStatus {
   PENDING_RELISTING = 'Pending Relisting',
   HEARING_COMPLETED = 'Hearing Completed',
   CASE_CLOSED = 'Case Closed',
+  CANCELLED = 'Cancelled',
 }
 
 export enum EXUISectionStatusEnum {
@@ -127,7 +128,8 @@ export enum HearingCategory {
   CancelHearingReason = 'CancelHearingReason',
   HearingRoles = 'HearingRoles',
   AdjournHearingActualReason = 'AdjournHearingActualReason',
-  CancelHearingActualReason = 'CancelHearingActualReason'
+  CancelHearingActualReason = 'CancelHearingActualReason',
+  HearingChangeReason = 'HearingChangeReason'
 }
 
 export enum HearingDateEnum {
@@ -195,6 +197,10 @@ export enum HearingDatePriorityConstEnum {
   MinutesMuliplier = 5,
 }
 
+export enum HearingSummaryEnum {
+ BackendError = 'There was a system error and your request could not be processed. Please try again.'
+}
+
 export enum ACTION {
   BACK = 'BACK',
   CONTINUE = 'CONTINUE',
@@ -221,6 +227,11 @@ export enum CancelHearingMessages {
   SELECT_AT_LEAST_ONE_REASON = 'Select at least one valid reason',
 }
 
+export enum HearingChangeReasonMessages {
+  NOT_SELECTED_A_REASON = 'You have not selected a reason for changing the hearing',
+  SELECT_AT_LEAST_ONE_REASON = 'Select at least one valid reason',
+}
+
 export enum AnswerSource {
   CASE_NAME,
   CASE_NUMBER,
@@ -228,16 +239,20 @@ export enum AnswerSource {
   TYPE_FROM_REQUEST,
   STATUS,
   DATE_REQUEST_SUBMITTED,
-  DATE_REQUEST_SUBMITTED_TIME,
+  DATE_RESPONSE_SUBMITTED_TIME,
+  DATE_RESPONSE_SUBMITTED,
   DATE_RESPONSE_RECEIVED,
   CASE_FLAGS,
   ROOM_ID,
   ADDITIONAL_SECURITY_REQUIRED,
   ADDITIONAL_FACILITIES_REQUIRED,
   STAGE,
+  HEARING_RESPONSE_STATUS,
   HOW_ATTENDANT,
+  PARTICIPANT_ATTENDENCE,
   ATTENDANT_PERSON_AMOUNT,
   VENUE,
+  COURT_LOCATION,
   NEED_WELSH,
   NEED_JUDGE,
   JUDGE_NAME,
@@ -249,9 +264,11 @@ export enum AnswerSource {
   PANEL_EXCLUSION,
   PANEL_ROLES,
   HEARING_LENGTH,
+  HEARING_RESPONSE_LENGTH,
   HEARING_SPECIFIC_DATE,
   HEARING_PRIORITY,
-  ADDITIONAL_INSTRUCTION
+  ADDITIONAL_INSTRUCTION,
+  REASON_FOR_CANCELLATION,
 }
 
 export enum IsHiddenSource {
@@ -293,6 +310,7 @@ export enum HearingActualAddEditSummaryEnum {
 
 export enum HearingTemplate {
   LISTING_INFORMATION = 'Listing information summary',
+  PARTIES_TEMPLATE = 'Parties Template'
 }
 
 export enum GroupLinkType {
@@ -306,4 +324,9 @@ export enum HearingActualsTimingErrorMessages {
   PAUSE_TIME_BEFORE_RESUME_TIME = 'Pause time must be before resume time',
   PAUSE_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES = 'Pause time must be between the hearing start and finish times',
   RESUME_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES = 'Resume time must be between the hearing start and finish times',
+}
+
+export enum PartyRoleOnly {
+  Appellant = 'appellant',
+  Claimant = 'claimant',
 }

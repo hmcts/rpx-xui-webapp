@@ -1035,6 +1035,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
     {
       partyID: 'P1',
       partyType: PartyType.IND,
+      partyRole: 'appellant',
       partyName: 'Jane Smith',
       partyChannel: 'inPerson',
       unavailabilityRanges: [
@@ -1047,6 +1048,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
     {
       partyID: 'P2',
       partyType: PartyType.ORG,
+      partyRole: 'claimant',
       partyName: 'DWP',
       partyChannel: 'inPerson',
       unavailabilityRanges: [
@@ -1613,12 +1615,14 @@ export const initialState = {
             partyID: 'P1',
             partyName: 'Jane and Smith',
             partyType: PartyType.IND,
+            partyRole: 'appellant',
             partyChannel: 'inPerson'
           },
           {
             partyID: 'P2',
             partyName: 'DWP',
             partyType: PartyType.ORG,
+            partyRole: 'claimant',
             partyChannel: 'byVideo'
           }
         ]
@@ -1650,12 +1654,14 @@ export const initialState = {
                 partyID: 'P1',
                 partyName: 'Jane and Smith',
                 partyType: PartyType.IND,
+                partyRole: 'appellant',
                 partyChannel: 'inPerson',
               },
               {
                 partyID: 'P2',
                 partyName: 'DWP',
                 partyType: PartyType.ORG,
+                partyRole: 'claimant',
                 partyChannel: 'byVideo',
               },
             ],
@@ -1738,12 +1744,14 @@ export const initialState = {
             partyID: 'P1',
             partyName: 'Jane and Smith',
             partyType: PartyType.IND,
+            partyRole: 'appellant',
             partyChannel: 'inPerson'
           },
           {
             partyID: 'P2',
             partyName: 'DWP',
             partyType: PartyType.ORG,
+            partyRole: 'claimant',
             partyChannel: 'byVideo'
           }
         ]

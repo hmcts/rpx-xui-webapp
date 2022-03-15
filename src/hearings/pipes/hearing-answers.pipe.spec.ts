@@ -82,12 +82,14 @@ describe('HearingAnswersPipe', () => {
         partyID: 'P1',
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
+        partyRole: 'appellant',
         partyChannel: 'inPerson'
       },
       {
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
+        partyRole: 'claimant',
         partyChannel: 'byVideo'
       }
     ];

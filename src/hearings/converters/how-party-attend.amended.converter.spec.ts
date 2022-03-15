@@ -43,9 +43,10 @@ describe('HowPartyAttendAmendedConverter', () => {
         partyID: 'P1',
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
+        partyRole: 'appellant',
         partyChannel: 'inPerson'
       }
-    ]
+    ];
     const result$ = converter.transformIsAmended(of(STATE));
     const isAmended = true;
     const expected = cold('(b|)', {b: isAmended});

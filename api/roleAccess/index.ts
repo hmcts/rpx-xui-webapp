@@ -50,6 +50,10 @@ export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next
 
 export async function getJudicialUsers(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const userIds = req.body.userIds;
+  // Ensures there are no errors when no userIds are provided
+  if (!userIds || userIds.length === 0) {
+    return res.status(200).send([]);
+  }
   const services = req.body.services ? req.body.services : userIds;
   const serviceCodes: string[] = [];
   const serviceRefDataMapping = getServiceRefDataMappingList();

@@ -32,6 +32,7 @@ import { PanelInclusionAnswerConverter } from '../converters/panel-inclusion.ans
 import { PanelRolesAnswerConverter } from '../converters/panel-roles.answer.converter';
 import { ParticipantAttendenceAnswerConverter } from '../converters/participant-attendence.answer.converter';
 import { PartyChannelsAnswerConverter } from '../converters/party-channels-answer.converter';
+import { ReasonForCancellationAnswerConverter } from '../converters/reason-for-cancellation.answer.converter';
 import { RoomIdAnswerConverter } from '../converters/room-id.answer.converter';
 import { StageAnswerConverter } from '../converters/stage.answer.converter';
 import { StatusAnswerConverter } from '../converters/status.answer.converter';
@@ -156,6 +157,9 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.PANEL_ROLES:
         converter = new PanelRolesAnswerConverter(this.route);
+        break;
+      case AnswerSource.REASON_FOR_CANCELLATION:
+        converter = new ReasonForCancellationAnswerConverter();
         break;
       default:
         break;

@@ -7,4 +7,5 @@ export interface Answer {
   changeLink?: string;
   isHiddenSource?: IsHiddenSource;
   isAmendedSource?: AnswerSource;
+  isHiddenMargin?: boolean;
 }

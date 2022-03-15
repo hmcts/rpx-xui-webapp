@@ -1,6 +1,6 @@
 <a class="govuk-back-link" href="javascript:history.back()">Back</a>
-<xuilib-hmcts-error-summary [errorMessages]="validationErrors"
-                            [header]="'There is a problem'"></xuilib-hmcts-error-summary>
+<xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem'"></xuilib-hmcts-error-summary>
+<xuilib-hmcts-error-summary [errorMessages]="serverErrors" [header]="'There is a problem'" *ngIf="error$ | async"></xuilib-hmcts-error-summary>
 <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
   <div class="govuk-grid-row" *ngIf="hearingActualsMainModel">
     <div class="govuk-grid-column-two-thirds">

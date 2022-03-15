@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
+import { HttpError } from '../../../../models/httpError.model';
 import {
   ActualDayPartyModel,
   ActualHearingDayModel,
@@ -14,6 +15,7 @@ import { HearingActualsStateData } from '../../../models/hearingActualsStateData
 import { ACTION, HearingActualAddEditSummaryEnum, HearingResult, PartyRoleOnly } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
+import { getHearingActualsError } from '../../../store';
 import * as fromHearingStore from '../../../store';
 
 @Component({
@@ -35,10 +37,14 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   public hearingTypeDescription: string;
   public hearingResultReasonTypeDescription: string;
   public validationErrors: { id: string, message: string }[] = [];
+  public serverErrors: { id: string, message: string }[] = [
+    { id: 'serverError', message: 'There was a system error and your request could not be processed. Please try again.' }
+  ];
   public hearingStageResultErrorMessage = '';
   public submitted = false;
   public sub: Subscription;
   public id: string;
+  public error$: Observable<HttpError>;
   public partyChannels: LovRefDataModel[] = [];
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
@@ -61,6 +67,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.id = this.route.snapshot.params.id;
+    this.error$ = this.hearingStore.select(fromHearingStore.getHearingActualsError);
     this.sub = this.hearingStore.select(fromHearingStore.getHearingActuals)
       .pipe(
         filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel),
@@ -174,5 +181,4 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
     }
     return true;
   }
-
 }

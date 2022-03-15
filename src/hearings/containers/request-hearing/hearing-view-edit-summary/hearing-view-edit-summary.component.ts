@@ -51,6 +51,6 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
 
   public ngOnDestroy(): void {
     super.unsubscribe();
-    this.initialAndCurrentStatesSubscription && this.initialAndCurrentStatesSubscription.unsubscribe()
+    this.initialAndCurrentStatesSubscription && this.initialAndCurrentStatesSubscription.unsubscribe();
   }
 }

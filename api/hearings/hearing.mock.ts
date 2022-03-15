@@ -79,7 +79,16 @@ export const init = () => {
     ];
   });
 
-  mock.onDelete(cancelHearingRequest).reply(() => {
+  mock.onDelete(cancelHearingRequest).reply(config => {
+    // START : This few lines code jus to faciliate testing for specific hearing id of 100002
+    // so that even the failure scenarios can be verified
+    if (config.url.includes('/h100002')) {
+      return [
+        500,
+        null,
+      ];
+    }
+    // END
     return [
       200,
       {},

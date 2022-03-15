@@ -710,7 +710,7 @@ export const HEARING_ROLES_REF: LovRefDataModel[] = [
 
 export const CHANGE_HEARING_REASON: LovRefDataModel[] = [
   {
-    key: 'reasoneOne',
+    key: 'reasonOne',
     value_en: 'Reason 1',
     value_cy: '',
     hintText_EN: 'reason 1',
@@ -719,7 +719,7 @@ export const CHANGE_HEARING_REASON: LovRefDataModel[] = [
     parentKey: null,
   },
   {
-    key: 'reasoneTwo',
+    key: 'reasonTwo',
     value_en: 'Reason 2',
     value_cy: '',
     hintText_EN: 'Reason 2',

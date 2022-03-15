@@ -3,7 +3,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {provideMockStore} from '@ngrx/store/testing';
-import {of} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {caseFlagsRefData, initialState} from '../../hearing.test.data';
 import {HearingConditions} from '../../models/hearingConditions';
 import {Mode} from '../../models/hearings.enum';
@@ -54,6 +54,13 @@ describe('HearingSummaryComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should unsubscribe', () => {
+    component.sub = new Observable().subscribe();
+    spyOn(component.sub, 'unsubscribe').and.callThrough();
+    component.ngOnDestroy();
+    expect(component.sub.unsubscribe).toHaveBeenCalled();
   });
 
   it('should change answer', () => {

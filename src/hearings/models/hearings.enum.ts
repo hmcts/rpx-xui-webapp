@@ -306,7 +306,7 @@ export enum HearingActualAddEditSummaryEnum {
 
 export enum HearingTemplate {
   LISTING_INFORMATION = 'Listing information summary',
-  PARTIES_TEMPLATE = 'PARTIES_TEMPLATE'
+  PARTIES_TEMPLATE = 'Parties Template'
 }
 
 export enum GroupLinkType {

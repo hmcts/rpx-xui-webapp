@@ -1,15 +1,16 @@
 <ng-container [ngSwitch]="caseStatusName">
-  <details *ngSwitchCase="exuiDisplayStatus.CANCELLATION_REQUESTED && caseStatus.LISTED" class="govuk-details"
-    data-module="govuk-details">
-    <summary class="govuk-details__summary">
-      <span class="govuk-details__summary-text">
-        Listing information summary
-      </span>
-    </summary>
-    <div class="govuk-details__text listing-info">
-      <ng-container *ngTemplateOutlet="listingContent"></ng-container>
-    </div>
-  </details>
+  <div *ngSwitchCase="exuiDisplayStatus.CANCELLATION_REQUESTED">
+    <details *ngIf="isListedCaseStatus" class="govuk-details" data-module="govuk-details">
+      <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+          Listing information summary
+        </span>
+      </summary>
+      <div class="govuk-details__text listing-info">
+        <ng-container *ngTemplateOutlet="listingContent"></ng-container>
+      </div>
+    </details>
+  </div>
   <div *ngSwitchCase="exuiDisplayStatus.LISTED">
     <h2 class="govuk-heading-m">Listing information summary</h2>
     <div class="listing-info">

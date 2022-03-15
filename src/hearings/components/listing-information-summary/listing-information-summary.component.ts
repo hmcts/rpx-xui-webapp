@@ -14,7 +14,7 @@ import * as fromHearingStore from '../../store';
 export class ListingInformationSummaryComponent implements OnInit, OnDestroy {
   public hearingState$: Observable<fromHearingStore.State>;
   public answerSource = AnswerSource;
-  public caseStatus = LaCaseStatus;
+  public isListedCaseStatus: boolean;
   public caseStatusName: string;
   public serviceValueSub: Subscription;
   public exuiDisplayStatus = EXUIDisplayStatusEnum;
@@ -24,12 +24,14 @@ export class ListingInformationSummaryComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.serviceValueSub = this.hearingState$.subscribe((state) =>
+    this.serviceValueSub = this.hearingState$.subscribe((state) => {
+      this.isListedCaseStatus = state.hearingRequest.hearingRequestMainModel.hearingResponse.laCaseStatus === LaCaseStatus.LISTED;
       state.hearingList.hearingListMainModel.caseHearings.forEach(caseHearing => {
         if (caseHearing.hearingID === state.hearingRequest.hearingRequestMainModel.caseDetails.hearingID) {
           this.caseStatusName = caseHearing.exuiDisplayStatus;
         }
-      })
+      });
+    }
     );
   }
 

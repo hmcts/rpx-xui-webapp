@@ -3,16 +3,20 @@ import { Section } from '../models/section';
 
 export const HEARING_CANCELLATION_SUMMARY_TEMPLATE: Section[] = [
   {
-    sectionHTMLTitle: HearingTemplate.LISTING_INFORMATION,
-    isHiddenSource: IsHiddenSource.NOT_LISTED,
-    isHiddenMargin: true,
-  },
-  {
     sectionHTMLTitle: HearingTemplate.PARTIES_TEMPLATE,
     isHiddenMargin: true,
   },
   {
     sectionHTMLTitle: '<h1 class="govuk-heading-l">Cancellation requested</h1>',
+    isHiddenMargin: true,
+  },
+  {
+    sectionHTMLTitle: HearingTemplate.LISTING_INFORMATION,
+    isHiddenSource: IsHiddenSource.NOT_LISTED,
+    isHiddenMargin: true,
+  },
+  {
+    sectionHTMLTitle: '',
     answers: [
       {
         id: 'caseName',

@@ -63,6 +63,10 @@ export const ROUTES: Routes = [
   {
     path: 'actuals/:id',
     component: HearingActualsComponent,
+    resolve: {
+      partyChannel: HearingActualPartyChannelResolverService,
+      hearingRole: HearingActualRoleResolverService,
+    },
     children: [
       {
         path: 'hearing-actual-add-edit-summary',
@@ -110,10 +114,6 @@ export const ROUTES: Routes = [
       },
       {
         path: 'actuals-parties',
-        resolve: {
-          partyChannel: HearingActualPartyChannelResolverService,
-          hearingRole: HearingActualRoleResolverService,
-        },
         component: HearingActualsViewEditPartiesComponent,
         canActivate: [HealthCheckGuard],
         data: {

@@ -1,5 +1,5 @@
-import {HearingActualsMainModel} from './models/hearingActualsMainModel';
-import {HearingRequestMainModel} from './models/hearingRequestMain.model';
+import { HearingActualsMainModel } from './models/hearingActualsMainModel';
+import { HearingRequestMainModel } from './models/hearingRequestMain.model';
 import {
   CategoryType,
   HearingListingStatusEnum,
@@ -11,7 +11,7 @@ import {
   PartyType,
   RequirementType
 } from './models/hearings.enum';
-import {ServiceHearingValuesModel} from './models/serviceHearingValues.model';
+import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
 
 export const hearingStageRefData = [
   {
@@ -1243,9 +1243,24 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
       hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
       hearingEndDateTime: '2021-03-12T16:00:00.000+0000',
       listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
-      hearingVenueId: 'venue 4',
+      hearingVenueId: '815833',
       hearingRoomId: 'room 4',
-      hearingPanel: ['hearingJudgeId2'],
+      hearingJudgeId: 'p1000002',
+      panelMemberIds: ['p1000001'],
+      attendees: [
+        {
+          partyID: 'P1',
+          partyName: 'Jane and Smith',
+          partyType: PartyType.IND,
+          partyChannel: 'inPerson',
+        },
+        {
+          partyID: 'P2',
+          partyName: 'DWP',
+          partyType: PartyType.ORG,
+          partyChannel: 'byVideo',
+        },
+      ],
     },
   },
 };
@@ -1592,7 +1607,22 @@ export const initialState = {
             listAssistSessionID: '',
             hearingVenueId: '',
             hearingRoomId: 'room 3',
-            hearingPanel: []
+            hearingJudgeId: 'p1000002',
+            panelMemberIds: ['p1000001'],
+            attendees: [
+              {
+                partyID: 'P1',
+                partyName: 'Jane and Smith',
+                partyType: PartyType.IND,
+                partyChannel: 'inPerson',
+              },
+              {
+                partyID: 'P2',
+                partyName: 'DWP',
+                partyType: PartyType.ORG,
+                partyChannel: 'byVideo',
+              },
+            ],
           }
         },
         hearingDetails: {

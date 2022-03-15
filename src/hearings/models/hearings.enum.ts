@@ -127,7 +127,8 @@ export enum HearingCategory {
   CancelHearingReason = 'CancelHearingReason',
   HearingRoles = 'HearingRoles',
   AdjournHearingActualReason = 'AdjournHearingActualReason',
-  CancelHearingActualReason = 'CancelHearingActualReason'
+  CancelHearingActualReason = 'CancelHearingActualReason',
+  HearingChangeReason = 'HearingChangeReason'
 }
 
 export enum HearingDateEnum {
@@ -195,6 +196,10 @@ export enum HearingDatePriorityConstEnum {
   MinutesMuliplier = 5,
 }
 
+export enum HearingSummaryEnum {
+ BackendError = 'There was a system error and your request could not be processed. Please try again.'
+}
+
 export enum ACTION {
   BACK = 'BACK',
   CONTINUE = 'CONTINUE',
@@ -221,6 +226,11 @@ export enum CancelHearingMessages {
   SELECT_AT_LEAST_ONE_REASON = 'Select at least one valid reason',
 }
 
+export enum HearingChangeReasonMessages {
+  NOT_SELECTED_A_REASON = 'You have not selected a reason for changing the hearing',
+  SELECT_AT_LEAST_ONE_REASON = 'Select at least one valid reason',
+}
+
 export enum AnswerSource {
   CASE_NAME,
   CASE_NUMBER,
@@ -228,16 +238,20 @@ export enum AnswerSource {
   TYPE_FROM_REQUEST,
   STATUS,
   DATE_REQUEST_SUBMITTED,
-  DATE_REQUEST_SUBMITTED_TIME,
+  DATE_RESPONSE_SUBMITTED_TIME,
+  DATE_RESPONSE_SUBMITTED,
   DATE_RESPONSE_RECEIVED,
   CASE_FLAGS,
   ROOM_ID,
   ADDITIONAL_SECURITY_REQUIRED,
   ADDITIONAL_FACILITIES_REQUIRED,
   STAGE,
+  HEARING_RESPONSE_STATUS,
   HOW_ATTENDANT,
+  PARTICIPANT_ATTENDENCE,
   ATTENDANT_PERSON_AMOUNT,
   VENUE,
+  COURT_LOCATION,
   NEED_WELSH,
   NEED_JUDGE,
   JUDGE_NAME,
@@ -249,9 +263,10 @@ export enum AnswerSource {
   PANEL_EXCLUSION,
   PANEL_ROLES,
   HEARING_LENGTH,
+  HEARING_RESPONSE_LENGTH,
   HEARING_SPECIFIC_DATE,
   HEARING_PRIORITY,
-  ADDITIONAL_INSTRUCTION
+  ADDITIONAL_INSTRUCTION,
 }
 
 export enum IsHiddenSource {

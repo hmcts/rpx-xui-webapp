@@ -34,12 +34,12 @@ import { CaseFlagsResolver } from './resolvers/case-flags.resolver';
 import { CourtLocationsDataResolver } from './resolvers/court-locations-resolver.resolve';
 import { HearingActualPartyChannelResolverService } from './resolvers/hearing-actual-party-channel-resolver.service';
 import { HearingActualRoleResolverService } from './resolvers/hearing-actual-role-resolver.service';
+import { HearingChangeReasonResolver } from './resolvers/hearing-change-reason.resolver'
 import { HearingStageResolver } from './resolvers/hearing-stage.resolver';
 import { JudgeTypesResolverService } from './resolvers/judge-types-resolver.service';
 import { PanelRolesResolverService } from './resolvers/panel-roles-resolver.service';
 import { PartyChannelsResolverService } from './resolvers/party-channels-resolver.service';
 import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
-import { HearingChangeReasonResolver } from './resolvers/hearing-change-reason.resolver'
 
 export const ROUTES: Routes = [
   {
@@ -248,7 +248,6 @@ export const ROUTES: Routes = [
           judgeTypes: JudgeTypesResolverService,
           judicialUsers: JudicialUserSearchResolver,
           otherPanelRoles: PanelRolesResolverService,
-          courtLocation: CourtLocationsDataResolver,
         },
         component: HearingCreateEditSummaryComponent,
         canActivate: [HealthCheckGuard],

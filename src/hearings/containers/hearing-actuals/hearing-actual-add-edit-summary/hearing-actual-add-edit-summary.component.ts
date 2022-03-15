@@ -72,6 +72,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
         this.actualHearingDay = this.getActualHearingDay(hearingActualsMainModel);
         this.getActualDayParties(hearingActualsMainModel);
         this.hearingTypeDescription = this.getHearingTypeDescription(this.hearingOutcome.hearingType);
+        this.hearingResult = hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResult;
         this.hearingResultReasonTypeDescription = this.getHearingResultReasonTypeDescription(this.hearingOutcome);
         this.hearingActualsMainModel = hearingActualsMainModel;
       });
@@ -162,7 +163,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   private isValid(): boolean {
     this.validationErrors = [];
     this.hearingStageResultErrorMessage = '';
-    if (this.hearingResult === '') {
+    if (this.hearingResult === '' || this.hearingResult === null) {
       this.validationErrors.push({
         id: 'hearing-stage-result-update-link',
         message: HearingActualAddEditSummaryEnum.HearingResultError

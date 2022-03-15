@@ -34,13 +34,9 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   ];
 
   public partiesTable: FormGroup;
-
   public participants: any[] = [];
-
-  public caseTitle = 'Jane Smith vs DWP';
-
   public hearingActuals: HearingActualsMainModel;
-
+  public caseTitle: string;
   public id: string;
   private sub: Subscription;
 
@@ -97,6 +93,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       .subscribe(([state, params]: [HearingActualsStateData, ParamMap]) => {
         this.id = params.get('id');
         this.hearingActuals = JSON.parse(JSON.stringify(state.hearingActualsMainModel));
+        this.caseTitle = this.hearingActuals.caseDetails.hmctsInternalCaseName;
         this.setUpRoleLists();
         this.createForm(this.hearingActuals);
       });

@@ -1,6 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { hearingRequestMainModel } from '../../hearing.test.data';
 import { HearingActualsCaseTitleComponent } from './hearing-actuals-case-title.component';
 
 describe('HearingActualsCaseTitleComponent', () => {
@@ -26,7 +25,7 @@ describe('HearingActualsCaseTitleComponent', () => {
   });
 
   it('should display case title if case details object is not empty', () => {
-    component.caseDetails = hearingRequestMainModel.caseDetails;
+    component.caseTitle = 'Jane Smith vs DWP';
     fixture.detectChanges();
     const caseNameEl = fixture.debugElement.nativeElement.querySelector('.govuk-caption-l');
     expect(caseNameEl.textContent).toContain('Jane Smith vs DWP');

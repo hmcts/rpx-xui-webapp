@@ -31,9 +31,21 @@ export function hearingActualsReducer(
         }
       };
     }
+    case fromActions.SUBMIT_HEARING_ACTUALS: {
+      return {
+        ...initialHearingActualsState,
+        lastError: null
+      };
+    }
     case fromActions.SUBMIT_HEARING_ACTUALS_SUCCESS: {
       return {
         ...initialHearingActualsState
+      };
+    }
+    case fromActions.SUBMIT_HEARING_ACTUALS_FAILURE: {
+      return {
+        ...initialHearingActualsState,
+        lastError: action.payload
       };
     }
     default: {

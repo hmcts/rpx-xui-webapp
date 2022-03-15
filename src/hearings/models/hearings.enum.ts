@@ -46,6 +46,7 @@ export enum LaCaseStatus {
   PENDING_RELISTING = 'Pending Relisting',
   HEARING_COMPLETED = 'Hearing Completed',
   CASE_CLOSED = 'Case Closed',
+  CANCELLED = 'Cancelled',
 }
 
 export enum EXUISectionStatusEnum {
@@ -267,6 +268,7 @@ export enum AnswerSource {
   HEARING_SPECIFIC_DATE,
   HEARING_PRIORITY,
   ADDITIONAL_INSTRUCTION,
+  REASON_FOR_CANCELLATION,
 }
 
 export enum IsHiddenSource {
@@ -308,6 +310,7 @@ export enum HearingActualAddEditSummaryEnum {
 
 export enum HearingTemplate {
   LISTING_INFORMATION = 'Listing information summary',
+  PARTIES_TEMPLATE = 'Parties Template'
 }
 
 export enum GroupLinkType {

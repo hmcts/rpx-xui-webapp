@@ -10,6 +10,7 @@ import { HearingActualsComponent } from './containers/hearing-actuals/hearing-ac
 import { HearingStageResultComponent } from './containers/hearing-actuals/hearing-stage-result/hearing-stage-result.component';
 import { HearingAdditionalInstructionsComponent } from './containers/request-hearing/hearing-additional-instructions/hearing-additional-instructions.component';
 import { HearingAttendanceComponent } from './containers/request-hearing/hearing-attendance/hearing-attendance.component';
+import { HearingCancellationSummaryComponent } from './containers/request-hearing/hearing-cancellation-summary/hearing-cancellation-summary.component';
 import { HearingChangeReasonComponent } from './containers/request-hearing/hearing-change-reason/hearing-change-reason.component';
 import { HearingCreateEditSummaryComponent } from './containers/request-hearing/hearing-create-edit-summary/hearing-create-edit-summary.component';
 import { HearingFacilitiesComponent } from './containers/request-hearing/hearing-facilities/hearing-facilities.component';
@@ -270,6 +271,26 @@ export const ROUTES: Routes = [
           courtLocation: CourtLocationsDataResolver,
         },
         component: HearingViewEditSummaryComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Hearings | Amend Hearing | Check Answers'
+        }
+      },
+      {
+        path: 'hearing-cancellation-summary',
+        resolve: {
+          hearingPriorities: RefDataResolver,
+          caseFlags: CaseFlagsResolver,
+          hearingStageOptions: HearingStageResolver,
+          additionFacilitiesOptions: AdditionalFacilitiesResolver,
+          partyChannels: PartyChannelsResolverService,
+          judgeTypes: JudgeTypesResolverService,
+          judicialUsers: JudicialUserSearchResolver,
+          judicialResponseUsers: JudicialUserSearchResponseResolver,
+          otherPanelRoles: PanelRolesResolverService,
+          courtLocation: CourtLocationsDataResolver,
+        },
+        component: HearingCancellationSummaryComponent,
         canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Hearings | Amend Hearing | Check Answers'

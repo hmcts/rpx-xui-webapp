@@ -17,6 +17,7 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy
   @Input() public template: Section[];
   @Input() public mode: Mode;
   public listingTemplate: string = HearingTemplate.LISTING_INFORMATION;
+  public partiesTemplate: string = HearingTemplate.PARTIES_TEMPLATE;
   public hearingState$: Observable<fromHearingStore.State>;
   public validationErrors: { id: string, message: string }[] = [];
   public sub: Subscription;

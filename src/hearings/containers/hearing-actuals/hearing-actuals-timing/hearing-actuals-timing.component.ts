@@ -20,7 +20,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
 
   public static TIME_MATCHER = /\d{2}:\d{2}/;
   public form: FormGroup;
-  public caseTitle: string = 'Jane Smith vs DWP';
+  public caseTitle: string;
   public submitted: boolean = false;
   public errors: any[] = [];
   private hearingActuals: HearingActualsMainModel;
@@ -78,6 +78,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
       .subscribe(([state, params]: [HearingActualsStateData, ParamMap]) => {
         this.id = params.get('id');
         this.hearingActuals = state.hearingActualsMainModel;
+        this.caseTitle = this.hearingActuals.caseDetails.hmctsInternalCaseName;
         this.form = this.createForm(this.hearingActuals);
         this.subscribeToFormChanges(this.form);
         this.subscribeToRecordPauseControl(this.form.get('recordTimes') as FormControl);

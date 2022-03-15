@@ -103,7 +103,7 @@ export const init = () => {
 
   mock.onPost(postHearingActualsUrl).reply((config: AxiosRequestConfig) => {
     return [
-      400,
+      200,
       [],
     ];
   });

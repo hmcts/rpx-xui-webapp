@@ -2,20 +2,20 @@ import { cold } from 'jasmine-marbles';
 import { of } from 'rxjs';
 import { initialState } from '../hearing.test.data';
 import { State } from '../store/reducers';
-import { DateRequestSubmittedTimeAnswerConverter } from './date-request-submitted-time.answer.converter';
+import { DateResponseSubmittedAnswerConverter } from './date-response-submitted.answer.converter';
 
-describe('DateRequestSubmittedTimeAnswerConverter', () => {
+describe('DateResponseSubmittedAnswerConverter', () => {
 
-  let dateRequestSubmittedTimeAnswerConverter: DateRequestSubmittedTimeAnswerConverter;
+  let dateRequestSubmittedTimeAnswerConverter: DateResponseSubmittedAnswerConverter;
 
   beforeEach(() => {
-    dateRequestSubmittedTimeAnswerConverter = new DateRequestSubmittedTimeAnswerConverter();
+    dateRequestSubmittedTimeAnswerConverter = new DateResponseSubmittedAnswerConverter();
   });
 
   it('should transform type from request', () => {
     const STATE: State = initialState.hearings;
     const result$ = dateRequestSubmittedTimeAnswerConverter.transformAnswer(of(STATE));
-    const type = '09:11';
+    const type = '30 November 2021';
     const expected = cold('(b|)', { b: type });
     expect(result$).toBeObservable(expected);
   });

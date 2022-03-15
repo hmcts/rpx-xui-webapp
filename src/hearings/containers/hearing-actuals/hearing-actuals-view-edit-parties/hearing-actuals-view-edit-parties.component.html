@@ -13,7 +13,7 @@
         </h1>
         <br>
 
-        <form [formGroup]="partiesTable">
+        <form [formGroup]="partiesTable" (submit)="submitForm(partiesTable.value)">
 
           <table class="govuk-table gov-table--middle">
             <thead class="govuk-table__head">
@@ -56,7 +56,7 @@
                 <td class="govuk-table__cell">
                   <select class="govuk-select" formControlName="role" aria-label="Attendee role">
                     <option value="Please select">Please select</option>
-                    <option *ngFor="let role of hearingRole" [ngValue]="role.key">{{role.value_en}}</option>
+                    <option *ngFor="let role of mutablePartyRoles" [ngValue]="role.key">{{role.value_en}}</option>
                   </select>
                 </td>
                 <td class="govuk-table__cell">
@@ -83,13 +83,13 @@
                   </select>
 
                 </td>
-                <td class="govuk-table__cell"><a href="#" class="govuk-link">Remove</a></td>
+                <td class="govuk-table__cell"><a href="#" class="govuk-link btn-remove" (click)="removeRow($event, i)">Remove</a></td>
               </tr>
             </ng-container>
             </tbody>
           </table>
 
-          <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
+          <button class="govuk-button govuk-button--secondary btn-add" data-module="govuk-button" (click)="addRow($event)">
             Add a participant
           </button>
 

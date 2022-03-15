@@ -8,13 +8,17 @@ import { AnswerConverter } from '../converters/answer.converter';
 import { CaseFlagAnswerConverter } from '../converters/case-flag.answer.converter';
 import { CaseNameAnswerConverter } from '../converters/case-name.answer.converter';
 import { CaseNumberAnswerConverter } from '../converters/case-number.answer.converter';
-import { DateRequestSubmittedTimeAnswerConverter } from '../converters/date-request-submitted-time.answer.converter';
+import { CourtLocationAnswerConverter } from '../converters/court-location.answer.converter';
 import { DateRequestSubmittedAnswerConverter } from '../converters/date-request-submitted.answer.converter';
 import { DateResponseReceivedAnswerConverter } from '../converters/date-response-received.answer.converter';
+import { DateResponseSubmittedTimeAnswerConverter } from '../converters/date-response-submitted-time.answer.converter';
+import { DateResponseSubmittedAnswerConverter } from '../converters/date-response-submitted.answer.converter';
 import { DefaultAnswerConverter } from '../converters/default.answer.converter';
 import { HearingLengthAnswerConverter } from '../converters/hearing-length.answer.converter';
 import { HearingPanelAnswerConverter } from '../converters/hearing-panel.answer.converter';
 import { HearingPriorityAnswerConverter } from '../converters/hearing-priority.answer.converter';
+import { HearingResponseLengthAnswerConverter } from '../converters/hearing-response-length.answer.converter';
+import { HearingResponseStatusAnswerConverter } from '../converters/hearing-response-status.answer.converter';
 import { HearingSpecificDateAnswerConverter } from '../converters/hearing-specific-date.answer.converter';
 import { JudgeExclusionAnswerConverter } from '../converters/judge-exclusion.answer.converter';
 import { JudgeNameAnswerConverter } from '../converters/judge-name.answer.converter';
@@ -26,6 +30,7 @@ import { NumberOfAttendancesAnswerConverter } from '../converters/number-of-atte
 import { PanelExclusionAnswerConverter } from '../converters/panel-exclusion.answer.converter';
 import { PanelInclusionAnswerConverter } from '../converters/panel-inclusion.answer.converter';
 import { PanelRolesAnswerConverter } from '../converters/panel-roles.answer.converter';
+import { ParticipantAttendenceAnswerConverter } from '../converters/participant-attendence.answer.converter';
 import { PartyChannelsAnswerConverter } from '../converters/party-channels-answer.converter';
 import { RoomIdAnswerConverter } from '../converters/room-id.answer.converter';
 import { StageAnswerConverter } from '../converters/stage.answer.converter';
@@ -62,8 +67,11 @@ export class HearingAnswersPipe implements PipeTransform {
       case AnswerSource.DATE_REQUEST_SUBMITTED:
         converter = new DateRequestSubmittedAnswerConverter();
         break;
-      case AnswerSource.DATE_REQUEST_SUBMITTED_TIME:
-        converter = new DateRequestSubmittedTimeAnswerConverter();
+      case AnswerSource.DATE_RESPONSE_SUBMITTED_TIME:
+        converter = new DateResponseSubmittedTimeAnswerConverter();
+        break;
+      case AnswerSource.DATE_RESPONSE_SUBMITTED:
+        converter = new DateResponseSubmittedAnswerConverter();
         break;
       case AnswerSource.DATE_RESPONSE_RECEIVED:
         converter = new DateResponseReceivedAnswerConverter();
@@ -83,8 +91,14 @@ export class HearingAnswersPipe implements PipeTransform {
       case AnswerSource.VENUE:
         converter = new VenueAnswerConverter();
         break;
+      case AnswerSource.COURT_LOCATION:
+        converter = new CourtLocationAnswerConverter(this.route);
+        break;
       case AnswerSource.HOW_ATTENDANT:
         converter = new PartyChannelsAnswerConverter(this.route);
+        break;
+      case AnswerSource.PARTICIPANT_ATTENDENCE:
+        converter = new ParticipantAttendenceAnswerConverter(this.route);
         break;
       case AnswerSource.ATTENDANT_PERSON_AMOUNT:
         converter = new NumberOfAttendancesAnswerConverter();
@@ -98,8 +112,14 @@ export class HearingAnswersPipe implements PipeTransform {
       case AnswerSource.STAGE:
         converter = new StageAnswerConverter(this.route);
         break;
+      case AnswerSource.HEARING_RESPONSE_STATUS:
+        converter = new HearingResponseStatusAnswerConverter();
+        break;
       case AnswerSource.HEARING_LENGTH:
         converter = new HearingLengthAnswerConverter();
+        break;
+      case AnswerSource.HEARING_RESPONSE_LENGTH:
+        converter = new HearingResponseLengthAnswerConverter();
         break;
       case AnswerSource.HEARING_SPECIFIC_DATE:
         converter = new HearingSpecificDateAnswerConverter();

@@ -1,12 +1,24 @@
 /* tslint:disable:max-line-length */
 import MockAdapter from 'axios-mock-adapter';
-import {HttpMockAdapter} from '../../common/httpMockAdapter';
-import {ALL_COURT_LOCATIONS} from './data/location.mock.data';
+import { HttpMockAdapter } from '../../common/httpMockAdapter';
+import { ALL_COURT_LOCATIONS } from './data/location.mock.data';
 import {toEpimmsLocation} from "./models/location.model";
 
 export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
   const getLocationsUrl = /http:\/\/rd-professional-api-aat.service.core-compute-aat.internal\/refdata\/location\/court-venues\/venue-search\?search-string=[\w]*/;
+  const getLocationByIdUrl = /http:\/\/rd-professional-api-aat.service.core-compute-aat.internal\/refdata\/location\/court-locations\?epimms_id=[\w]*/;
+
+  mock.onGet(getLocationByIdUrl).reply(config => {
+    const requestURL = config.url;
+    const epimmsIDIdx = config.url.lastIndexOf('=');
+    const epimmsID = requestURL.substring(epimmsIDIdx + 1);
+    const searchResult = ALL_COURT_LOCATIONS.find(location => location.epimms_id === epimmsID);
+    return [
+      200,
+      searchResult,
+    ];
+  });
 
   mock.onGet(getLocationsUrl).reply(config => {
     const requestURL = config.url;

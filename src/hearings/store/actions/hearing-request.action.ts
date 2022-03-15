@@ -1,4 +1,5 @@
 import { Action } from '@ngrx/store';
+import {HttpError} from '../../../models/httpError.model';
 import { HearingRequestMainModel } from '../../models/hearingRequestMain.model';
 
 export const RESET_HEARING_REQUEST = '[HEARING REQUEST] Reset Hearing Request';
@@ -7,6 +8,7 @@ export const UPDATE_HEARING_REQUEST = '[HEARING REQUEST] Update Hearing Request'
 export const INITIALIZE_HEARING_REQUEST = '[HEARING REQUEST] Initialize Hearing Request';
 export const LOAD_HEARING_REQUEST = '[HEARING REQUEST] Load Hearing Request';
 export const SUBMIT_HEARING_REQUEST = '[HEARING REQUEST] Submit Hearing Request';
+export const SUBMIT_HEARING_REQUEST_FAILURE = '[HEARING REQUEST] Submit Hearing Request Failure';
 export const VIEW_EDIT_SUBMIT_HEARING_REASON = '[HEARING REQUEST AMEND] View Edit Submit Hearing Reason';
 export const VIEW_EDIT_SUBMIT_HEARING_REQUEST = '[HEARING REQUEST AMEND] View Edit Submit Hearing Request';
 
@@ -46,6 +48,13 @@ export class SubmitHearingRequest implements Action {
   }
 }
 
+export class SubmitHearingRequestFailure implements Action {
+  public readonly type = SUBMIT_HEARING_REQUEST_FAILURE
+
+  constructor(public payload: HttpError) {
+  }
+}
+
 export class ViewEditSubmitHearingReason implements Action {
   public readonly type = VIEW_EDIT_SUBMIT_HEARING_REASON;
 
@@ -67,5 +76,6 @@ export type HearingRequestAction =
   | LoadHearingRequest
   | UpdateHearingRequest
   | SubmitHearingRequest
+  | SubmitHearingRequestFailure
   | ViewEditSubmitHearingReason
   | ViewEditSubmitHearingRequest;

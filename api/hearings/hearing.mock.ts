@@ -1,4 +1,3 @@
-import { AxiosRequestConfig } from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import {HttpMockAdapter} from '../common/httpMockAdapter';
 import {HEARING_ACTUAL} from './data/hearing-actuals.mock.data';
@@ -10,27 +9,27 @@ import {SERVICE_HEARING_VALUES} from './data/serviceHearingValues.mock.data';
 export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
 
-  const getHearingsUrl = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearings\/[0-9]{16}/;
+  const getHearingsUrl = /hearings\/[0-9]{16}/;
 
-  const getHearingInfoUrl = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearing\/[\w]*/;
+  const getHearingInfoUrl = /hearing\/[\w]*/;
 
-  const postServiceHearingValues = /https:\/\/hearings.aat.service.core-compute-aat.internal\/serviceHearingValues/;
+  const postServiceHearingValues = /serviceHearingValues/;
 
-  const submitHearingRequest = /https:\/\/hearings.aat.service.core-compute-aat.internal\/(hearing)\b/;
+  const submitHearingRequest = /(hearing)\b/;
 
-  const updateHearingRequest = /https:\/\/hearings.aat.service.core-compute-aat.internal\/(hearing)\b/;
+  const updateHearingRequest = /(hearing)\b/;
 
-  const cancelHearingRequest = /https:\/\/hearings.aat.service.core-compute-aat.internal\/(hearing)\b\/[\w]*/;
+  const cancelHearingRequest = /(hearing)\b\/[\w]*/;
 
-  const hearingActualsUrl = /https:\/\/hearings.aat.service.core-compute-aat.internal\/(hearingActuals)\b\/[\w]*/;
+  const hearingActualsUrl = /(hearingActuals)\b\/[\w]*/;
 
-  const postHearingActualsUrl = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearingActualsCompletion\/[\w]*/;
+  const postHearingActualsUrl = /hearingActualsCompletion\/[\w]*/;
 
-  const loadServiceLinkedCases = /https:\/\/hearings.aat.service.core-compute-aat.internal\/serviceLinkedCases/;
+  const loadServiceLinkedCases = /serviceLinkedCases/;
 
-  const getLinkedHearingGroup = /https:\/\/hearings.aat.service.core-compute-aat.internal\/linkedHearingGroup\?caseReference=[\w]*&hearingId=[\w]*/;
+  const getLinkedHearingGroup = /linkedHearingGroup\?caseReference=[\w]*&hearingId=[\w]*/;
 
-  const linkedHearingGroup = /https:\/\/hearings.aat.service.core-compute-aat.internal\/linkedHearingGroup/;
+  const linkedHearingGroup = /linkedHearingGroup/;
 
   mock.onGet(getHearingsUrl).reply(config => {
     const url = config.url;
@@ -39,12 +38,18 @@ export const init = () => {
     if (mod === 1) {
       return [
         200,
-        HEARINGS_LIST,
+        {
+          ...HEARINGS_LIST,
+          caseRef: caseIds[0],
+        },
       ];
     } else {
       return [
         200,
-        EMPTY_HEARINGS_LIST,
+        {
+          EMPTY_HEARINGS_LIST,
+          caseRef: caseIds[0],
+        },
       ];
     }
   });
@@ -110,7 +115,7 @@ export const init = () => {
     ];
   });
 
-  mock.onPost(postHearingActualsUrl).reply((config: AxiosRequestConfig) => {
+  mock.onPost(postHearingActualsUrl).reply(() => {
     return [
       200,
       [],

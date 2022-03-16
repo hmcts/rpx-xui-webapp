@@ -6,8 +6,8 @@ import { toEpimsLocation } from "./models/location.model";
 
 export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
-  const getLocationsUrl = /http:\/\/rd-professional-api-aat.service.core-compute-aat.internal\/refdata\/location\/court-venues\/venue-search\?search-string=[\w]*/;
-  const getLocationByIdUrl = /http:\/\/rd-professional-api-aat.service.core-compute-aat.internal\/refdata\/location\/court-locations\?epimms_id=[\w]*/;
+  const getLocationsUrl = /refdata\/location\/court-venues\/venue-search\?search-string=[\w]*/;
+  const getLocationByIdUrl = /refdata\/location\/court-locations\?epimms_id=[\w]*/;
 
   mock.onGet(getLocationByIdUrl).reply(config => {
     const requestURL = config.url;

@@ -7,7 +7,6 @@ import {CancelHearingMessages} from '../../models/hearings.enum';
 import {LovRefDataModel} from '../../models/lovRefData.model';
 import {HearingsService} from '../../services/hearings.service';
 import * as fromHearingStore from '../../store';
-import {ValidatorsUtils} from '../../utils/validators.utils';
 
 @Component({
   selector: 'exui-cancel-hearing',
@@ -22,11 +21,9 @@ export class CancelHearingComponent implements OnInit {
   public hearingId: string;
   public caseId: string;
   public caseHearing: HearingListModel;
-
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly validatorsUtils: ValidatorsUtils,
     private readonly formBuilder: FormBuilder,
     protected readonly hearingStore: Store<fromHearingStore.State>,
     protected readonly hearingsService: HearingsService) {
@@ -77,19 +74,26 @@ export class CancelHearingComponent implements OnInit {
     const isReasons = (this.hearingCancelForm.controls.reasons as FormArray).controls
       .filter(reason => reason.value.selected === true).length > 0;
     if (!isReasons) {
-      this.validationErrors.push({
+      this.validationErrors = [{
         id: `hearing-option-container`, message: CancelHearingMessages.NOT_SELECTED_A_REASON
-      });
+      }];
       this.selectionValid = false;
     }
     return this.selectionValid;
   }
 
   public executeContinue(): void {
+    const cancellationErrorMessage = 'There was a system error and your request could not be processed. Please try again.';
     if (this.isFormValid()) {
-      this.hearingsService.cancelHearingRequest(this.hearingId, this.getChosenReasons()).subscribe(() => {
-        return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']).then();
-      });
+      this.hearingsService.cancelHearingRequest(this.hearingId, this.getChosenReasons()).subscribe(
+        value => {
+          this.validationErrors = null;
+          return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']);
+        },
+        err => {
+            this.validationErrors = [{id: 'cancel-request-error', message: cancellationErrorMessage}];
+        }
+      );
     }
   }
 

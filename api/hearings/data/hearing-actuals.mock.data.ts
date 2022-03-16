@@ -1,5 +1,5 @@
 import { HearingActualsMainModel } from '../models/hearingActualsMainModel';
-import { HMCStatus } from '../models/hearings.enum';
+import { CategoryType, HMCStatus } from '../models/hearings.enum';
 
 export const HEARING_ACTUAL: HearingActualsMainModel = {
   hearingActuals: {
@@ -16,44 +16,7 @@ export const HEARING_ACTUAL: HearingActualsMainModel = {
         hearingStartTime: '2021-03-12T09:00:00.000+0000',
         hearingEndTime: '2021-03-13T10:00:00.000+0000',
         pauseDateTimes: [],
-        actualDayParties: [
-          {
-            actualPartyId: '1',
-            actualIndividualDetails: {
-              firstName: 'Ann-Marie',
-              lastName: 'Mccormick',
-            },
-            actualOrganisationDetails: {
-              name: 'XYZ Interpreters Ltd',
-            },
-            didNotAttendFlag: false,
-            partyChannelSubType: null,
-            partyRole: 'interpreter',
-            representedParty: 3,
-          },
-        ],
-      },
-      {
-        hearingDate: '2021-03-12',
-        hearingStartTime: '2021-03-12T09:00:00.000+0000',
-        hearingEndTime: '2021-03-13T10:00:00.000+0000',
-        pauseDateTimes: [],
-        actualDayParties: [
-          {
-            actualPartyId: '2',
-            actualIndividualDetails: {
-              firstName: 'Abdirahman',
-              lastName: 'Washington',
-            },
-            actualOrganisationDetails: {
-              name: 'J&F Legal LLP Solicitors',
-            },
-            didNotAttendFlag: false,
-            partyChannelSubType: null,
-            partyRole: 'solicitor',
-            representedParty: 3,
-          },
-        ],
+        actualDayParties: [],
       },
     ],
   },
@@ -199,4 +162,36 @@ export const HEARING_ACTUAL: HearingActualsMainModel = {
     ],
   },
   hmcStatus: HMCStatus.UPDATE_SUBMITTED,
+  caseDetails: {
+    hmctsServiceCode: 'SSCS',
+    caseRef: '1584618195804035',
+    requestTimeStamp: null,
+    hearingID: 'h100001',
+    externalCaseReference: null,
+    caseDeepLink: null,
+    hmctsInternalCaseName: 'Jane Smith vs DWP',
+    publicCaseName: 'Jane Smith vs DWP',
+    caseAdditionalSecurityFlag: false,
+    caseInterpreterRequiredFlag: false,
+    caseCategories: [
+      {
+        categoryType: CategoryType.CaseType,
+        categoryValue: 'Personal Independence Payment',
+      },
+      {
+        categoryType: CategoryType.CaseSubType,
+        categoryValue: 'Conditions of Entitlement',
+      },
+      {
+        categoryType: CategoryType.CaseSubType,
+        categoryValue: 'Good cause',
+      },
+      {
+        categoryType: CategoryType.CaseSubType,
+        categoryValue: 'Rate of Assessment / Payability Issues - complex',
+      }],
+    caseManagementLocationCode: null,
+    caserestrictedFlag: false,
+    caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
+  },
 };

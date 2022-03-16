@@ -43,7 +43,8 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
   },
   {
     sectionHTMLTitle: HearingTemplate.LISTING_INFORMATION,
-    isHiddenSource: IsHiddenSource.NOT_LISTED
+    isHiddenSource: IsHiddenSource.NOT_LISTED,
+    isHiddenMargin: true,
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Hearing requirements</h2>',

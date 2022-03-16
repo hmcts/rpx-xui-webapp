@@ -1,5 +1,5 @@
-import {HearingActualsMainModel} from './models/hearingActualsMainModel';
-import {HearingRequestMainModel} from './models/hearingRequestMain.model';
+import { HearingActualsMainModel } from './models/hearingActualsMainModel';
+import { HearingRequestMainModel } from './models/hearingRequestMain.model';
 import {
   CategoryType,
   HearingListingStatusEnum,
@@ -11,7 +11,7 @@ import {
   PartyType,
   RequirementType
 } from './models/hearings.enum';
-import {ServiceHearingValuesModel} from './models/serviceHearingValues.model';
+import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
 
 export const hearingStageRefData = [
   {
@@ -1243,9 +1243,24 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
       hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
       hearingEndDateTime: '2021-03-12T16:00:00.000+0000',
       listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
-      hearingVenueId: 'venue 4',
+      hearingVenueId: '815833',
       hearingRoomId: 'room 4',
-      hearingPanel: ['hearingJudgeId2'],
+      hearingJudgeId: 'p1000002',
+      panelMemberIds: ['p1000001'],
+      attendees: [
+        {
+          partyID: 'P1',
+          partyName: 'Jane and Smith',
+          partyType: PartyType.IND,
+          partyChannel: 'inPerson',
+        },
+        {
+          partyID: 'P2',
+          partyName: 'DWP',
+          partyType: PartyType.ORG,
+          partyChannel: 'byVideo',
+        },
+      ],
     },
   },
 };
@@ -1278,7 +1293,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
             didNotAttendFlag: false,
             partyChannelSubType: 'Fax',
             partyRole: 'interpreter',
-            representedParty: 5,
+            representedParty: '5',
           },
         ],
       },
@@ -1300,7 +1315,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
             didNotAttendFlag: true,
             partyChannelSubType: 'Other',
             partyRole: 'interpreter',
-            representedParty: 2,
+            representedParty: '2',
           },
         ],
       },
@@ -1448,6 +1463,38 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
     ],
   },
   hmcStatus: HMCStatus.UPDATE_SUBMITTED,
+  caseDetails: {
+    hmctsServiceCode: 'SSCS',
+    caseRef: '1584618195804035',
+    requestTimeStamp: null,
+    hearingID: 'h100001',
+    externalCaseReference: null,
+    caseDeepLink: null,
+    hmctsInternalCaseName: 'Jane Smith vs DWP',
+    publicCaseName: 'Jane Smith vs DWP',
+    caseAdditionalSecurityFlag: false,
+    caseInterpreterRequiredFlag: false,
+    caseCategories: [
+      {
+        categoryType: CategoryType.CaseType,
+        categoryValue: 'Personal Independence Payment',
+      },
+      {
+        categoryType: CategoryType.CaseSubType,
+        categoryValue: 'Conditions of Entitlement',
+      },
+      {
+        categoryType: CategoryType.CaseSubType,
+        categoryValue: 'Good cause',
+      },
+      {
+        categoryType: CategoryType.CaseSubType,
+        categoryValue: 'Rate of Assessment / Payability Issues - complex',
+      }],
+    caseManagementLocationCode: null,
+    caserestrictedFlag: false,
+    caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
+  },
 };
 
 export const initialState = {
@@ -1592,7 +1639,22 @@ export const initialState = {
             listAssistSessionID: '',
             hearingVenueId: '',
             hearingRoomId: 'room 3',
-            hearingPanel: []
+            hearingJudgeId: 'p1000002',
+            panelMemberIds: ['p1000001'],
+            attendees: [
+              {
+                partyID: 'P1',
+                partyName: 'Jane and Smith',
+                partyType: PartyType.IND,
+                partyChannel: 'inPerson',
+              },
+              {
+                partyID: 'P2',
+                partyName: 'DWP',
+                partyType: PartyType.ORG,
+                partyChannel: 'byVideo',
+              },
+            ],
           }
         },
         hearingDetails: {

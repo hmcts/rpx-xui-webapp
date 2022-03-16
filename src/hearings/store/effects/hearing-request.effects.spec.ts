@@ -6,7 +6,7 @@ import {provideMockActions} from '@ngrx/effects/testing';
 import {Store} from '@ngrx/store';
 import {provideMockStore} from '@ngrx/store/testing';
 import {cold} from 'jasmine-marbles';
-import {Observable, of} from 'rxjs';
+import {Observable, of, throwError} from 'rxjs';
 import {Go} from '../../../app/store/actions';
 import {hearingRequestMainModel, initialState} from '../../hearing.test.data';
 import {Mode} from '../../models/hearings.enum';
@@ -149,6 +149,25 @@ describe('Hearing Request Effects', () => {
       expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestToCompareActions.InitializeHearingRequestToCompare(hearingRequestMainModel));
       expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestActions.InitializeHearingRequest(hearingRequestMainModel));
     });
+
+    it('should error when loading hearing requests', () => {
+      const errorResponse: HttpError = {
+        status: 500,
+        error: null,
+        message: 'Internal server error',
+        timestamp: '',
+        exception: '',
+        path: ''
+      }
+      const dispatchSpy = spyOn(store, 'dispatch');
+      hearingsServiceMock.loadHearingRequest.and.returnValue(throwError(errorResponse));
+      const action = new hearingRequestActions.LoadHearingRequest('h1000000');
+      actions$ = cold('-a', {a: action});
+      const expected = cold('-b', {b: errorResponse});
+      expect(effects.loadHearingRequest$).toBeObservable(expected);
+      expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestActions.LoadHearingRequestFailure(errorResponse));
+  });
+
   });
 
   describe('submitHearingReason$', () => {

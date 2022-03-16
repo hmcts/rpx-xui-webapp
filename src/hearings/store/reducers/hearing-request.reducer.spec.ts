@@ -78,6 +78,22 @@ describe('Hearing Request Reducer', () => {
       });
     });
 
+    describe('Load hearing request failure action', () => {
+      it('should call error response action', () => {
+        const loadingHearingsErrorState: HearingRequestStateData = {
+          hearingRequestMainModel: null,
+          lastError: {
+            status: 500,
+            errors: null,
+            message: 'Internal server error'
+          },
+        };
+        const action = new fromHearingRequestActions.LoadHearingRequestFailure(loadingHearingsErrorState.lastError);
+        const hearingsState = fromHearingRequestReducer.hearingRequestReducer(loadingHearingsErrorState, action);
+        expect(hearingsState).toEqual(loadingHearingsErrorState);
+      });
+    });
+
     describe('Update hearing request action', () => {
       it('should update hearing request action and reset hearingInWelshFlag if no Wales location', () => {
         const initialHearingRequestState: HearingRequestStateData = {

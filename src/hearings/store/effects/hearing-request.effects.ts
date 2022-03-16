@@ -100,7 +100,8 @@ export class HearingRequestEffects {
             this.hearingStore.dispatch(new hearingRequestActions.InitializeHearingRequest(hearingRequestMainModel));
           }),
         catchError(error => {
-          return HearingRequestEffects.handleError(error);
+          this.hearingStore.dispatch(new hearingRequestActions.LoadHearingRequestFailure(error));
+          return of(error);
         })
       );
     })

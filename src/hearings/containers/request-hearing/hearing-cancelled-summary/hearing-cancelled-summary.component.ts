@@ -16,7 +16,7 @@ export class HearingCancelledSummaryComponent extends RequestHearingPageFlow imp
   public mode = Mode.VIEW;
 
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
-    protected readonly hearingsService: HearingsService) {
+              protected readonly hearingsService: HearingsService) {
     super(hearingStore, hearingsService);
   }
 

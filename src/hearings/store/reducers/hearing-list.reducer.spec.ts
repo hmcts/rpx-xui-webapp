@@ -1,7 +1,7 @@
-import {HearingDayScheduleModel} from '../../models/hearingDaySchedule.model';
-import {HearingListModel} from '../../models/hearingList.model';
-import {HearingListMainModel} from '../../models/hearingListMain.model';
-import {EXUISectionStatusEnum, HearingListingStatusEnum} from '../../models/hearings.enum';
+import { HearingDayScheduleModel } from '../../models/hearingDaySchedule.model';
+import { HearingListModel } from '../../models/hearingList.model';
+import { HearingListMainModel } from '../../models/hearingListMain.model';
+import { EXUISectionStatusEnum, HearingListingStatusEnum } from '../../models/hearings.enum';
 import * as fromHearingListActions from '../actions/hearing-list.action';
 import * as fromHearingListReducer from './hearing-list.reducer';
 
@@ -27,7 +27,9 @@ describe('Hearing List Reducer', () => {
           listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba5',
           hearingVenueId: 'venue 1',
           hearingRoomId: 'room 1',
-          hearingPanel: ['child'],
+          hearingJudgeId: 'child',
+          panelMemberIds: ['child'],
+          attendees: [],
         };
         const CASE_HEARING_1: HearingListModel = {
           hearingID: 'h111111',

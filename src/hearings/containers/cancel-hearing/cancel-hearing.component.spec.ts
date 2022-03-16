@@ -5,7 +5,7 @@ import {FormArray, FormBuilder, ReactiveFormsModule} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {provideMockStore} from '@ngrx/store/testing';
-import {Observable, of} from 'rxjs';
+import {Observable, of, throwError} from 'rxjs';
 import {initialState} from '../../hearing.test.data';
 import {LovRefDataModel} from '../../models/lovRefData.model';
 import {HearingsService} from '../../services/hearings.service';
@@ -14,7 +14,7 @@ import {CancelHearingComponent} from './cancel-hearing.component';
 describe('CancelHearingComponent', () => {
   let component: CancelHearingComponent;
   let fixture: ComponentFixture<CancelHearingComponent>;
-  const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
+  const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post', 'delete']);
   const hearingsService = new HearingsService(mockedHttpClient);
   const reasons: LovRefDataModel[] = [
     {
@@ -115,5 +115,12 @@ describe('CancelHearingComponent', () => {
     const formValid = component.isFormValid();
     expect(component.validationErrors.length).toBeGreaterThan(0);
     expect(formValid).toEqual(false);
+  });
+  it('should have a validation error message mapped when cancel hearing DELETE request failed', () => {
+    (component.hearingCancelForm.controls.reasons as FormArray).controls
+    .forEach(reason => reason.value.selected = true);
+    hearingsService.cancelHearingRequest = jasmine.createSpy().and.returnValue(throwError(''));
+    component.executeContinue();
+    expect(component.validationErrors).not.toBeNull();
   });
 });

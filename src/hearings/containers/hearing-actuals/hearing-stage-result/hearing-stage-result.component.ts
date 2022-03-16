@@ -66,12 +66,9 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
       first()
       ).subscribe((state: HearingActualsStateData) => {
         this.hearingActualsMainModel = state.hearingActualsMainModel;
+        this.caseTitle = this.hearingActualsMainModel.caseDetails.hmctsInternalCaseName;
         this.hearingStageResultForm.get('hearingStage').setValue(this.hearingActualsMainModel.hearingPlanned.plannedHearingType);
       });
-
-    // TODO: Get the case title from hearing actuals API
-    // Title is not returned by the API and need to liaise with the backend team
-    this.caseTitle = 'Jane Smith vs DWP';
   }
 
   public ngOnDestroy(): void {

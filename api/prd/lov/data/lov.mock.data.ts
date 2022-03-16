@@ -708,6 +708,36 @@ export const HEARING_ROLES_REF: LovRefDataModel[] = [
   },
 ];
 
+export const CHANGE_HEARING_REASON: LovRefDataModel[] = [
+  {
+    key: 'reasonOne',
+    value_en: 'Reason 1',
+    value_cy: '',
+    hintText_EN: 'reason 1',
+    hintTextCY: '',
+    order: 1,
+    parentKey: null,
+  },
+  {
+    key: 'reasonTwo',
+    value_en: 'Reason 2',
+    value_cy: '',
+    hintText_EN: 'Reason 2',
+    hintTextCY: '',
+    order: 2,
+    parentKey: null,
+  },
+  {
+    key: 'reasonThree',
+    value_en: 'Reason 3',
+    value_cy: '',
+    hintText_EN: 'Reason 3',
+    hintTextCY: '',
+    order: 4,
+    parentKey: null,
+  },
+];
+
 export const HEARING_ROLES: LovRefDataByServiceModel = {
   serviceID: 'SSCS',
   values: HEARING_ROLES_REF,
@@ -753,6 +783,11 @@ export const SSCS_CANCEL_HEARING_ACTUAL: LovRefDataByServiceModel = {
   values: DEFAULT_HEARING_ACTUAL_CANCEL_REF,
 };
 
+export const SSCS_CHANGE_HEARING_REASON: LovRefDataByServiceModel = {
+  serviceID: 'SSCS',
+  values: CHANGE_HEARING_REASON,
+};
+
 export const ALL_REF_DATA: LovRefDataByCategoryModel[] = [
   {
     categoryKey: 'HearingType',
@@ -789,5 +824,13 @@ export const ALL_REF_DATA: LovRefDataByCategoryModel[] = [
   {
     categoryKey: 'HearingRoles',
     services: [HEARING_ROLES],
+  },
+  {
+    categoryKey: 'CancelHearingReason',
+    services: [SSCS_CANCEL_HEARING],
+  },
+  {
+    categoryKey: 'HearingChangeReason',
+    services: [SSCS_CHANGE_HEARING_REASON],
   },
 ];

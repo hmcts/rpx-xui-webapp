@@ -140,5 +140,21 @@ describe('Hearing Request Reducer', () => {
         expect(hearingsState.hearingRequestMainModel.hearingDetails.hearingInWelshFlag).toBeFalsy();
       });
     });
+
+    describe('Submit hearing request failure action', () => {
+      it('should call error response action', () => {
+        const initialHearingRequestState: HearingRequestStateData = {
+          hearingRequestMainModel: null,
+          lastError: {
+            status: 403,
+            errors: null,
+            message: 'Http failure response: 403 Forbidden'
+          },
+        };
+        const action = new fromHearingRequestActions.SubmitHearingRequestFailure(initialHearingRequestState.lastError);
+        const hearingsState = fromHearingRequestReducer.hearingRequestReducer(initialHearingRequestState, action);
+        expect(hearingsState).toEqual(initialHearingRequestState);
+      });
+    });
   });
 });

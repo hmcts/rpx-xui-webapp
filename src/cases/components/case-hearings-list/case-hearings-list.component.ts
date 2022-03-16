@@ -28,8 +28,8 @@ export class CaseHearingsListComponent implements OnInit {
   public hasReadOnlyAction: boolean = false;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
-              private readonly activatedRoute: ActivatedRoute,
-              private readonly router: Router) {
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly router: Router) {
     this.caseId = this.activatedRoute.snapshot.params.cid;
   }
 
@@ -77,6 +77,9 @@ export class CaseHearingsListComponent implements OnInit {
     if (hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.CANCELLATION_REQUESTED) {
       this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearing.hearingID));
       this.router.navigate(['/', 'hearings', 'request', 'hearing-cancellation-summary']);
+    } else if (hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.CANCELLED) {
+      this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearing.hearingID));
+      this.router.navigate(['/', 'hearings', 'request', 'hearing-cancelled-summary']);
     } else {
       this.router.navigate(['/', 'hearings', 'view']);
     }

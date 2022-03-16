@@ -11,6 +11,7 @@ import { HearingStageResultComponent } from './containers/hearing-actuals/hearin
 import { HearingAdditionalInstructionsComponent } from './containers/request-hearing/hearing-additional-instructions/hearing-additional-instructions.component';
 import { HearingAttendanceComponent } from './containers/request-hearing/hearing-attendance/hearing-attendance.component';
 import { HearingCancellationSummaryComponent } from './containers/request-hearing/hearing-cancellation-summary/hearing-cancellation-summary.component';
+import { HearingCancelledSummaryComponent } from './containers/request-hearing/hearing-cancelled-summary/hearing-cancelled-summary.component';
 import { HearingChangeReasonComponent } from './containers/request-hearing/hearing-change-reason/hearing-change-reason.component';
 import { HearingCreateEditSummaryComponent } from './containers/request-hearing/hearing-create-edit-summary/hearing-create-edit-summary.component';
 import { HearingFacilitiesComponent } from './containers/request-hearing/hearing-facilities/hearing-facilities.component';
@@ -35,7 +36,7 @@ import { CaseFlagsResolver } from './resolvers/case-flags.resolver';
 import { CourtLocationsDataResolver } from './resolvers/court-locations-resolver.resolve';
 import { HearingActualPartyChannelResolverService } from './resolvers/hearing-actual-party-channel-resolver.service';
 import { HearingActualRoleResolverService } from './resolvers/hearing-actual-role-resolver.service';
-import { HearingChangeReasonResolver } from './resolvers/hearing-change-reason.resolver'
+import { HearingChangeReasonResolver } from './resolvers/hearing-change-reason.resolver';
 import { HearingStageResolver } from './resolvers/hearing-stage.resolver';
 import { JudgeTypesResolverService } from './resolvers/judge-types-resolver.service';
 import { PanelRolesResolverService } from './resolvers/panel-roles-resolver.service';
@@ -291,6 +292,26 @@ export const ROUTES: Routes = [
           courtLocation: CourtLocationsDataResolver,
         },
         component: HearingCancellationSummaryComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Hearings | Amend Hearing | Check Answers'
+        }
+      },
+      {
+        path: 'hearing-cancelled-summary',
+        resolve: {
+          hearingPriorities: RefDataResolver,
+          caseFlags: CaseFlagsResolver,
+          hearingStageOptions: HearingStageResolver,
+          additionFacilitiesOptions: AdditionalFacilitiesResolver,
+          partyChannels: PartyChannelsResolverService,
+          judgeTypes: JudgeTypesResolverService,
+          judicialUsers: JudicialUserSearchResolver,
+          judicialResponseUsers: JudicialUserSearchResponseResolver,
+          otherPanelRoles: PanelRolesResolverService,
+          courtLocation: CourtLocationsDataResolver,
+        },
+        component: HearingCancelledSummaryComponent,
         canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Hearings | Amend Hearing | Check Answers'

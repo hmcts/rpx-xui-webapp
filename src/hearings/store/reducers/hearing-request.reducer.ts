@@ -79,8 +79,7 @@ export function hearingRequestReducer(currentState = initialHearingRequestState,
         hearingRequestMainModel: updatedHearingRequestMainModel
       };
     }
-    case fromActions.SUBMIT_HEARING_REQUEST_FAILURE:
-    case fromActions.LOAD_HEARING_REQUEST_FAILURE: {
+    case fromActions.SUBMIT_HEARING_REQUEST_FAILURE: {
       return {
         ...currentState,
         lastError: action.payload

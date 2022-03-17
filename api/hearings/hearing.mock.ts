@@ -42,9 +42,17 @@ export const init = () => {
         HEARINGS_LIST,
       ];
     } else {
+      // the below exclusion of return 500 just to faciliate testing
+      if (caseIds[0].indexOf('6', caseIds[0].length - 1) > 0) {
+        return [
+          500,
+          null,
+        ];
+      }
       return [
         200,
         EMPTY_HEARINGS_LIST,
+        
       ];
     }
   });

@@ -149,25 +149,6 @@ describe('Hearing Request Effects', () => {
       expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestToCompareActions.InitializeHearingRequestToCompare(hearingRequestMainModel));
       expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestActions.InitializeHearingRequest(hearingRequestMainModel));
     });
-
-    it('should error when loading hearing requests', () => {
-      const errorResponse: HttpError = {
-        status: 500,
-        error: null,
-        message: 'Internal server error',
-        timestamp: '',
-        exception: '',
-        path: ''
-      }
-      const dispatchSpy = spyOn(store, 'dispatch');
-      hearingsServiceMock.loadHearingRequest.and.returnValue(throwError(errorResponse));
-      const action = new hearingRequestActions.LoadHearingRequest('h1000000');
-      actions$ = cold('-a', {a: action});
-      const expected = cold('-b', {b: errorResponse});
-      expect(effects.loadHearingRequest$).toBeObservable(expected);
-      expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestActions.LoadHearingRequestFailure(errorResponse));
-  });
-
   });
 
   describe('submitHearingReason$', () => {

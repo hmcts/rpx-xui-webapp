@@ -1,8 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { cold, hot } from 'jasmine-marbles';
-import { of } from 'rxjs';
-import { Go } from '../../../app/store/actions';
+import { of, throwError } from 'rxjs';
 import { HearingDayScheduleModel } from '../../models/hearingDaySchedule.model';
 import { HearingListModel } from '../../models/hearingList.model';
 import { HearingListMainModel } from '../../models/hearingListMain.model';
@@ -10,6 +9,8 @@ import { EXUISectionStatusEnum, HearingListingStatusEnum } from '../../models/he
 import { HearingsService } from '../../services/hearings.service';
 import * as hearingListActions from '../actions/hearing-list.action';
 import { HearingListEffects } from './hearing-list.effects';
+import {HttpError} from '../../../models/httpError.model';
+import { provideMockStore } from '@ngrx/store/testing';
 
 describe('Hearing List Effects', () => {
   let actions$;
@@ -17,9 +18,24 @@ describe('Hearing List Effects', () => {
   const hearingsServiceMock = jasmine.createSpyObj('HearingsService', [
     'getAllHearings',
   ]);
+
+  const HEARINGS_LIST: HearingListMainModel = {
+    hmctsServiceID: 'SSCS',
+    caseRef: '1568642646198441',
+    caseHearings: [],
+  };
+
+  const initialState = {
+    hearings: {
+      hearingList: {
+        hearingListMainModel: HEARINGS_LIST
+      },
+    }
+  };
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
+        provideMockStore({ initialState }),
         {
           provide: HearingsService,
           useValue: hearingsServiceMock,
@@ -72,12 +88,16 @@ describe('Hearing List Effects', () => {
   });
 
   describe('handleError', () => {
-    it('should handle 500', () => {
-      const action$ = HearingListEffects.handleError({
+    it('should error when loading all hearings request failure', () => {
+      const errorResponse: HttpError = {
         status: 500,
-        message: 'error'
-      });
-      action$.subscribe(action => expect(action).toEqual(new Go({ path: ['/service-down'] })));
-    });
+        message: 'Internal server error',
+      }
+      hearingsServiceMock.getAllHearings.and.returnValue(throwError(errorResponse));
+      const action = new hearingListActions.LoadAllHearings('h1000000');
+      actions$ = cold('-a', {a: action});
+      const expected = cold('-b', {b: errorResponse});
+      expect(effects.loadHearingList$).toBeObservable(expected);
+  });
   });
 });

@@ -46,7 +46,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.sub = this.hearingState$.subscribe(state => {
-      if (state && state.hearingRequest && state.hearingRequest.lastError) {
+      if (state && state.hearingList && state.hearingList.lastError) {
         this.serverError = {
           id: 'backendError', message: HearingSummaryEnum.BackendError
         };

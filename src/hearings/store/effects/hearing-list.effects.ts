@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { Action } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import * as fromAppStoreActions from '../../../app/store/actions';
 import * as hearingListActions from '../../../hearings/store/actions/hearing-list.action';
 import { HttpError } from '../../../models/httpError.model';
 import { HearingsService } from '../../services/hearings.service';
+import * as fromHearingReducers from '../../store/reducers';
 
 @Injectable()
 export class HearingListEffects {
@@ -14,6 +15,7 @@ export class HearingListEffects {
   constructor(
     private readonly actions$: Actions,
     private readonly hearingsService: HearingsService,
+    private readonly hearingStore: Store<fromHearingReducers.State>,
   ) {
   }
 
@@ -26,12 +28,13 @@ export class HearingListEffects {
         map(
           (response) => new hearingListActions.LoadAllHearingsSuccess(response)),
         catchError(error => {
-          return HearingListEffects.handleError(error);
+          this.hearingStore.dispatch(new hearingListActions.LoadAllHearingsFailure(error));
+          return of(error);
         })
       );
     })
   );
-
+  
   public static handleError(error: HttpError): Observable<Action> {
     if (error && error.status && error.status >= 400) {
       return of(new fromAppStoreActions.Go({path: ['/service-down']}));

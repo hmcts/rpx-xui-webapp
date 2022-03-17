@@ -99,10 +99,9 @@ export class HearingRequestEffects {
             this.hearingStore.dispatch(new hearingRequestToCompareActions.InitializeHearingRequestToCompare(hearingRequestMainModel));
             this.hearingStore.dispatch(new hearingRequestActions.InitializeHearingRequest(hearingRequestMainModel));
           }),
-        catchError(error => {
-          this.hearingStore.dispatch(new hearingRequestActions.LoadHearingRequestFailure(error));
-          return of(error);
-        })
+          catchError(error => {
+            return HearingRequestEffects.handleError(error);
+          })
       );
     })
   );

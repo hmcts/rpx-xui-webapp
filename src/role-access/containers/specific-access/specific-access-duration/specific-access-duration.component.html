@@ -1,0 +1,63 @@
+<form [formGroup]="formGroup" (submit)="onSubmit()">
+  <!-- TODO: SAD - check errors work as expected -->
+  <ng-container *ngIf="isAnyError()">
+    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+      <h2 class="govuk-error-summary__title" id="error-summary-title">
+        There is a problem
+      </h2>
+      <div class="govuk-error-summary__body">
+        <ul class="govuk-list govuk-error-summary__list">
+          <li *ngFor="let validationError of dateValidationErrors">
+            <a href="booking#{{validationError.documentHRef}}">{{validationError.errorMessage}}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </ng-container>
+  <div
+    class="govuk-form-group"
+    [ngClass]="{ 'form-group-error': formGroup.get('dateOption').invalid && submitted }">
+    <fieldset class="govuk-fieldset" aria-describedby="reason-hint">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+        <span class="govuk-caption-l"> {{ caption }}</span>
+        <h1 class="govuk-fieldset__heading test">
+          {{ title }}
+        </h1>
+      </legend>
+      <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
+        <div class="govuk-radios__item" *ngFor="let item of dateInterval; let i = index">
+          <input
+            [value]="item.date"
+            [checked]="item.checked"
+            class="govuk-radios__input"
+            id="{{ 'date-' + i }}"
+            name="dateOption"
+            type="radio"
+            formControlName="dateOption"
+            (change)="onSelectOption(i)"/>
+          <label
+            class="govuk-label govuk-radios__label"
+            for="{{ 'date-' + i }}">
+            {{ item.date }}
+          </label>
+          <!-- TODO: SAD - needed radio button hints (e.g. as per Role Access > Allocate) -->
+        </div>
+        <div id="conditional-date-0" *ngIf="formGroup.get('dateOption').value === dateInterval[2].date" class="govuk-radios__conditional">
+          <div class="govuk-form-group">
+            <xuilib-gov-uk-date
+              [formGroup]="formGroup"
+              [config]="configStart"
+              [errorMessage]="startDateErrorMessage">
+            </xuilib-gov-uk-date>
+            <xuilib-gov-uk-date
+              [formGroup]="formGroup"
+              [config]="configEnd"
+              [errorMessage]="endDateErrorMessage">
+            </xuilib-gov-uk-date>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+  <button class="govuk-button govuk-!-margin-right-3" type="submit">Submit</button>
+</form>

@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { cold } from 'jasmine-marbles';
 import { of } from 'rxjs';
 import { caseFlagsRefData, hearingPriorityRefData, initialState, partyChannelsRefData } from '../hearing.test.data';
-import { AnswerSource, PartyType, RadioOptions } from '../models/hearings.enum';
+import { AnswerSource, RadioOptions } from '../models/hearings.enum';
 import { State } from '../store/reducers';
 import { HearingAnswersPipe } from './hearing-answers.pipe';
 
@@ -71,28 +71,12 @@ describe('HearingAnswersPipe', () => {
 
   it('should transform case flag', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.CASE_FLAGS, of(STATE));
-    const caseFlags = '<strong class=\'bold\'>Jane Smith</strong>\n<ul><li>Sign Language Interpreter</li><li>Hearing Loop</li><li>Larger font size</li><li>Reading documents for customer</li><li>Sign Language Interpreter</li><li>Language Interpreter</li></ul><br><strong class=\'bold\'>DWP</strong>\n<ul><li>Physical access and facilities</li></ul><br>';
+    const caseFlags = '<strong class=\'bold\'>Jane and Smith</strong>\n<ul><li>Sign Language Interpreter</li><li>Hearing Loop</li><li>Larger font size</li><li>Reading documents for customer</li><li>Sign Language Interpreter</li><li>Language Interpreter</li></ul><br><strong class=\'bold\'>DWP</strong>\n<ul><li>Physical access and facilities</li></ul><br>';
     const expected = cold('(b|)', { b: caseFlags });
     expect(result$).toBeObservable(expected);
   });
 
   it('should transform party flags', () => {
-    STATE.hearingRequest.hearingRequestMainModel.partyDetails = [
-      {
-        partyID: 'P1',
-        partyName: 'Jane and Smith',
-        partyType: PartyType.IND,
-        partyRole: 'appellant',
-        partyChannel: 'inPerson'
-      },
-      {
-        partyID: 'P2',
-        partyName: 'DWP',
-        partyType: PartyType.ORG,
-        partyRole: 'claimant',
-        partyChannel: 'byVideo'
-      }
-    ];
     const result$ = hearingAnswersPipe.transform(AnswerSource.HOW_ATTENDANT, of(STATE));
     const partyFlags = '<ul><li>Jane and Smith - In person</li><li>DWP - By video</li></ul>';
     const expected = cold('(b|)', { b: partyFlags });

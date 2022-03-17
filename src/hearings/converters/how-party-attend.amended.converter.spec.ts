@@ -37,17 +37,17 @@ describe('HowPartyAttendAmendedConverter', () => {
   });
 
   it('should transform the amended flag when previous vs current party attending type are not equal', () => {
-    const STATE: State = initialState.hearings;
-    STATE.hearingRequest.hearingRequestMainModel.partyDetails =  [
+    const NEW_STATE: State = JSON.parse(JSON.stringify(initialState.hearings));
+    NEW_STATE.hearingRequest.hearingRequestMainModel.partyDetails =  [
       {
         partyID: 'P1',
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
         partyRole: 'appellant',
-        partyChannel: 'inPerson'
+        partyChannel: 'byVideo'
       }
     ];
-    const result$ = converter.transformIsAmended(of(STATE));
+    const result$ = converter.transformIsAmended(of(NEW_STATE));
     const isAmended = true;
     const expected = cold('(b|)', {b: isAmended});
     expect(result$).toBeObservable(expected);

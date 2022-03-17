@@ -1626,14 +1626,53 @@ export const initialState = {
             partyName: 'Jane and Smith',
             partyType: PartyType.IND,
             partyRole: 'appellant',
-            partyChannel: 'inPerson'
+            partyChannel: 'inPerson',
+            individualDetails: {
+              title: 'Miss',
+              firstName: 'Jane',
+              lastName: 'Smith',
+              reasonableAdjustments: [
+                'RA0042',
+                'RA0053',
+                'RA0013',
+                'RA0016',
+                'RA0042',
+              ],
+              interpreterLanguage: 'PF0015',
+            },
+            organisationDetails: {},
+            unavailabilityDOW: null,
+            unavailabilityRanges: [
+              {
+                unavailableFromDate: '2021-12-10T09:00:00.000+0000',
+                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+              },
+            ],
           },
           {
             partyID: 'P2',
             partyName: 'DWP',
             partyType: PartyType.ORG,
             partyRole: 'claimant',
-            partyChannel: 'byVideo'
+            partyChannel: 'byVideo',
+            individualDetails: {
+              reasonableAdjustments: [
+                'RA0005',
+              ],
+              interpreterLanguage: null,
+            },
+            organisationDetails: {
+              name: 'DWP',
+              organisationType: 'GOV',
+              cftOrganisationID: 'O100000',
+            },
+            unavailabilityDOW: null,
+            unavailabilityRanges: [
+              {
+                unavailableFromDate: '2021-12-20T09:00:00.000+0000',
+                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+              },
+            ],
           }
         ]
       },
@@ -1755,14 +1794,53 @@ export const initialState = {
             partyName: 'Jane and Smith',
             partyType: PartyType.IND,
             partyRole: 'appellant',
-            partyChannel: 'inPerson'
+            partyChannel: 'inPerson',
+            individualDetails: {
+              title: 'Miss',
+              firstName: 'Jane',
+              lastName: 'Smith',
+              reasonableAdjustments: [
+                'RA0042',
+                'RA0053',
+                'RA0013',
+                'RA0016',
+                'RA0042',
+              ],
+              interpreterLanguage: 'PF0015',
+            },
+            organisationDetails: {},
+            unavailabilityDOW: null,
+            unavailabilityRanges: [
+              {
+                unavailableFromDate: '2021-12-10T09:00:00.000+0000',
+                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+              },
+            ],
           },
           {
             partyID: 'P2',
             partyName: 'DWP',
             partyType: PartyType.ORG,
             partyRole: 'claimant',
-            partyChannel: 'byVideo'
+            partyChannel: 'byVideo',
+            individualDetails: {
+              reasonableAdjustments: [
+                'RA0005',
+              ],
+              interpreterLanguage: null,
+            },
+            organisationDetails: {
+              name: 'DWP',
+              organisationType: 'GOV',
+              cftOrganisationID: 'O100000',
+            },
+            unavailabilityDOW: null,
+            unavailabilityRanges: [
+              {
+                unavailableFromDate: '2021-12-20T09:00:00.000+0000',
+                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+              },
+            ],
           }
         ]
       },

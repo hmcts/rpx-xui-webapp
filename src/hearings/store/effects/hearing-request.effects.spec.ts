@@ -6,7 +6,7 @@ import {provideMockActions} from '@ngrx/effects/testing';
 import {Store} from '@ngrx/store';
 import {provideMockStore} from '@ngrx/store/testing';
 import {cold} from 'jasmine-marbles';
-import {Observable, of, throwError} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {Go} from '../../../app/store/actions';
 import {hearingRequestMainModel, initialState} from '../../hearing.test.data';
 import {Mode} from '../../models/hearings.enum';

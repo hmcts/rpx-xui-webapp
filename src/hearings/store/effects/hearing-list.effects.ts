@@ -34,7 +34,7 @@ export class HearingListEffects {
       );
     })
   );
-  
+
   public static handleError(error: HttpError): Observable<Action> {
     if (error && error.status && error.status >= 400) {
       return of(new fromAppStoreActions.Go({path: ['/service-down']}));

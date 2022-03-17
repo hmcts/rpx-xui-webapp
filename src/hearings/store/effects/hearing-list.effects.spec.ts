@@ -19,16 +19,10 @@ describe('Hearing List Effects', () => {
     'getAllHearings',
   ]);
 
-  const HEARINGS_LIST: HearingListMainModel = {
-    hmctsServiceID: 'SSCS',
-    caseRef: '1568642646198441',
-    caseHearings: [],
-  };
-
   const initialState = {
     hearings: {
       hearingList: {
-        hearingListMainModel: HEARINGS_LIST
+        hearingListMainModel: {}
       },
     }
   };

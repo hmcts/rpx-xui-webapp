@@ -1,0 +1,7 @@
+import { SpecificAccessState } from '../models/specific-access-state.enum';
+
+export const specificAccessReviewVisibilityStates = [SpecificAccessState.SPECIFIC_ACCESS_REVIEW];
+export const specificAccessDurationVisibilityStates = [SpecificAccessState.SPECIFIC_ACCESS_DURATION];
+export const specificAccessApprovedVisibilityStates = [SpecificAccessState.SPECIFIC_ACCESS_APPROVED];
+export const specificAccessInformationVisibilityStates = [SpecificAccessState.SPECIFIC_ACCESS_INFORMATION];
+export const specificAccessDeniedVisibilityStates = [SpecificAccessState.SPECIFIC_ACCESS_DENIED];

@@ -1,0 +1,59 @@
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { PersonRole } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
+import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import { ERROR_MESSAGE, PERSON_ROLE } from '../../../constants';
+import { SpecificAccessNavigationEvent } from '../../../models';
+import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
+import * as fromFeature from '../../../store';
+
+@Component({
+  selector: 'exui-specific-access-duration',
+  templateUrl: './specific-access-duration.component.html'
+})
+export class SpecificAccessDurationComponent implements OnInit, OnDestroy {
+  public ERROR_MESSAGE = ERROR_MESSAGE;
+  @Input() public navEvent: SpecificAccessNavigation;
+
+  public title = '';
+  public caption = '';
+
+  public submitted: boolean = false;
+
+  public formGroup: FormGroup;
+  public radioOptionControl: FormControl;
+  public radioControlName: string = PERSON_ROLE;
+
+  public specificAccessStateDataSub: Subscription;
+
+  public personRole: PersonRole;
+
+  constructor(private readonly store: Store<fromFeature.State>) {
+  }
+
+  public ngOnInit(): void {
+
+  }
+
+  public navigationHandler(navEvent: SpecificAccessNavigationEvent) {
+    this.submitted = true;
+    this.dispatchEvent(navEvent);
+  }
+
+  public dispatchEvent(navEvent: SpecificAccessNavigationEvent) {
+    switch (navEvent) {
+      case SpecificAccessNavigationEvent.CONTINUE:
+        break;
+      default:
+        throw new Error('Invalid option');
+    }
+  }
+
+  public ngOnDestroy(): void {
+    if (this.specificAccessStateDataSub) {
+      this.specificAccessStateDataSub.unsubscribe();
+    }
+  }
+}

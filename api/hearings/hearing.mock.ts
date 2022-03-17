@@ -51,7 +51,7 @@ export const init = () => {
       }
       return [
         200,
-        EMPTY_HEARINGS_LIST,       
+        EMPTY_HEARINGS_LIST,
       ];
     }
   });

@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { HEARING_CANCELLED_SUMMARY_TEMPLATE } from 'src/hearings/templates/hearing-cancelled-summary.template';
+import { HEARING_CANCELLED_SUMMARY_TEMPLATE } from '../../../../hearings/templates/hearing-cancelled-summary.template';
 import { ACTION, Mode } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';

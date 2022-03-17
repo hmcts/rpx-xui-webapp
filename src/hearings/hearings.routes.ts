@@ -278,46 +278,6 @@ export const ROUTES: Routes = [
         }
       },
       {
-        path: 'hearing-cancellation-summary',
-        resolve: {
-          hearingPriorities: RefDataResolver,
-          caseFlags: CaseFlagsResolver,
-          hearingStageOptions: HearingStageResolver,
-          additionFacilitiesOptions: AdditionalFacilitiesResolver,
-          partyChannels: PartyChannelsResolverService,
-          judgeTypes: JudgeTypesResolverService,
-          judicialUsers: JudicialUserSearchResolver,
-          judicialResponseUsers: JudicialUserSearchResponseResolver,
-          otherPanelRoles: PanelRolesResolverService,
-          courtLocation: CourtLocationsDataResolver,
-        },
-        component: HearingCancellationSummaryComponent,
-        canActivate: [HealthCheckGuard],
-        data: {
-          title: 'HMCTS Hearings | Amend Hearing | Check Answers'
-        }
-      },
-      {
-        path: 'hearing-cancelled-summary',
-        resolve: {
-          hearingPriorities: RefDataResolver,
-          caseFlags: CaseFlagsResolver,
-          hearingStageOptions: HearingStageResolver,
-          additionFacilitiesOptions: AdditionalFacilitiesResolver,
-          partyChannels: PartyChannelsResolverService,
-          judgeTypes: JudgeTypesResolverService,
-          judicialUsers: JudicialUserSearchResolver,
-          judicialResponseUsers: JudicialUserSearchResponseResolver,
-          otherPanelRoles: PanelRolesResolverService,
-          courtLocation: CourtLocationsDataResolver,
-        },
-        component: HearingCancelledSummaryComponent,
-        canActivate: [HealthCheckGuard],
-        data: {
-          title: 'HMCTS Hearings | Amend Hearing | Check Answers'
-        }
-      },
-      {
         path: 'hearing-change-reason',
         resolve: {
           hearingTypes: RefDataResolver,
@@ -350,7 +310,47 @@ export const ROUTES: Routes = [
         data: {
           title: 'HMCTS Hearings | View Hearing'
         }
-      }
+      },
+      {
+        path: 'hearing-cancellation-summary',
+        resolve: {
+          hearingPriorities: RefDataResolver,
+          caseFlags: CaseFlagsResolver,
+          hearingStageOptions: HearingStageResolver,
+          additionFacilitiesOptions: AdditionalFacilitiesResolver,
+          partyChannels: PartyChannelsResolverService,
+          judgeTypes: JudgeTypesResolverService,
+          judicialUsers: JudicialUserSearchResolver,
+          judicialResponseUsers: JudicialUserSearchResponseResolver,
+          otherPanelRoles: PanelRolesResolverService,
+          courtLocation: CourtLocationsDataResolver,
+        },
+        component: HearingCancellationSummaryComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Hearings | View Hearing | Cancellation summary'
+        }
+      },
+      {
+        path: 'hearing-cancelled-summary',
+        resolve: {
+          hearingPriorities: RefDataResolver,
+          caseFlags: CaseFlagsResolver,
+          hearingStageOptions: HearingStageResolver,
+          additionFacilitiesOptions: AdditionalFacilitiesResolver,
+          partyChannels: PartyChannelsResolverService,
+          judgeTypes: JudgeTypesResolverService,
+          judicialUsers: JudicialUserSearchResolver,
+          judicialResponseUsers: JudicialUserSearchResponseResolver,
+          otherPanelRoles: PanelRolesResolverService,
+          courtLocation: CourtLocationsDataResolver,
+        },
+        component: HearingCancelledSummaryComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Hearings | View Hearing | Cancelled Summary'
+        }
+      },
     ]
   },
 ];

@@ -10,8 +10,6 @@ import { HearingActualsComponent } from './containers/hearing-actuals/hearing-ac
 import { HearingStageResultComponent } from './containers/hearing-actuals/hearing-stage-result/hearing-stage-result.component';
 import { HearingAdditionalInstructionsComponent } from './containers/request-hearing/hearing-additional-instructions/hearing-additional-instructions.component';
 import { HearingAttendanceComponent } from './containers/request-hearing/hearing-attendance/hearing-attendance.component';
-import { HearingCancellationSummaryComponent } from './containers/request-hearing/hearing-cancellation-summary/hearing-cancellation-summary.component';
-import { HearingCancelledSummaryComponent } from './containers/request-hearing/hearing-cancelled-summary/hearing-cancelled-summary.component';
 import { HearingChangeReasonComponent } from './containers/request-hearing/hearing-change-reason/hearing-change-reason.component';
 import { HearingCreateEditSummaryComponent } from './containers/request-hearing/hearing-create-edit-summary/hearing-create-edit-summary.component';
 import { HearingFacilitiesComponent } from './containers/request-hearing/hearing-facilities/hearing-facilities.component';
@@ -25,6 +23,8 @@ import { HearingVenueComponent } from './containers/request-hearing/hearing-venu
 import { HearingViewEditSummaryComponent } from './containers/request-hearing/hearing-view-edit-summary/hearing-view-edit-summary.component';
 import { HearingWelshComponent } from './containers/request-hearing/hearing-welsh/hearing-welsh.component';
 import { RequestHearingComponent } from './containers/request-hearing/request-hearing.component';
+import { HearingCancellationSummaryComponent } from './containers/view-hearing/hearing-cancellation-summary/hearing-cancellation-summary.component';
+import { HearingCancelledSummaryComponent } from './containers/view-hearing/hearing-cancelled-summary/hearing-cancelled-summary.component';
 import { ViewHearingComponent } from './containers/view-hearing/view-hearing.component';
 import { HearingCategory, MemberType } from './models/hearings.enum';
 import { JudicialUserSearchResolver } from './resolvers/ judicial-user-search-resolver.resolve';

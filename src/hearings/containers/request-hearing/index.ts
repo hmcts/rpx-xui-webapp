@@ -1,7 +1,7 @@
+import { HearingCancellationSummaryComponent } from '../view-hearing/hearing-cancellation-summary/hearing-cancellation-summary.component';
+import { HearingCancelledSummaryComponent } from '../view-hearing/hearing-cancelled-summary/hearing-cancelled-summary.component';
 import { HearingAdditionalInstructionsComponent } from './hearing-additional-instructions/hearing-additional-instructions.component';
 import { HearingAttendanceComponent } from './hearing-attendance/hearing-attendance.component';
-import { HearingCancellationSummaryComponent } from './hearing-cancellation-summary/hearing-cancellation-summary.component';
-import { HearingCancelledSummaryComponent } from './hearing-cancelled-summary/hearing-cancelled-summary.component';
 import { HearingChangeReasonComponent } from './hearing-change-reason/hearing-change-reason.component';
 import { HearingCreateEditSummaryComponent } from './hearing-create-edit-summary/hearing-create-edit-summary.component';
 import { HearingFacilitiesComponent } from './hearing-facilities/hearing-facilities.component';

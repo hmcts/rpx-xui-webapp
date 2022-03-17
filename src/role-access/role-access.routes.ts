@@ -6,9 +6,24 @@ import { UserNotAssignableComponent } from './components';
 import { DeleteExclusionComponent, RemoveRoleComponent } from './containers';
 import { AddExclusionHomeComponent } from './containers/add-exclusion';
 import { AllocateRoleHomeComponent } from './containers/allocate-role';
+import { SpecificAccessHomeComponent } from './containers/specific-access';
 
 export const ROUTES: Routes = [
   { path: 'user-not-assignable', component: UserNotAssignableComponent },
+  {
+    path: 'specific-access',
+    component: SpecificAccessHomeComponent,
+    children: [
+      {
+        path: '',
+        component: null,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Manage cases | Role and access | Specific access',
+        }
+      }
+    ]
+  },
   {
     path: 'add-exclusion',
     component: AddExclusionHomeComponent,

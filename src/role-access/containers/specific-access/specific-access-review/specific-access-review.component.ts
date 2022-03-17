@@ -1,0 +1,67 @@
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { select, Store } from '@ngrx/store';
+import { combineLatest, Subscription } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import { UserDetails } from '../../../../app/models';
+import * as fromRoot from '../../../../app/store';
+import { ERROR_MESSAGE, EXCLUSION_OPTION } from '../../../constants';
+import { SpecificAccessNavigationEvent } from '../../../models';
+import { RoleAllocationCaptionText, RoleAllocationTitleText } from '../../../models/enums';
+import * as fromFeature from '../../../store';
+import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
+
+@Component({
+  selector: 'exui-specific-access-review',
+  templateUrl: './specific-access-review.component.html'
+})
+
+export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
+
+  public ERROR_MESSAGE = ERROR_MESSAGE;
+  @Input() public navEvent: SpecificAccessNavigation;
+  public title = RoleAllocationTitleText.ExclusionAllocate;
+  public caption = RoleAllocationCaptionText.Exclusion;
+  public userDetails$: Observable<UserDetails>;
+
+  public submitted: boolean = false;
+
+  public formGroup: FormGroup;
+  public radioOptionControl: FormControl;
+  public radioControlName: string = EXCLUSION_OPTION;
+
+  public specificAccessStateDataSub: Subscription;
+
+  constructor(private readonly store: Store<fromFeature.State>) {
+  }
+
+  public ngOnInit(): void {
+
+  }
+
+  public navigationHandler(navEvent: SpecificAccessNavigationEvent) {
+    this.submitted = true;
+    if (this.radioOptionControl.invalid) {
+      this.radioOptionControl.setErrors({
+        invalid: true
+      });
+      return;
+    }
+    this.dispatchEvent(navEvent);
+  }
+
+  public dispatchEvent(navEvent: SpecificAccessNavigationEvent) {
+    switch (navEvent) {
+      case SpecificAccessNavigationEvent.CONTINUE:
+        break;
+      default:
+        throw new Error('Invalid option');
+    }
+  }
+
+  public ngOnDestroy(): void {
+    if (this.specificAccessStateDataSub) {
+      this.specificAccessStateDataSub.unsubscribe();
+    }
+  }
+}

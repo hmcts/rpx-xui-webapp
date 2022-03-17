@@ -1,0 +1,11 @@
+$errorColour: #b10e1e;
+.date-error {
+  border: 2px solid $errorColour;
+}
+.form-group-error {
+  // TODO: SACD - try to use css specificity so important declartion can be removed
+ border-left: 5px solid $errorColour !important;
+}
+.hidden-legend {
+  display: none;
+}

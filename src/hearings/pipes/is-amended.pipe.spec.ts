@@ -1,6 +1,8 @@
+import {TestBed} from '@angular/core/testing';
+import {ActivatedRoute} from '@angular/router';
 import {cold} from 'jasmine-marbles';
 import {of} from 'rxjs';
-import {initialState} from '../hearing.test.data';
+import {caseFlagsRefData, hearingPriorityRefData, initialState, partyChannelsRefData} from '../hearing.test.data';
 import {AnswerSource} from '../models/hearings.enum';
 import {State} from '../store/reducers';
 import {IsAmendedPipe} from './is-amended.pipe';
@@ -8,9 +10,27 @@ import {IsAmendedPipe} from './is-amended.pipe';
 describe('IsAmendedPipe', () => {
 
   let isAmendedPipe: IsAmendedPipe;
+  let router: any;
 
   beforeEach(() => {
-    isAmendedPipe = new IsAmendedPipe();
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                hearingPriorities: hearingPriorityRefData,
+                caseFlags: caseFlagsRefData,
+                partyChannels: partyChannelsRefData,
+              },
+            },
+          },
+        }
+      ]
+    });
+    router = TestBed.get(ActivatedRoute);
+    isAmendedPipe = new IsAmendedPipe(router);
   });
 
   it('should transform is amended for venue', () => {

@@ -9,27 +9,27 @@ import {SERVICE_HEARING_VALUES} from './data/serviceHearingValues.mock.data';
 export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
 
-  const getHearingsUrl = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearings\/[0-9]{16}/;
+  const getHearingsUrl = /hearings\/[0-9]{16}/;
 
-  const getHearingInfoUrl = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearing\/[\w]*/;
+  const getHearingInfoUrl = /hearing\/[\w]*/;
 
-  const postServiceHearingValues = /https:\/\/hearings.aat.service.core-compute-aat.internal\/serviceHearingValues/;
+  const postServiceHearingValues = /serviceHearingValues/;
 
-  const submitHearingRequest = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearing/;
+  const submitHearingRequest = /(hearing)\b/;
 
-  const updateHearingRequest = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearing/;
+  const updateHearingRequest = /(hearing)\b/;
 
-  const cancelHearingRequest = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearing\/[\w]*/;
+  const cancelHearingRequest = /(hearing)\b\/[\w]*/;
 
-  const hearingActualsUrl = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearingActuals\/[\w]*/;
+  const hearingActualsUrl = /(hearingActuals)\b\/[\w]*/;
 
-  const postHearingActualsUrl = /https:\/\/hearings.aat.service.core-compute-aat.internal\/hearingActualsCompletion\/[\w]*/;
+  const postHearingActualsUrl = /hearingActualsCompletion\/[\w]*/;
 
-  const loadServiceLinkedCases = /https:\/\/hearings.aat.service.core-compute-aat.internal\/serviceLinkedCases/;
+  const loadServiceLinkedCases = /serviceLinkedCases/;
 
-  const getLinkedHearingGroup = /https:\/\/hearings.aat.service.core-compute-aat.internal\/linkedHearingGroup\?caseReference=[\w]*&hearingId=[\w]*/;
+  const getLinkedHearingGroup = /linkedHearingGroup\?caseReference=[\w]*&hearingId=[\w]*/;
 
-  const linkedHearingGroup = /https:\/\/hearings.aat.service.core-compute-aat.internal\/linkedHearingGroup/;
+  const linkedHearingGroup = /linkedHearingGroup/;
 
   mock.onGet(getHearingsUrl).reply(config => {
     const url = config.url;
@@ -38,12 +38,18 @@ export const init = () => {
     if (mod === 1) {
       return [
         200,
-        HEARINGS_LIST,
+        {
+          ...HEARINGS_LIST,
+          caseRef: caseIds[0],
+        },
       ];
     } else {
       return [
         200,
-        EMPTY_HEARINGS_LIST,
+        {
+          EMPTY_HEARINGS_LIST,
+          caseRef: caseIds[0],
+        },
       ];
     }
   });
@@ -79,7 +85,16 @@ export const init = () => {
     ];
   });
 
-  mock.onDelete(cancelHearingRequest).reply(() => {
+  mock.onDelete(cancelHearingRequest).reply(config => {
+    // START : This few lines code jus to faciliate testing for specific hearing id of 100002
+    // so that even the failure scenarios can be verified
+    if (config.url.includes('/h100002')) {
+      return [
+        500,
+        null,
+      ];
+    }
+    // END
     return [
       200,
       {},

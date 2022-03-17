@@ -2,8 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { cold, hot } from 'jasmine-marbles';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { Go } from '../../../app/store';
+import { HttpError } from '../../../models/httpError.model';
 import { hearingActualsMainModel } from '../../hearing.test.data';
 import { HearingsService } from '../../services/hearings.service';
 import * as hearingActualsActions from '../actions/hearing-actuals.action';
@@ -61,6 +62,21 @@ describe('Hearing Actuals Effects', () => {
       hearingsServiceMock.submitHearingActuals.and.returnValue(of(200));
       const action = new hearingActualsActions.SubmitHearingActuals('1111222233334444');
       const completion = new hearingActualsActions.SubmitHearingActualsSuccess('1111222233334444');
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.submitHearingActuals$).toBeObservable(expected);
+    });
+
+    it('should submit hearing actuals error', () => {
+      const error: HttpError = {
+        status: 400,
+        statusText: 'Bad Request',
+        message: 'Bad Request',
+        errors: [],
+      };
+      hearingsServiceMock.submitHearingActuals.and.returnValue(throwError(error));
+      const action = new hearingActualsActions.SubmitHearingActuals('1111222233334444');
+      const completion = new hearingActualsActions.SubmitHearingActualsFailure(error);
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.submitHearingActuals$).toBeObservable(expected);

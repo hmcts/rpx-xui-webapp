@@ -118,7 +118,8 @@ export class HearingRequestEffects {
             return this.router.navigate(['hearings', 'request', 'hearing-confirmation']);
           }),
         catchError(error => {
-          return HearingRequestEffects.handleError(error);
+          this.hearingStore.dispatch(new hearingRequestActions.SubmitHearingRequestFailure(error));
+          return of(error);
         })
       );
     })

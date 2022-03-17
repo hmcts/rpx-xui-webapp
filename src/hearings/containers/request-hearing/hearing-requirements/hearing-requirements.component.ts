@@ -4,7 +4,7 @@ import {Store} from '@ngrx/store';
 import * as fromHearingStore from '../../../../hearings/store';
 import {CaseFlagGroup} from '../../../models/caseFlagGroup.model';
 import {CaseFlagReferenceModel} from '../../../models/caseFlagReference.model';
-import {HearingConditions} from '../../../models/hearingConditions';
+import {HearingConditions, KEY_IS_INIT, KEY_MODE} from '../../../models/hearingConditions';
 import {HearingRequestMainModel} from '../../../models/hearingRequestMain.model';
 import {ACTION, CaseFlagType, Mode} from '../../../models/hearings.enum';
 import {PartyDetailsModel} from '../../../models/partyDetails.model';
@@ -29,7 +29,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   public onFocus(): void {
     if (this.lostFocus) {
       this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.referenceId));
-      // setTimeout(() => this.initializeHearingRequestFromHearingValues(), 500);
+      setTimeout(() => this.initializeHearingRequestFromHearingValues(), 500);
       this.lostFocus = false;
     }
   }
@@ -51,10 +51,11 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     if (this.hearingListMainModel) {
       this.referenceId = this.hearingListMainModel.caseRef;
     }
-    if (HearingsUtils.hasPropertyAndValue(this.hearingCondition, 'mode', Mode.CREATE)
-      && HearingsUtils.hasPropertyAndValue(this.hearingCondition, 'isInit', true)
+    if (HearingsUtils.hasPropertyAndValue(this.hearingCondition, KEY_MODE, Mode.CREATE)
+      && HearingsUtils.hasPropertyAndValue(this.hearingCondition, KEY_IS_INIT, true)
       && this.serviceHearingValuesModel) {
       this.initializeHearingRequestFromHearingValues();
+      this.initializeHearingCondition();
     }
   }
 
@@ -98,7 +99,6 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       partyDetails: combinedParties
     };
     this.hearingStore.dispatch(new fromHearingStore.InitializeHearingRequest(hearingRequestMainModel));
-    this.initializeHearingCondition();
   }
 
   public combinePartiesWithIndOrOrg(partyDetails: PartyDetailsModel[]): PartyDetailsModel[] {

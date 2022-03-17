@@ -2,8 +2,6 @@ import {OnDestroy} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Observable, of, Subscription} from 'rxjs';
 import {CaseFlagReferenceModel} from '../models/caseFlagReference.model';
-import {CaseFlagType} from '../models/hearings.enum';
-import {PartyFlagsModel} from '../models/partyFlags.model';
 import {State} from '../store';
 import {CaseFlagsUtils} from '../utils/case-flags.utils';
 import {AnswerConverter} from './answer.converter';
@@ -18,21 +16,27 @@ export class CaseFlagAnswerConverter implements AnswerConverter, OnDestroy {
   }
 
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
-    let partyFlags: PartyFlagsModel[] = [];
+    const partyWithFlags = {};
     this.storeSub = hearingState$.subscribe(
       state => {
-        if (state.hearingValues.serviceHearingValuesModel && state.hearingValues.serviceHearingValuesModel.caseFlags) {
-          partyFlags = state.hearingValues.serviceHearingValuesModel.caseFlags.flags;
-        }
+        state.hearingRequest.hearingRequestMainModel.partyDetails.forEach(party => {
+          const partyName = party.partyName;
+          const allFlagsId: string[] = party.individualDetails.reasonableAdjustments.slice();
+          if (party.individualDetails.interpreterLanguage) {
+            allFlagsId.push(party.individualDetails.interpreterLanguage);
+          }
+          partyWithFlags[partyName] = allFlagsId.map(flagId => CaseFlagsUtils.findFlagByFlagId(this.caseFlagsRefData, flagId));
+        });
       }
     );
-    const caseFlagsGroup = CaseFlagsUtils.displayCaseFlagsGroup(partyFlags, this.caseFlagsRefData, CaseFlagType.REASONABLE_ADJUSTMENT);
     let result = '';
-    caseFlagsGroup.forEach(flagsGroup => {
-      result += `<strong class='bold'>${flagsGroup.name}</strong>\n<ul>`;
-      flagsGroup.partyFlags.forEach(flag => result += `<li>${flag.displayName}</li>`);
-      result += '</ul><br>';
-    });
+    Object.keys(partyWithFlags).forEach(
+      key => {
+        result += `<strong class='bold'>${key}</strong>\n<ul>`;
+        partyWithFlags[key].forEach(flag => result += `<li>${flag.name}</li>`);
+        result += '</ul><br>';
+      }
+    );
     return of(result);
   }
 

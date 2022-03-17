@@ -59,7 +59,7 @@ export class CaseFlagsUtils {
     return this.convertMapToArray({...nonRAPFsWithGroup, ...caseFlagsWithGroup});
   }
 
-  private static findFlagByFlagId(caseFlagReferenceModels: CaseFlagReferenceModel[], flagId: string): CaseFlagReferenceModel {
+  public static findFlagByFlagId(caseFlagReferenceModels: CaseFlagReferenceModel[], flagId: string): CaseFlagReferenceModel {
     let foundFlag = null;
     for (const caseFlag of caseFlagReferenceModels) {
       if (caseFlag.flagCode === flagId) {

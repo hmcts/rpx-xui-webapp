@@ -138,6 +138,21 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
   }
 
+  // c test only will be removed later start
+  public amendFlagSimulatorTest(): void {
+    const partyDetails: PartyDetailsModel[] = this.hearingRequestMainModel.partyDetails.slice();
+    const clonedPartyDetails = JSON.parse(JSON.stringify(partyDetails));
+    if (!clonedPartyDetails[0].individualDetails.reasonableAdjustments.includes('RA0009')) {
+      clonedPartyDetails[0].individualDetails.reasonableAdjustments.push('RA0009');
+    }
+    const hearingRequestMainModel: HearingRequestMainModel = {
+      ...this.hearingRequestMainModel,
+      partyDetails: clonedPartyDetails
+    };
+    this.hearingStore.dispatch(new fromHearingStore.InitializeHearingRequest(hearingRequestMainModel));
+  }
+  // simulator test only will be removed later end
+
   protected executeAction(action: ACTION): void {
     super.navigateAction(action);
   }

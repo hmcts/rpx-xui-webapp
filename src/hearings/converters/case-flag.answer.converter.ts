@@ -16,24 +16,18 @@ export class CaseFlagAnswerConverter implements AnswerConverter, OnDestroy {
   }
 
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
-    const partyWithFlags = {};
+    let partyWithFlags: Map<string, CaseFlagReferenceModel[]> = new Map();
     this.storeSub = hearingState$.subscribe(
       state => {
-        state.hearingRequest.hearingRequestMainModel.partyDetails.forEach(party => {
-          const partyName = party.partyName;
-          const allFlagsId: string[] = party.individualDetails.reasonableAdjustments.slice();
-          if (party.individualDetails.interpreterLanguage) {
-            allFlagsId.push(party.individualDetails.interpreterLanguage);
-          }
-          partyWithFlags[partyName] = allFlagsId.map(flagId => CaseFlagsUtils.findFlagByFlagId(this.caseFlagsRefData, flagId));
-        });
+        partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(this.caseFlagsRefData,
+          state.hearingRequest.hearingRequestMainModel.partyDetails);
       }
     );
     let result = '';
-    Object.keys(partyWithFlags).forEach(
-      key => {
+    partyWithFlags.forEach(
+      (value, key) => {
         result += `<strong class='bold'>${key}</strong>\n<ul>`;
-        partyWithFlags[key].forEach(flag => result += `<li>${flag.name}</li>`);
+        value.forEach(flag => result += `<li>${flag.name}</li>`);
         result += '</ul><br>';
       }
     );

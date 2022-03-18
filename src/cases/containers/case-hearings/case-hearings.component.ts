@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import * as moment from 'moment';
@@ -18,7 +18,7 @@ import * as fromHearingStore from '../../../hearings/store';
   templateUrl: './case-hearings.component.html',
   styleUrls: ['./case-hearings.component.scss']
 })
-export class CaseHearingsComponent implements OnInit {
+export class CaseHearingsComponent implements OnInit, OnDestroy {
   public upcomingHearings$: Observable<HearingListViewModel[]>;
   public upcomingStatus: EXUISectionStatusEnum = EXUISectionStatusEnum.UPCOMING;
   public pastAndCancelledHearings$: Observable<HearingListViewModel[]>;
@@ -54,6 +54,12 @@ export class CaseHearingsComponent implements OnInit {
     );
     if (this.hearingsActions.includes(Actions.CREATE)) {
       this.hasRequestAction = true;
+    }
+  }
+
+	public ngOnDestroy(): void {
+    if (this.sub) {
+      this.sub.unsubscribe();
     }
   }
 
@@ -108,6 +114,7 @@ export class CaseHearingsComponent implements OnInit {
     this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
     this.sub = this.hearingStore.select(fromHearingStore.getHearingValuesLastError).subscribe(
       error => {
+				debugger;
         if (error) {
           // Reset error before navigating to the error page
           this.hearingStore.dispatch(new fromHearingStore.ResetHearingValuesLastError());

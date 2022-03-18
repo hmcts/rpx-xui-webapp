@@ -1,7 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable, Subscription } from 'rxjs';
 import { HearingConditions } from '../../../hearings/models/hearingConditions';
 import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
 import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, Mode } from '../../../hearings/models/hearings.enum';
@@ -13,7 +13,7 @@ import * as fromHearingStore from '../../../hearings/store';
   styleUrls: ['./case-hearings-list.component.scss']
 })
 
-export class CaseHearingsListComponent implements OnInit {
+export class CaseHearingsListComponent implements OnInit, OnDestroy {
   @Input()
   public status: EXUISectionStatusEnum;
 
@@ -26,6 +26,7 @@ export class CaseHearingsListComponent implements OnInit {
   public hasUpdateAction: boolean = false;
   public hasDeleteAction: boolean = false;
   public hasReadOnlyAction: boolean = false;
+  public sub: Subscription;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly activatedRoute: ActivatedRoute,
@@ -50,6 +51,12 @@ export class CaseHearingsListComponent implements OnInit {
     }
   }
 
+  public ngOnDestroy(): void {
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
+  }
+
   public isAwaitingActual(exuiDisplayStatus: EXUIDisplayStatusEnum): boolean {
     return exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_ACTUALS;
   }
@@ -66,11 +73,24 @@ export class CaseHearingsListComponent implements OnInit {
   public viewAndEdit(hearingID: string): void {
     this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
     this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearingID));
-    const hearingCondition: HearingConditions = {
-      mode: Mode.VIEW,
-    };
-    this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
-    this.router.navigate(['/', 'hearings', 'request', 'hearing-view-edit-summary']);
+    const sub$ = combineLatest([this.hearingStore.select(fromHearingStore.getHearingValuesLastError), this.hearingStore.select(fromHearingStore.getHearingRequestLastError)]);
+    this.sub = sub$.subscribe(
+      errors => {
+				debugger;
+        if (errors && (errors[0] !== null || errors[1] !== null)) {
+          // Reset error before navigating to the error page
+          this.hearingStore.dispatch(new fromHearingStore.ResetHearingValuesLastError());
+          this.hearingStore.dispatch(new fromHearingStore.ResetHearingRequestLastError());
+          this.router.navigate(['/', 'hearings', 'error']);
+        } else {
+          const hearingCondition: HearingConditions = {
+            mode: Mode.VIEW,
+          };
+          this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
+          this.router.navigate(['/', 'hearings', 'request', 'hearing-view-edit-summary']);
+        }
+      }
+    );
   }
 
   public viewDetails(hearing: HearingListViewModel): void {

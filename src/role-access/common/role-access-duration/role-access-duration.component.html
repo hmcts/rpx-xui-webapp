@@ -1,6 +1,6 @@
 
  <h1 class="govuk-heading-l">
-  <span class="govuk-caption-l">{{caption}}</span>
+  <span class="govuk-caption-l">{{ caption }}</span>
   {{ title }}
 </h1>
 <div class="govuk-form-group" [formGroup]="formGroup">
@@ -41,9 +41,21 @@
         </span>
       </div>
       {{ select}}
-      <div id="choose-duration-another-period" *ngIf="formGroup.get('selectedDuration').value === 'Another period'">
-        <!-- TODO: SARD another period -->
-        ANOTHER PERIOD
+      <div id="choose-duration-another-period" *ngIf="formGroup.get('selectedDuration').value === 'Another period'" class="govuk-radios__conditional">
+        <div class="govuk-form-group">
+          <xuilib-gov-uk-date
+            *ngIf="configStart"
+            [formGroup]="formGroup"
+            [config]="configStart"
+            [errorMessage]="startDateErrorMessage">
+          </xuilib-gov-uk-date>
+          <xuilib-gov-uk-date
+            *ngIf="configEnd"
+            [formGroup]="formGroup"
+            [config]="configEnd"
+            [errorMessage]="endDateErrorMessage">
+          </xuilib-gov-uk-date>
+        </div>
       </div>
     </div>
   </fieldset>

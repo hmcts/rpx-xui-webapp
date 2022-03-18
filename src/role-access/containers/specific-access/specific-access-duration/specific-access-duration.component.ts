@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 import { PersonRole } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
+import { GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
 import { ERROR_MESSAGE, PERSON_ROLE } from '../../../constants';
 import { SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
 import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
@@ -27,6 +28,18 @@ export class SpecificAccessDurationComponent implements OnInit, OnDestroy {
   public personRole: PersonRole;
 
   public defaultDuration = DurationType.SEVEN_DAYS;
+  public configEnd:GovUiConfigModel = {
+    id: 'endDate',
+    name: 'endDate',
+    hint: 'For example, 01 01 2022',
+    label: 'Access Ends'
+  }
+  public configStart:GovUiConfigModel = {
+    id: 'startDate',
+    name: 'startDate',
+    hint: 'For example, 01 01 2022',
+    label: 'Access Starts'
+  };
 
   constructor(
     private readonly store: Store<fromFeature.State>

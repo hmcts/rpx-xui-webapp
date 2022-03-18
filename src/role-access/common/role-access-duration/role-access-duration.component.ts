@@ -9,12 +9,16 @@ import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/
   styleUrls: ['./role-access-duration.component.scss']
 })
 export class RoleAccessDurationComponent implements OnInit {
+  @Input() caption = 'Caption';
+  @Input() configEnd:GovUiConfigModel;
+  @Input() configStart:GovUiConfigModel;
   @Input() defaultDuration = DurationType.SEVEN_DAYS;
   @Input() durations: Duration[] = [
     { id: '1', name: DurationType.SEVEN_DAYS, description: '', checked: false },
     { id: '2', name: DurationType.INDEFINITE, description: '', checked: false },
     { id: '3', name: DurationType.ANOTHER_PERIOD, description: '', checked: false }
   ];
+  @Input() title = 'Title';
 
   // properties
   public endDateErrorMessage: ErrorMessagesModel;
@@ -40,10 +44,10 @@ export class RoleAccessDurationComponent implements OnInit {
   ngOnInit(): void {
     this.setupFormControls();
     this.setupForm();
-    this.setDefaultDuration();
+    this.setupDefaultDuration();
   }
 
-  public setDefaultDuration(): void {
+  public setupDefaultDuration(): void {
     const defaultDuration = this.durations.find(duration => duration.name === this.defaultDuration);
     if (typeof defaultDuration !== 'undefined') {
       defaultDuration.checked = true;
@@ -96,6 +100,7 @@ export class RoleAccessDurationComponent implements OnInit {
 
 }
 
+// TODO: SARD - move these to separate file?
 export interface Duration {
   id: string;
   name: string;

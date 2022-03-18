@@ -40,19 +40,13 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
   }
 
   public navigationHandler(navEvent: SpecificAccessNavigationEvent) {
-    this.submitted = true;
-    if (this.radioOptionControl.invalid) {
-      this.radioOptionControl.setErrors({
-        invalid: true
-      });
-      return;
-    }
     this.dispatchEvent(navEvent);
   }
 
   public dispatchEvent(navEvent: SpecificAccessNavigationEvent) {
     switch (navEvent) {
       case SpecificAccessNavigationEvent.CONTINUE:
+        debugger;
         break;
       default:
         throw new Error('Invalid option');

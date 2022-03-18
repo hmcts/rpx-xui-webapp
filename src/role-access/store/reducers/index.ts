@@ -8,7 +8,7 @@ import * as fromSpecificAccess from './specific-access.reducer';
 export interface State {
   exclusion: ExclusionStateData;
   allocateRole: AllocateRoleStateData;
-  specificAccess: SpecificAccessStateData
+  specificAccess: SpecificAccessStateData;
 }
 
 export const reducers: ActionReducerMap<State> = {

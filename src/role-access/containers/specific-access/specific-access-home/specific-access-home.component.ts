@@ -59,7 +59,6 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    debugger;
     this.specificAccessStateDataSub = this.store.pipe(select(fromFeature.getSpecificAccessState)).subscribe(
       specificAccessReviewStateData => {
             debugger;
@@ -102,7 +101,6 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
             this.specificAccessDurationComponent.navigationHandler(navEvent);
             break;
           default:
-            this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_REVIEW));
            // throw new Error('Invalid specific access state');
         }
         break;
@@ -119,6 +117,6 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
     if (this.specificAccessStateDataSub) {
       this.specificAccessStateDataSub.unsubscribe();
     }
-    this.store.dispatch(new fromFeature.ExclusionReset());
+    //this.store.dispatch(new fromFeature.ExclusionReset());
   }
 }

@@ -8,7 +8,7 @@ import {
   confirmExclusionButtonVisibilityStates,
   continueButtonVisibilityStates
 } from '../../../constants';
-import { ExclusionNavigationEvent, ExclusionState } from '../../../models';
+import { ExclusionNavigationEvent, ExclusionState, SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
 import * as fromFeature from '../../../store';
 
 @Component({
@@ -19,11 +19,10 @@ export class SpecificAccessNavigationComponent implements OnInit {
 
   @Output() public eventTrigger = new EventEmitter();
 
-  public navigationCurrentState$: Observable<ExclusionState>;
+  public navigationCurrentState$: Observable<SpecificAccessState>;
 
   public backVisibilityStates = backButtonVisibilityStates;
   public continueVisibilityStates = continueButtonVisibilityStates;
-  public confirmExclusionButtonVisibilityStates = confirmExclusionButtonVisibilityStates;
   public cancelButtonVisibilityStates = cancelButtonVisibilityStates;
 
   public exclusionNavigationEvent = ExclusionNavigationEvent;
@@ -35,14 +34,14 @@ export class SpecificAccessNavigationComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.navigationCurrentState$ = this.store.pipe(select(fromFeature.currentNavigation));
+    this.navigationCurrentState$ = this.store.pipe(select(fromFeature.currentSpecificAccessNavigation));
   }
 
-  public isVisible(currentNavigationState: ExclusionState, visibleNavigationStates: ExclusionState[]): boolean {
+  public isVisible(currentNavigationState: SpecificAccessState, visibleNavigationStates: SpecificAccessState[]): boolean {
     return visibleNavigationStates.includes(currentNavigationState);
   }
 
-  public onEventTrigger(event: ExclusionNavigationEvent) {
+  public onEventTrigger(event: SpecificAccessNavigationEvent) {
     this.eventTrigger.emit(event);
   }
 }

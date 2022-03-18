@@ -218,7 +218,8 @@ export const ROUTES: Routes = [
         data: {
           title: 'HMCTS Hearings | Request Hearing | Require Panel Or Not',
           category: HearingCategory.OtherPanelRoles,
-          memberType: MemberType.PANEL_MEMBER
+          memberType: MemberType.PANEL_MEMBER,
+          isChildRequired: true
         }
       },
       {
@@ -254,7 +255,8 @@ export const ROUTES: Routes = [
         component: HearingCreateEditSummaryComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Hearings | Request Hearing | Check Answers'
+          title: 'HMCTS Hearings | Request Hearing | Check Answers',
+          isChildRequired: true
         }
       },
       {
@@ -274,7 +276,8 @@ export const ROUTES: Routes = [
         component: HearingViewEditSummaryComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Hearings | Amend Hearing | Check Answers'
+          title: 'HMCTS Hearings | Amend Hearing | Check Answers',
+          isChildRequired: true
         }
       },
       {

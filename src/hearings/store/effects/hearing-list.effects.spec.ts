@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { cold, hot } from 'jasmine-marbles';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { HearingDayScheduleModel } from '../../models/hearingDaySchedule.model';
 import { HearingListModel } from '../../models/hearingList.model';
 import { HearingListMainModel } from '../../models/hearingListMain.model';
@@ -11,10 +11,14 @@ import * as hearingListActions from '../actions/hearing-list.action';
 import { HearingListEffects } from './hearing-list.effects';
 import {HttpError} from '../../../models/httpError.model';
 import { provideMockStore } from '@ngrx/store/testing';
-import * as hearingListReducer from '../reducers/hearing-list.reducer';
+import * as fromHearingStore from '../../../hearings/store';
+import { select, Store } from '@ngrx/store';
+import { map } from 'rxjs/operators';
 
 describe('Hearing List Effects', () => {
   let actions$;
+  let store: Store<fromHearingStore.State>;
+
   let effects: HearingListEffects;
   const hearingsServiceMock = jasmine.createSpyObj('HearingsService', [
     'getAllHearings',
@@ -40,6 +44,8 @@ describe('Hearing List Effects', () => {
       ]
     });
     effects = TestBed.get(HearingListEffects);
+    store = TestBed.get(Store) as Store<fromHearingStore.State>;
+
   });
 
   describe('loadHearingList$', () => {
@@ -84,14 +90,16 @@ describe('Hearing List Effects', () => {
 
   describe('handleError', () => {
     it('should error when loading all hearings request failure', () => {
-      const { initialHearingListState } = hearingListReducer;
       const errorResponse: HttpError = {
         status: 500,
         message: 'Internal server error',
       }
-      const action = new hearingListActions.LoadAllHearingsFailure(errorResponse);
-      const state = hearingListReducer.hearingListReducer(initialHearingListState, action);
-      expect(state.lastError).not.toEqual(null);
+      hearingsServiceMock.getAllHearings.and.returnValue(throwError(errorResponse));
+      new hearingListActions.LoadAllHearings('h1000000');
+      return store.pipe(select(fromHearingStore.LoadAllHearingsFailure)).pipe(
+        map(hearingListStateData => {
+          expect(hearingListStateData.lastError).not.toEqual(null);
+        }));
     });
   });
 });

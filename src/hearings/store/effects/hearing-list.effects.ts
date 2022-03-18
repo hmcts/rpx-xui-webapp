@@ -27,10 +27,7 @@ export class HearingListEffects {
       return this.hearingsService.getAllHearings(payload).pipe(
         map(
           (response) => new hearingListActions.LoadAllHearingsSuccess(response)),
-        catchError(error => {
-          this.hearingStore.dispatch(new hearingListActions.LoadAllHearingsFailure(error));
-          return of();
-        })
+        catchError((error: HttpError) => of(new hearingListActions.LoadAllHearingsFailure(error)))
       );
     })
   );

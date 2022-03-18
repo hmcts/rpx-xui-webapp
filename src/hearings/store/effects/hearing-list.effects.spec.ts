@@ -95,11 +95,11 @@ describe('Hearing List Effects', () => {
         message: 'Internal server error',
       }
       hearingsServiceMock.getAllHearings.and.returnValue(throwError(errorResponse));
-      new hearingListActions.LoadAllHearings('h1000000');
-      return store.pipe(select(fromHearingStore.LoadAllHearingsFailure)).pipe(
-        map(hearingListStateData => {
-          expect(hearingListStateData.lastError).not.toEqual(null);
-        }));
+      const action = new hearingListActions.LoadAllHearings('h1000000');
+      const completion = new hearingListActions.LoadAllHearingsFailure(errorResponse);
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.loadHearingList$).toBeObservable(expected);
     });
   });
 });

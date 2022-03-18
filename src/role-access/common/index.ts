@@ -1,5 +1,7 @@
-import { RoleAccessDurationBaseComponent } from './role-access-duration-base/role-access-duration-base.component';
+import { RoleAccessDurationComponent } from './role-access-duration/role-access-duration.component';
 
-export const components: any[] = [RoleAccessDurationBaseComponent];
+export const components: any[] = [
+  RoleAccessDurationComponent
+];
 
-export * from './role-access-duration-base/role-access-duration-base.component';
+export * from './role-access-duration/role-access-duration.component';

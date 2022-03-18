@@ -486,7 +486,7 @@ describe('CaseHearingsComponent', () => {
     expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions(hearingCondition)));
   });
 
-  fit('should call the reloadhearings when reload clicked', () => {
+  it('should call the reloadhearings when reload clicked', () => {
     spyOn(component, 'reloadHearings');
     component.serverError = {id: '', message: 'server error'};
     fixture.detectChanges();

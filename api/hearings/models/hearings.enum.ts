@@ -26,6 +26,7 @@ export enum LaCaseStatus {
   PENDING_RELISTING = 'Pending Relisting',
   HEARING_COMPLETED = 'Hearing Completed',
   CASE_CLOSED = 'Case Closed',
+  CANCELLED = 'Cancelled',
 }
 
 export enum ListingStatus {

@@ -47,7 +47,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public reloadHearings() {
     this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
   }
-  
+
   public ngOnInit(): void {
     this.sub = this.hearingState$.subscribe(state => {
       if (state && state.hearingList && state.hearingList.lastError) {

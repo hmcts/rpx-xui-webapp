@@ -39,6 +39,10 @@ export class ListingInformationSummaryComponent implements OnInit, OnDestroy {
     return new HearingAnswersPipe(this.route).transform(this.answerSource.STATUS, this.hearingState$);
   }
 
+  public isCaseStatusListed(): boolean {
+    return this.exuiDisplayStatus.LISTED === this.caseStatusName;
+  }
+
   public ngOnDestroy(): void {
     if (this.serviceValueSub) {
       this.serviceValueSub.unsubscribe();

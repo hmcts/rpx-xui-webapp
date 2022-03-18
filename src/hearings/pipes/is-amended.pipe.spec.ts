@@ -88,4 +88,28 @@ describe('IsAmendedPipe', () => {
     const expected = cold('(b|)', {b: isAmended});
     expect(result$).toBeObservable(expected);
   });
+
+  it('should transform is amended for additional facilities required', () => {
+    const STATE: State = initialState.hearings;
+    const result$ = isAmendedPipe.transform(AnswerSource.ADDITIONAL_FACILITIES_REQUIRED, of(STATE));
+    const isAmended = false;
+    const expected = cold('(b|)', {b: isAmended});
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should not transform the amended flag when previous vs current people attend count are equal', () => {
+    const STATE: State = initialState.hearings;
+    const result$ = isAmendedPipe.transform(AnswerSource.HOW_ATTENDANT, of(STATE));
+    const isAmended = true;
+    const expected = cold('(b|)', {b: isAmended});
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should return amended flag false for hearing type', () => {
+    const STATE: State = initialState.hearings;
+    const result$ = isAmendedPipe.transform(AnswerSource.STAGE, of(STATE));
+    const isAmended = false;
+    const expected = cold('(b|)', {b: isAmended});
+    expect(result$).toBeObservable(expected);
+  });
 });

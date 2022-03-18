@@ -43,7 +43,7 @@ export const init = () => {
       ];
     } else {
       // the below exclusion of return 500 just to faciliate testing
-      if (caseIds[0].indexOf('6', caseIds[0].length - 1) > 0) {
+      if (caseIds[0].endsWith('6')) {
         return [
           500,
           null,

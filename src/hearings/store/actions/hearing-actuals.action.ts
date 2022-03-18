@@ -1,4 +1,5 @@
 import { Action } from '@ngrx/store';
+import { HttpError } from '../../../models/httpError.model';
 import { HearingActualsMainModel, HearingActualsModel } from '../../models/hearingActualsMainModel';
 
 export const RESET_HEARING_ACTUALS = '[HEARING ACTUALS] Reset Hearing Actuals';
@@ -8,6 +9,7 @@ export const GET_HEARING_ACTUALS = '[HEARING ACTUALS] Get Hearing Actuals';
 export const GET_HEARING_ACTUALS_SUCCESS = '[HEARING ACTUALS] Get Hearing Actuals success';
 export const SUBMIT_HEARING_ACTUALS = '[HEARING ACTUALS] Submit Hearing Actuals';
 export const SUBMIT_HEARING_ACTUALS_SUCCESS = '[HEARING ACTUALS] Submit Hearing Actuals Success';
+export const SUBMIT_HEARING_ACTUALS_FAILURE = '[HEARING ACTUALS] Submit Hearing Actuals Failure';
 
 export class ResetHearingActuals implements Action {
   public readonly type = RESET_HEARING_ACTUALS;
@@ -55,6 +57,14 @@ export class SubmitHearingActualsSuccess implements Action {
   }
 }
 
+export class SubmitHearingActualsFailure implements Action {
+  public readonly type = SUBMIT_HEARING_ACTUALS_FAILURE;
+
+  constructor(public payload: HttpError) {
+  }
+}
+
+
 export type HearingActualsAction =
   | ResetHearingActuals
   | GetHearingActuals
@@ -62,4 +72,5 @@ export type HearingActualsAction =
   | UpdateHearingActuals
   | UpdateHearingActualsSuccess
   | SubmitHearingActuals
-  | SubmitHearingActualsSuccess;
+  | SubmitHearingActualsSuccess
+  | SubmitHearingActualsFailure;

@@ -1,3 +1,4 @@
+import { HttpError } from '../../../models/httpError.model';
 import { hearingActualsMainModel } from '../../hearing.test.data';
 import * as fromHearingActualsActions from '../actions/hearing-actuals.action';
 import * as fromHearingActualsReducer from './hearing-actuals.reducer';
@@ -27,6 +28,25 @@ describe('Hearing Actuals Reducer', () => {
         const action = new fromHearingActualsActions.SubmitHearingActualsSuccess('1111222233334444');
         const state = fromHearingActualsReducer.hearingActualsReducer(initialHearingActualsState, action);
         expect(state.hearingActualsMainModel).toEqual(null);
+      });
+      it('should reset the last error', () => {
+        const { initialHearingActualsState } = fromHearingActualsReducer;
+        const action = new fromHearingActualsActions.SubmitHearingActuals('1111222233334444');
+        const state = fromHearingActualsReducer.hearingActualsReducer(initialHearingActualsState, action);
+        expect(state.lastError).toEqual(null);
+      });
+
+      it('should set the last error', () => {
+        const { initialHearingActualsState } = fromHearingActualsReducer;
+        const error: HttpError = {
+          status: 400,
+          statusText: 'Bad Request',
+          message: 'Bad Request',
+          errors: [],
+        };
+        const action = new fromHearingActualsActions.SubmitHearingActualsFailure(error);
+        const state = fromHearingActualsReducer.hearingActualsReducer(initialHearingActualsState, action);
+        expect(state.lastError).toEqual(error);
       });
     });
   });

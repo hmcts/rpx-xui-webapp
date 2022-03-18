@@ -33,6 +33,14 @@ describe('IsAmendedPipe', () => {
     isAmendedPipe = new IsAmendedPipe(router);
   });
 
+  it('should transform is amended for reasonable adjustment flags', () => {
+    const STATE: State = initialState.hearings;
+    const result$ = isAmendedPipe.transform(AnswerSource.CASE_FLAGS, of(STATE));
+    const isAmended = true;
+    const expected = cold('(b|)', {b: isAmended});
+    expect(result$).toBeObservable(expected);
+  });
+
   it('should transform is amended for venue', () => {
     const STATE: State = initialState.hearings;
     const result$ = isAmendedPipe.transform(AnswerSource.VENUE, of(STATE));

@@ -24,19 +24,19 @@ import { SpecificAccessDeniedComponent } from '../specific-access-denied/specifi
   styleUrls: ['./specific-access-home.component.scss']
 })
 export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
-  @ViewChild('specificAccessReview', {read: SpecificAccessReviewComponent})
+  @ViewChild('specificAccessReview', { read: SpecificAccessReviewComponent })
   public specificAccessReviewComponent: SpecificAccessReviewComponent;
 
-  @ViewChild('specificAccessDuration', {read: SpecificAccessDurationComponent})
+  @ViewChild('specificAccessDuration', { read: SpecificAccessDurationComponent })
   public specificAccessDurationComponent: SpecificAccessDurationComponent;
 
-  @ViewChild('specificAccessApproved', {read: SpecificAccessApprovedComponent})
+  @ViewChild('specificAccessApproved', { read: SpecificAccessApprovedComponent })
   public specificAccessApprovedComponent: SpecificAccessApprovedComponent;
 
-  @ViewChild('specificAccessInformation', {read: SpecificAccessInformationComponent})
+  @ViewChild('specificAccessInformation', { read: SpecificAccessInformationComponent })
   public specificAccessInformationComponent: SpecificAccessInformationComponent;
 
-  @ViewChild('specificAccessDenied', {read: SpecificAccessDeniedComponent})
+  @ViewChild('specificAccessDenied', { read: SpecificAccessDeniedComponent })
   public specificAccessDeniedComponent: SpecificAccessDeniedComponent;
 
 
@@ -54,15 +54,13 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
   public specificAccessDeniedVisibilityStates = specificAccessDeniedVisibilityStates;
 
   constructor(private readonly store: Store<fromFeature.State>,
-              private readonly router: Router) {
+    private readonly router: Router) {
     //this.store.dispatch(new fromFeature.ExclusionSetCaseId(this.caseId, this.jurisdiction));
   }
 
   public ngOnInit(): void {
     this.specificAccessStateDataSub = this.store.pipe(select(fromFeature.getSpecificAccessState)).subscribe(
       specificAccessReviewStateData => {
-            debugger;
-
         this.navigationCurrentState = specificAccessReviewStateData.state;
       }
     );
@@ -100,13 +98,16 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
           case SpecificAccessState.SPECIFIC_ACCESS_DURATION:
             this.specificAccessDurationComponent.navigationHandler(navEvent);
             break;
+          case SpecificAccessState.SPECIFIC_ACCESS_APPROVED:
+            this.specificAccessDurationComponent.navigationHandler(navEvent);
+            break;
           default:
-           // throw new Error('Invalid specific access state');
+          // throw new Error('Invalid specific access state');
         }
         break;
       }
       case SpecificAccessNavigationEvent.CANCEL:
-//        this.router.navigateByUrl(`cases/case-details/${this.caseId}/roles-and-access`);
+        //        this.router.navigateByUrl(`cases/case-details/${this.caseId}/roles-and-access`);
         break;
       default:
         throw new Error('Invalid specific access navigation event');

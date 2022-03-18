@@ -2,7 +2,7 @@ import { SpecificAccessState, SpecificAccessStateData } from '../../models';
 import { SpecificAccessAction, SpecificAccessActionTypes } from '../actions';
 
 export const specificAccessInitialState: SpecificAccessStateData = {
-  state: SpecificAccessState.SPECIFIC_ACCESS_DURATION,
+  state: SpecificAccessState.SPECIFIC_ACCESS_REVIEW,
   lastError: null
 };
 

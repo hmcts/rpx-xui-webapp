@@ -25,7 +25,7 @@ export class SpecificAccessNavigationComponent implements OnInit {
   public continueVisibilityStates = continueButtonVisibilityStates;
   public cancelButtonVisibilityStates = cancelButtonVisibilityStates;
 
-  public exclusionNavigationEvent = ExclusionNavigationEvent;
+  public specificAccessNavigationEvent = SpecificAccessNavigationEvent;
 
   constructor(
     private store: Store<fromFeature.State>,

@@ -3,7 +3,7 @@ import { createSelector } from '@ngrx/store';
 import * as fromFeature from '../reducers';
 
 export const getSpecificAccessState = createSelector(
-  fromFeature.getSpecificAccessFeatureState,
+  fromFeature.getRoleAccessFeatureState,
   (state: fromFeature.State) => state.specificAccess
 );
 

@@ -21,10 +21,6 @@ export const getRoleAccessFeatureState = createFeatureSelector<State>(
   'role-access'
 );
 
-export const getSpecificAccessFeatureState = createFeatureSelector<State>(
-  'specific-access'
-);
-
 export * from './exclusion.reducer';
 export * from './allocate-role.reducer';
 export * from './specific-access.reducer';

@@ -1,12 +1,12 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { select, Store } from '@ngrx/store';
-import { combineLatest, Subscription } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 import { UserDetails } from '../../../../app/models';
 import * as fromRoot from '../../../../app/store';
 import { ERROR_MESSAGE, EXCLUSION_OPTION } from '../../../constants';
-import { SpecificAccessNavigationEvent } from '../../../models';
+import { SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
 import { RoleAllocationCaptionText, RoleAllocationTitleText } from '../../../models/enums';
 import * as fromFeature from '../../../store';
 import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
@@ -46,7 +46,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
   public dispatchEvent(navEvent: SpecificAccessNavigationEvent) {
     switch (navEvent) {
       case SpecificAccessNavigationEvent.CONTINUE:
-        debugger;
+        this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_DURATION));
         break;
       default:
         throw new Error('Invalid option');

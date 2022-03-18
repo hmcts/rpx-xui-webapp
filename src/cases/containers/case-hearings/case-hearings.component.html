@@ -1,11 +1,12 @@
 <div class="govuk-tabs__panel">
   <div class="govuk-width-container" *ngIf="serverError">
     <div class="govuk-main-wrapper">
-      <div class="govuk-grid-row">
         <p class="govuk-body">{{serverError.message}}</p>
-        <a href="javascript:void(0)"
-            [routerLink]="['/', 'cases', 'case-details', caseId, 'hearings']" class="govuk-link">Reload hearings tab</a>
-      </div>
+        <span class="govuk-body align-left">
+          <a href="javascript:void(0)" [routerLink]="['/', 'cases', 'case-details', caseId, 'hearings']"
+             id="reload-hearing-tab"
+             class="govuk-link">Reload hearings tab</a>
+        </span>
     </div>
   </div>
   <ng-container *ngIf="!serverError">
@@ -13,8 +14,7 @@
     <a *ngIf="hasRequestAction"
        href="javascript:void(0)"
        role="button" draggable="false"
-       class="govuk-button
-       govuk-button--start"
+       class="govuk-button govuk-button--start"
        data-module="govuk-button"
        (click)="createHearingRequest()"
        style="padding-right: 10px;background-image:none;">

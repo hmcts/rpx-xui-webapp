@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { cold, hot } from 'jasmine-marbles';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { HearingDayScheduleModel } from '../../models/hearingDaySchedule.model';
 import { HearingListModel } from '../../models/hearingList.model';
 import { HearingListMainModel } from '../../models/hearingListMain.model';
@@ -11,6 +11,7 @@ import * as hearingListActions from '../actions/hearing-list.action';
 import { HearingListEffects } from './hearing-list.effects';
 import {HttpError} from '../../../models/httpError.model';
 import { provideMockStore } from '@ngrx/store/testing';
+import * as hearingListReducer from '../reducers/hearing-list.reducer';
 
 describe('Hearing List Effects', () => {
   let actions$;
@@ -83,15 +84,14 @@ describe('Hearing List Effects', () => {
 
   describe('handleError', () => {
     it('should error when loading all hearings request failure', () => {
+      const { initialHearingListState } = hearingListReducer;
       const errorResponse: HttpError = {
         status: 500,
         message: 'Internal server error',
       }
-      hearingsServiceMock.getAllHearings.and.returnValue(throwError(errorResponse));
-      const action = new hearingListActions.LoadAllHearings('h1000000');
-      actions$ = cold('-a', {a: action});
-      const expected = cold('-b', {b: errorResponse});
-      expect(effects.loadHearingList$).toBeObservable(expected);
-  });
+      const action = new hearingListActions.LoadAllHearingsFailure(errorResponse);
+      const state = hearingListReducer.hearingListReducer(initialHearingListState, action);
+      expect(state.lastError).not.toEqual(null);
+    });
   });
 });

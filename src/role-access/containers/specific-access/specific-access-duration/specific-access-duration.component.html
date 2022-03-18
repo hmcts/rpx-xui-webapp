@@ -1,1 +1,44 @@
-How long do you want to give access to this case for? (specific-access-duration)
+
+ <h1 class="govuk-heading-l">
+  <span class="govuk-caption-l">{{caption}}</span>
+  {{ title }}
+</h1>
+<div class="govuk-form-group" [formGroup]="formGroup">
+  <fieldset class="govuk-fieldset" [attr.aria-label]="caption">
+    <legend class="hidden-legend">{{caption}}</legend>
+    <div class="govuk-radios govuk-radios--conditional" data-module="radios">
+      <div *ngFor="let duration of durations" class="govuk-radios__item">
+        <input
+          class="govuk-radios__input"
+          id="choose-duration-{{duration.id}}"
+          name="radioSelected"
+          type="radio"
+          [value]="duration.name"
+          [attr.aria-describedby]="duration.description"
+          formControlName="radioSelected"
+          (change)="onSelectOption(duration.name)"
+          [checked]="duration.checked" />
+        <label class="govuk-label govuk-radios__label" for="choose-duration-{{duration.id}}">
+          {{ duration.name }}
+        </label>
+        <span id="choose-duration-{{duration.id}}-item-hint" class="govuk-hint govuk-radios__hint">
+          {{ duration.description }}
+        </span>
+      </div>
+      <div id="choose-duration-another-period" *ngIf="anotherPeriod" class="govuk-radios__conditional">
+        <div class="govuk-form-group">
+          <xuilib-gov-uk-date
+            [formGroup]="formGroup"
+            [config]="configStart"
+            [errorMessage]="startDateErrorMessage">
+          </xuilib-gov-uk-date>
+          <xuilib-gov-uk-date
+            [formGroup]="formGroup"
+            [config]="configEnd"
+            [errorMessage]="endDateErrorMessage">
+          </xuilib-gov-uk-date>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+</div>

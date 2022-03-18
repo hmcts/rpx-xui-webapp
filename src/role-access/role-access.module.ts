@@ -11,6 +11,7 @@ import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 import { SharedModule } from '../app/shared/shared.module';
 import { CaseworkerDataService } from '../work-allocation-2/services';
 import * as fromComponents from './components';
+import * as fromCommon from './common';
 import { ChooseRadioOptionComponent } from './components';
 import * as fromContainers from './containers';
 import { roleAccessRouting } from './role-access.routes';
@@ -29,7 +30,11 @@ import { effects, reducers } from './store';
     ReactiveFormsModule,
     ExuiCommonLibModule
   ],
-  declarations: [...fromContainers.containers, ...fromComponents.components],
+  declarations: [
+    ...fromContainers.containers,
+    ...fromComponents.components,
+    ...fromCommon.components
+  ],
   entryComponents: [],
   exports: [
     ChooseRadioOptionComponent

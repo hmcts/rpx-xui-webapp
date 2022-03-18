@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 import { ERROR_MESSAGE, PERSON_ROLE } from '../../../constants';
-import { SpecificAccessNavigationEvent } from '../../../models';
+import { SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
 import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
 import * as fromFeature from '../../../store';
 
@@ -45,6 +45,7 @@ export class SpecificAccessDurationComponent implements OnInit, OnDestroy {
   public dispatchEvent(navEvent: SpecificAccessNavigationEvent) {
     switch (navEvent) {
       case SpecificAccessNavigationEvent.CONTINUE:
+        this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_APPROVED));
         break;
       default:
         throw new Error('Invalid option');

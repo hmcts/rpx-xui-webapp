@@ -13,11 +13,7 @@ export class RoleAccessDurationComponent implements OnInit {
   @Input() configEnd:GovUiConfigModel;
   @Input() configStart:GovUiConfigModel;
   @Input() defaultDuration = DurationType.SEVEN_DAYS;
-  @Input() durations: Duration[] = [
-    { id: '1', name: DurationType.SEVEN_DAYS, description: '', checked: false },
-    { id: '2', name: DurationType.INDEFINITE, description: '', checked: false },
-    { id: '3', name: DurationType.ANOTHER_PERIOD, description: '', checked: false }
-  ];
+  @Input() durations: Duration[] = [];
   @Input() title = 'Title';
 
   // properties

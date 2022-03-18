@@ -8,7 +8,8 @@ import { ERROR_MESSAGE, PERSON_ROLE } from '../../../constants';
 import { SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
 import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
 import * as fromFeature from '../../../store';
-import { DurationType } from 'src/role-access/models/enums';
+import { DurationType } from '../../../models/enums';
+import { Duration } from '../../../common';
 
 @Component({
   selector: 'exui-specific-access-duration',
@@ -28,13 +29,18 @@ export class SpecificAccessDurationComponent implements OnInit, OnDestroy {
   public personRole: PersonRole;
 
   public defaultDuration = DurationType.SEVEN_DAYS;
-  public configEnd:GovUiConfigModel = {
+  public durations: Duration[] = [
+    { id: '1', name: DurationType.SEVEN_DAYS, description: 'Starts from today and ends at midnight 7 days from now.', checked: false },
+    { id: '2', name: DurationType.INDEFINITE, description: 'Access starts from today and lasts while the case is open.', checked: false },
+    { id: '3', name: DurationType.ANOTHER_PERIOD, description: 'You’ll need to provide both a start and end date for access to the case.', checked: false }
+  ];
+  public configEnd: GovUiConfigModel = {
     id: 'endDate',
     name: 'endDate',
     hint: 'For example, 01 01 2022',
     label: 'Access Ends'
   }
-  public configStart:GovUiConfigModel = {
+  public configStart: GovUiConfigModel = {
     id: 'startDate',
     name: 'startDate',
     hint: 'For example, 01 01 2022',

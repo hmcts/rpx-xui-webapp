@@ -325,6 +325,13 @@ class WorkAllocationModels {
             ]
         }
     }
+
+    getCaseEventTasksCompletable(){
+        return {
+            task_required_for_event:false,
+            tasks:[]
+        }
+    }
 }
 
 

@@ -26,6 +26,8 @@ class WorkAllocationMockData {
         
         this.caseworkersByService = this.getCaseworkersByService(this.waSupportedJusridictions);
 
+        this.caseEventTasks = WorkAllocationDataModels.getCaseEventTasksCompletable();
+
         this.exclusions = this.getCaseExclusions([
             { added: '2021-10-12T12:14:42.230129Z', name: 'judeg a', userType: 'JUDICIAL', type: 'CASE', id: '12345678901' },
             { added: '2021-10-12T12:14:42.230129Z', name: 'judeg b', userType: 'JUDICIAL', type: 'CASE', id: '12345678902' },
@@ -58,6 +60,40 @@ class WorkAllocationMockData {
 
         this.taskDetails = { task: this.getRelease2TaskDetails() } 
     }
+
+    setTaskDetails(task){
+        Object.keys(task).forEach(taskkey => {
+            if (task[taskkey].includes('true') || task[taskkey].includes('false')) {
+                this.taskDetails.task[taskkey] = task[taskkey] === "true";
+            } else if (task[taskkey].includes('null')) {
+                delete this.taskDetails.task[taskkey];
+            } else {
+                this.taskDetails.task[taskkey] = task[taskkey];
+            }
+
+        });
+    }
+
+    setTaskRequiredForEventAs(taskRequired){
+        this.caseEventTasks.task_required_for_event = taskRequired;
+    }
+
+    setTaskRequiredForEventTasks(tasks){
+
+        const watasks = tasks.map(task => {
+            const waTask = { ...this.caseTasks[0] };
+            Object.keys(task).forEach(taskkey => {
+                if (task[taskkey].includes('true') || task[taskkey].includes('false')){
+                    waTask[taskkey] = task[taskkey] === "true"; 
+                }else{
+                    waTask[taskkey] = task[taskkey]; 
+                }
+            });
+            return waTask; 
+        })
+        this.caseEventTasks.tasks = watasks; 
+    }
+ 
 
     getCaseTasksForCaseId(caseId){
         for (const task of this.caseTasks){

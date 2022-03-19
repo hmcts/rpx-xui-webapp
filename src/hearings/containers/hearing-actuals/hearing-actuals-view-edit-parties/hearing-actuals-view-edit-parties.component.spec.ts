@@ -257,7 +257,7 @@ describe('HearingViewEditSummaryComponent', () => {
 
   it('submit form should prevent default', () => {
     spyOn(store, 'dispatch');
-    component.submitForm(component.partiesTable.value);
+    component.submitForm(component.form.value);
     expect(store.dispatch).toHaveBeenCalled();
   });
 
@@ -348,7 +348,7 @@ describe('HearingViewEditSummaryComponent add actual participants', () => {
   });
 
   it('should create form with actual parties involved', () => {
-    const parties: any = component.partiesTable.value;
+    const parties: any = component.form.value;
     expect(parties.parties.length).toBe(3);
   });
 

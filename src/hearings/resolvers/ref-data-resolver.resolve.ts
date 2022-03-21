@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
+import { ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap, take } from 'rxjs/operators';
@@ -16,7 +16,8 @@ export class RefDataResolver implements Resolve<LovRefDataModel[]> {
 
   constructor(
     protected readonly lovRefDataService: LovRefDataService,
-    protected readonly hearingStore: Store<fromHearingStore.State>
+    protected readonly hearingStore: Store<fromHearingStore.State>,
+    protected readonly router: Router
   ) { }
 
   public resolve(route?: ActivatedRouteSnapshot): Observable<LovRefDataModel[]> {
@@ -42,7 +43,8 @@ export class RefDataResolver implements Resolve<LovRefDataModel[]> {
   public getReferenceData$(serviceId, category: HearingCategory, isChildRequired): Observable<LovRefDataModel[]> {
     return this.lovRefDataService.getListOfValues(category, serviceId, isChildRequired).pipe(
       catchError(() => {
-        return [];
+        this.router.navigate(['/hearings/error']);
+        return of(null);
       })
     );
   }

@@ -45,7 +45,6 @@ export class SpecificAccessDurationComponent implements OnInit {
   public isStartDateError: boolean;
   public startDateErrorMessage: string;
   public endDateErrorMessage: string;
-  public dateFormat = 'YYYY-MM-DD';
 
   constructor(
     private durationHelperService: DurationHelperService,
@@ -147,7 +146,7 @@ export class SpecificAccessDurationComponent implements OnInit {
         };
       }
       case DurationType.ANOTHER_PERIOD: {
-        if (this.isDateValid() && this.datesMissing() && this.formGroup.valid && this.startDateNotInPast() && this.startDateLessThanEndDate()) {
+        if (this.isDateValid() && this.formGroup.valid && this.startDateNotInPast() && this.startDateLessThanEndDate()) {
           return {
             startDate: this.getStartDate(),
             endDate: this.getEndDate(),
@@ -157,45 +156,30 @@ export class SpecificAccessDurationComponent implements OnInit {
     }
   }
 
-  // TODO: SARD - move to base class
+  /**
+   * Check if the end date is after the start date
+   * @returns boolean for whether the end date is after the start date
+   */
   public startDateLessThanEndDate(): boolean {
-    const startDate = this.getStartDate();
-    const endDate = this.getEndDate();
-    if (startDate > endDate) {
+    if (this.getStartDate() > this.getEndDate()) {
       this.isEndDateError = true;
-      this.endDateErrorMessage = 'The role end date must be after the role start date';
+      this.endDateErrorMessage = 'The access end date must be after the access start date';
       return false;
     }
     return true;
   }
 
-  // TODO: SARD - move to base class
+  /**
+   * Check if start date is in the past
+   * @returns boolean for whether the date is in the past or not
+   */
   public startDateNotInPast(): boolean {
-    const startDate = this.getStartDate();
-    const currentDate = this.getTodayDate();
-    if (startDate < currentDate) {
+    if (this.getStartDate() < this.getTodayDate()) {
       this.isStartDateError = true;
-      this.startDateErrorMessage = 'The role start date must not be in the past';
+      this.startDateErrorMessage = 'The access start date must not be in the past';
       return false;
     }
     return true;
-  }
-
-  // TODO: SARD - move to base class
-  public datesMissing(): boolean {
-    let dateMissing = true;
-    if (!parseInt(this.dayStartDate.value, 10) || !parseInt(this.monthStartDate.value, 10) || !parseInt(this.yearStartDate.value, 10)) {
-      this.startDateErrorMessage = 'Please enter some value';
-      this.isStartDateError = true;
-      dateMissing = false;
-    }
-
-    if (!parseInt(this.dayEndDate.value, 10) || !parseInt(this.monthEndDate.value, 10) || !parseInt(this.yearEndDate.value, 10)) {
-      this.endDateErrorMessage = 'Please enter some value';
-      this.isEndDateError = true;
-      dateMissing = false;
-    }
-    return dateMissing;
   }
 
   /**

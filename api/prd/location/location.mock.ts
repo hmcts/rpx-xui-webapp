@@ -2,7 +2,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import { HttpMockAdapter } from '../../common/httpMockAdapter';
 import { ALL_COURT_LOCATIONS } from './data/location.mock.data';
-import { toEpimsLocation } from "./models/location.model";
+import {toEpimmsLocation} from "./models/location.model";
 
 export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
@@ -13,7 +13,7 @@ export const init = () => {
     const requestURL = config.url;
     const epimmsIDIdx = config.url.lastIndexOf('=');
     const epimmsID = requestURL.substring(epimmsIDIdx + 1);
-    const searchResult = ALL_COURT_LOCATIONS.find(location => location.epims_id === epimmsID);
+    const searchResult = ALL_COURT_LOCATIONS.find(location => location.epimms_id === epimmsID);
     return [
       200,
       searchResult,
@@ -42,9 +42,9 @@ export const init = () => {
         || (location.postcode ? location.postcode.replace(/\s+/g, '').toLowerCase().includes(searchTerm.toLowerCase()) : false)
         || (location.postcode ? location.postcode.toLowerCase().includes(searchTerm.toLowerCase()) : false)
         || (location.court_address ? location.court_address.toLowerCase().includes(searchTerm.toLowerCase()) : false))
-      .map(locationModel => toEpimsLocation(locationModel))
+      .map(locationModel => toEpimmsLocation(locationModel))
       .filter((locationByEPIMSModel, index, locationByEPIMSModelArray) =>
-        locationByEPIMSModelArray.findIndex(t => (t.epims_id === locationByEPIMSModel.epims_id)) === index);
+        locationByEPIMSModelArray.findIndex(t => (t.epimms_id === locationByEPIMSModel.epimms_id)) === index);
     return [
       200,
       searchResult,

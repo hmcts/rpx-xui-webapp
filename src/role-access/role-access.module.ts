@@ -9,13 +9,13 @@ import { StoreModule } from '@ngrx/store';
 
 import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 import { SharedModule } from '../app/shared/shared.module';
-import { InfoMessageCommService } from '../work-allocation-2/services';
+import { CaseworkerDataService } from '../work-allocation-2/services';
 import * as fromComponents from './components';
+import { ChooseRadioOptionComponent } from './components';
 import * as fromContainers from './containers';
 import { roleAccessRouting } from './role-access.routes';
 import { RoleExclusionsService } from './services';
 import { effects, reducers } from './store';
-import { CaseworkerDataService } from '../work-allocation-2/services';
 
 @NgModule({
   imports: [
@@ -31,11 +31,13 @@ import { CaseworkerDataService } from '../work-allocation-2/services';
   ],
   declarations: [...fromContainers.containers, ...fromComponents.components],
   entryComponents: [],
+  exports: [
+    ChooseRadioOptionComponent
+  ],
   providers: [{
     provide: AbstractAppConfig,
-    useExisting: AppConfig
+    useExisting: AppConfig,
   },
-    InfoMessageCommService,
     RoleExclusionsService,
     CaseworkerDataService
   ]

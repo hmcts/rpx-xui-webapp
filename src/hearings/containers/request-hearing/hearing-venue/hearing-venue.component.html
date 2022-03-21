@@ -12,7 +12,9 @@
       <div class="govuk-error-summary__body">
         <ul class="govuk-list govuk-error-summary__list">
           <li>
-            <a href="javascript:void(0)" (click)="getLocationSearchFocus()">Enter a valid location</a>
+            <a href="javascript:void(0)"
+               [routerLink]="['/', 'hearings', 'request', 'hearing-venue']"
+               [fragment]="'inputLocationSearch'">Enter a valid location</a>
           </li>
         </ul>
       </div>
@@ -50,8 +52,6 @@
                                       class="search-location"
                                       [selectedLocations]="selectedLocations"
                                       [control]="findLocationFormGroup.controls.locationSelectedFormControl"
-                                      [displayedLocations]="displayedLocations"
-                                      [disabled]=false
                                       [serviceIds]="serviceIds"
                                       [locationType]="'hearing'"></exui-search-location>
                 <a href="javascript:void(0)" (click)="addSelection()" class="govuk-button govuk-button--secondary"

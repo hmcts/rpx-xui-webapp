@@ -3,9 +3,10 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {AbstractControl, FormBuilder, ReactiveFormsModule} from '@angular/forms';
 import {By} from '@angular/platform-browser';
 import {ActivatedRoute} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
 import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
 import {SearchLocationComponent} from '@hmcts/rpx-xui-common-lib';
-import {LocationByEPIMSModel} from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import {LocationByEPIMMSModel} from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
 import {initialState} from '../../../hearing.test.data';
@@ -38,7 +39,7 @@ class MockLocationSearchContainerComponent {
   @Input() public serviceIds: string = '';
   @Input() public locationType: string = '';
   @Input() public disabled: boolean = false;
-  @Input() public selectedLocations: LocationByEPIMSModel[];
+  @Input() public selectedLocations: LocationByEPIMMSModel[];
   @Input() public submitted?: boolean = true;
   @Input() public control: AbstractControl;
   public autoCompleteInputBox: MockAutoCompleteInputBox = new MockAutoCompleteInputBox();
@@ -52,7 +53,7 @@ describe('HearingVenueComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule],
+      imports: [ReactiveFormsModule, RouterTestingModule],
       declarations: [HearingVenueComponent, MockLocationSearchContainerComponent, MockHearingPartiesComponent],
       providers: [
         provideMockStore({initialState}),
@@ -74,19 +75,17 @@ describe('HearingVenueComponent', () => {
     fixture = TestBed.createComponent(HearingVenueComponent);
     component = fixture.componentInstance;
     component.selectedLocations = [{
-      epims_id: '1',
+      epimms_id: '1',
       court_name: 'wolverhampton court',
       region: 'welsh'
-    }] as LocationByEPIMSModel[];
+    }] as LocationByEPIMMSModel[];
     fixture.detectChanges();
     spyOn(component, 'removeSelection').and.callThrough();
     spyOn(component, 'reInitiateState').and.callThrough();
-    spyOn(component, 'getLocationSearchFocus').and.callThrough();
     spyOn(component, 'appendLocation').and.callThrough();
     spyOn(component, 'prepareHearingRequestData').and.callThrough();
     spyOn(component, 'isFormValid').and.callThrough();
     component.searchLocationComponent = new MockLocationSearchContainerComponent() as unknown as SearchLocationComponent;
-    spyOn(component.searchLocationComponent.autoCompleteInputBox.nativeElement, 'focus');
   });
 
   it('should create', () => {
@@ -98,10 +97,10 @@ describe('HearingVenueComponent', () => {
       fixture.detectChanges();
       expect(component.selectedLocations).toEqual([
         {
-          epims_id: '123',
+          epimms_id: '123',
           court_name: 'test location',
           region: 'Wales',
-        } as LocationByEPIMSModel
+        } as LocationByEPIMMSModel
       ]);
 
       expect(component.reInitiateState).toHaveBeenCalled();
@@ -124,11 +123,11 @@ describe('HearingVenueComponent', () => {
   });
 
   it('should return false for isFormValid when a location is selected and not added', () => {
-    const location: LocationByEPIMSModel = {
-      epims_id: '123',
+    const location: LocationByEPIMMSModel = {
+      epimms_id: '123',
       court_name: 'Test Caurt Name',
       region: 'Wales'
-    } as LocationByEPIMSModel;
+    } as LocationByEPIMMSModel;
 
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(location);
     fixture.detectChanges();
@@ -146,11 +145,11 @@ describe('HearingVenueComponent', () => {
   });
 
   it('should return true for isLocationValid when locationSelectedformcontrol is not valid and is dirty', () => {
-    const location: LocationByEPIMSModel = {
-      epims_id: '123',
+    const location: LocationByEPIMMSModel = {
+      epimms_id: '123',
       court_name: 'Test Caurt Name',
       region: 'Wales'
-    } as LocationByEPIMSModel;
+    } as LocationByEPIMMSModel;
 
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(location);
     component.findLocationFormGroup.controls.locationSelectedFormControl.markAsDirty();
@@ -164,13 +163,12 @@ describe('HearingVenueComponent', () => {
   it('should initialise component', async () => {
     expect(component).toBeDefined();
     component.ngOnInit();
-    expect(component.getLocationSearchFocus).toHaveBeenCalled();
   });
 
   it('should display selection in selection list', async () => {
     const location = {
       court_venue_id: '100',
-      epims_id: '219164',
+      epimms_id: '219164',
       is_hearing_location: 'Y',
       is_case_management_location: 'Y',
       site_name: 'Aberdeen Tribunal Hearing Centre',
@@ -183,7 +181,7 @@ describe('HearingVenueComponent', () => {
       open_for_public: 'Yes',
       court_address: 'AB1, 48 HUNTLY STREET, ABERDEEN',
       postcode: 'AB11 6LT'
-    } as LocationByEPIMSModel;
+    } as LocationByEPIMMSModel;
 
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(location);
     component.addSelection();
@@ -197,7 +195,7 @@ describe('HearingVenueComponent', () => {
   it('should remove selection in selection list', async () => {
     const location = {
       court_venue_id: '100',
-      epims_id: '219164',
+      epimms_id: '219164',
       is_hearing_location: 'Y',
       is_case_management_location: 'Y',
       site_name: 'Aberdeen Tribunal Hearing Centre',
@@ -210,7 +208,7 @@ describe('HearingVenueComponent', () => {
       open_for_public: 'Yes',
       court_address: 'AB1, 48 HUNTLY STREET, ABERDEEN',
       postcode: 'AB11 6LT'
-    } as LocationByEPIMSModel;
+    } as LocationByEPIMMSModel;
 
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(location);
     component.addSelection();
@@ -223,7 +221,7 @@ describe('HearingVenueComponent', () => {
   it('should show error when there is no locations found', async (done) => {
     const location = {
       court_venue_id: '100',
-      epims_id: '219164',
+      epimms_id: '219164',
       is_hearing_location: 'Y',
       is_case_management_location: 'Y',
       site_name: 'Aberdeen Tribunal Hearing Centre',
@@ -236,7 +234,7 @@ describe('HearingVenueComponent', () => {
       open_for_public: 'Yes',
       court_address: 'AB1, 48 HUNTLY STREET, ABERDEEN',
       postcode: 'AB11 6LT'
-    } as LocationByEPIMSModel;
+    } as LocationByEPIMMSModel;
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
     component.addSelection();
     fixture.whenStable().then(() => {
@@ -269,26 +267,6 @@ describe('HearingVenueComponent', () => {
     expect(component.findLocationFormGroup.controls.locationSelectedFormControl.value).toEqual(undefined);
   });
 
-  it('should call getLocationSearchFocus when clicking on the summary error anchor', async (done) => {
-    component.findLocationFormGroup.controls.locationSelectedFormControl.setValue('TEST ERROR');
-    fixture.whenStable().then(() => {
-      fixture.detectChanges();
-      done();
-      const errorElement = fixture.debugElement.query(By.css('.govuk-error-message'));
-      expect(errorElement).toBeDefined();
-      const errorAnchor = errorElement.nativeElement.nativeElement.querySelector('a');
-      errorAnchor.dispatchEvent(new Event('click'));
-      fixture.whenStable().then(() => {
-        fixture.detectChanges();
-        expect(component.getLocationSearchFocus).toHaveBeenCalled();
-        expect(component.searchLocationComponent &&
-          component.searchLocationComponent.autoCompleteInputBox &&
-          component.searchLocationComponent.autoCompleteInputBox.nativeElement).toBeDefined();
-        expect(component.searchLocationComponent.autoCompleteInputBox.nativeElement.focus).toHaveBeenCalled();
-      });
-    });
-  });
-
   it('should include page elements', () => {
     const hearingHeader = fixture.debugElement.query(By.css('.govuk-heading-l'));
     expect(hearingHeader.nativeElement.innerText).toContain('What are the hearing venue details?');
@@ -296,14 +274,6 @@ describe('HearingVenueComponent', () => {
     expect(hint.nativeElement.innerText).toContain('If this is a fully remote hearing you must still select the court or tribunal which will be managing the case.');
     const findCourtLink = fixture.debugElement.query(By.css('.govuk-inset-text'));
     expect(findCourtLink.nativeElement.innerText).toContain('You can check the venue has the required facilities or reasonable adjustments using');
-  });
-
-  it('should call auto complete focus', () => {
-    component.getLocationSearchFocus();
-    expect(component.searchLocationComponent &&
-      component.searchLocationComponent.autoCompleteInputBox &&
-      component.searchLocationComponent.autoCompleteInputBox.nativeElement).toBeDefined();
-    expect(component.searchLocationComponent.autoCompleteInputBox.nativeElement.focus).toHaveBeenCalled();
   });
 
   afterEach(() => {

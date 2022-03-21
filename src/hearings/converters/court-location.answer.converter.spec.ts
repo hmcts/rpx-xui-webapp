@@ -1,13 +1,13 @@
-import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { provideMockStore } from '@ngrx/store/testing';
-import { cold } from 'jasmine-marbles';
-import { of } from 'rxjs';
-import { initialState, judicailUsersRefData } from '../hearing.test.data';
-import { LocationModel } from '../models/location.model';
-import { State } from '../store/reducers';
-import { CourtLocationAnswerConverter } from './court-location.answer.converter';
+import {TestBed} from '@angular/core/testing';
+import {ActivatedRoute} from '@angular/router';
+import {LocationModel} from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import {Store} from '@ngrx/store';
+import {provideMockStore} from '@ngrx/store/testing';
+import {cold} from 'jasmine-marbles';
+import {of} from 'rxjs';
+import {initialState} from '../hearing.test.data';
+import {State} from '../store/reducers';
+import {CourtLocationAnswerConverter} from './court-location.answer.converter';
 
 describe('CourtLocationAnswerConverter', () => {
 
@@ -16,7 +16,7 @@ describe('CourtLocationAnswerConverter', () => {
   let router: any;
   const COURT_LOCATION: LocationModel = {
     court_venue_id: '164',
-    epims_id: '815833',
+    epimms_id: '815833',
     is_hearing_location: 'N',
     is_case_management_location: 'Y',
     site_name: 'Birmingham Social Security and Child Support Tribunal',
@@ -36,7 +36,7 @@ describe('CourtLocationAnswerConverter', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({ initialState }),
+        provideMockStore({initialState}),
         {
           provide: ActivatedRoute,
           useValue: {
@@ -58,7 +58,7 @@ describe('CourtLocationAnswerConverter', () => {
     const STATE: State = initialState.hearings;
     const result$ = listedVenueAnswerConverter.transformAnswer(of(STATE));
     const type = COURT_LOCATION.site_name;
-    const expected = cold('(b|)', { b: type });
+    const expected = cold('(b|)', {b: type});
     expect(result$).toBeObservable(expected);
   });
 

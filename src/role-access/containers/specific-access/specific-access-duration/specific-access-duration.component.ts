@@ -12,6 +12,7 @@ import {
   SpecificAccessNavigationEvent
 } from '../../../models';
 import { DurationType } from '../../../models/enums';
+import { DurationHelperService } from '../../../services/duration-helper.service';
 import * as fromFeature from '../../../store';
 import { getTitleText } from '../../../utils';
 
@@ -47,6 +48,7 @@ export class SpecificAccessDurationComponent implements OnInit {
   public dateFormat = 'YYYY-MM-DD';
 
   constructor(
+    private durationHelperService: DurationHelperService,
     private readonly store: Store<fromFeature.State>,
     private readonly builder: FormBuilder
   ) {
@@ -196,47 +198,41 @@ export class SpecificAccessDurationComponent implements OnInit {
     return dateMissing;
   }
 
-  // TODO: SARD - move to base class
-  public isDateValid() {
-    const startDate = `${this.yearStartDate.value}-${this.formatString(this.monthStartDate.value)}-${this.formatString(this.dayStartDate.value)}`;
-    const isStartDateValid = moment(startDate, this.dateFormat, true).isValid();
-    if (!isStartDateValid) {
+  public isDateValid(): boolean {
+    const startDate = this.durationHelperService.convertDateControlsToString([this.dayStartDate, this.monthStartDate, this.yearStartDate]);
+    const endDate = this.durationHelperService.convertDateControlsToString([this.dayEndDate, this.monthEndDate, this.yearEndDate]);
+    const dateCheck = this.durationHelperService.checkDates(startDate, endDate);
+    if (!dateCheck.isStartDateValid) {
       this.startDateErrorMessage = 'Invalid Start date';
       this.isStartDateError = true;
     }
-
-    const endDate = `${this.yearEndDate.value}-${this.formatString(this.monthEndDate.value)}-${this.formatString(this.dayEndDate.value)}`;
-    const isEndDateValid = moment(endDate, this.dateFormat, true).isValid();
-    if (!isEndDateValid) {
+    if (!dateCheck.isEndDateValid) {
       this.endDateErrorMessage = 'Invalid End date';
       this.isEndDateError = true;
     }
-    return isStartDateValid && isEndDateValid;
+    return dateCheck.isStartDateValid && dateCheck.isEndDateValid;
   }
 
-  // TODO: SARD - move to base class
-  private formatString(month: number) {
-    return month >= 10 ? month.toString() : `0${month}`;
-  }
-
-  // TODO: SARD - move to base class
   public getTodayDate(): Date {
-    const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
-    return currentDate;
+    return this.durationHelperService.getTodaysDate();
   }
 
-  // TODO: SARD - move to base class
   public getStartDate(): Date {
-    return new Date(this.yearStartDate.value, this.monthStartDate.value - 1, this.dayStartDate.value);
+    return this.durationHelperService.getDateFromControls(
+      this.dayStartDate,
+      this.monthStartDate,
+      this.yearStartDate
+    );
   }
 
-  // TODO: SARD - move to base class
   public getEndDate(): Date {
-    return new Date(this.yearEndDate.value, this.monthEndDate.value - 1, this.dayEndDate.value);
+    return this.durationHelperService.getDateFromControls(
+      this.dayEndDate,
+      this.monthEndDate,
+      this.yearEndDate
+    );
   }
 
-  // TODO: SARD - rename this to be more sensible name
   public onDurationChange(item: DurationType): void {
     this.anotherPeriod = item === DurationType.ANOTHER_PERIOD;
     this.selectedDuration = item;

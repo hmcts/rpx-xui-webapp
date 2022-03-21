@@ -1,22 +1,22 @@
-import { APP_BASE_HREF } from '@angular/common';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { inject, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { Store, StoreModule } from '@ngrx/store';
-import { of } from 'rxjs';
-import { metaReducers } from '../../app/app.module';
-import { reducers } from '../../app/store';
-import { LocationModel } from '../models/location.model';
-import { LocationsDataService } from '../services/locations-data.service';
+import {APP_BASE_HREF} from '@angular/common';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {inject, TestBed} from '@angular/core/testing';
+import {RouterTestingModule} from '@angular/router/testing';
+import {LocationModel} from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import {Store, StoreModule} from '@ngrx/store';
+import {of} from 'rxjs';
+import {metaReducers} from '../../app/app.module';
+import {reducers} from '../../app/store';
+import {LocationsDataService} from '../services/locations-data.service';
 import * as fromHearingStore from '../store';
-import { CourtLocationsDataResolver } from './court-locations-resolver.resolve';
+import {CourtLocationsDataResolver} from './court-locations-resolver.resolve';
 
 describe('CourtLocationsData Resolver', () => {
   let locationsDataService: LocationsDataService;
   let store: Store<fromHearingStore.State>;
   const dataRef: LocationModel = {
     court_venue_id: '164',
-    epims_id: '815833',
+    epimms_id: '815833',
     is_hearing_location: 'N',
     is_case_management_location: 'Y',
     site_name: 'Birmingham Social Security and Child Support Tribunal',
@@ -35,17 +35,17 @@ describe('CourtLocationsData Resolver', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        StoreModule.forRoot(reducers, { metaReducers }),
-        RouterTestingModule.withRoutes([]),
-        HttpClientTestingModule,
-      ],
-      providers: [
-        CourtLocationsDataResolver,
-        LocationsDataService,
-        { provide: APP_BASE_HREF, useValue: '/' }
-      ]
-    }
+        imports: [
+          StoreModule.forRoot(reducers, {metaReducers}),
+          RouterTestingModule.withRoutes([]),
+          HttpClientTestingModule,
+        ],
+        providers: [
+          CourtLocationsDataResolver,
+          LocationsDataService,
+          {provide: APP_BASE_HREF, useValue: '/'}
+        ]
+      }
     );
     locationsDataService = TestBed.get(LocationsDataService) as LocationsDataService;
     store = TestBed.get(Store) as Store<fromHearingStore.State>;

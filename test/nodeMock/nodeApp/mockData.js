@@ -2,6 +2,15 @@ const nodeAppDataModel = require('../../dataModels/nodeApp');
 
 class NodeAppMockData {
 
+    constructor(){
+
+    }
+
+    init(){
+        const roles = ['task-supervisor', 'case-allocator', 'caseworker', 'caseworker-ia', 'caseworker-ia-caseofficer', 'task-supervisor', 'case-allocator'];
+        this.userDetails = this.getUserDetailsWithRoles(roles); 
+    }
+
     getConfigurationValue(configurationKey) {
         return configurations[configurationKey];
     }
@@ -9,15 +18,36 @@ class NodeAppMockData {
     getUserDetailsWithRoles(roles) {
         const userDetails = nodeAppDataModel.getUserDetails_oidc();
         userDetails.userInfo.roles = roles;
+        userDetails.userInfo.roleCategory = this.getUserRoleType(roles);
+        this.userDetails = userDetails;
+ 
         return userDetails;
     }
 
-    getUserDetailsWithRolesAndIdamId(roles,idamId) {
+    setUserDetailsWithRolesAndIdamId(roles,idamId) {
         const userDetails = nodeAppDataModel.getUserDetails_oidc();
         userDetails.userInfo.roles = roles;
         userDetails.userInfo.id = idamId;
         userDetails.userInfo.uid = idamId;
+        userDetails.userInfo.roleCategory = this.getUserRoleType(roles);
+        this.userDetails = userDetails; 
+
         return userDetails;
+    }
+
+    getUserRoleType(roles) {
+        let roleType = '';
+        for (const role of roles) {
+            if (role.includes('pui-case-manager')) {
+                roleType = 'SOLICITOR';
+                break;
+            } else if (role.includes('judge')) {
+                roleType = 'JUDICIAL';
+                break;
+            }
+        }
+
+        return roleType !== '' ? roleType : 'LEGAL_OPS'
     }
 
     getUIConfiguration() {
@@ -27,7 +57,8 @@ class NodeAppMockData {
             "launchDarklyClientId": "5de6610b23ce5408280f2268",
             "manageCaseLink": "https://xui-webapp-aat.service.core-compute-aat.internal/cases",
             "manageOrgLink": "https://xui-mo-webapp-aat.service.core-compute-aat.internal",
-            "protocol": "http"
+            "protocol": "http",
+            "ccdGatewayUrl":"http://localhost:3001"
         };
     }
 

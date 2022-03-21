@@ -17,7 +17,8 @@ import {
   SERVICES_IDAM_LOGIN_URL,
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
   SERVICES_TERMS_AND_CONDITIONS_URL,
-  SERVICES_WORK_ALLOCATION_TASK_API_PATH
+  SERVICES_WORK_ALLOCATION_TASK_API_PATH,
+  SERVICES_CASE_JUDICIAL_REF_PATH
 } from '../configuration/references'
 import * as log4jui from '../lib/log4jui'
 import { JUILogger } from '../lib/models'
@@ -38,6 +39,7 @@ export interface HealthChecks {
     docassemblyApi: any,
     idamApi: any,
     idamWeb: any,
+    judicialApi?: any;
     s2s: any,
     workAllocationApi?: any,
     roleApi?: any,
@@ -63,6 +65,7 @@ if (showFeature(FEATURE_WORKALLOCATION_ENABLED)) {
   config.checks.workAllocationApi = checkServiceHealth(getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH))
   config.checks.caseworkerRefApi = checkServiceHealth(getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH))
   config.checks.roleApi = checkServiceHealth(getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH))
+  config.checks.judicialApi = checkServiceHealth(getConfigValue(SERVICES_CASE_JUDICIAL_REF_PATH))
 }
 
 export const addReformHealthCheck = app => {

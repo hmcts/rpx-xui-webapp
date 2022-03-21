@@ -2,5 +2,5 @@ export enum LocationTypeEnum {
   // Hearing location
   HEARING = 'hearing',
   // Work allocation location
-  CASE_MANAGEMENT = 'case_management',
+  CASE_MANAGEMENT = 'case-management',
 }

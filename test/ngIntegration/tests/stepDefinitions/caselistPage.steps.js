@@ -47,7 +47,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         caseListReq = null;
         await caseListPage.clickApplyWorkbasketFilters();
-        await BrowserWaits.waitForCondition(async () => caseListReq !== null);
+        await BrowserWaits.waitForCondition(async () => caseListReq !== null, `Case list search tequest not received /data/internal/searchCases`);
 
         for (const key of Object.keys(workbasketInputValues)) {
             if (workbasketInputValues[key] instanceof Array) {

@@ -1,1 +1,164 @@
-How long do you want to give access to this case for? (specific-access-duration)
+
+ <h1 class="govuk-heading-l">
+  <span class="govuk-caption-l">{{caption}}</span>
+  {{title}}
+</h1>
+<div class="govuk-form-group" [formGroup]="formGroup">
+  <fieldset class="govuk-fieldset" [attr.aria-label]="caption">
+    <legend class="hidden-legend">{{caption}}</legend>
+    <div class="govuk-radios govuk-radios--conditional" data-module="radios">
+      <div *ngFor="let duration of durations" class="govuk-radios__item">
+        <input
+          class="govuk-radios__input"
+          id="specific-access-{{duration.id}}"
+          name="radioSelected"
+          type="radio"
+          [value]="duration.duration"
+          [attr.aria-describedby]="duration.description"
+          formControlName="radioSelected"
+          (change)="onDurationChange(duration.duration)"
+          [checked]="duration.checked" />
+        <label class="govuk-label govuk-radios__label" for="specific-access-{{duration.id}}">
+          {{ duration.duration }}
+        </label>
+        <span id="specific-access-{{duration.id}}-item-hint" class="govuk-hint govuk-radios__hint">
+          {{ duration.description }}
+        </span>
+      </div>
+      <div id="conditional-specific-access-3"
+        [ngClass]="anotherPeriod? (isStartDateError || isEndDateError ?
+          'govuk-radios__conditional form-group-error' :
+          'govuk-radios__conditional') :
+          'govuk-radios__conditional govuk-radios__conditional--hidden'">
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset" aria-describedby="date-start-hint" role="group">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            Access starts
+          </legend>
+          <span id="date-start-hint" class="govuk-hint">
+            For example, 12 11 2007
+          </span>
+          <div class="govuk-error-summary__body">
+            <span class="govuk-error-message">
+              {{ startDateErrorMessage }}
+            </span>
+          </div>
+          <div class="govuk-date-input" id="date-start">
+            <div class="govuk-date-input__item">
+              <div class="govuk-form-group">
+              <label class="govuk-label govuk-date-input__label" for="date-start-day">
+                Day
+              </label>
+              <input
+                id="date-start-day"
+                name="date-start-day"
+                type="number"
+                pattern="[0-9]*"
+                formControlName="dayStartDate"
+                [ngClass]="isStartDateError?'govuk-input govuk-date-input__input govuk-input--width-2 date-error':'govuk-input govuk-date-input__input govuk-input--width-2'"/>
+                <!-- TODO: SARD - create method for getting class based on isStartDateError state -->
+              </div>
+            </div>
+            <div class="govuk-date-input__item">
+              <div class="govuk-form-group">
+                <label class="govuk-label govuk-date-input__label" for="date-start-month">
+                  Month
+                </label>
+                <input
+                  id="date-start-month"
+                  name="date-start-month"
+                  type="number"
+                  pattern="[0-9]*"
+                  formControlName="monthStartDate"
+                  min="0"
+                  max="11"
+                  [ngClass]="isStartDateError?'govuk-input govuk-date-input__input govuk-input--width-2 date-error':'govuk-input govuk-date-input__input govuk-input--width-2'" />
+                  <!-- TODO: SARD - create method for getting class based on isStartDateError state -->
+              </div>
+            </div>
+            <div class="govuk-date-input__item">
+              <div class="govuk-form-group">
+                <label class="govuk-label govuk-date-input__label" for="date-start-year">
+                  Year
+                </label>
+                <input
+                  id="date-start-year"
+                  name="date-start-year"
+                  type="number"
+                  pattern="[0-9]*"
+                  formControlName="yearStartDate"
+                  [ngClass]="isStartDateError?'govuk-input govuk-date-input__input govuk-input--width-4 date-error':'govuk-input govuk-date-input__input govuk-input--width-4'" />
+                  <!-- TODO: SARD - create method for getting class based on isStartDateError state -->
+              </div>
+            </div>
+          </div>
+          </fieldset>
+        </div>
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset" aria-describedby="date-end-hint" role="group">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+              Access ends
+            </legend>
+            <span id="date-end-hint" class="govuk-hint">
+              For example, 12 11 2007
+            </span>
+            <div class="govuk-error-summary__body">
+              <span class="govuk-error-message">
+                {{endDateErrorMessage}}
+              </span>
+            </div>
+            <div class="govuk-date-input" id="date-end">
+              <div class="govuk-date-input__item">
+                <div class="govuk-form-group">
+                  <label class="govuk-label govuk-date-input__label" for="date-end-day">
+                    Day
+                  </label>
+                  <input
+                    id="date-end-day"
+                    name="date-end-day"
+                    type="number"
+                    pattern="[0-9]*"
+                    formControlName="dayEndDate"
+                    [ngClass]="isEndDateError?'govuk-input govuk-date-input__input govuk-input--width-2 date-error':'govuk-input govuk-date-input__input govuk-input--width-2'" />
+                    <!-- TODO: SARD - create method for getting class based on isStartDateError state -->
+                </div>
+              </div>
+              <div class="govuk-date-input__item">
+                <div class="govuk-form-group">
+                  <label class="govuk-label govuk-date-input__label" for="date-end-month">
+                    Month
+                  </label>
+                  <input
+                    id="date-end-month"
+                    name="date-end-month"
+                    type="number"
+                    pattern="[0-9]*"
+                    formControlName="monthEndDate"
+                    min="0"
+                    max="11"
+                    [ngClass]="isEndDateError?'govuk-input govuk-date-input__input govuk-input--width-2 date-error':'govuk-input govuk-date-input__input govuk-input--width-2'" />
+                    <!-- TODO: SARD - create method for getting class based on isStartDateError state -->
+                </div>
+              </div>
+              <div class="govuk-date-input__item">
+                <div class="govuk-form-group">
+                  <label class="govuk-label govuk-date-input__label" for="date-end-year">
+                    Year
+                  </label>
+                  <input
+                    id="date-end-year"
+                    name="date-end-year"
+                    type="number"
+                    pattern="[0-9]*"
+                    formControlName="yearEndDate"
+                    [ngClass]="isEndDateError?'govuk-input govuk-date-input__input govuk-input--width-4 date-error':'govuk-input govuk-date-input__input govuk-input--width-4'" />
+                    <!-- TODO: SARD - create method for getting class based on isStartDateError state -->
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+</div>

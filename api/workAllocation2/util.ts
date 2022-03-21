@@ -122,7 +122,11 @@ export function assignActionsToTasks(tasks: any[], view: any, currentUser: strin
       }
       const permissions = task.permissions && task.permissions.values && Array.isArray(task.permissions.values)
         ? task.permissions.values : task.permissions;
-      const actions: Action[] = getActionsByPermissions(thisView, permissions);
+      let actions: Action[] = getActionsByPermissions(thisView, permissions);
+      // EUI-5549
+      if (task.assignee && currentUser !== task.assignee && view === ViewType.ACTIVE_TASKS) {
+        actions = actions.filter(action => action.id !== 'claim');
+      }
       const taskWithAction = {...task, actions};
       tasksWithActions.push(taskWithAction);
     }

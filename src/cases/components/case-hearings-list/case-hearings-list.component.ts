@@ -96,7 +96,10 @@ export class CaseHearingsListComponent implements OnInit, OnDestroy {
   public viewDetails(hearing: HearingListViewModel): void {
     if (hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.CANCELLATION_REQUESTED) {
       this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearing.hearingID));
-      this.router.navigate(['/', 'hearings', 'request', 'hearing-cancellation-summary']);
+      this.router.navigate(['/', 'hearings', 'view', 'hearing-cancellation-summary']);
+    } else if (hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.CANCELLED) {
+      this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearing.hearingID));
+      this.router.navigate(['/', 'hearings', 'view', 'hearing-cancelled-summary']);
     } else {
       this.router.navigate(['/', 'hearings', 'view']);
     }

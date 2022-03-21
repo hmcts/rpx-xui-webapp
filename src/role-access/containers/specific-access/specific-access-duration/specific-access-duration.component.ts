@@ -198,6 +198,9 @@ export class SpecificAccessDurationComponent implements OnInit {
     return dateMissing;
   }
 
+  /**
+   * Checks validity of start and end dates
+   */
   public isDateValid(): boolean {
     const startDate = this.durationHelperService.convertDateControlsToString([this.dayStartDate, this.monthStartDate, this.yearStartDate]);
     const endDate = this.durationHelperService.convertDateControlsToString([this.dayEndDate, this.monthEndDate, this.yearEndDate]);
@@ -213,10 +216,16 @@ export class SpecificAccessDurationComponent implements OnInit {
     return dateCheck.isStartDateValid && dateCheck.isEndDateValid;
   }
 
+  /**
+   * Returns a date object representing todays date
+   */
   public getTodayDate(): Date {
     return this.durationHelperService.getTodaysDate();
   }
 
+  /**
+   * Returns a date object for the provided start date controls
+   */
   public getStartDate(): Date {
     return this.durationHelperService.getDateFromControls(
       this.dayStartDate,
@@ -225,6 +234,9 @@ export class SpecificAccessDurationComponent implements OnInit {
     );
   }
 
+  /**
+   * Returns a date object for the provided end date controls
+   */
   public getEndDate(): Date {
     return this.durationHelperService.getDateFromControls(
       this.dayEndDate,
@@ -233,20 +245,20 @@ export class SpecificAccessDurationComponent implements OnInit {
     );
   }
 
+  /**
+   * Handler for when the duration is changed
+   * @param item the DurationType the user selected
+   */
   public onDurationChange(item: DurationType): void {
     this.anotherPeriod = item === DurationType.ANOTHER_PERIOD;
     this.selectedDuration = item;
   }
 
   /**
-   * Returns a string used for the class on date input fields
-   * @param isError whether there is an input error
-   * @param isYear whether the input is a year field
-   * @return the class string for the input field
+   * Returns class string for date input fields
    */
   public getInputClass(isError: boolean, isYear = false): string {
-    const inputClass = `govuk-input govuk-date-input__input govuk-input--width-${isYear ? '4' : '2'}`;
-    return isError ? `${inputClass} date-error` : inputClass;
+    return this.durationHelperService.getInputClass(isError, isYear);
   }
 
 }

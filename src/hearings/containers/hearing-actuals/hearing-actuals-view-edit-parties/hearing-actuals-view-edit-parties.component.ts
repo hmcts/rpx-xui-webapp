@@ -41,9 +41,9 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   public caseTitle: string;
   public id: string;
   public submitted: boolean;
+  public errors: any[] = [];
   private sub: Subscription;
   private formSub: Subscription;
-  public errors: any[] = [];
 
   public constructor(private readonly fb: FormBuilder,
                      private readonly validators: ValidatorsUtils,
@@ -159,6 +159,9 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       return '';
     }
     const keys = Object.keys(errors);
+    if (!keys.length) {
+      return null;
+    }
     if (keys.length === 1) {
       return errors[keys[0]];
     }
@@ -292,9 +295,13 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     });
   }
 
-  private displayErrors(): void {;
+  private displayErrors(): void {
     this.errors = this.parties.controls.reduce((acc, party, index: number) => {
-      return [...acc, {id: `participant${index}`, message: this.displayRowErrors(index)}];
+      const message = this.displayRowErrors(index);
+      if (!message) {
+        return acc;
+      }
+      return [...acc, { id: `participant${index}`, message }];
     }, []);
   }
 }

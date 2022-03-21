@@ -45,7 +45,7 @@
                   </span>
                 </td>
               </tr>
-              <tr class="govuk-table__row" *ngIf="group.get('isParty').value" formGroupName="{{i}}">
+              <tr class="govuk-table__row" *ngIf="group.get('isParty').value" formGroupName="{{i}}" [id]="'participant'+ id">
                 <td class="govuk-table__cell">{{group.get('firstName').value}}</td>
                 <td class="govuk-table__cell">{{group.get('lastName').value}}</td>
                 <td class="govuk-table__cell">{{getRole(group.get('role').value)}}</td>

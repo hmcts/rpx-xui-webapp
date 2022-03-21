@@ -26,7 +26,7 @@ export class AllocateRoleReset implements Action {
 
 export class AllocateRoleSetInitData implements Action {
   public readonly type = AllocateRoleActionTypes.SET_INITIAL_DATA;
-  constructor(public payload: { caseId: string, roleCategory: RoleCategory }) {
+  constructor(public payload: { caseId: string, jurisdiction: string, roleCategory: RoleCategory }) {
   }
 }
 
@@ -56,7 +56,7 @@ export class ChooseAllocateToAndGo implements Action {
 
 export class ChoosePersonAndGo implements Action {
   public readonly type = AllocateRoleActionTypes.CHOOSE_PERSON_AND_GO;
-  constructor(public payload: { person: Person, allocateRoleState: AllocateRoleState }) {
+  constructor(public payload: { person: Person, allocateRoleState: AllocateRoleState, allocateTo: AllocateTo }) {
   }
 }
 

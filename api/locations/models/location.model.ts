@@ -3,7 +3,7 @@ export interface LocationModel {
   court_venue_id: string;
   site_name: string;
   court_name?: string;
-  epims_id: string;
+  epimms_id: string;
   open_for_public?: string;
   court_type_id: string;
   court_type: string;
@@ -26,8 +26,8 @@ export interface LocationModel {
   is_hearing_location: string;
 }
 
-export interface LocationByEPIMSModel {
-  epims_id: string;
+export interface LocationByEPIMMSModel {
+  epimms_id: string;
   site_name: string;
   court_name?: string;
   open_for_public?: string;
@@ -50,9 +50,9 @@ export interface LocationByEPIMSModel {
   is_hearing_location: string;
 }
 
-export function toEpimsLocation(locationModel: LocationModel): LocationByEPIMSModel {
+export function toEpimmsLocation(locationModel: LocationModel): LocationByEPIMMSModel {
   return {
-    epims_id: locationModel.epims_id,
+    epimms_id: locationModel.epimms_id,
     site_name: locationModel.site_name,
     court_name: locationModel.court_name,
     open_for_public: locationModel.open_for_public,

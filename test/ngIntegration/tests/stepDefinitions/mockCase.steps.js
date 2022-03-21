@@ -8,6 +8,7 @@ const browserUtil = require('../../util/browserUtil');
 const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
 const CucumberReporter = require('../../../e2e/support/reportLogger');
 const dummyCaseDetails = require('../../../nodeMock/ccd/caseDetails_data');
+const ccdMockData = require('../../../nodeMock/ccd/ccdApi');
 
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
 const workAlloctionMockData = require('../../../nodeMock/workAllocation/mockData');
@@ -66,11 +67,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Given('I set MOCK case details with reference {string}', async function(caseDetailsReference){
-       const caseDetails = JSON.parse(JSON.stringify(dummyCaseDetails));
+        const caseDetails = ccdMockData.caseDetailsResponse;
         global.scenarioData[caseDetailsReference] = caseDetails;
-        MockApp.onGet('/data/internal/cases/:caseid', (req, res) => {
-            res.send(caseDetails);
-        });
+        // MockApp.onGet('/data/internal/cases/:caseid', (req, res) => {
+        //     res.send(caseDetails);
+        // });
     });
 
     Given('I set MOCK case details {string} property {string} as {string}', async function(caseDetailsRef, property, value){
@@ -93,12 +94,14 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                     dateObj.setDate(dateObj.getDate() + parseInt(hash[key]));
                     hash[key] = dateObj.toISOString();
                 }
+
+                if(key === 'role-name'){
+                    hash[key] = hash[key].toLowerCase().split(" ").join("-"); 
+                }
             }
         }
-        const caseRoles = workAlloctionMockData.getCaseRoles(dateTableHashes);
-        MockApp.onPost('/api/role-access/roles/post', (req, res) => {
-            res.send(caseRoles);
-        });
+        workAlloctionMockData.caseRoles = workAlloctionMockData.getCaseRoles(dateTableHashes);
+        
     }); 
 
     Given('I set MOCK case role exclusions', async function (caseRoleExclusionsDatatable) {
@@ -112,21 +115,40 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 }
             }
         }
-        const caseRoleExclusions = workAlloctionMockData.getCaseExclusions(dateTableHashes);
-        MockApp.onPost('/api/role-access/exclusions/post', (req, res) => {
-            res.send(caseRoleExclusions);
-        });
+        workAlloctionMockData.exclusions= workAlloctionMockData.getCaseExclusions(dateTableHashes);
     });
 
     Given('I set MOCK case tasks with userDetails from reference {string}', async function (userDetailsRef, caseTasksDatatable) {
         const userDetails = global.scenarioData[userDetailsRef];
 
         const dateTableHashes = caseTasksDatatable.hashes();
-        const tasks = workAlloctionMockData.getCaseTasks(dateTableHashes, userDetails);
-        MockApp.onGet('/workallocation2/case/task/:caseid', (req, res) => {
-            CucumberReporter.AddJson(tasks);
-            res.send(tasks);
-        });
+        workAlloctionMockData.caseTasks = workAlloctionMockData.getCaseTasks(dateTableHashes, userDetails);
+        
+    });
+
+    Given('I set MOCK case list values', async function(caseListAttributesDatatable){
+        const cases = ccdMockData.caseList.results;
+        const inputDatatableHashes = caseListAttributesDatatable.hashes();
+        
+        for (let i = 0; i < inputDatatableHashes.length; i++){
+            const caseItem = cases[i];
+            const inputHash = inputDatatableHashes[i];
+            
+            const keys = Object.keys(inputHash);
+            for(const caseAttrib of keys){
+                if (caseAttrib.startsWith('case_fields.')){
+                    const caseFieldAttrib = caseAttrib.replace('case_fields.',''); 
+                    caseItem['case_fields'][caseFieldAttrib] = inputHash[caseAttrib];  
+                } else if (caseAttrib.startsWith('case_fields_formatted.')){
+                    const caseFieldAttrib = caseAttrib.replace('case_fields_formatted.', '');
+                    caseItem['case_fields_formatted'][caseFieldAttrib] = inputHash[caseAttrib];  
+                }else{
+                    caseItem[caseAttrib] = inputHash[caseAttrib]; 
+                }
+            } 
+
+        }
+        
     });
 });
 

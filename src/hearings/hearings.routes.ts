@@ -69,6 +69,9 @@ export const ROUTES: Routes = [
       partyChannel: HearingActualPartyChannelResolverService,
       hearingRole: HearingActualRoleResolverService,
     },
+    data: {
+      isChildRequired: [HearingCategory.PartyChannel]
+    },
     children: [
       {
         path: 'hearing-actual-add-edit-summary',
@@ -82,7 +85,7 @@ export const ROUTES: Routes = [
         data: {
           category: HearingCategory.HearingType,
           title: 'HMCTS Hearings | Hearing Actuals | Check details'
-        }
+         }
       },
       {
         path: 'hearing-timing',
@@ -119,8 +122,7 @@ export const ROUTES: Routes = [
         component: HearingActualsViewEditPartiesComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Manage cases | Hearing Actuals | Update Participants',
-          isChildRequired: true
+          title: 'HMCTS Manage cases | Hearing Actuals | Update Participants'
         }
       },
     ]
@@ -219,7 +221,7 @@ export const ROUTES: Routes = [
           title: 'HMCTS Hearings | Request Hearing | Require Panel Or Not',
           category: HearingCategory.OtherPanelRoles,
           memberType: MemberType.PANEL_MEMBER,
-          isChildRequired: true
+          isChildRequired: [HearingCategory.OtherPanelRoles]
         }
       },
       {
@@ -255,7 +257,8 @@ export const ROUTES: Routes = [
         component: HearingCreateEditSummaryComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Hearings | Request Hearing | Check Answers'
+          title: 'HMCTS Hearings | Request Hearing | Check Answers',
+          isChildRequired: [HearingCategory.OtherPanelRoles]
         }
       },
       {
@@ -275,7 +278,8 @@ export const ROUTES: Routes = [
         component: HearingViewEditSummaryComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Hearings | Amend Hearing | Check Answers'
+          title: 'HMCTS Hearings | Amend Hearing | Check Answers',
+          isChildRequired: [HearingCategory.OtherPanelRoles]
         }
       },
       {

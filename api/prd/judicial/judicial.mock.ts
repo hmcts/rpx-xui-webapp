@@ -6,7 +6,7 @@ import {JudicialUserModel} from "./models/judicialUser.model";
 
 export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
-  const searchJudicialUrl = /http:\/\/rd-professional-api-aat.service.core-compute-aat.internal\/refdata\/judicial\/users/;
+  const searchJudicialUrl = /refdata\/judicial\/users/;
 
   mock.onPost(searchJudicialUrl).reply(config => {
     const data = JSON.parse(config.data);

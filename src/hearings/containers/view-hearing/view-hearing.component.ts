@@ -1,15 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'exui-view-hearing',
   templateUrl: './view-hearing.component.html',
   styleUrls: ['./view-hearing.component.scss']
 })
-export class ViewHearingComponent implements OnInit {
+export class ViewHearingComponent {
 
-  constructor() { }
+  constructor(
+    private readonly location: Location) { }
 
-  public ngOnInit(): void {
+
+  public onBack(): void {
+    this.location.back();
   }
-
 }

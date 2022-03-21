@@ -255,8 +255,7 @@ export const ROUTES: Routes = [
         component: HearingCreateEditSummaryComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Hearings | Request Hearing | Check Answers',
-          isChildRequired: true
+          title: 'HMCTS Hearings | Request Hearing | Check Answers'
         }
       },
       {
@@ -276,8 +275,7 @@ export const ROUTES: Routes = [
         component: HearingViewEditSummaryComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Hearings | Amend Hearing | Check Answers',
-          isChildRequired: true
+          title: 'HMCTS Hearings | Amend Hearing | Check Answers'
         }
       },
       {

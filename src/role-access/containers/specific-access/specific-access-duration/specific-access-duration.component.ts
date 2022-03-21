@@ -241,6 +241,18 @@ export class SpecificAccessDurationComponent implements OnInit {
     this.anotherPeriod = item === DurationType.ANOTHER_PERIOD;
     this.selectedDuration = item;
   }
+
+  /**
+   * Returns a string used for the class on date input fields
+   * @param isError whether there is an input error
+   * @param isYear whether the input is a year field
+   * @return the class string for the input field
+   */
+  public getInputClass(isError: boolean, isYear = false): string {
+    const inputClass = `govuk-input govuk-date-input__input govuk-input--width-${isYear ? '4' : '2'}`;
+    return isError ? `${inputClass} date-error` : inputClass;
+  }
+
 }
 
 export interface DurationDescription {

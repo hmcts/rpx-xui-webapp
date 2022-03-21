@@ -26,7 +26,7 @@
         </span>
       </div>
       <div id="conditional-specific-access-3"
-        [ngClass]="anotherPeriod? (isStartDateError || isEndDateError ?
+        [ngClass]="anotherPeriod ? (isStartDateError || isEndDateError ?
           'govuk-radios__conditional form-group-error' :
           'govuk-radios__conditional') :
           'govuk-radios__conditional govuk-radios__conditional--hidden'">
@@ -55,8 +55,7 @@
                 type="number"
                 pattern="[0-9]*"
                 formControlName="dayStartDate"
-                [ngClass]="isStartDateError?'govuk-input govuk-date-input__input govuk-input--width-2 date-error':'govuk-input govuk-date-input__input govuk-input--width-2'"/>
-                <!-- TODO: SARD - create method for getting class based on isStartDateError state -->
+                [ngClass]="getInputClass(isStartDateError)"/>
               </div>
             </div>
             <div class="govuk-date-input__item">
@@ -72,8 +71,7 @@
                   formControlName="monthStartDate"
                   min="0"
                   max="11"
-                  [ngClass]="isStartDateError?'govuk-input govuk-date-input__input govuk-input--width-2 date-error':'govuk-input govuk-date-input__input govuk-input--width-2'" />
-                  <!-- TODO: SARD - create method for getting class based on isStartDateError state -->
+                  [ngClass]="getInputClass(isStartDateError)" />
               </div>
             </div>
             <div class="govuk-date-input__item">
@@ -87,8 +85,7 @@
                   type="number"
                   pattern="[0-9]*"
                   formControlName="yearStartDate"
-                  [ngClass]="isStartDateError?'govuk-input govuk-date-input__input govuk-input--width-4 date-error':'govuk-input govuk-date-input__input govuk-input--width-4'" />
-                  <!-- TODO: SARD - create method for getting class based on isStartDateError state -->
+                  [ngClass]="getInputClass(isStartDateError, true)" />
               </div>
             </div>
           </div>
@@ -119,8 +116,7 @@
                     type="number"
                     pattern="[0-9]*"
                     formControlName="dayEndDate"
-                    [ngClass]="isEndDateError?'govuk-input govuk-date-input__input govuk-input--width-2 date-error':'govuk-input govuk-date-input__input govuk-input--width-2'" />
-                    <!-- TODO: SARD - create method for getting class based on isStartDateError state -->
+                    [ngClass]="getInputClass(isEndDateError)" />
                 </div>
               </div>
               <div class="govuk-date-input__item">
@@ -136,8 +132,7 @@
                     formControlName="monthEndDate"
                     min="0"
                     max="11"
-                    [ngClass]="isEndDateError?'govuk-input govuk-date-input__input govuk-input--width-2 date-error':'govuk-input govuk-date-input__input govuk-input--width-2'" />
-                    <!-- TODO: SARD - create method for getting class based on isStartDateError state -->
+                    [ngClass]="getInputClass(isEndDateError)" />
                 </div>
               </div>
               <div class="govuk-date-input__item">
@@ -151,8 +146,7 @@
                     type="number"
                     pattern="[0-9]*"
                     formControlName="yearEndDate"
-                    [ngClass]="isEndDateError?'govuk-input govuk-date-input__input govuk-input--width-4 date-error':'govuk-input govuk-date-input__input govuk-input--width-4'" />
-                    <!-- TODO: SARD - create method for getting class based on isStartDateError state -->
+                    [ngClass]="getInputClass(isEndDateError, true)" />
                 </div>
               </div>
             </div>

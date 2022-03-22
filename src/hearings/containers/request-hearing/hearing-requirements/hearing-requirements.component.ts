@@ -29,7 +29,10 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   public onFocus(): void {
     if (this.lostFocus) {
       this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.referenceId));
-      setTimeout(() => this.initializeHearingRequestFromHearingValues(), 500);
+      if (HearingsUtils.hasPropertyAndValue(this.hearingCondition, KEY_MODE, Mode.CREATE_EDIT)
+        || HearingsUtils.hasPropertyAndValue(this.hearingCondition, KEY_MODE, Mode.VIEW_EDIT)) {
+        setTimeout(() => this.updatePartyFlagsFromHearingValues(), 500);
+      }
       this.lostFocus = false;
     }
   }
@@ -96,6 +99,15 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         caserestrictedFlag: null,
         caseSLAStartDate: null,
       },
+      partyDetails: combinedParties
+    };
+    this.hearingStore.dispatch(new fromHearingStore.InitializeHearingRequest(hearingRequestMainModel));
+  }
+
+  public updatePartyFlagsFromHearingValues(): void {
+    const combinedParties: PartyDetailsModel[] = this.combinePartiesWithIndOrOrg(this.serviceHearingValuesModel.parties);
+    const hearingRequestMainModel: HearingRequestMainModel = {
+      ...this.hearingRequestMainModel,
       partyDetails: combinedParties
     };
     this.hearingStore.dispatch(new fromHearingStore.InitializeHearingRequest(hearingRequestMainModel));

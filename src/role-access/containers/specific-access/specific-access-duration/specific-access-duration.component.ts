@@ -43,7 +43,7 @@ export class SpecificAccessDurationComponent implements OnInit {
   public endDateErrorMessage: string;
 
   constructor(
-    private durationHelperService: DurationHelperService,
+    private durationHelper: DurationHelperService,
     private readonly store: Store<fromFeature.State>,
     private readonly builder: FormBuilder
   ) {
@@ -78,7 +78,7 @@ export class SpecificAccessDurationComponent implements OnInit {
   }
 
   public selectSpecificAccessDuration(specificAccessState: SpecificAccessStateData) {
-    // TODO: SARD - this will be wired up correctly in another ticket. Hint: see role-access/allocate-role/choose-duration
+    // TODO: SARD - this will be wired up correctly in another ticket ( 5505? ). Hint: see role-access/allocate-role/choose-duration
     console.log(specificAccessState);
     this.selectedDuration = DurationType.SEVEN_DAYS;
     this.durations.find(duration => duration.duration === this.selectedDuration).checked = true;
@@ -90,7 +90,7 @@ export class SpecificAccessDurationComponent implements OnInit {
     if (period) {
       switch (navEvent) {
         case SpecificAccessNavigationEvent.CONTINUE:
-          // TODO: SARD - this will be handled in another ticket.
+          // TODO: SARD - this will be handled in another ticket ( 5505? ).
           // this.store.dispatch(new fromFeature.ChooseDurationAndGo({
           //     durationOfRole: this.selectedDuration,
           //     period,
@@ -113,33 +113,33 @@ export class SpecificAccessDurationComponent implements OnInit {
     switch (duration) {
       case DurationType.SEVEN_DAYS: {
         return {
-          startDate: this.durationHelperService.getTodaysDate(),
-          endDate: this.durationHelperService.getDateInFuture(7)
+          startDate: this.durationHelper.getTodaysDate(),
+          endDate: this.durationHelper.getDateInFuture(7)
         };
       }
       case DurationType.INDEFINITE: {
         return {
-          startDate: this.durationHelperService.getTodaysDate(),
+          startDate: this.durationHelper.getTodaysDate(),
           endDate: null
         };
       }
       case DurationType.ANOTHER_PERIOD: {
         // get start and end dates
-        const startDate = this.durationHelperService.getDateFromControls(this.dayStartDate, this.monthStartDate, this.yearStartDate);
-        const endDate = this.durationHelperService.getDateFromControls(this.dayEndDate, this.monthEndDate, this.yearEndDate);
+        const startDate = this.durationHelper.getDateFromControls(this.dayStartDate, this.monthStartDate, this.yearStartDate);
+        const endDate = this.durationHelper.getDateFromControls(this.dayEndDate, this.monthEndDate, this.yearEndDate);
 
         // check that both the start and end dates are valid looking dates
-        const dateCheck = this.durationHelperService.checkDates(
-          this.durationHelperService.convertDateControlsToString(this.dayStartDate, this.monthStartDate, this.yearStartDate),
-          this.durationHelperService.convertDateControlsToString(this.dayEndDate, this.monthEndDate, this.yearEndDate)
+        const dateCheck = this.durationHelper.checkDates(
+          this.durationHelper.convertDateControlsToString(this.dayStartDate, this.monthStartDate, this.yearStartDate),
+          this.durationHelper.convertDateControlsToString(this.dayEndDate, this.monthEndDate, this.yearEndDate)
         );
         const datesValid = dateCheck.isStartDateValid && dateCheck.isEndDateValid;
 
         // check if start date is not in past
-        const startDateNotInPast = this.durationHelperService.startDateNotInPast(startDate);
+        const startDateNotInPast = this.durationHelper.startDateNotInPast(startDate);
 
         // check if start date is before the end date
-        const startDateBeforeEndDate = this.durationHelperService.startDateBeforeEndDate(startDate, endDate);
+        const startDateBeforeEndDate = this.durationHelper.startDateBeforeEndDate(startDate, endDate);
 
         // if all checks pass return object with startDate and endDate
         if (this.formGroup.valid && datesValid && startDateNotInPast && startDateBeforeEndDate) {
@@ -186,7 +186,7 @@ export class SpecificAccessDurationComponent implements OnInit {
    * Returns class string for date input fields
    */
   public getInputClass(isError: boolean, isYear = false): string {
-    return this.durationHelperService.getInputClass(isError, isYear);
+    return this.durationHelper.getInputClass(isError, isYear);
   }
 
 }

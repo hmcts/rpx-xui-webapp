@@ -2,8 +2,6 @@ import {OnDestroy} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Observable, of, Subscription} from 'rxjs';
 import {CaseFlagReferenceModel} from '../models/caseFlagReference.model';
-import {CaseFlagType} from '../models/hearings.enum';
-import {PartyFlagsModel} from '../models/partyFlags.model';
 import {State} from '../store';
 import {CaseFlagsUtils} from '../utils/case-flags.utils';
 import {AnswerConverter} from './answer.converter';
@@ -18,21 +16,21 @@ export class CaseFlagAnswerConverter implements AnswerConverter, OnDestroy {
   }
 
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
-    let partyFlags: PartyFlagsModel[] = [];
+    let partyWithFlags: Map<string, CaseFlagReferenceModel[]> = new Map();
     this.storeSub = hearingState$.subscribe(
       state => {
-        if (state.hearingValues.serviceHearingValuesModel && state.hearingValues.serviceHearingValuesModel.caseFlags) {
-          partyFlags = state.hearingValues.serviceHearingValuesModel.caseFlags.flags;
-        }
+        partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(this.caseFlagsRefData,
+          state.hearingRequest.hearingRequestMainModel.partyDetails);
       }
     );
-    const caseFlagsGroup = CaseFlagsUtils.displayCaseFlagsGroup(partyFlags, this.caseFlagsRefData, CaseFlagType.REASONABLE_ADJUSTMENT);
     let result = '';
-    caseFlagsGroup.forEach(flagsGroup => {
-      result += `<strong class='bold'>${flagsGroup.name}</strong>\n<ul>`;
-      flagsGroup.partyFlags.forEach(flag => result += `<li>${flag.displayName}</li>`);
-      result += '</ul><br>';
-    });
+    partyWithFlags.forEach(
+      (value, key) => {
+        result += `<strong class='bold'>${key}</strong>\n<ul>`;
+        value.forEach(flag => result += `<li>${flag.name}</li>`);
+        result += '</ul><br>';
+      }
+    );
     return of(result);
   }
 

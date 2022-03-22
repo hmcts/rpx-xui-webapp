@@ -112,15 +112,14 @@ export class SpecificAccessDurationComponent implements OnInit {
   public getPeriod(duration: DurationType): Period {
     switch (duration) {
       case DurationType.SEVEN_DAYS: {
-        const nextDate = this.getTodayDate().setDate(new Date().getDate() + 7);
         return {
-          startDate: this.getTodayDate(),
-          endDate: new Date(nextDate)
+          startDate: this.durationHelperService.getTodaysDate(),
+          endDate: this.durationHelperService.getDateInFuture(7)
         };
       }
       case DurationType.INDEFINITE: {
         return {
-          startDate: this.getTodayDate(),
+          startDate: this.durationHelperService.getTodaysDate(),
           endDate: null
         };
       }

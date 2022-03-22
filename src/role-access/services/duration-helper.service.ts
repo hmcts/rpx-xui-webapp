@@ -89,4 +89,18 @@ export class DurationHelperService {
     return isError ? `${inputClass} date-error` : inputClass;
   }
 
+  /**
+   * Returns a date in the future based on daysToAdd parameter
+   * @param daysToAdd number of days to add to todays date
+   * @return Date object
+   */
+  public getDateInFuture(daysToAdd: number): Date {
+    if (daysToAdd < 0) {
+      throw new Error('Invalid value for daysToAdd param');
+    }
+    return moment()
+      .set({ hour: 0, minute: 0, second: 0, millisecond:0 })
+      .add(daysToAdd, 'd').toDate();
+  }
+
 }

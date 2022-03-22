@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { ActualDayPartyModel, ActualHearingDayModel, HearingActualsMainModel, PauseDateTimeModel } from '../../../../hearings/models/hearingActualsMainModel';
-import { HearingDateEnum } from '../../../../hearings/models/hearings.enum';
+import { HearingDateEnum, HearingResult } from '../../../../hearings/models/hearings.enum';
 import { LovRefDataModel } from '../../../../hearings/models/lovRefData.model';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
 import * as fromHearingStore from '../../../store';
@@ -22,6 +22,7 @@ export class HearingCompletedSummaryComponent implements OnInit, OnDestroy {
   public participants: ActualDayPartyModel[] = [];
   public attendies: ActualDayPartyModel[] = [];
   public partyChannels: LovRefDataModel[] = [];
+  public isCompleted: boolean;
   public sub: Subscription;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
@@ -36,6 +37,7 @@ export class HearingCompletedSummaryComponent implements OnInit, OnDestroy {
       )
       .subscribe((state: HearingActualsStateData) => {
         this.hearingActualsMainModel = state.hearingActualsMainModel;
+        this.isCompleted = this.hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResult === HearingResult.COMPLETED;
         this.actualHearingDays = state.hearingActualsMainModel.hearingActuals.actualHearingDays[0];
         this.actualPauseTime = this.actualHearingDays.pauseDateTimes[0];
         this.setPartyData();

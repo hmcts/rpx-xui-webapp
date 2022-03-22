@@ -1,5 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import { HttpMockAdapter } from '../common/httpMockAdapter';
+import { HEARING_ACTUAL_ADJOURNED } from './data/hearing-actuals-adjourned.mock.data';
 import { HEARING_ACTUAL_COMPLETED } from './data/hearing-actuals-completed.mock.data';
 import { HEARING_ACTUAL } from './data/hearing-actuals.mock.data';
 import { EMPTY_HEARINGS_LIST, HEARINGS_LIST } from './data/hearingLists.mock.data';
@@ -115,6 +116,11 @@ export const init = () => {
       return [
         200,
         HEARING_ACTUAL_COMPLETED,
+      ];
+    } else if (config.url.includes('/h100011')) {
+      return [
+        200,
+        HEARING_ACTUAL_ADJOURNED,
       ];
     }
     return [

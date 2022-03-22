@@ -127,17 +127,25 @@ export const ROUTES: Routes = [
       {
         path: 'hearing-completed-summary',
         resolve: {
-          hearingPriorities: RefDataResolver,
-          caseFlags: CaseFlagsResolver,
           hearingStageOptions: HearingStageResolver,
-          additionFacilitiesOptions: AdditionalFacilitiesResolver,
-          judgeTypes: JudgeTypesResolverService,
-          judicialUsers: JudicialUserSearchResolver,
           judicialResponseUsers: JudicialUserSearchResponseResolver,
-          otherPanelRoles: PanelRolesResolverService,
           courtLocation: CourtLocationsDataResolver,
           partyChannels: HearingActualPartyChannelResolverService,
-          hearingRole: HearingActualRoleResolverService,
+        },
+        component: HearingCompletedSummaryComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Hearings | Hearing Actuals | Check details',
+          isChildRequired: true
+        }
+      },
+      {
+        path: 'hearing-adjourned-summary',
+        resolve: {
+          hearingStageOptions: HearingStageResolver,
+          judicialResponseUsers: JudicialUserSearchResponseResolver,
+          courtLocation: CourtLocationsDataResolver,
+          partyChannels: HearingActualPartyChannelResolverService,
         },
         component: HearingCompletedSummaryComponent,
         canActivate: [HealthCheckGuard],
@@ -265,10 +273,14 @@ export const ROUTES: Routes = [
       {
         path: 'hearing-create-edit-summary',
         resolve: {
-          partyChannels: PartyChannelsResolverService,
+          hearingPriorities: RefDataResolver,
+          caseFlags: CaseFlagsResolver,
           hearingStageOptions: HearingStageResolver,
-          courtLocation: CourtLocationsDataResolver,
+          additionFacilitiesOptions: AdditionalFacilitiesResolver,
+          partyChannels: PartyChannelsResolverService,
+          judgeTypes: JudgeTypesResolverService,
           judicialUsers: JudicialUserSearchResolver,
+          otherPanelRoles: PanelRolesResolverService,
         },
         component: HearingCreateEditSummaryComponent,
         canActivate: [HealthCheckGuard],

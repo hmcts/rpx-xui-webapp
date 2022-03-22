@@ -8,17 +8,16 @@ const CucumberReporter = require('../../../e2e/support/reportLogger');
 
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
 const workAllocationDataModel = require("../../../dataModels/workAllocation");
+const reportLogger = require('../../../e2e/support/reportLogger');
+const workAllocationMockData = require('../../../nodeMock/workAllocation/mockData');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Given('I navigate to home page', async function () {
+        await browserUtil.gotoHomePage();
         await BrowserWaits.retryWithActionCallback(async () => {
-            await browserUtil.gotoHomePage();
-            await BrowserWaits.retryWithActionCallback(async () => {
-                await headerpage.waitForPrimaryNavDisplay();
-                await browserUtil.waitForLD();
-            });
-            
+            await headerpage.waitForPrimaryNavDisplay();
+            await browserUtil.waitForLD();
         });  
     });
 
@@ -35,6 +34,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Given('I start MockApp', async function () {
+        try{
+            await MockApp.stopServer();
+        }
+        catch(err){}
        await MockApp.startServer();
     });
 
@@ -56,9 +59,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         const userDetails = nodeAppMockData.getUserDetailsWithRoles(roles);
         CucumberReporter.AddJson(userDetails)
-        MockApp.onGet('/api/user/details', (req,res) => {
-            res.send(userDetails);
-        });
+       
      });
 
     Given('I set MOCK request {string} intercept with reference {string}', async function(url,reference){
@@ -73,11 +74,17 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Given('I set MOCK request {string} response log to report', async function (url) {
         MockApp.addIntercept(url, (req, res, next) => { 
-            CucumberReporter.AddJson(req.body)
             let send = res.send;
             res.send = function (body) {
-                CucumberReporter.AddMessage('Intercept response or api ' + url);
-                CucumberReporter.AddJson(body)
+                CucumberReporter.AddMessage(` ------------------------------Mock response intercept from server with port "${MockApp.serverPort }" ---------------------------`);
+                CucumberReporter.AddMessage('Intercept response on MOCK api ' + url);
+                CucumberReporter.AddMessage('response code ' + res.statusCode);
+                try{
+                    CucumberReporter.AddJson(body)
+                }catch(err){
+                    CucumberReporter.AddMessage(body)
+                }
+                CucumberReporter.AddMessage('------------------------------Mock response intercept---------------------------');
                 send.call(this, body);
             }
             next();
@@ -113,22 +120,26 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
          switch (apiMethod.toLowerCase()){
             case 'get':
                  MockApp.onGet(apiEndpoint, (req, res) => {
+                     reportLogger.AddMessage(`Mock response code returned ${responseCode}`);
                      res.status(responseCode).send({ error: "Test error from mock" });
                  });
                  break;
              case 'post':
                  MockApp.onPost(apiEndpoint, (req, res) => {
+                     reportLogger.AddMessage(`Mock response code returned ${responseCode}`);
                      res.status(responseCode).send({ error: "Test error from mock" });
                  });
                  break;
              case 'put':
                  MockApp.onPut(apiEndpoint, (req, res) => {
+                     reportLogger.AddMessage(`Mock response code returned ${responseCode}`);
                      res.status(responseCode).send({ error: "Test error from mock" });
                  });
                  break;
              case 'delete':
                  MockApp.onDelete(apiEndpoint, (req, res) => {
-                     res.status(responseCode).send({ error: "Test error from mock" });
+                    reportLogger.AddMessage(`Mock response code returned ${responseCode}`);
+                    res.status(responseCode).send({ error: "Test error from mock" });
                  });
                  break;
 
@@ -143,30 +154,31 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Given('I set MOCK find person response for jurisdictions', async function(datatable){
         const personsConfigHashes = datatable.hashes();
 
-        const allPersons = [];
-        for (let i = 0; i < personsConfigHashes.length; i++) {
-            const inputperson = personsConfigHashes[i];
-            const person = workAllocationDataModel.getFindPersonObj();
+        for (const person of personsConfigHashes) {
 
-            for (const key of Object.keys(inputperson)){
-                person[key] = inputperson[key];
+            if (person.domain === 'Judicial'){
+                const judge = JSON.parse(JSON.stringify(workAllocationMockData.judgeUsers[0]));
+                judge.sidam_id = person.id;
+                judge.email_id = person.email;
+                judge.full_name = person.name;
+
+                workAllocationMockData.judgeUsers.push(judge);
+            } else if (person.domain === 'Legal Ops'){
+                const cw = JSON.parse(JSON.stringify(workAllocationMockData.caseWorkersList[0]));
+                const fullNameArr = person.name.split(" ");
+                cw.idamId = person.id;
+                cw.email = person.email;
+                cw.firstName = fullNameArr[0];
+                cw.lastName = fullNameArr[1];
+
+                workAllocationMockData.addCaseworker(cw,'IA'); 
+ 
             }
 
-           
-            allPersons.push(person);
-            
+             
         }
+       
 
-        MockApp.onPost('/workallocation2/findPerson', (req,res) => {
-            const inputJurisdiction = req.body.searchOptions.jurisdiction;
-            const filterdUsersForJurisdiction = [];
-            for (const p of allPersons){
-                if (p.domain === inputJurisdiction){
-                    filterdUsersForJurisdiction.push(p);
-                }  
-            }
-            res.send(filterdUsersForJurisdiction);
-        });
 
      });
 

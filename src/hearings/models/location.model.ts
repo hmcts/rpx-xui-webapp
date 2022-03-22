@@ -2,7 +2,7 @@ export interface LocationModel {
     court_venue_id: string;
     site_name: string;
     court_name?: string;
-    epims_id: string;
+    epimms_id: string;
     open_for_public?: string;
     court_type_id: string;
     court_type: string;

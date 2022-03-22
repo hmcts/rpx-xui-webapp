@@ -1,5 +1,4 @@
-<exui-alert></exui-alert>
-<exui-task-alert-banner *ngIf="warningIncluded" alertTitle="Task alert" 
+<exui-task-alert-banner *ngIf="warningIncluded" alertTitle="Task alert"
 alertMessage="An application is pending a decision. Consider if this application has an impact on any other tasks you might wish to complete.">
 </exui-task-alert-banner>
 
@@ -7,11 +6,11 @@ alertMessage="An application is pending a decision. Consider if this application
 <div class="govuk-tabs__panel active-tasks-container" id="event">
   <div>
     <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-grid-column-two-thirds govuk-!-padding-4">
         <h2 class="govuk-heading-m">Active tasks</h2>
         <ng-container *ngIf="tasks">
           <ng-container *ngFor="let task of tasks">
-            <exui-case-task [task]="task"></exui-case-task>
+            <exui-case-task [task]="task" [caseworkers]="caseworkers" (taskRefreshRequired)="onTaskRefreshRequired($event)"></exui-case-task>
           </ng-container>
         </ng-container>
       </div>

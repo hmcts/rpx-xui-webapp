@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import * as moment from 'moment';
-import { boolean } from '@pact-foundation/pact/dsl/matchers';
 
 @Injectable({ providedIn: 'root' })
 export class DurationHelperService {
@@ -61,17 +60,20 @@ export class DurationHelperService {
   }
 
   /**
-   * For given array of dateControls returns string representation of the date
-   * @param dateControls array of form controls for a date, expects 3 controls (day, month, year)
+   * For provided date form controls returns a string representation of the date
+   * @param dayControl the day form control
+   * @param monthControl the day form control
+   * @param yearControl the day form control
    * @return string representation of date: YYYY-MM-DD
    */
-  public convertDateControlsToString(dateControls: FormControl[]): string {
-    if (dateControls.length !== 3) {
-      return '';
-    }
-    const dayStart = this.formatString(dateControls[0].value);
-    const monthStart = this.formatString(dateControls[1].value);
-    const yearStart = dateControls[2].value;
+  public convertDateControlsToString(
+    dayControl: FormControl,
+    monthControl: FormControl,
+    yearControl: FormControl
+  ): string {
+    const dayStart = this.formatString(dayControl.value);
+    const monthStart = this.formatString(monthControl.value);
+    const yearStart = yearControl.value;
     return `${yearStart}-${monthStart}-${dayStart}`;
   }
 

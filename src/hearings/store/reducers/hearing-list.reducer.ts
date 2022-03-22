@@ -20,6 +20,12 @@ export function hearingListReducer(currentState = initialHearingListState,
         hearingListMainModel: action.payload
       };
     }
+    case fromActions.LOAD_ALL_HEARINGS_FAILURE: {
+      return {
+        ...currentState,
+        lastError: action.payload
+      }
+    }
     default: {
       return {
         ...currentState

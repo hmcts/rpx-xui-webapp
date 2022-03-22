@@ -1,20 +1,15 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
-import * as moment from 'moment';
-import { $enum as EnumUtil } from 'ts-enum-util';
 import {
-  Actions,
-  AllocateRoleStateData,
   Period,
-  SpecificAccessState,
+  SpecificAccessStateData,
   SpecificAccessNavigation,
   SpecificAccessNavigationEvent
 } from '../../../models';
 import { DurationType } from '../../../models/enums';
 import { DurationHelperService } from '../../../services/duration-helper.service';
 import * as fromFeature from '../../../store';
-import { getTitleText } from '../../../utils';
 
 @Component({
   selector: 'exui-specific-access-duration',
@@ -75,34 +70,18 @@ export class SpecificAccessDurationComponent implements OnInit {
       yearEndDate: this.yearEndDate,
       radioSelected: this.radioSelected
     });
-    // TODO: SARD - refactor or remove
-    // this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(roleAllocate => {
-    //   this.selectDurationRole(roleAllocate);
-    // });
+
+    this.store.pipe(select(fromFeature.getSpecificAccessState)).subscribe((specificAccessState) => {
+      this.selectSpecificAccessDuration(specificAccessState);
+    });
   }
 
-  // TODO: SARD - refactor or remove
-  // public selectDurationRole(roleAllocate: AllocateRoleStateData) {
-  //   const action = EnumUtil(Actions).getKeyOrDefault(roleAllocate.action);
-  //   const typeOfRole = roleAllocate.typeOfRole;
-  //   this.title = getTitleText(typeOfRole, action, roleAllocate.roleCategory);
-  //   this.selectedDuration = roleAllocate.durationOfRole;
-  //   this.durations.find(duration => duration.duration === this.selectedDuration).checked = true;
-  //   this.anotherPeriod = this.selectedDuration === DurationType.ANOTHER_PERIOD;
-  //   if (this.anotherPeriod && roleAllocate.period) {
-  //     this.radioSelected.setValue(this.selectedDuration);
-  //     if (roleAllocate.period.startDate) {
-  //       this.dayStartDate.setValue(roleAllocate.period.startDate.getDate());
-  //       this.monthStartDate.setValue(roleAllocate.period.startDate.getMonth() + 1);
-  //       this.yearStartDate.setValue(roleAllocate.period.startDate.getFullYear());
-  //     }
-  //     if (roleAllocate.period.endDate) {
-  //       this.dayEndDate.setValue(roleAllocate.period.endDate.getDate());
-  //       this.monthEndDate.setValue(roleAllocate.period.endDate.getMonth() + 1);
-  //       this.yearEndDate.setValue(roleAllocate.period.endDate.getFullYear());
-  //     }
-  //   }
-  // }
+  public selectSpecificAccessDuration(specificAccessState: SpecificAccessStateData) {
+    // TODO: SARD - this will be wired up correctly in another ticket. Hint: see role-access/allocate-role/choose-duration
+    console.log(specificAccessState);
+    this.selectedDuration = DurationType.SEVEN_DAYS;
+    this.durations.find(duration => duration.duration === this.selectedDuration).checked = true;
+  }
 
   public navigationHandler(navEvent: SpecificAccessNavigationEvent): void {
     this.resetPreviousErrors();
@@ -110,8 +89,7 @@ export class SpecificAccessDurationComponent implements OnInit {
     if (period) {
       switch (navEvent) {
         case SpecificAccessNavigationEvent.CONTINUE:
-          // TODO: SARD - handle store dispatch
-          console.log('dispatch event');
+          // TODO: SARD - this will be handled in another ticket.
           // this.store.dispatch(new fromFeature.ChooseDurationAndGo({
           //     durationOfRole: this.selectedDuration,
           //     period,

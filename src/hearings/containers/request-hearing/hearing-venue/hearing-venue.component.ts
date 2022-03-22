@@ -18,7 +18,7 @@ import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 export class HearingVenueComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public locationType: string;
   public selectedLocation: LocationByEPIMMSModel;
-  public serviceIds: string = 'SSCS';
+  public serviceIds: string = '';
   public findLocationFormGroup: FormGroup;
 
   @ViewChild(SearchLocationComponent) public searchLocationComponent: SearchLocationComponent;

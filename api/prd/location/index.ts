@@ -3,7 +3,7 @@ import {handleGet} from '../../common/crudService';
 import {getConfigValue} from '../../configuration';
 import {SERVICES_PRD_LOCATION_API} from '../../configuration/references';
 import {EnhancedRequest} from '../../lib/models';
-import {getCourtTypeIdsByJurisdiction} from '../utils/mapping.utils';
+import {getCourtTypeIdsByServices} from '../utils/mapping.utils';
 import {LocationTypeEnum} from './data/locationType.enum';
 import {LocationModel} from './models/location.model';
 
@@ -19,10 +19,11 @@ const url: string = getConfigValue(SERVICES_PRD_LOCATION_API);
 export async function getLocations(req: EnhancedRequest, res: Response, next: NextFunction) {
   // @ts-ignore
   const searchTerm = req.query.searchTerm;
-  const jurisdictionIds = req.query.serviceIds;
+  const serviceIds = req.query.serviceIds;
   const locationType = req.query.locationType;
-  const jurisdictionIdArray = jurisdictionIds.split(',');
-  const strCourtTypeIds: string = getCourtTypeIdsByJurisdiction(jurisdictionIdArray);
+  const serviceIdArray = serviceIds.split(',');
+  const courtTypeIdsArray: string[] = getCourtTypeIdsByServices(serviceIdArray);
+  const strCourtTypeIds = courtTypeIdsArray ? courtTypeIdsArray.join(',') : '';
   // tslint:disable-next-line:max-line-length
   const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${strCourtTypeIds}`;
   try {
@@ -40,13 +41,13 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
 }
 
 /**
- * Gets court locations
- * @description getCourtLocations from epimms_id
+ * Gets court location
+ * @description getLocationById from epimms_id
  * @overview API sample: /api/locations/court-locations?epimms_id=812332
  */
-export async function getCourtLocations(req: EnhancedRequest, res: Response, next: NextFunction) {
+export async function getLocationById(req: EnhancedRequest, res: Response, next: NextFunction) {
   const epimmsID = req.query.epimms_id;
-  const markupPath: string = `${url}/refdata/location/court-locations?epimms_id=${epimmsID}`;
+  const markupPath: string = `${url}/refdata/location/court-venues?epimms_id=${epimmsID}`;
   try {
     const {status, data}: { status: number, data: LocationModel } = await handleGet(markupPath, req, next);
     res.status(status).send(data);

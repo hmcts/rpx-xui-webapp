@@ -104,7 +104,7 @@ describe('HearingVenueComponent', () => {
       ]);
 
       expect(component.reInitiateState).toHaveBeenCalled();
-      expect(component.serviceIds).toEqual('SSCS');
+      expect(component.serviceIds).toEqual('BBA3');
     });
   });
 

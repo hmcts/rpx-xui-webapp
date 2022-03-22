@@ -16,7 +16,7 @@ describe('RequestHearingPageFlow', () => {
     hearingList: {
       hearingListMainModel: [
         {
-          hmctsServiceID: 'SSCS'
+          hmctsServiceID: 'BBA3'
         }
       ]
     },

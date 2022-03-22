@@ -53,7 +53,7 @@ describe('Hearing Request Reducer', () => {
               leadJudgeContractType: null,
             },
             caseDetails: {
-              hmctsServiceCode: 'SSCS',
+              hmctsServiceCode: 'BBA3',
               caseRef: '111122223333444',
               requestTimeStamp: null,
               hearingID: 'h111111',
@@ -116,7 +116,7 @@ describe('Hearing Request Reducer', () => {
               leadJudgeContractType: null,
             },
             caseDetails: {
-              hmctsServiceCode: 'SSCS',
+              hmctsServiceCode: 'BBA3',
               caseRef: '111122223333444',
               requestTimeStamp: null,
               hearingID: 'h111111',

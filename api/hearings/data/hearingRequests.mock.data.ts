@@ -43,7 +43,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       leadJudgeContractType: '',
     },
     caseDetails: {
-      hmctsServiceCode: 'SSCS',
+      hmctsServiceCode: 'BBA3',
       caseRef: '1584618195804035',
       requestTimeStamp: null,
       hearingID: 'h100001',
@@ -160,7 +160,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       leadJudgeContractType: '',
     },
     caseDetails: {
-      hmctsServiceCode: 'SSCS',
+      hmctsServiceCode: 'BBA3',
       caseRef: '1584618195804035',
       requestTimeStamp: null,
       hearingID: 'h100002',
@@ -277,7 +277,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       leadJudgeContractType: '',
     },
     caseDetails: {
-      hmctsServiceCode: 'SSCS',
+      hmctsServiceCode: 'BBA3',
       caseRef: '1584618195804035',
       requestTimeStamp: null,
       hearingID: 'h100003',
@@ -394,7 +394,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       leadJudgeContractType: '',
     },
     caseDetails: {
-      hmctsServiceCode: 'SSCS',
+      hmctsServiceCode: 'BBA3',
       caseRef: '1584618195804035',
       requestTimeStamp: null,
       hearingID: 'h100004',
@@ -511,7 +511,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       leadJudgeContractType: '',
     },
     caseDetails: {
-      hmctsServiceCode: 'SSCS',
+      hmctsServiceCode: 'BBA3',
       caseRef: '1584618195804035',
       requestTimeStamp: null,
       hearingID: 'h100005',
@@ -628,7 +628,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       leadJudgeContractType: '',
     },
     caseDetails: {
-      hmctsServiceCode: 'SSCS',
+      hmctsServiceCode: 'BBA3',
       caseRef: '1584618195804035',
       requestTimeStamp: null,
       hearingID: 'h100006',
@@ -745,7 +745,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       leadJudgeContractType: '',
     },
     caseDetails: {
-      hmctsServiceCode: 'SSCS',
+      hmctsServiceCode: 'BBA3',
       caseRef: '1584618195804035',
       requestTimeStamp: null,
       hearingID: 'h100007',
@@ -862,7 +862,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       leadJudgeContractType: '',
     },
     caseDetails: {
-      hmctsServiceCode: 'SSCS',
+      hmctsServiceCode: 'BBA3',
       caseRef: '1584618195804035',
       requestTimeStamp: null,
       hearingID: 'h100012',
@@ -979,7 +979,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       leadJudgeContractType: '',
     },
     caseDetails: {
-      hmctsServiceCode: 'SSCS',
+      hmctsServiceCode: 'BBA3',
       caseRef: '1584618195804035',
       requestTimeStamp: null,
       hearingID: 'h100008',

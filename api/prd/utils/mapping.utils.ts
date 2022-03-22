@@ -1,20 +1,17 @@
 import {JURISDICTION_SERVICES_MAPPINGS, SERVICE_COURT_TYPE_MAPPINGS} from "./mapping";
 
 export function getServicesByJurisdiction(jurisdictionIdArray: string[]): string[] {
-  const serviceIdsArray = jurisdictionIdArray.map(jurisdictionId => JURISDICTION_SERVICES_MAPPINGS[jurisdictionId])
+  return jurisdictionIdArray.map(jurisdictionId => JURISDICTION_SERVICES_MAPPINGS[jurisdictionId])
     .reduce(concatWithoutDuplicates);
-  return serviceIdsArray;
 }
 
 export function getCourtTypeIdsByServices(ServicesIdArray: string[]): string[] {
-  const courtTypeIdArray = ServicesIdArray.map(serviceId => SERVICE_COURT_TYPE_MAPPINGS[serviceId])
+  return ServicesIdArray.map(serviceId => SERVICE_COURT_TYPE_MAPPINGS[serviceId])
     .reduce(concatWithoutDuplicates);
-  return courtTypeIdArray;
 }
 
-export function getCourtTypeIdsByJurisdiction(jurisdictionIdArray: string[]): string {
-  const courtTypeIdArray = getCourtTypeIdsByServices(getServicesByJurisdiction(jurisdictionIdArray));
-  return courtTypeIdArray ? courtTypeIdArray.join(',') : '';
+export function getCourtTypeIdsByJurisdiction(jurisdictionIdArray: string[]): string[] {
+  return getCourtTypeIdsByServices(getServicesByJurisdiction(jurisdictionIdArray));
 }
 
 function concatWithoutDuplicates(array1: number[], array2: number[]) {

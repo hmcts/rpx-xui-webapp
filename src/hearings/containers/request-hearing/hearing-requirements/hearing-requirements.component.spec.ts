@@ -123,7 +123,7 @@ describe('HearingRequirementsComponent', () => {
         leadJudgeContractType: '',
       },
       caseDetails: {
-        hmctsServiceCode: 'SSCS',
+        hmctsServiceCode: 'BBA3',
         caseRef: '1111222233334444',
         requestTimeStamp: null,
         hearingID: null,

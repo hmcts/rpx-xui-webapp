@@ -1187,7 +1187,7 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
     leadJudgeContractType: '',
   },
   caseDetails: {
-    hmctsServiceCode: 'SSCS',
+    hmctsServiceCode: 'BBA3',
     caseRef: '1584618195804035',
     requestTimeStamp: null,
     hearingID: 'h100001',
@@ -1464,7 +1464,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
   },
   hmcStatus: HMCStatus.UPDATE_SUBMITTED,
   caseDetails: {
-    hmctsServiceCode: 'SSCS',
+    hmctsServiceCode: 'BBA3',
     caseRef: '1584618195804035',
     requestTimeStamp: null,
     hearingID: 'h100001',
@@ -1502,7 +1502,7 @@ export const initialState = {
     hearingList: {
       hearingListMainModel: {
         caseRef: '1111222233334444',
-        hmctsServiceID: 'SSCS',
+        hmctsServiceID: 'BBA3',
         caseHearings: [{
           hearingID: 'h00001',
           hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',

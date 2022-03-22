@@ -19,14 +19,15 @@ import * as fromFeature from '../../../store';
 })
 
 export class SpecificAccessDurationComponent implements OnInit {
-  // input bindings
-  @Input() public navEvent: SpecificAccessNavigation;
-
-  // properties
+  // static properties
   public static anotherPeriodDesc = 'You’ll need to provide both a start and end date for access to the case.';
   public static indefiniteDesc = 'Access starts from today and lasts while the case is open.';
   public static sevenDaysDesc = 'Starts from today and ends at midnight 7 days from now.';
 
+  // input bindings
+  @Input() public navEvent: SpecificAccessNavigation;
+
+  // properties
   public anotherPeriod: boolean;
   public caption = 'Approve specific access request';
   public readonly durations: DurationTypeDescription[];
@@ -162,8 +163,7 @@ export class SpecificAccessDurationComponent implements OnInit {
               this.endDateErrorMessage = 'Invalid End date';
               this.isEndDateError = true;
             }
-          }
-          else {
+          } else {
             if (!startDateNotInPast) {
               this.isStartDateError = true;
               this.startDateErrorMessage = 'The access start date must not be in the past';

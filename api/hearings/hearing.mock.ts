@@ -1,10 +1,11 @@
 import MockAdapter from 'axios-mock-adapter';
-import {HttpMockAdapter} from '../common/httpMockAdapter';
-import {HEARING_ACTUAL} from './data/hearing-actuals.mock.data';
-import {EMPTY_HEARINGS_LIST, HEARINGS_LIST} from './data/hearingLists.mock.data';
-import {HEARING_REQUEST_RESULTS} from './data/hearingRequests.mock.data';
-import {LINKED_HEARING_GROUP, SERVICE_LINKED_CASES} from './data/linkHearings.mock.data';
-import {SERVICE_HEARING_VALUES} from './data/serviceHearingValues.mock.data';
+import { HttpMockAdapter } from '../common/httpMockAdapter';
+import { HEARING_ACTUAL_COMPLETED } from './data/hearing-actuals-completed.mock.data';
+import { HEARING_ACTUAL } from './data/hearing-actuals.mock.data';
+import { EMPTY_HEARINGS_LIST, HEARINGS_LIST } from './data/hearingLists.mock.data';
+import { HEARING_REQUEST_RESULTS } from './data/hearingRequests.mock.data';
+import { LINKED_HEARING_GROUP, SERVICE_LINKED_CASES } from './data/linkHearings.mock.data';
+import { SERVICE_HEARING_VALUES } from './data/serviceHearingValues.mock.data';
 
 export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
@@ -108,7 +109,14 @@ export const init = () => {
     ];
   });
 
-  mock.onGet(hearingActualsUrl).reply(() => {
+  mock.onGet(hearingActualsUrl).reply(config => {
+    // returns completed hearing actual result
+    if (config.url.includes('/h100010')) {
+      return [
+        200,
+        HEARING_ACTUAL_COMPLETED,
+      ];
+    }
     return [
       200,
       HEARING_ACTUAL,

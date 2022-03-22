@@ -19,28 +19,33 @@ import * as fromFeature from '../../../store';
 })
 
 export class SpecificAccessDurationComponent implements OnInit {
-  public static sevenDaysDesc = 'Starts from today and ends at midnight 7 days from now.';
-  public static indefiniteDesc = 'Starts from today and lasts while the case is open.';
-  public static anotherPeriodDesc = 'You’ll need to provide both a start and end date for the role.';
-
+  // input bindings
   @Input() public navEvent: SpecificAccessNavigation;
-  public radioSelected: FormControl;
+
+  // properties
+  public static anotherPeriodDesc = 'You’ll need to provide both a start and end date for access to the case.';
+  public static indefiniteDesc = 'Access starts from today and lasts while the case is open.';
+  public static sevenDaysDesc = 'Starts from today and ends at midnight 7 days from now.';
+
   public anotherPeriod: boolean;
   public caption = 'Approve specific access request';
-  public title = 'How long do you want to give access to this case for?';
   public readonly durations: DurationTypeDescription[];
+  public endDateErrorMessage: string;
+  public isEndDateError: boolean;
+  public isStartDateError: boolean;
   public selectedDuration: DurationType;
+  public startDateErrorMessage: string;
+  public title = 'How long do you want to give access to this case for?';
+
+  // form group and controld
+  public formGroup: FormGroup;
+  public radioSelected: FormControl;
   public dayStartDate: FormControl;
   public monthStartDate: FormControl;
   public yearStartDate: FormControl;
   public dayEndDate: FormControl;
   public monthEndDate: FormControl;
   public yearEndDate: FormControl;
-  public formGroup: FormGroup;
-  public isEndDateError: boolean;
-  public isStartDateError: boolean;
-  public startDateErrorMessage: string;
-  public endDateErrorMessage: string;
 
   constructor(
     private durationHelper: DurationHelperService,

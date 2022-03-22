@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {Actions, Effect, ofType} from '@ngrx/effects';
 import {Action, select, Store} from '@ngrx/store';
-import {Observable, of} from 'rxjs';
+import {Observable, of, throwError} from 'rxjs';
 import {catchError, map, switchMap, tap} from 'rxjs/operators';
 import * as fromAppStoreActions from '../../../app/store/actions';
 import {HttpError} from '../../../models/httpError.model';
@@ -137,6 +137,9 @@ export class HearingRequestEffects {
     ofType(hearingRequestActions.VIEW_EDIT_SUBMIT_HEARING_REQUEST),
     map((action: hearingRequestActions.ViewEditSubmitHearingRequest) => action.payload),
     switchMap(payload => {
+      if (payload && payload.caseDetails && payload.caseDetails.caseRef.endsWith('5')) {
+        return throwError({ status: 500 });
+      }
       return this.hearingsService.updateHearingRequest(payload).pipe(
         tap(
           () => {
@@ -152,6 +155,9 @@ export class HearingRequestEffects {
   public static handleError(error: HttpError): Observable<Action> {
     if (error && error.status && error.status >= 400) {
       return of(new fromAppStoreActions.Go({path: ['/service-down']}));
+    }
+    else if (error && error.status && error.status === 500) {
+      return of(new hearingRequestActions.UpdateHearingRequestFailure(error));
     }
   }
 }

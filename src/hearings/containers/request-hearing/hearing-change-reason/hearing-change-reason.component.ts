@@ -1,13 +1,14 @@
 import {Component, OnDestroy} from '@angular/core';
-import {ACTION, HearingChangeReasonMessages } from '../../../models/hearings.enum';
+import {ACTION, HearingChangeReasonMessages, HearingSummaryEnum } from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 import {OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Store} from '@ngrx/store';
+import {select, Store} from '@ngrx/store';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
+import { Observable, Subscription } from 'rxjs';
 @Component({
   selector: 'exui-hearing-change-reason',
   templateUrl: './hearing-change-reason.component.html',
@@ -17,6 +18,9 @@ export class HearingChangeReasonComponent extends RequestHearingPageFlow impleme
   public hearingChangeReasonForm: FormGroup;
   public validationErrors: { id: string, message: string }[] = [];
   public selectionValid: boolean = true;
+  public hearingState$: Observable<fromHearingStore.State>;
+  public sub: Subscription;
+  public serverError: { id: string, message: string } = null;
 
   constructor(protected readonly route: ActivatedRoute,
               protected readonly router: Router,
@@ -24,9 +28,17 @@ export class HearingChangeReasonComponent extends RequestHearingPageFlow impleme
               protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService) {
       super(hearingStore, hearingsService);
+      this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.UpdateHearingRequest));
     }
 
   public ngOnInit(): void {
+    this.sub = this.hearingState$.subscribe(state => {
+      if (state && state.hearingRequest && state.hearingRequest.lastError) {
+        this.validationErrors = [{
+          id: 'backendError', message: HearingSummaryEnum.BackendError
+        }];
+      }
+    });
     this.hearingChangeReason = this.route.snapshot.data.hearingChangeReason;
     this.initForm();
   }
@@ -98,6 +110,9 @@ export class HearingChangeReasonComponent extends RequestHearingPageFlow impleme
   }
 
   public ngOnDestroy(): void {
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
     super.unsubscribe();
   }
 }

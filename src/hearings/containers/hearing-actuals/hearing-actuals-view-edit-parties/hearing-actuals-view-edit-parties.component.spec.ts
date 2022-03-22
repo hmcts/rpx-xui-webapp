@@ -174,6 +174,7 @@ const partyChannel = [
   },
 ];
 
+
 describe('HearingViewEditSummaryComponent', () => {
   let store: Store<any>;
   let component: HearingActualsViewEditPartiesComponent;

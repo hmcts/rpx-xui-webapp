@@ -124,40 +124,28 @@ export class SpecificAccessDurationComponent implements OnInit {
         };
       }
       case DurationType.ANOTHER_PERIOD: {
-        if (this.isDateValid() && this.formGroup.valid && this.startDateNotInPast() && this.startDateLessThanEndDate()) {
+        const startDate = this.durationHelperService.getDateFromControls(this.dayStartDate, this.monthStartDate, this.yearStartDate);
+        const endDate = this.durationHelperService.getDateFromControls(this.dayEndDate, this.monthEndDate, this.yearEndDate);
+        const startDateNotInPast = this.durationHelperService.startDateNotInPast(startDate);
+        const startDateBeforeEndDate = this.durationHelperService.startDateBeforeEndDate(startDate, endDate);
+
+        if (this.formGroup.valid && this.isDateValid() && startDateNotInPast && startDateBeforeEndDate) {
           return {
-            startDate: this.getStartDate(),
-            endDate: this.getEndDate(),
+            startDate,
+            endDate
           };
+        } else {
+          if (!startDateNotInPast) {
+            this.isStartDateError = true;
+            this.startDateErrorMessage = 'The access start date must not be in the past';
+          }
+          if (!startDateBeforeEndDate) {
+            this.isEndDateError = true;
+            this.endDateErrorMessage = 'The access end date must be after the access start date';
+          }
         }
       }
     }
-  }
-
-  /**
-   * Check if the end date is after the start date
-   * @returns boolean for whether the end date is after the start date
-   */
-  public startDateLessThanEndDate(): boolean {
-    if (this.getStartDate() > this.getEndDate()) {
-      this.isEndDateError = true;
-      this.endDateErrorMessage = 'The access end date must be after the access start date';
-      return false;
-    }
-    return true;
-  }
-
-  /**
-   * Check if start date is in the past
-   * @returns boolean for whether the date is in the past or not
-   */
-  public startDateNotInPast(): boolean {
-    if (this.getStartDate() < this.getTodayDate()) {
-      this.isStartDateError = true;
-      this.startDateErrorMessage = 'The access start date must not be in the past';
-      return false;
-    }
-    return true;
   }
 
   /**
@@ -176,35 +164,6 @@ export class SpecificAccessDurationComponent implements OnInit {
       this.isEndDateError = true;
     }
     return dateCheck.isStartDateValid && dateCheck.isEndDateValid;
-  }
-
-  /**
-   * Returns a date object representing todays date
-   */
-  public getTodayDate(): Date {
-    return this.durationHelperService.getTodaysDate();
-  }
-
-  /**
-   * Returns a date object for the provided start date controls
-   */
-  public getStartDate(): Date {
-    return this.durationHelperService.getDateFromControls(
-      this.dayStartDate,
-      this.monthStartDate,
-      this.yearStartDate
-    );
-  }
-
-  /**
-   * Returns a date object for the provided end date controls
-   */
-  public getEndDate(): Date {
-    return this.durationHelperService.getDateFromControls(
-      this.dayEndDate,
-      this.monthEndDate,
-      this.yearEndDate
-    );
   }
 
   /**

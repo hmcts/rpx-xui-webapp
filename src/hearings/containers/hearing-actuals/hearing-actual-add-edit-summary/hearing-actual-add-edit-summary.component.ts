@@ -15,7 +15,7 @@ import { HearingActualsStateData } from '../../../models/hearingActualsStateData
 import { ACTION, HearingActualAddEditSummaryEnum, HearingResult, PartyRoleOnly } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
-import { getHearingActualsError } from '../../../store';
+import { getHearingActualsLastError } from '../../../store';
 import * as fromHearingStore from '../../../store';
 
 @Component({
@@ -67,7 +67,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.id = this.route.snapshot.params.id;
-    this.error$ = this.hearingStore.select(fromHearingStore.getHearingActualsError);
+    this.error$ = this.hearingStore.select(fromHearingStore.getHearingActualsLastError);
     this.sub = this.hearingStore.select(fromHearingStore.getHearingActuals)
       .pipe(
         filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel),

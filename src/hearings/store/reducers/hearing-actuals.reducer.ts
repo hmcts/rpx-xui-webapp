@@ -48,6 +48,12 @@ export function hearingActualsReducer(
         lastError: action.payload
       };
     }
+    case fromActions.RESET_HEARING_ACTUALS_LAST_ERROR: {
+      return {
+        ...currentState,
+        lastError: null
+      }
+    }
     default: {
       return {
         ...currentState

@@ -22,6 +22,10 @@ export class ErrorPageComponent implements OnInit, OnDestroy {
         this.caseId = state.hearingList.hearingListMainModel.caseRef;
       }
     );
+    // Reset errors
+    this.hearingStore.dispatch(new fromHearingStore.ResetHearingValuesLastError());
+    this.hearingStore.dispatch(new fromHearingStore.ResetHearingRequestLastError());
+    this.hearingStore.dispatch(new fromHearingStore.ResetHearingActualsLastError());
   }
 
   public ngOnDestroy(): void {

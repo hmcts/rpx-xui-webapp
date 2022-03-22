@@ -114,7 +114,7 @@ describe('Hearing Values Reducer', () => {
         expect(hearingsState.serviceHearingValuesModel).toEqual(SERVICE_HEARING_VALUES);
       });
 
-			it('should call error response action', () => {
+      it('should call error response action', () => {
         const initialHearingValuesState: HearingValuesStateData = {
           serviceHearingValuesModel: null,
           lastError: {

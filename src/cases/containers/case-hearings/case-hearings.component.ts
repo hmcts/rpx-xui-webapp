@@ -26,11 +26,9 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public hearingState$: Observable<fromHearingStore.State>;
   public hearingsActions: Actions[] = [Actions.READ];
   public userRoles$: Observable<string[]>;
-  public hearingState$: Observable<fromHearingStore.State>;
   public sub: Subscription;
   public hasRequestAction: boolean = false;
   public caseId: string = '';
-  public sub: Subscription;
   public serverError: { id: string, message: string } = null;
 
   constructor(private readonly appStore: Store<fromAppStore.State>,
@@ -73,7 +71,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     }
   }
 
-	public ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     if (this.sub) {
       this.sub.unsubscribe();
     }
@@ -130,10 +128,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
     this.sub = this.hearingStore.select(fromHearingStore.getHearingValuesLastError).subscribe(
       error => {
-				debugger;
         if (error) {
-          // Reset error before navigating to the error page
-          this.hearingStore.dispatch(new fromHearingStore.ResetHearingValuesLastError());
           this.router.navigate(['/', 'hearings', 'error']);
         } else {
           const hearingCondition: HearingConditions = {
@@ -146,11 +141,5 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
         }
       }
     );
-  }
-
-  public ngOnDestroy(): void {
-    if (this.sub) {
-      this.sub.unsubscribe();
-    }
   }
 }

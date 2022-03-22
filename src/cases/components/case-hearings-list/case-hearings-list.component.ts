@@ -76,11 +76,7 @@ export class CaseHearingsListComponent implements OnInit, OnDestroy {
     const sub$ = combineLatest([this.hearingStore.select(fromHearingStore.getHearingValuesLastError), this.hearingStore.select(fromHearingStore.getHearingRequestLastError)]);
     this.sub = sub$.subscribe(
       errors => {
-				debugger;
         if (errors && (errors[0] !== null || errors[1] !== null)) {
-          // Reset error before navigating to the error page
-          this.hearingStore.dispatch(new fromHearingStore.ResetHearingValuesLastError());
-          this.hearingStore.dispatch(new fromHearingStore.ResetHearingRequestLastError());
           this.router.navigate(['/', 'hearings', 'error']);
         } else {
           const hearingCondition: HearingConditions = {
@@ -94,15 +90,22 @@ export class CaseHearingsListComponent implements OnInit, OnDestroy {
   }
 
   public viewDetails(hearing: HearingListViewModel): void {
-    if (hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.CANCELLATION_REQUESTED) {
-      this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearing.hearingID));
-      this.router.navigate(['/', 'hearings', 'view', 'hearing-cancellation-summary']);
-    } else if (hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.CANCELLED) {
-      this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearing.hearingID));
-      this.router.navigate(['/', 'hearings', 'view', 'hearing-cancelled-summary']);
-    } else {
-      this.router.navigate(['/', 'hearings', 'view']);
-    }
+    let url: string;
+    this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearing.hearingID));
+    this.sub = this.hearingStore.select(fromHearingStore.getHearingRequestLastError).subscribe(
+      error => {
+        if (error) {
+          this.router.navigate(['/', 'hearings', 'error']);
+        } else {
+          url = hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.CANCELLATION_REQUESTED
+            ? '/hearings/view/hearing-cancellation-summary'
+            : hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.CANCELLED
+              ? '/hearings/view/hearing-cancelled-summary'
+              : '/hearings/view';
+          this.router.navigateByUrl(url);
+        }
+      }
+    );
   }
 
   public addAndEdit(hearingID: string): void {

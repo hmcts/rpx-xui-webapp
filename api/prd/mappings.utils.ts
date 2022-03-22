@@ -1,4 +1,4 @@
-import {JURISDICTION_SERVICES_MAPPINGS, SERVICE_COURT_TYPE_MAPPINGS} from "./mapping";
+import {JURISDICTION_SERVICES_MAPPINGS, SERVICE_COURT_TYPE_MAPPINGS} from './mappings.data';
 
 export function getServicesByJurisdiction(jurisdictionIdArray: string[]): string[] {
   return jurisdictionIdArray.map(jurisdictionId => JURISDICTION_SERVICES_MAPPINGS[jurisdictionId])

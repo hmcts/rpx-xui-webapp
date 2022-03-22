@@ -3,7 +3,7 @@ import {handleGet} from '../../common/crudService';
 import {getConfigValue} from '../../configuration';
 import {SERVICES_PRD_LOCATION_API} from '../../configuration/references';
 import {EnhancedRequest} from '../../lib/models';
-import {getCourtTypeIdsByServices} from '../utils/mapping.utils';
+import {getCourtTypeIdsByServices} from '../mappings.utils';
 import {LocationTypeEnum} from './data/locationType.enum';
 import {LocationModel} from './models/location.model';
 
@@ -11,8 +11,8 @@ const url: string = getConfigValue(SERVICES_PRD_LOCATION_API);
 
 /**
  * @description getLocations from service ID/location type/search term
- * @overview API sample: /api/locations/getLocations?serviceIds=SSCS,IA&locationType=hearing&searchTerm=CT91RL
- * @example jurisdiction = SSCS | SSCS,IA split with ','
+ * @overview API sample: /api/locations/getLocations?serviceIds=BBA3,BFA1&locationType=hearing&searchTerm=CT91RL
+ * @example serviceIds = BBA3 | BBA3,BFA1 split with ','
  * @example locationType = optional | hearing | case_management
  * @example searchTerm = any search term for postcode | site name | venue name |court name | court address etc.
  */

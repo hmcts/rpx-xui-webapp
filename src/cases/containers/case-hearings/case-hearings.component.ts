@@ -10,7 +10,7 @@ import * as fromAppStore from '../../../app/store';
 import { HearingConditions } from '../../../hearings/models/hearingConditions';
 import { HearingListModel } from '../../../hearings/models/hearingList.model';
 import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
-import { Actions, EXUISectionStatusEnum, Mode } from '../../../hearings/models/hearings.enum';
+import { Actions, EXUISectionStatusEnum, HearingSummaryEnum, Mode } from '../../../hearings/models/hearings.enum';
 import * as fromHearingStore from '../../../hearings/store';
 
 @Component({
@@ -26,9 +26,12 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public hearingState$: Observable<fromHearingStore.State>;
   public hearingsActions: Actions[] = [Actions.READ];
   public userRoles$: Observable<string[]>;
+  public hearingState$: Observable<fromHearingStore.State>;
+  public sub: Subscription;
   public hasRequestAction: boolean = false;
   public caseId: string = '';
   public sub: Subscription;
+  public serverError: { id: string, message: string } = null;
 
   constructor(private readonly appStore: Store<fromAppStore.State>,
               private readonly hearingStore: Store<fromHearingStore.State>,
@@ -40,9 +43,22 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
       map(userDetails => userDetails.userInfo.roles)
     );
     this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
+    this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
+  }
+
+  public reloadHearings() {
+    this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
   }
 
   public ngOnInit(): void {
+    this.sub = this.hearingState$.subscribe(state => {
+      if (state && state.hearingList && state.hearingList.lastError) {
+        this.serverError = {
+          id: 'backendError', message: HearingSummaryEnum.BackendError
+        };
+        window.scrollTo({left: 0, top: 0, behavior: 'smooth'});
+      }
+    });
     this.upcomingHearings$ = this.getHearingListByStatus(EXUISectionStatusEnum.UPCOMING);
     this.pastAndCancelledHearings$ = this.getHearingListByStatus(EXUISectionStatusEnum.PAST_AND_CANCELLED);
     this.roleCategoryMappingService.isJudicialOrLegalOpsCategory(this.userRoles$).subscribe(
@@ -130,5 +146,11 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
         }
       }
     );
+  }
+
+  public ngOnDestroy(): void {
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
   }
 }

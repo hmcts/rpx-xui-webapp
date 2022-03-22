@@ -4,7 +4,7 @@ import { cold, hot } from 'jasmine-marbles';
 import { of } from 'rxjs';
 import { Go } from '../../../app/store';
 import * as routeAction from '../../../app/store/index';
-import { Actions, AllocateRoleState, AllocateTo, DurationOfRole } from '../../models';
+import { Actions as RoleActions, Actions, AllocateRoleState, AllocateTo, DurationOfRole } from '../../models';
 import { RoleAllocationMessageText } from '../../models/enums/allocation-text';
 import { AllocateRoleService } from '../../services';
 import * as allocateRoleAction from '../actions/allocate-role.action';
@@ -38,6 +38,7 @@ describe('Allocate Role Effects', () => {
 
       const STATE_DATA = {
         caseId: '111111',
+        jurisdiction: 'IA',
         state: AllocateRoleState.CHOOSE_ROLE,
         typeOfRole: null,
         allocateTo: AllocateTo.RESERVE_TO_ME,
@@ -49,12 +50,18 @@ describe('Allocate Role Effects', () => {
       allocateRoleServiceMock.confirmAllocation.and.returnValue(of({
       }));
       const action = new allocateRoleAction.ConfirmAllocation(STATE_DATA);
+      const message: any = {
+        type: 'success',
+        message: RoleAllocationMessageText.Add
+      };
       const completion = new routeAction.CreateCaseGo({
         path: [`work/my-work/cases`],
         caseId: '111111',
         extras: {
           state: {
             showMessage: true,
+            retainMessages: true,
+            message,
             messageText: RoleAllocationMessageText.Add,
           }
         }
@@ -69,6 +76,11 @@ describe('Allocate Role Effects', () => {
     it('should handle 500', () => {
       const action$ = AllocateRoleEffects.handleError({status: 500, message: 'error'}, allocateRoleAction.ConfirmAllocation.toString());
       action$.subscribe(action => expect(action).toEqual(new Go({path: ['/service-down']})));
+    });
+
+    it('should handle 422', () => {
+      const action$ = AllocateRoleEffects.handleError({status: 422, message: 'error'}, allocateRoleAction.ConfirmAllocation.toString());
+      action$.subscribe(action => expect(action).toEqual(new Go({path: ['/role-access/user-not-assignable']})));
     });
   });
 

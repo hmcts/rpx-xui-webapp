@@ -17,8 +17,17 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
 
     When('I navigate to My work sub navigation tab {string}', async function (secondaryNavTab) {
-        await headerPage.clickPrimaryNavigationWithLabel('My work');
-        await myWorkPage.clickSubNavigationTab(secondaryNavTab);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            try{
+                await headerPage.clickPrimaryNavigationWithLabel('My work');
+                await BrowserWaits.waitForSpinnerToDissappear();
+                await myWorkPage.clickSubNavigationTab(secondaryNavTab);
+            }catch(err){
+                await headerPage.refreshBrowser();
+                throw new Error(err); 
+            }
+           
+        });   
        
     });
 
@@ -36,6 +45,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 await allWorkPage.casesContainer.isPresent();
             }
         });
+        await BrowserWaits.waitForSpinnerToDissappear();
         
     });
 

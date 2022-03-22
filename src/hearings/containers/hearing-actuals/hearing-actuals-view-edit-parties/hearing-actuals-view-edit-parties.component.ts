@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ValidationErrors } from '@angular/forms/src/directives/validators';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -53,7 +53,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
                      private readonly renderer: Renderer2,
   ) {
     this.form = this.fb.group({
-      parties: this.fb.array([])
+      parties: this.fb.array([], [Validators.maxLength(50)]),
     });
   }
 
@@ -137,10 +137,11 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       organisation: [null],
       attendeeRepresenting: [null, [this.validators.mandatory('Enter attendee representing')]],
       isParty: [false]
-    });
+    }, { validator: this.validators.validateDuplicateEntries(this.parties, 'Participant details already entered.') });
   }
 
   public addRow($event: Event): void {
+    this.errors = [];
     $event.preventDefault();
     ($event.target as HTMLElement).blur();
     this.parties.push(this.initiateForm());
@@ -175,6 +176,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
 
   public removeRow($event: Event, index: number): void {
     $event.preventDefault();
+    this.errors = [];
     this.parties.removeAt(index);
   }
 

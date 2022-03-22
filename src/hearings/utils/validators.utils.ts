@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, FormGroup, ValidatorFn } from '@angular/forms';
+import { AbstractControl, FormArray, FormGroup, ValidatorFn } from '@angular/forms';
 import * as moment from 'moment';
 import { HearingDateEnum } from '../models/hearings.enum';
 
@@ -150,5 +150,19 @@ export class ValidatorsUtils {
     return (formGroup: FormGroup) => ValidatorsUtils.validPauseTime(formGroup, pauseTime, startTimes, message, errorName);
   }
 
+  public validateDuplicateEntries(controls: FormArray, message: string): ValidatorFn {
+    return (formGroup: FormGroup) => {
+      const values: string[] = controls.controls
+        .filter((control, index) => index !== controls.controls.length - 1)
+        .map((c) => JSON.stringify(c.value));
+      const value: string = JSON.stringify(formGroup.value);
+      const formControlKeys = Object.keys(formGroup.controls);
+      if (formControlKeys.some((key) => formGroup.controls[key].invalid)) {
+        return null;
+      }
+      const duplicateEntries = values.filter((v) => v === value);
+      return duplicateEntries.length > 0 ? { duplicateEntries: { error: true, message } } : null;
+    };
+  }
 }
 

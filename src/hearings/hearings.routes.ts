@@ -7,6 +7,7 @@ import { HearingActualsFinalConfirmationComponent } from './containers/hearing-a
 import { HearingActualsTimingComponent } from './containers/hearing-actuals/hearing-actuals-timing/hearing-actuals-timing.component';
 import { HearingActualsViewEditPartiesComponent } from './containers/hearing-actuals/hearing-actuals-view-edit-parties/hearing-actuals-view-edit-parties.component';
 import { HearingActualsComponent } from './containers/hearing-actuals/hearing-actuals.component';
+import { HearingCompletedSummaryComponent } from './containers/hearing-actuals/hearing-completed-summary/hearing-completed-summary.component';
 import { HearingStageResultComponent } from './containers/hearing-actuals/hearing-stage-result/hearing-stage-result.component';
 import { HearingAdditionalInstructionsComponent } from './containers/request-hearing/hearing-additional-instructions/hearing-additional-instructions.component';
 import { HearingAttendanceComponent } from './containers/request-hearing/hearing-attendance/hearing-attendance.component';
@@ -120,6 +121,28 @@ export const ROUTES: Routes = [
         canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Manage cases | Hearing Actuals | Update Participants',
+          isChildRequired: true
+        }
+      },
+      {
+        path: 'hearing-completed-summary',
+        resolve: {
+          hearingPriorities: RefDataResolver,
+          caseFlags: CaseFlagsResolver,
+          hearingStageOptions: HearingStageResolver,
+          additionFacilitiesOptions: AdditionalFacilitiesResolver,
+          judgeTypes: JudgeTypesResolverService,
+          judicialUsers: JudicialUserSearchResolver,
+          judicialResponseUsers: JudicialUserSearchResponseResolver,
+          otherPanelRoles: PanelRolesResolverService,
+          courtLocation: CourtLocationsDataResolver,
+          partyChannels: HearingActualPartyChannelResolverService,
+          hearingRole: HearingActualRoleResolverService,
+        },
+        component: HearingCompletedSummaryComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Hearings | Hearing Actuals | Check details',
           isChildRequired: true
         }
       },
@@ -242,14 +265,10 @@ export const ROUTES: Routes = [
       {
         path: 'hearing-create-edit-summary',
         resolve: {
-          hearingPriorities: RefDataResolver,
-          caseFlags: CaseFlagsResolver,
-          hearingStageOptions: HearingStageResolver,
-          additionFacilitiesOptions: AdditionalFacilitiesResolver,
           partyChannels: PartyChannelsResolverService,
-          judgeTypes: JudgeTypesResolverService,
+          hearingStageOptions: HearingStageResolver,
+          courtLocation: CourtLocationsDataResolver,
           judicialUsers: JudicialUserSearchResolver,
-          otherPanelRoles: PanelRolesResolverService,
         },
         component: HearingCreateEditSummaryComponent,
         canActivate: [HealthCheckGuard],

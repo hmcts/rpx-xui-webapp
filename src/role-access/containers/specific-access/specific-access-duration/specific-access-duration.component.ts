@@ -124,46 +124,53 @@ export class SpecificAccessDurationComponent implements OnInit {
         };
       }
       case DurationType.ANOTHER_PERIOD: {
+        // get start and end dates
         const startDate = this.durationHelperService.getDateFromControls(this.dayStartDate, this.monthStartDate, this.yearStartDate);
         const endDate = this.durationHelperService.getDateFromControls(this.dayEndDate, this.monthEndDate, this.yearEndDate);
+
+        // check that both the start and end dates are valid looking dates
+        const dateCheck = this.durationHelperService.checkDates(
+          this.durationHelperService.convertDateControlsToString(this.dayStartDate, this.monthStartDate, this.yearStartDate),
+          this.durationHelperService.convertDateControlsToString(this.dayEndDate, this.monthEndDate, this.yearEndDate)
+        );
+        const datesValid = dateCheck.isStartDateValid && dateCheck.isEndDateValid;
+
+        // check if start date is not in past
         const startDateNotInPast = this.durationHelperService.startDateNotInPast(startDate);
+
+        // check if start date is before the end date
         const startDateBeforeEndDate = this.durationHelperService.startDateBeforeEndDate(startDate, endDate);
 
-        if (this.formGroup.valid && this.isDateValid() && startDateNotInPast && startDateBeforeEndDate) {
+        // if all checks pass return object with startDate and endDate
+        if (this.formGroup.valid && datesValid && startDateNotInPast && startDateBeforeEndDate) {
           return {
             startDate,
             endDate
           };
-        } else {
-          if (!startDateNotInPast) {
-            this.isStartDateError = true;
-            this.startDateErrorMessage = 'The access start date must not be in the past';
+        } else {  // display the errors in the UI
+          if (!datesValid) {
+            if (!dateCheck.isStartDateValid) {
+              this.startDateErrorMessage = 'Invalid Start date';
+              this.isStartDateError = true;
+            }
+            if (!dateCheck.isEndDateValid) {
+              this.endDateErrorMessage = 'Invalid End date';
+              this.isEndDateError = true;
+            }
           }
-          if (!startDateBeforeEndDate) {
-            this.isEndDateError = true;
-            this.endDateErrorMessage = 'The access end date must be after the access start date';
+          else {
+            if (!startDateNotInPast) {
+              this.isStartDateError = true;
+              this.startDateErrorMessage = 'The access start date must not be in the past';
+            }
+            if (!startDateBeforeEndDate) {
+              this.isEndDateError = true;
+              this.endDateErrorMessage = 'The access end date must be after the access start date';
+            }
           }
         }
       }
     }
-  }
-
-  /**
-   * Checks validity of start and end dates
-   */
-  public isDateValid(): boolean {
-    const startDate = this.durationHelperService.convertDateControlsToString(this.dayStartDate, this.monthStartDate, this.yearStartDate);
-    const endDate = this.durationHelperService.convertDateControlsToString(this.dayEndDate, this.monthEndDate, this.yearEndDate);
-    const dateCheck = this.durationHelperService.checkDates(startDate, endDate);
-    if (!dateCheck.isStartDateValid) {
-      this.startDateErrorMessage = 'Invalid Start date';
-      this.isStartDateError = true;
-    }
-    if (!dateCheck.isEndDateValid) {
-      this.endDateErrorMessage = 'Invalid End date';
-      this.isEndDateError = true;
-    }
-    return dateCheck.isStartDateValid && dateCheck.isEndDateValid;
   }
 
   /**

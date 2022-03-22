@@ -6,6 +6,7 @@ export * from './allocate-role-navigation-event.enum';
 export * from './allocate-role-state-data.interface';
 export * from './case-role-details.interface';
 export * from './case-role.interface';
+export * from './duration-type-description.interface';
 export * from './exclusion.enum';
 export * from './exclusion-navigation-event.enum';
 export * from './exclusion-state.enum';

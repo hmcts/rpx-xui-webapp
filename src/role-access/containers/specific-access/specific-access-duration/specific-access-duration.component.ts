@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import {
+  DurationTypeDescription,
   Period,
   SpecificAccessStateData,
   SpecificAccessNavigation,
@@ -27,7 +28,7 @@ export class SpecificAccessDurationComponent implements OnInit {
   public anotherPeriod: boolean;
   public caption = 'Approve specific access request';
   public title = 'How long do you want to give access to this case for?';
-  public readonly durations: DurationDescription [];
+  public readonly durations: DurationTypeDescription[];
   public selectedDuration: DurationType;
   public dayStartDate: FormControl;
   public monthStartDate: FormControl;
@@ -223,11 +224,4 @@ export class SpecificAccessDurationComponent implements OnInit {
     return this.durationHelperService.getInputClass(isError, isYear);
   }
 
-}
-
-export interface DurationDescription {
-  id: string;
-  duration: DurationType;
-  description: string;
-  checked: boolean;
 }

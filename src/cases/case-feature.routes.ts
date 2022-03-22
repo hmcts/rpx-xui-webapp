@@ -2,7 +2,6 @@ import { ModuleWithProviders } from '@angular/core';
 // routes
 import { RouterModule, Routes } from '@angular/router';
 import { CaseResolver, editorRouting, viewerRouting as caseViewRouting } from '@hmcts/ccd-case-ui-toolkit';
-import { CaseTasksResolverService } from '../app/resolvers/case-tasks-resolver.service';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
 import {
   CaseCreateSubmitComponent,
@@ -87,7 +86,7 @@ export const ROUTES: Routes = [
             children: editorRouting
           }
         ],
-        canActivate: [ HealthCheckGuard ],
+        canActivate: [HealthCheckGuard],
         data: {
           title: 'Create a case'
         }
@@ -96,7 +95,7 @@ export const ROUTES: Routes = [
         path: 'case-search',
         component: CaseSearchComponent,
         children: editorRouting,
-        canActivate: [ HealthCheckGuard ],
+        canActivate: [HealthCheckGuard],
         data: {
           title: 'Find a case'
         }
@@ -118,9 +117,6 @@ export const ROUTES: Routes = [
               {
                 path: 'tasks',
                 component: TasksContainerComponent,
-                resolve: {
-                  tasks: CaseTasksResolverService
-                }
               },
               {
                 path: 'roles-and-access',
@@ -132,28 +128,15 @@ export const ROUTES: Routes = [
               }
             ]
           },
-          ...caseViewRouting
-        ],
+          ...caseViewRouting],
         canActivate: [HealthCheckGuard],
         data: {
           title: 'Case Details'
         }
       }
-    ],
-    canActivate: [HealthCheckGuard],
-    data: {
-      title: 'Create a case'
-    }
+    ]
   },
-  {
-    path: 'case-search',
-    component: CaseSearchComponent,
-    children: editorRouting,
-    canActivate: [HealthCheckGuard],
-    data: {
-      title: 'Find a case'
-    }
-  },
+
 ];
 
 export const casesRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);

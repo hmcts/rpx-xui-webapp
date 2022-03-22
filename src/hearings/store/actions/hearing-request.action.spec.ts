@@ -9,6 +9,18 @@ describe('Hearing Request Actions', () => {
     });
   });
 
+  describe('LoadHearingRequestFailure', () => {
+    it('should load hearing request failure action', () => {
+      const payload = {
+        status: 403,
+        errors: null,
+        message: 'Http failure response: 403 Forbidden'
+      };
+      const action = new fromHearingRequestAction.LoadHearingRequestFailure(payload);
+      expect(action.type).toBe(fromHearingRequestAction.LOAD_HEARING_REQUEST_FAILURE);
+    });
+  });
+
   describe('UpdateHearingRequest', () => {
     it('should update hearing request action', () => {
       const payload = {
@@ -42,6 +54,13 @@ describe('Hearing Request Actions', () => {
       };
       const action = new fromHearingRequestAction.SubmitHearingRequestFailure(payload);
       expect(action.type).toBe(fromHearingRequestAction.SUBMIT_HEARING_REQUEST_FAILURE);
+    });
+  });
+
+  describe('ResetHearingRequestLastError', () => {
+    it('should reset hearing request last error action', () => {
+      const action = new fromHearingRequestAction.ResetHearingRequestLastError();
+      expect(action.type).toBe(fromHearingRequestAction.RESET_HEARING_REQUEST_LAST_ERROR);
     });
   });
 });

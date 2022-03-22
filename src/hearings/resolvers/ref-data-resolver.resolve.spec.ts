@@ -1,7 +1,7 @@
 import {APP_BASE_HREF} from '@angular/common';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {inject, TestBed} from '@angular/core/testing';
-import {ActivatedRouteSnapshot} from '@angular/router';
+import {ActivatedRouteSnapshot, Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {Store, StoreModule} from '@ngrx/store';
 import {of} from 'rxjs';
@@ -16,6 +16,7 @@ import {RefDataResolver} from './ref-data-resolver.resolve';
 describe('Ref Data Resolver', () => {
   let lovRefDataService: LovRefDataService;
   let store: Store<fromHearingStore.State>;
+  const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
   const dataRef: LovRefDataModel[] = [];
 
   beforeEach(() => {
@@ -28,7 +29,8 @@ describe('Ref Data Resolver', () => {
         providers: [
           RefDataResolver,
           LovRefDataService,
-          {provide: APP_BASE_HREF, useValue: '/'}
+          {provide: APP_BASE_HREF, useValue: '/'},
+          {provide: Router, useValue: mockRouter}
         ]
       }
     );
@@ -54,6 +56,21 @@ describe('Ref Data Resolver', () => {
       expect(service.getReferenceData$).toHaveBeenCalled();
       expect(lovRefDataService.getListOfValues).toHaveBeenCalled();
       expect(refData).toEqual([]);
+    });
+  }));
+
+  it('should call router navigate if error', inject([RefDataResolver], (service: RefDataResolver) => {
+    spyOn(lovRefDataService, 'getListOfValues').and.throwError('mocked api error');
+    spyOn(service, 'getReferenceData$').and.callThrough();
+    const route = new ActivatedRouteSnapshot();
+    route.data = {
+      title: 'HMCTS Manage cases | Request Hearing | Date Priority Hearing',
+      category: HearingCategory.Priority
+    };
+    service.resolve(route).subscribe((refData: LovRefDataModel[]) => {
+      expect(service.getReferenceData$).toHaveBeenCalled();
+      expect(lovRefDataService.getListOfValues).toHaveBeenCalled();
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/hearings/error']);
     });
   }));
 });

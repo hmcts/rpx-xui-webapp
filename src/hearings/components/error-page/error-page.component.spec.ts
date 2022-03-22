@@ -10,7 +10,7 @@ import { ErrorPageComponent } from './error-page.component';
 describe('ErrorPageComponent', () => {
   let component: ErrorPageComponent;
   let fixture: ComponentFixture<ErrorPageComponent>;
-  let store: any;
+  let mockStore: any;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -26,13 +26,15 @@ describe('ErrorPageComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ErrorPageComponent);
-    store = TestBed.get(Store);
+    mockStore = TestBed.get(Store);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
   it('should create', () => {
+    const dispatchSpy = spyOn(mockStore, 'dispatch');
     expect(component).toBeTruthy();
+    expect(dispatchSpy).toHaveBeenCalledTimes(3);
   });
 
   it('should unsubscribe', () => {

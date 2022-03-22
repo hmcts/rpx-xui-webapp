@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as moment from 'moment';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { UserRole } from '../../../app/models';
 import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
 import { HearingConditions } from '../../../hearings/models/hearingConditions';
@@ -378,6 +378,13 @@ describe('CaseHearingsComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should unsubscribe', () => {
+    component.sub = new Observable().subscribe();
+    spyOn(component.sub, 'unsubscribe').and.callThrough();
+    component.ngOnDestroy();
+    expect(component.sub.unsubscribe).toHaveBeenCalled();
+  });
+
   it('should set hearings actions', () => {
     const USER_DETAILS = {
       sessionTimeout: {
@@ -475,6 +482,7 @@ describe('CaseHearingsComponent', () => {
 
   it('should create hearing request', () => {
     const dispatchSpy = spyOn(mockStore, 'dispatch');
+    const selectSpy = spyOn(mockStore, 'select');
     const hearingCondition: HearingConditions = {
       mode: 'create',
       isInit: true,
@@ -482,6 +490,7 @@ describe('CaseHearingsComponent', () => {
     };
     component.createHearingRequest();
     fixture.detectChanges();
+    expect(selectSpy).toHaveBeenCalled();
     expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.LoadHearingValues(component.caseId)));
     expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions(hearingCondition)));
   });

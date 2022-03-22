@@ -15,7 +15,6 @@ import { HearingActualsStateData } from '../../../models/hearingActualsStateData
 import { ACTION, HearingActualAddEditSummaryEnum, HearingResult, PartyRoleOnly } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
-import { getHearingActualsLastError } from '../../../store';
 import * as fromHearingStore from '../../../store';
 
 @Component({

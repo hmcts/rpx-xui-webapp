@@ -78,6 +78,22 @@ describe('Hearing Request Reducer', () => {
       });
     });
 
+    describe('Load hearing request failure action', () => {
+      it('should call error response action', () => {
+        const initialHearingRequestState: HearingRequestStateData = {
+          hearingRequestMainModel: null,
+          lastError: {
+            status: 403,
+            errors: null,
+            message: 'Http failure response: 403 Forbidden'
+          },
+        };
+        const action = new fromHearingRequestActions.LoadHearingRequestFailure(initialHearingRequestState.lastError);
+        const hearingsState = fromHearingRequestReducer.hearingRequestReducer(initialHearingRequestState, action);
+        expect(hearingsState).toEqual(initialHearingRequestState);
+      });
+    });
+
     describe('Update hearing request action', () => {
       it('should update hearing request action and reset hearingInWelshFlag if no Wales location', () => {
         const initialHearingRequestState: HearingRequestStateData = {
@@ -154,6 +170,22 @@ describe('Hearing Request Reducer', () => {
         const action = new fromHearingRequestActions.SubmitHearingRequestFailure(initialHearingRequestState.lastError);
         const hearingsState = fromHearingRequestReducer.hearingRequestReducer(initialHearingRequestState, action);
         expect(hearingsState).toEqual(initialHearingRequestState);
+      });
+    });
+
+    describe('reset hearing actuals last error action', () => {
+      it('should set correct object', () => {
+        const initialHearingRequestState: HearingRequestStateData = {
+          hearingRequestMainModel: null,
+          lastError: {
+            status: 403,
+            errors: null,
+            message: 'Http failure response: 403 Forbidden'
+          },
+        };
+        const action = new fromHearingRequestActions.ResetHearingRequestLastError();
+        const hearingsState = fromHearingRequestReducer.hearingRequestReducer(initialHearingRequestState, action);
+        expect(hearingsState.lastError).toEqual(null);
       });
     });
   });

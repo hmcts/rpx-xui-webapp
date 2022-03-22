@@ -101,13 +101,5 @@ describe('Hearing List Effects', () => {
       const expected = cold('-b', { b: completion });
       expect(effects.loadHearingList$).toBeObservable(expected);
     });
-
-    it('should handle 4xx related errors', () => {
-      const action$ = HearingListEffects.handleError({
-        status: 403,
-        message: 'error'
-      });
-      action$.subscribe(action => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
-    });
   });
 });

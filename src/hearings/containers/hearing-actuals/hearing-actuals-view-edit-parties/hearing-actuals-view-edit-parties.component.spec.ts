@@ -174,7 +174,7 @@ const partyChannel = [
   },
 ];
 
-fdescribe('HearingViewEditSummaryComponent', () => {
+describe('HearingViewEditSummaryComponent', () => {
   let store: Store<any>;
   let component: HearingActualsViewEditPartiesComponent;
   let fixture: ComponentFixture<HearingActualsViewEditPartiesComponent>;

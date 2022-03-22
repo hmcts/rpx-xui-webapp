@@ -103,4 +103,23 @@ export class DurationHelperService {
       .add(daysToAdd, 'd').toDate();
   }
 
+  /**
+   * Returns boolean representing whether the start date is in the past or not
+   * @param startDate the start date to compare to todays date
+   * @return boolean
+   */
+  public startDateNotInPast(startDate: Date): boolean {
+    return startDate >= this.getTodaysDate();
+  }
+
+  /**
+   * Returns boolean representing whether the start date is before the end date
+   * @param startDate the start date
+   * @param endDate the end date
+   * @return boolean
+   */
+  public startDateBeforeEndDate(startDate: Date, endDate: Date): boolean {
+    return startDate <= endDate;
+  }
+
 }

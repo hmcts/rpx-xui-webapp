@@ -69,6 +69,9 @@ export const ROUTES: Routes = [
       partyChannel: HearingActualPartyChannelResolverService,
       hearingRole: HearingActualRoleResolverService,
     },
+    data: {
+      isChildRequired: true,
+    },
     children: [
       {
         path: 'hearing-actual-add-edit-summary',
@@ -80,6 +83,7 @@ export const ROUTES: Routes = [
         component: HearingActualAddEditSummaryComponent,
         canActivate: [HealthCheckGuard],
         data: {
+          isChildRequired: true,
           category: HearingCategory.HearingType,
           title: 'HMCTS Hearings | Hearing Actuals | Check details'
         }
@@ -120,7 +124,6 @@ export const ROUTES: Routes = [
         canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Manage cases | Hearing Actuals | Update Participants',
-          isChildRequired: true
         }
       },
     ]

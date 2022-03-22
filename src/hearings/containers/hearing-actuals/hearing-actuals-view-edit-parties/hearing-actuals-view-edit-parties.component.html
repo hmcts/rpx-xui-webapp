@@ -38,10 +38,18 @@
             </thead>
             <tbody class="govuk-table__body">
             <ng-container formArrayName="parties" *ngFor="let group of parties.controls ; let i=index">
-              <tr class="error-row" *ngIf="submitted && rowHasErrors(i)">
+              <tr class="error-row" *ngIf="submitted && rowHasErrors(i) && !group.hasError('duplicateEntries')">
                 <td colspan="7">
                   <span class="govuk-error-message govuk-!-margin-top-2">
                     <span class="govuk-visually-hidden">Error:</span> {{ displayRowErrors(i) }}
+                  </span>
+                </td>
+              </tr>
+
+              <tr class="error-row" *ngIf="submitted && group.hasError('duplicateEntries')">
+                <td colspan="7">
+                  <span class="govuk-error-message govuk-!-margin-top-2">
+                    <span class="govuk-visually-hidden">Error:</span> {{ group.getError('duplicateEntries').message }}
                   </span>
                 </td>
               </tr>
@@ -66,11 +74,11 @@
 
               <tr class="govuk-table__row" *ngIf="!group.get('isParty').value" formGroupName="{{i}}">
                 <th scope="row" class="govuk-table__header">
-                  <input class="govuk-input" formControlName="firstName" type="text" aria-label="First name"
+                  <input class="govuk-input" formControlName="firstName" type="text" aria-label="First name" maxlength="80"
                          [ngClass]="{'govuk-input--error': highlightRowError(i, 'firstName')}">
                 </th>
                 <th scope="row" class="govuk-table__header">
-                  <input class="govuk-input" formControlName="lastName" type="text" aria-label="Last name"
+                  <input class="govuk-input" formControlName="lastName" type="text" aria-label="Last name" maxlength="80"
                          [ngClass]="{'govuk-input--error': highlightRowError(i, 'lastName')}">
                 </th>
                 <td class="govuk-table__cell">
@@ -117,7 +125,7 @@
           </table>
 
           <button class="govuk-button govuk-button--secondary btn-add" data-module="govuk-button"
-                  (click)="addRow($event)">
+                  (click)="addRow($event)" [disabled]="parties.hasError('maxlength')">
             Add a participant
           </button>
 

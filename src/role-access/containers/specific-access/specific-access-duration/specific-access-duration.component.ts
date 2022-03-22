@@ -165,8 +165,8 @@ export class SpecificAccessDurationComponent implements OnInit {
    * Checks validity of start and end dates
    */
   public isDateValid(): boolean {
-    const startDate = this.durationHelperService.convertDateControlsToString([this.dayStartDate, this.monthStartDate, this.yearStartDate]);
-    const endDate = this.durationHelperService.convertDateControlsToString([this.dayEndDate, this.monthEndDate, this.yearEndDate]);
+    const startDate = this.durationHelperService.convertDateControlsToString(this.dayStartDate, this.monthStartDate, this.yearStartDate);
+    const endDate = this.durationHelperService.convertDateControlsToString(this.dayEndDate, this.monthEndDate, this.yearEndDate);
     const dateCheck = this.durationHelperService.checkDates(startDate, endDate);
     if (!dateCheck.isStartDateValid) {
       this.startDateErrorMessage = 'Invalid Start date';

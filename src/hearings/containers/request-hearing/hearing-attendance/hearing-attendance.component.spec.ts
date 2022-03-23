@@ -93,9 +93,7 @@ describe('HearingAttendanceComponent', () => {
   });
   it('should render parties from the hearingvaluemodel', () => {
     const store = jasmine.createSpyObj('store', ['pipe', 'dispatch', 'select']);
-    const noneNaviationInitialState = initialState;
-    noneNaviationInitialState.hearings.hearingRequest.hearingRequestMainModel.partyDetails = [];
-    store.select.and.returnValue(of(noneNaviationInitialState));
+    store.select.and.returnValue(of(initialState));
     component = fixture.componentInstance;
     fixture.detectChanges();
     component.initialiseFromHearingValues();

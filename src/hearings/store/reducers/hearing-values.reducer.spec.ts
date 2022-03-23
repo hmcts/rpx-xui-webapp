@@ -64,6 +64,7 @@ describe('Hearing Values Reducer', () => {
               partyID: 'P1',
               partyName: 'Jane and Smith',
               partyType: PartyType.IND,
+              partyRole: 'appellant',
               partyChannel: 'byVideo',
               unavailabilityRanges: [
                 {
@@ -76,6 +77,7 @@ describe('Hearing Values Reducer', () => {
               partyID: 'P2',
               partyName: 'DWP',
               partyType: PartyType.ORG,
+              partyRole: 'claimant',
               partyChannel: 'byVideo',
               unavailabilityRanges: [
                 {
@@ -87,12 +89,14 @@ describe('Hearing Values Reducer', () => {
           caseFlags: {
             flags: [
               {
+                partyID: 'P1',
                 partyName: 'Jane and Smith',
                 flagId: 'Language Interpreter',
                 flagDescription: 'Spanish interpreter required',
                 flagStatus: 'ACTIVE',
               },
               {
+                partyID: 'P2',
                 partyName: 'DWP',
                 flagId: 'case flag 1',
                 flagDescription: 'case flag 1 description',

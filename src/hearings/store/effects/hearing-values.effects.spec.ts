@@ -81,6 +81,7 @@ describe('Hearing Values Effects', () => {
           partyName: 'Jane and Smith',
           partyType: PartyType.IND,
           partyChannel: 'byVideo',
+          partyRole: 'appellant',
           unavailabilityRanges: [
             {
               unavailableFromDate: '2021-12-10T09:00:00.000+0000',
@@ -93,6 +94,7 @@ describe('Hearing Values Effects', () => {
           partyName: 'DWP',
           partyType: PartyType.ORG,
           partyChannel: 'byVideo',
+          partyRole: 'claimant',
           unavailabilityRanges: [
             {
               unavailableFromDate: '2021-12-20T09:00:00.000+0000',
@@ -103,12 +105,14 @@ describe('Hearing Values Effects', () => {
       caseFlags: {
         flags: [
           {
+            partyID: 'P1',
             partyName: 'Jane and Smith',
             flagId: 'Language Interpreter',
             flagDescription: 'Spanish interpreter required',
             flagStatus: 'ACTIVE',
           },
           {
+            partyID: 'P2',
             partyName: 'DWP',
             flagId: 'case flag 1',
             flagDescription: 'case flag 1 description',

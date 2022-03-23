@@ -6,8 +6,8 @@ import { FeatureUser } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
-import { initialState } from '../../../hearings/hearing.test.data';
 import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
+import { initialState } from '../../../hearings/hearing.test.data';
 import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
 import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, PartyType } from '../../../hearings/models/hearings.enum';
 import { HearingsPipesModule } from '../../../hearings/pipes/hearings.pipes.module';
@@ -479,7 +479,8 @@ describe('CaseHearingsListComponent', () => {
   let mockRouter: any;
 
   mockRouter = {
-    navigate: jasmine.createSpy('navigate')
+    navigate: jasmine.createSpy('navigate'),
+    navigateByUrl: jasmine.createSpy('navigateByUrl')
   };
 
   beforeEach(() => {
@@ -735,6 +736,42 @@ describe('CaseHearingsListComponent', () => {
     expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.LoadHearingValues('1111222233334444')));
     expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.LoadHearingRequest('h100000')));
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'error']);
+  });
+
+  it('should viewDetails', () => {
+    const dispatchSpy = spyOn(mockStore, 'dispatch');
+    spyOn(mockStore, 'select').and.returnValue(of(null));
+    component.viewDetails(PAST_HEARING_LIST[0]);
+    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.LoadHearingRequest('h100008')));
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/hearings/view/hearing-cancelled-summary');
+  });
+
+  it('should fail viewDetails', () => {
+    const dispatchSpy = spyOn(mockStore, 'dispatch');
+    spyOn(mockStore, 'select').and.returnValue(of('error'));
+    component.viewDetails(PAST_HEARING_LIST[0]);
+    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.LoadHearingRequest('h100008')));
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'error']);
+  });
+
+  it('should addAndEdit', () => {
+    component.addAndEdit('h100000');
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'actuals', 'h100000', 'hearing-actual-add-edit-summary']);
+  });
+
+  it('should cancel', () => {
+    component.cancel('h100000');
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'cancel', 'h100000']);
+  });
+
+  it('should link', () => {
+    component.link('h100000');
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'link', 'h100000']);
+  });
+
+  it('should manageLinks', () => {
+    component.manageLinks('h100000');
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', 'h100000']);
   });
 
   afterEach(() => {

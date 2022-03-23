@@ -73,8 +73,8 @@ export class CaseHearingsListComponent implements OnInit, OnDestroy {
   public viewAndEdit(hearingID: string): void {
     this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
     this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearingID));
-    const sub$ = combineLatest([this.hearingStore.select(fromHearingStore.getHearingValuesLastError), this.hearingStore.select(fromHearingStore.getHearingRequestLastError)]);
-    this.sub = sub$.subscribe(
+    this.sub = combineLatest([this.hearingStore.select(fromHearingStore.getHearingValuesLastError),
+      this.hearingStore.select(fromHearingStore.getHearingRequestLastError)]).subscribe(
       errors => {
         if (errors && (errors[0] !== null || errors[1] !== null)) {
           this.router.navigate(['/', 'hearings', 'error']);
@@ -110,5 +110,17 @@ export class CaseHearingsListComponent implements OnInit, OnDestroy {
 
   public addAndEdit(hearingID: string): void {
     this.router.navigate(['/', 'hearings', 'actuals', hearingID, 'hearing-actual-add-edit-summary']);
+  }
+
+  public cancel(hearingID: string): void {
+    this.router.navigate(['/', 'hearings', 'cancel', hearingID]);
+  }
+
+  public link(hearingID: string): void {
+    this.router.navigate(['/', 'hearings', 'link', hearingID]);
+  }
+
+  public manageLinks(hearingID: string): void {
+    this.router.navigate(['/', 'hearings', 'manage-links', hearingID]);
   }
 }

@@ -36,7 +36,7 @@ export class RefDataResolver implements Resolve<LovRefDataModel[]> {
 
   public getServiceId$(): Observable<string> {
     return this.hearingStore.pipe(select(fromHearingStore.getHearingList)).pipe(
-      map(hearingList => hearingList.hearingListMainModel ? hearingList.hearingListMainModel.hmctsServiceID : '')
+      map(hearingList => hearingList && hearingList.hearingListMainModel ? hearingList.hearingListMainModel.hmctsServiceID : '')
     );
   }
 

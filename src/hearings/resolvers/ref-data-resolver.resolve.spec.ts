@@ -4,7 +4,7 @@ import {inject, TestBed} from '@angular/core/testing';
 import {ActivatedRouteSnapshot, Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {Store, StoreModule} from '@ngrx/store';
-import {of} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {HearingCategory} from '../models/hearings.enum';
 import {metaReducers} from '../../app/app.module';
 import {reducers} from '../../app/store';
@@ -60,7 +60,8 @@ describe('Ref Data Resolver', () => {
   }));
 
   it('should call router navigate if error', inject([RefDataResolver], (service: RefDataResolver) => {
-    spyOn(lovRefDataService, 'getListOfValues').and.throwError('mocked api error');
+    spyOn(store, 'pipe').and.returnValue(of('serviceName'));
+    spyOn(lovRefDataService, 'getListOfValues').and.returnValue(Observable.throwError('mocked api error'));
     spyOn(service, 'getReferenceData$').and.callThrough();
     const route = new ActivatedRouteSnapshot();
     route.data = {

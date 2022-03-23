@@ -13,11 +13,10 @@ import { ConfirmExclusionAction, ExclusionActionTypes, SpecificAccessActionTypes
 
 @Injectable()
 export class SpecificAccessEffects {
-  private payload: any;
 
   constructor(
-    private actions$: Actions,
-    private roleExclusionsService: RoleExclusionsService
+    private readonly actions$: Actions,
+    private readonly roleExclusionsService: RoleExclusionsService
   ) {
   }
 

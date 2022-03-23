@@ -3,7 +3,6 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { PersonRole } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { Observable } from 'rxjs/Observable';
 import { ERROR_MESSAGE, PERSON_ROLE } from '../../../constants';
 import { SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
 import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';

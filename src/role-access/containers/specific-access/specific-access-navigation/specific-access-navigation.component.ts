@@ -1,14 +1,14 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import * as fromRoot from '../../../../app/store';
 import {
-  backButtonVisibilityStates,
-  cancelButtonVisibilityStates,
-  confirmExclusionButtonVisibilityStates,
-  continueButtonVisibilityStates
+  specificAccessBackButtonVisibilityStates,
+  specicAccessCancelButtonVisibilityStates,
+  specificAccessContinueButtonVisibilityStates,
+  specicAccessReturnToMyTasksButtonVisibilityStates,
+  specicAccessReturnToTasksTabVisibilityStates
 } from '../../../constants';
-import { ExclusionNavigationEvent, ExclusionState, SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
+import { SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
 import * as fromFeature from '../../../store';
 
 @Component({
@@ -21,15 +21,16 @@ export class SpecificAccessNavigationComponent implements OnInit {
 
   public navigationCurrentState$: Observable<SpecificAccessState>;
 
-  public backVisibilityStates = backButtonVisibilityStates;
-  public continueVisibilityStates = continueButtonVisibilityStates;
-  public cancelButtonVisibilityStates = cancelButtonVisibilityStates;
+  public backVisibilityStates = specificAccessBackButtonVisibilityStates;
+  public continueButtonVisibilityStates = specificAccessContinueButtonVisibilityStates;
+  public cancelButtonVisibilityStates = specicAccessCancelButtonVisibilityStates;
+  public returnToMyTasksButtonVisibilityStates = specicAccessReturnToMyTasksButtonVisibilityStates;
+  public returnToTasksTabVisibilityStates = specicAccessReturnToTasksTabVisibilityStates;
 
   public specificAccessNavigationEvent = SpecificAccessNavigationEvent;
 
   constructor(
     private store: Store<fromFeature.State>,
-    private appStore: Store<fromRoot.State>
   ) {
   }
 

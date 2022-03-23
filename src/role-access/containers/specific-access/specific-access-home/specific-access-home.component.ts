@@ -2,21 +2,15 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import {
-  specificAccessReviewVisibilityStates,
-  specificAccessDurationVisibilityStates,
-  specificAccessApprovedVisibilityStates,
-  specificAccessInformationVisibilityStates,
-  specificAccessDeniedVisibilityStates
-} from '../../../constants';
-import { SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
-import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
-import * as fromFeature from '../../../store';
 import { SpecificAccessReviewComponent } from '../specific-access-review/specific-access-review.component';
 import { SpecificAccessDurationComponent } from '../specific-access-duration/specific-access-duration.component';
 import { SpecificAccessApprovedComponent } from '../specific-access-approved/specific-access-approved.component';
 import { SpecificAccessInformationComponent } from '../specific-access-information/specific-access-information.component';
 import { SpecificAccessDeniedComponent } from '../specific-access-denied/specific-access-denied.component';
+import { specificAccessApprovedVisibilityStates, specificAccessDeniedVisibilityStates, specificAccessDurationVisibilityStates, specificAccessInformationVisibilityStates, specificAccessReviewVisibilityStates } from '../../../constants';
+import { SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
+import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
+import * as fromFeature from '../../../store';
 
 @Component({
   selector: 'exui-specific-access-home',
@@ -39,23 +33,25 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
   @ViewChild('specificAccessDenied', { read: SpecificAccessDeniedComponent })
   public specificAccessDeniedComponent: SpecificAccessDeniedComponent;
 
+  public caseId: string;
 
   private specificAccessStateDataSub: Subscription;
-
   private specificAccessReviewStateData: SpecificAccessStateData;
+
   public navigationCurrentState: SpecificAccessState;
-
   public navEvent: SpecificAccessNavigation;
-
   public specificAccessReviewVisibilityStates = specificAccessReviewVisibilityStates;
   public specificAccessDurationVisibilityStates = specificAccessDurationVisibilityStates;
   public specificAccessApprovedVisibilityStates = specificAccessApprovedVisibilityStates;
   public specificAccessInformationVisibilityStates = specificAccessInformationVisibilityStates;
   public specificAccessDeniedVisibilityStates = specificAccessDeniedVisibilityStates;
 
-  constructor(private readonly store: Store<fromFeature.State>,
+  constructor(
+    private readonly store: Store<fromFeature.State>,
+    private readonly route: ActivatedRoute,
     private readonly router: Router) {
-    //this.store.dispatch(new fromFeature.ExclusionSetCaseId(this.caseId, this.jurisdiction));
+    this.caseId = this.route.snapshot.queryParams && this.route.snapshot.queryParams.caseId ?
+      this.route.snapshot.queryParams.caseId : '';
   }
 
   public ngOnInit(): void {
@@ -106,6 +102,14 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
         }
         break;
       }
+      case SpecificAccessNavigationEvent.RETURNTOMYTASKS: {
+        this.router.navigateByUrl(`/work/list`);
+        break;
+      }
+      case SpecificAccessNavigationEvent.RETURNTOTASKSTAB: {
+        this.router.navigateByUrl(`/cases/case-details/${this.caseId}/roles-and-access`);
+        break;
+      }
       case SpecificAccessNavigationEvent.CANCEL:
         //        this.router.navigateByUrl(`cases/case-details/${this.caseId}/roles-and-access`);
         break;
@@ -118,6 +122,5 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
     if (this.specificAccessStateDataSub) {
       this.specificAccessStateDataSub.unsubscribe();
     }
-    //this.store.dispatch(new fromFeature.ExclusionReset());
   }
 }

@@ -3,7 +3,7 @@ import { provideMockActions } from '@ngrx/effects/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { cold, hot } from 'jasmine-marbles';
 import { of } from 'rxjs';
-import { initialState } from 'src/hearings/hearing.test.data';
+import { initialState } from '../../../hearings/hearing.test.data';
 import { Go } from '../../../app/store';
 import { MemberType, PartyType, RequirementType } from '../../models/hearings.enum';
 import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';

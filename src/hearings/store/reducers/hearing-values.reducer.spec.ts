@@ -1,4 +1,4 @@
-import { HearingValuesStateData } from 'src/hearings/models/hearingValuesStateData';
+import { HearingValuesStateData } from '../../../hearings/models/hearingValuesStateData';
 import {MemberType, PartyType, RequirementType} from '../../models/hearings.enum';
 import {ServiceHearingValuesModel} from '../../models/serviceHearingValues.model';
 import * as fromHearingValuesActions from '../actions/hearing-values.action';

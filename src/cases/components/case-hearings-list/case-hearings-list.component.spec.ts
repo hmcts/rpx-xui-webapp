@@ -6,7 +6,7 @@ import { FeatureUser } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
-import { initialState } from 'src/hearings/hearing.test.data';
+import { initialState } from '../../../hearings/hearing.test.data';
 import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
 import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
 import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, PartyType } from '../../../hearings/models/hearings.enum';

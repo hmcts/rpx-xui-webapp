@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable } from 'rxjs';
-import { initialState } from 'src/hearings/hearing.test.data';
+import { initialState } from '../../../hearings/hearing.test.data';
 import { ErrorPageComponent } from './error-page.component';
 import * as fromHearingStore from '../../store';
 

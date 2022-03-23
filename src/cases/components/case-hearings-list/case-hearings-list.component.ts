@@ -28,8 +28,8 @@ export class CaseHearingsListComponent implements OnInit {
   public hasReadOnlyAction: boolean = false;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
-              private readonly activatedRoute: ActivatedRoute,
-              private readonly router: Router) {
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly router: Router) {
     this.caseId = this.activatedRoute.snapshot.params.cid;
   }
 
@@ -86,6 +86,10 @@ export class CaseHearingsListComponent implements OnInit {
       case EXUIDisplayStatusEnum.COMPLETED:
         this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearing.hearingID));
         this.router.navigate(['/', 'hearings', 'view', 'hearing-completed-summary', hearing.hearingID]);
+        break;
+      case EXUIDisplayStatusEnum.ADJOURNED:
+        this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearing.hearingID));
+        this.router.navigate(['/', 'hearings', 'view', 'hearing-adjourned-summary', hearing.hearingID]);
         break;
       default:
         this.router.navigate(['/', 'hearings', 'view']);

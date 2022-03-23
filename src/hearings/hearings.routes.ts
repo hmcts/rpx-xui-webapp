@@ -365,7 +365,23 @@ export const ROUTES: Routes = [
         component: HearingCompletedSummaryComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Hearings | Hearing Actuals | Check details',
+          title: 'HMCTS Hearings | Hearing Actuals | Completed',
+          isChildRequired: true
+        }
+      },
+      {
+        path: 'hearing-adjourned-summary/:id',
+        resolve: {
+          actualSummary: ActualSummaryResponseResolver,
+          hearingStageOptions: HearingStageResolver,
+          judicialResponseUsers: JudicialUserSearchResponseResolver,
+          courtLocation: CourtLocationsDataResolver,
+          partyChannels: HearingActualPartyChannelResolverService,
+        },
+        component: HearingCompletedSummaryComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Hearings | Hearing Actuals | Adjourned',
           isChildRequired: true
         }
       },

@@ -53,9 +53,11 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
   public specificAccessInformationVisibilityStates = specificAccessInformationVisibilityStates;
   public specificAccessDeniedVisibilityStates = specificAccessDeniedVisibilityStates;
 
-  constructor(private readonly store: Store<fromFeature.State>,
-    private readonly router: Router) {
-    //this.store.dispatch(new fromFeature.ExclusionSetCaseId(this.caseId, this.jurisdiction));
+  constructor(
+    private readonly store: Store<fromFeature.State>,
+    private readonly router: Router
+  ) {
+    // this.store.dispatch(new fromFeature.ExclusionSetCaseId(this.caseId, this.jurisdiction));
   }
 
   public ngOnInit(): void {
@@ -118,6 +120,6 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
     if (this.specificAccessStateDataSub) {
       this.specificAccessStateDataSub.unsubscribe();
     }
-    //this.store.dispatch(new fromFeature.ExclusionReset());
+    // this.store.dispatch(new fromFeature.ExclusionReset());
   }
 }

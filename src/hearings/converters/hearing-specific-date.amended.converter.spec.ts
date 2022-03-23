@@ -17,7 +17,7 @@ describe('HearingSpecificDateAmendedConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingWindow.hearingWindowDateRange = {
       hearingWindowStartDateRange: new Date().toDateString(),
       hearingWindowEndDateRange: new Date(new Date().getDay() + 1).toDateString(),
-    }
+    };
     const result$ = hearingSpecificDateAmendedConverter.transformIsAmended(of(STATE));
     const isAmended = true;
     const expected = cold('(b|)', {b: isAmended});

@@ -32,7 +32,7 @@ export class JudicialUserSearchResponseResolver implements Resolve<JudicialUserM
     return this.hearingStore.pipe(select(fromHearingStore.getHearingRequest)).pipe(
       map(hearingRequest => {
         let panelMemberIds: string[] = [];
-        if (hearingRequest.hearingRequestMainModel) {
+        if (hearingRequest.hearingRequestMainModel && hearingRequest.hearingRequestMainModel.hearingResponse) {
           panelMemberIds = hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.panelMemberIds || [];
           panelMemberIds = [...panelMemberIds, hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.hearingJudgeId];
         }

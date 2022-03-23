@@ -84,7 +84,7 @@ export function hearingRequestReducer(currentState = initialHearingRequestState,
       return {
         ...currentState,
         lastError: action.payload
-      }
+      };
     }
     default: {
       return {

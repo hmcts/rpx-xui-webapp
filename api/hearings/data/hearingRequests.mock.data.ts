@@ -1,4 +1,4 @@
-import { PartyType } from '../../../src/hearings/models/hearings.enum';
+import { PartyType } from '../../hearings/models/hearings.enum';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
 import { CategoryType, LaCaseStatus, ListingStatus } from '../models/hearings.enum';
 

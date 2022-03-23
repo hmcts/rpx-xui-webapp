@@ -723,7 +723,7 @@ describe('CaseHearingsListComponent', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['/', 'hearings', 'view', 'hearing-cancelled-summary']);
     component.viewDetails(PAST_HEARING_LIST[1]);
     fixture.detectChanges();
-    expect(navigateSpy).toHaveBeenCalledWith(['/', 'hearings', 'actuals', 'h100010', 'hearing-completed-summary']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/', 'hearings', 'view', 'hearing-completed-summary', 'h100010']);
     component.viewDetails(UPCOMING_HEARING_LIST[0]);
     fixture.detectChanges();
     expect(navigateSpy).toHaveBeenCalledWith(['/', 'hearings', 'view']);

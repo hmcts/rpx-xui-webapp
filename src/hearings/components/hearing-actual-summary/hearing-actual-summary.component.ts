@@ -3,18 +3,18 @@ import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { ActualDayPartyModel, ActualHearingDayModel, HearingActualsMainModel, PauseDateTimeModel } from '../../../../hearings/models/hearingActualsMainModel';
-import { HearingDateEnum } from '../../../../hearings/models/hearings.enum';
-import { LovRefDataModel } from '../../../../hearings/models/lovRefData.model';
-import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
-import * as fromHearingStore from '../../../store';
+import { ActualDayPartyModel, ActualHearingDayModel, HearingActualsMainModel, PauseDateTimeModel } from '../../models/hearingActualsMainModel';
+import { HearingActualsStateData } from '../../models/hearingActualsStateData.model';
+import { HearingDateEnum } from '../../models/hearings.enum';
+import { LovRefDataModel } from '../../models/lovRefData.model';
+import * as fromHearingStore from '../../store';
 
 @Component({
-  selector: 'exui-hearing-completed-summary',
-  templateUrl: './hearing-completed-summary.component.html',
-  styleUrls: ['./hearing-completed-summary.component.scss']
+  selector: 'exui-hearing-actual-summary',
+  templateUrl: './hearing-actual-summary.component.html',
+  styleUrls: ['./hearing-actual-summary.component.scss']
 })
-export class HearingCompletedSummaryComponent implements OnInit, OnDestroy {
+export class HearingActualSummaryComponent implements OnInit, OnDestroy {
   public dateFormat = HearingDateEnum;
   public hearingActualsMainModel: HearingActualsMainModel;
   public actualPauseTime: PauseDateTimeModel;

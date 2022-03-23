@@ -1,5 +1,19 @@
 import { SpecificAccessState } from '../models/specific-access-state.enum';
 
+export const specificAccessBackButtonVisibilityStates = [
+  SpecificAccessState.SPECIFIC_ACCESS_DURATION
+];
+
+export const specificAccessContinueButtonVisibilityStates = [
+  SpecificAccessState.SPECIFIC_ACCESS_REVIEW,
+  SpecificAccessState.SPECIFIC_ACCESS_DURATION
+];
+
+export const specificAccessCancelButtonVisibilityStates = [
+  SpecificAccessState.SPECIFIC_ACCESS_REVIEW,
+  SpecificAccessState.SPECIFIC_ACCESS_DURATION
+];
+
 export const specificAccessReviewVisibilityStates = [SpecificAccessState.SPECIFIC_ACCESS_REVIEW];
 export const specificAccessDurationVisibilityStates = [SpecificAccessState.SPECIFIC_ACCESS_DURATION];
 export const specificAccessApprovedVisibilityStates = [SpecificAccessState.SPECIFIC_ACCESS_APPROVED];

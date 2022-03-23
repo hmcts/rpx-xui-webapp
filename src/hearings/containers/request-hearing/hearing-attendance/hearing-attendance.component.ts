@@ -53,6 +53,10 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
           partyType: partyDetail.partyType,
           partyName: partyDetail.partyName,
           partyChannel: partyDetail.partyChannel,
+          individualDetails: partyDetail.individualDetails,
+          organisationDetails: partyDetail.organisationDetails,
+          unavailabilityDOW: partyDetail.unavailabilityDOW,
+          unavailabilityRanges: partyDetail.unavailabilityRanges
         } as PartyDetailsModel) as FormGroup);
       });
 
@@ -62,8 +66,8 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   }
 
   public initialiseFromHearingValues() {
-    this.serviceHearingValuesModel.parties.forEach((x: PartyDetailsModel) => {
-      (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues(x) as FormGroup);
+    this.serviceHearingValuesModel.parties.forEach((partyDetailsModel: PartyDetailsModel) => {
+      (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues(partyDetailsModel) as FormGroup);
     });
     this.attendanceFormGroup.controls.estimation.setValue(this.serviceHearingValuesModel.numberOfPhysicalAttendees);
   }
@@ -85,8 +89,13 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       const partyDetail: PartyDetailsModel = {
         partyID: control.value.partyID,
         partyType: control.value.partyType,
+        partyRole: control.value.partyRole,
         partyName: control.value.partyName,
         partyChannel: control.value.partyChannel,
+        individualDetails: control.value.individualDetails,
+        organisationDetails: control.value.organisationDetails,
+        unavailabilityDOW: control.value.unavailabilityDOW,
+        unavailabilityRanges: control.value.unavailabilityRanges
       };
       partyDetails.push(partyDetail);
     });
@@ -134,6 +143,9 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       partyType: [party.partyType],
       partyName: [party.partyName],
       partyChannel: [party.partyChannel, Validators.required],
+      individualDetails: [party.individualDetails],
+      organisationDetails: [party.organisationDetails],
+      unavailabilityDOW: [party.unavailabilityDOW],
       unavailabilityRanges: [party.unavailabilityRanges],
     });
   }

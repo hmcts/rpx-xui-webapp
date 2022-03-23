@@ -27,8 +27,6 @@ import { HearingCancellationSummaryComponent } from './containers/view-hearing/h
 import { HearingCancelledSummaryComponent } from './containers/view-hearing/hearing-cancelled-summary/hearing-cancelled-summary.component';
 import { ViewHearingComponent } from './containers/view-hearing/view-hearing.component';
 import { HearingCategory, MemberType } from './models/hearings.enum';
-import { JudicialUserSearchResolver } from './resolvers/ judicial-user-search-resolver.resolve';
-import { JudicialUserSearchResponseResolver } from './resolvers/ judicial-user-search-response-resolver.resolve';
 import { AdditionalFacilitiesResolver } from './resolvers/additional-facilities.resolver';
 import { AdjournHearingActualReasonResolver } from './resolvers/adjourn-hearing-actual-reason.resolver';
 import { CancelHearingActualReasonResolver } from './resolvers/cancel-hearing-actual-reason.resolver';
@@ -39,6 +37,8 @@ import { HearingActualRoleResolverService } from './resolvers/hearing-actual-rol
 import { HearingChangeReasonResolver } from './resolvers/hearing-change-reason.resolver';
 import { HearingStageResolver } from './resolvers/hearing-stage.resolver';
 import { JudgeTypesResolverService } from './resolvers/judge-types-resolver.service';
+import { JudicialUserSearchResolver } from './resolvers/judicial-user-search-resolver.resolve';
+import { JudicialUserSearchResponseResolver } from './resolvers/judicial-user-search-response-resolver.resolve';
 import { PanelRolesResolverService } from './resolvers/panel-roles-resolver.service';
 import { PartyChannelsResolverService } from './resolvers/party-channels-resolver.service';
 import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';

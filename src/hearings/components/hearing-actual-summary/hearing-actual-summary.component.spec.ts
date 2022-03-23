@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Component, Input, NO_ERRORS_SCHEMA } from '@angular/core';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -7,29 +7,20 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { ErrorMessage } from '../../../../app/models';
-import { initialState } from '../../../hearing.test.data';
-import { ACTION } from '../../../models/hearings.enum';
-import { LovRefDataModel } from '../../../models/lovRefData.model';
-import { HearingsService } from '../../../services/hearings.service';
-import { ValidatorsUtils } from '../../../utils/validators.utils';
-import { HearingCompletedSummaryComponent } from './hearing-completed-summary.component';
+import { initialState } from '../../hearing.test.data';
+import { ACTION } from '../../models/hearings.enum';
+import { LovRefDataModel } from '../../models/lovRefData.model';
+import { HearingsService } from '../../services/hearings.service';
+import { ValidatorsUtils } from '../../utils/validators.utils';
+import { HearingActualSummaryComponent } from './hearing-actual-summary.component';
 
-@Component({
-  selector: 'exui-hearing-parties-title',
-  template: '',
-})
-class MockHearingPartiesComponent {
-  @Input() public error: ErrorMessage;
-}
-
-describe('HearingTimingComponent', () => {
+describe('HearingActualSummaryComponent', () => {
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 
-  let component: HearingCompletedSummaryComponent;
-  let fixture: ComponentFixture<HearingCompletedSummaryComponent>;
+  let component: HearingActualSummaryComponent;
+  let fixture: ComponentFixture<HearingActualSummaryComponent>;
   let router: Router;
   let mockStore: any;
   const partyChannels: LovRefDataModel[] = [
@@ -66,7 +57,7 @@ describe('HearingTimingComponent', () => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule,
         HttpClientTestingModule],
-      declarations: [HearingCompletedSummaryComponent, MockHearingPartiesComponent],
+      declarations: [HearingActualSummaryComponent],
       providers: [
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },
@@ -88,7 +79,7 @@ describe('HearingTimingComponent', () => {
       .compileComponents();
     mockStore = TestBed.get(Store);
     mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
-    fixture = TestBed.createComponent(HearingCompletedSummaryComponent);
+    fixture = TestBed.createComponent(HearingActualSummaryComponent);
     component = fixture.componentInstance;
     router = TestBed.get(Router);
     fixture.detectChanges();

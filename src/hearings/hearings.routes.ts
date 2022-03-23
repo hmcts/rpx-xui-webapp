@@ -7,7 +7,6 @@ import { HearingActualsFinalConfirmationComponent } from './containers/hearing-a
 import { HearingActualsTimingComponent } from './containers/hearing-actuals/hearing-actuals-timing/hearing-actuals-timing.component';
 import { HearingActualsViewEditPartiesComponent } from './containers/hearing-actuals/hearing-actuals-view-edit-parties/hearing-actuals-view-edit-parties.component';
 import { HearingActualsComponent } from './containers/hearing-actuals/hearing-actuals.component';
-import { HearingCompletedSummaryComponent } from './containers/hearing-actuals/hearing-completed-summary/hearing-completed-summary.component';
 import { HearingStageResultComponent } from './containers/hearing-actuals/hearing-stage-result/hearing-stage-result.component';
 import { HearingAdditionalInstructionsComponent } from './containers/request-hearing/hearing-additional-instructions/hearing-additional-instructions.component';
 import { HearingAttendanceComponent } from './containers/request-hearing/hearing-attendance/hearing-attendance.component';
@@ -26,8 +25,10 @@ import { HearingWelshComponent } from './containers/request-hearing/hearing-wels
 import { RequestHearingComponent } from './containers/request-hearing/request-hearing.component';
 import { HearingCancellationSummaryComponent } from './containers/view-hearing/hearing-cancellation-summary/hearing-cancellation-summary.component';
 import { HearingCancelledSummaryComponent } from './containers/view-hearing/hearing-cancelled-summary/hearing-cancelled-summary.component';
+import { HearingCompletedSummaryComponent } from './containers/view-hearing/hearing-completed-summary/hearing-completed-summary.component';
 import { ViewHearingComponent } from './containers/view-hearing/view-hearing.component';
 import { HearingCategory, MemberType } from './models/hearings.enum';
+import { ActualSummaryResponseResolver } from './resolvers/actual-summary-response-resolver.resolve';
 import { AdditionalFacilitiesResolver } from './resolvers/additional-facilities.resolver';
 import { AdjournHearingActualReasonResolver } from './resolvers/adjourn-hearing-actual-reason.resolver';
 import { CancelHearingActualReasonResolver } from './resolvers/cancel-hearing-actual-reason.resolver';
@@ -121,21 +122,6 @@ export const ROUTES: Routes = [
         canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Manage cases | Hearing Actuals | Update Participants',
-          isChildRequired: true
-        }
-      },
-      {
-        path: 'hearing-completed-summary',
-        resolve: {
-          hearingStageOptions: HearingStageResolver,
-          judicialResponseUsers: JudicialUserSearchResponseResolver,
-          courtLocation: CourtLocationsDataResolver,
-          partyChannels: HearingActualPartyChannelResolverService,
-        },
-        component: HearingCompletedSummaryComponent,
-        canActivate: [HealthCheckGuard],
-        data: {
-          title: 'HMCTS Hearings | Hearing Actuals | Check details',
           isChildRequired: true
         }
       },
@@ -365,6 +351,22 @@ export const ROUTES: Routes = [
         canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Hearings | View Hearing | Cancelled Summary'
+        }
+      },
+      {
+        path: 'hearing-completed-summary/:id',
+        resolve: {
+          actualSummary: ActualSummaryResponseResolver,
+          hearingStageOptions: HearingStageResolver,
+          judicialResponseUsers: JudicialUserSearchResponseResolver,
+          courtLocation: CourtLocationsDataResolver,
+          partyChannels: HearingActualPartyChannelResolverService,
+        },
+        component: HearingCompletedSummaryComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Hearings | Hearing Actuals | Check details',
+          isChildRequired: true
         }
       },
     ]

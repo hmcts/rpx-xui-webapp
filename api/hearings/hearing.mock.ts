@@ -1,7 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import { HttpMockAdapter } from '../common/httpMockAdapter';
-import { HEARING_ACTUAL_COMPLETED } from './data/hearing-actuals-completed.mock.data';
-import { HEARING_ACTUAL } from './data/hearing-actuals.mock.data';
+import { HEARING_ACTUAL, HEARING_ACTUAL_COMPLETED } from './data/hearing-actuals.mock.data';
 import { EMPTY_HEARINGS_LIST, HEARINGS_LIST } from './data/hearingLists.mock.data';
 import { HEARING_REQUEST_RESULTS } from './data/hearingRequests.mock.data';
 import { LINKED_HEARING_GROUP, SERVICE_LINKED_CASES } from './data/linkHearings.mock.data';

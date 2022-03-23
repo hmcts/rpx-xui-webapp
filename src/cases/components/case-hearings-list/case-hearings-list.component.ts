@@ -85,7 +85,7 @@ export class CaseHearingsListComponent implements OnInit {
         break;
       case EXUIDisplayStatusEnum.COMPLETED:
         this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearing.hearingID));
-        this.router.navigate(['/', 'hearings', 'actuals', hearing.hearingID, 'hearing-completed-summary']);
+        this.router.navigate(['/', 'hearings', 'view', 'hearing-completed-summary', hearing.hearingID]);
         break;
       default:
         this.router.navigate(['/', 'hearings', 'view']);

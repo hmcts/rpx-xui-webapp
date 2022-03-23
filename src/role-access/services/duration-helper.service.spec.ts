@@ -1,7 +1,7 @@
 import { FormControl } from '@angular/forms';
 import { DurationHelperService } from '.';
 
-fdescribe('DurationHelperService', () => {
+describe('DurationHelperService', () => {
   let durationHelperService: DurationHelperService;
   beforeEach(() => {
     durationHelperService = new DurationHelperService();

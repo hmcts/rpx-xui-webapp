@@ -1,4 +1,5 @@
 export interface PartyFlagsModel {
+  partyID: string;
   partyName: string;
   flagParentId?: string;
   flagId: string;
@@ -7,6 +8,7 @@ export interface PartyFlagsModel {
 }
 
 export interface PartyFlagsDisplayModel {
+  partyID: string;
   partyName: string;
   flagParentId?: string;
   flagId: string;

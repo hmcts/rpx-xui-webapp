@@ -4,7 +4,7 @@ import {initialState} from '../hearing.test.data';
 import {State} from '../store/reducers';
 import { AdditionalInstructionsAmendedConverter } from './additional-instructions.amended.converter';
 
-fdescribe('AdditionalInstructionsAmendedConverter', () => {
+describe('AdditionalInstructionsAmendedConverter', () => {
 
   let additionalInstructionsAmendedConverter: AdditionalInstructionsAmendedConverter;
 

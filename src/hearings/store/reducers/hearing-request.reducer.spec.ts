@@ -2,7 +2,7 @@ import {HearingRequestStateData} from '../../models/hearingRequestStateData.mode
 import * as fromHearingRequestActions from '../actions/hearing-request.action';
 import * as fromHearingRequestReducer from './hearing-request.reducer';
 
-fdescribe('Hearing Request Reducer', () => {
+describe('Hearing Request Reducer', () => {
 
   describe('Actions', () => {
 

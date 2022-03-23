@@ -2,8 +2,9 @@ import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
 import { SpecificAccessDurationComponent } from './specific-access-duration.component';
-import { DurationHelperService } from '../../../services/duration-helper.service';
 import { DurationType } from '../../../models/enums';
+import { DurationHelperService } from '../../../services';
+
 import createSpyObj = jasmine.createSpyObj;
 
 describe('SpecificAccessDurationComponent', () => {

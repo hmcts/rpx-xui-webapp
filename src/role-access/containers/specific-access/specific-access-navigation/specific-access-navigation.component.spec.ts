@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
 import * as fromRoot from '../../../../app/store/reducers';
-import { ExclusionNavigationEvent } from '../../../models';
+import { SpecificAccessNavigationEvent } from '../../../models';
 import * as fromStore from '../../../store';
 import { SpecificAccessNavigationComponent } from './specific-access-navigation.component';
 
@@ -50,8 +50,8 @@ describe('ExclusionNavigationComponent', () => {
   describe('onEventTrigger', () => {
     it('should emit', () => {
       const backSpy = spyOn(component.eventTrigger, 'emit');
-      component.onEventTrigger(ExclusionNavigationEvent.BACK);
-      expect(backSpy).toHaveBeenCalledWith(ExclusionNavigationEvent.BACK);
+      component.onEventTrigger(SpecificAccessNavigationEvent.BACK);
+      expect(backSpy).toHaveBeenCalledWith(SpecificAccessNavigationEvent.BACK);
     });
   });
 

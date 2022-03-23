@@ -3,11 +3,10 @@ import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import * as fromRoot from '../../../../app/store';
 import {
-  backButtonVisibilityStates,
-  cancelButtonVisibilityStates,
-  confirmExclusionButtonVisibilityStates,
-  continueButtonVisibilityStates
-} from '../../../constants';
+  specificAccessBackButtonVisibilityStates as backButtonVisibilityStates,
+  specificAccessCancelButtonVisibilityStates as cancelButtonVisibilityStates,
+  specificAccessContinueButtonVisibilityStates as continueButtonVisibilityStates
+} from '../../../constants/specific-access-page-visibility-states';
 import { ExclusionNavigationEvent, ExclusionState, SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
 import * as fromFeature from '../../../store';
 

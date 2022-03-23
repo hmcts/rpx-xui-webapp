@@ -456,13 +456,15 @@ describe('workAllocation.utils', () => {
       expect(tasksWithActions[0].actions[2]).to.be.equal(RELEASE);
 
       const tasksWithActionsAllWorkAssigned = assignActionsToTasks(myTasks, 'AllWork', '');
-      expect(tasksWithActionsAllWorkAssigned[0].actions[0]).to.be.equal(GO);
-      expect(tasksWithActionsAllWorkAssigned[0].actions[1]).to.be.equal(REASSIGN);
-      expect(tasksWithActionsAllWorkAssigned[0].actions[2]).to.be.equal(RELEASE);
+      expect(tasksWithActionsAllWorkAssigned[0].actions[0]).to.be.equal(COMPLETE);
+      expect(tasksWithActionsAllWorkAssigned[0].actions[1]).to.be.equal(GO);
+      expect(tasksWithActionsAllWorkAssigned[0].actions[2]).to.be.equal(REASSIGN);
+      expect(tasksWithActionsAllWorkAssigned[0].actions[3]).to.be.equal(RELEASE);
 
       const tasksWithActionsAllWorkUnassigned = assignActionsToTasks(availableTasks, 'AllWork', '');
       expect(tasksWithActionsAllWorkUnassigned[0].actions[0]).to.be.equal(ASSIGN);
-      expect(tasksWithActionsAllWorkUnassigned[0].actions[1]).to.be.equal(GO);
+      expect(tasksWithActionsAllWorkUnassigned[0].actions[1]).to.be.equal(COMPLETE);
+      expect(tasksWithActionsAllWorkUnassigned[0].actions[2]).to.be.equal(GO);
 
       const tasksWithActionsActiveTasksAssignedCurrentUser = assignActionsToTasks(
         myTasks, 'ActiveTasks', '49db7670-09b3-49e3-b945-b98f4e5e9a99');
@@ -758,8 +760,7 @@ describe('workAllocation.utils', () => {
     });
 
     it('should get correct actions for all work tasks for certain permissions', () => {
-      expect(getActionsByPermissions('AllWorkAssigned', [TaskPermission.MANAGE])).to.deep.equal([GO, REASSIGN, RELEASE]);
-      expect(getActionsByPermissions('AllWorkAssigned', [TaskPermission.EXECUTE])).to.deep.equal([COMPLETE]);
+      expect(getActionsByPermissions('AllWorkAssigned', [TaskPermission.MANAGE])).to.deep.equal([COMPLETE, GO, REASSIGN, RELEASE]);
       expect(getActionsByPermissions('AllWorkUnassigned', [TaskPermission.MANAGE, TaskPermission.EXECUTE]))
         .to.deep.equal([ASSIGN, COMPLETE, GO]);
       // EUI-5046 - ensure test includes check that own gives correct actions as well
@@ -783,10 +784,10 @@ describe('workAllocation.utils', () => {
       expect(getActionsByPermissions('ActiveTasksAssignedOtherUser', [TaskPermission.MANAGE])).to.deep.equal([COMPLETE, REASSIGN, RELEASE]);
       expect(getActionsByPermissions('ActiveTasksAssignedOtherUser', [TaskPermission.EXECUTE])).to.deep.equal([]);
       expect(getActionsByPermissions('ActiveTasksAssignedOtherUser', [
-        TaskPermission.MANAGE, TaskPermission.EXECUTE])).to.deep.equal([CLAIM, COMPLETE, REASSIGN, RELEASE,
+        TaskPermission.MANAGE, TaskPermission.EXECUTE])).to.deep.equal([COMPLETE, REASSIGN, RELEASE,
       ]);
       expect(getActionsByPermissions('ActiveTasksAssignedOtherUser', [
-        TaskPermission.MANAGE, TaskPermission.EXECUTE, TaskPermission.CANCEL])).to.deep.equal([CANCEL, CLAIM, COMPLETE, REASSIGN, RELEASE,
+        TaskPermission.MANAGE, TaskPermission.EXECUTE, TaskPermission.CANCEL])).to.deep.equal([CANCEL, COMPLETE, REASSIGN, RELEASE,
       ]);
 
       expect(getActionsByPermissions('ActiveTasksUnassigned', [TaskPermission.MANAGE])).to.deep.equal([ASSIGN]);

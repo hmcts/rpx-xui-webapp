@@ -503,7 +503,7 @@ describe('CaseHearingsComponent', () => {
     expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions(hearingCondition)));
   });
 
-  fit('should fail create hearing request', () => {
+  it('should fail create hearing request', () => {
     const dispatchSpy = spyOn(mockStore, 'dispatch');
     spyOn(mockStore, 'select').and.returnValue(of('error'));
     component.createHearingRequest();

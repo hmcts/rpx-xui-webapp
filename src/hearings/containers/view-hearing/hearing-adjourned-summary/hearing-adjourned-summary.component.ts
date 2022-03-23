@@ -11,25 +11,25 @@ import * as fromHearingStore from '../../../store';
   templateUrl: './hearing-adjourned-summary.component.html',
 })
 export class HearingAdjournedSummaryComponent implements OnInit, OnDestroy {
-  public hearingActualsMainModel: HearingActualsMainModel;
-  public sub: Subscription;
+  public hearingActualsModel: HearingActualsMainModel;
+  public subscription: Subscription;
 
-  constructor(private readonly hearingStore: Store<fromHearingStore.State>) {
+  constructor(private readonly store: Store<fromHearingStore.State>) {
   }
 
   public ngOnInit(): void {
-    this.sub = this.hearingStore.select(fromHearingStore.getHearingActuals)
+    this.subscription = this.store.select(fromHearingStore.getHearingActuals)
       .pipe(
         filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel),
       )
       .subscribe((state: HearingActualsStateData) => {
-        this.hearingActualsMainModel = state.hearingActualsMainModel;
+        this.hearingActualsModel = state.hearingActualsMainModel;
       });
   }
 
   public ngOnDestroy(): void {
-    if (this.sub) {
-      this.sub.unsubscribe();
+    if (this.subscription) {
+      this.subscription.unsubscribe();
     }
   }
 }

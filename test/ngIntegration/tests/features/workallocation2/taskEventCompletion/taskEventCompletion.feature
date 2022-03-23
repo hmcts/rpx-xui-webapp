@@ -3,6 +3,10 @@ Feature: WA Release 2: Case events and Task completion and states
 
     Background: Setup
         Given I set MOCK case details with reference "caseDetails"
+        Given I set MOCK case list values
+            | case_id          | case_fields.[CASE_REFERENCE] | case_fields_formatted.[CASE_REFERENCE] |
+            | 1234567812345678 | 1234567812345678             | 1234567812345678                       |
+            | 1234567812345679 | 1234567812345679             | 1234567812345679                       |
         Given I set MOCK case details "caseDetails" property "jurisdiction" as "IA"
         Given I set MOCK case details "caseDetails" trigger id "text" trigger name "Test event"
            Given I set MOCK caseworkers for service "IA"
@@ -180,14 +184,15 @@ Feature: WA Release 2: Case events and Task completion and states
 
         Given I set MOCK task required for event as "true"
         Given I set MOCK tasks required for event
-            | id                                   | assignee                             | task_state |
-            | 3db21928-cbbc-task-bd91-137c7031fe17 | 3db21928-cbbc-4364-bd91-137c7031fe17 | assigned   |
+            | id                                   | assignee                             | task_state |case_id|
+            | 3db21928-cbbc-task-bd91-137c7031fe17 | 3db21928-cbbc-4364-bd91-137c7031fe17 | assigned | 1234567812345678 |
 
         Given I set MOCK task details
             | id           | 3db21928-cbbc-task-bd91-137c7031fe17 |
             | assignee     | 3db21928-cbbc-4364-bd91-137c7031fe17 |
             | task_state   | assigned                             |
             | jurisdiction | IA                                   |
+            | case_id | 1234567812345678 |
 
         Given I start MockApp
         Given I navigate to home page
@@ -208,7 +213,6 @@ Feature: WA Release 2: Case events and Task completion and states
             | roles                                                                            |
             | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor |
 
-
     Scenario Outline: Task one task found assigned to this user, reassigned someone before submit, continue
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>,task-supervisor,case-allocator" with reference "userDetails"
 
@@ -219,14 +223,15 @@ Feature: WA Release 2: Case events and Task completion and states
 
         Given I set MOCK task required for event as "true"
         Given I set MOCK tasks required for event
-            | id                                   | assignee                             | task_state | jurisdiction |
-            | 3db21928-cbbc-task-bd91-137c7031fe17 | 3db21928-cbbc-4364-bd91-137c7031fe17 | assigned   | IA           |
+            | id                                   | assignee                             | task_state | case_id          |
+            | 3db21928-cbbc-task-bd91-137c7031fe17 | 3db21928-cbbc-4364-bd91-137c7031fe17 | assigned   | 1234567812345678 |
 
         Given I set MOCK task details
             | id           | 3db21928-cbbc-task-bd91-137c7031fe17 |
             | assignee     | 3db21928-cbbc-4364-bd91-137c7031fe10 |
             | task_state   | assigned                             |
             | jurisdiction | IA                                   |
+            | case_id | 1234567812345678 |
 
 
         Given I start MockApp
@@ -241,6 +246,8 @@ Feature: WA Release 2: Case events and Task completion and states
         Then I validate case details task tab page is displayed
 
         When I start case next step "Test event"
+
+        Then I validate session storage has key "taskToComplete"
         When I complete and submit test event "text"
         Then I see task event validation error page
             | Summary header  | There is a problem                           |
@@ -264,7 +271,6 @@ Feature: WA Release 2: Case events and Task completion and states
             | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor |
 
 
-
     Scenario Outline: Task one task found assigned to this user, reassigned someone before submit, cancel
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>,task-supervisor,case-allocator" with reference "userDetails"
 
@@ -275,14 +281,15 @@ Feature: WA Release 2: Case events and Task completion and states
 
         Given I set MOCK task required for event as "true"
         Given I set MOCK tasks required for event
-            | id                                   | assignee                             | task_state | jurisdiction |
-            | 3db21928-cbbc-task-bd91-137c7031fe17 | 3db21928-cbbc-4364-bd91-137c7031fe17 | assigned   | IA           |
+            | id                                   | assignee                             | task_state | case_id          |
+            | 3db21928-cbbc-task-bd91-137c7031fe17 | 3db21928-cbbc-4364-bd91-137c7031fe17 | assigned   | 1234567812345678 |
 
         Given I set MOCK task details
             | id           | 3db21928-cbbc-task-bd91-137c7031fe17 |
             | assignee     | 3db21928-cbbc-4364-bd91-137c7031fe10 |
             | task_state   | assigned                             |
             | jurisdiction | IA                                   |
+            | case_id | 1234567812345678 |
 
 
         Given I start MockApp
@@ -320,7 +327,6 @@ Feature: WA Release 2: Case events and Task completion and states
             | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor |
 
 
-
     Scenario Outline: Task one task found assigned to this user, unassigned before submit, continue
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>,task-supervisor,case-allocator" with reference "userDetails"
 
@@ -331,14 +337,15 @@ Feature: WA Release 2: Case events and Task completion and states
 
         Given I set MOCK task required for event as "true"
         Given I set MOCK tasks required for event
-            | id                                   | assignee                             | task_state | jurisdiction |
-            | 3db21928-cbbc-task-bd91-137c7031fe17 | 3db21928-cbbc-4364-bd91-137c7031fe17 | assigned   | IA           |
+            | id                                   | assignee                             | task_state | case_id          |
+            | 3db21928-cbbc-task-bd91-137c7031fe17 | 3db21928-cbbc-4364-bd91-137c7031fe17 | assigned   | 1234567812345678 |
 
         Given I set MOCK task details
             | id           | 3db21928-cbbc-task-bd91-137c7031fe17 |
             | assignee     | null                                 |
             | task_state   | unassigned                           |
             | jurisdiction | IA                                   |
+            | case_id | 1234567812345678 |
 
 
         Given I start MockApp
@@ -369,14 +376,15 @@ Feature: WA Release 2: Case events and Task completion and states
 
         Given I set MOCK task required for event as "true"
         Given I set MOCK tasks required for event
-            | id                                   | assignee                             | task_state | jurisdiction |
-            | 3db21928-cbbc-task-bd91-137c7031fe17 | 3db21928-cbbc-4364-bd91-137c7031fe17 | assigned   | IA           |
+            | id                                   | assignee                             | task_state | case_id          |
+            | 3db21928-cbbc-task-bd91-137c7031fe17 | 3db21928-cbbc-4364-bd91-137c7031fe17 | assigned   | 1234567812345678 |
 
         Given I set MOCK task details
             | id           | 3db21928-cbbc-task-bd91-137c7031fe17 |
             | assignee     | 3db21928-cbbc-4364-bd91-137c7031fe17 |
             | task_state   | <task_state>                         |
             | jurisdiction | IA                                   |
+            | case_id | 1234567812345678 |
 
 
         Given I start MockApp

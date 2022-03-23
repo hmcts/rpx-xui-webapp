@@ -9,7 +9,7 @@ import {
   SpecificAccessNavigationEvent
 } from '../../../models';
 import { DurationType } from '../../../models/enums';
-import { DurationHelperService } from '../../../services/duration-helper.service';
+import { DurationHelperService } from '../../../services';
 import * as fromFeature from '../../../store';
 
 @Component({
@@ -85,7 +85,6 @@ export class SpecificAccessDurationComponent implements OnInit {
 
   public selectSpecificAccessDuration(specificAccessState: SpecificAccessStateData) {
     // TODO: SARD - this will be wired up correctly in another ticket ( 5505? ). Hint: see role-access/allocate-role/choose-duration
-    console.log(specificAccessState);
     this.selectedDuration = DurationType.SEVEN_DAYS;
     this.durations.find(duration => duration.duration === this.selectedDuration).checked = true;
   }

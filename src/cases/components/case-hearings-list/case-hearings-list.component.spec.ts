@@ -4,7 +4,9 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureUser } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
+import { initialState } from 'src/hearings/hearing.test.data';
 import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
 import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
 import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, PartyType } from '../../../hearings/models/hearings.enum';
@@ -451,8 +453,12 @@ describe('CaseHearingsListComponent', () => {
   let roleCategoryMappingService: RoleCategoryMappingService;
   let fixture: ComponentFixture<CaseHearingsListComponent>;
   const mockFeatureService = new MockRoleCategoryMappingService();
-  const mockStore = jasmine.createSpyObj('Store', ['dispatch']);
-  let router: any;
+  let mockStore: Store<fromHearingStore.State>;
+  let mockRouter: any;
+
+  mockRouter = {
+    navigate: jasmine.createSpy('navigate')
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -463,10 +469,7 @@ describe('CaseHearingsListComponent', () => {
       ],
       declarations: [CaseHearingsListComponent],
       providers: [
-        {
-          provide: Store,
-          useValue: mockStore
-        },
+        provideMockStore({ initialState }),
         {
           provide: ActivatedRoute,
           useValue: {
@@ -476,15 +479,19 @@ describe('CaseHearingsListComponent', () => {
               },
             }
           }
+        },
+        {
+          provide: Router,
+          useValue: mockRouter
         }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(CaseHearingsListComponent);
+    mockStore = TestBed.get(Store);
     roleCategoryMappingService = new RoleCategoryMappingService(mockFeatureService);
     component = fixture.componentInstance;
     component.hearingList$ = of(UPCOMING_HEARING_LIST);
     component.actions = [Actions.DELETE];
-    router = TestBed.get(Router);
     fixture.detectChanges();
   });
 
@@ -688,14 +695,24 @@ describe('CaseHearingsListComponent', () => {
   });
 
   it('should viewAndEdit', () => {
-    const navigateSpy = spyOn(router, 'navigate');
+    const dispatchSpy = spyOn(mockStore, 'dispatch');
+    spyOn(mockStore, 'select').and.returnValue(of(null));
     component.status = EXUISectionStatusEnum.UPCOMING;
     component.viewAndEdit('h100000');
-    fixture.detectChanges();
-    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.LoadHearingValues('1111222233334444'));
-    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.LoadHearingRequest('h100000'));
-    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.SaveHearingConditions({ mode: 'view' }));
-    expect(navigateSpy).toHaveBeenCalledWith(['/', 'hearings', 'request', 'hearing-view-edit-summary']);
+    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.LoadHearingValues('1111222233334444')));
+    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.LoadHearingRequest('h100000')));
+    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions({ mode: 'view' })));
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'request', 'hearing-view-edit-summary']);
+  });
+
+  it('should fail viewAndEdit', () => {
+    const dispatchSpy = spyOn(mockStore, 'dispatch');
+    spyOn(mockStore, 'select').and.returnValue(of('error'));
+    component.status = EXUISectionStatusEnum.UPCOMING;
+    component.viewAndEdit('h100000');
+    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.LoadHearingValues('1111222233334444')));
+    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.LoadHearingRequest('h100000')));
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'error']);
   });
 
   afterEach(() => {

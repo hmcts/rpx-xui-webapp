@@ -9,7 +9,6 @@ import { hearingActualsMainModel } from '../../hearing.test.data';
 import { HearingsService } from '../../services/hearings.service';
 import * as hearingActualsActions from '../actions/hearing-actuals.action';
 import { HearingActualsEffects } from './hearing-actuals.effects';
-import { HearingListEffects } from './hearing-list.effects';
 
 describe('Hearing Actuals Effects', () => {
   let actions$;

@@ -74,11 +74,15 @@ export class CaseHearingsListComponent implements OnInit, OnDestroy {
     this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
     this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearingID));
     const sub$ = combineLatest([this.hearingStore.select(fromHearingStore.getHearingValuesLastError), this.hearingStore.select(fromHearingStore.getHearingRequestLastError)]);
+    console.log('ONE');
     this.sub = sub$.subscribe(
       errors => {
+        console.log('ERRORS', errors);
         if (errors && (errors[0] !== null || errors[1] !== null)) {
+          console.log('ERROR NAVIGATE');
           this.router.navigate(['/', 'hearings', 'error']);
         } else {
+          console.log('NO ERROR');
           const hearingCondition: HearingConditions = {
             mode: Mode.VIEW,
           };

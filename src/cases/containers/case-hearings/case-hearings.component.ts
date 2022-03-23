@@ -137,7 +137,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
             caseId: this.caseId
           };
           this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
-          this.router.navigate(['/', 'hearings', 'request']).then();
+          this.router.navigate(['/', 'hearings', 'request']);
         }
       }
     );

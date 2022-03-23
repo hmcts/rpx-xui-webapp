@@ -6,6 +6,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { Observable } from 'rxjs';
 import { initialState } from 'src/hearings/hearing.test.data';
 import { ErrorPageComponent } from './error-page.component';
+import * as fromHearingStore from '../../store';
 
 describe('ErrorPageComponent', () => {
   let component: ErrorPageComponent;
@@ -32,9 +33,16 @@ describe('ErrorPageComponent', () => {
   });
 
   it('should create', () => {
-    const dispatchSpy = spyOn(mockStore, 'dispatch');
     expect(component).toBeTruthy();
-    expect(dispatchSpy).toHaveBeenCalledTimes(3);
+  });
+
+  it('should ngOnInit reset last errors', () => {
+    const dispatchSpy = spyOn(mockStore, 'dispatch');
+    component.ngOnInit();
+    fixture.detectChanges();
+    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.ResetHearingValuesLastError()));
+    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.ResetHearingRequestLastError()));
+    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.ResetHearingActualsLastError()));
   });
 
   it('should unsubscribe', () => {

@@ -2,7 +2,7 @@ import {HearingRequestStateData} from '../../models/hearingRequestStateData.mode
 import * as fromHearingRequestActions from '../actions/hearing-request.action';
 import * as fromHearingRequestReducer from './hearing-request.reducer';
 
-describe('Hearing Request Reducer', () => {
+fdescribe('Hearing Request Reducer', () => {
 
   describe('Actions', () => {
 
@@ -152,6 +152,22 @@ describe('Hearing Request Reducer', () => {
           },
         };
         const action = new fromHearingRequestActions.SubmitHearingRequestFailure(initialHearingRequestState.lastError);
+        const hearingsState = fromHearingRequestReducer.hearingRequestReducer(initialHearingRequestState, action);
+        expect(hearingsState).toEqual(initialHearingRequestState);
+      });
+    });
+
+    describe('Update hearing request failure', () => {
+      it('should call error response action', () => {
+        const initialHearingRequestState: HearingRequestStateData = {
+          hearingRequestMainModel: null,
+          lastError: {
+            status: 500,
+            errors: null,
+            message: 'Internal server error'
+          },
+        };
+        const action = new fromHearingRequestActions.UpdateHearingRequestFailure(initialHearingRequestState.lastError);
         const hearingsState = fromHearingRequestReducer.hearingRequestReducer(initialHearingRequestState, action);
         expect(hearingsState).toEqual(initialHearingRequestState);
       });

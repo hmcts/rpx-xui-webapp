@@ -5,14 +5,14 @@ import {FormArray, FormBuilder, ReactiveFormsModule} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {provideMockStore} from '@ngrx/store/testing';
-import {of} from 'rxjs';
+import {of, throwError} from 'rxjs';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import {HearingChangeReasonComponent} from './hearing-change-reason.component';
 
-describe('HearingChangeReasonComponent', () => {
+fdescribe('HearingChangeReasonComponent', () => {
   let component: HearingChangeReasonComponent;
   let fixture: ComponentFixture<HearingChangeReasonComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
@@ -91,6 +91,15 @@ describe('HearingChangeReasonComponent', () => {
 
   it('should not be any validation errors when back button selected', () => {
     component.isFormValid(ACTION.BACK);
-    expect(component.validationErrors.length).toEqual(0);
+    expect(component.errors.length).toEqual(0);
   });
+
+  it('should have a server error message mapped when update request failed', () => {
+    (component.hearingChangeReasonForm.controls.reasons as FormArray).controls
+    .forEach(reason => reason.value.selected = true);
+    hearingsService.updateHearingRequest = jasmine.createSpy().and.returnValue(throwError(''));
+    component.navigateAction(ACTION.VIEW_EDIT_SUBMIT);
+    expect(component.errors).not.toBeNull();
+  });
+
 });

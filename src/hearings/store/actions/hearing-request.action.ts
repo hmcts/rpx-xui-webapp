@@ -82,7 +82,7 @@ export type HearingRequestAction =
   | NavigateBackHearingRequest
   | InitializeHearingRequest
   | LoadHearingRequest
-  | UpdateHearingRequest
+  | UpdateHearingRequest  
   | UpdateHearingRequestFailure
   | SubmitHearingRequest
   | SubmitHearingRequestFailure

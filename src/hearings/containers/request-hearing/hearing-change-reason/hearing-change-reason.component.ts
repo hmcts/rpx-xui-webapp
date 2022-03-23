@@ -16,11 +16,10 @@ import { Observable, Subscription } from 'rxjs';
 export class HearingChangeReasonComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
   public hearingChangeReason: LovRefDataModel[];
   public hearingChangeReasonForm: FormGroup;
-  public validationErrors: { id: string, message: string }[] = [];
+  public errors: { id: string, message: string }[] = [];
   public selectionValid: boolean = true;
   public hearingState$: Observable<fromHearingStore.State>;
   public sub: Subscription;
-  public serverError: { id: string, message: string } = null;
 
   constructor(protected readonly route: ActivatedRoute,
               protected readonly router: Router,
@@ -28,13 +27,13 @@ export class HearingChangeReasonComponent extends RequestHearingPageFlow impleme
               protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService) {
       super(hearingStore, hearingsService);
-      this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.UpdateHearingRequest));
+      this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
     }
 
   public ngOnInit(): void {
     this.sub = this.hearingState$.subscribe(state => {
       if (state && state.hearingRequest && state.hearingRequest.lastError) {
-        this.validationErrors = [{
+        this.errors = [{
           id: 'backendError', message: HearingSummaryEnum.BackendError
         }];
       }
@@ -70,7 +69,7 @@ export class HearingChangeReasonComponent extends RequestHearingPageFlow impleme
     const isReasons = (this.hearingChangeReasonForm.controls.reasons as FormArray).controls
       .filter(reason => reason.value.selected === true).length > 0;
     if (!isReasons) {
-      this.validationErrors = [{
+      this.errors = [{
         id: `hearing-option-container`, message: HearingChangeReasonMessages.NOT_SELECTED_A_REASON
       }];
       this.selectionValid = false;

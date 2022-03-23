@@ -116,10 +116,10 @@ export class HearingRequestEffects {
           () => {
             return this.router.navigate(['hearings', 'request', 'hearing-confirmation']);
           }),
-        catchError(error => {
-          this.hearingStore.dispatch(new hearingRequestActions.SubmitHearingRequestFailure(error));
-          return of(error);
-        })
+          catchError(error => {
+            this.hearingStore.dispatch(new hearingRequestActions.SubmitHearingRequestFailure(error));
+            return of(error);
+          })
       );
     })
   );
@@ -137,17 +137,15 @@ export class HearingRequestEffects {
     ofType(hearingRequestActions.VIEW_EDIT_SUBMIT_HEARING_REQUEST),
     map((action: hearingRequestActions.ViewEditSubmitHearingRequest) => action.payload),
     switchMap(payload => {
-      if (payload && payload.caseDetails && payload.caseDetails.caseRef.endsWith('5')) {
-        return throwError({ status: 500 });
-      }
       return this.hearingsService.updateHearingRequest(payload).pipe(
         tap(
           () => {
             return this.router.navigate(['hearings', 'request', 'hearing-confirmation']);
           }),
-        catchError(error => {
-          return HearingRequestEffects.handleError(error);
-        })
+          catchError(error => {
+            this.hearingStore.dispatch(new hearingRequestActions.UpdateHearingRequestFailure(error));
+            return of(error);
+          })
       );
     })
   );
@@ -155,9 +153,6 @@ export class HearingRequestEffects {
   public static handleError(error: HttpError): Observable<Action> {
     if (error && error.status && error.status >= 400) {
       return of(new fromAppStoreActions.Go({path: ['/service-down']}));
-    }
-    else if (error && error.status && error.status === 500) {
-      return of(new hearingRequestActions.UpdateHearingRequestFailure(error));
     }
   }
 }

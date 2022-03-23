@@ -21,6 +21,7 @@ import { VenueAmendedConverter } from '../converters/venue.amended.converter';
 import { AnswerSource } from '../models/hearings.enum';
 import { State } from '../store';
 import { JudgeNameAmendedConverter } from '../converters/judge-name.amended.converter';
+import { AdditionalInstructionsAmendedConverter } from '../converters/additional-instructions.amended.converter';
 
 @Pipe({
   name: 'isAmended'
@@ -81,6 +82,9 @@ export class IsAmendedPipe implements PipeTransform {
       case AnswerSource.PANEL_ROLES:
         converter = new PanelRolesAmendedConverter();
         break;
+      case AnswerSource.ADDITIONAL_INSTRUCTION:
+        converter = new AdditionalInstructionsAmendedConverter();
+        break;        
       default:
         break;
     }

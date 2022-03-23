@@ -1,45 +1,32 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
 import { ActualDayPartyModel, ActualHearingDayModel, HearingActualsMainModel, PauseDateTimeModel } from '../../models/hearingActualsMainModel';
-import { HearingActualsStateData } from '../../models/hearingActualsStateData.model';
 import { HearingDateEnum } from '../../models/hearings.enum';
 import { LovRefDataModel } from '../../models/lovRefData.model';
-import * as fromHearingStore from '../../store';
 
 @Component({
   selector: 'exui-hearing-actual-summary',
   templateUrl: './hearing-actual-summary.component.html',
   styleUrls: ['./hearing-actual-summary.component.scss']
 })
-export class HearingActualSummaryComponent implements OnInit, OnDestroy {
+export class HearingActualSummaryComponent implements OnInit {
+  @Input() public hearingActualsMainModel: HearingActualsMainModel;
   public dateFormat = HearingDateEnum;
-  public hearingActualsMainModel: HearingActualsMainModel;
   public actualPauseTime: PauseDateTimeModel;
   public actualHearingDays: ActualHearingDayModel = {} as ActualHearingDayModel;
   public participants: ActualDayPartyModel[] = [];
   public attendies: ActualDayPartyModel[] = [];
   public partyChannels: LovRefDataModel[] = [];
-  public sub: Subscription;
 
-  constructor(private readonly hearingStore: Store<fromHearingStore.State>,
-              private readonly route: ActivatedRoute) {
+  constructor(private readonly route: ActivatedRoute) {
     this.partyChannels = this.route.snapshot.data.partyChannels;
   }
 
   public ngOnInit(): void {
-    this.sub = this.hearingStore.select(fromHearingStore.getHearingActuals)
-      .pipe(
-        filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel),
-      )
-      .subscribe((state: HearingActualsStateData) => {
-        this.hearingActualsMainModel = state.hearingActualsMainModel;
-        this.actualHearingDays = state.hearingActualsMainModel.hearingActuals.actualHearingDays[0];
-        this.actualPauseTime = this.actualHearingDays.pauseDateTimes[0];
-        this.setPartyData();
-      });
+    this.actualHearingDays = this.hearingActualsMainModel.hearingActuals.actualHearingDays[0];
+    this.actualPauseTime = this.actualHearingDays.pauseDateTimes[0];
+    this.setPartyData();
   }
 
   public setPartyData() {
@@ -95,11 +82,5 @@ export class HearingActualSummaryComponent implements OnInit, OnDestroy {
       }
     });
     return channelInfo;
-  }
-
-  public ngOnDestroy(): void {
-    if (this.sub) {
-      this.sub.unsubscribe();
-    }
   }
 }

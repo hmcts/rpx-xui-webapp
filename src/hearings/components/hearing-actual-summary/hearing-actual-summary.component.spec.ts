@@ -7,28 +7,21 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { initialState } from '../../hearing.test.data';
-import { ACTION } from '../../models/hearings.enum';
+import { hearingActualsMainModel, initialState } from '../../hearing.test.data';
 import { LovRefDataModel } from '../../models/lovRefData.model';
-import { HearingsService } from '../../services/hearings.service';
-import { ValidatorsUtils } from '../../utils/validators.utils';
 import { HearingActualSummaryComponent } from './hearing-actual-summary.component';
 
 describe('HearingActualSummaryComponent', () => {
-  const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
-  const hearingsService = new HearingsService(mockedHttpClient);
-  hearingsService.navigateAction$ = of(ACTION.CONTINUE);
-
   let component: HearingActualSummaryComponent;
   let fixture: ComponentFixture<HearingActualSummaryComponent>;
   let router: Router;
   let mockStore: any;
   const partyChannels: LovRefDataModel[] = [
     {
-      key: 'inPhone',
-      value_en: 'Phone',
+      key: 'Fax',
+      value_en: 'Fax',
       value_cy: '',
-      hintText_EN: 'Phone',
+      hintText_EN: 'Fax',
       hintTextCY: '',
       order: 1,
       parentKey: null,
@@ -60,8 +53,6 @@ describe('HearingActualSummaryComponent', () => {
       declarations: [HearingActualSummaryComponent],
       providers: [
         provideMockStore({ initialState }),
-        { provide: HearingsService, useValue: hearingsService },
-        ValidatorsUtils,
         {
           provide: ActivatedRoute,
           useValue: {
@@ -81,6 +72,7 @@ describe('HearingActualSummaryComponent', () => {
     mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
     fixture = TestBed.createComponent(HearingActualSummaryComponent);
     component = fixture.componentInstance;
+    component.hearingActualsMainModel = hearingActualsMainModel;
     router = TestBed.get(Router);
     fixture.detectChanges();
   });
@@ -90,7 +82,7 @@ describe('HearingActualSummaryComponent', () => {
   });
 
   it('should check getChannelInfo', () => {
-    expect(component.getChannelInfo('inPhone')).toEqual({ channel: 'Phone', subChannel: '' });
+    expect(component.getChannelInfo('Fax')).toEqual({ channel: 'Fax', subChannel: '' });
     expect(component.getChannelInfo('video-conference')).toEqual({ channel: 'By video', subChannel: 'Video Conference' });
   });
 

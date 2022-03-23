@@ -40,7 +40,6 @@ export class HearingValuesEffects {
       switch (error.status) {
         case 401:
         case 403:
-          // TODO: This should be not-authorised page. Need to confirm.
           return of(new fromAppStoreActions.Go({path: ['/hearings/error']}));
         default:
           return of(new fromAppStoreActions.Go({path: ['/hearings/error']}));

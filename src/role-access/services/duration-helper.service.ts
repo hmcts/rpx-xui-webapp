@@ -20,7 +20,13 @@ export class DurationHelperService {
     monthControl: FormControl,
     yearControl: FormControl
   ): Date {
-    return new Date(yearControl.value, monthControl.value - 1, dayControl.value);
+    const day = parseInt(dayControl.value, 10);
+    const month = parseInt(monthControl.value, 10) - 1;
+    const year = parseInt(yearControl.value, 10);
+    if (typeof day !== 'number' || typeof month !== 'number' || typeof year !== 'number') {
+      throw new Error('Invalid values provided');
+    }
+    return new Date(year, month, day);
   }
 
   /**
@@ -39,6 +45,9 @@ export class DurationHelperService {
    * @return string representation of number
    */
   public formatString(n: number): string {
+    if (n < 0) {
+      throw new Error('Invalid value provided');
+    }
     return n >= 10 ? n.toString() : `0${n}`;
   }
 
@@ -75,7 +84,11 @@ export class DurationHelperService {
     const dayStart = this.formatString(dayControl.value);
     const monthStart = this.formatString(monthControl.value);
     const yearStart = yearControl.value;
-    return `${yearStart}-${monthStart}-${dayStart}`;
+    const dateStr = `${yearStart}-${monthStart}-${dayStart}`;
+    if (!moment(dateStr, this.dateFormat).isValid()) {
+      throw new Error('Invalid date');
+    }
+    return dateStr;
   }
 
   /**

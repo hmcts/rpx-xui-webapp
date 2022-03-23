@@ -86,7 +86,7 @@ export const init = () => {
   });
 
   mock.onPut(updateHearingRequest).reply(config => {
-     if (config.data.caseDetails.caseRef.endsWith('5')) {
+    if (config.data.caseDetails.caseRef.endsWith('5')) {
       return [
         500,
         null,

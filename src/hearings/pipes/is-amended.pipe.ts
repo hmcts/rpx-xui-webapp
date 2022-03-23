@@ -92,7 +92,7 @@ export class IsAmendedPipe implements PipeTransform {
         break;
       case AnswerSource.ADDITIONAL_INSTRUCTION:
         converter = new AdditionalInstructionsAmendedConverter();
-        break;        
+        break;
       default:
         break;
     }

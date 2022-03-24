@@ -1,4 +1,4 @@
-import {HearingLocationModel} from '../../models/hearingLocation.model';
+import {HearingConditions} from '../../models/hearingConditions';
 import {HearingRequestMainModel} from '../../models/hearingRequestMain.model';
 import {HearingRequestStateData} from '../../models/hearingRequestStateData.model';
 import * as fromActions from '../actions';
@@ -62,14 +62,18 @@ export function hearingRequestReducer(currentState = initialHearingRequestState,
       };
     }
     case fromActions.UPDATE_HEARING_REQUEST: {
-      const hearingLocations: HearingLocationModel[] = action.payload.hearingDetails.hearingLocations;
-      const hasWalesLocation = hearingLocations.some(location => location.region === 'Wales');
-      let updatedHearingRequestMainModel: HearingRequestMainModel = action.payload;
+      let hasWalesLocation;
+      const hearingConditions: HearingConditions = action.hearingCondition;
+      if (hearingConditions.hasOwnProperty('region')) {
+        const region = hearingConditions['region'];
+        hasWalesLocation = region.includes('Wales');
+      }
+      let updatedHearingRequestMainModel: HearingRequestMainModel = action.hearingRequestMainModel;
       if (!hasWalesLocation) {
         updatedHearingRequestMainModel = {
-          ...action.payload,
+          ...action.hearingRequestMainModel,
           hearingDetails: {
-            ...action.payload.hearingDetails,
+            ...action.hearingRequestMainModel.hearingDetails,
             hearingInWelshFlag: false
           }
         };
@@ -83,7 +87,7 @@ export function hearingRequestReducer(currentState = initialHearingRequestState,
       return {
         ...currentState,
         lastError: action.payload
-      }
+      };
     }
     default: {
       return {

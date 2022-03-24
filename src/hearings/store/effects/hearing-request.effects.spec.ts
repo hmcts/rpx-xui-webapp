@@ -30,6 +30,10 @@ describe('Hearing Request Effects', () => {
   ]);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
   const mockLocation = jasmine.createSpyObj('Location', ['back']);
+  const hearingConditions = {
+    isInit: false,
+    region: 'Wales'
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -65,9 +69,9 @@ describe('Hearing Request Effects', () => {
     it('should navigate to next page if continue on CREATE mode', () => {
       effects.mode = Mode.CREATE;
       pageflowMock.getNextPage.and.returnValue('next');
-      const action = new hearingRequestActions.UpdateHearingRequest(null);
+      const action = new hearingRequestActions.UpdateHearingRequest(null, hearingConditions);
       actions$ = cold('-a', {a: action});
-      const navigateAction = new hearingRequestActions.UpdateHearingRequest(null);
+      const navigateAction = new hearingRequestActions.UpdateHearingRequest(null, hearingConditions);
       const expected = cold('-b', {b: navigateAction});
       expect(effects.continueNavigation$).toBeObservable(expected);
       expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'next']);
@@ -75,9 +79,9 @@ describe('Hearing Request Effects', () => {
 
     it('should navigate to create edit page if on CREATE_EDIT mode', () => {
       effects.mode = Mode.CREATE_EDIT;
-      const action = new hearingRequestActions.UpdateHearingRequest(null);
+      const action = new hearingRequestActions.UpdateHearingRequest(null, hearingConditions);
       actions$ = cold('-a', {a: action});
-      const navigateAction = new hearingRequestActions.UpdateHearingRequest(null);
+      const navigateAction = new hearingRequestActions.UpdateHearingRequest(null, hearingConditions);
       const expected = cold('-b', {b: navigateAction});
       expect(effects.continueNavigation$).toBeObservable(expected);
       expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-create-edit-summary'], { fragment: 'venue' });
@@ -85,9 +89,9 @@ describe('Hearing Request Effects', () => {
 
     it('should navigate to create edit page if on VIEW_EDIT mode', () => {
       effects.mode = Mode.VIEW_EDIT;
-      const action = new hearingRequestActions.UpdateHearingRequest(null);
+      const action = new hearingRequestActions.UpdateHearingRequest(null, hearingConditions);
       actions$ = cold('-a', {a: action});
-      const navigateAction = new hearingRequestActions.UpdateHearingRequest(null);
+      const navigateAction = new hearingRequestActions.UpdateHearingRequest(null, hearingConditions);
       const expected = cold('-b', {b: navigateAction});
       expect(effects.continueNavigation$).toBeObservable(expected);
       expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-view-edit-summary'], { fragment: 'venue' });
@@ -183,7 +187,7 @@ describe('Hearing Request Effects', () => {
         timestamp: '',
         exception: '',
         path: ''
-      }
+      };
       const dispatchSpy = spyOn(store, 'dispatch');
       hearingsServiceMock.submitHearingRequest.and.returnValue(Observable.throwError(error));
       const action = new hearingRequestActions.SubmitHearingRequest(hearingRequestMainModel);

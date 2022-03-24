@@ -1,5 +1,6 @@
+import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {Component, CUSTOM_ELEMENTS_SCHEMA, Input} from '@angular/core';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {AbstractControl, FormBuilder, ReactiveFormsModule} from '@angular/forms';
 import {By} from '@angular/platform-browser';
 import {ActivatedRoute} from '@angular/router';
@@ -12,6 +13,7 @@ import {of} from 'rxjs';
 import {initialState} from '../../../hearing.test.data';
 import {ACTION} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
+import {LocationsDataService} from '../../../services/locations-data.service';
 import {HearingVenueComponent} from './hearing-venue.component';
 
 @Component({
@@ -46,18 +48,43 @@ class MockLocationSearchContainerComponent {
 }
 
 describe('HearingVenueComponent', () => {
+  const FOUND_LOCATIONS: LocationByEPIMMSModel[] = [{
+    epimms_id: '196538',
+    site_name: 'Liverpool Social Security and Child Support Tribunal',
+    court_name: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
+    open_for_public: 'YES',
+    region_id: '5',
+    region: 'North West',
+    cluster_id: '3',
+    cluster_name: 'Cheshire and Merseyside',
+    court_status: 'Open',
+    court_open_date: null,
+    closed_date: null,
+    postcode: 'L2 5UZ',
+    court_address: 'PRUDENTIAL BUILDING, 36 DALE STREET, LIVERPOOL',
+    phone_number: '',
+    court_location_code: '',
+    dx_address: '',
+    welsh_site_name: '',
+    welsh_court_address: '',
+    venue_name: 'Liverpool',
+    is_case_management_location: 'Y',
+    is_hearing_location: 'Y'
+  }];
   let component: HearingVenueComponent;
   let fixture: ComponentFixture<HearingVenueComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
+  const locationsDataService: LocationsDataService = new LocationsDataService(mockedHttpClient);
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, RouterTestingModule],
+      imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
       declarations: [HearingVenueComponent, MockLocationSearchContainerComponent, MockHearingPartiesComponent],
       providers: [
         provideMockStore({initialState}),
         {provide: HearingsService, useValue: hearingsService},
+        {provide: LocationsDataService, useValue: locationsDataService},
         {
           provide: ActivatedRoute,
           useValue: {
@@ -69,9 +96,6 @@ describe('HearingVenueComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
       .compileComponents();
-  }));
-
-  beforeEach(() => {
     fixture = TestBed.createComponent(HearingVenueComponent);
     component = fixture.componentInstance;
     component.selectedLocations = [{
@@ -79,13 +103,14 @@ describe('HearingVenueComponent', () => {
       court_name: 'wolverhampton court',
       region: 'welsh'
     }] as LocationByEPIMMSModel[];
-    fixture.detectChanges();
+
     spyOn(component, 'removeSelection').and.callThrough();
-    spyOn(component, 'reInitiateState').and.callThrough();
     spyOn(component, 'appendLocation').and.callThrough();
     spyOn(component, 'prepareHearingRequestData').and.callThrough();
     spyOn(component, 'isFormValid').and.callThrough();
+    spyOn(locationsDataService, 'getLocationById').and.returnValue(of(FOUND_LOCATIONS));
     component.searchLocationComponent = new MockLocationSearchContainerComponent() as unknown as SearchLocationComponent;
+    fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -103,7 +128,6 @@ describe('HearingVenueComponent', () => {
         } as LocationByEPIMMSModel
       ]);
 
-      expect(component.reInitiateState).toHaveBeenCalled();
       expect(component.serviceIds).toEqual('BBA3');
     });
   });

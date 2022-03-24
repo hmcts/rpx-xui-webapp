@@ -24,7 +24,7 @@ export function hearingListReducer(currentState = initialHearingListState,
       return {
         ...currentState,
         lastError: action.payload
-      }
+      };
     }
     default: {
       return {

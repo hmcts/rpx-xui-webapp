@@ -60,7 +60,7 @@ describe('RequestHearingPageFlow', () => {
 
   it('should navigate continue', () => {
     requestHearingPageFlow.navigateAction(ACTION.CONTINUE);
-    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.UpdateHearingRequest(hearingState.hearingRequest.hearingRequestMainModel as HearingRequestMainModel));
+    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.UpdateHearingRequest(hearingState.hearingRequest.hearingRequestMainModel, hearingState.hearingConditions));
   });
 
   it('should navigate continue', () => {

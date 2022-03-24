@@ -27,15 +27,11 @@ describe('Hearing Request Reducer', () => {
               hearingType: null,
               hearingLocations: [{
                 locationId: '196538',
-                locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
                 locationType: 'hearing',
-                region: 'North West',
               },
                 {
                   locationId: '219164',
-                  locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
                   locationType: 'hearing',
-                  region: 'Scotland',
                 },
               ],
               hearingIsLinkedFlag: false,
@@ -90,15 +86,11 @@ describe('Hearing Request Reducer', () => {
               hearingType: null,
               hearingLocations: [{
                 locationId: '196538',
-                locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
                 locationType: 'hearing',
-                region: 'North West',
               },
                 {
                   locationId: '219164',
-                  locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
                   locationType: 'hearing',
-                  region: 'Scotland',
                 },
               ],
               hearingIsLinkedFlag: false,
@@ -135,7 +127,10 @@ describe('Hearing Request Reducer', () => {
           },
           lastError: null,
         };
-        const action = new fromHearingRequestActions.UpdateHearingRequest(initialHearingRequestState.hearingRequestMainModel);
+        const action = new fromHearingRequestActions.UpdateHearingRequest(initialHearingRequestState.hearingRequestMainModel, {
+          isInit: false,
+          region: 'North West'
+        });
         const hearingsState = fromHearingRequestReducer.hearingRequestReducer(initialHearingRequestState, action);
         expect(hearingsState.hearingRequestMainModel.hearingDetails.hearingInWelshFlag).toBeFalsy();
       });

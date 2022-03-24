@@ -7,6 +7,7 @@ import {HearingConditions} from '../../../models/hearingConditions';
 import {HearingRequestMainModel} from '../../../models/hearingRequestMain.model';
 import {ACTION, CaseFlagType, Mode} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
+import {LocationsDataService} from '../../../services/locations-data.service';
 import {HearingsUtils} from '../../../utils/hearings.utils';
 import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 
@@ -19,6 +20,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   public caseFlagType: CaseFlagType = CaseFlagType.REASONABLE_ADJUSTMENT;
   public lostFocus: boolean = false;
   public referenceId: string;
+  public strRegions: string;
 
   @HostListener('window:focus', ['$event'])
   public onFocus(): void {
@@ -35,7 +37,8 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
 
   constructor(protected readonly route: ActivatedRoute,
               public readonly hearingStore: Store<fromHearingStore.State>,
-              protected readonly hearingsService: HearingsService) {
+              protected readonly hearingsService: HearingsService,
+              public readonly locationsDataService: LocationsDataService) {
     super(hearingStore, hearingsService, route);
     this.caseFlagsRefData = this.route.snapshot.data.caseFlags;
   }
@@ -47,6 +50,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     if (HearingsUtils.hasPropertyAndValue(this.hearingCondition, 'mode', Mode.CREATE)
       && HearingsUtils.hasPropertyAndValue(this.hearingCondition, 'isInit', true)
       && this.serviceHearingValuesModel) {
+      this.initializeHearingCondition();
       this.initializeHearingRequestFromHearingValues();
     }
   }
@@ -90,16 +94,22 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       partyDetails: []
     };
     this.hearingStore.dispatch(new fromHearingStore.InitializeHearingRequest(hearingRequestMainModel));
-    this.initializeHearingCondition();
   }
 
   public initializeHearingCondition(): void {
-    const strRegions = this.serviceHearingValuesModel.hearingLocations.map(location => location.region).join(',');
-    const hearingCondition: HearingConditions = {
-      isInit: false,
-      region: strRegions
-    };
-    this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
+    if (this.serviceHearingValuesModel && this.serviceHearingValuesModel.hearingLocations) {
+      const strLocationIds = this.serviceHearingValuesModel.hearingLocations.map(location => location.locationId).join(',');
+      this.locationsDataService.getLocationById(strLocationIds).toPromise()
+        .then(locations => {
+          this.strRegions = locations.map(location => location.region).join(',');
+        }).then(() => {
+        const hearingCondition: HearingConditions = {
+          isInit: false,
+          region: this.strRegions
+        };
+        this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
+      });
+    }
   }
 
   protected executeAction(action: ACTION): void {

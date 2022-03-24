@@ -5,7 +5,7 @@ import {SERVICES_PRD_LOCATION_API} from '../../configuration/references';
 import {EnhancedRequest} from '../../lib/models';
 import {getCourtTypeIdsByServices} from '../mappings.utils';
 import {LocationTypeEnum} from './data/locationType.enum';
-import {LocationModel} from './models/location.model';
+import {LocationModel, toEpimmsLocation} from './models/location.model';
 
 const url: string = getConfigValue(SERVICES_PRD_LOCATION_API);
 
@@ -43,14 +43,17 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
 /**
  * Gets court location
  * @description getLocationById from epimms_id
- * @overview API sample: /api/locations/court-locations?epimms_id=812332
+ * @overview API sample: /api/locations/court-venues?epimms_id=812332,196538,372653
  */
 export async function getLocationById(req: EnhancedRequest, res: Response, next: NextFunction) {
   const epimmsID = req.query.epimms_id;
   const markupPath: string = `${url}/refdata/location/court-venues?epimms_id=${epimmsID}`;
   try {
-    const {status, data}: { status: number, data: LocationModel } = await handleGet(markupPath, req, next);
-    res.status(status).send(data);
+    const {status, data}: { status: number, data: LocationModel[] } = await handleGet(markupPath, req, next);
+    const identicalLocationByEpimmsId = data.map(locationModel => toEpimmsLocation(locationModel))
+      .filter((locationByEPIMSModel, index, locationByEPIMSModelArray) =>
+        locationByEPIMSModelArray.findIndex(location => (location.epimms_id === locationByEPIMSModel.epimms_id)) === index);
+    res.status(status).send(identicalLocationByEpimmsId);
   } catch (error) {
     next(error);
   }

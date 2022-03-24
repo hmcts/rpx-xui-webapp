@@ -18,15 +18,11 @@ describe('Hearing Request To Compare Reducer', () => {
               hearingType: null,
               hearingLocations: [{
                 locationId: '196538',
-                locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
                 locationType: 'hearing',
-                region: 'North West',
               },
                 {
                   locationId: '219164',
-                  locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
                   locationType: 'hearing',
-                  region: 'Scotland',
                 },
               ],
               hearingIsLinkedFlag: false,

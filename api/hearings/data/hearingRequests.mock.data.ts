@@ -15,8 +15,6 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         {
           locationType: 'hearing',
           locationId: '196538',
-          locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
-          region: 'North West',
         },
       ],
       hearingIsLinkedFlag: false,
@@ -132,8 +130,6 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         {
           locationType: 'hearing',
           locationId: '196538',
-          locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
-          region: 'North West',
         },
       ],
       hearingIsLinkedFlag: false,
@@ -249,8 +245,6 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         {
           locationType: 'hearing',
           locationId: '196538',
-          locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
-          region: 'North West',
         },
       ],
       hearingIsLinkedFlag: false,
@@ -366,8 +360,6 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         {
           locationType: 'hearing',
           locationId: '196538',
-          locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
-          region: 'North West',
         },
       ],
       hearingIsLinkedFlag: false,
@@ -483,8 +475,6 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         {
           locationType: 'hearing',
           locationId: '196538',
-          locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
-          region: 'North West',
         },
       ],
       hearingIsLinkedFlag: false,
@@ -600,8 +590,6 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         {
           locationType: 'hearing',
           locationId: '196538',
-          locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
-          region: 'North West',
         },
       ],
       hearingIsLinkedFlag: false,
@@ -717,8 +705,6 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         {
           locationType: 'hearing',
           locationId: '196538',
-          locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
-          region: 'North West',
         },
       ],
       hearingIsLinkedFlag: false,
@@ -834,8 +820,6 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         {
           locationType: 'hearing',
           locationId: '196538',
-          locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
-          region: 'North West',
         },
       ],
       hearingIsLinkedFlag: false,
@@ -951,8 +935,6 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         {
           locationType: 'hearing',
           locationId: '196538',
-          locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
-          region: 'North West',
         },
       ],
       hearingIsLinkedFlag: false,

@@ -986,15 +986,11 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   hearingInWelshFlag: false,
   hearingLocations: [{
     locationId: '196538',
-    locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
     locationType: 'hearing',
-    region: 'North West',
   },
   {
-    locationId: '219164',
-    locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
+    locationId: '234850',
     locationType: 'hearing',
-    region: 'Scotland',
   },
   ],
   caseAdditionalSecurityFlag: false,
@@ -1157,10 +1153,8 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
     hearingType: 'final',
     hearingLocations: [
       {
-        locationType: 'hearing',
         locationId: '196538',
-        locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
-        region: 'North West',
+        locationType: 'hearing',
       },
     ],
     hearingIsLinkedFlag: false,
@@ -1537,15 +1531,11 @@ export const initialState = {
           hearingLocations: [
             {
               locationId: '196538',
-              locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
               locationType: 'hearing',
-              region: 'North West',
             },
             {
-              locationId: '219164',
-              locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
+              locationId: '234850',
               locationType: 'hearing',
-              region: 'Scotland',
             },
           ],
           hearingIsLinkedFlag: false,
@@ -1663,15 +1653,11 @@ export const initialState = {
           hearingLocations: [
             {
               locationId: '196538',
-              locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
               locationType: 'hearing',
-              region: 'North West',
             },
             {
-              locationId: '219164',
-              locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
+              locationId: '234850',
               locationType: 'hearing',
-              region: 'Scotland',
             },
           ],
           hearingIsLinkedFlag: false,

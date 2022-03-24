@@ -84,22 +84,20 @@ describe('HearingChangeReasonComponent', () => {
     expect(formValid).toEqual(true);
   });
 
-  it('should be false when calling isFormValid with no reasons selected', () => {
+  it('should be false when calling isFormValid with no reasons selected',  () => {
     const formValid = component.isFormValid(ACTION.VIEW_EDIT_SUBMIT);
     expect(formValid).toEqual(false);
   });
 
   it('should not be any validation errors when back button selected', () => {
     component.isFormValid(ACTION.BACK);
-    expect(component.errors.length).toEqual(0);
+    expect(component.errors).toEqual(null);
   });
 
   it('should have a server error message mapped when update request failed', () => {
-    (component.hearingChangeReasonForm.controls.reasons as FormArray).controls
-    .forEach(reason => reason.value.selected = true);
     hearingsService.updateHearingRequest = jasmine.createSpy().and.returnValue(throwError(''));
     component.navigateAction(ACTION.VIEW_EDIT_SUBMIT);
-    expect(component.errors).not.toBeNull();
+    expect(component.errors).not.toEqual(null);
   });
 
 });

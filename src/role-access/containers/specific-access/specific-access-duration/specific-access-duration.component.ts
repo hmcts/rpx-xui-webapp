@@ -2,7 +2,6 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { PersonRole } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { ERROR_MESSAGE, PERSON_ROLE } from '../../../constants';
 import { SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
 import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
 import * as fromFeature from '../../../store';
@@ -11,26 +10,18 @@ import * as fromFeature from '../../../store';
   selector: 'exui-specific-access-duration',
   templateUrl: './specific-access-duration.component.html'
 })
-export class SpecificAccessDurationComponent implements OnInit, OnDestroy {
-  public ERROR_MESSAGE = ERROR_MESSAGE;
+export class SpecificAccessDurationComponent implements OnDestroy {
   @Input() public navEvent: SpecificAccessNavigation;
 
   public title = '';
   public caption = '';
 
   public submitted: boolean = false;
-
-  public radioControlName: string = PERSON_ROLE;
-
   public specificAccessStateDataSub: Subscription;
 
   public personRole: PersonRole;
 
   constructor(private readonly store: Store<fromFeature.State>) {
-  }
-
-  public ngOnInit(): void {
-
   }
 
   public navigationHandler(navEvent: SpecificAccessNavigationEvent) {

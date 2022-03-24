@@ -23,7 +23,6 @@ describe('Hearing Request Effects', () => {
   const hearingsServiceMock = jasmine.createSpyObj('HearingsService', [
     'getAllHearings', 'loadHearingRequest', 'updateHearingRequest', 'submitHearingRequest',
   ]);
-  const hearingRequestEffectsMock = jasmine.createSpyObj('HearingRequestEffects', ['handleError']);
   const pageflowMock = jasmine.createSpyObj('AbstractPageFlow', [
     'getCurrentPage', 'getLastPage', 'getNextPage'
   ]);
@@ -216,6 +215,25 @@ describe('Hearing Request Effects', () => {
       expect(effects.viewEditSubmitHearingRequest$).toBeObservable(expected);
       expect(hearingsServiceMock.updateHearingRequest).toHaveBeenCalled();
       expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-confirmation']);
+    });
+
+    it('should error update hearing request failed', () => {
+      const error: HttpError = {
+        status: 403,
+        error: null,
+        message: 'Http failure response: 403 Forbidden',
+        timestamp: '',
+        exception: '',
+        path: ''
+      }
+      const dispatchSpy = spyOn(store, 'dispatch');
+      hearingsServiceMock.updateHearingRequest.and.returnValue(Observable.throwError(error));
+      const action = new hearingRequestActions.ViewEditSubmitHearingRequest(hearingRequestMainModel);
+      actions$ = cold('-a', {a: action});
+      const expected = cold('-b', {b: error});
+      expect(effects.viewEditSubmitHearingRequest$).toBeObservable(expected);
+      expect(hearingsServiceMock.updateHearingRequest).toHaveBeenCalled();
+      expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestActions.UpdateHearingRequestFailure(error));
     });
   });
 

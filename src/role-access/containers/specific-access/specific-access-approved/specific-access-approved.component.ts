@@ -1,71 +1,27 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 
-import { PERSON_ERROR_MESSAGE } from '../../../constants';
-import { ExclusionNavigationEvent, ExclusionState, ExclusionStateData } from '../../../models';
-import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
+import { SpecificAccessNavigationEvent } from '../../../models';
 import * as fromFeature from '../../../store';
 
 @Component({
   selector: 'exui-specific-access-approved',
   templateUrl: './specific-access-approved.component.html'
 })
-export class SpecificAccessApprovedComponent implements OnInit {
-  public ERROR_MESSAGE = PERSON_ERROR_MESSAGE;
-  @Input() public navEvent: ExclusionNavigation;
-  public domain = PersonRole.ALL;
-  public formGroup: FormGroup = new FormGroup({});
-  public personName: string;
-  public person: Person;
+export class SpecificAccessApprovedComponent {
+  @Input() public navEvent: SpecificAccessNavigationEvent;
   public subscription: Subscription;
-  public personRole: PersonRole;
   public services: string[];
   public assignedUser: string;
 
   constructor(private readonly store: Store<fromFeature.State>) {
   }
 
-  public ngOnInit(): void {
-    this.subscription = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe(exclusion => this.setPerson(exclusion));
-  }
-
-  private setPerson(exclusion: ExclusionStateData): void {
-    this.personName = exclusion && exclusion.person ? this.getDisplayName(exclusion.person) : null;
-    this.person = exclusion.person;
-    this.personRole = exclusion.personRole;
-    this.services = [exclusion.jurisdiction];
-    this.assignedUser = exclusion.person ? exclusion.person.id : null;
-  }
-
-  public navigationHandler(navEvent: ExclusionNavigationEvent): void {
-    if (this.formGroup && this.formGroup.value && this.formGroup.value.findPersonControl && this.person) {
-      switch (navEvent) {
-        case ExclusionNavigationEvent.CONTINUE:
-          this.store.dispatch(new fromFeature.UpdatePersonExclusion(ExclusionState.DESCRIBE_EXCLUSION, this.person));
-          break;
-        default:
-          throw new Error('Invalid option');
-      }
-    } else {
-      this.formGroup.setErrors({
-        invalid: true
-      });
-      return;
+  public navigationHandler(navEvent: SpecificAccessNavigationEvent): void {
+    switch (navEvent) {
+      default:
+        throw new Error('Not yet implemented');
     }
-  }
-
-  public selectedPerson(person: Person): void {
-    if (person && !person.domain) {
-      this.person = { ... person, domain: this.personRole };
-    } else {
-      this.person = person;
-    }
-  }
-
-  private getDisplayName(selectedPerson: Person): string {
-    return selectedPerson.email ? `${selectedPerson.name}(${selectedPerson.email})` : selectedPerson.name;
   }
 }

@@ -206,8 +206,13 @@ export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Resp
   const jurisdiction = req.params.jurisdiction;
   try {
     const payload = { case_id: caseId, event_id: eventId, case_jurisdiction: jurisdiction, case_type: caseType };
-    const { status, data } = await handlePost(`${baseWorkAllocationTaskUrl}/task/search-for-completable`, payload, req);
-    return res.send(data).status(status);
+    const jurisdictions = getWASupportedJurisdictionsList();
+    let status;
+    let data;
+    jurisdictions.includes(jurisdiction) ? {status, data} =
+     await handlePost(`${baseWorkAllocationTaskUrl}/task/search-for-completable`, payload, req)
+     : (status = 200, data = []);
+    return res.status(status).send(data);
   } catch (e) {
     next(e);
   }
@@ -232,10 +237,7 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
     res.status(status);
     res.send(data);
   } catch (error) {
-    if (req.params.action === 'complete' && error && error.status === 403) {
-      // handle gracefully EUI-4998
-      return res.status(201).send('complete');
-    }
+    // 5528 - removed error handling for 403 errors
     next(error);
   }
 }

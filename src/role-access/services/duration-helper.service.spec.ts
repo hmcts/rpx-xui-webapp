@@ -94,13 +94,17 @@ describe('DurationHelperService', () => {
       expect(dateStr).toEqual('2022-07-07');
     });
 
-    it('should throw an error if an invalid date is provided in the form controls', () => {
+    it('should return an incorrect date string if an invalid date is provided in form controls', () => {
       const day = new FormControl('');
       const month = new FormControl('');
       const year = new FormControl('');
-      expect(() => {
-        durationHelperService.convertDateControlsToString(day, month, year)
-      }).toThrow(new Error('Invalid date'));
+
+      const day2 = new FormControl('7');
+      const month2 = new FormControl('7');
+      const year2 = new FormControl('');
+
+      expect(durationHelperService.convertDateControlsToString(day, month, year)).toEqual('-0-0');
+      expect(durationHelperService.convertDateControlsToString(day2, month2, year2)).toEqual('-07-07');
     });
 
   });

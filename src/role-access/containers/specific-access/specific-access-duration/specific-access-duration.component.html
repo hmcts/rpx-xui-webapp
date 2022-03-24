@@ -11,11 +11,11 @@
         <input
           class="govuk-radios__input"
           id="specific-access-{{duration.id}}"
-          name="radioSelected"
+          name="dateOption"
           type="radio"
           [value]="duration.duration"
           [attr.aria-describedby]="duration.description"
-          formControlName="radioSelected"
+          formControlName="dateOption"
           (change)="onDurationChange(duration.duration)"
           [checked]="duration.checked" />
         <label class="govuk-label govuk-radios__label" for="specific-access-{{duration.id}}">
@@ -31,127 +31,18 @@
           'govuk-radios__conditional') :
           'govuk-radios__conditional govuk-radios__conditional--hidden'">
         <div class="govuk-form-group">
-          <fieldset class="govuk-fieldset" aria-describedby="date-start-hint" role="group">
-          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-            Access starts
-          </legend>
-          <span id="date-start-hint" class="govuk-hint">
-            For example, 12 11 2007
-          </span>
-          <div class="govuk-error-summary__body">
-            <span class="govuk-error-message">
-              {{ startDateErrorMessage }}
-            </span>
-          </div>
-          <div class="govuk-date-input" id="date-start">
-            <div class="govuk-date-input__item">
-              <div class="govuk-form-group">
-              <label class="govuk-label govuk-date-input__label" for="date-start-day">
-                Day
-              </label>
-              <input
-                id="date-start-day"
-                name="date-start-day"
-                type="number"
-                pattern="[0-9]*"
-                formControlName="dayStartDate"
-                [ngClass]="getInputClass(isStartDateError)"/>
-              </div>
-            </div>
-            <div class="govuk-date-input__item">
-              <div class="govuk-form-group">
-                <label class="govuk-label govuk-date-input__label" for="date-start-month">
-                  Month
-                </label>
-                <input
-                  id="date-start-month"
-                  name="date-start-month"
-                  type="number"
-                  pattern="[0-9]*"
-                  formControlName="monthStartDate"
-                  min="0"
-                  max="11"
-                  [ngClass]="getInputClass(isStartDateError)" />
-              </div>
-            </div>
-            <div class="govuk-date-input__item">
-              <div class="govuk-form-group">
-                <label class="govuk-label govuk-date-input__label" for="date-start-year">
-                  Year
-                </label>
-                <input
-                  id="date-start-year"
-                  name="date-start-year"
-                  type="number"
-                  pattern="[0-9]*"
-                  formControlName="yearStartDate"
-                  [ngClass]="getInputClass(isStartDateError, true)" />
-              </div>
-            </div>
-          </div>
-          </fieldset>
+          <xuilib-gov-uk-date
+            [formGroup]="formGroup"
+            [config]="configStart"
+            [errorMessage]="startDateErrorMessage">
+          </xuilib-gov-uk-date>
+          <xuilib-gov-uk-date
+            [formGroup]="formGroup"
+            [config]="configEnd"
+            [errorMessage]="endDateErrorMessage">
+          </xuilib-gov-uk-date>
         </div>
-        <div class="govuk-form-group">
-          <fieldset class="govuk-fieldset" aria-describedby="date-end-hint" role="group">
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-              Access ends
-            </legend>
-            <span id="date-end-hint" class="govuk-hint">
-              For example, 12 11 2007
-            </span>
-            <div class="govuk-error-summary__body">
-              <span class="govuk-error-message">
-                {{endDateErrorMessage}}
-              </span>
-            </div>
-            <div class="govuk-date-input" id="date-end">
-              <div class="govuk-date-input__item">
-                <div class="govuk-form-group">
-                  <label class="govuk-label govuk-date-input__label" for="date-end-day">
-                    Day
-                  </label>
-                  <input
-                    id="date-end-day"
-                    name="date-end-day"
-                    type="number"
-                    pattern="[0-9]*"
-                    formControlName="dayEndDate"
-                    [ngClass]="getInputClass(isEndDateError)" />
-                </div>
-              </div>
-              <div class="govuk-date-input__item">
-                <div class="govuk-form-group">
-                  <label class="govuk-label govuk-date-input__label" for="date-end-month">
-                    Month
-                  </label>
-                  <input
-                    id="date-end-month"
-                    name="date-end-month"
-                    type="number"
-                    pattern="[0-9]*"
-                    formControlName="monthEndDate"
-                    min="0"
-                    max="11"
-                    [ngClass]="getInputClass(isEndDateError)" />
-                </div>
-              </div>
-              <div class="govuk-date-input__item">
-                <div class="govuk-form-group">
-                  <label class="govuk-label govuk-date-input__label" for="date-end-year">
-                    Year
-                  </label>
-                  <input
-                    id="date-end-year"
-                    name="date-end-year"
-                    type="number"
-                    pattern="[0-9]*"
-                    formControlName="yearEndDate"
-                    [ngClass]="getInputClass(isEndDateError, true)" />
-                </div>
-              </div>
-            </div>
-          </fieldset>
-        </div>
+
       </div>
     </div>
   </fieldset>

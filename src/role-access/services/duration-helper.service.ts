@@ -85,9 +85,6 @@ export class DurationHelperService {
     const monthStart = this.formatString(monthControl.value);
     const yearStart = yearControl.value;
     const dateStr = `${yearStart}-${monthStart}-${dayStart}`;
-    if (!moment(dateStr, this.dateFormat).isValid()) {
-      throw new Error('Invalid date');
-    }
     return dateStr;
   }
 

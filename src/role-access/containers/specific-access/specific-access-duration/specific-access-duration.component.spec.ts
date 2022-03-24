@@ -1,6 +1,7 @@
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { SpecificAccessDurationComponent } from './specific-access-duration.component';
 import { DurationType } from '../../../models/enums';
 import { DurationHelperService } from '../../../services';
@@ -15,7 +16,12 @@ describe('SpecificAccessDurationComponent', () => {
   beforeEach(async(() => {
     durationHelperService = createSpyObj('durationHelperService', ['getInputClass']);
     TestBed.configureTestingModule({
-      imports: [FormsModule, ReactiveFormsModule, StoreModule.forRoot({})],
+      imports: [
+        ExuiCommonLibModule,
+        FormsModule,
+        ReactiveFormsModule,
+        StoreModule.forRoot({})
+      ],
       declarations: [SpecificAccessDurationComponent],
       providers: [
         FormBuilder,
@@ -33,16 +39,11 @@ describe('SpecificAccessDurationComponent', () => {
   describe('resetPreviousErrors', () => {
 
     it('should reset the component properties as expected', () => {
-      component.startDateErrorMessage = 'Start date error message';
-      component.endDateErrorMessage = 'End date error message';
-      component.isStartDateError = true;
-      component.isEndDateError = true;
-
+      component.startDateErrorMessage = { isInvalid: true, messages: ['Start date error message'] };
+      component.endDateErrorMessage = { isInvalid: true, messages: ['End date error message'] };
       component.resetPreviousErrors();
-      expect(component.isStartDateError).toBe(false);
-      expect(component.isEndDateError).toBe(false);
-      expect(component.startDateErrorMessage).toBe('');
-      expect(component.endDateErrorMessage).toBe('');
+      expect(component.startDateErrorMessage).toEqual({ isInvalid: false, messages: [] });
+      expect(component.endDateErrorMessage).toEqual({ isInvalid: false, messages: [] });
     });
 
   });
@@ -68,15 +69,6 @@ describe('SpecificAccessDurationComponent', () => {
       component.onDurationChange(duration);
       expect(component.selectedDuration).toEqual(duration);
       expect(component.anotherPeriod).toEqual(true);
-    });
-
-  });
-
-  describe('getInputClass', () => {
-
-    it('should call durationHelperService getInputClass method', () => {
-      component.getInputClass(false);
-      expect(durationHelperService.getInputClass).toHaveBeenCalledWith(false, false);
     });
 
   });

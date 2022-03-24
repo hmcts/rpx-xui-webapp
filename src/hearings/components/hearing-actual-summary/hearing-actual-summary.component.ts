@@ -1,8 +1,7 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
 import { ActualDayPartyModel, ActualHearingDayModel, HearingActualsMainModel, PauseDateTimeModel } from '../../models/hearingActualsMainModel';
-import { HearingDateEnum } from '../../models/hearings.enum';
+import { HearingDateEnum, HearingResult } from '../../models/hearings.enum';
 import { LovRefDataModel } from '../../models/lovRefData.model';
 
 @Component({
@@ -18,12 +17,14 @@ export class HearingActualSummaryComponent implements OnInit {
   public participants: ActualDayPartyModel[] = [];
   public attendies: ActualDayPartyModel[] = [];
   public partyChannels: LovRefDataModel[] = [];
+  public isCompleted: boolean;
 
   constructor(private readonly route: ActivatedRoute) {
     this.partyChannels = this.route.snapshot.data.partyChannels;
   }
 
   public ngOnInit(): void {
+    this.isCompleted = this.hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResult === HearingResult.COMPLETED;
     this.actualHearingDays = this.hearingActualsMainModel.hearingActuals.actualHearingDays[0];
     this.actualPauseTime = this.actualHearingDays.pauseDateTimes[0];
     this.setPartyData();

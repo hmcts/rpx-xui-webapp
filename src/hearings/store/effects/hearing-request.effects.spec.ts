@@ -19,9 +19,7 @@ import {HearingRequestEffects} from './hearing-request.effects';
 describe('Hearing Request Effects', () => {
   let actions$;
   let effects: HearingRequestEffects;
-  let router: Router;
   let store: any;
-  let hearingService: any;
   const hearingsServiceMock = jasmine.createSpyObj('HearingsService', [
     'getAllHearings', 'loadHearingRequest', 'updateHearingRequest', 'submitHearingRequest',
   ]);
@@ -56,9 +54,7 @@ describe('Hearing Request Effects', () => {
       ]
     });
     effects = TestBed.get(HearingRequestEffects);
-    router = TestBed.get(Router);
     store = TestBed.get(Store);
-    hearingService = TestBed.get(HearingsService);
   });
 
   describe('continueNavigation$', () => {
@@ -210,7 +206,7 @@ describe('Hearing Request Effects', () => {
   describe('handleError', () => {
     it('should handle 500', () => {
       const action$ = HearingRequestEffects.handleError({
-        status: 500,
+        status: 400,
         message: 'error'
       });
       action$.subscribe(action => expect(action).toEqual(new Go({path: ['/service-down']})));

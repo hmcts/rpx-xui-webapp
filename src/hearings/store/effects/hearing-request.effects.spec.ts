@@ -23,6 +23,7 @@ describe('Hearing Request Effects', () => {
   const hearingsServiceMock = jasmine.createSpyObj('HearingsService', [
     'getAllHearings', 'loadHearingRequest', 'updateHearingRequest', 'submitHearingRequest',
   ]);
+  const hearingRequestEffectsMock = jasmine.createSpyObj('HearingRequestEffects', ['handleError']);
   const pageflowMock = jasmine.createSpyObj('AbstractPageFlow', [
     'getCurrentPage', 'getLastPage', 'getNextPage'
   ]);
@@ -144,6 +145,21 @@ describe('Hearing Request Effects', () => {
       expect(hearingsServiceMock.loadHearingRequest).toHaveBeenCalledWith('h1000000');
       expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestToCompareActions.InitializeHearingRequestToCompare(hearingRequestMainModel));
       expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestActions.InitializeHearingRequest(hearingRequestMainModel));
+    });
+    it('should error submitting loading hearing request', () => {
+      const error: HttpError = {
+        status: 400,
+        error: null,
+        message: 'Http failure response',
+        timestamp: '',
+        exception: '',
+        path: ''
+      }
+      hearingsServiceMock.loadHearingRequest.and.returnValue(of(error));
+      const action = new hearingRequestActions.LoadHearingRequest('h1000000');
+      actions$ = cold('-a', {a: action});
+      const expected = cold('-b', {b: error});
+      expect(effects.loadHearingRequest$).toBeObservable(expected);
     });
   });
 

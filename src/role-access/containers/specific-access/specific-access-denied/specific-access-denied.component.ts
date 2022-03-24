@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { SpecificAccessNavigationEvent, SpecificAccessStateData } from '../../../models';
+import { SpecificAccessNavigationEvent } from '../../../models';
 import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
 import * as fromFeature from '../../../store';
 
@@ -17,8 +17,6 @@ export class SpecificAccessDeniedComponent implements OnDestroy {
   public heading = '';
   public hint = '';
   public storeSubscription: Subscription;
-
-  private specificAccessStateData: SpecificAccessStateData;
 
   constructor(private readonly store: Store<fromFeature.State>) {
     this.storeSubscription = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe();
@@ -40,7 +38,7 @@ export class SpecificAccessDeniedComponent implements OnDestroy {
   }
 
   public onNavigate(action) {
-    this.store.dispatch(new fromFeature.ChangeNavigation(action));
+    this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(action));
   }
 }
 

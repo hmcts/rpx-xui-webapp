@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.12.16-error-withholding-for-401-403-404":
-  version "4.12.16-error-withholding-for-401-403-404"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.12.16-error-withholding-for-401-403-404.tgz#c94ec43c2ca4d1d3ba3e1be1daee523b220716c6"
-  integrity sha512-g3Ksq1BT8RpGGPZVPMPp6yNrAPEqtTZ/YHSB6Io1tSIs+1orSbcWqgKR71XxFAbiINxWa6Wgb3k8iDMh8VBGjA==
+"@hmcts/ccd-case-ui-toolkit@4.12.16-task-event-completion":
+  version "4.12.16-task-event-completion"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.12.16-task-event-completion.tgz#842bea9ecd14d905258d4f33bfe23328b49017b3"
+  integrity sha512-0ZCYBG7U74SPjx7BZw6JlpDL3mwT5WqWH9CKtU1DDcE4+klmsS5uy8dhzcOAEgEt6Zrf/koutlTQMlELPp7qsQ==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

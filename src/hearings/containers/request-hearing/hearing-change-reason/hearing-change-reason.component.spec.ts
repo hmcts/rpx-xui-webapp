@@ -91,7 +91,7 @@ describe('HearingChangeReasonComponent', () => {
 
   it('should not be any validation errors when back button selected', () => {
     component.isFormValid(ACTION.BACK);
-    expect(component.errors).toEqual(null);
+    expect(component.errors.length).toEqual(0);
   });
 
   it('should have a server error message mapped when update request failed', () => {

@@ -2,8 +2,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { State } from '../../../../app/store';
 import { SpecificAccessReviewComponent } from './specific-access-review.component';
+import { State } from '../../../../app/store';
 
 describe('ChooseExclusionComponent', () => {
   let component: SpecificAccessReviewComponent;

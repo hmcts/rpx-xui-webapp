@@ -1,13 +1,14 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import * as fromRoot from '../../../../app/store';
 import {
-  specificAccessBackButtonVisibilityStates as backButtonVisibilityStates,
-  specificAccessCancelButtonVisibilityStates as cancelButtonVisibilityStates,
-  specificAccessContinueButtonVisibilityStates as continueButtonVisibilityStates
-} from '../../../constants/specific-access-page-visibility-states';
-import { ExclusionNavigationEvent, ExclusionState, SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
+  specificAccessBackButtonVisibilityStates,
+  specicAccessCancelButtonVisibilityStates,
+  specificAccessContinueButtonVisibilityStates,
+  specicAccessReturnToMyTasksButtonVisibilityStates,
+  specicAccessReturnToTasksTabVisibilityStates
+} from '../../../constants';
+import { SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
 import * as fromFeature from '../../../store';
 
 @Component({
@@ -20,15 +21,16 @@ export class SpecificAccessNavigationComponent implements OnInit {
 
   public navigationCurrentState$: Observable<SpecificAccessState>;
 
-  public backVisibilityStates = backButtonVisibilityStates;
-  public continueVisibilityStates = continueButtonVisibilityStates;
-  public cancelButtonVisibilityStates = cancelButtonVisibilityStates;
+  public backVisibilityStates = specificAccessBackButtonVisibilityStates;
+  public continueButtonVisibilityStates = specificAccessContinueButtonVisibilityStates;
+  public cancelButtonVisibilityStates = specicAccessCancelButtonVisibilityStates;
+  public returnToMyTasksButtonVisibilityStates = specicAccessReturnToMyTasksButtonVisibilityStates;
+  public returnToTasksTabVisibilityStates = specicAccessReturnToTasksTabVisibilityStates;
 
   public specificAccessNavigationEvent = SpecificAccessNavigationEvent;
 
   constructor(
     private store: Store<fromFeature.State>,
-    private appStore: Store<fromRoot.State>
   ) {
   }
 

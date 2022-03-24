@@ -1,15 +1,14 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
-import { UserDetails } from '../../../../app/models';
-import * as fromRoot from '../../../../app/store';
 import { ERROR_MESSAGE, EXCLUSION_OPTION } from '../../../constants';
 import { SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
 import { RoleAllocationCaptionText, RoleAllocationTitleText } from '../../../models/enums';
-import * as fromFeature from '../../../store';
 import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
+import * as fromFeature from '../../../store';
+import { UserDetails } from '../../../../app/models';
 
 @Component({
   selector: 'exui-specific-access-review',

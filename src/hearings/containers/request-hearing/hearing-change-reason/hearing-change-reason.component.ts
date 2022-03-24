@@ -36,6 +36,9 @@ export class HearingChangeReasonComponent extends RequestHearingPageFlow impleme
         this.errors = [{
           id: 'backendError', message: HearingSummaryEnum.BackendError
         }];
+      } else {
+        // Reset the error context if there is no error on subsequent requests
+        this.errors = null;
       }
     });
     this.hearingChangeReason = this.route.snapshot.data.hearingChangeReason;

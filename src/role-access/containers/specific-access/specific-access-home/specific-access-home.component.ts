@@ -36,8 +36,7 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
   public caseId: string;
 
   private specificAccessStateDataSub: Subscription;
-  private specificAccessReviewStateData: SpecificAccessStateData;
-
+  public specificAccessReviewStateData: SpecificAccessStateData;
   public navigationCurrentState: SpecificAccessState;
   public navEvent: SpecificAccessNavigation;
   public specificAccessReviewVisibilityStates = specificAccessReviewVisibilityStates;

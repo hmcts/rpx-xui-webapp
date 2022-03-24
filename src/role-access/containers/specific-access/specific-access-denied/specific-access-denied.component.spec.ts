@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
 import { SpecificAccessDeniedComponent } from './specific-access-denied.component';
 
-describe('AddExclusionCheckAnswersComponent', () => {
+describe('SpecificAccessDeniedComponent', () => {
   let component: SpecificAccessDeniedComponent;
   let fixture: ComponentFixture<SpecificAccessDeniedComponent>;
   let mockStore: any;

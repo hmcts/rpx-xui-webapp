@@ -41,7 +41,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
       map(userDetails => userDetails.userInfo.roles)
     );
     this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
-    this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
+    this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingRequestLastError));
   }
 
   public reloadHearings() {

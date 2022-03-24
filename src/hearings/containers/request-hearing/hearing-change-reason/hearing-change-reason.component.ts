@@ -27,7 +27,7 @@ export class HearingChangeReasonComponent extends RequestHearingPageFlow impleme
               protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService) {
       super(hearingStore, hearingsService);
-      this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
+      this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingRequestLastError));
     }
 
   public ngOnInit(): void {

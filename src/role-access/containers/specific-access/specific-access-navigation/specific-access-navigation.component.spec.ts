@@ -47,14 +47,6 @@ describe('ExclusionNavigationComponent', () => {
     });
   });
 
-  describe('onEventTrigger', () => {
-    it('should emit', () => {
-      const backSpy = spyOn(component.eventTrigger, 'emit');
-      component.onEventTrigger(ExclusionNavigationEvent.BACK);
-      expect(backSpy).toHaveBeenCalledWith(ExclusionNavigationEvent.BACK);
-    });
-  });
-
   afterEach(() => {
     component = null;
     fixture.destroy();

@@ -18,8 +18,8 @@ export class HearingChangeReasonComponent extends RequestHearingPageFlow impleme
   public hearingChangeReasonForm: FormGroup;
   public errors: { id: string, message: string }[] = [];
   public selectionValid: boolean = true;
-  public hearingState$: Observable<fromHearingStore.State>;
-  public sub: Subscription;
+  public hearingRequestLastError$: Observable<fromHearingStore.State>;
+  public lastErrorSubscription: Subscription;
 
   constructor(protected readonly route: ActivatedRoute,
               protected readonly router: Router,
@@ -27,12 +27,12 @@ export class HearingChangeReasonComponent extends RequestHearingPageFlow impleme
               protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService) {
       super(hearingStore, hearingsService);
-      this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingRequestLastError));
+      this.hearingRequestLastError$ = this.hearingStore.pipe(select(fromHearingStore.getHearingRequestLastError));
     }
 
   public ngOnInit(): void {
-    this.sub = this.hearingState$.subscribe(state => {
-      if (state && state.hearingRequest && state.hearingRequest.lastError) {
+    this.lastErrorSubscription = this.hearingRequestLastError$.subscribe(lastError => {
+      if (lastError) {
         this.errors = [{
           id: 'backendError', message: HearingSummaryEnum.BackendError
         }];
@@ -109,8 +109,8 @@ export class HearingChangeReasonComponent extends RequestHearingPageFlow impleme
   }
 
   public ngOnDestroy(): void {
-    if (this.sub) {
-      this.sub.unsubscribe();
+    if (this.lastErrorSubscription) {
+      this.lastErrorSubscription.unsubscribe();
     }
     super.unsubscribe();
   }

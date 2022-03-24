@@ -25,8 +25,8 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public pastAndCancelledStatus: EXUISectionStatusEnum = EXUISectionStatusEnum.PAST_AND_CANCELLED;
   public hearingsActions: Actions[] = [Actions.READ];
   public userRoles$: Observable<string[]>;
-  public hearingState$: Observable<fromHearingStore.State>;
-  public sub: Subscription;
+  public hearingsLastErrorState$: Observable<fromHearingStore.State>;
+  public lastErrorSubscription: Subscription;
   public hasRequestAction: boolean = false;
   public caseId: string = '';
   public serverError: { id: string, message: string } = null;
@@ -41,7 +41,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
       map(userDetails => userDetails.userInfo.roles)
     );
     this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
-    this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingRequestLastError));
+    this.hearingsLastErrorState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingListLastError));
   }
 
   public reloadHearings() {
@@ -49,8 +49,8 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.sub = this.hearingState$.subscribe(state => {
-      if (state && state.hearingList && state.hearingList.lastError) {
+    this.lastErrorSubscription = this.hearingsLastErrorState$.subscribe(lastError => {
+      if (lastError) {
         this.serverError = {
           id: 'backendError', message: HearingSummaryEnum.BackendError
         };
@@ -133,8 +133,8 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    if (this.sub) {
-      this.sub.unsubscribe();
+    if (this.lastErrorSubscription) {
+      this.lastErrorSubscription.unsubscribe();
     }
   }
 }

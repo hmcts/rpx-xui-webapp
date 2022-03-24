@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
+import * as fromFeature from '../../../store';
 import {
   DurationTypeDescription,
   Period,
@@ -11,7 +12,6 @@ import {
 } from '../../../models';
 import { DurationType } from '../../../models/enums';
 import { DurationHelperService } from '../../../services';
-import * as fromFeature from '../../../store';
 
 @Component({
   selector: 'exui-specific-access-duration',

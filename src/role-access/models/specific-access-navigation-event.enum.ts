@@ -1,5 +1,7 @@
 export enum SpecificAccessNavigationEvent {
   BACK,
   CANCEL,
-  CONTINUE
+  CONTINUE,
+  RETURNTOMYTASKS,
+  RETURNTOTASKSTAB
 }

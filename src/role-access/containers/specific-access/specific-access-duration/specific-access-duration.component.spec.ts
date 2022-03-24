@@ -36,6 +36,20 @@ describe('SpecificAccessDurationComponent', () => {
     fixture.detectChanges();
   });
 
+  describe('setFormControlRefs', () => {
+
+    it('should assign form control objects to component properties as expected', () => {
+      const expectedType = 'object';
+      expect(typeof component.startDateDayCtrl).toEqual(expectedType);
+      expect(typeof component.startDateMonthCtrl).toEqual(expectedType);
+      expect(typeof component.startDateYearCtrl).toEqual(expectedType);
+      expect(typeof component.endDateDayCtrl).toEqual(expectedType);
+      expect(typeof component.endDateMonthCtrl).toEqual(expectedType);
+      expect(typeof component.endDateYearCtrl).toEqual(expectedType);
+    });
+
+  });
+
   describe('resetPreviousErrors', () => {
 
     it('should reset the component properties as expected', () => {

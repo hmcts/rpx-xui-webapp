@@ -1,5 +1,4 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { PersonRole } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
@@ -21,8 +20,6 @@ export class SpecificAccessDurationComponent implements OnInit, OnDestroy {
 
   public submitted: boolean = false;
 
-  public formGroup: FormGroup;
-  public radioOptionControl: FormControl;
   public radioControlName: string = PERSON_ROLE;
 
   public specificAccessStateDataSub: Subscription;

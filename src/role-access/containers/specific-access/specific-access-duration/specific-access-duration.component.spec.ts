@@ -1,7 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
-import { ChooseRadioOptionComponent } from '../../../components';
 import { SpecificAccessDurationComponent } from './specific-access-duration.component';
 
 describe('SpecificAccessDurationComponent', () => {
@@ -12,8 +11,8 @@ describe('SpecificAccessDurationComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [ChooseRadioOptionComponent, SpecificAccessDurationComponent],
-      imports: [ ],
+      declarations: [SpecificAccessDurationComponent],
+      imports: [],
       providers: [
         { provide: Store, useValue: mockStore },
       ]

@@ -1,72 +1,35 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { select, Store } from '@ngrx/store';
+import { Component, Input, OnDestroy } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { ErrorMessage } from '../../../../app/models';
-import { ExclusionNavigationEvent, ExclusionState, ExclusionStateData } from '../../../models';
-import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
+import { SpecificAccessNavigationEvent } from '../../../models';
+import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
 import * as fromFeature from '../../../store';
 
 @Component({
   selector: 'exui-specific-access-information',
   templateUrl: './specific-access-information.component.html'
 })
-export class SpecificAccessInformationComponent implements OnInit, OnDestroy {
+export class SpecificAccessInformationComponent implements OnDestroy {
 
-  @Input() public navEvent: ExclusionNavigation;
-  @Input() public title: string = 'Describe the exclusion';
-  @Input() public caption: string = 'Add an exclusion';
+  @Input() public navEvent: SpecificAccessNavigation;
+  @Input() public title = '';
+  @Input() public caption = '';
 
-  public submitted: boolean = true;
-  public controlName = 'text';
-  public formGroup: FormGroup;
-  public error: ErrorMessage = null;
+  public submitted = true;
   public subscription: Subscription;
 
-  constructor(public readonly store: Store<fromFeature.State>,
-              public readonly fb: FormBuilder) {
-      this.formGroup = this.fb.group({[this.controlName]: ['', [Validators.required]]
-    });
+  constructor(public readonly store: Store<fromFeature.State>) {
   }
 
-  public ngOnInit(): void {
-    this.submitted = false;
-    this.subscription = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe(exclusion => this.setExclusionDescription(exclusion));
-  }
-
-  public setExclusionDescription(exclusion: ExclusionStateData): void {
-    if (exclusion && exclusion.exclusionDescription) {
-      this.formGroup.get(this.controlName).setValue(exclusion.exclusionDescription);
-    }
-  }
-
-  public navigationHandler(navEvent: ExclusionNavigationEvent) {
-    this.submitted = true;
-    this.formGroup.get(this.controlName).markAsTouched();
-    if (!this.formGroup.valid) {
-      this.error = this.getErrorObject();
-      return;
-    }
-    this.error = null;
+  public navigationHandler(navEvent: SpecificAccessNavigationEvent) {
     this.dispatchEvent(navEvent);
   }
 
-  public dispatchEvent(navEvent: ExclusionNavigationEvent) {
+  public dispatchEvent(navEvent: SpecificAccessNavigationEvent) {
     switch (navEvent) {
-      case ExclusionNavigationEvent.CONTINUE:
-        this.store.dispatch(new fromFeature.UpdateDescribeExclusionText(ExclusionState.CHECK_ANSWERS, this.formGroup.value.text));
-        break;
       default:
-        throw new Error('Invalid option');
+        throw new Error('Not yet implemented');
     }
-  }
-
-  public getErrorObject(): ErrorMessage {
-    return {
-      title: 'There is a problem',
-      description: 'Enter exclusion',
-      fieldId: 'exclusion-description'
-    };
   }
 
   public ngOnDestroy() {

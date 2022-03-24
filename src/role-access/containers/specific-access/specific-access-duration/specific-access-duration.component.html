@@ -26,10 +26,7 @@
         </span>
       </div>
       <div id="conditional-specific-access-3"
-        [ngClass]="anotherPeriod ? (isStartDateError || isEndDateError ?
-          'govuk-radios__conditional form-group-error' :
-          'govuk-radios__conditional') :
-          'govuk-radios__conditional govuk-radios__conditional--hidden'">
+        [ngClass]="anotherPeriod ? 'govuk-radios__conditional' : 'govuk-radios__conditional govuk-radios__conditional--hidden'">
         <div class="govuk-form-group">
           <xuilib-gov-uk-date
             [formGroup]="formGroup"

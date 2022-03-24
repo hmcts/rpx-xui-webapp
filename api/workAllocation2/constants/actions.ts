@@ -46,28 +46,33 @@ export const VIEW_PERMISSIONS_ACTIONS_MATRIX = {
   // level 1 - select a view, like 'MyTasks'
   // level 2 - select a permission, like 'Manage'
   // level 3 - return the actions array, like [REASSIGN, RELEASE, GO]
+  // Note - For easeness of actions for active tasks Own presumes Manage is a permission as well
+  // Execute presumes either Manage is not a permission
   ActiveTasksAssignedCurrentUser: {
-    Execute: [CLAIM, REASSIGN, RELEASE],
+    Cancel: [CANCEL],
+    Own: [REASSIGN, RELEASE, COMPLETE],
   },
   ActiveTasksAssignedOtherUser: {
-    Execute: [CLAIM],
-    Manage: [REASSIGN, RELEASE],
+    Cancel: [CANCEL],
+    Manage: [REASSIGN, RELEASE, COMPLETE],
+    Own: [CLAIM],
   },
   ActiveTasksUnassigned: {
+    Cancel: [CANCEL],
     Execute: [CLAIM],
+    Manage: [ASSIGN],
+    Own: [CLAIM, COMPLETE],
   },
   AllCases: {
     Manage: [RE_ALLOCATE, REMOVE_ALLOCATE],
   },
   AllWorkAssigned: {
     Cancel: [CANCEL],
-    Execute: [COMPLETE],
-    Manage: [REASSIGN, RELEASE, GO],
+    Manage: [REASSIGN, RELEASE, GO, COMPLETE],
   },
   AllWorkUnassigned: {
     Cancel: [CANCEL],
-    Execute: [COMPLETE],
-    Manage: [ASSIGN, GO],
+    Manage: [ASSIGN, GO, COMPLETE],
   },
   AvailableTasks: {
     Execute: [CLAIM, CLAIM_AND_GO],

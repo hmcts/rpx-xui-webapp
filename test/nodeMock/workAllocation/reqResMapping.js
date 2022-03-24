@@ -66,6 +66,9 @@ module.exports = {
         },
         '/api/locations/getLocations': (req, res) => {
             res.send(workAllocationMockData.searchLocations(req.query.serviceIds, req.query.searchTerm));
+        },
+        '/workallocation2/case/tasks/:caseId/event/:eventId/caseType/:caseType/jurisdiction/:service': (req,res) => {
+            res.send(workAllocationMockData.caseEventTasks);
         }
     },
     post: {
@@ -285,6 +288,28 @@ module.exports = {
         },
         '/api/role-access/exclusions/delete' : (req,res) => {
             res.status(204).send();
+        },
+        '/workallocation2/getJudicialUsers':(req,res) => {
+            const allJudicialUsers = workAllocationMockData.judgeUsers;
+            const services = req.body.services;
+            const userids = req.body.userIds;
+
+            const returnUsers = [];
+            for (const userid of userids) {
+                for (const mockedUser of allJudicialUsers) {
+                    if (mockedUser.sidam_id === userid) {
+                        returnUsers.push(mockedUser);
+                    }
+                }
+            }
+            if (returnUsers.length === 0) {
+                let i = 0;
+                for (const userid of userids) {
+                    i++;
+                    returnUsers.push(workAllocationMockData.addJudgeUsers(userid, 'someJudgefn_' + i, 'judicialln_' + i, i + '_judicial_test@hmcts.net'));
+                }
+            }
+            res.send(returnUsers);
         },
         '/api/role-access/roles/getJudicialUsers': (req,res) => {
             const allJudicialUsers = workAllocationMockData.judgeUsers;

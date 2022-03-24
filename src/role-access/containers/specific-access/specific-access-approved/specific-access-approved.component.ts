@@ -4,7 +4,6 @@ import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 
-import { PERSON_ERROR_MESSAGE } from '../../../constants';
 import { ExclusionNavigationEvent, ExclusionState, ExclusionStateData } from '../../../models';
 import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
 import * as fromFeature from '../../../store';
@@ -14,7 +13,6 @@ import * as fromFeature from '../../../store';
   templateUrl: './specific-access-approved.component.html'
 })
 export class SpecificAccessApprovedComponent implements OnInit {
-  public ERROR_MESSAGE = PERSON_ERROR_MESSAGE;
   @Input() public navEvent: ExclusionNavigation;
   public domain = PersonRole.ALL;
   public formGroup: FormGroup = new FormGroup({});

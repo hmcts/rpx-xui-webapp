@@ -2,6 +2,7 @@ import * as _ from 'underscore';
 import {CaseFlagGroup} from '../models/caseFlagGroup.model';
 import {CaseFlagReferenceModel} from '../models/caseFlagReference.model';
 import {CaseFlagType} from '../models/hearings.enum';
+import {PartyDetailsModel} from '../models/partyDetails.model';
 import {PartyFlagsDisplayModel, PartyFlagsModel} from '../models/partyFlags.model';
 
 export class CaseFlagsUtils {
@@ -59,7 +60,7 @@ export class CaseFlagsUtils {
     return this.convertMapToArray({...nonRAPFsWithGroup, ...caseFlagsWithGroup});
   }
 
-  private static findFlagByFlagId(caseFlagReferenceModels: CaseFlagReferenceModel[], flagId: string): CaseFlagReferenceModel {
+  public static findFlagByFlagId(caseFlagReferenceModels: CaseFlagReferenceModel[], flagId: string): CaseFlagReferenceModel {
     let foundFlag = null;
     for (const caseFlag of caseFlagReferenceModels) {
       if (caseFlag.flagCode === flagId) {
@@ -72,6 +73,20 @@ export class CaseFlagsUtils {
       }
     }
     return foundFlag;
+  }
+
+  public static convertPartiesToPartyWithFlags(caseFlagReferenceModels: CaseFlagReferenceModel[], partyDetails: PartyDetailsModel[]): Map<string, CaseFlagReferenceModel[]> {
+    const partyWithFlags: Map<string, CaseFlagReferenceModel[]> = new Map();
+    partyDetails.forEach(party => {
+      const partyName = party.partyName;
+      const allFlagsId: string[] = party.individualDetails.reasonableAdjustments.slice();
+      if (party.individualDetails.interpreterLanguage) {
+        allFlagsId.push(party.individualDetails.interpreterLanguage);
+      }
+      const allFlags: CaseFlagReferenceModel[] = allFlagsId.map(flagId => CaseFlagsUtils.findFlagByFlagId(caseFlagReferenceModels, flagId));
+      partyWithFlags.set(partyName, allFlags);
+    });
+    return partyWithFlags;
   }
 
   private static convertMapToArray(caseFlags: Record<string, PartyFlagsDisplayModel[]>): CaseFlagGroup[] {

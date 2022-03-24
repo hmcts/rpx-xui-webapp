@@ -9,7 +9,7 @@ import { reducers } from '../../app/store';
 import { JudicialUserModel } from '../models/judicialUser.model';
 import { JudicialRefDataService } from '../services/judicial-ref-data.service';
 import * as fromHearingStore from '../store';
-import { JudicialUserSearchResponseResolver } from './ judicial-user-search-response-resolver.resolve';
+import { JudicialUserSearchResponseResolver } from './judicial-user-search-response-resolver.resolve';
 
 describe('Ref Data Resolver', () => {
   let judicialRefDataService: JudicialRefDataService;

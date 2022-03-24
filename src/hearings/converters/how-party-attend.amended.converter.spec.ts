@@ -5,9 +5,7 @@ import {provideMockStore} from '@ngrx/store/testing';
 import {cold} from 'jasmine-marbles';
 import {of} from 'rxjs';
 import {hearingStageRefData, initialState} from '../hearing.test.data';
-import { PartyType } from '../models/hearings.enum';
-import {State} from '../store';
-import { HowPartyAttendAmendedConverter } from './how-party-attend.amended.converter';
+import {HowPartyAttendAmendedConverter} from './how-party-attend.amended.converter';
 
 describe('HowPartyAttendAmendedConverter', () => {
 
@@ -37,16 +35,7 @@ describe('HowPartyAttendAmendedConverter', () => {
   });
 
   it('should transform the amended flag when previous vs current party attending type are not equal', () => {
-    const STATE: State = initialState.hearings;
-    STATE.hearingRequest.hearingRequestMainModel.partyDetails =  [
-      {
-        partyID: 'P1',
-        partyName: 'Jane and Smith',
-        partyType: PartyType.IND,
-        partyChannel: 'inPerson'
-      }
-    ]
-    const result$ = converter.transformIsAmended(of(STATE));
+    const result$ = converter.transformIsAmended(of(initialState.hearings));
     const isAmended = true;
     const expected = cold('(b|)', {b: isAmended});
     expect(result$).toBeObservable(expected);

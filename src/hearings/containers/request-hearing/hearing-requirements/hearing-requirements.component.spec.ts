@@ -4,9 +4,9 @@ import {ActivatedRoute} from '@angular/router';
 import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
-import {initialState, serviceHearingValuesModel} from '../../../hearing.test.data';
+import {caseFlagsRefData, initialState, serviceHearingValuesModel} from '../../../hearing.test.data';
 import {HearingRequestMainModel} from '../../../models/hearingRequestMain.model';
-import {ACTION} from '../../../models/hearings.enum';
+import {ACTION, CaseFlagType, PartyType} from '../../../models/hearings.enum';
 import {LocationByEPIMMSModel} from '../../../models/location.model';
 import {HearingsService} from '../../../services/hearings.service';
 import {LocationsDataService} from '../../../services/locations-data.service';
@@ -64,7 +64,7 @@ describe('HearingRequirementsComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                caseFlags: null,
+                caseFlags: caseFlagsRefData,
               },
             },
             fragment: of('point-to-me'),
@@ -76,6 +76,7 @@ describe('HearingRequirementsComponent', () => {
       .compileComponents();
     fixture = TestBed.createComponent(HearingRequirementsComponent);
     component = fixture.componentInstance;
+    component.caseFlagType = CaseFlagType.REASONABLE_ADJUSTMENT;
     spyOn(locationsDataService, 'getLocationById').and.returnValue(of(FOUND_LOCATIONS));
     fixture.detectChanges();
   });
@@ -159,7 +160,44 @@ describe('HearingRequirementsComponent', () => {
         caserestrictedFlag: null,
         caseSLAStartDate: null
       },
-      partyDetails: []
+      partyDetails: [{
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        partyName: 'Jane Smith',
+        partyChannel: 'inPerson',
+        unavailabilityRanges: [{
+          unavailableFromDate: '2021-12-10T09:00:00.000+0000',
+          unavailableToDate: '2021-12-31T09:00:00.000+0000'
+        }],
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          reasonableAdjustments: [],
+          interpreterLanguage: null
+        },
+        organisationDetails: {}
+      }, {
+        partyID: 'P2',
+        partyType: PartyType.ORG,
+        partyRole: 'claimant',
+        partyName: 'DWP',
+        partyChannel: 'inPerson',
+        unavailabilityRanges: [{
+          unavailableFromDate: '2021-12-20T09:00:00.000+0000',
+          unavailableToDate: '2021-12-31T09:00:00.000+0000'
+        }],
+        individualDetails: {
+          reasonableAdjustments: [],
+          interpreterLanguage: null
+        },
+        organisationDetails: {
+          name: 'DWP',
+          organisationType: 'GOV',
+          cftOrganisationID: 'O100000'
+        },
+      }]
     };
     const storeDispatchSpy = spyOn(component.hearingStore, 'dispatch');
     component.initializeHearingRequestFromHearingValues();

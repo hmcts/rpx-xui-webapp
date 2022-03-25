@@ -1,0 +1,113 @@
+import { Router } from '@angular/router';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { Store } from '@ngrx/store';
+import { of } from 'rxjs';
+import { UserDetails } from '../../app/models';
+import {SessionStorageService} from '../../app/services';
+import * as fromAppStore from '../../app/store';
+import {HearingsGuard} from './hearings-guard';
+
+describe('HearingsGuard', () => {
+  const USER_1: UserDetails = {
+    canShareCases: true,
+    sessionTimeout: {
+      idleModalDisplayTime: 10,
+      totalIdleTime: 50
+    },
+    userInfo: {
+      id: '41a90c39-d756-4eba-8e85-5b5bf56b31f5',
+      forename: 'Luke',
+      surname: 'Wilson',
+      email: 'lukesuperuserxui@mailnesia.com',
+      active: true,
+      roles: [
+        'caseworker',
+        'caseworker-sscs',
+      ],
+    }
+  };
+  const USER_2: UserDetails = {
+    canShareCases: true,
+    sessionTimeout: {
+      idleModalDisplayTime: 10,
+      totalIdleTime: 50
+    },
+    userInfo: {
+      id: '41a90c39-d756-4eba-8e85-5b5bf56b31f5',
+      forename: 'Luke',
+      surname: 'Wilson',
+      email: 'lukesuperuserxui@mailnesia.com',
+      active: true,
+      roles: [
+        'caseworker',
+        'caseworker-iac-judge',
+      ],
+    }
+  };
+
+  const FEATURE_FLAG = [
+    {
+      jurisdiction: 'SSCS',
+      roles: [
+        'caseworker-sscs',
+        'caseworker-sscs-judge'
+      ]
+    }
+  ];
+
+  const CASE_INFO = {cid: '1546518523959179', caseType: 'Benefit', jurisdiction: 'SSCS'};
+
+  let hearingsGuard: HearingsGuard;
+  let routerMock: jasmine.SpyObj<Router>;
+  let storeMock: jasmine.SpyObj<Store<fromAppStore.State>>;
+  let sessionStorageMock: jasmine.SpyObj<SessionStorageService>;
+  let featureToggleMock: jasmine.SpyObj<FeatureToggleService>;
+
+  beforeEach(() => {
+    routerMock = jasmine.createSpyObj<Router>('router', ['navigate']);
+    storeMock = jasmine.createSpyObj<Store<fromAppStore.State>>('store', ['pipe']);
+    sessionStorageMock = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+    featureToggleMock = jasmine.createSpyObj<FeatureToggleService>('featureToggleService', ['getValueOnce']);
+    hearingsGuard = new HearingsGuard(routerMock, storeMock, sessionStorageMock, featureToggleMock);
+  });
+
+  it('guard truthy', () => {
+    expect(hearingsGuard).toBeTruthy();
+  });
+
+  it('should return false if feature is toggled off', () => {
+    storeMock.pipe.and.returnValue(of(USER_1));
+    featureToggleMock.getValueOnce.and.returnValue(of(null));
+    sessionStorageMock.getItem.and.returnValue(CASE_INFO);
+    hearingsGuard.canActivate().toPromise().then(canActivate => expect(canActivate).toBeFalsy());
+  });
+
+  it('should return false if case info is null', () => {
+    storeMock.pipe.and.returnValue(of(USER_1));
+    featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
+    sessionStorageMock.getItem.and.returnValue(null);
+    hearingsGuard.canActivate().toPromise().then(canActivate => expect(canActivate).toBeFalsy());
+  });
+
+  it('should return false if case jurisdiction do not match', () => {
+    storeMock.pipe.and.returnValue(of(USER_1));
+    featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
+    sessionStorageMock.getItem.and.returnValue({cid: '1546518523959179', caseType: 'Benefit', jurisdiction: 'IA'});
+    hearingsGuard.canActivate().toPromise().then(canActivate => expect(canActivate).toBeFalsy());
+  });
+
+  it('should return false if user role do not match', () => {
+    storeMock.pipe.and.returnValue(of(USER_2));
+    featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
+    sessionStorageMock.getItem.and.returnValue(CASE_INFO);
+    hearingsGuard.canActivate().toPromise().then(canActivate => expect(canActivate).toBeFalsy());
+  });
+
+  it('should return true if feature is toggled on and user role match jurisdiction', () => {
+    storeMock.pipe.and.returnValue(of(USER_1));
+    featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
+    sessionStorageMock.getItem.and.returnValue(CASE_INFO);
+    hearingsGuard.canActivate().toPromise().then(canActivate => expect(canActivate).toBeTruthy());
+  });
+
+});

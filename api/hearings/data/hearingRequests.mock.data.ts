@@ -1,6 +1,5 @@
-import { PartyType } from '../../hearings/models/hearings.enum';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
-import { CategoryType, LaCaseStatus, ListingStatus } from '../models/hearings.enum';
+import { CategoryType, LaCaseStatus, ListingStatus, PartyType } from '../models/hearings.enum';
 
 export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
   {
@@ -108,6 +107,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyChannel: 'byVideo',
         partyRole: 'claimant',
         individualDetails: {
+          title: '',
+          firstName: 'DWP',
+          lastName: 'Representative',
           reasonableAdjustments: [
             'RA0005',
           ],
@@ -178,6 +180,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyRole: 'claimant',
             partyChannel: 'byVideo',
             individualDetails: {
+              title: '',
+              firstName: 'DWP',
+              lastName: 'Representative',
               reasonableAdjustments: [
                 'RA0005',
               ],
@@ -305,6 +310,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyRole: 'claimant',
         partyChannel: 'byVideo',
         individualDetails: {
+          title: '',
+          firstName: 'DWP',
+          lastName: 'Representative',
           reasonableAdjustments: [
             'RA0005',
           ],
@@ -375,6 +383,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyRole: 'claimant',
             partyChannel: 'byVideo',
             individualDetails: {
+              title: '',
+              firstName: 'DWP',
+              lastName: 'Representative',
               reasonableAdjustments: [
                 'RA0005',
               ],
@@ -502,6 +513,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyChannel: 'byVideo',
         partyRole: 'claimant',
         individualDetails: {
+          title: '',
+          firstName: 'DWP',
+          lastName: 'Representative',
           reasonableAdjustments: [
             'RA0005',
           ],
@@ -572,6 +586,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyRole: 'claimant',
             partyChannel: 'byVideo',
             individualDetails: {
+              title: '',
+              firstName: 'DWP',
+              lastName: 'Representative',
               reasonableAdjustments: [
                 'RA0005',
               ],
@@ -699,6 +716,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyChannel: 'byVideo',
         partyRole: 'claimant',
         individualDetails: {
+          title: '',
+          firstName: 'DWP',
+          lastName: 'Representative',
           reasonableAdjustments: [
             'RA0005',
           ],
@@ -769,6 +789,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyRole: 'claimant',
             partyChannel: 'byVideo',
             individualDetails: {
+              title: '',
+              firstName: 'DWP',
+              lastName: 'Representative',
               reasonableAdjustments: [
                 'RA0005',
               ],
@@ -896,6 +919,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyChannel: 'byVideo',
         partyRole: 'claimant',
         individualDetails: {
+          title: '',
+          firstName: 'DWP',
+          lastName: 'Representative',
           reasonableAdjustments: [
             'RA0005',
           ],
@@ -966,6 +992,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyRole: 'claimant',
             partyChannel: 'byVideo',
             individualDetails: {
+              title: '',
+              firstName: 'DWP',
+              lastName: 'Representative',
               reasonableAdjustments: [
                 'RA0005',
               ],
@@ -1093,6 +1122,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyChannel: 'byVideo',
         partyRole: 'claimant',
         individualDetails: {
+          title: '',
+          firstName: 'DWP',
+          lastName: 'Representative',
           reasonableAdjustments: [
             'RA0005',
           ],
@@ -1163,6 +1195,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyRole: 'claimant',
             partyChannel: 'byVideo',
             individualDetails: {
+              title: '',
+              firstName: 'DWP',
+              lastName: 'Representative',
               reasonableAdjustments: [
                 'RA0005',
               ],
@@ -1290,6 +1325,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyRole: 'claimant',
         partyChannel: 'byVideo',
         individualDetails: {
+          title: '',
+          firstName: 'DWP',
+          lastName: 'Representative',
           reasonableAdjustments: [
             'RA0005',
           ],
@@ -1360,6 +1398,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyRole: 'claimant',
             partyChannel: 'byVideo',
             individualDetails: {
+              title: '',
+              firstName: 'DWP',
+              lastName: 'Representative',
               reasonableAdjustments: [
                 'RA0005',
               ],
@@ -1487,6 +1528,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyRole: 'claimant',
         partyChannel: 'byVideo',
         individualDetails: {
+          title: '',
+          firstName: 'DWP',
+          lastName: 'Representative',
           reasonableAdjustments: [
             'RA0005',
           ],
@@ -1557,6 +1601,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyRole: 'claimant',
             partyChannel: 'byVideo',
             individualDetails: {
+              title: '',
+              firstName: 'DWP',
+              lastName: 'Representative',
               reasonableAdjustments: [
                 'RA0005',
               ],
@@ -1684,6 +1731,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyRole: 'claimant',
         partyChannel: 'byVideo',
         individualDetails: {
+          title: '',
+          firstName: 'DWP',
+          lastName: 'Representative',
           reasonableAdjustments: [
             'RA0005',
           ],
@@ -1738,7 +1788,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               ],
               interpreterLanguage: 'PF0015',
             },
-            organisationDetails: {},
+            organisationDetails: null,
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
@@ -1754,6 +1804,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyRole: 'claimant',
             partyChannel: 'byVideo',
             individualDetails: {
+              title: '',
+              firstName: 'DWP',
+              lastName: 'Representative',
               reasonableAdjustments: [
                 'RA0005',
               ],
@@ -1788,8 +1841,6 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         {
           locationType: 'hearing',
           locationId: '196538',
-          locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
-          region: 'North West',
         },
       ],
       hearingIsLinkedFlag: false,
@@ -1909,8 +1960,6 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         {
           locationType: 'hearing',
           locationId: '196538',
-          locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
-          region: 'North West',
         },
       ],
       hearingIsLinkedFlag: false,

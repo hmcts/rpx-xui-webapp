@@ -26,7 +26,7 @@ describe('Hearing Request Effects', () => {
   const pageflowMock = jasmine.createSpyObj('AbstractPageFlow', [
     'getCurrentPage', 'getLastPage', 'getNextPage'
   ]);
-  const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+  const mockRouter = jasmine.createSpyObj('Router', ['navigate', 'navigateByUrl']);
   const mockLocation = jasmine.createSpyObj('Location', ['back']);
 
   beforeEach(() => {
@@ -144,21 +144,7 @@ describe('Hearing Request Effects', () => {
       expect(hearingsServiceMock.loadHearingRequest).toHaveBeenCalledWith('h1000000');
       expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestToCompareActions.InitializeHearingRequestToCompare(hearingRequestMainModel));
       expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestActions.InitializeHearingRequest(hearingRequestMainModel));
-    });
-    it('should error submitting loading hearing request', () => {
-      const error: HttpError = {
-        status: 400,
-        error: null,
-        message: 'Http failure response',
-        timestamp: '',
-        exception: '',
-        path: ''
-      }
-      hearingsServiceMock.loadHearingRequest.and.returnValue(of(error));
-      const action = new hearingRequestActions.LoadHearingRequest({hearingID: 'h1000000', targetURL: 'dummy-url'});
-      actions$ = cold('-a', {a: action});
-      const expected = cold('-b', {b: error});
-      expect(effects.loadHearingRequest$).toBeObservable(expected);
+      expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('dummy-url');
     });
   });
 

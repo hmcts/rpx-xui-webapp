@@ -784,10 +784,10 @@ describe('workAllocation.utils', () => {
       expect(getActionsByPermissions('ActiveTasksAssignedOtherUser', [TaskPermission.MANAGE])).to.deep.equal([COMPLETE, REASSIGN, RELEASE]);
       expect(getActionsByPermissions('ActiveTasksAssignedOtherUser', [TaskPermission.EXECUTE])).to.deep.equal([]);
       expect(getActionsByPermissions('ActiveTasksAssignedOtherUser', [
-        TaskPermission.MANAGE, TaskPermission.EXECUTE])).to.deep.equal([COMPLETE, REASSIGN, RELEASE,
+        TaskPermission.MANAGE, TaskPermission.EXECUTE])).to.deep.equal([CLAIM, COMPLETE, REASSIGN, RELEASE,
       ]);
       expect(getActionsByPermissions('ActiveTasksAssignedOtherUser', [
-        TaskPermission.MANAGE, TaskPermission.EXECUTE, TaskPermission.CANCEL])).to.deep.equal([CANCEL, COMPLETE, REASSIGN, RELEASE,
+        TaskPermission.MANAGE, TaskPermission.EXECUTE, TaskPermission.CANCEL])).to.deep.equal([CANCEL, CLAIM, COMPLETE, REASSIGN, RELEASE,
       ]);
 
       expect(getActionsByPermissions('ActiveTasksUnassigned', [TaskPermission.MANAGE])).to.deep.equal([ASSIGN]);

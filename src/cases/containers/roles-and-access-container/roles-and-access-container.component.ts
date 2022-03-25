@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { first, map, mergeMap, tap } from 'rxjs/operators';
 import { getJudicialUserIds, getJudicialUserIdsFromExclusions, mapCaseRoles, mapCaseRolesForExclusions } from '../../../cases/utils/utils';
 import { UserDetails } from '../../../app/models/user-details.model';
@@ -58,6 +58,7 @@ export class RolesAndAccessContainerComponent implements OnInit {
             )
           );
         }
+        return of(exclusions);
       })
     );
   }
@@ -71,6 +72,7 @@ export class RolesAndAccessContainerComponent implements OnInit {
             map((caseRolesWithUserDetails: CaseRoleDetails[]) => mapCaseRoles(caseRoles, caseRolesWithUserDetails))
           );
         }
+        return of(caseRoles);
       }),
       tap(roles => {
         if (roles && roles.length > 0) {

@@ -132,7 +132,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     return this.fb.group({
       firstName: [null, [this.validators.mandatory('Enter first name')]],
       lastName: [null, [this.validators.mandatory('Enter last name')]],
-      role: [null, [this.validators.mandatory('Enter  party role')]],
+      role: [null, [this.validators.mandatory('Enter party role')]],
       attendanceType: [null, [this.validators.mandatory('Enter attendance type')]],
       organisation: [null],
       attendeeRepresenting: [null, [this.validators.mandatory('Enter attendee representing')]],

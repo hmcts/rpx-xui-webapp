@@ -80,5 +80,5 @@ export interface ActualDayPartyModel {
   actualOrganisationDetails: ActualOrganisationDetailsModel;
   partyChannelSubType: string;
   partyRole: string;
-  representedParty: number;
+  representedParty: string;
 }

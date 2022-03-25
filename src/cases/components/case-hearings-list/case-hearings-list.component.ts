@@ -74,14 +74,26 @@ export class CaseHearingsListComponent implements OnInit {
   }
 
   public viewDetails(hearing: HearingListViewModel): void {
-    if (hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.CANCELLATION_REQUESTED) {
-      this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearing.hearingID));
-      this.router.navigate(['/', 'hearings', 'view', 'hearing-cancellation-summary']);
-    } else if (hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.CANCELLED) {
-      this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearing.hearingID));
-      this.router.navigate(['/', 'hearings', 'view', 'hearing-cancelled-summary']);
-    } else {
-      this.router.navigate(['/', 'hearings', 'view']);
+    switch (hearing.exuiDisplayStatus) {
+      case EXUIDisplayStatusEnum.CANCELLATION_REQUESTED:
+        this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearing.hearingID));
+        this.router.navigate(['/', 'hearings', 'view', 'hearing-cancellation-summary']);
+        break;
+      case EXUIDisplayStatusEnum.CANCELLED:
+        this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearing.hearingID));
+        this.router.navigate(['/', 'hearings', 'view', 'hearing-cancelled-summary']);
+        break;
+      case EXUIDisplayStatusEnum.COMPLETED:
+        this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearing.hearingID));
+        this.router.navigate(['/', 'hearings', 'view', 'hearing-completed-summary', hearing.hearingID]);
+        break;
+      case EXUIDisplayStatusEnum.ADJOURNED:
+        this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearing.hearingID));
+        this.router.navigate(['/', 'hearings', 'view', 'hearing-adjourned-summary', hearing.hearingID]);
+        break;
+      default:
+        this.router.navigate(['/', 'hearings', 'view']);
+        break;
     }
   }
 

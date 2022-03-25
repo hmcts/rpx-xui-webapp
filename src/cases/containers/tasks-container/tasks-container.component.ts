@@ -69,7 +69,7 @@ export class TasksContainerComponent implements OnInit {
     const assignedJudicialUsers: string[] = [];
     this.tasks.forEach(task => {
       task.assigneeName = getAssigneeName(this.caseworkers, task.assignee);
-      if (!task.assigneeName) {
+      if (!task.assigneeName && task.assignee) {
         assignedJudicialUsers.push(task.assignee);
       }
     });

@@ -25,8 +25,10 @@ import { HearingWelshComponent } from './containers/request-hearing/hearing-wels
 import { RequestHearingComponent } from './containers/request-hearing/request-hearing.component';
 import { HearingCancellationSummaryComponent } from './containers/view-hearing/hearing-cancellation-summary/hearing-cancellation-summary.component';
 import { HearingCancelledSummaryComponent } from './containers/view-hearing/hearing-cancelled-summary/hearing-cancelled-summary.component';
+import { HearingCompletedSummaryComponent } from './containers/view-hearing/hearing-completed-summary/hearing-completed-summary.component';
 import { ViewHearingComponent } from './containers/view-hearing/view-hearing.component';
 import { HearingCategory, MemberType } from './models/hearings.enum';
+import { ActualSummaryResponseResolver } from './resolvers/actual-summary-response-resolver.resolve';
 import { AdditionalFacilitiesResolver } from './resolvers/additional-facilities.resolver';
 import { AdjournHearingActualReasonResolver } from './resolvers/adjourn-hearing-actual-reason.resolver';
 import { CancelHearingActualReasonResolver } from './resolvers/cancel-hearing-actual-reason.resolver';
@@ -352,6 +354,38 @@ export const ROUTES: Routes = [
         canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Hearings | View Hearing | Cancelled Summary'
+        }
+      },
+      {
+        path: 'hearing-completed-summary/:id',
+        resolve: {
+          actualSummary: ActualSummaryResponseResolver,
+          hearingStageOptions: HearingStageResolver,
+          judicialResponseUsers: JudicialUserSearchResponseResolver,
+          courtLocation: CourtLocationsDataResolver,
+          partyChannels: HearingActualPartyChannelResolverService,
+        },
+        component: HearingCompletedSummaryComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Hearings | Hearing Actuals | Completed',
+          isChildRequired: true
+        }
+      },
+      {
+        path: 'hearing-adjourned-summary/:id',
+        resolve: {
+          actualSummary: ActualSummaryResponseResolver,
+          hearingStageOptions: HearingStageResolver,
+          judicialResponseUsers: JudicialUserSearchResponseResolver,
+          courtLocation: CourtLocationsDataResolver,
+          partyChannels: HearingActualPartyChannelResolverService,
+        },
+        component: HearingCompletedSummaryComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Hearings | Hearing Actuals | Adjourned',
+          isChildRequired: true
         }
       },
     ]

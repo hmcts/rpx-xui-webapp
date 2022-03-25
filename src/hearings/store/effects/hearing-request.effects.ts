@@ -117,10 +117,10 @@ export class HearingRequestEffects {
           () => {
             return this.router.navigate(['hearings', 'request', 'hearing-confirmation']);
           }),
-        catchError(error => {
-          this.hearingStore.dispatch(new hearingRequestActions.SubmitHearingRequestFailure(error));
-          return of(error);
-        })
+          catchError(error => {
+            this.hearingStore.dispatch(new hearingRequestActions.SubmitHearingRequestFailure(error));
+            return of(error);
+          })
       );
     })
   );
@@ -143,9 +143,10 @@ export class HearingRequestEffects {
           () => {
             return this.router.navigate(['hearings', 'request', 'hearing-confirmation']);
           }),
-        catchError(error => {
-          return HearingRequestEffects.handleError(error);
-        })
+          catchError(error => {
+            this.hearingStore.dispatch(new hearingRequestActions.UpdateHearingRequestFailure(error));
+            return of(error);
+          })
       );
     })
   );

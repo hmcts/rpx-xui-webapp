@@ -1,11 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
-import { switchMap } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+import { catchError, switchMap } from 'rxjs/operators';
 import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';
 import { TaskListFilterComponent } from '../../../work-allocation-2/components';
 import { BookingNavigationEvent, BookingProcess, BookingRequest } from '../../models';
 import { BookingService } from '../../services';
+import { CreateBookingHandleError, RefreshBookingHandleError} from '../utils/booking-error-handler';
 
 @Component({
   selector: 'exui-booking-check',
@@ -41,20 +43,29 @@ export class BookingCheckComponent implements OnInit {
   }
 
   private submitBooking(): void {
-    this.bookingService.refreshRoleAssignments().pipe(
+    const payload: BookingRequest = {
+      locationId: this.bookingProcess.location.epimms_id,
+      regionId: this.bookingProcess.location.region_id,
+      beginDate: this.bookingProcess.startDate,
+      endDate: this.bookingProcess.endDate
+    };
+    this.bookingService.createBooking(payload).pipe(
       switchMap(() => {
-        const payload: BookingRequest = {
-          locationId: this.bookingProcess.location.epimms_id,
-          regionId: this.bookingProcess.location.region_id,
-          beginDate: this.bookingProcess.startDate,
-          endDate: this.bookingProcess.endDate
-        };
-        return this.bookingService.createBooking(payload);
-      })
+        return this.bookingService.refreshRoleAssignments().pipe(
+          catchError(err => {
+            return throwError({...err, case : 'refreshRoleAssignments'});
+          })
+        );
+      }),
+      catchError(err => {
+        if ( !err.case) {
+        return throwError({...err, case : 'createBooking'});
+      }
+        return throwError({...err, case : 'refreshRoleAssignments'});
+    })
     ).subscribe(() => {
       this.sessionStorageService.removeItem(TaskListFilterComponent.FILTER_NAME);
       this.windowService.removeLocalStorage(TaskListFilterComponent.FILTER_NAME);
-
       this.router.navigate(['/work/my-work/list'], {
         state: {
           location: {
@@ -62,6 +73,13 @@ export class BookingCheckComponent implements OnInit {
           }
         }
       });
+    },
+    err => {
+      if ( err.case === 'createBooking') {
+        CreateBookingHandleError(err, this.router)
+      } else {
+        RefreshBookingHandleError(err, this.router)
+      }
     });
   }
 }

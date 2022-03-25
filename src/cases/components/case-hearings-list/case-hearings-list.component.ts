@@ -2,6 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { combineLatest, Observable, Subscription } from 'rxjs';
+import { HttpError } from '../../../models/httpError.model';
 import { HearingConditions } from '../../../hearings/models/hearingConditions';
 import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
 import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, Mode } from '../../../hearings/models/hearings.enum';
@@ -74,11 +75,11 @@ export class CaseHearingsListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/', 'hearings', 'actuals', hearingID, 'hearing-actual-add-edit-summary']);
   }
 
-  public cancel(hearingID: string): void {
+  public cancelHearing(hearingID: string): void {
     this.router.navigate(['/', 'hearings', 'cancel', hearingID]);
   }
 
-  public link(hearingID: string): void {
+  public linkHearing(hearingID: string): void {
     this.router.navigate(['/', 'hearings', 'link', hearingID]);
   }
 
@@ -88,63 +89,34 @@ export class CaseHearingsListComponent implements OnInit, OnDestroy {
 
   public viewAndEdit(hearingID: string): void {
     this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearingID));
-    this.sub = combineLatest([this.hearingStore.select(fromHearingStore.getHearingValuesLastError),
-      this.hearingStore.select(fromHearingStore.getHearingRequestLastError)]).subscribe(
-      errors => {
-        if (errors && (errors[0] !== null || errors[1] !== null)) {
-          this.router.navigate(['/', 'hearings', 'error']);
-        } else {
-          const hearingCondition: HearingConditions = {
-            mode: Mode.VIEW,
-          };
-          this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
-          this.router.navigate(['/', 'hearings', 'request', 'hearing-view-edit-summary']);
-        }
-      }
-    );
+    const hearingCondition: HearingConditions = {
+      mode: Mode.VIEW,
+    };
+    this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
+    this.LoadHearingRequestAndRedirect(hearingID, '/hearings/request/hearing-view-edit-summary');
   }
 
   public viewDetails(hearing: HearingListViewModel): void {
-    if (!this.loadHearingRequestFromStoreRequired(hearing.exuiDisplayStatus)) {
-      this.router.navigate(['/', 'hearings', 'view']);
-    } else {
-      this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearing.hearingID));
-      this.sub = this.hearingStore.select(fromHearingStore.getHearingRequestLastError).subscribe(
-        error => {
-          if (error) {
-            this.router.navigate(['/', 'hearings', 'error']);
-          } else {
-            this.router.navigateByUrl(this.getViewDetailsNavigationUrl(hearing));
-          }
-        }
-      );
+    switch (hearing.exuiDisplayStatus) {
+      case EXUIDisplayStatusEnum.CANCELLATION_REQUESTED:
+        this.LoadHearingRequestAndRedirect(hearing.hearingID, '/hearings/view/hearing-cancellation-summary');
+        break;
+      case EXUIDisplayStatusEnum.CANCELLED:
+        this.LoadHearingRequestAndRedirect(hearing.hearingID, '/hearings/view/hearing-cancelled-summary');
+        break;
+      case EXUIDisplayStatusEnum.COMPLETED:
+        this.LoadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-completed-summary/${hearing.hearingID}`);
+        break;
+      case EXUIDisplayStatusEnum.ADJOURNED:
+        this.LoadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-adjourned-summary/${hearing.hearingID}`);
+        break;
+      default:
+        this.router.navigate(['/', 'hearings', 'view']);
+        break;
     }
   }
 
-  private loadHearingRequestFromStoreRequired(exuiDisplayStatus: EXUIDisplayStatusEnum): boolean {
-    if (exuiDisplayStatus === EXUIDisplayStatusEnum.CANCELLATION_REQUESTED ||
-        exuiDisplayStatus === EXUIDisplayStatusEnum.CANCELLED ||
-        exuiDisplayStatus === EXUIDisplayStatusEnum.COMPLETED ||
-        exuiDisplayStatus === EXUIDisplayStatusEnum.ADJOURNED) {
-      return true;
-    }
-    return false;
-  }
-
-  private getViewDetailsNavigationUrl(hearing: HearingListViewModel): string {
-    if (hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.CANCELLATION_REQUESTED) {
-      return '/hearings/view/hearing-cancellation-summary';
-    }
-    if (hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.CANCELLED) {
-      return '/hearings/view/hearing-cancelled-summary';
-    }
-    if (hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.COMPLETED) {
-      return `/hearings/view/hearing-completed-summary/${hearing.hearingID}`;
-    }
-    if (hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.ADJOURNED) {
-      return `/hearings/view/hearing-adjourned-summary/${hearing.hearingID}`;
-    }
-    return '/hearings/view';
+  public LoadHearingRequestAndRedirect(hearingID: string, targetURL: string) {
+    this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest({hearingID, targetURL}));
   }
 }

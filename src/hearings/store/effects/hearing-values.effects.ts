@@ -29,7 +29,7 @@ export class HearingValuesEffects {
           (response) => new hearingValuesActions.LoadHearingValuesSuccess(response)),
         catchError(error => {
           this.hearingStore.dispatch(new hearingValuesActions.LoadHearingValuesFailure(error));
-          return of(error);
+          return HearingValuesEffects.handleError(error);
         })
       );
     })

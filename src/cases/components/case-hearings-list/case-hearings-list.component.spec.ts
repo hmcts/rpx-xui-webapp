@@ -720,38 +720,12 @@ describe('CaseHearingsListComponent', () => {
   it('should viewAndEdit', () => {
     const dispatchSpy = spyOn(mockStore, 'dispatch');
     spyOn(mockStore, 'select').and.returnValue(of(null));
+    const loadHearingRequestAndRedirect = spyOn(component, 'LoadHearingRequestAndRedirect');
     component.status = EXUISectionStatusEnum.UPCOMING;
     component.viewAndEdit('h100000');
     expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.LoadHearingValues('1111222233334444')));
-    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.LoadHearingRequest('h100000')));
     expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions({ mode: 'view' })));
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'request', 'hearing-view-edit-summary']);
-  });
-
-  it('should fail viewAndEdit', () => {
-    const dispatchSpy = spyOn(mockStore, 'dispatch');
-    spyOn(mockStore, 'select').and.returnValue(of('error'));
-    component.status = EXUISectionStatusEnum.UPCOMING;
-    component.viewAndEdit('h100000');
-    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.LoadHearingValues('1111222233334444')));
-    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.LoadHearingRequest('h100000')));
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'error']);
-  });
-
-  it('should viewDetails', () => {
-    const dispatchSpy = spyOn(mockStore, 'dispatch');
-    spyOn(mockStore, 'select').and.returnValue(of(null));
-    component.viewDetails(PAST_HEARING_LIST[0]);
-    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.LoadHearingRequest('h100008')));
-    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/hearings/view/hearing-cancelled-summary');
-  });
-
-  it('should fail viewDetails', () => {
-    const dispatchSpy = spyOn(mockStore, 'dispatch');
-    spyOn(mockStore, 'select').and.returnValue(of('error'));
-    component.viewDetails(PAST_HEARING_LIST[0]);
-    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.LoadHearingRequest('h100008')));
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'error']);
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100000', '/hearings/request/hearing-view-edit-summary');
   });
 
   it('should addAndEdit', () => {
@@ -759,13 +733,13 @@ describe('CaseHearingsListComponent', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'actuals', 'h100000', 'hearing-actual-add-edit-summary']);
   });
 
-  it('should cancel', () => {
-    component.cancel('h100000');
+  it('should cancelHearing', () => {
+    component.cancelHearing('h100000');
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'cancel', 'h100000']);
   });
 
-  it('should link', () => {
-    component.link('h100000');
+  it('should linkHearing', () => {
+    component.linkHearing('h100000');
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'link', 'h100000']);
   });
 
@@ -775,15 +749,16 @@ describe('CaseHearingsListComponent', () => {
   });
 
   it('should check viewDetails', () => {
+    const loadHearingRequestAndRedirect = spyOn(component, 'LoadHearingRequestAndRedirect');
     component.viewDetails(UPCOMING_HEARING_LIST[6]);
     fixture.detectChanges();
-    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/hearings/view/hearing-cancellation-summary');
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100007', '/hearings/view/hearing-cancellation-summary');
     component.viewDetails(PAST_HEARING_LIST[0]);
     fixture.detectChanges();
-    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/hearings/view/hearing-cancelled-summary');
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100008', '/hearings/view/hearing-cancelled-summary');
     component.viewDetails(PAST_HEARING_LIST[1]);
     fixture.detectChanges();
-    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/hearings/view/hearing-completed-summary/h100010');
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100010', '/hearings/view/hearing-completed-summary/h100010');
     component.viewDetails(UPCOMING_HEARING_LIST[0]);
     fixture.detectChanges();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'view']);

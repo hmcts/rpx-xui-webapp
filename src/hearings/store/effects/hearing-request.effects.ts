@@ -95,14 +95,17 @@ export class HearingRequestEffects {
     ofType(hearingRequestActions.LOAD_HEARING_REQUEST),
     map((action: hearingRequestActions.LoadHearingRequest) => action.payload),
     switchMap(payload => {
-      return this.hearingsService.loadHearingRequest(payload).pipe(
+      return this.hearingsService.loadHearingRequest(payload.hearingID).pipe(
         tap(hearingRequestMainModel => {
             this.hearingStore.dispatch(new hearingRequestToCompareActions.InitializeHearingRequestToCompare(hearingRequestMainModel));
             this.hearingStore.dispatch(new hearingRequestActions.InitializeHearingRequest(hearingRequestMainModel));
+            if (payload.targetURL) {
+              this.router.navigateByUrl(payload.targetURL);
+            }
           }),
         catchError(error => {
           this.hearingStore.dispatch(new hearingRequestActions.LoadHearingRequestFailure(error));
-          return of(error);
+          return HearingRequestEffects.handleError(error);
         })
       );
     })

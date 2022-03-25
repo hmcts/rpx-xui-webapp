@@ -5,7 +5,7 @@ import { HttpError } from '@hmcts/ccd-case-ui-toolkit';
 import {provideMockActions} from '@ngrx/effects/testing';
 import {Store} from '@ngrx/store';
 import {provideMockStore} from '@ngrx/store/testing';
-import {cold} from 'jasmine-marbles';
+import {cold, hot} from 'jasmine-marbles';
 import {Observable, of} from 'rxjs';
 import {Go} from '../../../app/store/actions';
 import {hearingRequestMainModel, initialState} from '../../hearing.test.data';
@@ -141,7 +141,7 @@ describe('Hearing Request Effects', () => {
     it('should load hearing requests', () => {
       const dispatchSpy = spyOn(store, 'dispatch');
       hearingsServiceMock.loadHearingRequest.and.returnValue(of(hearingRequestMainModel));
-      const action = new hearingRequestActions.LoadHearingRequest('h1000000');
+      const action = new hearingRequestActions.LoadHearingRequest({hearingID: 'h1000000', targetURL: 'dummy-url'});
       actions$ = cold('-a', {a: action});
       const expected = cold('-b', {b: hearingRequestMainModel});
       expect(effects.loadHearingRequest$).toBeObservable(expected);

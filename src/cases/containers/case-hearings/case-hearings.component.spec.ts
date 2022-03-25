@@ -503,14 +503,6 @@ describe('CaseHearingsComponent', () => {
     expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions(hearingCondition)));
   });
 
-  it('should fail create hearing request', () => {
-    const dispatchSpy = spyOn(mockStore, 'dispatch');
-    spyOn(mockStore, 'select').and.returnValue(of('error'));
-    component.createHearingRequest();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'error']);
-    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.LoadHearingValues(component.caseId)));
-  });
-
   it('should call the reloadhearings when reload clicked', () => {
     spyOn(component, 'reloadHearings');
     component.serverError = {id: '', message: 'server error'};

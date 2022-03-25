@@ -126,20 +126,12 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
 
   public createHearingRequest(): void {
     this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
-    this.sub = this.hearingStore.select(fromHearingStore.getHearingValuesLastError).subscribe(
-      error => {
-        if (error) {
-          this.router.navigate(['/', 'hearings', 'error']);
-        } else {
-          const hearingCondition: HearingConditions = {
-            mode: Mode.CREATE,
-            isInit: true,
-            caseId: this.caseId
-          };
-          this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
-          this.router.navigate(['/', 'hearings', 'request']);
-        }
-      }
-    );
+    const hearingCondition: HearingConditions = {
+      mode: Mode.CREATE,
+      isInit: true,
+      caseId: this.caseId
+    };
+    this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
+    this.router.navigate(['/', 'hearings', 'request']);
   }
 }

@@ -12,7 +12,7 @@ export const SUBMIT_HEARING_REQUEST = '[HEARING REQUEST] Submit Hearing Request'
 export const SUBMIT_HEARING_REQUEST_FAILURE = '[HEARING REQUEST] Submit Hearing Request Failure';
 export const VIEW_EDIT_SUBMIT_HEARING_REASON = '[HEARING REQUEST AMEND] View Edit Submit Hearing Reason';
 export const VIEW_EDIT_SUBMIT_HEARING_REQUEST = '[HEARING REQUEST AMEND] View Edit Submit Hearing Request';
-export const RESET_HEARING_REQUEST_LAST_ERROR = '[HEARING REQUEST AMEND] Reset Hearing Request Last Error';
+export const RESET_HEARING_REQUEST_LAST_ERROR = '[HEARING REQUEST] Reset Hearing Request Last Error';
 
 export class ResetHearingRequest implements Action {
   public readonly type = RESET_HEARING_REQUEST;
@@ -32,7 +32,7 @@ export class InitializeHearingRequest implements Action {
 export class LoadHearingRequest implements Action {
   public readonly type = LOAD_HEARING_REQUEST;
 
-  constructor(public payload: string) {
+  constructor(public payload: { hearingID: string, targetURL: string }) {
   }
 }
 
@@ -79,7 +79,7 @@ export class ViewEditSubmitHearingRequest implements Action {
 }
 
 export class ResetHearingRequestLastError implements Action {
-  public readonly type = RESET_HEARING_REQUEST_LAST_ERROR
+  public readonly type = RESET_HEARING_REQUEST_LAST_ERROR;
 }
 
 export type HearingRequestAction =

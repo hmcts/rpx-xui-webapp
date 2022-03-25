@@ -155,7 +155,7 @@ describe('Hearing Request Effects', () => {
         path: ''
       }
       hearingsServiceMock.loadHearingRequest.and.returnValue(of(error));
-      const action = new hearingRequestActions.LoadHearingRequest('h1000000');
+      const action = new hearingRequestActions.LoadHearingRequest({hearingID: 'h1000000', targetURL: 'dummy-url'});
       actions$ = cold('-a', {a: action});
       const expected = cold('-b', {b: error});
       expect(effects.loadHearingRequest$).toBeObservable(expected);

@@ -775,19 +775,18 @@ describe('CaseHearingsListComponent', () => {
   });
 
   it('should check viewDetails', () => {
-    const navigateSpy = spyOn(router, 'navigate');
     component.viewDetails(UPCOMING_HEARING_LIST[6]);
     fixture.detectChanges();
-    expect(navigateSpy).toHaveBeenCalledWith(['/', 'hearings', 'view', 'hearing-cancellation-summary']);
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/hearings/view/hearing-cancellation-summary');
     component.viewDetails(PAST_HEARING_LIST[0]);
     fixture.detectChanges();
-    expect(navigateSpy).toHaveBeenCalledWith(['/', 'hearings', 'view', 'hearing-cancelled-summary']);
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/hearings/view/hearing-cancelled-summary');
     component.viewDetails(PAST_HEARING_LIST[1]);
     fixture.detectChanges();
-    expect(navigateSpy).toHaveBeenCalledWith(['/', 'hearings', 'view', 'hearing-completed-summary', 'h100010']);
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/hearings/view/hearing-completed-summary/h100010');
     component.viewDetails(UPCOMING_HEARING_LIST[0]);
     fixture.detectChanges();
-    expect(navigateSpy).toHaveBeenCalledWith(['/', 'hearings', 'view']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'view']);
   });
 
   afterEach(() => {

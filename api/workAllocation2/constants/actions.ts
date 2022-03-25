@@ -55,6 +55,7 @@ export const VIEW_PERMISSIONS_ACTIONS_MATRIX = {
   ActiveTasksAssignedOtherUser: {
     Cancel: [CANCEL],
     Manage: [REASSIGN, RELEASE, COMPLETE],
+    Own: [CLAIM],
   },
   ActiveTasksUnassigned: {
     Cancel: [CANCEL],

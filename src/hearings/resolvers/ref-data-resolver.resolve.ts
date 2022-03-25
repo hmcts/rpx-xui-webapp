@@ -29,7 +29,7 @@ export class RefDataResolver implements Resolve<LovRefDataModel[]> {
         }), take(1),
         switchMap((serviceId) => {
           const category = route.data['category'] ? route.data['category'] as HearingCategory : HearingCategory.Priority;
-          return this.getReferenceData$(serviceId, category, route.data.isChildRequired);
+          return this.getReferenceData$(serviceId, category, route.data.isChildRequired && route.data.isChildRequired.includes(route.data['category']));
         })
       );
   }

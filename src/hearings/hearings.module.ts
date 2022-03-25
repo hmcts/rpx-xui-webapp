@@ -10,6 +10,7 @@ import {AppConfig} from '../app/services/ccd-config/ccd-case.config';
 import {SharedModule} from '../app/shared/shared.module';
 import * as fromComponents from './components';
 import * as fromContainers from './containers';
+import {HearingsGuard} from './guards/hearings-guard';
 import {hearingsRouting} from './hearings.routes';
 import {HearingsPipesModule} from './pipes/hearings.pipes.module';
 import {HearingsService} from './services/hearings.service';
@@ -44,6 +45,7 @@ import {PageFlow} from './utils/page-flow';
       useExisting: PageFlow,
     },
     HearingsService,
+    HearingsGuard
   ]
 })
 /**

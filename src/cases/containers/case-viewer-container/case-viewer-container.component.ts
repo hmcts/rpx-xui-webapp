@@ -1,16 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { CaseTab, CaseView } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { select, Store } from '@ngrx/store';
-import { combineLatest } from 'rxjs';
-import { Observable } from 'rxjs/Observable';
-import { map } from 'rxjs/operators';
-import { AppUtils } from '../../../app/app-utils';
-import { AppConstants } from '../../../app/app.constants';
-import { UserDetails } from '../../../app/models/user-details.model';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {CaseTab, CaseView} from '@hmcts/ccd-case-ui-toolkit';
+import {FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
+import {select, Store} from '@ngrx/store';
+import {combineLatest} from 'rxjs';
+import {Observable} from 'rxjs/Observable';
+import {map} from 'rxjs/operators';
+import {AppUtils} from '../../../app/app-utils';
+import {AppConstants} from '../../../app/app.constants';
+import {UserDetails} from '../../../app/models/user-details.model';
 import * as fromRoot from '../../../app/store';
-import { FeatureVariation } from '../../models/feature-variation.model';
+import {FeatureVariation} from '../../models/feature-variation.model';
+import {Utils} from '../../utils/utils';
 
 @Component({
   selector: 'exui-case-viewer-container',
@@ -85,7 +86,7 @@ export class CaseViewerContainerComponent implements OnInit {
       map(([featureVariations, userDetails]: [FeatureVariation[], UserDetails]) => {
         const jurisdictionID = this.caseDetails.case_type.jurisdiction.id;
         const hasMatchedJurisdictionAndRole = featureVariations.some(featureVariation =>
-          hasMatchedJurisdictionAndRole(featureVariation, jurisdictionID, userDetails));
+          Utils.hasMatchedJurisdictionAndRole(featureVariation, jurisdictionID, userDetails));
         return hasMatchedJurisdictionAndRole ? this.appendedTabs : [];
       })
     );

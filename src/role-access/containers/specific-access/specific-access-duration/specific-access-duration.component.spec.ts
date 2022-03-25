@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { SpecificAccessDurationComponent } from './specific-access-duration.component';
+import { SpecificAccessStateData, SpecificAccessState, SpecificAccessNavigationEvent } from '../../../models';
 import { DurationType } from '../../../models/enums';
 import { DurationHelperService } from '../../../services';
 
@@ -14,7 +15,15 @@ describe('SpecificAccessDurationComponent', () => {
   let durationHelperService: DurationHelperService;
 
   beforeEach(async(() => {
-    durationHelperService = createSpyObj('durationHelperService', ['getInputClass']);
+    durationHelperService = createSpyObj('durationHelperService', [
+      'getInputClass',
+      'getTodaysDate',
+      'getDateInFuture',
+      'getDateFromControls',
+      'convertDateControlsToString',
+      'checkDates'
+    ]);
+
     TestBed.configureTestingModule({
       imports: [
         ExuiCommonLibModule,
@@ -83,6 +92,51 @@ describe('SpecificAccessDurationComponent', () => {
       component.onDurationChange(duration);
       expect(component.selectedDuration).toEqual(duration);
       expect(component.anotherPeriod).toEqual(true);
+    });
+
+  });
+
+  describe('selectSpecificAccessDuration', () => {
+
+    it('should set the value of selected duration', () => {
+      // TODO: this will need to be updated when specific access is wired up correctly with state, added to increase code coverage for now
+      const specificAccessState: SpecificAccessStateData = { state: SpecificAccessState.SPECIFIC_ACCESS_DURATION };
+      component.selectSpecificAccessDuration(specificAccessState);
+      expect(component.selectedDuration).toEqual(DurationType.SEVEN_DAYS);
+    })
+
+  });
+
+  describe('navigationHandler', () => {
+
+    it('should dispatch the expected state', () => {
+      // TODO: this will need to be updated when specific access is wired up correctly with state, added to increase code coverage for now
+      component.selectedDuration = DurationType.SEVEN_DAYS;
+      const navEvent = SpecificAccessNavigationEvent.CONTINUE;
+      component.navigationHandler(navEvent);
+      expect(component.selectedDuration).toEqual(DurationType.SEVEN_DAYS);
+    });
+
+    it('should throw an error for an unhandled navEvent case', () => {
+      // TODO: this will need to be updated when specific access is wired up correctly with state, added to increase code coverage for now
+      component.selectedDuration = DurationType.SEVEN_DAYS;
+      expect(() => {
+        component.navigationHandler(SpecificAccessNavigationEvent.CANCEL);
+      }).toThrow(new Error('Invalid option'));
+    });
+
+  });
+
+  describe('getPeriod', () => {
+
+    it('should return a Period object for SEVEN_DAYS duration type', () => {
+      const period = component.getPeriod(DurationType.SEVEN_DAYS);
+      expect(period.hasOwnProperty('startDate') && period.hasOwnProperty('endDate')).toEqual(true);
+    });
+
+    it('should return a Period object for INDEFINITE duration type', () => {
+      const period = component.getPeriod(DurationType.INDEFINITE);
+      expect(period.hasOwnProperty('startDate') && period.hasOwnProperty('endDate')).toEqual(true);
     });
 
   });

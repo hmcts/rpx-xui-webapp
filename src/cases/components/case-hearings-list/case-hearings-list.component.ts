@@ -90,22 +90,27 @@ export class CaseHearingsListComponent implements OnInit, OnDestroy {
   }
 
   public viewDetails(hearing: HearingListViewModel): void {
-    let url: string;
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearing.hearingID));
-    this.sub = this.hearingStore.select(fromHearingStore.getHearingRequestLastError).subscribe(
-      error => {
-        if (error) {
-          this.router.navigate(['/', 'hearings', 'error']);
-        } else {
-          url = hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.CANCELLATION_REQUESTED
-            ? '/hearings/view/hearing-cancellation-summary'
-            : hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.CANCELLED
-              ? '/hearings/view/hearing-cancelled-summary'
-              : '/hearings/view';
-          this.router.navigateByUrl(url);
-        }
-      }
-    );
+    switch (hearing.exuiDisplayStatus) {
+      case EXUIDisplayStatusEnum.CANCELLATION_REQUESTED:
+        this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearing.hearingID));
+        this.router.navigate(['/', 'hearings', 'view', 'hearing-cancellation-summary']);
+        break;
+      case EXUIDisplayStatusEnum.CANCELLED:
+        this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearing.hearingID));
+        this.router.navigate(['/', 'hearings', 'view', 'hearing-cancelled-summary']);
+        break;
+      case EXUIDisplayStatusEnum.COMPLETED:
+        this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearing.hearingID));
+        this.router.navigate(['/', 'hearings', 'view', 'hearing-completed-summary', hearing.hearingID]);
+        break;
+      case EXUIDisplayStatusEnum.ADJOURNED:
+        this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearing.hearingID));
+        this.router.navigate(['/', 'hearings', 'view', 'hearing-adjourned-summary', hearing.hearingID]);
+        break;
+      default:
+        this.router.navigate(['/', 'hearings', 'view']);
+        break;
+    }
   }
 
   public addAndEdit(hearingID: string): void {

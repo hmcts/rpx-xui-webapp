@@ -16,7 +16,7 @@ import { CaseHearingsListComponent } from './case-hearings-list.component';
 
 class MockRoleCategoryMappingService {
   public initialize = (user: FeatureUser, clientId: string): void => {
-  };
+  }
   public isEnabled = (feature: string): Observable<boolean> => of(true);
   public getValue = <R>(key: string, defaultValue: R): Observable<R> => of(defaultValue);
   public getValueOnce = <R>(key: string, defaultValue: R): Observable<R> => of(defaultValue);
@@ -772,6 +772,22 @@ describe('CaseHearingsListComponent', () => {
   it('should manageLinks', () => {
     component.manageLinks('h100000');
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', 'h100000']);
+  });
+
+  it('should check viewDetails', () => {
+    const navigateSpy = spyOn(router, 'navigate');
+    component.viewDetails(UPCOMING_HEARING_LIST[6]);
+    fixture.detectChanges();
+    expect(navigateSpy).toHaveBeenCalledWith(['/', 'hearings', 'view', 'hearing-cancellation-summary']);
+    component.viewDetails(PAST_HEARING_LIST[0]);
+    fixture.detectChanges();
+    expect(navigateSpy).toHaveBeenCalledWith(['/', 'hearings', 'view', 'hearing-cancelled-summary']);
+    component.viewDetails(PAST_HEARING_LIST[1]);
+    fixture.detectChanges();
+    expect(navigateSpy).toHaveBeenCalledWith(['/', 'hearings', 'view', 'hearing-completed-summary', 'h100010']);
+    component.viewDetails(UPCOMING_HEARING_LIST[0]);
+    fixture.detectChanges();
+    expect(navigateSpy).toHaveBeenCalledWith(['/', 'hearings', 'view']);
   });
 
   afterEach(() => {

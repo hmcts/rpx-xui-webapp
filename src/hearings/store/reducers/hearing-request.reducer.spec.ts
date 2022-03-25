@@ -186,8 +186,8 @@ describe('Hearing Request Reducer', () => {
         const action = new fromHearingRequestActions.ResetHearingRequestLastError();
         const hearingsState = fromHearingRequestReducer.hearingRequestReducer(initialHearingRequestState, action);
         expect(hearingsState.lastError).toEqual(null);
-			});
-		});
+      });
+    });
 
     describe('Update hearing request failure', () => {
       it('should call error response action', () => {

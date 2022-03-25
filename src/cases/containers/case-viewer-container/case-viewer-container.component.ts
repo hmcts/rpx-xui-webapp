@@ -85,20 +85,10 @@ export class CaseViewerContainerComponent implements OnInit {
       map(([featureVariations, userDetails]: [FeatureVariation[], UserDetails]) => {
         const jurisdictionID = this.caseDetails.case_type.jurisdiction.id;
         const hasMatchedJurisdictionAndRole = featureVariations.some(featureVariation =>
-          this.hasMatchedJurisdictionAndRole(featureVariation, jurisdictionID, userDetails));
+          hasMatchedJurisdictionAndRole(featureVariation, jurisdictionID, userDetails));
         return hasMatchedJurisdictionAndRole ? this.appendedTabs : [];
       })
     );
   }
 
-  private hasMatchedJurisdictionAndRole(featureVariation: FeatureVariation, jurisdictionID: string, userDetails: UserDetails): boolean {
-    if (featureVariation.jurisdiction === jurisdictionID) {
-      if (userDetails && userDetails.userInfo) {
-        return userDetails.userInfo.roles && featureVariation.roles ? userDetails.userInfo.roles.some(userRole =>
-          featureVariation.roles.some(role => role === userRole)) : false;
-      }
-    } else {
-      return false;
-    }
-  }
 }

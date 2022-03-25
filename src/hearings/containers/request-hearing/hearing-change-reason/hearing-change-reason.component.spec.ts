@@ -5,7 +5,7 @@ import {FormArray, FormBuilder, ReactiveFormsModule} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {provideMockStore} from '@ngrx/store/testing';
-import {of} from 'rxjs';
+import {of, throwError} from 'rxjs';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
@@ -84,13 +84,20 @@ describe('HearingChangeReasonComponent', () => {
     expect(formValid).toEqual(true);
   });
 
-  it('should be false when calling isFormValid with no reasons selected', () => {
+  it('should be false when calling isFormValid with no reasons selected',  () => {
     const formValid = component.isFormValid(ACTION.VIEW_EDIT_SUBMIT);
     expect(formValid).toEqual(false);
   });
 
   it('should not be any validation errors when back button selected', () => {
     component.isFormValid(ACTION.BACK);
-    expect(component.validationErrors.length).toEqual(0);
+    expect(component.errors.length).toEqual(0);
   });
+
+  it('should have a server error message mapped when update request failed', () => {
+    hearingsService.updateHearingRequest = jasmine.createSpy().and.returnValue(throwError(''));
+    component.navigateAction(ACTION.VIEW_EDIT_SUBMIT);
+    expect(component.errors).not.toEqual(null);
+  });
+
 });

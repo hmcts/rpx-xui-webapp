@@ -37,13 +37,7 @@ export class HearingValuesEffects {
 
   public static handleError(error: HttpError): Observable<Action> {
     if (error && error.status) {
-      switch (error.status) {
-        case 401:
-        case 403:
-          return of(new fromAppStoreActions.Go({path: ['/hearings/error']}));
-        default:
-          return of(new fromAppStoreActions.Go({path: ['/hearings/error']}));
-      }
+      return of(new fromAppStoreActions.Go({path: ['/hearings/error']}));
     }
   }
 }

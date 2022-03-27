@@ -1127,8 +1127,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingResponse: {
       listAssistTransactionID: '123456789',
       receivedDateTime: '2021-11-30T09:00:00.000+0000',
+      errorTimestamp: '2022-03-27T09:00:00.000+0000',
       responseVersion: 0,
-      laCaseStatus: LaCaseStatus.CASE_CLOSED,
+      laCaseStatus: LaCaseStatus.EXCEPTION,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
       hearingDaySchedule: {

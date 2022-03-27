@@ -26,6 +26,7 @@ import { RequestHearingComponent } from './containers/request-hearing/request-he
 import { HearingCancellationSummaryComponent } from './containers/view-hearing/hearing-cancellation-summary/hearing-cancellation-summary.component';
 import { HearingCancelledSummaryComponent } from './containers/view-hearing/hearing-cancelled-summary/hearing-cancelled-summary.component';
 import { HearingCompletedSummaryComponent } from './containers/view-hearing/hearing-completed-summary/hearing-completed-summary.component';
+import { HearingRequestFailedSummaryComponent } from './containers/view-hearing/hearing-request-failed-summary/hearing-request-failed-summary.component';
 import { ViewHearingComponent } from './containers/view-hearing/view-hearing.component';
 import { HearingCategory, MemberType } from './models/hearings.enum';
 import { ActualSummaryResponseResolver } from './resolvers/actual-summary-response-resolver.resolve';
@@ -388,6 +389,20 @@ export const ROUTES: Routes = [
         data: {
           title: 'HMCTS Hearings | Hearing Actuals | Adjourned',
           isChildRequired: true
+        }
+      },
+      {
+        path: 'hearing-request-failed-summary/:id',
+        resolve: {
+          hearingStageOptions: HearingStageResolver,
+          judicialResponseUsers: JudicialUserSearchResponseResolver,
+          courtLocation: CourtLocationsDataResolver,
+          partyChannels: HearingActualPartyChannelResolverService,
+        },
+        component: HearingRequestFailedSummaryComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Hearings | View Hearing | Request failed '
         }
       },
     ]

@@ -9,4 +9,5 @@ export interface HearingResponseModel {
   listingStatus: ListingStatus;
   hearingCancellationReason: string;
   hearingDaySchedule: HearingDayScheduleModel;
+  errorTimestamp?: string;
 }

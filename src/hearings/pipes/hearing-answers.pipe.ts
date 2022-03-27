@@ -9,6 +9,7 @@ import { CaseFlagAnswerConverter } from '../converters/case-flag.answer.converte
 import { CaseNameAnswerConverter } from '../converters/case-name.answer.converter';
 import { CaseNumberAnswerConverter } from '../converters/case-number.answer.converter';
 import { CourtLocationAnswerConverter } from '../converters/court-location.answer.converter';
+import { DateRequestFailedAnswerConverter } from '../converters/date-request-failed.answer.converter';
 import { DateRequestSubmittedAnswerConverter } from '../converters/date-request-submitted.answer.converter';
 import { DateResponseReceivedAnswerConverter } from '../converters/date-response-received.answer.converter';
 import { DateResponseSubmittedTimeAnswerConverter } from '../converters/date-response-submitted-time.answer.converter';
@@ -77,6 +78,9 @@ export class HearingAnswersPipe implements PipeTransform {
       case AnswerSource.DATE_RESPONSE_RECEIVED:
         converter = new DateResponseReceivedAnswerConverter();
         break;
+      case AnswerSource.DATE_REQUEST_FAILED:
+        converter = new DateRequestFailedAnswerConverter();
+        break;        
       case AnswerSource.TYPE_FROM_REQUEST:
         converter = new TypeFromRequestAnswerConverter();
         break;

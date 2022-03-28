@@ -17,14 +17,15 @@ export function hearingListReducer(currentState = initialHearingListState,
     case fromActions.LOAD_ALL_HEARINGS_SUCCESS: {
       return {
         ...currentState,
-        hearingListMainModel: action.payload
+        hearingListMainModel: action.payload,
+        lastError: null
       };
     }
     case fromActions.LOAD_ALL_HEARINGS_FAILURE: {
       return {
         ...currentState,
         lastError: action.payload
-      }
+      };
     }
     default: {
       return {

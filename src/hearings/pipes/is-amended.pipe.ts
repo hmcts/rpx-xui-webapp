@@ -3,6 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {Observable} from 'rxjs';
 import {AdditionalFacilitiesAmendedConverter} from '../converters/additional-facilities.amended.converter';
 import {AdditionalSecurityAmendedConverter} from '../converters/additional-security.amended.converter';
+import { AdditionalInstructionsAmendedConverter } from '../converters/additional-instructions.amended.converter';
 import {CaseFlagAmendedConverter} from '../converters/case-flag.amended.converter';
 import {DefaultAmendedConverter} from '../converters/default.amended.converter';
 import {HearingLengthAmendedConverter} from '../converters/hearing-length.amended.converter';
@@ -16,6 +17,7 @@ import {JudgeExclusionAmendedConverter} from '../converters/judge-exclusion.amen
 import {JudgeNameAmendedConverter} from '../converters/judge-name.amended.converter';
 import {JudgeTypesAmendedConverter} from '../converters/judge-types.amended.converter';
 import {NeedJudgeAmendedConverter} from '../converters/need-judge.amended.converter';
+import {NeedWelshAmendedConverter} from '../converters/need-welsh.amended.converter';
 import {PanelExclusionAmendedConverter} from '../converters/panel-exclusion.amended.converter';
 import {PanelInclusionAmendedConverter} from '../converters/panel-inclusion.amended.converter';
 import {PanelRolesAmendedConverter} from '../converters/panel-roles.amended.converter';
@@ -56,6 +58,9 @@ export class IsAmendedPipe implements PipeTransform {
       case AnswerSource.STAGE:
         converter = new StageAmendedConverter();
         break;
+      case AnswerSource.NEED_WELSH:
+        converter = new NeedWelshAmendedConverter();
+        break;
       case AnswerSource.NEED_JUDGE:
         converter = new NeedJudgeAmendedConverter();
         break;
@@ -88,6 +93,9 @@ export class IsAmendedPipe implements PipeTransform {
         break;
       case AnswerSource.PANEL_ROLES:
         converter = new PanelRolesAmendedConverter();
+        break;
+      case AnswerSource.ADDITIONAL_INSTRUCTION:
+        converter = new AdditionalInstructionsAmendedConverter();
         break;
       default:
         break;

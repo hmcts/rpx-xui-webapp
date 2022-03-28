@@ -27,15 +27,11 @@ describe('Hearing Request Reducer', () => {
               hearingType: null,
               hearingLocations: [{
                 locationId: '196538',
-                locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
                 locationType: 'hearing',
-                region: 'North West',
               },
                 {
                   locationId: '219164',
-                  locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
                   locationType: 'hearing',
-                  region: 'Scotland',
                 },
               ],
               hearingIsLinkedFlag: false,
@@ -53,7 +49,7 @@ describe('Hearing Request Reducer', () => {
               leadJudgeContractType: null,
             },
             caseDetails: {
-              hmctsServiceCode: 'SSCS',
+              hmctsServiceCode: 'BBA3',
               caseRef: '111122223333444',
               requestTimeStamp: null,
               hearingID: 'h111111',
@@ -90,15 +86,11 @@ describe('Hearing Request Reducer', () => {
               hearingType: null,
               hearingLocations: [{
                 locationId: '196538',
-                locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
                 locationType: 'hearing',
-                region: 'North West',
               },
                 {
                   locationId: '219164',
-                  locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
                   locationType: 'hearing',
-                  region: 'Scotland',
                 },
               ],
               hearingIsLinkedFlag: false,
@@ -116,7 +108,7 @@ describe('Hearing Request Reducer', () => {
               leadJudgeContractType: null,
             },
             caseDetails: {
-              hmctsServiceCode: 'SSCS',
+              hmctsServiceCode: 'BBA3',
               caseRef: '111122223333444',
               requestTimeStamp: null,
               hearingID: 'h111111',
@@ -135,7 +127,10 @@ describe('Hearing Request Reducer', () => {
           },
           lastError: null,
         };
-        const action = new fromHearingRequestActions.UpdateHearingRequest(initialHearingRequestState.hearingRequestMainModel);
+        const action = new fromHearingRequestActions.UpdateHearingRequest(initialHearingRequestState.hearingRequestMainModel, {
+          isInit: false,
+          region: 'North West'
+        });
         const hearingsState = fromHearingRequestReducer.hearingRequestReducer(initialHearingRequestState, action);
         expect(hearingsState.hearingRequestMainModel.hearingDetails.hearingInWelshFlag).toBeFalsy();
       });
@@ -152,6 +147,22 @@ describe('Hearing Request Reducer', () => {
           },
         };
         const action = new fromHearingRequestActions.SubmitHearingRequestFailure(initialHearingRequestState.lastError);
+        const hearingsState = fromHearingRequestReducer.hearingRequestReducer(initialHearingRequestState, action);
+        expect(hearingsState).toEqual(initialHearingRequestState);
+      });
+    });
+
+    describe('Update hearing request failure', () => {
+      it('should call error response action', () => {
+        const initialHearingRequestState: HearingRequestStateData = {
+          hearingRequestMainModel: null,
+          lastError: {
+            status: 500,
+            errors: null,
+            message: 'Internal server error'
+          },
+        };
+        const action = new fromHearingRequestActions.UpdateHearingRequestFailure(initialHearingRequestState.lastError);
         const hearingsState = fromHearingRequestReducer.hearingRequestReducer(initialHearingRequestState, action);
         expect(hearingsState).toEqual(initialHearingRequestState);
       });

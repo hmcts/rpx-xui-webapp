@@ -128,7 +128,8 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
         id: 'needWelsh',
         answerTitle: 'Does this hearing need to be in Welsh?',
         answerSource: AnswerSource.NEED_WELSH,
-        changeLink: '/hearings/request/hearing-welsh#welsh_hearing_yes'
+        changeLink: '/hearings/request/hearing-welsh#welsh_hearing_yes',
+        isAmendedSource: AnswerSource.NEED_WELSH,
       },
     ],
     isHiddenSource: IsHiddenSource.WELSH_LOCATION
@@ -239,6 +240,7 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
         answerTitle: 'Enter any additional instructions for the hearing',
         answerSource: AnswerSource.ADDITIONAL_INSTRUCTION,
         changeLink: '/hearings/request/hearing-additional-instructions#additionalInstructionsTextarea',
+        isAmendedSource: AnswerSource.ADDITIONAL_INSTRUCTION,
       },
     ],
   },

@@ -46,7 +46,7 @@ describe('Hearing List Reducer', () => {
           hearingDaySchedule: [HEARING_DAY_SCHEDULE_1],
         };
         const HEARINGS_LIST: HearingListMainModel = {
-          hmctsServiceID: 'SSCS',
+          hmctsServiceID: 'BBA3',
           caseRef: '1568642646198441',
           caseHearings: [CASE_HEARING_1],
         };

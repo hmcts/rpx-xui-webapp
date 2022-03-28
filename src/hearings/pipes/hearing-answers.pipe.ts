@@ -41,6 +41,7 @@ import { TypeFromRequestAnswerConverter } from '../converters/type-from-request.
 import { TypeAnswerConverter } from '../converters/type.answer.converter';
 import { VenueAnswerConverter } from '../converters/venue.answer.converter';
 import { AnswerSource } from '../models/hearings.enum';
+import { LocationsDataService } from '../services/locations-data.service';
 import { State } from '../store';
 
 @Pipe({
@@ -48,7 +49,8 @@ import { State } from '../store';
 })
 export class HearingAnswersPipe implements PipeTransform {
 
-  constructor(protected readonly route: ActivatedRoute) {
+  constructor(protected readonly route: ActivatedRoute,
+              protected readonly locationsDataService: LocationsDataService) {
   }
 
   public transform(answerSource: AnswerSource, hearingState$: Observable<State>): Observable<string> {
@@ -94,7 +96,7 @@ export class HearingAnswersPipe implements PipeTransform {
         converter = new AdditionalFacilitiesAnswerConverter(this.route);
         break;
       case AnswerSource.VENUE:
-        converter = new VenueAnswerConverter();
+        converter = new VenueAnswerConverter(this.locationsDataService);
         break;
       case AnswerSource.COURT_LOCATION:
         converter = new CourtLocationAnswerConverter(this.route);

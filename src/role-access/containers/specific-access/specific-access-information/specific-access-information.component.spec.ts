@@ -25,11 +25,6 @@ describe('DescribeExclusionComponent', () => {
       expect(mockStore.dispatch).toHaveBeenCalled();
     });
 
-    it('should not navigate if attempting to click the return to my tasks button', () => {
-      const navEvent = SpecificAccessNavigationEvent.RETURNTOMYTASKS;
-      expect(function () { component.dispatchEvent(navEvent) }).toThrowError('Not yet implemented');
-    });
-
   });
 
   describe('onDestroy()', () => {

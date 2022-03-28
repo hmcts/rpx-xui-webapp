@@ -5,6 +5,7 @@ import { HearingRequestMainModel } from '../../models/hearingRequestMain.model';
 export const RESET_HEARING_REQUEST = '[HEARING REQUEST] Reset Hearing Request';
 export const NAVIGATE_BACK_HEARING_REQUEST = '[HEARING REQUEST] Navigate Back Hearing Request';
 export const UPDATE_HEARING_REQUEST = '[HEARING REQUEST] Update Hearing Request';
+export const UPDATE_HEARING_REQUEST_FAILURE = '[HEARING REQUEST] Update Hearing Request Failure';
 export const INITIALIZE_HEARING_REQUEST = '[HEARING REQUEST] Initialize Hearing Request';
 export const LOAD_HEARING_REQUEST = '[HEARING REQUEST] Load Hearing Request';
 export const SUBMIT_HEARING_REQUEST = '[HEARING REQUEST] Submit Hearing Request';
@@ -38,6 +39,13 @@ export class UpdateHearingRequest implements Action {
   public readonly type = UPDATE_HEARING_REQUEST;
 
   constructor(public payload: HearingRequestMainModel) {
+  }
+}
+
+export class UpdateHearingRequestFailure implements Action {
+  public readonly type = UPDATE_HEARING_REQUEST_FAILURE
+
+  constructor(public payload: HttpError) {
   }
 }
 
@@ -75,6 +83,7 @@ export type HearingRequestAction =
   | InitializeHearingRequest
   | LoadHearingRequest
   | UpdateHearingRequest
+  | UpdateHearingRequestFailure
   | SubmitHearingRequest
   | SubmitHearingRequestFailure
   | ViewEditSubmitHearingReason

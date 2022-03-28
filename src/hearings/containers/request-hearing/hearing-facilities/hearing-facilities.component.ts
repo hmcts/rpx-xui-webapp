@@ -2,11 +2,13 @@ import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {Store} from '@ngrx/store';
+import {CaseFlagGroup} from '../../../models/caseFlagGroup.model';
 import {CaseFlagReferenceModel} from '../../../models/caseFlagReference.model';
 import {ACTION, CaseFlagType, HearingFacilitiesEnum} from '../../../models/hearings.enum';
 import {LovRefDataModel} from '../../../models/lovRefData.model';
 import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
+import {CaseFlagsUtils} from '../../../utils/case-flags.utils';
 import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 
 @Component({
@@ -16,6 +18,7 @@ import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 export class HearingFacilitiesComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public caseFlagsRefData: CaseFlagReferenceModel[];
   public caseFlagType: CaseFlagType = CaseFlagType.NON_REASONABLE_ADJUSTMENT;
+  public nonReasonableAdjustmentFlags: CaseFlagGroup[] = [];
   public hearingFactilitiesForm: FormGroup;
   public additionSecurityError: string;
   public validationErrors: { id: string, message: string }[] = [];
@@ -29,6 +32,7 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
     super(hearingStore, hearingsService, route);
     this.additionalFacilities = this.route.snapshot.data.additionFacilitiesOptions;
     this.caseFlagsRefData = this.route.snapshot.data.caseFlags;
+    this.nonReasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(this.serviceHearingValuesModel.caseFlags.flags, this.caseFlagsRefData, this.caseFlagType);
   }
 
   public ngOnInit(): void {

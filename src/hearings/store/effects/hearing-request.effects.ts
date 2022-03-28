@@ -7,6 +7,7 @@ import {Observable, of} from 'rxjs';
 import {catchError, map, switchMap, tap} from 'rxjs/operators';
 import * as fromAppStoreActions from '../../../app/store/actions';
 import {HttpError} from '../../../models/httpError.model';
+import {KEY_FRAGMENT_ID, KEY_MODE} from '../../models/hearingConditions';
 import {Mode} from '../../models/hearings.enum';
 import {ScreenNavigationModel} from '../../models/screenNavigation.model';
 import {HearingsService} from '../../services/hearings.service';
@@ -37,8 +38,8 @@ export class HearingRequestEffects {
     this.hearingStore.pipe(select(fromHearingReducers.getHearingsFeatureState)).subscribe(
       state => {
         this.caseId = state.hearingList.hearingListMainModel ? state.hearingList.hearingListMainModel.caseRef : '';
-        this.mode = state.hearingConditions.hasOwnProperty('mode') ? state.hearingConditions['mode'] : Mode.CREATE;
-        this.fragmentId = state.hearingConditions.hasOwnProperty('fragmentId') ? state.hearingConditions['fragmentId'] : '';
+        this.mode = state.hearingConditions.hasOwnProperty(KEY_MODE) ? state.hearingConditions[KEY_MODE] : Mode.CREATE;
+        this.fragmentId = state.hearingConditions.hasOwnProperty(KEY_FRAGMENT_ID) ? state.hearingConditions[KEY_FRAGMENT_ID] : '';
       }
     );
   }
@@ -116,10 +117,10 @@ export class HearingRequestEffects {
           () => {
             return this.router.navigate(['hearings', 'request', 'hearing-confirmation']);
           }),
-        catchError(error => {
-          this.hearingStore.dispatch(new hearingRequestActions.SubmitHearingRequestFailure(error));
-          return of(error);
-        })
+          catchError(error => {
+            this.hearingStore.dispatch(new hearingRequestActions.SubmitHearingRequestFailure(error));
+            return of(error);
+          })
       );
     })
   );
@@ -142,9 +143,10 @@ export class HearingRequestEffects {
           () => {
             return this.router.navigate(['hearings', 'request', 'hearing-confirmation']);
           }),
-        catchError(error => {
-          return HearingRequestEffects.handleError(error);
-        })
+          catchError(error => {
+            this.hearingStore.dispatch(new hearingRequestActions.UpdateHearingRequestFailure(error));
+            return of(error);
+          })
       );
     })
   );

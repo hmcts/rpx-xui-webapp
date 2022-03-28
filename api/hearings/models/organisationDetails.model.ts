@@ -1,5 +1,5 @@
 export interface OrganisationDetailsModel {
-  name: string;
-  organisationType: string;
-  cftOrganisationID: string;
+  name?: string;
+  organisationType?: string;
+  cftOrganisationID?: string;
 }

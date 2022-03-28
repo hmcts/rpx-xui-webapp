@@ -26,6 +26,8 @@ class WorkAllocationMockData {
         
         this.caseworkersByService = this.getCaseworkersByService(this.waSupportedJusridictions);
 
+        this.caseEventTasks = WorkAllocationDataModels.getCaseEventTasksCompletable();
+
         this.exclusions = this.getCaseExclusions([
             { added: '2021-10-12T12:14:42.230129Z', name: 'judeg a', userType: 'JUDICIAL', type: 'CASE', id: '12345678901' },
             { added: '2021-10-12T12:14:42.230129Z', name: 'judeg b', userType: 'JUDICIAL', type: 'CASE', id: '12345678902' },
@@ -58,6 +60,40 @@ class WorkAllocationMockData {
 
         this.taskDetails = { task: this.getRelease2TaskDetails() } 
     }
+
+    setTaskDetails(task){
+        Object.keys(task).forEach(taskkey => {
+            if (task[taskkey].includes('true') || task[taskkey].includes('false')) {
+                this.taskDetails.task[taskkey] = task[taskkey] === "true";
+            } else if (task[taskkey].includes('null')) {
+                delete this.taskDetails.task[taskkey];
+            } else {
+                this.taskDetails.task[taskkey] = task[taskkey];
+            }
+
+        });
+    }
+
+    setTaskRequiredForEventAs(taskRequired){
+        this.caseEventTasks.task_required_for_event = taskRequired;
+    }
+
+    setTaskRequiredForEventTasks(tasks){
+
+        const watasks = tasks.map(task => {
+            const waTask = { ...this.caseTasks[0] };
+            Object.keys(task).forEach(taskkey => {
+                if (task[taskkey].includes('true') || task[taskkey].includes('false')){
+                    waTask[taskkey] = task[taskkey] === "true"; 
+                }else{
+                    waTask[taskkey] = task[taskkey]; 
+                }
+            });
+            return waTask; 
+        })
+        this.caseEventTasks.tasks = watasks; 
+    }
+ 
 
     getCaseTasksForCaseId(caseId){
         for (const task of this.caseTasks){
@@ -591,6 +627,8 @@ class WorkAllocationMockData {
             const taskTemplate = this.getRelease2TaskDetails();
             let taskPermissions = [];
             const taskAttributes = Object.keys(task);
+
+            let taskAssignState = 'ActiveTasksUnassigned';
             for (const taskAttribute of taskAttributes) {
                 if (taskAttribute.toLowerCase().includes('date')) {
                     const dateObj = new Date();
@@ -611,12 +649,16 @@ class WorkAllocationMockData {
                 } else if (taskAttribute.toLowerCase().trim() === 'assignee') {
                     const val = task[taskAttribute].toLowerCase();
                     if (val.includes('session')) {
+                        taskAssignState = 'ActiveTasksAssignedCurrentUser'
                         taskTemplate[taskAttribute] = nodeAppMock.userDetails.userInfo.uid ? nodeAppMock.userDetails.userInfo.uid : nodeAppMock.userDetails.userInfo.id;
                     } else if (val === '' || val === undefined) {
                         taskTemplate[taskAttribute] = null;
                     } else if (val === 'someone' ) {
+                        taskAssignState = 'ActiveTasksAssignedOtherUser'
+
                         taskTemplate[taskAttribute] = this.caseWorkersList[0].idamId;
                     }  else {
+                        taskAssignState = 'ActiveTasksAssignedOtherUser'
                         taskTemplate[taskAttribute] = task[taskAttribute];
                     }
                     taskTemplate.task_state= taskTemplate[taskAttribute] ? 'assigned':'unassigned'
@@ -638,7 +680,7 @@ class WorkAllocationMockData {
                     taskTemplate[taskAttribute] = task[taskAttribute];
                 }
             }
-            taskTemplate.actions = WorkAllocationDataModels.getRelease2TaskActions(taskPermissions, 'AllWork', taskTemplate.task_state); 
+            taskTemplate.actions = WorkAllocationDataModels.getRelease2TaskActions(taskPermissions, taskAssignState, taskTemplate.task_state); 
 
             taskTemplate.jurisdiction = "IA";
             tasks.push(taskTemplate);

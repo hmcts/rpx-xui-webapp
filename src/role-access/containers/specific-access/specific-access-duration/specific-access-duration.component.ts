@@ -119,6 +119,8 @@ export class SpecificAccessDurationComponent implements OnInit {
         default:
           throw new Error('Invalid option');
       }
+    } else {
+      throw new Error('Invalid period');
     }
   }
   public resetPreviousErrors(): void {

@@ -739,52 +739,52 @@ export const CHANGE_HEARING_REASON: LovRefDataModel[] = [
 ];
 
 export const HEARING_ROLES: LovRefDataByServiceModel = {
-  serviceID: 'SSCS',
+  serviceID: 'BBA3',
   values: HEARING_ROLES_REF,
 };
 
 export const SSCS_STAGES: LovRefDataByServiceModel = {
-  serviceID: 'SSCS',
+  serviceID: 'BBA3',
   values: DEFAULT_STAGES_REF,
 };
 
 export const SSCS_PRIORITIES: LovRefDataByServiceModel = {
-  serviceID: 'SSCS',
+  serviceID: 'BBA3',
   values: DEFAULT_PRIORITIES_REF,
 };
 
 export const SSCS_PARTY_CHANNEL: LovRefDataByServiceModel = {
-  serviceID: 'SSCS',
+  serviceID: 'BBA3',
   values: DEFAULT_PARTYCHANNEL_REF,
 };
 
 export const SSCS_JUDGE_TYPES: LovRefDataByServiceModel = {
-  serviceID: 'SSCS',
+  serviceID: 'BBA3',
   values: DEFAULT_JUDGE_TYPES_REF,
 };
 export const SSCS_CANCEL_HEARING: LovRefDataByServiceModel = {
-  serviceID: 'SSCS',
+  serviceID: 'BBA3',
   values: DEFAULT_HEARING_CANCEL_REF,
 };
 export const ADDITIONAL_HEARING_FACILITIES: LovRefDataByServiceModel = {
-  serviceID: 'SSCS',
+  serviceID: 'BBA3',
   values: ADDITIONAL_HEARING_FACILITIES_REF,
 };
 export const SSCS_OTHER_PANEL_ROLES: LovRefDataByServiceModel = {
-  serviceID: 'SSCS',
+  serviceID: 'BBA3',
   values: OTHER_PANEL_ROLES,
 };
 export const SSCS_ADJOURN_HEARING_ACTUAL: LovRefDataByServiceModel = {
-  serviceID: 'SSCS',
+  serviceID: 'BBA3',
   values: DEFAULT_HEARING_ACTUAL_ADJOURN_REF,
 };
 export const SSCS_CANCEL_HEARING_ACTUAL: LovRefDataByServiceModel = {
-  serviceID: 'SSCS',
+  serviceID: 'BBA3',
   values: DEFAULT_HEARING_ACTUAL_CANCEL_REF,
 };
 
 export const SSCS_CHANGE_HEARING_REASON: LovRefDataByServiceModel = {
-  serviceID: 'SSCS',
+  serviceID: 'BBA3',
   values: CHANGE_HEARING_REASON,
 };
 

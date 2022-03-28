@@ -5,10 +5,11 @@ import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
 import {caseFlagsRefData, initialState, serviceHearingValuesModel} from '../../../hearing.test.data';
-import {HearingConditions} from '../../../models/hearingConditions';
 import {HearingRequestMainModel} from '../../../models/hearingRequestMain.model';
 import {ACTION, CaseFlagType, PartyType} from '../../../models/hearings.enum';
+import {LocationByEPIMMSModel} from '../../../models/location.model';
 import {HearingsService} from '../../../services/hearings.service';
+import {LocationsDataService} from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
 import {HearingRequirementsComponent} from './hearing-requirements.component';
 
@@ -21,10 +22,34 @@ class MockHearingPartiesComponent {
 }
 
 describe('HearingRequirementsComponent', () => {
+  const FOUND_LOCATIONS: LocationByEPIMMSModel[] = [{
+   epimms_id: '196538',
+   site_name: 'Liverpool Social Security and Child Support Tribunal',
+   court_name: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
+   open_for_public: 'YES',
+   region_id: '5',
+   region: 'North West',
+   cluster_id: '3',
+   cluster_name: 'Cheshire and Merseyside',
+   court_status: 'Open',
+   court_open_date: null,
+   closed_date: null,
+   postcode: 'L2 5UZ',
+   court_address: 'PRUDENTIAL BUILDING, 36 DALE STREET, LIVERPOOL',
+   phone_number: '',
+   court_location_code: '',
+   dx_address: '',
+   welsh_site_name: '',
+   welsh_court_address: '',
+   venue_name: 'Liverpool',
+   is_case_management_location: 'Y',
+   is_hearing_location: 'Y'
+  }];
   let component: HearingRequirementsComponent;
   let fixture: ComponentFixture<HearingRequirementsComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
+  const locationsDataService = new LocationsDataService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 
   beforeEach(() => {
@@ -33,6 +58,7 @@ describe('HearingRequirementsComponent', () => {
       providers: [
         provideMockStore({initialState}),
         {provide: HearingsService, useValue: hearingsService},
+        {provide: LocationsDataService, useValue: locationsDataService},
         {
           provide: ActivatedRoute,
           useValue: {
@@ -51,6 +77,7 @@ describe('HearingRequirementsComponent', () => {
     fixture = TestBed.createComponent(HearingRequirementsComponent);
     component = fixture.componentInstance;
     component.caseFlagType = CaseFlagType.REASONABLE_ADJUSTMENT;
+    spyOn(locationsDataService, 'getLocationById').and.returnValue(of(FOUND_LOCATIONS));
     fixture.detectChanges();
   });
 
@@ -93,15 +120,11 @@ describe('HearingRequirementsComponent', () => {
         hearingLocations: [
           {
             locationId: '196538',
-            locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
             locationType: 'hearing',
-            region: 'North West',
           },
           {
-            locationId: '219164',
-            locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
+            locationId: '234850',
             locationType: 'hearing',
-            region: 'Scotland',
           }
         ],
         hearingIsLinkedFlag: false,
@@ -124,7 +147,7 @@ describe('HearingRequirementsComponent', () => {
         leadJudgeContractType: '',
       },
       caseDetails: {
-        hmctsServiceCode: 'SSCS',
+        hmctsServiceCode: 'BBA3',
         caseRef: '1111222233334444',
         requestTimeStamp: null,
         hearingID: null,
@@ -179,16 +202,6 @@ describe('HearingRequirementsComponent', () => {
     const storeDispatchSpy = spyOn(component.hearingStore, 'dispatch');
     component.initializeHearingRequestFromHearingValues();
     expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.InitializeHearingRequest(expectedHearingRequestMainModel));
-  });
-
-  it('should initialize hearing condition', () => {
-    const hearingCondition: HearingConditions = {
-      isInit: false,
-      region: 'North West,Scotland'
-    };
-    const storeDispatchSpy = spyOn(component.hearingStore, 'dispatch');
-    component.initializeHearingCondition();
-    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.SaveHearingConditions(hearingCondition));
   });
 
   afterEach(() => {

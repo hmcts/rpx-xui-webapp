@@ -112,4 +112,13 @@ describe('IsAmendedPipe', () => {
     const expected = cold('(b|)', {b: isAmended});
     expect(result$).toBeObservable(expected);
   });
+
+  it('should transform need welsh flag based on selection', () => {
+    const STATE: State = initialState.hearings;
+    const result$ = isAmendedPipe.transform(AnswerSource.NEED_WELSH, of(STATE));
+    const isAmended = false;
+    const expected = cold('(b|)', {b: isAmended});
+    expect(result$).toBeObservable(expected);
+  });
+
 });

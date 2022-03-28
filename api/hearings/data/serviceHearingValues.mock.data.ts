@@ -21,10 +21,8 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   hearingInWelshFlag: false,
   hearingLocations: [{
     locationId: '196538',
-    locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
-    region: 'North West',
-  },
-  ],
+    locationType: 'hearing',
+  }],
   caseAdditionalSecurityFlag: false,
   facilitiesRequired: ['immigrationDetentionCentre'],
   listingComments: 'Additional instructions for the hearing',

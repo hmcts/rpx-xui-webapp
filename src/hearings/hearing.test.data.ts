@@ -986,15 +986,11 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   hearingInWelshFlag: false,
   hearingLocations: [{
     locationId: '196538',
-    locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
     locationType: 'hearing',
-    region: 'North West',
   },
   {
-    locationId: '219164',
-    locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
+    locationId: '234850',
     locationType: 'hearing',
-    region: 'Scotland',
   },
   ],
   caseAdditionalSecurityFlag: false,
@@ -1169,10 +1165,8 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
     hearingType: 'final',
     hearingLocations: [
       {
-        locationType: 'hearing',
         locationId: '196538',
-        locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
-        region: 'North West',
+        locationType: 'hearing',
       },
     ],
     hearingIsLinkedFlag: false,
@@ -1199,7 +1193,7 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
     leadJudgeContractType: '',
   },
   caseDetails: {
-    hmctsServiceCode: 'SSCS',
+    hmctsServiceCode: 'BBA3',
     caseRef: '1584618195804035',
     requestTimeStamp: null,
     hearingID: 'h100001',
@@ -1480,7 +1474,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
   },
   hmcStatus: HMCStatus.UPDATE_SUBMITTED,
   caseDetails: {
-    hmctsServiceCode: 'SSCS',
+    hmctsServiceCode: 'BBA3',
     caseRef: '1584618195804035',
     requestTimeStamp: null,
     hearingID: 'h100001',
@@ -1518,7 +1512,7 @@ export const initialState = {
     hearingList: {
       hearingListMainModel: {
         caseRef: '1111222233334444',
-        hmctsServiceID: 'SSCS',
+        hmctsServiceID: 'BBA3',
         caseHearings: [{
           hearingID: 'h00001',
           hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
@@ -1553,15 +1547,11 @@ export const initialState = {
           hearingLocations: [
             {
               locationId: '196538',
-              locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
               locationType: 'hearing',
-              region: 'North West',
             },
             {
-              locationId: '219164',
-              locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
+              locationId: '234850',
               locationType: 'hearing',
-              region: 'Scotland',
             },
           ],
           hearingIsLinkedFlag: false,
@@ -1574,7 +1564,6 @@ export const initialState = {
           },
           privateHearingRequiredFlag: false,
           panelRequirements: null,
-          panelPreferences: null,
           autolistFlag: false,
           nonStandardHearingDurationReasons: [],
           hearingPriorityType: 'standard',
@@ -1724,15 +1713,11 @@ export const initialState = {
           hearingLocations: [
             {
               locationId: '196538',
-              locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
               locationType: 'hearing',
-              region: 'North West',
             },
             {
-              locationId: '219164',
-              locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
+              locationId: '234850',
               locationType: 'hearing',
-              region: 'Scotland',
             },
           ],
           hearingIsLinkedFlag: false,
@@ -1809,7 +1794,6 @@ export const initialState = {
                 'RA0042',
               ],
               interpreterLanguage: 'PF0015',
-              partyChannel: 'inPerson',
             },
             organisationDetails: {},
             unavailabilityDOW: null,

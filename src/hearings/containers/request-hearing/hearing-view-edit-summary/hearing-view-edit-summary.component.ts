@@ -1,14 +1,14 @@
 import {Component, OnDestroy} from '@angular/core';
 import {Store} from '@ngrx/store';
+import * as _ from 'lodash';
+import { combineLatest, Observable, Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
+import { HearingRequestStateData } from '../../../models/hearingRequestStateData.model';
 import {ACTION, Mode} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import {HEARING_VIEW_EDIT_SUMMARY_TEMPLATE} from '../../../templates/hearing-view-edit-summary.template';
 import {RequestHearingPageFlow} from '../request-hearing.page.flow';
-import * as _ from 'lodash';
-import { combineLatest, Observable, Subscription } from 'rxjs';
-import { HearingRequestStateData } from '../../../models/hearingRequestStateData.model';
-import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'exui-hearing-view-edit-summary',
@@ -51,6 +51,8 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
 
   public ngOnDestroy(): void {
     super.unsubscribe();
-    this.initialAndCurrentStatesSubscription && this.initialAndCurrentStatesSubscription.unsubscribe();
+    if (this.initialAndCurrentStatesSubscription) {
+      this.initialAndCurrentStatesSubscription.unsubscribe();
+    }
   }
 }

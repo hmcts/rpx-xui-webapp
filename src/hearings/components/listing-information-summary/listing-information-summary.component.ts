@@ -2,8 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import { AnswerSource, EXUIDisplayStatusEnum, LaCaseStatus } from '../../../hearings/models/hearings.enum';
-import { HearingAnswersPipe } from '../../../hearings/pipes/hearing-answers.pipe';
+import { AnswerSource, EXUIDisplayStatusEnum, LaCaseStatus } from '../../models/hearings.enum';
 import * as fromHearingStore from '../../store';
 
 @Component({
@@ -33,10 +32,6 @@ export class ListingInformationSummaryComponent implements OnInit, OnDestroy {
       });
     }
     );
-  }
-
-  public getStatusName(): Observable<string> {
-    return new HearingAnswersPipe(this.route).transform(this.answerSource.STATUS, this.hearingState$);
   }
 
   public isCaseStatusListed(): boolean {

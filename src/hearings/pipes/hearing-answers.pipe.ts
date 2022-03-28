@@ -80,7 +80,7 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.DATE_REQUEST_FAILED:
         converter = new DateRequestFailedAnswerConverter();
-        break;        
+        break;
       case AnswerSource.TYPE_FROM_REQUEST:
         converter = new TypeFromRequestAnswerConverter();
         break;

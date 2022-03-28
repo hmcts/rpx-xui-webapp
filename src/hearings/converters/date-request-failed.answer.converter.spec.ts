@@ -5,7 +5,6 @@ import { State } from '../store/reducers';
 import { DateRequestFailedAnswerConverter } from './date-request-failed.answer.converter';
 
 describe('DateRequestFailedAnswerConverter', () => {
-
   let dateRequestSubmittedAnswerConverter: DateRequestFailedAnswerConverter;
 
   beforeEach(() => {
@@ -14,8 +13,9 @@ describe('DateRequestFailedAnswerConverter', () => {
 
   it('should transform error timestamp from request', () => {
     const STATE: State = initialState.hearings;
+    STATE.hearingRequest.hearingRequestMainModel.hearingResponse.errorTimestamp = STATE.hearingRequest.hearingRequestMainModel.hearingResponse.receivedDateTime;
     const result$ = dateRequestSubmittedAnswerConverter.transformAnswer(of(STATE));
-    const type = '30-11-2021 16:00';
+    const type = '30-11-2021 09:11';
     const expected = cold('(b|)', { b: type });
     expect(result$).toBeObservable(expected);
   });

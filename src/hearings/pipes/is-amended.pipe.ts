@@ -3,6 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {Observable} from 'rxjs';
 import {AdditionalFacilitiesAmendedConverter} from '../converters/additional-facilities.amended.converter';
 import {AdditionalSecurityAmendedConverter} from '../converters/additional-security.amended.converter';
+import { AdditionalInstructionsAmendedConverter } from '../converters/additional-instructions.amended.converter';
 import {CaseFlagAmendedConverter} from '../converters/case-flag.amended.converter';
 import {DefaultAmendedConverter} from '../converters/default.amended.converter';
 import {HearingLengthAmendedConverter} from '../converters/hearing-length.amended.converter';
@@ -88,6 +89,9 @@ export class IsAmendedPipe implements PipeTransform {
         break;
       case AnswerSource.PANEL_ROLES:
         converter = new PanelRolesAmendedConverter();
+        break;
+      case AnswerSource.ADDITIONAL_INSTRUCTION:
+        converter = new AdditionalInstructionsAmendedConverter();
         break;
       default:
         break;

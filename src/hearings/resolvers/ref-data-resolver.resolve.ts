@@ -12,7 +12,7 @@ import * as fromHearingStore from '../store';
   providedIn: 'root'
 })
 export class RefDataResolver implements Resolve<LovRefDataModel[]> {
-  public serviceId: string = 'SSCS';
+  public serviceId: string = '';
 
   constructor(
     protected readonly lovRefDataService: LovRefDataService,

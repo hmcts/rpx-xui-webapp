@@ -7,12 +7,12 @@ describe('Lov RefData service', () => {
   describe('LovRefDataService', () => {
     it('getForService should make correct api call', () => {
       const service = new LovRefDataService(mockHttpService);
-      service.getListOfValues(HearingCategory.Priority, 'SSCS', false);
+      service.getListOfValues(HearingCategory.Priority, 'BBA3', false);
 
       const options = {
         params: new HttpParams()
           .set('category', HearingCategory.Priority)
-          .set('service', 'SSCS')
+          .set('service', 'BBA3')
           .set('isChildRequired', 'N')
       };
 

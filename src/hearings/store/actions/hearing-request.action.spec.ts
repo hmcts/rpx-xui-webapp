@@ -16,7 +16,11 @@ describe('Hearing Request Actions', () => {
         hearingDetails: null,
         partyDetails: null
       };
-      const action = new fromHearingRequestAction.UpdateHearingRequest(payload);
+      const hearingConditions = {
+        isInit: false,
+        region: 'Wales'
+      };
+      const action = new fromHearingRequestAction.UpdateHearingRequest(payload, hearingConditions);
       expect(action.type).toBe(fromHearingRequestAction.UPDATE_HEARING_REQUEST);
     });
   });

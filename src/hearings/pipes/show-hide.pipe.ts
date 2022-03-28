@@ -12,6 +12,7 @@ import { PanelInclusionHiddenConverter } from '../converters/panel-inclusion.hid
 import { PanelRolesHiddenConverter } from '../converters/panel-roles.hidden.converter';
 import { WelshHiddenConverter } from '../converters/welsh.hidden.converter';
 import { IsHiddenSource } from '../models/hearings.enum';
+import {LocationsDataService} from '../services/locations-data.service';
 import { State } from '../store';
 
 @Pipe({
@@ -19,11 +20,14 @@ import { State } from '../store';
 })
 export class ShowHidePipe implements PipeTransform {
 
+  constructor(protected readonly locationsDataService: LocationsDataService) {
+  }
+
   public transform(isHiddenSource: IsHiddenSource, hearingState$: Observable<State>): Observable<boolean> {
     let converter: HiddenConverter = new DefaultHiddenConverter();
     switch (isHiddenSource) {
       case IsHiddenSource.WELSH_LOCATION:
-        converter = new WelshHiddenConverter();
+        converter = new WelshHiddenConverter(this.locationsDataService);
         break;
       case IsHiddenSource.JUDGE_NAME:
         converter = new JudgeNameHiddenConverter();

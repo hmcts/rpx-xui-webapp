@@ -94,7 +94,7 @@ export class CaseHearingsListComponent implements OnInit {
       case EXUIDisplayStatusEnum.FAILURE:
         this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearing.hearingID));
         this.router.navigate(['/', 'hearings', 'view', 'hearing-request-failed-summary', hearing.hearingID]);
-        break;        
+        break;
       default:
         this.router.navigate(['/', 'hearings', 'view']);
         break;

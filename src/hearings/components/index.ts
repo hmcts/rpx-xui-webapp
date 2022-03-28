@@ -1,4 +1,5 @@
-import { CaseFlagsComponent } from './case-flags/case-flags.component';
+import {CaseFlagsComponent} from './case-flags/case-flags.component';
+import { ErrorPageComponent } from './error-page/error-page.component';
 import { HearingActualSummaryComponent } from './hearing-actual-summary/hearing-actual-summary.component';
 import { HearingActualsCaseTitleComponent } from './hearing-actuals-case-title/hearing-actuals-case-title.component';
 import { HearingAmendWarningMsgComponent } from './hearing-amend-warning-msg/hearing-amend-warning-msg.component';
@@ -24,6 +25,7 @@ export const components: any[] = [
   ListingInformationSummaryComponent,
   HearingConfirmationComponent,
   HearingAmendWarningMsgComponent,
+  ErrorPageComponent,
   HearingActualsCaseTitleComponent,
   HearingActualSummaryComponent
 ];
@@ -38,6 +40,9 @@ export * from '../components/hearing-judge-names-list/hearing-judge-names-list.c
 export * from '../components/hearing-parties-title/hearing-parties-title.component';
 export * from '../components/hearing-summary/hearing-summary.component';
 export * from '../components/listing-information-summary/listing-information-summary.component';
+export * from '../components/hearing-confirmation/hearing-confirmation.component';
+export * from '../components/hearing-amend-warning-msg/hearing-amend-warning-msg.component';
+export * from '../components/error-page/error-page.component';
+export * from '../components/hearing-actuals-case-title/hearing-actuals-case-title.component';
 export * from '../components/parties-unavailable-dates/parties-unavailable-dates.component';
 export * from './multi-level-selector/multi-level-selector.component';
-

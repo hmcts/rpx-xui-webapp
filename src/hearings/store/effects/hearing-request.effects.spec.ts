@@ -5,7 +5,7 @@ import { HttpError } from '@hmcts/ccd-case-ui-toolkit';
 import {provideMockActions} from '@ngrx/effects/testing';
 import {Store} from '@ngrx/store';
 import {provideMockStore} from '@ngrx/store/testing';
-import {cold} from 'jasmine-marbles';
+import {cold, hot} from 'jasmine-marbles';
 import {Observable, of} from 'rxjs';
 import {Go} from '../../../app/store/actions';
 import {hearingRequestMainModel, initialState} from '../../hearing.test.data';
@@ -26,7 +26,7 @@ describe('Hearing Request Effects', () => {
   const pageflowMock = jasmine.createSpyObj('AbstractPageFlow', [
     'getCurrentPage', 'getLastPage', 'getNextPage'
   ]);
-  const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+  const mockRouter = jasmine.createSpyObj('Router', ['navigate', 'navigateByUrl']);
   const mockLocation = jasmine.createSpyObj('Location', ['back']);
   const hearingConditions = {
     isInit: false,
@@ -141,28 +141,14 @@ describe('Hearing Request Effects', () => {
     it('should load hearing requests', () => {
       const dispatchSpy = spyOn(store, 'dispatch');
       hearingsServiceMock.loadHearingRequest.and.returnValue(of(hearingRequestMainModel));
-      const action = new hearingRequestActions.LoadHearingRequest('h1000000');
+      const action = new hearingRequestActions.LoadHearingRequest({hearingID: 'h1000000', targetURL: 'dummy-url'});
       actions$ = cold('-a', {a: action});
       const expected = cold('-b', {b: hearingRequestMainModel});
       expect(effects.loadHearingRequest$).toBeObservable(expected);
       expect(hearingsServiceMock.loadHearingRequest).toHaveBeenCalledWith('h1000000');
       expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestToCompareActions.InitializeHearingRequestToCompare(hearingRequestMainModel));
       expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestActions.InitializeHearingRequest(hearingRequestMainModel));
-    });
-    it('should error submitting loading hearing request', () => {
-      const error: HttpError = {
-        status: 400,
-        error: null,
-        message: 'Http failure response',
-        timestamp: '',
-        exception: '',
-        path: ''
-      }
-      hearingsServiceMock.loadHearingRequest.and.returnValue(of(error));
-      const action = new hearingRequestActions.LoadHearingRequest('h1000000');
-      actions$ = cold('-a', {a: action});
-      const expected = cold('-b', {b: error});
-      expect(effects.loadHearingRequest$).toBeObservable(expected);
+      expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('dummy-url');
     });
   });
 
@@ -247,7 +233,15 @@ describe('Hearing Request Effects', () => {
         status: 400,
         message: 'error'
       });
-      action$.subscribe(action => expect(action).toEqual(new Go({path: ['/service-down']})));
+      action$.subscribe(action => expect(action).toEqual(new Go({path: ['/hearings/error']})));
+    });
+
+    it('should handle 4xx related errors', () => {
+      const action$ = HearingRequestEffects.handleError({
+        status: 403,
+        message: 'error'
+      });
+      action$.subscribe(action => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
     });
   });
 });

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
+import { ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { HearingCategory } from '../models/hearings.enum';
@@ -15,9 +15,10 @@ export class HearingActualPartyChannelResolverService extends RefDataResolver im
 
   constructor(
     protected readonly lovRefDataService: LovRefDataService,
-    protected readonly hearingStore: Store<fromHearingStore.State>
+    protected readonly hearingStore: Store<fromHearingStore.State>,
+    protected readonly router: Router
   ) {
-    super(lovRefDataService, hearingStore);
+    super(lovRefDataService, hearingStore, router);
   }
 
   public resolve(route?: ActivatedRouteSnapshot): Observable<LovRefDataModel[]> {

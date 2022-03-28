@@ -1,6 +1,7 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
+import { ErrorPageComponent } from './components/error-page/error-page.component';
 import { CancelHearingComponent } from './containers/cancel-hearing/cancel-hearing.component';
 import { HearingActualAddEditSummaryComponent } from './containers/hearing-actuals/hearing-actual-add-edit-summary/hearing-actual-add-edit-summary.component';
 import { HearingActualsFinalConfirmationComponent } from './containers/hearing-actuals/hearing-actuals-final-confirmation/hearing-actuals-final-confirmation.component';
@@ -392,6 +393,13 @@ export const ROUTES: Routes = [
       },
     ]
   },
+  {
+    path: 'error',
+    component: ErrorPageComponent,
+    data: {
+      title: 'HMCTS Hearings | System Error'
+    }
+  }
 ];
 
 export const hearingsRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);

@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 
-import { SpecificAccessNavigationEvent } from '../../../models';
+import { SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
 import * as fromFeature from '../../../store';
 
 @Component({
@@ -20,6 +20,9 @@ export class SpecificAccessApprovedComponent {
 
   public navigationHandler(navEvent: SpecificAccessNavigationEvent): void {
     switch (navEvent) {
+      case SpecificAccessNavigationEvent.RETURNTOMYTASKS:
+        this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_APPROVED));
+        break;
       default:
         throw new Error('Not yet implemented');
     }

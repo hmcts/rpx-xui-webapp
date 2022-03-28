@@ -1,5 +1,6 @@
 import { ExtraOptions, Routes } from '@angular/router';
 import { FeatureToggleGuard } from '@hmcts/rpx-xui-common-lib';
+import { BookingServiceDownComponent, RefreshBookingServiceDownComponent } from 'src/booking/containers';
 import {
   AccessibilityComponent,
   CookiePolicyComponent,
@@ -113,6 +114,20 @@ export const ROUTES: Routes = [
   {
     path: 'service-down',
     component: ServiceDownComponent,
+    data: {
+      title: 'Service Unavailable'
+    }
+  },
+  {
+    path: 'booking-service-down',
+    component: BookingServiceDownComponent,
+    data: {
+      title: 'Service Unavailable'
+    }
+  },
+  {
+    path: 'refresh-booking-service-down',
+    component: RefreshBookingServiceDownComponent,
     data: {
       title: 'Service Unavailable'
     }

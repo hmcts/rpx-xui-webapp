@@ -20,6 +20,18 @@ export function hearingValuesReducer(currentState = initialHearingValuesState,
         serviceHearingValuesModel: action.payload
       };
     }
+    case fromActions.LOAD_HEARING_VALUES_FAILURE: {
+      return {
+        ...currentState,
+        lastError: action.payload
+      }
+    }
+    case fromActions.RESET_HEARING_VAUES_LAST_ERROR: {
+      return {
+        ...currentState,
+        lastError: null
+      }
+    }
     default: {
       return {
         ...currentState

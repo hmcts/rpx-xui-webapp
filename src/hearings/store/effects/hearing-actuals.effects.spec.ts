@@ -9,7 +9,6 @@ import { hearingActualsMainModel } from '../../hearing.test.data';
 import { HearingsService } from '../../services/hearings.service';
 import * as hearingActualsActions from '../actions/hearing-actuals.action';
 import { HearingActualsEffects } from './hearing-actuals.effects';
-import { HearingListEffects } from './hearing-list.effects';
 
 describe('Hearing Actuals Effects', () => {
   let actions$;
@@ -85,11 +84,19 @@ describe('Hearing Actuals Effects', () => {
 
   describe('handleError', () => {
     it('should handle 500', () => {
-      const action$ = HearingListEffects.handleError({
+      const action$ = HearingActualsEffects.handleError({
         status: 500,
         message: 'error'
       });
-      action$.subscribe(action => expect(action).toEqual(new Go({ path: ['/service-down'] })));
+      action$.subscribe(action => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
+    });
+
+    it('should handle 4xx related errors', () => {
+      const action$ = HearingActualsEffects.handleError({
+        status: 403,
+        message: 'error'
+      });
+      action$.subscribe(action => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
     });
   });
 });

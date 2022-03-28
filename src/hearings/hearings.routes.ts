@@ -1,6 +1,7 @@
 import {ModuleWithProviders} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {HealthCheckGuard} from '../app/shared/guards/health-check.guard';
+import {ErrorPageComponent} from './components';
 import {CancelHearingComponent} from './containers/cancel-hearing/cancel-hearing.component';
 import {HearingActualAddEditSummaryComponent} from './containers/hearing-actuals/hearing-actual-add-edit-summary/hearing-actual-add-edit-summary.component';
 import {HearingActualsFinalConfirmationComponent} from './containers/hearing-actuals/hearing-actuals-final-confirmation/hearing-actuals-final-confirmation.component';
@@ -26,6 +27,7 @@ import {RequestHearingComponent} from './containers/request-hearing/request-hear
 import {HearingCancellationSummaryComponent} from './containers/view-hearing/hearing-cancellation-summary/hearing-cancellation-summary.component';
 import {HearingCancelledSummaryComponent} from './containers/view-hearing/hearing-cancelled-summary/hearing-cancelled-summary.component';
 import {HearingCompletedSummaryComponent} from './containers/view-hearing/hearing-completed-summary/hearing-completed-summary.component';
+import {HearingRequestFailedSummaryComponent} from './containers/view-hearing/hearing-request-failed-summary/hearing-request-failed-summary.component';
 import {ViewHearingComponent} from './containers/view-hearing/view-hearing.component';
 import {HearingsGuard} from './guards/hearings-guard';
 import {HearingCategory, MemberType} from './models/hearings.enum';
@@ -88,7 +90,7 @@ export const ROUTES: Routes = [
         data: {
           category: HearingCategory.HearingType,
           title: 'HMCTS Hearings | Hearing Actuals | Check details'
-         }
+        }
       },
       {
         path: 'hearing-timing',
@@ -351,7 +353,7 @@ export const ROUTES: Routes = [
         component: HearingCompletedSummaryComponent,
         data: {
           title: 'HMCTS Hearings | Hearing Actuals | Completed',
-          isChildRequired: true
+          isChildRequired: [HearingCategory.PartyChannel]
         }
       },
       {
@@ -366,11 +368,31 @@ export const ROUTES: Routes = [
         component: HearingCompletedSummaryComponent,
         data: {
           title: 'HMCTS Hearings | Hearing Actuals | Adjourned',
-          isChildRequired: true
+          isChildRequired: [HearingCategory.PartyChannel]
+        }
+      },
+      {
+        path: 'hearing-request-failed-summary/:id',
+        resolve: {
+          hearingStageOptions: HearingStageResolver,
+          judicialResponseUsers: JudicialUserSearchResponseResolver,
+          courtLocation: CourtLocationsDataResolver,
+          partyChannels: HearingActualPartyChannelResolverService,
+        },
+        component: HearingRequestFailedSummaryComponent,
+        data: {
+          title: 'HMCTS Hearings | View Hearing | Request failed '
         }
       },
     ]
   },
+  {
+    path: 'error',
+    component: ErrorPageComponent,
+    data: {
+      title: 'HMCTS Hearings | System Error'
+    }
+  }
 ];
 
 export const hearingsRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);

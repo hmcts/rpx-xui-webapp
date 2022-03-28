@@ -53,8 +53,8 @@ export class HearingActualsEffects {
   }
 
   public static handleError(error: HttpError): Observable<Action> {
-    if (error && error.status && error.status >= 400) {
-      return of(new fromAppStoreActions.Go({ path: ['/service-down'] }));
+    if (error && error.status) {
+      return of(new fromAppStoreActions.Go({path: ['/hearings/error']}));
     }
   }
 }

@@ -48,4 +48,11 @@ describe('Hearing Request Actions', () => {
       expect(action.type).toBe(fromHearingRequestAction.SUBMIT_HEARING_REQUEST_FAILURE);
     });
   });
+
+  describe('ResetHearingRequestLastError', () => {
+    it('should reset hearing request last error action', () => {
+      const action = new fromHearingRequestAction.ResetHearingRequestLastError();
+      expect(action.type).toBe(fromHearingRequestAction.RESET_HEARING_REQUEST_LAST_ERROR);
+    });
+  });
 });

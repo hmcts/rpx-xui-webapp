@@ -372,7 +372,7 @@ export const ROUTES: Routes = [
         canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Hearings | Hearing Actuals | Completed',
-          isChildRequired: true
+          isChildRequired: [HearingCategory.PartyChannel]
         }
       },
       {
@@ -388,7 +388,7 @@ export const ROUTES: Routes = [
         canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Hearings | Hearing Actuals | Adjourned',
-          isChildRequired: true
+          isChildRequired: [HearingCategory.PartyChannel]
         }
       },
       {

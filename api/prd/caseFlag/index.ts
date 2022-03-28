@@ -1,14 +1,14 @@
 import {NextFunction, Response} from 'express';
 import {handleGet} from '../../common/mockService';
 import {getConfigValue} from '../../configuration';
-import {SERVICES_PRD_API_URL} from '../../configuration/references';
+import {SERVICES_PRD_COMMONDATA_API} from '../../configuration/references';
 import {EnhancedRequest} from '../../lib/models';
 import * as mock from './caseFlag.mock';
 import {CaseFlagReferenceModel} from './models/caseFlagReference.model';
 
 mock.init();
 
-const prdUrl: string = getConfigValue(SERVICES_PRD_API_URL);
+const prdUrl: string = getConfigValue(SERVICES_PRD_COMMONDATA_API);
 
 /**
  * getCaseFlagRefData

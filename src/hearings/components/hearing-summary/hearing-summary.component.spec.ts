@@ -1,3 +1,4 @@
+import {HttpClientTestingModule} from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -23,7 +24,8 @@ describe('HearingSummaryComponent', () => {
     TestBed.configureTestingModule({
       declarations: [HearingSummaryComponent],
       imports: [
-        HearingsPipesModule
+        HearingsPipesModule,
+        HttpClientTestingModule
       ],
       providers: [
         provideMockStore({initialState}),

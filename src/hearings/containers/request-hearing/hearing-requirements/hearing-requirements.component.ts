@@ -10,6 +10,7 @@ import {ACTION, CaseFlagType, Mode} from '../../../models/hearings.enum';
 import {PartyDetailsModel} from '../../../models/partyDetails.model';
 import {PartyFlagsDisplayModel} from '../../../models/partyFlags.model';
 import {HearingsService} from '../../../services/hearings.service';
+import {LocationsDataService} from '../../../services/locations-data.service';
 import {CaseFlagsUtils} from '../../../utils/case-flags.utils';
 import {HearingsUtils} from '../../../utils/hearings.utils';
 import {RequestHearingPageFlow} from '../request-hearing.page.flow';
@@ -24,6 +25,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   public reasonableAdjustmentFlags: CaseFlagGroup[] = [];
   public lostFocus: boolean = false;
   public referenceId: string;
+  public strRegions: string;
 
   @HostListener('window:focus', ['$event'])
   public onFocus(): void {
@@ -44,7 +46,8 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
 
   constructor(protected readonly route: ActivatedRoute,
               public readonly hearingStore: Store<fromHearingStore.State>,
-              protected readonly hearingsService: HearingsService) {
+              protected readonly hearingsService: HearingsService,
+              public readonly locationsDataService: LocationsDataService) {
     super(hearingStore, hearingsService, route);
     this.caseFlagsRefData = this.route.snapshot.data.caseFlags;
     this.reasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(this.serviceHearingValuesModel.caseFlags.flags, this.caseFlagsRefData, this.caseFlagType);
@@ -57,8 +60,8 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     if (HearingsUtils.hasPropertyAndValue(this.hearingCondition, KEY_MODE, Mode.CREATE)
       && HearingsUtils.hasPropertyAndValue(this.hearingCondition, KEY_IS_INIT, true)
       && this.serviceHearingValuesModel) {
-      this.initializeHearingRequestFromHearingValues();
       this.initializeHearingCondition();
+      this.initializeHearingRequestFromHearingValues();
     }
   }
 
@@ -142,12 +145,19 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   }
 
   public initializeHearingCondition(): void {
-    const strRegions = this.serviceHearingValuesModel.hearingLocations.map(location => location.region).join(',');
-    const hearingCondition: HearingConditions = {
-      isInit: false,
-      region: strRegions
-    };
-    this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
+    if (this.serviceHearingValuesModel && this.serviceHearingValuesModel.hearingLocations) {
+      const strLocationIds = this.serviceHearingValuesModel.hearingLocations.map(location => location.locationId).join(',');
+      this.locationsDataService.getLocationById(strLocationIds).toPromise()
+        .then(locations => {
+          this.strRegions = locations.map(location => location.region).join(',');
+        }).then(() => {
+        const hearingCondition: HearingConditions = {
+          isInit: false,
+          region: this.strRegions
+        };
+        this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
+      });
+    }
   }
 
   protected executeAction(action: ACTION): void {

@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { HearingSummaryEnum } from 'src/hearings/models/hearings.enum';
+import { HearingSummaryEnum } from '../../../models/hearings.enum';
 import { HearingRequestFailedSummaryComponent } from './hearing-request-failed-summary.component';
 
 describe('HearingRequestFailedSummaryComponent', () => {

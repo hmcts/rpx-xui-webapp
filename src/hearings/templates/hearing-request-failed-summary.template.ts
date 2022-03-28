@@ -12,7 +12,7 @@ export const HEARING_REQUEST_FAILED_SUMMARY_TEMPLATE: Section[] = [
       {
         id: 'dateRequestFailed',
         answerTitle: 'Time of error',
-        answerSource: AnswerSource.DATE_REQUEST_FAILED,
+        answerSource: AnswerSource.ERROR_TIME_STAMP,
       },
       {
         id: 'caseNumber',

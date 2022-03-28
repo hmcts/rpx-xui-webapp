@@ -103,8 +103,7 @@ export class CaseHearingsListComponent implements OnInit {
         this.LoadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-adjourned-summary/${hearing.hearingID}`);
         break;
       case EXUIDisplayStatusEnum.FAILURE:
-        this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearing.hearingID));
-        this.router.navigate(['/', 'hearings', 'view', 'hearing-request-failed-summary', hearing.hearingID]);
+        this.LoadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-request-failed-summary/${hearing.hearingID}`);
         break;
       default:
         this.router.navigate(['/', 'hearings', 'view']);

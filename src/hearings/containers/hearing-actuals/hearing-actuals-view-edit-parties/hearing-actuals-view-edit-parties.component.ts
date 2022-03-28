@@ -128,7 +128,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       });
   }
 
-  public initiateForm(): FormGroup {
+  public initiateForm(index: number): FormGroup {
     return this.fb.group({
       firstName: [null, [this.validators.mandatory('Enter first name')]],
       lastName: [null, [this.validators.mandatory('Enter last name')]],
@@ -137,14 +137,15 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       organisation: [null],
       attendeeRepresenting: [null, [this.validators.mandatory('Enter attendee representing')]],
       isParty: [false]
-    }, { validator: this.validators.validateDuplicateEntries(this.parties, 'Participant details already entered.') });
+    }, { validator: this.validators.validateDuplicateEntries(index, 'Participant details already entered.') });
   }
 
   public addRow($event: Event): void {
     this.errors = [];
     $event.preventDefault();
     ($event.target as HTMLElement).blur();
-    this.parties.push(this.initiateForm());
+    const index = this.parties.length;
+    this.parties.push(this.initiateForm(index));
     setTimeout(() => {
       this.renderer.selectRootElement('tr:last-child input').focus();
     }, 100);

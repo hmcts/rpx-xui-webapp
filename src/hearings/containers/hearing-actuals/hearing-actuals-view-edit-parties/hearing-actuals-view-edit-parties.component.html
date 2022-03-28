@@ -13,7 +13,8 @@
         </h1>
         <br>
 
-        <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" *ngIf="errors && errors.length"
+        <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert"
+             *ngIf="errors && errors.length"
              data-module="govuk-error-summary">
           <h2 class="govuk-error-summary__title" id="error-summary-title">
             There is a problem
@@ -53,13 +54,15 @@
                   </span>
                 </td>
               </tr>
-              <tr class="govuk-table__row" *ngIf="group.get('isParty').value" formGroupName="{{i}}" [id]="'participant'+ id">
+              <tr class="govuk-table__row" *ngIf="group.get('isParty').value" formGroupName="{{i}}"
+                  [id]="'participant'+ id">
                 <td class="govuk-table__cell">{{group.get('firstName').value}}</td>
                 <td class="govuk-table__cell">{{group.get('lastName').value}}</td>
                 <td class="govuk-table__cell">{{getRole(group.get('role').value)}}</td>
                 <td class="govuk-table__cell">
-                  <select class="govuk-select" formControlName="attendanceType" aria-label="Attendee type">
-                    <option>Please select</option>
+                  <select class="govuk-select" formControlName="attendanceType" aria-label="Attendee type"
+                          [ngClass]="{'govuk-select--error': highlightRowError(i, 'attendanceType')}">
+                    <option [ngValue]="null">Please select</option>
                     <ng-container *ngFor="let reason of partyChannel">
                       <option *ngIf="!reason.child_nodes" [ngValue]="reason.key">{{reason.value_en}}</option>
                       <ng-container *ngIf="reason.child_nodes">
@@ -74,11 +77,13 @@
 
               <tr class="govuk-table__row" *ngIf="!group.get('isParty').value" formGroupName="{{i}}">
                 <th scope="row" class="govuk-table__header">
-                  <input class="govuk-input" formControlName="firstName" type="text" aria-label="First name" maxlength="50"
+                  <input class="govuk-input" formControlName="firstName" type="text" aria-label="First name"
+                         maxlength="40"
                          [ngClass]="{'govuk-input--error': highlightRowError(i, 'firstName')}">
                 </th>
                 <th scope="row" class="govuk-table__header">
-                  <input class="govuk-input" formControlName="lastName" type="text" aria-label="Last name" maxlength="60"
+                  <input class="govuk-input" formControlName="lastName" type="text" aria-label="Last name"
+                         maxlength="60"
                          [ngClass]="{'govuk-input--error': highlightRowError(i, 'lastName')}">
                 </th>
                 <td class="govuk-table__cell">
@@ -109,7 +114,7 @@
                 <td class="govuk-table__cell">
 
                   <select class="govuk-select" formControlName="attendeeRepresenting"
-                          aria-label="Who was this attenddee representing?"
+                          aria-label="Who was this attendee representing?"
                           [ngClass]="{'govuk-select--error': highlightRowError(i, 'attendeeRepresenting')}">
                     <option value="Please select">Please select</option>
                     <option *ngFor="let participant of participants" value="{{ participant.id }}"

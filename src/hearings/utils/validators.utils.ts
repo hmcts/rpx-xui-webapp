@@ -150,10 +150,11 @@ export class ValidatorsUtils {
     return (formGroup: FormGroup) => ValidatorsUtils.validPauseTime(formGroup, pauseTime, startTimes, message, errorName);
   }
 
-  public validateDuplicateEntries(controls: FormArray, message: string): ValidatorFn {
+  public validateDuplicateEntries(index: number, message: string): ValidatorFn {
     return (formGroup: FormGroup) => {
-      const values: string[] = controls.controls
-        .filter((control, index) => index !== controls.controls.length - 1)
+      const parent = formGroup.parent as FormArray;
+      const values: string[] = parent && parent.controls
+        .filter((control, i) => i !== index)
         .map((c) => JSON.stringify(c.value));
       const value: string = JSON.stringify(formGroup.value);
       const formControlKeys = Object.keys(formGroup.controls);

@@ -193,10 +193,12 @@ describe('ValidatorsUtils', () => {
     });
     parties.push(form1);
     parties.push(form2);
-    const result = service.validateDuplicateEntries(parties, 'Duplicate entry')(new FormGroup({
+    const evaluatedForm =  new FormGroup({
       start: new FormControl('12:00'),
       end: new FormControl('13:00'),
-    }) as FormGroup);
+    }) as FormGroup;
+    evaluatedForm.setParent(parties);
+    const result = service.validateDuplicateEntries(1, 'Duplicate entry')(evaluatedForm);
     expect(result.hasOwnProperty('duplicateEntries')).toBeTruthy();
 
   }));

@@ -4,11 +4,13 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { SpecificAccessReviewComponent } from './specific-access-review.component';
 import { State } from '../../../../app/store';
+import { SpecificAccessNavigationEvent } from '../../../models';
+import { Observable } from 'rxjs';
 
-describe('ChooseExclusionComponent', () => {
+describe('SpecificAccessReviewComponent', () => {
   let component: SpecificAccessReviewComponent;
   let fixture: ComponentFixture<SpecificAccessReviewComponent>;
-  let store: MockStore<State>;
+  let mockStore: MockStore<State>;
 
   let spyOnPipeToStore = jasmine.createSpy();
   let spyOnStoreDispatch = jasmine.createSpy();
@@ -26,9 +28,9 @@ describe('ChooseExclusionComponent', () => {
   }));
 
   beforeEach(() => {
-    store = TestBed.get(Store);
-    spyOnPipeToStore = spyOn(store, 'pipe').and.callThrough();
-    spyOnStoreDispatch = spyOn(store, 'dispatch');
+    mockStore = TestBed.get(Store);
+    spyOnPipeToStore = spyOn(mockStore, 'pipe').and.callThrough();
+    spyOnStoreDispatch = spyOn(mockStore, 'dispatch');
     fixture = TestBed.createComponent(SpecificAccessReviewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -41,5 +43,23 @@ describe('ChooseExclusionComponent', () => {
   afterEach(() => {
     component = null;
     fixture.destroy();
+  });
+
+  describe('navigation', () => {
+
+    it('should correctly navigate on click of continue button', () => {
+      component.navigationHandler(SpecificAccessNavigationEvent.CONTINUE);
+      expect(mockStore.dispatch).toHaveBeenCalled();
+    });
+
+  });
+
+  describe('onDestroy()', () => {
+    it('should unsubscribe', () => {
+      component.specificAccessStateDataSub = new Observable().subscribe();
+      spyOn(component.specificAccessStateDataSub, 'unsubscribe').and.callThrough();
+      component.ngOnDestroy();
+      expect(component.specificAccessStateDataSub.unsubscribe).toHaveBeenCalled();
+    });
   });
 });

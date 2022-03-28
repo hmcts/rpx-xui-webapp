@@ -3,6 +3,7 @@ import { ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap, take } from 'rxjs/operators';
+import { SessionStorageService } from '../../app/services';
 import { HearingCategory } from '../models/hearings.enum';
 import { LovRefDataModel } from '../models/lovRefData.model';
 import { LovRefDataService } from '../services/lov-ref-data.service';
@@ -12,12 +13,14 @@ import * as fromHearingStore from '../store';
   providedIn: 'root'
 })
 export class RefDataResolver implements Resolve<LovRefDataModel[]> {
+  private readonly lovKey = 'lov';
   public serviceId: string = '';
 
   constructor(
     protected readonly lovRefDataService: LovRefDataService,
     protected readonly hearingStore: Store<fromHearingStore.State>,
-    protected readonly router: Router
+    protected readonly router: Router,
+    protected readonly sessionStorageService: SessionStorageService
   ) { }
 
   public resolve(route?: ActivatedRouteSnapshot): Observable<LovRefDataModel[]> {
@@ -41,6 +44,8 @@ export class RefDataResolver implements Resolve<LovRefDataModel[]> {
   }
 
   public getReferenceData$(serviceId, category: HearingCategory, isChildRequired): Observable<LovRefDataModel[]> {
+    // Get 
+    this.sessionStorageService.getItem(this.lovKey);
     return this.lovRefDataService.getListOfValues(category, serviceId, isChildRequired).pipe(
       catchError(() => {
         this.router.navigate(['/hearings/error']);
@@ -48,4 +53,6 @@ export class RefDataResolver implements Resolve<LovRefDataModel[]> {
       })
     );
   }
+
+  
 }

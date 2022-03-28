@@ -23,6 +23,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public upcomingStatus: EXUISectionStatusEnum = EXUISectionStatusEnum.UPCOMING;
   public pastAndCancelledHearings$: Observable<HearingListViewModel[]>;
   public pastAndCancelledStatus: EXUISectionStatusEnum = EXUISectionStatusEnum.PAST_AND_CANCELLED;
+  public hearingState$: Observable<fromHearingStore.State>;
   public hearingsActions: Actions[] = [Actions.READ];
   public userRoles$: Observable<string[]>;
   public hearingsLastErrorState$: Observable<fromHearingStore.State>;
@@ -122,14 +123,14 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   }
 
   public createHearingRequest(): void {
+    this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
     const hearingCondition: HearingConditions = {
       mode: Mode.CREATE,
       isInit: true,
       caseId: this.caseId
     };
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
     this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
-    this.router.navigate(['/', 'hearings', 'request']).then();
+    this.router.navigate(['/', 'hearings', 'request']);
   }
 
   public ngOnDestroy(): void {

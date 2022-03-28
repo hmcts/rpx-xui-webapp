@@ -152,6 +152,22 @@ describe('Hearing Request Reducer', () => {
       });
     });
 
+    describe('reset hearing actuals last error action', () => {
+      it('should set correct object', () => {
+        const initialHearingRequestState: HearingRequestStateData = {
+          hearingRequestMainModel: null,
+          lastError: {
+            status: 403,
+            errors: null,
+            message: 'Http failure response: 403 Forbidden'
+          },
+        };
+        const action = new fromHearingRequestActions.ResetHearingRequestLastError();
+        const hearingsState = fromHearingRequestReducer.hearingRequestReducer(initialHearingRequestState, action);
+        expect(hearingsState.lastError).toEqual(null);
+      });
+    });
+
     describe('Update hearing request failure', () => {
       it('should call error response action', () => {
         const initialHearingRequestState: HearingRequestStateData = {

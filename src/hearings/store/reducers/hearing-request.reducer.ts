@@ -91,6 +91,12 @@ export function hearingRequestReducer(currentState = initialHearingRequestState,
         lastError: action.payload
       };
     }
+    case fromActions.RESET_HEARING_REQUEST_LAST_ERROR: {
+      return {
+        ...currentState,
+        lastError: null
+      }
+    }
     default: {
       return {
         ...currentState,

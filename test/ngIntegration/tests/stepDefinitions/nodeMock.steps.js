@@ -29,6 +29,16 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         });        
     });
 
+    Given('I navigate page route {string}, wait for locator {string}', async function (routeUrl,locator) {
+        await browser.get(routeUrl);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await headerpage.waitForPrimaryNavDisplay();
+            await browserUtil.waitForLD();
+            await BrowserWaits.waitForElement($(locator));
+        });
+    });
+
+
     Given('I init MockApp', async function () {
         MockApp.init();
     });
@@ -58,7 +68,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         }
 
         const userDetails = nodeAppMockData.getUserDetailsWithRoles(roles);
-        CucumberReporter.AddJson(userDetails)
        
      });
 

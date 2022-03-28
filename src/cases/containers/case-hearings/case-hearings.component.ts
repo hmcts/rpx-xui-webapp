@@ -26,7 +26,6 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public hearingState$: Observable<fromHearingStore.State>;
   public hearingsActions: Actions[] = [Actions.READ];
   public userRoles$: Observable<string[]>;
-  public sub: Subscription;
   public hearingsLastErrorState$: Observable<fromHearingStore.State>;
   public lastErrorSubscription: Subscription;
   public hasRequestAction: boolean = false;
@@ -135,9 +134,6 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    if (this.sub) {
-      this.sub.unsubscribe();
-    }
     if (this.lastErrorSubscription) {
       this.lastErrorSubscription.unsubscribe();
     }

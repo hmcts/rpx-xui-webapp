@@ -388,10 +388,10 @@ describe('CaseHearingsComponent', () => {
   });
 
   it('should unsubscribe', () => {
-    component.sub = new Observable().subscribe();
-    spyOn(component.sub, 'unsubscribe').and.callThrough();
+    component.lastErrorSubscription = new Observable().subscribe();
+    spyOn(component.lastErrorSubscription, 'unsubscribe').and.callThrough();
     component.ngOnDestroy();
-    expect(component.sub.unsubscribe).toHaveBeenCalled();
+    expect(component.lastErrorSubscription.unsubscribe).toHaveBeenCalled();
   });
 
   it('should set hearings actions', () => {

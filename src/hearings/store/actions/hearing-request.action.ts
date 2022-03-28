@@ -8,7 +8,6 @@ export const UPDATE_HEARING_REQUEST = '[HEARING REQUEST] Update Hearing Request'
 export const UPDATE_HEARING_REQUEST_FAILURE = '[HEARING REQUEST] Update Hearing Request Failure';
 export const INITIALIZE_HEARING_REQUEST = '[HEARING REQUEST] Initialize Hearing Request';
 export const LOAD_HEARING_REQUEST = '[HEARING REQUEST] Load Hearing Request';
-export const LOAD_HEARING_REQUEST_FAILURE = '[HEARING REQUEST] Load Hearing Request Failure';
 export const SUBMIT_HEARING_REQUEST = '[HEARING REQUEST] Submit Hearing Request';
 export const SUBMIT_HEARING_REQUEST_FAILURE = '[HEARING REQUEST] Submit Hearing Request Failure';
 export const VIEW_EDIT_SUBMIT_HEARING_REASON = '[HEARING REQUEST AMEND] View Edit Submit Hearing Reason';
@@ -34,13 +33,6 @@ export class LoadHearingRequest implements Action {
   public readonly type = LOAD_HEARING_REQUEST;
 
   constructor(public payload: { hearingID: string, targetURL: string }) {
-  }
-}
-
-export class LoadHearingRequestFailure implements Action {
-  public readonly type = LOAD_HEARING_REQUEST_FAILURE
-
-  constructor(public payload: HttpError) {
   }
 }
 
@@ -95,7 +87,6 @@ export type HearingRequestAction =
   | NavigateBackHearingRequest
   | InitializeHearingRequest
   | LoadHearingRequest
-  | LoadHearingRequestFailure
   | UpdateHearingRequest
   | UpdateHearingRequestFailure
   | SubmitHearingRequest

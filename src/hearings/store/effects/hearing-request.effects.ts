@@ -104,7 +104,6 @@ export class HearingRequestEffects {
             }
           }),
         catchError(error => {
-          this.hearingStore.dispatch(new hearingRequestActions.LoadHearingRequestFailure(error));
           return HearingRequestEffects.handleError(error);
         })
       );

@@ -522,13 +522,6 @@ describe('CaseHearingsListComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should unsubscribe', () => {
-    component.sub = new Observable().subscribe();
-    spyOn(component.sub, 'unsubscribe').and.callThrough();
-    component.ngOnDestroy();
-    expect(component.sub.unsubscribe).toHaveBeenCalled();
-  });
-
   it('Should show only past and cancelling', () => {
     component.status = EXUISectionStatusEnum.UPCOMING;
     fixture.detectChanges();

@@ -80,7 +80,6 @@ export function hearingRequestReducer(currentState = initialHearingRequestState,
         lastError: null
       };
     }
-    case fromActions.LOAD_HEARING_REQUEST_FAILURE:
     case fromActions.SUBMIT_HEARING_REQUEST_FAILURE:
     case fromActions.UPDATE_HEARING_REQUEST_FAILURE: {
       return {

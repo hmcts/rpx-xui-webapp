@@ -1,8 +1,7 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { combineLatest, Observable, Subscription } from 'rxjs';
-import { HttpError } from '../../../models/httpError.model';
+import { Observable } from 'rxjs';
 import { HearingConditions } from '../../../hearings/models/hearingConditions';
 import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
 import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, Mode } from '../../../hearings/models/hearings.enum';
@@ -14,7 +13,7 @@ import * as fromHearingStore from '../../../hearings/store';
   styleUrls: ['./case-hearings-list.component.scss']
 })
 
-export class CaseHearingsListComponent implements OnInit, OnDestroy {
+export class CaseHearingsListComponent implements OnInit {
   @Input()
   public status: EXUISectionStatusEnum;
 
@@ -27,7 +26,6 @@ export class CaseHearingsListComponent implements OnInit, OnDestroy {
   public hasUpdateAction: boolean = false;
   public hasDeleteAction: boolean = false;
   public hasReadOnlyAction: boolean = false;
-  public sub: Subscription;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly activatedRoute: ActivatedRoute,
@@ -49,12 +47,6 @@ export class CaseHearingsListComponent implements OnInit, OnDestroy {
       if (this.actions.length === 1 && this.actions.includes(Actions.READ)) {
         this.hasReadOnlyAction = true;
       }
-    }
-  }
-
-  public ngOnDestroy(): void {
-    if (this.sub) {
-      this.sub.unsubscribe();
     }
   }
 

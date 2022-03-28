@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { Answer, SpecificAccessNavigationEvent } from '../../../models';
+import { Answer, SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
 import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
 import * as fromFeature from '../../../store';
 
@@ -31,7 +31,8 @@ export class SpecificAccessDeniedComponent implements OnDestroy {
 
   public navigationHandler(navEvent: SpecificAccessNavigationEvent) {
     switch (navEvent) {
-      case SpecificAccessNavigationEvent.CONTINUE:
+      case SpecificAccessNavigationEvent.RETURNTOMYTASKS:
+        this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_APPROVED));
         break;
       default:
         throw new Error('Invalid option');

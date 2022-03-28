@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { SpecificAccessNavigationEvent } from '../../../models';
+import { SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
 import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
 import * as fromFeature from '../../../store';
 
@@ -12,10 +12,9 @@ import * as fromFeature from '../../../store';
 export class SpecificAccessInformationComponent implements OnDestroy {
 
   @Input() public navEvent: SpecificAccessNavigation;
-  @Input() public title = '';
-  @Input() public caption = '';
+  @Input() public title = 'Request more information';
+  @Input() public caption = 'Reject specific access request';
 
-  public submitted = true;
   public subscription: Subscription;
 
   constructor(public readonly store: Store<fromFeature.State>) {
@@ -27,6 +26,9 @@ export class SpecificAccessInformationComponent implements OnDestroy {
 
   public dispatchEvent(navEvent: SpecificAccessNavigationEvent) {
     switch (navEvent) {
+      case SpecificAccessNavigationEvent.BACK:
+        this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_REVIEW));
+        break;
       default:
         throw new Error('Not yet implemented');
     }

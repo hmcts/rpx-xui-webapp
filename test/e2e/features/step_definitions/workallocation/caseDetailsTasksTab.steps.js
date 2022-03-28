@@ -149,6 +149,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         
     });
 
+    When('I click next step {string} for task with name {string}', async function(linkText, taskName){
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await caseDetailsTaskTabPage.clickTaskNextStepLink(taskName, linkText) 
+        });
+    });
+
 
 });
 

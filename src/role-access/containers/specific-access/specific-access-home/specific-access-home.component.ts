@@ -93,10 +93,8 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
           case SpecificAccessState.SPECIFIC_ACCESS_DURATION:
             this.specificAccessDurationComponent.navigationHandler(navEvent);
             break;
-          case SpecificAccessState.SPECIFIC_ACCESS_APPROVED:
-            this.specificAccessDurationComponent.navigationHandler(navEvent);
-            break;
           default:
+            break;
           // throw new Error('Invalid specific access state');
         }
         break;

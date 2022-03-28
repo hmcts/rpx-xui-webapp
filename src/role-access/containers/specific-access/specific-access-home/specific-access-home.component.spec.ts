@@ -11,18 +11,18 @@ import { UtilsModule } from '../../../../noc/containers/noc-field/utils/utils.mo
 import * as fromFeature from '../../../store';
 import * as fromContainers from '../../add-exclusion';
 import { SpecificAccessHomeComponent } from './specific-access-home.component';
-import { SpecificAccessState } from '../../../models';
-import { of } from 'rxjs';
+import { SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
+import { SpecificAccessReviewComponent } from '../specific-access-review/specific-access-review.component';
+import { SpecificAccessDurationComponent } from '../specific-access-duration/specific-access-duration.component';
 
-describe('SpecificAccessHomeComponent', () => {
+fdescribe('SpecificAccessHomeComponent', () => {
   let component: SpecificAccessHomeComponent;
   let fixture: ComponentFixture<SpecificAccessHomeComponent>;
   const routerMock = jasmine.createSpyObj('Router', [
     'navigateByUrl'
   ]);
-  let store: MockStore<fromFeature.State>;
-  let storePipeMock: any;
-
+  let mockStore: MockStore<fromFeature.State>;
+  let storeDispatchMock: any;
   const specificAccessStateData = {
     caseId: '111111',
     state: SpecificAccessState.SPECIFIC_ACCESS_REVIEW
@@ -42,6 +42,7 @@ describe('SpecificAccessHomeComponent', () => {
       ],
       declarations: [
         SpecificAccessHomeComponent,
+        SpecificAccessReviewComponent,
         ...fromContainers.containers
       ],
       providers: [
@@ -63,9 +64,8 @@ describe('SpecificAccessHomeComponent', () => {
       ]
     })
       .compileComponents();
-    store = TestBed.get(Store);
-    storePipeMock = spyOn(store, 'pipe');
-    storePipeMock.and.returnValue(of(specificAccessStateData));
+    mockStore = TestBed.get(Store);
+    storeDispatchMock = spyOn(mockStore, 'dispatch').and.callThrough();
     fixture = TestBed.createComponent(SpecificAccessHomeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -77,5 +77,45 @@ describe('SpecificAccessHomeComponent', () => {
 
   afterEach(() => {
     fixture.destroy();
+  });
+
+  describe('navigation', () => {
+    const backNavEvent = SpecificAccessNavigationEvent.BACK;
+    const continueNavEvent = SpecificAccessNavigationEvent.CONTINUE;
+    const returnToMyTasksNavEvent = SpecificAccessNavigationEvent.RETURNTOMYTASKS;
+    const returnTasksTab = SpecificAccessNavigationEvent.RETURNTOTASKSTAB;
+
+    it('should correctly navigate to the specific access review page on navigating back', () => {
+      component.navigationCurrentState = SpecificAccessState.SPECIFIC_ACCESS_DURATION;
+      component.navigationHandler(backNavEvent);
+      expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_REVIEW));
+    });
+
+    it('should correctly navigate to the specific access duration page on pressing continue on the specific access review page', () => {
+      component.specificAccessReviewComponent = new SpecificAccessReviewComponent(mockStore);
+      component.navigationCurrentState = SpecificAccessState.SPECIFIC_ACCESS_REVIEW;
+      component.navigationHandler(continueNavEvent);
+      expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_DURATION));
+    });
+
+    it('should correctly navigate to the specific access approved page on pressing continue on the specific access duration page', () => {
+      component.specificAccessDurationComponent = new SpecificAccessDurationComponent(mockStore);
+      component.navigationCurrentState = SpecificAccessState.SPECIFIC_ACCESS_DURATION;
+      component.navigationHandler(continueNavEvent);
+      expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_APPROVED));
+    });
+
+    it('should correctly redirect to the work list if the return to tasks event is triggered', () => {
+      component.navigationHandler(returnToMyTasksNavEvent);
+      expect(routerMock.navigateByUrl).toHaveBeenCalledWith(`/work/list`);
+    });
+
+    it('should correctly redirect to the tasks tab on the case details page if the return to my tasks event is triggered', () => {
+      const caseId = '111111';
+      component.caseId = caseId;
+      component.navigationHandler(returnTasksTab);
+      expect(routerMock.navigateByUrl).toHaveBeenCalledWith(`/cases/case-details/${caseId}/roles-and-access`);
+    });
+
   });
 });

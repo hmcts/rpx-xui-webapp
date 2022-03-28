@@ -1,4 +1,4 @@
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
@@ -6,24 +6,13 @@ import { SpecificAccessDurationComponent } from './specific-access-duration.comp
 import { SpecificAccessStateData, SpecificAccessState, SpecificAccessNavigationEvent } from '../../../models';
 import { DurationType } from '../../../models/enums';
 import { DurationHelperService } from '../../../services';
-
 import createSpyObj = jasmine.createSpyObj;
 
 describe('SpecificAccessDurationComponent', () => {
   let component: SpecificAccessDurationComponent;
   let fixture: ComponentFixture<SpecificAccessDurationComponent>;
-  let durationHelperService: DurationHelperService;
 
   beforeEach(async(() => {
-    durationHelperService = createSpyObj('durationHelperService', [
-      'getInputClass',
-      'getTodaysDate',
-      'getDateInFuture',
-      'getDateFromControls',
-      'convertDateControlsToString',
-      'checkDates'
-    ]);
-
     TestBed.configureTestingModule({
       imports: [
         ExuiCommonLibModule,
@@ -34,7 +23,7 @@ describe('SpecificAccessDurationComponent', () => {
       declarations: [SpecificAccessDurationComponent],
       providers: [
         FormBuilder,
-        { provide: DurationHelperService, useValue: durationHelperService }
+        { provide: DurationHelperService, useClass: DurationHelperService }
       ]
     });
   }));
@@ -125,6 +114,14 @@ describe('SpecificAccessDurationComponent', () => {
       }).toThrow(new Error('Invalid option'));
     });
 
+    it('should throw an error if Period is undefined', () => {
+      // TODO: this will need to be updated when specific access is wired up correctly with state, added to increase code coverage for now
+      component.selectedDuration = DurationType.ANOTHER_PERIOD;
+      expect(() => {
+        component.navigationHandler(SpecificAccessNavigationEvent.CONTINUE);
+      }).toThrow(new Error('Invalid period'));
+    });
+
   });
 
   describe('getPeriod', () => {
@@ -137,6 +134,62 @@ describe('SpecificAccessDurationComponent', () => {
     it('should return a Period object for INDEFINITE duration type', () => {
       const period = component.getPeriod(DurationType.INDEFINITE);
       expect(period.hasOwnProperty('startDate') && period.hasOwnProperty('endDate')).toEqual(true);
+    });
+
+    it('should return a Period object for ANOTHER_PERIOD duration type', () => {
+      // fake form group and form control values
+      component.startDateDayCtrl = new FormControl(7);
+      component.startDateMonthCtrl = new FormControl(7);
+      component.startDateYearCtrl = new FormControl(2025);
+
+      component.endDateDayCtrl = new FormControl(8);
+      component.endDateMonthCtrl = new FormControl(7);
+      component.endDateYearCtrl = new FormControl(2025);
+
+      component.formGroup = new FormGroup({});
+
+      const period = component.getPeriod(DurationType.ANOTHER_PERIOD);
+      expect(period.hasOwnProperty('startDate') && period.hasOwnProperty('endDate')).toEqual(true);
+    });
+
+    it('should display invalid date messages', () => {
+      component.startDateDayCtrl = new FormControl(99);
+      component.startDateMonthCtrl = new FormControl(99);
+      component.startDateYearCtrl = new FormControl(2025);
+
+      component.endDateDayCtrl = new FormControl(99);
+      component.endDateMonthCtrl = new FormControl(99);
+      component.endDateYearCtrl = new FormControl(2025);
+
+      component.getPeriod(DurationType.ANOTHER_PERIOD);
+      expect(component.startDateErrorMessage).toEqual({ isInvalid : true, "messages": [ "Invalid Start date" ] });
+      expect(component.endDateErrorMessage).toEqual({ isInvalid : true, "messages": [ "Invalid End date" ] });
+    });
+
+    it('should display start date in past error message', () => {
+      component.startDateDayCtrl = new FormControl(1);
+      component.startDateMonthCtrl = new FormControl(1);
+      component.startDateYearCtrl = new FormControl(2021);
+
+      component.endDateDayCtrl = new FormControl(2);
+      component.endDateMonthCtrl = new FormControl(1);
+      component.endDateYearCtrl = new FormControl(2021);
+
+      component.getPeriod(DurationType.ANOTHER_PERIOD);
+      expect(component.startDateErrorMessage).toEqual({ isInvalid : true, messages: ['The access start date must not be in the past'] });
+    });
+
+    it('should display end date must be after start date message', () => {
+      component.startDateDayCtrl = new FormControl(2);
+      component.startDateMonthCtrl = new FormControl(1);
+      component.startDateYearCtrl = new FormControl(2021);
+
+      component.endDateDayCtrl = new FormControl(1);
+      component.endDateMonthCtrl = new FormControl(1);
+      component.endDateYearCtrl = new FormControl(2021);
+
+      component.getPeriod(DurationType.ANOTHER_PERIOD);
+      expect(component.endDateErrorMessage).toEqual( { isInvalid: true, messages: ['The access end date must be after the access start date']});
     });
 
   });

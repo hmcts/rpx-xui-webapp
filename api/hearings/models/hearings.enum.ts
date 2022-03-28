@@ -27,7 +27,7 @@ export enum LaCaseStatus {
   HEARING_COMPLETED = 'Hearing Completed',
   CASE_CLOSED = 'Case Closed',
   CANCELLED = 'Cancelled',
-  EXCEPTION = 'Request failure'
+  EXCEPTION = 'Request failure',
 }
 
 export enum ListingStatus {

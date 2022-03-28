@@ -239,6 +239,7 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
         answerTitle: 'Enter any additional instructions for the hearing',
         answerSource: AnswerSource.ADDITIONAL_INSTRUCTION,
         changeLink: '/hearings/request/hearing-additional-instructions#additionalInstructionsTextarea',
+        isAmendedSource: AnswerSource.ADDITIONAL_INSTRUCTION,
       },
     ],
   },

@@ -8,6 +8,7 @@ import {AppConstants} from '../../app/app.constants';
 import {UserDetails} from '../../app/models';
 import * as fromActions from '../../app/store';
 import {RoleCategory} from '../models';
+import { SessionStorageService } from 'src/app/services/session-storage/session-storage.service';
 
 @Injectable()
 export class BookingGuard implements CanActivate {
@@ -15,12 +16,21 @@ export class BookingGuard implements CanActivate {
 
   constructor(private readonly router: Router,
               private readonly store: Store<fromActions.State>,
-              private readonly featureToggleService: FeatureToggleService) {
+              private readonly featureToggleService: FeatureToggleService,
+              private readonly sessionStorageService: SessionStorageService) {
   }
 
   public hasAccess(userDetails: UserDetails): boolean {
     const { roleAssignmentInfo, userInfo } = userDetails;
     return userInfo.roleCategory === RoleCategory.JUDICIAL && roleAssignmentInfo.some( roleAssignment => 'bookable' in roleAssignment && roleAssignment.bookable === true );
+  }
+
+  private isJourneyCompleted(): boolean {
+    const journeyCompleted = this.sessionStorageService.getItem('JourneyCompleted');
+    if (journeyCompleted && journeyCompleted == 'true' ) {
+      return false;
+    }
+    return true;
   }
 
   public canActivate(): Observable<boolean> {
@@ -31,7 +41,7 @@ export class BookingGuard implements CanActivate {
       if (!bookingFeatureToggle) {
         return false;
       }
-      return this.hasAccess(userDetails);
+      return this.hasAccess(userDetails) && this.isJourneyCompleted();
     })).pipe(tap(hasAccesss => {
       if (!hasAccesss) {
         this.router.navigate([BookingGuard.defaultUrl]);

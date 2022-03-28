@@ -13,7 +13,7 @@ export const ROUTES: Routes = [
         path: '',
         component: BookingHomeComponent,
         // it will be activated in later stages
-        // canActivate: [BookingGuard],
+        canActivate: [BookingGuard],
         data: {
           title: 'Booking'
         }

@@ -9,5 +9,5 @@ import { HearingSummaryEnum, Mode } from '../../../models/hearings.enum';
 export class HearingRequestFailedSummaryComponent {
   public template = HEARING_REQUEST_FAILED_SUMMARY_TEMPLATE;
   public mode = Mode.VIEW;
-  public requestErrors = [{id: 'request-failed',  message: HearingSummaryEnum.RequestFailedError}];
+  public requestErrors = [{ id: 'request-failed', message: HearingSummaryEnum.RequestFailedError }];
 }

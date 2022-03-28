@@ -10,7 +10,7 @@ export class DateRequestFailedAnswerConverter implements AnswerConverter {
     return hearingState$.pipe(
       map(state => {
         const hearingResponse = state.hearingRequest.hearingRequestMainModel.hearingResponse;
-        return moment(hearingResponse.errorTimestamp).format(HearingDateEnum.DisplayDateAndTime);
+        return moment(hearingResponse.errorTimestamp).format(HearingDateEnum.RequestFailedDateAndTime);
       })
     );
   }

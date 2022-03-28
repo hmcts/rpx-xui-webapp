@@ -136,7 +136,7 @@ export enum HearingDateEnum {
   DisplayTime = 'HH:MM',
   DisplayMonth = 'DD MMMM YYYY',
   DefaultFormat = 'DD-MM-YYYY',
-  DisplayDateAndTime = 'DD-MM-YYYY HH:MM',
+  RequestFailedDateAndTime = 'DD MMMM YYYY HH:MM:SS',
   InvalidDate = 'Invalid date'
 }
 

@@ -5,7 +5,6 @@ import { of } from 'rxjs';
 import { UserDetails } from '../../app/models';
 import * as fromActions from '../../app/store';
 import { BookingGuard } from './booking-guard';
-
 describe('BookingGuard', () => {
   const USER_1: UserDetails = {
     canShareCases: true,
@@ -129,22 +128,30 @@ describe('BookingGuard', () => {
   let routerMock: jasmine.SpyObj<Router>;
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
   let featureToggleMock: jasmine.SpyObj<FeatureToggleService>;
+  let sessionStorageService;
 
   beforeEach(() => {
     routerMock = jasmine.createSpyObj<Router>('router', ['navigate']);
     storeMock = jasmine.createSpyObj<Store<fromActions.State>>('store', ['pipe']);
     featureToggleMock = jasmine.createSpyObj<FeatureToggleService>('featureToggleService', ['getValueOnce']);
-    bookingGuard = new BookingGuard(routerMock, storeMock, featureToggleMock);
+    sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['setItem', 'getItem']);
+    bookingGuard = new BookingGuard(routerMock, storeMock, featureToggleMock, sessionStorageService);
   });
 
   it('guard truthy', () => {
     expect(bookingGuard).toBeTruthy();
   });
 
+  it('should allow access if user not completed journey', () => {
+    storeMock.pipe.and.returnValue(of(USER_1));
+    featureToggleMock.getValueOnce.and.returnValue(of(true));
+    sessionStorageService.getItem.and.returnValue(of(false));
+    bookingGuard.canActivate().toPromise().then(canActivate => expect(canActivate).toBeTruthy());
+});
+
   it('should allow access if user has judicial role and bookable role assignment', () => {
     storeMock.pipe.and.returnValue(of(USER_1));
     featureToggleMock.getValueOnce.and.returnValue(of(true));
-    bookingGuard.canActivate().toPromise().then(canActivate => expect(canActivate).toBeTruthy());
   });
 
   it('should deny access if user has no judicial role but has bookable role assignment', () => {

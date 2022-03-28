@@ -6,6 +6,7 @@ import {Action, select, Store} from '@ngrx/store';
 import {Observable, of} from 'rxjs';
 import {catchError, map, switchMap, tap} from 'rxjs/operators';
 import * as fromAppStoreActions from '../../../app/store/actions';
+import * as fromAppReducers from '../../../app/store/reducers';
 import {HttpError} from '../../../models/httpError.model';
 import {KEY_FRAGMENT_ID, KEY_MODE} from '../../models/hearingConditions';
 import {Mode} from '../../models/hearings.enum';
@@ -32,6 +33,7 @@ export class HearingRequestEffects {
     private readonly pageFlow: AbstractPageFlow,
     private readonly router: Router,
     private readonly location: Location,
+    private readonly appStore: Store<fromAppReducers.State>
   ) {
     this.screenNavigations$ = this.hearingStore.pipe(select(fromHearingSelectors.getHearingValuesModel)).pipe(
       map(hearingValuesModel => hearingValuesModel ? hearingValuesModel.screenFlow : []));
@@ -97,14 +99,15 @@ export class HearingRequestEffects {
     switchMap(payload => {
       return this.hearingsService.loadHearingRequest(payload.hearingID).pipe(
         tap(hearingRequestMainModel => {
-            this.hearingStore.dispatch(new hearingRequestToCompareActions.InitializeHearingRequestToCompare(hearingRequestMainModel));
-            this.hearingStore.dispatch(new hearingRequestActions.InitializeHearingRequest(hearingRequestMainModel));
-            if (payload.targetURL) {
-              this.router.navigateByUrl(payload.targetURL);
-            }
-          }),
+          this.hearingStore.dispatch(new hearingRequestToCompareActions.InitializeHearingRequestToCompare(hearingRequestMainModel));
+          this.hearingStore.dispatch(new hearingRequestActions.InitializeHearingRequest(hearingRequestMainModel));
+          if (payload.targetURL) {
+            this.router.navigateByUrl(payload.targetURL);
+          }
+        }),
         catchError(error => {
-          return HearingRequestEffects.handleError(error);
+          this.appStore.dispatch(new fromAppStoreActions.Go({path: ['/hearings/error']}));
+          return of(error);
         })
       );
     })

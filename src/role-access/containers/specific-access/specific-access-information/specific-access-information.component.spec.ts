@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { SpecificAccessNavigationEvent } from '../../../models';
 import { SpecificAccessInformationComponent } from './specific-access-information.component';
 
-fdescribe('DescribeExclusionComponent', () => {
+describe('DescribeExclusionComponent', () => {
   let component: SpecificAccessInformationComponent;
   let mockStore: any;
 

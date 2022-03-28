@@ -174,6 +174,7 @@ const partyChannel = [
   },
 ];
 
+
 describe('HearingViewEditSummaryComponent', () => {
   let store: Store<any>;
   let component: HearingActualsViewEditPartiesComponent;
@@ -236,7 +237,17 @@ describe('HearingViewEditSummaryComponent', () => {
     addBtn.nativeElement.click();
     fixture.detectChanges();
     expect(component.parties.get([component.parties.length - 1]).value)
-      .toEqual(jasmine.objectContaining({ firstName: '', lastName: '', isParty: false }));
+      .toEqual(jasmine.objectContaining(
+        {
+          firstName: null,
+          lastName: null,
+          isParty: false,
+          role: null,
+          attendanceType:
+            null,
+          organisation: null
+        }))
+    ;
   });
 
   it('should remove a FormGroup from the FormArray', () => {
@@ -255,10 +266,73 @@ describe('HearingViewEditSummaryComponent', () => {
     expect(component.parties.length).toEqual(2);
   });
 
-  it('submit form should prevent default', () => {
+  it('should submit form with correct details', () => {
+    const addBtn = fixture.debugElement.query(By.css('.btn-add'));
+    addBtn.nativeElement.click();
+    fixture.detectChanges();
+    component.parties.get([0]).patchValue({
+      attendeeRepresenting: 'Mary',
+    });
+    component.parties.get([1]).patchValue({
+      attendeeRepresenting: 'Mary',
+    });
+    component.parties.get([component.parties.length - 1]).patchValue({
+      firstName: 'Peter',
+      lastName: 'Jones',
+      isParty: false,
+      role: 'Claimant',
+      attendanceType: 'inPerson',
+      attendeeRepresenting: 'Mary',
+      organisation: null
+    });
+    fixture.detectChanges();
     spyOn(store, 'dispatch');
-    component.submitForm(component.partiesTable.value);
+    component.submitForm(component.form.value, component.form.valid);
     expect(store.dispatch).toHaveBeenCalled();
+  });
+
+  it('should mark form as invalid if some of the values are missing', () => {
+    const addBtn = fixture.debugElement.query(By.css('.btn-add'));
+    addBtn.nativeElement.click();
+    fixture.detectChanges();
+    component.parties.get([component.parties.length - 1]).patchValue({
+      firstName: '',
+      lastName: '',
+      isParty: false,
+    });
+    component.submitForm(component.form.value, component.form.valid);
+    expect(component.parties.get([component.parties.length - 1]).valid).toBeFalsy();
+    expect(component.form.valid).toBeFalsy();
+  });
+
+  it('should mark one of the fields with duplicate entry identified', () => {
+    const addBtn = fixture.debugElement.query(By.css('.btn-add'));
+    addBtn.nativeElement.click();
+    addBtn.nativeElement.click();
+    fixture.detectChanges();
+    component.parties.get([component.parties.length - 2]).patchValue({
+      firstName: 'Peter',
+      lastName: 'Jones',
+      isParty: false,
+      role: 'Claimant',
+      attendanceType: 'inPerson',
+      attendeeRepresenting: 'Mary',
+      organisation: null
+    });
+    component.parties.get([component.parties.length - 1]).patchValue({
+      firstName: 'Peter',
+      lastName: 'Jones',
+      isParty: false,
+      role: 'Claimant',
+      attendanceType: 'inPerson',
+      attendeeRepresenting: 'Mary',
+      organisation: null
+    });
+    fixture.detectChanges();
+    component.submitForm(component.form.value, component.form.valid);
+    expect(component.parties.get([component.parties.length - 1]).valid).toBeFalsy();
+    expect(component.parties.get([component.parties.length - 1]).hasError('duplicateEntries')).toBeTruthy();
+    expect(component.form.valid).toBeFalsy();
   });
 
   afterEach(() => {
@@ -348,7 +422,7 @@ describe('HearingViewEditSummaryComponent add actual participants', () => {
   });
 
   it('should create form with actual parties involved', () => {
-    const parties: any = component.partiesTable.value;
+    const parties: any = component.form.value;
     expect(parties.parties.length).toBe(3);
   });
 

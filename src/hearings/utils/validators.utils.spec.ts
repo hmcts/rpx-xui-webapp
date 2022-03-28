@@ -179,4 +179,27 @@ describe('ValidatorsUtils', () => {
     expect(form.hasError('invalidPauseEndTimeRange')).toBeTruthy();
     expect(form.getError('invalidPauseEndTimeRange').resume.message).toBe('Resume time must be between the hearing start and finish times');
   }));
+
+
+  it('should detect duplicate entries', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
+    const parties = new FormArray([]);
+    const form1 = new FormGroup({
+      start: new FormControl('12:00'),
+      end: new FormControl('13:00'),
+    });
+    const form2 = new FormGroup({
+      start: new FormControl('22:00'),
+      end: new FormControl('24:00'),
+    });
+    parties.push(form1);
+    parties.push(form2);
+    const evaluatedForm =  new FormGroup({
+      start: new FormControl('12:00'),
+      end: new FormControl('13:00'),
+    }) as FormGroup;
+    evaluatedForm.setParent(parties);
+    const result = service.validateDuplicateEntries(1, 'Duplicate entry')(evaluatedForm);
+    expect(result.hasOwnProperty('duplicateEntries')).toBeTruthy();
+
+  }));
 });

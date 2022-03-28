@@ -15,7 +15,7 @@ import { SpecificAccessNavigationEvent, SpecificAccessState } from '../../../mod
 import { SpecificAccessReviewComponent } from '../specific-access-review/specific-access-review.component';
 import { SpecificAccessDurationComponent } from '../specific-access-duration/specific-access-duration.component';
 
-fdescribe('SpecificAccessHomeComponent', () => {
+describe('SpecificAccessHomeComponent', () => {
   let component: SpecificAccessHomeComponent;
   let fixture: ComponentFixture<SpecificAccessHomeComponent>;
   const routerMock = jasmine.createSpyObj('Router', [

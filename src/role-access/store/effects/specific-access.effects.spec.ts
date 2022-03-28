@@ -1,33 +1,26 @@
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Go } from '../../../app/store';
-import * as allocateRoleAction from '../actions/allocate-role.action';
-import { AllocateRoleEffects } from './allocate-role.effects';
 import { SpecificAccessEffects } from './specific-access.effects';
+import * as specificAccessAction from '../actions/specific-access.action';
 
 describe('Specific Access Effects', () => {
-  let actions$;
   let effects: SpecificAccessEffects;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockActions(() => actions$)
+        SpecificAccessEffects
       ]
     });
-    effects = TestBed.get(AllocateRoleEffects);
+    effects = TestBed.get(SpecificAccessEffects);
 
   });
 
   describe('handleError', () => {
     it('should handle 500', () => {
-      const action$ = AllocateRoleEffects.handleError({status: 500, message: 'error'}, allocateRoleAction.ConfirmAllocation.toString());
+      const action$ = SpecificAccessEffects.handleError({status: 500, message: 'error'}, specificAccessAction.ChangeSpecificAccessNavigation.toString());
       action$.subscribe(action => expect(action).toEqual(new Go({path: ['/service-down']})));
-    });
-
-    it('should handle 422', () => {
-      const action$ = AllocateRoleEffects.handleError({status: 422, message: 'error'}, allocateRoleAction.ConfirmAllocation.toString());
-      action$.subscribe(action => expect(action).toEqual(new Go({path: ['/role-access/user-not-assignable']})));
     });
   });
 

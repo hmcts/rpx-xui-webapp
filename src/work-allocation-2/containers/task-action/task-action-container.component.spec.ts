@@ -179,6 +179,43 @@ describe('WorkAllocation', () => {
 
     });
 
+    it('isTaskUnAssignedOrReAssigned should return false', () => {
+      const task = {} as Task;
+      task.assignee = null;
+      let result = component.isTaskUnAssignedOrReAssigned(task);
+      expect(result).toBeTruthy();
+
+      mockSessionStorageService.getItem.and.returnValue(JSON.stringify({
+        id: 'someId',
+        forename: 'fore',
+        surname: 'surName',
+        email: 'email',
+        active: true,
+        roles: ['caseworker-ia-caseofficer'],
+        uid: '1233434'
+      }));
+
+      task.assignee = 'some Other Id';
+      result = component.isTaskUnAssignedOrReAssigned(task);
+      expect(result).toBeTruthy();
+    });
+
+    it('isTaskUnAssignedOrReAssigned should return true', () => {
+      mockSessionStorageService.getItem.and.returnValue(JSON.stringify({
+        id: 'someId',
+        forename: 'fore',
+        surname: 'surName',
+        email: 'email',
+        active: true,
+        roles: ['caseworker-ia-caseofficer'],
+        uid: '1233434'
+      }));
+      const task = {} as Task;
+      task.assignee = 'someId';
+      const result = component.isTaskUnAssignedOrReAssigned(task);
+      expect(result).toBeFalsy();
+    });
+
   });
 
   afterAll(() => {

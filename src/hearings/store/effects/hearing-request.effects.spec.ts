@@ -19,9 +19,7 @@ import {HearingRequestEffects} from './hearing-request.effects';
 describe('Hearing Request Effects', () => {
   let actions$;
   let effects: HearingRequestEffects;
-  let router: Router;
   let store: any;
-  let hearingService: any;
   const hearingsServiceMock = jasmine.createSpyObj('HearingsService', [
     'getAllHearings', 'loadHearingRequest', 'updateHearingRequest', 'submitHearingRequest',
   ]);
@@ -56,9 +54,7 @@ describe('Hearing Request Effects', () => {
       ]
     });
     effects = TestBed.get(HearingRequestEffects);
-    router = TestBed.get(Router);
     store = TestBed.get(Store);
-    hearingService = TestBed.get(HearingsService);
   });
 
   describe('continueNavigation$', () => {
@@ -149,6 +145,21 @@ describe('Hearing Request Effects', () => {
       expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestToCompareActions.InitializeHearingRequestToCompare(hearingRequestMainModel));
       expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestActions.InitializeHearingRequest(hearingRequestMainModel));
     });
+    it('should error submitting loading hearing request', () => {
+      const error: HttpError = {
+        status: 400,
+        error: null,
+        message: 'Http failure response',
+        timestamp: '',
+        exception: '',
+        path: ''
+      }
+      hearingsServiceMock.loadHearingRequest.and.returnValue(of(error));
+      const action = new hearingRequestActions.LoadHearingRequest('h1000000');
+      actions$ = cold('-a', {a: action});
+      const expected = cold('-b', {b: error});
+      expect(effects.loadHearingRequest$).toBeObservable(expected);
+    });
   });
 
   describe('submitHearingReason$', () => {
@@ -205,12 +216,31 @@ describe('Hearing Request Effects', () => {
       expect(hearingsServiceMock.updateHearingRequest).toHaveBeenCalled();
       expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-confirmation']);
     });
+
+    it('should error update hearing request failed', () => {
+      const error: HttpError = {
+        status: 403,
+        error: null,
+        message: 'Http failure response: 403 Forbidden',
+        timestamp: '',
+        exception: '',
+        path: ''
+      }
+      const dispatchSpy = spyOn(store, 'dispatch');
+      hearingsServiceMock.updateHearingRequest.and.returnValue(Observable.throwError(error));
+      const action = new hearingRequestActions.ViewEditSubmitHearingRequest(hearingRequestMainModel);
+      actions$ = cold('-a', {a: action});
+      const expected = cold('-b', {b: error});
+      expect(effects.viewEditSubmitHearingRequest$).toBeObservable(expected);
+      expect(hearingsServiceMock.updateHearingRequest).toHaveBeenCalled();
+      expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestActions.UpdateHearingRequestFailure(error));
+    });
   });
 
   describe('handleError', () => {
     it('should handle 500', () => {
       const action$ = HearingRequestEffects.handleError({
-        status: 500,
+        status: 400,
         message: 'error'
       });
       action$.subscribe(action => expect(action).toEqual(new Go({path: ['/service-down']})));

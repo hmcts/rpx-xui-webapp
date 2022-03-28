@@ -72,7 +72,7 @@ export const ROUTES: Routes = [
       hearingRole: HearingActualRoleResolverService,
     },
     data: {
-      isChildRequired: true,
+      isChildRequired: [HearingCategory.PartyChannel]
     },
     children: [
       {
@@ -85,10 +85,9 @@ export const ROUTES: Routes = [
         component: HearingActualAddEditSummaryComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          isChildRequired: true,
           category: HearingCategory.HearingType,
           title: 'HMCTS Hearings | Hearing Actuals | Check details'
-        }
+         }
       },
       {
         path: 'hearing-timing',
@@ -125,7 +124,7 @@ export const ROUTES: Routes = [
         component: HearingActualsViewEditPartiesComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Manage cases | Hearing Actuals | Update Participants',
+          title: 'HMCTS Manage cases | Hearing Actuals | Update Participants'
         }
       },
     ]
@@ -223,7 +222,8 @@ export const ROUTES: Routes = [
         data: {
           title: 'HMCTS Hearings | Request Hearing | Require Panel Or Not',
           category: HearingCategory.OtherPanelRoles,
-          memberType: MemberType.PANEL_MEMBER
+          memberType: MemberType.PANEL_MEMBER,
+          isChildRequired: [HearingCategory.OtherPanelRoles]
         }
       },
       {
@@ -259,7 +259,8 @@ export const ROUTES: Routes = [
         component: HearingCreateEditSummaryComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Hearings | Request Hearing | Check Answers'
+          title: 'HMCTS Hearings | Request Hearing | Check Answers',
+          isChildRequired: [HearingCategory.OtherPanelRoles]
         }
       },
       {
@@ -279,7 +280,8 @@ export const ROUTES: Routes = [
         component: HearingViewEditSummaryComponent,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Hearings | Amend Hearing | Check Answers'
+          title: 'HMCTS Hearings | Amend Hearing | Check Answers',
+          isChildRequired: [HearingCategory.OtherPanelRoles]
         }
       },
       {

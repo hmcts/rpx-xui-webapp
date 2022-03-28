@@ -74,11 +74,11 @@
 
               <tr class="govuk-table__row" *ngIf="!group.get('isParty').value" formGroupName="{{i}}">
                 <th scope="row" class="govuk-table__header">
-                  <input class="govuk-input" formControlName="firstName" type="text" aria-label="First name" maxlength="80"
+                  <input class="govuk-input" formControlName="firstName" type="text" aria-label="First name" maxlength="50"
                          [ngClass]="{'govuk-input--error': highlightRowError(i, 'firstName')}">
                 </th>
                 <th scope="row" class="govuk-table__header">
-                  <input class="govuk-input" formControlName="lastName" type="text" aria-label="Last name" maxlength="80"
+                  <input class="govuk-input" formControlName="lastName" type="text" aria-label="Last name" maxlength="60"
                          [ngClass]="{'govuk-input--error': highlightRowError(i, 'lastName')}">
                 </th>
                 <td class="govuk-table__cell">

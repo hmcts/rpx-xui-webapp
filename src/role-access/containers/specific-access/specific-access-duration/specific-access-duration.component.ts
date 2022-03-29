@@ -157,7 +157,7 @@ export class SpecificAccessDurationComponent implements OnInit {
         const startDateBeforeEndDate = this.durationHelper.startDateBeforeEndDate(startDate, endDate);
 
         // if all checks pass return object with startDate and endDate
-        if (this.formGroup.valid && datesValid && startDateNotInPast && startDateBeforeEndDate) {
+        if (datesValid && startDateNotInPast && startDateBeforeEndDate) {
           return {
             startDate,
             endDate

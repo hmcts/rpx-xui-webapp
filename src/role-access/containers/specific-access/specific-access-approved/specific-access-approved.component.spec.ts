@@ -9,13 +9,19 @@ describe('SpecificAccessApprovedComponent', () => {
     component = new SpecificAccessApprovedComponent(mockStore);
   }));
 
-  describe('navigation', () => {
+  describe('navigationHandler', () => {
 
     it('should correctly navigate on click of return to my tasks button when dispatching the event', () => {
       const navEvent = SpecificAccessNavigationEvent.RETURNTOMYTASKS;
       component.navigationHandler(navEvent);
       expect(mockStore.dispatch).toHaveBeenCalled();
     });
+
+    it('should throw an error if navEvent case is not handled', () => {
+      expect(() => {
+        component.navigationHandler(null);
+      }).toThrow(new Error('Invalid case'));
+    })
 
   });
 

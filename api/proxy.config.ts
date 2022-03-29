@@ -1,6 +1,5 @@
 import * as bodyParser from 'body-parser';
 import { Express } from 'express';
-import * as accessManagement from './accessManagement';
 import * as amendedJurisdictions from './amendedJurisdictions';
 import { getConfigValue } from './configuration';
 import {
@@ -15,12 +14,7 @@ import {
   SERVICES_MARKUP_API_URL,
   SERVICES_PAYMENTS_URL,
   SERVICES_PRD_COMMONDATA_API,
-  SERVICES_REFUNDS_API_URL,
-<<<<<<< HEAD
-  SERVICES_ROLE_ASSIGNMENT_API_PATH
-=======
-  SERVICES_LOCATION_REF_API_URL
->>>>>>> master
+  SERVICES_REFUNDS_API_URL
 } from './configuration/references';
 import { applyProxy } from './lib/middleware/proxy';
 import * as searchCases from './searchCases';
@@ -135,9 +129,9 @@ export const initProxy = (app: Express) => {
   });
 
   applyProxy(app, {
-      rewrite: false,
-      source: '/refdata/location',
-      target: getConfigValue(SERVICES_LOCATION_REF_API_URL),
+    rewrite: false,
+    source: '/refdata/location',
+    target: getConfigValue(SERVICES_LOCATION_REF_API_URL),
   });
 
   applyProxy(app, {

@@ -64,15 +64,12 @@ export const init = () => {
   mock.onGet(getHearingInfoUrl).reply(config => {
     const urlPaths: string[] = config.url.split('/');
     const hearingId = urlPaths[urlPaths.length - 1];
-    // START : This few lines code jus to faciliate testing for specific hearing id of 100002
-    // so that even the failure scenarios can be verified
-    if (hearingId === 'h100002' || hearingId === 'h100007') {
+    if (hearingId === 'h100004') {
       return [
         500,
         null,
       ];
     }
-    // END
     const FOUND_A_HEARING = HEARING_REQUEST_RESULTS.find(hearing => hearing.caseDetails.hearingID === hearingId);
     return [
       200,

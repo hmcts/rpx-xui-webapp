@@ -5,6 +5,7 @@ import { getConfigValue } from './configuration';
 import * as accessManagement from './accessManagement'
 import {
   SERVICES_CCD_COMPONENT_API_PATH,
+  SERVICES_COMMONRD_API_URL,
   SERVICES_DOCUMENTS_API_PATH,
   SERVICES_DOCUMENTS_API_PATH_V2,
   SERVICES_EM_ANNO_API_URL,
@@ -123,20 +124,31 @@ export const initProxy = (app: Express) => {
   });
 
   applyProxy(app, {
-      rewrite: true,
-      rewriteUrl: '/refund',
-      source: '/api/refund',
-      target: getConfigValue(SERVICES_REFUNDS_API_URL),
+    rewrite: true,
+    rewriteUrl: '/refund',
+    source: '/api/refund',
+    target: getConfigValue(SERVICES_REFUNDS_API_URL),
   });
+
   applyProxy(app, {
     onReq: accessManagement.removeAcceptHeader,
     rewrite: false,
     source: '/am/role-assignments',
     target: getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH),
   });
+
   applyProxy(app, {
-      rewrite: false,
-      source: '/refdata/location',
-      target: getConfigValue(SERVICES_LOCATION_REF_API_URL),
+    rewrite: false,
+    source: '/refdata/location',
+    target: getConfigValue(SERVICES_LOCATION_REF_API_URL),
+  });
+
+  applyProxy(app, {
+    rewrite: false,
+    // Note: the "service-id=" part of the URL is *not* missing a preceding '?', as would be expected if service-id was
+    // a query string parameter. The Reference Data team confirms service-id is a *path* parameter and "service-id=" is
+    // intentional (see https://github.com/hmcts/rd-commondata-api/blob/master/src/main/java/uk/gov/hmcts/reform/cdapi/controllers/CaseFlagApiController.java#L66)
+    source: '/refdata/commondata/caseflags/service-id=:sid',
+    target: getConfigValue(SERVICES_COMMONRD_API_URL),
   });
 }

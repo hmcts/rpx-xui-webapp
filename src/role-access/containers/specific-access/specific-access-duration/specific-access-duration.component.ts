@@ -8,7 +8,8 @@ import {
   Period,
   SpecificAccessStateData,
   SpecificAccessNavigation,
-  SpecificAccessNavigationEvent
+  SpecificAccessNavigationEvent,
+  SpecificAccessState
 } from '../../../models';
 import { DurationType } from '../../../models/enums';
 import { DurationHelperService } from '../../../services';
@@ -109,12 +110,7 @@ export class SpecificAccessDurationComponent implements OnInit {
     if (period) {
       switch (navEvent) {
         case SpecificAccessNavigationEvent.CONTINUE:
-          // TODO: SARD - this will be handled in another ticket ( 5505? ).
-          // this.store.dispatch(new fromFeature.ChooseDurationAndGo({
-          //     durationOfRole: this.selectedDuration,
-          //     period,
-          //     allocateRoleState: SpecificAccessState.CHECK_ANSWERS}
-          //   ));
+          this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_APPROVED));
           break;
         default:
           throw new Error('Invalid option');

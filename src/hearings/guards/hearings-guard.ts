@@ -30,7 +30,7 @@ export class HearingsGuard {
       this.userRoles$
     ]).pipe(
       map(([featureVariations, userRoles]: [FeatureVariation[], string[]]) => {
-        const caseInfo = JSON.parse(JSON.stringify(this.sessionStorageService.getItem(HearingsGuard.CASE_INFO)));
+        const caseInfo = JSON.parse(this.sessionStorageService.getItem(HearingsGuard.CASE_INFO));
         const jurisdiction = caseInfo && caseInfo.hasOwnProperty(HearingsGuard.JURISDICTION) ? caseInfo[HearingsGuard.JURISDICTION] : '';
         return featureVariations.some(featureVariation =>
           Utils.hasMatchedJurisdictionAndRole(featureVariation, jurisdiction, userRoles));

@@ -7,7 +7,8 @@ import * as fromFeature from '../../../store';
 
 @Component({
   selector: 'exui-specific-access-approved',
-  templateUrl: './specific-access-approved.component.html'
+  templateUrl: './specific-access-approved.component.html',
+  styleUrls: ['./specific-access-approved.component.scss']
 })
 export class SpecificAccessApprovedComponent {
   @Input() public navEvent: SpecificAccessNavigationEvent;

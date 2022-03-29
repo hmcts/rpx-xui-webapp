@@ -8,7 +8,7 @@ import {AppConstants} from '../../app/app.constants';
 import {UserDetails} from '../../app/models';
 import * as fromActions from '../../app/store';
 import {RoleCategory} from '../models';
-import { SessionStorageService } from 'src/app/services/session-storage/session-storage.service';
+import { SessionStorageService } from '../../app/services/session-storage/session-storage.service';
 
 @Injectable()
 export class BookingGuard implements CanActivate {

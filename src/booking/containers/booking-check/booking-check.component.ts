@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
-import { SessionStorageService } from 'src/app/services/session-storage/session-storage.service';
+import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';
 import { TaskListFilterComponent } from '../../../work-allocation-2/components';
 import { BookingNavigationEvent, BookingProcess, BookingRequest } from '../../models';
 import { BookingService } from '../../services';

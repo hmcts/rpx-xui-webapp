@@ -1,5 +1,5 @@
 @ng
-Feature: WA Release 2: Case events and Task completion and states
+Feature: WA Release 2: Case events and Task completion and states when task_required is true
 
     Background: Setup
         Given I set MOCK case details with reference "caseDetails"
@@ -30,6 +30,10 @@ Feature: WA Release 2: Case events and Task completion and states
             | 18a3d216-c6ab-4e92-a7e3-ca3661e6be82 | caseworker8 | cw       | caseworker_user8@gov.uk |
             | 18a3d216-c6ab-4e92-a7e3-ca3661e6be83 | admin1      | a        | admin_user1@gov.uk      |
             | 18a3d216-c6ab-4e92-a7e3-ca3661e6be82 | admin2      | a        | admin_user2@gov.uk      |
+
+
+        Given I set MOCK request "/workallocation2/task/:taskId/:action" intercept with reference "completeTaskRequest"
+        Given I set MOCK request "/data/cases/:caseId/events" intercept with reference "submitEvent"
 
 
     Scenario Outline: No task available
@@ -206,7 +210,15 @@ Feature: WA Release 2: Case events and Task completion and states
         Then I validate case details task tab page is displayed
 
         When I start case next step "Test event"
+
+        Given I reset reference "completeTaskRequest" value to null
+        Given I reset reference "submitEvent" value to null
+
         When I complete and submit test event "text"
+
+        Then I wait for reference "completeTaskRequest" value not null
+        Then I wait for reference "submitEvent" value not null
+
         Then I see case details page
       
          Examples:
@@ -263,9 +275,15 @@ Feature: WA Release 2: Case events and Task completion and states
             | Summary header  | There is a problem                                                                  |
             | Details message | Alternatively, click Cancel to return to the tasks tab without saving your progress |
 
+        Given I reset reference "completeTaskRequest" value to null
+        Given I reset reference "submitEvent" value to null
 
         When I click continue in task event validation message page
+
+        Then I wait for reference "completeTaskRequest" value not null
+        Then I wait for reference "submitEvent" value not null
         Then I see case details page
+
         Examples:
             | roles                                                                            |
             | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor |
@@ -360,9 +378,17 @@ Feature: WA Release 2: Case events and Task completion and states
         Then I validate case details task tab page is displayed
 
         When I start case next step "Test event"
+
+        Given I reset reference "completeTaskRequest" value to null
+        Given I reset reference "submitEvent" value to null
+
         When I complete and submit test event "text"
 
+        Then I wait for reference "completeTaskRequest" value not null
+        Then I wait for reference "submitEvent" value not null
+
         Then I see case details page
+
         Examples:
             | roles                                                                            |
             | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor |
@@ -412,8 +438,16 @@ Feature: WA Release 2: Case events and Task completion and states
             | Details message | Click Continue to complete the event and save your progress. |
         Then I see task event validation error page
             | Details message | Alternatively, click Cancel to return to the tasks tab without saving your progress. |
+
+        Given I reset reference "completeTaskRequest" value to null
+        Given I reset reference "submitEvent" value to null
+
         When I click continue in task event validation message page
+
+        Then I wait for reference "submitEvent" value not null
+
         Then I see case details page
+        Then I verify reference "completeTaskRequest" value is null
 
         Examples:
             | roles                                                                            | task_state |

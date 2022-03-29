@@ -1,4 +1,3 @@
-import {UserDetails} from '../../app/models';
 import {CaseRole, CaseRoleDetails, RoleCategory, RoleExclusion} from '../../role-access/models';
 import {FeatureVariation} from '../models/feature-variation.model';
 
@@ -59,10 +58,10 @@ export class Utils {
     });
   }
 
-  public static hasMatchedJurisdictionAndRole(featureVariation: FeatureVariation, jurisdictionID: string, userDetails: UserDetails): boolean {
+  public static hasMatchedJurisdictionAndRole(featureVariation: FeatureVariation, jurisdictionID: string, userRoles: string[]): boolean {
     if (featureVariation.jurisdiction === jurisdictionID) {
-      if (userDetails && userDetails.userInfo) {
-        return userDetails.userInfo.roles && featureVariation.roles ? userDetails.userInfo.roles.some(userRole =>
+      if (userRoles) {
+        return featureVariation.roles ? userRoles.some(userRole =>
           featureVariation.roles.some(role => role === userRole)) : false;
       }
     } else {

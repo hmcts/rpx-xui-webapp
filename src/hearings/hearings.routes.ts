@@ -29,7 +29,8 @@ import {HearingCancelledSummaryComponent} from './containers/view-hearing/hearin
 import {HearingCompletedSummaryComponent} from './containers/view-hearing/hearing-completed-summary/hearing-completed-summary.component';
 import {HearingRequestFailedSummaryComponent} from './containers/view-hearing/hearing-request-failed-summary/hearing-request-failed-summary.component';
 import {ViewHearingComponent} from './containers/view-hearing/view-hearing.component';
-import {HearingsGuard} from './guards/hearings-guard';
+import {HearingsEditGuard} from './guards/hearings-edit-guard';
+import {HearingsViewGuard} from './guards/hearings-view-guard';
 import {HearingCategory, MemberType} from './models/hearings.enum';
 import {ActualSummaryResponseResolver} from './resolvers/actual-summary-response-resolver.resolve';
 import {AdditionalFacilitiesResolver} from './resolvers/additional-facilities.resolver';
@@ -53,7 +54,7 @@ export const ROUTES: Routes = [
     path: 'cancel/:hearingId',
     resolve: {hearingCancelOptions: RefDataResolver},
     component: CancelHearingComponent,
-    canActivate: [HealthCheckGuard, HearingsGuard],
+    canActivate: [HealthCheckGuard, HearingsEditGuard],
     data: {
       category: HearingCategory.CancelHearingReason
     },
@@ -70,7 +71,7 @@ export const ROUTES: Routes = [
   {
     path: 'actuals/:id',
     component: HearingActualsComponent,
-    canActivate: [HealthCheckGuard, HearingsGuard],
+    canActivate: [HealthCheckGuard, HearingsEditGuard],
     resolve: {
       partyChannel: HearingActualPartyChannelResolverService,
       hearingRole: HearingActualRoleResolverService,
@@ -131,7 +132,7 @@ export const ROUTES: Routes = [
   {
     path: 'request',
     component: RequestHearingComponent,
-    canActivate: [HealthCheckGuard, HearingsGuard],
+    canActivate: [HealthCheckGuard, HearingsEditGuard],
     children: [
       {
         path: '',
@@ -294,7 +295,7 @@ export const ROUTES: Routes = [
   {
     path: 'view',
     component: ViewHearingComponent,
-    canActivate: [HealthCheckGuard, HearingsGuard],
+    canActivate: [HealthCheckGuard, HearingsViewGuard],
     children: [
       {
         path: '',
@@ -389,6 +390,7 @@ export const ROUTES: Routes = [
   {
     path: 'error',
     component: ErrorPageComponent,
+    canActivate: [HealthCheckGuard, HearingsViewGuard],
     data: {
       title: 'HMCTS Hearings | System Error'
     }

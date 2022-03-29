@@ -1,4 +1,3 @@
-import { Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
@@ -58,20 +57,19 @@ describe('HearingsGuard', () => {
   const CASE_INFO = {cid: '1546518523959179', caseType: 'Benefit', jurisdiction: 'SSCS'};
 
   let hearingsGuard: HearingsGuard;
-  let routerMock: jasmine.SpyObj<Router>;
   let storeMock: jasmine.SpyObj<Store<fromAppStore.State>>;
   let sessionStorageMock: jasmine.SpyObj<SessionStorageService>;
   let featureToggleMock: jasmine.SpyObj<FeatureToggleService>;
 
   beforeEach(() => {
-    routerMock = jasmine.createSpyObj<Router>('router', ['navigate']);
     storeMock = jasmine.createSpyObj<Store<fromAppStore.State>>('store', ['pipe']);
     sessionStorageMock = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
     featureToggleMock = jasmine.createSpyObj<FeatureToggleService>('featureToggleService', ['getValueOnce']);
-    hearingsGuard = new HearingsGuard(routerMock, storeMock, sessionStorageMock, featureToggleMock);
   });
 
   it('guard truthy', () => {
+    storeMock.pipe.and.returnValue(of(USER_1));
+    hearingsGuard = new HearingsGuard(storeMock, sessionStorageMock, featureToggleMock);
     expect(hearingsGuard).toBeTruthy();
   });
 
@@ -79,35 +77,40 @@ describe('HearingsGuard', () => {
     storeMock.pipe.and.returnValue(of(USER_1));
     featureToggleMock.getValueOnce.and.returnValue(of(null));
     sessionStorageMock.getItem.and.returnValue(CASE_INFO);
-    hearingsGuard.canActivate().toPromise().then(canActivate => expect(canActivate).toBeFalsy());
+    hearingsGuard = new HearingsGuard(storeMock, sessionStorageMock, featureToggleMock);
+    hearingsGuard.hasMatchedJurisdictionAndRole().toPromise().then(hasMatchedJurisdictionAndRole => expect(hasMatchedJurisdictionAndRole).toBeFalsy());
   });
 
   it('should return false if case info is null', () => {
     storeMock.pipe.and.returnValue(of(USER_1));
     featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
     sessionStorageMock.getItem.and.returnValue(null);
-    hearingsGuard.canActivate().toPromise().then(canActivate => expect(canActivate).toBeFalsy());
+    hearingsGuard = new HearingsGuard(storeMock, sessionStorageMock, featureToggleMock);
+    hearingsGuard.hasMatchedJurisdictionAndRole().toPromise().then(hasMatchedJurisdictionAndRole => expect(hasMatchedJurisdictionAndRole).toBeFalsy());
   });
 
   it('should return false if case jurisdiction do not match', () => {
     storeMock.pipe.and.returnValue(of(USER_1));
     featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
     sessionStorageMock.getItem.and.returnValue({cid: '1546518523959179', caseType: 'Benefit', jurisdiction: 'IA'});
-    hearingsGuard.canActivate().toPromise().then(canActivate => expect(canActivate).toBeFalsy());
+    hearingsGuard = new HearingsGuard(storeMock, sessionStorageMock, featureToggleMock);
+    hearingsGuard.hasMatchedJurisdictionAndRole().toPromise().then(hasMatchedJurisdictionAndRole => expect(hasMatchedJurisdictionAndRole).toBeFalsy());
   });
 
   it('should return false if user role do not match', () => {
     storeMock.pipe.and.returnValue(of(USER_2));
     featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
     sessionStorageMock.getItem.and.returnValue(CASE_INFO);
-    hearingsGuard.canActivate().toPromise().then(canActivate => expect(canActivate).toBeFalsy());
+    hearingsGuard = new HearingsGuard(storeMock, sessionStorageMock, featureToggleMock);
+    hearingsGuard.hasMatchedJurisdictionAndRole().toPromise().then(hasMatchedJurisdictionAndRole => expect(hasMatchedJurisdictionAndRole).toBeFalsy());
   });
 
   it('should return true if feature is toggled on and user role match jurisdiction', () => {
     storeMock.pipe.and.returnValue(of(USER_1));
     featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
     sessionStorageMock.getItem.and.returnValue(CASE_INFO);
-    hearingsGuard.canActivate().toPromise().then(canActivate => expect(canActivate).toBeTruthy());
+    hearingsGuard = new HearingsGuard(storeMock, sessionStorageMock, featureToggleMock);
+    hearingsGuard.hasMatchedJurisdictionAndRole().toPromise().then(hasMatchedJurisdictionAndRole => expect(hasMatchedJurisdictionAndRole).toBeTruthy());
   });
 
 });

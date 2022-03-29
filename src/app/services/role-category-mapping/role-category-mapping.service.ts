@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { UserRole } from '../../models/user-details.model';
+import { UserRole } from '../../models';
 
 export interface RoleMapping {
   JUDICIAL_ROLE_LIST: string[];

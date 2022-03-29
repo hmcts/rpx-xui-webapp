@@ -12,11 +12,13 @@ import {LovRefDataModel} from '../models/lovRefData.model';
 import {LovRefDataService} from '../services/lov-ref-data.service';
 import * as fromHearingStore from '../store';
 import {RefDataResolver} from './ref-data-resolver.resolve';
+import { SessionStorageService } from '../../app/services';
 
 describe('Ref Data Resolver', () => {
   let lovRefDataService: LovRefDataService;
   let store: Store<fromHearingStore.State>;
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+  const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const dataRef: LovRefDataModel[] = [];
 
   beforeEach(() => {
@@ -30,7 +32,8 @@ describe('Ref Data Resolver', () => {
           RefDataResolver,
           LovRefDataService,
           {provide: APP_BASE_HREF, useValue: '/'},
-          {provide: Router, useValue: mockRouter}
+          {provide: Router, useValue: mockRouter},
+          {provide: SessionStorageService, useValue: mockSessionStorageService}
         ]
       }
     );
@@ -55,6 +58,23 @@ describe('Ref Data Resolver', () => {
     service.resolve(route).subscribe((refData: LovRefDataModel[]) => {
       expect(service.getReferenceData$).toHaveBeenCalled();
       expect(lovRefDataService.getListOfValues).toHaveBeenCalled();
+      expect(mockSessionStorageService.setItem).toHaveBeenCalled();
+      expect(refData).toEqual([]);
+    });
+  }));
+
+  it('resolves reference data from session', inject([RefDataResolver], (service: RefDataResolver) => {
+    spyOn(service, 'getLovSessionKey').and.returnValue('lov-BBA3-PartyChannel');
+    spyOn(service, 'getLovRefDataFromSession').and.returnValue(dataRef);
+    const route = new ActivatedRouteSnapshot();
+    route.data = {
+      title: 'HMCTS Manage cases | Request Hearing | Date Priority Hearing',
+      category: HearingCategory.Priority
+    };
+    service.resolve(route).subscribe((refData: LovRefDataModel[]) => {
+      expect(service.getReferenceData$).toHaveBeenCalled();
+      expect(lovRefDataService.getListOfValues).toHaveBeenCalledTimes(0);
+      expect(mockSessionStorageService.setItem).toHaveBeenCalledTimes(0);
       expect(refData).toEqual([]);
     });
   }));

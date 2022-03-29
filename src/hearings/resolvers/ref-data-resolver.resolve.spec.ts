@@ -63,22 +63,6 @@ describe('Ref Data Resolver', () => {
     });
   }));
 
-  it('resolves reference data from session', inject([RefDataResolver], (service: RefDataResolver) => {
-    spyOn(service, 'getLovSessionKey').and.returnValue('lov-BBA3-PartyChannel');
-    spyOn(service, 'getLovRefDataFromSession').and.returnValue(dataRef);
-    const route = new ActivatedRouteSnapshot();
-    route.data = {
-      title: 'HMCTS Manage cases | Request Hearing | Date Priority Hearing',
-      category: HearingCategory.Priority
-    };
-    service.resolve(route).subscribe((refData: LovRefDataModel[]) => {
-      expect(service.getReferenceData$).toHaveBeenCalled();
-      expect(lovRefDataService.getListOfValues).toHaveBeenCalledTimes(0);
-      expect(mockSessionStorageService.setItem).toHaveBeenCalledTimes(0);
-      expect(refData).toEqual([]);
-    });
-  }));
-
   it('should call router navigate if error', inject([RefDataResolver], (service: RefDataResolver) => {
     spyOn(store, 'pipe').and.returnValue(of('serviceName'));
     spyOn(lovRefDataService, 'getListOfValues').and.returnValue(Observable.throwError('mocked api error'));

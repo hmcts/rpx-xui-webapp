@@ -347,7 +347,7 @@ describe('CaseHearingsComponent', () => {
   };
 
   beforeEach(() => {
-    mockRoleCategoryMappingService = jasmine.createSpyObj('RoleCategoryMappingService', ['isJudicialOrLegalOpsCategory']);
+    mockRoleCategoryMappingService = jasmine.createSpyObj('RoleCategoryMappingService', ['getUserRoleCategory']);
     TestBed.configureTestingModule({
       declarations: [CaseHearingsComponent],
       imports: [RouterTestingModule],
@@ -378,7 +378,7 @@ describe('CaseHearingsComponent', () => {
     mockStore = TestBed.get(Store);
     component = fixture.componentInstance;
     // @ts-ignore
-    mockRoleCategoryMappingService.isJudicialOrLegalOpsCategory.and.returnValue(of(UserRole.Judicial));
+    mockRoleCategoryMappingService.getUserRoleCategory.and.returnValue(of(UserRole.Judicial));
     spyStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
     fixture.detectChanges();
   });
@@ -413,7 +413,7 @@ describe('CaseHearingsComponent', () => {
 
     spyStore.pipe.and.returnValue(of(USER_DETAILS));
     // @ts-ignore
-    mockRoleCategoryMappingService.isJudicialOrLegalOpsCategory.and.returnValue(of(UserRole.LegalOps));
+    mockRoleCategoryMappingService.getUserRoleCategory.and.returnValue(of(UserRole.LegalOps));
     component.ngOnInit();
     fixture.detectChanges();
     expect(component.hearingsActions.length).toBe(4);
@@ -422,7 +422,7 @@ describe('CaseHearingsComponent', () => {
   });
 
   it('should getHearsListByStatus', (done) => {
-    const hearingList = component.getHearingListByStatus(EXUISectionStatusEnum.UPCOMING);
+    const hearingList = component.getHearingListBySectionStatus(EXUISectionStatusEnum.UPCOMING);
     hearingList.subscribe(hearing => {
       expect(hearing.length).toBeGreaterThan(0);
       done();

@@ -1,5 +1,5 @@
 import { of } from 'rxjs';
-import { UserRole } from '../../models/user-details.model';
+import { UserRole } from '../../models';
 import { RoleCategoryMappingService, RoleMapping } from './role-category-mapping.service';
 
 describe('Role category mapping service', () => {
@@ -11,6 +11,9 @@ describe('Role category mapping service', () => {
     ],
     LEGAL_OPS_ROLE_LIST: [
       'caseworker-sscs',
+    ],
+    OGD_ROLE_LIST: [
+      'caseworker-sscs-dwpresponsewriter'
     ]
   };
   beforeEach(() => {
@@ -47,15 +50,15 @@ describe('Role category mapping service', () => {
       expect(isLegalOpsCategory).toBeFalsy());
   });
 
-  it('should return Judicial if there is judicial role when calling isJudicialOrLegalOpsCategory', () => {
+  it('should return Judicial if there is judicial role when calling getUserRoleCategory', () => {
     const USER_ROLES: string[] = ['caseworker-sscs-judge'];
-    roleCategoryMappingService.isJudicialOrLegalOpsCategory(of(USER_ROLES)).subscribe(isJudicialOrLegalOpsCategory =>
-      expect(isJudicialOrLegalOpsCategory).toBe(UserRole.Judicial));
+    roleCategoryMappingService.getUserRoleCategory(of(USER_ROLES)).subscribe(userRoleCategory =>
+      expect(userRoleCategory).toBe(UserRole.Judicial));
   });
 
-  it('should return Legalops if there is legal ops user role when calling isJudicialOrLegalOpsCategory', () => {
+  it('should return Legalops if there is legal ops user role when calling getUserRoleCategory', () => {
     const USER_ROLES: string[] = ['caseworker-sscs'];
-    roleCategoryMappingService.isJudicialOrLegalOpsCategory(of(USER_ROLES)).subscribe(isJudicialOrLegalOpsCategory =>
-      expect(isJudicialOrLegalOpsCategory).toBe(UserRole.LegalOps));
+    roleCategoryMappingService.getUserRoleCategory(of(USER_ROLES)).subscribe(userRoleCategory =>
+      expect(userRoleCategory).toBe(UserRole.LegalOps));
   });
 });

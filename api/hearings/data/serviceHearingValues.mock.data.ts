@@ -67,7 +67,6 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       partyID: 'P1',
       partyType: PartyType.IND,
       partyName: 'Jane and Smith',
-      partyChannel: 'byVideo',
       partyRole: 'appellant',
       individualDetails: {
         title: 'Miss',
@@ -85,7 +84,6 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       partyID: 'P2',
       partyType: PartyType.ORG,
       partyName: 'DWP',
-      partyChannel: 'byVideo',
       partyRole: 'claimant',
       organisationDetails: {
         name: 'DWP',

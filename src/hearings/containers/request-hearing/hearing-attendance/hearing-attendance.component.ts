@@ -4,6 +4,7 @@ import {ActivatedRoute} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {ACTION} from '../../../models/hearings.enum';
+import { IndividualDetailsModel } from '../../../models/individualDetails.model';
 import {LovRefDataModel} from '../../../models/lovRefData.model';
 import {PartyDetailsModel} from '../../../models/partyDetails.model';
 import {HearingsService} from '../../../services/hearings.service';
@@ -24,7 +25,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   public title: string = ' How will each participant attend the hearing?';
   public partiesFormArray: FormArray;
   public formValid: boolean = true;
-  public partyChannels: Observable<LovRefDataModel[]>;
+  public partyChannels$: Observable<LovRefDataModel[]>;
   public selectionValid: boolean = true;
 
   constructor(
@@ -43,7 +44,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   }
 
   public ngOnInit(): void {
-    this.partyChannels = this.lovRefDataService.getListOfValues('PartyChannel', this.hearingListMainModel.hmctsServiceID);
+    this.partyChannels$ = this.lovRefDataService.getListOfValues('PartyChannel', this.hearingListMainModel.hmctsServiceID);
     if (!this.hearingRequestMainModel.partyDetails.length) {
       this.initialiseFromHearingValues();
     } else {
@@ -52,7 +53,6 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
           partyID: partyDetail.partyID,
           partyType: partyDetail.partyType,
           partyName: partyDetail.partyName,
-          partyChannel: partyDetail.partyChannel,
           individualDetails: partyDetail.individualDetails,
           organisationDetails: partyDetail.organisationDetails,
           unavailabilityDOW: partyDetail.unavailabilityDOW,
@@ -91,7 +91,6 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
         partyType: control.value.partyType,
         partyRole: control.value.partyRole,
         partyName: control.value.partyName,
-        partyChannel: control.value.partyChannel,
         individualDetails: control.value.individualDetails,
         organisationDetails: control.value.organisationDetails,
         unavailabilityDOW: control.value.unavailabilityDOW,
@@ -138,12 +137,12 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   }
 
   public patchValues(party: PartyDetailsModel): FormGroup {
+    console.log('in patch values', party);
     return this.fb.group({
       partyID: [party.partyID],
       partyType: [party.partyType],
       partyName: [party.partyName],
-      partyChannel: [party.partyChannel, Validators.required],
-      individualDetails: [party.individualDetails],
+      individualDetails: this.initIndividualDetailsFormGroup(party.individualDetails),
       organisationDetails: [party.organisationDetails],
       unavailabilityDOW: [party.unavailabilityDOW],
       unavailabilityRanges: [party.unavailabilityRanges],
@@ -156,5 +155,19 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
 
   public ngOnDestroy(): void {
     super.unsubscribe();
+  }
+
+  private initIndividualDetailsFormGroup(individualDetails: IndividualDetailsModel): FormGroup {
+    return this.fb.group({
+      firstName: [individualDetails.firstName],
+      lastName: [individualDetails.lastName],
+      preferredHearingChannel: [individualDetails.preferredHearingChannel, Validators.required],
+      hearingChannelEmail: [individualDetails.hearingChannelEmail],
+      interpreterLanguage: [individualDetails.interpreterLanguage],
+      reasonableAdjustments: [individualDetails.reasonableAdjustments],
+      relatedParties: [individualDetails.relatedParties],
+      title: [individualDetails.title],
+      vulnerabilityDetails: [individualDetails.vulnerabilityDetails],
+    });
   }
 }

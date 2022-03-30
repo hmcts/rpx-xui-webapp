@@ -988,10 +988,10 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
     locationId: '196538',
     locationType: 'hearing',
   },
-  {
-    locationId: '234850',
-    locationType: 'hearing',
-  },
+    {
+      locationId: '234850',
+      locationType: 'hearing',
+    },
   ],
   caseAdditionalSecurityFlag: false,
   facilitiesRequired: [],
@@ -1033,11 +1033,11 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
       partyType: PartyType.IND,
       partyRole: 'appellant',
       partyName: 'Jane Smith',
-      partyChannel: 'inPerson',
       individualDetails: {
         title: 'Mrs',
         firstName: 'Jane',
-        lastName: 'Smith'
+        lastName: 'Smith',
+        preferredHearingChannel: 'inPerson',
       },
       unavailabilityRanges: [
         {
@@ -1051,7 +1051,12 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
       partyType: PartyType.ORG,
       partyRole: 'claimant',
       partyName: 'DWP',
-      partyChannel: 'inPerson',
+      individualDetails: {
+        title: null,
+        firstName: 'DWP',
+        lastName: null,
+        preferredHearingChannel: 'inPerson',
+      },
       organisationDetails: {
         name: 'DWP',
         organisationType: 'GOV',
@@ -1153,7 +1158,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
     ],
     flagAmendURL: '/'
   },
-} as ServiceHearingValuesModel;
+} as unknown as ServiceHearingValuesModel;
 
 export const hearingRequestMainModel: HearingRequestMainModel = {
   requestDetails: {
@@ -1230,14 +1235,12 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
       partyName: 'Jane and Smith',
       partyType: PartyType.IND,
       partyRole: 'appellant',
-      partyChannel: 'inPerson',
     },
     {
       partyID: 'P2',
       partyName: 'DWP',
       partyType: PartyType.ORG,
       partyRole: 'claimant',
-      partyChannel: 'byVideo',
     },
   ],
   hearingResponse: {
@@ -1261,14 +1264,12 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
           partyName: 'Jane and Smith',
           partyType: PartyType.IND,
           partyRole: 'appellant',
-          partyChannel: 'inPerson',
         },
         {
           partyID: 'P2',
           partyName: 'DWP',
           partyType: PartyType.ORG,
           partyRole: 'claimant',
-          partyChannel: 'byVideo',
         },
       ],
     },
@@ -1629,7 +1630,7 @@ export const initialState = {
                 'RA0009',
               ],
               interpreterLanguage: 'PF0015',
-              preferredHearingChannel: 'byVideo',
+              preferredHearingChannel: 'inPerson',
             },
             organisationDetails: {},
             unavailabilityDOW: null,
@@ -1781,11 +1782,11 @@ export const initialState = {
             partyName: 'Jane and Smith',
             partyType: PartyType.IND,
             partyRole: 'appellant',
-            partyChannel: 'inPerson',
             individualDetails: {
               title: 'Miss',
               firstName: 'Jane',
               lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
               reasonableAdjustments: [
                 'RA0042',
                 'RA0053',
@@ -1809,8 +1810,8 @@ export const initialState = {
             partyName: 'DWP',
             partyType: PartyType.ORG,
             partyRole: 'claimant',
-            partyChannel: 'byVideo',
             individualDetails: {
+              preferredHearingChannel: 'byVideo',
               reasonableAdjustments: [
                 'RA0005',
               ],

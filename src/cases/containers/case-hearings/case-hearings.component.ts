@@ -116,23 +116,6 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     );
   }
 
-  // public getHearingListByHearingStatus(exuiDisplayStatusEnum: EXUIDisplayStatusEnum): Observable<HearingListViewModel[]> {
-  //   return this.hearingStore.pipe(select(fromHearingStore.getHearingList)).pipe(
-  //     map(hearingListStateData => {
-  //         if (hearingListStateData && hearingListStateData.hearingListMainModel && hearingListStateData.hearingListMainModel.caseHearings) {
-  //           const caseHearingModels: HearingListModel[] = hearingListStateData.hearingListMainModel.caseHearings.filter(hearing =>
-  //             hearing.exuiDisplayStatus === exuiDisplayStatusEnum
-  //           );
-  //           const caseHearingViewModels: HearingListViewModel[] = this.calculateEarliestHearingDate(caseHearingModels);
-  //           return this.sortHearingsByHearingAndRequestDate(caseHearingViewModels);
-  //         } else {
-  //           return [];
-  //         }
-  //       }
-  //     )
-  //   );
-  // }
-
   public calculateEarliestHearingDate(hearings: HearingListModel[]): HearingListViewModel[] {
     const viewModels: HearingListViewModel[] = [];
     hearings.forEach((hearing) => {

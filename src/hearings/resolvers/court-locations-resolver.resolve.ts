@@ -30,7 +30,7 @@ export class CourtLocationsDataResolver implements Resolve<LocationModel> {
 
   public getLocationId$(): Observable<string> {
     return this.hearingStore.pipe(select(fromHearingStore.getHearingRequest)).pipe(
-      map(hearingRequest => 
+      map(hearingRequest =>
         hearingRequest.hearingRequestMainModel
         && hearingRequest.hearingRequestMainModel.hearingResponse
         && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule

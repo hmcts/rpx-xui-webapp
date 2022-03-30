@@ -743,18 +743,38 @@ describe('CaseHearingsListComponent', () => {
 
   it('should check viewDetails', () => {
     const loadHearingRequestAndRedirect = spyOn(component, 'LoadHearingRequestAndRedirect');
+    // AWAITING_LISTING
+    component.viewDetails(UPCOMING_HEARING_LIST[0]);
+    fixture.detectChanges();
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100001', '/hearings/view/hearing-view-summary');
+    // LISTED
+    component.viewDetails(UPCOMING_HEARING_LIST[2]);
+    fixture.detectChanges();
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100003', '/hearings/view/hearing-view-summary');
+    // UPDATE_REQUESTED
+    component.viewDetails(UPCOMING_HEARING_LIST[3]);
+    fixture.detectChanges();
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100004', '/hearings/view/hearing-view-summary');
+    // CANCELLATION_REQUESTED
     component.viewDetails(UPCOMING_HEARING_LIST[6]);
     fixture.detectChanges();
     expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100007', '/hearings/view/hearing-cancellation-summary');
+    // CANCELLED
     component.viewDetails(PAST_HEARING_LIST[0]);
     fixture.detectChanges();
     expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100008', '/hearings/view/hearing-cancelled-summary');
+    // COMPLETED
     component.viewDetails(PAST_HEARING_LIST[1]);
     fixture.detectChanges();
     expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100010', '/hearings/view/hearing-completed-summary/h100010');
-    component.viewDetails(UPCOMING_HEARING_LIST[0]);
+    // ADJOURNED
+    component.viewDetails(PAST_HEARING_LIST[2]);
     fixture.detectChanges();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'view']);
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100011', '/hearings/view/hearing-adjourned-summary/h100011');
+    // FAILURE
+    component.viewDetails(UPCOMING_HEARING_LIST[5]);
+    fixture.detectChanges();
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100006', '/hearings/view/hearing-request-failed-summary/h100006');
   });
 
   afterEach(() => {

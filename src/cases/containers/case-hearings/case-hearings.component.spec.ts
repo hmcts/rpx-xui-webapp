@@ -422,7 +422,7 @@ describe('CaseHearingsComponent', () => {
   });
 
   it('should getHearsListByStatus', (done) => {
-    const hearingList = component.getHearingListBySectionStatus(EXUISectionStatusEnum.UPCOMING);
+    const hearingList = component.getHearingListByStatus(EXUISectionStatusEnum.UPCOMING);
     hearingList.subscribe(hearing => {
       expect(hearing.length).toBeGreaterThan(0);
       done();

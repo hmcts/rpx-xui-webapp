@@ -74,9 +74,9 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.upcomingHearings$ = this.getHearingListBySectionStatus(EXUISectionStatusEnum.UPCOMING);
-    this.pastAndCancelledHearings$ = this.getHearingListBySectionStatus(EXUISectionStatusEnum.PAST_AND_CANCELLED);
-    this.listedHearings$ = this.getHearingListByHearingStatus(EXUIDisplayStatusEnum.LISTED);
+    this.upcomingHearings$ = this.getHearingListByStatus(EXUISectionStatusEnum.UPCOMING);
+    this.pastAndCancelledHearings$ = this.getHearingListByStatus(EXUISectionStatusEnum.PAST_AND_CANCELLED);
+    this.listedHearings$ = this.getHearingListByStatus(EXUIDisplayStatusEnum.LISTED);
 
     this.roleCatSubscription = this.roleCategoryMappingService.getUserRoleCategory(this.userRoles$).subscribe(
       userRole => {
@@ -91,13 +91,21 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     this.isOgdRole$ = this.roleCategoryMappingService.getUserRoleCategory(this.userRoles$).pipe(map(userRole => userRole === UserRole.Ogd));
   }
 
-  public getHearingListBySectionStatus(status: EXUISectionStatusEnum): Observable<HearingListViewModel[]> {
+  public getHearingListByStatus(status: EXUISectionStatusEnum | EXUIDisplayStatusEnum): Observable<HearingListViewModel[]> {
     return this.hearingStore.pipe(select(fromHearingStore.getHearingList)).pipe(
       map(hearingListStateData => {
           if (hearingListStateData && hearingListStateData.hearingListMainModel && hearingListStateData.hearingListMainModel.caseHearings) {
-            const caseHearingModels: HearingListModel[] = hearingListStateData.hearingListMainModel.caseHearings.filter(hearing =>
-              hearing.exuiSectionStatus === status
-            );
+            let caseHearingModels: HearingListModel[] = [];
+            if (Object.values(EXUISectionStatusEnum).includes(status)) {
+              caseHearingModels = hearingListStateData.hearingListMainModel.caseHearings.filter(hearing =>
+                hearing.exuiSectionStatus === status
+              );
+            }
+            if (Object.values(EXUIDisplayStatusEnum).includes(status)) {
+              caseHearingModels = hearingListStateData.hearingListMainModel.caseHearings.filter(hearing =>
+                hearing.exuiDisplayStatus === status
+              );
+            }
             const caseHearingViewModels: HearingListViewModel[] = this.calculateEarliestHearingDate(caseHearingModels);
             return this.sortHearingsByHearingAndRequestDate(caseHearingViewModels);
           } else {
@@ -108,22 +116,22 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     );
   }
 
-  public getHearingListByHearingStatus(exuiDisplayStatusEnum: EXUIDisplayStatusEnum): Observable<HearingListViewModel[]> {
-    return this.hearingStore.pipe(select(fromHearingStore.getHearingList)).pipe(
-      map(hearingListStateData => {
-          if (hearingListStateData && hearingListStateData.hearingListMainModel && hearingListStateData.hearingListMainModel.caseHearings) {
-            const caseHearingModels: HearingListModel[] = hearingListStateData.hearingListMainModel.caseHearings.filter(hearing =>
-              hearing.exuiDisplayStatus === exuiDisplayStatusEnum
-            );
-            const caseHearingViewModels: HearingListViewModel[] = this.calculateEarliestHearingDate(caseHearingModels);
-            return this.sortHearingsByHearingAndRequestDate(caseHearingViewModels);
-          } else {
-            return [];
-          }
-        }
-      )
-    );
-  }
+  // public getHearingListByHearingStatus(exuiDisplayStatusEnum: EXUIDisplayStatusEnum): Observable<HearingListViewModel[]> {
+  //   return this.hearingStore.pipe(select(fromHearingStore.getHearingList)).pipe(
+  //     map(hearingListStateData => {
+  //         if (hearingListStateData && hearingListStateData.hearingListMainModel && hearingListStateData.hearingListMainModel.caseHearings) {
+  //           const caseHearingModels: HearingListModel[] = hearingListStateData.hearingListMainModel.caseHearings.filter(hearing =>
+  //             hearing.exuiDisplayStatus === exuiDisplayStatusEnum
+  //           );
+  //           const caseHearingViewModels: HearingListViewModel[] = this.calculateEarliestHearingDate(caseHearingModels);
+  //           return this.sortHearingsByHearingAndRequestDate(caseHearingViewModels);
+  //         } else {
+  //           return [];
+  //         }
+  //       }
+  //     )
+  //   );
+  // }
 
   public calculateEarliestHearingDate(hearings: HearingListModel[]): HearingListViewModel[] {
     const viewModels: HearingListViewModel[] = [];

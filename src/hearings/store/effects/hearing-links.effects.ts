@@ -21,8 +21,7 @@ export class HearingLinksEffects {
     map((action: hearingLinksActions.LoadServiceLinkedCases) => action.payload),
     switchMap(payload => {
       return this.hearingsService.loadServiceLinkedCases(payload.caseReference, payload.hearingId).pipe(
-        map(
-          (response) => new hearingLinksActions.LoadServiceLinkedCasesSuccess(response)),
+        map(response => new hearingLinksActions.LoadServiceLinkedCasesSuccess(response)),
         catchError((error: HttpError) => of(new hearingLinksActions.LoadServiceLinkedCasesFailure(error)))
       );
     })

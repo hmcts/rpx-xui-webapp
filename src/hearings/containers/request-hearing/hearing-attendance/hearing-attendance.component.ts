@@ -137,7 +137,6 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   }
 
   public patchValues(party: PartyDetailsModel): FormGroup {
-    console.log('in patch values', party);
     return this.fb.group({
       partyID: [party.partyID],
       partyType: [party.partyType],

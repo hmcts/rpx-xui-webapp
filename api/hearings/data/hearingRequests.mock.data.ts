@@ -25,7 +25,21 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
       },
       privateHearingRequiredFlag: false,
-      panelRequirements: null,
+      panelRequirements: {
+        roleType: [
+          'tribunalJudge',
+          'deputyTribunalJudge',
+          'regionalTribunalJudge',
+        ],
+        panelPreferences: [],
+        panelSpecialisms: [
+          "DisabilityQualifiedPanelMember",
+          "EyeSurgeon",
+          "GeneralPractitioner",
+          "FinanciallyQualifiedPanelMember",
+          "RegionalMedicalMember",
+        ],
+      },
       autolistFlag: false,
       hearingPriorityType: 'standard',
       numberOfPhysicalAttendees: 2,
@@ -228,7 +242,18 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
       },
       privateHearingRequiredFlag: false,
-      panelRequirements: null,
+      panelRequirements: {
+        roleType: [
+          'tribunalJudge',
+          'regionalTribunalJudge',
+        ],
+        panelPreferences: [],
+        panelSpecialisms: [
+          "GeneralPractitioner",
+          "FinanciallyQualifiedPanelMember",
+          "RegionalMedicalMember",
+        ],
+      },
       autolistFlag: false,
       hearingPriorityType: 'standard',
       numberOfPhysicalAttendees: 2,

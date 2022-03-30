@@ -1839,5 +1839,10 @@ export const initialState = {
       isInit: true,
       fragmentId: 'venue'
     },
+    hearingLinks: {
+      serviceLinkedCases: [],
+      linkedHearingGroup: null,
+      lastError: null
+    }
   },
 };

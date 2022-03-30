@@ -3,13 +3,12 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import { JudicialUserModel } from '../../../../hearings/models/judicialUser.model';
 import { PanelPreferenceModel } from '../../../../hearings/models/panelPreference.model';
 import { JudicialRefDataService } from '../../../../hearings/services/judicial-ref-data.service';
-import { HearingJudgeNameComponent, HearingJudgeNamesListComponent } from '../../../components';
+import { HearingJudgeNamesListComponent } from '../../../components';
 import { ACTION, HearingJudgeSelectionEnum, MemberType, RadioOptions, RequirementType } from '../../../models/hearings.enum';
+import { JudicialUserModel } from '../../../models/judicialUser.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
-import { Person } from '../../../models/person.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
@@ -22,15 +21,15 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 export class HearingJudgeComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public hearingJudgeForm: FormGroup;
   public specificJudgeSelection: string;
-  public excludedJudgeList: Person[] = [];
+  public excludedJudgeList: JudicialUserModel[] = [];
   public hearingJudgeTypes: LovRefDataModel[];
   public personalCodejudgeList: JudicialUserModel[] = [];
   public validationErrors: { id: string, message: string }[] = [];
   public personRole = PersonRole.JUDICIAL;
   public specificJudgeSelectionError: string;
   public selectJudgeTypesError: string;
+  public selectJudgeNameError: string;
   public hearingJudgeFormInfo: { includedJudges: string[], judgeTypes: string[], excludedJudges: string[] };
-  @ViewChild('hearingJudgeInfo') public hearingJudgeInfo: HearingJudgeNameComponent;
   @ViewChild('excludedJudge') public excludedJudge: HearingJudgeNamesListComponent;
 
   constructor(protected readonly route: ActivatedRoute,
@@ -85,14 +84,7 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
   public initForm(): void {
     this.hearingJudgeForm = this.formBuilder.group({
       specificJudge: [this.specificJudgeSelection, Validators.required],
-      findPersonControl: this.formBuilder.group({
-        domain: '',
-        email: [''],
-        id: '',
-        knownAs: '',
-        name: '',
-        personalCode: '',
-      }),
+      judgeName: [null],
       judgeType: this.getJudgeTypeFormArray,
     });
   }
@@ -103,27 +95,31 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
     }
     if (this.specificJudgeSelection === RadioOptions.YES) {
       const includedJudge = this.personalCodejudgeList.find((judgeInfo) => this.hearingJudgeFormInfo.includedJudges.includes(judgeInfo.personal_code));
-      const judgeDetails = {
-        domain: this.personRole,
-        email: includedJudge.email_id,
-        id: includedJudge.sidam_id,
-        knownAs: includedJudge.known_as,
-        name: includedJudge.surname,
-        personalCode: includedJudge.personal_code,
+      const judgeDetails: JudicialUserModel = {
+        email_id: includedJudge.email_id,
+        sidam_id: includedJudge.sidam_id,
+        known_as: includedJudge.known_as,
+        surname: includedJudge.surname,
+        personal_code: includedJudge.personal_code,
+        full_name: includedJudge.full_name,
+        object_id: includedJudge.object_id,
+        post_nominals: includedJudge.post_nominals
       };
-      this.hearingJudgeInfo.setSelectedJudge(judgeDetails);
+      this.hearingJudgeForm.controls.judgeName.setValue(judgeDetails);
     }
 
     if (this.hearingJudgeFormInfo.excludedJudges && this.hearingJudgeFormInfo.excludedJudges.length) {
       this.personalCodejudgeList.forEach(judgeInfo => {
         if (this.hearingJudgeFormInfo.excludedJudges.includes(judgeInfo.personal_code)) {
-          const judgeDetail = {
-            domain: this.personRole,
-            email: judgeInfo.email_id,
-            id: judgeInfo.sidam_id,
-            knownAs: judgeInfo.known_as,
-            name: judgeInfo.surname,
-            personalCode: judgeInfo.personal_code,
+          const judgeDetail: JudicialUserModel = {
+            email_id: judgeInfo.email_id,
+            sidam_id: judgeInfo.sidam_id,
+            known_as: judgeInfo.known_as,
+            surname: judgeInfo.surname,
+            personal_code: judgeInfo.personal_code,
+            full_name: judgeInfo.full_name,
+            object_id: judgeInfo.object_id,
+            post_nominals: judgeInfo.post_nominals
           };
           this.excludedJudgeList.push(judgeDetail);
         }
@@ -134,14 +130,14 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
   public showSpecificJudge(judgeSelection: string) {
     this.specificJudgeSelection = judgeSelection;
     this.hearingJudgeForm.controls.specificJudge.setValue(this.specificJudgeSelection);
-    this.hearingJudgeForm.controls.findPersonControl.get('email').clearValidators();
+    this.hearingJudgeForm.controls.judgeName.clearValidators();
     this.hearingJudgeForm.controls.judgeType.clearValidators();
     if (this.specificJudgeSelection === RadioOptions.YES) {
-      this.hearingJudgeForm.controls.findPersonControl.get('email').setValidators([Validators.required]);
+      this.hearingJudgeForm.controls.judgeName.setValidators([Validators.required]);
     } else {
       this.hearingJudgeForm.controls.judgeType.setValidators([this.validatorsUtils.formArraySelectedValidator()]);
     }
-    this.hearingJudgeForm.controls.findPersonControl.get('email').updateValueAndValidity();
+    this.hearingJudgeForm.controls.judgeName.updateValueAndValidity();
     this.hearingJudgeForm.controls.judgeType.updateValueAndValidity();
   }
 
@@ -162,7 +158,7 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
     let roleType: string[] = [];
     if (this.hearingJudgeForm.value.specificJudge === RadioOptions.YES) {
       const panelPreference: PanelPreferenceModel = {
-        memberID: this.hearingJudgeForm.value.findPersonControl.personalCode,
+        memberID: (this.hearingJudgeForm.value.judgeName as JudicialUserModel).personal_code,
         memberType: MemberType.JUDGE,
         requirementType: RequirementType.MUSTINC
       };
@@ -170,9 +166,9 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
     } else {
       roleType = this.hearingJudgeForm.value.judgeType.filter(judgeType => judgeType.selected).map(judgeType => judgeType.key);
     }
-    this.excludedJudge.judgeList.forEach(judgeInfo => {
+    this.excludedJudge.judgeList.forEach((judgeInfo: JudicialUserModel) => {
       const panelPreference: PanelPreferenceModel = {
-        memberID: judgeInfo.personalCode,
+        memberID: judgeInfo.personal_code,
         memberType: MemberType.JUDGE,
         requirementType: RequirementType.EXCLUDE
       };
@@ -197,8 +193,9 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
     if (!this.hearingJudgeForm.controls.specificJudge.valid) {
       this.specificJudgeSelectionError = HearingJudgeSelectionEnum.SelectionError;
       this.validationErrors.push({ id: 'specific-judge-selection', message: HearingJudgeSelectionEnum.SelectionError });
-    } else if (this.specificJudgeSelection === RadioOptions.YES && !this.hearingJudgeInfo.isJudgeInputValid() && !this.hearingJudgeForm.controls.findPersonControl.get('email').valid) {
-      this.validationErrors.push(this.hearingJudgeInfo.validationError);
+    } else if (this.specificJudgeSelection === RadioOptions.YES && !this.hearingJudgeForm.controls.judgeName.valid) {
+      this.selectJudgeNameError = HearingJudgeSelectionEnum.ValidNameError;
+      this.validationErrors.push({ id: 'inputSelectPerson', message: HearingJudgeSelectionEnum.ValidNameError });
     } else if (this.specificJudgeSelection === RadioOptions.NO && !this.hearingJudgeForm.controls.judgeType.valid) {
       this.selectJudgeTypesError = HearingJudgeSelectionEnum.SelectOneJudgeError;
       this.validationErrors.push({ id: 'judgeTypes', message: HearingJudgeSelectionEnum.SelectOneJudgeError });
@@ -214,6 +211,7 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
   public checkFormData(): void {
     this.validationErrors = [];
     this.selectJudgeTypesError = null;
+    this.selectJudgeNameError = null;
     this.specificJudgeSelectionError = null;
     this.showRadioButtonError();
     this.showExcludeJudgeError();

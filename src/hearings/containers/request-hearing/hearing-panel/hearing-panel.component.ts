@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { JudicialUserModel } from '../../../../hearings/models/judicialUser.model';
 import { PanelPreferenceModel } from '../../../../hearings/models/panelPreference.model';
@@ -19,16 +18,16 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 export class HearingPanelComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public panelJudgeForm: FormGroup;
   public validationErrors: { id: string, message: string }[] = [];
-  public includedJudgeList: Person[] = [];
-  public excludedJudgeList: Person[] = [];
-  public selectedPanelRoles: Person[] = [];
+  public includedJudgeList: JudicialUserModel[] = [];
+  public excludedJudgeList: JudicialUserModel[] = [];
+  public selectedPanelRoles: JudicialUserModel[] = [];
   public panelSelection: string;
   public multiLevelSelections: LovRefDataModel[] = [];
   public panelSelectionError: string;
   public hasValidationRequested: boolean = false;
   public childNodesValidationError: string;
   public personalCodejudgeList: JudicialUserModel[] = [];
-  public personRole = PersonRole.JUDICIAL;
+  public personRole = 'JUDICIAL';
   public configLevels: { level: number, controlType: ControlTypeEnum }[];
   @ViewChild('includedJudge') public includedJudge: HearingJudgeNamesListComponent;
   @ViewChild('excludedJudge') public excludedJudge: HearingJudgeNamesListComponent;
@@ -80,20 +79,22 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     this.panelJudgeForm.controls.multiLevelSelect = this.convertRefDataModelToArray(this.multiLevelSelections);
   }
 
-  public getPannelMemberList(panelRequirementType: string): Person[] {
-    const selectedPanelList: Person[] = [];
+  public getPannelMemberList(panelRequirementType: string): JudicialUserModel[] {
+    const selectedPanelList: JudicialUserModel[] = [];
     const panelRequirements = this.hearingRequestMainModel.hearingDetails.panelRequirements;
     const panelMemberIDs = panelRequirements && panelRequirements.panelPreferences && panelRequirements.panelPreferences.filter(preferences => preferences.memberType === MemberType.PANEL_MEMBER && preferences.requirementType === panelRequirementType).map(preferences => preferences.memberID);
     if (panelMemberIDs && panelMemberIDs.length) {
       this.personalCodejudgeList.forEach(judgeInfo => {
         if (panelMemberIDs.includes(judgeInfo.personal_code)) {
-          const judgeDetail = {
-            domain: this.personRole,
-            email: judgeInfo.email_id,
-            id: judgeInfo.sidam_id,
-            knownAs: judgeInfo.known_as,
-            name: judgeInfo.surname,
-            personalCode: judgeInfo.personal_code,
+          const judgeDetail: JudicialUserModel = {
+            email_id: judgeInfo.email_id,
+            sidam_id: judgeInfo.sidam_id,
+            known_as: judgeInfo.known_as,
+            surname: judgeInfo.surname,
+            personal_code: judgeInfo.personal_code,
+            full_name: judgeInfo.full_name,
+            object_id: judgeInfo.object_id,
+            post_nominals: judgeInfo.post_nominals
           };
           selectedPanelList.push(judgeDetail);
         }
@@ -164,7 +165,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     if (hearingPanelRequiredFlag) {
       this.includedJudge.judgeList.forEach(judgeInfo => {
         const panelPreference: PanelPreferenceModel = {
-          memberID: judgeInfo.personalCode,
+          memberID: judgeInfo.personal_code,
           memberType: MemberType.PANEL_MEMBER,
           requirementType: RequirementType.MUSTINC
         };
@@ -172,7 +173,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
       });
       this.excludedJudge.judgeList.forEach(judgeInfo => {
         const panelPreference: PanelPreferenceModel = {
-          memberID: judgeInfo.personalCode,
+          memberID: judgeInfo.personal_code,
           memberType: MemberType.PANEL_MEMBER,
           requirementType: RequirementType.EXCLUDE
         };

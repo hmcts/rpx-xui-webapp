@@ -93,7 +93,10 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
       }
     );
     if (this.route.snapshot.queryParams) {
-      this.caseId = this.route.snapshot.queryParams.caseId ? this.route.snapshot.queryParams.caseId : null;
+      const caseIdStr = this.route.snapshot.queryParams.caseId ? this.route.snapshot.queryParams.caseId : null;
+      if (caseIdStr) {
+        this.caseId = caseIdStr.replace(/-/g, '');
+      }
       this.jurisdiction = this.route.snapshot.queryParams.jurisdiction ? this.route.snapshot.queryParams.jurisdiction : null;
       this.assignmentId = this.route.snapshot.queryParams.assignmentId ? this.route.snapshot.queryParams.assignmentId : null;
       this.roleCategory = this.route.snapshot.queryParams.roleCategory ? this.route.snapshot.queryParams.roleCategory : null;

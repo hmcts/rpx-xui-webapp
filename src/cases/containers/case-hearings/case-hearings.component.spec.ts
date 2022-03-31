@@ -421,10 +421,18 @@ describe('CaseHearingsComponent', () => {
     expect(component.hasRequestAction).toBeTruthy();
   });
 
-  it('should getHearsListByStatus', (done) => {
+  it('should getHearsList by EXUISectionStatus', (done) => {
     const hearingList = component.getHearingListByStatus(EXUISectionStatusEnum.UPCOMING);
     hearingList.subscribe(hearing => {
-      expect(hearing.length).toBeGreaterThan(0);
+      expect(hearing.length).toBe(7);
+      done();
+    });
+  });
+
+  it('should getHearsList by EXUIDisplayStatus', (done) => {
+    const hearingList = component.getHearingListByStatus(EXUIDisplayStatusEnum.LISTED);
+    hearingList.subscribe(hearing => {
+      expect(hearing.length).toBe(1);
       done();
     });
   });

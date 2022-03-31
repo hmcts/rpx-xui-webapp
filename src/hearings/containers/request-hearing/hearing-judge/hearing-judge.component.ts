@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { PanelPreferenceModel } from '../../../../hearings/models/panelPreference.model';
 import { JudicialRefDataService } from '../../../../hearings/services/judicial-ref-data.service';
@@ -25,7 +24,6 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
   public hearingJudgeTypes: LovRefDataModel[];
   public personalCodejudgeList: JudicialUserModel[] = [];
   public validationErrors: { id: string, message: string }[] = [];
-  public personRole = PersonRole.JUDICIAL;
   public specificJudgeSelectionError: string;
   public selectJudgeTypesError: string;
   public selectJudgeNameError: string;

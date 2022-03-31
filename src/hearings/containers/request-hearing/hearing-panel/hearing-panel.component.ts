@@ -27,7 +27,6 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
   public hasValidationRequested: boolean = false;
   public childNodesValidationError: string;
   public personalCodejudgeList: JudicialUserModel[] = [];
-  public personRole = 'JUDICIAL';
   public configLevels: { level: number, controlType: ControlTypeEnum }[];
   @ViewChild('includedJudge') public includedJudge: HearingJudgeNamesListComponent;
   @ViewChild('excludedJudge') public excludedJudge: HearingJudgeNamesListComponent;

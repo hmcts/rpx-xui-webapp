@@ -988,10 +988,10 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
     locationId: '196538',
     locationType: 'hearing',
   },
-    {
-      locationId: '234850',
-      locationType: 'hearing',
-    },
+  {
+    locationId: '234850',
+    locationType: 'hearing',
+  },
   ],
   caseAdditionalSecurityFlag: false,
   facilitiesRequired: [],
@@ -1235,12 +1235,24 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
       partyName: 'Jane and Smith',
       partyType: PartyType.IND,
       partyRole: 'appellant',
+      individualDetails: {
+        title: null,
+        firstName: 'Jane',
+        lastName: 'Smith',
+        preferredHearingChannel: 'inPerson',
+      }
     },
     {
       partyID: 'P2',
       partyName: 'DWP',
       partyType: PartyType.ORG,
       partyRole: 'claimant',
+      individualDetails: {
+        title: null,
+        firstName: 'DWP',
+        lastName: null,
+        preferredHearingChannel: 'byVideo',
+      },
     },
   ],
   hearingResponse: {
@@ -1264,12 +1276,24 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
           partyName: 'Jane and Smith',
           partyType: PartyType.IND,
           partyRole: 'appellant',
+          individualDetails: {
+            title: null,
+            firstName: 'Jane',
+            lastName: 'Smith',
+            preferredHearingChannel: 'inPerson',
+          }
         },
         {
           partyID: 'P2',
           partyName: 'DWP',
           partyType: PartyType.ORG,
           partyRole: 'claimant',
+          individualDetails: {
+            title: null,
+            firstName: 'DWP',
+            lastName: null,
+            preferredHearingChannel: 'byVideo',
+          },
         },
       ],
     },
@@ -1629,7 +1653,7 @@ export const initialState = {
                 'RA0009',
               ],
               interpreterLanguage: 'PF0015',
-              preferredHearingChannel: 'inPerson',
+              preferredHearingChannel: 'byVideo',
             },
             organisationDetails: {},
             unavailabilityDOW: null,

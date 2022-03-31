@@ -63,10 +63,6 @@ export class CaseHearingsListComponent implements OnInit {
     return !!hearingGroupRequestId;
   }
 
-  public addAndEdit(hearingID: string): void {
-    this.router.navigate(['/', 'hearings', 'actuals', hearingID, 'hearing-actual-add-edit-summary']);
-  }
-
   public cancelHearing(hearingID: string): void {
     this.router.navigate(['/', 'hearings', 'cancel', hearingID]);
   }
@@ -102,6 +98,9 @@ export class CaseHearingsListComponent implements OnInit {
       case EXUIDisplayStatusEnum.ADJOURNED:
         this.LoadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-adjourned-summary/${hearing.hearingID}`);
         break;
+      case EXUIDisplayStatusEnum.AWAITING_ACTUALS:
+        this.LoadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-awaiting-summary/${hearing.hearingID}`);
+        break;
       case EXUIDisplayStatusEnum.FAILURE:
         this.LoadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-request-failed-summary/${hearing.hearingID}`);
         break;
@@ -112,6 +111,6 @@ export class CaseHearingsListComponent implements OnInit {
   }
 
   public LoadHearingRequestAndRedirect(hearingID: string, targetURL: string) {
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest({hearingID, targetURL}));
+    this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest({ hearingID, targetURL }));
   }
 }

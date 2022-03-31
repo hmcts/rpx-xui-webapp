@@ -61,4 +61,10 @@ describe('Role category mapping service', () => {
     roleCategoryMappingService.getUserRoleCategory(of(USER_ROLES)).subscribe(userRoleCategory =>
       expect(userRoleCategory).toBe(UserRole.LegalOps));
   });
+
+  it('should return Legalops if there is legal ops user role when calling getUserRoleCategory', () => {
+    const USER_ROLES: string[] = ['caseworker-sscs-dwpresponsewriter'];
+    roleCategoryMappingService.getUserRoleCategory(of(USER_ROLES)).subscribe(userRoleCategory =>
+      expect(userRoleCategory).toBe(UserRole.Ogd));
+  });
 });

@@ -8,6 +8,7 @@ import {ScreenNavigationModel} from './screenNavigation.model';
 import {VocabularyModel} from './vocabulary.model';
 
 export interface ServiceHearingValuesModel {
+  hmctsServiceID: string;
   caseName: string;
   autoListFlag: boolean;
   hearingType: string;

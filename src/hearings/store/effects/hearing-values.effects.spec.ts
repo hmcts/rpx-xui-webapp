@@ -34,6 +34,7 @@ describe('Hearing Values Effects', () => {
 
   describe('loadHearingValue$', () => {
     const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
+      hmctsServiceID: 'BBA3',
       caseName: 'Jane Smith vs DWP',
       autoListFlag: false,
       hearingType: 'Final',

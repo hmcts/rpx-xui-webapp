@@ -964,6 +964,7 @@ export const caseFlagsRefData = [
 ];
 
 export const serviceHearingValuesModel: ServiceHearingValuesModel = {
+  hmctsServiceID: 'BBA3',
   caseName: 'Jane vs DWP',
   autoListFlag: false,
   hearingType: 'Final',
@@ -1027,6 +1028,21 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
     ]
   },
   hearingIsLinkedFlag: false,
+  panelRequirements: {
+    roleType: [
+      'tribunalJudge',
+      'deputyTribunalJudge',
+      'regionalTribunalJudge',
+    ],
+    panelPreferences: [],
+    panelSpecialisms: [
+      'DisabilityQualifiedPanelMember',
+      'EyeSurgeon',
+      'GeneralPractitioner',
+      'FinanciallyQualifiedPanelMember',
+      'RegionalMedicalMember',
+    ],
+  },
   parties: [
     {
       partyID: 'P1',
@@ -1072,6 +1088,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   caseFlags: {
     flags: [
       {
+        partyID: 'P1',
         partyName: 'Jane Smith',
         flagParentId: 'RA0008',
         flagId: 'RA0042',
@@ -1079,6 +1096,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE',
       },
       {
+        partyID: 'P1',
         partyName: 'Jane Smith',
         flagParentId: 'RA0032',
         flagId: 'RA0053',
@@ -1086,6 +1104,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE',
       },
       {
+        partyID: 'P1',
         partyName: 'Jane Smith',
         flagParentId: 'RA0002',
         flagId: 'RA0013',
@@ -1093,6 +1112,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE',
       },
       {
+        partyID: 'P1',
         partyName: 'Jane Smith',
         flagParentId: 'RA0003',
         flagId: 'RA0016',
@@ -1100,6 +1120,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE',
       },
       {
+        partyID: 'P1',
         partyName: 'Jane Smith',
         flagParentId: 'RA0008',
         flagId: 'RA0042',
@@ -1107,6 +1128,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE',
       },
       {
+        partyID: 'P1',
         partyName: 'Jane Smith',
         flagParentId: 'PF0001',
         flagId: 'PF0015',
@@ -1114,6 +1136,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE',
       },
       {
+        partyID: 'P1',
         partyName: 'Jane Smith',
         flagParentId: 'PF0001',
         flagId: 'PF0002',
@@ -1121,6 +1144,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE',
       },
       {
+        partyID: 'P2',
         partyName: 'DWP',
         flagParentId: 'RA0001',
         flagId: 'RA0005',
@@ -1128,6 +1152,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE',
       },
       {
+        partyID: 'P2',
         partyName: 'DWP',
         flagParentId: 'PF0001',
         flagId: 'PF0011',
@@ -1135,6 +1160,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE',
       },
       {
+        partyID: 'P2',
         partyName: 'Jane Smith vs DWP',
         flagParentId: 'CF0001',
         flagId: 'CF0002',
@@ -1142,6 +1168,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE',
       },
       {
+        partyID: 'P2',
         partyName: 'Jane Smith vs DWP',
         flagParentId: 'CF0001',
         flagId: 'CF0006',
@@ -1149,6 +1176,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE',
       },
       {
+        partyID: 'P2',
         partyName: 'Jane Smith vs DWP',
         flagParentId: 'CF0001',
         flagId: 'CF0007',
@@ -1158,7 +1186,102 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
     ],
     flagAmendURL: '/'
   },
-} as ServiceHearingValuesModel;
+  screenFlow: [
+    {
+      screenName: 'hearing-requirements',
+      navigation: [
+        {
+          resultValue: 'hearing-facilities',
+        },
+      ],
+    },
+    {
+      screenName: 'hearing-facilities',
+      navigation: [
+        {
+          resultValue: 'hearing-stage',
+        },
+      ],
+    },
+    {
+      screenName: 'hearing-stage',
+      navigation: [
+        {
+          resultValue: 'hearing-attendance',
+        },
+      ],
+    },
+    {
+      screenName: 'hearing-attendance',
+      navigation: [
+        {
+          resultValue: 'hearing-venue',
+        },
+      ],
+    },
+    {
+      screenName: 'hearing-venue',
+      conditionKey: 'region',
+      navigation: [
+        {
+          conditionOperator: 'INCLUDE',
+          conditionValue: 'Wales',
+          resultValue: 'hearing-welsh',
+        },
+        {
+          conditionOperator: 'NOT INCLUDE',
+          conditionValue: 'Wales',
+          resultValue: 'hearing-judge',
+        },
+      ],
+    },
+    {
+      screenName: 'hearing-welsh',
+      navigation: [
+        {
+          resultValue: 'hearing-judge',
+        },
+      ],
+    },
+    {
+      screenName: 'hearing-judge',
+      navigation: [
+        {
+          resultValue: 'hearing-panel',
+        },
+      ],
+    },
+    {
+      screenName: 'hearing-panel',
+      navigation: [
+        {
+          resultValue: 'hearing-timing',
+        },
+      ],
+    },
+    {
+      screenName: 'hearing-timing',
+      navigation: [
+        {
+          resultValue: 'hearing-additional-instructions',
+        },
+      ],
+    },
+    {
+      screenName: 'hearing-additional-instructions',
+      navigation: [
+        {
+          resultValue: 'hearing-create-edit-summary',
+        },
+      ],
+    },
+  ],
+  vocabulary: [
+    {
+      word1: '',
+    },
+  ],
+};
 
 export const hearingRequestMainModel: HearingRequestMainModel = {
   requestDetails: {

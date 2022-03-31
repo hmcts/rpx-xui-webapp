@@ -416,14 +416,22 @@ const HEARING_DAY_SCHEDULE_14: HearingDayScheduleModel = {
       partyName: 'Jane and Smith',
       partyType: PartyType.IND,
       partyRole: 'claimant',
-      partyChannel: 'inPerson',
+      individualDetails: {
+        firstName: 'Jane',
+        lastName: 'Smith',
+        preferredHearingChannel: 'inPerson',
+      },
     },
     {
       partyID: 'P2',
       partyName: 'DWP',
       partyType: PartyType.ORG,
       partyRole: 'claimant',
-      partyChannel: 'byVideo',
+      individualDetails: {
+        firstName: 'DWP',
+        lastName: null,
+        preferredHearingChannel: 'byVideo',
+      },
     },
   ],
 };

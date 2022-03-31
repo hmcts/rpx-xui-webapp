@@ -118,7 +118,7 @@ Note that this is connected into the application via the following pieces of cod
 
 which in turn uses `propertiesVolume.addTo()`
 
-# How Application Configuration (Node Config) Works
+# How Application Configuration (Node Config) Works 
 
 The application picks up the configuration from the /config .json files. 
 

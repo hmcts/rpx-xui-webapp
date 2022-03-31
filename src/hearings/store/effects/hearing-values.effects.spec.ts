@@ -3,8 +3,8 @@ import { provideMockActions } from '@ngrx/effects/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { cold, hot } from 'jasmine-marbles';
 import { of } from 'rxjs';
-import { initialState } from '../../../hearings/hearing.test.data';
 import { Go } from '../../../app/store';
+import { initialState } from '../../hearing.test.data';
 import { MemberType, PartyType, RequirementType } from '../../models/hearings.enum';
 import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
 import { HearingsService } from '../../services/hearings.service';
@@ -20,7 +20,7 @@ describe('Hearing Values Effects', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({initialState}),
+        provideMockStore({ initialState }),
         {
           provide: HearingsService,
           useValue: hearingsServiceMock,
@@ -80,7 +80,6 @@ describe('Hearing Values Effects', () => {
           partyID: 'P1',
           partyName: 'Jane and Smith',
           partyType: PartyType.IND,
-          partyChannel: 'byVideo',
           partyRole: 'appellant',
           unavailabilityRanges: [
             {
@@ -93,7 +92,6 @@ describe('Hearing Values Effects', () => {
           partyID: 'P2',
           partyName: 'DWP',
           partyType: PartyType.ORG,
-          partyChannel: 'byVideo',
           partyRole: 'claimant',
           unavailabilityRanges: [
             {
@@ -121,8 +119,7 @@ describe('Hearing Values Effects', () => {
         ],
         flagAmendURL: '/',
       },
-      screenFlow: [
-      ],
+      screenFlow: [],
       vocabulary: [
         {
           word1: '',
@@ -134,8 +131,8 @@ describe('Hearing Values Effects', () => {
       hearingsServiceMock.loadHearingValues.and.returnValue(of(SERVICE_HEARING_VALUES));
       const action = new hearingValuesActions.LoadHearingValues('1111222233334444');
       const completion = new hearingValuesActions.LoadHearingValuesSuccess(SERVICE_HEARING_VALUES);
-      actions$ = hot('-a', {a: action});
-      const expected = cold('-b', {b: completion});
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
       expect(effects.loadHearingValue$).toBeObservable(expected);
     });
   });
@@ -146,7 +143,7 @@ describe('Hearing Values Effects', () => {
         status: 500,
         message: 'error'
       });
-      action$.subscribe(action => expect(action).toEqual(new Go({path: ['/hearings/error']})));
+      action$.subscribe(action => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
     });
 
     it('should handle 4xx related errors', () => {

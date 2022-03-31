@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
-import { catchError, map, switchMap, take } from 'rxjs/operators';
+import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
+import { SessionStorageService } from '../../app/services';
 import { HearingCategory } from '../models/hearings.enum';
 import { LovRefDataModel } from '../models/lovRefData.model';
 import { LovRefDataService } from '../services/lov-ref-data.service';
@@ -17,7 +18,8 @@ export class RefDataResolver implements Resolve<LovRefDataModel[]> {
   constructor(
     protected readonly lovRefDataService: LovRefDataService,
     protected readonly hearingStore: Store<fromHearingStore.State>,
-    protected readonly router: Router
+    protected readonly router: Router,
+    protected readonly sessionStorageService: SessionStorageService
   ) { }
 
   public resolve(route?: ActivatedRouteSnapshot): Observable<LovRefDataModel[]> {
@@ -41,11 +43,32 @@ export class RefDataResolver implements Resolve<LovRefDataModel[]> {
   }
 
   public getReferenceData$(serviceId, category: HearingCategory, isChildRequired): Observable<LovRefDataModel[]> {
+    const sessionKey = this.getLovSessionKey(serviceId, category);
+    const lovDataFromSession = this.getLovRefDataFromSession(sessionKey);
+    if (lovDataFromSession.length > 0) {
+      return of(lovDataFromSession);
+    }
     return this.lovRefDataService.getListOfValues(category, serviceId, isChildRequired).pipe(
+      tap((lovData) => {
+        this.sessionStorageService.setItem(sessionKey, JSON.stringify(lovData));
+      }),
       catchError(() => {
         this.router.navigate(['/hearings/error']);
         return of(null);
       })
     );
+  }
+
+  public getLovRefDataFromSession(sessionKey): LovRefDataModel[] {
+    const lovDataStr = this.sessionStorageService.getItem(sessionKey);
+    if (lovDataStr) {
+      const lovData = JSON.parse(lovDataStr);
+      return lovData as LovRefDataModel[];
+    }
+    return [];
+  }
+
+  public getLovSessionKey(serviceId: string, category: string): string {
+    return `lov-${serviceId}-${category}`;
   }
 }

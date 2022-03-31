@@ -120,7 +120,7 @@ describe('SpecificAccessHomeComponent', () => {
       const caseId = '111111';
       component.caseId = caseId;
       component.navigationHandler(returnTasksTab);
-      expect(routerMock.navigateByUrl).toHaveBeenCalledWith(`/cases/case-details/${caseId}/roles-and-access`);
+      expect(routerMock.navigateByUrl).toHaveBeenCalledWith(`/cases/case-details/${caseId}/tasks`);
     });
 
   });

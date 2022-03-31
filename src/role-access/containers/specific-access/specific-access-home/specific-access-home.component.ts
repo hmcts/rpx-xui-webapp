@@ -105,7 +105,7 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
         break;
       }
       case SpecificAccessNavigationEvent.RETURNTOTASKSTAB: {
-        this.router.navigateByUrl(`/cases/case-details/${this.caseId}/roles-and-access`);
+        this.router.navigateByUrl(`/cases/case-details/${this.caseId}/tasks`);
         break;
       }
       case SpecificAccessNavigationEvent.CANCEL:

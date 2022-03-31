@@ -24,7 +24,7 @@ export class SpecificAccessApprovedComponent {
         this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_APPROVED));
         break;
       default:
-        throw new Error('Not yet implemented');
+        throw new Error('Invalid case');
     }
   }
 }

@@ -136,7 +136,21 @@ describe('HearingRequirementsComponent', () => {
           hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000'
         },
         privateHearingRequiredFlag: false,
-        panelRequirements: undefined,
+        panelRequirements: {
+          roleType: [
+            'tribunalJudge',
+            'deputyTribunalJudge',
+            'regionalTribunalJudge',
+          ],
+          panelPreferences: [],
+          panelSpecialisms: [
+            'DisabilityQualifiedPanelMember',
+            'EyeSurgeon',
+            'GeneralPractitioner',
+            'FinanciallyQualifiedPanelMember',
+            'RegionalMedicalMember',
+          ],
+        },
         autolistFlag: false,
         hearingPriorityType: 'standard',
         numberOfPhysicalAttendees: 2,
@@ -174,8 +188,13 @@ describe('HearingRequirementsComponent', () => {
           firstName: 'Jane',
           lastName: 'Smith',
           preferredHearingChannel: 'inPerson',
-          reasonableAdjustments: [],
-          interpreterLanguage: null
+          reasonableAdjustments: [
+            'RA0042',
+            'RA0053',
+            'RA0013',
+            'RA0016',
+            'RA0042'],
+          interpreterLanguage: 'PF0015'
         },
         organisationDetails: {}
       }, {
@@ -192,9 +211,8 @@ describe('HearingRequirementsComponent', () => {
           firstName: 'DWP',
           lastName: null,
           preferredHearingChannel: 'inPerson',
-          reasonableAdjustments: [],
+          reasonableAdjustments: ['RA0005'],
           interpreterLanguage: null
-
         },
         organisationDetails: {
           name: 'DWP',

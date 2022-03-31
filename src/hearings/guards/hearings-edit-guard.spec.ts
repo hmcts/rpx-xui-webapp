@@ -77,7 +77,7 @@ describe('HearingsEditGuard', () => {
     storeMock.pipe.and.returnValue(of(USER_1));
     roleCategoryMappingServiceMock.getUserRoleCategory.and.returnValue(of(UserRole.LegalOps));
     hearingsEditGuard = new HearingsEditGuard(storeMock, sessionStorageMock, featureToggleMock, roleCategoryMappingServiceMock, routerMock);
-    featureToggleMock.getValueOnce.and.returnValue(of(null));
+    featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
     sessionStorageMock.getItem.and.returnValue(CASE_INFO);
     hearingsEditGuard.canActivate().toPromise().then(canActivate => expect(canActivate).toBeTruthy());
   });

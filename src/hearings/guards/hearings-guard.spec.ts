@@ -1,5 +1,6 @@
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
+import {cold} from 'jasmine-marbles';
 import { of } from 'rxjs';
 import { UserDetails } from '../../app/models';
 import {SessionStorageService} from '../../app/services';
@@ -102,7 +103,10 @@ describe('HearingsGuard', () => {
     featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
     sessionStorageMock.getItem.and.returnValue(CASE_INFO);
     hearingsGuard = new HearingsGuard(storeMock, sessionStorageMock, featureToggleMock);
-    hearingsGuard.hasMatchedJurisdictionAndRole().toPromise().then(hasMatchedJurisdictionAndRole => expect(hasMatchedJurisdictionAndRole).toBeFalsy());
+    const result$ = hearingsGuard.hasMatchedJurisdictionAndRole();
+    const canActive = false;
+    const expected = cold('(b|)', {b: canActive});
+    expect(result$).toBeObservable(expected);
   });
 
   it('should return true if feature is toggled on and user role match jurisdiction', () => {
@@ -110,7 +114,10 @@ describe('HearingsGuard', () => {
     featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
     sessionStorageMock.getItem.and.returnValue(CASE_INFO);
     hearingsGuard = new HearingsGuard(storeMock, sessionStorageMock, featureToggleMock);
-    hearingsGuard.hasMatchedJurisdictionAndRole().toPromise().then(hasMatchedJurisdictionAndRole => expect(hasMatchedJurisdictionAndRole).toBeTruthy());
+    const result$ = hearingsGuard.hasMatchedJurisdictionAndRole();
+    const canActive = true;
+    const expected = cold('(b|)', {b: canActive});
+    expect(result$).toBeObservable(expected);
   });
 
 });

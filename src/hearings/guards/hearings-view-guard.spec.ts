@@ -1,6 +1,7 @@
 import { Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
+import {cold} from 'jasmine-marbles';
 import { of } from 'rxjs';
 import {UserDetails, UserRole} from '../../app/models';
 import {SessionStorageService} from '../../app/services';
@@ -76,19 +77,25 @@ describe('HearingsViewGuard', () => {
   it('case worker should be able to access the hearings edit link', () => {
     storeMock.pipe.and.returnValue(of(USER_1));
     roleCategoryMappingServiceMock.getUserRoleCategory.and.returnValue(of(UserRole.LegalOps));
-    hearingsViewGuard = new HearingsViewGuard(storeMock, sessionStorageMock, featureToggleMock, roleCategoryMappingServiceMock, routerMock);
     featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
-    sessionStorageMock.getItem.and.returnValue(CASE_INFO);
-    hearingsViewGuard.canActivate().toPromise().then(canActivate => expect(canActivate).toBeTruthy());
+    sessionStorageMock.getItem.and.returnValue(JSON.stringify(CASE_INFO));
+    hearingsViewGuard = new HearingsViewGuard(storeMock, sessionStorageMock, featureToggleMock, roleCategoryMappingServiceMock, routerMock);
+    const result$ = hearingsViewGuard.canActivate();
+    const canActive = true;
+    const expected = cold('(b|)', {b: canActive});
+    expect(result$).toBeObservable(expected);
   });
 
   it('judicial user should not be able to access the hearings edit link', () => {
     storeMock.pipe.and.returnValue(of(USER_2));
     roleCategoryMappingServiceMock.getUserRoleCategory.and.returnValue(of(UserRole.Judicial));
-    hearingsViewGuard = new HearingsViewGuard(storeMock, sessionStorageMock, featureToggleMock, roleCategoryMappingServiceMock, routerMock);
     featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
-    sessionStorageMock.getItem.and.returnValue(CASE_INFO);
-    hearingsViewGuard.canActivate().toPromise().then(canActivate => expect(canActivate).toBeTruthy());
+    sessionStorageMock.getItem.and.returnValue(JSON.stringify(CASE_INFO));
+    hearingsViewGuard = new HearingsViewGuard(storeMock, sessionStorageMock, featureToggleMock, roleCategoryMappingServiceMock, routerMock);
+    const result$ = hearingsViewGuard.canActivate();
+    const canActive = true;
+    const expected = cold('(b|)', {b: canActive});
+    expect(result$).toBeObservable(expected);
   });
 
 });

@@ -16,7 +16,7 @@ import { CaseHearingsListComponent } from './case-hearings-list.component';
 
 class MockRoleCategoryMappingService {
   public initialize = (user: FeatureUser, clientId: string): void => {
-  }
+  };
   public isEnabled = (feature: string): Observable<boolean> => of(true);
   public getValue = <R>(key: string, defaultValue: R): Observable<R> => of(defaultValue);
   public getValueOnce = <R>(key: string, defaultValue: R): Observable<R> => of(defaultValue);
@@ -78,14 +78,24 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
         partyRole: 'appellant',
-        partyChannel: 'inPerson',
+        individualDetails: {
+          title: null,
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+        }
       },
       {
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
         partyRole: 'claimant',
-        partyChannel: 'byVideo',
+        individualDetails: {
+          title: null,
+          firstName: 'DWP',
+          lastName: null,
+          preferredHearingChannel: 'byVideo',
+        },
       },
     ],
   }, {
@@ -102,14 +112,24 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
         partyRole: 'appellant',
-        partyChannel: 'inPerson',
+        individualDetails: {
+          title: null,
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+        }
       },
       {
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
         partyRole: 'claimant',
-        partyChannel: 'byVideo',
+        individualDetails: {
+          title: null,
+          firstName: 'DWP',
+          lastName: null,
+          preferredHearingChannel: 'byVideo',
+        },
       },
     ],
   }],
@@ -141,14 +161,24 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
         partyRole: 'appellant',
-        partyChannel: 'inPerson',
+        individualDetails: {
+          title: null,
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+        }
       },
       {
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
         partyRole: 'claimant',
-        partyChannel: 'byVideo',
+        individualDetails: {
+          title: null,
+          firstName: 'DWP',
+          lastName: null,
+          preferredHearingChannel: 'byVideo',
+        },
       },
     ],
   }, {
@@ -165,14 +195,24 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
         partyRole: 'appellant',
-        partyChannel: 'inPerson',
+        individualDetails: {
+          title: null,
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+        }
       },
       {
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
         partyRole: 'claimant',
-        partyChannel: 'byVideo',
+        individualDetails: {
+          title: null,
+          firstName: 'DWP',
+          lastName: null,
+          preferredHearingChannel: 'byVideo',
+        },
       },
     ],
   }],
@@ -204,14 +244,24 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
         partyRole: 'appellant',
-        partyChannel: 'inPerson',
+        individualDetails: {
+          title: null,
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+        }
       },
       {
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
         partyRole: 'claimant',
-        partyChannel: 'byVideo',
+        individualDetails: {
+          title: null,
+          firstName: 'DWP',
+          lastName: null,
+          preferredHearingChannel: 'byVideo',
+        },
       },
     ],
   }],
@@ -243,14 +293,24 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
         partyRole: 'appellant',
-        partyChannel: 'inPerson',
+        individualDetails: {
+          title: null,
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+        }
       },
       {
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
         partyRole: 'claimant',
-        partyChannel: 'byVideo',
+        individualDetails: {
+          title: null,
+          firstName: 'DWP',
+          lastName: null,
+          preferredHearingChannel: 'byVideo',
+        },
       },
     ],
   }],
@@ -282,14 +342,18 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
         partyRole: 'appellant',
-        partyChannel: 'inPerson',
+        individualDetails: {
+          title: null,
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+        }
       },
       {
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
         partyRole: 'claimant',
-        partyChannel: 'byVideo',
       },
     ],
   }, {
@@ -306,14 +370,24 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
         partyRole: 'appellant',
-        partyChannel: 'inPerson',
+        individualDetails: {
+          title: null,
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+        }
       },
       {
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
         partyRole: 'claimant',
-        partyChannel: 'byVideo',
+        individualDetails: {
+          title: null,
+          firstName: 'DWP',
+          lastName: null,
+          preferredHearingChannel: 'byVideo',
+        },
       },
     ],
   }],
@@ -345,14 +419,18 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
         partyRole: 'appellant',
-        partyChannel: 'inPerson',
       },
       {
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
         partyRole: 'claimant',
-        partyChannel: 'byVideo',
+        individualDetails: {
+          title: null,
+          firstName: 'DWP',
+          lastName: null,
+          preferredHearingChannel: 'byVideo',
+        },
       },
     ],
   }],
@@ -401,14 +479,24 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
         partyRole: 'appellant',
-        partyChannel: 'inPerson',
+        individualDetails: {
+          title: null,
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+        }
       },
       {
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
         partyRole: 'claimant',
-        partyChannel: 'byVideo',
+        individualDetails: {
+          title: null,
+          firstName: 'DWP',
+          lastName: null,
+          preferredHearingChannel: 'byVideo',
+        },
       },
     ],
   }],
@@ -440,14 +528,24 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
         partyRole: 'appellant',
-        partyChannel: 'inPerson',
+        individualDetails: {
+          title: null,
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+        }
       },
       {
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
         partyRole: 'claimant',
-        partyChannel: 'byVideo',
+        individualDetails: {
+          title: null,
+          firstName: 'DWP',
+          lastName: null,
+          preferredHearingChannel: 'byVideo',
+        },
       },
     ],
   }],

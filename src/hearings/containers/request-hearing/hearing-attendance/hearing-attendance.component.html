@@ -13,21 +13,22 @@
     </div>
     <form [formGroup]="attendanceFormGroup" class="form" *ngIf="hearingRequestMainModel">
       <div  class="govuk-form-group"
-            [ngClass]="{'govuk-form-group--error' : !selectionValid}">
+            [ngClass]="{'govuk-form-group--error' : !selectionValid}" formGroupName="parties">
          <span *ngIf=" !selectionValid"
             id="party-selection-error"
             class="govuk-error-message">
             <span class="govuk-visually-hidden">Error:</span> Select how each party will attend the hearing
           </span>
-        <div *ngFor="let partyControl of partiesFormArray.controls; let i=index" class="party-row">
-          <label class="govuk-label">
+        <div *ngFor="let partyControl of partiesFormArray.controls; let i=index" class="party-row" [formGroupName]="i">
+          <label class="govuk-label" [for]="'partyChannel'+i">
               <strong>{{ partyControl.value.partyName }}</strong>
           </label>
-          <select class="govuk-select" id="{{'partyChannel' + i}}" name="party1Channel"
-            [formControl]="partyControl.get('partyChannel')">
-            <option value="" selected>Please select</option>
-            <option *ngFor="let party of partyChannels | async" [ngValue]="party.key">{{party.value_en}}</option>
-          </select>
+          <ng-container formGroupName="individualDetails">
+            <select class="govuk-select" [id]="'partyChannel'+i" [name]="'partyChannel'+i" formControlName="preferredHearingChannel">
+              <option value="" selected>Please select</option>
+              <option *ngFor="let party of partyChannels$ | async" [ngValue]="party.key">{{party.value_en}}</option>
+            </select>
+          </ng-container>
         </div>
       </div>
       <br>
@@ -46,7 +47,7 @@
               class="govuk-error-message">
             <span class="govuk-visually-hidden">Error:</span> Enter a valid number off attendees
           </span>
-          <input [formControl]="attendanceFormGroup.controls.estimation" style="width: 80px;" class="govuk-input" id="attendance-number" name="attendance-number" value="" type="text" aria-describedby="attendance-number-hint">
+          <input formControlName="estimation" class="govuk-input" id="attendance-number" name="attendance-number" aria-describedby="attendance-number-hint">
       </div>
   </form>
   </div>

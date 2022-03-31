@@ -90,12 +90,12 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyID: 'P1',
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
-        partyChannel: 'inPerson',
         partyRole: 'appellant',
         individualDetails: {
           title: 'Miss',
           firstName: 'Jane',
           lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
           reasonableAdjustments: [
             'RA0042',
             'RA0053',
@@ -118,11 +118,11 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
-        partyChannel: 'byVideo',
         partyRole: 'claimant',
         individualDetails: {
           title: '',
           firstName: 'DWP',
+          preferredHearingChannel: 'inPerson',
           lastName: 'Representative',
           reasonableAdjustments: [
             'RA0005',
@@ -164,11 +164,11 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyName: 'Jane and Smith',
             partyType: PartyType.IND,
             partyRole: 'appellant',
-            partyChannel: 'inPerson',
             individualDetails: {
               title: 'Miss',
               firstName: 'Jane',
               lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
               reasonableAdjustments: [
                 'RA0042',
                 'RA0053',
@@ -192,10 +192,10 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyName: 'DWP',
             partyType: PartyType.ORG,
             partyRole: 'claimant',
-            partyChannel: 'byVideo',
             individualDetails: {
               title: '',
               firstName: 'DWP',
+              preferredHearingChannel: 'byVideo',
               lastName: 'Representative',
               reasonableAdjustments: [
                 'RA0005',
@@ -305,11 +305,11 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
         partyRole: 'appellant',
-        partyChannel: 'inPerson',
         individualDetails: {
           title: 'Miss',
           firstName: 'Jane',
           lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
           reasonableAdjustments: [
             'RA0042',
             'RA0053',
@@ -333,11 +333,11 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyName: 'DWP',
         partyType: PartyType.ORG,
         partyRole: 'claimant',
-        partyChannel: 'byVideo',
         individualDetails: {
           title: '',
           firstName: 'DWP',
           lastName: 'Representative',
+          preferredHearingChannel: 'byVideo',
           reasonableAdjustments: [
             'RA0005',
           ],
@@ -378,11 +378,11 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyName: 'Jane and Smith',
             partyType: PartyType.IND,
             partyRole: 'appellant',
-            partyChannel: 'inPerson',
             individualDetails: {
               title: 'Miss',
               firstName: 'Jane',
               lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
               reasonableAdjustments: [
                 'RA0042',
                 'RA0053',
@@ -406,10 +406,10 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyName: 'DWP',
             partyType: PartyType.ORG,
             partyRole: 'claimant',
-            partyChannel: 'byVideo',
             individualDetails: {
               title: '',
               firstName: 'DWP',
+              preferredHearingChannel: 'byVideo',
               lastName: 'Representative',
               reasonableAdjustments: [
                 'RA0005',
@@ -507,12 +507,12 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyID: 'P1',
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
-        partyChannel: 'inPerson',
         partyRole: 'appellant',
         individualDetails: {
           title: 'Miss',
           firstName: 'Jane',
           lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
           reasonableAdjustments: [
             'RA0042',
             'RA0053',
@@ -535,12 +535,12 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
-        partyChannel: 'byVideo',
         partyRole: 'claimant',
         individualDetails: {
           title: '',
           firstName: 'DWP',
           lastName: 'Representative',
+          preferredHearingChannel: 'byVideo',
           reasonableAdjustments: [
             'RA0005',
           ],
@@ -581,11 +581,11 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyName: 'Jane and Smith',
             partyType: PartyType.IND,
             partyRole: 'appellant',
-            partyChannel: 'inPerson',
             individualDetails: {
               title: 'Miss',
               firstName: 'Jane',
               lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
               reasonableAdjustments: [
                 'RA0042',
                 'RA0053',
@@ -609,10 +609,10 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyName: 'DWP',
             partyType: PartyType.ORG,
             partyRole: 'claimant',
-            partyChannel: 'byVideo',
             individualDetails: {
               title: '',
               firstName: 'DWP',
+              preferredHearingChannel: 'byVideo',
               lastName: 'Representative',
               reasonableAdjustments: [
                 'RA0005',
@@ -710,12 +710,12 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyID: 'P1',
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
-        partyChannel: 'inPerson',
         partyRole: 'appellant',
         individualDetails: {
           title: 'Miss',
           firstName: 'Jane',
           lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
           reasonableAdjustments: [
             'RA0042',
             'RA0053',
@@ -738,11 +738,11 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
-        partyChannel: 'byVideo',
         partyRole: 'claimant',
         individualDetails: {
           title: '',
           firstName: 'DWP',
+          preferredHearingChannel: 'byVideo',
           lastName: 'Representative',
           reasonableAdjustments: [
             'RA0005',
@@ -784,11 +784,11 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyName: 'Jane and Smith',
             partyType: PartyType.IND,
             partyRole: 'appellant',
-            partyChannel: 'inPerson',
             individualDetails: {
               title: 'Miss',
               firstName: 'Jane',
               lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
               reasonableAdjustments: [
                 'RA0042',
                 'RA0053',
@@ -812,11 +812,11 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyName: 'DWP',
             partyType: PartyType.ORG,
             partyRole: 'claimant',
-            partyChannel: 'byVideo',
             individualDetails: {
               title: '',
               firstName: 'DWP',
               lastName: 'Representative',
+              preferredHearingChannel: 'byVideo',
               reasonableAdjustments: [
                 'RA0005',
               ],
@@ -913,12 +913,12 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyID: 'P1',
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
-        partyChannel: 'inPerson',
         partyRole: 'appellant',
         individualDetails: {
           title: 'Miss',
           firstName: 'Jane',
           lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
           reasonableAdjustments: [
             'RA0042',
             'RA0053',
@@ -941,12 +941,12 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
-        partyChannel: 'byVideo',
         partyRole: 'claimant',
         individualDetails: {
           title: '',
           firstName: 'DWP',
           lastName: 'Representative',
+          preferredHearingChannel: 'byVideo',
           reasonableAdjustments: [
             'RA0005',
           ],
@@ -987,11 +987,11 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyName: 'Jane and Smith',
             partyType: PartyType.IND,
             partyRole: 'appellant',
-            partyChannel: 'inPerson',
             individualDetails: {
               title: 'Miss',
               firstName: 'Jane',
               lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
               reasonableAdjustments: [
                 'RA0042',
                 'RA0053',
@@ -1015,11 +1015,11 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyName: 'DWP',
             partyType: PartyType.ORG,
             partyRole: 'claimant',
-            partyChannel: 'byVideo',
             individualDetails: {
               title: '',
               firstName: 'DWP',
               lastName: 'Representative',
+              preferredHearingChannel: 'byVideo',
               reasonableAdjustments: [
                 'RA0005',
               ],
@@ -1116,12 +1116,12 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyID: 'P1',
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
-        partyChannel: 'inPerson',
         partyRole: 'appellant',
         individualDetails: {
           title: 'Miss',
           firstName: 'Jane',
           lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
           reasonableAdjustments: [
             'RA0042',
             'RA0053',
@@ -1144,12 +1144,12 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
-        partyChannel: 'byVideo',
         partyRole: 'claimant',
         individualDetails: {
           title: '',
           firstName: 'DWP',
           lastName: 'Representative',
+          preferredHearingChannel: 'byVideo',
           reasonableAdjustments: [
             'RA0005',
           ],
@@ -1191,11 +1191,11 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyName: 'Jane and Smith',
             partyType: PartyType.IND,
             partyRole: 'appellant',
-            partyChannel: 'inPerson',
             individualDetails: {
               title: 'Miss',
               firstName: 'Jane',
               lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
               reasonableAdjustments: [
                 'RA0042',
                 'RA0053',
@@ -1219,11 +1219,11 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyName: 'DWP',
             partyType: PartyType.ORG,
             partyRole: 'claimant',
-            partyChannel: 'byVideo',
             individualDetails: {
               title: '',
               firstName: 'DWP',
               lastName: 'Representative',
+              preferredHearingChannel: 'byVideo',
               reasonableAdjustments: [
                 'RA0005',
               ],
@@ -1321,11 +1321,11 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
         partyRole: 'appellant',
-        partyChannel: 'inPerson',
         individualDetails: {
           title: 'Miss',
           firstName: 'Jane',
           lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
           reasonableAdjustments: [
             'RA0042',
             'RA0053',
@@ -1349,11 +1349,11 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyName: 'DWP',
         partyType: PartyType.ORG,
         partyRole: 'claimant',
-        partyChannel: 'byVideo',
         individualDetails: {
           title: '',
           firstName: 'DWP',
           lastName: 'Representative',
+          preferredHearingChannel: 'byVideo',
           reasonableAdjustments: [
             'RA0005',
           ],
@@ -1394,11 +1394,11 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyName: 'Jane and Smith',
             partyType: PartyType.IND,
             partyRole: 'appellant',
-            partyChannel: 'inPerson',
             individualDetails: {
               title: 'Miss',
               firstName: 'Jane',
               lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
               reasonableAdjustments: [
                 'RA0042',
                 'RA0053',
@@ -1422,11 +1422,11 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyName: 'DWP',
             partyType: PartyType.ORG,
             partyRole: 'claimant',
-            partyChannel: 'byVideo',
             individualDetails: {
               title: '',
               firstName: 'DWP',
               lastName: 'Representative',
+              preferredHearingChannel: 'byVideo',
               reasonableAdjustments: [
                 'RA0005',
               ],
@@ -1524,11 +1524,11 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
         partyRole: 'appellant',
-        partyChannel: 'inPerson',
         individualDetails: {
           title: 'Miss',
           firstName: 'Jane',
           lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
           reasonableAdjustments: [
             'RA0042',
             'RA0053',
@@ -1552,11 +1552,11 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyName: 'DWP',
         partyType: PartyType.ORG,
         partyRole: 'claimant',
-        partyChannel: 'byVideo',
         individualDetails: {
           title: '',
           firstName: 'DWP',
           lastName: 'Representative',
+          preferredHearingChannel: 'byVideo',
           reasonableAdjustments: [
             'RA0005',
           ],
@@ -1596,12 +1596,12 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyID: 'P1',
             partyName: 'Jane and Smith',
             partyType: PartyType.IND,
-            partyChannel: 'inPerson',
             partyRole: 'appellant',
             individualDetails: {
               title: 'Miss',
               firstName: 'Jane',
               lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
               reasonableAdjustments: [
                 'RA0042',
                 'RA0053',
@@ -1625,11 +1625,11 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyName: 'DWP',
             partyType: PartyType.ORG,
             partyRole: 'claimant',
-            partyChannel: 'byVideo',
             individualDetails: {
               title: '',
               firstName: 'DWP',
               lastName: 'Representative',
+              preferredHearingChannel: 'byVideo',
               reasonableAdjustments: [
                 'RA0005',
               ],
@@ -1726,12 +1726,12 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyID: 'P1',
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
-        partyChannel: 'inPerson',
         partyRole: 'appellant',
         individualDetails: {
           title: 'Miss',
           firstName: 'Jane',
           lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
           reasonableAdjustments: [
             'RA0042',
             'RA0053',
@@ -1755,11 +1755,11 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyName: 'DWP',
         partyType: PartyType.ORG,
         partyRole: 'claimant',
-        partyChannel: 'byVideo',
         individualDetails: {
           title: '',
           firstName: 'DWP',
           lastName: 'Representative',
+          preferredHearingChannel: 'byVideo',
           reasonableAdjustments: [
             'RA0005',
           ],
@@ -1799,12 +1799,12 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyID: 'P1',
             partyName: 'Jane and Smith',
             partyType: PartyType.IND,
-            partyChannel: 'inPerson',
             partyRole: 'appellant',
             individualDetails: {
               title: 'Miss',
               firstName: 'Jane',
               lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
               reasonableAdjustments: [
                 'RA0042',
                 'RA0053',
@@ -1828,11 +1828,11 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyName: 'DWP',
             partyType: PartyType.ORG,
             partyRole: 'claimant',
-            partyChannel: 'byVideo',
             individualDetails: {
               title: '',
               firstName: 'DWP',
               lastName: 'Representative',
+              preferredHearingChannel: 'byVideo',
               reasonableAdjustments: [
                 'RA0005',
               ],
@@ -1929,14 +1929,22 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyID: 'P1',
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
-        partyChannel: 'inPerson',
+        individualDetails: {
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+        },
         partyRole: 'Judge',
       },
       {
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
-        partyChannel: 'byVideo',
+        individualDetails: {
+          firstName: 'DWP',
+          lastName: null,
+          preferredHearingChannel: 'byVideo',
+        },
         partyRole: 'Judge',
       },
     ],
@@ -1960,15 +1968,23 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyID: 'P1',
             partyName: 'Jane and Smith',
             partyType: PartyType.IND,
-            partyChannel: 'inPerson',
             partyRole: 'Judge',
+            individualDetails: {
+              firstName: 'Jane',
+              lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
+            },
           },
           {
             partyID: 'P2',
             partyName: 'DWP',
             partyType: PartyType.ORG,
-            partyChannel: 'byVideo',
             partyRole: 'Judge',
+            individualDetails: {
+              firstName: 'DWP',
+              lastName: null,
+              preferredHearingChannel: 'byVideo',
+            },
           },
         ],
       },
@@ -2048,15 +2064,23 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyID: 'P1',
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
-        partyChannel: 'inPerson',
         partyRole: 'Judge',
+        individualDetails: {
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+        },
       },
       {
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
-        partyChannel: 'byVideo',
         partyRole: 'Judge',
+        individualDetails: {
+          firstName: 'DWP',
+          lastName: null,
+          preferredHearingChannel: 'byVideo',
+        },
       },
     ],
     hearingResponse: {
@@ -2079,15 +2103,23 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyID: 'P1',
             partyName: 'Jane and Smith',
             partyType: PartyType.IND,
-            partyChannel: 'inPerson',
             partyRole: 'Judge',
+            individualDetails: {
+              firstName: 'Jane',
+              lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
+            },
           },
           {
             partyID: 'P2',
             partyName: 'DWP',
             partyType: PartyType.ORG,
-            partyChannel: 'byVideo',
             partyRole: 'Judge',
+            individualDetails: {
+              firstName: 'DWP',
+              lastName: null,
+              preferredHearingChannel: 'byVideo',
+            },
           },
         ],
       },

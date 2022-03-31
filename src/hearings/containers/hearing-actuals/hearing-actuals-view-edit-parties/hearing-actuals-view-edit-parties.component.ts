@@ -44,7 +44,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   public errors: any[] = [];
   private sub: Subscription;
   private formSub: Subscription;
-  window: any = window;
+  public window: any = window;
 
   public constructor(private readonly fb: FormBuilder,
                      private readonly validators: ValidatorsUtils,

@@ -81,6 +81,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           title: 'Miss',
           firstName: 'Jane',
           lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
           reasonableAdjustments: [
             'RA0042',
             'RA0053',
@@ -107,6 +108,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         individualDetails: {
           title: '',
           firstName: 'DWP',
+          preferredHearingChannel: 'inPerson',
           lastName: 'Representative',
           reasonableAdjustments: [
             'RA0005',
@@ -152,6 +154,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               title: 'Miss',
               firstName: 'Jane',
               lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
               reasonableAdjustments: [
                 'RA0042',
                 'RA0053',
@@ -178,6 +181,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             individualDetails: {
               title: '',
               firstName: 'DWP',
+              preferredHearingChannel: 'byVideo',
               lastName: 'Representative',
               reasonableAdjustments: [
                 'RA0005',
@@ -280,6 +284,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           title: 'Miss',
           firstName: 'Jane',
           lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
           reasonableAdjustments: [
             'RA0042',
             'RA0053',
@@ -307,6 +312,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           title: '',
           firstName: 'DWP',
           lastName: 'Representative',
+          preferredHearingChannel: 'byVideo',
           reasonableAdjustments: [
             'RA0005',
           ],
@@ -351,6 +357,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               title: 'Miss',
               firstName: 'Jane',
               lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
               reasonableAdjustments: [
                 'RA0042',
                 'RA0053',
@@ -377,6 +384,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             individualDetails: {
               title: '',
               firstName: 'DWP',
+              preferredHearingChannel: 'byVideo',
               lastName: 'Representative',
               reasonableAdjustments: [
                 'RA0005',
@@ -479,6 +487,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           title: 'Miss',
           firstName: 'Jane',
           lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
           reasonableAdjustments: [
             'RA0042',
             'RA0053',
@@ -506,6 +515,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           title: '',
           firstName: 'DWP',
           lastName: 'Representative',
+          preferredHearingChannel: 'byVideo',
           reasonableAdjustments: [
             'RA0005',
           ],
@@ -550,6 +560,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               title: 'Miss',
               firstName: 'Jane',
               lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
               reasonableAdjustments: [
                 'RA0042',
                 'RA0053',
@@ -576,6 +587,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             individualDetails: {
               title: '',
               firstName: 'DWP',
+              preferredHearingChannel: 'byVideo',
               lastName: 'Representative',
               reasonableAdjustments: [
                 'RA0005',
@@ -678,6 +690,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           title: 'Miss',
           firstName: 'Jane',
           lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
           reasonableAdjustments: [
             'RA0042',
             'RA0053',
@@ -704,6 +717,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         individualDetails: {
           title: '',
           firstName: 'DWP',
+          preferredHearingChannel: 'byVideo',
           lastName: 'Representative',
           reasonableAdjustments: [
             'RA0005',
@@ -749,6 +763,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               title: 'Miss',
               firstName: 'Jane',
               lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
               reasonableAdjustments: [
                 'RA0042',
                 'RA0053',
@@ -776,6 +791,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               title: '',
               firstName: 'DWP',
               lastName: 'Representative',
+              preferredHearingChannel: 'byVideo',
               reasonableAdjustments: [
                 'RA0005',
               ],
@@ -877,6 +893,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           title: 'Miss',
           firstName: 'Jane',
           lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
           reasonableAdjustments: [
             'RA0042',
             'RA0053',
@@ -904,6 +921,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           title: '',
           firstName: 'DWP',
           lastName: 'Representative',
+          preferredHearingChannel: 'byVideo',
           reasonableAdjustments: [
             'RA0005',
           ],
@@ -948,6 +966,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               title: 'Miss',
               firstName: 'Jane',
               lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
               reasonableAdjustments: [
                 'RA0042',
                 'RA0053',
@@ -975,6 +994,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               title: '',
               firstName: 'DWP',
               lastName: 'Representative',
+              preferredHearingChannel: 'byVideo',
               reasonableAdjustments: [
                 'RA0005',
               ],
@@ -1076,6 +1096,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           title: 'Miss',
           firstName: 'Jane',
           lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
           reasonableAdjustments: [
             'RA0042',
             'RA0053',
@@ -1103,6 +1124,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           title: '',
           firstName: 'DWP',
           lastName: 'Representative',
+          preferredHearingChannel: 'byVideo',
           reasonableAdjustments: [
             'RA0005',
           ],
@@ -1148,6 +1170,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               title: 'Miss',
               firstName: 'Jane',
               lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
               reasonableAdjustments: [
                 'RA0042',
                 'RA0053',
@@ -1175,6 +1198,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               title: '',
               firstName: 'DWP',
               lastName: 'Representative',
+              preferredHearingChannel: 'byVideo',
               reasonableAdjustments: [
                 'RA0005',
               ],
@@ -1276,6 +1300,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           title: 'Miss',
           firstName: 'Jane',
           lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
           reasonableAdjustments: [
             'RA0042',
             'RA0053',
@@ -1303,6 +1328,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           title: '',
           firstName: 'DWP',
           lastName: 'Representative',
+          preferredHearingChannel: 'byVideo',
           reasonableAdjustments: [
             'RA0005',
           ],
@@ -1347,6 +1373,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               title: 'Miss',
               firstName: 'Jane',
               lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
               reasonableAdjustments: [
                 'RA0042',
                 'RA0053',
@@ -1374,6 +1401,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               title: '',
               firstName: 'DWP',
               lastName: 'Representative',
+              preferredHearingChannel: 'byVideo',
               reasonableAdjustments: [
                 'RA0005',
               ],
@@ -1475,6 +1503,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           title: 'Miss',
           firstName: 'Jane',
           lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
           reasonableAdjustments: [
             'RA0042',
             'RA0053',
@@ -1502,6 +1531,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           title: '',
           firstName: 'DWP',
           lastName: 'Representative',
+          preferredHearingChannel: 'byVideo',
           reasonableAdjustments: [
             'RA0005',
           ],
@@ -1546,6 +1576,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               title: 'Miss',
               firstName: 'Jane',
               lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
               reasonableAdjustments: [
                 'RA0042',
                 'RA0053',
@@ -1573,6 +1604,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               title: '',
               firstName: 'DWP',
               lastName: 'Representative',
+              preferredHearingChannel: 'byVideo',
               reasonableAdjustments: [
                 'RA0005',
               ],
@@ -1674,6 +1706,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           title: 'Miss',
           firstName: 'Jane',
           lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
           reasonableAdjustments: [
             'RA0042',
             'RA0053',
@@ -1701,6 +1734,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
           title: '',
           firstName: 'DWP',
           lastName: 'Representative',
+          preferredHearingChannel: 'byVideo',
           reasonableAdjustments: [
             'RA0005',
           ],
@@ -1745,6 +1779,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               title: 'Miss',
               firstName: 'Jane',
               lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
               reasonableAdjustments: [
                 'RA0042',
                 'RA0053',
@@ -1772,6 +1807,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
               title: '',
               firstName: 'DWP',
               lastName: 'Representative',
+              preferredHearingChannel: 'byVideo',
               reasonableAdjustments: [
                 'RA0005',
               ],
@@ -1868,12 +1904,22 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyID: 'P1',
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
+        individualDetails: {
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+        },
         partyRole: 'Judge',
       },
       {
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
+        individualDetails: {
+          firstName: 'DWP',
+          lastName: null,
+          preferredHearingChannel: 'byVideo',
+        },
         partyRole: 'Judge',
       },
     ],
@@ -1898,12 +1944,22 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyName: 'Jane and Smith',
             partyType: PartyType.IND,
             partyRole: 'Judge',
+            individualDetails: {
+              firstName: 'Jane',
+              lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
+            },
           },
           {
             partyID: 'P2',
             partyName: 'DWP',
             partyType: PartyType.ORG,
             partyRole: 'Judge',
+            individualDetails: {
+              firstName: 'DWP',
+              lastName: null,
+              preferredHearingChannel: 'byVideo',
+            },
           },
         ],
       },
@@ -1984,12 +2040,22 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
         partyRole: 'Judge',
+        individualDetails: {
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+        },
       },
       {
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
         partyRole: 'Judge',
+        individualDetails: {
+          firstName: 'DWP',
+          lastName: null,
+          preferredHearingChannel: 'byVideo',
+        },
       },
     ],
     hearingResponse: {
@@ -2013,12 +2079,22 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             partyName: 'Jane and Smith',
             partyType: PartyType.IND,
             partyRole: 'Judge',
+            individualDetails: {
+              firstName: 'Jane',
+              lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
+            },
           },
           {
             partyID: 'P2',
             partyName: 'DWP',
             partyType: PartyType.ORG,
             partyRole: 'Judge',
+            individualDetails: {
+              firstName: 'DWP',
+              lastName: null,
+              preferredHearingChannel: 'byVideo',
+            },
           },
         ],
       },

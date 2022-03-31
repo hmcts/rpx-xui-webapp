@@ -72,6 +72,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
         title: 'Miss',
         firstName: 'Jane',
         lastName: 'Smith',
+        preferredHearingChannel: 'inPerson',
       },
       unavailabilityRanges: [
         {
@@ -85,6 +86,11 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       partyType: PartyType.ORG,
       partyName: 'DWP',
       partyRole: 'claimant',
+      individualDetails: {
+        firstName: 'DWP',
+        lastName: null,
+        preferredHearingChannel: 'inPerson',
+      },
       organisationDetails: {
         name: 'DWP',
         organisationType: 'GOV',

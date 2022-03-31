@@ -1158,7 +1158,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
     ],
     flagAmendURL: '/'
   },
-} as unknown as ServiceHearingValuesModel;
+} as ServiceHearingValuesModel;
 
 export const hearingRequestMainModel: HearingRequestMainModel = {
   requestDetails: {
@@ -1616,7 +1616,6 @@ export const initialState = {
             partyName: 'Jane and Smith',
             partyType: PartyType.IND,
             partyRole: 'appellant',
-            partyChannel: 'inPerson',
             individualDetails: {
               title: 'Miss',
               firstName: 'Jane',
@@ -1646,8 +1645,10 @@ export const initialState = {
             partyName: 'DWP',
             partyType: PartyType.ORG,
             partyRole: 'claimant',
-            partyChannel: 'byVideo',
             individualDetails: {
+              firstName: 'DWP',
+              lastName: null,
+              preferredHearingChannel: 'byVideo',
               reasonableAdjustments: [
                 'RA0005',
               ],
@@ -1696,14 +1697,22 @@ export const initialState = {
                 partyName: 'Jane and Smith',
                 partyType: PartyType.IND,
                 partyRole: 'appellant',
-                partyChannel: 'inPerson',
+                individualDetails: {
+                  firstName: 'Jane',
+                  lastName: 'Smith',
+                  preferredHearingChannel: 'inPerson',
+                }
               },
               {
                 partyID: 'P2',
                 partyName: 'DWP',
                 partyType: PartyType.ORG,
                 partyRole: 'claimant',
-                partyChannel: 'byVideo',
+                individualDetails: {
+                  firstName: 'DWP',
+                  lastName: null,
+                  preferredHearingChannel: 'byVideo',
+                }
               },
             ],
           }

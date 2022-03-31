@@ -10,7 +10,13 @@ chai.use(chaiAsPromised);
 const argv = minimist(process.argv.slice(2));
 
 
-const isParallelExecution = true;
+const isParallelExecution = argv.parallel ? argv.parallel === "true" : true;;
+const chromeOptArgs = ['--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'];
+
+if (!argv.head) {
+    chromeOptArgs.push('--headless');
+}
+
 
 const jenkinsConfig = [
 
@@ -18,7 +24,7 @@ const jenkinsConfig = [
         browserName: 'chrome',
         acceptInsecureCerts: true,
         nogui: true,
-        chromeOptions: { args: ['--headless', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'] }
+        chromeOptions: { args: chromeOptArgs }
     }
 ];
 
@@ -27,7 +33,7 @@ const localConfig = [
 
         browserName: 'chrome',
         acceptInsecureCerts: true,
-        chromeOptions: { args: ['--headless1', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
+        chromeOptions: { args: chromeOptArgs },
         proxy: {
             proxyType: 'manual',
             httpProxy: 'proxyout.reform.hmcts.net:8080',
@@ -40,7 +46,7 @@ const localConfig = [
 
 if (isParallelExecution) {
     jenkinsConfig[0].shardTestFiles = true;
-    jenkinsConfig[0].maxInstances = 3;
+    jenkinsConfig[0].maxInstances = 6;
 }
 
 const cap = (argv.local) ? localConfig : jenkinsConfig;
@@ -86,7 +92,7 @@ const config = {
         strict: true,
         // format: ['node_modules/cucumber-pretty'],
         format: ['node_modules/cucumber-pretty', 'json:reports/tests/json/results.json'],
-        tags: ['@fullfunctional','~@wa2'],
+        tags: getBDDTags(),
         require: [
             '../support/timeout.js',
             '../support/hooks.js',
@@ -115,5 +121,14 @@ const config = {
 
 };
 
+function getBDDTags(){
+    let tags = [];
+    if (argv.tags) {
+        tags = argv.tags.split(',');
+    } else {
+        tags = ["@fullfunctional", "~@ignore"];
+    }
+    return tags;
+}
 
 exports.config = config;

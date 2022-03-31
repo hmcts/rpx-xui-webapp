@@ -4,10 +4,11 @@ export enum TypeOfRole {
   CaseManager = 'Case manager'
 }
 
+// kept two admin references as seem to be used alternately
 export enum RoleCategory {
   JUDICIAL = 'JUDICIAL',
   LEGAL_OPERATIONS = 'LEGAL_OPERATIONS',
-  ADMIN = 'ADMIN',
+  ADMIN = 'ADMIN'
 }
 
 export enum AllocateTo {
@@ -24,6 +25,7 @@ export enum DurationOfRole {
 
 export enum Actions {
   Allocate = 'allocate',
+  Complete = 'complete',
   Reallocate = 'reallocate',
   Remove = 'remove'
 }

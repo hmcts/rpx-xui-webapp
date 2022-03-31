@@ -65,19 +65,22 @@
     },
     "case": {
       "caseworkerApi": "http://rd-caseworker-ref-api-prod.service.core-compute-prod.internal",
-      "judicialworkerApi": "http://rd-judicialworker-ref-api-prod.service.core-compute-prod.internal"
+      "judicialworkerApi": "http://rd-judicialworker-ref-api-prod.service.core-compute-prod.internal",
+      "judicialApi": "http://rd-judicial-api-prod.service.core-compute-prod.internal"
     },
     "payments": "http://payment-api-prod.service.core-compute-prod.internal",
     "markup_api": "http://em-npa-prod.service.core-compute-prod.internal",
     "icp_api": "http://em-icp-prod.service.core-compute-prod.internal",
     "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal",
-    "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal"
+    "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal",
+    "payment_return_url": "https://paymentoutcome-web.prod.platform.hmcts.net/"
   },
   "protocol": "https",
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
   "waSupportedJurisdictions": ["IA"],
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC",
+  "serviceRefDataMapping": [{"IA": "BFA1"}],
   "wildcardSearchFields": {
     "Benefit": [
       "generatedSurname",

@@ -72,13 +72,15 @@
     },
     "case": {
       "caseworkerApi": "SERVICES_CASE_CASEWORKER_API",
-      "judicialworkerApi": "SERVICES_CASE_JUDICIALWORKER_API"
+      "judicialworkerApi": "SERVICES_CASE_JUDICIALWORKER_API",
+      "judicialApi": "SERVICES_CASE_JUDICIAL_API"
     },
     "markup_api": "SERVICES_MARKUP_API",
     "icp_api": "SERVICES_ICP_API",
     "payments": "SERVICES_PAYMENTS_URL",
     "s2s": "SERVICES_S2S",
-    "termsAndConditions": "SERVICES_TERMS_AND_CONDITIONS"
+    "termsAndConditions": "SERVICES_TERMS_AND_CONDITIONS",
+    "payment_return_url": "SERVICES_PAYMENT_RETURN_URL"
   },
   "protocol": "PROTOCOL",
   "secureCookie": "SECURE_COOKIE",
@@ -97,6 +99,7 @@
   },
   "jurisdictions": "JURISDICTIONS",
   "waSupportedJurisdictions": "WA_SUPPORTED_JURISDICTIONS",
+  "serviceRefDataMapping": "SERVICE_REF_DATA_MAPPING",
   "log4JConfig": {
     "__name": "LOG_4JS_CONFIG",
     "__format": "json"

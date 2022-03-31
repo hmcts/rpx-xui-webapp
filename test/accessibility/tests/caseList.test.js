@@ -11,11 +11,16 @@ const divorceCaseActions = require('../caseCreationActions/divorce');
 const MockApp = require('../../nodeMock/app');
 
 const ccdApi = require('../../nodeMock/ccd/ccdApi');
+const nodeAppMockData = require('../../nodeMock/nodeApp/mockData');
 
 describe('Pa11y Accessibility tests', function () {
 
     before(async function (done) {
         MockApp.init()
+
+        nodeAppMockData.init();
+        nodeAppMockData.userDetails.userInfo.roles.push("caseworker-ia");
+
         done();
     });
     after(async function (done) {

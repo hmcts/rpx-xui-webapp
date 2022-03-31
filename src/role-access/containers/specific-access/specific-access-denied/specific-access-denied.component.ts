@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
+import { Answer, SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
 import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
 import * as fromFeature from '../../../store';
 
@@ -13,6 +13,7 @@ export class SpecificAccessDeniedComponent implements OnDestroy {
 
   @Input() public navEvent: SpecificAccessNavigation;
 
+  public answers: Answer[] = [];
   public caption = '';
   public heading = '';
   public hint = '';

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
 import * as fromRoot from '../../../../app/store/reducers';
-import { ExclusionNavigationEvent } from '../../../models';
+import { SpecificAccessNavigationEvent } from '../../../models';
 import * as fromStore from '../../../store';
 import { SpecificAccessNavigationComponent } from './specific-access-navigation.component';
 

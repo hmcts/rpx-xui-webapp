@@ -37,6 +37,20 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
 }
 
 /**
+ * loadServiceLinkedCases - get linked cases from service
+ */
+export async function loadServiceLinkedCases(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const reqBody = req.body;
+  const markupPath: string = `${serviceHearingsUrl}/serviceLinkedCases`;
+  try {
+    const {status, data}: { status: number, data: ServiceLinkedCasesModel[] } = await handlePost(markupPath, reqBody, req);
+    res.status(status).send(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
  * getHearings from case ID
  */
 export async function getHearings(req: EnhancedRequest, res: Response, next: NextFunction) {
@@ -157,20 +171,6 @@ export async function submitHearingActuals(req: EnhancedRequest, res: Response, 
   try {
     const {status}: { status: number } = await handlePost(markupPath, null, req);
     res.status(status).send(null);
-  } catch (error) {
-    next(error);
-  }
-}
-
-/**
- * loadServiceLinkedCases - get linked cases from service
- */
-export async function loadServiceLinkedCases(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const reqBody = req.body;
-  const markupPath: string = `${hmcHearingsUrl}/serviceLinkedCases`;
-  try {
-    const {status, data}: { status: number, data: ServiceLinkedCasesModel[] } = await handlePost(markupPath, reqBody, req);
-    res.status(status).send(data);
   } catch (error) {
     next(error);
   }

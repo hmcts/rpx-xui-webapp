@@ -89,7 +89,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         leadJudgeContractType: this.serviceHearingValuesModel.leadJudgeContractType,
       },
       caseDetails: {
-        hmctsServiceCode: this.hearingListMainModel.hmctsServiceID || null,
+        hmctsServiceCode: this.serviceHearingValuesModel.hmctsServiceID || null,
         caseRef: this.hearingListMainModel.caseRef || null,
         requestTimeStamp: null,
         hearingID: null,

@@ -1,5 +1,5 @@
-import { HearingValuesStateData } from '../../../hearings/models/hearingValuesStateData';
 import {MemberType, PartyType, RequirementType} from '../../models/hearings.enum';
+import { HearingValuesStateData } from '../../models/hearingValuesStateData';
 import {ServiceHearingValuesModel} from '../../models/serviceHearingValues.model';
 import * as fromHearingValuesActions from '../actions/hearing-values.action';
 import * as fromHearingValuesReducer from './hearing-values.reducer';
@@ -18,6 +18,7 @@ describe('Hearing Values Reducer', () => {
     describe('Load service hearing values success action', () => {
       it('should set correct object', () => {
         const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
+          hmctsServiceID: 'BBA3',
           caseName: 'Jane Smith vs DWP',
           autoListFlag: false,
           hearingType: 'Final',

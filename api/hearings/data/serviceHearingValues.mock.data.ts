@@ -3,6 +3,7 @@ import {MemberType, PartyType, RequirementType} from '../models/hearings.enum';
 import {ServiceHearingValuesModel} from '../models/serviceHearingValues.model';
 
 export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
+  hmctsServiceID: 'BBA3',
   caseName: 'Jane and Smith vs DWP',
   autoListFlag: false,
   hearingType: 'final',

@@ -537,10 +537,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.6.13-search-judicial":
-  version "1.6.13-search-judicial"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.13-search-judicial.tgz#9056448efd3e7075d87122fd0e5766bad022932b"
-  integrity sha512-RckC9pF2E+nKzD4QLx/lemJgk6KvqHMdSEfwn8m15WzOOfAvapupKFylfiHpYsyswidga7929kR3iV79tGbuGg==
+"@hmcts/rpx-xui-common-lib@1.6.13-search-judicial-v2":
+  version "1.6.13-search-judicial-v2"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.13-search-judicial-v2.tgz#e83675cbabbbe2d33bacc474299f09d19597af95"
+  integrity sha512-zKLOvcyXhx93GsOFQCFbQqx9iTPQUEKP/UcEWFABdUjXJ7lSIkETwl1/11L9YbX4zNsZwBaHS4XDP+Xh+S4lAg==
   dependencies:
     tslib "^1.9.0"
 

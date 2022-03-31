@@ -1,6 +1,6 @@
 import {Component, CUSTOM_ELEMENTS_SCHEMA, Input} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {FormArray, FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
 import {provideMockStore} from '@ngrx/store/testing';
@@ -62,21 +62,15 @@ describe('HearingAttendanceComponent', () => {
   it('should call prepareHearingRequestData when executeAction is called with a valid form', () => {
     component.attendanceFormGroup.controls.estimation.setValue(1);
     (component.attendanceFormGroup.controls.parties as FormArray).controls.forEach(element => {
-      (element as FormGroup).value.partyChannel = {
-        key: 'inperson',
-        value_en: 'In person',
-      } as LovRefDataModel;
+      element.value.individualDetails.preferredHearingChannel = 'inperson';
     });
     component.executeAction(ACTION.CONTINUE);
     expect(component.prepareHearingRequestData).toHaveBeenCalled();
   });
   it('should true when calling isFormValid with partyChannel', () => {
     component.attendanceFormGroup.controls.estimation.setValue(1);
-    (component.attendanceFormGroup.controls.parties as FormArray).controls.forEach(element => {
-      (element as FormGroup).value.partyChannel = {
-        key: 'inperson',
-        value_en: 'In person',
-      } as LovRefDataModel;
+    (component.attendanceFormGroup.controls.parties as FormArray).controls.forEach((element: AbstractControl) => {
+      element.value.individualDetails.preferredHearingChannel = 'inperson';
     });
     const formValid = component.isFormValid();
     expect((component.attendanceFormGroup.controls.parties as FormArray).length).toBeGreaterThan(0);
@@ -85,7 +79,7 @@ describe('HearingAttendanceComponent', () => {
   it('should false when calling isFormValid without partyChannel', () => {
     component.attendanceFormGroup.controls.estimation.setValue(1);
     (component.attendanceFormGroup.controls.parties as FormArray).controls.forEach(element => {
-      (element as FormGroup).controls.partyChannel.setValue(undefined);
+      (element as FormGroup).controls.individualDetails.get('preferredHearingChannel').setValue(null);
     });
     const formValid = component.isFormValid();
     expect((component.attendanceFormGroup.controls.parties as FormArray).length).toBeGreaterThan(0);

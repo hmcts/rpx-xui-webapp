@@ -65,7 +65,6 @@ describe('Hearing Values Reducer', () => {
               partyName: 'Jane and Smith',
               partyType: PartyType.IND,
               partyRole: 'appellant',
-              partyChannel: 'byVideo',
               unavailabilityRanges: [
                 {
                   unavailableFromDate: '2021-12-10T09:00:00.000+0000',
@@ -78,7 +77,6 @@ describe('Hearing Values Reducer', () => {
               partyName: 'DWP',
               partyType: PartyType.ORG,
               partyRole: 'claimant',
-              partyChannel: 'byVideo',
               unavailabilityRanges: [
                 {
                   unavailableFromDate: '2021-12-20T09:00:00.000+0000',

@@ -6,7 +6,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { CASEROLES } from '../../../../api/workAllocation2/constants/roles.mock.data';
-import { initialMockState } from '../../testing/app-initial-state.mock';
 import { CaseRolesTableComponent } from './case-roles-table.component';
 
 describe('CaseRolesTableComponent', () => {
@@ -129,9 +128,9 @@ describe('CaseRolesTableComponent', () => {
     const tableBodyHTMLElement: HTMLElement = tableBody.nativeElement as HTMLElement;
     expect(tableBodyHTMLElement.children.length).toBe(3);
     expect(tableBodyHTMLElement.children[0].children[0].textContent).toBe('Judge Beech');
-    expect(tableBodyHTMLElement.children[0].children[2].textContent).toBe('Taylor House');
+    expect(tableBodyHTMLElement.children[0].children[2].textContent).toBe('13 July 2021');
     expect(tableBodyHTMLElement.children[1].children[0].textContent).toBe('Kuda Nyamainashe');
-    expect(tableBodyHTMLElement.children[1].children[2].textContent).toBe('Milton Keynes');
+    expect(tableBodyHTMLElement.children[1].children[2].textContent).toBe('19 May 2021');
   });
 
   it('should display no roles for this case', () => {
@@ -146,7 +145,7 @@ describe('CaseRolesTableComponent', () => {
     const tableBody: DebugElement = fixture.debugElement.query(By.css('.govuk-table__body'));
     const tableBodyHTMLElement: HTMLElement = tableBody.nativeElement as HTMLElement;
     const firstRow = tableBodyHTMLElement.children[0] as HTMLElement;
-    const manageLinkCell = firstRow.children[5].children[0] as HTMLElement;
+    const manageLinkCell = firstRow.children[4].children[0] as HTMLElement;
     manageLinkCell.click();
     fixture.detectChanges();
     const secondRow = tableBodyHTMLElement.children[1] as HTMLElement;

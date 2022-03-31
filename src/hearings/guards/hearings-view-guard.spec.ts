@@ -74,7 +74,7 @@ describe('HearingsViewGuard', () => {
     roleCategoryMappingServiceMock = jasmine.createSpyObj<RoleCategoryMappingService>('roleCategoryMappingService', ['getUserRoleCategory']);
   });
 
-  it('case worker should be able to access the hearings edit link', () => {
+  it('case worker should be able to access the hearings view link', () => {
     storeMock.pipe.and.returnValue(of(USER_1));
     roleCategoryMappingServiceMock.getUserRoleCategory.and.returnValue(of(UserRole.LegalOps));
     featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
@@ -86,7 +86,7 @@ describe('HearingsViewGuard', () => {
     expect(result$).toBeObservable(expected);
   });
 
-  it('judicial user should not be able to access the hearings edit link', () => {
+  it('judicial user should be able to access the hearings view link', () => {
     storeMock.pipe.and.returnValue(of(USER_2));
     roleCategoryMappingServiceMock.getUserRoleCategory.and.returnValue(of(UserRole.Judicial));
     featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));

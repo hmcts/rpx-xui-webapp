@@ -48,7 +48,8 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
   constructor(
     private readonly store: Store<fromFeature.State>,
     private readonly route: ActivatedRoute,
-    private readonly router: Router) {
+    private readonly router: Router
+  ) {
     this.caseId = this.route.snapshot.queryParams && this.route.snapshot.queryParams.caseId ?
       this.route.snapshot.queryParams.caseId : '';
   }

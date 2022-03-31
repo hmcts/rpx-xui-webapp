@@ -2234,5 +2234,5 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         ],
       },
     },
-  }
+  },
 ];

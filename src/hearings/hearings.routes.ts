@@ -91,7 +91,7 @@ export const ROUTES: Routes = [
         data: {
           category: HearingCategory.HearingType,
           title: 'HMCTS Hearings | Hearing Actuals | Check details'
-        }
+         }
       },
       {
         path: 'hearing-timing',

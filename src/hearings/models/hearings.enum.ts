@@ -136,6 +136,7 @@ export enum HearingDateEnum {
   DisplayTime = 'HH:MM',
   DisplayMonth = 'DD MMMM YYYY',
   DefaultFormat = 'DD-MM-YYYY',
+  RequestFailedDateAndTime = 'DD MMMM YYYY HH:MM:SS',
   InvalidDate = 'Invalid date'
 }
 
@@ -198,7 +199,8 @@ export enum HearingDatePriorityConstEnum {
 }
 
 export enum HearingSummaryEnum {
- BackendError = 'There was a system error and your request could not be processed. Please try again.'
+ BackendError = 'There was a system error and your request could not be processed. Please try again.',
+ RequestFailedError = 'Something went wrong and your request could not be processed. Contact your service desk quoting all the error details on this screen.'
 }
 
 export enum ACTION {
@@ -238,6 +240,7 @@ export enum AnswerSource {
   Type,
   TYPE_FROM_REQUEST,
   STATUS,
+  ERROR_TIME_STAMP,
   DATE_REQUEST_SUBMITTED,
   DATE_RESPONSE_SUBMITTED_TIME,
   DATE_RESPONSE_SUBMITTED,

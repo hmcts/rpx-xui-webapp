@@ -1,21 +1,18 @@
-import { NextFunction, Response } from 'express';
-import { handleGet } from '../../common/mockService';
-import { getConfigValue } from '../../configuration';
-import { SERVICES_PRD_API_URL } from '../../configuration/references';
-import { EnhancedRequest } from '../../lib/models';
-import { LocationTypeEnum } from './data/locationType.enum';
-import { SERVICES_COURT_TYPE_MAPPINGS } from './data/serviceCourtType.mapping';
-import * as mock from './location.mock';
-import { LocationModel } from './models/location.model';
+import {NextFunction, Response} from 'express';
+import {handleGet} from '../../common/crudService';
+import {getConfigValue} from '../../configuration';
+import {SERVICES_PRD_LOCATION_API} from '../../configuration/references';
+import {EnhancedRequest} from '../../lib/models';
+import {getCourtTypeIdsByServices} from '../mappings.utils';
+import {LocationTypeEnum} from './data/locationType.enum';
+import {LocationModel, toEpimmsLocation} from './models/location.model';
 
-mock.init();
-
-const url: string = getConfigValue(SERVICES_PRD_API_URL);
+const url: string = getConfigValue(SERVICES_PRD_LOCATION_API);
 
 /**
  * @description getLocations from service ID/location type/search term
- * @overview API sample: /api/locations/getLocations?serviceIds=SSCS,IA&locationType=hearing&searchTerm=CT91RL
- * @example service = SSCS | SSCS,IA split with ','
+ * @overview API sample: /api/locations/getLocations?serviceIds=BBA3,BFA1&locationType=hearing&searchTerm=CT91RL
+ * @example serviceIds = BBA3 | BBA3,BFA1 split with ','
  * @example locationType = optional | hearing | case_management
  * @example searchTerm = any search term for postcode | site name | venue name |court name | court address etc.
  */
@@ -25,11 +22,12 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   const serviceIds = req.query.serviceIds;
   const locationType = req.query.locationType;
   const serviceIdArray = serviceIds.split(',');
-  const courtTypeIds = getCourtTypeIdsByService(serviceIdArray);
+  const courtTypeIdsArray: string[] = getCourtTypeIdsByServices(serviceIdArray);
+  const strCourtTypeIds = courtTypeIdsArray ? courtTypeIdsArray.join(',') : '';
   // tslint:disable-next-line:max-line-length
-  const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${courtTypeIds}`;
+  const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${strCourtTypeIds}`;
   try {
-    const { status, data }: { status: number, data: LocationModel[] } = await handleGet(markupPath, req);
+    const {status, data}: { status: number, data: LocationModel[] } = await handleGet(markupPath, req, next);
     let result: LocationModel[] = data;
     if (locationType === LocationTypeEnum.HEARING) {
       result = data.filter(location => location.is_hearing_location === 'Y');
@@ -42,30 +40,20 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   }
 }
 
-function getCourtTypeIdsByService(serviceIdArray: string[]): string {
-  const courtTypeIdsArray = serviceIdArray.map(serviceId => SERVICES_COURT_TYPE_MAPPINGS[serviceId])
-    .reduce(concatCourtTypeWithoutDuplicates);
-  if (courtTypeIdsArray) {
-    return courtTypeIdsArray.join(',');
-  }
-  return '';
-}
-
-function concatCourtTypeWithoutDuplicates(array1: number[], array2: number[]) {
-  return array1.concat(array2.filter(item => array1.indexOf(item) < 0));
-}
-
 /**
- * Gets court locations
- * @description getCourtLocations from epimms_id
- * @overview API sample: /api/locations/court-locations?epimms_id=812332
+ * Gets court location
+ * @description getLocationById from epimms_id
+ * @overview API sample: /api/locations/court-venues?epimms_id=812332,196538,372653
  */
-export async function getCourtLocations(req: EnhancedRequest, res: Response, next: NextFunction) {
+export async function getLocationById(req: EnhancedRequest, res: Response, next: NextFunction) {
   const epimmsID = req.query.epimms_id;
-  const markupPath: string = `${url}/refdata/location/court-locations?epimms_id=${epimmsID}`;
+  const markupPath: string = `${url}/refdata/location/court-venues?epimms_id=${epimmsID}`;
   try {
-    const { status, data }: { status: number, data: LocationModel } = await handleGet(markupPath, req);
-    res.status(status).send(data);
+    const {status, data}: { status: number, data: LocationModel[] } = await handleGet(markupPath, req, next);
+    const identicalLocationByEpimmsId = data.map(locationModel => toEpimmsLocation(locationModel))
+      .filter((locationByEPIMSModel, index, locationByEPIMSModelArray) =>
+        locationByEPIMSModelArray.findIndex(location => (location.epimms_id === locationByEPIMSModel.epimms_id)) === index);
+    res.status(status).send(identicalLocationByEpimmsId);
   } catch (error) {
     next(error);
   }

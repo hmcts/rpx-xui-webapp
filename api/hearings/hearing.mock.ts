@@ -1,10 +1,10 @@
 import MockAdapter from 'axios-mock-adapter';
-import {HttpMockAdapter} from '../common/httpMockAdapter';
-import {HEARING_ACTUAL} from './data/hearing-actuals.mock.data';
-import {EMPTY_HEARINGS_LIST, HEARINGS_LIST} from './data/hearingLists.mock.data';
-import {HEARING_REQUEST_RESULTS} from './data/hearingRequests.mock.data';
-import {LINKED_HEARING_GROUP, SERVICE_LINKED_CASES} from './data/linkHearings.mock.data';
-import {SERVICE_HEARING_VALUES} from './data/serviceHearingValues.mock.data';
+import { HttpMockAdapter } from '../common/httpMockAdapter';
+import { HEARING_ACTUAL, HEARING_ACTUAL_ADJOURNED, HEARING_ACTUAL_COMPLETED } from './data/hearing-actuals.mock.data';
+import { EMPTY_HEARINGS_LIST, HEARINGS_LIST } from './data/hearingLists.mock.data';
+import { HEARING_REQUEST_RESULTS } from './data/hearingRequests.mock.data';
+import { LINKED_HEARING_GROUP, SERVICE_LINKED_CASES } from './data/linkHearings.mock.data';
+import { SERVICE_HEARING_VALUES } from './data/serviceHearingValues.mock.data';
 
 export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
@@ -44,6 +44,13 @@ export const init = () => {
         },
       ];
     } else {
+      // the below exclusion of return 500 just to faciliate testing
+      if (caseIds[0].endsWith('6')) {
+        return [
+          500,
+          null,
+        ];
+      }
       return [
         200,
         {
@@ -57,6 +64,12 @@ export const init = () => {
   mock.onGet(getHearingInfoUrl).reply(config => {
     const urlPaths: string[] = config.url.split('/');
     const hearingId = urlPaths[urlPaths.length - 1];
+    if (hearingId === 'h100004') {
+      return [
+        500,
+        null,
+      ];
+    }
     const FOUND_A_HEARING = HEARING_REQUEST_RESULTS.find(hearing => hearing.caseDetails.hearingID === hearingId);
     return [
       200,
@@ -64,7 +77,18 @@ export const init = () => {
     ];
   });
 
-  mock.onPost(postServiceHearingValues).reply(() => {
+  mock.onPost(postServiceHearingValues).reply(config => {
+    const jsonData = JSON.parse(config.data);
+    const caseReference = jsonData.caseReference;
+    // START : This few lines code jus to faciliate testing for case references ending with 1
+    // so that even the failure scenarios can be verified
+    if (caseReference.endsWith('1')) {
+      return [
+        500,
+        null,
+      ];
+    }
+    // END
     return [
       200,
       SERVICE_HEARING_VALUES,
@@ -101,7 +125,28 @@ export const init = () => {
     ];
   });
 
-  mock.onGet(hearingActualsUrl).reply(() => {
+  mock.onGet(hearingActualsUrl).reply(config => {
+    // START : This few lines code jus to faciliate testing for specific hearing id of 100013
+    // so that even the failure scenarios can be verified
+    if (config.url.includes('/h100013')) {
+      return [
+        500,
+        null,
+      ];
+    }
+    // END
+    // returns completed hearing actual result
+    if (config.url.includes('/h100010')) {
+      return [
+        200,
+        HEARING_ACTUAL_COMPLETED,
+      ];
+    } else if (config.url.includes('/h100011')) {
+      return [
+        200,
+        HEARING_ACTUAL_ADJOURNED,
+      ];
+    }
     return [
       200,
       HEARING_ACTUAL,

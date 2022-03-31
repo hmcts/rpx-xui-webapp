@@ -49,5 +49,13 @@ describe('Hearing Actuals Reducer', () => {
         expect(state.lastError).toEqual(error);
       });
     });
+
+    describe('reset hearing actuals last error action', () => {
+      it('should set correct object', () => {
+        const action = new fromHearingActualsActions.ResetHearingActualsLastError();
+        const hearingsState = fromHearingActualsReducer.hearingActualsReducer(fromHearingActualsReducer.initialHearingActualsState, action);
+        expect(hearingsState.lastError).toEqual(null);
+      });
+    });
   });
 });

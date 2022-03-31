@@ -4,8 +4,10 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureUser } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
+import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
 import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
+import { initialState } from '../../../hearings/hearing.test.data';
 import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
 import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, PartyType } from '../../../hearings/models/hearings.enum';
 import { HearingsPipesModule } from '../../../hearings/pipes/hearings.pipes.module';
@@ -14,7 +16,7 @@ import { CaseHearingsListComponent } from './case-hearings-list.component';
 
 class MockRoleCategoryMappingService {
   public initialize = (user: FeatureUser, clientId: string): void => {
-  };
+  }
   public isEnabled = (feature: string): Observable<boolean> => of(true);
   public getValue = <R>(key: string, defaultValue: R): Observable<R> => of(defaultValue);
   public getValueOnce = <R>(key: string, defaultValue: R): Observable<R> => of(defaultValue);
@@ -75,12 +77,14 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
         partyID: 'P1',
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
+        partyRole: 'appellant',
         partyChannel: 'inPerson',
       },
       {
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
+        partyRole: 'claimant',
         partyChannel: 'byVideo',
       },
     ],
@@ -97,12 +101,14 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
         partyID: 'P1',
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
+        partyRole: 'appellant',
         partyChannel: 'inPerson',
       },
       {
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
+        partyRole: 'claimant',
         partyChannel: 'byVideo',
       },
     ],
@@ -134,12 +140,14 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
         partyID: 'P1',
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
+        partyRole: 'appellant',
         partyChannel: 'inPerson',
       },
       {
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
+        partyRole: 'claimant',
         partyChannel: 'byVideo',
       },
     ],
@@ -156,12 +164,14 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
         partyID: 'P1',
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
+        partyRole: 'appellant',
         partyChannel: 'inPerson',
       },
       {
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
+        partyRole: 'claimant',
         partyChannel: 'byVideo',
       },
     ],
@@ -193,12 +203,14 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
         partyID: 'P1',
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
+        partyRole: 'appellant',
         partyChannel: 'inPerson',
       },
       {
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
+        partyRole: 'claimant',
         partyChannel: 'byVideo',
       },
     ],
@@ -230,12 +242,14 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
         partyID: 'P1',
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
+        partyRole: 'appellant',
         partyChannel: 'inPerson',
       },
       {
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
+        partyRole: 'claimant',
         partyChannel: 'byVideo',
       },
     ],
@@ -267,12 +281,14 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
         partyID: 'P1',
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
+        partyRole: 'appellant',
         partyChannel: 'inPerson',
       },
       {
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
+        partyRole: 'claimant',
         partyChannel: 'byVideo',
       },
     ],
@@ -289,12 +305,14 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
         partyID: 'P1',
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
+        partyRole: 'appellant',
         partyChannel: 'inPerson',
       },
       {
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
+        partyRole: 'claimant',
         partyChannel: 'byVideo',
       },
     ],
@@ -326,12 +344,14 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
         partyID: 'P1',
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
+        partyRole: 'appellant',
         partyChannel: 'inPerson',
       },
       {
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
+        partyRole: 'claimant',
         partyChannel: 'byVideo',
       },
     ],
@@ -380,12 +400,14 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
         partyID: 'P1',
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
+        partyRole: 'appellant',
         partyChannel: 'inPerson',
       },
       {
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
+        partyRole: 'claimant',
         partyChannel: 'byVideo',
       },
     ],
@@ -417,12 +439,14 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
         partyID: 'P1',
         partyName: 'Jane and Smith',
         partyType: PartyType.IND,
+        partyRole: 'appellant',
         partyChannel: 'inPerson',
       },
       {
         partyID: 'P2',
         partyName: 'DWP',
         partyType: PartyType.ORG,
+        partyRole: 'claimant',
         partyChannel: 'byVideo',
       },
     ],
@@ -451,8 +475,13 @@ describe('CaseHearingsListComponent', () => {
   let roleCategoryMappingService: RoleCategoryMappingService;
   let fixture: ComponentFixture<CaseHearingsListComponent>;
   const mockFeatureService = new MockRoleCategoryMappingService();
-  const mockStore = jasmine.createSpyObj('Store', ['dispatch']);
-  let router: any;
+  let mockStore: Store<fromHearingStore.State>;
+  let mockRouter: any;
+
+  mockRouter = {
+    navigate: jasmine.createSpy('navigate'),
+    navigateByUrl: jasmine.createSpy('navigateByUrl')
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -463,10 +492,7 @@ describe('CaseHearingsListComponent', () => {
       ],
       declarations: [CaseHearingsListComponent],
       providers: [
-        {
-          provide: Store,
-          useValue: mockStore
-        },
+        provideMockStore({ initialState }),
         {
           provide: ActivatedRoute,
           useValue: {
@@ -476,15 +502,19 @@ describe('CaseHearingsListComponent', () => {
               },
             }
           }
+        },
+        {
+          provide: Router,
+          useValue: mockRouter
         }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(CaseHearingsListComponent);
+    mockStore = TestBed.get(Store);
     roleCategoryMappingService = new RoleCategoryMappingService(mockFeatureService);
     component = fixture.componentInstance;
     component.hearingList$ = of(UPCOMING_HEARING_LIST);
     component.actions = [Actions.DELETE];
-    router = TestBed.get(Router);
     fixture.detectChanges();
   });
 
@@ -681,14 +711,50 @@ describe('CaseHearingsListComponent', () => {
   });
 
   it('should viewAndEdit', () => {
-    const navigateSpy = spyOn(router, 'navigate');
+    const dispatchSpy = spyOn(mockStore, 'dispatch');
+    spyOn(mockStore, 'select').and.returnValue(of(null));
+    const loadHearingRequestAndRedirect = spyOn(component, 'LoadHearingRequestAndRedirect');
     component.status = EXUISectionStatusEnum.UPCOMING;
     component.viewAndEdit('h100000');
+    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.LoadHearingValues('1111222233334444')));
+    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions({ mode: 'view' })));
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100000', '/hearings/request/hearing-view-edit-summary');
+  });
+
+  it('should addAndEdit', () => {
+    component.addAndEdit('h100000');
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'actuals', 'h100000', 'hearing-actual-add-edit-summary']);
+  });
+
+  it('should cancelHearing', () => {
+    component.cancelHearing('h100000');
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'cancel', 'h100000']);
+  });
+
+  it('should linkHearing', () => {
+    component.linkHearing('h100000');
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'link', 'h100000']);
+  });
+
+  it('should manageLinks', () => {
+    component.manageLinks('h100000');
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', 'h100000']);
+  });
+
+  it('should check viewDetails', () => {
+    const loadHearingRequestAndRedirect = spyOn(component, 'LoadHearingRequestAndRedirect');
+    component.viewDetails(UPCOMING_HEARING_LIST[6]);
     fixture.detectChanges();
-    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.LoadHearingValues('1111222233334444'));
-    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.LoadHearingRequest('h100000'));
-    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.SaveHearingConditions({ mode: 'view' }));
-    expect(navigateSpy).toHaveBeenCalledWith(['/', 'hearings', 'request', 'hearing-view-edit-summary']);
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100007', '/hearings/view/hearing-cancellation-summary');
+    component.viewDetails(PAST_HEARING_LIST[0]);
+    fixture.detectChanges();
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100008', '/hearings/view/hearing-cancelled-summary');
+    component.viewDetails(PAST_HEARING_LIST[1]);
+    fixture.detectChanges();
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100010', '/hearings/view/hearing-completed-summary/h100010');
+    component.viewDetails(UPCOMING_HEARING_LIST[0]);
+    fixture.detectChanges();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'view']);
   });
 
   afterEach(() => {

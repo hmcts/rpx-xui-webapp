@@ -1,3 +1,4 @@
+import { HearingValuesStateData } from '../../../hearings/models/hearingValuesStateData';
 import {MemberType, PartyType, RequirementType} from '../../models/hearings.enum';
 import {ServiceHearingValuesModel} from '../../models/serviceHearingValues.model';
 import * as fromHearingValuesActions from '../actions/hearing-values.action';
@@ -63,6 +64,7 @@ describe('Hearing Values Reducer', () => {
               partyID: 'P1',
               partyName: 'Jane and Smith',
               partyType: PartyType.IND,
+              partyRole: 'appellant',
               partyChannel: 'byVideo',
               unavailabilityRanges: [
                 {
@@ -75,6 +77,7 @@ describe('Hearing Values Reducer', () => {
               partyID: 'P2',
               partyName: 'DWP',
               partyType: PartyType.ORG,
+              partyRole: 'claimant',
               partyChannel: 'byVideo',
               unavailabilityRanges: [
                 {
@@ -86,12 +89,14 @@ describe('Hearing Values Reducer', () => {
           caseFlags: {
             flags: [
               {
+                partyID: 'P1',
                 partyName: 'Jane and Smith',
                 flagId: 'Language Interpreter',
                 flagDescription: 'Spanish interpreter required',
                 flagStatus: 'ACTIVE',
               },
               {
+                partyID: 'P2',
                 partyName: 'DWP',
                 flagId: 'case flag 1',
                 flagDescription: 'case flag 1 description',
@@ -111,6 +116,36 @@ describe('Hearing Values Reducer', () => {
         const action = new fromHearingValuesActions.LoadHearingValuesSuccess(SERVICE_HEARING_VALUES);
         const hearingsState = fromHearingValuesReducer.hearingValuesReducer(fromHearingValuesReducer.initialHearingValuesState, action);
         expect(hearingsState.serviceHearingValuesModel).toEqual(SERVICE_HEARING_VALUES);
+      });
+
+      it('should call error response action', () => {
+        const initialHearingValuesState: HearingValuesStateData = {
+          serviceHearingValuesModel: null,
+          lastError: {
+            status: 403,
+            errors: null,
+            message: 'Http failure response: 403 Forbidden'
+          },
+        };
+        const action = new fromHearingValuesActions.LoadHearingValuesFailure(initialHearingValuesState.lastError);
+        const hearingsState = fromHearingValuesReducer.hearingValuesReducer(initialHearingValuesState, action);
+        expect(hearingsState).toEqual(initialHearingValuesState);
+      });
+    });
+
+    describe('reset hearing actuals last error action', () => {
+      it('should set correct object', () => {
+        const initialHearingValuesState: HearingValuesStateData = {
+          serviceHearingValuesModel: null,
+          lastError: {
+            status: 403,
+            errors: null,
+            message: 'Http failure response: 403 Forbidden'
+          },
+        };
+        const action = new fromHearingValuesActions.ResetHearingValuesLastError();
+        const hearingsState = fromHearingValuesReducer.hearingValuesReducer(initialHearingValuesState, action);
+        expect(hearingsState.lastError).toEqual(null);
       });
     });
   });

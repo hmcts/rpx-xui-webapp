@@ -6,7 +6,9 @@ import {Action, select, Store} from '@ngrx/store';
 import {Observable, of} from 'rxjs';
 import {catchError, map, switchMap, tap} from 'rxjs/operators';
 import * as fromAppStoreActions from '../../../app/store/actions';
+import * as fromAppReducers from '../../../app/store/reducers';
 import {HttpError} from '../../../models/httpError.model';
+import {KEY_FRAGMENT_ID, KEY_MODE} from '../../models/hearingConditions';
 import {Mode} from '../../models/hearings.enum';
 import {ScreenNavigationModel} from '../../models/screenNavigation.model';
 import {HearingsService} from '../../services/hearings.service';
@@ -31,14 +33,15 @@ export class HearingRequestEffects {
     private readonly pageFlow: AbstractPageFlow,
     private readonly router: Router,
     private readonly location: Location,
+    private readonly appStore: Store<fromAppReducers.State>
   ) {
     this.screenNavigations$ = this.hearingStore.pipe(select(fromHearingSelectors.getHearingValuesModel)).pipe(
       map(hearingValuesModel => hearingValuesModel ? hearingValuesModel.screenFlow : []));
     this.hearingStore.pipe(select(fromHearingReducers.getHearingsFeatureState)).subscribe(
       state => {
         this.caseId = state.hearingList.hearingListMainModel ? state.hearingList.hearingListMainModel.caseRef : '';
-        this.mode = state.hearingConditions.hasOwnProperty('mode') ? state.hearingConditions['mode'] : Mode.CREATE;
-        this.fragmentId = state.hearingConditions.hasOwnProperty('fragmentId') ? state.hearingConditions['fragmentId'] : '';
+        this.mode = state.hearingConditions.hasOwnProperty(KEY_MODE) ? state.hearingConditions[KEY_MODE] : Mode.CREATE;
+        this.fragmentId = state.hearingConditions.hasOwnProperty(KEY_FRAGMENT_ID) ? state.hearingConditions[KEY_FRAGMENT_ID] : '';
       }
     );
   }
@@ -94,13 +97,17 @@ export class HearingRequestEffects {
     ofType(hearingRequestActions.LOAD_HEARING_REQUEST),
     map((action: hearingRequestActions.LoadHearingRequest) => action.payload),
     switchMap(payload => {
-      return this.hearingsService.loadHearingRequest(payload).pipe(
+      return this.hearingsService.loadHearingRequest(payload.hearingID).pipe(
         tap(hearingRequestMainModel => {
-            this.hearingStore.dispatch(new hearingRequestToCompareActions.InitializeHearingRequestToCompare(hearingRequestMainModel));
-            this.hearingStore.dispatch(new hearingRequestActions.InitializeHearingRequest(hearingRequestMainModel));
-          }),
+          this.hearingStore.dispatch(new hearingRequestToCompareActions.InitializeHearingRequestToCompare(hearingRequestMainModel));
+          this.hearingStore.dispatch(new hearingRequestActions.InitializeHearingRequest(hearingRequestMainModel));
+          if (payload.targetURL) {
+            this.router.navigateByUrl(payload.targetURL);
+          }
+        }),
         catchError(error => {
-          return HearingRequestEffects.handleError(error);
+          this.appStore.dispatch(new fromAppStoreActions.Go({path: ['/hearings/error']}));
+          return of(error);
         })
       );
     })
@@ -116,10 +123,10 @@ export class HearingRequestEffects {
           () => {
             return this.router.navigate(['hearings', 'request', 'hearing-confirmation']);
           }),
-        catchError(error => {
-          this.hearingStore.dispatch(new hearingRequestActions.SubmitHearingRequestFailure(error));
-          return of(error);
-        })
+          catchError(error => {
+            this.hearingStore.dispatch(new hearingRequestActions.SubmitHearingRequestFailure(error));
+            return of(error);
+          })
       );
     })
   );
@@ -142,16 +149,17 @@ export class HearingRequestEffects {
           () => {
             return this.router.navigate(['hearings', 'request', 'hearing-confirmation']);
           }),
-        catchError(error => {
-          return HearingRequestEffects.handleError(error);
-        })
+          catchError(error => {
+            this.hearingStore.dispatch(new hearingRequestActions.UpdateHearingRequestFailure(error));
+            return of(error);
+          })
       );
     })
   );
 
   public static handleError(error: HttpError): Observable<Action> {
-    if (error && error.status && error.status >= 400) {
-      return of(new fromAppStoreActions.Go({path: ['/service-down']}));
+    if (error && error.status) {
+      return of(new fromAppStoreActions.Go({path: ['/hearings/error']}));
     }
   }
 }

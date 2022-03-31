@@ -31,7 +31,7 @@ async function initBrowser() {
 async function pa11ytest(test, actions, startUrl, roles) {
     let isTestSuccess = false;
     let retryCounter = 0;
-
+    test.screenshots = [];
     while (!isTestSuccess && retryCounter < 3) {
 
         try {
@@ -43,6 +43,7 @@ async function pa11ytest(test, actions, startUrl, roles) {
             console.log("Retrying test again for " + retryCounter);
         }
     }
+    console.log(test.screenshots);
 }
 
 async function pa11ytestRunner(test, actions, startUrl, roles) {
@@ -95,6 +96,7 @@ async function pa11ytestRunner(test, actions, startUrl, roles) {
         };
        
         result.executionTime = elapsedTime;
+        test.screenshots.push(screenshotReportRef);
         result.screenshot = screenshotReportRef;
         test.a11yResult = result;
         console.log("Test Execution time : " + elapsedTime);
@@ -109,6 +111,8 @@ async function pa11ytestRunner(test, actions, startUrl, roles) {
     await testBrowser.close();
     const elapsedTime = Date.now() - startTime;
     result.executionTime = elapsedTime;
+
+    test.screenshots.push(screenshotReportRef);
     result.screenshot = screenshotReportRef;
     test.a11yResult = result;
     console.log("Test Execution time : " + elapsedTime);

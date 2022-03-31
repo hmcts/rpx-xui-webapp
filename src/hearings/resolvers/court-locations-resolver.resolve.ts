@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { Resolve } from '@angular/router';
-import { select, Store } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
-import { catchError, map, switchMap, take } from 'rxjs/operators';
-import { LocationModel } from '../models/location.model';
-import { LocationsDataService } from '../services/locations-data.service';
+import {Injectable} from '@angular/core';
+import {Resolve} from '@angular/router';
+import {LocationModel} from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import {select, Store} from '@ngrx/store';
+import {Observable, of} from 'rxjs';
+import {catchError, map, switchMap, take} from 'rxjs/operators';
+import {LocationsDataService} from '../services/locations-data.service';
 import * as fromHearingStore from '../store';
 
 @Injectable({
@@ -15,7 +15,8 @@ export class CourtLocationsDataResolver implements Resolve<LocationModel> {
   constructor(
     protected readonly locationsDataService: LocationsDataService,
     protected readonly hearingStore: Store<fromHearingStore.State>
-  ) { }
+  ) {
+  }
 
   public resolve(): Observable<LocationModel> {
     return this.getLocationId$()
@@ -29,7 +30,11 @@ export class CourtLocationsDataResolver implements Resolve<LocationModel> {
 
   public getLocationId$(): Observable<string> {
     return this.hearingStore.pipe(select(fromHearingStore.getHearingRequest)).pipe(
-      map(hearingRequest => hearingRequest.hearingRequestMainModel && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.hearingVenueId)
+      map(hearingRequest =>
+        hearingRequest.hearingRequestMainModel
+        && hearingRequest.hearingRequestMainModel.hearingResponse
+        && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule
+        && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule.hearingVenueId)
     );
   }
 

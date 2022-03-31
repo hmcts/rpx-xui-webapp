@@ -28,7 +28,7 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
       let attemptCounter = 0;
       await BrowserWaits.retryWithActionCallback(async () => {
         if (attemptCounter > 0){
-          await browser.refresh();
+          await headerPage.refreshBrowser();
           await browserUtil.waitForLD();
         }
         attemptCounter++; 
@@ -74,7 +74,7 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
 
         }else{
           await CucumberReporter.AddMessage("Refreshing page");
-          await browser.refresh();
+          await headerPage.refreshBrowser();
 
         }
         throw new Error(err);
@@ -102,7 +102,7 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
 
         } else {
           await CucumberReporter.AddMessage("Refreshing page");
-          await browser.refresh();
+          await headerPage.refreshBrowser();
 
         }
         throw new Error(err);

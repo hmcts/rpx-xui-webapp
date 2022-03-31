@@ -66,10 +66,12 @@ export const getXuiNodeMiddleware = () => {
 
     const routeCredential = {
         password,
-        routes: ['/workallocation/caseworker', '/workallocation2/caseworker'],
+        routes: ['/workallocation/caseworker', '/workallocation2/caseworker',
+         '/api/role-access/roles/getJudicialUsers', '/workallocation2/retrieveCaseWorkersForServices',
+         '/workallocation2/retrieveCaseWorkersForSpecificService', '/workallocation2/getJudicialUsers'],
         scope: 'openid profile roles manage-user create-user search-user',
         userName,
-    }
+    };
 
     //TODO: we can move these out into proper config at some point to tidy up even further
     const options: AuthOptions = {

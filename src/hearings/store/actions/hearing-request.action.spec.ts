@@ -16,7 +16,11 @@ describe('Hearing Request Actions', () => {
         hearingDetails: null,
         partyDetails: null
       };
-      const action = new fromHearingRequestAction.UpdateHearingRequest(payload);
+      const hearingConditions = {
+        isInit: false,
+        region: 'Wales'
+      };
+      const action = new fromHearingRequestAction.UpdateHearingRequest(payload, hearingConditions);
       expect(action.type).toBe(fromHearingRequestAction.UPDATE_HEARING_REQUEST);
     });
   });
@@ -42,6 +46,13 @@ describe('Hearing Request Actions', () => {
       };
       const action = new fromHearingRequestAction.SubmitHearingRequestFailure(payload);
       expect(action.type).toBe(fromHearingRequestAction.SUBMIT_HEARING_REQUEST_FAILURE);
+    });
+  });
+
+  describe('ResetHearingRequestLastError', () => {
+    it('should reset hearing request last error action', () => {
+      const action = new fromHearingRequestAction.ResetHearingRequestLastError();
+      expect(action.type).toBe(fromHearingRequestAction.RESET_HEARING_REQUEST_LAST_ERROR);
     });
   });
 });

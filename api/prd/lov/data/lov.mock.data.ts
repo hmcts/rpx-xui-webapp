@@ -1,5 +1,5 @@
 /* tslint:disable:object-literal-sort-keys */
-import {LovRefDataByCategoryModel, LovRefDataByServiceModel, LovRefDataModel} from '../models/lovRefData.model';
+import { LovRefDataByCategoryModel, LovRefDataByServiceModel, LovRefDataModel } from '../models/lovRefData.model';
 
 export const DEFAULT_JUDGE_TYPES_REF: LovRefDataModel[] = [
   {
@@ -117,7 +117,7 @@ export const DEFAULT_PARTYCHANNEL_REF: LovRefDataModel[] = [
         hintText_EN: 'By Phone bTMeetme',
         hintTextCY: '',
         order: 1,
-        parentKey: null,
+        parentKey: 'byPhone',
       },
       {
         key: 'telephone-CVP',
@@ -126,7 +126,7 @@ export const DEFAULT_PARTYCHANNEL_REF: LovRefDataModel[] = [
         hintText_EN: 'By Phone CVP',
         hintTextCY: '',
         order: 2,
-        parentKey: null,
+        parentKey: 'byPhone',
       },
       {
         key: 'telephone-other',
@@ -135,7 +135,7 @@ export const DEFAULT_PARTYCHANNEL_REF: LovRefDataModel[] = [
         hintText_EN: 'By Phone Other',
         hintTextCY: '',
         order: 3,
-        parentKey: null,
+        parentKey: 'byPhone',
       },
       {
         key: 'telephone-skype',
@@ -144,7 +144,7 @@ export const DEFAULT_PARTYCHANNEL_REF: LovRefDataModel[] = [
         hintText_EN: 'By Phone Skype',
         hintTextCY: '',
         order: 4,
-        parentKey: null,
+        parentKey: 'byPhone',
       },
     ],
   },
@@ -164,7 +164,7 @@ export const DEFAULT_PARTYCHANNEL_REF: LovRefDataModel[] = [
         hintText_EN: 'By video conference',
         hintTextCY: '',
         order: 4,
-        parentKey: null,
+        parentKey: 'byVideo',
       },
       {
         key: 'video-other',
@@ -173,7 +173,7 @@ export const DEFAULT_PARTYCHANNEL_REF: LovRefDataModel[] = [
         hintText_EN: 'By video other',
         hintTextCY: '',
         order: 4,
-        parentKey: null,
+        parentKey: 'byVideo',
       },
       {
         key: 'video-skype',
@@ -182,7 +182,7 @@ export const DEFAULT_PARTYCHANNEL_REF: LovRefDataModel[] = [
         hintText_EN: 'By video skype',
         hintTextCY: '',
         order: 4,
-        parentKey: null,
+        parentKey: 'byVideo',
       },
       {
         key: 'video-teams',
@@ -191,7 +191,7 @@ export const DEFAULT_PARTYCHANNEL_REF: LovRefDataModel[] = [
         hintText_EN: 'By video teams',
         hintTextCY: '',
         order: 4,
-        parentKey: null,
+        parentKey: 'byVideo',
       },
     ],
   },
@@ -739,52 +739,52 @@ export const CHANGE_HEARING_REASON: LovRefDataModel[] = [
 ];
 
 export const HEARING_ROLES: LovRefDataByServiceModel = {
-  serviceID: 'SSCS',
+  serviceID: 'BBA3',
   values: HEARING_ROLES_REF,
 };
 
 export const SSCS_STAGES: LovRefDataByServiceModel = {
-  serviceID: 'SSCS',
+  serviceID: 'BBA3',
   values: DEFAULT_STAGES_REF,
 };
 
 export const SSCS_PRIORITIES: LovRefDataByServiceModel = {
-  serviceID: 'SSCS',
+  serviceID: 'BBA3',
   values: DEFAULT_PRIORITIES_REF,
 };
 
 export const SSCS_PARTY_CHANNEL: LovRefDataByServiceModel = {
-  serviceID: 'SSCS',
+  serviceID: 'BBA3',
   values: DEFAULT_PARTYCHANNEL_REF,
 };
 
 export const SSCS_JUDGE_TYPES: LovRefDataByServiceModel = {
-  serviceID: 'SSCS',
+  serviceID: 'BBA3',
   values: DEFAULT_JUDGE_TYPES_REF,
 };
 export const SSCS_CANCEL_HEARING: LovRefDataByServiceModel = {
-  serviceID: 'SSCS',
+  serviceID: 'BBA3',
   values: DEFAULT_HEARING_CANCEL_REF,
 };
 export const ADDITIONAL_HEARING_FACILITIES: LovRefDataByServiceModel = {
-  serviceID: 'SSCS',
+  serviceID: 'BBA3',
   values: ADDITIONAL_HEARING_FACILITIES_REF,
 };
 export const SSCS_OTHER_PANEL_ROLES: LovRefDataByServiceModel = {
-  serviceID: 'SSCS',
+  serviceID: 'BBA3',
   values: OTHER_PANEL_ROLES,
 };
 export const SSCS_ADJOURN_HEARING_ACTUAL: LovRefDataByServiceModel = {
-  serviceID: 'SSCS',
+  serviceID: 'BBA3',
   values: DEFAULT_HEARING_ACTUAL_ADJOURN_REF,
 };
 export const SSCS_CANCEL_HEARING_ACTUAL: LovRefDataByServiceModel = {
-  serviceID: 'SSCS',
+  serviceID: 'BBA3',
   values: DEFAULT_HEARING_ACTUAL_CANCEL_REF,
 };
 
 export const SSCS_CHANGE_HEARING_REASON: LovRefDataByServiceModel = {
-  serviceID: 'SSCS',
+  serviceID: 'BBA3',
   values: CHANGE_HEARING_REASON,
 };
 

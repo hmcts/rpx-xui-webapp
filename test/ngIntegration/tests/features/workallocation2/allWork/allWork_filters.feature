@@ -1,5 +1,5 @@
-@ng  @wa2
-Feature: WA Release 2: All work - filters
+@ng 
+Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
 
     Background: Mock and browser setup
         Given I init MockApp
@@ -7,25 +7,45 @@ Feature: WA Release 2: All work - filters
             | Permissions | Count |
             | Manage      | 140   |
             | Read        | 10    |
-        Given I set MOCK locations for WA release 2
-            | id    | locationName |
-            | 12345 | Test loc 1   |
-            | 12346 | Test loc 2   |
-            | 12347 | Test loc 3   |
-            | 12348 | Test loc 4   |
-            | 12349 | Test loc 5   |
+        Given I set MOCK locations with names in service "IA"
+            | id    | locationName           |
+            | 20001 | IA Court Aldgate Tower |
+            | 20002 | IA Court Birmingham    |
+            | 2003  | IA Court Bradford      |
+            | 20004 | IA Court Glasgow       |
+            | 20005 | IA Court Hatton Cross  |
+            | 20006 | IA Court Newcastle     |
+            | 20007 | IA Court Newport       |
+            | 20008 | IA Court North Shields |
+            | 12347 | IA Court Taylor House  |
+
+        Given I set MOCK locations with names in service "SSCS"
+            | id    | locationName             |
+            | 20010 | SSCS Court Aldgate Tower |
+            | 20011 | SSCS Court Birmingham    |
+            | 20012 | SSCS Court Bradford      |
+            | 20013 | SSCS Court Glasgow       |
+            | 20014 | SSCS Court Hatton Cross  |
+            | 20015 | SSCS Court Newcastle     |
+            | 20016 | SSCS Court Newport       |
+            | 20017 | SSCS Court North Shields |
+            | 20018 | SSCS Court Taylor House  |
+
+        Given I set MOCK find person response for jurisdictions
+            | domain   | id   | email                   | name           | knownAs       |
+            | Judicial | 1231 | judge_user1@gov.uk      | user1 j        | Lead judge    |
+            | Judicial | 1232 | judge_user2@gov.uk      | user2 j        | Hearing judge |
+            | legalOps | 1233 | caseworker_user1@gov.uk | caseworker1 cw | Case worker   |
+            | legalOps | 1234 | caseworker_user1@gov.uk | caseworker2 cw | Case worker   |
+            | Admin    | 1235 | admin_user1@gov.uk      | admin1 a       | Case worker   |
+            | Admin    | 1236 | admin_user2@gov.uk      | admin2 a       | Case worker   |
 
         Given I set MOCK request "/workallocation2/findPerson" response log to report
-        Given I set MOCK find person response for jurisdictions
-            | domain    | id   | email                   | name           | knownAs       |
-            | Judicial  | 1231 | judge_user1@gov.uk      | user1 j        | Lead judge    |
-            | Judicial  | 1232 | judge_user2@gov.uk      | user2 j        | Hearing judge |
-            | Legal Ops | 1233 | caseworker_user1@gov.uk | caseworker1 cw | Case worker   |
-            | Legal Ops | 1234 | caseworker_user2@gov.uk | caseworker2 cw | Case worker   |
-            | Admin     | 1235 | admin_user1@gov.uk      | admin1 a       | Case worker   |
-            | Admin     | 1236 | admin_user2@gov.uk      | admin2 a       | Case worker   |
+        Given I set MOCK request "/workallocation2/findPerson" intercept with reference "findpersonRequest"
 
-        Given I set MOCK persons end point "/workallocation2/caseworker" for WA release 2
+
+
+        Given I set MOCK caseworkers for service "IA"
             | idamId                               | firstName   | lastName | email                   | roleCategory     |
             | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | caseworker1 | cw       | caseworker_user1@gov.uk | LEGAL_OPERATIONS |
             | 08a3d216-c6ab-4e92-a7e3-ca3661e6be81 | caseworker2 | cw       | caseworker_user2@gov.uk | LEGAL_OPERATIONS |
@@ -38,36 +58,35 @@ Feature: WA Release 2: All work - filters
             | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | admin1      | a        | admin_user1@gov.uk      | ADMIN            |
             | 08a3d216-c6ab-4e92-a7e3-ca3661e6be82 | admin2      | a        | admin_user2@gov.uk      | ADMIN            |
 
-        Given I set MOCK request "/workallocation2/taskWithPagination/" intercept with reference "taskSearchRequest"
-        Given I set MOCK request "/workallocation2/my-cases/" intercept with reference "caseSearchRequest"
+        Given I set MOCK request "/workallocation2/task" intercept with reference "taskSearchRequest"
+        Given I set MOCK request "/workallocation2/all-work/cases" intercept with reference "caseSearchRequest"
 
-
-    Scenario Outline: Tasks filter selection, with user role "<UserType>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+    Scenario: Tasks filters state, with user role "Caseworker"
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I start MockApp
 
         Given I navigate to home page
         When I click on primary navigation header tab "All work", I see selected tab page displayed
         Then I validate tasks count in page 25
-
         Given I reset reference "taskSearchRequest" value to null
+
 
         Then I see filter "Service" is displayed in all work page
         Then I see filter "Service" is enabled in all work page
         Then I validate filter item "Service" select or radio options present in all work page
-            | option                 |
-            | Immigration and Asylum |
+            | option |
+            | IA     |
 
-        Then I see filter "Case Location" is displayed in all work page
-        Then I see filter "Case Location" is enabled in all work page
-        Then I validate filter item "Case Location" select or radio options present in all work page
-            | option     |
-            | Test loc 1 |
-            | Test loc 2 |
-            | Test loc 3 |
-            | Test loc 4 |
-            | Test loc 5 |
+
+        Then I see filter "Location" is displayed in all work page
+        Then I validate filter item "Location radios" select or radio options present in all work page
+            | option                |
+            | All                   |
+            | Search for a location |
+        When I see location search input is disabled in all work filters
+
+
 
         Then I see filter "Person" is displayed in all work page
 
@@ -84,245 +103,98 @@ Feature: WA Release 2: All work - filters
         Then I see filter "Priority" is displayed in all work page
         Then I see filter "Priority" is enabled in all work page
 
-
-        Given I reset reference "taskSearchRequest" value to null
-        Given I set debug text "DEBUG category" in element with css selector "exui-task-field"
-        When I click Apply filter button in all work page
-        When I wait for reference "taskSearchRequest" value not null
-        Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value     |
-            | location     | 12345     |
-            | location     | 12346     |
-            | location     | 12347     |
-            | location     | 12348     |
-            | location     | 12349     |
-            | person       |           |
-            | jurisdiction | IA        |
-            | taskCategory | All       |
-            | taskType     | Legal Ops |
-            | priority     | All       |
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-task-field"
-
-        Given I reset reference "taskSearchRequest" value to null
-        When I select filter item "Case Location" select or radio option "Test loc 3" in all work page
-        Given I set debug text "DEBUG category" in element with css selector "exui-task-field"
-        When I click Apply filter button in all work page
-        When I wait for reference "taskSearchRequest" value not null
-        Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value     |
-            | location     | 12347     |
-            | person       |           |
-            | jurisdiction | IA        |
-            | taskCategory | All       |
-            | taskType     | Legal Ops |
-            | priority     | All       |
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-task-field"
-
-        Given I reset reference "taskSearchRequest" value to null
-        When I select filter item "Person" select or radio option "None / Available tasks" in all work page
-        Given I set debug text "DEBUG category" in element with css selector "exui-task-field"
-        When I click Apply filter button in all work page
-        When I wait for reference "taskSearchRequest" value not null
-        Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value                  |
-            | location     | 12347                  |
-            | person       | unassigned             |
-            | jurisdiction | IA                     |
-            | taskCategory | None / Available tasks |
-            | taskType     | Legal Ops              |
-            | priority     | All                    |
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-task-field"
-
-        Given I reset reference "taskSearchRequest" value to null
-        When I select filter item "Person" select or radio option "Specific person" in all work page
-        Then I see filter "Person role type" is enabled in all work page
-
-        Then I see filter "Person input" is displayed in all work page
-        Then I see filter "Person input" is enabled in all work page
-        Then I validate Apply filter button in disabled in all work page
-
-
-        When I enter find person search input "cas" in work flow
-        Then I see find person search results in work flow
-            | Person                                  |
-            | caseworker1 cw(caseworker_user1@gov.uk) |
-            | caseworker2 cw(caseworker_user2@gov.uk) |
-        When I select find person result "caseworker1 cw(caseworker_user1@gov.uk)" in work flow
-
-        Then I validate Apply filter button in enabled in all work page
-        Given I set debug text "DEBUG category" in element with css selector "exui-task-field"
-        When I click Apply filter button in all work page
-        When I wait for reference "taskSearchRequest" value not null
-        Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value                                |
-            | location     | 12347                                |
-            | person       | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 |
-            | jurisdiction | IA                                   |
-            | taskCategory | Specific person                      |
-            | taskType     | Legal Ops                            |
-            | priority     | All                                  |
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-task-field"
-
-        Given I reset reference "taskSearchRequest" value to null
-        When I select filter item "Person" select or radio option "Specific person" in all work page
-        Then I see filter "Person role type" is enabled in all work page
-
-        When I select filter item "Person role type" select or radio option "Judicial" in all work page
-
-        Then I see filter "Person input" is displayed in all work page
-        Then I see filter "Person input" is enabled in all work page
-        Then I validate Apply filter button in disabled in all work page
-
-
-        When I enter find person search input "jud" in work flow
-        Then I see find person search results in work flow
-            | Person                            |
-            | Lead judge(judge_user1@gov.uk)    |
-            | Hearing judge(judge_user2@gov.uk) |
-        When I select find person result "Lead judge(judge_user1@gov.uk)" in work flow
-
-        Then I validate Apply filter button in enabled in all work page
-        Given I set debug text "DEBUG category" in element with css selector "exui-task-field"
-        When I click Apply filter button in all work page
-        When I wait for reference "taskSearchRequest" value not null
-        Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value           |
-            | location     | 12347           |
-            | person       | 1231            |
-            | jurisdiction | IA              |
-            | taskCategory | Specific person |
-            | taskType     | Legal Ops       |
-            | priority     | All             |
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-task-field"
-
-        Given I reset reference "taskSearchRequest" value to null
-        When I select filter item "Person" select or radio option "Specific person" in all work page
-        Then I see filter "Person role type" is enabled in all work page
-
-        When I select filter item "Person role type" select or radio option "Admin" in all work page
-
-        Then I see filter "Person input" is displayed in all work page
-        Then I see filter "Person input" is enabled in all work page
-        Then I validate Apply filter button in disabled in all work page
-
-
-        When I enter find person search input "adm" in work flow
-        Then I see find person search results in work flow
-            | Person                       |
-            | admin1 a(admin_user1@gov.uk) |
-            | admin2 a(admin_user2@gov.uk) |
-        When I select find person result "admin1 a(admin_user1@gov.uk)" in work flow
-
-        Then I validate Apply filter button in enabled in all work page
-        Given I set debug text "DEBUG category" in element with css selector "exui-task-field"
-        When I click Apply filter button in all work page
-        When I wait for reference "taskSearchRequest" value not null
-        Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value                                |
-            | location     | 12347                                |
-            | person       | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 |
-            | jurisdiction | IA                                   |
-            | taskCategory | Specific person                      |
-            | taskType     | Legal Ops                            |
-            | priority     | All                                  |
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-task-field"
-
-        Given I reset reference "taskSearchRequest" value to null
-        When I select filter item "Person" select or radio option "Specific person" in all work page
-        Then I see filter "Person role type" is enabled in all work page
-
-        When I select filter item "Person role type" select or radio option "Admin" in all work page
-
-        Then I see filter "Person input" is displayed in all work page
-        Then I see filter "Person input" is enabled in all work page
-
-        When I enter find person search input "adm" in work flow
-        Then I see find person search results in work flow
-            | Person                       |
-            | admin1 a(admin_user1@gov.uk) |
-            | admin2 a(admin_user2@gov.uk) |
-        When I select find person result "admin1 a(admin_user1@gov.uk)" in work flow
-
-        Then I validate Apply filter button in enabled in all work page
-        Given I set debug text "DEBUG category" in element with css selector "exui-task-field"
-        When I click Apply filter button in all work page
-        When I wait for reference "taskSearchRequest" value not null
-        Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value                                |
-            | location     | 12347                                |
-            | person       | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 |
-            | jurisdiction | IA                                   |
-            | taskCategory | Specific person                      |
-            | taskType     | Legal Ops                            |
-            | priority     | All                                  |
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-task-field"
-
-        Given I reset reference "taskSearchRequest" value to null
-
-        When I select filter item "Task type" select or radio option "Judicial" in all work page
-        Given I set debug text "DEBUG category" in element with css selector "exui-task-field"
-        When I click Apply filter button in all work page
-        When I wait for reference "taskSearchRequest" value not null
-        Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value                                |
-            | location     | 12347                                |
-            | person       | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 |
-            | jurisdiction | IA                                   |
-            | taskCategory | Specific person                      |
-            | taskType     | Judicial                             |
-            | priority     | All                                  |
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-task-field"
-
-        Given I reset reference "taskSearchRequest" value to null
-
-        When I select filter item "Priority" select or radio option "High" in all work page
-
-        Then I validate Apply filter button in enabled in all work page
-        Given I set debug text "DEBUG category" in element with css selector "exui-task-field"
-        When I click Apply filter button in all work page
-        When I wait for reference "taskSearchRequest" value not null
-        Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value                                |
-            | location     | 12347                                |
-            | person       | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 |
-            | jurisdiction | IA                                   |
-            | taskCategory | Specific person                      |
-            | taskType     | Judicial                             |
-            | priority     | High                                 |
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-task-field"
-
-        Examples:
-            | UserIdentifier     | UserType   | Roles                                              |
-            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-    # | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
-
-
-    Scenario Outline: filter selection, with user role "<UserType>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+    Scenario Outline: "Caseworker" Tasks filter, filetr role type <Person_Role_Type>
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I start MockApp
 
         Given I navigate to home page
         When I click on primary navigation header tab "All work", I see selected tab page displayed
         Then I validate tasks count in page 25
-
         Given I reset reference "taskSearchRequest" value to null
+
 
         Then I see filter "Service" is displayed in all work page
         Then I see filter "Service" is enabled in all work page
         Then I validate filter item "Service" select or radio options present in all work page
-            | option                 |
-            | Immigration and Asylum |
+            | option |
+            | IA     |
 
-        Then I see filter "Case Location" is displayed in all work page
-        Then I see filter "Case Location" is enabled in all work page
-        Then I validate filter item "Case Location" select or radio options present in all work page
-            | option     |
-            | Test loc 1 |
-            | Test loc 2 |
-            | Test loc 3 |
-            | Test loc 4 |
-            | Test loc 5 |
+        Then I see filter "Location" is displayed in all work page
+        Then I validate filter item "Location radios" select or radio options present in all work page
+            | option                |
+            | All                   |
+            | Search for a location |
+        When I see location search input is disabled in all work filters
+        When I select filter item "Location radios" select or radio option "Search for a location" in all work page
+        Then I see location search input is enabled in all work filters
+        Then I enter location search "IA Court Taylor House" in all work filter
+        Then I see location search results in all work filter
+            | location              |
+            | IA Court Taylor House |
+        Then I select location search result "IA Court Taylor House" in all work filter
+        Then I see location "IA Court Taylor House" selected in all work filter
+
+        When I select filter item "Person" select or radio option "<Task_Category>" in all work page
+        When I select filter item "Person role type" select or radio option "<Person_Role_Type>" in all work page
+
+        When I enter find person search input "<Person_search>" in work flow
+
+        Then I see find person search results in work flow
+            | Person        |
+            | <Person_name> |
+
+        When I select find person result "<Person_name>" in work flow
+        When I select filter item "Task type" select or radio option "<Task_type>" in all work page
+
+        When I select filter item "Priority" select or radio option "<Priority>" in all work page
+
+        When I click Apply filter button in all work page
+        When I wait for reference "taskSearchRequest" value not null
+        Then I validate task search request with reference "taskSearchRequest" have search parameters
+            | key          | value          |
+            | location     | <locationId>   |
+            | user         | <person_id>    |
+            | jurisdiction | <Jurisdiction> |
+            | taskType     | <Task_type>    |
+            | priority     | <Priority>     |
+
+        Given I reset reference "taskSearchRequest" value to null
+        When I select filter item "Person" select or radio option "All" in all work page
+        When I select filter item "Location radios" select or radio option "All" in all work page
+        When I click Apply filter button in all work page
+        When I wait for reference "taskSearchRequest" value not null
+        Then I validate task search request with reference "taskSearchRequest" does not have search patameter key "user"
+        Then I validate task search request with reference "taskSearchRequest" does not have search patameter key "location"
+        Examples:
+            | Jurisdiction | locationName | locationId | Task_Category   | Person_search | Person_name                             | person_id                            | Person_Role_Type | Task_type | Priority |
+            | IA           | Test loc 3   | 12347      | Specific person | cas           | caseworker1 cw(caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops        | Legal Ops | High     |
+            | IA           | Test loc 3   | 12347      | Specific person | user1         | user1 j(judge_user1@gov.uk)             | 1231                                 | Judicial         | Legal Ops | High     |
+            | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a(admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     | High     |
+
+    Scenario: "Judicial" Tasks filters state
+        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
+
+        Given I start MockApp
+
+        Given I navigate to home page
+        When I click on primary navigation header tab "All work", I see selected tab page displayed
+        Then I validate tasks count in page 25
+        Given I reset reference "taskSearchRequest" value to null
+
+
+        Then I see filter "Service" is displayed in all work page
+        Then I see filter "Service" is enabled in all work page
+        Then I validate filter item "Service" select or radio options present in all work page
+            | option |
+            | IA     |
+
+        Then I see filter "Location" is displayed in all work page
+        Then I validate filter item "Location radios" select or radio options present in all work page
+            | option                |
+            | All                   |
+            | Search for a location |
+        When I see location search input is disabled in all work filters
 
         Then I see filter "Person" is displayed in all work page
 
@@ -338,204 +210,118 @@ Feature: WA Release 2: All work - filters
 
         Then I see filter "Priority" is not displayed in all work page
 
+
+    Scenario Outline: "Judicial" Tasks filter selection, with person role type <Person_Role_Type>
+        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
+
+        Given I start MockApp
+
+        Given I navigate to home page
+        When I click on primary navigation header tab "All work", I see selected tab page displayed
+        Then I validate tasks count in page 25
         Given I reset reference "taskSearchRequest" value to null
-        Given I set debug text "DEBUG category" in element with css selector "exui-task-field"
-        When I click Apply filter button in all work page
-        When I wait for reference "taskSearchRequest" value not null
-        Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value    |
-            | location     | 12345    |
-            | location     | 12346    |
-            | location     | 12347    |
-            | location     | 12348    |
-            | location     | 12349    |
-            | person       |          |
-            | jurisdiction | IA       |
-            | taskCategory | All      |
-            | taskType     | Judicial |
-            | priority     |          |
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-task-field"
-
-        Given I reset reference "taskSearchRequest" value to null
-        When I select filter item "Case Location" select or radio option "Test loc 3" in all work page
-        Given I set debug text "DEBUG category" in element with css selector "exui-task-field"
-        When I click Apply filter button in all work page
-        When I wait for reference "taskSearchRequest" value not null
-        Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value    |
-            | location     | 12347    |
-            | person       |          |
-            | jurisdiction | IA       |
-            | taskCategory | All      |
-            | taskType     | Judicial |
-            | priority     |          |
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-task-field"
-
-        Given I reset reference "taskSearchRequest" value to null
-        When I select filter item "Person" select or radio option "None / Available tasks" in all work page
-        Given I set debug text "DEBUG category" in element with css selector "exui-task-field"
-        When I click Apply filter button in all work page
-        When I wait for reference "taskSearchRequest" value not null
-        Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value                  |
-            | location     | 12347                  |
-            | person       | unassigned             |
-            | jurisdiction | IA                     |
-            | taskCategory | None / Available tasks |
-            | taskType     | Judicial               |
-            | priority     |                        |
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-task-field"
-
-        Given I reset reference "taskSearchRequest" value to null
-        When I select filter item "Person" select or radio option "Specific person" in all work page
-        Then I see filter "Person role type" is enabled in all work page
-
-        Then I see filter "Person input" is displayed in all work page
-        Then I see filter "Person input" is enabled in all work page
-        Then I validate Apply filter button in disabled in all work page
 
 
-        When I enter find person search input "cas" in work flow
+        Then I see filter "Service" is displayed in all work page
+        Then I see filter "Service" is enabled in all work page
+        Then I validate filter item "Service" select or radio options present in all work page
+            | option |
+            | IA     |
+
+        Then I see filter "Location" is displayed in all work page
+        Then I validate filter item "Location radios" select or radio options present in all work page
+            | option                |
+            | All                   |
+            | Search for a location |
+        When I see location search input is disabled in all work filters
+        When I select filter item "Location radios" select or radio option "Search for a location" in all work page
+        Then I see location search input is enabled in all work filters
+        Then I enter location search "IA Court Taylor House" in all work filter
+        Then I see location search results in all work filter
+            | location              |
+            | IA Court Taylor House |
+        Then I select location search result "IA Court Taylor House" in all work filter
+        Then I see location "IA Court Taylor House" selected in all work filter
+
+
+        When I select filter item "Person" select or radio option "<Task_Category>" in all work page
+        When I select filter item "Person role type" select or radio option "<Person_Role_Type>" in all work page
+
+        When I enter find person search input "<Person_search>" in work flow
+
         Then I see find person search results in work flow
-            | Person                            |
-            | Lead judge(judge_user1@gov.uk)    |
-            | Hearing judge(judge_user2@gov.uk) |
+            | Person        |
+            | <Person_name> |
 
-        When I select find person result "Lead judge(judge_user1@gov.uk)" in work flow
+        When I select find person result "<Person_name>" in work flow
+        When I select filter item "Task type" select or radio option "<Task_type>" in all work page
 
-        Then I validate Apply filter button in enabled in all work page
-        Given I set debug text "DEBUG category" in element with css selector "exui-task-field"
+
         When I click Apply filter button in all work page
         When I wait for reference "taskSearchRequest" value not null
         Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value           |
-            | location     | 12347           |
-            | person       | 1231            |
-            | jurisdiction | IA              |
-            | taskCategory | Specific person |
-            | taskType     | Judicial        |
-            | priority     |                 |
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-task-field"
+            | key          | value          |
+            | location     | <locationId>   |
+            | user         | <person_id>    |
+            | jurisdiction | <Jurisdiction> |
+            | taskType     | <Task_type>    |
+
 
         Given I reset reference "taskSearchRequest" value to null
-        When I select filter item "Person" select or radio option "Specific person" in all work page
-        Then I see filter "Person role type" is enabled in all work page
-
-        When I select filter item "Person role type" select or radio option "Legal Ops" in all work page
-
-        Then I see filter "Person input" is displayed in all work page
-        Then I see filter "Person input" is enabled in all work page
-        Then I validate Apply filter button in disabled in all work page
-
-
-        When I enter find person search input "cas" in work flow
-        Then I see find person search results in work flow
-            | Person                                  |
-            | caseworker1 cw(caseworker_user1@gov.uk) |
-            | caseworker2 cw(caseworker_user2@gov.uk) |
-        When I select find person result "caseworker1 cw(caseworker_user1@gov.uk)" in work flow
-
-        Then I validate Apply filter button in enabled in all work page
-        Given I set debug text "DEBUG category" in element with css selector "exui-task-field"
+        When I select filter item "Person" select or radio option "All" in all work page
+        When I select filter item "Location radios" select or radio option "All" in all work page
         When I click Apply filter button in all work page
         When I wait for reference "taskSearchRequest" value not null
-        Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value                                |
-            | location     | 12347                                |
-            | person       | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 |
-            | jurisdiction | IA                                   |
-            | taskCategory | Specific person                      |
-            | taskType     | Judicial                             |
-            | priority     |                                      |
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-task-field"
-
-        Given I reset reference "taskSearchRequest" value to null
-        When I select filter item "Person" select or radio option "Specific person" in all work page
-        Then I see filter "Person role type" is enabled in all work page
-
-        When I select filter item "Person role type" select or radio option "Admin" in all work page
-
-        Then I see filter "Person input" is displayed in all work page
-        Then I see filter "Person input" is enabled in all work page
-        Then I validate Apply filter button in disabled in all work page
-
-
-        When I enter find person search input "adm" in work flow
-        Then I see find person search results in work flow
-            | Person                       |
-            | admin1 a(admin_user1@gov.uk) |
-            | admin2 a(admin_user2@gov.uk) |
-        When I select find person result "admin1 a(admin_user1@gov.uk)" in work flow
-
-        Then I validate Apply filter button in enabled in all work page
-        Given I set debug text "DEBUG category" in element with css selector "exui-task-field"
-        When I click Apply filter button in all work page
-        When I wait for reference "taskSearchRequest" value not null
-        Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value                                |
-            | location     | 12347                                |
-            | person       | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 |
-            | jurisdiction | IA                                   |
-            | taskCategory | Specific person                      |
-            | taskType     | Judicial                             |
-            | priority     |                                      |
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-task-field"
-
-        Given I reset reference "taskSearchRequest" value to null
-        When I select filter item "Person" select or radio option "Specific person" in all work page
-        Then I see filter "Person role type" is enabled in all work page
-
-        When I select filter item "Person role type" select or radio option "Admin" in all work page
-
-        Then I see filter "Person input" is displayed in all work page
-        Then I see filter "Person input" is enabled in all work page
-
-        When I enter find person search input "adm" in work flow
-        Then I see find person search results in work flow
-            | Person                       |
-            | admin1 a(admin_user1@gov.uk) |
-            | admin2 a(admin_user2@gov.uk) |
-        When I select find person result "admin1 a(admin_user1@gov.uk)" in work flow
-
-        Then I validate Apply filter button in enabled in all work page
-        Given I set debug text "DEBUG category" in element with css selector "exui-task-field"
-        When I click Apply filter button in all work page
-        When I wait for reference "taskSearchRequest" value not null
-        Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value                                |
-            | location     | 12347                                |
-            | person       | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 |
-            | jurisdiction | IA                                   |
-            | taskCategory | Specific person                      |
-            | taskType     | Judicial                             |
-            | priority     |                                      |
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-task-field"
-
-        Given I reset reference "taskSearchRequest" value to null
-
-        When I select filter item "Task type" select or radio option "Legal Ops" in all work page
-        Given I set debug text "DEBUG category" in element with css selector "exui-task-field"
-        When I click Apply filter button in all work page
-        When I wait for reference "taskSearchRequest" value not null
-        Then I validate task search request with reference "taskSearchRequest" have search parameters
-            | key          | value                                |
-            | location     | 12347                                |
-            | person       | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 |
-            | jurisdiction | IA                                   |
-            | taskCategory | Specific person                      |
-            | taskType     | Legal Ops                            |
-            | priority     |                                      |
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-task-field"
-
+        Then I validate task search request with reference "taskSearchRequest" does not have search patameter key "user"
+        Then I validate task search request with reference "taskSearchRequest" does not have search patameter key "location"
 
         Examples:
-            | UserIdentifier  | UserType | Roles                                           |
-            # | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            | IAC_Judge_WA_R2 | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker |
+            | Jurisdiction | locationName | locationId | Task_Category   | Person_search | Person_name                             | person_id                            | Person_Role_Type | Task_type |
+            | IA           | Test loc 3   | 12347      | Specific person | cas           | caseworker1 cw(caseworker_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 | Legal Ops        | Legal Ops |
+            | IA           | Test loc 3   | 12347      | Specific person | user1         | user1 j(judge_user1@gov.uk)             | 1231                                 | Judicial         | Legal Ops |
+            | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a(admin_user1@gov.uk)            | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin            | Admin     |
+
+    Scenario: "Caseworker" Cases filters state
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "task-supervisor,case-allocator,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
+
+        Given I start MockApp
+
+        Given I navigate to home page
+        When I click on primary navigation header tab "All work", I see selected tab page displayed
+        When I navigate to All work sub navigation tab "Cases"
+
+        Then I validate work allocation cases count in page 25
+
+        Given I am perforing actions to validate "9 default filters"
+        Given I reset reference "caseSearchRequest" value to null
+
+        Then I see filter "Service" is displayed in all work page
+        Then I see filter "Service" is enabled in all work page
+        Then I validate filter item "Service" select or radio options present in all work page
+            | option |
+            | IA     |
+
+        Then I see filter "Location" is displayed in all work page
+        Then I validate filter item "Location radios" select or radio options present in all work page
+            | option                |
+            | All                   |
+            | Search for a location |
+        When I see location search input is disabled in all work filters
 
 
-    Scenario Outline: Cases filter selection, with user role "<UserType>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+
+        Then I see filter "Role type" is displayed in all work page
+
+        Then I see filter "Person" is displayed in all work page
+
+        Then I see filter "Person role type" is displayed in all work page
+        Then I see filter "Role type" is enabled in all work page
+
+        Then I see filter "Person input" is displayed in all work page
+        Then I see filter "Person input" is disabled in all work page
+
+    Scenario Outline: "Caseworker" Case filter selection, with role type <Role_Type>
+        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I start MockApp
 
@@ -550,192 +336,52 @@ Feature: WA Release 2: All work - filters
         Then I see filter "Service" is displayed in all work page
         Then I see filter "Service" is enabled in all work page
         Then I validate filter item "Service" select or radio options present in all work page
-            | option                 |
-            | Immigration and Asylum |
+            | option |
+            | IA     |
 
-        Then I see filter "Case Location" is displayed in all work page
-        Then I see filter "Case Location" is enabled in all work page
-        Then I validate filter item "Case Location" select or radio options present in all work page
-            | option     |
-            | Test loc 1 |
-            | Test loc 2 |
-            | Test loc 3 |
-            | Test loc 4 |
-            | Test loc 5 |
-
-        Then I see filter "Role type" is displayed in all work page
-
-        Then I see filter "Person" is displayed in all work page
-
-        Then I see filter "Person role type" is displayed in all work page
-        Then I see filter "Role type" is enabled in all work page
-
-        Then I see filter "Person input" is displayed in all work page
-        Then I see filter "Person input" is disabled in all work page
-
-        Given I reset reference "caseSearchRequest" value to null
-        Given I set debug text "DEBUG category" in element with css selector "exui-work-field"
-        When I click Apply filter button in all work page
-        When I wait for reference "caseSearchRequest" value not null
-        Then I validate task search request with reference "caseSearchRequest" have search parameters
-            | key          | value                  |
-            | location_id  |                        |
-            | actorId      |                        |
-            | jurisdiction | Immigration and Asylum |
-            | role         | Legal Ops              |
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-work-field"
-
-        Given I reset reference "caseSearchRequest" value to null
-        When I select filter item "Case Location" select or radio option "Test loc 3" in all work page
-        Given I set debug text "DEBUG category" in element with css selector "exui-work-field"
-        When I click Apply filter button in all work page
-        When I wait for reference "caseSearchRequest" value not null
-        Then I validate task search request with reference "caseSearchRequest" have search parameters
-            | key          | value                  |
-            | location_id  | 12347                  |
-            | actorId      |                        |
-            | jurisdiction | Immigration and Asylum |
-            | role         | Legal Ops              |
-
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-work-field"
-
-        Given I reset reference "caseSearchRequest" value to null
-        When I select filter item "Person" select or radio option "Specific person" in all work page
-        Then I see filter "Role type" is enabled in all work page
-
-        Then I see filter "Person input" is displayed in all work page
-        Then I see filter "Person input" is enabled in all work page
-        Then I validate Apply filter button in disabled in all work page
+        Then I see filter "Location" is displayed in all work page
+        Then I validate filter item "Location radios" select or radio options present in all work page
+            | option                |
+            | All                   |
+            | Search for a location |
+        When I see location search input is disabled in all work filters
+        When I select filter item "Location radios" select or radio option "Search for a location" in all work page
+        Then I see location search input is enabled in all work filters
+        Then I enter location search "IA Court Taylor House" in all work filter
+        Then I see location search results in all work filter
+            | location              |
+            | IA Court Taylor House |
+        Then I select location search result "IA Court Taylor House" in all work filter
+        Then I see location "IA Court Taylor House" selected in all work filter
 
 
-        When I enter find person search input "cas" in work flow
+        When I select filter item "Person" select or radio option "<Person_radio>" in all work page
+        When I select filter item "Role type" select or radio option "<Role_Type>" in all work page
+
+        When I enter find person search input "<Person_search>" in work flow
+
         Then I see find person search results in work flow
-            | Person                                  |
-            | caseworker1 cw(caseworker_user1@gov.uk) |
-            | caseworker2 cw(caseworker_user2@gov.uk) |
-        When I select find person result "caseworker1 cw(caseworker_user1@gov.uk)" in work flow
+            | Person        |
+            | <Person_name> |
 
-        Then I validate Apply filter button in enabled in all work page
-        Given I set debug text "DEBUG category" in element with css selector "exui-work-field"
+        When I select find person result "<Person_name>" in work flow
+
+
         When I click Apply filter button in all work page
         When I wait for reference "caseSearchRequest" value not null
         Then I validate task search request with reference "caseSearchRequest" have search parameters
-            | key          | value                                |
-            | location_id  | 12347                                |
-            | actorId      | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 |
-            | jurisdiction | Immigration and Asylum               |
-            | role         | Legal Ops                            |
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-work-field"
-
-        Given I reset reference "caseSearchRequest" value to null
-        When I select filter item "Person" select or radio option "Specific person" in all work page
-        Then I see filter "Role type" is enabled in all work page
-
-        When I select filter item "Role type" select or radio option "Judicial" in all work page
-
-        Then I see filter "Person input" is displayed in all work page
-        Then I see filter "Person input" is enabled in all work page
-        Then I validate Apply filter button in disabled in all work page
-
-
-        When I enter find person search input "jud" in work flow
-        Then I see find person search results in work flow
-            | Person                            |
-            | Lead judge(judge_user1@gov.uk)    |
-            | Hearing judge(judge_user2@gov.uk) |
-        When I select find person result "Lead judge(judge_user1@gov.uk)" in work flow
-
-        Then I validate Apply filter button in enabled in all work page
-        Given I set debug text "DEBUG category" in element with css selector "exui-work-field"
-        When I click Apply filter button in all work page
-        When I wait for reference "caseSearchRequest" value not null
-        Then I validate task search request with reference "caseSearchRequest" have search parameters
-            | key          | value                  |
-            | location_id  | 12347                  |
-            | actorId      | 1231                   |
-            | jurisdiction | Immigration and Asylum |
-            | role         | Judicial               |
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-work-field"
-
-        Given I reset reference "taskSearchRequest" value to null
-        When I select filter item "Person" select or radio option "Specific person" in all work page
-        Then I see filter "Role type" is enabled in all work page
-
-        When I select filter item "Role type" select or radio option "Admin" in all work page
-
-        Then I see filter "Person input" is displayed in all work page
-        Then I see filter "Person input" is enabled in all work page
-        Then I validate Apply filter button in disabled in all work page
-
-
-        When I enter find person search input "adm" in work flow
-        Then I see find person search results in work flow
-            | Person                       |
-            | admin1 a(admin_user1@gov.uk) |
-            | admin2 a(admin_user2@gov.uk) |
-        When I select find person result "admin1 a(admin_user1@gov.uk)" in work flow
-
-        Then I validate Apply filter button in enabled in all work page
-        Given I set debug text "DEBUG category" in element with css selector "exui-work-field"
-        When I click Apply filter button in all work page
-        When I wait for reference "caseSearchRequest" value not null
-        Then I validate task search request with reference "caseSearchRequest" have search parameters
-            | key          | value                                |
-            | location_id  | 12347                                |
-            | actorId      | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 |
-            | jurisdiction | Immigration and Asylum               |
-            | role         | Admin                                |
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-work-field"
-
-        Given I reset reference "caseSearchRequest" value to null
-        When I select filter item "Person" select or radio option "Specific person" in all work page
-        Then I see filter "Role type" is enabled in all work page
-
-        When I select filter item "Role type" select or radio option "Admin" in all work page
-
-        Then I see filter "Person input" is displayed in all work page
-        Then I see filter "Person input" is enabled in all work page
-
-        When I enter find person search input "adm" in work flow
-        Then I see find person search results in work flow
-            | Person                       |
-            | admin1 a(admin_user1@gov.uk) |
-            | admin2 a(admin_user2@gov.uk) |
-        When I select find person result "admin1 a(admin_user1@gov.uk)" in work flow
-
-        Then I validate Apply filter button in enabled in all work page
-        Given I set debug text "DEBUG category" in element with css selector "exui-work-field"
-        When I click Apply filter button in all work page
-        When I wait for reference "caseSearchRequest" value not null
-        Then I validate task search request with reference "caseSearchRequest" have search parameters
-            | key          | value                                |
-            | location_id  | 12347                                |
-            | actorId      | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 |
-            | jurisdiction | Immigration and Asylum               |
-            | role         | Admin                                |
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-work-field"
-
-        Given I reset reference "caseSearchRequest" value to null
-
-        Given I set debug text "DEBUG category" in element with css selector "exui-work-field"
-        When I click Apply filter button in all work page
-        When I wait for reference "caseSearchRequest" value not null
-        Then I validate task search request with reference "caseSearchRequest" have search parameters
-            | key          | value                  |
-            | location_id  | 12347                  |
-            | actorId | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 |
-            | jurisdiction | Immigration and Asylum |
-            | role         | Admin                  |
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-work-field"
-
-
+            | key          | value          |
+            | location_id  | <locationId>   |
+            | actorId      | <person_id>    |
+            | jurisdiction | <Jurisdiction> |
+            | role         | <Role_Type>    |
         Examples:
-            | UserIdentifier     | UserType   | Roles                                              |
-            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-    # | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+            | Jurisdiction | locationName | locationId | Person_radio    | Person_search | Person_name                  | person_id                            | Role_Type |
+            | IA           | Test loc 3   | 12347      | Specific person | user1         | user1 j(judge_user1@gov.uk)  | 1231                                 | Judicial  |
+            | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a(admin_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin     |
 
-    Scenario Outline: Cases filter selection, with user role "<UserType>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
+    Scenario Outline: "Judicial" Case filter selection, with role type <Role_Type>
+        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,task-supervisor,case-allocator,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I start MockApp
 
@@ -750,189 +396,47 @@ Feature: WA Release 2: All work - filters
         Then I see filter "Service" is displayed in all work page
         Then I see filter "Service" is enabled in all work page
         Then I validate filter item "Service" select or radio options present in all work page
-            | option                 |
-            | Immigration and Asylum |
+            | option |
+            | IA     |
 
-        Then I see filter "Case Location" is displayed in all work page
-        Then I see filter "Case Location" is enabled in all work page
-        Then I validate filter item "Case Location" select or radio options present in all work page
-            | option     |
-            | Test loc 1 |
-            | Test loc 2 |
-            | Test loc 3 |
-            | Test loc 4 |
-            | Test loc 5 |
-
-        Then I see filter "Role type" is displayed in all work page
-
-        Then I see filter "Person" is displayed in all work page
-
-        Then I see filter "Person role type" is displayed in all work page
-        Then I see filter "Role type" is enabled in all work page
-
-        Then I see filter "Person input" is displayed in all work page
-        Then I see filter "Person input" is disabled in all work page
-
-        Given I reset reference "caseSearchRequest" value to null
-        Given I set debug text "DEBUG category" in element with css selector "exui-work-field"
-        When I click Apply filter button in all work page
-        When I wait for reference "caseSearchRequest" value not null
-        Then I validate task search request with reference "caseSearchRequest" have search parameters
-            | key          | value                  |
-            | location_id  |                        |
-            | actorId      |                        |
-            | jurisdiction | Immigration and Asylum |
-            | role         | Judicial               |
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-work-field"
-
-        Given I reset reference "caseSearchRequest" value to null
-        When I select filter item "Case Location" select or radio option "Test loc 3" in all work page
-        Given I set debug text "DEBUG category" in element with css selector "exui-work-field"
-        When I click Apply filter button in all work page
-        When I wait for reference "caseSearchRequest" value not null
-        Then I validate task search request with reference "caseSearchRequest" have search parameters
-            | key          | value                  |
-            | location_id  | 12347                  |
-            | actorId      |                        |
-            | jurisdiction | Immigration and Asylum |
-            | role         | Judicial               |
-
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-work-field"
-
-        Given I reset reference "caseSearchRequest" value to null
-        When I select filter item "Person" select or radio option "Specific person" in all work page
-        Then I see filter "Role type" is enabled in all work page
-
-        Then I see filter "Person input" is displayed in all work page
-        Then I see filter "Person input" is enabled in all work page
-        Then I validate Apply filter button in disabled in all work page
+        Then I see filter "Location" is displayed in all work page
+        Then I validate filter item "Location radios" select or radio options present in all work page
+            | option                |
+            | All                   |
+            | Search for a location |
+        When I see location search input is disabled in all work filters
+        When I select filter item "Location radios" select or radio option "Search for a location" in all work page
+        Then I see location search input is enabled in all work filters
+        Then I enter location search "IA Court Taylor House" in all work filter
+        Then I see location search results in all work filter
+            | location              |
+            | IA Court Taylor House |
+        Then I select location search result "IA Court Taylor House" in all work filter
+        Then I see location "IA Court Taylor House" selected in all work filter
 
 
-        When I enter find person search input "jud" in work flow
+
+        When I select filter item "Person" select or radio option "<Person_radio>" in all work page
+        When I select filter item "Role type" select or radio option "<Role_Type>" in all work page
+
+        When I enter find person search input "<Person_search>" in work flow
+
         Then I see find person search results in work flow
-            | Person                            |
-            | Lead judge(judge_user1@gov.uk)    |
-            | Hearing judge(judge_user2@gov.uk) |
+            | Person        |
+            | <Person_name> |
 
-        When I select find person result "Lead judge(judge_user1@gov.uk)" in work flow
+        When I select find person result "<Person_name>" in work flow
 
-        Then I validate Apply filter button in enabled in all work page
-        Given I set debug text "DEBUG category" in element with css selector "exui-work-field"
+
         When I click Apply filter button in all work page
         When I wait for reference "caseSearchRequest" value not null
         Then I validate task search request with reference "caseSearchRequest" have search parameters
-            | key          | value                  |
-            | location_id  | 12347                  |
-            | actorId      | 1231                   |
-            | jurisdiction | Immigration and Asylum |
-            | role         | Judicial               |
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-work-field"
-
-        Given I reset reference "caseSearchRequest" value to null
-        When I select filter item "Person" select or radio option "Specific person" in all work page
-        Then I see filter "Role type" is enabled in all work page
-
-        When I select filter item "Role type" select or radio option "Legal Ops" in all work page
-
-        Then I see filter "Person input" is displayed in all work page
-        Then I see filter "Person input" is enabled in all work page
-        Then I validate Apply filter button in disabled in all work page
-
-
-        When I enter find person search input "cas" in work flow
-        Then I see find person search results in work flow
-            | Person                                  |
-            | caseworker1 cw(caseworker_user1@gov.uk) |
-            | caseworker2 cw(caseworker_user2@gov.uk) |
-        When I select find person result "caseworker1 cw(caseworker_user1@gov.uk)" in work flow
-
-        Then I validate Apply filter button in enabled in all work page
-        Given I set debug text "DEBUG category" in element with css selector "exui-work-field"
-        When I click Apply filter button in all work page
-        When I wait for reference "caseSearchRequest" value not null
-        Then I validate task search request with reference "caseSearchRequest" have search parameters
-            | key          | value                                |
-            | location_id  | 12347                                |
-            | actorId      | 08a3d216-c6ab-4e92-a7e3-ca3661e6be89 |
-            | jurisdiction | Immigration and Asylum               |
-            | role         | Legal Ops                            |
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-work-field"
-
-        Given I reset reference "taskSearchRequest" value to null
-        When I select filter item "Person" select or radio option "Specific person" in all work page
-        Then I see filter "Role type" is enabled in all work page
-
-        When I select filter item "Role type" select or radio option "Admin" in all work page
-
-        Then I see filter "Person input" is displayed in all work page
-        Then I see filter "Person input" is enabled in all work page
-        Then I validate Apply filter button in disabled in all work page
-
-
-        When I enter find person search input "adm" in work flow
-        Then I see find person search results in work flow
-            | Person                       |
-            | admin1 a(admin_user1@gov.uk) |
-            | admin2 a(admin_user2@gov.uk) |
-        When I select find person result "admin1 a(admin_user1@gov.uk)" in work flow
-
-        Then I validate Apply filter button in enabled in all work page
-        Given I set debug text "DEBUG category" in element with css selector "exui-work-field"
-        When I click Apply filter button in all work page
-        When I wait for reference "caseSearchRequest" value not null
-        Then I validate task search request with reference "caseSearchRequest" have search parameters
-            | key          | value                                |
-            | location_id  | 12347                                |
-            | actorId      | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 |
-            | jurisdiction | Immigration and Asylum               |
-            | role         | Admin                                |
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-work-field"
-
-        Given I reset reference "caseSearchRequest" value to null
-        When I select filter item "Person" select or radio option "Specific person" in all work page
-        Then I see filter "Role type" is enabled in all work page
-
-        When I select filter item "Role type" select or radio option "Admin" in all work page
-
-        Then I see filter "Person input" is displayed in all work page
-        Then I see filter "Person input" is enabled in all work page
-
-        When I enter find person search input "adm" in work flow
-        Then I see find person search results in work flow
-            | Person                       |
-            | admin1 a(admin_user1@gov.uk) |
-            | admin2 a(admin_user2@gov.uk) |
-        When I select find person result "admin1 a(admin_user1@gov.uk)" in work flow
-
-        Then I validate Apply filter button in enabled in all work page
-        Given I set debug text "DEBUG category" in element with css selector "exui-work-field"
-        When I click Apply filter button in all work page
-        When I wait for reference "caseSearchRequest" value not null
-        Then I validate task search request with reference "caseSearchRequest" have search parameters
-            | key          | value                                |
-            | location_id  | 12347                                |
-            | actorId      | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 |
-            | jurisdiction | Immigration and Asylum               |
-            | role         | Admin                                |
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-work-field"
-
-        Given I reset reference "caseSearchRequest" value to null
-
-        Given I set debug text "DEBUG category" in element with css selector "exui-work-field"
-        When I click Apply filter button in all work page
-        When I wait for reference "caseSearchRequest" value not null
-        Then I validate task search request with reference "caseSearchRequest" have search parameters
-            | key          | value                                |
-            | location_id  | 12347                                |
-            | actorId      | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 |
-            | jurisdiction | Immigration and Asylum               |
-            | role         | Admin                                |
-        Then I validate debug text "DEBUG category" not present in element with css selector "exui-work-field"
-
-
+            | key          | value          |
+            | location_id  | <locationId>   |
+            | actorId      | <person_id>    |
+            | jurisdiction | <Jurisdiction> |
+            | role         | <Role_Type>    |
         Examples:
-            | UserIdentifier  | UserType | Roles                                           |
-            # | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            | IAC_Judge_WA_R2 | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker |
-
-
+            | Jurisdiction | locationName | locationId | Person_radio    | Person_search | Person_name                  | person_id                            | Role_Type |
+            | IA           | Test loc 3   | 12347      | Specific person | user1         | user1 j(judge_user1@gov.uk)  | 1231                                 | Judicial  |
+            | IA           | Test loc 3   | 12347      | Specific person | adm           | admin1 a(admin_user1@gov.uk) | 08a3d216-c6ab-4e92-a7e3-ca3661e6be83 | Admin     |

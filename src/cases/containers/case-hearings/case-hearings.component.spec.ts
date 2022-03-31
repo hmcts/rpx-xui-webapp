@@ -1,11 +1,11 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as moment from 'moment';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { UserRole } from '../../../app/models';
 import { RoleCategoryMappingService } from '../../../app/services/role-category-mapping/role-category-mapping.service';
 import { HearingConditions } from '../../../hearings/models/hearingConditions';
@@ -29,6 +29,7 @@ describe('CaseHearingsComponent', () => {
   let mockStore: Store<fromHearingStore.State>;
   let spyStore: any;
   let mockRoleCategoryMappingService: RoleCategoryMappingService;
+  let mockRouter: any;
 
   const HEARING_DAY_SCHEDULE_1: HearingDayScheduleModel = {
     hearingStartDateTime: '',
@@ -328,7 +329,7 @@ describe('CaseHearingsComponent', () => {
   };
 
   const HEARINGS_LIST: HearingListMainModel = {
-    hmctsServiceID: 'SSCS',
+    hmctsServiceID: 'BBA3',
     caseRef: '1568642646198441',
     caseHearings: [CASE_HEARING_1, CASE_HEARING_2, CASE_HEARING_3, CASE_HEARING_4, CASE_HEARING_5, CASE_HEARING_6, CASE_HEARING_7, CASE_HEARING_8, CASE_HEARING_9, CASE_HEARING_10, CASE_HEARING_11],
   };
@@ -339,6 +340,10 @@ describe('CaseHearingsComponent', () => {
         hearingListMainModel: HEARINGS_LIST
       },
     }
+  };
+
+  mockRouter = {
+    navigate: jasmine.createSpy('navigate')
   };
 
   beforeEach(() => {
@@ -360,6 +365,10 @@ describe('CaseHearingsComponent', () => {
           }
         },
         {
+          provide: Router,
+          useValue: mockRouter
+        },
+        {
           provide: RoleCategoryMappingService,
           useValue: mockRoleCategoryMappingService,
         }
@@ -376,6 +385,13 @@ describe('CaseHearingsComponent', () => {
 
   it('should create hearing component', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should unsubscribe', () => {
+    component.lastErrorSubscription = new Observable().subscribe();
+    spyOn(component.lastErrorSubscription, 'unsubscribe').and.callThrough();
+    component.ngOnDestroy();
+    expect(component.lastErrorSubscription.unsubscribe).toHaveBeenCalled();
   });
 
   it('should set hearings actions', () => {
@@ -475,15 +491,25 @@ describe('CaseHearingsComponent', () => {
 
   it('should create hearing request', () => {
     const dispatchSpy = spyOn(mockStore, 'dispatch');
+    spyOn(mockStore, 'select').and.returnValue(of(null));
     const hearingCondition: HearingConditions = {
       mode: 'create',
       isInit: true,
       caseId: '1234'
     };
     component.createHearingRequest();
-    fixture.detectChanges();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'request']);
     expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.LoadHearingValues(component.caseId)));
     expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions(hearingCondition)));
+  });
+
+  it('should call the reloadhearings when reload clicked', () => {
+    spyOn(component, 'reloadHearings');
+    component.serverError = {id: '', message: 'server error'};
+    fixture.detectChanges();
+    const cancelledReasonElement: HTMLSelectElement = fixture.nativeElement.querySelector('#reload-hearing-tab');
+    cancelledReasonElement.click()
+    expect(component.reloadHearings).toHaveBeenCalled();
   });
 
   afterEach(() => {

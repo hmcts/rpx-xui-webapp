@@ -3,7 +3,7 @@ import {MemberType, PartyType, RequirementType} from '../models/hearings.enum';
 import {ServiceHearingValuesModel} from '../models/serviceHearingValues.model';
 
 export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
-  caseName: 'Jane Smith vs DWP',
+  caseName: 'Jane and Smith vs DWP',
   autoListFlag: false,
   hearingType: 'final',
   caseType: 'Personal Independence Payment',
@@ -21,10 +21,8 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   hearingInWelshFlag: false,
   hearingLocations: [{
     locationId: '196538',
-    locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
-    region: 'North West',
-  },
-  ],
+    locationType: 'hearing',
+  }],
   caseAdditionalSecurityFlag: false,
   facilitiesRequired: ['immigrationDetentionCentre'],
   listingComments: 'Additional instructions for the hearing',
@@ -68,8 +66,14 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
     {
       partyID: 'P1',
       partyType: PartyType.IND,
-      partyName: 'Jane Smith',
+      partyName: 'Jane and Smith',
       partyChannel: 'byVideo',
+      partyRole: 'appellant',
+      individualDetails: {
+        title: 'Miss',
+        firstName: 'Jane',
+        lastName: 'Smith',
+      },
       unavailabilityRanges: [
         {
           unavailableFromDate: '2021-12-10T09:00:00.000+0000',
@@ -82,6 +86,12 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       partyType: PartyType.ORG,
       partyName: 'DWP',
       partyChannel: 'byVideo',
+      partyRole: 'claimant',
+      organisationDetails: {
+        name: 'DWP',
+        organisationType: 'GOV',
+        cftOrganisationID: 'O100000',
+      },
       unavailabilityRanges: [
         {
           unavailableFromDate: '2021-12-20T09:00:00.000+0000',
@@ -92,55 +102,63 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   caseFlags: {
     flags: [
       {
-        partyName: 'Jane Smith',
+        partyID: 'P1',
+        partyName: 'Jane and Smith',
         flagParentId: 'RA0008',
         flagId: 'RA0042',
         flagDescription: 'Sign language interpreter required',
         flagStatus: 'ACTIVE',
       },
       {
-        partyName: 'Jane Smith',
+        partyID: 'P1',
+        partyName: 'Jane and Smith',
         flagParentId: 'RA0032',
         flagId: 'RA0053',
         flagDescription: 'Hearing loop required',
         flagStatus: 'ACTIVE',
       },
       {
-        partyName: 'Jane Smith',
+        partyID: 'P1',
+        partyName: 'Jane and Smith',
         flagParentId: 'RA0002',
         flagId: 'RA0013',
         flagDescription: 'Larger font size',
         flagStatus: 'ACTIVE',
       },
       {
-        partyName: 'Jane Smith',
+        partyID: 'P1',
+        partyName: 'Jane and Smith',
         flagParentId: 'RA0003',
         flagId: 'RA0016',
         flagDescription: 'Reading documents for customer',
         flagStatus: 'ACTIVE',
       },
       {
-        partyName: 'Jane Smith',
+        partyID: 'P1',
+        partyName: 'Jane and Smith',
         flagParentId: 'RA0008',
         flagId: 'RA0042',
         flagDescription: 'Sign Language Interpreter',
         flagStatus: 'ACTIVE',
       },
       {
-        partyName: 'Jane Smith',
+        partyID: 'P1',
+        partyName: 'Jane and Smith',
         flagParentId: 'PF0001',
         flagId: 'PF0015',
         flagDescription: 'Language Interpreter',
         flagStatus: 'ACTIVE',
       },
       {
-        partyName: 'Jane Smith',
+        partyID: 'P1',
+        partyName: 'Jane and Smith',
         flagParentId: 'PF0001',
         flagId: 'PF0002',
         flagDescription: 'Vulnerable user',
         flagStatus: 'ACTIVE',
       },
       {
+        partyID: 'P2',
         partyName: 'DWP',
         flagParentId: 'RA0001',
         flagId: 'RA0005',
@@ -148,6 +166,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE',
       },
       {
+        partyID: 'P2',
         partyName: 'DWP',
         flagParentId: 'PF0001',
         flagId: 'PF0011',
@@ -155,21 +174,24 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE',
       },
       {
-        partyName: 'Jane Smith vs DWP',
+        partyID: 'P2',
+        partyName: 'DWP',
         flagParentId: 'CF0001',
         flagId: 'CF0002',
         flagDescription: 'Complex Case',
         flagStatus: 'ACTIVE',
       },
       {
-        partyName: 'Jane Smith vs DWP',
+        partyID: 'P2',
+        partyName: 'DWP',
         flagParentId: 'CF0001',
         flagId: 'CF0006',
         flagDescription: 'Potential fraud',
         flagStatus: 'ACTIVE',
       },
       {
-        partyName: 'Jane Smith vs DWP',
+        partyID: 'P2',
+        partyName: 'DWP',
         flagParentId: 'CF0001',
         flagId: 'CF0007',
         flagDescription: 'Urgent flag',

@@ -63,29 +63,55 @@ export class CaseHearingsListComponent implements OnInit {
     return !!hearingGroupRequestId;
   }
 
+  public addAndEdit(hearingID: string): void {
+    this.router.navigate(['/', 'hearings', 'actuals', hearingID, 'hearing-actual-add-edit-summary']);
+  }
+
+  public cancelHearing(hearingID: string): void {
+    this.router.navigate(['/', 'hearings', 'cancel', hearingID]);
+  }
+
+  public linkHearing(hearingID: string): void {
+    this.router.navigate(['/', 'hearings', 'link', hearingID]);
+  }
+
+  public manageLinks(hearingID: string): void {
+    this.router.navigate(['/', 'hearings', 'manage-links', hearingID]);
+  }
+
   public viewAndEdit(hearingID: string): void {
     this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearingID));
     const hearingCondition: HearingConditions = {
       mode: Mode.VIEW,
     };
     this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
-    this.router.navigate(['/', 'hearings', 'request', 'hearing-view-edit-summary']);
+    this.LoadHearingRequestAndRedirect(hearingID, '/hearings/request/hearing-view-edit-summary');
   }
 
   public viewDetails(hearing: HearingListViewModel): void {
-    if (hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.CANCELLATION_REQUESTED) {
-      this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearing.hearingID));
-      this.router.navigate(['/', 'hearings', 'view', 'hearing-cancellation-summary']);
-    } else if (hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.CANCELLED) {
-      this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest(hearing.hearingID));
-      this.router.navigate(['/', 'hearings', 'view', 'hearing-cancelled-summary']);
-    } else {
-      this.router.navigate(['/', 'hearings', 'view']);
+    switch (hearing.exuiDisplayStatus) {
+      case EXUIDisplayStatusEnum.CANCELLATION_REQUESTED:
+        this.LoadHearingRequestAndRedirect(hearing.hearingID, '/hearings/view/hearing-cancellation-summary');
+        break;
+      case EXUIDisplayStatusEnum.CANCELLED:
+        this.LoadHearingRequestAndRedirect(hearing.hearingID, '/hearings/view/hearing-cancelled-summary');
+        break;
+      case EXUIDisplayStatusEnum.COMPLETED:
+        this.LoadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-completed-summary/${hearing.hearingID}`);
+        break;
+      case EXUIDisplayStatusEnum.ADJOURNED:
+        this.LoadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-adjourned-summary/${hearing.hearingID}`);
+        break;
+      case EXUIDisplayStatusEnum.FAILURE:
+        this.LoadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-request-failed-summary/${hearing.hearingID}`);
+        break;
+      default:
+        this.router.navigate(['/', 'hearings', 'view']);
+        break;
     }
   }
 
-  public addAndEdit(hearingID: string): void {
-    this.router.navigate(['/', 'hearings', 'actuals', hearingID, 'hearing-actual-add-edit-summary']);
+  public LoadHearingRequestAndRedirect(hearingID: string, targetURL: string) {
+    this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest({hearingID, targetURL}));
   }
 }

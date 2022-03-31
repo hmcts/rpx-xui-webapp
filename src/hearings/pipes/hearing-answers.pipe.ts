@@ -9,6 +9,7 @@ import { CaseFlagAnswerConverter } from '../converters/case-flag.answer.converte
 import { CaseNameAnswerConverter } from '../converters/case-name.answer.converter';
 import { CaseNumberAnswerConverter } from '../converters/case-number.answer.converter';
 import { CourtLocationAnswerConverter } from '../converters/court-location.answer.converter';
+import { DateRequestFailedAnswerConverter } from '../converters/date-request-failed.answer.converter';
 import { DateRequestSubmittedAnswerConverter } from '../converters/date-request-submitted.answer.converter';
 import { DateResponseReceivedAnswerConverter } from '../converters/date-response-received.answer.converter';
 import { DateResponseSubmittedTimeAnswerConverter } from '../converters/date-response-submitted-time.answer.converter';
@@ -40,6 +41,7 @@ import { TypeFromRequestAnswerConverter } from '../converters/type-from-request.
 import { TypeAnswerConverter } from '../converters/type.answer.converter';
 import { VenueAnswerConverter } from '../converters/venue.answer.converter';
 import { AnswerSource } from '../models/hearings.enum';
+import { LocationsDataService } from '../services/locations-data.service';
 import { State } from '../store';
 
 @Pipe({
@@ -47,7 +49,8 @@ import { State } from '../store';
 })
 export class HearingAnswersPipe implements PipeTransform {
 
-  constructor(protected readonly route: ActivatedRoute) {
+  constructor(protected readonly route: ActivatedRoute,
+              protected readonly locationsDataService: LocationsDataService) {
   }
 
   public transform(answerSource: AnswerSource, hearingState$: Observable<State>): Observable<string> {
@@ -77,6 +80,9 @@ export class HearingAnswersPipe implements PipeTransform {
       case AnswerSource.DATE_RESPONSE_RECEIVED:
         converter = new DateResponseReceivedAnswerConverter();
         break;
+      case AnswerSource.ERROR_TIME_STAMP:
+        converter = new DateRequestFailedAnswerConverter();
+        break;
       case AnswerSource.TYPE_FROM_REQUEST:
         converter = new TypeFromRequestAnswerConverter();
         break;
@@ -90,7 +96,7 @@ export class HearingAnswersPipe implements PipeTransform {
         converter = new AdditionalFacilitiesAnswerConverter(this.route);
         break;
       case AnswerSource.VENUE:
-        converter = new VenueAnswerConverter();
+        converter = new VenueAnswerConverter(this.locationsDataService);
         break;
       case AnswerSource.COURT_LOCATION:
         converter = new CourtLocationAnswerConverter(this.route);

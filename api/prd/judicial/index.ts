@@ -1,14 +1,14 @@
 import {NextFunction, Response} from 'express';
 import {handlePost} from '../../common/mockService';
 import {getConfigValue} from '../../configuration';
-import {SERVICES_PRD_API_URL} from '../../configuration/references';
+import {SERVICES_PRD_JUDICIAL_API} from '../../configuration/references';
 import {EnhancedRequest} from '../../lib/models';
 import * as mock from './judicial.mock';
 import {JudicialUserModel} from './models/judicialUser.model';
 
 mock.init();
 
-const prdUrl: string = getConfigValue(SERVICES_PRD_API_URL);
+const prdUrl: string = getConfigValue(SERVICES_PRD_JUDICIAL_API);
 
 /**
  * @overview searchJudicialUserByPersonalCodes from personalCodes, i.e. ['p1000000','p1000001']

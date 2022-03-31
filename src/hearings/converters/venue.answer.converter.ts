@@ -1,19 +1,27 @@
 import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map, switchMap} from 'rxjs/operators';
+import {HearingLocationModel} from '../models/hearingLocation.model';
+import {LocationByEPIMMSModel} from '../models/location.model';
+import {LocationsDataService} from '../services/locations-data.service';
 import {State} from '../store';
 import {AnswerConverter} from './answer.converter';
 
 export class VenueAnswerConverter implements AnswerConverter {
+  constructor(protected readonly locationsDataService: LocationsDataService) { }
+
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
-      map(state => {
-        let result = '<ul>';
-        state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingLocations.forEach(
-          location => result += `<li>${location.locationName}</li>`
-        );
-        result += '</ul>';
-        return result;
-      })
-    );
+      switchMap(state => {
+        const hearingLocations: HearingLocationModel[] = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingLocations;
+        const locationIds = hearingLocations.map((hearingLocationModel: HearingLocationModel) => hearingLocationModel.locationId).join(',');
+        return this.locationsDataService.getLocationById(locationIds).pipe(
+          map((locationByEPIMMSModels: LocationByEPIMMSModel[]) => {
+            let result = '<ul>';
+            locationByEPIMMSModels.forEach((locationByEPIMMSModel: LocationByEPIMMSModel) =>
+              result += `<li>${locationByEPIMMSModel.court_name}</li>`);
+            result += '</ul>';
+            return result;
+          }));
+      }));
   }
 }

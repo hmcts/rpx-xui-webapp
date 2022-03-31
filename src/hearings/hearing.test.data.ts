@@ -986,15 +986,11 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   hearingInWelshFlag: false,
   hearingLocations: [{
     locationId: '196538',
-    locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
     locationType: 'hearing',
-    region: 'North West',
   },
   {
-    locationId: '219164',
-    locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
+    locationId: '234850',
     locationType: 'hearing',
-    region: 'Scotland',
   },
   ],
   caseAdditionalSecurityFlag: false,
@@ -1035,8 +1031,14 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
     {
       partyID: 'P1',
       partyType: PartyType.IND,
+      partyRole: 'appellant',
       partyName: 'Jane Smith',
       partyChannel: 'inPerson',
+      individualDetails: {
+        title: 'Mrs',
+        firstName: 'Jane',
+        lastName: 'Smith'
+      },
       unavailabilityRanges: [
         {
           unavailableFromDate: '2021-12-10T09:00:00.000+0000',
@@ -1047,8 +1049,14 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
     {
       partyID: 'P2',
       partyType: PartyType.ORG,
+      partyRole: 'claimant',
       partyName: 'DWP',
       partyChannel: 'inPerson',
+      organisationDetails: {
+        name: 'DWP',
+        organisationType: 'GOV',
+        cftOrganisationID: 'O100000'
+      },
       unavailabilityRanges: [
         {
           unavailableFromDate: '2021-12-20T09:00:00.000+0000',
@@ -1157,10 +1165,8 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
     hearingType: 'final',
     hearingLocations: [
       {
-        locationType: 'hearing',
         locationId: '196538',
-        locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
-        region: 'North West',
+        locationType: 'hearing',
       },
     ],
     hearingIsLinkedFlag: false,
@@ -1187,7 +1193,7 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
     leadJudgeContractType: '',
   },
   caseDetails: {
-    hmctsServiceCode: 'SSCS',
+    hmctsServiceCode: 'BBA3',
     caseRef: '1584618195804035',
     requestTimeStamp: null,
     hearingID: 'h100001',
@@ -1223,12 +1229,14 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
       partyID: 'P1',
       partyName: 'Jane and Smith',
       partyType: PartyType.IND,
+      partyRole: 'appellant',
       partyChannel: 'inPerson',
     },
     {
       partyID: 'P2',
       partyName: 'DWP',
       partyType: PartyType.ORG,
+      partyRole: 'claimant',
       partyChannel: 'byVideo',
     },
   ],
@@ -1252,12 +1260,14 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
           partyID: 'P1',
           partyName: 'Jane and Smith',
           partyType: PartyType.IND,
+          partyRole: 'appellant',
           partyChannel: 'inPerson',
         },
         {
           partyID: 'P2',
           partyName: 'DWP',
           partyType: PartyType.ORG,
+          partyRole: 'claimant',
           partyChannel: 'byVideo',
         },
       ],
@@ -1464,7 +1474,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
   },
   hmcStatus: HMCStatus.UPDATE_SUBMITTED,
   caseDetails: {
-    hmctsServiceCode: 'SSCS',
+    hmctsServiceCode: 'BBA3',
     caseRef: '1584618195804035',
     requestTimeStamp: null,
     hearingID: 'h100001',
@@ -1502,7 +1512,7 @@ export const initialState = {
     hearingList: {
       hearingListMainModel: {
         caseRef: '1111222233334444',
-        hmctsServiceID: 'SSCS',
+        hmctsServiceID: 'BBA3',
         caseHearings: [{
           hearingID: 'h00001',
           hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
@@ -1537,15 +1547,11 @@ export const initialState = {
           hearingLocations: [
             {
               locationId: '196538',
-              locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
               locationType: 'hearing',
-              region: 'North West',
             },
             {
-              locationId: '219164',
-              locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
+              locationId: '234850',
               locationType: 'hearing',
-              region: 'Scotland',
             },
           ],
           hearingIsLinkedFlag: false,
@@ -1558,7 +1564,6 @@ export const initialState = {
           },
           privateHearingRequiredFlag: false,
           panelRequirements: null,
-          panelPreferences: null,
           autolistFlag: false,
           nonStandardHearingDurationReasons: [],
           hearingPriorityType: 'standard',
@@ -1609,13 +1614,56 @@ export const initialState = {
             partyID: 'P1',
             partyName: 'Jane and Smith',
             partyType: PartyType.IND,
-            partyChannel: 'inPerson'
+            partyRole: 'appellant',
+            partyChannel: 'inPerson',
+            individualDetails: {
+              title: 'Miss',
+              firstName: 'Jane',
+              lastName: 'Smith',
+              reasonableAdjustments: [
+                'RA0042',
+                'RA0053',
+                'RA0013',
+                'RA0016',
+                'RA0042',
+                'RA0009',
+              ],
+              interpreterLanguage: 'PF0015',
+              preferredHearingChannel: 'byVideo',
+            },
+            organisationDetails: {},
+            unavailabilityDOW: null,
+            unavailabilityRanges: [
+              {
+                unavailableFromDate: '2021-12-10T09:00:00.000+0000',
+                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+              },
+            ],
           },
           {
             partyID: 'P2',
             partyName: 'DWP',
             partyType: PartyType.ORG,
-            partyChannel: 'byVideo'
+            partyRole: 'claimant',
+            partyChannel: 'byVideo',
+            individualDetails: {
+              reasonableAdjustments: [
+                'RA0005',
+              ],
+              interpreterLanguage: null,
+            },
+            organisationDetails: {
+              name: 'DWP',
+              organisationType: 'GOV',
+              cftOrganisationID: 'O100000',
+            },
+            unavailabilityDOW: null,
+            unavailabilityRanges: [
+              {
+                unavailableFromDate: '2021-12-20T09:00:00.000+0000',
+                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+              },
+            ],
           }
         ]
       },
@@ -1646,12 +1694,14 @@ export const initialState = {
                 partyID: 'P1',
                 partyName: 'Jane and Smith',
                 partyType: PartyType.IND,
+                partyRole: 'appellant',
                 partyChannel: 'inPerson',
               },
               {
                 partyID: 'P2',
                 partyName: 'DWP',
                 partyType: PartyType.ORG,
+                partyRole: 'claimant',
                 partyChannel: 'byVideo',
               },
             ],
@@ -1663,15 +1713,11 @@ export const initialState = {
           hearingLocations: [
             {
               locationId: '196538',
-              locationName: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
               locationType: 'hearing',
-              region: 'North West',
             },
             {
-              locationId: '219164',
-              locationName: 'ABERDEEN TRIBUNAL HEARING CENTRE',
+              locationId: '234850',
               locationType: 'hearing',
-              region: 'Scotland',
             },
           ],
           hearingIsLinkedFlag: false,
@@ -1734,13 +1780,54 @@ export const initialState = {
             partyID: 'P1',
             partyName: 'Jane and Smith',
             partyType: PartyType.IND,
-            partyChannel: 'inPerson'
+            partyRole: 'appellant',
+            partyChannel: 'inPerson',
+            individualDetails: {
+              title: 'Miss',
+              firstName: 'Jane',
+              lastName: 'Smith',
+              reasonableAdjustments: [
+                'RA0042',
+                'RA0053',
+                'RA0013',
+                'RA0016',
+                'RA0042',
+              ],
+              interpreterLanguage: 'PF0015',
+            },
+            organisationDetails: {},
+            unavailabilityDOW: null,
+            unavailabilityRanges: [
+              {
+                unavailableFromDate: '2021-12-10T09:00:00.000+0000',
+                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+              },
+            ],
           },
           {
             partyID: 'P2',
             partyName: 'DWP',
             partyType: PartyType.ORG,
-            partyChannel: 'byVideo'
+            partyRole: 'claimant',
+            partyChannel: 'byVideo',
+            individualDetails: {
+              reasonableAdjustments: [
+                'RA0005',
+              ],
+              interpreterLanguage: null,
+            },
+            organisationDetails: {
+              name: 'DWP',
+              organisationType: 'GOV',
+              cftOrganisationID: 'O100000',
+            },
+            unavailabilityDOW: null,
+            unavailabilityRanges: [
+              {
+                unavailableFromDate: '2021-12-20T09:00:00.000+0000',
+                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+              },
+            ],
           }
         ]
       },
@@ -1752,5 +1839,10 @@ export const initialState = {
       isInit: true,
       fragmentId: 'venue'
     },
+    hearingLinks: {
+      serviceLinkedCases: [],
+      linkedHearingGroup: null,
+      lastError: null
+    }
   },
 };

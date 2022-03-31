@@ -3,7 +3,7 @@ import { v4 as uuid } from 'uuid';
 // import mocha from 'mocha';
 import { config } from '../config/config';
 import { getUserId, getXSRFToken } from '../utils/authUtil';
-import { setTestContext } from '../utils/helper';
+import { setTestContext,reporterJson,reporterMsg } from '../utils/helper';
 
 import Request from '../utils/request';
 
@@ -11,11 +11,11 @@ import TaskRequestBody from '../utils/wa/taskRequestBody';
 const workAllocationDataModels = require( '../../../dataModels/workAllocation');
 
 describe('Work allocations Release 2: Tasks', () => {
-    const userName = config.users.solicitor;
-    const password = 'Monday01';
+    const userName = config.users[config.testEnv].solicitor.e;
+    const password = config.users[config.testEnv].solicitor.sec;
 
-    const caseOfficer = config.users.caseOfficer_r2;
-    const caseofficerPass = 'Welcome01';
+    const caseOfficer = config.users[config.testEnv].caseOfficer_r2.e;
+    const caseofficerPass = config.users[config.testEnv].caseOfficer_r2.sec;
 
     beforeEach(function() {
         setTestContext(this);
@@ -29,13 +29,13 @@ describe('Work allocations Release 2: Tasks', () => {
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
-        const reqBody = getSearchTaskReqBody("MyTasks", ["3db21928-cbbc-4364-bd91-137c7031fe17"], ["698118"],'caseworker').getRequestBody();
+        const reqBody = getSearchTaskReqBody("MyTasks", ["3db21928-cbbc-4364-bd91-137c7031fe17"], [config.workallocation[config.testEnv].locationId],'caseworker').getRequestBody();
         const headers = {
             'X-XSRF-TOKEN': xsrfToken,
             'content-length': JSON.stringify(reqBody).length
         };
 
-        const response = await Request.post(`workallocation2/taskWithPagination`, reqBody, headers, 200);
+        const response = await Request.post(`workallocation2/task`, reqBody, headers, 200);
         expect(response.status).to.equal(200);
         const actual = response.data;
         const expected = workAllocationDataModels.getRelease2Tasks();
@@ -52,42 +52,48 @@ describe('Work allocations Release 2: Tasks', () => {
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
-        const reqBody = getSearchTaskReqBody("AvailableTasks", ["77f9a4a4-1bf1-4903-aa6c-cab334875d91"], ["698118"], 'caseworker').getRequestBody();
+        const reqBody = getSearchTaskReqBody("AvailableTasks", [], [config.workallocation[config.testEnv].locationId], 'caseworker').getRequestBody();
         const headers = {
             'X-XSRF-TOKEN': xsrfToken,
             'content-length': JSON.stringify(reqBody).length
         };
 
-        const response = await Request.post(`workallocation2/taskWithPagination`, reqBody, headers, 200);
+        const response = await Request.post(`workallocation2/task`, reqBody, headers, 200);
         expect(response.status).to.equal(200);
         const actual = response.data;
         const expected = workAllocationDataModels.getRelease2Tasks();
+        let expectedKeys = Object.keys(expected.tasks[0]);
+        expectedKeys = expectedKeys.filter(key => !['assignee', 'work_type_id'].includes(key));
+
         expect(actual).to.have.all.keys(Object.keys(expected));
         if (actual.tasks.length > 0 ) {
-            expect(actual.tasks[0]).to.have.all.keys(Object.keys(expected.tasks[0]));
+            expect(Object.keys(actual.tasks[0])).to.include.members(expectedKeys);
 
         }
     });
 
 
-    it('case officer, `Task manager tasks`', async function () {
+    it('case officer, `All work tasks`', async function () {
         this.timeout(60000);
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
-        const reqBody = getSearchTaskReqBody("TaskManager", ["77f9a4a4-1bf1-4903-aa6c-cab334875d91"], ["698118"], 'caseworker').getRequestBody();
+        const reqBody = getSearchTaskReqBody("AllWork", ["77f9a4a4-1bf1-4903-aa6c-cab334875d91"], [config.workallocation[config.testEnv].locationId], 'caseworker').getRequestBody();
         const headers = {
             'X-XSRF-TOKEN': xsrfToken,
             'content-length': JSON.stringify(reqBody).length
         };
 
-        const response = await Request.post(`workallocation2/taskWithPagination`, reqBody, headers, 200);
+        const response = await Request.post(`workallocation2/task`, reqBody, headers, 200);
         expect(response.status).to.equal(200);
         const actual = response.data;
         const expected = workAllocationDataModels.getRelease2Tasks();
+        let expectedKeys = Object.keys(expected.tasks[0]);
+        expectedKeys = expectedKeys.filter(key => !['assignee', 'work_type_id'].includes(key));
+
         expect(actual).to.have.all.keys(Object.keys(expected));
         if (actual.tasks.length > 0 ) {
-            expect(actual.tasks[0]).to.have.all.keys(Object.keys(expected.tasks[0]));
+            expect(expectedKeys).to.include.members(Object.keys(actual.tasks[0]));
 
         }
     });
@@ -102,13 +108,7 @@ describe('Work allocations Release 2: Tasks', () => {
         };
 
         const userDetailsRes = await Request.get('api/user/details', { 'X-XSRF-TOKEN': xsrfToken }, 200);
-        const reqBody = getSearchTaskReqBody("AvailableTasks", [userDetailsRes.data.userInfo.id], ["698118"], 'caseworker').getRequestBody();
-        const headersForGetTasks = {
-            'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
-            'content-length': JSON.stringify(reqBody).length
-        };
-
-        const tasksRes = await Request.post(`workallocation2/taskWithPagination`, reqBody, headersForGetTasks, 200);
+        const tasksRes = await getTasks('AvailableTasks', [userDetailsRes.data.userInfo.id], 1);
         const caseworkerRes = await Request.get(`workallocation2/caseworker`, headers, 200);
 
 
@@ -145,13 +145,8 @@ describe('Work allocations Release 2: Tasks', () => {
 
         const userDetailsRes = await Request.get('api/user/details', { 'X-XSRF-TOKEN': xsrfToken }, 200);
         const sessionUserIdamId = userDetailsRes.data.userInfo.id ? userDetailsRes.data.userInfo.id : userDetailsRes.data.userInfo.uid;
-        const reqBody = getSearchTaskReqBody("MyTasks", [sessionUserIdamId], ["698118"], 'caseworker').getRequestBody();
-        const headersForGetTasks = {
-            'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
-            'content-length': JSON.stringify(reqBody).length
-        };
 
-        const tasksRes = await Request.post(`workallocation2/taskWithPagination`, reqBody, headersForGetTasks, 200);
+        const tasksRes = await getTasks('MyTasks', [userDetailsRes.data.userInfo.id], 1);
         const caseworkerRes = await Request.get(`workallocation2/caseworker`, headers, 200);
 
 
@@ -180,13 +175,7 @@ describe('Work allocations Release 2: Tasks', () => {
         const userDetailsRes = await Request.get('api/user/details', { 'X-XSRF-TOKEN': xsrfToken }, 200);
         const sessionUserIdamId = userDetailsRes.data.userInfo.id ? userDetailsRes.data.userInfo.id : userDetailsRes.data.userInfo.uid;
 
-        const reqBody = getSearchTaskReqBody("MyTasks", [sessionUserIdamId], ["698118"], 'caseworker').getRequestBody();
-        const headersForGetTasks = {
-            'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
-            'content-length': JSON.stringify(reqBody).length
-        };
-
-        const tasksRes = await Request.post(`workallocation2/taskWithPagination`, reqBody, headersForGetTasks, 200);
+        const tasksRes = await getTasks('MyTasks', [userDetailsRes.data.userInfo.id], 1);
 
 
         const assignTaskReqBody = {}
@@ -210,13 +199,7 @@ describe('Work allocations Release 2: Tasks', () => {
             'X-XSRF-TOKEN': xsrfToken,
         };
 
-        const reqBody = getSearchTaskReqBody("TaskManager", [], ["698118"], 'caseworker').getRequestBody();
-        const headersForGetTasks = {
-            'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
-            'content-length': JSON.stringify(reqBody).length
-        };
-
-        const tasksRes = await Request.post(`workallocation2/taskWithPagination`, reqBody, headersForGetTasks, 200);
+        const tasksRes = await getTasks('AllWork', [],1);
 
 
         const assignTaskReqBody = {}
@@ -224,10 +207,20 @@ describe('Work allocations Release 2: Tasks', () => {
             'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
             'content-length': JSON.stringify(assignTaskReqBody).length
         };
-        if (tasksRes.data.tasks.length > 0) {
-            const assignTaskRes = await Request.post(`workallocation2/task/${tasksRes.data.tasks[0].id}/complete`, assignTaskReqBody, assignTasksHeader, 204);
-            expect(assignTaskRes.status).to.equal(204);
+
+        let taskWithAssignee = null;
+        for (const task of tasksRes.data.tasks){
+            if (task.assignee){
+                taskWithAssignee = task.id; 
+            }
         }
+        if (taskWithAssignee) {
+            const assignTaskRes = await Request.post(`workallocation2/task/${taskWithAssignee}/complete`, assignTaskReqBody, assignTasksHeader, 204);
+            expect(assignTaskRes.status).to.equal(204);
+        } else {
+            reporterMsg('No tasks retuened with assignee, complete task can be performed only on already assigned tasks. skipping complete task step in tests due to data unavailability');
+        }
+       
 
     });
 
@@ -240,13 +233,7 @@ describe('Work allocations Release 2: Tasks', () => {
             'X-XSRF-TOKEN': xsrfToken,
         };
 
-        const reqBody = getSearchTaskReqBody('TaskManager', [], ["698118"], 'caseworker').getRequestBody();
-        const headersForGetTasks = {
-            'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
-            'content-length': JSON.stringify(reqBody).length
-        };
-
-        const tasksRes = await Request.post(`workallocation2/taskWithPagination`, reqBody, headersForGetTasks, 200);
+        const tasksRes = await getTasks('AllWork', [], 1);
 
 
         const assignTaskReqBody = {}
@@ -266,14 +253,7 @@ describe('Work allocations Release 2: Tasks', () => {
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
-        const taskRequestObj = getSearchTaskReqBody("TaskManager", ["77f9a4a4-1bf1-4903-aa6c-cab334875d91"], ["698118"], 'caseworker');
-        taskRequestObj.withPageNumber(1);
-        const headers = {
-            'X-XSRF-TOKEN': xsrfToken,
-            'content-length': JSON.stringify(taskRequestObj.getRequestBody()).length
-        };
-
-        const response = await Request.post(`workallocation2/taskWithPagination`, taskRequestObj.getRequestBody(), headers, 200);
+        const response = await getTasks('AllWork', [], 1);
         expect(response.status).to.equal(200);
         expect(response.data).to.have.all.keys('tasks', 'total_records');
 
@@ -282,15 +262,35 @@ describe('Work allocations Release 2: Tasks', () => {
 
         const totalRecords = response.data.total_records;
         if (totalRecords > 10) {
-            taskRequestObj.withPageNumber(2);
-            const response = await Request.post(`workallocation2/taskWithPagination`, taskRequestObj.getRequestBody(), headers, 200);
-            expect(response.status).to.equal(200);
-            expect(response.data).to.have.all.keys('tasks', 'total_records');
+            const response2 = await getTasks('AllWork', [], 2);
+            expect(response2.status).to.equal(200);
+            expect(response2.data).to.have.all.keys('tasks', 'total_records');
             //expect(response.data.tasks.length).to.equal(response.data.total_records > 20 ? 10 : response.data.total_records - 10);
 
         }
 
     });
+
+    async function getTasks(view, users,pageNum){
+        const reqBodyObj = getSearchTaskReqBody(view, users, [config.workallocation[config.testEnv].locationId], 'caseworker');
+        if (pageNum) {
+            reqBodyObj.withPageNumber(pageNum);
+        }
+        const reqBody = reqBodyObj.getRequestBody();
+        const headersForGetTasks = {
+            'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
+            'content-length': JSON.stringify(reqBody).length
+        };
+
+        const tasksRes = await Request.post(`workallocation2/task`, reqBody, headersForGetTasks, 200);
+        const taskIds = [];
+        for (const task of tasksRes.data.tasks) {
+            taskIds.push(task.id);
+        }
+        reporterMsg(`"${view}" tasks returned for page "${pageNum}" : ${taskIds.length}`);
+        reporterJson(taskIds);
+        return tasksRes;
+    }
 
     function getSearchTaskReqBody(view, users, locations ,userType) {
         // const response = await Request.get('api/user/details', null, 200); 
@@ -313,22 +313,31 @@ describe('Work allocations Release 2: Tasks', () => {
                 } else {
                     taskRequestBody.searchWithUser(null);
                 }
+                taskRequestBody.searchWithState('assigned');
                 taskRequestBody.searchBy(userType ? userType : 'caseworker');
                 break;
             case 'AvailableTasks':
                 taskRequestBody.searchWithlocation(null);
                 taskRequestBody.searchWithState('unassigned');
+                taskRequestBody.searchBy(userType ? userType : 'caseworker');
+
                 break;
 
-            case 'TaskManager':
+            case 'AllWork':
                 taskRequestBody.searchWithlocation(null);
                 taskRequestBody.searchWithUser(null);
+
+                taskRequestBody.searchWithState('assigned');
+                taskRequestBody.searchWithState('unassigned');
+
+                taskRequestBody.searchWithJurisdiction('IA');
+                taskRequestBody.searchWithTaskType('Legal Ops');
 
                 break;
             default:
                 throw new Error(`${view} is not recognized or not implemented in test`);
         }
-
+       
         return taskRequestBody;
     }
 

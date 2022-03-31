@@ -1,14 +1,15 @@
-import {TestBed} from '@angular/core/testing';
-import {provideMockActions} from '@ngrx/effects/testing';
-import {cold, hot} from 'jasmine-marbles';
-import {of} from 'rxjs';
-import {Go} from '../../../app/store';
-import {MemberType, PartyType, RequirementType} from '../../models/hearings.enum';
-import {ServiceHearingValuesModel} from '../../models/serviceHearingValues.model';
-import {HearingsService} from '../../services/hearings.service';
+import { TestBed } from '@angular/core/testing';
+import { provideMockActions } from '@ngrx/effects/testing';
+import { provideMockStore } from '@ngrx/store/testing';
+import { cold, hot } from 'jasmine-marbles';
+import { of } from 'rxjs';
+import { initialState } from '../../../hearings/hearing.test.data';
+import { Go } from '../../../app/store';
+import { MemberType, PartyType, RequirementType } from '../../models/hearings.enum';
+import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
+import { HearingsService } from '../../services/hearings.service';
 import * as hearingValuesActions from '../actions/hearing-values.action';
-import {HearingListEffects} from './hearing-list.effects';
-import {HearingValuesEffects} from './hearing-values.effects';
+import { HearingValuesEffects } from './hearing-values.effects';
 
 describe('Hearing Values Effects', () => {
   let actions$;
@@ -19,6 +20,7 @@ describe('Hearing Values Effects', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
+        provideMockStore({initialState}),
         {
           provide: HearingsService,
           useValue: hearingsServiceMock,
@@ -79,6 +81,7 @@ describe('Hearing Values Effects', () => {
           partyName: 'Jane and Smith',
           partyType: PartyType.IND,
           partyChannel: 'byVideo',
+          partyRole: 'appellant',
           unavailabilityRanges: [
             {
               unavailableFromDate: '2021-12-10T09:00:00.000+0000',
@@ -91,6 +94,7 @@ describe('Hearing Values Effects', () => {
           partyName: 'DWP',
           partyType: PartyType.ORG,
           partyChannel: 'byVideo',
+          partyRole: 'claimant',
           unavailabilityRanges: [
             {
               unavailableFromDate: '2021-12-20T09:00:00.000+0000',
@@ -101,12 +105,14 @@ describe('Hearing Values Effects', () => {
       caseFlags: {
         flags: [
           {
+            partyID: 'P1',
             partyName: 'Jane and Smith',
             flagId: 'Language Interpreter',
             flagDescription: 'Spanish interpreter required',
             flagStatus: 'ACTIVE',
           },
           {
+            partyID: 'P2',
             partyName: 'DWP',
             flagId: 'case flag 1',
             flagDescription: 'case flag 1 description',
@@ -136,11 +142,19 @@ describe('Hearing Values Effects', () => {
 
   describe('handleError', () => {
     it('should handle 500', () => {
-      const action$ = HearingListEffects.handleError({
+      const action$ = HearingValuesEffects.handleError({
         status: 500,
         message: 'error'
       });
-      action$.subscribe(action => expect(action).toEqual(new Go({path: ['/service-down']})));
+      action$.subscribe(action => expect(action).toEqual(new Go({path: ['/hearings/error']})));
+    });
+
+    it('should handle 4xx related errors', () => {
+      const action$ = HearingValuesEffects.handleError({
+        status: 403,
+        message: 'error'
+      });
+      action$.subscribe(action => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
     });
   });
 });

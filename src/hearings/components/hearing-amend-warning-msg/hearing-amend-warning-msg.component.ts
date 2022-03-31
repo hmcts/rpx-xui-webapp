@@ -1,6 +1,7 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {select, Store} from '@ngrx/store';
 import {Subscription} from 'rxjs';
+import {KEY_MODE} from '../../models/hearingConditions';
 import {Mode} from '../../models/hearings.enum';
 import * as fromHearingStore from '../../store';
 import {HearingsUtils} from '../../utils/hearings.utils';
@@ -11,8 +12,6 @@ import {HearingsUtils} from '../../utils/hearings.utils';
 })
 export class HearingAmendWarningMsgComponent implements OnInit, OnDestroy {
 
-  private static MODE = 'mode';
-
   @Input() public warningMsg: string = '';
   public hearingConditionsSub: Subscription;
   public isViewEditMode: boolean = false;
@@ -22,7 +21,7 @@ export class HearingAmendWarningMsgComponent implements OnInit, OnDestroy {
     this.hearingConditionsSub = this.hearingStore.pipe(select(fromHearingStore.getHearingConditions)).subscribe(
       hearingConditions => {
         this.isViewEditMode = HearingsUtils.hasPropertyAndValue(
-          hearingConditions, HearingAmendWarningMsgComponent.MODE, Mode.VIEW_EDIT);
+          hearingConditions, KEY_MODE, Mode.VIEW_EDIT);
       });
   }
 

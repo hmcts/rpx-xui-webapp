@@ -1,24 +1,19 @@
 # Requirements
 # https://tools.hmcts.net/confluence/display/EUI/Work+Allocation-+Release+2#WorkAllocationRelease2-ManagelinklogicforTasksandCases
 
-@ng  @wa2 @wa2 @wa @ignore
+@ng @wa2 @wa @ignore
 Feature: WA Release 2: My cases - Manage links - Action work flow
 
     Background: Mock and browser setup
         Given I init MockApp
         Given I set MOCK workallocation cases with permissions for view "My cases"
             | Roles          | Count |
-            | case-allocator | 10    |
-            |                | 90    |
+            | case-allocator | 10 |
+            | case-allocator | 90 |
 
     Scenario Outline:  Task Manage links for "<UserType>" action "<action>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
-        Given I set MOCK find persons database with persons
-            | email             | name          |
-            | Test12@justice.uk | test12 person |
-            | Test23@justice.uk | test23 person |
-            | Test34@justice.uk | test34 person |
-            | Test45@justice.uk | test45 person |
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+      
         Given I start MockApp
         Given I navigate to home page
 
@@ -63,13 +58,8 @@ Feature: WA Release 2: My cases - Manage links - Action work flow
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | 4         | Reallocate | Reallocate     | You've reassigned a task to somebody else. |
 
     Scenario Outline:  Case Manage links for "<UserType>" action "<action>" cancel in check your changes page
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
-        Given I set MOCK find persons database with persons
-            | email             | name          |
-            | Test12@justice.uk | test12 person |
-            | Test23@justice.uk | test23 person |
-            | Test34@justice.uk | test34 person |
-            | Test45@justice.uk | test45 person |
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+       
         Given I start MockApp
         Given I navigate to home page
 

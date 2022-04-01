@@ -97,7 +97,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         expect(linkToClick !== null, `lnk with text ${attributeLinktext} not found in next steps`).to.be.true;
         await linkToClick.click();
 
-        await BrowserWaits.waitForElement($('ccd-case-edit-page'));
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await BrowserWaits.waitForElement($('ccd-case-edit-page'));
+        });
     });
 
     Then('I validate task tab active task at position {int} with task name {string} has attributes', async function(position,taskNameExpected ,attributesDatatable){

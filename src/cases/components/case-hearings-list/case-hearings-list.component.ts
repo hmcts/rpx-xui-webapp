@@ -90,6 +90,11 @@ export class CaseHearingsListComponent implements OnInit {
 
   public viewDetails(hearing: HearingListViewModel): void {
     switch (hearing.exuiDisplayStatus) {
+      case EXUIDisplayStatusEnum.AWAITING_LISTING:
+      case EXUIDisplayStatusEnum.UPDATE_REQUESTED:
+      case EXUIDisplayStatusEnum.LISTED:
+        this.LoadHearingRequestAndRedirect(hearing.hearingID, '/hearings/view/hearing-view-summary');
+        break;
       case EXUIDisplayStatusEnum.CANCELLATION_REQUESTED:
         this.LoadHearingRequestAndRedirect(hearing.hearingID, '/hearings/view/hearing-cancellation-summary');
         break;

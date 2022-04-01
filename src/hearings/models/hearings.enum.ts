@@ -6,7 +6,7 @@ export enum Actions {
 }
 
 export enum HMCStatus {
-  HEARING_REQUESTD = 'Hearing requested',
+  HEARING_REQUESTED = 'Hearing requested',
   AWAITING_LISTING = 'Awaiting listing',
   LISTED = 'Listed',
   UPDATE_REQUESTED = 'Update requested',

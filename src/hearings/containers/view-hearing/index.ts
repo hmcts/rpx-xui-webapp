@@ -4,6 +4,7 @@ import { HearingCancelledSummaryComponent } from './hearing-cancelled-summary/he
 import { HearingCompletedSummaryComponent } from './hearing-completed-summary/hearing-completed-summary.component';
 import { HearingRequestFailedSummaryComponent } from './hearing-request-failed-summary/hearing-request-failed-summary.component';
 import { HearingViewActualSummaryComponent } from './hearing-view-actual-summary/hearing-view-actual-summary.component';
+import { HearingViewSummaryComponent } from './hearing-view-summary/hearing-view-summary.component';
 import { ViewHearingComponent } from './view-hearing.component';
 
 export const containers: any[] = [
@@ -14,4 +15,5 @@ export const containers: any[] = [
   HearingAdjournedSummaryComponent,
   HearingViewActualSummaryComponent,
   HearingRequestFailedSummaryComponent,
+  HearingViewSummaryComponent
 ];

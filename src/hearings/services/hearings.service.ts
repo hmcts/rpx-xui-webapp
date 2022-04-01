@@ -71,22 +71,22 @@ export class HearingsService {
   }
 
   public loadServiceLinkedCases(caseReference: string, hearingId?: string): Observable<ServiceLinkedCasesModel[]> {
-    return this.http.post<ServiceLinkedCasesModel[]>('api/hearings/serviceLinkedCases', {
+    return this.http.post<ServiceLinkedCasesModel[]>('api/hearings/loadServiceLinkedCases', {
       caseReference,
       hearingId // could be null, empty string or missing
     });
   }
 
   public getLinkedHearingGroup(caseReference: string, hearingId?: string): Observable<LinkedHearingGroupMainModel> {
-    return this.http.get<LinkedHearingGroupMainModel>(`api/hearings/linkedHearingGroup?caseReference=${caseReference}&hearingId=${hearingId}`);
+    return this.http.get<LinkedHearingGroupMainModel>(`api/hearings/getLinkedHearingGroup?caseReference=${caseReference}&hearingId=${hearingId}`);
   }
 
   public postLinkedHearingGroup(linkedHearingGroupMainModel: LinkedHearingGroupMainModel): Observable<LinkedHearingGroupResponseModel> {
-    return this.http.post<LinkedHearingGroupResponseModel>('api/hearings/linkedHearingGroup', linkedHearingGroupMainModel);
+    return this.http.post<LinkedHearingGroupResponseModel>('api/hearings/postLinkedHearingGroup', linkedHearingGroupMainModel);
   }
 
   public putLinkedHearingGroup(linkedHearingGroupMainModel: LinkedHearingGroupMainModel): Observable<LinkedHearingGroupResponseModel> {
-    return this.http.put<LinkedHearingGroupResponseModel>('api/hearings/linkedHearingGroup', linkedHearingGroupMainModel);
+    return this.http.put<LinkedHearingGroupResponseModel>('api/hearings/putLinkedHearingGroup', linkedHearingGroupMainModel);
   }
 
   public deleteLinkedHearingGroup(hearingGroupId: string, hearingIds: string): Observable<LinkedHearingGroupResponseModel> {
@@ -95,6 +95,6 @@ export class HearingsService {
         .set('hearingGroupId', hearingGroupId)
         .set('hearingIds', hearingIds)
     };
-    return this.http.delete<LinkedHearingGroupResponseModel>('api/hearings/linkedHearingGroup', options);
+    return this.http.delete<LinkedHearingGroupResponseModel>('api/hearings/deleteLinkedHearingGroup', options);
   }
 }

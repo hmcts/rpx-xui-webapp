@@ -16,6 +16,7 @@ import {HearingCreateEditSummaryComponent} from './containers/request-hearing/he
 import {HearingFacilitiesComponent} from './containers/request-hearing/hearing-facilities/hearing-facilities.component';
 import {HearingFinalConfirmationComponent} from './containers/request-hearing/hearing-final-confirmation/hearing-final-confirmation.component';
 import {HearingJudgeComponent} from './containers/request-hearing/hearing-judge/hearing-judge.component';
+import { HearingLinkComponent } from './containers/request-hearing/hearing-link/hearing-link.component';
 import {HearingPanelComponent} from './containers/request-hearing/hearing-panel/hearing-panel.component';
 import {HearingRequirementsComponent} from './containers/request-hearing/hearing-requirements/hearing-requirements.component';
 import {HearingStageComponent} from './containers/request-hearing/hearing-stage/hearing-stage.component';
@@ -42,6 +43,7 @@ import {HearingActualPartyChannelResolverService} from './resolvers/hearing-actu
 import {HearingActualRoleResolverService} from './resolvers/hearing-actual-role-resolver.service';
 import {HearingChangeReasonResolver} from './resolvers/hearing-change-reason.resolver';
 import {HearingStageResolver} from './resolvers/hearing-stage.resolver';
+import { HearingStateResolver } from './resolvers/hearings-state.resolver';
 import {JudgeTypesResolverService} from './resolvers/judge-types-resolver.service';
 import {JudicialUserSearchResolver} from './resolvers/judicial-user-search-resolver.resolve';
 import {JudicialUserSearchResponseResolver} from './resolvers/judicial-user-search-response-resolver.resolve';
@@ -225,6 +227,14 @@ export const ROUTES: Routes = [
         data: {
           title: 'HMCTS Hearings | Request Hearing | Hearing Timing',
           category: HearingCategory.Priority
+        }
+      },
+      {
+        path: 'hearing-link',
+        // resolve: {hearingState: HearingStateResolver},
+        component: HearingLinkComponent,
+        data: {
+          title: 'HMCTS Hearings | Request Hearing | Hearing Link'
         }
       },
       {

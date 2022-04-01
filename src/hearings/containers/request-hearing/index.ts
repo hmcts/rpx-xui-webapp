@@ -33,5 +33,5 @@ export const containers: any[] = [
   HearingViewEditSummaryComponent,
   HearingFinalConfirmationComponent,
   HearingChangeReasonComponent,
-	HearingLinkComponent
+  HearingLinkComponent
 ];

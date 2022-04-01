@@ -1,15 +1,15 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { select, Store } from "@ngrx/store";
-import { Observable, Subscription } from "rxjs";
-import { ServiceLinkedCasesModel } from "../../../models/linkHearings.model";
-import { ACTION, HearingLinkMessages } from "../../../models/hearings.enum";
-import { HearingsService } from "../../../services/hearings.service";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { select, Store } from '@ngrx/store';
+import { Observable, Subscription } from 'rxjs';
+import { HearingLinksStateData } from '../../../models/hearingLinksStateData.model';
+import { ACTION, HearingLinkMessages } from '../../../models/hearings.enum';
+import { ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
+import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import { LoadServiceLinkedCases } from "../../../store";
-import { RequestHearingPageFlow } from "../request-hearing.page.flow";
-import {HearingLinksStateData} from '../../../models/hearingLinksStateData.model';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { LoadServiceLinkedCases } from '../../../store';
+import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-link',
@@ -23,9 +23,9 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
   public hearingLinkForm: FormGroup;
   public validationErrors: { id: string, message: string }[] = [];
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
-    protected readonly hearingsService: HearingsService,
-    private readonly formBuilder: FormBuilder,
-    protected readonly route: ActivatedRoute) {
+              protected readonly hearingsService: HearingsService,
+              protected readonly route: ActivatedRoute,
+              private readonly formBuilder: FormBuilder) {
     super(hearingStore, hearingsService);
     this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
       state => {

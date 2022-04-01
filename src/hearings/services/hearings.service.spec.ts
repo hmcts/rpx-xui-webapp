@@ -177,7 +177,7 @@ describe('HearingsService', () => {
         expect(response).toBeNull();
       });
 
-      const req = httpMock.expectOne('api/hearings/linkedHearingGroup?caseReference=1111222233334444&hearingId=h1000000');
+      const req = httpMock.expectOne('api/hearings/getLinkedHearingGroup?caseReference=1111222233334444&hearingId=h1000000');
       expect(req.request.method).toEqual('GET');
       req.flush(null);
     }));
@@ -187,7 +187,7 @@ describe('HearingsService', () => {
         expect(response).toBeNull();
       });
 
-      const req = httpMock.expectOne('api/hearings/linkedHearingGroup');
+      const req = httpMock.expectOne('api/hearings/postLinkedHearingGroup');
       expect(req.request.method).toEqual('POST');
       req.flush(null);
     }));
@@ -197,7 +197,7 @@ describe('HearingsService', () => {
         expect(response).toBeNull();
       });
 
-      const req = httpMock.expectOne('api/hearings/linkedHearingGroup');
+      const req = httpMock.expectOne('api/hearings/putLinkedHearingGroup');
       expect(req.request.method).toEqual('PUT');
       req.flush(null);
     }));
@@ -208,7 +208,7 @@ describe('HearingsService', () => {
       });
 
       httpMock.expectOne((req: HttpRequest<any>) => {
-        expect(req.url).toBe('api/hearings/linkedHearingGroup');
+        expect(req.url).toBe('api/hearings/deleteLinkedHearingGroup');
         expect(req.method).toBe('DELETE');
         expect(req.params.get('hearingGroupId')).toEqual('g100000');
         expect(req.params.get('hearingIds')).toEqual('h1000000');

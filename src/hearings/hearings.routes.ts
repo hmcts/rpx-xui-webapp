@@ -43,7 +43,6 @@ import {HearingActualPartyChannelResolverService} from './resolvers/hearing-actu
 import {HearingActualRoleResolverService} from './resolvers/hearing-actual-role-resolver.service';
 import {HearingChangeReasonResolver} from './resolvers/hearing-change-reason.resolver';
 import {HearingStageResolver} from './resolvers/hearing-stage.resolver';
-import { HearingStateResolver } from './resolvers/hearings-state.resolver';
 import {JudgeTypesResolverService} from './resolvers/judge-types-resolver.service';
 import {JudicialUserSearchResolver} from './resolvers/judicial-user-search-resolver.resolve';
 import {JudicialUserSearchResponseResolver} from './resolvers/judicial-user-search-response-resolver.resolve';
@@ -231,7 +230,6 @@ export const ROUTES: Routes = [
       },
       {
         path: 'hearing-link',
-        // resolve: {hearingState: HearingStateResolver},
         component: HearingLinkComponent,
         data: {
           title: 'HMCTS Hearings | Request Hearing | Hearing Link'

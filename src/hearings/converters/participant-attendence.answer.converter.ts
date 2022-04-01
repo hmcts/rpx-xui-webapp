@@ -13,7 +13,7 @@ export class ParticipantAttendenceAnswerConverter implements AnswerConverter {
   }
 
   private static getPartyChannelValue(refData: LovRefDataModel[], party: PartyDetailsModel): string {
-    return refData.find(ref => ref.key === party.partyChannel).value_en;
+    return refData.find(ref => ref.key === party.individualDetails.preferredHearingChannel).value_en;
   }
 
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {

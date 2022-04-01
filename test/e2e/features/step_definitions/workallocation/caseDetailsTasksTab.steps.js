@@ -66,6 +66,40 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         expect(await caseDetailsTaskTabPage.getTaskNameForTaskAtPosition(position)).to.include(taskName);
     });
 
+    When('I click active tast attribute Next steps link {string} for task at position {int} with name {string}', async function (attributeLinktext, position, taskNameExpected){
+        let taskAttributes = null;
+
+        await BrowserWaits.retryWithActionCallback(async () => {
+            taskAttributes = await caseDetailsTaskTabPage.getAttributeElementssDisplayedForTaskAtPos(position);
+            reportLogger.AddMessage(`*** Actual values displayed ***`);
+
+            const actualDisplayValues = {};
+            for (const taskAttrib of Object.keys(taskAttributes)) {
+                const attriText = await taskAttributes[taskAttrib].getText();
+                actualDisplayValues[taskAttrib] = attriText;
+            }
+            reportLogger.FormatPrintJson(actualDisplayValues);
+
+        });
+        const nextSteps = taskAttributes['Next steps'];
+        const links = nextSteps.$$('a');
+        const linksCount = await links.count();
+
+        let linkToClick = null;
+        for(let i =0 ; i < linksCount;i++){
+            const link = await links.get(i);
+            const linktext = await link.getText();
+            if (linktext.includes(attributeLinktext)){
+                linkToClick = link;
+                break;
+            } 
+        }
+        expect(linkToClick !== null, `lnk with text ${attributeLinktext} not found in next steps`).to.be.true;
+        await linkToClick.click();
+
+        await BrowserWaits.waitForElement($('ccd-case-edit-page'));
+    });
+
     Then('I validate task tab active task at position {int} with task name {string} has attributes', async function(position,taskNameExpected ,attributesDatatable){
         await BrowserWaits.retryWithActionCallback(async () => {
             const softAssert = new SoftAssert();

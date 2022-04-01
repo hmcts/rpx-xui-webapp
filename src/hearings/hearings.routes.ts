@@ -28,6 +28,7 @@ import {HearingCancellationSummaryComponent} from './containers/view-hearing/hea
 import {HearingCancelledSummaryComponent} from './containers/view-hearing/hearing-cancelled-summary/hearing-cancelled-summary.component';
 import {HearingCompletedSummaryComponent} from './containers/view-hearing/hearing-completed-summary/hearing-completed-summary.component';
 import {HearingRequestFailedSummaryComponent} from './containers/view-hearing/hearing-request-failed-summary/hearing-request-failed-summary.component';
+import { HearingViewSummaryComponent } from './containers/view-hearing/hearing-view-summary/hearing-view-summary.component';
 import {ViewHearingComponent} from './containers/view-hearing/view-hearing.component';
 import {HearingsEditGuard} from './guards/hearings-edit-guard';
 import {HearingsViewGuard} from './guards/hearings-view-guard';
@@ -91,7 +92,7 @@ export const ROUTES: Routes = [
         data: {
           category: HearingCategory.HearingType,
           title: 'HMCTS Hearings | Hearing Actuals | Check details'
-        }
+         }
       },
       {
         path: 'hearing-timing',
@@ -302,6 +303,26 @@ export const ROUTES: Routes = [
         component: null,
         data: {
           title: 'HMCTS Hearings | View Hearing'
+        }
+      },
+      {
+        path: 'hearing-view-summary',
+        resolve: {
+          hearingPriorities: RefDataResolver,
+          caseFlags: CaseFlagsResolver,
+          hearingStageOptions: HearingStageResolver,
+          additionFacilitiesOptions: AdditionalFacilitiesResolver,
+          partyChannels: PartyChannelsResolverService,
+          judgeTypes: JudgeTypesResolverService,
+          judicialUsers: JudicialUserSearchResolver,
+          judicialResponseUsers: JudicialUserSearchResponseResolver,
+          otherPanelRoles: PanelRolesResolverService,
+          courtLocation: CourtLocationsDataResolver,
+        },
+        component: HearingViewSummaryComponent,
+        data: {
+          title: 'HMCTS Hearings | View Hearing | Summary',
+          isChildRequired: [HearingCategory.OtherPanelRoles]
         }
       },
       {

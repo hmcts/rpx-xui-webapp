@@ -1033,11 +1033,11 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
       partyType: PartyType.IND,
       partyRole: 'appellant',
       partyName: 'Jane Smith',
-      partyChannel: 'inPerson',
       individualDetails: {
         title: 'Mrs',
         firstName: 'Jane',
-        lastName: 'Smith'
+        lastName: 'Smith',
+        preferredHearingChannel: 'inPerson',
       },
       unavailabilityRanges: [
         {
@@ -1051,7 +1051,12 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
       partyType: PartyType.ORG,
       partyRole: 'claimant',
       partyName: 'DWP',
-      partyChannel: 'inPerson',
+      individualDetails: {
+        title: null,
+        firstName: 'DWP',
+        lastName: null,
+        preferredHearingChannel: 'inPerson',
+      },
       organisationDetails: {
         name: 'DWP',
         organisationType: 'GOV',
@@ -1230,14 +1235,24 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
       partyName: 'Jane and Smith',
       partyType: PartyType.IND,
       partyRole: 'appellant',
-      partyChannel: 'inPerson',
+      individualDetails: {
+        title: null,
+        firstName: 'Jane',
+        lastName: 'Smith',
+        preferredHearingChannel: 'inPerson',
+      }
     },
     {
       partyID: 'P2',
       partyName: 'DWP',
       partyType: PartyType.ORG,
       partyRole: 'claimant',
-      partyChannel: 'byVideo',
+      individualDetails: {
+        title: null,
+        firstName: 'DWP',
+        lastName: null,
+        preferredHearingChannel: 'byVideo',
+      },
     },
   ],
   hearingResponse: {
@@ -1261,14 +1276,24 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
           partyName: 'Jane and Smith',
           partyType: PartyType.IND,
           partyRole: 'appellant',
-          partyChannel: 'inPerson',
+          individualDetails: {
+            title: null,
+            firstName: 'Jane',
+            lastName: 'Smith',
+            preferredHearingChannel: 'inPerson',
+          }
         },
         {
           partyID: 'P2',
           partyName: 'DWP',
           partyType: PartyType.ORG,
           partyRole: 'claimant',
-          partyChannel: 'byVideo',
+          individualDetails: {
+            title: null,
+            firstName: 'DWP',
+            lastName: null,
+            preferredHearingChannel: 'byVideo',
+          },
         },
       ],
     },
@@ -1517,7 +1542,7 @@ export const initialState = {
           hearingID: 'h00001',
           hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
           hearingType: 'Case management hearing',
-          hmcStatus: HMCStatus.HEARING_REQUESTD,
+          hmcStatus: HMCStatus.HEARING_REQUESTED,
           lastResponseReceivedDateTime: '',
           responseVersion: 'rv1',
           hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
@@ -1615,7 +1640,6 @@ export const initialState = {
             partyName: 'Jane and Smith',
             partyType: PartyType.IND,
             partyRole: 'appellant',
-            partyChannel: 'inPerson',
             individualDetails: {
               title: 'Miss',
               firstName: 'Jane',
@@ -1645,8 +1669,10 @@ export const initialState = {
             partyName: 'DWP',
             partyType: PartyType.ORG,
             partyRole: 'claimant',
-            partyChannel: 'byVideo',
             individualDetails: {
+              firstName: 'DWP',
+              lastName: null,
+              preferredHearingChannel: 'byVideo',
               reasonableAdjustments: [
                 'RA0005',
               ],
@@ -1695,14 +1721,22 @@ export const initialState = {
                 partyName: 'Jane and Smith',
                 partyType: PartyType.IND,
                 partyRole: 'appellant',
-                partyChannel: 'inPerson',
+                individualDetails: {
+                  firstName: 'Jane',
+                  lastName: 'Smith',
+                  preferredHearingChannel: 'inPerson',
+                }
               },
               {
                 partyID: 'P2',
                 partyName: 'DWP',
                 partyType: PartyType.ORG,
                 partyRole: 'claimant',
-                partyChannel: 'byVideo',
+                individualDetails: {
+                  firstName: 'DWP',
+                  lastName: null,
+                  preferredHearingChannel: 'byVideo',
+                }
               },
             ],
           }
@@ -1781,11 +1815,11 @@ export const initialState = {
             partyName: 'Jane and Smith',
             partyType: PartyType.IND,
             partyRole: 'appellant',
-            partyChannel: 'inPerson',
             individualDetails: {
               title: 'Miss',
               firstName: 'Jane',
               lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
               reasonableAdjustments: [
                 'RA0042',
                 'RA0053',
@@ -1809,8 +1843,8 @@ export const initialState = {
             partyName: 'DWP',
             partyType: PartyType.ORG,
             partyRole: 'claimant',
-            partyChannel: 'byVideo',
             individualDetails: {
+              preferredHearingChannel: 'byVideo',
               reasonableAdjustments: [
                 'RA0005',
               ],
@@ -1839,5 +1873,10 @@ export const initialState = {
       isInit: true,
       fragmentId: 'venue'
     },
+    hearingLinks: {
+      serviceLinkedCases: [],
+      linkedHearingGroup: null,
+      lastError: null
+    }
   },
 };

@@ -18,14 +18,22 @@ const HEARING_DAY_SCHEDULE_1: HearingDayScheduleModel = {
       partyName: 'Jane and Smith',
       partyType: PartyType.IND,
       partyRole: 'appellant',
-      partyChannel: 'inPerson',
+      individualDetails: {
+        firstName: 'Jane',
+        lastName: 'Smith',
+        preferredHearingChannel: 'inPerson',
+      },
     },
     {
       partyID: 'P2',
       partyName: 'DWP',
       partyType: PartyType.ORG,
       partyRole: 'claimant',
-      partyChannel: 'byVideo',
+      individualDetails: {
+        firstName: 'Jane',
+        lastName: 'Smith',
+        preferredHearingChannel: 'byVideo',
+      },
     },
   ],
 };
@@ -44,14 +52,22 @@ const HEARING_DAY_SCHEDULE_2: HearingDayScheduleModel = {
       partyName: 'Jane and Smith',
       partyType: PartyType.IND,
       partyRole: 'appellant',
-      partyChannel: 'inPerson',
+      individualDetails: {
+        firstName: 'Jane',
+        lastName: 'Smith',
+        preferredHearingChannel: 'inPerson',
+      },
     },
     {
       partyID: 'P2',
       partyName: 'DWP',
       partyType: PartyType.ORG,
       partyRole: 'claimant',
-      partyChannel: 'byVideo',
+      individualDetails: {
+        firstName: 'DWP',
+        lastName: null,
+        preferredHearingChannel: 'byVideo',
+      },
     },
   ],
 };
@@ -70,14 +86,17 @@ const HEARING_DAY_SCHEDULE_3: HearingDayScheduleModel = {
       partyName: 'Jane and Smith',
       partyType: PartyType.IND,
       partyRole: 'appellant',
-      partyChannel: 'inPerson',
     },
     {
       partyID: 'P2',
       partyName: 'DWP',
       partyType: PartyType.ORG,
       partyRole: 'claimant',
-      partyChannel: 'byVideo',
+      individualDetails: {
+        firstName: 'DWP',
+        lastName: null,
+        preferredHearingChannel: 'byVideo',
+      },
     },
   ],
 };
@@ -96,14 +115,22 @@ const HEARING_DAY_SCHEDULE_4: HearingDayScheduleModel = {
       partyName: 'Jane and Smith',
       partyType: PartyType.IND,
       partyRole: 'appellant',
-      partyChannel: 'inPerson',
+      individualDetails: {
+        firstName: 'Jane',
+        lastName: 'Smith',
+        preferredHearingChannel: 'inPerson',
+      },
     },
     {
       partyID: 'P2',
       partyName: 'DWP',
       partyType: PartyType.ORG,
       partyRole: 'claimant',
-      partyChannel: 'byVideo',
+      individualDetails: {
+        firstName: 'DWP',
+        lastName: null,
+        preferredHearingChannel: 'byVideo',
+      },
     },
   ],
 };
@@ -122,14 +149,17 @@ const HEARING_DAY_SCHEDULE_5: HearingDayScheduleModel = {
       partyName: 'Jane and Smith',
       partyType: PartyType.IND,
       partyRole: 'appellant',
-      partyChannel: 'inPerson',
     },
     {
       partyID: 'P2',
       partyName: 'DWP',
       partyType: PartyType.ORG,
       partyRole: 'claimant',
-      partyChannel: 'byVideo',
+      individualDetails: {
+        firstName: 'DWP',
+        lastName: null,
+        preferredHearingChannel: 'byVideo',
+      },
     },
   ],
 };
@@ -148,14 +178,22 @@ const HEARING_DAY_SCHEDULE_6: HearingDayScheduleModel = {
       partyName: 'Jane and Smith',
       partyType: PartyType.IND,
       partyRole: 'appellant',
-      partyChannel: 'inPerson',
+      individualDetails: {
+        firstName: 'Jane',
+        lastName: 'Smith',
+        preferredHearingChannel: 'inPerson',
+      },
     },
     {
       partyID: 'P2',
       partyName: 'DWP',
       partyType: PartyType.ORG,
       partyRole: 'claimant',
-      partyChannel: 'byVideo',
+      individualDetails: {
+        firstName: 'DWP',
+        lastName: null,
+        preferredHearingChannel: 'byVideo',
+      },
     },
   ],
 };
@@ -174,14 +212,22 @@ const HEARING_DAY_SCHEDULE_7: HearingDayScheduleModel = {
       partyName: 'Jane and Smith',
       partyType: PartyType.IND,
       partyRole: 'appellant',
-      partyChannel: 'inPerson',
+      individualDetails: {
+        firstName: 'Jane',
+        lastName: 'Smith',
+        preferredHearingChannel: 'inPerson',
+      },
     },
     {
       partyID: 'P2',
       partyName: 'DWP',
       partyType: PartyType.ORG,
       partyRole: 'claimant',
-      partyChannel: 'byVideo',
+      individualDetails: {
+        firstName: 'DWP',
+        lastName: null,
+        preferredHearingChannel: 'byVideo',
+      },
     },
   ],
 };
@@ -200,14 +246,22 @@ const HEARING_DAY_SCHEDULE_8: HearingDayScheduleModel = {
       partyName: 'Jane and Smith',
       partyType: PartyType.IND,
       partyRole: 'appellant',
-      partyChannel: 'inPerson',
+      individualDetails: {
+        firstName: 'Jane',
+        lastName: 'Smith',
+        preferredHearingChannel: 'inPerson',
+      },
     },
     {
       partyID: 'P2',
       partyName: 'DWP',
       partyType: PartyType.ORG,
       partyRole: 'claimant',
-      partyChannel: 'byVideo',
+      individualDetails: {
+        firstName: 'DWP',
+        lastName: null,
+        preferredHearingChannel: 'byVideo',
+      },
     },
   ],
 };
@@ -226,14 +280,22 @@ const HEARING_DAY_SCHEDULE_9: HearingDayScheduleModel = {
       partyName: 'Jane and Smith',
       partyType: PartyType.IND,
       partyRole: 'appellant',
-      partyChannel: 'inPerson',
+      individualDetails: {
+        firstName: 'Jane',
+        lastName: 'Smith',
+        preferredHearingChannel: 'inPerson',
+      },
     },
     {
       partyID: 'P2',
       partyName: 'DWP',
       partyType: PartyType.ORG,
       partyRole: 'claimant',
-      partyChannel: 'byVideo',
+      individualDetails: {
+        firstName: 'DWP',
+        lastName: null,
+        preferredHearingChannel: 'byVideo',
+      },
     },
   ],
 };
@@ -252,14 +314,22 @@ const HEARING_DAY_SCHEDULE_10: HearingDayScheduleModel = {
       partyName: 'Jane and Smith',
       partyType: PartyType.IND,
       partyRole: 'appellant',
-      partyChannel: 'inPerson',
+      individualDetails: {
+        firstName: 'Jane',
+        lastName: 'Smith',
+        preferredHearingChannel: 'inPerson',
+      },
     },
     {
       partyID: 'P2',
       partyName: 'DWP',
       partyType: PartyType.ORG,
       partyRole: 'claimant',
-      partyChannel: 'byVideo',
+      individualDetails: {
+        firstName: 'DWP',
+        lastName: null,
+        preferredHearingChannel: 'byVideo',
+      },
     },
   ],
 };
@@ -278,14 +348,22 @@ const HEARING_DAY_SCHEDULE_11: HearingDayScheduleModel = {
       partyName: 'Jane and Smith',
       partyType: PartyType.IND,
       partyRole: 'appellant',
-      partyChannel: 'inPerson',
+      individualDetails: {
+        firstName: 'Jane',
+        lastName: 'Smith',
+        preferredHearingChannel: 'inPerson',
+      },
     },
     {
       partyID: 'P2',
       partyName: 'DWP',
       partyType: PartyType.ORG,
       partyRole: 'claimant',
-      partyChannel: 'byVideo',
+      individualDetails: {
+        firstName: 'DWP',
+        lastName: null,
+        preferredHearingChannel: 'byVideo',
+      },
     },
   ],
 };
@@ -304,14 +382,56 @@ const HEARING_DAY_SCHEDULE_13: HearingDayScheduleModel = {
       partyName: 'Jane and Smith',
       partyType: PartyType.IND,
       partyRole: 'claimant',
-      partyChannel: 'inPerson',
+      individualDetails: {
+        firstName: 'Jane',
+        lastName: 'Smith',
+        preferredHearingChannel: 'inPerson',
+      },
     },
     {
       partyID: 'P2',
       partyName: 'DWP',
       partyType: PartyType.ORG,
       partyRole: 'claimant',
-      partyChannel: 'byVideo',
+      individualDetails: {
+        firstName: 'DWP',
+        lastName: null,
+        preferredHearingChannel: 'byVideo',
+      },
+    },
+  ],
+};
+
+const HEARING_DAY_SCHEDULE_14: HearingDayScheduleModel = {
+  hearingStartDateTime: '2022-02-28T09:00:00.000+0000',
+  hearingEndDateTime: '2021-02-28T16:00:00.000+0000',
+  listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b18',
+  hearingVenueId: '815833',
+  hearingRoomId: 'room 5',
+  hearingJudgeId: 'hearingJudgeId1',
+  panelMemberIds: ['hearingJudgeId1'],
+  attendees: [
+    {
+      partyID: 'P1',
+      partyName: 'Jane and Smith',
+      partyType: PartyType.IND,
+      partyRole: 'claimant',
+      individualDetails: {
+        firstName: 'Jane',
+        lastName: 'Smith',
+        preferredHearingChannel: 'inPerson',
+      },
+    },
+    {
+      partyID: 'P2',
+      partyName: 'DWP',
+      partyType: PartyType.ORG,
+      partyRole: 'claimant',
+      individualDetails: {
+        firstName: 'DWP',
+        lastName: null,
+        preferredHearingChannel: 'byVideo',
+      },
     },
   ],
 };
@@ -320,7 +440,7 @@ const CASE_HEARING_1: HearingListModel = {
   hearingID: 'h100001',
   hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
   hearingType: 'Case management hearing',
-  hmcStatus: HMCStatus.HEARING_REQUESTD,
+  hmcStatus: HMCStatus.HEARING_REQUESTED,
   lastResponseReceivedDateTime: '',
   responseVersion: 'rv1',
   hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
@@ -498,6 +618,20 @@ const CASE_HEARING_13: HearingListModel = {
   hearingDaySchedule: [HEARING_DAY_SCHEDULE_13],
 };
 
+const CASE_HEARING_14: HearingListModel = {
+  hearingID: 'h100014',
+  hearingRequestDateTime: '2022-02-28T10:00:00.000+0000',
+  hearingType: 'Case management hearing - open',
+  hmcStatus: HMCStatus.UPDATE_REQUESTED,
+  lastResponseReceivedDateTime: '',
+  responseVersion: 'rv14',
+  hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
+  listAssistCaseStatus: '',
+  hearingIsLinkedFlag: false,
+  hearingGroupRequestId: null,
+  hearingDaySchedule: [HEARING_DAY_SCHEDULE_14],
+};
+
 export const EMPTY_HEARINGS_LIST: HearingListMainModel = {
   hmctsServiceID: 'BBA3',
   caseRef: '1584618195804035',
@@ -520,5 +654,6 @@ export const HEARINGS_LIST: HearingListMainModel = {
     CASE_HEARING_10,
     CASE_HEARING_11,
     CASE_HEARING_12,
-    CASE_HEARING_13],
+    CASE_HEARING_13,
+    CASE_HEARING_14],
 };

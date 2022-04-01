@@ -5,18 +5,18 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { initialState } from '../../../hearing.test.data';
-import { HearingAwaitingSummaryComponent } from './hearing-awaiting-summary.component';
+import { HearingViewActualSummaryComponent } from './hearing-view-actual-summary.component';
 
-describe('HearingAwaitingSummaryComponent', () => {
-  let component: HearingAwaitingSummaryComponent;
-  let fixture: ComponentFixture<HearingAwaitingSummaryComponent>;
+describe('HearingViewActualSummaryComponent', () => {
+  let component: HearingViewActualSummaryComponent;
+  let fixture: ComponentFixture<HearingViewActualSummaryComponent>;
   let router: Router;
   let mockStore: any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [HearingAwaitingSummaryComponent],
+      declarations: [HearingViewActualSummaryComponent],
       providers: [
         provideMockStore({ initialState }),
       ],
@@ -25,7 +25,7 @@ describe('HearingAwaitingSummaryComponent', () => {
       .compileComponents();
     mockStore = TestBed.get(Store);
     mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
-    fixture = TestBed.createComponent(HearingAwaitingSummaryComponent);
+    fixture = TestBed.createComponent(HearingViewActualSummaryComponent);
     component = fixture.componentInstance;
     router = TestBed.get(Router);
     fixture.detectChanges();

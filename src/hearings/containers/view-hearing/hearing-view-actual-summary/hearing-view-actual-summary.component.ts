@@ -7,10 +7,10 @@ import { HearingActualsStateData } from '../../../models/hearingActualsStateData
 import * as fromHearingStore from '../../../store';
 
 @Component({
-  selector: 'exui-hearing-awaiting-summary',
-  templateUrl: './hearing-awaiting-summary.component.html',
+  selector: 'exui-hearing-view-actual-summary',
+  templateUrl: './hearing-view-actual-summary.component.html',
 })
-export class HearingAwaitingSummaryComponent implements OnInit, OnDestroy {
+export class HearingViewActualSummaryComponent implements OnInit, OnDestroy {
   public hearingActualsMainModel: HearingActualsMainModel;
   public subscription: Subscription;
 

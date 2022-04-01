@@ -63,6 +63,10 @@ export class CaseHearingsListComponent implements OnInit {
     return !!hearingGroupRequestId;
   }
 
+  public addAndEdit(hearingID: string): void {
+    this.router.navigate(['/', 'hearings', 'actuals', hearingID, 'hearing-actual-add-edit-summary']);
+  }
+
   public cancelHearing(hearingID: string): void {
     this.router.navigate(['/', 'hearings', 'cancel', hearingID]);
   }

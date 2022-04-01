@@ -4,7 +4,7 @@ import { HearingStatusMapping } from './hearingStatusMapping';
 
 export const hearingStatusMappings: HearingStatusMapping[] = [
   {
-    hmcStatus: HMCStatus.HEARING_REQUESTD,
+    hmcStatus: HMCStatus.HEARING_REQUESTED,
     exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
     exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
   },

@@ -159,7 +159,7 @@ describe('CaseHearingsComponent', () => {
     lastResponseReceivedDateTime: '',
     exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
     exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
-    hmcStatus: HMCStatus.HEARING_REQUESTD,
+    hmcStatus: HMCStatus.HEARING_REQUESTED,
     responseVersion: 'rv1',
     hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
     listAssistCaseStatus: '',

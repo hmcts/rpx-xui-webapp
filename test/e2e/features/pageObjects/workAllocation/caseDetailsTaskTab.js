@@ -124,6 +124,12 @@ class CaseDetailsTaskTab{
         return attributeElements;
     }
 
+    async clickTaskNextStepLink(taskName, linkText){
+        const attributes = this.getAttributesDisplayedForTaskWithName(taskName);
+        const link = this.getAttributeLink(attributes, 'Next steps', linkText);
+        await link.click();
+    }
+
 }
 
 module.exports = new CaseDetailsTaskTab();

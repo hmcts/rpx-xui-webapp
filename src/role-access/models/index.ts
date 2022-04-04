@@ -6,6 +6,8 @@ export * from './allocate-role-navigation-event.enum';
 export * from './allocate-role-state-data.interface';
 export * from './case-role-details.interface';
 export * from './case-role.interface';
+export * from './check-dates-result.interface';
+export * from './duration-type-description.interface';
 export * from './exclusion.enum';
 export * from './exclusion-navigation-event.enum';
 export * from './exclusion-state.enum';
@@ -15,4 +17,9 @@ export * from './radio-option.model';
 export * from './role.model';
 export * from './role-access-http-error.interface';
 export * from './role-exclusion.model';
+export * from './specific-access-navigation.interface';
+export * from './specific-access-navigation-event.enum';
+export * from './specific-access-state.enum';
+export * from './specific-access-state-data.interface';
 export * from './specific-role.model';
+

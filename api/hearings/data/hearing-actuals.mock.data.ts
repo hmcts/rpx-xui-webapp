@@ -682,7 +682,7 @@ export const HEARING_ACTUAL_AWAITING: HearingActualsMainModel = {
   hearingActuals: {
     hearingOutcome: {
       hearingFinalFlag: false,
-      hearingResult: HearingResult.AWAITING,
+      hearingResult: HearingResult.CANCELLED,
       hearingResultDate: '2019-01-01',
       hearingResultReasonType: 'Result reason',
       hearingType: 'final',

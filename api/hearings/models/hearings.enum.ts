@@ -110,7 +110,6 @@ export enum HearingResult {
   COMPLETED = 'COMPLETED',
   ADJOURNED = 'ADJOURNED',
   CANCELLED = 'CANCELLED',
-  AWAITING = 'AWAITING',
 }
 
 export enum GroupLinkType {

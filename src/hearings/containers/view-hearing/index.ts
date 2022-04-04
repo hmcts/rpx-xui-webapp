@@ -3,6 +3,7 @@ import { HearingCancellationSummaryComponent } from './hearing-cancellation-summ
 import { HearingCancelledSummaryComponent } from './hearing-cancelled-summary/hearing-cancelled-summary.component';
 import { HearingCompletedSummaryComponent } from './hearing-completed-summary/hearing-completed-summary.component';
 import { HearingRequestFailedSummaryComponent } from './hearing-request-failed-summary/hearing-request-failed-summary.component';
+import { HearingViewSummaryComponent } from './hearing-view-summary/hearing-view-summary.component';
 import { ViewHearingComponent } from './view-hearing.component';
 
 export const containers: any[] = [
@@ -12,4 +13,5 @@ export const containers: any[] = [
   HearingCompletedSummaryComponent,
   HearingAdjournedSummaryComponent,
   HearingRequestFailedSummaryComponent,
+  HearingViewSummaryComponent
 ];

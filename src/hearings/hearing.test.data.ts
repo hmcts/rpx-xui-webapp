@@ -1542,7 +1542,7 @@ export const initialState = {
           hearingID: 'h00001',
           hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
           hearingType: 'Case management hearing',
-          hmcStatus: HMCStatus.HEARING_REQUESTD,
+          hmcStatus: HMCStatus.HEARING_REQUESTED,
           lastResponseReceivedDateTime: '',
           responseVersion: 'rv1',
           hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,

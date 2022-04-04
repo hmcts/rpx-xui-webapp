@@ -395,7 +395,7 @@ export const ROUTES: Routes = [
         }
       },
       {
-        path: 'hearing-awaiting-summary/:id',
+        path: 'hearing-view-actuals-summary/:id',
         resolve: {
           actualSummary: ActualSummaryResponseResolver,
           hearingStageOptions: HearingStageResolver,

@@ -18,7 +18,7 @@ export class HearingActualSummaryComponent implements OnInit {
   public attendies: ActualDayPartyModel[] = [];
   public partyChannels: LovRefDataModel[] = [];
   public isCompleted: boolean;
-  public isAaiting: boolean;
+  public isAdjourned: boolean;
 
   constructor(private readonly route: ActivatedRoute) {
     this.partyChannels = this.route.snapshot.data.partyChannels;
@@ -26,7 +26,7 @@ export class HearingActualSummaryComponent implements OnInit {
 
   public ngOnInit(): void {
     this.isCompleted = this.hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResult === HearingResult.COMPLETED;
-    this.isAaiting = this.hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResult === HearingResult.AWAITING;
+    this.isAdjourned = this.hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResult === HearingResult.ADJOURNED;
     this.actualHearingDays = this.hearingActualsMainModel.hearingActuals.actualHearingDays[0];
     this.actualPauseTime = this.actualHearingDays.pauseDateTimes[0];
     this.setPartyData();

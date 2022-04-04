@@ -108,7 +108,7 @@ export class CaseHearingsListComponent implements OnInit {
         this.LoadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-adjourned-summary/${hearing.hearingID}`);
         break;
       case EXUIDisplayStatusEnum.AWAITING_ACTUALS:
-        this.LoadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-awaiting-summary/${hearing.hearingID}`);
+        this.LoadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-view-actuals-summary/${hearing.hearingID}`);
         break;
       case EXUIDisplayStatusEnum.FAILURE:
         this.LoadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-request-failed-summary/${hearing.hearingID}`);

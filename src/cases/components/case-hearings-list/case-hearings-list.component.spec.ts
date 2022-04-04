@@ -867,7 +867,7 @@ describe('CaseHearingsListComponent', () => {
     expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100010', '/hearings/view/hearing-completed-summary/h100010');
     component.viewDetails(UPCOMING_HEARING_LIST[7]);
     fixture.detectChanges();
-    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100009', '/hearings/view/hearing-awaiting-summary/h100009');
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100009', '/hearings/view/hearing-view-actuals-summary/h100009');
     // ADJOURNED
     component.viewDetails(PAST_HEARING_LIST[2]);
     fixture.detectChanges();

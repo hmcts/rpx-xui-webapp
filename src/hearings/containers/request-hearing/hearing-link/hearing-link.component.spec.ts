@@ -19,6 +19,7 @@ describe('HearingLinkComponent', () => {
       data: {
       },
     },
+    fragment: of('point-to-me'),
   };
   const mockHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockHttpClient);

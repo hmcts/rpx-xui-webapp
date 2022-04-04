@@ -201,4 +201,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         expect(await headerPage.caseReferenceSearchBox.isPresent()).to.equal(isDisplayed.includes('yes') || isDisplayed.includes('true') );
     });
 
+
+    Then('I validate primary navigation headers not displayed', async function () {
+        const tabsDisplayed = await headerPage.getPrimaryTabsDisplayed();
+        expect(tabsDisplayed.length).to.equal(0);
+    });
+
 });

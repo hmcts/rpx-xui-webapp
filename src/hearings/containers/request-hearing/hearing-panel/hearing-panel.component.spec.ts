@@ -6,6 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
+import { JudicialUserModel } from '../../../../hearings/models/person.model';
 import { HearingJudgeNamesListComponent } from '../../../components';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION, MemberType, RadioOptions, RequirementType } from '../../../models/hearings.enum';
@@ -235,14 +236,17 @@ describe('HearingPanelComponent', () => {
   });
 
   it('should check prepareData', () => {
-    const judgeInfo = {
-      id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
-      name: 'Jacky Collins',
-      email: 'jacky.collins@judicial.com',
-      domain: 'JUDICIAL',
-      personalCode: 'P0000001',
-      knownAs: 'Jacky Collins',
+    const judgeInfo: JudicialUserModel = {
+      sidam_id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
+      object_id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
+      known_as: 'Hearing Judge',
+      surname: 'Jacky',
+      personal_code: 'P100001',
+      full_name: 'Jacky Collins',
+      post_nominals: '',
+      email_id: 'jacky.collins@judicial.com'
     };
+
     component.includedJudge.judgeList = [judgeInfo];
     component.excludedJudge.judgeList = [judgeInfo];
     component.prepareData();

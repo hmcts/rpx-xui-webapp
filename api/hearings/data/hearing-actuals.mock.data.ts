@@ -404,7 +404,7 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
   },
   hmcStatus: HMCStatus.UPDATE_SUBMITTED,
   caseDetails: {
-    hmctsServiceCode: 'SSCS',
+    hmctsServiceCode: 'BBA3',
     caseRef: '1584618195804035',
     requestTimeStamp: null,
     hearingID: 'h100010',
@@ -645,7 +645,7 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
   },
   hmcStatus: HMCStatus.UPDATE_SUBMITTED,
   caseDetails: {
-    hmctsServiceCode: 'SSCS',
+    hmctsServiceCode: 'BBA3',
     caseRef: '1584618195804035',
     requestTimeStamp: null,
     hearingID: 'h100011',

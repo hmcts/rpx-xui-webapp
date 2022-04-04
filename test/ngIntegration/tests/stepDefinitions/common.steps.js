@@ -25,6 +25,15 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         } 
         
     });
-   
+  
+    Then('I validate session storage has key {string}', async function(key){
+        await BrowserWaits.retryWithActionCallback(async () => {
+            const sessionStorageVal = await browserUtil.getFromSessionStorage(key);
+            expect(sessionStorageVal !== null && sessionStorageVal !== undefined, `Session stoarge does not have ${key} key ${sessionStorageVal}`).to.be.true;
+        });
+        
+    });
+
 
 });
+

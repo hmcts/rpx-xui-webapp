@@ -186,7 +186,7 @@ describe('HearingAnswersPipe', () => {
 
   it('should transform linked hearings', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.LINKED_HEARINGS, of(STATE));
-    const linkedHearings = 'Yes';
+    const linkedHearings = 'No';
     const expected = cold('(b|)', {b: linkedHearings});
     expect(result$).toBeObservable(expected);
   });

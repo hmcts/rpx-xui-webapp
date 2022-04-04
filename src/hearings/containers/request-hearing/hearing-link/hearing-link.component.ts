@@ -36,7 +36,7 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
 
   public ngOnInit(): void {
     this.hearingLinkForm = this.formBuilder.group({
-      'hearingLink': ['', Validators.required],
+      hearingLink: ['', Validators.required],
     });
     this.initialiseFromHearingValues();
     this.hearingStore.dispatch(new LoadServiceLinkedCases({caseReference: this.caseId, hearingId: ''}));

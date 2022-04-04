@@ -1,4 +1,3 @@
-import { TestBed } from '@angular/core/testing';
 import { cold } from 'jasmine-marbles';
 import { of } from 'rxjs';
 import { initialState } from '../hearing.test.data';
@@ -7,11 +6,8 @@ import { LinkedHearingsAmendedConverter } from './linked-hearings.amended.conver
 
 describe('LinkedHearingsAmendedConverter', () => {
   let converter: LinkedHearingsAmendedConverter;
-  
-  beforeEach(() => {
-    TestBed.configureTestingModule({
 
-    });
+  beforeEach(() => {
     converter = new LinkedHearingsAmendedConverter();
   });
 

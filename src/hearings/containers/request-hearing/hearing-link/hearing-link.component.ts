@@ -13,7 +13,8 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-link',
-  templateUrl: './hearing-link.component.html'
+  templateUrl: './hearing-link.component.html',
+  styleUrls: ['./hearing-link.component.scss']
 })
 export class HearingLinkComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
   public sub: Subscription;

@@ -167,7 +167,7 @@ describe('HearingsService', () => {
         expect(response).toBeNull();
       });
 
-      const req = httpMock.expectOne('api/hearings/serviceLinkedCases');
+      const req = httpMock.expectOne('api/hearings/loadServiceLinkedCases');
       expect(req.request.method).toEqual('POST');
       req.flush(null);
     }));

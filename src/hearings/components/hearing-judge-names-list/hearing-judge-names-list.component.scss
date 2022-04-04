@@ -1,4 +1,4 @@
-:host ::ng-deep .exclude-person{
+:host ::ng-deep .exclude-person {
   .govuk-form-group {
     .govuk-hint {
       font-weight: bold;
@@ -9,7 +9,7 @@
       width: 98% !important;
     }
   }
-  &.column-view{
+  &.column-view {
     .govuk-form-group {
       .govuk-input {
         width: 80% !important;
@@ -18,6 +18,13 @@
   }
 }
 
+.govuk-form-group {
+  .govuk-hint {
+    font-weight: bold;
+    color: #0b0c0c;
+    margin-bottom: 15px;
+  }
+}
 .exclude-person {
   display: flex;
   margin-bottom: 30px;
@@ -28,15 +35,15 @@
     display: flex;
     align-items: flex-end;
     flex-grow: 2;
-    .govuk-button{
+    .govuk-button {
       min-width: 140px;
       margin-bottom: 3px;
     }
   }
-  &.column-view{
+  &.column-view {
     margin-bottom: 15px;
     flex-direction: column;
-    .person-button{
+    .person-button {
       margin-top: 15px;
     }
   }

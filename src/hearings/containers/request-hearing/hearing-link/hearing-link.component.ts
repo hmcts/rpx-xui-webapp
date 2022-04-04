@@ -17,7 +17,6 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
   styleUrls: ['./hearing-link.component.scss']
 })
 export class HearingLinkComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
-  public sub: Subscription;
   public caseId: string;
   public hearingLinksStateData$: Observable<HearingLinksStateData>;
   public linkedCases: ServiceLinkedCasesModel[];

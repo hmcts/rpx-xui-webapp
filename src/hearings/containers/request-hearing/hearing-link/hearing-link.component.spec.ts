@@ -4,7 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { initialState } from 'src/hearings/hearing.test.data';
 import { ACTION } from 'src/hearings/models/hearings.enum';
 import { HearingsService } from 'src/hearings/services/hearings.service';
@@ -46,13 +46,6 @@ describe('HearingLinkComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
     expect(component.hearingLinkForm).toBeTruthy();
-  });
-
-  it('should unsubscribe', () => {
-    component.sub = new Observable().subscribe();
-    spyOn(component.sub, 'unsubscribe').and.callThrough();
-    component.ngOnDestroy();
-    expect(component.sub.unsubscribe).toHaveBeenCalled();
   });
 
   it('should validate form and proceed to next step', () => {

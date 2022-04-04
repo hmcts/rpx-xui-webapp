@@ -1,10 +1,10 @@
-import {NextFunction, Response} from 'express';
-import {handlePost} from '../../common/mockService';
-import {getConfigValue} from '../../configuration';
-import {SERVICES_PRD_JUDICIAL_API} from '../../configuration/references';
-import {EnhancedRequest} from '../../lib/models';
+import { NextFunction, Response } from 'express';
+import { handlePost } from '../../common/mockService';
+import { getConfigValue } from '../../configuration';
+import { SERVICES_PRD_JUDICIAL_API } from '../../configuration/references';
+import { EnhancedRequest } from '../../lib/models';
 import * as mock from './judicial.mock';
-import {JudicialUserModel} from './models/judicialUser.model';
+import { JudicialUserModel } from './models/judicialUser.model';
 
 mock.init();
 
@@ -19,7 +19,23 @@ export async function searchJudicialUserByPersonalCodes(req: EnhancedRequest, re
   const reqBody = req.body;
   const markupPath: string = `${prdUrl}/refdata/judicial/users`;
   try {
-    const {status, data}: { status: number, data: JudicialUserModel[] } = await handlePost(markupPath, reqBody, req);
+    const { status, data }: { status: number, data: JudicialUserModel[] } = await handlePost(markupPath, reqBody, req);
+    res.status(status).send(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * @overview getJudicialUsersSearch from searchString, i.e. jam
+ * @description API sample: POST /api/prd/judicial/users/search
+ * @example with body {searchString: jam}
+ */
+export async function getJudicialUsersSearch(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const reqBody = req.body;
+  const markupPath: string = `${prdUrl}/refdata/judicial/users/search`;
+  try {
+    const { status, data }: { status: number, data: JudicialUserModel[] } = await handlePost(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     next(error);

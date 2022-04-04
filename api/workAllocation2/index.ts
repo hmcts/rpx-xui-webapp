@@ -231,6 +231,8 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
            assign_and_complete: true,
          },
       };
+    } else {
+      delete req.body.hasNoAssigneeOnComplete;
     }
     const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action);
     const { status, data } = await handleTaskPost(getTaskPath, req.body, req);

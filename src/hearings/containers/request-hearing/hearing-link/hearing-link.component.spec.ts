@@ -5,9 +5,9 @@ import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { initialState } from 'src/hearings/hearing.test.data';
-import { ACTION } from 'src/hearings/models/hearings.enum';
-import { HearingsService } from 'src/hearings/services/hearings.service';
+import { initialState } from '../../../hearing.test.data';
+import { ACTION } from '../../../models/hearings.enum';
+import { HearingsService } from '../../../services/hearings.service';
 import { HearingLinkComponent } from './hearing-link.component';
 
 describe('HearingLinkComponent', () => {

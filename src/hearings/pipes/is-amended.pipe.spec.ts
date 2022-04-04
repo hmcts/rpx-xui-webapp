@@ -143,4 +143,12 @@ describe('IsAmendedPipe', () => {
     expect(result$).toBeObservable(expected);
   });
 
+  it('should transform need linked hearings flag based on selection', () => {
+    const STATE: State = _.cloneDeep(initialState.hearings);
+    const result$ = isAmendedPipe.transform(AnswerSource.LINKED_HEARINGS, of(STATE));
+    const isAmended = true;
+    const expected = cold('(b|)', { b: isAmended });
+    expect(result$).toBeObservable(expected);
+  });
+
 });

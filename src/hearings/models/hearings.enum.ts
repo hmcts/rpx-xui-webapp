@@ -276,6 +276,7 @@ export enum AnswerSource {
   HEARING_PRIORITY,
   ADDITIONAL_INSTRUCTION,
   REASON_FOR_CANCELLATION,
+  LINKED_HEARINGS
 }
 
 export enum IsHiddenSource {

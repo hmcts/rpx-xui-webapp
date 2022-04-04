@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
@@ -16,7 +16,7 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
   templateUrl: './hearing-link.component.html',
   styleUrls: ['./hearing-link.component.scss']
 })
-export class HearingLinkComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
+export class HearingLinkComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public sub: Subscription;
   public caseId: string;
   public hearingLinksStateData$: Observable<HearingLinksStateData>;
@@ -45,12 +45,6 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
         this.linkedCases = hearingLinks.serviceLinkedCases;
       }
     );
-  }
-
-  public ngOnDestroy(): void {
-    if (this.sub) {
-      this.sub.unsubscribe();
-    }
   }
 
   public executeAction(action: ACTION): void {
@@ -85,5 +79,13 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
 
   public onHearingLink(value: string): void {
     this.hearingLinkForm.get('hearingLink').setValue(value);
+  }
+
+  public ngAfterViewInit(): void {
+    this.fragmentFocus();
+  }
+
+  public ngOnDestroy(): void {
+    super.unsubscribe();
   }
 }

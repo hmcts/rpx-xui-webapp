@@ -12,7 +12,7 @@ import { InfoMessage, InfoMessageType, SortOrder, TaskActionType, TaskService } 
 import { FieldConfig } from '../../models/common';
 import { RouteData } from '../../models/common/route-data';
 import { InformationMessage } from '../../models/comms';
-import { TaskServiceConfig } from '../../models/tasks';
+import { Task, TaskServiceConfig } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
 import { ACTION } from '../../services/work-allocation-task.service';
 import { getAssigneeName, handleFatalErrors } from '../../utils';
@@ -110,7 +110,7 @@ export class TaskActionContainerComponent implements OnInit {
         break;
     }
     // add hasNoAssigneeOnComplete - only false if complete action and assignee not present
-    const hasNoAssigneeOnComplete = action === Actions.Complete.toString() ? !(this.tasks[0].assignee) : false;
+    const hasNoAssigneeOnComplete = action === Actions.Complete.toString() ? this.isTaskUnAssignedOrReAssigned(this.tasks[0]) : false;
     if (action) {
       this.taskService.performActionOnTask(this.tasks[0].id, action, hasNoAssigneeOnComplete).subscribe(() => {
         this.reportSuccessAndReturn();
@@ -120,6 +120,18 @@ export class TaskActionContainerComponent implements OnInit {
           this.reportUnavailableErrorAndReturn();
         }
       });
+    }
+  }
+
+  public isTaskUnAssignedOrReAssigned(currentTask: Task): boolean {
+    if (!currentTask.assignee) {
+      return true;
+    }
+    const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
+    if (userInfoStr) {
+      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const id = userInfo.id ? userInfo.id : userInfo.uid;
+      return id !== currentTask.assignee;
     }
   }
 

@@ -1,5 +1,5 @@
 
-@ng @integration_todo @test
+@ng
 Feature: WA Release 2: Case details Tasks tab
 
     Requirements from
@@ -22,8 +22,8 @@ Feature: WA Release 2: Case details Tasks tab
         Given I set MOCK case details "caseDetails" property "Jurisdiction" as "IA"
         Given I set MOCK case list values
             | case_id          | case_fields.[CASE_REFERENCE] | case_fields_formatted.[CASE_REFERENCE] |
-            | 1234567812345678 | 1234567812345678             | 1234567812345678                       |
-            | 1234567812345679 | 1234567812345679             | 1234567812345679                       |
+            | 18a3d216-case-4e92-a7e3-ca3661e6be80 | 18a3d216-case-4e92-a7e3-ca3661e6be80             | 18a3d216-case-4e92-a7e3-ca3661e6be80                       |
+            | 18a3d216-case-4e92-a7e3-ca3661e6be81 | 18a3d216-case-4e92-a7e3-ca3661e6be81             | 18a3d216-case-4e92-a7e3-ca3661e6be81                       |
         Given I set MOCK caseworkers for service "IA"
             | idamId                               | firstName   | lastName | email                   | roleCategory     |
             | 3db21928-cbbc-4364-bd91-137c7031fe10 | Test 2      | user     | caseworker_user1@gov.uk | LEGAL_OPERATIONS |
@@ -56,22 +56,22 @@ Feature: WA Release 2: Case details Tasks tab
         #     | 18a3d216-c6ab-4e92-a7e3-ca3661e6be82 | user 4       jud |
 
         Given I set MOCK case tasks with userDetails from reference "userDetails"
-            | id                                   | task_title                                | assignee                             | assigneeName | created_date | due_date | permissions                          | warnings | description                                                                                                                                                            |
-            | 08a3d216-task-4e92-a7e3-ca3661e6be87 | Task 1                                    | thissession                          | Test user    | -10          | -1       | Own,Read,Refer,Manage,Execute,Cancel | true     | Click link to proceed to next step [test link next step](/case/case-details/${[case_id]})                                                                              |
-            | 18a3d216-task-4e92-a7e3-ca3661e6be87 | Task 2                                    | thissession                          | Test 2 user  | -10          | 0        | Own,Manage,Execute                   | true     | Click link to proceed [next step 1](/case/case-details/${[case_id]}) or \n Click link to proceed to [next step 2](/case/case-details/${[case_id]}/${[id]}/testaction2) |
-            |                                      | Task 3                                    |                                      |              | -10          | 1        | Own,Manage,Execute                   | true     |                                                                                                                                                                        |
-            |                                      | Task 4                                    |                                      |              | -10          | 10       |                                      | true     |                                                                                                                                                                        |
-            |                                      | Task 5                                    |                                      |              | -10          | 10       |                                      | true     |                                                                                                                                                                        |
-            |                                      | 6 Permissions OME assined to me           | thissession                          | Test user    | -10          | 10       | Own,Manage,Execute                   | true     |                                                                                                                                                                        |
-            |                                      | 7 Permissions OME assigned to someother   | 08a3d216-c6ab-4e92-a7e3-ca3661e6be81 | Test 3 user  | -10          | 10       | Own,Manage,Execute                   | true     |                                                                                                                                                                        |
-            |                                      | 8 Permissions OME unassigned              |                                      |              | -10          | 10       | Own,Manage,Execute                   | true     |                                                                                                                                                                        |
-            |                                      | 9 Permissions ME assined to me            | thissession                          | Test user    | -10          | 10       | Manage,Execute                       | true     |                                                                                                                                                                        |
-            |                                      | 10 Permissions ME assigned to someother   | 08a3d216-c6ab-4e92-a7e3-ca3661e6be87 | Test 4 user  | -10          | 10       | Manage,Execute                       | true     |                                                                                                                                                                        |
-            |                                      | 11 Permissions ME unassigned              |                                      |              | -10          | 10       | Manage,Execute                       | true     |                                                                                                                                                                        |
-            |                                      | 12 Permissions M assigned to someother    | 38eb0c5e-29c7-453e-b92d-f2029aaed6c3 | Test 5 user  | -10          | 10       | Manage                               | true     |                                                                                                                                                                        |
-            |                                      | 13 Permissions M unassigned               |                                      |              | -10          | 10       | Manage                               | true     |                                                                                                                                                                        |
-            |                                      | 14 Permissions none assigned to someother | 18a3d216-c6ab-4e92-a7e3-ca3661e6be81 | Test 6 user  | -10          | 10       |                                      | true     |                                                                                                                                                                        |
-            |                                      | 15 Permissions none unassigned            |                                      |              | -10          | 10       |                                      | true     |                                                                                                                                                                        |
+            | id                                   | task_title                                | assignee                             | assigneeName | created_date | due_date | permissions                          | warnings | description                                                                                                                                                                                                                                                               |
+            | 08a3d216-task-4e92-a7e3-ca3661e6be87 | Task 1                                    | thissession                          | Test user    | -10          | -1       | Own,Read,Refer,Manage,Execute,Cancel | true     | Click link to proceed to next step [test link next step](/case/case-details/${[case_id]})                                                                                                                                                                                 |
+            | 18a3d216-task-4e92-a7e3-ca3661e6be87 | Task 2                                    | thissession                          | Test 2 user  | -10          | 0        | Own,Manage,Execute                   | true     | Click link to proceed [next step 1](/case/case-details/${[case_id]}) or \n Click link to proceed to [next step 2](/case/case-details/${[case_id]}/${[id]}/testaction2) \n Click link to proceed to [next step 3](/case/testroute?caseId=${[case_id]}/${[id]}/testaction2) |
+            |                                      | Task 3                                    |                                      |              | -10          | 1        | Own,Manage,Execute                   | true     |                                                                                                                                                                                                                                                                           |
+            |                                      | Task 4                                    |                                      |              | -10          | 10       |                                      | true     |                                                                                                                                                                                                                                                                           |
+            |                                      | Task 5                                    |                                      |              | -10          | 10       |                                      | true     |                                                                                                                                                                                                                                                                           |
+            |                                      | 6 Permissions OME assined to me           | thissession                          | Test user    | -10          | 10       | Own,Manage,Execute                   | true     |                                                                                                                                                                                                                                                                           |
+            |                                      | 7 Permissions OME assigned to someother   | 08a3d216-c6ab-4e92-a7e3-ca3661e6be81 | Test 3 user  | -10          | 10       | Own,Manage,Execute                   | true     |                                                                                                                                                                                                                                                                           |
+            |                                      | 8 Permissions OME unassigned              |                                      |              | -10          | 10       | Own,Manage,Execute                   | true     |                                                                                                                                                                                                                                                                           |
+            |                                      | 9 Permissions ME assined to me            | thissession                          | Test user    | -10          | 10       | Manage,Execute                       | true     |                                                                                                                                                                                                                                                                           |
+            |                                      | 10 Permissions ME assigned to someother   | 08a3d216-c6ab-4e92-a7e3-ca3661e6be87 | Test 4 user  | -10          | 10       | Manage,Execute                       | true     |                                                                                                                                                                                                                                                                           |
+            |                                      | 11 Permissions ME unassigned              |                                      |              | -10          | 10       | Manage,Execute                       | true     |                                                                                                                                                                                                                                                                           |
+            |                                      | 12 Permissions M assigned to someother    | 38eb0c5e-29c7-453e-b92d-f2029aaed6c3 | Test 5 user  | -10          | 10       | Manage                               | true     |                                                                                                                                                                                                                                                                           |
+            |                                      | 13 Permissions M unassigned               |                                      |              | -10          | 10       | Manage                               | true     |                                                                                                                                                                                                                                                                           |
+            |                                      | 14 Permissions none assigned to someother | 18a3d216-c6ab-4e92-a7e3-ca3661e6be81 | Test 6 user  | -10          | 10       |                                      | true     |                                                                                                                                                                                                                                                                           |
+            |                                      | 15 Permissions none unassigned            |                                      |              | -10          | 10       |                                      | true     |                                                                                                                                                                                                                                                                           |
 
 
 
@@ -101,7 +101,7 @@ Feature: WA Release 2: Case details Tasks tab
             | Manage       | true                     | link            | Unassign                                               |                                          |
             | Next steps   | true                     |                 | Click link to proceed to next step test link next step |                                          |
             | Next steps   | true                     | link            | test link next step                                    |                                          |
-            | Next steps   | true                     | linkURLContains | test link next step                                    | case/case-details/1234567812345678       |
+            | Next steps   | true                     | linkURLContains | test link next step                                    | case/case-details/18a3d216-case-4e92-a7e3-ca3661e6be80       |
             | Next steps   | true                     | linkURLContains | test link next step                                    | tid=08a3d216-task-4e92-a7e3-ca3661e6be87 |
 
 
@@ -116,8 +116,9 @@ Feature: WA Release 2: Case details Tasks tab
             | Manage       | true                     | link            | Unassign                          |                                                                                     |
             | Next steps   | true                     |                 | Click link to proceed next step 1 |                                                                                     |
             | Next steps   | true                     | link            | next step 2                       |                                                                                     |
-            | Next steps   | true                     | linkURLContains | next step 1                       | case/case-details/1234567812345678                                                  |
-            | Next steps   | true                     | linkURLContains | next step 2                       | case/case-details/1234567812345678/18a3d216-task-4e92-a7e3-ca3661e6be87/testaction2 |
+            | Next steps   | true                     | linkURLContains | next step 1                       | case/case-details/18a3d216-case-4e92-a7e3-ca3661e6be80                                                  |
+            | Next steps   | true                     | linkURLContains | next step 2                       | case/case-details/18a3d216-case-4e92-a7e3-ca3661e6be80/18a3d216-task-4e92-a7e3-ca3661e6be87/testaction2 |
+            | Next steps   | true                     | linkURLContains | next step 3                       | /case/testroute?caseId=18a3d216-case-4e92-a7e3-ca3661e6be80                                             |
 
 
 
@@ -127,6 +128,8 @@ Feature: WA Release 2: Case details Tasks tab
             | Priority     | <PriorityIsDisplayed>    |             | LOW          |
             | Due date     | <DuedateIsDisplayed>     |             | 1            |
             | Assigned to  | true                     |             |              |
+            | Manage       | true                     | link        | Mark as done |
+            | Manage       | true                     | link        | Assign task  |
             | Manage       | true                     | link        | Assign to me |
             | Manage       | true                     | link        | Assign       |
             | Next steps   | false                    |             |              |
@@ -159,15 +162,18 @@ Feature: WA Release 2: Case details Tasks tab
             | Next steps   | true                     |             |               |
 
         Then I validate task tab active task at position 7 with task name "7 Permissions OME assigned to someother" has attributes
-            | name         | isDisplayed              | contentType | text         |
-            | Task created | <TaskcreatedIsDisplayed> |             | -10          |
-            | Priority     | <PriorityIsDisplayed>    |             | LOW          |
-            | Due date     | <DuedateIsDisplayed>     |             | 10           |
-            | Assigned to  | true                     |             | Test 3 user  |
-            | Manage       | true                     | link        | Assign to me |
-            | Manage       | true                     | link        | Reassign     |
-            | Manage       | true                     | link        | Unassign     |
-            | Next steps   | false                    |             |              |
+            | name         | isDisplayed              | contentType | text          |
+            | Task created | <TaskcreatedIsDisplayed> |             | -10           |
+            | Priority     | <PriorityIsDisplayed>    |             | LOW           |
+            | Due date     | <DuedateIsDisplayed>     |             | 10            |
+            | Assigned to  | true                     |             | Test 3 user   |
+            | Manage       | true                     | link        | Assign to me  |
+            | Manage       | true                     | link        | Reassign task |
+            | Manage       | true                     | link        | Unassign task |
+            | Manage       | true                     | link        | Mark as done  |
+            | Manage       | true                     | link        | Reassign      |
+            | Manage       | true                     | link        | Unassign      |
+            | Next steps   | false                    |             |               |
 
         Then I validate task tab active task at position 8 with task name "8 Permissions OME unassigned" has attributes
             | name         | isDisplayed              | contentType | text         |
@@ -183,20 +189,19 @@ Feature: WA Release 2: Case details Tasks tab
             | Priority     | <PriorityIsDisplayed>    |             | LOW           |
             | Due date     | <DuedateIsDisplayed>     |             | 10            |
             | Assigned to  | true                     |             | XUI test auto |
-            | Manage       | true                     | link        | Reassign      |
-            | Manage       | true                     | link        | Unassign      |
+            | Manage       | true                     | link        | Mark as done  |
             | Next steps   | true                     |             |               |
 
         Then I validate task tab active task at position 10 with task name "10 Permissions ME assigned to someother" has attributes
-            | name         | isDisplayed              | contentType | text         |
-            | Task created | <TaskcreatedIsDisplayed> |             | -10          |
-            | Priority     | <PriorityIsDisplayed>    |             | LOW          |
-            | Due date     | <DuedateIsDisplayed>     |             | 10           |
-            | Assigned to  | true                     |             | Test 4 user  |
-            | Manage       | true                     | link        | Assign to me |
-            | Manage       | true                     | link        | Reassign     |
-            | Manage       | true                     | link        | Unassign     |
-            | Next steps   | false                    |             |              |
+            | name         | isDisplayed              | contentType | text          |
+            | Task created | <TaskcreatedIsDisplayed> |             | -10           |
+            | Priority     | <PriorityIsDisplayed>    |             | LOW           |
+            | Due date     | <DuedateIsDisplayed>     |             | 10            |
+            | Assigned to  | true                     |             | Test 4 user   |
+            | Manage       | true                     | link        | Reassign task |
+            | Manage       | true                     | link        | Unassign task |
+            | Manage       | true                     | link        | Mark as done  |
+            | Next steps   | false                    |             |               |
 
         Then I validate task tab active task at position 11 with task name "11 Permissions ME unassigned" has attributes
             | name         | isDisplayed              | contentType | text         |
@@ -223,7 +228,7 @@ Feature: WA Release 2: Case details Tasks tab
             | Priority     | <PriorityIsDisplayed>    |             | LOW        |
             | Due date     | <DuedateIsDisplayed>     |             | 10         |
             | Assigned to  | true                     |             | Unassigned |
-            | Manage       | false                    |             |            |
+            | Manage       | true                     |             |            |
             | Next steps   | false                    |             |            |
 
         Then I validate task tab active task at position 14 with task name "14 Permissions none assigned to someother" has attributes

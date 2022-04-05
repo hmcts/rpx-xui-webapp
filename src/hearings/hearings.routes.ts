@@ -9,6 +9,7 @@ import {HearingActualsTimingComponent} from './containers/hearing-actuals/hearin
 import {HearingActualsViewEditPartiesComponent} from './containers/hearing-actuals/hearing-actuals-view-edit-parties/hearing-actuals-view-edit-parties.component';
 import {HearingActualsComponent} from './containers/hearing-actuals/hearing-actuals.component';
 import {HearingStageResultComponent} from './containers/hearing-actuals/hearing-stage-result/hearing-stage-result.component';
+import { LinkedHearingsCheckYourAnswersComponent } from './containers/linked-hearings/linked-hearings-check-your-answers/linked-hearings-check-your-answers.component';
 import {HearingAdditionalInstructionsComponent} from './containers/request-hearing/hearing-additional-instructions/hearing-additional-instructions.component';
 import {HearingAttendanceComponent} from './containers/request-hearing/hearing-attendance/hearing-attendance.component';
 import {HearingChangeReasonComponent} from './containers/request-hearing/hearing-change-reason/hearing-change-reason.component';
@@ -51,6 +52,19 @@ import {PartyChannelsResolverService} from './resolvers/party-channels-resolver.
 import {RefDataResolver} from './resolvers/ref-data-resolver.resolve';
 
 export const ROUTES: Routes = [
+  {
+    path: 'link/:hearingId',
+    component: LinkedHearingsCheckYourAnswersComponent,
+    children: [
+      {
+        path: 'check-your-answers',
+        component: LinkedHearingsCheckYourAnswersComponent,
+        data: {
+          title: 'HMCTS Hearings | Linked Hearings | Check Your Answers'
+        }
+      }
+    ]
+  },
   {
     path: 'cancel/:hearingId',
     resolve: {hearingCancelOptions: RefDataResolver},

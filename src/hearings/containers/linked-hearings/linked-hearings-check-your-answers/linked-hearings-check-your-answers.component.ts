@@ -29,4 +29,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
       }
     )
   }
+
+  public onLinkHearings(): void {
+  }
 }

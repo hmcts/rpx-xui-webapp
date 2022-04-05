@@ -14,9 +14,8 @@
         <thead class="govuk-table__head">
           <tr class="govuk-table__row">
             <th scope="col" class="govuk-table__header">Case name and number </th>
-            <th scope="col" class="govuk-table__header"width="300px">Stage of hearing </th>
-            <th scope="col" class="govuk-table__header" width="200px">Position</th>
-            <th scope="col" class="govuk-table__header" width="60px"></th>
+            <th scope="col" class="govuk-table__header">Stage of hearing </th>
+            <th scope="col" class="govuk-table__header">Position</th>
           </tr>
         </thead>
         <tbody class="govuk-table__body">
@@ -26,37 +25,16 @@
             </td>
             <td scope="row" class="govuk-table__cell" style="vertical-align: middle;">Initial hearing</td>
             <td class="govuk-table__cell">1</td>
-            <td class="govuk-table__cell">
-              <a class="govuk-link govuk-link--no-visited-state" href="#">Change</a>
-            </td>
-          </tr>
-          <tr class="govuk-table__row">
-            <td class="govuk-table__cell" style="vertical-align: middle;">
-              Smith vs Peterson &nbsp;5283-8196-7254-2864
-            </td>
-            <td scope="row" class="govuk-table__cell" style="vertical-align: middle;">Final hearing</td>
-            <td class="govuk-table__cell">2</td>
-            <td class="govuk-table__cell">
-              <a class="govuk-link govuk-link--no-visited-state" href="#">Change</a>
-            </td>
-          </tr>
-          <tr class="govuk-table__row">
-            <td class="govuk-table__cell" style="vertical-align: middle;">
-              Smith vs Peterson &nbsp;8254-9025-7233-6147
-            </td>
-            <td scope="row" class="govuk-table__cell" style="vertical-align: middle;">Initial hearing</td>
-            <td class="govuk-table__cell">3</td>
-            <td class="govuk-table__cell">
-              <a class="govuk-link govuk-link--no-visited-state" href="#">Change</a>
-            </td>
           </tr>
         </tbody>
       </table>
     </div>
-    <br>
+  </div>
+  <br>
+  <div class="govuk-grid-row">
     <div class="govuk-button-group">
-      <button class="govuk-button primary" data-module="govuk-button" (click)="onSubmitHearingDetails()">
-        Submit hearing details
+      <button class="govuk-button primary" data-module="govuk-button" (click)="onLinkHearings()">
+        Link hearings
       </button>
     </div>
   </div>

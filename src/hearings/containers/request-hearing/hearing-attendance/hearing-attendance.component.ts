@@ -44,7 +44,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   }
 
   public ngOnInit(): void {
-    this.partyChannels$ = this.lovRefDataService.getListOfValues('PartyChannel', this.hearingListMainModel.hmctsServiceID);
+    this.partyChannels$ = this.lovRefDataService.getListOfValues('PartyChannel', this.serviceHearingValuesModel.hmctsServiceID);
     if (!this.hearingRequestMainModel.partyDetails.length) {
       this.initialiseFromHearingValues();
     } else {

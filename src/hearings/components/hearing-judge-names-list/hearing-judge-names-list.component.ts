@@ -1,7 +1,7 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { HearingJudgeSelectionEnum } from '../../models/hearings.enum';
-import { Person } from '../../models/person.model';
+import { JudicialUserModel } from '../../models/person.model';
 import { ValidatorsUtils } from '../../utils/validators.utils';
 
 @Component({
@@ -11,57 +11,53 @@ import { ValidatorsUtils } from '../../utils/validators.utils';
 })
 export class HearingJudgeNamesListComponent {
   @Input() public subTitle: string;
-  @Input() public domain: string;
-  @Input() public idValue: string;
+  @Input() public idValue: string = 'Exclude';
   @Input() public placeholderContent: string = '';
   @Input() public submitButtonName: string = '';
   @Input() public isColumnView: boolean;
-  @Input() public judgeList: Person[];
+  @Input() public judgeList: JudicialUserModel[];
   public validationError: { id: string, message: string };
-  @ViewChild('personControl') public personControl;
-  public selectedJudge: Person;
+  public selectedJudge: JudicialUserModel;
   public personFormGroup: FormGroup;
 
   constructor(private readonly formBuilder: FormBuilder,
               private readonly validatorsUtils: ValidatorsUtils) {
-    this.personFormGroup = this.formBuilder.group({});
+    this.personFormGroup = this.formBuilder.group({ selectedFormControl: '' });
   }
 
-  public updatePersonControls(selectedJudge: Person): void {
-    this.selectedJudge = selectedJudge;
-  }
-
-  public removeSelectedJudge(selectedJudge: Person): void {
-    this.judgeList = this.judgeList.filter(judge => judge.id !== selectedJudge.id);
+  public removeSelectedJudge(selectedJudge: JudicialUserModel): void {
+    this.judgeList = this.judgeList.filter(judge => judge.sidam_id !== selectedJudge.sidam_id);
   }
 
   public excludeJudge(): void {
-    if (this.selectedJudge && this.personControl && this.personControl.isPersonSelectionCompleted) {
-      this.judgeList.push(this.selectedJudge);
-      this.selectedJudge = null;
-      this.personControl.findPersonControl.setValue('');
+    if (this.personFormGroup.controls.selectedFormControl.value) {
+      this.judgeList.push(this.personFormGroup.controls.selectedFormControl.value as JudicialUserModel);
+      this.personFormGroup.controls.selectedFormControl.setValue(undefined);
+      this.personFormGroup.controls.selectedFormControl.markAsPristine();
+    } else {
+      this.personFormGroup.controls.selectedFormControl.setValue(undefined);
     }
   }
   public isExcludeJudgeInputValid(): boolean {
-    if (this.personControl.findPersonControl.value.length > 0) {
-      const isJudgeSelected = this.selectedJudge && this.personControl && this.personControl.isPersonSelectionCompleted;
+    if (this.personFormGroup.controls.selectedFormControl.dirty || this.personFormGroup.controls.selectedFormControl.value) {
+      const isJudgeSelected = !!this.personFormGroup.controls.selectedFormControl.value;
       const message = isJudgeSelected ? HearingJudgeSelectionEnum.ExcludeJudge : HearingJudgeSelectionEnum.ExcludeFullNameJudge;
-      this.validationError = { id: 'inputSelectPersonExclude', message };
-      this.personControl.findPersonGroup.setValidators([this.validatorsUtils.errorValidator(message)]);
-      this.personControl.findPersonGroup.updateValueAndValidity();
+      this.validationError = { id: this.idValue ? `inputSelectPerson${this.idValue}` : 'inputSelectPerson', message };
+      this.personFormGroup.controls.selectedFormControl.setValidators([this.validatorsUtils.errorValidator(message)]);
+      this.personFormGroup.controls.selectedFormControl.updateValueAndValidity();
       return false;
     } else {
       this.validationError = null;
-      this.personControl.findPersonGroup.clearValidators();
-      this.personControl.findPersonGroup.updateValueAndValidity();
+      this.personFormGroup.controls.selectedFormControl.clearValidators();
+      this.personFormGroup.controls.selectedFormControl.updateValueAndValidity();
     }
     return true;
   }
 
-  public displayedJudgeName(judge: Person) {
-    if (judge && judge.knownAs) {
-      return `${judge.knownAs} (${judge.email})`;
+  public displayedJudgeName(judge: JudicialUserModel) {
+    if (judge && judge.known_as) {
+      return `${judge.known_as} (${judge.email_id})`;
     }
-    return judge ? `${judge.name} (${judge.email})` : '';
+    return judge ? `${judge.full_name} (${judge.email_id})` : '';
   }
 }

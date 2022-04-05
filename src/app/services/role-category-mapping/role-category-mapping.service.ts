@@ -7,6 +7,7 @@ import { UserRole } from '../../models';
 export interface RoleMapping {
   JUDICIAL_ROLE_LIST: string[];
   LEGAL_OPS_ROLE_LIST: string[];
+  OGD_ROLE_LIST: string[];
 }
 
 @Injectable({
@@ -41,12 +42,14 @@ export class RoleCategoryMappingService {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  public isJudicialOrLegalOpsCategory(userRoles$: Observable<string[]>): Observable<UserRole> {
+  public getUserRoleCategory(userRoles$: Observable<string[]>): Observable<UserRole> {
     return combineLatest([this.roleMappings$, userRoles$]).pipe(
       // @ts-ignore
       map(([roleMappings, userRoles]: [RoleMapping, string[]]) => {
           if (userRoles.some(userRole => roleMappings.JUDICIAL_ROLE_LIST.some(role => role === userRole))) {
             return UserRole.Judicial;
+          } else if (userRoles.some(userRole => roleMappings.OGD_ROLE_LIST.some(role => role === userRole))) {
+            return UserRole.Ogd;
           } else if (userRoles.some(userRole => roleMappings.LEGAL_OPS_ROLE_LIST.some(role => role === userRole))) {
             return UserRole.LegalOps;
           } else {

@@ -1,19 +1,22 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { Person } from '../../models/person.model';
+import { JudicialUserModel } from '../../../hearings/models/person.model';
 import { HearingJudgeNamesListComponent } from './hearing-judge-names-list.component';
 
 describe('HearingJudgeNamesListComponent', () => {
   let component: HearingJudgeNamesListComponent;
   let fixture: ComponentFixture<HearingJudgeNamesListComponent>;
 
-  const judgeDetails: Person = {
-    id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
-    name: 'Jacky Collins',
-    email: 'jacky.collins@judicial.com',
-    domain: 'JUDICIAL',
-    knownAs: 'Hearing Judge'
+  const judgeDetails: JudicialUserModel = {
+    sidam_id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
+    object_id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
+    known_as: 'Hearing Judge',
+    surname: 'Jacky',
+    personal_code: 'P100001',
+    full_name: 'Jacky Collins',
+    post_nominals: '',
+    email_id: 'jacky.collins@judicial.com'
   };
 
   beforeEach(async(() => {
@@ -35,20 +38,8 @@ describe('HearingJudgeNamesListComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should update person controls of selectedJudge', () => {
-    component.updatePersonControls(judgeDetails);
-    expect(component.selectedJudge).toBe(judgeDetails);
-  });
-
   it('should check displayed Judge Name', () => {
     expect(component.displayedJudgeName(judgeDetails)).toBe(`Hearing Judge (jacky.collins@judicial.com)`);
-    const judgeDetailsWithoutKnownas: Person = {
-      id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
-      name: 'Jacky Collins',
-      email: 'jacky.collins@judicial.com',
-      domain: 'JUDICIAL',
-    };
-    expect(component.displayedJudgeName(judgeDetailsWithoutKnownas)).toBe(`Jacky Collins (jacky.collins@judicial.com)`);
   });
 
   it('should remove selected Judge', () => {
@@ -58,11 +49,9 @@ describe('HearingJudgeNamesListComponent', () => {
   });
 
   it('should check exclude judge', () => {
-    component.selectedJudge = judgeDetails;
     component.judgeList = [];
-    component.personControl = {};
-    component.personControl.findPersonControl = new FormControl();
-    component.personControl.isPersonSelectionCompleted = true;
+    component.selectedJudge = judgeDetails;
+    component.personFormGroup.controls.selectedFormControl.setValue(judgeDetails);
     component.excludeJudge();
     expect(component.judgeList.length).toBe(1);
     component.removeSelectedJudge(judgeDetails);
@@ -72,13 +61,9 @@ describe('HearingJudgeNamesListComponent', () => {
   it('should check exclude judge is valid input or not', () => {
     component.selectedJudge = judgeDetails;
     component.judgeList = [];
-    component.personControl = {};
-    component.personControl.isPersonSelectionCompleted = true;
-    component.personControl.findPersonControl = new FormControl();
-    component.personControl.findPersonGroup = new FormGroup({});
-    component.personControl.findPersonControl.value = 'jam';
+    component.personFormGroup.controls.selectedFormControl.setValue(judgeDetails);
     expect(component.isExcludeJudgeInputValid()).toBe(false);
-    component.personControl.findPersonControl.value = '';
+    component.personFormGroup.controls.selectedFormControl.setValue(null);
     expect(component.isExcludeJudgeInputValid()).toBe(true);
   });
 });

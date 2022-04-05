@@ -1,6 +1,7 @@
 import { Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
+import {cold} from 'jasmine-marbles';
 import { of } from 'rxjs';
 import {UserDetails, UserRole} from '../../app/models';
 import {SessionStorageService} from '../../app/services';
@@ -70,25 +71,31 @@ describe('HearingsEditGuard', () => {
     storeMock = jasmine.createSpyObj<Store<fromAppStore.State>>('store', ['pipe']);
     sessionStorageMock = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
     featureToggleMock = jasmine.createSpyObj<FeatureToggleService>('featureToggleService', ['getValueOnce']);
-    roleCategoryMappingServiceMock = jasmine.createSpyObj<RoleCategoryMappingService>('roleCategoryMappingService', ['isJudicialOrLegalOpsCategory']);
+    roleCategoryMappingServiceMock = jasmine.createSpyObj<RoleCategoryMappingService>('roleCategoryMappingService', ['getUserRoleCategory']);
   });
 
   it('case worker should be able to access the hearings edit link', () => {
     storeMock.pipe.and.returnValue(of(USER_1));
-    roleCategoryMappingServiceMock.isJudicialOrLegalOpsCategory.and.returnValue(of(UserRole.LegalOps));
+    roleCategoryMappingServiceMock.getUserRoleCategory.and.returnValue(of(UserRole.LegalOps));
+    featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
+    sessionStorageMock.getItem.and.returnValue(JSON.stringify(CASE_INFO));
     hearingsEditGuard = new HearingsEditGuard(storeMock, sessionStorageMock, featureToggleMock, roleCategoryMappingServiceMock, routerMock);
-    featureToggleMock.getValueOnce.and.returnValue(of(null));
-    sessionStorageMock.getItem.and.returnValue(CASE_INFO);
-    hearingsEditGuard.canActivate().toPromise().then(canActivate => expect(canActivate).toBeTruthy());
+    const result$ = hearingsEditGuard.canActivate();
+    const canActive = true;
+    const expected = cold('(b|)', {b: canActive});
+    expect(result$).toBeObservable(expected);
   });
 
   it('judicial user should not be able to access the hearings edit link', () => {
     storeMock.pipe.and.returnValue(of(USER_2));
-    roleCategoryMappingServiceMock.isJudicialOrLegalOpsCategory.and.returnValue(of(UserRole.Judicial));
-    hearingsEditGuard = new HearingsEditGuard(storeMock, sessionStorageMock, featureToggleMock, roleCategoryMappingServiceMock, routerMock);
+    roleCategoryMappingServiceMock.getUserRoleCategory.and.returnValue(of(UserRole.Judicial));
     featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
-    sessionStorageMock.getItem.and.returnValue(CASE_INFO);
-    hearingsEditGuard.canActivate().toPromise().then(canActivate => expect(canActivate).toBeFalsy());
+    sessionStorageMock.getItem.and.returnValue(JSON.stringify(CASE_INFO));
+    hearingsEditGuard = new HearingsEditGuard(storeMock, sessionStorageMock, featureToggleMock, roleCategoryMappingServiceMock, routerMock);
+    const result$ = hearingsEditGuard.canActivate();
+    const canActive = false;
+    const expected = cold('(b|)', {b: canActive});
+    expect(result$).toBeObservable(expected);
   });
 
 });

@@ -60,6 +60,7 @@ export async function getHearings(req: EnhancedRequest, res: Response, next: Nex
 
   try {
     const {status, data}: { status: number, data: HearingListMainModel } = await realAPI.handleGet(markupPath, req, next);
+    // const {status, data}: { status: number, data: HearingListMainModel } = await handleGet(markupPath, req);
     data.caseHearings.forEach(hearing =>
       hearingStatusMappings.filter(mapping => mapping.hmcStatus === hearing.hmcStatus).map(hearingStatusMapping => {
         hearing.exuiSectionStatus = hearingStatusMapping.exuiSectionStatus;
@@ -96,6 +97,7 @@ export async function submitHearingRequest(req: EnhancedRequest, res: Response, 
   const markupPath: string = `${hmcHearingsUrl}/hearing`;
   try {
     // tslint:disable-next-line:max-line-length
+    // const { status, data }: { status: number, data: ServiceHearingValuesModel } = await handlePost(markupPath, reqBody, req);
     const {status, data}: { status: number, data: ServiceHearingValuesModel } = await realAPI.sendPost(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {

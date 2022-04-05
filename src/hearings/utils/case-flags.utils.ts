@@ -38,13 +38,21 @@ export class CaseFlagsUtils {
   private static getAllActiveDisplayFlags(partyFlags: PartyFlagsModel[], caseFlagsRefDataModels: CaseFlagReferenceModel[]): PartyFlagsDisplayModel[] {
     const displayCaseFlags: PartyFlagsDisplayModel[] = partyFlags.map(flag => {
       const flagPath: CaseFlagReferenceModel = this.findFlagByFlagId(caseFlagsRefDataModels, flag.flagId);
-      return {
-        ...flag,
-        displayName: flagPath.name,
-        displayPath: flagPath.Path,
-      };
+      if (flagPath) {
+        return {
+          ...flag,
+          displayName: flagPath.name,
+          displayPath: flagPath.Path,
+        };
+      } else {
+        return {
+          ...flag,
+          displayName: null,
+          displayPath: null,
+        };
+      }
     });
-    return displayCaseFlags.filter(flag => flag.flagStatus === CaseFlagsUtils.ACTIVE);
+    return displayCaseFlags.filter(flag => flag.displayPath ? flag.flagStatus === CaseFlagsUtils.ACTIVE : false);
   }
 
   private static getAllRAFsWithGroup(flags: PartyFlagsDisplayModel[]): CaseFlagGroup[] {

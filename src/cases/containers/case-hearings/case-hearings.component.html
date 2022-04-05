@@ -1,8 +1,8 @@
 <div class="govuk-tabs__panel">
   <div class="govuk-width-container" *ngIf="serverError">
     <div class="govuk-main-wrapper">
-        <p class="govuk-body">{{serverError.message}}</p>
-        <span class="govuk-body align-left">
+      <p class="govuk-body">{{serverError.message}}</p>
+      <span class="govuk-body align-left">
           <a href="javascript:void(0)" (click)="reloadHearings()"
              id="reload-hearing-tab"
              class="govuk-link">Reload hearings tab</a>
@@ -25,16 +25,27 @@
         <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"/>
       </svg>
     </a>
-    <exui-case-hearings-list
-      [status]="upcomingStatus"
-      [hearingList$]="upcomingHearings$"
-      [actions]="hearingsActions">
-    </exui-case-hearings-list>
-  
-    <exui-case-hearings-list
-      [status]="pastAndCancelledStatus"
-      [hearingList$]="pastAndCancelledHearings$"
-      [actions]="hearingsActions">
-    </exui-case-hearings-list>
+    <ng-container *ngIf="!(isOgdRole$ | async)">
+      <exui-case-hearings-list
+        [status]="upcomingStatus"
+        [hearingList$]="upcomingHearings$"
+        [actions]="hearingsActions">
+      </exui-case-hearings-list>
+
+      <exui-case-hearings-list
+        [status]="pastAndCancelledStatus"
+        [hearingList$]="pastAndCancelledHearings$"
+        [actions]="hearingsActions">
+      </exui-case-hearings-list>
+    </ng-container>
+
+    <ng-container *ngIf="isOgdRole$ | async">
+      <exui-case-hearings-list
+        [status]="upcomingStatus"
+        [hearingList$]="listedHearings$"
+        [actions]="hearingsActions">
+      </exui-case-hearings-list>
+    </ng-container>
+
   </ng-container>
 </div>

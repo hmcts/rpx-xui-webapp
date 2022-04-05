@@ -819,14 +819,14 @@ describe('CaseHearingsListComponent', () => {
     expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100000', '/hearings/request/hearing-view-edit-summary');
   });
 
-  it('should addAndEdit', () => {
-    component.addAndEdit('h100000');
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'actuals', 'h100000', 'hearing-actual-add-edit-summary']);
-  });
-
   it('should cancelHearing', () => {
     component.cancelHearing('h100000');
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'cancel', 'h100000']);
+  });
+
+  it('should addAndEdit', () => {
+    component.addAndEdit('h100000');
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'actuals', 'h100000', 'hearing-actual-add-edit-summary']);
   });
 
   it('should linkHearing', () => {
@@ -865,6 +865,9 @@ describe('CaseHearingsListComponent', () => {
     component.viewDetails(PAST_HEARING_LIST[1]);
     fixture.detectChanges();
     expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100010', '/hearings/view/hearing-completed-summary/h100010');
+    component.viewDetails(UPCOMING_HEARING_LIST[7]);
+    fixture.detectChanges();
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100009', '/hearings/view/hearing-view-actuals-summary/h100009');
     // ADJOURNED
     component.viewDetails(PAST_HEARING_LIST[2]);
     fixture.detectChanges();

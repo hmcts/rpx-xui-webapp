@@ -6,7 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { JudicialUserModel } from '../../../../hearings/models/judicialUser.model';
+import { JudicialUserModel } from '../../../../hearings/models/person.model';
 import { HearingJudgeNamesListComponent } from '../../../components';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION, HearingJudgeSelectionEnum, MemberType, RadioOptions, RequirementType } from '../../../models/hearings.enum';
@@ -19,7 +19,6 @@ describe('HearingJudgeComponent', () => {
   let fixture: ComponentFixture<HearingJudgeComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const childComponent = jasmine.createSpyObj('HearingJudgeNamesListComponent', ['isExcludeJudgeInputValid']);
-  const personComponent = jasmine.createSpyObj('HearingJudgeNameComponent', ['setSelectedJudge', 'isJudgeInputValid']);
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
   const judgeTypes: LovRefDataModel[] = [
@@ -70,16 +69,6 @@ describe('HearingJudgeComponent', () => {
     expect(component.specificJudgeSelection).toBe(RadioOptions.YES);
   });
 
-  it('should initForm', () => {
-    component.initForm();
-    expect(component.hearingJudgeForm.controls.findPersonControl.get('domain')).toBeTruthy();
-    expect(component.hearingJudgeForm.controls.findPersonControl.get('email')).toBeTruthy();
-    expect(component.hearingJudgeForm.controls.findPersonControl.get('id')).toBeTruthy();
-    expect(component.hearingJudgeForm.controls.findPersonControl.get('knownAs')).toBeTruthy();
-    expect(component.hearingJudgeForm.controls.findPersonControl.get('name')).toBeTruthy();
-    expect(component.hearingJudgeForm.controls.findPersonControl.get('personalCode')).toBeTruthy();
-  });
-
   it('should check form data', () => {
     component.excludedJudge = childComponent;
     component.excludedJudge.validationError = { id: 'elementId', message: 'Error Message' };
@@ -106,18 +95,22 @@ describe('HearingJudgeComponent', () => {
   });
 
   it('should check prepareHearingRequestData', () => {
-    const judgeInfo = {
-      id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
-      name: 'Jacky Collins',
-      email: 'jacky.collins@judicial.com',
-      domain: 'JUDICIAL',
-      personalCode: 'P0000001',
-      knownAs: 'Jacky Collins',
+    const judgeInfo: JudicialUserModel = {
+      sidam_id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
+      object_id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
+      known_as: 'Hearing Judge',
+      surname: 'Jacky',
+      personal_code: 'P100001',
+      full_name: 'Jacky Collins',
+      post_nominals: '',
+      email_id: 'jacky.collins@judicial.com'
     };
+
     component.hearingJudgeForm.controls.specificJudge.setValue(RadioOptions.YES);
+    component.hearingJudgeForm.controls.judgeName.setValue(judgeInfo);
     component.prepareHearingRequestData();
     expect(component.hearingRequestMainModel.hearingDetails.panelRequirements.panelPreferences.length).toBe(1);
-    component.hearingJudgeForm.controls.findPersonControl.setValue(judgeInfo);
+    component.hearingJudgeForm.controls.judgeName.setValue(judgeInfo);
     component.excludedJudge.judgeList = [judgeInfo];
     component.prepareHearingRequestData();
     expect(component.hearingRequestMainModel.hearingDetails.panelRequirements.panelPreferences.length).toBeGreaterThan(0);
@@ -159,10 +152,8 @@ describe('HearingJudgeComponent', () => {
   });
 
   it('should check setFormData', () => {
-    component.hearingJudgeInfo = personComponent;
     component.setFormData();
     expect(component.excludedJudgeList.length).toBe(0);
-    expect(personComponent.setSelectedJudge).not.toHaveBeenCalled();
     const personalCodeJudgeList: JudicialUserModel[] = [{
       sidam_id: '1102839232',
       object_id: '1102839232',
@@ -188,7 +179,6 @@ describe('HearingJudgeComponent', () => {
     component.hearingJudgeFormInfo.excludedJudges = ['P0000002'];
     component.personalCodejudgeList = personalCodeJudgeList;
     component.setFormData();
-    expect(personComponent.setSelectedJudge).toHaveBeenCalled();
     expect(component.excludedJudgeList.length).toBe(1);
   });
 

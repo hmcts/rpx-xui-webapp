@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { MemberType, RadioOptions, RequirementType } from '../models/hearings.enum';
+import { MemberType, RadioOptions } from '../models/hearings.enum';
 import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 

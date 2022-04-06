@@ -27,4 +27,15 @@ export class HearingLinksEffects {
     })
   );
 
+  @Effect()
+  public loadLinkedHearingGroup$ = this.actions$.pipe(
+    ofType(hearingLinksActions.LOAD_LINKED_HEARING_GROUP),
+    map((action: hearingLinksActions.LoadLinkedHearingGroup) => action.payload),
+    switchMap(payload => {
+      return this.hearingsService.getLinkedHearingGroup(payload.caseReference, payload.hearingId).pipe(
+        map(response => new hearingLinksActions.LoadLinkedHearingGroupSuccess(response)),
+        catchError((error: HttpError) => of(new hearingLinksActions.LoadLinkedHearingGroupFailure(error)))
+      );
+    })
+  );
 }

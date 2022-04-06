@@ -4,6 +4,7 @@ export interface ServiceLinkedCasesModel {
   caseReference: string;
   caseName: string;
   reasonsForLink: string[];
+  hearingStage?: string;
 }
 
 export interface LinkedHearingGroupMainModel {
@@ -21,6 +22,7 @@ export interface GroupDetailsModel {
 export interface LinkedHearingsDetailModel {
   hearingId: string;
   hearingOrder: number;
+  hearingStage?: string;
 }
 
 export interface LinkedHearingGroupResponseModel {

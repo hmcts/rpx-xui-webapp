@@ -1,16 +1,21 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { SpecificAccessReviewComponent } from './specific-access-review.component';
-import { State } from '../../../../app/store';
-import { SpecificAccessNavigationEvent } from '../../../models';
 import { Observable } from 'rxjs';
+
+import { State } from '../../../../app/store';
+import { SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
+import { AccessReason } from '../../../models/enums';
+import { DecideSpecificAccessAndGo } from '../../../store';
+import { SpecificAccessReviewComponent } from './specific-access-review.component';
 
 describe('SpecificAccessReviewComponent', () => {
   let component: SpecificAccessReviewComponent;
   let fixture: ComponentFixture<SpecificAccessReviewComponent>;
   let mockStore: MockStore<State>;
+  const FORM_GROUP: FormGroup = new FormGroup({});
 
   let spyOnPipeToStore = jasmine.createSpy();
   let spyOnStoreDispatch = jasmine.createSpy();
@@ -19,9 +24,10 @@ describe('SpecificAccessReviewComponent', () => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [SpecificAccessReviewComponent],
-      imports: [],
+      imports: [ReactiveFormsModule],
       providers: [
-        provideMockStore()
+        provideMockStore(),
+        FormBuilder
       ]
     })
       .compileComponents();
@@ -33,6 +39,7 @@ describe('SpecificAccessReviewComponent', () => {
     spyOnStoreDispatch = spyOn(mockStore, 'dispatch');
     fixture = TestBed.createComponent(SpecificAccessReviewComponent);
     component = fixture.componentInstance;
+    component.formGroup = FORM_GROUP;
     fixture.detectChanges();
   });
 
@@ -48,8 +55,10 @@ describe('SpecificAccessReviewComponent', () => {
   describe('navigation', () => {
 
     it('should correctly navigate on click of continue button', () => {
+      component.reviewOptionControl.setValue(AccessReason.APPROVE_REQUEST);
       component.navigationHandler(SpecificAccessNavigationEvent.CONTINUE);
-      expect(mockStore.dispatch).toHaveBeenCalled();
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        new DecideSpecificAccessAndGo( { accessReason: AccessReason.APPROVE_REQUEST, specificAccessState: SpecificAccessState.SPECIFIC_ACCESS_DURATION } ));
     });
 
   });

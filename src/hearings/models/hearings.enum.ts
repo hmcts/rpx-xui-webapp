@@ -246,6 +246,10 @@ export enum HearingChangeReasonMessages {
   SELECT_AT_LEAST_ONE_REASON = 'Select at least one valid reason',
 }
 
+export enum HearingLinkMessages {
+  SELECT_HEARING_LINK_OPTION = 'Please make a selection'
+}
+
 export enum AnswerSource {
   CASE_NAME,
   CASE_NUMBER,
@@ -284,6 +288,7 @@ export enum AnswerSource {
   HEARING_PRIORITY,
   ADDITIONAL_INSTRUCTION,
   REASON_FOR_CANCELLATION,
+  LINKED_HEARINGS
 }
 
 export enum IsHiddenSource {

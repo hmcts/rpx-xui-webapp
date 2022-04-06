@@ -194,6 +194,16 @@ export const HEARING_VIEW_ONLY_SUMMARY_TEMPLATE: Section[] = [
     ],
   },
   {
+    sectionHTMLTitle: '<h2 class="govuk-heading-m">Linked hearings</h2>',
+    answers: [
+      {
+        id: 'linkedHearings',
+        answerTitle: 'Will this hearing need to be linked to other hearings?',
+        answerSource: AnswerSource.LINKED_HEARINGS,
+      },
+    ],
+  },
+  {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Additional instructions</h2>',
     answers: [
       {

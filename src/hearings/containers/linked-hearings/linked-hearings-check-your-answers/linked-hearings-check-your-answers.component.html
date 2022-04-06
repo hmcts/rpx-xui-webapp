@@ -6,25 +6,25 @@
       <h1 class="govuk-heading-l">Check your answers</h1>
       <h2 class="govuk-heading-m">Linked hearings</h2>
       <span class="govuk-body align-right">
-        <a href="javascript:void(0)" [routerLink]="['/', 'hearings', 'actuals', id, 'hearing-stage-result']"
+        <a href="javascript:void(0)" [routerLink]="['/', 'hearings', 'actuals', 'hearing-stage-result']"
            id="hearing-stage-result-update-link"
            class="govuk-link">Change</a>
       </span>
       <table class="govuk-table">
         <thead class="govuk-table__head">
           <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header">Case name and number </th>
-            <th scope="col" class="govuk-table__header">Stage of hearing </th>
-            <th scope="col" class="govuk-table__header">Position</th>
+            <th scope="col" class="govuk-table__header">Case name and number</th>
+            <th scope="col" class="govuk-table__header">Stage of hearing</th>
+            <th scope="col" class="govuk-table__header" *ngIf="showPositionColumn">Position</th>
           </tr>
         </thead>
         <tbody class="govuk-table__body">
-          <tr class="govuk-table__row">
-            <td class="govuk-table__cell" style="vertical-align: middle;">
-              Smith vs Peterson &nbsp;1234-5678-9012-3456
+          <tr class="govuk-table__row" *ngFor="let case of linkedCases">
+            <td class="govuk-table__cell">
+              {{case.caseName}} {{case.caseReference}}
             </td>
-            <td scope="row" class="govuk-table__cell" style="vertical-align: middle;">Initial hearing</td>
-            <td class="govuk-table__cell">1</td>
+            <td class="govuk-table__cell">{{case.hearingStage}}</td>
+            <td class="govuk-table__cell" *ngIf="showPositionColumn"></td>
           </tr>
         </tbody>
       </table>

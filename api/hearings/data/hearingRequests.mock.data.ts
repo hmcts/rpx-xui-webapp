@@ -2356,17 +2356,15 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingType: 'final',
       hearingLocations: [
         {
-          locationType: 'hearing',
+          locationType: HMCLocationType.COURT,
           locationId: '196538',
         },
       ],
       hearingIsLinkedFlag: false,
       hearingWindow: {
-        hearingWindowDateRange: {
-          hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
-          hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000',
-        },
-        hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
+        dateRangeStart: '2022-11-23T09:00:00.000Z',
+        dateRangeEnd: '2022-11-30T09:00:00.000Z',
+        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
       },
       privateHearingRequiredFlag: false,
       panelRequirements: null,

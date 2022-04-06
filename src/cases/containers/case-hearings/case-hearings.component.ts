@@ -148,7 +148,6 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   }
 
   public createHearingRequest(): void {
-    // this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
     const hearingCondition: HearingConditions = {
       mode: Mode.CREATE,
       isInit: true,

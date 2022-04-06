@@ -24,7 +24,7 @@ class MockRoleCategoryMappingService {
 
 const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   hearingID: 'h100001',
-  hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
+  hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
   hearingType: 'Case management hearing',
   hmcStatus: 'Hearing requested',
   lastResponseReceivedDateTime: '',
@@ -39,7 +39,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING
 }, {
   hearingID: 'h100002',
-  hearingRequestDateTime: '2021-10-01T16:00:00.000+0000',
+  hearingRequestDateTime: '2021-10-01T16:00:00.000Z',
   hearingType: 'Final hearing',
   hmcStatus: 'Awaiting listing',
   lastResponseReceivedDateTime: '',
@@ -54,7 +54,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING
 }, {
   hearingID: 'h100003',
-  hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
+  hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
   hearingType: 'Initial hearing',
   hmcStatus: 'Listed',
   lastResponseReceivedDateTime: '',
@@ -65,8 +65,8 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   hearingIsLinkedFlag: false,
   hearingGroupRequestId: 'g100000',
   hearingDaySchedule: [{
-    hearingStartDateTime: '2021-05-04T09:00:00.000+0000',
-    hearingEndDateTime: '2021-05-04T16:00:00.000+0000',
+    hearingStartDateTime: '2021-05-04T09:00:00.000Z',
+    hearingEndDateTime: '2021-05-04T16:00:00.000Z',
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba5',
     hearingVenueId: 'venue 1',
     hearingRoomId: 'room 1',
@@ -99,8 +99,8 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
       },
     ],
   }, {
-    hearingStartDateTime: '2021-05-05T09:00:00.000+0000',
-    hearingEndDateTime: '2021-05-05T16:00:00.000+0000',
+    hearingStartDateTime: '2021-05-05T09:00:00.000Z',
+    hearingEndDateTime: '2021-05-05T16:00:00.000Z',
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba4',
     hearingVenueId: 'venue 2',
     hearingRoomId: 'room 2',
@@ -137,7 +137,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   exuiDisplayStatus: EXUIDisplayStatusEnum.LISTED
 }, {
   hearingID: 'h100004',
-  hearingRequestDateTime: '2021-10-01T16:00:00.000+0000',
+  hearingRequestDateTime: '2021-10-01T16:00:00.000Z',
   hearingType: 'Case management hearing',
   hmcStatus: 'Update requested',
   lastResponseReceivedDateTime: '',
@@ -148,8 +148,8 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   hearingIsLinkedFlag: false,
   hearingGroupRequestId: null,
   hearingDaySchedule: [{
-    hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
-    hearingEndDateTime: '2021-03-12T16:00:00.000+0000',
+    hearingStartDateTime: '2021-03-12T09:00:00.000Z',
+    hearingEndDateTime: '2021-03-12T16:00:00.000Z',
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc4',
     hearingVenueId: 'venue 3',
     hearingRoomId: 'room 3',
@@ -182,8 +182,8 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
       },
     ],
   }, {
-    hearingStartDateTime: '2021-03-13T09:00:00.000+0000',
-    hearingEndDateTime: '2021-03-13T16:00:00.000+0000',
+    hearingStartDateTime: '2021-03-13T09:00:00.000Z',
+    hearingEndDateTime: '2021-03-13T16:00:00.000Z',
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc5',
     hearingVenueId: 'venue 4',
     hearingRoomId: 'room 4',
@@ -220,7 +220,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   exuiDisplayStatus: EXUIDisplayStatusEnum.UPDATE_REQUESTED
 }, {
   hearingID: 'h100005',
-  hearingRequestDateTime: '2021-10-01T16:00:00.000+0000',
+  hearingRequestDateTime: '2021-10-01T16:00:00.000Z',
   hearingType: 'Case management preliminary hearing - open',
   hmcStatus: 'Update submitted',
   lastResponseReceivedDateTime: '',
@@ -231,8 +231,8 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   hearingIsLinkedFlag: false,
   hearingGroupRequestId: null,
   hearingDaySchedule: [{
-    hearingStartDateTime: '2021-04-12T09:00:00.000+0000',
-    hearingEndDateTime: '2021-04-12T16:00:00.000+0000',
+    hearingStartDateTime: '2021-04-12T09:00:00.000Z',
+    hearingEndDateTime: '2021-04-12T16:00:00.000Z',
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc6',
     hearingVenueId: 'venue 5',
     hearingRoomId: 'room 5',
@@ -269,7 +269,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   exuiDisplayStatus: EXUIDisplayStatusEnum.UPDATE_REQUESTED
 }, {
   hearingID: 'h100006',
-  hearingRequestDateTime: '2021-09-01T14:00:00.000+0000',
+  hearingRequestDateTime: '2021-09-01T14:00:00.000Z',
   hearingType: 'Directions hearing',
   hmcStatus: 'Exception',
   lastResponseReceivedDateTime: '',
@@ -280,8 +280,8 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   hearingIsLinkedFlag: false,
   hearingGroupRequestId: null,
   hearingDaySchedule: [{
-    hearingStartDateTime: '2021-05-02T09:00:00.000+0000',
-    hearingEndDateTime: '2021-05-02T16:00:00.000+0000',
+    hearingStartDateTime: '2021-05-02T09:00:00.000Z',
+    hearingEndDateTime: '2021-05-02T16:00:00.000Z',
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b55',
     hearingVenueId: 'venue 1',
     hearingRoomId: 'room 1',
@@ -318,7 +318,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   exuiDisplayStatus: EXUIDisplayStatusEnum.FAILURE
 }, {
   hearingID: 'h100007',
-  hearingRequestDateTime: '2021-09-01T14:00:00.000+0000',
+  hearingRequestDateTime: '2021-09-01T14:00:00.000Z',
   hearingType: 'Full hearing',
   hmcStatus: 'Cancellation requested',
   lastResponseReceivedDateTime: '',
@@ -329,8 +329,8 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   hearingIsLinkedFlag: false,
   hearingGroupRequestId: null,
   hearingDaySchedule: [{
-    hearingStartDateTime: '2021-07-12T09:00:00.000+0000',
-    hearingEndDateTime: '2021-07-12T16:00:00.000+0000',
+    hearingStartDateTime: '2021-07-12T09:00:00.000Z',
+    hearingEndDateTime: '2021-07-12T16:00:00.000Z',
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b44',
     hearingVenueId: 'venue 2',
     hearingRoomId: 'room 2',
@@ -357,8 +357,8 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
       },
     ],
   }, {
-    hearingStartDateTime: '2021-02-13T09:00:00.000+0000',
-    hearingEndDateTime: '2021-02-13T16:00:00.000+0000',
+    hearingStartDateTime: '2021-02-13T09:00:00.000Z',
+    hearingEndDateTime: '2021-02-13T16:00:00.000Z',
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b34',
     hearingVenueId: 'venue 3',
     hearingRoomId: 'room 3',
@@ -395,7 +395,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLATION_REQUESTED
 }, {
   hearingID: 'h100009',
-  hearingRequestDateTime: '2021-09-01T14:00:00.000+0000',
+  hearingRequestDateTime: '2021-09-01T14:00:00.000Z',
   hearingType: 'Pre-hearing review',
   hmcStatus: 'Awaiting Actuals',
   lastResponseReceivedDateTime: '',
@@ -406,8 +406,8 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   hearingIsLinkedFlag: false,
   hearingGroupRequestId: null,
   hearingDaySchedule: [{
-    hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
-    hearingEndDateTime: '2021-03-12T16:00:00.000+0000',
+    hearingStartDateTime: '2021-03-12T09:00:00.000Z',
+    hearingEndDateTime: '2021-03-12T16:00:00.000Z',
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
     hearingVenueId: 'venue 4',
     hearingRoomId: 'room 4',
@@ -440,7 +440,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
 
 const PAST_HEARING_LIST: HearingListViewModel[] = [{
   hearingID: 'h100008',
-  hearingRequestDateTime: '2021-09-14T16:00:00.000+0000',
+  hearingRequestDateTime: '2021-09-14T16:00:00.000Z',
   hearingType: 'Directions hearing',
   hmcStatus: 'Vacated',
   lastResponseReceivedDateTime: '',
@@ -455,7 +455,7 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
   exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED
 }, {
   hearingID: 'h100010',
-  hearingRequestDateTime: '2021-09-01T14:00:00.000+0000',
+  hearingRequestDateTime: '2021-09-01T14:00:00.000Z',
   hearingType: 'Case management preliminary hearing - open',
   hmcStatus: 'Completed',
   lastResponseReceivedDateTime: '',
@@ -466,8 +466,8 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
   hearingIsLinkedFlag: false,
   hearingGroupRequestId: null,
   hearingDaySchedule: [{
-    hearingStartDateTime: '2021-04-12T09:00:00.000+0000',
-    hearingEndDateTime: '2021-04-12T16:00:00.000+0000',
+    hearingStartDateTime: '2021-04-12T09:00:00.000Z',
+    hearingEndDateTime: '2021-04-12T16:00:00.000Z',
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b66',
     hearingVenueId: 'venue 5',
     hearingRoomId: 'room 5',
@@ -504,7 +504,7 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
   exuiDisplayStatus: EXUIDisplayStatusEnum.COMPLETED
 }, {
   hearingID: 'h100011',
-  hearingRequestDateTime: '2021-09-14T16:00:00.000+0000',
+  hearingRequestDateTime: '2021-09-14T16:00:00.000Z',
   hearingType: 'Remedy hearing',
   hmcStatus: 'Adjourned',
   lastResponseReceivedDateTime: '',
@@ -515,8 +515,8 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
   hearingIsLinkedFlag: false,
   hearingGroupRequestId: null,
   hearingDaySchedule: [{
-    hearingStartDateTime: '2021-09-01T09:00:00.000+0000',
-    hearingEndDateTime: '2021-09-01T16:00:00.000+0000',
+    hearingStartDateTime: '2021-09-01T09:00:00.000Z',
+    hearingEndDateTime: '2021-09-01T16:00:00.000Z',
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b33',
     hearingVenueId: 'venue 11',
     hearingRoomId: 'room 11',
@@ -553,7 +553,7 @@ const PAST_HEARING_LIST: HearingListViewModel[] = [{
   exuiDisplayStatus: EXUIDisplayStatusEnum.ADJOURNED
 }, {
   hearingID: 'h100012',
-  hearingRequestDateTime: '2021-10-14T16:00:00.000+0000',
+  hearingRequestDateTime: '2021-10-14T16:00:00.000Z',
   hearingType: 'Full hearing',
   hmcStatus: 'Vacated',
   lastResponseReceivedDateTime: '',
@@ -814,7 +814,6 @@ describe('CaseHearingsListComponent', () => {
     const loadHearingRequestAndRedirect = spyOn(component, 'LoadHearingRequestAndRedirect');
     component.status = EXUISectionStatusEnum.UPCOMING;
     component.viewAndEdit('h100000');
-    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.LoadHearingValues('1111222233334444')));
     expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions({ mode: 'view' })));
     expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100000', '/hearings/request/hearing-view-edit-summary');
   });

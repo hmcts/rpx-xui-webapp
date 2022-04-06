@@ -4,13 +4,12 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
-import {Store} from '@ngrx/store';
 import {provideMockStore} from '@ngrx/store/testing';
 import * as moment from 'moment';
 import {of} from 'rxjs';
 import {ErrorMessage} from '../../../../app/models';
 import {initialState} from '../../../hearing.test.data';
-import {ACTION, HearingDatePriorityEnum, RadioOptions} from '../../../models/hearings.enum';
+import {ACTION, HearingDatePriorityEnum, RadioOptions, UnavailabilityType} from '../../../models/hearings.enum';
 import {LovRefDataModel} from '../../../models/lovRefData.model';
 import {UnavailabilityRangeModel} from '../../../models/unavailabilityRange.model';
 import {HearingsService} from '../../../services/hearings.service';
@@ -33,7 +32,6 @@ describe('HearingTimingComponent', () => {
   let component: HearingTimingComponent;
   let fixture: ComponentFixture<HearingTimingComponent>;
   let router: Router;
-  let mockStore: any;
   const priorities: LovRefDataModel[] = [
     {
       key: 'urgent',
@@ -69,8 +67,6 @@ describe('HearingTimingComponent', () => {
       schemas: [NO_ERRORS_SCHEMA],
     })
       .compileComponents();
-    mockStore = TestBed.get(Store);
-    mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
     fixture = TestBed.createComponent(HearingTimingComponent);
     component = fixture.componentInstance;
     router = TestBed.get(Router);
@@ -109,12 +105,14 @@ describe('HearingTimingComponent', () => {
     component.partiesNotAvailableDates = [];
     const unavailabilityDates: UnavailabilityRangeModel[] = [
       {
-        unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-        unavailableToDate: '2021-12-31T09:00:00.000+0000',
+        unavailableFromDate: '2021-12-10T09:00:00.000Z',
+        unavailableToDate: '2021-12-31T09:00:00.000Z',
+        unavailabilityType: UnavailabilityType.ALL_DAY,
       },
       {
-        unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-        unavailableToDate: '2021-12-31T09:00:00.000+0000',
+        unavailableFromDate: '2021-12-10T09:00:00.000Z',
+        unavailableToDate: '2021-12-31T09:00:00.000Z',
+        unavailabilityType: UnavailabilityType.ALL_DAY,
       },
     ];
     component.checkUnavailableDatesList(unavailabilityDates);
@@ -125,8 +123,9 @@ describe('HearingTimingComponent', () => {
   it('should set unavailable dates', () => {
     component.partiesNotAvailableDates = [];
     const unavailabilityDate: UnavailabilityRangeModel = {
-      unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-      unavailableToDate: '2021-12-11T09:00:00.000+0000',
+      unavailableFromDate: '2021-12-10T09:00:00.000Z',
+      unavailableToDate: '2021-12-11T09:00:00.000Z',
+      unavailabilityType: UnavailabilityType.ALL_DAY,
     };
     component.checkUnavailableDatesList([unavailabilityDate]);
     expect(component.partiesNotAvailableDates[0]).toBe('10 December 2021');
@@ -161,16 +160,16 @@ describe('HearingTimingComponent', () => {
   it('should get getFormData', () => {
     component.hearingRequestMainModel.hearingDetails.duration = 70;
     component.hearingRequestMainModel.hearingDetails.hearingPriorityType = 'Urgent';
-    component.hearingRequestMainModel.hearingDetails.hearingWindow = { hearingWindowDateRange: { hearingWindowStartDateRange: '', hearingWindowEndDateRange: '' }, hearingWindowFirstDate: '' };
+    component.hearingRequestMainModel.hearingDetails.hearingWindow = { dateRangeStart: '', dateRangeEnd: '', firstDateTimeMustBe: '' };
     component.getFormData();
     expect(component.priorityFormInfo.hours).toBe('1');
     expect(component.priorityFormInfo.minutes).toBe('10');
     expect(component.priorityFormInfo.priority).toBe('Urgent');
     expect(component.checkedHearingAvailability).toBe(RadioOptions.NO);
-    component.hearingRequestMainModel.hearingDetails.hearingWindow.hearingWindowDateRange.hearingWindowStartDateRange = '01-01-2021';
+    component.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeStart = '01-01-2021';
     component.getFormData();
     expect(component.checkedHearingAvailability).toBe(RadioOptions.YES);
-    component.hearingRequestMainModel.hearingDetails.hearingWindow.hearingWindowDateRange.hearingWindowEndDateRange = '01-01-2021';
+    component.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeEnd = '01-01-2021';
     component.getFormData();
     expect(component.checkedHearingAvailability).toBe(RadioOptions.CHOOSE_DATE_RANGE);
   });
@@ -281,11 +280,11 @@ describe('HearingTimingComponent', () => {
     component.showDateAvailability();
     component.prepareHearingRequestData();
     expect(component.hearingRequestMainModel.hearingDetails.duration).toBe(65);
-    expect(component.hearingRequestMainModel.hearingDetails.hearingWindow.hearingWindowDateRange.hearingWindowStartDateRange.length).toBeGreaterThan(1);
+    expect(component.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeStart).toBe('null');
     hearingAvailability.setValue(RadioOptions.CHOOSE_DATE_RANGE);
     component.showDateAvailability();
     component.prepareHearingRequestData();
-    expect(component.hearingRequestMainModel.hearingDetails.hearingWindow.hearingWindowDateRange.hearingWindowStartDateRange.length).toBeGreaterThan(1);
+    expect(component.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeEnd).toBe('2022-12-12T00:00:00.000Z');
   });
 
   it('should check date selection format', () => {

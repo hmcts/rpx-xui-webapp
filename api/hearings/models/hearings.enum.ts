@@ -6,17 +6,17 @@ export enum Actions {
 }
 
 export enum HMCStatus {
-  HEARING_REQUESTED = 'Hearing requested',
-  AWAITING_LISTING = 'Awaiting listing',
-  LISTED = 'Listed',
-  UPDATE_REQUESTED = 'Update requested',
-  UPDATE_SUBMITTED = 'Update submitted',
-  EXCEPTION = 'Exception',
-  CANCELLATION_REQUESTED = 'Cancellation requested',
-  VACATED = 'Vacated',
-  AWAITING_ACTUALS = 'Awaiting Actuals',
-  COMPLETED = 'Completed',
-  ADJOURNED = 'Adjourned',
+  HEARING_REQUESTED = 'HEARING_REQUESTED',
+  AWAITING_LISTING = 'AWAITING_LISTING',
+  LISTED = 'LISTED',
+  UPDATE_REQUESTED = 'UPDATE_REQUESTED',
+  UPDATE_SUBMITTED = 'UPDATE_SUBMITTED',
+  EXCEPTION = 'EXCEPTION',
+  CANCELLATION_REQUESTED = 'CANCELLATION_REQUESTED',
+  VACATED = 'VACATED',
+  AWAITING_ACTUALS = 'AWAITING_ACTUALS',
+  COMPLETED = 'COMPLETED',
+  ADJOURNED = 'ADJOURNED',
 }
 
 export enum LaCaseStatus {
@@ -67,6 +67,18 @@ export enum EXUIDisplayStatusEnum {
   VACATED = 'VACATED',
   AWAITING_ACTUALS = 'AWAITING HEARING DETAILS',
   ADJOURNED = 'ADJOURNED',
+}
+
+export enum HMCLocationType {
+  COURT = 'court',
+  CLUSTER = 'cluster',
+  REGION = 'region',
+}
+
+export enum UnavailabilityType {
+  AM = 'AM',
+  PM = 'PM',
+  ALL_DAY = 'All Day',
 }
 
 export enum RequirementType {

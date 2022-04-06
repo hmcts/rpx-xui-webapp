@@ -1,4 +1,4 @@
-import {MemberType, PartyType, RequirementType} from '../../models/hearings.enum';
+import {CategoryType, MemberType, PartyType, RequirementType, UnavailabilityType} from '../../models/hearings.enum';
 import { HearingValuesStateData } from '../../models/hearingValuesStateData';
 import {ServiceHearingValuesModel} from '../../models/serviceHearingValues.model';
 import * as fromHearingValuesActions from '../actions/hearing-values.action';
@@ -22,14 +22,30 @@ describe('Hearing Values Reducer', () => {
           caseName: 'Jane Smith vs DWP',
           autoListFlag: false,
           hearingType: 'Final',
-          caseType: 'Personal Independence Payment',
-          caseSubTypes: ['Conditions of Entitlement', 'Good cause', 'Rate of Assessment / Payability Issues - complex'],
-          hearingWindow: {
-            hearingWindowDateRange: {
-              hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
-              hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000',
+          caseAdditionalSecurityFlag: false,
+          caseCategories: [
+            {
+              categoryType: CategoryType.CaseType,
+              categoryValue: 'Personal Independence Payment',
+            }, {
+              categoryType: CategoryType.CaseSubType,
+              categoryValue: 'Conditions of Entitlement',
+            }, {
+              categoryType: CategoryType.CaseSubType,
+              categoryValue: 'Good cause',
+            }, {
+              categoryType: CategoryType.CaseSubType,
+              categoryValue: 'Rate of Assessment / Payability Issues - complex',
             },
-            hearingWindowFirstDate: '',
+          ],
+          caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',
+          caserestrictedFlag: false,
+          caseManagementLocationCode: '196538',
+          caseSLAStartDate: '2021-05-05T09:00:00.000Z',
+          hearingWindow: {
+            dateRangeStart: '2021-11-23T09:00:00.000Z',
+            dateRangeEnd: '2021-11-30T09:00:00.000Z',
+            firstDateTimeMustBe: '2021-12-01T09:00:00.000Z',
           },
           duration: 45,
           hearingPriorityType: 'standard',
@@ -68,8 +84,9 @@ describe('Hearing Values Reducer', () => {
               partyRole: 'appellant',
               unavailabilityRanges: [
                 {
-                  unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-                  unavailableToDate: '2021-12-31T09:00:00.000+0000',
+                  unavailableFromDate: '2021-12-10T09:00:00.000Z',
+                  unavailableToDate: '2021-12-31T09:00:00.000Z',
+                  unavailabilityType: UnavailabilityType.ALL_DAY,
                 },
               ],
             },
@@ -80,8 +97,9 @@ describe('Hearing Values Reducer', () => {
               partyRole: 'claimant',
               unavailabilityRanges: [
                 {
-                  unavailableFromDate: '2021-12-20T09:00:00.000+0000',
-                  unavailableToDate: '2021-12-31T09:00:00.000+0000',
+                  unavailableFromDate: '2021-12-20T09:00:00.000Z',
+                  unavailableToDate: '2021-12-31T09:00:00.000Z',
+                  unavailabilityType: UnavailabilityType.ALL_DAY,
                 },
               ],
             }],

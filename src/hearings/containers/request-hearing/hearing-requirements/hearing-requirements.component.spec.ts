@@ -1,17 +1,17 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
-import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
-import { provideMockStore } from '@ngrx/store/testing';
-import { of } from 'rxjs';
-import { caseFlagsRefData, initialState, serviceHearingValuesModel } from '../../../hearing.test.data';
-import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
-import { ACTION, CaseFlagType, PartyType } from '../../../models/hearings.enum';
-import { LocationByEPIMMSModel } from '../../../models/location.model';
-import { HearingsService } from '../../../services/hearings.service';
-import { LocationsDataService } from '../../../services/locations-data.service';
+import {Component, CUSTOM_ELEMENTS_SCHEMA, Input} from '@angular/core';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {ActivatedRoute} from '@angular/router';
+import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
+import {provideMockStore} from '@ngrx/store/testing';
+import {of} from 'rxjs';
+import {caseFlagsRefData, initialState, serviceHearingValuesModel} from '../../../hearing.test.data';
+import {HearingRequestMainModel} from '../../../models/hearingRequestMain.model';
+import {ACTION, CaseFlagType, HMCLocationType, PartyType, UnavailabilityType} from '../../../models/hearings.enum';
+import {LocationByEPIMMSModel} from '../../../models/location.model';
+import {HearingsService} from '../../../services/hearings.service';
+import {LocationsDataService} from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
-import { HearingRequirementsComponent } from './hearing-requirements.component';
+import {HearingRequirementsComponent} from './hearing-requirements.component';
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -56,9 +56,9 @@ describe('HearingRequirementsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [HearingRequirementsComponent, MockHearingPartiesComponent],
       providers: [
-        provideMockStore({ initialState }),
-        { provide: HearingsService, useValue: hearingsService },
-        { provide: LocationsDataService, useValue: locationsDataService },
+        provideMockStore({initialState}),
+        {provide: HearingsService, useValue: hearingsService},
+        {provide: LocationsDataService, useValue: locationsDataService},
         {
           provide: ActivatedRoute,
           useValue: {
@@ -111,29 +111,24 @@ describe('HearingRequirementsComponent', () => {
 
   it('should initialize hearing request from hearing values', () => {
     const expectedHearingRequestMainModel: HearingRequestMainModel = {
-      requestDetails: {
-        requestTimeStamp: null
-      },
       hearingDetails: {
         duration: 45,
         hearingType: 'Final',
         hearingLocations: [
           {
             locationId: '196538',
-            locationType: 'hearing',
+            locationType: HMCLocationType.COURT,
           },
           {
             locationId: '234850',
-            locationType: 'hearing',
+            locationType: HMCLocationType.COURT,
           }
         ],
         hearingIsLinkedFlag: false,
         hearingWindow: {
-          hearingWindowDateRange: {
-            hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
-            hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000'
-          },
-          hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000'
+          dateRangeStart: '2022-11-23T09:00:00.000Z',
+          dateRangeEnd: '2022-11-30T09:00:00.000Z',
+          firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
         },
         privateHearingRequiredFlag: false,
         panelRequirements: {
@@ -165,14 +160,31 @@ describe('HearingRequirementsComponent', () => {
         caseRef: '1111222233334444',
         requestTimeStamp: null,
         hearingID: null,
-        caseDeepLink: null,
+        caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',
         hmctsInternalCaseName: 'Jane vs DWP',
         publicCaseName: 'Jane vs DWP',
         caseAdditionalSecurityFlag: false,
-        caseCategories: [],
-        caseManagementLocationCode: null,
-        caserestrictedFlag: null,
-        caseSLAStartDate: null
+        caseCategories: [
+          {
+            categoryType: 'caseType',
+            categoryValue: 'Personal Independence Payment',
+          },
+          {
+            categoryType: 'caseSubType',
+            categoryValue: 'Conditions of Entitlement',
+          },
+          {
+            categoryType: 'caseSubType',
+            categoryValue: 'Good cause',
+          },
+          {
+            categoryType: 'caseSubType',
+            categoryValue: 'Rate of Assessment / Payability Issues - complex',
+          }
+        ],
+        caseManagementLocationCode: '196538',
+        caserestrictedFlag: false,
+        caseSLAStartDate: '2021-05-05T09:00:00.000Z'
       },
       partyDetails: [{
         partyID: 'P1',
@@ -180,8 +192,9 @@ describe('HearingRequirementsComponent', () => {
         partyRole: 'appellant',
         partyName: 'Jane Smith',
         unavailabilityRanges: [{
-          unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-          unavailableToDate: '2021-12-31T09:00:00.000+0000'
+          unavailableFromDate: '2021-12-10T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY,
         }],
         individualDetails: {
           title: 'Mrs',
@@ -196,15 +209,15 @@ describe('HearingRequirementsComponent', () => {
             'RA0042'],
           interpreterLanguage: 'PF0015'
         },
-        organisationDetails: {}
       }, {
         partyID: 'P2',
         partyType: PartyType.ORG,
         partyRole: 'claimant',
         partyName: 'DWP',
         unavailabilityRanges: [{
-          unavailableFromDate: '2021-12-20T09:00:00.000+0000',
-          unavailableToDate: '2021-12-31T09:00:00.000+0000'
+          unavailableFromDate: '2021-12-20T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY,
         }],
         individualDetails: {
           title: null,

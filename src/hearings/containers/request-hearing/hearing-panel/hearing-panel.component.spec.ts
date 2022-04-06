@@ -5,12 +5,13 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
+import * as _ from 'lodash';
 import { of } from 'rxjs';
-import { JudicialUserModel } from '../../../../hearings/models/person.model';
 import { HearingJudgeNamesListComponent } from '../../../components';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION, MemberType, RadioOptions, RequirementType } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
+import { JudicialUserModel } from '../../../models/person.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingPanelComponent } from './hearing-panel.component';
 
@@ -155,8 +156,8 @@ describe('HearingPanelComponent', () => {
 
   beforeEach(() => {
 
-    initialState.hearings.hearingRequest.hearingRequestMainModel
-      .hearingDetails.panelRequirements = {
+    const STATE = _.cloneDeep(initialState);
+    STATE.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
       panelPreferences: JUDICAIL_USER_DETAILS,
       panelSpecialisms: ['DisabilityQualifiedPanelMember', '', 'Cardiologist']
     };
@@ -165,7 +166,7 @@ describe('HearingPanelComponent', () => {
       imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
       declarations: [HearingPanelComponent, HearingJudgeNamesListComponent],
       providers: [
-        provideMockStore({ initialState }),
+        provideMockStore({initialState: STATE}),
         { provide: HearingsService, useValue: hearingsService },
         {
           provide: ActivatedRoute,

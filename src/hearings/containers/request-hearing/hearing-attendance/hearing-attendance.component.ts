@@ -52,6 +52,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
         (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues({
           partyID: partyDetail.partyID,
           partyType: partyDetail.partyType,
+          partyRole: partyDetail.partyRole,
           partyName: partyDetail.partyName,
           individualDetails: partyDetail.individualDetails,
           organisationDetails: partyDetail.organisationDetails,
@@ -137,12 +138,15 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   }
 
   public patchValues(party: PartyDetailsModel): FormGroup {
+    const individualDetails = this.initIndividualDetailsFormGroup(party.individualDetails);
+    const organisationDetails = party.organisationDetails;
     return this.fb.group({
       partyID: [party.partyID],
       partyType: [party.partyType],
       partyName: [party.partyName],
-      individualDetails: this.initIndividualDetailsFormGroup(party.individualDetails),
-      organisationDetails: [party.organisationDetails],
+      partyRole: [party.partyRole],
+      ...individualDetails && ({individualDetails}),
+      ...organisationDetails && ({organisationDetails}),
       unavailabilityDOW: [party.unavailabilityDOW],
       unavailabilityRanges: [party.unavailabilityRanges],
     });

@@ -1,4 +1,5 @@
 import {HearingRequestStateData} from '../../models/hearingRequestStateData.model';
+import {HMCLocationType} from '../../models/hearings.enum';
 import * as fromHearingRequestToCompareActions from '../actions/hearing-request-to-compare.action';
 import * as fromHearingRequestToCompareReducer from './hearing-request-to-compare.reducer';
 
@@ -18,11 +19,11 @@ describe('Hearing Request To Compare Reducer', () => {
               hearingType: null,
               hearingLocations: [{
                 locationId: '196538',
-                locationType: 'hearing',
+                locationType: HMCLocationType.COURT,
               },
                 {
                   locationId: '219164',
-                  locationType: 'hearing',
+                  locationType: HMCLocationType.COURT,
                 },
               ],
               hearingIsLinkedFlag: false,

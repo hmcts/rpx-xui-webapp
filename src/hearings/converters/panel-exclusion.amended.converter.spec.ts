@@ -1,13 +1,14 @@
-import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { provideMockStore } from '@ngrx/store/testing';
-import { cold } from 'jasmine-marbles';
-import { of } from 'rxjs';
-import { hearingStageRefData, initialState } from '../hearing.test.data';
-import { MemberType, RequirementType } from '../models/hearings.enum';
-import { State } from '../store';
-import { PanelExclusionAmendedConverter } from './panel-exclusion.amended.converter';
+import {TestBed} from '@angular/core/testing';
+import {ActivatedRoute} from '@angular/router';
+import {Store} from '@ngrx/store';
+import {provideMockStore} from '@ngrx/store/testing';
+import {cold} from 'jasmine-marbles';
+import * as _ from 'lodash';
+import {of} from 'rxjs';
+import {hearingStageRefData, initialState} from '../hearing.test.data';
+import {MemberType, RequirementType} from '../models/hearings.enum';
+import {State} from '../store';
+import {PanelExclusionAmendedConverter} from './panel-exclusion.amended.converter';
 
 describe('PanelExclusionAmendedConverter', () => {
 
@@ -23,7 +24,7 @@ describe('PanelExclusionAmendedConverter', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({ initialState }),
+        provideMockStore({initialState}),
         {
           provide: ActivatedRoute,
           useValue: {
@@ -42,22 +43,22 @@ describe('PanelExclusionAmendedConverter', () => {
   });
 
   it('should not transform the amended flag when previous vs current hearing type are equal', () => {
-    const STATE: State = initialState.hearings;
+    const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
       panelPreferences: JUDICAIL_USER_DETAILS
     };
     const result$ = converter.transformIsAmended(of(STATE));
     const isAmended = true;
-    const expected = cold('(b|)', { b: isAmended });
+    const expected = cold('(b|)', {b: isAmended});
     expect(result$).toBeObservable(expected);
   });
 
   it('should not transform the amended flag when previous vs current hearing type are equal', () => {
-    const STATE: State = initialState.hearings;
+    const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = null;
     const result$ = converter.transformIsAmended(of(STATE));
     const isAmended = false;
-    const expected = cold('(b|)', { b: isAmended });
+    const expected = cold('(b|)', {b: isAmended});
     expect(result$).toBeObservable(expected);
   });
 });

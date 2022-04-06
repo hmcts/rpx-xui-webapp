@@ -3,20 +3,17 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {inject, TestBed} from '@angular/core/testing';
 import {ActivatedRouteSnapshot, Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
-import {Store, StoreModule} from '@ngrx/store';
+import {provideMockStore} from '@ngrx/store/testing';
 import {Observable, of} from 'rxjs';
+import {SessionStorageService} from '../../app/services';
+import {initialState} from '../hearing.test.data';
 import {HearingCategory} from '../models/hearings.enum';
-import {metaReducers} from '../../app/app.module';
-import {reducers} from '../../app/store';
 import {LovRefDataModel} from '../models/lovRefData.model';
 import {LovRefDataService} from '../services/lov-ref-data.service';
-import * as fromHearingStore from '../store';
 import {RefDataResolver} from './ref-data-resolver.resolve';
-import { SessionStorageService } from '../../app/services';
 
 describe('Ref Data Resolver', () => {
   let lovRefDataService: LovRefDataService;
-  let store: Store<fromHearingStore.State>;
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const dataRef: LovRefDataModel[] = [];
@@ -24,11 +21,11 @@ describe('Ref Data Resolver', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
         imports: [
-          StoreModule.forRoot(reducers, {metaReducers}),
           RouterTestingModule.withRoutes([]),
           HttpClientTestingModule,
         ],
         providers: [
+          provideMockStore({initialState}),
           RefDataResolver,
           LovRefDataService,
           {provide: APP_BASE_HREF, useValue: '/'},
@@ -38,7 +35,6 @@ describe('Ref Data Resolver', () => {
       }
     );
     lovRefDataService = TestBed.get(LovRefDataService) as LovRefDataService;
-    store = TestBed.get(Store) as Store<fromHearingStore.State>;
   });
 
   it('should be created', () => {
@@ -47,7 +43,6 @@ describe('Ref Data Resolver', () => {
   });
 
   it('resolves reference data', inject([RefDataResolver], (service: RefDataResolver) => {
-    spyOn(store, 'pipe').and.returnValue(of('serviceName'));
     spyOn(lovRefDataService, 'getListOfValues').and.returnValue(of(dataRef));
     spyOn(service, 'getReferenceData$').and.callThrough();
     const route = new ActivatedRouteSnapshot();
@@ -64,7 +59,6 @@ describe('Ref Data Resolver', () => {
   }));
 
   it('should call router navigate if error', inject([RefDataResolver], (service: RefDataResolver) => {
-    spyOn(store, 'pipe').and.returnValue(of('serviceName'));
     spyOn(lovRefDataService, 'getListOfValues').and.returnValue(Observable.throwError('mocked api error'));
     spyOn(service, 'getReferenceData$').and.callThrough();
     const route = new ActivatedRouteSnapshot();

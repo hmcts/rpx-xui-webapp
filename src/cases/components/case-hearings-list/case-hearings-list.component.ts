@@ -80,7 +80,6 @@ export class CaseHearingsListComponent implements OnInit {
   }
 
   public viewAndEdit(hearingID: string): void {
-    // this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
     const hearingCondition: HearingConditions = {
       mode: Mode.VIEW,
     };

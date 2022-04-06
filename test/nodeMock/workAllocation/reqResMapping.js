@@ -66,6 +66,9 @@ module.exports = {
         },
         '/api/locations/getLocations': (req, res) => {
             res.send(workAllocationMockData.searchLocations(req.query.serviceIds, req.query.searchTerm));
+        },
+        '/workallocation2/case/tasks/:caseId/event/:eventId/caseType/:caseType/jurisdiction/:service': (req, res) => {
+            res.send(workAllocationMockData.caseEventTasks);
         }
     },
     post: {

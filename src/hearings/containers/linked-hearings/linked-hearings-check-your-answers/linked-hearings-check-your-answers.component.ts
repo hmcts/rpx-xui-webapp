@@ -12,6 +12,7 @@ import { LoadLinkedHearingGroup, LoadServiceLinkedCases } from '../../../store';
 })
 export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
   public caseId: string;
+  public caseTitle: string;
   public linkedCases: ServiceLinkedCasesModel[];
   public showPositionColumn: boolean;
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
@@ -20,6 +21,8 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
       state => {
         this.caseId = state.hearingList.hearingListMainModel ? state.hearingList.hearingListMainModel.caseRef : '';
         console.log('CASE HEARINGS', state.hearingList.hearingListMainModel.caseHearings);
+        const caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.caseName : '';
+        this.caseTitle = `${caseName} ${this.caseId}`;
       }
     )
   }

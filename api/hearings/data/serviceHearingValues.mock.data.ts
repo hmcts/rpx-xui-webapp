@@ -281,6 +281,14 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       screenName: 'hearing-timing',
       navigation: [
         {
+          resultValue: 'hearing-link',
+        },
+      ],
+    },
+    {
+      screenName: 'hearing-link',
+      navigation: [
+        {
           resultValue: 'hearing-additional-instructions',
         },
       ],

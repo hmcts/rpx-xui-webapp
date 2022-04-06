@@ -25,6 +25,7 @@ import { JudgeExclusionAnswerConverter } from '../converters/judge-exclusion.ans
 import { JudgeNameAnswerConverter } from '../converters/judge-name.answer.converter';
 import { JudgeTypesAnswerConverter } from '../converters/judge-types.answer.converter';
 import { JudicialMembersAnswerConverter } from '../converters/judicial-members.answer.converter';
+import { LinkedHearingsAnswerConverter } from '../converters/linked-hearings.answer.converter';
 import { NeedJudgeAnswerConverter } from '../converters/need-judge.answer.converter';
 import { NeedWelshAnswerConverter } from '../converters/need-welsh.answer.converter';
 import { NumberOfAttendancesAnswerConverter } from '../converters/number-of-attendances-answer.converter';
@@ -166,6 +167,9 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.REASON_FOR_CANCELLATION:
         converter = new ReasonForCancellationAnswerConverter();
+        break;
+      case AnswerSource.LINKED_HEARINGS:
+        converter = new LinkedHearingsAnswerConverter();
         break;
       default:
         break;

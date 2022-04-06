@@ -16,6 +16,7 @@ import { HearingCreateEditSummaryComponent } from './containers/request-hearing/
 import { HearingFacilitiesComponent } from './containers/request-hearing/hearing-facilities/hearing-facilities.component';
 import { HearingFinalConfirmationComponent } from './containers/request-hearing/hearing-final-confirmation/hearing-final-confirmation.component';
 import { HearingJudgeComponent } from './containers/request-hearing/hearing-judge/hearing-judge.component';
+import { HearingLinkComponent } from './containers/request-hearing/hearing-link/hearing-link.component';
 import { HearingPanelComponent } from './containers/request-hearing/hearing-panel/hearing-panel.component';
 import { HearingRequirementsComponent } from './containers/request-hearing/hearing-requirements/hearing-requirements.component';
 import { HearingStageComponent } from './containers/request-hearing/hearing-stage/hearing-stage.component';
@@ -227,6 +228,13 @@ export const ROUTES: Routes = [
         data: {
           title: 'HMCTS Hearings | Request Hearing | Hearing Timing',
           category: HearingCategory.Priority
+        }
+      },
+      {
+        path: 'hearing-link',
+        component: HearingLinkComponent,
+        data: {
+          title: 'HMCTS Hearings | Request Hearing | Hearing Link'
         }
       },
       {

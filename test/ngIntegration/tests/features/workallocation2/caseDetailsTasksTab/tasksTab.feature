@@ -1,5 +1,5 @@
 
-@ng @integration_todo @test
+@ng @integration_todo
 Feature: WA Release 2: Case details Tasks tab
 
     Requirements from

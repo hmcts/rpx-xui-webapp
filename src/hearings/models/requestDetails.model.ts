@@ -1,8 +1,3 @@
-export interface RequestDetailsModel extends ResponseDetailsModel {
-  hearingGroupRequestId?: string;
-  partiesNotified?: string;
-}
-
 export interface ResponseDetailsModel {
   hearingRequestID?: string;
   status?: string;
@@ -10,3 +5,7 @@ export interface ResponseDetailsModel {
   versionNumber: number;
 }
 
+export interface RequestDetailsModel extends ResponseDetailsModel {
+  hearingGroupRequestId?: string;
+  partiesNotified?: string;
+}

@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
 import { SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
@@ -8,6 +10,7 @@ describe('SpecificAccessDeniedComponent', () => {
   let component: SpecificAccessDeniedComponent;
   let fixture: ComponentFixture<SpecificAccessDeniedComponent>;
   let mockStore: any;
+  const mockRouter = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate']);
   const pipeSubject: Subject<any> = new Subject<any>();
 
   beforeEach(() => {
@@ -16,9 +19,13 @@ describe('SpecificAccessDeniedComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [SpecificAccessDeniedComponent],
+      imports: [RouterTestingModule],
       providers: [
         {
           provide: Store, useValue: mockStore
+        },
+        {
+          provide: Router, useValue: mockRouter
         }
       ]
     }).compileComponents();
@@ -41,7 +48,14 @@ describe('SpecificAccessDeniedComponent', () => {
     it('should correctly navigate on click of return to my tasks button when dispatching the event', () => {
       const navEvent = SpecificAccessNavigationEvent.RETURNTOMYTASKS;
       component.navigationHandler(navEvent);
-      expect(mockStore.dispatch).toHaveBeenCalled();
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/work/my-work/list'])
+    });
+
+    it('should correctly navigate on click of return to my tasks button when dispatching the event', () => {
+      component.caseId = '123456789';
+      const navEvent = SpecificAccessNavigationEvent.RETURNTOTASKSTAB;
+      component.navigationHandler(navEvent);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/cases/case-details/123456789'])
     });
 
     it('should dispatch a change navigation when called', () => {

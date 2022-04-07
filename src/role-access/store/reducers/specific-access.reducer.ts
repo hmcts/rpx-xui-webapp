@@ -4,6 +4,7 @@ import { SpecificAccessAction, SpecificAccessActionTypes } from '../actions';
 export const specificAccessInitialState: SpecificAccessStateData = {
   state: SpecificAccessState.SPECIFIC_ACCESS_REVIEW,
   specificAccessFormData: null,
+  accessReason: null,
   lastError: null
 };
 
@@ -15,6 +16,7 @@ export function specificAccessReducer(currentState = specificAccessInitialState,
         state: action.payload
       };
     }
+        accessReason: action.payload.accessReason,
     case SpecificAccessActionTypes.SET_SPECIFIC_ACCESS_FORM_DATA: {
       return {
         ...currentState,

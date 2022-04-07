@@ -1,8 +1,9 @@
 import { Action } from '@ngrx/store';
-import { SpecificAccessState } from '../../models';
+import { SpecificAccessFormData, SpecificAccessState } from '../../models';
 
 export enum SpecificAccessActionTypes {
-  CHANGE_NAVIGATION = '[SPECIFIC ACCESS] Change Navigation'
+  CHANGE_NAVIGATION = '[SPECIFIC ACCESS] Change Navigation',
+  SET_SPECIFIC_ACCESS_FORM_DATA = '[SPECIFIC ACCESS] Set Specific Access Form Data'
 }
 
 export class ChangeSpecificAccessNavigation implements Action {
@@ -12,6 +13,14 @@ export class ChangeSpecificAccessNavigation implements Action {
   }
 }
 
+export class SetSpecificAccessFormData implements Action {
+  public readonly type = SpecificAccessActionTypes.SET_SPECIFIC_ACCESS_FORM_DATA;
+
+  constructor(public payload: SpecificAccessFormData) {
+  }
+}
+
 export type SpecificAccessAction =
-  ChangeSpecificAccessNavigation;
+| ChangeSpecificAccessNavigation
+| SetSpecificAccessFormData;
 

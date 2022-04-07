@@ -21,9 +21,10 @@ export class CourtLocationsDataResolver implements Resolve<LocationModel> {
   public resolve(): Observable<LocationModel> {
     return this.getLocationId$()
       .pipe(
-        switchMap(id => of(id)), take(1),
+        switchMap(id => of(id)),
+        take(1),
         switchMap((locationId) => {
-          return this.getCourtLocationData$(locationId);
+            return this.getCourtLocationData$(locationId);
         })
       );
   }
@@ -39,10 +40,13 @@ export class CourtLocationsDataResolver implements Resolve<LocationModel> {
   }
 
   public getCourtLocationData$(locationId: string): Observable<LocationModel> {
-    return this.locationsDataService.getLocationById(locationId).pipe(
-      catchError(() => {
-        return [];
-      })
-    );
+    if (locationId) {
+      return this.locationsDataService.getLocationById(locationId).pipe(
+        catchError(() => {
+          return [];
+        })
+      );
+    }
+    return of(null);
   }
 }

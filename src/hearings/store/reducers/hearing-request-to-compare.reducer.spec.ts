@@ -12,7 +12,8 @@ describe('Hearing Request To Compare Reducer', () => {
         const initialHearingRequestState: HearingRequestStateData = {
           hearingRequestMainModel: {
             requestDetails: {
-              requestTimeStamp: null,
+              timeStamp: null,
+              versionNumber: 1,
             },
             hearingDetails: {
               duration: null,

@@ -1,9 +1,12 @@
-import { HttpRequest } from '@angular/common/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { inject, TestBed } from '@angular/core/testing';
-import { StoreModule } from '@ngrx/store';
-import { LovRefDataModel } from '../models/lovRefData.model';
-import { HearingsService } from './hearings.service';
+import {HttpRequest} from '@angular/common/http';
+import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {inject, TestBed} from '@angular/core/testing';
+import {StoreModule} from '@ngrx/store';
+import * as _ from 'lodash';
+import {initialState} from '../hearing.test.data';
+import {HearingRequestMainModel} from '../models/hearingRequestMain.model';
+import {LovRefDataModel} from '../models/lovRefData.model';
+import {HearingsService} from './hearings.service';
 
 describe('HearingsService', () => {
   beforeEach(() => {
@@ -77,19 +80,25 @@ describe('HearingsService', () => {
   });
 
   describe('updateHearingRequest', () => {
+    const hearingRequest: HearingRequestMainModel = _.cloneDeep(initialState.hearings.hearingRequest);
     const payload = {
-      requestDetails: null,
-      hearingDetails: null,
-      partyDetails: null,
+      ...hearingRequest,
+      requestDetails: {
+        ...hearingRequest.requestDetails,
+        hearingRequestID: 'h100000'
+      }
     };
     it('should update hearing request', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
       service.updateHearingRequest(payload).subscribe(response => {
         expect(response).toBeNull();
       });
-
-      const req = httpMock.expectOne('api/hearings/updateHearingRequest');
-      expect(req.request.method).toEqual('PUT');
-      req.flush(null);
+      httpMock.expectOne((req: HttpRequest<any>) => {
+        expect(req.url).toBe('api/hearings/updateHearingRequest');
+        expect(req.method).toBe('PUT');
+        expect(req.params.get('hearingId')).toEqual('h100000');
+        return true;
+      })
+        .flush(null);
     }));
   });
 

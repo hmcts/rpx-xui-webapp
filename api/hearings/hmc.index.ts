@@ -70,11 +70,12 @@ export async function submitHearingRequest(req: EnhancedRequest, res: Response, 
  * cancelHearingRequest - cancel hearing request
  */
 export async function cancelHearingRequest(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const reqBody = req.body;
   const hearingId = req.query.hearingId;
+  const cancellationReasonCode = req.query.cancellationReasonCode;
   const markupPath: string = `${hmcHearingsUrl}/hearing/${hearingId}`;
 
   try {
+    const reqBody = { cancellationReasonCode };
     const {status, data}: { status: number, data: any } = await handleDelete(markupPath, reqBody, req, next);
     res.status(status).send(data);
   } catch (error) {
@@ -86,8 +87,9 @@ export async function cancelHearingRequest(req: EnhancedRequest, res: Response, 
  * updateHearingRequest - update hearing request
  */
 export async function updateHearingRequest(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const hearingId = req.query.hearingId;
   const reqBody = req.body;
-  const markupPath: string = `${hmcHearingsUrl}/hearing`;
+  const markupPath: string = `${hmcHearingsUrl}/hearing/${hearingId}`;
   try {
     const {status, data}: { status: number, data: any } = await handlePut(markupPath, reqBody, req, next);
     res.status(status).send(data);

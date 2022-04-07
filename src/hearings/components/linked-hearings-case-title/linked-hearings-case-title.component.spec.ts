@@ -28,6 +28,6 @@ describe('LinkedHearingsCaseTitleComponent', () => {
     component.caseTitle = 'Jane Smith vs DWP';
     fixture.detectChanges();
     const caseNameEl = fixture.debugElement.nativeElement.querySelector('.govuk-caption-l');
-    expect(caseNameEl.textContent).toEqual('Request a hearing for Jane Smith vs DWP (full hearing)');
+    expect(caseNameEl.textContent).toEqual('Link hearings to Jane Smith vs DWP (full hearing)');
   })
 });

@@ -4,7 +4,13 @@ export interface ServiceLinkedCasesModel {
   caseReference: string;
   caseName: string;
   reasonsForLink: string[];
-  hearingStage?: string;
+  hearings?: HearingDetailModel[];
+}
+
+export interface HearingDetailModel {
+  hearingId: string;
+  hearingStage: string;
+  isSelected: boolean; // default will be false.
 }
 
 export interface LinkedHearingGroupMainModel {
@@ -13,16 +19,15 @@ export interface LinkedHearingGroupMainModel {
 }
 
 export interface GroupDetailsModel {
-  groupName: string;
-  groupReason: string;
+  groupName?: string;
+  groupReason?: string;
   groupLinkType: GroupLinkType;
-  groupComments: string;
+  groupComments?: string;
 }
 
 export interface LinkedHearingsDetailModel {
   hearingId: string;
   hearingOrder: number;
-  hearingStage?: string;
 }
 
 export interface LinkedHearingGroupResponseModel {

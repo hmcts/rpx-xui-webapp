@@ -51,6 +51,13 @@ describe('SpecificAccessDeniedComponent', () => {
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/work/my-work/list'])
     });
 
+    it('should correctly navigate on click of return to my tasks button when dispatching the event', () => {
+      component.caseId = '123456789';
+      const navEvent = SpecificAccessNavigationEvent.RETURNTOTASKSTAB;
+      component.navigationHandler(navEvent);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/cases/case-details/123456789'])
+    });
+
     it('should dispatch a change navigation when called', () => {
       component.onNavigate(SpecificAccessState.SPECIFIC_ACCESS_DENIED);
       expect(mockStore.dispatch).toHaveBeenCalled();

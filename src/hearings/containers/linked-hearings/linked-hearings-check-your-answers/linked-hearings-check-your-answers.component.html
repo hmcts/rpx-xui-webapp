@@ -4,12 +4,12 @@
     <div class="govuk-grid-column-two-thirds">
       <exui-linked-hearings-case-title [caseTitle]="caseTitle"></exui-linked-hearings-case-title>
       <h1 class="govuk-heading-l">Check your answers</h1>
-      <h2 class="govuk-heading-m">Linked hearings</h2>
-      <span class="govuk-body align-right">
-        <a href="javascript:void(0)" [routerLink]="['/', 'hearings', 'actuals', 'hearing-stage-result']"
-           id="hearing-stage-result-update-link"
-           class="govuk-link">Change</a>
-      </span>
+      <div>
+        <h2 class="govuk-heading-m">Linked hearings</h2>
+        <span class="govuk-body align-right">
+          <a href="javascript:void(0)" class="govuk-link" id="hearing-link-change" (click)="onChange()">Change</a>
+        </span>
+      </div>
       <table class="govuk-table">
         <thead class="govuk-table__head">
           <tr class="govuk-table__row">
@@ -24,7 +24,7 @@
               {{case.caseName}} {{case.caseReference}}
             </td>
             <td class="govuk-table__cell">{{case.hearingStage}}</td>
-            <td class="govuk-table__cell" *ngIf="showPositionColumn"></td>
+            <td class="govuk-table__cell" *ngIf="showPositionColumn">{{case.position}}</td>
           </tr>
         </tbody>
       </table>

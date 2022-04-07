@@ -21,7 +21,8 @@ describe('Hearing Request Reducer', () => {
         const initialHearingRequestState: HearingRequestStateData = {
           hearingRequestMainModel: {
             requestDetails: {
-              requestTimeStamp: null,
+              timeStamp: null,
+              versionNumber: 1,
             },
             hearingDetails: {
               duration: null,
@@ -80,7 +81,8 @@ describe('Hearing Request Reducer', () => {
         const initialHearingRequestState: HearingRequestStateData = {
           hearingRequestMainModel: {
             requestDetails: {
-              requestTimeStamp: null,
+              timeStamp: null,
+              versionNumber: 1,
             },
             hearingDetails: {
               duration: null,

@@ -1299,7 +1299,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
 
 export const hearingRequestMainModel: HearingRequestMainModel = {
   requestDetails: {
-    requestTimeStamp: '2022-02-23T09:00:00.000Z',
+    timeStamp: '2022-02-23T09:00:00.000Z',
     versionNumber: 1,
   },
   hearingDetails: {
@@ -1699,7 +1699,8 @@ export const initialState = {
     hearingRequestToCompare: {
       hearingRequestMainModel: {
         requestDetails: {
-          requestTimeStamp: null
+          timeStamp: null,
+          versionNumber: 1,
         },
         hearingDetails: {
           duration: 60,
@@ -1833,7 +1834,8 @@ export const initialState = {
     hearingRequest: {
       hearingRequestMainModel: {
         requestDetails: {
-          requestTimeStamp: '2021-11-30T09:00:00.000Z'
+          timeStamp: '2021-11-30T09:00:00.000Z',
+          versionNumber: 1,
         },
         hearingResponse: {
           listAssistTransactionID: '',

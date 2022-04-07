@@ -1,0 +1,39 @@
+<exui-app-header></exui-app-header>
+<div class="govuk-width-container">
+  <div class="page">
+    <main id="content" role="main">
+      <div class="govuk-grid-row">
+        <exui-specific-access-navigation (eventTrigger)="onNavEvent($event)">
+          <div class="govuk-main-wrapper">
+            <exui-specific-access-review
+              #specificAccessReview
+              *ngIf="isComponentVisible(navigationCurrentState, specificAccessReviewVisibilityStates)"
+              [navEvent]="navEvent">
+            </exui-specific-access-review>
+            <exui-specific-access-duration
+              #specificAccessDuration
+              *ngIf="isComponentVisible(navigationCurrentState, specificAccessDurationVisibilityStates)"
+              [navEvent]="navEvent" >
+            </exui-specific-access-duration>
+            <exui-specific-access-approved
+              #specificAccessApproved
+              *ngIf="isComponentVisible(navigationCurrentState, specificAccessApprovedVisibilityStates)"
+              [navEvent]="navEvent">
+            </exui-specific-access-approved>
+            <exui-specific-access-information
+              #specificAccessInformation
+              *ngIf="isComponentVisible(navigationCurrentState, specificAccessInformationVisibilityStates)"
+              [navEvent]="navEvent">
+            </exui-specific-access-information>
+            <exui-specific-access-denied
+              #specificAccessDenied
+              *ngIf="isComponentVisible(navigationCurrentState, specificAccessDeniedVisibilityStates)"
+              [navEvent]="navEvent">
+            </exui-specific-access-denied>
+          </div>
+        </exui-specific-access-navigation>
+      </div>
+    </main>
+  </div>
+</div>
+<exui-app-footer></exui-app-footer>

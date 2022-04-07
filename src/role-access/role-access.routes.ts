@@ -10,6 +10,20 @@ import { AllocateRoleHomeComponent } from './containers/allocate-role';
 export const ROUTES: Routes = [
   { path: 'user-not-assignable', component: UserNotAssignableComponent },
   {
+    path: 'specific-access',
+    component: SpecificAccessHomeComponent,
+    children: [
+      {
+        path: '',
+        component: null,
+       // canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Manage cases | Role and access | Specific access',
+        }
+      }
+    ]
+  },
+  {
     path: 'add-exclusion',
     component: AddExclusionHomeComponent,
     children: [

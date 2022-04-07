@@ -1,0 +1,22 @@
+<a class="govuk-back-link govuk-!-margin-bottom-1" routerLink="."
+  *ngIf="isVisible((navigationCurrentState$ | async), backVisibilityStates)"
+  (click)="onEventTrigger(specificAccessNavigationEvent.BACK)">Back</a>
+<ng-content></ng-content>
+<div class="govuk-button-group">
+  <button class="govuk-button govuk-!-margin-right-3" type="button"
+    *ngIf="isVisible((navigationCurrentState$ | async), continueButtonVisibilityStates)"
+    (click)="onEventTrigger(specificAccessNavigationEvent.CONTINUE)">Continue
+  </button>
+  <button class="govuk-button govuk-!-margin-right-3" type="button"
+    *ngIf="isVisible((navigationCurrentState$ | async), returnToMyTasksButtonVisibilityStates)"
+    (click)="onEventTrigger(specificAccessNavigationEvent.RETURNTOMYTASKS)">Return to My tasks
+  </button>
+  <div class="govuk-grid-column-full govuk-!-padding-left-0">
+    <p>
+      <a class='govuk-body' *ngIf="isVisible((navigationCurrentState$ | async), cancelButtonVisibilityStates)"
+        (click)="onEventTrigger(specificAccessNavigationEvent.CANCEL)" routerLink=".">Cancel</a>
+      <a class='govuk-body' *ngIf="isVisible((navigationCurrentState$ | async), returnToTasksTabVisibilityStates)"
+        (click)="onEventTrigger(specificAccessNavigationEvent.RETURNTOTASKSTAB)" routerLink=".">Return to the Tasks tab for this case</a>
+    </p>
+  </div>
+</div>

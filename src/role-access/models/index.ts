@@ -16,3 +16,5 @@ export * from './role.model';
 export * from './role-access-http-error.interface';
 export * from './role-exclusion.model';
 export * from './specific-role.model';
+export * from './specific-access-form-data.interface';
+

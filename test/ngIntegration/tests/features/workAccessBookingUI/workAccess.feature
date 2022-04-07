@@ -1,5 +1,5 @@
 
-@test
+@ng
 Feature: Work access page
 
 

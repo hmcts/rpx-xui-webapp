@@ -43,7 +43,7 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
 
   public ngOnInit(): void {
     this.reInitiateState();
-    this.serviceIds = this.hearingListMainModel.hmctsServiceID;
+    this.serviceIds = this.serviceHearingValuesModel.hmctsServiceID;
   }
 
   public reInitiateState() {

@@ -22,6 +22,7 @@ describe('RequestHearingPageFlow', () => {
     },
     hearingValues: {
       serviceHearingValuesModel: {
+        hmctsServiceID: 'BBA3',
         autoListFlag: false,
         hearingType: 'Final',
         lastError: null,

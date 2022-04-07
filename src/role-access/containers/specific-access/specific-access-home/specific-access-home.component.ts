@@ -75,13 +75,28 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
   }
 
   public navigationHandler(navEvent: SpecificAccessNavigationEvent): void {
+    const selectedDurationOption = this.specificAccessDurationComponent? this.specificAccessDurationComponent.selectedDuration : null;
+    const selectedDurationPeriod = this.specificAccessDurationComponent? this.specificAccessDurationComponent.getRawData():null;
+
+    if( this.specificAccessDurationComponent)
+    {
+      this.store.dispatch(new fromFeature.SetSpecificAccessFormData(
+        {
+          specificAccessDurationForm: { selectedOption: selectedDurationOption,selectedDuration: selectedDurationPeriod }
+        }
+      ));
+    }
+
     switch (navEvent) {
       case SpecificAccessNavigationEvent.BACK: {
         switch (this.navigationCurrentState) {
           case SpecificAccessState.SPECIFIC_ACCESS_DURATION:
             this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_REVIEW));
             break;
-          default:
+          case SpecificAccessState.SPECIFIC_ACCESS_APPROVED:
+              this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_DURATION));
+              break;
+            default:
             throw new Error('Invalid specific access state');
         }
         break;

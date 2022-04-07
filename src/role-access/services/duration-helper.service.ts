@@ -29,6 +29,17 @@ export class DurationHelperService {
     return new Date(year, month, day);
   }
 
+  public getRawFromControlsValues(
+    dayControl: FormControl,
+    monthControl: FormControl,
+    yearControl: FormControl
+  ): any {
+    const day = parseInt(dayControl.value, 10);
+    const month = parseInt(monthControl.value, 10);
+    const year = parseInt(yearControl.value, 10);
+    return { day, month, year };
+  }
+
   /**
    * Return todays date as a Date object
    * @return date object

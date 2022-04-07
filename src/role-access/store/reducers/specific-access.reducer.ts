@@ -3,6 +3,7 @@ import { SpecificAccessAction, SpecificAccessActionTypes } from '../actions';
 
 export const specificAccessInitialState: SpecificAccessStateData = {
   state: SpecificAccessState.SPECIFIC_ACCESS_REVIEW,
+  specificAccessFormData: null,
   lastError: null
 };
 
@@ -12,6 +13,12 @@ export function specificAccessReducer(currentState = specificAccessInitialState,
       return {
         ...currentState,
         state: action.payload
+      };
+    }
+    case SpecificAccessActionTypes.SET_SPECIFIC_ACCESS_FORM_DATA: {
+      return {
+        ...currentState,
+        specificAccessFormData: action.payload
       };
     }
 
@@ -25,3 +32,4 @@ export function specificAccessReducer(currentState = specificAccessInitialState,
 
 export const getSpecificAccessActiveState = (specificAccessState: SpecificAccessStateData) => specificAccessState.state;
 export const getSpecificAccessLastErrors = (specificAccessState: SpecificAccessStateData) => specificAccessState.lastError;
+export const getSpecificAccessFormData = (specificAccessState: SpecificAccessStateData) => specificAccessState.specificAccessFormData.specificAccessDurationForm;

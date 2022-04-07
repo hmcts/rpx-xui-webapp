@@ -22,4 +22,5 @@ export * from './specific-access-navigation-event.enum';
 export * from './specific-access-state.enum';
 export * from './specific-access-state-data.interface';
 export * from './specific-role.model';
+export * from './specific-access-form-data.interface';
 

@@ -183,7 +183,7 @@ export const init = () => {
   });
 
   mock.onGet(getLinkedHearingGroup).reply(config => {
-    if (config.url.includes('1584618195804035')) {
+    if (config.url.includes('1585200265504149')) {
       return [
         200,
         LINKED_HEARING_GROUP_SAME_SLOT,

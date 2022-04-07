@@ -112,7 +112,7 @@ describe('SpecificAccessHomeComponent', () => {
       component.specificAccessDurationComponent = new SpecificAccessDurationComponent(durationHelperService, new FormBuilder(), mockStore);
       component.navigationCurrentState = SpecificAccessState.SPECIFIC_ACCESS_DURATION;
       component.specificAccessDurationComponent.selectedDuration = DurationType.SEVEN_DAYS;
-      spyOn(component.specificAccessDurationComponent,'getRawData').and.returnValue({day:11});
+      spyOn(component.specificAccessDurationComponent, 'getRawData').and.returnValue({day: 11});
 
       component.navigationHandler(continueNavEvent);
       expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_APPROVED));

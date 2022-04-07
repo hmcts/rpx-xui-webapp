@@ -75,14 +75,13 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
   }
 
   public navigationHandler(navEvent: SpecificAccessNavigationEvent): void {
-    const selectedDurationOption = this.specificAccessDurationComponent? this.specificAccessDurationComponent.selectedDuration : null;
-    const selectedDurationPeriod = this.specificAccessDurationComponent? this.specificAccessDurationComponent.getRawData():null;
+    const selectedDurationOption = this.specificAccessDurationComponent ? this.specificAccessDurationComponent.selectedDuration : null;
+    const selectedDurationPeriod = this.specificAccessDurationComponent ? this.specificAccessDurationComponent.getRawData() : null;
 
-    if( this.specificAccessDurationComponent)
-    {
+    if ( this.specificAccessDurationComponent) {
       this.store.dispatch(new fromFeature.SetSpecificAccessFormData(
         {
-          specificAccessDurationForm: { selectedOption: selectedDurationOption,selectedDuration: selectedDurationPeriod }
+          specificAccessDurationForm: { selectedOption: selectedDurationOption, selectedDuration: selectedDurationPeriod }
         }
       ));
     }

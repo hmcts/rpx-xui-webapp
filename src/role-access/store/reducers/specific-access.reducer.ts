@@ -16,7 +16,13 @@ export function specificAccessReducer(currentState = specificAccessInitialState,
         state: action.payload
       };
     }
+    case SpecificAccessActionTypes.DECIDE_SPECIFIC_ACCESS_AND_GO: {
+      return {
+        ...currentState,
         accessReason: action.payload.accessReason,
+        state: action.payload.specificAccessState
+      };
+    }
     case SpecificAccessActionTypes.SET_SPECIFIC_ACCESS_FORM_DATA: {
       return {
         ...currentState,

@@ -166,10 +166,10 @@ describe('SpecificAccessDurationComponent', () => {
 
       const period = component.getRawData();
       expect(period.endDate.day).toEqual(8);
-      expect(period.endDate.month).toEqual(6);
+      expect(period.endDate.month).toEqual(7);
       expect(period.endDate.year).toEqual(2025);
       expect(period.startDate.day).toEqual(7);
-      expect(period.startDate.month).toEqual(6);
+      expect(period.startDate.month).toEqual(7);
       expect(period.startDate.year).toEqual(2025);
       expect(period.hasOwnProperty('startDate') && period.hasOwnProperty('endDate')).toEqual(true);
     });

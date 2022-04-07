@@ -15,10 +15,10 @@ describe('Specific Access Reducer', () => {
 
       it('should set correct object', () => {
         const initialState = fromReducer.specificAccessInitialState;
-        const specificAccessFormData: SpecificAccessFormData ={
-              specificAccessDurationForm:{
-                selectedDuration:{},
-                selectedOption:1
+        const specificAccessFormData: SpecificAccessFormData = {
+              specificAccessDurationForm: {
+                selectedDuration: {},
+                selectedOption: 1
               }
         }
         const action = new fromActions.SetSpecificAccessFormData(specificAccessFormData);

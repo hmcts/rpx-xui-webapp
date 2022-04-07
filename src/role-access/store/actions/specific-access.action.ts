@@ -4,7 +4,7 @@ import { SpecificAccessFormData, SpecificAccessState } from '../../models';
 
 export enum SpecificAccessActionTypes {
   CHANGE_NAVIGATION = '[SPECIFIC ACCESS] Change Navigation',
-  SET_SPECIFIC_ACCESS_FORM_DATA = '[SPECIFIC ACCESS] Set Specific Access Form Data'
+  SET_SPECIFIC_ACCESS_FORM_DATA = '[SPECIFIC ACCESS] Set Specific Access Form Data',
   DECIDE_SPECIFIC_ACCESS_AND_GO = '[SPECIFIC ACCESS] Decide Specific Access And Go',
 }
 
@@ -29,7 +29,7 @@ export class SetSpecificAccessFormData implements Action {
 }
 
 export type SpecificAccessAction =
-  | DecideSpecificAccessAndGo;
-  | SetSpecificAccessFormData;
-  | ChangeSpecificAccessNavigation
+  | DecideSpecificAccessAndGo
+  | SetSpecificAccessFormData
+  | ChangeSpecificAccessNavigation;
 

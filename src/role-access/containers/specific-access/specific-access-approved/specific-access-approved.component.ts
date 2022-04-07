@@ -19,9 +19,7 @@ export class SpecificAccessApprovedComponent {
   }
 
   public navigationHandler(navEvent: SpecificAccessNavigationEvent): void {
-    debugger;
     switch (navEvent) {
-
       case SpecificAccessNavigationEvent.RETURNTOMYTASKS:
         this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_APPROVED));
         break;

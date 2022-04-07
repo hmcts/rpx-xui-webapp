@@ -50,7 +50,7 @@ router.use('/task/:taskId', getTask);
 router.use('/task', searchTask);
 
 router.use('/case/task/:caseId', getTasksByCaseId);
-router.use('/case/tasks/:caseId/event/:eventId', getTasksByCaseIdAndEventId);
+router.use('/case/tasks/:caseId/event/:eventId/caseType/:caseType/jurisdiction/:jurisdiction', getTasksByCaseIdAndEventId);
 
 router.use('/exclusion/rolesCategory', getRolesCategory);
 

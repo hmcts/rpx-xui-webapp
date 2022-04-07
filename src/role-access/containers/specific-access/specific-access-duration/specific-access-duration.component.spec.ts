@@ -4,7 +4,7 @@ import { StoreModule } from '@ngrx/store';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { SpecificAccessDurationComponent } from './specific-access-duration.component';
 import { SpecificAccessStateData, SpecificAccessState, SpecificAccessNavigationEvent } from '../../../models';
-import { DurationType } from '../../../models/enums';
+import { AccessReason, DurationType } from '../../../models/enums';
 import { DurationHelperService } from '../../../services';
 import createSpyObj = jasmine.createSpyObj;
 
@@ -89,7 +89,7 @@ describe('SpecificAccessDurationComponent', () => {
 
     it('should set the value of selected duration', () => {
       // TODO: this will need to be updated when specific access is wired up correctly with state, added to increase code coverage for now
-      const specificAccessState: SpecificAccessStateData = { state: SpecificAccessState.SPECIFIC_ACCESS_DURATION };
+      const specificAccessState: SpecificAccessStateData = { accessReason: AccessReason.APPROVE_REQUEST, state: SpecificAccessState.SPECIFIC_ACCESS_DURATION };
       component.selectSpecificAccessDuration(specificAccessState);
       expect(component.selectedDuration).toEqual(DurationType.SEVEN_DAYS);
     })

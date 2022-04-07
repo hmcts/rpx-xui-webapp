@@ -101,15 +101,11 @@ export class SpecificAccessDurationComponent implements OnInit {
 
   public selectSpecificAccessDuration(specificAccessState: SpecificAccessStateData) {
     // TODO: SARD - this will be wired up correctly in another ticket ( 5505? ). Hint: see role-access/allocate-role/choose-duration
-    debugger;
     this.selectedDuration = DurationType.SEVEN_DAYS;
 
-
-    if(specificAccessState.specificAccessFormData && specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedOption)
-    {
-      this.selectedDuration=specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedOption;
-      //this.anotherPeriod = this.selectedDuration === DurationType.ANOTHER_PERIOD;
-      if(this.selectedDuration === DurationType.ANOTHER_PERIOD){
+    if (specificAccessState.specificAccessFormData && specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedOption) {
+      this.selectedDuration = specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedOption;
+      if (this.selectedDuration === DurationType.ANOTHER_PERIOD) {
         this.anotherPeriod = true ;
         this.startDateDayCtrl.setValue(specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedDuration.startDate.day);
         this.startDateMonthCtrl.setValue(specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedDuration.startDate.month);
@@ -121,7 +117,6 @@ export class SpecificAccessDurationComponent implements OnInit {
     }
 
     this.durations.find(duration => duration.duration === this.selectedDuration).checked = true;
-
   }
 
   public navigationHandler(navEvent: SpecificAccessNavigationEvent): void {
@@ -145,10 +140,9 @@ export class SpecificAccessDurationComponent implements OnInit {
   }
 
   public getRawData(): any {
-    debugger;
-     const startDate = this.durationHelper.getRawFromControlsValues(this.startDateDayCtrl, this.startDateMonthCtrl, this.startDateYearCtrl);
-     const endDate = this.durationHelper.getRawFromControlsValues(this.endDateDayCtrl, this.endDateMonthCtrl, this.endDateYearCtrl);
-     return {startDate, endDate}
+    const startDate = this.durationHelper.getRawFromControlsValues(this.startDateDayCtrl, this.startDateMonthCtrl, this.startDateYearCtrl);
+    const endDate = this.durationHelper.getRawFromControlsValues(this.endDateDayCtrl, this.endDateMonthCtrl, this.endDateYearCtrl);
+    return {startDate, endDate}
   }
 
   public getPeriod(duration: DurationType): Period {
@@ -215,8 +209,6 @@ export class SpecificAccessDurationComponent implements OnInit {
    * @param item the DurationType the user selected
    */
   public onDurationChange(item: DurationType): void {
-    debugger;
-    const period = this.getPeriod(this.selectedDuration);
     this.anotherPeriod = item === DurationType.ANOTHER_PERIOD;
     this.selectedDuration = item;
   }

@@ -112,7 +112,7 @@ describe('DurationHelperService', () => {
       const month = new FormControl('7');
       const year = new FormControl('2022');
       const dateStr = durationHelperService.getRawFromControlsValues(day, month, year);
-      expect(dateStr).toEqual({day:7, month:7, year:2022});
+      expect(dateStr).toEqual({day: 7, month: 7, year: 2022});
     });
 
   });

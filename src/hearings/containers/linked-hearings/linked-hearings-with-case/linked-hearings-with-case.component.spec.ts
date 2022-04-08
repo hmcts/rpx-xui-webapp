@@ -6,10 +6,10 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { HearingsPipesModule } from 'src/hearings/pipes/hearings.pipes.module';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION, HMCStatus } from '../../../models/hearings.enum';
 import { ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
+import { HearingsPipesModule } from '../../../pipes/hearings.pipes.module';
 import { HearingsService } from '../../../services/hearings.service';
 import { LinkedHearingsWithCaseComponent } from './linked-hearings-with-case.component';
 

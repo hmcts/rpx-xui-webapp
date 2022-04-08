@@ -6,6 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
+import { HearingsPipesModule } from 'src/hearings/pipes/hearings.pipes.module';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION, HMCStatus } from '../../../models/hearings.enum';
 import { ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
@@ -64,7 +65,8 @@ describe('LinkedHearingsWithCaseComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [LinkedHearingsWithCaseComponent],
-      imports: [ReactiveFormsModule, RouterTestingModule],
+      imports: [ReactiveFormsModule, RouterTestingModule,
+        HearingsPipesModule],
       providers: [
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },

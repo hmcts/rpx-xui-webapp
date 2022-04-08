@@ -17,7 +17,6 @@ import * as fromHearingStore from '../../../store';
 export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public linkedCases: ServiceLinkedCasesModel[];
   public sub: Subscription;
-  public caseId: string;
   public linkHearingForm: FormGroup;
   public caseTitle: string;
 
@@ -25,13 +24,6 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
               private readonly hearingsService: HearingsService,
               private readonly route: ActivatedRoute,
               private readonly fb: FormBuilder) {
-    this.caseId = this.route.snapshot.params.caseId;
-    this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
-      state => {
-        const caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.caseName : '';
-        this.caseTitle = `${caseName} ${this.caseId}`;
-      }
-    );
   }
 
   public addHearingFormGroup(caseRef: string): FormGroup {

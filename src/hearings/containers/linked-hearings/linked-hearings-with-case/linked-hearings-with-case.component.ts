@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { select, Store } from '@ngrx/store';
-import { HMCStatus } from 'api/hearings/models/hearings.enum';
+import { Store } from '@ngrx/store';
+import { EXUIDisplayStatusEnum } from 'api/hearings/models/hearings.enum';
 import { forkJoin, Subscription } from 'rxjs';
 import { HearingListMainModel } from '../../../../hearings/models/hearingListMain.model';
 import { HearingDetailModel, ServiceLinkedCasesModel } from '../../../../hearings/models/linkHearings.model';
@@ -52,7 +52,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
         (this.linkHearingForm.get('hearings') as FormArray).push(this.addHearingFormGroup(caseInfo.caseReference));
         const hearings = [] as HearingDetailModel[];
         hearingsList[pos].caseHearings.forEach((hearing) => {
-          if (hearing.hmcStatus === HMCStatus.UPDATE_REQUESTED || hearing.hmcStatus === HMCStatus.UPDATE_REQUESTED) {
+          if (hearing.hmcStatus === EXUIDisplayStatusEnum.UPDATE_REQUESTED || hearing.hmcStatus === EXUIDisplayStatusEnum.AWAITING_LISTING) {
             const hearingInfo: HearingDetailModel = {
               hearingId: hearing.hearingID,
               hearingStage: hearing.exuiDisplayStatus,

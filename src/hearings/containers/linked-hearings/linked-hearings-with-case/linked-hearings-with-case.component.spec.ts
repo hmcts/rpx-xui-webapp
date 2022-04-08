@@ -85,12 +85,6 @@ describe('LinkedHearingsWithCaseComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should check back method', () => {
-    spyOn(hearingsService, 'navigateAction');
-    component.onBack();
-    expect(hearingsService.navigateAction).toHaveBeenCalledWith(ACTION.BACK);
-  });
-
   it('should check on submit', () => {
     (component.linkHearingForm.get('hearings') as FormArray).push(component.addHearingFormGroup('8254902572336147'));
     component.linkedCases = [];

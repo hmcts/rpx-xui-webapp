@@ -129,7 +129,8 @@ export enum HearingCategory {
   HearingRoles = 'HearingRoles',
   AdjournHearingActualReason = 'AdjournHearingActualReason',
   CancelHearingActualReason = 'CancelHearingActualReason',
-  HearingChangeReason = 'HearingChangeReason'
+  HearingChangeReason = 'HearingChangeReason',
+  LinkedHearings = 'LinkedHearings',
 }
 
 export enum HearingDateEnum {

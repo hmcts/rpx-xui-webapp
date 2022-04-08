@@ -71,7 +71,7 @@ export class HearingsService {
   }
 
   public loadServiceLinkedCases(caseReference: string, hearingId?: string): Observable<ServiceLinkedCasesModel[]> {
-    return this.http.post<ServiceLinkedCasesModel[]>('api/hearings/serviceLinkedCases', {
+    return this.http.post<ServiceLinkedCasesModel[]>('api/hearings/loadServiceLinkedCases', {
       caseReference,
       hearingId // could be null, empty string or missing
     });

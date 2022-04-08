@@ -10,14 +10,13 @@ import * as fromHearingStore from '../../store';
 })
 export class LinkedHearingsComponent {
   public caseId: string;
-  public caseTitle: string;
+  public caseName: string;
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly route: ActivatedRoute) {
     this.caseId = this.route.snapshot.params.caseId;
     this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
       state => {
-        const caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.caseName : '';
-        this.caseTitle = `${caseName} ${this.caseId}`;
+        this.caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.caseName : '';
       }
     );
   }

@@ -23,14 +23,15 @@
                 <a href="link_hearings_22.html">Manage Link</a>
               </span>
             </td>
-            <td scope="row" class="govuk-table__cell allign-middle"><strong
-                class="govuk-tag govuk-tag--grey">{{hearing.hearingStatus}}</strong></td>
+            <td scope="row" class="govuk-table__cell allign-middle">
+              <strong class="govuk-tag govuk-tag--grey"
+                [ngClass]="hearing.hearingStatus | hearingsBadge">{{hearing.hearingStatus}}</strong>
+            </td>
             <td class="govuk-table__cell">
               <div class="govuk-radios" data-module="govuk-radios">
                 <div class="govuk-radios__item">
                   <input class="govuk-radios__input" id="{{case.caseReference}}{{hearing.hearingId}}"
-                    formControlName="hearingReference" type="radio"
-                    value="{{hearing.hearingId}}">
+                    formControlName="hearingReference" type="radio" value="{{hearing.hearingId}}">
                   <label class="govuk-label govuk-radios__label"
                     for="{{case.caseReference}}{{hearing.hearingId}}"></label>
                 </div>

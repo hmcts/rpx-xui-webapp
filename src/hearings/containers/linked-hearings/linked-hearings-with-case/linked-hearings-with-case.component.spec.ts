@@ -7,7 +7,8 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { initialState } from '../../../hearing.test.data';
-import { ACTION } from '../../../models/hearings.enum';
+import { ACTION, HMCStatus } from '../../../models/hearings.enum';
+import { ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { LinkedHearingsWithCaseComponent } from './linked-hearings-with-case.component';
 
@@ -21,7 +22,7 @@ describe('LinkedHearingsWithCaseComponent', () => {
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
   const mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
 
-  const source = [
+  const source: ServiceLinkedCasesModel[] = [
     {
       caseReference: '4652724902696213',
       caseName: 'Smith vs Peterson',
@@ -44,7 +45,20 @@ describe('LinkedHearingsWithCaseComponent', () => {
         'Familial',
         'Guardian',
         'Linked for a hearing'
-      ]
+      ],
+      hearings: [{
+        hearingId: 'h100010',
+        hearingStage: HMCStatus.UPDATE_REQUESTED,
+        isSelected: false,
+        hearingStatus: HMCStatus.AWAITING_LISTING,
+        hearingIsLinkedFlag: false
+      }, {
+        hearingId: 'h100012',
+        hearingStage: HMCStatus.UPDATE_REQUESTED,
+        isSelected: false,
+        hearingStatus: HMCStatus.AWAITING_LISTING,
+        hearingIsLinkedFlag: false
+      }]
     }
   ];
   beforeEach(async(() => {
@@ -87,9 +101,13 @@ describe('LinkedHearingsWithCaseComponent', () => {
 
   it('should check on submit', () => {
     (component.linkHearingForm.get('hearings') as FormArray).push(component.addHearingFormGroup('8254902572336147'));
-    component.linkedCases = [];
+    (component.linkHearingForm.get('hearings') as FormArray).patchValue([
+      { caseReference: '8254902572336147', hearingReference: 'h100010' }
+    ]);
+    component.linkedCases = source;
     component.onSubmit();
     expect(component.linkHearingForm.valid).toBeTruthy();
+    expect(component.linkedCases[2].hearings[0].isSelected).toBe(true);
   });
 
   afterEach(() => {

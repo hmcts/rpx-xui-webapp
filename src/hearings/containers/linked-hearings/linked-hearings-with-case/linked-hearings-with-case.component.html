@@ -15,7 +15,7 @@
       <tbody class="govuk-table__body">
         <ng-container [formGroupName]="i">
           <tr class="govuk-table__row" *ngFor="let hearing of case.hearings">
-            <td scope="row" class="govuk-table__cell allign-middle">{{hearing.hearingStatus}}
+            <td scope="row" class="govuk-table__cell allign-middle">{{hearing.hearingStage}}
               <span *ngIf="hearing.hearingIsLinkedFlag">
                 &nbsp;&nbsp;
                 <img src="https://upload.wikimedia.org/wikipedia/commons/5/56/Chain_link_icon_slanted.png" width="20px;"
@@ -24,7 +24,7 @@
               </span>
             </td>
             <td scope="row" class="govuk-table__cell allign-middle"><strong
-                class="govuk-tag govuk-tag--grey">{{hearing.hearingStage}}</strong></td>
+                class="govuk-tag govuk-tag--grey">{{hearing.hearingStatus}}</strong></td>
             <td class="govuk-table__cell">
               <div class="govuk-radios" data-module="govuk-radios">
                 <div class="govuk-radios__item">

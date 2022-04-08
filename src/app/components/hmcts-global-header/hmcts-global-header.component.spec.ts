@@ -6,15 +6,17 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { SessionStorageService } from 'src/app/services';
 import { UserService } from 'src/app/services/user/user.service';
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
-
+import createSpyObj = jasmine.createSpyObj;
 
 describe('HmctsGlobalHeaderComponent', () => {
   let nocStoreSpy: jasmine.Spy;
   let component: HmctsGlobalHeaderComponent;
   let fixture: ComponentFixture<HmctsGlobalHeaderComponent>;
   let mockRouter: jasmine.SpyObj<Router>;
+  let sessionStorageService;
 
   const changesMock = {
     items: {
@@ -33,6 +35,7 @@ describe('HmctsGlobalHeaderComponent', () => {
   beforeEach(async(() => {
     origTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+    sessionStorageService = createSpyObj('sessionStorageService', ['setItem', 'getItem']);
     TestBed.configureTestingModule({
       declarations: [ HmctsGlobalHeaderComponent ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
@@ -54,7 +57,8 @@ describe('HmctsGlobalHeaderComponent', () => {
           useValue: {
             isEnabled: (flag) => of(flags[flag])
           }
-        }
+        },
+        { provide: SessionStorageService, useValue: sessionStorageService }
       ]
     })
     .compileComponents();

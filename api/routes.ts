@@ -1,4 +1,5 @@
 import * as express from 'express';
+import { router as accessManagementRouter } from './accessManagement/routes';
 import { router as caseShareRoutes } from './caseshare/routes';
 import { getConfigValue, showFeature } from './configuration';
 import { APP_INSIGHTS_KEY } from './configuration/references';
@@ -7,10 +8,10 @@ import authInterceptor from './lib/middleware/auth';
 import { router as locationsRouter } from './locations/routes';
 import { router as nocRouter } from './noc/routes';
 import { router as organisationRouter } from './organisations';
-import { router as serviceRefDataRouter } from './serviceRefData';
-import { router as waSupportedJurisdictionRouter } from './waSupportedJurisdictions';
 import roleAccessRouter from './roleAccess/routes';
+import { router as serviceRefDataRouter } from './serviceRefData';
 import userRouter from './user/routes';
+import { router as waSupportedJurisdictionRouter } from './waSupportedJurisdictions';
 
 const router = express.Router({mergeParams: true});
 
@@ -38,6 +39,7 @@ router.use('/organisation', organisationRouter);
 router.use('/wa-supported-jurisdiction', waSupportedJurisdictionRouter);
 router.use('/locations', locationsRouter);
 router.use('/service-ref-data', serviceRefDataRouter);
+router.use('/access-management', accessManagementRouter);
 
 // @ts-ignore
 export default router;

@@ -29,6 +29,7 @@ export const SERVICES_CCD_DATA_STORE_API_PATH = 'services.ccd.dataApi';
 export const SERVICES_CCD_CASE_ASSIGNMENT_API_PATH = 'services.ccd.caseAssignmentApi';
 export const SERVICES_WORK_ALLOCATION_TASK_API_PATH = 'services.work_allocation.taskApi';
 export const SERVICES_ROLE_ASSIGNMENT_API_PATH = 'services.role_assignment.roleApi';
+export const SERVICES_WORK_FLOW_API_PATH = 'services.role_assignment.workFlowApi';
 export const SERVICES_CASE_CASEWORKER_REF_PATH = 'services.case.caseworkerApi';
 export const SERVICES_CASE_JUDICIALWORKER_REF_PATH = 'services.case.judicialworkerApi';
 export const SERVICES_CASE_JUDICIAL_REF_PATH = 'services.case.judicialApi';
@@ -53,7 +54,7 @@ export const SERVICES_TERMS_AND_CONDITIONS_URL = 'services.termsAndConditions';
 
 export const SERVICES_PAYMENTS_URL = 'services.payments';
 
-export const SERVICES_PAYMENT_RETURN_URL = 'services.payment_return_url'
+export const SERVICES_PAYMENT_RETURN_URL = 'services.payment_return_url';
 
 export const SERVICES_PRD_API_URL = 'services.prd.api';
 

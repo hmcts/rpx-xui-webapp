@@ -2,7 +2,7 @@ import { ActorType, Classification, GrantType, RequestType, RoleCategory, RoleTy
 import { Attributes, Note } from './shared';
 
 export interface RoleRequest {
-  assignerId: number;
+  assignerId: string;
   process?: string;
   reference?: string;
   replaceExisting: boolean;

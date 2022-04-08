@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { HMCStatus } from 'api/hearings/models/hearings.enum';
 import { forkJoin, Subscription } from 'rxjs';
 import { HearingListMainModel } from '../../../../hearings/models/hearingListMain.model';
-import { LinkedHearingsDetailModel, ServiceLinkedCasesModel } from '../../../../hearings/models/linkHearings.model';
+import { HearingDetailModel, ServiceLinkedCasesModel } from '../../../../hearings/models/linkHearings.model';
 import { ACTION } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
@@ -20,12 +20,19 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public sub: Subscription;
   public caseId: string;
   public linkHearingForm: FormGroup;
+  public caseTitle: string;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly hearingsService: HearingsService,
               private readonly route: ActivatedRoute,
               private readonly fb: FormBuilder) {
     this.caseId = this.route.snapshot.params.caseId;
+    this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
+      state => {
+        const caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.caseName : '';
+        this.caseTitle = `${caseName} ${this.caseId}`;
+      }
+    );
   }
 
   public addHearingFormGroup(caseRef: string): FormGroup {
@@ -52,12 +59,11 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     this.sub = forkJoin(hearingServices).subscribe((hearingsList: HearingListMainModel[]) => {
       this.linkedCases = receivedCases.map((caseInfo: ServiceLinkedCasesModel, pos: number) => {
         (this.linkHearingForm.get('hearings') as FormArray).push(this.addHearingFormGroup(caseInfo.caseReference));
-        const hearings = [] as LinkedHearingsDetailModel[];
+        const hearings = [] as HearingDetailModel[];
         hearingsList[pos].caseHearings.forEach((hearing) => {
           if (hearing.hmcStatus === HMCStatus.UPDATE_REQUESTED || hearing.hmcStatus === HMCStatus.UPDATE_REQUESTED) {
-            const hearingInfo: LinkedHearingsDetailModel = {
+            const hearingInfo: HearingDetailModel = {
               hearingId: hearing.hearingID,
-              hearingOrder: 0,
               hearingStage: hearing.exuiDisplayStatus,
               isSelected: false,
               hearingStatus: hearing.exuiSectionStatus,

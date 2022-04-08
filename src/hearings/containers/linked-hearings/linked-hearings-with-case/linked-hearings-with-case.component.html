@@ -1,7 +1,7 @@
 <a class="govuk-back-link" href="javascript:history.back()">Back</a>
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
-    <span class="govuk-caption-l">Link hearings to {{caseId}} (full hearing)</span>
+    <exui-linked-hearings-case-title [caseTitle]="caseTitle"></exui-linked-hearings-case-title>
     <h1 class="govuk-heading-l">Which hearings should be linked to this hearing?</h1>
     <form class="form" [formGroup]="linkHearingForm">
       <div formArrayName="hearings" *ngFor="let case of linkedCases; let i = index">

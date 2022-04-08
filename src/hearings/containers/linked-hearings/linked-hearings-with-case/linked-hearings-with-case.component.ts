@@ -6,7 +6,6 @@ import { HMCStatus } from 'api/hearings/models/hearings.enum';
 import { forkJoin, Subscription } from 'rxjs';
 import { HearingListMainModel } from '../../../../hearings/models/hearingListMain.model';
 import { HearingDetailModel, ServiceLinkedCasesModel } from '../../../../hearings/models/linkHearings.model';
-import { ACTION } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 
@@ -102,9 +101,4 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
       this.sub.unsubscribe();
     }
   }
-
-  public onBack(): void {
-    this.hearingsService.navigateAction(ACTION.BACK);
-  }
-
 }

@@ -1,5 +1,11 @@
 <exui-app-header></exui-app-header>
 <div class="govuk-width-container">
-  <router-outlet></router-outlet>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <a class="govuk-back-link" href="javascript:history.back()">Back</a>
+      <exui-linked-hearings-case-title [caseTitle]="caseTitle"></exui-linked-hearings-case-title>
+      <router-outlet></router-outlet>
+    </div>
+  </div>
 </div>
 <exui-app-footer></exui-app-footer>

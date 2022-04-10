@@ -166,6 +166,13 @@ export enum HearingJudgeSelectionEnum {
   ExcludeFullNameJudge = 'Enter a full name to exclude a judge, or delete the name to stop the judge being excluded.'
 }
 
+export enum HearingLinkedSelectionEnum {
+  ValidSelectionError = 'You need to select atleast one hearing',
+  HearingSelection = 'Which hearings should be linked to this hearing?',
+  NoHearingSelection = 'There are no hearings available to link to',
+  NoLinkedCases = 'No linked Cases',
+}
+
 export enum HearingDatePriorityEnum {
   LengthError = 'Enter a valid hearing length',
   LengthMinutesError = 'The minutes entered must be a multiple of 5',

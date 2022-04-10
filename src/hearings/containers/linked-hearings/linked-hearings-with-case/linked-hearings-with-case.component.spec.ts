@@ -7,7 +7,7 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { initialState } from '../../../hearing.test.data';
-import { ACTION, HMCStatus } from '../../../models/hearings.enum';
+import { ACTION, HearingLinkedSelectionEnum, HMCStatus } from '../../../models/hearings.enum';
 import { ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
 import { HearingsPipesModule } from '../../../pipes/hearings.pipes.module';
 import { HearingsService } from '../../../services/hearings.service';
@@ -110,6 +110,12 @@ describe('LinkedHearingsWithCaseComponent', () => {
     component.onSubmit();
     expect(component.linkHearingForm.valid).toBeTruthy();
     expect(component.linkedCases[2].hearings[0].isSelected).toBe(true);
+  });
+
+  it('should check on submit error', () => {
+    component.onSubmit();
+    expect(component.linkHearingForm.valid).toBeFalsy();
+    expect(component.linkedHearingSelectionError).toBe(HearingLinkedSelectionEnum.ValidSelectionError);
   });
 
   afterEach(() => {

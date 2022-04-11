@@ -12,7 +12,7 @@ import * as fromHearingStore from "../../../store";
 import { ValidatorsUtils } from "src/hearings/utils/validators.utils";
 
 @Component({
-  selector: "exui-how-hearings-linked-heard",
+  selector: "exui-linked-hearings-how-to-heard",
   templateUrl: "./linked-hearings-how-to-heard.component.html",
   styleUrls: ['./linked-hearings-how-to-heard.component.scss']
 })
@@ -34,13 +34,11 @@ export class HowLinkedHearingsBeHeardComponent
   public formValid: boolean = true;
   public selectionValid: boolean = true;
   public form: FormGroup;
-  public subscribedOnce$: Subject<boolean> = new Subject()
 
   constructor(
     protected readonly hearingStore: Store<fromHearingStore.State>,
     protected readonly hearingsService: HearingsService,
     protected readonly route: ActivatedRoute,
-    private readonly router: Router,
     private readonly validators: ValidatorsUtils,
     private readonly fb: FormBuilder
   ) {

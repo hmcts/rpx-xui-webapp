@@ -6,12 +6,14 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { ACTION } from 'src/hearings/models/hearings.enum';
-import { ServiceLinkedCasesModel } from 'src/hearings/models/linkHearings.model';
-import { HearingsService } from 'src/hearings/services/hearings.service';
+import { initialState } from '../../../hearing.test.data';
+import { ACTION, HearingLinkedSelectionEnum, HMCStatus } from '../../../models/hearings.enum';
+import { ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
+import { HearingsPipesModule } from '../../../pipes/hearings.pipes.module';
+import { HearingsService } from '../../../services/hearings.service';
 import { HowLinkedHearingsBeHeardComponent } from './linked-hearings-how-to-heard.component';
 
-describe('HowLinkedHearingsBeHeardComponent', () => {
+fdescribe('HowLinkedHearingsBeHeardComponent', () => {
   let component: HowLinkedHearingsBeHeardComponent;
   let fixture: ComponentFixture<HowLinkedHearingsBeHeardComponent>;
   let store: any;
@@ -99,14 +101,15 @@ describe('HowLinkedHearingsBeHeardComponent', () => {
   });
 
   it('should check on submit', () => {
-    (component.linkHearingForm.get('hearings') as FormArray).push(component.addHearingFormGroup('8254902572336147'));
-    (component.linkHearingForm.get('hearings') as FormArray).patchValue([
-      { caseReference: '8254902572336147', hearingReference: 'h100010' }
-    ]);
-    component.linkedCases = source;
+    mockStore.pipe.and.returnValue(of(source));
     component.onSubmit();
-    expect(component.linkHearingForm.valid).toBeTruthy();
-    expect(component.linkedCases[2].hearings[0].isSelected).toBe(true);
+    expect(component.hearingOrder.valid).toBeTruthy();
+  });
+
+  it('should check on submit error', () => {
+    component.onSubmit();
+    expect(component.hearingOrder.valid).toBeFalsy();
+    expect(component.validationErrors).not.toBeNull();
   });
 
   afterEach(() => {

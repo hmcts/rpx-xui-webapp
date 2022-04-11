@@ -23,7 +23,8 @@ export class HowLinkedHearingsBeHeardComponent
   public caseId: string;
   public caseName: string;
   public hearingLinksStateData$: Observable<HearingLinksStateData>;
-  public linkedCases: ServiceLinkedCasesModel[];
+  public receivedCases: ServiceLinkedCasesModel[];
+  public selectedToBeLinkedCases: ServiceLinkedCasesModel[];
   public linkedHearingGroup: LinkedHearingGroupMainModel;
   public validationErrors: { id: string; message: string }[] = [];
   public positionDropdownValues = [];
@@ -48,12 +49,9 @@ export class HowLinkedHearingsBeHeardComponent
       hearingOrder: this.fb.array([]),
     });
     this.hearingStore
-      .pipe(select(fromHearingStore.getHearingsFeatureState))
+      .pipe(select(fromHearingStore.getHearingLinks))
       .subscribe((state) => {
-        this.caseId = state.hearingList.hearingListMainModel
-          ? state.hearingList.hearingListMainModel.caseRef
-          : "";
-        this.caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.caseName : '';
+        this.receivedCases = state.serviceLinkedCases;      
       });
   }
 
@@ -62,38 +60,39 @@ export class HowLinkedHearingsBeHeardComponent
   }
 
   private addRow(linkCase:ServiceLinkedCasesModel) {
-    if (!linkCase) return;
+    if (!linkCase || !linkCase.hearings) return;
+
     this.hearingOrder.push(this.fb.group({
       caseReference: [linkCase.caseReference],
       caseName: [linkCase.caseName],
-      hearingStage: [linkCase.hearings[0].hearingStage],
+      hearingStage: [linkCase.hearings[0] && linkCase.hearings[0].hearingStage || ''],
       position: [null, this.validators.mandatory('')]
     }));
   }
 
   public ngOnInit(): void {
-    const receivedCases: ServiceLinkedCasesModel[] = this.route.snapshot.data.linkedCase && this.route.snapshot.data.linkedCase.serviceLinkedCases || [];
-    if (receivedCases && receivedCases.length) {
-      this.linkedCases = receivedCases.filter(cases => cases.hearings.filter(hearings => hearings.isSelected));
-      this.positionDropdownValues = Array.from({length: this.linkedCases.length}, (_, i) => i + 1)
+    this.selectedToBeLinkedCases = [];
+    this.receivedCases.forEach((linked) => {
+      const selectedHearing = linked.hearings && linked.hearings.filter(hearing => hearing.isSelected === true);
+      if (selectedHearing && selectedHearing.length) {
+        this.selectedToBeLinkedCases.push({
+          caseReference: linked.caseReference,
+          caseName: linked.caseName,
+          hearings: selectedHearing,
+          reasonsForLink: linked.reasonsForLink
+        })
+      }
+    })
+    if (this.selectedToBeLinkedCases && this.selectedToBeLinkedCases.length) {
+      this.positionDropdownValues = Array.from({length: this.selectedToBeLinkedCases.length}, (_, i) => i + 1)
       this.createForm();
     }
   }
 
   private createForm(): void {
-    this.linkedCases.forEach((linked) => {
+    this.selectedToBeLinkedCases.forEach((linked) => {
      this.addRow(linked);
     })
-  }
-
-  public executeAction(action: ACTION): void {
-    if (action === ACTION.CONTINUE) {
-      if (this.isFormValid()) {
-        super.navigateAction(action);
-      }
-    } else if (action === ACTION.BACK) {
-      super.navigateAction(action);
-    }
   }
 
   public onSubmit(): void {
@@ -105,7 +104,7 @@ export class HowLinkedHearingsBeHeardComponent
     }, hearingsInGroup: []};
     if (this.isFormValid()) {
       this.hearingOrder.value.forEach(formValue => {
-        const hearing = this.linkedCases.find(linked => linked.caseReference === formValue.caseReference)
+        const hearing = this.selectedToBeLinkedCases.find(linked => linked.caseReference === formValue.caseReference)
         const selectedHearing = hearing && hearing.hearings.find(selected => selected.isSelected)
         selectedHearing && linkedHearingGroupMainModel.hearingsInGroup.push({
             hearingId: selectedHearing.hearingId,
@@ -115,6 +114,10 @@ export class HowLinkedHearingsBeHeardComponent
       this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesGroupDetail(linkedHearingGroupMainModel));
       //this.router.navigate(['/', 'hearings-link-summary', this.caseId]);
     }
+  }
+
+  protected executeAction(action: ACTION): void {
+    throw new Error("Method not implemented.");
   }
 
   public onOrderChange(index: number) {

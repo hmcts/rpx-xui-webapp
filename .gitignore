@@ -80,3 +80,6 @@ stryker.log
 yalc.lock
 
 ignore/
+
+*.sh
+.gitignore

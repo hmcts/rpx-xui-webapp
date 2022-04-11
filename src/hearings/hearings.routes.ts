@@ -55,7 +55,6 @@ import { LinkedCaseResolver } from './resolvers/linked-case-resolver.resolve';
 import { PanelRolesResolverService } from './resolvers/panel-roles-resolver.service';
 import { PartyChannelsResolverService } from './resolvers/party-channels-resolver.service';
 import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
-import { SelectedLinkedCasesGroupResolver } from './resolvers/selected-linked-cases-group.resolver';
 
 export const ROUTES: Routes = [
   {
@@ -453,12 +452,10 @@ export const ROUTES: Routes = [
     ]
   },
   {
-    path: 'link/:caseId/:hearingId/group-selection',
-    resolve: { linkedCase: SelectedLinkedCasesGroupResolver },
+    path: 'link/group-selection/:caseId/:hearingId',
     component: HowLinkedHearingsBeHeardComponent,
     canActivate: [HealthCheckGuard, HearingsEditGuard],
-    data: {
-    },
+    data: {},
     children: [
       {
         path: '',

@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { forkJoin, Subscription } from 'rxjs';
 import { HearingListMainModel } from '../../../models/hearingListMain.model';
@@ -19,10 +19,13 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public sub: Subscription;
   public linkHearingForm: FormGroup;
   public caseTitle: string;
+  public caseReference: string;
+  public selectedHearingId: string;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly hearingsService: HearingsService,
               private readonly route: ActivatedRoute,
+              private readonly router: Router,
               private readonly fb: FormBuilder) {
   }
 
@@ -38,6 +41,10 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
       hearings: this.fb.array([])
     });
     this.getAllCaseInformation();
+    this.route.params.subscribe((params: Params) => {
+      this.caseReference = params.caseId;
+      this.selectedHearingId = params.hearingId;
+    });
   }
 
   public getAllCaseInformation() {
@@ -85,6 +92,8 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
         });
       });
       this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesSuccess(this.linkedCases));
+      this.router.navigate(['/', 'hearings', 'link', 'group-selection', this.caseReference, this.selectedHearingId]);
+
     }
   }
 

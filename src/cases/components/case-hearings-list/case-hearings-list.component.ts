@@ -72,7 +72,7 @@ export class CaseHearingsListComponent implements OnInit {
   }
 
   public linkHearing(hearingID: string): void {
-    this.router.navigate(['/', 'hearings', 'link', this.caseId, hearingID, 'group-selection']);
+    this.router.navigate(['/', 'hearings', 'link', this.caseId, hearingID]);
   }
 
   public manageLinks(hearingID: string): void {

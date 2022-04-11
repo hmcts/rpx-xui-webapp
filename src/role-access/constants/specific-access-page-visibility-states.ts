@@ -13,11 +13,11 @@ export const specicAccessCancelButtonVisibilityStates = [
 ];
 
 export const specicAccessReturnToMyTasksButtonVisibilityStates = [
-  SpecificAccessState.SPECIFIC_ACCESS_APPROVED
+  SpecificAccessState.SPECIFIC_ACCESS_APPROVED, SpecificAccessState.SPECIFIC_ACCESS_DENIED
 ];
 
 export const specicAccessReturnToTasksTabVisibilityStates = [
-  SpecificAccessState.SPECIFIC_ACCESS_APPROVED
+  SpecificAccessState.SPECIFIC_ACCESS_APPROVED, SpecificAccessState.SPECIFIC_ACCESS_DENIED
 ];
 export const specificAccessReviewVisibilityStates = [SpecificAccessState.SPECIFIC_ACCESS_REVIEW];
 export const specificAccessDurationVisibilityStates = [SpecificAccessState.SPECIFIC_ACCESS_DURATION];

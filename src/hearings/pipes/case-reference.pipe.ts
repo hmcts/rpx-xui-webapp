@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'ccdCaseReference'
+  name: 'caseReference'
 })
 export class CaseReferencePipe implements PipeTransform {
 

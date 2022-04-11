@@ -1,4 +1,4 @@
-import { SpecificAccessFormData, SpecificAccessState } from '../../models';
+import { SpecificAccessFormData, SpecificAccessMoreInformationForm, SpecificAccessState } from '../../models';
 import * as fromActions from '../actions/specific-access.action';
 import * as fromReducer from './specific-access.reducer';
 describe('Specific Access Reducer', () => {
@@ -24,6 +24,16 @@ describe('Specific Access Reducer', () => {
         const action = new fromActions.SetSpecificAccessFormData(specificAccessFormData);
         const specificAccessState = fromReducer.specificAccessReducer(initialState, action);
         expect(specificAccessState.specificAccessFormData).toEqual(specificAccessFormData);
+      });
+
+      it('should set correct object', () => {
+        const initialState = fromReducer.specificAccessInitialState;
+        const specificAccessMoreInformationForm: SpecificAccessMoreInformationForm = {
+          InfoText : 'test text'
+        }
+        const action = new fromActions.SetSpecificAccessInfoFormData(specificAccessMoreInformationForm);
+        const specificAccessState = fromReducer.specificAccessReducer(initialState, action);
+        expect(specificAccessState.SpecificAccessMoreInformationFormData).toEqual(specificAccessMoreInformationForm);
       });
     });
   });

@@ -1,11 +1,12 @@
 
-
+@ng
 Feature: Case access management: Approve specific access request
 
     Background:setup
         Given I init MockApp
         Given I set MOCK case details with reference "caseDetails"
         Given I set MOCK case details "caseDetails" property "Jurisdiction" as "IA"
+        Given I set MOCK case details "caseDetails" trigger id "text" trigger name "Test event"
         Given I set MOCK case list values
             | case_id          | case_fields.[CASE_REFERENCE] | case_fields_formatted.[CASE_REFERENCE] |
             | 1234567812345678 | 1234567812345678             | 1234567812345678                       |
@@ -32,30 +33,14 @@ Feature: Case access management: Approve specific access request
             | 18a3d216-c6ab-4e92-a7e3-ca3661e6be83 | admin1      | a        | admin_user1@gov.uk      |
             | 18a3d216-c6ab-4e92-a7e3-ca3661e6be82 | admin2      | a        | admin_user2@gov.uk      |
 
-    
-        Given I set MOCK case tasks with userDetails from reference "userDetails"
-            | id                                   | task_title                                | assignee                             | assigneeName | created_date | due_date | permissions                          | warnings | description                                                                                                                                                            |
-            | 08a3d216-task-4e92-a7e3-ca3661e6be87 | Task 1                                    | thissession                          | Test user    | -10          | -1       | Own,Read,Refer,Manage,Execute,Cancel | true     | Click link to proceed to next step [test link next step](/case/case-details/${[case_id]})                                                                              |
-            | 18a3d216-task-4e92-a7e3-ca3661e6be87 | Task 2                                    | thissession                          | Test 2 user  | -10          | 0        | Own,Manage,Execute                   | true     | Click link to proceed [next step 1](/case/case-details/${[case_id]}) or \n Click link to proceed to [next step 2](/case/case-details/${[case_id]}/${[id]}/testaction2) |
-            |                                      | Task 3                                    |                                      |              | -10          | 1        | Own,Manage,Execute                   | true     |                                                                                                                                                                        |
-            |                                      | Task 4                                    |                                      |              | -10          | 10       |                                      | true     |                                                                                                                                                                        |
-            |                                      | Task 5                                    |                                      |              | -10          | 10       |                                      | true     |                                                                                                                                                                        |
-            |                                      | 6 Permissions OME assined to me           | thissession                          | Test user    | -10          | 10       | Own,Manage,Execute                   | true     |                                                                                                                                                                        |
-            |                                      | 7 Permissions OME assigned to someother   | 08a3d216-c6ab-4e92-a7e3-ca3661e6be81 | Test 3 user  | -10          | 10       | Own,Manage,Execute                   | true     |                                                                                                                                                                        |
-            |                                      | 8 Permissions OME unassigned              |                                      |              | -10          | 10       | Own,Manage,Execute                   | true     |                                                                                                                                                                        |
-            |                                      | 9 Permissions ME assined to me            | thissession                          | Test user    | -10          | 10       | Manage,Execute                       | true     |                                                                                                                                                                        |
-            |                                      | 10 Permissions ME assigned to someother   | 08a3d216-c6ab-4e92-a7e3-ca3661e6be87 | Test 4 user  | -10          | 10       | Manage,Execute                       | true     |                                                                                                                                                                        |
-            |                                      | 11 Permissions ME unassigned              |                                      |              | -10          | 10       | Manage,Execute                       | true     |                                                                                                                                                                        |
-            |                                      | 12 Permissions M assigned to someother    | 38eb0c5e-29c7-453e-b92d-f2029aaed6c3 | Test 5 user  | -10          | 10       | Manage                               | true     |                                                                                                                                                                        |
-            |                                      | 13 Permissions M unassigned               |                                      |              | -10          | 10       | Manage                               | true     |                                                                                                                                                                        |
-            |                                      | 14 Permissions none assigned to someother | 18a3d216-c6ab-4e92-a7e3-ca3661e6be81 | Test 6 user  | -10          | 10       |                                      | true     |                                                                                                                                                                        |
-            |                                      | 15 Permissions none unassigned            |                                      |              | -10          | 10       |                                      | true     |                                                                                                                                                                        |
-
-
-
 
     Scenario Outline: Approve specific access request page validations 
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK case tasks with userDetails from reference "userDetails"
+            | id                                   | task_title | assignee    | assigneeName | created_date | due_date | permissions                          | warnings | description                                                                                                                                                            |
+            | 08a3d216-task-4e92-a7e3-ca3661e6be87 | Task 1     | thissession | Test user    | -10          | -1       | Own,Read,Refer,Manage,Execute,Cancel | true     | Click link to proceed to next step [test link next step](/case/case-details/${[case_id]})                                                                              |
+            | 18a3d216-task-4e92-a7e3-ca3661e6be87 | Task 2 | thissession | Test 2 user | -10 | 0 | Own,Manage,Execute | true | Click link to proceed [next step 1](/case/case-details/${[case_id]}) or \n Click link to proceed to [next step 2](/case/IA/Asylum/${[case_id]}/trigger/text) |
+
 
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
@@ -73,7 +58,7 @@ Feature: Case access management: Approve specific access request
         Then I validate case details task tab page is displayed
         Then I validate task tab active tasks container displayed
 
-        When I click next step "" for task with name ""
+        When I click next step "next step 2" for task with name "Task 2"
         Then I see Approve specific access work flow page "How long do you want to give access to this case for?" with caption "Approve specific access request" is displayed
 
 
@@ -101,6 +86,11 @@ Feature: Case access management: Approve specific access request
     
     Scenario Outline:  Approve specifc access requestion date validations - Happy path 
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK case tasks with userDetails from reference "userDetails"
+            | id                                   | task_title | assignee    | assigneeName | created_date | due_date | permissions                          | warnings | description                                                                                                                                                            |
+            | 08a3d216-task-4e92-a7e3-ca3661e6be87 | Task 1     | thissession | Test user    | -10          | -1       | Own,Read,Refer,Manage,Execute,Cancel | true     | Click link to proceed to next step [test link next step](/case/case-details/${[case_id]})                                                                              |
+            | 18a3d216-task-4e92-a7e3-ca3661e6be87 | Task 2     | thissession | Test 2 user  | -10          | 0        | Own,Manage,Execute                   | true     | Click link to proceed [next step 1](/case/case-details/${[case_id]}) or \n Click link to proceed to [next step 2](/case/case-details/${[case_id]}/${[id]}/testaction2) |
+
 
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |
@@ -142,6 +132,11 @@ Feature: Case access management: Approve specific access request
 
     Scenario Outline:  Approve specifc access requestion invalid date validations - Unhappy path
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK case tasks with userDetails from reference "userDetails"
+            | id                                   | task_title | assignee    | assigneeName | created_date | due_date | permissions                          | warnings | description                                                                                                                                                            |
+            | 08a3d216-task-4e92-a7e3-ca3661e6be87 | Task 1     | thissession | Test user    | -10          | -1       | Own,Read,Refer,Manage,Execute,Cancel | true     | Click link to proceed to next step [test link next step](/case/case-details/${[case_id]})                                                                              |
+            | 18a3d216-task-4e92-a7e3-ca3661e6be87 | Task 2     | thissession | Test 2 user  | -10          | 0        | Own,Manage,Execute                   | true     | Click link to proceed [next step 1](/case/case-details/${[case_id]}) or \n Click link to proceed to [next step 2](/case/case-details/${[case_id]}/${[id]}/testaction2) |
+
 
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | isCaseAllocator | jurisdiction | primaryLocation |

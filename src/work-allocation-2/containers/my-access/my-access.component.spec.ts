@@ -60,7 +60,7 @@ describe('MyAccessComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
-    component.isPaginationEnabled$ = of(false);
+    // component.isPaginationEnabled$ = of(false);
     router = TestBed.get(Router);
     const cases: Case[] = getMockCases();
     mockCaseService.searchCase.and.returnValue(of({ cases }));

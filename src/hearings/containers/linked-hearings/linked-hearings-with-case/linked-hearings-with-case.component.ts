@@ -17,6 +17,7 @@ import { ValidatorsUtils } from '../../../utils/validators.utils';
 })
 export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public caseId: string;
+  public hearingId: string;
   public caseName: string;
   public linkedHearingSelectionError: string;
   public validationErrors: { id: string, message: string }[] = [];
@@ -36,6 +37,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
               private readonly router: Router,
               private readonly fb: FormBuilder) {
     this.caseId = this.route.snapshot.params.caseId;
+    this.hearingId = this.route.snapshot.params.hearingId;
     this.sub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
       state => {
         this.caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.caseName : '';
@@ -105,9 +107,21 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
           });
         }
       });
-      this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesSuccess(this.linkedCases));
-      this.router.navigate(['/', 'hearings', 'link', 'group-selection', this.caseReference, this.selectedHearingId]);
     });
+    this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesSuccess(this.linkedCases));
+    this.router.navigate([`/hearings/link/${this.caseId}/${this.hearingId}/group-selection`])
+    //this.router.navigate([`group-selection`])
+  }
+
+  public onSubmit() {
+    this.validationErrors = [];
+    this.linkedHearingSelectionError = null;
+    if (this.linkHearingForm.valid) {
+      this.saveLinkedHearingInfo();
+    } else {
+      this.linkedHearingSelectionError = this.linkedHearingEnum.ValidSelectionError;
+      this.validationErrors.push({ id: 'linked-form', message: this.linkedHearingEnum.ValidSelectionError });
+    }
   }
 
   public ngOnDestroy(): void {

@@ -6,7 +6,6 @@
           <div class="govuk-width-container">
             <div class="govuk-grid-row">
               <div class="govuk-grid-column-full">
-                <a class="govuk-back-link" href="javascript:history.back()">Back</a>
                 <xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem'">
                 </xuilib-hmcts-error-summary>
                 <exui-linked-hearings-case-title [caseId]="caseId" [caseName]="caseName">
@@ -42,7 +41,7 @@
                           </caption>
                           <thead class="govuk-table__head">
                             <tr class="govuk-table__row">
-                              <span *ngIf="validationErrors.length > 0">
+                              <span *ngIf="validationErrors.length > 0" class="govuk-error-message govuk-!-margin-top-2">
                                 {{ validationErrors[0].message }}
                               </span>
                             </tr>

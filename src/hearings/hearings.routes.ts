@@ -11,7 +11,7 @@ import { HearingActualsComponent } from './containers/hearing-actuals/hearing-ac
 import { HearingStageResultComponent } from './containers/hearing-actuals/hearing-stage-result/hearing-stage-result.component';
 import { LinkedHearingsWithCaseComponent } from './containers/linked-hearings/linked-hearings-with-case/linked-hearings-with-case.component';
 import { LinkedHearingsComponent } from './containers/linked-hearings/linked-hearings.component';
-import { HowLinkedHearingsBeHeardComponent } from './containers/linked-hearing/how-linked-hearings-be-heard.component';
+import { HowLinkedHearingsBeHeardComponent } from './containers/linked-hearings/linked-hearings-how-to-heard/linked-hearings-how-to-heard.component';
 import { HearingAdditionalInstructionsComponent } from './containers/request-hearing/hearing-additional-instructions/hearing-additional-instructions.component';
 import { HearingAttendanceComponent } from './containers/request-hearing/hearing-attendance/hearing-attendance.component';
 import { HearingChangeReasonComponent } from './containers/request-hearing/hearing-change-reason/hearing-change-reason.component';
@@ -88,6 +88,13 @@ export const ROUTES: Routes = [
           title: 'HMCTS Hearings | Linked Hearings | Cases'
         }
       },
+      {
+        path: 'group-selection',
+        component: HowLinkedHearingsBeHeardComponent,
+        data: {
+          title: 'HMCTS Hearings | Linked Hearings | Group Selection'
+        }
+      }
     ]
   },
   {
@@ -449,21 +456,6 @@ export const ROUTES: Routes = [
           title: 'HMCTS Hearings | View Hearing | Request failed '
         }
       },
-    ]
-  },
-  {
-    path: 'link/group-selection/:caseId/:hearingId',
-    component: HowLinkedHearingsBeHeardComponent,
-    canActivate: [HealthCheckGuard, HearingsEditGuard],
-    data: {},
-    children: [
-      {
-        path: '',
-        component: null,
-        data: {
-          title: 'HMCTS Hearings | Linked Hearings | Group Selection'
-        }
-      }
     ]
   },
   {

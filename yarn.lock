@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.13.1-case-flags-multi-level-flag-types":
-  version "4.13.1-case-flags-multi-level-flag-types"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.13.1-case-flags-multi-level-flag-types.tgz#375c2d00ccd20cc969b9505e562bc3263380a050"
-  integrity sha512-5oJOKUPoya/6xtVQ2InK+mv3zcLYbZLEfbE94vG/MxMRTCU+brbmPNHkhn4OjbkXLLgihYTzz2ytvUYEIAJaSQ==
+"@hmcts/ccd-case-ui-toolkit@4.13.1-case-flags-multi-level-flag-types-html-fix":
+  version "4.13.1-case-flags-multi-level-flag-types-html-fix"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.13.1-case-flags-multi-level-flag-types-html-fix.tgz#9bd9545b4ff06e53c157b12133c6f3e4ea46e752"
+  integrity sha512-JBn+8d0GbHShCmYCkIw8n9o/dm7CUkPeKBptFBEJU2n1Vdq2lPNfEYaq8nexOCJebfNZsP2g0ndnX6EIK0S1Fw==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

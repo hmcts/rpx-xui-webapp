@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import * as fromHearingStore from '../../store';
 
 @Component({
-  selector: 'exui-linked-hearingss',
+  selector: 'exui-linked-hearings',
   templateUrl: './linked-hearings.component.html',
   styleUrls: ['./linked-hearings.component.scss']
 })

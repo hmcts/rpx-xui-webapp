@@ -9,6 +9,7 @@ import { HearingActualsTimingComponent } from './containers/hearing-actuals/hear
 import { HearingActualsViewEditPartiesComponent } from './containers/hearing-actuals/hearing-actuals-view-edit-parties/hearing-actuals-view-edit-parties.component';
 import { HearingActualsComponent } from './containers/hearing-actuals/hearing-actuals.component';
 import { HearingStageResultComponent } from './containers/hearing-actuals/hearing-stage-result/hearing-stage-result.component';
+import { HowLinkedHearingsBeHeardComponent } from './containers/linked-hearing/how-linked-hearings-be-heard.component';
 import { HearingAdditionalInstructionsComponent } from './containers/request-hearing/hearing-additional-instructions/hearing-additional-instructions.component';
 import { HearingAttendanceComponent } from './containers/request-hearing/hearing-attendance/hearing-attendance.component';
 import { HearingChangeReasonComponent } from './containers/request-hearing/hearing-change-reason/hearing-change-reason.component';
@@ -51,6 +52,7 @@ import { JudicialUserSearchResponseResolver } from './resolvers/judicial-user-se
 import { PanelRolesResolverService } from './resolvers/panel-roles-resolver.service';
 import { PartyChannelsResolverService } from './resolvers/party-channels-resolver.service';
 import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
+import { SelectedLinkedCasesGroupResolver } from './resolvers/selected-linked-cases-group.resolver';
 
 export const ROUTES: Routes = [
   {
@@ -430,6 +432,23 @@ export const ROUTES: Routes = [
           title: 'HMCTS Hearings | View Hearing | Request failed '
         }
       },
+    ]
+  },
+  {
+    path: 'link/:caseId/:hearingId/group-selection',
+    resolve: { linkedCase: SelectedLinkedCasesGroupResolver },
+    component: HowLinkedHearingsBeHeardComponent,
+    canActivate: [HealthCheckGuard, HearingsEditGuard],
+    data: {
+    },
+    children: [
+      {
+        path: '',
+        component: null,
+        data: {
+          title: 'HMCTS Hearings | Linked Hearings | Group Selection'
+        }
+      }
     ]
   },
   {

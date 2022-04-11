@@ -50,7 +50,7 @@ export class HowLinkedHearingsBeHeardComponent
     this.hearingStore
       .pipe(select(fromHearingStore.getHearingLinks))
       .subscribe((state) => {
-        this.receivedCases = state.serviceLinkedCases;      
+        this.receivedCases = state.serviceLinkedCases;    
       });
     this.caseId = this.route.snapshot.params.caseId;
     this.hearingId = this.route.snapshot.params.hearingId;
@@ -63,6 +63,9 @@ export class HowLinkedHearingsBeHeardComponent
   private addRow(linkCase:ServiceLinkedCasesModel) {
     if (!linkCase || !linkCase.hearings) return;
 
+    console.log('this.receivedCases.length')
+    console.log(this.receivedCases.length)  
+    
     this.hearingOrder.push(this.fb.group({
       caseReference: [linkCase.caseReference],
       caseName: [linkCase.caseName],
@@ -91,8 +94,8 @@ export class HowLinkedHearingsBeHeardComponent
   }
 
   private createForm(): void {
-    this.selectedToBeLinkedCases.forEach((linked) => {
-     this.addRow(linked);
+    this.selectedToBeLinkedCases.forEach((linked) => {  
+      this.addRow(linked);
     })
   }
 

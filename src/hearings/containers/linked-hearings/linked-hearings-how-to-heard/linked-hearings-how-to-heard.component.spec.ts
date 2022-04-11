@@ -9,7 +9,7 @@ import { of } from 'rxjs';
 import { ACTION } from 'src/hearings/models/hearings.enum';
 import { ServiceLinkedCasesModel } from 'src/hearings/models/linkHearings.model';
 import { HearingsService } from 'src/hearings/services/hearings.service';
-import { HowLinkedHearingsBeHeardComponent } from './how-linked-hearings-be-heard.component';
+import { HowLinkedHearingsBeHeardComponent } from './linked-hearings-how-to-heard.component';
 
 describe('HowLinkedHearingsBeHeardComponent', () => {
   let component: HowLinkedHearingsBeHeardComponent;

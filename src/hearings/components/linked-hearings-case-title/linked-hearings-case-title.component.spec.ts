@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { HearingsPipesModule } from 'src/hearings/pipes/hearings.pipes.module';
+import { HearingsPipesModule } from '../../pipes/hearings.pipes.module';
 import { LinkedHearingsCaseTitleComponent } from './linked-hearings-case-title.component';
 
 describe('LinkedHearingsCaseTitleComponent', () => {

@@ -29,7 +29,7 @@
               <td scope="row" class="govuk-table__cell allign-middle">{{hearing.hearingStage}}
                 <span *ngIf="hearing.hearingIsLinkedFlag">
                   &nbsp;&nbsp;
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/5/56/Chain_link_icon_slanted.png"
+                  <img src="../../../../assets/images/link_icon_slanted.png"
                     width="20px;" class="allign-middle" alt="Linked">&nbsp;
                   <a href="link_hearings_22.html">Manage Link</a>
                 </span>
@@ -40,7 +40,7 @@
               </td>
               <td class="govuk-table__cell">
                 <div class="govuk-radios" data-module="govuk-radios">
-                  <div class="govuk-radios__item">
+                  <div class="govuk-radios__item" *ngIf="!hearing.hearingIsLinkedFlag">
                     <input class="govuk-radios__input" id="{{case.caseReference}}{{hearing.hearingId}}"
                       formControlName="hearingReference" type="radio" value="{{hearing.hearingId}}">
                     <label class="govuk-label govuk-radios__label"

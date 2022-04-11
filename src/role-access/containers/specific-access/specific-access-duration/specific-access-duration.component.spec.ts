@@ -1,12 +1,12 @@
-import { FormBuilder, FormsModule, ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { StoreModule } from '@ngrx/store';
+import { FormBuilder, FormsModule, ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
-import { SpecificAccessDurationComponent } from './specific-access-duration.component';
+import { StoreModule } from '@ngrx/store';
+
 import { SpecificAccessStateData, SpecificAccessState, SpecificAccessNavigationEvent } from '../../../models';
 import { AccessReason, DurationType } from '../../../models/enums';
 import { DurationHelperService } from '../../../services';
-import createSpyObj = jasmine.createSpyObj;
+import { SpecificAccessDurationComponent } from './specific-access-duration.component';
 
 describe('SpecificAccessDurationComponent', () => {
   let component: SpecificAccessDurationComponent;

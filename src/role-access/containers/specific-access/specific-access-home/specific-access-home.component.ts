@@ -115,7 +115,7 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
         break;
       }
       case SpecificAccessNavigationEvent.RETURNTOMYTASKS: {
-        this.router.navigateByUrl(`/work/list`);
+        this.router.navigateByUrl(`/work/my-work/list`);
         break;
       }
       case SpecificAccessNavigationEvent.RETURNTOTASKSTAB: {
@@ -123,7 +123,7 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
         break;
       }
       case SpecificAccessNavigationEvent.CANCEL:
-        //        this.router.navigateByUrl(`cases/case-details/${this.caseId}/roles-and-access`);
+        this.router.navigateByUrl(`cases/case-details/${this.caseId}/roles-and-access`);
         break;
       default:
         throw new Error('Invalid specific access navigation event');

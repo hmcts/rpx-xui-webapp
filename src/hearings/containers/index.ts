@@ -10,9 +10,5 @@ export const containers: any[] = [
   ...fromRequestHearing.containers,
   ...fromViewHearing.containers,
   ...fromHearingActuals.containers,
-<<<<<<< HEAD
-  ...fromLinkedHearing.containers  
-=======
   ...fromLinkedHearings.containers
->>>>>>> story/EUI-5197
 ];

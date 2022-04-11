@@ -12,7 +12,6 @@ import { LinkedHearingsCaseTitleComponent } from './linked-hearings-case-title/l
 import { ListingInformationSummaryComponent } from './listing-information-summary/listing-information-summary.component';
 import { MultiLevelSelectorComponent } from './multi-level-selector/multi-level-selector.component';
 import { PartiesUnavailableDatesComponent } from './parties-unavailable-dates/parties-unavailable-dates.component';
-import { LinkedHearingsCaseTitleComponent } from './linked-hearings-case-title/linked-hearings-case-title.component';
 
 export const components: any[] = [
   CaseFlagsComponent,

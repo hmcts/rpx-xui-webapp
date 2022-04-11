@@ -12,4 +12,4 @@ class ApproveSpecificAccessRequest{
     }
 }
 
-module.exportts = new ApproveSpecificAccessRequest(); 
+module.exports = new ApproveSpecificAccessRequest(); 

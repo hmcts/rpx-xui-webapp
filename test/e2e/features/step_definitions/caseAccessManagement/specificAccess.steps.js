@@ -15,10 +15,13 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     const durationSelectionPage = workFlowPage.durationSelectionPage; 
 
     Then('I see Approve specific access work flow page {string} with caption {string} is displayed', async function (header, captionHeader) {
-        expect(await durationSelectionPage.isDisplayed(), `${header} work flow page not displayed`).to.be.true;
-        expect(await durationSelectionPage.getHeaderText(), `${header} work flow page header not matching`).to.include(header);
-        expect(await durationSelectionPage.getHeaderCaption(), `${header} work flow page header caption not matching`).to.include(captionHeader);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await durationSelectionPage.isDisplayed(), `${header} work flow page not displayed`).to.be.true;
+            expect(await durationSelectionPage.getHeaderText(), `${header} work flow page header not matching`).to.include(header);
+            expect(await durationSelectionPage.getHeaderCaption(), `${header} work flow page header caption not matching`).to.include(captionHeader);
 
+        });
+       
 
     });
 

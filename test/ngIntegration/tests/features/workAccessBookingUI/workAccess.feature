@@ -1,5 +1,5 @@
 
-@test
+@ng 
 Feature: Work access page
 
 
@@ -16,12 +16,11 @@ Feature: Work access page
 
         Examples:
             | UserIdentifier     | Roles                                                           | isDisplayed |
-            | IAC_CaseOfficer_R2 | caseworker-ia-caseofficer,caseworker-ia-admofficer              | false       |
-            | IAC_Judge_WA_R2    | caseworker-ia-iacjudge,caseworker-ia,caseworker                 | false       |
+            | BOOKING_UI-FT-ON | caseworker-ia-iacjudge,caseworker-ia,caseworker | false |
             # | IAC_Judge_WA_R2    | caseworker-ia-iacjudge,caseworker-ia,caseworker, fee-paid-judge | true       |
 
     Scenario: Work access options
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker, fee-paid-judge" with reference "userDetails"
+        Given I set MOCK with user "BOOKING_UI-FT-ON" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker, fee-paid-judge" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | bookable | isCaseAllocator | substantive | jurisdiction |
             | true     | true            | Y           | IA           |

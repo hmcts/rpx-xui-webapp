@@ -12,6 +12,7 @@ import { HearingStageResultComponent } from './containers/hearing-actuals/hearin
 import { LinkedHearingsWithCaseComponent } from './containers/linked-hearings/linked-hearings-with-case/linked-hearings-with-case.component';
 import { LinkedHearingsComponent } from './containers/linked-hearings/linked-hearings.component';
 import { HowLinkedHearingsBeHeardComponent } from './containers/linked-hearings/linked-hearings-how-to-heard/linked-hearings-how-to-heard.component';
+import { LinkedHearingsCheckYourAnswersComponent } from './containers/linked-hearings/check-your-answers/check-your-answers.component';
 import { HearingAdditionalInstructionsComponent } from './containers/request-hearing/hearing-additional-instructions/hearing-additional-instructions.component';
 import { HearingAttendanceComponent } from './containers/request-hearing/hearing-attendance/hearing-attendance.component';
 import { HearingChangeReasonComponent } from './containers/request-hearing/hearing-change-reason/hearing-change-reason.component';
@@ -94,7 +95,14 @@ export const ROUTES: Routes = [
         data: {
           title: 'HMCTS Hearings | Linked Hearings | Group Selection'
         }
-      }
+      },
+      {
+        path: 'check-your-answers',
+        component: LinkedHearingsCheckYourAnswersComponent,
+        data: {
+          title: 'HMCTS Hearings | Linked Hearings | Check your answers'
+        }
+      },
     ]
   },
   {

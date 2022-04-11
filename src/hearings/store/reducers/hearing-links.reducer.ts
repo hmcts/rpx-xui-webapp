@@ -1,4 +1,4 @@
-import {HearingLinksStateData} from '../../models/hearingLinksStateData.model';
+import { HearingLinksStateData } from '../../models/hearingLinksStateData.model';
 import * as fromActions from '../actions';
 
 export const initialHearingLinksState: HearingLinksStateData = {
@@ -8,7 +8,7 @@ export const initialHearingLinksState: HearingLinksStateData = {
 };
 
 export function hearingLinksReducer(currentState = initialHearingLinksState,
-                                    action: fromActions.HearingLinksAction): HearingLinksStateData {
+  action: fromActions.HearingLinksAction): HearingLinksStateData {
   switch (action.type) {
     case fromActions.RESET_HEARING_LINKS: {
       return {
@@ -31,6 +31,18 @@ export function hearingLinksReducer(currentState = initialHearingLinksState,
       return {
         ...currentState,
         linkedHearingGroup: action.payload
+      };
+    }
+    case fromActions.LOAD_LINKED_HEARING_GROUP_SUCCESS: {
+      return {
+        ...currentState,
+        linkedHearingGroup: action.payload
+      };
+    }
+    case fromActions.LOAD_LINKED_HEARING_GROUP_FAILURE: {
+      return {
+        ...currentState,
+        lastError: action.payload
       };
     }
     default: {

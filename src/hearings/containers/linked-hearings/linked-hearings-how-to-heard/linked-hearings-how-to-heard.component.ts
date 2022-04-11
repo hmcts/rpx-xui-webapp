@@ -1,25 +1,24 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from "@angular/core";
-import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from "@angular/forms";
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { select, Store } from "@ngrx/store";
-import { Observable, Subject } from "rxjs";
-import { HearingLinksStateData } from "src/hearings/models/hearingLinksStateData.model";
-import { ACTION } from "src/hearings/models/hearings.enum";
-import { LinkedHearingGroupMainModel, ServiceLinkedCasesModel } from "src/hearings/models/linkHearings.model";
-import { HearingsService } from "src/hearings/services/hearings.service";
-import { RequestHearingPageFlow } from "../../request-hearing/request-hearing.page.flow";
-import * as fromHearingStore from "../../../store";
-import { ValidatorsUtils } from "src/hearings/utils/validators.utils";
+import { select, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { HearingLinksStateData } from '../../../models/hearingLinksStateData.model';
+import { ACTION, GroupLinkType } from '../../../models/hearings.enum';
+import { LinkedHearingGroupMainModel, ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
+import { HearingsService } from '../../../services/hearings.service';
+import * as fromHearingStore from '../../../store';
+import { ValidatorsUtils } from '../../../utils/validators.utils';
+import { RequestHearingPageFlow } from '../../request-hearing/request-hearing.page.flow';
 
 @Component({
-  selector: "exui-linked-hearings-how-to-heard",
-  templateUrl: "./linked-hearings-how-to-heard.component.html",
+  selector: 'exui-linked-hearings-how-to-heard',
+  templateUrl: './linked-hearings-how-to-heard.component.html',
   styleUrls: ['./linked-hearings-how-to-heard.component.scss']
 })
 export class HowLinkedHearingsBeHeardComponent
   extends RequestHearingPageFlow
-  implements OnInit, AfterViewInit, OnDestroy
-{
+  implements OnInit, AfterViewInit, OnDestroy {
   public caseId: string;
   public hearingId: string;
   public caseName: string;
@@ -29,7 +28,7 @@ export class HowLinkedHearingsBeHeardComponent
   public linkedHearingGroup: LinkedHearingGroupMainModel;
   public validationErrors: { id: string; message: string }[] = [];
   public positionDropdownValues = [];
-  public selectedOption = "";
+  public selectedOption = '';
   public linkTitle: string;
   public formValid: boolean = true;
   public selectionValid: boolean = true;
@@ -40,17 +39,18 @@ export class HowLinkedHearingsBeHeardComponent
     protected readonly hearingsService: HearingsService,
     protected readonly route: ActivatedRoute,
     private readonly validators: ValidatorsUtils,
-    private readonly fb: FormBuilder
+    private readonly fb: FormBuilder,
+    private readonly router: Router,
   ) {
     super(hearingStore, hearingsService);
     this.form = this.fb.group({
-      hearingGroup: ['',Validators.required],
+      hearingGroup: ['', Validators.required],
       hearingOrder: this.fb.array([]),
     });
     this.hearingStore
       .pipe(select(fromHearingStore.getHearingLinks))
       .subscribe((state) => {
-        this.receivedCases = state.serviceLinkedCases;      
+        this.receivedCases = state.serviceLinkedCases;
       });
     this.caseId = this.route.snapshot.params.caseId;
     this.hearingId = this.route.snapshot.params.hearingId;
@@ -60,8 +60,8 @@ export class HowLinkedHearingsBeHeardComponent
     return this.form.get('hearingOrder') as FormArray;
   }
 
-  private addRow(linkCase:ServiceLinkedCasesModel) {
-    if (!linkCase || !linkCase.hearings) return;
+  private addRow(linkCase: ServiceLinkedCasesModel) {
+    if (!linkCase || !linkCase.hearings) { return; }
 
     this.hearingOrder.push(this.fb.group({
       caseReference: [linkCase.caseReference],
@@ -81,59 +81,63 @@ export class HowLinkedHearingsBeHeardComponent
           caseName: linked.caseName,
           hearings: selectedHearing,
           reasonsForLink: linked.reasonsForLink
-        })
+        });
       }
-    })
+    });
     if (this.selectedToBeLinkedCases && this.selectedToBeLinkedCases.length) {
-      this.positionDropdownValues = Array.from({length: this.selectedToBeLinkedCases.length}, (_, i) => i + 1)
+      this.positionDropdownValues = Array.from({ length: this.selectedToBeLinkedCases.length }, (_, i) => i + 1);
       this.createForm();
     }
   }
 
   private createForm(): void {
     this.selectedToBeLinkedCases.forEach((linked) => {
-     this.addRow(linked);
-    })
+      this.addRow(linked);
+    });
   }
 
   public onSubmit(): void {
-    const linkedHearingGroupMainModel: LinkedHearingGroupMainModel = {groupDetails: {
-      groupComments: '',
-      groupLinkType: this.form.value.hearingGroup,
-      groupName: '',
-      groupReason: ''
-    }, hearingsInGroup: []};
+    const linkedHearingGroupMainModel: LinkedHearingGroupMainModel = {
+      groupDetails: {
+        groupComments: '',
+        groupLinkType: this.selectedOption === 'heardTogether' ? GroupLinkType.SAME_SLOT : GroupLinkType.ORDERED,
+        groupName: '',
+        groupReason: ''
+      }, hearingsInGroup: []
+    };
     if (this.isFormValid()) {
       this.hearingOrder.value.forEach(formValue => {
-        const hearing = this.selectedToBeLinkedCases.find(linked => linked.caseReference === formValue.caseReference)
-        const selectedHearing = hearing && hearing.hearings.find(selected => selected.isSelected)
-        selectedHearing && linkedHearingGroupMainModel.hearingsInGroup.push({
+        const hearing = this.selectedToBeLinkedCases.find(linked => linked.caseReference === formValue.caseReference);
+        const selectedHearing = hearing && hearing.hearings.find(selected => selected.isSelected);
+        if (selectedHearing) {
+          linkedHearingGroupMainModel.hearingsInGroup.push({
             hearingId: selectedHearing.hearingId,
             hearingOrder: formValue.position,
-          })
+          });
+        }
       });
       this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesGroupDetail(linkedHearingGroupMainModel));
-      //this.router.navigate(['/', 'hearings-link-summary', this.caseId]);
+      this.router.navigate([`/hearings/link/${this.caseId}/${this.hearingId}/check-your-answers`]);
     }
   }
 
   protected executeAction(action: ACTION): void {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
 
   public onOrderChange(index: number) {
     const positionSelected = this.hearingOrder.controls[index].get('position').value;
-    const hasSamePositionExistedIndex = this.hearingOrder.value.map((val, rowIndex) => val.position == positionSelected && rowIndex != index);
-    hasSamePositionExistedIndex.forEach((val, index) => val && this.hearingOrder.controls[index].patchValue({position: ''}));
+    const hasSamePositionExistedIndex = this.hearingOrder.value.map((val, rowIndex) => val.position === positionSelected && rowIndex !== index);
+    hasSamePositionExistedIndex.forEach((val, index: number) => val && this.hearingOrder.controls[index].patchValue({ position: '' }));
   }
 
   public isFormValid(): boolean {
     this.validationErrors = [];
-    if (this.form.value.hearingGroup === 'heardTogether') { 
+    if (this.form.value.hearingGroup === 'heardTogether') {
       return true;
     } else {
-      let validSelection = this.hearingOrder.valid && this.form.valid;
-      if(!validSelection) {
+      const validSelection = this.hearingOrder.valid && this.form.valid;
+      if (!validSelection) {
         this.validationErrors.push({
           id: `selection-error`,
           message: 'check the position you have given to each hearing'
@@ -142,7 +146,7 @@ export class HowLinkedHearingsBeHeardComponent
       }
     }
     this.validationErrors = [];
-    return true
+    return true;
   }
 
   public rowHasErrors(index: number): boolean {

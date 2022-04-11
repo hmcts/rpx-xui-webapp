@@ -87,11 +87,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Given('I set MOCK case details {string} trigger id {string} trigger name {string}', async function (caseDetailsRef, eventId, eventName) {
         const caseDetails = global.scenarioData[caseDetailsRef];
-        const testTrigger = { ...caseDetails.triggers[0] }
+        const testTrigger = { ...caseDetails.triggers[0]}
         testTrigger.id = eventId;
         testTrigger.name = eventName;
         caseDetails.triggers.push(testTrigger);
-
+        
     });
 
     Given('I set MOCK case roles', async function(caseRolesDatatable){

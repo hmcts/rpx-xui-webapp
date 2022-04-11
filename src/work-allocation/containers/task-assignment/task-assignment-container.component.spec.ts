@@ -1,5 +1,5 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
@@ -8,19 +8,18 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable } from 'rxjs';
-
 import { ErrorMessageComponent } from '../../../app/components';
 import { TaskActionConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { TaskListComponent } from '../../containers';
 import {
   NAME_ERROR,
-  TaskAssignmentContainerComponent,
+  TaskAssignmentContainerComponent
 } from '../../containers/task-assignment/task-assignment-container.component';
 import { Assignee } from '../../models/dtos';
 import { Task } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
-import { getMockCaseworkers, getMockTasks, MockRouter } from '../../tests/utils.spec';
+import { getMockCaseworkers, getMockTasks } from '../../tests/utils.spec';
 
 @Component({
   template: `<exui-task-container-assignment></exui-task-container-assignment>`
@@ -54,7 +53,7 @@ describe('TaskAssignmentContainerComponent1', () => {
         TaskAssignmentContainerComponent, WrapperComponent, TaskListComponent, NothingComponent, ErrorMessageComponent,
       ],
       imports: [
-        WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule, PaginationModule, MatAutocompleteModule,
+        WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientTestingModule, PaginationModule, MatAutocompleteModule,
         RouterTestingModule.withRoutes(
           [
             { path: 'tasks/list', component: NothingComponent }

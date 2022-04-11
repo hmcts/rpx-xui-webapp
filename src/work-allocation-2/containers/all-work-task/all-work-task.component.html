@@ -1,13 +1,14 @@
-<div class="tasks-container" *ngIf="{locations: locations$ | async, jurisdictions: waSupportedJurisdictions$ | async } as filterLists">
-  <ng-container *ngIf="filterLists.locations && filterLists.jurisdictions">
-    <exui-task-manager-filter [locations]="filterLists.locations" [jurisdictions]="filterLists.jurisdictions" (selectionChanged)="onSelectionChanged($event)"></exui-task-manager-filter>
+<xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
+<div class="tasks-container" *ngIf="(waSupportedJurisdictions$ | async) as jurisdictions">
+    <exui-task-manager-filter [jurisdictions]="jurisdictions"
+                              (selectionChanged)="onSelectionChanged($event)"></exui-task-manager-filter>
     <div class="hmcts-filter-layout__content exui-task-list">
       <exui-task-list
-      [taskServiceConfig]="taskServiceConfig" [tasks]="tasks" [fields]="fields" [tasksTotal]="tasksTotal" [pagination]="pagination"
-      [sortedBy]="sortedBy" [emptyMessage]="emptyMessage"
-      (paginationEvent)="onPaginationEvent($event)"
-      (sortEvent)="onSortHandler($event)" (actionEvent)="onActionHandler($event)">
+        [taskServiceConfig]="taskServiceConfig" [tasks]="tasks" [fields]="fields" [tasksTotal]="tasksTotal"
+        [pagination]="pagination"
+        [sortedBy]="sortedBy" [emptyMessage]="emptyMessage"
+        [pageSessionKey]="pageSessionKey" (paginationEvent)="onPaginationEvent($event)"
+        (sortEvent)="onSortHandler($event)" (actionEvent)="onActionHandler($event)">
       </exui-task-list>
     </div>
-  </ng-container>
 </div>

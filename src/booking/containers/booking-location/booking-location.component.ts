@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
-import { LocationByEPIMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { select, Store } from '@ngrx/store';
 import * as fromRoot from '../../../app/store';
 import { BookingNavigationEvent, BookingProcess } from '../../models';
@@ -42,7 +42,7 @@ export class BookingLocationComponent implements AfterViewInit, OnInit {
     this.findLocationFormGroup.controls.locationSelectedFormControl.setValue(this.bookingProcess.location);
   }
 
-  public onLocationChanged(location: LocationByEPIMSModel): void {
+  public onLocationChanged(location: LocationByEPIMMSModel): void {
     this.bookingProcess.location = location;
     if (location) {
       this.formError = false;
@@ -59,11 +59,11 @@ export class BookingLocationComponent implements AfterViewInit, OnInit {
   }
 
   public getLocationSearchFocus(): void {
-    if (this.searchLocationComponent &&
-      this.searchLocationComponent.autoCompleteInputBox &&
-      this.searchLocationComponent.autoCompleteInputBox.nativeElement) {
-      this.searchLocationComponent.autoCompleteInputBox.nativeElement.focus();
-    }
+    // if (this.searchLocationComponent &&
+    //   this.searchLocationComponent.autoCompleteInputBox &&
+    //   this.searchLocationComponent.autoCompleteInputBox.nativeElement) {
+    //   this.searchLocationComponent.autoCompleteInputBox.nativeElement.focus();
+    // }
   }
 
   // get a comma separated list of unique jurisdictions from the user role assignment info

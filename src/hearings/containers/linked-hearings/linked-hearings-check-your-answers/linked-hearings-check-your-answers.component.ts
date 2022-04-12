@@ -5,7 +5,7 @@ import { GroupLinkType } from '../../../models/hearings.enum';
 import { HearingDetailModel, LinkedHearingGroupMainModel, LinkedHearingsDetailModel, ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import { LoadLinkedHearingGroup, LoadServiceLinkedCases } from '../../../store';
+import { LoadLinkedHearingGroup, LoadServiceLinkedCases, SubmitLinkedHearingGroup } from '../../../store';
 
 @Component({
   selector: 'exui-linked-hearings-check-your-answers',
@@ -16,7 +16,8 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
   public caseId: string;
   public caseTitle: string;
   public showPositionColumn: boolean;
-  public linkedCases: LinkedHearingsCheckYourAnswersPageResult[] = [];
+  public linkedCases: LinkedHearingsCheckYourAnswersPageResult[];
+  public linkedHearingGroup: LinkedHearingGroupMainModel;
   public hearingsInGroup: LinkedHearingsDetailModel[];
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
@@ -36,7 +37,9 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
     this.hearingStore.dispatch(new LoadLinkedHearingGroup({caseReference: this.caseId, hearingId: ''}));
     this.hearingStore.pipe(select(fromHearingStore.getHearingLinks)).subscribe(
       hearingLinks => {
-        this.showPositionColumn = this.canDisplayPositionColumn(hearingLinks.linkedHearingGroup);
+        this.linkedCases = [];
+        this.linkedHearingGroup = hearingLinks.linkedHearingGroup;
+        this.showPositionColumn = this.canDisplayPositionColumn();
         if (hearingLinks && hearingLinks.linkedHearingGroup) {
           this.hearingsInGroup = hearingLinks.linkedHearingGroup.hearingsInGroup;
           hearingLinks.serviceLinkedCases.forEach(linkedCase => {
@@ -71,10 +74,10 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
     return null;
   }
 
-  public canDisplayPositionColumn(linkedHearingGroup: LinkedHearingGroupMainModel): boolean {
-    return linkedHearingGroup
-      && linkedHearingGroup.groupDetails
-      && linkedHearingGroup.groupDetails.groupLinkType === GroupLinkType.ORDERED;
+  public canDisplayPositionColumn(): boolean {
+    return this.linkedHearingGroup
+      && this.linkedHearingGroup.groupDetails
+      && this.linkedHearingGroup.groupDetails.groupLinkType === GroupLinkType.ORDERED;
   }
 
   public onChange(): void {
@@ -82,6 +85,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
   }
 
   public onLinkHearings(): void {
+    this.hearingStore.dispatch(new SubmitLinkedHearingGroup(this.linkedHearingGroup));
   }
 }
 

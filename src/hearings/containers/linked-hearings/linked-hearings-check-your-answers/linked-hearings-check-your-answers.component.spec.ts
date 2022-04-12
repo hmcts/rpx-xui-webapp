@@ -39,14 +39,15 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
   });
 
   it('should display position column return true', () => {
-    const linkedHearingGroup = initialState.hearings.hearingLinks.linkedHearingGroup;
-    expect(component.canDisplayPositionColumn(linkedHearingGroup)).toEqual(true);
+    component.linkedHearingGroup = initialState.hearings.hearingLinks.linkedHearingGroup;
+    expect(component.canDisplayPositionColumn()).toEqual(true);
   });
 
   it('should display position column return false', () => {
     const linkedHearingGroup = initialState.hearings.hearingLinks.linkedHearingGroup;
     linkedHearingGroup.groupDetails.groupLinkType = GroupLinkType.SAME_SLOT;
-    expect(component.canDisplayPositionColumn(linkedHearingGroup)).toEqual(false);
+    component.linkedHearingGroup = linkedHearingGroup;
+    expect(component.canDisplayPositionColumn()).toEqual(false);
   });
 
   it('should return valid position', () => {

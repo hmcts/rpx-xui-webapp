@@ -1,19 +1,19 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormArray, FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { initialState } from '../../../hearing.test.data';
-import { ACTION, HearingLinkedSelectionEnum, HMCStatus } from '../../../models/hearings.enum';
+import { ACTION, HMCStatus } from '../../../models/hearings.enum';
 import { ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
 import { HearingsPipesModule } from '../../../pipes/hearings.pipes.module';
 import { HearingsService } from '../../../services/hearings.service';
 import { HowLinkedHearingsBeHeardComponent } from './linked-hearings-how-to-heard.component';
 
-fdescribe('HowLinkedHearingsBeHeardComponent', () => {
+describe('HowLinkedHearingsBeHeardComponent', () => {
   let component: HowLinkedHearingsBeHeardComponent;
   let fixture: ComponentFixture<HowLinkedHearingsBeHeardComponent>;
   let store: any;

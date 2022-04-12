@@ -5,3 +5,8 @@ export const getHearingLinks = createSelector(
   fromFeature.getHearingsFeatureState,
   (state: fromFeature.State) => state.hearingLinks
 );
+
+export const getHearingLinksLastError = createSelector(
+  fromFeature.getHearingsFeatureState,
+  (state: fromFeature.State) => state.hearingLinks.lastError
+);

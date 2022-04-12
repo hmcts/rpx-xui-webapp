@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { HearingLinksStateData } from 'src/hearings/models/hearingLinksStateData.model';
+import { Observable } from 'rxjs';
+import { HearingLinksStateData } from '../../../models/hearingLinksStateData.model';
+import { HttpError } from '../../../../models/httpError.model';
 import { GroupLinkType } from '../../../models/hearings.enum';
 import { HearingDetailModel, LinkedHearingGroupMainModel, LinkedHearingsDetailModel, ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
-import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 
 @Component({
@@ -21,9 +22,12 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
   public linkedCases: LinkedHearingsCheckYourAnswersPageResult[] = [];
   public hearingsInGroup: LinkedHearingsDetailModel[];
   public linkedHearingGroup: LinkedHearingGroupMainModel;
+  public serverErrors: { id: string, message: string }[] = [
+    { id: 'serverError', message: 'There was a system error and your request could not be processed. Please try again.' }
+  ];
+  public error$: Observable<HttpError>;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
-              private readonly hearingsService: HearingsService,
               private readonly route: ActivatedRoute) {
     this.caseId = this.route.snapshot.params.caseId;
     this.hearingId = this.route.snapshot.params.hearingId;
@@ -36,6 +40,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    this.error$ = this.hearingStore.select(fromHearingStore.getHearingLinksLastError);
     if (this.hearingLinks) {
       this.showPositionColumn = this.canDisplayPositionColumn();
       if (this.hearingLinks && this.hearingLinks.linkedHearingGroup) {

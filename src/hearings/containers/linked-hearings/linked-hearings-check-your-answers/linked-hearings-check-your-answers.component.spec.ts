@@ -68,12 +68,12 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
   });
 
   it('should display position column return true', () => {
-    expect(component.canDisplayPositionColumn(linkedHearingGroup)).toEqual(true);
+    expect(component.canDisplayPositionColumn()).toEqual(true);
   });
 
   it('should display position column return false', () => {
     linkedHearingGroup.groupDetails.groupLinkType = GroupLinkType.SAME_SLOT;
-    expect(component.canDisplayPositionColumn(linkedHearingGroup)).toEqual(false);
+    expect(component.canDisplayPositionColumn()).toEqual(false);
   });
 
   it('should return valid position', () => {

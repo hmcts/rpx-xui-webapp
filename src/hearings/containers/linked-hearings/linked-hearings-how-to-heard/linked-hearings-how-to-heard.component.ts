@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -57,14 +57,14 @@ export class HowLinkedHearingsBeHeardComponent extends RequestHearingPageFlow im
     return this.form.get('hearingOrder') as FormArray;
   }
 
-  private addRow(linkCase: ServiceLinkedCasesModel) {
-    if (!linkCase || !linkCase.hearings) {
+  private addLinkedCaseRow(linkedCase: ServiceLinkedCasesModel) {
+    if (!linkedCase || !linkedCase.hearings) {
       return;
     }
     this.hearingOrder.push(this.fb.group({
-      caseReference: [linkCase.caseReference],
-      caseName: [linkCase.caseName],
-      hearingStage: [linkCase.hearings[0] && linkCase.hearings[0].hearingStage || ''],
+      caseReference: [linkedCase.caseReference],
+      caseName: [linkedCase.caseName],
+      hearingStage: [linkedCase.hearings[0] && linkedCase.hearings[0].hearingStage || ''],
       position: [null, this.validators.mandatory('')]
     }));
   }
@@ -75,10 +75,8 @@ export class HowLinkedHearingsBeHeardComponent extends RequestHearingPageFlow im
       const selectedHearing = linked.hearings && linked.hearings.filter(hearing => hearing.isSelected === true);
       if (selectedHearing && selectedHearing.length) {
         this.selectedToBeLinkedCases.push({
-          caseReference: linked.caseReference,
-          caseName: linked.caseName,
+          ...linked,
           hearings: selectedHearing,
-          reasonsForLink: linked.reasonsForLink
         })
       }
     })
@@ -90,7 +88,7 @@ export class HowLinkedHearingsBeHeardComponent extends RequestHearingPageFlow im
 
   private createForm(): void {
     this.selectedToBeLinkedCases.forEach((linked) => {
-      this.addRow(linked);
+      this.addLinkedCaseRow(linked);
     });
   }
 
@@ -114,8 +112,8 @@ export class HowLinkedHearingsBeHeardComponent extends RequestHearingPageFlow im
     }
   }
 
-  protected executeAction(action: ACTION): void {
-    throw new Error('Method not implemented');
+  public executeAction(action: ACTION): void {
+    super.navigateAction(action);
   }
 
   public onOrderChange(index: number) {
@@ -149,33 +147,6 @@ export class HowLinkedHearingsBeHeardComponent extends RequestHearingPageFlow im
   public highlightRowError(index: number, error: string, formSubmitted: boolean): boolean {
     const controls = (this.hearingOrder.controls[index] as FormGroup).controls;
     return formSubmitted && controls[error].invalid;
-  }
-
-  public displayRowErrors(index: number): string {
-    const errors = this.getAllRowErrors((this.hearingOrder.controls[index] as FormGroup).controls);
-    if (!errors) {
-      return '';
-    }
-    const keys = Object.keys(errors);
-    if (!keys.length) {
-      return null;
-    }
-    if (keys.length === 1) {
-      return errors[keys[0]];
-    }
-  }
-
-  private getAllRowErrors(controls: { [p: string]: AbstractControl }): { [p: string]: string } {
-    const errors: { [p: string]: string } = {};
-    Object.keys(controls).forEach(key => {
-      const controlErrors: ValidationErrors = controls[key].errors;
-      if (controlErrors) {
-        Object.keys(controlErrors).forEach(keyError => {
-          errors[key] = controlErrors[keyError].message;
-        });
-      }
-    });
-    return errors;
   }
 
   public onOptionSelection(value: string): void {

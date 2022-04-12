@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { GroupLinkType } from '../../../models/hearings.enum';
 import { HearingDetailModel, LinkedHearingGroupMainModel, LinkedHearingsDetailModel, ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
@@ -13,6 +13,7 @@ import * as fromHearingStore from '../../../store';
 })
 export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
   public caseId: string;
+  public caseName: string;
   public caseTitle: string;
   public showPositionColumn: boolean;
   public linkedCases: LinkedHearingsCheckYourAnswersPageResult[] = [];
@@ -20,12 +21,12 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly hearingsService: HearingsService,
+              private readonly route: ActivatedRoute,
               private readonly router: Router) {
+    this.caseId = this.route.snapshot.params.caseId;
     this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
       state => {
-        this.caseId = state.hearingList.hearingListMainModel ? state.hearingList.hearingListMainModel.caseRef : '';
-        const caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.caseName : '';
-        this.caseTitle = `${caseName} ${this.caseId}`;
+        this.caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.caseName : '';
       }
     );
   }

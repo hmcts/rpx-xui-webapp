@@ -20,7 +20,7 @@
         <tbody class="govuk-table__body">
           <tr class="govuk-table__row" *ngFor="let case of linkedCases">
             <td class="govuk-table__cell">
-              {{case.caseName}} {{case.caseReference}}
+              {{case.caseName}} {{case.caseReference | caseReference}}
             </td>
             <td class="govuk-table__cell">{{case.hearingStage}}</td>
             <td class="govuk-table__cell" *ngIf="showPositionColumn">{{case.position}}</td>
@@ -30,7 +30,7 @@
     </div>
   </div>
   <br>
-  <div class="govuk-grid-row">
+  <div class="govuk-grid-row linked-hearings-button">
     <div class="govuk-button-group">
       <button class="govuk-button primary" data-module="govuk-button" (click)="onLinkHearings()">
         Link hearings

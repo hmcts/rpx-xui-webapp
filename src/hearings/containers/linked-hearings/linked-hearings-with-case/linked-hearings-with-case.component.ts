@@ -109,8 +109,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
       });
     });
     this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesSuccess(this.linkedCases));
-    this.router.navigate([`/hearings/link/${this.caseId}/${this.hearingId}/group-selection`])
-    //this.router.navigate([`group-selection`])
+    this.router.navigate([`/hearings/link/${this.caseId}/${this.hearingId}/group-selection`]);
   }
 
   public onSubmit() {

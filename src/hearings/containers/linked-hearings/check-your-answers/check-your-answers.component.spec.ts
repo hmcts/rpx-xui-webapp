@@ -3,10 +3,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
-import { GroupLinkType } from 'src/hearings/models/hearings.enum';
+import { HearingDetailModel } from 'src/hearings/models/linkHearings.model';
 import { initialState } from '../../../hearing.test.data';
+import { GroupLinkType } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
-import { LinkedHearingsCheckYourAnswersComponent } from './linked-hearings-check-your-answers.component';
+import { LinkedHearingsCheckYourAnswersComponent } from './check-your-answers.component';
 
 describe('LinkedHearingsCheckYourAnswersComponent', () => {
   let component: LinkedHearingsCheckYourAnswersComponent;
@@ -20,9 +21,9 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
     TestBed.configureTestingModule({
       declarations: [LinkedHearingsCheckYourAnswersComponent],
       providers: [
-        provideMockStore({initialState}),
-        {provide: Router, useValue: mockRouter},
-        {provide: HearingsService, useValue: hearingsService}
+        provideMockStore({ initialState }),
+        { provide: Router, useValue: mockRouter },
+        { provide: HearingsService, useValue: hearingsService }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
@@ -50,10 +51,12 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
   });
 
   it('should return valid position', () => {
-    const hearing = {
+    const hearing: HearingDetailModel = {
       hearingId: 'h1000001',
       hearingStage: 'Initial hearing',
       isSelected: true,
+      hearingStatus: '',
+      hearingIsLinkedFlag: false
     };
     component.hearingsInGroup = initialState.hearings.hearingLinks.linkedHearingGroup.hearingsInGroup;
     component.showPositionColumn = true;
@@ -65,6 +68,8 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
       hearingId: 'h1000002',
       hearingStage: 'Initial hearing',
       isSelected: false,
+      hearingStatus: '',
+      hearingIsLinkedFlag: false
     };
     component.hearingsInGroup = initialState.hearings.hearingLinks.linkedHearingGroup.hearingsInGroup;
     component.showPositionColumn = true;

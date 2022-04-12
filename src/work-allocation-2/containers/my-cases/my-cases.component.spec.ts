@@ -69,7 +69,7 @@ describe('MyCasesComponent', () => {
     fixture.detectChanges();
   });
 
-
+ // on merge bookingUi and WA service isPaginationEnabled$ seems not part of component so at this stage it s deactivated
   it('should make a call to load cases using the default search request my-cases', () => {
     const searchRequest = component.getSearchCaseRequestPagination();
     const payload = { searchRequest, view: component.view };
@@ -77,7 +77,7 @@ describe('MyCasesComponent', () => {
     expect(component.cases).toBeDefined();
     expect(component.cases.length).toEqual(2);
   });
-
+  // on merge bookingUi and WA service isPaginationEnabled$ seems not part of component so at this stage it s deactivated
   it('should have all column headers, including "Manage +"', () => {
     const element = fixture.debugElement.nativeElement;
     const headerCells = element.querySelectorAll('.govuk-table__header');

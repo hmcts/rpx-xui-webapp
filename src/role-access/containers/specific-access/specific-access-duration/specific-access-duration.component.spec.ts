@@ -4,7 +4,7 @@ import { StoreModule } from '@ngrx/store';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { SpecificAccessDurationComponent } from './specific-access-duration.component';
 import { SpecificAccessStateData, SpecificAccessState, SpecificAccessNavigationEvent } from '../../../models';
-import { DurationType } from '../../../models/enums';
+import { AccessReason, DurationType } from '../../../models/enums';
 import { DurationHelperService } from '../../../services';
 import createSpyObj = jasmine.createSpyObj;
 
@@ -89,9 +89,44 @@ describe('SpecificAccessDurationComponent', () => {
 
     it('should set the value of selected duration', () => {
       // TODO: this will need to be updated when specific access is wired up correctly with state, added to increase code coverage for now
-      const specificAccessState: SpecificAccessStateData = { state: SpecificAccessState.SPECIFIC_ACCESS_DURATION };
+      const specificAccessState: SpecificAccessStateData = { accessReason: AccessReason.APPROVE_REQUEST, state: SpecificAccessState.SPECIFIC_ACCESS_DURATION };
       component.selectSpecificAccessDuration(specificAccessState);
       expect(component.selectedDuration).toEqual(DurationType.SEVEN_DAYS);
+    })
+
+  });
+
+  describe('selectSpecificAccessDuration with formdata', () => {
+
+    it('should set the value of selected duration', () => {
+      // fake form group and form control values
+      component.startDateDayCtrl = new FormControl(7);
+      component.startDateMonthCtrl = new FormControl(7);
+      component.startDateYearCtrl = new FormControl(2025);
+      component.endDateDayCtrl = new FormControl(8);
+      component.endDateMonthCtrl = new FormControl(7);
+      component.endDateYearCtrl = new FormControl(2025);
+      component.formGroup = new FormGroup({});
+      const specificAccessState: SpecificAccessStateData = { accessReason: AccessReason.APPROVE_REQUEST,
+        state: SpecificAccessState.SPECIFIC_ACCESS_DURATION,
+        specificAccessFormData: {
+          specificAccessDurationForm: {
+            selectedOption: DurationType.ANOTHER_PERIOD,
+            selectedDuration: {
+              startDate: {
+                day: 11,
+                month: 11,
+                year: 2024
+              },
+              endDate: {
+                day: 11,
+                month: 11,
+                year: 2024
+              }
+            }
+          }}};
+      component.selectSpecificAccessDuration(specificAccessState);
+      expect(component.selectedDuration).toEqual(DurationType.ANOTHER_PERIOD);
     })
 
   });
@@ -149,6 +184,28 @@ describe('SpecificAccessDurationComponent', () => {
       component.formGroup = new FormGroup({});
 
       const period = component.getPeriod(DurationType.ANOTHER_PERIOD);
+      expect(period.hasOwnProperty('startDate') && period.hasOwnProperty('endDate')).toEqual(true);
+    });
+
+    it('should return control values when getRawData called', () => {
+      // fake form group and form control values
+      component.startDateDayCtrl = new FormControl(7);
+      component.startDateMonthCtrl = new FormControl(7);
+      component.startDateYearCtrl = new FormControl(2025);
+
+      component.endDateDayCtrl = new FormControl(8);
+      component.endDateMonthCtrl = new FormControl(7);
+      component.endDateYearCtrl = new FormControl(2025);
+
+      component.formGroup = new FormGroup({});
+
+      const period = component.getRawData();
+      expect(period.endDate.day).toEqual(8);
+      expect(period.endDate.month).toEqual(7);
+      expect(period.endDate.year).toEqual(2025);
+      expect(period.startDate.day).toEqual(7);
+      expect(period.startDate.month).toEqual(7);
+      expect(period.startDate.year).toEqual(2025);
       expect(period.hasOwnProperty('startDate') && period.hasOwnProperty('endDate')).toEqual(true);
     });
 

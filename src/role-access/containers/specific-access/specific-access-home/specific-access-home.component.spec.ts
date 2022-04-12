@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
@@ -12,7 +12,7 @@ import * as fromFeature from '../../../store';
 import * as fromContainers from '../../add-exclusion';
 import { SpecificAccessHomeComponent } from './specific-access-home.component';
 import { SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
-import { DurationType } from '../../../models/enums';
+import { AccessReason, DurationType } from '../../../models/enums';
 import { SpecificAccessReviewComponent } from '../specific-access-review/specific-access-review.component';
 import { SpecificAccessDurationComponent } from '../specific-access-duration/specific-access-duration.component';
 import { DurationHelperService } from '../../../services';
@@ -26,6 +26,7 @@ describe('SpecificAccessHomeComponent', () => {
     'navigateByUrl'
   ]);
   let mockStore: MockStore<fromFeature.State>;
+  let mockFormBuilder: FormBuilder;
   let storeDispatchMock: any;
   const specificAccessStateData = {
     caseId: '111111',
@@ -70,6 +71,7 @@ describe('SpecificAccessHomeComponent', () => {
     })
       .compileComponents();
     mockStore = TestBed.get(Store);
+    mockFormBuilder = TestBed.get(FormBuilder);
     storeDispatchMock = spyOn(mockStore, 'dispatch').and.callThrough();
     fixture = TestBed.createComponent(SpecificAccessHomeComponent);
     component = fixture.componentInstance;
@@ -97,16 +99,21 @@ describe('SpecificAccessHomeComponent', () => {
     });
 
     it('should correctly navigate to the specific access duration page on pressing continue on the specific access review page', () => {
-      component.specificAccessReviewComponent = new SpecificAccessReviewComponent(mockStore);
+      component.specificAccessReviewComponent = new SpecificAccessReviewComponent(mockFormBuilder, mockStore);
       component.navigationCurrentState = SpecificAccessState.SPECIFIC_ACCESS_REVIEW;
+      component.specificAccessReviewComponent.reviewOptionControl = new FormControl('', [Validators.required]);
+      component.specificAccessReviewComponent.reviewOptionControl.setValue(AccessReason.APPROVE_REQUEST);
       component.navigationHandler(continueNavEvent);
-      expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_DURATION));
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        new fromFeature.DecideSpecificAccessAndGo({accessReason: AccessReason.APPROVE_REQUEST, specificAccessState: SpecificAccessState.SPECIFIC_ACCESS_DURATION}));
     });
 
     it('should correctly navigate to the specific access approved page on pressing continue on the specific access duration page', () => {
       component.specificAccessDurationComponent = new SpecificAccessDurationComponent(durationHelperService, new FormBuilder(), mockStore);
       component.navigationCurrentState = SpecificAccessState.SPECIFIC_ACCESS_DURATION;
       component.specificAccessDurationComponent.selectedDuration = DurationType.SEVEN_DAYS;
+      spyOn(component.specificAccessDurationComponent, 'getRawData').and.returnValue({day: 11});
+
       component.navigationHandler(continueNavEvent);
       expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_APPROVED));
     });

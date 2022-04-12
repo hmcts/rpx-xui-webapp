@@ -107,6 +107,14 @@ describe('DurationHelperService', () => {
       expect(durationHelperService.convertDateControlsToString(day2, month2, year2)).toEqual('-07-07');
     });
 
+    it('should return extract values for provided form controls', () => {
+      const day = new FormControl('7');
+      const month = new FormControl('7');
+      const year = new FormControl('2022');
+      const dateStr = durationHelperService.getRawFromControlsValues(day, month, year);
+      expect(dateStr).toEqual({day: 7, month: 7, year: 2022});
+    });
+
   });
 
   describe('getInputClass', () => {

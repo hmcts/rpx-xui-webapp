@@ -16,3 +16,13 @@ export const specificAccessLastError = createSelector(
   getSpecificAccessState,
   fromFeature.getSpecificAccessLastErrors
 );
+
+export const specificAccessFormData = createSelector(
+  getSpecificAccessState,
+  fromFeature.getSpecificAccessFormData
+);
+
+export const specificAccessInfoFormData = createSelector(
+  getSpecificAccessState,
+  fromFeature.getSpecificAccessInfoFormData
+);

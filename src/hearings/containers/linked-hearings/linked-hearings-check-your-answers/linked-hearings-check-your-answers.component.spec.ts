@@ -23,6 +23,27 @@ fdescribe('LinkedHearingsCheckYourAnswersComponent', () => {
       }
     }
   };
+  const linkedHearingGroup = {
+    groupDetails: {
+      groupName: 'Group A',
+      groupReason: 'Reason 1',
+      groupLinkType: GroupLinkType.ORDERED,
+      groupComments: 'Comment 1',
+    },
+    hearingsInGroup: [
+      {
+        hearingId: 'h1000001',
+        hearingOrder: 1,
+      },
+      {
+        hearingId: 'h1000003',
+        hearingOrder: 2,
+      },
+      {
+        hearingId: 'h1000005',
+        hearingOrder: 3,
+      }],
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -44,16 +65,13 @@ fdescribe('LinkedHearingsCheckYourAnswersComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-    expect(component.linkedCases.length).toBe(3);
   });
 
   it('should display position column return true', () => {
-    const linkedHearingGroup = initialState.hearings.hearingLinks.linkedHearingGroup;
     expect(component.canDisplayPositionColumn(linkedHearingGroup)).toEqual(true);
   });
 
   it('should display position column return false', () => {
-    const linkedHearingGroup = initialState.hearings.hearingLinks.linkedHearingGroup;
     linkedHearingGroup.groupDetails.groupLinkType = GroupLinkType.SAME_SLOT;
     expect(component.canDisplayPositionColumn(linkedHearingGroup)).toEqual(false);
   });
@@ -66,7 +84,7 @@ fdescribe('LinkedHearingsCheckYourAnswersComponent', () => {
       hearingStatus: '',
       hearingIsLinkedFlag: false
     };
-    component.hearingsInGroup = initialState.hearings.hearingLinks.linkedHearingGroup.hearingsInGroup;
+    component.hearingsInGroup = linkedHearingGroup.hearingsInGroup;
     component.showPositionColumn = true;
     expect(component.getPosition(hearing)).not.toBeNull();
   });
@@ -79,7 +97,7 @@ fdescribe('LinkedHearingsCheckYourAnswersComponent', () => {
       hearingStatus: '',
       hearingIsLinkedFlag: false
     };
-    component.hearingsInGroup = initialState.hearings.hearingLinks.linkedHearingGroup.hearingsInGroup;
+    component.hearingsInGroup = linkedHearingGroup.hearingsInGroup;
     component.showPositionColumn = true;
     expect(component.getPosition(hearing)).toBeNull();
   });

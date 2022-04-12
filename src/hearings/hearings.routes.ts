@@ -12,7 +12,6 @@ import { HearingStageResultComponent } from './containers/hearing-actuals/hearin
 import { LinkedHearingsWithCaseComponent } from './containers/linked-hearings/linked-hearings-with-case/linked-hearings-with-case.component';
 import { LinkedHearingsComponent } from './containers/linked-hearings/linked-hearings.component';
 import { HowLinkedHearingsBeHeardComponent } from './containers/linked-hearings/linked-hearings-how-to-heard/linked-hearings-how-to-heard.component';
-import { LinkedHearingsCheckYourAnswersComponent } from './containers/linked-hearings/check-your-answers/check-your-answers.component';
 import { HearingAdditionalInstructionsComponent } from './containers/request-hearing/hearing-additional-instructions/hearing-additional-instructions.component';
 import { HearingAttendanceComponent } from './containers/request-hearing/hearing-attendance/hearing-attendance.component';
 import { HearingChangeReasonComponent } from './containers/request-hearing/hearing-change-reason/hearing-change-reason.component';
@@ -56,6 +55,7 @@ import { LinkedCaseResolver } from './resolvers/linked-case-resolver.resolve';
 import { PanelRolesResolverService } from './resolvers/panel-roles-resolver.service';
 import { PartyChannelsResolverService } from './resolvers/party-channels-resolver.service';
 import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
+import { LinkedHearingsCheckYourAnswersComponent } from './containers/linked-hearings/linked-hearings-check-your-answers/linked-hearings-check-your-answers.component';
 
 export const ROUTES: Routes = [
   {

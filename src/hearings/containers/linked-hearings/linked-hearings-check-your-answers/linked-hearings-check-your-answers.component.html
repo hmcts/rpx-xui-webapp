@@ -6,7 +6,7 @@
       <div>
         <h2 class="govuk-heading-m">Linked hearings</h2>
         <span class="govuk-body align-right">
-          <a href="javascript:void(0)" class="govuk-link" id="hearing-link-change" (click)="onChange()">Change</a>
+          <a href="javascript:history.back()" class="govuk-link" id="hearing-link-change">Change</a>
         </span>
       </div>
       <table class="govuk-table">
@@ -20,7 +20,7 @@
         <tbody class="govuk-table__body">
           <tr class="govuk-table__row" *ngFor="let case of linkedCases">
             <td class="govuk-table__cell">
-              {{case.caseName}} {{case.caseReference | caseReference}}
+              {{case.caseName}} {{case.caseReference}}
             </td>
             <td class="govuk-table__cell">{{case.hearingStage}}</td>
             <td class="govuk-table__cell" *ngIf="showPositionColumn">{{case.position}}</td>

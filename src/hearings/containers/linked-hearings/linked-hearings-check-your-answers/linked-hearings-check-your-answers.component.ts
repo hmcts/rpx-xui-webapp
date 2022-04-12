@@ -8,8 +8,8 @@ import * as fromHearingStore from '../../../store';
 
 @Component({
   selector: 'exui-check-your-answers',
-  templateUrl: './check-your-answers.component.html',
-  styleUrls: ['./check-your-answers.component.scss']
+  templateUrl: './linked-hearings-check-your-answers.component.html',
+  styleUrls: ['./linked-hearings-check-your-answers.component.scss']
 })
 export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
   public caseId: string;
@@ -21,8 +21,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly hearingsService: HearingsService,
-              private readonly route: ActivatedRoute,
-              private readonly router: Router) {
+              private readonly route: ActivatedRoute) {
     this.caseId = this.route.snapshot.params.caseId;
     this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
       state => {
@@ -73,10 +72,6 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
     return linkedHearingGroup
       && linkedHearingGroup.groupDetails
       && linkedHearingGroup.groupDetails.groupLinkType === GroupLinkType.ORDERED;
-  }
-
-  public onChange(): void {
-    this.router.navigate(['/hearings', 'link', 'h100002']);
   }
 
   public onLinkHearings(): void {

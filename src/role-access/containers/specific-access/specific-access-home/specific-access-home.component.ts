@@ -96,7 +96,7 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
     }
 
     switch (navEvent) {
-      case SpecificAccessNavigationEvent.BACK: {
+      case SpecificAccessNavigationEvent.BACK, SpecificAccessNavigationEvent.CANCEL: {
         switch (this.navigationCurrentState) {
           case SpecificAccessState.SPECIFIC_ACCESS_DURATION:
             this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_REVIEW));
@@ -137,9 +137,6 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
         this.router.navigateByUrl(`/cases/case-details/${this.caseId}/tasks`);
         break;
       }
-      case SpecificAccessNavigationEvent.CANCEL:
-        //        this.router.navigateByUrl(`cases/case-details/${this.caseId}/roles-and-access`);
-        break;
       default:
         throw new Error('Invalid specific access navigation event');
     }

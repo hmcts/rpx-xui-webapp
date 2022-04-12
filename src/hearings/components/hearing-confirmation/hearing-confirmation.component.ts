@@ -7,6 +7,7 @@ import { Component, Input } from '@angular/core';
 export class HearingConfirmationComponent {
 
   @Input() public caseId: string;
+  @Input() public hearingId: string;
   @Input() public heading: string;
   @Input() public headingDescription: string;
   @Input() public subheading: string;

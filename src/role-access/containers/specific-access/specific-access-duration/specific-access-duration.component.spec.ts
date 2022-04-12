@@ -96,6 +96,41 @@ describe('SpecificAccessDurationComponent', () => {
 
   });
 
+  describe('selectSpecificAccessDuration with formdata', () => {
+
+    it('should set the value of selected duration', () => {
+      // fake form group and form control values
+      component.startDateDayCtrl = new FormControl(7);
+      component.startDateMonthCtrl = new FormControl(7);
+      component.startDateYearCtrl = new FormControl(2025);
+      component.endDateDayCtrl = new FormControl(8);
+      component.endDateMonthCtrl = new FormControl(7);
+      component.endDateYearCtrl = new FormControl(2025);
+      component.formGroup = new FormGroup({});
+      const specificAccessState: SpecificAccessStateData = { accessReason: AccessReason.APPROVE_REQUEST,
+        state: SpecificAccessState.SPECIFIC_ACCESS_DURATION,
+        specificAccessFormData: {
+          specificAccessDurationForm: {
+            selectedOption: DurationType.ANOTHER_PERIOD,
+            selectedDuration: {
+              startDate: {
+                day: 11,
+                month: 11,
+                year: 2024
+              },
+              endDate: {
+                day: 11,
+                month: 11,
+                year: 2024
+              }
+            }
+          }}};
+      component.selectSpecificAccessDuration(specificAccessState);
+      expect(component.selectedDuration).toEqual(DurationType.ANOTHER_PERIOD);
+    })
+
+  });
+
   describe('navigationHandler', () => {
 
     it('should dispatch the expected state', () => {

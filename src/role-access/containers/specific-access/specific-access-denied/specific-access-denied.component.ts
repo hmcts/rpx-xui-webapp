@@ -20,7 +20,8 @@ export class SpecificAccessDeniedComponent implements OnDestroy {
   public readonly retunToTask = 'Return to the Tasks tab for this case';
   public readonly returnToMyTask = 'Return to My tasks';
 
-  constructor(private readonly store: Store<fromFeature.State>) {
+  constructor(private readonly router: Router,
+              private readonly store: Store<fromFeature.State>) {
     this.storeSubscription = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe();
   }
 

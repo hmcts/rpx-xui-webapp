@@ -9,7 +9,7 @@ import { GroupLinkType } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import { LinkedHearingsCheckYourAnswersComponent } from './linked-hearings-check-your-answers.component';
 
-fdescribe('LinkedHearingsCheckYourAnswersComponent', () => {
+describe('LinkedHearingsCheckYourAnswersComponent', () => {
   let component: LinkedHearingsCheckYourAnswersComponent;
   let fixture: ComponentFixture<LinkedHearingsCheckYourAnswersComponent>;
   let mockStore: any;

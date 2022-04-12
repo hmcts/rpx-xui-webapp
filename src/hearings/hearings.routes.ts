@@ -56,6 +56,7 @@ import { PanelRolesResolverService } from './resolvers/panel-roles-resolver.serv
 import { PartyChannelsResolverService } from './resolvers/party-channels-resolver.service';
 import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
 import { LinkedHearingsCheckYourAnswersComponent } from './containers/linked-hearings/linked-hearings-check-your-answers/linked-hearings-check-your-answers.component';
+import { LinkedHearingsFinalConfirmationComponent } from './containers/linked-hearings/linked-hearings-final-confirmation/linked-hearings-final-confirmation.component';
 
 export const ROUTES: Routes = [
   {
@@ -103,6 +104,13 @@ export const ROUTES: Routes = [
           title: 'HMCTS Hearings | Linked Hearings | Check your answers'
         }
       },
+      {
+        path: 'final-confirmation',
+        component: LinkedHearingsFinalConfirmationComponent,
+        data: {
+          title: 'HMCTS Hearings | Linked Hearings | Final confirmation'
+        }
+      }
     ]
   },
   {

@@ -457,33 +457,6 @@
     "@hapi/hoek" "^9.0.0"
 
 
-"@hmcts/ccd-case-ui-toolkit@4.13.8-event-start-markdown-correct-branch":
-  version "4.13.8-event-start-markdown-correct-branch"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.13.8-event-start-markdown-correct-branch.tgz#b8508f446bb7deb4c7f14301082a4ad5fe7aa08f"
-  integrity sha512-s+N+3dl527aPHcWN+UY0+H/90l0Z5iwtH3E+iVNlrsrSewslclEzQnTXqAdAYlm4uESr/YO8/wYYwXwuDhuq4w==
-  dependencies:
-    "@angular-material-components/datetime-picker" "^2.0.4"
-    "@angular-material-components/moment-adapter" "^5.0.0"
-    "@angular/cli" "^6.0.8"
-    "@angular/compiler-cli" "~7.0.3"
-    "@edium/fsm" "^2.1.2"
-    braces "^2.3.1"
-    enhanced-resolve "3.3.0"
-    file-saver "^2.0.2"
-    govuk-elements-sass "^3.1.2"
-    json-server "^0.15.1"
-    karma-jasmine-html-reporter "^1.2.0"
-    marked "^0.7.0"
-    mem "^6.0.0"
-    minimist "1.2.3"
-    mocha "^5.0.5"
-    moment "^2.29.1"
-    moment-timezone "^0.5.31"
-    npm-registry-fetch "^4.0.5"
-    rx-polling "1.1.0"
-    typescript "3.1.1"
-    underscore "^1.9.1"
-    yargs-parser "18.1.2"
 
 "@hmcts/ccpay-web-component@5.0.4":
   version "5.0.4"

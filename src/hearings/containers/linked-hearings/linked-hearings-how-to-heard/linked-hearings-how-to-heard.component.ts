@@ -128,6 +128,7 @@ export class HowLinkedHearingsBeHeardComponent
   public onOrderChange(index: number) {
     const positionSelected = this.hearingOrder.controls[index].get('position').value;
     const hasSamePositionExistedIndex = this.hearingOrder.value.map((val, rowIndex) => val.position === positionSelected && rowIndex !== index);
+    // tslint:disable-next-line: no-shadowed-variable
     hasSamePositionExistedIndex.forEach((val, index: number) => val && this.hearingOrder.controls[index].patchValue({ position: '' }));
   }
 

@@ -1,10 +1,11 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
-import { GroupLinkType } from 'src/hearings/models/hearings.enum';
+import { HearingDetailModel } from 'src/hearings/models/linkHearings.model';
 import { initialState } from '../../../hearing.test.data';
+import { GroupLinkType } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import { LinkedHearingsCheckYourAnswersComponent } from './linked-hearings-check-your-answers.component';
 
@@ -15,14 +16,43 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
   const mockHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockHttpClient);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+  const mockRoute = {
+    snapshot: {
+      params: {
+        caseId: '1111-2222-3333-4444'
+      }
+    }
+  };
+  const linkedHearingGroup = {
+    groupDetails: {
+      groupName: 'Group A',
+      groupReason: 'Reason 1',
+      groupLinkType: GroupLinkType.ORDERED,
+      groupComments: 'Comment 1',
+    },
+    hearingsInGroup: [
+      {
+        hearingId: 'h1000001',
+        hearingOrder: 1,
+      },
+      {
+        hearingId: 'h1000003',
+        hearingOrder: 2,
+      },
+      {
+        hearingId: 'h1000005',
+        hearingOrder: 3,
+      }],
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [LinkedHearingsCheckYourAnswersComponent],
       providers: [
-        provideMockStore({initialState}),
-        {provide: Router, useValue: mockRouter},
-        {provide: HearingsService, useValue: hearingsService}
+        provideMockStore({ initialState }),
+        { provide: ActivatedRoute, useValue: mockRoute },
+        { provide: Router, useValue: mockRouter },
+        { provide: HearingsService, useValue: hearingsService }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
@@ -35,28 +65,26 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-    expect(component.linkedCases.length).toBe(3);
   });
 
   it('should display position column return true', () => {
-    component.linkedHearingGroup = initialState.hearings.hearingLinks.linkedHearingGroup;
-    expect(component.canDisplayPositionColumn()).toEqual(true);
+    expect(component.canDisplayPositionColumn(linkedHearingGroup)).toEqual(true);
   });
 
   it('should display position column return false', () => {
-    const linkedHearingGroup = initialState.hearings.hearingLinks.linkedHearingGroup;
     linkedHearingGroup.groupDetails.groupLinkType = GroupLinkType.SAME_SLOT;
-    component.linkedHearingGroup = linkedHearingGroup;
-    expect(component.canDisplayPositionColumn()).toEqual(false);
+    expect(component.canDisplayPositionColumn(linkedHearingGroup)).toEqual(false);
   });
 
   it('should return valid position', () => {
-    const hearing = {
+    const hearing: HearingDetailModel = {
       hearingId: 'h1000001',
       hearingStage: 'Initial hearing',
       isSelected: true,
+      hearingStatus: '',
+      hearingIsLinkedFlag: false
     };
-    component.hearingsInGroup = initialState.hearings.hearingLinks.linkedHearingGroup.hearingsInGroup;
+    component.hearingsInGroup = linkedHearingGroup.hearingsInGroup;
     component.showPositionColumn = true;
     expect(component.getPosition(hearing)).not.toBeNull();
   });
@@ -66,16 +94,11 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
       hearingId: 'h1000002',
       hearingStage: 'Initial hearing',
       isSelected: false,
+      hearingStatus: '',
+      hearingIsLinkedFlag: false
     };
-    component.hearingsInGroup = initialState.hearings.hearingLinks.linkedHearingGroup.hearingsInGroup;
+    component.hearingsInGroup = linkedHearingGroup.hearingsInGroup;
     component.showPositionColumn = true;
     expect(component.getPosition(hearing)).toBeNull();
-  });
-
-  it('should call navigate on change event', () => {
-    const hearingLinkChangeElement = fixture.debugElement.nativeElement.querySelector('#hearing-link-change');
-    hearingLinkChangeElement.click();
-    fixture.detectChanges();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/hearings', 'link', 'h100002']);
   });
 });

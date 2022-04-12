@@ -2,12 +2,12 @@
 <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <exui-linked-hearings-case-title [caseTitle]="caseTitle"></exui-linked-hearings-case-title>
+			<exui-linked-hearings-case-title [caseId]="caseId" [caseName]="caseName"></exui-linked-hearings-case-title>
       <h1 class="govuk-heading-l">Check your answers</h1>
       <div>
         <h2 class="govuk-heading-m">Linked hearings</h2>
         <span class="govuk-body align-right">
-          <a href="javascript:void(0)" class="govuk-link" id="hearing-link-change" (click)="onChange()">Change</a>
+          <a href="javascript:history.back()" class="govuk-link" id="hearing-link-change">Change</a>
         </span>
       </div>
       <table class="govuk-table">

@@ -129,7 +129,8 @@ export enum HearingCategory {
   HearingRoles = 'HearingRoles',
   AdjournHearingActualReason = 'AdjournHearingActualReason',
   CancelHearingActualReason = 'CancelHearingActualReason',
-  HearingChangeReason = 'HearingChangeReason'
+  HearingChangeReason = 'HearingChangeReason',
+  LinkedHearings = 'LinkedHearings',
 }
 
 export enum HearingDateEnum {
@@ -163,6 +164,13 @@ export enum HearingJudgeSelectionEnum {
   SelectionError = 'Please select that applies',
   ExcludeJudge = 'Exclude judge before continue',
   ExcludeFullNameJudge = 'Enter a full name to exclude a judge, or delete the name to stop the judge being excluded.'
+}
+
+export enum HearingLinkedSelectionEnum {
+  ValidSelectionError = 'You need to select atleast one hearing',
+  HearingSelection = 'Which hearings should be linked to this hearing?',
+  NoHearingSelection = 'There are no hearings available to link to',
+  NoLinkedCases = 'No linked Cases',
 }
 
 export enum HearingDatePriorityEnum {

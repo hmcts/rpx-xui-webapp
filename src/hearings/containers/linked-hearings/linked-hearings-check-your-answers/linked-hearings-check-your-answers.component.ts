@@ -1,45 +1,39 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { GroupLinkType } from '../../../models/hearings.enum';
 import { HearingDetailModel, LinkedHearingGroupMainModel, LinkedHearingsDetailModel, ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import { LoadLinkedHearingGroup, LoadServiceLinkedCases, SubmitLinkedHearingGroup } from '../../../store';
 
 @Component({
-  selector: 'exui-linked-hearings-check-your-answers',
+  selector: 'exui-check-your-answers',
   templateUrl: './linked-hearings-check-your-answers.component.html',
   styleUrls: ['./linked-hearings-check-your-answers.component.scss']
 })
 export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
   public caseId: string;
+  public caseName: string;
   public caseTitle: string;
   public showPositionColumn: boolean;
-  public linkedCases: LinkedHearingsCheckYourAnswersPageResult[];
-  public linkedHearingGroup: LinkedHearingGroupMainModel;
+  public linkedCases: LinkedHearingsCheckYourAnswersPageResult[] = [];
   public hearingsInGroup: LinkedHearingsDetailModel[];
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly hearingsService: HearingsService,
-              private readonly router: Router) {
+              private readonly route: ActivatedRoute) {
+    this.caseId = this.route.snapshot.params.caseId;
     this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
       state => {
-        this.caseId = state.hearingList.hearingListMainModel ? state.hearingList.hearingListMainModel.caseRef : '';
-        const caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.caseName : '';
-        this.caseTitle = `${caseName} ${this.caseId}`;
+        this.caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.caseName : '';
       }
-    )
+    );
   }
 
   public ngOnInit(): void {
-    this.hearingStore.dispatch(new LoadServiceLinkedCases({caseReference: this.caseId, hearingId: ''}));
-    this.hearingStore.dispatch(new LoadLinkedHearingGroup({caseReference: this.caseId, hearingId: ''}));
     this.hearingStore.pipe(select(fromHearingStore.getHearingLinks)).subscribe(
       hearingLinks => {
-        this.linkedCases = [];
-        this.linkedHearingGroup = hearingLinks.linkedHearingGroup;
-        this.showPositionColumn = this.canDisplayPositionColumn();
+        this.showPositionColumn = this.canDisplayPositionColumn(hearingLinks.linkedHearingGroup);
         if (hearingLinks && hearingLinks.linkedHearingGroup) {
           this.hearingsInGroup = hearingLinks.linkedHearingGroup.hearingsInGroup;
           hearingLinks.serviceLinkedCases.forEach(linkedCase => {
@@ -48,7 +42,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
           });
         }
       }
-    )
+    );
   }
 
   public setDisplayRow(linkedCase: ServiceLinkedCasesModel, selectedHearings: HearingDetailModel[]): void {
@@ -74,18 +68,13 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
     return null;
   }
 
-  public canDisplayPositionColumn(): boolean {
-    return this.linkedHearingGroup
-      && this.linkedHearingGroup.groupDetails
-      && this.linkedHearingGroup.groupDetails.groupLinkType === GroupLinkType.ORDERED;
-  }
-
-  public onChange(): void {
-    this.router.navigate(['/hearings', 'link', 'h100002']);
+  public canDisplayPositionColumn(linkedHearingGroup: LinkedHearingGroupMainModel): boolean {
+    return linkedHearingGroup
+      && linkedHearingGroup.groupDetails
+      && linkedHearingGroup.groupDetails.groupLinkType === GroupLinkType.ORDERED;
   }
 
   public onLinkHearings(): void {
-    this.hearingStore.dispatch(new SubmitLinkedHearingGroup(this.linkedHearingGroup));
   }
 }
 

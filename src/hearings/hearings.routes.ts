@@ -11,6 +11,9 @@ import { HearingActualsComponent } from './containers/hearing-actuals/hearing-ac
 import { HearingStageResultComponent } from './containers/hearing-actuals/hearing-stage-result/hearing-stage-result.component';
 import { LinkedHearingsCheckYourAnswersComponent } from './containers/linked-hearings/linked-hearings-check-your-answers/linked-hearings-check-your-answers.component';
 import { LinkedHearingsFinalConfirmationComponent } from './containers/linked-hearings/linked-hearings-final-confirmation/linked-hearings-final-confirmation.component';
+import { LinkedHearingsWithCaseComponent } from './containers/linked-hearings/linked-hearings-with-case/linked-hearings-with-case.component';
+import { LinkedHearingsComponent } from './containers/linked-hearings/linked-hearings.component';
+import { HowLinkedHearingsBeHeardComponent } from './containers/linked-hearings/linked-hearings-how-to-heard/linked-hearings-how-to-heard.component';
 import { HearingAdditionalInstructionsComponent } from './containers/request-hearing/hearing-additional-instructions/hearing-additional-instructions.component';
 import { HearingAttendanceComponent } from './containers/request-hearing/hearing-attendance/hearing-attendance.component';
 import { HearingChangeReasonComponent } from './containers/request-hearing/hearing-change-reason/hearing-change-reason.component';
@@ -50,6 +53,7 @@ import { HearingStageResolver } from './resolvers/hearing-stage.resolver';
 import { JudgeTypesResolverService } from './resolvers/judge-types-resolver.service';
 import { JudicialUserSearchResolver } from './resolvers/judicial-user-search-resolver.resolve';
 import { JudicialUserSearchResponseResolver } from './resolvers/judicial-user-search-response-resolver.resolve';
+import { LinkedCaseResolver } from './resolvers/linked-case-resolver.resolve';
 import { PanelRolesResolverService } from './resolvers/panel-roles-resolver.service';
 import { PartyChannelsResolverService } from './resolvers/party-channels-resolver.service';
 import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
@@ -91,6 +95,35 @@ export const ROUTES: Routes = [
           title: 'HMCTS Hearings | Cancel Hearing'
         }
       }
+    ]
+  },
+  {
+    path: 'link/:caseId/:hearingId',
+    component: LinkedHearingsComponent,
+    canActivate: [HealthCheckGuard, HearingsEditGuard],
+    resolve: { linkedCase: LinkedCaseResolver },
+    children: [
+      {
+        path: '',
+        component: LinkedHearingsWithCaseComponent,
+        data: {
+          title: 'HMCTS Hearings | Linked Hearings | Cases'
+        }
+      },
+      {
+        path: 'group-selection',
+        component: HowLinkedHearingsBeHeardComponent,
+        data: {
+          title: 'HMCTS Hearings | Linked Hearings | Group Selection'
+        }
+      },
+      {
+        path: 'check-your-answers',
+        component: LinkedHearingsCheckYourAnswersComponent,
+        data: {
+          title: 'HMCTS Hearings | Linked Hearings | Check your answers'
+        }
+      },
     ]
   },
   {

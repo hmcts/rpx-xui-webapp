@@ -1,4 +1,5 @@
 import {TestBed} from '@angular/core/testing';
+import { Router } from '@angular/router';
 import {provideMockActions} from '@ngrx/effects/testing';
 import {Store} from '@ngrx/store';
 import {provideMockStore} from '@ngrx/store/testing';
@@ -13,12 +14,11 @@ import {HearingLinksEffects} from './hearing-links.effects';
 describe('Hearing Links Effects', () => {
   let actions$;
   let store: Store<fromHearingStore.State>;
-
   let effects: HearingLinksEffects;
   const hearingsServiceMock = jasmine.createSpyObj('HearingsService', [
     'loadServiceLinkedCases',
   ]);
-
+  const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
   const initialState = {
     hearings: {
       hearingLinks: {
@@ -32,6 +32,10 @@ describe('Hearing Links Effects', () => {
     TestBed.configureTestingModule({
       providers: [
         provideMockStore({initialState}),
+        {
+          provide: Router,
+          useValue: mockRouter,
+        },
         {
           provide: HearingsService,
           useValue: hearingsServiceMock,
@@ -63,5 +67,4 @@ describe('Hearing Links Effects', () => {
       expect(effects.loadServiceLinkedCases$).toBeObservable(expected);
     });
   });
-
 });

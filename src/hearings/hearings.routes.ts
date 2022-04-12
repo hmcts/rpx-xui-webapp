@@ -10,6 +10,7 @@ import { HearingActualsViewEditPartiesComponent } from './containers/hearing-act
 import { HearingActualsComponent } from './containers/hearing-actuals/hearing-actuals.component';
 import { HearingStageResultComponent } from './containers/hearing-actuals/hearing-stage-result/hearing-stage-result.component';
 import { LinkedHearingsCheckYourAnswersComponent } from './containers/linked-hearings/linked-hearings-check-your-answers/linked-hearings-check-your-answers.component';
+import { LinkedHearingsFinalConfirmationComponent } from './containers/linked-hearings/linked-hearings-final-confirmation/linked-hearings-final-confirmation.component';
 import { HearingAdditionalInstructionsComponent } from './containers/request-hearing/hearing-additional-instructions/hearing-additional-instructions.component';
 import { HearingAttendanceComponent } from './containers/request-hearing/hearing-attendance/hearing-attendance.component';
 import { HearingChangeReasonComponent } from './containers/request-hearing/hearing-change-reason/hearing-change-reason.component';
@@ -63,6 +64,13 @@ export const ROUTES: Routes = [
         component: LinkedHearingsCheckYourAnswersComponent,
         data: {
           title: 'HMCTS Hearings | Linked Hearings | Check Your Answers'
+        }
+      },
+      {
+        path: 'confirmation',
+        component: LinkedHearingsFinalConfirmationComponent,
+        data: {
+          title: 'HMCTS Hearings | Linked Hearings | Confirmation'
         }
       }
     ]

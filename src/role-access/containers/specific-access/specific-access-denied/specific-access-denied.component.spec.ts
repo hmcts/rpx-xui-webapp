@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
-import { SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
+import { SpecificAccessState } from '../../../models';
 import { SpecificAccessDeniedComponent } from './specific-access-denied.component';
 
 describe('SpecificAccessDeniedComponent', () => {
@@ -45,17 +45,15 @@ describe('SpecificAccessDeniedComponent', () => {
 
   describe('navigation', () => {
 
-    it('should correctly navigate on click of return to my tasks button when dispatching the event', () => {
-      const navEvent = SpecificAccessNavigationEvent.RETURNTOMYTASKS;
-      component.navigationHandler(navEvent);
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/work/my-work/list'])
+    it('should create component and show the correct message', () => {
+      expect(component).toBeDefined();
+      const confirmationMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-panel__title');
+      expect(confirmationMessageElement.textContent).toContain('Request for access denied');
     });
 
-    it('should correctly navigate on click of return to my tasks button when dispatching the event', () => {
-      component.caseId = '123456789';
-      const navEvent = SpecificAccessNavigationEvent.RETURNTOTASKSTAB;
-      component.navigationHandler(navEvent);
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/cases/case-details/123456789'])
+    it('should show the correct message for heading', () => {
+      const confirmationMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-heading-m');
+      expect(confirmationMessageElement.textContent).toContain('What happens next');
     });
 
     it('should dispatch a change navigation when called', () => {

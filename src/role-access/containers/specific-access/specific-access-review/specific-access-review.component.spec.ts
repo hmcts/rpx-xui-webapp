@@ -69,51 +69,21 @@ describe('SpecificAccessReviewComponent', () => {
       );
     });
 
-    xit('should show validation error when any radio button selected and the form submitted', () => {
-      const submitButton = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
-
-      submitButton.click();
-      fixture.detectChanges();
+    it('should show validation error when any radio button selected and the form submitted', () => {
+      spyOn(component, 'dispatchEvent');
+      component.submitted = true;
+      component.navigationHandler(SpecificAccessNavigationEvent.CONTINUE);
       expect(component.formGroup.invalid).toBe(true);
-      const errorBannerElement = fixture.debugElement.nativeElement.querySelector(
-        '.govuk-error-summary__list'
-      );
-      expect(errorBannerElement.textContent).toContain(
-        SpecificAccessErrors.NO_SELECTION
-      );
-      const errorMessageElement = fixture.debugElement.nativeElement.querySelector(
-        '.govuk-error-summary__title'
-      );
-      expect(errorMessageElement.textContent).toContain(
-        SpecificAccessErrors.GENERIC_ERROR
-      );
+      expect(component.dispatchEvent).not.toHaveBeenCalled();
     });
 
-    xit('should clear validation error when a radio button selected and the form submitted', () => {
-      const radioButton =
-        fixture.debugElement.nativeElement.querySelector('#reason-0');
-      radioButton.click();
-      const submitButton = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
-      submitButton.click();
-      fixture.detectChanges();
+    it('should clear validation error when a radio button selected and the form submitted', () => {
+      spyOn(component, 'dispatchEvent');
+      component.submitted = false;
+      component.reviewOptionControl.setValue(AccessReason.APPROVE_REQUEST);
+      component.navigationHandler(SpecificAccessNavigationEvent.CONTINUE);
       expect(component.formGroup.invalid).toBe(false);
-      const errorBannerElement = fixture.debugElement.nativeElement.querySelector(
-        '.govuk-error-summary__list'
-      );
-      expect(errorBannerElement).toBeNull();
-      const errorMessageElement = fixture.debugElement.nativeElement.querySelector(
-        '.govuk-error-summary__title'
-      );
-      expect(errorMessageElement).toBeNull();
-    });
-
-    xit('should go back to the page before previous one when the Cancel link is clicked', () => {
-      const cancelLink =
-        fixture.debugElement.nativeElement.querySelector('a.govuk-body');
-      expect(cancelLink.text).toContain('Cancel');
-      spyOn(window.history, 'go');
-      cancelLink.click();
-      expect(window.history.go).toHaveBeenCalledWith(-1);
+      expect(component.dispatchEvent).toHaveBeenCalled();
     });
 
     it('should correctly navigate on click of continue button for approve request', () => {

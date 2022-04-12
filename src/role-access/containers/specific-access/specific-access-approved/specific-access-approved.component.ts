@@ -24,7 +24,17 @@ export class SpecificAccessApprovedComponent {
         this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_APPROVED));
         break;
       default:
+        this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_APPROVED));
         throw new Error('Invalid case');
+    }
+  }
+  public dispatchEvent(navEvent: SpecificAccessNavigationEvent) {
+    switch (navEvent) {
+      case SpecificAccessNavigationEvent.BACK:
+        this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_REVIEW));
+        break;
+      default:
+        throw new Error('Not yet implemented');
     }
   }
 }

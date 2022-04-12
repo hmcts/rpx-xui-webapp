@@ -1,4 +1,4 @@
-import {GroupLinkType} from './hearings.enum';
+import { GroupLinkType } from './hearings.enum';
 
 export interface ServiceLinkedCasesModel {
   caseReference: string;
@@ -11,6 +11,8 @@ export interface HearingDetailModel {
   hearingId: string;
   hearingStage: string;
   isSelected: boolean; // default will be false.
+  hearingStatus: string;
+  hearingIsLinkedFlag: boolean;
 }
 
 export interface LinkedHearingGroupMainModel {

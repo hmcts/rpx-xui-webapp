@@ -10,7 +10,7 @@ export interface ServiceLinkedCasesModel {
 export interface HearingDetailModel {
   hearingId: string;
   hearingStage: string;
-  isSelected: boolean; // default will be false.
+  isSelected: boolean; //default will be false.
 }
 
 export interface LinkedHearingGroupMainModel {

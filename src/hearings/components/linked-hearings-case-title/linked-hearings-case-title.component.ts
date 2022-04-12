@@ -5,5 +5,6 @@ import { Component, Input } from '@angular/core';
   templateUrl: './linked-hearings-case-title.component.html',
 })
 export class LinkedHearingsCaseTitleComponent {
-  @Input() caseTitle: string;
+  @Input() public caseName: string;
+  @Input() public caseId: string;
 }

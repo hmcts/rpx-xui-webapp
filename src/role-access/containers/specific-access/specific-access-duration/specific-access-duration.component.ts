@@ -12,7 +12,8 @@ import {
   SpecificAccessState
 } from '../../../models';
 import { DurationType } from '../../../models/enums';
-import { DurationHelperService } from '../../../services';
+import { DurationHelperService } from '../../../services/duration-helper.service';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'exui-specific-access-duration',
@@ -84,7 +85,7 @@ export class SpecificAccessDurationComponent implements OnInit {
       endDate_year: new FormControl(null, null)
     });
     this.setFormControlRefs();
-    this.store.pipe(select(fromFeature.getSpecificAccessState)).subscribe((specificAccessState) => {
+    this.store.pipe(select(fromFeature.getSpecificAccessState)).pipe(take(1)).subscribe((specificAccessState) => {
       this.selectSpecificAccessDuration(specificAccessState);
     });
   }
@@ -101,6 +102,20 @@ export class SpecificAccessDurationComponent implements OnInit {
   public selectSpecificAccessDuration(specificAccessState: SpecificAccessStateData) {
     // TODO: SARD - this will be wired up correctly in another ticket ( 5505? ). Hint: see role-access/allocate-role/choose-duration
     this.selectedDuration = DurationType.SEVEN_DAYS;
+
+    if (specificAccessState.specificAccessFormData && specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedOption) {
+      this.selectedDuration = specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedOption;
+      if (this.selectedDuration === DurationType.ANOTHER_PERIOD) {
+        this.anotherPeriod = true ;
+        this.startDateDayCtrl.setValue(specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedDuration.startDate.day);
+        this.startDateMonthCtrl.setValue(specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedDuration.startDate.month);
+        this.startDateYearCtrl.setValue(specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedDuration.startDate.year);
+        this.endDateDayCtrl.setValue(specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedDuration.endDate.day);
+        this.endDateMonthCtrl.setValue(specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedDuration.endDate.month);
+        this.endDateYearCtrl.setValue(specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedDuration.endDate.year);
+      }
+    }
+
     this.durations.find(duration => duration.duration === this.selectedDuration).checked = true;
   }
 
@@ -122,6 +137,12 @@ export class SpecificAccessDurationComponent implements OnInit {
   public resetPreviousErrors(): void {
     this.startDateErrorMessage = { isInvalid: false, messages: [] };
     this.endDateErrorMessage =  { isInvalid: false, messages: [] };
+  }
+
+  public getRawData(): any {
+    const startDate = this.durationHelper.getRawFromControlsValues(this.startDateDayCtrl, this.startDateMonthCtrl, this.startDateYearCtrl);
+    const endDate = this.durationHelper.getRawFromControlsValues(this.endDateDayCtrl, this.endDateMonthCtrl, this.endDateYearCtrl);
+    return {startDate, endDate}
   }
 
   public getPeriod(duration: DurationType): Period {

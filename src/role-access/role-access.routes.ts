@@ -17,7 +17,7 @@ export const ROUTES: Routes = [
       {
         path: '',
         component: null,
-        canActivate: [HealthCheckGuard],
+       // canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Manage cases | Role and access | Specific access',
         }

@@ -17,7 +17,7 @@ import { SpecificAccessReviewComponent } from '../specific-access-review/specifi
 import { SpecificAccessDurationComponent } from '../specific-access-duration/specific-access-duration.component';
 import { DurationHelperService } from '../../../services';
 
-fdescribe('SpecificAccessHomeComponent', () => {
+describe('SpecificAccessHomeComponent', () => {
   let component: SpecificAccessHomeComponent;
   let fixture: ComponentFixture<SpecificAccessHomeComponent>;
   let durationHelperService: DurationHelperService;

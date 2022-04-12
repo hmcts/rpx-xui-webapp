@@ -24,7 +24,6 @@ export class SpecificAccessApprovedComponent {
         this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_APPROVED));
         break;
       default:
-        this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_APPROVED));
         throw new Error('Invalid case');
     }
   }

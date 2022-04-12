@@ -8,7 +8,6 @@ import { SessionStorageService } from 'src/app/services';
 import * as fromNocStore from '../../../noc/store';
 import { FlagDefinition, NavigationItem } from '../../models/theming.model';
 import { UserNavModel } from '../../models/user-nav.model';
-import { UserService } from '../../services/user/user.service';
 
 @Component({
     selector: 'exui-hmcts-global-header',
@@ -45,7 +44,6 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
 
   constructor(
     public nocStore: Store<fromNocStore.State>,
-    private readonly userService: UserService,
     private readonly featureToggleService: FeatureToggleService,
     private readonly sessionStorageService: SessionStorageService,
   ) { }

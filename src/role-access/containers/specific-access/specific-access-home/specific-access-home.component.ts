@@ -96,7 +96,8 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
     }
 
     switch (navEvent) {
-      case SpecificAccessNavigationEvent.BACK, SpecificAccessNavigationEvent.CANCEL: {
+      case SpecificAccessNavigationEvent.BACK:
+      case SpecificAccessNavigationEvent.CANCEL: {
         switch (this.navigationCurrentState) {
           case SpecificAccessState.SPECIFIC_ACCESS_DURATION:
             this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_REVIEW));

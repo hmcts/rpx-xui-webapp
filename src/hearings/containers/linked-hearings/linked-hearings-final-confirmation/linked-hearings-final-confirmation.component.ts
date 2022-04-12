@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import * as fromHearingStore from '../../../store';
@@ -10,20 +11,24 @@ import * as fromHearingStore from '../../../store';
 export class LinkedHearingsFinalConfirmationComponent implements OnInit, OnDestroy {
 
   public heading: string;
-  public subheading: string;
   public caseId: string;
+  public hearingId: string;
   public sub: Subscription;
+  public linkedHearingsCount: number;
 
-  constructor(protected readonly hearingStore: Store<fromHearingStore.State>) {
+  constructor(private readonly hearingStore: Store<fromHearingStore.State>,
+              private readonly route: ActivatedRoute) {
+    this.caseId = this.route.snapshot.params.caseId;
+    this.hearingId = this.route.snapshot.params.hearingId;
+    this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
+      state => {
+        this.linkedHearingsCount = state.hearingLinks.linkedHearingGroup.hearingsInGroup.length;
+      }
+    );
   }
 
   public ngOnInit(): void {
-    this.sub = this.hearingStore.pipe(select(fromHearingStore.getHearingList)).subscribe(
-      hearingList => {
-        this.caseId = hearingList.hearingListMainModel ? hearingList.hearingListMainModel.caseRef : '';
-        this.heading = 'You have successfully submitted the hearing details.';
-        this.subheading = 'What happens next';
-      });
+    this.heading = this.linkedHearingsCount > 1 ? `${this.linkedHearingsCount} hearings are now linked` : `${this.linkedHearingsCount} hearing is now linked`;
   }
 
   public ngOnDestroy(): void {

@@ -25,4 +25,23 @@ describe('Hearing Links Actions', () => {
     expect(action.type).toBe(fromHearingLinksAction.LOAD_SERVICE_LINKED_CASES_FAILURE);
   });
 
+  it('should submit hearing request action', () => {
+    const payload = {
+      linkedHearingGroup: null,
+      caseId: null,
+      hearingId: null
+    };
+    const action = new fromHearingLinksAction.SubmitLinkedHearingGroup(payload);
+    expect(action.type).toBe(fromHearingLinksAction.SUBMIT_LINKED_HEARING_GROUP);
+  });
+
+  it('should submit linked hearing group failure action', () => {
+    const payload = {
+      status: 403,
+      errors: null,
+      message: 'Http failure response: 403 Forbidden'
+    };
+    const action = new fromHearingLinksAction.SubmitLinkedHearingGroupFailure(payload);
+    expect(action.type).toBe(fromHearingLinksAction.SUBMIT_LINKED_HEARING_GROUP_FAILURE);
+  });
 });

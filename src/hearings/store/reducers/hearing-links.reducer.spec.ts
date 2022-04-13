@@ -1,3 +1,4 @@
+import { HearingLinksStateData } from 'src/hearings/models/hearingLinksStateData.model';
 import {ServiceLinkedCasesModel} from '../../models/linkHearings.model';
 import * as fromHearingLinksActions from '../actions/hearing-links.action';
 import * as fromHearingLinksReducer from './hearing-links.reducer';
@@ -43,6 +44,23 @@ describe('Hearing Links Reducer', () => {
         const action = new fromHearingLinksActions.LoadServiceLinkedCasesFailure(ERROR);
         const hearingsState = fromHearingLinksReducer.hearingLinksReducer(initialState, action);
         expect(hearingsState.lastError).toEqual(ERROR);
+      });
+    });
+
+    describe('Submit linked hearing group failure action', () => {
+      it('should call error response action', () => {
+        const initialState: HearingLinksStateData = {
+          serviceLinkedCases: [],
+          linkedHearingGroup: null,
+          lastError: {
+            status: 403,
+            errors: null,
+            message: 'Http failure response: 403 Forbidden'
+          },
+        };
+        const action = new fromHearingLinksActions.SubmitLinkedHearingGroupFailure(initialState.lastError);
+        const hearingsState = fromHearingLinksReducer.hearingLinksReducer(initialState, action);
+        expect(hearingsState).toEqual(initialState);
       });
     });
   });

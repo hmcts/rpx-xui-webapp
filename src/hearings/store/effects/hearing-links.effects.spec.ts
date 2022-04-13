@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { cold, hot } from 'jasmine-marbles';
 import { Observable, of } from 'rxjs';
-import { HttpError } from 'src/models/httpError.model';
+import { HttpError } from '../../../models/httpError.model';
 import { Go } from '../../../app/store/actions';
 import * as fromHearingStore from '../../../hearings/store';
 import { GroupLinkType } from '../../models/hearings.enum';

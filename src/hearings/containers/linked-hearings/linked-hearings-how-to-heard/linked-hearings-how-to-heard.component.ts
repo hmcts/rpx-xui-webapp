@@ -1,22 +1,24 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { HearingLinksStateData } from 'src/hearings/models/hearingLinksStateData.model';
-import { ACTION } from 'src/hearings/models/hearings.enum';
-import { LinkedHearingGroupMainModel, ServiceLinkedCasesModel } from 'src/hearings/models/linkHearings.model';
-import { HearingsService } from 'src/hearings/services/hearings.service';
-import { RequestHearingPageFlow } from '../../request-hearing/request-hearing.page.flow';
+import { HearingLinksStateData } from '../../../models/hearingLinksStateData.model';
+import { ACTION, GroupLinkType } from '../../../models/hearings.enum';
+import { LinkedHearingGroupMainModel, ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
+import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import { ValidatorsUtils } from 'src/hearings/utils/validators.utils';
+import { ValidatorsUtils } from '../../../utils/validators.utils';
+import { RequestHearingPageFlow } from '../../request-hearing/request-hearing.page.flow';
 
 @Component({
   selector: 'exui-linked-hearings-how-to-heard',
   templateUrl: './linked-hearings-how-to-heard.component.html',
   styleUrls: ['./linked-hearings-how-to-heard.component.scss']
 })
-export class HowLinkedHearingsBeHeardComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
+export class HowLinkedHearingsBeHeardComponent
+  extends RequestHearingPageFlow
+  implements OnInit, AfterViewInit, OnDestroy {
   public caseId: string;
   public hearingId: string;
   public caseName: string;
@@ -37,7 +39,8 @@ export class HowLinkedHearingsBeHeardComponent extends RequestHearingPageFlow im
     protected readonly hearingsService: HearingsService,
     protected readonly route: ActivatedRoute,
     private readonly validators: ValidatorsUtils,
-    private readonly fb: FormBuilder
+    private readonly fb: FormBuilder,
+    private readonly router: Router,
   ) {
     super(hearingStore, hearingsService);
     this.form = this.fb.group({
@@ -57,14 +60,13 @@ export class HowLinkedHearingsBeHeardComponent extends RequestHearingPageFlow im
     return this.form.get('hearingOrder') as FormArray;
   }
 
-  private addLinkedCaseRow(linkedCase: ServiceLinkedCasesModel) {
-    if (!linkedCase || !linkedCase.hearings) {
-      return;
-    }
+  private addRow(linkCase: ServiceLinkedCasesModel) {
+    if (!linkCase || !linkCase.hearings) { return; }
+
     this.hearingOrder.push(this.fb.group({
-      caseReference: [linkedCase.caseReference],
-      caseName: [linkedCase.caseName],
-      hearingStage: [linkedCase.hearings[0] && linkedCase.hearings[0].hearingStage || ''],
+      caseReference: [linkCase.caseReference],
+      caseName: [linkCase.caseName],
+      hearingStage: [linkCase.hearings[0] && linkCase.hearings[0].hearingStage || ''],
       position: [null, this.validators.mandatory('')]
     }));
   }
@@ -75,51 +77,58 @@ export class HowLinkedHearingsBeHeardComponent extends RequestHearingPageFlow im
       const selectedHearing = linked.hearings && linked.hearings.filter(hearing => hearing.isSelected === true);
       if (selectedHearing && selectedHearing.length) {
         this.selectedToBeLinkedCases.push({
-          ...linked,
+          caseReference: linked.caseReference,
+          caseName: linked.caseName,
           hearings: selectedHearing,
-        })
+          reasonsForLink: linked.reasonsForLink
+        });
       }
-    })
+    });
     if (this.selectedToBeLinkedCases && this.selectedToBeLinkedCases.length) {
-      this.positionDropdownValues = Array.from({length: this.selectedToBeLinkedCases.length}, (_, i) => i + 1)
+      this.positionDropdownValues = Array.from({ length: this.selectedToBeLinkedCases.length }, (_, i) => i + 1);
       this.createForm();
     }
   }
 
   private createForm(): void {
     this.selectedToBeLinkedCases.forEach((linked) => {
-      this.addLinkedCaseRow(linked);
+      this.addRow(linked);
     });
   }
 
   public onSubmit(): void {
-    const linkedHearingGroupMainModel: LinkedHearingGroupMainModel = {groupDetails: {
-      groupComments: '',
-      groupLinkType: this.form.value.hearingGroup,
-      groupName: '',
-      groupReason: ''
-    }, hearingsInGroup: []};
+    const linkedHearingGroupMainModel: LinkedHearingGroupMainModel = {
+      groupDetails: {
+        groupComments: '',
+        groupLinkType: this.selectedOption === 'heardTogether' ? GroupLinkType.SAME_SLOT : GroupLinkType.ORDERED,
+        groupName: '',
+        groupReason: ''
+      }, hearingsInGroup: []
+    };
     if (this.isFormValid()) {
       this.hearingOrder.value.forEach(formValue => {
-        const hearing = this.selectedToBeLinkedCases.find(linked => linked.caseReference === formValue.caseReference)
-        const selectedHearing = hearing && hearing.hearings.find(selected => selected.isSelected)
-        selectedHearing && linkedHearingGroupMainModel.hearingsInGroup.push({
+        const hearing = this.selectedToBeLinkedCases.find(linked => linked.caseReference === formValue.caseReference);
+        const selectedHearing = hearing && hearing.hearings.find(selected => selected.isSelected);
+        if (selectedHearing) {
+          linkedHearingGroupMainModel.hearingsInGroup.push({
             hearingId: selectedHearing.hearingId,
             hearingOrder: formValue.position,
-          })
+          });
+        }
       });
       this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesGroupDetail(linkedHearingGroupMainModel));
+      this.router.navigate([`/hearings/link/${this.caseId}/${this.hearingId}/check-your-answers`]);
     }
   }
 
-  public executeAction(action: ACTION): void {
+  protected executeAction(action: ACTION): void {
     super.navigateAction(action);
   }
 
   public onOrderChange(index: number) {
     const positionSelected = this.hearingOrder.controls[index].get('position').value;
-    const hasSamePositionExistedIndex = this.hearingOrder.value.map((val, rowIndex) => val.position == positionSelected && rowIndex != index);
-    hasSamePositionExistedIndex.forEach((val, idx) => val && this.hearingOrder.controls[idx].patchValue({position: ''}));
+    const hasSamePosSelectedIndex = this.hearingOrder.value.map((val, rowIndex) => val.position === positionSelected && rowIndex !== index);
+    hasSamePosSelectedIndex.forEach((val, idx: number) => val && this.hearingOrder.controls[idx].patchValue({ position: '' }));
   }
 
   public isFormValid(): boolean {
@@ -131,17 +140,13 @@ export class HowLinkedHearingsBeHeardComponent extends RequestHearingPageFlow im
       if (!validSelection) {
         this.validationErrors.push({
           id: `selection-error`,
-          message: 'check the position you have given to each hearing'
+          message: !this.form.value.hearingGroup ? 'Please make a selection' : 'Check the position you have given to each hearing'
         });
         return false;
       }
     }
     this.validationErrors = [];
-    return true
-  }
-
-  public rowHasErrors(index: number): boolean {
-    return this.hearingOrder.controls[index].invalid;
+    return true;
   }
 
   public highlightRowError(index: number, error: string, formSubmitted: boolean): boolean {
@@ -149,7 +154,16 @@ export class HowLinkedHearingsBeHeardComponent extends RequestHearingPageFlow im
     return formSubmitted && controls[error].invalid;
   }
 
+  public hasEmptyGroupSelection() {
+    return this.validationErrors.length > 0 && this.selectedOption === '';
+  }
+
+  public hasInvalidOrderSelection() {
+    return this.validationErrors.length > 0 && this.selectedOption !== '' && this.selectedToBeLinkedCases && this.selectedToBeLinkedCases.length;
+  }
+
   public onOptionSelection(value: string): void {
+    this.validationErrors = [];
     this.selectedOption = value;
   }
 

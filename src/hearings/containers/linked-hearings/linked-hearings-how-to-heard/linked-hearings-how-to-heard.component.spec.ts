@@ -110,14 +110,22 @@ describe('HowLinkedHearingsBeHeardComponent', () => {
     expect(component.validationErrors.length).toBe(1);
   });
 
-  it('should able to submit when form is valie', () => {
+  it('should able to submit when form particularOrder radio is selected', () => {
     const nativeElement = fixture.debugElement.nativeElement;
-    const firstRadioButtonElement = nativeElement.querySelector('#order');
+    const firstRadioButtonElement = nativeElement.querySelector('#particularOrder');
     firstRadioButtonElement.click();
     fixture.detectChanges();
     component.form.patchValue({hearingGroup: 'particularOrder'});
     component.onOrderChange(0)
     component.onOrderChange(1)
+    expect(component.validationErrors.length).toBe(0);
+  });
+
+  it('should able to submit when form together radio is selected', () => {
+    const nativeElement = fixture.debugElement.nativeElement;
+    const firstRadioButtonElement = nativeElement.querySelector('#heardTogether');
+    firstRadioButtonElement.click();
+    fixture.detectChanges();
     expect(component.validationErrors.length).toBe(0);
   });
 

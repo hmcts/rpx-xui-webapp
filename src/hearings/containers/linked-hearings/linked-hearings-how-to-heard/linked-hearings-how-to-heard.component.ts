@@ -1,24 +1,21 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { HearingLinksStateData } from '../../../models/hearingLinksStateData.model';
-import { ACTION, GroupLinkType } from '../../../models/hearings.enum';
+import { GroupLinkType } from '../../../models/hearings.enum';
 import { LinkedHearingGroupMainModel, ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
-import { RequestHearingPageFlow } from '../../request-hearing/request-hearing.page.flow';
 
 @Component({
   selector: 'exui-linked-hearings-how-to-heard',
   templateUrl: './linked-hearings-how-to-heard.component.html',
   styleUrls: ['./linked-hearings-how-to-heard.component.scss']
 })
-export class HowLinkedHearingsBeHeardComponent
-  extends RequestHearingPageFlow
-  implements OnInit, AfterViewInit, OnDestroy {
+export class HowLinkedHearingsBeHeardComponent implements OnInit {
   public caseId: string;
   public hearingId: string;
   public caseName: string;
@@ -42,7 +39,6 @@ export class HowLinkedHearingsBeHeardComponent
     private readonly fb: FormBuilder,
     private readonly router: Router,
   ) {
-    super(hearingStore, hearingsService);
     this.form = this.fb.group({
       hearingGroup: ['', Validators.required],
       hearingOrder: this.fb.array([]),
@@ -121,10 +117,6 @@ export class HowLinkedHearingsBeHeardComponent
     }
   }
 
-  protected executeAction(action: ACTION): void {
-    throw new Error('Method not implemented.');
-  }
-
   public onOrderChange(index: number) {
     const positionSelected = this.hearingOrder.controls[index].get('position').value;
     const hasSamePosSelectedIndex = this.hearingOrder.value.map((val, rowIndex) => val.position === positionSelected && rowIndex !== index);
@@ -166,12 +158,5 @@ export class HowLinkedHearingsBeHeardComponent
     this.validationErrors = [];
     this.selectedOption = value;
   }
-
-  public ngAfterViewInit(): void {
-    this.fragmentFocus();
-  }
-
-  public ngOnDestroy(): void {
-    super.unsubscribe();
-  }
 }
+

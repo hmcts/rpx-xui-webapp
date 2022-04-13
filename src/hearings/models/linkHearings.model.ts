@@ -1,9 +1,18 @@
-import {GroupLinkType} from './hearings.enum';
+import { GroupLinkType } from './hearings.enum';
 
 export interface ServiceLinkedCasesModel {
   caseReference: string;
   caseName: string;
   reasonsForLink: string[];
+  hearings?: HearingDetailModel[];
+}
+
+export interface HearingDetailModel {
+  hearingId: string;
+  hearingStage: string;
+  isSelected: boolean;
+  hearingStatus: string;
+  hearingIsLinkedFlag: boolean;
 }
 
 export interface LinkedHearingGroupMainModel {

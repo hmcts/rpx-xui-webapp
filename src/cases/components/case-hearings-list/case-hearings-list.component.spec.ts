@@ -16,7 +16,7 @@ import { CaseHearingsListComponent } from './case-hearings-list.component';
 
 class MockRoleCategoryMappingService {
   public initialize = (user: FeatureUser, clientId: string): void => {
-  };
+  }
   public isEnabled = (feature: string): Observable<boolean> => of(true);
   public getValue = <R>(key: string, defaultValue: R): Observable<R> => of(defaultValue);
   public getValueOnce = <R>(key: string, defaultValue: R): Observable<R> => of(defaultValue);
@@ -830,7 +830,7 @@ describe('CaseHearingsListComponent', () => {
 
   it('should linkHearing', () => {
     component.linkHearing('h100000');
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'link', 'h100000']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'link', '1111222233334444', 'h100000']);
   });
 
   it('should manageLinks', () => {

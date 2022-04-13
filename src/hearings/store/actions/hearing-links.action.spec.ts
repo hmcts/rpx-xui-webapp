@@ -25,7 +25,7 @@ describe('Hearing Links Actions', () => {
     expect(action.type).toBe(fromHearingLinksAction.LOAD_SERVICE_LINKED_CASES_FAILURE);
   });
 
-  it('should submit hearing request action', () => {
+  it('should submit linked hearing group action', () => {
     const payload = {
       linkedHearingGroup: null,
       caseId: null,

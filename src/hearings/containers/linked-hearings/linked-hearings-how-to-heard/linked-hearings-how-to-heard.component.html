@@ -18,22 +18,25 @@
             <form class="form" [formGroup]="form" (submit)="onSubmit()" #ngForm="ngForm">
               <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
-                  <div class="govuk-radios">
+                  <div class="govuk-radios" [ngClass]="{'govuk-form-group--error' : hasEmptyGroupSelection()}">
+                    <span *ngIf="hasEmptyGroupSelection()" class="govuk-error-message govuk-!-margin-top-2">
+                      {{ validationErrors[0].message }}
+                    </span>
                     <div class="govuk-radios__item">
-                      <input class="govuk-radios__input" id="together" formControlName="hearingGroup" name="hearingGroup"
+                      <input class="govuk-radios__input" id="heardTogether" formControlName="hearingGroup" name="hearingGroup"
                         type="radio" value="heardTogether" (change)="onOptionSelection('heardTogether')">
-                      <label class="govuk-label govuk-radios__label" for="together">
+                      <label class="govuk-label govuk-radios__label" for="yes">
                         Hearings should be heard together
                       </label>
                     </div>
                     <div class="govuk-radios__item">
-                      <input class="govuk-radios__input" id="order" formControlName="hearingGroup" name="hearingGroup"
+                      <input class="govuk-radios__input" id="particularOrder" formControlName="hearingGroup" name="hearingGroup"
                         type="radio" value="particularOrder" (change)="onOptionSelection('particularOrder')">
-                      <label class="govuk-label govuk-radios__label" for="order">
+                      <label class="govuk-label govuk-radios__label" for="no">
                         Hearings should be heard in a particular order, but not together
                       </label>
                       <br />
-                      <div [ngClass]="{'govuk-form-group--error' : validationErrors.length > 0}" style="margin:15px"
+                      <div [ngClass]="{'govuk-form-group--error' : hasInvalidOrderSelection()}" style="margin:15px"
                         class="govuk-error-message govuk-!-margin-top-2">
                         <table class="govuk-table" *ngIf="selectedOption === 'particularOrder'">
                           <caption class="govuk-table__caption govuk-table__caption--m">
@@ -54,7 +57,7 @@
                           <tbody class="govuk-table__body">
                             <tr class="govuk-table__row"
                               *ngIf="selectedToBeLinkedCases && selectedToBeLinkedCases.length === 0">
-                              <td class="govuk-table__cell" colspan="2">None</td>
+                              <td class="govuk-table__cell" colspan="3">None</td>
                             </tr>
                             <ng-container *ngIf="selectedToBeLinkedCases && selectedToBeLinkedCases.length > 0"
                               formArrayName="hearingOrder">
@@ -63,7 +66,7 @@
                                 <td class="govuk-table__cell">
                                   <a class="govuk-link govuk-link--no-visited-state" style="text-decoration: none;">
                                     {{group.get('caseName').value}}
-                                    {{group.get('caseReference').value}}
+                                    {{group.get('caseReference').value | caseReference}}
                                   </a>
                                 </td>
                                 <td class="govuk-table__cell">
@@ -72,7 +75,7 @@
                                 <td>
                                   <select class="govuk-select" [id]="'hearingsOrder'+i" formControlName="position"
                                     (change)="onOrderChange(i)"
-                                    [ngClass]="{'govuk-select--error': highlightRowError(i, 'position', ngForm.submitted)}">
+                                    [ngClass]="{'govuk-select--error': validationErrors.length > 0 && highlightRowError(i, 'position', ngForm.submitted)}">
                                     <option value="" selected></option>
                                     <option *ngFor="let num of positionDropdownValues">
                                       {{num}}</option>

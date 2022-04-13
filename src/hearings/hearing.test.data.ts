@@ -2,6 +2,7 @@ import { HearingActualsMainModel } from './models/hearingActualsMainModel';
 import { HearingRequestMainModel } from './models/hearingRequestMain.model';
 import {
   CategoryType,
+  GroupLinkType,
   HearingListingStatusEnum,
   HearingResult,
   HMCStatus,
@@ -1874,8 +1875,73 @@ export const initialState = {
       fragmentId: 'venue'
     },
     hearingLinks: {
-      serviceLinkedCases: [],
-      linkedHearingGroup: null,
+      serviceLinkedCases: [
+        {
+          caseReference: '4652724902696213',
+          caseName: 'Smith vs Peterson',
+          reasonsForLink: [
+            'Linked for a hearing'
+          ],
+          hearings: [{
+            hearingId: 'h100001',
+            hearingStage: HMCStatus.UPDATE_REQUESTED,
+            isSelected: true,
+            hearingStatus: HMCStatus.AWAITING_LISTING,
+            hearingIsLinkedFlag: false
+          }]
+        },
+        {
+          caseReference: '5283819672542864',
+          caseName: 'Smith vs Peterson',
+          reasonsForLink: [
+            'Linked for a hearing',
+            'Progressed as part of lead case'
+          ]
+        },
+        {
+          caseReference: '8254902572336147',
+          caseName: 'Smith vs Peterson',
+          reasonsForLink: [
+            'Familial',
+            'Guardian',
+            'Linked for a hearing'
+          ],
+          hearings: [{
+            hearingId: 'h100010',
+            hearingStage: HMCStatus.UPDATE_REQUESTED,
+            isSelected: true,
+            hearingStatus: HMCStatus.AWAITING_LISTING,
+            hearingIsLinkedFlag: false
+          }, {
+            hearingId: 'h100012',
+            hearingStage: HMCStatus.UPDATE_REQUESTED,
+            isSelected: false,
+            hearingStatus: HMCStatus.AWAITING_LISTING,
+            hearingIsLinkedFlag: false
+          }]
+        }
+      ],
+      linkedHearingGroup: {
+        groupDetails: {
+          groupName: 'Group A',
+          groupReason: 'Reason 1',
+          groupLinkType: GroupLinkType.ORDERED,
+          groupComments: 'Comment 1',
+        },
+        hearingsInGroup: [
+          {
+            hearingId: 'h1000001',
+            hearingOrder: 1,
+          },
+          {
+            hearingId: 'h1000003',
+            hearingOrder: 2,
+          },
+          {
+            hearingId: 'h1000005',
+            hearingOrder: 3,
+          }],
+      },
       lastError: null
     }
   },

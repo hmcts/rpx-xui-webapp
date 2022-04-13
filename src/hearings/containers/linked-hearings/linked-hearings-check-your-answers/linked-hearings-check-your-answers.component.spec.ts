@@ -15,12 +15,14 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
   let mockStore: any;
   const mockHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockHttpClient);
+  const caseId = '1111-2222-3333-4444';
+  const hearingId = 'h100002';
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
   const mockRoute = {
     snapshot: {
       params: {
-        caseId: '1111-2222-3333-4444',
-        hearingId: 'h100002'
+        caseId: {caseId},
+        hearingId: {hearingId}
       }
     }
   };
@@ -104,4 +106,11 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
     component.showPositionColumn = true;
     expect(component.getPosition(hearing)).toBeNull();
   });
+
+  it('should change call navigate', () => {
+    component.caseId = caseId;
+    component.hearingId = hearingId;
+    component.onChange();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'link', caseId, hearingId]);
+  })
 });

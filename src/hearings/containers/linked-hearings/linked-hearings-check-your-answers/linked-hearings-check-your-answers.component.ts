@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { HearingLinksStateData } from '../../../models/hearingLinksStateData.model';
@@ -28,7 +28,8 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
   public error$: Observable<HttpError>;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
-              private readonly route: ActivatedRoute) {
+              private readonly route: ActivatedRoute,
+              private readonly router: Router) {
     this.caseId = this.route.snapshot.params.caseId;
     this.hearingId = this.route.snapshot.params.hearingId;
     this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
@@ -79,6 +80,10 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
     return this.linkedHearingGroup
       && this.linkedHearingGroup.groupDetails
       && this.linkedHearingGroup.groupDetails.groupLinkType === GroupLinkType.ORDERED;
+  }
+
+  public onChange(): void {
+    this.router.navigate(['/', 'hearings', 'link', this.caseId, this.hearingId]);
   }
 
   public onLinkHearings(): void {

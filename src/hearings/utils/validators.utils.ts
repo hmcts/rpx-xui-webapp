@@ -1,3 +1,4 @@
+import { FocusMonitor } from '@angular/cdk/a11y';
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup, ValidatorFn } from '@angular/forms';
 import * as moment from 'moment';
@@ -59,8 +60,8 @@ export class ValidatorsUtils {
       const isValidDate = Object.values(control.value).every(value => value !== null);
       const selectedDate = moment(Object.values(control.value).join('-'), HearingDateEnum.DefaultFormat);
       return isValidDate && selectedDate.isValid() &&
-      (!selectedDate.isBefore() || selectedDate.isSame(new Date(), 'd')) &&
-      ((selectedDate.weekday() !== 6) && (selectedDate.weekday() !== 0))
+        (!selectedDate.isBefore() || selectedDate.isSame(new Date(), 'd')) &&
+        ((selectedDate.weekday() !== 6) && (selectedDate.weekday() !== 0))
         ? null : { isValid: false };
     };
   }
@@ -91,10 +92,10 @@ export class ValidatorsUtils {
       const isLatestDate = (isValidFirstDate && isValidSecondDate) ? secondDate >= firstDate : (isValidFirstDate || isValidSecondDate);
       const numberOfBusinessDays = this.calcBusinessDays(firstDate, secondDate);
       return (isValidFirstDate || isValidSecondDate) && (firstDateNullLength === 0 || firstDateNullLength === 3) && (secondDateNullLength === 0 || secondDateNullLength === 3) &&
-      (firstDate.isValid() || secondDate.isValid()) && isLatestDate &&
-      (isValidFirstDate ? (firstDate.isAfter() || firstDate.isSame(new Date(), 'd')) : true) &&
-      (isValidSecondDate ? (secondDate.isAfter() || secondDate.isSame(new Date(), 'd')) : true) &&
-      numberOfBusinessDays !== 0
+        (firstDate.isValid() || secondDate.isValid()) && isLatestDate &&
+        (isValidFirstDate ? (firstDate.isAfter() || firstDate.isSame(new Date(), 'd')) : true) &&
+        (isValidSecondDate ? (secondDate.isAfter() || secondDate.isSame(new Date(), 'd')) : true) &&
+        numberOfBusinessDays !== 0
         ? null : { isValid: false };
     };
   }
@@ -163,6 +164,13 @@ export class ValidatorsUtils {
       }
       const duplicateEntries = values.filter((v) => v === value);
       return duplicateEntries.length > 0 ? { duplicateEntries: { error: true, message } } : null;
+    };
+  }
+
+  public validateLinkedHearings(): ValidatorFn {
+    return (formGroup: FormGroup) => {
+      const formArrayValue = formGroup && formGroup.value;
+      return formArrayValue.find(entry => entry.hearingReference !== null) ? null : { error: true };
     };
   }
 }

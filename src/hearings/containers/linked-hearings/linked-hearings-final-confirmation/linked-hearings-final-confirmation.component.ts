@@ -12,14 +12,12 @@ export class LinkedHearingsFinalConfirmationComponent implements OnInit, OnDestr
 
   public heading: string;
   public caseId: string;
-  public hearingId: string;
   public sub: Subscription;
   public linkedHearingsCount: number;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly route: ActivatedRoute) {
     this.caseId = this.route.snapshot.params.caseId;
-    this.hearingId = this.route.snapshot.params.hearingId;
     this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
       state => {
         this.linkedHearingsCount = state.hearingLinks.linkedHearingGroup.hearingsInGroup.length;

@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormArray, FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
@@ -12,7 +12,6 @@ import { ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
 import { HearingsPipesModule } from '../../../pipes/hearings.pipes.module';
 import { HearingsService } from '../../../services/hearings.service';
 import { LinkedHearingsWithCaseComponent } from './linked-hearings-with-case.component';
-
 
 describe('LinkedHearingsWithCaseComponent', () => {
   let component: LinkedHearingsWithCaseComponent;
@@ -66,20 +65,21 @@ describe('LinkedHearingsWithCaseComponent', () => {
     TestBed.configureTestingModule({
       declarations: [LinkedHearingsWithCaseComponent],
       imports: [ReactiveFormsModule, RouterTestingModule,
-        HearingsPipesModule],
+        HearingsPipesModule,
+        RouterModule,
+        RouterTestingModule.withRoutes([])],
       providers: [
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },
         {
           provide: ActivatedRoute,
           useValue: {
+            queryParams: of(),
             snapshot: {
               data: {
                 linkedCase: { serviceLinkedCases: source }
               },
-              params: {
-                caseId: '8254902572336147'
-              }
+              params: {caseId: '4652724902696211', hearingId: 'h000001'},
             },
             fragment: of('point-to-me'),
           }

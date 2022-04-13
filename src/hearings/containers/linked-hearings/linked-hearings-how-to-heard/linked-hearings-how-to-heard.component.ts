@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -127,9 +127,8 @@ export class HowLinkedHearingsBeHeardComponent
 
   public onOrderChange(index: number) {
     const positionSelected = this.hearingOrder.controls[index].get('position').value;
-    const hasSamePositionExistedIndex = this.hearingOrder.value.map((val, rowIndex) => val.position === positionSelected && rowIndex !== index);
-    // tslint:disable-next-line: no-shadowed-variable
-    hasSamePositionExistedIndex.forEach((val, index: number) => val && this.hearingOrder.controls[index].patchValue({ position: '' }));
+    const hasSamePosSelectedIndex = this.hearingOrder.value.map((val, rowIndex) => val.position === positionSelected && rowIndex !== index);
+    hasSamePosSelectedIndex.forEach((val, idx: number) => val && this.hearingOrder.controls[idx].patchValue({ position: '' }));
   }
 
   public isFormValid(): boolean {
@@ -141,7 +140,7 @@ export class HowLinkedHearingsBeHeardComponent
       if (!validSelection) {
         this.validationErrors.push({
           id: `selection-error`,
-          message: 'check the position you have given to each hearing'
+          message: !this.form.value.hearingGroup ? 'Please make a selection' : 'Check the position you have given to each hearing'
         });
         return false;
       }
@@ -150,43 +149,21 @@ export class HowLinkedHearingsBeHeardComponent
     return true;
   }
 
-  public rowHasErrors(index: number): boolean {
-    return this.hearingOrder.controls[index].invalid;
-  }
-
   public highlightRowError(index: number, error: string, formSubmitted: boolean): boolean {
     const controls = (this.hearingOrder.controls[index] as FormGroup).controls;
     return formSubmitted && controls[error].invalid;
   }
 
-  public displayRowErrors(index: number): string {
-    const errors = this.getAllRowErrors((this.hearingOrder.controls[index] as FormGroup).controls);
-    if (!errors) {
-      return '';
-    }
-    const keys = Object.keys(errors);
-    if (!keys.length) {
-      return null;
-    }
-    if (keys.length === 1) {
-      return errors[keys[0]];
-    }
+  public hasEmptyGroupSelection() {
+    return this.validationErrors.length > 0 && this.selectedOption === '';
   }
 
-  private getAllRowErrors(controls: { [p: string]: AbstractControl }): { [p: string]: string } {
-    const errors: { [p: string]: string } = {};
-    Object.keys(controls).forEach(key => {
-      const controlErrors: ValidationErrors = controls[key].errors;
-      if (controlErrors) {
-        Object.keys(controlErrors).forEach(keyError => {
-          errors[key] = controlErrors[keyError].message;
-        });
-      }
-    });
-    return errors;
+  public hasInvalidOrderSelection() {
+    return this.validationErrors.length > 0 && this.selectedOption !== '' && this.selectedToBeLinkedCases && this.selectedToBeLinkedCases.length;
   }
 
   public onOptionSelection(value: string): void {
+    this.validationErrors = [];
     this.selectedOption = value;
   }
 

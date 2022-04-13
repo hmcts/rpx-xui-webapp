@@ -26,7 +26,6 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public linkHearingForm: FormGroup;
   public caseTitle: string;
   public caseReference: string;
-  public selectedHearingId: string;
   public isHearingsAvailable: boolean;
   public linkedHearingEnum = HearingLinkedSelectionEnum;
 
@@ -105,7 +104,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
       });
     });
     this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesSuccess(this.linkedCases));
-    this.router.navigate([`/hearings/link/${this.caseId}/${this.hearingId}/group-selection`]);
+    this.router.navigate([`/hearings/link/${this.caseId}/${this.hearingId}/group-selection`])
   }
 
   public onSubmit() {

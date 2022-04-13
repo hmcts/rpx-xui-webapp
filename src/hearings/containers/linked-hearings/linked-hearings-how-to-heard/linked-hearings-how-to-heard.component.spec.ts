@@ -3,11 +3,10 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { initialState } from '../../../hearing.test.data';
-import { ACTION, HMCStatus } from '../../../models/hearings.enum';
+import { HMCStatus } from '../../../models/hearings.enum';
 import { ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
 import { HearingsPipesModule } from '../../../pipes/hearings.pipes.module';
 import { HearingsService } from '../../../services/hearings.service';
@@ -16,10 +15,8 @@ import { HowLinkedHearingsBeHeardComponent } from './linked-hearings-how-to-hear
 describe('HowLinkedHearingsBeHeardComponent', () => {
   let component: HowLinkedHearingsBeHeardComponent;
   let fixture: ComponentFixture<HowLinkedHearingsBeHeardComponent>;
-  let store: any;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
-  hearingsService.navigateAction$ = of(ACTION.CONTINUE);
   const mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
 
   const source: ServiceLinkedCasesModel[] = [
@@ -28,7 +25,14 @@ describe('HowLinkedHearingsBeHeardComponent', () => {
       caseName: 'Smith vs Peterson',
       reasonsForLink: [
         'Linked for a hearing'
-      ]
+      ],
+      hearings: [{
+        hearingId: 'h100001',
+        hearingStage: HMCStatus.UPDATE_REQUESTED,
+        isSelected: true,
+        hearingStatus: HMCStatus.AWAITING_LISTING,
+        hearingIsLinkedFlag: false
+      }]
     },
     {
       caseReference: '5283819672542864',
@@ -49,7 +53,7 @@ describe('HowLinkedHearingsBeHeardComponent', () => {
       hearings: [{
         hearingId: 'h100010',
         hearingStage: HMCStatus.UPDATE_REQUESTED,
-        isSelected: false,
+        isSelected: true,
         hearingStatus: HMCStatus.AWAITING_LISTING,
         hearingIsLinkedFlag: false
       }, {
@@ -62,12 +66,13 @@ describe('HowLinkedHearingsBeHeardComponent', () => {
     }
   ];
   beforeEach(async(() => {
+    initialState.hearings.hearingLinks.serviceLinkedCases = source
     TestBed.configureTestingModule({
       declarations: [HowLinkedHearingsBeHeardComponent],
       imports: [ReactiveFormsModule, RouterTestingModule,
         HearingsPipesModule],
       providers: [
-        provideMockStore({ initialState }),
+        provideMockStore({initialState}),
         { provide: HearingsService, useValue: hearingsService },
         {
           provide: ActivatedRoute,
@@ -91,7 +96,6 @@ describe('HowLinkedHearingsBeHeardComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HowLinkedHearingsBeHeardComponent);
-    store = TestBed.get(Store);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -100,16 +104,29 @@ describe('HowLinkedHearingsBeHeardComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should check on submit', () => {
+  it('should have validation errors mapped when nothing selected', () => {
     mockStore.pipe.and.returnValue(of(source));
     component.onSubmit();
-    expect(component.hearingOrder.valid).toBeTruthy();
+    expect(component.validationErrors.length).toBe(1);
   });
 
-  it('should check on submit error', () => {
-    component.onSubmit();
-    expect(component.hearingOrder.valid).toBeFalsy();
-    expect(component.validationErrors).not.toBeNull();
+  it('should able to submit when form particularOrder radio is selected', () => {
+    const nativeElement = fixture.debugElement.nativeElement;
+    const firstRadioButtonElement = nativeElement.querySelector('#particularOrder');
+    firstRadioButtonElement.click();
+    fixture.detectChanges();
+    component.form.patchValue({hearingGroup: 'particularOrder'});
+    component.onOrderChange(0)
+    component.onOrderChange(1)
+    expect(component.validationErrors.length).toBe(0);
+  });
+
+  it('should able to submit when form together radio is selected', () => {
+    const nativeElement = fixture.debugElement.nativeElement;
+    const firstRadioButtonElement = nativeElement.querySelector('#heardTogether');
+    firstRadioButtonElement.click();
+    fixture.detectChanges();
+    expect(component.validationErrors.length).toBe(0);
   });
 
   afterEach(() => {

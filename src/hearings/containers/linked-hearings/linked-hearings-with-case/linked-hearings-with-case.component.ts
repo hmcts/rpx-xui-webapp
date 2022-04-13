@@ -57,10 +57,6 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
       hearings: this.fb.array([], this.validators.validateLinkedHearings())
     });
     this.getAllCaseInformation();
-    this.route.params.subscribe((params: Params) => {
-      this.caseReference = params.caseId;
-      this.selectedHearingId = params.hearingId;
-    });
   }
 
   public getAllCaseInformation() {

@@ -10,7 +10,7 @@ describe('LinkedHearingsFinalConfirmationComponent', () => {
   let component: LinkedHearingsFinalConfirmationComponent;
   let fixture: ComponentFixture<LinkedHearingsFinalConfirmationComponent>;
   let mockStore: any;
-	const mockRoute = {
+  const mockRoute = {
     snapshot: {
       params: {
         caseId: '1111-2222-3333-4444',
@@ -24,7 +24,7 @@ describe('LinkedHearingsFinalConfirmationComponent', () => {
       declarations: [LinkedHearingsFinalConfirmationComponent],
       providers: [
         provideMockStore({initialState}),
-				{ provide: ActivatedRoute, useValue: mockRoute },
+        { provide: ActivatedRoute, useValue: mockRoute },
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })

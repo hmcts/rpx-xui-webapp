@@ -1,4 +1,4 @@
-import { HearingLinksStateData } from 'src/hearings/models/hearingLinksStateData.model';
+import { HearingLinksStateData } from '../../models/hearingLinksStateData.model';
 import {ServiceLinkedCasesModel} from '../../models/linkHearings.model';
 import * as fromHearingLinksActions from '../actions/hearing-links.action';
 import * as fromHearingLinksReducer from './hearing-links.reducer';

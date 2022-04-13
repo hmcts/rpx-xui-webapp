@@ -41,16 +41,14 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
 
   public ngOnInit(): void {
     this.error$ = this.hearingStore.select(fromHearingStore.getHearingLinksLastError);
-    if (this.hearingLinks) {
+    if (this.hearingLinks && this.hearingLinks.linkedHearingGroup) {
+      this.linkedHearingGroup = this.hearingLinks.linkedHearingGroup;
+      this.hearingsInGroup = this.hearingLinks.linkedHearingGroup.hearingsInGroup;
       this.showPositionColumn = this.canDisplayPositionColumn();
-      if (this.hearingLinks && this.hearingLinks.linkedHearingGroup) {
-        this.linkedHearingGroup = this.hearingLinks.linkedHearingGroup;
-        this.hearingsInGroup = this.hearingLinks.linkedHearingGroup.hearingsInGroup;
-        this.hearingLinks.serviceLinkedCases.forEach(linkedCase => {
-          const selectedHearings = linkedCase.hearings && linkedCase.hearings.filter(hearing => hearing.isSelected);
-          this.setDisplayRow(linkedCase, selectedHearings);
-        });
-      }
+      this.hearingLinks.serviceLinkedCases.forEach(linkedCase => {
+        const selectedHearings = linkedCase.hearings && linkedCase.hearings.filter(hearing => hearing.isSelected);
+        this.setDisplayRow(linkedCase, selectedHearings);
+      });
     }
   }
 

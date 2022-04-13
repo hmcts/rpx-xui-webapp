@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
-import { HearingDetailModel } from 'src/hearings/models/linkHearings.model';
+import { HearingDetailModel } from '../../../models/linkHearings.model';
 import { initialState } from '../../../hearing.test.data';
 import { GroupLinkType } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';

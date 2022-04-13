@@ -3,10 +3,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
-import { HearingDetailModel } from '../../../models/linkHearings.model';
 import { initialState } from '../../../hearing.test.data';
 import { GroupLinkType } from '../../../models/hearings.enum';
+import { HearingDetailModel } from '../../../models/linkHearings.model';
 import { HearingsService } from '../../../services/hearings.service';
+import * as fromHearingStore from '../../../store';
 import { LinkedHearingsCheckYourAnswersComponent } from './linked-hearings-check-your-answers.component';
 
 describe('LinkedHearingsCheckYourAnswersComponent', () => {
@@ -112,5 +113,15 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
     component.hearingId = hearingId;
     component.onChange();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'link', caseId, hearingId]);
-  })
+  });
+
+  it('should dispatch on submit link hearings', () => {
+    component.linkedHearingGroup = linkedHearingGroup;
+    component.caseId = caseId;
+    component.hearingId = hearingId;
+    spyOn(mockStore, 'dispatch');
+    component.onLinkHearings();
+    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.SubmitLinkedHearingGroup({
+      linkedHearingGroup, caseId, hearingId}));
+	});
 });

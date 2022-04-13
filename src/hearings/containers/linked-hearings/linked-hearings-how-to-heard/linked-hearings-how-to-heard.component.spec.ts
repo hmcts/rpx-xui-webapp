@@ -66,7 +66,6 @@ describe('HowLinkedHearingsBeHeardComponent', () => {
     }
   ];
   beforeEach(async(() => {
-    initialState.hearings.hearingLinks.serviceLinkedCases = source
     TestBed.configureTestingModule({
       declarations: [HowLinkedHearingsBeHeardComponent],
       imports: [ReactiveFormsModule, RouterTestingModule,
@@ -116,8 +115,8 @@ describe('HowLinkedHearingsBeHeardComponent', () => {
     firstRadioButtonElement.click();
     fixture.detectChanges();
     component.form.patchValue({hearingGroup: 'particularOrder'});
-    component.onOrderChange(0)
-    component.onOrderChange(1)
+    component.onOrderChange(0);
+    component.onOrderChange(1);
     expect(component.validationErrors.length).toBe(0);
   });
 

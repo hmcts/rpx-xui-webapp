@@ -77,7 +77,6 @@ export type HearingLinksAction =
   | LoadServiceLinkedCasesSuccess
   | LoadServiceLinkedCasesFailure
   | LoadServiceLinkedCasesGroupDetail
-  | LoadServiceLinkedCasesFailure
   | LoadLinkedHearingGroup
   | LoadLinkedHearingGroupSuccess
   | LoadLinkedHearingGroupFailure

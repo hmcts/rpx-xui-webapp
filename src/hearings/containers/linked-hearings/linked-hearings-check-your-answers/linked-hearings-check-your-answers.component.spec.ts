@@ -19,7 +19,8 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
   const mockRoute = {
     snapshot: {
       params: {
-        caseId: '1111-2222-3333-4444'
+        caseId: '1111-2222-3333-4444',
+        hearingId: 'h100002'
       }
     }
   };
@@ -68,11 +69,13 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
   });
 
   it('should display position column return true', () => {
+    component.linkedHearingGroup = linkedHearingGroup;
     expect(component.canDisplayPositionColumn()).toEqual(true);
   });
 
   it('should display position column return false', () => {
     linkedHearingGroup.groupDetails.groupLinkType = GroupLinkType.SAME_SLOT;
+    component.linkedHearingGroup = linkedHearingGroup;
     expect(component.canDisplayPositionColumn()).toEqual(false);
   });
 

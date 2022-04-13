@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
 import { initialState } from '../../../hearing.test.data';
@@ -9,12 +10,21 @@ describe('LinkedHearingsFinalConfirmationComponent', () => {
   let component: LinkedHearingsFinalConfirmationComponent;
   let fixture: ComponentFixture<LinkedHearingsFinalConfirmationComponent>;
   let mockStore: any;
+	const mockRoute = {
+    snapshot: {
+      params: {
+        caseId: '1111-2222-3333-4444',
+        hearingId: 'h100002'
+      }
+    }
+  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [LinkedHearingsFinalConfirmationComponent],
       providers: [
-        provideMockStore({initialState})
+        provideMockStore({initialState}),
+				{ provide: ActivatedRoute, useValue: mockRoute },
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
@@ -31,7 +41,7 @@ describe('LinkedHearingsFinalConfirmationComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-    expect(component.caseId).toEqual('1111222233334444');
+    expect(component.caseId).toEqual('1111-2222-3333-4444');
   });
 
   it('should unsubscribe', () => {

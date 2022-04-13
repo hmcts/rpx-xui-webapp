@@ -13,7 +13,7 @@ import { HearingsPipesModule } from '../../../pipes/hearings.pipes.module';
 import { HearingsService } from '../../../services/hearings.service';
 import { HowLinkedHearingsBeHeardComponent } from './linked-hearings-how-to-heard.component';
 
-fdescribe('HowLinkedHearingsBeHeardComponent', () => {
+describe('HowLinkedHearingsBeHeardComponent', () => {
   let component: HowLinkedHearingsBeHeardComponent;
   let fixture: ComponentFixture<HowLinkedHearingsBeHeardComponent>;
   let store: any;

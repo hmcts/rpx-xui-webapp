@@ -123,5 +123,5 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
     component.onLinkHearings();
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.SubmitLinkedHearingGroup({
       linkedHearingGroup, caseId, hearingId}));
-	});
+  });
 });

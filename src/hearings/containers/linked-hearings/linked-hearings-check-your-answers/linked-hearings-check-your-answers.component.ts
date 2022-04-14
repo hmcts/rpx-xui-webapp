@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { HearingLinksStateData } from '../../../models/hearingLinksStateData.model';
 import { HttpError } from '../../../../models/httpError.model';
+import { HearingLinksStateData } from '../../../models/hearingLinksStateData.model';
 import { GroupLinkType } from '../../../models/hearings.enum';
 import { HearingDetailModel, LinkedHearingGroupMainModel, LinkedHearingsDetailModel, ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
 import * as fromHearingStore from '../../../store';
@@ -14,6 +14,7 @@ import * as fromHearingStore from '../../../store';
   styleUrls: ['./linked-hearings-check-your-answers.component.scss']
 })
 export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
+  public isManageLink: boolean;
   public caseId: string;
   public caseName: string;
   public hearingId: string;
@@ -30,6 +31,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly route: ActivatedRoute,
               private readonly router: Router) {
+    this.isManageLink = this.route.snapshot.data.isManageLink;
     this.caseId = this.route.snapshot.params.caseId;
     this.hearingId = this.route.snapshot.params.hearingId;
     this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
@@ -88,7 +90,8 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
 
   public onLinkHearings(): void {
     this.hearingStore.dispatch(new fromHearingStore.SubmitLinkedHearingGroup({
-      linkedHearingGroup: this.linkedHearingGroup, caseId: this.caseId, hearingId: this.hearingId}));
+      linkedHearingGroup: this.linkedHearingGroup, caseId: this.caseId, hearingId: this.hearingId
+    }));
   }
 }
 

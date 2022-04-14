@@ -110,7 +110,39 @@ export const ROUTES: Routes = [
         data: {
           title: 'HMCTS Hearings | Linked Hearings | Final confirmation'
         }
-      }
+      },
+      {
+        path: 'manage-links',
+        component: LinkedHearingsWithCaseComponent,
+        data: {
+          isManageLink: true,
+          title: 'HMCTS Hearings | Linked Hearings | Cases'
+        }
+      },
+      {
+        path: 'manage-link-group-selection',
+        component: HowLinkedHearingsBeHeardComponent,
+        data: {
+          isManageLink: true,
+          title: 'HMCTS Hearings | Linked Hearings | Group Selection'
+        }
+      },
+      {
+        path: 'manage-your-answers',
+        component: LinkedHearingsCheckYourAnswersComponent,
+        data: {
+          isManageLink: true,
+          title: 'HMCTS Hearings | Linked Hearings | Check your answers'
+        }
+      },
+      {
+        path: 'manage-link-final-confirmation',
+        component: LinkedHearingsFinalConfirmationComponent,
+        data: {
+          isManageLink: true,
+          title: 'HMCTS Hearings | Linked Hearings | Final confirmation'
+        }
+      },
     ]
   },
   {

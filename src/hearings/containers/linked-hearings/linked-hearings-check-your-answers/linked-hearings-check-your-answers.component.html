@@ -33,7 +33,7 @@
 <div class="govuk-grid-row linked-hearings-button">
   <div class="govuk-button-group">
     <button class="govuk-button primary" data-module="govuk-button" (click)="onLinkHearings()">
-      Link hearings
+      {{!isManageLink ? 'Link hearings' : 'Edit'}}
     </button>
   </div>
 </div>

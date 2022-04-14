@@ -460,6 +460,7 @@
   version "4.9.16-avoid-frequent-case-details-api-call"
   resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.9.16-avoid-frequent-case-details-api-call.tgz#cf5ca899890f1db69727b6706b81d6309c8f209a"
   integrity sha512-+6DyZ/FkjHjeO1S0VbZaNB3IrXiHR4hAQNQvIs1BytWJyr9qSuPujODgDTOzcZkfKiqOwbhtjDkrapLDbUmSTw==
+
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

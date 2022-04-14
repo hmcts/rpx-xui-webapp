@@ -111,8 +111,16 @@ export const ROUTES: Routes = [
           title: 'HMCTS Hearings | Linked Hearings | Final confirmation'
         }
       },
+    ]
+  },
+  {
+    path: 'manage-link/:caseId/:hearingId',
+    component: LinkedHearingsComponent,
+    canActivate: [HealthCheckGuard, HearingsEditGuard],
+    resolve: { linkedCase: LinkedCaseResolver },
+    children: [
       {
-        path: 'manage-links',
+        path: '',
         component: LinkedHearingsWithCaseComponent,
         data: {
           isManageLink: true,
@@ -120,7 +128,7 @@ export const ROUTES: Routes = [
         }
       },
       {
-        path: 'manage-link-group-selection',
+        path: 'group-selection',
         component: HowLinkedHearingsBeHeardComponent,
         data: {
           isManageLink: true,
@@ -128,7 +136,7 @@ export const ROUTES: Routes = [
         }
       },
       {
-        path: 'manage-your-answers',
+        path: 'check-your-answers',
         component: LinkedHearingsCheckYourAnswersComponent,
         data: {
           isManageLink: true,
@@ -136,7 +144,7 @@ export const ROUTES: Routes = [
         }
       },
       {
-        path: 'manage-link-final-confirmation',
+        path: 'final-confirmation',
         component: LinkedHearingsFinalConfirmationComponent,
         data: {
           isManageLink: true,

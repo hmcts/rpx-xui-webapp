@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { forkJoin, Subscription } from 'rxjs';
 import { HearingListMainModel } from '../../../models/hearingListMain.model';
@@ -115,6 +115,17 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     } else {
       this.linkedHearingSelectionError = this.linkedHearingEnum.ValidSelectionError;
       this.validationErrors.push({ id: 'linked-form', message: this.linkedHearingEnum.ValidSelectionError });
+    }
+  }
+
+  public clearHearings(caseReference: string): void {
+    const formArray = this.linkHearingForm.get('hearings') as FormArray;
+    for (const control of formArray.controls) {
+      const formGroup = control as FormGroup;
+      if (formGroup.value.caseReference === caseReference) {
+        formGroup.controls['hearingReference'].reset();
+        break;
+      }
     }
   }
 

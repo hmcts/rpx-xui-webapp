@@ -118,6 +118,16 @@ describe('LinkedHearingsWithCaseComponent', () => {
     expect(component.linkedHearingSelectionError).toBe(HearingLinkedSelectionEnum.ValidSelectionError);
   });
 
+  it('should clear hearings for a case', () => {
+    (component.linkHearingForm.get('hearings') as FormArray).push(component.addHearingFormGroup('8254902572336147'));
+    (component.linkHearingForm.get('hearings') as FormArray).patchValue([
+      { caseReference: '8254902572336147', hearingReference: 'h100010' }
+    ]);
+    component.linkedCases = source;
+    component.clearHearings('8254902572336147');
+    expect((component.linkHearingForm.get('hearings') as FormArray).value.hearingReference).not.toBeDefined();
+  });
+
   afterEach(() => {
     fixture.destroy();
   });

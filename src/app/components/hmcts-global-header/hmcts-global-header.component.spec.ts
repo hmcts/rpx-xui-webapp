@@ -156,10 +156,6 @@ fdescribe('HmctsGlobalHeaderComponent', () => {
 
     leftItems.pipe(
       switchMap(items => {
-        console.log("unit1");
-
-console.log(items);
-
         expect(items).toEqual([{
           align: null,
           text: '2',

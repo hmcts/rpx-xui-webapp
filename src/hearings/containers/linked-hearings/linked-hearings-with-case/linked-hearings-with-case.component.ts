@@ -31,11 +31,11 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public mode: Mode;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
-    private readonly hearingsService: HearingsService,
-    private readonly validators: ValidatorsUtils,
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly fb: FormBuilder) {
+              private readonly hearingsService: HearingsService,
+              private readonly validators: ValidatorsUtils,
+              private readonly route: ActivatedRoute,
+              private readonly router: Router,
+              private readonly fb: FormBuilder) {
     this.isManageLink = this.route.snapshot.data.mode === Mode.MANAGE_HEARINGS;
     this.mode = this.route.snapshot.data.mode;
     this.caseId = this.route.snapshot.params.caseId;

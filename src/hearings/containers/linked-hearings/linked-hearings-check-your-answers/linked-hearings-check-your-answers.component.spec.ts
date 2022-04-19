@@ -124,6 +124,7 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
     component.linkedHearingGroup = linkedHearingGroup;
     component.caseId = caseId;
     component.hearingId = hearingId;
+    component.isManageLink = false;
     spyOn(mockStore, 'dispatch');
     component.onLinkHearings();
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.SubmitLinkedHearingGroup({

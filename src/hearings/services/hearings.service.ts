@@ -11,6 +11,7 @@ import {
   HearingDetailModel,
   LinkedHearingGroupMainModel,
   LinkedHearingGroupResponseModel,
+  LinkedHearingsDetailModel,
   ServiceLinkedCasesModel
 } from '../models/linkHearings.model';
 import { LovRefDataModel } from '../models/lovRefData.model';
@@ -117,7 +118,8 @@ export class HearingsService {
               const hearingInfo: HearingDetailModel = {
                 hearingId: hearing.hearingID,
                 hearingStage: hearing.hearingType,
-                isSelected: isManageLink ? !!linkedState.linkedHearingGroup.hearingsInGroup.find((hearingInfo) => hearingInfo.caseRef === caseInfo.caseReference && hearingInfo.hearingId === hearing.hearingID) : false,
+                // tslint:disable-next-line: no-shadowed-variable
+                isSelected: isManageLink ? !!linkedState.linkedHearingGroup.hearingsInGroup.find((hearingInfo: LinkedHearingsDetailModel) => hearingInfo.caseRef === caseInfo.caseReference && hearingInfo.hearingId === hearing.hearingID) : false,
                 hearingStatus: hearing.exuiDisplayStatus,
                 hearingIsLinkedFlag: hearing.hearingIsLinkedFlag
               };

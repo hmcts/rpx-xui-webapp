@@ -836,7 +836,7 @@ describe('CaseHearingsListComponent', () => {
 
   it('should manageLinks', () => {
     component.manageLinks('h100000');
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', 'h100000']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', '1111222233334444', 'h100000']);
   });
 
   it('should check viewDetails', () => {

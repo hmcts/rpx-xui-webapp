@@ -167,5 +167,9 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
     this.validationErrors = [];
     this.selectedOption = value;
   }
+
+  public onBack(): void {
+    this.router.navigate(['/', 'hearings', 'link', this.caseId, this.hearingId]);
+  }
 }
 

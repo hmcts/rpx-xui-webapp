@@ -150,6 +150,10 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
       linkedHearingGroup: this.linkedHearingGroup, caseId: this.caseId, hearingId: this.hearingId
     }));
   }
+
+	public onBack(): void {
+    this.router.navigate(['/', 'hearings', 'link', this.caseId, this.hearingId, 'group-selection']);
+  }
 }
 
 interface LinkedHearingsCheckYourAnswersPageResult {

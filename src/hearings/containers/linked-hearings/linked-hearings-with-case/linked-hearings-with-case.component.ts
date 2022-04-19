@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { forkJoin, Subscription } from 'rxjs';
 import { HearingListMainModel } from '../../../models/hearingListMain.model';
-import { EXUIDisplayStatusEnum, HearingLinkedSelectionEnum } from '../../../models/hearings.enum';
+import { EXUIDisplayStatusEnum, HearingLinkedSelectionEnum, Mode } from '../../../models/hearings.enum';
 import { HearingDetailModel, ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
@@ -28,6 +28,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public caseReference: string;
   public isHearingsAvailable: boolean;
   public linkedHearingEnum = HearingLinkedSelectionEnum;
+  public mode: Mode;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly hearingsService: HearingsService,
@@ -35,6 +36,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
               private readonly route: ActivatedRoute,
               private readonly router: Router,
               private readonly fb: FormBuilder) {
+    this.mode = this.route.snapshot.data.mode;
     this.caseId = this.route.snapshot.params.caseId;
     this.hearingId = this.route.snapshot.params.hearingId;
     this.sub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
@@ -42,6 +44,10 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
         this.caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.caseName : '';
       }
     );
+  }
+
+  public get pageMode(): typeof Mode {
+    return Mode;
   }
 
   public addHearingFormGroup(caseRef: string): FormGroup {
@@ -96,25 +102,27 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
       this.linkedCases.forEach((caseInfo: ServiceLinkedCasesModel, pos: number) => {
         if (caseInfo.caseReference === formValue.caseReference) {
           caseInfo.hearings.forEach((hearing) => {
-            if (hearing.hearingId === formValue.hearingReference) {
-              hearing.isSelected = true;
-            }
+            hearing.isSelected = hearing.hearingId === formValue.hearingReference;
           });
         }
       });
     });
     this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesSuccess(this.linkedCases));
-    this.router.navigate([`/hearings/link/${this.caseId}/${this.hearingId}/group-selection`])
+    this.navigate();
   }
 
   public onSubmit() {
-    this.validationErrors = [];
-    this.linkedHearingSelectionError = null;
-    if (this.linkHearingForm.valid) {
+    if (this.mode === this.pageMode.MANAGE_HEARINGS) {
       this.saveLinkedHearingInfo();
     } else {
-      this.linkedHearingSelectionError = this.linkedHearingEnum.ValidSelectionError;
-      this.validationErrors.push({ id: 'linked-form', message: this.linkedHearingEnum.ValidSelectionError });
+      this.validationErrors = [];
+      this.linkedHearingSelectionError = null;
+      if (this.linkHearingForm.valid) {
+        this.saveLinkedHearingInfo();
+      } else {
+        this.linkedHearingSelectionError = this.linkedHearingEnum.ValidSelectionError;
+        this.validationErrors.push({ id: 'linked-form', message: this.linkedHearingEnum.ValidSelectionError });
+      }
     }
   }
 
@@ -126,6 +134,14 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
         formGroup.controls['hearingReference'].reset();
         break;
       }
+    }
+  }
+
+  public navigate(): void {
+    if (this.mode === this.pageMode.LINK_HEARINGS) {
+      this.router.navigate([`/hearings/link/${this.caseId}/${this.hearingId}/group-selection`]);
+    } else {
+      this.router.navigate([`/hearings/link/${this.caseId}/${this.hearingId}/check-your-answers`]);
     }
   }
 

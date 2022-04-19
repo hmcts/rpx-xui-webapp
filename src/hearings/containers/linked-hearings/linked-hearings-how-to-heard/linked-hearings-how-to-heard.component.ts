@@ -55,7 +55,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
       .pipe(select(fromHearingStore.LoadServiceLinkedCasesGroupDetail))
       .subscribe((state) => {
         this.receivedCases = state.serviceLinkedCases;
-      });      
+      });
     }
     this.caseId = this.route.snapshot.params.caseId;
     this.hearingId = this.route.snapshot.params.hearingId;

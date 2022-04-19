@@ -46,6 +46,12 @@ export function hearingLinksReducer(currentState = initialHearingLinksState,
         lastError: action.payload
       };
     }
+    case fromActions.RESET_LINKED_HEARING_LAST_ERROR: {
+      return {
+        ...currentState,
+        lastError: null
+      }
+    }
     default: {
       return {
         ...currentState

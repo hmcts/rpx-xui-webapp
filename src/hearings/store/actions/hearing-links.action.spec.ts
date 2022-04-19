@@ -44,4 +44,9 @@ describe('Hearing Links Actions', () => {
     const action = new fromHearingLinksAction.SubmitLinkedHearingGroupFailure(payload);
     expect(action.type).toBe(fromHearingLinksAction.SUBMIT_LINKED_HEARING_GROUP_FAILURE);
   });
+
+  it('should reset linked hearing last error action', () => {
+    const action = new fromHearingLinksAction.ResetLinkedHearingLastError();
+    expect(action.type).toBe(fromHearingLinksAction.RESET_LINKED_HEARING_LAST_ERROR);
+  });
 });

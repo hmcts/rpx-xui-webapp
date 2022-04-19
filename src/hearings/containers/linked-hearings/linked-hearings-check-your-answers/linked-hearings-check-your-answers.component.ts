@@ -142,6 +142,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
   }
 
   public onChange(): void {
+    this.hearingStore.dispatch(new fromHearingStore.ResetLinkedHearingLastError());
     this.router.navigate(['/', 'hearings', 'link', this.caseId, this.hearingId]);
   }
 
@@ -152,6 +153,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
   }
 
   public onBack(): void {
+    this.hearingStore.dispatch(new fromHearingStore.ResetLinkedHearingLastError());
     this.router.navigate(['/', 'hearings', 'link', this.caseId, this.hearingId, 'group-selection']);
   }
 }

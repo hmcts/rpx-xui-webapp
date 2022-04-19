@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { initialState } from '../../../hearing.test.data';
-import { GroupLinkType } from '../../../models/hearings.enum';
+import { GroupLinkType, Mode } from '../../../models/hearings.enum';
 import { HearingDetailModel } from '../../../models/linkHearings.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
@@ -24,6 +24,9 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
       params: {
         caseId: {caseId},
         hearingId: {hearingId}
+      },
+      data: {
+        mode: Mode.MANAGE_HEARINGS
       }
     }
   };
@@ -109,10 +112,12 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
   });
 
   it('should change call navigate', () => {
+    const storeDispatchSpy = spyOn(mockStore, 'dispatch');
     component.caseId = caseId;
     component.hearingId = hearingId;
     component.onChange();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'link', caseId, hearingId]);
+    expect(storeDispatchSpy).toHaveBeenCalled();
   });
 
   it('should dispatch on submit link hearings', () => {
@@ -126,9 +131,11 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
   });
 
   it('should navigate to previous page', () => {
+    const storeDispatchSpy = spyOn(mockStore, 'dispatch');
     component.caseId = caseId;
     component.hearingId = hearingId;
     component.onBack();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'link', caseId, hearingId, 'group-selection']);
+    expect(storeDispatchSpy).toHaveBeenCalled();
   });
 });

@@ -10,8 +10,8 @@ import { of } from 'rxjs';
 import { HearingJudgeNamesListComponent } from '../../../components';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION, MemberType, RadioOptions, RequirementType } from '../../../models/hearings.enum';
+import {JudicialUserModel} from '../../../models/judicialUser.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
-import { JudicialUserModel } from '../../../models/person.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingPanelComponent } from './hearing-panel.component';
 
@@ -220,14 +220,16 @@ describe('HearingPanelComponent', () => {
 
   it('should check getPannelMemberList', () => {
     component.personalCodejudgeList = [{
-      sidam_id: '1102839232',
-      object_id: '1102839232',
-      known_as: 'Jacky Collins',
+      emailId: 'jacky.collins@judicial.com',
+      fullName: 'Jacky Collins',
+      idamId: '1102839232',
+      isJudge: '',
+      isMagistrate: '',
+      isPanelMember: '',
+      knownAs: 'Hearing Judge',
+      personalCode: 'P0000001',
       surname: 'Jacky Collins',
-      personal_code: 'P0000001',
-      full_name: 'Jacky Collins',
-      post_nominals: 'Jacky Collins',
-      email_id: 'jacky.collins@judicial.com',
+      title: 'Mr'
     }];
     component.initForm();
     expect(component.includedJudgeList.length).toBe(1);
@@ -238,14 +240,16 @@ describe('HearingPanelComponent', () => {
 
   it('should check prepareData', () => {
     const judgeInfo: JudicialUserModel = {
-      sidam_id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
-      object_id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
-      known_as: 'Hearing Judge',
+      emailId: 'jacky.collins@judicial.com',
+      fullName: 'Jacky Collins',
+      idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
+      isJudge: '',
+      isMagistrate: '',
+      isPanelMember: '',
+      knownAs: 'Hearing Judge',
+      personalCode: 'P0000001',
       surname: 'Jacky',
-      personal_code: 'P100001',
-      full_name: 'Jacky Collins',
-      post_nominals: '',
-      email_id: 'jacky.collins@judicial.com'
+      title: 'Mr'
     };
 
     component.includedJudge.judgeList = [judgeInfo];

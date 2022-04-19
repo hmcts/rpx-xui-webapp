@@ -12,6 +12,7 @@ import {
   PartyType,
   RequirementType, UnavailabilityType
 } from './models/hearings.enum';
+import {JudicialUserModel} from './models/judicialUser.model';
 import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
 
 export const hearingStageRefData = [
@@ -35,25 +36,31 @@ export const hearingStageRefData = [
   }
 ];
 
-export const judicailUsersRefData = [{
-  sidam_id: '1102839232',
-  object_id: '1102839232',
-  known_as: 'Jacky Collins',
+export const judicailUsersRefData: JudicialUserModel[] = [{
+  emailId: 'jacky.collins@judicial.com',
+  fullName: 'Jacky Collins',
+  idamId: '1102839232',
+  isJudge: '',
+  isMagistrate: '',
+  isPanelMember: '',
+  knownAs: 'Jacky Collins',
+  personalCode: 'P0000001',
   surname: 'Jacky Collins',
-  personal_code: 'P0000001',
-  full_name: 'Jacky Collins',
-  post_nominals: 'Jacky Collins',
-  email_id: 'jacky.collins@judicial.com',
+  title: 'Mr'
 }];
 
-export const judgeRefData = [
+export const judgeRefData: JudicialUserModel[] = [
   {
-    id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
-    name: 'Jacky Collins',
-    email: 'jacky.collins@judicial.com',
-    domain: 'JUDICIAL',
-    personalCode: 'P0000001',
+    emailId: 'jacky.collins@judicial.com',
+    fullName: 'Jacky Collins',
+    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
+    isJudge: '',
+    isMagistrate: '',
+    isPanelMember: '',
     knownAs: 'Jacky Collins',
+    personalCode: 'P0000001',
+    surname: 'Collins',
+    title: 'Mr'
   }];
 
 export const hearingPriorityRefData = [

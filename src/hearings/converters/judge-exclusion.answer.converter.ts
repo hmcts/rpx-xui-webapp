@@ -17,9 +17,12 @@ export class JudgeExclusionAnswerConverter implements AnswerConverter {
         const panelRequirements = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
         const excludedJudges: string[] = panelRequirements && panelRequirements.panelPreferences.filter(preferences => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.EXCLUDE).map(preferences => preferences.memberID);
         const excludedJudgeNames: string[] = [];
+        console.log('panelRequirements', panelRequirements);
+        console.log('judicialUsersList', judicialUsersList);
+        console.log('excludedJudges', excludedJudges);
         judicialUsersList.forEach(judgeInfo => {
-          if (excludedJudges.includes(judgeInfo.personal_code)) {
-            excludedJudgeNames.push(judgeInfo.known_as ? judgeInfo.known_as : judgeInfo.full_name);
+          if (excludedJudges.includes(judgeInfo.personalCode)) {
+            excludedJudgeNames.push(judgeInfo.knownAs ? judgeInfo.knownAs : judgeInfo.fullName);
           }
         });
         return excludedJudgeNames.join();

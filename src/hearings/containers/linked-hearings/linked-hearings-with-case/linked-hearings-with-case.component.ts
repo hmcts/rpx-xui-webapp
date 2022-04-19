@@ -21,7 +21,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public caseName: string;
   public linkedHearingSelectionError: string;
   public validationErrors: { id: string, message: string }[] = [];
-  public linkedCases: ServiceLinkedCasesModel[];
+  public linkedCases: ServiceLinkedCasesModel[] = [];
   public sub: Subscription;
   public linkHearingForm: FormGroup;
   public caseTitle: string;
@@ -50,18 +50,51 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     return Mode;
   }
 
-  public addHearingFormGroup(caseRef: string): FormGroup {
-    return this.fb.group({
-      caseReference: caseRef,
-      hearingReference: new FormControl(),
+  public get getCasesFormValue(): FormArray {
+    return (this.linkHearingForm.get('linkedCases') as FormArray);
+  }
+
+  public getHearingsFormValue(position): FormArray {
+    return this.getCasesFormValue.controls[position].get('hearings') as FormArray;
+  }
+
+  public get getCasesFormArray(): FormArray {
+    return this.fb.array(this.linkedCases.map((caseInfo: ServiceLinkedCasesModel) => this.fb.group({
+      caseReference: caseInfo.caseReference,
+      caseName: caseInfo.caseName,
+      reasonsForLink: this.fb.array(caseInfo.reasonsForLink),
+      hearings: this.getHearingsFormArray(caseInfo.hearings),
+    })));
+  }
+
+  public getHearingsFormArray(hearings: HearingDetailModel[]): FormArray {
+    return this.fb.array(hearings.map((hearingInfo: HearingDetailModel) => this.fb.group({
+      hearingId: hearingInfo.hearingId,
+      hearingStage: hearingInfo.hearingStage,
+      isSelected: hearingInfo.isSelected,
+      hearingStatus: hearingInfo.hearingStatus,
+      hearingIsLinkedFlag: hearingInfo.hearingIsLinkedFlag
+    })));
+  }
+
+  public initForm(): void {
+    this.linkHearingForm = this.fb.group({
+      linkedCases: this.getCasesFormArray
     });
   }
 
   public ngOnInit(): void {
-    this.linkHearingForm = this.fb.group({
-      hearings: this.fb.array([], this.validators.validateLinkedHearings())
-    });
+    this.initForm();
     this.getAllCaseInformation();
+  }
+
+  public updateLinkedCase(casePos: number, hearingPos: number) {
+    this.linkedCases[casePos].hearings.forEach((hearingInfo, pos) => {
+      const isSelected = (pos !== hearingPos) ? false : true;
+      hearingInfo.isSelected = isSelected;
+      this.getHearingsFormValue(casePos).controls[pos].patchValue(hearingInfo);
+      return hearingInfo;
+    });
   }
 
   public getAllCaseInformation() {
@@ -74,7 +107,6 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     });
     this.sub = forkJoin(hearingServices).subscribe((hearingsList: HearingListMainModel[]) => {
       this.linkedCases = receivedCases.map((caseInfo: ServiceLinkedCasesModel, pos: number) => {
-        (this.linkHearingForm.get('hearings') as FormArray).push(this.addHearingFormGroup(caseInfo.caseReference));
         const hearings = [] as HearingDetailModel[];
         hearingsList[pos].caseHearings.forEach((hearing) => {
           if (hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_LISTING || hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.UPDATE_REQUESTED || hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.LISTED) {
@@ -94,19 +126,11 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
           ...caseInfo
         };
       });
+      this.initForm();
     });
   }
 
   public saveLinkedHearingInfo(): void {
-    this.linkHearingForm.value.hearings.forEach(formValue => {
-      this.linkedCases.forEach((caseInfo: ServiceLinkedCasesModel, pos: number) => {
-        if (caseInfo.caseReference === formValue.caseReference) {
-          caseInfo.hearings.forEach((hearing) => {
-            hearing.isSelected = hearing.hearingId === formValue.hearingReference;
-          });
-        }
-      });
-    });
     this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesSuccess(this.linkedCases));
     this.navigate();
   }
@@ -138,10 +162,10 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   }
 
   public navigate(): void {
-    if (this.mode === this.pageMode.LINK_HEARINGS) {
-      this.router.navigate([`/hearings/link/${this.caseId}/${this.hearingId}/group-selection`]);
-    } else {
+    if (this.mode === this.pageMode.MANAGE_HEARINGS) {
       this.router.navigate([`/hearings/link/${this.caseId}/${this.hearingId}/check-your-answers`]);
+    } else {
+      this.router.navigate([`/hearings/link/${this.caseId}/${this.hearingId}/group-selection`]);
     }
   }
 

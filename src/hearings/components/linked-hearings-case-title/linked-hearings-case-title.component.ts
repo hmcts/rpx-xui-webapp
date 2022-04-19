@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { Mode } from 'src/hearings/models/hearings.enum';
 
 @Component({
   selector: 'exui-linked-hearings-case-title',
@@ -7,4 +8,6 @@ import { Component, Input, OnInit } from '@angular/core';
 export class LinkedHearingsCaseTitleComponent {
   @Input() public caseName: string;
   @Input() public caseId: string;
+  @Input() public mode: Mode = Mode.LINK_HEARINGS;
+  public hearingTitleTextPrefix = this.mode === Mode.LINK_HEARINGS ? 'Link hearings' : 'Manage hearings';
 }

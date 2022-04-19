@@ -37,7 +37,7 @@ import { HearingViewSummaryComponent } from './containers/view-hearing/hearing-v
 import { ViewHearingComponent } from './containers/view-hearing/view-hearing.component';
 import { HearingsEditGuard } from './guards/hearings-edit-guard';
 import { HearingsViewGuard } from './guards/hearings-view-guard';
-import { HearingCategory, MemberType } from './models/hearings.enum';
+import { HearingCategory, MemberType, Mode } from './models/hearings.enum';
 import { ActualSummaryResponseResolver } from './resolvers/actual-summary-response-resolver.resolve';
 import { AdditionalFacilitiesResolver } from './resolvers/additional-facilities.resolver';
 import { AdjournHearingActualReasonResolver } from './resolvers/adjourn-hearing-actual-reason.resolver';
@@ -110,39 +110,47 @@ export const ROUTES: Routes = [
         data: {
           title: 'HMCTS Hearings | Linked Hearings | Final confirmation'
         }
-      },
+      }
+    ]
+  },
+  {
+    path: 'manage-links/:caseId/:hearingId',
+    component: LinkedHearingsComponent,
+    canActivate: [HealthCheckGuard, HearingsEditGuard],
+    resolve: { linkedCase: LinkedCaseResolver },
+    data: {
+      mode: Mode.MANAGE_HEARINGS
+    },
+    children: [
       {
-        path: 'manage-links',
+        path: '',
         component: LinkedHearingsWithCaseComponent,
         data: {
-          isManageLink: true,
           title: 'HMCTS Hearings | Linked Hearings | Cases'
         }
       },
       {
-        path: 'manage-link-group-selection',
+        path: 'group-selection',
         component: HowLinkedHearingsBeHeardComponent,
         data: {
-          isManageLink: true,
-          title: 'HMCTS Hearings | Linked Hearings | Group Selection'
+          title: 'HMCTS Hearings | Linked Hearings | Group Selection',
+          mode: Mode.MANAGE_HEARINGS,
         }
       },
       {
-        path: 'manage-your-answers',
+        path: 'check-your-answers',
         component: LinkedHearingsCheckYourAnswersComponent,
         data: {
-          isManageLink: true,
           title: 'HMCTS Hearings | Linked Hearings | Check your answers'
         }
       },
       {
-        path: 'manage-link-final-confirmation',
+        path: 'final-confirmation',
         component: LinkedHearingsFinalConfirmationComponent,
         data: {
-          isManageLink: true,
           title: 'HMCTS Hearings | Linked Hearings | Final confirmation'
         }
-      },
+      }
     ]
   },
   {

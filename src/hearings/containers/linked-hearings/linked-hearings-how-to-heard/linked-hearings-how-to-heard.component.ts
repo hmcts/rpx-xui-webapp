@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { HearingLinksStateData } from '../../../models/hearingLinksStateData.model';
-import { GroupLinkType } from '../../../models/hearings.enum';
+import { GroupLinkType, Mode } from '../../../models/hearings.enum';
 import { LinkedHearingGroupMainModel, ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
@@ -30,6 +30,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
   public formValid: boolean = true;
   public selectionValid: boolean = true;
   public form: FormGroup;
+  public mode: Mode = Mode.LINK_HEARINGS;
 
   constructor(
     protected readonly hearingStore: Store<fromHearingStore.State>,
@@ -43,11 +44,19 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
       hearingGroup: ['', Validators.required],
       hearingOrder: this.fb.array([]),
     });
+    if (this.mode === Mode.LINK_HEARINGS) {
     this.hearingStore
       .pipe(select(fromHearingStore.getHearingLinks))
       .subscribe((state) => {
         this.receivedCases = state.serviceLinkedCases;
       });
+    } else {
+      this.hearingStore
+      .pipe(select(fromHearingStore.LoadServiceLinkedCasesGroupDetail))
+      .subscribe((state) => {
+        this.receivedCases = state.serviceLinkedCases;
+      });      
+    }
     this.caseId = this.route.snapshot.params.caseId;
     this.hearingId = this.route.snapshot.params.hearingId;
   }
@@ -63,7 +72,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
       caseReference: [linkCase.caseReference],
       caseName: [linkCase.caseName],
       hearingStage: [linkCase.hearings[0] && linkCase.hearings[0].hearingStage || ''],
-      position: [null, this.validators.mandatory('')]
+      position: ['', this.validators.mandatory('')]
     }));
   }
 

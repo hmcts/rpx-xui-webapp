@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { forkJoin, Observable, Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { HearingListModel } from 'src/hearings/models/hearingList.model';
-import { HearingListMainModel } from 'src/hearings/models/hearingListMain.model';
-import { HearingsService } from 'src/hearings/services/hearings.service';
 import { HttpError } from '../../../../models/httpError.model';
 import { HearingLinksStateData } from '../../../models/hearingLinksStateData.model';
-import { EXUIDisplayStatusEnum, GroupLinkType, Mode } from '../../../models/hearings.enum';
+import { HearingListModel } from '../../../models/hearingList.model';
+import { GroupLinkType, Mode } from '../../../models/hearings.enum';
 import { HearingDetailModel, LinkedHearingGroupMainModel, LinkedHearingsDetailModel, ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
+import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 
 @Component({
@@ -19,6 +18,7 @@ import * as fromHearingStore from '../../../store';
 })
 export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
   public isManageLink: boolean;
+  public mode: Mode = Mode.LINK_HEARINGS;
   public caseId: string;
   public caseName: string;
   public hearingId: string;
@@ -51,7 +51,10 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
 
   public ngOnInit(): void {
     if (this.isManageLink) {
-      this.getAllCaseInformation(this.hearingLinks);
+      this.sub = this.hearingsService.getAllCaseInformation(this.hearingLinks, this.isManageLink).subscribe((casesLinkedInfo) => {
+        this.setHearingLinkedGroup(casesLinkedInfo);
+        this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesSuccess(casesLinkedInfo));
+      });
     } else {
       this.setHearingLinkedGroup(this.hearingLinks.serviceLinkedCases);
     }
@@ -74,38 +77,6 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
     return this.hearingStore.pipe(select(fromHearingStore.getHearingLinks)).pipe(
       map(hearingLinks => hearingLinks
       ));
-  }
-
-  public getAllCaseInformation(linkedState: HearingLinksStateData) {
-    const receivedCases: ServiceLinkedCasesModel[] = linkedState.serviceLinkedCases || [];
-    const linkedCaseIds: string[] = receivedCases.map((caseDetails: ServiceLinkedCasesModel) => caseDetails.caseReference);
-    const hearingServices = [];
-    linkedCaseIds.forEach(id => {
-      hearingServices.push(this.hearingsService.getAllHearings(id));
-    });
-    this.sub = forkJoin(hearingServices).subscribe((hearingsList: HearingListMainModel[]) => {
-      this.casesLinkedInfo = receivedCases.map((caseInfo: ServiceLinkedCasesModel, pos: number) => {
-        const hearings = [] as HearingDetailModel[];
-        hearingsList[pos].caseHearings.forEach((hearing) => {
-          if (hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_LISTING || hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.UPDATE_REQUESTED || hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.LISTED) {
-            const hearingInfo: HearingDetailModel = {
-              hearingId: hearing.hearingID,
-              hearingStage: hearing.hearingType,
-              isSelected: this.getHearingSelectedValue(caseInfo, hearing, linkedState.linkedHearingGroup),
-              hearingStatus: hearing.exuiDisplayStatus,
-              hearingIsLinkedFlag: hearing.hearingIsLinkedFlag
-            };
-            hearings.push(hearingInfo);
-          }
-        });
-        return {
-          hearings,
-          ...caseInfo
-        };
-      });
-      this.setHearingLinkedGroup(this.casesLinkedInfo);
-      this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesSuccess(this.casesLinkedInfo));
-    });
   }
 
   public getHearingSelectedValue(caseInfo: ServiceLinkedCasesModel, hearing: HearingListModel, linkedHearingGroup: LinkedHearingGroupMainModel): boolean {
@@ -147,9 +118,13 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
   }
 
   public onLinkHearings(): void {
-    this.hearingStore.dispatch(new fromHearingStore.SubmitLinkedHearingGroup({
-      linkedHearingGroup: this.linkedHearingGroup, caseId: this.caseId, hearingId: this.hearingId
-    }));
+    if (this.isManageLink) {
+      this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, this.hearingId, 'selected-hearings']);
+    } else {
+      this.hearingStore.dispatch(new fromHearingStore.SubmitLinkedHearingGroup({
+        linkedHearingGroup: this.linkedHearingGroup, caseId: this.caseId, hearingId: this.hearingId
+      }));
+    }
   }
 
   public onBack(): void {

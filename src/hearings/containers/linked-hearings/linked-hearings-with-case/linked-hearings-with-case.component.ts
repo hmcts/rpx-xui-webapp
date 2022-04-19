@@ -2,9 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { forkJoin, Subscription } from 'rxjs';
-import { HearingListMainModel } from '../../../models/hearingListMain.model';
-import { EXUIDisplayStatusEnum, HearingLinkedSelectionEnum, Mode } from '../../../models/hearings.enum';
+import { Subscription } from 'rxjs';
+import { HearingLinkedSelectionEnum, Mode } from '../../../models/hearings.enum';
 import { HearingDetailModel, ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
@@ -16,6 +15,7 @@ import { ValidatorsUtils } from '../../../utils/validators.utils';
   styleUrls: ['./linked-hearings-with-case.component.scss']
 })
 export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
+  public isManageLink: boolean;
   public caseId: string;
   public hearingId: string;
   public caseName: string;
@@ -31,17 +31,21 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public mode: Mode;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
-              private readonly hearingsService: HearingsService,
-              private readonly validators: ValidatorsUtils,
-              private readonly route: ActivatedRoute,
-              private readonly router: Router,
-              private readonly fb: FormBuilder) {
+    private readonly hearingsService: HearingsService,
+    private readonly validators: ValidatorsUtils,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly fb: FormBuilder) {
+    this.isManageLink = this.route.snapshot.data.mode === Mode.MANAGE_HEARINGS;
     this.mode = this.route.snapshot.data.mode;
     this.caseId = this.route.snapshot.params.caseId;
     this.hearingId = this.route.snapshot.params.hearingId;
     this.sub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
       state => {
         this.caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.caseName : '';
+        if (this.isManageLink) {
+          this.linkedCases = state.hearingLinks.serviceLinkedCases;
+        }
       }
     );
   }
@@ -80,12 +84,17 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public initForm(): void {
     this.linkHearingForm = this.fb.group({
       linkedCases: this.getCasesFormArray
-    });
+    }, { validator: this.validators.validateLinkedHearings() });
   }
 
   public ngOnInit(): void {
     this.initForm();
-    this.getAllCaseInformation();
+    if (!this.isManageLink) {
+      this.sub = this.hearingsService.getAllCaseInformation(this.route.snapshot.data.linkedCase, this.isManageLink).subscribe((casesLinkedInfo) => {
+        this.linkedCases = casesLinkedInfo;
+        this.initForm();
+      });
+    }
   }
 
   public updateLinkedCase(casePos: number, hearingPos: number) {
@@ -94,39 +103,6 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
       hearingInfo.isSelected = isSelected;
       this.getHearingsFormValue(casePos).controls[pos].patchValue(hearingInfo);
       return hearingInfo;
-    });
-  }
-
-  public getAllCaseInformation() {
-    this.isHearingsAvailable = false;
-    const receivedCases: ServiceLinkedCasesModel[] = this.route.snapshot.data.linkedCase && this.route.snapshot.data.linkedCase.serviceLinkedCases || [];
-    const linkedCaseIds: string[] = receivedCases.map((caseDetails: ServiceLinkedCasesModel) => caseDetails.caseReference);
-    const hearingServices = [];
-    linkedCaseIds.forEach(id => {
-      hearingServices.push(this.hearingsService.getAllHearings(id));
-    });
-    this.sub = forkJoin(hearingServices).subscribe((hearingsList: HearingListMainModel[]) => {
-      this.linkedCases = receivedCases.map((caseInfo: ServiceLinkedCasesModel, pos: number) => {
-        const hearings = [] as HearingDetailModel[];
-        hearingsList[pos].caseHearings.forEach((hearing) => {
-          if (hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_LISTING || hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.UPDATE_REQUESTED || hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.LISTED) {
-            const hearingInfo: HearingDetailModel = {
-              hearingId: hearing.hearingID,
-              hearingStage: hearing.hearingType,
-              isSelected: false,
-              hearingStatus: hearing.exuiDisplayStatus,
-              hearingIsLinkedFlag: hearing.hearingIsLinkedFlag
-            };
-            hearings.push(hearingInfo);
-            this.isHearingsAvailable = true;
-          }
-        });
-        return {
-          hearings,
-          ...caseInfo
-        };
-      });
-      this.initForm();
     });
   }
 

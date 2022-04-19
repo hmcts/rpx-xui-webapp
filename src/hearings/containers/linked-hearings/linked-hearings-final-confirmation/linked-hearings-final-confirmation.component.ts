@@ -1,18 +1,16 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
 import * as fromHearingStore from '../../../store';
 
 @Component({
   selector: 'exui-linked-hearings-final-confirmation',
   templateUrl: './linked-hearings-final-confirmation.component.html'
 })
-export class LinkedHearingsFinalConfirmationComponent implements OnInit, OnDestroy {
+export class LinkedHearingsFinalConfirmationComponent implements OnInit {
 
   public heading: string;
   public caseId: string;
-  public sub: Subscription;
   public linkedHearingsCount: number;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
@@ -26,12 +24,16 @@ export class LinkedHearingsFinalConfirmationComponent implements OnInit, OnDestr
   }
 
   public ngOnInit(): void {
-    this.heading = this.linkedHearingsCount > 1 ? `${this.linkedHearingsCount} hearings are now linked` : `${this.linkedHearingsCount} hearing is now linked`;
-  }
-
-  public ngOnDestroy(): void {
-    if (this.sub) {
-      this.sub.unsubscribe();
+    switch (this.linkedHearingsCount) {
+      case 0:
+        this.heading = 'All links to other hearings removed';
+        break;
+      case 1:
+        this.heading = `${this.linkedHearingsCount} hearing is now linked`;
+        break;
+      default:
+        this.heading = `${this.linkedHearingsCount} hearings are now linked`;
+        break;
     }
   }
 }

@@ -2,13 +2,13 @@ import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { PanelPreferenceModel } from '../../../../hearings/models/panelPreference.model';
-import { JudicialRefDataService } from '../../../../hearings/services/judicial-ref-data.service';
 import { HearingJudgeNamesListComponent } from '../../../components';
 import { ACTION, HearingJudgeSelectionEnum, MemberType, RadioOptions, RequirementType } from '../../../models/hearings.enum';
 import { JudicialUserModel } from '../../../models/judicialUser.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
+import { PanelPreferenceModel } from '../../../models/panelPreference.model';
 import { HearingsService } from '../../../services/hearings.service';
+import { JudicialRefDataService } from '../../../services/judicial-ref-data.service';
 import * as fromHearingStore from '../../../store';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
@@ -28,6 +28,7 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
   public selectJudgeTypesError: string;
   public selectJudgeNameError: string;
   public hearingJudgeFormInfo: { includedJudges: string[], judgeTypes: string[], excludedJudges: string[] };
+  public serviceId: string;
   @ViewChild('excludedJudge') public excludedJudge: HearingJudgeNamesListComponent;
 
   constructor(protected readonly route: ActivatedRoute,
@@ -63,6 +64,7 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
     this.hearingJudgeFormInfo = {
       includedJudges, judgeTypes, excludedJudges
     };
+    this.serviceId = this.serviceHearingValuesModel.hmctsServiceID;
   }
 
   public get getJudgeTypeFormArray(): FormArray {
@@ -92,34 +94,14 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
       this.showSpecificJudge(this.specificJudgeSelection);
     }
     if (this.specificJudgeSelection === RadioOptions.YES) {
-      const includedJudge = this.personalCodejudgeList.find((judgeInfo) => this.hearingJudgeFormInfo.includedJudges.includes(judgeInfo.personal_code));
-      const judgeDetails: JudicialUserModel = {
-        email_id: includedJudge.email_id,
-        sidam_id: includedJudge.sidam_id,
-        known_as: includedJudge.known_as,
-        surname: includedJudge.surname,
-        personal_code: includedJudge.personal_code,
-        full_name: includedJudge.full_name,
-        object_id: includedJudge.object_id,
-        post_nominals: includedJudge.post_nominals
-      };
-      this.hearingJudgeForm.controls.judgeName.setValue(judgeDetails);
+      const includedJudge = this.personalCodejudgeList.find((judgeInfo) => this.hearingJudgeFormInfo.includedJudges.includes(judgeInfo.personalCode));
+      this.hearingJudgeForm.controls.judgeName.setValue(includedJudge);
     }
 
     if (this.hearingJudgeFormInfo.excludedJudges && this.hearingJudgeFormInfo.excludedJudges.length) {
       this.personalCodejudgeList.forEach(judgeInfo => {
-        if (this.hearingJudgeFormInfo.excludedJudges.includes(judgeInfo.personal_code)) {
-          const judgeDetail: JudicialUserModel = {
-            email_id: judgeInfo.email_id,
-            sidam_id: judgeInfo.sidam_id,
-            known_as: judgeInfo.known_as,
-            surname: judgeInfo.surname,
-            personal_code: judgeInfo.personal_code,
-            full_name: judgeInfo.full_name,
-            object_id: judgeInfo.object_id,
-            post_nominals: judgeInfo.post_nominals
-          };
-          this.excludedJudgeList.push(judgeDetail);
+        if (this.hearingJudgeFormInfo.excludedJudges.includes(judgeInfo.personalCode)) {
+          this.excludedJudgeList.push(judgeInfo);
         }
       });
     }
@@ -156,7 +138,7 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
     let roleType: string[] = [];
     if (this.hearingJudgeForm.value.specificJudge === RadioOptions.YES) {
       const panelPreference: PanelPreferenceModel = {
-        memberID: (this.hearingJudgeForm.value.judgeName as JudicialUserModel).personal_code,
+        memberID: (this.hearingJudgeForm.value.judgeName as JudicialUserModel).personalCode,
         memberType: MemberType.JUDGE,
         requirementType: RequirementType.MUSTINC
       };
@@ -166,7 +148,7 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
     }
     this.excludedJudge.judgeList.forEach((judgeInfo: JudicialUserModel) => {
       const panelPreference: PanelPreferenceModel = {
-        memberID: judgeInfo.personal_code,
+        memberID: judgeInfo.personalCode,
         memberType: MemberType.JUDGE,
         requirementType: RequirementType.EXCLUDE
       };

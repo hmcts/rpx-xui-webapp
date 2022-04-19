@@ -1,5 +1,5 @@
 <div class="govuk-form-group"
-  [ngClass]="{ 'govuk-form-group--error': personFormGroup.controls.selectedFormControl.errors && personFormGroup.controls.selectedFormControl.errors.error}">
+     [ngClass]="{ 'govuk-form-group--error': personFormGroup.controls.selectedFormControl.errors && personFormGroup.controls.selectedFormControl.errors.error}">
   <div id="sub-title-hint" class="govuk-hint">
     {{subTitle}}
   </div>
@@ -8,8 +8,12 @@
   </span>
   <div class="exclude-person" [class.column-view]="isColumnView">
     <div class="person-input">
-      <xuilib-search-judicials id="judicialsSearch" [placeholderContent]="'e.g. John Smith'" [idValue]="idValue"
-        [selectedJudicials]="judgeList" [control]="personFormGroup.controls.selectedFormControl">
+      <xuilib-search-judicials id="judicialsSearch"
+                               [placeholderContent]="'e.g. John Smith'"
+                               [idValue]="idValue"
+                               [serviceId]="serviceId"
+                               [selectedJudicials]="judgeList"
+                               [control]="personFormGroup.controls.selectedFormControl">
       </xuilib-search-judicials>
     </div>
     <div class="person-button">

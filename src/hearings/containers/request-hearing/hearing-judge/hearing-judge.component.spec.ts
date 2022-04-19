@@ -6,10 +6,10 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { JudicialUserModel } from '../../../../hearings/models/person.model';
 import { HearingJudgeNamesListComponent } from '../../../components';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION, HearingJudgeSelectionEnum, MemberType, RadioOptions, RequirementType } from '../../../models/hearings.enum';
+import {JudicialUserModel} from '../../../models/judicialUser.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingJudgeComponent } from './hearing-judge.component';
@@ -96,14 +96,16 @@ describe('HearingJudgeComponent', () => {
 
   it('should check prepareHearingRequestData', () => {
     const judgeInfo: JudicialUserModel = {
-      sidam_id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
-      object_id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
-      known_as: 'Hearing Judge',
+      emailId: 'jacky.collins@judicial.com',
+      fullName: 'Jacky Collins',
+      idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
+      isJudge: '',
+      isMagistrate: '',
+      isPanelMember: '',
+      knownAs: 'Hearing Judge',
+      personalCode: 'P100001',
       surname: 'Jacky',
-      personal_code: 'P100001',
-      full_name: 'Jacky Collins',
-      post_nominals: '',
-      email_id: 'jacky.collins@judicial.com'
+      title: 'Mr'
     };
 
     component.hearingJudgeForm.controls.specificJudge.setValue(RadioOptions.YES);
@@ -155,24 +157,28 @@ describe('HearingJudgeComponent', () => {
     component.setFormData();
     expect(component.excludedJudgeList.length).toBe(0);
     const personalCodeJudgeList: JudicialUserModel[] = [{
-      sidam_id: '1102839232',
-      object_id: '1102839232',
-      known_as: 'Jacky Collins',
+      emailId: 'jacky.collins@judicial.com',
+      fullName: 'Jacky Collins',
+      idamId: '1102839232',
+      isJudge: '',
+      isMagistrate: '',
+      isPanelMember: '',
+      knownAs: 'Jacky Collins',
+      personalCode: 'P100001',
       surname: 'Jacky Collins',
-      personal_code: 'P0000001',
-      full_name: 'Jacky Collins',
-      post_nominals: 'Jacky Collins',
-      email_id: 'jacky.collins@judicial.com',
+      title: 'Mr'
     },
     {
-      sidam_id: '1102839233',
-      object_id: '1102839233',
-      known_as: 'Jammie Williams',
+      emailId: 'jammie.williams@judicial.com',
+      fullName: 'Jammie Williams',
+      idamId: '1102839233',
+      isJudge: '',
+      isMagistrate: '',
+      isPanelMember: '',
+      knownAs: 'Jammie Williams',
+      personalCode: 'P0000002',
       surname: 'Jammie Williams',
-      personal_code: 'P0000002',
-      full_name: 'Jammie Williams',
-      post_nominals: 'Jammie Williams',
-      email_id: 'jammie.williams@judicial.com',
+      title: 'Mr'
     }];
     component.specificJudgeSelection = RadioOptions.YES;
     component.hearingJudgeFormInfo.includedJudges = ['P0000001'];

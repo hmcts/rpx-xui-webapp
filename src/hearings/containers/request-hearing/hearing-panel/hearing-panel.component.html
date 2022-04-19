@@ -17,8 +17,13 @@
             </div>
             <div class="govuk-radios__conditional" [ngClass]="{'govuk-radios__conditional--hidden': panelSelection !=='Yes'}">
               <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': !!panelSelectionError || !!childNodesValidationError}">
-                <exui-hearing-judge-names-list #includedJudge [subTitle]="'Include specific panel members (optional)'" [judgeList]= "includedJudgeList"
-                  [placeholderContent]="'e.g. John Smith'" [submitButtonName]="'Include panel member'" [idValue]="'Include'" [isColumnView]="false"></exui-hearing-judge-names-list>
+                <exui-hearing-judge-names-list #includedJudge [subTitle]="'Include specific panel members (optional)'"
+                                               [judgeList]="includedJudgeList"
+                                               [placeholderContent]="'e.g. John Smith'"
+                                               [submitButtonName]="'Include panel member'"
+                                               [idValue]="'Include'"
+                                               [serviceId]="serviceId"
+                                               [isColumnView]="false"></exui-hearing-judge-names-list>
                  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
                     <h1 class="govuk-fieldset__heading">
                         Or select any other panel roles required
@@ -33,8 +38,13 @@
                   [configLevels]="configLevels"
                 ></exui-multi-level-selector>
                 <div class="govuk-!-padding-top-8">
-                  <exui-hearing-judge-names-list #excludedJudge [subTitle]="'Exclude specific panel members (optional)'" [judgeList]= "excludedJudgeList"
-                  [placeholderContent]="'e.g. John Smith'" [submitButtonName]="'Exclude panel member'"  [idValue]="'Exclude'" [isColumnView]="false"></exui-hearing-judge-names-list>
+                  <exui-hearing-judge-names-list #excludedJudge [subTitle]="'Exclude specific panel members (optional)'"
+                                                 [judgeList]="excludedJudgeList"
+                                                 [placeholderContent]="'e.g. John Smith'"
+                                                 [submitButtonName]="'Exclude panel member'"
+                                                 [idValue]="'Exclude'"
+                                                 [serviceId]="serviceId"
+                                                 [isColumnView]="false"></exui-hearing-judge-names-list>
                 </div>
               </div>
             </div>

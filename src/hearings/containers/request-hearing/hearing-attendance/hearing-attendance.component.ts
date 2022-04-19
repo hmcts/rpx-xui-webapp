@@ -165,7 +165,6 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       firstName: [individualDetails.firstName],
       lastName: [individualDetails.lastName],
       preferredHearingChannel: [individualDetails.preferredHearingChannel, Validators.required],
-      hearingChannelEmail: [individualDetails.hearingChannelEmail],
       interpreterLanguage: [individualDetails.interpreterLanguage],
       reasonableAdjustments: [individualDetails.reasonableAdjustments],
       relatedParties: [individualDetails.relatedParties],

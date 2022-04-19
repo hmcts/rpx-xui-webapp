@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
@@ -18,6 +18,7 @@ describe('HowLinkedHearingsBeHeardComponent', () => {
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
   const mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
+  const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
   const source: ServiceLinkedCasesModel[] = [
     {
@@ -73,6 +74,7 @@ describe('HowLinkedHearingsBeHeardComponent', () => {
       providers: [
         provideMockStore({initialState}),
         { provide: HearingsService, useValue: hearingsService },
+        { provide: Router, useValue: mockRouter },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -126,6 +128,13 @@ describe('HowLinkedHearingsBeHeardComponent', () => {
     firstRadioButtonElement.click();
     fixture.detectChanges();
     expect(component.validationErrors.length).toBe(0);
+  });
+
+  it('should navigate to previous page', () => {
+    component.caseId = '8254902572336147';
+    component.hearingId = 'h100010';
+    component.onBack();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'link', '8254902572336147', 'h100010']);
   });
 
   afterEach(() => {

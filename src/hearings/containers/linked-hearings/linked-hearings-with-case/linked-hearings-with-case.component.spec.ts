@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormArray, FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
@@ -21,6 +21,7 @@ describe('LinkedHearingsWithCaseComponent', () => {
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
   const mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
+  const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
   const source: ServiceLinkedCasesModel[] = [
     {
@@ -71,6 +72,7 @@ describe('LinkedHearingsWithCaseComponent', () => {
       providers: [
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },
+        { provide: Router, useValue: mockRouter },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -126,6 +128,13 @@ describe('LinkedHearingsWithCaseComponent', () => {
     component.linkedCases = source;
     component.clearHearings('8254902572336147');
     expect((component.linkHearingForm.get('hearings') as FormArray).value.hearingReference).not.toBeDefined();
+  });
+
+  it('should navigate to previous page', () => {
+    component.caseId = '8254902572336147';
+    component.hearingId = 'h100010';
+    component.onBack();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'cases', 'case-details', '8254902572336147', 'hearings']);
   });
 
   afterEach(() => {

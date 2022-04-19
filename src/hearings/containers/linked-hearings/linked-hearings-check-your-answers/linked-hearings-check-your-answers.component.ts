@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { forkJoin, Observable, of, Subscription } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { forkJoin, Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { HearingListModel } from 'src/hearings/models/hearingList.model';
 import { HearingListMainModel } from 'src/hearings/models/hearingListMain.model';
 import { HearingsService } from 'src/hearings/services/hearings.service';
@@ -151,7 +151,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
     }));
   }
 
-	public onBack(): void {
+  public onBack(): void {
     this.router.navigate(['/', 'hearings', 'link', this.caseId, this.hearingId, 'group-selection']);
   }
 }

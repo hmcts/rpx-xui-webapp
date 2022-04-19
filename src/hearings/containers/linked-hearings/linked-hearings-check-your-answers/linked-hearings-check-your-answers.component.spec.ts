@@ -124,4 +124,11 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.SubmitLinkedHearingGroup({
       linkedHearingGroup, caseId, hearingId}));
   });
+
+  it('should navigate to previous page', () => {
+    component.caseId = caseId;
+    component.hearingId = hearingId;
+    component.onBack();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'link', caseId, hearingId, 'group-selection']);
+  });
 });

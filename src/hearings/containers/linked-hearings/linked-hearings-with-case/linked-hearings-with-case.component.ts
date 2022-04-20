@@ -153,10 +153,27 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
 
   public navigate(): void {
     if (this.mode === this.pageMode.MANAGE_HEARINGS) {
-      this.router.navigate([`/hearings/manage-links/${this.caseId}/${this.hearingId}/group-selection`]);
+      if (this.isAnyHearingSelected()) {
+        this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, this.hearingId, 'group-selection']);
+      } else {
+        this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, this.hearingId, 'check-your-answers']);
+      }
     } else {
-      this.router.navigate([`/hearings/link/${this.caseId}/${this.hearingId}/group-selection`]);
+      this.router.navigate(['/', 'hearings', 'link', this.caseId, this.hearingId, 'group-selection']);
     }
+  }
+
+  public isAnyHearingSelected(): boolean {
+    const formArray = this.linkHearingForm.get('linkedCases') as FormArray;
+    const serviceLinkedCasesModel = formArray.value as ServiceLinkedCasesModel[];
+    let selectedHearingsFound = false;
+    serviceLinkedCasesModel.forEach(linkedCase => {
+      const hearings = linkedCase.hearings.filter(hearing => hearing.isSelected === true);
+      if (hearings && hearings.length > 0) {
+        selectedHearingsFound = true;
+      }
+    });
+    return selectedHearingsFound;
   }
 
   public onBack(): void {

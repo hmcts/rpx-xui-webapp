@@ -186,6 +186,13 @@ describe('ExclusionHomeComponent', () => {
       component.navigationHandler(ExclusionNavigationEvent.CONFIRM_EXCLUSION);
       expect(component.showSpinner).toBeTruthy();
     });
+
+    it('should be false when exclusion navigation is not handled', () => {
+      component.navigationCurrentState = ExclusionState.CHECK_ANSWERS;
+      fixture.detectChanges();
+      component.navigationHandler(ExclusionNavigationEvent.BACK);
+      expect(component.showSpinner).toBeFalsy();
+    });
   });
 
   afterEach(() => {

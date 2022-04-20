@@ -49,21 +49,9 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
       hearingGroup: ['', Validators.required],
       hearingOrder: this.fb.array([]),
     });
-    if (this.mode === Mode.LINK_HEARINGS) {
-      this.hearingStore.pipe(select(fromHearingStore.getHearingLinks)).subscribe((state) => {
-        this.receivedCases = state.serviceLinkedCases;
-        this.groupDetails = state.linkedHearingGroup && state.linkedHearingGroup.groupDetails;
-        this.selectedOption = this.groupDetails && this.groupDetails.groupLinkType;
-        this.groupDetails = state && state.linkedHearingGroup && state.linkedHearingGroup.groupDetails;
-        this.hearingsInGroup = state && state.linkedHearingGroup && state.linkedHearingGroup.hearingsInGroup;
-        this.form = this.fb.group({
-          hearingGroup: [this.groupDetails && this.groupDetails.groupLinkType || '', Validators.required],
-          hearingOrder: this.fb.array([]),
-        });
-    });
-  } else {
     this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
       state => {
+        this.receivedCases = state.hearingLinks && state.hearingLinks.serviceLinkedCases;
         this.caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.caseName : '';
         this.hearingsInGroup = state.hearingLinks && state.hearingLinks.linkedHearingGroup && state.hearingLinks.linkedHearingGroup.hearingsInGroup;
         this.groupDetails = state.hearingLinks && state.hearingLinks.linkedHearingGroup && state.hearingLinks.linkedHearingGroup.groupDetails;
@@ -75,7 +63,6 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
         });
       }
     );
-  }
     this.caseId = this.route.snapshot.params.caseId;
     this.hearingId = this.route.snapshot.params.hearingId;
   }

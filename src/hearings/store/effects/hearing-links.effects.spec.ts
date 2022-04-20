@@ -98,7 +98,7 @@ describe('Hearing Links Effects', () => {
       const caseId = '1111222233334444';
       const hearingId = 'h100002';
       hearingsServiceMock.postLinkedHearingGroup.and.returnValue(of({hearingGroupRequestId: 'g1000000'}));
-      const action = new hearingLinksActions.SubmitLinkedHearingGroup({linkedHearingGroup, caseId, hearingId});
+      const action = new hearingLinksActions.SubmitLinkedHearingGroup({linkedHearingGroup, caseId, hearingId, isManageLink: true});
       actions$ = cold('-a', {a: action});
       const expected = cold('-b', {b: {hearingGroupRequestId: 'g1000000'}});
       expect(effects.submitLinkedHearingGroup$).toBeObservable(expected);
@@ -136,7 +136,7 @@ describe('Hearing Links Effects', () => {
       const caseId = '1111222233334444';
       const hearingId = 'h100002';
       hearingsServiceMock.postLinkedHearingGroup.and.returnValue(Observable.throwError(error));
-      const action = new hearingLinksActions.SubmitLinkedHearingGroup({linkedHearingGroup, caseId, hearingId});
+      const action = new hearingLinksActions.SubmitLinkedHearingGroup({linkedHearingGroup, caseId, hearingId, isManageLink: true});
       actions$ = cold('-a', {a: action});
       const expected = cold('-b', {b: error});
       expect(effects.submitLinkedHearingGroup$).toBeObservable(expected);

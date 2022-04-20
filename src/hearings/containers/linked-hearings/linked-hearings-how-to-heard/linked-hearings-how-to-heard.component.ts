@@ -25,7 +25,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
   public linkedHearingGroup: LinkedHearingGroupMainModel;
   public validationErrors: { id: string; message: string }[] = [];
   public positionDropdownValues = [];
-  public selectedOption:GroupLinkType;
+  public selectedOption: GroupLinkType;
   public linkTitle: string;
   public formValid: boolean = true;
   public selectionValid: boolean = true;
@@ -34,7 +34,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
   public hearingLinks: HearingLinksStateData;
   public sub: Subscription;
   public hearingsInGroup: LinkedHearingsDetailModel[];
-  public groupDetails:GroupDetailsModel;
+  public groupDetails: GroupDetailsModel;
 
   constructor(
     protected readonly hearingStore: Store<fromHearingStore.State>,
@@ -94,10 +94,10 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
   }
 
   public getPosition(hearing: HearingDetailModel): number {
-      const linkedHearings: LinkedHearingsDetailModel[] = this.hearingsInGroup && this.hearingsInGroup.filter(x => x.hearingId === hearing.hearingId);
-      if (linkedHearings && linkedHearings.length > 0) {
-        return linkedHearings[0].hearingOrder;
-      }
+    const linkedHearings: LinkedHearingsDetailModel[] = this.hearingsInGroup && this.hearingsInGroup.filter(x => x.hearingId === hearing.hearingId);
+    if (linkedHearings && linkedHearings.length > 0) {
+      return linkedHearings[0].hearingOrder;
+    }
     return null;
   }
 

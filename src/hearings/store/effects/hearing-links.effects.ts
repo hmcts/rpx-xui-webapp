@@ -53,6 +53,9 @@ export class HearingLinksEffects {
       return this.hearingsService.postLinkedHearingGroup(payload.linkedHearingGroup).pipe(
         tap(
           () => {
+            if (payload.isManageLink) {
+              return this.router.navigate(['/', 'hearings', 'manage-links', payload.caseId, payload.hearingId, 'final-confirmation']);
+            }
             return this.router.navigate(['/', 'hearings', 'link', payload.caseId, payload.hearingId, 'final-confirmation']);
           }),
           catchError(error => {

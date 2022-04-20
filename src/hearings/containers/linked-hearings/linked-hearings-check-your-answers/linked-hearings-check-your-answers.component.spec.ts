@@ -201,7 +201,7 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
     component.isManageLink = false;
     component.onLinkHearings();
     expect(storeDispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SubmitLinkedHearingGroup({
-      linkedHearingGroup, caseId, hearingId
+      linkedHearingGroup, caseId, hearingId, isManageLink: false
     })));
   });
 

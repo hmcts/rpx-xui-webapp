@@ -29,7 +29,8 @@ describe('Hearing Links Actions', () => {
     const payload = {
       linkedHearingGroup: null,
       caseId: null,
-      hearingId: null
+      hearingId: null,
+      isManageLink: null
     };
     const action = new fromHearingLinksAction.SubmitLinkedHearingGroup(payload);
     expect(action.type).toBe(fromHearingLinksAction.SUBMIT_LINKED_HEARING_GROUP);

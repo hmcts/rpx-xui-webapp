@@ -1,6 +1,6 @@
 <a class="govuk-back-link" href="javascript:void(0)" (click)="onBack()">Back</a>
 <xuilib-hmcts-error-summary [errorMessages]="serverErrors" [header]="'There is a problem'" *ngIf="error$ | async"></xuilib-hmcts-error-summary>
-<exui-linked-hearings-case-title [caseId]="caseId" [caseName]="caseName"  mode="mode"></exui-linked-hearings-case-title>
+<exui-linked-hearings-case-title [caseId]="caseId" [caseName]="caseName" mode="mode"></exui-linked-hearings-case-title>
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
     <h1 class="govuk-heading-l">{{isManageLink && linkedCases.length > 0 ? 'Linked hearings' :'Check your answers'}}</h1>

@@ -38,9 +38,10 @@
 <br>
 <div class="govuk-grid-row linked-hearings-button">
   <div class="govuk-button-group">
-    <button class="govuk-button primary" data-module="govuk-button" (click)="onLinkHearings()">
-      {{primaryButtonText}}
-    </button>
+    <button *ngIf="!isManageLink" class="govuk-button primary" data-module="govuk-button" (click)="onLinkHearings()">Link hearings</button>
+    <button *ngIf="isManageJourneyFinalPage && linkedCases.length > 0" class="govuk-button primary" data-module="govuk-button" (click)="onManageLinkHearings()">Link hearings</button>
+    <button *ngIf="isManageLink && !isManageJourneyFinalPage && linkedCases.length > 0" class="govuk-button primary" data-module="govuk-button" (click)="onEdit()">Edit</button>
+    <button *ngIf="isManageJourneyFinalPage && linkedCases.length === 0" class="govuk-button primary" data-module="govuk-button" (click)="onUnlinkHearings()">Unlink hearings</button>
     <a href="javascript:history.back()" class="link-cancel">{{cancelButtonText}}</a>
   </div>
 </div>

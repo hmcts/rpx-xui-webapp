@@ -66,6 +66,30 @@ export class HearingLinksEffects {
     })
   );
 
+  @Effect({dispatch: false})
+  public manageLinkedHearingGroup$ = this.actions$.pipe(
+    ofType(hearingLinksActions.MANAGE_LINKED_HEARING_GROUP),
+    map((action: hearingLinksActions.ManageLinkedHearingGroup) => action.payload),
+    switchMap(payload => {
+      let apiCall: any;
+      if (payload.linkedHearingGroup && payload.linkedHearingGroup.hearingsInGroup && payload.linkedHearingGroup.hearingsInGroup.length > 0) {
+        apiCall = this.hearingsService.putLinkedHearingGroup(payload.linkedHearingGroup);
+      } else {
+        apiCall = this.hearingsService.deleteLinkedHearingGroup(payload.hearingGroupId);
+      }
+      return apiCall.pipe(
+        tap(
+          () => {
+            return this.router.navigate(['/', 'hearings', 'manage-links', payload.caseId, payload.hearingId, 'final-confirmation']);
+          }),
+        catchError(error => {
+          this.hearingStore.dispatch(new hearingLinksActions.SubmitLinkedHearingGroupFailure(error));
+          return of(error);
+        })
+      );
+    })
+  );
+
   public static handleError(error: HttpError): Observable<Action> {
     if (error && error.status) {
       return of(new fromAppStoreActions.Go({path: ['/hearings/error']}));

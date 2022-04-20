@@ -6,7 +6,9 @@ import { map } from 'rxjs/operators';
 import { HttpError } from '../../../../models/httpError.model';
 import { HearingLinksStateData } from '../../../models/hearingLinksStateData.model';
 import { GroupLinkType, Mode } from '../../../models/hearings.enum';
-import { HearingDetailModel, LinkedHearingGroupMainModel, LinkedHearingsDetailModel, ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
+import {
+  HearingDetailModel, LinkedHearingGroupMainModel, LinkedHearingsDetailModel, ServiceLinkedCasesModel
+} from '../../../models/linkHearings.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 
@@ -16,30 +18,38 @@ import * as fromHearingStore from '../../../store';
   styleUrls: ['./linked-hearings-check-your-answers.component.scss']
 })
 export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
+  
+  private static MANAGE_JOURNEY_FINAL_PAGE = 'check-your-answers';
+
   public isManageLink: boolean;
   public mode: Mode = Mode.LINK_HEARINGS;
   public caseId: string;
   public caseName: string;
   public hearingId: string;
   public hearingLinks: HearingLinksStateData;
+  public hearingGroupRequestId: string;
   public showPositionColumn: boolean;
   public linkedCases: LinkedHearingsCheckYourAnswersPageResult[] = [];
   public hearingsInGroup: LinkedHearingsDetailModel[];
   public linkedHearingGroup: LinkedHearingGroupMainModel;
   public selectedLinkedHearingsCount: number;
-  public primaryButtonText: string;
   public cancelButtonText: string;
   public sub: Subscription;
   public serverErrors: { id: string, message: string }[] = [
     { id: 'serverError', message: 'There was a system error and your request could not be processed. Please try again.' }
   ];
   public error$: Observable<HttpError>;
+  public isManageJourneyFinalPage: boolean;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly hearingsService: HearingsService,
               private readonly route: ActivatedRoute,
               private readonly router: Router) {
     this.isManageLink = this.route.snapshot.data.mode === Mode.MANAGE_HEARINGS;
+    this.isManageJourneyFinalPage = this.isManageLink &&
+      this.route.snapshot.url &&
+      this.route.snapshot.url.length > 0 &&
+      this.route.snapshot.url[0].path === LinkedHearingsCheckYourAnswersComponent.MANAGE_JOURNEY_FINAL_PAGE;
     this.mode = this.route.snapshot.data.mode;
     this.caseId = this.route.snapshot.params.caseId;
     this.hearingId = this.route.snapshot.params.hearingId;
@@ -47,6 +57,9 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
       state => {
         this.caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.caseName : '';
         this.hearingLinks = state.hearingLinks;
+        // console.log('HEARING LIST MAIN MODEL', state.hearingList.hearingListMainModel);
+        // console.log('CASE HEARINGS', state.hearingList.hearingListMainModel.caseHearings);
+        this.hearingGroupRequestId = state.hearingList.hearingListMainModel.caseHearings[0].hearingGroupRequestId;
       }
     );
   }
@@ -77,7 +90,6 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
   }
 
   public setButtonText(): void {
-    this.primaryButtonText = !this.isManageLink ? 'Link hearings' : this.linkedCases.length > 0 ? 'Edit' : 'Unlink hearings';
     this.cancelButtonText = this.isManageLink && this.linkedCases.length === 0 ? 'Cancel' : 'Return to hearings';
   }
 
@@ -122,20 +134,25 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
   }
 
   public onLinkHearings(): void {
-    if (this.isManageLink) {
-      if (this.linkedCases && this.linkedCases.length > 0) {
-        this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, this.hearingId, 'selected-hearings']);
-      } else {
-        this.linkedHearingGroup = null;
-        this.hearingStore.dispatch(new fromHearingStore.SubmitLinkedHearingGroup({
-          linkedHearingGroup: this.linkedHearingGroup, caseId: this.caseId, hearingId: this.hearingId, isManageLink: this.isManageLink
-        }));
-      }
-    } else {
-      this.hearingStore.dispatch(new fromHearingStore.SubmitLinkedHearingGroup({
-        linkedHearingGroup: this.linkedHearingGroup, caseId: this.caseId, hearingId: this.hearingId, isManageLink: this.isManageLink
-      }));
-    }
+    this.hearingStore.dispatch(new fromHearingStore.SubmitLinkedHearingGroup({
+      linkedHearingGroup: this.linkedHearingGroup, caseId: this.caseId, hearingId: this.hearingId, isManageLink: this.isManageLink
+    }));
+  }
+
+  public onManageLinkHearings(): void {
+    this.hearingStore.dispatch(new fromHearingStore.ManageLinkedHearingGroup({
+      linkedHearingGroup: this.linkedHearingGroup, hearingGroupId: this.hearingGroupRequestId, caseId: this.caseId, hearingId: this.hearingId
+    }));
+  }
+
+  public onEdit(): void {
+    this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, this.hearingId, 'selected-hearings']);
+  }
+
+  public onUnlinkHearings(): void {
+    this.hearingStore.dispatch(new fromHearingStore.ManageLinkedHearingGroup({
+      linkedHearingGroup: null, hearingGroupId: this.hearingGroupRequestId, caseId: this.caseId, hearingId: this.hearingId
+    }));
   }
 
   public onBack(): void {

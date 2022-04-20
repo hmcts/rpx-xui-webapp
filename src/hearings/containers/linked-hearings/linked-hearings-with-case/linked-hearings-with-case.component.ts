@@ -142,7 +142,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
       const formGroup = control as FormGroup;
       if (formGroup.value.caseReference === caseReference) {
         const hearingsFormArray = formGroup.controls['hearings'] as FormArray;
-        for(const hearingFormControl of hearingsFormArray.controls) {
+        for (const hearingFormControl of hearingsFormArray.controls) {
           const hearingsFormGroup = hearingFormControl as FormGroup;
           hearingsFormGroup.controls['isSelected'].patchValue(false);
         }
@@ -177,7 +177,11 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   }
 
   public onBack(): void {
-    this.router.navigate(['/', 'cases', 'case-details', this.caseId, 'hearings']);
+    if (this.isManageLink) {
+      this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, this.hearingId]);
+    } else {
+      this.router.navigate(['/', 'cases', 'case-details', this.caseId, 'hearings']);
+    }
   }
 
   public ngOnDestroy(): void {

@@ -27,7 +27,9 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
   public linkedCases: LinkedHearingsCheckYourAnswersPageResult[] = [];
   public hearingsInGroup: LinkedHearingsDetailModel[];
   public linkedHearingGroup: LinkedHearingGroupMainModel;
-  public casesLinkedInfo: ServiceLinkedCasesModel[] = [];
+  public selectedLinkedHearingsCount: number;
+  public primaryButtonText: string;
+  public cancelButtonText: string;
   public sub: Subscription;
   public serverErrors: { id: string, message: string }[] = [
     { id: 'serverError', message: 'There was a system error and your request could not be processed. Please try again.' }
@@ -71,6 +73,12 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
         this.setDisplayRow(linkedCase, selectedHearings);
       });
     }
+    this.setButtonText();
+  }
+
+  public setButtonText(): void {
+    this.primaryButtonText = !this.isManageLink ? 'Link hearings' : this.linkedCases.length > 0 ? 'Edit' : 'Unlink hearings';
+    this.cancelButtonText = this.isManageLink && this.linkedCases.length === 0 ? 'Cancel' : 'Return to hearings';
   }
 
   public getHearingLinkState$(): Observable<HearingLinksStateData> {
@@ -119,7 +127,14 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
 
   public onLinkHearings(): void {
     if (this.isManageLink) {
-      this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, this.hearingId, 'selected-hearings']);
+      if (this.linkedCases && this.linkedCases.length > 0) {
+        this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, this.hearingId, 'selected-hearings']);
+      } else {
+        this.linkedHearingGroup = null;
+        this.hearingStore.dispatch(new fromHearingStore.SubmitLinkedHearingGroup({
+          linkedHearingGroup: this.linkedHearingGroup, caseId: this.caseId, hearingId: this.hearingId
+        }));
+      }
     } else {
       this.hearingStore.dispatch(new fromHearingStore.SubmitLinkedHearingGroup({
         linkedHearingGroup: this.linkedHearingGroup, caseId: this.caseId, hearingId: this.hearingId

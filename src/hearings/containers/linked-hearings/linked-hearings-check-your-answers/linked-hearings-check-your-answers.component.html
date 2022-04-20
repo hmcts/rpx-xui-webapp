@@ -3,14 +3,14 @@
 <exui-linked-hearings-case-title [caseId]="caseId" [caseName]="caseName"  mode="mode"></exui-linked-hearings-case-title>
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
-    <h1 class="govuk-heading-l">{{isManageLink ? 'Linked hearings' :'Check your answers'}}</h1>
+    <h1 class="govuk-heading-l">{{isManageLink && linkedCases.length > 0 ? 'Linked hearings' :'Check your answers'}}</h1>
     <div *ngIf="!isManageLink">
       <h2 class="govuk-heading-m">Linked hearings</h2>
       <span class="govuk-body align-right">
         <a href="javascript:void(0)" class="govuk-link" id="hearing-link-change" (click)="onChange()">Change</a>
       </span>
     </div>
-    <table class="govuk-table">
+    <table class="govuk-table" *ngIf="linkedCases.length > 0">
       <thead class="govuk-table__head">
         <tr class="govuk-table__row">
           <th scope="col" class="govuk-table__header">Case name and number</th>
@@ -28,14 +28,19 @@
         </tr>
       </tbody>
     </table>
+    <div class="no-linked-hearings" *ngIf="isManageLink && linkedCases.length === 0">
+      <h2 class="govuk-heading-m">Linked hearings</h2>
+      <br>
+      No linked hearings.
+    </div>
   </div>
 </div>
 <br>
 <div class="govuk-grid-row linked-hearings-button">
   <div class="govuk-button-group">
     <button class="govuk-button primary" data-module="govuk-button" (click)="onLinkHearings()">
-      {{!isManageLink ? 'Link hearings' : 'Edit'}}
+      {{primaryButtonText}}
     </button>
-    <a href="javascript:history.back()" class="link-cancel">Return to hearings</a>
+    <a href="javascript:history.back()" class="link-cancel">{{cancelButtonText}}</a>
   </div>
 </div>

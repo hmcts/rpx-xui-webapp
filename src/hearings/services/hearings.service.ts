@@ -102,7 +102,7 @@ export class HearingsService {
     return this.http.delete<LinkedHearingGroupResponseModel>('api/hearings/deleteLinkedHearingGroup', options);
   }
 
-  public getAllCaseInformation(linkedState: HearingLinksStateData, isManageLink: boolean): Observable<any[]> {
+  public getAllCaseInformation(linkedState: HearingLinksStateData, isManageLink: boolean): Observable<ServiceLinkedCasesModel[]> {
     const receivedCases: ServiceLinkedCasesModel[] = linkedState.serviceLinkedCases || [];
     const linkedCaseIds: string[] = receivedCases.map((caseDetails: ServiceLinkedCasesModel) => caseDetails.caseReference);
     const hearingServices = [];

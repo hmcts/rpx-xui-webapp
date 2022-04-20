@@ -107,22 +107,26 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   }
 
   public saveLinkedHearingInfo(): void {
-    const serviceLinkedCasesModel: ServiceLinkedCasesModel[] = [];
-    const formArray = this.linkHearingForm.get('linkedCases') as FormArray;
-    formArray.value.forEach(formValue => {
-      serviceLinkedCasesModel.push({
-        caseName: formValue.caseName,
-        caseReference: formValue.caseReference,
-        hearings: formValue.hearings,
-        reasonsForLink: formValue.reasonsForLink
+    let serviceLinkedCasesModel: ServiceLinkedCasesModel[] = [];
+    if (this.isManageLink) {
+      const formArray = this.linkHearingForm.get('linkedCases') as FormArray;
+      formArray.value.forEach(formValue => {
+        serviceLinkedCasesModel.push({
+          caseName: formValue.caseName,
+          caseReference: formValue.caseReference,
+          hearings: formValue.hearings,
+          reasonsForLink: formValue.reasonsForLink
+        });
       });
-    });
+    } else {
+      serviceLinkedCasesModel = this.linkedCases;
+    }
     this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesSuccess(serviceLinkedCasesModel));
     this.navigate();
   }
 
   public onSubmit() {
-    if (this.mode === this.pageMode.MANAGE_HEARINGS) {
+    if (this.isManageLink) {
       this.saveLinkedHearingInfo();
     } else {
       this.validationErrors = [];

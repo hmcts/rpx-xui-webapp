@@ -86,11 +86,15 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
         this.setDisplayRow(linkedCase, selectedHearings);
       });
     }
-    this.setButtonText();
+    this.setCancelButtonText();
   }
 
-  public setButtonText(): void {
-    this.cancelButtonText = this.isManageLink && this.linkedCases.length === 0 ? 'Cancel' : 'Return to hearings';
+  public setCancelButtonText(): void {
+    if (this.isManageLink) {
+      this.cancelButtonText = !this.isManageJourneyFinalPage && this.linkedCases.length > 0 ? 'Return to hearings' : 'Cancel';
+    } else {
+      this.cancelButtonText = 'Cancel';
+    }
   }
 
   public getHearingLinkState$(): Observable<HearingLinksStateData> {
@@ -128,11 +132,6 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
       && this.linkedHearingGroup.groupDetails.groupLinkType === GroupLinkType.ORDERED;
   }
 
-  public onChange(): void {
-    this.hearingStore.dispatch(new fromHearingStore.ResetLinkedHearingLastError());
-    this.router.navigate(['/', 'hearings', 'link', this.caseId, this.hearingId]);
-  }
-
   public onLinkHearings(): void {
     this.hearingStore.dispatch(new fromHearingStore.SubmitLinkedHearingGroup({
       linkedHearingGroup: this.linkedHearingGroup, caseId: this.caseId, hearingId: this.hearingId, isManageLink: this.isManageLink
@@ -153,6 +152,11 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
     this.hearingStore.dispatch(new fromHearingStore.ManageLinkedHearingGroup({
       linkedHearingGroup: null, hearingGroupId: this.hearingGroupRequestId, caseId: this.caseId, hearingId: this.hearingId
     }));
+  }
+
+  public onChange(): void {
+    this.hearingStore.dispatch(new fromHearingStore.ResetLinkedHearingLastError());
+    this.router.navigate(['/', 'hearings', 'link', this.caseId, this.hearingId]);
   }
 
   public onBack(): void {

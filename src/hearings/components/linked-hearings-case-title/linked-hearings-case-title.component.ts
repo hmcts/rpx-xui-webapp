@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Mode } from 'src/hearings/models/hearings.enum';
 
 @Component({
@@ -9,5 +10,10 @@ export class LinkedHearingsCaseTitleComponent {
   @Input() public caseName: string;
   @Input() public caseId: string;
   @Input() public mode: Mode = Mode.LINK_HEARINGS;
-  public hearingTitleTextPrefix = this.mode === Mode.LINK_HEARINGS ? 'Link hearings' : 'Manage hearings';
+  public hearingTitleTextPrefix = '';
+  constructor(
+    protected readonly route: ActivatedRoute,
+  ) {
+      this.hearingTitleTextPrefix = this.route.snapshot.data.mode === Mode.LINK_HEARINGS ? 'Link hearings' : 'Manage hearings';
+  }
 }

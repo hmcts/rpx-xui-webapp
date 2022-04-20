@@ -139,7 +139,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
 
   public navigate(): void {
     if (this.mode === this.pageMode.MANAGE_HEARINGS) {
-      this.router.navigate([`/hearings/link/${this.caseId}/${this.hearingId}/check-your-answers`]);
+      this.router.navigate([`/hearings/manage-links/${this.caseId}/${this.hearingId}/group-selection`]);
     } else {
       this.router.navigate([`/hearings/link/${this.caseId}/${this.hearingId}/group-selection`]);
     }

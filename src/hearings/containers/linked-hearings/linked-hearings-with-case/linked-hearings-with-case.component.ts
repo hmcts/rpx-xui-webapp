@@ -107,7 +107,17 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   }
 
   public saveLinkedHearingInfo(): void {
-    this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesSuccess(this.linkedCases));
+    const serviceLinkedCasesModel: ServiceLinkedCasesModel[] = [];
+    const formArray = this.linkHearingForm.get('linkedCases') as FormArray;
+    formArray.value.forEach(formValue => {
+      serviceLinkedCasesModel.push({
+        caseName: formValue.caseName,
+        caseReference: formValue.caseReference,
+        hearings: formValue.hearings,
+        reasonsForLink: formValue.reasonsForLink
+      });
+    });
+    this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesSuccess(serviceLinkedCasesModel));
     this.navigate();
   }
 
@@ -127,11 +137,15 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   }
 
   public clearHearings(caseReference: string): void {
-    const formArray = this.linkHearingForm.get('hearings') as FormArray;
+    const formArray = this.linkHearingForm.get('linkedCases') as FormArray;
     for (const control of formArray.controls) {
       const formGroup = control as FormGroup;
       if (formGroup.value.caseReference === caseReference) {
-        formGroup.controls['hearingReference'].reset();
+        const hearingsFormArray = formGroup.controls['hearings'] as FormArray;
+        for(const hearingFormControl of hearingsFormArray.controls) {
+          const hearingsFormGroup = hearingFormControl as FormGroup;
+          hearingsFormGroup.controls['isSelected'].patchValue(false);
+        }
         break;
       }
     }
@@ -139,10 +153,27 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
 
   public navigate(): void {
     if (this.mode === this.pageMode.MANAGE_HEARINGS) {
-      this.router.navigate([`/hearings/manage-links/${this.caseId}/${this.hearingId}/group-selection`]);
+      if (this.isAnyHearingSelected()) {
+        this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, this.hearingId, 'group-selection']);
+      } else {
+        this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, this.hearingId, 'check-your-answers']);
+      }
     } else {
-      this.router.navigate([`/hearings/link/${this.caseId}/${this.hearingId}/group-selection`]);
+      this.router.navigate(['/', 'hearings', 'link', this.caseId, this.hearingId, 'group-selection']);
     }
+  }
+
+  public isAnyHearingSelected(): boolean {
+    const formArray = this.linkHearingForm.get('linkedCases') as FormArray;
+    const serviceLinkedCasesModel = formArray.value as ServiceLinkedCasesModel[];
+    let selectedHearingsFound = false;
+    serviceLinkedCasesModel.forEach(linkedCase => {
+      const hearings = linkedCase.hearings.filter(hearing => hearing.isSelected === true);
+      if (hearings && hearings.length > 0) {
+        selectedHearingsFound = true;
+      }
+    });
+    return selectedHearingsFound;
   }
 
   public onBack(): void {

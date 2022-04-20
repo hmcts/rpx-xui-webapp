@@ -12,6 +12,8 @@ export const LOAD_LINKED_HEARING_GROUP_SUCCESS = '[HEARING LINKS] Load Linked He
 export const LOAD_LINKED_HEARING_GROUP_FAILURE = '[HEARING LINKS] Load Linked Hearing Group Failure';
 export const SUBMIT_LINKED_HEARING_GROUP = '[HEARING LINKS] Submit Linked Hearing Group';
 export const SUBMIT_LINKED_HEARING_GROUP_FAILURE = '[HEARING LINKS] Submit Linked Hearing Group Failure';
+export const MANAGE_LINKED_HEARING_GROUP = '[HEARING LINKS] Manage Linked Hearing Group';
+export const MANAGE_LINKED_HEARING_GROUP_FAILURE = '[HEARING LINKS] Manage Linked Hearing Group Failure';
 export const RESET_LINKED_HEARING_LAST_ERROR = '[HEARING LINKS] Reset Linked Hearing Last Error';
 
 export class ResetHearingLinks implements Action {
@@ -72,6 +74,18 @@ export class SubmitLinkedHearingGroupFailure implements Action {
   }
 }
 
+export class ManageLinkedHearingGroup implements Action {
+  public readonly type = MANAGE_LINKED_HEARING_GROUP;
+  constructor(public payload: { linkedHearingGroup: LinkedHearingGroupMainModel, hearingGroupId: string, caseId: string, hearingId: string }) {
+  }
+}
+
+export class ManageLinkedHearingGroupFailure implements Action {
+  public readonly type = MANAGE_LINKED_HEARING_GROUP_FAILURE;
+  constructor(public payload: HttpError) {
+  }
+}
+
 export class ResetLinkedHearingLastError implements Action {
   public readonly type = RESET_LINKED_HEARING_LAST_ERROR
 }
@@ -87,4 +101,6 @@ export type HearingLinksAction =
   | LoadLinkedHearingGroupFailure
   | SubmitLinkedHearingGroup
   | SubmitLinkedHearingGroupFailure
+  | ManageLinkedHearingGroup
+  | ManageLinkedHearingGroupFailure
   | ResetLinkedHearingLastError;

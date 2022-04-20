@@ -93,11 +93,10 @@ export class HearingsService {
     return this.http.put<LinkedHearingGroupResponseModel>('api/hearings/putLinkedHearingGroup', linkedHearingGroupMainModel);
   }
 
-  public deleteLinkedHearingGroup(hearingGroupId: string, hearingIds: string): Observable<LinkedHearingGroupResponseModel> {
+  public deleteLinkedHearingGroup(hearingGroupId: string): Observable<LinkedHearingGroupResponseModel> {
     const options = {
       params: new HttpParams()
         .set('hearingGroupId', hearingGroupId)
-        .set('hearingIds', hearingIds)
     };
     return this.http.delete<LinkedHearingGroupResponseModel>('api/hearings/deleteLinkedHearingGroup', options);
   }

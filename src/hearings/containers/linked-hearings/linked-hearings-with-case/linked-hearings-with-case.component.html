@@ -48,7 +48,7 @@
                 <div class="govuk-radios" data-module="govuk-radios">
                   <div class="govuk-radios__item" *ngIf="!hearing.hearingIsLinkedFlag">
                     <input class="govuk-radios__input" id="{{case.caseReference}}{{hearing.hearingId}}" type="radio"
-                      [checked]="hearing.isSelected" (click)="updateLinkedCase(i, pos);"
+                      [value]="true" [checked]="getHearingsFormValue(i).controls[pos].get('isSelected').value" (click)="updateLinkedCase(i, pos);"
                      [formControlName]="'isSelected'">
                     <label class="govuk-label govuk-radios__label"
                       for="{{case.caseReference}}{{hearing.hearingId}}"></label>

@@ -32,12 +32,12 @@ export const LINKED_HEARING_GROUP: LinkedHearingGroupMainModel = {
   hearingsInGroup: [
     {
       hearingId: 'h100001',
-      hearingOrder: 1,
+      hearingOrder: 2,
       caseRef: '4652724902696213',
     },
     {
       hearingId: 'h100003',
-      hearingOrder: 3,
+      hearingOrder: 1,
       caseRef: '8254902572336147',
     }],
 };

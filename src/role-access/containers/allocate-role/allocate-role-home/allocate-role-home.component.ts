@@ -142,13 +142,13 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.allocateRoleStateDataSub = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe({
-      next: allocateRoleStateData => {
+    this.allocateRoleStateDataSub = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(
+      allocateRoleStateData => {
         this.navigationCurrentState = allocateRoleStateData.state;
         this.allocateTo = allocateRoleStateData.allocateTo;
         this.action = allocateRoleStateData.action;
       }
-    });
+    );
   }
 
   public isComponentVisible(currentNavigationState: AllocateRoleState, requiredNavigationState: AllocateRoleState[]): boolean {

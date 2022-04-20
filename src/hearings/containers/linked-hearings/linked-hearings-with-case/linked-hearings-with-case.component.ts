@@ -32,11 +32,11 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public mode: Mode;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
-    private readonly hearingsService: HearingsService,
-    private readonly validators: ValidatorsUtils,
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly fb: FormBuilder) {
+              private readonly hearingsService: HearingsService,
+              private readonly validators: ValidatorsUtils,
+              private readonly route: ActivatedRoute,
+              private readonly router: Router,
+              private readonly fb: FormBuilder) {
     this.isManageLink = this.route.snapshot.data.mode === Mode.MANAGE_HEARINGS;
     this.mode = this.route.snapshot.data.mode;
     this.caseId = this.route.snapshot.params.caseId;
@@ -119,9 +119,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   }
 
   public updateLinkedCase(casePos: number, hearingPos: number) {
-    this.linkedCases[casePos].hearings.forEach((hearingInfo, pos) => {
-      this.getHearingsFormValue(casePos).controls[pos].get('isSelected').setValue(false);
-    });
+    this.clearHearings(casePos);
     this.getHearingsFormValue(casePos).controls[hearingPos].get('isSelected').setValue(true);
   }
 
@@ -145,24 +143,15 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     }
   }
 
-  public clearHearings(caseReference: string): void {
-    const formArray = this.linkHearingForm.get('linkedCases') as FormArray;
-    for (const control of formArray.controls) {
-      const formGroup = control as FormGroup;
-      if (formGroup.value.caseReference === caseReference) {
-        const hearingsFormArray = formGroup.controls['hearings'] as FormArray;
-        for (const hearingFormControl of hearingsFormArray.controls) {
-          const hearingsFormGroup = hearingFormControl as FormGroup;
-          hearingsFormGroup.controls['isSelected'].patchValue(false);
-        }
-        break;
-      }
-    }
+  public clearHearings(casePos: number): void {
+    this.linkedCases[casePos].hearings.forEach((hearingInfo, pos) => {
+      this.getHearingsFormValue(casePos).controls[pos].get('isSelected').setValue(false);
+    });
   }
 
   public navigate(): void {
     if (this.mode === this.pageMode.MANAGE_HEARINGS) {
-      if (this.isAnyHearingSelected()) {
+      if (this.linkHearingForm.valid) {
         this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, this.hearingId, 'group-selection']);
       } else {
         this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, this.hearingId, 'check-your-answers']);
@@ -174,19 +163,6 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
 
   public navigateToCaseHearing(caseId: string): void {
     this.router.navigate(['/', 'cases', 'case-details', caseId, 'hearings']);
-  }
-
-  public isAnyHearingSelected(): boolean {
-    const formArray = this.linkHearingForm.get('linkedCases') as FormArray;
-    const serviceLinkedCasesModel = formArray.value as ServiceLinkedCasesModel[];
-    let selectedHearingsFound = false;
-    serviceLinkedCasesModel.forEach(linkedCase => {
-      const hearings = linkedCase.hearings.filter(hearing => hearing.isSelected === true);
-      if (hearings && hearings.length > 0) {
-        selectedHearingsFound = true;
-      }
-    });
-    return selectedHearingsFound;
   }
 
   public onBack(): void {

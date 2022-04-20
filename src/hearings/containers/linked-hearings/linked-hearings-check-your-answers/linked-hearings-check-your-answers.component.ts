@@ -40,9 +40,9 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
   public isManageJourneyFinalPage: boolean;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
-    private readonly hearingsService: HearingsService,
-    private readonly route: ActivatedRoute,
-    private readonly router: Router) {
+              private readonly hearingsService: HearingsService,
+              private readonly route: ActivatedRoute,
+              private readonly router: Router) {
     this.isManageLink = this.route.snapshot.data.mode === Mode.MANAGE_HEARINGS;
     this.isManageJourneyFinalPage = this.isManageLink &&
       this.route.snapshot.url &&

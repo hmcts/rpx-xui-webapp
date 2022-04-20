@@ -332,6 +332,25 @@ describe('AllocateRoleHomeComponent', () => {
     });
   });
 
+  describe('showSpinner', () => {
+    it('should default to false', () => {
+      expect(component.showSpinner).toBeFalsy();
+    });
+
+    it('should be true when allocation is confirmed', () => {
+      const CURRENT_STATE = { ...STATE_DATA,
+        state: AllocateRoleState.CHECK_ANSWERS
+      };
+      storePipeMock.and.returnValue(of(CURRENT_STATE));
+      component.navigationCurrentState = AllocateRoleState.CHECK_ANSWERS;
+      fixture.detectChanges();
+      spyOn(component.checkAnswersComponent, 'navigationHandler').and.callThrough();
+      component.navigationHandler(AllocateRoleNavigationEvent.CONFIRM);
+      expect(component.checkAnswersComponent.navigationHandler).toHaveBeenCalled();
+      expect(component.showSpinner).toBeTruthy();
+    });
+  });
+
   describe('navigationHandler cancel', () => {
     beforeEach(() => {
       allocateRoleServiceMock.getValidRoles.and.returnValue(of(ROLE_LIST));

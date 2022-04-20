@@ -173,6 +173,21 @@ describe('ExclusionHomeComponent', () => {
       expect(routerMock.navigateByUrl).toHaveBeenCalledWith('cases/case-details/111111/roles-and-access');
     });
   });
+
+  describe('showSpinner', () => {
+    it('should default to false', () => {
+      expect(component.showSpinner).toBeFalsy();
+    });
+
+    it('should be true when exclusion is confirmed', () => {
+      component.navigationCurrentState = ExclusionState.CHECK_ANSWERS;
+      fixture.detectChanges();
+      spyOn(component.checkAnswersComponent, 'navigationHandler');
+      component.navigationHandler(ExclusionNavigationEvent.CONFIRM_EXCLUSION);
+      expect(component.showSpinner).toBeTruthy();
+    });
+  });
+
   afterEach(() => {
     fixture.destroy();
   });

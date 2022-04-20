@@ -98,6 +98,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
+    this.initForm();
     if (!this.isManageLink && !this.isHearingsPreSelected) {
       this.sub = this.hearingsService.getAllCaseInformation(this.route.snapshot.data.linkedCase, this.isManageLink).subscribe((casesLinkedInfo) => {
         this.linkedCases = casesLinkedInfo;
@@ -105,7 +106,6 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
         this.getHearingsAvailable();
       });
     } else {
-      this.initForm();
       this.getHearingsAvailable();
     }
   }
@@ -170,6 +170,10 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     } else {
       this.router.navigate(['/', 'hearings', 'link', this.caseId, this.hearingId, 'group-selection']);
     }
+  }
+
+  public navigateToCaseHearing(caseId: string): void {
+    this.router.navigate(['/', 'cases', 'case-details', caseId, 'hearings']);
   }
 
   public isAnyHearingSelected(): boolean {

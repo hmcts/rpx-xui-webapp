@@ -5,6 +5,8 @@
 <h1 class="govuk-heading-l" *ngIf="!linkedCases?.length">{{ linkedHearingEnum.NoLinkedCases}}</h1>
 <h1 class="govuk-heading-l" *ngIf="linkedCases?.length">{{ isHearingsAvailable? linkedHearingEnum.HearingSelection :
   linkedHearingEnum.NoHearingSelection}}</h1>
+<p class="govuk-hint" *ngIf="isManageLink">Hearings may be unavailable due to their status. or if they are already linked to another hearing.<br>Only hearings
+  from cases linked to this case will appear in this list.</p>
 <form class="form" [formGroup]="linkHearingForm" id="linked-form">
   <div class="govuk-form-group govuk-!-margin-top-5" formArrayName="linkedCases"
     [ngClass]="{'govuk-form-group--error': !!linkedHearingSelectionError}">
@@ -16,7 +18,8 @@
       <table class="govuk-table">
         <thead class="govuk-table__head">
           <tr class="govuk-table__row" *ngIf="case.hearings.length > 0">
-            <th scope="col" [attr.colspan]="mode === pageMode.MANAGE_HEARINGS ? '2' : '3'" class="govuk-table__header" width="550px">
+            <th scope="col" [attr.colspan]="mode === pageMode.MANAGE_HEARINGS ? '2' : '3'" class="govuk-table__header"
+              width="550px">
               {{case.caseName}} &nbsp;{{case.caseReference | caseReference}}
             </th>
             <th scope="col" class="govuk-table__header" width="80px" *ngIf="mode === pageMode.MANAGE_HEARINGS">
@@ -37,7 +40,7 @@
                   &nbsp;&nbsp;
                   <img src="../../../../assets/images/link_icon_slanted.png" width="20px;" class="align-middle"
                     alt="Linked">&nbsp;
-                  <a href="link_hearings_22.html">Manage Link</a>
+                  <a class="govuk-link" [routerLink]="['/', 'cases', 'case-details', case.caseReference, 'hearings']" href="javascript:void()">Manage Link</a>
                 </span>
               </td>
               <td scope="row" class="govuk-table__cell align-middle">
@@ -48,8 +51,8 @@
                 <div class="govuk-radios" data-module="govuk-radios">
                   <div class="govuk-radios__item" *ngIf="!hearing.hearingIsLinkedFlag">
                     <input class="govuk-radios__input" id="{{case.caseReference}}{{hearing.hearingId}}" type="radio"
-                      [value]="true" [checked]="getHearingsFormValue(i).controls[pos].get('isSelected').value" (click)="updateLinkedCase(i, pos);"
-                     [formControlName]="'isSelected'">
+                      [value]="true" [checked]="getHearingsFormValue(i).controls[pos].get('isSelected').value"
+                      (click)="updateLinkedCase(i, pos);" [formControlName]="'isSelected'">
                     <label class="govuk-label govuk-radios__label"
                       for="{{case.caseReference}}{{hearing.hearingId}}"></label>
                   </div>

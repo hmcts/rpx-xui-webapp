@@ -24,7 +24,7 @@ export class PanelRolesResolverService extends RefDataResolver implements Resolv
   }
 
   public resolve(route: ActivatedRouteSnapshot): Observable<LovRefDataModel[]> {
-    route.data.category = HearingCategory.OtherPanelRoles;
+    route.data.category = HearingCategory.PanelMemberType;
     return super.resolve(route);
   }
 }

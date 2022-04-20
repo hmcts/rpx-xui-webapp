@@ -48,7 +48,7 @@ describe('Ref Data Resolver', () => {
     const route = new ActivatedRouteSnapshot();
     route.data = {
       title: 'HMCTS Manage cases | Request Hearing | Date Priority Hearing',
-      category: HearingCategory.Priority
+      category: HearingCategory.HearingPriority
     };
     service.resolve(route).subscribe((refData: LovRefDataModel[]) => {
       expect(service.getReferenceData$).toHaveBeenCalled();
@@ -64,7 +64,7 @@ describe('Ref Data Resolver', () => {
     const route = new ActivatedRouteSnapshot();
     route.data = {
       title: 'HMCTS Manage cases | Request Hearing | Date Priority Hearing',
-      category: HearingCategory.Priority
+      category: HearingCategory.HearingPriority
     };
     service.resolve(route).subscribe((refData: LovRefDataModel[]) => {
       expect(service.getReferenceData$).toHaveBeenCalled();

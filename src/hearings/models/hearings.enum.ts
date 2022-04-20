@@ -124,11 +124,10 @@ export enum DOWUnavailabilityType {
 }
 
 export enum HearingCategory {
-  Priority = 'Priority',
-  PartyChannel = 'PartyChannel',
+  HearingPriority = 'HearingPriority',
+  HearingChannel = 'HearingChannel',
   HearingType = 'HearingType',
-  FacilitiesList = 'FacilitiesList',
-  HearingChannels = 'HearingChannels',
+  AdditionalFacilities = 'AdditionalFacilities',
   HearingSubChannels = 'HearingSubChannels',
   PanelMemberType = 'PanelMemberType',
   PanelMemberSpecialism = 'PanelMemberSpecialism',
@@ -136,9 +135,8 @@ export enum HearingCategory {
   NonStdDurationReasonCodes = 'NonStdDurationReasonCodes',
   EntityRoleCodes = 'EntityRoleCodes',
   JudgeType = 'JudgeType',
-  OtherPanelRoles = 'OtherPanelRoles',
-  CancelHearingReason = 'CancelHearingReason',
-  HearingRoles = 'HearingRoles',
+  CancelHearingReason = 'CancellationReason',
+  HearingRoles = 'EntityRoleCode',
   AdjournHearingActualReason = 'AdjournHearingActualReason',
   CancelHearingActualReason = 'CancelHearingActualReason',
   HearingChangeReason = 'HearingChangeReason'

@@ -15,25 +15,59 @@ import {
 import {JudicialUserModel} from './models/judicialUser.model';
 import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
 
-export const hearingStageRefData = [
+export const hearingStageRefData =  [
   {
     key: 'initial',
     value_en: 'Initial',
     value_cy: '',
-    hintText_EN: 'Initial',
-    hintTextCY: '',
-    order: 1,
-    parentKey: null
+    hint_text_en: 'Initial',
+    hint_text_cy: '',
+    lov_order: 1,
+    parent_key: null,
+    category_key: 'HearingType',
+    parent_category: '',
+    active_flag: 'Y',
+    child_nodes: null,
   },
   {
     key: 'final',
     value_en: 'Final',
     value_cy: '',
-    hintText_EN: 'Final',
-    hintTextCY: '',
-    order: 2,
-    parentKey: null
-  }
+    hint_text_en: 'Final',
+    hint_text_cy: '',
+    lov_order: 2,
+    parent_key: null,
+    category_key: 'HearingType',
+    parent_category: '',
+    active_flag: 'Y',
+    child_nodes: null,
+  },
+  {
+    key: 'substantial',
+    value_en: 'Substantial',
+    value_cy: '',
+    hint_text_en: 'Substantial',
+    hint_text_cy: '',
+    lov_order: 3,
+    parent_key: null,
+    category_key: 'HearingType',
+    parent_category: '',
+    active_flag: 'Y',
+    child_nodes: null,
+  },
+  {
+    key: 'case-management',
+    value_en: 'Case management',
+    value_cy: '',
+    hint_text_en: 'Case management',
+    hint_text_cy: '',
+    lov_order: 4,
+    parent_key: null,
+    category_key: 'HearingType',
+    parent_category: '',
+    active_flag: 'Y',
+    child_nodes: null,
+  },
 ];
 
 export const judicailUsersRefData: JudicialUserModel[] = [{
@@ -1055,11 +1089,11 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
     ],
     panelPreferences: [],
     panelSpecialisms: [
-      'DisabilityQualifiedPanelMember',
-      'EyeSurgeon',
-      'GeneralPractitioner',
-      'FinanciallyQualifiedPanelMember',
-      'RegionalMedicalMember',
+      'BBA3-DQPM',
+      'BBA3-MQPM2-003',
+      'BBA3-MQPM2-004',
+      'BBA3-FQPM',
+      'BBA3-RMM',
     ],
   },
   parties: [
@@ -1448,7 +1482,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
       hearingFinalFlag: false,
       hearingResult: HearingResult.CANCELLED,
       hearingResultDate: '2019-01-01',
-      hearingResultReasonType: 'reasoneTwo',
+      hearingResultReasonType: 'reasonTwo',
       hearingType: 'Pre-hearing review',
     },
     actualHearingDays: [
@@ -1468,7 +1502,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               name: 'Company D',
             },
             didNotAttendFlag: false,
-            partyChannelSubType: 'Fax',
+            partyChannelSubType: 'inPerson',
             partyRole: 'interpreter',
             representedParty: '5',
           },
@@ -1490,7 +1524,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               name: 'Company A',
             },
             didNotAttendFlag: true,
-            partyChannelSubType: 'Other',
+            partyChannelSubType: 'video-teams',
             partyRole: 'interpreter',
             representedParty: '2',
           },

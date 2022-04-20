@@ -73,10 +73,10 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
       key: [val.key],
       value_en: [val.value_en],
       value_cy: [val.value_cy],
-      hintText_EN: [val.hintText_EN],
-      hintTextCY: [val.hintTextCY],
-      order: [val.order],
-      parentKey: [val.parentKey],
+      hint_text_en: [val.hint_text_en],
+      hint_text_cy: [val.hint_text_cy],
+      lov_order: [val.lov_order],
+      parent_key: [val.parent_key],
       selected: [!!val.selected || (preselectedJudgeTypes && preselectedJudgeTypes.includes(val.key))]
     })));
   }

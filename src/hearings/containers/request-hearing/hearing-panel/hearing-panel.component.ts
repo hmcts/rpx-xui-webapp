@@ -142,7 +142,6 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
       this.showSpecificPanel(RadioOptions.YES);
     } else {
       this.showSpecificPanel(RadioOptions.NO);
-
     }
   }
 
@@ -201,10 +200,13 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
         key: control.value.key,
         value_en: control.value.value_en,
         value_cy: control.value.value_cy,
-        hintText_EN: control.value.hintText_EN,
-        hintTextCY: control.value.hintTextCY,
-        order: control.value.order,
-        parentKey: control.value.parentKey,
+        hint_text_en: control.value.hint_text_en,
+        hint_text_cy: control.value.hint_text_cy,
+        lov_order: control.value.lov_order,
+        parent_key: control.value.parent_key,
+        category_key: control.value.category_key,
+        parent_category: control.value.parent_category,
+        active_flag: control.value.active_flag,
         child_nodes: control.value && control.value.child_nodes ? control.value.child_nodes : [],
         selected: control.value.selected,
       };
@@ -220,10 +222,13 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
         key: otherPanelRoles.key,
         value_en: otherPanelRoles.value_en,
         value_cy: otherPanelRoles.value_cy,
-        hintText_EN: otherPanelRoles.hintText_EN,
-        hintTextCY: otherPanelRoles.hintTextCY,
-        order: otherPanelRoles.order,
-        parentKey: otherPanelRoles.parentKey,
+        hint_text_en: otherPanelRoles.hint_text_en,
+        hint_text_cy: otherPanelRoles.hint_text_cy,
+        lov_order: otherPanelRoles.lov_order,
+        parent_key: otherPanelRoles.parent_key,
+        category_key: otherPanelRoles.category_key,
+        parent_category: otherPanelRoles.parent_category,
+        active_flag: otherPanelRoles.active_flag,
         child_nodes: otherPanelRoles.child_nodes,
         selected: !otherPanelRoles.selected ? false : true,
       } as LovRefDataModel) as FormGroup);
@@ -236,10 +241,13 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
       key: [refDataModel.key],
       value_en: [refDataModel.value_en],
       value_cy: [refDataModel.value_cy],
-      hintText_EN: [refDataModel.hintText_EN],
-      hintTextCY: [refDataModel.hintText_EN],
-      order: [refDataModel.order],
-      parentKey: [refDataModel.parentKey],
+      hint_text_en: [refDataModel.hint_text_en],
+      hint_text_cy: [refDataModel.hint_text_cy],
+      lov_order: [refDataModel.lov_order],
+      parent_key: [refDataModel.parent_key],
+      category_key: [refDataModel.category_key],
+      parent_category: [refDataModel.parent_category],
+      active_flag: [refDataModel.active_flag],
       selected: [refDataModel.selected, Validators.required],
       child_nodes: refDataModel.child_nodes && refDataModel.child_nodes.length > 0 ? this.convertRefDataModelToArray(refDataModel.child_nodes) : []
     });

@@ -42,6 +42,6 @@
     <button *ngIf="isManageJourneyFinalPage && linkedCases.length > 0" class="govuk-button primary" data-module="govuk-button" (click)="onManageLinkHearings()">Link hearings</button>
     <button *ngIf="isManageLink && !isManageJourneyFinalPage && linkedCases.length > 0" class="govuk-button primary" data-module="govuk-button" (click)="onEdit()">Edit</button>
     <button *ngIf="isManageJourneyFinalPage && linkedCases.length === 0" class="govuk-button primary" data-module="govuk-button" (click)="onUnlinkHearings()">Unlink hearings</button>
-    <a href="javascript:void(0)" class="link-cancel" (click)="onBack()">{{cancelButtonText}}</a>
+    <a href="javascript:void(0)" class="link-cancel" (click)="onCancel()">{{cancelButtonText}}</a>
   </div>
 </div>

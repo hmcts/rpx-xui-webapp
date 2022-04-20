@@ -167,6 +167,15 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
       this.router.navigate(['/', 'hearings', 'link', this.caseId, this.hearingId, 'group-selection']);
     }
   }
+
+  public onCancel(): void {
+    if (this.isManageLink) {
+      this.router.navigate(['/', 'cases', 'case-details', this.caseId, 'hearings']);
+    } else {
+      this.hearingStore.dispatch(new fromHearingStore.ResetLinkedHearingLastError());
+      this.router.navigate(['/', 'hearings', 'link', this.caseId, this.hearingId, 'group-selection']);
+    }
+  }
 }
 
 interface LinkedHearingsCheckYourAnswersPageResult {

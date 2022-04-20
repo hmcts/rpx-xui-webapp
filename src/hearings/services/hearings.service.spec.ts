@@ -203,7 +203,7 @@ describe('HearingsService', () => {
     }));
 
     it('should call deleteLinkedHearingGroup', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
-      service.deleteLinkedHearingGroup('g100000', 'h1000000').subscribe(response => {
+      service.deleteLinkedHearingGroup('g100000').subscribe(response => {
         expect(response).toBeNull();
       });
 

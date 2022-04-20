@@ -16,6 +16,7 @@ import { ValidatorsUtils } from '../../../utils/validators.utils';
 })
 export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public isManageLink: boolean;
+  public isHearingsPreSelected: boolean;
   public caseId: string;
   public hearingId: string;
   public caseName: string;
@@ -31,11 +32,11 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public mode: Mode;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
-              private readonly hearingsService: HearingsService,
-              private readonly validators: ValidatorsUtils,
-              private readonly route: ActivatedRoute,
-              private readonly router: Router,
-              private readonly fb: FormBuilder) {
+    private readonly hearingsService: HearingsService,
+    private readonly validators: ValidatorsUtils,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly fb: FormBuilder) {
     this.isManageLink = this.route.snapshot.data.mode === Mode.MANAGE_HEARINGS;
     this.mode = this.route.snapshot.data.mode;
     this.caseId = this.route.snapshot.params.caseId;
@@ -43,7 +44,8 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     this.sub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
       state => {
         this.caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.caseName : '';
-        if (this.isManageLink) {
+        this.isHearingsSelected(state.hearingLinks.serviceLinkedCases);
+        if (this.isManageLink || this.isHearingsPreSelected) {
           this.linkedCases = state.hearingLinks.serviceLinkedCases;
         }
       }
@@ -60,6 +62,14 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
 
   public getHearingsFormValue(position): FormArray {
     return this.getCasesFormValue.controls[position].get('hearings') as FormArray;
+  }
+
+  public isHearingsSelected(linkedCases) {
+    linkedCases.forEach((caseInfo) => {
+      if (caseInfo.hearings && caseInfo.hearings.find((hearingInfo) => hearingInfo.isSelected === true)) {
+        this.isHearingsPreSelected = true;
+      }
+    });
   }
 
   public get getCasesFormArray(): FormArray {
@@ -88,13 +98,24 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.initForm();
-    if (!this.isManageLink) {
+    if (!this.isManageLink && !this.isHearingsPreSelected) {
       this.sub = this.hearingsService.getAllCaseInformation(this.route.snapshot.data.linkedCase, this.isManageLink).subscribe((casesLinkedInfo) => {
         this.linkedCases = casesLinkedInfo;
         this.initForm();
+        this.getHearingsAvailable();
       });
+    } else {
+      this.initForm();
+      this.getHearingsAvailable();
     }
+  }
+
+  public getHearingsAvailable() {
+    this.linkedCases.forEach((caseInfo) => {
+      if (caseInfo.hearings && caseInfo.hearings.length > 0) {
+        this.isHearingsAvailable = true;
+      }
+    });
   }
 
   public updateLinkedCase(casePos: number, hearingPos: number) {

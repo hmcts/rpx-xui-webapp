@@ -21,7 +21,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
   public caseName: string;
   public hearingLinksStateData$: Observable<HearingLinksStateData>;
   public receivedCases: ServiceLinkedCasesModel[];
-  public selectedToBeLinkedCases: ServiceLinkedCasesModel[];
+  public selectedLinkedCases: ServiceLinkedCasesModel[];
   public linkedHearingGroup: LinkedHearingGroupMainModel;
   public validationErrors: { id: string; message: string }[] = [];
   public positionDropdownValues = [];
@@ -91,46 +91,41 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.selectedToBeLinkedCases = [];
+    this.selectedLinkedCases = [];
     if (this.mode === Mode.MANAGE_HEARINGS) {
       this.sub = this.hearingsService.getAllCaseInformation(this.hearingLinks, true).subscribe((casesLinkedInfo) => {
         casesLinkedInfo.forEach(linkedCase => {
-          const selectedHearings = linkedCase.hearings && linkedCase.hearings.filter(hearing => hearing.isSelected);
-          if (selectedHearings && selectedHearings.length) {
-            this.selectedToBeLinkedCases.push({
-              caseReference: linkedCase.caseReference,
-              caseName: linkedCase.caseName,
-              hearings: selectedHearings,
-              reasonsForLink: linkedCase.reasonsForLink
-            });
-          }
+          this.mapLinkedCase(linkedCase);
         });
-        if (this.selectedToBeLinkedCases && this.selectedToBeLinkedCases.length) {
-          this.positionDropdownValues = Array.from({ length: this.selectedToBeLinkedCases.length }, (_, i) => i + 1);
-          this.createForm();
-        }
+        this.initiateFormCreation();
       });
     } else {
-      this.receivedCases.forEach((linked) => {
-        const selectedHearing = linked.hearings && linked.hearings.filter(hearing => hearing.isSelected === true);
-        if (selectedHearing && selectedHearing.length) {
-          this.selectedToBeLinkedCases.push({
-            caseReference: linked.caseReference,
-            caseName: linked.caseName,
-            hearings: selectedHearing,
-            reasonsForLink: linked.reasonsForLink
-          });
-        }
+      this.receivedCases.forEach((linkedCase) => {
+        this.mapLinkedCase(linkedCase)
       });
-      if (this.selectedToBeLinkedCases && this.selectedToBeLinkedCases.length) {
-        this.positionDropdownValues = Array.from({ length: this.selectedToBeLinkedCases.length }, (_, i) => i + 1);
-        this.createForm();
-      }
+      this.initiateFormCreation();
+    }
+  }
+
+  private initiateFormCreation() {
+    if (this.selectedLinkedCases && this.selectedLinkedCases.length) {
+      this.positionDropdownValues = Array.from({ length: this.selectedLinkedCases.length }, (_, i) => i + 1);
+      this.createForm();
+    }
+  }
+
+  private mapLinkedCase(linkedCase: ServiceLinkedCasesModel) {
+    const selectedHearings = linkedCase.hearings && linkedCase.hearings.filter(hearing => hearing.isSelected);
+    if (selectedHearings && selectedHearings.length) {
+      this.selectedLinkedCases.push({
+        ...linkedCase,
+        hearings: selectedHearings,
+      });
     }
   }
 
   private createForm(): void {
-    this.selectedToBeLinkedCases.forEach((linked) => {
+    this.selectedLinkedCases.forEach((linked) => {
       this.addRow(linked);
     });
   }
@@ -146,7 +141,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
     };
     if (this.isFormValid()) {
       this.hearingOrder.value.forEach(formValue => {
-        const hearing = this.selectedToBeLinkedCases.find(linked => linked.caseReference === formValue.caseReference);
+        const hearing = this.selectedLinkedCases.find(linked => linked.caseReference === formValue.caseReference);
         const selectedHearing = hearing && hearing.hearings.find(selected => selected.isSelected);
         if (selectedHearing) {
           linkedHearingGroupMainModel.hearingsInGroup.push({
@@ -161,7 +156,6 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
       } else {
         this.router.navigate([`/hearings/link/${this.caseId}/${this.hearingId}/check-your-answers`]);
       }
-
     }
   }
 
@@ -207,7 +201,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
   }
 
   public hasInvalidOrderSelection() {
-    return this.validationErrors.length > 0 && this.selectedOption !== null && this.selectedToBeLinkedCases && this.selectedToBeLinkedCases.length;
+    return this.validationErrors.length > 0 && this.selectedOption !== null && this.selectedLinkedCases && this.selectedLinkedCases.length;
   }
 
   public onOptionSelection(value: GroupLinkType): void {

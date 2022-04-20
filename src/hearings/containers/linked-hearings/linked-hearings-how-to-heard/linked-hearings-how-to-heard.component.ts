@@ -54,12 +54,11 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
         this.receivedCases = state.serviceLinkedCases;
     });
   } else {
-    const routeData = this.route.snapshot.data;
-    this.hearingsInGroup = routeData.linkedCase && routeData.linkedCase.linkedHearingGroup && routeData.linkedCase.linkedHearingGroup.hearingsInGroup;
     this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
       state => {
         this.caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.caseName : '';
         this.hearingLinks = state.hearingLinks;
+        this.hearingsInGroup = this.hearingLinks.linkedHearingGroup.hearingsInGroup;
       }
     );
   }
@@ -78,7 +77,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
       caseReference: [linkCase.caseReference],
       caseName: [linkCase.caseName],
       hearingStage: [linkCase.hearings[0] && linkCase.hearings[0].hearingStage || ''],
-      position: [1, this.validators.mandatory('')]
+      position: [this.getPosition(linkCase.hearings[0]), this.validators.mandatory('')]
     }));
   }
 
@@ -156,7 +155,12 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
         }
       });
       this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesGroupDetail(linkedHearingGroupMainModel));
-      this.router.navigate([`/hearings/link/${this.caseId}/${this.hearingId}/check-your-answers`]);
+      if (this.mode === Mode.MANAGE_HEARINGS) {
+        this.router.navigate([`/hearings/manage-links/${this.caseId}/${this.hearingId}/check-your-answers`]);
+      } else {
+        this.router.navigate([`/hearings/link/${this.caseId}/${this.hearingId}/check-your-answers`]);
+      }
+
     }
   }
 
@@ -164,6 +168,10 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
     const positionSelected = this.hearingOrder.controls[index].get('position').value;
     const hasSamePosSelectedIndex = this.hearingOrder.value.map((val, rowIndex) => val.position === positionSelected && rowIndex !== index);
     hasSamePosSelectedIndex.forEach((val, idx: number) => val && this.hearingOrder.controls[idx].patchValue({ position: '' }));
+  }
+
+  public hasPosToBePreSelected(index: number) {
+    return this.hearingOrder.controls[index].get('position') && this.hearingOrder.controls[index].get('position').value;
   }
 
   public isFormValid(): boolean {

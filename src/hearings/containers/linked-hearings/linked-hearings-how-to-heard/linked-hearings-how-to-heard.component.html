@@ -73,13 +73,13 @@
                                 <td class="govuk-table__cell">
                                   {{group.get('hearingStage').value}}
                                 </td>
-                                <td>
+                                <td *ngIf="hearingOrder">
                                   <select class="govuk-select" [id]="'hearingsOrder'+i" formControlName="position"
                                     (change)="onOrderChange(i)"
                                     [ngClass]="{'govuk-select--error': validationErrors.length > 0 && highlightRowError(i, 'position', ngForm.submitted)}">
-                                    <option value="" selected></option>
-                                    <option *ngFor="let num of positionDropdownValues">
-                                      {{num}}</option>
+                                    <option value=""></option>
+                                    <option *ngFor="let pos of positionDropdownValues" [selected]="hasPosToBePreSelected(i) === pos">
+                                      {{pos}}</option>
                                   </select>
                                 </td>
                               </tr>

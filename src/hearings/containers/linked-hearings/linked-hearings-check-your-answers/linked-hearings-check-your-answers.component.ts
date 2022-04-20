@@ -18,9 +18,7 @@ import * as fromHearingStore from '../../../store';
   styleUrls: ['./linked-hearings-check-your-answers.component.scss']
 })
 export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
-  
-  private static MANAGE_JOURNEY_FINAL_PAGE = 'check-your-answers';
-
+  private static readonly MANAGE_JOURNEY_FINAL_PAGE = 'check-your-answers';
   public isManageLink: boolean;
   public mode: Mode = Mode.LINK_HEARINGS;
   public caseId: string;
@@ -42,9 +40,9 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
   public isManageJourneyFinalPage: boolean;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
-              private readonly hearingsService: HearingsService,
-              private readonly route: ActivatedRoute,
-              private readonly router: Router) {
+    private readonly hearingsService: HearingsService,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router) {
     this.isManageLink = this.route.snapshot.data.mode === Mode.MANAGE_HEARINGS;
     this.isManageJourneyFinalPage = this.isManageLink &&
       this.route.snapshot.url &&
@@ -160,7 +158,9 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
   }
 
   public onBack(): void {
-    if (this.isManageLink) {
+    if (this.isManageJourneyFinalPage) {
+      this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, this.hearingId, 'group-selection']);
+    } else if (this.isManageLink) {
       this.router.navigate(['/', 'cases', 'case-details', this.caseId, 'hearings']);
     } else {
       this.hearingStore.dispatch(new fromHearingStore.ResetLinkedHearingLastError());

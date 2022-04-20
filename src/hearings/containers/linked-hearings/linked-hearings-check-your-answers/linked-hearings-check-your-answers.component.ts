@@ -87,10 +87,6 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
       ));
   }
 
-  public getHearingSelectedValue(caseInfo: ServiceLinkedCasesModel, hearing: HearingListModel, linkedHearingGroup: LinkedHearingGroupMainModel): boolean {
-    return this.isManageLink ? !!linkedHearingGroup.hearingsInGroup.find((hearingInfo) => hearingInfo.caseRef === caseInfo.caseReference && hearingInfo.hearingId === hearing.hearingID) : false;
-  }
-
   public setDisplayRow(linkedCase: ServiceLinkedCasesModel, selectedHearings: HearingDetailModel[]): void {
     if (selectedHearings && selectedHearings.length > 0) {
       selectedHearings.forEach(hearing => {

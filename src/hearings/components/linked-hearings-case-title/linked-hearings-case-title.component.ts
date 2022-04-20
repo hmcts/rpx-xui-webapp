@@ -14,6 +14,6 @@ export class LinkedHearingsCaseTitleComponent {
   constructor(
     protected readonly route: ActivatedRoute,
   ) {
-      this.hearingTitleTextPrefix = this.route.snapshot.data.mode === Mode.LINK_HEARINGS ? 'Link hearings' : 'Manage hearings';
+      this.hearingTitleTextPrefix = this.route.snapshot.data.mode === Mode.MANAGE_HEARINGS ? 'Manage hearings' : 'Link hearings';
   }
 }

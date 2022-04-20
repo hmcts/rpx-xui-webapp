@@ -78,7 +78,7 @@
                                     (change)="onOrderChange(i)"
                                     [ngClass]="{'govuk-select--error': validationErrors.length > 0 && highlightRowError(i, 'position', ngForm.submitted)}">
                                     <option value=""></option>
-                                    <option *ngFor="let pos of positionDropdownValues" [selected]="hasPosToBePreSelected(i) === pos">
+                                    <option *ngFor="let pos of positionDropdownValues" [selected]="hasPosToBePreSelected(i) == pos">
                                       {{pos}}</option>
                                   </select>
                                 </td>

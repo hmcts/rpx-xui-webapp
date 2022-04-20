@@ -54,6 +54,8 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
         this.receivedCases = state.serviceLinkedCases;
         this.groupDetails = state.linkedHearingGroup && state.linkedHearingGroup.groupDetails;
         this.selectedOption = this.groupDetails && this.groupDetails.groupLinkType;
+        this.groupDetails = state && state.linkedHearingGroup && state.linkedHearingGroup.groupDetails;
+        this.hearingsInGroup = state && state.linkedHearingGroup && state.linkedHearingGroup.hearingsInGroup;
         this.form = this.fb.group({
           hearingGroup: [this.groupDetails && this.groupDetails.groupLinkType || '', Validators.required],
           hearingOrder: this.fb.array([]),

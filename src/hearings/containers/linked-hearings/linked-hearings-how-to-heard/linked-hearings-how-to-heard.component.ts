@@ -44,21 +44,25 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly router: Router,
   ) {
-    this.mode = this.route.snapshot.data.mode;
-    this.hearingsInGroup = this.route.snapshot.data.linkedCase && this.route.snapshot.data.linkedCase.linkedHearingGroup.hearingsInGroup;
+    this.mode = this.route.snapshot.data.mode || Mode.LINK_HEARINGS;
     this.form = this.fb.group({
       hearingGroup: ['', Validators.required],
       hearingOrder: this.fb.array([]),
     });
+    if (this.mode === Mode.LINK_HEARINGS) {
     this.hearingStore.pipe(select(fromHearingStore.getHearingLinks)).subscribe((state) => {
         this.receivedCases = state.serviceLinkedCases;
     });
+  } else {
+    const routeData = this.route.snapshot.data;
+    this.hearingsInGroup = routeData.linkedCase && routeData.linkedCase.linkedHearingGroup && routeData.linkedCase.linkedHearingGroup.hearingsInGroup;
     this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
       state => {
         this.caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.caseName : '';
         this.hearingLinks = state.hearingLinks;
       }
     );
+  }
     this.caseId = this.route.snapshot.params.caseId;
     this.hearingId = this.route.snapshot.params.hearingId;
   }

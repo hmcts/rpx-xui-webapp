@@ -13,7 +13,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   hmctsServiceID: 'BBA3',
   caseName: 'Jane and Smith vs DWP',
   autoListFlag: false,
-  hearingType: 'final',
+  hearingType: 'BBA3-directionHearings',
   caseCategories: [
     {
       categoryType: CategoryType.CaseType,
@@ -39,7 +39,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
     firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
   },
   duration: 45,
-  hearingPriorityType: 'standard',
+  hearingPriorityType: 'normal',
   numberOfPhysicalAttendees: 2,
   hearingInWelshFlag: false,
   hearingLocations: [{
@@ -47,7 +47,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
     locationType: HMCLocationType.COURT,
   }],
   caseAdditionalSecurityFlag: false,
-  facilitiesRequired: ['immigrationDetentionCentre'],
+  facilitiesRequired: ['AF-VF'],
   listingComments: 'Additional instructions for the hearing',
   hearingRequester: '',
   privateHearingRequiredFlag: false,
@@ -78,11 +78,11 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
     ],
     panelPreferences: [],
     panelSpecialisms: [
-      'DisabilityQualifiedPanelMember',
-      'EyeSurgeon',
-      'GeneralPractitioner',
-      'FinanciallyQualifiedPanelMember',
-      'RegionalMedicalMember',
+      'BBA3-DQPM',
+      'BBA3-MQPM2-003',
+      'BBA3-MQPM2-004',
+      'BBA3-FQPM',
+      'BBA3-RMM',
     ],
   },
   parties: [
@@ -95,7 +95,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
         title: 'Miss',
         firstName: 'Jane',
         lastName: 'Smith',
-        preferredHearingChannel: 'inPerson',
+        preferredHearingChannel: 'faceToFace',
       },
       unavailabilityRanges: [
         {
@@ -114,7 +114,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
         title: '',
         firstName: 'DWP',
         lastName: '',
-        preferredHearingChannel: 'inPerson',
+        preferredHearingChannel: 'faceToFace',
       },
       unavailabilityRanges: [
         {

@@ -4,7 +4,7 @@ import {getConfigValue} from '../../configuration';
 import {SERVICES_PRD_COMMONDATA_API} from '../../configuration/references';
 import {EnhancedRequest} from '../../lib/models';
 import {ALL_REF_DATA} from "./data/lov.mock.data";
-import {LovRefDataByCategoryModel, LovRefDataByServiceModel} from './models/lovRefData.model';
+import {LovRefDataByServiceModel} from './models/lovRefData.model';
 
 const prdUrl: string = getConfigValue(SERVICES_PRD_COMMONDATA_API);
 
@@ -18,11 +18,15 @@ export async function getLovRefData(req: EnhancedRequest, res: Response) {
   const markupPath: string = `${prdUrl}/refdata/commondata/lov/categories/${category}?${params}`;
   try {
     const {status, data}: { status: number, data: LovRefDataByServiceModel } = await sendGet(markupPath, req);
-    res.status(status).send(data);
+    res.status(status).send(data.list_of_values);
   } catch (error) {
     // in order to not break the hearing journey, if the LoV is not defined from RD we will use the ExUI default value set.
-    const defaultData = ALL_REF_DATA.filter(lovRefDataByCategoryModel => lovRefDataByCategoryModel.categoryKey === category)
-      .map((lovRefDataByCategoryModel: LovRefDataByCategoryModel) => lovRefDataByCategoryModel.lovDataModel.list_of_values);
-    res.status(200).send(defaultData);
+    const foundDataWithCategory = ALL_REF_DATA.find(lovRefDataByCategoryModel =>
+      lovRefDataByCategoryModel.categoryKey === category);
+    let exuiDefaultData;
+    if (foundDataWithCategory && foundDataWithCategory.lovDataModel) {
+      exuiDefaultData = foundDataWithCategory.lovDataModel.list_of_values;
+    }
+    res.status(200).send(exuiDefaultData);
   }
 }

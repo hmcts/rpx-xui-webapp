@@ -62,7 +62,7 @@ export class LoadLinkedHearingGroupFailure implements Action {
 
 export class SubmitLinkedHearingGroup implements Action {
   public readonly type = SUBMIT_LINKED_HEARING_GROUP;
-  constructor(public payload: { linkedHearingGroup: LinkedHearingGroupMainModel, caseId: string, hearingId: string }) {
+  constructor(public payload: { linkedHearingGroup: LinkedHearingGroupMainModel, caseId: string, hearingId: string, isManageLink: boolean }) {
   }
 }
 

@@ -5,7 +5,6 @@ import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpError } from '../../../../models/httpError.model';
 import { HearingLinksStateData } from '../../../models/hearingLinksStateData.model';
-import { HearingListModel } from '../../../models/hearingList.model';
 import { GroupLinkType, Mode } from '../../../models/hearings.enum';
 import { HearingDetailModel, LinkedHearingGroupMainModel, LinkedHearingsDetailModel, ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
 import { HearingsService } from '../../../services/hearings.service';
@@ -41,6 +40,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
               private readonly route: ActivatedRoute,
               private readonly router: Router) {
     this.isManageLink = this.route.snapshot.data.mode === Mode.MANAGE_HEARINGS;
+    this.mode = this.route.snapshot.data.mode;
     this.caseId = this.route.snapshot.params.caseId;
     this.hearingId = this.route.snapshot.params.hearingId;
     this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
@@ -87,10 +87,6 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
       ));
   }
 
-  public getHearingSelectedValue(caseInfo: ServiceLinkedCasesModel, hearing: HearingListModel, linkedHearingGroup: LinkedHearingGroupMainModel): boolean {
-    return this.isManageLink ? !!linkedHearingGroup.hearingsInGroup.find((hearingInfo) => hearingInfo.caseRef === caseInfo.caseReference && hearingInfo.hearingId === hearing.hearingID) : false;
-  }
-
   public setDisplayRow(linkedCase: ServiceLinkedCasesModel, selectedHearings: HearingDetailModel[]): void {
     if (selectedHearings && selectedHearings.length > 0) {
       selectedHearings.forEach(hearing => {
@@ -132,12 +128,12 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
       } else {
         this.linkedHearingGroup = null;
         this.hearingStore.dispatch(new fromHearingStore.SubmitLinkedHearingGroup({
-          linkedHearingGroup: this.linkedHearingGroup, caseId: this.caseId, hearingId: this.hearingId
+          linkedHearingGroup: this.linkedHearingGroup, caseId: this.caseId, hearingId: this.hearingId, isManageLink: this.isManageLink
         }));
       }
     } else {
       this.hearingStore.dispatch(new fromHearingStore.SubmitLinkedHearingGroup({
-        linkedHearingGroup: this.linkedHearingGroup, caseId: this.caseId, hearingId: this.hearingId
+        linkedHearingGroup: this.linkedHearingGroup, caseId: this.caseId, hearingId: this.hearingId, isManageLink: this.isManageLink
       }));
     }
   }

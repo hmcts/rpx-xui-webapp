@@ -188,11 +188,12 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
     const storeDispatchSpy = spyOn(mockStore, 'dispatch');
     component.linkedHearingGroup = linkedHearingGroup;
     component.caseId = caseId;
+    component.hearingGroupRequestId = 'undefined';
     component.hearingId = hearingId;
     component.isManageLink = false;
     component.onLinkHearings();
     expect(storeDispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SubmitLinkedHearingGroup({
-      linkedHearingGroup, caseId, hearingGroupRequestId, hearingId, isManageLink: false
+      linkedHearingGroup, caseId, hearingGroupRequestId: 'undefined', hearingId, isManageLink: false
     })));
   });
 
@@ -212,8 +213,10 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
   it('should navigate to selected hearings page', () => {
     component.caseId = caseId;
     component.hearingId = hearingId;
+    component.hearingGroupRequestId = hearingGroupRequestId;
+    component.isManageLink = true;
     component.onEdit();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', caseId, hearingId, 'selected-hearings']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', caseId, hearingGroupRequestId, hearingId, 'selected-hearings']);
   });
 
   it('should dispatch to store on link hearings', () => {

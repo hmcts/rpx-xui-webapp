@@ -33,7 +33,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   hearingListingStatus: 'UPDATE REQUESTED',
   listAssistCaseStatus: '',
   hearingIsLinkedFlag: true,
-  hearingGroupRequestId: null,
+  hearingGroupRequestId: 'g1000000',
   hearingDaySchedule: null,
   exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
   exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING
@@ -835,6 +835,7 @@ describe('CaseHearingsListComponent', () => {
   });
 
   it('should manageLinks', () => {
+    component.caseId = '1111222233334444';
     component.manageLinks(UPCOMING_HEARING_LIST[0]);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', '1111222233334444', 'g1000000', 'h100001']);
   });

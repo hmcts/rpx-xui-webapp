@@ -220,9 +220,7 @@ export const init = () => {
   mock.onDelete(linkedHearingGroup).reply(() => {
     return [
       200,
-      {
-        hearingGroupRequestId: 'g1000000',
-      },
+      null,
     ];
   });
 };

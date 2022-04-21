@@ -211,7 +211,6 @@ describe('HearingsService', () => {
         expect(req.url).toBe('api/hearings/deleteLinkedHearingGroup');
         expect(req.method).toBe('DELETE');
         expect(req.params.get('hearingGroupId')).toEqual('g100000');
-        expect(req.params.get('hearingIds')).toEqual('h1000000');
         return true;
       })
         .flush(null);

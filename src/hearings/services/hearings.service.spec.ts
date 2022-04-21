@@ -280,6 +280,17 @@ describe('HearingsService', () => {
     }));
 
 
+    it('should call getAllCaseInformation', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
+      const linkedState: HearingLinksStateData = {
+        serviceLinkedCases: null,
+        linkedHearingGroup: {} as LinkedHearingGroupMainModel
+      };
+      const isManageLink: boolean = false;
+      service.getAllCaseInformation(linkedState, isManageLink).subscribe(response => {
+        expect(response).toBeNull();
+      });
+    }));
+
     it('should call deleteLinkedHearingGroup', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
       service.deleteLinkedHearingGroup('g100000').subscribe(response => {
         expect(response).toBeNull();

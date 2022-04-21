@@ -96,13 +96,13 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
       caseReference: '4652724902696213',
       caseName: 'Smith vs Peterson',
       hearingStage: 'Initial',
-      position: 1
+      position: 2
     },
     {
       caseReference: '5283819672542864',
       caseName: 'Smith vs Peterson',
       hearingStage: 'Initial',
-      position: 2
+      position: 1
     }
   ];
 
@@ -136,6 +136,25 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
     component.setHearingLinkedGroup(source);
     expect(setDisplayRowSpy).toHaveBeenCalledTimes(3);
     expect(setCancelButtonTextSpy).toHaveBeenCalled();
+  });
+
+  it('should verify cancel button text', () => {
+    component.isManageLink = true;
+    component.isManageJourneyFinalPage = false;
+    component.linkedCases = linkedCases;
+    component.setCancelButtonText();
+    expect(component.cancelButtonText).toEqual('Return to hearings');
+    component.isManageLink = false;
+    component.setCancelButtonText();
+    expect(component.cancelButtonText).toEqual('Cancel');
+  });
+
+  it('should sort display records', () => {
+    component.showPositionColumn = true;
+    component.linkedCases = linkedCases;
+    component.sortDisplayRecords();
+    expect(component.linkedCases[0].position).toEqual(1);
+    expect(component.linkedCases[1].position).toEqual(2);
   });
 
   it('should display position column return true', () => {

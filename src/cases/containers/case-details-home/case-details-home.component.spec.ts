@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
   AlertService,
@@ -8,6 +8,8 @@ import {
   ErrorNotifierService
 } from '@hmcts/ccd-case-ui-toolkit';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
+import { of } from 'rxjs';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared';
 
 import { CaseDetailsHomeComponent } from '..';
 import { reducers } from '../../../app/store';
@@ -19,6 +21,8 @@ describe('CaseDetailsHomeComponent', () => {
   let fixture: ComponentFixture<CaseDetailsHomeComponent>;
   const mockAlertService = jasmine.createSpyObj('alertService', ['success', 'setPreserveAlerts', 'error']);
   const mockErrorNotifierService = jasmine.createSpyObj('ErrorNotifierService', ['announceError']);
+  const mockActivatedRoute = { data: of({case: {case_id: '1234', case_type: {id: 'caseTypeId', jurisdiction: {id: 'IA'}}}})};
+  const mockSessionStorageService = jasmine.createSpyObj('SessionStorageService', ['setItem']);
   let mockRouter: jasmine.SpyObj<Router>;
   let store: Store<fromFeature.State>;
   let storeDispatchMock: any;
@@ -34,7 +38,9 @@ describe('CaseDetailsHomeComponent', () => {
       declarations: [CaseDetailsHomeComponent],
       providers: [
         { provide: AlertService, useValue: mockAlertService },
-        { provide: ErrorNotifierService, useValue: mockErrorNotifierService }
+        { provide: ErrorNotifierService, useValue: mockErrorNotifierService },
+        { provide: ActivatedRoute, useValue: mockActivatedRoute },
+        { provide: SessionStorageService, useValue: mockSessionStorageService  }
       ]
     })
       .compileComponents();
@@ -52,6 +58,11 @@ describe('CaseDetailsHomeComponent', () => {
 
     it('should create', () => {
       expect(component).toBeTruthy();
+    });
+
+    it('ngOnInit', () => {
+      component.ngOnInit();
+      expect(mockSessionStorageService.setItem).toHaveBeenCalled();
     });
 
     it('should not have a success message that is shown', () => {

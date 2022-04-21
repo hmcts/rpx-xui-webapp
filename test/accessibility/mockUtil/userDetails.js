@@ -22,7 +22,7 @@ class UserDetails{
     mockUserDetailsWithIdentifierAndRoles(forUserIndetifier, roles) {
         const userDetails = nodeAppDataModels.getUserDetails_oidc();
 
-        const testUser = testUsers.users.filter(user => user.userIdentifier === forUserIndetifier);
+        const testUser = testUsers.users['aat'].filter(user => user.userIdentifier === forUserIndetifier);
         if (testUser.length === 0) {
             throw new Error(`User with idenifier ${forUserIndetifier} not found is test uers config`);
         }

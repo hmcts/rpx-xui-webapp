@@ -151,12 +151,13 @@ describe('LinkedHearingsWithCaseComponent', () => {
   it('should navigate to previous page', () => {
     component.caseId = '8254902572336147';
     component.hearingId = 'h100010';
+    component.hearingGroupRequestId = 'g000101';
     component.onBack();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'cases', 'case-details', '8254902572336147', 'hearings']);
 
     component.isManageLink = true;
     component.onBack();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', '8254902572336147', 'h100010']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', '8254902572336147', 'g000101', 'h100010']);
   });
 
   it('should check on submit for manage link', () => {
@@ -177,10 +178,11 @@ describe('LinkedHearingsWithCaseComponent', () => {
 
   it('should check navigate', () => {
     component.caseId = '8254902572336147';
+    component.hearingGroupRequestId = 'g00101';
     component.hearingId = 'h100010';
     component.mode = component.pageMode.MANAGE_HEARINGS;
     component.navigate();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', '8254902572336147', 'h100010', 'group-selection']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', '8254902572336147', 'g00101', 'h100010', 'group-selection']);
 
     component.linkedCases = [];
     component.initForm();
@@ -188,7 +190,7 @@ describe('LinkedHearingsWithCaseComponent', () => {
     component.mode = component.pageMode.MANAGE_HEARINGS;
     fixture.detectChanges();
     component.navigate();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', '8254902572336147', 'h100010', 'check-your-answers']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', '8254902572336147', 'g00101', 'h100010', 'check-your-answers']);
   });
 
   afterEach(() => {

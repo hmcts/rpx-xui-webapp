@@ -29,6 +29,7 @@ describe('Hearing Links Actions', () => {
     const payload = {
       linkedHearingGroup: null,
       caseId: null,
+      hearingGroupRequestId: null,
       hearingId: null,
       isManageLink: null
     };

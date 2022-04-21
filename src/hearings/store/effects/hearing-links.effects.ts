@@ -54,7 +54,7 @@ export class HearingLinksEffects {
         tap(
           () => {
             if (payload.isManageLink) {
-              return this.router.navigate(['/', 'hearings', 'manage-links', payload.caseId, payload.hearingId, 'final-confirmation']);
+              return this.router.navigate(['/', 'hearings', 'manage-links', payload.caseId, payload.hearingGroupRequestId, payload.hearingId, 'final-confirmation']);
             }
             return this.router.navigate(['/', 'hearings', 'link', payload.caseId, payload.hearingId, 'final-confirmation']);
           }),
@@ -75,12 +75,12 @@ export class HearingLinksEffects {
       if (payload.linkedHearingGroup && payload.linkedHearingGroup.hearingsInGroup && payload.linkedHearingGroup.hearingsInGroup.length > 0) {
         apiCall = this.hearingsService.putLinkedHearingGroup(payload.linkedHearingGroup);
       } else {
-        apiCall = this.hearingsService.deleteLinkedHearingGroup(payload.hearingGroupId);
+        apiCall = this.hearingsService.deleteLinkedHearingGroup(payload.hearingGroupRequestId);
       }
       return apiCall.pipe(
         tap(
           () => {
-            return this.router.navigate(['/', 'hearings', 'manage-links', payload.caseId, payload.hearingId, 'final-confirmation']);
+            return this.router.navigate(['/', 'hearings', 'manage-links', payload.caseId, payload.hearingGroupRequestId, payload.hearingId, 'final-confirmation']);
           }),
         catchError(error => {
           this.hearingStore.dispatch(new hearingLinksActions.SubmitLinkedHearingGroupFailure(error));

@@ -18,6 +18,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public isManageLink: boolean;
   public isHearingsPreSelected: boolean;
   public caseId: string;
+  public hearingGroupRequestId: string;
   public hearingId: string;
   public caseName: string;
   public linkedHearingSelectionError: string;
@@ -40,6 +41,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     this.isManageLink = this.route.snapshot.data.mode === Mode.MANAGE_HEARINGS;
     this.mode = this.route.snapshot.data.mode;
     this.caseId = this.route.snapshot.params.caseId;
+    this.hearingGroupRequestId = this.route.snapshot.params.hearingGroupRequestId;
     this.hearingId = this.route.snapshot.params.hearingId;
     this.sub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
       state => {
@@ -152,9 +154,9 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public navigate(): void {
     if (this.mode === this.pageMode.MANAGE_HEARINGS) {
       if (this.linkHearingForm.valid) {
-        this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, this.hearingId, 'group-selection']);
+        this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, this.hearingGroupRequestId, this.hearingId, 'group-selection']);
       } else {
-        this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, this.hearingId, 'check-your-answers']);
+        this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, this.hearingGroupRequestId, this.hearingId, 'check-your-answers']);
       }
     } else {
       this.router.navigate(['/', 'hearings', 'link', this.caseId, this.hearingId, 'group-selection']);
@@ -167,7 +169,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
 
   public onBack(): void {
     if (this.isManageLink) {
-      this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, this.hearingId]);
+      this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, this.hearingGroupRequestId, this.hearingId]);
     } else {
       this.router.navigate(['/', 'cases', 'case-details', this.caseId, 'hearings']);
     }

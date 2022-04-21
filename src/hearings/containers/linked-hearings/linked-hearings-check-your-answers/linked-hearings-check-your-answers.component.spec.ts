@@ -192,7 +192,7 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
     component.isManageLink = false;
     component.onLinkHearings();
     expect(storeDispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SubmitLinkedHearingGroup({
-      linkedHearingGroup, caseId, hearingId, isManageLink: false
+      linkedHearingGroup, caseId, hearingGroupRequestId, hearingId, isManageLink: false
     })));
   });
 
@@ -218,37 +218,37 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
 
   it('should dispatch to store on link hearings', () => {
     const storeDispatchSpy = spyOn(mockStore, 'dispatch');
-		component.caseId = caseId;
+    component.caseId = caseId;
     component.hearingId = hearingId;
     component.isManageLink = false;
     component.linkedHearingGroup = linkedHearingGroup;
     component.hearingGroupRequestId = hearingGroupRequestId;
     component.onLinkHearings();
     expect(storeDispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SubmitLinkedHearingGroup({
-      linkedHearingGroup, caseId, hearingId, isManageLink: false
+      linkedHearingGroup, caseId, hearingGroupRequestId, hearingId, isManageLink: false
     })));
   });
 
   it('should dispatch to store on manage link hearings', () => {
     const storeDispatchSpy = spyOn(mockStore, 'dispatch');
-		component.caseId = caseId;
+    component.caseId = caseId;
     component.hearingId = hearingId;
     component.linkedHearingGroup = linkedHearingGroup;
     component.hearingGroupRequestId = hearingGroupRequestId;
     component.onManageLinkHearings();
     expect(storeDispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.ManageLinkedHearingGroup({
-      linkedHearingGroup, hearingGroupId: hearingGroupRequestId, caseId, hearingId
+      linkedHearingGroup, hearingGroupRequestId, caseId, hearingId
     })));
   });
 
   it('should dispatch to store on unlink hearings', () => {
     const storeDispatchSpy = spyOn(mockStore, 'dispatch');
-		component.caseId = caseId;
+    component.caseId = caseId;
     component.hearingId = hearingId;
     component.hearingGroupRequestId = hearingGroupRequestId;
     component.onUnlinkHearings();
     expect(storeDispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.ManageLinkedHearingGroup({
-      linkedHearingGroup: null, hearingGroupId: hearingGroupRequestId, caseId, hearingId
+      linkedHearingGroup: null, hearingGroupRequestId, caseId, hearingId
     })));
   });
 

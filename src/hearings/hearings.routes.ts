@@ -54,7 +54,6 @@ import { JudgeTypesResolverService } from './resolvers/judge-types-resolver.serv
 import { JudicialUserSearchResolver } from './resolvers/judicial-user-search-resolver.resolve';
 import { JudicialUserSearchResponseResolver } from './resolvers/judicial-user-search-response-resolver.resolve';
 import { LinkedCaseResolver } from './resolvers/linked-case-resolver.resolve';
-import { LinkedHearingGroupResolver } from './resolvers/linked-hearing-group-resolver.resolve';
 import { PanelRolesResolverService } from './resolvers/panel-roles-resolver.service';
 import { PartyChannelsResolverService } from './resolvers/party-channels-resolver.service';
 import { RefDataResolver } from './resolvers/ref-data-resolver.resolve';
@@ -115,7 +114,7 @@ export const ROUTES: Routes = [
     ]
   },
   {
-    path: 'manage-links/:caseId/:hearingId',
+    path: 'manage-links/:caseId/:hearingGroupRequestId/:hearingId',
     component: LinkedHearingsComponent,
     data: {
       mode: Mode.MANAGE_HEARINGS

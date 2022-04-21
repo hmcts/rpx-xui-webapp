@@ -17,6 +17,7 @@ import { ValidatorsUtils } from '../../../utils/validators.utils';
 })
 export class HowLinkedHearingsBeHeardComponent implements OnInit {
   public caseId: string;
+  public hearingGroupRequestId: string;
   public hearingId: string;
   public caseName: string;
   public hearingLinksStateData$: Observable<HearingLinksStateData>;
@@ -64,6 +65,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
       }
     );
     this.caseId = this.route.snapshot.params.caseId;
+    this.hearingGroupRequestId = this.route.snapshot.params.hearingGroupRequestId;
     this.hearingId = this.route.snapshot.params.hearingId;
   }
 
@@ -152,9 +154,9 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
       });
       this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesGroupDetail(linkedHearingGroupMainModel));
       if (this.mode === Mode.MANAGE_HEARINGS) {
-        this.router.navigate([`/hearings/manage-links/${this.caseId}/${this.hearingId}/check-your-answers`]);
+        this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, this.hearingGroupRequestId, this.hearingId, 'check-your-answers']);
       } else {
-        this.router.navigate([`/hearings/link/${this.caseId}/${this.hearingId}/check-your-answers`]);
+        this.router.navigate(['/', 'hearings', 'link', this.caseId, this.hearingId, 'check-your-answers']);
       }
     }
   }
@@ -211,7 +213,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
 
   public onBack(): void {
     if (this.mode === Mode.MANAGE_HEARINGS) {
-      this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, this.hearingId, 'selected-hearings']);
+      this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, this.hearingGroupRequestId, this.hearingId, 'selected-hearings']);
     } else {
       this.router.navigate(['/', 'hearings', 'link', this.caseId, this.hearingId]);
     }

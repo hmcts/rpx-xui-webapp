@@ -17,8 +17,8 @@ import { HearingLinksEffects } from './hearing-links.effects';
 describe('Hearing Links Effects', () => {
   let actions$;
   let store: Store<fromHearingStore.State>;
-
   let effects: HearingLinksEffects;
+  const hearingGroupRequestId = 'g1000000';
   const hearingsServiceMock = jasmine.createSpyObj('HearingsService', [
     'loadServiceLinkedCases', 'postLinkedHearingGroup'
   ]);
@@ -97,8 +97,8 @@ describe('Hearing Links Effects', () => {
       };
       const caseId = '1111222233334444';
       const hearingId = 'h100002';
-      hearingsServiceMock.postLinkedHearingGroup.and.returnValue(of({hearingGroupRequestId: 'g1000000'}));
-      const action = new hearingLinksActions.SubmitLinkedHearingGroup({linkedHearingGroup, caseId, hearingId, isManageLink: true});
+      hearingsServiceMock.postLinkedHearingGroup.and.returnValue(of({hearingGroupRequestId}));
+      const action = new hearingLinksActions.SubmitLinkedHearingGroup({linkedHearingGroup, caseId, hearingGroupRequestId, hearingId, isManageLink: true});
       actions$ = cold('-a', {a: action});
       const expected = cold('-b', {b: {hearingGroupRequestId: 'g1000000'}});
       expect(effects.submitLinkedHearingGroup$).toBeObservable(expected);
@@ -136,7 +136,7 @@ describe('Hearing Links Effects', () => {
       const caseId = '1111222233334444';
       const hearingId = 'h100002';
       hearingsServiceMock.postLinkedHearingGroup.and.returnValue(Observable.throwError(error));
-      const action = new hearingLinksActions.SubmitLinkedHearingGroup({linkedHearingGroup, caseId, hearingId, isManageLink: true});
+      const action = new hearingLinksActions.SubmitLinkedHearingGroup({linkedHearingGroup, caseId, hearingGroupRequestId, hearingId, isManageLink: true});
       actions$ = cold('-a', {a: action});
       const expected = cold('-b', {b: error});
       expect(effects.submitLinkedHearingGroup$).toBeObservable(expected);

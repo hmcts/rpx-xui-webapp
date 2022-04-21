@@ -19,23 +19,23 @@
         </span>
         <div class="govuk-radios__item">
           <input class="govuk-radios__input" id="heardTogether" formControlName="hearingGroup" name="hearingGroup"
-            type="radio" value="SAME_SLOT" (change)="onOptionSelection('SAME_SLOT')"
-            [checked]="hasGroupSelected('Same Slot')">
+            type="radio" [value]="groupLinkType.SAME_SLOT" (change)="onOptionSelection(groupLinkType.SAME_SLOT)"
+            [checked]="hasGroupSelected(groupLinkType.SAME_SLOT)">
           <label class="govuk-label govuk-radios__label" for="together">
             Hearings should be heard together
           </label>
         </div>
         <div class="govuk-radios__item">
           <input class="govuk-radios__input" id="particularOrder" formControlName="hearingGroup" name="hearingGroup"
-            type="radio" value="ORDERED" (change)="onOptionSelection('ORDERED')"
-            [checked]="hasGroupSelected('Ordered')">
+            type="radio" [value]="groupLinkType.ORDERED" (change)="onOptionSelection(groupLinkType.ORDERED)"
+            [checked]="hasGroupSelected(groupLinkType.ORDERED)">
           <label class="govuk-label govuk-radios__label" for="order">
             Hearings should be heard in a particular order, but not together
           </label>
           <br />
           <div [ngClass]="{'govuk-form-group--error' : hasInvalidOrderSelection()}" style="margin:15px"
             class="govuk-error-message govuk-!-margin-top-2">
-            <table class="govuk-table" *ngIf="selectedOption === 'ORDERED' || selectedOption === 'Ordered'">
+            <table class="govuk-table" *ngIf="selectedOption === groupLinkType.ORDERED">
               <caption class="govuk-table__caption govuk-table__caption--m">
                 In what order should these hearings be heard?
               </caption>

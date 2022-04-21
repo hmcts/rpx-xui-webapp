@@ -35,6 +35,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
   public sub: Subscription;
   public hearingsInGroup: LinkedHearingsDetailModel[];
   public groupDetails: GroupDetailsModel;
+  public groupLinkType = GroupLinkType;
 
   constructor(
     protected readonly hearingStore: Store<fromHearingStore.State>,
@@ -58,7 +59,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
         this.hearingLinks =  state.hearingLinks;
         this.selectedOption = this.groupDetails && this.groupDetails.groupLinkType;
         this.form = this.fb.group({
-          hearingGroup: [this.groupDetails.groupLinkType, Validators.required],
+          hearingGroup: [this.groupDetails && this.groupDetails.groupLinkType || '', Validators.required],
           hearingOrder: this.fb.array([]),
         });
       }
@@ -134,7 +135,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
     const linkedHearingGroupMainModel: LinkedHearingGroupMainModel = {
       groupDetails: {
         groupComments: '',
-        groupLinkType: GroupLinkType[this.selectedOption],
+        groupLinkType: this.selectedOption,
         groupName: '',
         groupReason: ''
       }, hearingsInGroup: []
@@ -175,7 +176,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit {
 
   public isFormValid(): boolean {
     this.validationErrors = [];
-    if (this.form.value.hearingGroup === 'Same Slot' || this.form.value.hearingGroup === 'SAME_SLOT') {
+    if (this.form.value.hearingGroup === GroupLinkType.SAME_SLOT) {
       return true;
     } else {
       const validSelection = this.hearingOrder.valid && this.form.valid;

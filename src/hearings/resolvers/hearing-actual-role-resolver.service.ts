@@ -26,7 +26,7 @@ export class HearingActualRoleResolverService extends RefDataResolver implements
   public resolve(route?: ActivatedRouteSnapshot): Observable<LovRefDataModel[]> {
     route.data = {
       ...route.data,
-      category: HearingCategory.HearingRoles
+      category: HearingCategory.EntityRoleCode
     };
 
     return super.resolve(route);

@@ -38,7 +38,9 @@ export class HearingsService {
   }
 
   public cancelHearingRequest(hearingId: string, reasons: LovRefDataModel[]): Observable<ResponseDetailsModel> {
-    const cancellationReasonCode: string = reasons.map(reason => reason.key).join(',');
+    // TODO below logic may change, currently it was confirmed by HMC and stakeholder we will only send the 1st reasonCode to the backend
+    const cancellationReasonCodes: string[] = reasons.map(reason => reason.key);
+    const cancellationReasonCode: string = cancellationReasonCodes.length > 0 ? cancellationReasonCodes[0] : '';
     let httpParams = new HttpParams();
     httpParams = httpParams.append('cancellationReasonCode', cancellationReasonCode);
     return this.http.delete<ResponseDetailsModel>(`api/hearings/cancelHearings?hearingId=${hearingId}`, {

@@ -3,8 +3,8 @@ import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
-import {ACTION} from '../../../models/hearings.enum';
-import { IndividualDetailsModel } from '../../../models/individualDetails.model';
+import {ACTION, HearingCategory} from '../../../models/hearings.enum';
+import {IndividualDetailsModel} from '../../../models/individualDetails.model';
 import {LovRefDataModel} from '../../../models/lovRefData.model';
 import {PartyDetailsModel} from '../../../models/partyDetails.model';
 import {HearingsService} from '../../../services/hearings.service';
@@ -44,7 +44,8 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   }
 
   public ngOnInit(): void {
-    this.partyChannels$ = this.lovRefDataService.getListOfValues('PartyChannel', this.serviceHearingValuesModel.hmctsServiceID);
+    this.partyChannels$ = this.lovRefDataService.getListOfValues(HearingCategory.HearingChannel,
+      this.serviceHearingValuesModel.hmctsServiceID);
     if (!this.hearingRequestMainModel.partyDetails.length) {
       this.initialiseFromHearingValues();
     } else {

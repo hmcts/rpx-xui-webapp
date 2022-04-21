@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Mode } from 'src/hearings/models/hearings.enum';
+import { Mode } from '../../models/hearings.enum';
 
 @Component({
   selector: 'exui-linked-hearings-case-title',

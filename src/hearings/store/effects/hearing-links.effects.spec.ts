@@ -100,10 +100,10 @@ describe('Hearing Links Effects', () => {
       hearingsServiceMock.postLinkedHearingGroup.and.returnValue(of({hearingGroupRequestId}));
       const action = new hearingLinksActions.SubmitLinkedHearingGroup({linkedHearingGroup, caseId, hearingGroupRequestId, hearingId, isManageLink: true});
       actions$ = cold('-a', {a: action});
-      const expected = cold('-b', {b: {hearingGroupRequestId: 'g1000000'}});
+      const expected = cold('-b', {b: {hearingGroupRequestId: hearingGroupRequestId}});
       expect(effects.submitLinkedHearingGroup$).toBeObservable(expected);
       expect(hearingsServiceMock.postLinkedHearingGroup).toHaveBeenCalled();
-      expect(mockRouter.navigate).toHaveBeenCalledWith([ '/', 'hearings', 'link', '1111222233334444', 'h100002', 'final-confirmation' ]);
+      expect(mockRouter.navigate).toHaveBeenCalledWith([ '/', 'hearings', 'manage-links', '1111222233334444', hearingGroupRequestId, 'h100002', 'final-confirmation' ]);
     });
 
     it('should error submitting linked hearing group', () => {

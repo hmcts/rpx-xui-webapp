@@ -68,7 +68,7 @@ const source: ServiceLinkedCasesModel[] = [
 ];
 
 
-fdescribe('HearingsService', () => {
+describe('HearingsService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [

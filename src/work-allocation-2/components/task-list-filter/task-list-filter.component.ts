@@ -184,21 +184,22 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
 
   private setPersistenceAndDefaultLocations(): void {
     this.fieldsConfig.persistence = this.persistence || 'session';
+    // get booking locations
     if (this.bookingLocations && this.bookingLocations.length > 0) {
       this.defaultLocations = this.bookingLocations;
-    } else if (history.state && history.state.location) {
+    } else if (history.state && history.state.location && history.state.location.id) {
       const location: Location = history.state.location;
       this.defaultLocations = [location.id];
     }
   }
 
   private persistFirstSetting(): void {
-      const savedFilterSetting = this.filterService.get(TaskListFilterComponent.FILTER_NAME);
-      // if there are bookings we have been led to this by or if there is no saved filter
-      if ((this.defaultLocations && this.defaultLocations.length > 0) || !savedFilterSetting) {
-        this.filterService.persist(this.fieldsSettings, this.fieldsConfig.persistence);
-        this.filterService.isInitialSetting = true;
-      }
+    const savedFilterSetting = this.filterService.get(TaskListFilterComponent.FILTER_NAME);
+    // if there are bookings we have been led to this by or if there is no saved filter
+    if ((this.defaultLocations && this.defaultLocations.length > 0) || !savedFilterSetting) {
+      this.filterService.persist(this.fieldsSettings, this.fieldsConfig.persistence);
+      this.filterService.isInitialSetting = true;
+    }
   }
 
   private setErrors(): void {

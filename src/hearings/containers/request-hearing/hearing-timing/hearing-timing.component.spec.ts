@@ -37,11 +37,29 @@ describe('HearingTimingComponent', () => {
       key: 'urgent',
       value_en: 'Urgent',
       value_cy: '',
-      hintText_EN: 'Urgent',
-      hintTextCY: '',
-      order: 1,
-      parentKey: null,
-    }];
+      hint_text_en: 'Urgent',
+      hint_text_cy: '',
+      lov_order: 1,
+      parent_key: null,
+      category_key: 'HearingPriority',
+      parent_category: '',
+      active_flag: 'Y',
+      child_nodes: null,
+    },
+    {
+      key: 'standard',
+      value_en: 'Standard',
+      value_cy: '',
+      hint_text_en: 'Standard',
+      hint_text_cy: '',
+      lov_order: 2,
+      parent_key: null,
+      category_key: 'HearingPriority',
+      parent_category: '',
+      active_flag: 'Y',
+      child_nodes: null,
+    },
+  ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({

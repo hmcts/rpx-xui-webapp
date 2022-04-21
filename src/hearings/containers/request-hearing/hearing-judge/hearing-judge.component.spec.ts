@@ -26,11 +26,45 @@ describe('HearingJudgeComponent', () => {
       key: 'tribunalJudge',
       value_en: 'Tribunal Judge',
       value_cy: '',
-      hintText_EN: 'Tribunal',
-      hintTextCY: '',
-      order: 1,
-      parentKey: null,
-    }];
+      hint_text_en: 'Tribunal',
+      hint_text_cy: '',
+      lov_order: 1,
+      parent_key: null,
+      category_key: 'JudgeType',
+      parent_category: '',
+      active_flag: 'Y',
+      child_nodes: null,
+      from: 'exui-default',
+    },
+    {
+      key: 'deputyTribunalJudge',
+      value_en: 'Deputy Tribunal Judge',
+      value_cy: '',
+      hint_text_en: 'Deputy',
+      hint_text_cy: '',
+      lov_order: 2,
+      parent_key: null,
+      category_key: 'JudgeType',
+      parent_category: '',
+      active_flag: 'Y',
+      child_nodes: null,
+      from: 'exui-default',
+    },
+    {
+      key: 'regionalTribunalJudge',
+      value_en: 'Regional Tribunal Judge',
+      value_cy: '',
+      hint_text_en: 'Regional',
+      hint_text_cy: '',
+      lov_order: 3,
+      parent_key: null,
+      category_key: 'JudgeType',
+      parent_category: '',
+      active_flag: 'Y',
+      child_nodes: null,
+      from: 'exui-default',
+    },
+  ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -117,19 +151,8 @@ describe('HearingJudgeComponent', () => {
     component.prepareHearingRequestData();
     expect(component.hearingRequestMainModel.hearingDetails.panelRequirements.panelPreferences.length).toBeGreaterThan(0);
     component.hearingJudgeForm.controls.specificJudge.setValue(RadioOptions.NO);
-    component.hearingJudgeForm.controls.judgeType.setValue([
-      {
-        key: 'tribunalJudge',
-        value_en: 'Tribunal Judge',
-        value_cy: '',
-        hintText_EN: 'Tribunal',
-        hintTextCY: '',
-        order: 1,
-        parentKey: null,
-        selected: true,
-      }]);
     component.prepareHearingRequestData();
-    expect(component.hearingRequestMainModel.hearingDetails.panelRequirements.roleType.length).toBeGreaterThan(0);
+    expect(component.hearingRequestMainModel.hearingDetails.panelRequirements.roleType.length).toBe(0);
 
   });
 

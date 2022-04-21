@@ -1,19 +1,19 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { provideMockStore } from '@ngrx/store/testing';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {NO_ERRORS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {ReactiveFormsModule} from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
+import {provideMockStore} from '@ngrx/store/testing';
 import * as _ from 'lodash';
-import { of } from 'rxjs';
-import { HearingJudgeNamesListComponent } from '../../../components';
-import { initialState } from '../../../hearing.test.data';
-import { ACTION, MemberType, RadioOptions, RequirementType } from '../../../models/hearings.enum';
+import {of} from 'rxjs';
+import {HearingJudgeNamesListComponent} from '../../../components';
+import {initialState} from '../../../hearing.test.data';
+import {ACTION, MemberType, RadioOptions, RequirementType} from '../../../models/hearings.enum';
 import {JudicialUserModel} from '../../../models/judicialUser.model';
-import { LovRefDataModel } from '../../../models/lovRefData.model';
-import { HearingsService } from '../../../services/hearings.service';
-import { HearingPanelComponent } from './hearing-panel.component';
+import {LovRefDataModel} from '../../../models/lovRefData.model';
+import {HearingsService} from '../../../services/hearings.service';
+import {HearingPanelComponent} from './hearing-panel.component';
 
 describe('HearingPanelComponent', () => {
   let component: HearingPanelComponent;
@@ -25,129 +25,177 @@ describe('HearingPanelComponent', () => {
 
   const OTHER_PANEL_ROLES: LovRefDataModel[] = [
     {
-      key: 'DisabilityQualifiedPanelMember',
-      value_en: 'Disability qualified panel member',
+      category_key: 'PanelMemberType',
+      key: 'BBA3-DQPM',
+      value_en: 'Disability Qualified Panel Member',
       value_cy: '',
-      hintText_EN: 'true',
-      hintTextCY: 'false',
-      order: 1,
-      parentKey: '3',
-    }, {
-      key: 'MedicallyQualifiedPanelMember1',
-      value_en: 'Medically qualified panel member',
-      value_cy: '',
-      hintText_EN: 'true',
-      hintTextCY: 'false',
-      order: 1,
-      parentKey: '3',
-      child_nodes: [{
-        key: 'Cardiologist',
-        value_en: 'Cardiologist',
-        value_cy: '',
-        hintText_EN: 'true',
-        hintTextCY: 'false',
-        order: 1,
-        parentKey: '3',
-        child_nodes: []
-      },
-      {
-        key: 'Carer',
-        value_en: 'Carer',
-        value_cy: '',
-        hintText_EN: 'true',
-        hintTextCY: 'false',
-        order: 1,
-        parentKey: '3',
-        child_nodes: []
-      },
-      {
-        key: 'EyeSurgeon',
-        value_en: 'Medically qualified panel member',
-        value_cy: '',
-        hintText_EN: 'true',
-        hintTextCY: 'false',
-        order: 1,
-        parentKey: '3',
-        child_nodes: []
-      },
-      {
-        key: 'GeneralPractitioner',
-        value_en: 'General Practitioner',
-        value_cy: '',
-        hintText_EN: 'true',
-        hintTextCY: 'false',
-        order: 1,
-        parentKey: '3',
-        child_nodes: []
-      }]
-    }, {
-      key: 'MedicallyQualifiedPanelMember',
-      value_en: 'Medically qualified panel member',
-      value_cy: '',
-      hintText_EN: 'true',
-      hintTextCY: 'false',
-      order: 1,
-      parentKey: '3',
-      child_nodes: [{
-        key: 'Cardiologist',
-        value_en: 'Cardiologist',
-        value_cy: '',
-        hintText_EN: 'true',
-        hintTextCY: 'false',
-        order: 1,
-        parentKey: '3',
-        child_nodes: []
-      },
-      {
-        key: 'Carer',
-        value_en: 'Carer',
-        value_cy: '',
-        hintText_EN: 'true',
-        hintTextCY: 'false',
-        order: 1,
-        parentKey: '3',
-        child_nodes: []
-      },
-      {
-        key: 'EyeSurgeon',
-        value_en: 'Medically qualified panel member',
-        value_cy: '',
-        hintText_EN: 'true',
-        hintTextCY: 'false',
-        order: 1,
-        parentKey: '3',
-        child_nodes: []
-      },
-      {
-        key: 'GeneralPractitioner',
-        value_en: 'General Practitioner',
-        value_cy: '',
-        hintText_EN: 'true',
-        hintTextCY: 'false',
-        order: 1,
-        parentKey: '3',
-        child_nodes: []
-      }]
-    }, {
-      key: 'FinanciallyQualifiedPanelMember',
-      value_en: 'Financially qualified panel member',
-      value_cy: '',
-      hintText_EN: 'true',
-      hintTextCY: 'false',
-      order: 1,
-      parentKey: '3',
-      child_nodes: []
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
+      child_nodes: null,
     },
     {
-      key: 'RegionalMedicalMember',
+      category_key: 'PanelMemberType',
+      key: 'BBA3-MQPM2',
+      value_en: 'Medically Qualified Panel Member',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
+      child_nodes: [
+        {
+          category_key: 'PanelMemberSpecialism',
+          key: 'BBA3-MQPM2-003',
+          value_en: 'Eye Surgeon',
+          value_cy: '',
+          hint_text_en: '',
+          hint_text_cy: '',
+          lov_order: null,
+          parent_category: 'PanelMemberType',
+          parent_key: 'BBA3-MQPM2',
+          active_flag: 'Y',
+          child_nodes: null,
+        },
+        {
+          category_key: 'PanelMemberSpecialism',
+          key: 'BBA3-MQPM2-004',
+          value_en: 'General Practitioner',
+          value_cy: '',
+          hint_text_en: '',
+          hint_text_cy: '',
+          lov_order: null,
+          parent_category: 'PanelMemberType',
+          parent_key: 'BBA3-MQPM2',
+          active_flag: 'Y',
+          child_nodes: null,
+        },
+        {
+          category_key: 'PanelMemberSpecialism',
+          key: 'BBA3-MQPM2-001',
+          value_en: 'Cardiologist',
+          value_cy: '',
+          hint_text_en: '',
+          hint_text_cy: '',
+          lov_order: null,
+          parent_category: 'PanelMemberType',
+          parent_key: 'BBA3-MQPM2',
+          active_flag: 'Y',
+          child_nodes: null,
+        },
+        {
+          category_key: 'PanelMemberSpecialism',
+          key: 'BBA3-MQPM2-002',
+          value_en: 'Carer',
+          value_cy: '',
+          hint_text_en: '',
+          hint_text_cy: '',
+          lov_order: null,
+          parent_category: 'PanelMemberType',
+          parent_key: 'BBA3-MQPM2',
+          active_flag: 'Y',
+          child_nodes: null,
+        },
+      ],
+    },
+    {
+      category_key: 'PanelMemberType',
+      key: 'BBA3-MQPM1',
+      value_en: 'Medically Qualified Panel Member',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
+      child_nodes: [
+        {
+          category_key: 'PanelMemberSpecialism',
+          key: 'BBA3-MQPM1-001',
+          value_en: 'Cardiologist',
+          value_cy: '',
+          hint_text_en: '',
+          hint_text_cy: '',
+          lov_order: null,
+          parent_category: 'PanelMemberType',
+          parent_key: 'BBA3-MQPM1',
+          active_flag: 'Y',
+          child_nodes: null,
+        },
+        {
+          category_key: 'PanelMemberSpecialism',
+          key: 'BBA3-MQPM1-002',
+          value_en: 'Carer',
+          value_cy: '',
+          hint_text_en: '',
+          hint_text_cy: '',
+          lov_order: null,
+          parent_category: 'PanelMemberType',
+          parent_key: 'BBA3-MQPM1',
+          active_flag: 'Y',
+          child_nodes: null,
+        },
+        {
+          category_key: 'PanelMemberSpecialism',
+          key: 'BBA3-MQPM1-004',
+          value_en: 'General Practitioner',
+          value_cy: '',
+          hint_text_en: '',
+          hint_text_cy: '',
+          lov_order: null,
+          parent_category: 'PanelMemberType',
+          parent_key: 'BBA3-MQPM1',
+          active_flag: 'Y',
+          child_nodes: null,
+        },
+        {
+          category_key: 'PanelMemberSpecialism',
+          key: 'BBA3-MQPM1-003',
+          value_en: 'Eye Surgeon',
+          value_cy: '',
+          hint_text_en: '',
+          hint_text_cy: '',
+          lov_order: null,
+          parent_category: 'PanelMemberType',
+          parent_key: 'BBA3-MQPM1',
+          active_flag: 'Y',
+          child_nodes: null,
+        },
+      ],
+    },
+    {
+      category_key: 'PanelMemberType',
+      key: 'BBA3-FQPM',
+      value_en: 'Financially Qualified Panel Member',
+      value_cy: '',
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
+      child_nodes: null,
+    },
+    {
+      category_key: 'PanelMemberType',
+      key: 'BBA3-RMM',
       value_en: 'Regional Medical Member',
       value_cy: '',
-      hintText_EN: 'true',
-      hintTextCY: 'false',
-      order: 1,
-      parentKey: '3',
-      child_nodes: []
-    }];
+      hint_text_en: '',
+      hint_text_cy: '',
+      lov_order: null,
+      parent_category: '',
+      parent_key: '',
+      active_flag: 'Y',
+      child_nodes: null,
+    },
+  ];
   const JUDICAIL_USER_DETAILS = [{
     memberID: 'P0000001',
     memberType: MemberType.PANEL_MEMBER,
@@ -159,7 +207,7 @@ describe('HearingPanelComponent', () => {
     const STATE = _.cloneDeep(initialState);
     STATE.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
       panelPreferences: JUDICAIL_USER_DETAILS,
-      panelSpecialisms: ['DisabilityQualifiedPanelMember', '', 'Cardiologist']
+      panelSpecialisms: ['BBA3-DQPM', 'BBA3-MQPM2-001']
     };
 
     TestBed.configureTestingModule({
@@ -167,7 +215,7 @@ describe('HearingPanelComponent', () => {
       declarations: [HearingPanelComponent, HearingJudgeNamesListComponent],
       providers: [
         provideMockStore({initialState: STATE}),
-        { provide: HearingsService, useValue: hearingsService },
+        {provide: HearingsService, useValue: hearingsService},
         {
           provide: ActivatedRoute,
           useValue: {
@@ -185,7 +233,8 @@ describe('HearingPanelComponent', () => {
 
     fixture = TestBed.createComponent(HearingPanelComponent);
     component = fixture.componentInstance;
-    spyOn(component, 'fragmentFocus').and.callFake(() => { });
+    spyOn(component, 'fragmentFocus').and.callFake(() => {
+    });
     spyOn(component, 'prepareData').and.callThrough();
     fixture.detectChanges();
   });

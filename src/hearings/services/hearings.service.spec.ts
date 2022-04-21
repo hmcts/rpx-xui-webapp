@@ -105,7 +105,7 @@ describe('HearingsService', () => {
   describe('cancelHearingRequest', () => {
     const payload: LovRefDataModel[] = [
       {
-        key: 'reasoneOne',
+        key: 'reasonOne',
         value_en: 'Reason 1',
         value_cy: '',
         hint_text_en: 'reason 1',
@@ -118,7 +118,7 @@ describe('HearingsService', () => {
         child_nodes: null,
       },
       {
-        key: 'reasoneTwo',
+        key: 'reasonTwo',
         value_en: 'Reason 2',
         value_cy: '',
         hint_text_en: 'Reason 2',
@@ -146,7 +146,7 @@ describe('HearingsService', () => {
     ];
 
     it('should cancel hearing request', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
-      const cancellationReasonCode: string = payload.map(reason => reason.key).toString();
+      const cancellationReasonCode: string = payload.map(reason => reason.key)[0];
       service.cancelHearingRequest('h0002', payload).subscribe(response => {
         expect(response).toBeNull();
       });

@@ -81,6 +81,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
         const selectedHearings = linkedCase.hearings && linkedCase.hearings.filter(hearing => hearing.isSelected);
         this.setDisplayRow(linkedCase, selectedHearings);
       });
+      this.sortDisplayRecords();
     }
     this.setCancelButtonText();
   }
@@ -109,6 +110,12 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
           position: this.getPosition(hearing)
         });
       });
+    }
+  }
+
+  public sortDisplayRecords(): void {
+    if (this.showPositionColumn) {
+      this.linkedCases.sort((a, b) => a.position - b.position);
     }
   }
 

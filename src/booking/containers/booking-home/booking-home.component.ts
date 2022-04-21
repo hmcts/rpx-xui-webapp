@@ -4,10 +4,11 @@ import { Router } from '@angular/router';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { combineLatest, forkJoin, Observable, Subscription, } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { AppConstants } from 'src/app/app.constants';
+import { map } from 'rxjs/operators';
+import { AppConstants } from '../../../app/app.constants';
 import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';
 import { TaskListFilterComponent } from '../../../work-allocation-2/components';
+import { LocationDataService } from '../../../work-allocation-2/services';
 import { Booking, BookingNavigationEvent, BookingProcess } from '../../models';
 import { BookingService } from '../../services';
 
@@ -32,6 +33,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
   constructor(
     private readonly fb: FormBuilder,
     private readonly bookingService: BookingService,
+    private readonly locationService: LocationDataService,
     private readonly router: Router,
     private readonly sessionStorageService: SessionStorageService,
     private readonly windowService: WindowService,
@@ -45,11 +47,11 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
 
     this.existingBookingsSubscription = this.bookingService.getBookings().subscribe((arr) => {
       this.locations$ = arr.bookings.map(
-        booking => this.bookingService.getBookingLocation(booking.base_location_id).pipe(
+        booking => this.locationService.getSpecificLocations([booking.base_location_id]).pipe(
           map(location => {
             return {
               ...booking,
-              locationName: location[0] && location[0].building_location_name
+              locationName: location[0] && location[0].site_name
             };
           }
           ))
@@ -106,7 +108,6 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
     this.refreshAssignmentsSubscription = this.bookingService.refreshRoleAssignments().subscribe(response => {
       this.sessionStorageService.removeItem(TaskListFilterComponent.FILTER_NAME);
       this.windowService.removeLocalStorage(TaskListFilterComponent.FILTER_NAME);
-
       this.router.navigate(
         ['/work/my-work/list'],
         {

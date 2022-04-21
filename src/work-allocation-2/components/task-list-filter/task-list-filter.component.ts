@@ -14,7 +14,7 @@ import {
 
 import * as _ from 'underscore';
 import { ErrorMessage } from '../../../app/models';
-import { Location } from '../../models/dtos';
+import { Location, LocationByEPIMMSModel } from '../../models/dtos';
 import Task from '../../models/tasks/task.model';
 import { LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { TaskTypesService } from '../../services/task-types.service';
@@ -23,7 +23,7 @@ import { servicesMap } from '../../utils';
 export const LOCATION_ERROR: ErrorMessage = {
   title: 'There is a problem',
   description: 'At least one location is required',
-  fieldId: 'locations'
+  fieldId: 'myWork'
 };
 
 @Component({
@@ -33,7 +33,7 @@ export const LOCATION_ERROR: ErrorMessage = {
   encapsulation: ViewEncapsulation.None
 })
 export class TaskListFilterComponent implements OnInit, OnDestroy {
-  public static readonly FILTER_NAME = 'locations';
+  public static readonly FILTER_NAME = 'myWork';
   @Input() public persistence: FilterPersistence;
   @Output() public errorChanged: EventEmitter<ErrorMessage> = new EventEmitter();
   public showFilteredText = false;
@@ -93,6 +93,9 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   }
 
   private static hasBaseLocations(locations, baseLocations): boolean {
+    if (!(locations.value && locations.value.length > 0)) {
+      return false;
+    }
     const result = locations.value.filter(location => baseLocations.value.find(baseLocation => _.isEqual(location, baseLocation)));
     return result.length >= baseLocations.value.length;
   }
@@ -111,16 +114,17 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   // }
 
   public ngOnInit(): void {
-    this.fieldsConfig.persistence = this.persistence || 'session';
+    this.setPersistenceAndDefaultLocations();
     // TODO: CAM_BOOKING - are both subscriptions still needed, check this
     // MASTER
     this.subscription = combineLatest([
       this.taskTypesService.getTypesOfWork(),
       this.service.getWASupportedJurisdictions(),
-      this.taskService.getUsersAssignedTasks()
-    ]).subscribe(([typesOfWork, services, assignedTasks]: [any[], string[], Task[]]) => {
+      this.taskService.getUsersAssignedTasks(),
+      this.locationService.getSpecificLocations(this.defaultLocations)
+    ]).subscribe(([typesOfWork, services, assignedTasks, locations]: [any[], string[], Task[], LocationByEPIMMSModel[]]) => {
       this.setUpServicesFilter(services);
-      this.setUpLocationFilter();
+      this.setUpLocationFilter(locations);
       this.setUpTypesOfWorkFilter(typesOfWork);
       this.persistFirstSetting();
       this.subscribeToFilters(assignedTasks);
@@ -178,9 +182,23 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       });
   }
 
+  private setPersistenceAndDefaultLocations(): void {
+    this.fieldsConfig.persistence = this.persistence || 'session';
+    if (this.bookingLocations && this.bookingLocations.length > 0) {
+      this.defaultLocations = this.bookingLocations;
+    } else if (history.state && history.state.location) {
+      const location: Location = history.state.location;
+      this.defaultLocations = [location.id];
+    }
+  }
+
   private persistFirstSetting(): void {
-      this.filterService.persist(this.fieldsSettings, this.fieldsConfig.persistence);
-      this.filterService.isInitialSetting = true;
+      const savedFilterSetting = this.filterService.get(TaskListFilterComponent.FILTER_NAME);
+      // if there are bookings we have been led to this by or if there is no saved filter
+      if ((this.defaultLocations && this.defaultLocations.length > 0) || !savedFilterSetting) {
+        this.filterService.persist(this.fieldsSettings, this.fieldsConfig.persistence);
+        this.filterService.isInitialSetting = true;
+      }
   }
 
   private setErrors(): void {
@@ -196,9 +214,9 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     });
   }
 
-  private setUpLocationFilter(): void {
+  private setUpLocationFilter(locations: LocationByEPIMMSModel[]): void {
     const field: FilterFieldConfig = {
-      name: TaskListFilterComponent.FILTER_NAME,
+      name: 'locations',
       options: [],
       locationTitle: 'Search for a location by name',
       minSelected: 1,
@@ -210,33 +228,17 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       type: 'find-location',
       enableAddLocationButton: true
     };
-    if (this.bookingLocations && this.bookingLocations.length > 0) {
-      this.defaultLocations = this.bookingLocations ;
-    } else if ( this.route.snapshot.data && this.route.snapshot.data.location ) {
+    let baseLocation = null;
+    // if there are no booking locations selected then check for base location for salary judge
+    if ((locations.length === 0) && this.route.snapshot.data && this.route.snapshot.data.location) {
       const location: Location = this.route.snapshot.data.location;
-      this.defaultLocations = [`${location.id}`];
-    } else if (history.state && history.state.location) {
-      const location: Location = history.state.location;
-      this.defaultLocations = [`${location.id}`]
+      if (location) {
+        baseLocation = [location];
+      }
     }
-    // } else {
-    //   if (defaultLocations) {
-    //     this.defaultLocations = [defaultLocations];
-    //     this.defaultLocations = ['366796'];
-    //   } else {
-    //     this.defaultLocations = [];
-    //   }
-    // }
-    // TODO: CAM_BOOKING - check this logic
-    // if (location) {
-    //   this.defaultLocations = [location];
-    // } else {
-    //   this.defaultLocations = [];
-    // }
-
     this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
-      name: TaskListFilterComponent.FILTER_NAME,
-      value: this.defaultLocations
+      name: 'locations',
+      value: baseLocation ? baseLocation : locations
     }];
     this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
     this.fieldsConfig.fields.push(field);

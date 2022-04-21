@@ -85,7 +85,7 @@
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
   "waSupportedJurisdictions": ["IA"],
-  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC",
+  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW",
   "serviceRefDataMapping": [{"IA": "BFA1"}],
   "wildcardSearchFields": {
     "Benefit": [

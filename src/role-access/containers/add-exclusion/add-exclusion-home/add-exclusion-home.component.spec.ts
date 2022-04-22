@@ -165,12 +165,26 @@ describe('ExclusionHomeComponent', () => {
       component.navigationHandler(ExclusionNavigationEvent.CONFIRM_EXCLUSION);
       expect(component.checkAnswersComponent.navigationHandler).toHaveBeenCalled();
     });
+
+    it('on choose exclusion page click continue button state set incorrectly', () => {
+      component.navigationCurrentState = ExclusionState.FIND_PERSON;
+      fixture.detectChanges();
+      expect(function(){component.navigationHandler(ExclusionNavigationEvent.CONFIRM_EXCLUSION)}).toThrow(new Error('Invalid exclusion state'));
+      expect(component.showSpinner).toBe(false);
+    });
   });
 
   describe('Click cancel button', () => {
     it('should navigate to role and access tab when click cancel button', () => {
       component.navigationHandler(ExclusionNavigationEvent.CANCEL);
       expect(routerMock.navigateByUrl).toHaveBeenCalledWith('cases/case-details/111111/roles-and-access');
+    });
+  });
+
+  describe('Unidentified state', () => {
+    it('should stop showing spinner and throw error', () => {
+      expect(function(){component.navigationHandler(null)}).toThrow(new Error('Invalid exclusion navigation event'));
+      expect(component.showSpinner).toBe(false);
     });
   });
 

@@ -1,8 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { select, Store } from '@ngrx/store';
 import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
-import * as fromFeature from '../../../store';
+import { select, Store } from '@ngrx/store';
+import { take } from 'rxjs/operators';
+
 import {
   DurationTypeDescription,
   Period,
@@ -12,8 +13,9 @@ import {
   SpecificAccessState
 } from '../../../models';
 import { DurationType } from '../../../models/enums';
+import { AllocateRoleService } from '../../../services';
 import { DurationHelperService } from '../../../services/duration-helper.service';
-import { take } from 'rxjs/operators';
+import * as fromFeature from '../../../store';
 
 @Component({
   selector: 'exui-specific-access-duration',
@@ -31,6 +33,7 @@ export class SpecificAccessDurationComponent implements OnInit {
   @Input() public navEvent: SpecificAccessNavigation;
 
   // properties
+  public specificAccessStateData: SpecificAccessStateData;
   public anotherPeriod: boolean;
   public caption = 'Approve specific access request';
   public configStart: GovUiConfigModel;
@@ -52,6 +55,7 @@ export class SpecificAccessDurationComponent implements OnInit {
 
   constructor(
     private durationHelper: DurationHelperService,
+    private readonly allocateRoleService: AllocateRoleService,
     private readonly fb: FormBuilder,
     private readonly store: Store<fromFeature.State>
   ) {
@@ -86,7 +90,9 @@ export class SpecificAccessDurationComponent implements OnInit {
     });
     this.setFormControlRefs();
     this.store.pipe(select(fromFeature.getSpecificAccessState)).pipe(take(1)).subscribe((specificAccessState) => {
+      this.specificAccessStateData = specificAccessState;
       this.selectSpecificAccessDuration(specificAccessState);
+
     });
   }
 
@@ -123,6 +129,12 @@ export class SpecificAccessDurationComponent implements OnInit {
     this.resetPreviousErrors();
     const period = this.getPeriod(this.selectedDuration);
     if (period) {
+      this.specificAccessStateData.period = period;
+      // note: adding example details here to reach endpoint without previous access info
+      this.specificAccessStateData.caseId = '1644427124312856';
+      this.specificAccessStateData.jurisdiction = 'IA';
+      // TODO: sort out subscription and error handling for this
+      this.allocateRoleService.specificAccessApproval(this.specificAccessStateData).subscribe
       switch (navEvent) {
         case SpecificAccessNavigationEvent.CONTINUE:
           this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_APPROVED));

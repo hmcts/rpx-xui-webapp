@@ -26,6 +26,30 @@ export function toRoleAssignmentBody(currentUserId: string, allocateRoleData: Al
   };
 }
 
+export function toSARoleAssignmentBody(currentUserId: string, allocateRoleData: AllocateRoleData): any {
+  return {
+    roleRequest: {
+      assignerId: currentUserId,
+      replaceExisting: false,
+    },
+    requestedRoles: [{
+      roleType: 'CASE',
+      grantType: 'SPECIFIC',
+      classification: 'RESTRICTED',
+      attributes: {
+        caseId: allocateRoleData.caseId,
+        jurisdiction: allocateRoleData.jurisdiction,
+      },
+      roleName: allocateRoleData.typeOfRole.id,
+      roleCategory: allocateRoleData.roleCategory,
+      actorIdType: 'IDAM',
+      actorId: allocateRoleData.person.id,
+      beginTime: allocateRoleData.period.startDate,
+      endTime: allocateRoleData.period.endDate,
+    }],
+  };
+}
+
 export function getActorId(currentUserId: string, allocateRoleData: AllocateRoleData): string {
   if (allocateRoleData.allocateTo === AllocateTo.RESERVE_TO_ME) {
     return currentUserId;

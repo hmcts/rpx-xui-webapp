@@ -113,6 +113,23 @@ export async function confirmAllocateRole(req: EnhancedRequest, res: Response, n
   }
 }
 
+export async function createSpecificAccessApprovalRole(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+  try {
+    const body = req.body;
+    // @ts-ignore
+    const currentUser = req.session.passport.user.userinfo;
+    const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
+    const roleAssignmentsBody = toRoleAssignmentBody(currentUserId, body);
+    const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
+    const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
+    await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
+    const { status, data } = response;
+    return res.status(status).send(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function reallocateRole(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   try {
     const body = req.body;

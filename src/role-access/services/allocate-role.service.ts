@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { SessionStorageService } from '../../app/services';
-import { Actions, AllocateRoleStateData, CaseRole, Role, RoleCategory, RolesByService } from '../models';
+import { Actions, AllocateRoleStateData, CaseRole, Role, RoleCategory, RolesByService, SpecificAccessStateData } from '../models';
 import { CaseRoleDetails } from '../models/case-role-details.interface';
 import { getAllRolesFromServices, getRoleSessionStorageKeyForServiceId, setRoles } from '../utils';
 
@@ -22,6 +22,10 @@ export class AllocateRoleService {
     if (action === Actions.Reallocate) {
       return this.http.post(`${AllocateRoleService.allocateRoleBaseUrl}/reallocate`, allocateRoleStateData);
     }
+  }
+
+  public specificAccessApproval(specificAccessStateData: SpecificAccessStateData) {
+    return this.http.post(`${AllocateRoleService.allocateRoleBaseUrl}/specific-access-approval`, specificAccessStateData);
   }
 
   public removeAllocation(assigmentId: string): Observable<any> {

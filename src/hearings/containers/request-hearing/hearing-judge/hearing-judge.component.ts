@@ -51,7 +51,6 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
   public getFormData(): void {
     let judgeTypes: string[];
     let includedJudges: string[] = [];
-    let excludedJudges: string[] = [];
     const panelRequirements = this.hearingRequestMainModel.hearingDetails.panelRequirements;
     if (panelRequirements && panelRequirements.roleType && panelRequirements.roleType.length) {
       this.specificJudgeSelection = RadioOptions.NO;
@@ -60,7 +59,9 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
       this.specificJudgeSelection = RadioOptions.YES;
       includedJudges = panelRequirements.panelPreferences.filter(preferences => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.MUSTINC).map(preferences => preferences.memberID);
     }
-    excludedJudges = panelRequirements && panelRequirements.panelPreferences.filter(preferences => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.EXCLUDE).map(preferences => preferences.memberID);
+    const excludedJudges: string[] = panelRequirements && panelRequirements.panelPreferences && panelRequirements.panelPreferences
+        .filter(preferences => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.EXCLUDE)
+        .map(preferences => preferences.memberID);
     this.hearingJudgeFormInfo = {
       includedJudges, judgeTypes, excludedJudges
     };

@@ -19,8 +19,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingIsLinkedFlag: false,
       hearingWindow: {
         hearingWindowDateRange: {
-          hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
-          hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000',
+          hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
+          hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
         },
         hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
       },
@@ -83,7 +83,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
+      caseSLAStartDate: '2022-11-23T09:00:00.000+0000',
     },
     partyDetails: [
       {
@@ -145,7 +145,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
-      receivedDateTime: '2021-11-30T09:00:00.000+0000',
+      receivedDateTime: '2022-11-30T09:00:00.000+0000',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.AWAITING_LISTING,
       listingStatus: ListingStatus.FIXED,
@@ -236,8 +236,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingIsLinkedFlag: false,
       hearingWindow: {
         hearingWindowDateRange: {
-          hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
-          hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000',
+          hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
+          hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
         },
         hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
       },
@@ -297,7 +297,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
+      caseSLAStartDate: '2022-11-23T09:00:00.000+0000',
     },
     partyDetails: [
       {
@@ -359,7 +359,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
-      receivedDateTime: '2021-11-30T09:00:00.000+0000',
+      receivedDateTime: '2022-11-30T09:00:00.000+0000',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.AWAITING_LISTING,
       listingStatus: ListingStatus.DRAFT,
@@ -450,8 +450,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingIsLinkedFlag: false,
       hearingWindow: {
         hearingWindowDateRange: {
-          hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
-          hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000',
+          hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
+          hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
         },
         hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
       },
@@ -500,7 +500,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
+      caseSLAStartDate: '2022-11-23T09:00:00.000+0000',
     },
     partyDetails: [
       {
@@ -562,7 +562,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
-      receivedDateTime: '2021-11-30T09:00:00.000+0000',
+      receivedDateTime: '2022-11-30T09:00:00.000+0000',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.LISTED,
       listingStatus: ListingStatus.FIXED,
@@ -653,8 +653,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingIsLinkedFlag: false,
       hearingWindow: {
         hearingWindowDateRange: {
-          hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
-          hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000',
+          hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
+          hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
         },
         hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
       },
@@ -703,7 +703,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
+      caseSLAStartDate: '2022-11-23T09:00:00.000+0000',
     },
     partyDetails: [
       {
@@ -765,7 +765,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
-      receivedDateTime: '2021-11-30T09:00:00.000+0000',
+      receivedDateTime: '2022-11-30T09:00:00.000+0000',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.PENDING_RELISTING,
       listingStatus: ListingStatus.FIXED,
@@ -856,8 +856,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingIsLinkedFlag: false,
       hearingWindow: {
         hearingWindowDateRange: {
-          hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
-          hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000',
+          hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
+          hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
         },
         hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
       },
@@ -906,7 +906,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
+      caseSLAStartDate: '2022-11-23T09:00:00.000+0000',
     },
     partyDetails: [
       {
@@ -968,7 +968,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
-      receivedDateTime: '2021-11-30T09:00:00.000+0000',
+      receivedDateTime: '2022-11-30T09:00:00.000+0000',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.AWAITING_LISTING,
       listingStatus: ListingStatus.FIXED,
@@ -1059,8 +1059,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingIsLinkedFlag: false,
       hearingWindow: {
         hearingWindowDateRange: {
-          hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
-          hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000',
+          hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
+          hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
         },
         hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
       },
@@ -1109,7 +1109,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
+      caseSLAStartDate: '2022-11-23T09:00:00.000+0000',
     },
     partyDetails: [
       {
@@ -1171,7 +1171,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
-      receivedDateTime: '2021-11-30T09:00:00.000+0000',
+      receivedDateTime: '2022-11-30T09:00:00.000+0000',
       errorTimestamp: '2022-03-27T09:00:00.000+0000',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.EXCEPTION,
@@ -1263,8 +1263,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingIsLinkedFlag: false,
       hearingWindow: {
         hearingWindowDateRange: {
-          hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
-          hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000',
+          hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
+          hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
         },
         hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
       },
@@ -1313,7 +1313,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
+      caseSLAStartDate: '2022-11-23T09:00:00.000+0000',
     },
     partyDetails: [
       {
@@ -1375,7 +1375,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
-      receivedDateTime: '2021-11-30T09:00:00.000+0000',
+      receivedDateTime: '2022-11-30T09:00:00.000+0000',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.LISTED,
       listingStatus: ListingStatus.FIXED,
@@ -1466,8 +1466,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingIsLinkedFlag: false,
       hearingWindow: {
         hearingWindowDateRange: {
-          hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
-          hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000',
+          hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
+          hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
         },
         hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
       },
@@ -1516,7 +1516,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
+      caseSLAStartDate: '2022-11-23T09:00:00.000+0000',
     },
     partyDetails: [
       {
@@ -1578,7 +1578,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
-      receivedDateTime: '2021-11-30T09:00:00.000+0000',
+      receivedDateTime: '2022-11-30T09:00:00.000+0000',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.CASE_CLOSED,
       listingStatus: ListingStatus.FIXED,
@@ -1669,8 +1669,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingIsLinkedFlag: false,
       hearingWindow: {
         hearingWindowDateRange: {
-          hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
-          hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000',
+          hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
+          hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
         },
         hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
       },
@@ -1719,7 +1719,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
+      caseSLAStartDate: '2022-11-23T09:00:00.000+0000',
     },
     partyDetails: [
       {
@@ -1781,7 +1781,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
-      receivedDateTime: '2021-11-30T09:00:00.000+0000',
+      receivedDateTime: '2022-11-30T09:00:00.000+0000',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.CANCELLED,
       listingStatus: ListingStatus.FIXED,
@@ -1872,8 +1872,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingIsLinkedFlag: false,
       hearingWindow: {
         hearingWindowDateRange: {
-          hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
-          hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000',
+          hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
+          hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
         },
         hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
       },
@@ -1922,7 +1922,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
+      caseSLAStartDate: '2022-11-23T09:00:00.000+0000',
     },
     partyDetails: [
       {
@@ -1950,7 +1950,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
-      receivedDateTime: '2021-11-30T09:00:00.000+0000',
+      receivedDateTime: '2022-11-30T09:00:00.000+0000',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.LISTED,
       listingStatus: ListingStatus.FIXED,
@@ -2007,8 +2007,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingIsLinkedFlag: false,
       hearingWindow: {
         hearingWindowDateRange: {
-          hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
-          hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000',
+          hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
+          hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
         },
         hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
       },
@@ -2057,7 +2057,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
+      caseSLAStartDate: '2022-11-23T09:00:00.000+0000',
     },
     partyDetails: [
       {
@@ -2085,7 +2085,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
-      receivedDateTime: '2021-11-30T09:00:00.000+0000',
+      receivedDateTime: '2022-11-30T09:00:00.000+0000',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.LISTED,
       listingStatus: ListingStatus.FIXED,
@@ -2142,8 +2142,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingIsLinkedFlag: false,
       hearingWindow: {
         hearingWindowDateRange: {
-          hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
-          hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000',
+          hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
+          hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
         },
         hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
       },
@@ -2192,7 +2192,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
+      caseSLAStartDate: '2022-11-23T09:00:00.000+0000',
     },
     partyDetails: [
       {
@@ -2252,7 +2252,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
-      receivedDateTime: '2021-11-30T09:00:00.000+0000',
+      receivedDateTime: '2022-11-30T09:00:00.000+0000',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.LISTED,
       listingStatus: ListingStatus.FIXED,
@@ -2340,8 +2340,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingIsLinkedFlag: false,
       hearingWindow: {
         hearingWindowDateRange: {
-          hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
-          hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000',
+          hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
+          hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
         },
         hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
       },
@@ -2390,7 +2390,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
+      caseSLAStartDate: '2022-11-23T09:00:00.000+0000',
     },
     partyDetails: [
       {
@@ -2418,7 +2418,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
-      receivedDateTime: '2021-11-30T09:00:00.000+0000',
+      receivedDateTime: '2022-11-30T09:00:00.000+0000',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.LISTED,
       listingStatus: ListingStatus.FIXED,

@@ -88,6 +88,29 @@ describe('HearingJudgeComponent', () => {
     expect(component.selectJudgeTypesError).toBe(HearingJudgeSelectionEnum.SelectOneJudgeError);
   });
 
+  it('should check RadioButton selection', () => {
+    const judgeInfo: JudicialUserModel = {
+      sidam_id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
+      object_id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
+      known_as: 'Hearing Judge',
+      surname: 'Jacky',
+      personal_code: 'P100001',
+      full_name: 'Jacky Collins',
+      post_nominals: '',
+      email_id: 'jacky.collins@judicial.com'
+    };
+    component.showSpecificJudge(RadioOptions.YES);
+    expect(component.specificJudgeSelection).toBe(RadioOptions.YES);
+    component.hearingJudgeForm.controls.specificJudge.setValue(RadioOptions.YES);
+    component.hearingJudgeForm.controls.judgeName.setValue(judgeInfo);
+    component.hearingJudgeForm.controls.judgeName.markAsTouched();
+    component.showRadioButtonError();
+    expect(component.selectJudgeNameError).toBe(HearingJudgeSelectionEnum.ExcludeFullNameJudge);
+    component.hearingJudgeForm.controls.judgeName.setValue(null);
+    component.showRadioButtonError();
+    expect(component.selectJudgeNameError).toBe(HearingJudgeSelectionEnum.ValidNameError);
+  });
+
   it('should check form valid', () => {
     component.excludedJudge = childComponent;
     component.isFormValid();

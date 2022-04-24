@@ -159,11 +159,11 @@ export enum HearingFacilitiesEnum {
 }
 
 export enum HearingJudgeSelectionEnum {
-  ValidNameError = 'Please enter a valid Name',
-  SelectOneJudgeError = 'Please select at least one judge type',
-  SelectionError = 'Please select that applies',
+  ValidNameError = 'Enter a valid name',
+  SelectOneJudgeError = 'Select at least one judge type',
+  SelectionError = 'Select the option that applies',
   ExcludeJudge = 'Exclude judge before continue',
-  ExcludeFullNameJudge = 'Enter a full name to exclude a judge, or delete the name to stop the judge being excluded.'
+  ExcludeFullNameJudge = 'Enter a full name for a specific judge, or delete the name to stop the judge being included'
 }
 
 export enum HearingLinkedSelectionEnum {

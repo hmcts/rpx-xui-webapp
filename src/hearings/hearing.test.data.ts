@@ -976,8 +976,8 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   ],
   hearingWindow: {
     hearingWindowDateRange: {
-      hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
-      hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000',
+      hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
+      hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
     },
     hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
   },
@@ -1178,8 +1178,8 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
     hearingIsLinkedFlag: false,
     hearingWindow: {
       hearingWindowDateRange: {
-        hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
-        hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000',
+        hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
+        hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
       },
       hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
     },
@@ -1228,7 +1228,7 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
       }],
     caseManagementLocationCode: null,
     caserestrictedFlag: false,
-    caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
+    caseSLAStartDate: '2022-11-23T09:00:00.000+0000',
   },
   partyDetails: [
     {
@@ -1258,7 +1258,7 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
   ],
   hearingResponse: {
     listAssistTransactionID: '123456789',
-    receivedDateTime: '2021-11-30T09:00:00.000+0000',
+    receivedDateTime: '2022-11-30T09:00:00.000+0000',
     responseVersion: 0,
     laCaseStatus: LaCaseStatus.AWAITING_LISTING,
     listingStatus: ListingStatus.DRAFT,
@@ -1529,7 +1529,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
       }],
     caseManagementLocationCode: null,
     caserestrictedFlag: false,
-    caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
+    caseSLAStartDate: '2022-11-23T09:00:00.000+0000',
   },
 };
 
@@ -1699,12 +1699,12 @@ export const initialState = {
     hearingRequest: {
       hearingRequestMainModel: {
         requestDetails: {
-          requestTimeStamp: '2021-11-30T09:00:00.000+0000'
+          requestTimeStamp: '2022-11-30T09:00:00.000+0000'
         },
         hearingResponse: {
           listAssistTransactionID: '',
           responseVersion: 1,
-          receivedDateTime: '2021-11-30T09:00:00.000+0000',
+          receivedDateTime: '2022-11-30T09:00:00.000+0000',
           laCaseStatus: LaCaseStatus.AWAITING_LISTING,
           listingStatus: ListingStatus.FIXED,
           hearingCancellationReason: '',

@@ -3,6 +3,7 @@ import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {State} from '../store/reducers';
 import {IsAmendedConverter} from './is-amended.converter';
+import * as moment from 'moment';
 
 export class HearingSpecificDateAmendedConverter implements IsAmendedConverter {
   public transformIsAmended(hearingState$?: Observable<State>): Observable<boolean> {
@@ -10,9 +11,9 @@ export class HearingSpecificDateAmendedConverter implements IsAmendedConverter {
       const objAHearingWindow = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.hearingWindow;
       const objBHearingWindow = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingWindow;
 
-      const objA = objAHearingWindow && objAHearingWindow.hearingWindowDateRange && objAHearingWindow.hearingWindowDateRange.hearingWindowStartDateRange;
-      const objB = objBHearingWindow && objBHearingWindow.hearingWindowDateRange && objBHearingWindow.hearingWindowDateRange.hearingWindowStartDateRange;
-      return !_.isEqual(objA, objB);
+      const objA = objAHearingWindow.hearingWindowDateRange && objAHearingWindow.hearingWindowDateRange.hearingWindowStartDateRange;
+      const objB = objBHearingWindow.hearingWindowDateRange && objBHearingWindow.hearingWindowDateRange.hearingWindowStartDateRange;
+      return !moment(new Date(objA).toDateString()).isSame(moment(new Date(objB).toDateString()).toDate());
     }));
   }
 }

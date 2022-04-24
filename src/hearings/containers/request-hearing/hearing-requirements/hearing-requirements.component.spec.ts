@@ -130,8 +130,8 @@ describe('HearingRequirementsComponent', () => {
         hearingIsLinkedFlag: false,
         hearingWindow: {
           hearingWindowDateRange: {
-            hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
-            hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000'
+            hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
+            hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000'
           },
           hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000'
         },

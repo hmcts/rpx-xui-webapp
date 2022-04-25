@@ -22,12 +22,10 @@ export async function getBookings(req, res: Response, next: NextFunction): Promi
   // return res.status(403).send('{"errorMessage": "Forbidden}"');
 
   // Succesfull Case
-   return res.send(bookings);
+  return res.send(bookings);
 }
 
 export async function postBooking(req, res: Response, next: NextFunction): Promise<Response> {
-  // Unhappy paths are part of https://tools.hmcts.net/jira/browse/EUI-4783
-
   return res.send(bookingResponse);
 }
 
@@ -41,4 +39,3 @@ export async function refreshRoleAssignments(req, res: Response, next: NextFunct
 export function removeAcceptHeader(proxyReq, req) {
     proxyReq.removeHeader('accept');
 }
-

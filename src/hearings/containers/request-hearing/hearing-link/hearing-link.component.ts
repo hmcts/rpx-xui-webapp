@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { HearingLinksStateData } from '../../../models/hearingLinksStateData.model';
 import { ACTION, HearingLinkMessages } from '../../../models/hearings.enum';
 import { ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
@@ -21,7 +21,7 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
   public linkedCases: ServiceLinkedCasesModel[];
   public hearingLinkForm: FormGroup;
   public validationErrors: { id: string, message: string }[] = [];
-  public caseTitle: string;
+  public caseName: string;
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService,
               protected readonly route: ActivatedRoute,
@@ -30,8 +30,7 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
     this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
       state => {
         this.caseId = state.hearingList.hearingListMainModel ? state.hearingList.hearingListMainModel.caseRef : '';
-        const caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.caseName : '';
-        this.caseTitle = `${caseName} ${this.caseId}`;
+        this.caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.caseName : '';
       }
     );
   }

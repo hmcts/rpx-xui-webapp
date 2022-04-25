@@ -1,8 +1,8 @@
-import { Component, Input } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { HearingJudgeSelectionEnum } from '../../models/hearings.enum';
-import { JudicialUserModel } from '../../models/person.model';
-import { ValidatorsUtils } from '../../utils/validators.utils';
+import {Component, Input} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {HearingJudgeSelectionEnum} from '../../models/hearings.enum';
+import {JudicialUserModel} from '../../models/judicialUser.model';
+import {ValidatorsUtils} from '../../utils/validators.utils';
 
 @Component({
   selector: 'exui-hearing-judge-names-list',
@@ -12,6 +12,7 @@ import { ValidatorsUtils } from '../../utils/validators.utils';
 export class HearingJudgeNamesListComponent {
   @Input() public subTitle: string;
   @Input() public idValue: string = 'Exclude';
+  @Input() public serviceId: string = '';
   @Input() public placeholderContent: string = '';
   @Input() public submitButtonName: string = '';
   @Input() public isColumnView: boolean;
@@ -26,7 +27,7 @@ export class HearingJudgeNamesListComponent {
   }
 
   public removeSelectedJudge(selectedJudge: JudicialUserModel): void {
-    this.judgeList = this.judgeList.filter(judge => judge.sidam_id !== selectedJudge.sidam_id);
+    this.judgeList = this.judgeList.filter(judge => judge.idamId !== selectedJudge.idamId);
   }
 
   public excludeJudge(): void {
@@ -55,9 +56,9 @@ export class HearingJudgeNamesListComponent {
   }
 
   public displayedJudgeName(judge: JudicialUserModel) {
-    if (judge && judge.known_as) {
-      return `${judge.known_as} (${judge.email_id})`;
+    if (judge && judge.knownAs) {
+      return `${judge.knownAs} (${judge.emailId})`;
     }
-    return judge ? `${judge.full_name} (${judge.email_id})` : '';
+    return judge ? `${judge.fullName} (${judge.emailId})` : '';
   }
 }

@@ -19,14 +19,42 @@ describe('HearingChangeReasonComponent', () => {
   const hearingsService = new HearingsService(mockedHttpClient);
   const reasons: LovRefDataModel[] = [
     {
-      key: 'reasonone',
+      key: 'reasonOne',
       value_en: 'Reason 1',
       value_cy: '',
-      hintText_EN: 'Reason 1',
-      hintTextCY: '',
-      order: 1,
-      parentKey: null,
-    }];
+      hint_text_en: 'Reason 1',
+      hint_text_cy: '',
+      lov_order: 1,
+      category_key: 'HearingChangeReason',
+      parent_category: '',
+      parent_key: '',
+      active_flag: '',
+    },
+    {
+      key: 'reasonTwo',
+      value_en: 'Reason 2',
+      value_cy: '',
+      hint_text_en: 'Reason 2',
+      hint_text_cy: '',
+      lov_order: 2,
+      category_key: 'HearingChangeReason',
+      parent_category: '',
+      parent_key: '',
+      active_flag: '',
+    },
+    {
+      key: 'reasonThree',
+      value_en: 'Reason 3',
+      value_cy: '',
+      hint_text_en: 'Reason 3',
+      hint_text_cy: '',
+      lov_order: 3,
+      category_key: 'HearingChangeReason',
+      parent_category: '',
+      parent_key: '',
+      active_flag: '',
+    },
+  ];
 
   let mockStore: any;
 

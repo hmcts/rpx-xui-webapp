@@ -6,10 +6,10 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { JudicialUserModel } from '../../../../hearings/models/person.model';
 import { HearingJudgeNamesListComponent } from '../../../components';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION, HearingJudgeSelectionEnum, MemberType, RadioOptions, RequirementType } from '../../../models/hearings.enum';
+import {JudicialUserModel} from '../../../models/judicialUser.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingJudgeComponent } from './hearing-judge.component';
@@ -26,11 +26,45 @@ describe('HearingJudgeComponent', () => {
       key: 'tribunalJudge',
       value_en: 'Tribunal Judge',
       value_cy: '',
-      hintText_EN: 'Tribunal',
-      hintTextCY: '',
-      order: 1,
-      parentKey: null,
-    }];
+      hint_text_en: 'Tribunal',
+      hint_text_cy: '',
+      lov_order: 1,
+      parent_key: null,
+      category_key: 'JudgeType',
+      parent_category: '',
+      active_flag: 'Y',
+      child_nodes: null,
+      from: 'exui-default',
+    },
+    {
+      key: 'deputyTribunalJudge',
+      value_en: 'Deputy Tribunal Judge',
+      value_cy: '',
+      hint_text_en: 'Deputy',
+      hint_text_cy: '',
+      lov_order: 2,
+      parent_key: null,
+      category_key: 'JudgeType',
+      parent_category: '',
+      active_flag: 'Y',
+      child_nodes: null,
+      from: 'exui-default',
+    },
+    {
+      key: 'regionalTribunalJudge',
+      value_en: 'Regional Tribunal Judge',
+      value_cy: '',
+      hint_text_en: 'Regional',
+      hint_text_cy: '',
+      lov_order: 3,
+      parent_key: null,
+      category_key: 'JudgeType',
+      parent_category: '',
+      active_flag: 'Y',
+      child_nodes: null,
+      from: 'exui-default',
+    },
+  ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -88,6 +122,31 @@ describe('HearingJudgeComponent', () => {
     expect(component.selectJudgeTypesError).toBe(HearingJudgeSelectionEnum.SelectOneJudgeError);
   });
 
+  it('should check RadioButton selection', () => {
+    const judgeInfo: JudicialUserModel = {
+      emailId: 'jacky.collins@judicial.com',
+      fullName: 'Jacky Collins',
+      idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
+      isJudge: '',
+      isMagistrate: '',
+      isPanelMember: '',
+      knownAs: 'Hearing Judge',
+      personalCode: 'P100001',
+      surname: 'Jacky',
+      title: 'Mr'
+    };
+    component.showSpecificJudge(RadioOptions.YES);
+    expect(component.specificJudgeSelection).toBe(RadioOptions.YES);
+    component.hearingJudgeForm.controls.specificJudge.setValue(RadioOptions.YES);
+    component.hearingJudgeForm.controls.judgeName.setValue(judgeInfo);
+    component.hearingJudgeForm.controls.judgeName.markAsTouched();
+    component.showRadioButtonError();
+    expect(component.selectJudgeNameError).toBe(HearingJudgeSelectionEnum.ExcludeFullNameJudge);
+    component.hearingJudgeForm.controls.judgeName.setValue(null);
+    component.showRadioButtonError();
+    expect(component.selectJudgeNameError).toBe(HearingJudgeSelectionEnum.ValidNameError);
+  });
+
   it('should check form valid', () => {
     component.excludedJudge = childComponent;
     component.isFormValid();
@@ -96,14 +155,16 @@ describe('HearingJudgeComponent', () => {
 
   it('should check prepareHearingRequestData', () => {
     const judgeInfo: JudicialUserModel = {
-      sidam_id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
-      object_id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
-      known_as: 'Hearing Judge',
+      emailId: 'jacky.collins@judicial.com',
+      fullName: 'Jacky Collins',
+      idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
+      isJudge: '',
+      isMagistrate: '',
+      isPanelMember: '',
+      knownAs: 'Hearing Judge',
+      personalCode: 'P100001',
       surname: 'Jacky',
-      personal_code: 'P100001',
-      full_name: 'Jacky Collins',
-      post_nominals: '',
-      email_id: 'jacky.collins@judicial.com'
+      title: 'Mr'
     };
 
     component.hearingJudgeForm.controls.specificJudge.setValue(RadioOptions.YES);
@@ -115,19 +176,8 @@ describe('HearingJudgeComponent', () => {
     component.prepareHearingRequestData();
     expect(component.hearingRequestMainModel.hearingDetails.panelRequirements.panelPreferences.length).toBeGreaterThan(0);
     component.hearingJudgeForm.controls.specificJudge.setValue(RadioOptions.NO);
-    component.hearingJudgeForm.controls.judgeType.setValue([
-      {
-        key: 'tribunalJudge',
-        value_en: 'Tribunal Judge',
-        value_cy: '',
-        hintText_EN: 'Tribunal',
-        hintTextCY: '',
-        order: 1,
-        parentKey: null,
-        selected: true,
-      }]);
     component.prepareHearingRequestData();
-    expect(component.hearingRequestMainModel.hearingDetails.panelRequirements.roleType.length).toBeGreaterThan(0);
+    expect(component.hearingRequestMainModel.hearingDetails.panelRequirements.roleType.length).toBe(0);
 
   });
 
@@ -155,24 +205,28 @@ describe('HearingJudgeComponent', () => {
     component.setFormData();
     expect(component.excludedJudgeList.length).toBe(0);
     const personalCodeJudgeList: JudicialUserModel[] = [{
-      sidam_id: '1102839232',
-      object_id: '1102839232',
-      known_as: 'Jacky Collins',
+      emailId: 'jacky.collins@judicial.com',
+      fullName: 'Jacky Collins',
+      idamId: '1102839232',
+      isJudge: '',
+      isMagistrate: '',
+      isPanelMember: '',
+      knownAs: 'Jacky Collins',
+      personalCode: 'P100001',
       surname: 'Jacky Collins',
-      personal_code: 'P0000001',
-      full_name: 'Jacky Collins',
-      post_nominals: 'Jacky Collins',
-      email_id: 'jacky.collins@judicial.com',
+      title: 'Mr'
     },
     {
-      sidam_id: '1102839233',
-      object_id: '1102839233',
-      known_as: 'Jammie Williams',
+      emailId: 'jammie.williams@judicial.com',
+      fullName: 'Jammie Williams',
+      idamId: '1102839233',
+      isJudge: '',
+      isMagistrate: '',
+      isPanelMember: '',
+      knownAs: 'Jammie Williams',
+      personalCode: 'P0000002',
       surname: 'Jammie Williams',
-      personal_code: 'P0000002',
-      full_name: 'Jammie Williams',
-      post_nominals: 'Jammie Williams',
-      email_id: 'jammie.williams@judicial.com',
+      title: 'Mr'
     }];
     component.specificJudgeSelection = RadioOptions.YES;
     component.hearingJudgeFormInfo.includedJudges = ['P0000001'];

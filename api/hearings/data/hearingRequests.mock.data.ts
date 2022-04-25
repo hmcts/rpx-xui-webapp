@@ -1,10 +1,17 @@
-import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
-import { CategoryType, LaCaseStatus, ListingStatus, PartyType } from '../models/hearings.enum';
+import {HearingRequestMainModel} from '../models/hearingRequestMain.model';
+import {
+  CategoryType,
+  HMCLocationType,
+  LaCaseStatus,
+  ListingStatus,
+  PartyType,
+  UnavailabilityType
+} from '../models/hearings.enum';
 
 export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
   {
     requestDetails: {
-      requestTimeStamp: '2022-02-23T09:00:00.000+0000',
+      timeStamp: '2022-02-23T09:00:00.000Z',
       versionNumber: 1,
     },
     hearingDetails: {
@@ -12,17 +19,15 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingType: 'final',
       hearingLocations: [
         {
-          locationType: 'hearing',
+          locationType: HMCLocationType.COURT,
           locationId: '196538',
         },
       ],
       hearingIsLinkedFlag: false,
       hearingWindow: {
-        hearingWindowDateRange: {
-          hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
-          hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
-        },
-        hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
+        dateRangeStart: '2022-11-23T09:00:00.000Z',
+        dateRangeEnd: '2022-11-30T09:00:00.000Z',
+        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
       },
       privateHearingRequiredFlag: false,
       panelRequirements: {
@@ -33,11 +38,11 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         ],
         panelPreferences: [],
         panelSpecialisms: [
-          "DisabilityQualifiedPanelMember",
-          "EyeSurgeon",
-          "GeneralPractitioner",
-          "FinanciallyQualifiedPanelMember",
-          "RegionalMedicalMember",
+          'DisabilityQualifiedPanelMember',
+          'EyeSurgeon',
+          'GeneralPractitioner',
+          'FinanciallyQualifiedPanelMember',
+          'RegionalMedicalMember',
         ],
       },
       autolistFlag: false,
@@ -83,7 +88,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2022-11-23T09:00:00.000+0000',
+      caseSLAStartDate: '2021-11-23T09:00:00.000Z',
     },
     partyDetails: [
       {
@@ -109,8 +114,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
-            unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-            unavailableToDate: '2021-12-31T09:00:00.000+0000',
+            unavailableFromDate: '2021-12-10T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY,
           },
         ],
       },
@@ -137,22 +143,23 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
-            unavailableFromDate: '2021-12-20T09:00:00.000+0000',
-            unavailableToDate: '2021-12-31T09:00:00.000+0000',
+            unavailableFromDate: '2021-12-20T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY,
           },
         ],
       },
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
-      receivedDateTime: '2022-11-30T09:00:00.000+0000',
+      receivedDateTime: '2021-11-30T09:00:00.000Z',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.AWAITING_LISTING,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
       hearingDaySchedule: {
-        hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
-        hearingEndDateTime: '2021-03-12T16:00:00.000+0000',
+        hearingStartDateTime: '2021-03-12T09:00:00.000Z',
+        hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
@@ -182,8 +189,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
-                unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+                unavailableFromDate: '2021-12-10T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
               },
             ],
           },
@@ -210,8 +218,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
-                unavailableFromDate: '2021-12-20T09:00:00.000+0000',
-                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+                unavailableFromDate: '2021-12-20T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
               },
             ],
           },
@@ -221,7 +230,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
   },
   {
     requestDetails: {
-      requestTimeStamp: '2022-02-23T09:00:00.000+0000',
+      timeStamp: '2022-02-23T09:00:00.000Z',
       versionNumber: 1,
     },
     hearingDetails: {
@@ -229,17 +238,15 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingType: 'final',
       hearingLocations: [
         {
-          locationType: 'hearing',
+          locationType: HMCLocationType.COURT,
           locationId: '196538',
         },
       ],
       hearingIsLinkedFlag: false,
       hearingWindow: {
-        hearingWindowDateRange: {
-          hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
-          hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
-        },
-        hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
+        dateRangeStart: '2022-11-23T09:00:00.000Z',
+        dateRangeEnd: '2022-11-30T09:00:00.000Z',
+        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
       },
       privateHearingRequiredFlag: false,
       panelRequirements: {
@@ -249,9 +256,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         ],
         panelPreferences: [],
         panelSpecialisms: [
-          "GeneralPractitioner",
-          "FinanciallyQualifiedPanelMember",
-          "RegionalMedicalMember",
+          'GeneralPractitioner',
+          'FinanciallyQualifiedPanelMember',
+          'RegionalMedicalMember',
         ],
       },
       autolistFlag: false,
@@ -297,7 +304,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2022-11-23T09:00:00.000+0000',
+      caseSLAStartDate: '2021-11-23T09:00:00.000Z',
     },
     partyDetails: [
       {
@@ -323,8 +330,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
-            unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-            unavailableToDate: '2021-12-31T09:00:00.000+0000',
+            unavailableFromDate: '2021-12-10T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY,
           },
         ],
       },
@@ -351,22 +359,23 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
-            unavailableFromDate: '2021-12-20T09:00:00.000+0000',
-            unavailableToDate: '2021-12-31T09:00:00.000+0000',
+            unavailableFromDate: '2021-12-20T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY,
           },
         ],
       },
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
-      receivedDateTime: '2022-11-30T09:00:00.000+0000',
+      receivedDateTime: '2021-11-30T09:00:00.000Z',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.AWAITING_LISTING,
       listingStatus: ListingStatus.DRAFT,
       hearingCancellationReason: '123456543',
       hearingDaySchedule: {
-        hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
-        hearingEndDateTime: '2021-03-12T16:00:00.000+0000',
+        hearingStartDateTime: '2021-03-12T09:00:00.000Z',
+        hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
@@ -396,8 +405,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
-                unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+                unavailableFromDate: '2021-12-10T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
               },
             ],
           },
@@ -424,8 +434,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
-                unavailableFromDate: '2021-12-20T09:00:00.000+0000',
-                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+                unavailableFromDate: '2021-12-20T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
               },
             ],
           },
@@ -435,7 +446,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
   },
   {
     requestDetails: {
-      requestTimeStamp: '2022-02-23T09:00:00.000+0000',
+      timeStamp: '2022-02-23T09:00:00.000Z',
       versionNumber: 1,
     },
     hearingDetails: {
@@ -443,17 +454,15 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingType: 'final',
       hearingLocations: [
         {
-          locationType: 'hearing',
+          locationType: HMCLocationType.COURT,
           locationId: '196538',
         },
       ],
       hearingIsLinkedFlag: false,
       hearingWindow: {
-        hearingWindowDateRange: {
-          hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
-          hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
-        },
-        hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
+        dateRangeStart: '2022-11-23T09:00:00.000Z',
+        dateRangeEnd: '2022-11-30T09:00:00.000Z',
+        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
       },
       privateHearingRequiredFlag: false,
       panelRequirements: null,
@@ -500,7 +509,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2022-11-23T09:00:00.000+0000',
+      caseSLAStartDate: '2021-11-23T09:00:00.000Z',
     },
     partyDetails: [
       {
@@ -526,8 +535,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
-            unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-            unavailableToDate: '2021-12-31T09:00:00.000+0000',
+            unavailableFromDate: '2021-12-10T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY,
           },
         ],
       },
@@ -554,22 +564,23 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
-            unavailableFromDate: '2021-12-20T09:00:00.000+0000',
-            unavailableToDate: '2021-12-31T09:00:00.000+0000',
+            unavailableFromDate: '2021-12-20T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY,
           },
         ],
       },
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
-      receivedDateTime: '2022-11-30T09:00:00.000+0000',
+      receivedDateTime: '2021-11-30T09:00:00.000Z',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.LISTED,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
       hearingDaySchedule: {
-        hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
-        hearingEndDateTime: '2021-03-12T11:00:00.000+0000',
+        hearingStartDateTime: '2021-03-12T09:00:00.000Z',
+        hearingEndDateTime: '2021-03-12T11:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
@@ -599,8 +610,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
-                unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+                unavailableFromDate: '2021-12-10T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
               },
             ],
           },
@@ -627,8 +639,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
-                unavailableFromDate: '2021-12-20T09:00:00.000+0000',
-                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+                unavailableFromDate: '2021-12-20T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
               },
             ],
           },
@@ -638,7 +651,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
   },
   {
     requestDetails: {
-      requestTimeStamp: '2022-02-23T09:00:00.000+0000',
+      timeStamp: '2022-02-23T09:00:00.000Z',
       versionNumber: 1,
     },
     hearingDetails: {
@@ -646,17 +659,15 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingType: 'final',
       hearingLocations: [
         {
-          locationType: 'hearing',
+          locationType: HMCLocationType.COURT,
           locationId: '196538',
         },
       ],
       hearingIsLinkedFlag: false,
       hearingWindow: {
-        hearingWindowDateRange: {
-          hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
-          hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
-        },
-        hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
+        dateRangeStart: '2022-11-23T09:00:00.000Z',
+        dateRangeEnd: '2022-11-30T09:00:00.000Z',
+        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
       },
       privateHearingRequiredFlag: false,
       panelRequirements: null,
@@ -703,7 +714,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2022-11-23T09:00:00.000+0000',
+      caseSLAStartDate: '2021-11-23T09:00:00.000Z',
     },
     partyDetails: [
       {
@@ -729,8 +740,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
-            unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-            unavailableToDate: '2021-12-31T09:00:00.000+0000',
+            unavailableFromDate: '2021-12-10T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY,
           },
         ],
       },
@@ -757,22 +769,23 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
-            unavailableFromDate: '2021-12-20T09:00:00.000+0000',
-            unavailableToDate: '2021-12-31T09:00:00.000+0000',
+            unavailableFromDate: '2021-12-20T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY,
           },
         ],
       },
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
-      receivedDateTime: '2022-11-30T09:00:00.000+0000',
+      receivedDateTime: '2021-11-30T09:00:00.000Z',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.PENDING_RELISTING,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
       hearingDaySchedule: {
-        hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
-        hearingEndDateTime: '2021-03-12T16:00:00.000+0000',
+        hearingStartDateTime: '2021-03-12T09:00:00.000Z',
+        hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
@@ -802,8 +815,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
-                unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+                unavailableFromDate: '2021-12-10T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
               },
             ],
           },
@@ -830,8 +844,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
-                unavailableFromDate: '2021-12-20T09:00:00.000+0000',
-                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+                unavailableFromDate: '2021-12-20T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
               },
             ],
           },
@@ -841,7 +856,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
   },
   {
     requestDetails: {
-      requestTimeStamp: '2022-02-23T09:00:00.000+0000',
+      timeStamp: '2022-02-23T09:00:00.000Z',
       versionNumber: 1,
     },
     hearingDetails: {
@@ -849,17 +864,15 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingType: 'final',
       hearingLocations: [
         {
-          locationType: 'hearing',
+          locationType: HMCLocationType.COURT,
           locationId: '196538',
         },
       ],
       hearingIsLinkedFlag: false,
       hearingWindow: {
-        hearingWindowDateRange: {
-          hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
-          hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
-        },
-        hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
+        dateRangeStart: '2022-11-23T09:00:00.000Z',
+        dateRangeEnd: '2022-11-30T09:00:00.000Z',
+        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
       },
       privateHearingRequiredFlag: false,
       panelRequirements: null,
@@ -906,7 +919,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2022-11-23T09:00:00.000+0000',
+      caseSLAStartDate: '2021-11-23T09:00:00.000Z',
     },
     partyDetails: [
       {
@@ -932,8 +945,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
-            unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-            unavailableToDate: '2021-12-31T09:00:00.000+0000',
+            unavailableFromDate: '2021-12-10T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY,
           },
         ],
       },
@@ -960,22 +974,23 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
-            unavailableFromDate: '2021-12-20T09:00:00.000+0000',
-            unavailableToDate: '2021-12-31T09:00:00.000+0000',
+            unavailableFromDate: '2021-12-20T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY,
           },
         ],
       },
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
-      receivedDateTime: '2022-11-30T09:00:00.000+0000',
+      receivedDateTime: '2021-11-30T09:00:00.000Z',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.AWAITING_LISTING,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
       hearingDaySchedule: {
-        hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
-        hearingEndDateTime: '2021-03-12T16:00:00.000+0000',
+        hearingStartDateTime: '2021-03-12T09:00:00.000Z',
+        hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
@@ -1005,8 +1020,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
-                unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+                unavailableFromDate: '2021-12-10T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
               },
             ],
           },
@@ -1033,8 +1049,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
-                unavailableFromDate: '2021-12-20T09:00:00.000+0000',
-                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+                unavailableFromDate: '2021-12-20T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
               },
             ],
           },
@@ -1044,7 +1061,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
   },
   {
     requestDetails: {
-      requestTimeStamp: '2022-02-23T09:00:00.000+0000',
+      timeStamp: '2022-02-23T09:00:00.000Z',
       versionNumber: 1,
     },
     hearingDetails: {
@@ -1052,17 +1069,15 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingType: 'final',
       hearingLocations: [
         {
-          locationType: 'hearing',
+          locationType: HMCLocationType.COURT,
           locationId: '196538',
         },
       ],
       hearingIsLinkedFlag: false,
       hearingWindow: {
-        hearingWindowDateRange: {
-          hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
-          hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
-        },
-        hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
+        dateRangeStart: '2022-11-23T09:00:00.000Z',
+        dateRangeEnd: '2022-11-30T09:00:00.000Z',
+        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
       },
       privateHearingRequiredFlag: false,
       panelRequirements: null,
@@ -1109,7 +1124,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2022-11-23T09:00:00.000+0000',
+      caseSLAStartDate: '2021-11-23T09:00:00.000Z',
     },
     partyDetails: [
       {
@@ -1135,8 +1150,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
-            unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-            unavailableToDate: '2021-12-31T09:00:00.000+0000',
+            unavailableFromDate: '2021-12-10T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY,
           },
         ],
       },
@@ -1163,23 +1179,24 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
-            unavailableFromDate: '2021-12-20T09:00:00.000+0000',
-            unavailableToDate: '2021-12-31T09:00:00.000+0000',
+            unavailableFromDate: '2021-12-20T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY,
           },
         ],
       },
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
-      receivedDateTime: '2022-11-30T09:00:00.000+0000',
-      errorTimestamp: '2022-03-27T09:00:00.000+0000',
+      receivedDateTime: '2021-11-30T09:00:00.000Z',
+      errorTimestamp: '2022-03-27T09:00:00.000Z',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.EXCEPTION,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
       hearingDaySchedule: {
-        hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
-        hearingEndDateTime: '2021-03-12T16:00:00.000+0000',
+        hearingStartDateTime: '2021-03-12T09:00:00.000Z',
+        hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
@@ -1209,8 +1226,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
-                unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+                unavailableFromDate: '2021-12-10T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
               },
             ],
           },
@@ -1237,8 +1255,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
-                unavailableFromDate: '2021-12-20T09:00:00.000+0000',
-                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+                unavailableFromDate: '2021-12-20T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
               },
             ],
           },
@@ -1248,7 +1267,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
   },
   {
     requestDetails: {
-      requestTimeStamp: '2022-02-23T09:00:00.000+0000',
+      timeStamp: '2022-02-23T09:00:00.000Z',
       versionNumber: 1,
     },
     hearingDetails: {
@@ -1256,17 +1275,15 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingType: 'final',
       hearingLocations: [
         {
-          locationType: 'hearing',
+          locationType: HMCLocationType.COURT,
           locationId: '196538',
         },
       ],
       hearingIsLinkedFlag: false,
       hearingWindow: {
-        hearingWindowDateRange: {
-          hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
-          hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
-        },
-        hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
+        dateRangeStart: '2022-11-23T09:00:00.000Z',
+        dateRangeEnd: '2022-11-30T09:00:00.000Z',
+        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
       },
       privateHearingRequiredFlag: false,
       panelRequirements: null,
@@ -1313,7 +1330,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2022-11-23T09:00:00.000+0000',
+      caseSLAStartDate: '2021-11-23T09:00:00.000Z',
     },
     partyDetails: [
       {
@@ -1339,8 +1356,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
-            unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-            unavailableToDate: '2021-12-31T09:00:00.000+0000',
+            unavailableFromDate: '2021-12-10T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY,
           },
         ],
       },
@@ -1367,22 +1385,23 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
-            unavailableFromDate: '2021-12-20T09:00:00.000+0000',
-            unavailableToDate: '2021-12-31T09:00:00.000+0000',
+            unavailableFromDate: '2021-12-20T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY,
           },
         ],
       },
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
-      receivedDateTime: '2022-11-30T09:00:00.000+0000',
+      receivedDateTime: '2021-11-30T09:00:00.000Z',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.LISTED,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
       hearingDaySchedule: {
-        hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
-        hearingEndDateTime: '2021-03-12T16:00:00.000+0000',
+        hearingStartDateTime: '2021-03-12T09:00:00.000Z',
+        hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
@@ -1412,8 +1431,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
-                unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+                unavailableFromDate: '2021-12-10T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
               },
             ],
           },
@@ -1440,8 +1460,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
-                unavailableFromDate: '2021-12-20T09:00:00.000+0000',
-                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+                unavailableFromDate: '2021-12-20T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
               },
             ],
           },
@@ -1451,7 +1472,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
   },
   {
     requestDetails: {
-      requestTimeStamp: '2022-02-23T09:00:00.000+0000',
+      timeStamp: '2022-02-23T09:00:00.000Z',
       versionNumber: 1,
     },
     hearingDetails: {
@@ -1459,17 +1480,15 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingType: 'final',
       hearingLocations: [
         {
-          locationType: 'hearing',
+          locationType: HMCLocationType.COURT,
           locationId: '196538',
         },
       ],
       hearingIsLinkedFlag: false,
       hearingWindow: {
-        hearingWindowDateRange: {
-          hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
-          hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
-        },
-        hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
+        dateRangeStart: '2022-11-23T09:00:00.000Z',
+        dateRangeEnd: '2022-11-30T09:00:00.000Z',
+        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
       },
       privateHearingRequiredFlag: false,
       panelRequirements: null,
@@ -1516,7 +1535,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2022-11-23T09:00:00.000+0000',
+      caseSLAStartDate: '2021-11-23T09:00:00.000Z',
     },
     partyDetails: [
       {
@@ -1542,8 +1561,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
-            unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-            unavailableToDate: '2021-12-31T09:00:00.000+0000',
+            unavailableFromDate: '2021-12-10T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY,
           },
         ],
       },
@@ -1570,22 +1590,23 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
-            unavailableFromDate: '2021-12-20T09:00:00.000+0000',
-            unavailableToDate: '2021-12-31T09:00:00.000+0000',
+            unavailableFromDate: '2021-12-20T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY,
           },
         ],
       },
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
-      receivedDateTime: '2022-11-30T09:00:00.000+0000',
+      receivedDateTime: '2021-11-30T09:00:00.000Z',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.CASE_CLOSED,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: 'cancelled',
       hearingDaySchedule: {
-        hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
-        hearingEndDateTime: '2021-03-12T16:00:00.000+0000',
+        hearingStartDateTime: '2021-03-12T09:00:00.000Z',
+        hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
@@ -1615,8 +1636,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
-                unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+                unavailableFromDate: '2021-12-10T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
               },
             ],
           },
@@ -1643,8 +1665,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
-                unavailableFromDate: '2021-12-20T09:00:00.000+0000',
-                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+                unavailableFromDate: '2021-12-20T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
               },
             ],
           },
@@ -1654,7 +1677,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
   },
   {
     requestDetails: {
-      requestTimeStamp: '2022-02-23T09:00:00.000+0000',
+      timeStamp: '2022-02-23T09:00:00.000Z',
       versionNumber: 1,
     },
     hearingDetails: {
@@ -1662,17 +1685,15 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingType: 'final',
       hearingLocations: [
         {
-          locationType: 'hearing',
+          locationType: HMCLocationType.COURT,
           locationId: '196538',
         },
       ],
       hearingIsLinkedFlag: false,
       hearingWindow: {
-        hearingWindowDateRange: {
-          hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
-          hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
-        },
-        hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
+        dateRangeStart: '2022-11-23T09:00:00.000Z',
+        dateRangeEnd: '2022-11-30T09:00:00.000Z',
+        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
       },
       privateHearingRequiredFlag: false,
       panelRequirements: null,
@@ -1719,7 +1740,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2022-11-23T09:00:00.000+0000',
+      caseSLAStartDate: '2021-11-23T09:00:00.000Z',
     },
     partyDetails: [
       {
@@ -1745,8 +1766,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
-            unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-            unavailableToDate: '2021-12-31T09:00:00.000+0000',
+            unavailableFromDate: '2021-12-10T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY,
           },
         ],
       },
@@ -1773,22 +1795,23 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
-            unavailableFromDate: '2021-12-20T09:00:00.000+0000',
-            unavailableToDate: '2021-12-31T09:00:00.000+0000',
+            unavailableFromDate: '2021-12-20T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY,
           },
         ],
       },
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
-      receivedDateTime: '2022-11-30T09:00:00.000+0000',
+      receivedDateTime: '2021-11-30T09:00:00.000Z',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.CANCELLED,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: 'cancelled',
       hearingDaySchedule: {
-        hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
-        hearingEndDateTime: '2021-03-12T16:00:00.000+0000',
+        hearingStartDateTime: '2021-03-12T09:00:00.000Z',
+        hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
@@ -1818,8 +1841,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
-                unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+                unavailableFromDate: '2021-12-10T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
               },
             ],
           },
@@ -1846,8 +1870,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
-                unavailableFromDate: '2021-12-20T09:00:00.000+0000',
-                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+                unavailableFromDate: '2021-12-20T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
               },
             ],
           },
@@ -1857,7 +1882,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
   },
   {
     requestDetails: {
-      requestTimeStamp: '2022-02-23T09:00:00.000+0000',
+      timeStamp: '2022-02-23T09:00:00.000Z',
       versionNumber: 1,
     },
     hearingDetails: {
@@ -1865,17 +1890,15 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingType: 'final',
       hearingLocations: [
         {
-          locationType: 'hearing',
+          locationType: HMCLocationType.COURT,
           locationId: '196538',
         },
       ],
       hearingIsLinkedFlag: false,
       hearingWindow: {
-        hearingWindowDateRange: {
-          hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
-          hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
-        },
-        hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
+        dateRangeStart: '2022-11-23T09:00:00.000Z',
+        dateRangeEnd: '2022-11-30T09:00:00.000Z',
+        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
       },
       privateHearingRequiredFlag: false,
       panelRequirements: null,
@@ -1922,7 +1945,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2022-11-23T09:00:00.000+0000',
+      caseSLAStartDate: '2021-11-23T09:00:00.000Z',
     },
     partyDetails: [
       {
@@ -1950,14 +1973,14 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
-      receivedDateTime: '2022-11-30T09:00:00.000+0000',
+      receivedDateTime: '2021-11-30T09:00:00.000Z',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.LISTED,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: 'cancelled',
       hearingDaySchedule: {
-        hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
-        hearingEndDateTime: '2021-03-12T16:00:00.000+0000',
+        hearingStartDateTime: '2021-03-12T09:00:00.000Z',
+        hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
@@ -1992,7 +2015,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
   },
   {
     requestDetails: {
-      requestTimeStamp: '2022-02-23T09:00:00.000+0000',
+      timeStamp: '2022-02-23T09:00:00.000Z',
       versionNumber: 1,
     },
     hearingDetails: {
@@ -2000,17 +2023,15 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingType: 'final',
       hearingLocations: [
         {
-          locationType: 'hearing',
+          locationType: HMCLocationType.COURT,
           locationId: '196538',
         },
       ],
       hearingIsLinkedFlag: false,
       hearingWindow: {
-        hearingWindowDateRange: {
-          hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
-          hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
-        },
-        hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
+        dateRangeStart: '2022-11-23T09:00:00.000Z',
+        dateRangeEnd: '2022-11-30T09:00:00.000Z',
+        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
       },
       privateHearingRequiredFlag: false,
       panelRequirements: null,
@@ -2057,7 +2078,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2022-11-23T09:00:00.000+0000',
+      caseSLAStartDate: '2021-11-23T09:00:00.000Z',
     },
     partyDetails: [
       {
@@ -2085,14 +2106,14 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
-      receivedDateTime: '2022-11-30T09:00:00.000+0000',
+      receivedDateTime: '2021-11-30T09:00:00.000Z',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.LISTED,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: 'cancelled',
       hearingDaySchedule: {
-        hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
-        hearingEndDateTime: '2021-03-12T16:00:00.000+0000',
+        hearingStartDateTime: '2021-03-12T09:00:00.000Z',
+        hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
@@ -2127,7 +2148,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
   },
   {
     requestDetails: {
-      requestTimeStamp: '2022-02-23T09:00:00.000+0000',
+      timeStamp: '2022-02-23T09:00:00.000Z',
       versionNumber: 1,
     },
     hearingDetails: {
@@ -2135,17 +2156,15 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingType: 'final',
       hearingLocations: [
         {
-          locationType: 'hearing',
+          locationType: HMCLocationType.COURT,
           locationId: '196538',
         },
       ],
       hearingIsLinkedFlag: false,
       hearingWindow: {
-        hearingWindowDateRange: {
-          hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
-          hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
-        },
-        hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
+        dateRangeStart: '2022-11-23T09:00:00.000Z',
+        dateRangeEnd: '2022-11-30T09:00:00.000Z',
+        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
       },
       privateHearingRequiredFlag: false,
       panelRequirements: null,
@@ -2192,7 +2211,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2022-11-23T09:00:00.000+0000',
+      caseSLAStartDate: '2021-11-23T09:00:00.000Z',
     },
     partyDetails: [
       {
@@ -2217,8 +2236,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
-            unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-            unavailableToDate: '2021-12-31T09:00:00.000+0000',
+            unavailableFromDate: '2021-12-10T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY,
           },
         ],
       },
@@ -2244,22 +2264,23 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         unavailabilityDOW: null,
         unavailabilityRanges: [
           {
-            unavailableFromDate: '2021-12-20T09:00:00.000+0000',
-            unavailableToDate: '2021-12-31T09:00:00.000+0000',
+            unavailableFromDate: '2021-12-20T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY,
           },
         ],
       },
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
-      receivedDateTime: '2022-11-30T09:00:00.000+0000',
+      receivedDateTime: '2021-11-30T09:00:00.000Z',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.LISTED,
       listingStatus: ListingStatus.FIXED,
       hearingCancellationReason: '123456543',
       hearingDaySchedule: {
-        hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
-        hearingEndDateTime: '2021-03-12T16:00:00.000+0000',
+        hearingStartDateTime: '2021-03-12T09:00:00.000Z',
+        hearingEndDateTime: '2021-03-12T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
         hearingVenueId: '815833',
         hearingRoomId: 'room 4',
@@ -2288,8 +2309,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
-                unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+                unavailableFromDate: '2021-12-10T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
               },
             ],
           },
@@ -2315,8 +2337,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
-                unavailableFromDate: '2021-12-20T09:00:00.000+0000',
-                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+                unavailableFromDate: '2021-12-20T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
               },
             ],
           },
@@ -2325,7 +2348,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     },
   }, {
     requestDetails: {
-      requestTimeStamp: '2022-02-23T09:00:00.000+0000',
+      timeStamp: '2022-02-23T09:00:00.000+0000',
       versionNumber: 1,
     },
     hearingDetails: {
@@ -2333,17 +2356,15 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       hearingType: 'final',
       hearingLocations: [
         {
-          locationType: 'hearing',
+          locationType: HMCLocationType.COURT,
           locationId: '196538',
         },
       ],
       hearingIsLinkedFlag: false,
       hearingWindow: {
-        hearingWindowDateRange: {
-          hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
-          hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
-        },
-        hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
+        dateRangeStart: '2022-11-23T09:00:00.000Z',
+        dateRangeEnd: '2022-11-30T09:00:00.000Z',
+        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
       },
       privateHearingRequiredFlag: false,
       panelRequirements: null,
@@ -2390,7 +2411,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
         }],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2022-11-23T09:00:00.000+0000',
+      caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
     },
     partyDetails: [
       {
@@ -2418,7 +2439,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     ],
     hearingResponse: {
       listAssistTransactionID: '123456789',
-      receivedDateTime: '2022-11-30T09:00:00.000+0000',
+      receivedDateTime: '2021-11-30T09:00:00.000+0000',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.LISTED,
       listingStatus: ListingStatus.FIXED,

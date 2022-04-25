@@ -1,9 +1,9 @@
-import { cold } from 'jasmine-marbles';
-import { of } from 'rxjs';
-import { initialState } from '../hearing.test.data';
-import { LaCaseStatus } from '../models/hearings.enum';
-import { State } from '../store/reducers';
-import { StatusAnswerConverter } from './status.answer.converter';
+import {cold} from 'jasmine-marbles';
+import {of} from 'rxjs';
+import {initialState} from '../hearing.test.data';
+import {LaCaseStatus} from '../models/hearings.enum';
+import {State} from '../store/reducers';
+import {StatusAnswerConverter} from './status.answer.converter';
 
 describe('StatusAnswerConverter', () => {
 
@@ -16,8 +16,8 @@ describe('StatusAnswerConverter', () => {
   it('should transform type from request', () => {
     const STATE: State = initialState.hearings;
     const result$ = statusAnswerConverter.transformAnswer(of(STATE));
-    const type = LaCaseStatus.LISTED;
-    const expected = cold('(b|)', { b: type });
+    const type = LaCaseStatus.AWAITING_LISTING;
+    const expected = cold('(b|)', {b: type});
     expect(result$).toBeObservable(expected);
   });
 

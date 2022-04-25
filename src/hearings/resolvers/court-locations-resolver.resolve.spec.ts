@@ -3,17 +3,14 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {inject, TestBed} from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
 import {LocationModel} from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
-import {Store, StoreModule} from '@ngrx/store';
+import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
-import {metaReducers} from '../../app/app.module';
-import {reducers} from '../../app/store';
+import {initialState} from '../hearing.test.data';
 import {LocationsDataService} from '../services/locations-data.service';
-import * as fromHearingStore from '../store';
 import {CourtLocationsDataResolver} from './court-locations-resolver.resolve';
 
 describe('CourtLocationsData Resolver', () => {
   let locationsDataService: LocationsDataService;
-  let store: Store<fromHearingStore.State>;
   const dataRef: LocationModel = {
     court_venue_id: '164',
     epimms_id: '815833',
@@ -36,11 +33,11 @@ describe('CourtLocationsData Resolver', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
         imports: [
-          StoreModule.forRoot(reducers, {metaReducers}),
           RouterTestingModule.withRoutes([]),
           HttpClientTestingModule,
         ],
         providers: [
+          provideMockStore({initialState}),
           CourtLocationsDataResolver,
           LocationsDataService,
           {provide: APP_BASE_HREF, useValue: '/'}
@@ -48,7 +45,6 @@ describe('CourtLocationsData Resolver', () => {
       }
     );
     locationsDataService = TestBed.get(LocationsDataService) as LocationsDataService;
-    store = TestBed.get(Store) as Store<fromHearingStore.State>;
   });
 
   it('should be created', () => {
@@ -57,13 +53,16 @@ describe('CourtLocationsData Resolver', () => {
   });
 
   it('resolves reference data', inject([CourtLocationsDataResolver], (service: CourtLocationsDataResolver) => {
-    spyOn(store, 'pipe').and.returnValue(of('serviceName'));
     spyOn(locationsDataService, 'getLocationById').and.returnValue(of(dataRef));
-    spyOn(service, 'getLocationId$').and.callThrough();
+    spyOn(service, 'getLocationId$').and.returnValue(of('12345'));
     service.resolve().subscribe((refData: LocationModel) => {
       expect(service.getLocationId$).toHaveBeenCalled();
       expect(locationsDataService.getLocationById).toHaveBeenCalled();
       expect(refData).toEqual(dataRef);
     });
   }));
+
+  afterEach(() => {
+    locationsDataService = null;
+  });
 });

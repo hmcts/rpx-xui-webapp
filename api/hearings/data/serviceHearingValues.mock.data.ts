@@ -1,30 +1,53 @@
 /* tslint:disable:object-literal-sort-keys */
-import {MemberType, PartyType, RequirementType} from '../models/hearings.enum';
+import {
+  CategoryType,
+  HMCLocationType,
+  MemberType,
+  PartyType,
+  RequirementType,
+  UnavailabilityType
+} from '../models/hearings.enum';
 import {ServiceHearingValuesModel} from '../models/serviceHearingValues.model';
 
 export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
+  hmctsServiceID: 'BBA3',
   caseName: 'Jane and Smith vs DWP',
   autoListFlag: false,
-  hearingType: 'final',
-  caseType: 'Personal Independence Payment',
-  caseSubTypes: ['Conditions of Entitlement', 'Good cause', 'Rate of Assessment / Payability Issues - complex'],
-  hearingWindow: {
-    hearingWindowDateRange: {
-      hearingWindowStartDateRange: '2022-11-23T09:00:00.000+0000',
-      hearingWindowEndDateRange: '2022-11-30T09:00:00.000+0000',
+  hearingType: 'BBA3-directionHearings',
+  caseCategories: [
+    {
+      categoryType: CategoryType.CaseType,
+      categoryValue: 'Personal Independence Payment',
+    }, {
+      categoryType: CategoryType.CaseSubType,
+      categoryValue: 'Conditions of Entitlement',
+    }, {
+      categoryType: CategoryType.CaseSubType,
+      categoryValue: 'Good cause',
+    }, {
+      categoryType: CategoryType.CaseSubType,
+      categoryValue: 'Rate of Assessment / Payability Issues - complex',
     },
-    hearingWindowFirstDate: '2022-12-01T09:00:00.000+0000',
+  ],
+  caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',
+  caserestrictedFlag: false,
+  caseManagementLocationCode: '196538',
+  caseSLAStartDate: '2021-05-05T09:00:00.000Z',
+  hearingWindow: {
+    dateRangeStart: '2022-11-23T09:00:00.000Z',
+    dateRangeEnd: '2022-11-30T09:00:00.000Z',
+    firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
   },
   duration: 45,
-  hearingPriorityType: 'standard',
+  hearingPriorityType: 'normal',
   numberOfPhysicalAttendees: 2,
   hearingInWelshFlag: false,
   hearingLocations: [{
     locationId: '196538',
-    locationType: 'hearing',
+    locationType: HMCLocationType.COURT,
   }],
   caseAdditionalSecurityFlag: false,
-  facilitiesRequired: ['immigrationDetentionCentre'],
+  facilitiesRequired: ['AF-VF'],
   listingComments: 'Additional instructions for the hearing',
   hearingRequester: '',
   privateHearingRequiredFlag: false,
@@ -55,11 +78,11 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
     ],
     panelPreferences: [],
     panelSpecialisms: [
-      "DisabilityQualifiedPanelMember",
-      "EyeSurgeon",
-      "GeneralPractitioner",
-      "FinanciallyQualifiedPanelMember",
-      "RegionalMedicalMember",
+      'BBA3-DQPM',
+      'BBA3-MQPM2-003',
+      'BBA3-MQPM2-004',
+      'BBA3-FQPM',
+      'BBA3-RMM',
     ],
   },
   parties: [
@@ -67,39 +90,37 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       partyID: 'P1',
       partyType: PartyType.IND,
       partyName: 'Jane and Smith',
-      partyRole: 'appellant',
+      partyRole: 'appeal',
       individualDetails: {
         title: 'Miss',
         firstName: 'Jane',
         lastName: 'Smith',
-        preferredHearingChannel: 'inPerson',
+        preferredHearingChannel: 'faceToFace',
       },
       unavailabilityRanges: [
         {
-          unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-          unavailableToDate: '2021-12-31T09:00:00.000+0000',
+          unavailableFromDate: '2021-12-10T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY,
         },
       ],
     },
     {
       partyID: 'P2',
-      partyType: PartyType.ORG,
+      partyType: PartyType.IND,
       partyName: 'DWP',
-      partyRole: 'claimant',
+      partyRole: 'claim',
       individualDetails: {
+        title: '',
         firstName: 'DWP',
-        lastName: null,
-        preferredHearingChannel: 'inPerson',
-      },
-      organisationDetails: {
-        name: 'DWP',
-        organisationType: 'GOV',
-        cftOrganisationID: 'O100000',
+        lastName: '',
+        preferredHearingChannel: 'faceToFace',
       },
       unavailabilityRanges: [
         {
-          unavailableFromDate: '2021-12-20T09:00:00.000+0000',
-          unavailableToDate: '2021-12-31T09:00:00.000+0000',
+          unavailableFromDate: '2021-12-20T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY,
         },
       ],
     }],

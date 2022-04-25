@@ -1,9 +1,10 @@
 import {cold} from 'jasmine-marbles';
+import * as _ from 'lodash';
 import {of} from 'rxjs';
 import {initialState} from '../hearing.test.data';
-import { MemberType, RequirementType } from '../models/hearings.enum';
+import {MemberType, RequirementType} from '../models/hearings.enum';
 import {State} from '../store/reducers';
-import { JudgeNameAmendedConverter } from './judge-name.amended.converter';
+import {JudgeNameAmendedConverter} from './judge-name.amended.converter';
 
 describe('JudgeNameAmendedConverter', () => {
 
@@ -14,7 +15,7 @@ describe('JudgeNameAmendedConverter', () => {
   });
 
   it('should transform judge name amended flag based on selection', () => {
-    const STATE: State = initialState.hearings;
+    const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {};
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements.panelPreferences = [{
       memberID: 'P000001',

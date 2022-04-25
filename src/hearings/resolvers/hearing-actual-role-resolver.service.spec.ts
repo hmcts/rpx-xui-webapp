@@ -3,28 +3,25 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {inject, TestBed} from '@angular/core/testing';
 import {ActivatedRouteSnapshot} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
-import {Store, StoreModule} from '@ngrx/store';
+import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
-import {metaReducers} from '../../app/app.module';
-import {reducers} from '../../app/store';
+import {initialState} from '../hearing.test.data';
 import {LovRefDataModel} from '../models/lovRefData.model';
 import {LovRefDataService} from '../services/lov-ref-data.service';
-import * as fromHearingStore from '../store';
 import {HearingActualRoleResolverService} from './hearing-actual-role-resolver.service';
 
 describe('HearingActualRoleResolverService', () => {
   let lovRefDataService: LovRefDataService;
-  let store: Store<fromHearingStore.State>;
   const dataRef: LovRefDataModel[] = [];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
         imports: [
-          StoreModule.forRoot(reducers, {metaReducers}),
           RouterTestingModule.withRoutes([]),
           HttpClientTestingModule,
         ],
         providers: [
+          provideMockStore({initialState}),
           HearingActualRoleResolverService,
           LovRefDataService,
           {provide: APP_BASE_HREF, useValue: '/'}
@@ -32,7 +29,6 @@ describe('HearingActualRoleResolverService', () => {
       }
     );
     lovRefDataService = TestBed.get(LovRefDataService) as LovRefDataService;
-    store = TestBed.get(Store) as Store<fromHearingStore.State>;
   });
 
   it('should be created', () => {
@@ -41,7 +37,6 @@ describe('HearingActualRoleResolverService', () => {
   });
 
   it('resolves reference data for the hearing stage', inject([HearingActualRoleResolverService], (service: HearingActualRoleResolverService) => {
-    spyOn(store, 'pipe').and.returnValue(of('serviceName'));
     spyOn(lovRefDataService, 'getListOfValues').and.returnValue(of(dataRef));
     spyOn(service, 'getReferenceData$').and.callThrough();
     const route = new ActivatedRouteSnapshot();

@@ -22,9 +22,10 @@ export class ParticipantAttendenceAnswerConverter implements AnswerConverter {
 
     return hearingState$.pipe(
       map(state => {
-        const parties: PartyDetailsModel[] = state.hearingRequest.hearingRequestMainModel.partyDetails;
-        return parties.map((partyInfo) => {
-          const name = partyInfo.partyName;
+        const partiesFromRequest: PartyDetailsModel[] = state.hearingRequest.hearingRequestMainModel.partyDetails;
+        const partiesFromServiceValue: PartyDetailsModel[] = state.hearingValues.serviceHearingValuesModel.parties;
+        return partiesFromRequest.map((partyInfo) => {
+          const name = partyInfo.partyName ? partyInfo.partyName : partiesFromServiceValue.find(pty => pty.partyID === partyInfo.partyID).partyName;
           const value = ParticipantAttendenceAnswerConverter.getPartyChannelValue(partyChannels, partyInfo);
           return `${name} - ${value}`;
         }).join('<br>');

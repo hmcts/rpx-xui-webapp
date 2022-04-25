@@ -1,13 +1,14 @@
-import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { provideMockStore } from '@ngrx/store/testing';
-import { cold } from 'jasmine-marbles';
-import { of } from 'rxjs';
-import { hearingStageRefData, initialState } from '../hearing.test.data';
-import { State } from '../store';
-import { AnswerConverter } from './answer.converter';
-import { JudgeTypesAnswerConverter } from './judge-types.answer.converter';
+import {TestBed} from '@angular/core/testing';
+import {ActivatedRoute} from '@angular/router';
+import {Store} from '@ngrx/store';
+import {provideMockStore} from '@ngrx/store/testing';
+import {cold} from 'jasmine-marbles';
+import * as _ from 'lodash';
+import {of} from 'rxjs';
+import {hearingStageRefData, initialState} from '../hearing.test.data';
+import {State} from '../store';
+import {AnswerConverter} from './answer.converter';
+import {JudgeTypesAnswerConverter} from './judge-types.answer.converter';
 
 describe('JudgeTypesAnswerConverter', () => {
 
@@ -19,7 +20,7 @@ describe('JudgeTypesAnswerConverter', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({ initialState }),
+        provideMockStore({initialState}),
         {
           provide: ActivatedRoute,
           useValue: {
@@ -38,22 +39,22 @@ describe('JudgeTypesAnswerConverter', () => {
   });
 
   it('should transform hearing judge types', () => {
-    const STATE: State = initialState.hearings;
+    const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
       roleType: ROLE_TYPE
     };
     const result$ = converter.transformAnswer(of(STATE));
     const option = 'Initial';
-    const expected = cold('(b|)', { b: option });
+    const expected = cold('(b|)', {b: option});
     expect(result$).toBeObservable(expected);
   });
 
   it('should transform hearing judge types empty', () => {
-    const STATE: State = initialState.hearings;
+    const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = null;
     const result$ = converter.transformAnswer(of(STATE));
     const option = '';
-    const expected = cold('(b|)', { b: option });
+    const expected = cold('(b|)', {b: option});
     expect(result$).toBeObservable(expected);
   });
 });

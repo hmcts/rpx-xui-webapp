@@ -7,7 +7,7 @@ import {Store} from '@ngrx/store';
 import {Subscription} from 'rxjs';
 import * as fromHearingStore from '../../../../hearings/store';
 import {HearingLocationModel} from '../../../models/hearingLocation.model';
-import {ACTION, HearingErrorMessage} from '../../../models/hearings.enum';
+import {ACTION, HearingErrorMessage, HMCLocationType} from '../../../models/hearings.enum';
 import {HearingsService} from '../../../services/hearings.service';
 import {LocationsDataService} from '../../../services/locations-data.service';
 import {RequestHearingPageFlow} from '../request-hearing.page.flow';
@@ -43,7 +43,7 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
 
   public ngOnInit(): void {
     this.reInitiateState();
-    this.serviceIds = this.hearingListMainModel.hmctsServiceID;
+    this.serviceIds = this.serviceHearingValuesModel.hmctsServiceID;
   }
 
   public reInitiateState() {
@@ -115,7 +115,7 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
   public prepareHearingRequestData(): void {
     const locations: HearingLocationModel[] = this.selectedLocations.map(locationByEPIMMSModel => {
       return {
-        locationType: 'hearing',
+        locationType: HMCLocationType.COURT,
         locationId: locationByEPIMMSModel.epimms_id,
         locationName: locationByEPIMMSModel.court_name,
         region: locationByEPIMMSModel.region,

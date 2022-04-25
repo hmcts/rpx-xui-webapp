@@ -3,8 +3,8 @@ import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
-import {ACTION} from '../../../models/hearings.enum';
-import { IndividualDetailsModel } from '../../../models/individualDetails.model';
+import {ACTION, HearingCategory} from '../../../models/hearings.enum';
+import {IndividualDetailsModel} from '../../../models/individualDetails.model';
 import {LovRefDataModel} from '../../../models/lovRefData.model';
 import {PartyDetailsModel} from '../../../models/partyDetails.model';
 import {HearingsService} from '../../../services/hearings.service';
@@ -44,7 +44,8 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   }
 
   public ngOnInit(): void {
-    this.partyChannels$ = this.lovRefDataService.getListOfValues('PartyChannel', this.hearingListMainModel.hmctsServiceID);
+    this.partyChannels$ = this.lovRefDataService.getListOfValues(HearingCategory.HearingChannel,
+      this.serviceHearingValuesModel.hmctsServiceID);
     if (!this.hearingRequestMainModel.partyDetails.length) {
       this.initialiseFromHearingValues();
     } else {
@@ -52,6 +53,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
         (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues({
           partyID: partyDetail.partyID,
           partyType: partyDetail.partyType,
+          partyRole: partyDetail.partyRole,
           partyName: partyDetail.partyName,
           individualDetails: partyDetail.individualDetails,
           organisationDetails: partyDetail.organisationDetails,
@@ -137,12 +139,15 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   }
 
   public patchValues(party: PartyDetailsModel): FormGroup {
+    const individualDetails = this.initIndividualDetailsFormGroup(party.individualDetails);
+    const organisationDetails = party.organisationDetails;
     return this.fb.group({
       partyID: [party.partyID],
       partyType: [party.partyType],
       partyName: [party.partyName],
-      individualDetails: this.initIndividualDetailsFormGroup(party.individualDetails),
-      organisationDetails: [party.organisationDetails],
+      partyRole: [party.partyRole],
+      ...individualDetails && ({individualDetails}),
+      ...organisationDetails && ({organisationDetails}),
       unavailabilityDOW: [party.unavailabilityDOW],
       unavailabilityRanges: [party.unavailabilityRanges],
     });
@@ -161,7 +166,6 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       firstName: [individualDetails.firstName],
       lastName: [individualDetails.lastName],
       preferredHearingChannel: [individualDetails.preferredHearingChannel, Validators.required],
-      hearingChannelEmail: [individualDetails.hearingChannelEmail],
       interpreterLanguage: [individualDetails.interpreterLanguage],
       reasonableAdjustments: [individualDetails.reasonableAdjustments],
       relatedParties: [individualDetails.relatedParties],

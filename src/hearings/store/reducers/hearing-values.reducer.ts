@@ -24,13 +24,13 @@ export function hearingValuesReducer(currentState = initialHearingValuesState,
       return {
         ...currentState,
         lastError: action.payload
-      }
+      };
     }
     case fromActions.RESET_HEARING_VAUES_LAST_ERROR: {
       return {
         ...currentState,
         lastError: null
-      }
+      };
     }
     default: {
       return {

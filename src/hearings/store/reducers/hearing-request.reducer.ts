@@ -6,7 +6,8 @@ import * as fromActions from '../actions';
 export const initialHearingRequestState: HearingRequestStateData = {
   hearingRequestMainModel: {
     requestDetails: {
-      requestTimeStamp: null,
+      timeStamp: null,
+      versionNumber: 0,
     },
     hearingDetails: {
       duration: null,
@@ -95,7 +96,7 @@ export function hearingRequestReducer(currentState = initialHearingRequestState,
       return {
         ...currentState,
         lastError: null
-      }
+      };
     }
     default: {
       return {

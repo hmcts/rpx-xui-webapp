@@ -10,8 +10,8 @@ export class HearingSpecificDateAmendedConverter implements IsAmendedConverter {
       const objAHearingWindow = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.hearingWindow;
       const objBHearingWindow = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingWindow;
 
-      const objA = objAHearingWindow && objAHearingWindow.hearingWindowDateRange && objAHearingWindow.hearingWindowDateRange.hearingWindowStartDateRange;
-      const objB = objBHearingWindow && objBHearingWindow.hearingWindowDateRange && objBHearingWindow.hearingWindowDateRange.hearingWindowStartDateRange;
+      const objA = objAHearingWindow && objAHearingWindow.dateRangeStart;
+      const objB = objBHearingWindow && objBHearingWindow.dateRangeStart;
       return !_.isEqual(objA, objB);
     }));
   }

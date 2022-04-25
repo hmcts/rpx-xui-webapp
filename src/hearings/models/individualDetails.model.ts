@@ -9,7 +9,7 @@ export interface IndividualDetailsModel {
   reasonableAdjustments?: string[];
   vulnerableFlag?: boolean;
   vulnerabilityDetails?: string;
-  hearingChannelEmail?: string;
-  hearingChannelPhone?: string;
+  hearingChannelEmail?: string[];
+  hearingChannelPhone?: string[];
   relatedParties?: RelatedPartiesModel[];
 }

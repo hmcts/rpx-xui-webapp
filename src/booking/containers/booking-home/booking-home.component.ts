@@ -124,14 +124,15 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
 
   public NavigationErrorHandler = ( error: any, navigator: {navigate(commands: any[], extras?: NavigationExtras): Promise<boolean>} ): void => {
     if (error && error.status) {
+      if(error.status >= 500 && error.status < 600)
+      {
+        navigator.navigate(['/service-down']);
+        return;
+      }
       switch (error.status) {
         case 401:
         case 403: {
           navigator.navigate(['/not-authorised']);
-          return;
-        }
-        case 500: {
-          navigator.navigate(['/service-down']);
           return;
         }
         default: {

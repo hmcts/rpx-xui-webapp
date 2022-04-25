@@ -62,6 +62,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
+    this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
     this.lastErrorSubscription = this.hearingsLastErrorState$.subscribe(lastError => {
       if (lastError) {
         this.serverError = {
@@ -147,7 +148,6 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   }
 
   public createHearingRequest(): void {
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
     const hearingCondition: HearingConditions = {
       mode: Mode.CREATE,
       isInit: true,

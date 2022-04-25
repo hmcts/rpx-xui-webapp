@@ -26,14 +26,14 @@ export class LoadHearingValuesSuccess implements Action {
 }
 
 export class LoadHearingValuesFailure implements Action {
-  public readonly type = LOAD_HEARING_VALUES_FAILURE
+  public readonly type = LOAD_HEARING_VALUES_FAILURE;
 
   constructor(public payload: HttpError) {
   }
 }
 
 export class ResetHearingValuesLastError implements Action {
-  public readonly type = RESET_HEARING_VAUES_LAST_ERROR
+  public readonly type = RESET_HEARING_VAUES_LAST_ERROR;
 }
 
 export type HearingValuesAction =

@@ -177,6 +177,9 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
     } else if (this.specificJudgeSelection === RadioOptions.YES && !this.hearingJudgeForm.controls.judgeName.valid) {
       this.selectJudgeNameError = HearingJudgeSelectionEnum.ValidNameError;
       this.validationErrors.push({ id: 'inputSelectPerson', message: HearingJudgeSelectionEnum.ValidNameError });
+    } else if (this.hearingJudgeForm.controls.judgeName.valid && this.hearingJudgeForm.controls.judgeName.touched) {
+      this.selectJudgeNameError = HearingJudgeSelectionEnum.ExcludeFullNameJudge;
+      this.validationErrors.push({ id: 'inputSelectPerson', message: HearingJudgeSelectionEnum.ExcludeFullNameJudge });
     } else if (this.specificJudgeSelection === RadioOptions.NO && !this.hearingJudgeForm.controls.judgeType.valid) {
       this.selectJudgeTypesError = HearingJudgeSelectionEnum.SelectOneJudgeError;
       this.validationErrors.push({ id: 'judgeTypes', message: HearingJudgeSelectionEnum.SelectOneJudgeError });
@@ -199,7 +202,7 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
   }
 
   public isFormValid(): boolean {
-    return this.excludedJudge.isExcludeJudgeInputValid() && this.hearingJudgeForm.valid;
+    return this.excludedJudge.isExcludeJudgeInputValid() && this.hearingJudgeForm.valid && !this.hearingJudgeForm.controls.judgeName.touched;
   }
 
   public ngAfterViewInit(): void {

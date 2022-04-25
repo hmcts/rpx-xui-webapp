@@ -189,7 +189,18 @@ export const init = () => {
     ];
   });
 
-  mock.onPost(linkedHearingGroup).reply(() => {
+  mock.onPost(linkedHearingGroup).reply(config => {
+    // START : This few lines code jus to faciliate testing for specific hearing id of h100014
+    // so that even the failure scenarios can be verified
+    const jsonData = JSON.parse(config.data);
+    const hearingId = jsonData.hearingsInGroup[0].hearingId
+    if (hearingId === 'h100014') {
+      return [
+        500,
+        null,
+      ];
+    }
+    // END
     return [
       200,
       {

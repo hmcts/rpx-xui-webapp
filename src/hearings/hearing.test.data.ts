@@ -1404,11 +1404,7 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
       }],
     caseManagementLocationCode: null,
     caserestrictedFlag: false,
-<<<<<<< HEAD
-    caseSLAStartDate: '2022-11-23T09:00:00.000+0000',
-=======
     caseSLAStartDate: '2021-11-23T09:00:00.000Z',
->>>>>>> feature/hearings-part2
   },
   partyDetails: [
     {

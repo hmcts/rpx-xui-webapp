@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { forkJoin, Subscription } from 'rxjs';
 import { HearingListMainModel } from '../../../models/hearingListMain.model';
@@ -17,6 +17,7 @@ import { ValidatorsUtils } from '../../../utils/validators.utils';
 })
 export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public caseId: string;
+  public hearingId: string;
   public caseName: string;
   public linkedHearingSelectionError: string;
   public validationErrors: { id: string, message: string }[] = [];
@@ -24,6 +25,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public sub: Subscription;
   public linkHearingForm: FormGroup;
   public caseTitle: string;
+  public caseReference: string;
   public isHearingsAvailable: boolean;
   public linkedHearingEnum = HearingLinkedSelectionEnum;
 
@@ -31,8 +33,10 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
               private readonly hearingsService: HearingsService,
               private readonly validators: ValidatorsUtils,
               private readonly route: ActivatedRoute,
+              private readonly router: Router,
               private readonly fb: FormBuilder) {
     this.caseId = this.route.snapshot.params.caseId;
+    this.hearingId = this.route.snapshot.params.hearingId;
     this.sub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
       state => {
         this.caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.caseName : '';
@@ -100,6 +104,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
       });
     });
     this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesSuccess(this.linkedCases));
+    this.router.navigate([`/hearings/link/${this.caseId}/${this.hearingId}/group-selection`])
   }
 
   public onSubmit() {

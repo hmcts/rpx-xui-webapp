@@ -1,8 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { select, Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
-import * as fromHearingStore from '../../store';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'exui-linked-hearings',

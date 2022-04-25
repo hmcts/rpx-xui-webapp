@@ -43,4 +43,6 @@ export * from '../components/linked-hearings-case-title/linked-hearings-case-tit
 export * from '../components/listing-information-summary/listing-information-summary.component';
 export * from '../components/multi-level-selector/multi-level-selector.component';
 export * from '../components/parties-unavailable-dates/parties-unavailable-dates.component';
+export * from './linked-hearings-case-title/linked-hearings-case-title.component';
+
 

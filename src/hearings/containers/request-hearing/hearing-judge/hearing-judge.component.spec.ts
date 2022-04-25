@@ -124,14 +124,16 @@ describe('HearingJudgeComponent', () => {
 
   it('should check RadioButton selection', () => {
     const judgeInfo: JudicialUserModel = {
-      sidam_id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
-      object_id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
-      known_as: 'Hearing Judge',
+      emailId: 'jacky.collins@judicial.com',
+      fullName: 'Jacky Collins',
+      idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
+      isJudge: '',
+      isMagistrate: '',
+      isPanelMember: '',
+      knownAs: 'Hearing Judge',
+      personalCode: 'P100001',
       surname: 'Jacky',
-      personal_code: 'P100001',
-      full_name: 'Jacky Collins',
-      post_nominals: '',
-      email_id: 'jacky.collins@judicial.com'
+      title: 'Mr'
     };
     component.showSpecificJudge(RadioOptions.YES);
     expect(component.specificJudgeSelection).toBe(RadioOptions.YES);

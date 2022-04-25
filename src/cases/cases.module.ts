@@ -2,29 +2,28 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 import { MatDialogModule } from '@angular/material';
 import {
-  AbstractAppConfig,
-  AlertService,
-  AuthService as CCDAuthService,
-  CaseEditWizardGuard,
-  CaseListFiltersModule,
-  CasesService,
-  CaseUIToolkitModule,
-  CreateCaseFiltersModule,
-  DocumentManagementService,
-  DraftService,
-  HttpErrorService,
-  HttpService,
-  LoadingModule,
-  PageValidationService,
-  PlaceholderService,
-  RequestOptionsBuilder,
-  RouterHelperService,
-  SearchFiltersModule,
-  SearchResultModule,
-  WorkbasketFiltersModule
+	AbstractAppConfig,
+	AlertService,
+	AuthService as CCDAuthService,
+	CaseEditWizardGuard,
+	CaseListFiltersModule,
+	CasesService,
+	CaseUIToolkitModule,
+	CreateCaseFiltersModule,
+	DocumentManagementService,
+	DraftService,
+	HttpErrorService,
+	HttpService,
+	LoadingModule,
+	PageValidationService,
+	PlaceholderService,
+	RequestOptionsBuilder,
+	RouterHelperService,
+	SearchFiltersModule,
+	SearchResultModule,
+	WorkbasketFiltersModule
 } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
@@ -33,19 +32,19 @@ import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 import { SharedModule } from '../app/shared/shared.module';
 import { OrganisationModule } from '../organisation/organisation.module';
+import { PriorityFieldComponentModule } from '../work-allocation-2/components/priority-field/priority.module';
 import { casesRouting } from './case-feature.routes';
 // from components
 import * as fromComponents from './components';
-// from directives
-import * as fromDirectives from './directives';
 // from containers
 import * as fromContainers from './containers';
+// from directives
+import * as fromDirectives from './directives';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 // from services
 import * as fromServices from './services';
 import { effects, reducers } from './store';
-import { PriorityFieldComponentModule } from '../work-allocation-2/components/priority-field/priority.module';
 
 @NgModule({
   imports: [
@@ -53,14 +52,13 @@ import { PriorityFieldComponentModule } from '../work-allocation-2/components/pr
     CaseUIToolkitModule,
     CreateCaseFiltersModule,
     SearchResultModule,
-    HttpClientModule,
     StoreModule.forFeature('cases', reducers),
     EffectsModule.forFeature(effects),
     casesRouting,
     SharedModule,
     OrganisationModule,
     SearchFiltersModule,
-    HttpModule,
+    HttpClientModule,
     MatDialogModule,
     CaseListFiltersModule,
     WorkbasketFiltersModule,

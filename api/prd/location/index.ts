@@ -34,7 +34,8 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
     } else if (locationType === LocationTypeEnum.CASE_MANAGEMENT) {
       result = data.filter(location => location.is_case_management_location === 'Y');
     }
-    res.status(status).send(result);
+    const identicalLocationByEpimmsId = getIdenticalLocationByEpimmsId(result);
+    res.status(status).send(identicalLocationByEpimmsId);
   } catch (error) {
     next(error);
   }
@@ -50,11 +51,15 @@ export async function getLocationById(req: EnhancedRequest, res: Response, next:
   const markupPath: string = `${url}/refdata/location/court-venues?epimms_id=${epimmsID}`;
   try {
     const {status, data}: { status: number, data: LocationModel[] } = await handleGet(markupPath, req, next);
-    const identicalLocationByEpimmsId = data.map(locationModel => toEpimmsLocation(locationModel))
-      .filter((locationByEPIMSModel, index, locationByEPIMSModelArray) =>
-        locationByEPIMSModelArray.findIndex(location => (location.epimms_id === locationByEPIMSModel.epimms_id)) === index);
+    const identicalLocationByEpimmsId = getIdenticalLocationByEpimmsId(data);
     res.status(status).send(identicalLocationByEpimmsId);
   } catch (error) {
     next(error);
   }
+}
+
+function getIdenticalLocationByEpimmsId(data: LocationModel[]) {
+  return data.map(locationModel => toEpimmsLocation(locationModel))
+    .filter((locationByEPIMSModel, index, locationByEPIMSModelArray) =>
+      locationByEPIMSModelArray.findIndex(location => (location.epimms_id === locationByEPIMSModel.epimms_id)) === index);
 }

@@ -21,15 +21,16 @@ export class PartyChannelsAnswerConverter implements AnswerConverter {
     return hearingState$.pipe(
       map(state => {
         const partyChannels = this.route.snapshot.data.partyChannels;
-        const  parties = state.hearingRequest.hearingRequestMainModel.partyDetails;
-        return parties
+        const partiesFromRequest = state.hearingRequest.hearingRequestMainModel.partyDetails;
+        const partiesFromServiceValue = state.hearingValues.serviceHearingValuesModel.parties;
+        return partiesFromRequest
           .reduce((acc: string, party: PartyDetailsModel, index: number) => {
-            const name = party.partyName;
+            const name = party.partyName ? party.partyName : partiesFromServiceValue.find(pty => pty.partyID === party.partyID).partyName;
             const value = PartyChannelsAnswerConverter.getPartyChannelValue(partyChannels, party);
             if (index === 0) {
               return `<ul><li>${name} - ${value}</li>`;
             }
-            return index === parties.length - 1 ? `${acc}<li>${name} - ${value}</li></ul>` : `${acc}<li>${name} - ${value}</li>`;
+            return index === partiesFromRequest.length - 1 ? `${acc}<li>${name} - ${value}</li></ul>` : `${acc}<li>${name} - ${value}</li>`;
           }, '');
       })
     );

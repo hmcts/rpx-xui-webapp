@@ -3,6 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {provideMockStore} from '@ngrx/store/testing';
 import {cold} from 'jasmine-marbles';
+import * as _ from 'lodash';
 import {of} from 'rxjs';
 import {hearingStageRefData, initialState} from '../hearing.test.data';
 import {State} from '../store';
@@ -37,7 +38,7 @@ describe('HearingLengthAnswerConverter', () => {
   });
 
   it('should transform hearing stage hours', () => {
-    const STATE: State = initialState.hearings;
+    const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.duration = 60;
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDuration = '1 hour(s)';
@@ -46,7 +47,7 @@ describe('HearingLengthAnswerConverter', () => {
   });
 
   it('should transform hearing stage minutes', () => {
-    const STATE: State = initialState.hearings;
+    const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.duration = 45;
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDuration = '45 minutes';
@@ -55,7 +56,7 @@ describe('HearingLengthAnswerConverter', () => {
   });
 
   it('should transform hearing stage both hours and minutes', () => {
-    const STATE: State = initialState.hearings;
+    const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.duration = 70;
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDuration = '1 hour(s) and 10 minute(s)';
@@ -64,7 +65,7 @@ describe('HearingLengthAnswerConverter', () => {
   });
 
   it('should transform hearing stage empty', () => {
-    const STATE: State = initialState.hearings;
+    const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.duration = null;
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDuration = '';

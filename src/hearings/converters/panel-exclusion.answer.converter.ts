@@ -18,8 +18,8 @@ export class PanelExclusionAnswerConverter implements AnswerConverter {
         const excludedJudges: string[] = panelRequirements && panelRequirements.panelPreferences.filter(preferences => preferences.memberType === MemberType.PANEL_MEMBER && preferences.requirementType === RequirementType.EXCLUDE).map(preferences => preferences.memberID);
         const excludedJudgeNames: string[] = [];
         judicialUsersList.forEach(judgeInfo => {
-          if (excludedJudges.includes(judgeInfo.personal_code)) {
-            excludedJudgeNames.push(judgeInfo.known_as ? judgeInfo.known_as : judgeInfo.full_name);
+          if (excludedJudges.includes(judgeInfo.personalCode)) {
+            excludedJudgeNames.push(judgeInfo.knownAs ? judgeInfo.knownAs : judgeInfo.fullName);
           }
         });
         return excludedJudgeNames.join();

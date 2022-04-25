@@ -1,5 +1,5 @@
 import {Observable} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
+import {map, switchMap, take} from 'rxjs/operators';
 import {HearingLocationModel} from '../models/hearingLocation.model';
 import {LocationByEPIMMSModel} from '../models/location.model';
 import {LocationsDataService} from '../services/locations-data.service';
@@ -13,6 +13,7 @@ export class WelshHiddenConverter implements HiddenConverter {
 
   public transformHidden(hearingState$: Observable<State>): Observable<boolean> {
     return hearingState$.pipe(
+      take(1),
       switchMap(state => {
       const hearingLocations: HearingLocationModel[] = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingLocations;
       const locationIds = hearingLocations.map(location => location.locationId).join(',');

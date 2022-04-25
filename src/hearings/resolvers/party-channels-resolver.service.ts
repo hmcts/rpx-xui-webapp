@@ -24,7 +24,7 @@ export class PartyChannelsResolverService extends RefDataResolver implements Res
   }
 
   public resolve(route: ActivatedRouteSnapshot): Observable<LovRefDataModel[]> {
-    route.data.category = HearingCategory.PartyChannel;
+    route.data.category = HearingCategory.HearingChannel;
     return super.resolve(route);
   }
 }

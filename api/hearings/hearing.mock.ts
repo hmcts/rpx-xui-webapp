@@ -46,19 +46,33 @@ export const init = () => {
           caseRef: caseIds[0],
         },
       ];
+    } else {
+      // the below exclusion of return 500 just to faciliate testing
+      if (caseIds[0].endsWith('6')) {
+        return [
+          500,
+          null,
+        ];
+      }
+      return [
+        200,
+        {
+          ...EMPTY_HEARINGS_LIST,
+          caseRef: caseIds[0],
+        },
+      ];
     }
-    return [
-      200,
-      {
-        ...EMPTY_HEARINGS_LIST,
-        caseRef: caseIds[0],
-      },
-    ];
   });
 
   mock.onGet(getHearingInfoUrl).reply(config => {
     const urlPaths: string[] = config.url.split('/');
     const hearingId = urlPaths[urlPaths.length - 1];
+    if (hearingId === 'h100004') {
+      return [
+        500,
+        null,
+      ];
+    }
     const FOUND_A_HEARING = HEARING_REQUEST_RESULTS.find(hearing => hearing.caseDetails.hearingID === hearingId);
     return [
       200,
@@ -67,6 +81,17 @@ export const init = () => {
   });
 
   mock.onPost(postServiceHearingValues).reply(config => {
+    const jsonData = JSON.parse(config.data);
+    const caseReference = jsonData.caseReference;
+    // START : This few lines code jus to faciliate testing for case references ending with 1
+    // so that even the failure scenarios can be verified
+    if (caseReference.endsWith('1')) {
+      return [
+        500,
+        null,
+      ];
+    }
+    // END
     return [
       200,
       SERVICE_HEARING_VALUES,
@@ -88,6 +113,15 @@ export const init = () => {
   });
 
   mock.onDelete(cancelHearingRequest).reply(config => {
+    // START : This few lines code jus to faciliate testing for specific hearing id of 100002
+    // so that even the failure scenarios can be verified
+    if (config.url.includes('/h100002')) {
+      return [
+        500,
+        null,
+      ];
+    }
+    // END
     return [
       200,
       {},
@@ -95,6 +129,15 @@ export const init = () => {
   });
 
   mock.onGet(hearingActualsUrl).reply(config => {
+    // START : This few lines code jus to faciliate testing for specific hearing id of 100013
+    // so that even the failure scenarios can be verified
+    if (config.url.includes('/h100013')) {
+      return [
+        500,
+        null,
+      ];
+    }
+    // END
     // returns completed hearing actual result
     if (config.url.includes('/h100010')) {
       return [
@@ -147,6 +190,17 @@ export const init = () => {
   });
 
   mock.onPost(linkedHearingGroup).reply(config => {
+    // START : This few lines code jus to faciliate testing for specific hearing id of h100014
+    // so that even the failure scenarios can be verified
+    const jsonData = JSON.parse(config.data);
+    const hearingId = jsonData.hearingsInGroup[0].hearingId
+    if (hearingId === 'h100014') {
+      return [
+        500,
+        null,
+      ];
+    }
+    // END
     return [
       200,
       {

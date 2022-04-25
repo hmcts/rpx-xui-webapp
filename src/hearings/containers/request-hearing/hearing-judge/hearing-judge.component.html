@@ -31,8 +31,10 @@
                     <span class="govuk-visually-hidden">Error:</span>
                     {{selectJudgeNameError}}
                   </span>
-                  <xuilib-search-judicials id="judicialSearch" [placeholderContent]="'e.g. John Smith'"
-                    [control]="hearingJudgeForm.controls.judgeName">
+                  <xuilib-search-judicials id="judicialSearch"
+                                           [placeholderContent]="'e.g. John Smith'"
+                                           [serviceId]="serviceId"
+                                           [control]="hearingJudgeForm.controls.judgeName">
                   </xuilib-search-judicials>
                 </fieldset>
               </div>
@@ -72,8 +74,12 @@
           </div>
         </fieldset>
       </div>
-      <exui-hearing-judge-names-list #excludedJudge [subTitle]="'Exclude a judge (optional)'"
-        [judgeList]="excludedJudgeList" [placeholderContent]="'e.g. John Smith'" [submitButtonName]="'Exclude judge'">
+      <exui-hearing-judge-names-list #excludedJudge
+                                     [subTitle]="'Exclude a judge (optional)'"
+                                     [judgeList]="excludedJudgeList"
+                                     [serviceId]="serviceId"
+                                     [placeholderContent]="'e.g. John Smith'"
+                                     [submitButtonName]="'Exclude judge'">
       </exui-hearing-judge-names-list>
     </form>
   </div>

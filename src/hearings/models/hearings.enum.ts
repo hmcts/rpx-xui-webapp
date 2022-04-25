@@ -6,17 +6,17 @@ export enum Actions {
 }
 
 export enum HMCStatus {
-  HEARING_REQUESTED = 'Hearing requested',
-  AWAITING_LISTING = 'Awaiting listing',
-  LISTED = 'Listed',
-  UPDATE_REQUESTED = 'Update requested',
-  UPDATE_SUBMITTED = 'Update submitted',
-  EXCEPTION = 'Exception',
-  CANCELLATION_REQUESTED = 'Cancellation requested',
-  VACATED = 'Vacated',
-  AWAITING_ACTUALS = 'Awaiting Actuals',
-  COMPLETED = 'Completed',
-  ADJOURNED = 'Adjourned',
+  HEARING_REQUESTED = 'HEARING_REQUESTED',
+  AWAITING_LISTING = 'AWAITING_LISTING',
+  LISTED = 'LISTED',
+  UPDATE_REQUESTED = 'UPDATE_REQUESTED',
+  UPDATE_SUBMITTED = 'UPDATE_SUBMITTED',
+  EXCEPTION = 'EXCEPTION',
+  CANCELLATION_REQUESTED = 'CANCELLATION_REQUESTED',
+  VACATED = 'VACATED',
+  AWAITING_ACTUALS = 'AWAITING_ACTUALS',
+  COMPLETED = 'COMPLETED',
+  ADJOURNED = 'ADJOURNED',
 }
 
 export enum HearingListingStatusEnum {
@@ -68,6 +68,18 @@ export enum EXUIDisplayStatusEnum {
   ADJOURNED = 'ADJOURNED',
 }
 
+export enum HMCLocationType {
+  COURT = 'court',
+  CLUSTER = 'cluster',
+  REGION = 'region',
+}
+
+export enum UnavailabilityType {
+  AM = 'AM',
+  PM = 'PM',
+  ALL_DAY = 'All Day',
+}
+
 export enum RequirementType {
   MUSTINC = 'MUSTINC',
   OPTINC = 'OPTINC',
@@ -112,21 +124,16 @@ export enum DOWUnavailabilityType {
 }
 
 export enum HearingCategory {
-  Priority = 'Priority',
-  PartyChannel = 'PartyChannel',
+  HearingPriority = 'HearingPriority',
+  HearingChannel = 'HearingChannel',
   HearingType = 'HearingType',
-  FacilitiesList = 'FacilitiesList',
-  HearingChannels = 'HearingChannels',
-  HearingSubChannels = 'HearingSubChannels',
+  AdditionalFacilities = 'AdditionalFacilities',
   PanelMemberType = 'PanelMemberType',
   PanelMemberSpecialism = 'PanelMemberSpecialism',
-  CancellationReasonCodes = 'CancellationReasonCodes',
   NonStdDurationReasonCodes = 'NonStdDurationReasonCodes',
-  EntityRoleCodes = 'EntityRoleCodes',
   JudgeType = 'JudgeType',
-  OtherPanelRoles = 'OtherPanelRoles',
-  CancelHearingReason = 'CancelHearingReason',
-  HearingRoles = 'HearingRoles',
+  CancelHearingReason = 'CancellationReason',
+  EntityRoleCode = 'EntityRoleCode',
   AdjournHearingActualReason = 'AdjournHearingActualReason',
   CancelHearingActualReason = 'CancelHearingActualReason',
   HearingChangeReason = 'HearingChangeReason',

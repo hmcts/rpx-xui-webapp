@@ -1,12 +1,13 @@
-import { NextFunction, Response } from 'express';
-import { handlePost } from '../../common/mockService';
-import { getConfigValue } from '../../configuration';
-import { SERVICES_PRD_JUDICIAL_API } from '../../configuration/references';
-import { EnhancedRequest } from '../../lib/models';
-import * as mock from './judicial.mock';
-import { JudicialUserModel } from './models/judicialUser.model';
-
-mock.init();
+import {NextFunction, Response} from 'express';
+import {handlePost} from '../../common/crudService';
+import {getConfigValue} from '../../configuration';
+import {SERVICES_PRD_JUDICIAL_API} from '../../configuration/references';
+import {EnhancedRequest} from '../../lib/models';
+import {
+  JudicialUserModel,
+  RawJudicialUserModel,
+  transformToJudicialUserModel
+} from './models/judicialUser.model';
 
 const prdUrl: string = getConfigValue(SERVICES_PRD_JUDICIAL_API);
 
@@ -19,8 +20,9 @@ export async function searchJudicialUserByPersonalCodes(req: EnhancedRequest, re
   const reqBody = req.body;
   const markupPath: string = `${prdUrl}/refdata/judicial/users`;
   try {
-    const { status, data }: { status: number, data: JudicialUserModel[] } = await handlePost(markupPath, reqBody, req);
-    res.status(status).send(data);
+    const {status, data}: { status: number, data: RawJudicialUserModel[] } = await handlePost(markupPath, reqBody, req, next);
+    const result = data.map(transformToJudicialUserModel);
+    res.status(status).send(result);
   } catch (error) {
     next(error);
   }
@@ -35,7 +37,7 @@ export async function getJudicialUsersSearch(req: EnhancedRequest, res: Response
   const reqBody = req.body;
   const markupPath: string = `${prdUrl}/refdata/judicial/users/search`;
   try {
-    const { status, data }: { status: number, data: JudicialUserModel[] } = await handlePost(markupPath, reqBody, req);
+    const {status, data}: { status: number, data: JudicialUserModel[] } = await handlePost(markupPath, reqBody, req, next);
     res.status(status).send(data);
   } catch (error) {
     next(error);

@@ -18,8 +18,8 @@ export class PanelInclusionAnswerConverter implements AnswerConverter {
         const includedJudges: string[] = panelRequirements && panelRequirements.panelPreferences.filter(preferences => preferences.memberType === MemberType.PANEL_MEMBER && preferences.requirementType === RequirementType.MUSTINC).map(preferences => preferences.memberID);
         const includedJudgeNames: string[] = [];
         judicialUsersList.forEach(judgeInfo => {
-          if (includedJudges.includes(judgeInfo.personal_code)) {
-            includedJudgeNames.push(judgeInfo.known_as ? judgeInfo.known_as : judgeInfo.full_name);
+          if (includedJudges.includes(judgeInfo.personalCode)) {
+            includedJudgeNames.push(judgeInfo.knownAs ? judgeInfo.knownAs : judgeInfo.fullName);
           }
         });
         return includedJudgeNames.join();

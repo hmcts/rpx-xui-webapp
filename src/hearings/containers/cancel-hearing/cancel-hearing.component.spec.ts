@@ -18,14 +18,45 @@ describe('CancelHearingComponent', () => {
   const hearingsService = new HearingsService(mockedHttpClient);
   const reasons: LovRefDataModel[] = [
     {
-      key: 'reasonone',
+      key: 'reasonOne',
       value_en: 'Reason 1',
       value_cy: '',
-      hintText_EN: 'Reason 1',
-      hintTextCY: '',
-      order: 1,
-      parentKey: null,
-    }];
+      hint_text_en: 'reason 1',
+      hint_text_cy: '',
+      lov_order: 1,
+      parent_key: null,
+      category_key: 'CancelHearingReason',
+      parent_category: '',
+      active_flag: 'Y',
+      child_nodes: null,
+    },
+    {
+      key: 'reasonTwo',
+      value_en: 'Reason 2',
+      value_cy: '',
+      hint_text_en: 'Reason 2',
+      hint_text_cy: '',
+      lov_order: 2,
+      parent_key: null,
+      category_key: 'CancelHearingReason',
+      parent_category: '',
+      active_flag: 'Y',
+      child_nodes: null,
+    },
+    {
+      key: 'reasonThree',
+      value_en: 'Reason 3',
+      value_cy: '',
+      hint_text_en: 'Reason 3',
+      hint_text_cy: '',
+      lov_order: 4,
+      parent_key: null,
+      category_key: 'CancelHearingReason',
+      parent_category: '',
+      active_flag: 'Y',
+      child_nodes: null,
+    },
+  ];
 
   const HEARING_ID = 'h00001';
   const CASE_REF = '1111222233334444';

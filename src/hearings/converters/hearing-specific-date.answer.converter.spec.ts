@@ -1,14 +1,15 @@
-import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { provideMockStore } from '@ngrx/store/testing';
-import { cold } from 'jasmine-marbles';
-import { of } from 'rxjs';
-import { hearingStageRefData, initialState } from '../hearing.test.data';
-import { RadioOptions } from '../models/hearings.enum';
-import { State } from '../store';
-import { AnswerConverter } from './answer.converter';
-import { HearingSpecificDateAnswerConverter } from './hearing-specific-date.answer.converter';
+import {TestBed} from '@angular/core/testing';
+import {ActivatedRoute} from '@angular/router';
+import {Store} from '@ngrx/store';
+import {provideMockStore} from '@ngrx/store/testing';
+import {cold} from 'jasmine-marbles';
+import {of} from 'rxjs';
+import * as _ from 'lodash';
+import {hearingStageRefData, initialState} from '../hearing.test.data';
+import {RadioOptions} from '../models/hearings.enum';
+import {State} from '../store';
+import {AnswerConverter} from './answer.converter';
+import {HearingSpecificDateAnswerConverter} from './hearing-specific-date.answer.converter';
 
 describe('HearingSpecificDateAnswerConverter', () => {
 
@@ -19,7 +20,7 @@ describe('HearingSpecificDateAnswerConverter', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({ initialState }),
+        provideMockStore({initialState}),
         {
           provide: ActivatedRoute,
           useValue: {
@@ -38,47 +39,41 @@ describe('HearingSpecificDateAnswerConverter', () => {
   });
 
   it('should transform hearing choose date range', () => {
-    const STATE: State = initialState.hearings;
+    const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingWindow = {
-      hearingWindowDateRange: {
-        hearingWindowStartDateRange: '12-12-2022',
-        hearingWindowEndDateRange: '12-12-2022',
-      },
-      hearingWindowFirstDate: null,
+      dateRangeStart: '2022-12-12T09:00:00.000Z',
+      dateRangeEnd: '2022-12-12T09:00:00.000Z',
+      firstDateTimeMustBe: null,
     };
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDateRange = `${RadioOptions.CHOOSE_DATE_RANGE}<dt class="heading-h3 bottom-0">Earliest hearing date</dt>12 December 2022<dt class="heading-h3 bottom-0">Latest hearing date</dt>12 December 2022`;
-    const expected = cold('(b|)', { b: hearingDateRange });
+    const expected = cold('(b|)', {b: hearingDateRange});
     expect(result$).toBeObservable(expected);
   });
 
   it('should transform hearing start date', () => {
-    const STATE: State = initialState.hearings;
+    const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingWindow = {
-      hearingWindowDateRange: {
-        hearingWindowStartDateRange: '12-12-2022',
-        hearingWindowEndDateRange: null,
-      },
-      hearingWindowFirstDate: null,
+      dateRangeStart: '2022-12-12T09:00:00.000Z',
+      dateRangeEnd: null,
+      firstDateTimeMustBe: null,
     };
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDateRange = `${RadioOptions.YES}<dt class="heading-h3 bottom-0">The first date of the hearing must be</dt>12 December 2022`;
-    const expected = cold('(b|)', { b: hearingDateRange });
+    const expected = cold('(b|)', {b: hearingDateRange});
     expect(result$).toBeObservable(expected);
   });
 
   it('should transform hearing empty date', () => {
-    const STATE: State = initialState.hearings;
+    const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingWindow = {
-      hearingWindowDateRange: {
-        hearingWindowStartDateRange: null,
-        hearingWindowEndDateRange: null,
-      },
-      hearingWindowFirstDate: null,
+      dateRangeStart: null,
+      dateRangeEnd: null,
+      firstDateTimeMustBe: null,
     };
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDateRange = RadioOptions.NO;
-    const expected = cold('(b|)', { b: hearingDateRange });
+    const expected = cold('(b|)', {b: hearingDateRange});
     expect(result$).toBeObservable(expected);
   });
 });

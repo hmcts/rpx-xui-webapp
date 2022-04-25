@@ -1,9 +1,12 @@
-import { HttpRequest } from '@angular/common/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { inject, TestBed } from '@angular/core/testing';
-import { StoreModule } from '@ngrx/store';
-import { LovRefDataModel } from '../models/lovRefData.model';
-import { HearingsService } from './hearings.service';
+import {HttpRequest} from '@angular/common/http';
+import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {inject, TestBed} from '@angular/core/testing';
+import {StoreModule} from '@ngrx/store';
+import * as _ from 'lodash';
+import {initialState} from '../hearing.test.data';
+import {HearingRequestMainModel} from '../models/hearingRequestMain.model';
+import {LovRefDataModel} from '../models/lovRefData.model';
+import {HearingsService} from './hearings.service';
 
 describe('HearingsService', () => {
   beforeEach(() => {
@@ -77,36 +80,73 @@ describe('HearingsService', () => {
   });
 
   describe('updateHearingRequest', () => {
+    const hearingRequest: HearingRequestMainModel = _.cloneDeep(initialState.hearings.hearingRequest);
     const payload = {
-      requestDetails: null,
-      hearingDetails: null,
-      partyDetails: null,
+      ...hearingRequest,
+      requestDetails: {
+        ...hearingRequest.requestDetails,
+        hearingRequestID: 'h100000'
+      }
     };
     it('should update hearing request', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
       service.updateHearingRequest(payload).subscribe(response => {
         expect(response).toBeNull();
       });
-
-      const req = httpMock.expectOne('api/hearings/updateHearingRequest');
-      expect(req.request.method).toEqual('PUT');
-      req.flush(null);
+      httpMock.expectOne((req: HttpRequest<any>) => {
+        expect(req.url).toBe('api/hearings/updateHearingRequest');
+        expect(req.method).toBe('PUT');
+        expect(req.params.get('hearingId')).toEqual('h100000');
+        return true;
+      })
+        .flush(null);
     }));
   });
 
   describe('cancelHearingRequest', () => {
     const payload: LovRefDataModel[] = [
       {
-        key: 'reasonone',
+        key: 'reasonOne',
         value_en: 'Reason 1',
         value_cy: '',
-        hintText_EN: 'Reason 1',
-        hintTextCY: '',
-        order: 1,
-        parentKey: null,
-      }];
+        hint_text_en: 'reason 1',
+        hint_text_cy: '',
+        lov_order: 1,
+        parent_key: null,
+        category_key: 'CancelHearingReason',
+        parent_category: '',
+        active_flag: 'Y',
+        child_nodes: null,
+      },
+      {
+        key: 'reasonTwo',
+        value_en: 'Reason 2',
+        value_cy: '',
+        hint_text_en: 'Reason 2',
+        hint_text_cy: '',
+        lov_order: 2,
+        parent_key: null,
+        category_key: 'CancelHearingReason',
+        parent_category: '',
+        active_flag: 'Y',
+        child_nodes: null,
+      },
+      {
+        key: 'reasonThree',
+        value_en: 'Reason 3',
+        value_cy: '',
+        hint_text_en: 'Reason 3',
+        hint_text_cy: '',
+        lov_order: 4,
+        parent_key: null,
+        category_key: 'CancelHearingReason',
+        parent_category: '',
+        active_flag: 'Y',
+        child_nodes: null,
+      },
+    ];
 
     it('should cancel hearing request', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
-      const cancellationReasonCode: string = payload.map(reason => reason.key).toString();
+      const cancellationReasonCode: string = payload.map(reason => reason.key)[0];
       service.cancelHearingRequest('h0002', payload).subscribe(response => {
         expect(response).toBeNull();
       });

@@ -5,55 +5,97 @@ import {
   GroupLinkType,
   HearingListingStatusEnum,
   HearingResult,
+  HMCLocationType,
   HMCStatus,
   LaCaseStatus,
   ListingStatus,
   MemberType,
   PartyType,
-  RequirementType
+  RequirementType, UnavailabilityType
 } from './models/hearings.enum';
+import {JudicialUserModel} from './models/judicialUser.model';
 import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
 
-export const hearingStageRefData = [
+export const hearingStageRefData =  [
   {
     key: 'initial',
     value_en: 'Initial',
     value_cy: '',
-    hintText_EN: 'Initial',
-    hintTextCY: '',
-    order: 1,
-    parentKey: null
+    hint_text_en: 'Initial',
+    hint_text_cy: '',
+    lov_order: 1,
+    parent_key: null,
+    category_key: 'HearingType',
+    parent_category: '',
+    active_flag: 'Y',
+    child_nodes: null,
   },
   {
     key: 'final',
     value_en: 'Final',
     value_cy: '',
-    hintText_EN: 'Final',
-    hintTextCY: '',
-    order: 2,
-    parentKey: null
-  }
+    hint_text_en: 'Final',
+    hint_text_cy: '',
+    lov_order: 2,
+    parent_key: null,
+    category_key: 'HearingType',
+    parent_category: '',
+    active_flag: 'Y',
+    child_nodes: null,
+  },
+  {
+    key: 'substantial',
+    value_en: 'Substantial',
+    value_cy: '',
+    hint_text_en: 'Substantial',
+    hint_text_cy: '',
+    lov_order: 3,
+    parent_key: null,
+    category_key: 'HearingType',
+    parent_category: '',
+    active_flag: 'Y',
+    child_nodes: null,
+  },
+  {
+    key: 'case-management',
+    value_en: 'Case management',
+    value_cy: '',
+    hint_text_en: 'Case management',
+    hint_text_cy: '',
+    lov_order: 4,
+    parent_key: null,
+    category_key: 'HearingType',
+    parent_category: '',
+    active_flag: 'Y',
+    child_nodes: null,
+  },
 ];
 
-export const judicailUsersRefData = [{
-  sidam_id: '1102839232',
-  object_id: '1102839232',
-  known_as: 'Jacky Collins',
+export const judicailUsersRefData: JudicialUserModel[] = [{
+  emailId: 'jacky.collins@judicial.com',
+  fullName: 'Jacky Collins',
+  idamId: '1102839232',
+  isJudge: '',
+  isMagistrate: '',
+  isPanelMember: '',
+  knownAs: 'Jacky Collins',
+  personalCode: 'P0000001',
   surname: 'Jacky Collins',
-  personal_code: 'P0000001',
-  full_name: 'Jacky Collins',
-  post_nominals: 'Jacky Collins',
-  email_id: 'jacky.collins@judicial.com',
+  title: 'Mr'
 }];
 
-export const judgeRefData = [
+export const judgeRefData: JudicialUserModel[] = [
   {
-    id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
-    name: 'Jacky Collins',
-    email: 'jacky.collins@judicial.com',
-    domain: 'JUDICIAL',
-    personalCode: 'P0000001',
+    emailId: 'jacky.collins@judicial.com',
+    fullName: 'Jacky Collins',
+    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
+    isJudge: '',
+    isMagistrate: '',
+    isPanelMember: '',
     knownAs: 'Jacky Collins',
+    personalCode: 'P0000001',
+    surname: 'Collins',
+    title: 'Mr'
   }];
 
 export const hearingPriorityRefData = [
@@ -965,21 +1007,33 @@ export const caseFlagsRefData = [
 ];
 
 export const serviceHearingValuesModel: ServiceHearingValuesModel = {
+  hmctsServiceID: 'BBA3',
   caseName: 'Jane vs DWP',
   autoListFlag: false,
   hearingType: 'Final',
-  caseType: 'Personal Independence Payment',
-  caseSubTypes: [
-    'Conditions of Entitlement',
-    'Good cause',
-    'Rate of Assessment / Payability Issues - complex'
-  ],
-  hearingWindow: {
-    hearingWindowDateRange: {
-      hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
-      hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000',
+  caseCategories: [
+    {
+      categoryType: CategoryType.CaseType,
+      categoryValue: 'Personal Independence Payment',
+    }, {
+      categoryType: CategoryType.CaseSubType,
+      categoryValue: 'Conditions of Entitlement',
+    }, {
+      categoryType: CategoryType.CaseSubType,
+      categoryValue: 'Good cause',
+    }, {
+      categoryType: CategoryType.CaseSubType,
+      categoryValue: 'Rate of Assessment / Payability Issues - complex',
     },
-    hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
+  ],
+  caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',
+  caserestrictedFlag: false,
+  caseManagementLocationCode: '196538',
+  caseSLAStartDate: '2021-05-05T09:00:00.000Z',
+  hearingWindow: {
+    dateRangeStart: '2022-11-23T09:00:00.000Z',
+    dateRangeEnd: '2022-11-30T09:00:00.000Z',
+    firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
   },
   duration: 45,
   hearingPriorityType: 'standard',
@@ -987,11 +1041,11 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   hearingInWelshFlag: false,
   hearingLocations: [{
     locationId: '196538',
-    locationType: 'hearing',
+    locationType: HMCLocationType.COURT,
   },
   {
     locationId: '234850',
-    locationType: 'hearing',
+    locationType: HMCLocationType.COURT,
   },
   ],
   caseAdditionalSecurityFlag: false,
@@ -1028,6 +1082,21 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
     ]
   },
   hearingIsLinkedFlag: false,
+  panelRequirements: {
+    roleType: [
+      'tribunalJudge',
+      'deputyTribunalJudge',
+      'regionalTribunalJudge',
+    ],
+    panelPreferences: [],
+    panelSpecialisms: [
+      'BBA3-DQPM',
+      'BBA3-MQPM2-003',
+      'BBA3-MQPM2-004',
+      'BBA3-FQPM',
+      'BBA3-RMM',
+    ],
+  },
   parties: [
     {
       partyID: 'P1',
@@ -1042,8 +1111,9 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
       },
       unavailabilityRanges: [
         {
-          unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-          unavailableToDate: '2021-12-31T09:00:00.000+0000',
+          unavailableFromDate: '2021-12-10T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY,
         },
       ],
     },
@@ -1065,14 +1135,16 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
       },
       unavailabilityRanges: [
         {
-          unavailableFromDate: '2021-12-20T09:00:00.000+0000',
-          unavailableToDate: '2021-12-31T09:00:00.000+0000',
+          unavailableFromDate: '2021-12-20T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY,
         },
       ],
     }],
   caseFlags: {
     flags: [
       {
+        partyID: 'P1',
         partyName: 'Jane Smith',
         flagParentId: 'RA0008',
         flagId: 'RA0042',
@@ -1080,6 +1152,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE',
       },
       {
+        partyID: 'P1',
         partyName: 'Jane Smith',
         flagParentId: 'RA0032',
         flagId: 'RA0053',
@@ -1087,6 +1160,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE',
       },
       {
+        partyID: 'P1',
         partyName: 'Jane Smith',
         flagParentId: 'RA0002',
         flagId: 'RA0013',
@@ -1094,6 +1168,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE',
       },
       {
+        partyID: 'P1',
         partyName: 'Jane Smith',
         flagParentId: 'RA0003',
         flagId: 'RA0016',
@@ -1101,6 +1176,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE',
       },
       {
+        partyID: 'P1',
         partyName: 'Jane Smith',
         flagParentId: 'RA0008',
         flagId: 'RA0042',
@@ -1108,6 +1184,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE',
       },
       {
+        partyID: 'P1',
         partyName: 'Jane Smith',
         flagParentId: 'PF0001',
         flagId: 'PF0015',
@@ -1115,6 +1192,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE',
       },
       {
+        partyID: 'P1',
         partyName: 'Jane Smith',
         flagParentId: 'PF0001',
         flagId: 'PF0002',
@@ -1122,6 +1200,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE',
       },
       {
+        partyID: 'P2',
         partyName: 'DWP',
         flagParentId: 'RA0001',
         flagId: 'RA0005',
@@ -1129,6 +1208,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE',
       },
       {
+        partyID: 'P2',
         partyName: 'DWP',
         flagParentId: 'PF0001',
         flagId: 'PF0011',
@@ -1136,6 +1216,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE',
       },
       {
+        partyID: 'P2',
         partyName: 'Jane Smith vs DWP',
         flagParentId: 'CF0001',
         flagId: 'CF0002',
@@ -1143,6 +1224,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE',
       },
       {
+        partyID: 'P2',
         partyName: 'Jane Smith vs DWP',
         flagParentId: 'CF0001',
         flagId: 'CF0006',
@@ -1150,6 +1232,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
         flagStatus: 'ACTIVE',
       },
       {
+        partyID: 'P2',
         partyName: 'Jane Smith vs DWP',
         flagParentId: 'CF0001',
         flagId: 'CF0007',
@@ -1159,11 +1242,106 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
     ],
     flagAmendURL: '/'
   },
-} as ServiceHearingValuesModel;
+  screenFlow: [
+    {
+      screenName: 'hearing-requirements',
+      navigation: [
+        {
+          resultValue: 'hearing-facilities',
+        },
+      ],
+    },
+    {
+      screenName: 'hearing-facilities',
+      navigation: [
+        {
+          resultValue: 'hearing-stage',
+        },
+      ],
+    },
+    {
+      screenName: 'hearing-stage',
+      navigation: [
+        {
+          resultValue: 'hearing-attendance',
+        },
+      ],
+    },
+    {
+      screenName: 'hearing-attendance',
+      navigation: [
+        {
+          resultValue: 'hearing-venue',
+        },
+      ],
+    },
+    {
+      screenName: 'hearing-venue',
+      conditionKey: 'region',
+      navigation: [
+        {
+          conditionOperator: 'INCLUDE',
+          conditionValue: 'Wales',
+          resultValue: 'hearing-welsh',
+        },
+        {
+          conditionOperator: 'NOT INCLUDE',
+          conditionValue: 'Wales',
+          resultValue: 'hearing-judge',
+        },
+      ],
+    },
+    {
+      screenName: 'hearing-welsh',
+      navigation: [
+        {
+          resultValue: 'hearing-judge',
+        },
+      ],
+    },
+    {
+      screenName: 'hearing-judge',
+      navigation: [
+        {
+          resultValue: 'hearing-panel',
+        },
+      ],
+    },
+    {
+      screenName: 'hearing-panel',
+      navigation: [
+        {
+          resultValue: 'hearing-timing',
+        },
+      ],
+    },
+    {
+      screenName: 'hearing-timing',
+      navigation: [
+        {
+          resultValue: 'hearing-additional-instructions',
+        },
+      ],
+    },
+    {
+      screenName: 'hearing-additional-instructions',
+      navigation: [
+        {
+          resultValue: 'hearing-create-edit-summary',
+        },
+      ],
+    },
+  ],
+  vocabulary: [
+    {
+      word1: '',
+    },
+  ],
+};
 
 export const hearingRequestMainModel: HearingRequestMainModel = {
   requestDetails: {
-    requestTimeStamp: '2022-02-23T09:00:00.000+0000',
+    timeStamp: '2022-02-23T09:00:00.000Z',
     versionNumber: 1,
   },
   hearingDetails: {
@@ -1172,16 +1350,14 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
     hearingLocations: [
       {
         locationId: '196538',
-        locationType: 'hearing',
+        locationType: HMCLocationType.COURT,
       },
     ],
     hearingIsLinkedFlag: false,
     hearingWindow: {
-      hearingWindowDateRange: {
-        hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
-        hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000',
-      },
-      hearingWindowFirstDate: '2021-12-01T09:00:00.000+0000',
+      dateRangeStart: '2022-11-23T09:00:00.000Z',
+      dateRangeEnd: '2022-11-30T09:00:00.000Z',
+      firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
     },
     privateHearingRequiredFlag: false,
     panelRequirements: null,
@@ -1228,7 +1404,7 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
       }],
     caseManagementLocationCode: null,
     caserestrictedFlag: false,
-    caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
+    caseSLAStartDate: '2021-11-23T09:00:00.000Z',
   },
   partyDetails: [
     {
@@ -1258,14 +1434,14 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
   ],
   hearingResponse: {
     listAssistTransactionID: '123456789',
-    receivedDateTime: '2021-11-30T09:00:00.000+0000',
+    receivedDateTime: '2021-11-30T09:00:00.000Z',
     responseVersion: 0,
     laCaseStatus: LaCaseStatus.AWAITING_LISTING,
     listingStatus: ListingStatus.DRAFT,
     hearingCancellationReason: '123456543',
     hearingDaySchedule: {
-      hearingStartDateTime: '2021-03-12T09:00:00.000+0000',
-      hearingEndDateTime: '2021-03-12T16:00:00.000+0000',
+      hearingStartDateTime: '2021-03-12T09:00:00.000Z',
+      hearingEndDateTime: '2021-03-12T16:00:00.000Z',
       listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
       hearingVenueId: '815833',
       hearingRoomId: 'room 4',
@@ -1307,14 +1483,14 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
       hearingFinalFlag: false,
       hearingResult: HearingResult.CANCELLED,
       hearingResultDate: '2019-01-01',
-      hearingResultReasonType: 'reasoneTwo',
+      hearingResultReasonType: 'reasonTwo',
       hearingType: 'Pre-hearing review',
     },
     actualHearingDays: [
       {
-        hearingDate: '2021-03-12T09:00:00.000+0000',
-        hearingStartTime: '2021-03-12T09:00:00.000+0000',
-        hearingEndTime: '2021-03-13T10:00:00.000+0000',
+        hearingDate: '2021-03-12T09:00:00.000Z',
+        hearingStartTime: '2021-03-12T09:00:00.000Z',
+        hearingEndTime: '2021-03-13T10:00:00.000Z',
         pauseDateTimes: [],
         actualDayParties: [
           {
@@ -1327,7 +1503,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               name: 'Company D',
             },
             didNotAttendFlag: false,
-            partyChannelSubType: 'Fax',
+            partyChannelSubType: 'inPerson',
             partyRole: 'interpreter',
             representedParty: '5',
           },
@@ -1335,8 +1511,8 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
       },
       {
         hearingDate: '2021-03-12',
-        hearingStartTime: '2021-03-12T09:00:00.000+0000',
-        hearingEndTime: '2021-03-13T10:00:00.000+0000',
+        hearingStartTime: '2021-03-12T09:00:00.000Z',
+        hearingEndTime: '2021-03-13T10:00:00.000Z',
         pauseDateTimes: [],
         actualDayParties: [
           {
@@ -1349,7 +1525,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               name: 'Company A',
             },
             didNotAttendFlag: true,
-            partyChannelSubType: 'Other',
+            partyChannelSubType: 'video-teams',
             partyRole: 'interpreter',
             representedParty: '2',
           },
@@ -1361,8 +1537,8 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
     plannedHearingType: 'final',
     plannedHearingDays: [
       {
-        plannedStartTime: '2021-03-12T09:00:00.000+0000',
-        plannedEndTime: '2021-03-13T10:00:00.000+0000',
+        plannedStartTime: '2021-03-12T09:00:00.000Z',
+        plannedEndTime: '2021-03-13T10:00:00.000Z',
         parties: [
           {
             individualDetails: {
@@ -1395,8 +1571,8 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
         ],
       },
       {
-        plannedStartTime: '2021-03-12T09:00:00.000+0000',
-        plannedEndTime: '2021-03-13T10:00:00.000+0000',
+        plannedStartTime: '2021-03-12T09:00:00.000Z',
+        plannedEndTime: '2021-03-13T10:00:00.000Z',
         parties: [
           {
             individualDetails: {
@@ -1429,8 +1605,8 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
         ],
       },
       {
-        plannedStartTime: '2021-03-12T09:00:00.000+0000',
-        plannedEndTime: '2021-03-13T10:00:00.000+0000',
+        plannedStartTime: '2021-03-12T09:00:00.000Z',
+        plannedEndTime: '2021-03-13T10:00:00.000Z',
         parties: [
           {
             individualDetails: {
@@ -1463,8 +1639,8 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
         ],
       },
       {
-        plannedStartTime: '2021-03-12T09:00:00.000+0000',
-        plannedEndTime: '2021-03-13T10:00:00.000+0000',
+        plannedStartTime: '2021-03-12T09:00:00.000Z',
+        plannedEndTime: '2021-03-13T10:00:00.000Z',
         parties: [
           {
             individualDetails: {
@@ -1529,7 +1705,7 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
       }],
     caseManagementLocationCode: null,
     caserestrictedFlag: false,
-    caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
+    caseSLAStartDate: '2021-11-23T09:00:00.000Z',
   },
 };
 
@@ -1541,7 +1717,7 @@ export const initialState = {
         hmctsServiceID: 'BBA3',
         caseHearings: [{
           hearingID: 'h00001',
-          hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
+          hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
           hearingType: 'Case management hearing',
           hmcStatus: HMCStatus.HEARING_REQUESTED,
           lastResponseReceivedDateTime: '',
@@ -1565,7 +1741,8 @@ export const initialState = {
     hearingRequestToCompare: {
       hearingRequestMainModel: {
         requestDetails: {
-          requestTimeStamp: null
+          timeStamp: null,
+          versionNumber: 1,
         },
         hearingDetails: {
           duration: 60,
@@ -1573,20 +1750,18 @@ export const initialState = {
           hearingLocations: [
             {
               locationId: '196538',
-              locationType: 'hearing',
+              locationType: HMCLocationType.COURT,
             },
             {
               locationId: '234850',
-              locationType: 'hearing',
+              locationType: HMCLocationType.COURT,
             },
           ],
           hearingIsLinkedFlag: false,
           hearingWindow: {
-            hearingWindowDateRange: {
-              hearingWindowStartDateRange: '12-12-2022',
-              hearingWindowEndDateRange: '12-12-2022',
-            },
-            hearingWindowFirstDate: null,
+            dateRangeStart: '2022-12-12T09:00:00.000Z',
+            dateRangeEnd: '2022-12-12T09:00:00.000Z',
+            firstDateTimeMustBe: '',
           },
           privateHearingRequiredFlag: false,
           panelRequirements: null,
@@ -1660,8 +1835,9 @@ export const initialState = {
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
-                unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+                unavailableFromDate: '2021-12-10T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
               },
             ],
           },
@@ -1687,8 +1863,9 @@ export const initialState = {
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
-                unavailableFromDate: '2021-12-20T09:00:00.000+0000',
-                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+                unavailableFromDate: '2021-12-20T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
               },
             ],
           }
@@ -1699,12 +1876,13 @@ export const initialState = {
     hearingRequest: {
       hearingRequestMainModel: {
         requestDetails: {
-          requestTimeStamp: '2021-11-30T09:00:00.000+0000'
+          timeStamp: '2021-11-30T09:00:00.000Z',
+          versionNumber: 1,
         },
         hearingResponse: {
           listAssistTransactionID: '',
           responseVersion: 1,
-          receivedDateTime: '2021-11-30T09:00:00.000+0000',
+          receivedDateTime: '2021-11-30T09:00:00.000Z',
           laCaseStatus: LaCaseStatus.AWAITING_LISTING,
           listingStatus: ListingStatus.FIXED,
           hearingCancellationReason: '',
@@ -1748,20 +1926,18 @@ export const initialState = {
           hearingLocations: [
             {
               locationId: '196538',
-              locationType: 'hearing',
+              locationType: HMCLocationType.COURT,
             },
             {
               locationId: '234850',
-              locationType: 'hearing',
+              locationType: HMCLocationType.COURT,
             },
           ],
           hearingIsLinkedFlag: false,
           hearingWindow: {
-            hearingWindowDateRange: {
-              hearingWindowStartDateRange: '12-12-2022',
-              hearingWindowEndDateRange: '12-12-2022',
-            },
-            hearingWindowFirstDate: null,
+            dateRangeStart: '2022-12-12T09:00:00.000Z',
+            dateRangeEnd: '2022-12-12T09:00:00.000Z',
+            firstDateTimeMustBe: '',
           },
           privateHearingRequiredFlag: false,
           panelRequirements: null,
@@ -1834,8 +2010,9 @@ export const initialState = {
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
-                unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+                unavailableFromDate: '2021-12-10T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
               },
             ],
           },
@@ -1859,8 +2036,9 @@ export const initialState = {
             unavailabilityDOW: null,
             unavailabilityRanges: [
               {
-                unavailableFromDate: '2021-12-20T09:00:00.000+0000',
-                unavailableToDate: '2021-12-31T09:00:00.000+0000',
+                unavailableFromDate: '2021-12-20T09:00:00.000Z',
+                unavailableToDate: '2021-12-31T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
               },
             ],
           }

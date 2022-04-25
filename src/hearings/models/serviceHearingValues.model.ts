@@ -1,4 +1,5 @@
 /* tslint:disable:object-literal-sort-keys */
+import {CaseCategoryModel} from './caseCategory.model';
 import {HearingLocationModel} from './hearingLocation.model';
 import {HearingWindowModel} from './hearingWindow.model';
 import {JudiciaryModel} from './judiciary.model';
@@ -9,18 +10,22 @@ import {ScreenNavigationModel} from './screenNavigation.model';
 import {VocabularyModel} from './vocabulary.model';
 
 export interface ServiceHearingValuesModel {
+  hmctsServiceID: string;
   caseName: string;
+  caseAdditionalSecurityFlag: boolean;
+  caseCategories: CaseCategoryModel[];
+  caseDeepLink: string;
+  caserestrictedFlag: boolean;
+  caseManagementLocationCode: string;
+  caseSLAStartDate: string;
   autoListFlag: boolean;
   hearingType: string;
-  caseType: string;
-  caseSubTypes: string[];
   hearingWindow: HearingWindowModel;
   duration: number;
   hearingPriorityType: string;
   numberOfPhysicalAttendees: number;
   hearingInWelshFlag: boolean;
   hearingLocations: HearingLocationModel[];
-  caseAdditionalSecurityFlag?: boolean;
   facilitiesRequired: string[];
   listingComments: string;
   hearingRequester: string;

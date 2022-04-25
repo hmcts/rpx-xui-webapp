@@ -32,7 +32,6 @@ export class CancelHearingComponent implements OnInit {
     });
   }
 
-
   public get cancelHearingMessageEnum() {
     return CancelHearingMessages;
   }
@@ -55,10 +54,10 @@ export class CancelHearingComponent implements OnInit {
       key: [val.key],
       value_en: [val.value_en],
       value_cy: [val.value_cy],
-      hintText_EN: [val.hintText_EN],
-      hintTextCY: [val.hintTextCY],
-      order: [val.order],
-      parentKey: [val.parentKey],
+      hint_text_en: [val.hint_text_en],
+      hint_text_cy: [val.hint_text_cy],
+      lov_order: [val.lov_order],
+      parent_key: [val.parent_key],
       selected: [!!val.selected]
     })));
   }
@@ -106,10 +105,10 @@ export class CancelHearingComponent implements OnInit {
         key: element.value.key,
         value_en: element.value.value_en,
         value_cy: element.value.value_cy,
-        hintText_EN: element.value.hintText_EN,
-        hintTextCY: element.value.hintTextCY,
-        order: element.value.order,
-        parentKey: element.value.parentKey,
+        hint_text_en: element.value.hint_text_en,
+        hint_text_cy: element.value.hint_text_cy,
+        lov_order: element.value.lov_order,
+        parent_key: element.value.parent_key,
       } as LovRefDataModel);
     });
     return mappedReason;

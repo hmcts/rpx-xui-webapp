@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { cold } from 'jasmine-marbles';
+import * as _ from 'lodash';
 import { of } from 'rxjs';
 import { initialState } from '../hearing.test.data';
 import { MemberType, RadioOptions, RequirementType } from '../models/hearings.enum';
@@ -30,7 +31,7 @@ describe('HearingPanelAnswerConverter', () => {
   });
 
   it('should transform hearing panel answer selection to yes', () => {
-    const STATE: State = initialState.hearings;
+    const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
       panelPreferences: JUDICAIL_USER_DETAILS
     };
@@ -41,7 +42,7 @@ describe('HearingPanelAnswerConverter', () => {
   });
 
   it('should transform hearing panel answer selection to no', () => {
-    const STATE: State = initialState.hearings;
+    const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = null;
     const result$ = converter.transformAnswer(of(STATE));
     const option = RadioOptions.NO;

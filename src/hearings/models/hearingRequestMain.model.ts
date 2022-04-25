@@ -5,7 +5,7 @@ import {PartyDetailsModel} from './partyDetails.model';
 import {RequestDetailsModel} from './requestDetails.model';
 
 export interface HearingRequestMainModel {
-  requestDetails: RequestDetailsModel;
+  requestDetails?: RequestDetailsModel;
   hearingDetails: HearingDetailsModel;
   caseDetails?: CaseDetailsModel;
   partyDetails: PartyDetailsModel[];

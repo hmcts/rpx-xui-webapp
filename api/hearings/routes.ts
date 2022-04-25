@@ -7,15 +7,17 @@ import {
   getHearingActuals,
   getHearings,
   getLinkedHearingGroup,
-  loadServiceHearingValues,
-  loadServiceLinkedCases,
   postLinkedHearingGroup,
   putLinkedHearingGroup,
   submitHearingActuals,
   submitHearingRequest,
   updateHearingActuals,
   updateHearingRequest
-} from './index';
+} from './hmc.index';
+import {
+  loadServiceHearingValues,
+  loadServiceLinkedCases
+} from './services.index';
 
 export const router = express.Router({mergeParams: true});
 

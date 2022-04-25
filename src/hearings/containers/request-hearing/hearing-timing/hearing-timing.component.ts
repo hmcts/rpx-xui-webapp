@@ -85,15 +85,14 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     duration = this.hearingRequestMainModel.hearingDetails.duration ?
       this.hearingRequestMainModel.hearingDetails.duration : 0;
     hearingWindow = this.hearingRequestMainModel.hearingDetails.hearingWindow;
-    if (hearingWindow && hearingWindow.hearingWindowDateRange
-      && hearingWindow.hearingWindowDateRange.hearingWindowStartDateRange && hearingWindow.hearingWindowDateRange.hearingWindowEndDateRange) {
+    if (hearingWindow && hearingWindow.dateRangeStart && hearingWindow.dateRangeEnd) {
       this.checkedHearingAvailability = RadioOptions.CHOOSE_DATE_RANGE;
-      firstDate = new Date(hearingWindow.hearingWindowDateRange.hearingWindowStartDateRange);
-      secondDate = new Date(hearingWindow.hearingWindowDateRange.hearingWindowEndDateRange);
-    } else if (hearingWindow && hearingWindow.hearingWindowDateRange
-      && hearingWindow.hearingWindowDateRange.hearingWindowStartDateRange && !hearingWindow.hearingWindowDateRange.hearingWindowEndDateRange) {
+      firstDate = new Date(hearingWindow.dateRangeStart);
+      secondDate = new Date(hearingWindow.dateRangeEnd);
+    } else if (hearingWindow && hearingWindow.dateRangeStart
+      && !hearingWindow.dateRangeEnd) {
       this.checkedHearingAvailability = RadioOptions.YES;
-      startDate = new Date(hearingWindow.hearingWindowDateRange.hearingWindowStartDateRange);
+      startDate = new Date(hearingWindow.dateRangeStart);
     } else if (hearingWindow) {
       this.checkedHearingAvailability = RadioOptions.NO;
     }
@@ -332,10 +331,10 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     let firstDate = '';
     let secondDate = '';
     if (this.priorityForm.value.specificDate === RadioOptions.YES) {
-      firstDate = `${moment(Object.values(this.priorityForm.value.firstHearing).join('-'), HearingDateEnum.DefaultFormat).toDate()}`;
+      firstDate = `${moment(Object.values(this.priorityForm.value.firstHearing).join('-'), HearingDateEnum.DefaultFormat).toISOString()}`;
     } else if (this.priorityForm.value.specificDate === RadioOptions.CHOOSE_DATE_RANGE) {
-      firstDate = `${moment(Object.values(this.priorityForm.value.dateRangeHearing.earliestHearing).join('-'), HearingDateEnum.DefaultFormat).toDate()}`;
-      secondDate = `${moment(Object.values(this.priorityForm.value.dateRangeHearing.latestHearing).join('-'), HearingDateEnum.DefaultFormat).toDate()}`;
+      firstDate = `${moment(Object.values(this.priorityForm.value.dateRangeHearing.earliestHearing).join('-'), HearingDateEnum.DefaultFormat).toISOString()}`;
+      secondDate = `${moment(Object.values(this.priorityForm.value.dateRangeHearing.latestHearing).join('-'), HearingDateEnum.DefaultFormat).toISOString()}`;
     }
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
@@ -343,11 +342,9 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
         ...this.hearingRequestMainModel.hearingDetails,
         duration,
         hearingWindow: {
-          hearingWindowDateRange: {
-            hearingWindowStartDateRange: firstDate,
-            hearingWindowEndDateRange: secondDate
-          },
-          hearingWindowFirstDate: firstDate
+          dateRangeStart: firstDate,
+          dateRangeEnd: secondDate,
+          firstDateTimeMustBe: firstDate,
         },
         hearingPriorityType: this.priorityForm.value.priority
       }

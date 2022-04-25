@@ -1,15 +1,15 @@
-import { TestBed } from '@angular/core/testing';
-import { provideMockActions } from '@ngrx/effects/testing';
-import { provideMockStore } from '@ngrx/store/testing';
-import { cold, hot } from 'jasmine-marbles';
-import { of } from 'rxjs';
-import { Go } from '../../../app/store';
-import { initialState } from '../../hearing.test.data';
-import { MemberType, PartyType, RequirementType } from '../../models/hearings.enum';
-import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
-import { HearingsService } from '../../services/hearings.service';
+import {TestBed} from '@angular/core/testing';
+import {provideMockActions} from '@ngrx/effects/testing';
+import {provideMockStore} from '@ngrx/store/testing';
+import {cold, hot} from 'jasmine-marbles';
+import {of} from 'rxjs';
+import {Go} from '../../../app/store';
+import {initialState} from '../../hearing.test.data';
+import {CategoryType, MemberType, PartyType, RequirementType, UnavailabilityType} from '../../models/hearings.enum';
+import {ServiceHearingValuesModel} from '../../models/serviceHearingValues.model';
+import {HearingsService} from '../../services/hearings.service';
 import * as hearingValuesActions from '../actions/hearing-values.action';
-import { HearingValuesEffects } from './hearing-values.effects';
+import {HearingValuesEffects} from './hearing-values.effects';
 
 describe('Hearing Values Effects', () => {
   let actions$;
@@ -20,7 +20,7 @@ describe('Hearing Values Effects', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({ initialState }),
+        provideMockStore({initialState}),
         {
           provide: HearingsService,
           useValue: hearingsServiceMock,
@@ -34,17 +34,34 @@ describe('Hearing Values Effects', () => {
 
   describe('loadHearingValue$', () => {
     const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
+      hmctsServiceID: 'BBA3',
       caseName: 'Jane Smith vs DWP',
       autoListFlag: false,
       hearingType: 'Final',
-      caseType: 'Personal Independence Payment',
-      caseSubTypes: ['Conditions of Entitlement', 'Good cause', 'Rate of Assessment / Payability Issues - complex'],
-      hearingWindow: {
-        hearingWindowDateRange: {
-          hearingWindowStartDateRange: '2021-11-23T09:00:00.000+0000',
-          hearingWindowEndDateRange: '2021-11-30T09:00:00.000+0000',
+      caseAdditionalSecurityFlag: false,
+      caseCategories: [
+        {
+          categoryType: CategoryType.CaseType,
+          categoryValue: 'Personal Independence Payment',
+        }, {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'Conditions of Entitlement',
+        }, {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'Good cause',
+        }, {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'Rate of Assessment / Payability Issues - complex',
         },
-        hearingWindowFirstDate: '',
+      ],
+      caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',
+      caserestrictedFlag: false,
+      caseManagementLocationCode: '196538',
+      caseSLAStartDate: '2021-05-05T09:00:00.000Z',
+      hearingWindow: {
+        dateRangeStart: '2021-11-23T09:00:00.000Z',
+        dateRangeEnd: '2021-11-30T09:00:00.000Z',
+        firstDateTimeMustBe: '',
       },
       duration: 45,
       hearingPriorityType: 'standard',
@@ -83,8 +100,9 @@ describe('Hearing Values Effects', () => {
           partyRole: 'appellant',
           unavailabilityRanges: [
             {
-              unavailableFromDate: '2021-12-10T09:00:00.000+0000',
-              unavailableToDate: '2021-12-31T09:00:00.000+0000',
+              unavailableFromDate: '2021-12-10T09:00:00.000Z',
+              unavailableToDate: '2021-12-31T09:00:00.000Z',
+              unavailabilityType: UnavailabilityType.ALL_DAY,
             },
           ],
         },
@@ -95,8 +113,9 @@ describe('Hearing Values Effects', () => {
           partyRole: 'claimant',
           unavailabilityRanges: [
             {
-              unavailableFromDate: '2021-12-20T09:00:00.000+0000',
-              unavailableToDate: '2021-12-31T09:00:00.000+0000',
+              unavailableFromDate: '2021-12-20T09:00:00.000Z',
+              unavailableToDate: '2021-12-31T09:00:00.000Z',
+              unavailabilityType: UnavailabilityType.ALL_DAY,
             },
           ],
         }],
@@ -131,8 +150,8 @@ describe('Hearing Values Effects', () => {
       hearingsServiceMock.loadHearingValues.and.returnValue(of(SERVICE_HEARING_VALUES));
       const action = new hearingValuesActions.LoadHearingValues('1111222233334444');
       const completion = new hearingValuesActions.LoadHearingValuesSuccess(SERVICE_HEARING_VALUES);
-      actions$ = hot('-a', { a: action });
-      const expected = cold('-b', { b: completion });
+      actions$ = hot('-a', {a: action});
+      const expected = cold('-b', {b: completion});
       expect(effects.loadHearingValue$).toBeObservable(expected);
     });
   });
@@ -143,7 +162,7 @@ describe('Hearing Values Effects', () => {
         status: 500,
         message: 'error'
       });
-      action$.subscribe(action => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
+      action$.subscribe(action => expect(action).toEqual(new Go({path: ['/hearings/error']})));
     });
 
     it('should handle 4xx related errors', () => {
@@ -151,7 +170,7 @@ describe('Hearing Values Effects', () => {
         status: 403,
         message: 'error'
       });
-      action$.subscribe(action => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
+      action$.subscribe(action => expect(action).toEqual(new Go({path: ['/hearings/error']})));
     });
   });
 });

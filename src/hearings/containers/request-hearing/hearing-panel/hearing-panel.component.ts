@@ -1,15 +1,22 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { JudicialUserModel } from '../../../../hearings/models/judicialUser.model';
-import { PanelPreferenceModel } from '../../../../hearings/models/panelPreference.model';
-import { HearingJudgeNamesListComponent } from '../../../components';
-import { ACTION, ControlTypeEnum, HearingPanelSelectionEnum, MemberType, RadioOptions, RequirementType } from '../../../models/hearings.enum';
-import { LovRefDataModel } from '../../../models/lovRefData.model';
-import { HearingsService } from '../../../services/hearings.service';
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
+import {Store} from '@ngrx/store';
+import {HearingJudgeNamesListComponent} from '../../../components';
+import {
+  ACTION,
+  ControlTypeEnum,
+  HearingPanelSelectionEnum,
+  MemberType,
+  RadioOptions,
+  RequirementType
+} from '../../../models/hearings.enum';
+import {JudicialUserModel} from '../../../models/judicialUser.model';
+import {LovRefDataModel} from '../../../models/lovRefData.model';
+import {PanelPreferenceModel} from '../../../models/panelPreference.model';
+import {HearingsService} from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
-import { RequestHearingPageFlow } from '../request-hearing.page.flow';
+import {RequestHearingPageFlow} from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-panel',
@@ -28,6 +35,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
   public childNodesValidationError: string;
   public personalCodejudgeList: JudicialUserModel[] = [];
   public configLevels: { level: number, controlType: ControlTypeEnum }[];
+  public serviceId: string;
   @ViewChild('includedJudge') public includedJudge: HearingJudgeNamesListComponent;
   @ViewChild('excludedJudge') public excludedJudge: HearingJudgeNamesListComponent;
 
@@ -76,6 +84,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     this.includedJudgeList = this.getPannelMemberList(RequirementType.MUSTINC);
     this.loadHearingPanels();
     this.panelJudgeForm.controls.multiLevelSelect = this.convertRefDataModelToArray(this.multiLevelSelections);
+    this.serviceId = this.serviceHearingValuesModel.hmctsServiceID;
   }
 
   public getPannelMemberList(panelRequirementType: string): JudicialUserModel[] {
@@ -84,18 +93,8 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     const panelMemberIDs = panelRequirements && panelRequirements.panelPreferences && panelRequirements.panelPreferences.filter(preferences => preferences.memberType === MemberType.PANEL_MEMBER && preferences.requirementType === panelRequirementType).map(preferences => preferences.memberID);
     if (panelMemberIDs && panelMemberIDs.length) {
       this.personalCodejudgeList.forEach(judgeInfo => {
-        if (panelMemberIDs.includes(judgeInfo.personal_code)) {
-          const judgeDetail: JudicialUserModel = {
-            email_id: judgeInfo.email_id,
-            sidam_id: judgeInfo.sidam_id,
-            known_as: judgeInfo.known_as,
-            surname: judgeInfo.surname,
-            personal_code: judgeInfo.personal_code,
-            full_name: judgeInfo.full_name,
-            object_id: judgeInfo.object_id,
-            post_nominals: judgeInfo.post_nominals
-          };
-          selectedPanelList.push(judgeDetail);
+        if (panelMemberIDs.includes(judgeInfo.personalCode)) {
+          selectedPanelList.push(judgeInfo);
         }
       });
     }
@@ -143,7 +142,6 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
       this.showSpecificPanel(RadioOptions.YES);
     } else {
       this.showSpecificPanel(RadioOptions.NO);
-
     }
   }
 
@@ -160,11 +158,11 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     const panelRoles: LovRefDataModel[] = this.convertArrayToRefDataModel(this.panelJudgeForm.controls.multiLevelSelect as FormArray);
     const panelRolesSelected: string[] = [];
     const selectedPanelMembers: PanelPreferenceModel[] = [] as PanelPreferenceModel[];
-    const hearingPanelRequiredFlag = this.panelJudgeForm.controls.specificPanel.value === RadioOptions.YES
+    const hearingPanelRequiredFlag = this.panelJudgeForm.controls.specificPanel.value === RadioOptions.YES;
     if (hearingPanelRequiredFlag) {
       this.includedJudge.judgeList.forEach(judgeInfo => {
         const panelPreference: PanelPreferenceModel = {
-          memberID: judgeInfo.personal_code,
+          memberID: judgeInfo.personalCode,
           memberType: MemberType.PANEL_MEMBER,
           requirementType: RequirementType.MUSTINC
         };
@@ -172,7 +170,7 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
       });
       this.excludedJudge.judgeList.forEach(judgeInfo => {
         const panelPreference: PanelPreferenceModel = {
-          memberID: judgeInfo.personal_code,
+          memberID: judgeInfo.personalCode,
           memberType: MemberType.PANEL_MEMBER,
           requirementType: RequirementType.EXCLUDE
         };
@@ -202,10 +200,13 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
         key: control.value.key,
         value_en: control.value.value_en,
         value_cy: control.value.value_cy,
-        hintText_EN: control.value.hintText_EN,
-        hintTextCY: control.value.hintTextCY,
-        order: control.value.order,
-        parentKey: control.value.parentKey,
+        hint_text_en: control.value.hint_text_en,
+        hint_text_cy: control.value.hint_text_cy,
+        lov_order: control.value.lov_order,
+        parent_key: control.value.parent_key,
+        category_key: control.value.category_key,
+        parent_category: control.value.parent_category,
+        active_flag: control.value.active_flag,
         child_nodes: control.value && control.value.child_nodes ? control.value.child_nodes : [],
         selected: control.value.selected,
       };
@@ -221,10 +222,13 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
         key: otherPanelRoles.key,
         value_en: otherPanelRoles.value_en,
         value_cy: otherPanelRoles.value_cy,
-        hintText_EN: otherPanelRoles.hintText_EN,
-        hintTextCY: otherPanelRoles.hintTextCY,
-        order: otherPanelRoles.order,
-        parentKey: otherPanelRoles.parentKey,
+        hint_text_en: otherPanelRoles.hint_text_en,
+        hint_text_cy: otherPanelRoles.hint_text_cy,
+        lov_order: otherPanelRoles.lov_order,
+        parent_key: otherPanelRoles.parent_key,
+        category_key: otherPanelRoles.category_key,
+        parent_category: otherPanelRoles.parent_category,
+        active_flag: otherPanelRoles.active_flag,
         child_nodes: otherPanelRoles.child_nodes,
         selected: !otherPanelRoles.selected ? false : true,
       } as LovRefDataModel) as FormGroup);
@@ -237,10 +241,13 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
       key: [refDataModel.key],
       value_en: [refDataModel.value_en],
       value_cy: [refDataModel.value_cy],
-      hintText_EN: [refDataModel.hintText_EN],
-      hintTextCY: [refDataModel.hintText_EN],
-      order: [refDataModel.order],
-      parentKey: [refDataModel.parentKey],
+      hint_text_en: [refDataModel.hint_text_en],
+      hint_text_cy: [refDataModel.hint_text_cy],
+      lov_order: [refDataModel.lov_order],
+      parent_key: [refDataModel.parent_key],
+      category_key: [refDataModel.category_key],
+      parent_category: [refDataModel.parent_category],
+      active_flag: [refDataModel.active_flag],
       selected: [refDataModel.selected, Validators.required],
       child_nodes: refDataModel.child_nodes && refDataModel.child_nodes.length > 0 ? this.convertRefDataModelToArray(refDataModel.child_nodes) : []
     });
@@ -266,23 +273,26 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
     this.validationErrors = [];
     this.childNodesValidationError = null;
     this.panelSelectionError = null;
-    const panelRequiredFlag = this.panelJudgeForm.controls.specificPanel.value === RadioOptions.YES
+    const panelRequiredFlag = this.panelJudgeForm.controls.specificPanel.value === RadioOptions.YES;
     if (panelRequiredFlag) {
-      const selectedPanelRoles: LovRefDataModel[] = this.convertArrayToRefDataModel(this.panelJudgeForm.controls.multiLevelSelect as FormArray).filter(role => role.selected)
-      const panelRolesValid = this.childNodesValidation()
-      const validIncludeOrExcludeSelection = this.includedJudge.judgeList.length > 0 || this.excludedJudge.judgeList.length > 0
+      const selectedPanelRoles: LovRefDataModel[] = this.convertArrayToRefDataModel(this.panelJudgeForm.controls.multiLevelSelect as FormArray).filter(role => role.selected);
+      const panelRolesValid = this.childNodesValidation();
+      const validIncludeOrExcludeSelection = this.includedJudge.judgeList.length > 0 || this.excludedJudge.judgeList.length > 0;
       if (panelRolesValid) {
         if (!selectedPanelRoles.length) {
           if (!validIncludeOrExcludeSelection) {
             this.panelSelectionError = HearingPanelSelectionEnum.SelectionError;
-            this.validationErrors.push({ id: 'specific-panel-selection', message: HearingPanelSelectionEnum.SelectionError });
+            this.validationErrors.push({
+              id: 'specific-panel-selection',
+              message: HearingPanelSelectionEnum.SelectionError
+            });
             return false;
           }
         }
       } else {
-        this.hasValidationRequested = true
+        this.hasValidationRequested = true;
         this.childNodesValidationError = HearingPanelSelectionEnum.PanelRowChildError;
-        this.validationErrors.push({ id: 'panel-role-selector', message: HearingPanelSelectionEnum.PanelRowChildError });
+        this.validationErrors.push({id: 'panel-role-selector', message: HearingPanelSelectionEnum.PanelRowChildError});
         return false;
       }
     }

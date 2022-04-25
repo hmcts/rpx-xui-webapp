@@ -13,8 +13,8 @@ export const HEARING_ACTUAL: HearingActualsMainModel = {
     actualHearingDays: [
       {
         hearingDate: '2021-03-12',
-        hearingStartTime: '2021-03-12T09:00:00.000+0000',
-        hearingEndTime: '2021-03-13T10:00:00.000+0000',
+        hearingStartTime: '2021-03-12T09:00:00.000Z',
+        hearingEndTime: '2021-03-13T10:00:00.000Z',
         pauseDateTimes: [],
         actualDayParties: [],
       },
@@ -24,8 +24,8 @@ export const HEARING_ACTUAL: HearingActualsMainModel = {
     plannedHearingType: 'final',
     plannedHearingDays: [
       {
-        plannedStartTime: '2021-03-12T09:00:00.000+0000',
-        plannedEndTime: '2021-03-13T10:00:00.000+0000',
+        plannedStartTime: '2021-03-12T09:00:00.000Z',
+        plannedEndTime: '2021-03-13T10:00:00.000Z',
         parties: [
           {
             individualDetails: {
@@ -58,8 +58,8 @@ export const HEARING_ACTUAL: HearingActualsMainModel = {
         ],
       },
       {
-        plannedStartTime: '2021-03-12T09:00:00.000+0000',
-        plannedEndTime: '2021-03-13T10:00:00.000+0000',
+        plannedStartTime: '2021-03-12T09:00:00.000Z',
+        plannedEndTime: '2021-03-13T10:00:00.000Z',
         parties: [
           {
             individualDetails: {
@@ -92,8 +92,8 @@ export const HEARING_ACTUAL: HearingActualsMainModel = {
         ],
       },
       {
-        plannedStartTime: '2021-03-12T09:00:00.000+0000',
-        plannedEndTime: '2021-03-13T10:00:00.000+0000',
+        plannedStartTime: '2021-03-12T09:00:00.000Z',
+        plannedEndTime: '2021-03-13T10:00:00.000Z',
         parties: [
           {
             individualDetails: {
@@ -126,8 +126,8 @@ export const HEARING_ACTUAL: HearingActualsMainModel = {
         ],
       },
       {
-        plannedStartTime: '2021-03-12T09:00:00.000+0000',
-        plannedEndTime: '2021-03-13T10:00:00.000+0000',
+        plannedStartTime: '2021-03-12T09:00:00.000Z',
+        plannedEndTime: '2021-03-13T10:00:00.000Z',
         parties: [
           {
             individualDetails: {
@@ -192,7 +192,7 @@ export const HEARING_ACTUAL: HearingActualsMainModel = {
       }],
     caseManagementLocationCode: null,
     caserestrictedFlag: false,
-    caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
+    caseSLAStartDate: '2021-11-23T09:00:00.000Z',
   },
 };
 
@@ -208,11 +208,11 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
     actualHearingDays: [
       {
         hearingDate: '2021-03-12',
-        hearingStartTime: '2021-03-12T09:00:00.000+0000',
-        hearingEndTime: '2021-03-13T10:00:00.000+0000',
+        hearingStartTime: '2021-03-12T09:00:00.000Z',
+        hearingEndTime: '2021-03-13T10:00:00.000Z',
         pauseDateTimes: [{
-          pauseStartTime: '2021-03-12T10:10:00.000+0000',
-          pauseEndTime: '2021-03-12T11:15:00.000+0000',
+          pauseStartTime: '2021-03-12T10:10:00.000Z',
+          pauseEndTime: '2021-03-12T11:15:00.000Z',
         }],
         actualDayParties: [
           {
@@ -265,8 +265,8 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
     plannedHearingType: 'final',
     plannedHearingDays: [
       {
-        plannedStartTime: '2021-03-12T09:00:00.000+0000',
-        plannedEndTime: '2021-03-13T10:00:00.000+0000',
+        plannedStartTime: '2021-03-12T09:00:00.000Z',
+        plannedEndTime: '2021-03-13T10:00:00.000Z',
         parties: [
           {
             individualDetails: {
@@ -299,8 +299,8 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
         ],
       },
       {
-        plannedStartTime: '2021-03-12T09:00:00.000+0000',
-        plannedEndTime: '2021-03-13T10:00:00.000+0000',
+        plannedStartTime: '2021-03-12T09:00:00.000Z',
+        plannedEndTime: '2021-03-13T10:00:00.000Z',
         parties: [
           {
             individualDetails: {
@@ -333,8 +333,8 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
         ],
       },
       {
-        plannedStartTime: '2021-03-12T09:00:00.000+0000',
-        plannedEndTime: '2021-03-13T10:00:00.000+0000',
+        plannedStartTime: '2021-03-12T09:00:00.000Z',
+        plannedEndTime: '2021-03-13T10:00:00.000Z',
         parties: [
           {
             individualDetails: {
@@ -367,8 +367,8 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
         ],
       },
       {
-        plannedStartTime: '2021-03-12T09:00:00.000+0000',
-        plannedEndTime: '2021-03-13T10:00:00.000+0000',
+        plannedStartTime: '2021-03-12T09:00:00.000Z',
+        plannedEndTime: '2021-03-13T10:00:00.000Z',
         parties: [
           {
             individualDetails: {
@@ -433,7 +433,7 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
       }],
     caseManagementLocationCode: null,
     caserestrictedFlag: false,
-    caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
+    caseSLAStartDate: '2021-11-23T09:00:00.000Z',
   },
 };
 
@@ -449,11 +449,11 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
     actualHearingDays: [
       {
         hearingDate: '2021-03-12',
-        hearingStartTime: '2021-03-12T09:00:00.000+0000',
-        hearingEndTime: '2021-03-13T10:00:00.000+0000',
+        hearingStartTime: '2021-03-12T09:00:00.000Z',
+        hearingEndTime: '2021-03-13T10:00:00.000Z',
         pauseDateTimes: [{
-          pauseStartTime: '2021-03-12T10:10:00.000+0000',
-          pauseEndTime: '2021-03-12T11:15:00.000+0000',
+          pauseStartTime: '2021-03-12T10:10:00.000Z',
+          pauseEndTime: '2021-03-12T11:15:00.000Z',
         }],
         actualDayParties: [
           {
@@ -506,8 +506,8 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
     plannedHearingType: 'final',
     plannedHearingDays: [
       {
-        plannedStartTime: '2021-03-12T09:00:00.000+0000',
-        plannedEndTime: '2021-03-13T10:00:00.000+0000',
+        plannedStartTime: '2021-03-12T09:00:00.000Z',
+        plannedEndTime: '2021-03-13T10:00:00.000Z',
         parties: [
           {
             individualDetails: {
@@ -540,8 +540,8 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
         ],
       },
       {
-        plannedStartTime: '2021-03-12T09:00:00.000+0000',
-        plannedEndTime: '2021-03-13T10:00:00.000+0000',
+        plannedStartTime: '2021-03-12T09:00:00.000Z',
+        plannedEndTime: '2021-03-13T10:00:00.000Z',
         parties: [
           {
             individualDetails: {
@@ -574,8 +574,8 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
         ],
       },
       {
-        plannedStartTime: '2021-03-12T09:00:00.000+0000',
-        plannedEndTime: '2021-03-13T10:00:00.000+0000',
+        plannedStartTime: '2021-03-12T09:00:00.000Z',
+        plannedEndTime: '2021-03-13T10:00:00.000Z',
         parties: [
           {
             individualDetails: {
@@ -608,8 +608,8 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
         ],
       },
       {
-        plannedStartTime: '2021-03-12T09:00:00.000+0000',
-        plannedEndTime: '2021-03-13T10:00:00.000+0000',
+        plannedStartTime: '2021-03-12T09:00:00.000Z',
+        plannedEndTime: '2021-03-13T10:00:00.000Z',
         parties: [
           {
             individualDetails: {
@@ -674,7 +674,7 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
       }],
     caseManagementLocationCode: null,
     caserestrictedFlag: false,
-    caseSLAStartDate: '2021-11-23T09:00:00.000+0000',
+    caseSLAStartDate: '2021-11-23T09:00:00.000Z',
   },
 };
 

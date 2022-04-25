@@ -1,8 +1,9 @@
 import {cold} from 'jasmine-marbles';
+import * as _ from 'lodash';
 import {of} from 'rxjs';
 import {initialState} from '../hearing.test.data';
 import {State} from '../store/reducers';
-import { JudgeTypesAmendedConverter } from './judge-types.amended.converter';
+import {JudgeTypesAmendedConverter} from './judge-types.amended.converter';
 
 describe('JudgeTypesAmendedConverter', () => {
 
@@ -13,7 +14,7 @@ describe('JudgeTypesAmendedConverter', () => {
   });
 
   it('should transform judge type amended flag based on selection', () => {
-    const STATE: State = initialState.hearings;
+    const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {};
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements.roleType = ['tribunalJudge'];
     const result$ = judgeTypesAmendedConverter.transformIsAmended(of(STATE));

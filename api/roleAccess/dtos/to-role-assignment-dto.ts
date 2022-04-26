@@ -43,7 +43,7 @@ export function toSARoleAssignmentBody(currentUserId: string, allocateRoleData: 
       roleName: allocateRoleData.typeOfRole.id,
       roleCategory: allocateRoleData.roleCategory,
       actorIdType: 'IDAM',
-      actorId: allocateRoleData.person.id,
+      actorId: allocateRoleData.assigneeId,
       beginTime: allocateRoleData.period.startDate,
       endTime: allocateRoleData.period.endDate,
     }],

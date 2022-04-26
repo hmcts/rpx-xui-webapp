@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
 import { select, Store } from '@ngrx/store';
 import { take } from 'rxjs/operators';
@@ -10,7 +11,9 @@ import {
   SpecificAccessStateData,
   SpecificAccessNavigation,
   SpecificAccessNavigationEvent,
-  SpecificAccessState
+  SpecificAccessState,
+  TypeOfRole,
+  SpecificRole
 } from '../../../models';
 import { DurationType } from '../../../models/enums';
 import { AllocateRoleService } from '../../../services';
@@ -38,11 +41,12 @@ export class SpecificAccessDurationComponent implements OnInit {
   public caption = 'Approve specific access request';
   public configStart: GovUiConfigModel;
   public configEnd: GovUiConfigModel;
-  public readonly durations: DurationTypeDescription[];
+  public durations: DurationTypeDescription[];
   public endDateErrorMessage: ErrorMessagesModel;
   public selectedDuration: DurationType;
   public startDateErrorMessage: ErrorMessagesModel;
   public title = 'How long do you want to give access to this case for?';
+  public approvalRole = {id: 'specific-access-approved', name: 'specific-access-approved'};
 
   // form group and controls
   public formGroup: FormGroup;
@@ -105,7 +109,7 @@ export class SpecificAccessDurationComponent implements OnInit {
     this.endDateYearCtrl = this.formGroup.get('endDate_year') as FormControl;
   }
 
-  public selectSpecificAccessDuration(specificAccessState: SpecificAccessStateData) {
+  public selectSpecificAccessDuration(specificAccessState: SpecificAccessStateData): void {
     // TODO: SARD - this will be wired up correctly in another ticket ( 5505? ). Hint: see role-access/allocate-role/choose-duration
     this.selectedDuration = DurationType.SEVEN_DAYS;
 
@@ -129,14 +133,38 @@ export class SpecificAccessDurationComponent implements OnInit {
     this.resetPreviousErrors();
     const period = this.getPeriod(this.selectedDuration);
     if (period) {
-      this.specificAccessStateData.period = period;
+      this.store.dispatch(new fromFeature.ApproveSpecificAccessRequest({
+        period,
+        specificAccessState: SpecificAccessState.SPECIFIC_ACCESS_APPROVED,
+        specificAccessStateData: this.specificAccessStateData}
+      ));
+      const specificAccessMockState: SpecificAccessStateData = {
+      state: SpecificAccessState.SPECIFIC_ACCESS_DURATION,
+      accessReason: null,
+      typeOfRole: this.approvalRole,
+      period: period,
       // note: adding example details here to reach endpoint without previous access info
-      this.specificAccessStateData.caseId = '1644427124312856';
-      this.specificAccessStateData.jurisdiction = 'IA';
-      // TODO: sort out subscription and error handling for this
-      this.allocateRoleService.specificAccessApproval(this.specificAccessStateData).subscribe
+      caseId: '1644427124312856',
+      jurisdiction: 'IA',
+      roleCategory: RoleCategory.JUDICIAL,
+      person: {id: '09f1f25d-7d7e-4481-b8e3-8624227438ef', name: null, domain: null}
+      }
       switch (navEvent) {
         case SpecificAccessNavigationEvent.CONTINUE:
+          /* TODO: at some point will need all four steps 
+           1) create approved request role
+           2) create specified role for user (of type specific-access-(admin/judge/caseworker))
+           3) delete specific access request role
+           4) complete task
+           https://tools.hmcts.net/confluence/pages/viewpage.action?pageId=1507726018#ExpertUIDesignOverviewCaseAccessManagement-ReviewRoleAssignments-Approve
+          */
+          this.allocateRoleService.specificAccessApproval(specificAccessMockState).subscribe({
+            next: () => { // need to continue with steps
+            },
+            error: (error: any) => {
+              // TODO: Error handling - for certain errors we have to try and delete dats
+            }
+          })
           this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_APPROVED));
           break;
         default:
@@ -146,6 +174,7 @@ export class SpecificAccessDurationComponent implements OnInit {
       throw new Error('Invalid period');
     }
   }
+
   public resetPreviousErrors(): void {
     this.startDateErrorMessage = { isInvalid: false, messages: [] };
     this.endDateErrorMessage =  { isInvalid: false, messages: [] };

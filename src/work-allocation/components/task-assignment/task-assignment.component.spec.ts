@@ -1,7 +1,7 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Caseworker, Location } from '../../models/dtos';
@@ -24,21 +24,21 @@ class MockLocationDataService {
   public getLocation(locationId: string): Observable<Location> {
     switch (locationId) {
       case LOCATION_A.id:
-        return Observable.of(LOCATION_A);
+        return of(LOCATION_A);
       case LOCATION_B.id:
-        return Observable.of(LOCATION_B);
+        return of(LOCATION_B);
       default:
-        return Observable.of(LOCATION_C);
+        return of(LOCATION_C);
     }
   }
   public getLocations(): Observable<Location[]> {
-    return Observable.of([ LOCATION_A, LOCATION_B, LOCATION_C ]);
+    return of([ LOCATION_A, LOCATION_B, LOCATION_C ]);
   }
 }
 
 class MockCaseworkerDataService {
   public getAll(): Observable<Caseworker[]> {
-    return Observable.of([ JD, JS, JB, NB ]);
+    return of([ JD, JS, JB, NB ]);
   }
 }
 

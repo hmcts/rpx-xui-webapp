@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 import { CaseEventTrigger, CasesService, Draft, DRAFT_QUERY_PARAM } from '@hmcts/ccd-case-ui-toolkit';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import 'rxjs/add/operator/do';
+import { tap } from 'rxjs/operators';
 
 @Injectable()
 export class CreateCaseEventTriggerResolver implements Resolve<CaseEventTrigger> {
@@ -21,7 +22,7 @@ export class CreateCaseEventTriggerResolver implements Resolve<CaseEventTrigger>
 
   public resolve(route: ActivatedRouteSnapshot): Observable<CaseEventTrigger> {
     return this.isRootCreateRoute(route) ? this.getAndCacheEventTrigger(route)
-    : this.cachedEventTrigger ? Observable.of(this.cachedEventTrigger)
+    : this.cachedEventTrigger ? of(this.cachedEventTrigger)
     : this.getAndCacheEventTrigger(route);
   }
 
@@ -40,7 +41,7 @@ export class CreateCaseEventTriggerResolver implements Resolve<CaseEventTrigger>
     }
     return this.casesService
       .getEventTrigger(caseTypeId, eventTriggerId, caseId, ignoreWarning)
-      .do(eventTrigger => this.cachedEventTrigger = eventTrigger);
+      .pipe(tap(eventTrigger => this.cachedEventTrigger = eventTrigger));
   }
 
   private isRootCreateRoute(route: ActivatedRouteSnapshot) {

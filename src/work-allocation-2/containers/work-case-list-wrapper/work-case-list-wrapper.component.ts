@@ -153,12 +153,12 @@ export class WorkCaseListWrapperComponent implements OnInit {
   }
 
   public setupCaseWorkers(): void {
-    const caseworkersByService$ = this.waSupportedJurisdictions$.switchMap(jurisdictions =>
+    const caseworkersByService$ = this.waSupportedJurisdictions$.pipe(switchMap(jurisdictions =>
       this.caseworkerService.getCaseworkersForServices(jurisdictions)
-    );
-    this.waSupportedJurisdictions$.switchMap(jurisdictions =>
+    ));
+    this.waSupportedJurisdictions$.pipe(switchMap(jurisdictions =>
       this.rolesService.getValidRoles(jurisdictions)
-    ).subscribe(roles => this.allRoles = roles);
+    )).subscribe(roles => this.allRoles = roles);
     // currently get caseworkers for all supported services
     // in future change, could get caseworkers by specific service from filter changes
     // however regrdless would likely need this initialisation

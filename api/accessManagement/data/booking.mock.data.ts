@@ -39,6 +39,7 @@ export const bookings: Bookings = {
       },
       {
         appointmentId: '103',
+        base_location_id: '512401',
         beginTime: new Date('2021-10-10T00:00:00Z'),
         contract_type_id: '102',
         created: new Date('2021-02-23T06:37:58Z'),

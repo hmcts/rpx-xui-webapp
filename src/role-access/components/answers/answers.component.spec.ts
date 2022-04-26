@@ -6,7 +6,7 @@ import { AnswersComponent } from './answers.component';
   template: `<exui-answers [caption]="caption" [heading]="heading" [hint]="hint" [answers]="answers" (navigate)="onNavigate($event)"></exui-answers>`
 })
 class WrapperComponent {
-  @ViewChild(AnswersComponent) public ref: AnswersComponent;
+  @ViewChild(AnswersComponent, /* TODO: add static flag */ {}) public ref: AnswersComponent;
 }
 
 describe('AnswersComponent', () => {

@@ -11,7 +11,7 @@ import { TaskFieldComponent } from './task-field.component';
   template: `<exui-task-field [config]="config" [task]="task"></exui-task-field>`
 })
 class WrapperComponent {
-  @ViewChild(TaskFieldComponent) public appComponentRef: TaskFieldComponent;
+  @ViewChild(TaskFieldComponent, /* TODO: add static flag */ {}) public appComponentRef: TaskFieldComponent;
   @Input() public config: FieldConfig;
   @Input() public task: Task;
 }

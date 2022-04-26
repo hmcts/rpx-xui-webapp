@@ -21,7 +21,7 @@ import { TaskManagerListComponent } from './task-manager-list.component';
   template: `<exui-task-manager-list></exui-task-manager-list>`
 })
 class WrapperComponent {
-  @ViewChild(TaskManagerListComponent) public appComponentRef: TaskManagerListComponent;
+  @ViewChild(TaskManagerListComponent, /* TODO: add static flag */ {}) public appComponentRef: TaskManagerListComponent;
 }
 
 describe('TaskManagerListComponent', () => {

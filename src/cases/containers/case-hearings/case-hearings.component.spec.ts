@@ -33,7 +33,7 @@ describe('CaseHearingsComponent', () => {
 
   const HEARING_DAY_SCHEDULE_1: HearingDayScheduleModel = {
     hearingStartDateTime: '',
-    hearingEndDateTime: '2021-05-04T16:00:00.000+0000',
+    hearingEndDateTime: '2021-05-04T16:00:00.000Z',
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba5',
     hearingVenueId: 'venue 1',
     hearingRoomId: 'room 1',
@@ -44,7 +44,7 @@ describe('CaseHearingsComponent', () => {
 
   const HEARING_DAY_SCHEDULE_2: HearingDayScheduleModel = {
     hearingStartDateTime: '',
-    hearingEndDateTime: '2021-06-04T16:00:00.000+0000',
+    hearingEndDateTime: '2021-06-04T16:00:00.000Z',
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba4',
     hearingVenueId: 'venue 2',
     hearingRoomId: 'room 2',
@@ -54,8 +54,8 @@ describe('CaseHearingsComponent', () => {
   };
 
   const HEARING_DAY_SCHEDULE_3: HearingDayScheduleModel = {
-    hearingStartDateTime: '2021-03-12T16:00:00.000+0000',
-    hearingEndDateTime: '2021-06-12T16:00:00.000+0000',
+    hearingStartDateTime: '2021-03-12T16:00:00.000Z',
+    hearingEndDateTime: '2021-06-12T16:00:00.000Z',
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc4',
     hearingVenueId: 'venue 3',
     hearingRoomId: 'room 3',
@@ -65,8 +65,8 @@ describe('CaseHearingsComponent', () => {
   };
 
   const HEARING_DAY_SCHEDULE_4: HearingDayScheduleModel = {
-    hearingStartDateTime: '2021-10-12T16:00:00.000+0000',
-    hearingEndDateTime: '2021-11-12T16:00:00.000+0000',
+    hearingStartDateTime: '2021-10-12T16:00:00.000Z',
+    hearingEndDateTime: '2021-11-12T16:00:00.000Z',
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc5',
     hearingVenueId: 'venue 4',
     hearingRoomId: 'room 4',
@@ -76,8 +76,8 @@ describe('CaseHearingsComponent', () => {
   };
 
   const HEARING_DAY_SCHEDULE_5: HearingDayScheduleModel = {
-    hearingStartDateTime: '2021-04-12T16:00:00.000+0000',
-    hearingEndDateTime: '2021-05-12T16:00:00.000+0000',
+    hearingStartDateTime: '2021-04-12T16:00:00.000Z',
+    hearingEndDateTime: '2021-05-12T16:00:00.000Z',
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc6',
     hearingVenueId: 'venue 5',
     hearingRoomId: 'room 5',
@@ -87,8 +87,8 @@ describe('CaseHearingsComponent', () => {
   };
 
   const HEARING_DAY_SCHEDULE_6: HearingDayScheduleModel = {
-    hearingStartDateTime: '2021-05-02T16:00:00.000+0000',
-    hearingEndDateTime: '2021-05-20T16:00:00.000+0000',
+    hearingStartDateTime: '2021-05-02T16:00:00.000Z',
+    hearingEndDateTime: '2021-05-20T16:00:00.000Z',
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b55',
     hearingVenueId: 'venue 1',
     hearingRoomId: 'room 1',
@@ -98,8 +98,8 @@ describe('CaseHearingsComponent', () => {
   };
 
   const HEARING_DAY_SCHEDULE_7: HearingDayScheduleModel = {
-    hearingStartDateTime: '2021-06-12T16:00:00.000+0000',
-    hearingEndDateTime: '2021-07-12T16:00:00.000+0000',
+    hearingStartDateTime: '2021-06-12T16:00:00.000Z',
+    hearingEndDateTime: '2021-07-12T16:00:00.000Z',
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b44',
     hearingVenueId: 'venue 2',
     hearingRoomId: 'room 2',
@@ -109,8 +109,8 @@ describe('CaseHearingsComponent', () => {
   };
 
   const HEARING_DAY_SCHEDULE_8: HearingDayScheduleModel = {
-    hearingStartDateTime: '2021-02-13T16:00:00.000+0000',
-    hearingEndDateTime: '2021-03-13T16:00:00.000+0000',
+    hearingStartDateTime: '2021-02-13T16:00:00.000Z',
+    hearingEndDateTime: '2021-03-13T16:00:00.000Z',
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b34',
     hearingVenueId: 'venue 3',
     hearingRoomId: 'room 3',
@@ -120,8 +120,8 @@ describe('CaseHearingsComponent', () => {
   };
 
   const HEARING_DAY_SCHEDULE_9: HearingDayScheduleModel = {
-    hearingStartDateTime: '2021-03-12T16:00:00.000+0000',
-    hearingEndDateTime: '2021-04-12T16:00:00.000+0000',
+    hearingStartDateTime: '2021-03-12T16:00:00.000Z',
+    hearingEndDateTime: '2021-04-12T16:00:00.000Z',
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
     hearingVenueId: 'venue 4',
     hearingRoomId: 'room 4',
@@ -131,8 +131,8 @@ describe('CaseHearingsComponent', () => {
   };
 
   const HEARING_DAY_SCHEDULE_10: HearingDayScheduleModel = {
-    hearingStartDateTime: '2021-04-12T16:00:00.000+0000',
-    hearingEndDateTime: '2021-05-12T16:00:00.000+0000',
+    hearingStartDateTime: '2021-04-12T16:00:00.000Z',
+    hearingEndDateTime: '2021-05-12T16:00:00.000Z',
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b66',
     hearingVenueId: 'venue 5',
     hearingRoomId: 'room 5',
@@ -142,8 +142,8 @@ describe('CaseHearingsComponent', () => {
   };
 
   const HEARING_DAY_SCHEDULE_11: HearingDayScheduleModel = {
-    hearingStartDateTime: '2021-09-01T16:00:00.000+0000',
-    hearingEndDateTime: '2021-09-04T16:00:00.000+0000',
+    hearingStartDateTime: '2021-09-01T16:00:00.000Z',
+    hearingEndDateTime: '2021-09-04T16:00:00.000Z',
     listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b33',
     hearingVenueId: 'venue 11',
     hearingRoomId: 'room 11',
@@ -155,7 +155,7 @@ describe('CaseHearingsComponent', () => {
   const CASE_HEARING_1: HearingListModel = {
     hearingID: 'h100001',
     hearingType: 'Case management hearing',
-    hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
+    hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
     lastResponseReceivedDateTime: '',
     exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
     exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
@@ -173,7 +173,7 @@ describe('CaseHearingsComponent', () => {
     hearingType: 'Final hearing',
     lastResponseReceivedDateTime: '',
     exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
-    hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
+    hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
     exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
     hmcStatus: HMCStatus.AWAITING_LISTING,
     responseVersion: 'rv2',
@@ -188,7 +188,7 @@ describe('CaseHearingsComponent', () => {
     hearingID: 'h100003',
     hearingType: 'Initial hearing',
     lastResponseReceivedDateTime: '',
-    hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
+    hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
     hmcStatus: HMCStatus.LISTED,
     exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
     exuiDisplayStatus: EXUIDisplayStatusEnum.LISTED,
@@ -204,7 +204,7 @@ describe('CaseHearingsComponent', () => {
     hearingID: 'h100004',
     hearingType: 'Case management hearing',
     lastResponseReceivedDateTime: '',
-    hearingRequestDateTime: '2021-10-01T16:00:00.000+0000',
+    hearingRequestDateTime: '2021-10-01T16:00:00.000Z',
     exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
     exuiDisplayStatus: EXUIDisplayStatusEnum.UPDATE_REQUESTED,
     hmcStatus: HMCStatus.UPDATE_REQUESTED,
@@ -220,7 +220,7 @@ describe('CaseHearingsComponent', () => {
     hearingID: 'h100005',
     hearingType: 'Case management preliminary hearing - open',
     lastResponseReceivedDateTime: '',
-    hearingRequestDateTime: '2021-10-01T16:00:00.000+0000',
+    hearingRequestDateTime: '2021-10-01T16:00:00.000Z',
     hmcStatus: HMCStatus.UPDATE_SUBMITTED,
     exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
     exuiDisplayStatus: EXUIDisplayStatusEnum.UPDATE_REQUESTED,
@@ -236,7 +236,7 @@ describe('CaseHearingsComponent', () => {
     hearingID: 'h100006',
     hearingType: 'Directions hearing',
     lastResponseReceivedDateTime: '',
-    hearingRequestDateTime: '2021-09-01T14:00:00.000+0000',
+    hearingRequestDateTime: '2021-09-01T14:00:00.000Z',
     hmcStatus: HMCStatus.EXCEPTION,
     exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
     exuiDisplayStatus: EXUIDisplayStatusEnum.UPDATE_REQUESTED,
@@ -252,7 +252,7 @@ describe('CaseHearingsComponent', () => {
     hearingID: 'h100007',
     hearingType: 'Full hearing',
     lastResponseReceivedDateTime: '',
-    hearingRequestDateTime: '2021-09-01T14:00:00.000+0000',
+    hearingRequestDateTime: '2021-09-01T14:00:00.000Z',
     hmcStatus: HMCStatus.CANCELLATION_REQUESTED,
     exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLATION_REQUESTED,
     responseVersion: 'rv7',
@@ -270,7 +270,7 @@ describe('CaseHearingsComponent', () => {
     lastResponseReceivedDateTime: '',
     hmcStatus: HMCStatus.VACATED,
     exuiDisplayStatus: EXUIDisplayStatusEnum.VACATED,
-    hearingRequestDateTime: '2021-09-14T16:00:00.000+0000',
+    hearingRequestDateTime: '2021-09-14T16:00:00.000Z',
     responseVersion: 'rv8',
     hearingListingStatus: HearingListingStatusEnum.VACATED,
     listAssistCaseStatus: '',
@@ -284,7 +284,7 @@ describe('CaseHearingsComponent', () => {
     hearingID: 'h100009',
     hearingType: 'Pre-hearing review',
     lastResponseReceivedDateTime: '',
-    hearingRequestDateTime: '2021-09-01T14:00:00.000+0000',
+    hearingRequestDateTime: '2021-09-01T14:00:00.000Z',
     hmcStatus: HMCStatus.AWAITING_ACTUALS,
     responseVersion: 'rv9',
     hearingListingStatus: HearingListingStatusEnum.AWAITING_ACTUALS,
@@ -301,7 +301,7 @@ describe('CaseHearingsComponent', () => {
     hearingType: 'Case management preliminary hearing - open',
     lastResponseReceivedDateTime: '',
     hmcStatus: HMCStatus.COMPLETED,
-    hearingRequestDateTime: '2021-09-01T14:00:00.000+0000',
+    hearingRequestDateTime: '2021-09-01T14:00:00.000Z',
     responseVersion: 'rv10',
     hearingListingStatus: HearingListingStatusEnum.COMPLETED,
     listAssistCaseStatus: '',
@@ -315,7 +315,7 @@ describe('CaseHearingsComponent', () => {
   const CASE_HEARING_11: HearingListModel = {
     hearingID: 'h100011',
     hearingType: 'Remedy hearing',
-    hearingRequestDateTime: '2021-09-14T16:00:00.000+0000',
+    hearingRequestDateTime: '2021-09-14T16:00:00.000Z',
     lastResponseReceivedDateTime: '',
     hmcStatus: HMCStatus.COMPLETED,
     responseVersion: 'rv11',
@@ -447,7 +447,7 @@ describe('CaseHearingsComponent', () => {
   it('should provide a date', () => {
     const testVM: HearingListViewModel = {
       hearingID: 'h111111',
-      hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
+      hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
       hearingType: 'Case management hearing 2',
       lastResponseReceivedDateTime: '',
       hmcStatus: HMCStatus.AWAITING_ACTUALS,
@@ -463,7 +463,7 @@ describe('CaseHearingsComponent', () => {
 
     const testVM2: HearingListViewModel = {
       hearingID: 'h111111',
-      hearingRequestDateTime: '2021-09-01T16:00:00.000+0000',
+      hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
       hearingType: 'Case management hearing 2',
       lastResponseReceivedDateTime: '',
       hmcStatus: HMCStatus.AWAITING_ACTUALS,
@@ -507,7 +507,6 @@ describe('CaseHearingsComponent', () => {
     };
     component.createHearingRequest();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'request']);
-    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.LoadHearingValues(component.caseId)));
     expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions(hearingCondition)));
   });
 
@@ -516,7 +515,7 @@ describe('CaseHearingsComponent', () => {
     component.serverError = {id: '', message: 'server error'};
     fixture.detectChanges();
     const cancelledReasonElement: HTMLSelectElement = fixture.nativeElement.querySelector('#reload-hearing-tab');
-    cancelledReasonElement.click()
+    cancelledReasonElement.click();
     expect(component.reloadHearings).toHaveBeenCalled();
   });
 

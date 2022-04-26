@@ -1,4 +1,6 @@
+import {HMCLocationType} from './hearings.enum';
+
 export interface HearingLocationModel {
   locationId: string;
-  locationType: string;
+  locationType: HMCLocationType;
 }

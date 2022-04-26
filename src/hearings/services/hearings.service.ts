@@ -14,8 +14,9 @@ import {
   LinkedHearingsDetailModel,
   ServiceLinkedCasesModel
 } from '../models/linkHearings.model';
-import { LovRefDataModel } from '../models/lovRefData.model';
-import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
+import {LovRefDataModel} from '../models/lovRefData.model';
+import {ResponseDetailsModel} from '../models/requestDetails.model';
+import {ServiceHearingValuesModel} from '../models/serviceHearingValues.model';
 
 @Injectable()
 export class HearingsService {
@@ -40,12 +41,13 @@ export class HearingsService {
       { caseReference: caseId });
   }
 
-  public cancelHearingRequest(hearingId: string, reasons: LovRefDataModel[]): Observable<any> {
-    const cancellationReasonCode: string = reasons.map(reason => reason.key).toString();
+  public cancelHearingRequest(hearingId: string, reasons: LovRefDataModel[]): Observable<ResponseDetailsModel> {
+    // TODO below logic may change, currently it was confirmed by HMC and stakeholder we will only send the 1st reasonCode to the backend
+    const cancellationReasonCodes: string[] = reasons.map(reason => reason.key);
+    const cancellationReasonCode: string = cancellationReasonCodes.length > 0 ? cancellationReasonCodes[0] : '';
     let httpParams = new HttpParams();
     httpParams = httpParams.append('cancellationReasonCode', cancellationReasonCode);
-    httpParams = httpParams.append('versionNumber', '1');
-    return this.http.delete<any>(`api/hearings/cancelHearings?hearingId=${hearingId}`, {
+    return this.http.delete<ResponseDetailsModel>(`api/hearings/cancelHearings?hearingId=${hearingId}`, {
       params: httpParams
     });
   }
@@ -54,12 +56,16 @@ export class HearingsService {
     return this.http.get<HearingRequestMainModel>(`api/hearings/getHearing?hearingId=${hearingId}`);
   }
 
-  public submitHearingRequest(hearingRequestMainModel: HearingRequestMainModel): Observable<HearingRequestMainModel> {
-    return this.http.post<HearingRequestMainModel>('api/hearings/submitHearingRequest', hearingRequestMainModel);
+  public submitHearingRequest(hearingRequestMainModel: HearingRequestMainModel): Observable<ResponseDetailsModel> {
+    return this.http.post<ResponseDetailsModel>('api/hearings/submitHearingRequest', hearingRequestMainModel);
   }
 
-  public updateHearingRequest(hearingRequestMainModel: HearingRequestMainModel): Observable<HearingRequestMainModel> {
-    return this.http.put<HearingRequestMainModel>('api/hearings/updateHearingRequest', hearingRequestMainModel);
+  public updateHearingRequest(hearingRequestMainModel: HearingRequestMainModel): Observable<ResponseDetailsModel> {
+    const options = {
+      params: new HttpParams()
+        .set('hearingId', hearingRequestMainModel.requestDetails.hearingRequestID)
+    };
+    return this.http.put<ResponseDetailsModel>(`api/hearings/updateHearingRequest`, hearingRequestMainModel, options);
   }
 
   public getHearingActuals(hearingId: string): Observable<HearingActualsMainModel> {

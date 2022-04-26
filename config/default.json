@@ -33,7 +33,8 @@
       "caseAssignmentApi": "http://aac-manage-case-assignment-prod.service.core-compute-prod.internal"
     },
     "hearings": {
-      "componentApi": "https://hearings-prod.service.core-compute-prod.internal"
+      "serviceApi": "hearing-service-prod.service.core-compute-prod.internal",
+      "hmcApi": "hmc-cft-hearing-service-prod.service.core-compute-prod.internal"
     },
     "documents": {
       "api": "http://dm-store-prod.service.core-compute-prod.internal"
@@ -85,7 +86,7 @@
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
   "waSupportedJurisdictions": ["IA"],
-  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC",
+  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW",
   "serviceRefDataMapping": [{"IA": "BFA1"}],
   "wildcardSearchFields": {
     "Benefit": [

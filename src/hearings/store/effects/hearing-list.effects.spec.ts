@@ -50,8 +50,8 @@ describe('Hearing List Effects', () => {
   describe('loadHearingList$', () => {
     it('should return a response with hearings list', () => {
       const HEARING_DAY_SCHEDULE_1: HearingDayScheduleModel = {
-        hearingStartDateTime: '2021-05-01T16:00:00.000+0000',
-        hearingEndDateTime: '2021-05-04T16:00:00.000+0000',
+        hearingStartDateTime: '2021-05-01T16:00:00.000Z',
+        hearingEndDateTime: '2021-05-04T16:00:00.000Z',
         listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba5',
         hearingVenueId: 'venue 1',
         hearingRoomId: 'room 1',
@@ -61,7 +61,7 @@ describe('Hearing List Effects', () => {
       };
       const CASE_HEARING_1: HearingListModel = {
         hearingID: 'h111111',
-        hearingRequestDateTime: '2021-05-05T16:00:00.000+0000',
+        hearingRequestDateTime: '2021-05-05T16:00:00.000Z',
         hearingType: 'hearing type 1',
         lastResponseReceivedDateTime: '',
         hmcStatus: 'pending',

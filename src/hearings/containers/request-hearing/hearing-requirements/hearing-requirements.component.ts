@@ -2,11 +2,12 @@ import {AfterViewInit, Component, HostListener, OnDestroy, OnInit} from '@angula
 import {ActivatedRoute} from '@angular/router';
 import {Store} from '@ngrx/store';
 import * as fromHearingStore from '../../../../hearings/store';
+import {CaseCategoryModel} from '../../../models/caseCategory.model';
 import {CaseFlagGroup} from '../../../models/caseFlagGroup.model';
 import {CaseFlagReferenceModel} from '../../../models/caseFlagReference.model';
 import {HearingConditions, KEY_IS_INIT, KEY_MODE} from '../../../models/hearingConditions';
 import {HearingRequestMainModel} from '../../../models/hearingRequestMain.model';
-import {ACTION, CaseFlagType, Mode} from '../../../models/hearings.enum';
+import {ACTION, CaseFlagType, CategoryType, Mode} from '../../../models/hearings.enum';
 import {PartyDetailsModel} from '../../../models/partyDetails.model';
 import {PartyFlagsDisplayModel} from '../../../models/partyFlags.model';
 import {HearingsService} from '../../../services/hearings.service';
@@ -26,6 +27,8 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   public lostFocus: boolean = false;
   public referenceId: string;
   public strRegions: string;
+  public caseType: string;
+  public caseSubTypes: string[];
 
   @HostListener('window:focus', ['$event'])
   public onFocus(): void {
@@ -63,14 +66,13 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       this.initializeHearingCondition();
       this.initializeHearingRequestFromHearingValues();
     }
+    this.caseType = this.getCaseCategoriesByType(CategoryType.CaseType).map(cat => cat.categoryValue)[0];
+    this.caseSubTypes = this.getCaseCategoriesByType(CategoryType.CaseSubType).map(cat => cat.categoryValue);
   }
 
   public initializeHearingRequestFromHearingValues(): void {
     const combinedParties: PartyDetailsModel[] = this.combinePartiesWithIndOrOrg(this.serviceHearingValuesModel.parties);
     const hearingRequestMainModel: HearingRequestMainModel = {
-      requestDetails: {
-        requestTimeStamp: null
-      },
       hearingDetails: {
         duration: this.serviceHearingValuesModel.duration,
         hearingType: this.serviceHearingValuesModel.hearingType,
@@ -89,18 +91,18 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         leadJudgeContractType: this.serviceHearingValuesModel.leadJudgeContractType,
       },
       caseDetails: {
-        hmctsServiceCode: this.hearingListMainModel.hmctsServiceID || null,
+        hmctsServiceCode: this.serviceHearingValuesModel.hmctsServiceID || null,
         caseRef: this.hearingListMainModel.caseRef || null,
         requestTimeStamp: null,
         hearingID: null,
-        caseDeepLink: null,
+        caseDeepLink: this.serviceHearingValuesModel.caseDeepLink,
         hmctsInternalCaseName: this.serviceHearingValuesModel.caseName,
         publicCaseName: this.serviceHearingValuesModel.caseName,
         caseAdditionalSecurityFlag: this.serviceHearingValuesModel.caseAdditionalSecurityFlag,
-        caseCategories: [],
-        caseManagementLocationCode: null,
-        caserestrictedFlag: null,
-        caseSLAStartDate: null,
+        caseCategories: this.serviceHearingValuesModel.caseCategories,
+        caseManagementLocationCode: this.serviceHearingValuesModel.caseManagementLocationCode,
+        caserestrictedFlag: this.serviceHearingValuesModel.caserestrictedFlag,
+        caseSLAStartDate: this.serviceHearingValuesModel.caseSLAStartDate,
       },
       partyDetails: combinedParties
     };
@@ -119,6 +121,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   public combinePartiesWithIndOrOrg(partyDetails: PartyDetailsModel[]): PartyDetailsModel[] {
     const combinedPartyDetails: PartyDetailsModel[] = [];
     partyDetails.forEach(partyDetail => {
+      const organisationDetails = partyDetail.organisationDetails;
       const party: PartyDetailsModel = {
         ...partyDetail,
         individualDetails: {
@@ -128,10 +131,8 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
           interpreterLanguage: this.getAllPartyFlagsByPartyId(partyDetail.partyID)
             .includes(CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID) ? CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID : null,
         },
-        organisationDetails: {
-          ...partyDetail.organisationDetails
-        }
-      };
+        ...organisationDetails && ({organisationDetails}),
+        };
       combinedPartyDetails.push(party);
     });
     return combinedPartyDetails;
@@ -158,6 +159,10 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
       });
     }
+  }
+
+  public getCaseCategoriesByType(categoryType: CategoryType): CaseCategoryModel[] {
+    return this.serviceHearingValuesModel.caseCategories.filter(cat => cat.categoryType === categoryType);
   }
 
   protected executeAction(action: ACTION): void {

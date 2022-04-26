@@ -38,7 +38,8 @@
       "caseAssignmentApi": "SERVICES_CCD_CASE_ASSIGNMENT_API"
     },
     "hearings": {
-      "componentApi": "SERVICES_HEARINGS_COMPONENT_API"
+      "serviceApi": "SERVICES_HEARINGS_COMPONENT_API",
+      "hmcApi": "SERVICES_HMC_HEARINGS_COMPONENT_API"
     },
     "documents": {
       "api": "SERVICES_DOCUMENTS_API"

@@ -1,11 +1,7 @@
-<div class="govuk-width-container ">
-
   <a class="govuk-back-link" [routerLink]="['../hearing-actual-add-edit-summary']">Back</a>
-
   <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
-
     <div class="govuk-grid-row">
-      <div class="govuk-grid-column-full">
+      <div class="govuk-grid-column-two-thirds">
         <exui-hearing-actuals-case-title *ngIf="caseTitle"
                                          [caseTitle]="caseTitle"></exui-hearing-actuals-case-title>
         <h1 class="govuk-heading-l">
@@ -146,6 +142,4 @@
 
       </div>
     </div>
-
   </main>
-</div>

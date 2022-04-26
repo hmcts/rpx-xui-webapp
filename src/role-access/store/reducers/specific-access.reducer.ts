@@ -16,6 +16,11 @@ export const specificAccessInitialState: SpecificAccessStateData = {
 
 export function specificAccessReducer(currentState = specificAccessInitialState, action: SpecificAccessAction): SpecificAccessStateData {
   switch (action.type) {
+    case SpecificAccessActionTypes.APPROVE_SPECIFIC_ACCESS_REQUEST: {
+      return {
+        ...currentState
+      };
+    }
     case SpecificAccessActionTypes.CHANGE_NAVIGATION: {
       return {
         ...currentState,
@@ -39,6 +44,12 @@ export function specificAccessReducer(currentState = specificAccessInitialState,
       return {
         ...currentState,
         SpecificAccessMoreInformationFormData: action.payload
+      };
+    }
+    case SpecificAccessActionTypes.SET_SPECIFIC_ACCESS_DURATION: {
+      return {
+        ...currentState,
+        period: action.payload.period
       };
     }
     default: {

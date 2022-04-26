@@ -6,7 +6,7 @@ export const bookings: Bookings = {
     [
       {
         appointmentId: '1011',
-        base_location_id: '227101',
+        base_location_id: '765324',
         beginTime: new Date('2022-02-29T00:00:00Z'),
         contract_type_id: '102',
         created: new Date('2022-01-23T06:37:58Z'),
@@ -17,7 +17,7 @@ export const bookings: Bookings = {
       },
       {
         appointmentId: '102',
-        base_location_id: '366796',
+        base_location_id: '231596',
         beginTime: new Date('2021-12-02T00:00:00Z'),
         contract_type_id: '102',
         created: new Date('2021-02-23T06:37:58Z'),
@@ -28,7 +28,7 @@ export const bookings: Bookings = {
       },
       {
         appointmentId: '103',
-        base_location_id: '366796',
+        base_location_id: '231596',
         beginTime: new Date('2021-12-22T00:00:00Z'),
         contract_type_id: '102',
         created: new Date('2021-02-23T06:37:58Z'),
@@ -39,7 +39,7 @@ export const bookings: Bookings = {
       },
       {
         appointmentId: '103',
-        base_location_id: '324339',
+        base_location_id: '512401',
         beginTime: new Date('2021-10-10T00:00:00Z'),
         contract_type_id: '102',
         created: new Date('2021-02-23T06:37:58Z'),
@@ -50,7 +50,7 @@ export const bookings: Bookings = {
       },
       {
         appointmentId: '103',
-        base_location_id: '231596',
+        base_location_id: '512401',
         beginTime: new Date('2022-02-24T00:00:00Z'),
         contract_type_id: '102',
         created: new Date('2022-02-23T06:37:58Z'),
@@ -61,7 +61,7 @@ export const bookings: Bookings = {
       },
       {
         appointmentId: '103',
-        base_location_id: '324339',
+        base_location_id: '512401',
         beginTime: new Date('2021-12-20T00:00:00Z'),
         contract_type_id: '102',
         created: new Date('2021-02-23T06:37:58Z'),
@@ -72,7 +72,7 @@ export const bookings: Bookings = {
       },
       {
         appointmentId: '103',
-        base_location_id: '324339',
+        base_location_id: '512401',
         beginTime: new Date('2021-12-22T00:00:00Z'),
         contract_type_id: '102',
         created: new Date('2021-02-23T06:37:58Z'),

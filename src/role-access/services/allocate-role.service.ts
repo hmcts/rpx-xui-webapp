@@ -25,6 +25,7 @@ export class AllocateRoleService {
   }
 
   public specificAccessApproval(specificAccessStateData: SpecificAccessStateData) {
+    console.log('doing the approval');
     return this.http.post(`${AllocateRoleService.allocateRoleBaseUrl}/specific-access-approval`, specificAccessStateData);
   }
 

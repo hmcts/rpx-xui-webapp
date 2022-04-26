@@ -133,11 +133,6 @@ export class SpecificAccessDurationComponent implements OnInit {
     this.resetPreviousErrors();
     const period = this.getPeriod(this.selectedDuration);
     if (period) {
-      this.store.dispatch(new fromFeature.ApproveSpecificAccessRequest({
-        period,
-        specificAccessState: SpecificAccessState.SPECIFIC_ACCESS_APPROVED,
-        specificAccessStateData: this.specificAccessStateData}
-      ));
       const specificAccessMockState: SpecificAccessStateData = {
       state: SpecificAccessState.SPECIFIC_ACCESS_DURATION,
       accessReason: null,
@@ -158,14 +153,7 @@ export class SpecificAccessDurationComponent implements OnInit {
            4) complete task
            https://tools.hmcts.net/confluence/pages/viewpage.action?pageId=1507726018#ExpertUIDesignOverviewCaseAccessManagement-ReviewRoleAssignments-Approve
           */
-          this.allocateRoleService.specificAccessApproval(specificAccessMockState).subscribe({
-            next: () => { // need to continue with steps
-            },
-            error: (error: any) => {
-              // TODO: Error handling - for certain errors we have to try and delete dats
-            }
-          })
-          this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_APPROVED));
+          this.store.dispatch(new fromFeature.ApproveSpecificAccessRequest(specificAccessMockState));
           break;
         default:
           throw new Error('Invalid option');

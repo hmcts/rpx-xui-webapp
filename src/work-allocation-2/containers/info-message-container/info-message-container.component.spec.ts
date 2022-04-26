@@ -11,7 +11,7 @@ import { RouterTestingModule } from '@angular/router/testing';
   template: `<exui-info-message-container></exui-info-message-container>`
 })
 class WrapperComponent {
-  @ViewChild(InfoMessageContainerComponent, /* TODO: add static flag */ {}) public appComponentRef: InfoMessageContainerComponent;
+  @ViewChild(InfoMessageContainerComponent, {static: false}) public appComponentRef: InfoMessageContainerComponent;
 }
 
 describe('WorkAllocation', () => {

@@ -16,7 +16,7 @@ import { DeleteExclusionComponent } from './delete-exclusion.component';
     <exui-delete-exclusion></exui-delete-exclusion>`
 })
 class WrapperComponent {
-  @ViewChild(DeleteExclusionComponent, /* TODO: add static flag */ {}) public appComponentRef: DeleteExclusionComponent;
+  @ViewChild(DeleteExclusionComponent, {static: false}) public appComponentRef: DeleteExclusionComponent;
 }
 
 const mockCaseworker: Caseworker = {

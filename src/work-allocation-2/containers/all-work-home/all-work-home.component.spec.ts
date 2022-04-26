@@ -17,7 +17,7 @@ import { AllWorkHomeComponent } from './all-work-home.component';
     <exui-all-work-home></exui-all-work-home>`
 })
 class WrapperComponent {
-  @ViewChild(AllWorkHomeComponent, /* TODO: add static flag */ {}) public appComponentRef: AllWorkHomeComponent;
+  @ViewChild(AllWorkHomeComponent, {static: false}) public appComponentRef: AllWorkHomeComponent;
 }
 
 describe('AllWorkHomeComponent', () => {

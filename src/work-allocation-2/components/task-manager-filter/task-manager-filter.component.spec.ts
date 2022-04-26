@@ -18,7 +18,7 @@ import { ALL_LOCATIONS } from '../constants/locations';
     <exui-task-manager-filter></exui-task-manager-filter>`
 })
 class WrapperComponent {
-  @ViewChild(TaskManagerFilterComponent, /* TODO: add static flag */ {}) public appComponentRef: TaskManagerFilterComponent;
+  @ViewChild(TaskManagerFilterComponent, {static: false}) public appComponentRef: TaskManagerFilterComponent;
 }
 
 describe('TaskManagerFilterComponent', () => {

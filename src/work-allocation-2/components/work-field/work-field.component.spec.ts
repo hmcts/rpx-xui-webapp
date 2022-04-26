@@ -10,7 +10,7 @@ import { WorkFieldComponent } from './work-field.component';
   template: `<exui-work-field [config]="config" [workField]="task"></exui-work-field>`
 })
 class WrapperComponent {
-  @ViewChild(WorkFieldComponent, /* TODO: add static flag */ {}) public appComponentRef: WorkFieldComponent;
+  @ViewChild(WorkFieldComponent, {static: false}) public appComponentRef: WorkFieldComponent;
   @Input() public config: FieldConfig;
   @Input() public task: Task;
 }

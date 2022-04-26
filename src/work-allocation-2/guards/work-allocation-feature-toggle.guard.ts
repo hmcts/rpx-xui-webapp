@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-
 import { AppConstants } from '../../app/app.constants';
 
 @Injectable()

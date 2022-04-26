@@ -99,8 +99,8 @@ describe('TaskAssignmentConfirmComponent', () => {
                 taskId: 'task1111111'
               }
             },
-            params: Observable.of({ task: mockTasks[0] }),
-            paramMap: Observable.of({ selectedPerson: SELECTED_PERSON })
+            params: of({ task: mockTasks[0] }),
+            paramMap: of({ selectedPerson: SELECTED_PERSON })
           }
         },
         {
@@ -332,8 +332,8 @@ describe('TaskAssignmentConfirmComponent', () => {
                   taskId: 'task1111111'
                 }
               },
-              params: Observable.of({ task: mockTasks[0] }),
-              paramMap: Observable.of({ selectedPerson: SELECTED_PERSON })
+              params: of({ task: mockTasks[0] }),
+              paramMap: of({ selectedPerson: SELECTED_PERSON })
             }
           },
           {

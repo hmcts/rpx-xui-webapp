@@ -42,7 +42,7 @@ describe('WorkAllocation', () => {
 
     const mockTasks = getMockTasks();
     const mockWorkAllocationService = {
-      performActionOnTask: jasmine.createSpy('performActionOnTask').and.returnValue(Observable.of({}))
+      performActionOnTask: jasmine.createSpy('performActionOnTask').and.returnValue(of({}))
     };
     const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
     const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
@@ -74,7 +74,7 @@ describe('WorkAllocation', () => {
                   ...TaskActionConstants.Unassign
                 }
               },
-              params: Observable.of({ task: mockTasks[0] })
+              params: of({ task: mockTasks[0] })
             }
           },
           { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },

@@ -1,7 +1,7 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 import { SessionStorageService } from '../session-storage/session-storage.service';
 import { AuthService } from './auth.service';
@@ -64,7 +64,7 @@ describe('AuthService', () => {
       [AuthService],
       async (service: AuthService) => {
         const spyOnSetWindowLocation = spyOn(service, 'setWindowLocationHref');
-        spyOn(service, 'logOut').and.returnValue(Observable.of(false));
+        spyOn(service, 'logOut').and.returnValue(of(false));
         service.logOutAndRedirect();
         expect(spyOnSetWindowLocation).toHaveBeenCalledWith('/idle-sign-out');
       }

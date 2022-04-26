@@ -3,7 +3,7 @@ import { HealthCheckGuard } from './health-check.guard';
 import { StoreModule, Store } from '@ngrx/store';
 import { HealthCheckService } from '../services/health-check.service';
 import { HttpClient } from '@angular/common/http';
-import { of, Observable } from 'rxjs';
+import { of, Observable, throwError } from 'rxjs';
 
 class HttpClientMock {
 
@@ -63,7 +63,7 @@ describe('HealthCheckGuard', () => {
         }));
 
         it('should trigger service down when there is an error', inject([HealthCheckGuard], (guard: HealthCheckGuard) => {
-            healthCheckServiceMock.doHealthCheck.and.returnValue(Observable.throwError({status: 404}));
+            healthCheckServiceMock.doHealthCheck.and.returnValue(throwError({status: 404}));
             guard.canActivate().subscribe(() => {
                 expect(storeInstance.dispatch).toHaveBeenCalled();
             });

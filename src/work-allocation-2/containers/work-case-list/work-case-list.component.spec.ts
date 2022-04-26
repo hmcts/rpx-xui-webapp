@@ -25,7 +25,7 @@ import { ConfigConstants } from '../../components/constants';
       [pagination]="pagination"></exui-work-case-list>`
 })
 class WrapperComponent {
-  @ViewChild(WorkCaseListComponent, /* TODO: add static flag */ {}) public appComponentRef: WorkCaseListComponent;
+  @ViewChild(WorkCaseListComponent, {static: false}) public appComponentRef: WorkCaseListComponent;
   @Input() public fields: FieldConfig[];
   @Input() public cases: Case[];
   @Input() public casesTotal: number;

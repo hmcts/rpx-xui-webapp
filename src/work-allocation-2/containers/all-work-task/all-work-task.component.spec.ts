@@ -24,7 +24,7 @@ import { AllocateRoleService } from 'src/role-access/services';
     <exui-all-work-tasks></exui-all-work-tasks>`
 })
 class WrapperComponent {
-  @ViewChild(AllWorkTaskComponent, /* TODO: add static flag */ {}) public appComponentRef: AllWorkTaskComponent;
+  @ViewChild(AllWorkTaskComponent, {static: false}) public appComponentRef: AllWorkTaskComponent;
 }
 
 @Component({

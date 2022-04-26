@@ -25,7 +25,7 @@ import { getMockCaseworkers, getMockTasks } from '../../tests/utils.spec';
   template: `<exui-task-container-assignment></exui-task-container-assignment>`
 })
 class WrapperComponent {
-  @ViewChild(TaskAssignmentContainerComponent, /* TODO: add static flag */ {}) public appComponentRef: TaskAssignmentContainerComponent;
+  @ViewChild(TaskAssignmentContainerComponent, {static: false}) public appComponentRef: TaskAssignmentContainerComponent;
   @Input() public tasks: Task[];
 }
 

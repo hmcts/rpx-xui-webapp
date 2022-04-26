@@ -23,7 +23,7 @@ import { TaskActionContainerComponent } from '../task-action/task-action-contain
   template: `<exui-task-action-container></exui-task-action-container>`
 })
 class WrapperComponent {
-  @ViewChild(TaskActionContainerComponent, /* TODO: add static flag */ {}) public appComponentRef: TaskActionContainerComponent;
+  @ViewChild(TaskActionContainerComponent, {static: false}) public appComponentRef: TaskActionContainerComponent;
   @Input() public tasks: Task[];
 }
 

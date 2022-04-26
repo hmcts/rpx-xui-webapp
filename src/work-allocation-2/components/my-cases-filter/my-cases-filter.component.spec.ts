@@ -14,7 +14,7 @@ import { RouterTestingModule } from '@angular/router/testing';
   template: `<exui-my-cases-filter></exui-my-cases-filter>`
 })
 class WrapperComponent {
-  @ViewChild(MyCasesFilterComponent, /* TODO: add static flag */ {}) public appComponentRef: MyCasesFilterComponent;
+  @ViewChild(MyCasesFilterComponent, {static: false}) public appComponentRef: MyCasesFilterComponent;
 }
 
 describe('MyCasesFilterComponent', () => {

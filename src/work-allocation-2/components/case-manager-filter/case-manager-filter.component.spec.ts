@@ -18,7 +18,7 @@ import { ALL_LOCATIONS } from '../constants/locations';
     <exui-case-manager-filter></exui-case-manager-filter>`
 })
 class WrapperComponent {
-  @ViewChild(CaseManagerFilterComponent, /* TODO: add static flag */ {}) public appComponentRef: CaseManagerFilterComponent;
+  @ViewChild(CaseManagerFilterComponent, {static: false}) public appComponentRef: CaseManagerFilterComponent;
 }
 
 describe('CaseManagerFilterComponent', () => {

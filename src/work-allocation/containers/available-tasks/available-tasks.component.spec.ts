@@ -21,7 +21,7 @@ import { AvailableTasksComponent } from './available-tasks.component';
   template: `<exui-available-tasks></exui-available-tasks>`
 })
 class WrapperComponent {
-  @ViewChild(AvailableTasksComponent) public appComponentRef: AvailableTasksComponent;
+  @ViewChild(AvailableTasksComponent, /* TODO: add static flag */ {}) public appComponentRef: AvailableTasksComponent;
 }
 
 describe('AvailableTasksComponent', () => {

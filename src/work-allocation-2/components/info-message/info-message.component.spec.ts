@@ -9,7 +9,7 @@ import { InfoMessageComponent } from './info-message.component';
   template: `<exui-info-message [type]="type" [message]="message"></exui-info-message>`
 })
 class WrapperComponent {
-  @ViewChild(InfoMessageComponent) public appComponentRef: InfoMessageComponent;
+  @ViewChild(InfoMessageComponent, /* TODO: add static flag */ {}) public appComponentRef: InfoMessageComponent;
   @Input() public type: InfoMessageType;
   @Input() public message: InfoMessage;
 }

@@ -21,7 +21,7 @@ describe('TermsAndConditionsComponent', () => {
         template: `<exui-terms-and-conditions></exui-terms-and-conditions>`
     })
     class TestDummyHostComponent {
-        @ViewChild(TermsAndConditionsComponent)
+        @ViewChild(TermsAndConditionsComponent, /* TODO: add static flag */ {})
         public footerComponent: TermsAndConditionsComponent;
     }
 

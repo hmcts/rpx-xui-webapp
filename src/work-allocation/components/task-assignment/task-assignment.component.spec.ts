@@ -53,7 +53,7 @@ class MockSessionStorageService {
     (caseworkerChanged)="onCaseworkerChanged($event)"></exui-task-assignment>`
 })
 class WrapperComponent {
-  @ViewChild(TaskAssignmentComponent) public ref: TaskAssignmentComponent;
+  @ViewChild(TaskAssignmentComponent, /* TODO: add static flag */ {}) public ref: TaskAssignmentComponent;
   @Input() public excludeCaseworkers: Caseworker[];
   @Input() public location: Location;
 

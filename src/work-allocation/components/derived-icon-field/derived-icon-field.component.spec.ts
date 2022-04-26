@@ -10,7 +10,7 @@ import { DerivedIconFieldComponent } from './derived-icon-field.component';
   template: `<exui-derived-icon-field [task]="task" [sourceColumn]="sourceColumn" [matchValue]="matchValue"></exui-derived-icon-field>`
 })
 class WrapperComponent {
-  @ViewChild(DerivedIconFieldComponent) public appComponentRef: DerivedIconFieldComponent;
+  @ViewChild(DerivedIconFieldComponent, /* TODO: add static flag */ {}) public appComponentRef: DerivedIconFieldComponent;
   @Input() public task: Task = null;
   @Input() public sourceColumn: string;
   @Input() public matchValue: any;

@@ -20,7 +20,7 @@ import { RemoveRoleComponent } from './remove-role.component';
     <exui-remove-role></exui-remove-role>`
 })
 class WrapperComponent {
-  @ViewChild(RemoveRoleComponent) public appComponentRef: RemoveRoleComponent;
+  @ViewChild(RemoveRoleComponent, /* TODO: add static flag */ {}) public appComponentRef: RemoveRoleComponent;
 }
 
 const mockCaseworker: Caseworker = {

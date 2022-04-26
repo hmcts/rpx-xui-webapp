@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { combineLatest, forkJoin, Observable, Subscription, } from 'rxjs';
@@ -64,9 +64,11 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
         this.orderByCurrentThenFuture();
         this.bookingProcess.selectedBookingLocationIds = bookingFeatureToggle ? (bookingResults as any ).filter(p => new Date().getTime() < new Date(p.beginTime).getTime()).sort(this.sortBookings).map(p => p.base_location_id) : null;
       })).subscribe();
-
-
-    });
+    },
+    err => {
+        this.NavigationErrorHandler(err, this.router)
+    }
+    );
   }
 
   public checkIfButtonDisabled(beginTime: Date): boolean {
@@ -120,5 +122,24 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
       );
     });
   }
+
+  public NavigationErrorHandler = ( error: any, navigator: {navigate(commands: any[], extras?: NavigationExtras): Promise<boolean>} ): void => {
+    if (error && error.status) {
+      if (error.status >= 500 && error.status < 600) {
+        navigator.navigate(['/service-down']);
+        return;
+      }
+      switch (error.status) {
+        case 401:
+        case 403: {
+          navigator.navigate(['/not-authorised']);
+          return;
+        }
+        default: {
+          navigator.navigate(['/booking-system-error']);
+        }
+      }
+    }
+  };
 
 }

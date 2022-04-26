@@ -96,8 +96,7 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
     }
 
     switch (navEvent) {
-      case SpecificAccessNavigationEvent.BACK:
-      case SpecificAccessNavigationEvent.CANCEL: {
+      case SpecificAccessNavigationEvent.BACK: {
         switch (this.navigationCurrentState) {
           case SpecificAccessState.SPECIFIC_ACCESS_DURATION:
             this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_REVIEW));
@@ -131,11 +130,15 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
         break;
       }
       case SpecificAccessNavigationEvent.RETURNTOMYTASKS: {
-        this.router.navigateByUrl(`/work/list`);
+        this.router.navigateByUrl(`/work/my-work/list`);
         break;
       }
       case SpecificAccessNavigationEvent.RETURNTOTASKSTAB: {
         this.router.navigateByUrl(`/cases/case-details/${this.caseId}/tasks`);
+        break;
+      }
+      case SpecificAccessNavigationEvent.CANCEL: {
+        this.router.navigateByUrl(`cases/case-details/${this.caseId}/roles-and-access`);
         break;
       }
       default:

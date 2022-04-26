@@ -12,6 +12,7 @@ import { Booking } from '../../models/booking.interface';
 import { BookingService } from '../../services';
 import { BookingHomeComponent } from './booking-home.component';
 
+
 const DUMMY_BOOKINGS: Booking[] = [{
   userId: 'Dummy User Id',
   appointmentId: 'Dummy Appointment Id',
@@ -59,6 +60,11 @@ describe('BookingHomeComponent', () => {
     enabledFlag: true,
     disabledFlag: false
   };
+  let mockRouter: any;
+  const error = {
+    status: 400,
+    message: 'Service down'
+  };
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -101,6 +107,34 @@ describe('BookingHomeComponent', () => {
     component.bookingProcess = {} as BookingProcess;
     fixture.detectChanges();
   }));
+
+  it('should send back the status if it is 400', () => {
+    mockRouter = {
+      navigate: jasmine.createSpy('navigate')
+    };
+    component.NavigationErrorHandler(error, mockRouter);
+    expect(mockRouter.navigate).toHaveBeenCalled();
+  });
+
+  it('should attempt to navigate to the correct error pages', () => {
+    mockRouter = {
+      navigate: jasmine.createSpy('navigate')
+    };
+    // should get correct redirect for 401, 403
+    error.status = 401;
+    component.NavigationErrorHandler(error, mockRouter);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/not-authorised']);
+
+    // correct redirect for 500
+    error.status = 500;
+    component.NavigationErrorHandler(error, mockRouter);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/service-down']);
+
+    // correct redirect for 404
+    error.status = 404;
+    component.NavigationErrorHandler(error, mockRouter);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([ '/booking-system-error' ]);
+  });
 
   it('should display bookings list when there are existing bookings and first radio button is clicked', () => {
 

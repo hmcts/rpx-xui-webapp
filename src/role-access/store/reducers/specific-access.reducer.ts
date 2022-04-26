@@ -6,7 +6,12 @@ export const specificAccessInitialState: SpecificAccessStateData = {
   specificAccessFormData: null,
   SpecificAccessMoreInformationFormData: null,
   accessReason: null,
-  lastError: null
+  lastError: null,
+  caseId: null,
+  jurisdiction: null,
+  roleCategory: null,
+  period: {startDate: null, endDate: null},
+  person: null
 };
 
 export function specificAccessReducer(currentState = specificAccessInitialState, action: SpecificAccessAction): SpecificAccessStateData {

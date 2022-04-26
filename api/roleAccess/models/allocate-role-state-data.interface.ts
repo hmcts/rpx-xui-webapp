@@ -9,6 +9,7 @@ export interface AllocateRoleData {
   allocateTo: AllocateTo;
   personToBeRemoved?: Person;
   person: Person;
+  assigneeId?: string;
   durationOfRole: DurationOfRole;
   roleCategory?: RoleCategory;
   period: Period;

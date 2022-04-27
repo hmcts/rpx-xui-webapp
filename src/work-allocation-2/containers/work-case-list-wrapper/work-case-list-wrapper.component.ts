@@ -300,7 +300,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
 
   // Do the actual load. This is separate as it's called from two methods.
   protected doLoad(): void {
-    this.showSpinner$ = this.loadingService.isLoading;
+    this.showSpinner$ = this.loadingService.isLoading as any;
     const loadingToken = this.loadingService.register();
     const casesSearch$ = this.performSearchPagination();
     const mappedSearchResult$ = casesSearch$.pipe(mergeMap(result => {

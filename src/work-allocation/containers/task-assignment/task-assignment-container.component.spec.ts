@@ -3,18 +3,18 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { ErrorMessageComponent } from '../../../app/components';
 import { TaskActionConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { TaskListComponent } from '../../containers';
 import {
-  NAME_ERROR,
-  TaskAssignmentContainerComponent
+	NAME_ERROR,
+	TaskAssignmentContainerComponent
 } from '../../containers/task-assignment/task-assignment-container.component';
 import { Assignee } from '../../models/dtos';
 import { Task } from '../../models/tasks';

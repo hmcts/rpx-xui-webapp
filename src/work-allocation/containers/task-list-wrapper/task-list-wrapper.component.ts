@@ -2,7 +2,6 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { Caseworker } from 'api/workAllocation/interfaces/task';
-import { Observable } from 'rxjs';
 
 import { SessionStorageService } from '../../../app/services';
 import { ListConstants } from '../../components/constants';
@@ -15,6 +14,7 @@ import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { AppConstants } from '../../../app/app.constants';
 import { mergeMap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html'
@@ -259,7 +259,7 @@ export class TaskListWrapperComponent implements OnInit {
 
   // Do the actual load. This is separate as it's called from two methods.
   private doLoad(): void {
-    this.showSpinner$ = this.loadingService.isLoading;
+    this.showSpinner$ = this.loadingService.isLoading as any;
     const loadingToken = this.loadingService.register();
     this.isPaginationEnabled$.pipe(mergeMap(enabled => enabled ? this.performSearchPagination() : this.performSearch())).subscribe(result => {
         this.loadingService.unregister(loadingToken);

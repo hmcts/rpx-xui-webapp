@@ -36,7 +36,7 @@ describe('App Effects', () => {
             ]
         });
 
-        effects = TestBed.get(AppEffects);
+        effects = TestBed.inject(AppEffects);
 
     });
 

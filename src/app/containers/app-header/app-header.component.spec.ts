@@ -74,7 +74,7 @@ describe('AppHeaderComponent', () => {
       ],
     }).compileComponents();
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     fixture = TestBed.createComponent(AppHeaderComponent);
     component = fixture.componentInstance;

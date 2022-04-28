@@ -91,7 +91,7 @@ describe('WorkAllocation', () => {
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;
-      router = TestBed.get(Router);
+      router = TestBed.inject(Router);
 
       wrapper.tasks = null;
       window.history.pushState({returnUrl: 'mywork/list'}, '', 'mywork/list');

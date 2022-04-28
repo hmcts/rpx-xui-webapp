@@ -32,7 +32,7 @@ describe('NocCaseRefComponent', () => {
       ]
     }).compileComponents();
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     spyOnPipeToStore = spyOn(store, 'pipe').and.callThrough();
     spyOnPipeToStore.and.returnValue(of(NocState.START));

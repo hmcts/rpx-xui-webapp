@@ -81,7 +81,7 @@ describe('MyTasksComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({tasks}));
     mockCaseworkerService.getCaseworkersForServices.and.returnValue(of([]));

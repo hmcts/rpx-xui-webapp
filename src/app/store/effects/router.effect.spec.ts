@@ -48,10 +48,10 @@ describe('Router Effects', () => {
         provideMockActions(() => actions$)
       ]
     });
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();
 
-    effects = TestBed.get(RouterEffects);
+    effects = TestBed.inject(RouterEffects);
   });
 
   describe('navigate$', () => {

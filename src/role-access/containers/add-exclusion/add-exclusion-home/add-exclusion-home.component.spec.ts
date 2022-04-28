@@ -67,7 +67,7 @@ describe('ExclusionHomeComponent', () => {
       ]
     })
       .compileComponents();
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     storePipeMock = spyOn(store, 'pipe');
     storeDispatchMock = spyOn(store, 'dispatch');

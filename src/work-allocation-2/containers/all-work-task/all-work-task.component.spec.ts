@@ -88,7 +88,7 @@ describe('AllWorkTaskComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({tasks}));
     mockRoleService.getCaseRolesUserDetails.and.returnValue(of(tasks));
@@ -237,7 +237,7 @@ describe('AllWorkTaskComponent', () => {
       component = wrapper.appComponentRef;
 
       component.locations = [{ id: 'loc123', locationName: 'Test', services: [] }];
-      router = TestBed.get(Router);
+      router = TestBed.inject(Router);
       fixture.detectChanges();
 
     }));

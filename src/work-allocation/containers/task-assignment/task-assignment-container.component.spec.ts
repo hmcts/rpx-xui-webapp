@@ -138,7 +138,7 @@ describe('TaskAssignmentContainerComponent1', () => {
   });
 
   it('should show assignee column when relevant', () => {
-    const router = TestBed.get(Router);
+    const router = TestBed.inject(Router);
     spyOnProperty(router, 'url', 'get').and.returnValues(`/example-url/assign`, `/example-url/reassign`);
     expect(component.fields.pop().name).not.toBe('assigneeName');
     expect(component.fields.pop().name).toBe('assigneeName');

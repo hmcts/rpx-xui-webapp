@@ -30,7 +30,7 @@ describe('NocCheckYourAnswersComponent', () => {
   }));
 
   beforeEach(() => {
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     spyOnPipeToStore = spyOn(store, 'pipe').and.callThrough();
     spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();
     spyOnPipeToStore.and.returnValue(of('1231123112311231'));

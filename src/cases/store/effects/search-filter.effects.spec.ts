@@ -29,7 +29,7 @@ describe('Pending Organisation Effects', () => {
             ]
         });
 
-        effects = TestBed.get(SearchFilterEffects);
+        effects = TestBed.inject(SearchFilterEffects);
 
     });
 

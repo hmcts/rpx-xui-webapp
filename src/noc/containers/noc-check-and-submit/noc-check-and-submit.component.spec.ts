@@ -72,7 +72,7 @@ describe('NocCheckAndSubmitComponent', () => {
   }));
 
   beforeEach(() => {
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();
     fixture = TestBed.createComponent(NocCheckAndSubmitComponent);
     component = fixture.componentInstance;

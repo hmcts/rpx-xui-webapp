@@ -50,7 +50,7 @@ describe('TaskListWrapperComponent', () => {
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(TaskListWrapperComponent);
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     component = fixture.componentInstance;
     component.isPaginationEnabled$ = of(false);
     const tasks: Task[] = getMockTasks();
@@ -161,7 +161,7 @@ describe('TaskListWrapperComponent searchWithPagination', () => {
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(TaskListWrapperComponent);
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     component = fixture.componentInstance;
     const tasks: Task[] = [];
     for (let i = 0; i < 25; i++) {

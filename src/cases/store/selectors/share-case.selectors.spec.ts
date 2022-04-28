@@ -12,7 +12,7 @@ describe('Share case selectors', () => {
         StoreModule.forFeature('cases', reducers),
       ],
     });
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     spyOn(store, 'dispatch').and.callThrough();
   });
 

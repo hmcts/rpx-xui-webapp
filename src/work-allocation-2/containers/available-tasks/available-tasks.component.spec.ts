@@ -109,7 +109,7 @@ describe('AvailableTasksComponent', () => {
     mockRoleService.getCaseRolesUserDetails.and.returnValue(of(tasks));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of([]));
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     fixture.detectChanges();
   });
 

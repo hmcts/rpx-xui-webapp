@@ -39,8 +39,8 @@ describe('HealthCheckGuard', () => {
     });
 
     beforeEach(() => {
-        healthCheckServiceInstance = TestBed.get(HealthCheckService);
-        storeInstance = TestBed.get(Store);
+        healthCheckServiceInstance = TestBed.inject(HealthCheckService);
+        storeInstance = TestBed.inject(Store);
     });
 
     describe('canActivate', () => {

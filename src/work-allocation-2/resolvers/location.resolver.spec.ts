@@ -100,14 +100,14 @@ describe('LocationResolver', () => {
         ]
       }
     );
-    caseworkerDataService = TestBed.get(CaseworkerDataService) as CaseworkerDataService;
-    judicialWorkerDataService = TestBed.get(AllocateRoleService) as AllocateRoleService;
-    store = TestBed.get(Store) as Store<fromCaseList.State>;
+    caseworkerDataService = TestBed.inject(CaseworkerDataService) as CaseworkerDataService;
+    judicialWorkerDataService = TestBed.inject(AllocateRoleService) as AllocateRoleService;
+    store = TestBed.inject(Store) as Store<fromCaseList.State>;
 
   });
 
   it('should be created', () => {
-    const service: LocationResolver = TestBed.get(LocationResolver);
+    const service: LocationResolver = TestBed.inject(LocationResolver);
     expect(service).toBeTruthy();
   });
 

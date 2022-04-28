@@ -39,7 +39,7 @@ describe('CaseShareComponent', () => {
         }
       ]
     }).compileComponents();
-    mockStore = TestBed.get(Store);
+    mockStore = TestBed.inject(Store);
     mockFeatureToggleService.getValue.and.returnValue(of(true));
     dispatchSpy = spyOn(mockStore, 'dispatch');
     fixture = TestBed.createComponent(CaseShareComponent);

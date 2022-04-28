@@ -60,7 +60,7 @@ describe('MyCasesComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     const cases: Case[] = getMockCases();
     mockCaseService.getMyCases.and.returnValue(of({ cases }));
     mockCaseworkerService.getAll.and.returnValue(of([]));

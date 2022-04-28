@@ -111,7 +111,7 @@ describe('TaskHomeComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     spyOn(mockFilterService.givenErrors, 'unsubscribe');
     fixture.detectChanges();
   });

@@ -29,7 +29,7 @@ describe('Allocate Role Effects', () => {
       ]
     });
     allocateRoleServiceMock.backUrl = 'work/my-work/cases';
-    effects = TestBed.get(AllocateRoleEffects);
+    effects = TestBed.inject(AllocateRoleEffects);
 
   });
 

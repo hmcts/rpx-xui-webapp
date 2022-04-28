@@ -13,7 +13,7 @@ describe('Organisation selectors', () => {
         StoreModule.forFeature('organisation', reducers),
       ],
     });
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     spyOn(store, 'dispatch').and.callThrough();
   });
 

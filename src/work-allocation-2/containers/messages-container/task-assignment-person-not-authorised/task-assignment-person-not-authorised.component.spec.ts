@@ -19,7 +19,7 @@ describe('TaskAssignmentPersonNotAuthorised', () => {
   }));
 
   beforeEach(() => {
-    mockRouter = TestBed.get(Router);
+    mockRouter = TestBed.inject(Router);
     spyOn(mockRouter, 'getCurrentNavigation').and.returnValue({extras: {state: {returnUrl: '/work'}}});
     fixture = TestBed.createComponent(TaskAssignmentPersonNotAuthorisedComponent);
     component = fixture.componentInstance;

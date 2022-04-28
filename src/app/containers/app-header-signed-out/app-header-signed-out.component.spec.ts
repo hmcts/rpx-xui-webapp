@@ -37,7 +37,7 @@ describe('AppHeaderSignedOutComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AppHeaderSignedOutComponent);
     component = fixture.componentInstance;
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     fixture.detectChanges();
   });
 

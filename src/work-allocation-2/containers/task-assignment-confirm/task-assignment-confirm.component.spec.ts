@@ -114,7 +114,7 @@ describe('TaskAssignmentConfirmComponent', () => {
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
     component.verb = TaskActionType.Reassign;
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     window.history.pushState({ selectedPerson: SELECTED_PERSON }, '', '');
     fixture.detectChanges();
   });
@@ -347,7 +347,7 @@ describe('TaskAssignmentConfirmComponent', () => {
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;
       component.verb = TaskActionType.Reassign;
-      router = TestBed.get(Router);
+      router = TestBed.inject(Router);
       window.history.pushState({ selectedPerson: SELECTED_PERSON }, '', '');
       fixture.detectChanges();
     });

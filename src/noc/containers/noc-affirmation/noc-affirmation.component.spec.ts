@@ -23,7 +23,7 @@ describe('NocAffirmationComponent', () => {
   }));
 
   beforeEach(() => {
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     spyOnPipeToStore = spyOn(store, 'pipe').and.callThrough();
     spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();

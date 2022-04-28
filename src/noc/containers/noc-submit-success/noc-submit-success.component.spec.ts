@@ -22,7 +22,7 @@ describe('NocSubmitSuccessComponent', () => {
       ]
     })
     .compileComponents();
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     spyOn(store, 'pipe').and.callThrough();
   }));
 

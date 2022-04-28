@@ -19,7 +19,7 @@ describe('CaseShareConfirmComponent', () => {
         provideMockStore(),
       ]
     }).compileComponents();
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(CaseShareConfirmComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

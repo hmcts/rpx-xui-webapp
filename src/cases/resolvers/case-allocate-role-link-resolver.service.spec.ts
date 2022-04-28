@@ -22,12 +22,12 @@ describe('CaseAllocateRoleLinkResolverService', () => {
         {provide: APP_BASE_HREF, useValue: '/'}
       ]
     });
-    httpClient = TestBed.get(HttpClient) as HttpClient;
+    httpClient = TestBed.inject(HttpClient) as HttpClient;
   });
 
   it('should return a value which tells if the user is allowed to see the allocate role link', (done) => {
     spyOn(httpClient, 'get').and.returnValue(of(true));
-    const service: CaseAllocateRoleLinkResolverService = TestBed.get(CaseAllocateRoleLinkResolverService);
+    const service: CaseAllocateRoleLinkResolverService = TestBed.inject(CaseAllocateRoleLinkResolverService);
     const activatedRoute = new ActivatedRouteSnapshot();
     activatedRoute.params = {
       cid: '1546883526751282'

@@ -65,7 +65,7 @@ describe('CaseListComponent', () => {
         provideMockStore(),
       ]
     });
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();
     spyOnPipeToStore = spyOn(store, 'pipe').and.callThrough();
     mockFeatureToggleService.getValue.and.returnValue(of(['dummy']));

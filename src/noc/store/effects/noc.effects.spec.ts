@@ -29,7 +29,7 @@ describe('Noc Effects', () => {
       ]
     });
 
-    effects = TestBed.get(NocEffects);
+    effects = TestBed.inject(NocEffects);
 
   });
 

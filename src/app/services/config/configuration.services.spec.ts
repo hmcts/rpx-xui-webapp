@@ -18,7 +18,7 @@ describe('Configuration Service', () => {
   });
 
   it('should have configuration service', () => {
-    service = TestBed.get(AppConfigService);
+    service = TestBed.inject(AppConfigService);
     expect(service).toBeTruthy();
   });
 

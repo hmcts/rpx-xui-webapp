@@ -31,7 +31,7 @@ describe('acceptTC Effects', () => {
             ]
         });
 
-        effects = TestBed.get(fromTcEffects.AcceptTcEffects);
+        effects = TestBed.inject(fromTcEffects.AcceptTcEffects);
 
     });
 

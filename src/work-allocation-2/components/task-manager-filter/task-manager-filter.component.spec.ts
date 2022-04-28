@@ -99,7 +99,7 @@ describe('TaskManagerFilterComponent', () => {
         },
       ]
     }).compileComponents();
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     storePipeMock = spyOn(store, 'pipe');
 
     fixture = TestBed.createComponent(WrapperComponent);

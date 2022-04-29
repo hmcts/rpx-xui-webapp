@@ -1,6 +1,7 @@
-import { Input } from '@angular/core';
+import { Input, Directive } from '@angular/core';
 import { AbstractFormFieldComponent } from './abstract-form-field.component';
 
+@Directive()
 export abstract class AbstractFieldWriteComponent extends AbstractFormFieldComponent {
 
   @Input()

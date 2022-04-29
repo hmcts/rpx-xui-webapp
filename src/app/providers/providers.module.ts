@@ -14,7 +14,7 @@ import { AuthService } from '../services/auth/auth.service';
   providers: []
 })
 export class ProvidersModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<ProvidersModule> {
     return {
       ngModule: ProvidersModule,
       providers: [

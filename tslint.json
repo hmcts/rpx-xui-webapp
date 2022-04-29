@@ -4,7 +4,18 @@
     "codelyzer"
   ],
   "rules": {
-    "array-type": { "severity": "warning", "options": ["array"] },
+    "array-type": {
+      "severity": "warning",
+      "options": [
+        "array"
+      ]
+    },
+    "align": {
+      "options": [
+        "parameters",
+        "statements"
+      ]
+    },
     "arrow-parens": false,
     "directive-selector": false,
     "component-selector": false,
@@ -33,7 +44,14 @@
         ]
       }
     ],
+    "eofline": true,
     "no-consecutive-blank-lines": false,
+    "import-spacing": true,
+    "indent": {
+      "options": [
+        "spaces"
+      ]
+    },
     "no-console": [
       true,
       "debug",
@@ -46,7 +64,6 @@
     "no-non-null-assertion": true,
     "no-redundant-jsdoc": true,
     "no-switch-case-fall-through": true,
-    "no-use-before-declare": true,
     "no-var-requires": false,
     "no-string-literal": false,
     "object-literal-key-quotes": [
@@ -83,15 +100,59 @@
     "no-duplicate-super": { "severity": "warning" },
     "no-duplicate-switch-case": { "severity": "warning" },
     "no-duplicate-variable": { "severity": "warning" },
-    "no-unused-expression": { "severity": "warning" },
-    "no-unused-variable": { "severity": "warning" },
+    "no-unused-expression": {
+      "severity": "warning"
+    },
     "switch-default": { "severity": "warning" },
-    "triple-equals": { "severity": "warning" },
+    "triple-equals": {
+      "severity": "warning"
+    },
+    "space-before-function-paren": {
+      "options": {
+        "anonymous": "never",
+        "asyncArrow": "always",
+        "constructor": "never",
+        "method": "never",
+        "named": "never"
+      }
+    },
     "prefer-readonly": { "severity": "warning" },
     "arrow-return-shorthand": { "severity": "warning" },
-    "class-name": { "severity": "warning" },
+    "class-name": {
+      "severity": "warning"
+    },
+    "typedef-whitespace": {
+      "options": [
+        {
+          "call-signature": "nospace",
+          "index-signature": "nospace",
+          "parameter": "nospace",
+          "property-declaration": "nospace",
+          "variable-declaration": "nospace"
+        },
+        {
+          "call-signature": "onespace",
+          "index-signature": "onespace",
+          "parameter": "onespace",
+          "property-declaration": "onespace",
+          "variable-declaration": "onespace"
+        }
+      ]
+    },
     "prefer-method-signature": { "severity": "warning" },
     "prefer-template": { "severity": "warning" },
-    "semicolon": { "severity": "warning" }
+    "semicolon": {
+      "severity": "warning"
+    },
+    "whitespace": {
+      "options": [
+        "check-branch",
+        "check-decl",
+        "check-operator",
+        "check-separator",
+        "check-type",
+        "check-typecast"
+      ]
+    }
   }
 }

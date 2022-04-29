@@ -50,7 +50,7 @@ export class RoleAccessModule {
     RoleAccessModule.forRoot();
   }
 
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<RoleAccessModule> {
     return {
       ngModule: RoleAccessModule,
       providers: []

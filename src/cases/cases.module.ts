@@ -98,7 +98,7 @@ export class CasesModule {
     CasesModule.forRoot();
   }
 
-  public static forRoot(): ModuleWithProviders {
+  public static forRoot(): ModuleWithProviders<CasesModule> {
     return {
       ngModule: CasesModule,
       providers: [

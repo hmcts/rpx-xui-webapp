@@ -8,6 +8,7 @@ import { createFeatureSelector, ActionReducerMap, createSelector } from '@ngrx/s
 import * as fromRouter from '@ngrx/router-store';
 
 import * as fromApp from './app-config.reducer';
+import { Injectable } from "@angular/core";
 
 export interface RouterStateUrl {
   url: string;
@@ -25,6 +26,7 @@ export const reducers: ActionReducerMap<State> = {
   appConfig: fromApp.reducer
 };
 
+@Injectable()
 export class CustomSerializer
   implements fromRouter.RouterStateSerializer<RouterStateUrl> {
   serialize(routerState: RouterStateSnapshot): RouterStateUrl {

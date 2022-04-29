@@ -11,7 +11,7 @@ import { NocCheckAndSubmitComponent } from './noc-check-and-submit.component';
 describe('NocCheckAndSubmitComponent', () => {
   let component: NocCheckAndSubmitComponent;
   let fixture: ComponentFixture<NocCheckAndSubmitComponent>;
-  let store: MockStore<fromFeature.State>;
+  let store: any;
   let spyOnPipeToStore: any;
   let spyOnDispatchToStore = jasmine.createSpy();
 

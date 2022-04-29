@@ -33,7 +33,7 @@ describe('AppHeaderComponent', () => {
 
   let component: AppHeaderComponent;
   let fixture: ComponentFixture<AppHeaderComponent>;
-  let store: Store<fromActions.State>;
+  let store: any;
   const subscriptionMock: Subscription = new Subscription();
   const stateStoreMock: Store<fromActions.State> = new Store<fromActions.State>(null, null, null);
   const eventsSub = new BehaviorSubject<any>(null);

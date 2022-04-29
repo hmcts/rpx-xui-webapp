@@ -16,7 +16,7 @@ import { State } from '../reducers';
 describe('Router Effects', () => {
   let actions$;
   let effects: RouterEffects;
-  let store: MockStore<State>;
+  let store: any;
 
   const LocationMock = jasmine.createSpyObj('Location', [
     'back', 'forward',

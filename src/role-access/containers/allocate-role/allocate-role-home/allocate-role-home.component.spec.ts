@@ -66,7 +66,7 @@ describe('AllocateRoleHomeComponent', () => {
     'navigateByUrl', 'getCurrentNavigation'
   ]);
   const allocateRoleServiceMock = jasmine.createSpyObj('AllocateRoleService', ['getValidRoles']);
-  let store: Store<fromStore.State>;
+  let store: any;
   let storePipeMock: any;
   let storeDispatchMock: any;
 

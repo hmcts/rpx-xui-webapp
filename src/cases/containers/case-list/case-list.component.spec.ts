@@ -23,7 +23,7 @@ import { CaseListComponent } from './case-list.component';
 describe('CaseListComponent', () => {
   let component: CaseListComponent;
   let fixture: ComponentFixture<CaseListComponent>;
-  let store: MockStore<State>;
+  let store: any;
 
   /**
    * Spies

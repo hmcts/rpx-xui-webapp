@@ -4,6 +4,7 @@ import { FeatureToggleGuard } from '@hmcts/rpx-xui-common-lib';
 import { AppConstants } from '../app/app.constants';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
 import { NocHomeComponent } from './containers/noc-home/noc-home.component';
+import { NocModule } from './noc.module';
 
 export const ROUTES: Routes = [
   {
@@ -24,4 +25,4 @@ export const ROUTES: Routes = [
   },
 ];
 
-export const nocRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
+export const nocRouting: ModuleWithProviders<NocModule> = RouterModule.forChild(ROUTES);

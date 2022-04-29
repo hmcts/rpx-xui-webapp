@@ -26,7 +26,7 @@ describe('SearchFilterService', () => {
     const httpService = createSpyObj<HttpService>('HttpService', ['get']);
     const requestOptionsBuilder = createSpyObj<RequestOptionsBuilder>('RequestOptionsBuilder', ['buildOptions']);
     let storeDispatchMock: any;
-    let store: Store<fromCaseSearchStore.SearchState>;
+    let store: any;
 
     beforeEach(() => {
 

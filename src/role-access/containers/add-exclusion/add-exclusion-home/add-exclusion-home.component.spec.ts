@@ -20,7 +20,7 @@ describe('ExclusionHomeComponent', () => {
   const routerMock = jasmine.createSpyObj('Router', [
     'navigateByUrl'
   ]);
-  let store: MockStore<fromFeature.State>;
+  let store: any;
   let storePipeMock: any;
   let storeDispatchMock: any;
 

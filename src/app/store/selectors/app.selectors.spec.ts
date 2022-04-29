@@ -8,7 +8,7 @@ import * as fromSelectors from './app.selectors';
 
 
 describe('App Selectors', () => {
-  let store: Store<fromReducers.State>;
+  let store: any;
 
   const appConfig = {
     config: {},

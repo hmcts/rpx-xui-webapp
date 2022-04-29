@@ -23,8 +23,8 @@ describe('CaseDetailsHomeComponent', () => {
   const mockErrorNotifierService = jasmine.createSpyObj('ErrorNotifierService', ['announceError']);
   const mockActivatedRoute = { data: of({case: {case_id: '1234', case_type: {id: 'caseTypeId', jurisdiction: {id: 'IA'}}}})};
   const mockSessionStorageService = jasmine.createSpyObj('SessionStorageService', ['setItem']);
-  let mockRouter: jasmine.SpyObj<Router>;
-  let store: Store<fromFeature.State>;
+  let mockRouter: any;
+  let store: any;
   let storeDispatchMock: any;
 
   beforeEach(async(() => {

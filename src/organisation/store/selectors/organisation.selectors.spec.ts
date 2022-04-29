@@ -4,7 +4,7 @@ import { reducers } from '../index';
 import { OrganisationState } from '../reducers/organisation.reducer';
 
 describe('Organisation selectors', () => {
-  let store: Store<OrganisationState>;
+  let store: any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

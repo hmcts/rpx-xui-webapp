@@ -25,7 +25,7 @@ describe('TaskManagerFilterComponent', () => {
   let component: TaskManagerFilterComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
-  let store: Store<fromStore.State>;
+  let store: any;
   let storePipeMock: any;
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
   const typesOfWork = [

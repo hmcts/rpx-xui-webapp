@@ -15,7 +15,7 @@ import { NocHomeComponent } from './noc-home.component';
 describe('NocHomeComponent', () => {
   let fixture: ComponentFixture<NocHomeComponent>;
   let component: NocHomeComponent;
-  let store: MockStore<fromNocStore.State>;
+  let store: any;
   let storePipeMock: any;
   let storeDispatchMock: any;
 

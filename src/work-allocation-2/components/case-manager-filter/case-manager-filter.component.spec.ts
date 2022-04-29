@@ -25,7 +25,7 @@ describe('CaseManagerFilterComponent', () => {
   let component: CaseManagerFilterComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
-  let store: Store<fromStore.State>;
+  let store: any;
   let storePipeMock: any;
   const mockCaseService = jasmine.createSpyObj('mockCaseService', ['searchCase']);
   const SELECTED_LOCATIONS = { id: 'locations', fields: [ { name: 'locations', value: ['231596', '698118'] }] };

@@ -26,7 +26,7 @@ import * as fromShareCaseEffects from './share-case.effects';
 describe('Share Case Effects', () => {
   let actions$;
   let effects: ShareCaseEffects;
-  let store: MockStore<State>;
+  let store: any;
   const routerMock = jasmine.createSpyObj('Router', [
     'navigate'
   ]);

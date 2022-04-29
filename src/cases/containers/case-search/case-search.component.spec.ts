@@ -14,7 +14,7 @@ import { ApplySearchFilterForES, SearchFilterToggle } from '../../store';
 describe('CaseSearchComponent', () => {
   let fixture: ComponentFixture<CaseSearchComponent>;
   let component: CaseSearchComponent;
-  let store: Store<fromCaseSearchStore.SearchState>;
+  let store: any;
   let storePipeMock: any;
   let storeDispatchMock: any;
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);

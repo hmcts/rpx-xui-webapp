@@ -7,7 +7,7 @@ import { TaskAssignmentPersonNotAuthorisedComponent } from './task-assignment-pe
 describe('TaskAssignmentPersonNotAuthorised', () => {
   let component: TaskAssignmentPersonNotAuthorisedComponent;
   let fixture: ComponentFixture<TaskAssignmentPersonNotAuthorisedComponent>;
-  let mockRouter: jasmine.SpyObj<Router>;
+  let mockRouter: any;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

@@ -14,7 +14,7 @@ describe('HmctsGlobalHeaderComponent', () => {
   let nocStoreSpy: jasmine.Spy;
   let component: HmctsGlobalHeaderComponent;
   let fixture: ComponentFixture<HmctsGlobalHeaderComponent>;
-  let mockRouter: jasmine.SpyObj<Router>;
+  let mockRouter: any;
 
   const changesMock = {
     items: {

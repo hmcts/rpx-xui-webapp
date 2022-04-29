@@ -19,7 +19,7 @@ describe('CaseHomeComponent', () => {
   const mockErrorNotifierService = jasmine.createSpyObj('ErrorNotifierService', ['announceError']);
   const mockCommonLibLoadingService = jasmine.createSpyObj('CommonLibLoadingService', ['']);
   const mockCCDLoadingService = jasmine.createSpyObj('CCDLoadingService', ['']);
-  let store: Store<fromFeature.State>;
+  let store: any;
   let storeDispatchMock: any;
 
   beforeEach(async(() => {

@@ -20,7 +20,7 @@ const cookieService = {
 describe('AppHeaderSignedOutComponent', () => {
   let component: AppHeaderSignedOutComponent;
   let fixture: ComponentFixture<AppHeaderSignedOutComponent>;
-  let store: Store<fromActions.State>;
+  let store: any;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

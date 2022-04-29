@@ -18,7 +18,7 @@ describe('LocationResolver', () => {
 
   let caseworkerDataService: CaseworkerDataService;
   let judicialWorkerDataService: AllocateRoleService;
-  let store: Store<fromCaseList.State>;
+  let store: any;
 
   const CASE_WORKER: UserDetails = {
     sessionTimeout: {

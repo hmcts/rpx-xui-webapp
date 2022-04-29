@@ -6,6 +6,7 @@ import { UserNotAssignableComponent } from './components';
 import { DeleteExclusionComponent, RemoveRoleComponent } from './containers';
 import { AddExclusionHomeComponent } from './containers/add-exclusion';
 import { AllocateRoleHomeComponent } from './containers/allocate-role';
+import { RoleAccessModule } from './role-access.module';
 
 export const ROUTES: Routes = [
   { path: 'user-not-assignable', component: UserNotAssignableComponent },
@@ -63,4 +64,4 @@ export const ROUTES: Routes = [
   },
 ];
 
-export const roleAccessRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
+export const roleAccessRouting: ModuleWithProviders<RoleAccessModule> = RouterModule.forChild(ROUTES);

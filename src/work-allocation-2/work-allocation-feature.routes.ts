@@ -23,6 +23,7 @@ import { WorkAllocationFeatureToggleGuard } from './guards';
 import { TaskResolver } from './resolvers';
 import { LocationResolver } from './resolvers/location-resolver.service';
 import { TaskRoleResolverService } from './resolvers/task-role-resolver.service';
+import { WorkAllocationModule2 } from './work-allocation2.module';
 
 export const ROUTES: Routes = [
   {
@@ -173,4 +174,4 @@ export const ROUTES: Routes = [
   }
 ];
 
-export const workAllocationRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
+export const workAllocationRouting: ModuleWithProviders<WorkAllocationModule2> = RouterModule.forChild(ROUTES);

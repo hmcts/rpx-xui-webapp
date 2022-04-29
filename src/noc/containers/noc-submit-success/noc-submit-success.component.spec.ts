@@ -7,7 +7,7 @@ import { UtilsModule } from '../noc-field/utils/utils.module';
 import { NocSubmitSuccessComponent } from './noc-submit-success.component';
 
 describe('NocSubmitSuccessComponent', () => {
-  let store: MockStore<fromNocStore.State>;
+  let store: any;
   let component: NocSubmitSuccessComponent;
   let fixture: ComponentFixture<NocSubmitSuccessComponent>;
 

@@ -11,7 +11,7 @@ import { NocQAndAComponent } from './noc-q-and-a.component';
 
 describe('NocQAndAComponent', () => {
   const FORM_GROUP = new FormGroup({});
-  let store: MockStore<fromNocStore.State>;
+  let store: any;
   let component: NocQAndAComponent;
   let fixture: ComponentFixture<NocQAndAComponent>;
 

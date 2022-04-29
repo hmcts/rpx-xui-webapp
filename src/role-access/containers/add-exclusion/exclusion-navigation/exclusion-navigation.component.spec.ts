@@ -9,7 +9,7 @@ import { ExclusionNavigationComponent } from './exclusion-navigation.component';
 describe('ExclusionNavigationComponent', () => {
   let fixture: ComponentFixture<ExclusionNavigationComponent>;
   let component: ExclusionNavigationComponent;
-  let store: Store<fromStore.State>;
+  let store: any;
   let storePipeMock: any;
 
   beforeEach(() => {

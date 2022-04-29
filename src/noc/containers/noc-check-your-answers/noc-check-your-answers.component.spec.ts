@@ -9,7 +9,7 @@ import { UtilsModule } from '../noc-field/utils/utils.module';
 import { NocCheckYourAnswersComponent } from './noc-check-your-answers.component';
 
 describe('NocCheckYourAnswersComponent', () => {
-  let store: MockStore<fromFeature.State>;
+  let store: any;
   let spyOnPipeToStore = jasmine.createSpy();
   let spyOnDispatchToStore = jasmine.createSpy();
   let component: NocCheckYourAnswersComponent;

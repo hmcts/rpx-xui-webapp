@@ -9,7 +9,7 @@ import { AllocateRoleNavigationComponent } from './allocate-role-navigation.comp
 describe('AllocateRoleNavigationComponent', () => {
   let component: AllocateRoleNavigationComponent;
   let fixture: ComponentFixture<AllocateRoleNavigationComponent>;
-  let store: Store<fromStore.State>;
+  let store: any;
   let storePipeMock: any;
 
   beforeEach(() => {

@@ -9,7 +9,7 @@ import { NocNavigationComponent } from './noc-navigation.component';
 describe('NocNavigationComponent', () => {
   let fixture: ComponentFixture<NocNavigationComponent>;
   let component: NocNavigationComponent;
-  let store: Store<fromNocStore.State>;
+  let store: any;
   let storePipeMock: any;
 
   beforeEach(() => {

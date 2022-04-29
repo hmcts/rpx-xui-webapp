@@ -17,6 +17,7 @@ import { WorkAllocationFeatureToggleGuard } from './guards';
 import { SeniorTribunalCaseworkerGuard } from './guards/senior-tribunal-caseworker-guard';
 import { TribunalCaseworkerGuard } from './guards/tribunal-caseworker-guard';
 import { TaskResolver } from './resolvers';
+import { WorkAllocationModule } from './work-allocation.module';
 
 export const ROUTES: Routes = [
   {
@@ -111,4 +112,4 @@ export const ROUTES: Routes = [
   }
 ];
 
-export const workAllocationRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
+export const workAllocationRouting: ModuleWithProviders<WorkAllocationModule> = RouterModule.forChild(ROUTES);

@@ -6,7 +6,7 @@ import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
 import { getSearchState, searchFilterJurisdiction } from './search.filter.selectors';
 
 describe('Search filter selectors', () => {
-  let store: Store<SearchState>;
+  let store: any;
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [

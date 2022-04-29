@@ -5,7 +5,7 @@ import { initialState, State } from '../reducers';
 import { getNocState } from './noc.selectors';
 
 describe('Noc selectors', () => {
-  let store: Store<State>;
+  let store: any;
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [

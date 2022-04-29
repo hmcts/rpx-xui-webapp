@@ -3,6 +3,7 @@ import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CaseResolver, editorRouting, viewerRouting as caseViewRouting } from '@hmcts/ccd-case-ui-toolkit';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
+import { CasesModule } from './cases.module';
 import {
   CaseCreateSubmitComponent,
   CaseDetailsHomeComponent,
@@ -134,5 +135,5 @@ export const ROUTES: Routes = [
 
 ];
 
-export const casesRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
+export const casesRouting: ModuleWithProviders<CasesModule> = RouterModule.forChild(ROUTES);
 

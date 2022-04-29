@@ -4,7 +4,7 @@ import { CaseListComponent } from '../../containers';
 import { getShareCaseListState, reducers, State } from '../index';
 
 describe('Share case selectors', () => {
-  let store: Store<State>;
+  let store: any;
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [

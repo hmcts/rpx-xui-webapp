@@ -65,6 +65,7 @@
     "@angular/compiler": "^9.1.13",
     "@angular/core": "^9.1.13",
     "@angular/forms": "^9.1.13",
+    "@angular/localize": "^13.3.5",
     "@angular/material": "^7.3.7",
     "@angular/platform-browser": "^9.1.13",
     "@angular/platform-browser-dynamic": "^9.1.13",

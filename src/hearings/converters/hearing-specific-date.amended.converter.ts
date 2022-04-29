@@ -3,6 +3,7 @@ import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {State} from '../store/reducers';
 import {IsAmendedConverter} from './is-amended.converter';
+import * as moment from 'moment';
 
 export class HearingSpecificDateAmendedConverter implements IsAmendedConverter {
   public transformIsAmended(hearingState$?: Observable<State>): Observable<boolean> {
@@ -12,7 +13,7 @@ export class HearingSpecificDateAmendedConverter implements IsAmendedConverter {
 
       const objA = objAHearingWindow && objAHearingWindow.dateRangeStart;
       const objB = objBHearingWindow && objBHearingWindow.dateRangeStart;
-      return !_.isEqual(objA, objB);
+      return !moment(new Date(objA).toDateString()).isSame(moment(new Date(objB).toDateString()).toDate());
     }));
   }
 }

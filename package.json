@@ -135,7 +135,7 @@
     "terser-webpack-plugin": "^2.3.5",
     "ts-enum-util": "4.0.2",
     "tslib": "^2.0.0",
-    "typescript": "^3.8.3",
+    "typescript": "3.9",
     "web-animations-js": "^2.3.2",
     "webpack-dev-server": "^4.8.1",
     "xlsx": "^0.15.4",

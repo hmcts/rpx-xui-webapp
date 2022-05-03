@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.13.1-case-flags-language-interpreter-dual-entry-error":
-  version "4.13.1-case-flags-language-interpreter-dual-entry-error"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.13.1-case-flags-language-interpreter-dual-entry-error.tgz#03e2e255bd376708fb6bbeae1a6be12ef6dae922"
-  integrity sha512-UJliboFf3qRpBH54/oLBGvsYCkLf2xMZ+zgLU7rWlGFREoiW9KnCucTR0juEpEhUhryH4XtG+YiMw57t2ACk2w==
+"@hmcts/ccd-case-ui-toolkit@4.13.1-case-flags-language-interpreter-dual-entry-error-2":
+  version "4.13.1-case-flags-language-interpreter-dual-entry-error-2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.13.1-case-flags-language-interpreter-dual-entry-error-2.tgz#f59ac21e55616c6da3e7e5cbb12c559c70b36e0b"
+  integrity sha512-h4lr6FgHETBiXj78txZZP/cRtP10zzQIE4JCQJAY1KioJDLmMtABSVNtpukIjMNf5eDLinbHXPQeqowjsHppNw==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

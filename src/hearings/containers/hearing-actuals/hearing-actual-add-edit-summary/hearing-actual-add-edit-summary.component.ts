@@ -186,6 +186,6 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
 
   public calculateEarliestHearingDate(hearingDays: PlannedHearingDayModel[]): string {
     const moments: moment.Moment[] = hearingDays.map(d => moment(d.plannedStartTime));
-    return moment.min(moments).toString();
+    return moment.min(moments).toISOString();
   }
 }

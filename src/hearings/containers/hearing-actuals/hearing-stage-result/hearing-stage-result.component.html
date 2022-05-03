@@ -34,14 +34,14 @@
             <div class="govuk-radios" data-module="govuk-radios">
               <div class="govuk-radios__item">
                 <input class="govuk-radios__input" id="completed" formName="hearingResult" name="hearingResult"
-                  type="radio" value="completed" data-aria-controls="conditional-completed" (change)="onHearingResult(hearingResultEnum.COMPLETED)">
+                  type="radio" value="COMPLETED" data-aria-controls="conditional-completed" (change)="onHearingResult(hearingResultEnum.COMPLETED)">
                 <label class="govuk-label govuk-radios__label" for="completed">
                   Heard
                 </label>
               </div>
               <div class="govuk-radios__item">
                 <input class="govuk-radios__input" id="adjourned" formName="hearingResult" name="hearingResult"
-                  type="radio" value="adjourned" data-aria-controls="conditional-adjourned" (change)="onHearingResult(hearingResultEnum.ADJOURNED)">
+                  type="radio" value="ADJOURNED" data-aria-controls="conditional-adjourned" (change)="onHearingResult(hearingResultEnum.ADJOURNED)">
                 <label class="govuk-label govuk-radios__label" for="adjourned">
                   Part-heard, adjourned or postponed
                 </label>
@@ -61,7 +61,7 @@
               </div>
               <div class="govuk-radios__item">
                 <input class="govuk-radios__input" id="cancelled" formName="hearingResult" name="hearingResult"
-                  type="radio" value="cancelled" data-aria-controls="conditional-cancelled" (change)="onHearingResult(hearingResultEnum.CANCELLED)">
+                  type="radio" value="CANCELLED" data-aria-controls="conditional-cancelled" (change)="onHearingResult(hearingResultEnum.CANCELLED)">
                 <label class="govuk-label govuk-radios__label" for="cancelled">
                   Withdrawn, settled or vacated
                 </label>
@@ -77,7 +77,7 @@
                     <option value="" selected>Please select</option>
                     <option *ngFor="let reason of cancelHearingActualReasons" [ngValue]="reason.key">{{reason.value_en}}</option>
                   </select>
-                </div>        
+                </div>
               </div>
             </div>
           </fieldset>

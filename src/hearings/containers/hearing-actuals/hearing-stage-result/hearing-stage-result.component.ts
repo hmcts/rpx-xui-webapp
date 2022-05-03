@@ -2,9 +2,14 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
+import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
-import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
+import {
+  HearingActualsMainModel,
+  HearingActualsModel,
+  PlannedHearingDayModel
+} from '../../../models/hearingActualsMainModel';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
 import { HearingResult, HearingStageResultEnum } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
@@ -29,6 +34,7 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
   public adjournHearingErrorMessage = '';
   public cancelHearingErrorMessage = '';
   private id: string;
+  public hearingDate: string;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly formBuilder: FormBuilder,
@@ -67,7 +73,12 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
       ).subscribe((state: HearingActualsStateData) => {
         this.hearingActualsMainModel = state.hearingActualsMainModel;
         this.caseTitle = this.hearingActualsMainModel.caseDetails.hmctsInternalCaseName;
+        const hearingResult = this.hearingActualsMainModel && this.hearingActualsMainModel.hearingActuals
+          && this.hearingActualsMainModel.hearingActuals.hearingOutcome
+          && this.hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResult;
+        this.hearingStageResultForm.get('hearingResult').setValue(hearingResult);
         this.hearingStageResultForm.get('hearingStage').setValue(this.hearingActualsMainModel.hearingPlanned.plannedHearingType);
+        this.hearingDate = this.calculateEarliestHearingDate(this.hearingActualsMainModel.hearingPlanned.plannedHearingDays);
       });
   }
 
@@ -83,13 +94,17 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
       this.hearingStageResultForm.get('hearingResult').setValue(this.hearingResultType);
     }
     if (this.isFormValid()) {
-      const hearingActuals = {
+      const hearingOutcome = this.hearingActualsMainModel && this.hearingActualsMainModel.hearingActuals
+        && this.hearingActualsMainModel.hearingActuals.hearingOutcome;
+      const hearingActuals: HearingActualsModel = {
         ...this.hearingActualsMainModel.hearingActuals,
         hearingOutcome: {
-          ...this.hearingActualsMainModel.hearingActuals.hearingOutcome,
-          hearingResultReasonType: this.getHearingResultReasonType(),
+          ...hearingOutcome,
+          hearingFinalFlag: false,
           hearingResult: this.hearingResultType as HearingResult,
-          hearingType: this.hearingStageResultForm.get('hearingStage').value
+          hearingResultDate: this.hearingDate,
+          hearingResultReasonType: this.getHearingResultReasonType(),
+          hearingType: this.hearingStageResultForm.get('hearingStage').value,
         }
       };
       this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
@@ -156,5 +171,10 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
       return this.hearingStageResultForm.get('cancelledReason').value;
     }
     return '';
+  }
+
+  public calculateEarliestHearingDate(hearingDays: PlannedHearingDayModel[]): string {
+    const moments: moment.Moment[] = hearingDays.map(d => moment(d.plannedStartTime));
+    return moment.min(moments).toISOString();
   }
 }

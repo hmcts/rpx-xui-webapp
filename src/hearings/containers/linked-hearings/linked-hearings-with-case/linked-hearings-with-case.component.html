@@ -1,0 +1,78 @@
+<xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem'">
+</xuilib-hmcts-error-summary>
+<exui-linked-hearings-case-title [caseId]="caseId" [caseName]="caseName"></exui-linked-hearings-case-title>
+<h1 class="govuk-heading-l" *ngIf="!linkedCases?.length">{{ linkedHearingEnum.NoLinkedCases}}</h1>
+<h1 class="govuk-heading-l" *ngIf="linkedCases?.length">{{ isHearingsAvailable? linkedHearingEnum.HearingSelection :
+  linkedHearingEnum.NoHearingSelection}}</h1>
+<form class="form" [formGroup]="linkHearingForm" id="linked-form">
+  <div class="govuk-form-group govuk-!-margin-top-5"
+    [ngClass]="{'govuk-form-group--error': !!linkedHearingSelectionError}">
+    <span class="govuk-error-message" *ngIf="linkedHearingSelectionError">
+      <span class="govuk-visually-hidden">Error:</span> {{linkedHearingSelectionError}}
+    </span>
+    <div formArrayName="hearings" *ngFor="let case of linkedCases; let i = index">
+      <br>
+      <table class="govuk-table">
+        <caption class="govuk-table__caption govuk-table__caption--s">{{case.caseName}} &nbsp;{{case.caseReference |
+          caseReference}}
+        </caption>
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header" width="300px"> </th>
+            <th scope="col" class="govuk-table__header" width="250px"> </th>
+            <th scope="col" class="govuk-table__header" width="80px"> </th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          <ng-container [formGroupName]="i">
+            <tr class="govuk-table__row" *ngFor="let hearing of case.hearings">
+              <td scope="row" class="govuk-table__cell allign-middle">{{hearing.hearingStage}}
+                <span *ngIf="hearing.hearingIsLinkedFlag">
+                  &nbsp;&nbsp;
+                  <img src="../../../../assets/images/link_icon_slanted.png"
+                    width="20px;" class="allign-middle" alt="Linked">&nbsp;
+                  <a href="link_hearings_22.html">Manage Link</a>
+                </span>
+              </td>
+              <td scope="row" class="govuk-table__cell allign-middle">
+                <strong class="govuk-tag govuk-tag--grey"
+                  [ngClass]="hearing.hearingStatus | hearingsBadge">{{hearing.hearingStatus}}</strong>
+              </td>
+              <td class="govuk-table__cell">
+                <div class="govuk-radios" data-module="govuk-radios">
+                  <div class="govuk-radios__item" *ngIf="!hearing.hearingIsLinkedFlag">
+                    <input class="govuk-radios__input" id="{{case.caseReference}}{{hearing.hearingId}}"
+                      formControlName="hearingReference" type="radio" value="{{hearing.hearingId}}">
+                    <label class="govuk-label govuk-radios__label"
+                      for="{{case.caseReference}}{{hearing.hearingId}}"></label>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+          <tr class="govuk-table__row" class="govuk-table__row" *ngIf="case.hearings.length === 0">
+            <td scope="row" class="govuk-table__cell allign-middle">No hearings requested</td>
+            <td scope="row" class="govuk-table__cell allign-middle"></td>
+            <td class="govuk-table__cell">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</form>
+
+<br>
+
+<div *ngIf="!linkedCases?.length" class="no-linked-cases">
+  <p>You can only link to hearings from other linked cases.<br>Case links can be created from the 'Linked cases' tab</p>
+  <div class="govuk-button-group">
+    <a href="javascript:history.back()" class="govuk-link">Return to hearings</a>
+  </div>
+</div>
+
+<div *ngIf="linkedCases?.length">
+  <button class="govuk-button" data-module="govuk-button" (click)="onSubmit()">Continue</button>
+  <a href="javascript:history.back()" class="link-cancel">Cancel</a>
+</div>

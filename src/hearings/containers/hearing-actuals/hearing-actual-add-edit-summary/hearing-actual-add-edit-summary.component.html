@@ -8,7 +8,7 @@
     <dl class="govuk-summary-list">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Hearing date</dt>
-        <dd class="govuk-summary-list__value">{{actualHearingDay?.hearingDate | date:"dd MMMM yyyy"}}</dd>
+        <dd class="govuk-summary-list__value">{{hearingDate | date:"dd MMMM yyyy"}}</dd>
       </div>
     </dl>
     <br>
@@ -56,13 +56,13 @@
       </div>
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Pause time</dt>
-        <dd class="govuk-summary-list__value" *ngIf="actualHearingDay.pauseDateTimes.length > 0">
+        <dd class="govuk-summary-list__value" *ngIf="actualHearingDay?.pauseDateTimes.length > 0">
           {{actualHearingDay.pauseDateTimes[0].pauseStartTime | date:"HH:mm" }}
         </dd>
       </div>
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Resume time</dt>
-        <dd class="govuk-summary-list__value" *ngIf="actualHearingDay.pauseDateTimes.length > 0">
+        <dd class="govuk-summary-list__value" *ngIf="actualHearingDay?.pauseDateTimes.length > 0">
           {{actualHearingDay.pauseDateTimes[0].pauseEndTime | date:"HH:mm" }}
         </dd>
       </div>

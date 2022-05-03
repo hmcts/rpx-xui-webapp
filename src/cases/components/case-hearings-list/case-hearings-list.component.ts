@@ -51,7 +51,7 @@ export class CaseHearingsListComponent implements OnInit {
   }
 
   public isAwaitingActual(exuiDisplayStatus: EXUIDisplayStatusEnum): boolean {
-    return exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_ACTUALS;
+    return exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_ACTUALS || exuiDisplayStatus === EXUIDisplayStatusEnum.LISTED;
   }
 
   public isNonCancellable(exuiDisplayStatus: EXUIDisplayStatusEnum): boolean {

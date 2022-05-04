@@ -120,7 +120,7 @@ describe('SpecificAccessHomeComponent', () => {
 
     it('should correctly redirect to the work list if the return to tasks event is triggered', () => {
       component.navigationHandler(returnToMyTasksNavEvent);
-      expect(routerMock.navigateByUrl).toHaveBeenCalledWith(`/work/list`);
+      expect(routerMock.navigateByUrl).toHaveBeenCalledWith(`/work/my-work/list`);
     });
 
     it('should correctly redirect to the tasks tab on the case details page if the return to my tasks event is triggered', () => {

@@ -123,7 +123,7 @@ describe('CaseListComponent', () => {
   // required no sorting on EUI-4476 so exclude the test
   xit('should take in the field name and trigger a new Request to the API to get a sorted result set.', async () => {
 
-    // mock the emitter and dispatch the connected event
+    // mock the emitter and dispatch the connected event 
     spyOn(component.sortEvent, 'emit');
     const element = fixture.debugElement.nativeElement;
     const button = element.querySelector('#sort_by_caseName');

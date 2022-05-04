@@ -111,8 +111,13 @@ class SpecificAccessDuration {
 
     async isValidationErrorDisplayedForDateInput(label) {
         const errorMessageElement = this.getDateInputErrorMessageElement(label);
-        const errorMessage = await errorMessageElement.getText()
-        return errorMessage !== '';
+        const isPresent = await errorMessageElement.isPresent();
+        if (!isPresent){
+            return isPresent;
+        }
+        const isDisplayed = await errorMessageElement.isDisplayed()
+
+        return isDisplayed;
     }
 
     async getAnotherPeriodValidationMessageForField(label) {
@@ -125,7 +130,7 @@ class SpecificAccessDuration {
     }
 
     getFieldFromDatInput(forFieldWithLabel, fieldLabel) {
-        return element(by.xpath(`//div[contains(@class,'govuk-radios__conditional')]//legend[contains(text(),'${forFieldWithLabel}')]/parent::fieldset//label[contains(text() ,'${fieldLabel}')]/following-sibling::input`));
+        return element(by.xpath(`//div[contains(@class,'govuk-radios__conditional')]//legend[contains(text(),'${forFieldWithLabel}')]/parent::fieldset//label[contains(text() ,'${fieldLabel}')]/../../input`));
     }
 
     getDateInputFieldWithLabel(label) {

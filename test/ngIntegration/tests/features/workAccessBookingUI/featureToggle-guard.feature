@@ -44,7 +44,6 @@ Feature: Work access page, feature toggle and route guards
             | BOOKING_UI-FT-ON | caseworker-ia-iacjudge,caseworker-ia,caseworker | true     | true        | exui-booking-home |
 
 
-    @test
     Scenario Outline: After completing booking ui journey "View existing bookings"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo

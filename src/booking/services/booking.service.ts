@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Booking, BookingRequest, BookingResponseError, BookingResponseSuccess } from '../models';
 
 @Injectable()
@@ -13,7 +13,9 @@ export class BookingService {
   }
 
   public getBookingLocation(locationId: string): Observable<any> {
-    return this.http.get(`/refdata/location/building-locations?epimms_id=${locationId}`);
+    return of([{
+      building_location_name: 'Wolverhampton'
+    }]); // this.http.get(`/refdata/location/building-locations?epimms_id=${locationId}`);
   }
 
   public createBooking(bookingRequest: BookingRequest): Observable<BookingResponseSuccess | BookingResponseError> {

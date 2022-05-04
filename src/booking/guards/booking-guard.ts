@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {CanActivate, Router} from '@angular/router';
 import {FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
 import {select, Store} from '@ngrx/store';
-import {combineLatest, Observable} from 'rxjs';
+import {combineLatest, Observable, of} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 import {AppConstants} from '../../app/app.constants';
 import {UserDetails} from '../../app/models';
@@ -24,18 +24,19 @@ export class BookingGuard implements CanActivate {
   }
 
   public canActivate(): Observable<boolean> {
-    const userDetails$: Observable<UserDetails> = this.store.pipe(select(fromActions.getUserDetails));
-    const bookingFeatureToggle$: Observable<boolean> = this.featureToggleService.getValueOnce(AppConstants.FEATURE_NAMES.booking, false);
-    const userAccess$ = combineLatest([userDetails$, bookingFeatureToggle$]);
-    return userAccess$.pipe(map(([userDetails, bookingFeatureToggle]) => {
-      if (!bookingFeatureToggle) {
-        return false;
-      }
-      return this.hasAccess(userDetails);
-    })).pipe(tap(hasAccesss => {
-      if (!hasAccesss) {
-        this.router.navigate([BookingGuard.defaultUrl]);
-      }
-    }));
+    return of(true);
+    // const userDetails$: Observable<UserDetails> = this.store.pipe(select(fromActions.getUserDetails));
+    // const bookingFeatureToggle$: Observable<boolean> = this.featureToggleService.getValueOnce(AppConstants.FEATURE_NAMES.booking, false);
+    // const userAccess$ = combineLatest([userDetails$, bookingFeatureToggle$]);
+    // return userAccess$.pipe(map(([userDetails, bookingFeatureToggle]) => {
+    //   if (!bookingFeatureToggle) {
+    //     return false;
+    //   }
+    //   return this.hasAccess(userDetails);
+    // })).pipe(tap(hasAccesss => {
+    //   if (!hasAccesss) {
+    //     this.router.navigate([BookingGuard.defaultUrl]);
+    //   }
+    // }));
   }
 }

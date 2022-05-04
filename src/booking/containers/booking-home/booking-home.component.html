@@ -17,7 +17,6 @@
                 </label>
               </div>
               <div id="conditional-booking-type-0" *ngIf="bookingTypeForm.get('bookingType').value === 0" class="govuk-radios__conditional">
-
                 <div class="govuk-form-group">
                   <div class="govuk-grid-column-one-third" *ngFor="let booking of existingBookings" >
                       <p>
@@ -39,20 +38,19 @@
                       </div>
                   </div>
                 </div>
-
               </div>
             </ng-container>
             <div class="govuk-radios__item">
-              <input class="govuk-radios__input" id="type-1" name="bookingType" type="radio"
+              <input class="govuk-radios__input" id="type-2" name="bookingType" type="radio"
                 (change)="onSelectOption(1)" [value]="1" formControlName="bookingType" [checked]="bookingProcess.selectedBookingOption===1" />
-              <label class="govuk-label govuk-radios__label" for="type-1">
+              <label class="govuk-label govuk-radios__label" for="type-2">
                 Create a new booking
               </label>
             </div>
             <div class="govuk-radios__item">
-              <input class="govuk-radios__input" id="type-2" name="bookingType" type="radio"
+              <input class="govuk-radios__input" id="type-3" name="bookingType" type="radio"
                 (change)="onSelectOption(2)" [value]="2" formControlName="bookingType"/>
-              <label class="govuk-label govuk-radios__label" for="type-2">
+              <label class="govuk-label govuk-radios__label" for="type-3">
                 View tasks and cases
               </label>
             </div>

@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.13.8-remove-specific-access-code":
-  version "4.13.8-remove-specific-access-code"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.13.8-remove-specific-access-code.tgz#a9caef1468e1f3de2aa0336f514f43cd6b9e1abb"
-  integrity sha512-XHSdnl1bfOEFjzDh7X36dqlzXtG5e0Ja/IKf2QXE/H10HPAg81ULkgtu6VrWafQCzolO6Ko/INb23ZXJw4bQgQ==
+"@hmcts/ccd-case-ui-toolkit@4.9.16-EUI-4284-specific-access-request":
+  version "4.9.16-EUI-4284-specific-access-request"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.9.16-EUI-4284-specific-access-request.tgz#2b1cdd4fe4c4020e80ad1bdac5e9e1e68f9b9db1"
+  integrity sha512-bTIRVGtv8+ynLGXE4OXtnyLqY+ho9je7W/y1ilKRLrZJuldK8KJpvn58OGJT3ooVS6N+kJg5aH/c4bFYhmMSBA==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

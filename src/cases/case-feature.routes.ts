@@ -7,6 +7,7 @@ import {
   CaseCreateSubmitComponent,
   CaseDetailsHomeComponent,
   CaseFilterComponent,
+  CaseHearingsComponent,
   CaseHomeComponent,
   CaseListComponent,
   CasesCreateComponent,
@@ -120,6 +121,10 @@ export const ROUTES: Routes = [
               {
                 path: 'roles-and-access',
                 component: RolesAndAccessContainerComponent
+              },
+              {
+                path: 'hearings',
+                component: CaseHearingsComponent,
               }
             ]
           },

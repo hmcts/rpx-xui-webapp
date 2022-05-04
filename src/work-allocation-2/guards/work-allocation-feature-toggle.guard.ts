@@ -20,7 +20,7 @@ export class WorkAllocationFeatureToggleGuard implements CanActivate {
   }
 
   public canActivate(): Observable<boolean> {
-    return this.featureToggleService.getValueOnce<boolean>(AppConstants.FEATURE_NAMES.workAllocation, false).pipe(tap(isfeatureEnabled => {
+    return this.featureToggleService.getValueOnce<boolean>(AppConstants.FEATURE_NAMES.workAllocation, true).pipe(tap(isfeatureEnabled => {
       WorkAllocationFeatureToggleGuard.navigateUrl(isfeatureEnabled, this.router, WorkAllocationFeatureToggleGuard.defaultUrl);
     }));
   }

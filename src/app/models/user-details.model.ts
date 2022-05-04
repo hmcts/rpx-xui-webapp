@@ -30,4 +30,5 @@ export enum UserRole {
   Admin = 'admin',
   LegalOps = 'legalops',
   Judicial = 'judicial',
+  Ogd = 'ogd',
 }

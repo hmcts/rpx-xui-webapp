@@ -1,0 +1,30 @@
+<div class="govuk-form-group"
+     [ngClass]="{ 'govuk-form-group--error': personFormGroup.controls.selectedFormControl.errors && personFormGroup.controls.selectedFormControl.errors.error}">
+  <div id="sub-title-hint" class="govuk-hint">
+    {{subTitle}}
+  </div>
+  <span id="validation-error" class="govuk-error-message" *ngIf="personFormGroup.controls.selectedFormControl.errors">
+    <span class="govuk-visually-hidden">Error:</span>{{personFormGroup.controls.selectedFormControl.errors.error }}
+  </span>
+  <div class="exclude-person" [class.column-view]="isColumnView">
+    <div class="person-input">
+      <xuilib-search-judicials id="judicialsSearch"
+                               [placeholderContent]="'e.g. John Smith'"
+                               [idValue]="idValue"
+                               [serviceId]="serviceId"
+                               [selectedJudicials]="judgeList"
+                               [control]="personFormGroup.controls.selectedFormControl">
+      </xuilib-search-judicials>
+    </div>
+    <div class="person-button">
+      <div class="govuk-button govuk-button--secondary" data-module="govuk-button" (click)="excludeJudge();">
+        {{submitButtonName}}</div>
+    </div>
+  </div>
+  <ul class="hmcts-filter-tags selection-container">
+    <li class="location-selection" *ngFor="let judge of judgeList">
+      <a class="hmcts-filter__tag" (click)="removeSelectedJudge(judge)" href="javascript:void(0)">
+        {{displayedJudgeName(judge)}} </a>
+    </li>
+  </ul>
+</div>

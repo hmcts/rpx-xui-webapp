@@ -1,17 +1,20 @@
 export interface Person {
-    id: string;
-    name: string;
-    email: string;
-    domain: PersonRole;
+  id: string;
+  name: string;
+  email: string;
+  domain: PersonRole;
+  knownAs?: string;
+  personalCode?: string;
 }
+
 export interface SearchOptions {
-    searchTerm: string;
-    jurisdiction: string;
+  searchTerm: string;
+  jurisdiction: string;
 }
 
 export enum PersonRole {
-    JUDICIAL = 'Judicial',
-    CASEWORKER = 'Legal Ops',
-    ADMIN = 'Admin',
-    ALL = 'All',
+  JUDICIAL = 'Judicial',
+  CASEWORKER = 'Legal Ops',
+  ADMIN = 'Admin',
+  ALL = 'All',
 }

@@ -9,7 +9,6 @@ import { switchMap } from 'rxjs/operators';
 import { UserService } from 'src/app/services/user/user.service';
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
 
-
 describe('HmctsGlobalHeaderComponent', () => {
   let nocStoreSpy: jasmine.Spy;
   let component: HmctsGlobalHeaderComponent;

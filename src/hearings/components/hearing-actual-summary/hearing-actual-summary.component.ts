@@ -39,11 +39,11 @@ export class HearingActualSummaryComponent implements OnInit {
       const plannedPartyInfo = plannedParties.find((plannedParty) => plannedParty.partyId === actualPartyInfo.actualPartyId);
       if (plannedPartyInfo) {
         const partyDetail: ActualDayPartyModel = {
-          actualIndividualDetails: {
+          individualDetails: {
             firstName: plannedPartyInfo.individualDetails.firstName,
             lastName: plannedPartyInfo.individualDetails.lastName,
           },
-          actualOrganisationDetails: {
+          organisationDetails: {
             name: plannedPartyInfo.organisationDetails.name,
           },
           didNotAttendFlag: false,

@@ -60,7 +60,9 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   }
 
   private static hasActualParties(hearingActuals: HearingActualsMainModel, immutablePartyRoles: LovRefDataModel[]): boolean {
-    return !!hearingActuals.hearingActuals && hearingActuals.hearingActuals.actualHearingDays.length ? hearingActuals.hearingActuals.actualHearingDays[0].actualDayParties.some(
+    return !!hearingActuals.hearingActuals && hearingActuals.hearingActuals.actualHearingDays
+      && hearingActuals.hearingActuals.actualHearingDays.length && hearingActuals.hearingActuals.actualHearingDays[0].actualDayParties
+      ? hearingActuals.hearingActuals.actualHearingDays[0].actualDayParties.some(
       (actualDayParty: ActualDayPartyModel) => immutablePartyRoles
         .map((partyRole: LovRefDataModel) => partyRole.key)
         .includes(actualDayParty.partyRole)
@@ -150,11 +152,11 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
       for (const party of parties) {
         if (party.partyRole === PartyRoleOnly.Appellant || party.partyRole === PartyRoleOnly.Claimant) {
           const actualDayParty: ActualDayPartyModel = {
-            actualIndividualDetails: {
+            individualDetails: {
               firstName: party.individualDetails.firstName,
               lastName: party.individualDetails.lastName,
             },
-            actualOrganisationDetails: {
+            organisationDetails: {
               name: party.organisationDetails.name,
             },
             didNotAttendFlag: false,

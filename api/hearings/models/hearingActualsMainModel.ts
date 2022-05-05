@@ -76,8 +76,8 @@ export interface ActualOrganisationDetailsModel {
 export interface ActualDayPartyModel {
   actualPartyId: string;
   didNotAttendFlag: boolean;
-  actualIndividualDetails: ActualIndividualDetailsModel;
-  actualOrganisationDetails: ActualOrganisationDetailsModel;
+  individualDetails: ActualIndividualDetailsModel;
+  organisationDetails: ActualOrganisationDetailsModel;
   partyChannelSubType: string;
   partyRole: string;
   representedParty: string;

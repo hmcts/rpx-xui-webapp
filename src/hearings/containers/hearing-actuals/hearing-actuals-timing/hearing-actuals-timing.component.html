@@ -13,9 +13,9 @@
       </ul>
     </div>
   </div>
-  <div class="govuk-grid-row" *ngIf="form">
+  <div class="govuk-grid-row" *ngIf="formGroup">
     <div class="govuk-grid-column-two-thirds">
-      <form [formGroup]="form" (submit)="submit(form.value, form.valid)">
+      <form [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup.value, formGroup.valid)">
         <exui-hearing-actuals-case-title *ngIf="caseTitle"
           [caseTitle]="caseTitle"></exui-hearing-actuals-case-title>
         <h1 class="govuk-heading-l">
@@ -24,58 +24,58 @@
         <br>
         <div
           [ngClass]="{
-          'govuk-form-group--error': submitted && (form.get('hearingStartTime').errors && form.get('hearingEndTime').errors || (form.hasError('invalidTimeRange') && form.getError('invalidTimeRange').hearingStartTime))}">
+          'govuk-form-group--error': submitted && (formGroup.get('hearingStartTime').errors && formGroup.get('hearingEndTime').errors || (formGroup.hasError('invalidTimeRange') && formGroup.getError('invalidTimeRange').hearingStartTime))}">
           <span class="govuk-error-message"
-                *ngIf="submitted && form.get('hearingStartTime').getError('mandatory') && form.get('hearingEndTime').getError('mandatory')">
+                *ngIf="submitted && formGroup.get('hearingStartTime').getError('mandatory') && formGroup.get('hearingEndTime').getError('mandatory')">
               <span class="govuk-visually-hidden">Error:</span> Enter hearing start and finish times
             </span>
 
           <span class="govuk-error-message"
-                *ngIf="submitted && form.hasError('invalidTimeRange') && form.getError('invalidTimeRange').hearingStartTime">
+                *ngIf="submitted && formGroup.hasError('invalidTimeRange') && formGroup.getError('invalidTimeRange').hearingStartTime">
               <span
-                class="govuk-visually-hidden">Error:</span> {{form.getError('invalidTimeRange').hearingStartTime.message}}
+                class="govuk-visually-hidden">Error:</span> {{formGroup.getError('invalidTimeRange').hearingStartTime.message}}
             </span>
           <div class="govuk-form-group"
-                [ngClass]="{'govuk-form-group--error': form.get('hearingStartTime').hasError('invalidTime') || (submitted && form.get('hearingStartTime').errors)}">
+                [ngClass]="{'govuk-form-group--error': formGroup.get('hearingStartTime').hasError('invalidTime') || (submitted && formGroup.get('hearingStartTime').errors)}">
             <label for="hearingStartTime" class="govuk-label govuk-!-font-weight-bold">Start time</label>
-            <span class="govuk-error-message" *ngIf="submitted && form.get('hearingStartTime').hasError('mandatory')">
+            <span class="govuk-error-message" *ngIf="submitted && formGroup.get('hearingStartTime').hasError('mandatory')">
               <span
-                class="govuk-visually-hidden">Error:</span> {{form.get('hearingStartTime').getError('mandatory').message}}
+                class="govuk-visually-hidden">Error:</span> {{formGroup.get('hearingStartTime').getError('mandatory').message}}
             </span>
-            <span class="govuk-error-message" *ngIf="form.get('hearingStartTime').hasError('invalidTime')">
+            <span class="govuk-error-message" *ngIf="formGroup.get('hearingStartTime').hasError('invalidTime')">
               <span
-                class="govuk-visually-hidden">Error:</span> {{form.get('hearingStartTime').getError('invalidTime').message}}
+                class="govuk-visually-hidden">Error:</span> {{formGroup.get('hearingStartTime').getError('invalidTime').message}}
             </span>
             <input class="govuk-input govuk-date-input__input govuk-input--width-5"
                     id="hearingStartTime"
-                    [ngClass]="{'govuk-input--error': form.get('hearingStartTime').hasError('invalidTime') || (submitted && (form.get('hearingStartTime').errors || (form.hasError('invalidTimeRange') && form.getError('invalidTimeRange').hearingStartTime)))}"
+                    [ngClass]="{'govuk-input--error': formGroup.get('hearingStartTime').hasError('invalidTime') || (submitted && (formGroup.get('hearingStartTime').errors || (formGroup.hasError('invalidTimeRange') && formGroup.getError('invalidTimeRange').hearingStartTime)))}"
                     type="text"
                     formControlName="hearingStartTime"
             >
           </div>
 
           <div class="govuk-form-group"
-                [ngClass]="{'govuk-form-group--error': form.get('hearingEndTime').hasError('invalidTime') || submitted && form.get('hearingEndTime').errors}">
-            <span class="govuk-error-message" *ngIf="submitted && form.get('hearingEndTime').hasError('mandatory')">
+                [ngClass]="{'govuk-form-group--error': formGroup.get('hearingEndTime').hasError('invalidTime') || submitted && formGroup.get('hearingEndTime').errors}">
+            <span class="govuk-error-message" *ngIf="submitted && formGroup.get('hearingEndTime').hasError('mandatory')">
               <span
-                class="govuk-visually-hidden">Error:</span> {{form.get('hearingEndTime').getError('mandatory').message}}
+                class="govuk-visually-hidden">Error:</span> {{formGroup.get('hearingEndTime').getError('mandatory').message}}
             </span>
-            <span class="govuk-error-message" *ngIf="submitted && form.get('hearingEndTime').hasError('mandatory')">
+            <span class="govuk-error-message" *ngIf="submitted && formGroup.get('hearingEndTime').hasError('mandatory')">
               <span class="govuk-visually-hidden">Error:</span>
             </span>
-            <span class="govuk-error-message" *ngIf="form.get('hearingEndTime').hasError('invalidTime')">
+            <span class="govuk-error-message" *ngIf="formGroup.get('hearingEndTime').hasError('invalidTime')">
               <span
-                class="govuk-visually-hidden">Error:</span> {{form.get('hearingEndTime').getError('invalidTime').message}}
+                class="govuk-visually-hidden">Error:</span> {{formGroup.get('hearingEndTime').getError('invalidTime').message}}
             </span>
             <span class="govuk-error-message"
-                  *ngIf="submitted && form.hasError('invalidTimeRange') && form.getError('invalidTimeRange').hearingEndTime">
+                  *ngIf="submitted && formGroup.hasError('invalidTimeRange') && formGroup.getError('invalidTimeRange').hearingEndTime">
               <span
-                class="govuk-visually-hidden">Error:</span> {{form.getError('invalidTimeRange').hearingEndTime.message}}
+                class="govuk-visually-hidden">Error:</span> {{formGroup.getError('invalidTimeRange').hearingEndTime.message}}
             </span>
             <label for="hearingEndTime" class="govuk-label govuk-!-font-weight-bold">Finish time</label>
             <input class="govuk-input govuk-date-input__input govuk-input--width-5"
                     id="hearingEndTime"
-                    [ngClass]="{'govuk-input--error': form.get('hearingEndTime').hasError('invalidTime') || (submitted && (form.get('hearingEndTime').errors || (form.hasError('invalidTimeRange') && form.getError('invalidTimeRange').hearingStartTime)))}"
+                    [ngClass]="{'govuk-input--error': formGroup.get('hearingEndTime').hasError('invalidTime') || (submitted && (formGroup.get('hearingEndTime').errors || (formGroup.hasError('invalidTimeRange') && formGroup.getError('invalidTimeRange').hearingStartTime)))}"
                     type="text"
                     formControlName="hearingEndTime"
             >
@@ -83,16 +83,16 @@
         </div>
 
         <div class="govuk-form-group"
-              [ngClass]="{'govuk-form-group--error': submitted && form.get('recordTimes').errors}">
+              [ngClass]="{'govuk-form-group--error': submitted && formGroup.get('recordTimes').errors}">
           <fieldset class="govuk-fieldset" aria-describedby="changed-name-hint">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
               <h1 class="govuk-fieldset__heading">
                 Do you need to record times the hearing was paused?
               </h1>
             </legend>
-            <span class="govuk-error-message" *ngIf="submitted && form.get('recordTimes').hasError('mandatory')">
+            <span class="govuk-error-message" *ngIf="submitted && formGroup.get('recordTimes').hasError('mandatory')">
               <span
-                class="govuk-visually-hidden">Error:</span> {{form.get('recordTimes').getError('mandatory').message}}
+                class="govuk-visually-hidden">Error:</span> {{formGroup.get('recordTimes').getError('mandatory').message}}
             </span>
             <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios" id="recordTimes">
               <div class="govuk-radios__item">
@@ -100,7 +100,7 @@
                         id="pauseResumeYes"
                         formControlName="recordTimes"
                         type="radio"
-                        value="yes" (change)="updateControl($event, form.get('recordTimes'))">
+                        value="yes" (change)="updateControl($event, formGroup.get('recordTimes'))">
                 <label class="govuk-label govuk-radios__label" for="pauseResumeYes">
                   Yes
                 </label>
@@ -110,7 +110,7 @@
                         id="pauseResumeNo"
                         formControlName="recordTimes" type="radio"
                         value="no"
-                        (change)="updateControl($event, form.get('recordTimes'))">
+                        (change)="updateControl($event, formGroup.get('recordTimes'))">
                 <label class="govuk-label govuk-radios__label" for="pauseResumeNo">
                   No
                 </label>
@@ -119,88 +119,88 @@
           </fieldset>
         </div>
 
-        <div *ngIf="form.get('recordTimes').value === 'yes'"
-              [ngClass]="{'govuk-form-group--error': submitted && (form.get('pauseStartTime').errors && form.get('pauseEndTime').errors
-              || (form.hasError('invalidTimeRange') && form.getError('invalidTimeRange').pauseStartTime)
-              || (form.hasError('invalidPauseStartTimeRange') && form.getError('invalidPauseStartTimeRange').pauseStartTime)
-              || (form.hasError('invalidPauseEndTimeRange') && form.getError('invalidPauseEndTimeRange').pauseEndTime ))}">
+        <div *ngIf="formGroup.get('recordTimes').value === 'yes'"
+              [ngClass]="{'govuk-form-group--error': submitted && (formGroup.get('pauseStartTime').errors && formGroup.get('pauseEndTime').errors
+              || (formGroup.hasError('invalidTimeRange') && formGroup.getError('invalidTimeRange').pauseStartTime)
+              || (formGroup.hasError('invalidPauseStartTimeRange') && formGroup.getError('invalidPauseStartTimeRange').pauseStartTime)
+              || (formGroup.hasError('invalidPauseEndTimeRange') && formGroup.getError('invalidPauseEndTimeRange').pauseEndTime ))}">
           <span class="govuk-error-message"
-                *ngIf="submitted && !form.getError('required') && form.hasError('invalidTimeRange') && form.getError('invalidTimeRange').pauseStartTime">
+                *ngIf="submitted && !formGroup.getError('required') && formGroup.hasError('invalidTimeRange') && formGroup.getError('invalidTimeRange').pauseStartTime">
               <span class="govuk-visually-hidden">Error:</span> Pause time must be before resume time
             </span>
           <span class="govuk-error-message"
-                *ngIf="submitted && form.get('pauseStartTime').hasError('mandatory') && form.get('pauseEndTime').hasError('mandatory')">
+                *ngIf="submitted && formGroup.get('pauseStartTime').hasError('mandatory') && formGroup.get('pauseEndTime').hasError('mandatory')">
               <span class="govuk-visually-hidden">Error:</span> Enter hearing pause and resume times
             </span>
           <div class="govuk-form-group"
-                [ngClass]="{'govuk-form-group--error': form.get('pauseStartTime').hasError('invalidTime') || submitted && form.get('pauseStartTime').errors}">
+                [ngClass]="{'govuk-form-group--error': formGroup.get('pauseStartTime').hasError('invalidTime') || submitted && formGroup.get('pauseStartTime').errors}">
             <label class="govuk-label govuk-!-font-weight-bold" for="pauseStartTime">
               Pause time
             </label>
             <div class="govuk-hint">
               For example, 13:35
             </div>
-            <span class="govuk-error-message" *ngIf="submitted && form.get('pauseStartTime').getError('mandatory')">
+            <span class="govuk-error-message" *ngIf="submitted && formGroup.get('pauseStartTime').getError('mandatory')">
               <span
-                class="govuk-visually-hidden">Error:</span> {{form.get('pauseStartTime').getError('mandatory').message}}
+                class="govuk-visually-hidden">Error:</span> {{formGroup.get('pauseStartTime').getError('mandatory').message}}
             </span>
-            <span class="govuk-error-message" *ngIf="form.get('pauseStartTime').hasError('invalidTime')">
+            <span class="govuk-error-message" *ngIf="formGroup.get('pauseStartTime').hasError('invalidTime')">
               <span
-                class="govuk-visually-hidden">Error:</span> {{form.get('pauseStartTime').getError('invalidTime').message}}
+                class="govuk-visually-hidden">Error:</span> {{formGroup.get('pauseStartTime').getError('invalidTime').message}}
             </span>
             <span class="govuk-error-message"
-                  *ngIf="submitted && form.hasError('invalidPauseStartTimeRange') && form.getError('invalidPauseStartTimeRange').pauseStartTime">
+                  *ngIf="submitted && formGroup.hasError('invalidPauseStartTimeRange') && formGroup.getError('invalidPauseStartTimeRange').pauseStartTime">
               <span
-                class="govuk-visually-hidden">Error:</span>{{form.getError('invalidPauseStartTimeRange').pauseStartTime.message}}
+                class="govuk-visually-hidden">Error:</span>{{formGroup.getError('invalidPauseStartTimeRange').pauseStartTime.message}}
             </span>
             <input class="govuk-input govuk-date-input__input govuk-input--width-5"
                     id="pauseStartTime"
                     [ngClass]="{'govuk-input--error':
-                    form.get('pauseStartTime').hasError('invalidTime') ||
-                    (form.get('pauseStartTime').errors && (submitted
-                    || (form.hasError('invalidTimeRange') && form.getError('invalidTimeRange').pauseStartTime)
-                    || (form.hasError('invalidPauseStartTimeRange') && form.getError('invalidPauseStartTimeRange').pauseStartTime)))
+                    formGroup.get('pauseStartTime').hasError('invalidTime') ||
+                    (formGroup.get('pauseStartTime').errors && (submitted
+                    || (formGroup.hasError('invalidTimeRange') && formGroup.getError('invalidTimeRange').pauseStartTime)
+                    || (formGroup.hasError('invalidPauseStartTimeRange') && formGroup.getError('invalidPauseStartTimeRange').pauseStartTime)))
                     }"
                     type="text" formControlName="pauseStartTime">
           </div>
           <div class="govuk-form-group"
-                [ngClass]="{'govuk-form-group--error': form.get('pauseEndTime').hasError('invalidTime') || (submitted && form.get('pauseEndTime').errors)}">
+                [ngClass]="{'govuk-form-group--error': formGroup.get('pauseEndTime').hasError('invalidTime') || (submitted && formGroup.get('pauseEndTime').errors)}">
             <label class="govuk-label govuk-!-font-weight-bold" for="pauseEndTime">
               Resume time
             </label>
             <div class="govuk-hint">
               For example, 13:55
             </div>
-            <span class="govuk-error-message" *ngIf="submitted && form.get('pauseEndTime').hasError('mandatory')">
+            <span class="govuk-error-message" *ngIf="submitted && formGroup.get('pauseEndTime').hasError('mandatory')">
               <span
-                class="govuk-visually-hidden">Error:</span> {{form.get('pauseEndTime').getError('mandatory').message}}
+                class="govuk-visually-hidden">Error:</span> {{formGroup.get('pauseEndTime').getError('mandatory').message}}
             </span>
 
-            <span class="govuk-error-message" *ngIf="form.get('pauseEndTime').hasError('invalidTime')">
+            <span class="govuk-error-message" *ngIf="formGroup.get('pauseEndTime').hasError('invalidTime')">
               <span
-                class="govuk-visually-hidden">Error:</span> {{form.get('pauseEndTime').getError('invalidTime').message}}
+                class="govuk-visually-hidden">Error:</span> {{formGroup.get('pauseEndTime').getError('invalidTime').message}}
             </span>
 
             <span class="govuk-error-message"
-                  *ngIf="submitted && form.hasError('invalidPauseEndTimeRange') && form.getError('invalidPauseEndTimeRange').pauseEndTime">
+                  *ngIf="submitted && formGroup.hasError('invalidPauseEndTimeRange') && formGroup.getError('invalidPauseEndTimeRange').pauseEndTime">
               <span
-                class="govuk-visually-hidden">Error:</span>{{form.getError('invalidPauseEndTimeRange').pauseEndTime.message}}
+                class="govuk-visually-hidden">Error:</span>{{formGroup.getError('invalidPauseEndTimeRange').pauseEndTime.message}}
             </span>
 
 
             <input class="govuk-input govuk-date-input__input govuk-input--width-5 govuk-input--error"
                     id="pauseEndTime"
                     [ngClass]="{'govuk-input--error':
-                    form.get('pauseEndTime').errors && (submitted
-                      || (form.hasError('invalidTimeRange') && form.getError('invalidTimeRange').pauseStartTime)
-                      || (form.hasError('invalidPauseEndTimeRange') && form.getError('invalidPauseEndTimeRange').pauseEndTime))
+                    formGroup.get('pauseEndTime').errors && (submitted
+                      || (formGroup.hasError('invalidTimeRange') && formGroup.getError('invalidTimeRange').pauseStartTime)
+                      || (formGroup.hasError('invalidPauseEndTimeRange') && formGroup.getError('invalidPauseEndTimeRange').pauseEndTime))
                       }"
                     formControlName="pauseEndTime"
                     type="text">
           </div>
         </div>
 
-        <button class="govuk-button primary" data-module="govuk-button">
+        <button type="submit" class="govuk-button primary" data-module="govuk-button">
           Save and continue
         </button>
       </form>

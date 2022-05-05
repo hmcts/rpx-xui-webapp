@@ -1495,11 +1495,11 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
         actualDayParties: [
           {
             actualPartyId: '1',
-            actualIndividualDetails: {
+            individualDetails: {
               firstName: 'Bob',
               lastName: 'Jones',
             },
-            actualOrganisationDetails: {
+            organisationDetails: {
               name: 'Company D',
             },
             didNotAttendFlag: false,
@@ -1517,11 +1517,11 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
         actualDayParties: [
           {
             actualPartyId: '2',
-            actualIndividualDetails: {
+            individualDetails: {
               firstName: 'Mary',
               lastName: 'Jones',
             },
-            actualOrganisationDetails: {
+            organisationDetails: {
               name: 'Company A',
             },
             didNotAttendFlag: true,

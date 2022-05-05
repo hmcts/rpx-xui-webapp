@@ -33,7 +33,7 @@ export class GetHearingActualsSuccess implements Action {
 export class UpdateHearingActuals implements Action {
   public readonly type = UPDATE_HEARING_ACTUALS;
 
-  constructor(public payload: { hearingActuals: HearingActualsModel, hearingId: string }) {
+  constructor(public payload: { hearingId: string, hearingActuals: HearingActualsModel }) {
   }
 }
 
@@ -66,7 +66,7 @@ export class SubmitHearingActualsFailure implements Action {
 }
 
 export class ResetHearingActualsLastError implements Action {
-  public readonly type = RESET_HEARING_ACTUALS_LAST_ERROR
+  public readonly type = RESET_HEARING_ACTUALS_LAST_ERROR;
 }
 
 export type HearingActualsAction =

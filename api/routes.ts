@@ -1,4 +1,5 @@
 import * as express from 'express';
+import {router as accessManagementRouter} from './accessManagement/routes';
 import {router as caseShareRoutes} from './caseshare/routes';
 import {getConfigValue, showFeature} from './configuration';
 import {APP_INSIGHTS_KEY} from './configuration/references';
@@ -29,6 +30,8 @@ router.get('/configuration', (req, res) => {
 router.use(authInterceptor);
 
 router.use('/user', userRouter);
+
+router.use('/am', accessManagementRouter);
 
 router.use('/role-access', roleAccessRouter);
 

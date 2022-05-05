@@ -132,11 +132,21 @@ export class CaseTaskComponent implements OnInit {
     }
   }
 
-    public toDate(value: string | number | Date): Date {
+  public toDate(value: string | number | Date): Date {
     if (value) {
       const d = new Date(value);
       return isNaN(d.getTime()) ? null : d;
     }
     return null;
+  }
+
+  public onClick(event: string) {
+    const url = event.substring(event.indexOf('(') + 1, event.indexOf(')'));
+    const urls = url.split('?');
+    this.router.navigate([urls[0]], {
+      queryParams: {
+        tid: urls[1].split('=')[1]
+      }
+    });
   }
 }

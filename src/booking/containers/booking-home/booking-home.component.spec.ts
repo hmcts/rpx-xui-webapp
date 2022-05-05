@@ -48,7 +48,7 @@ const DUMMY_BOOKINGS: Booking[] = [{
 
 const DUMMY_LOCATION_NAME: string = 'Some place name';
 
-describe('BookingHomeComponent', () => {
+fdescribe('BookingHomeComponent', () => {
   let component: BookingHomeComponent;
   let fixture: ComponentFixture<BookingHomeComponent>;
   const bookingService = jasmine.createSpyObj<BookingService>('BookingService', ['getBookings', 'getBookingLocation', 'refreshRoleAssignments']);

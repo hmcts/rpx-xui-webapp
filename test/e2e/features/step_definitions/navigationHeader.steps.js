@@ -182,18 +182,25 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I validate header displayed for user type {string}', async function(userType){
         await browserWaits.retryWithActionCallback(async () => {
-            
             try{
-                await headerPage.validateHeaderDisplayedForUserType(userType);
+                await browserWaits.retryWithActionCallback(async () => {
+                    try {
+                        await headerPage.validateHeaderDisplayedForUserType(userType);
+                    } catch (err) {
+                        await headerpage.clickManageCases();
+                        throw new Error(err); 
+                    }
+                });
             }catch(err){
                 const baseUrl = process.env.TEST_URL ? process.env.TEST_URL : 'http://localhost:3000/';
                 await browser.get(baseUrl);
-                await headerpage.waitForPrimaryNavDisplay();
+                await headerpage.click();
                 await browserUtil.waitForLD();
                 throw new Error(err);
-            } 
+            }
+            
         });
-
+        
     });
 
     Then('I validate 16-digit Case reference search box isDisplayed? is {string}', async function(isDisplayed){

@@ -41,7 +41,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I validate task tab alert banner header is {string}', async function (alertheader) {
-        await BrowserWaits(async () => {
+        await BrowserWaits.retryWithActionCallback(async () => {
             expect(await caseDetailsTaskTabPage.alertBannerHeading.getText()).includes(alertheader);
 
         });

@@ -31,6 +31,8 @@ export class RemoveRoleComponent implements OnInit {
 
   private backUrl: string;
 
+  public showSpinner: boolean;
+
   constructor(private readonly route: ActivatedRoute,
               private readonly router: Router,
               private readonly location: Location,
@@ -82,6 +84,7 @@ export class RemoveRoleComponent implements OnInit {
   public onNavEvent(navEvent: RemoveAllocationNavigationEvent): void {
     switch (navEvent) {
       case RemoveAllocationNavigationEvent.REMOVE_ROLE_ALLOCATION: {
+        this.showSpinner = true;
         this.allocateRoleService.removeAllocation(this.assignmentId).subscribe(() => {
             const message: any = { type: 'success', message: RemoveRoleText.infoMessage };
             this.router.navigate([this.backUrl], {
@@ -104,6 +107,7 @@ export class RemoveRoleComponent implements OnInit {
         return;
       }
       default: {
+        this.showSpinner = false;
         throw new Error('Invalid option');
       }
     }

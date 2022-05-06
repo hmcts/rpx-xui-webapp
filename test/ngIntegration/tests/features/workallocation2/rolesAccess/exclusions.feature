@@ -1,4 +1,4 @@
-@ng 
+@ng  
 Feature: WA Release 2: Exclusions
     Background: Setup
         Given I set MOCK case details with reference "caseDetails"

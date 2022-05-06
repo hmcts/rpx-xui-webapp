@@ -82,6 +82,8 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
   public typeOfRole: SpecificRole;
   public action: string;
 
+  public showSpinner: boolean = false;
+
   constructor(private readonly appStore: Store<fromAppStore.State>,
               private readonly store: Store<fromFeature.State>,
               private readonly allocateRoleService: AllocateRoleService,
@@ -295,9 +297,11 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
       case AllocateRoleNavigationEvent.CONFIRM: {
         switch (this.navigationCurrentState) {
           case AllocateRoleState.CHECK_ANSWERS:
+            this.showSpinner = true;
             this.checkAnswersComponent.navigationHandler(navEvent);
             break;
           default:
+            this.showSpinner = false;
             throw new Error('Invalid allocation state');
         }
         break;

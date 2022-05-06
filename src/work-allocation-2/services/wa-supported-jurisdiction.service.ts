@@ -10,4 +10,7 @@ export class WASupportedJurisdictionsService {
   public getWASupportedJurisdictions(): Observable<string[]> {
     return this.http.get<string[]>(WASupportedJurisdictionsService.jurisdictionUrl);
   }
+  public testService(): Observable<any> {
+    return this.http.post<any>('/api/task/createTask', {caseId: '1641997006934665', jurisdiction: 'IA', caseType: 'asylum'});
+  }
 }

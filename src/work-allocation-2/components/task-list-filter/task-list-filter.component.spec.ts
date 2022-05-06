@@ -80,10 +80,11 @@ describe('TaskListFilterComponent', () => {
     postcode: 'AB11 6LT'
   };
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask', 'getUsersAssignedTasks', 'currentTasks$']);
-  const locationService = jasmine.createSpyObj('locationService', ['path']);
+  const locationService = jasmine.createSpyObj('locationService', ['path', 'getSpecificLocations']);
   const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
   mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
   mockTaskService.getUsersAssignedTasks.and.returnValue(of([]));
+  locationService.getSpecificLocations.and.returnValue(of([]));
   mockTaskService.currentTasks$.and.returnValue(of([null]));
   const filterSettings = {
     id: 'locations',
@@ -137,7 +138,7 @@ describe('TaskListFilterComponent', () => {
         },
         { provide: AngularLocation, useValue: locationService },
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
-        { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },
+        { provide: LocationDataService, useValue: locationService },
         { provide: TaskTypesService, useValue: { getTypesOfWork: () => of(typesOfWork) } },
         { provide: FilterService, useValue: mockFilterService },
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService }
@@ -185,6 +186,14 @@ describe('TaskListFilterComponent', () => {
     expect(component.fieldsSettings.fields.length).toBe(3);
     const typesOfWorkSelectedFields = component.fieldsSettings.fields[2];
     expect(typesOfWorkSelectedFields.value.length).toBe(typesOfWork.length + 1);
+  });
+
+  it('should store default locations from booking navigation', () => {
+    component.bookingLocations = ['Location1'];
+    locationService.getSpecificLocations.and.returnValue(['Location1']);
+    component.ngOnInit();
+    expect(component.defaultLocations).toBe(component.bookingLocations);
+    expect(locationService.getSpecificLocations).toHaveBeenCalledWith(component.defaultLocations);
   });
 
   afterAll(() => {

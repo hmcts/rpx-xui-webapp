@@ -62,6 +62,7 @@
     },
     "em_anno_api": "SERVICES_EM_ANNO_API",
     "em_docassembly_api": "SERVICES_EM_DOCASSEMBLY_API",
+    "waWorkflowApi": "SERVICES_WA_WORKFLOW_API_URL",
     "idam": {
       "idamApiUrl": "SERVICES_IDAM_API_URL",
       "idamClientID": "SERVICES_IDAM_CLIENT_ID",

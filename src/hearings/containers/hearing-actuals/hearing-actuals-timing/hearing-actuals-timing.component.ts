@@ -126,8 +126,6 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
       && this.hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes && this.hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes.length
       && this.hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes[0] && this.hearingActuals.hearingActuals.actualHearingDays[0].pauseDateTimes[0].pauseEndTime;
     const hearingDate = HearingActualsTimingComponent.getDate(hearingStartTime);
-    console.log('value.pauseStartTime', value.pauseStartTime);
-    console.log('value.pauseEndTime', value.pauseEndTime);
     const isPauseStartTimeValid = moment(pauseStartTime, 'YYYY-MM-DDTHH:mm:ssZ', true).isValid();
     let changedPauseStartTime;
     let changedPauseEndTime;
@@ -145,10 +143,6 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
       changedPauseEndTime = HearingActualsTimingComponent.replaceTime(hearingDate, moPauseEndTime);
     }
     let pauseDateTimes = null;
-    console.log('pauseStartTime', pauseStartTime);
-    console.log('pauseEndTime', pauseEndTime);
-    console.log('changedPauseStartTime', changedPauseStartTime);
-    console.log('changedPauseEndTime', changedPauseEndTime);
     if (value.pauseStartTime && value.pauseEndTime) {
       pauseDateTimes = [
         {
@@ -157,7 +151,6 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
         }
       ];
     }
-    console.log('pauseDateTimes', pauseDateTimes);
     const hearingActuals = {
         ...this.hearingActuals.hearingActuals,
         actualHearingDays: [

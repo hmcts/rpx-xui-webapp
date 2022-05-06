@@ -108,7 +108,6 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   }
 
   private static isParty(party: any) {
-    console.log('party.partyRole', party.partyRole);
     return party.partyRole === 'appeal' || party.partyRole === 'claim';
   }
 
@@ -223,12 +222,10 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
 
   private createForm(hearingActuals: HearingActualsMainModel): void {
     if (HearingActualsViewEditPartiesComponent.hasActualParties(hearingActuals, this.immutablePartyRoles)) {
-      console.log('addActualParticipantsAndParties');
       hearingActuals.hearingActuals.actualHearingDays[0].actualDayParties.forEach((party: ActualDayPartyModel) => {
         this.addActualParticipantsAndParties(party);
       });
     } else {
-      console.log('addParties');
       hearingActuals.hearingPlanned.plannedHearingDays[0].parties.forEach((party: PartyModel) => {
         this.addParties(party);
       });
@@ -261,7 +258,6 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
         id: party.partyId,
       });
     }
-    console.log('add party', party);
     this.parties.push(this.fb.group({
       firstName: [party.individualDetails.firstName, [this.validators.mandatory('Enter first name')]],
       lastName: [party.individualDetails.lastName, HearingActualsViewEditPartiesComponent.isParty(party) ? [] : [this.validators.mandatory('Enter last name')]],
@@ -276,7 +272,6 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
 
   private setUpRoleLists(): void {
     const planParties = this.hearingActuals.hearingPlanned.plannedHearingDays[0].parties;
-    console.log('planParties', planParties);
     for (const role of this.hearingRoles) {
       if (role.key === PartyRoleOnly.Claimant || role.key === PartyRoleOnly.Appellant) {
         this.immutablePartyRoles.push(role);

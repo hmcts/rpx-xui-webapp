@@ -5,6 +5,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
+
+import { LocationDataService } from '../../../work-allocation-2/services';
 import { BookingProcess } from '../../models';
 import { Booking } from '../../models/booking.interface';
 import { BookingService } from '../../services';
@@ -52,6 +54,7 @@ fdescribe('BookingHomeComponent', () => {
   let component: BookingHomeComponent;
   let fixture: ComponentFixture<BookingHomeComponent>;
   const bookingService = jasmine.createSpyObj<BookingService>('BookingService', ['getBookings', 'getBookingLocation', 'refreshRoleAssignments']);
+  const locationService = jasmine.createSpyObj<LocationDataService>('LocationDataService', ['getSpecificLocations']);
   const mockWindowService = jasmine.createSpyObj('WindowService', ['removeLocalStorage']);
   const flags = {
     enabledFlag: true,
@@ -76,6 +79,10 @@ fdescribe('BookingHomeComponent', () => {
           useValue: bookingService
         },
         {
+          provide: LocationDataService,
+          useValue: locationService
+        },
+        {
           provide: WindowService,
           useValue: mockWindowService
         },
@@ -90,8 +97,8 @@ fdescribe('BookingHomeComponent', () => {
     .compileComponents();
 
     bookingService.getBookings.and.returnValue(of({bookings: DUMMY_BOOKINGS}));
-    bookingService.getBookingLocation.and.returnValue(of([{
-      building_location_name: DUMMY_LOCATION_NAME
+    locationService.getSpecificLocations.and.returnValue(of([{
+      site_name: DUMMY_LOCATION_NAME
     }]));
     bookingService.refreshRoleAssignments.and.returnValue(of({}));
 

@@ -107,6 +107,9 @@ describe('HearingStageResultComponent', () => {
   });
 
   it('should not display hearing result dropdowns by default', () => {
+    component.hearingResult = null;
+    component.hearingStageResultForm.get('hearingResult').setValue('');
+    fixture.detectChanges();
     const nativeElement = fixture.debugElement.nativeElement;
     expect(nativeElement.querySelector('#adjourned-reason')).toBeNull();
     expect(nativeElement.querySelector('#cancelled-reason')).toBeNull();
@@ -143,6 +146,9 @@ describe('HearingStageResultComponent', () => {
   });
 
   it('should fail validation if hearing result type not selected', () => {
+    component.hearingResult = null;
+    component.hearingStageResultForm.get('hearingResult').setValue('');
+    fixture.detectChanges();
     const storeDispatchSpy = spyOn(store, 'dispatch');
     component.onSubmit();
     expect(component.formControls.hearingResult.valid).toEqual(false);
@@ -162,6 +168,8 @@ describe('HearingStageResultComponent', () => {
   it('should fail validation if cancelled reason not selected', () => {
     const storeDispatchSpy = spyOn(store, 'dispatch');
     component.hearingResult = HearingResult.CANCELLED;
+    component.hearingStageResultForm.get('cancelledReason').setValue('');
+    fixture.detectChanges();
     component.onSubmit();
     component.cancelHearingErrorMessage = 'Select a reason for the hearing result';
     expect(component.validationErrors.length).toEqual(1);

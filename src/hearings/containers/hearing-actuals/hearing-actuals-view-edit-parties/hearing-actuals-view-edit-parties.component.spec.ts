@@ -174,8 +174,7 @@ const partyChannel = [
   },
 ];
 
-
-describe('HearingViewEditSummaryComponent', () => {
+describe('HearingActualsViewEditPartiesComponent', () => {
   let store: Store<any>;
   let component: HearingActualsViewEditPartiesComponent;
   let fixture: ComponentFixture<HearingActualsViewEditPartiesComponent>;
@@ -350,11 +349,11 @@ describe('HearingViewEditSummaryComponent add actual participants', () => {
       partyRole: 'claimant',
       partyChannelSubType: 'by-video-teams',
       representedParty: null,
-      actualIndividualDetails: {
+      individualDetails: {
         firstName: 'Jane',
         lastName: 'Smith',
       },
-      actualOrganisationDetails: {
+      organisationDetails: {
         name: null,
       },
       didNotAttendFlag: false,
@@ -364,11 +363,11 @@ describe('HearingViewEditSummaryComponent add actual participants', () => {
       partyRole: 'appellant',
       partyChannelSubType: 'by-video-teams',
       representedParty: null,
-      actualIndividualDetails: {
+      individualDetails: {
         firstName: 'DWP',
         lastName: '',
       },
-      actualOrganisationDetails: {
+      organisationDetails: {
         name: null,
       },
       didNotAttendFlag: false,
@@ -378,11 +377,11 @@ describe('HearingViewEditSummaryComponent add actual participants', () => {
       partyRole: 'appellant',
       partyChannelSubType: 'by-video-teams',
       representedParty: '1',
-      actualIndividualDetails: {
+      individualDetails: {
         firstName: 'Thomas',
         lastName: 'Wayne',
       },
-      actualOrganisationDetails: {
+      organisationDetails: {
         name: null,
       },
       didNotAttendFlag: false,

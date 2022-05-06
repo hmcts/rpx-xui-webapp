@@ -146,6 +146,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public ngOnInit(): void {
+    this.waSupportedJurisdictionsService.testService().subscribe(x => console.log(x));
     // get supported jurisdictions on initialisation in order to get caseworkers by these services
     this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
 

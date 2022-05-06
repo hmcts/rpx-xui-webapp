@@ -31,6 +31,8 @@ export class BookingGuard implements CanActivate {
       if (!bookingFeatureToggle) {
         return false;
       }
+      // note: in order to enable booking url for guarded users just set return true for testing purposes
+      // return true;
       return this.hasAccess(userDetails);
     })).pipe(tap(hasAccesss => {
       if (!hasAccesss) {

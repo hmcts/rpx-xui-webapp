@@ -1,5 +1,6 @@
 
-@ng @test 
+@ng
+
 Feature: Case access management: Approve specific access request
 
     Background:setup

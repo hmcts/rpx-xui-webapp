@@ -15,11 +15,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I see Add an exclusion work flow page {string} is displayed', async function (workFlowPage) {
         let workFlowPageObject = getWorkflowPageObject(workFlowPage);
 
-
-        expect(await workFlowPageObject.isDisplayed(), `${workFlowPage} work flow page not displayed`).to.be.true;
-        expect(await workFlowPageObject.getHeaderText(), `${workFlowPage} work flow page header not matching`).to.include(workFlowPage);
-        expect(await workFlowPageObject.getHeaderCaption(), `${workFlowPage} work flow page header caption not matching`).to.include("Add an exclusion");
-
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await workFlowPageObject.isDisplayed(), `${workFlowPage} work flow page not displayed`).to.be.true;
+            expect(await workFlowPageObject.getHeaderText(), `${workFlowPage} work flow page header not matching`).to.include(workFlowPage);
+            expect(await workFlowPageObject.getHeaderCaption(), `${workFlowPage} work flow page header caption not matching`).to.include("Add an exclusion");
+        });
     });
 
 

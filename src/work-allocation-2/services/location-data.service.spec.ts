@@ -18,11 +18,5 @@ describe('WorkAllocation', () => {
       service.getLocations();
       expect(mockHttpService.get).toHaveBeenCalledWith(LocationDataService.locationUrl);
     });
-
-    it('getLocation should make correct api call', () => {
-      const service = new LocationDataService(mockHttpService, sessionStorageService);
-      service.getLocation('location123');
-      expect(mockHttpService.get).toHaveBeenCalledWith(`${LocationDataService.locationUrl}/location123`);
-    });
   });
 });

@@ -89,6 +89,8 @@ nodejs:
     SERVICES_MARKUP_API: http://em-npa-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services Em docassembly
     SERVICES_EM_DOCASSEMBLY_API: http://dg-docassembly-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services Wa Workflow
+    SERVICES_WA_WORKFLOW_API_URL: http://wa-workflow-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services ICP
     SERVICES_ICP_API: http://em-icp-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services Idam

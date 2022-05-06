@@ -47,8 +47,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I see work access radio button {string} displayed', async function(radioButtonName){
-        const radioButton = getWorkAccessRadioButton(radioButtonName);
-        expect(await radioButton.isDisplayed()).to.be.true;
+        await BrowserWaits.retryWithActionCallback(async () => {
+            const radioButton = getWorkAccessRadioButton(radioButtonName);
+            expect(await radioButton.isDisplayed()).to.be.true;
+        }); 
     });
 
     Then('I see work access radio button {string} not displayed', async function (radioButtonName) {

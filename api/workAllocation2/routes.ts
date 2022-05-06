@@ -22,7 +22,7 @@ import {
   showAllocateRoleLink
 } from '.';
 import authInterceptor from '../lib/middleware/auth';
-import { getLocationById, getLocations } from './locationController';
+import { getFullLocations, getLocationById, getLocations } from './locationController';
 import { postFindPersonSearch } from './personService';
 
 const router = Router({mergeParams: true});
@@ -40,6 +40,7 @@ router.use('/findPerson', postFindPersonSearch);
 
 router.use('/location/:locationId', getLocationById);
 router.use('/location', getLocations);
+router.use('/full-location', getFullLocations);
 
 router.use('/searchForCompletable', postTaskSearchForCompletable);
 

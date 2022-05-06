@@ -24,6 +24,7 @@ export class BookingGuard implements CanActivate {
   }
 
   public canActivate(): Observable<boolean> {
+<<<<<<< HEAD
     return of(true);
     // const userDetails$: Observable<UserDetails> = this.store.pipe(select(fromActions.getUserDetails));
     // const bookingFeatureToggle$: Observable<boolean> = this.featureToggleService.getValueOnce(AppConstants.FEATURE_NAMES.booking, false);
@@ -38,5 +39,22 @@ export class BookingGuard implements CanActivate {
     //     this.router.navigate([BookingGuard.defaultUrl]);
     //   }
     // }));
+=======
+    const userDetails$: Observable<UserDetails> = this.store.pipe(select(fromActions.getUserDetails));
+    const bookingFeatureToggle$: Observable<boolean> = this.featureToggleService.getValueOnce(AppConstants.FEATURE_NAMES.booking, false);
+    const userAccess$ = combineLatest([userDetails$, bookingFeatureToggle$]);
+    return userAccess$.pipe(map(([userDetails, bookingFeatureToggle]) => {
+      if (!bookingFeatureToggle) {
+        return false;
+      }
+      // note: in order to enable booking url for guarded users just set return true for testing purposes
+      // return true;
+      return this.hasAccess(userDetails);
+    })).pipe(tap(hasAccesss => {
+      if (!hasAccesss) {
+        this.router.navigate([BookingGuard.defaultUrl]);
+      }
+    }));
+>>>>>>> 669d0f42f0500f3690967ff7d0b1c1738ab997d7
   }
 }

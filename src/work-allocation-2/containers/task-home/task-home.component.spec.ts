@@ -87,6 +87,8 @@ describe('TaskHomeComponent', () => {
     }
   };
   const sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem']);
+  const locationDataService = jasmine.createSpyObj('locationDataService', ['getItem', 'getSpecificLocations']);
+  locationDataService.getSpecificLocations.and.returnValue(of([]));
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -99,7 +101,8 @@ describe('TaskHomeComponent', () => {
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
         provideMockStore({ initialState: initialMockState }),
-        { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },
+        // { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },
+        { provide: LocationDataService, useValue: locationDataService },
         {
           provide: FilterService, useValue: mockFilterService
         },

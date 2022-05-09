@@ -231,7 +231,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
     const addBtn = fixture.debugElement.query(By.css('.btn-add'));
 
     expect(component.parties.get([component.parties.length - 1]).value)
-      .not.toEqual(jasmine.objectContaining({ firstName: '', lastName: '', isParty: false }));
+      .not.toEqual(jasmine.objectContaining({ firstName: '', lastName: '', isPlannedParty: false }));
 
     addBtn.nativeElement.click();
     fixture.detectChanges();
@@ -240,7 +240,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
         {
           firstName: null,
           lastName: null,
-          isParty: false,
+          isPlannedParty: false,
           role: null,
           attendanceType:
             null,
@@ -249,15 +249,22 @@ describe('HearingActualsViewEditPartiesComponent', () => {
     ;
   });
 
-  it('should remove a FormGroup from the FormArray', () => {
-    expect(component.parties.length).toEqual(2);
+  it('should add a FormGroup from the FormArray', () => {
+    expect(component.parties.length).toEqual(3);
     const addBtn = fixture.debugElement.query(By.css('.btn-add'));
-
-    expect(component.parties.get([component.parties.length - 1]).value)
-      .not.toEqual(jasmine.objectContaining({ firstName: '', lastName: '', isParty: false }));
 
     addBtn.nativeElement.click();
     fixture.detectChanges();
+
+    expect(component.parties.length).toEqual(4);
+  });
+
+  it('should remove a FormGroup from the FormArray', () => {
+    expect(component.parties.length).toEqual(3);
+    const addBtn = fixture.debugElement.query(By.css('.btn-add'));
+
+    expect(component.parties.get([component.parties.length - 1]).value)
+      .not.toEqual(jasmine.objectContaining({ firstName: '', lastName: '', isPlannedParty: false }));
 
     const removeBtn = fixture.debugElement.query(By.css('.btn-remove:last-child'));
     removeBtn.nativeElement.click();
@@ -278,7 +285,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
     component.parties.get([component.parties.length - 1]).patchValue({
       firstName: 'Peter',
       lastName: 'Jones',
-      isParty: false,
+      isPlannedParty: false,
       role: 'Claimant',
       attendanceType: 'inPerson',
       attendeeRepresenting: 'Mary',
@@ -297,7 +304,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
     component.parties.get([component.parties.length - 1]).patchValue({
       firstName: '',
       lastName: '',
-      isParty: false,
+      isPlannedParty: false,
     });
     component.submitForm(component.form.value, component.form.valid);
     expect(component.parties.get([component.parties.length - 1]).valid).toBeFalsy();
@@ -312,7 +319,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
     component.parties.get([component.parties.length - 2]).patchValue({
       firstName: 'Peter',
       lastName: 'Jones',
-      isParty: false,
+      isPlannedParty: false,
       role: 'Claimant',
       attendanceType: 'inPerson',
       attendeeRepresenting: 'Mary',
@@ -321,7 +328,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
     component.parties.get([component.parties.length - 1]).patchValue({
       firstName: 'Peter',
       lastName: 'Jones',
-      isParty: false,
+      isPlannedParty: false,
       role: 'Claimant',
       attendanceType: 'inPerson',
       attendeeRepresenting: 'Mary',
@@ -343,50 +350,6 @@ describe('HearingViewEditSummaryComponent add actual participants', () => {
   let component: HearingActualsViewEditPartiesComponent;
   let fixture: ComponentFixture<HearingActualsViewEditPartiesComponent>;
   const newState: any = JSON.parse(JSON.stringify(initialState));
-  newState.hearings.hearingActuals.hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties = [
-    {
-      actualPartyId: '1',
-      partyRole: 'claimant',
-      partyChannelSubType: 'by-video-teams',
-      representedParty: null,
-      individualDetails: {
-        firstName: 'Jane',
-        lastName: 'Smith',
-      },
-      organisationDetails: {
-        name: null,
-      },
-      didNotAttendFlag: false,
-    },
-    {
-      actualPartyId: '2',
-      partyRole: 'appellant',
-      partyChannelSubType: 'by-video-teams',
-      representedParty: null,
-      individualDetails: {
-        firstName: 'DWP',
-        lastName: '',
-      },
-      organisationDetails: {
-        name: null,
-      },
-      didNotAttendFlag: false,
-    },
-    {
-      actualPartyId: null,
-      partyRole: 'appellant',
-      partyChannelSubType: 'by-video-teams',
-      representedParty: '1',
-      individualDetails: {
-        firstName: 'Thomas',
-        lastName: 'Wayne',
-      },
-      organisationDetails: {
-        name: null,
-      },
-      didNotAttendFlag: false,
-    },
-  ];
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [HearingActualsViewEditPartiesComponent],

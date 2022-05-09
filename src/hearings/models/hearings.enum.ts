@@ -348,8 +348,3 @@ export enum HearingActualsTimingErrorMessages {
   PAUSE_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES = 'Pause time must be between the hearing start and finish times',
   RESUME_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES = 'Resume time must be between the hearing start and finish times',
 }
-
-export enum PartyRoleOnly {
-  Appellant = 'appellant',
-  Claimant = 'claimant',
-}

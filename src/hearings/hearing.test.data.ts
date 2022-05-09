@@ -1500,21 +1500,13 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               lastName: 'Jones',
             },
             organisationDetails: {
-              name: 'Company D',
+              name: 'Company A',
             },
             didNotAttendFlag: false,
             partyChannelSubType: 'inPerson',
-            partyRole: 'interpreter',
-            representedParty: '5',
+            partyRole: 'appellant',
+            representedParty: '',
           },
-        ],
-      },
-      {
-        hearingDate: '2021-03-12',
-        hearingStartTime: '2021-03-12T09:00:00.000Z',
-        hearingEndTime: '2021-03-13T10:00:00.000Z',
-        pauseDateTimes: [],
-        actualDayParties: [
           {
             actualPartyId: '2',
             individualDetails: {
@@ -1522,15 +1514,29 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
               lastName: 'Jones',
             },
             organisationDetails: {
-              name: 'Company A',
+              name: 'Company B',
             },
-            didNotAttendFlag: true,
-            partyChannelSubType: 'video-teams',
+            didNotAttendFlag: false,
+            partyChannelSubType: 'inPerson',
+            partyRole: 'claimant',
+            representedParty: '',
+          },
+          {
+            actualPartyId: '3',
+            individualDetails: {
+              firstName: 'James',
+              lastName: 'Gods',
+            },
+            organisationDetails: {
+              name: 'Solicitors A',
+            },
+            didNotAttendFlag: false,
+            partyChannelSubType: 'inPerson',
             partyRole: 'interpreter',
-            representedParty: '2',
+            representedParty: '1',
           },
         ],
-      },
+      }
     ],
   },
   hearingPlanned: {
@@ -1542,133 +1548,31 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
         parties: [
           {
             individualDetails: {
-              title: 'Ms',
-              firstName: 'Mary',
-              lastName: 'Jones',
-            },
-            organisationDetails: {
-              cftOrganisationID: '54321',
-              name: 'Company D',
-            },
-            partyId: '3',
-            partyRole: 'interpreter',
-            partyChannelSubType: 'Letter',
-          },
-          {
-            individualDetails: {
               title: 'Miss',
               firstName: 'Bob',
               lastName: 'Jones',
             },
             organisationDetails: {
               cftOrganisationID: '54321',
-              name: 'Company C',
-            },
-            partyId: '5',
-            partyRole: 'interpreter',
-            partyChannelSubType: 'Fax',
-          },
-        ],
-      },
-      {
-        plannedStartTime: '2021-03-12T09:00:00.000Z',
-        plannedEndTime: '2021-03-13T10:00:00.000Z',
-        parties: [
-          {
-            individualDetails: {
-              title: 'Miss',
-              firstName: 'Jane',
-              lastName: 'Smith',
-            },
-            organisationDetails: {
-              cftOrganisationID: '12345',
-              name: 'Company E',
-            },
-            partyId: '2',
-            partyRole: 'interpreter',
-            partyChannelSubType: 'Email',
-          },
-          {
-            individualDetails: {
-              title: 'Mr',
-              firstName: 'Tom',
-              lastName: 'Jones',
-            },
-            organisationDetails: {
-              cftOrganisationID: '12345',
-              name: 'Company C',
-            },
-            partyId: '3',
-            partyRole: 'interpreter',
-            partyChannelSubType: 'Email',
-          },
-        ],
-      },
-      {
-        plannedStartTime: '2021-03-12T09:00:00.000Z',
-        plannedEndTime: '2021-03-13T10:00:00.000Z',
-        parties: [
-          {
-            individualDetails: {
-              title: 'Mr',
-              firstName: 'John',
-              lastName: 'Smith',
-            },
-            organisationDetails: {
-              cftOrganisationID: '67890',
-              name: 'Company B',
+              name: 'Company A',
             },
             partyId: '1',
             partyRole: 'interpreter',
-            partyChannelSubType: 'Fax',
+            partyChannelSubType: 'appellant',
           },
           {
             individualDetails: {
-              title: 'Mr',
-              firstName: 'Jane',
-              lastName: 'Jones',
+              title: '',
+              firstName: 'DWP',
+              lastName: '',
             },
             organisationDetails: {
-              cftOrganisationID: '54321',
-              name: 'Company E',
+              cftOrganisationID: 'ogd1',
+              name: 'DWP',
             },
-            partyId: '3',
+            partyId: '2',
             partyRole: 'interpreter',
-            partyChannelSubType: 'Other',
-          },
-        ],
-      },
-      {
-        plannedStartTime: '2021-03-12T09:00:00.000Z',
-        plannedEndTime: '2021-03-13T10:00:00.000Z',
-        parties: [
-          {
-            individualDetails: {
-              title: 'Miss',
-              firstName: 'Tom',
-              lastName: 'Jones',
-            },
-            organisationDetails: {
-              cftOrganisationID: '67890',
-              name: 'Company D',
-            },
-            partyId: '3',
-            partyRole: 'interpreter',
-            partyChannelSubType: 'Fax',
-          },
-          {
-            individualDetails: {
-              title: 'Mrs',
-              firstName: 'Jane',
-              lastName: 'Smith',
-            },
-            organisationDetails: {
-              cftOrganisationID: '54321',
-              name: 'Company C',
-            },
-            partyId: '4',
-            partyRole: 'interpreter',
-            partyChannelSubType: 'Letter',
+            partyChannelSubType: 'claimant',
           },
         ],
       },

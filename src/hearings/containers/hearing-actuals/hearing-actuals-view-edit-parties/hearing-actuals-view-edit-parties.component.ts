@@ -1,17 +1,20 @@
-import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ValidationErrors } from '@angular/forms/src/directives/validators';
-import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { combineLatest, Subscription } from 'rxjs';
-import { filter, first } from 'rxjs/operators';
-import { ActualDayPartyModel, HearingActualsMainModel, PartyModel } from '../../../models/hearingActualsMainModel';
-import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
-import { PartyRoleOnly } from '../../../models/hearings.enum';
-import { LovRefDataModel } from '../../../models/lovRefData.model';
-import { LovRefDataService } from '../../../services/lov-ref-data.service';
+import {Component, OnDestroy, OnInit, Renderer2} from '@angular/core';
+import {AbstractControl, FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ValidationErrors} from '@angular/forms/src/directives/validators';
+import {ActivatedRoute, ParamMap} from '@angular/router';
+import {Store} from '@ngrx/store';
+import {combineLatest, Subscription} from 'rxjs';
+import {filter, first} from 'rxjs/operators';
+import {
+  ActualDayPartyModel,
+  HearingActualsMainModel,
+  PlannedDayPartyModel
+} from '../../../models/hearingActualsMainModel';
+import {HearingActualsStateData} from '../../../models/hearingActualsStateData.model';
+import {LovRefDataModel} from '../../../models/lovRefData.model';
+import {LovRefDataService} from '../../../services/lov-ref-data.service';
 import * as fromHearingStore from '../../../store';
-import { ValidatorsUtils } from '../../../utils/validators.utils';
+import {ValidatorsUtils} from '../../../utils/validators.utils';
 
 @Component({
   selector: 'exui-hearing-actuals-view-edit-parties',
@@ -37,7 +40,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
 
   public form: FormGroup;
   public participants: any[] = [];
-  public hearingActuals: HearingActualsMainModel;
+  public hearingActualsMainModel: HearingActualsMainModel;
   public caseTitle: string;
   public id: string;
   public submitted: boolean;
@@ -62,7 +65,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     return this.form.get('parties') as FormArray;
   }
 
-  private static toActualParties(parties: { parties: PartyModel[] }): ActualDayPartyModel[] {
+  private static toActualParties(parties: { parties: PlannedDayPartyModel[] }): ActualDayPartyModel[] {
     return parties
       .parties
       .map((party: any) => ({
@@ -81,8 +84,8 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       }));
   }
 
-  private static hasActualParties(hearingActuals: HearingActualsMainModel, immutablePartyRoles: LovRefDataModel[]): boolean {
-    return hearingActuals.hearingActuals.actualHearingDays.length ? hearingActuals.hearingActuals.actualHearingDays[0].actualDayParties.some(
+  private static hasActualParties(hearingActualsMainModel: HearingActualsMainModel, immutablePartyRoles: LovRefDataModel[]): boolean {
+    return hearingActualsMainModel.hearingActuals.actualHearingDays.length ? hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties.some(
       (actualDayParty: ActualDayPartyModel) => immutablePartyRoles
         .map((partyRole: LovRefDataModel) => partyRole.key)
         .includes(actualDayParty.partyRole)
@@ -107,8 +110,8 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       }, 'Enter ');
   }
 
-  private static isParty(party: any) {
-    return party.partyRole === 'appeal' || party.partyRole === 'claim';
+  public isPlannedParty(actualDayParty: ActualDayPartyModel): boolean {
+    return this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties.some(plannedParty => plannedParty.partyId === actualDayParty.actualPartyId);
   }
 
   public ngOnInit(): void {
@@ -121,10 +124,10 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       )
       .subscribe(([state, params]: [HearingActualsStateData, ParamMap]) => {
         this.id = params.get('id');
-        this.hearingActuals = JSON.parse(JSON.stringify(state.hearingActualsMainModel));
-        this.caseTitle = this.hearingActuals.caseDetails.hmctsInternalCaseName;
+        this.hearingActualsMainModel = JSON.parse(JSON.stringify(state.hearingActualsMainModel));
+        this.caseTitle = this.hearingActualsMainModel.caseDetails.hmctsInternalCaseName;
         this.setUpRoleLists();
-        this.createForm(this.hearingActuals);
+        this.createForm(this.hearingActualsMainModel);
         this.subscribeToFormChanges();
       });
   }
@@ -137,8 +140,8 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       attendanceType: [null, [this.validators.mandatory('Enter attendance type')]],
       organisation: [null],
       attendeeRepresenting: [null, [this.validators.mandatory('Enter attendee representing')]],
-      isParty: [false]
-    }, { validator: this.validators.validateDuplicateEntries(index, 'Participant details already entered.') });
+      isPlannedParty: [false]
+    }, {validator: this.validators.validateDuplicateEntries(index, 'Participant details already entered.')});
   }
 
   public addRow($event: Event): void {
@@ -191,7 +194,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     }
   }
 
-  public submitForm(parties: { parties: PartyModel[] }, valid: boolean): void {
+  public submitForm(parties: { parties: PlannedDayPartyModel[] }, valid: boolean): void {
     this.submitted = true;
     if (!valid) {
       this.displayErrors();
@@ -200,10 +203,10 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     if (valid) {
       const actualParties = HearingActualsViewEditPartiesComponent.toActualParties(parties);
       const hearingActuals = {
-        ...this.hearingActuals.hearingActuals,
+        ...this.hearingActualsMainModel.hearingActuals,
         actualHearingDays: [
           {
-            ...this.hearingActuals.hearingActuals.actualHearingDays[0],
+            ...this.hearingActualsMainModel.hearingActuals.actualHearingDays[0],
             actualDayParties: actualParties,
           }
         ],
@@ -220,38 +223,38 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     return hearingRole ? hearingRole.value_en : value;
   }
 
-  private createForm(hearingActuals: HearingActualsMainModel): void {
-    if (HearingActualsViewEditPartiesComponent.hasActualParties(hearingActuals, this.immutablePartyRoles)) {
-      hearingActuals.hearingActuals.actualHearingDays[0].actualDayParties.forEach((party: ActualDayPartyModel) => {
+  private createForm(hearingActualsMainModel: HearingActualsMainModel): void {
+    if (HearingActualsViewEditPartiesComponent.hasActualParties(hearingActualsMainModel, this.immutablePartyRoles)) {
+      hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties.forEach((party: ActualDayPartyModel) => {
         this.addActualParticipantsAndParties(party);
       });
     } else {
-      hearingActuals.hearingPlanned.plannedHearingDays[0].parties.forEach((party: PartyModel) => {
+      hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties.forEach((party: PlannedDayPartyModel) => {
         this.addParties(party);
       });
     }
   }
 
-  private addActualParticipantsAndParties(party: ActualDayPartyModel) {
-    if (HearingActualsViewEditPartiesComponent.isParty(party)) {
+  private addActualParticipantsAndParties(actualParty: ActualDayPartyModel) {
+    if (this.isPlannedParty(actualParty)) {
       this.participants.push({
-        name: `${party.individualDetails.firstName} ${party.individualDetails.lastName}`,
-        id: party.actualPartyId,
+        name: `${actualParty.individualDetails.firstName} ${actualParty.individualDetails.lastName}`,
+        id: actualParty.actualPartyId,
       });
     }
     this.parties.push(this.fb.group({
-      firstName: [party.individualDetails.firstName, [this.validators.mandatory('Enter first name')]],
-      lastName: [party.individualDetails.lastName, HearingActualsViewEditPartiesComponent.isParty(party) ? [] : [this.validators.mandatory('Enter last name')]],
-      role: [party.partyRole, HearingActualsViewEditPartiesComponent.isParty(party) ? [] : [this.validators.mandatory('Enter party role')]],
-      attendanceType: [party.partyChannelSubType, [this.validators.mandatory('Enter attendance type')]],
-      organisation: [party.organisationDetails.name],
-      attendeeRepresenting: [party.representedParty, HearingActualsViewEditPartiesComponent.isParty(party) ? [] : [this.validators.mandatory('Enter attendee representing')]],
-      partyId: [party.actualPartyId],
-      isParty: [HearingActualsViewEditPartiesComponent.isParty(party)],
+      firstName: [actualParty.individualDetails.firstName, [this.validators.mandatory('Enter first name')]],
+      lastName: [actualParty.individualDetails.lastName, this.isPlannedParty(actualParty) ? [] : [this.validators.mandatory('Enter last name')]],
+      role: [actualParty.partyRole, this.isPlannedParty(actualParty) ? [] : [this.validators.mandatory('Enter party role')]],
+      attendanceType: [actualParty.partyChannelSubType, [this.validators.mandatory('Enter attendance type')]],
+      organisation: [actualParty.organisationDetails.name],
+      attendeeRepresenting: [actualParty.representedParty, this.isPlannedParty(actualParty) ? [] : [this.validators.mandatory('Enter attendee representing')]],
+      partyId: [actualParty.actualPartyId],
+      isPlannedParty: [this.isPlannedParty(actualParty)],
     }));
   }
 
-  private addParties(party: PartyModel) {
+  private addParties(party: PlannedDayPartyModel) {
     if (party.partyId) {
       this.participants.push({
         name: `${party.individualDetails.firstName} ${party.individualDetails.lastName}`,
@@ -260,20 +263,21 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     }
     this.parties.push(this.fb.group({
       firstName: [party.individualDetails.firstName, [this.validators.mandatory('Enter first name')]],
-      lastName: [party.individualDetails.lastName, HearingActualsViewEditPartiesComponent.isParty(party) ? [] : [this.validators.mandatory('Enter last name')]],
-      role: [party.partyRole, HearingActualsViewEditPartiesComponent.isParty(party) ? [] : [this.validators.mandatory('Enter party role')]],
+      lastName: [party.individualDetails.lastName, [this.validators.mandatory('Enter last name')]],
+      role: [party.partyRole, [this.validators.mandatory('Enter party role')]],
       attendanceType: [party.partyChannelSubType, [this.validators.mandatory('Enter attendance type')]],
       organisation: [party.organisationDetails && party.organisationDetails.name],
-      attendeeRepresenting: [null, HearingActualsViewEditPartiesComponent.isParty(party) ? [] : [this.validators.mandatory('Enter attendee representing')]],
+      attendeeRepresenting: [null, [this.validators.mandatory('Enter attendee representing')]],
       partyId: [party.partyId],
-      isParty: [true]
+      isPlannedParty: [true]
     }));
   }
 
   private setUpRoleLists(): void {
-    const planParties = this.hearingActuals.hearingPlanned.plannedHearingDays[0].parties;
+    const plannedParties = this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties;
     for (const role of this.hearingRoles) {
-      if (role.key === PartyRoleOnly.Claimant || role.key === PartyRoleOnly.Appellant) {
+      const isPlannedRole = plannedParties.some(plannedParty => plannedParty.partyRole === role.key);
+      if (isPlannedRole) {
         this.immutablePartyRoles.push(role);
       } else {
         this.mutablePartyRoles.push(role);
@@ -306,7 +310,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       if (!message) {
         return acc;
       }
-      return [...acc, { id: `participant${index}`, message }];
+      return [...acc, {id: `participant${index}`, message}];
     }, []);
   }
 }

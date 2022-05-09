@@ -379,8 +379,12 @@ describe('HearingActualAddEditSummaryComponent', () => {
 
   it('should return attending representative', () => {
     component.hearingActualsMainModel = hearingActualsMainModel;
-    const attendingRepresentative = component.getRepresentingAttendee('3');
-    expect(attendingRepresentative).toEqual('Mary Jones');
+    const attendingRepresentative1 = component.getRepresentingAttendee('1');
+    expect(attendingRepresentative1).toEqual('Bob Jones');
+    const attendingRepresentative2 = component.getRepresentingAttendee('2');
+    expect(attendingRepresentative2).toEqual('DWP ');
+    const attendingRepresentative3 = component.getRepresentingAttendee('3');
+    expect(attendingRepresentative3).toEqual('');
   });
 
   it('should return empty string for hearing result reason type completed', () => {
@@ -635,7 +639,7 @@ describe('HearingActualAddEditSummaryComponent display actual participants', () 
       didNotAttendFlag: false,
     },
     {
-      actualPartyId: null,
+      actualPartyId: '3',
       partyRole: 'interpreter',
       partyChannelSubType: 'by-video-teams',
       representedParty: '1',
@@ -687,7 +691,6 @@ describe('HearingActualAddEditSummaryComponent display actual participants', () 
   });
 
   it('should display form with actual parties involved', () => {
-
     expect(component.parties.length).toBe(2);
     expect(component.participants.length).toBe(1);
   });

@@ -50,7 +50,7 @@
                   </span>
                 </td>
               </tr>
-              <tr class="govuk-table__row" *ngIf="group.get('isParty').value" [formGroupName]="i"
+              <tr class="govuk-table__row" *ngIf="group.get('isPlannedParty').value" [formGroupName]="i"
                   [id]="'participant'+ i">
                 <td class="govuk-table__cell">{{group.get('firstName').value}}</td>
                 <td class="govuk-table__cell">{{group.get('lastName').value}}</td>
@@ -71,7 +71,7 @@
                 <td class="govuk-table__cell" colspan="3"></td>
               </tr>
 
-              <tr class="govuk-table__row" *ngIf="!group.get('isParty').value" [formGroupName]="i"
+              <tr class="govuk-table__row" *ngIf="!group.get('isPlannedParty').value" [formGroupName]="i"
                   [id]="'participant'+ i">
                 <th scope="row" class="govuk-table__header">
                   <input class="govuk-input" formControlName="firstName" type="text" aria-label="First name"

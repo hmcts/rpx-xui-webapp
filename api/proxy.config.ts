@@ -19,6 +19,7 @@ import {
 } from './configuration/references';
 import { applyProxy } from './lib/middleware/proxy';
 import * as searchCases from './searchCases';
+import { handleSpecificAccessResponse } from './specificAccessOrchastrator';
 
 export const initProxy = (app: Express) => {
   applyProxy(app, {
@@ -128,12 +129,13 @@ export const initProxy = (app: Express) => {
       source: '/api/refund',
       target: getConfigValue(SERVICES_REFUNDS_API_URL),
   });
-  // applyProxy(app, {
-  //   onReq: accessManagement.removeAcceptHeader,
-  //   rewrite: false,
-  //   source: '/am/role-assignments',
-  //   target: getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH),
-  // });
+  applyProxy(app, {
+    onReq: accessManagement.removeAcceptHeader,
+    onRes: handleSpecificAccessResponse,
+    rewrite: false,
+    source: '/am/role-assignments',
+    target: getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH),
+  });
   applyProxy(app, {
       rewrite: false,
       source: '/refdata/location',

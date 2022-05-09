@@ -5,6 +5,20 @@ import { setHeaders } from '../lib/proxy';
 import { http } from '../lib/http';
 import { AxiosResponse } from 'axios';
 import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
+
+export function handleSpecificAccessResponse(proxyRes, req, res, data): {} {
+  const attributes = data.roleAssignmentResponse.requestedRoles[0].attributes;
+  if (data && data.roleAssignmentResponse && data.roleAssignmentResponse.requestedRoles && data.roleAssignmentResponse.requestedRoles[0].attributes) {
+    const caseId = attributes.caseId;
+    const requestedRole = attributes.requestedRole;
+    const jurisdiction = attributes.jurisdiction;
+    const caseType = attributes.caseType;
+    console.log('caseType');
+    console.log(caseId, requestedRole, jurisdiction, caseType);
+  }
+  return data;
+}
+
 export async function specificAccessRequest(req, res, next): Promise<Response> {
 
   // console.log('here****************************');
@@ -21,7 +35,7 @@ export async function specificAccessRequest(req, res, next): Promise<Response> {
     let amResponse ;
     let taskResponse ;
     try {
-      amResponse = await specificAccessRequestCreateAmRole(req, res, next);
+      // amResponse = await specificAccessRequestCreateAmRole(req, res, next);
       debugger;
       if(!amResponse || !amResponse.roleAssignmentId)
       {
@@ -39,7 +53,7 @@ export async function specificAccessRequest(req, res, next): Promise<Response> {
     } catch (error) {
       if(amResponse&&amResponse.roleAssignmentId)
       {
-        specificAccessRequestCreateAmRoleRoleback(req, res, next)
+        // specificAccessRequestCreateAmRoleRoleback(req, res, next)
       }
       next(error);
     }
@@ -47,22 +61,6 @@ export async function specificAccessRequest(req, res, next): Promise<Response> {
     return res.status(201).send({taskID:101});
 }
 
-async function specificAccessRequestCreateAmRole(req, res, next): Promise<Response> {
-  try {
-    debugger;
-    const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
-    const fullPath = `${basePath}/am/role-assignments`;
-    const headers = setHeaders(req);
-    const response: any = await http.post(fullPath, { headers } );
-    debugger;
-    return response;
-    //return this.http.get<LocationModel>(`api/locations/getLocationsById?ids=${location.id}`);
-  } catch (error) {
-    console.log(error)
-    debugger;
-    next(error);
-  }
-}
 async function specificAccessRequestCreateAmRoleRoleback(req, res, next): Promise<Response> {
   try {
     return res.status(201).send({roleAssignmentId:101, rolebackStatus:true});
@@ -80,10 +78,4 @@ async function specificAccessRequestCreateTask(req, res, next): Promise<Response
     return null;
   }
 }
-// async function specificAccessRequestCreateTaskRollback(req, res, next): Promise<Response> {
-//   try {
-//     //RoleBack
-//   } catch (error) {
-//     next(error);
-//   }
-//}
+

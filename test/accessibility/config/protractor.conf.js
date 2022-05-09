@@ -49,6 +49,8 @@ const config = {
         password: 'Monday01',
         caseworkerUser: 'mahesh_fr_courtadmn@mailinator.com',
         caseworkerPassword: 'London01',
+        probate_username: process.env.PROBATE_EMAIL || 'probaterequesteraat@mailnesia.com',
+        probate_password: process.env.PROBATE_PASSWORD || 'LevelAt12',
         fr_judge_username: process.env.FR_EMAIL,
         fr_judge_password: process.env.FR_PASSWORD,
         sscs_username: process.env.SSCS_EMAIL,

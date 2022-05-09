@@ -11,6 +11,7 @@ import { router as serviceRefDataRouter } from './serviceRefData';
 import { router as waSupportedJurisdictionRouter } from './waSupportedJurisdictions';
 import roleAccessRouter from './roleAccess/routes';
 import userRouter from './user/routes';
+import { router as SpecificAccessRouter } from './specificAccessOrchastrator/routes';
 
 const router = express.Router({mergeParams: true});
 
@@ -38,6 +39,18 @@ router.use('/organisation', organisationRouter);
 router.use('/wa-supported-jurisdiction', waSupportedJurisdictionRouter);
 router.use('/locations', locationsRouter);
 router.use('/service-ref-data', serviceRefDataRouter);
+router.use('/service-ref-data', serviceRefDataRouter);
+router.use('/service-ref-data', serviceRefDataRouter);
+
+//http://localhost:3000/am/role-assignments1
+router.post('/specific-access-request', function (req, res, next) {
+  res.send('This is specific-access-request');
+});
+router.post('/api/specific-access-request', function (req, res, next) {
+  res.send('This is specific-access-request');
+});
+router.use('/am/role-assignments1', SpecificAccessRouter);
+router.use('/specific-access-request', SpecificAccessRouter);
 
 // @ts-ignore
 export default router;

@@ -4,7 +4,7 @@ import { NextFunction, Response } from 'express';
 import { setHeaders } from '../lib/proxy';
 import { http } from '../lib/http';
 import { AxiosResponse } from 'axios';
-import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from "configuration/references";
+import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
 export async function specificAccessRequest(req, res, next): Promise<Response> {
 
   // console.log('here****************************');
@@ -50,14 +50,15 @@ export async function specificAccessRequest(req, res, next): Promise<Response> {
 async function specificAccessRequestCreateAmRole(req, res, next): Promise<Response> {
   try {
     debugger;
-    //const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
-    const fullPath = 'api/am/role-assignments';//`${basePath}/am/role-assignments`;
+    const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+    const fullPath = `${basePath}/am/role-assignments`;
     const headers = setHeaders(req);
-    const response: any = await http.post(fullPath, { headers });
+    const response: any = await http.post(fullPath, { headers } );
     debugger;
     return response;
     //return this.http.get<LocationModel>(`api/locations/getLocationsById?ids=${location.id}`);
   } catch (error) {
+    console.log(error)
     debugger;
     next(error);
   }

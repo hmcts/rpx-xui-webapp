@@ -1,12 +1,14 @@
 import Logger from "@pact-foundation/pact-node/src/logger";
 import { getConfigValue } from '../configuration';
-import { NextFunction, Response } from 'express';
+import { NextFunction, response, Response } from 'express';
 import { setHeaders } from '../lib/proxy';
 import { http } from '../lib/http';
 import { AxiosResponse } from 'axios';
-import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
+import { SERVICES_ROLE_ASSIGNMENT_API_PATH, SERVICES_WA_WORKFLOW_API_URL } from '../configuration/references';
+import { EnhancedRequest } from "lib/models";
+import { v4 as uuidv4 } from 'uuid';
 
-export function handleSpecificAccessResponse(proxyRes, req, res, data): {} {
+export async function handleSpecificAccessResponse(proxyRes, req, res, data): Promise<any> {
   const attributes = data.roleAssignmentResponse.requestedRoles[0].attributes;
   if (data && data.roleAssignmentResponse && data.roleAssignmentResponse.requestedRoles && data.roleAssignmentResponse.requestedRoles[0].attributes) {
     const caseId = attributes.caseId;
@@ -15,6 +17,14 @@ export function handleSpecificAccessResponse(proxyRes, req, res, data): {} {
     const caseType = attributes.caseType;
     console.log('caseType');
     console.log(caseId, requestedRole, jurisdiction, caseType);
+    // this neeeds to identified later in e2e testing
+    const taskType = 'followUpOverdueRespondentEvidence';
+    const dueDate = '2022-01-22T16:21:41.320086';
+    const taskName = 'Process Application';
+    const taskResponse = await postCreateTask(req, {caseId, jurisdiction, caseType, taskType, dueDate, name: taskName});
+    if (!taskResponse || !taskResponse.data || taskResponse.data !== 204) {
+      // delete the role Assignment by Id
+    }
   }
   return data;
 }
@@ -79,3 +89,53 @@ async function specificAccessRequestCreateTask(req, res, next): Promise<Response
   }
 }
 
+export async function postCreateTask(req: EnhancedRequest, createTask: {caseId, jurisdiction, caseType, taskType, dueDate, name}): Promise<any> {
+    try {
+        const waWorkFlowApi = getConfigValue(SERVICES_WA_WORKFLOW_API_URL);
+        const id = uuidv4();
+        console.log('id is ', id)
+        const url = `${waWorkFlowApi}/workflow/message`;
+        const body = {
+            messageName: 'createTaskMessage',
+            processVariables: {
+                idempotencyKey: {
+                    value: id,
+                    type: 'String'
+                },
+                dueDate: {
+                    value: createTask.dueDate,
+                    type: 'String'
+                },
+                jurisdiction: {
+                    value:  createTask.jurisdiction,
+                    type: 'String'
+                },
+                caseId: {
+                    value: createTask.caseId,
+                    type: 'String'
+                },
+                name: {
+                    value: createTask.name,
+                    type: 'String'
+                },
+                taskType: {
+                    value: createTask.taskType,
+                    type: 'String'
+                },
+                caseType: {
+                    value: createTask.caseType,
+                    type: 'String'
+                }
+            },
+            correlationKeys: null,
+            all: false
+        }
+        const headers = setHeaders(req);
+        const response = await http.post(url, body, {headers});
+        console.log('response.data', response.data)
+        console.log('response.status', response.status)
+        return response;
+        } catch (error) {
+          console.log(error)
+        }
+    }

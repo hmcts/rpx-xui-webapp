@@ -37,6 +37,10 @@
       "dataApi": "SERVICES_CCD_DATA_STORE_API",
       "caseAssignmentApi": "SERVICES_CCD_CASE_ASSIGNMENT_API"
     },
+    "hearings": {
+      "serviceApi": "SERVICES_HEARINGS_COMPONENT_API",
+      "hmcApi": "SERVICES_HMC_HEARINGS_COMPONENT_API"
+    },
     "documents": {
       "api": "SERVICES_DOCUMENTS_API"
     },
@@ -45,7 +49,10 @@
     },
     "em_hrs_api": "SERVICES_EM_HRS_API",
     "prd": {
-      "api": "SERVICES_PRD_API"
+      "api": "SERVICES_PRD_API",
+      "locationApi": "SERVICES_PRD_LOCATION_API",
+      "judicialApi": "SERVICES_PRD_JUDICIAL_API",
+      "commondataApi": "SERVICES_PRD_COMMONDATA_API"
     },
     "locationref": {
       "api": "SERVICES_LOCATION_REF_API_URL"
@@ -55,6 +62,7 @@
     },
     "em_anno_api": "SERVICES_EM_ANNO_API",
     "em_docassembly_api": "SERVICES_EM_DOCASSEMBLY_API",
+    "waWorkflowApi": "SERVICES_WA_WORKFLOW_API_URL",
     "idam": {
       "idamApiUrl": "SERVICES_IDAM_API_URL",
       "idamClientID": "SERVICES_IDAM_CLIENT_ID",

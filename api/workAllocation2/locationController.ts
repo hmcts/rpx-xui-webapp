@@ -8,6 +8,7 @@ import { prepareGetLocationByIdUrl, prepareGetLocationsUrl } from './util';
 
 export const baseUrl: string = 'http://localhost:8080';
 
+// TODO: Get rid of this - does not connect with API and cannot see it used elsewhere
 /**
  * getLocation
  *
@@ -18,7 +19,6 @@ export async function getLocationById(req: EnhancedRequest, res: Response, next:
   try {
 
     const path: string = prepareGetLocationByIdUrl(baseUrl, req.params.locationId);
-    /*TODO: Implement get location*/
     const locationById = await handleLocationGet(path, req);
 
     res.status(200);
@@ -41,6 +41,22 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
     const newLocations = response.data.court_venues.filter(venue => venue.is_case_management_location === 'Y').
                          map(venue => ({id: venue.epimms_id, locationName: venue.site_name }));
     res.send(newLocations).status(response.status);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * Get locations
+ *
+ */
+export async function getFullLocations(req: EnhancedRequest, res: Response, next: NextFunction) {
+
+  try {
+    const basePath = getConfigValue(SERVICES_LOCATION_API_PATH);
+    const path: string = prepareGetLocationsUrl(basePath);
+    const response = await handleLocationGet(path, req);
+    res.send(response.data.court_venues).status(response.status);
   } catch (error) {
     next(error);
   }

@@ -5,15 +5,12 @@ import { setHeaders } from '../lib/proxy';
 import { getConfigValue } from '../configuration';
 import { SERVICES_LOCATION_API_PATH } from '../configuration/references';
 import { EnhancedRequest } from '../lib/models';
-import * as mock from '../locations/location.mock';
 import {LocationTypeEnum} from './data/locationType.enum';
 import {SERVICES_COURT_TYPE_MAPPINGS} from './data/serviceCourtType.mapping';
 import {LocationModel} from './models/location.model';
 import { CourtVenue } from '../workAllocation2/interfaces/location';
 import { handleLocationGet } from '../workAllocation2/locationService';
 import { prepareGetLocationsUrl } from '../workAllocation2/util';
-
-mock.init();
 
 // const url: string = getConfigValue(SERVICES_PRD_API_URL);
 // TODO: CAM_BOOKING - check this

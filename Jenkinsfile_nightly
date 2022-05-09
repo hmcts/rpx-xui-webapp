@@ -7,7 +7,7 @@ properties([
         projectUrlStr: 'https://github.com/hmcts/rpx-xui-webapp/'
     ],
     pipelineTriggers([
-    cron('H 05 * * *')
+    cron('H 07 * * *')
     ])
 ])
 

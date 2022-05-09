@@ -41,7 +41,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I validate task tab alert banner header is {string}', async function (alertheader) {
-        expect(await caseDetailsTaskTabPage.alertBannerHeading.getText()).includes(alertheader);
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await caseDetailsTaskTabPage.alertBannerHeading.getText()).includes(alertheader);
+
+        });
     });
 
     Then('I validate task tab alert banner message is {string}', async function (alertMessagee) {
@@ -95,8 +98,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             } 
         }
         expect(linkToClick !== null, `lnk with text ${attributeLinktext} not found in next steps`).to.be.true;
-        await linkToClick.click();
-
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await linkToClick.click();
+        });
         await BrowserWaits.retryWithActionCallback(async () => {
             await BrowserWaits.waitForElement($('ccd-case-edit-page'));
         });

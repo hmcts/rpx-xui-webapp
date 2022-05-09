@@ -39,17 +39,15 @@ router.use('/organisation', organisationRouter);
 router.use('/wa-supported-jurisdiction', waSupportedJurisdictionRouter);
 router.use('/locations', locationsRouter);
 router.use('/service-ref-data', serviceRefDataRouter);
-router.use('/service-ref-data', serviceRefDataRouter);
-router.use('/service-ref-data', serviceRefDataRouter);
 
 //http://localhost:3000/am/role-assignments1
-router.post('/specific-access-request', function (req, res, next) {
-  res.send('This is specific-access-request');
-});
-router.post('/api/specific-access-request', function (req, res, next) {
-  res.send('This is specific-access-request');
-});
-router.use('/am/role-assignments1', SpecificAccessRouter);
+// router.post('/specific-access-request', function (req, res, next) {
+//   res.send('This is specific-access-request');
+// });
+// router.post('/api/specific-access-request', function (req, res, next) {
+//   res.send('This is specific-access-request');
+// });
+// router.use('/am/role-assignments1', SpecificAccessRouter);
 router.use('/specific-access-request', SpecificAccessRouter);
 
 // @ts-ignore

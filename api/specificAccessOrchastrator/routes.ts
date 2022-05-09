@@ -8,9 +8,9 @@ export const router = express.Router({mergeParams: true});
 
 
 
-router.post('', specificAccessRequest);
+//router.post('', specificAccessRequest);
 router.post('/', specificAccessRequest);
 // router.post('/specificAccessRequest', specificAccessRequest);
-router.post('/role-assignments1', specificAccessRequest);
+//router.post('/role-assignments1', specificAccessRequest);
 
 

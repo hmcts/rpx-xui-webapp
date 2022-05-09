@@ -1,8 +1,14 @@
 import Logger from "@pact-foundation/pact-node/src/logger";
-
+import { getConfigValue } from '../configuration';
+import { NextFunction, Response } from 'express';
+import { setHeaders } from '../lib/proxy';
+import { http } from '../lib/http';
+import { AxiosResponse } from 'axios';
+import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from "configuration/references";
 export async function specificAccessRequest(req, res, next): Promise<Response> {
-  console.log('here****************************');
-  return res.status(201).send({taskID:101});
+
+  // console.log('here****************************');
+  // return res.status(201).send({taskID:101});
     //
     //   //1: create role assignment {get role assinmentID}
     //       // role and access folder
@@ -16,6 +22,7 @@ export async function specificAccessRequest(req, res, next): Promise<Response> {
     let taskResponse ;
     try {
       amResponse = await specificAccessRequestCreateAmRole(req, res, next);
+      debugger;
       if(!amResponse || !amResponse.roleAssignmentId)
       {
         // Log
@@ -36,15 +43,22 @@ export async function specificAccessRequest(req, res, next): Promise<Response> {
       }
       next(error);
     }
-
-
+    debugger;
+    return res.status(201).send({taskID:101});
 }
 
 async function specificAccessRequestCreateAmRole(req, res, next): Promise<Response> {
   try {
-    return res.status(201).send({roleAssignmentId:101});
+    debugger;
+    //const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+    const fullPath = 'api/am/role-assignments';//`${basePath}/am/role-assignments`;
+    const headers = setHeaders(req);
+    const response: any = await http.post(fullPath, { headers });
+    debugger;
+    return response;
     //return this.http.get<LocationModel>(`api/locations/getLocationsById?ids=${location.id}`);
   } catch (error) {
+    debugger;
     next(error);
   }
 }

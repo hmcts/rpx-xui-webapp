@@ -1,6 +1,7 @@
 Dropdown = require('./webdriver-components/dropdown.js')
 Button = require('./webdriver-components/button.js')
 
+const { $$ } = require('protractor');
 var BrowserWaits = require('../../support/customWaits');
 
 class RefundsPage {
@@ -17,12 +18,12 @@ class RefundsPage {
 
     this._startBtn = element(by.xpath("//button[text() = 'Start']"));
     this.reviewCase = element.all(by.linkText('Review case')).first();
-    this.processRefund = element.all(by.linkText('Process refund')).first();
-    this.reviewRefund = element.all(by.linkText('Review refund')).first();
+    this.processRefundLink = element.all(by.linkText('Process refund')).first();
+    this.reviewRefundLink = element.all(by.linkText('Review refund')).first();
 
-    this.processRefund = {
-      reviewRefundDetailsHeading: '',
-      whatDoYouWantToDoWithThisRefundHeading: '',
+    this.processRefundPage = {
+      reviewRefundDetailsHeading: element(by.xpath('//h1[contains(text(),"Review refund details")]')),
+      whatDoYouWantToDoWithThisRefundHeading: element(by.xpath('//h1[contains(text(),"What do you want to do with this refund?")]')),
       reviewRefundDetailsTableColumns: $$('.payment-view-alignment  table td:nth-child(1)'),
       refundActionFields: {
         approve: $('#refundAction-0'),
@@ -51,6 +52,13 @@ class RefundsPage {
         },
       }
 
+    };
+
+    this.reviewRefundPage = {
+      refundDetailsHeading: element(by.xpath('//h2[contains(text(),"Refund details")]')),
+      refundStatusHistoryHeading: element(by.xpath('//h2[contains(text(),"Refund status history")]')),
+      refundDetailsTableColumns: $$('ccpay-refund-status table tr td:nth-child(1)'),
+      refundStatusHistoryColumns: $$('ccpay-refund-status table thead tr td')
     }
 
   }
@@ -66,13 +74,32 @@ class RefundsPage {
     let subHeader1 = await this.refundsToBeApproved.getText();
     await BrowserWaits.waitForElement(this.refundsReturnedToCaseworker);
     let subHeader2 = await this.refundsReturnedToCaseworker.getText();
-    return header === 'Refund list' &&
-        subHeader1 == 'Refunds to be approved' &&
-        subHeader2 == 'Refunds returned to caseworker'
+    return [header, subHeader1, subHeader2];
+  }
+
+  async amOnProcessRefundPage(){
+    await BrowserWaits.waitForElement(this.processRefundPage.whatDoYouWantToDoWithThisRefundHeading);
+    let subHeader1 = await this.processRefundPage.reviewRefundDetailsHeading.getText();
+    let subHeader2 = await this.processRefundPage.whatDoYouWantToDoWithThisRefundHeading.getText();
+    return [subHeader1, subHeader2];
+  }
+
+  async amOnReviewRefundPage(){
+    await BrowserWaits.waitForElement(this.reviewRefundPage.refundStatusHistoryHeading);
+    let subHeader1 = await this.reviewRefundPage.refundDetailsHeading.getText();
+    let subHeader2 = await this.reviewRefundPage.refundStatusHistoryHeading.getText();
+    return [subHeader1, subHeader2];
   }
 
   async getRefundDetailsInfo(){
     return this.processRefund.reviewRefundDetailsTableColumns.getText();
+  }
+
+  async getReviewRefundsInfo(){
+    return [
+      this.reviewRefund.refundDetailsTableColumns.getText(),
+      this.reviewRefund.refundStatusHistoryColumns.getText()
+    ];
   }
 
   // async amOnProcessRefundsPage(){
@@ -102,13 +129,13 @@ class RefundsPage {
   }
 
   async clickProcessRefund(){
-    await BrowserWaits.waitForElementClickable(this.processRefund);
-    await this.processRefund.click();
+    await BrowserWaits.waitForElementClickable(this.processRefundLink);
+    await this.processRefundLink.click();
   }
 
   async clickReviewRefund(){
-    await BrowserWaits.waitForElementClickable(this.reviewRefund);
-    await this.reviewRefund.click();
+    await BrowserWaits.waitForElementClickable(this.reviewRefundLink);
+    await this.reviewRefundLink.click();
   }
 
 

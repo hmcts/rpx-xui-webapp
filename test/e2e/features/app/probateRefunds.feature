@@ -16,10 +16,9 @@ Feature: Probate Refunds
 @processrefund
   Scenario: Verify Process Refund
     When I click Process refund
-    Then Process refunds page should be displayed
-    # Then I am on case form page
+    Then Process refund page should be displayed
 
-# @reviewrefund
-#   Scenario: Verify Review Refund
-#     When I click Review refund
-#     # Then I am on case form page
+@reviewrefund
+  Scenario: Verify Review Refund
+    When I click Review refund
+    Then Review refund page should be displayed

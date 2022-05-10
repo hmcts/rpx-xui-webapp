@@ -46,30 +46,46 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
   });
 
   Then(/^Refunds page should be displayed$/, async function () {
-    expect(await refundsPage.amOnPage()).to.be.true;
+    let refundPageHeadings = [
+      'Refund list',
+      'Refunds to be approved',
+      'Refunds returned to caseworker'
+    ]
+    let renderedHeadings = await refundsPage.amOnPage();
+    expect(renderedHeadings).to.include.all.members(refundPageHeadings);
   });
   
   When(/^I click Review case$/, async function () {
-    //await caseListPage.clickCreateNewCaseButton();
     await refundsPage.clickReviewCase();
   });
 
   When(/^I click Process refund$/, async function () {
-    //await caseListPage.clickCreateNewCaseButton();
-    await browser.sleep(20000);
     await refundsPage.clickProcessRefund();
   });
 
-  Then(/^Process refunds page should be displayed$/, async function () {
-    let data = refundsPage.getRefundDetailsInfo();
-    console.log(data);
+  Then(/^Process refund page should be displayed$/, async function () {
+    let processRefundPageHeadings = [
+      'Review refund details',
+      'What do you want to do with this refund?'
+    ];
+    let renderedHeadings = await refundsPage.amOnProcessRefundPage();
+    expect(renderedHeadings).to.include.all.members(processRefundPageHeadings);
   });
 
   When(/^I click Review refund$/, async function () {
-    //await caseListPage.clickCreateNewCaseButton();
     await refundsPage.clickReviewRefund();
   });
   
+  Then(/^Review refund page should be displayed$/, async function () {
+    let reviewRefundPageHeadings = [
+      'Refund details',
+      'Refund status history'
+    ];
+    let renderedHeadings = await refundsPage.amOnReviewRefundPage();
+    expect(renderedHeadings).to.include.all.members(reviewRefundPageHeadings);
+  });
+
+
 
   When(/^I enter mandatory probate fields jurisdiction,case type,event and click on start button$/, async function () {
     browser.sleep(AMAZING_DELAY);

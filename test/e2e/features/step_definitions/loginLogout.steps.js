@@ -106,7 +106,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     await expect(loginPage.dashboard_header.getText())
       .to
       .eventually
-      .equal('Case List');
+      .equal('Case list');
 
   });
 

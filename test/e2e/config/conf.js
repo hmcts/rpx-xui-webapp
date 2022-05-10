@@ -24,7 +24,7 @@ const localConfig = [
 
     browserName: 'chrome',
     acceptInsecureCerts: true,
-    chromeOptions: { args: ['--headless','--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
+    chromeOptions: { args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
     proxy: {
       proxyType: 'manual',
       httpProxy: 'proxyout.reform.hmcts.net:8080',
@@ -51,6 +51,8 @@ const config = {
     caseworkerPassword: 'London01',
     fr_judge_username: process.env.FR_EMAIL,
     fr_judge_password: process.env.FR_PASSWORD,
+    probate_username: process.env.PROBATE_EMAIL || 'probaterequesteraat@mailnesia.com',
+    probate_password: process.env.PROBATE_PASSWORD || 'LevelAt12',
     sscs_username: process.env.SSCS_EMAIL,
     sscs_password: process.env.SSCS_PASSWORD
 

@@ -1,28 +1,25 @@
-
-@probate @fullfunctional
+@probate @fullfunctional @refunds
 Feature: Probate Refunds
 
   Background:
     When I navigate to Expert UI Url
-    Given I am logged into Expert UI with valid user details
+    Given I am logged into Expert UI with Probate user details
     Then I should be redirected to EUI dashboard page
-    When I click on create case button
-    Then Create case page should be displayed
+    When I click on Refunds button
+    Then Refunds page should be displayed
 
-@all
-  Scenario: Start create case for Probate
-    When I start case with jurisdiction "Manage probate application" case type "Grant of representation" and event "Apply for probate"
-    Then I am on case form page
+# @reviewcase
+#   Scenario: Verify Review Case
+#     When I click Review case
+#     # Then I am on case form page
 
-@crossbrowser
-  Scenario: Cancel create case for Probate
-    When I start case with jurisdiction "Manage probate application" case type "Grant of representation" and event "Apply for probate"
-    When I click cancel link
-    When I am on case list page
+@processrefund
+  Scenario: Verify Process Refund
+    When I click Process refund
+    Then Process refunds page should be displayed
+    # Then I am on case form page
 
-  Scenario: Create and Submit FR Consented Case
-    When I start case with jurisdiction "Manage probate application" case type "Grant of representation" and event "Apply for probate"
-    When I create Probate case
-    Then I am on check your answers page
-    When I submit case
-    Then I see case details page
+# @reviewrefund
+#   Scenario: Verify Review Refund
+#     When I click Review refund
+#     # Then I am on case form page

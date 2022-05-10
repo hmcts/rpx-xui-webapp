@@ -10,6 +10,7 @@ function HeaderPage() {
     this.caseList = element(by.xpath("//a[contains(text(),'Case list')]"));
     this.createCase = element(by.xpath("//li/a[contains(text(),'Create case')]"));
     this.findCase = element(by.xpath("//a[contains(text(),'Find case')]"));
+    this.refunds = element(by.xpath("//a[contains(text(),'Refunds')]"));
     this.signOut = element(by.xpath("//a[contains(text(),'Sign out')]"));
 
     this.contentHeader = $("#content h1");
@@ -36,6 +37,13 @@ function HeaderPage() {
     await this.findCase.click();
 
     var searchPageHeader = element(by.xpath("//*[@id = 'content']//h1[text() = 'Search']"));
+    await BrowserWaits.waitForElement(searchPageHeader); 
+  };
+
+  this.clickRefunds = async function () {
+    await BrowserWaits.waitForElementClickable(this.refunds);
+    await this.refunds.click();
+    let searchPageHeader = element(by.xpath("//*[@id = 'content']//h1[text() = 'Refund list']"));
     await BrowserWaits.waitForElement(searchPageHeader); 
   };
 

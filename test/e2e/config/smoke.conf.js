@@ -15,7 +15,7 @@ const jenkinsConfig = [
     browserName: 'chrome',
     acceptInsecureCerts: true,
     nogui: true,
-    chromeOptions: { args: ['--headless', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'] }
+    chromeOptions: { args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'] }
   }
 ];
 
@@ -24,7 +24,7 @@ const localConfig = [
 
     browserName: 'chrome',
     acceptInsecureCerts: true,
-    chromeOptions: { args: ['--headless', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
+    chromeOptions: { args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
     proxy: {
       proxyType: 'manual',
       httpProxy: 'proxyout.reform.hmcts.net:8080',
@@ -76,7 +76,7 @@ const config = {
     strict: true,
     // format: ['node_modules/cucumber-pretty'],
     format: ['node_modules/cucumber-pretty', 'json:reports/tests/json/results.json'],
-    tags: ['@smoke'],
+    tags: ['@refunds'],
     require: [
       '../support/timeout.js',
       '../support/hooks.js',

@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { forkJoin, Subscription } from 'rxjs';
 import { HearingListMainModel } from '../../../models/hearingListMain.model';
@@ -71,7 +71,9 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
         (this.linkHearingForm.get('hearings') as FormArray).push(this.addHearingFormGroup(caseInfo.caseReference));
         const hearings = [] as HearingDetailModel[];
         hearingsList[pos].caseHearings.forEach((hearing) => {
-          if (hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_LISTING || hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.UPDATE_REQUESTED || hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.LISTED) {
+          if (hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_LISTING
+            || hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.UPDATE_REQUESTED
+            || hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.LISTED) {
             const hearingInfo: HearingDetailModel = {
               hearingId: hearing.hearingID,
               hearingStage: hearing.hearingType,
@@ -104,7 +106,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
       });
     });
     this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesSuccess(this.linkedCases));
-    this.router.navigate([`/hearings/link/${this.caseId}/${this.hearingId}/group-selection`])
+    this.router.navigate([`/hearings/link/${this.caseId}/${this.hearingId}/group-selection`]);
   }
 
   public onSubmit() {

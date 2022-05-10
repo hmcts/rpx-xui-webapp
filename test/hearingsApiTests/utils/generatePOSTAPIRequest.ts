@@ -3,7 +3,7 @@ import { authenticateAndGetcookies } from './getCookie';
 const fetch = require('node-fetch');
 const mainURL = process.env.TEST_URL || 'http://localhost:3000';
 
-export async function generateAPIRequest(method, subURL) {
+export async function generatePOSTAPIRequest(method, subURL, payload) {
 
   try {
   const cookie = await authenticateAndGetcookies(mainURL);
@@ -16,7 +16,7 @@ export async function generateAPIRequest(method, subURL) {
       json: true,
       resolveWithFullResponse: true,
       method,
-      //body: JSON.stringify(payload)
+      body: JSON.stringify(payload)
     };
   const url = `${mainURL}${subURL}`;
 

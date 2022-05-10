@@ -11,7 +11,7 @@ import { SessionStorageService } from 'src/app/services';
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
 import createSpyObj = jasmine.createSpyObj;
 
-fdescribe('HmctsGlobalHeaderComponent', () => {
+describe('HmctsGlobalHeaderComponent', () => {
   let nocStoreSpy: jasmine.Spy;
   let component: HmctsGlobalHeaderComponent;
   let fixture: ComponentFixture<HmctsGlobalHeaderComponent>;

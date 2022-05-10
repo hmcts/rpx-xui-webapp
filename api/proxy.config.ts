@@ -2,7 +2,6 @@ import * as bodyParser from 'body-parser';
 import { Express } from 'express';
 import * as amendedJurisdictions from './amendedJurisdictions';
 import { getConfigValue } from './configuration';
-import * as accessManagement from './accessManagement'
 import {
   SERVICES_CCD_COMPONENT_API_PATH,
   SERVICES_DOCUMENTS_API_PATH,
@@ -14,12 +13,10 @@ import {
   SERVICES_MARKUP_API_URL,
   SERVICES_PAYMENTS_URL,
   SERVICES_REFUNDS_API_URL,
-  SERVICES_LOCATION_REF_API_URL,
-  SERVICES_ROLE_ASSIGNMENT_API_PATH
+  SERVICES_LOCATION_REF_API_URL
 } from './configuration/references';
 import { applyProxy } from './lib/middleware/proxy';
 import * as searchCases from './searchCases';
-import { handleSpecificAccessResponse } from './specificAccessOrchastrator';
 
 export const initProxy = (app: Express) => {
   applyProxy(app, {
@@ -129,13 +126,13 @@ export const initProxy = (app: Express) => {
       source: '/api/refund',
       target: getConfigValue(SERVICES_REFUNDS_API_URL),
   });
-  applyProxy(app, {
-    onReq: accessManagement.removeAcceptHeader,
-    onRes: handleSpecificAccessResponse,
-    rewrite: false,
-    source: '/am/role-assignments',
-    target: getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH),
-  });
+  // applyProxy(app, {
+  //   onReq: accessManagement.removeAcceptHeader,
+  //   onRes: handleSpecificAccessResponse,
+  //   rewrite: false,
+  //   source: '/am/role-assignments',
+  //   target: getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH),
+  // });
   applyProxy(app, {
       rewrite: false,
       source: '/refdata/location',

@@ -5,9 +5,12 @@ import { SERVICES_ROLE_ASSIGNMENT_API_PATH, SERVICES_WA_WORKFLOW_API_URL } from 
 import { EnhancedRequest } from "lib/models";
 import { v4 as uuidv4 } from 'uuid';
 import { sendDelete } from '../common/crudService';
+import { AxiosResponse } from 'axios';
 
-export async function handleSpecificAccessResponse(proxyRes, req, res, data): Promise<any> {
-  if (data && data.roleAssignmentResponse
+export async function OrchastrationSpecificAccessRequest(req, res): Promise<any> {
+  const CreateAmRoleResponse: AxiosResponse = await specificAccessRequestCreateAmRole(req, res);
+  const { status, data } = CreateAmRoleResponse;
+  if (CreateAmRoleResponse && data.roleAssignmentResponse
     && data.roleAssignmentResponse.requestedRoles
     && data.roleAssignmentResponse.requestedRoles[0].attributes) {
     const attributes = data.roleAssignmentResponse.requestedRoles[0].attributes;
@@ -15,7 +18,7 @@ export async function handleSpecificAccessResponse(proxyRes, req, res, data): Pr
     const jurisdiction = attributes.jurisdiction;
     const caseType = attributes.caseType;
     const taskType = 'followUpOverdueRespondentEvidence';
-    const dueDate = '2022-01-22T16:21:41.320086';
+    const dueDate = '2022-04-23T16:21:41.320086';
     const taskName = 'Process Application';
     const taskResponse = await postCreateTask(req, { caseId, jurisdiction, caseType, taskType, dueDate, name: taskName });
     if (!taskResponse || taskResponse.status !== 204) {
@@ -29,9 +32,21 @@ export async function handleSpecificAccessResponse(proxyRes, req, res, data): Pr
         console.log(e);
       }
     }
-    return data;
+    return res.status(status).send(data);
   }
 }
+
+async function specificAccessRequestCreateAmRole(req, res): Promise<AxiosResponse> {
+  const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+  const fullPath = `${basePath}/am/role-assignments`;
+  const headers = setHeaders(req);
+  // AM service reject header with 406 error if accept is sent
+  /* tslint:disable:no-string-literal */
+  delete headers['accept'];
+  const response = await http.post(fullPath, req.body, { headers} );
+  return response;
+}
+
 // tslint:disable-next-line:max-line-length
 export async function postCreateTask(req: EnhancedRequest, createTask: { caseId, jurisdiction, caseType, taskType, dueDate, name }): Promise<any> {
   try {

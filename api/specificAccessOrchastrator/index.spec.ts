@@ -3,10 +3,10 @@ import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
-import { mockReq } from 'sinon-express-mock';
+import { mockReq, mockRes } from 'sinon-express-mock';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
-import { handleSpecificAccessResponse, postCreateTask } from '.';
+import { OrchastrationSpecificAccessRequest, postCreateTask } from '.';
 
 chai.use(sinonChai);
 describe('postCreateTask', () => {
@@ -41,9 +41,10 @@ describe('postCreateTask', () => {
   });
 });
 
-describe('handleSpecificAccessResponse', () => {
+describe('OrchastrationSpecificAccessRequest', () => {
   let sandbox: sinon.SinonSandbox;
-  let req: EnhancedRequest;
+  let res;
+  let req;
   let spy: sinon.SinonSpy;
   const data = {
     roleAssignmentResponse: {
@@ -72,9 +73,10 @@ describe('handleSpecificAccessResponse', () => {
   };
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    res = mockRes()
     req = mockReq({
-      body: {},
-    });
+       params: {}
+    })
     spy = sandbox.stub(http, 'post').resolves({
       data,
     });
@@ -84,11 +86,9 @@ describe('handleSpecificAccessResponse', () => {
     sandbox.restore();
   });
 
-  it('should call handleSpecificAccessResponse successfully', async () => {
-    const response = await handleSpecificAccessResponse({}, req, {}, data);
-    expect(response.roleAssignmentResponse.roleRequest.status).to.equal('APPROVED');
-    expect(response.roleAssignmentResponse.roleRequest.log).to.equal('Request has been approved');
-    expect(response).to.deep.equal(data);
+  it('should call OrchastrationSpecificAccessRequest successfully', async () => {
+    await OrchastrationSpecificAccessRequest(req, res);
+    expect(res.send).to.have.been.calledWith(sinon.match(data));
   });
 });
 

@@ -3,7 +3,6 @@ import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {select, Store} from '@ngrx/store';
 import {Observable, Subscription} from 'rxjs';
-import {HearingRequestMainModel} from '../../../models/hearingRequestMain.model';
 import {ACTION, HearingChangeReasonMessages, HearingSummaryEnum} from '../../../models/hearings.enum';
 import {LovRefDataModel} from '../../../models/lovRefData.model';
 import {HearingsService} from '../../../services/hearings.service';
@@ -97,15 +96,8 @@ export class HearingChangeReasonComponent extends RequestHearingPageFlow impleme
     const reasons: string[] = (this.hearingChangeReasonForm.controls.reasons as FormArray).controls.map(
       control => control.value.key
     );
-    // If HMAN-213 is not fixed below code is needed, otherwise it can be removed
-    const hearingRequest: HearingRequestMainModel = JSON.parse(JSON.stringify(this.hearingRequestMainModel));
-    hearingRequest.partyDetails.forEach(party => {
-      if (party.individualDetails && party.individualDetails.relatedParties && party.individualDetails.relatedParties.length === 0) {
-        delete party.individualDetails.relatedParties;
-      }
-    });
     this.hearingRequestMainModel = {
-      ...hearingRequest,
+      ...this.hearingRequestMainModel,
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
         amendReasonCode: reasons[0],

@@ -7,6 +7,7 @@ import { AxiosResponse } from 'axios';
 import { SERVICES_ROLE_ASSIGNMENT_API_PATH, SERVICES_WA_WORKFLOW_API_URL } from '../configuration/references';
 import { EnhancedRequest } from "lib/models";
 import { v4 as uuidv4 } from 'uuid';
+import { sendDelete } from '../common/crudService';
 
 export async function handleSpecificAccessResponse(proxyRes, req, res, data): Promise<any> {
   const attributes = data.roleAssignmentResponse.requestedRoles[0].attributes;
@@ -22,9 +23,18 @@ export async function handleSpecificAccessResponse(proxyRes, req, res, data): Pr
     const dueDate = '2022-01-22T16:21:41.320086';
     const taskName = 'Process Application';
     const taskResponse = await postCreateTask(req, {caseId, jurisdiction, caseType, taskType, dueDate, name: taskName});
-    if (!taskResponse || !taskResponse.data || taskResponse.data !== 204) {
-      // delete the role Assignment by Id
+    if (!taskResponse || taskResponse.status !== 204) {
+      const assignmentId = data.roleAssignmentResponse.roleRequest.id;
+      const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+      const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
+      const deleteBody = {assigmentId: assignmentId};
+      try {
+        await sendDelete(`${basePath}/${assignmentId}`, deleteBody, req);
+      } catch (e) {
+        console.log(e);
+      }
     }
+
   }
   return data;
 }

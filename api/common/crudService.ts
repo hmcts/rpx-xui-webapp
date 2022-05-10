@@ -129,6 +129,8 @@ export async function sendDelete<T>(path: string, body: T, req: EnhancedRequest)
   try {
     logger.info('send delete request to:', path);
     const headers = setHeaders(req);
+    // AM service reject header with 406 error if accept is sent
+    delete headers['accept'];
     return await http.delete(path, {
       data: body,
       headers,

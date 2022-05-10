@@ -1373,6 +1373,7 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
     listingComments: 'Interpreter required',
     hearingRequester: '',
     leadJudgeContractType: '',
+    amendReasonCode: '',
   },
   caseDetails: {
     hmctsServiceCode: 'BBA3',
@@ -1681,6 +1682,7 @@ export const initialState = {
           listingComments: 'blah blah blah',
           hearingRequester: null,
           leadJudgeContractType: null,
+          amendReasonCode: null,
         },
         caseDetails: {
           hmctsServiceCode: null,
@@ -1857,6 +1859,7 @@ export const initialState = {
           listingComments: 'blah blah blah',
           hearingRequester: null,
           leadJudgeContractType: null,
+          amendReasonCode: null,
         },
         caseDetails: {
           hmctsServiceCode: null,

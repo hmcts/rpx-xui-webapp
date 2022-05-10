@@ -1,9 +1,9 @@
-import {Component, OnDestroy} from '@angular/core';
-import {OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {select, Store} from '@ngrx/store';
 import {Observable, Subscription} from 'rxjs';
+import {HearingRequestMainModel} from '../../../models/hearingRequestMain.model';
 import {ACTION, HearingChangeReasonMessages, HearingSummaryEnum} from '../../../models/hearings.enum';
 import {LovRefDataModel} from '../../../models/lovRefData.model';
 import {HearingsService} from '../../../services/hearings.service';
@@ -85,11 +85,32 @@ export class HearingChangeReasonComponent extends RequestHearingPageFlow impleme
   public executeAction(action: ACTION): void {
     if (action === ACTION.VIEW_EDIT_SUBMIT) {
       if (this.isFormValid(action)) {
+        this.prepareHearingRequestData();
         super.navigateAction(action);
       }
     } else if (action === ACTION.BACK) {
       super.navigateAction(action);
     }
+  }
+
+  public prepareHearingRequestData(): void {
+    const reasons: string[] = (this.hearingChangeReasonForm.controls.reasons as FormArray).controls.map(
+      control => control.value.key
+    );
+    // If HMAN-213 is not fixed below code is needed, otherwise it can be removed
+    const hearingRequest: HearingRequestMainModel = JSON.parse(JSON.stringify(this.hearingRequestMainModel));
+    hearingRequest.partyDetails.forEach(party => {
+      if (party.individualDetails && party.individualDetails.relatedParties && party.individualDetails.relatedParties.length === 0) {
+        delete party.individualDetails.relatedParties;
+      }
+    });
+    this.hearingRequestMainModel = {
+      ...hearingRequest,
+      hearingDetails: {
+        ...this.hearingRequestMainModel.hearingDetails,
+        amendReasonCode: reasons[0],
+      }
+    };
   }
 
   public getChosenReasons(): LovRefDataModel[] {

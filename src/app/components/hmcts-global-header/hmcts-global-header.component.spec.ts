@@ -16,8 +16,6 @@ describe('HmctsGlobalHeaderComponent', () => {
   let component: HmctsGlobalHeaderComponent;
   let fixture: ComponentFixture<HmctsGlobalHeaderComponent>;
   let mockRouter: jasmine.SpyObj<Router>;
-  let sessionStorageService;
-  let windowService;
 
   const changesMock = {
     items: {
@@ -36,8 +34,25 @@ describe('HmctsGlobalHeaderComponent', () => {
   beforeEach(async(() => {
     origTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
-    sessionStorageService = createSpyObj('sessionStorageService', ['setItem', 'getItem']);
-    windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage', 'removeLocalStorage']);
+    const USERDETAILS = {
+      sub: 'Caseworker.ed@mailinator.com',
+      uid: '36314153-06c2-400a-8dc3-7d3790660918',
+      roles: [
+          'roleA',
+          'roleB',
+          'roleC',
+      ],
+      name: 'Caseworker Ed',
+      given_name: 'Caseworker',
+      family_name: 'Ed test',
+      roleCategory: 'LEGAL_OPERATIONS',
+      token: 'Bearer eyJ0eXAiOiJKV1QiLCJ6aXAiOiJOT05FIiwia2lkIjoiMWVyMFdSd2dJT1RBRm9qRTRyQy9mYmVLdTNJPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJDYXNld29ya2VyLmVkQG1haWxpbmF0b3IuY29tIiwiY3RzIjoiT0FVVEgyX1NUQVRFTEVTU19HUkFOVCIsImF1dGhfbGV2ZWwiOjAsImF1ZGl0VHJhY2tpbmdJZCI6ImY3ZjVmNjM4LTBmMDQtNGQxNC1hZmZlLWFjZWVjNzkyYjBjMy04MTI4NTA0NSIsImlzcyI6Imh0dHBzOi8vZm9yZ2Vyb2NrLWFtLnNlcnZpY2UuY29yZS1jb21wdXRlLWlkYW0tYWF0Mi5pbnRlcm5hbDo4NDQzL29wZW5hbS9vYXV0aDIvcmVhbG1zL3Jvb3QvcmVhbG1zL2htY3RzIiwidG9rZW5OYW1lIjoiYWNjZXNzX3Rva2VuIiwidG9rZW5fdHlwZSI6IkJlYXJlciIsImF1dGhHcmFudElkIjoia1lNdkJlaUFmbWpYLUlJRW83bXBXVzBHMjU0Iiwibm9uY2UiOiI1SUFIb3FCUUppcXY3amY0a3Rfd0JEYWdrWUZ3SDMwbHBnWnZ5UkdXUWxJIiwiYXVkIjoieHVpd2ViYXBwIiwibmJmIjoxNjQ5Njk4MDk3LCJncmFudF90eXBlIjoiYXV0aG9yaXphdGlvbl9jb2RlIiwic2NvcGUiOlsib3BlbmlkIiwicHJvZmlsZSIsInJvbGVzIiwiY3JlYXRlLXVzZXIiLCJtYW5hZ2UtdXNlciIsInNlYXJjaC11c2VyIl0sImF1dGhfdGltZSI6MTY0OTY5ODA5NiwicmVhbG0iOiIvaG1jdHMiLCJleHAiOjE2NDk3MjY4OTcsImlhdCI6MTY0OTY5ODA5NywiZXhwaXJlc19pbiI6Mjg4MDAsImp0aSI6Il9oNktSTVJmbE5USXVVaWhZNk5OR2tHY2h0cyJ9.PrVZlLToFaOI-sGorD_yVQaXYGqaKIjZ0JOGAFyFfkGkjaqInixhvXJMu7G3QK1cRl5i1MmM3C9_AGL2N4Xh8YLBjqVnIIFfgYom2wBAoON2YcqhUbE3gVtqCPxhhZSNfxXZzspEwYP2oKKFF4M8s6QaflHZZ6eEY1eTnciaYFAHvkgQbNB5lnZHCAeSZC8bbtgHbGKbbgtE0Cpvi6CxvJVMXYk2vo376V-mVxtZrimXhAve8v48EIVDiYxXHgwHdvgUPD6wYZzsnZmdWe5sKMg0NeNdOM8XgLdwbsL-HZcAp7TvtISQ7u8gjM0eTFcLRL1TGYmMxZqUI3jsBsdwOQ'
+    };
+
+    const mockSessionStorageService = {
+      getItem: jasmine.createSpy('getItem').and.returnValue(JSON.stringify(USERDETAILS))
+    };
+
     TestBed.configureTestingModule({
       declarations: [ HmctsGlobalHeaderComponent ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
@@ -50,8 +65,7 @@ describe('HmctsGlobalHeaderComponent', () => {
             isEnabled: (flag) => of(flags[flag])
           }
         },
-        { provide: SessionStorageService, useValue: sessionStorageService },
-        { provide: WindowService, useValue: windowService },
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
       ]
     })
     .compileComponents();
@@ -74,6 +88,24 @@ describe('HmctsGlobalHeaderComponent', () => {
         { text: 'Nav item 2', emit: '#1' }
       ]
     };
+    component.items = [{
+      align: 'right',
+      text: '1',
+      href: '',
+      active: false
+    },
+    {
+      align: null,
+      text: '2',
+      href: '',
+      active: false
+    },
+    {
+      align: 'right',
+      text: '3',
+      href: '',
+      active: false
+    }];
     nocStoreSpy = spyOn(component.nocStore, 'dispatch');
     fixture.detectChanges();
   });
@@ -82,22 +114,8 @@ describe('HmctsGlobalHeaderComponent', () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = origTimeout;
   });
 
+  // 3
   it('should create', () => {
-    const USERDETAILS = {
-      sub: 'Caseworker.ed@mailinator.com',
-      uid: '36314153-06c2-400a-8dc3-7d3790660918',
-      roles: [
-          'roleA',
-          'roleB',
-          'roleC',
-      ],
-      name: 'Caseworker Ed',
-      given_name: 'Caseworker',
-      family_name: 'Ed test',
-      roleCategory: 'LEGAL_OPERATIONS',
-      token: 'Bearer eyJ0eXAiOiJKV1QiLCJ6aXAiOiJOT05FIiwia2lkIjoiMWVyMFdSd2dJT1RBRm9qRTRyQy9mYmVLdTNJPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJDYXNld29ya2VyLmVkQG1haWxpbmF0b3IuY29tIiwiY3RzIjoiT0FVVEgyX1NUQVRFTEVTU19HUkFOVCIsImF1dGhfbGV2ZWwiOjAsImF1ZGl0VHJhY2tpbmdJZCI6ImY3ZjVmNjM4LTBmMDQtNGQxNC1hZmZlLWFjZWVjNzkyYjBjMy04MTI4NTA0NSIsImlzcyI6Imh0dHBzOi8vZm9yZ2Vyb2NrLWFtLnNlcnZpY2UuY29yZS1jb21wdXRlLWlkYW0tYWF0Mi5pbnRlcm5hbDo4NDQzL29wZW5hbS9vYXV0aDIvcmVhbG1zL3Jvb3QvcmVhbG1zL2htY3RzIiwidG9rZW5OYW1lIjoiYWNjZXNzX3Rva2VuIiwidG9rZW5fdHlwZSI6IkJlYXJlciIsImF1dGhHcmFudElkIjoia1lNdkJlaUFmbWpYLUlJRW83bXBXVzBHMjU0Iiwibm9uY2UiOiI1SUFIb3FCUUppcXY3amY0a3Rfd0JEYWdrWUZ3SDMwbHBnWnZ5UkdXUWxJIiwiYXVkIjoieHVpd2ViYXBwIiwibmJmIjoxNjQ5Njk4MDk3LCJncmFudF90eXBlIjoiYXV0aG9yaXphdGlvbl9jb2RlIiwic2NvcGUiOlsib3BlbmlkIiwicHJvZmlsZSIsInJvbGVzIiwiY3JlYXRlLXVzZXIiLCJtYW5hZ2UtdXNlciIsInNlYXJjaC11c2VyIl0sImF1dGhfdGltZSI6MTY0OTY5ODA5NiwicmVhbG0iOiIvaG1jdHMiLCJleHAiOjE2NDk3MjY4OTcsImlhdCI6MTY0OTY5ODA5NywiZXhwaXJlc19pbiI6Mjg4MDAsImp0aSI6Il9oNktSTVJmbE5USXVVaWhZNk5OR2tHY2h0cyJ9.PrVZlLToFaOI-sGorD_yVQaXYGqaKIjZ0JOGAFyFfkGkjaqInixhvXJMu7G3QK1cRl5i1MmM3C9_AGL2N4Xh8YLBjqVnIIFfgYom2wBAoON2YcqhUbE3gVtqCPxhhZSNfxXZzspEwYP2oKKFF4M8s6QaflHZZ6eEY1eTnciaYFAHvkgQbNB5lnZHCAeSZC8bbtgHbGKbbgtE0Cpvi6CxvJVMXYk2vo376V-mVxtZrimXhAve8v48EIVDiYxXHgwHdvgUPD6wYZzsnZmdWe5sKMg0NeNdOM8XgLdwbsL-HZcAp7TvtISQ7u8gjM0eTFcLRL1TGYmMxZqUI3jsBsdwOQ'
-    };
-    windowService.getLocalStorage.and.returnValues(JSON.stringify(USERDETAILS));
     expect(component).toBeTruthy();
   });
 
@@ -107,12 +125,14 @@ describe('HmctsGlobalHeaderComponent', () => {
     expect(nocStoreSpy).toHaveBeenCalled();
   });
 
+  // 1
   it('should onEmitEvent', () => {
     spyOn(component.navigate, 'emit');
     component.onEmitEvent(1);
     expect(component.navigate.emit).toHaveBeenCalled();
   });
 
+  // 2
   it('splitNavItems', (done: any) => {
     const USERDETAILS = {
       sub: 'Caseworker.ed@mailinator.com',
@@ -128,9 +148,7 @@ describe('HmctsGlobalHeaderComponent', () => {
       roleCategory: 'LEGAL_OPERATIONS',
       token: 'Bearer eyJ0eXAiOiJKV1QiLCJ6aXAiOiJOT05FIiwia2lkIjoiMWVyMFdSd2dJT1RBRm9qRTRyQy9mYmVLdTNJPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJDYXNld29ya2VyLmVkQG1haWxpbmF0b3IuY29tIiwiY3RzIjoiT0FVVEgyX1NUQVRFTEVTU19HUkFOVCIsImF1dGhfbGV2ZWwiOjAsImF1ZGl0VHJhY2tpbmdJZCI6ImY3ZjVmNjM4LTBmMDQtNGQxNC1hZmZlLWFjZWVjNzkyYjBjMy04MTI4NTA0NSIsImlzcyI6Imh0dHBzOi8vZm9yZ2Vyb2NrLWFtLnNlcnZpY2UuY29yZS1jb21wdXRlLWlkYW0tYWF0Mi5pbnRlcm5hbDo4NDQzL29wZW5hbS9vYXV0aDIvcmVhbG1zL3Jvb3QvcmVhbG1zL2htY3RzIiwidG9rZW5OYW1lIjoiYWNjZXNzX3Rva2VuIiwidG9rZW5fdHlwZSI6IkJlYXJlciIsImF1dGhHcmFudElkIjoia1lNdkJlaUFmbWpYLUlJRW83bXBXVzBHMjU0Iiwibm9uY2UiOiI1SUFIb3FCUUppcXY3amY0a3Rfd0JEYWdrWUZ3SDMwbHBnWnZ5UkdXUWxJIiwiYXVkIjoieHVpd2ViYXBwIiwibmJmIjoxNjQ5Njk4MDk3LCJncmFudF90eXBlIjoiYXV0aG9yaXphdGlvbl9jb2RlIiwic2NvcGUiOlsib3BlbmlkIiwicHJvZmlsZSIsInJvbGVzIiwiY3JlYXRlLXVzZXIiLCJtYW5hZ2UtdXNlciIsInNlYXJjaC11c2VyIl0sImF1dGhfdGltZSI6MTY0OTY5ODA5NiwicmVhbG0iOiIvaG1jdHMiLCJleHAiOjE2NDk3MjY4OTcsImlhdCI6MTY0OTY5ODA5NywiZXhwaXJlc19pbiI6Mjg4MDAsImp0aSI6Il9oNktSTVJmbE5USXVVaWhZNk5OR2tHY2h0cyJ9.PrVZlLToFaOI-sGorD_yVQaXYGqaKIjZ0JOGAFyFfkGkjaqInixhvXJMu7G3QK1cRl5i1MmM3C9_AGL2N4Xh8YLBjqVnIIFfgYom2wBAoON2YcqhUbE3gVtqCPxhhZSNfxXZzspEwYP2oKKFF4M8s6QaflHZZ6eEY1eTnciaYFAHvkgQbNB5lnZHCAeSZC8bbtgHbGKbbgtE0Cpvi6CxvJVMXYk2vo376V-mVxtZrimXhAve8v48EIVDiYxXHgwHdvgUPD6wYZzsnZmdWe5sKMg0NeNdOM8XgLdwbsL-HZcAp7TvtISQ7u8gjM0eTFcLRL1TGYmMxZqUI3jsBsdwOQ'
     };
-    sessionStorageService.getItem.and.returnValues(JSON.stringify(USERDETAILS));
     fixture.detectChanges();
-     // windowService.getLocalStorage.and.returnValues(JSON.stringify(USERDETAILS));
     component.items = [{
       align: 'right',
       text: '1',

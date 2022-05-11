@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { sendDelete } from '../common/crudService';
 import { AxiosResponse } from 'axios';
 
-export async function OrchastrationSpecificAccessRequest(req, res): Promise<any> {
+export async function orchestrationSpecificAccessRequest(req, res): Promise<any> {
   const CreateAmRoleResponse: AxiosResponse = await specificAccessRequestCreateAmRole(req, res);
   const { status, data } = CreateAmRoleResponse;
   if (CreateAmRoleResponse && data.roleAssignmentResponse

@@ -6,7 +6,7 @@ import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
-import { OrchastrationSpecificAccessRequest, postCreateTask } from '.';
+import { orchestrationSpecificAccessRequest, postCreateTask } from '.';
 
 chai.use(sinonChai);
 describe('postCreateTask', () => {
@@ -41,7 +41,7 @@ describe('postCreateTask', () => {
   });
 });
 
-describe('OrchastrationSpecificAccessRequest', () => {
+describe('orchestrationSpecificAccessRequest', () => {
   let sandbox: sinon.SinonSandbox;
   let res;
   let req;
@@ -86,8 +86,8 @@ describe('OrchastrationSpecificAccessRequest', () => {
     sandbox.restore();
   });
 
-  it('should call OrchastrationSpecificAccessRequest successfully', async () => {
-    await OrchastrationSpecificAccessRequest(req, res);
+  it('should call orchestrationSpecificAccessRequest successfully', async () => {
+    await orchestrationSpecificAccessRequest(req, res);
     expect(res.send).to.have.been.calledWith(sinon.match(data));
   });
 });

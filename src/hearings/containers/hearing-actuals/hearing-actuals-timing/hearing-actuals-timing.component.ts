@@ -151,11 +151,13 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
         }
       ];
     }
+    const actualInDay1 = this.hearingActuals.hearingActuals && this.hearingActuals.hearingActuals.actualHearingDays
+      && this.hearingActuals.hearingActuals.actualHearingDays[0];
     const hearingActuals = {
         ...this.hearingActuals.hearingActuals,
         actualHearingDays: [
           {
-            ...this.hearingActuals.hearingActuals.actualHearingDays[0],
+            ...actualInDay1,
             hearingDate,
             hearingStartTime: HearingActualsTimingComponent.replaceTime(hearingStartTime, moment(value.hearingStartTime, 'HH:mm')),
             hearingEndTime: HearingActualsTimingComponent.replaceTime(hearingEndTime, moment(value.hearingEndTime, 'HH:mm')),

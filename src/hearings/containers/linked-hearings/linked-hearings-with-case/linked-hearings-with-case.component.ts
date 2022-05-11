@@ -79,7 +79,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
               hearingStage: hearing.hearingType,
               isSelected: false,
               hearingStatus: hearing.exuiDisplayStatus,
-              hearingIsLinkedFlag: hearing.hearingIsLinkedFlag
+              hearingIsLinkedFlag: !!hearing.hearingGroupRequestId,
             };
             hearings.push(hearingInfo);
             this.isHearingsAvailable = true;
@@ -98,7 +98,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
       this.linkedCases.forEach((caseInfo: ServiceLinkedCasesModel, pos: number) => {
         if (caseInfo.caseReference === formValue.caseReference) {
           caseInfo.hearings.forEach((hearing) => {
-            if (hearing.hearingId === formValue.hearingReference) {
+            if (hearing.hearingId.toString() === formValue.hearingReference) {
               hearing.isSelected = true;
             }
           });

@@ -9,7 +9,7 @@ import { Go } from '../../../app/store/actions';
 import * as fromHearingStore from '../../../hearings/store';
 import { HttpError } from '../../../models/httpError.model';
 import { GroupLinkType } from '../../models/hearings.enum';
-import { LinkedHearingGroupResponseModel, ServiceLinkedCasesModel } from '../../models/linkHearings.model';
+import { ServiceLinkedCasesModel } from '../../models/linkHearings.model';
 import { HearingsService } from '../../services/hearings.service';
 import * as hearingLinksActions from '../actions/hearing-links.action';
 import { HearingLinksEffects } from './hearing-links.effects';
@@ -35,7 +35,7 @@ describe('Hearing Links Effects', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({ initialState }),
+        provideMockStore({initialState}),
         {
           provide: Router,
           useValue: mockRouter,

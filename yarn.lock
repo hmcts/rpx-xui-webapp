@@ -456,10 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.10.0-rc.6":
-  version "4.10.0-rc.6"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.10.0-rc.6.tgz#ae81e8f890ea21159ec92bd25c91e3e001a12742"
-  integrity sha512-Pr1adE+vYxt73y6x1MhFFMWC5ZpIaCff0i81CR/e4SFYUIapb5K02Pug3ieBBQfTXc13MtJkfyIsec0ZOJ3eEQ==
+"@hmcts/ccd-case-ui-toolkit@4.14.1":
+  version "4.14.1"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.14.1.tgz#738965afe43886faa03f116df25645be3df6c5ca"
+  integrity sha512-0qrWpIFPc4aRwyWDUf7KfJZ/mU/Taxggz9aDScaobT2ab/4/zBKC4SkDoE+F7JXh6kNwyl4sdAz59a7PIssFDg==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -537,10 +537,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.6.15-hearing-judge-name-display":
-  version "1.6.15-hearing-judge-name-display"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.15-hearing-judge-name-display.tgz#708e62bb9918ed3b55b62fe3b9a87686cf7815de"
-  integrity sha512-9yAzDixeEYhlaYIbYvSRR2WmjK0tyTTdFr9BiWwZsVfbQih/wftw2ppeh0JXmbBx9mb7StbGAXyHYSkDwvr19A==
+"@hmcts/rpx-xui-common-lib@1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.0.tgz#2fbc8cb65933039ef551b9005526f9235817e9ac"
+  integrity sha512-cg+LUrZsDUJjqI+bOSmGRNaJXKmg0cyMQMIqLp7fUv0bw00N6xR211wA2QFOeS2hMq2JIG6+bKnwW43W/L6Ljg==
   dependencies:
     tslib "^1.9.0"
 

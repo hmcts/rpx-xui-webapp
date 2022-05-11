@@ -100,6 +100,7 @@ describe('LinkedHearingsWithCaseComponent', () => {
               data: {
                 linkedCase: { serviceLinkedCases: source }
               },
+              params: {caseId: '4652724902696211', hearingId: 'h000001'},
               params: { caseId: '4652724902696211', hearingId: 'h000001' },
             },
             fragment: of('point-to-me'),

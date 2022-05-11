@@ -36,6 +36,7 @@ function HeaderPage() {
     this.manageCases = element(by.css(".hmcts-header .hmcts-header__link"));
 
     this.headerAppLogoLink = $('.hmcts-header__logo a');
+    this.headerBanner = $('exui-header header > div');
 
 
     this.navigateToRoute = async function(route){

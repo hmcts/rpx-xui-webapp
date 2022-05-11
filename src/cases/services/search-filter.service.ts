@@ -1,13 +1,13 @@
-import { Injectable } from '@angular/core';
-import { SearchService, AbstractAppConfig, HttpService, RequestOptionsBuilder } from '@hmcts/ccd-case-ui-toolkit';
-import { Observable } from 'rxjs';
-import { FormGroup } from '@angular/forms';
-import { isStringOrNumber, getFilterType, sanitiseMetadataFieldName } from '../utils/utils';
+import {Injectable} from '@angular/core';
+import {FormGroup} from '@angular/forms';
+import {AbstractAppConfig, HttpService, RequestOptionsBuilder, SearchService} from '@hmcts/ccd-case-ui-toolkit';
+import {Observable} from 'rxjs';
+import {Utils} from '../utils/utils';
 
 @Injectable()
 export class SearchFilterService {
 
-  metadataFields: string[];
+  public metadataFields: string[];
 
   constructor(
     private ccdSearchService: SearchService,
@@ -16,11 +16,10 @@ export class SearchFilterService {
     private requestOptionsBuilder: RequestOptionsBuilder,
   ) { }
 
-  search(payload, isElasticSearchEnabled: boolean = false): Observable<any> {
+  public search(payload, isElasticSearchEnabled: boolean = false): Observable<any> {
 
     const { jurisdictionId, caseTypeId, metadataFilters, caseFilters, view, sortParameters } = this.getParams(payload);
 
-    // return this.ccdSearchService.search(jurisdictionId, caseTypeId, metadataFilters, caseFilters, view) as any;
     return isElasticSearchEnabled ?
           this.ccdSearchService.searchCases(caseTypeId, metadataFilters, caseFilters, view, sortParameters) as any :
           this.ccdSearchService.search(jurisdictionId, caseTypeId, metadataFilters, caseFilters, view) as any;
@@ -72,13 +71,13 @@ export class SearchFilterService {
     }
     for (let attributeName of Object.keys(formGroupValue)) {
       let value = formGroupValue[attributeName];
-      if (isStringOrNumber(value)) {
-        const filterType = getFilterType(attributeName, this.metadataFields);
-        attributeName = sanitiseMetadataFieldName(filterType, attributeName);
+      if (Utils.isStringOrNumber(value)) {
+        const filterType = Utils.getFilterType(attributeName, this.metadataFields);
+        attributeName = Utils.sanitiseMetadataFieldName(filterType, attributeName);
         target[filterType][prefix + attributeName] = value;
       } else if (value) {
         if (Array.isArray(value) && value.length > 0) { // is array and has index zero populated
-          value = isStringOrNumber(value[0]) ? value : value[0]; // determine if it is a collection or a plain array
+          value = Utils.isStringOrNumber(value[0]) ? value : value[0]; // determine if it is a collection or a plain array
         }
         this.buildFormDetails(prefix + attributeName, target, value);
       }

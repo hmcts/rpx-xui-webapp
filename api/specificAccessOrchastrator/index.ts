@@ -2,15 +2,25 @@ import { getConfigValue } from '../configuration';
 import { setHeaders } from '../lib/proxy';
 import { http } from '../lib/http';
 import { SERVICES_ROLE_ASSIGNMENT_API_PATH, SERVICES_WA_WORKFLOW_API_URL } from '../configuration/references';
-import { EnhancedRequest } from "lib/models";
+import { EnhancedRequest } from '../lib/models';
 import { v4 as uuidv4 } from 'uuid';
 import { sendDelete } from '../common/crudService';
 import { AxiosResponse } from 'axios';
+import { NextFunction } from 'express';
 
-export async function orchestrationSpecificAccessRequest(req, res): Promise<any> {
-  const CreateAmRoleResponse: AxiosResponse = await specificAccessRequestCreateAmRole(req, res);
-  const { status, data } = CreateAmRoleResponse;
-  if (CreateAmRoleResponse && data.roleAssignmentResponse
+export async function orchestrationSpecificAccessRequest(req: EnhancedRequest, res, next: NextFunction): Promise<any> {
+  let createAmRoleResponse: AxiosResponse;
+  let status, data;
+  try {
+    createAmRoleResponse = await specificAccessRequestCreateAmRole(req, res);
+    status = createAmRoleResponse.status;
+    data = createAmRoleResponse.data;
+  } catch (error) {
+    next(error);
+    return
+  }
+
+  if (createAmRoleResponse && data.roleAssignmentResponse
     && data.roleAssignmentResponse.requestedRoles
     && data.roleAssignmentResponse.requestedRoles[0].attributes) {
     const attributes = data.roleAssignmentResponse.requestedRoles[0].attributes;
@@ -20,7 +30,7 @@ export async function orchestrationSpecificAccessRequest(req, res): Promise<any>
     const taskType = 'followUpOverdueRespondentEvidence';
     const dueDate = '2022-04-23T16:21:41.320086';
     const taskName = 'Process Application';
-    const taskResponse = await postCreateTask(req, { caseId, jurisdiction, caseType, taskType, dueDate, name: taskName });
+    const taskResponse = await postCreateTask(req, next, { caseId, jurisdiction, caseType, taskType, dueDate, name: taskName });
     if (!taskResponse || taskResponse.status !== 204) {
       const assignmentId = data.roleAssignmentResponse.roleRequest.id;
       const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
@@ -29,9 +39,11 @@ export async function orchestrationSpecificAccessRequest(req, res): Promise<any>
       try {
         await sendDelete(`${basePath}/${assignmentId}`, deleteBody, req);
       } catch (e) {
-        console.log(e);
+        next(e)
       }
     }
+    // only send status when its successful.
+    // Otherwise you need to send an error status of taskResponse.status
     return res.status(status).send(data);
   }
 }
@@ -48,7 +60,7 @@ async function specificAccessRequestCreateAmRole(req, res): Promise<AxiosRespons
 }
 
 // tslint:disable-next-line:max-line-length
-export async function postCreateTask(req: EnhancedRequest, createTask: { caseId, jurisdiction, caseType, taskType, dueDate, name }): Promise<any> {
+export async function postCreateTask(req: EnhancedRequest, next: NextFunction, createTask: { caseId, jurisdiction, caseType, taskType, dueDate, name }): Promise<any> {
   try {
     const waWorkFlowApi = getConfigValue(SERVICES_WA_WORKFLOW_API_URL);
     const id = uuidv4();
@@ -92,6 +104,6 @@ export async function postCreateTask(req: EnhancedRequest, createTask: { caseId,
     const response = await http.post(url, body, { headers });
     return response;
   } catch (error) {
-    console.log(error)
+    next(error)
   }
 }

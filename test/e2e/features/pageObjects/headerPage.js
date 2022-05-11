@@ -113,6 +113,14 @@ function HeaderPage() {
       return element(by.xpath("//li/a[contains(text(),'Create case')]")) 
     };
 
+    this.clickRefunds = async function () {
+      let refundsLink = element(by.xpath("//li/a[contains(text(),'Refunds')]"));
+      await BrowserWaits.waitForElementClickable(refundsLink);
+      await refundsLink.click();
+      let searchPageHeader = element(by.xpath("//*[@id = 'content']//h1[text() = 'Refund list']"));
+      await BrowserWaits.waitForElement(searchPageHeader); 
+    };
+
     this.taskList = function(){
       return element(by.xpath("//li/a[contains(text(),'Task list')]"))
     };

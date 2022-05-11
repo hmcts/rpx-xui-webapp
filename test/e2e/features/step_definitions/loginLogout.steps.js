@@ -272,14 +272,14 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   Given(/^I am logged into Expert UI with Probate user details$/, async function () {
     browser.sleep(MID_DELAY);
-    await loginPage.emailAddress.sendKeys(config.config.params.username);
+    await loginPage.emailAddress.sendKeys(config.config.params.probate_username);
     browser.sleep(MID_DELAY);
-    await loginPage.password.sendKeys(config.config.params.password);
+    await loginPage.password.sendKeys(config.config.params.probate_password);
     await loginPage.clickSignIn();
     browser.sleep(LONG_DELAY);
 
     loginAttempts++;
-    await loginattemptCheckAndRelogin(config.config.params.username, config.config.params.password, this);
+    await loginattemptCheckAndRelogin(config.config.params.probate_username, config.config.params.probate_password, this);
   });
 
 

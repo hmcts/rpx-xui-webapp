@@ -32,9 +32,9 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       privateHearingRequiredFlag: false,
       panelRequirements: {
         roleType: [
-          'tribunalJudge',
-          'deputyTribunalJudge',
-          'regionalTribunalJudge',
+          'tj',
+          'dtj',
+          'rtj',
         ],
         panelPreferences: [],
         panelSpecialisms: [
@@ -252,8 +252,8 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       privateHearingRequiredFlag: false,
       panelRequirements: {
         roleType: [
-          'tribunalJudge',
-          'regionalTribunalJudge',
+          'tj',
+          'rtj',
         ],
         panelPreferences: [],
         panelSpecialisms: [

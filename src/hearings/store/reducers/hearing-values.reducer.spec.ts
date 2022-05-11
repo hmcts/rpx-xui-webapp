@@ -19,7 +19,8 @@ describe('Hearing Values Reducer', () => {
       it('should set correct object', () => {
         const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
           hmctsServiceID: 'BBA3',
-          caseName: 'Jane Smith vs DWP',
+          hmctsInternalCaseName: 'Jane Smith vs DWP',
+          publicCaseName: 'Jane Smith vs DWP',
           autoListFlag: false,
           hearingType: 'Final',
           caseAdditionalSecurityFlag: false,
@@ -40,6 +41,7 @@ describe('Hearing Values Reducer', () => {
           ],
           caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',
           caserestrictedFlag: false,
+          externalCaseReference: '',
           caseManagementLocationCode: '196538',
           caseSLAStartDate: '2021-05-05T09:00:00.000Z',
           hearingWindow: {

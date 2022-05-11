@@ -133,9 +133,9 @@ describe('HearingRequirementsComponent', () => {
         privateHearingRequiredFlag: false,
         panelRequirements: {
           roleType: [
-            'tribunalJudge',
-            'deputyTribunalJudge',
-            'regionalTribunalJudge',
+            'tj',
+            'dtj',
+            'rtj',
           ],
           panelPreferences: [],
           panelSpecialisms: [

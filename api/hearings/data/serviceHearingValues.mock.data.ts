@@ -11,7 +11,8 @@ import {ServiceHearingValuesModel} from '../models/serviceHearingValues.model';
 
 export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   hmctsServiceID: 'BBA3',
-  caseName: 'Jane and Smith vs DWP',
+  hmctsInternalCaseName: 'Jane and Smith vs DWP',
+  publicCaseName: 'Jane and Smith vs DWP',
   autoListFlag: false,
   hearingType: 'BBA3-directionHearings',
   caseCategories: [
@@ -31,6 +32,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   ],
   caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',
   caserestrictedFlag: false,
+  externalCaseReference: '',
   caseManagementLocationCode: '196538',
   caseSLAStartDate: '2021-05-05T09:00:00.000Z',
   hearingWindow: {
@@ -72,9 +74,9 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   hearingIsLinkedFlag: false,
   panelRequirements: {
     roleType: [
-      'tribunalJudge',
-      'deputyTribunalJudge',
-      'regionalTribunalJudge',
+      'tj',
+      'dtj',
+      'rtj',
     ],
     panelPreferences: [],
     panelSpecialisms: [
@@ -113,7 +115,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       individualDetails: {
         title: '',
         firstName: 'DWP',
-        lastName: '',
+        lastName: 'Representative',
         preferredHearingChannel: 'faceToFace',
       },
       unavailabilityRanges: [

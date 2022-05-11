@@ -34,7 +34,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit {
     this.hearingId = this.route.snapshot.params.hearingId;
     this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
       state => {
-        this.caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.caseName : '';
+        this.caseName = state.hearingValues.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.publicCaseName : '';
         this.hearingLinks = state.hearingLinks;
       }
     );

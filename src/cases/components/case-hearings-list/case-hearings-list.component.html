@@ -41,12 +41,12 @@
            href="javascript:void(0)"
            (click)="cancelHearing(hearing.hearingID)">Cancel</a>&nbsp;&nbsp;&nbsp;&nbsp;
       </div>
-      <div *ngIf="hasUpdateAction && hearing.hearingIsLinkedFlag" class="div-action">
+      <div *ngIf="hasUpdateAction && !isNonCancellable(hearing.exuiDisplayStatus) && hearing.hearingIsLinkedFlag && !isManageLinksEnabled(hearing.hearingGroupRequestId)" class="div-action">
         <a id="link-hearing-link-{{hearing.hearingID}}"
            href="javascript:void(0)"
            (click)="linkHearing(hearing.hearingID)">Link hearing</a>&nbsp;&nbsp;&nbsp;&nbsp;
       </div>
-      <div *ngIf="hasUpdateAction && isManageLinksEnabled(hearing.hearingGroupRequestId)" class="div-action">
+      <div *ngIf="hasUpdateAction && !isNonCancellable(hearing.exuiDisplayStatus) && isManageLinksEnabled(hearing.hearingGroupRequestId)" class="div-action">
         <a id="link-manage-links-{{hearing.hearingID}}"
            href="javascript:void(0)"
            (click)="manageLinks(hearing.hearingID)">Manage links</a>&nbsp;&nbsp;&nbsp;&nbsp;

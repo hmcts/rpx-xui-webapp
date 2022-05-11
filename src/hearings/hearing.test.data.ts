@@ -1008,7 +1008,8 @@ export const caseFlagsRefData = [
 
 export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   hmctsServiceID: 'BBA3',
-  caseName: 'Jane vs DWP',
+  hmctsInternalCaseName: 'Jane vs DWP',
+  publicCaseName: 'Jane vs DWP',
   autoListFlag: false,
   hearingType: 'Final',
   caseCategories: [
@@ -1028,6 +1029,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   ],
   caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',
   caserestrictedFlag: false,
+  externalCaseReference: '',
   caseManagementLocationCode: '196538',
   caseSLAStartDate: '2021-05-05T09:00:00.000Z',
   hearingWindow: {
@@ -1084,9 +1086,9 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   hearingIsLinkedFlag: false,
   panelRequirements: {
     roleType: [
-      'tribunalJudge',
-      'deputyTribunalJudge',
-      'regionalTribunalJudge',
+      'tj',
+      'dtj',
+      'rtj',
     ],
     panelPreferences: [],
     panelSpecialisms: [

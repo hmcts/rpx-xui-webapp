@@ -1,5 +1,5 @@
 
-@ng 
+@ng @test
 Feature: Work access page
 
 
@@ -19,6 +19,7 @@ Feature: Work access page
             | BOOKING_UI-FT-ON | caseworker-ia-iacjudge,caseworker-ia,caseworker | false |
             # | IAC_Judge_WA_R2    | caseworker-ia-iacjudge,caseworker-ia,caseworker, fee-paid-judge | true       |
 
+    
     Scenario: Work access options
         Given I set MOCK with user "BOOKING_UI-FT-ON" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker, fee-paid-judge" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
@@ -49,7 +50,7 @@ Feature: Work access page
 
 
     Scenario: Work access View existing bookings with details
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker, fee-paid-judge" with reference "userDetails"
+        Given I set MOCK with user "BOOKING_UI-FT-ON" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker, fee-paid-judge" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | bookable | isCaseAllocator | substantive | jurisdiction |
             | true     | true            | Y           | IA           |
@@ -79,7 +80,7 @@ Feature: Work access page
 
 
     Scenario: Work access View existing booking and continue
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker, fee-paid-judge" with reference "userDetails"
+        Given I set MOCK with user "BOOKING_UI-FT-ON" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker, fee-paid-judge" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | bookable | isCaseAllocator | substantive | jurisdiction |
             | true     | true            | Y           | IA           |
@@ -104,7 +105,7 @@ Feature: Work access page
 
 
     Scenario: Work access Create new booking and continue
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker, fee-paid-judge" with reference "userDetails"
+        Given I set MOCK with user "BOOKING_UI-FT-ON" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker, fee-paid-judge" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | bookable | isCaseAllocator | substantive | jurisdiction |
             | true     | true            | Y           | IA           |
@@ -130,7 +131,7 @@ Feature: Work access page
 
 
     Scenario: Work access View tasks and casesg and continue
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker, fee-paid-judge" with reference "userDetails"
+        Given I set MOCK with user "BOOKING_UI-FT-ON" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker, fee-paid-judge" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | bookable | isCaseAllocator | substantive | jurisdiction |
             | true     | true            | Y           | IA           |

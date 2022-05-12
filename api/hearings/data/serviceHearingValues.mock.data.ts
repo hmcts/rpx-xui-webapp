@@ -18,34 +18,34 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   caseCategories: [
     {
       categoryType: CategoryType.CaseType,
-      categoryValue: 'Personal Independence Payment',
+      categoryValue: 'BBA3-002',
     }, {
       categoryType: CategoryType.CaseSubType,
-      categoryValue: 'Conditions of Entitlement',
+      categoryValue: 'BBA3-002CC',
     }, {
       categoryType: CategoryType.CaseSubType,
-      categoryValue: 'Good cause',
+      categoryValue: 'BBA3-002GC',
     }, {
       categoryType: CategoryType.CaseSubType,
-      categoryValue: 'Rate of Assessment / Payability Issues - complex',
+      categoryValue: 'BBA3-002RC',
     },
   ],
   caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',
   caserestrictedFlag: false,
   externalCaseReference: '',
-  caseManagementLocationCode: '196538',
+  caseManagementLocationCode: '372653',
   caseSLAStartDate: '2021-05-05T09:00:00.000Z',
   hearingWindow: {
     dateRangeStart: '2022-11-23T09:00:00.000Z',
     dateRangeEnd: '2022-11-30T09:00:00.000Z',
-    firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
+    firstDateTimeMustBe: '',
   },
   duration: 45,
   hearingPriorityType: 'normal',
   numberOfPhysicalAttendees: 2,
   hearingInWelshFlag: false,
   hearingLocations: [{
-    locationId: '196538',
+    locationId: '372653',
     locationType: HMCLocationType.COURT,
   }],
   caseAdditionalSecurityFlag: false,

@@ -456,11 +456,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.12.1-EUI-5721-not-displaying-order-document-in-CYA":
-  version "4.12.1-EUI-5721-not-displaying-order-document-in-CYA"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.12.1-EUI-5721-not-displaying-order-document-in-CYA.tgz#8b294c7291e5ac3caf7b2c04c8e87cd0f099c502"
-  integrity sha512-v+EVMu6zd9P9FLkSDCo6gy276uuCj/IMQzT1N+RXzWfD2PThTQkRcRLRA6pOf9+3bNd813yut7pAJjn9zVQ+rg==
-
+"@hmcts/ccd-case-ui-toolkit@4.12.1-EUI-5721-not-displaying-order-document-in-CYA-rc1":
+  version "4.12.1-EUI-5721-not-displaying-order-document-in-CYA-rc1"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.12.1-EUI-5721-not-displaying-order-document-in-CYA-rc1.tgz#776c0f80f7d1501e2d27342bdc4d74fcc289068e"
+  integrity sha512-MRJvPThobvxzEusL/2TJIxqfjdT9zJqSZSwMWZxWqDlvA2Vt0EXf3TIDwMI0H417EoaVie00njQikitjYaUZow==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

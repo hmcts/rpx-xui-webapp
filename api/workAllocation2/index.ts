@@ -211,7 +211,7 @@ export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Resp
     let data;
     jurisdictions.includes(jurisdiction) ? {status, data} =
      await handlePost(`${baseWorkAllocationTaskUrl}/task/search-for-completable`, payload, req)
-     : (status = 200, data = []);
+     : (status = 200, data = {'task_required_for_event': false, 'tasks': []});
     return res.status(status).send(data);
   } catch (e) {
     next(e);

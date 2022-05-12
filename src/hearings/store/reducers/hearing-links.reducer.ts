@@ -40,11 +40,18 @@ export function hearingLinksReducer(currentState = initialHearingLinksState,
       };
     }
     case fromActions.LOAD_LINKED_HEARING_GROUP_FAILURE:
-    case fromActions.SUBMIT_LINKED_HEARING_GROUP_FAILURE: {
+    case fromActions.SUBMIT_LINKED_HEARING_GROUP_FAILURE:
+    case fromActions.MANAGE_LINKED_HEARING_GROUP_FAILURE: {
       return {
         ...currentState,
         lastError: action.payload
       };
+    }
+    case fromActions.RESET_LINKED_HEARING_LAST_ERROR: {
+      return {
+        ...currentState,
+        lastError: null
+      }
     }
     default: {
       return {

@@ -169,8 +169,18 @@ export class ValidatorsUtils {
 
   public validateLinkedHearings(): ValidatorFn {
     return (formGroup: FormGroup) => {
-      const formArrayValue = formGroup && formGroup.value;
-      return formArrayValue.find(entry => entry.hearingReference !== null) ? null : { error: true };
+      const linkedCases = formGroup.value.linkedCases;
+      if (linkedCases) {
+        let isHearingSelected: boolean;
+        linkedCases.forEach((caseInfo) => {
+          if (caseInfo.hearings.find((hearingInfo) => hearingInfo.isSelected !== false)) {
+            isHearingSelected = true;
+          }
+        });
+        return isHearingSelected ? null : { error: true };
+      } else {
+        return null;
+      }
     };
   }
 }

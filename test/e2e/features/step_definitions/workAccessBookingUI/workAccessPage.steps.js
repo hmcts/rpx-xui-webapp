@@ -28,7 +28,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     }
 
     function getDateWithFormatForDays(inDays){
-        const todayObj = moment();
+        let todayObj = moment();
         if (inDays > 0){
             todayObj = todayObj.add(inDays,'days')
         } else if (inDays > 0){
@@ -94,11 +94,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I see work access existing bookings displayed with details', async function(datatable){
         const bookingsHashes = datatable.hashes();
-        bookingsHashes.forEach(booking, async () => {
+
+        for (const booking of bookingsHashes){
             const fromDate = getDateWithFormatForDays(booking.fromDate);
             const toDate = getDateWithFormatForDays(booking.toDate);
             expect(await workAccessPage.isBookingDisplayed(booking.location, fromDate, toDate)).to.be.true 
-        }) 
+        }
     });
 
     When('I click continue for any existing booking in work access page', async function(){

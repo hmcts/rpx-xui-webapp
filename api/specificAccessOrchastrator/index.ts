@@ -10,52 +10,52 @@ import { NextFunction } from 'express';
 
 export async function orchestrationSpecificAccessRequest(req: EnhancedRequest, res, next: NextFunction): Promise<any> {
   let createAmRoleResponse: AxiosResponse;
-  let status, data;
+  let status;
+  let data;
   try {
     createAmRoleResponse = await specificAccessRequestCreateAmRole(req, res);
     status = createAmRoleResponse.status;
     data = createAmRoleResponse.data;
+    if (!createAmRoleResponse || createAmRoleResponse.status !== 201) {
+      return res.status(createAmRoleResponse.status).send(createAmRoleResponse);
+    }
+    if (createAmRoleResponse && data.roleAssignmentResponse
+      && data.roleAssignmentResponse.requestedRoles
+      && data.roleAssignmentResponse.requestedRoles[0].attributes) {
+      const attributes = data.roleAssignmentResponse.requestedRoles[0].attributes;
+      const caseId = attributes.caseId;
+      const jurisdiction = attributes.jurisdiction;
+      const caseType = attributes.caseType;
+      const taskType = 'followUpOverdueRespondentEvidence';
+      const dueDate = '2022-04-23T16:21:41.320086';
+      const taskName = 'Process Application';
+      const taskResponse = await postCreateTask(req, next, { caseId, jurisdiction, caseType, taskType, dueDate, name: taskName });
+      if (!taskResponse || taskResponse.status !== 204) {
+        const assignmentId = data.roleAssignmentResponse.roleRequest.id;
+        const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+        const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
+        const deleteBody = { assigmentId: assignmentId };
+        const deleteResponse =   await sendDelete(`${basePath}/${assignmentId}`, deleteBody, req);
+        if (!deleteResponse || deleteResponse.status !== 204) {
+          return res.status(deleteResponse.status).send(deleteResponse);
+        }
+        return res.status(taskResponse.status).send(taskResponse);
+      }
+      return res.status(status).send(data);
+    }
   } catch (error) {
     next(error);
-    return
-  }
-
-  if (createAmRoleResponse && data.roleAssignmentResponse
-    && data.roleAssignmentResponse.requestedRoles
-    && data.roleAssignmentResponse.requestedRoles[0].attributes) {
-    const attributes = data.roleAssignmentResponse.requestedRoles[0].attributes;
-    const caseId = attributes.caseId;
-    const jurisdiction = attributes.jurisdiction;
-    const caseType = attributes.caseType;
-    const taskType = 'followUpOverdueRespondentEvidence';
-    const dueDate = '2022-04-23T16:21:41.320086';
-    const taskName = 'Process Application';
-    const taskResponse = await postCreateTask(req, next, { caseId, jurisdiction, caseType, taskType, dueDate, name: taskName });
-    if (!taskResponse || taskResponse.status !== 204) {
-      const assignmentId = data.roleAssignmentResponse.roleRequest.id;
-      const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
-      const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
-      const deleteBody = {assigmentId: assignmentId};
-      try {
-        await sendDelete(`${basePath}/${assignmentId}`, deleteBody, req);
-      } catch (e) {
-        next(e)
-      }
-    }
-    // only send status when its successful.
-    // Otherwise you need to send an error status of taskResponse.status
-    return res.status(status).send(data);
+    return res.status(error.status).send(error);
   }
 }
 
-async function specificAccessRequestCreateAmRole(req, res): Promise<AxiosResponse> {
+export async function specificAccessRequestCreateAmRole(req, res): Promise<AxiosResponse> {
   const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
   const fullPath = `${basePath}/am/role-assignments`;
   const headers = setHeaders(req);
-  // AM service reject header with 406 error if accept is sent
   /* tslint:disable:no-string-literal */
   delete headers['accept'];
-  const response = await http.post(fullPath, req.body, { headers} );
+  const response = await http.post(fullPath, req.body, { headers });
   return response;
 }
 
@@ -105,5 +105,6 @@ export async function postCreateTask(req: EnhancedRequest, next: NextFunction, c
     return response;
   } catch (error) {
     next(error)
+    return error;
   }
 }

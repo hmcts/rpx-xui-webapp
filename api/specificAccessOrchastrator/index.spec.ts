@@ -13,6 +13,7 @@ describe('postCreateTask', () => {
 
   let sandbox: sinon.SinonSandbox;
   let req: EnhancedRequest;
+  let next ;
   let spy: sinon.SinonSpy;
   const data = {
     status: 204,
@@ -25,6 +26,7 @@ describe('postCreateTask', () => {
     req = mockReq({
       body: {},
     });
+    next = sandbox.stub();
     spy = sandbox.stub(http, 'post').resolves({
       data,
     });
@@ -36,7 +38,7 @@ describe('postCreateTask', () => {
 
   it('should create task successfully', async () => {
     const createTask= { caseId: '101', jurisdiction: 'IA', caseType: 'caseType', taskType: 'access_requests', dueDate: '2022-06-30T16:53:10+0100', name: 'name' }
-    const response = await postCreateTask(req, createTask);
+    const response = await postCreateTask(req, next, createTask);
     expect(response.data).to.deep.equal(data);
   });
 });
@@ -45,7 +47,7 @@ describe('orchestrationSpecificAccessRequest', () => {
   let sandbox: sinon.SinonSandbox;
   let res;
   let req;
-  let spy: sinon.SinonSpy;
+  let next;
   const data = {
     roleAssignmentResponse: {
       roleRequest: {
@@ -76,9 +78,14 @@ describe('orchestrationSpecificAccessRequest', () => {
     res = mockRes()
     req = mockReq({
        params: {}
-    })
-    spy = sandbox.stub(http, 'post').resolves({
-      data,
+    });
+    next = sandbox.stub();
+    const postSpy =sandbox.stub(http, 'post');
+    postSpy.onCall(0).resolves({
+      data,status:201
+    });
+    postSpy.onCall(1).resolves({
+      data,status:204
     });
   });
 
@@ -87,7 +94,7 @@ describe('orchestrationSpecificAccessRequest', () => {
   });
 
   it('should call orchestrationSpecificAccessRequest successfully', async () => {
-    await orchestrationSpecificAccessRequest(req, res);
+    await orchestrationSpecificAccessRequest(req, res, next);
     expect(res.send).to.have.been.calledWith(sinon.match(data));
   });
 });

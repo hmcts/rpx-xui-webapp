@@ -21,10 +21,10 @@ class WorkAccessPage{
         this.radioCreateNewBooking = element(by.xpath(this.getRadiobuttonXPathWithLabel('Create a new booking')));
         this.radioViewtasksAndCases = element(by.xpath(this.getRadiobuttonXPathWithLabel('View tasks and cases')));
 
-        this.existingBookingsList = $('');
-        this.existingBookings = $$('');
+        this.existingBookingsList = $('exui-booking-home .govuk-radios__conditional');
+        this.existingBookings = $$('exui-booking-home .govuk-radios__conditional .govuk-grid-column-one-third');
 
-        this.continueButton = element(by.xpath(`//exui-booking-home//button[contains(text(),'Continue')]`));
+        this.continueButton = element(by.xpath(`//exui-booking-home//form/button[contains(text(),'Continue')]`));
 
     }
 
@@ -70,7 +70,7 @@ class WorkAccessPage{
     }
 
     async getExistingBookingsDetails(){
-        const count = await getExistingBooksingCount();
+        const count = await this.getExistingBooksingCount();
         const bookings = []; 
         for(let i = 0; i < count ; i++){
             const booking = await this.existingBookings.get(i);

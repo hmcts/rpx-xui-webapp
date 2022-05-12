@@ -14,6 +14,7 @@ import { router as waSupportedJurisdictionRouter } from './waSupportedJurisdicti
 import roleAccessRouter from './roleAccess/routes';
 import {router as prdRouter} from './prd/routes';
 import userRouter from './user/routes';
+import { router as specificAccessRouter } from './specificAccessOrchastrator/routes';
 
 const router = express.Router({mergeParams: true});
 
@@ -45,6 +46,7 @@ router.use('/locations', locationsRouter);
 router.use('/service-ref-data', serviceRefDataRouter);
 router.use('/prd', prdRouter);
 router.use('/hearings', hearingsRouter);
+router.use('/specific-access-request', specificAccessRouter);
 
 // @ts-ignore
 export default router;

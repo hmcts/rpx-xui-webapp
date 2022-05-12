@@ -13,9 +13,11 @@ export interface SpecificAccessStateData {
   jurisdiction: string;
   typeOfRole?: SpecificRole;
   roleCategory: RoleCategory;
+  requestedRole: string;
   accessReason: AccessReason;
   period: Period;
   person: Person;
+  requestId: string;
   lastError?: HttpError;
   specificAccessFormData?: SpecificAccessFormData;
   SpecificAccessMoreInformationFormData?: SpecificAccessMoreInformationForm;

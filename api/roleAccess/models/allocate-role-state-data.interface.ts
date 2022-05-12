@@ -6,6 +6,7 @@ export interface AllocateRoleData {
   action: string;
   assignmentId?: string;
   typeOfRole: SpecificRole;
+  requestedRole?: string;
   allocateTo: AllocateTo;
   personToBeRemoved?: Person;
   person: Person;

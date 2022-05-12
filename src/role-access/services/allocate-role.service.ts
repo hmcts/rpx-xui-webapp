@@ -11,6 +11,7 @@ import { getAllRolesFromServices, getRoleSessionStorageKeyForServiceId, setRoles
 export class AllocateRoleService {
   public static allocateRoleBaseUrl = '/api/role-access/allocate-role';
   public static roleUrl = '/api/role-access/roles';
+  public static accessManagementUrl = '/api/am';
   public backUrl: string;
   constructor(private readonly http: HttpClient, private readonly sessionStorageService: SessionStorageService) { }
 
@@ -26,7 +27,7 @@ export class AllocateRoleService {
 
   public specificAccessApproval(specificAccessStateData: SpecificAccessStateData) {
     console.log('doing the approval');
-    return this.http.post(`${AllocateRoleService.allocateRoleBaseUrl}/specific-access-approval`, specificAccessStateData);
+    return this.http.post(`${AllocateRoleService.accessManagementUrl}/specific-access-approval`, specificAccessStateData);
   }
 
   public removeAllocation(assigmentId: string): Observable<any> {

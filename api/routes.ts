@@ -1,5 +1,5 @@
 import * as express from 'express';
-import {router as accessManagementRouter} from './accessManagement/routes';
+import accessManagementRouter from './accessManagement/routes';
 import {router as caseShareRoutes} from './caseshare/routes';
 import {getConfigValue, showFeature} from './configuration';
 import {APP_INSIGHTS_KEY} from './configuration/references';

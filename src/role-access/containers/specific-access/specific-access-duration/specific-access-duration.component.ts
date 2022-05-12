@@ -46,7 +46,7 @@ export class SpecificAccessDurationComponent implements OnInit {
   public selectedDuration: DurationType;
   public startDateErrorMessage: ErrorMessagesModel;
   public title = 'How long do you want to give access to this case for?';
-  public approvalRole = {id: 'specific-access-approved', name: 'specific-access-approved'};
+  public approvalRole = {id: 'specific-access-granted', name: 'specific-access-granted'};
 
   // form group and controls
   public formGroup: FormGroup;
@@ -139,14 +139,16 @@ export class SpecificAccessDurationComponent implements OnInit {
       typeOfRole: this.approvalRole,
       period: period,
       // note: adding example details here to reach endpoint without previous access info
-      caseId: '1644427124312856',
+      caseId: '1599729079005640',
+      requestId: '8b685ef7-3ebf-4405-b159-756fc94b7ee3',
       jurisdiction: 'IA',
-      roleCategory: RoleCategory.JUDICIAL,
-      person: {id: '09f1f25d-7d7e-4481-b8e3-8624227438ef', name: null, domain: null}
+      roleCategory: RoleCategory.CASEWORKER,
+      requestedRole: 'specific-access-legal-ops',
+      person: {id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null}
       }
       switch (navEvent) {
         case SpecificAccessNavigationEvent.CONTINUE:
-          /* TODO: at some point will need all four steps 
+          /* TODO: at some point will need all four steps on node layer
            1) create approved request role
            2) create specified role for user (of type specific-access-(admin/judge/caseworker))
            3) delete specific access request role

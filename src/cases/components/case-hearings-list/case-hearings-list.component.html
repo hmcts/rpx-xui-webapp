@@ -14,7 +14,9 @@
     </td>
   </tr>
   <tr class="govuk-table__row" *ngFor="let hearing of hearingList$ | async">
-    <td class="govuk-table__header govuk-table-width-30-percent gds-font">{{ hearing.hearingType}}</td>
+    <td class="govuk-table__header govuk-table-width-30-percent gds-font">{{ hearing.hearingType}}
+      <img *ngIf="hasUpdateAction && isManageLinksEnabled(hearing.hearingGroupRequestId)" src="../../../../assets/images/link_icon_slanted.png" width="20px;" class="align-middle" alt="Linked">
+    </td>
     <td
       class="govuk-table__cell govuk-table-width-15-percent gds-font">
       {{ hearing.earliestHearingStartDateTime ? (hearing.earliestHearingStartDateTime | date:'d MMMM yyyy') : '' }}
@@ -49,7 +51,7 @@
       <div *ngIf="hasUpdateAction && isManageLinksEnabled(hearing.hearingGroupRequestId)" class="div-action">
         <a id="link-manage-links-{{hearing.hearingID}}"
            href="javascript:void(0)"
-           (click)="manageLinks(hearing.hearingID)">Manage links</a>&nbsp;&nbsp;&nbsp;&nbsp;
+           (click)="manageLinks(hearing)">Manage links</a>&nbsp;&nbsp;&nbsp;&nbsp;
       </div>
       <div *ngIf="hasReadOnlyAction || isNonCancellable(hearing.exuiDisplayStatus)" class="div-action">
         <a id="link-view-details-{{hearing.hearingID}}"

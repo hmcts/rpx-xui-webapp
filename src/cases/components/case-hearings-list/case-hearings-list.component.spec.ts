@@ -33,7 +33,7 @@ const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
   hearingListingStatus: 'UPDATE REQUESTED',
   listAssistCaseStatus: '',
   hearingIsLinkedFlag: true,
-  hearingGroupRequestId: null,
+  hearingGroupRequestId: 'g1000000',
   hearingDaySchedule: null,
   exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
   exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING
@@ -686,8 +686,8 @@ describe('CaseHearingsListComponent', () => {
     expect(cancel1.textContent).toBe('Cancel');
     const linkHearing1 = fixture.debugElement.query(By.css('#link-hearing-link-h100001')).nativeElement;
     expect(linkHearing1.textContent).toBe('Link hearing');
-    const manageLinks1 = fixture.debugElement.query(By.css('#link-manage-links-h100001'));
-    expect(manageLinks1).toBeNull();
+    const manageLinks1 = fixture.debugElement.query(By.css('#link-manage-links-h100001')).nativeElement;
+    expect(manageLinks1.textContent).toBe('Manage links');
     const viewDetails1 = fixture.debugElement.query(By.css('#link-view-details-h100001'));
     expect(viewDetails1).toBeNull();
     const addOrEdit1 = fixture.debugElement.query(By.css('#link-add-or-edit-h100001'));
@@ -834,8 +834,9 @@ describe('CaseHearingsListComponent', () => {
   });
 
   it('should manageLinks', () => {
-    component.manageLinks('h100000');
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', 'h100000']);
+    component.caseId = '1111222233334444';
+    component.manageLinks(UPCOMING_HEARING_LIST[0]);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', '1111222233334444', 'g1000000', 'h100001']);
   });
 
   it('should check viewDetails', () => {

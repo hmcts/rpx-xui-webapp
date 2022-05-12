@@ -63,5 +63,13 @@ describe('Hearing Links Reducer', () => {
         expect(hearingsState).toEqual(initialState);
       });
     });
+
+    describe('reset linked hearing last error action', () => {
+      it('should set correct object', () => {
+        const action = new fromHearingLinksActions.ResetLinkedHearingLastError();
+        const hearingsState = fromHearingLinksReducer.hearingLinksReducer(fromHearingLinksReducer.initialHearingLinksState, action);
+        expect(hearingsState.lastError).toEqual(null);
+      });
+    });
   });
 });

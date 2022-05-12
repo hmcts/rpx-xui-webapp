@@ -31,15 +31,13 @@ export const LINKED_HEARING_GROUP: LinkedHearingGroupMainModel = {
   },
   hearingsInGroup: [
     {
-      hearingId: 'h1000000',
-      hearingOrder: 1,
-    },
-    {
-      hearingId: 'h1000001',
+      hearingId: 'h100001',
       hearingOrder: 2,
+      caseRef: '4652724902696213',
     },
     {
-      hearingId: 'h1000002',
-      hearingOrder: 3,
+      hearingId: 'h100003',
+      hearingOrder: 1,
+      caseRef: '8254902572336147',
     }],
 };

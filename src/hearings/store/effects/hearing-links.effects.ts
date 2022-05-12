@@ -53,12 +53,39 @@ export class HearingLinksEffects {
       return this.hearingsService.postLinkedHearingGroup(payload.linkedHearingGroup).pipe(
         tap(
           () => {
+            if (payload.isManageLink) {
+              return this.router.navigate(['/', 'hearings', 'manage-links', payload.caseId, payload.hearingGroupRequestId, payload.hearingId, 'final-confirmation']);
+            }
             return this.router.navigate(['/', 'hearings', 'link', payload.caseId, payload.hearingId, 'final-confirmation']);
           }),
           catchError(error => {
             this.hearingStore.dispatch(new hearingLinksActions.SubmitLinkedHearingGroupFailure(error));
             return of(error);
           })
+      );
+    })
+  );
+
+  @Effect({dispatch: false})
+  public manageLinkedHearingGroup$ = this.actions$.pipe(
+    ofType(hearingLinksActions.MANAGE_LINKED_HEARING_GROUP),
+    map((action: hearingLinksActions.ManageLinkedHearingGroup) => action.payload),
+    switchMap(payload => {
+      let apiCall: any;
+      if (payload.linkedHearingGroup && payload.linkedHearingGroup.hearingsInGroup && payload.linkedHearingGroup.hearingsInGroup.length > 0) {
+        apiCall = this.hearingsService.putLinkedHearingGroup(payload.linkedHearingGroup);
+      } else {
+        apiCall = this.hearingsService.deleteLinkedHearingGroup(payload.hearingGroupRequestId);
+      }
+      return apiCall.pipe(
+        tap(
+          () => {
+            return this.router.navigate(['/', 'hearings', 'manage-links', payload.caseId, payload.hearingGroupRequestId, payload.hearingId, 'final-confirmation']);
+          }),
+        catchError(error => {
+          this.hearingStore.dispatch(new hearingLinksActions.SubmitLinkedHearingGroupFailure(error));
+          return of(error);
+        })
       );
     })
   );

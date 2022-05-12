@@ -310,7 +310,9 @@ export enum Mode {
   CREATE = 'create',
   CREATE_EDIT = 'create-edit',
   VIEW = 'view',
-  VIEW_EDIT = 'view-edit'
+  VIEW_EDIT = 'view-edit',
+  LINK_HEARINGS = 'link-hearings',
+  MANAGE_HEARINGS = 'manage-hearings',
 }
 
 export enum ControlTypeEnum {

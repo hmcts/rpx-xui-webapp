@@ -1,13 +1,17 @@
-import {HttpClient, HttpParams, HttpResponse} from '@angular/common/http';
-import {Injectable} from '@angular/core';
-import {Observable, Subject} from 'rxjs';
-import {HearingActualsMainModel, HearingActualsModel} from '../models/hearingActualsMainModel';
-import {HearingListMainModel} from '../models/hearingListMain.model';
-import {HearingRequestMainModel} from '../models/hearingRequestMain.model';
-import {ACTION} from '../models/hearings.enum';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { forkJoin, Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { HearingActualsMainModel, HearingActualsModel } from '../models/hearingActualsMainModel';
+import { HearingLinksStateData } from '../models/hearingLinksStateData.model';
+import { HearingListMainModel } from '../models/hearingListMain.model';
+import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
+import { ACTION, EXUIDisplayStatusEnum } from '../models/hearings.enum';
 import {
+  HearingDetailModel,
   LinkedHearingGroupMainModel,
   LinkedHearingGroupResponseModel,
+  LinkedHearingsDetailModel,
   ServiceLinkedCasesModel
 } from '../models/linkHearings.model';
 import {LovRefDataModel} from '../models/lovRefData.model';
@@ -34,7 +38,7 @@ export class HearingsService {
 
   public loadHearingValues(caseId: string): Observable<ServiceHearingValuesModel> {
     return this.http.post<ServiceHearingValuesModel>('api/hearings/loadServiceHearingValues',
-      {caseReference: caseId});
+      { caseReference: caseId });
   }
 
   public cancelHearingRequest(hearingId: string, reasons: LovRefDataModel[]): Observable<ResponseDetailsModel> {
@@ -95,12 +99,44 @@ export class HearingsService {
     return this.http.put<LinkedHearingGroupResponseModel>('api/hearings/putLinkedHearingGroup', linkedHearingGroupMainModel);
   }
 
-  public deleteLinkedHearingGroup(hearingGroupId: string, hearingIds: string): Observable<LinkedHearingGroupResponseModel> {
+  public deleteLinkedHearingGroup(hearingGroupId: string): Observable<LinkedHearingGroupResponseModel> {
     const options = {
       params: new HttpParams()
         .set('hearingGroupId', hearingGroupId)
-        .set('hearingIds', hearingIds)
     };
     return this.http.delete<LinkedHearingGroupResponseModel>('api/hearings/deleteLinkedHearingGroup', options);
+  }
+
+  public getAllCaseInformation(linkedState: HearingLinksStateData, isManageLink: boolean): Observable<ServiceLinkedCasesModel[]> {
+    const receivedCases: ServiceLinkedCasesModel[] = linkedState.serviceLinkedCases || [];
+    const linkedCaseIds: string[] = receivedCases.map((caseDetails: ServiceLinkedCasesModel) => caseDetails.caseReference);
+    const hearingServices = [];
+    linkedCaseIds.forEach(id => {
+      hearingServices.push(this.getAllHearings(id));
+    });
+    return forkJoin(hearingServices).pipe(
+      map((hearingsList: HearingListMainModel[]) => {
+        return receivedCases.map((caseInfo: ServiceLinkedCasesModel, pos: number) => {
+          const hearings = [] as HearingDetailModel[];
+          hearingsList[pos].caseHearings.forEach((hearing) => {
+            if (hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_LISTING || hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.UPDATE_REQUESTED || hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.LISTED) {
+              const hearingInfo: HearingDetailModel = {
+                hearingId: hearing.hearingID,
+                hearingStage: hearing.hearingType,
+                // tslint:disable-next-line: no-shadowed-variable
+                isSelected: isManageLink ? !!linkedState.linkedHearingGroup.hearingsInGroup.find((hearingInfo: LinkedHearingsDetailModel) => hearingInfo.caseRef === caseInfo.caseReference && hearingInfo.hearingId === hearing.hearingID) : false,
+                hearingStatus: hearing.exuiDisplayStatus,
+                hearingIsLinkedFlag: hearing.hearingIsLinkedFlag
+              };
+              hearings.push(hearingInfo);
+            }
+          });
+          return {
+            hearings,
+            ...caseInfo
+          };
+        });
+      })
+    );
   }
 }

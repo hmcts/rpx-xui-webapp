@@ -39,7 +39,7 @@ import { HearingViewSummaryComponent } from './containers/view-hearing/hearing-v
 import { ViewHearingComponent } from './containers/view-hearing/view-hearing.component';
 import { HearingsEditGuard } from './guards/hearings-edit-guard';
 import { HearingsViewGuard } from './guards/hearings-view-guard';
-import { HearingCategory, MemberType } from './models/hearings.enum';
+import { HearingCategory, MemberType, Mode } from './models/hearings.enum';
 import { ActualSummaryResponseResolver } from './resolvers/actual-summary-response-resolver.resolve';
 import { AdditionalFacilitiesResolver } from './resolvers/additional-facilities.resolver';
 import { AdjournHearingActualReasonResolver } from './resolvers/adjourn-hearing-actual-reason.resolver';
@@ -95,6 +95,52 @@ export const ROUTES: Routes = [
         component: HowLinkedHearingsBeHeardComponent,
         data: {
           title: 'HMCTS Hearings | Linked Hearings | Group Selection'
+        }
+      },
+      {
+        path: 'check-your-answers',
+        component: LinkedHearingsCheckYourAnswersComponent,
+        data: {
+          title: 'HMCTS Hearings | Linked Hearings | Check your answers'
+        }
+      },
+      {
+        path: 'final-confirmation',
+        component: LinkedHearingsFinalConfirmationComponent,
+        data: {
+          title: 'HMCTS Hearings | Linked Hearings | Final confirmation'
+        }
+      }
+    ]
+  },
+  {
+    path: 'manage-links/:caseId/:hearingGroupRequestId/:hearingId',
+    component: LinkedHearingsComponent,
+    data: {
+      mode: Mode.MANAGE_HEARINGS
+    },
+    children: [
+      {
+        path: '',
+        component: LinkedHearingsCheckYourAnswersComponent,
+        canActivate: [HealthCheckGuard, HearingsEditGuard],
+        data: {
+          title: 'HMCTS Hearings | Linked Hearings | Selected Hearings'
+        }
+      },
+      {
+        path: 'selected-hearings',
+        component: LinkedHearingsWithCaseComponent,
+        data: {
+          title: 'HMCTS Hearings | Linked Hearings | Cases'
+        }
+      },
+      {
+        path: 'group-selection',
+        component: HowLinkedHearingsBeHeardComponent,
+        data: {
+          title: 'HMCTS Hearings | Linked Hearings | Group Selection',
+          mode: Mode.MANAGE_HEARINGS,
         }
       },
       {

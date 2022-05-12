@@ -30,6 +30,7 @@ export interface GroupDetailsModel {
 export interface LinkedHearingsDetailModel {
   hearingId: string;
   hearingOrder: number;
+  caseRef?: string;
 }
 
 export interface LinkedHearingGroupResponseModel {

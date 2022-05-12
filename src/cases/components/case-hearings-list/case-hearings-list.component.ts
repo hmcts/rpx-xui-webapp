@@ -75,8 +75,10 @@ export class CaseHearingsListComponent implements OnInit {
     this.router.navigate(['/', 'hearings', 'link', this.caseId, hearingID]);
   }
 
-  public manageLinks(hearingID: string): void {
-    this.router.navigate(['/', 'hearings', 'manage-links', hearingID]);
+  public manageLinks(hearing: HearingListViewModel): void {
+    this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCases({ caseReference: this.caseId, hearingId: hearing.hearingID }));
+    this.hearingStore.dispatch(new fromHearingStore.LoadLinkedHearingGroup({ caseReference: this.caseId, hearingId: hearing.hearingID }));
+    this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, hearing.hearingGroupRequestId, hearing.hearingID]);
   }
 
   public viewAndEdit(hearingID: string): void {

@@ -8,6 +8,8 @@ export const specificAccessInitialState: SpecificAccessStateData = {
   accessReason: null,
   lastError: null,
   caseId: null,
+  requestedRole: null,
+  requestId: null,
   jurisdiction: null,
   roleCategory: null,
   period: {startDate: null, endDate: null},

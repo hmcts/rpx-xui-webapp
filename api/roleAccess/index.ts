@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import { NextFunction, Response } from 'express';
+import { NextFunction, response, Response } from 'express';
 import { sendDelete, sendPost } from '../common/crudService';
 import { getConfigValue } from '../configuration';
 import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
@@ -10,7 +10,7 @@ import { getServiceRefDataMappingList } from '../serviceRefData';
 import { refreshRoleAssignmentForUser } from '../user';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { CaseRole } from '../workAllocation2/interfaces/caseRole';
-import { toRoleAssignmentBody } from './dtos/to-role-assignment-dto';
+import { toRoleAssignmentBody, toSARoleAssignmentBody } from './dtos/to-role-assignment-dto';
 import { getEmail, getJudicialUsersFromApi, getUserName, mapRoleCategory } from './exclusionService';
 import { CaseRoleRequestPayload } from './models/caseRoleRequestPayload';
 import { release2ContentType } from './models/release2ContentType';
@@ -113,20 +113,20 @@ export async function confirmAllocateRole(req: EnhancedRequest, res: Response, n
   }
 }
 
-export async function createSpecificAccessApprovalRole(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+export async function createSpecificAccessApprovalRole(req: EnhancedRequest, res: Response, next: NextFunction): Promise<AxiosResponse> {
   try {
     const body = req.body;
     // @ts-ignore
     const currentUser = req.session.passport.user.userinfo;
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
-    const roleAssignmentsBody = toRoleAssignmentBody(currentUserId, body);
+    const roleAssignmentsBody = toSARoleAssignmentBody(currentUserId, body);
     const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
     const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
     await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
-    const { status, data } = response;
-    return res.status(status).send(data);
+    return response;
   } catch (error) {
     next(error);
+    return error;
   }
 }
 
@@ -162,6 +162,20 @@ export async function deleteRoleByCaseAndRoleId(req: EnhancedRequest, res: Respo
     const { status } = await sendDelete(`${basePath}/${assigmentId}`, body, req);
     await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
     return res.send().status(status);
+  } catch (e) {
+    next(e);
+  }
+}
+
+// Same as above but for node layer use
+export async function deleteRoleByAssignmentId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Number> {
+  const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
+  const body = req.body;
+  const assigmentId = req.body.requestId;
+  try {
+    const { status } = await sendDelete(`${basePath}/${assigmentId}`, body, req);
+    await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
+    return status;
   } catch (e) {
     next(e);
   }

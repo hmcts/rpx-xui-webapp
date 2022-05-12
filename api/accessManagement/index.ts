@@ -1,4 +1,6 @@
+import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
+import { createSpecificAccessApprovalRole, deleteRoleByAssignmentId } from '../roleAccess';
 import { bookingResponse, bookings, refreshRoleAssignmentsSuccess } from './data/booking.mock.data';
 
 export async function getBookings(req, res: Response, next: NextFunction): Promise<Response> {
@@ -31,6 +33,29 @@ export async function postBooking(req, res: Response, next: NextFunction): Promi
 
 export async function refreshRoleAssignments(req, res: Response, next: NextFunction): Promise<Response> {
   return res.send(refreshRoleAssignmentsSuccess);
+}
+
+// node layer logic for approving specific access request
+export async function approveSpecificAccessRequest(req, res: Response, next: NextFunction): Promise<Response> {
+  // create the specific access approval role
+  const firstRoleResponse: AxiosResponse = await createSpecificAccessApprovalRole(req, res, next);
+  let deletionStatus = null;
+  if (firstRoleResponse) {
+    deletionStatus = await deleteRoleByAssignmentId(req, res, next);
+    /* const assignmentId = req.requestIid;
+    const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+        const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
+        const deleteBody = { assigmentId: assignmentId };
+        const deleteResponse =   await sendDelete(`${basePath}/${assignmentId}`, deleteBody, req);
+        if (!deleteResponse || deleteResponse.status !== 204) {
+          return res.status(deleteResponse.status).send(deleteResponse);
+        } */
+  } else {
+    // check failures - remove relevant role assignments
+    return;
+  }
+  // create the actual role with e.g. specific-access-caseworker
+  return res.send(firstRoleResponse.data).status(firstRoleResponse.status);
 }
 
 /**

@@ -137,7 +137,7 @@ DO NOT create a new .json file within /config as this increases the complexity o
 The 3rd party Node config package selects the file within /config based on `NODE_ENV` which is always production on all environments,
 due to Reform standards, this does not change on different environments, it is always `NODE_ENV=production`
 
-If production.json is not within /config, it's not in the case of Manage Cases, it will use the files in the order specified by
+If production.json is not within /config, it's not in the case of Manage Cases, it will use the files in the order specified by 
 @see https://github.com/lorenwest/node-config/wiki/Configuration-Files
 
 We DO NOT need to leverage `NODE_CONFIG_ENV` on the Manage Cases project - All application code be written so that it's 

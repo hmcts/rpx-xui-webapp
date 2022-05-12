@@ -1,4 +1,6 @@
 const workAllocationMockData = require('./mockData');
+const bookingsMockData = require('./bookingsData');
+
 const CucumberReporter = require('../../e2e/support/reportLogger');
 const MockApp = require('../app');
 
@@ -69,6 +71,12 @@ module.exports = {
         },
         '/workallocation2/case/tasks/:caseId/event/:eventId/caseType/:caseType/jurisdiction/:service': (req, res) => {
             res.send(workAllocationMockData.caseEventTasks);
+        },
+        '/am/bookings': (req,res) => {
+            res.send(bookingsMockData.getBookings());
+        },
+        '/workallocation2/full-location':(req,res) => {
+            res.send(bookingsMockData.getAllLocationDetails());
         }
     },
     post: {

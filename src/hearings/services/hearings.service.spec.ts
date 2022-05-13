@@ -245,7 +245,7 @@ describe('HearingsService', () => {
         expect(response).toBeNull();
       });
 
-      const req = httpMock.expectOne('api/hearings/hearingActuals/1111222233334444');
+      const req = httpMock.expectOne('api/hearings/hearingActuals?hearingId=1111222233334444');
       expect(req.request.method).toEqual('PUT');
       req.flush(null);
     }));

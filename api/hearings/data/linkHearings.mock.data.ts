@@ -6,17 +6,17 @@ import {
 
 export const SERVICE_LINKED_CASES: ServiceLinkedCasesModel[] = [
   {
-    caseReference: '4652724902696213',
+    caseReference: '1546589340228619',
     caseName: 'Smith vs Peterson',
     reasonsForLink: ['Linked for a hearing'],
   },
   {
-    caseReference: '5283819672542864',
+    caseReference: '1546589642998505',
     caseName: 'Smith vs Peterson',
     reasonsForLink: ['Linked for a hearing', 'Progressed as part of lead case'],
   },
   {
-    caseReference: '8254902572336147',
+    caseReference: '1546590083847466',
     caseName: 'Smith vs Peterson',
     reasonsForLink: ['Familial', 'Guardian', 'Linked for a hearing'],
   },

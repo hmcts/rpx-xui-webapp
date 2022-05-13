@@ -133,9 +133,9 @@ describe('HearingRequirementsComponent', () => {
         privateHearingRequiredFlag: false,
         panelRequirements: {
           roleType: [
-            'tribunalJudge',
-            'deputyTribunalJudge',
-            'regionalTribunalJudge',
+            'tj',
+            'dtj',
+            'rtj',
           ],
           panelPreferences: [],
           panelSpecialisms: [
@@ -154,6 +154,7 @@ describe('HearingRequirementsComponent', () => {
         listingComments: '',
         hearingRequester: '',
         leadJudgeContractType: '',
+        amendReasonCode: null,
       },
       caseDetails: {
         hmctsServiceCode: 'BBA3',

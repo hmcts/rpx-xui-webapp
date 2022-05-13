@@ -89,6 +89,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         listingComments: this.serviceHearingValuesModel.listingComments,
         hearingRequester: this.serviceHearingValuesModel.hearingRequester,
         leadJudgeContractType: this.serviceHearingValuesModel.leadJudgeContractType,
+        amendReasonCode: null,
       },
       caseDetails: {
         hmctsServiceCode: this.serviceHearingValuesModel.hmctsServiceID || null,
@@ -96,8 +97,8 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         requestTimeStamp: null,
         hearingID: null,
         caseDeepLink: this.serviceHearingValuesModel.caseDeepLink,
-        hmctsInternalCaseName: this.serviceHearingValuesModel.caseName,
-        publicCaseName: this.serviceHearingValuesModel.caseName,
+        hmctsInternalCaseName: this.serviceHearingValuesModel.hmctsInternalCaseName,
+        publicCaseName: this.serviceHearingValuesModel.publicCaseName,
         caseAdditionalSecurityFlag: this.serviceHearingValuesModel.caseAdditionalSecurityFlag,
         caseCategories: this.serviceHearingValuesModel.caseCategories,
         caseManagementLocationCode: this.serviceHearingValuesModel.caseManagementLocationCode,

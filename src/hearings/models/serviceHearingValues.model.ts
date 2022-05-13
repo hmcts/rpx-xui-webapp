@@ -11,11 +11,13 @@ import {VocabularyModel} from './vocabulary.model';
 
 export interface ServiceHearingValuesModel {
   hmctsServiceID: string;
-  caseName: string;
+  hmctsInternalCaseName: string;
+  publicCaseName: string;
   caseAdditionalSecurityFlag: boolean;
   caseCategories: CaseCategoryModel[];
   caseDeepLink: string;
   caserestrictedFlag: boolean;
+  externalCaseReference: string;
   caseManagementLocationCode: string;
   caseSLAStartDate: string;
   autoListFlag: boolean;

@@ -218,11 +218,11 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
           {
             actualPartyId: '3',
             didNotAttendFlag: false,
-            actualIndividualDetails: {
+            individualDetails: {
               firstName: 'Jane',
               lastName: 'Smith',
             },
-            actualOrganisationDetails: {
+            organisationDetails: {
               name: 'Company A',
             },
             partyChannelSubType: 'video-teams',
@@ -232,11 +232,11 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
           {
             actualPartyId: '5',
             didNotAttendFlag: false,
-            actualIndividualDetails: {
+            individualDetails: {
               firstName: 'DWP',
               lastName: '',
             },
-            actualOrganisationDetails: {
+            organisationDetails: {
               name: 'Company A',
             },
             partyChannelSubType: 'telephone-btMeetMe',
@@ -246,11 +246,11 @@ export const HEARING_ACTUAL_COMPLETED: HearingActualsMainModel = {
           {
             actualPartyId: '10',
             didNotAttendFlag: false,
-            actualIndividualDetails: {
+            individualDetails: {
               firstName: 'Tom',
               lastName: 'Cruise',
             },
-            actualOrganisationDetails: {
+            organisationDetails: {
               name: 'Company A',
             },
             partyChannelSubType: 'telephone-CVP',
@@ -459,11 +459,11 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
           {
             actualPartyId: '3',
             didNotAttendFlag: false,
-            actualIndividualDetails: {
+            individualDetails: {
               firstName: 'Jane',
               lastName: 'Smith',
             },
-            actualOrganisationDetails: {
+            organisationDetails: {
               name: 'Company A',
             },
             partyChannelSubType: 'video-teams',
@@ -473,11 +473,11 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
           {
             actualPartyId: '5',
             didNotAttendFlag: false,
-            actualIndividualDetails: {
+            individualDetails: {
               firstName: 'DWP',
               lastName: '',
             },
-            actualOrganisationDetails: {
+            organisationDetails: {
               name: 'Company A',
             },
             partyChannelSubType: 'telephone-btMeetMe',
@@ -487,11 +487,11 @@ export const HEARING_ACTUAL_ADJOURNED: HearingActualsMainModel = {
           {
             actualPartyId: '10',
             didNotAttendFlag: false,
-            actualIndividualDetails: {
+            individualDetails: {
               firstName: 'Tom',
               lastName: 'Cruise',
             },
-            actualOrganisationDetails: {
+            organisationDetails: {
               name: 'Company A',
             },
             partyChannelSubType: 'telephone-CVP',
@@ -700,11 +700,11 @@ export const HEARING_ACTUAL_AWAITING: HearingActualsMainModel = {
           {
             actualPartyId: '3',
             didNotAttendFlag: false,
-            actualIndividualDetails: {
+            individualDetails: {
               firstName: 'Jane',
               lastName: 'Smith',
             },
-            actualOrganisationDetails: {
+            organisationDetails: {
               name: 'Company A',
             },
             partyChannelSubType: 'video-teams',
@@ -714,11 +714,11 @@ export const HEARING_ACTUAL_AWAITING: HearingActualsMainModel = {
           {
             actualPartyId: '5',
             didNotAttendFlag: false,
-            actualIndividualDetails: {
+            individualDetails: {
               firstName: 'DWP',
               lastName: '',
             },
-            actualOrganisationDetails: {
+            organisationDetails: {
               name: 'Company A',
             },
             partyChannelSubType: 'telephone-btMeetMe',
@@ -728,11 +728,11 @@ export const HEARING_ACTUAL_AWAITING: HearingActualsMainModel = {
           {
             actualPartyId: '10',
             didNotAttendFlag: false,
-            actualIndividualDetails: {
+            individualDetails: {
               firstName: 'Tom',
               lastName: 'Cruise',
             },
-            actualOrganisationDetails: {
+            organisationDetails: {
               name: 'Company A',
             },
             partyChannelSubType: 'telephone-CVP',

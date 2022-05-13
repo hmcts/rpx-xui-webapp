@@ -1,6 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
 import { createSpecificAccessApprovalRole, deleteRoleByAssignmentId } from '../roleAccess';
+import { postTaskActionForAccess } from '../workAllocation2';
 import { bookingResponse, bookings, refreshRoleAssignmentsSuccess } from './data/booking.mock.data';
 
 export async function getBookings(req, res: Response, next: NextFunction): Promise<Response> {
@@ -50,8 +51,16 @@ export async function approveSpecificAccessRequest(req, res: Response, next: Nex
         if (!deleteResponse || deleteResponse.status !== 204) {
           return res.status(deleteResponse.status).send(deleteResponse);
         } */
+    if (deletionStatus) {
+      req.body.hasNoAssigneeOnComplete = true;
+      req.params.action = 'complete';
+      req.params.taskId = req.body.taskId;
+      const taskResponse: AxiosResponse = await postTaskActionForAccess(req, res, next);
+      return res.send(taskResponse.data).status(firstRoleResponse.status);
+    } else {
+      // check failures - remove reviewed roles
+    }
   } else {
-    // check failures - remove relevant role assignments
     return;
   }
   // create the actual role with e.g. specific-access-caseworker

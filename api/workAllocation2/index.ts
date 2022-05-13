@@ -66,6 +66,7 @@ import {
   prepareTaskSearchForCompletable,
   searchCasesById
 } from './util';
+import { AxiosResponse } from 'axios';
 
 caseServiceMock.init();
 roleServiceMock.init();
@@ -241,6 +242,31 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
   } catch (error) {
     // 5528 - removed error handling for 403 errors
     next(error);
+  }
+}
+
+/**
+ * Post to invoke an action on a Task.
+ */
+ export async function postTaskActionForAccess(req: EnhancedRequest, res: Response, next: NextFunction): Promise<AxiosResponse> {
+
+  try {
+    // Additional setting to mark unassigned tasks as done - need to assign task before completing
+    if (req.body.hasNoAssigneeOnComplete === true) {
+      req.body = {
+        completion_options: {
+           assign_and_complete: true,
+         },
+      };
+    } else {
+      delete req.body.hasNoAssigneeOnComplete;
+    }
+    const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action);
+    const completionResponse = await handleTaskPost(getTaskPath, req.body, req);
+    return completionResponse;
+  } catch (error) {
+    next(error);
+    return error;
   }
 }
 

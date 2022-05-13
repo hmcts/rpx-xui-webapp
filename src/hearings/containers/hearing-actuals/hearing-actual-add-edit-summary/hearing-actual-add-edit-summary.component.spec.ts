@@ -379,8 +379,12 @@ describe('HearingActualAddEditSummaryComponent', () => {
 
   it('should return attending representative', () => {
     component.hearingActualsMainModel = hearingActualsMainModel;
-    const attendingRepresentative = component.getRepresentingAttendee('3');
-    expect(attendingRepresentative).toEqual('Mary Jones');
+    const attendingRepresentative1 = component.getRepresentingAttendee('1');
+    expect(attendingRepresentative1).toEqual('Bob Jones');
+    const attendingRepresentative2 = component.getRepresentingAttendee('2');
+    expect(attendingRepresentative2).toEqual('DWP ');
+    const attendingRepresentative3 = component.getRepresentingAttendee('3');
+    expect(attendingRepresentative3).toEqual('');
   });
 
   it('should return empty string for hearing result reason type completed', () => {
@@ -611,11 +615,11 @@ describe('HearingActualAddEditSummaryComponent display actual participants', () 
       partyRole: 'claimant',
       partyChannelSubType: 'by-video-teams',
       representedParty: null,
-      actualIndividualDetails: {
+      individualDetails: {
         firstName: 'Jane',
         lastName: 'Smith',
       },
-      actualOrganisationDetails: {
+      organisationDetails: {
         name: null,
       },
       didNotAttendFlag: false,
@@ -625,25 +629,25 @@ describe('HearingActualAddEditSummaryComponent display actual participants', () 
       partyRole: 'appellant',
       partyChannelSubType: 'by-video-teams',
       representedParty: null,
-      actualIndividualDetails: {
+      individualDetails: {
         firstName: 'DWP',
         lastName: '',
       },
-      actualOrganisationDetails: {
+      organisationDetails: {
         name: null,
       },
       didNotAttendFlag: false,
     },
     {
-      actualPartyId: null,
+      actualPartyId: '3',
       partyRole: 'interpreter',
       partyChannelSubType: 'by-video-teams',
       representedParty: '1',
-      actualIndividualDetails: {
+      individualDetails: {
         firstName: 'Thomas',
         lastName: 'Wayne',
       },
-      actualOrganisationDetails: {
+      organisationDetails: {
         name: null,
       },
       didNotAttendFlag: false,
@@ -687,7 +691,6 @@ describe('HearingActualAddEditSummaryComponent display actual participants', () 
   });
 
   it('should display form with actual parties involved', () => {
-
     expect(component.parties.length).toBe(2);
     expect(component.participants.length).toBe(1);
   });

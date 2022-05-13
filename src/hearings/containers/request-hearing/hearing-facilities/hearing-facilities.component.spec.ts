@@ -146,11 +146,13 @@ describe('HearingFacilitiesComponent', () => {
     expect(component.hearingFactilitiesForm.controls['addition-security-required'].dirty).toEqual(true);
     expect(component.prepareHearingRequestData).toHaveBeenCalled();
   });
+
   it('should be true when calling isFormValid when security is selected', () => {
     component.hearingFactilitiesForm.controls['addition-security-required'].setValue('Yes');
     const formValid = component.isFormValid();
     expect(formValid).toEqual(true);
   });
+
   it('should false when calling isFormValid when security required not selected', () => {
     component.hearingFactilitiesForm.controls['addition-security-required'].setValue(undefined);
     const formValid = component.isFormValid();

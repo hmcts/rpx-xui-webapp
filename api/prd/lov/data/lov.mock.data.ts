@@ -3,7 +3,7 @@ import {LovRefDataByCategoryModel, LovRefDataByServiceModel, LovRefDataModel} fr
 
 export const DEFAULT_JUDGE_TYPES_REF: LovRefDataModel[] = [
   {
-    key: 'tribunalJudge',
+    key: 'tj',
     value_en: 'Tribunal Judge',
     value_cy: '',
     hint_text_en: 'Tribunal',
@@ -17,7 +17,7 @@ export const DEFAULT_JUDGE_TYPES_REF: LovRefDataModel[] = [
     from: 'exui-default',
   },
   {
-    key: 'deputyTribunalJudge',
+    key: 'dtj',
     value_en: 'Deputy Tribunal Judge',
     value_cy: '',
     hint_text_en: 'Deputy',
@@ -31,7 +31,7 @@ export const DEFAULT_JUDGE_TYPES_REF: LovRefDataModel[] = [
     from: 'exui-default',
   },
   {
-    key: 'regionalTribunalJudge',
+    key: 'rtj',
     value_en: 'Regional Tribunal Judge',
     value_cy: '',
     hint_text_en: 'Regional',

@@ -73,7 +73,7 @@ export class HearingsService {
   }
 
   public updateHearingActuals(hearingId: string, hearingActualsModel: HearingActualsModel): Observable<HearingActualsMainModel> {
-    return this.http.put<HearingActualsMainModel>(`api/hearings/hearingActuals/${hearingId}`, hearingActualsModel);
+    return this.http.put<HearingActualsMainModel>(`api/hearings/hearingActuals?hearingId=${hearingId}`, hearingActualsModel);
   }
 
   public submitHearingActuals(hearingId: string): Observable<HttpResponse<number>> {

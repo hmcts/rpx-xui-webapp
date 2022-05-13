@@ -1,5 +1,4 @@
-import {Component, OnDestroy} from '@angular/core';
-import {OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {select, Store} from '@ngrx/store';
@@ -85,11 +84,25 @@ export class HearingChangeReasonComponent extends RequestHearingPageFlow impleme
   public executeAction(action: ACTION): void {
     if (action === ACTION.VIEW_EDIT_SUBMIT) {
       if (this.isFormValid(action)) {
+        this.prepareHearingRequestData();
         super.navigateAction(action);
       }
     } else if (action === ACTION.BACK) {
       super.navigateAction(action);
     }
+  }
+
+  public prepareHearingRequestData(): void {
+    const reasons: string[] = (this.hearingChangeReasonForm.controls.reasons as FormArray).controls.map(
+      control => control.value.key
+    );
+    this.hearingRequestMainModel = {
+      ...this.hearingRequestMainModel,
+      hearingDetails: {
+        ...this.hearingRequestMainModel.hearingDetails,
+        amendReasonCode: reasons[0],
+      }
+    };
   }
 
   public getChosenReasons(): LovRefDataModel[] {

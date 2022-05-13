@@ -18,7 +18,7 @@ export class HearingPartiesTitleComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.serviceValueSub = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesModel)).subscribe((hearingValueModel: ServiceHearingValuesModel) =>
-      this.caseTitle = hearingValueModel ? hearingValueModel.caseName : ''
+      this.caseTitle = hearingValueModel ? hearingValueModel.publicCaseName : ''
     );
   }
 

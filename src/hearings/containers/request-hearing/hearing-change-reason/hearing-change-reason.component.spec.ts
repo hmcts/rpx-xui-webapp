@@ -6,10 +6,10 @@ import {ActivatedRoute} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of, throwError} from 'rxjs';
-import { initialState } from '../../../hearing.test.data';
-import { ACTION } from '../../../models/hearings.enum';
-import { LovRefDataModel } from '../../../models/lovRefData.model';
-import { HearingsService } from '../../../services/hearings.service';
+import {initialState} from '../../../hearing.test.data';
+import {ACTION} from '../../../models/hearings.enum';
+import {LovRefDataModel} from '../../../models/lovRefData.model';
+import {HearingsService} from '../../../services/hearings.service';
 import {HearingChangeReasonComponent} from './hearing-change-reason.component';
 
 describe('HearingChangeReasonComponent', () => {
@@ -112,7 +112,7 @@ describe('HearingChangeReasonComponent', () => {
     expect(formValid).toEqual(true);
   });
 
-  it('should be false when calling isFormValid with no reasons selected',  () => {
+  it('should be false when calling isFormValid with no reasons selected', () => {
     const formValid = component.isFormValid(ACTION.VIEW_EDIT_SUBMIT);
     expect(formValid).toEqual(false);
   });
@@ -126,6 +126,13 @@ describe('HearingChangeReasonComponent', () => {
     hearingsService.updateHearingRequest = jasmine.createSpy().and.returnValue(throwError(''));
     component.navigateAction(ACTION.VIEW_EDIT_SUBMIT);
     expect(component.errors).not.toEqual(null);
+  });
+
+  it('should prepareHearingRequestData', () => {
+    (component.hearingChangeReasonForm.controls.reasons as FormArray).controls
+      .forEach(reason => reason.value.selected = true);
+    component.prepareHearingRequestData();
+    expect(component.hearingRequestMainModel.hearingDetails.amendReasonCode).toEqual('reasonOne');
   });
 
 });

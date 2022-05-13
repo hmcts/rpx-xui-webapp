@@ -40,9 +40,8 @@ export async function refreshRoleAssignments(req, res: Response, next: NextFunct
 export async function approveSpecificAccessRequest(req, res: Response, next: NextFunction): Promise<Response> {
   // create the specific access approval role
   const firstRoleResponse: AxiosResponse = await createSpecificAccessApprovalRole(req, res, next);
-  let deletionStatus = null;
   if (firstRoleResponse) {
-    deletionStatus = await deleteRoleByAssignmentId(req, res, next);
+    const deletionStatus = await deleteRoleByAssignmentId(req, res, next);
     /* const assignmentId = req.requestIid;
     const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
         const basePath = `${baseRoleAccessUrl}/am/role-assignments`;

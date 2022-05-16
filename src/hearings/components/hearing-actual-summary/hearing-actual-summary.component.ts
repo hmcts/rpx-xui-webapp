@@ -36,7 +36,7 @@ export class HearingActualSummaryComponent implements OnInit {
     const plannedParties = this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties;
     const actualParties = this.actualHearingDays.actualDayParties;
     actualParties.forEach((actualPartyInfo) => {
-      const plannedPartyInfo = plannedParties.find((plannedParty) => plannedParty.partyId === actualPartyInfo.actualPartyId);
+      const plannedPartyInfo = plannedParties.find((plannedParty) => plannedParty.partyID === actualPartyInfo.actualPartyId);
       if (plannedPartyInfo) {
         const partyDetail: ActualDayPartyModel = {
           individualDetails: {
@@ -49,7 +49,7 @@ export class HearingActualSummaryComponent implements OnInit {
           didNotAttendFlag: false,
           partyChannelSubType: plannedPartyInfo.partyChannelSubType,
           representedParty: null,
-          actualPartyId: plannedPartyInfo.partyId,
+          actualPartyId: plannedPartyInfo.partyID,
           partyRole: plannedPartyInfo.partyRole,
         };
         const { channel, subChannel } = this.getChannelInfo(actualPartyInfo.partyChannelSubType);
@@ -58,10 +58,9 @@ export class HearingActualSummaryComponent implements OnInit {
         this.participants.push(partyDetail);
       } else {
         const partyDetail: ActualDayPartyModel = { ...actualPartyInfo };
-        const reprentedPartyDetails = plannedParties.find((plannedParty) => plannedParty.partyId === actualPartyInfo.representedParty).individualDetails;
+        const reprentedPartyDetails = plannedParties.find((plannedParty) => plannedParty.partyID === actualPartyInfo.representedParty).individualDetails;
         if (reprentedPartyDetails) {
-          const partyName = `${reprentedPartyDetails.firstName} ${reprentedPartyDetails.lastName}`;
-          partyDetail['reprentedPartyDetails'] = partyName;
+          partyDetail['reprentedPartyDetails'] = `${reprentedPartyDetails.firstName} ${reprentedPartyDetails.lastName}`;
         }
         const { channel, subChannel } = this.getChannelInfo(actualPartyInfo.partyChannelSubType);
         partyDetail['channel'] = channel;

@@ -139,9 +139,9 @@ export class SpecificAccessDurationComponent implements OnInit {
       typeOfRole: this.approvalRole,
       period: period,
       // note: adding example details here to reach endpoint without previous access info
-      caseId: '1571056574480595',
-      taskId: 'a6ed8c85-9e2f-11ec-8209-be654c589cdb',
-      requestId: '5ecf29c4-c82b-4357-b6cb-9a2d169eac5d',
+      caseId: '1594717367271987',
+      taskId: 'd3f939d2-d4f3-11ec-8d51-b6ad61ebbb09',
+      requestId: '59bedc19-9cc6-4bff-9f58-041c3ba664a0',
       jurisdiction: 'IA',
       roleCategory: RoleCategory.CASEWORKER,
       requestedRole: 'specific-access-legal-ops',

@@ -16,7 +16,6 @@ import {
   SpecificRole
 } from '../../../models';
 import { DurationType } from '../../../models/enums';
-import { AllocateRoleService } from '../../../services';
 import { DurationHelperService } from '../../../services/duration-helper.service';
 import * as fromFeature from '../../../store';
 
@@ -59,7 +58,6 @@ export class SpecificAccessDurationComponent implements OnInit {
 
   constructor(
     private durationHelper: DurationHelperService,
-    private readonly allocateRoleService: AllocateRoleService,
     private readonly fb: FormBuilder,
     private readonly store: Store<fromFeature.State>
   ) {

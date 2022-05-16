@@ -1,4 +1,5 @@
-import { SpecificAccessFormData, SpecificAccessMoreInformationForm, SpecificAccessState } from '../../models';
+import { AccessReason, DurationType } from 'src/role-access/models/enums';
+import { SpecificAccessFormData, SpecificAccessMoreInformationForm, SpecificAccessState, SpecificAccessStateData } from '../../models';
 import * as fromActions from '../actions/specific-access.action';
 import * as fromReducer from './specific-access.reducer';
 describe('Specific Access Reducer', () => {
@@ -34,6 +35,46 @@ describe('Specific Access Reducer', () => {
         const action = new fromActions.SetSpecificAccessInfoFormData(specificAccessMoreInformationForm);
         const specificAccessState = fromReducer.specificAccessReducer(initialState, action);
         expect(specificAccessState.SpecificAccessMoreInformationFormData).toEqual(specificAccessMoreInformationForm);
+      });
+
+      it('should set correct object', () => {
+        const period = {
+          startDate: new Date(),
+          endDate: new Date()
+        };;
+        const specificAccessData: SpecificAccessStateData = {
+          state: SpecificAccessState.SPECIFIC_ACCESS_DURATION,
+          accessReason: AccessReason.APPROVE_REQUEST,
+          typeOfRole: {id: 'specific-access-granted', name: 'specific-access-granted'},
+          period: period,
+          caseId: '1594717367271987',
+          taskId: 'd3f939d2-d4f3-11ec-8d51-b6ad61ebbb09',
+          requestId: '59bedc19-9cc6-4bff-9f58-041c3ba664a0',
+          jurisdiction: 'IA',
+          roleCategory: 'LEGAL_OPERATIONS',
+          requestedRole: 'specific-access-legal-ops',
+          person: {id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null},
+          specificAccessFormData: {
+          specificAccessDurationForm: {
+              selectedOption: DurationType.SEVEN_DAYS,
+              selectedDuration: {
+                startDate: {
+                  day: 11,
+                  month: 11,
+                  year: 2024
+                },
+                endDate: {
+                  day: 11,
+                  month: 11,
+                  year: 2024
+                }
+              }
+            }
+          }
+        }
+        const action = new fromActions.ApproveSpecificAccessRequest(specificAccessData);
+        const specificAccessState = fromReducer.specificAccessReducer(specificAccessData, action);
+        expect(specificAccessState).toEqual(specificAccessData);
       });
     });
   });

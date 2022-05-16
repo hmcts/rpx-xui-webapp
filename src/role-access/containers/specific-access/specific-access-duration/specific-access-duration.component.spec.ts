@@ -88,30 +88,22 @@ describe('SpecificAccessDurationComponent', () => {
   describe('selectSpecificAccessDuration', () => {
 
     it('should set the value of selected duration', () => {
-      // TODO: this will need to be updated when specific access is wired up correctly with state, added to increase code coverage for now
-      const specificAccessState: SpecificAccessStateData = { accessReason: AccessReason.APPROVE_REQUEST, state: SpecificAccessState.SPECIFIC_ACCESS_DURATION };
-      component.selectSpecificAccessDuration(specificAccessState);
-      expect(component.selectedDuration).toEqual(DurationType.SEVEN_DAYS);
-    })
-
-  });
-
-  describe('selectSpecificAccessDuration with formdata', () => {
-
-    it('should set the value of selected duration', () => {
-      // fake form group and form control values
-      component.startDateDayCtrl = new FormControl(7);
-      component.startDateMonthCtrl = new FormControl(7);
-      component.startDateYearCtrl = new FormControl(2025);
-      component.endDateDayCtrl = new FormControl(8);
-      component.endDateMonthCtrl = new FormControl(7);
-      component.endDateYearCtrl = new FormControl(2025);
-      component.formGroup = new FormGroup({});
-      const specificAccessState: SpecificAccessStateData = { accessReason: AccessReason.APPROVE_REQUEST,
+      const period = component.getPeriod(DurationType.INDEFINITE);
+      const specificAccessState: SpecificAccessStateData = {
         state: SpecificAccessState.SPECIFIC_ACCESS_DURATION,
+        accessReason: AccessReason.APPROVE_REQUEST,
+        typeOfRole: {id: 'specific-access-granted', name: 'specific-access-granted'},
+        period: period,
+        caseId: '1594717367271987',
+        taskId: 'd3f939d2-d4f3-11ec-8d51-b6ad61ebbb09',
+        requestId: '59bedc19-9cc6-4bff-9f58-041c3ba664a0',
+        jurisdiction: 'IA',
+        roleCategory: 'LEGAL_OPERATIONS',
+        requestedRole: 'specific-access-legal-ops',
+        person: {id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null},
         specificAccessFormData: {
           specificAccessDurationForm: {
-            selectedOption: DurationType.ANOTHER_PERIOD,
+            selectedOption: DurationType.SEVEN_DAYS,
             selectedDuration: {
               startDate: {
                 day: 11,
@@ -124,7 +116,52 @@ describe('SpecificAccessDurationComponent', () => {
                 year: 2024
               }
             }
-          }}};
+          }
+        }
+      }
+      component.selectSpecificAccessDuration(specificAccessState);
+      expect(component.selectedDuration).toEqual(DurationType.SEVEN_DAYS);
+    })
+
+  });
+
+  describe('selectSpecificAccessDuration with formdata', () => {
+
+    it('should set the value of selected duration', () => {
+      const period = component.getPeriod(DurationType.INDEFINITE);
+      const specificAccessState: SpecificAccessStateData = {
+        state: SpecificAccessState.SPECIFIC_ACCESS_DURATION,
+        accessReason: AccessReason.APPROVE_REQUEST,
+        typeOfRole: {id: 'specific-access-granted', name: 'specific-access-granted'},
+        period: period,
+        caseId: '1594717367271987',
+        taskId: 'd3f939d2-d4f3-11ec-8d51-b6ad61ebbb09',
+        requestId: '59bedc19-9cc6-4bff-9f58-041c3ba664a0',
+        jurisdiction: 'IA',
+        roleCategory: 'LEGAL_OPERATIONS',
+        requestedRole: 'specific-access-legal-ops',
+        person: {id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null},
+        specificAccessFormData: {
+          specificAccessDurationForm: {
+            selectedOption: DurationType.ANOTHER_PERIOD,
+            selectedDuration: {
+              startDate: {
+              },
+              endDate: {
+              }
+            }
+          }
+        }
+      }
+      // fake form group and form control values
+      component.startDateDayCtrl = new FormControl(7);
+      component.startDateMonthCtrl = new FormControl(7);
+      component.startDateYearCtrl = new FormControl(2025);
+      component.endDateDayCtrl = new FormControl(8);
+      component.endDateMonthCtrl = new FormControl(7);
+      component.endDateYearCtrl = new FormControl(2025);
+      component.formGroup = new FormGroup({});
+
       component.selectSpecificAccessDuration(specificAccessState);
       expect(component.selectedDuration).toEqual(DurationType.ANOTHER_PERIOD);
     })

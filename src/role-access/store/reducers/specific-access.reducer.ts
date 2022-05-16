@@ -1,16 +1,36 @@
 import { SpecificAccessState, SpecificAccessStateData } from '../../models';
 import { SpecificAccessAction, SpecificAccessActionTypes } from '../actions';
 
+// export const specificAccessInitialState: SpecificAccessStateData = {
+//   state: SpecificAccessState.SPECIFIC_ACCESS_REVIEW,
+//   specificAccessFormData: null,
+//   SpecificAccessMoreInformationFormData: null,
+//   accessReason: null,
+//   lastError: null
+// };
+
 export const specificAccessInitialState: SpecificAccessStateData = {
   state: SpecificAccessState.SPECIFIC_ACCESS_REVIEW,
   specificAccessFormData: null,
   SpecificAccessMoreInformationFormData: null,
   accessReason: null,
-  lastError: null
+  lastError: null,
+  caseId: null,
+  requestedRole: null,
+  requestId: null,
+  jurisdiction: null,
+  roleCategory: null,
+  period: {startDate: null, endDate: null},
+  person: null
 };
 
 export function specificAccessReducer(currentState = specificAccessInitialState, action: SpecificAccessAction): SpecificAccessStateData {
   switch (action.type) {
+    case SpecificAccessActionTypes.REQUEST_MORE_INFO_SPECIFIC_ACCESS_REQUEST: {
+      return {
+        ...currentState
+      };
+    }
     case SpecificAccessActionTypes.CHANGE_NAVIGATION: {
       return {
         ...currentState,

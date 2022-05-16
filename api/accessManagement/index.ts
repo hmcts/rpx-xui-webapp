@@ -38,32 +38,32 @@ export async function refreshRoleAssignments(req, res: Response, next: NextFunct
 
 // node layer logic for approving specific access request
 export async function approveSpecificAccessRequest(req, res: Response, next: NextFunction): Promise<Response> {
+  try {
   // create the specific access approval role
   const firstRoleResponse: AxiosResponse = await createSpecificAccessApprovalRole(req, res, next);
-  if (firstRoleResponse) {
-    const deletionStatus = await deleteRoleByAssignmentId(req, res, next);
-    /* const assignmentId = req.requestIid;
-    const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
-        const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
-        const deleteBody = { assigmentId: assignmentId };
-        const deleteResponse =   await sendDelete(`${basePath}/${assignmentId}`, deleteBody, req);
-        if (!deleteResponse || deleteResponse.status !== 204) {
-          return res.status(deleteResponse.status).send(deleteResponse);
-        } */
-    if (deletionStatus) {
-      req.body.hasNoAssigneeOnComplete = true;
-      req.params.action = 'complete';
-      req.params.taskId = req.body.taskId;
-      const taskResponse: AxiosResponse = await postTaskActionForAccess(req, res, next);
-      return res.send(taskResponse.data).status(firstRoleResponse.status);
-    } else {
-      // check failures - remove reviewed roles
-    }
-  } else {
-    return;
+  // 201
+  if (!firstRoleResponse || firstRoleResponse.status !== 201) {
+    // delete the roles if they have been created
   }
-  // create the actual role with e.g. specific-access-caseworker
-  return res.send(firstRoleResponse.data).status(firstRoleResponse.status);
+  const deletionResponse = await deleteRoleByAssignmentId(req, res, next);
+  if (!deletionResponse || deletionResponse.status !== 204) {
+    // delete the roles created previously
+  }
+  req.body.hasNoAssigneeOnComplete = true;
+  req.params.action = 'complete';
+  req.params.taskId = req.body.taskId;
+      // 204
+  const taskResponse: AxiosResponse = await postTaskActionForAccess(req, res, next);
+  if (!taskResponse || taskResponse.status !== 204) {
+    // restore specific access requested role and delete two created roles
+  }
+  // if everything has worked send the last response back to the user
+  return res.send(taskResponse.data).status(taskResponse.status);
+  }
+  catch (error) {
+    next(error);
+    return res.status(error.status).send(error);
+  }
 }
 
 /**

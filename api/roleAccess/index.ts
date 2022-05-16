@@ -168,14 +168,14 @@ export async function deleteRoleByCaseAndRoleId(req: EnhancedRequest, res: Respo
 }
 
 // Same as above but for node layer use
-export async function deleteRoleByAssignmentId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Number> {
+export async function deleteRoleByAssignmentId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<AxiosResponse> {
   const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
   const body = req.body;
   const assigmentId = req.body.requestId;
   try {
-    const { status } = await sendDelete(`${basePath}/${assigmentId}`, body, req);
+    const response = await sendDelete(`${basePath}/${assigmentId}`, body, req);
     await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
-    return status;
+    return response;
   } catch (e) {
     next(e);
   }

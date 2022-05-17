@@ -78,6 +78,39 @@ export function toSARoleAssignmentBody(currentUserId: string, allocateRoleData: 
   };
 }
 
+export function toSARequestRoleAssignmentBody(allocateRoleData: AllocateRoleData): any {
+  const todayDate = new Date();
+  
+  return {
+    roleRequest: {
+      assignerId: allocateRoleData.person.id,
+      replaceExisting: true,
+      process: 'specific-access',
+      reference: `${allocateRoleData.caseId}/${allocateRoleData.requestedRole}/${allocateRoleData.person.id}`
+    },
+    requestedRoles: [{
+      roleType: 'CASE',
+      readOnly: true,
+      grantType: 'BASIC',
+      classification: 'PRIVATE',
+      attributes: {
+        caseId: allocateRoleData.caseId,
+        requestedRole: allocateRoleData.requestedRole
+      },
+      roleName: 'specific-access-requested',
+      roleCategory: allocateRoleData.roleCategory,
+      actorIdType: 'IDAM',
+      actorId: allocateRoleData.person.id,
+      beginTime: new Date(),
+      endTime: allocateRoleData.period.endDate ? allocateRoleData.period.endDate : new Date(todayDate.setMonth(todayDate.getMonth()+1)),
+      // TODO: Include notes once we have that information
+      notes: [{comment: "{\"specificReason\":\"Testing testing testing\"}",
+      time: "2022-05-10T16:34:18.763Z",
+      userId: allocateRoleData.person.id}]
+    }],
+  };
+}
+
 export function getActorId(currentUserId: string, allocateRoleData: AllocateRoleData): string {
   if (allocateRoleData.allocateTo === AllocateTo.RESERVE_TO_ME) {
     return currentUserId;

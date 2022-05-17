@@ -251,18 +251,14 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
  export async function postTaskActionForAccess(req: EnhancedRequest, res: Response, next: NextFunction): Promise<AxiosResponse> {
 
   try {
-    // Additional setting to mark unassigned tasks as done - need to assign task before completing
-    if (req.body.hasNoAssigneeOnComplete === true) {
-      req.body = {
+    // Additional setting to mark unassigned tasks as done - need to assign task before completing=
+      const newRequest = {
         completion_options: {
            assign_and_complete: true,
          },
       };
-    } else {
-      delete req.body.hasNoAssigneeOnComplete;
-    }
     const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action);
-    const completionResponse = await handleTaskPost(getTaskPath, req.body, req);
+    const completionResponse = await handleTaskPost(getTaskPath, newRequest, req);
     return completionResponse;
   } catch (error) {
     next(error);

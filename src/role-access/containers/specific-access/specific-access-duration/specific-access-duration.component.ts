@@ -137,9 +137,9 @@ export class SpecificAccessDurationComponent implements OnInit {
       typeOfRole: this.approvalRole,
       period,
       // note: adding example details here to reach endpoint without previous access info
-      caseId: '1600076493309191',
-      taskId: '3de1128c-d5da-11ec-99d7-aa51b07369f7',
-      requestId: 'ab9570d0-755e-4503-9af9-44b65c6f1717',
+      caseId: '1599833287883309',
+      taskId: 'cdf09287-d5f2-11ec-99d7-aa51b07369f7',
+      requestId: '0194400f-b20d-441b-ac1a-7f1de7e14cb1',
       jurisdiction: 'IA',
       roleCategory: RoleCategory.CASEWORKER,
       requestedRole: 'specific-access-legal-ops',
@@ -147,13 +147,6 @@ export class SpecificAccessDurationComponent implements OnInit {
       }
       switch (navEvent) {
         case SpecificAccessNavigationEvent.CONTINUE:
-          /* TODO: at some point will need all four steps on node layer
-           1) create approved request role
-           2) create specified role for user (of type specific-access-(admin/judge/caseworker))
-           3) delete specific access request role
-           4) complete task
-           https://tools.hmcts.net/confluence/pages/viewpage.action?pageId=1507726018#ExpertUIDesignOverviewCaseAccessManagement-ReviewRoleAssignments-Approve
-          */
           this.store.dispatch(new fromFeature.ApproveSpecificAccessRequest(specificAccessMockState));
           break;
         default:

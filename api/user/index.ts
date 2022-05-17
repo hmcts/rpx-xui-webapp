@@ -54,20 +54,6 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
   return locationInfo;
 }
 
-/* export async function getRoleAssignmentForUser(userId: string, req: any): Promise<any []> {
-  const baseUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
-  const id = userId;
-  const path = `${baseUrl}/am/role-assignments/actors/${id}`;
-  const headers = setHeaders(req);
-  try {
-    const response: AxiosResponse = await http.get(path, { headers });
-    return response.data.roleAssignmentResponse;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-} */
-
 export function getRoleAssignmentInfo(roleAssignmentResponse: RoleAssignment[]): LocationInfo[] {
   const roleAssignmentInfo = [];
   roleAssignmentResponse.forEach(roleAssignment => {

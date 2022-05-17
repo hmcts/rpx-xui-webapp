@@ -51,9 +51,9 @@ export async function approveSpecificAccessRequest(req, res: Response, next: Nex
     if (!firstRoleResponse || firstRoleResponse.status !== 201) {
       return firstRoleResponse && firstRoleResponse.status ? res.status(firstRoleResponse.status).send(firstRoleResponse) : res.status(400);
     }
-    const deletionResponse = await deleteRoleByAssignmentId(req, res, next);
+    const deletionResponse = await deleteRoleByAssignmentId(req, res, next, req.body.requestId);
     req.body.rolesToDelete = firstRoleResponse.data.roleAssignmentResponse.requestedRoles;
-    if (!deletionResponse || deletionResponse.status !== 204) {
+    if (deletionResponse || deletionResponse.status !== 204) {
       // delete the roles created previously
       return deleteSpecificAccessRoles(req, res, next, deletionResponse);
     }
@@ -78,14 +78,12 @@ export async function approveSpecificAccessRequest(req, res: Response, next: Nex
 // attempts to delete 
 export async function deleteSpecificAccessRoles(req, res: Response, next: NextFunction, previousResponse: AxiosResponse<any>): Promise<Response> {
   try {
-    req.body.requestId = req.body.rolesToDelete[1].id;
-    const specificAccessDeletionResponse = await deleteRoleByAssignmentId(req, res, next);
+    const specificAccessDeletionResponse = await deleteRoleByAssignmentId(req, res, next, req.body.rolesToDelete[1].id);
     if (!specificAccessDeletionResponse || specificAccessDeletionResponse.status !== 204) {
       // retry x 3
       return previousResponse && previousResponse.status ? res.status(previousResponse.status).send(previousResponse) : res.status(400);
     }
-    req.body.requestId = req.body.rolesToDelete[0].id;
-    const grantedDeletionResponse = await deleteRoleByAssignmentId(req, res, next);
+    const grantedDeletionResponse = await deleteRoleByAssignmentId(req, res, next, req.body.rolesToDelete[0].id);
     if (!grantedDeletionResponse || grantedDeletionResponse.status !== 204) {
       // retry x 3
       return previousResponse && previousResponse.status ? res.status(previousResponse.status).send(previousResponse) : res.status(400);

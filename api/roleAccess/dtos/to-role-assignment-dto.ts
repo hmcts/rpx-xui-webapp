@@ -33,7 +33,7 @@ export function toSARoleAssignmentBody(currentUserId: string, allocateRoleData: 
       assignerId: currentUserId,
       replaceExisting: true,
       process: 'specific-access',
-      reference: `${allocateRoleData.caseId}/${allocateRoleData.requestedRole}/${allocateRoleData.person.id}`
+      reference: `${allocateRoleData.caseId}/${allocateRoleData.requestedRole}/${allocateRoleData.person.id}`,
     },
     requestedRoles: [{
       roleType: 'CASE',
@@ -42,18 +42,19 @@ export function toSARoleAssignmentBody(currentUserId: string, allocateRoleData: 
       classification: 'PUBLIC',
       attributes: {
         caseId: allocateRoleData.caseId,
-        requestedRole: allocateRoleData.requestedRole
+        requestedRole: allocateRoleData.requestedRole,
       },
       roleName: allocateRoleData.typeOfRole.id,
       roleCategory: allocateRoleData.roleCategory,
       actorIdType: 'IDAM',
       actorId: allocateRoleData.person.id,
       beginTime: allocateRoleData.period.startDate,
-      endTime: allocateRoleData.period.endDate ? allocateRoleData.period.endDate : new Date(todayDate.setMonth(todayDate.getMonth()+1)),
+      endTime: allocateRoleData.period.endDate
+      ? allocateRoleData.period.endDate : new Date(todayDate.setMonth(todayDate.getMonth() + 1)),
       // TODO: Include notes once we have that information
       notes: [{comment: "{\"specificReason\":\"Testing testing testing\"}",
       time: "2022-05-10T16:34:18.763Z",
-      userId: allocateRoleData.person.id}]
+      userId: allocateRoleData.person.id}],
     },
     {
       roleType: 'CASE',
@@ -62,7 +63,7 @@ export function toSARoleAssignmentBody(currentUserId: string, allocateRoleData: 
       classification: 'RESTRICTED',
       attributes: {
         caseId: allocateRoleData.caseId,
-        requestedRole: allocateRoleData.requestedRole
+        requestedRole: allocateRoleData.requestedRole,
       },
       roleName: allocateRoleData.requestedRole,
       roleCategory: allocateRoleData.roleCategory,
@@ -73,7 +74,7 @@ export function toSARoleAssignmentBody(currentUserId: string, allocateRoleData: 
       // TODO: Include notes once we have that information
       notes: [{comment: "{\"specificReason\":\"Testing testing testing\"}",
       time: "2022-05-10T16:34:18.763Z",
-      userId: allocateRoleData.person.id}]
+      userId: allocateRoleData.person.id}, ],
     }],
   };
 }

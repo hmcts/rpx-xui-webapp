@@ -14,6 +14,7 @@ import roleAccessRouter from './roleAccess/routes';
 import {router as prdRouter} from './prd/routes';
 import userRouter from './user/routes';
 import { router as specificAccessRouter } from './specificAccessOrchastrator/routes';
+import { router as challengedAccessRouter } from './challengedAccess/routes';
 
 const router = express.Router({mergeParams: true});
 
@@ -44,6 +45,7 @@ router.use('/service-ref-data', serviceRefDataRouter);
 router.use('/prd', prdRouter);
 router.use('/hearings', hearingsRouter);
 router.use('/specific-access-request', specificAccessRouter);
+router.use('/challenged-access-request', challengedAccessRouter)
 
 // @ts-ignore
 export default router;

@@ -3,8 +3,9 @@ import { inject, TestBed } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
 import { AllocateRoleService } from '.';
-import { Actions, AllocateRoleState, AllocateRoleStateData, AllocateTo, DurationOfRole, RoleCategory, RolesByService } from '../models';
+import { Actions, AllocateRoleState, AllocateRoleStateData, AllocateTo, DurationOfRole, RoleCategory, RolesByService, SpecificAccessState, SpecificAccessStateData } from '../models';
 import { CaseRoleDetails } from '../models/case-role-details.interface';
+import { AccessReason, DurationType } from '../models/enums';
 
 const mockRoles = [{ roleId: '1', roleName: 'Role 1' },
   { roleId: '2', roleName: 'Role 2' },
@@ -96,6 +97,50 @@ describe('AllocateRoleService', () => {
       const req = httpMock.expectOne('/api/role-access/allocate-role/delete');
       expect(req.request.method).toEqual('POST');
       expect(req.request.body).toEqual({ assigmentId: '111111' });
+      req.flush(null);
+    }));
+
+    it('should approve specific access request', inject([HttpTestingController, AllocateRoleService], (httpMock: HttpTestingController, service: AllocateRoleService) => {
+      const period = {
+        startDate: new Date(),
+        endDate: new Date()
+      }
+      const specificAccessState: SpecificAccessStateData = {
+        state: SpecificAccessState.SPECIFIC_ACCESS_DURATION,
+        accessReason: AccessReason.APPROVE_REQUEST,
+        typeOfRole: {id: 'specific-access-granted', name: 'specific-access-granted'},
+        period,
+        caseId: '1594717367271987',
+        taskId: 'd3f939d2-d4f3-11ec-8d51-b6ad61ebbb09',
+        requestId: '59bedc19-9cc6-4bff-9f58-041c3ba664a0',
+        jurisdiction: 'IA',
+        roleCategory: 'LEGAL_OPERATIONS',
+        requestedRole: 'specific-access-legal-ops',
+        person: {id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null},
+        specificAccessFormData: {
+          specificAccessDurationForm: {
+            selectedOption: DurationType.SEVEN_DAYS,
+            selectedDuration: {
+              startDate: {
+                day: 11,
+                month: 11,
+                year: 2024
+              },
+              endDate: {
+                day: 11,
+                month: 11,
+                year: 2024
+              }
+            }
+          }
+        }
+      }
+      service.specificAccessApproval(specificAccessState).subscribe(response => {
+        expect(response).toBeNull();
+      });
+      const req = httpMock.expectOne('/api/am/specific-access-approval');
+      expect(req.request.method).toEqual('POST');
+      expect(req.request.body.requestId).toEqual('59bedc19-9cc6-4bff-9f58-041c3ba664a0');
       req.flush(null);
     }));
 

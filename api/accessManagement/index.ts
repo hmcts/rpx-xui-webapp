@@ -109,6 +109,7 @@ export async function restoreDeletedRole(req, res: Response, next: NextFunction,
     return deleteSpecificAccessRoles(req, res, next, previousResponse);
   }
   catch (error) {
+
     next(error);
     return res.status(error.status).send(error);
   }

@@ -10,7 +10,7 @@ import { getServiceRefDataMappingList } from '../serviceRefData';
 import { refreshRoleAssignmentForUser } from '../user';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { CaseRole } from '../workAllocation2/interfaces/caseRole';
-import { toRoleAssignmentBody, toSARoleAssignmentBody } from './dtos/to-role-assignment-dto';
+import { toRoleAssignmentBody, toSARequestRoleAssignmentBody, toSARoleAssignmentBody } from './dtos/to-role-assignment-dto';
 import { getEmail, getJudicialUsersFromApi, getUserName, mapRoleCategory } from './exclusionService';
 import { CaseRoleRequestPayload } from './models/caseRoleRequestPayload';
 import { release2ContentType } from './models/release2ContentType';
@@ -113,6 +113,7 @@ export async function confirmAllocateRole(req: EnhancedRequest, res: Response, n
   }
 }
 
+// this creates the two specific access approved roles
 export async function createSpecificAccessApprovalRole(req: EnhancedRequest, res: Response, next: NextFunction): Promise<AxiosResponse> {
   try {
     const body = req.body;
@@ -129,6 +130,22 @@ export async function createSpecificAccessApprovalRole(req: EnhancedRequest, res
     return error;
   }
 }
+
+// this restores the specific access request role if task completion goes wrong
+export async function restoreSpecificAccessRequestRole(req: EnhancedRequest, res: Response, next: NextFunction): Promise<AxiosResponse> {
+  try {
+    const body = req.body;
+    const roleAssignmentsBody = toSARequestRoleAssignmentBody(body);
+    const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
+    const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
+    await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
+    return response;
+  } catch (error) {
+    next(error);
+    return error;
+  }
+}
+
 
 export async function reallocateRole(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   try {
@@ -171,13 +188,14 @@ export async function deleteRoleByCaseAndRoleId(req: EnhancedRequest, res: Respo
 export async function deleteRoleByAssignmentId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<AxiosResponse> {
   const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
   const body = req.body;
-  const assigmentId = req.body.requestId;
+  const assignmentId = req.body.requestId;
   try {
-    const response = await sendDelete(`${basePath}/${assigmentId}`, body, req);
+    const response = await sendDelete(`${basePath}/${assignmentId}`, body, req);
     await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
     return response;
   } catch (e) {
     next(e);
+    return e;
   }
 }
 

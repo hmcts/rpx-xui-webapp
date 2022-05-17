@@ -115,7 +115,7 @@ describe('SpecificAccessHomeComponent', () => {
       spyOn(component.specificAccessDurationComponent, 'getRawData').and.returnValue({day: 11});
 
       component.navigationHandler(continueNavEvent);
-      expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_APPROVED));
+      expect(mockStore.dispatch).toHaveBeenCalled();
     });
 
     it('should correctly redirect to the work list if the return to tasks event is triggered', () => {

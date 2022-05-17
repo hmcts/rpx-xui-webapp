@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import { NextFunction, response, Response } from 'express';
+import { NextFunction, Response } from 'express';
 import { sendDelete, sendPost } from '../common/crudService';
 import { getConfigValue } from '../configuration';
 import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
@@ -114,6 +114,7 @@ export async function confirmAllocateRole(req: EnhancedRequest, res: Response, n
 }
 
 // this creates the two specific access approved roles
+// tslint:disable-next-line:max-line-length
 export async function createSpecificAccessApprovalRole(req: EnhancedRequest, res: Response, next: NextFunction): Promise<AxiosResponse> {
   try {
     const body = req.body;

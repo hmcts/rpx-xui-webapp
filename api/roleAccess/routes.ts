@@ -1,7 +1,12 @@
 import { Router } from 'express';
 import authInterceptor from '../lib/middleware/auth';
 import { confirmUserExclusion, deleteUserExclusion, findExclusionsForCaseId } from './exclusionService';
-import { confirmAllocateRole, createSpecificAccessApprovalRole, deleteRoleByCaseAndRoleId, getJudicialUsers, getRolesByCaseId, reallocateRole } from './index';
+import { confirmAllocateRole,
+  createSpecificAccessApprovalRole,
+  deleteRoleByCaseAndRoleId,
+  getJudicialUsers,
+  getRolesByCaseId,
+  reallocateRole } from './index';
 import { getPossibleRoles } from './roleAssignmentService';
 
 const router = Router({ mergeParams: true });

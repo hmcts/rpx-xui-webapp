@@ -16,7 +16,6 @@ import {
   SpecificRole
 } from '../../../models';
 import { DurationType } from '../../../models/enums';
-import { AllocateRoleService } from '../../../services';
 import { DurationHelperService } from '../../../services/duration-helper.service';
 import * as fromFeature from '../../../store';
 
@@ -59,7 +58,6 @@ export class SpecificAccessDurationComponent implements OnInit {
 
   constructor(
     private durationHelper: DurationHelperService,
-    private readonly allocateRoleService: AllocateRoleService,
     private readonly fb: FormBuilder,
     private readonly store: Store<fromFeature.State>
   ) {
@@ -137,7 +135,7 @@ export class SpecificAccessDurationComponent implements OnInit {
       state: SpecificAccessState.SPECIFIC_ACCESS_DURATION,
       accessReason: null,
       typeOfRole: this.approvalRole,
-      period: period,
+      period,
       // note: adding example details here to reach endpoint without previous access info
       caseId: '1600076493309191',
       taskId: '3de1128c-d5da-11ec-99d7-aa51b07369f7',

@@ -137,8 +137,10 @@ export async function restoreSpecificAccessRequestRole(req: EnhancedRequest, res
   try {
     const body = req.body;
     const roleAssignmentsBody = toSARequestRoleAssignmentBody(body);
+    // console.log('restoration request', roleAssignmentsBody)
     const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
     const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
+    // console.log('restore response', response);
     await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
     return response;
   } catch (error) {
@@ -186,12 +188,13 @@ export async function deleteRoleByCaseAndRoleId(req: EnhancedRequest, res: Respo
 }
 
 // Same as above but for node layer use
-export async function deleteRoleByAssignmentId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<AxiosResponse> {
+export async function deleteRoleByAssignmentId(req: EnhancedRequest, res: Response, next: NextFunction, assignmentId: string): Promise<AxiosResponse> {
   const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
   const body = req.body;
-  const assignmentId = req.body.requestId;
   try {
+    // console.log(body, 'removal role', assignmentId);
     const response = await sendDelete(`${basePath}/${assignmentId}`, body, req);
+    // console.log('role removal response', response);
     await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
     return response;
   } catch (e) {

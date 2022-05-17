@@ -53,7 +53,7 @@ export async function approveSpecificAccessRequest(req, res: Response, next: Nex
     }
     const deletionResponse = await deleteRoleByAssignmentId(req, res, next, req.body.requestId);
     req.body.rolesToDelete = firstRoleResponse.data.roleAssignmentResponse.requestedRoles;
-    if (deletionResponse || deletionResponse.status !== 204) {
+    if (!deletionResponse || deletionResponse.status !== 204) {
       // delete the roles created previously
       return deleteSpecificAccessRoles(req, res, next, deletionResponse);
     }

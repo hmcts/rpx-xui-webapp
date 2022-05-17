@@ -39,28 +39,27 @@ export async function refreshRoleAssignments(req, res: Response, next: NextFunct
 // node layer logic for approving specific access request
 export async function approveSpecificAccessRequest(req, res: Response, next: NextFunction): Promise<Response> {
   try {
-  // create the specific access approval role
-  const firstRoleResponse: AxiosResponse = await createSpecificAccessApprovalRole(req, res, next);
-  // 201
-  if (!firstRoleResponse || firstRoleResponse.status !== 201) {
-    // delete the roles if they have been created
-  }
-  const deletionResponse = await deleteRoleByAssignmentId(req, res, next);
-  if (!deletionResponse || deletionResponse.status !== 204) {
-    // delete the roles created previously
-  }
-  req.body.hasNoAssigneeOnComplete = true;
-  req.params.action = 'complete';
-  req.params.taskId = req.body.taskId;
-      // 204
-  const taskResponse: AxiosResponse = await postTaskActionForAccess(req, res, next);
-  if (!taskResponse || taskResponse.status !== 204) {
-    // restore specific access requested role and delete two created roles
-  }
-  // if everything has worked send the last response back to the user
-  return res.send(taskResponse.data).status(taskResponse.status);
-  }
-  catch (error) {
+    // create the specific access approval role
+    const firstRoleResponse: AxiosResponse = await createSpecificAccessApprovalRole(req, res, next);
+    // 201
+    if (!firstRoleResponse || firstRoleResponse.status !== 201) {
+      // delete the roles if they have been created
+    }
+    const deletionResponse = await deleteRoleByAssignmentId(req, res, next);
+    if (!deletionResponse || deletionResponse.status !== 204) {
+      // delete the roles created previously
+    }
+    req.body.hasNoAssigneeOnComplete = true;
+    req.params.action = 'complete';
+    req.params.taskId = req.body.taskId;
+        // 204
+    const taskResponse: AxiosResponse = await postTaskActionForAccess(req, res, next);
+    if (!taskResponse || taskResponse.status !== 204) {
+      // restore specific access requested role and delete two created roles
+    }
+    // if everything has worked send the last response back to the user
+    return res.send(taskResponse.data).status(taskResponse.status);
+  } catch (error) {
     next(error);
     return res.status(error.status).send(error);
   }

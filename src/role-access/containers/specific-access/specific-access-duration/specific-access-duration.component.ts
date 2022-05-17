@@ -135,7 +135,7 @@ export class SpecificAccessDurationComponent implements OnInit {
       state: SpecificAccessState.SPECIFIC_ACCESS_DURATION,
       accessReason: null,
       typeOfRole: this.approvalRole,
-      period: period,
+      period,
       // note: adding example details here to reach endpoint without previous access info
       caseId: '1594717367271987',
       taskId: 'd3f939d2-d4f3-11ec-8d51-b6ad61ebbb09',

@@ -21,7 +21,7 @@ describe('Specific Access Reducer', () => {
                 selectedDuration: {},
                 selectedOption: 1
               }
-        }
+        };
         const action = new fromActions.SetSpecificAccessFormData(specificAccessFormData);
         const specificAccessState = fromReducer.specificAccessReducer(initialState, action);
         expect(specificAccessState.specificAccessFormData).toEqual(specificAccessFormData);
@@ -31,7 +31,7 @@ describe('Specific Access Reducer', () => {
         const initialState = fromReducer.specificAccessInitialState;
         const specificAccessMoreInformationForm: SpecificAccessMoreInformationForm = {
           InfoText : 'test text'
-        }
+        };
         const action = new fromActions.SetSpecificAccessInfoFormData(specificAccessMoreInformationForm);
         const specificAccessState = fromReducer.specificAccessReducer(initialState, action);
         expect(specificAccessState.SpecificAccessMoreInformationFormData).toEqual(specificAccessMoreInformationForm);
@@ -41,12 +41,12 @@ describe('Specific Access Reducer', () => {
         const period = {
           startDate: new Date(),
           endDate: new Date()
-        };;
+        }
         const specificAccessData: SpecificAccessStateData = {
           state: SpecificAccessState.SPECIFIC_ACCESS_DURATION,
           accessReason: AccessReason.APPROVE_REQUEST,
           typeOfRole: {id: 'specific-access-granted', name: 'specific-access-granted'},
-          period: period,
+          period,
           caseId: '1594717367271987',
           taskId: 'd3f939d2-d4f3-11ec-8d51-b6ad61ebbb09',
           requestId: '59bedc19-9cc6-4bff-9f58-041c3ba664a0',

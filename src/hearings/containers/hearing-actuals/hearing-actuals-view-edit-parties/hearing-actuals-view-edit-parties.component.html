@@ -1,5 +1,19 @@
   <a class="govuk-back-link" [routerLink]="['../hearing-actual-add-edit-summary']">Back</a>
   <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert"
+         *ngIf="errors && errors.length"
+         data-module="govuk-error-summary">
+      <h2 class="govuk-error-summary__title" id="error-summary-title">
+        There is a problem
+      </h2>
+      <div class="govuk-error-summary__body">
+        <ul class="govuk-list govuk-error-summary__list">
+          <li *ngFor="let error of errors">
+            <a [href]="window.location.pathname +'#' + error.id">{{error.message}}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
         <exui-hearing-actuals-case-title *ngIf="caseTitle"
@@ -8,21 +22,6 @@
           Participants
         </h1>
         <br>
-
-        <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert"
-             *ngIf="errors && errors.length"
-             data-module="govuk-error-summary">
-          <h2 class="govuk-error-summary__title" id="error-summary-title">
-            There is a problem
-          </h2>
-          <div class="govuk-error-summary__body">
-            <ul class="govuk-list govuk-error-summary__list">
-              <li *ngFor="let error of errors">
-                <a [href]="window.location.pathname +'#' + error.id">{{error.message}}</a>
-              </li>
-            </ul>
-          </div>
-        </div>
 
         <form [formGroup]="form" (submit)="submitForm(form.value, form.valid)">
 

@@ -11,7 +11,7 @@ const MockApp = require('../../nodeMock/app');
 const browserUtil = require('../util/browserUtil');
 const customReporter = require('../../e2e/support/reportLogger');
 
-const isParallelExecution = argv.parallel ? argv.parallel=== "true" : true;
+const isParallelExecution = argv.parallel && !getBDDTags().includes('@none') ? argv.parallel === "true" : true;
 
 if (!process.env['TEST_ENV_URL']){
     process.env['TEST_ENV_URL'] = process.env['TEST_URL']; 

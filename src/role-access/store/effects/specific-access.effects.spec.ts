@@ -1,16 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
-import { Go } from '../../../app/store';
 import { SpecificAccessEffects } from './specific-access.effects';
 import * as specificAccessAction from '../actions/specific-access.action';
 import { AllocateRoleService } from 'src/role-access/services';
 import { SpecificAccessState, SpecificAccessStateData } from 'src/role-access/models';
 import { AccessReason, DurationType } from 'src/role-access/models/enums';
 import { of } from 'rxjs';
-import { cold, hot } from 'jasmine-marbles';
-import { REDIRECTS } from '../../models/enums/redirect-urls';
+import { hot } from 'jasmine-marbles';
 
-describe('Specific Access Effects', () => {
+fdescribe('Specific Access Effects', () => {
   let effects: SpecificAccessEffects;
   let actions$;
 
@@ -75,23 +73,6 @@ describe('Specific Access Effects', () => {
       effects.approveSpecificAccessRequest$.subscribe(() => {
           expect(allocateRoleServiceMock.specificAccessApproval).toHaveBeenCalled();
       });
-    });
-  });
-
-  describe('handleError', () => {
-    it('should handle 500', () => {
-      const action$ = SpecificAccessEffects.handleError({status: 500, message: 'error'}, specificAccessAction.ChangeSpecificAccessNavigation.toString());
-      action$.subscribe(action => expect(action).toEqual(new Go({path: [REDIRECTS.ServiceDown]})));
-    });
-
-    it('should handle 401', () => {
-      const action$ = SpecificAccessEffects.handleError({status: 401, message: 'error'}, specificAccessAction.ChangeSpecificAccessNavigation.toString());
-      action$.subscribe(action => expect(action).toEqual(new Go({path: [REDIRECTS.NotAuthorised]})));
-    });
-
-    it('should handle 422', () => {
-      const action$ = SpecificAccessEffects.handleError({status: 422, message: 'error'}, specificAccessAction.ChangeSpecificAccessNavigation.toString());
-      action$.subscribe(action => expect(action).toEqual(new Go({path: [REDIRECTS.UserNotAssignable]})));
     });
   });
 

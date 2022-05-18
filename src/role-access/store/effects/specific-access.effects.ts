@@ -1,15 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { Action } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
-import { catchError, map, mergeMap, tap } from 'rxjs/operators';
+import { catchError, map, mergeMap } from 'rxjs/operators';
 
-import * as routeAction from '../../../app/store/index';
-import { RoleAccessHttpError, SpecificAccessState } from '../../models';
-import { REDIRECTS } from '../../models/enums/redirect-urls';
+import { SpecificAccessState } from '../../models';
 import { AllocateRoleService } from '../../services';
 import * as fromFeature from '../../store/actions';
 import { ApproveSpecificAccessRequest, SpecificAccessActionTypes } from '../actions';
+import { AllocateRoleEffects } from './allocate-role.effects';
 
 @Injectable()
 export class SpecificAccessEffects {
@@ -23,7 +20,7 @@ export class SpecificAccessEffects {
               return new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_APPROVED);
             }),
             catchError(error => {
-                return SpecificAccessEffects.handleError(error, SpecificAccessActionTypes.APPROVE_SPECIFIC_ACCESS_REQUEST);
+                return AllocateRoleEffects.handleError(error, SpecificAccessActionTypes.APPROVE_SPECIFIC_ACCESS_REQUEST);
               }
             )
           )
@@ -34,31 +31,5 @@ export class SpecificAccessEffects {
     private actions$: Actions,
     private allocateRoleService: AllocateRoleService
   ) {
-  }
-
-  public static handleError(error: RoleAccessHttpError, action?: string): Observable<Action> {
-    if (error && error.status) {
-      switch (error.status) {
-        case 401:
-        case 403:
-          return of(new routeAction.Go({
-            path: [REDIRECTS.NotAuthorised]
-          }));
-        case 422:
-          return of(new routeAction.Go({
-            path: [REDIRECTS.UserNotAssignable]
-          }));
-        case 400:
-        case 500:
-        case 503:
-          return of(new routeAction.Go({
-            path: [REDIRECTS.ServiceDown]
-          }));
-        default:
-          return of(new routeAction.Go({
-            path: [REDIRECTS.ServiceDown]
-          }));
-      }
-    }
   }
 }

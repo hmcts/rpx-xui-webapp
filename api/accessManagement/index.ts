@@ -49,7 +49,8 @@ export async function approveSpecificAccessRequest(req, res: Response, next: Nex
     const firstRoleResponse: AxiosResponse = await createSpecificAccessApprovalRole(req, res, next);
     // 201
     if (!firstRoleResponse || firstRoleResponse.status !== 201) {
-      return firstRoleResponse && firstRoleResponse.status ? res.status(firstRoleResponse.status).send(firstRoleResponse) : res.status(400);
+      return firstRoleResponse && firstRoleResponse.status
+       ? res.status(firstRoleResponse.status).send(firstRoleResponse) : res.status(400);
     }
     const deletionResponse = await deleteRoleByAssignmentId(req, res, next, req.body.requestId);
     const rolesToDelete = firstRoleResponse.data.roleAssignmentResponse.requestedRoles;
@@ -65,47 +66,49 @@ export async function approveSpecificAccessRequest(req, res: Response, next: Nex
     }
     // if everything has worked send the last response back to the user
     return res.send(taskResponse.data).status(taskResponse.status);
-  }
-  catch (error) {
+  } catch (error) {
     next(error);
     return res.status(error.status).send(error);
   }
 }
 
-// attempts to delete 
+// attempts to delete
+// tslint:disable-next-line:max-line-length
 export async function deleteSpecificAccessRoles(req, res: Response, next: NextFunction, previousResponse: AxiosResponse<any>, rolesToDelete: any): Promise<Response> {
   try {
     const specificAccessDeletionResponse = await deleteRoleByAssignmentId(req, res, next, rolesToDelete[1].id);
     if (!specificAccessDeletionResponse || specificAccessDeletionResponse.status !== 204) {
       // TODO: retry x 3
-      return previousResponse && previousResponse.status ? res.status(previousResponse.status).send(previousResponse) : res.status(400);
+      return previousResponse && previousResponse.status
+       ? res.status(previousResponse.status).send(previousResponse) : res.status(400);
     }
     // Note - the functionality is present but this does not currently work due to AM team restrictions - gives 422 error
     const grantedDeletionResponse = await deleteRoleByAssignmentId(req, res, next, rolesToDelete[0].id);
     if (!grantedDeletionResponse || grantedDeletionResponse.status !== 204) {
       // TODO: retry x 3
-      return previousResponse && previousResponse.status ? res.status(previousResponse.status).send(previousResponse) : res.status(400);
+      return previousResponse && previousResponse.status
+       ? res.status(previousResponse.status).send(previousResponse) : res.status(400);
     }
-    return previousResponse && previousResponse.status ? res.status(previousResponse.status).send(previousResponse) : res.status(400);
-  }
-  catch (error) {
+    return previousResponse && previousResponse.status
+     ? res.status(previousResponse.status).send(previousResponse) : res.status(400);
+  } catch (error) {
     next(error);
     return res.status(error.status).send(error);
   }
 }
 
 // attempts to restore the deleted specific access requested role on task completion failure
+// tslint:disable-next-line:max-line-length
 export async function restoreDeletedRole(req, res: Response, next: NextFunction, previousResponse: AxiosResponse<any>, rolesToDelete: any): Promise<Response> {
   try {
     const restoreResponse = await restoreSpecificAccessRequestRole(req, res, next);
     if (!restoreResponse || restoreResponse.status !== 201) {
       // TODO: retry x 3
-      return previousResponse && previousResponse.status ? res.status(previousResponse.status).send(previousResponse) : res.status(400);
+      return previousResponse && previousResponse.status
+       ? res.status(previousResponse.status).send(previousResponse) : res.status(400);
     }
     return deleteSpecificAccessRoles(req, res, next, previousResponse, rolesToDelete);
-  }
-  catch (error) {
-
+  } catch (error) {
     next(error);
     return res.status(error.status).send(error);
   }

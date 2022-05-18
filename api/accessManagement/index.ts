@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
 import { createSpecificAccessApprovalRole, deleteRoleByAssignmentId, restoreSpecificAccessRequestRole } from '../roleAccess';
-import { postTaskActionForAccess } from '../workAllocation2';
+import { postTaskCompletionForAccess } from '../workAllocation2';
 import { bookingResponse, bookings, refreshRoleAssignmentsSuccess } from './data/booking.mock.data';
 
 export async function getBookings(req, res: Response, next: NextFunction): Promise<Response> {
@@ -52,19 +52,16 @@ export async function approveSpecificAccessRequest(req, res: Response, next: Nex
       return firstRoleResponse && firstRoleResponse.status ? res.status(firstRoleResponse.status).send(firstRoleResponse) : res.status(400);
     }
     const deletionResponse = await deleteRoleByAssignmentId(req, res, next, req.body.requestId);
-    req.body.rolesToDelete = firstRoleResponse.data.roleAssignmentResponse.requestedRoles;
+    const rolesToDelete = firstRoleResponse.data.roleAssignmentResponse.requestedRoles;
     if (!deletionResponse || deletionResponse.status !== 204) {
       // delete the roles created previously
-      return deleteSpecificAccessRoles(req, res, next, deletionResponse);
+      return deleteSpecificAccessRoles(req, res, next, deletionResponse, rolesToDelete);
     }
-    req.body.hasNoAssigneeOnComplete = true;
-    req.params.action = 'complete';
-    req.params.taskId = req.body.taskId;
     // 204
-    const taskResponse: AxiosResponse = await postTaskActionForAccess(req, res, next);
+    const taskResponse: AxiosResponse = await postTaskCompletionForAccess(req, res, next);
     if (!taskResponse || taskResponse.status !== 204) {
       // restore specific access requested role and delete two created roles
-      return restoreDeletedRole(req, res, next, taskResponse);
+      return restoreDeletedRole(req, res, next, taskResponse, rolesToDelete);
     }
     // if everything has worked send the last response back to the user
     return res.send(taskResponse.data).status(taskResponse.status);
@@ -76,16 +73,17 @@ export async function approveSpecificAccessRequest(req, res: Response, next: Nex
 }
 
 // attempts to delete 
-export async function deleteSpecificAccessRoles(req, res: Response, next: NextFunction, previousResponse: AxiosResponse<any>): Promise<Response> {
+export async function deleteSpecificAccessRoles(req, res: Response, next: NextFunction, previousResponse: AxiosResponse<any>, rolesToDelete: any): Promise<Response> {
   try {
-    const specificAccessDeletionResponse = await deleteRoleByAssignmentId(req, res, next, req.body.rolesToDelete[1].id);
+    const specificAccessDeletionResponse = await deleteRoleByAssignmentId(req, res, next, rolesToDelete[1].id);
     if (!specificAccessDeletionResponse || specificAccessDeletionResponse.status !== 204) {
-      // retry x 3
+      // TODO: retry x 3
       return previousResponse && previousResponse.status ? res.status(previousResponse.status).send(previousResponse) : res.status(400);
     }
-    const grantedDeletionResponse = await deleteRoleByAssignmentId(req, res, next, req.body.rolesToDelete[0].id);
+    // Note - the functionality is present but this does not currently work due to AM team restrictions - gives 422 error
+    const grantedDeletionResponse = await deleteRoleByAssignmentId(req, res, next, rolesToDelete[0].id);
     if (!grantedDeletionResponse || grantedDeletionResponse.status !== 204) {
-      // retry x 3
+      // TODO: retry x 3
       return previousResponse && previousResponse.status ? res.status(previousResponse.status).send(previousResponse) : res.status(400);
     }
     return previousResponse && previousResponse.status ? res.status(previousResponse.status).send(previousResponse) : res.status(400);
@@ -97,14 +95,14 @@ export async function deleteSpecificAccessRoles(req, res: Response, next: NextFu
 }
 
 // attempts to restore the deleted specific access requested role on task completion failure
-export async function restoreDeletedRole(req, res: Response, next: NextFunction, previousResponse: AxiosResponse<any>): Promise<Response> {
+export async function restoreDeletedRole(req, res: Response, next: NextFunction, previousResponse: AxiosResponse<any>, rolesToDelete: any): Promise<Response> {
   try {
     const restoreResponse = await restoreSpecificAccessRequestRole(req, res, next);
     if (!restoreResponse || restoreResponse.status !== 201) {
-      // retry x 3
+      // TODO: retry x 3
       return previousResponse && previousResponse.status ? res.status(previousResponse.status).send(previousResponse) : res.status(400);
     }
-    return deleteSpecificAccessRoles(req, res, next, previousResponse);
+    return deleteSpecificAccessRoles(req, res, next, previousResponse, rolesToDelete);
   }
   catch (error) {
 

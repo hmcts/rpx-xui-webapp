@@ -133,14 +133,13 @@ export async function createSpecificAccessApprovalRole(req: EnhancedRequest, res
 }
 
 // this restores the specific access request role if task completion goes wrong
+// tslint:disable-next-line:max-line-length
 export async function restoreSpecificAccessRequestRole(req: EnhancedRequest, res: Response, next: NextFunction): Promise<AxiosResponse> {
   try {
     const body = req.body;
     const roleAssignmentsBody = toSARequestRoleAssignmentBody(body);
-    // console.log('restoration request', roleAssignmentsBody)
     const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
     const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
-    // console.log('restore response', response);
     await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
     return response;
   } catch (error) {
@@ -149,7 +148,7 @@ export async function restoreSpecificAccessRequestRole(req: EnhancedRequest, res
   }
 }
 
-
+// tslint:disable-next-line:max-line-length
 export async function reallocateRole(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   try {
     const body = req.body;
@@ -188,6 +187,7 @@ export async function deleteRoleByCaseAndRoleId(req: EnhancedRequest, res: Respo
 }
 
 // Same as above but for node layer use
+// tslint:disable-next-line:max-line-length
 export async function deleteRoleByAssignmentId(req: EnhancedRequest, res: Response, next: NextFunction, assignmentId: string): Promise<AxiosResponse> {
   const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
   const body = req.body;

@@ -17,7 +17,7 @@ export class SpecificAccessEffects {
     .pipe(
       ofType<RequestMoreInfoSpecificAccessRequest>(SpecificAccessActionTypes.REQUEST_MORE_INFO_SPECIFIC_ACCESS_REQUEST),
       mergeMap(
-        (data) => of({status:201, message:'done'})//this.allocateRoleService.specificAccessApproval(data.payload)
+        (data) => of({status:201, message:'done'}) //service call will be here
           .pipe(
           map((data) => {
                 return new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_DENIED);

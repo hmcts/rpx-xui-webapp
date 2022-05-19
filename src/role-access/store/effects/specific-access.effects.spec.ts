@@ -10,7 +10,7 @@ import * as specificAccessAction from '../actions/specific-access.action';
 import { SpecificAccessEffects } from './specific-access.effects';
 
 describe('Specific Access Effects', () => {
-  
+
   let effects: SpecificAccessEffects;
   let actions$;
 

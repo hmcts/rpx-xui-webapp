@@ -69,8 +69,12 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
             this.error = this.getErrorObject();
             return;
           }
+          debugger;
+          this.store.dispatch(new fromFeature.RequestMoreInfoSpecificAccessRequest(specificAccessMockState));
 
-          this.bookingService.createBooking(payload).pipe(
+
+
+          // this.bookingService.createBooking(payload).pipe(
           //   switchMap(() => {
           //     return this.bookingService.refreshRoleAssignments().pipe(
           //       catchError(err => {
@@ -84,32 +88,32 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
           //   }
           //     return throwError({...err, case : 'refreshRoleAssignments'});
           // })
-          ).subscribe(() => {
+          // ).subscribe(() => {
 
 
-            this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_DENIED));
+         // this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_DENIED));
 
-            // this.sessionStorageService.removeItem(TaskListFilterComponent.FILTER_NAME);
-            // this.windowService.removeLocalStorage(TaskListFilterComponent.FILTER_NAME);
-            // this.router.navigate(['/work/my-work/list'], {
-            //   state: {
-            //     location: {
-            //       id: this.bookingProcess.location.epimms_id
-            //     }
-            //   }
-            // });
-          }
-          ,
-          err => {
-            //Should direct error page , it should not have to be dispatch
-            this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_DENIED));
+          //   // this.sessionStorageService.removeItem(TaskListFilterComponent.FILTER_NAME);
+          //   // this.windowService.removeLocalStorage(TaskListFilterComponent.FILTER_NAME);
+          //   // this.router.navigate(['/work/my-work/list'], {
+          //   //   state: {
+          //   //     location: {
+          //   //       id: this.bookingProcess.location.epimms_id
+          //   //     }
+          //   //   }
+          //   // });
+          // }
+          // ,
+          // err => {
+          //   //Should direct error page , it should not have to be dispatch
+          //   this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_DENIED));
 
-            // if ( err.case === 'createBooking') {
-            //   CreateBookingHandleError(err, this.router)
-            // } else {
-            //   RefreshBookingHandleError(err, this.router)
-            // }
-          });
+          //   // if ( err.case === 'createBooking') {
+          //   //   CreateBookingHandleError(err, this.router)
+          //   // } else {
+          //   //   RefreshBookingHandleError(err, this.router)
+          //   // }
+          // });
 
 
           //this.store.dispatch(new fromFeature.RequestMoreInfoSpecificAccessRequest(specificAccessMockState));

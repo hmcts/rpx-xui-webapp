@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
-import { catchError, map, mergeMap, tap } from 'rxjs/operators';
+import { catchError, map, mergeMap, tap ,switchMap} from 'rxjs/operators';
 import * as routeAction from '../../../app/store/index';
 import { RoleAccessHttpError, SpecificAccessState } from '../../models';
 import { REDIRECTS } from '../../models/enums/redirect-urls';
@@ -20,9 +20,7 @@ export class SpecificAccessEffects {
         (data) => of({status:201, message:'done'})//this.allocateRoleService.specificAccessApproval(data.payload)
           .pipe(
           map((data) => {
-            console.log(data);
-            debugger;
-              return new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_DENIED);
+                return new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_DENIED);
             }),
             catchError(error => {
                 return SpecificAccessEffects.handleError(error, SpecificAccessActionTypes.REQUEST_MORE_INFO_SPECIFIC_ACCESS_REQUEST);

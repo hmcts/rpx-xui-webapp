@@ -25,7 +25,7 @@ export class AllocateRoleService {
     }
   }
 
-  public specificAccessApproval(specificAccessStateData: SpecificAccessStateData) {
+  public specificAccessApproval(specificAccessStateData: SpecificAccessStateData): Observable<any> {
     return this.http.post(`${AllocateRoleService.accessManagementUrl}/specific-access-approval`, specificAccessStateData);
   }
 

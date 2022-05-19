@@ -1,4 +1,4 @@
-import { AccessReason, DurationType } from 'src/role-access/models/enums';
+import { AccessReason, DurationType } from '../../models/enums';
 import { SpecificAccessFormData, SpecificAccessMoreInformationForm, SpecificAccessState, SpecificAccessStateData } from '../../models';
 import * as fromActions from '../actions/specific-access.action';
 import * as fromReducer from './specific-access.reducer';

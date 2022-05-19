@@ -1,8 +1,22 @@
 
-@ng @test
+@ng 
 Feature: Work access page
-
-
+"appointmentId": "1011",
+"base_location_id": "765324",
+"beginTime": "2022-03-01T00:00:00.000Z",
+"contract_type_id": "102",
+"created": "2022-01-23T06:37:58.000Z",
+"endTime": "2022-12-24T00:00:00.000Z",
+"region_id": "104",
+"roleId": "caseworker",
+"userId": "21334a2b-79ce-44eb-9168-2d49a744be9c"
+    Background: Setup bookings data
+        Given I set mock for existing bookings
+            | appointmentId | base_location_id | beginTime | endTime |  
+            | 1001 | 765324 | 2022-03-01T00:00:00.000Z | 2022-03-01T00:00:00.000Z |
+            | 1002 | 765324 | 2022-03-01T00:00:00.000Z | 2022-03-01T00:00:00.000Z |
+            | 1003 | 765324 |2022-03-01T00:00:00.000Z | 2022-03-01T00:00:00.000Z |
+       
     Scenario Outline: page access to user with roles "<Roles>" is displayed "<isDisplayed>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
@@ -48,7 +62,7 @@ Feature: Work access page
         When I select work access radio button "View task and cases"
         Then I see work access continue button displayed
 
-
+@test
     Scenario: Work access View existing bookings with details
         Given I set MOCK with user "BOOKING_UI-FT-ON" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker, fee-paid-judge" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo

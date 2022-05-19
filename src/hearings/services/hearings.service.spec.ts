@@ -1,15 +1,15 @@
-import { HttpRequest } from '@angular/common/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { inject, TestBed } from '@angular/core/testing';
-import { StoreModule } from '@ngrx/store';
+import {HttpRequest} from '@angular/common/http';
+import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {inject, TestBed} from '@angular/core/testing';
+import {StoreModule} from '@ngrx/store';
 import * as _ from 'lodash';
-import { initialState } from '../hearing.test.data';
-import { HearingLinksStateData } from '../models/hearingLinksStateData.model';
-import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
-import { HMCStatus } from '../models/hearings.enum';
-import { LinkedHearingGroupMainModel, ServiceLinkedCasesModel } from '../models/linkHearings.model';
-import { LovRefDataModel } from '../models/lovRefData.model';
-import { HearingsService } from './hearings.service';
+import {initialState} from '../hearing.test.data';
+import {HearingLinksStateData} from '../models/hearingLinksStateData.model';
+import {HearingRequestMainModel} from '../models/hearingRequestMain.model';
+import {HMCStatus} from '../models/hearings.enum';
+import {LinkedHearingGroupMainModel, ServiceLinkedCasesModel} from '../models/linkHearings.model';
+import {LovRefDataModel} from '../models/lovRefData.model';
+import {HearingsService} from './hearings.service';
 
 const source: ServiceLinkedCasesModel[] = [
   {
@@ -265,21 +265,21 @@ describe('HearingsService', () => {
 
   describe('link hearing services', () => {
     it('should call loadServiceLinkedCases', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
-      service.loadServiceLinkedCases('1111222233334444', 'h1000000').subscribe(response => {
+      service.loadServiceLinkedCases('SSCS', '1111222233334444', 'h1000000').subscribe(response => {
         expect(response).toBeNull();
       });
 
-      const req = httpMock.expectOne('api/hearings/loadServiceLinkedCases');
+      const req = httpMock.expectOne('api/hearings/loadServiceLinkedCases?jurisdictionId=SSCS');
       expect(req.request.method).toEqual('POST');
       req.flush(null);
     }));
 
     it('should call getLinkedHearingGroup', inject([HttpTestingController, HearingsService], (httpMock: HttpTestingController, service: HearingsService) => {
-      service.getLinkedHearingGroup('1111222233334444', 'h1000000').subscribe(response => {
+      service.getLinkedHearingGroup('1').subscribe(response => {
         expect(response).toBeNull();
       });
 
-      const req = httpMock.expectOne('api/hearings/getLinkedHearingGroup?caseReference=1111222233334444&hearingId=h1000000');
+      const req = httpMock.expectOne('api/hearings/getLinkedHearingGroup?groupId=1');
       expect(req.request.method).toEqual('GET');
       req.flush(null);
     }));

@@ -145,9 +145,8 @@ export async function submitHearingActuals(req: EnhancedRequest, res: Response, 
  * getLinkedHearingGroup - get linked hearing group
  */
 export async function getLinkedHearingGroup(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const caseReference: string = req.query.caseReference;
-  const hearingId: string = req.query.hearingId;
-  const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup?caseReference=${caseReference}&hearingId=${hearingId}`;
+  const groupId: string = req.query.groupId;
+  const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup/${groupId}`;
   try {
     const {status, data}: { status: number, data: LinkedHearingGroupMainModel } = await handleGet(markupPath, req, next);
     res.status(status).send(data);

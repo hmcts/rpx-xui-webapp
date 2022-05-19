@@ -80,15 +80,15 @@ export class HearingsService {
     return this.http.post<HttpResponse<number>>(`api/hearings/hearingActualsCompletion/${hearingId}`, null);
   }
 
-  public loadServiceLinkedCases(caseReference: string, hearingId?: string): Observable<ServiceLinkedCasesModel[]> {
-    return this.http.post<ServiceLinkedCasesModel[]>('api/hearings/loadServiceLinkedCases', {
+  public loadServiceLinkedCases(jurisdictionId: string, caseReference: string, hearingId?: string): Observable<ServiceLinkedCasesModel[]> {
+    return this.http.post<ServiceLinkedCasesModel[]>(`api/hearings/loadServiceLinkedCases?jurisdictionId=${jurisdictionId}`, {
       caseReference,
       hearingId // could be null, empty string or missing
     });
   }
 
-  public getLinkedHearingGroup(caseReference: string, hearingId?: string): Observable<LinkedHearingGroupMainModel> {
-    return this.http.get<LinkedHearingGroupMainModel>(`api/hearings/getLinkedHearingGroup?caseReference=${caseReference}&hearingId=${hearingId}`);
+  public getLinkedHearingGroup(groupId: string): Observable<LinkedHearingGroupMainModel> {
+    return this.http.get<LinkedHearingGroupMainModel>(`api/hearings/getLinkedHearingGroup?groupId=${groupId}`);
   }
 
   public postLinkedHearingGroup(linkedHearingGroupMainModel: LinkedHearingGroupMainModel): Observable<LinkedHearingGroupResponseModel> {

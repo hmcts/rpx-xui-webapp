@@ -49,6 +49,12 @@ export function specificAccessReducer(currentState = specificAccessInitialState,
         SpecificAccessMoreInformationFormData: action.payload
       };
     }
+    case SpecificAccessActionTypes.SET_SPECIFIC_ACCESS_DURATION: {
+      return {
+        ...currentState,
+        period: action.payload.period
+      };
+    }
     default: {
       return {
         ...currentState

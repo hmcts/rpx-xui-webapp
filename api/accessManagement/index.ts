@@ -2,6 +2,7 @@ import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
 import { createSpecificAccessApprovalRole, deleteRoleByAssignmentId, restoreSpecificAccessRequestRole } from '../roleAccess';
 import { postTaskCompletionForAccess } from '../workAllocation2';
+import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { bookingResponse, bookings, refreshRoleAssignmentsSuccess } from './data/booking.mock.data';
 
 export async function getBookings(req, res: Response, next: NextFunction): Promise<Response> {
@@ -53,7 +54,7 @@ export async function approveSpecificAccessRequest(req, res: Response, next: Nex
        ? res.status(firstRoleResponse.status).send(firstRoleResponse) : res.status(400);
     }
     const deletionResponse = await deleteRoleByAssignmentId(req, res, next, req.body.requestId);
-    const rolesToDelete = firstRoleResponse.data.roleAssignmentResponse.requestedRoles;
+    const rolesToDelete: RoleAssignment[] = firstRoleResponse.data.roleAssignmentResponse.requestedRoles;
     if (!deletionResponse || deletionResponse.status !== 204) {
       // delete the roles created previously
       return deleteSpecificAccessRoles(req, res, next, deletionResponse, rolesToDelete);
@@ -74,7 +75,7 @@ export async function approveSpecificAccessRequest(req, res: Response, next: Nex
 
 // attempts to delete
 // tslint:disable-next-line:max-line-length
-export async function deleteSpecificAccessRoles(req, res: Response, next: NextFunction, previousResponse: AxiosResponse<any>, rolesToDelete: any): Promise<Response> {
+export async function deleteSpecificAccessRoles(req, res: Response, next: NextFunction, previousResponse: AxiosResponse<any>, rolesToDelete: RoleAssignment[]): Promise<Response> {
   try {
     const specificAccessDeletionResponse = await deleteRoleByAssignmentId(req, res, next, rolesToDelete[1].id);
     if (!specificAccessDeletionResponse || specificAccessDeletionResponse.status !== 204) {
@@ -99,7 +100,7 @@ export async function deleteSpecificAccessRoles(req, res: Response, next: NextFu
 
 // attempts to restore the deleted specific access requested role on task completion failure
 // tslint:disable-next-line:max-line-length
-export async function restoreDeletedRole(req, res: Response, next: NextFunction, previousResponse: AxiosResponse<any>, rolesToDelete: any): Promise<Response> {
+export async function restoreDeletedRole(req, res: Response, next: NextFunction, previousResponse: AxiosResponse<any>, rolesToDelete: RoleAssignment[]): Promise<Response> {
   try {
     const restoreResponse = await restoreSpecificAccessRequestRole(req, res, next);
     if (!restoreResponse || restoreResponse.status !== 201) {

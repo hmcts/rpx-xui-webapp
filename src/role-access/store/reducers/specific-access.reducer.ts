@@ -16,6 +16,7 @@ export const specificAccessInitialState: SpecificAccessStateData = {
   accessReason: null,
   lastError: null,
   caseId: null,
+  taskId: null,
   requestedRole: null,
   requestId: null,
   jurisdiction: null,
@@ -34,6 +35,11 @@ export function specificAccessReducer(currentState = specificAccessInitialState,
         requestId : action.payload.requestId,
         jurisdiction : action.payload.jurisdiction,
         roleCategory : action.payload.roleCategory
+      };
+    }
+    case SpecificAccessActionTypes.APPROVE_SPECIFIC_ACCESS_REQUEST: {
+      return {
+        ...currentState
       };
     }
     case SpecificAccessActionTypes.CHANGE_NAVIGATION: {

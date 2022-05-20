@@ -6,4 +6,4 @@ export const effects: any[] = [ExclusionEffects, AllocateRoleEffects, SpecificAc
 
 export * from './exclusion.effects';
 export * from './allocate-role.effects';
-export * from './specific-access.effects'
+export * from './specific-access.effects';

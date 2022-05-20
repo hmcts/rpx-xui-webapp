@@ -1,4 +1,5 @@
 import * as express from 'express';
+import accessManagementRouter from './accessManagement/routes';
 import {router as caseShareRoutes} from './caseshare/routes';
 import {getConfigValue, showFeature} from './configuration';
 import {APP_INSIGHTS_KEY} from './configuration/references';
@@ -14,6 +15,7 @@ import roleAccessRouter from './roleAccess/routes';
 import {router as prdRouter} from './prd/routes';
 import userRouter from './user/routes';
 import { router as specificAccessRouter } from './specificAccessOrchastrator/routes';
+import { router as challengedAccessRouter } from './challengedAccess/routes';
 
 const router = express.Router({mergeParams: true});
 
@@ -31,6 +33,8 @@ router.use(authInterceptor);
 
 router.use('/user', userRouter);
 
+router.use('/am', accessManagementRouter);
+
 router.use('/role-access', roleAccessRouter);
 
 router.use('/locations', locationsRouter);
@@ -44,6 +48,7 @@ router.use('/service-ref-data', serviceRefDataRouter);
 router.use('/prd', prdRouter);
 router.use('/hearings', hearingsRouter);
 router.use('/specific-access-request', specificAccessRouter);
+router.use('/challenged-access-request', challengedAccessRouter)
 
 // @ts-ignore
 export default router;

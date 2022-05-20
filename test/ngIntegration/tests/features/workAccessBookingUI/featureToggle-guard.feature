@@ -1,5 +1,5 @@
 
-@ng
+@ng @test
 Feature: Work access page, feature toggle and route guards
 
     Scenario Outline: Before completing booking ui journey

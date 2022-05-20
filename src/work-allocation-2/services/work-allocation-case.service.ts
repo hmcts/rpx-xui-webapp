@@ -37,29 +37,23 @@ export class WorkAllocationCaseService {
     return this.http.post<Case[]>(`/workallocation2/my-work/cases`, body);
   }
 
-  public getMyAccess(body: { searchRequest: SearchCaseRequest, view: string }): Observable<Case[]> {
-    return  this.http.post<Case[]>(`/workallocation2/my-work/cases`, body).pipe(
-      switchMap((caseList) => {
-        return  this.featureToggleService.getValue('case-access-management-specific-access-mock', false).pipe(
-          switchMap((result: any) => {
-            let refinedList = caseList['cases'].filter((item: any) => result.scenarios.myAccess.includes(item.case_id));
-            refinedList = refinedList.map((refinedItem) => (
-                {
-                  ...refinedItem,
-                  actions: {},
-                  dateSubmitted: result.data.myAccess.filter( item => item.id == refinedItem.case_id)[0].dateSubmitted,
-                  access: result.data.myAccess.filter( item => item.id == refinedItem.case_id)[0].accessProcess
-                }
-              )
-            );
-            caseList['cases'] = refinedList;
-            caseList['total'] = refinedList.length;
-            caseList['total_records'] = refinedList.length;
-            return of(caseList);
-          })
-        );
-      })
-    );
+  public getMyAccess(body: { searchRequest: SearchCaseRequest, view: string }): Observable<any> {
+    return of({
+      cases: [{
+      assignee: "80a100a6-d9f4-481f-8cc3-729d494b9a94",
+      case_category: "DoC",
+      case_id: 1620838835067373,
+      case_name: "d d",
+      case_role: "case-manager",
+      case_type: "Asylum",
+      id: "1ca563b2-78de-47e5-a51a-ffc6ca285e8e",
+      jurisdiction: "IA",
+      jurisdictionId: "IA",
+      location_id: "765324",
+      role: "case-manager",
+      role_category: "LEGAL_OPERATIONS",
+      startDate: "2022-05-03T23:00:00Z"
+    }]});
   }
   public getCases(body: { searchRequest: SearchCaseRequest, view: string }): Observable<Case[]> {
     return this.http.post<Case[]>(`/workallocation2/all-work/cases`, body);

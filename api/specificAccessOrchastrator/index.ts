@@ -110,60 +110,37 @@ export async function postCreateTask(req: EnhancedRequest, next: NextFunction, c
     return error;
   }
 }
-export async function orchestrationRequestMoreInformation(req: EnhancedRequest, res, next: NextFunction): Promise<any> {
-
+export async function orchestrationRequestMoreInformation(req: EnhancedRequest, res): Promise<any> {
   const requestId = req.body.requestId;
-  //return res.status(201).send({message:'succesfully denied with additional comments'});
-  debugger;
   const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
   //http://am-role-assignment-service-aat.service.core-compute-aat.internal/am/role-assignments?process=staff-organisational-role-mapping&reference=cbb51593-aaca-4da3-ab67-7200d8d31af6
-
   const queryString = `?process=staff-organisational-role-mapping&reference=${requestId}`
   const fullPath = `${basePath}/am/role-assignments${queryString}`;
   const headers = setHeaders(req);
-
-
+  delete headers['accept'];
+  logger.info('send delete request to:', fullPath);
   try {
-    logger.info('send delete request to:', fullPath);
-    const headers = setHeaders(req);
-    // AM service reject header with 406 error if accept is sent
-    /* tslint:disable:no-string-literal */
-    delete headers['accept'];
-
-
-    const pathVariables = {
-      process : 'staff-organisational-role-mapping',
-      reference : requestId
-    };
-    const queryParams = null;
     const body = {
-      userIds : [ requestId ]
-    };
-    const multipart = false;
-    debugger;
-    logger.info('send delete request Body:',
-    {
-     data:{
-     pathVariables,
-     queryParams,
-     body,
-     multipart
-     },
-     headers});
-
-    const resp = await http.delete(fullPath, {
-      // data: body,
-     data:{
-       pathVariables,
-      queryParams,
-      body,
-      multipart
+      pathVariables: {
+        process : 'staff-organisational-role-mapping',
+        reference : requestId
       },
+      queryParams : null,
+      body:{
+        userIds : [ requestId ]
+      },
+      multipart: false
+    };
+    logger.info('send delete request Body:', {body, headers});
+
+    const respDeleteRoleByRequestId = await http.delete(fullPath, {
+      data: body,
       headers,
     });
-    logger.info('send delete response:', resp);
+    logger.info('send delete response:', respDeleteRoleByRequestId);
     debugger;
-    return resp;
+    //return res.status(201).send({message:'succesfully denied with additional comments'});
+    return res.status(respDeleteRoleByRequestId.status).send({data:respDeleteRoleByRequestId.config.data});
   } catch (e) {
     debugger;
     logger.error(e.status, e.statusText, JSON.stringify(e.data));

@@ -49,7 +49,7 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
       //period: period,
       // note: adding example details here to reach endpoint without previous access info
       caseId: '1599729079005640',
-      requestId: '8b685ef7-3ebf-4405-b159-756fc94b7ee3',
+      requestId: 'f837c7e7-33e2-445e-8b0c-98640767932c',
       jurisdiction: 'IA',
       roleCategory: RoleCategory.CASEWORKER,
       requestedRole: 'specific-access-legal-ops',
@@ -71,6 +71,8 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
           }
           debugger;
           this.store.dispatch(new fromFeature.RequestMoreInfoSpecificAccessRequest(specificAccessMockState));
+
+
 
 
 

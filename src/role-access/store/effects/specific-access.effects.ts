@@ -6,7 +6,7 @@ import { catchError, map, mergeMap, tap ,switchMap} from 'rxjs/operators';
 import * as routeAction from '../../../app/store/index';
 import { RoleAccessHttpError, SpecificAccessState } from '../../models';
 import { REDIRECTS } from '../../models/enums/redirect-urls';
-import { AllocateRoleService } from '../../services';
+import { SpecificAccessService } from '../../services';
 import * as fromFeature from '../../store/actions';
 import {  RequestMoreInfoSpecificAccessRequest, SpecificAccessActionTypes } from '../actions';
 
@@ -17,20 +17,22 @@ export class SpecificAccessEffects {
     .pipe(
       ofType<RequestMoreInfoSpecificAccessRequest>(SpecificAccessActionTypes.REQUEST_MORE_INFO_SPECIFIC_ACCESS_REQUEST),
       mergeMap(
-        (data) => of({status:201, message:'done'}) //service call will be here
+        (data) => this.specificAccessService.requestMoreInformation(data.payload)
           .pipe(
           map((data) => {
-                return new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_DENIED);
+              debugger;
+                //return new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_DENIED);
             }),
             catchError(error => {
-                return SpecificAccessEffects.handleError(error, SpecificAccessActionTypes.REQUEST_MORE_INFO_SPECIFIC_ACCESS_REQUEST);
+              return error;
+                //return SpecificAccessEffects.handleError(error, SpecificAccessActionTypes.REQUEST_MORE_INFO_SPECIFIC_ACCESS_REQUEST);
               }
             )
           )
       )
     );
 
-  constructor(private readonly actions$: Actions
+  constructor(private readonly actions$: Actions,  private specificAccessService: SpecificAccessService
   ) {
   }
 

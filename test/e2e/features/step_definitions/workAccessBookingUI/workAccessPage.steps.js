@@ -98,7 +98,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         for (const booking of bookingsHashes){
             const fromDate = getDateWithFormatForDays(booking.fromDate);
             const toDate = getDateWithFormatForDays(booking.toDate);
-            expect(await workAccessPage.isBookingDisplayed(booking.location, fromDate, toDate)).to.be.true 
+            expect(await workAccessPage.isBookingDisplayed(booking.location, fromDate, toDate),`Booking with details not displayed: ${booking.location}, ${fromDate} to ${toDate}`).to.be.true 
         }
     });
 

@@ -3,6 +3,7 @@ import { AccessReason } from '../../models/enums';
 import { SpecificAccessFormData, SpecificAccessMoreInformationForm, SpecificAccessState, SpecificAccessStateData } from '../../models';
 
 export enum SpecificAccessActionTypes {
+  APPROVE_SPECIFIC_ACCESS_REQUEST = '[APPROVE_SPECIFIC_ACCESS_REQUEST] Approve Specific Access Request',
   CHANGE_NAVIGATION = '[SPECIFIC ACCESS] Change Navigation',
   SET_SPECIFIC_ACCESS_FORM_DATA = '[SPECIFIC ACCESS] Set Specific Access Form Data',
   SET_SPECIFIC_ACCESS_INFO_FORM_DATA = '[SPECIFIC ACCESS] Set Specific Access Info Form Data',
@@ -42,11 +43,17 @@ export class RequestMoreInfoSpecificAccessRequest implements Action {
   constructor(public payload: SpecificAccessStateData) {
   }
 }
+export class ApproveSpecificAccessRequest implements Action {
+  public readonly type = SpecificAccessActionTypes.APPROVE_SPECIFIC_ACCESS_REQUEST;
+  constructor(public payload: SpecificAccessStateData) {
+  }
+}
 
 
 
 
 export type SpecificAccessAction =
+  | ApproveSpecificAccessRequest
   | DecideSpecificAccessAndGo
   | SetSpecificAccessFormData
   | ChangeSpecificAccessNavigation

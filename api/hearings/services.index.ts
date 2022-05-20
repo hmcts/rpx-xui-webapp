@@ -1,5 +1,6 @@
 import {NextFunction, Response} from 'express';
 import {handlePost} from '../common/mockService';
+import {sendPost} from '../common/crudService';
 import {getConfigValue} from '../configuration';
 import {SERVICES_HEARINGS_COMPONENT_API} from '../configuration/references';
 import * as mock from '../hearings/hearing.mock';
@@ -31,12 +32,18 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
  * loadServiceLinkedCases - get linked cases from service
  */
 export async function loadServiceLinkedCases(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const jurisdictionId = req.query.jurisdictionId;
   const reqBody = req.body;
-  const markupPath: string = `${serviceHearingsUrl}/serviceLinkedCases`;
+  const servicePath: string = getServicePath(serviceHearingsUrl, jurisdictionId);
+  const markupPath: string = `${servicePath}/serviceLinkedCases`;
   try {
-    const {status, data}: { status: number, data: ServiceLinkedCasesModel[] } = await handlePost(markupPath, reqBody, req);
+    const {status, data}: { status: number, data: ServiceLinkedCasesModel[] } = await sendPost(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     next(error);
   }
+}
+
+function getServicePath(pathTemplate: string, jurisdictionId): string {
+  return pathTemplate.replace(/jurisdiction/g, jurisdictionId.toLowerCase());
 }

@@ -22,7 +22,6 @@ export class HearingActualsEffects {
       ))
   );
 
-
   @Effect()
   public updateHearingActuals$ = this.actions$.pipe(
     ofType(hearingActualsActions.UPDATE_HEARING_ACTUALS),
@@ -53,7 +52,7 @@ export class HearingActualsEffects {
   }
 
   public static handleError(error: HttpError): Observable<Action> {
-    if (error && error.status) {
+    if (error) {
       return of(new fromAppStoreActions.Go({path: ['/hearings/error']}));
     }
   }

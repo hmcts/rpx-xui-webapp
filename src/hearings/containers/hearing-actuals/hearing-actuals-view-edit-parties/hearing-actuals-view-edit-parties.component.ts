@@ -84,14 +84,6 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       }));
   }
 
-  private static hasActualParties(hearingActualsMainModel: HearingActualsMainModel, immutablePartyRoles: LovRefDataModel[]): boolean {
-    return hearingActualsMainModel.hearingActuals.actualHearingDays.length ? hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties.some(
-      (actualDayParty: ActualDayPartyModel) => immutablePartyRoles
-        .map((partyRole: LovRefDataModel) => partyRole.key)
-        .includes(actualDayParty.partyRole)
-    ) : false;
-  }
-
   private static displayMultipleErrors(errors: { [p: string]: string }) {
     const keys = Object.keys(errors);
     return keys
@@ -111,7 +103,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   }
 
   public isPlannedParty(actualDayParty: ActualDayPartyModel): boolean {
-    return this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties.some(plannedParty => plannedParty.partyId === actualDayParty.actualPartyId);
+    return this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties.some(plannedParty => plannedParty.partyID === actualDayParty.actualPartyId);
   }
 
   public ngOnInit(): void {
@@ -132,27 +124,75 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
       });
   }
 
-  public initiateForm(index: number): FormGroup {
-    return this.fb.group({
-      firstName: [null, [this.validators.mandatory('Enter first name')]],
-      lastName: [null, [this.validators.mandatory('Enter last name')]],
-      role: [null, [this.validators.mandatory('Enter party role')]],
-      attendanceType: [null, [this.validators.mandatory('Enter attendance type')]],
-      organisation: [null],
-      attendeeRepresenting: [null, [this.validators.mandatory('Enter attendee representing')]],
-      isPlannedParty: [false]
-    }, {validator: this.validators.validateDuplicateEntries(index, 'Participant details already entered.')});
+  private setUpRoleLists(): void {
+    const plannedParties = this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties;
+    for (const role of this.hearingRoles) {
+      const isPlannedRole = plannedParties.some(plannedParty => plannedParty.partyRole === role.key);
+      if (isPlannedRole) {
+        this.immutablePartyRoles.push(role);
+      } else {
+        this.mutablePartyRoles.push(role);
+      }
+    }
   }
 
-  public addRow($event: Event): void {
-    this.errors = [];
-    $event.preventDefault();
-    ($event.target as HTMLElement).blur();
-    const index = this.parties.length;
-    this.parties.push(this.initiateForm(index));
-    setTimeout(() => {
-      this.renderer.selectRootElement('tr:last-child input').focus();
-    }, 100);
+  private hasActualParties(hearingActualsMainModel: HearingActualsMainModel, immutablePartyRoles: LovRefDataModel[]): boolean {
+    return hearingActualsMainModel.hearingActuals.actualHearingDays.length ? hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties.some(
+      (actualDayParty: ActualDayPartyModel) => immutablePartyRoles
+        .map((partyRole: LovRefDataModel) => partyRole.key)
+        .includes(actualDayParty.partyRole)
+    ) : false;
+  }
+
+  private createForm(hearingActualsMainModel: HearingActualsMainModel): void {
+    const hasActualParties = this.hasActualParties(hearingActualsMainModel, this.immutablePartyRoles);
+    if (hasActualParties) {
+      hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties.forEach((party: ActualDayPartyModel) => {
+        this.addActualParticipantsAndParties(party);
+      });
+    } else {
+      hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties.forEach((party: PlannedDayPartyModel) => {
+        this.addPlannedParty(party);
+      });
+    }
+  }
+
+  private addActualParticipantsAndParties(actualParty: ActualDayPartyModel) {
+    if (this.isPlannedParty(actualParty)) {
+      this.participants.push({
+        name: `${actualParty.individualDetails.firstName} ${actualParty.individualDetails.lastName}`,
+        id: actualParty.actualPartyId,
+      });
+    }
+    this.parties.push(this.fb.group({
+      firstName: [actualParty.individualDetails.firstName, [this.validators.mandatory('Enter first name')]],
+      lastName: [actualParty.individualDetails.lastName, this.isPlannedParty(actualParty) ? [] : [this.validators.mandatory('Enter last name')]],
+      role: [actualParty.partyRole, this.isPlannedParty(actualParty) ? [] : [this.validators.mandatory('Enter party role')]],
+      attendanceType: [actualParty.partyChannelSubType, [this.validators.mandatory('Enter attendance type')]],
+      organisation: [actualParty.organisationDetails.name],
+      attendeeRepresenting: [actualParty.representedParty, this.isPlannedParty(actualParty) ? [] : [this.validators.mandatory('Enter attendee representing')]],
+      partyId: [actualParty.actualPartyId],
+      isPlannedParty: [this.isPlannedParty(actualParty)],
+    }));
+  }
+
+  private addPlannedParty(plannedParty: PlannedDayPartyModel) {
+    if (plannedParty.partyID) {
+      this.participants.push({
+        name: `${plannedParty.individualDetails.firstName} ${plannedParty.individualDetails.lastName}`,
+        id: plannedParty.partyID,
+      });
+    }
+    this.parties.push(this.fb.group({
+      firstName: [plannedParty.individualDetails.firstName, null],
+      lastName: [plannedParty.individualDetails.lastName, null],
+      role: [plannedParty.partyRole, null],
+      attendanceType: [plannedParty.partyChannelSubType, [this.validators.mandatory('Enter attendance type')]],
+      organisation: [plannedParty.organisationDetails && plannedParty.organisationDetails.name],
+      attendeeRepresenting: [null, null],
+      partyId: [plannedParty.partyID],
+      isPlannedParty: [true]
+    }));
   }
 
   public rowHasErrors(index: number): boolean {
@@ -177,6 +217,29 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   public highlightRowError(index: number, error: string): boolean {
     const controls = (this.parties.controls[index] as FormGroup).controls;
     return this.submitted && controls[error].invalid;
+  }
+
+  public addPartyForm(index: number): FormGroup {
+    return this.fb.group({
+      firstName: [null, [this.validators.mandatory('Enter first name')]],
+      lastName: [null, [this.validators.mandatory('Enter last name')]],
+      role: [null, [this.validators.mandatory('Enter party role')]],
+      attendanceType: [null, [this.validators.mandatory('Enter attendance type')]],
+      organisation: [null],
+      attendeeRepresenting: [null, [this.validators.mandatory('Enter attendee representing')]],
+      isPlannedParty: [false]
+    }, {validator: this.validators.validateDuplicateEntries(index, 'Participant details already entered.')});
+  }
+
+  public addRow($event: Event): void {
+    this.errors = [];
+    $event.preventDefault();
+    ($event.target as HTMLElement).blur();
+    const index = this.parties.length;
+    this.parties.push(this.addPartyForm(index));
+    setTimeout(() => {
+      this.renderer.selectRootElement('tr:last-child input').focus();
+    }, 100);
   }
 
   public removeRow($event: Event, index: number): void {
@@ -221,68 +284,6 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   public getRole(value: string): string {
     const hearingRole = this.hearingRoles.find(role => role.key === value);
     return hearingRole ? hearingRole.value_en : value;
-  }
-
-  private createForm(hearingActualsMainModel: HearingActualsMainModel): void {
-    if (HearingActualsViewEditPartiesComponent.hasActualParties(hearingActualsMainModel, this.immutablePartyRoles)) {
-      hearingActualsMainModel.hearingActuals.actualHearingDays[0].actualDayParties.forEach((party: ActualDayPartyModel) => {
-        this.addActualParticipantsAndParties(party);
-      });
-    } else {
-      hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties.forEach((party: PlannedDayPartyModel) => {
-        this.addParties(party);
-      });
-    }
-  }
-
-  private addActualParticipantsAndParties(actualParty: ActualDayPartyModel) {
-    if (this.isPlannedParty(actualParty)) {
-      this.participants.push({
-        name: `${actualParty.individualDetails.firstName} ${actualParty.individualDetails.lastName}`,
-        id: actualParty.actualPartyId,
-      });
-    }
-    this.parties.push(this.fb.group({
-      firstName: [actualParty.individualDetails.firstName, [this.validators.mandatory('Enter first name')]],
-      lastName: [actualParty.individualDetails.lastName, this.isPlannedParty(actualParty) ? [] : [this.validators.mandatory('Enter last name')]],
-      role: [actualParty.partyRole, this.isPlannedParty(actualParty) ? [] : [this.validators.mandatory('Enter party role')]],
-      attendanceType: [actualParty.partyChannelSubType, [this.validators.mandatory('Enter attendance type')]],
-      organisation: [actualParty.organisationDetails.name],
-      attendeeRepresenting: [actualParty.representedParty, this.isPlannedParty(actualParty) ? [] : [this.validators.mandatory('Enter attendee representing')]],
-      partyId: [actualParty.actualPartyId],
-      isPlannedParty: [this.isPlannedParty(actualParty)],
-    }));
-  }
-
-  private addParties(party: PlannedDayPartyModel) {
-    if (party.partyId) {
-      this.participants.push({
-        name: `${party.individualDetails.firstName} ${party.individualDetails.lastName}`,
-        id: party.partyId,
-      });
-    }
-    this.parties.push(this.fb.group({
-      firstName: [party.individualDetails.firstName, [this.validators.mandatory('Enter first name')]],
-      lastName: [party.individualDetails.lastName, [this.validators.mandatory('Enter last name')]],
-      role: [party.partyRole, [this.validators.mandatory('Enter party role')]],
-      attendanceType: [party.partyChannelSubType, [this.validators.mandatory('Enter attendance type')]],
-      organisation: [party.organisationDetails && party.organisationDetails.name],
-      attendeeRepresenting: [null, [this.validators.mandatory('Enter attendee representing')]],
-      partyId: [party.partyId],
-      isPlannedParty: [true]
-    }));
-  }
-
-  private setUpRoleLists(): void {
-    const plannedParties = this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties;
-    for (const role of this.hearingRoles) {
-      const isPlannedRole = plannedParties.some(plannedParty => plannedParty.partyRole === role.key);
-      if (isPlannedRole) {
-        this.immutablePartyRoles.push(role);
-      } else {
-        this.mutablePartyRoles.push(role);
-      }
-    }
   }
 
   private getAllRowErrors(controls: { [p: string]: AbstractControl }): { [p: string]: string } {

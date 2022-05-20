@@ -108,7 +108,8 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   }
 
   public getRepresentingAttendee(partyId: string): string {
-    const party: PlannedDayPartyModel = this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties.find(x => x.partyId === partyId.toString());
+    const party: PlannedDayPartyModel = this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties
+      .find(x => x.partyID === partyId.toString());
     if (party && party.individualDetails) {
       return `${party.individualDetails.firstName} ${party.individualDetails.lastName}`;
     }
@@ -161,7 +162,7 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
           didNotAttendFlag: false,
           partyChannelSubType: plannedParty.partyChannelSubType,
           representedParty: null,
-          actualPartyId: plannedParty.partyId,
+          actualPartyId: plannedParty.partyID,
           partyRole: plannedParty.partyRole
         };
         this.parties.push(actualDayParty);
@@ -170,7 +171,8 @@ export class HearingActualAddEditSummaryComponent implements OnInit, OnDestroy {
   }
 
   public isPlannedParty(actualDayParty: ActualDayPartyModel): boolean {
-    return this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties.some(plannedParty => plannedParty.partyId === actualDayParty.actualPartyId);
+    return this.hearingActualsMainModel.hearingPlanned.plannedHearingDays[0].parties
+      .some(plannedParty => plannedParty.partyID === actualDayParty.actualPartyId);
   }
 
   private isValid(): boolean {

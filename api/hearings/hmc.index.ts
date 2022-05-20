@@ -1,5 +1,5 @@
 import {NextFunction, Response} from 'express';
-import {handleDelete, handleGet, handlePost, handlePut} from '../common/crudService';
+import {handleDelete, handleGet, handlePost, handlePut, sendPut} from '../common/crudService';
 import {getConfigValue} from '../configuration';
 import {SERVICES_HMC_HEARINGS_COMPONENT_API} from '../configuration/references';
 import {EnhancedRequest} from '../lib/models';
@@ -120,7 +120,7 @@ export async function updateHearingActuals(req: EnhancedRequest, res: Response, 
   const hearingId = req.query.hearingId;
   const markupPath = `${hmcHearingsUrl}/hearingActuals/${hearingId}`;
   try {
-    const {status, data}: { status: number, data: HearingActualsModel } = await handlePut(markupPath, reqBody, req, next);
+    const {status, data}: { status: number, data: HearingActualsModel } = await sendPut(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     next(error);
@@ -145,9 +145,8 @@ export async function submitHearingActuals(req: EnhancedRequest, res: Response, 
  * getLinkedHearingGroup - get linked hearing group
  */
 export async function getLinkedHearingGroup(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const caseReference: string = req.query.caseReference;
-  const hearingId: string = req.query.hearingId;
-  const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup?caseReference=${caseReference}&hearingId=${hearingId}`;
+  const groupId: string = req.query.groupId;
+  const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup/${groupId}`;
   try {
     const {status, data}: { status: number, data: LinkedHearingGroupMainModel } = await handleGet(markupPath, req, next);
     res.status(status).send(data);

@@ -27,7 +27,7 @@ export interface OrganisationDetailsModel {
 }
 
 export interface PlannedDayPartyModel {
-  partyId: string;
+  partyID: string;
   partyRole: string;
   individualDetails?: IndividualDetailsModel;
   organisationDetails?: OrganisationDetailsModel;

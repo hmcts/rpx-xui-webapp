@@ -46,7 +46,7 @@ export class LoadServiceLinkedCasesGroupDetail implements Action {
 
 export class LoadLinkedHearingGroup implements Action {
   public readonly type = LOAD_LINKED_HEARING_GROUP;
-  constructor(public payload: { caseReference: string, hearingId: string }) {
+  constructor(public payload: { groupId: string }) {
   }
 }
 

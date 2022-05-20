@@ -14,7 +14,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   hmctsInternalCaseName: 'Jane and Smith vs DWP',
   publicCaseName: 'Jane and Smith vs DWP',
   autoListFlag: false,
-  hearingType: 'BBA3-directionHearings',
+  hearingType: 'BBA3-DIR',
   caseCategories: [
     {
       categoryType: CategoryType.CaseType,

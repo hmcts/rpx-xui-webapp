@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ListConstants } from '../../components/constants';
 import { SortOrder } from '../../enums';
@@ -73,6 +73,17 @@ export class WorkCaseListComponent implements OnChanges {
   }
 
   public ngOnChanges(): void {
+    this.router.events.subscribe(s => {
+      if (s instanceof NavigationEnd) {
+        const tree = this.router.parseUrl(this.router.url);
+        if (tree.fragment) {
+          const element = document.querySelector('#' + tree.fragment);
+          if (element) {
+            element.scrollIntoView({block: "center"});
+          }
+        }
+      }
+    })
     if (this.cases) {
       this.cases = this.addPersonInfoAndLocationInfo(this.cases);
       this.dataSource$ = new BehaviorSubject(this.cases);

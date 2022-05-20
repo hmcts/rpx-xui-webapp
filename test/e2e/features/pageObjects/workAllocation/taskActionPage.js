@@ -1,6 +1,7 @@
 const TaskList = require('./taskListTable');
 const BrowserWaits = require('../../../support/customWaits');
 var cucumberReporter = require('../../../support/reportLogger');
+const { LOG_LEVELS } = require('../../../support/constants');
 
 class TaskActionPage extends TaskList {
 
@@ -90,7 +91,7 @@ class TaskActionPage extends TaskList {
             await BrowserWaits.waitForElement(this.bannerMessageContainer);
             return true;
         } catch (err) {
-            cucumberReporter.AddMessage("message banner not displayed: " + err);
+            cucumberReporter.AddMessage("message banner not displayed: " + err, LOG_LEVELS.Error);
 
             return false;
         }

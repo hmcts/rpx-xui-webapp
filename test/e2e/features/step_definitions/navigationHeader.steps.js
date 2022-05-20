@@ -9,6 +9,7 @@ const browserUtil = require("../../../ngIntegration/util/browserUtil");
 const headerpage = require('../pageObjects/headerPage');
 const config = require('../../config/conf.js');
 const reportLogger = require('../../support/reportLogger');
+const { LOG_LEVELS } = require('../../support/constants');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -84,7 +85,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                             return await headerPage.isTabPresentInMainNav(headerlabel);
                         });
                     } catch (err) {
-                        reportLogger.AddMessage(`Expected main nav tab "${headerlabel}" not present in "${navigationTabsArr}"`);
+                        reportLogger.AddMessage(`Expected main nav tab "${headerlabel}" not present in "${navigationTabsArr}"`, LOG_LEVELS.Error);
                     }
                     softAssert.setScenario('Nav header in main tab ' + headerlabel);
                     await softAssert.assert(async () => expect(await headerPage.isTabPresentInMainNav(headerlabel), headerlabel + " tab is not present main nav in " + await headerPage.getPrimaryTabsDisplayed()).to.be.true);
@@ -113,7 +114,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
         }
 
-        cucumberReporter.AddMessage("Tabs not to be displaued " + navigationTabsArr); 
+        cucumberReporter.AddMessage("Tabs not to be displaued " + navigationTabsArr, LOG_LEVELS.Info); 
         await browserWaits.retryWithActionCallback(async () => {
             try {
                 const softAssert = new SoftAssert();

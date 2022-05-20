@@ -4,6 +4,7 @@ const CucumberReportLogger = require('../../support/reportLogger');
 Button = require('./webdriver-components/button.js');
 const RuntimeTestData = require("../../support/runtimeTestData");
 const CaseListPage = require("../pageObjects/CaseListPage");
+const { LOG_LEVELS } = require('../../support/constants');
 class caseEditPage {
     constructor() {
         this.userName = 'lukesuperuserxui@mailnesia.com';
@@ -101,9 +102,9 @@ class caseEditPage {
 
     async workBasketHeaders(index) {
         await BrowserWaits.waitForElement(this.searchResultsTopPagination);
-        CucumberReportLogger.AddMessage("starting wait for 2 sec for list to render  : " + new Date().toTimeString());
+        CucumberReportLogger.AddMessage("starting wait for 2 sec for list to render  : " + new Date().toTimeString(), LOG_LEVELS.Debug);
         await BrowserWaits.waitForSeconds(2);
-        CucumberReportLogger.AddMessage("wait complete : " + new Date().toTimeString());
+        CucumberReportLogger.AddMessage("wait complete : " + new Date().toTimeString(), LOG_LEVELS.Debug);
         let thLable = $$("ccd-search-result>table>thead tr th");
         await BrowserWaits.waitForElement($("ccd-search-result>table>thead tr th"));
         let count = await thLable.count();

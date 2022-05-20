@@ -6,11 +6,24 @@ export const specificAccessInitialState: SpecificAccessStateData = {
   specificAccessFormData: null,
   SpecificAccessMoreInformationFormData: null,
   accessReason: null,
-  lastError: null
+  lastError: null,
+  caseId: null,
+  taskId: null,
+  requestedRole: null,
+  requestId: null,
+  jurisdiction: null,
+  roleCategory: null,
+  period: {startDate: null, endDate: null},
+  person: null
 };
 
 export function specificAccessReducer(currentState = specificAccessInitialState, action: SpecificAccessAction): SpecificAccessStateData {
   switch (action.type) {
+    case SpecificAccessActionTypes.APPROVE_SPECIFIC_ACCESS_REQUEST: {
+      return {
+        ...currentState
+      };
+    }
     case SpecificAccessActionTypes.CHANGE_NAVIGATION: {
       return {
         ...currentState,

@@ -9,6 +9,7 @@ import { AxiosResponse } from 'axios';
 import { NextFunction } from 'express';
 import logger from '@pact-foundation/pact-node/src/logger';
 import { postTaskCompletionForAccess } from '../workAllocation2';
+import { toRoleAssignmentBody, toSARequestRoleAssignmentBody, toDenySARoleAssignmentBody } from '../roleAccess/dtos/to-role-assignment-dto';
 
 export async function orchestrationSpecificAccessRequest(req: EnhancedRequest, res, next: NextFunction): Promise<any> {
   let createAmRoleResponse: AxiosResponse;
@@ -54,15 +55,22 @@ export async function orchestrationSpecificAccessRequest(req: EnhancedRequest, r
 }
 
 export async function specificAccessRequestCreateAmRole(req, res): Promise<AxiosResponse> {
+  try {
   const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
   const fullPath = `${basePath}/am/role-assignments`;
   const headers = setHeaders(req);
   /* tslint:disable:no-string-literal */
   delete headers['accept'];
-  logger.info('send delete request to:', fullPath);
-  logger.info('send delete request to:', req.body);
+  logger.info('send Create request to:', fullPath);
+  logger.info('send Create request to:', req.body);
+  debugger;
   const response = await http.post(fullPath, req.body, { headers });
   return response;
+} catch (error) {
+  debugger;
+  logger.info(error);
+  return res.status(error.status).send(error);
+}
 }
 
 export async function specificAccessRequestCreateAmDenyRole(req, res): Promise<AxiosResponse> {
@@ -131,30 +139,39 @@ export async function orchestrationRequestMoreInformation(req: EnhancedRequest, 
   const taskId = req.body.taskId;
   const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
 
-  req.body =  {
-    roleRequest: {
-      assignerId: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
-      process: 'specific-access',
-      reference: '1611147207534858/specific-access-legal-operations/db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
-      replaceExisting: true
-    },
-    requestedRoles: [
-      {
-        actorIdType: 'IDAM',
-        actorId: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
-        roleType: 'CASE',
-        roleName: 'specific-access-denied',
-        classification: 'PRIVATE',
-        roleCategory: 'LEGAL_OPERATIONS',
-        grantType: 'BASIC',
-        beginTime: null,
-        endTime: '2022-06-19T15:08:20.608Z',
-        attributes: [Object],
-        notes: [Array],
-        readOnly: true
-      }
-    ]
-  }
+
+  /********************************************** */
+  const currentUser = req.session.passport.user.userinfo;
+  const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
+  const roleAssignmentsBody = toDenySARoleAssignmentBody(currentUserId, req.body);
+  req.body = roleAssignmentsBody;
+  /********************************************** */
+
+
+  // req.body =  {
+  //   roleRequest: {
+  //     assignerId: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
+  //     process: 'specific-access',
+  //     reference: '1611147207534858/specific-access-legal-operations/db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
+  //     replaceExisting: true
+  //   },
+  //   requestedRoles: [
+  //     {
+  //       actorIdType: 'IDAM',
+  //       actorId: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
+  //       roleType: 'CASE',
+  //       roleName: 'specific-access-denied',
+  //       classification: 'PRIVATE',
+  //       roleCategory: 'LEGAL_OPERATIONS',
+  //       grantType: 'BASIC',
+  //       beginTime: null,
+  //       endTime: '2022-06-19T15:08:20.608Z',
+  //       attributes: [Object],
+  //       notes: [Array],
+  //       readOnly: true
+  //     }
+  //   ]
+  // }
   const createDenyRoleResponse = await specificAccessRequestCreateAmRole(req, res);
 
 

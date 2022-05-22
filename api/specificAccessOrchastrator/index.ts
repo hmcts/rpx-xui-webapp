@@ -8,12 +8,14 @@ import { sendDelete } from '../common/crudService';
 import { AxiosResponse } from 'axios';
 import { NextFunction } from 'express';
 import logger from '@pact-foundation/pact-node/src/logger';
+import { postTaskCompletionForAccess } from '../workAllocation2';
 
 export async function orchestrationSpecificAccessRequest(req: EnhancedRequest, res, next: NextFunction): Promise<any> {
   let createAmRoleResponse: AxiosResponse;
   let status;
   let data;
   try {
+    debugger;
     createAmRoleResponse = await specificAccessRequestCreateAmRole(req, res);
     status = createAmRoleResponse.status;
     data = createAmRoleResponse.data;
@@ -57,6 +59,20 @@ export async function specificAccessRequestCreateAmRole(req, res): Promise<Axios
   const headers = setHeaders(req);
   /* tslint:disable:no-string-literal */
   delete headers['accept'];
+  logger.info('send delete request to:', fullPath);
+  logger.info('send delete request to:', req.body);
+  const response = await http.post(fullPath, req.body, { headers });
+  return response;
+}
+
+export async function specificAccessRequestCreateAmDenyRole(req, res): Promise<AxiosResponse> {
+  const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+  const fullPath = `${basePath}/am/role-assignments`;
+  const headers = setHeaders(req);
+  /* tslint:disable:no-string-literal */
+  delete headers['accept'];
+  logger.info('send delete request to:', fullPath);
+  logger.info('send delete request to:', req.body);
   const response = await http.post(fullPath, req.body, { headers });
   return response;
 }
@@ -110,60 +126,80 @@ export async function postCreateTask(req: EnhancedRequest, next: NextFunction, c
     return error;
   }
 }
-export async function orchestrationRequestMoreInformation(req: EnhancedRequest, res, next: NextFunction): Promise<any> {
-
+export async function orchestrationRequestMoreInformation(req: EnhancedRequest, res,next: NextFunction): Promise<Response> {
   const requestId = req.body.requestId;
-  //return res.status(201).send({message:'succesfully denied with additional comments'});
-  debugger;
+  const taskId = req.body.taskId;
   const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
-  //http://am-role-assignment-service-aat.service.core-compute-aat.internal/am/role-assignments?process=staff-organisational-role-mapping&reference=cbb51593-aaca-4da3-ab67-7200d8d31af6
 
+  req.body =  {
+    roleRequest: {
+      assignerId: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
+      process: 'specific-access',
+      reference: '1611147207534858/specific-access-legal-operations/db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
+      replaceExisting: true
+    },
+    requestedRoles: [
+      {
+        actorIdType: 'IDAM',
+        actorId: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
+        roleType: 'CASE',
+        roleName: 'specific-access-denied',
+        classification: 'PRIVATE',
+        roleCategory: 'LEGAL_OPERATIONS',
+        grantType: 'BASIC',
+        beginTime: null,
+        endTime: '2022-06-19T15:08:20.608Z',
+        attributes: [Object],
+        notes: [Array],
+        readOnly: true
+      }
+    ]
+  }
+  const createDenyRoleResponse = await specificAccessRequestCreateAmRole(req, res);
+
+
+  //http://am-role-assignment-service-aat.service.core-compute-aat.internal/am/role-assignments?process=staff-organisational-role-mapping&reference=cbb51593-aaca-4da3-ab67-7200d8d31af6
   const queryString = `?process=staff-organisational-role-mapping&reference=${requestId}`
   const fullPath = `${basePath}/am/role-assignments${queryString}`;
   const headers = setHeaders(req);
-
-
+  delete headers['accept'];
+  logger.info('send delete request to:', fullPath);
   try {
-    logger.info('send delete request to:', fullPath);
-    const headers = setHeaders(req);
-    // AM service reject header with 406 error if accept is sent
-    /* tslint:disable:no-string-literal */
-    delete headers['accept'];
-
-
-    const pathVariables = {
-      process : 'staff-organisational-role-mapping',
-      reference : requestId
-    };
-    const queryParams = null;
     const body = {
-      userIds : [ requestId ]
-    };
-    const multipart = false;
-    debugger;
-    logger.info('send delete request Body:',
-    {
-     data:{
-     pathVariables,
-     queryParams,
-     body,
-     multipart
-     },
-     headers});
-
-    const resp = await http.delete(fullPath, {
-      // data: body,
-     data:{
-       pathVariables,
-      queryParams,
-      body,
-      multipart
+      pathVariables: {
+        process : 'staff-organisational-role-mapping',
+        reference : requestId
       },
+      queryParams : null,
+      body:{
+        userIds : [ requestId ]
+      },
+      multipart: false
+    };
+    logger.info('send delete request Body:', {body, headers});
+
+    const respDeleteRoleByRequestId = await http.delete(fullPath, {
+      data: body,
       headers,
     });
-    logger.info('send delete response:', resp);
+    //logger.info('send delete response:', respDeleteRoleByRequestId);
+
+    //return res.status(201).send({message:'succesfully denied with additional comments'});
+    //return res.status(respDeleteRoleByRequestId.status).send({data:respDeleteRoleByRequestId.config.data});
+
     debugger;
-    return resp;
+    logger.info('postTaskCompletionForAccess:', fullPath);
+    const taskResponse: AxiosResponse = await postTaskCompletionForAccess(req, res, next);
+    if (!taskResponse || taskResponse.status !== 204) {
+      // restore specific access requested role and delete two created roles
+      //return restoreDeletedRole(req, res, next, taskResponse, rolesToDelete);
+    }
+    debugger;
+    // if everything has worked send the last response back to the user
+    return res.send(taskResponse.data).status(taskResponse.status);
+
+   return res.status(201).send({message:'succesfully denied with additional comments'});
+    //const taskResponse: AxiosResponse = await postTaskCompletionForAccess(req, res, next);
   } catch (e) {
     debugger;
     logger.error(e.status, e.statusText, JSON.stringify(e.data));

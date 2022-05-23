@@ -1,7 +1,7 @@
 import { isDefined } from '@angular/compiler/src/util';
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 
 import { SessionStorageService } from '../../../app/services';
 import { ListConstants } from '../../components/constants';
@@ -76,17 +76,6 @@ export class TaskListComponent implements OnChanges {
   }
 
   public ngOnChanges(): void {
-    this.router.events.subscribe(s => {
-      if (s instanceof NavigationEnd) {
-        const tree = this.router.parseUrl(this.router.url);
-        if (tree.fragment) {
-          const element = document.querySelector('#' + tree.fragment);
-          if (element) {
-            element.scrollIntoView({block: "center"});
-          }
-        }
-      }
-    })
     if (this.tasks) {
       this.dataSource$ = new BehaviorSubject(this.tasks);
       this.setSelectedTask(this.selectTaskFromUrlHash(this.router.url));

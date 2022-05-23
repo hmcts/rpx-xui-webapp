@@ -1,4 +1,5 @@
 export interface RoleCaseData {
+  access?: string;
   id: string;
   case_name: string;
   case_id: string;

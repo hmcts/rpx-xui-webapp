@@ -550,6 +550,7 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
     caseDetail.case_data.caseManagementLocation.baseLocation ?
       caseDetail.case_data.caseManagementLocation.baseLocation : null,
     startDate: roleAssignment.beginTime,
+    access: roleAssignment.grantType,
   };
 }
 

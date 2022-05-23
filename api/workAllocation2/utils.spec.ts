@@ -975,6 +975,7 @@ describe('workAllocation.utils', () => {
       },
     ];
     const expectedRoleCaseData: RoleCaseData[] = [{
+      access: undefined,
       id: '1',
       case_id: '123',
       case_name: '123',
@@ -991,6 +992,7 @@ describe('workAllocation.utils', () => {
       role_category: 'LEGAL_OPERATIONS',
     },
       {
+        access: undefined,
         id: '3',
         case_id: '456',
         case_name: '456',

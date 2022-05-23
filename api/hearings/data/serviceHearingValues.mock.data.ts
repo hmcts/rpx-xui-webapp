@@ -22,12 +22,15 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
     }, {
       categoryType: CategoryType.CaseSubType,
       categoryValue: 'BBA3-002CC',
+      categoryParent: 'BBA3-002',
     }, {
       categoryType: CategoryType.CaseSubType,
       categoryValue: 'BBA3-002GC',
+      categoryParent: 'BBA3-002',
     }, {
       categoryType: CategoryType.CaseSubType,
       categoryValue: 'BBA3-002RC',
+      categoryParent: 'BBA3-002',
     },
   ],
   caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',

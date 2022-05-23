@@ -38,22 +38,7 @@ export class WorkAllocationCaseService {
   }
 
   public getMyAccess(body: { searchRequest: SearchCaseRequest, view: string }): Observable<any> {
-    return of({
-      cases: [{
-      assignee: "80a100a6-d9f4-481f-8cc3-729d494b9a94",
-      case_category: "DoC",
-      case_id: 1620838835067373,
-      case_name: "d d",
-      case_role: "case-manager",
-      case_type: "Asylum",
-      id: "1ca563b2-78de-47e5-a51a-ffc6ca285e8e",
-      jurisdiction: "IA",
-      jurisdictionId: "IA",
-      location_id: "765324",
-      role: "case-manager",
-      role_category: "LEGAL_OPERATIONS",
-      startDate: "2022-05-03T23:00:00Z"
-    }]});
+    return this.http.post<any>('/workallocation2/my-work/myaccess', body);
   }
   public getCases(body: { searchRequest: SearchCaseRequest, view: string }): Observable<Case[]> {
     return this.http.post<Case[]>(`/workallocation2/all-work/cases`, body);

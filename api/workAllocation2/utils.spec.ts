@@ -1008,13 +1008,13 @@ describe('workAllocation.utils', () => {
       }
     ];
     it('should return empty list if there is nothing given', () => {
-      expect(mapCasesFromData(null, null, null)).to.deep.equal([]);
-      expect(mapCasesFromData(null, firstRoleAssignment, null)).to.deep.equal([]);
-      expect(mapCasesFromData(null, firstRoleAssignment, paginationConfig)).to.deep.equal([]);
-      expect(mapCasesFromData(null, null, paginationConfig)).to.deep.equal([]);
+      expect(mapCasesFromData(null, null)).to.deep.equal([]);
+      expect(mapCasesFromData(null, firstRoleAssignment)).to.deep.equal([]);
+      expect(mapCasesFromData(null, firstRoleAssignment)).to.deep.equal([]);
+      expect(mapCasesFromData(null, null)).to.deep.equal([]);
     });
     it('should return correct case data if role assignment data returned', () => {
-      expect(mapCasesFromData(mockCaseData, mockRoleAssignment, null)).to.deep.equal(expectedRoleCaseData);
+      expect(mapCasesFromData(mockCaseData, mockRoleAssignment)).to.deep.equal(expectedRoleCaseData);
     });
   });
 

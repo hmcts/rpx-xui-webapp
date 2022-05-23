@@ -17,7 +17,6 @@ import {exists, reflect} from '../lib/util';
 import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX, ViewType } from './constants/actions';
 import {getCaseListPromises} from "./index";
 import {Case, CaseList} from './interfaces/case';
-import { PaginationParameter } from './interfaces/caseSearchParameter';
 import { CaseworkerPayload, ServiceCaseworkerData } from './interfaces/caseworkerPayload';
 import {
   Action,
@@ -511,8 +510,7 @@ export function filterByLocationId(cases: Case[], locations: string[]): Case[] {
 
 export function mapCasesFromData(
   caseDetails: Case[],
-  roleAssignmentList: RoleAssignment[],
-  paginationConfig: PaginationParameter
+  roleAssignmentList: RoleAssignment[]
 ): RoleCaseData[] {
   if (!caseDetails) {
     return [];

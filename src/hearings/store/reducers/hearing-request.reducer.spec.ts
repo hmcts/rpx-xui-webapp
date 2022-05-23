@@ -1,5 +1,5 @@
-import {HearingRequestStateData} from '../../models/hearingRequestStateData.model';
-import {HMCLocationType} from '../../models/hearings.enum';
+import { HearingRequestStateData } from '../../models/hearingRequestStateData.model';
+import { HMCLocationType } from '../../models/hearings.enum';
 import * as fromHearingRequestActions from '../actions/hearing-request.action';
 import * as fromHearingRequestReducer from './hearing-request.reducer';
 
@@ -27,14 +27,15 @@ describe('Hearing Request Reducer', () => {
             hearingDetails: {
               duration: null,
               hearingType: null,
+              hearingChannel: [],
               hearingLocations: [{
                 locationId: '196538',
                 locationType: HMCLocationType.COURT,
               },
-                {
-                  locationId: '219164',
-                  locationType: HMCLocationType.COURT,
-                },
+              {
+                locationId: '219164',
+                locationType: HMCLocationType.COURT,
+              },
               ],
               hearingIsLinkedFlag: false,
               hearingWindow: null,
@@ -88,14 +89,15 @@ describe('Hearing Request Reducer', () => {
             hearingDetails: {
               duration: null,
               hearingType: null,
+              hearingChannel: [],
               hearingLocations: [{
                 locationId: '196538',
                 locationType: HMCLocationType.COURT,
               },
-                {
-                  locationId: '219164',
-                  locationType: HMCLocationType.COURT,
-                },
+              {
+                locationId: '219164',
+                locationType: HMCLocationType.COURT,
+              },
               ],
               hearingIsLinkedFlag: false,
               hearingWindow: null,

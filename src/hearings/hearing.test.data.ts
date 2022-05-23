@@ -13,10 +13,10 @@ import {
   PartyType,
   RequirementType, UnavailabilityType
 } from './models/hearings.enum';
-import {JudicialUserModel} from './models/judicialUser.model';
+import { JudicialUserModel } from './models/judicialUser.model';
 import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
 
-export const hearingStageRefData =  [
+export const hearingStageRefData = [
   {
     key: 'initial',
     value_en: 'Initial',
@@ -1012,6 +1012,7 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
   publicCaseName: 'Jane vs DWP',
   autoListFlag: false,
   hearingType: 'Final',
+  hearingChannel: [],
   caseCategories: [
     {
       categoryType: CategoryType.CaseType,
@@ -1349,6 +1350,7 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
   hearingDetails: {
     duration: 45,
     hearingType: 'final',
+    hearingChannel: [],
     hearingLocations: [
       {
         locationId: '196538',
@@ -1654,6 +1656,7 @@ export const initialState = {
         hearingDetails: {
           duration: 60,
           hearingType: 'final',
+          hearingChannel: [],
           hearingLocations: [
             {
               locationId: '196538',
@@ -1831,6 +1834,7 @@ export const initialState = {
         hearingDetails: {
           duration: 60,
           hearingType: 'final',
+          hearingChannel: [],
           hearingLocations: [
             {
               locationId: '196538',

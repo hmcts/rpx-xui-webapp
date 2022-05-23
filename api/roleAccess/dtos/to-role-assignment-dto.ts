@@ -105,35 +105,8 @@ export function toDenySARoleAssignmentBody(currentUserId: string, allocateRoleDa
       notes: [{comment: allocateRoleData.comment,
       time: "2022-05-10T16:34:18.763Z",
       userId: allocateRoleData.person.id}],
-
-      // NOTE: There is not information getting previously request role at the moment on LLD documantation,
-      // and it s not included in steps on requirement
-      // when it's ready originalRequestJustification and originalRequestDate will be replaced with it
-      originalRequestDate: "2022-05-22T16:34:18.763Z",
-      originalRequestJustification: {
-        roleRequest: {
-          assignerId: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
-          process: 'specific-access',
-          reference: '1613568559071553/specific-access-legal-operations/db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
-          replaceExisting: true,
-        },
-        requestedRoles: [
-          {
-            actorIdType: 'IDAM',
-            actorId: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
-            roleType: 'CASE',
-            roleName: 'specific-access-requested',
-            classification: 'PRIVATE',
-            roleCategory: 'LEGAL_OPERATIONS',
-            grantType: 'BASIC',
-            beginTime: null,
-            endTime: '2022-06-21T12:34:09.101Z',
-            attributes: [Object],
-            notes: [Array],
-            readOnly: true,
-          },
-        ],
-      },
+      originalRequestDate: allocateRoleData.originalRequestDate,
+      originalRequestJustification: allocateRoleData.originalRequestJustification,
     },
   ],
   };
@@ -141,12 +114,12 @@ export function toDenySARoleAssignmentBody(currentUserId: string, allocateRoleDa
 export function toDenySADletionRequestedRoleBody(requestId: string): any {
   return {
       pathVariables: {
-        process : 'staff-organisational-role-mapping',
-        reference : requestId,
+        process: 'staff-organisational-role-mapping',
+        reference: requestId,
       },
-      queryParams : null,
+      queryParams: null,
       body: {
-        userIds : [ requestId ],
+        userIds: [ requestId ],
       },
       multipart: false,
     };

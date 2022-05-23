@@ -5,8 +5,9 @@ import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
 import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
-import * as fromFeature from '../../../store';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import * as fromFeature from '../../../store';
+
 @Component({
   selector: 'exui-specific-access-information',
   templateUrl: './specific-access-information.component.html'
@@ -40,14 +41,15 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
     });
   }
   public navigationHandler(navEvent: SpecificAccessNavigationEvent): void {
-    const  approvalRole = {id: 'specific-access-denied', name: 'specific-access-denied'};
+    const  rejectedRole = {id: 'specific-access-denied', name: 'specific-access-denied'};
     const specificAccessMockState: SpecificAccessStateData = {
       state: SpecificAccessState.SPECIFIC_ACCESS_DURATION,
       accessReason: null,
-      typeOfRole: approvalRole,
+      typeOfRole: rejectedRole,
       comment: this.infoCtrl.value,
       caseId: '1613568559071553',
       requestId: 'eb7b412d-9e8e-4e1e-8e6f-ad540d455945',
+      originalSpecificAccessRequestId: '777b412d-9e8e-4e1e-8e6f-ad540d459999',
       taskId: '9b440fc1-d9cb-11ec-a8f0-eef41c565753',
       jurisdiction: 'IA',
       roleCategory: RoleCategory.CASEWORKER,

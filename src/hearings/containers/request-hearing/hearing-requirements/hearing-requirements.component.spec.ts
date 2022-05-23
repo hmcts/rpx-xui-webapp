@@ -6,7 +6,14 @@ import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
 import {caseFlagsRefData, initialState, serviceHearingValuesModel} from '../../../hearing.test.data';
 import {HearingRequestMainModel} from '../../../models/hearingRequestMain.model';
-import {ACTION, CaseFlagType, HMCLocationType, PartyType, UnavailabilityType} from '../../../models/hearings.enum';
+import {
+  ACTION,
+  CaseFlagType,
+  CategoryType,
+  HMCLocationType,
+  PartyType,
+  UnavailabilityType
+} from '../../../models/hearings.enum';
 import {LocationByEPIMMSModel} from '../../../models/location.model';
 import {HearingsService} from '../../../services/hearings.service';
 import {LocationsDataService} from '../../../services/locations-data.service';
@@ -167,19 +174,19 @@ describe('HearingRequirementsComponent', () => {
         caseAdditionalSecurityFlag: false,
         caseCategories: [
           {
-            categoryType: 'caseType',
+            categoryType: CategoryType.CaseType,
             categoryValue: 'Personal Independence Payment',
           },
           {
-            categoryType: 'caseSubType',
+            categoryType: CategoryType.CaseSubType,
             categoryValue: 'Conditions of Entitlement',
           },
           {
-            categoryType: 'caseSubType',
+            categoryType: CategoryType.CaseSubType,
             categoryValue: 'Good cause',
           },
           {
-            categoryType: 'caseSubType',
+            categoryType: CategoryType.CaseSubType,
             categoryValue: 'Rate of Assessment / Payability Issues - complex',
           }
         ],

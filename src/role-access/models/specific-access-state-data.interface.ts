@@ -18,6 +18,7 @@ export interface SpecificAccessStateData {
   accessReason: AccessReason;
   person: Person;
   requestId: string;
+  originalSpecificAccessRequestId?: string;
   period?: Period;
   lastError?: HttpError;
   comment?: string;

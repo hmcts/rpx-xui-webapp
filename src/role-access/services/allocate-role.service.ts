@@ -30,7 +30,7 @@ export class AllocateRoleService {
     return this.http.post(`${AllocateRoleService.accessManagementUrl}/specific-access-approval`, specificAccessStateData);
   }
 
-  public requestMoreInformation(requestMoreInformationStateData: any): Observable<any> {
+  public requestMoreInformation(requestMoreInformationStateData: SpecificAccessStateData): Observable<any> {
     return this.http.post(`${AllocateRoleService.specificAccessUrl}`, requestMoreInformationStateData);
   }
 

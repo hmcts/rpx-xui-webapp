@@ -1,14 +1,6 @@
 import { SpecificAccessState, SpecificAccessStateData } from '../../models';
 import { SpecificAccessAction, SpecificAccessActionTypes } from '../actions';
 
-// export const specificAccessInitialState: SpecificAccessStateData = {
-//   state: SpecificAccessState.SPECIFIC_ACCESS_REVIEW,
-//   specificAccessFormData: null,
-//   SpecificAccessMoreInformationFormData: null,
-//   accessReason: null,
-//   lastError: null
-// };
-
 export const specificAccessInitialState: SpecificAccessStateData = {
   state: SpecificAccessState.SPECIFIC_ACCESS_REVIEW,
   specificAccessFormData: null,

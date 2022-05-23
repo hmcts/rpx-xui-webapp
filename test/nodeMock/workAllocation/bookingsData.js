@@ -20,6 +20,16 @@ class BookingsData{
         return this.bookingResponse;
     }
 
+    setupLocations(inputLocations){
+        this.allLocations = inputLocations.map(location => {
+            const locationModel = BookingDataModel.getLocationDetails();
+            for (const locationKey of Object.keys(location)) {
+                locationModel[locationKey] = location[locationKey];
+            }
+            return locationModel;
+        });
+    }
+
     setUpBookings(bookings){
         this.bookingResponse.bookings = bookings.map(booking => {
             const bookingModel = BookingDataModel.getBooking();
@@ -28,7 +38,6 @@ class BookingsData{
             }    
             return bookingModel;
         });
-        this.updateAllLocationsFromBookings();
        
     }
 

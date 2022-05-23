@@ -3,6 +3,7 @@ const BrowserWaits = require('../../../support/customWaits');
 var cucumberReporter = require('../../../support/reportLogger');
 
 var TaskMessageBanner = require('../messageBanner');
+const { LOG_LEVELS } = require('../../../support/constants');
 
 class MyWorkPage extends TaskList {
 
@@ -145,7 +146,7 @@ class MyWorkPage extends TaskList {
             });
             return true;
         }catch(err){
-            cucumberReporter.AddMessage("My work page not displayed "+err.stack);
+            cucumberReporter.AddMessage("My work page not displayed "+err.stack, LOG_LEVELS.Error);
             return false;
         }
         
@@ -171,7 +172,7 @@ class MyWorkPage extends TaskList {
             await BrowserWaits.waitForElement(this.myTasksContaine);
             return true;
         } catch (err) {
-            cucumberReporter.AddMessage("My Tasks list page not displayed: " + err);
+            cucumberReporter.AddMessage("My Tasks list page not displayed: " + err, LOG_LEVELS.Error);
             return false;
         }
     }
@@ -182,7 +183,7 @@ class MyWorkPage extends TaskList {
             await BrowserWaits.waitForElement(this.availableTasksContainer);
             return true;
         } catch (err) {
-            cucumberReporter.AddMessage("Available Tasks list page not displayed: " + err);
+            cucumberReporter.AddMessage("Available Tasks list page not displayed: " + err, LOG_LEVELS.Error);
             return false;
         }
     }

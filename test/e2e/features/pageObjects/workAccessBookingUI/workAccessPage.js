@@ -59,7 +59,7 @@ class WorkAccessPage{
     async getMatchingBookings(location, fromDate, toDate){
         const allBookings = await this.getExistingBookingsDetails();
         const matchingBookings = allBookings.filter(booking =>
-            booking.locations.includees(location) && booking.fromDate.includes(fromDate) && booking.toDate.includes(toDate)
+            booking.location.includes(location) && booking.fromDate.includes(fromDate) && booking.toDate.includes(toDate)
         );
         return matchingBookings; 
     }
@@ -75,11 +75,13 @@ class WorkAccessPage{
         for(let i = 0; i < count ; i++){
             const booking = await this.existingBookings.get(i);
             
+            const bookingDatesText = await booking.$('span.govuk-hint').getText();
+            const bookingDateSplit = bookingDatesText.split('to');
             bookings.push({
-                location: await this.existingBookings.get(i),
-                fromDate: await booking.$('').getText(),
-                toDate: await booking.$('').getText(),
-                continueBtnElement: booking.$('') 
+                location: await booking.$('span[class*="font-weight-bold"]').getText(),
+                fromDate: bookingDateSplit[0],
+                toDate: bookingDateSplit[1],
+                continueBtnElement: booking.$('.govuk-button-group button') 
             }); 
         }
         return bookings; 

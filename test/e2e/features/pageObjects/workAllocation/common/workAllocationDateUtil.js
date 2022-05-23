@@ -42,7 +42,15 @@ class WorkAllocationDateUtil{
             let year = dateObj.getFullYear();
             return `${date}/${month+1}/${year}`
         }
+
+        return date
        
+    }
+
+    getDateInDays(dateInDays){
+        let dateObj = new Date();
+        dateObj.setDate(dateObj.getDate() + parseInt(dateInDays.replace(' ', '')));
+        return dateObj; 
     }
 
     getDateFormat_DD_Month_YYYY(dateInDays){
@@ -116,8 +124,6 @@ class WorkAllocationDateUtil{
         }
         return month;
     }
-
-
 }
 
 module.exports = new WorkAllocationDateUtil();

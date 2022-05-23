@@ -1,13 +1,14 @@
 /* tslint:disable:object-literal-sort-keys */
 import {
   CategoryType,
+  HearingChannelEnum,
   HMCLocationType,
   MemberType,
   PartyType,
   RequirementType,
   UnavailabilityType
 } from '../models/hearings.enum';
-import {ServiceHearingValuesModel} from '../models/serviceHearingValues.model';
+import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
 
 export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   hmctsServiceID: 'BBA3',
@@ -15,6 +16,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   publicCaseName: 'Jane and Smith vs DWP',
   autoListFlag: false,
   hearingType: 'BBA3-DIR',
+  hearingChannel: [HearingChannelEnum.ONPPR],
   caseCategories: [
     {
       categoryType: CategoryType.CaseType,

@@ -80,7 +80,6 @@ export function toSARoleAssignmentBody(currentUserId: string, allocateRoleData: 
 }
 
 export function toDenySARoleAssignmentBody(currentUserId: string, allocateRoleData: AllocateRoleData): any {
-  const todayDate = new Date();
   return {
     roleRequest: {
       assignerId: currentUserId,
@@ -91,7 +90,7 @@ export function toDenySARoleAssignmentBody(currentUserId: string, allocateRoleDa
     requestedRoles: [{
       roleType: 'CASE',
       readOnly: true,
-      grantType: 'BASIC', //SPECIFIC
+      grantType: 'BASIC',
       classification: 'PRIVATE',
       attributes: {
         caseId: allocateRoleData.caseId,
@@ -101,39 +100,56 @@ export function toDenySARoleAssignmentBody(currentUserId: string, allocateRoleDa
       roleCategory: allocateRoleData.roleCategory,
       actorIdType: 'IDAM',
       actorId: allocateRoleData.person.id,
-      endTime: '2022-06-21T12:34:09.101Z',//new Date(new Date().setDate(new Date().getDate() + 30)),
-      beginTime: null,
-      //beginTime: allocateRoleData.period.startDate,
-      // endTime: allocateRoleData.period.endDate
-      // ? allocateRoleData.period.endDate : new Date(todayDate.setMonth(todayDate.getMonth() + 1)),
-      // TODO: Include notes once we have that information
-      notes: [{comment: "{\"specificReason\":\"Testing testing testing\"}",
+      endTime: new Date(new Date().setDate(new Date().getDate() + 14)),
+      beginTime: new Date(),
+      notes:[{comment: allocateRoleData.comment,
       time: "2022-05-10T16:34:18.763Z",
       userId: allocateRoleData.person.id}],
-    }
-    // ,
-    // {
-    //   roleType: 'CASE',
-    //   readOnly: true,
-    //   grantType: 'SPECIFIC',
-    //   classification: 'RESTRICTED',
-    //   attributes: {
-    //     caseId: allocateRoleData.caseId,
-    //     requestedRole: allocateRoleData.requestedRole,
-    //   },
-    //   roleName: allocateRoleData.requestedRole,
-    //   roleCategory: allocateRoleData.roleCategory,
-    //   actorIdType: 'IDAM',
-    //   actorId: allocateRoleData.person.id,
-    //   // beginTime: allocateRoleData.period.startDate,
-    //   // endTime: allocateRoleData.period.endDate,
-    //   // TODO: Include notes once we have that information
-    //   notes: [{comment: "{\"specificReason\":\"Testing testing testing\"}",
-    //   time: "2022-05-10T16:34:18.763Z",
-    //   userId: allocateRoleData.person.id}, ],
-    // }
+
+      // NOTE: There is not information getting previously request role at the moment on LLD documantation,
+      // and it s not included in steps on requirement
+      // when it's ready originalRequestJustification and originalRequestDate will be replaced with it
+      originalRequestDate: "2022-05-22T16:34:18.763Z",
+      originalRequestJustification:{
+        roleRequest: {
+          assignerId: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
+          process: 'specific-access',
+          reference: '1613568559071553/specific-access-legal-operations/db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
+          replaceExisting: true
+        },
+        requestedRoles: [
+          {
+            actorIdType: 'IDAM',
+            actorId: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
+            roleType: 'CASE',
+            roleName: 'specific-access-requested',
+            classification: 'PRIVATE',
+            roleCategory: 'LEGAL_OPERATIONS',
+            grantType: 'BASIC',
+            beginTime: null,
+            endTime: '2022-06-21T12:34:09.101Z',
+            attributes: [Object],
+            notes: [Array],
+            readOnly: true
+          }
+        ]
+      },
+    },
   ],
   };
+}
+export function toDenySADletionRequestedRoleBody(requestId: string): any {
+  return {
+      pathVariables: {
+        process : 'staff-organisational-role-mapping',
+        reference : requestId
+      },
+      queryParams : null,
+      body:{
+        userIds : [ requestId ]
+      },
+      multipart: false
+    };
 }
 
 export function toSARequestRoleAssignmentBody(allocateRoleData: AllocateRoleData): any {

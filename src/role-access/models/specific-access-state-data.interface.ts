@@ -7,20 +7,10 @@ import { HttpError } from './http-error.interface';
 import { SpecificAccessFormData, SpecificAccessMoreInformationForm } from './specific-access-form-data.interface';
 import { SpecificAccessState } from './specific-access-state.enum';
 
-// export interface SpecificAccessStateData {
-//   state: SpecificAccessState;
-//   accessReason: AccessReason;
-//   lastError?: HttpError;
-//   specificAccessFormData?: SpecificAccessFormData;
-//   SpecificAccessMoreInformationFormData?: SpecificAccessMoreInformationForm;
-
-
-// }
-
 export interface SpecificAccessStateData {
   state: SpecificAccessState;
   caseId: string;
-  taskId: string;
+  taskId?: string;
   jurisdiction: string;
   typeOfRole?: SpecificRole;
   roleCategory: RoleCategory;
@@ -28,8 +18,9 @@ export interface SpecificAccessStateData {
   accessReason: AccessReason;
   person: Person;
   requestId: string;
-  period: Period;
+  period?: Period;
   lastError?: HttpError;
+  comment?: string;
   specificAccessFormData?: SpecificAccessFormData;
   SpecificAccessMoreInformationFormData?: SpecificAccessMoreInformationForm;
 }

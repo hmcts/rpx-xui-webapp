@@ -15,4 +15,5 @@ export interface AllocateRoleData {
   roleCategory?: RoleCategory;
   period: Period;
   jurisdiction?: string;
+  comment?: string;
 }

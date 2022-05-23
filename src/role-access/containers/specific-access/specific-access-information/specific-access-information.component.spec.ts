@@ -6,6 +6,7 @@ import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { SpecificAccessNavigationEvent } from '../../../models';
 import { SpecificAccessInformationComponent } from './specific-access-information.component';
+import { StoreModule } from '@ngrx/store';
 
 describe('DescribeExclusionComponent', () => {
   let component: SpecificAccessInformationComponent;
@@ -28,7 +29,7 @@ describe('DescribeExclusionComponent', () => {
   let fixture: ComponentFixture<SpecificAccessInformationComponent>;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, FormsModule, RouterModule],
+      imports: [ReactiveFormsModule, FormsModule, RouterModule, StoreModule.forRoot({})],
       declarations: [SpecificAccessInformationComponent, ErrorMessageComponent],
       providers: [
         FormBuilder,
@@ -49,14 +50,8 @@ describe('DescribeExclusionComponent', () => {
 
   describe('navigation', () => {
     it('should correctly navigate on click of back link in the navigation handler', () => {
-      component.navigationHandler(SpecificAccessNavigationEvent.BACK);
-      expect(mockStore.dispatch).toHaveBeenCalled();
-    });
-
-    it('should correctly navigate on click of back link when dispatching the event', () => {
       mockStore.pipe.and.returnValue(of({}));
-      const navEvent = SpecificAccessNavigationEvent.BACK;
-      component.dispatchEvent(navEvent);
+      component.navigationHandler(SpecificAccessNavigationEvent.BACK);
       expect(mockStore.dispatch).toHaveBeenCalled();
     });
   });

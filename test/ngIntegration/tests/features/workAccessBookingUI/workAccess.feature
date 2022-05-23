@@ -1,8 +1,22 @@
 
-@ng @test
+@ng  
 Feature: Work access page
 
+    Background: Setup bookings data
+        Given I set mock locations for bookings
+            | epimms_id | site_name |
+            |100001|Test location 1|
+            | 100002 | Test location 2 |
+            | 100003 | Test location 3 |
 
+
+
+        Given I set mock for existing bookings
+            | appointmentId | base_location_id | beginTime | endTime |  
+            | 1001 | 100001 | +1 | +2 |
+            | 1002 | 100002 | +2 | +4 |
+            | 1003 | 100003 | +4 | +8 |
+       
     Scenario Outline: page access to user with roles "<Roles>" is displayed "<isDisplayed>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
@@ -74,9 +88,9 @@ Feature: Work access page
         Then I see work access existing bookings list container
         Then I see work access existing bookings displayed with details
             | location        | fromDate | toDate |
-            | Plymouth center | -1       | +1     |
-            | Hatton center   | 0        | 4      |
-            | Taylor center   | 2        | 6      |
+            | Test location 1 | +1 | +2 |
+            | Test location 2 | +2 | +4 |
+            | Test location 3 | +4 | +8 |
 
 
     Scenario: Work access View existing booking and continue

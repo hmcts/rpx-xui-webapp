@@ -1,7 +1,7 @@
 'use strict';
 
 const browserUtil = require('../../../ngIntegration/util/browserUtil');
-const { SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
+const { SHORT_DELAY, MID_DELAY, LONG_DELAY, LOG_LEVELS } = require('../../support/constants');
 
 var BrowserWaits = require('../../support/customWaits');
 var BrowserUtil = require('.././../../ngIntegration/util/browserUtil');
@@ -93,9 +93,9 @@ function HeaderPage() {
           await BrowserWaits.waitForElement(ele);
           await BrowserWaits.waitForElementClickable(ele);
           await ele.click();
-          await CucumberReporter.AddMessage(`Primary nav tab clicked successfully. "${label}"`);
+          await CucumberReporter.AddMessage(`Primary nav tab clicked successfully. "${label}"`, LOG_LEVELS.Debug);
         } catch (err) {
-          await CucumberReporter.AddMessage(`Failed to click Primary nav tab . "${label}"`);
+          await CucumberReporter.AddMessage(`Failed to click Primary nav tab . "${label}"`, LOG_LEVELS.Error);
           await this.refreshBrowser();
           throw new Error(err);
         }

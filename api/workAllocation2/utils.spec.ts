@@ -990,6 +990,7 @@ describe('workAllocation.utils', () => {
       endDate: new Date('01-01-2022'),
       assignee: 'person1',
       role_category: 'LEGAL_OPERATIONS',
+      dateSubmitted: undefined,
     },
       {
         access: undefined,
@@ -1007,6 +1008,7 @@ describe('workAllocation.utils', () => {
         endDate: new Date('01-01-2022'),
         assignee: 'person1',
         role_category: 'LEGAL_OPERATIONS',
+        dateSubmitted: undefined,
       }
     ];
     it('should return empty list if there is nothing given', () => {

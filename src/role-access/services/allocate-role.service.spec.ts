@@ -144,6 +144,37 @@ describe('AllocateRoleService', () => {
       req.flush(null);
     }));
 
+
+    it('should deny specific access request', inject([HttpTestingController, AllocateRoleService], (httpMock: HttpTestingController, service: AllocateRoleService) => {
+      const specificAccessState = {
+        state: 1,
+        accessReason: null,
+        typeOfRole: {
+            id: 'specific-access-denied',
+            name: 'specific-access-denied'
+        },
+        comment: 'asd',
+        caseId: '1613568559071553',
+        requestId: 'eb7b412d-9e8e-4e1e-8e6f-ad540d455945',
+        taskId: '9b440fc1-d9cb-11ec-a8f0-eef41c565753',
+        jurisdiction: 'IA',
+        roleCategory: 'LEGAL_OPERATIONS',
+        requestedRole: 'specific-access-legal-operations',
+        person: {
+            id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
+            name: null,
+            domain: null
+        }
+      }
+      service.requestMoreInformation(specificAccessState).subscribe(response => {
+        expect(response).toBeNull();
+      });
+      const req = httpMock.expectOne('/api/specific-access-request/request-more-information');
+      expect(req.request.method).toEqual('POST');
+      expect(req.request.body.requestId).toEqual('eb7b412d-9e8e-4e1e-8e6f-ad540d455945');
+      req.flush(null);
+    }));
+
     it('should get case roles user details', inject([HttpTestingController, AllocateRoleService], (httpMock: HttpTestingController, service: AllocateRoleService) => {
       const data: CaseRoleDetails[] = [
         {

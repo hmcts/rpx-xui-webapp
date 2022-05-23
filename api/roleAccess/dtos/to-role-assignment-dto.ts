@@ -102,7 +102,7 @@ export function toDenySARoleAssignmentBody(currentUserId: string, allocateRoleDa
       actorId: allocateRoleData.person.id,
       endTime: new Date(new Date().setDate(new Date().getDate() + 14)),
       beginTime: new Date(),
-      notes:[{comment: allocateRoleData.comment,
+      notes: [{comment: allocateRoleData.comment,
       time: "2022-05-10T16:34:18.763Z",
       userId: allocateRoleData.person.id}],
 
@@ -110,12 +110,12 @@ export function toDenySARoleAssignmentBody(currentUserId: string, allocateRoleDa
       // and it s not included in steps on requirement
       // when it's ready originalRequestJustification and originalRequestDate will be replaced with it
       originalRequestDate: "2022-05-22T16:34:18.763Z",
-      originalRequestJustification:{
+      originalRequestJustification: {
         roleRequest: {
           assignerId: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
           process: 'specific-access',
           reference: '1613568559071553/specific-access-legal-operations/db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
-          replaceExisting: true
+          replaceExisting: true,
         },
         requestedRoles: [
           {
@@ -130,9 +130,9 @@ export function toDenySARoleAssignmentBody(currentUserId: string, allocateRoleDa
             endTime: '2022-06-21T12:34:09.101Z',
             attributes: [Object],
             notes: [Array],
-            readOnly: true
-          }
-        ]
+            readOnly: true,
+          },
+        ],
       },
     },
   ],
@@ -142,13 +142,13 @@ export function toDenySADletionRequestedRoleBody(requestId: string): any {
   return {
       pathVariables: {
         process : 'staff-organisational-role-mapping',
-        reference : requestId
+        reference : requestId,
       },
       queryParams : null,
-      body:{
-        userIds : [ requestId ]
+      body: {
+        userIds : [ requestId ],
       },
-      multipart: false
+      multipart: false,
     };
 }
 

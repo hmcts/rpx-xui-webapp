@@ -1,4 +1,3 @@
-import logger from '@pact-foundation/pact-node/src/logger';
 import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
 import { sendDelete, sendPost } from '../common/crudService';
@@ -11,7 +10,12 @@ import { getServiceRefDataMappingList } from '../serviceRefData';
 import { refreshRoleAssignmentForUser } from '../user';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { CaseRole } from '../workAllocation2/interfaces/caseRole';
-import { toDenySADletionRequestedRoleBody, toDenySARoleAssignmentBody, toRoleAssignmentBody, toSARequestRoleAssignmentBody, toSARoleAssignmentBody } from './dtos/to-role-assignment-dto';
+import {
+  toDenySADletionRequestedRoleBody,
+  toDenySARoleAssignmentBody,
+  toRoleAssignmentBody,
+  toSARequestRoleAssignmentBody,
+  toSARoleAssignmentBody } from './dtos/to-role-assignment-dto';
 import { getEmail, getJudicialUsersFromApi, getUserName, mapRoleCategory } from './exclusionService';
 import { CaseRoleRequestPayload } from './models/caseRoleRequestPayload';
 import { release2ContentType } from './models/release2ContentType';
@@ -139,7 +143,6 @@ export async function createSpecificAccessDenyRole(req: EnhancedRequest, res: Re
     const currentUser = req.session.passport.user.userinfo;
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
     const roleAssignmentsBody = toDenySARoleAssignmentBody(currentUserId, req.body);
-    debugger;
     const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
     const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
     //await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
@@ -153,25 +156,18 @@ export async function createSpecificAccessDenyRole(req: EnhancedRequest, res: Re
 // tslint:disable-next-line:max-line-length
 export async function deleteSpecificAccessRequestedRole(req: EnhancedRequest, res: Response, next: NextFunction): Promise<AxiosResponse> {
   try {
-  //http://am-role-assignment-service-aat.service.core-compute-aat.internal/am/role-assignments?process=staff-organisational-role-mapping&reference=cbb51593-aaca-4da3-ab67-7200d8d31af6
   const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
   const requestId = req.body.requestId;
   const queryString = `?process=staff-organisational-role-mapping&reference=${requestId}`
   const fullPath = `${basePath}/am/role-assignments${queryString}`;
   const headers = setHeaders(req);
   const body = toDenySADletionRequestedRoleBody(requestId);
+  /* tslint:disable:no-string-literal */
   delete headers['accept'];
-
-  logger.info('send delete request to:', fullPath);
-  logger.info('send delete request Body:', {body, headers});
-
   const response = await http.delete(fullPath, {
     data: body,
     headers,
   });
-
-  logger.info('deleteSpecificAccessRequestedRole response:', response);
-  //await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
   return response;
   } catch (error) {
     next(error);

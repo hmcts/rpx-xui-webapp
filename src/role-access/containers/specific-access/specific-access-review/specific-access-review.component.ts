@@ -2,6 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
@@ -9,7 +10,7 @@ import { $enum as EnumUtil } from 'ts-enum-util';
 
 import { UserDetails } from '../../../../app/models';
 import { ERROR_MESSAGE } from '../../../constants';
-import { DisplayedAccessReason, OptionsModel, RequestAccessDetails, SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
+import { DisplayedAccessReason, OptionsModel, RequestAccessDetails, SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
 import { AccessReason, SpecificAccessErrors, SpecificAccessText } from '../../../models/enums';
 import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
 import * as fromFeature from '../../../store';
@@ -120,7 +121,22 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
             specificAccessState = SpecificAccessState.SPECIFIC_ACCESS_DURATION;
             break;
           case AccessReason.REJECT_REQUEST:
-            specificAccessState = SpecificAccessState.SPECIFIC_ACCESS_DENIED;
+            const  rejectedRole = {id: 'specific-access-denied', name: 'specific-access-denied'};
+            const specificAccessMockState: SpecificAccessStateData = {
+              state: SpecificAccessState.SPECIFIC_ACCESS_DURATION,
+              accessReason: null,
+              typeOfRole: rejectedRole,
+              comment: '',
+              caseId: '1613568559071553',
+              requestId: 'eb7b412d-9e8e-4e1e-8e6f-ad540d455945',
+              originalSpecificAccessRequestId: '777b412d-9e8e-4e1e-8e6f-ad540d459999',
+              taskId: '9b440fc1-d9cb-11ec-a8f0-eef41c565753',
+              jurisdiction: 'IA',
+              roleCategory: RoleCategory.CASEWORKER,
+              requestedRole: 'specific-access-legal-operations',
+              person: {id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null}
+            }
+            this.store.dispatch(new fromFeature.RequestMoreInfoSpecificAccessRequest(specificAccessMockState));
             break;
           case AccessReason.REQUEST_MORE_INFORMATION:
             specificAccessState = SpecificAccessState.SPECIFIC_ACCESS_INFORMATION;

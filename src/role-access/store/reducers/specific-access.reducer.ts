@@ -21,12 +21,7 @@ export function specificAccessReducer(currentState = specificAccessInitialState,
   switch (action.type) {
     case SpecificAccessActionTypes.REQUEST_MORE_INFO_SPECIFIC_ACCESS_REQUEST: {
       return {
-        ...currentState,
-        caseId : action.payload.caseId,
-        requestedRole : action.payload.requestedRole,
-        requestId : action.payload.requestId,
-        jurisdiction : action.payload.jurisdiction,
-        roleCategory : action.payload.roleCategory
+        ...currentState
       };
     }
     case SpecificAccessActionTypes.APPROVE_SPECIFIC_ACCESS_REQUEST: {

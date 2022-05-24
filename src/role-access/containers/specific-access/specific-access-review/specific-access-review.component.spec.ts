@@ -96,8 +96,7 @@ describe('SpecificAccessReviewComponent', () => {
     it('should correctly navigate on click of continue button for reject request', () => {
       component.reviewOptionControl.setValue(AccessReason.REJECT_REQUEST);
       component.navigationHandler(SpecificAccessNavigationEvent.CONTINUE);
-      expect(mockStore.dispatch).toHaveBeenCalledWith(
-        new DecideSpecificAccessAndGo( { accessReason: AccessReason.REJECT_REQUEST, specificAccessState: SpecificAccessState.SPECIFIC_ACCESS_DENIED } ));
+      expect(mockStore.dispatch).toHaveBeenCalled();
     });
 
     it('should correctly navigate on click of continue button for request more information', () => {

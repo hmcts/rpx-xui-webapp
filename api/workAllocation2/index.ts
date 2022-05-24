@@ -466,11 +466,13 @@ export function getCaseListPromises(data: CaseDataType, req: EnhancedRequest): A
 export async function getMyAccess(req: EnhancedRequest, res: Response, next: NextFunction) {
   const roleAssignments = req.session.roleAssignmentResponse as RoleAssignment [];
   const specificRoleAssignments = roleAssignments.filter(roleAssignment =>
-    (roleAssignment.grantType && roleAssignment.grantType === 'SPECIFIC')
+    roleAssignment.grantType === 'SPECIFIC'
     ||
-    (roleAssignment.roleName && roleAssignment.roleName === 'specific-access-requested')
+    roleAssignment.roleName === 'specific-access-requested'
     ||
-    (roleAssignment.roleName && roleAssignment.roleName === 'specific-access-denied')
+    roleAssignment.roleName === 'specific-access-denied'
+    ||
+    roleAssignment.grantType === 'CHALLENGED'
   );
   const cases = await getCaseIdListFromRoles(specificRoleAssignments, req);
   const mappedCases = mapCasesFromData(cases, specificRoleAssignments);

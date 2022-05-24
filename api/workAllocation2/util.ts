@@ -555,17 +555,19 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
   };
 }
 export function getGrantType(roleAssignment: RoleAssignment) {
-  return roleAssignment.grantType === 'SPECIFIC' || roleAssignment.roleName === 'specific-access-requested'
-  ?
-  'Specific'
-  :
-  roleAssignment.grantType;
+  if (roleAssignment.grantType === 'SPECIFIC' || roleAssignment.roleName === 'specific-access-requested') {
+    return 'Specific';
+  } else if (roleAssignment.grantType) {
+    return roleAssignment.grantType.toLocaleLowerCase();
+  } else {
+    return roleAssignment.grantType;
+  }
 }
 
 export function getStartDate(roleAssignment: RoleAssignment): Date | string {
   if (roleAssignment.roleName === 'specific-access-requested') {
     return 'Not authorised';
-  } else if (roleAssignment.grantType === 'SPECIFIC' && roleAssignment.beginTime) {
+  } else if ((roleAssignment.grantType === 'SPECIFIC' || roleAssignment.grantType === 'CHALLENGED') && roleAssignment.beginTime) {
     return formatDate(new Date(roleAssignment.beginTime));
   }
   return roleAssignment.beginTime;

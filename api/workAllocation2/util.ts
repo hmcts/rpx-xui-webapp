@@ -558,7 +558,9 @@ export function getGrantType(roleAssignment: RoleAssignment) {
   if (roleAssignment.grantType === 'SPECIFIC' || roleAssignment.roleName === 'specific-access-requested') {
     return 'Specific';
   } else if (roleAssignment.grantType) {
-    return roleAssignment.grantType.toLocaleLowerCase();
+    return roleAssignment.grantType.replace(/(\w)(\w*)/g, (g0, second, third) => {
+      return second.toUpperCase() + third.toLowerCase();
+    });
   } else {
     return roleAssignment.grantType;
   }

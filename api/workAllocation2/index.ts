@@ -258,7 +258,9 @@ export async function postTaskCompletionForAccess(req: EnhancedRequest, res: Res
         assign_and_complete: true,
       },
     };
+
     const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.body.taskId, 'complete');
+    debugger;
     const completionResponse = await handleTaskPost(getTaskPath, newRequest, req);
     return completionResponse;
   } catch (error) {

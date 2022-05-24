@@ -34,7 +34,7 @@ export async function orchestrationSpecificAccessRequest(req: EnhancedRequest, r
       const taskType = 'followUpOverdueRespondentEvidence';
       const dueDate = '2022-04-23T16:21:41.320086';
       const taskName = 'Process Application';
-      const taskResponse = await postCreateTask(req, next, { caseId, jurisdiction, caseType, taskType, dueDate, name: taskName });
+      const taskResponse = await postCreateTask(req, next, { caseId, jurisdiction, caseType, taskType, dueDate, name: taskName, roleAssignmentID:'10' });
       if (!taskResponse || taskResponse.status !== 204) {
         const assignmentId = data.roleAssignmentResponse.roleRequest.id;
         const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
@@ -104,6 +104,10 @@ export async function postCreateTask(req: EnhancedRequest, next: NextFunction, c
         },
         caseType: {
           value: createTask.caseType,
+          type: 'String',
+        },
+        jurisdiction: {
+          value: 'roleAssif..',
           type: 'String',
         },
       },

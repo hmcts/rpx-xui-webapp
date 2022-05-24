@@ -5,6 +5,7 @@ import {
   getAllCaseWorkers,
   getAllCaseWorkersForLocation,
   getCases,
+  getMyAccess,
   getCaseWorkersForLocationAndService,
   getCaseWorkersForService,
   getCaseWorkersFromServices,
@@ -61,5 +62,6 @@ router.use('/my-work/cases', getMyCases);
 router.use('/all-work/cases', getCases);
 
 router.use('/getJudicialUsers', getJudicialUsers);
+router.use('/my-work/myaccess', getMyAccess);
 
 export default router;

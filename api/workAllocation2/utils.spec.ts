@@ -975,6 +975,7 @@ describe('workAllocation.utils', () => {
       },
     ];
     const expectedRoleCaseData: RoleCaseData[] = [{
+      access: undefined,
       id: '1',
       case_id: '123',
       case_name: '123',
@@ -989,8 +990,10 @@ describe('workAllocation.utils', () => {
       endDate: new Date('01-01-2022'),
       assignee: 'person1',
       role_category: 'LEGAL_OPERATIONS',
+      dateSubmitted: undefined,
     },
       {
+        access: undefined,
         id: '3',
         case_id: '456',
         case_name: '456',
@@ -1005,16 +1008,17 @@ describe('workAllocation.utils', () => {
         endDate: new Date('01-01-2022'),
         assignee: 'person1',
         role_category: 'LEGAL_OPERATIONS',
+        dateSubmitted: undefined,
       }
     ];
     it('should return empty list if there is nothing given', () => {
-      expect(mapCasesFromData(null, null, null)).to.deep.equal([]);
-      expect(mapCasesFromData(null, firstRoleAssignment, null)).to.deep.equal([]);
-      expect(mapCasesFromData(null, firstRoleAssignment, paginationConfig)).to.deep.equal([]);
-      expect(mapCasesFromData(null, null, paginationConfig)).to.deep.equal([]);
+      expect(mapCasesFromData(null, null)).to.deep.equal([]);
+      expect(mapCasesFromData(null, firstRoleAssignment)).to.deep.equal([]);
+      expect(mapCasesFromData(null, firstRoleAssignment)).to.deep.equal([]);
+      expect(mapCasesFromData(null, null)).to.deep.equal([]);
     });
     it('should return correct case data if role assignment data returned', () => {
-      expect(mapCasesFromData(mockCaseData, mockRoleAssignment, null)).to.deep.equal(expectedRoleCaseData);
+      expect(mapCasesFromData(mockCaseData, mockRoleAssignment)).to.deep.equal(expectedRoleCaseData);
     });
   });
 

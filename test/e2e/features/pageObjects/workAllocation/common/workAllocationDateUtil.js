@@ -50,7 +50,7 @@ class WorkAllocationDateUtil{
     getDateInDays(dateInDays){
         let dateObj = new Date();
         dateObj.setDate(dateObj.getDate() + parseInt(dateInDays.replace(' ', '')));
-        return dateObj.getDate();; 
+        return dateObj; 
     }
 
     getDateFormat_DD_Month_YYYY(dateInDays){

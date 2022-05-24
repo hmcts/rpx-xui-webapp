@@ -8,6 +8,7 @@ const Spinner = require('../../pageObjects/common/spinner');
 
 var cucumberReporter = require('../../../support/reportLogger');
 const reportLogger = require('../../../support/reportLogger');
+const { LOG_LEVELS } = require('../../../support/constants');
 
 
 class WAListTable {
@@ -46,7 +47,7 @@ class WAListTable {
         await BrowserWaits.waitForConditionAsync(async () => {
             let tableRowsCount = await this.tableRows.count();
             let isTableFooterDispayed = await this.tableFooter.isDisplayed();
-            cucumberReporter.AddMessage(`Waiting for WA list table condition : row count is ${tableRowsCount} or table foorter displayed ${isTableFooterDispayed}`);
+            cucumberReporter.AddMessage(`Waiting for WA list table condition : row count is ${tableRowsCount} or table foorter displayed ${isTableFooterDispayed}`, LOG_LEVELS.Info);
             return tableRowsCount > 0 || isTableFooterDispayed;
         }, 45000);
     }
@@ -220,7 +221,7 @@ class WAListTable {
     async clickRowAction(action) {
 
         await BrowserWaits.waitForConditionAsync(async () => await this.isRowActionPresent(action), 5000);
-        await reportLogger.AddMessage(`Manage links displayed : ${await this.displayedActionRow.getText()}`)
+        await reportLogger.AddMessage(`Manage links displayed : ${await this.displayedActionRow.getText()}`, LOG_LEVELS.Debug)
         const actionLink = this.displayedActionRow.element(by.xpath(`//div[contains(@class,"task-action") or contains(@class,"case-action")]//a[contains(text(),"${action}" )]`))
         await browser.executeScript('arguments[0].scrollIntoView()',
             actionLink.getWebElement());
@@ -253,7 +254,7 @@ class WAListTable {
             return true;
         }
         catch (err) {
-            cucumberReporter.AddMessage(`${this.baseCssLocator} WA Row Action bar not displayed  ${err.stack}`);
+            cucumberReporter.AddMessage(`${this.baseCssLocator} WA Row Action bar not displayed  ${err.stack}`, LOG_LEVELS.Error);
             return false;
         }
     }

@@ -1,11 +1,11 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
 import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
-import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import * as fromFeature from '../../../store';
 
 @Component({
@@ -64,14 +64,6 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
           return;
         }
         this.store.dispatch(new fromFeature.RequestMoreInfoSpecificAccessRequest(specificAccessMockState));
-        break;
-      case SpecificAccessNavigationEvent.BACK:
-        // need to hold comment
-        this.submitted = true;
-        if (!this.formGroup.valid) {
-          this.error = this.getErrorObject();
-          return;
-        }
         break;
       default:
         throw new Error('Invalid option');

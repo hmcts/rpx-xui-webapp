@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ErrorMessageComponent } from '@hmcts/ccd-case-ui-toolkit/dist/shared';
 import { Store } from '@ngrx/store';
@@ -9,7 +9,7 @@ import { SpecificAccessInformationComponent } from './specific-access-informatio
 import { StoreModule } from '@ngrx/store';
 import { AccessReason, SpecificAccessErrors, SpecificAccessText } from '../../../models/enums';
 
-fdescribe('DescribeExclusionComponent', () => {
+describe('DescribeExclusionComponent', () => {
   let component: SpecificAccessInformationComponent;
   let mockStore: any;
   let mockFormBuilder: any;
@@ -62,9 +62,10 @@ fdescribe('DescribeExclusionComponent', () => {
       requestedRole: 'specific-access-legal-operations',
       person: {id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null},
     }
-    xit('should correctly navigate on click of back link in the navigation handler', () => {
+    it('should correctly navigate on click of back link in the navigation handler', () => {
+      component.infoCtrl = new FormControl('');
       mockStore.pipe.and.returnValue(of(specificAccessState));
-      component.navigationHandler(SpecificAccessNavigationEvent.BACK);
+      component.navigationHandler(SpecificAccessNavigationEvent.CONTINUE);
       expect(mockStore.dispatch).toHaveBeenCalled();
     });
   });

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import * as fromFeature from '../../store/actions';
-import { catchError, map, mergeMap } from 'rxjs/operators';
 import { Actions, Effect, ofType } from '@ngrx/effects';
+import { catchError, map, mergeMap } from 'rxjs/operators';
 import { SpecificAccessState } from '../../models';
 import { AllocateRoleService } from '../../services';
+import * as fromFeature from '../../store/actions';
 import { ApproveSpecificAccessRequest, RequestMoreInfoSpecificAccessRequest, SpecificAccessActionTypes } from '../actions';
 import { AllocateRoleEffects } from './allocate-role.effects';
 
@@ -36,9 +36,8 @@ export class SpecificAccessEffects {
               return new fromFeature.ChangeSpecificAccessNavigation(SpecificAccessState.SPECIFIC_ACCESS_DENIED);
             }),
             catchError(error => {
-              return error;
-              }
-            )
+              return AllocateRoleEffects.handleError(error, SpecificAccessActionTypes.REQUEST_MORE_INFO_SPECIFIC_ACCESS_REQUEST);
+            })
           )
       )
     );

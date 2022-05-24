@@ -2,12 +2,11 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ErrorMessageComponent } from '@hmcts/ccd-case-ui-toolkit/dist/shared';
-import { Store } from '@ngrx/store';
+import { Store, StoreModule } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
 import { SpecificAccessInformationComponent } from './specific-access-information.component';
-import { StoreModule } from '@ngrx/store';
-import { AccessReason, SpecificAccessErrors, SpecificAccessText } from '../../../models/enums';
+import { AccessReason} from '../../../models/enums';
 
 describe('DescribeExclusionComponent', () => {
   let component: SpecificAccessInformationComponent;

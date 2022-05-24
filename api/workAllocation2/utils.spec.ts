@@ -331,6 +331,7 @@ describe('workAllocation.utils', () => {
   describe('prepareRoleApiRequest', () => {
 
     it('should correctly prepare a payload with jurisdictions and location parameters', () => {
+      debugger;
       const jurisdictions: string[] = ['IA', 'Not-IA'];
       const locationId = 123456;
       const expectedResult = {
@@ -817,6 +818,7 @@ describe('workAllocation.utils', () => {
 
   describe('applySearchFilter', () => {
     it('PersonRole BOTH', () => {
+      debugger;
       const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.CASEWORKER};
       const result = applySearchFilter(person, PersonRole.ALL, 'name');
       expect(result).to.equal(true);
@@ -893,6 +895,7 @@ describe('workAllocation.utils', () => {
   describe('constructElasticSearchQuery', () => {
 
     it('should create a query with at least three case ids', () => {
+
       const caseIds = [1589185982594513, 1589185060514243, 1589185060514243];
       const result = constructElasticSearchQuery(caseIds, 0, 1000);
       expect(result.native_es_query.query.terms).to.deep.equal({reference: caseIds});
@@ -1012,6 +1015,7 @@ describe('workAllocation.utils', () => {
       }
     ];
     it('should return empty list if there is nothing given', () => {
+      debugger;
       expect(mapCasesFromData(null, null)).to.deep.equal([]);
       expect(mapCasesFromData(null, firstRoleAssignment)).to.deep.equal([]);
       expect(mapCasesFromData(null, firstRoleAssignment)).to.deep.equal([]);
@@ -1020,6 +1024,79 @@ describe('workAllocation.utils', () => {
     it('should return correct case data if role assignment data returned', () => {
       expect(mapCasesFromData(mockCaseData, mockRoleAssignment)).to.deep.equal(expectedRoleCaseData);
     });
+  });
+
+  describe('getGrantType', () => {
+    debugger;
+    const mockRoleAssignment: RoleAssignment=
+      {
+        id: '1',
+        actorId: 'person1',
+        roleName: 'specific-access-requested',
+        endTime: new Date('01-01-2022'),
+        beginTime: new Date('01-01-2021'),
+        roleCategory: 'LEGAL_OPERATIONS',
+        grantType: 'SPECIFIC',
+        attributes: {
+          caseId: '123',
+          primaryLocation: '001',
+        },
+      };
+    const mockRoleAssignmentBasic: RoleAssignment=
+    {
+      id: '1',
+      actorId: 'person1',
+      roleName: 'specific-access-denied',
+      endTime: new Date('01-01-2022'),
+      beginTime: new Date('01-01-2021'),
+      roleCategory: 'LEGAL_OPERATIONS',
+      grantType: 'BASIC',
+      attributes: {
+        caseId: '123',
+        primaryLocation: '001',
+      },
+    };
+    const mockRoleAssignmentNoGrantType: RoleAssignment=
+    {
+      id: '1',
+      actorId: 'person1',
+      roleName: 'specific-access-denied',
+      endTime: new Date('01-01-2022'),
+      beginTime: new Date('01-01-2021'),
+      roleCategory: 'LEGAL_OPERATIONS',
+      attributes: {
+        caseId: '123',
+        primaryLocation: '001',
+      },
+    };
+    it('should getGrantType return correct response',   () => {
+      debugger;
+      const resp = util.getGrantType(mockRoleAssignment)
+      expect(resp).to.deep.equal('Specific');
+      const respBasic = util.getGrantType(mockRoleAssignmentBasic)
+      expect(respBasic).to.deep.equal('BASIC');
+    });
+
+    it('should getStartDate return correct response',   () => {
+      const resp = util.getStartDate(mockRoleAssignment)
+      expect(resp).to.deep.equal('Not authorised');
+      const respBasic = util.getStartDate(mockRoleAssignmentBasic)
+      expect(respBasic).to.deep.equal(new Date('01-01-2021'));
+    });
+
+    it('should formatDate return correct response',   () => {
+      const resp = util.formatDate(new Date('01-01-2021'))
+      expect(resp).to.deep.equal('Not authorised');
+    });
+
+    it('should getAccessType return correct response',   () => {
+      const resp = util.getAccessType(mockRoleAssignment)
+      expect(resp).to.deep.equal('Not authorised');
+      const respNoGrantTYpe = util.getAccessType(mockRoleAssignmentNoGrantType)
+      expect(respNoGrantTYpe).to.deep.equal('Not authorised');
+    });
+
+
   });
 
   describe('getSubstantiveRoles', () => {

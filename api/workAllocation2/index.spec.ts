@@ -8,6 +8,7 @@ import { baseWorkAllocationTaskUrl, getTask, postTaskAction, searchTask, getType
 import { http } from '../lib/http';
 import { RE_ALLOCATE, REMOVE_ALLOCATE } from './constants/actions';
 import { mockTasks } from './taskTestData.spec';
+import { getCaseIdListFromRoles } from './util';
 
 chai.use(sinonChai);
 
@@ -266,6 +267,30 @@ describe('workAllocation2', () => {
       await postTaskAction(req, response, next);
 
       expect(next).to.have.been.calledWith();
+    });
+
+    it('should getMyAccess return proper response', async () => {
+      debugger;
+    //   sinon.stub('getCaseIdListFromRoles').resolves({
+    //     cases: mockCaseData,
+    //   });
+    //   spy = sandbox.stub(http, 'post').resolves(res);
+    //   const body = {assignee: {name: 'bob', id: 'bob01'}};
+    //   const req = mockReq({
+    //     body,
+    //     params: {
+    //       action: 'assign',
+    //       taskId: '123456',
+    //     },
+    //   });
+    //   const response = mockRes();
+
+    //   // Have the response throw an error.
+    //   response.send.throws();
+
+    //   await postTaskAction(req, response, next);
+
+    //   expect(getCaseIdListFromRoles).to.have.been.calledWith();
     });
 
   });

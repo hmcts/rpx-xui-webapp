@@ -549,10 +549,42 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
     caseDetail.case_data.caseManagementLocation &&
     caseDetail.case_data.caseManagementLocation.baseLocation ?
       caseDetail.case_data.caseManagementLocation.baseLocation : null,
-    startDate: roleAssignment.beginTime,
-    access: roleAssignment.grantType,
+    startDate: getStartDate(roleAssignment),
+    access: getGrantType(roleAssignment),
     dateSubmitted: roleAssignment.created,
   };
+}
+export function getGrantType(roleAssignment: RoleAssignment) {
+  return roleAssignment.grantType === 'SPECIFIC' || roleAssignment.roleName === 'specific-access-requested'
+  ?
+  'Specific'
+  :
+  roleAssignment.grantType;
+}
+
+export function getStartDate(roleAssignment: RoleAssignment): Date | string {
+  if (roleAssignment.roleName === 'specific-access-requested') {
+    return 'Not authorised';
+  } else if (roleAssignment.grantType === 'SPECIFIC' && roleAssignment.beginTime) {
+    return formatDate(new Date(roleAssignment.beginTime));
+  }
+  return roleAssignment.beginTime;
+}
+
+export function formatDate(date: Date) {
+  const day = date.toLocaleString('default', { day: '2-digit' });
+  const month = date.toLocaleString('default', { month: 'short' });
+  const year = date.toLocaleString('default', { year: 'numeric' });
+  return `${day} ${month} ${year}`;
+}
+
+export function getAccessType(roleAssignment: RoleAssignment) {
+  return roleAssignment.grantType ?
+  roleAssignment.grantType.replace(/\w+/g, replacableString => {
+    return replacableString[0].toUpperCase() + replacableString.slice(1).toLowerCase()
+  })
+  :
+  undefined;
 }
 
 export function getCaseName(caseDetail: Case): string {

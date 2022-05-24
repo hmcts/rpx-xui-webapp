@@ -17,6 +17,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 45,
       hearingType: 'final',
+      hearingChannel:[],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -237,6 +238,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 50,
       hearingType: 'final',
+      hearingChannel:[],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -454,6 +456,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 55,
       hearingType: 'final',
+      hearingChannel:[],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -660,6 +663,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 60,
       hearingType: 'final',
+      hearingChannel:[],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -866,6 +870,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 65,
       hearingType: 'final',
+      hearingChannel:[],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -1072,6 +1077,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 70,
       hearingType: 'final',
+      hearingChannel:[],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -1279,6 +1285,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 70,
       hearingType: 'final',
+      hearingChannel:[],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -1485,6 +1492,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 70,
       hearingType: 'final',
+      hearingChannel:[],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -1691,6 +1699,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 70,
       hearingType: 'final',
+      hearingChannel:[],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -1897,6 +1906,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 70,
       hearingType: 'final',
+      hearingChannel:[],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -2031,6 +2041,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 70,
       hearingType: 'final',
+      hearingChannel:[],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -2165,6 +2176,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 60,
       hearingType: 'final',
+      hearingChannel:[],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,
@@ -2366,6 +2378,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     hearingDetails: {
       duration: 70,
       hearingType: 'final',
+      hearingChannel:[],
       hearingLocations: [
         {
           locationType: HMCLocationType.COURT,

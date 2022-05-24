@@ -114,6 +114,26 @@ describe('DeleteExclusionComponent', () => {
     const additionalState = { state: { showMessage: true, messageText: ExclusionMessageText.Delete } };
     expect(routerMock.navigate).toHaveBeenCalledWith([goToCaseUrl], additionalState);
   });
+
+  describe('showSpinner', () => {
+    it('should default to false', () => {
+      expect(component.showSpinner).toBeFalsy();
+    });
+
+    it('should be true when exclusion is confirmed', () => {
+      mockRoleExclusionService.deleteExclusion.and.returnValue(of(200));
+      component.onNavEvent(ExclusionNavigationEvent.DELETE_EXCLUSION);
+      fixture.detectChanges();
+      expect(component.showSpinner).toBeTruthy();
+    });
+
+    it('should be false when exclusion navigation is not handled', () => {
+      expect(() => component.onNavEvent(ExclusionNavigationEvent.BACK)).toThrow();
+      fixture.detectChanges();
+      expect(component.showSpinner).toBeFalsy();
+    });
+  });
+
   it('populateAnswers', () => {
     const someExclusion = {
       actorId: null,

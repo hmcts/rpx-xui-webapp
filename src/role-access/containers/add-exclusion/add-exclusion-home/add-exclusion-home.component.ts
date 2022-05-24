@@ -55,6 +55,8 @@ export class AddExclusionHomeComponent implements OnInit, OnDestroy {
   public describeExclusionVisibilityStates = describeExclusionVisibilityStates;
   public checkAnswersVisibilityStates = checkAnswersVisibilityStates;
 
+  public showSpinner: boolean;
+
   constructor(private readonly store: Store<fromFeature.State>,
               private readonly route: ActivatedRoute,
               private readonly router: Router) {
@@ -138,9 +140,11 @@ export class AddExclusionHomeComponent implements OnInit, OnDestroy {
       case ExclusionNavigationEvent.CONFIRM_EXCLUSION: {
         switch (this.navigationCurrentState) {
           case ExclusionState.CHECK_ANSWERS:
+            this.showSpinner = true;
             this.checkAnswersComponent.navigationHandler(navEvent);
             break;
           default:
+            this.showSpinner = false;
             throw new Error('Invalid exclusion state');
         }
         break;
@@ -149,6 +153,7 @@ export class AddExclusionHomeComponent implements OnInit, OnDestroy {
         this.router.navigateByUrl(`cases/case-details/${this.caseId}/roles-and-access`);
         break;
       default:
+        this.showSpinner = false;
         throw new Error('Invalid exclusion navigation event');
     }
   }

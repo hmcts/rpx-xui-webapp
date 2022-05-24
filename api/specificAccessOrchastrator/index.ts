@@ -42,7 +42,9 @@ export async function orchestrationSpecificAccessRequest(req: EnhancedRequest, r
         }
         return res.status(taskResponse.status).send(taskResponse);
       }
-      await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
+      if (req &&  req.session && req.session.passport && req.session.passport.user.userinfo) {
+        await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
+      }
       return res.status(status).send(data);
     }
   } catch (error) {

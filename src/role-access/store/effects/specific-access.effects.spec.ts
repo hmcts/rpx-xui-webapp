@@ -89,8 +89,7 @@ describe('Specific Access Effects', () => {
       requestedRole: 'specific-access-legal-operations',
       person: {id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null},
       }
-      allocateRoleServiceMock.specificAccessApproval.and.returnValue(of({
-      }));
+      allocateRoleServiceMock.specificAccessApproval.and.returnValue(of({}));
       const action = new specificAccessAction.RequestMoreInfoSpecificAccessRequest(specificAccessState); actions$ = hot('-a', { a: action });
       effects.approveSpecificAccessRequest$.subscribe(() => {
           expect(allocateRoleServiceMock.requestMoreInformation).toHaveBeenCalled();

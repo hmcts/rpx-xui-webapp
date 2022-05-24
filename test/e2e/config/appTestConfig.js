@@ -1,5 +1,5 @@
 const data = {
-    testEnv: process.env.TEST_ENV ? process.env.TEST_ENV : 'aat', 
+    testEnv: process.env.TEST_ENV !== undefined && (process.env.TEST_ENV.includes('aat') || process.env.TEST_ENV.includes('demo') ) ? process.env.TEST_ENV : 'aat',  
     users: {
         aat: [
             {

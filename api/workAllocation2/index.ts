@@ -463,6 +463,27 @@ export function getCaseListPromises(data: CaseDataType, req: EnhancedRequest): A
   return casePromises;
 }
 
+export async function getMyAccess(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const roleAssignments = req.session.roleAssignmentResponse as RoleAssignment [];
+  const specificRoleAssignments = roleAssignments.filter(roleAssignment =>
+    roleAssignment.grantType === 'SPECIFIC'
+    ||
+    roleAssignment.roleName === 'specific-access-requested'
+    ||
+    roleAssignment.roleName === 'specific-access-denied'
+    ||
+    roleAssignment.grantType === 'CHALLENGED'
+  );
+  const cases = await getCaseIdListFromRoles(specificRoleAssignments, req);
+  const mappedCases = mapCasesFromData(cases, specificRoleAssignments);
+  const result = {
+    cases: mappedCases,
+    total_records: 0,
+    unique_cases: 0,
+  };
+  return res.send(result).status(200);
+}
+
 export async function getMyCases(req: EnhancedRequest, res: Response): Promise<Response> {
   try {
     const roleAssignments = req.session.roleAssignmentResponse;
@@ -482,7 +503,7 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
     };
 
     if (cases.length) {
-      const mappedCases = checkedRoles ? mapCasesFromData(cases, checkedRoles as any, null) : [];
+      const mappedCases = checkedRoles ? mapCasesFromData(cases, checkedRoles as any) : [];
       result.total_records = mappedCases.length;
       result.unique_cases = getUniqueCasesCount(mappedCases);
       result.cases = assignActionsToCases(mappedCases, userIsCaseAllocator);
@@ -530,7 +551,7 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     if (showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED)) {
       checkedRoles = getSubstantiveRoles(roleAssignmentResult.roleAssignmentResponse);
     }
-    const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles, pagination) : [];
+    const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles) : [];
     result.total_records = mappedCases.length;
     result.unique_cases = getUniqueCasesCount(mappedCases);
     const roleCaseList = pagination ? paginate(mappedCases, pagination.page_number, pagination.page_size) : mappedCases;

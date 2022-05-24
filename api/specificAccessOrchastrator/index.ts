@@ -12,6 +12,7 @@ import { postTaskCompletionForAccess } from '../workAllocation2';
 import { createSpecificAccessDenyRole, deleteSpecificAccessRequestedRole } from '../roleAccess/index';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { deleteSpecificAccessRoles, restoreDeletedRole } from '../accessManagement';
+import { refreshRoleAssignmentForUser } from '../user';
 
 export async function orchestrationSpecificAccessRequest(req: EnhancedRequest, res, next: NextFunction): Promise<any> {
   let createAmRoleResponse: AxiosResponse;
@@ -45,6 +46,9 @@ export async function orchestrationSpecificAccessRequest(req: EnhancedRequest, r
           return res.status(deleteResponse.status).send(deleteResponse);
         }
         return res.status(taskResponse.status).send(taskResponse);
+      }
+      if (req &&  req.session && req.session.passport && req.session.passport.user.userinfo) {
+        await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
       }
       return res.status(status).send(data);
     }

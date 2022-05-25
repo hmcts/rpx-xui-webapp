@@ -5,3 +5,8 @@ export interface CaseCategoryModel {
   categoryValue: string;
   categoryParent?: string;
 }
+
+export interface CaseCategoryDisplayModel extends CaseCategoryModel {
+  categoryDisplayValue: string;
+  childNodes?: CaseCategoryDisplayModel[];
+}

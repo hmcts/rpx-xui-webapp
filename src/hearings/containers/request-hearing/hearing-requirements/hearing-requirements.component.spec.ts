@@ -4,7 +4,7 @@ import {ActivatedRoute} from '@angular/router';
 import {ErrorMessage} from '@hmcts/ccd-case-ui-toolkit/dist/shared/domain';
 import {provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
-import {caseFlagsRefData, initialState, serviceHearingValuesModel} from '../../../hearing.test.data';
+import {caseFlagsRefData, caseTypeRefData, initialState, serviceHearingValuesModel} from '../../../hearing.test.data';
 import {HearingRequestMainModel} from '../../../models/hearingRequestMain.model';
 import {
   ACTION,
@@ -72,6 +72,7 @@ describe('HearingRequirementsComponent', () => {
             snapshot: {
               data: {
                 caseFlags: caseFlagsRefData,
+                caseType: caseTypeRefData,
               },
             },
             fragment: of('point-to-me'),
@@ -175,19 +176,19 @@ describe('HearingRequirementsComponent', () => {
         caseCategories: [
           {
             categoryType: CategoryType.CaseType,
-            categoryValue: 'Personal Independence Payment',
-          },
-          {
+            categoryValue: 'BBA3-002',
+          }, {
             categoryType: CategoryType.CaseSubType,
-            categoryValue: 'Conditions of Entitlement',
-          },
-          {
+            categoryValue: 'BBA3-002CC',
+            categoryParent: 'BBA3-002',
+          }, {
             categoryType: CategoryType.CaseSubType,
-            categoryValue: 'Good cause',
-          },
-          {
+            categoryValue: 'BBA3-002GC',
+            categoryParent: 'BBA3-002',
+          }, {
             categoryType: CategoryType.CaseSubType,
-            categoryValue: 'Rate of Assessment / Payability Issues - complex',
+            categoryValue: 'BBA3-002RC',
+            categoryParent: 'BBA3-002',
           }
         ],
         caseManagementLocationCode: '196538',

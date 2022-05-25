@@ -11,7 +11,7 @@ import {LovRefDataService} from '../services/lov-ref-data.service';
 import {CaseTypesResolver} from './case-types.resolver';
 import {JudgeTypesResolverService} from './judge-types-resolver.service';
 
-fdescribe('CaseTypesResolver', () => {
+describe('CaseTypesResolver', () => {
   let lovRefDataService: LovRefDataService;
   const dataRef: LovRefDataModel[] = [];
 

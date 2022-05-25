@@ -1,4 +1,5 @@
 export interface RoleCaseData {
+  access?: string;
   id: string;
   case_name: string;
   case_id: string;
@@ -10,8 +11,9 @@ export interface RoleCaseData {
   jurisdiction: string;
   jurisdictionId?: string;
   location_id: string;
-  startDate: Date;
+  startDate: Date | string;
   endDate: Date;
+  dateSubmitted?: Date;
   assignee: string;
   state?: string;
   version?: string;

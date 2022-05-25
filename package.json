@@ -74,7 +74,7 @@
     "@edium/fsm": "^2.1.2",
     "@hmcts/ccd-case-ui-toolkit": "4.14.1",
     "@hmcts/frontend": "0.0.39-alpha",
-    "@hmcts/media-viewer": "2.7.15",
+    "@hmcts/media-viewer": "2.7.16",
     "@hmcts/nodejs-healthcheck": "^1.7.0",
     "@hmcts/properties-volume": "^0.0.13",
     "@hmcts/rpx-xui-common-lib": "1.7.0",

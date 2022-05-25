@@ -65,7 +65,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
         } as PartyDetailsModel) as FormGroup);
       });
 
-      this.attendanceFormGroup.controls.estimation.setValue(this.hearingRequestMainModel.hearingDetails.numberOfPhysicalAttendees);
+      this.attendanceFormGroup.controls.estimation.setValue(this.hearingRequestMainModel.hearingDetails.numberOfPhysicalAttendees || 0);
     }
     this.partiesFormArray = this.attendanceFormGroup.controls.parties as FormArray;
   }
@@ -103,12 +103,19 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       };
       partyDetails.push(partyDetail);
     });
-
+    let hearingChannel: string[] = this.hearingRequestMainModel.hearingDetails.hearingChannel;
+    const preferredHearingChannelsList: string[] = partyDetails.map(party => party.individualDetails.preferredHearingChannel)
+    if (preferredHearingChannelsList.every(channel => channel === HearingChannelEnum.NotAttending)) {
+      hearingChannel = [HearingChannelEnum.ONPPR];
+    } else {
+      hearingChannel = preferredHearingChannelsList;
+    }
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
       partyDetails,
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
+        hearingChannel,
         numberOfPhysicalAttendees: parseInt(this.attendanceFormGroup.controls.estimation.value, 0)
       }
     };
@@ -178,6 +185,6 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   }
 
   public setHearingPreferredChannel(individualDetails: IndividualDetailsModel): string {
-    return this.serviceHearingValuesModel.hearingChannel.includes(HearingChannelEnum.ONPPR) ? HearingChannelEnum.NotAttending : individualDetails.preferredHearingChannel;
+    return this.hearingRequestMainModel.hearingDetails.hearingChannel.includes(HearingChannelEnum.ONPPR) ? HearingChannelEnum.NotAttending : individualDetails.preferredHearingChannel;
   }
 }

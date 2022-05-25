@@ -1,20 +1,20 @@
-import {AfterViewInit, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {Store} from '@ngrx/store';
+import { AfterViewInit, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
 import * as fromHearingStore from '../../../../hearings/store';
-import {CaseCategoryModel} from '../../../models/caseCategory.model';
-import {CaseFlagGroup} from '../../../models/caseFlagGroup.model';
-import {CaseFlagReferenceModel} from '../../../models/caseFlagReference.model';
-import {HearingConditions, KEY_IS_INIT, KEY_MODE} from '../../../models/hearingConditions';
-import {HearingRequestMainModel} from '../../../models/hearingRequestMain.model';
-import {ACTION, CaseFlagType, CategoryType, Mode} from '../../../models/hearings.enum';
-import {PartyDetailsModel} from '../../../models/partyDetails.model';
-import {PartyFlagsDisplayModel} from '../../../models/partyFlags.model';
-import {HearingsService} from '../../../services/hearings.service';
-import {LocationsDataService} from '../../../services/locations-data.service';
-import {CaseFlagsUtils} from '../../../utils/case-flags.utils';
-import {HearingsUtils} from '../../../utils/hearings.utils';
-import {RequestHearingPageFlow} from '../request-hearing.page.flow';
+import { CaseCategoryModel } from '../../../models/caseCategory.model';
+import { CaseFlagGroup } from '../../../models/caseFlagGroup.model';
+import { CaseFlagReferenceModel } from '../../../models/caseFlagReference.model';
+import { HearingConditions, KEY_IS_INIT, KEY_MODE } from '../../../models/hearingConditions';
+import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
+import { ACTION, CaseFlagType, CategoryType, Mode } from '../../../models/hearings.enum';
+import { PartyDetailsModel } from '../../../models/partyDetails.model';
+import { PartyFlagsDisplayModel } from '../../../models/partyFlags.model';
+import { HearingsService } from '../../../services/hearings.service';
+import { LocationsDataService } from '../../../services/locations-data.service';
+import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
+import { HearingsUtils } from '../../../utils/hearings.utils';
+import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-requirements',
@@ -90,11 +90,11 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         hearingRequester: this.serviceHearingValuesModel.hearingRequester,
         leadJudgeContractType: this.serviceHearingValuesModel.leadJudgeContractType,
         amendReasonCode: null,
-        hearingChannel: [],
+        hearingChannel: this.serviceHearingValuesModel.hearingChannel,
       },
       caseDetails: {
         hmctsServiceCode: this.serviceHearingValuesModel.hmctsServiceID || null,
-        caseRef: this.hearingListMainModel.caseRef || null,
+        caseRef: this.hearingListMainModel && this.hearingListMainModel.caseRef || null,
         requestTimeStamp: null,
         hearingID: null,
         caseDeepLink: this.serviceHearingValuesModel.caseDeepLink,
@@ -133,8 +133,8 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
           interpreterLanguage: this.getAllPartyFlagsByPartyId(partyDetail.partyID)
             .includes(CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID) ? CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID : null,
         },
-        ...organisationDetails && ({organisationDetails}),
-        };
+        ...organisationDetails && ({ organisationDetails }),
+      };
       combinedPartyDetails.push(party);
     });
     return combinedPartyDetails;
@@ -154,12 +154,12 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         .then(locations => {
           this.strRegions = locations.map(location => location.region).join(',');
         }).then(() => {
-        const hearingCondition: HearingConditions = {
-          isInit: false,
-          region: this.strRegions
-        };
-        this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
-      });
+          const hearingCondition: HearingConditions = {
+            isInit: false,
+            region: this.strRegions
+          };
+          this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
+        });
     }
   }
 

@@ -29,4 +29,22 @@ Feature: Login
     Given I navigate to Expert UI Url direct link
     Then I should be redirected back to Login page after direct link
 
-  
+  @iauserslogin
+  Scenario Outline: Login as IA "<Usertype>"
+    Given I am logged into Expert UI as IA "<Usertype>"
+    Then I should be redirected to EUI dashboard page
+    Then I see primary navigation tabs "<mainHeaders>" in main header
+    Then I should see the expected banner for IA "<Usertype>"
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+    Examples: 
+      | Usertype              | mainHeaders                                    |
+      | case_officer          | Task list, Task manager,Case list, Create case |
+      | legal_rep             | Task manager,Case list, Create case            |
+      | admin_officer         | Case list, Create case                         |
+      | homeoffice_respondent | Case list, Create case                         |
+      | homeoffice_apc        | Case list, Create case                         |
+      | homeoffice_larts      | Case list, Create case                         |
+      | homeoffice_pou        | Case list, Create case                         |
+      | judge                 | Case list                                      |

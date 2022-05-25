@@ -431,8 +431,10 @@ export function getCaseListPromises(data: CaseDataType, req: EnhancedRequest): A
     if (data.hasOwnProperty(jurisdiction)) {
       for (const caseType in data[jurisdiction]) {
         if (data[jurisdiction].hasOwnProperty(caseType)) {
-          const query = constructElasticSearchQuery(Array.from(data[jurisdiction][caseType]), 0, 10000);
-          casePromises.push(searchCasesById(caseType, query, req));
+          const queries = constructElasticSearchQuery(Array.from(data[jurisdiction][caseType]), 0, 10000);
+          queries.forEach(query => {
+            casePromises.push(searchCasesById(caseType, query, req));
+          });
         }
       }
     }

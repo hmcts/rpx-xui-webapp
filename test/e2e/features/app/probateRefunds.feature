@@ -1,4 +1,4 @@
-@probate @fullfunctional @refunds
+@probate @refunds
 Feature: Probate Refunds
 
   Background:

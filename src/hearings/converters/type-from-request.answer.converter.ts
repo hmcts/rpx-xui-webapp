@@ -32,7 +32,6 @@ export class TypeFromRequestAnswerConverter implements AnswerConverter {
             }
             result += '</ul>';
           });
-          result += '</ul>';
           return result;
         }
         return result;

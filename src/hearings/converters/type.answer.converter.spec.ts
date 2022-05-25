@@ -33,7 +33,7 @@ describe('TypeAnswerConverter', () => {
   it('should transform type', () => {
     const STATE: State = initialState.hearings;
     const result$ = typeAnswerConverter.transformAnswer(of(STATE));
-    const type = 'PERSONAL INDEPENDENT PAYMENT (NEW CLAIM) \n<ul><li>- CONDITIONS OF ENTITLEMENT - COMPLEX</li><li>- GOOD CAUSE</li><li>- RATE OF ASSESSMENT/PAYABILITY ISSUES - COMPLEX</li></ul></ul>';
+    const type = 'PERSONAL INDEPENDENT PAYMENT (NEW CLAIM) \n<ul><li>- CONDITIONS OF ENTITLEMENT - COMPLEX</li><li>- GOOD CAUSE</li><li>- RATE OF ASSESSMENT/PAYABILITY ISSUES - COMPLEX</li></ul>';
     const expected = cold('(b|)', {b: type});
     expect(result$).toBeObservable(expected);
   });

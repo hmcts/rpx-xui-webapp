@@ -29,7 +29,6 @@ export class TypeAnswerConverter implements AnswerConverter {
           }
           result += '</ul>';
         });
-        result += '</ul>';
         return result;
       })
     );

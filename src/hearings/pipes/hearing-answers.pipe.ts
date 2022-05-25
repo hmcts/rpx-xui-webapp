@@ -38,6 +38,7 @@ import { ReasonForCancellationAnswerConverter } from '../converters/reason-for-c
 import { RoomIdAnswerConverter } from '../converters/room-id.answer.converter';
 import { StageAnswerConverter } from '../converters/stage.answer.converter';
 import { StatusAnswerConverter } from '../converters/status.answer.converter';
+import { TypeFromRequestAnswerConverter } from '../converters/type-from-request.answer.converter';
 import { TypeAnswerConverter } from '../converters/type.answer.converter';
 import { VenueAnswerConverter } from '../converters/venue.answer.converter';
 import { AnswerSource } from '../models/hearings.enum';
@@ -64,6 +65,9 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.Type:
         converter = new TypeAnswerConverter(this.route);
+        break;
+      case AnswerSource.TYPE_FROM_REQUEST:
+        converter = new TypeFromRequestAnswerConverter(this.route);
         break;
       case AnswerSource.STATUS:
         converter = new StatusAnswerConverter();

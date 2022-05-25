@@ -93,10 +93,10 @@ export const DEFAULT_STAGES_REF: LovRefDataModel[] = [
 
 export const DEFAULT_PRIORITIES_REF: LovRefDataModel[] = [
   {
-    key: 'urgent',
-    value_en: 'Urgent',
+    key: 'NORMAL',
+    value_en: 'Normal',
     value_cy: '',
-    hint_text_en: 'Urgent',
+    hint_text_en: 'Normal',
     hint_text_cy: '',
     lov_order: 1,
     parent_key: null,
@@ -107,10 +107,38 @@ export const DEFAULT_PRIORITIES_REF: LovRefDataModel[] = [
     from: 'exui-default',
   },
   {
-    key: 'standard',
-    value_en: 'Standard',
+    key: 'HIGH',
+    value_en: 'High',
     value_cy: '',
-    hint_text_en: 'Standard',
+    hint_text_en: 'High',
+    hint_text_cy: '',
+    lov_order: 2,
+    parent_key: null,
+    category_key: 'HearingPriority',
+    parent_category: '',
+    active_flag: 'Y',
+    child_nodes: null,
+    from: 'exui-default',
+  },
+  {
+    key: 'CRITICAL',
+    value_en: 'Critical',
+    value_cy: '',
+    hint_text_en: 'Critical',
+    hint_text_cy: '',
+    lov_order: 2,
+    parent_key: null,
+    category_key: 'HearingPriority',
+    parent_category: '',
+    active_flag: 'Y',
+    child_nodes: null,
+    from: 'exui-default',
+  },
+  {
+    key: 'PENDING',
+    value_en: 'Pending',
+    value_cy: '',
+    hint_text_en: 'Pending',
     hint_text_cy: '',
     lov_order: 2,
     parent_key: null,
@@ -811,7 +839,7 @@ export const DEFAULT_ADDITIONAL_FACILITIES_REF: LovRefDataModel[] = [
   },
 ];
 
-export const OTHER_PANEL_ROLES: LovRefDataModel[] = [
+export const DEFAULT_PANEL_MEMBER_TYPE_REF: LovRefDataModel[] = [
   {
     category_key: 'PanelMemberType',
     key: 'BBA3-DQPM',
@@ -1136,8 +1164,8 @@ export const DEFAULT_ADDITIONAL_FACILITIES: LovRefDataByServiceModel = {
   list_of_values: DEFAULT_ADDITIONAL_FACILITIES_REF,
 };
 
-export const DEFAULT_OTHER_PANEL_ROLES: LovRefDataByServiceModel = {
-  list_of_values: OTHER_PANEL_ROLES,
+export const DEFAULT_PANEL_MEMBER_TYPE: LovRefDataByServiceModel = {
+  list_of_values: DEFAULT_PANEL_MEMBER_TYPE_REF,
 };
 
 export const DEFAULT_ADJOURN_HEARING_ACTUAL: LovRefDataByServiceModel = {
@@ -1182,8 +1210,8 @@ export const ALL_REF_DATA: LovRefDataByCategoryModel[] = [
     lovDataModel: DEFAULT_ADDITIONAL_FACILITIES,
   },
   {
-    categoryKey: 'OtherPanelRoles',
-    lovDataModel: DEFAULT_OTHER_PANEL_ROLES,
+    categoryKey: 'PanelMemberType',
+    lovDataModel: DEFAULT_PANEL_MEMBER_TYPE,
   },
   {
     categoryKey: 'HearingRoles',

@@ -17,14 +17,8 @@ export async function getLovRefData(req: EnhancedRequest, res: Response) {
   const params = new URLSearchParams({service, isChildRequired});
   const markupPath: string = `${prdUrl}/refdata/commondata/lov/categories/${category}?${params}`;
   try {
-    // TODO the getLovFromExUI will be removed once all LoV data returns as required
-    if (category === 'HearingType') {
-      const exuiDefaultData = getLovFromExUI(category);
-      res.status(200).send(exuiDefaultData);
-    } else {
-      const {status, data}: { status: number, data: LovRefDataByServiceModel } = await sendGet(markupPath, req);
-      res.status(status).send(data.list_of_values);
-    }
+    const {status, data}: { status: number, data: LovRefDataByServiceModel } = await sendGet(markupPath, req);
+    res.status(status).send(data.list_of_values);
   } catch (error) {
     // in order to not break the hearing journey, if the LoV is not defined from RD we will use the ExUI default value set.
     const exuiDefaultData = getLovFromExUI(category);

@@ -20,7 +20,7 @@ export const HEARING_VIEW_ONLY_SUMMARY_TEMPLATE: Section[] = [
       {
         id: 'type',
         answerTitle: 'Type',
-        answerSource: AnswerSource.Type,
+        answerSource: AnswerSource.TYPE_FROM_REQUEST,
         isHiddenSource: IsHiddenSource.LISTED
       },
       {

@@ -21,9 +21,45 @@
           "id": "caseLinks",
           "label": "Linked cases",
           "hidden": null,
-          "value": [{
-            "caseReference" : "1234-1234"
-          }],
+          "value": [
+            {
+              "caseReference": "1652112127295261",
+              "modified_date_time": "2022-05-10",
+              "caseType": "Benefit_SCSS",
+              "reasons": [
+                {
+                  "reasonCode": "bail",
+                  "OtherDescription": ""
+                }
+              ]
+            },
+            {
+              "caseReference": "1652111610080172",
+              "modified_date_time": "2022-05-10",
+              "caseType": "Benefit_SCSS",
+              "reasons": [
+                {
+                  "reasonCode": "consolidated",
+                  "OtherDescription": ""
+                }
+              ]
+            },
+            {
+              "caseReference": "1652111179220086",
+              "modified_date_time": "2022-05-10",
+              "caseType": "Benefit_SCSS",
+              "reasons": [
+                {
+                  "reasonCode": "progressed",
+                  "OtherDescription": ""
+                },
+                {
+                  "reasonCode": "familial",
+                  "OtherDescription": ""
+                }
+              ]
+            }
+          ],
           "metadata": false,
           "hint_text": null,
           "field_type": {
@@ -32,21 +68,15 @@
             "min": null,
             "max": null,
             "regular_expression": null,
-            "fixed_list_items": [
-              
-            ],
-            "complex_fields": [
-              
-            ],
+            "fixed_list_items": [],
+            "complex_fields": [],
             "collection_field_type": {
               "id": "CaseLink",
               "type": "Complex",
               "min": null,
               "max": null,
               "regular_expression": null,
-              "fixed_list_items": [
-                
-              ],
+              "fixed_list_items": [],
               "complex_fields": [
                 {
                   "id": "CaseReference",
@@ -56,19 +86,15 @@
                   "metadata": false,
                   "case_type_id": null,
                   "hint_text": null,
-                  "value" : "1234-1242-1223-2313",
+                  "value": "1234-1242-1223-2313",
                   "field_type": {
                     "id": "TextCaseReference",
                     "type": "Text",
                     "min": null,
                     "max": null,
                     "regular_expression": "(?:^[0-9]{16}$|^\\d{4}-\\d{4}-\\d{4}-\\d{4}$)",
-                    "fixed_list_items": [
-                      
-                    ],
-                    "complex_fields": [
-                      
-                    ],
+                    "fixed_list_items": [],
+                    "complex_fields": [],
                     "collection_field_type": null
                   },
                   "security_classification": "PUBLIC",
@@ -105,9 +131,7 @@
                       "role": "caseworker-sscs-dwpresponsewriter"
                     }
                   ],
-                  "complexACLs": [
-                    
-                  ],
+                  "complexACLs": [],
                   "display_context": null,
                   "display_context_parameter": null,
                   "retain_hidden_value": null,

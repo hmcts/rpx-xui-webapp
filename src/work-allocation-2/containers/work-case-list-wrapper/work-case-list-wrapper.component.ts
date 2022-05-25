@@ -307,22 +307,26 @@ export class WorkCaseListWrapperComponent implements OnInit {
     const loadingToken = this.loadingService.register();
     const casesSearch$ = this.performSearchPagination();
     const mappedSearchResult$ = casesSearch$.pipe(mergeMap(result => {
-      const judicialUserIds = result.cases.filter(theCase => theCase.role_category === 'JUDICIAL').map(thisCase => thisCase.assignee);
-      if (judicialUserIds && judicialUserIds.length > 0 && this.view !== 'MyCases') {
-        // may want to determine judicial workers by services in filter
-        return this.rolesService.getCaseRolesUserDetails(judicialUserIds, this.selectedServices).pipe(switchMap((judicialUserData) => {
-          const judicialNamedCases = result.cases.map(judicialCase => {
-            const currentCase = judicialCase;
-            const theJUser = judicialUserData.find(judicialUser => judicialUser.sidam_id === judicialCase.assignee);
-            if (theJUser) {
-              currentCase.actorName = theJUser.known_as;
+      if (result && result.cases) {
+        const judicialUserIds = result.cases.filter(theCase => theCase.role_category === 'JUDICIAL').map(thisCase => thisCase.assignee);
+        if (judicialUserIds && judicialUserIds.length > 0 && this.view !== 'MyCases') {
+          // may want to determine judicial workers by services in filter
+          return this.rolesService.getCaseRolesUserDetails(judicialUserIds, this.selectedServices).pipe(switchMap((judicialUserData) => {
+            const judicialNamedCases = result.cases.map(judicialCase => {
+              const currentCase = judicialCase;
+              const theJUser = judicialUserData.find(judicialUser => judicialUser.sidam_id === judicialCase.assignee);
+              if (theJUser) {
+                currentCase.actorName = theJUser.known_as;
+                return currentCase;
+              }
               return currentCase;
-            }
-            return currentCase;
-          });
-          result.cases = judicialNamedCases;
+            });
+            result.cases = judicialNamedCases;
+            return of(result);
+          }));
+        } else {
           return of(result);
-        }));
+        }
       } else {
         return of(result);
       }

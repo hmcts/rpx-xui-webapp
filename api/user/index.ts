@@ -41,6 +41,8 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
   const id = userInfo.id ? userInfo.id : userInfo.uid;
   const path = `${baseUrl}/am/role-assignments/actors/${id}`;
   const headers = setHeaders(req);
+  /* tslint:disable:no-string-literal */
+  delete headers['accept'];
   try {
     const response: AxiosResponse = await http.get(path, { headers });
     locationInfo = getRoleAssignmentInfo(response.data.roleAssignmentResponse);

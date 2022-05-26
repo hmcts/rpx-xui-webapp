@@ -42,7 +42,7 @@ export class RefDataResolver extends ServiceIdResolverResolve implements Resolve
   public getReferenceData$(serviceId, category: HearingCategory, isChildRequired): Observable<LovRefDataModel[]> {
     const sessionKey = this.getLovSessionKey(serviceId, category);
     const lovDataFromSession = this.getLovRefDataFromSession(sessionKey);
-    if (lovDataFromSession.length > 0) {
+    if (lovDataFromSession && lovDataFromSession.length > 0) {
       return of(lovDataFromSession);
     }
     return this.lovRefDataService.getListOfValues(category, serviceId, isChildRequired).pipe(

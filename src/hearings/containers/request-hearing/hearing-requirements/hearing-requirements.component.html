@@ -7,10 +7,12 @@
     <exui-hearing-amend-warning-msg
       [warningMsg]="'Review the information on this page, it has been updated.'">
     </exui-hearing-amend-warning-msg>
-    <p class="govuk-body govuk-!-margin-bottom-2">{{caseType}}</p>
-    <ul class="govuk-list govuk-list--bullet">
-      <li *ngFor="let subType of caseSubTypes">{{subType}}</li>
-    </ul>
+    <div *ngFor="let caseType of caseTypes">
+      <p class="govuk-body govuk-!-margin-bottom-2" >{{caseType.categoryDisplayValue}}</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li *ngFor="let subType of caseType.childNodes">{{subType.categoryDisplayValue}}</li>
+      </ul>
+    </div>
     <exui-case-flags
       [info]="'Any reasonable adjustments on this page will be included in the hearing request.'"
       [caseFlagsGroup]="reasonableAdjustmentFlags">

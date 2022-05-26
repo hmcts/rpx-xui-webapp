@@ -129,11 +129,13 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
       let skip: boolean = false;
       this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms.forEach(panelSpecialism => {
         skip = false;
-        this.multiLevelSelections.forEach(multiLevelSelectionFiltered => {
-          if (!skip) {
-            skip = this.loadPanel(multiLevelSelectionFiltered, panelSpecialism);
-          }
-        });
+        if (this.multiLevelSelections && this.multiLevelSelections.length) {
+          this.multiLevelSelections.forEach(multiLevelSelectionFiltered => {
+            if (!skip) {
+              skip = this.loadPanel(multiLevelSelectionFiltered, panelSpecialism);
+            }
+          });
+        }
       });
     }
     const hearingPanelRequirements = this.hearingRequestMainModel.hearingDetails.panelRequirements;
@@ -217,22 +219,24 @@ export class HearingPanelComponent extends RequestHearingPageFlow implements OnI
 
   public convertRefDataModelToArray(dataSource: LovRefDataModel[]): FormArray {
     const dataSourceArray = this.formBuilder.array([]);
-    dataSource.forEach(otherPanelRoles => {
-      dataSourceArray.push(this.patchValues({
-        key: otherPanelRoles.key,
-        value_en: otherPanelRoles.value_en,
-        value_cy: otherPanelRoles.value_cy,
-        hint_text_en: otherPanelRoles.hint_text_en,
-        hint_text_cy: otherPanelRoles.hint_text_cy,
-        lov_order: otherPanelRoles.lov_order,
-        parent_key: otherPanelRoles.parent_key,
-        category_key: otherPanelRoles.category_key,
-        parent_category: otherPanelRoles.parent_category,
-        active_flag: otherPanelRoles.active_flag,
-        child_nodes: otherPanelRoles.child_nodes,
-        selected: !otherPanelRoles.selected ? false : true,
-      } as LovRefDataModel) as FormGroup);
-    });
+    if (dataSource && dataSource.length) {
+      dataSource.forEach(otherPanelRoles => {
+        dataSourceArray.push(this.patchValues({
+          key: otherPanelRoles.key,
+          value_en: otherPanelRoles.value_en,
+          value_cy: otherPanelRoles.value_cy,
+          hint_text_en: otherPanelRoles.hint_text_en,
+          hint_text_cy: otherPanelRoles.hint_text_cy,
+          lov_order: otherPanelRoles.lov_order,
+          parent_key: otherPanelRoles.parent_key,
+          category_key: otherPanelRoles.category_key,
+          parent_category: otherPanelRoles.parent_category,
+          active_flag: otherPanelRoles.active_flag,
+          child_nodes: otherPanelRoles.child_nodes,
+          selected: !otherPanelRoles.selected ? false : true,
+        } as LovRefDataModel) as FormGroup);
+      });
+    }
     return dataSourceArray;
   }
 

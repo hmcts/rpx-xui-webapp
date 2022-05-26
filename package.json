@@ -59,7 +59,7 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^7.2.13",
+    "@angular/animations": "^8.2.14",
     "@angular/cdk": "^7.3.7",
     "@angular/common": "^7.2.13",
     "@angular/compiler": "^7.2.13",
@@ -141,8 +141,8 @@
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.13.0",
     "@angular-devkit/build-webpack": "^0.1201.1",
-    "@angular-material-components/datetime-picker": "^2.0.4",
-    "@angular-material-components/moment-adapter": "^5.0.0",
+    "@angular-material-components/datetime-picker": "^7.0.1",
+    "@angular-material-components/moment-adapter": "^7.0.0",
     "@angular/cli": "^7.3.10",
     "@angular/compiler-cli": "^7.2.13",
     "@angular/language-service": "~7.2.0",

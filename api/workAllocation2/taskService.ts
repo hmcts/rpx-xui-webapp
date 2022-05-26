@@ -13,6 +13,10 @@ const logger: JUILogger = log4jui.getLogger('task-service');
 export async function handleTaskGet(path: string, req: EnhancedRequest): Promise<any> {
     logger.info('getting tasks for', path);
     const headers = setHeaders(req);
+    delete headers['accept'];
+    delete headers['Accept'];
+    headers['Content-Type'] = 'application/json';
+    console.log(headers, 'check check');
     const response: AxiosResponse = await http.get(path, { headers });
     return response.data;
 }
@@ -20,6 +24,9 @@ export async function handleTaskGet(path: string, req: EnhancedRequest): Promise
 export async function handleTaskRolesGet(path: string, req: EnhancedRequest): Promise<any> {
   logger.info('getting task Roles for', path);
   const headers = setHeaders(req);
+  delete headers['accept'];
+  delete headers['Accept'];
+  headers['Content-Type'] = 'application/json';
   const response: AxiosResponse = await http.get(path, { headers });
   return response;
 }

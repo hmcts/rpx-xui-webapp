@@ -50,9 +50,9 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   }
 
   constructor(protected readonly route: ActivatedRoute,
-    public readonly hearingStore: Store<fromHearingStore.State>,
-    protected readonly hearingsService: HearingsService,
-    public readonly locationsDataService: LocationsDataService) {
+              public readonly hearingStore: Store<fromHearingStore.State>,
+              protected readonly hearingsService: HearingsService,
+              public readonly locationsDataService: LocationsDataService) {
     super(hearingStore, hearingsService, route);
     this.caseFlagsRefData = this.route.snapshot.data.caseFlags;
     this.caseTypeRefData = this.route.snapshot.data.caseType;
